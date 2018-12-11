@@ -1,0 +1,10 @@
+<?php
+Route::get('clientes/listar_pedidos','PedidoController@listar_pedidos');
+Route::get('clientes/ver_pedidos','PedidoController@ver_pedidos');
+Route::get('clientes/add_pedido','PedidoController@add_pedido');
+Route::post('clientes/store_pedidos','PedidoController@store_pedidos');
+Route::get('clientes/inputs_pedidos','PedidoController@inputs_pedidos');
+Route::get('clientes/actualizar_estado_pedido_detalle','PedidoController@actualizar_estado_pedido_detalle');
+Route::get('clientes/cancelar_pedido','PedidoController@cancelar_pedido');
+Route::get('clientes/opcion_pedido_fijo','PedidoController@opcion_pedido_fijo');
+Route::get('clientes/add_fechas_pedido_fijo_personalizado','PedidoController@add_fechas_pedido_fijo_personalizado');

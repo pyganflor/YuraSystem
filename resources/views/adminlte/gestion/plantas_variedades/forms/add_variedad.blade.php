@@ -1,0 +1,74 @@
+<form id="form_add_variedad">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="nombre">Nombre</label>
+                <input type="text" id="nombre" name="nombre" class="form-control" required maxlength="250" autocomplete="off">
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="id_planta">Planta</label>
+                <select name="id_planta" id="id_planta" required class="form-control">
+                    <option selected disabled>Seleccione</option>
+                    @foreach($plantas as $p)
+                        <option value="{{$p->id_planta}}">{{$p->nombre}}</option>
+                    @endforeach
+                </select>
+            </div>
+        </div>
+      <!--  <div class="col-md-3">
+            <div class="form-group">
+                <label for="id_planta">Unidad de medida</label>
+                <select id="unidad_medida" name="unidad_medida" class="form-control" required>
+                    <option disabled selected>Seleccione</option>
+                    <option value="pl">Pulgadas</option>
+                    <option value="cm" >Centímetros</option>
+                    <option value="m">Metros</option>
+                    <option value="km">Kilómetros</option>
+                    <option value="gr">Gramos</option>
+                    <option value="kg">Kilogramos</option>
+                </select>
+            </div>
+        </div>-->
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="siglas">Siglas</label>
+                <input type="text" id="siglas" name="siglas" class="form-control" required maxlength="25" autocomplete="off">
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="id_planta">Tallos por ramo (Cantidad)</label>
+                <input type="text" id="tallos_por_ramo" name="tallos_por_ramo" class="form-control" minlength="1"
+                       maxlength="255" value=""
+                       required onkeypress="return isNumber(event)">
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="id_planta">Mínio apertura</label>
+                <input type="text" id="minimo_apertura" name="minimo_apertura" class="form-control" minlength="1"
+                       maxlength="255" value=""
+                       required onkeypress="return isNumber(event)">
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="id_planta">Máximo apertura</label>
+                <input type="text" id="maximo_apertura" name="maximo_apertura" class="form-control" minlength="1"
+                       maxlength="255" value=""
+                       required onkeypress="return isNumber(event)">
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="id_planta">Estandar</label>
+                <input type="text" id="estandar" name="estandar" class="form-control" minlength="1"
+                       maxlength="255" value="" required onkeypress="return isNumber(event)">
+            </div>
+        </div>
+    </div>
+</form>

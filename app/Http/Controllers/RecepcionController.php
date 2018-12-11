@@ -1,0 +1,311 @@
+<?php
+
+namespace yura\Http\Controllers;
+
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use yura\Modelos\Apertura;
+use yura\Modelos\ClasificacionVerde;
+use yura\Modelos\DesgloseRecepcion;
+use yura\Modelos\Recepcion;
+use yura\Modelos\Semana;
+use yura\Modelos\Submenu;
+use yura\Modelos\Variedad;
+use Validator;
+use PHPExcel;
+use PHPExcel_IOFactory;
+use PHPExcel_Worksheet;
+use PHPExcel_Style_Alignment;
+use PHPExcel_Style_Fill;
+use PHPExcel_Style_Border;
+use PHPExcel_Style_Color;
+
+class RecepcionController extends Controller
+{
+    public function inicio(Request $request)
+    {
+        return view('adminlte.gestion.postcocecha.recepciones.inicio', [
+            'url' => $request->getRequestUri(),
+            'submenu' => Submenu::Where('url', '=', substr($request->getRequestUri(), 1))->get()[0],
+            'annos' => DB::table('semana as s')
+                ->select('s.anno')->distinct()
+                ->where('s.estado', '=', 1)->orderBy('s.anno')->get()
+        ]);
+    }
+
+    public function buscar_recepciones(Request $request)    /* =========== OPTIMIZR LA CONSULTA =========*/
+    {
+        $busqueda = $request->has('busqueda') ? espacios($request->busqueda) : '';
+        $bus = str_replace(' ', '%%', $busqueda);
+        $mi_busqueda_toupper = mb_strtoupper($bus);
+        $mi_busqueda_tolower = mb_strtolower($bus);
+
+        $listado = DB::table('recepcion as r')
+            ->join('semana as s', 's.id_semana', '=', 'r.id_semana')
+            ->select('r.*', 's.codigo as semana')->distinct();
+
+        if ($request->busqueda != '') $listado = $listado->Where(function ($q) use ($mi_busqueda_toupper, $mi_busqueda_tolower, $bus) {
+            $q->Where('s.codigo', 'like', '%' . $bus . '%')
+                ->orWhere('r.fecha_ingreso', 'like', '%' . $bus . '%')
+                ->orWhere('s.anno', 'like', '%' . $bus . '%');
+        });
+        if ($request->fecha_ingreso != '')
+            $listado = $listado->where('r.fecha_ingreso', '=', $request->fecha_ingreso);
+        if ($request->anno != '')
+            $listado = $listado->where('s.anno', '=', $request->anno);
+        if ($request->semana != '')
+            $listado = $listado->where('s.codigo', '=', $request->codigo);
+
+        $listado = $listado->orderBy('s.anno', 'desc')->orderBy('r.fecha_ingreso', 'desc')
+            ->paginate(20);
+
+        $datos = [
+            'listado' => $listado
+        ];
+
+        return view('adminlte.gestion.postcocecha.recepciones.partials.listado', $datos);
+    }
+
+    public function add_recepcion(Request $request)
+    {
+        return view('adminlte.gestion.postcocecha.recepciones.forms.add_recepcion', [
+            'variedades' => Variedad::All()->where('estado', '=', 1),
+        ]);
+    }
+
+    public function store_recepcion(Request $request)
+    {
+        $msg = '';
+        $success = true;
+        $valida = Validator::make($request->all(), [
+            'fecha_ingreso' => 'required',
+            'cantidad' => 'required',
+        ], [
+            'fecha_ingreso.required' => 'La fecha de ingreso es obligatoria',
+            'cantidad.required' => 'La cantidad de tallos es obligatoria',
+        ]);
+        if (!$valida->fails()) {
+            $semana = Semana::All()
+                ->where('fecha_inicial', '<=', $request->fecha_ingreso)
+                ->where('fecha_final', '>=', $request->fecha_ingreso)->first();
+            if ($semana != '') {
+                if (count($request->cantidad) > 0) {
+                    $cantidad_total = 0;
+
+                    $model = new Recepcion();
+                    $model->id_semana = $semana->id_semana;
+                    $model->fecha_ingreso = $request->fecha_ingreso;
+                    $model->fecha_registro = date('Y-m-d H:i:s');
+
+                    if ($model->save()) {
+                        $recepcion = Recepcion::All()->last();
+                        bitacora('recepcion', $model->id_recepcion, 'I', 'Inserción satisfactoria de una nueva recepción');
+                        foreach ($request->cantidad as $item) {
+                            $model = new DesgloseRecepcion();
+                            $model->id_variedad = $item['id_variedad'];
+                            $model->id_recepcion = $recepcion->id_recepcion;
+                            $model->cantidad_mallas = $item['cantidad_mallas'];
+                            $model->tallos_x_malla = $item['tallos_x_malla'];
+                            $model->fecha_registro = date('Y-m-d H:i:s');
+
+                            if ($model->save()) {
+                                $cantidad_total += ($item['cantidad_mallas'] * $item['tallos_x_malla']);
+                                bitacora('desglose_recepcion', $model->id_desglose_recepcion, 'I', 'Inserción satisfactoria de un nuevo desglose de recepción');
+                            } else {
+                                $success = false;
+                                $msg .= '<div class="alert alert-warning text-center">' .
+                                    '<p> Ha ocurrido un problema al guardar la cantidad de ' . $item['cantidad_mallas'] . ' mallas y ' . $item['tallos_x_malla'] . ' tallos por malla</p>'
+                                    . '</div>';
+                            }
+                        }
+                    } else {
+                        $success = false;
+                        $msg = '<div class="alert alert-warning text-center">' .
+                            '<p> Ha ocurrido un problema al guardar el ingreso en el sistema</p>'
+                            . '</div>';
+                    }
+
+                    if ($success) {
+                        $msg = '<div class="alert alert-success text-center">' .
+                            '<p> Se han guardado un total de ' . $cantidad_total . ' de tallos</p>'
+                            . '</div>';
+                    }
+                } else {
+                    $success = false;
+                    $msg = '<div class="alert alert-warning text-center">' .
+                        '<p> Al menos debe ingresar una cantidad tanto de mallas como de tallos por malla</p>'
+                        . '</div>';
+                }
+            } else {
+                $success = false;
+                $msg = '<div class="alert alert-warning text-center">' .
+                    '<p> La fecha seleccionada no pertenece a ninguna semana programada anteriormente</p>'
+                    . '</div>';
+            }
+        } else {
+            $success = false;
+            $errores = '';
+            foreach ($valida->errors()->all() as $mi_error) {
+                if ($errores == '') {
+                    $errores = '<li>' . $mi_error . '</li>';
+                } else {
+                    $errores .= '<li>' . $mi_error . '</li>';
+                }
+            }
+            $msg = '<div class="alert alert-danger">' .
+                '<p class="text-center">¡Por favor corrija los siguientes errores!</p>' .
+                '<ul>' .
+                $errores .
+                '</ul>' .
+                '</div>';
+        }
+        return [
+            'mensaje' => $msg,
+            'success' => $success
+        ];
+    }
+
+    public function ver_recepcion(Request $request)
+    {
+        if ($request->has('id_recepcion')) {
+            $r = Recepcion::find($request->id_recepcion);
+            if ($r != '') {
+                return view('adminlte.gestion.postcocecha.recepciones.partials.detalles', [
+                    'recepcion' => $r,
+                ]);
+            } else {
+                return '<div class="alert alert-warning text-center">No se ha encontrado el usuario en el sistema</div>';
+            }
+        } else {
+            return '<div class="alert alert-warning text-center">No se ha seleccionado ningún usuario</div>';
+        }
+    }
+
+    public function exportar_recepciones(Request $request)
+    {
+        //---------------------- EXCEL --------------------------------------
+        $objPHPExcel = new PHPExcel;
+        $objPHPExcel->getDefaultStyle()->getFont()->setName('Calibri');
+        $objPHPExcel->getDefaultStyle()->getFont()->setSize(12);
+        $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, "Excel2007");
+        $currencyFormat = '#,#0.## \€;[Red]-#,#0.## \€';
+        $numberFormat = '#,#0.##;[Red]-#,#0.##';
+
+        $objPHPExcel->removeSheetByIndex(0); //Eliminar la hoja inicial por defecto
+
+        $this->excel_hoja_recepciones($objPHPExcel, $request);
+
+        //--------------------------- GUARDAR EL EXCEL -----------------------
+
+        header("Content-Type: application/force-download");
+        header("Content-Type: application/octet-stream");
+        header("Content-Type: application/download");
+        header('Content-Disposition:inline;filename="Reporte ' . explode('|', getConfiguracionEmpresa()->postcocecha)[0] . '.xlsx"');
+        header("Content-Transfer-Encoding: binary");
+        header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
+        header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+        header("Pragma: no-cache");
+        $objWriter->save('php://output');
+    }
+
+    public function excel_hoja_recepciones($objPHPExcel, $request)
+    {
+        $busqueda = $request->has('busqueda') ? espacios($request->busqueda) : '';
+        $bus = str_replace(' ', '%%', $busqueda);
+        $mi_busqueda_toupper = mb_strtoupper($bus);
+        $mi_busqueda_tolower = mb_strtolower($bus);
+
+        $listado = DB::table('recepcion as r')
+            ->join('semana as s', 's.id_semana', '=', 'r.id_semana')
+            ->select('r.*', 's.codigo as semana')->distinct();
+
+        if ($request->busqueda != '') $listado = $listado->Where(function ($q) use ($mi_busqueda_toupper, $mi_busqueda_tolower, $bus) {
+            $q->Where('s.codigo', 'like', '%' . $bus . '%')
+                ->orWhere('r.fecha_ingreso', 'like', '%' . $bus . '%')
+                ->orWhere('s.anno', 'like', '%' . $bus . '%');
+        });
+        if ($request->fecha_ingreso != '')
+            $listado = $listado->where('r.fecha_ingreso', '=', $request->fecha_ingreso);
+        if ($request->anno != '')
+            $listado = $listado->where('s.anno', '=', $request->anno);
+        if ($request->semana != '')
+            $listado = $listado->where('s.codigo', '=', $request->codigo);
+
+        $listado = $listado->orderBy('s.anno', 'desc')->orderBy('r.fecha_ingreso', 'desc')
+            ->get();
+
+        if (count($listado) > 0) {
+            $objSheet = new PHPExcel_Worksheet($objPHPExcel, explode('|', getConfiguracionEmpresa()->postcocecha)[0]);
+            $objPHPExcel->addSheet($objSheet, 0);
+
+            $objSheet->mergeCells('A1:F1');
+            $objSheet->getStyle('A1:F1')->getFont()->setBold(true)->setSize(12);
+            $objSheet->getStyle('A1:F1')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+            $objSheet->getStyle('A1:F1')
+                ->getFill()
+                ->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
+                ->getStartColor()
+                ->setRGB('CCFFCC');
+
+            $objSheet->getCell('A1')->setValue('Listado de ingresos a ' . explode('|', getConfiguracionEmpresa()->postcocecha)[0]);
+
+            $objSheet->getCell('A3')->setValue('FECHA');
+            $objSheet->getCell('B3')->setValue('SEMANA');
+            $objSheet->getCell('C3')->setValue('TALLOS');
+            $objSheet->getCell('D3')->setValue('CANTIDADES');
+            $objSheet->getCell('E3')->setValue('ETAPA del PROCESO');
+            $objSheet->getCell('F3')->setValue('OTROS DATOS');
+
+            $objSheet->getStyle('A3:F3')->getFont()->setBold(true)->setSize(12);
+
+            $objSheet->getStyle('A3:F3')
+                ->getBorders()
+                ->getAllBorders()
+                ->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN)
+                ->getColor()
+                ->setRGB(PHPExcel_Style_Color::COLOR_BLACK);
+
+            $objSheet->getStyle('A3:F3')
+                ->getFill()
+                ->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
+                ->getStartColor()
+                ->setRGB('CCFFCC');
+
+            //--------------------------- LLENAR LA TABLA ---------------------------------------------
+            for ($i = 0; $i < sizeof($listado); $i++) {
+                $objSheet->getCell('A' . ($i + 4))->setValue(substr($listado[$i]->fecha_ingreso, 0, 16));
+                $objSheet->getCell('B' . ($i + 4))->setValue($listado[$i]->semana);
+                $objSheet->getCell('C' . ($i + 4))->setValue(getRecepcion($listado[$i]->id_recepcion)->cantidad_tallos());
+                $cantidades = '';
+                foreach (getRecepcion($listado[$i]->id_recepcion)->desgloses as $recepcion) {
+                    $cantidades .= $recepcion->variedad->planta->nombre . " - " . $recepcion->variedad->siglas . ": " .
+                        $recepcion->cantidad_mallas . " mallas de " . $recepcion->tallos_x_malla . " tallos = " .
+                        $recepcion->cantidad_mallas * $recepcion->tallos_x_malla . "\n";
+                }
+                $objSheet->getCell('D' . ($i + 4))->setValue($cantidades);
+                $etapa = '';
+                if ($listado[$i]->proceso == 'I')
+                    $etapa = explode('|', getConfiguracionEmpresa()->postcocecha)[0];
+                elseif ($listado[$i]->proceso == 'V')
+                    $etapa = explode('|', getConfiguracionEmpresa()->postcocecha)[1];
+                elseif ($listado[$i]->proceso == 'A')
+                    $etapa = explode('|', getConfiguracionEmpresa()->postcocecha)[2];
+                $objSheet->getCell('E' . ($i + 4))->setValue($etapa);
+                $documentos = '';
+                foreach (getDocumentos('recepcion', $listado[$i]->id_recepcion) as $doc) {
+                    $documentos .= getTextFromDocumento($doc) . "\n";
+                }
+                $objSheet->getCell('F' . ($i + 4))->setValue($documentos);
+            }
+
+            $objSheet->getColumnDimension('A')->setAutoSize(true);
+            $objSheet->getColumnDimension('B')->setAutoSize(true);
+            $objSheet->getColumnDimension('C')->setAutoSize(true);
+            $objSheet->getColumnDimension('D')->setAutoSize(true);
+            $objSheet->getColumnDimension('E')->setAutoSize(true);
+            $objSheet->getColumnDimension('F')->setAutoSize(true);
+        } else {
+            return '<div>No se han encontrado coincidencias para exportar</div>';
+        }
+    }
+}

@@ -1,0 +1,121 @@
+.sombra_estandar {
+    -webkit-box-shadow: 9px 8px 11px -2px rgba(0, 0, 0, 0.34);
+    -moz-box-shadow: 9px 8px 11px -2px rgba(0, 0, 0, 0.34);
+    box-shadow: 9px 8px 11px -2px rgba(0, 0, 0, 0.34);
+}
+.sombra_roja {
+    -webkit-box-shadow: 10px 10px 16px -1px rgba(255,48,48,0.7);
+    -moz-box-shadow: 10px 10px 16px -1px rgba(255,48,48,0.7);
+    box-shadow: 10px 10px 16px -1px rgba(255,48,48,0.7);
+}
+.sombra_amarilla {
+    -webkit-box-shadow: 10px 10px 5px 0px rgba(239,252,53,0.71);
+    -moz-box-shadow: 10px 10px 5px 0px rgba(239,252,53,0.71);
+    box-shadow: 10px 10px 5px 0px rgba(239,252,53,0.71);
+}
+
+.table-skin-blue, .table-skin-blue-light {
+    background-color: #3c8dbc;
+    color: white;
+}
+
+.table-skin-red, .table-skin-red-light {
+    background-color: #dd4b39;
+    color: white;
+}
+
+.table-skin-black, .table-skin-black-light {
+    background-color: #fff;
+    color: black;
+}
+
+.table-skin-purple, .table-skin-purple-light {
+    background-color: #605ca8;
+    color: white;
+}
+
+.table-skin-green, .table-skin-green-light {
+    background-color: #00a65a;
+    color: white;
+}
+
+.table-skin-yellow, .table-skin-yellow-light {
+    background-color: #f39c12;
+    color: white;
+}
+
+.mouse-hand {
+    cursor: pointer;
+}
+
+.error {
+    color: red;
+}
+
+.span-addon {
+    background-color: #e9ecef;
+}
+
+.borde-celda {
+    border-color: #9d9d9d;
+}
+
+/* ================ Tooltip ==============*/
+.tooltip_y {
+    position: relative;
+    display: inline-block;
+}
+
+.tooltip_y .tooltiptext_y {
+    visibility: hidden;
+    width: 200px;
+    background-color: #555;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -60px;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.tooltip_y .tooltiptext_y::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #555 transparent transparent transparent;
+}
+
+.tooltip_y:hover .tooltiptext_y {
+    visibility: visible;
+    opacity: 1;
+}
+
+div span.input-group-addon + input + label.error,
+div span.input-group-addon + select  + label.error{
+    position: absolute;
+    width: 100%;
+    top: 37px;
+    line-height: 15px;
+    left: 0px;
+}
+
+.form-group {
+    margin-bottom: 25px;
+}
+
+div.form-group textarea + label.error{
+    top:57px
+}
+
+.green {
+    color: #4bd62a
+}

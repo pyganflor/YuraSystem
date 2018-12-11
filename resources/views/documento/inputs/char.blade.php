@@ -1,0 +1,1 @@
+<input type="text" class="form-control" id="valor_{{$number}}" name="valor_{{$number}}" maxlength="1" required>

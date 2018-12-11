@@ -1,0 +1,1 @@
+<input type="date" class="form-control" id="valor_{{$number}}" name="valor_{{$number}}" required>
