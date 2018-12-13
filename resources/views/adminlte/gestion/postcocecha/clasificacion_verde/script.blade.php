@@ -1,0 +1,198 @@
+<script>
+    buscar_listado();
+
+    function buscar_listado() {
+        $.LoadingOverlay('show');
+        datos = {
+            semana_desde: $('#semana_desde_search').val().trim(),
+            semana_hasta: $('#semana_hasta_search').val().trim(),
+            fecha_desde: $('#fecha_desde_search').val().trim(),
+            fecha_hasta: $('#fecha_hasta_search').val().trim(),
+            anno: $('#anno_search').val(),
+        };
+        $.get('{{url('clasificacion_verde/buscar_clasificaciones')}}', datos, function (retorno) {
+            $('#div_listado_clasificaciones').html(retorno);
+            //estructura_tabla('table_content_clasificaciones');
+        }).always(function () {
+            $.LoadingOverlay('hide');
+        });
+    }
+
+    $(document).on("click", "#pagination_listado_clasificaciones .pagination li a", function (e) {
+        $.LoadingOverlay("show");
+        //para que la pagina se cargen los elementos
+        e.preventDefault();
+        var url = $(this).attr("href");
+        url = url.replace('?', '?semana_desde=' + $('#semana_desde_search').val().trim() +
+            '&semana_hasta=' + $('#semana_hasta_search').val() +
+            '&fecha_desde=' + $('#fecha_desde_search').val() +
+            '&fecha_hasta=' + $('#fecha_hasta_search').val() +
+            '&anno=' + $('#anno_search').val() + '&');
+        $('#div_listado_clasificaciones').html($('#table_clasificaciones').html());
+        $.get(url, function (resul) {
+            $('#div_listado_clasificaciones').html(resul);
+            //estructura_tabla('table_content_clasificaciones');
+        }).always(function () {
+            $.LoadingOverlay("hide");
+        });
+    });
+
+    function exportar_recepciones() {
+        $.LoadingOverlay('show');
+        window.open('{{url('recepcion/exportar_recepciones')}}' + '?busqueda=' + $('#busqueda_recepciones').val().trim() +
+            '&fecha_ingreso=' + $('#fecha_ingreso_search').val() + '&anno=' + $('#anno_search').val(), '_blank');
+        $.LoadingOverlay('hide');
+    }
+
+    function add_verde(fecha) {
+        $.LoadingOverlay('show');
+        datos = {
+            fecha: fecha
+        };
+        $.get('{{url('clasificacion_verde/add_verde')}}', datos, function (retorno) {
+            modal_view('modal_add_clasificacion_verde', retorno, '<i class="fa fa-fw fa-plus"></i> Añadir clasificación', true, false, '{{isPC() ? '65%' : ''}}');
+        });
+        $.LoadingOverlay('hide');
+    }
+
+    function store_verde() {
+        if ($('#form-add-verde').valid()) {
+            $.LoadingOverlay('show');
+            arreglo = [];
+            for (i = 1; i <= cant_forms; i++) {
+                data = {
+                    id_variedad: $('#id_variedad_' + i).val(),
+                    cantidad_mallas: $('#cantidad_mallas_' + i).val(),
+                    tallos_x_malla: $('#tallos_x_malla_' + i).val(),
+                };
+                arreglo.push(data);
+            }
+            datos = {
+                _token: '{{csrf_token()}}',
+                fecha_ingreso: $('#fecha_ingreso').val(),
+                cantidad: arreglo
+            };
+            post_jquery('{{url('clasificacion_verde/store_recepcion')}}', datos, function () {
+                add_recepcion();
+                cerrar_modals();
+                buscar_listado();
+            });
+            $.LoadingOverlay('hide');
+        }
+    }
+
+    function ver_clasificacion(id_clasificacion_verde) {
+        $.LoadingOverlay('show');
+        datos = {
+            id_clasificacion_verde: id_clasificacion_verde
+        };
+        $.get('{{url('clasificacion_verde/ver_clasificacion')}}', datos, function (retorno) {
+            modal_view('modal_view_clasificacion_verde', retorno, '<i class="fa fa-fw fa-eye"></i> Detalles de clasificación', true, false, '{{isPC() ? '50%' : ''}}');
+            $.LoadingOverlay('hide');
+        });
+        $.LoadingOverlay('hide');
+    }
+
+    /* ============= FUNCION PARA AÑADIR DOCUMENTO =================*/
+    function add_info(codigo) {
+        add_documento('clasificacion_verde', codigo, function () {
+            ver_clasificacion(codigo);
+        });
+    }
+
+    function add_tallo_malla() {
+        cant_forms++;
+        $('#table_forms_tallos_mallas').append('<tr id="row_form_' + cant_forms + '">' +
+            '<td style="border-color: #9d9d9d" class="text-center">' +
+            '<div class="form-group">' +
+            '<select id="id_variedad_' + cant_forms + '" name="id_variedad_' + cant_forms + '" required class="form-control">' +
+            '<option value="">Seleccione...</option></select>' +
+            '</div>' +
+            '</td>' +
+            '<td style="border-color: #9d9d9d" class="text-center">' +
+            '<div class="form-group">' +
+            '<input type="number" id="cantidad_mallas_' + cant_forms + '" name="cantidad_mallas_' + cant_forms + '" required class="form-control"' +
+            '       min="1" max="1000">' +
+            '</div>' +
+            '</td>' +
+            '<td style="border-color: #9d9d9d" class="text-center" colspan="2">' +
+            '<div class="form-group">' +
+            '<input type="number" id="tallos_x_malla_' + cant_forms + '" name="tallos_x_malla_' + cant_forms + '" required class="form-control"' +
+            '       min="1" max="50">' +
+            '</div>' +
+            '</td>' +
+            '</tr>');
+        $('#btn_del_form').show();
+        for (i = 0; i < $('.option_variedades_form').length; i++) {
+            $('#id_variedad_' + cant_forms).append('<option value="' + $('.option_variedades_form')[i].value + '">' +
+                $('.option_variedades_form')[i].text +
+                '</option>');
+        }
+    }
+
+    function del_tallo_malla() {
+        if (cant_forms > 1) {
+            $('#row_form_' + cant_forms).remove();
+            cant_forms--;
+        }
+        if (cant_forms == 1) {
+            $('#btn_del_form').hide();
+        }
+    }
+
+    function destinar_lotes(variedad, clasificacion) {
+        datos = {
+            id_variedad: variedad,
+            id_clasificacion_verde: clasificacion
+        };
+        get_jquery('{{url('clasificacion_verde/destinar_lotes')}}', datos, function (retorno) {
+            modal_view('modal_destinar_lotes', retorno, '<i class="fa fa-fw fa-exchange"></i> Destinar lotes', true, false, '{{isPC() ? '75%' : ''}}');
+        });
+    }
+
+    function ver_lotes(variedad, clasificacion) {
+        datos = {
+            id_variedad: variedad,
+            id_clasificacion_verde: clasificacion
+        };
+        get_jquery('{{url('clasificacion_verde/ver_lotes')}}', datos, function (retorno) {
+            modal_view('modal_ver_lotes', retorno, '<i class="fa fa-fw fa-exchange"></i> Lotes', true, false, '{{isPC() ? '75%' : ''}}');
+        });
+    }
+    
+    function calcular_stock(unitaria) {
+        datos = {
+            id_clasificacion_unitaria: unitaria,
+            id_variedad: $('#id_variedad').val(),
+            fecha_ingreso: $('#fecha_ingreso').val(),
+            dias: $('#dias_' + unitaria).val(),
+            cantidad_tallos: $('#apertura_' + unitaria).val(),
+        };
+        $.LoadingOverlay('show');
+        $.get('{{url('clasificacion_verde/calcular_stock')}}', datos, function (retorno) {
+            $('#stock_' + unitaria).val(retorno.stock);
+            $('#disponible_' + unitaria).val(retorno.disponible);
+            $('#fecha_disponible_' + unitaria).html(retorno.fecha);
+        }, 'json').fail(function (retorno) {
+            console.log(retorno);
+            alerta_errores(retorno.responseText);
+            alert('Ha ocurrido un problema al enviar la información');
+        }).always(function () {
+            $.LoadingOverlay('hide');
+        });
+    }
+
+    function cargar_opcion(opcion, id) {
+        $.LoadingOverlay('show');
+        datos = {
+            id_clasificacion_verde: id
+        };
+        get_jquery('{{url('clasificacion_verde')}}/' + opcion, datos, function (retorno) {
+            $('#div_content_opciones').html(retorno);
+        });
+        $.LoadingOverlay('hide');
+    }
+
+    set_max_today($('#fecha_ingreso_search'));
+    $('#fecha_ingreso_search').val('');
+</script>
