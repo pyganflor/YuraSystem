@@ -62,11 +62,7 @@ class EspecificacionController extends Controller
 
     public function store_especificacion(Request $request)
     {
-<<<<<<< HEAD
-     // dd($request->all());
-=======
-       // dd($request->all());
->>>>>>> f7d939a64537592b1e24eedf8cf21d3e9742e791
+
 
         $validaDataGeneral = Validator::make($request->all(), [
             'nombre' => 'required',
@@ -160,10 +156,7 @@ class EspecificacionController extends Controller
                     if ($objEspecificacionEmpaque->save()) {
 
                         $modelEspcificacionEmpaque = EspecificacionEmpaque::all()->last();
-<<<<<<< HEAD
 
-=======
->>>>>>> f7d939a64537592b1e24eedf8cf21d3e9742e791
                         bitacora('especificacion_empaque', $modelEspcificacion->nombre, $accionLetra, $accion . ' satisfactoria de una nueva especificación de empaque');
                         //************ FIN INSERTA Ó ACTUALIZA ESPECIFICACIÓN EMPAQUE *************//
 
@@ -206,12 +199,10 @@ class EspecificacionController extends Controller
                             $objEspecificacionEmpaqueDetalle->cantidad = $request->input('cantidad_' . $i . '_' . $j);
                             $objEspecificacionEmpaqueDetalle->id_empaque_e = $request->input('id_empaque_e_' . $i . '_' . $j);
                             $objEspecificacionEmpaqueDetalle->id_empaque_p = $request->input('id_empaque_p_' . $i . '_' . $j);
-<<<<<<< HEAD
                             !empty($request->input('tallos_X_ramos' . $i . '_' . $j))
                                 ? $objEspecificacionEmpaqueDetalle->tallos_x_ramos = $request->input('tallos_X_ramos' . $i . '_' . $j)
                                 : '';
-=======
->>>>>>> f7d939a64537592b1e24eedf8cf21d3e9742e791
+
 
                             if ($objEspecificacionEmpaqueDetalle->save()) {
 

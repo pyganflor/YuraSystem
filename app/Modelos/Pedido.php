@@ -15,12 +15,8 @@ class Pedido extends Model
         'id_cliente',
         'estado',
         'descripcion',
-<<<<<<< HEAD
-        'fecha_pedido'
-=======
         'fecha_pedido',
         'empaquetado'
->>>>>>> f7d939a64537592b1e24eedf8cf21d3e9742e791
     ];
 
     public function detalles()

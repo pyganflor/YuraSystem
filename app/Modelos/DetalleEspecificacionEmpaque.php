@@ -21,10 +21,7 @@ class DetalleEspecificacionEmpaque extends Model
         'cantidad',
         'id_empaque_e',    // el id del empaque de tipo envase-envoltorio
         'id_empaque_p',    // el id del empaque de tipo presentacion
-<<<<<<< HEAD
         'tallos_x_ramos'
-=======
->>>>>>> f7d939a64537592b1e24eedf8cf21d3e9742e791
     ];
 
     public function especificacion_empaque()

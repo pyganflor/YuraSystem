@@ -48,14 +48,11 @@ class StockApertura extends Model
         return $fecha;
     }
 
-<<<<<<< HEAD
-=======
     public function calcularDisponibles()
     {
 
     }
 
->>>>>>> f7d939a64537592b1e24eedf8cf21d3e9742e791
     public function getDisponibles()
     {
         $l = StockApertura::All()->where('disponibilidad', '=', 1)

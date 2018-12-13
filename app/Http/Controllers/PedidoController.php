@@ -15,10 +15,6 @@ class PedidoController extends Controller
 {
 
     public function listar_pedidos(Request $request){
-<<<<<<< HEAD
-
-=======
->>>>>>> f7d939a64537592b1e24eedf8cf21d3e9742e791
     return view('adminlte.gestion.postcocecha.pedidos.inicio',
         [
             'idCliente'        => $request->id_cliente,
@@ -55,10 +51,7 @@ class PedidoController extends Controller
             $listado = $listado->where(DB::raw('YEAR(p.fecha_pedido)'), $busquedaAnno );
         if ($request->id_especificaciones != '')
             $listado = $listado->where('dp.id_cliente_especificacion',$busquedaEspecificacion);
-<<<<<<< HEAD
 
-=======
->>>>>>> f7d939a64537592b1e24eedf8cf21d3e9742e791
         if ($request->desde != '' && $request->hasta != '')
             $listado = $listado->whereBetween('p.fecha_pedido', [$busquedaDesde,$busquedaHasta]);
 
