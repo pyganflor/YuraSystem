@@ -40,11 +40,20 @@
         $('#table_desglose_apertura_' + id).css('border', '1px solid #add8e6');
     }
 
+<<<<<<< HEAD
     function buscar_pedidos(){
         datos = {
             fecha: $('#fecha_pedidos').val()
         };
         get_jquery('{{url('apertura/listar_pedidos')}}',datos,function(retorno){
+=======
+    function buscar_pedidos() {
+        datos = {
+            fecha: $('#fecha_pedidos').val(),
+            id_variedad: $('#variedad_search').val()
+        };
+        get_jquery('{{url('apertura/listar_pedidos')}}', datos, function (retorno) {
+>>>>>>> f7d939a64537592b1e24eedf8cf21d3e9742e791
             $('#div_listado_pedidos').html(retorno);
         });
     }

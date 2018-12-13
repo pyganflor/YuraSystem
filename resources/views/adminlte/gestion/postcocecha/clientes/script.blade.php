@@ -292,6 +292,7 @@
 
             var select_clasif_x_ramo = $("#id_clasificacion_ramo_"+data.split('_')[2]+"_"+data.split('_')[3]);
             $('option#option_dinamic').remove();
+<<<<<<< HEAD
             console.log(retorno);
             $.each(retorno,function (i,j) {
                 select_clasif_x_ramo.append('<option id="option_dinamic" value="'+j.id_clasificacion_ramo+'"> '+j.nombre+' </option>');
@@ -304,5 +305,17 @@
             }
         });
 
+=======
+
+            $.each(retorno,function (i,j) {
+                select_clasif_x_ramo.append('<option id="option_dinamic" value="'+i.id_clasificacion_ramo+'"> '+j.nombre+' </option>');
+            })
+        });
+
+
+
+
+
+>>>>>>> f7d939a64537592b1e24eedf8cf21d3e9742e791
     }
 </script>

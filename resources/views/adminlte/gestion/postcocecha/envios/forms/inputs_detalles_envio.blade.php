@@ -6,7 +6,11 @@
         <div class="input-group">
               <span class="input-group-addon" style="background-color: #e9ecef">Agencia de transporte</span>
             <select class="form-control" id="id_agencia_transporte_{{$form}}_{{$rows}}" name="id_agencia_transporte_{{$form}}_{{$rows}}" required>
+<<<<<<< HEAD
               <!--  <option selected disabled> Seleccione </option>-->
+=======
+                <option selected disabled> Seleccione </option>
+>>>>>>> f7d939a64537592b1e24eedf8cf21d3e9742e791
                 @foreach($agencia_transporte as $at)
                     <option value="{{$at->id_agencia_transporte}}"> {{$at->nombre}} </option>
                 @endforeach
@@ -29,8 +33,13 @@
     <div class="form-group col-md-4">
         <div class="input-group">
             <span class="input-group-addon" style="background-color: #e9ecef">Envío</span>
+<<<<<<< HEAD
             <select class="form-control" id="envio_{{$form}}_{{$rows}}" name="envio_{{$form}}" onchange="change_agencia_transporte(this)" required>
                 <option id="seleccione" value="{{$form}}"> Mismo envío </option>
+=======
+            <select class="form-control" id="envio_{{$form}}_{{$rows}}" name="envio_{{$form}}" required>
+                <option value="1"> Seleccione </option>
+>>>>>>> f7d939a64537592b1e24eedf8cf21d3e9742e791
             </select>
         </div>
     </div>

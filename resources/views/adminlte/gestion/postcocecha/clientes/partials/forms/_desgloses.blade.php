@@ -68,6 +68,7 @@
         </div>
     </div>
 </div>
+<<<<<<< HEAD
 <div class="row hide" id="input_tallo_x_ramo">
     <div class="col-md-4">
         <div class="form-group input-group">
@@ -78,3 +79,5 @@
         </div>
     </div>
 </div>
+=======
+>>>>>>> f7d939a64537592b1e24eedf8cf21d3e9742e791
