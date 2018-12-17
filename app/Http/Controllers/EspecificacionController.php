@@ -281,7 +281,7 @@ class EspecificacionController extends Controller
         return view('adminlte.gestion.postcocecha.clientes.partials.list_especificaciones');
     }
 
-    public function  listar_especificaciones(Request $request){
+    public function listar_especificaciones(Request $request){
 
         $listado = DB::table('especificacion')->orderBy('nombre', 'asc')->paginate(10);
 

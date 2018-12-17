@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 17-12-2018 a las 21:24:00
+-- Tiempo de generación: 17-12-2018 a las 21:40:41
 -- Versión del servidor: 10.1.36-MariaDB
 -- Versión de PHP: 7.2.11
 
@@ -1448,7 +1448,61 @@ INSERT INTO `bitacora` (`id_bitacora`, `tabla`, `codigo`, `fecha_registro`, `acc
 (1350, 'CLIENTE_AGENCIACARGA', 3, '2018-12-17 15:23:02', 'I', 1, '127.0.0.1', 'INSERCIÓN SATISFACTORIA DE LA RELACIÓN DE UNA AGENCIA DE CARGA A UN CLIENTE'),
 (1351, 'CLIENTE_AGENCIACARGA', 4, '2018-12-17 15:23:02', 'I', 1, '127.0.0.1', 'INSERCIÓN SATISFACTORIA DE LA RELACIÓN DE UNA AGENCIA DE CARGA A UN CLIENTE'),
 (1352, 'CLIENTE_AGENCIACARGA', 5, '2018-12-17 15:23:02', 'I', 1, '127.0.0.1', 'INSERCIÓN SATISFACTORIA DE LA RELACIÓN DE UNA AGENCIA DE CARGA A UN CLIENTE'),
-(1353, 'CLIENTE_AGENCIACARGA', 6, '2018-12-17 15:23:03', 'I', 1, '127.0.0.1', 'INSERCIÓN SATISFACTORIA DE LA RELACIÓN DE UNA AGENCIA DE CARGA A UN CLIENTE');
+(1353, 'CLIENTE_AGENCIACARGA', 6, '2018-12-17 15:23:03', 'I', 1, '127.0.0.1', 'INSERCIÓN SATISFACTORIA DE LA RELACIÓN DE UNA AGENCIA DE CARGA A UN CLIENTE'),
+(1354, 'DETALLE_ESPECIFICACIONEMPAQUE', 2, '2018-12-17 15:29:19', 'I', 1, '127.0.0.1', 'INSERCIÓN SATISFACTORIA DE UN NUEVO DETALLE DE ESPECIFICACIÓN DE EMPAQUE'),
+(1355, 'DETALLE_ESPECIFICACIONEMPAQUE', 3, '2018-12-17 15:30:47', 'I', 1, '127.0.0.1', 'INSERCIÓN SATISFACTORIA DE UN NUEVO DETALLE DE ESPECIFICACIÓN DE EMPAQUE'),
+(1356, 'PEDIDO|DETALLE_PEDIDO', 1, '2018-12-17 15:33:39', 'I', 1, '127.0.0.1', 'INSERCIÓN SATISFACTORIA DE UN NUEVO PEDIDO'),
+(1357, 'PEDIDO|DETALLE_PEDIDO', 2, '2018-12-17 15:33:40', 'I', 1, '127.0.0.1', 'INSERCIÓN SATISFACTORIA DE UN NUEVO PEDIDO'),
+(1358, 'PEDIDO|DETALLE_PEDIDO', 3, '2018-12-17 15:33:40', 'I', 1, '127.0.0.1', 'INSERCIÓN SATISFACTORIA DE UN NUEVO PEDIDO'),
+(1359, 'PEDIDO|DETALLE_PEDIDO', 4, '2018-12-17 15:33:40', 'I', 1, '127.0.0.1', 'INSERCIÓN SATISFACTORIA DE UN NUEVO PEDIDO'),
+(1360, 'PEDIDO|DETALLE_PEDIDO', 5, '2018-12-17 15:33:40', 'I', 1, '127.0.0.1', 'INSERCIÓN SATISFACTORIA DE UN NUEVO PEDIDO'),
+(1361, 'PEDIDO|DETALLE_PEDIDO', 6, '2018-12-17 15:33:40', 'I', 1, '127.0.0.1', 'INSERCIÓN SATISFACTORIA DE UN NUEVO PEDIDO'),
+(1362, 'PEDIDO|DETALLE_PEDIDO', 7, '2018-12-17 15:33:40', 'I', 1, '127.0.0.1', 'INSERCIÓN SATISFACTORIA DE UN NUEVO PEDIDO'),
+(1363, 'PEDIDO|DETALLE_PEDIDO', 8, '2018-12-17 15:33:41', 'I', 1, '127.0.0.1', 'INSERCIÓN SATISFACTORIA DE UN NUEVO PEDIDO'),
+(1364, 'PEDIDO|DETALLE_PEDIDO', 9, '2018-12-17 15:33:41', 'I', 1, '127.0.0.1', 'INSERCIÓN SATISFACTORIA DE UN NUEVO PEDIDO'),
+(1365, 'PEDIDO|DETALLE_PEDIDO', 10, '2018-12-17 15:33:41', 'I', 1, '127.0.0.1', 'INSERCIÓN SATISFACTORIA DE UN NUEVO PEDIDO'),
+(1366, 'PEDIDO|DETALLE_PEDIDO', 11, '2018-12-17 15:33:41', 'I', 1, '127.0.0.1', 'INSERCIÓN SATISFACTORIA DE UN NUEVO PEDIDO'),
+(1367, 'PEDIDO|DETALLE_PEDIDO', 12, '2018-12-17 15:33:41', 'I', 1, '127.0.0.1', 'INSERCIÓN SATISFACTORIA DE UN NUEVO PEDIDO'),
+(1368, 'PEDIDO|DETALLE_PEDIDO', 13, '2018-12-17 15:33:41', 'I', 1, '127.0.0.1', 'INSERCIÓN SATISFACTORIA DE UN NUEVO PEDIDO'),
+(1369, 'PEDIDO|DETALLE_PEDIDO', 14, '2018-12-17 15:33:41', 'I', 1, '127.0.0.1', 'INSERCIÓN SATISFACTORIA DE UN NUEVO PEDIDO'),
+(1370, 'PEDIDO|DETALLE_PEDIDO', 15, '2018-12-17 15:33:41', 'I', 1, '127.0.0.1', 'INSERCIÓN SATISFACTORIA DE UN NUEVO PEDIDO'),
+(1371, 'PEDIDO|DETALLE_PEDIDO', 16, '2018-12-17 15:33:41', 'I', 1, '127.0.0.1', 'INSERCIÓN SATISFACTORIA DE UN NUEVO PEDIDO'),
+(1372, 'PEDIDO|DETALLE_PEDIDO', 17, '2018-12-17 15:33:41', 'I', 1, '127.0.0.1', 'INSERCIÓN SATISFACTORIA DE UN NUEVO PEDIDO'),
+(1373, 'PEDIDO|DETALLE_PEDIDO', 18, '2018-12-17 15:33:42', 'I', 1, '127.0.0.1', 'INSERCIÓN SATISFACTORIA DE UN NUEVO PEDIDO'),
+(1374, 'PEDIDO|DETALLE_PEDIDO', 19, '2018-12-17 15:33:42', 'I', 1, '127.0.0.1', 'INSERCIÓN SATISFACTORIA DE UN NUEVO PEDIDO'),
+(1375, 'PEDIDO|DETALLE_PEDIDO', 20, '2018-12-17 15:33:42', 'I', 1, '127.0.0.1', 'INSERCIÓN SATISFACTORIA DE UN NUEVO PEDIDO'),
+(1376, 'PEDIDO|DETALLE_PEDIDO', 21, '2018-12-17 15:33:42', 'I', 1, '127.0.0.1', 'INSERCIÓN SATISFACTORIA DE UN NUEVO PEDIDO'),
+(1377, 'PEDIDO|DETALLE_PEDIDO', 22, '2018-12-17 15:33:42', 'I', 1, '127.0.0.1', 'INSERCIÓN SATISFACTORIA DE UN NUEVO PEDIDO'),
+(1378, 'PEDIDO|DETALLE_PEDIDO', 23, '2018-12-17 15:33:42', 'I', 1, '127.0.0.1', 'INSERCIÓN SATISFACTORIA DE UN NUEVO PEDIDO'),
+(1379, 'PEDIDO|DETALLE_PEDIDO', 24, '2018-12-17 15:33:42', 'I', 1, '127.0.0.1', 'INSERCIÓN SATISFACTORIA DE UN NUEVO PEDIDO'),
+(1380, 'PEDIDO|DETALLE_PEDIDO', 25, '2018-12-17 15:33:42', 'I', 1, '127.0.0.1', 'INSERCIÓN SATISFACTORIA DE UN NUEVO PEDIDO'),
+(1381, 'PEDIDO|DETALLE_PEDIDO', 26, '2018-12-17 15:33:43', 'I', 1, '127.0.0.1', 'INSERCIÓN SATISFACTORIA DE UN NUEVO PEDIDO'),
+(1382, 'PEDIDO|DETALLE_PEDIDO', 27, '2018-12-17 15:33:43', 'I', 1, '127.0.0.1', 'INSERCIÓN SATISFACTORIA DE UN NUEVO PEDIDO'),
+(1383, 'PEDIDO|DETALLE_PEDIDO', 28, '2018-12-17 15:33:43', 'I', 1, '127.0.0.1', 'INSERCIÓN SATISFACTORIA DE UN NUEVO PEDIDO'),
+(1384, 'PEDIDO|DETALLE_PEDIDO', 29, '2018-12-17 15:33:43', 'I', 1, '127.0.0.1', 'INSERCIÓN SATISFACTORIA DE UN NUEVO PEDIDO'),
+(1385, 'PEDIDO|DETALLE_PEDIDO', 30, '2018-12-17 15:33:43', 'I', 1, '127.0.0.1', 'INSERCIÓN SATISFACTORIA DE UN NUEVO PEDIDO'),
+(1386, 'PEDIDO|DETALLE_PEDIDO', 31, '2018-12-17 15:33:43', 'I', 1, '127.0.0.1', 'INSERCIÓN SATISFACTORIA DE UN NUEVO PEDIDO'),
+(1387, 'PEDIDO|DETALLE_PEDIDO', 32, '2018-12-17 15:33:43', 'I', 1, '127.0.0.1', 'INSERCIÓN SATISFACTORIA DE UN NUEVO PEDIDO'),
+(1388, 'PEDIDO|DETALLE_PEDIDO', 33, '2018-12-17 15:33:43', 'I', 1, '127.0.0.1', 'INSERCIÓN SATISFACTORIA DE UN NUEVO PEDIDO'),
+(1389, 'PEDIDO|DETALLE_PEDIDO', 34, '2018-12-17 15:33:43', 'I', 1, '127.0.0.1', 'INSERCIÓN SATISFACTORIA DE UN NUEVO PEDIDO'),
+(1390, 'PEDIDO|DETALLE_PEDIDO', 35, '2018-12-17 15:33:43', 'I', 1, '127.0.0.1', 'INSERCIÓN SATISFACTORIA DE UN NUEVO PEDIDO'),
+(1391, 'PEDIDO|DETALLE_PEDIDO', 36, '2018-12-17 15:33:43', 'I', 1, '127.0.0.1', 'INSERCIÓN SATISFACTORIA DE UN NUEVO PEDIDO'),
+(1392, 'PEDIDO|DETALLE_PEDIDO', 37, '2018-12-17 15:33:44', 'I', 1, '127.0.0.1', 'INSERCIÓN SATISFACTORIA DE UN NUEVO PEDIDO'),
+(1393, 'PEDIDO|DETALLE_PEDIDO', 38, '2018-12-17 15:33:44', 'I', 1, '127.0.0.1', 'INSERCIÓN SATISFACTORIA DE UN NUEVO PEDIDO'),
+(1394, 'PEDIDO|DETALLE_PEDIDO', 39, '2018-12-17 15:33:44', 'I', 1, '127.0.0.1', 'INSERCIÓN SATISFACTORIA DE UN NUEVO PEDIDO'),
+(1395, 'PEDIDO|DETALLE_PEDIDO', 40, '2018-12-17 15:33:44', 'I', 1, '127.0.0.1', 'INSERCIÓN SATISFACTORIA DE UN NUEVO PEDIDO'),
+(1396, 'PEDIDO|DETALLE_PEDIDO', 41, '2018-12-17 15:33:44', 'I', 1, '127.0.0.1', 'INSERCIÓN SATISFACTORIA DE UN NUEVO PEDIDO'),
+(1397, 'PEDIDO|DETALLE_PEDIDO', 42, '2018-12-17 15:33:44', 'I', 1, '127.0.0.1', 'INSERCIÓN SATISFACTORIA DE UN NUEVO PEDIDO'),
+(1398, 'PEDIDO|DETALLE_PEDIDO', 43, '2018-12-17 15:33:44', 'I', 1, '127.0.0.1', 'INSERCIÓN SATISFACTORIA DE UN NUEVO PEDIDO'),
+(1399, 'PEDIDO|DETALLE_PEDIDO', 44, '2018-12-17 15:33:44', 'I', 1, '127.0.0.1', 'INSERCIÓN SATISFACTORIA DE UN NUEVO PEDIDO'),
+(1400, 'PEDIDO|DETALLE_PEDIDO', 45, '2018-12-17 15:33:44', 'I', 1, '127.0.0.1', 'INSERCIÓN SATISFACTORIA DE UN NUEVO PEDIDO'),
+(1401, 'PEDIDO|DETALLE_PEDIDO', 46, '2018-12-17 15:33:44', 'I', 1, '127.0.0.1', 'INSERCIÓN SATISFACTORIA DE UN NUEVO PEDIDO'),
+(1402, 'PEDIDO|DETALLE_PEDIDO', 47, '2018-12-17 15:33:44', 'I', 1, '127.0.0.1', 'INSERCIÓN SATISFACTORIA DE UN NUEVO PEDIDO'),
+(1403, 'PEDIDO|DETALLE_PEDIDO', 48, '2018-12-17 15:33:44', 'I', 1, '127.0.0.1', 'INSERCIÓN SATISFACTORIA DE UN NUEVO PEDIDO'),
+(1404, 'PEDIDO|DETALLE_PEDIDO', 49, '2018-12-17 15:33:45', 'I', 1, '127.0.0.1', 'INSERCIÓN SATISFACTORIA DE UN NUEVO PEDIDO'),
+(1405, 'PEDIDO|DETALLE_PEDIDO', 50, '2018-12-17 15:33:45', 'I', 1, '127.0.0.1', 'INSERCIÓN SATISFACTORIA DE UN NUEVO PEDIDO'),
+(1406, 'PEDIDO|DETALLE_PEDIDO', 51, '2018-12-17 15:33:45', 'I', 1, '127.0.0.1', 'INSERCIÓN SATISFACTORIA DE UN NUEVO PEDIDO'),
+(1407, 'PEDIDO|DETALLE_PEDIDO', 52, '2018-12-17 15:33:45', 'I', 1, '127.0.0.1', 'INSERCIÓN SATISFACTORIA DE UN NUEVO PEDIDO');
 
 -- --------------------------------------------------------
 
@@ -1590,6 +1644,14 @@ CREATE TABLE `cliente_pedido_especificacion` (
   `id_cliente` int(11) NOT NULL,
   `id_especificacion` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+--
+-- Volcado de datos para la tabla `cliente_pedido_especificacion`
+--
+
+INSERT INTO `cliente_pedido_especificacion` (`id_cliente_pedido_especificacion`, `id_cliente`, `id_especificacion`) VALUES
+(1, 1, 6),
+(2, 1, 7);
 
 -- --------------------------------------------------------
 
@@ -2009,6 +2071,14 @@ CREATE TABLE `detalle_especificacionempaque` (
   `tallos_x_ramos` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
+--
+-- Volcado de datos para la tabla `detalle_especificacionempaque`
+--
+
+INSERT INTO `detalle_especificacionempaque` (`id_detalle_especificacionempaque`, `id_especificacion_empaque`, `id_variedad`, `id_clasificacion_ramo`, `cantidad`, `id_empaque_e`, `id_empaque_p`, `estado`, `fecha_registro`, `tallos_x_ramos`) VALUES
+(2, 6, 1, 4, 20, 5, 7, 1, '2018-12-17 15:29:19', NULL),
+(3, 7, 1, 3, 15, 5, 7, 1, '2018-12-17 15:30:47', NULL);
+
 -- --------------------------------------------------------
 
 --
@@ -2024,6 +2094,64 @@ CREATE TABLE `detalle_pedido` (
   `estado` tinyint(1) NOT NULL DEFAULT '1',
   `fecha_registro` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+--
+-- Volcado de datos para la tabla `detalle_pedido`
+--
+
+INSERT INTO `detalle_pedido` (`id_detalle_pedido`, `id_cliente_especificacion`, `id_pedido`, `id_agencia_carga`, `cantidad`, `estado`, `fecha_registro`) VALUES
+(1, 1, 1, 5, 1, 1, '2018-12-17 15:33:39'),
+(2, 1, 2, 5, 1, 1, '2018-12-17 15:33:40'),
+(3, 1, 3, 5, 1, 1, '2018-12-17 15:33:40'),
+(4, 1, 4, 5, 1, 1, '2018-12-17 15:33:40'),
+(5, 1, 5, 5, 1, 1, '2018-12-17 15:33:40'),
+(6, 1, 6, 5, 1, 1, '2018-12-17 15:33:40'),
+(7, 1, 7, 5, 1, 1, '2018-12-17 15:33:40'),
+(8, 1, 8, 5, 1, 1, '2018-12-17 15:33:41'),
+(9, 1, 9, 5, 1, 1, '2018-12-17 15:33:41'),
+(10, 1, 10, 5, 1, 1, '2018-12-17 15:33:41'),
+(11, 1, 11, 5, 1, 1, '2018-12-17 15:33:41'),
+(12, 1, 12, 5, 1, 1, '2018-12-17 15:33:41'),
+(13, 1, 13, 5, 1, 1, '2018-12-17 15:33:41'),
+(14, 1, 14, 5, 1, 1, '2018-12-17 15:33:41'),
+(15, 1, 15, 5, 1, 1, '2018-12-17 15:33:41'),
+(16, 1, 16, 5, 1, 1, '2018-12-17 15:33:41'),
+(17, 1, 17, 5, 1, 1, '2018-12-17 15:33:41'),
+(18, 1, 18, 5, 1, 1, '2018-12-17 15:33:42'),
+(19, 1, 19, 5, 1, 1, '2018-12-17 15:33:42'),
+(20, 1, 20, 5, 1, 1, '2018-12-17 15:33:42'),
+(21, 1, 21, 5, 1, 1, '2018-12-17 15:33:42'),
+(22, 1, 22, 5, 1, 1, '2018-12-17 15:33:42'),
+(23, 1, 23, 5, 1, 1, '2018-12-17 15:33:42'),
+(24, 1, 24, 5, 1, 1, '2018-12-17 15:33:42'),
+(25, 1, 25, 5, 1, 1, '2018-12-17 15:33:42'),
+(26, 1, 26, 5, 1, 1, '2018-12-17 15:33:42'),
+(27, 1, 27, 5, 1, 1, '2018-12-17 15:33:43'),
+(28, 1, 28, 5, 1, 1, '2018-12-17 15:33:43'),
+(29, 1, 29, 5, 1, 1, '2018-12-17 15:33:43'),
+(30, 1, 30, 5, 1, 1, '2018-12-17 15:33:43'),
+(31, 1, 31, 5, 1, 1, '2018-12-17 15:33:43'),
+(32, 1, 32, 5, 1, 1, '2018-12-17 15:33:43'),
+(33, 1, 33, 5, 1, 1, '2018-12-17 15:33:43'),
+(34, 1, 34, 5, 1, 1, '2018-12-17 15:33:43'),
+(35, 1, 35, 5, 1, 1, '2018-12-17 15:33:43'),
+(36, 1, 36, 5, 1, 1, '2018-12-17 15:33:43'),
+(37, 1, 37, 5, 1, 1, '2018-12-17 15:33:43'),
+(38, 1, 38, 5, 1, 1, '2018-12-17 15:33:44'),
+(39, 1, 39, 5, 1, 1, '2018-12-17 15:33:44'),
+(40, 1, 40, 5, 1, 1, '2018-12-17 15:33:44'),
+(41, 1, 41, 5, 1, 1, '2018-12-17 15:33:44'),
+(42, 1, 42, 5, 1, 1, '2018-12-17 15:33:44'),
+(43, 1, 43, 5, 1, 1, '2018-12-17 15:33:44'),
+(44, 1, 44, 5, 1, 1, '2018-12-17 15:33:44'),
+(45, 1, 45, 5, 1, 1, '2018-12-17 15:33:44'),
+(46, 1, 46, 5, 1, 1, '2018-12-17 15:33:44'),
+(47, 1, 47, 5, 1, 1, '2018-12-17 15:33:44'),
+(48, 1, 48, 5, 1, 1, '2018-12-17 15:33:44'),
+(49, 1, 49, 5, 1, 1, '2018-12-17 15:33:45'),
+(50, 1, 50, 5, 1, 1, '2018-12-17 15:33:45'),
+(51, 1, 51, 5, 1, 1, '2018-12-17 15:33:45'),
+(52, 1, 52, 5, 1, 1, '2018-12-17 15:33:45');
 
 -- --------------------------------------------------------
 
@@ -2086,10 +2214,11 @@ INSERT INTO `empaque` (`id_empaque`, `nombre`, `id_configuracion_empresa`, `esta
 
 CREATE TABLE `envio` (
   `id_envio` int(11) NOT NULL,
-  `fecha_registro` date NOT NULL,
-  `fecha_ingreso` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `fecha_registro` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `fecha_envio` datetime NOT NULL,
   `estado` tinyint(1) NOT NULL,
-  `id_agencia_transporte` int(11) NOT NULL
+  `id_agencia_transporte` int(11) NOT NULL,
+  `id_pedido` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 -- --------------------------------------------------------
@@ -2106,6 +2235,14 @@ CREATE TABLE `especificacion` (
   `estado` tinyint(1) NOT NULL DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
+--
+-- Volcado de datos para la tabla `especificacion`
+--
+
+INSERT INTO `especificacion` (`id_especificacion`, `nombre`, `descripcion`, `fecha_registro`, `estado`) VALUES
+(6, 'Combo 1', 'Combo 1', '2018-12-17 15:29:19', 1),
+(7, 'Combo Especifico 1', '2 Half de 15 Ramos de GLX de 750gr de 25 tallos c/u', '2018-12-17 15:30:46', 1);
+
 -- --------------------------------------------------------
 
 --
@@ -2121,6 +2258,14 @@ CREATE TABLE `especificacion_empaque` (
   `estado` tinyint(1) NOT NULL DEFAULT '1',
   `fecha_registro` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+--
+-- Volcado de datos para la tabla `especificacion_empaque`
+--
+
+INSERT INTO `especificacion_empaque` (`id_especificacion_empaque`, `id_especificacion`, `id_empaque`, `cantidad`, `imagen`, `estado`, `fecha_registro`) VALUES
+(6, 6, 4, 1, '', 1, '2018-12-17 15:29:19'),
+(7, 7, 3, 2, '', 1, '2018-12-17 15:30:47');
 
 -- --------------------------------------------------------
 
@@ -3221,6 +3366,64 @@ CREATE TABLE `pedido` (
   `empaquetado` tinyint(1) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
+--
+-- Volcado de datos para la tabla `pedido`
+--
+
+INSERT INTO `pedido` (`id_pedido`, `id_cliente`, `estado`, `descripcion`, `fecha_pedido`, `fecha_registro`, `empaquetado`) VALUES
+(1, 1, 1, 'Pedido de los lunes de 1 Combo 1 por la Agencia 1', '2018-12-03', '2018-12-17 15:33:39', 0),
+(2, 1, 1, 'Pedido de los lunes de 1 Combo 1 por la Agencia 1', '2018-12-10', '2018-12-17 15:33:39', 0),
+(3, 1, 1, 'Pedido de los lunes de 1 Combo 1 por la Agencia 1', '2018-12-17', '2018-12-17 15:33:40', 0),
+(4, 1, 1, 'Pedido de los lunes de 1 Combo 1 por la Agencia 1', '2018-12-24', '2018-12-17 15:33:40', 0),
+(5, 1, 1, 'Pedido de los lunes de 1 Combo 1 por la Agencia 1', '2018-12-31', '2018-12-17 15:33:40', 0),
+(6, 1, 1, 'Pedido de los lunes de 1 Combo 1 por la Agencia 1', '2019-01-07', '2018-12-17 15:33:40', 0),
+(7, 1, 1, 'Pedido de los lunes de 1 Combo 1 por la Agencia 1', '2019-01-14', '2018-12-17 15:33:40', 0),
+(8, 1, 1, 'Pedido de los lunes de 1 Combo 1 por la Agencia 1', '2019-01-21', '2018-12-17 15:33:40', 0),
+(9, 1, 1, 'Pedido de los lunes de 1 Combo 1 por la Agencia 1', '2019-01-28', '2018-12-17 15:33:41', 0),
+(10, 1, 1, 'Pedido de los lunes de 1 Combo 1 por la Agencia 1', '2019-02-04', '2018-12-17 15:33:41', 0),
+(11, 1, 1, 'Pedido de los lunes de 1 Combo 1 por la Agencia 1', '2019-02-11', '2018-12-17 15:33:41', 0),
+(12, 1, 1, 'Pedido de los lunes de 1 Combo 1 por la Agencia 1', '2019-02-18', '2018-12-17 15:33:41', 0),
+(13, 1, 1, 'Pedido de los lunes de 1 Combo 1 por la Agencia 1', '2019-02-25', '2018-12-17 15:33:41', 0),
+(14, 1, 1, 'Pedido de los lunes de 1 Combo 1 por la Agencia 1', '2019-03-04', '2018-12-17 15:33:41', 0),
+(15, 1, 1, 'Pedido de los lunes de 1 Combo 1 por la Agencia 1', '2019-03-11', '2018-12-17 15:33:41', 0),
+(16, 1, 1, 'Pedido de los lunes de 1 Combo 1 por la Agencia 1', '2019-03-18', '2018-12-17 15:33:41', 0),
+(17, 1, 1, 'Pedido de los lunes de 1 Combo 1 por la Agencia 1', '2019-03-25', '2018-12-17 15:33:41', 0),
+(18, 1, 1, 'Pedido de los lunes de 1 Combo 1 por la Agencia 1', '2019-04-01', '2018-12-17 15:33:42', 0),
+(19, 1, 1, 'Pedido de los lunes de 1 Combo 1 por la Agencia 1', '2019-04-08', '2018-12-17 15:33:42', 0),
+(20, 1, 1, 'Pedido de los lunes de 1 Combo 1 por la Agencia 1', '2019-04-15', '2018-12-17 15:33:42', 0),
+(21, 1, 1, 'Pedido de los lunes de 1 Combo 1 por la Agencia 1', '2019-04-22', '2018-12-17 15:33:42', 0),
+(22, 1, 1, 'Pedido de los lunes de 1 Combo 1 por la Agencia 1', '2019-04-29', '2018-12-17 15:33:42', 0),
+(23, 1, 1, 'Pedido de los lunes de 1 Combo 1 por la Agencia 1', '2019-05-06', '2018-12-17 15:33:42', 0),
+(24, 1, 1, 'Pedido de los lunes de 1 Combo 1 por la Agencia 1', '2019-05-13', '2018-12-17 15:33:42', 0),
+(25, 1, 1, 'Pedido de los lunes de 1 Combo 1 por la Agencia 1', '2019-05-20', '2018-12-17 15:33:42', 0),
+(26, 1, 1, 'Pedido de los lunes de 1 Combo 1 por la Agencia 1', '2019-05-27', '2018-12-17 15:33:42', 0),
+(27, 1, 1, 'Pedido de los lunes de 1 Combo 1 por la Agencia 1', '2019-06-03', '2018-12-17 15:33:43', 0),
+(28, 1, 1, 'Pedido de los lunes de 1 Combo 1 por la Agencia 1', '2019-06-10', '2018-12-17 15:33:43', 0),
+(29, 1, 1, 'Pedido de los lunes de 1 Combo 1 por la Agencia 1', '2019-06-17', '2018-12-17 15:33:43', 0),
+(30, 1, 1, 'Pedido de los lunes de 1 Combo 1 por la Agencia 1', '2019-06-24', '2018-12-17 15:33:43', 0),
+(31, 1, 1, 'Pedido de los lunes de 1 Combo 1 por la Agencia 1', '2019-07-01', '2018-12-17 15:33:43', 0),
+(32, 1, 1, 'Pedido de los lunes de 1 Combo 1 por la Agencia 1', '2019-07-08', '2018-12-17 15:33:43', 0),
+(33, 1, 1, 'Pedido de los lunes de 1 Combo 1 por la Agencia 1', '2019-07-15', '2018-12-17 15:33:43', 0),
+(34, 1, 1, 'Pedido de los lunes de 1 Combo 1 por la Agencia 1', '2019-07-22', '2018-12-17 15:33:43', 0),
+(35, 1, 1, 'Pedido de los lunes de 1 Combo 1 por la Agencia 1', '2019-07-29', '2018-12-17 15:33:43', 0),
+(36, 1, 1, 'Pedido de los lunes de 1 Combo 1 por la Agencia 1', '2019-08-05', '2018-12-17 15:33:43', 0),
+(37, 1, 1, 'Pedido de los lunes de 1 Combo 1 por la Agencia 1', '2019-08-12', '2018-12-17 15:33:43', 0),
+(38, 1, 1, 'Pedido de los lunes de 1 Combo 1 por la Agencia 1', '2019-08-19', '2018-12-17 15:33:44', 0),
+(39, 1, 1, 'Pedido de los lunes de 1 Combo 1 por la Agencia 1', '2019-08-26', '2018-12-17 15:33:44', 0),
+(40, 1, 1, 'Pedido de los lunes de 1 Combo 1 por la Agencia 1', '2019-09-02', '2018-12-17 15:33:44', 0),
+(41, 1, 1, 'Pedido de los lunes de 1 Combo 1 por la Agencia 1', '2019-09-09', '2018-12-17 15:33:44', 0),
+(42, 1, 1, 'Pedido de los lunes de 1 Combo 1 por la Agencia 1', '2019-09-16', '2018-12-17 15:33:44', 0),
+(43, 1, 1, 'Pedido de los lunes de 1 Combo 1 por la Agencia 1', '2019-09-23', '2018-12-17 15:33:44', 0),
+(44, 1, 1, 'Pedido de los lunes de 1 Combo 1 por la Agencia 1', '2019-09-30', '2018-12-17 15:33:44', 0),
+(45, 1, 1, 'Pedido de los lunes de 1 Combo 1 por la Agencia 1', '2019-10-07', '2018-12-17 15:33:44', 0),
+(46, 1, 1, 'Pedido de los lunes de 1 Combo 1 por la Agencia 1', '2019-10-14', '2018-12-17 15:33:44', 0),
+(47, 1, 1, 'Pedido de los lunes de 1 Combo 1 por la Agencia 1', '2019-10-21', '2018-12-17 15:33:44', 0),
+(48, 1, 1, 'Pedido de los lunes de 1 Combo 1 por la Agencia 1', '2019-10-28', '2018-12-17 15:33:44', 0),
+(49, 1, 1, 'Pedido de los lunes de 1 Combo 1 por la Agencia 1', '2019-11-04', '2018-12-17 15:33:45', 0),
+(50, 1, 1, 'Pedido de los lunes de 1 Combo 1 por la Agencia 1', '2019-11-11', '2018-12-17 15:33:45', 0),
+(51, 1, 1, 'Pedido de los lunes de 1 Combo 1 por la Agencia 1', '2019-11-18', '2018-12-17 15:33:45', 0),
+(52, 1, 1, 'Pedido de los lunes de 1 Combo 1 por la Agencia 1', '2019-11-25', '2018-12-17 15:33:45', 0);
+
 -- --------------------------------------------------------
 
 --
@@ -4104,7 +4307,8 @@ ALTER TABLE `empaque`
 --
 ALTER TABLE `envio`
   ADD PRIMARY KEY (`id_envio`),
-  ADD KEY `FK_Envio_AgenciaTransporte` (`id_agencia_transporte`);
+  ADD KEY `FK_Envio_AgenciaTransporte` (`id_agencia_transporte`),
+  ADD KEY `FK_Envio_Pedido` (`id_pedido`);
 
 --
 -- Indices de la tabla `especificacion`
@@ -4312,7 +4516,7 @@ ALTER TABLE `agencia_transporte`
 -- AUTO_INCREMENT de la tabla `bitacora`
 --
 ALTER TABLE `bitacora`
-  MODIFY `id_bitacora` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1354;
+  MODIFY `id_bitacora` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1408;
 
 --
 -- AUTO_INCREMENT de la tabla `clasificacion_ramo`
@@ -4348,7 +4552,7 @@ ALTER TABLE `cliente_agenciacarga`
 -- AUTO_INCREMENT de la tabla `cliente_pedido_especificacion`
 --
 ALTER TABLE `cliente_pedido_especificacion`
-  MODIFY `id_cliente_pedido_especificacion` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_cliente_pedido_especificacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `configuracion_empresa`
@@ -4408,13 +4612,13 @@ ALTER TABLE `detalle_empaque`
 -- AUTO_INCREMENT de la tabla `detalle_especificacionempaque`
 --
 ALTER TABLE `detalle_especificacionempaque`
-  MODIFY `id_detalle_especificacionempaque` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_detalle_especificacionempaque` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `detalle_pedido`
 --
 ALTER TABLE `detalle_pedido`
-  MODIFY `id_detalle_pedido` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_detalle_pedido` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
 
 --
 -- AUTO_INCREMENT de la tabla `documento`
@@ -4438,13 +4642,13 @@ ALTER TABLE `envio`
 -- AUTO_INCREMENT de la tabla `especificacion`
 --
 ALTER TABLE `especificacion`
-  MODIFY `id_especificacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id_especificacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT de la tabla `especificacion_empaque`
 --
 ALTER TABLE `especificacion_empaque`
-  MODIFY `id_especificacion_empaque` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id_especificacion_empaque` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT de la tabla `factura`
@@ -4498,7 +4702,7 @@ ALTER TABLE `modulo`
 -- AUTO_INCREMENT de la tabla `pedido`
 --
 ALTER TABLE `pedido`
-  MODIFY `id_pedido` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_pedido` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
 
 --
 -- AUTO_INCREMENT de la tabla `planta`
@@ -4695,7 +4899,8 @@ ALTER TABLE `empaque`
 -- Filtros para la tabla `envio`
 --
 ALTER TABLE `envio`
-  ADD CONSTRAINT `FK_Envio_AgenciaTransporte` FOREIGN KEY (`id_agencia_transporte`) REFERENCES `agencia_transporte` (`id_agencia_transporte`) ON DELETE NO ACTION ON UPDATE CASCADE;
+  ADD CONSTRAINT `FK_Envio_AgenciaTransporte` FOREIGN KEY (`id_agencia_transporte`) REFERENCES `agencia_transporte` (`id_agencia_transporte`) ON DELETE NO ACTION ON UPDATE CASCADE,
+  ADD CONSTRAINT `FK_Envio_Pedido` FOREIGN KEY (`id_pedido`) REFERENCES `pedido` (`id_pedido`) ON DELETE NO ACTION ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `especificacion_empaque`
