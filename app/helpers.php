@@ -799,6 +799,29 @@ function getLoteREById($id)
     return LoteRE::find($id);
 }
 
+
+/*function getResumenPedidosByFecha($fecha, $variedad)
+{
+    $pedidos = Pedido::All()->where('estado', '=', 1)->where('empaquetado', '=', 0)
+        ->where('fecha_pedido', '=', $fecha);
+    $r = [];
+    foreach ($pedidos as $pedido) {
+        array_push($r, $pedido->id_pedido);
+    }
+    $query = DB::table('pedido as p')
+        ->join('detalle_pedido as dp', 'dp.id_pedido', '=', 'p.id_pedido')
+        ->join('cliente_pedido_especificacion as cpe', 'cpe.id_cliente_pedido_especificacion', '=', 'dp.id_cliente_especificacion')
+        ->join('especificacion_empaque as ee', 'ee.id_especificacion', '=', 'cpe.id_especificacion')
+        ->join('detalle_especificacionempaque as dee', 'dee.id_especificacion_empaque', '=', 'ee.id_especificacion_empaque')
+        ->join('variedad as v', 'v.id_variedad', '=', 'dee.id_variedad')
+        ->join('clasificacion_ramo as cr', 'cr.id_clasificacion_ramo', '=', 'dee.id_clasificacion_ramo')
+        ->select('dee.id_variedad', 'dee.id_clasificacion_ramo', 'dee.cantidad')
+        ->where('dee.id_variedad', '=', $variedad)
+        ->whereIn('dp.id_pedido', $r)
+        ->get();
+    dd($query);
+    //return $pedidos;
+}*/
 function getCalibreRamoById($id)
 {
     return ClasificacionRamo::find($id);
@@ -825,4 +848,5 @@ function getResumenPedidosByFecha($fecha, $variedad)
         ->groupBy('dee.id_variedad','dee.id_clasificacion_ramo')
         ->get();
     return $query;
+
 }

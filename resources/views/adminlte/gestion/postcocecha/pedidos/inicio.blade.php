@@ -26,7 +26,6 @@
                                     @foreach($especificaciones as $especificacion)
                                         <option value="{{$especificacion->id_cliente_pedido_especificacion}}"> {{$especificacion->nombre}} </option>
                                     @endforeach
-
                                 </select>
                             </div>
                             <div class="form-group">

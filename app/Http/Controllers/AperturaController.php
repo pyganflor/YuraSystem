@@ -55,7 +55,6 @@ class AperturaController extends Controller
 
         $datos = [
             'listado' => $listado,
-
         ];
 
         return view('adminlte.gestion.postcocecha.aperturas.partials.listado', $datos);
