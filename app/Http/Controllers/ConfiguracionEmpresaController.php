@@ -301,7 +301,6 @@ class ConfiguracionEmpresaController extends Controller
 
     public function guardarDetalleEmpaque(Request $request)
     {
-
         $valida = Validator::make($request->all(), [
             'data_detalles_empaque' => 'required|Array',
         ]);
