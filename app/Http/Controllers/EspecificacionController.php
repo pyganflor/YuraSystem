@@ -98,7 +98,7 @@ class EspecificacionController extends Controller
                 bitacora('especificacion', $modelEspcificacion->nombre, $accionLetra, $accion . ' satisfactoria de un nuevo empaque');
 
                 for ($i = 1; $i <= $request->cant_forms_detalles; $i++) {
-                   // dd($request->input('cant_forms_desgloses_'.$i));
+
                     //*********** VALIDA IMAGEN ************//
                     if ($request->hasFile('imagen_' . $i)) {
 
@@ -173,7 +173,6 @@ class EspecificacionController extends Controller
                             }
 
                             if($request->input('cant_forms_desgloses_'.$i) == 1){
-                                //dd(valida_especificacion($request->input('id_variedad_'.$i.'_'.$j),$request->input('id_clasificacion_ramo_'.$i.'_'.$j),$request->input('id_empaque_'.$i), $request->input('cantidad_'.$i.'_'.$j)));
                                 if(!valida_especificacion($request->input('id_variedad_'.$i.'_'.$j),$request->input('id_clasificacion_ramo_'.$i.'_'.$j),$request->input('id_empaque_'.$i), $request->input('cantidad_'.$i.'_'.$j))){
 
                                     if($accion === 'Inserción' ){

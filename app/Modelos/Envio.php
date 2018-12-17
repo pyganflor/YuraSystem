@@ -14,6 +14,6 @@ class Envio extends Model
     protected $fillable = [
         'id_pedido',
         'fecha_envio',
-        'estado',
+        'fecha_registro',
     ];
 }
