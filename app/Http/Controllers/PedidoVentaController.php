@@ -4,6 +4,7 @@ namespace yura\Http\Controllers;
 
 use Illuminate\Http\Request;
 use yura\Modelos\Cliente;
+use yura\Modelos\DetalleEnvio;
 use yura\Modelos\Pedido;
 use DB;
 use yura\Modelos\Submenu;
@@ -42,9 +43,11 @@ class PedidoVentaController extends Controller
 
         if ($request->anno != '')
             $listado = $listado->where(DB::raw('YEAR(p.fecha_pedido)'), $busquedaAnno );
-        if ($request->desde != '' && $request->hasta != '')
-            $listado = $listado->whereBetween('p.fecha_pedido', [$busquedaDesde,$busquedaHasta]);
-        if ($request->id_cliente != '')
+
+        //if ($request->desde != '' && $request->hasta != '')
+            $listado = $listado->whereBetween('p.fecha_pedido', [!empty($busquedaDesde) ? $busquedaDesde : '2000-01-01',!empty($busquedaHasta) ? $busquedaHasta : Pedido::select('fecha_pedido')->orderBy('fecha_pedido','desc')->take(1)->get()[0]->fecha_pedido]);
+
+            if ($request->id_cliente != '')
             $listado = $listado->where('p.id_cliente',$busquedaCliente );
 
         $listado = $listado->distinct()->orderBy('p.fecha_pedido', 'desc')->simplePaginate(20);

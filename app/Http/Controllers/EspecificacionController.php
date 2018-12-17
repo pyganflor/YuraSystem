@@ -62,7 +62,7 @@ class EspecificacionController extends Controller
 
     public function store_especificacion(Request $request)
     {
-       // dd($request->all());
+        //dd($request->all());
         $validaDataGeneral = Validator::make($request->all(), [
             'nombre' => 'required',
             'descripcion' => 'required',
@@ -197,8 +197,8 @@ class EspecificacionController extends Controller
                             $objEspecificacionEmpaqueDetalle->cantidad = $request->input('cantidad_' . $i . '_' . $j);
                             $objEspecificacionEmpaqueDetalle->id_empaque_e = $request->input('id_empaque_e_' . $i . '_' . $j);
                             $objEspecificacionEmpaqueDetalle->id_empaque_p = $request->input('id_empaque_p_' . $i . '_' . $j);
-                            !empty($request->input('tallos_X_ramos' . $i . '_' . $j))
-                                ? $objEspecificacionEmpaqueDetalle->tallos_x_ramos = $request->input('tallos_X_ramos' . $i . '_' . $j)
+                            !empty($request->input('tallos_x_ramos_'.$i.'_'.$j))
+                                ? $objEspecificacionEmpaqueDetalle->tallos_x_ramos = $request->input('tallos_x_ramos_'.$i.'_'.$j)
                                 : '';
 
 

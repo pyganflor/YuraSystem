@@ -54,7 +54,7 @@ class PedidoController extends Controller
         if ($request->desde != '' && $request->hasta != '')
             $listado = $listado->whereBetween('p.fecha_pedido', [$busquedaDesde,$busquedaHasta]);
 
-        $listado = $listado->orderBy('p.fecha_pedido', 'desc')->simplePaginate(6);
+        $listado = $listado->orderBy('p.fecha_pedido', 'desc')->simplePaginate(20);
        //dd($listado);
         $datos = [
             'listado' => $listado,

@@ -55,7 +55,7 @@ class EnvioController extends Controller
                     ->join('pedido as p','e.id_pedido','=','p.id_pedido')
                     ->where([
                        //['id_especificaion',$detalle_envio[0]],
-                        ['id_agencia_transporte',$detalle_envio[1]],
+                        ['detalle_envio.id_agencia_transporte',$detalle_envio[1]],
                         ['e.fecha_envio',$detalle_envio[4]],
                         ['e.id_pedido',$request->id_pedido]
                     ])->first();
