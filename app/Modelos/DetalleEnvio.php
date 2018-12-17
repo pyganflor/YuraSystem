@@ -16,6 +16,7 @@ class DetalleEnvio extends Model
         'id_envio',
         'id_agencia_transporte',
         'cantidad',
+        'envio' //agrupción de los detalles de envíos
     ];
 
     public function envio()

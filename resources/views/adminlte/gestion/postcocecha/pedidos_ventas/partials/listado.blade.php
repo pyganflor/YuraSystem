@@ -48,13 +48,13 @@
                                          @foreach($detalle->cliente_especificacion->especificacion->especificacionesEmpaque as $espEmp)
                                              {{$espEmp->cantidad}}
                                              {{$espEmp->empaque->nombre}} con las variedades
-                                                     @foreach($espEmp->detalles as $det)
-                                             {{$det->variedad->nombre}}
-                                                 con {{$det->cantidad}}  ramos de
-                                                         {{$det->clasificacion_ramo->nombre}} gr c/u,
-                                                         con envoltura de {{$det->empaque_e->nombre}}
-                                                 y presentación de {{$det->empaque_p->nombre}}
-                                         @endforeach
+                                                @foreach($espEmp->detalles as $det)
+                                                     {{$det->variedad->nombre}}
+                                                         con {{$det->cantidad}}  ramos de
+                                                                 {{$det->clasificacion_ramo->nombre}} gr c/u,
+                                                                 con envoltura de {{$det->empaque_e->nombre}}
+                                                         y presentación de {{$det->empaque_p->nombre}}
+                                                @endforeach
                                          @endforeach">
                                          {{$detalle->cantidad}} {{$detalle->cliente_especificacion->especificacion->nombre}}
                                      </a>
@@ -67,10 +67,20 @@
                     </td>
                     <td class="text-center"  style="border-color: #9d9d9d">
                        @if(now()->toDateString() < $item->fecha_pedido )
-                            <button class="btn  btn-{!! $item->estado == 1 ? 'success' : 'warning' !!} btn-xs" type="button" title="{!! $item->estado == 1 ? 'Pedido activo' : 'Pedido cancelado' !!}" id="edit_pedidos" onclick="cancelar_pedidos('{{$item->id_pedido}}')">
+                            <button class="btn  btn-{!! $item->estado == 1 ? 'success' : 'warning' !!} btn-xs" type="button" title="{!! $item->estado == 1 ? 'Pedido activo' : 'Pedido cancelado' !!}"
+                                    id="edit_pedidos" onclick="cancelar_pedidos('{{$item->id_pedido}}','','{{$item->estado}}','{{@csrf_token()}}')">
                                 <i class="fa fa-{!! $item->estado == 1 ? 'check' : 'ban' !!}" aria-hidden="true"></i>
                             </button>
-                        @endif
+                       @endif
+                       @if(yura\Modelos\Envio::where('id_pedido',$item->id_pedido)->count() <= 0)
+                           <button class="btn btn-default btn-xs" title="Realizar envío" onclick="add_envio('{{$item->id_pedido}}','{{@csrf_token()}}')">
+                               <i class="fa fa-plane" aria-hidden="true"></i>
+                           </button>
+                       @else
+                            <button class="btn btn-default btn-xs" title="Ver envío" onclick="ver_envio('{{$item->id_pedido}}')">
+                                <i class="fa fa-eye" aria-hidden="true"></i>
+                            </button>
+                       @endif
                     </td>
                 </tr>
             @endforeach

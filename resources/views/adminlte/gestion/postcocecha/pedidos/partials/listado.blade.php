@@ -60,13 +60,19 @@
                     <td class="text-center"  style="border-color: #9d9d9d">
                         @if(now()->toDateString() < $item->fecha_pedido )
                         <button class="btn  btn-{!! $item->estado == 1 ? 'success' : 'warning' !!} btn-xs" type="button" title="{!! $item->estado == 1 ? 'Pedido activo' : 'Pedido cancelado' !!}" id="edit_pedidos"
-                                onclick="cancelar_pedidos('{{$item->id_pedido}}','{{$idCliente}}')">
+                                onclick="cancelar_pedidos('{{$item->id_pedido}}','{{$idCliente}}','{{$item->estado}}','{{@csrf_token()}}')">
                             <i class="fa fa-{!! $item->estado == 1 ? 'check' : 'ban' !!}" aria-hidden="true"></i>
                         </button>
                         @endif
-                        <button class="btn btn-default btn-xs" title="Realizar envío" onclick="add_envio('{{$item->id_pedido}}')">
-                            <i class="fa fa-plane" aria-hidden="true"></i>
-                        </button>
+                        @if(yura\Modelos\Envio::where('id_pedido',$item->id_pedido)->count() <= 0)
+                             <button class="btn btn-default btn-xs" title="Realizar envío" onclick="add_envio('{{$item->id_pedido}}','{{@csrf_token()}}')">
+                                 <i class="fa fa-plane" aria-hidden="true"></i>
+                             </button>
+                        @else
+                            <button class="btn btn-default btn-xs" title="Ver envío" onclick="ver_envio('{{$item->id_pedido}}')">
+                                <i class="fa fa-eye" aria-hidden="true"></i>
+                            </button>
+                        @endif
                     </td>
                 </tr>
             @endforeach

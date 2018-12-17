@@ -3,4 +3,7 @@
 Route::get('clientes/add_envio','EnvioController@add_envio');
 Route::get('clientes/add_form_envio','EnvioController@add_form_envio');
 Route::post('clientes/store_envio','EnvioController@store_envio');
-
+Route::get('envio','EnvioController@ver_envio');
+Route::get('envio/buscar','EnvioController@buscar_envio');
+Route::get('envio/exportar','EnvioController@generar_excel_envios');
+Route::get('envio/editar_envio','EnvioController@editar_envio');

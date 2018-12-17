@@ -355,7 +355,7 @@ class ClienteController extends Controller
             ['estado',1]
         ])->first();
         $dataClienteAgenciasCarga  = ClienteAgenciaCarga::where('id_cliente',$request->id_cliente)->get();
-        $pais                      = Pais::where('codigo',$dataCliente->codigo_pais)->first();
+        $pais         = Pais::where('codigo',$dataCliente->codigo_pais)->first();
         $dataContacto = DB::table('detalle_cliente as dc')
             ->where('id_cliente',$request->id_cliente)
             ->join('detalle_cliente_contacto as dcc','dc.id_detalle_cliente','=','dcc.id_detalle_cliente')

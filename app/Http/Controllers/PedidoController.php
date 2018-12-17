@@ -51,7 +51,6 @@ class PedidoController extends Controller
             $listado = $listado->where(DB::raw('YEAR(p.fecha_pedido)'), $busquedaAnno );
         if ($request->id_especificaciones != '')
             $listado = $listado->where('dp.id_cliente_especificacion',$busquedaEspecificacion);
-
         if ($request->desde != '' && $request->hasta != '')
             $listado = $listado->whereBetween('p.fecha_pedido', [$busquedaDesde,$busquedaHasta]);
 
@@ -203,8 +202,9 @@ class PedidoController extends Controller
         if($objPedido->save()){
             $model = Pedido::all()->last();
             $success = true;
+            $objPedido->estado == 0 ? $palabra = 'cancelado' : $palabra = 'activado';
             $msg = '<div class="alert alert-success text-center">' .
-                '<p> Se ha cancelado el pedido exitosamente</p>'
+                '<p> Se ha '.$palabra.' el pedido exitosamente</p>'
                 . '</div>';
             bitacora('pedido', $model->id_pedido, 'U', 'Actualizacion satisfactoria del estado de un pedido');
         }else{

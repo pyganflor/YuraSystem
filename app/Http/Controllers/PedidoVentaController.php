@@ -10,6 +10,7 @@ use yura\Modelos\Submenu;
 use yura\Modelos\DetalleCliente;
 use yura\Modelos\ClientePedidoEspecificacion;
 use yura\Modelos\ClienteAgenciaCarga;
+use yura\Modelos\Envio;
 
 class PedidoVentaController extends Controller
 {
@@ -49,8 +50,8 @@ class PedidoVentaController extends Controller
         $listado = $listado->distinct()->orderBy('p.fecha_pedido', 'desc')->simplePaginate(20);
 
         $datos = [
-            'listado' => $listado,
-            'idCliente' => $request->id_cliente,
+            'listado'    => $listado,
+            'idCliente'  => $request->id_cliente,
         ];
         return view('adminlte.gestion.postcocecha.pedidos_ventas.partials.listado',$datos);
     }

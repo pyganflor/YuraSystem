@@ -216,16 +216,18 @@ function store_pedido(id_cliente,pedido_fijo,csrf_token,vista) {
     }
 }
 
-function cancelar_pedidos(id_pedido,id_cliente) {
-
+function cancelar_pedidos(id_pedido,id_cliente,estado,token) {
     $.LoadingOverlay('show');
     datos = {
-        _token: '{{csrf_token()}}',
-        id_pedido: id_pedido,
+        _token: token,
+        id_pedido : id_pedido,
+        estado    : estado
     };
-    get_jquery('clientes/cancelar_pedido', datos, function () {
+    post_jquery('clientes/cancelar_pedido', datos, function () {
         cerrar_modals();
         detalles_cliente(id_cliente);
+        buscar_listado_pedidos();
+       // modal_view('modal_status_pedidos', retorno, '<i class="fa fa-fw fa-plus"></i> Estado pedido', true, false, '50%');
     });
     $.LoadingOverlay('hide');
 }
@@ -264,19 +266,17 @@ function detalles_cliente(id_cliente) {
 }
 
 function add_envio(id_pedido,token){
-    console.log(token);
     $.LoadingOverlay('show');
     datos = {
         id_pedido: id_pedido
     };
     $.get('clientes/add_envio', datos, function (retorno) {
         modal_form('modal_view_envio_pedido', retorno, '<i class="fa fa-plane" ></i> Crear envío', true, false, '75%', function () {
-            store_envio(token);
+            store_envio(token,id_pedido);
         });
     });
     $.LoadingOverlay('hide');
 }
-
 
 function add_form_envio(id_form,total) {
 
@@ -284,19 +284,20 @@ function add_form_envio(id_form,total) {
 
     //console.log(cant_total_pedidos);
     var cant_rows = $("form#form_envio_"+id_form+ " div#rows").length;
-
     cant_rows < 1 ? agregar_inputs(cant_rows,cant_total_pedidos,id_form,total) : '';
 
     if(cant_rows >= 1 ){
-       var campo_at = $("#id_agencia_transporte_"+id_form+"_"+cant_rows).val();
+       //var campo_at = $("#id_agencia_transporte_"+id_form+"_"+cant_rows).val();
        var campo_c  =  $("#cantidad_"+id_form+"_"+cant_rows).val();
-       var campo_e  =  $("#envio_"+id_form+"_"+cant_rows).val();
+       //var campo_e  =  $("#envio_"+id_form+"_"+cant_rows).val();
        cant_rows == 0 ? total = total - campo_c : '';
 
        var totales_cantidad = 0;
+
        for(var i=1; i<=cant_rows; i++){
           totales_cantidad =  totales_cantidad + parseInt($("#cantidad_"+id_form+"_"+i).val());
        }
+
         total2 = total - totales_cantidad;
 
         if( campo_c == undefined || campo_c == null ){
@@ -308,7 +309,7 @@ function add_form_envio(id_form,total) {
         }
     }
 }
-
+//
 function agregar_inputs(cant_rows,cant_total_pedidos,id_form, total) {
     $.LoadingOverlay('show');
     if(total > 0){
@@ -386,14 +387,19 @@ function reset_form_envio(id_form) {
 
 }
 
-function store_envio(token) {
+function store_envio(token,id_pedido) {
 
     var cant_forms = $('div.well').length;
     var data = [];
-
     var suma_cant_input = 0;
     var suma_cant_forms = 0;
     for (var j = 1; j <= cant_forms; j++) {
+
+        if($("#fecha_envio_"+j).val() == ''){
+            var msg = '<div class="alert alert-warning text-center"><p> El campo fecha del Detalle N# '+j+' es obligatorio </p></div>';
+            modal_view('modal_view_error_fechas', msg, '<i class="fa fa-fw fa-eye"></i> Error al realizar el envío', true, false, '40%');
+            return false;
+        }
 
         var cant_rows_x_form = $("#div_inputs_envios_" + j + " div#rows").length;
         for(var z=1;z<=cant_rows_x_form; z++){
@@ -402,44 +408,73 @@ function store_envio(token) {
             var fecha ="";
 
             if($("select#envio_"+j+"_"+z).text().trim() === ("Mismo envío").trim()){
-               envio = $("#envio_"+j+"_"+z).val();
+               //envio = $("#envio_"+j+"_"+z).val();
                fecha = $("#fecha_envio_"+j).val()
             }else{
                 var arrEnvio = $("#envio_"+j+"_"+z).val().split("_");
-                envio = arrEnvio[0];
-                fecha = fecha = $("#fecha_envio_"+arrEnvio[0]).val()
-            }
 
+                //envio = arrEnvio[0];
+                //envio = $("#envio_"+arrEnvio[0]).val();
+                envio = $("select[name=envio_"+j+"]")[0].name.split("_")[1];
+                fecha = fecha = $("#fecha_envio_"+arrEnvio[0]).val();
+            }
             suma_cant_input += Number($("#cantidad_"+j+"_"+z).val());
 
-            data.push([
-                $("#id_especificacion_"+j).val(),
-                $("#id_agencia_transporte_"+j+"_"+z).val(),
-                $("#cantidad_"+j+"_"+z).val(),
-                envio,
-                fecha
-            ]);
+                data.push([
+                    $("#id_especificacion_"+j).val(),
+                    $("#id_agencia_transporte_"+j+"_"+z).val(),
+                    $("#cantidad_"+j+"_"+z).val(),
+                    envio,
+                    fecha,
+                ]);
         }
         suma_cant_forms += Number($("#cantidad_detalle_form_"+j).val());
     }
+    console.log(data);
+    //return false;
+    console.log(suma_cant_input , suma_cant_forms);
     if(suma_cant_input < suma_cant_forms){
         var msg = '<div class="alert alert-warning text-center"><p> Aún faltan especificaiones por ordenar en este pedido para su envío </p></div>';
         modal_view('modal_view_error_cantidad', msg, '<i class="fa fa-fw fa-eye"></i> Error al realizar el envío', true, false, '40%');
-    }else{
-      //  if ($('#form_add_cliente').valid()) {
-
-            $.LoadingOverlay('show');
-            datos = {
-                _token: '1', //POR AQUI
-                id_cliente: $('#id_cliente').val(),
-                arrData   : data
-            };
-            post_jquery('clientes/store_envio', datos, function () {
-                cerrar_modals();
-                //detalles_cliente($('#id_cliente').val());
-            });
-            $.LoadingOverlay('hide');
-       // }
+        return false;
+    }else if(suma_cant_input > suma_cant_forms){
+        var msg = '<div class="alert alert-warning text-center"><p> La suma de las cantidades de los envios no puede ser mayor a la suma de las cantidades de las especificaciones</p></div>';
+        modal_view('modal_view_error_cantidad', msg, '<i class="fa fa-fw fa-eye"></i> Error al realizar el envío', true, false, '40%');
+        return false;
     }
+
+    $.LoadingOverlay('show');
+    datos = {
+        _token: token,
+        arrData   : data,
+        id_pedido : id_pedido
+    };
+    post_jquery('clientes/store_envio', datos, function () {
+        cerrar_modals();
+        buscar_listado_pedidos();
+    });
+    $.LoadingOverlay('hide');
+}
+
+function editar_envio(id_envio,id_detalle_envio,id_pedido) {
+
+    $.LoadingOverlay('show');
+    datos = {
+        //_token           : token,
+        id_pedido        : id_pedido,
+        id_detalle_envio : id_detalle_envio,
+        id_envio         : id_envio
+    };
+    $.get('envio/editar_envio', datos, function (retorno) {
+        modal_form('modal_view_edtiar_envio_pedido', retorno, '<i class="fa fa-plane" ></i> Editar envío', true, false, '75%', function () {
+            //update_envio(token,id_pedido);
+        });
+    });
+    $.LoadingOverlay('hide');
+
+}
+
+function ver_envio(id_pedido) {
+    //clientes/ver_envio
 }
 

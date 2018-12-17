@@ -12,8 +12,8 @@ class Envio extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'id_cliente',
+        'id_pedido',
+        'fecha_envio',
         'estado',
-        'fecha_ingreso',
     ];
 }

@@ -335,7 +335,7 @@ class AperturaController extends Controller
         }
     }
 
-<<<<<<< HEAD
+
     public function listar_pedidos(Request $request){
         if($request->fecha != '')
             $listado = DB::table('pedido as p')
@@ -348,22 +348,6 @@ class AperturaController extends Controller
             $listado = [];
         return view('adminlte.gestion.postcocecha.aperturas.partials.listado_pedidos',[
             'listado'=>$listado
-=======
-    public function listar_pedidos(Request $request)
-    {
-        if ($request->fecha != '')
-            $listado = DB::table('pedido as p')
-                ->select('p.fecha_pedido')->distinct()
-                ->where('estado', '=', 1)
-                ->where('empaquetado', '=', 0)
-                ->where('fecha_pedido', '<=', $request->fecha)
-                ->orderBy('p.fecha_pedido', 'asc')->get();
-        else
-            $listado = [];
-        return view('adminlte.gestion.postcocecha.aperturas.partials.listado_pedidos', [
-            'listado' => $listado,
-            'variedad' => Variedad::find($request->id_variedad)
->>>>>>> f7d939a64537592b1e24eedf8cf21d3e9742e791
         ]);
     }
 }
