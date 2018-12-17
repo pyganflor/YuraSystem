@@ -69,7 +69,7 @@
     </div>
 </div>
 <div class="row" id="input_tallo_x_ramo">
-    <div class="col-md-4">
+    <div class="col-md-6">
         <div class="form-group input-group">
             <span class="input-group-addon" style="background-color: #e9ecef">Tallos por ramos (Opcional)</span>
             <input type="number" onkeypress="return isNumber(event)" id="tallos_x_ramo_{{$pos_form_detalles}}_{{$cant_desgloses}}"
