@@ -372,5 +372,6 @@ class EspecificacionController extends Controller
         return UnidadMedida::where('tipo',$request->tipo_unidad_medida)
         ->join('clasificacion_ramo as cr','unidad_medida.id_unidad_medida','=','cr.id_unidad_medida')
         ->get();
+
     }
 }
