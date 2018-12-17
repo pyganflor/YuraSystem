@@ -33,25 +33,28 @@ class AperturaController extends Controller
 
     public function buscar_aperturas(Request $request)    /* =========== OPTIMIZR LA CONSULTA =========*/
     {
-        $listado = DB::table('stock_apertura as a')
-            ->select('a.*')->distinct()
-            ->where('a.disponibilidad', '=', 1);
+        $listado = [];
+        if ($request->fecha_desde != '' || $request->fecha_hasta != '' || $request->variedad != '' || $request->unitaria != '') {
+            $listado = DB::table('stock_apertura as a')
+                ->join('clasificacion_unitaria as u', 'u.id_clasificacion_unitaria', '=', 'a.id_clasificacion_unitaria')
+                ->select('a.*')->distinct()
+                ->where('a.disponibilidad', '=', 1);
 
-        if ($request->fecha_desde != '')
-            $listado = $listado->where('a.fecha_inicio', '>=', $request->fecha_desde);
-        if ($request->fecha_hasta != '')
-            $listado = $listado->where('a.fecha_inicio', '<=', $request->fecha_hasta);
-        if ($request->variedad != '')
-            $listado = $listado->where('a.id_variedad', '=', $request->variedad);
-        if ($request->unitaria != '')
-            $listado = $listado->where('a.id_clasificacion_unitaria', '=', $request->unitaria);
+            if ($request->fecha_desde != '')
+                $listado = $listado->where('a.fecha_inicio', '>=', $request->fecha_desde);
+            if ($request->fecha_hasta != '')
+                $listado = $listado->where('a.fecha_inicio', '<=', $request->fecha_hasta);
+            if ($request->variedad != '')
+                $listado = $listado->where('a.id_variedad', '=', $request->variedad);
+            if ($request->unitaria != '')
+                $listado = $listado->where('a.id_clasificacion_unitaria', '=', $request->unitaria);
 
-        $listado = $listado->orderBy('a.fecha_inicio', 'asc')
-            ->get();
+            $listado = $listado->orderBy('a.fecha_inicio', 'asc')->orderBy('u.nombre', 'asc')
+                ->get();
+        }
 
         $datos = [
             'listado' => $listado,
-            'calibre' => $request->clasificacion_ramo != '' ? ClasificacionRamo::find($request->clasificacion_ramo) : '',
 
         ];
 

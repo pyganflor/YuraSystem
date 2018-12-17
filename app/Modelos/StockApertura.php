@@ -50,20 +50,34 @@ class StockApertura extends Model
 
     public function calcularDisponibles()
     {
+        $r = $this->cantidad_disponible;
+        $unitaria = $this->clasificacion_unitaria;
+        $ramo_estandar = $unitaria->clasificacion_ramo_estandar;
+        $ramo_real = $unitaria->clasificacion_ramo_real;
 
+        $f_e = round($ramo_estandar->nombre / explode('|', $unitaria->nombre)[0], 2);
+        $f_r = round($ramo_real->nombre / explode('|', $unitaria->nombre)[0], 2);
+        if ($unitaria->unidad_medida->tipo == 'L') {
+            $f_e = $f_r = explode('|', $unitaria->nombre)[1];
+        }
+
+        return [
+            'estandar' => round($r / $f_e, 2),
+            'real' => round($r / $f_r, 2),
+        ];
     }
 
-    public function getDisponibles()
+    public function getDisponibles($tipo_ramo)
     {
         $l = StockApertura::All()->where('disponibilidad', '=', 1)
             ->where('id_variedad', '=', $this->id_variedad)
             ->where('id_clasificacion_unitaria', '=', $this->id_clasificacion_unitaria)
             ->where('fecha_inicio', '<', $this->fecha_inicio);
 
-        $r = $this->cantidad_disponible;
+        $r = $this->calcularDisponibles()['' . $tipo_ramo];
 
         foreach ($l as $item) {
-            $r += $item->cantidad_disponible;
+            $r += $item->calcularDisponibles()['' . $tipo_ramo];
         }
 
         return $r;

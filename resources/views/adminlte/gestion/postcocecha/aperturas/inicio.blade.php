@@ -39,9 +39,11 @@
                 </h3>
                 <div class="form-group pull-right" style="margin: 0">
                     <label for="clasificacion_ramo_search" style="margin-right: 10px">Calibre del ramo</label>
-                    <select name="clasificacion_ramo_search" id="clasificacion_ramo_search" onchange="buscar_listado()">
+                    <select name="clasificacion_ramo_search" id="clasificacion_ramo_search" onchange="calcularConvercion($(this).val())">
                         @foreach(getCalibresRamo() as $calibre)
-                            <option value="{{$calibre->id_clasificacion_ramo}}">{{$calibre->nombre}}</option>
+                            @if($calibre->unidad_medida->tipo == 'P')
+                                <option value="{{$calibre->nombre}}">{{$calibre->nombre}}</option>
+                            @endif
                         @endforeach
                     </select>
                 </div>
