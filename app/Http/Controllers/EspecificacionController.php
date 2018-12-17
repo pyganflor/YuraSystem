@@ -198,9 +198,8 @@ class EspecificacionController extends Controller
                             $objEspecificacionEmpaqueDetalle->id_empaque_e = $request->input('id_empaque_e_' . $i . '_' . $j);
                             $objEspecificacionEmpaqueDetalle->id_empaque_p = $request->input('id_empaque_p_' . $i . '_' . $j);
                             !empty($request->input('tallos_x_ramos_'.$i.'_'.$j))
-                                ? $objEspecificacionEmpaqueDetalle->tallos_x_ramos = $request->input('tallos_x_ramos_'.$i.'_'.$j)
+                                ? $objEspecificacionEmpaqueDetalle->tallos_x_ramos = $request->input('tallos_x_ramos_ps'.$i.'_'.$j)
                                 : '';
-
 
                             if ($objEspecificacionEmpaqueDetalle->save()) {
 

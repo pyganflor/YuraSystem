@@ -53,7 +53,12 @@
                                                          con {{$det->cantidad}}  ramos de
                                                                  {{$det->clasificacion_ramo->nombre}} gr c/u,
                                                                  con envoltura de {{$det->empaque_e->nombre}}
-                                                         y presentación de {{$det->empaque_p->nombre}}
+                                                         y presentación de {{$det->empaque_p->nombre}}  {{" y ".$det->tallos_x_ramos." Tallos por ramos"}}
+                                                        @php
+                                                            if(!empty($det->tallos_x_ramos)) {
+                                                            echo  " y ".$det->tallos_x_ramos." Tallos por ramos";
+                                                             }
+                                                        @endphp
                                                 @endforeach
                                          @endforeach">
                                          {{$detalle->cantidad}} {{$detalle->cliente_especificacion->especificacion->nombre}}
