@@ -66,10 +66,7 @@
                                     <select class="form-control" id="envio_{{$i+1}}_{{$rows}}" name="envio_" onchange="change_agencia_transporte(this)" required>
                                         <option id="seleccione" value="form"> Mismo envío </option>
                                         @for($x=0;$x<$cant_detalles;$x++)
-                                            {{$i+1}} {{$detalleEnvio->envio}} {{$x+1}}
-                                            @if($x+1 != $detalleEnvio->envio)
-                                                <option>Detalle # {{$i+1}} envío {{$rows}}</option>
-                                            @endif
+                                            <option>Detalle # {{$i+1}} envío {{$rows}}</option>
                                         @endfor
                                     </select>
                                 </div>

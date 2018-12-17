@@ -291,13 +291,13 @@
         get_jquery('{{url('clientes/obtener_calsificacion_ramos')}}', datos, function (retorno) {
 
             var select_clasif_x_ramo = $("#id_clasificacion_ramo_"+data.split('_')[2]+"_"+data.split('_')[3]);
-            $('option#option_dinamic').remove();
+            $('select#id_clasificacion_ramo_'+data.split('_')[2]+"_"+data.split('_')[3]+' option#option_dinamic').remove();
             //console.log(retorno);
             $.each(retorno,function (i,j) {
                 select_clasif_x_ramo.append('<option id="option_dinamic" value="'+j.id_clasificacion_ramo+'"> '+j.nombre+' </option>');
             });
 
-          /*  if(datos.tipo_unidad_medida === "L"){
+          /*if(datos.tipo_unidad_medida === "L"){
                 $("#input_tallo_x_ramo").removeClass('hide');
             }else{
                 $("#input_tallo_x_ramo").addClass('hide');

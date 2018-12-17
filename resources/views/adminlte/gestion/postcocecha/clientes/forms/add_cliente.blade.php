@@ -63,5 +63,4 @@
             </div>
         </div>
     </div>
-    <button class="btn btn-success" type="button" id="btn_guardar_modal_add_cliente" onclick="store_cliente()"><span class="bootstrap-dialog-button-icon fa fa-fw fa-save"></span>Guardar</button>
 </form>
