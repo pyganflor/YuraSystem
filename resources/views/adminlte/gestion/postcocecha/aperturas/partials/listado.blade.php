@@ -46,7 +46,7 @@
                             <td class="text-center" style="border-color: #9d9d9d;">
                                 <input type="hidden" class="ids_apertura" id="id_apertura_{{$apertura->id_stock_apertura}}"
                                        value="{{$apertura->id_stock_apertura}}">
-                                <input type="hidasdden" id="cantidad_disponible_{{$apertura->id_stock_apertura}}"
+                                <input type="hidden" id="cantidad_disponible_{{$apertura->id_stock_apertura}}"
                                        value="{{getStockById($apertura->id_stock_apertura)->cantidad_disponible}}">
                                 <input type="hidden" id="ramos_convertidos_{{$apertura->id_stock_apertura}}"
                                        name="ramos_convertidos_{{$apertura->id_stock_apertura}}" class="ramos_convertidos"
