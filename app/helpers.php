@@ -710,7 +710,6 @@ function valida_especificacion($id_variedad, $id_clasificaicon_ramo, $id_empaque
             $resultado = true;
         }
     }
-
     return $resultado;
 }
 

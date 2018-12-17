@@ -62,8 +62,7 @@ class EspecificacionController extends Controller
 
     public function store_especificacion(Request $request)
     {
-
-
+       // dd($request->all());
         $validaDataGeneral = Validator::make($request->all(), [
             'nombre' => 'required',
             'descripcion' => 'required',
@@ -91,7 +90,7 @@ class EspecificacionController extends Controller
            /* $objEspecificacion->id_cliente  = $request->id_cliente;*/
             $objEspecificacion->nombre      = $request->nombre;
             $objEspecificacion->descripcion = $request->descripcion;
-
+            //
             if ($objEspecificacion->save()) {
 
                 $modelEspcificacion = Especificacion::all()->last();
@@ -152,7 +151,7 @@ class EspecificacionController extends Controller
                     $objEspecificacionEmpaque->id_empaque = $request->input('id_empaque_' . $i);
                     $objEspecificacionEmpaque->cantidad = $request->input('cantidad_'. $i);
                     $objEspecificacionEmpaque->imagen = isset($imagen) ? $imagen: '';
-
+                    //
                     if ($objEspecificacionEmpaque->save()) {
 
                         $modelEspcificacionEmpaque = EspecificacionEmpaque::all()->last();
@@ -174,8 +173,8 @@ class EspecificacionController extends Controller
                             }
 
                             if($request->input('cant_forms_desgloses_'.$i) == 1){
-
-                                if(!valida_especificacion($request->input('id_variedad_'.$i.'_'.$j),$request->input('id_clasificacion_ramo_'.$i.'_'.$j),$request->id_empaque_.$i, $request->input('cantidad_'.$i.'_'.$j))){
+                                //dd(valida_especificacion($request->input('id_variedad_'.$i.'_'.$j),$request->input('id_clasificacion_ramo_'.$i.'_'.$j),$request->input('id_empaque_'.$i), $request->input('cantidad_'.$i.'_'.$j)));
+                                if(!valida_especificacion($request->input('id_variedad_'.$i.'_'.$j),$request->input('id_clasificacion_ramo_'.$i.'_'.$j),$request->input('id_empaque_'.$i), $request->input('cantidad_'.$i.'_'.$j))){
 
                                     if($accion === 'Inserción' ){
                                         $objEspecificacionEmpaqueDelete = EspecificacionEmpaque::where('id_especificacion', $modelEspcificacion->id_especificacion);

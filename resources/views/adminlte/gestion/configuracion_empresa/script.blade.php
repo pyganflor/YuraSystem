@@ -161,7 +161,11 @@
             var arrDetallesEmpaque = [];
 
             for (var i = 0; i < cant_inputs_detalles_empaques; i++) {
-                arrDetallesEmpaque.push([$('#empaque_id_variedad_' + (parseInt(i) + parseInt(1))).val(), $('#empaque_id_clasificacion_por_ramo_' + (parseInt(i) + parseInt(1))).val(), $('#cantidad_empaque_' + (parseInt(i) + parseInt(1))).val(), $("#id_empque").val(), $('#id_detalle_empaque_' + (parseInt(i) + parseInt(1))).val()]);
+                arrDetallesEmpaque.push([
+                    $('#empaque_id_variedad_' + (parseInt(i) + parseInt(1))).val(),
+                    $('#empaque_id_clasificacion_por_ramo_' + (parseInt(i) + parseInt(1))).val(),
+                    $('#cantidad_empaque_' + (parseInt(i) + parseInt(1))).val(), $("#id_empque").val(),
+                    $('#id_detalle_empaque_' + (parseInt(i) + parseInt(1))).val()]);
             }
 
             datos = {
