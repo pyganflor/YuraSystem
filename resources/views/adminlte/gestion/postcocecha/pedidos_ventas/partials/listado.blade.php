@@ -49,13 +49,18 @@
                                        title="Descripción" data-trigger="focus"
                                        data-content="
                                          @foreach($detalle->cliente_especificacion->especificacion->especificacionesEmpaque as $espEmp)
-                                       {{$espEmp->cantidad}}
+                                             {{$espEmp->cantidad}}
                                        {{$espEmp->empaque->nombre}} con las variedades
                                                 @foreach($espEmp->detalles as $det)
                                        {{$det->variedad->nombre}}
                                                con {{$det->cantidad}}  ramos de
                                                                  {{$det->clasificacion_ramo->nombre}} gr c/u,
-                                                                 con envoltura de {{$det->empaque_e->nombre}}
+                                                                  @php
+                                           if(!empty($det->tallos_x_ramos)) {
+                                              echo  " de ".$det->tallos_x_ramos." Tallos por ramos";
+                                           }
+                                       @endphp
+                                               con envoltura de {{$det->empaque_e->nombre}}
                                                y presentación de {{$det->empaque_p->nombre}}
                                        @endforeach
                                        @endforeach">

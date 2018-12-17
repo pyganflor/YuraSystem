@@ -1,7 +1,7 @@
 <div id="table_aperturas">
     @if(sizeof($listado)>0)
         <div class="row">
-            <div class="col-md-8">
+            <div class="col-md-7">
                 <table width="100%" class="table table-responsive table-bordered" style="font-size: 0.8em; border-color: #9d9d9d"
                        id="table_content_aperturas">
                     <thead>
@@ -118,7 +118,7 @@
                     @endforeach
                 </table>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-5">
                 <div class="form-group text-center" style="margin-bottom: 15px" onchange="buscar_pedidos()">
                     <label for="fecha_pedidos">Fecha de pedidos</label>
                     <input type="date" id="fecha_pedidos">
