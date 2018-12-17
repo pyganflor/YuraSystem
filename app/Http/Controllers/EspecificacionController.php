@@ -280,7 +280,7 @@ class EspecificacionController extends Controller
         return view('adminlte.gestion.postcocecha.clientes.partials.list_especificaciones');
     }
 
-    public function  listar_especificaciones(Request $request){
+    public function listar_especificaciones(Request $request){
 
         $listado = DB::table('especificacion')->orderBy('nombre', 'asc')->paginate(10);
 
@@ -370,5 +370,6 @@ class EspecificacionController extends Controller
         return UnidadMedida::where('tipo',$request->tipo_unidad_medida)
         ->join('clasificacion_ramo as cr','unidad_medida.id_unidad_medida','=','cr.id_unidad_medida')
         ->get();
+
     }
 }
