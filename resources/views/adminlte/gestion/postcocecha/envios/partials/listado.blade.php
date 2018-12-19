@@ -35,7 +35,7 @@
                 <tr onmouseover="$(this).css('background-color','#add8e6')"
                      onmouseleave="$(this).css('background-color','')" class="" id="row_pedidos_">
                     <td style="border-color: #9d9d9d" class="text-center mouse-hand"  id="popover_pedidos">
-                        {{$item->fecha_envio}}
+                        {{\Carbon\Carbon::parse($item->fecha_envio)->format('Y-m-d')}}
                     </td>
                     <td style="border-color: #9d9d9d" class="text-center mouse-hand">
                         {{$item->cantidad}} {{$item->nombre}}
@@ -54,7 +54,6 @@
                         @elseif($item->tipo_agencia == 'M')
                             MARíTIMA
                         @endif
-
                     </td>
                     <td class="text-center"  style="border-color: #9d9d9d">
                         {{--@if(now()->toDateString() <> $item->fecha_envio )--}}

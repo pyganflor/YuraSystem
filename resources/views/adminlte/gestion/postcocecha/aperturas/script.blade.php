@@ -11,7 +11,7 @@
         };
         $.get('{{url('apertura/buscar_aperturas')}}', datos, function (retorno) {
             $('#div_listado_aperturas').html(retorno);
-            estructura_tabla('table_content_aperturas');
+            //estructura_tabla('table_content_aperturas');
             buscar_pedidos();
         }).always(function () {
             $.LoadingOverlay('hide');
@@ -46,6 +46,7 @@
         };
         get_jquery('{{url('apertura/listar_pedidos')}}', datos, function (retorno) {
             $('#div_listado_pedidos').html(retorno);
+            $('#btn_sacar').hide();
         });
     }
 
@@ -59,6 +60,7 @@
                 factor = Math.round((calibre / unitaria) * 100) / 100;
                 convercion = Math.round((disponible / factor) * 100) / 100;
                 $('#celda_ramos_convertidos_' + aperturas[i].value).html(convercion);
+                $('#sacar_' + aperturas[i].value).html(convercion);
                 $('#ramos_convertidos_' + aperturas[i].value).val(convercion);
             }
         }

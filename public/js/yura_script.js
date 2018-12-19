@@ -278,13 +278,12 @@ function add_envio(id_pedido,token){
     $.LoadingOverlay('hide');
 }
 
-function add_form_envio(id_form,total) {
+function add_form_envio(id_form,total,form) {
 
     var cant_total_pedidos = $("#cantidad_detalle_form_"+id_form).val();
 
-    //console.log(cant_total_pedidos);
     var cant_rows = $("form#form_envio_"+id_form+ " div#rows").length;
-    cant_rows < 1 ? agregar_inputs(cant_rows,cant_total_pedidos,id_form,total) : '';
+    cant_rows < 1 ? agregar_inputs(cant_rows,cant_total_pedidos,id_form,total,form) : '';
 
     if(cant_rows >= 1 ){
        //var campo_at = $("#id_agencia_transporte_"+id_form+"_"+cant_rows).val();
@@ -302,15 +301,15 @@ function add_form_envio(id_form,total) {
         if( campo_c == undefined || campo_c == null ){
             $('#msg_'+id_form).html('<b>Complete todos los campos del Envío N# '+cant_rows+'</b>');
         }else{
-            agregar_inputs(cant_rows,cant_total_pedidos,id_form, total2);
+            agregar_inputs(cant_rows,cant_total_pedidos,id_form, total2,form);
             $('#msg_'+id_form).html('');
         }
     }
 }
 
-function agregar_inputs(cant_rows,cant_total_pedidos,id_form, total) {
+function agregar_inputs(cant_rows,cant_total_pedidos,id_form, total,form) {
 
-    $.LoadingOverlay('show');
+    //$.LoadingOverlay('show');
     if(total > 0){
         datos = {
             rows         : cant_rows+1,
@@ -341,28 +340,33 @@ function agregar_inputs(cant_rows,cant_total_pedidos,id_form, total) {
         for(var j=1; j<=cant_forms; j++) {
              var cant_rows_x_form = $("#div_inputs_envios_"+j+" div#rows").length;
 
-             var selected = '';
              for(var z=1;z<=cant_rows_x_form; z++){
-                 options.push("<option "+selected+" value="+j+"_"+z+" id=dinamic_"+j+"> Detalle N# "+j+" Envio N# "+z+" </option>");
+                 options.push("<option  value="+j+"_"+z+" id=dinamic_"+j+"> Detalle N# "+j+" Envio N# "+z+" </option>");
              }
              for(var l=1; l<=cant_forms; l++){
                  var cant_rows_x_form = $("#div_inputs_envios_"+l+" div#rows").length;
                  for(var p=1; p<=cant_rows_x_form; p++) {
-                     add_option(options, id_form, l, p);
+                     add_option(options, id_form, l, p,form);
                      $("select#envio_"+l+"_"+p+ " option#dinamic_"+l).remove();
                  }
              }
         }
     },1000);
-
     $.LoadingOverlay('hide');
 }
 
-function add_option(arr,id_form,form,input) {
+function add_option(arr,id_form,form,input,selected) {
     $("#envio_"+form+"_"+input+" option:not(#seleccione)").remove();
     for(var p=0; p<arr.length; p++){
         $("#envio_"+form+"_"+input).append(arr[p]);
     }
+    setTimeout(function () {
+        if(selected != undefined){
+            var s = selected.split("|");
+            $("#div_inputs_envios_"+s[0]+ " select#envio_"+s[0]+"_"+s[1]+ " option[value="+s[2]+"_"+s[3]+"]").attr('selected',true);
+        }
+    });
+
 }
 
 function change_agencia_transporte(input) {
@@ -385,7 +389,7 @@ function change_agencia_transporte(input) {
     }
 }
 
-function store_envio(token,id_pedido) {
+function store_envio(token,id_pedido,vista) {
 
     var cant_forms = $('div.well').length;
     var data = [];
@@ -402,19 +406,21 @@ function store_envio(token,id_pedido) {
         var cant_rows_x_form = $("#div_inputs_envios_" + j + " div#rows").length;
         for(var z=1;z<=cant_rows_x_form; z++){
 
-            var envio ="";
+            var envio =1;
             var fecha ="";
+            var form = '';
 
             if($("select#envio_"+j+"_"+z).text().trim() === ("Mismo envío").trim()){
                //envio = $("#envio_"+j+"_"+z).val();
-               fecha = $("#fecha_envio_"+j).val()
+               fecha = $("#fecha_envio_"+j).val();
+                form = 0;
             }else{
                 var arrEnvio = $("#envio_"+j+"_"+z).val().split("_");
 
                 //envio = arrEnvio[0];
-                //envio = $("#envio_"+arrEnvio[0]).val();
                 envio = $("select[name=envio_"+j+"]")[0].name.split("_")[1];
                 fecha = fecha = $("#fecha_envio_"+arrEnvio[0]).val();
+                form = j+"|"+z+"|"+arrEnvio[0]+"|"+arrEnvio[1];
             }
             suma_cant_input += Number($("#cantidad_"+j+"_"+z).val());
 
@@ -424,13 +430,12 @@ function store_envio(token,id_pedido) {
                     $("#cantidad_"+j+"_"+z).val(),
                     envio,
                     fecha,
-                    $("#id_detalle_envio_"+j+"_"+z).val()
+                    form,
+                    //$("#id_detalle_envio_"+j+"_"+z).val()
                 ]);
         }
         suma_cant_forms += Number($("#cantidad_detalle_form_"+j).val());
     }
-
-    console.log(suma_cant_input , suma_cant_forms);
     if(suma_cant_input < suma_cant_forms){
         var msg = '<div class="alert alert-warning text-center"><p> Aún faltan especificaiones por ordenar en este pedido para su envío </p></div>';
         modal_view('modal_view_error_cantidad', msg, '<i class="fa fa-fw fa-eye"></i> Error al realizar el envío', true, false, '40%');
@@ -449,7 +454,7 @@ function store_envio(token,id_pedido) {
     };
     post_jquery('clientes/store_envio', datos, function () {
         cerrar_modals();
-        buscar_listado_pedidos();
+        vista === 'envios' ? buscar_listado_envios() : buscar_listado_pedidos() ;
     });
     $.LoadingOverlay('hide');
 }
@@ -465,7 +470,7 @@ function editar_envio(id_envio,id_detalle_envio,id_pedido,token) {
     };
     $.get('envio/editar_envio', datos, function (retorno) {
         modal_form('modal_view_edtiar_envio_pedido', retorno, '<i class="fa fa-plane" ></i> Editar envío', true, false, '75%', function () {
-            store_envio(token,id_pedido);
+            store_envio(token,id_pedido,'envios');
         });
     });
     $.LoadingOverlay('hide');
@@ -477,9 +482,25 @@ function ver_envio(id_pedido) {
 }
 
 function delete_input(id_form) {
+    $.LoadingOverlay('show');
     var div = $('div#div_inputs_envios_'+id_form+ ' div#rows:last-child');
+    var rows = $("#div_inputs_envios_"+id_form+ " #rows");
+    var cant = $("#cantidad_"+id_form+"_"+rows.length).val();
+
     div.remove();
+
+    var rows_new = $("#div_inputs_envios_"+id_form+ " #rows");
+    var cant_new = $("#cantidad_"+id_form+"_"+rows_new.length).val();
+
+    cant = parseInt(cant)+parseInt(cant_new);
+
+    $("#cantidad_"+id_form+"_"+rows_new.length+ " option").remove();
+    for(var x=1; x<=cant; x++){
+         cant == x ? selected = "selected='selected'" : selected = "";
+        $("#cantidad_"+id_form+"_"+rows_new.length).append("<option "+selected+" value="+x+">"+x+"</option>");
+    }
     var_cant_inputs = $("#div_inputs_envios_"+id_form+ " div#rows").length;
     $("#cantidad_"+id_form+"_"+(var_cant_inputs)).attr('disabled',false);
+    $.LoadingOverlay('hide');
 }
 

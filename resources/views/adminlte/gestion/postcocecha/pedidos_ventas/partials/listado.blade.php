@@ -28,23 +28,26 @@
                 </th>
             </tr>
             </thead>
-             @foreach($listado as $item)
+            @foreach($listado as $item)
                 <tr onmouseover="$(this).css('background-color','#add8e6')"
                     onmouseleave="$(this).css('background-color','')" class=""
                     id="row_pedidos_">
                     <td style="border-color: #9d9d9d" class="text-center">
-                         {{$item->fecha_pedido}}
-                     </td>
+                        {{$item->fecha_pedido}}
+                        <em>
+                            {{getDias()[transformDiaPhp(date('w', strtotime($item->fecha_pedido)))]}}
+                        </em>
+                    </td>
                     <td style="border-color: #9d9d9d" class="text-center">
                         {{$item->nombre}}
                     </td>
-                     <td style="border-color: #9d9d9d" class="text-center mouse-hand">
-                         <ul>
+                    <td style="border-color: #9d9d9d" class="text-center mouse-hand">
+                        <ul>
                             @foreach(getPedido($item->id_pedido)->detalles as $detalle)
-                                 <li style="list-style: none">
-                                     <a  tabindex="0" data-toggle="popover"
-                                         title="Descripción" data-trigger="focus"
-                                         data-content="
+                                <li style="list-style: none">
+                                    <a tabindex="0" data-toggle="popover"
+                                       title="Descripción" data-trigger="focus"
+                                       data-content="
                                          @foreach($detalle->cliente_especificacion->especificacion->especificacionesEmpaque as $espEmp)
                                              {{$espEmp->cantidad}}
                                              {{$espEmp->empaque->nombre}} con las variedades
@@ -67,25 +70,28 @@
                              @endforeach
                         </ul>
                     </td>
-                    <td style="border-color: #9d9d9d" class="text-center mouse-hand"  id="popover_pedidos">
-                      {{$item->descripcion}}
+                    <td style="border-color: #9d9d9d" class="text-center mouse-hand" id="popover_pedidos">
+                        {{$item->descripcion}}
                     </td>
-                    <td class="text-center"  style="border-color: #9d9d9d">
-                       @if(now()->toDateString() < $item->fecha_pedido )
-                            <button class="btn  btn-{!! $item->estado == 1 ? 'success' : 'warning' !!} btn-xs" type="button" title="{!! $item->estado == 1 ? 'Pedido activo' : 'Pedido cancelado' !!}"
-                                    id="edit_pedidos" onclick="cancelar_pedidos('{{$item->id_pedido}}','','{{$item->estado}}','{{@csrf_token()}}')">
+                    <td class="text-center" style="border-color: #9d9d9d">
+                        @if(now()->toDateString() < $item->fecha_pedido )
+                            <button class="btn  btn-{!! $item->estado == 1 ? 'success' : 'warning' !!} btn-xs" type="button"
+                                    title="{!! $item->estado == 1 ? 'Pedido activo' : 'Pedido cancelado' !!}"
+                                    id="edit_pedidos"
+                                    onclick="cancelar_pedidos('{{$item->id_pedido}}','','{{$item->estado}}','{{@csrf_token()}}')">
                                 <i class="fa fa-{!! $item->estado == 1 ? 'check' : 'ban' !!}" aria-hidden="true"></i>
                             </button>
-                       @endif
-                       @if(yura\Modelos\Envio::where('id_pedido',$item->id_pedido)->count() <= 0)
-                           <button class="btn btn-default btn-xs" title="Realizar envío" onclick="add_envio('{{$item->id_pedido}}','{{@csrf_token()}}')">
-                               <i class="fa fa-plane" aria-hidden="true"></i>
-                           </button>
-                       @else
+                        @endif
+                        @if(yura\Modelos\Envio::where('id_pedido',$item->id_pedido)->count() <= 0)
+                            <button class="btn btn-default btn-xs" title="Realizar envío"
+                                    onclick="add_envio('{{$item->id_pedido}}','{{@csrf_token()}}')">
+                                <i class="fa fa-plane" aria-hidden="true"></i>
+                            </button>
+                        @else
                             <button class="btn btn-default btn-xs" title="Ver envío" onclick="ver_envio('{{$item->id_pedido}}')">
                                 <i class="fa fa-eye" aria-hidden="true"></i>
                             </button>
-                       @endif
+                        @endif
                     </td>
                 </tr>
             @endforeach

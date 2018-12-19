@@ -44,15 +44,22 @@ class EnvioController extends Controller
 
     public function store_envio(Request $request){
 
-    $valida = Validator::make($request->all(), [
+        $valida = Validator::make($request->all(), [
             'arrData' => 'required|Array',
             'id_pedido' => 'required',
         ]);
-
         if (!$valida->fails()) {
 
-            foreach ($request->arrData as $key => $detalle_envio) {
+            $existDataEnvio = Envio::where('id_pedido',$request->id_pedido);
 
+            if($existDataEnvio->count() > 0){
+                foreach($existDataEnvio->get() as $dataEnvio){
+                    if(DetalleEnvio::where('id_envio',$dataEnvio->id_envio)->delete()){
+                        Envio::destroy($dataEnvio->id_envio);
+                    }
+                }
+            }
+            foreach ($request->arrData as $key => $detalle_envio) {
                 $existDataEnvio = DetalleEnvio::join('envio as e','detalle_envio.id_envio','=','e.id_envio')
                     ->join('pedido as p','e.id_pedido','=','p.id_pedido')
                     ->where([
@@ -80,11 +87,12 @@ class EnvioController extends Controller
                                 $palabra = 'Actualización';
                                 $accion = 'U';
                             }
-                            $objDetalleEnvio->id_especificacion = $detalle_envio[0];
-                            $objDetalleEnvio->id_envio =   $model->id_envio;
+                            $objDetalleEnvio->id_especificacion     = $detalle_envio[0];
+                            $objDetalleEnvio->id_envio              =   $model->id_envio;
                             $objDetalleEnvio->id_agencia_transporte = $detalle_envio[1];
-                            $objDetalleEnvio->cantidad = $detalle_envio[2];
-                            $objDetalleEnvio->envio = $detalle_envio[3];
+                            $objDetalleEnvio->cantidad              = $detalle_envio[2];
+                            $objDetalleEnvio->envio                 = $detalle_envio[3];
+                            $objDetalleEnvio->form                  = $detalle_envio[5];
 
                             if ($objDetalleEnvio->save()) {
                                 $success = true;
@@ -109,11 +117,12 @@ class EnvioController extends Controller
                             $palabra = 'Actualización';
                             $accion = 'U';
                         }
-                        $objDetalleEnvio->id_especificacion = $detalle_envio[0];
-                        $objDetalleEnvio->id_envio =   $existDataEnvio->id_envio;
-                        $objDetalleEnvio->id_agencia_transporte = $detalle_envio[1];
-                        $objDetalleEnvio->cantidad = $detalle_envio[2];
-                        $objDetalleEnvio->envio = $detalle_envio[3];
+                        $objDetalleEnvio->id_especificacion      = $detalle_envio[0];
+                        $objDetalleEnvio->id_envio               = $existDataEnvio->id_envio;
+                        $objDetalleEnvio->id_agencia_transporte  = $detalle_envio[1];
+                        $objDetalleEnvio->cantidad               = $detalle_envio[2];
+                        $objDetalleEnvio->envio                  = $detalle_envio[3];
+                        $objDetalleEnvio->form                   = $detalle_envio[5];
 
                         if ($objDetalleEnvio->save()) {
                             $success = true;

@@ -21,11 +21,12 @@ class LoteRE extends Model
         'id_variedad',
         'id_clasificacion_unitaria',
         'id_clasificacion_verde',
-        'etapa',    //A => Apertura, C => Guarde Clasificacion, G => Guarde Apertura, E => Empaquetado
+        'etapa',    //A => Apertura, C => Guarde Clasificacion, G => Guarde Apertura, F => StockFrio, E => Empaquetado
         'guarde_clasificacion', //date
         'apertura', //date
         'guarde_apertura',  //date
         'empaquetado',  //date
+        'stock_frio',  //date
     ];
 
     public function variedad()
