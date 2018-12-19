@@ -50,11 +50,13 @@ class EnvioController extends Controller
         ]);
 
         if (!$valida->fails()) {
+
             foreach ($request->arrData as $key => $detalle_envio) {
+
                 $existDataEnvio = DetalleEnvio::join('envio as e','detalle_envio.id_envio','=','e.id_envio')
                     ->join('pedido as p','e.id_pedido','=','p.id_pedido')
                     ->where([
-                       //['id_especificaion',$detalle_envio[0]],
+                        //['id_especificaion',$detalle_envio[0]],
                         ['detalle_envio.id_agencia_transporte',$detalle_envio[1]],
                         ['e.fecha_envio',$detalle_envio[4]],
                         ['e.id_pedido',$request->id_pedido]
@@ -324,10 +326,10 @@ class EnvioController extends Controller
 
     public function editar_envio(Request $request){
 
-       // dd(Envio::where('id_pedido',$request->id_pedido)->join('detalle_envio as de','envio.id_envio','=','de.id_envio')->get());
-
         $dataDetallePedido = DetallePedido::where('detalle_pedido.id_pedido',$request->id_pedido);
         $detalleEnvio = Envio::where('id_pedido',$request->id_pedido)->join('detalle_envio as de','envio.id_envio','=','de.id_envio');
+        $cant_rows = $detalleEnvio->count();
+
         return view('adminlte.gestion.postcocecha.envios.forms.form_edit_envio',
         [
             'cantForms'          => $dataDetallePedido->count(),
@@ -335,11 +337,11 @@ class EnvioController extends Controller
                                                       ->join('especificacion as e','cpe.id_especificacion','=','e.id_especificacion')
                                                       ->select('detalle_pedido.cantidad','detalle_pedido.id_detalle_pedido','e.nombre','cpe.id_especificacion','cpe.id_cliente')->get(),
             'dataDetalleEnvio' => $detalleEnvio->get(),
-           // 'dataDetalleEnvio' => DetallePedido::where('detalle_pedido.id_pedido',$request->id_pedido)->join('envio as e','detalle_pedido.id_pedido','=','e.id_pedido')->join('detalle_envio as de','e.id_envio','=','de.id_envio')->get(),
             'agencia_transporte' => AgenciaTransporte::all(),
             'id_detalle_envio' => $request->id_detalle_envio,
-            'cant_detalles' => $detalleEnvio->distinct()->count()
-
+            'cant_detalles' =>  $detalleEnvio->distinct()->count(),
+            'fechaEnvio' => $detalleEnvio->select('fecha_envio')->get(),
+            'cant_rows' => $cant_rows
         ]);
     }
 }

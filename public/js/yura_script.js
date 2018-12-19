@@ -297,11 +297,9 @@ function add_form_envio(id_form,total) {
        for(var i=1; i<=cant_rows; i++){
           totales_cantidad =  totales_cantidad + parseInt($("#cantidad_"+id_form+"_"+i).val());
        }
-
         total2 = total - totales_cantidad;
 
         if( campo_c == undefined || campo_c == null ){
-
             $('#msg_'+id_form).html('<b>Complete todos los campos del Envío N# '+cant_rows+'</b>');
         }else{
             agregar_inputs(cant_rows,cant_total_pedidos,id_form, total2);
@@ -309,8 +307,9 @@ function add_form_envio(id_form,total) {
         }
     }
 }
-//
+
 function agregar_inputs(cant_rows,cant_total_pedidos,id_form, total) {
+
     $.LoadingOverlay('show');
     if(total > 0){
         datos = {
@@ -319,41 +318,43 @@ function agregar_inputs(cant_rows,cant_total_pedidos,id_form, total) {
             id_form      : id_form
         };
         $.get('clientes/add_form_envio', datos, function (retorno) {
-            $("#div_inputs_envios_"+id_form).append(retorno);
+
+          $("#div_inputs_envios_"+id_form).append(retorno);
+
+          var_cant_inputs = $("#div_inputs_envios_"+id_form+ " div#rows").length;
+          $("#cantidad_"+id_form+"_"+(var_cant_inputs-1)).attr('disabled',true);
 
             for(var i=1; i<=total; i++){
                 $("#cantidad_"+id_form+"_"+(cant_rows+1)).append('<option value="'+i+'">'+i+'</option>');
             }
             $('#msg_'+id_form).html('');
-
-            var cant_forms = $('div.well').length;
-            var options = [];
-
-            for(var j=1; j<=cant_forms; j++) {
-
-                var cant_rows_x_form = $("#div_inputs_envios_"+j+" div#rows").length;
-
-                for(var z=1;z<=cant_rows_x_form; z++){
-                    options.push("<option value="+j+"_"+z+" id=dinamic_"+j+"> Detalle N# "+j+" Envio N# "+z+" </option>");
-                }
-
-                for(var l=1; l<=cant_forms; l++){
-                    var cant_rows_x_form = $("#div_inputs_envios_"+l+" div#rows").length;
-
-                    for(var p=1; p<=cant_rows_x_form; p++) {
-                        add_option(options, id_form, l, p);
-                        $("select#envio_"+l+"_"+p+ " option#dinamic_"+l).remove();
-                    }
-                }
-            }
         });
-
     }else{
         setTimeout(function () {
             $('#msg_'+id_form).html('No se pueden realizar mas envíos en este detalle');
         },500);
-
     }
+    setTimeout(function () {
+        var cant_forms = $('div.well').length;
+        var options = [];
+
+        for(var j=1; j<=cant_forms; j++) {
+             var cant_rows_x_form = $("#div_inputs_envios_"+j+" div#rows").length;
+
+             var selected = '';
+             for(var z=1;z<=cant_rows_x_form; z++){
+                 options.push("<option "+selected+" value="+j+"_"+z+" id=dinamic_"+j+"> Detalle N# "+j+" Envio N# "+z+" </option>");
+             }
+             for(var l=1; l<=cant_forms; l++){
+                 var cant_rows_x_form = $("#div_inputs_envios_"+l+" div#rows").length;
+                 for(var p=1; p<=cant_rows_x_form; p++) {
+                     add_option(options, id_form, l, p);
+                     $("select#envio_"+l+"_"+p+ " option#dinamic_"+l).remove();
+                 }
+             }
+        }
+    },1000);
+
     $.LoadingOverlay('hide');
 }
 
@@ -366,25 +367,22 @@ function add_option(arr,id_form,form,input) {
 
 function change_agencia_transporte(input) {
 
-    $("select#id_agencia_transporte_"+input.id.split("_")[1]+"_"+input.id.split("_")[2]+" option").attr('selected',false);
-
+    var id_form = input.id.split("_")[1];
+    var id_input= input.id.split("_")[2];
     var val_form = input.value.split("_")[0];
     var val_input = input.value.split("_")[1];
+
+    $("select#id_agencia_transporte_"+id_form+"_"+id_input+" option").attr('selected',false);
+
     var val_form_selected = $("#id_agencia_transporte_"+val_form+"_"+val_input).val();
 
-    console.log("select#id_agencia_transporte_"+input.id.split("_")[1]+"_"+input.id.split("_")[2]);
+    $("select#id_agencia_transporte_"+id_form+"_"+id_input+" option[value="+val_form_selected+"]").attr('selected',true);
 
-    $("select#id_agencia_transporte_"+input.id.split("_")[1]+"_"+input.id.split("_")[2]+" option[value="+val_form_selected+"]").attr('selected',true);
-
-   /* if($("select#"+input.id+" option:selected").text().trim() == ("Mismo envío").trim()){
-        $("#id_agencia_transporte_"+input.id.split("_")[1]+"_"+input.id.split("_")[2]).attr("disabled",true)
+   if($("select#"+input.id+" option:selected").text().trim() != ("Mismo envío").trim()){
+        $("#id_agencia_transporte_"+id_form+"_"+id_input).attr("disabled",true)
     }else{
-        $("#id_agencia_transporte_"+input.id.split("_")[1]+"_"+input.id.split("_")[2]).attr("disabled",false)
-    }*/
-}
-
-function reset_form_envio(id_form) {
-
+        $("#id_agencia_transporte_"+id_form+"_"+id_input).attr("disabled",false)
+    }
 }
 
 function store_envio(token,id_pedido) {
@@ -426,12 +424,12 @@ function store_envio(token,id_pedido) {
                     $("#cantidad_"+j+"_"+z).val(),
                     envio,
                     fecha,
+                    $("#id_detalle_envio_"+j+"_"+z).val()
                 ]);
         }
         suma_cant_forms += Number($("#cantidad_detalle_form_"+j).val());
     }
-    console.log(data);
-    //return false;
+
     console.log(suma_cant_input , suma_cant_forms);
     if(suma_cant_input < suma_cant_forms){
         var msg = '<div class="alert alert-warning text-center"><p> Aún faltan especificaiones por ordenar en este pedido para su envío </p></div>';
@@ -456,7 +454,7 @@ function store_envio(token,id_pedido) {
     $.LoadingOverlay('hide');
 }
 
-function editar_envio(id_envio,id_detalle_envio,id_pedido) {
+function editar_envio(id_envio,id_detalle_envio,id_pedido,token) {
 
     $.LoadingOverlay('show');
     datos = {
@@ -467,7 +465,7 @@ function editar_envio(id_envio,id_detalle_envio,id_pedido) {
     };
     $.get('envio/editar_envio', datos, function (retorno) {
         modal_form('modal_view_edtiar_envio_pedido', retorno, '<i class="fa fa-plane" ></i> Editar envío', true, false, '75%', function () {
-            //update_envio(token,id_pedido);
+            store_envio(token,id_pedido);
         });
     });
     $.LoadingOverlay('hide');
@@ -476,5 +474,12 @@ function editar_envio(id_envio,id_detalle_envio,id_pedido) {
 
 function ver_envio(id_pedido) {
     //clientes/ver_envio
+}
+
+function delete_input(id_form) {
+    var div = $('div#div_inputs_envios_'+id_form+ ' div#rows:last-child');
+    div.remove();
+    var_cant_inputs = $("#div_inputs_envios_"+id_form+ " div#rows").length;
+    $("#cantidad_"+id_form+"_"+(var_cant_inputs)).attr('disabled',false);
 }
 

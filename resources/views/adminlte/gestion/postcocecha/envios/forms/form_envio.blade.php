@@ -9,7 +9,7 @@
                 <div>
                     <label style="float: left;margin-bottom: 0;margin-top: 4px;margin-right: 5px;">Fecha envío:</label>
                     <input type="date" id="fecha_envio_{{$i+1}}" class="form-control" style="width: 25%;margin-bottom: 5px"></div>
-                <a href="javascript:void(0)" class="btn btn-xs btn-warning pull-right" title="Reiniciar envío" onclick="reset_form_envio('{{$i+1}}')" id="btn_reset_form_envio_{{$i+1}}">
+                <a href="javascript:void(0)" class="btn btn-xs btn-warning pull-right" title="Reiniciar envío" onclick="delete_input('{{$i+1}}')" id="btn_reset_form_envio_{{$i+1}}">
                     <i class="fa fa-eraser" aria-hidden="true"></i>
                 </a>
                 <a href="javascript:void(0)" class="btn btn-xs btn-primary pull-right" title="Añadir envío" onclick="add_form_envio('{{$i+1}}','{{$dataDetallesPedidos[$i]->cantidad}}')" id="btn_add_form_envio_{{$i+1}}">

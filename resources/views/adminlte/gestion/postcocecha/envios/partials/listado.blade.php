@@ -59,7 +59,7 @@
                     <td class="text-center"  style="border-color: #9d9d9d">
                         {{--@if(now()->toDateString() <> $item->fecha_envio )--}}
                             <button class="btn  btn-default btn-xs" type="button" title="Editar envío" id="edit_envio"
-                                    onclick="editar_envio('{{$item->id_envio}}','{{$item->id_detalle_envio}}','{{$item->id_pedido}}')">
+                                    onclick="editar_envio('{{$item->id_envio}}','{{$item->id_detalle_envio}}','{{$item->id_pedido}}','{{@csrf_token()}}')">
                                 <i class="fa fa-pencil" aria-hidden="true"></i>
                             </button>
                             {{--<button class="btn  btn-danger btn-xs" type="button" title="Eliminar envío" id="edit_envio"
