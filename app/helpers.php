@@ -874,3 +874,10 @@ function getResumenPedidosByFechaOfTallos($fecha, $variedad)
         ->get();
     return $query;
 }
+
+function getCalibreRamoEstandar()
+{
+    $r = ClasificacionRamo::All()->where('estado', '=', 1)->where('estandar', '=', 1)->first();
+
+    return $r;
+}

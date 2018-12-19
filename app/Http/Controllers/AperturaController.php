@@ -5,6 +5,9 @@ namespace yura\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use yura\Modelos\ClasificacionRamo;
+use yura\Modelos\Consumo;
+use yura\Modelos\StockApertura;
+use yura\Modelos\StockFrio;
 use yura\Modelos\Submenu;
 use PHPExcel;
 use PHPExcel_IOFactory;
@@ -85,7 +88,7 @@ class AperturaController extends Controller
         header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
         header("Pragma: no-cache");
         $objWriter->save('php://output');
-    }
+    } /* ======= Actualizar ========*/
 
     public function excel_hoja_aperturas($objPHPExcel, $request)
     {
@@ -335,7 +338,7 @@ class AperturaController extends Controller
         } else {
             return '<div>No se han encontrado coincidencias para exportar</div>';
         }
-    }
+    }   /* ======= Actualizar ========*/
 
     public function listar_pedidos(Request $request)
     {
@@ -352,5 +355,125 @@ class AperturaController extends Controller
             'listado' => $listado,
             'variedad' => Variedad::find($request->id_variedad)
         ]);
+    }
+
+    public function sacar(Request $request)
+    {
+        $msg = '';
+        $success = true;
+        if (count($request->arreglo) > 0) {
+            foreach ($request->arreglo as $item) {
+                $consumo = Consumo::All()->where('fecha_pedidos', '=', $item['fecha_pedido'])->first();
+                $apertura = StockApertura::find($item['id_stock_apertura']);
+
+                $unitaria = $apertura->clasificacion_unitaria;
+                $tallos = $item['cantidad_ramos_estandar'] * explode('|', $unitaria->nombre)[1];
+                $current = $apertura->cantidad_disponible - $tallos;
+
+                dd($current);
+                dd($current < 0);
+                if ($current < 0) {
+                    if ($consumo == '') {
+                        /* ========= CREAR CONSUMO ========== */
+                        $consumo = new Consumo();
+                        $consumo->fecha_pedidos = $item['fecha_pedido'];
+                        $consumo->fecha_registro = date('Y-m-d H:i:s');
+
+                        if ($consumo->save()) {
+                            $consumo = Consumo::All()->last();
+                            bitacora('consumo', $consumo->id_consumo, 'I', 'Creacion satisfactoria de un consumo');
+                        } else {
+                            $msg .= '<div class="alert alert-warning text-center">' .
+                                'Ha ocurrido un problema al crear el nuevo consumo de la fecha de los pedidos indicada' .
+                                '</div>';
+                            $success = false;
+                        }
+                    }
+
+                    /* ========= GUARDAR STOCK_FRIO ========== */
+                    $frio = new StockFrio();
+                    $frio->id_consumo = $consumo->id_consumo;
+                    $frio->id_stock_apertura = $apertura->id_stock_apertura;
+                    $frio->id_variedad = $apertura->id_variedad;
+                    $frio->id_clasificacion_unitaria = $apertura->id_clasificacion_unitaria;
+                    $frio->id_semana = getSemanaByDate($apertura->fecha_inicio)->id_semana;
+                    $frio->dias_maduracion = $item['dias_maduracion'];
+                    $frio->cantidad_ramos_estandar = $item['cantidad_ramos_estandar'];
+                    $frio->fecha_ingreso = date('Y-m-d');
+                    $frio->fecha_registro = date('Y-m-d H:i:s');
+
+                    if ($frio->save()) {
+                        $frio = StockFrio::All()->last();
+                        bitacora('stock_frio', $frio->id_stock_frio, 'I', 'Creacion satisfactoria de un stock frio');
+
+                        /* ============= ACTUALIZAR EL STOCK_APERTURA ===============*/
+                        $apertura->cantidad_disponible = $current;
+                        if ($apertura->cantidad_disponible == 0) {
+                            $apertura->disponibilidad = 0;
+                            $apertura->fecha_fin = date('Y-m-d');
+
+                            /* ========== ACTUALIZAR LOTE_RE ===========*/
+                            $lote = $apertura->lote_re;
+                            $lote->etapa = 'F';
+                            $lote->stock_frio = $apertura->fecha_fin;
+
+                            if ($lote->save()) {
+                                $lote = StockApertura::All()->last();
+                                bitacora('lote_re', $lote->id_lote_re, 'U', 'Actualizacion satisfactoria de un lote_re');
+                            } else {
+                                $msg .= '<div class="alert alert-warning text-center">' .
+                                    'Ha ocurrido un problema al actualizar el lote de la apertura indicada de ' . explode('|', getStockById($item['id_stock_apertura'])->clasificacion_unitaria->nombre)[0] .
+                                    getStockById($item['id_stock_apertura'])->clasificacion_unitaria->unidad_medida->siglas .
+                                    ' con ' . $item['dias_maduracion'] . ' días de maduración' .
+                                    '</div>';
+                                $success = false;
+                            }
+                        }
+
+                        if ($apertura->save()) {
+                            $apertura = StockApertura::All()->last();
+                            bitacora('stock_apertura', $apertura->id_stock_apertura, 'U', 'Actualizacion satisfactoria de un stock_apertura');
+                        } else {
+                            $msg .= '<div class="alert alert-warning text-center">' .
+                                'Ha ocurrido un problema al actualizar el stock de apertura indicado de ' . explode('|', getStockById($item['id_stock_apertura'])->clasificacion_unitaria->nombre)[0] .
+                                getStockById($item['id_stock_apertura'])->clasificacion_unitaria->unidad_medida->siglas .
+                                ' con ' . $item['dias_maduracion'] . ' días de maduración' .
+                                '</div>';
+                            $success = false;
+                        }
+
+                        /* ============= ACTUALIZAR PEDIDOS ==============*/
+                    } else {
+                        $msg .= '<div class="alert alert-warning text-center">' .
+                            'Ha ocurrido un problema al crear un nuevo stock en frío de ' . explode('|', getStockById($item['id_stock_apertura'])->clasificacion_unitaria->nombre)[0] .
+                            getStockById($item['id_stock_apertura'])->clasificacion_unitaria->unidad_medida->siglas .
+                            ' con ' . $item['dias_maduracion'] . ' días de maduración' .
+                            '</div>';
+                        $success = false;
+                    }
+                } else {
+                    $msg .= '<div class="alert alert-warning text-center">' .
+                        'No se puede sacar una cantidad de ramos mayor a la ingresada en apertura de ' . explode('|', getStockById($item['id_stock_apertura'])->clasificacion_unitaria->nombre)[0] .
+                        getStockById($item['id_stock_apertura'])->clasificacion_unitaria->unidad_medida->siglas .
+                        ' con ' . $item['dias_maduracion'] . ' días de maduración' .
+                        '</div>';
+                    $success = false;
+                }
+            }
+        } else {
+            $msg = '<div class="alert alert-warning text-center">' .
+                'Al menos debe indicar un stock de apertura a sacar' .
+                '</div>';
+            $success = false;
+        }
+        if ($success) {
+            $msg = '<div class="alert alert-success text-center">' .
+                'Se ha guardado toda la información satisfactoriamente' .
+                '</div>';
+        }
+        return [
+            'mensaje' => $msg,
+            'success' => $success
+        ];
     }
 }
