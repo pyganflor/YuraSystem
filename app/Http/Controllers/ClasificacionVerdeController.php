@@ -12,6 +12,7 @@ use yura\Modelos\Recepcion;
 use yura\Modelos\RecepcionClasificacionVerde;
 use yura\Modelos\Semana;
 use yura\Modelos\StockApertura;
+use yura\Modelos\StockGuarde;
 use yura\Modelos\Submenu;
 use yura\Modelos\Variedad;
 use Validator;
@@ -546,6 +547,29 @@ class ClasificacionVerdeController extends Controller
                         if ($lote->save()) {
                             $lote = LoteRE::All()->last();
                             bitacora('lote_re', $lote->id_lote_re, 'I', 'Inserción satisfactoria de un nuevo lote RE');
+
+                            /* ================ GUARDAR EN TABLA STOCK_GUARDE ===============*/
+                            $stock = new StockGuarde();
+                            $stock->fecha_registro = date('Y-m-d H:i:s');
+                            $stock->fecha_inicio = $request->fecha;
+                            $stock->cantidad_tallos = $lote->cantidad_tallos;
+                            $stock->cantidad_disponible = $lote->cantidad_tallos;
+                            $stock->id_variedad = $lote->id_variedad;
+                            $stock->id_clasificacion_unitaria = $lote->id_clasificacion_unitaria;
+                            $stock->dias = $item['dias'];
+                            $stock->id_lote_re = $lote->id_lote_re;
+
+                            if ($stock->save()) {
+                                $stock = StockApertura::All()->last();
+                                bitacora('stock_apertura', $stock->id_stock_apertura, 'I', 'Inserción satisfactoria de un nuevo lote RE a Stock');
+                            } else {
+                                $success = false;
+                                $msg .= '<div class="alert alert-warning text-center">' .
+                                    '<p> Ha ocurrido un problema al guardar en <strong>stock</strong> el lote de ' .
+                                    ClasificacionUnitaria::find($item['id_clasificacion_unitaria'])->nombre .
+                                    Variedad::find($request->id_variedad)->unidad_de_medida . '</p>'
+                                    . '</div>';
+                            }
                         } else {
                             $success = false;
                             $msg .= '<div class="alert alert-warning text-center">' .

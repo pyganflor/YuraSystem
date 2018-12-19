@@ -20,6 +20,7 @@ use yura\Modelos\StockApertura;
 use yura\Modelos\Semana;
 use yura\Modelos\LoteRE;
 use yura\Modelos\UnidadMedida;
+use yura\Modelos\Consumo;
 
 /*
  * -------- BITÁCORA DE LAS ACCIONES ECHAS POR EL USUARIO ------
@@ -880,4 +881,13 @@ function getCalibreRamoEstandar()
     $r = ClasificacionRamo::All()->where('estado', '=', 1)->where('estandar', '=', 1)->first();
 
     return $r;
+}
+
+/* ============ Obtener los ramos sacados de apertura para los pedidos de un "fecha" ==============*/
+function getDestinadosToFrioByFecha($fecha)
+{
+    $consumo = Consumo::All()->where('fecha_pedidos', '=', $fecha)->where('estado', '=', 1)->first();
+    if ($consumo != '')
+        return $consumo->getDestinados();
+    return 0;
 }

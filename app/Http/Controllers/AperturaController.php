@@ -367,12 +367,10 @@ class AperturaController extends Controller
                 $apertura = StockApertura::find($item['id_stock_apertura']);
 
                 $unitaria = $apertura->clasificacion_unitaria;
-                $tallos = $item['cantidad_ramos_estandar'] * explode('|', $unitaria->nombre)[1];
+                $tallos = round($item['cantidad_ramos_estandar'] * explode('|', $unitaria->nombre)[1]);
                 $current = $apertura->cantidad_disponible - $tallos;
 
-                dd($current);
-                dd($current < 0);
-                if ($current < 0) {
+                if ($current >= 0) {
                     if ($consumo == '') {
                         /* ========= CREAR CONSUMO ========== */
                         $consumo = new Consumo();
@@ -411,23 +409,6 @@ class AperturaController extends Controller
                         if ($apertura->cantidad_disponible == 0) {
                             $apertura->disponibilidad = 0;
                             $apertura->fecha_fin = date('Y-m-d');
-
-                            /* ========== ACTUALIZAR LOTE_RE ===========*/
-                            $lote = $apertura->lote_re;
-                            $lote->etapa = 'F';
-                            $lote->stock_frio = $apertura->fecha_fin;
-
-                            if ($lote->save()) {
-                                $lote = StockApertura::All()->last();
-                                bitacora('lote_re', $lote->id_lote_re, 'U', 'Actualizacion satisfactoria de un lote_re');
-                            } else {
-                                $msg .= '<div class="alert alert-warning text-center">' .
-                                    'Ha ocurrido un problema al actualizar el lote de la apertura indicada de ' . explode('|', getStockById($item['id_stock_apertura'])->clasificacion_unitaria->nombre)[0] .
-                                    getStockById($item['id_stock_apertura'])->clasificacion_unitaria->unidad_medida->siglas .
-                                    ' con ' . $item['dias_maduracion'] . ' días de maduración' .
-                                    '</div>';
-                                $success = false;
-                            }
                         }
 
                         if ($apertura->save()) {
