@@ -15,6 +15,9 @@
                 <h3 class="box-title">
                     Datos principales
                 </h3>
+                <a href="javascript:void(0)" class="btn btn-xs btn-primary pull-right" title="Grosor de Ramos" onclick="admin_grosor_ramo()">
+                    <i class="fa fa-fw fa-leaf"></i>
+                </a>
             </div>
             <div class="box-body" id="div_content_permisos">
                 <div class="row">

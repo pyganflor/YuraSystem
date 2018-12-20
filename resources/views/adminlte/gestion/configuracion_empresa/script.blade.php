@@ -216,14 +216,21 @@
         });
     }
 
-    function seleccionar_unidad_medida(id_clasificacion_unitaria, campo){
+    function seleccionar_unidad_medida(id_clasificacion_unitaria, campo) {
         datos = {
-            id_unidad_medida:$('#id_unidad_medida_'+id_clasificacion_unitaria).val(),
-            campo:campo,
-            id_clasificacion_unitaria:id_clasificacion_unitaria
+            id_unidad_medida: $('#id_unidad_medida_' + id_clasificacion_unitaria).val(),
+            campo: campo,
+            id_clasificacion_unitaria: id_clasificacion_unitaria
         };
-        get_jquery('{{url('configuracion/seleccionar_unidad_medida')}}', datos, function(retorno){
-            $('#td_clasificacion_'+campo+'_'+id_clasificacion_unitaria).html(retorno);
+        get_jquery('{{url('configuracion/seleccionar_unidad_medida')}}', datos, function (retorno) {
+            $('#td_clasificacion_' + campo + '_' + id_clasificacion_unitaria).html(retorno);
+        });
+    }
+
+    function admin_grosor_ramo() {
+        get_jquery('{{url('configuracion/admin_grosor_ramo')}}', {}, function (retorno) {
+            modal_view('modal_view_admin_grosor_ramo', retorno, '<i class="fa fa-fw fa-leaf"></i> Grosor de ramos', true, false,
+                '{{isPC() ? '35%' : ''}}');
         });
     }
 </script>
