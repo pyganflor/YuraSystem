@@ -80,7 +80,7 @@
     <div class="col-md-4">
         <div class="form-group input-group">
             <span class="input-group-addon" style="background-color: #e9ecef">Ud. medida </span>
-            <select class="form-control" id="ud_medida_{{$pos_form_detalles}}_{{$cant_desgloses}}" required>
+            <select class="form-control" name="id_ud_medida_{{$pos_form_detalles}}_{{$cant_desgloses}}" id="id_ud_medida_{{$pos_form_detalles}}_{{$cant_desgloses}}" required>
                 <option disabled selected>Seleccione</option>
                 @foreach ($unidad_medida as $um)
                     <option value="{{$um->id_unidad_medida}}">{{$um->tipo}}</option>
@@ -88,5 +88,23 @@
             </select>
         </div>
     </div>
+    <div class="col-md-4">
+        <div class="form-group input-group">
+            <span class="input-group-addon" style="background-color: #e9ecef"> Grosor </span>
+            <select class="form-control" name="id_grosor_{{$pos_form_detalles}}_{{$cant_desgloses}}" id="id_grosor_{{$pos_form_detalles}}_{{$cant_desgloses}}" required>
+                <option disabled selected>Seleccione</option>
+                @foreach ($grosor as $g)
+                    <option value="{{$g->id_grosor_ramo}}">{{$g->nombre}}</option>
+                @endforeach
+            </select>
+        </div>
+    </div>
 </div>
-
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group input-group">
+            <span class="input-group-addon" style="background-color: #e9ecef"> longitud ramo </span>
+            <input type="number" min="1" onkeypress="return isNumber(event)" id="long_ramo_{{$pos_form_detalles}}_{{$cant_desgloses}}" name="long_ramo_{{$pos_form_detalles}}_{{$cant_desgloses}}">
+        </div>
+    </div>
+</div>

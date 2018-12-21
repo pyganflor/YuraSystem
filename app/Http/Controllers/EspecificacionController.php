@@ -12,6 +12,7 @@ use yura\Modelos\EspecificacionEmpaque;
 use yura\Modelos\DetalleEspecificacionEmpaque;
 use yura\Modelos\ClientePedidoEspecificacion;
 use yura\Modelos\UnidadMedida;
+use yura\Modelos\Grosor;
 use Validator;
 use DB;
 use Storage as Almacenamiento;
@@ -52,13 +53,14 @@ class EspecificacionController extends Controller
     {
 
         return view('adminlte.gestion.postcocecha.clientes.partials.forms._desgloses', [
-            'envolturas' => Empaque::All()->where('tipo', '=', 'E')->where('estado', '=', 1),
-            'presentaciones' => Empaque::All()->where('tipo', '=', 'P')->where('estado', '=', 1),
-            'pesajes' => ClasificacionRamo::All()->where('estado', '=', 1),
-            'variedades' => Variedad::All()->where('estado', '=', 1),
+            'envolturas'        => Empaque::All()->where('tipo', '=', 'E')->where('estado', '=', 1),
+            'presentaciones'    => Empaque::All()->where('tipo', '=', 'P')->where('estado', '=', 1),
+            'pesajes'           => ClasificacionRamo::All()->where('estado', '=', 1),
+            'variedades'        => Variedad::All()->where('estado', '=', 1),
             'pos_form_detalles' => $request->pos_form_detalles,
-            'cant_desgloses' => $request->cant_desgloses,
-            'unidad_medida' => UnidadMedida::where('tipo','L')->get()
+            'cant_desgloses'    => $request->cant_desgloses,
+            'unidad_medida'     => UnidadMedida::where('tipo','L')->get(),
+            'grosor'            => Grosor::all()->where('estado',1),
         ]);
     }
 
@@ -176,7 +178,6 @@ class EspecificacionController extends Controller
 
                             if($request->input('cant_forms_desgloses_'.$i) == 1){
                                 if(!valida_especificacion($request->input('id_variedad_'.$i.'_'.$j),$request->input('id_clasificacion_ramo_'.$i.'_'.$j),$request->input('id_empaque_'.$i), $request->input('cantidad_'.$i.'_'.$j))){
-
                                     if($accion === 'Inserción' ){
                                         $objEspecificacionEmpaqueDelete = EspecificacionEmpaque::where('id_especificacion', $modelEspcificacion->id_especificacion);
                                         $objEspecificacionEmpaqueDelete->delete();
@@ -194,14 +195,15 @@ class EspecificacionController extends Controller
                             }
 
                             $objEspecificacionEmpaqueDetalle->id_especificacion_empaque = $modelEspcificacionEmpaque->id_especificacion_empaque;
-                            $objEspecificacionEmpaqueDetalle->id_variedad = $request->input('id_variedad_' . $i . '_' . $j);
-                            $objEspecificacionEmpaqueDetalle->id_clasificacion_ramo = $request->input('id_clasificacion_ramo_' . $i . '_' . $j);
-                            $objEspecificacionEmpaqueDetalle->cantidad = $request->input('cantidad_' . $i . '_' . $j);
-                            $objEspecificacionEmpaqueDetalle->id_empaque_e = $request->input('id_empaque_e_' . $i . '_' . $j);
-                            $objEspecificacionEmpaqueDetalle->id_empaque_p = $request->input('id_empaque_p_' . $i . '_' . $j);
-                            !empty($request->input('tallos_x_ramos_'.$i.'_'.$j))
-                                ? $objEspecificacionEmpaqueDetalle->tallos_x_ramos = $request->input('tallos_x_ramos_ps'.$i.'_'.$j)
-                                : '';
+                            $objEspecificacionEmpaqueDetalle->id_variedad              = $request->input('id_variedad_' . $i . '_' . $j);
+                            $objEspecificacionEmpaqueDetalle->id_clasificacion_ramo    = $request->input('id_clasificacion_ramo_' . $i . '_' . $j);
+                            $objEspecificacionEmpaqueDetalle->cantidad                 = $request->input('cantidad_' . $i . '_' . $j);
+                            $objEspecificacionEmpaqueDetalle->id_empaque_e             = $request->input('id_empaque_e_' . $i . '_' . $j);
+                            $objEspecificacionEmpaqueDetalle->id_empaque_p             = $request->input('id_empaque_p_' . $i . '_' . $j);
+                            !empty($request->input('tallos_x_ramos_'.$i.'_'.$j))  ? $objEspecificacionEmpaqueDetalle->tallos_x_ramos   = $request->input('tallos_x_ramos_'.$i.'_'.$j) : '';
+                            !empty($request->input('id_ud_medida_'.$i.'_'.$j))    ? $objEspecificacionEmpaqueDetalle->id_unidad_medida = $request->input('id_ud_medida_'.$i.'_'.$j)   : '';
+                            !empty($request->input('id_grosor_'.$i.'_'.$j))       ? $objEspecificacionEmpaqueDetalle->id_grosor_ramo   = $request->input('id_grosor_'.$i.'_'.$j)         : '';
+                            !empty($request->input('long_ramo_'.$i.'_'.$j))       ? $objEspecificacionEmpaqueDetalle->longitud_ramo   = $request->input('long_ramo_'.$i.'_'.$j)      : '';
 
                             if ($objEspecificacionEmpaqueDetalle->save()) {
 

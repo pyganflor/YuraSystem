@@ -207,7 +207,6 @@
                         $('#id_select_agencia_carga_' + (parseInt(i) + parseInt(1))).val()
                     ]);
             }
-
             datos = {
                 _token: '{{csrf_token()}}',
                 data_agencias_carga: arrAgenciasCarga,
@@ -219,7 +218,6 @@
             });
             $.LoadingOverlay('hide');
         }
-
     }
 
     function ActualizarClienteAgenciaCarga(id_cliente_agencia_carga, estado, id_cliente) {
