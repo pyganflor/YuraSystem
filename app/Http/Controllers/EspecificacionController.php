@@ -50,6 +50,7 @@ class EspecificacionController extends Controller
 
     public function cargar_form_detalle_especificacion_empaque(Request $request)
     {
+
         return view('adminlte.gestion.postcocecha.clientes.partials.forms._desgloses', [
             'envolturas' => Empaque::All()->where('tipo', '=', 'E')->where('estado', '=', 1),
             'presentaciones' => Empaque::All()->where('tipo', '=', 'P')->where('estado', '=', 1),
@@ -57,6 +58,7 @@ class EspecificacionController extends Controller
             'variedades' => Variedad::All()->where('estado', '=', 1),
             'pos_form_detalles' => $request->pos_form_detalles,
             'cant_desgloses' => $request->cant_desgloses,
+            'unidad_medida' => UnidadMedida::where('tipo','L')->get()
         ]);
     }
 

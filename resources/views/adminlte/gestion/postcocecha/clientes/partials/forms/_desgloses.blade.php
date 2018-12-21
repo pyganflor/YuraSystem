@@ -69,12 +69,23 @@
     </div>
 </div>
 <div class="row" id="input_tallo_x_ramo">
-    <div class="col-md-6">
+    <div class="col-md-4">
         <div class="form-group input-group">
-            <span class="input-group-addon" style="background-color: #e9ecef">Tallos por ramos (Opcional)</span>
+            <span class="input-group-addon" style="background-color: #e9ecef">Tallos por ramos </span>
             <input type="number" onkeypress="return isNumber(event)" id="tallos_x_ramo_{{$pos_form_detalles}}_{{$cant_desgloses}}"
                    name="tallos_x_ramos_{{$pos_form_detalles}}_{{$cant_desgloses}}"
                    class="form-control" maxlength="3" max="999" min="1" placeholder="Cantidad">
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="form-group input-group">
+            <span class="input-group-addon" style="background-color: #e9ecef">Ud. medida </span>
+            <select class="form-control" id="ud_medida_{{$pos_form_detalles}}_{{$cant_desgloses}}" required>
+                <option disabled selected>Seleccione</option>
+                @foreach ($unidad_medida as $um)
+                    <option value="{{$um->id_unidad_medida}}">{{$um->tipo}}</option>
+                @endforeach
+            </select>
         </div>
     </div>
 </div>
