@@ -2,9 +2,9 @@
     <legend>
         Pedidos
         <span class="pull-right badge" id="html_current_pedido" title="Convertidos al Estandar"></span>
+        <span class="pull-right badge" id="html_current_sacar" title="Ramos seleccionados" style="margin-right: 5px"></span>
         <a href="javascript:void(0)" class="badge btn-success pull-right" id="btn_sacar" title="Sacar de apertura"
-           style="display: none; margin-right: 5px"
-           onclick="sacar_aperturas()">
+           style="display: none; margin-right: 5px" onclick="sacar_aperturas()">
             <i class="fa fa-fw fa-share-square-o"></i> Sacar
         </a>
     </legend>
@@ -16,6 +16,9 @@
                 $pos = 1;
             @endphp
             @foreach($listado as $fecha)
+                <script>
+                    cantidad_ramos_pedidos = 0;
+                </script>
                 <li class="list-group-item" style="border: 1px solid #9d9d9d"
                     onmouseover="$(this).css('background-color','#e9ecef')" onmouseleave="$(this).css('background-color','')">
                     <a href="javascript:void(0)" data-toggle="collapse" data-target="#div_content_fecha_pedido_{{$fecha->fecha_pedido}}"
@@ -23,6 +26,11 @@
                         {{getDias()[transformDiaPhp(date('w', strtotime($fecha->fecha_pedido)))]}}
                         {{convertDateToText($fecha->fecha_pedido)}}
                     </a>
+
+                    <span class="badge pull-right">
+                        Destinados: {{getDestinadosToFrioByFecha($fecha->fecha_pedido)}} -
+                        Pedidos: <em id="html_cantidad_ramos_pedidos_{{$fecha->fecha_pedido}}">0</em>
+                    </span>
 
                     <div id="div_content_fecha_pedido_{{$fecha->fecha_pedido}}" class="collapse"
                          aria-labelledby="div_header_fecha_pedido_{{$fecha->fecha_pedido}}" data-parent="#accordionExample">
@@ -46,6 +54,13 @@
                                             <input type="hidden" id="cantidad_ramos_pedidos_{{$pos}}"
                                                    value="{{$item->cantidad}}">
                                         </li>
+
+                                        <script>
+                                            factor = Math.round(($('#calibre_ramo_pedido_{{$pos}}').val() / $('#calibre_estandar').val()) * 100) / 100;
+                                            conversion = $('#cantidad_ramos_pedidos_{{$pos}}').val() * factor;
+
+                                            cantidad_ramos_pedidos += conversion;
+                                        </script>
                                         @php
                                             $pos ++;
                                         @endphp
@@ -66,6 +81,13 @@
                                             <input type="hidden" id="cantidad_ramos_pedidos_{{$pos}}"
                                                    value="{{$item->cantidad}}">
                                         </li>
+
+                                        <script>
+                                            factor = Math.round(($('#calibre_ramo_pedido_{{$pos}}').val() / $('#calibre_estandar').val()) * 100) / 100;
+                                            conversion = $('#cantidad_ramos_pedidos_{{$pos}}').val() * factor;
+
+                                            cantidad_ramos_pedidos += conversion;
+                                        </script>
                                         @php
                                             $pos ++;
                                         @endphp
@@ -79,6 +101,9 @@
                         </div>
                     </div>
                 </li>
+                <script>
+                    $('#html_cantidad_ramos_pedidos_{{$fecha->fecha_pedido}}').html(cantidad_ramos_pedidos);
+                </script>
             @endforeach
         </ul>
     </div>
@@ -96,13 +121,14 @@
         factor = Math.round(($('#calibre_ramo_pedido_' + pos).val() / $('#calibre_estandar').val()) * 100) / 100;
         conversion = $('#cantidad_ramos_pedidos_' + pos).val() * factor;
 
-        $('#html_current_pedido').html(conversion + ' Ramos');
+        $('#html_current_pedido').html('Se necesitan: ' + conversion + ' Ramos');
         $('#meta_sacar').val(conversion);
         $('.input_sacar').prop('readonly', false);
+        $('.checkbox_sacar').prop('disabled', false);
 
         $('#pos_pedido').val(pos);
 
-        seleccionar_checkboxs();
+        seleccionar_checkboxs('');
     }
 
     function sacar_aperturas() {

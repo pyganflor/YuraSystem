@@ -53,7 +53,7 @@
                             style="color: {{getStockById($apertura->id_stock_apertura)->clasificacion_unitaria->unidad_medida->tipo == 'L' ? 'blue' : ''}}">
                             <td class="text-center" style="border-color: #9d9d9d;">
                                 <input type="checkbox" id="checkbox_sacar_{{$apertura->id_stock_apertura}}" class="checkbox_sacar"
-                                       onchange="seleccionar_checkboxs()">
+                                       onchange="seleccionar_checkboxs($(this))" disabled>
                             </td>
                             <td class="text-center" style="border-color: #9d9d9d;">
                                 <input type="hidden" class="ids_apertura" id="id_apertura_{{$apertura->id_stock_apertura}}"
@@ -77,19 +77,34 @@
                             </td>
                             @php
                                 $color = '';
-                                if(difFechas(date('Y-m-d'),substr($apertura->fecha_inicio,0,10))->days > getStockById($apertura->id_stock_apertura)->variedad->maximo_apertura)
+                                $maximo_estandar = true;
+                                $minimo_estandar = true;
+                                $estandar_estandar = true;
+                                if(difFechas(date('Y-m-d'),substr($apertura->fecha_inicio,0,10))->days > getStockById($apertura->id_stock_apertura)->variedad->maximo_apertura){
                                     $color = '#ce8483';
-                                if(difFechas(date('Y-m-d'),substr($apertura->fecha_inicio,0,10))->days < getStockById($apertura->id_stock_apertura)->variedad->minimo_apertura)
+                                    $maximo_estandar = false;
+                                }
+                                if(difFechas(date('Y-m-d'),substr($apertura->fecha_inicio,0,10))->days < getStockById($apertura->id_stock_apertura)->variedad->minimo_apertura){
                                     $color = '#ce8483';
+                                    $minimo_estandar = false;
+                                }
                                 if(difFechas(date('Y-m-d'),substr($apertura->fecha_inicio,0,10))->days > getStockById($apertura->id_stock_apertura)->variedad->estandar_apertura &&
-                                    difFechas(date('Y-m-d'),substr($apertura->fecha_inicio,0,10))->days < getStockById($apertura->id_stock_apertura)->variedad->maximo_apertura)
+                                    difFechas(date('Y-m-d'),substr($apertura->fecha_inicio,0,10))->days <= getStockById($apertura->id_stock_apertura)->variedad->maximo_apertura){
                                     $color = '#ffef92';
+                                    $estandar_estandar = false;
+                                }
                             @endphp
                             <td class="text-center"
                                 style="border-color: #9d9d9d; background-color: {{$color}}">
                                 {{difFechas(date('Y-m-d'),substr($apertura->fecha_inicio,0,10))->days}}
                                 <input type="hidden" id="dias_maduracion_{{$apertura->id_stock_apertura}}"
                                        value="{{difFechas(date('Y-m-d'),substr($apertura->fecha_inicio,0,10))->days}}">
+                                <input type="checkbox" class="hidden" id="maximo_estandar_{{$apertura->id_stock_apertura}}"
+                                        {{!$maximo_estandar ? 'checked' : ''}}>
+                                <input type="checkbox" class="hidden" id="minimo_estandar_{{$apertura->id_stock_apertura}}"
+                                        {{!$minimo_estandar ? 'checked' : ''}}>
+                                <input type="checkbox" class="hidden" id="estandar_estandar_{{$apertura->id_stock_apertura}}"
+                                        {{!$estandar_estandar ? 'checked' : ''}}>
                             </td>
                             <td class="text-center" style="border-color: #9d9d9d" title="Convertidos"
                                 id="celda_ramos_convertidos_{{$apertura->id_stock_apertura}}">
@@ -106,8 +121,8 @@
                                 </span>
                             </td>
                             <td class="text-center" style="border-color: #9d9d9d">
-                                <input type="number" class="text-center input_sacar" onkeypress="return isNumber(event)"
-                                       id="sacar_{{$apertura->id_stock_apertura}}" readonly min="1"
+                                <input type="number" class="text-center input_sacar" {{--onkeypress="return isNumber(event)"--}}
+                                id="sacar_{{$apertura->id_stock_apertura}}" readonly min="1"
                                        max="{{getStockById($apertura->id_stock_apertura)->calcularDisponibles()['estandar']}}"
                                        onchange="seleccionar_apertura_sacar('{{$apertura->id_stock_apertura}}')"
                                        value="{{getStockById($apertura->id_stock_apertura)->calcularDisponibles()['estandar']}}">
@@ -168,22 +183,113 @@
 <script>
     function seleccionar_apertura_sacar(apertura) {
         if ($('#sacar_' + apertura).val() != '') {
-            $('#checkbox_sacar_' + apertura).prop('checked', true);
-            $('#btn_sacar').show();
+            texto = '';
+            if ($('#maximo_estandar_' + apertura).prop('checked'))
+                texto = 'por encima del máximo';
+            if ($('#minimo_estandar_' + apertura).prop('checked'))
+                texto = 'por debajo del mínimo';
+            if ($('#estandar_estandar_' + apertura).prop('checked'))
+                texto = 'por encima del estandar';
+
+            if (texto != '') {
+                modal_quest('modal_quest_input_sacar',
+                    '<div class="alert alert-info text-center">Está seleccionando flores con días de maduración ' + texto + ' permitido</div>',
+                    '<i class="fa fa-fw fa-exclamation-triangle"></i> Mensaje de alerta', true, false, '{{isPC() ? '35%' : ''}}', function () {
+                        $('#checkbox_sacar_' + apertura).prop('checked', true);
+                        $('#btn_sacar').show();
+
+                        $('#html_current_sacar').html('');
+
+                        listado = $('.checkbox_sacar');
+                        $('#btn_sacar').hide();
+                        cantidad_seleccionada = 0;
+                        for (i = 0; i < listado.length; i++) {
+                            if (listado[i].checked) {
+                                $('#btn_sacar').show();
+                                cantidad_seleccionada += parseFloat($('#sacar_' + listado[i].id.substr(15)).val());
+                                $('#html_current_sacar').html('Seleccionados: ' + Math.round(cantidad_seleccionada * 100) / 100);
+                            }
+                        }
+                        cerrar_modals();
+                    });
+            } else {
+                $('#checkbox_sacar_' + apertura).prop('checked', true);
+                $('#btn_sacar').show();
+            }
         } else {
             $('#checkbox_sacar_' + apertura).prop('checked', false);
             $('#btn_sacar').hide();
         }
-        seleccionar_checkboxs();
+        seleccionar_checkboxs($('#checkbox_sacar_' + apertura));
     }
 
-    function seleccionar_checkboxs() {
-        listado = $('.checkbox_sacar');
-        $('#btn_sacar').hide();
-        for (i = 0; i < listado.length; i++) {
-            if (listado[i].checked) {
+    function seleccionar_checkboxs(current) {
+        if (current != '' && current.prop('checked')) {
+            current.prop('checked', false);
+            apertura = current.prop('id').substr(15);
+            $('#btn_sacar').hide();
+
+            texto = '';
+            if ($('#maximo_estandar_' + apertura).prop('checked'))
+                texto = 'por encima del máximo';
+            if ($('#minimo_estandar_' + apertura).prop('checked'))
+                texto = 'por debajo del mínimo';
+            if ($('#estandar_estandar_' + apertura).prop('checked'))
+                texto = 'por encima del estandar';
+
+            if (texto != '') {
+                modal_quest('modal_quest_input_sacar',
+                    '<div class="alert alert-info text-center">Está seleccionando flores con días de maduración ' + texto + ' permitido</div>',
+                    '<i class="fa fa-fw fa-exclamation-triangle"></i> Mensaje de alerta', true, false, '{{isPC() ? '35%' : ''}}', function () {
+                        current.prop('checked', true);
+                        $('#btn_sacar').show();
+
+                        $('#html_current_sacar').html('');
+
+                        listado = $('.checkbox_sacar');
+                        $('#btn_sacar').hide();
+                        cantidad_seleccionada = 0;
+                        for (i = 0; i < listado.length; i++) {
+                            if (listado[i].checked) {
+                                $('#btn_sacar').show();
+                                cantidad_seleccionada += parseFloat($('#sacar_' + listado[i].id.substr(15)).val());
+                                $('#html_current_sacar').html('Seleccionados: ' + Math.round(cantidad_seleccionada * 100) / 100);
+                            }
+                        }
+                        cerrar_modals();
+                    });
+            } else {
+                current.prop('checked', true);
                 $('#btn_sacar').show();
+
+                $('#html_current_sacar').html('');
+
+                listado = $('.checkbox_sacar');
+                $('#btn_sacar').hide();
+                cantidad_seleccionada = 0;
+                for (i = 0; i < listado.length; i++) {
+                    if (listado[i].checked) {
+                        $('#btn_sacar').show();
+                        cantidad_seleccionada += parseFloat($('#sacar_' + listado[i].id.substr(15)).val());
+                        $('#html_current_sacar').html('Seleccionados: ' + Math.round(cantidad_seleccionada * 100) / 100);
+                    }
+                }
+            }
+        } else {
+            $('#html_current_sacar').html('');
+
+            listado = $('.checkbox_sacar');
+            $('#btn_sacar').hide();
+            cantidad_seleccionada = 0;
+            for (i = 0; i < listado.length; i++) {
+                if (listado[i].checked) {
+                    $('#btn_sacar').show();
+                    cantidad_seleccionada += parseFloat($('#sacar_' + listado[i].id.substr(15)).val());
+                    $('#html_current_sacar').html('Seleccionados: ' + Math.round(cantidad_seleccionada * 100) / 100);
+                }
             }
         }
+
+
     }
 </script>
