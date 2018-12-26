@@ -60,10 +60,10 @@
                 </th>
                 @foreach(getVariedades() as $variedad)
                     <td class="text-center" style="border-color: #9d9d9d">
-                        ----
+                        {{$variedad->getDisponiblesToFecha($item)['cosechado'] - $variedad->getPedidosToFecha($item)}}
                     </td>
                     <td class="text-center" style="border-color: #9d9d9d">
-                        ----
+                        {{$variedad->getDisponiblesToFecha($item)['acumulado'] - $variedad->getPedidosToFecha($item)}}
                     </td>
                 @endforeach
             </tr>
