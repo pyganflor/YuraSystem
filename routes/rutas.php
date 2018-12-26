@@ -86,6 +86,7 @@ Route::group(['middleware' => 'autenticacion'], function () {
 
         /* ========================== FACTURACIÓN ========================*/
         include 'facturacion/comprobantes.php';
+        include 'facturacion/tipo_identificacion.php';
 
     });
 
