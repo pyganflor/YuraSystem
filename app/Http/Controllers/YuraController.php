@@ -488,22 +488,9 @@ class YuraController extends Controller
             }
         }
         $arreglo = array_sort($arreglo);
-        $listado = StockApertura::All()->where('estado', '=', 1)->where('disponibilidad', '=', 1);
-        $return = [];
-        foreach ($arreglo as $fecha) {
-            $r = [];
-            foreach ($listado as $stock) {
-                $fecha_stock = opDiasFecha('+', $stock->dias, $stock->fecha_inicio);
-                if ($fecha_stock == $fecha) {
-                    array_push($r, $stock);
-                }
-            }
-            array_push($return, [
-                'fecha' => $fecha,
-                'stocks' => $r
-            ]);
-        }
-        dd($return);
-        return '';
+        return view('adminlte.gestion.postcocecha.pedidos.forms.paritals.saldos', [
+            'fechas' => $arreglo,
+            'fecha' => $request->fecha
+        ]);
     }
 }
