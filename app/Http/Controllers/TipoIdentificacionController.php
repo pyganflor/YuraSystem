@@ -21,16 +21,16 @@ class TipoIdentificacionController extends Controller
         $busqueda = $request->has('busqueda') ? espacios($request->busqueda) : '';
         $bus = str_replace(' ', '%%', $busqueda);
 
-        $listado = DB::table('comprobante as c');
+        $listado = DB::table('tipo_identificacion as ti');
 
-        $listado->where('c.estado', $request->estado != '' ? $request->estado : 1);
+        $listado->where('ti.estado', $request->estado != '' ? $request->estado : 1);
 
         if ($request->busqueda != '') $listado = $listado->Where(function ($q) use ($bus) {
-            $q->orWhere('c.codigo', 'like', '%' . $bus . '%');
-            $q->orWhere('c.nombre', 'like', '%' . $bus . '%');
+            $q->orWhere('ti.codigo', 'like', '%' . $bus . '%');
+            $q->orWhere('ti.nombre', 'like', '%' . $bus . '%');
         });
 
-        $listado = $listado->orderBy('c.nombre', 'asc')->get();
+        $listado = $listado->orderBy('ti.nombre', 'asc')->get();
 
         $datos = [
             'listado' => $listado
