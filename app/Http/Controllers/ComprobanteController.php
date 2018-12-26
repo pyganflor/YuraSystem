@@ -16,7 +16,7 @@ class ComprobanteController extends Controller
             [
                 'url' => $request->getRequestUri(),
                 'submenu' => Submenu::Where('url', '=', substr($request->getRequestUri(), 1))->get()[0],
-                'text' => ['titulo' => 'Clientes', 'subtitulo' => 'mmódulo de postcocecha']
+                'text' => ['titulo' => 'Facturación', 'subtitulo' => 'comprobantes de facturación']
             ]);
     }
 
@@ -25,8 +25,9 @@ class ComprobanteController extends Controller
         $busqueda = $request->has('busqueda') ? espacios($request->busqueda) : '';
         $bus = str_replace(' ', '%%', $busqueda);
 
-        $listado = DB::table('comprobante as c')
-            ->where('c.estado', 1);
+        $listado = DB::table('comprobante as c');
+
+        $listado->where('c.estado', $request->estado != '' ? $request->estado : 1);
 
         if ($request->busqueda != '') $listado = $listado->Where(function ($q) use ($bus) {
             $q->orWhere('c.codigo', 'like', '%' . $bus . '%');

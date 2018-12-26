@@ -23,16 +23,16 @@
                     <tr>
                         <td>
                             <div class="form-inline">
-                                <div class="form-group">
+                                <div class="">
                                     <label for="anno">Estado</label><br />
                                     <select class="form-control" id="estado" name="estado">
                                         <option value=""> Seleccione </option>
-                                        <option value="1"> Enviado </option>
-                                        <option value="0"> No enviado </option>
+                                        <option value="1"> Activo </option>
+                                        <option value="0"> Inactivo </option>
                                     </select>
                                     <input type="text" class="form-control" placeholder="Búsqueda" id="busqueda_comprobantes"
                                            name="busqueda_comprobantes">
-                                    <span class="input-group-btn">
+                                    <span class="">
                                     <button class="btn btn-default" onclick="buscar_listado()"
                                             onmouseover="$('#title_btn_buscar').html('Buscar')"
                                             onmouseleave="$('#title_btn_buscar').html('')">
@@ -40,7 +40,7 @@
                                             id="title_btn_buscar"></em>
                                     </button>
                                 </span>
-                                    <span class="input-group-btn">
+                                    <span class="">
                                     <button class="btn btn-primary" onclick="add_comprobante()"
                                             onmouseover="$('#title_btn_add').html('Añadir')"
                                             onmouseleave="$('#title_btn_add').html('')">

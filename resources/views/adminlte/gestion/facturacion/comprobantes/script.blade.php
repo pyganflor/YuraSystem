@@ -5,6 +5,7 @@
         $.LoadingOverlay('show');
         datos = {
             busqueda: $('#busqueda_comprobantes').val().trim(),
+            estado  : $("#estado").val()
         };
         $.get('{{url('comprobantes/buscar')}}', datos, function (retorno) {
             $('#div_listado_comprobantes').html(retorno);
