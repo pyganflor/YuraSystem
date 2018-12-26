@@ -648,6 +648,11 @@ function getVariedad($id)
     return Variedad::find($id);
 }
 
+function getVariedades()
+{
+    return Variedad::All()->where('estado', '=', 1);
+}
+
 function getUnitaria($id)
 {
     return ClasificacionUnitaria::find($id);
