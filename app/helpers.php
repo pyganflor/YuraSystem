@@ -730,6 +730,10 @@ function getPedidos($idPedido)
     return $dataPedido;
 }
 
+function getUnidadMedida($id){
+    return UnidadMedida::where('id_unidad_medida',$id)->select('siglas')->first();
+}
+
 function getEspeficiacionesPedido($idEspecificacion)
 {
     $dataDetalleEspecificacion = DB::table('especificacion_empaque as espe')

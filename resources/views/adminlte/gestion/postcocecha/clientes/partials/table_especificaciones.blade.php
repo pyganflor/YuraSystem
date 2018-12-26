@@ -84,6 +84,9 @@
         post_jquery('{{url('clientes/asignar_especificacion')}}', datos, function () {
             cerrar_modals();
             detalles_cliente($('#id_cliente').val());
+            setTimeout(function(){ admin_especificaciones($('#id_cliente').val());  },200);
+
+
         });
         $.LoadingOverlay('hide');
     }

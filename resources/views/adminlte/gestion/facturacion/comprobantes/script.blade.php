@@ -48,7 +48,7 @@
 
     function actualizar_estado_comprobante(id_comprobante,estado_comprobante) {
         mensaje = {
-            title: estado_comprobante == 1 ? '<i class="fa fa-fw fa-trash"></i> Desactivar comprobante' : '<i class="fa fa-fw fa-unlock"></i> Activar agencia de carga',
+            title: estado_comprobante == 1 ? '<i class="fa fa-fw fa-trash"></i> Desactivar comprobante' : '<i class="fa fa-fw fa-unlock"></i> Activar comprobante',
             mensaje: estado_comprobante == 1 ? '<div class="alert alert-danger text-center"><i class="fa fa-fw fa-exclamation-triangle"></i> ¿Está seguro de desactivar este comprobante?</div>' :
                 '<div class="alert alert-info text-center"><i class="fa fa-fw fa-exclamation-triangle"></i> ¿Está seguro de activar este comprobante?</div>',
         };

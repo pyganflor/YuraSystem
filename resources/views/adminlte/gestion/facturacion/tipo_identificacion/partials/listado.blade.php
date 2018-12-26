@@ -15,7 +15,7 @@
                 </th>
             </tr>
             </thead>
-           {{--@foreach($listado as $item)
+           @foreach($listado as $item)
                 <tr onmouseover="$(this).css('background-color','#add8e6')" onmouseleave="$(this).css('background-color','')"
                     class="{{$item->estado == 1 ? '':'error'}}" id="row_marcas_{{$item->id_tipo_identificacion}}">
                     <td style="border-color: #9d9d9d" class="text-center">{{$item->nombre}}</td>
@@ -31,11 +31,11 @@
                         </a>
                     </td>
                 </tr>
-            @endforeach--}}
+            @endforeach
         </table>
         <div id="pagination_listado_tipo_identificacion">
         </div>
     @else
-        <div class="alert alert-info text-center">No se han encontrado coincidencias</div>
+        <div class="alert alert-info text-center" style="margin-top: 20px">No se han encontrado coincidencias</div>
     @endif
 </div>

@@ -44,12 +44,17 @@
                                                 @foreach($espEmp->detalles as $det)
                                        {{$det->variedad->nombre}}
                                                con {{$det->cantidad}}  ramos de
-                                                    {{$det->clasificacion_ramo->nombre}} gr c/u,
-                                                     @php
-                                                        if(!empty($det->tallos_x_ramos)) {
-                                                           echo  " de ".$det->tallos_x_ramos." Tallos por ramos";
-                                                        }
-                                                    @endphp
+                                                    {{$det->clasificacion_ramo->nombre}} gr
+                                                    @if(!empty($det->longitud_ramo))
+                                                       {{" y ".$det->longitud_ramo}}
+                                                       @if(!empty($det->id_unidad_medida))
+                                                            {{getUnidadMedida($det->id_unidad_medida)->siglas}}
+                                                       @endif
+                                                    @endif
+                                                    c/u,
+                                                    @if(!empty($det->tallos_x_ramos))
+                                                           {{ " de ".$det->tallos_x_ramos." Tallos por ramos"}}
+                                                    @endif
                                                     con envoltura de {{$det->empaque_e->nombre}}
                                                y presentación de {{$det->empaque_p->nombre}}
                                        @endforeach
