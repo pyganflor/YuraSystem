@@ -101,10 +101,11 @@
     </div>
 </div>
 <div class="row">
-    <div class="col-md-6">
+    <div class="col-md-4">
         <div class="form-group input-group">
             <span class="input-group-addon" style="background-color: #e9ecef"> longitud ramo </span>
-            <input type="number" min="1" onkeypress="return isNumber(event)" id="long_ramo_{{$pos_form_detalles}}_{{$cant_desgloses}}" name="long_ramo_{{$pos_form_detalles}}_{{$cant_desgloses}}">
+            <input type="number" min="1" onkeypress="return isNumber(event)" class="form-control"
+                   id="long_ramo_{{$pos_form_detalles}}_{{$cant_desgloses}}" name="long_ramo_{{$pos_form_detalles}}_{{$cant_desgloses}}">
         </div>
     </div>
 </div>

@@ -177,8 +177,10 @@ class EspecificacionController extends Controller
                             }
 
                             if($request->input('cant_forms_desgloses_'.$i) == 1){
+
                                 if(!valida_especificacion($request->input('id_variedad_'.$i.'_'.$j),$request->input('id_clasificacion_ramo_'.$i.'_'.$j),$request->input('id_empaque_'.$i), $request->input('cantidad_'.$i.'_'.$j))){
-                                    if($accion === 'Inserción' ){
+
+                                    if($accion === 'Inserción'){
                                         $objEspecificacionEmpaqueDelete = EspecificacionEmpaque::where('id_especificacion', $modelEspcificacion->id_especificacion);
                                         $objEspecificacionEmpaqueDelete->delete();
 
@@ -187,9 +189,13 @@ class EspecificacionController extends Controller
 
                                         $success = false;
                                         $msg = '<div class="alert alert-warning text-center">' .
-                                            '<p> No se puede crear un paquete con las especificaciones antes descritas ya que sobrepasa la cantidad de ramos por empaque configuradas o no existe el detalle del empaque</p>';
+                                                    '<p> No se puede crear un paquete con las especificaciones antes descritas ya que sobrepasa la cantidad de ramos por empaque configuradas o no existe el detalle del empaque</p>'.
+                                                '</div>';
+                                        return [
+                                            'mensaje' => $msg,
+                                            'success' => $success
+                                        ];
                                     }
-
                                 }
 
                             }
