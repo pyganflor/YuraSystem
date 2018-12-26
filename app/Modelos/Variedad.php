@@ -42,7 +42,6 @@ class Variedad extends Model
                 $r_a += $item->getDisponibles('estandar');
             }
         }
-
         return [
             'cosechado' => $r,
             'acumulado' => $r_a,

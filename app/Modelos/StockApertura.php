@@ -69,7 +69,7 @@ class StockApertura extends Model
 
     public function getDisponibles($tipo_ramo)
     {
-        $l = StockApertura::All()->where('disponibilidad', '=', 1)
+        $l = StockApertura::All()->where('disponibilidad', '=', 1)->where('estado', '=', 1)
             ->where('id_variedad', '=', $this->id_variedad)
             ->where('id_clasificacion_unitaria', '=', $this->id_clasificacion_unitaria)
             ->where('fecha_inicio', '<', $this->fecha_inicio);

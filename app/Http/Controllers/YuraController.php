@@ -490,7 +490,7 @@ class YuraController extends Controller
         $arreglo = array_sort($arreglo);
         return view('adminlte.gestion.postcocecha.pedidos.forms.paritals.saldos', [
             'fechas' => $arreglo,
-            'fecha' => $request->fecha
+            'fecha' => $request->fecha,
         ]);
     }
 }

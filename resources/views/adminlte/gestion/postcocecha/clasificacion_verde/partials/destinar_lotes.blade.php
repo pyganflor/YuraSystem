@@ -1,7 +1,7 @@
 <div class="box box-primary">
     <div class="box-header with-border">
         <h3 class="box-title">
-            Lote de <em class="badge">{{$clasificacion->tallos_x_variedad($variedad->id_variedad)}}</em> tallos de
+            Producción de <em class="badge">{{$clasificacion->tallos_x_variedad($variedad->id_variedad)}}</em> tallos de
             <strong>{{$variedad->planta->nombre}} - {{$variedad->nombre}}</strong>
             <em class="badge">{{$clasificacion->fecha_ingreso}}</em>
         </h3>

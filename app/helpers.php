@@ -889,10 +889,10 @@ function getCalibreRamoEstandar()
 }
 
 /* ============ Obtener los ramos sacados de apertura para los pedidos de un "fecha" ==============*/
-function getDestinadosToFrioByFecha($fecha)
+function getDestinadosToFrioByFecha($fecha, $variedad)
 {
     $consumo = Consumo::All()->where('fecha_pedidos', '=', $fecha)->where('estado', '=', 1)->first();
     if ($consumo != '')
-        return $consumo->getDestinados();
+        return $consumo->getDestinados($variedad);
     return 0;
 }
