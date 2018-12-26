@@ -10,7 +10,7 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label for="identificacion">Código</label>
-                <input type="text" id="codigo" name="codigo" class="form-control" required maxlength="25" autocomplete="off" value="">
+                <input type="text" id="codigo" name="codigo" class="form-control" required  autocomplete="off" value="">
             </div>
         </div>
     </div>

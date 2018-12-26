@@ -84,8 +84,9 @@ Route::group(['middleware' => 'autenticacion'], function () {
         include 'postcocecha/envios.php';
         include 'postcocecha/agencias_transporte.php';
 
+        /* ========================== FACTURACIÓN ========================*/
         include 'facturacion/comprobantes.php';
-    });
 
+    });
 
 });

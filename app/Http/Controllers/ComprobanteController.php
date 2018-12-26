@@ -19,7 +19,7 @@ class ComprobanteController extends Controller
             ]);
     }
 
-    public function burcar_comprobantes(Request $request){
+    public function buscar_comprobantes(Request $request){
 
         $busqueda = $request->has('busqueda') ? espacios($request->busqueda) : '';
         $bus = str_replace(' ', '%%', $busqueda);

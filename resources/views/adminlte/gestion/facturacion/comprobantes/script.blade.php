@@ -14,16 +14,33 @@
     }
 
     function add_comprobante(id_comprobante){
+        $.LoadingOverlay('show');
         datos = {
             id_comprobante : id_comprobante
         };
-        $.LoadingOverlay('show');
-        $.get('{{url('add_comprobantes')}}', datos, function (retorno) {
+        $.get('{{url('comprobantes/add_comprobantes')}}', datos, function (retorno) {
             modal_form('modal_add_comprobante', retorno, '<i class="fa fa-fw fa-plus"></i> Añadir comprobante', true, false, '{{isPC() ? '60%' : ''}}', function () {
-                    store_comprobante();
-                $.LoadingOverlay('hide');
+                comprobantes_store();
             });
+        }).always(function () {
+            $.LoadingOverlay('hide');
         });
-        $.LoadingOverlay('hide');
+    }
+    
+    function comprobantes_store() {
+        if ($('#form_add_cliente').valid()) {
+            $.LoadingOverlay('show');
+            datos = {
+                _token     : '{{csrf_token()}}',
+                marca      : $('#marca').val(),
+                descripcion: $('#descripcion').val(),
+                id_marca   : $('#id_marca').val()
+            };
+            post_jquery('{{url('marcas/store')}}', datos, function () {
+                cerrar_modals();
+                buscar_listado();
+            });
+            $.LoadingOverlay('hide');
+        }
     }
 </script>
