@@ -80,10 +80,10 @@
     <div class="col-md-4">
         <div class="form-group input-group">
             <span class="input-group-addon" style="background-color: #e9ecef">Ud. medida </span>
-            <select class="form-control" name="id_ud_medida_{{$pos_form_detalles}}_{{$cant_desgloses}}" id="id_ud_medida_{{$pos_form_detalles}}_{{$cant_desgloses}}" required>
+            <select class="form-control" name="id_ud_medida_{{$pos_form_detalles}}_{{$cant_desgloses}}" id="id_ud_medida_{{$pos_form_detalles}}_{{$cant_desgloses}}">
                 <option disabled selected>Seleccione</option>
                 @foreach ($unidad_medida as $um)
-                    <option value="{{$um->id_unidad_medida}}">{{$um->tipo}}</option>
+                    <option value="{{$um->id_unidad_medida}}">{{$um->siglas}}</option>
                 @endforeach
             </select>
         </div>

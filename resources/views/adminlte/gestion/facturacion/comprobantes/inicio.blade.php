@@ -22,10 +22,17 @@
                 <table width="100%">
                     <tr>
                         <td>
-                            <div class="form-group input-group" style="padding: 0px">
-                                <input type="text" class="form-control" placeholder="Búsqueda" id="busqueda_comprobantes"
-                                       name="busqueda_comprobantes">
-                                <span class="input-group-btn">
+                            <div class="form-inline">
+                                <div class="form-group">
+                                    <label for="anno">Estado</label><br />
+                                    <select class="form-control" id="estado" name="estado">
+                                        <option value=""> Seleccione </option>
+                                        <option value="1"> Enviado </option>
+                                        <option value="0"> No enviado </option>
+                                    </select>
+                                    <input type="text" class="form-control" placeholder="Búsqueda" id="busqueda_comprobantes"
+                                           name="busqueda_comprobantes">
+                                    <span class="input-group-btn">
                                     <button class="btn btn-default" onclick="buscar_listado()"
                                             onmouseover="$('#title_btn_buscar').html('Buscar')"
                                             onmouseleave="$('#title_btn_buscar').html('')">
@@ -33,7 +40,7 @@
                                             id="title_btn_buscar"></em>
                                     </button>
                                 </span>
-                                <span class="input-group-btn">
+                                    <span class="input-group-btn">
                                     <button class="btn btn-primary" onclick="add_comprobante()"
                                             onmouseover="$('#title_btn_add').html('Añadir')"
                                             onmouseleave="$('#title_btn_add').html('')">
@@ -41,7 +48,10 @@
                                         <em id="title_btn_add"></em>
                                     </button>
                                 </span>
+                                </div>
                             </div>
+
+
                         </td>
                     </tr>
                 </table>

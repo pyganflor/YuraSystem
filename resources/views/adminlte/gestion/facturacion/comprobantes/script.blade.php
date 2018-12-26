@@ -1,5 +1,6 @@
 <script>
     buscar_listado();
+
     function buscar_listado() {
         $.LoadingOverlay('show');
         datos = {
@@ -26,21 +27,49 @@
             $.LoadingOverlay('hide');
         });
     }
-    
+
     function comprobantes_store() {
-        if ($('#form_add_cliente').valid()) {
+        if ($('#form_add_comprobante').valid()) {
             $.LoadingOverlay('show');
             datos = {
-                _token     : '{{csrf_token()}}',
-                marca      : $('#marca').val(),
-                descripcion: $('#descripcion').val(),
-                id_marca   : $('#id_marca').val()
+                _token         : '{{csrf_token()}}',
+                nombre         : $('#nombre').val(),
+                codigo         : $('#codigo').val(),
+                id_comprobante : $("#id_comprobante").val()
             };
-            post_jquery('{{url('marcas/store')}}', datos, function () {
+            post_jquery('{{url('comprobantes/store_comprobantes')}}', datos, function () {
                 cerrar_modals();
                 buscar_listado();
             });
             $.LoadingOverlay('hide');
         }
+    }
+
+    function actualizar_estado_comprobante(id_comprobante,estado_comprobante) {
+        mensaje = {
+            title: estado_comprobante == 1 ? '<i class="fa fa-fw fa-trash"></i> Desactivar comprobante' : '<i class="fa fa-fw fa-unlock"></i> Activar agencia de carga',
+            mensaje: estado_comprobante == 1 ? '<div class="alert alert-danger text-center"><i class="fa fa-fw fa-exclamation-triangle"></i> ¿Está seguro de desactivar este comprobante?</div>' :
+                '<div class="alert alert-info text-center"><i class="fa fa-fw fa-exclamation-triangle"></i> ¿Está seguro de activar este comprobante?</div>',
+        };
+        modal_quest('modal_actualizar_estado_comprobante', mensaje['mensaje'], mensaje['title'], true, false, '{{isPC() ? '25%' : ''}}', function () {
+            datos = {
+                _token: '{{csrf_token()}}',
+                id_comprobante: id_comprobante
+            };
+            $.LoadingOverlay('show');
+            $.post('{{url('comprobantes/actualizar_estado_comprobantes')}}', datos, function (retorno) {
+                if (retorno.success) {
+                    cerrar_modals();
+                    buscar_listado();
+                } else {
+                    alerta(retorno.mensaje);
+                }
+            }, 'json').fail(function (retorno) {
+                alerta(retorno.responseText);
+                alerta('Ha ocurrido un problema al cambiar el estado de la agencia de carga');
+            }).always(function () {
+                $.LoadingOverlay('hide');
+            })
+        });
     }
 </script>
