@@ -17,60 +17,64 @@
                     </a>
                     <a href="javascript:void(0)" class="list-group-item list-group-item-action"
                        title="Ver información personalizada" onclick="div_opcion_pedido_fijo(3)">
-                       PERSONALIZADO
+                        PERSONALIZADO
                     </a>
                 </div>
             </div>
             <div class="col-md-9" id="div_opciones_pedido_fijo"></div>
-    </div>
+        </div>
     @endif
     <div>
-        <div id="table_recepciones" >
-            <table width="100%" class="table table-responsive table-bordered" style="font-size: 0.8em; border-color: white" id="table_content_recepciones">
+        <div id="table_recepciones">
+            <table width="100%" class="table table-responsive table-bordered" style="font-size: 0.8em; border-color: white"
+                   id="table_content_recepciones">
                 <thead>
-                    <tr style="border: none;border-color: white">
-                        <th style="border: none;padding: 0 0 5px ;">
-                            @if(!$pedido_fijo)
-                                <div class="col-md-6">
-                                    <label for="Fecha de entrega" style="font-size: 11pt">Fecha de entrega</label>
-                                    <input type="date" id="fecha_de_entrega" name="fecha_de_entrega"
-                                          value="" class="form-control"  required>
-                                </div>
-                            @endif
-                            @if($vista === 'pedidos')
-                                    <div class="col-md-6">
-                                        <label for="Cliente" style="font-size: 11pt">Cliente</label>
-                                        <select class="form-control" id="id_cliente_venta" name="id_cliente_venta" onchange="cargar_espeicificaciones_cliente(true)" required>
-                                            <option disabled selected> Seleccione </option>
-                                             @foreach($clientes as $cliente)
-                                                <option value="{{$cliente->id_cliente}}"> {{$cliente->nombre}} </option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                            @endif
-                        </th>
-                        <th style="border: none"></th>
-                        <th style="border: none;text-align: right">
-                            <button type="button" id="btn_add_campos" onclick="add_campos(1,'{{$idCliente}}')" class="btn btn-success btn-xs"> <i class="fa fa-plus" aria-hidden="true"></i> </button>
-                            <button type="button" onclick="delete_campos(1)" id="btn_delete_inputs"  class="btn btn-danger btn-xs hide"> <i class="fa fa-trash " aria-hidden="true"></i> </button>
-                        </th>
-                    </tr>
-                    <tr style="background-color: #dd4b39; color: white">
-                        <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
-                            style="border-color: #9d9d9d">
-                            CANTIDAD
-                        </th>
-                        <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
-                            style="border-color: #9d9d9d">
-                            ESPECIFICIACIONES
-                        </th>
-                        <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
-                            style="border-color: #9d9d9d">
-                            AGENCIA DE CARGA
-                        </th>
-                    </tr>
+                <tr style="border: none;border-color: white">
+                    <th style="border: none;padding: 0 0 5px ;">
+                        @if(!$pedido_fijo)
+                            <div class="col-md-6">
+                                <label for="Fecha de entrega" style="font-size: 11pt">Fecha de entrega</label>
+                                <input type="date" id="fecha_de_entrega" name="fecha_de_entrega" onchange="buscar_saldos($(this).val())"
+                                       value="" class="form-control" required>
+                            </div>
+                        @endif
+                        @if($vista === 'pedidos')
+                            <div class="col-md-6">
+                                <label for="Cliente" style="font-size: 11pt">Cliente</label>
+                                <select class="form-control" id="id_cliente_venta" name="id_cliente_venta"
+                                        onchange="cargar_espeicificaciones_cliente(true)" required>
+                                    <option disabled selected> Seleccione</option>
+                                    @foreach($clientes as $cliente)
+                                        <option value="{{$cliente->id_cliente}}"> {{$cliente->nombre}} </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        @endif
+                    </th>
+                    <th style="border: none"></th>
+                    <th style="border: none;text-align: right">
+                        <button type="button" id="btn_add_campos" onclick="add_campos(1,'{{$idCliente}}')" class="btn btn-success btn-xs"><i
+                                    class="fa fa-plus" aria-hidden="true"></i></button>
+                        <button type="button" onclick="delete_campos(1)" id="btn_delete_inputs" class="btn btn-danger btn-xs hide"><i
+                                    class="fa fa-trash " aria-hidden="true"></i></button>
+                    </th>
+                </tr>
+                <tr style="background-color: #dd4b39; color: white">
+                    <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
+                        style="border-color: #9d9d9d">
+                        CANTIDAD
+                    </th>
+                    <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
+                        style="border-color: #9d9d9d">
+                        ESPECIFICIACIONES
+                    </th>
+                    <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
+                        style="border-color: #9d9d9d">
+                        AGENCIA DE CARGA
+                    </th>
+                </tr>
                 </thead>
-                <tbody id="tbody_inputs_pedidos"> </tbody>
+                <tbody id="tbody_inputs_pedidos"></tbody>
                 <table>
                     <tr>
                         <td>
@@ -92,3 +96,18 @@
         </div>
     </div>
 </form>
+
+@if(!$pedido_fijo)
+    <div id="div_content_saldos" style="margin-top: 10px"></div>
+
+    <script>
+        function buscar_saldos(fecha) {
+            datos = {
+                fecha: fecha
+            };
+            get_jquery('{{url('clientes/buscar_saldos')}}', datos, function (retorno) {
+                $('#div_content_saldos').html(retorno);
+            });
+        }
+    </script>
+@endif

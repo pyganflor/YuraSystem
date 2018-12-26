@@ -21,17 +21,13 @@
                     class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}">
                     Stock
                 </th>
-                <th style="border-color: #9d9d9d; background-color: #ce8483; color: white"
-                    class="text-center">
-                    Enviar a
-                </th>
             </tr>
             @foreach($clasificacion->lotes_reByVariedad($variedad->id_variedad) as $lote)
                 <tr onmouseover="$(this).css('background-color','#add8e6')" onmouseleave="$(this).css('background-color','')">
                     <th width="10%" class="text-center" style="border-color: #9d9d9d">
                         <span class="badge" title="Tallos">{{$lote->cantidad_tallos}}</span>
                         {{explode('|',$lote->clasificacion_unitaria->nombre)[0]}}
-                        {{$variedad->unidad_de_medida}}
+                        {{$lote->clasificacion_unitaria->unidad_medida->siglas}}
                     </th>
                     <th class="text-center" style="border-color: #9d9d9d">
                         @php
@@ -89,18 +85,6 @@
                             <input type="text" class="form-control text-center" readonly
                                    value="{{$lote->etapa == 'A' ? getStock($lote->id_variedad, $lote->id_clasificacion_unitaria) : '-'}}">
                         </div>
-                    </th>
-                    <th class="text-center mouse-hand" style="border-color: #9d9d9d" onmouseover="$(this).css('color','blue')"
-                        onmouseleave="$(this).css('color','')" onclick="destinar_a('{{$lote->id_lote_re}}','{{$lote->etapa}}')">
-                        @if($lote->etapa == 'A')
-                            Guarde (apertura)
-                        @elseif($lote->etapa == 'C')
-                            Apertura
-                        @elseif($lote->etapa == 'G')
-                            Listo para empaquetar
-                        @elseif($lote->etapa == 'E')
-                            Empaquetado
-                        @endif
                     </th>
                 </tr>
             @endforeach

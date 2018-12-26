@@ -67,7 +67,8 @@ class ClasificacionVerdeController extends Controller
         $listado = DB::table('detalle_clasificacion_verde as d')
             ->join('variedad as v', 'v.id_variedad', '=', 'd.id_variedad')
             ->join('clasificacion_unitaria as u', 'u.id_clasificacion_unitaria', '=', 'd.id_clasificacion_unitaria')
-            ->select('d.*', 'v.nombre as nombre_variedad', 'v.siglas as siglas_variedad', 'v.unidad_de_medida as medida_variedad', 'u.nombre as nombre_unitaria')->distinct();
+            ->join('unidad_medida as um', 'um.id_unidad_medida', '=', 'u.id_unidad_medida')
+            ->select('d.*', 'v.nombre as nombre_variedad', 'v.siglas as siglas_variedad', 'um.siglas as unidad_medida', 'u.nombre as nombre_unitaria')->distinct();
 
         if ($request->id_variedad != '')
             $listado = $listado->where('d.id_variedad', '=', $request->id_variedad);

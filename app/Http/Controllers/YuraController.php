@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Session;
 use phpseclib\Crypt\RSA;
 use yura\Modelos\ConfiguracionUser;
 use yura\Modelos\Rol;
+use yura\Modelos\StockApertura;
 use yura\Modelos\Submenu;
 use yura\Modelos\Usuario;
 use Validator;
@@ -468,5 +469,41 @@ class YuraController extends Controller
             'success' => $success,
             'mensaje' => $msg,
         ];
+    }
+
+    public function buscar_saldos(Request $request)
+    {
+        $arreglo = [];
+        if ($request->fecha >= date('Y-m-d')) {
+            for ($i = 1; $i <= 3; $i++) {
+                $fecha = opDiasFecha('-', $i, $request->fecha);
+                if ($fecha >= date('Y-m-d')) {
+                    array_push($arreglo, $fecha);
+                }
+            }
+            array_push($arreglo, $request->fecha);
+            for ($i = 1; $i <= 3; $i++) {
+                $fecha = opDiasFecha('+', $i, $request->fecha);
+                array_push($arreglo, $fecha);
+            }
+        }
+        $arreglo = array_sort($arreglo);
+        $listado = StockApertura::All()->where('estado', '=', 1)->where('disponibilidad', '=', 1);
+        $return = [];
+        foreach ($arreglo as $fecha) {
+            $r = [];
+            foreach ($listado as $stock) {
+                $fecha_stock = opDiasFecha('+', $stock->dias, $stock->fecha_inicio);
+                if ($fecha_stock == $fecha) {
+                    array_push($r, $stock);
+                }
+            }
+            array_push($return, [
+                'fecha' => $fecha,
+                'stocks' => $r
+            ]);
+        }
+        dd($return);
+        return '';
     }
 }
