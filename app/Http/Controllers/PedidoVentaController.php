@@ -35,6 +35,7 @@ class PedidoVentaController extends Controller
         $busquedaAnno   = $request->has('anno') ? $request->anno : '';
         $busquedaDesde  = $request->has('desde') ? $request->desde : '';
         $busquedaHasta  = $request->has('hasta') ? $request->hasta : '';
+
         $listado = DB::table('pedido as p')
             ->join('cliente_pedido_especificacion as cpe', 'p.id_cliente','=','cpe.id_cliente')
             ->join('especificacion as esp','cpe.id_especificacion','=','esp.id_especificacion')
@@ -44,8 +45,16 @@ class PedidoVentaController extends Controller
         if ($request->anno != '')
             $listado = $listado->where(DB::raw('YEAR(p.fecha_pedido)'), $busquedaAnno );
 
+        $ultimoPedido=null;
+        if($busquedaHasta == "")
             $ultimoPedido = Pedido::select('fecha_pedido')->orderBy('fecha_pedido','desc')->first();
-            $listado = $listado->whereBetween('p.fecha_pedido', [!empty($busquedaDesde) ? $busquedaDesde : '2000-01-01',!empty($busquedaHasta) ? $busquedaHasta : !empty($ultimoPedido) ? $ultimoPedido : '']);
+
+        if(!empty($ultimoPedido))
+            $ultimoPedido = $ultimoPedido->fecha_pedido;
+        else
+            $ultimoPedido = '';
+
+            $listado = $listado->whereBetween('p.fecha_pedido', [!empty($busquedaDesde) ? $busquedaDesde : '2000-01-01',!empty($busquedaHasta) ? $busquedaHasta : $ultimoPedido]);
 
             if ($request->id_cliente != '')
             $listado = $listado->where('p.id_cliente',$busquedaCliente );
@@ -56,6 +65,7 @@ class PedidoVentaController extends Controller
             'listado'    => $listado,
             'idCliente'  => $request->id_cliente,
         ];
+
         return view('adminlte.gestion.postcocecha.pedidos_ventas.partials.listado',$datos);
     }
 
