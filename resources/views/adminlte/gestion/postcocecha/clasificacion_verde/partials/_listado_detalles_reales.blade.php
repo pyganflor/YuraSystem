@@ -37,7 +37,7 @@
                     id="row_detalles_reales_{{$item->id_clasificacion_verde}}">
                     <td style="border-color: #9d9d9d" class="text-center">{{substr($item->fecha_registro,11,5)}}</td>
                     <td style="border-color: #9d9d9d" class="text-center">{{$item->nombre_variedad}}</td>
-                    <td style="border-color: #9d9d9d" class="text-center">{{explode('|',$item->nombre_unitaria)[0].''.$item->medida_variedad}}</td>
+                    <td style="border-color: #9d9d9d" class="text-center">{{explode('|',$item->nombre_unitaria)[0].''.$item->unidad_medida}}</td>
                     <td style="border-color: #9d9d9d" class="text-center">
                         {{$item->cantidad_ramos}}
                     </td>

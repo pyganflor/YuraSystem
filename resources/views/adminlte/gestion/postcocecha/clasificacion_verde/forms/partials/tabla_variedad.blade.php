@@ -21,7 +21,7 @@
         @foreach($unitarias as $unitaria)
             <tr>
                 <th class="text-center" style="border-color: #9d9d9d">
-                    {{explode('|',$unitaria->nombre)[0]}} {{$variedad->unidad_de_medida}}
+                    {{explode('|',$unitaria->nombre)[0]}} {{$unitaria->unidad_medida->siglas}}
                 </th>
                 <td class="text-center" style="border-color: #9d9d9d">
                     <input type="number" id="cantidad_ramos_{{$unitaria->id_clasificacion_unitaria}}" min="0"

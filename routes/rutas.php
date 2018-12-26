@@ -15,17 +15,17 @@ Route::get('login', 'YuraController@login');
 Route::post('login', 'YuraController@verificaUsuario');
 Route::get('logout', 'YuraController@logout');
 
-Route::get('prueba-wsdl',function (){
+Route::get('prueba-wsdl', function () {
     $url = 'https://celcer.sri.gob.ec/comprobantes-electronicos-ws/RecepcionComprobantes?wsdl';
     $cliente = new SoapClient($url);
-    $c  = $cliente;
+    $c = $cliente;
     //$c  = $cliente->__getTypes();
-   // dd($c);
+    // dd($c);
     $xml = file_get_contents("C:/factura.xml");
     //dd($xml);
-    $byteArray = unpack("N*",$xml);
+    $byteArray = unpack("N*", $xml);
     //dd($byteArray);
-    dd($c->validarComprobante(['xml'=>$byteArray]));
+    dd($c->validarComprobante(['xml' => $byteArray]));
 });
 
 Route::get('configuracion/inputs_dinamicos_detalle_empaque', 'ConfiguracionEmpresaController@vistaInputsDetallesEmpaque')->name('view.inputs_detalle_empaque');
@@ -67,6 +67,6 @@ Route::group(['middleware' => 'autenticacion'], function () {
         include 'postcocecha/pedidos_ventas.php';
         include 'postcocecha/envios.php';
         include 'postcocecha/agencias_transporte.php';
-    });
+        });
 
 });

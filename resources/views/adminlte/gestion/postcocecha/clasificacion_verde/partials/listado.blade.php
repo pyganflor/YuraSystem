@@ -97,7 +97,7 @@
                                                     @foreach(getClasificacionVerde($item->id_clasificacion_verde)->unitarias() as $unitaria)
                                                         <th style="border-color: #9d9d9d; background-color: #e9ecef" class="text-center"
                                                             width="{{100 / count(getClasificacionVerde($item->id_clasificacion_verde)->unitarias())}}%">
-                                                            {{explode('|',$unitaria->nombre)[0]}}{{getVariedad($variedad->id_variedad)->unidad_de_medida}}
+                                                            {{explode('|',$unitaria->nombre)[0]}}{{$unitaria->unidad_medida->siglas}}
                                                         </th>
                                                     @endforeach
                                                 </tr>

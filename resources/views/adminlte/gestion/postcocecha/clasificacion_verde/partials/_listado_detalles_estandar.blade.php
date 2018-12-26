@@ -26,7 +26,7 @@
                 <tr onmouseover="$(this).css('background-color','#add8e6')" onmouseleave="$(this).css('background-color','')">
                     <td style="border-color: #9d9d9d" class="text-center">{{getVariedad($item->id_variedad)->nombre}}</td>
                     <td style="border-color: #9d9d9d" class="text-center">
-                        {{explode('|',getUnitaria($item->id_clasificacion_unitaria)->nombre)[0].''.getVariedad($item->id_variedad)->unidad_de_medida}}
+                        {{explode('|',getUnitaria($item->id_clasificacion_unitaria)->nombre)[0].''.getUnitaria($item->id_clasificacion_unitaria)->unidad_medida->siglas}}
                     </td>
                     <td style="border-color: #9d9d9d" class="text-center">
                         {{round($clasificacion->getTallosByvariedadUnitaria($item->id_variedad, $item->id_clasificacion_unitaria) /

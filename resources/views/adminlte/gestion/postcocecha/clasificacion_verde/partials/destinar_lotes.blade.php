@@ -32,7 +32,7 @@
                                     <span class="badge" id="badge_tallos_x_unitaria_{{$unitaria->id_clasificacion_unitaria}}">
                                         {{$clasificacion->getTallosByvariedadUnitaria($variedad->id_variedad, $unitaria->id_clasificacion_unitaria)}}
                                     </span>
-                                {{explode('|',$unitaria->nombre)[0]}}{{$variedad->unidad_de_medida}}
+                                {{explode('|',$unitaria->nombre)[0]}}{{$unitaria->unidad_medida->siglas}}
                                 <input type="hidden" id="tallos_x_unitaria_{{$unitaria->id_clasificacion_unitaria}}"
                                        name="tallos_x_unitaria_{{$unitaria->id_clasificacion_unitaria}}"
                                        value="{{$clasificacion->getTallosByvariedadUnitaria($variedad->id_variedad, $unitaria->id_clasificacion_unitaria)}}">
