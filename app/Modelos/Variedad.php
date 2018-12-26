@@ -33,15 +33,20 @@ class Variedad extends Model
     public function getDisponiblesToFecha($fecha)
     {
         $r = 0;
+        $r_a = 0;   // acumulado
         $l = StockApertura::All()->where('estado', '=', 1)->where('disponibilidad', '=', 1)
             ->where('id_variedad', '=', $this->id_variedad);
         foreach ($l as $item) {
             if (opDiasFecha('+', $item->dias, $item->fecha_inicio) == $fecha) {
-                $r += $item->cantidad_disponible;
+                $r += $item->calcularDisponibles()['estandar'];
+                $r_a += $item->getDisponibles('estandar');
             }
         }
 
-        return $r;
+        return [
+            'cosechado' => $r,
+            'acumulado' => $r_a,
+        ];
     }
 
     public function getPedidosToFecha($fecha)
@@ -49,10 +54,18 @@ class Variedad extends Model
         $r = 0;
         $l = getResumenPedidosByFecha($fecha, $this->id_variedad);
         foreach ($l as $item) {
-            dd($item);
             $ramo = ClasificacionRamo::find($item->id_clasificacion_ramo);
             $estandar = getCalibreRamoEstandar();
             $conversion = round(($ramo->nombre / $estandar->nombre) * $item->cantidad, 2);
+            $r += $conversion;
         }
+        $l = getResumenPedidosByFechaOfTallos($fecha, $this->id_variedad);
+        foreach ($l as $item) {
+            $ramo = ClasificacionRamo::find($item->id_clasificacion_ramo);
+            $estandar = getCalibreRamoEstandar();
+            $conversion = round(($ramo->nombre / $estandar->nombre) * $item->cantidad, 2);
+            $r += $conversion;
+        }
+        return $r;
     }
 }
