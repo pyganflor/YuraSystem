@@ -474,15 +474,15 @@ class YuraController extends Controller
     public function buscar_saldos(Request $request)
     {
         $arreglo = [];
+        $antes = $request->antes != '' ? $request->antes : 3;
+        $despues = $request->despues != '' ? $request->despues : 3;
         if ($request->fecha >= date('Y-m-d')) {
-            for ($i = 1; $i <= 3; $i++) {
+            for ($i = 1; $i <= $antes; $i++) {
                 $fecha = opDiasFecha('-', $i, $request->fecha);
-                if ($fecha >= date('Y-m-d')) {
-                    array_push($arreglo, $fecha);
-                }
+                array_push($arreglo, $fecha);
             }
             array_push($arreglo, $request->fecha);
-            for ($i = 1; $i <= 3; $i++) {
+            for ($i = 1; $i <= $despues; $i++) {
                 $fecha = opDiasFecha('+', $i, $request->fecha);
                 array_push($arreglo, $fecha);
             }
@@ -491,6 +491,8 @@ class YuraController extends Controller
         return view('adminlte.gestion.postcocecha.pedidos.forms.paritals.saldos', [
             'fechas' => $arreglo,
             'fecha' => $request->fecha,
+            'antes' => $antes,
+            'despues' => $despues,
         ]);
     }
 }

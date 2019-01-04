@@ -75,8 +75,16 @@
     <input type="hidden" id="id_variedad" name="id_variedad" value="{{$variedad->id_variedad}}">
 </form>
 
-<div class="text-center" id="btn_store_verde">
-    <button type="button" class="btn btn-success btn-sm" onclick="store_verde()">
-        <i class="fa fa-fw fa-save"></i> Guardar
-    </button>
-</div>
+@if($clasificacion_verde == '')
+    <div class="text-center" id="btn_store_verde">
+        <button type="button" class="btn btn-success btn-sm" onclick="store_verde()">
+            <i class="fa fa-fw fa-save"></i> Guardar
+        </button>
+    </div>
+@elseif($clasificacion_verde->activo == 1)
+    <div class="text-center" id="btn_store_verde">
+        <button type="button" class="btn btn-success btn-sm" onclick="store_verde()">
+            <i class="fa fa-fw fa-save"></i> Guardar
+        </button>
+    </div>
+@endif

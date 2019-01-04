@@ -34,7 +34,7 @@
                         @if(!$pedido_fijo)
                             <div class="col-md-6">
                                 <label for="Fecha de entrega" style="font-size: 11pt">Fecha de entrega</label>
-                                <input type="date" id="fecha_de_entrega" name="fecha_de_entrega" onchange="buscar_saldos($(this).val())"
+                                <input type="date" id="fecha_de_entrega" name="fecha_de_entrega" onchange="buscar_saldos($(this).val(), 3, 3)"
                                        value="" class="form-control" required>
                             </div>
                         @endif
@@ -101,9 +101,11 @@
     <div id="div_content_saldos" style="margin-top: 10px"></div>
 
     <script>
-        function buscar_saldos(fecha) {
+        function buscar_saldos(fecha, antes, despues) {
             datos = {
-                fecha: fecha
+                fecha: fecha,
+                antes: antes,
+                despues: despues
             };
             get_jquery('{{url('clientes/buscar_saldos')}}', datos, function (retorno) {
                 $('#div_content_saldos').html(retorno);

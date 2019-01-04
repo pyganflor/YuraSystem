@@ -1,0 +1,10 @@
+TRUNCATE `bitacora`;
+TRUNCATE `clasificacion_verde`;
+TRUNCATE `consumo`;
+TRUNCATE `desglose_recepcion`;
+TRUNCATE `detalle_clasificacion_verde`;
+TRUNCATE `recepcion`;
+TRUNCATE `recepcion_clasificacion_verde`;
+TRUNCATE `stock_apertura`;
+TRUNCATE `stock_empaquetado`;
+TRUNCATE `stock_frio`;

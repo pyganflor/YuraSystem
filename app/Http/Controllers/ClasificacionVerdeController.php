@@ -152,7 +152,8 @@ class ClasificacionVerdeController extends Controller
     {
         return view('adminlte.gestion.postcocecha.clasificacion_verde.forms.partials.tabla_variedad', [
             'variedad' => Variedad::find($request->id_variedad),
-            'unitarias' => ClasificacionUnitaria::All()->where('estado', '=', 1)
+            'unitarias' => ClasificacionUnitaria::All()->where('estado', '=', 1),
+            'clasificacion_verde' => ClasificacionVerde::find($request->id_clasificacion_verde)
         ]);
     }
 
@@ -311,6 +312,27 @@ class ClasificacionVerdeController extends Controller
                         }
                     }
                 }
+
+                /* ================= GUARDAR TABLA RECEPCION_CLASIFICACION_VERDE ===================*/
+                foreach (explode('|', $request->recepciones) as $item) {
+                    $relacion = RecepcionClasificacionVerde::where('id_recepcion', '=', $item)->where('id_clasificacion_verde', '=', $verde->id_clasificacion_verde)->first();
+                    if ($relacion == '') {
+                        $relacion = new RecepcionClasificacionVerde();
+                        $relacion->id_recepcion = $item;
+                        $relacion->id_clasificacion_verde = $verde->id_clasificacion_verde;
+                        $relacion->fecha_registro = date('Y-m-d H:i:s');
+                        if ($relacion->save()) {
+                            $relacion = ClasificacionVerde::All()->last();
+                            bitacora('recepcion_clasificacion_verde', $relacion->id_recepcion_clasificacion_verde, 'I', 'Inserción satisfactoria de una nueva relacion recepcion-clasificación en verde');
+                        } else {
+                            $success = false;
+                            $msg = '<div class="alert alert-warning text-center">' .
+                                '<p> Ha ocurrido un problema al guardar la recepción del día ' . Recepcion::find($item)->fecha_ingreso . '</p>'
+                                . '</div>';
+                        }
+                    }
+                }
+
                 if ($success) {
                     $msg = '<div class="alert alert-success text-center">' .
                         'Se ha guardado toda la información satisfactoriamente'
@@ -481,6 +503,20 @@ class ClasificacionVerdeController extends Controller
             if (count($request->arreglo) > 0) {
                 $verde = ClasificacionVerde::find($request->id_clasificacion_verde);
                 $detalles = $verde->detalles;
+
+                /* ================= ACTUALIZR CLASIFICACION_VERDE =================*/
+                if ($request->terminar == 0) {
+                    $verde->activo = 0;
+
+                    if ($verde->save()) {
+                        bitacora('clasificacion_verde', $verde->id_clasificacion_verde, 'U', 'Actualizacion satisfactoria del campo activo de una clasificacion en verde');
+                    } else {
+                        $success = false;
+                        $msg .= '<div class="alert alert-warning text-center">' .
+                            '<p> Ha ocurrido un problema al terminar la clasificación en verde'
+                            . '</div>';
+                    }
+                }
 
                 /* ================= GUARDAR TABLA LOTE_RE ===================*/
                 foreach ($request->arreglo as $item) {
@@ -689,5 +725,25 @@ class ClasificacionVerdeController extends Controller
             'mensaje' => $msg,
             'success' => $success
         ];
+    }
+
+    public function terminar(Request $request)
+    {
+        $model = ClasificacionVerde::find($request->id_clasificacion_verde);
+        $model->activo = 0;
+
+        if ($model->save()) {
+            bitacora('clasificacion_verde', $model->id_clasificacion_verde, 'U', 'Terminacion satisfactia de una clasificacion en verde');
+
+            return [
+                'success' => true,
+                'mensaje' => '<div class="alert alert-success text-center">Se ha terminado satisfactoriamente la clasificación</div>'
+            ];
+        } else {
+            return [
+                'success' => false,
+                'mensaje' => '<div class="alert alert-warning text-center">No se pudo terminar la clasificación</div>'
+            ];
+        }
     }
 }

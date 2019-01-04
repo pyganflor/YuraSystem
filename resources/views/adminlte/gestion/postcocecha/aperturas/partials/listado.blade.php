@@ -8,7 +8,6 @@
                     <tr>
                         <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
                             style="border-color: #9d9d9d">
-
                         </th>
                         <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
                             style="border-color: #9d9d9d">
@@ -64,7 +63,7 @@
                                        name="ramos_convertidos_{{$apertura->id_stock_apertura}}" class="ramos_convertidos"
                                        value="{{getStockById($apertura->id_stock_apertura)->calcularDisponibles()['estandar']}}">
 
-                                {{getSemanaByDate($apertura->fecha_inicio)->codigo}}
+                                {{getSemanaByDateVariedad($apertura->fecha_inicio, getStockById($apertura->id_stock_apertura)->id_variedad)->codigo}}
                             </td>
                             <td class="text-center" style="border-color: #9d9d9d">
                                 {{explode('|',getStockById($apertura->id_stock_apertura)->clasificacion_unitaria->nombre)[0]}}
@@ -146,13 +145,13 @@
                                 </td>
                                 <td style="border-bottom-color: #9d9d9d"></td>
                                 <td style="border-bottom-color: #9d9d9d"></td>
-                                <td style="border-bottom-color: #9d9d9d; border-right-color: #9d9d9d"></td>
                                 <th class="text-center" style="border-color: #9d9d9d">Total</th>
                                 <th class="text-center" style=" border-color: #9d9d9d"
                                     id="celda_total_ramos_{{substr($apertura->fecha_inicio,0,10)}}">
                                     {{$total_ramos}}
                                 </th>
                                 <th class="text-center" style=" border-color: #9d9d9d">{{$total_disponibles}}</th>
+                                <td style="border-bottom-color: #9d9d9d; border-right-color: #9d9d9d"></td>
                                 <td style="border-bottom-color: #9d9d9d; border-right-color: #9d9d9d"></td>
                             </tr>
                             @php

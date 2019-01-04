@@ -36,14 +36,29 @@ class Variedad extends Model
         $r_a = 0;   // acumulado
         $l = StockApertura::All()->where('estado', '=', 1)->where('disponibilidad', '=', 1)
             ->where('id_variedad', '=', $this->id_variedad);
+        $pedidos = 0;
         foreach ($l as $item) {
             if (opDiasFecha('+', $item->dias, $item->fecha_inicio) == $fecha) {
                 $r += $item->calcularDisponibles()['estandar'];
                 $r_a += $item->getDisponibles('estandar');
             }
         }
+        if ($r_a > 0) {
+            $fecha_p = Pedido::All()->where('estado', '=', 1)->where('empaquetado', '=', 0)
+                ->sortBy('fecha_pedidos')->first()->fecha_pedido;
+            if ($fecha >= $fecha_p)
+                $dias_last_pedido = difFechas($fecha, $fecha_p)->days;
+            else
+                $dias_last_pedido = 0;
+
+            for ($i = 1; $i <= $dias_last_pedido; $i++) {
+                $pedidos += $this->getPedidosToFecha(opDiasFecha('-', $i, $fecha));
+            }
+        }
+
         return [
             'cosechado' => $r,
+            'saldo' => $r_a - $pedidos,
             'acumulado' => $r_a,
         ];
     }

@@ -21,6 +21,7 @@ use yura\Modelos\Semana;
 use yura\Modelos\LoteRE;
 use yura\Modelos\UnidadMedida;
 use yura\Modelos\Consumo;
+use yura\Modelos\Grosor;
 
 /*
  * -------- BITÁCORA DE LAS ACCIONES ECHAS POR EL USUARIO ------
@@ -638,6 +639,11 @@ function getClasificacionVerde($id)
     return ClasificacionVerde::find($id);
 }
 
+function getGrosor($id)
+{
+    return Grosor::find($id);
+}
+
 function getRecepcion($id)
 {
     return Recepcion::find($id);
@@ -730,8 +736,9 @@ function getPedidos($idPedido)
     return $dataPedido;
 }
 
-function getUnidadMedida($id){
-    return UnidadMedida::where('id_unidad_medida',$id)->select('siglas')->first();
+function getUnidadMedida($id)
+{
+    return UnidadMedida::where('id_unidad_medida', $id)->select('siglas')->first();
 }
 
 function getEspeficiacionesPedido($idEspecificacion)
@@ -797,6 +804,16 @@ function getStockToFecha($variedad, $unitaria, $fecha, $dias)
 function getSemanaByDate($fecha)
 {
     $r = Semana::All()
+        ->where('fecha_inicial', '<=', $fecha)
+        ->where('fecha_final', '>=', $fecha)->first();
+
+    return $r;
+}
+
+function getSemanaByDateVariedad($fecha, $variedad)
+{
+    $r = Semana::All()
+        ->where('id_variedad', '=', $variedad)
         ->where('fecha_inicial', '<=', $fecha)
         ->where('fecha_final', '>=', $fecha)->first();
 
@@ -899,4 +916,28 @@ function getDestinadosToFrioByFecha($fecha, $variedad)
     if ($consumo != '')
         return $consumo->getDestinados($variedad);
     return 0;
+}
+
+/* ============ Calcular la cantidad de cajas equivalentes segun grosor_variedad ==============*/
+function getEquivalentesByGrosorVariedad($fecha, $grosor, $variedad)
+{
+    $r = 0;
+    $listado = DB::table('pedido as p')
+        ->join('detalle_pedido as dp', 'dp.id_pedido', '=', 'p.id_pedido')
+        ->join('cliente_pedido_especificacion as cpe', 'cpe.id_cliente_pedido_especificacion', '=', 'dp.id_cliente_especificacion')
+        ->join('especificacion_empaque as ee', 'ee.id_especificacion', '=', 'cpe.id_especificacion')
+        ->join('detalle_especificacionempaque as dee', 'dee.id_especificacion_empaque', '=', 'ee.id_especificacion_empaque')
+        ->select('dee.cantidad as cantidad_ramos', 'ee.cantidad as cantidad_empaques', 'dp.cantidad as cantidad_pedidos')
+        ->where('p.estado', '=', 1)
+        ->where('p.empaquetado', '=', 0)
+        ->where('p.fecha_pedido', '=', $fecha)
+        ->where('dee.id_grosor_ramo', '=', $grosor)
+        ->where('dee.id_variedad', '=', $variedad)
+        ->get();
+
+    foreach ($listado as $item) {
+        $ramos = $item->cantidad_ramos * $item->cantidad_empaques * $item->cantidad_pedidos;
+        $r += round($ramos / getConfiguracionEmpresa()->ramos_x_caja, 2);
+    }
+    return $r;
 }

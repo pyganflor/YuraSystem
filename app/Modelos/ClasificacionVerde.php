@@ -18,6 +18,7 @@ class ClasificacionVerde extends Model
         'estado',
         'fecha_ingreso',
         'id_semana',
+        'activo',
     ];
 
     public function lotes_re()

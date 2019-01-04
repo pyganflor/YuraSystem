@@ -1,26 +1,25 @@
 <script>
-    function buscar_stock() {
+    function listar_resumen_pedidos(fecha) {
         $.LoadingOverlay('show');
         datos = {
-            variedad: $('#variedad_search').val(),
-            unitaria: $('#unitaria_search').val(),
+            fecha: fecha,
         };
-        $.get('{{url('clasificacion_blanco/buscar_stock')}}', datos, function (retorno) {
-            $('#div_listado_aperturas').html(retorno);
-            //estructura_tabla('table_content_aperturas');
-            buscar_pedidos();
+        $.get('{{url('clasificacion_blanco/listar_resumen_pedidos')}}', datos, function (retorno) {
+            $('#div_listado_blanco').html(retorno);
         }).always(function () {
             $.LoadingOverlay('hide');
         });
     }
 
-    function buscar_pedidos() {
+    function empaquetar(fecha) {
+        $.LoadingOverlay('show');
         datos = {
-            fecha_pedidos: $('#fecha_pedidos').val(),
+            fecha: fecha,
         };
-        get_jquery('{{url('clasificacion_blanco/buscar_pedidos')}}', datos, function (retorno) {
-            $('#div_listado_pedidos').html(retorno);
-            $('#btn_sacar').hide();
+        $.get('{{url('clasificacion_blanco/empaquetar')}}', datos, function (retorno) {
+            modal_view('modal_view_empaquetar', retorno, '<i class="fa fa-fw fa-gift"></i> Empaquetar', true, false, '{{isPc() ? '35%' : ''}}');
+        }).always(function () {
+            $.LoadingOverlay('hide');
         });
     }
 </script>

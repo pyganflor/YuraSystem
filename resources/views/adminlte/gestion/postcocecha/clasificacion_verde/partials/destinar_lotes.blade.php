@@ -5,6 +5,8 @@
             <strong>{{$variedad->planta->nombre}} - {{$variedad->nombre}}</strong>
             <em class="badge">{{$clasificacion->fecha_ingreso}}</em>
         </h3>
+        <input type="text" id="terminar_calsificacion_verde" value="{{$clasificacion->activo}}">
+
     </div>
     <input type="hidden" id="id_variedad" value="{{$variedad->id_variedad}}">
     <input type="hidden" id="fecha_ingreso" value="{{$clasificacion->fecha_ingreso}}">
@@ -141,19 +143,37 @@
                 }
             }
             if (success) {
+                if ($('#terminar_calsificacion_verde').val() == 0)
+                    terminar = 1;
+                else
+                    terminar = 0;
+
                 datos = {
                     _token: '{{csrf_token()}}',
                     fecha: $('#fecha_ingreso').val(),
                     id_variedad: $('#id_variedad').val(),
                     id_clasificacion_verde: $('#id_clasificacion_verde').val(),
-                    arreglo: arreglo
+                    arreglo: arreglo,
+                    terminar: terminar
                 };
 
-                post_jquery('{{url('clasificacion_verde/store_lote_re')}}', datos, function () {
-                    buscar_listado();
-                    ver_lotes($('#id_variedad').val(), $('#id_clasificacion_verde').val());
-                    cerrar_modals();
-                });
+                if ($('#terminar_calsificacion_verde').val() == 1)
+                    modal_quest('modal_quest_terminar_clasificacion',
+                        '<div class="alert alert-info text-center">Al destinar esta clasificación en verde no podrá volver a clasificar más ramos en la fecha seleccionada</div>',
+                        '<i class="fa fa-fw fa-exclamation-triangle"></i> Mensaje de alerta', true, false, '{{isPc() ? '35%' : ''}}', function () {
+                            post_jquery('{{url('clasificacion_verde/store_lote_re')}}', datos, function () {
+                                buscar_listado();
+                                ver_lotes($('#id_variedad').val(), $('#id_clasificacion_verde').val());
+                                cerrar_modals();
+                            });
+                        });
+                else {
+                    post_jquery('{{url('clasificacion_verde/store_lote_re')}}', datos, function () {
+                        buscar_listado();
+                        ver_lotes($('#id_variedad').val(), $('#id_clasificacion_verde').val());
+                        cerrar_modals();
+                    });
+                }
             } else {
                 alerta('<p class="text-center">Debe distribuir la cantidad exacta de tallos entre Apertura y Guarde</p>');
             }

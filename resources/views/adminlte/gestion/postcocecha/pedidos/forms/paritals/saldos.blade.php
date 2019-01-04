@@ -2,9 +2,17 @@
     <div class="box-header with-border">
         <h4>
             Disponibilidad
+            <strong class="pull-right" style="font-size: 0.8em">
+                <input type="number" onkeypress="return isNumber(event)" id="antes" name="antes" value="{{$antes}}" min="0" max="7"
+                       onchange="buscar_saldos('{{$fecha}}',$('#antes').val(),$('#despues').val())" style="width: 50px;">
+                días antes y
+                <input type="number" onkeypress="return isNumber(event)" id="despues" name="despues" value="{{$despues}}"
+                       onchange="buscar_saldos('{{$fecha}}',$('#antes').val(),$('#despues').val())" style="width: 50px;">
+                después
+            </strong>
         </h4>
     </div>
-    <div class="box-body" style="overflow-x: scroll; max-width: 100%">
+    <div class="box-body" style="overflow-x: scroll; overflow-y: scroll; max-width: 100%; height: 810px">
         <table class="table table-responsive table-bordered" width="100%"
                style="border: 2px solid #9d9d9d; font-size: 0.8em;">
             <tr>
@@ -34,6 +42,7 @@
                     <th class="text-center"
                         style="border-color: #9d9d9d; background-color: {{$item == $fecha ? '#b9ffb4' : '#e9ecef'}}; border-bottom: 3px solid #9d9d9d; text-align:center"
                         rowspan="4">
+                        {{getDias(TP_ABREVIADO,FR_ARREGLO)[transformDiaPhp(date('w',strtotime($item)))]}}
                         {{convertDateToText($item)}}
                     </th>
                 </tr>
@@ -46,7 +55,11 @@
                             {{$variedad->getDisponiblesToFecha($item)['cosechado']}}
                         </td>
                         <td class="text-center" style="border-color: #9d9d9d" title="Acumulado">
-                            {{$variedad->getDisponiblesToFecha($item)['acumulado']}}
+                            @if($variedad->getPedidosToFecha($item) && $variedad->getDisponiblesToFecha($item)['acumulado'])
+                                {{$variedad->getDisponiblesToFecha($item)['saldo']}}
+                            @else
+                                0
+                            @endif
                         </td>
                     @endforeach
                 </tr>
@@ -70,11 +83,11 @@
                                 $saldo = $variedad->getDisponiblesToFecha($item)['cosechado'] - $variedad->getPedidosToFecha($item);
                             @endphp
                             @if($saldo > 0)
-                                <span class="badge sombra_pequeña" style="background-color: #b9ffb4; color: #0a0a0a">
+                                <span class="badge" style="background-color: #b9ffb4; color: #0a0a0a; border: 1px solid #9d9d9d">
                                 {{$saldo}}
                             </span>
                             @elseif($saldo < 0)
-                                <span class="badge" style="background-color: #ce8483">
+                                <span class="badge" style="background-color: #ce8483;">
                                 {{$saldo}}
                             </span>
                             @else
@@ -84,21 +97,25 @@
                             @endif
                         </td>
                         <td class="text-center" style="border-color: #9d9d9d" title="Acumulado">
-                            @php
-                                $saldo = $variedad->getDisponiblesToFecha($item)['acumulado'] - $variedad->getPedidosToFecha($item);
-                            @endphp
-                            @if($saldo > 0)
-                                <span class="badge sombra_pequeña" style="background-color: #b9ffb4; color: #0a0a0a">
-                                {{$saldo}}
-                            </span>
-                            @elseif($saldo < 0)
-                                <span class="badge" style="background-color: #ce8483">
-                                {{$saldo}}
-                            </span>
+                            @if($variedad->getPedidosToFecha($item) && $variedad->getDisponiblesToFecha($item)['acumulado'])
+                                @php
+                                    $saldo = $variedad->getDisponiblesToFecha($item)['saldo'] - $variedad->getPedidosToFecha($item);
+                                @endphp
+                                @if($saldo > 0)
+                                    <span class="badge" style="background-color: #b9ffb4; color: #0a0a0a; border: 1px solid #9d9d9d">
+                                        {{$saldo}}
+                                    </span>
+                                @elseif($saldo < 0)
+                                    <span class="badge" style="background-color: #ce8483;">
+                                        {{$saldo}}
+                                    </span>
+                                @else
+                                    <span class="badge">
+                                        {{$saldo}}
+                                    </span>
+                                @endif
                             @else
-                                <span class="badge">
-                                {{$saldo}}
-                            </span>
+                                <span class="badge">0</span>
                             @endif
                         </td>
                     @endforeach
