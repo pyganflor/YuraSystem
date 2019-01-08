@@ -4,6 +4,8 @@ namespace yura\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use yura\Modelos\Pedido;
+use yura\Modelos\StockEmpaquetado;
 use yura\Modelos\Submenu;
 use yura\Modelos\Variedad;
 
@@ -119,5 +121,55 @@ class ClasificacionBlancoController extends Controller
             'stock_frio' => $stock_frio,
             'fecha' => $request->fecha
         ]);
+    }
+
+    public function update_stock_empaquetado(Request $request)
+    {
+        $success = true;
+        $msg = '';
+        if (count($request->arreglo) > 0) {
+            foreach ($request->arreglo as $item) {
+                $stock = StockEmpaquetado::find($item['id']);
+                $stock->cantidad_empaquetada = $item['cantidad'];
+                $stock->empaquetado = 1;
+
+                if ($stock->save()) {
+                    bitacora('stock_empaquetado', $stock->id_stock_empaquetado, 'U', 'Actualizacion satisfactoria del stock_empaquetado');
+                } else {
+                    $success = false;
+                    $msg .= '<div class="alert alert-warning text-center">' .
+                        'Ha ocurrido un problema con la variedad: "' . Variedad::find($stock->id_variedad)->nombre .
+                        '"</div>';
+                }
+            }
+            /* =========== ACTUALIZAR TABLA PEDIDOS ===============*/
+            $pedidos = Pedido::All()->where('estado', '=', 1)->where('fecha_pedido', '=', $request->fecha);
+            foreach ($pedidos as $pedido) {
+                $pedido->empaquetado = 1;
+                if ($pedido->save()) {
+                    bitacora('pedido', $pedido->id_pedido, 'U', 'Actualizacion satisfactoria del pedido');
+                } else {
+                    $success = false;
+                    $msg .= '<div class="alert alert-warning text-center">' .
+                        'Ha ocurrido un problema con el pedido: "' . $pedido->descripcion .
+                        '"</div>';
+                }
+            }
+
+            if ($success) {
+                $msg = '<div class="alert alert-success text-center">' .
+                    'Se ha guardado toda la información satisfactoriamente' .
+                    '</div>';
+            }
+        } else {
+            $success = false;
+            $msg = '<div class="alert alert-warning text-center">' .
+                'Al menos debe enviar alguna información relacionada con una variedad' .
+                '</div>';
+        }
+        return [
+            'mensaje' => $msg,
+            'success' => $success
+        ];
     }
 }

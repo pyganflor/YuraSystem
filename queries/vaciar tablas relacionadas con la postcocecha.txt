@@ -8,3 +8,4 @@ TRUNCATE `recepcion_clasificacion_verde`;
 TRUNCATE `stock_apertura`;
 TRUNCATE `stock_empaquetado`;
 TRUNCATE `stock_frio`;
+TRUNCATE `lote_re`;

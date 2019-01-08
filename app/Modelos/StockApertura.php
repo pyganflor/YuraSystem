@@ -51,6 +51,7 @@ class StockApertura extends Model
     public function calcularDisponibles()
     {
         $r = $this->cantidad_disponible;
+        $ingresados = $this->cantidad_tallos;
         $unitaria = $this->clasificacion_unitaria;
         $ramo_estandar = $unitaria->clasificacion_ramo_estandar;
         $ramo_real = $unitaria->clasificacion_ramo_real;
@@ -64,12 +65,30 @@ class StockApertura extends Model
         return [
             'estandar' => round($r / $f_e, 2),
             'real' => round($r / $f_r, 2),
+            'estandar_ingresados' => round($ingresados / $f_e, 2),
+            'real_ingresados' => round($ingresados / $f_r, 2),
         ];
     }
 
     public function getDisponibles($tipo_ramo)
     {
         $l = StockApertura::All()->where('disponibilidad', '=', 1)->where('estado', '=', 1)
+            ->where('id_variedad', '=', $this->id_variedad)
+            ->where('id_clasificacion_unitaria', '=', $this->id_clasificacion_unitaria)
+            ->where('fecha_inicio', '<', $this->fecha_inicio);
+
+        $r = $this->calcularDisponibles()['' . $tipo_ramo];
+
+        foreach ($l as $item) {
+            $r += $item->calcularDisponibles()['' . $tipo_ramo];
+        }
+
+        return $r;
+    }   // solo tiene en cuenta los stock_apertura disponibles (disponibilidad = 1)
+
+    public function getDisponiblesAll($tipo_ramo)   // tiene en cuenta todos los stock_apertura (disponibilidad = [1;0])
+    {
+        $l = StockApertura::All()->where('estado', '=', 1)
             ->where('id_variedad', '=', $this->id_variedad)
             ->where('id_clasificacion_unitaria', '=', $this->id_clasificacion_unitaria)
             ->where('fecha_inicio', '<', $this->fecha_inicio);

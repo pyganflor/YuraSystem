@@ -19,6 +19,7 @@ class StockEmpaquetado extends Model
         'fecha_ingreso',
         'cantidad_ingresada',
         'cantidad_empaquetada',
+        'empaquetado',
     ];
 
     public function variedad()

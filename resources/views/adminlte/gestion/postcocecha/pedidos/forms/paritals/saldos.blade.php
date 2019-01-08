@@ -99,7 +99,7 @@
                         <td class="text-center" style="border-color: #9d9d9d" title="Acumulado">
                             @if($variedad->getPedidosToFecha($item) && $variedad->getDisponiblesToFecha($item)['acumulado'])
                                 @php
-                                    $saldo = $variedad->getDisponiblesToFecha($item)['saldo'] - $variedad->getPedidosToFecha($item);
+                                    $saldo = round($variedad->getDisponiblesToFecha($item)['saldo'] - $variedad->getPedidosToFecha($item),2);
                                 @endphp
                                 @if($saldo > 0)
                                     <span class="badge" style="background-color: #b9ffb4; color: #0a0a0a; border: 1px solid #9d9d9d">

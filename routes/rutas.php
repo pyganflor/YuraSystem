@@ -59,6 +59,7 @@ Route::group(['middleware' => 'autenticacion'], function () {
     Route::post('usuarios/get_usuario_json', 'UsuarioController@get_usuario_json');
 
     include 'documento/rutas.php';
+    include 'crm/dashboard.php';
 
     Route::group(['middleware' => 'permiso'], function () {
         /* ========================== POSTCPCECHA ========================*/

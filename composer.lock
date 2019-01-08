@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "097eb8233c388ed1af8fa356a10faab0",
+    "content-hash": "5e97254005909d816c6407df9ad3bb9a",
     "packages": [
         {
             "name": "barryvdh/laravel-ide-helper",
@@ -126,7 +126,7 @@
                     "email": "mike.vanriel@naenius.com"
                 }
             ],
-                "time": "2018-10-25T19:09:52+00:00"
+            "time": "2018-10-25T19:09:52+00:00"
         },
         {
             "name": "dnoegel/php-xdg-base-dir",
@@ -343,7 +343,6 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/egulias/EmailValidator/zipball/709f21f92707308cdf8f9bcfa1af4cb26586521e",
                 "reference": "709f21f92707308cdf8f9bcfa1af4cb26586521e",
-            "version": "2.1.6",
                 "shasum": ""
             },
             "require": {
@@ -387,7 +386,7 @@
                 "validation",
                 "validator"
             ],
-            "time": "2018-09-25T20:47:26+00:00"
+            "time": "2018-12-04T22:38:24+00:00"
         },
         {
             "name": "erusev/parsedown",
@@ -488,6 +487,58 @@
                 "trusted proxy"
             ],
             "time": "2018-02-07T20:20:57+00:00"
+        },
+        {
+            "name": "fx3costa/laravelchartjs",
+            "version": "2.5.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/fxcosta/laravel-chartjs.git",
+                "reference": "ab1b987e12c477be2408f77df8c0506be0e7848b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/fxcosta/laravel-chartjs/zipball/ab1b987e12c477be2408f77df8c0506be0e7848b",
+                "reference": "ab1b987e12c477be2408f77df8c0506be0e7848b",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/support": "~5.1",
+                "php": ">=5.6.4"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Fx3costa\\LaravelChartJs\\Providers\\ChartjsServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Fx3costa\\LaravelChartJs\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Felix",
+                    "email": "fx3costa@gmail.com"
+                }
+            ],
+            "description": "Simple package to facilitate and automate the use of charts in Laravel 5.x using Chartjs v2 library",
+            "keywords": [
+                "chart",
+                "chartjs",
+                "fx3costa",
+                "graphics",
+                "laravel5",
+                "reports"
+            ],
+            "time": "2018-09-11T21:37:47+00:00"
         },
         {
             "name": "guzzlehttp/psr7",
@@ -2248,7 +2299,6 @@
             "extra": {
                 "branch-alias": {
                     "dev-master": "4.2-dev"
-
                 }
             },
             "autoload": {
@@ -2309,7 +2359,6 @@
             "extra": {
                 "branch-alias": {
                     "dev-master": "4.2-dev"
-
                 }
             },
             "autoload": {
@@ -2966,7 +3015,6 @@
             "extra": {
                 "branch-alias": {
                     "dev-master": "4.2-dev"
-
                 }
             },
             "autoload": {
@@ -3591,7 +3639,6 @@
             "require": {
                 "filp/whoops": "^2.1.4",
                 "jakub-onderka/php-console-highlighter": "0.3.*|0.4.*",
-
                 "php": "^7.1",
                 "symfony/console": "~2.8|~3.3|~4.0"
             },
@@ -3600,7 +3647,6 @@
                 "nunomaduro/larastan": "^0.3.0",
                 "phpstan/phpstan": "^0.10",
                 "phpunit/phpunit": "~7.3"
-
             },
             "type": "library",
             "extra": {
@@ -3980,7 +4026,6 @@
                 "phpunit/php-token-stream": "^3.0",
                 "sebastian/code-unit-reverse-lookup": "^1.0.1",
                 "sebastian/environment": "^3.1 || ^4.0",
-
                 "sebastian/version": "^2.0.1",
                 "theseer/tokenizer": "^1.1"
             },
@@ -3994,7 +4039,6 @@
             "extra": {
                 "branch-alias": {
                     "dev-master": "6.1-dev"
-
                 }
             },
             "autoload": {
@@ -4268,7 +4312,6 @@
             "extra": {
                 "branch-alias": {
                     "dev-master": "7.5-dev"
-
                 }
             },
             "autoload": {
@@ -4795,7 +4838,6 @@
             "extra": {
                 "branch-alias": {
                     "dev-master": "2.0-dev"
-
                 }
             },
             "autoload": {
@@ -4816,7 +4858,6 @@
             "description": "Provides a list of PHP built-in functions that operate on resources",
             "homepage": "https://www.github.com/sebastianbergmann/resource-operations",
             "time": "2018-10-04T04:07:39+00:00"
-
         },
         {
             "name": "sebastian/version",

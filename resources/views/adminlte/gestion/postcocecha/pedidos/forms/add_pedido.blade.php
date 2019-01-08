@@ -107,8 +107,17 @@
                 antes: antes,
                 despues: despues
             };
-            get_jquery('{{url('clientes/buscar_saldos')}}', datos, function (retorno) {
+
+            $("#div_content_saldos").LoadingOverlay('show', {
+                background: "rgba(250, 250, 250, 0.5)",
+                image       : "",
+                fontawesome : "fa fa-cog fa-spin"
+            });
+
+            $.get('{{url('clientes/buscar_saldos')}}', datos, function (retorno) {
                 $('#div_content_saldos').html(retorno);
+            }).always(function () {
+                $("#div_content_saldos").LoadingOverlay('hide');
             });
         }
     </script>

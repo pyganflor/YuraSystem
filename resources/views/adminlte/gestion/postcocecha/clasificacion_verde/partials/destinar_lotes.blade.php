@@ -5,7 +5,7 @@
             <strong>{{$variedad->planta->nombre}} - {{$variedad->nombre}}</strong>
             <em class="badge">{{$clasificacion->fecha_ingreso}}</em>
         </h3>
-        <input type="text" id="terminar_calsificacion_verde" value="{{$clasificacion->activo}}">
+        <input type="hidden" id="terminar_calsificacion_verde" value="{{$clasificacion->activo}}">
 
     </div>
     <input type="hidden" id="id_variedad" value="{{$variedad->id_variedad}}">

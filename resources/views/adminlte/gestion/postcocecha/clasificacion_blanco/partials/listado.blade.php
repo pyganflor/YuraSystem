@@ -16,7 +16,7 @@
                 <th style="border-color: #9d9d9d;" colspan="8">
                     @if(count($stock_frio) > 0)
                         <button type="button" class="btn btn-primary btn-xs pull-right" onclick="empaquetar('{{$fecha}}')">
-                            <i class="fa fa-fw fa-gift"></i> Empaquetar
+                            <i class="fa fa-fw fa-gift"></i> Armado
                         </button>
                     @else
                         <div class="well text-center" style="margin-bottom: 0">
