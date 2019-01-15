@@ -15,35 +15,6 @@ Route::get('login', 'YuraController@login');
 Route::post('login', 'YuraController@verificaUsuario');
 Route::get('logout', 'YuraController@logout');
 
-
-/*Route::get('prueba-wsdl',function (){
-
-    $url = 'https://celcer.sri.gob.ec/comprobantes-electronicos-ws/RecepcionComprobantes?wsdl';
-    $cliente = new SoapClient($url);
-    $c = $cliente;
-    //$c  = $cliente->__getTypes();
-
-    //dd($c);
-    $xml = file_get_contents("C:/factura.xml");
-
-    $x = base64_encode($xml);
-
-    $xml  = "<soapenv:Envelope xmlns:soapenv='http://schemas.xmlsoap.org/soap/envelope/' xmlns:ec='http://ec.gob.sri.ws.recepcion'>"."\r\n";
-    $xml .= "<soapenv:Header/>";
-    $xml .= "<soapenv:Body>";
-    $xml .= "<ec:autorizacionComprobante>";
-    $xml .= "<ec:validarComprobante>";
-    $xml .= "<xml>";
-    $xml .= $x;
-    $xml .= "</xml>";
-    $xml .= "</ec:validarComprobante>";
-    $xml .= "</ec:autorizacionComprobante>";
-    $xml .= "</soapenv:Body>";
-    $xml .= "</soapenv:Envelope>";
-    dd($c->validarComprobante(['xml'=>$xml]));
-});*/
-
-
 Route::get('configuracion/inputs_dinamicos_detalle_empaque', 'ConfiguracionEmpresaController@vistaInputsDetallesEmpaque')->name('view.inputs_detalle_empaque');
 Route::get('configuracion/campos_empaques', 'ConfiguracionEmpresaController@campos_empaque')->name('view.campos_empaque');
 
@@ -89,5 +60,5 @@ Route::group(['middleware' => 'autenticacion'], function () {
         include 'facturacion/tipo_identificacion.php';
 
     });
-
+    include 'facturacion/facturar.php';
 });

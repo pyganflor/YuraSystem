@@ -5,11 +5,12 @@ namespace yura\Http\Controllers;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use DomDocument;
+use SoapClient;
+use yura\Jobs\EnvioComprobanteElectronico;
 
 class FacturacionController extends Controller
 {
-    public function genera_comprobante_xml_factura(){
-
+    public function comprobante_xml_factura(){
         $xml = new DomDocument('1.0', 'UTF-8');
         $factura = $xml->createElement('factura');
         $factura->setAttribute('id','comprobante');
@@ -22,17 +23,17 @@ class FacturacionController extends Controller
         $ruc = env('RUC');
         $entorno = env('ENTORNO');
         $serie = '001001';
-        $secuencial = '000000003';
-        $modulo11= $this->generaModulo11();
-        $codigo_numerico =  $modulo11['codigo_numerico'];
-        $digito_verificador = $modulo11['digito_verificador'];
+        $secuencial = '000000090';
         $tipo_emision = '1';
+        $codigo_numerico = '12345676';
+        $cadena = $fechaEmision.$tipoComprobante.$ruc.$entorno.$serie.$secuencial.$codigo_numerico.$tipo_emision;
+        $digito_verificador = generaDigitoVerificador($cadena);
         //factura normal codigo 01
         //tipo empision  codigo 1
-        $claveAcceso = $fechaEmision.$tipoComprobante.$ruc.$entorno.$serie.$secuencial.$codigo_numerico.$tipo_emision.$digito_verificador;
+        $claveAcceso = $cadena.$digito_verificador;
         $informacionTributaria = [
-            'ambiente'=>'1',
-            'tipoEmision'=>'1',
+            'ambiente'=>$entorno,
+            'tipoEmision'=>$tipo_emision,
             'razonSocial'=>'PRUEBAS SERVICIO DE RENTAS INTERNAS',
             'nombreComercial'=>'LE HACE BIEN AL PAIS',
             'ruc' => $ruc,
@@ -58,7 +59,7 @@ class FacturacionController extends Controller
             'tipoIdentificacionComprador'=> '09',
             'razonSocialComprador' => 'FLOREXPO LLC',
             'identificacionComprador' => '1',
-            'totalSinImpuestos' => '100',
+            'totalSinImpuestos' => '100.00',
             'totalDescuento' => '0.00',
         ];
 
@@ -160,94 +161,103 @@ class FacturacionController extends Controller
                 $informacionAdicional->appendChild($campo_adicional);
             }
         }
+
         $xml->formatOutput = true;
         $xml->saveXML();
         $nombre_xml = $claveAcceso.".xml";
         $xml->save(env('PATH_XML_GENERADOS').$nombre_xml);
-    }
 
-    public function firmar_comprobante_xml(){
+        $resultado = firmar_comprobante_xml($nombre_xml);
 
-        $ruta_xml_generado = env('PATH_XML_GENERADOS');
-        $xml_generado     = '0801201901179244632500110010010000000031234567814.xml';
-        $ruta_xml_firmado = env('PATH_XML_FIRMADOS');
-        $ruta_firma_digital =env('PATH_FIRMA_DIGITAL');
-        $nombre_certificado = env('NOMBRE_ARCHIVO_FIRMA_DIGITAL');
-        $contrasena_certificado = env('CONTRASENA_FIRMA_DIGITAL');
-        $ruta_jar  = env('PATH_JAR_FIRMADOR');
-
-        exec('java -Dfile.encoding=UTF-8 -jar '.$ruta_jar.' '
-            .$ruta_xml_generado." "
-            . $xml_generado." "
-            . $ruta_xml_firmado." "
-            . $ruta_firma_digital." "
-            .$contrasena_certificado." "
-            .$nombre_certificado." ",
-            $a,$b);
-        dd($a);
-    }
-
-    public function enviar_comprobante_xml(){
-
-        $ruta_xml_firmado = env('PATH_XML_FIRMADOS');
-        $xml_firmado     = '0801201901179244632500110010010000000031234567814.xml';
-        $ruta_xml_enviados = env('PATH_XML_ENVIADOS');
-        $ruta_firma_rechazados = env('PATH_XML_RECHAZADOS');
-        $ruta_firma_autorizados = env('PATH_XML_AUTORIZADOS');
-        $ruta_firma_no_autorizados = env('PATH_XML_NO_AUTORIZADOS');
-        $url_ws_recepcion = env('URL_WS_RECEPCION');
-        $url_ws_autorizacion = env('URL_WS_ATURIZACION');
-        $ruta_jar  = env('PATH_JAR_ENVIADOR');
-        $clave_acceso = '0801201901179244632500110010010000000031234567814';
-
-        exec('java -jar '.$ruta_jar.' '
-            .$ruta_xml_firmado." "
-            . $xml_firmado." "
-            . $ruta_xml_enviados." "
-            . $ruta_firma_rechazados." "
-            . $ruta_firma_autorizados." "
-            . $ruta_firma_no_autorizados." "
-            . $url_ws_recepcion." "
-            . $url_ws_autorizacion." "
-            . $clave_acceso." ",
-            $a,$b);
-        dd($a);
-    }
-
-    public function generaModulo11(){
-
-        $n_aleatorio = mt_rand(0,99999999);
-        while (strlen($n_aleatorio) < 8) {
-            $n_aleatorio = mt_rand(0,99999999);
-        }
-
-        $arr_num = str_split($n_aleatorio);
-        $sumatoria = ($arr_num[0]*3)+($arr_num[1]*2)+($arr_num[2]*7)+($arr_num[3]*6)+($arr_num[4]*5)+($arr_num[5]*4)+($arr_num[6]*3)+($arr_num[7]*2);
-        $cociente = $sumatoria/11 ;
-        $producto = ((int)$cociente)*11;
-        $resultado = $sumatoria-$producto;
-        $digito_verificador = 11-$resultado;
-
-        if((11*(int)$cociente)+$resultado === $sumatoria){
-
-            if($digito_verificador == 10)
-                $digito_verificador = 1;
-            elseif($digito_verificador == 11)
-                $digito_verificador = 0;
-
-            echo "aleatorio= ".$n_aleatorio ."<br/>";
-            echo "sumatoria= ".$sumatoria ."<br/>";
-            echo "cociente=  ".(int)$cociente ."<br/>";
-            echo "producto=  ".$producto ."<br/>";
-            echo "resultado= ".$resultado ."<br/>";
-            echo "digito_verificador= ".$digito_verificador ."<br/>";
-
-            return [
-                'codigo_numerico'=>$n_aleatorio,
-                'digito_verificador'=>$digito_verificador
-            ];
+        if($resultado){
+            mensaje_firma_electronica($resultado) == 5 ? $class = 'success': $class = 'warning';
+            $msg = "<div class='alert text-center  alert-".$class."'>" .
+                        "<p> ".mensaje_firma_electronica($resultado)."</p>"
+                . "</div>";
         }else{
-            dd("intente generar nuevamente el archivo");
+            $msg = "<div class='alert text-center  alert-danger'>" .
+                        "<p>Hubo un error al realizar el proceso de la firma del comprobante, intente nuevamente realizar la firma del mismo filtrando por GENERADOS</p>"
+                . "</div>";
         }
+        return $msg;
     }
+
+    public function comprobante_lote(){
+
+        $xml = new DomDocument('1.0', 'UTF-8');
+        $factura = $xml->createElement('lote');
+        $factura->setAttribute('version','1.0.0');
+        $xml->appendChild($factura);
+        $fechaEmision = Carbon::now()->format('dmY');
+        $tipoComprobante = '00';
+        $ruc = env('RUC');
+        $entorno = env('ENTORNO');
+        $serie = '001001';
+        $secuencial = '000000088';
+        $tipo_emision = '1';
+        $codigo_numerico = '22222228';
+        $cadena = $fechaEmision.$tipoComprobante.$ruc.$entorno.$serie.$secuencial.$codigo_numerico.$tipo_emision;
+        $digito_verificador = generaDigitoVerificador($cadena);
+        $claveAcceso = $cadena.$digito_verificador;
+        $nodeClaveAcceso = $xml->createElement('claveAcceso',$claveAcceso);
+        $factura->appendChild($nodeClaveAcceso);
+        $nodeRuc = $xml->createElement('ruc',$ruc);
+        $factura->appendChild($nodeRuc);
+        $nodeComprobantes = $xml->createElement('comprobantes');
+        $factura->appendChild($nodeComprobantes);
+
+        $path_firmados = env('PATH_XML_FIRMADOS');
+        $xml_firmados= [
+            '1401201901179244632500110010010000000841234567615',
+            '1401201901179244632500110010010000000851234567610',
+            '1401201901179244632500110010010000000861234567616',
+            '1401201901179244632500110010010000000871234567611'
+        ];
+
+        foreach ($xml_firmados as $xml_firmado){
+            $data_xml_firmado = file_get_contents($path_firmados.$xml_firmado.".xml");
+            $nodeComprobante = $xml->createElement('comprobante',$data_xml_firmado);
+            $nodeComprobantes->appendChild($nodeComprobante);
+        }
+
+        $xml->formatOutput = true;
+        $xml->saveXML();
+        $nombre_xml = "lote".$claveAcceso.".xml";
+        $xml->save(env('PATH_XML_GENERADOS').$nombre_xml);
+
+    }
+
+    public function enviar_documento_electronico(Request $request){
+
+        $resultado = enviar_comprobante("1501201910179244632500110010010000000901234567611.xml","1501201910179244632500110010010000000901234567611");
+        if($resultado){
+            switch ($resultado[0]) {
+                case '0':
+                    $class = "warning";
+                    break;
+                case '1':
+                    $class = "success";
+                    break;
+                case '2':
+                    $class = "danger";
+                    break;
+            }
+            $msg = "<div class='alert text-center  alert-".$class."'>" .
+                "<p> ".mensaje_envio_comprobante($resultado[0])."</p>"
+                . "</div>";
+        }else{
+            $msg = "<div class='alert text-center  alert-danger'>" .
+                "<p>Hubo un error al realizar el proceso del envío del comprobante, intente el envío nuevamente</p>"
+                . "</div>";
+        }
+        return $msg;
+    }
+
+    public function autorizacion_comprobante(){
+        $cliente = new SoapClient(env('URL_WS_ATURIZACION'));
+        //dd($cliente->__getFunctions());
+        dd($cliente->autorizacionComprobanteLote(["claveAccesoLote"=>"1501201910179244632500110010010000000901234567611"]));
+    }
+
+
 }

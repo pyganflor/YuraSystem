@@ -260,7 +260,7 @@ class EnvioController extends Controller
         if($busquedaEsatdo != '')
             $listado = $listado->where('de.estado',$request->estado);
 
-        $listado = $listado->orderBy('de.fecha_envio', 'desc')->distinct()->get(20);
+        $listado = $listado->orderBy('e.fecha_envio', 'desc')->distinct()->get(20);
       //  dd($listado);
 
         if (count($listado) > 0) {

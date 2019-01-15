@@ -900,3 +900,90 @@ function getDestinadosToFrioByFecha($fecha)
         return $consumo->getDestinados();
     return 0;
 }
+
+//==================  Funciones involucradas con la facturacion electrónica ======================//
+function generaDigitoVerificador($cadena){
+    $arr_num = str_split($cadena);
+    $cant_cadena = count($arr_num);
+    $total =0;
+    if($cant_cadena===48){
+        $x=2;
+        for($i=47;$i>=0;$i--){
+            $cantidad = $arr_num[$i] * $x;
+            $total += $cantidad;
+            $x++;
+            if($x == 8)
+                $x=2;
+        }
+        $cociente = $total/11 ;
+        $producto = ((int)$cociente)*11;
+        $resultado = $total-$producto;
+        $digito_verificador = 11-$resultado;
+
+        if((11*(int)$cociente)+$resultado === $total){
+            if($digito_verificador == 10)
+                $digito_verificador = 1;
+            elseif($digito_verificador == 11)
+                $digito_verificador = 0;
+
+            return $digito_verificador;
+        }else{
+            return false;
+        }
+    }
+}
+
+function firmar_comprobante_xml($archivo_xml){
+    exec('java -Dfile.encoding=UTF-8 -jar '.env('PATH_JAR_FIRMADOR').' '
+        .env('PATH_XML_GENERADOS')." "
+        .$archivo_xml." "
+        .env('PATH_XML_FIRMADOS')." "
+        .env('PATH_FIRMA_DIGITAL')." "
+        .env('CONTRASENA_FIRMA_DIGITAL')." "
+        .env('NOMBRE_ARCHIVO_FIRMA_DIGITAL')." ",
+        $salida,$var);
+    if($var == 0)
+        return $salida[0];
+    if($var != 0)
+        return false;
+}
+
+function mensaje_firma_electronica($indice){
+    $mensaje = [
+        0 => "No se ha obtenido el archivo de la firma digital correctamente, verifique que el path propocionado en la variable de entorno 'PATH_FIRMA_DIGITAL' en el archivo .env coincida con la ubicación actual del archivo la firma digital y el String pasado a la variable 'NOMBRE_ARCHIVO_FIRMA_DIGITAL' corresponda con el nombre del archivo), una vez corregido el error puede filtrar por 'GENERADOS' y proceder a realizar la firma del mismo",
+        1 => "Verificar lo explicado en el Índice 0 de este apartado y a su vez verificar que exista el certificado como archivo físico, una vez corregido el error puede filtrar por 'GENERADOS' y proceder a realizar la firma del mismo",
+        2 => "No se pudo acceder al contenido del archivo del certificado electrónico, verifique los indicies 0 y 1 de este apartado  y a su vez que el String pasado en la variable 'CONTRASENA_FIRMA_DIGITAL' en el archivo .env coincida con la propocionada por el ente certificador, una vez corregido el error puede filtrar por 'GENERADOS' y proceder a realizar la firma del mismo",
+        3 => "Se produjo un error al momento de generar la firma electrónica, por favor comunicarse con el deparatmento de técnologia, una vez corregido el error puede filtrar por 'GENERADOS' y proceder a realizar la firma del mismo",
+        4 => "El archivo firamado no pudo ser guardado en su respectiva carpeta, verifique que el path propocionado en la variable de entorno 'PATH_XML_FIRMADOS' en el archivo .env coincida con con la carpeta creada en esa ruta, una vez corregido el error puede filtrar por 'GENERADOS' y proceder a realizar la firma del mismo",
+        5 => "La factura se ha generado y firmado con exito",
+    ];
+    return $mensaje[$indice];
+}
+
+function enviar_comprobante($comprobante_xml,$clave_acceso){
+    ini_set('max_execution_time', env('MAX_EXECUTION_TIME'));
+    exec('java -Dfile.encoding=UTF-8 -jar '.env('PATH_JAR_ENVIADOR').' '
+        .env('PATH_XML_FIRMADOS')." "
+        .$comprobante_xml." "
+        .env('PATH_XML_ENVIADOS')." "
+        .env('PATH_XML_RECHAZADOS')." "
+        .env('PATH_XML_AUTORIZADOS')." "
+        .env('PATH_XML_NO_AUTORIZADOS')." "
+        .env('URL_WS_RECEPCION')." "
+        .env('URL_WS_ATURIZACION')." "
+        .$clave_acceso." ",
+        $salida,$var);
+    if($var == 0)
+        return $salida;
+    if($var != 0)
+        return false;
+}
+
+function mensaje_envio_comprobante($indice){
+    $mensaje = [
+        0 => "El comprobante fue enviado pero devuelto por el SRI, filtre por 'DEVUELTOS' para verificar la causa de la devolución",
+        1 => "El comprobante fue enviado y recibido con éxito por el SRI",
+        2 => "Fallo en la conexión con el web service del SRI, intente nuevamente",
+    ];
+    return $mensaje[$indice];
+}
