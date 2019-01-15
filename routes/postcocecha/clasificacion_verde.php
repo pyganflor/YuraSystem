@@ -18,3 +18,4 @@ Route::get('clasificacion_verde/add/cargar_tabla_variedad', 'ClasificacionVerdeC
 Route::post('clasificacion_verde/store', 'ClasificacionVerdeController@store');
 Route::post('clasificacion_verde/store_detalles', 'ClasificacionVerdeController@store_detalles');
 Route::get('clasificacion_verde/calcular_stock', 'ClasificacionVerdeController@calcular_stock');
+Route::post('clasificacion_verde/terminar', 'ClasificacionVerdeController@terminar');

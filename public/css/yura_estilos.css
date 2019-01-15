@@ -3,6 +3,11 @@
     -moz-box-shadow: 9px 8px 11px -2px rgba(0, 0, 0, 0.34);
     box-shadow: 9px 8px 11px -2px rgba(0, 0, 0, 0.34);
 }
+.sombra_pequeña {
+    -webkit-box-shadow: 9px 8px 11px -2px rgba(0, 0, 0, 0.34);
+    -moz-box-shadow: 9px 8px 11px -2px rgba(0, 0, 0, 0.34);
+    box-shadow: 5px 3px 11px -2px rgba(0, 0, 0, 0.34);
+}
 .sombra_roja {
     -webkit-box-shadow: 10px 10px 16px -1px rgba(255,48,48,0.7);
     -moz-box-shadow: 10px 10px 16px -1px rgba(255,48,48,0.7);

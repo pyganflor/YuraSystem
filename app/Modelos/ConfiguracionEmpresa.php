@@ -22,7 +22,8 @@ class ConfiguracionEmpresa extends Model
         'fecha_registro',
         'estado',
         'tallos_x_ramo',
-        'unidad_medida'
+        'unidad_medida',
+        'ramos_x_caja', // pendiente por programar el campo
     ];
 
     public function clasificaciones_unitarias()

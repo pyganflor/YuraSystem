@@ -21,7 +21,10 @@ class DetalleEspecificacionEmpaque extends Model
         'cantidad',
         'id_empaque_e',    // el id del empaque de tipo envase-envoltorio
         'id_empaque_p',    // el id del empaque de tipo presentacion
-        'tallos_x_ramos'
+        'tallos_x_ramos',
+        'longitud_ramo',
+        'id_unidad_medida', // unidad de medida de longitud
+        'id_grosor_ramo',   // grosor del ramo
     ];
 
     public function especificacion_empaque()
@@ -47,5 +50,15 @@ class DetalleEspecificacionEmpaque extends Model
     public function empaque_p()
     {
         return $this->belongsTo('\yura\Modelos\Empaque', 'id_empaque_p');
+    }
+
+    public function unidad_medida()
+    {
+        return $this->belongsTo('\yura\Modelos\UnidadMedida', 'id_unidad_medida');
+    }
+
+    public function grosor_ramo()
+    {
+        return $this->belongsTo('\yura\Modelos\Grosor', 'id_grosor_ramo');
     }
 }

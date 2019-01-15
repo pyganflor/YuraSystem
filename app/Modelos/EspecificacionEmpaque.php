@@ -35,8 +35,4 @@ class EspecificacionEmpaque extends Model
     {
         return $this->hasMany('\yura\Modelos\DetalleEspecificacionEmpaque', 'id_especificacion_empaque');
     }
-
-
-
-
 }

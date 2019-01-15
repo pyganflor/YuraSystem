@@ -23,11 +23,11 @@ class Consumo extends Model
         return $this->hasMany('\yura\Modelos\StockFrio', 'id_consumo');
     }
 
-    public function getDestinados()
+    public function getDestinados($variedad)
     {
         $r = 0;
         foreach ($this->stocks_frio as $item) {
-            if ($item->estado == 1) {
+            if ($item->estado == 1 && $item->id_variedad == $variedad) {
                 $r += $item->cantidad_ramos_estandar;
             }
         }

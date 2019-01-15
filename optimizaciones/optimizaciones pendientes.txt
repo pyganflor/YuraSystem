@@ -1,0 +1,2 @@
+Programar un filtro de columnas para las tablas con demasiadas columnas:
+	-permitir mostrar/ocultar las columnas deseadas por el usuario

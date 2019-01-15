@@ -160,6 +160,11 @@ return [
         Mews\Captcha\CaptchaServiceProvider::class,
 
         /*
+         * Chartjs
+         */
+        Fx3costa\LaravelChartJs\Providers\ChartjsServiceProvider::class,
+
+        /*
          * Laravel IDE Helper
          */
         Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,

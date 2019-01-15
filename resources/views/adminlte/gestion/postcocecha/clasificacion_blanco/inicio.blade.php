@@ -34,60 +34,15 @@
         <div class="box box-info">
             <div class="box-header with-border">
                 <h3 class="box-title">
-                    Stock en frío
+                    Empaquetado
                 </h3>
                 <div class="form-group pull-right" style="margin: 0">
-                    <label for="clasificacion_ramo_search" style="margin-right: 10px">Calibre del ramo</label>
-                    <select name="clasificacion_ramo_search" id="clasificacion_ramo_search" onchange="calcularConvercion($(this).val())">
-                        @foreach(getCalibresRamo() as $calibre)
-                            @if($calibre->unidad_medida->tipo == 'P')
-                                <option value="{{$calibre->nombre}}">{{$calibre->nombre}}</option>
-                            @endif
-                        @endforeach
-                    </select>
+                    <label for="fecha_pedidos_search" style="margin-right: 10px">Fecha de pedidos</label>
+                    <input type="date" name="fecha_pedidos_search" id="fecha_pedidos_search" onchange="listar_resumen_pedidos($(this).val())">
                 </div>
             </div>
-            <div class="box-body" id="div_content_aperturas">
-                <table width="100%">
-                    <tr>
-                        <td>
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="form-group input-group" style="width: 100%">
-                                        <select name="variedad_search" id="variedad_search" class="form-control" onchange="buscar_stock()">
-                                            <option value="">Variedad</option>
-                                            @foreach($variedades as $item)
-                                                <option value="{{$item->id_variedad}}">
-                                                    {{$item->planta->nombre}} - {{$item->nombre}}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-2">
-                                    <div class="form-group input-group" style="width: 100%">
-                                        <select name="unitaria_search" id="unitaria_search" class="form-control" onchange="buscar_stock()">
-                                            <option value="">Calibre</option>
-                                            @foreach($unitarias as $item)
-                                                <option value="{{$item->id_clasificacion_unitaria}}">
-                                                    {{explode('|',$item->nombre)[0]}} {{$item->unidad_medida->siglas}}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group input-group" style="padding: 0px">
-                                        <span class="input-group-addon" style="background-color: #e9ecef">Fecha de pedidos</span>
-                                        <input type="date" id="fecha_desde_search" name="fecha_desde_search" class="form-control"
-                                               onchange="buscar_pedidos()">
-                                    </div>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                </table>
-                <div id="div_listado_aperturas"></div>
+            <div class="box-body" id="div_content_blanco">
+                <div id="div_listado_blanco"></div>
             </div>
         </div>
     </section>

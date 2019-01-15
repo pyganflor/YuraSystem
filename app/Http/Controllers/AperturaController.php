@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use yura\Modelos\ClasificacionRamo;
 use yura\Modelos\Consumo;
 use yura\Modelos\StockApertura;
+use yura\Modelos\StockEmpaquetado;
 use yura\Modelos\StockFrio;
 use yura\Modelos\Submenu;
 use PHPExcel;
@@ -394,15 +395,39 @@ class AperturaController extends Controller
                     $frio->id_stock_apertura = $apertura->id_stock_apertura;
                     $frio->id_variedad = $apertura->id_variedad;
                     $frio->id_clasificacion_unitaria = $apertura->id_clasificacion_unitaria;
-                    $frio->id_semana = getSemanaByDate($apertura->fecha_inicio)->id_semana;
+                    $frio->id_semana = getSemanaByDateVariedad($apertura->fecha_inicio, $apertura->id_variedad)->id_semana;
                     $frio->dias_maduracion = $item['dias_maduracion'];
                     $frio->cantidad_ramos_estandar = $item['cantidad_ramos_estandar'];
+                    $frio->cantidad_disponible = $item['cantidad_ramos_estandar'];
                     $frio->fecha_ingreso = date('Y-m-d');
                     $frio->fecha_registro = date('Y-m-d H:i:s');
 
                     if ($frio->save()) {
                         $frio = StockFrio::All()->last();
                         bitacora('stock_frio', $frio->id_stock_frio, 'I', 'Creacion satisfactoria de un stock frio');
+
+                        /* ============= ACTUALIZAR EL STOCK_EMPAQUETADO ===============*/
+                        $empaquetado = StockEmpaquetado::All()->where('id_variedad', '=', $apertura->id_variedad)
+                            ->where('fecha_ingreso', '=', $consumo->fecha_pedidos)->first();
+                        if ($empaquetado == '') {
+                            /* ========= CREAR STOCK_EMPAQUETADO ========== */
+                            $empaquetado = new StockEmpaquetado();
+                            $empaquetado->fecha_ingreso = $consumo->fecha_pedidos;
+                            $empaquetado->fecha_registro = date('Y-m-d H:i:s');
+                            $empaquetado->id_semana = getSemanaByDateVariedad($consumo->fecha_pedidos, $apertura->id_variedad)->id_semana;
+                            $empaquetado->id_variedad = $apertura->id_variedad;
+                        }
+                        $empaquetado->cantidad_ingresada += $frio->cantidad_ramos_estandar;
+
+                        if ($empaquetado->save()) {
+                            $empaquetado = Consumo::All()->last();
+                            bitacora('stock_empaquetado', $empaquetado->id_stock_empaquetado, 'I', 'Creacion satisfactoria de un stock empaquetado');
+                        } else {
+                            $msg .= '<div class="alert alert-warning text-center">' .
+                                'Ha ocurrido un problema al guardar el stock-empaquetado de la fecha de los pedidos indicada' .
+                                '</div>';
+                            $success = false;
+                        }
 
                         /* ============= ACTUALIZAR EL STOCK_APERTURA ===============*/
                         $apertura->cantidad_disponible = $current;

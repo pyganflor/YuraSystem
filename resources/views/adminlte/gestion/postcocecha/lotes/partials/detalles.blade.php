@@ -33,7 +33,7 @@
                     SEMANA
                 </th>
                 <td style="border-color: #9d9d9d" class="text-center">
-                    {{getSemanaByDate($lote->getCurrentFecha())->codigo}}
+                    {{getSemanaByDateVariedad($lote->getCurrentFecha(), $lote->variedad->id_variedad)->codigo}}
                 </td>
             </tr>
             <tr>

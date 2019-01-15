@@ -81,6 +81,20 @@
         </div>
     </div>
 
+    @if($clasificacion_verde == '')
+        <div class="text-center" id="btn_terminar_clasificacion">
+            <button type="button" class="btn btn-danger btn-sm" onclick="terminar_clasificacion()">
+                <i class="fa fa-fw fa-times"></i> Terminar Clasificación
+            </button>
+        </div>
+    @elseif($clasificacion_verde->activo == 1)
+        <div class="text-center" id="btn_terminar_clasificacion">
+            <button type="button" class="btn btn-danger btn-sm" onclick="terminar_clasificacion()">
+                <i class="fa fa-fw fa-times"></i> Terminar Clasificación
+            </button>
+        </div>
+    @endif
+
     @php
         $val_recepciones = $recepciones[0]->id_recepcion;
         for($i=1;$i<count($recepciones);$i++)
@@ -98,7 +112,8 @@
 <script>
     function seleccionar_variedad(id_variedad, li) {
         datos = {
-            id_variedad: id_variedad
+            id_variedad: id_variedad,
+            id_clasificacion_verde: $('#id_clasificacion_verde').val()
         };
         get_jquery('{{url('clasificacion_verde/add/cargar_tabla_variedad')}}', datos, function (retorno) {
             $('#div_table_x_variedad').html(retorno);
@@ -107,7 +122,7 @@
 
             $('#html_total_tallos').html($('#total_tallos').val());
             $('#html_total_ramos').html($('#total_ramos').val());
-            $('#html_desechos').html($('#desechos').val()+'%');
+            $('#html_desechos').html($('#desechos').val() + '%');
 
             variedades = $('.ids_variedad');
             for (i = 0; i < variedades.length; i++) {
@@ -210,5 +225,20 @@
                     'La cantidad clasificada no puede ser mayor a la cantidad en recepción</p>');
             }
         }
+    }
+
+    function terminar_clasificacion() {
+        datos = {
+            _token: '{{csrf_token()}}',
+            id_clasificacion_verde: $('#id_clasificacion_verde').val()
+        };
+        modal_quest('modal_quest_terminar_clasificacion',
+            '<div class="alert alert-info text-center">Si termina esta clasificación en verde no podrá volver a clasificar más ramos en la fecha seleccionada</div>',
+            '<i class="fa fa-fw fa-exclamation-triangle"></i> Mensaje de alerta', true, false, '{{isPc() ? '35%' : ''}}', function () {
+                post_jquery('{{url('clasificacion_verde/terminar')}}', datos, function () {
+                    cerrar_modals();
+                    add_verde($('#fecha_recepciones').val());
+                });
+            });
     }
 </script>

@@ -34,18 +34,34 @@ class Variedad extends Model
     {
         $r = 0;
         $r_a = 0;   // acumulado
-        $l = StockApertura::All()->where('estado', '=', 1)->where('disponibilidad', '=', 1)
+        $l = StockApertura::All()->where('estado', '=', 1)
             ->where('id_variedad', '=', $this->id_variedad);
+        $pedidos = 0;
         foreach ($l as $item) {
             if (opDiasFecha('+', $item->dias, $item->fecha_inicio) == $fecha) {
-                $r += $item->calcularDisponibles()['estandar'];
-                $r_a += $item->getDisponibles('estandar');
+                $r += $item->calcularDisponibles()['estandar_ingresados'];
+                $r_a += $item->getDisponiblesAll('estandar_ingresados');
+            }
+        }
+        if ($r_a > 0) {
+            $fecha_p = Pedido::All()->where('estado', '=', 1)
+                ->sortBy('fecha_pedidos')->first()->fecha_pedido;
+            if ($fecha >= $fecha_p)
+                $dias_last_pedido = difFechas($fecha, $fecha_p)->days;
+            else
+                $dias_last_pedido = 0;
+
+            for ($i = 1; $i <= $dias_last_pedido; $i++) {
+                $pedidos += $this->getPedidosToFecha(opDiasFecha('-', $i, $fecha));
             }
         }
 
+        //dd($r_a);
+
         return [
-            'cosechado' => $r,
-            'acumulado' => $r_a,
+            'cosechado' => round($r,2),
+            'saldo' => round($r_a - $pedidos, 2),
+            'acumulado' => round($r_a, 2),
         ];
     }
 

@@ -55,7 +55,7 @@
                         {{getLoteREById($lote->id_lote_re)->getCurrentFecha()}}
                     </td>
                     <td class="text-center" style="border-color: #9d9d9d">
-                        {{getSemanaByDate(getLoteREById($lote->id_lote_re)->getCurrentFecha())->codigo}}
+                        {{getSemanaByDateVariedad(getLoteREById($lote->id_lote_re)->getCurrentFecha(),getLoteREById($lote->id_lote_re)->id_variedad)->codigo}}
                     </td>
                     <td class="text-center" style="border-color: #9d9d9d">
                         @if($calibre == '')

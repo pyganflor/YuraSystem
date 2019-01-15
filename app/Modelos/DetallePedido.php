@@ -20,7 +20,18 @@ class DetallePedido extends Model
         'fecha'
     ];
 
-    public function cliente_especificacion(){
-        return $this->belongsTo('yura\Modelos\ClientePedidoEspecificacion','id_cliente_especificacion');
+    public function cliente_especificacion()
+    {
+        return $this->belongsTo('yura\Modelos\ClientePedidoEspecificacion', 'id_cliente_especificacion');
+    }
+
+    public function agencia_carga()
+    {
+        return $this->belongsTo('yura\Modelos\AgenciaCarga', 'id_agencia_carga');
+    }
+
+    public function pedido()
+    {
+        return $this->belongsTo('yura\Modelos\Pedido', 'id_pedido');
     }
 }

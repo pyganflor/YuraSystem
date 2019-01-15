@@ -20,6 +20,11 @@ class Cliente extends Model
         return $this->hasMany('\yura\Modelos\DetalleCliente', 'id_cliente');
     }
 
+    public function detalle()
+    {
+        return $this->hasMany('\yura\Modelos\DetalleCliente', 'id_cliente')->where('estado', '=', 1)->first();
+    }
+
     public function cliente_agencia_carga()
     {
         return $this->hasMany('\yura\Modelos\ClienteAgenciaCarga', 'id_cliente');

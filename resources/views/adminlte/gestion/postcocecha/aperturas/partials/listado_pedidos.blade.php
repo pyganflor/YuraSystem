@@ -28,7 +28,7 @@
                     </a>
 
                     <span class="badge pull-right">
-                        Destinados: {{getDestinadosToFrioByFecha($fecha->fecha_pedido)}} -
+                        Destinados: {{getDestinadosToFrioByFecha($fecha->fecha_pedido, $variedad->id_variedad)}} -
                         Pedidos: <em id="html_cantidad_ramos_pedidos_{{$fecha->fecha_pedido}}">0</em>
                     </span>
 
