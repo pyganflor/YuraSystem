@@ -46,18 +46,19 @@ class ClasificacionesController extends Controller
             $unitaria->id_unidad_medida = $request->id_unidad_medida;
             $unitaria->id_clasificacion_ramo_real = $request->id_clasificacion_ramo_real;
             $unitaria->id_clasificacion_ramo_estandar = $request->id_clasificacion_ramo_estandar;
-                if ($unitaria->save()) {
-                    $success = true;
-                    $msg = '<div class="alert alert-success text-center">' .
-                        '<p> Se ha actualizado la clasificación unitaria satisfactoriamente</p>'
-                        . '</div>';
-                    bitacora('clasificacion_unitaria', $unitaria->id_clasificacion_unitaria, 'U', 'Actualización satisfactoria de una clasificación unitaria');
-                } else {
-                    $success = false;
-                    $msg = '<div class="alert alert-warning text-center">' .
-                        '<p> Ha ocurrido un problema al guardar la información al sistema</p>'
-                        . '</div>';
-                }
+            $unitaria->tallos_x_ramo = $request->tallos_x_ramo;
+            if ($unitaria->save()) {
+                $success = true;
+                $msg = '<div class="alert alert-success text-center">' .
+                    '<p> Se ha actualizado la clasificación unitaria satisfactoriamente</p>'
+                    . '</div>';
+                bitacora('clasificacion_unitaria', $unitaria->id_clasificacion_unitaria, 'U', 'Actualización satisfactoria de una clasificación unitaria');
+            } else {
+                $success = false;
+                $msg = '<div class="alert alert-warning text-center">' .
+                    '<p> Ha ocurrido un problema al guardar la información al sistema</p>'
+                    . '</div>';
+            }
         } else {
             $success = false;
             $errores = '';
@@ -97,18 +98,18 @@ class ClasificacionesController extends Controller
             $ramo = ClasificacionRamo::find($request->id_clasificacion_ramo);
             $ramo->nombre = str_limit(mb_strtoupper(espacios($request->nombre)), 25);
             $ramo->id_unidad_medida = $request->id_unidad_medida;
-                if ($ramo->save()) {
-                    $success = true;
-                    $msg = '<div class="alert alert-success text-center">' .
-                        '<p> Se ha actualizado la clasificación del ramo satisfactoriamente</p>'
-                        . '</div>';
-                    bitacora('clasificacion_ramo', $ramo->id_clasificacion_ramo, 'U', 'Actualización satisfactoria de una clasificación de ramo');
-                } else {
-                    $success = false;
-                    $msg = '<div class="alert alert-warning text-center">' .
-                        '<p> Ha ocurrido un problema al guardar la información al sistema</p>'
-                        . '</div>';
-                }
+            if ($ramo->save()) {
+                $success = true;
+                $msg = '<div class="alert alert-success text-center">' .
+                    '<p> Se ha actualizado la clasificación del ramo satisfactoriamente</p>'
+                    . '</div>';
+                bitacora('clasificacion_ramo', $ramo->id_clasificacion_ramo, 'U', 'Actualización satisfactoria de una clasificación de ramo');
+            } else {
+                $success = false;
+                $msg = '<div class="alert alert-warning text-center">' .
+                    '<p> Ha ocurrido un problema al guardar la información al sistema</p>'
+                    . '</div>';
+            }
         } else {
             $success = false;
             $errores = '';
@@ -134,13 +135,13 @@ class ClasificacionesController extends Controller
 
     public function seleccionar_unidad_medida(Request $request)
     {
-        $r = ClasificacionRamo::All()->where('id_unidad_medida','=',$request->id_unidad_medida)
-                ->where('estado','=',1);
-        return view('adminlte.gestion.configuracion_empresa.partials.select_clasificacion_ramo',[
-                'ramos'=>$r,
-                'campo'=>$request->campo,
-                'unitaria'=>ClasificacionUnitaria::find($request->id_clasificacion_unitaria)
-            ]);
+        $r = ClasificacionRamo::All()->where('id_unidad_medida', '=', $request->id_unidad_medida)
+            ->where('estado', '=', 1);
+        return view('adminlte.gestion.configuracion_empresa.partials.select_clasificacion_ramo', [
+            'ramos' => $r,
+            'campo' => $request->campo,
+            'unitaria' => ClasificacionUnitaria::find($request->id_clasificacion_unitaria)
+        ]);
     }
 
 }

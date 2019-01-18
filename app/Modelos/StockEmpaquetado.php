@@ -14,11 +14,9 @@ class StockEmpaquetado extends Model
     protected $fillable = [
         'id_stock_empaquetado',
         'id_variedad',
-        'id_semana',
         'fecha_registro',
-        'fecha_ingreso',
+        'estado',
         'cantidad_ingresada',
-        'cantidad_empaquetada',
         'empaquetado',
     ];
 

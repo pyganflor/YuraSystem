@@ -19,6 +19,9 @@
                 <th class="text-center" style="border-color: #9d9d9d">
                     Clasificación real
                 </th>
+                <th class="text-center" style="border-color: #9d9d9d" width="10%">
+                    Tallos x ramo
+                </th>
                 <th class="text-center" style="border-color: #9d9d9d">
                     Opciones
                 </th>
@@ -40,13 +43,18 @@
                             @endforeach
                         </select>
                     </td>
-                    <td class="text-center" style="border-color: #9d9d9d" 
+                    <td class="text-center" style="border-color: #9d9d9d"
                         id="td_clasificacion_estandar_{{$unitaria->id_clasificacion_unitaria}}">
                         Seleccione unidad de medida
                     </td>
                     <td class="text-center" style="border-color: #9d9d9d"
                         id="td_clasificacion_real_{{$unitaria->id_clasificacion_unitaria}}">
                         Seleccione unidad de medida
+                    </td>
+                    <td class="text-center" style="border-color: #9d9d9d"
+                        id="td_clasificacion_real_{{$unitaria->id_clasificacion_unitaria}}">
+                        <input type="number" id="tallos_x_ramo_{{$unitaria->id_clasificacion_unitaria}}" value="{{$unitaria->tallos_x_ramo}}"
+                               name="tallos_x_ramo_{{$unitaria->id_clasificacion_unitaria}}" onkeypress="return isNumber(event)">
                     </td>
                     <td class="text-center" style="border-color: #9d9d9d">
                         <div class="btn-group">
@@ -57,8 +65,8 @@
                         </div>
                     </td>
                     <script>
-                      seleccionar_unidad_medida('{{$unitaria->id_clasificacion_unitaria}}', 'estandar');                   
-                      seleccionar_unidad_medida('{{$unitaria->id_clasificacion_unitaria}}', 'real');
+                        seleccionar_unidad_medida('{{$unitaria->id_clasificacion_unitaria}}', 'estandar');
+                        seleccionar_unidad_medida('{{$unitaria->id_clasificacion_unitaria}}', 'real');
                     </script>
                 </tr>
             @endforeach
@@ -73,8 +81,9 @@
             id_clasificacion_unitaria: id,
             nombre: $('#nombre_' + id).val(),
             id_unidad_medida: $('#id_unidad_medida_' + id).val(),
-            id_clasificacion_ramo_estandar:$('#id_clasificacion_ramo_estandar_'+id).val(),
-            id_clasificacion_ramo_real:$('#id_clasificacion_ramo_real_'+id).val(),
+            id_clasificacion_ramo_estandar: $('#id_clasificacion_ramo_estandar_' + id).val(),
+            id_clasificacion_ramo_real: $('#id_clasificacion_ramo_real_' + id).val(),
+            tallos_x_ramo: $('#tallos_x_ramo_' + id).val(),
         };
         post_jquery('{{url('configuracion/update_unitaria')}}', datos, function () {
             cerrar_modals();

@@ -35,8 +35,7 @@
             </li>
             <legend style="margin-bottom: 0"></legend>
             <li>
-                <input type="checkbox" id="check_filtro_x_variedad" class="check_filtro_recepciones"
-                       onchange="select_checkbox_recepciones('check_filtro_x_variedad')">
+                <input type="checkbox" id="check_filtro_x_variedad">
                 <label for="check_filtro_x_variedad">Por Variedad</label>
             </li>
         </ul>
@@ -51,7 +50,7 @@
                 <label for="check_filtro_hasta">Hasta</label>
                 <input type="date" id="check_filtro_hasta">
             </li>
-            <li style="margin-bottom: 10px">
+            <li style="margin-bottom: 10px" class="op_check_filtro_x_variedad">
                 <label for="check_filtro_variedad">Variedad</label>
                 <select name="check_filtro_variedad" id="check_filtro_variedad">
                     <option value="">Seleccione...</option>
@@ -70,10 +69,12 @@
 </div>
 
 <script>
-    function select_checkbox_recepciones() {
+    function select_checkbox_recepciones(id) {
         checks = $('.check_filtro_recepciones');
         for (i = 0; i < checks.length; i++) {
-
+            if (checks[i].id != id) {
+                checks[i].checked = false;
+            }
         }
     }
 </script>

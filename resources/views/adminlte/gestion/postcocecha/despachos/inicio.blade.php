@@ -1,14 +1,14 @@
 @extends('layouts.adminlte.master')
 
 @section('titulo')
-    {{explode('|',getConfiguracionEmpresa()->postcocecha)[3]}}  {{--Apertura--}}
+    Despachos
 @endsection
 
 @section('contenido')
     <!-- Content Header (Page header) -->
     <section class="content-header">
         <h1>
-            {{explode('|',getConfiguracionEmpresa()->postcocecha)[3]}}
+            Despachos
             <small>módulo de postcocecha</small>
         </h1>
 
@@ -37,15 +37,8 @@
                     Empaquetado
                 </h3>
                 <div class="form-group pull-right" style="margin: 0">
-                    <label for="variedad_search" style="margin-right: 10px">Variedad</label>
-                    <select name="variedad_search" id="variedad_search" onchange="listar_clasificacion_blanco($(this).val())">
-                        <option value="">Seleccione...</option>
-                        @foreach($variedades as $item)
-                            <option value="{{$item->id_variedad}}">
-                                {{$item->nombre}}
-                            </option>
-                        @endforeach
-                    </select>
+                    <label for="fecha_pedidos_search" style="margin-right: 10px">Fecha de pedidos</label>
+                    <input type="date" name="fecha_pedidos_search" id="fecha_pedidos_search" onchange="listar_resumen_pedidos($(this).val())">
                 </div>
             </div>
             <div class="box-body" id="div_content_blanco">
@@ -56,5 +49,5 @@
 @endsection
 
 @section('script_final')
-    @include('adminlte.gestion.postcocecha.clasificacion_blanco.script')
+    @include('adminlte.gestion.postcocecha.despachos.script')
 @endsection

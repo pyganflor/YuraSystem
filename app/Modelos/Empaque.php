@@ -17,6 +17,7 @@ class Empaque extends Model
         'nombre',
         'fecha_registro',
         'estado',
+        'tipo', //	C => Caja E => Envoltura P => Presentacion
     ];
 
     public function configuracion_empresa()

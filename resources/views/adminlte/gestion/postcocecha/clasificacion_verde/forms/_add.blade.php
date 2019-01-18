@@ -81,18 +81,63 @@
         </div>
     </div>
 
+    @if($clasificacion_verde != '')
+        <div class="row">
+            <div class="col-md-8">
+                <div class="form-group input-group">
+                    <span class="input-group-addon" style="background-color: #e9ecef">Personal</span>
+                    <input type="number" onkeypress="return isNumber(event)" id="personal" name="personal" class="form-control text-center"
+                           min="1" value="{{$clasificacion_verde->personal}}">
+                    <span class="input-group-btn" title="Guardar personal">
+                        <button type="button" class="btn btn-success" onclick="store_personal()">
+                            <i class="fa fa-fw fa-save"></i>
+                        </button>
+                    </span>
+                    @if($clasificacion_verde->personal != '')
+                        <span class="input-group-addon" style="background-color: #e9ecef">
+                            Rendimiento
+                        </span>
+                        <span class="input-group-addon" title="Tallos por persona en una hora">
+                            {{$clasificacion_verde->getRendimiento()}}
+                        </span>
+                        <span class="input-group-btn" title="Ver detalles">
+                            <button type="button" class="btn btn-default"
+                                    onclick="ver_rendimiento('{{$clasificacion_verde->id_clasificacion_verde}}')">
+                                <i class="fa fa-fw fa-eye"></i>
+                            </button>
+                        </span>
+                    @endif
+                </div>
+            </div>
+        </div>
+    @endif
+
     @if($clasificacion_verde == '')
         <div class="text-center" id="btn_terminar_clasificacion">
             <button type="button" class="btn btn-danger btn-sm" onclick="terminar_clasificacion()">
                 <i class="fa fa-fw fa-times"></i> Terminar Clasificación
             </button>
         </div>
+
+        @foreach($clasificacion_verde->variedades() as $variedad)
+            <div id="div_destinar_lotes_{{$variedad->id_variedad}}" style="display: none;"></div>
+            <script>
+                destinar_lotes_form('{{$variedad->id_variedad}}', '{{$clasificacion_verde->id_clasificacion_verde}}');
+            </script>
+        @endforeach
     @elseif($clasificacion_verde->activo == 1)
         <div class="text-center" id="btn_terminar_clasificacion">
             <button type="button" class="btn btn-danger btn-sm" onclick="terminar_clasificacion()">
                 <i class="fa fa-fw fa-times"></i> Terminar Clasificación
             </button>
         </div>
+
+        @foreach($clasificacion_verde->variedades() as $variedad)
+            <div id="div_destinar_lotes_{{$variedad->id_variedad}}" style="display: none;"></div>
+            <script>
+                destinar_lotes_form('{{$variedad->id_variedad}}', '{{$clasificacion_verde->id_clasificacion_verde}}');
+            </script>
+        @endforeach
     @endif
 
     @php
@@ -236,9 +281,47 @@
             '<div class="alert alert-info text-center">Si termina esta clasificación en verde no podrá volver a clasificar más ramos en la fecha seleccionada</div>',
             '<i class="fa fa-fw fa-exclamation-triangle"></i> Mensaje de alerta', true, false, '{{isPc() ? '35%' : ''}}', function () {
                 post_jquery('{{url('clasificacion_verde/terminar')}}', datos, function () {
+                    if ($('#check_mandar_apertura_auto').prop('checked')) {
+                        ids_variedades = $('.id_variedad_form');
+                        arreglo_master = [];
+                        for (v = 0; v < ids_variedades.length; v++) {
+                            arreglo_master.push(store_lote_re_from(ids_variedades[v].value));
+                        }
+                        datos = {
+                            _token: '{{csrf_token()}}',
+                            arreglo: arreglo_master
+                        };
+                        post_jquery('{{url('clasificacion_verde/store_lote_re_from')}}', datos, function () {
+                        });
+                    }
                     cerrar_modals();
+                    buscar_listado();
+
                     add_verde($('#fecha_recepciones').val());
                 });
             });
+    }
+
+    function store_personal() {
+        datos = {
+            _token: '{{csrf_token()}}',
+            personal: $('#personal').val(),
+            id_clasificacion_verde: $('#id_clasificacion_verde').val(),
+        };
+
+        post_jquery('{{url('clasificacion_verde/store_personal')}}', datos, function () {
+            cerrar_modals();
+            add_verde($('#fecha_recepciones').val());
+        });
+    }
+
+    function destinar_lotes_form(variedad, clasificacion) {
+        datos = {
+            id_variedad: variedad,
+            id_clasificacion_verde: clasificacion
+        };
+        get_jquery('<?php echo e(url('clasificacion_verde/destinar_lotes_form')); ?>', datos, function (retorno) {
+            $('#div_destinar_lotes_' + variedad).html(retorno);
+        });
     }
 </script>

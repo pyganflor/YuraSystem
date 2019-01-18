@@ -4,7 +4,6 @@
     <tr class="table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}">
         <th class="text-center" style="border-color: #9d9d9d">VARIEDAD</th>
         <th class="text-center" style="border-color: #9d9d9d">SIGLAS</th>
-        <th class="text-center" style="border-color: #9d9d9d">T x R (CANTIDAD)</th>
         <th class="text-center" style="border-color: #9d9d9d">Minimo apertura (Dias)</th>
         <th class="text-center" style="border-color: #9d9d9d">Estandar apertura (Dias)</th>
         <th class="text-center" style="border-color: #9d9d9d">Maximo apertura (Dias)</th>
@@ -24,9 +23,6 @@
                 </td>
                 <td style="border-color: #9d9d9d" class="text-center">
                     {{$v->siglas}}
-                </td>
-                <td style="border-color: #9d9d9d" class="text-center">
-                    {{$v->cantidad}}
                 </td>
                 <td style="border-color: #9d9d9d" class="text-center">
                     {{$v->minimo_apertura}}

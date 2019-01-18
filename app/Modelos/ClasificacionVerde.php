@@ -19,6 +19,7 @@ class ClasificacionVerde extends Model
         'fecha_ingreso',
         'id_semana',
         'activo',
+        'personal',
     ];
 
     public function lotes_re()
@@ -28,7 +29,7 @@ class ClasificacionVerde extends Model
 
     public function lotes_reByVariedad($variedad)
     {
-        return LoteRE::All()->where('id_clasificacion_verde','=',$this->id_clasificacion_verde)->where('id_variedad', '=', $variedad);
+        return LoteRE::All()->where('id_clasificacion_verde', '=', $this->id_clasificacion_verde)->where('id_variedad', '=', $variedad);
     }
 
     public function detalles()
@@ -100,7 +101,7 @@ class ClasificacionVerde extends Model
             $total += $item->recepcion->cantidad_tallos();
         }
 
-        return round(100 - round(($this->total_tallos() * 100) / $total, 2),2);
+        return round(100 - round(($this->total_tallos() * 100) / $total, 2), 2);
     }
 
     public function getRamosByvariedadUnitaria($variedad, $unitaria)
@@ -147,5 +148,33 @@ class ClasificacionVerde extends Model
             array_push($r, ClasificacionUnitaria::find($item->id_clasificacion_unitaria));
         }
         return $r;
+    }
+
+    function getRendimiento()
+    {
+        $current = $this->detalles[0]->fecha_registro;
+        $listado_fechas = DB::table('detalle_clasificacion_verde')
+            ->select(DB::raw('min(fecha_registro) as minimo'), DB::raw('max(fecha_registro) as maximo'))->distinct()
+            ->where('estado', '=', 1)
+            ->where('id_clasificacion_verde', '=', $this->id_clasificacion_verde)
+            ->get();
+        $horas = difFechas($listado_fechas[0]->maximo, $listado_fechas[0]->minimo)->h;
+        $horas += round(difFechas($listado_fechas[0]->maximo, $listado_fechas[0]->minimo)->i / 60, 2);
+        if ($horas > 0) {
+            $r = ($this->total_tallos() / $this->personal) / $horas;
+        } else {
+            $r = ($this->total_tallos() / $this->personal) / 1;
+        }
+        return round($r, 2);
+    }
+
+    function getDetallesByFecha($fecha)
+    {
+        $listado = DetalleClasificacionVerde::All()
+            ->where('estado', '=', 1)
+            ->where('id_clasificacion_verde', '=', $this->id_clasificacion_verde)
+            ->where('fecha_ingreso', '=', $fecha)
+            ->sortBy('id_variedad');
+        return $listado;
     }
 }

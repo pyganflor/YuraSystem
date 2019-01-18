@@ -1,15 +1,14 @@
 <script>
-
     buscar_listado_pedidos();
 
     function buscar_listado_pedidos() {
         $.LoadingOverlay('show');
         datos = {
             //busqueda: $('#busqueda_pedidos').val().trim(),
-            id_cliente : $("#id_cliente").val(),
-            anno       : $("#anno").val(),
-            desde      : $("#desde").val(),
-            hasta      : $("#hasta").val(),
+            id_cliente: $("#id_cliente").val(),
+            anno: $("#anno").val(),
+            desde: $("#desde").val(),
+            hasta: $("#hasta").val(),
         };
         $.get('{{url('pedidos/buscar')}}', datos, function (retorno) {
             $('#div_listado_pedidos').html(retorno);
@@ -25,9 +24,9 @@
         e.preventDefault();
         var url = $(this).attr("href");
         url = url.replace('?', '?busquedaAnno=' + $('#anno').val() +
-            '&desde=' + $('#desde').val() + '&'+
-            '&hasta=' + $('#hasta').val() + '&'+
-            '&busqueda_pedidos=' +  $('#busqueda_pedidos').val() + '&');
+            '&desde=' + $('#desde').val() + '&' +
+            '&hasta=' + $('#hasta').val() + '&' +
+            '&busqueda_pedidos=' + $('#busqueda_pedidos').val() + '&');
         $('#div_listado_pedidos').html($('#table_pedidos').html());
         $.get(url, function (resul) {
             //console.log(resul);
@@ -48,6 +47,13 @@
             //estructura_tabla('table_content_pedidos');
         }).always(function () {
             $.LoadingOverlay('hide');
+        });
+    }
+    function add_orden_semanal() {
+        get_jquery('{{url('pedidos/add_orden_semanal')}}', {}, function (retorno) {
+            modal_view('modal-view_add_orden_semanal', retorno, '<i class="fa fa-fw fa-plus"></i> Agregar Orden Semanal', true, false,
+                    '{{isPC() ? '95%' : ''}}')
+
         });
     }
 </script>

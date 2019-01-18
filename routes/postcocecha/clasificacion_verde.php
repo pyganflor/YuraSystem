@@ -13,9 +13,13 @@ Route::get('clasificacion_verde/buscar_recepciones_byFecha', 'ClasificacionVerde
 Route::get('clasificacion_verde/ver_lotes', 'ClasificacionVerdeController@ver_lotes');
 Route::post('clasificacion_verde/destinar_a', 'ClasificacionVerdeController@destinar_a');
 Route::get('clasificacion_verde/destinar_lotes', 'ClasificacionVerdeController@destinar_lotes');
+Route::get('clasificacion_verde/destinar_lotes_form', 'ClasificacionVerdeController@destinar_lotes_form');
 Route::post('clasificacion_verde/store_lote_re', 'ClasificacionVerdeController@store_lote_re');
 Route::get('clasificacion_verde/add/cargar_tabla_variedad', 'ClasificacionVerdeController@cargar_tabla_variedad');
 Route::post('clasificacion_verde/store', 'ClasificacionVerdeController@store');
 Route::post('clasificacion_verde/store_detalles', 'ClasificacionVerdeController@store_detalles');
 Route::get('clasificacion_verde/calcular_stock', 'ClasificacionVerdeController@calcular_stock');
 Route::post('clasificacion_verde/terminar', 'ClasificacionVerdeController@terminar');
+Route::post('clasificacion_verde/store_personal', 'ClasificacionVerdeController@store_personal');
+Route::get('clasificacion_verde/ver_rendimiento', 'ClasificacionVerdeController@ver_rendimiento');
+Route::post('clasificacion_verde/store_lote_re_from', 'ClasificacionVerdeController@store_lote_re_from');

@@ -36,6 +36,7 @@ Route::group(['middleware' => 'autenticacion'], function () {
         /* ========================== POSTCPCECHA ========================*/
         include 'postcocecha/lotes.php';
         include 'postcocecha/clasificacion_blanco.php';
+        include 'postcocecha/despachos.php';
         include 'postcocecha/apertura.php';
         include 'postcocecha/clasificacion_verde.php';
         include 'postcocecha/recepcion.php';

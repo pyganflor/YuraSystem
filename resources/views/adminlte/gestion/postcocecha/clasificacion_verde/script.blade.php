@@ -93,6 +93,70 @@
         $.LoadingOverlay('hide');
     }
 
+    function ver_rendimiento(verde) {
+        datos = {
+            id_clasificacion_verde: verde
+        };
+
+        get_jquery('{{url('clasificacion_verde/ver_rendimiento')}}', datos, function (retorno) {
+            modal_view('modal_view_ver_rendimiento', retorno, '<i class="fa fa-fw fa-balance-scale"></i> Rendimiento', true, false, '{{isPC() ? '50%' : ''}}');
+        });
+    }
+
+    function store_lote_re_from(variedad) {
+        if ($('#form-add_lote_re_' + variedad).valid()) {
+            unitarias = $('.ids_unitaria_' + variedad);
+
+            arreglo = [];
+            success = true;
+
+            for (i = 0; i < unitarias.length; i++) {
+                total_tallos = parseInt($('#tallos_x_unitaria_' + unitarias[i].value + '_' + variedad).val());
+                apertura = parseInt($('#apertura_' + unitarias[i].value + '_' + variedad).val());
+                guarde = parseInt($('#guarde_' + unitarias[i].value + '_' + variedad).val());
+                dias = parseInt($('#dias_' + unitarias[i].value + '_' + variedad).val());
+
+                if ((apertura + guarde) != total_tallos) {
+                    $('#apertura_' + unitarias[i].value + '_' + variedad).addClass('error');
+                    $('#guarde_' + unitarias[i].value + '_' + variedad).addClass('error');
+                    $('#badge_tallos_x_unitaria_' + unitarias[i].value + '_' + variedad).addClass('error');
+                    success = false;
+                } else {
+                    $('#apertura_' + unitarias[i].value + '_' + variedad).removeClass('error');
+                    $('#guarde_' + unitarias[i].value + '_' + variedad).removeClass('error');
+                    $('#badge_tallos_x_unitaria_' + unitarias[i].value + '_' + variedad).removeClass('error');
+
+                    lote = {
+                        id_clasificacion_unitaria: unitarias[i].value,
+                        dias: dias,
+                        apertura: apertura,
+                        guarde: guarde,
+                    };
+
+                    arreglo.push(lote);
+                }
+            }
+            if (success) {
+
+                datos = {
+                    _token: '{{csrf_token()}}',
+                    fecha: $('#fecha_ingreso').val(),
+                    id_variedad: variedad,
+                    id_clasificacion_verde: $('#id_clasificacion_verde').val(),
+                    arreglo: arreglo,
+                    terminar: 1
+                };
+
+                return datos;
+
+            } else {
+                alerta('<p class="text-center">Debe distribuir la cantidad exacta de tallos entre Apertura y Guarde</p>');
+            }
+        } else {
+            alerta('<p class="text-center">Faltan datos en el formulario</p>');
+        }
+    }
+
     /* ============= FUNCION PARA AÑADIR DOCUMENTO =================*/
     function add_info(codigo) {
         add_documento('clasificacion_verde', codigo, function () {
@@ -159,7 +223,7 @@
             modal_view('modal_ver_lotes', retorno, '<i class="fa fa-fw fa-exchange"></i> Lotes', true, false, '{{isPC() ? '75%' : ''}}');
         });
     }
-    
+
     function calcular_stock(unitaria) {
         datos = {
             id_clasificacion_unitaria: unitaria,

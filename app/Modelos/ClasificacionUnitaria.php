@@ -19,7 +19,8 @@ class ClasificacionUnitaria extends Model
         'fecha_registro',
         'estado',
         'id_clasificacion_ramo_estandar',
-        'id_clasificacion_ramo_real'
+        'id_clasificacion_ramo_real',
+        'tallos_x_ramo',
     ];
 
     public function configuracion_empresa()

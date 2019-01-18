@@ -613,8 +613,6 @@
             today += ' ' + hh + ':' + minutes;
         }
 
-        alert(today);
-
         entrada.prop('min', today);
         entrada.val(today);
     }
@@ -633,11 +631,16 @@
             mm = '0' + mm
         }
 
-
         if (entrada.prop('type') == 'datetime-local') {
             var hh = today.getHours();
             var minutes = today.getMinutes();
-            today = yyyy + '-' + mm + '-' + dd + ' ' + hh + ':' + minutes;
+            if (hh < 10) {
+                hh = '0' + hh
+            }
+            if (minutes < 10) {
+                minutes = '0' + minutes
+            }
+            today = yyyy + '-' + mm + '-' + dd + 'T' + hh + ':' + minutes;
         } else {
             today = yyyy + '-' + mm + '-' + dd;
         }

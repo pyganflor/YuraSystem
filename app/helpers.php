@@ -22,6 +22,8 @@ use yura\Modelos\LoteRE;
 use yura\Modelos\UnidadMedida;
 use yura\Modelos\Consumo;
 use yura\Modelos\Grosor;
+use yura\Modelos\Empaque;
+use yura\Modelos\InventarioFrio;
 
 /*
  * -------- BITÁCORA DE LAS ACCIONES ECHAS POR EL USUARIO ------
@@ -825,6 +827,11 @@ function getLoteREById($id)
     return LoteRE::find($id);
 }
 
+function getEmpaque($id)
+{
+    return Empaque::find($id);
+}
+
 
 /*function getResumenPedidosByFecha($fecha, $variedad)
 {
@@ -1030,4 +1037,60 @@ function getEquivalentesByGrosorVariedad($fecha, $grosor, $variedad)
     }
     return $r;
 
+}
+
+/* ============ Cantidad de ramos pedidos segun fecha, variedad, clasificacion_ramo, envoltura, presentacion, tallos_x_ramo, longitud_ramo, unidad_medida ==============*/
+function getCantidadRamosPedidosForCB($fecha, $variedad, $clasificacion_ramo, $envoltura, $presentacion, $tallos_x_ramos, $longitud_ramo, $unidad_medida)
+{
+    $r = DB::table('pedido as p')
+        ->join('detalle_pedido as dp', 'dp.id_pedido', '=', 'p.id_pedido')
+        ->join('cliente_pedido_especificacion as cpe', 'cpe.id_cliente_pedido_especificacion', '=', 'dp.id_cliente_especificacion')
+        ->join('especificacion_empaque as ee', 'ee.id_especificacion', '=', 'cpe.id_especificacion')
+        ->join('detalle_especificacionempaque as dee', 'dee.id_especificacion_empaque', '=', 'ee.id_especificacion_empaque')
+        ->join('variedad as v', 'v.id_variedad', '=', 'dee.id_variedad')
+        ->select(DB::raw('sum(dee.cantidad * ee.cantidad * dp.cantidad) as cantidad'))
+        ->where('p.estado', '=', 1)
+        ->where('p.empaquetado', '=', 0)
+        ->where('p.fecha_pedido', '=', $fecha)
+        ->where('dee.id_variedad', '=', $variedad)
+        ->where('dee.id_clasificacion_ramo', '=', $clasificacion_ramo)
+        ->where('dee.id_empaque_e', '=', $envoltura)
+        ->where('dee.id_empaque_p', '=', $presentacion);
+
+    if ($tallos_x_ramos != '')
+        $r = $r->where('dee.tallos_x_ramos', '=', $tallos_x_ramos);
+    if ($longitud_ramo != '')
+        $r = $r->where('dee.longitud_ramo', '=', $longitud_ramo);
+    if ($unidad_medida != '')
+        $r = $r->where('dee.id_unidad_medida', '=', $unidad_medida);
+
+    if (count($r->get()) > 0)
+        return $r->get()[0]->cantidad != '' ? $r->get()[0]->cantidad : 0;
+    else
+        return 0;
+}
+
+/* ============ Obtener Inventario en frío ==============*/
+function getDisponibleInventarioFrio($variedad, $clasificacion_ramo, $envoltura, $presentacion, $tallos_x_ramos, $longitud_ramo, $unidad_medida)
+{
+    $r = DB::table('inventario_frio as if')
+        ->select(DB::raw('sum(if.disponibles) as cantidad'))
+        ->where('estado', '=', 1)
+        ->where('disponibilidad', '=', 1)
+        ->where('id_variedad', '=', $variedad)
+        ->where('id_clasificacion_ramo', '=', $clasificacion_ramo)
+        ->where('id_empaque_e', '=', $envoltura)
+        ->where('id_empaque_p', '=', $presentacion);
+
+    if ($tallos_x_ramos != '')
+        $r = $r->where('if.tallos_x_ramo', '=', $tallos_x_ramos);
+    if ($longitud_ramo != '')
+        $r = $r->where('if.longitud_ramo', '=', $longitud_ramo);
+    if ($unidad_medida != '')
+        $r = $r->where('if.id_unidad_medida', '=', $unidad_medida);
+
+    if (count($r->get()) > 0)
+        return $r->get()[0]->cantidad != '' ? $r->get()[0]->cantidad : 0;
+    else
+        return 0;
 }

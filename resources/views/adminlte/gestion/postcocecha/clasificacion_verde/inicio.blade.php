@@ -89,6 +89,8 @@
                         </td>
                     </tr>
                 </table>
+                <label for="check_mandar_apertura_auto" class="pull-right" style="margin-left: 5px">Mandar automáticamente a aperturas</label>
+                <input type="checkbox" id="check_mandar_apertura_auto" class="pull-right" checked>
                 <div id="div_listado_clasificaciones"></div>
             </div>
         </div>

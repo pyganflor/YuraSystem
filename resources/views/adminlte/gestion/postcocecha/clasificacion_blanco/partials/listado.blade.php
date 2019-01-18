@@ -1,337 +1,276 @@
-<div id="table_aperturas">
-    @if(count($listado)>0)
-        <table width="100%" class="table table-responsive table-bordered" style="font-size: 0.8em; border-color: #9d9d9d"
-               id="table_content_aperturas">
+@if(count($fechas) > 0 && count($combinaciones)>0)
+    <form id="form-update_stock_empaquetado" class="pull-left">
+        <input type="hidden" id="id_variedad" value="{{$variedad->id_variedad}}">
+        <span class="badge">{{$stock_apertura->cantidad_ingresada}}</span> ramos de <span
+                class="badge">{{$variedad->nombre}}</span> sacados de apertura -
+
+        <input type="number" id="ramos_restantes_aperturas" placeholder="ramos restantes" min="0" max="{{$stock_apertura->cantidad_ingresada}}"
+               required>
+        <button type="button" class="btn btn-xs btn-success" onclick="update_stock_empaquetado()">
+            <i class="fa fa-fw fa-save"></i> Guardar
+        </button>
+        <input type="hidden" id="id_stock_empaquetado" value="{{$stock_apertura->id_stock_empaquetado}}">
+    </form>
+
+    <label for="check_dias_maduracion" class="pull-right" style="margin-left: 5px">Seleccionar flores con mayor días de maduración</label>
+    <input type="checkbox" class="pull-right" id="check_dias_maduracion" checked>
+    <table class="table table-bordered table-striped table-responsive" width="100%" id="table_clasificacion_blanco"
+           style="border: 1px solid #9d9d9d; font-size: 0.8em; margin-top: 10px; margin-bottom: 0">
+        <tr>
+            <td style="border-color: #9d9d9d"></td>
+            @php
+                $pos_fecha = 1;
+            @endphp
+            @foreach($fechas as $fecha)
+                <th class="text-center" style="background-color: #e9ecef; border-color: #9d9d9d; border-width: {{$pos_fecha == 1 ? '3px' : ''}}">
+                    {{getDias(TP_ABREVIADO,FR_ARREGLO)[transformDiaPhp(date('w',strtotime($fecha->fecha_pedido)))]}}<br>
+                    <small>{{$fecha->fecha_pedido}}</small>
+                    <input type="hidden" id="fecha_{{$pos_fecha}}" value="{{$fecha->fecha_pedido}}">
+                </th>
+                @php
+                    $pos_fecha++;
+                @endphp
+            @endforeach
+            <th class="text-center" style="background-color: #357CA5; border-color: #9d9d9d; color: white">
+                Cuarto Frío
+            </th>
+            <th class="text-center" style="background-color: #357CA5; border-color: #9d9d9d; color: white">
+                Armado
+            </th>
+        </tr>
+        @php
+            $pos_comb = 1;
+        @endphp
+        @foreach($combinaciones as $item)
+            @php
+                if($item->tallos_x_ramos != '')
+                    $tallos_x_ramo = $item->tallos_x_ramos.' tallos ';
+                else
+                    $tallos_x_ramo = '';
+                if($item->longitud_ramo != '' && $item->id_unidad_medida != '')
+                    $longitud_ramo = $item->longitud_ramo.' '.getUnidadMedida($item->id_unidad_medida)->siglas.' ';
+                else
+                    $longitud_ramo = '';
+                $texto = getCalibreRamoById($item->id_clasificacion_ramo)->nombre.' '.getCalibreRamoById($item->id_clasificacion_ramo)->unidad_medida->siglas.' '.
+                    $tallos_x_ramo.''.$longitud_ramo.''.getEmpaque($item->id_empaque_e)->nombre.' '.getEmpaque($item->id_empaque_p)->nombre;
+            @endphp
             <tr>
-                <th style="border-color: #9d9d9d; background-color: #e9ecef" colspan="2">
-                    <ul class="list-unstyled">
-                        <li>
-                            Semana: {{getSemanaByDate($fecha)->codigo}}
-                        </li>
-                        <li>
-                            Día: {{getDias(TP_COMPLETO,FR_ARREGLO)[transformDiaPhp(date('w',strtotime($fecha)))]}}
-                        </li>
-                    </ul>
+                <th class="text-center" style="background-color: #e9ecef; border-color: #9d9d9d" id="th_pedidos_{{$pos_comb}}">
+                    <strong class="pull-left">
+                        {{$texto}}
+                    </strong>
+                    <span class="badge pull-right" title="Total">
+                        {{$item->cantidad}}
+                    </span>
+                    <input type="hidden" id="texto_{{$pos_comb}}" value="{{$texto}}">
+                    <input type="hidden" id="clasificacion_ramo_{{$pos_comb}}" value="{{$item->id_clasificacion_ramo}}">
+                    <input type="hidden" id="tallos_x_ramo_{{$pos_comb}}" value="{{$item->tallos_x_ramos}}">
+                    <input type="hidden" id="longitud_ramo_{{$pos_comb}}" value="{{$item->longitud_ramo}}">
+                    <input type="hidden" id="id_empaque_e_{{$pos_comb}}" value="{{$item->id_empaque_e}}">
+                    <input type="hidden" id="id_empaque_p_{{$pos_comb}}" value="{{$item->id_empaque_p}}">
+                    <input type="hidden" id="id_unidad_medida_{{$pos_comb}}" value="{{$item->id_unidad_medida}}">
                 </th>
-                <th style="border-color: #9d9d9d;" colspan="8">
-                    @if(count($stock_frio) > 0)
-                        <button type="button" class="btn btn-primary btn-xs pull-right" onclick="empaquetar('{{$fecha}}')">
-                            <i class="fa fa-fw fa-gift"></i> Armado
-                        </button>
-                    @else
-                        <div class="well text-center" style="margin-bottom: 0">
-                            No se han sacado flores de las aperturas para los pedidos de este día
-                        </div>
-                    @endif
-                </th>
-            </tr>
-            <tr>
-                <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
-                    style="border-color: #9d9d9d">
-                    PEDIDO
-                </th>
-                <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
-                    style="border-color: #9d9d9d">
-                    CLIENTE
-                </th>
-                <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
-                    style="border-color: #9d9d9d">
-                    FLOR
-                </th>
-                <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
-                    style="border-color: #9d9d9d">
-                    EMPAQUE
-                </th>
-                <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
-                    style="border-color: #9d9d9d">
-                    PRESENTACIÓN
-                </th>
-                <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
-                    style="border-color: #9d9d9d">
-                    PIEZAS
-                </th>
-                <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
-                    style="border-color: #9d9d9d">
-                    CAJAS FULL
-                </th>
-                <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
-                    style="border-color: #9d9d9d">
-                    RAMOS
-                </th>
-                <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
-                    style="border-color: #9d9d9d">
-                    RAMOS x CAJA
-                </th>
-                <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
-                    style="border-color: #9d9d9d">
-                    AGENCIA CARGA
-                </th>
+                @php
+                    $pos_fecha = 1;
+                @endphp
+                @foreach($fechas as $fecha)
+                    <td class="text-center"
+                        style="border-color: #9d9d9d; border-right-width: {{$pos_fecha == 1 ? '3px' : ''}}; border-left-width: {{$pos_fecha == 1 ? '3px' : ''}};"
+                        onmouseover="$(this).css('background-color','#ADD8E6')" onmouseleave="$(this).css('background-color','')">
+                        {{getCantidadRamosPedidosForCB($fecha->fecha_pedido,$item->id_variedad,$item->id_clasificacion_ramo,$item->id_empaque_e,$item->id_empaque_p,
+                        $item->tallos_x_ramos,$item->longitud_ramo,$item->id_unidad_medida)}}
+                        <input type="hidden" id="pedido_{{$pos_comb}}_{{$pos_fecha}}" value="{{getCantidadRamosPedidosForCB($fecha->fecha_pedido,$item->id_variedad,$item->id_clasificacion_ramo,$item->id_empaque_e,$item->id_empaque_p,
+                        $item->tallos_x_ramos,$item->longitud_ramo,$item->id_unidad_medida)}}">
+                    </td>
+                    @php
+                        $pos_fecha++;
+                    @endphp
+                @endforeach
+                <td class="text-center" style=" border-color: #9d9d9d;" width="7%">
+                    <input type="hidden" id="inventario_frio_{{$pos_comb}}" value="{{getDisponibleInventarioFrio($item->id_variedad,$item->id_clasificacion_ramo,$item->id_empaque_e,$item->id_empaque_p,
+                        $item->tallos_x_ramos,$item->longitud_ramo,$item->id_unidad_medida)}}">
+                    <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
+                            aria-expanded="false" id="btn_inventario_{{$pos_comb}}" onclick="maduracion('{{$pos_comb}}')">
+                        {{getDisponibleInventarioFrio($item->id_variedad,$item->id_clasificacion_ramo,$item->id_empaque_e,$item->id_empaque_p,
+                    $item->tallos_x_ramos,$item->longitud_ramo,$item->id_unidad_medida)}}
+                    </button>
+                </td>
+                <td class="text-center" style=" border-color: #9d9d9d;" width="7%">
+                    <input type="number" style="width: 100%" id="armar_{{$pos_comb}}" min="0"
+                           onchange="calcular_inventario_i('{{$pos_comb}}', '{{$pos_comb-1}}')"
+                           class="text-center" value="0">
+                </td>
             </tr>
             @php
-                $piezas_totales = 0;
-                $ramos_totales = 0;
-                $cajas_totales = 0;
+                $pos_comb++;
             @endphp
-            @foreach($listado as $pedido)
-                @foreach(getPedido($pedido->id_pedido)->detalles as $detalle)
-                    @foreach($detalle->cliente_especificacion->especificacion->especificacionesEmpaque as $esp_emp)
-                        @foreach($esp_emp->detalles as $det_esp_emp)
-                            <tr onmouseover="$(this).css('background-color','#ADD8E6')" onmouseleave="$(this).css('background-color','')">
-                                <td class="text-center" style="border-color: #9d9d9d">
-                                    PED{{$pedido->id_pedido}}
-                                </td>
-                                <td class="text-center" style="border-color: #9d9d9d">
-                                    {{getPedido($pedido->id_pedido)->cliente->detalle()->nombre}}
-                                </td>
-                                <td class="text-center" style="border-color: #9d9d9d">
-                                    {{$det_esp_emp->variedad->siglas}} {{$det_esp_emp->clasificacion_ramo->nombre}}
-                                    {{$det_esp_emp->clasificacion_ramo->unidad_medida->siglas}}
-                                    @if($det_esp_emp->tallos_x_ramos != '')
-                                        {{$det_esp_emp->tallos_x_ramos}} tallos
-                                    @endif
-                                    @if($det_esp_emp->id_unidad_medida != '' && $det_esp_emp->longitud_ramo != '')
-                                        {{$det_esp_emp->longitud_ramo}}{{$det_esp_emp->unidad_medida->siglas}}
-                                    @endif
-                                    {{$det_esp_emp->grosor_ramo->nombre}}
-                                </td>
-                                <td class="text-center" style="border-color: #9d9d9d">
-                                    {{explode('|',$esp_emp->empaque->nombre)[0]}}
-                                </td>
-                                <td class="text-center" style="border-color: #9d9d9d">
-                                    {{$det_esp_emp->empaque_e->nombre}}, {{$det_esp_emp->empaque_p->nombre}}
-                                </td>
-                                <td class="text-center" style="border-color: #9d9d9d">
-                                    {{$esp_emp->cantidad}}
-                                    @php
-                                        $piezas_totales += $esp_emp->cantidad;
-                                    @endphp
-                                </td>
-                                <td class="text-center" style="border-color: #9d9d9d">
-                                    {{$esp_emp->cantidad * explode('|',$esp_emp->empaque->nombre)[1]}}
-                                    @php
-                                        $cajas_totales += $esp_emp->cantidad * explode('|',$esp_emp->empaque->nombre)[1];
-                                    @endphp
-                                </td>
-                                <td class="text-center" style="border-color: #9d9d9d">
-                                    {{$det_esp_emp->cantidad * $esp_emp->cantidad * $detalle->cantidad}}
-                                    @php
-                                        $ramos_totales += $det_esp_emp->cantidad * $esp_emp->cantidad * $detalle->cantidad;
-                                    @endphp
-                                </td>
-                                <td class="text-center" style="border-color: #9d9d9d">
-                                    {{$det_esp_emp->cantidad}}
-                                </td>
-                                <td class="text-center" style="border-color: #9d9d9d">
-                                    {{$detalle->agencia_carga->nombre}}
-                                </td>
-                            </tr>
-                        @endforeach
-                    @endforeach
-                @endforeach
+        @endforeach
+        <tr>
+            <td style="border-color: #9d9d9d"></td>
+            @php
+                $pos_fecha = 1;
+            @endphp
+            @foreach($fechas as $fecha)
+                <td style="border-color: #9d9d9d; border-bottom-width: {{$pos_fecha == 1 ? '3px' : ''}}; background-color: #e9ecef;
+                        border-right-width: {{$pos_fecha == 1 ? '3px' : ''}}; border-left-width: {{$pos_fecha == 1 ? '3px' : ''}};"
+                    class="text-center">
+                    <button type="button" class="btn btn-xs btn-primary" title="Mandar a armar">
+                        <i class="fa fa-fw fa-gift"></i>
+                    </button>
+                    @if($pos_fecha == 1)
+                        <button type="button" class="btn btn-xs btn-success" title="Confirmar pedidos"
+                                onclick="confirmar_pedidos('{{$pos_comb-1}}')">
+                            <i class="fa fa-fw fa-check"></i>
+                        </button>
+                    @endif
+                </td>
+                @php
+                    $pos_fecha++;
+                @endphp
             @endforeach
-        </table>
-        <div class="row">
-            <div class="col-md-4">
-                <table class="table table-responsive table-bordered" style="font-size: 0.7em; border: 1px solid #9d9d9d">
-                    <tr>
-                        <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
-                            style="border-color: #9d9d9d" colspan="{{count($variedades)+1}}">
-                            Cajas Equivalentes
-                        </th>
-                    </tr>
-                    <tr>
-                        <td style="border-color: #9d9d9d"></td>
-                        @foreach($variedades as $variedad)
-                            <th class="text-center" style="border-color: #9d9d9d">
-                                {{getVariedad($variedad->id_variedad)->nombre}}
-                            </th>
-                        @endforeach
-                    </tr>
-                    @foreach($grosores as $grosor)
-                        <tr>
-                            <th class="text-center" style="border-color: #9d9d9d">
-                                {{getGrosor($grosor->id_grosor_ramo)->nombre}}
-                            </th>
-                            @foreach($variedades as $variedad)
-                                <td class="text-center" style="border-color: #9d9d9d">
-                                    {{getEquivalentesByGrosorVariedad($fecha, $grosor->id_grosor_ramo, $variedad->id_variedad)}}
-                                </td>
-                            @endforeach
-                        </tr>
-                    @endforeach
-                </table>
-            </div>
-            <div class="col-md-4">
-                <table class="table table-responsive table-bordered" style="font-size: 0.7em; border: 1px solid #9d9d9d">
-                    <tr>
-                        <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
-                            style="border-color: #9d9d9d" colspan="2">
-                            Totales ramos por Variedad
-                        </th>
-                    </tr>
-                    @foreach($ramos_x_variedad as $item)
-                        <tr>
-                            <th class="text-center" style="border-color: #9d9d9d">
-                                {{getVariedad($item->id_variedad)->siglas}}
-                                {{getCalibreRamoById($item->id_clasificacion_ramo)->nombre}}{{getCalibreRamoById($item->id_clasificacion_ramo)->unidad_medida->siglas}}
-                                @if($item->tallos_x_ramos != '')
-                                    {{$item->tallos_x_ramos}} tallos
-                                @endif
-                                @if($item->longitud_ramo != '' && $item->id_unidad_medida != '')
-                                    {{$item->longitud_ramo}} {{getUnidadMedida($item->id_unidad_medida)->siglas}}
-                                @endif
-                            </th>
-                            <td class="text-center" style="border-color: #9d9d9d">
-                                {{$item->cantidad}}
-                            </td>
-                        </tr>
-                    @endforeach
-                </table>
-            </div>
-            <div class="col-md-4">
-                <table class="table table-responsive table-bordered" style="font-size: 0.7em; border: 1px solid #9d9d9d">
-                    <tr>
-                        <th class="text-center" style="border-color: #9d9d9d">Piezas Totales Pedidas</th>
-                        <td class="text-center" style="border-color: #9d9d9d">
-                            {{$piezas_totales}}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th class="text-center" style="border-color: #9d9d9d">Ramos Totales Pedidos</th>
-                        <td class="text-center" style="border-color: #9d9d9d">
-                            {{$ramos_totales}}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th class="text-center" style="border-color: #9d9d9d">Cajas Full Totales Pedidas</th>
-                        <td class="text-center" style="border-color: #9d9d9d">
-                            {{$cajas_totales}}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th class="text-center" style="border-color: #9d9d9d">Cajas Equivalentes Totales Pedidas</th>
-                        <td class="text-center" style="border-color: #9d9d9d">
-                            {{$ramos_totales/getConfiguracionEmpresa()->ramos_x_caja}}
-                        </td>
-                    </tr>
-                </table>
-            </div>
-        </div>
-    @else
-        <div class="alert alert-info text-center">No se han encontrado pedidos para esta fecha</div>
-    @endif
-</div>
+            <td class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef" colspan="2">
+                <button type="button" class="btn btn-xs btn-success" title="Guardar armados"
+                        onclick="store_armar('{{$pos_comb-1}}')">
+                    <i class="fa fa-fw fa-save"></i> Guardar
+                </button>
+            </td>
+        </tr>
+    </table>
 
-<script>
-    function seleccionar_apertura_sacar(apertura) {
-        if ($('#sacar_' + apertura).val() != '') {
-            texto = '';
-            if ($('#maximo_estandar_' + apertura).prop('checked'))
-                texto = 'por encima del máximo';
-            if ($('#minimo_estandar_' + apertura).prop('checked'))
-                texto = 'por debajo del mínimo';
-            if ($('#estandar_estandar_' + apertura).prop('checked'))
-                texto = 'por encima del estandar';
+    <input type="hidden" id="pos_comb_total" value="{{$pos_comb-1}}">
 
-            if (texto != '') {
-                modal_quest('modal_quest_input_sacar',
-                    '<div class="alert alert-info text-center">Está seleccionando flores con días de maduración ' + texto + ' permitido</div>',
-                    '<i class="fa fa-fw fa-exclamation-triangle"></i> Mensaje de alerta', true, false, '{{isPC() ? '35%' : ''}}', function () {
-                        $('#checkbox_sacar_' + apertura).prop('checked', true);
-                        $('#btn_sacar').show();
+    <div style="border-top: 1px dotted #9d9d9d; padding: 5px; margin-top: 2px" class="well" title="Opciones">
+        <input type="checkbox" id="estrechar_tabla" onchange="estrechar_tabla('table_clasificacion_blanco', $(this).prop('checked'))">
+        <label for="estrechar_tabla" class="mouse-hand">Estrechar tabla</label>
+    </div>
 
-                        $('#html_current_sacar').html('');
-
-                        listado = $('.checkbox_sacar');
-                        $('#btn_sacar').hide();
-                        cantidad_seleccionada = 0;
-                        for (i = 0; i < listado.length; i++) {
-                            if (listado[i].checked) {
-                                $('#btn_sacar').show();
-                                cantidad_seleccionada += parseFloat($('#sacar_' + listado[i].id.substr(15)).val());
-                                $('#html_current_sacar').html('Seleccionados: ' + Math.round(cantidad_seleccionada * 100) / 100);
-                            }
-                        }
-                        cerrar_modals();
-                    });
-            } else {
-                $('#checkbox_sacar_' + apertura).prop('checked', true);
-                $('#btn_sacar').show();
-            }
-        } else {
-            $('#checkbox_sacar_' + apertura).prop('checked', false);
-            $('#btn_sacar').hide();
+    <script>
+        function calcular_inventario_i(pos_comb) {
+            armar = 0;
+            if ($('#armar_' + pos_comb).val() != '')
+                armar = parseFloat($('#armar_' + pos_comb).val());
+            inv = armar + parseFloat($('#inventario_frio_' + pos_comb).val());
+            $('#btn_inventario_' + pos_comb).html(inv);
         }
-        seleccionar_checkboxs($('#checkbox_sacar_' + apertura));
-    }
 
-    function seleccionar_checkboxs(current) {
-        if (current != '' && current.prop('checked')) {
-            current.prop('checked', false);
-            apertura = current.prop('id').substr(15);
-            $('#btn_sacar').hide();
+        function confirmar_pedidos(pos_comb) {
+            arreglo = [];
+            for (i = 1; i <= pos_comb; i++) {
+                data = {
+                    pedido: parseFloat($('#pedido_' + i + '_' + 1).val()),
+                    inventario: parseFloat($('#inventario_frio_' + i).val()),
+                    armar: $('#armar_' + i).val() != '' ? parseFloat($('#armar_' + i).val()) : 0,
+                    clasificacion_ramo: $('#clasificacion_ramo_' + i).val(),
+                    tallos_x_ramo: $('#tallos_x_ramo_' + i).val(),
+                    longitud_ramo: $('#longitud_ramo_' + i).val(),
+                    id_empaque_e: $('#id_empaque_e_' + i).val(),
+                    id_empaque_p: $('#id_empaque_p_' + i).val(),
+                    id_unidad_medida: $('#id_unidad_medida_' + i).val(),
+                    texto: $('#texto_' + i).val()
+                };
+                if (data['pedido'] <= (data['inventario'] + data['armar'])) {
+                    $('#th_pedidos_' + i).removeClass('error');
 
-            texto = '';
-            if ($('#maximo_estandar_' + apertura).prop('checked'))
-                texto = 'por encima del máximo';
-            if ($('#minimo_estandar_' + apertura).prop('checked'))
-                texto = 'por debajo del mínimo';
-            if ($('#estandar_estandar_' + apertura).prop('checked'))
-                texto = 'por encima del estandar';
-
-            if (texto != '') {
-                modal_quest('modal_quest_input_sacar',
-                    '<div class="alert alert-info text-center">Está seleccionando flores con días de maduración ' + texto + ' permitido</div>',
-                    '<i class="fa fa-fw fa-exclamation-triangle"></i> Mensaje de alerta', true, false, '{{isPC() ? '35%' : ''}}', function () {
-                        current.prop('checked', true);
-                        $('#btn_sacar').show();
-
-                        $('#html_current_sacar').html('');
-
-                        listado = $('.checkbox_sacar');
-                        $('#btn_sacar').hide();
-                        cantidad_seleccionada = 0;
-                        for (i = 0; i < listado.length; i++) {
-                            if (listado[i].checked) {
-                                $('#btn_sacar').show();
-                                cantidad_seleccionada += parseFloat($('#sacar_' + listado[i].id.substr(15)).val());
-                                $('#html_current_sacar').html('Seleccionados: ' + Math.round(cantidad_seleccionada * 100) / 100);
-                            }
-                        }
-                        cerrar_modals();
-                    });
-            } else {
-                current.prop('checked', true);
-                $('#btn_sacar').show();
-
-                $('#html_current_sacar').html('');
-
-                listado = $('.checkbox_sacar');
-                $('#btn_sacar').hide();
-                cantidad_seleccionada = 0;
-                for (i = 0; i < listado.length; i++) {
-                    if (listado[i].checked) {
-                        $('#btn_sacar').show();
-                        cantidad_seleccionada += parseFloat($('#sacar_' + listado[i].id.substr(15)).val());
-                        $('#html_current_sacar').html('Seleccionados: ' + Math.round(cantidad_seleccionada * 100) / 100);
-                    }
+                    arreglo.push(data);
+                } else {
+                    alert('Faltan ramos por armar para los pedidos de "' + $('#texto_' + i).val() + '"');
+                    $('#th_pedidos_' + i).addClass('error');
+                    return;
                 }
             }
-        } else {
-            $('#html_current_sacar').html('');
+            datos = {
+                _token: '{{csrf_token()}}',
+                id_variedad: $('#id_variedad').val(),
+                arreglo: arreglo,
+                fecha_pedidos: $('#fecha_' + 1).val(),
+                check_maduracion: $('#check_dias_maduracion').prop('checked'),
+            };
+            post_jquery('{{url('clasificacion_blanco/confirmar_pedidos')}}', datos, function () {
+                cerrar_modals();
+                listar_clasificacion_blanco($('#id_variedad').val());
+            });
+        }
 
-            listado = $('.checkbox_sacar');
-            $('#btn_sacar').hide();
-            cantidad_seleccionada = 0;
-            for (i = 0; i < listado.length; i++) {
-                if (listado[i].checked) {
-                    $('#btn_sacar').show();
-                    cantidad_seleccionada += parseFloat($('#sacar_' + listado[i].id.substr(15)).val());
-                    $('#html_current_sacar').html('Seleccionados: ' + Math.round(cantidad_seleccionada * 100) / 100);
-                }
+        function store_armar(pos_comb) {
+            arreglo = [];
+            armar = 0;
+            for (i = 1; i <= pos_comb; i++) {
+                data = {
+                    pedido: parseFloat($('#pedido_' + i + '_' + 1).val()),
+                    inventario: parseFloat($('#inventario_frio_' + i).val()),
+                    armar: $('#armar_' + i).val() != '' ? parseFloat($('#armar_' + i).val()) : 0,
+                    clasificacion_ramo: $('#clasificacion_ramo_' + i).val(),
+                    tallos_x_ramo: $('#tallos_x_ramo_' + i).val(),
+                    longitud_ramo: $('#longitud_ramo_' + i).val(),
+                    id_empaque_e: $('#id_empaque_e_' + i).val(),
+                    id_empaque_p: $('#id_empaque_p_' + i).val(),
+                    id_unidad_medida: $('#id_unidad_medida_' + i).val(),
+                    texto: $('#texto_' + i).val()
+                };
+                armar += data['armar'];
+                arreglo.push(data);
+            }
+            if (armar > 0) {
+                datos = {
+                    _token: '{{csrf_token()}}',
+                    id_variedad: $('#id_variedad').val(),
+                    arreglo: arreglo,
+                };
+                post_jquery('{{url('clasificacion_blanco/store_armar')}}', datos, function () {
+                    cerrar_modals();
+                    listar_clasificacion_blanco($('#id_variedad').val());
+                });
             }
         }
 
+        function maduracion(pos_comb) {
+            arreglo = [];
+            for (i = 1; i <= $('#pos_comb_total').val(); i++) {
+                if (i != pos_comb) {
+                    data = {
+                        inventario: parseFloat($('#inventario_frio_' + i).val()),
+                        clasificacion_ramo: $('#clasificacion_ramo_' + i).val(),
+                        tallos_x_ramo: $('#tallos_x_ramo_' + i).val(),
+                        longitud_ramo: $('#longitud_ramo_' + i).val(),
+                        id_empaque_e: $('#id_empaque_e_' + i).val(),
+                        id_empaque_p: $('#id_empaque_p_' + i).val(),
+                        id_unidad_medida: $('#id_unidad_medida_' + i).val(),
+                        texto: $('#texto_' + i).val()
+                    };
+                    arreglo.push(data);
+                }
+            }
+            datos = {
+                id_variedad: $('#id_variedad').val(),
+                clasificacion_ramo: $('#clasificacion_ramo_' + pos_comb).val(),
+                tallos_x_ramo: $('#tallos_x_ramo_' + pos_comb).val(),
+                longitud_ramo: $('#longitud_ramo_' + pos_comb).val(),
+                id_empaque_e: $('#id_empaque_e_' + pos_comb).val(),
+                id_empaque_p: $('#id_empaque_p_' + pos_comb).val(),
+                id_unidad_medida: $('#id_unidad_medida_' + pos_comb).val(),
+                texto: $('#texto_' + pos_comb).val(),
+                arreglo: arreglo
+            };
+            get_jquery('{{url('clasificacion_blanco/maduracion')}}', datos, function (retorno) {
+                modal_view('modal_view', retorno, '<i class="fa fa-fw fa-gift"></i> Días de maduración', true, false, '{{isPC() ? '35%' : ''}}');
+            });
+        }
 
-    }
-</script>
+        function update_stock_empaquetado() {
+            if ($('#form-update_stock_empaquetado').valid()) {
+                datos = {
+                    _token: '{{csrf_token()}}',
+                    id_stock_empaquetado: $('#id_stock_empaquetado').val(),
+                    cantidad: $('#ramos_restantes_aperturas').val()
+                };
+                post_jquery('{{url('clasificacion_blanco/update_stock_empaquetado')}}', datos, function () {
+                    listar_clasificacion_blanco($('#id_variedad').val());
+                });
+            }
+        }
+    </script>
+@else
+    <div class="well text-center">
+        No se han encontrado datos que mostrar
+    </div>
+@endif
