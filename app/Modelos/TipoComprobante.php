@@ -4,16 +4,17 @@ namespace yura\Modelos;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Comprobante extends Model
+class TipoComprobante extends Model
 {
-    protected $table = 'comprobante';
-    protected $primaryKey = 'id_comprobante';
+    protected $table = 'tipo_comprobante';
+    protected $primaryKey = 'id_tipo_comprobante';
     public $incrementing = false;
     public $timestamps = false;
 
     protected $fillable = [
-        'id_comprobante',
-        'clave_acceso',
+        'codigo',
+        'nombre',
+        'fecha_registro',
         'estado'
     ];
 }

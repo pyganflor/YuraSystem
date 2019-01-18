@@ -62,5 +62,5 @@
 @endsection
 
 @section('script_final')
-    @include('adminlte.gestion.facturacion.tipo_identificacion.script')
+    @include('adminlte.gestion.configuracion_facturacion.tipo_identificacion.script')
 @endsection

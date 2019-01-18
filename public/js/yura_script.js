@@ -504,3 +504,17 @@ function delete_input(id_form) {
     $.LoadingOverlay('hide');
 }
 
+function facturar_envio(id_envio,token) {
+    $.LoadingOverlay('show');
+    datos = {
+        id_envio : id_envio
+    };
+    $.get('configuracion_facturacion/formulario_facturacion', datos, function (retorno) {
+        modal_form('modal_view_envios_facturas', retorno, '<i class="fa fa-usd" aria-hidden="true"></i> Facturar Envío', true, false, '75%', function () {
+            /*facturar_cliente(token);*/
+        });
+    }).always(function () {
+        $.LoadingOverlay('hide');
+    });
+}
+

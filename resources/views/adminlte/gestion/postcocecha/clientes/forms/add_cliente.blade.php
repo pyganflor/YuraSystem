@@ -1,16 +1,35 @@
 <form id="form_add_cliente">
     <input type="hidden" id="id_cliente" value="{!! !empty($dataCliente) ? $dataCliente->id_cliente : $dataCliente !!}">
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-4">
             <div class="form-group">
                 <label for="nombre_completo">Nombre</label>
                 <input type="text" id="nombre" name="nombreo" class="form-control" required maxlength="250" autocomplete="off" value="{!! !empty($dataCliente) ? $dataCliente->nombre : $dataCliente !!}">
             </div>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-4">
             <div class="form-group">
                 <label for="identificacion">Identificación</label>
                 <input type="text" id="identificacion" name="identificacion" class="form-control" required maxlength="25" autocomplete="off" value="{!! !empty($dataCliente) ? $dataCliente->ruc : $dataCliente !!}">
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="pais">Iva</label>
+                <select id="iva" name="iva" class="form-control" required>
+                    <option selected disabled>Seleccione</option>
+                    @foreach($dataIva as $dI)
+                        @php
+                            $selected ='';
+                            if(!empty($dataCliente)){
+                                if($dataCliente->codigo_iva == $dI->codigo){
+                                    $selected = 'selected=selected';
+                                }
+                            }
+                        @endphp
+                        <option {{$selected}} value="{{$dI->codigo}}">{{$dI->porcentaje}}%</option>
+                    @endforeach
+                </select>
             </div>
         </div>
     </div>
@@ -61,6 +80,14 @@
                 <label for="direccion">Dirección</label>
                 <textarea  rows="5"  id="direccion" name="direccion" class="form-control" required  maxlength="500" autocomplete="off" >{!! !empty($dataCliente) ? $dataCliente->direccion : $dataCliente !!}</textarea>
             </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <button type="button" class="btn btn-success" onclick="store_cliente()">
+                <i class="fa fa-floppy-o" aria-hidden="true"></i>
+                Guardar
+            </button>
         </div>
     </div>
 </form>

@@ -10,7 +10,7 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label for="identificacion">Código</label>
-                <input type="text" id="codigo" name="codigo" class="form-control" required  autocomplete="off" value="{{!empty($data_tipo_identificacion->codigo) ? $data_tipo_identificacion->codigo : ''}}">
+                <input type="text" id="codigo" name="codigo" class="form-control" minlength="2" maxlength="2"  required  autocomplete="off" value="{{!empty($data_tipo_identificacion->codigo) ? $data_tipo_identificacion->codigo : ''}}">
             </div>
         </div>
     </div>

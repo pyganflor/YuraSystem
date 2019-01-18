@@ -110,6 +110,7 @@
                 correo: $("#correo").val(),
                 telefono: $("#telefono").val(),
                 direccion: $("#direccion").val(),
+                iva: $("#iva").val(),
             };
             post_jquery('{{url('clientes/store')}}', datos, function () {
                 cerrar_modals();

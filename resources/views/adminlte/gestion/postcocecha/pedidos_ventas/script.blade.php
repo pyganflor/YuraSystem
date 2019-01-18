@@ -37,4 +37,17 @@
             $.LoadingOverlay("hide");
         });
     });
+
+    function ver_envio(id_pedido){
+        $.LoadingOverlay('show');
+        datos = {
+            id_pedido : id_pedido
+        };
+        $.get('{{url('pedidos/ver_envio')}}', datos, function (retorno) {
+            modal_view('modal_view_envios_facturas', retorno, '<i class="fa fa-usd" aria-hidden="true"></i> Envios a facturar', true, false, '75%');
+            //estructura_tabla('table_content_pedidos');
+        }).always(function () {
+            $.LoadingOverlay('hide');
+        });
+    }
 </script>

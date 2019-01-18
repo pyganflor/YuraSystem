@@ -1,7 +1,7 @@
 @extends('layouts.adminlte.master')
 
 @section('titulo')
-    Comprobantes
+    Tipos de iva
 @endsection
 
 @section('contenido')
@@ -15,10 +15,10 @@
         <div class="box box-info">
             <div class="box-header with-border">
                 <h3 class="box-title">
-                    Administración de comprobantes de facturación
+                    Administración de tipos de iva
                 </h3>
             </div>
-            <div class="box-body" id="div_content_comprobantes">
+            <div class="box-body" id="div_content_tipo_iva">
                 <table width="100%">
                     <tr>
                         <td>
@@ -30,8 +30,8 @@
                                         <option value="1"> Activo </option>
                                         <option value="0"> Inactivo </option>
                                     </select>
-                                    <input type="text" class="form-control" placeholder="Búsqueda" id="busqueda_comprobantes"
-                                           name="busqueda_comprobantes">
+                                    <input type="text" class="form-control" placeholder="Búsqueda" id="busqueda_tipo_iva"
+                                           name="busqueda_tipo_iva">
                                     <span class="">
                                     <button class="btn btn-default" onclick="buscar_listado()"
                                             onmouseover="$('#title_btn_buscar').html('Buscar')"
@@ -41,7 +41,7 @@
                                     </button>
                                 </span>
                                     <span class="">
-                                    <button class="btn btn-primary" onclick="add_comprobante()"
+                                    <button class="btn btn-primary" onclick="add_tipo_iva()"
                                             onmouseover="$('#title_btn_add').html('Añadir')"
                                             onmouseleave="$('#title_btn_add').html('')">
                                         <i class="fa fa-fw fa-plus" style="color: #0c0c0c"></i>
@@ -50,17 +50,15 @@
                                 </span>
                                 </div>
                             </div>
-
-
                         </td>
                     </tr>
                 </table>
-                <div id="div_listado_comprobantes"></div>
+                <div id="div_listado_tipo_iva"></div>
             </div>
         </div>
     </section>
 @endsection
 
 @section('script_final')
-    @include('adminlte.gestion.facturacion.comprobantes.script')
+    @include('adminlte.gestion.configuracion_facturacion.tipo_iva.script')
 @endsection

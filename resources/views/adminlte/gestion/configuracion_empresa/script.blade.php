@@ -7,8 +7,6 @@
             datos = {
                 cant_tr: cant
             };
-            console.log(datos);
-            //return false;
             $.get('{{url('configuracion/campos_empaques')}}', datos, function (retorno) {
                 $("tbody#" + id_tbody).append(retorno);
                 $("#add_empaques").attr('disabled', false);

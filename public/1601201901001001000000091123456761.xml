@@ -6,15 +6,15 @@
     <razonSocial>PRUEBAS SERVICIO DE RENTAS INTERNAS</razonSocial>
     <nombreComercial>LE HACE BIEN AL PAIS</nombreComercial>
     <ruc/>
-    <claveAcceso>1101201901001001000000040123456761</claveAcceso>
+    <claveAcceso>1601201901001001000000091123456761</claveAcceso>
     <codDoc>01</codDoc>
     <estab>001</estab>
     <ptoEmi>001</ptoEmi>
-    <secuencial>000000040</secuencial>
+    <secuencial>000000091</secuencial>
     <dirMatriz>AMAZONAS Y ROCA</dirMatriz>
   </infoTributaria>
   <infoFactura>
-    <fechaEmision>11/01/2019</fechaEmision>
+    <fechaEmision>16/01/2019</fechaEmision>
     <dirEstablecimiento>Vía San Jose de Minas Vía al Pisque</dirEstablecimiento>
     <obligadoContabilidad>SI</obligadoContabilidad>
     <tipoIdentificacionComprador>09</tipoIdentificacionComprador>

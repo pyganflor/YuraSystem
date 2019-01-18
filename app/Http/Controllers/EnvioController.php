@@ -16,6 +16,7 @@ use PHPExcel_Style_Fill;
 use PHPExcel_Style_Border;
 use PHPExcel_Style_Color;
 use PHPExcel_Style_Alignment;
+use yura\Modelos\Pedido;
 
 class EnvioController extends Controller
 {
@@ -188,6 +189,7 @@ class EnvioController extends Controller
             ->select('p.*','dc.nombre','e.*','de.*','es.nombre','at.nombre as at_nombre','at.tipo_agencia','dc.nombre as c_nombre')
             ->where('dc.estado',1);
 
+
         if ($busquedaAnno != '')
             $listado = $listado->where(DB::raw('YEAR(de.fecha_envio)'), $busquedaAnno );
         if ($busquedacliente != '')
@@ -196,10 +198,15 @@ class EnvioController extends Controller
             $listado = $listado->whereBetween('e.fecha_envio', [$busquedaDesde,$busquedaHasta]);
         $busquedaEsatdo != '' ?  $listado = $listado->where('de.estado',$request->estado) : $listado = $listado->where('de.estado',0);
 
-        $listado = $listado->orderBy('e.fecha_envio', 'desc')->distinct()->paginate(20);
-
+        $listado = $listado->orderBy('e.fecha_envio', 'desc')->distinct();
+        /*$groupEnvios = [];
+        foreach ($listado as $gE) {
+            $groupEnvios[$gE->c_nombre][] = (array)$gE;
+        }*/
+        //dd($groupEnvios);
         $datos = [
-            'listado' => $listado,
+            //'listado' => $groupEnvios,
+            'listado' => $listado->paginate(20),
             'idCliente' => $request->id_cliente,
         ];
        // dd($datos);
@@ -351,6 +358,21 @@ class EnvioController extends Controller
             'cant_detalles' =>  $detalleEnvio->distinct()->count(),
             'fechaEnvio' => $detalleEnvio->select('fecha_envio')->get(),
             'cant_rows' => $cant_rows
+        ]);
+    }
+
+    public function ver_envios(Request $request){
+        return view('adminlte.gestion.postcocecha.pedidos.partials.listado_facturacion',[
+            'data_envios' => Pedido::where([
+                ['dc.estado',1],
+                ['pedido.id_pedido',$request->id_pedido]
+            ])->join('envio as e','pedido.id_pedido','e.id_pedido')
+                ->join('detalle_envio as de','e.id_envio','de.id_envio')
+                ->join('especificacion as es','de.id_especificacion','es.id_especificacion')
+                ->join('agencia_transporte as at','de.id_agencia_transporte','at.id_agencia_transporte')
+                ->join('detalle_cliente as dc','pedido.id_cliente','dc.id_cliente')
+                ->select('e.*','es.*','de.*','dc.nombre as nombre_cl','pedido.*','at.nombre as at_nombre','at.tipo_agencia')
+                ->get()
         ]);
     }
 }

@@ -7,3 +7,4 @@ Route::get('envio','EnvioController@ver_envio');
 Route::get('envio/buscar','EnvioController@buscar_envio');
 Route::get('envio/exportar','EnvioController@generar_excel_envios');
 Route::get('envio/editar_envio','EnvioController@editar_envio');
+
