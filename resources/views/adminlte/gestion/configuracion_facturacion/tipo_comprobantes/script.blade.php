@@ -7,7 +7,7 @@
             busqueda: $('#busqueda_comprobantes').val().trim(),
             estado  : $("#estado").val()
         };
-        $.get('{{url('comprobantes/buscar')}}', datos, function (retorno) {
+        $.get('{{url('tipo_comprobante/buscar')}}', datos, function (retorno) {
             $('#div_listado_comprobantes').html(retorno);
             estructura_tabla('table_content_comprobantes');
         }).always(function () {
@@ -15,21 +15,21 @@
         });
     }
 
-    function add_comprobante(id_comprobante){
+    function add_tipo_comprobante(id_comprobante){
         $.LoadingOverlay('show');
         datos = {
             id_comprobante : id_comprobante
         };
-        $.get('{{url('comprobantes/add_comprobantes')}}', datos, function (retorno) {
+        $.get('{{url('tipo_comprobante/add_tipo_comprobantes')}}', datos, function (retorno) {
             modal_form('modal_add_comprobante', retorno, '<i class="fa fa-fw fa-plus"></i> Añadir comprobante', true, false, '{{isPC() ? '60%' : ''}}', function () {
-                comprobantes_store();
+                tipo_comprobantes_store();
             });
         }).always(function () {
             $.LoadingOverlay('hide');
         });
     }
 
-    function comprobantes_store() {
+    function tipo_comprobantes_store() {
         if ($('#form_add_comprobante').valid()) {
             $.LoadingOverlay('show');
             datos = {
@@ -38,7 +38,7 @@
                 codigo         : $('#codigo').val(),
                 id_comprobante : $("#id_comprobante").val()
             };
-            post_jquery('{{url('comprobantes/store_comprobantes')}}', datos, function () {
+            post_jquery('{{url('tipo_comprobante/store_tipo_comprobantes')}}', datos, function () {
                 cerrar_modals();
                 buscar_listado();
             });
@@ -46,7 +46,7 @@
         }
     }
 
-    function actualizar_estado_comprobante(id_comprobante,estado_comprobante) {
+    function actualizar_estado_tipo_comprobante(id_comprobante,estado_comprobante) {
         mensaje = {
             title: estado_comprobante == 1 ? '<i class="fa fa-fw fa-trash"></i> Desactivar comprobante' : '<i class="fa fa-fw fa-unlock"></i> Activar comprobante',
             mensaje: estado_comprobante == 1 ? '<div class="alert alert-danger text-center"><i class="fa fa-fw fa-exclamation-triangle"></i> ¿Está seguro de desactivar este comprobante?</div>' :
@@ -58,7 +58,7 @@
                 id_comprobante: id_comprobante
             };
             $.LoadingOverlay('show');
-            $.post('{{url('comprobantes/actualizar_estado_comprobantes')}}', datos, function (retorno) {
+            $.post('{{url('tipo_comprobante/actualizar_estado_tipo_comprobantes')}}', datos, function (retorno) {
                 if (retorno.success) {
                     cerrar_modals();
                     buscar_listado();

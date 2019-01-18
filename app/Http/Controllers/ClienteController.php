@@ -11,6 +11,7 @@ use yura\Modelos\Contacto;
 use yura\Modelos\AgenciaCarga;
 use yura\Modelos\ClienteAgenciaCarga;
 use yura\Modelos\DetalleClienteContacto;
+use yura\Modelos\TipoIva;
 use DB;
 use Validator;
 use PHPExcel;
@@ -63,17 +64,18 @@ class ClienteController extends Controller
         return view('adminlte.gestion.postcocecha.clientes.partials.listado', $datos);
     }
 
-
     public function add_clientes(Request $request)
     {
-        !empty($request->id_cliente) ? $dataCliente = DetalleCliente::where([
+        !empty($request->id_cliente)
+            ? $dataCliente = DetalleCliente::where([
             ['id_cliente', $request->id_cliente],
-            ['estado',1]
-        ])->first() : $dataCliente = '';
+            ['estado',1]])->first()
+            : $dataCliente = '';
 
         return view('adminlte.gestion.postcocecha.clientes.forms.add_cliente',[
             'dataPais'=>Pais::all(),
-            'dataCliente' => $dataCliente
+            'dataCliente' => $dataCliente,
+            'dataIva' => TipoIva::all()
         ]);
     }
 
@@ -87,6 +89,7 @@ class ClienteController extends Controller
             'correo'        => 'required',
             'telefono'      => 'required',
             'direccion'     => 'required',
+            'iva'           => 'required'
         ]);
 
         if(!$valida->fails()) {
@@ -108,6 +111,7 @@ class ClienteController extends Controller
                     $objDetalleCliente->correo        = $request->correo;
                     $objDetalleCliente->telefono      = $request->telefono;
                     $objDetalleCliente->direccion     = $request->direccion;
+                    $objDetalleCliente->codigo_iva    = $request->iva;
                     $msg= '';
 
                     if($objDetalleCliente->save()) {
@@ -173,6 +177,7 @@ class ClienteController extends Controller
                     $objDetalleCliente->telefono      = $request->telefono;
                     $objDetalleCliente->direccion     = $request->direccion;
                     $objDetalleCliente->id_cliente    = $detalleClienteActivo->id_cliente;
+                    $objDetalleCliente->codigo_iva    = $request->iva;
                     $msg= '';
                     if($objDetalleCliente->save()) {
 
@@ -464,7 +469,6 @@ class ClienteController extends Controller
     }
 
     public function ver_contactos_clientes(Request $request){
-
 
         return view('adminlte.gestion.postcocecha.clientes.partials.inputs_contactos_clientes',
             [

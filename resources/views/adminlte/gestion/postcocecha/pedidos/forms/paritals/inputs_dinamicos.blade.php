@@ -1,7 +1,7 @@
 <tr id="tr_inputs_pedido_{{$cantTr}}">
     <input type="hidden" id="id_detalle_pedido_{{$cantTr}}" value="">
     <td>
-        <input type="number" id="cantidad_{{$cantTr}}" name="cantidad_{{$cantTr}}" class="form-control" required onkeypress="return isNumber(event)">
+        <input type="number" id="cantidad_{{$cantTr}}" name="cantidad_{{$cantTr}}" min="1" class="form-control" required onkeypress="return isNumber(event)">
     </td>
     <td>
         <select id="id_especificacion_{{$cantTr}}" name="id_especificacion_{{$cantTr}}" class="form-control" required>

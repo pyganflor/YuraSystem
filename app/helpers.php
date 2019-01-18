@@ -926,7 +926,7 @@ function getDestinadosToFrioByFecha($fecha, $variedad)
 }
 
 
-//==================  Funciones involucradas con la facturacion electrónica ======================//
+//==================  Funciones involucradas con la configuracion_facturacion electrónica ======================//
 function generaDigitoVerificador($cadena){
     $arr_num = str_split($cadena);
     $cant_cadena = count($arr_num);
@@ -973,14 +973,14 @@ function firmar_comprobante_xml($archivo_xml){
         return false;
 }
 
-function mensaje_firma_electronica($indice){
+function mensaje_firma_electronica($indice,$id_envio){
     $mensaje = [
         0 => "No se ha obtenido el archivo de la firma digital correctamente, verifique que el path propocionado en la variable de entorno 'PATH_FIRMA_DIGITAL' en el archivo .env coincida con la ubicación actual del archivo la firma digital y el String pasado a la variable 'NOMBRE_ARCHIVO_FIRMA_DIGITAL' corresponda con el nombre del archivo), una vez corregido el error puede filtrar por 'GENERADOS' y proceder a realizar la firma del mismo",
         1 => "Verificar lo explicado en el Índice 0 de este apartado y a su vez verificar que exista el certificado como archivo físico, una vez corregido el error puede filtrar por 'GENERADOS' y proceder a realizar la firma del mismo",
         2 => "No se pudo acceder al contenido del archivo del certificado electrónico, verifique los indicies 0 y 1 de este apartado  y a su vez que el String pasado en la variable 'CONTRASENA_FIRMA_DIGITAL' en el archivo .env coincida con la propocionada por el ente certificador, una vez corregido el error puede filtrar por 'GENERADOS' y proceder a realizar la firma del mismo",
-        3 => "Se produjo un error al momento de generar la firma electrónica, por favor comunicarse con el deparatmento de técnologia, una vez corregido el error puede filtrar por 'GENERADOS' y proceder a realizar la firma del mismo",
-        4 => "El archivo firamado no pudo ser guardado en su respectiva carpeta, verifique que el path propocionado en la variable de entorno 'PATH_XML_FIRMADOS' en el archivo .env coincida con con la carpeta creada en esa ruta, una vez corregido el error puede filtrar por 'GENERADOS' y proceder a realizar la firma del mismo",
-        5 => "La factura se ha generado y firmado con exito",
+        3 => "Se produjo un error al momento de generar la firma electrónica del xml pertenciente a la factura del envío N# ".$id_envio.", por favor comunicarse con el deparatmento de tecnología, una vez corregido el error puede filtrar por 'GENERADOS' y proceder a realizar la firma del mismo",
+        4 => "El archivo firamado xml pertenciente a la factura del envío N# ".$id_envio." no pudo ser guardado en su respectiva carpeta, verifique que el path propocionado en la variable de entorno 'PATH_XML_FIRMADOS' en el archivo .env coincida con la carpeta creada en esa ruta, una vez corregido el error puede filtrar por 'GENERADOS' y proceder a realizar la firma del mismo",
+        5 => "La factura pertenciente al envío N# ".$id_envio." se ha generado y firmado con exito",
     ];
     return $mensaje[$indice];
 }

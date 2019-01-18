@@ -37,10 +37,23 @@
         });
     });
 
+    function ver_envio(id_pedido){
+        $.LoadingOverlay('show');
+        datos = {
+            id_pedido : id_pedido
+        };
+        $.get('{{url('pedidos/ver_envio')}}', datos, function (retorno) {
+            modal_view('modal_view_envios_facturas', retorno, '<i class="fa fa-usd" aria-hidden="true"></i> Envios a facturar', true, false, '75%');
+            //estructura_tabla('table_content_pedidos');
+        }).always(function () {
+            $.LoadingOverlay('hide');
+        });
+    }
     function add_orden_semanal() {
         get_jquery('{{url('pedidos/add_orden_semanal')}}', {}, function (retorno) {
             modal_view('modal-view_add_orden_semanal', retorno, '<i class="fa fa-fw fa-plus"></i> Agregar Orden Semanal', true, false,
                     '{{isPC() ? '95%' : ''}}')
+
         });
     }
 </script>

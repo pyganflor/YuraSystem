@@ -138,6 +138,7 @@
         });
     });
 </script>
+
 @section('script_final')
     @include('adminlte.gestion.postcocecha.pedidos.script')
 @endsection
