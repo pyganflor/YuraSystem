@@ -47,9 +47,9 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="form-group pull-right" style="margin: 0">
-                    <label for="clasificacion_ramo_search" style="margin-right: 10px">Por coches</label>
-                    <input type="checkbox" onkeypress="return isNumber(event)" id="check_coches">
+                <div class="form-group pull-right" style="margin-right: 5px">
+                    <label for="clasificacion_ramo_search">Por coches</label>
+                    <input type="checkbox" id="check_coches">
                     <input type="number" onkeypress="return isNumber(event)" id="ramos_x_coche">
                 </div>
             </div>
