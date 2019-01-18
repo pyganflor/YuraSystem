@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<factura id="comprobante" version="1.0.0">
+  <infoTributaria>
+    <ambiente/>
+    <tipoEmision>1</tipoEmision>
+    <razonSocial>PRUEBAS SERVICIO DE RENTAS INTERNAS</razonSocial>
+    <nombreComercial>LE HACE BIEN AL PAIS</nombreComercial>
+    <ruc/>
+    <claveAcceso>1501201910001001000000090123456761</claveAcceso>
+    <codDoc>01</codDoc>
+    <estab>001</estab>
+    <ptoEmi>001</ptoEmi>
+    <secuencial>000000090</secuencial>
+    <dirMatriz>AMAZONAS Y ROCA</dirMatriz>
+  </infoTributaria>
+  <infoFactura>
+    <fechaEmision>15/01/2019</fechaEmision>
+    <dirEstablecimiento>Vía San Jose de Minas Vía al Pisque</dirEstablecimiento>
+    <obligadoContabilidad>SI</obligadoContabilidad>
+    <tipoIdentificacionComprador>09</tipoIdentificacionComprador>
+    <razonSocialComprador>FLOREXPO LLC</razonSocialComprador>
+    <identificacionComprador>1</identificacionComprador>
+    <totalSinImpuestos>100.00</totalSinImpuestos>
+    <totalDescuento>0.00</totalDescuento>
+    <totalConImpuestos>
+      <totalImpuesto>
+        <codigo>2</codigo>
+        <codigoPorcentaje>0</codigoPorcentaje>
+        <baseImponible>100.00</baseImponible>
+        <tarifa>0.00</tarifa>
+        <valor>0.00</valor>
+      </totalImpuesto>
+    </totalConImpuestos>
+    <propina>0.00</propina>
+    <importeTotal>100.00</importeTotal>
+    <moneda>DOLAR</moneda>
+  </infoFactura>
+  <detalles>
+    <detalle>
+      <codigoPrincipal>0011601010003</codigoPrincipal>
+      <descripcion>GYP. MS. 250 GR 75 CM</descripcion>
+      <cantidad>2.00</cantidad>
+      <precioUnitario>50.00</precioUnitario>
+      <descuento>0.00</descuento>
+      <precioTotalSinImpuesto>100.00</precioTotalSinImpuesto>
+      <impuestos>
+        <impuesto>
+          <codigo>2</codigo>
+          <codigoPorcentaje>0</codigoPorcentaje>
+          <tarifa>0.00</tarifa>
+          <baseImponible>100.00</baseImponible>
+          <valor>0.00</valor>
+        </impuesto>
+      </impuestos>
+    </detalle>
+  </detalles>
+  <infoAdicional>
+    <campoAdicional nombre="Dirección">1960 KELLOGG AVE</campoAdicional>
+    <campoAdicional nombre="Email">daniela@ecuabloom.com</campoAdicional>
+    <campoAdicional nombre="Teléfono">59322555440</campoAdicional>
+    <campoAdicional nombre="DAE">05520184000859803</campoAdicional>
+    <campoAdicional nombre="AWB">729 6908 7771</campoAdicional>
+  </infoAdicional>
+</factura>
