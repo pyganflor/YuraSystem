@@ -299,6 +299,7 @@ class ClasificacionVerdeController extends Controller
                         $detalle->cantidad_ramos = $item['cantidad_ramos'];
                         $detalle->tallos_x_ramos = $item['tallos_x_ramos'];
                         $detalle->fecha_registro = date('Y-m-d H:i:s');
+                        $detalle->fecha_ingreso = date('Y-m-d H:i');
 
                         if ($detalle->save()) {
                             $detalle = DetalleClasificacionVerde::All()->last();
@@ -439,6 +440,23 @@ class ClasificacionVerdeController extends Controller
             $model = ClasificacionVerde::find($request->id_clasificacion_verde);
             if ($model != '') {
                 return view('adminlte.gestion.postcocecha.clasificacion_verde.partials.destinar_lotes', [
+                    'clasificacion' => $model,
+                    'variedad' => Variedad::find($request->id_variedad),
+                ]);
+            } else {
+                return '<div class="alert alert-warning text-center">No se ha encontrado la clasificación en el sistema</div>';
+            }
+        } else {
+            return '<div class="alert alert-warning text-center">No se ha seleccionado ninguna clasificación</div>';
+        }
+    }
+
+    public function destinar_lotes_form(Request $request)
+    {
+        if ($request->has('id_clasificacion_verde')) {
+            $model = ClasificacionVerde::find($request->id_clasificacion_verde);
+            if ($model != '') {
+                return view('adminlte.gestion.postcocecha.clasificacion_verde.partials.destinar_lotes_form', [
                     'clasificacion' => $model,
                     'variedad' => Variedad::find($request->id_variedad),
                 ]);
@@ -650,6 +668,174 @@ class ClasificacionVerdeController extends Controller
         ];
     }
 
+    public function store_lote_re_from(Request $request)
+    {
+        $msg = '';
+        $success = true;
+        foreach ($request->arreglo as $object) {
+            $valida = Validator::make($object, [
+                'id_clasificacion_verde' => 'required',
+                'id_variedad' => 'required',
+                'fecha' => 'required',
+                'arreglo' => 'required',
+            ], [
+                'id_clasificacion_verde.required' => 'La clasificación es obligatoria',
+                'id_variedad.required' => 'La variedad es obligatoria',
+                'fecha.required' => 'La fecha es obligatoria',
+                'arreglo.required' => 'Los lotes son obligatorios',
+            ]);
+            if (!$valida->fails()) {
+                if (count($object['arreglo']) > 0) {
+                    $verde = ClasificacionVerde::find($object['id_clasificacion_verde']);
+                    $detalles = $verde->detalles;
+
+                    /* ================= ACTUALIZR CLASIFICACION_VERDE =================*/
+                    if ($object['terminar'] == 0) {
+                        $verde->activo = 0;
+
+                        if ($verde->save()) {
+                            bitacora('clasificacion_verde', $verde->id_clasificacion_verde, 'U', 'Actualizacion satisfactoria del campo activo de una clasificacion en verde');
+                        } else {
+                            $success = false;
+                            $msg .= '<div class="alert alert-warning text-center">' .
+                                '<p> Ha ocurrido un problema al terminar la clasificación en verde'
+                                . '</div>';
+                        }
+                    }
+
+                    /* ================= GUARDAR TABLA LOTE_RE ===================*/
+                    foreach ($object['arreglo'] as $item) {
+                        if ($item['apertura'] > 0) {    // Se trata de una cantidad para apertura
+
+                            //dd('apertura');
+
+                            $lote = new LoteRE();
+                            $lote->id_variedad = $object['id_variedad'];
+                            $lote->id_clasificacion_unitaria = $item['id_clasificacion_unitaria'];
+                            $lote->id_clasificacion_verde = $verde->id_clasificacion_verde;
+                            $lote->fecha_registro = date('Y-m-d H:i:s');
+                            $lote->cantidad_tallos = $item['apertura'];
+                            $lote->etapa = 'A';
+                            $lote->apertura = $object['fecha'];
+
+                            if ($lote->save()) {
+                                $lote = LoteRE::All()->last();
+                                bitacora('lote_re', $lote->id_lote_re, 'I', 'Inserción satisfactoria de un nuevo lote RE');
+
+                                /* ================ GUARDAR EN TABLA STOCK_APERTURA ===============*/
+                                $stock = new StockApertura();
+                                $stock->fecha_registro = date('Y-m-d H:i:s');
+                                $stock->fecha_inicio = $object['fecha'];
+                                $stock->cantidad_tallos = $lote->cantidad_tallos;
+                                $stock->cantidad_disponible = $lote->cantidad_tallos;
+                                $stock->id_variedad = $lote->id_variedad;
+                                $stock->id_clasificacion_unitaria = $lote->id_clasificacion_unitaria;
+                                $stock->dias = $item['dias'];
+                                $stock->id_lote_re = $lote->id_lote_re;
+
+                                if ($stock->save()) {
+                                    $stock = StockApertura::All()->last();
+                                    bitacora('stock_apertura', $stock->id_stock_apertura, 'I', 'Inserción satisfactoria de un nuevo lote RE a Stock');
+                                } else {
+                                    $success = false;
+                                    $msg .= '<div class="alert alert-warning text-center">' .
+                                        '<p> Ha ocurrido un problema al guardar en <strong>stock</strong> el lote de ' .
+                                        ClasificacionUnitaria::find($item['id_clasificacion_unitaria'])->nombre .
+                                        Variedad::find($object['id_variedad'])->unidad_de_medida . '</p>'
+                                        . '</div>';
+                                }
+                            } else {
+                                $success = false;
+                                $msg .= '<div class="alert alert-warning text-center">' .
+                                    '<p> Ha ocurrido un problema al guardar el lote de ' . ClasificacionUnitaria::find($item['id_clasificacion_unitaria'])->nombre .
+                                    Variedad::find($object['id_variedad'])->unidad_de_medida . '</p>'
+                                    . '</div>';
+                            }
+                        }
+                        if ($item['guarde'] > 0) {    // Se trata de una cantidad para guarde
+
+                            //dd('guarde');
+
+                            $lote = new LoteRE();
+                            $lote->id_variedad = $object['id_variedad'];
+                            $lote->id_clasificacion_unitaria = $item['id_clasificacion_unitaria'];
+                            $lote->id_clasificacion_verde = $verde->id_clasificacion_verde;
+                            $lote->fecha_registro = date('Y-m-d H:i:s');
+                            $lote->cantidad_tallos = $item['guarde'];
+                            $lote->etapa = 'C';
+                            $lote->guarde_clasificacion = $object['fecha'];
+                            $lote->dias_guarde_clasificacion = $item['dias'];
+
+                            if ($lote->save()) {
+                                $lote = LoteRE::All()->last();
+                                bitacora('lote_re', $lote->id_lote_re, 'I', 'Inserción satisfactoria de un nuevo lote RE');
+
+                                /* ================ GUARDAR EN TABLA STOCK_GUARDE ===============*/
+                                $stock = new StockGuarde();
+                                $stock->fecha_registro = date('Y-m-d H:i:s');
+                                $stock->fecha_inicio = $object['fecha'];
+                                $stock->cantidad_tallos = $lote->cantidad_tallos;
+                                $stock->cantidad_disponible = $lote->cantidad_tallos;
+                                $stock->id_variedad = $lote->id_variedad;
+                                $stock->id_clasificacion_unitaria = $lote->id_clasificacion_unitaria;
+                                $stock->dias = $item['dias'];
+                                $stock->id_lote_re = $lote->id_lote_re;
+
+                                if ($stock->save()) {
+                                    $stock = StockApertura::All()->last();
+                                    bitacora('stock_apertura', $stock->id_stock_apertura, 'I', 'Inserción satisfactoria de un nuevo lote RE a Stock');
+                                } else {
+                                    $success = false;
+                                    $msg .= '<div class="alert alert-warning text-center">' .
+                                        '<p> Ha ocurrido un problema al guardar en <strong>stock</strong> el lote de ' .
+                                        ClasificacionUnitaria::find($item['id_clasificacion_unitaria'])->nombre .
+                                        Variedad::find($object['id_variedad'])->unidad_de_medida . '</p>'
+                                        . '</div>';
+                                }
+                            } else {
+                                $success = false;
+                                $msg .= '<div class="alert alert-warning text-center">' .
+                                    '<p> Ha ocurrido un problema al guardar el lote de ' . ClasificacionUnitaria::find($item['id_clasificacion_unitaria'])->nombre .
+                                    Variedad::find($object['id_variedad'])->unidad_de_medida . '</p>'
+                                    . '</div>';
+                            }
+                        }
+                    }
+                } else {
+                    $success = false;
+                    $msg = '<div class="alert alert-warning text-center">' .
+                        '<p> Al menos ingrese un lote de la clasificación</p>'
+                        . '</div>';
+                }
+            } else {
+                $success = false;
+                $errores = '';
+                foreach ($valida->errors()->all() as $mi_error) {
+                    if ($errores == '') {
+                        $errores = '<li>' . $mi_error . '</li>';
+                    } else {
+                        $errores .= '<li>' . $mi_error . '</li>';
+                    }
+                }
+                $msg = '<div class="alert alert-danger">' .
+                    '<p class="text-center">¡Por favor corrija los siguientes errores!</p>' .
+                    '<ul>' .
+                    $errores .
+                    '</ul>' .
+                    '</div>';
+            }
+        }
+        if ($success) {
+            $msg = '<div class="alert alert-success text-center">' .
+                'Se han enviado todos los ramos clasificados a las aperturas'
+                . '</div>';
+        }
+        return [
+            'mensaje' => $msg,
+            'success' => $success
+        ];
+    }
+
     public function destinar_a(Request $request)
     {
         $valida = Validator::make($request->all(), [
@@ -745,5 +931,41 @@ class ClasificacionVerdeController extends Controller
                 'mensaje' => '<div class="alert alert-warning text-center">No se pudo terminar la clasificación</div>'
             ];
         }
+    }
+
+    public function store_personal(Request $request)
+    {
+        $model = ClasificacionVerde::find($request->id_clasificacion_verde);
+        $model->personal = $request->personal;
+
+        if ($model->save()) {
+            bitacora('clasificacion_verde', $model->id_clasificacion_verde, 'U', 'Actualización satisfactia de una clasificacion en verde');
+
+            return [
+                'success' => true,
+                'mensaje' => '<div class="alert alert-success text-center">Se ha guardado satisfactoriamente el personal</div>'
+            ];
+        } else {
+            return [
+                'success' => false,
+                'mensaje' => '<div class="alert alert-warning text-center">No se pudo guardar la información</div>'
+            ];
+        }
+    }
+
+    public function ver_rendimiento(Request $request)
+    {
+        $clasificacion_verde = ClasificacionVerde::find($request->id_clasificacion_verde);
+        $listado = DB::table('detalle_clasificacion_verde')
+            ->select(DB::raw('sum(tallos_x_ramos * cantidad_ramos) as cantidad'), 'fecha_ingreso as fecha')
+            ->where('estado', '=', 1)
+            ->where('id_clasificacion_verde', '=', $request->id_clasificacion_verde)
+            ->groupBy('fecha_ingreso')
+            ->orderBy('fecha_ingreso')
+            ->get();
+        return view('adminlte.gestion.postcocecha.clasificacion_verde.partials.rendimiento', [
+            'clasificacion_verde' => $clasificacion_verde,
+            'listado' => $listado,
+        ]);
     }
 }

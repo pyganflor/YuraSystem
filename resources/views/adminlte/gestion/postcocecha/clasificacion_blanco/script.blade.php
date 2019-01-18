@@ -1,23 +1,11 @@
 <script>
-    function listar_resumen_pedidos(fecha) {
+    function listar_clasificacion_blanco(variedad) {
         $.LoadingOverlay('show');
         datos = {
-            fecha: fecha,
+            variedad: variedad,
         };
-        $.get('{{url('clasificacion_blanco/listar_resumen_pedidos')}}', datos, function (retorno) {
+        $.get('{{url('clasificacion_blanco/listar_clasificacion_blanco')}}', datos, function (retorno) {
             $('#div_listado_blanco').html(retorno);
-        }).always(function () {
-            $.LoadingOverlay('hide');
-        });
-    }
-
-    function empaquetar(fecha) {
-        $.LoadingOverlay('show');
-        datos = {
-            fecha: fecha,
-        };
-        $.get('{{url('clasificacion_blanco/empaquetar')}}', datos, function (retorno) {
-            modal_view('modal_view_empaquetar', retorno, '<i class="fa fa-fw fa-gift"></i> Empaquetar', true, false, '{{isPc() ? '35%' : ''}}');
         }).always(function () {
             $.LoadingOverlay('hide');
         });

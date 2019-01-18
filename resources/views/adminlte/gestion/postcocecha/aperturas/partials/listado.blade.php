@@ -52,7 +52,7 @@
                             style="color: {{getStockById($apertura->id_stock_apertura)->clasificacion_unitaria->unidad_medida->tipo == 'L' ? 'blue' : ''}}">
                             <td class="text-center" style="border-color: #9d9d9d;">
                                 <input type="checkbox" id="checkbox_sacar_{{$apertura->id_stock_apertura}}" class="checkbox_sacar"
-                                       onchange="seleccionar_checkboxs($(this))" disabled>
+                                       onchange="seleccionar_checkboxs($(this))">
                             </td>
                             <td class="text-center" style="border-color: #9d9d9d;">
                                 <input type="hidden" class="ids_apertura" id="id_apertura_{{$apertura->id_stock_apertura}}"
@@ -121,7 +121,7 @@
                             </td>
                             <td class="text-center" style="border-color: #9d9d9d">
                                 <input type="number" class="text-center input_sacar" {{--onkeypress="return isNumber(event)"--}}
-                                id="sacar_{{$apertura->id_stock_apertura}}" readonly min="1"
+                                id="sacar_{{$apertura->id_stock_apertura}}" min="1"
                                        max="{{getStockById($apertura->id_stock_apertura)->calcularDisponibles()['estandar']}}"
                                        onchange="seleccionar_apertura_sacar('{{$apertura->id_stock_apertura}}')"
                                        value="{{getStockById($apertura->id_stock_apertura)->calcularDisponibles()['estandar']}}">
@@ -291,4 +291,7 @@
 
 
     }
+
+    set_min_today($('#fecha_pedidos'));
+    buscar_pedidos();
 </script>

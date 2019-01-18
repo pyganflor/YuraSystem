@@ -13,6 +13,7 @@ class DetalleClasificacionVerde extends Model
 
     protected $fillable = [
         'fecha_registro',
+        'fecha_ingreso',
         'estado',
         'tallos_x_ramos',
         'cantidad_ramos',

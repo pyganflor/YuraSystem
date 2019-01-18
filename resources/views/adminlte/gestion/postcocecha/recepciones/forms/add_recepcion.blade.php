@@ -72,5 +72,5 @@
 <script>
     cant_forms = 1;
 
-    //set_max_today($('#fecha_ingreso'));
+    set_max_today($('#fecha_ingreso'));
 </script>

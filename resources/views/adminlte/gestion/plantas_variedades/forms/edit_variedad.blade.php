@@ -7,7 +7,7 @@
                        value="{{$variedad->nombre}}">
             </div>
         </div>
-      <!--  <div class="col-md-3">
+    <!--  <div class="col-md-3">
             <div class="form-group">
                 <label for="id_planta">Unidad de medida</label>
                 <select id="unidad_medida" name="unidad_medida" class="form-control" required>
@@ -44,13 +44,6 @@
     <div class="row">
         <div class="col-md-3">
             <div class="form-group">
-                <label for="id_planta">Tallos por ramo (Cantidad)</label>
-                <input type="text" id="tallos_por_ramo" name="tallos_por_ramo" class="form-control" minlength="1"
-                       maxlength="255" value="{{$variedad->cantidad}}"
-                       required onkeypress="return isNumber(event)">
-            </div>
-        </div> <div class="col-md-3">
-            <div class="form-group">
                 <label for="id_planta">Mínio apertura</label>
                 <input type="text" id="minimo_apertura" name="minimo_apertura" class="form-control" minlength="1"
                        maxlength="255" value="{{$variedad->minimo_apertura}}"
@@ -74,5 +67,5 @@
         </div>
     </div>
 
-<input type="hidden" id="id_variedad" name="id_variedad" value="{{$variedad->id_variedad}}">
+    <input type="hidden" id="id_variedad" name="id_variedad" value="{{$variedad->id_variedad}}">
 </form>

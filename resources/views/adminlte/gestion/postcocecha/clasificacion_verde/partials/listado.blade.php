@@ -26,6 +26,14 @@
                     </th>
                     <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
                         style="border-color: #9d9d9d">
+                        PERSONAL
+                    </th>
+                    <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
+                        style="border-color: #9d9d9d">
+                        RENDIMIENTO
+                    </th>
+                    <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
+                        style="border-color: #9d9d9d">
                         OPCIONES
                     </th>
                 </tr>
@@ -43,6 +51,14 @@
                         {{getClasificacionVerde($item->id_clasificacion_verde)->desecho()}}%
                     </td>
                     <td style="border-color: #9d9d9d" class="text-center">
+                        {{getClasificacionVerde($item->id_clasificacion_verde)->personal}}
+                    </td>
+                    <td style="border-color: #9d9d9d" class="text-center">
+                        <a href="javascript:void(0)" onclick="ver_rendimiento('{{$item->id_clasificacion_verde}}')" title="Ver rendimiento">
+                            {{getClasificacionVerde($item->id_clasificacion_verde)->getRendimiento()}}
+                        </a>
+                    </td>
+                    <td style="border-color: #9d9d9d" class="text-center">
                         <a href="javascript:void(0)" class="btn btn-default btn-xs" title="Detalles"
                            onclick="ver_clasificacion('{{$item->id_clasificacion_verde}}')"
                            id="btn_view_clasificacion_{{$item->id_clasificacion_verde}}">
@@ -51,7 +67,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td colspan="6" style="border-color: #9d9d9d; padding: 0;">
+                    <td colspan="8" style="border-color: #9d9d9d; padding: 0;">
                         <div style="overflow-y: scroll; height: 170px">
                             <table width="100%" class="table table-responsive table-bordered"
                                    style="border: 1px solid #9d9d9d; margin-bottom: 0">
