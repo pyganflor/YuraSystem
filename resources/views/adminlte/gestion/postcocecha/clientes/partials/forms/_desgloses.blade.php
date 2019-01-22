@@ -91,7 +91,7 @@
     <div class="col-md-4">
         <div class="form-group input-group">
             <span class="input-group-addon" style="background-color: #e9ecef"> Grosor </span>
-            <select class="form-control" name="id_grosor_{{$pos_form_detalles}}_{{$cant_desgloses}}" id="id_grosor_{{$pos_form_detalles}}_{{$cant_desgloses}}" required>
+            <select class="form-control" name="id_grosor_{{$pos_form_detalles}}_{{$cant_desgloses}}" id="id_grosor_{{$pos_form_detalles}}_{{$cant_desgloses}}">
                 <option disabled selected>Seleccione</option>
                 @foreach ($grosor as $g)
                     <option value="{{$g->id_grosor_ramo}}">{{$g->nombre}}</option>

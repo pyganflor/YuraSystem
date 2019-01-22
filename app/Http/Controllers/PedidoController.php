@@ -13,7 +13,6 @@ use DB;
 
 class PedidoController extends Controller
 {
-
     public function listar_pedidos(Request $request)
     {
         return view('adminlte.gestion.postcocecha.pedidos.inicio',
@@ -81,7 +80,6 @@ class PedidoController extends Controller
     public function store_pedidos(Request $request)
     {
 
-        //dd($request->all());
         $valida = Validator::make($request->all(), [
             'arrDataPedido' => 'Array',
             'id_cliente' => 'required',
@@ -109,7 +107,8 @@ class PedidoController extends Controller
                 $objPedido->id_cliente = $request->id_cliente;
                 $objPedido->descripcion = $request->descripcion;
                 $objPedido->fecha_pedido = $fechaFormateada;
-
+                $objPedido->variedad = implode("|",array_unique($request->variedades));
+                //dd($request->all());
                 if ($objPedido->save()) {
                     $model = Pedido::all()->last();
                     foreach ($request->arrDataDetallesPedido as $key => $item) {
@@ -157,25 +156,45 @@ class PedidoController extends Controller
 
     public function inputs_pedidos(Request $request)
     {
+        $data_especificaciones = DB::table('cliente_pedido_especificacion as cpe')
+            ->join('especificacion as esp', 'cpe.id_especificacion', '=', 'esp.id_especificacion')
+            ->where('cpe.id_cliente', $request->id_cliente);
 
+        $arr_data_cliente_especificacion = [];
+        foreach ($data_especificaciones->get() as $data){
+
+           $data =  ClientePedidoEspecificacion::where('id_cliente_pedido_especificacion',$data->id_cliente_pedido_especificacion)
+                ->join('especificacion as esp', 'cliente_pedido_especificacion.id_especificacion', '=', 'esp.id_especificacion')
+                ->join('especificacion_empaque as eemp','esp.id_especificacion','eemp.id_especificacion')
+                ->join('empaque as e','eemp.id_empaque','e.id_empaque')
+                ->join('detalle_especificacionempaque as deemp','eemp.id_especificacion_empaque','deemp.id_especificacion_empaque')
+                ->join('variedad as v','deemp.id_variedad','v.id_variedad')
+                ->join('empaque as empE','deemp.id_empaque_e','empE.id_empaque')
+                ->join('empaque as empP','deemp.id_empaque_p','empP.id_empaque')
+                ->join('unidad_medida as um','deemp.id_unidad_medida','um.id_unidad_medida')
+                ->join('clasificacion_ramo as cr','deemp.id_clasificacion_ramo','cr.id_clasificacion_ramo')
+               ->join('unidad_medida as umCR','cr.id_unidad_medida','umCR.id_unidad_medida')
+                ->select('cliente_pedido_especificacion.id_cliente_pedido_especificacion','esp.id_especificacion','v.id_variedad','v.nombre as nombre_variedad','empE.nombre as envoltura', 'empP.nombre as presentacion', 'deemp.tallos_x_ramos','deemp.longitud_ramo','um.siglas as siglas_unidad_medida_longitud','cr.nombre as nombre_clasificacion_ramo','umCR.siglas as siglas_unidad_medida_clasificacion_ramo')->get();
+            $arr_data_cliente_especificacion[] =$data;
+        }
+       //dd($arr_data_cliente_especificacion);
         return view('adminlte.gestion.postcocecha.pedidos.forms.paritals.inputs_dinamicos',
             [
-                'especificaciones' => DB::table('cliente_pedido_especificacion as cpe')
-                    ->join('especificacion as esp', 'cpe.id_especificacion', '=', 'esp.id_especificacion')
-                    ->where('cpe.id_cliente', $request->id_cliente)->get(),
+                'especificaciones' => $data_especificaciones->get(),
                 'agenciasCarga' => DB::table('cliente_agenciacarga as cac')
                     ->join('agencia_carga as ac', 'cac.id_agencia_carga', 'ac.id_agencia_carga')
                     ->where([
                         ['cac.id_cliente', $request->id_cliente],
                         ['cac.estado', 1]
                     ])->get(),
-                'cantTr' => $request->cant_tr + 1
+                //'cantTr' => $request->cant_tr + 1,
+                'arr_data_cliente_especificacion' => $arr_data_cliente_especificacion,
+                'cant_especificaciones' => $data_especificaciones->count() > 0 ? $data_especificaciones->get() : []
             ]);
     }
 
     public function actualizar_estado_pedido_detalle(Request $request)
     {
-
         $objDetallePedido = DetallePedido::find($request->id_detalle_pedido);
         $objDetallePedido->estado = $request->estado == 1 ? 0 : 1;
 
@@ -201,7 +220,6 @@ class PedidoController extends Controller
 
     public function cancelar_pedido(Request $request)
     {
-
         $objPedido = Pedido::find($request->id_pedido);
         $objPedido->estado = $request->estado == 0 ? 1 : 0;
 
