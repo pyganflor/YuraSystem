@@ -26,6 +26,10 @@
             </th>
             <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
                 style="border-color: #9d9d9d">
+                Módulo
+            </th>
+            <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
+                style="border-color: #9d9d9d">
                 <div class="form-group">
                     <button type="button" class="btn btn-xs btn-default" title="Añadir" onclick="add_tallo_malla()">
                         <i class="fa fa-fw fa-plus"></i>
@@ -58,11 +62,16 @@
                     {{-- Configurar el máximo permitido de cantidad de mallas segun la config de la empresa --}}
                 </div>
             </td>
-            <td style="border-color: #9d9d9d" class="text-center" colspan="2">
+            <td style="border-color: #9d9d9d" class="text-center">
                 <div class="form-group">
                     <input type="number" id="tallos_x_malla_1" name="tallos_x_malla_1" required class="form-control"
                            min="1" max="50">
                     {{-- Configurar el máximo permitido de cantidad de tallos por malla segun la config de la empresa --}}
+                </div>
+            </td>
+            <td style="border-color: #9d9d9d" class="text-center" colspan="2">
+                <div class="form-group">
+                    <input id="id_modulo_1" name="id_modulo_1" required class="form-control">
                 </div>
             </td>
         </tr>

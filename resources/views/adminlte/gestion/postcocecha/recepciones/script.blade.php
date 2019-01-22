@@ -104,10 +104,15 @@
             '       min="1" max="1000">' +
             '</div>' +
             '</td>' +
-            '<td style="border-color: #9d9d9d" class="text-center" colspan="2">' +
+            '<td style="border-color: #9d9d9d" class="text-center">' +
             '<div class="form-group">' +
             '<input type="number" id="tallos_x_malla_' + cant_forms + '" name="tallos_x_malla_' + cant_forms + '" required class="form-control"' +
             '       min="1" max="50">' +
+            '</div>' +
+            '</td>' +
+            '<td style="border-color: #9d9d9d" class="text-center" colspan="2">' +
+            '<div class="form-group">' +
+            '<select id="id_modulo_' + cant_forms + '" name="id_modulo_' + cant_forms + '" required class="form-control"></select>' +
             '</div>' +
             '</td>' +
             '</tr>');
