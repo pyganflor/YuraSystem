@@ -17,6 +17,7 @@ class StockEmpaquetado extends Model
         'fecha_registro',
         'estado',
         'cantidad_ingresada',
+        'cantidad_armada',
         'empaquetado',
     ];
 

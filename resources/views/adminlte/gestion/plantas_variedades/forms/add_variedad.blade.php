@@ -17,20 +17,20 @@
                 </select>
             </div>
         </div>
-      <!--  <div class="col-md-3">
-            <div class="form-group">
-                <label for="id_planta">Unidad de medida</label>
-                <select id="unidad_medida" name="unidad_medida" class="form-control" required>
-                    <option disabled selected>Seleccione</option>
-                    <option value="pl">Pulgadas</option>
-                    <option value="cm" >Centímetros</option>
-                    <option value="m">Metros</option>
-                    <option value="km">Kilómetros</option>
-                    <option value="gr">Gramos</option>
-                    <option value="kg">Kilogramos</option>
-                </select>
-            </div>
-        </div>-->
+        <!--  <div class="col-md-3">
+              <div class="form-group">
+                  <label for="id_planta">Unidad de medida</label>
+                  <select id="unidad_medida" name="unidad_medida" class="form-control" required>
+                      <option disabled selected>Seleccione</option>
+                      <option value="pl">Pulgadas</option>
+                      <option value="cm" >Centímetros</option>
+                      <option value="m">Metros</option>
+                      <option value="km">Kilómetros</option>
+                      <option value="gr">Gramos</option>
+                      <option value="kg">Kilogramos</option>
+                  </select>
+              </div>
+          </div>-->
         <div class="col-md-4">
             <div class="form-group">
                 <label for="siglas">Siglas</label>
@@ -41,25 +41,32 @@
     <div class="row">
         <div class="col-md-3">
             <div class="form-group">
-                <label for="id_planta">Mínio apertura</label>
-                <input type="text" id="minimo_apertura" name="minimo_apertura" class="form-control" minlength="1"
+                <label for="minimo_apertura">Mínimo apertura</label>
+                <input type="number" id="minimo_apertura" name="minimo_apertura" class="form-control" minlength="1"
                        maxlength="255" value=""
                        required onkeypress="return isNumber(event)">
             </div>
         </div>
         <div class="col-md-3">
             <div class="form-group">
-                <label for="id_planta">Máximo apertura</label>
-                <input type="text" id="maximo_apertura" name="maximo_apertura" class="form-control" minlength="1"
+                <label for="maximo_apertura">Máximo apertura</label>
+                <input type="number" id="maximo_apertura" name="maximo_apertura" class="form-control" minlength="1"
                        maxlength="255" value=""
                        required onkeypress="return isNumber(event)">
             </div>
         </div>
         <div class="col-md-3">
             <div class="form-group">
-                <label for="id_planta">Estandar</label>
-                <input type="text" id="estandar" name="estandar" class="form-control" minlength="1"
+                <label for="estandar">Estandar</label>
+                <input type="number" id="estandar" name="estandar" class="form-control" minlength="1"
                        maxlength="255" value="" required onkeypress="return isNumber(event)">
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="tallos_x_malla">Tallos por malla</label>
+                <input type="number" id="tallos_x_malla" name="tallos_x_malla" class="form-control"
+                       min="1" required onkeypress="return isNumber(event)">
             </div>
         </div>
     </div>

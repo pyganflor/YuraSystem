@@ -407,7 +407,9 @@ class AperturaController extends Controller
                         bitacora('stock_frio', $frio->id_stock_frio, 'I', 'Creacion satisfactoria de un stock frio');
 
                         /* ============= ACTUALIZAR EL STOCK_EMPAQUETADO ===============*/
-                        $empaquetado = StockEmpaquetado::All()->where('id_variedad', '=', $apertura->id_variedad)->first();
+                        $empaquetado = StockEmpaquetado::All()
+                            ->where('id_variedad', '=', $apertura->id_variedad)->where('empaquetado', '=', 0)
+                            ->first();
                         if ($empaquetado == '') {
                             /* ========= CREAR STOCK_EMPAQUETADO ========== */
                             $empaquetado = new StockEmpaquetado();

@@ -125,6 +125,9 @@
                                        max="{{getStockById($apertura->id_stock_apertura)->calcularDisponibles()['estandar']}}"
                                        onchange="seleccionar_apertura_sacar('{{$apertura->id_stock_apertura}}')"
                                        value="{{getStockById($apertura->id_stock_apertura)->calcularDisponibles()['estandar']}}">
+                                <input type="hidden" class="input_sacar_ini"
+                                       id="sacar_ini_{{$apertura->id_stock_apertura}}"
+                                       value="{{getStockById($apertura->id_stock_apertura)->calcularDisponibles()['estandar']}}">
                             </td>
                         </tr>
                         @php
@@ -181,7 +184,7 @@
 
 <script>
     function seleccionar_apertura_sacar(apertura) {
-        if ($('#sacar_' + apertura).val() != '') {
+        if ($('#sacar_' + apertura).val() != '' && $('#sacar_' + apertura).val() > 0) {
             texto = '';
             if ($('#maximo_estandar_' + apertura).prop('checked'))
                 texto = 'por encima del máximo';
@@ -194,6 +197,10 @@
                 modal_quest('modal_quest_input_sacar',
                     '<div class="alert alert-info text-center">Está seleccionando flores con días de maduración ' + texto + ' permitido</div>',
                     '<i class="fa fa-fw fa-exclamation-triangle"></i> Mensaje de alerta', true, false, '{{isPC() ? '35%' : ''}}', function () {
+                        ramos_x_coche = $('#ramos_x_coche').val();
+                        if (ramos_x_coche == '' || ramos_x_coche <= 0)
+                            ramos_x_coche = 1;
+
                         $('#checkbox_sacar_' + apertura).prop('checked', true);
                         $('#btn_sacar').show();
 
@@ -205,10 +212,11 @@
                         for (i = 0; i < listado.length; i++) {
                             if (listado[i].checked) {
                                 $('#btn_sacar').show();
-                                cantidad_seleccionada += parseFloat($('#sacar_' + listado[i].id.substr(15)).val());
-                                $('#html_current_sacar').html('Seleccionados: ' + Math.round(cantidad_seleccionada * 100) / 100);
+                                cantidad_seleccionada += parseFloat($('#sacar_' + listado[i].id.substr(15)).val()) * ramos_x_coche;
+                                $('#html_current_sacar').html('Seleccionados: ' + (Math.round(cantidad_seleccionada * 100) / 100));
                             }
                         }
+
                         cerrar_modals();
                     });
             } else {
@@ -240,6 +248,10 @@
                 modal_quest('modal_quest_input_sacar',
                     '<div class="alert alert-info text-center">Está seleccionando flores con días de maduración ' + texto + ' permitido</div>',
                     '<i class="fa fa-fw fa-exclamation-triangle"></i> Mensaje de alerta', true, false, '{{isPC() ? '35%' : ''}}', function () {
+                        ramos_x_coche = $('#ramos_x_coche').val();
+                        if (ramos_x_coche == '' || ramos_x_coche <= 0)
+                            ramos_x_coche = 1;
+
                         current.prop('checked', true);
                         $('#btn_sacar').show();
 
@@ -251,10 +263,11 @@
                         for (i = 0; i < listado.length; i++) {
                             if (listado[i].checked) {
                                 $('#btn_sacar').show();
-                                cantidad_seleccionada += parseFloat($('#sacar_' + listado[i].id.substr(15)).val());
+                                cantidad_seleccionada += parseFloat($('#sacar_' + listado[i].id.substr(15)).val()) * ramos_x_coche;
                                 $('#html_current_sacar').html('Seleccionados: ' + Math.round(cantidad_seleccionada * 100) / 100);
                             }
                         }
+
                         cerrar_modals();
                     });
             } else {

@@ -56,15 +56,15 @@
         if ($('#form_add_variedad').valid()) {
             $.LoadingOverlay('show');
             datos = {
-                _token          : '{{csrf_token()}}',
-                nombre          : $('#nombre').val(),
-                id_planta       : $('#id_planta').val(),
-                unidad_medida   : $('#unidad_medida').val(),
-                minimo_apertura : $('#minimo_apertura').val(),
-                maximo_apertura : $('#maximo_apertura').val(),
-                estandar        : $('#estandar').val(),
-                siglas          : $('#siglas').val(),
-
+                _token: '{{csrf_token()}}',
+                nombre: $('#nombre').val(),
+                id_planta: $('#id_planta').val(),
+                unidad_medida: $('#unidad_medida').val(),
+                minimo_apertura: $('#minimo_apertura').val(),
+                maximo_apertura: $('#maximo_apertura').val(),
+                estandar: $('#estandar').val(),
+                siglas: $('#siglas').val(),
+                tallos_x_malla: $('#tallos_x_malla').val(),
             };
             post_jquery('{{url('plantas_variedades/store_variedad')}}', datos, function () {
                 cerrar_modals();
@@ -145,11 +145,12 @@
                 nombre: $('#nombre').val(),
                 id_planta: $('#id_planta').val(),
                 id_variedad: $('#id_variedad').val(),
-                unidad_medida : $('#unidad_medida').val(),
-                minimo_apertura : $('#minimo_apertura').val(),
-                maximo_apertura : $('#maximo_apertura').val(),
-                estandar        : $('#estandar').val(),
+                unidad_medida: $('#unidad_medida').val(),
+                minimo_apertura: $('#minimo_apertura').val(),
+                maximo_apertura: $('#maximo_apertura').val(),
+                estandar: $('#estandar').val(),
                 siglas: $('#siglas').val(),
+                tallos_x_malla: $('#tallos_x_malla').val(),
             };
             post_jquery('{{url('plantas_variedades/update_variedad')}}', datos, function () {
                 cerrar_modals();
@@ -177,12 +178,12 @@
             });
         });
     }
-    
+
     function add_precio(id_variedad) {
 
         $.LoadingOverlay('show');
         datos = {
-            id_variedad : id_variedad
+            id_variedad: id_variedad
         };
 
         $.get('{{url('plantas_variedades/form_precio_variedad')}}', datos, function (retorno) {
@@ -192,11 +193,11 @@
             });
             setInterval(function () {
                 $("#id_variedad").val(id_variedad);
-            },1000)
+            }, 1000)
         });
         $.LoadingOverlay('hide');
     }
-    
+
     function store_precio() {
 
         if ($('#form_add_precio').valid()) {
@@ -204,15 +205,15 @@
             var cant_tr = $("tbody#precios tr").length;
             var arrData = [];
 
-            for (var i=0; i < cant_tr; i++ ){
-                arrData.push([$("#precio_" + (parseInt(i) + parseInt(1))).val(),$("#id_clasificacion_por_ramo_" + (parseInt(i) + parseInt(1))).val(),$("#id_precio_" + (parseInt(i) + parseInt(1))).val()]);
+            for (var i = 0; i < cant_tr; i++) {
+                arrData.push([$("#precio_" + (parseInt(i) + parseInt(1))).val(), $("#id_clasificacion_por_ramo_" + (parseInt(i) + parseInt(1))).val(), $("#id_precio_" + (parseInt(i) + parseInt(1))).val()]);
             }
 
             $.LoadingOverlay('show');
             datos = {
                 _token: '{{csrf_token()}}',
-                arrData                    : arrData,
-                id_variedad                : $("#id_variedad").val()
+                arrData: arrData,
+                id_variedad: $("#id_variedad").val()
             };
             post_jquery('{{url('plantas_variedades/store_precio')}}', datos, function () {
                 cerrar_modals();
@@ -221,29 +222,29 @@
             $.LoadingOverlay('hide');
         }
     }
-    
+
     function add_inptus_precio() {
 
         $.LoadingOverlay('show');
 
         var cant_tr = $("tbody#precios tr").length;
         datos = {
-            cant_tr : cant_tr
+            cant_tr: cant_tr
         };
         console.log(datos);
         $.get('{{url('plantas_variedades/add_inptus_precio_variedad')}}', datos, function (retorno) {
-          $("#precios").append(retorno);
+            $("#precios").append(retorno);
 
         });
         $.LoadingOverlay('hide');
     }
 
     function delete_inputs(cant) {
-        var tr = $("tbody#precios tr#precios_"+cant);
+        var tr = $("tbody#precios tr#precios_" + cant);
         tr.remove(tr.cant);
     }
-    
-    function actualizar_status_precio(id_precio,estado,id_variedad) {
+
+    function actualizar_status_precio(id_precio, estado, id_variedad) {
         $.LoadingOverlay('show');
         datos = {
             _token: '{{csrf_token()}}',
@@ -255,10 +256,10 @@
             add_precio($("#id_variedad").val());
         });
         $.LoadingOverlay('hide');
-        
+
     }
 
     function comprabar(id_input) {
-        $("#id_precio_"+id_input).val('');
+        $("#id_precio_" + id_input).val('');
     }
 </script>

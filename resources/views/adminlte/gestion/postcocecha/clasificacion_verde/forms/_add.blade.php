@@ -112,32 +112,21 @@
         </div>
     @endif
 
-    @if($clasificacion_verde == '')
-        <div class="text-center" id="btn_terminar_clasificacion">
-            <button type="button" class="btn btn-danger btn-sm" onclick="terminar_clasificacion()">
-                <i class="fa fa-fw fa-times"></i> Terminar Clasificación
-            </button>
-        </div>
+    @if($clasificacion_verde != '')
+        @if($clasificacion_verde->activo == 1)
+            <div class="text-center" id="btn_terminar_clasificacion">
+                <button type="button" class="btn btn-danger btn-sm" onclick="terminar_clasificacion()">
+                    <i class="fa fa-fw fa-times"></i> Terminar Clasificación
+                </button>
+            </div>
 
-        @foreach($clasificacion_verde->variedades() as $variedad)
-            <div id="div_destinar_lotes_{{$variedad->id_variedad}}" style="display: none;"></div>
-            <script>
-                destinar_lotes_form('{{$variedad->id_variedad}}', '{{$clasificacion_verde->id_clasificacion_verde}}');
-            </script>
-        @endforeach
-    @elseif($clasificacion_verde->activo == 1)
-        <div class="text-center" id="btn_terminar_clasificacion">
-            <button type="button" class="btn btn-danger btn-sm" onclick="terminar_clasificacion()">
-                <i class="fa fa-fw fa-times"></i> Terminar Clasificación
-            </button>
-        </div>
-
-        @foreach($clasificacion_verde->variedades() as $variedad)
-            <div id="div_destinar_lotes_{{$variedad->id_variedad}}" style="display: none;"></div>
-            <script>
-                destinar_lotes_form('{{$variedad->id_variedad}}', '{{$clasificacion_verde->id_clasificacion_verde}}');
-            </script>
-        @endforeach
+            @foreach($clasificacion_verde->variedades() as $variedad)
+                <div id="div_destinar_lotes_{{$variedad->id_variedad}}" style="display: none;"></div>
+                <script>
+                    destinar_lotes_form('{{$variedad->id_variedad}}', '{{$clasificacion_verde->id_clasificacion_verde}}');
+                </script>
+            @endforeach
+        @endif
     @endif
 
     @php

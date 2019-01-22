@@ -37,7 +37,12 @@
                 <h3 class="box-title">
                     Stock
                 </h3>
-                <div class="form-group pull-right" style="margin: 0">
+                <div class="form-group pull-right" id="div_form_group_coches" style="display: none">
+                    <label for="check_coches">Ramos por coches</label>
+                    <input type="number" onkeypress="return isNumber(event)" id="ramos_x_coche" min="1"
+                           placeholder=" cantidad de ramos" onchange="calcular_ramos_x_coche()">
+                </div>
+                <div class="form-group pull-right" style="margin-right: 10px">
                     <label for="clasificacion_ramo_search" style="margin-right: 10px">Calibre del ramo</label>
                     <select name="clasificacion_ramo_search" id="clasificacion_ramo_search" onchange="calcularConvercion($(this).val())">
                         @foreach(getCalibresRamo() as $calibre)
@@ -46,11 +51,6 @@
                             @endif
                         @endforeach
                     </select>
-                </div>
-                <div class="form-group pull-right" style="margin-right: 5px">
-                    <label for="clasificacion_ramo_search">Por coches</label>
-                    <input type="checkbox" id="check_coches">
-                    <input type="number" onkeypress="return isNumber(event)" id="ramos_x_coche">
                 </div>
             </div>
             <div class="box-body" id="div_content_aperturas">
