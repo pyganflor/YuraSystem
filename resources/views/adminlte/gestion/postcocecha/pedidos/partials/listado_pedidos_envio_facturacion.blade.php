@@ -92,23 +92,23 @@
 </div>
 <script>
     function genera_comprobante_cliente(){
+        arrEnvios = [];
+        $.each($('input:checkbox[name=check_envio]:checked'), function (i, j) {
+            arrEnvios.push([
+                j.value,
+                $("#descuento_"+(i+1)).val(),
+                $("#muestra_descuento_"+(i+1)).is(":checked")
+            ]);
+        });
+        if(arrEnvios.length === 0) {
+            modal_view('modal_view_msg_factura',
+                '<div class="alert text-center  alert-warning"><p>Debe seleccionar al menos un envío para facturar</p></div>',
+                '<i class="fa fa-fw fa-table"></i> Estatus facturas', true, false, '{{isPC() ? '50%' : ''}}');
+            return false;
+        }
+
         var result = confirm("¿Esta seguro que facturar los envíos seleccionados?");
         if (result) {
-            arrEnvios = [];
-            $.each($('input:checkbox[name=check_envio]:checked'), function (i, j) {
-                arrEnvios.push([
-                    j.value,
-                    $("#descuento_"+(i+1)).val(),
-                    $("#muestra_descuento_"+(i+1)).is(":checked")
-                ]);
-            });
-            if(arrEnvios.length === 0){
-                modal_view('modal_view_msg_factura',
-                    '<div class="alert text-center  alert-warning"><p>Debe seleccionar al menos un envío para facturar</p></div>',
-                    '<i class="fa fa-fw fa-table"></i> Estatus facturas', true, false,'{{isPC() ? '50%' : ''}}');
-                return false;
-            }
-
             $.LoadingOverlay("show", {
                 image       : "",
                 progress    : true,

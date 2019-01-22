@@ -20,6 +20,7 @@ class DetalleCliente extends Model
         'ruc',
         'correo',
         'id_cliente',
-        'codigo_iva'
+        'codigo_iva',
+        'codigo_identificacion'
     ];
 }

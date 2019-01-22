@@ -111,6 +111,7 @@
                 telefono: $("#telefono").val(),
                 direccion: $("#direccion").val(),
                 iva: $("#iva").val(),
+                tipo_identificacion : $('#tipo_identificacion').val(),
             };
             post_jquery('{{url('clientes/store')}}', datos, function () {
                 cerrar_modals();
@@ -302,5 +303,15 @@
                 $("#input_tallo_x_ramo").addClass('hide');
             }*/
         });
+    }
+
+    function cosumidor_final() {
+        if ($("#tipo_identificacion").val() == 07) {
+            $("#identificacion").val("9999999999999");
+            $("#identificacion").attr('disabled', true);
+        }else{
+            $("#identificacion").attr('disabled', false);
+            $("#identificacion").val("");
+        }
     }
 </script>

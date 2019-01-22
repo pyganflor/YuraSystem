@@ -9,13 +9,35 @@
         </div>
         <div class="col-md-4">
             <div class="form-group">
-                <label for="identificacion">Identificación</label>
-                <input type="text" id="identificacion" name="identificacion" class="form-control" required maxlength="25" autocomplete="off" value="{!! !empty($dataCliente) ? $dataCliente->ruc : $dataCliente !!}">
+                <label for="identificacion">Tipo de identificación</label>
+                <select class="form-control" id="tipo_identificacion" name="tipo_identificacion" onchange="cosumidor_final()" required>
+                    <option disabled selected>Seleccione</option>
+                    @foreach($dataTipoIdentificacion as $dTI)
+                        @php
+                            $selected ='';
+                            if(!empty($dataCliente)){
+                                if($dataCliente->codigo_identificacion == $dTI->codigo){
+                                    $selected = 'selected=selected';
+                                }
+                            }
+                        @endphp
+                        <option {{$selected}} value="{{$dTI->codigo}}">{{$dTI->nombre}}</option>
+                    @endforeach
+                </select>
             </div>
         </div>
         <div class="col-md-4">
             <div class="form-group">
-                <label for="pais">Iva</label>
+                <label for="identificacion">Número de identificación</label>
+                <input type="text" id="identificacion" name="identificacion" class="form-control" {{(!empty($dataCliente) && $dataCliente->codigo_identificacion == 07) ? "disabled" : ""}}
+                       required maxlength="25" autocomplete="off" value="{!! !empty($dataCliente) ? $dataCliente->ruc : $dataCliente !!}">
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="pais">Tipo de iva</label>
                 <select id="iva" name="iva" class="form-control" required>
                     <option selected disabled>Seleccione</option>
                     @foreach($dataIva as $dI)
@@ -32,9 +54,7 @@
                 </select>
             </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-4">
             <div class="form-group">
                 <label for="pais">País</label>
                 <select id="pais" name="pais" class="form-control" required>
@@ -53,7 +73,7 @@
                 </select>
             </div>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-4">
             <div class="form-group">
                 <label for="provincia">Provincia</label>
                 <input type="text" id="provincia" name="provincia" class="form-control" required  maxlength="255" autocomplete="off" value="{!! !empty($dataCliente) ? $dataCliente->provincia : $dataCliente !!}">

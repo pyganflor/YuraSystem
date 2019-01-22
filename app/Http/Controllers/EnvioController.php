@@ -362,7 +362,7 @@ class EnvioController extends Controller
     }
 
     public function ver_envios(Request $request){
-        return view('adminlte.gestion.postcocecha.pedidos.partials.listado_facturacion',[
+        return view('adminlte.gestion.postcocecha.pedidos.partials.listado_pedidos_envio_facturacion',[
             'data_envios' => Pedido::where([
                 ['dc.estado',1],
                 ['pedido.id_pedido',$request->id_pedido]

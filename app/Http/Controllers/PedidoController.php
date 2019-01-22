@@ -108,7 +108,7 @@ class PedidoController extends Controller
                 $objPedido->descripcion = $request->descripcion;
                 $objPedido->fecha_pedido = $fechaFormateada;
                 $objPedido->variedad = implode("|",array_unique($request->variedades));
-                //dd($request->all());
+
                 if ($objPedido->save()) {
                     $model = Pedido::all()->last();
                     foreach ($request->arrDataDetallesPedido as $key => $item) {

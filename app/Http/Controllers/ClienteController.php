@@ -12,6 +12,7 @@ use yura\Modelos\AgenciaCarga;
 use yura\Modelos\ClienteAgenciaCarga;
 use yura\Modelos\DetalleClienteContacto;
 use yura\Modelos\TipoIva;
+use yura\Modelos\TipoIdentificacion;
 use DB;
 use Validator;
 use PHPExcel;
@@ -75,21 +76,23 @@ class ClienteController extends Controller
         return view('adminlte.gestion.postcocecha.clientes.forms.add_cliente',[
             'dataPais'=>Pais::all(),
             'dataCliente' => $dataCliente,
-            'dataIva' => TipoIva::all()
+            'dataIva' => TipoIva::all(),
+            'dataTipoIdentificacion' => TipoIdentificacion::where('estado',1)->get()
         ]);
     }
 
     public function store_clientes(Request $request){
 
         $valida = Validator::make($request->all(), [
-            'nombre'        => 'required',
-            'identificacion' => 'required',
-            'pais'          => 'required',
-            'provincia'     => 'required',
-            'correo'        => 'required',
-            'telefono'      => 'required',
-            'direccion'     => 'required',
-            'iva'           => 'required'
+            'nombre'              => 'required',
+            'identificacion'      => 'required',
+            'pais'                => 'required',
+            'provincia'           => 'required',
+            'correo'              => 'required',
+            'telefono'            => 'required',
+            'direccion'           => 'required',
+            'iva'                 => 'required',
+            'tipo_identificacion' => 'required'
         ]);
 
         if(!$valida->fails()) {
@@ -103,17 +106,18 @@ class ClienteController extends Controller
 
                     $model = Cliente::all()->last();
                     $objDetalleCliente = new DetalleCliente;
-                    $objDetalleCliente->id_cliente    = $model->id_cliente;
-                    $objDetalleCliente->nombre        = $request->nombre;
-                    $objDetalleCliente->ruc           = $request->identificacion;
-                    $objDetalleCliente->codigo_pais   = $request->pais;
-                    $objDetalleCliente->provincia     = $request->provincia;
-                    $objDetalleCliente->correo        = $request->correo;
-                    $objDetalleCliente->telefono      = $request->telefono;
-                    $objDetalleCliente->direccion     = $request->direccion;
-                    $objDetalleCliente->codigo_iva    = $request->iva;
-                    $msg= '';
+                    $objDetalleCliente->id_cliente            = $model->id_cliente;
+                    $objDetalleCliente->nombre                = $request->nombre;
+                    $objDetalleCliente->ruc                   = $request->identificacion;
+                    $objDetalleCliente->codigo_pais           = $request->pais;
+                    $objDetalleCliente->provincia             = $request->provincia;
+                    $objDetalleCliente->correo                = $request->correo;
+                    $objDetalleCliente->telefono              = $request->telefono;
+                    $objDetalleCliente->direccion             = $request->direccion;
+                    $objDetalleCliente->codigo_iva            = $request->iva;
+                    $objDetalleCliente->codigo_identificacion = $request->tipo_identificacion;
 
+                    $msg= '';
                     if($objDetalleCliente->save()) {
 
                         $model = DetalleCliente::all()->last();
@@ -163,6 +167,7 @@ class ClienteController extends Controller
                     ['estado',1]
                 ])->select('id_detalle_cliente','id_cliente')->first();
 
+
                 $objDetalleClienteEsatdo = DetalleCliente::find($detalleClienteActivo->id_detalle_cliente);
                 $objDetalleClienteEsatdo->estado = 0;
 
@@ -178,7 +183,9 @@ class ClienteController extends Controller
                     $objDetalleCliente->direccion     = $request->direccion;
                     $objDetalleCliente->id_cliente    = $detalleClienteActivo->id_cliente;
                     $objDetalleCliente->codigo_iva    = $request->iva;
+                    $objDetalleCliente->codigo_identificacion = $request->tipo_identificacion;
                     $msg= '';
+                    
                     if($objDetalleCliente->save()) {
 
                         $model = DetalleCliente::all()->last();

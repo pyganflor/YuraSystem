@@ -10,11 +10,12 @@ use yura\Modelos\Comprobante;
 use Validator;
 use yura\Modelos\Envio;
 use yura\Jobs\EnvioComprobanteElectronico;
+use yura\Modelos\Usuario;
 
 class ComprobanteController extends Controller
 {
 
-    public function comprobante_lote(){
+    public function comprobante_lote(Request $request){
 
         $xml = new DomDocument('1.0', 'UTF-8');
         $factura = $xml->createElement('lote');
@@ -105,7 +106,6 @@ class ComprobanteController extends Controller
 
             $inicio_secuencial = env('INICIAL_FACTURA');
             foreach ($request->arrEnvios as $dataEnvio) {
-
                 $datos_xml = Envio::where([
                     ['envio.id_envio',$dataEnvio[0]],
                     ['dc.estado',1]
@@ -117,7 +117,7 @@ class ComprobanteController extends Controller
                     ->join('empaque as emp','eemp.id_empaque','emp.id_empaque')
                     ->join('configuracion_empresa as ce','emp.id_configuracion_empresa','ce.id_configuracion_empresa')
                     ->join('agencia_transporte as at','de.id_agencia_transporte','at.id_agencia_transporte')
-
+                    //->select('ce.nombre as nombre_empresa','ce.razon_social','ce.direccion_matriz','dc.codigo_identificacion','dc.ruc as identificacion','dc.nombre as nombre_cliente')
                     ->first();
                 dd($datos_xml);
                 $secuencial = $inicio_secuencial+1;
@@ -126,8 +126,6 @@ class ComprobanteController extends Controller
                     $secuencial = $cant_reg + $inicio_secuencial + 1;
 
                 $secuencial = str_pad($secuencial,9,"0",STR_PAD_LEFT);
-                //dd($secuencial);
-
                 $xml = new DomDocument('1.0', 'UTF-8');
                 $factura = $xml->createElement('factura');
                 $factura->setAttribute('id','comprobante');
@@ -139,7 +137,8 @@ class ComprobanteController extends Controller
                 $tipoComprobante = '01';
                 $ruc = env('RUC');
                 $entorno = env('ENTORNO');
-                $serie = '001001';
+                $punto_acceso = Usuario::where('id_usuario',session('id_usuario'))->first()->punto_acceso;
+                $serie = '001'.$punto_acceso;
                 $codigo_numerico = env('CODIGO_NUMERICO');
                // $secuencial = '000000091';
                 $tipo_emision = '1';
@@ -151,15 +150,15 @@ class ComprobanteController extends Controller
                 $informacionTributaria = [
                     'ambiente'=>$entorno,
                     'tipoEmision'=>$tipo_emision,
-                    'razonSocial'=>'PRUEBAS SERVICIO DE RENTAS INTERNAS',
-                    'nombreComercial'=>'LE HACE BIEN AL PAIS',
+                    'razonSocial'=>$datos_xml->razon_social,
+                    'nombreComercial'=>$datos_xml->nombre_empresa,
                     'ruc' => $ruc,
                     'claveAcceso' => $claveAcceso,
                     'codDoc' => '01',
                     'estab' => '001',
-                    'ptoEmi'=> '001',
+                    'ptoEmi'=> $punto_acceso,
                     'secuencial'=> $secuencial,
-                    'dirMatriz' => 'AMAZONAS Y ROCA'
+                    'dirMatriz' => $datos_xml->direccion_matriz
                 ];
 
                 foreach ($informacionTributaria as $key => $it){
@@ -171,11 +170,11 @@ class ComprobanteController extends Controller
                 $factura->appendChild($infoFactura);
                 $informacionFactura = [
                     'fechaEmision'=>Carbon::now()->format('d/m/Y'),
-                    'dirEstablecimiento'=>'Vía San Jose de Minas Vía al Pisque',
-                    'obligadoContabilidad'=>'SI',
-                    'tipoIdentificacionComprador'=> '09',
-                    'razonSocialComprador' => 'FLOREXPO LLC',
-                    'identificacionComprador' => '1',
+                    'dirEstablecimiento'=>$datos_xml->direccion_establecimiento,
+                    'obligadoContabilidad'=> env('OBLIGADO_CONTABILIDAD'),
+                    'tipoIdentificacionComprador'=> $datos_xml->codigo_identificacion,
+                    'razonSocialComprador' => $datos_xml->nombre_cliente,
+                    'identificacionComprador' => $datos_xml->identificacion,
                     'totalSinImpuestos' => '100.00',
                     'totalDescuento' => '0.00',
                 ];
