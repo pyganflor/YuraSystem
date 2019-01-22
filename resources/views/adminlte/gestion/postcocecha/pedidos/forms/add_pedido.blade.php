@@ -30,9 +30,9 @@
                    id="table_content_recepciones">
                 <thead>
                 <tr style="border: none;border-color: white">
-                    <th style="border: none;padding: 0 0 5px ;">
+                    <th colspan="2" style="border: none;padding: 0 0 5px ;">
                         @if(!$pedido_fijo)
-                            <div class="col-md-6">
+                            <div class="col-md-3">
                                 <label for="Fecha de entrega" style="font-size: 11pt">Fecha de entrega</label>
                                 <input type="date" id="fecha_de_entrega" name="fecha_de_entrega" onchange="buscar_saldos($(this).val(), 3, 3)"
                                        value="" class="form-control" required>
@@ -49,24 +49,26 @@
                                     @endforeach
                                 </select>
                             </div>
+                        @else
+                            <input type="hidden" value="{{$idCliente}}" id="id_cliente_venta">
                         @endif
                     </th>
                     <th style="border: none"></th>
-                    <th style="border: none;text-align: right">
-                        <button type="button" id="btn_add_campos" onclick="add_campos(1,'{{$idCliente}}')" class="btn btn-success btn-xs"><i
+                    {{-- <th style="border: none;text-align: right">
+                       <button type="button" id="btn_add_campos" onclick="add_campos(1,'{{$idCliente}}')" class="btn btn-success btn-xs"><i
                                     class="fa fa-plus" aria-hidden="true"></i></button>
                         <button type="button" onclick="delete_campos(1)" id="btn_delete_inputs" class="btn btn-danger btn-xs hide"><i
                                     class="fa fa-trash " aria-hidden="true"></i></button>
-                    </th>
+                    </th>--}}
                 </tr>
                 <tr style="background-color: #dd4b39; color: white">
                     <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
-                        style="border-color: #9d9d9d">
+                        style="border-color: #9d9d9d;">
                         CANTIDAD
                     </th>
                     <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
                         style="border-color: #9d9d9d">
-                        ESPECIFICIACIONES
+                       DESCRIPCIÓN ESPECIFICIACIONES
                     </th>
                     <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
                         style="border-color: #9d9d9d">
@@ -96,7 +98,6 @@
         </div>
     </div>
 </form>
-
 @if(!$pedido_fijo)
     <div id="div_content_saldos" style="margin-top: 10px"></div>
 

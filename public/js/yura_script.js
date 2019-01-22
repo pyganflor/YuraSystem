@@ -10,17 +10,19 @@ function add_pedido(id_cliente, pedido_fijo, vista) {
         pedido_fijo != '' ? div_opcion_pedido_fijo(1) : '';
         setTimeout(function () {
             vista == 'pedidos' ? $("#btn_add_campos").attr('disabled', true) : '';
-        }, 500)
+        }, 500);
     });
 }
 
-function add_campos(value, id_cliente) {
+function add_campos(value, id_cliente, cant_especificaciones) {
+    console.log(id_cliente);
     $.LoadingOverlay('show');
-    var cant_tr = $('tbody#tbody_inputs_pedidos tr').length;
-    cant_tr > -1 ? $('#btn_delete_inputs').removeClass('hide') : '';
+    //var cant_tr = $('tbody#tbody_inputs_pedidos tr').length;
+    //cant_tr > -1 ? $('#btn_delete_inputs').removeClass('hide') : '';
     datos = {
-        cant_tr: cant_tr,
-        id_cliente: id_cliente
+        //cant_tr: cant_tr,
+        id_cliente: id_cliente == "" ? $("#id_cliente_venta").val() : id_cliente,
+        //cant_especificaciones : cant_especificaciones
     };
     $.get('/clientes/inputs_pedidos', datos, function (retorno) {
         $('#tbody_inputs_pedidos').append(retorno);
@@ -140,6 +142,31 @@ function habilitar_campos() {
 
 function store_pedido(id_cliente, pedido_fijo, csrf_token, vista) {
 
+    var cant_tr = $('tbody#tbody_inputs_pedidos tr').length;
+    var arrDataDetallesPedido = [];
+    var variedades = '';
+    for (var i = 1; i <= cant_tr; i++) {
+        if($("#cantidad_" + i).val() != ""){
+            var inputs_variedad = $("tbody#tbody_inputs_pedidos tr#tr_inputs_pedido_"+i+" td ul input[name='id_variedad']").length;
+            var id_variedad = '';
+
+            for(var z=1; z<=inputs_variedad;z++){
+                id_variedad += $("#id_variedad_"+i+"_"+z).val()+"|";
+            }
+            variedades += id_variedad;
+            arrDataDetallesPedido.push([
+                $("#cantidad_" + i).val(),
+                $("#id_especificacion_" + i).val(),
+                $("#id_agencia_carga_" + i).val(),
+            ]);
+        }
+    }
+
+    if(arrDataDetallesPedido.length < 1){
+        modal_view('modal_status_pedidos','<div class="alert alert-danger text-center"><p> Debe colocar la cantidad en al menos una especificación</p> </div>','<i class="fa fa-times" aria-hidden="true"></i> Estado pedido', true, false, '50%');
+        return false;
+    }
+
     if ($('#form_add_pedido').valid()) {
         var result = confirm("Una vez guardado el pedido no puede ser editado");
         if (result) {
@@ -154,7 +181,6 @@ function store_pedido(id_cliente, pedido_fijo, csrf_token, vista) {
                 let date = new Date(fechaFormateada);
                 var x = 1;
 
-                //($("#opcion_pedido_fijo").val() == 2 || $("#opcion_pedido_fijo").val() == 1 ) ? diferenciaDias = diferenciaDias + 2 : diferenciaDias;
                 for (var i = 0; i < diferenciaDias + 2; i++) {
 
                     var fechas = (date.getMonth() + 1) + "/" + date.getDate() + "/" + date.getFullYear();
@@ -184,15 +210,6 @@ function store_pedido(id_cliente, pedido_fijo, csrf_token, vista) {
                 }
             }
             $.LoadingOverlay('show');
-            var cant_tr = $('tbody#tbody_inputs_pedidos tr').length;
-            var arrDataDetallesPedido = [];
-            for (var i = 1; i <= cant_tr; i++) {
-                arrDataDetallesPedido.push([
-                    $("#cantidad_" + i).val(),
-                    $("#id_especificacion_" + i).val(),
-                    $("#id_agencia_carga_" + i).val(),
-                ]);
-            }
 
             datos = {
                 _token: csrf_token,
@@ -203,7 +220,8 @@ function store_pedido(id_cliente, pedido_fijo, csrf_token, vista) {
                 id_pedido: $('#id_pedido').val(),
                 arrFechas: arrFechas.length < 1 ? '' : arrFechas,
                 pedido_fijo: $("#opcion_pedido_fijo").length > 0 ? $("#opcion_pedido_fijo").val() : '',
-                opcion: $("#opcion_pedido_fijo").val()
+                opcion: $("#opcion_pedido_fijo").val(),
+                variedades : variedades.split("|")
             };
             post_jquery('clientes/store_pedidos', datos, function () {
                 cerrar_modals();
@@ -239,17 +257,19 @@ function cargar_espeicificaciones_cliente(remove) {
     var cant_tr = $('tbody#tbody_inputs_pedidos tr').length;
     datos = {
         id_cliente: $("#id_cliente_venta").val()
-    };
+    }
     get_jquery('pedidos/cargar_especificaciones', datos, function (response) {
-        remove ? add_campos(1, '') : '';
-        setTimeout(function () {
-            $.each(response['especificaciones'], function (i, j) {
-                $("#id_especificacion_" + cant_tr).append('<option value="' + j.id_cliente_pedido_especificacion + '">' + j.nombre + '</option>');
-            });
-            $.each(response['agencias_carga'], function (i, j) {
-                $("#id_agencia_carga_" + cant_tr).append('<option value="' + j.id_agencia_carga + '">' + j.nombre + '</option>');
-            });
-        }, 500);
+        remove ? add_campos(1, '',response['agencias_carga']) : '';
+        /*setTimeout(function () {
+            for(var x=0;x<cant_tr;x++){
+                $.each(response['especificaciones'], function (i, j) {
+                    $("#id_especificacion_" + (x+1)).append('<option value="' + j.id_cliente_pedido_especificacion + '">' + j.nombre + '</option>');
+                });
+                $.each(response['agencias_carga'], function (i, j) {
+                    $("#id_agencia_carga_" + (x+1)).append('<option value="' + j.id_agencia_carga + '">' + j.nombre + '</option>');
+                });
+            }
+        },300);*/
         $("#btn_add_campos").attr('disabled', false);
     });
     $.LoadingOverlay('hide');
@@ -504,7 +524,6 @@ function delete_input(id_form) {
     $("#cantidad_" + id_form + "_" + (var_cant_inputs)).attr('disabled', false);
     $.LoadingOverlay('hide');
 }
-
 
 function facturar_envio(id_envio,token) {
     $.LoadingOverlay('show');

@@ -61,6 +61,7 @@ Route::group(['middleware' => 'autenticacion'], function () {
         include 'facturacion/tipo_comprobante.php';
         include 'facturacion/tipo_identificacion.php';
         include 'facturacion/tipo_iva.php';
+        include 'facturacion/emision_comprobante.php';
 
     });
     include 'facturacion/comprobante.php';

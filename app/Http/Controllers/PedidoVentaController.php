@@ -33,7 +33,6 @@ class PedidoVentaController extends Controller
 
     public function buscar_pedidos(Request $request)
     {
-
         $busquedaCliente = $request->has('id_cliente') ? $request->id_cliente : '';
         $busquedaAnno = $request->has('anno') ? $request->anno : '';
         $busquedaDesde = $request->has('desde') ? $request->desde : '';

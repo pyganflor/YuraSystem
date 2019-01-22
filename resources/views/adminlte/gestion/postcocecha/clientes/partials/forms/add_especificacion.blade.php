@@ -10,7 +10,7 @@
         <div class="col-md-7">
             <div class="form-group input-group">
                 <span class="input-group-addon" style="background-color: #e9ecef">Descripción</span>
-                <textarea id="descripcion" name="descripcion" class="form-control" maxlength="4000" required
+                <textarea id="descripcion" name="descripcion" class="form-control" maxlength="4000"
                           placeholder="Escriba la descripción"></textarea>
             </div>
         </div>
