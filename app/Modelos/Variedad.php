@@ -23,6 +23,7 @@ class Variedad extends Model
         'fecha_registro',
         'estado',
         'id_planta',
+        'tallos_x_malla',
     ];
 
     public function planta()

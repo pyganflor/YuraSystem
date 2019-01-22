@@ -44,7 +44,7 @@
     <div class="row">
         <div class="col-md-3">
             <div class="form-group">
-                <label for="id_planta">Mínio apertura</label>
+                <label for="minimo_apertura">Mínimo apertura</label>
                 <input type="text" id="minimo_apertura" name="minimo_apertura" class="form-control" minlength="1"
                        maxlength="255" value="{{$variedad->minimo_apertura}}"
                        required onkeypress="return isNumber(event)">
@@ -52,7 +52,7 @@
         </div>
         <div class="col-md-3">
             <div class="form-group">
-                <label for="id_planta">Máximo apertura</label>
+                <label for="maximo_apertura">Máximo apertura</label>
                 <input type="text" id="maximo_apertura" name="maximo_apertura" class="form-control" minlength="1"
                        maxlength="255" value="{{$variedad->maximo_apertura}}"
                        required onkeypress="return isNumber(event)">
@@ -60,9 +60,16 @@
         </div>
         <div class="col-md-3">
             <div class="form-group">
-                <label for="id_planta">Estandar</label>
+                <label for="estandar">Estandar</label>
                 <input type="text" id="estandar" name="estandar" class="form-control" minlength="1"
                        maxlength="255" value="{{$variedad->estandar_apertura}}" required onkeypress="return isNumber(event)">
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="tallos_x_malla">Tallos por malla</label>
+                <input type="number" id="tallos_x_malla" name="tallos_x_malla" class="form-control"
+                       min="1" required onkeypress="return isNumber(event)" value="{{$variedad->tallos_x_malla}}">
             </div>
         </div>
     </div>

@@ -7,6 +7,7 @@
         <th class="text-center" style="border-color: #9d9d9d">Minimo apertura (Dias)</th>
         <th class="text-center" style="border-color: #9d9d9d">Estandar apertura (Dias)</th>
         <th class="text-center" style="border-color: #9d9d9d">Maximo apertura (Dias)</th>
+        <th class="text-center" style="border-color: #9d9d9d">Tallos por malla</th>
         <th class="text-center" style="border-color: #9d9d9d">
             <button type="button" class="btn btn-xs btn-default" title="Añadir Variedad" onclick="add_variedad()">
                 <i class="fa fa-fw fa-plus"></i>
@@ -32,6 +33,9 @@
                 </td>
                 <td style="border-color: #9d9d9d" class="text-center">
                     {{$v->maximo_apertura}}
+                </td>
+                <td style="border-color: #9d9d9d" class="text-center">
+                    {{$v->tallos_x_malla}}
                 </td>
 
                 <td style="border-color: #9d9d9d" class="text-center">

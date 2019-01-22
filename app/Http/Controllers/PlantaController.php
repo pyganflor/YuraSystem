@@ -102,16 +102,18 @@ class PlantaController extends Controller
             'siglas' => 'required|max:25',
             'id_planta' => 'required|',
             //'unidad_medida' => 'required|',
-            'tallos_por_ramo'=> 'required|',
-            'minimo_apertura'=> 'required|',
-            'maximo_apertura'=> 'required|',
-            'estandar'=> 'required|'
+            //'tallos_por_ramo' => 'required|',
+            'minimo_apertura' => 'required|',
+            'maximo_apertura' => 'required|',
+            'estandar' => 'required|',
+            'tallos_x_malla' => 'required|'
         ], [
+            'tallos_x_malla.required' => 'Los tallos por malla son obligatorios',
             'nombre.required' => 'El nombre es obligatorio',
             'siglas.required' => 'Las siglas son obligatorias',
             'id_planta.required' => 'La planta es obligatoria',
             //'unidad_medida' => 'La unidad de medida es requerida',
-            'tallos_por_ramo.required' => 'El tallo por ramo es requerido',
+            //'tallos_por_ramo.required' => 'El tallo por ramo es requerido',
             'nombre.max' => 'El nombre es muy grande',
             'siglas.max' => 'Las siglas son muy grande',
             'maximo_apertura.required' => 'EL maximo de apertura es obligatorio',
@@ -122,15 +124,16 @@ class PlantaController extends Controller
             if (count(Variedad::All()->where('nombre', '=', str_limit(mb_strtoupper(espacios($request->nombre)), 250))
                     ->where('id_planta', '=', $request->id_planta)) == 0) {
                 $model = new Variedad();
-                $model->nombre           = str_limit(mb_strtoupper(espacios($request->nombre)), 250);
-                $model->siglas           = str_limit(mb_strtoupper(espacios($request->siglas)), 25);
-                $model->id_planta        = $request->id_planta;
-              //  $model->unidad_de_medida = $request->unidad_medida;
-                $model->cantidad         = $request->tallos_por_ramo;
-                $model->minimo_apertura  = $request->minimo_apertura;
-                $model->maximo_apertura  = $request->maximo_apertura;
-                $model->fecha_registro   = date('Y-m-d H:i:s');
-                $model->estandar_apertura= $request->estandar;
+                $model->nombre = str_limit(mb_strtoupper(espacios($request->nombre)), 250);
+                $model->siglas = str_limit(mb_strtoupper(espacios($request->siglas)), 25);
+                $model->id_planta = $request->id_planta;
+                //  $model->unidad_de_medida = $request->unidad_medida;
+                //$model->cantidad = $request->tallos_por_ramo;
+                $model->minimo_apertura = $request->minimo_apertura;
+                $model->maximo_apertura = $request->maximo_apertura;
+                $model->tallos_x_malla = $request->tallos_x_malla;
+                $model->fecha_registro = date('Y-m-d H:i:s');
+                $model->estandar_apertura = $request->estandar;
 
                 if ($model->save()) {
                     $model = Variedad::All()->last();
@@ -301,20 +304,22 @@ class PlantaController extends Controller
     public function update_variedad(Request $request)
     {
         $valida = Validator::make($request->all(), [
-            'nombre'         => 'required|max:250',
-            'siglas'         => 'required|max:25',
-            'id_planta'      => 'required|',
+            'nombre' => 'required|max:250',
+            'siglas' => 'required|max:25',
+            'id_planta' => 'required|',
             //'unidad_medida'  => 'required|',
-            'tallos_por_ramo'=> 'required|',
-            'minimo_apertura'=> 'required|',
-            'maximo_apertura'=> 'required|',
-            'estandar'       => 'required|'
+            //'tallos_por_ramo' => 'required|',
+            'minimo_apertura' => 'required|',
+            'maximo_apertura' => 'required|',
+            'tallos_x_malla' => 'required|',
+            'estandar' => 'required|'
         ], [
+            'tallos_x_malla.required' => 'Los tallos por malla son obligatorios',
             'nombre.required' => 'El nombre es obligatorio',
             'siglas.required' => 'Las siglas son obligatorias',
             'id_planta.required' => 'La planta es obligatoria',
             //'unidad_medida' => 'La unidad de medida es requerida',
-            'tallos_por_ramo.required' => 'El tallo por ramo es requerido',
+            //'tallos_por_ramo.required' => 'El tallo por ramo es requerido',
             'nombre.max' => 'El nombre es muy grande',
             'siglas.max' => 'Las siglas son muy grande',
             'maximo_apertura.required' => 'EL maximo de apertura es obligatorio',
@@ -326,14 +331,15 @@ class PlantaController extends Controller
                     ->where('id_planta', '=', $request->id_planta)
                     ->where('id_variedad', '!=', $request->id_variedad)) == 0) {
                 $model = Variedad::find($request->id_variedad);
-                $model->nombre           = str_limit(mb_strtoupper(espacios($request->nombre)), 250);
-                $model->siglas           = str_limit(mb_strtoupper(espacios($request->siglas)), 25);
+                $model->nombre = str_limit(mb_strtoupper(espacios($request->nombre)), 250);
+                $model->siglas = str_limit(mb_strtoupper(espacios($request->siglas)), 25);
                 //$model->unidad_de_medida = $request->unidad_medida;
-                $model->cantidad         = $request->tallos_por_ramo;
-                $model->id_planta        = $request->id_planta;
-                $model->minimo_apertura  = $request->minimo_apertura;
-                $model->maximo_apertura  = $request->maximo_apertura;
-                $model->estandar_apertura= $request->estandar;
+                //$model->cantidad = $request->tallos_por_ramo;
+                $model->id_planta = $request->id_planta;
+                $model->minimo_apertura = $request->minimo_apertura;
+                $model->maximo_apertura = $request->maximo_apertura;
+                $model->estandar_apertura = $request->estandar;
+                $model->tallos_x_malla = $request->tallos_x_malla;
 
                 if ($model->save()) {
                     $success = true;
@@ -408,53 +414,55 @@ class PlantaController extends Controller
         ];
     }
 
-    public function form_precio_variedad(Request $request){
+    public function form_precio_variedad(Request $request)
+    {
 
         $dataMondea = DB::table('configuracion_empresa')->select('moneda')->first();
-        $dataPrecio = Precio::where('precio.id_variedad',$request->id_variedad)
-            ->join('variedad as v', 'precio.id_variedad','=', 'v.id_variedad')->get();
-        $adataClasificacionRamos= ClasificacionRamo::where('estado',1)->get();
+        $dataPrecio = Precio::where('precio.id_variedad', $request->id_variedad)
+            ->join('variedad as v', 'precio.id_variedad', '=', 'v.id_variedad')->get();
+        $adataClasificacionRamos = ClasificacionRamo::where('estado', 1)->get();
         return view('adminlte.gestion.plantas_variedades.forms.add_precio',
             [
-                'moneda' =>$dataMondea,
+                'moneda' => $dataMondea,
                 'dataPrecio' => $dataPrecio,
-                'adataClasificacionRamos'=>$adataClasificacionRamos
+                'adataClasificacionRamos' => $adataClasificacionRamos
             ]);
 
     }
 
-    public function store_precio(Request $request){
-           //dd($request->all());
+    public function store_precio(Request $request)
+    {
+        //dd($request->all());
         $valida = Validator::make($request->all(), [
             'arrData' => 'required|Array',
         ]);
 
         if (!$valida->fails()) {
 
-            $msg='';
-            foreach ($request->arrData as $key => $precio){
+            $msg = '';
+            foreach ($request->arrData as $key => $precio) {
                 $verifica = false;
                 $existPrecio = Precio::where([
                     ['id_variedad', $request->id_variedad],
-                    ['id_clasificacion_ramo',$request->arrData[$key][1]]
+                    ['id_clasificacion_ramo', $request->arrData[$key][1]]
                 ])->get();
 
-                if(count($existPrecio) > 0){
+                if (count($existPrecio) > 0) {
 
-                    if(!empty($request->arrData[$key][2])){
+                    if (!empty($request->arrData[$key][2])) {
 
                         $objClasificacionRamo = ClasificacionRamo::find($existPrecio[0]->id_clasificacion_ramo);
-                        $msg .= '<div class="alert alert-success text-center">Ya existe un precio establecido para la clasificación por ramo de '.$objClasificacionRamo->nombre.' , este precio no será guardado nuevamene  </div>';
+                        $msg .= '<div class="alert alert-success text-center">Ya existe un precio establecido para la clasificación por ramo de ' . $objClasificacionRamo->nombre . ' , este precio no será guardado nuevamene  </div>';
                         $success = false;
 
-                    }else{
+                    } else {
 
                         $verifica = true;
                         $objPrecio = Precio::find($existPrecio[0]->id_precio);
                         $palabra = 'Actualizado';
                         $accion = 'U';
                     }
-                }elseif( count($existPrecio) < 1 && empty($request->arrData[$key][2])){
+                } elseif (count($existPrecio) < 1 && empty($request->arrData[$key][2])) {
 
                     $verifica = true;
                     $objPrecio = new Precio;
@@ -462,18 +470,18 @@ class PlantaController extends Controller
                     $accion = 'I';
                 }
 
-                if($verifica){
+                if ($verifica) {
 
-                    $objPrecio->id_clasificacion_ramo  = $request->arrData[$key][1];
-                    $objPrecio->id_variedad            = $request->id_variedad;
-                    $objPrecio->cantidad               = $request->arrData[$key][0];
+                    $objPrecio->id_clasificacion_ramo = $request->arrData[$key][1];
+                    $objPrecio->id_variedad = $request->id_variedad;
+                    $objPrecio->cantidad = $request->arrData[$key][0];
 
                     if ($objPrecio->save()) {
 
                         $model = Precio::All()->last();
-                        $msg .= '<div class="alert alert-success text-center">Se ha '.$palabra.' satisfactoriamente el precio '.$model->cantidad.'</div>';
+                        $msg .= '<div class="alert alert-success text-center">Se ha ' . $palabra . ' satisfactoriamente el precio ' . $model->cantidad . '</div>';
                         $success = true;
-                        bitacora('precio', $model->id_precio, $accion, $palabra.' de precio');
+                        bitacora('precio', $model->id_precio, $accion, $palabra . ' de precio');
 
                     } else {
 
@@ -489,18 +497,20 @@ class PlantaController extends Controller
         }
     }
 
-    public function add_inptus_precio_variedad(Request $request){
+    public function add_inptus_precio_variedad(Request $request)
+    {
 
-        $adataClasificacionRamos= ClasificacionRamo::where('estado',1)->get();
+        $adataClasificacionRamos = ClasificacionRamo::where('estado', 1)->get();
         return view('adminlte.gestion.plantas_variedades.forms.partials.add_inputs_precio',
-        [
-            'adataClasificacionRamos'=>$adataClasificacionRamos,
-            'cntTr' => $request->cant_tr
+            [
+                'adataClasificacionRamos' => $adataClasificacionRamos,
+                'cntTr' => $request->cant_tr
 
-        ]);
+            ]);
     }
 
-    public function update_precio(Request $request){
+    public function update_precio(Request $request)
+    {
 
         if (!empty($request->id_precio)) {
 
