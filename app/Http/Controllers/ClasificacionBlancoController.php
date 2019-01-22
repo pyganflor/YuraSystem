@@ -4,6 +4,7 @@ namespace yura\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use yura\Modelos\ClasificacionRamo;
 use yura\Modelos\InventarioFrio;
 use yura\Modelos\Pedido;
 use yura\Modelos\StockEmpaquetado;
@@ -166,6 +167,7 @@ class ClasificacionBlancoController extends Controller
     {
         $success = true;
         $msg = '';
+        $armados = 0;
         foreach ($request->arreglo as $item) {
             if ($item['armar'] > 0) {
                 $inventario = new InventarioFrio();
@@ -184,6 +186,9 @@ class ClasificacionBlancoController extends Controller
                 if ($inventario->save()) {
                     $id = InventarioFrio::All()->last()->id_inventario_frio;
                     bitacora('inventario_frio', $id, 'I', 'Registro de un inventario en frio');
+
+                    $factor = ClasificacionRamo::find($item['clasificacion_ramo'])->nombre / getCalibreRamoEstandar()->nombre;
+                    $armados += $item['armar'] * $factor;
                 } else {
                     $success = false;
                     $msg .= '<div class="alert alert-warning text-center">' .
@@ -192,6 +197,19 @@ class ClasificacionBlancoController extends Controller
                 }
             }
         }
+
+        $stock_empaquetado = StockEmpaquetado::find($request->id_stock_empaquetado);
+        $stock_empaquetado->cantidad_armada += $armados;
+
+        if ($stock_empaquetado->save()) {
+            bitacora('stock_empaquetado', $stock_empaquetado->id_stock_empaquetado, 'U', 'Actualización de los armados de un stock_empaquetados');
+        } else {
+            $success = false;
+            $msg .= '<div class="alert alert-warning text-center">' .
+                'Ha ocurrido un problema al actualizar los ramos armados' .
+                '</div>';
+        }
+
         if ($success) {
             $msg = '<div class="alert alert-success text-center">Se ha guardado toda la información satisfactoriamente</div>';
         }
@@ -305,7 +323,8 @@ class ClasificacionBlancoController extends Controller
         ]);
         if (!$valida->fails()) {
             $model = StockEmpaquetado::find($request->id_stock_empaquetado);
-            $model->cantidad_ingresada = $request->cantidad;
+            $model->cantidad_armada = $request->cantidad;
+            $model->empaquetado = $request->terminar;
 
             if ($model->save()) {
                 $success = true;

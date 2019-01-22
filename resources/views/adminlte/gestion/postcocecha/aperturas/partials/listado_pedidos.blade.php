@@ -137,14 +137,18 @@
             listado = $('.checkbox_sacar');
             arreglo = [];
 
+            ramos_x_coche = $('#ramos_x_coche').val();
+            if (ramos_x_coche == '' || ramos_x_coche <= 0)
+                ramos_x_coche = 1;
+
             for (i = 0; i < listado.length; i++) {
                 if (listado[i].checked) {
                     id = listado[i].id.substr(15);
-                    pos = $('#pos_pedido').val()
+                    pos = $('#pos_pedido').val();
                     data = {
                         id_stock_apertura: id,
                         dias_maduracion: $('#dias_maduracion_' + id).val(),
-                        cantidad_ramos_estandar: $('#sacar_' + id).val(),
+                        cantidad_ramos_estandar: parseFloat($('#sacar_' + id).val()) * ramos_x_coche,
                         fecha_pedido: $('#val_fecha_' + pos).val()
                     };
                     arreglo.push(data);

@@ -1,14 +1,23 @@
-@if(count($fechas) > 0 && count($combinaciones)>0)
+@if(count($fechas) > 0 && count($combinaciones) > 0 && $stock_apertura != '')
     <form id="form-update_stock_empaquetado" class="pull-left">
         <input type="hidden" id="id_variedad" value="{{$variedad->id_variedad}}">
         <span class="badge">{{$stock_apertura->cantidad_ingresada}}</span> ramos de <span
                 class="badge">{{$variedad->nombre}}</span> sacados de apertura -
-
-        <input type="number" id="ramos_restantes_aperturas" placeholder="ramos restantes" min="0" max="{{$stock_apertura->cantidad_ingresada}}"
-               required>
-        <button type="button" class="btn btn-xs btn-success" onclick="update_stock_empaquetado()">
-            <i class="fa fa-fw fa-save"></i> Guardar
-        </button>
+        @if($stock_apertura->empaquetado == 0)
+            <input type="number" id="ramos_armados" placeholder="armados" min="0" required value="{{$stock_apertura->cantidad_armada}}">
+            <div class="btn-group">
+                <button type="button" class="btn btn-xs btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
+                        aria-expanded="false">
+                    Opciones <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a href="javascript:void(0)" onclick="update_stock_empaquetado(0)">Guardar</a></li>
+                    <li><a href="javascript:void(0)" onclick="update_stock_empaquetado(1)">Guardar y terminar</a></li>
+                </ul>
+            </div>
+        @else
+            <span class="badge">{{$stock_apertura->cantidad_armada}}</span> ramos armados
+        @endif
         <input type="hidden" id="id_stock_empaquetado" value="{{$stock_apertura->id_stock_empaquetado}}">
     </form>
 
@@ -129,10 +138,12 @@
                 @endphp
             @endforeach
             <td class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef" colspan="2">
-                <button type="button" class="btn btn-xs btn-success" title="Guardar armados"
-                        onclick="store_armar('{{$pos_comb-1}}')">
-                    <i class="fa fa-fw fa-save"></i> Guardar
-                </button>
+                @if($stock_apertura->empaquetado == 0)
+                    <button type="button" class="btn btn-xs btn-success" title="Guardar armados"
+                            onclick="store_armar('{{$pos_comb-1}}')">
+                        <i class="fa fa-fw fa-save"></i> Guardar
+                    </button>
+                @endif
             </td>
         </tr>
     </table>
@@ -214,6 +225,7 @@
                 datos = {
                     _token: '{{csrf_token()}}',
                     id_variedad: $('#id_variedad').val(),
+                    id_stock_empaquetado: $('#id_stock_empaquetado').val(),
                     arreglo: arreglo,
                 };
                 post_jquery('{{url('clasificacion_blanco/store_armar')}}', datos, function () {
@@ -256,16 +268,28 @@
             });
         }
 
-        function update_stock_empaquetado() {
+        function update_stock_empaquetado(terminar) {
             if ($('#form-update_stock_empaquetado').valid()) {
                 datos = {
                     _token: '{{csrf_token()}}',
                     id_stock_empaquetado: $('#id_stock_empaquetado').val(),
-                    cantidad: $('#ramos_restantes_aperturas').val()
+                    cantidad: $('#ramos_armados').val(),
+                    terminar: terminar
                 };
-                post_jquery('{{url('clasificacion_blanco/update_stock_empaquetado')}}', datos, function () {
-                    listar_clasificacion_blanco($('#id_variedad').val());
-                });
+                if (terminar == 1) {
+                    modal_quest('modal-quest_update_stock_empaquetado',
+                        '<div class="alert alert-info text-center">¿Desea terminar la clasificación en blanco?</div>',
+                        '<i class="fa fa-fw fa-exclamation-triangle"></i> Mensaje de alerta', true, false, '{{isPC() ? '35%' : ''}}', function () {
+                            post_jquery('{{url('clasificacion_blanco/update_stock_empaquetado')}}', datos, function () {
+                                cerrar_modals();
+                                listar_clasificacion_blanco($('#id_variedad').val());
+                            });
+                        })
+                } else {
+                    post_jquery('{{url('clasificacion_blanco/update_stock_empaquetado')}}', datos, function () {
+                        listar_clasificacion_blanco($('#id_variedad').val());
+                    });
+                }
             }
         }
     </script>

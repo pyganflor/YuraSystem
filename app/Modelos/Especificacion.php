@@ -18,6 +18,7 @@ class Especificacion extends Model
         'estado',
         'nombre',
         'descripcion',
+        'tipo', // N => normal; O => Otras (ordenes semanales)
     ];
 
     public function cliente()
