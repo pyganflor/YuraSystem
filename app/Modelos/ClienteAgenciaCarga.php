@@ -12,8 +12,17 @@ class ClienteAgenciaCarga extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'id_cliente','id_agencia_carga',
+        'id_cliente',
+        'id_agencia_carga',
     ];
 
+    public function agencia_carga()
+    {
+        return $this->belongsTo('\yura\Modelos\AgenciaCarga', 'id_agencia_carga');
+    }
 
+    public function cliente()
+    {
+        return $this->belongsTo('\yura\Modelos\Cliente', 'id_cliente');
+    }
 }

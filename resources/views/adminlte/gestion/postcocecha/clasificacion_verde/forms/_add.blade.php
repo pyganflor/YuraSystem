@@ -6,7 +6,7 @@
                     $total_tallos = 0;
                 @endphp
                 @foreach($variedades as $v)
-                    <a href="#" class="list-group-item list-group-item-action"
+                    <a href="javascript:void(0)" class="list-group-item list-group-item-action"
                        onclick="seleccionar_variedad('{{$v['variedad']->id_variedad}}', $(this))">
                         {{$v['variedad']->planta->nombre.' - '.$v['variedad']->siglas}}
                         <span class="pull-right badge" title="Tallos de clasificación" style="background-color: #0b58a2; color: white"
@@ -24,6 +24,11 @@
                         $total_tallos += $v['tallos'];
                     @endphp
                 @endforeach
+                @if(count($variedades)==1)
+                    <script>
+                        seleccionar_variedad('{{$variedades[0]['variedad']->id_variedad}}', $('#'));
+                    </script>
+                @endif
             </div>
         </div>
         <div class="col-md-7" id="div_table_x_variedad">
@@ -81,36 +86,51 @@
         </div>
     </div>
 
-    @if($clasificacion_verde != '')
-        <div class="row">
-            <div class="col-md-8">
+    <div class="row">
+        <div class="col-md-8">
+            <form id="form_store_personal_hora_inicio">
                 <div class="form-group input-group">
                     <span class="input-group-addon" style="background-color: #e9ecef">Personal</span>
-                    <input type="number" onkeypress="return isNumber(event)" id="personal" name="personal" class="form-control text-center"
-                           min="1" value="{{$clasificacion_verde->personal}}">
+                    @if($clasificacion_verde != '')
+                        <input type="number" onkeypress="return isNumber(event)" id="personal" name="personal" class="form-control text-center"
+                               min="1" value="{{$clasificacion_verde->personal}}" required>
+                    @else
+                        <input type="number" onkeypress="return isNumber(event)" id="personal" name="personal" class="form-control text-center"
+                               min="1" value="" required>
+                    @endif
+                    <span class="input-group-addon" style="background-color: #e9ecef">Hora inicio</span>
+                    @if($clasificacion_verde != '')
+                        <input type="time" id="hora_inicio" name="hora_inicio" class="form-control text-center"
+                               value="{{$clasificacion_verde->hora_inicio}}" required>
+                    @else
+                        <input type="time" id="hora_inicio" name="hora_inicio" class="form-control text-center"
+                               value="08:00" required>
+                    @endif
                     <span class="input-group-btn" title="Guardar personal">
-                        <button type="button" class="btn btn-success" onclick="store_personal()">
-                            <i class="fa fa-fw fa-save"></i>
-                        </button>
-                    </span>
-                    @if($clasificacion_verde->personal != '')
-                        <span class="input-group-addon" style="background-color: #e9ecef">
+                    <button type="button" class="btn btn-success" onclick="store_personal()">
+                        <i class="fa fa-fw fa-save"></i>
+                    </button>
+                </span>
+                    @if($clasificacion_verde != '')
+                        @if($clasificacion_verde->personal != '')
+                            <span class="input-group-addon" style="background-color: #e9ecef">
                             Rendimiento
                         </span>
-                        <span class="input-group-addon" title="Tallos por persona en una hora">
+                            <span class="input-group-addon" title="Tallos por persona en una hora">
                             {{$clasificacion_verde->getRendimiento()}}
                         </span>
-                        <span class="input-group-btn" title="Ver detalles">
+                            <span class="input-group-btn" title="Ver detalles">
                             <button type="button" class="btn btn-default"
                                     onclick="ver_rendimiento('{{$clasificacion_verde->id_clasificacion_verde}}')">
                                 <i class="fa fa-fw fa-eye"></i>
                             </button>
                         </span>
+                        @endif
                     @endif
                 </div>
-            </div>
+            </form>
         </div>
-    @endif
+    </div>
 
     @if($clasificacion_verde != '')
         @if($clasificacion_verde->activo == 1)
@@ -292,25 +312,20 @@
     }
 
     function store_personal() {
-        datos = {
-            _token: '{{csrf_token()}}',
-            personal: $('#personal').val(),
-            id_clasificacion_verde: $('#id_clasificacion_verde').val(),
-        };
+        if ($('#personal').val() != '' && $('#hora_inicio').val() != '') {
+            datos = {
+                _token: '{{csrf_token()}}',
+                recepciones: $('#recepciones').val(),
+                fecha_ingreso: $('#fecha_ingreso').val(),
+                personal: $('#personal').val(),
+                hora_inicio: $('#hora_inicio').val(),
+                id_clasificacion_verde: $('#id_clasificacion_verde').val(),
+            };
 
-        post_jquery('{{url('clasificacion_verde/store_personal')}}', datos, function () {
-            cerrar_modals();
-            add_verde($('#fecha_recepciones').val());
-        });
-    }
-
-    function destinar_lotes_form(variedad, clasificacion) {
-        datos = {
-            id_variedad: variedad,
-            id_clasificacion_verde: clasificacion
-        };
-        get_jquery('<?php echo e(url('clasificacion_verde/destinar_lotes_form')); ?>', datos, function (retorno) {
-            $('#div_destinar_lotes_' + variedad).html(retorno);
-        });
+            post_jquery('{{url('clasificacion_verde/store_personal')}}', datos, function () {
+                cerrar_modals();
+                add_verde($('#fecha_recepciones').val());
+            });
+        }
     }
 </script>

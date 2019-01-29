@@ -31,7 +31,6 @@
 
 <script>
     function store_orden_semanal() {
-        alert($('#id_cliente_orden_semanal').val());
         if ($('#form_add_orden_semanal').valid()) {
             col = $('#num_colores').val();
             fil = $('#num_marcaciones').val();
@@ -76,7 +75,7 @@
                         _token: '{{csrf_token()}}',
                         fecha_pedido: $('#fecha_pedido').val(),
                         id_cliente: $('#id_cliente_orden_semanal').val(),
-                        descripcion: $('#descripcion').val(),
+                        id_agencia_carga: $('#id_agencia_carga').val(),
                         cantidad_cajas: $('#cantidad_cajas').val(),
                         id_empaque: $('#id_empaque').val(),
                         cantidad_ramos: $('#cantidad_ramos').val(),
@@ -92,8 +91,31 @@
                         colores: colores,
                     };
 
-                    post_jquery('{{url('pedidos/store_orden_semanal')}}', datos, function () {
+                    $.LoadingOverlay('show');
+                    $.post('{{url('pedidos/store_orden_semanal')}}', datos, function (retorno) {
+                        if (retorno.success) {
+                            alerta_accion(retorno.mensaje, function () {
+                                cerrar_modals();
+                                datos = {
+                                    data: datos,
+                                    id_pedido: retorno.id_pedido
+                                };
+                                get_jquery('{{url('pedidos/distribuir_orden_semanal')}}', datos, function (vista) {
+                                    modal_view('modal-view_distribuir_orden_semanal', vista, '<i class="fa fa-fw fa-gift"></i> Distribución', true, false,
+                                        '{{isPC() ? '95%' : ''}}');
+                                });
+                                buscar_listado_pedidos();
+                            });
+                        } else {
+                            alerta(retorno.mensaje);
+                        }
 
+                    }, 'json').fail(function (retorno) {
+                        console.log(retorno);
+                        alerta_errores(retorno.responseText);
+                        alerta('Ha ocurrido un problema');
+                    }).always(function () {
+                        $.LoadingOverlay('hide');
                     });
                 } else {
                     alerta('<div class="alert alert-info text-center">' +

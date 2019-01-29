@@ -17,7 +17,7 @@ class DetallePedido extends Model
         'id_pedido',
         'id_agencia_carga',
         'cantidad',
-        'fecha'
+        'fecha_registro'
     ];
 
     public function cliente_especificacion()

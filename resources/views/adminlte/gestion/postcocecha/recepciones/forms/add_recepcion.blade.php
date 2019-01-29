@@ -3,10 +3,29 @@
         <div class="col-md-12">
             <div class="form-group input-group">
                 <span class="input-group-addon" style="background-color: #e9ecef">Fecha</span>
-                <input type="datetime-local" id="fecha_ingreso" name="fecha_ingreso" required
+                <input type="datetime-local" id="fecha_ingreso" name="fecha_ingreso" required onchange="buscarCosechaByFecha()"
                        class="form-control text-center">
             </div>
         </div>
+    </div>
+    <input type="hidden" id="id_cosecha" name="id_cosecha">
+    <div class="form-group input-group">
+        <span class="input-group-addon" style="background-color: #e9ecef">Personal</span>
+        <input type="number" class="form-control" id="personal" name="personal" required min="1">
+        <span class="input-group-addon" style="background-color: #e9ecef">Hora inicio</span>
+        <input type="time" class="form-control" id="hora_inicio" name="hora_inicio" required>
+        <span class="input-group-addon" style="background-color: #e9ecef">Rendimiento</span>
+        <span class="input-group-addon" id="html_rendimiento"></span>
+        <span class="input-group-btn">
+            <button type="button" class="btn btn-default" title="Ver rendimiento" onclick="ver_rendimiento()">
+                <i class="fa fa-fw fa-eye"></i>
+            </button>
+        </span>
+        <span class="input-group-btn">
+            <button type="button" class="btn btn-success" title="Guardar" onclick="store_cosecha()">
+                <i class="fa fa-fw fa-save"></i>
+            </button>
+        </span>
     </div>
     <table width="100%" class="table table-responsive table-bordered" style="font-size: 0.8em; border-color: #9d9d9d"
            id="table_forms_tallos_mallas">
@@ -71,7 +90,11 @@
             </td>
             <td style="border-color: #9d9d9d" class="text-center" colspan="2">
                 <div class="form-group">
-                    <input id="id_modulo_1" name="id_modulo_1" required class="form-control">
+                    <select id="id_modulo_1" name="id_modulo_1" required class="form-control">
+                        @foreach(getModulos() as $item)
+                            <option value="{{$item->id_modulo}}">{{$item->nombre}}</option>
+                        @endforeach
+                    </select>
                 </div>
             </td>
         </tr>
@@ -82,4 +105,45 @@
     cant_forms = 1;
 
     set_max_today($('#fecha_ingreso'));
+
+    buscarCosechaByFecha();
+
+    function buscarCosechaByFecha() {
+        datos = {
+            fecha: $('#fecha_ingreso').val()
+        };
+        get_jquery('{{url('recepcion/buscarCosechaByFecha')}}', datos, function (retorno) {
+            $('#id_cosecha').val(retorno.id_cosecha);
+            $('#personal').val(retorno.personal);
+            $('#hora_inicio').val(retorno.hora_inicio);
+            $('#html_rendimiento').html(retorno.rendimiento);
+        });
+    }
+
+    function store_cosecha() {
+        datos = {
+            _token: '{{csrf_token()}}',
+            id_cosecha: $('#id_cosecha').val(),
+            personal: $('#personal').val(),
+            hora_inicio: $('#hora_inicio').val(),
+            fecha_ingreso: $('#fecha_ingreso').val(),
+        };
+        if (datos['personal'] != '' && datos['hora_inicio'] != '') {
+            post_jquery('{{url('recepcion/store_cosecha')}}', datos, function () {
+                buscarCosechaByFecha();
+            });
+        }
+    }
+
+    function ver_rendimiento() {
+        if ($('#id_cosecha').val() != '') {
+            datos = {
+                id_cosecha: $('#id_cosecha').val()
+            };
+            get_jquery('{{url('recepcion/ver_rendimiento')}}', datos, function (retorno) {
+                modal_view('modal_view_ver_rendimiento', retorno, '<i class="fa fa-fw fa-balance-scale"></i> Rendimiento', true, false,
+                    '{{isPC() ? '65%' : ''}}');
+            });
+        }
+    }
 </script>

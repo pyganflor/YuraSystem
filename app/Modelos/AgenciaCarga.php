@@ -16,9 +16,9 @@ class AgenciaCarga extends Model
         'cdigo'
     ];
 
-    public function cliente()
+    public function cliente_agencia_carga()
     {
-        return $this->belongsTo('\yura\Modelos\Cliente', 'id_cliente');
+        return $this->hasMany('\yura\Modelos\ClienteAgenciaCarga', 'id_agencia_carga');
     }
 
 }

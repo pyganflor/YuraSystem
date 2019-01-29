@@ -49,31 +49,31 @@
                                        title="Descripción" data-trigger="focus"
                                        data-content="
                                          @foreach($detalle->cliente_especificacion->especificacion->especificacionesEmpaque as $espEmp)
-                                             {{$espEmp->cantidad}}
+                                       {{$espEmp->cantidad}}:
                                              {{$espEmp->empaque->nombre}} con las variedades
                                                 @foreach($espEmp->detalles as $det)
-                                                     {{$det->variedad->nombre}}
-                                                         con {{$det->cantidad}}  ramos de
+                                       {{$det->variedad->nombre}}
+                                               con {{$det->cantidad}}  ramos de
                                                              {{$det->clasificacion_ramo->nombre}} gr
                                                                 @if(!empty($det->longitud_ramo))
-                                                                    {{" y ".$det->longitud_ramo}}
-                                                                    @if(!empty($det->id_unidad_medida))
-                                                                        {{getUnidadMedida($det->id_unidad_medida)->siglas}}
-                                                                    @endif
-                                                               @endif
-                                                             c/u,
-                                                                @if(!empty($det->tallos_x_ramos))
-                                                                    {{" de ".$det->tallos_x_ramos." Tallos por ramos"}}
-                                                                @endif
+                                       {{" y ".$det->longitud_ramo}}
+                                       @if(!empty($det->id_unidad_medida))
+                                       {{getUnidadMedida($det->id_unidad_medida)->siglas}}
+                                       @endif
+                                       @endif
+                                               c/u,
+@if(!empty($det->tallos_x_ramos))
+                                       {{" de ".$det->tallos_x_ramos." Tallos por ramos"}}
+                                       @endif
 
-                                                              con envoltura de {{$det->empaque_e->nombre}}
-                                                              y presentación de {{$det->empaque_p->nombre}}
-                                                @endforeach
-                                         @endforeach">
-                                         {{$detalle->cantidad}} {{$detalle->cliente_especificacion->especificacion->nombre}}
-                                     </a>
-                                 </li>
-                             @endforeach
+                                               con envoltura de {{$det->empaque_e->nombre}}
+                                               y presentación de {{$det->empaque_p->nombre}}
+                                       @endforeach
+                                       @endforeach">
+                                        {{$detalle->cantidad}}: {{$detalle->cliente_especificacion->especificacion->nombre}}
+                                    </a>
+                                </li>
+                            @endforeach
                         </ul>
                     </td>
                     <td style="border-color: #9d9d9d" class="text-center mouse-hand" id="popover_pedidos">

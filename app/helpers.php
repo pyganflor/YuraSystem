@@ -595,6 +595,12 @@ function opDiasFecha($operador, $dias, $fecha)
     return date('Y-m-d', $r);
 }
 
+function opHorasFecha($operador, $horas, $fecha)
+{
+    $r = strtotime('' . $operador . '' . $horas . ' hour', strtotime($fecha));
+    return date('Y-m-d H:i', $r);
+}
+
 function difFechas($max, $min)
 {
     $datetime1 = date_create($min);

@@ -16,7 +16,9 @@ class Pedido extends Model
         'estado',
         'descripcion',
         'fecha_pedido',
-        'empaquetado'
+        'empaquetado',
+        'variedad',
+        'tipo_especificacion',
     ];
 
     public function detalles()
@@ -27,5 +29,21 @@ class Pedido extends Model
     public function cliente()
     {
         return $this->belongsTo('\yura\Modelos\Cliente', 'id_cliente');
+    }
+
+    public function haveDistribucion()
+    {
+        if ($this->tipo_especificacion == 'O') {
+            foreach ($this->detalles as $detalle) {
+                foreach ($detalle->cliente_especificacion->especificacion->especificacionesEmpaque as $esp_emp) {
+                    foreach ($esp_emp->marcaciones as $marcacion) {
+                        if (count($marcacion->distribuciones) == 0)
+                            return false;
+                    }
+                }
+            }
+            return true;
+        } else
+            return false;
     }
 }
