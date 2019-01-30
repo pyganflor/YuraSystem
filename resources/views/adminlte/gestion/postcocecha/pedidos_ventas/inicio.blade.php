@@ -86,6 +86,14 @@
                                                 id="title_btn_add_orden_semanal"></em>
                                     </button>
                                 </span>
+                                        <span class="">
+                                    <button class="btn btn-default" onclick="add_pedido_personalizado()"
+                                            onmouseover="$('#title_btn_add_pedido_personalizado').html('Pedido personalizado')"
+                                            onmouseleave="$('#title_btn_add_pedido_personalizado').html('')">
+                                        <i class="fa fa-fw fa-plus" style="color: #0c0c0c"></i> <em
+                                                id="title_btn_add_pedido_personalizado"></em>
+                                    </button>
+                                </span>
                                     </div>
                                 </div>
                             </div>
