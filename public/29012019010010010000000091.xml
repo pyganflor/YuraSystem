@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<factura id="comprobante" version="1.0.0">
+  <infoTributaria>
+    <ambiente/>
+    <tipoEmision>1</tipoEmision>
+    <razonSocial>Pyganflor S.A</razonSocial>
+    <nombreComercial>Pyganflor</nombreComercial>
+    <ruc/>
+    <claveAcceso>29012019010010010000000091</claveAcceso>
+    <codDoc>01</codDoc>
+    <estab>001</estab>
+    <ptoEmi>001</ptoEmi>
+    <secuencial>000000009</secuencial>
+    <dirMatriz>Pasaje la Paz E9-01 y Av. 6 de Diciembre</dirMatriz>
+  </infoTributaria>
+  <infoFactura>
+    <fechaEmision>29/01/2019</fechaEmision>
+    <dirEstablecimiento>Vía San Jose de Minas Vía al Pisque</dirEstablecimiento>
+    <obligadoContabilidad/>
+    <tipoIdentificacionComprador>04</tipoIdentificacionComprador>
+    <razonSocialComprador>Julian</razonSocialComprador>
+    <identificacionComprador>1792228638001</identificacionComprador>
+    <totalSinImpuestos>56330.00</totalSinImpuestos>
+    <totalDescuento>0.00</totalDescuento>
+    <totalConImpuestos>
+      <totalImpuesto>
+        <codigo>2</codigo>
+        <codigoPorcentaje>2</codigoPorcentaje>
+        <baseImponible>56330.00</baseImponible>
+        <valor>6759.60</valor>
+      </totalImpuesto>
+    </totalConImpuestos>
+    <propina>0.00</propina>
+    <importeTotal>63089.60</importeTotal>
+    <moneda>DOLAR</moneda>
+  </infoFactura>
+  <detalles>
+    <detalle>
+      <codigoPrincipal>ENV000000036</codigoPrincipal>
+      <descripcion>GYPSOPHILA (GLX) 250cm 50cm</descripcion>
+      <cantidad>1300.00</cantidad>
+      <precioUnitario>30.00</precioUnitario>
+      <descuento>0.00</descuento>
+      <precioTotalSinImpuesto>39000.00</precioTotalSinImpuesto>
+      <impuestos>
+        <impuesto>
+          <codigo>2</codigo>
+          <codigoPorcentaje>2</codigoPorcentaje>
+          <tarifa>12.00</tarifa>
+          <baseImponible>39000.00</baseImponible>
+          <valor>4680.00</valor>
+        </impuesto>
+      </impuestos>
+    </detalle>
+    <detalle>
+      <codigoPrincipal>ENV000000036</codigoPrincipal>
+      <descripcion>GYPSOPHILA (GLX) 250cm 20cm</descripcion>
+      <cantidad>50.00</cantidad>
+      <precioUnitario>30.00</precioUnitario>
+      <descuento>0.00</descuento>
+      <precioTotalSinImpuesto>1500.00</precioTotalSinImpuesto>
+      <impuestos>
+        <impuesto>
+          <codigo>2</codigo>
+          <codigoPorcentaje>2</codigoPorcentaje>
+          <tarifa>12.00</tarifa>
+          <baseImponible>1500.00</baseImponible>
+          <valor>180.00</valor>
+        </impuesto>
+      </impuestos>
+    </detalle>
+    <detalle>
+      <codigoPrincipal>ENV000000036</codigoPrincipal>
+      <descripcion>GYPSOPHILA (GLX) 250cm 20cm</descripcion>
+      <cantidad>400.00</cantidad>
+      <precioUnitario>30.00</precioUnitario>
+      <descuento>0.00</descuento>
+      <precioTotalSinImpuesto>12000.00</precioTotalSinImpuesto>
+      <impuestos>
+        <impuesto>
+          <codigo>2</codigo>
+          <codigoPorcentaje>2</codigoPorcentaje>
+          <tarifa>12.00</tarifa>
+          <baseImponible>12000.00</baseImponible>
+          <valor>1440.00</valor>
+        </impuesto>
+      </impuestos>
+    </detalle>
+    <detalle>
+      <codigoPrincipal>ENV000000036</codigoPrincipal>
+      <descripcion>GYPSOPHILA (GLX) 250cm cm</descripcion>
+      <cantidad>1.00</cantidad>
+      <precioUnitario>30.00</precioUnitario>
+      <descuento>0.00</descuento>
+      <precioTotalSinImpuesto>30.00</precioTotalSinImpuesto>
+      <impuestos>
+        <impuesto>
+          <codigo>2</codigo>
+          <codigoPorcentaje>2</codigoPorcentaje>
+          <tarifa>12.00</tarifa>
+          <baseImponible>30.00</baseImponible>
+          <valor>3.60</valor>
+        </impuesto>
+      </impuestos>
+    </detalle>
+    <detalle>
+      <codigoPrincipal>ENV000000036</codigoPrincipal>
+      <descripcion>GYPSOPHILA (XL) 250cm 40cm</descripcion>
+      <cantidad>100.00</cantidad>
+      <precioUnitario>8.00</precioUnitario>
+      <descuento>0.00</descuento>
+      <precioTotalSinImpuesto>800.00</precioTotalSinImpuesto>
+      <impuestos>
+        <impuesto>
+          <codigo>2</codigo>
+          <codigoPorcentaje>2</codigoPorcentaje>
+          <tarifa>12.00</tarifa>
+          <baseImponible>800.00</baseImponible>
+          <valor>96.00</valor>
+        </impuesto>
+      </impuestos>
+    </detalle>
+    <detalle>
+      <codigoPrincipal>ENV000000036</codigoPrincipal>
+      <descripcion>GYPSOPHILA (GLX) 250cm 45cm</descripcion>
+      <cantidad>100.00</cantidad>
+      <precioUnitario>30.00</precioUnitario>
+      <descuento>0.00</descuento>
+      <precioTotalSinImpuesto>3000.00</precioTotalSinImpuesto>
+      <impuestos>
+        <impuesto>
+          <codigo>2</codigo>
+          <codigoPorcentaje>2</codigoPorcentaje>
+          <tarifa>12.00</tarifa>
+          <baseImponible>3000.00</baseImponible>
+          <valor>360.00</valor>
+        </impuesto>
+      </impuestos>
+    </detalle>
+  </detalles>
+  <infoAdicional>
+    <campoAdicional nombre="Dirección">Quito Buen cliente</campoAdicional>
+    <campoAdicional nombre="Email">julian@gmail.com</campoAdicional>
+    <campoAdicional nombre="Teléfono">094858785</campoAdicional>
+  </infoAdicional>
+</factura>

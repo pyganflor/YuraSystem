@@ -39,6 +39,7 @@ class PedidoVentaController extends Controller
         $busquedaHasta = $request->has('hasta') ? $request->hasta : '';
 
         $listado = DB::table('pedido as p')
+            ->where('p.estado',$request->estado != '' ? $request->estado : 1 )
             ->join('cliente_pedido_especificacion as cpe', 'p.id_cliente', '=', 'cpe.id_cliente')
             ->join('especificacion as esp', 'cpe.id_especificacion', '=', 'esp.id_especificacion')
             ->join('detalle_cliente as dt', 'p.id_cliente', '=', 'dt.id_cliente')
@@ -51,10 +52,7 @@ class PedidoVentaController extends Controller
         if ($busquedaHasta == "")
             $ultimoPedido = Pedido::select('fecha_pedido')->orderBy('fecha_pedido', 'desc')->first();
 
-        if (!empty($ultimoPedido))
-            $ultimoPedido = $ultimoPedido->fecha_pedido;
-        else
-            $ultimoPedido = '';
+        !empty($ultimoPedido) ? $ultimoPedido = $ultimoPedido->fecha_pedido : $ultimoPedido = '';
 
         $listado = $listado->whereBetween('p.fecha_pedido', [!empty($busquedaDesde) ? $busquedaDesde : '2000-01-01', !empty($busquedaHasta) ? $busquedaHasta : $ultimoPedido]);
 

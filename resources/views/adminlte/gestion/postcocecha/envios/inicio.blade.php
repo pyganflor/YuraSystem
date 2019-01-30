@@ -61,14 +61,6 @@
                                                 id="title_btn_buscar_pedido"></em>
                                         </button>
                                     </span>
-                                   {{-- <span class="">
-                                        <button class="btn btn-primary" onclick="add_pedido()"
-                                                onmouseover="$('#title_btn_add_pedido').html('Pedido')"
-                                                onmouseleave="$('#title_btn_add_pedido').html('')">
-                                            <i class="fa fa-fw fa-plus" style="color: #0c0c0c"></i> <em
-                                                id="title_btn_add_pedido"></em>
-                                        </button>
-                                    </span>--}}
                                     <span class="">
                                         <button class="btn btn-success" onclick="exportar_envios()"
                                                 onmouseover="$('#title_btn_add_pedido_fijo').html('Exportar a excel')"

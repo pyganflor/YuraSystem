@@ -69,7 +69,7 @@
                         {{$item->descripcion}}
                     </td>
                     <td class="text-center" style="border-color: #9d9d9d">
-                        @if(now()->toDateString() < $item->fecha_pedido )
+                        @if(now()->toDateString() < $item->fecha_pedido)
                             <button class="btn  btn-{!! $item->estado == 1 ? 'success' : 'warning' !!} btn-xs" type="button"
                                     title="{!! $item->estado == 1 ? 'Pedido activo' : 'Pedido cancelado' !!}" id="edit_pedidos"
                                     onclick="cancelar_pedidos('{{$item->id_pedido}}','{{$idCliente}}','{{$item->estado}}','{{@csrf_token()}}')">

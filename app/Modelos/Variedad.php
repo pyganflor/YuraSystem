@@ -16,7 +16,6 @@ class Variedad extends Model
         'nombre',
         'siglas',
         'unidad_de_medida',
-        'cantidad',
         'minimo_apertura',
         'maximo_apertura',
         'estandar_apertura',

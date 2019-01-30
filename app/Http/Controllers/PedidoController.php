@@ -3,6 +3,7 @@
 namespace yura\Http\Controllers;
 
 use Illuminate\Http\Request;
+use yura\Modelos\DetalleEspecificacionEmpaque;
 use yura\Modelos\Pedido;
 use yura\Modelos\Especificacion;
 use yura\Modelos\ClientePedidoEspecificacion;
@@ -162,20 +163,7 @@ class PedidoController extends Controller
 
         $arr_data_cliente_especificacion = [];
         foreach ($data_especificaciones->get() as $data){
-
-           $data =  ClientePedidoEspecificacion::where('id_cliente_pedido_especificacion',$data->id_cliente_pedido_especificacion)
-                ->join('especificacion as esp', 'cliente_pedido_especificacion.id_especificacion', '=', 'esp.id_especificacion')
-                ->join('especificacion_empaque as eemp','esp.id_especificacion','eemp.id_especificacion')
-                ->join('empaque as e','eemp.id_empaque','e.id_empaque')
-                ->join('detalle_especificacionempaque as deemp','eemp.id_especificacion_empaque','deemp.id_especificacion_empaque')
-                ->join('variedad as v','deemp.id_variedad','v.id_variedad')
-                ->join('empaque as empE','deemp.id_empaque_e','empE.id_empaque')
-                ->join('empaque as empP','deemp.id_empaque_p','empP.id_empaque')
-                ->join('unidad_medida as um','deemp.id_unidad_medida','um.id_unidad_medida')
-                ->join('clasificacion_ramo as cr','deemp.id_clasificacion_ramo','cr.id_clasificacion_ramo')
-               ->join('unidad_medida as umCR','cr.id_unidad_medida','umCR.id_unidad_medida')
-                ->select('cliente_pedido_especificacion.id_cliente_pedido_especificacion','esp.id_especificacion','v.id_variedad','v.nombre as nombre_variedad','empE.nombre as envoltura', 'empP.nombre as presentacion', 'deemp.tallos_x_ramos','deemp.longitud_ramo','um.siglas as siglas_unidad_medida_longitud','cr.nombre as nombre_clasificacion_ramo','umCR.siglas as siglas_unidad_medida_clasificacion_ramo')->get();
-            $arr_data_cliente_especificacion[] =$data;
+           $arr_data_cliente_especificacion[] = ClientePedidoEspecificacion::where('id_cliente_pedido_especificacion',$data->id_cliente_pedido_especificacion)->get();
         }
        //dd($arr_data_cliente_especificacion);
         return view('adminlte.gestion.postcocecha.pedidos.forms.paritals.inputs_dinamicos',
@@ -188,7 +176,7 @@ class PedidoController extends Controller
                         ['cac.estado', 1]
                     ])->get(),
                 //'cantTr' => $request->cant_tr + 1,
-                'arr_data_cliente_especificacion' => $arr_data_cliente_especificacion,
+               'arr_data_cliente_especificacion' => $arr_data_cliente_especificacion,
                 'cant_especificaciones' => $data_especificaciones->count() > 0 ? $data_especificaciones->get() : []
             ]);
     }

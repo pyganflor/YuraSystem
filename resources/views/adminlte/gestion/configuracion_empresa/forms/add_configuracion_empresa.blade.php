@@ -7,7 +7,7 @@
             <div class="col-md-6">
                 <div class="form-group input-group">
                     <span class="input-group-addon" style="background-color: #e9ecef">Nombre comercial</span>
-                    <input type="text" id="nombre_empresa" name="nombre_empresa" class="form-control" required maxlength="255" minlength="3"
+                    <input type="text" id="nombre_empresa" name="nombre_empresa" class="form-control" required maxlength="300" minlength="3"
                            autocomplete="off" placeholder="Nombre de la Empresa" pattern="[A-Za-z]+"
                            value="{!! isset($config_empresa[0]->nombre) ? $config_empresa[0]->nombre : '' !!}">
                 </div>
@@ -15,7 +15,7 @@
             <div class="col-md-6">
                 <div class="form-group input-group">
                     <span class="input-group-addon" style="background-color: #e9ecef">Razón social</span>
-                    <input type="text" id="razon_social" name="razon_social" class="form-control" required maxlength="200" minlength="3"
+                    <input type="text" id="razon_social" name="razon_social" class="form-control" required maxlength="300" minlength="3"
                            autocomplete="off" placeholder="Razón social"
                            value="{!! isset($config_empresa[0]->razon_social) ? $config_empresa[0]->razon_social : '' !!}">
                 </div>
@@ -66,7 +66,7 @@
             <div class="col-md-6">
                 <div class="form-group input-group">
                     <span class="input-group-addon" style="background-color: #e9ecef">Matriz</span>
-                    <input type="text" id="matriz" name="matriz" class="form-control" required maxlength="500"
+                    <input type="text" id="matriz" name="matriz" class="form-control" required maxlength="300"
                            autocomplete="off" minlength="3"
                            value="{!! isset($config_empresa[0]->direccion_matriz) ? $config_empresa[0]->direccion_matriz : '' !!}">
                 </div>
@@ -74,7 +74,7 @@
             <div class="col-md-6">
                 <div class="form-group input-group">
                     <span class="input-group-addon" style="background-color: #e9ecef">Establecimiento</span>
-                    <input type="text" id="establecimiento" name="establecimiento" class="form-control" required maxlength="500"
+                    <input type="text" id="establecimiento" name="establecimiento" class="form-control" required maxlength="300"
                            autocomplete="off" minlength="1"
                            value="{!! isset($config_empresa[0]->direccion_establecimiento) ? $config_empresa[0]->direccion_establecimiento : '' !!}">
                 </div>

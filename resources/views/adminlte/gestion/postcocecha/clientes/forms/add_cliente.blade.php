@@ -37,21 +37,43 @@
     <div class="row">
         <div class="col-md-4">
             <div class="form-group">
-                <label for="pais">Tipo de iva</label>
-                <select id="iva" name="iva" class="form-control" required>
+                <label for="pais">Impuesto</label>
+                <select id="codigo_impuesto" name="codigo_impuesto" class="form-control" required onchange="porcentaje_impuesto()">
                     <option selected disabled>Seleccione</option>
-                    @foreach($dataIva as $dI)
+                    @foreach($impuestos as $impuesto)
                         @php
                             $selected ='';
                             if(!empty($dataCliente)){
-                                if($dataCliente->codigo_iva == $dI->codigo){
+                                if($dataCliente->codigo_impuesto == $impuesto->codigo){
                                     $selected = 'selected=selected';
                                 }
                             }
                         @endphp
-                        <option {{$selected}} value="{{$dI->codigo}}">{{$dI->porcentaje}}%</option>
+                        <option {{$selected}} value="{{$impuesto->codigo}}">{{$impuesto->nombre}}</option>
                     @endforeach
                 </select>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="pais">Tipo de impuesto</label>
+                <select id="tipo_impuesto" name="tipo_impuesto" class="form-control" required>
+                    <option selected disabled>Seleccione</option>
+                    @if(isset($tipoImpuestos) && !empty($tipoImpuestos))
+                        @foreach($tipoImpuestos as $tipoImpuesto)
+                            @php
+                                $selected ='';
+                                if(!empty($dataCliente)){
+                                    if($dataCliente->codigo_impuesto == $tipoImpuesto->codigo){
+                                        $selected = 'selected=selected';
+                                    }
+                                }
+                            @endphp
+                            <option {{$selected}} value="{{$tipoImpuesto->codigo}}">{{$tipoImpuesto->descripcion}}</option>
+                        @endforeach
+                    @endif
+                </select>
+                <input type="hidden" value="">
             </div>
         </div>
         <div class="col-md-4">
@@ -73,21 +95,21 @@
                 </select>
             </div>
         </div>
+    </div>
+    <div class="row">
         <div class="col-md-4">
             <div class="form-group">
                 <label for="provincia">Provincia</label>
                 <input type="text" id="provincia" name="provincia" class="form-control" required  maxlength="255" autocomplete="off" value="{!! !empty($dataCliente) ? $dataCliente->provincia : $dataCliente !!}">
             </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-4">
             <div class="form-group">
                 <label for="correo">Correo</label>
                 <input type="email" id="correo" name="correo" class="form-control" required  maxlength="255" autocomplete="off" value="{!! !empty($dataCliente) ? $dataCliente->correo : $dataCliente !!}">
             </div>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-4">
             <div class="form-group">
                 <label for="telefono">Teléfono</label>
                 <input type="number" onkeypress="isNumber()" id="telefono" name="telefono" class="form-control" required  maxlength="25" autocomplete="off" value="{!! !empty($dataCliente) ? $dataCliente->telefono : $dataCliente !!}">

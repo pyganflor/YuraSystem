@@ -187,9 +187,8 @@
         };
 
         $.get('{{url('plantas_variedades/form_precio_variedad')}}', datos, function (retorno) {
-            modal_form('modal_add_precio', retorno, '<i class="fa fa-fw fa-plus"></i> Añadir Precio', true, false, '{{isPC() ? '60%' : ''}}', function () {
+            modal_form('modal_add_precio', retorno, '<i class="fa fa-fw fa-plus"></i> Añadir Precio', true, false, '{{isPC() ? '40%' : ''}}', function () {
                 store_precio();
-
             });
             setInterval(function () {
                 $("#id_variedad").val(id_variedad);
@@ -204,11 +203,9 @@
 
             var cant_tr = $("tbody#precios tr").length;
             var arrData = [];
-
             for (var i = 0; i < cant_tr; i++) {
                 arrData.push([$("#precio_" + (parseInt(i) + parseInt(1))).val(), $("#id_clasificacion_por_ramo_" + (parseInt(i) + parseInt(1))).val(), $("#id_precio_" + (parseInt(i) + parseInt(1))).val()]);
             }
-
             $.LoadingOverlay('show');
             datos = {
                 _token: '{{csrf_token()}}',

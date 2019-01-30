@@ -29,9 +29,7 @@
     </legend>
     <table width="100%" id="table_forms_especificaciones">
     </table>
-
     <input type="hidden" id="cant_forms_detalles" name="cant_forms_detalles" value="0">
-
     <input type="hidden" id="id_cliente" name="id_cliente" value="{{$cliente->id_cliente}}">
 </form>
 

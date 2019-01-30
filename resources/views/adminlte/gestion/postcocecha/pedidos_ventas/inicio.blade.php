@@ -25,6 +25,14 @@
                             <div class="pull-right" style="padding: 0px">
                                 <div class="form-inline">
                                     <div class="form-group">
+                                        <label for="anno">Estado</label><br/>
+                                        <select class="form-control" id="estado" name="estado">
+                                            <option value=""> Seleccione</option>
+                                            <option value="1"> Activo </option>
+                                            <option value="0"> Cancelado </option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
                                         <label for="anno">Cliente</label><br/>
                                         <select class="form-control" id="id_cliente" name="id_cliente">
                                             <option value=""> Seleccione</option>
@@ -62,30 +70,25 @@
                                                 id="title_btn_buscar_pedido"></em>
                                     </button>
                                 </span>
-                                        <span class="">
-                                    <button class="btn btn-primary" onclick="add_pedido('','','pedidos')"
-                                            onmouseover="$('#title_btn_add_pedido').html('Pedido')"
-                                            onmouseleave="$('#title_btn_add_pedido').html('')">
-                                        <i class="fa fa-fw fa-plus" style="color: #0c0c0c"></i> <em
-                                                id="title_btn_add_pedido"></em>
-                                    </button>
-                                </span>
-                                        <span class="">
-                                    <button class="btn btn-success" onclick="add_pedido('', $fijo = true,'pedidos')"
-                                            onmouseover="$('#title_btn_add_pedido_fijo').html('Pedido fijo')"
-                                            onmouseleave="$('#title_btn_add_pedido_fijo').html('')">
-                                        <i class="fa fa-fw fa-plus" style="color: #0c0c0c"></i> <em
-                                                id="title_btn_add_pedido_fijo"></em>
-                                    </button>
-                                </span>
-                                        <span class="">
-                                    <button class="btn btn-info" onclick="add_orden_semanal()"
-                                            onmouseover="$('#title_btn_add_orden_semanal').html('Orden semanal')"
-                                            onmouseleave="$('#title_btn_add_orden_semanal').html('')">
-                                        <i class="fa fa-fw fa-plus" style="color: #0c0c0c"></i> <em
-                                                id="title_btn_add_orden_semanal"></em>
-                                    </button>
-                                </span>
+                                    <span class="dropdown">
+                                        <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
+                                            <i class="fa fa-bars" aria-hidden="true"></i> Acciones de pedidos
+                                        <span class="caret"></span></button>
+                                        <ul class="dropdown-menu">
+                                            <li onclick="add_pedido('','','pedidos')" class="btn btn-default text-left" style="cursor:pointer;padding:5px 3px;width:100%;">
+                                                 <i class="fa fa-fw fa-plus" style="color: #0c0c0c"></i>
+                                                <em id="title_btn_add_pedido"> Pedido</em>
+                                            </li>
+                                            <li onclick="add_pedido('', $fijo = true,'pedidos')" class="btn btn-default text-left" style="cursor:pointer;padding:5px 3px;width:100%;">
+                                                <i class="fa fa-fw fa-plus" style="color: #0c0c0c"></i>
+                                                <em id="title_btn_add_pedido_fijo"> Pedido fijo</em>
+                                            </li>
+                                            <li onclick="add_orden_semanal()" class="btn btn-default text-left" style="cursor:pointer;padding:5px 3px;width:100%;">
+                                                <i class="fa fa-fw fa-plus" style="color: #0c0c0c"></i>
+                                                <em id="title_btn_add_orden_semanal"> Orden semanal</em>
+                                            </li>
+                                        </ul>
+                                    </span>
                                     </div>
                                 </div>
                             </div>

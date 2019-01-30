@@ -13,27 +13,23 @@
             </th>
         </tr>
         <tbody id="precios">
-
         @if(isset($dataPrecio) && !empty($dataPrecio))
             @foreach($dataPrecio as $key => $precio)
                 <tr id="precios_{{$key+1}}">
                     <td>
-                        <div class="form-group input-group">
-                            <select id="id_clasificacion_por_ramo_{{$key+1}}" class="form-control" required
-                                    onchange="comprabar('{{$key+1}}')" {!! $precio->estado == 0 ? 'disabled' : '' !!}>
-                                <option disabled selected> Seleccione</option>
-                                @foreach($adataClasificacionRamos as $clasificacionRamos)
-                                    @php
-                                        $selected='';
+                        <select id="id_clasificacion_por_ramo_{{$key+1}}" class="form-control" required
+                                onchange="comprabar('{{$key+1}}')" {!! $precio->estado == 0 ? 'disabled' : '' !!}>
+                            <option disabled selected> Seleccione</option>
+                            @foreach($adataClasificacionRamos as $clasificacionRamos)
+                                @php
+                                    $selected='';
                                         if($clasificacionRamos->id_clasificacion_ramo === $precio->id_clasificacion_ramo){
                                         $selected='selected=selected';
                                         }
                                     @endphp
-                                    <option {{$selected}} value="{{$clasificacionRamos->id_clasificacion_ramo}}">{{$clasificacionRamos->nombre}}</option>
+                                <option {{$selected}} value="{{$clasificacionRamos->id_clasificacion_ramo}}">{{$clasificacionRamos->nombre}}</option>
                                 @endforeach
-                            </select>
-                            <span class="input-group-addon" style="background-color: #e9ecef">{{$precio->unidad_de_medida}}</span>
-                        </div>
+                        </select>
                     </td>
                     <td>
                         <input {!! $precio->estado == 0 ? 'disabled' : '' !!} type="text" id="precio_{{$key+1}}" name="precio_{{$key+1}}"

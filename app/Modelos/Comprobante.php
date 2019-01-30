@@ -14,6 +14,9 @@ class Comprobante extends Model
     protected $fillable = [
         'id_comprobante',
         'clave_acceso',
-        'estado'
+        'estado',
+        'fecha_emision',
+        'tipo_comprobante',
+        'monto_total'
     ];
 }

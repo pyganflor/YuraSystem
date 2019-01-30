@@ -17,7 +17,6 @@ use Validator;
 use DB;
 use Storage as Almacenamiento;
 
-
 class EspecificacionController extends Controller
 {
     public function admin_especificaciones(Request $request)
@@ -66,7 +65,6 @@ class EspecificacionController extends Controller
 
     public function store_especificacion(Request $request)
     {
-        //dd($request->all());
         $validaDataGeneral = Validator::make($request->all(), [
             'nombre' => 'required',
             'descripcion' => 'required',
@@ -212,18 +210,41 @@ class EspecificacionController extends Controller
                             !empty($request->input('long_ramo_'.$i.'_'.$j))       ? $objEspecificacionEmpaqueDetalle->longitud_ramo   = $request->input('long_ramo_'.$i.'_'.$j)      : '';
 
                             if ($objEspecificacionEmpaqueDetalle->save()) {
-
                                 $modelEspecificacionEmpaqueDetalle = DetalleEspecificacionEmpaque::all()->last();
-                                bitacora('detalle_especificacionempaque', $modelEspecificacionEmpaqueDetalle->id_detalle_especificacionempaque, $accionLetra, $accion . ' satisfactoria de un nuevo detalle de especificación de empaque');
+
+                                $objClientePedidoEspecificacion = new ClientePedidoEspecificacion;
+                                $objClientePedidoEspecificacion->id_cliente        = $request->id_cliente;
+                                $objClientePedidoEspecificacion->id_especificacion = $modelEspcificacion->id_especificacion;
+
+                               if($objClientePedidoEspecificacion->save()){
+                                   bitacora('detalle_especificacionempaque', $modelEspecificacionEmpaqueDetalle->id_detalle_especificacionempaque, $accionLetra, $accion . ' satisfactoria de un nuevo detalle de especificación de empaque');
+                               }else{
+                                   if ($accion === 'Inserción') {
+                                       Almacenamiento::disk('imagenes')->delete($imagen);
+
+                                       $objEspecificacionEmpaqueDetalleDelete = DetalleEspecificacionEmpaque::find($modelEspcificacionEmpaque->id_especificacion_empaque);
+                                       $objEspecificacionEmpaqueDetalleDelete->delete();
+
+                                       $objEspecificacionEmpaqueDelete = EspecificacionEmpaque::where('id_especificacion', $modelEspcificacion->id_especificacion);
+                                       $objEspecificacionEmpaqueDelete->delete();
+
+                                       $modelEspcificacion = Especificacion::find($modelEspcificacion->id_especificacion);
+                                       $modelEspcificacion->delete();
+
+                                   }
+                                   $success = false;
+                                   $msg = '<div class="alert alert-warning text-center">' .
+                                       '<p> Ha ocurrido un problema al guardar el desglose del detalle de la especificación</p>';
+
+                               }
 
                             } else {
 
                                 if ($accion === 'Inserción') {
 
                                     Almacenamiento::disk('imagenes')->delete($imagen);
-
-                                    $objEspecificacionEmpaqueDetalleDelete = DetalleEspecificacionEmpaque::find($modelEspcificacionEmpaque->id_especificacion_empaque);
-                                    $objEspecificacionEmpaqueDetalleDelete->delete();
+                                    //$objEspecificacionEmpaqueDetalleDelete = DetalleEspecificacionEmpaque::find($modelEspcificacionEmpaque->id_especificacion_empaque);
+                                    //$objEspecificacionEmpaqueDetalleDelete->delete();
 
                                     $objEspecificacionEmpaqueDelete = EspecificacionEmpaque::where('id_especificacion', $modelEspcificacion->id_especificacion);
                                     $objEspecificacionEmpaqueDelete->delete();
@@ -243,9 +264,8 @@ class EspecificacionController extends Controller
                         if ($accion === 'Inserción') {
 
                             Almacenamiento::disk('imagenes')->delete($imagen);
-                            $objEspecificacionEmpaqueDelete = EspecificacionEmpaque::where('id_especificacion', $modelEspcificacion->id_especificacion);
-
-                             $objEspecificacionEmpaqueDelete->delete();
+                            //$objEspecificacionEmpaqueDelete = EspecificacionEmpaque::where('id_especificacion', $modelEspcificacion->id_especificacion);
+                             //$objEspecificacionEmpaqueDelete->delete();
 
                             $modelEspcificacion = Especificacion::find($modelEspcificacion->id_especificacion);
                             $modelEspcificacion->delete();
@@ -291,7 +311,7 @@ class EspecificacionController extends Controller
 
     public function listar_especificaciones(Request $request){
 
-        $listado = DB::table('especificacion')->orderBy('nombre', 'asc')->paginate(10);
+        $listado = DB::table('especificacion')->where('tipo','N')->orderBy('nombre', 'asc')->paginate(10);
 
         $datos = [
             'listado' => $listado,
@@ -340,7 +360,7 @@ class EspecificacionController extends Controller
             if(count($existClienteEspecificacion) > 0){
                 $success = true;
                 $msg = '<div class="alert alert-success text-center">' .
-                    '<p> La especificaion ya esta asignada a este cliente</p>'
+                    '<p> La especificación ya esta asignada a este cliente</p>'
                     . '</div>';
 
             }else{
@@ -351,7 +371,7 @@ class EspecificacionController extends Controller
                 if($objClientePedidoEspecificacion->save()){
                     $success = true;
                     $msg = '<div class="alert alert-success text-center">' .
-                        '<p> Se ha agregado exitosamente la especificaión al cliente</p>'
+                        '<p> Se ha agregado exitosamente la especificación al cliente</p>'
                         . '</div>';
                 }
             }
@@ -364,7 +384,7 @@ class EspecificacionController extends Controller
             if($objClientePedidoEspecificacion->delete()){
                 $success = true;
                 $msg = '<div class="alert alert-success text-center">' .
-                    '<p> Se ha eliminado la especificaión del cliente exitosamente</p>'
+                    '<p> Se ha eliminado la especificación del cliente exitosamente</p>'
                     . '</div>';
             }
         }

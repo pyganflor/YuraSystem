@@ -15,8 +15,7 @@
                        title="Añadir nueva información" onclick="div_opcion_pedido_fijo(2)">
                         DÍA MES
                     </a>
-                    <a href="javascript:void(0)" class="list-group-item list-group-item-action"
-                       title="Ver información personalizada" onclick="div_opcion_pedido_fijo(3)">
+                    <a href="javascript:void(0)" class="list-group-item list-group-item-action">
                         PERSONALIZADO
                     </a>
                 </div>
