@@ -70,7 +70,6 @@
                                                 id="title_btn_buscar_pedido"></em>
                                     </button>
                                 </span>
-<<<<<<< HEAD
                                     <span class="dropdown">
                                         <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
                                             <i class="fa fa-bars" aria-hidden="true"></i> Acciones de pedidos
@@ -90,40 +89,6 @@
                                             </li>
                                         </ul>
                                     </span>
-=======
-                                        <span class="">
-                                    <button class="btn btn-primary" onclick="add_pedido('','','pedidos')"
-                                            onmouseover="$('#title_btn_add_pedido').html('Pedido')"
-                                            onmouseleave="$('#title_btn_add_pedido').html('')">
-                                        <i class="fa fa-fw fa-plus" style="color: #0c0c0c"></i> <em
-                                                id="title_btn_add_pedido"></em>
-                                    </button>
-                                </span>
-                                        <span class="">
-                                    <button class="btn btn-success" onclick="add_pedido('', $fijo = true,'pedidos')"
-                                            onmouseover="$('#title_btn_add_pedido_fijo').html('Pedido fijo')"
-                                            onmouseleave="$('#title_btn_add_pedido_fijo').html('')">
-                                        <i class="fa fa-fw fa-plus" style="color: #0c0c0c"></i> <em
-                                                id="title_btn_add_pedido_fijo"></em>
-                                    </button>
-                                </span>
-                                        <span class="">
-                                    <button class="btn btn-info" onclick="add_orden_semanal()"
-                                            onmouseover="$('#title_btn_add_orden_semanal').html('Orden semanal')"
-                                            onmouseleave="$('#title_btn_add_orden_semanal').html('')">
-                                        <i class="fa fa-fw fa-plus" style="color: #0c0c0c"></i> <em
-                                                id="title_btn_add_orden_semanal"></em>
-                                    </button>
-                                </span>
-                                        <span class="">
-                                    <button class="btn btn-default" onclick="add_pedido_personalizado()"
-                                            onmouseover="$('#title_btn_add_pedido_personalizado').html('Pedido personalizado')"
-                                            onmouseleave="$('#title_btn_add_pedido_personalizado').html('')">
-                                        <i class="fa fa-fw fa-plus" style="color: #0c0c0c"></i> <em
-                                                id="title_btn_add_pedido_personalizado"></em>
-                                    </button>
-                                </span>
->>>>>>> ff80cd3d9f52ca72b85e0c5333153e1c38f10c08
                                     </div>
                                 </div>
                             </div>
