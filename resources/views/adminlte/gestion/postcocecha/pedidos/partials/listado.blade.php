@@ -39,7 +39,7 @@
                                        title="Descripción" data-trigger="focus"
                                        data-content="
                                            @foreach($detalle->cliente_especificacion->especificacion->especificacionesEmpaque as $espEmp)
-                                       {{$espEmp->cantidad}}
+                                       {{$espEmp->cantidad}}:
                                        {{$espEmp->empaque->nombre}} con las variedades
                                                 @foreach($espEmp->detalles as $det)
                                        {{$det->variedad->nombre}}
@@ -59,7 +59,7 @@
                                                y presentación de {{$det->empaque_p->nombre}}
                                        @endforeach
                                        @endforeach">
-                                        {{$detalle->cantidad}} {{$detalle->cliente_especificacion->especificacion->nombre}}
+                                        {{$detalle->cantidad}}: {{$detalle->cliente_especificacion->especificacion->nombre}}
                                     </a>
                                 </li>
                             @endforeach

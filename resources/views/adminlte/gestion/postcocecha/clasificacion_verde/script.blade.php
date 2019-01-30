@@ -99,7 +99,7 @@
         };
 
         get_jquery('{{url('clasificacion_verde/ver_rendimiento')}}', datos, function (retorno) {
-            modal_view('modal_view_ver_rendimiento', retorno, '<i class="fa fa-fw fa-balance-scale"></i> Rendimiento', true, false, '{{isPC() ? '50%' : ''}}');
+            modal_view('modal_view_ver_rendimiento', retorno, '<i class="fa fa-fw fa-balance-scale"></i> Rendimiento', true, false, '{{isPC() ? '65%' : ''}}');
         });
     }
 

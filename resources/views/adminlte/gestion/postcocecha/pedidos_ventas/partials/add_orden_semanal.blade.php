@@ -11,7 +11,8 @@
                 Cliente
             </th>
             <td class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
-                <select name="id_cliente_orden_semanal" id="id_cliente_orden_semanal" required style="width: 100%" class="form-control">
+                <select name="id_cliente_orden_semanal" id="id_cliente_orden_semanal" required style="width: 100%" class="form-control"
+                        onchange="buscar_agencia_carga()">
                     <option value="">Seleccione...</option>
                     @foreach($clientes as $item)
                         <option value="{{$item->id_cliente}}">
@@ -21,10 +22,10 @@
                 </select>
             </td>
             <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
-                Descripción
+                Agencia de Carga
             </th>
-            <td class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
-                <input type="text" id="descripcion" name="descripcion" class="form-control" style="width: 100%">
+            <td class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef" id="div_agenia_carga">
+
             </td>
         </tr>
         <tr>
@@ -272,5 +273,14 @@
 
         $('#total_ramos_' + fil + '_' + col).val(total_ramos);
         $('#total_piezas_' + fil + '_' + col).val(total_piezas);
+    }
+
+    function buscar_agencia_carga() {
+        datos = {
+            id_cliente: $('#id_cliente_orden_semanal').val()
+        };
+        get_jquery('{{url('pedidos/buscar_agencia_carga')}}', datos, function (retorno) {
+            $('#div_agenia_carga').html(retorno);
+        });
     }
 </script>

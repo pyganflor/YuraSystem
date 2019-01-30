@@ -16,6 +16,10 @@
         });
     }
 
+    function buscarRecepcionByFecha() {
+        datos = {};
+    }
+
     $(document).on("click", "#pagination_listado_recepciones .pagination li a", function (e) {
         $.LoadingOverlay("show");
         //para que la pagina se cargen los elementos
@@ -43,7 +47,7 @@
     function add_recepcion() {
         $.LoadingOverlay('show');
         $.get('{{url('recepcion/add_recepcion')}}', {}, function (retorno) {
-            modal_form('modal_add_recepcion', retorno, '<i class="fa fa-fw fa-plus"></i> Añadir recepción', true, false, '{{isPC() ? '50%' : ''}}', function () {
+            modal_form('modal_add_recepcion', retorno, '<i class="fa fa-fw fa-plus"></i> Añadir cosecha', true, false, '{{isPC() ? '50%' : ''}}', function () {
                 store_recepcion();
                 $.LoadingOverlay('hide');
             });
@@ -60,11 +64,15 @@
                     id_variedad: $('#id_variedad_' + i).val(),
                     cantidad_mallas: $('#cantidad_mallas_' + i).val(),
                     tallos_x_malla: $('#tallos_x_malla_' + i).val(),
+                    id_modulo: $('#id_modulo_' + i).val(),
                 };
                 arreglo.push(data);
             }
             datos = {
                 _token: '{{csrf_token()}}',
+                id_cosecha: $('#id_cosecha').val(),
+                personal: $('#personal').val(),
+                hora_inicio: $('#hora_inicio').val(),
                 fecha_ingreso: $('#fecha_ingreso').val(),
                 cantidad: arreglo
             };
@@ -72,6 +80,7 @@
                 add_recepcion();
                 cerrar_modals();
                 buscar_listado();
+                set_max_today($('#fecha_ingreso'));
             });
             $.LoadingOverlay('hide');
         }
@@ -104,10 +113,17 @@
             '       min="1" max="1000">' +
             '</div>' +
             '</td>' +
-            '<td style="border-color: #9d9d9d" class="text-center" colspan="2">' +
+            '<td style="border-color: #9d9d9d" class="text-center">' +
             '<div class="form-group">' +
             '<input type="number" id="tallos_x_malla_' + cant_forms + '" name="tallos_x_malla_' + cant_forms + '" required class="form-control"' +
             '       min="1" max="50">' +
+            '</div>' +
+            '</td>' +
+            '<td style="border-color: #9d9d9d" class="text-center" colspan="2">' +
+            '<div class="form-group">' +
+            '<select id="id_modulo_' + cant_forms + '" name="id_modulo_' + cant_forms + '" required class="form-control">' +
+            $('#id_modulo_1').html() +
+            '</select>' +
             '</div>' +
             '</td>' +
             '</tr>');

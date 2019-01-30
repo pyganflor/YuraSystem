@@ -18,6 +18,7 @@ class Recepcion extends Model
         'fecha_ingreso',
         'fecha_registro',
         'estado',
+        'id_cosecha',
     ];
 
     public function desgloses()
@@ -33,6 +34,11 @@ class Recepcion extends Model
     public function clasificaciones_verdes()
     {
         return $this->hasMany('\yura\Modelos\RecepcionClasificacionVerde', 'id_recepcion');
+    }
+
+    public function cosecha()
+    {
+        return $this->belongsTo('\yura\Modelos\Cosecha', 'id_cosecha');
     }
 
     public function cantidad_tallos()

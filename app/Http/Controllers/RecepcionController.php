@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use yura\Modelos\Apertura;
 use yura\Modelos\ClasificacionVerde;
+use yura\Modelos\Cosecha;
 use yura\Modelos\DesgloseRecepcion;
 use yura\Modelos\Recepcion;
 use yura\Modelos\Semana;
@@ -80,9 +81,13 @@ class RecepcionController extends Controller
         $valida = Validator::make($request->all(), [
             'fecha_ingreso' => 'required',
             'cantidad' => 'required',
+            'personal' => 'required',
+            'hora_inicio' => 'required',
         ], [
             'fecha_ingreso.required' => 'La fecha de ingreso es obligatoria',
             'cantidad.required' => 'La cantidad de tallos es obligatoria',
+            'personal.required' => 'El personal es obligatorio',
+            'hora_inicio.required' => 'La hora de inicio es obligatoria',
         ]);
         if (!$valida->fails()) {
             $semana = Semana::All()
@@ -90,38 +95,62 @@ class RecepcionController extends Controller
                 ->where('fecha_final', '>=', $request->fecha_ingreso)->first();
             if ($semana != '') {
                 if (count($request->cantidad) > 0) {
-                    $cantidad_total = 0;
+                    /* ============= TABLA COSECHA ===============*/
+                    $cosecha = Cosecha::find($request->id_cosecha);
+                    if ($cosecha == '') {
+                        $cosecha = new Cosecha();
+                        $cosecha->personal = $request->personal;
+                        $cosecha->hora_inicio = $request->hora_inicio;
+                        $cosecha->fecha_ingreso = substr($request->fecha_ingreso, 0, 10);
+                    }
 
-                    $model = new Recepcion();
-                    $model->id_semana = $semana->id_semana;
-                    $model->fecha_ingreso = $request->fecha_ingreso;
-                    $model->fecha_registro = date('Y-m-d H:i:s');
+                    if ($cosecha->save()) {
+                        $cosecha = Cosecha::find($request->id_cosecha) != '' ? Cosecha::find($request->id_cosecha) : Cosecha::All()->last();
+                        $accion = Cosecha::find($request->id_cosecha) != '' ? 'U' : 'I';
+                        bitacora('cosecha', $cosecha->id_cosecha, $accion, 'Modificacion en la tabla cosecha');
 
-                    if ($model->save()) {
-                        $recepcion = Recepcion::All()->last();
-                        bitacora('recepcion', $model->id_recepcion, 'I', 'Inserción satisfactoria de una nueva recepción');
-                        foreach ($request->cantidad as $item) {
-                            $model = new DesgloseRecepcion();
-                            $model->id_variedad = $item['id_variedad'];
-                            $model->id_recepcion = $recepcion->id_recepcion;
-                            $model->cantidad_mallas = $item['cantidad_mallas'];
-                            $model->tallos_x_malla = $item['tallos_x_malla'];
-                            $model->fecha_registro = date('Y-m-d H:i:s');
+                        /* ============= TABLA RECPCION ==============*/
+                        $cantidad_total = 0;
 
-                            if ($model->save()) {
-                                $cantidad_total += ($item['cantidad_mallas'] * $item['tallos_x_malla']);
-                                bitacora('desglose_recepcion', $model->id_desglose_recepcion, 'I', 'Inserción satisfactoria de un nuevo desglose de recepción');
-                            } else {
-                                $success = false;
-                                $msg .= '<div class="alert alert-warning text-center">' .
-                                    '<p> Ha ocurrido un problema al guardar la cantidad de ' . $item['cantidad_mallas'] . ' mallas y ' . $item['tallos_x_malla'] . ' tallos por malla</p>'
-                                    . '</div>';
+                        $model = new Recepcion();
+                        $model->id_cosecha = $cosecha->id_cosecha;
+                        $model->id_semana = $semana->id_semana;
+                        $model->fecha_ingreso = $request->fecha_ingreso;
+                        $model->fecha_registro = date('Y-m-d H:i:s');
+
+                        if ($model->save()) {
+                            $recepcion = Recepcion::All()->last();
+                            bitacora('recepcion', $model->id_recepcion, 'I', 'Inserción satisfactoria de una nueva recepción');
+                            /* ========= TABLA DESGLOSE_RECPCION ============*/
+                            foreach ($request->cantidad as $item) {
+                                $model = new DesgloseRecepcion();
+                                $model->id_variedad = $item['id_variedad'];
+                                $model->id_recepcion = $recepcion->id_recepcion;
+                                $model->cantidad_mallas = $item['cantidad_mallas'];
+                                $model->tallos_x_malla = $item['tallos_x_malla'];
+                                $model->id_modulo = $item['id_modulo'];
+                                $model->fecha_registro = date('Y-m-d H:i:s');
+
+                                if ($model->save()) {
+                                    $cantidad_total += ($item['cantidad_mallas'] * $item['tallos_x_malla']);
+                                    bitacora('desglose_recepcion', $model->id_desglose_recepcion, 'I', 'Inserción satisfactoria de un nuevo desglose de recepción');
+                                } else {
+                                    $success = false;
+                                    $msg .= '<div class="alert alert-warning text-center">' .
+                                        '<p> Ha ocurrido un problema al guardar la cantidad de ' . $item['cantidad_mallas'] . ' mallas y ' . $item['tallos_x_malla'] . ' tallos por malla</p>'
+                                        . '</div>';
+                                }
                             }
+                        } else {
+                            $success = false;
+                            $msg = '<div class="alert alert-warning text-center">' .
+                                '<p> Ha ocurrido un problema al guardar el ingreso en el sistema</p>'
+                                . '</div>';
                         }
                     } else {
                         $success = false;
                         $msg = '<div class="alert alert-warning text-center">' .
-                            '<p> Ha ocurrido un problema al guardar el ingreso en el sistema</p>'
+                            '<p> Ha ocurrido un problema al guardar la cosecha</p>'
                             . '</div>';
                     }
 
@@ -307,5 +336,55 @@ class RecepcionController extends Controller
         } else {
             return '<div>No se han encontrado coincidencias para exportar</div>';
         }
+    }
+
+    public function getIdCosechaByFecha(Request $request)
+    {
+        $cosecha = Cosecha::All()->where('fecha_ingreso', '=', substr($request->fecha, 0, 10))->first();
+        if ($cosecha != '')
+            return [
+                'id_cosecha' => $cosecha->id_cosecha,
+                'personal' => $cosecha->personal,
+                'hora_inicio' => $cosecha->hora_inicio,
+                'rendimiento' => $cosecha->getRendimiento(),
+            ];
+        else
+            return '';
+    }
+
+    public function store_cosecha(Request $request)
+    {
+        $cosecha = Cosecha::find($request->id_cosecha);
+        if ($cosecha == '') {
+            $cosecha = new Cosecha();
+        }
+        $cosecha->personal = $request->personal;
+        $cosecha->hora_inicio = $request->hora_inicio;
+        $cosecha->fecha_ingreso = substr($request->fecha_ingreso, 0, 10);
+
+        if ($cosecha->save()) {
+            $id = Cosecha::find($request->id_cosecha) != '' ? $cosecha->id_cosecha : Cosecha::All()->last()->id_cosecha;
+            $accion = Cosecha::find($request->id_cosecha) != '' ? 'U' : 'I';
+            bitacora('cosecha', $id, $accion, 'Modificacion en la tabla cosecha');
+
+            return [
+                'mensaje' => '<div class="alert alert-success text-center">Se ha guardado toda la información satisfactoriamente</div>',
+                'success' => true
+            ];
+        } else {
+            return [
+                'mensaje' => '<div class="alert alert-warning text-center">No se ha podido guardar la información en el sistema</div>',
+                'success' => false
+            ];
+        }
+    }
+
+    public function ver_rendimiento(Request $request)
+    {
+        $cosecha = Cosecha::find($request->id_cosecha);
+
+        return view('adminlte.gestion.postcocecha.recepciones.partials.rendimiento', [
+            'cosecha' => $cosecha
+        ]);
     }
 }

@@ -35,4 +35,9 @@ class EspecificacionEmpaque extends Model
     {
         return $this->hasMany('\yura\Modelos\DetalleEspecificacionEmpaque', 'id_especificacion_empaque');
     }
+
+    public function marcaciones()
+    {
+        return $this->hasMany('\yura\Modelos\Marcacion', 'id_especificacion_empaque');
+    }
 }

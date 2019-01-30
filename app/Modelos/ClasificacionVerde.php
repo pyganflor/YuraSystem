@@ -152,20 +152,14 @@ class ClasificacionVerde extends Model
 
     function getRendimiento()
     {
-        $current = $this->detalles[0]->fecha_registro;
-        $listado_fechas = DB::table('detalle_clasificacion_verde')
-            ->select(DB::raw('min(fecha_registro) as minimo'), DB::raw('max(fecha_registro) as maximo'))->distinct()
-            ->where('estado', '=', 1)
-            ->where('id_clasificacion_verde', '=', $this->id_clasificacion_verde)
-            ->get();
-        $horas = difFechas($listado_fechas[0]->maximo, $listado_fechas[0]->minimo)->h;
-        $horas += round(difFechas($listado_fechas[0]->maximo, $listado_fechas[0]->minimo)->i / 60, 2);
-        if ($horas > 0) {
-            $r = ($this->total_tallos() / $this->personal) / $horas;
+        if (count($this->detalles) > 0) {
+            $r = $this->total_tallos() / $this->personal;
+            $r = $r / $this->getCantidadHorasTrabajo();
+
+            return round($r, 2);
         } else {
-            $r = ($this->total_tallos() / $this->personal) / 1;
+            return 0;
         }
-        return round($r, 2);
     }
 
     function getDetallesByFecha($fecha)
@@ -176,5 +170,106 @@ class ClasificacionVerde extends Model
             ->where('fecha_ingreso', '=', $fecha)
             ->sortBy('id_variedad');
         return $listado;
+    }
+
+    function getIntervalosHoras()
+    {
+        $r = [];
+        $listado_fechas = DB::table('detalle_clasificacion_verde')
+            ->select('fecha_registro')->distinct()
+            ->where('estado', '=', 1)
+            ->where('id_clasificacion_verde', '=', $this->id_clasificacion_verde)
+            ->get();
+
+        $listado = [];
+        foreach ($listado_fechas as $item)
+            array_push($listado, $item->fecha_registro);
+
+        foreach ($listado as $item) {
+            $intervalo = [
+                'fecha_inicio' => substr($item, 0, 10),
+                'fecha_fin' => substr(opHorasFecha('+', 1, substr($item, 0, 13) . ':00'), 0, 10),
+                'fecha_inicio_full' => substr($item, 0, 13) . ':00',
+                'fecha_fin_full' => opHorasFecha('+', 1, substr($item, 0, 13) . ':00'),
+                'hora_inicio' => substr($item, 11, 2) . ':00',
+                'hora_fin' => substr(opHorasFecha('+', 1, substr($item, 0, 13) . ':00'), 11, 2) . ':00',
+            ];
+            if (!in_array($intervalo, $r)) {
+                array_push($r, $intervalo);
+            }
+        }
+
+        return $r;
+    }
+
+    function getVariedadesByIntervaloFecha($inicio, $fin)
+    {
+        $listado = DB::table('detalle_clasificacion_verde as dc')
+            ->select('dc.id_variedad')->distinct()
+            ->where('estado', '=', 1)
+            ->where('id_clasificacion_verde', '=', $this->id_clasificacion_verde)
+            ->where('fecha_registro', '>=', $inicio)
+            ->where('fecha_registro', '<', $fin)
+            ->get();
+
+        return $listado;
+    }
+
+    function getDetallesByIntervaloFecha($inicio, $fin)
+    {
+        $listado = DB::table('detalle_clasificacion_verde as dc')
+            ->select('dc.id_variedad', 'dc.id_clasificacion_unitaria', DB::raw('sum(cantidad_ramos * tallos_x_ramos) as cantidad'))
+            ->where('estado', '=', 1)
+            ->where('id_clasificacion_verde', '=', $this->id_clasificacion_verde)
+            ->where('fecha_registro', '>=', $inicio)
+            ->where('fecha_registro', '<', $fin)
+            ->groupBy('dc.id_variedad', 'dc.id_clasificacion_unitaria')
+            ->orderBy('dc.id_variedad')
+            ->get();
+
+        return $listado;
+    }
+
+    function getLastFechaClasificacion()
+    {
+        $r = DB::table('detalle_clasificacion_verde')
+            ->select(DB::raw('max(fecha_registro) as fecha'))
+            ->where('estado', '=', 1)
+            ->where('id_clasificacion_verde', '=', $this->id_clasificacion_verde)
+            ->get();
+        if (count($r) > 0)
+            return $r[0]->fecha;
+        else
+            return '';
+    }
+
+    function getFechaHoraInicio()
+    {
+        return $this->fecha_ingreso . ' ' . $this->hora_inicio . ':00';
+    }
+
+    function getCantidadHorasTrabajo()
+    {
+        $r = difFechas($this->getLastFechaClasificacion(), $this->getFechaHoraInicio());
+        return round($r->h + ($r->i / 60), 2);
+    }
+
+    function getTotalTallosByVariedadIntervaloFecha($variedad, $inicio, $fin)
+    {
+        $r = DB::table('detalle_clasificacion_verde as dc')
+            ->select(DB::raw('sum(cantidad_ramos * tallos_x_ramos) as cantidad'))
+            ->where('estado', '=', 1)
+            ->where('id_clasificacion_verde', '=', $this->id_clasificacion_verde)
+            ->where('id_variedad', '=', $variedad)
+            ->where('fecha_registro', '>=', $inicio)
+            ->where('fecha_registro', '<', $fin)
+            ->groupBy('dc.id_variedad')
+            ->orderBy('dc.id_variedad')
+            ->get();
+
+        if (count($r) > 0)
+            return $r[0]->cantidad;
+        else
+            return 0;
     }
 }
