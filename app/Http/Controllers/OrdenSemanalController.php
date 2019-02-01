@@ -247,4 +247,177 @@ class OrdenSemanalController extends Controller
             'pedido' => $pedido
         ]);
     }
+
+    /* ================ PEDIDOS PERSONALIZDOS ================*/
+    public function add_pedido_personalizado(Request $request)
+    {
+        return view('adminlte.gestion.postcocecha.pedidos_ventas.partials.add_pedido_personalizado', [
+            'clientes' => Cliente::All()->where('estado', '=', 1),
+            'cajas' => Empaque::All()->where('estado', '=', 1)->where('tipo', '=', 'C'),
+            'calibres' => getCalibresRamo(),
+            'variedades' => getVariedades(),
+            'envolturas' => Empaque::All()->where('estado', '=', 1)->where('tipo', '=', 'E'),
+            'presentaciones' => Empaque::All()->where('estado', '=', 1)->where('tipo', '=', 'P'),
+            'unidades_medida' => UnidadMedida::All()->where('estado', '=', 1)->where('tipo', '=', 'L'),
+        ]);
+    }
+
+    public function listar_agencias_carga(Request $request)
+    {
+        return view('adminlte.gestion.postcocecha.pedidos_ventas.partials._listar_agencias_carga', [
+            'cliente' => Cliente::find($request->id_cliente),
+            'pos' => $request->pos
+        ]);
+    }
+
+    public function store_pedido_personalizado(Request $request)
+    {
+        $creados = [];
+        if (count($request->arreglo) > 0) {
+            foreach ($request->arreglo as $item) {
+                /* ========= TABLA ESPECIFICACION ==========*/
+                $texto = $item['cantidad_piezas'] . ' ' . explode('|', Empaque::find($item['id_empaque'])->nombre)[0] . ' de ' .
+                    $item['cantidad_ramos'] . ' ramos ' . ClasificacionRamo::find($item['id_clasificacion_ramo'])->nombre .
+                    ClasificacionRamo::find($item['id_clasificacion_ramo'])->unidad_medida->siglas . ' ' . Variedad::find($item['id_variedad'])->siglas . ' ' .
+                    explode('|', Empaque::find($item['id_empaque_e'])->nombre)[0] . ' ' .
+                    explode('|', Empaque::find($item['id_empaque_p'])->nombre)[0] . ' ' . $item['tallos_x_ramo'] . ' ' .
+                    $item['longitud_ramo'] . (UnidadMedida::find($item['id_unidad_medida']) != '' ? UnidadMedida::find($item['id_unidad_medida'])->siglas : '');
+
+                $especificacion = new Especificacion();
+                $especificacion->nombre = $especificacion->descripcion = $texto;
+                if ($item['check_make_especificacion'] == 'true')
+                    $especificacion->tipo = 'N';
+                else
+                    $especificacion->tipo = 'O';
+
+                if ($especificacion->save()) {
+                    $especificacion = Especificacion::All()->last();
+                    bitacora('especificacion', $especificacion->id_especificacion, 'I', 'Insercion de una nueva especificacion');
+                    array_push($creados, $especificacion);
+
+                    /* ========== TABLA ESPECIFIACION_EMPAQUE ==============*/
+                    $esp_emp = new EspecificacionEmpaque();
+                    $esp_emp->id_especificacion = $especificacion->id_especificacion;
+                    $esp_emp->id_empaque = $item['id_empaque'];
+                    $esp_emp->cantidad = $item['cantidad_piezas'];
+
+                    if ($esp_emp->save()) {
+                        $esp_emp = EspecificacionEmpaque::All()->last();
+                        bitacora('especificacion_empaque', $esp_emp->id_especificacion_empaque, 'I', 'Insercion de una nueva especificacion-empaque');
+                        array_push($creados, $esp_emp);
+
+                        /* ========= TABLA DETALLE_ESPECIFICACION_EMPAQUE ===========*/
+                        $det_esp_emp = new DetalleEspecificacionEmpaque();
+                        $det_esp_emp->id_especificacion_empaque = $esp_emp->id_especificacion_empaque;
+                        $det_esp_emp->id_variedad = $item['id_variedad'];
+                        $det_esp_emp->id_clasificacion_ramo = $item['id_clasificacion_ramo'];
+                        $det_esp_emp->cantidad = $item['cantidad_ramos'];
+                        $det_esp_emp->id_empaque_e = $item['id_empaque_e'];
+                        $det_esp_emp->id_empaque_p = $item['id_empaque_p'];
+                        $det_esp_emp->tallos_x_ramos = $item['tallos_x_ramo'];
+                        $det_esp_emp->longitud_ramo = $item['longitud_ramo'];
+                        $det_esp_emp->id_unidad_medida = $item['id_unidad_medida'];
+
+                        if ($det_esp_emp->save()) {
+                            $det_esp_emp = DetalleEspecificacionEmpaque::All()->last();
+                            bitacora('detalle_especificacionempaque', $det_esp_emp->id_detalle_especificacionempaque, 'I', 'Insercion de un nuevo detalle-especificacion-empaque');
+                            array_push($creados, $det_esp_emp);
+
+                            /* =========== TABLA CLIENTE_PEDIDO_ESPECIFICACION ==========*/
+                            $cli_ped_esp = new ClientePedidoEspecificacion();
+                            $cli_ped_esp->id_especificacion = $especificacion->id_especificacion;
+                            $cli_ped_esp->id_cliente = $item['id_cliente'];
+
+                            if ($cli_ped_esp->save()) {
+                                $cli_ped_esp = ClientePedidoEspecificacion::All()->last();
+                                bitacora('cliente_pedido_especificacion', $cli_ped_esp->id_cliente_pedido_especificacion, 'I', 'Insercion de un nuevo cliente_pedido_especificacion');
+                                array_push($creados, $cli_ped_esp);
+
+                                /* ========== TABLA PEDIDO ============*/
+                                $pedido = new Pedido();
+                                $pedido->id_cliente = $item['id_cliente'];
+                                $pedido->descripcion = $texto;
+                                $pedido->variedad = $item['id_variedad'];  // optimizar
+                                $pedido->fecha_pedido = $request->fecha_pedido;
+                                if ($item['check_make_especificacion'] == 'true')
+                                    $pedido->tipo_especificacion = 'N';
+                                else
+                                    $pedido->tipo_especificacion = 'O';
+
+                                if ($pedido->save()) {
+                                    $pedido = Pedido::All()->last();
+                                    bitacora('pedido', $pedido->id_pedido, 'I', 'Insercion de un nuevo pedido');
+                                    array_push($creados, $pedido);
+
+                                    /* ========= TABLA DETALLE_PEDIDO ===========*/
+                                    $det_pedido = new DetallePedido();
+                                    $det_pedido->id_pedido = $pedido->id_pedido;
+                                    $det_pedido->id_cliente_especificacion = $cli_ped_esp->id_cliente_pedido_especificacion;
+                                    $det_pedido->id_agencia_carga = $item['id_agencia_carga'];
+                                    $det_pedido->cantidad = 1;
+
+                                    if ($det_pedido->save()) {
+                                        $det_pedido = DetallePedido::All()->last();
+                                        bitacora('detalle_pedido', $pedido->id_detalle_pedido, 'I', 'Insercion de un nuevo detalle-pedido');
+                                        array_push($creados, $det_pedido);
+                                    } else {
+                                        foreach ($creados as $c)
+                                            $c->delete();
+                                        return [
+                                            'success' => false,
+                                            'mensaje' => '<div class="alert alert-warning text-center">No se ha podido crear la información relacionada al detalle-pedido</div>'
+                                        ];
+                                    }
+                                } else {
+                                    foreach ($creados as $c)
+                                        $c->delete();
+                                    return [
+                                        'success' => false,
+                                        'mensaje' => '<div class="alert alert-warning text-center">No se ha podido crear el pedido</div>'
+                                    ];
+                                }
+                            } else {
+                                foreach ($creados as $c)
+                                    $c->delete();
+                                return [
+                                    'success' => false,
+                                    'mensaje' => '<div class="alert alert-warning text-center">No se ha podido crear la información relacionada a CLIENTE_PEDIDO_ESPECIFICACION</div>'
+                                ];
+                            }
+                        } else {
+                            foreach ($creados as $c)
+                                $c->delete();
+                            return [
+                                'success' => false,
+                                'mensaje' => '<div class="alert alert-warning text-center">No se ha podido crear el detalle-especificación-empaque</div>'
+                            ];
+                        }
+                    } else {
+                        foreach ($creados as $c)
+                            $c->delete();
+                        return [
+                            'success' => false,
+                            'mensaje' => '<div class="alert alert-warning text-center">No se ha podido crear la especificación</div>'
+                        ];
+                    }
+                } else {
+                    foreach ($creados as $c)
+                        $c->delete();
+                    return [
+                        'success' => false,
+                        'mensaje' => '<div class="alert alert-warning text-center">No se ha podido crear la especificación</div>'
+                    ];
+                }
+            }
+            return [
+                'success' => true,
+                'mensaje' => '<div class="alert alert-success text-center">Se ha guardado toda la información satisfactoriamente</div>'
+            ];
+        } else {
+            return [
+                'success' => false,
+                'mensaje' => '<div class="alert alert-warning text-center">Al menos ingrese un pedido</div>'
+            ];
+        }
+    }
 }

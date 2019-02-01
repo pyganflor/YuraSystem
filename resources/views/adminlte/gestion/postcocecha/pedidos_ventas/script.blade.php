@@ -57,4 +57,11 @@
 
         });
     }
+
+    function add_pedido_personalizado() {
+        get_jquery('{{url('pedidos/add_pedido_personalizado')}}', {}, function (retorno) {
+            modal_view('modal_view_add_pedido_personalizado', retorno, '<i class="fa fa-fw fa-gift"></i> Pedidos personalzados', true, false,
+                '{{isPC() ? '95%' : ''}}');
+        });
+    }
 </script>

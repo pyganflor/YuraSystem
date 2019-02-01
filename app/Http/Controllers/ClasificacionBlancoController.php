@@ -44,7 +44,8 @@ class ClasificacionBlancoController extends Controller
             ->orderBy('p.fecha_pedido')
             ->get();
 
-        $stock_apertura = StockEmpaquetado::All()->where('id_variedad', '=', $request->variedad)->first();
+        $stock_apertura = StockEmpaquetado::All()->where('id_variedad', '=', $request->variedad)
+            ->where('empaquetado', '=', 0)->first();
 
         $combinaciones = DB::table('pedido as p')
             ->join('detalle_pedido as dp', 'dp.id_pedido', '=', 'p.id_pedido')
@@ -75,6 +76,7 @@ class ClasificacionBlancoController extends Controller
 
     public function confirmar_pedidos(Request $request)
     {
+        dd($request->all());
         $success = true;
         $msg = '';
         foreach ($request->arreglo as $item) {
