@@ -28,8 +28,8 @@
                                         <label for="anno">Estado</label><br/>
                                         <select class="form-control" id="estado" name="estado">
                                             <option value=""> Seleccione</option>
-                                            <option value="1"> Activo </option>
-                                            <option value="0"> Cancelado </option>
+                                            <option value="1"> Activo</option>
+                                            <option value="0"> Cancelado</option>
                                         </select>
                                     </div>
                                     <div class="form-group">
@@ -70,22 +70,26 @@
                                                 id="title_btn_buscar_pedido"></em>
                                     </button>
                                 </span>
-                                    <span class="dropdown">
+                                        <span class="dropdown">
                                         <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
-                                            <i class="fa fa-bars" aria-hidden="true"></i> Acciones de pedidos
+                                            <i class="fa fa-plus" aria-hidden="true"></i> Añadir pedidos
                                         <span class="caret"></span></button>
-                                        <ul class="dropdown-menu">
-                                            <li onclick="add_pedido('','','pedidos')" class="btn btn-default text-left" style="cursor:pointer;padding:5px 3px;width:100%;">
-                                                 <i class="fa fa-fw fa-plus" style="color: #0c0c0c"></i>
+                                        <ul class="dropdown-menu dropdown-menu-right">
+                                            <li onclick="add_pedido('','','pedidos')" class="btn btn-default text-left"
+                                                style="cursor:pointer;padding:5px 3px;width:100%;">
                                                 <em id="title_btn_add_pedido"> Pedido</em>
                                             </li>
-                                            <li onclick="add_pedido('', $fijo = true,'pedidos')" class="btn btn-default text-left" style="cursor:pointer;padding:5px 3px;width:100%;">
-                                                <i class="fa fa-fw fa-plus" style="color: #0c0c0c"></i>
+                                            <li onclick="add_pedido('', $fijo = true,'pedidos')" class="btn btn-default text-left"
+                                                style="cursor:pointer;padding:5px 3px;width:100%;">
                                                 <em id="title_btn_add_pedido_fijo"> Pedido fijo</em>
                                             </li>
-                                            <li onclick="add_orden_semanal()" class="btn btn-default text-left" style="cursor:pointer;padding:5px 3px;width:100%;">
-                                                <i class="fa fa-fw fa-plus" style="color: #0c0c0c"></i>
+                                            <li onclick="add_orden_semanal()" class="btn btn-default text-left"
+                                                style="cursor:pointer;padding:5px 3px;width:100%;">
                                                 <em id="title_btn_add_orden_semanal"> Orden semanal</em>
+                                            </li>
+                                            <li onclick="add_pedido_personalizado()" class="btn btn-default text-left"
+                                                style="cursor:pointer;padding:5px 3px;width:100%;">
+                                                <em id="title_btn_add_pedido_personalizado"> Pedido personalizado</em>
                                             </li>
                                         </ul>
                                     </span>
