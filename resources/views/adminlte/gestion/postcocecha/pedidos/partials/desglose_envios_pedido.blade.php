@@ -14,7 +14,7 @@
             </th>
             <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
                 style="border-color: #9d9d9d">
-                CANTIDAD / ESPECIFICIACIONES
+                CANTIDAD x ESPECIFICIACIONES
             </th>
             <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
                 style="border-color: #9d9d9d">
@@ -28,91 +28,96 @@
                 style="border-color: #9d9d9d">
                 TIPO AGENCIA
             </th>
-            <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
+            {{--<th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
                 style="border-color: #9d9d9d">
                 DESCUENTO $ / EN FACTURA
             </th>
             <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
                 style="border-color: #9d9d9d">
-                OPCIONES
-            </th>
+                FACTURAR
+            </th>--}}
         </tr>
         </thead>
+       {{-- @php $x =1; @endphp--}}
         @foreach($data_envios as $key => $item)
             <tr onmouseover="$(this).css('background-color','#add8e6')"
                 onmouseleave="$(this).css('background-color','')" class="" id="row_pedidos_">
                 <td style="border-color: #9d9d9d" class="text-center mouse-hand">
-                    {{str_pad($item->id_envio,9,"0",STR_PAD_LEFT)}}
+                    {{str_pad($key,9,"0",STR_PAD_LEFT)}}
                 </td>
                 <td style="border-color: #9d9d9d" class="text-center mouse-hand"  id="popover_pedidos">
-                    {{\Carbon\Carbon::parse($item->fecha_pedido)->format('d-m-Y')}}
+                    {{\Carbon\Carbon::parse($item[0]->fecha_pedido)->format('d-m-Y')}}
                 </td>
+
                 <td style="border-color: #9d9d9d" class="text-center mouse-hand">
-                {{$item->cantidad}} {{$item->nombre}}
+                    <ul style="padding: 0;">
+                        @foreach($item as $i)
+                            <li style="list-style:none"> {{$i->cantidad}} x {{getDetalleEspecificacion($i->id_especificacion)}}</li>
+                        @endforeach
+                    </ul>
                 </td>
                 <td style="border-color: #9d9d9d" class="text-center">
-                    {{$item->nombre_cl}}
+                    <li style="list-style:none">{{$item[0]->nombre_cl}}</li>
                 </td>
                 <td style="border-color: #9d9d9d" class="text-center mouse-hand"  id="popover_pedidos">
-                    {{$item->at_nombre}}
+                    <li style="list-style:none"> {{$item[0]->at_nombre}}</li>
                 </td>
                 <td style="border-color: #9d9d9d" class="text-center mouse-hand"  id="popover_pedidos">
-                    @if($item->tipo_agencia == 'A')
-                        AÉREA
-                    @elseif($item->tipo_agencia == 'T')
-                        TERRESTRE
-                    @elseif($item->tipo_agencia == 'M')
-                        MARíTIMA
-                    @endif
+                    <li style="list-style:none"> @if($item[0]->tipo_agencia == 'A')
+                            AÉREA
+                        @elseif($item[0]->tipo_agencia == 'T')
+                            TERRESTRE
+                        @elseif($item[0]->tipo_agencia == 'M')
+                            MARíTIMA
+                        @endif
+                    </li>
                 </td>
-                <td style="border-color: #9d9d9d" class="text-center "  id="popover_pedidos">
-                    <input type="number" onkeypress="return isNumber(event)" min="1" id="descuento_{{$key+1}}" name="descuento_{{$key+1}}" ondblclick="activar(this)" readonly>
-                    <input type="checkbox" id="muestra_descuento_{{$key+1}}" name="muestra_descuento" disabled>
+               {{-- <td style="border-color: #9d9d9d" class="text-center "  id="popover_pedidos">
+                    <input type="number" onkeypress="return isNumber(event)" min="1" id="descuento_{{$x}}" name="descuento_{{$x}}"
+                           ondblclick="activar(this)" value="0.00" readonly>
                 </td>
                 <td class="text-center"  style="border-color: #9d9d9d">
-                    @if($item->empaquetado == 1)
-                        <input type="checkbox" id="check_envio" name="check_envio" value="{{$item->id_envio}}">
-                        {{--<button class="btn  btn-default btn-xs" type="button" title="Facturar envío" id="facturar_envio"
-                                   onclick="facturar_envio('{{$item->id_envio}}')">
-                               <i class="fa fa-file-text-o" aria-hidden="true"></i>
-                           </button>--}}
+                    @if($i->empaquetado == 1)
+                        <input type="checkbox" id="{{$x}}" name="check_envio" value="{{$item[0]->id_envio}}">
                     @else
                         Debe empaquetarse para poder facturar este envío
                     @endif
-                </td>
+                </td>--}}
             </tr>
+           {{-- @php $x++; @endphp --}}
         @endforeach
     </table>
-    <div class="text-center">
+   {{-- <div class="text-center">
         <button type="button" class="btn btn-success" onclick="genera_comprobante_cliente()">
             <i class="fa fa-file-text-o" aria-hidden="true"></i>
             Generar factura
         </button>
-    </div>
+    </div>--}}
 </div>
 <script>
     function genera_comprobante_cliente(){
+        arrEnvios = [];
+        $.each($('input:checkbox[name=check_envio]:checked'), function (i, j) {
+            arrEnvios.push([
+                j.value,
+                $("#descuento_"+(j.id)).val(),
+                //$("#muestra_descuento_"+(i+1)).is(":checked")
+            ]);
+        });
+
+        if(arrEnvios.length === 0) {
+            modal_view('modal_view_msg_factura',
+                '<div class="alert text-center  alert-warning"><p>Debe seleccionar al menos un envío para facturar</p></div>',
+                '<i class="fa fa-fw fa-table"></i> Estatus facturas', true, false, '{{isPC() ? '50%' : ''}}');
+            return false;
+        }
         var result = confirm("¿Esta seguro que facturar los envíos seleccionados?");
         if (result) {
-            arrEnvios = [];
-            $.each($('input:checkbox[name=check_envio]:checked'), function (i, j) {
-                arrEnvios.push([
-                    j.value,
-                    $("#descuento_"+(i+1)).val(),
-                    $("#muestra_descuento_"+(i+1)).is(":checked")
-                ]);
-            });
-            if(arrEnvios.length === 0){
-                modal_view('modal_view_msg_factura',
-                    '<div class="alert text-center  alert-warning"><p>Debe seleccionar al menos un envío para facturar</p></div>',
-                    '<i class="fa fa-fw fa-table"></i> Estatus facturas', true, false,'{{isPC() ? '50%' : ''}}');
-                return false;
-            }
-
             $.LoadingOverlay("show", {
                 image       : "",
                 progress    : true,
-                text        : "Generando factura"
+                text        : "Generando factura",
+                colorText   : $fff
             });
             var count     = 0;
             var cantidad_envios = arrEnvios.length;
@@ -127,9 +132,9 @@
             }, tiempo);
             datos = {
                 _token: '{{csrf_token()}}',
-                arrEnvios : arrEnvios,
+                arrEnvios : arrEnvios
             };
-            $.get('{{url('comprobante/generar_comprobante_cliente')}}', datos, function (retorno) {
+            $.get('{{url('comprobante/generar_factura_cliente')}}', datos, function (retorno) {
                 $.LoadingOverlay("hide");
                 modal_view('modal_view_msg_factura', retorno, '<i class="fa fa-check" aria-hidden="true"></i> Estatus facturas', true, false,
                     '{{isPC() ? '50%' : ''}}');

@@ -4,16 +4,15 @@ namespace yura\Modelos;
 
 use Illuminate\Database\Eloquent\Model;
 
-class TipoIva extends Model
+class Impuesto extends Model
 {
-    protected $table = 'tipo_iva';
-    protected $primaryKey = 'id_tipo_iva';
+    protected $table = 'impuesto';
+    protected $primaryKey = 'id_impuesto';
     public $incrementing = false;
     public $timestamps = false;
 
     protected $fillable = [
         'codigo',
-        'porcentaje',
-        'estado'
+        'nombre'
     ];
 }

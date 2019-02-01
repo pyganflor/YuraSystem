@@ -189,7 +189,6 @@ class EnvioController extends Controller
             ->select('p.*','dc.nombre','e.*','de.*','es.nombre','at.nombre as at_nombre','at.tipo_agencia','dc.nombre as c_nombre')
             ->where('dc.estado',1);
 
-
         if ($busquedaAnno != '')
             $listado = $listado->where(DB::raw('YEAR(de.fecha_envio)'), $busquedaAnno );
         if ($busquedacliente != '')
@@ -198,18 +197,19 @@ class EnvioController extends Controller
             $listado = $listado->whereBetween('e.fecha_envio', [$busquedaDesde,$busquedaHasta]);
         $busquedaEsatdo != '' ?  $listado = $listado->where('de.estado',$request->estado) : $listado = $listado->where('de.estado',0);
 
-        $listado = $listado->orderBy('e.fecha_envio', 'desc')->distinct();
-        /*$groupEnvios = [];
-        foreach ($listado as $gE) {
-            $groupEnvios[$gE->c_nombre][] = (array)$gE;
-        }*/
-        //dd($groupEnvios);
+        $listado = $listado->orderBy('e.fecha_envio', 'desc')->distinct()->get();
+
+        $groupEnvios = [];
+        foreach ($listado as $e) {
+            $groupEnvios[$e->id_envio][] = $e;
+        }
+
         $datos = [
-            //'listado' => $groupEnvios,
-            'listado' => $listado->paginate(20),
+            'listado' =>  manualPagination($groupEnvios,10),
+            //'listado' => $listado,
             'idCliente' => $request->id_cliente,
         ];
-       // dd($datos);
+
         return view('adminlte.gestion.postcocecha.envios.partials.listado',$datos);
     }
 
@@ -362,17 +362,24 @@ class EnvioController extends Controller
     }
 
     public function ver_envios(Request $request){
-        return view('adminlte.gestion.postcocecha.pedidos.partials.listado_facturacion',[
-            'data_envios' => Pedido::where([
-                ['dc.estado',1],
-                ['pedido.id_pedido',$request->id_pedido]
-            ])->join('envio as e','pedido.id_pedido','e.id_pedido')
-                ->join('detalle_envio as de','e.id_envio','de.id_envio')
-                ->join('especificacion as es','de.id_especificacion','es.id_especificacion')
-                ->join('agencia_transporte as at','de.id_agencia_transporte','at.id_agencia_transporte')
-                ->join('detalle_cliente as dc','pedido.id_cliente','dc.id_cliente')
-                ->select('e.*','es.*','de.*','dc.nombre as nombre_cl','pedido.*','at.nombre as at_nombre','at.tipo_agencia')
-                ->get()
+
+        $dataEnvio = Pedido::where([
+            ['dc.estado',1],
+            ['pedido.id_pedido',$request->id_pedido]
+        ])->join('envio as e','pedido.id_pedido','e.id_pedido')
+            ->join('detalle_envio as de','e.id_envio','de.id_envio')
+            ->join('especificacion as es','de.id_especificacion','es.id_especificacion')
+            ->join('agencia_transporte as at','de.id_agencia_transporte','at.id_agencia_transporte')
+            ->join('detalle_cliente as dc','pedido.id_cliente','dc.id_cliente')
+            ->select('e.*','es.*','de.*','dc.nombre as nombre_cl','pedido.*','at.nombre as at_nombre','at.tipo_agencia')
+            ->get();
+
+        $groupEnvios = [];
+        foreach ($dataEnvio as $dE) {
+            $groupEnvios[$dE->id_envio][] = $dE;
+        }
+        return view('adminlte.gestion.postcocecha.pedidos.partials.desglose_envios_pedido',[
+            'data_envios' => $groupEnvios
         ]);
     }
 }

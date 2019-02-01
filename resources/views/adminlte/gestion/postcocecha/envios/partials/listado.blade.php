@@ -7,6 +7,10 @@
             <tr style="background-color: #dd4b39; color: white">
                 <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
                     style="border-color: #9d9d9d">
+                   ENVÍO N#
+                </th>
+                <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
+                    style="border-color: #9d9d9d">
                     CLIENTE
                 </th>
                 <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
@@ -15,7 +19,7 @@
                 </th>
                 <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
                     style="border-color: #9d9d9d">
-                    CANTIDAD / ESPECIFICIACIONES
+                    CANTIDAD x ESPECIFICIACIONES
                 </th>
                 <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
                     style="border-color: #9d9d9d">
@@ -35,34 +39,43 @@
                 <tr onmouseover="$(this).css('background-color','#add8e6')"
                      onmouseleave="$(this).css('background-color','')" class="" id="row_pedidos_">
                     <td style="border-color: #9d9d9d" class="text-center">
-                        {{$item->c_nombre}}
+                        {{$item[0]->id_envio}}
+                    </td>
+                    <td style="border-color: #9d9d9d" class="text-center">
+                        {{$item[0]->c_nombre}}
                     </td>
                     <td style="border-color: #9d9d9d" class="text-center mouse-hand"  id="popover_pedidos">
-                        {{\Carbon\Carbon::parse($item->fecha_envio)->format('Y-m-d')}}
+                        {{\Carbon\Carbon::parse($item[0]->fecha_envio)->format('Y-m-d')}}
                     </td>
                     <td style="border-color: #9d9d9d" class="text-center mouse-hand">
-                        {{$item->cantidad}} {{$item->nombre}}
+                        <ul style="padding: 0;">
+                            @foreach($item as $especificacion)
+                                <li style="list-style: none">
+                                {{$especificacion->cantidad}} x {{getDetalleEspecificacion($especificacion->id_especificacion)}} {{--{{$especificacion->nombre}}--}}
+                                </li>
+                            @endforeach
+                        </ul>
                     </td>
                     <td style="border-color: #9d9d9d" class="text-center mouse-hand"  id="popover_pedidos">
-                        {{$item->at_nombre}}
+                        {{$item[0]->at_nombre}}
                     </td>
                     <td style="border-color: #9d9d9d" class="text-center mouse-hand"  id="popover_pedidos">
-                        @if($item->tipo_agencia == 'A')
+                        @if($item[0]->tipo_agencia == 'A')
                             AÉREA
-                        @elseif($item->tipo_agencia == 'T')
+                        @elseif($item[0]->tipo_agencia == 'T')
                             TERRESTRE
-                        @elseif($item->tipo_agencia == 'M')
+                        @elseif($item[0]->tipo_agencia == 'M')
                             MARíTIMA
                         @endif
                     </td>
                     <td class="text-center"  style="border-color: #9d9d9d">
-                        @if($item->empaquetado == 0)
+                        @if($item[0]->empaquetado == 0)
                             <button class="btn  btn-default btn-xs" type="button" title="Editar envío" id="edit_envio"
-                                    onclick="editar_envio('{{$item->id_envio}}','{{$item->id_detalle_envio}}','{{$item->id_pedido}}','{{@csrf_token()}}')">
+                                    onclick="editar_envio('{{$item[0]->id_envio}}','{{$item[0]->id_detalle_envio}}','{{$item[0]->id_pedido}}','{{@csrf_token()}}')">
                                 <i class="fa fa-pencil" aria-hidden="true"></i>
                             </button>
                         @else
-                            <button class="btn  btn-default btn-xs" type="button" title="Facturar envío" id="facturar_envio" onclick="facturar_envio('{{$item->id_envio}}')">
+                            <button class="btn  btn-default btn-xs" type="button" title="Facturar envío" id="facturar_envio" onclick="facturar_envio('{{$item[0]->id_envio}}')">
                                 <i class="fa fa-file-text-o" aria-hidden="true"></i>
                             </button>
                         @endif
@@ -71,7 +84,7 @@
             @endforeach
     </table>
     <div id="pagination_listado_envios">
-        {!! str_replace('/?','?',$listado->render()) !!}
+       {!! str_replace('/?','?',$listado->render()) !!}
         </div>
 @else
 <div class="alert alert-info text-center">No se han creado envíos</div>

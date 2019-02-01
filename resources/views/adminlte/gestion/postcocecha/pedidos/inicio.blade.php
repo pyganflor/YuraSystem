@@ -47,28 +47,25 @@
                                     </button>
                                 </span>
                                 <span class="">
-                                    <button class="btn btn-primary" onclick="add_pedido('{{$idCliente}}')"
-                                            onmouseover="$('#title_btn_add_pedido').html('Pedido')"
-                                            onmouseleave="$('#title_btn_add_pedido').html('')">
-                                        <i class="fa fa-fw fa-plus" style="color: #0c0c0c"></i> <em
-                                                id="title_btn_add_pedido"></em>
-                                    </button>
-                                </span>
-                                <span class="">
-                                    <button class="btn btn-success" onclick="add_pedido('{{$idCliente}}',$fijo = true)"
-                                            onmouseover="$('#title_btn_add_pedido_fijo').html('Pedido fijo')"
-                                            onmouseleave="$('#title_btn_add_pedido_fijo').html('')">
-                                        <i class="fa fa-fw fa-plus" style="color: #0c0c0c"></i> <em
-                                                id="title_btn_add_pedido_fijo"></em>
-                                    </button>
-                                </span>
-                                <span class="">
-                                    <button class="btn btn-success" onclick="add_orden_semanal('{{$idCliente}}')"
-                                            onmouseover="$('#title_btn_add_orden_semanal').html('Orden semanal')"
-                                            onmouseleave="$('#title_btn_add_orden_semanal').html('')">
-                                        <i class="fa fa-fw fa-plus" style="color: #0c0c0c"></i> <em
-                                                id="title_btn_add_orden_semanal"></em>
-                                    </button>
+                                    <span class="dropdown">
+                                        <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
+                                            <i class="fa fa-bars" aria-hidden="true"></i> Acciones de pedidos
+                                        <span class="caret"></span></button>
+                                        <ul class="dropdown-menu">
+                                            <li onclick="add_pedido('{{$idCliente}}')" class="btn btn-default text-left" style="cursor:pointer;padding:5px 3px;width:100%;">
+                                                 <i class="fa fa-fw fa-plus" style="color: #0c0c0c"></i>
+                                                <em id="title_btn_add_pedido"> Pedido</em>
+                                            </li>
+                                            <li onclick="add_pedido('{{$idCliente}}',$fijo = true)" class="btn btn-default text-left" style="cursor:pointer;padding:5px 3px;width:100%;">
+                                                <i class="fa fa-fw fa-plus" style="color: #0c0c0c"></i>
+                                                <em id="title_btn_add_pedido_fijo"> Pedido fijo</em>
+                                            </li>
+                                            <li onclick="add_orden_semanal('{{$idCliente}}')" class="btn btn-default text-left" style="cursor:pointer;padding:5px 3px;width:100%;">
+                                                <i class="fa fa-fw fa-plus" style="color: #0c0c0c"></i>
+                                                <em id="title_btn_add_orden_semanal"> Orden semanal</em>
+                                            </li>
+                                        </ul>
+                                    </span>
                                 </span>
                             </div>
                         </div>

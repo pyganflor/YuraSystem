@@ -5,10 +5,11 @@
         $.LoadingOverlay('show');
         datos = {
             //busqueda: $('#busqueda_pedidos').val().trim(),
-            id_cliente: $("#id_cliente").val(),
-            anno: $("#anno").val(),
-            desde: $("#desde").val(),
-            hasta: $("#hasta").val(),
+            id_cliente : $("#id_cliente").val(),
+            anno       : $("#anno").val(),
+            desde      : $("#desde").val(),
+            hasta      : $("#hasta").val(),
+            estado     : $("#estado").val()
         };
         $.get('{{url('pedidos/buscar')}}', datos, function (retorno) {
             $('#div_listado_pedidos').html(retorno);
@@ -43,7 +44,7 @@
             id_pedido: id_pedido
         };
         $.get('{{url('pedidos/ver_envio')}}', datos, function (retorno) {
-            modal_view('modal_view_envios_facturas', retorno, '<i class="fa fa-usd" aria-hidden="true"></i> Envios a facturar', true, false, '75%');
+            modal_view('modal_view_envios_facturas', retorno, '<i class="fa fa-plane" aria-hidden="true"></i> Desglose de los envíos del pedido', true, false, '75%');
             //estructura_tabla('table_content_pedidos');
         }).always(function () {
             $.LoadingOverlay('hide');

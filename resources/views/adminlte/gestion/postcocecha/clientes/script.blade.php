@@ -110,8 +110,12 @@
                 correo: $("#correo").val(),
                 telefono: $("#telefono").val(),
                 direccion: $("#direccion").val(),
-                iva: $("#iva").val(),
+                codigo_impuesto: $("#codigo_impuesto").val(),
+                tipo_identificacion : $('#tipo_identificacion').val(),
+                tipo_impuesto : $('#tipo_impuesto').val()
             };
+
+            console.log(datos);
             post_jquery('{{url('clientes/store')}}', datos, function () {
                 cerrar_modals();
                 buscar_listado();
@@ -301,6 +305,31 @@
             }else{
                 $("#input_tallo_x_ramo").addClass('hide');
             }*/
+        });
+    }
+
+    function cosumidor_final() {
+        if ($("#tipo_identificacion").val() == 07) {
+            $("#identificacion").val("9999999999999");
+            $("#identificacion").attr('disabled', true);
+        }else{
+            $("#identificacion").attr('disabled', false);
+            $("#identificacion").val("");
+        }
+    }
+
+    function porcentaje_impuesto() {
+        datos = {
+            codigo_impuesto: $("#codigo_impuesto").val()
+        };
+        get_jquery('{{url('tipo_impuesto/get_tipo_impuesto')}}', datos, function (retorno) {
+            $("option#dinamic").remove();
+            $.each(retorno,function(i,j){
+                $("#tipo_impuesto").append("<option id='dinamic' value="+j.codigo+">"+   j.descripcion+"</option>")
+            });
+
+
+            console.log(retorno);
         });
     }
 </script>

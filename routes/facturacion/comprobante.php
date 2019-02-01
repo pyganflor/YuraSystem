@@ -1,8 +1,6 @@
 <?php
 
-    Route::get('comprobante/generar_comprobante_cliente','ComprobanteController@generar_comprobante_cliente');
-
-
+    Route::get('comprobante/generar_factura_cliente','ComprobanteController@generar_factura_cliente');
     Route::get('comprobante/enviar_comprobante','ComprobanteController@enviar_documento_electronico');
     Route::get('comprobante/generar_comprobante_lote','ComprobanteController@comprobante_lote');
     Route::get('comprobante/autorizacion_comprobante','ComprobanteController@autorizacion_comprobante');

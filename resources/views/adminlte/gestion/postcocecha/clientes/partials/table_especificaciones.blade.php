@@ -5,6 +5,9 @@
             <thead>
             <tr style="background-color: #dd4b39; color: white">
                 <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
+                    ASIGNAR
+                </th>
+                <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
                     ESPECIFICACIÓN
                 </th>
                 <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
@@ -33,7 +36,10 @@
                         <input type="checkbox" {{$check}}  {{$item->estado == 1 ? '':'disabled'}} style="top: 4px;position:relative;"
                                name="especificacion_{{$item->id_especificacion}}" id="especificacion_{{$item->id_especificacion}}"
                                value="{{$item->id_especificacion}}"  onchange="asignar_especificacion_cliente(this.id,'{{$item->id_especificacion}}')">
-                               {{$item->nombre}}</td>
+                    </td>
+                    <td style="border-color: #9d9d9d" class="text-center">
+                       {{getDetalleEspecificacion($item->id_especificacion)}}
+                    </td>
                     <td style="border-color: #9d9d9d" class="text-center">{{$item->descripcion}}</td>
                     <td style="border-color: #9d9d9d" class="text-center">
                         <a href="javascript:void(0)" class="btn btn-{{$item->estado == 1 ? 'warning':'success'}} btn-xs" title="{{$item->estado == 1 ? 'Deshabilitar':'Habilitar'}}"
@@ -82,11 +88,9 @@
             id_cliente       : $('#id_cliente').val()
         };
         post_jquery('{{url('clientes/asignar_especificacion')}}', datos, function () {
-            cerrar_modals();
-            detalles_cliente($('#id_cliente').val());
-            setTimeout(function(){ admin_especificaciones($('#id_cliente').val());  },200);
-
-
+            //cerrar_modals();
+            //detalles_cliente($('#id_cliente').val());
+            //setTimeout(function(){ admin_especificaciones($('#id_cliente').val());  },200);
         });
         $.LoadingOverlay('hide');
     }

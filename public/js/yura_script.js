@@ -168,8 +168,8 @@ function store_pedido(id_cliente, pedido_fijo, csrf_token, vista) {
     }
 
     if ($('#form_add_pedido').valid()) {
-        var result = confirm("Una vez guardado el pedido no puede ser editado");
-        if (result) {
+        //var result = confirm("Una vez guardado el pedido no puede ser editado");
+        //if (result) {
             var arrFechas = [];
 
             if (pedido_fijo && ($("#opcion_pedido_fijo").val() == 1) || $("#opcion_pedido_fijo").val() == 2) {
@@ -231,7 +231,7 @@ function store_pedido(id_cliente, pedido_fijo, csrf_token, vista) {
                 }
             });
             $.LoadingOverlay('hide');
-        }
+        //}
     }
 }
 

@@ -22,7 +22,7 @@
             <div class="box-body" id="div_content_permisos">
                 <div class="row">
                     <div class="col-md-12" id="div_content_form_config_empresa">
-                        @include('adminlte.gestion.configuracion_empresa.forms.add_clasificacion')
+                        @include('adminlte.gestion.configuracion_empresa.forms.add_configuracion_empresa')
                     </div>
 
                 </div>

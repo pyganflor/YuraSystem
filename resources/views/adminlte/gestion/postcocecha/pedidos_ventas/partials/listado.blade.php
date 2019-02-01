@@ -94,9 +94,11 @@
                                 <i class="fa fa-plane" aria-hidden="true"></i>
                             </button>
                         @else
-                            <button class="btn btn-default btn-xs" title="Ver envío" onclick="ver_envio('{{$item->id_pedido}}')">
-                                <i class="fa fa-eye" aria-hidden="true"></i>
-                            </button>
+                            @if(!empty(yura\Modelos\Usuario::where('id_usuario',session::get('id_usuario'))->first()->punto_acceso))
+                                <button class="btn btn-default btn-xs" title="Ver envío" onclick="ver_envio('{{$item->id_pedido}}')">
+                                    <i class="fa fa-eye" aria-hidden="true"></i>
+                                </button>
+                            @endif
                         @endif
                     </td>
                 </tr>

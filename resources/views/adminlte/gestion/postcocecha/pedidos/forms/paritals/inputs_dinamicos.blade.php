@@ -6,18 +6,14 @@
                 <input type="number" id="cantidad_{{$i+1}}" name="cantidad_{{$i+1}}" min="1" class="form-control" onkeypress="return isNumber(event)">
             </td>
             <td class="text-center">
-                <ul>
+
+                <ul style="padding: 0">
                     @foreach($arr_data_cliente_especificacion[$i] as $key => $especificacion)
-                    <li style="list-style: none;font-size:10pt">{{$especificacion->nombre_clasificacion_ramo." ". $especificacion->siglas_unidad_medida_longitud ." ".$especificacion->nombre_variedad." ".$especificacion->envoltura." ". $especificacion->presentacion ." ". $especificacion->tallos_x_ramos." tallos por ramo ". $especificacion->longitud_ramo." ". $especificacion->siglas_unidad_medida_longitud}} </li>
+                    <li style="list-style: none;font-size:10pt">{{getDetalleEspecificacion($especificacion->id_especificacion)}}</li>
                         <input type="hidden" id="id_variedad_{{$i+1}}_{{$key+1}}" name="id_variedad" value="{{$especificacion->id_variedad}}">
                     @endforeach
                     <input type="hidden" id="id_especificacion_{{$i+1}}" name="id_especificacion_{{$i+1}}"  value="{{$arr_data_cliente_especificacion[$i][0]->id_cliente_pedido_especificacion}}">
                 </ul>
-               {{--<select id="id_especificacion_{{$i+1}}" name="id_especificacion_{{$i+1}}" class="form-control" {{$i+1 == 1 ? "required" : ""}}>
-                    @foreach ($especificaciones as $especificacion)
-                        <option value="{{$especificacion->id_cliente_pedido_especificacion}}">{{$especificacion->nombre}}</option>
-                    @endforeach
-                </select>--}}
             </td>
             <td>
                 <select id="id_agencia_carga_{{$i+1}}" name="id_agencia_carga_{{$i+1}}" class="form-control" {{$i+1 == 1 ? "required" : ""}}>
@@ -27,6 +23,7 @@
                 </select>
             </td>
         </tr>
+
     @endfor
 @else
     <tr id="">

@@ -77,8 +77,6 @@
     }
 
     function store_data_config() {
-        console.log($('#moneda').val());
-        //return false;
         var id_config;
 
         $("#id_config").val().length == 1 ? id_config = $("#id_config").val() : id_config = '';
@@ -113,6 +111,9 @@
             datos = {
                 _token: '{{csrf_token()}}',
                 nombre: $("#nombre_empresa").val(),
+                razon_social : $("#razon_social").val(),
+                matriz : $("#matriz").val(),
+                establecimiento : $("#establecimiento").val(),
                 cantidad_usuarios: $("#cant_usuarios").val(),
                 cant_hectarea: $("#hectarea").val(),
                 propagacion: $("#propagacion_proceso1").val() + "|" + $("#propagacion_proceso2").val() + "|" + $("#propagacion_proceso3").val(),

@@ -107,6 +107,9 @@ class ConfiguracionEmpresaController extends Controller
             $objConfigEmpresa->campo = $request->campo;
             $objConfigEmpresa->postcocecha = $request->postcocecha;
             $objConfigEmpresa->moneda = $request->moneda;
+            $objConfigEmpresa->razon_social = $request->razon_social;
+            $objConfigEmpresa->direccion_matriz = $request->matriz;
+            $objConfigEmpresa->direccion_establecimiento = $request->establecimiento;
             $objConfigEmpresa->save();
 
             $idConfiEmpresa = ConfiguracionEmpresa::all()->last();
