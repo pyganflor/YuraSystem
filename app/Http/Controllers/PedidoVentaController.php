@@ -43,7 +43,7 @@ class PedidoVentaController extends Controller
             ->join('cliente_pedido_especificacion as cpe', 'p.id_cliente', '=', 'cpe.id_cliente')
             ->join('especificacion as esp', 'cpe.id_especificacion', '=', 'esp.id_especificacion')
             ->join('detalle_cliente as dt', 'p.id_cliente', '=', 'dt.id_cliente')
-            ->select('p.*', 'dt.nombre', 'p.fecha_pedido', 'dt.id_cliente')->where('dt.estado', 1);
+            ->select('p.*', 'dt.nombre', 'p.fecha_pedido','p.id_cliente','dt.id_cliente')->where('dt.estado', 1);
 
         if ($request->anno != '')
             $listado = $listado->where(DB::raw('YEAR(p.fecha_pedido)'), $busquedaAnno);
@@ -89,5 +89,16 @@ class PedidoVentaController extends Controller
             'envolturas' => Empaque::All()->where('estado', '=', 1)->where('tipo', '=', 'E'),
             'presentaciones' => Empaque::All()->where('estado', '=', 1)->where('tipo', '=', 'P')
         ]);
+    }
+
+    public function editar_pedido(Request $request){
+
+        return Pedido::where([
+            ['pedido.id_pedido',$request->id_pedido],
+            ['dc.estado',1]
+        ])->join('detalle_pedido as dp','pedido.id_pedido','dp.id_pedido')
+            ->join('detalle_cliente as dc','pedido.id_cliente','dc.id_cliente')
+            ->join('cliente_pedido_especificacion as cpe','dp.id_cliente_especificacion','cpe.id_cliente_pedido_especificacion')
+            ->select('dp.cantidad as cantidad_especificacion','dp.id_agencia_carga','dc.id_cliente','pedido.fecha_pedido','pedido.descripcion','cpe.id_especificacion')->get();
     }
 }

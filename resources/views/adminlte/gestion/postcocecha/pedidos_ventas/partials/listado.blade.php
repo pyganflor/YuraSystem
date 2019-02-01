@@ -57,13 +57,13 @@
                                                              {{$det->clasificacion_ramo->nombre}} gr
                                                                 @if(!empty($det->longitud_ramo))
                                        {{" y ".$det->longitud_ramo}}
-                                       @if(!empty($det->id_unidad_medida))
-                                       {{getUnidadMedida($det->id_unidad_medida)->siglas}}
-                                       @endif
+                                           @if(!empty($det->id_unidad_medida))
+                                           {{getUnidadMedida($det->id_unidad_medida)->siglas}}
+                                           @endif
                                        @endif
                                                c/u,
-@if(!empty($det->tallos_x_ramos))
-                                       {{" de ".$det->tallos_x_ramos." Tallos por ramos"}}
+                                        @if(!empty($det->tallos_x_ramos))
+                                        {{" de ".$det->tallos_x_ramos." Tallos por ramos"}}
                                        @endif
 
                                                con envoltura de {{$det->empaque_e->nombre}}
@@ -88,17 +88,20 @@
                                 <i class="fa fa-{!! $item->estado == 1 ? 'check' : 'ban' !!}" aria-hidden="true"></i>
                             </button>
                         @endif
-                        @if(yura\Modelos\Envio::where('id_pedido',$item->id_pedido)->count() <= 0)
+                        @if(yura\Modelos\Envio::where('id_pedido',$item->id_pedido)->count() == 0)
                             <button class="btn btn-default btn-xs" title="Realizar envío"
                                     onclick="add_envio('{{$item->id_pedido}}','{{@csrf_token()}}')">
                                 <i class="fa fa-plane" aria-hidden="true"></i>
                             </button>
                         @else
-                            @if(!empty(yura\Modelos\Usuario::where('id_usuario',session::get('id_usuario'))->first()->punto_acceso))
-                                <button class="btn btn-default btn-xs" title="Ver envío" onclick="ver_envio('{{$item->id_pedido}}')">
-                                    <i class="fa fa-eye" aria-hidden="true"></i>
-                                </button>
-                            @endif
+                            <button class="btn btn-default btn-xs" title="Ver envío" onclick="ver_envio('{{$item->id_pedido}}')">
+                                <i class="fa fa-eye" aria-hidden="true"></i>
+                            </button>
+                        @endif
+                        @if($item->empaquetado == 0)
+                        <button type="button" class="btn btn-default btn-xs" title="Editar pedido" onclick="editar_pedido('{{$item->id_cliente}}','{{$item->id_pedido}}')">
+                            <i class="fa fa-pencil" aria-hidden="true"></i>
+                        </button>
                         @endif
                     </td>
                 </tr>

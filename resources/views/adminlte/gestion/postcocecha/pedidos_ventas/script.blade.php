@@ -58,4 +58,62 @@
 
         });
     }
+
+    function editar_pedido(id_cliente,id_pedido) {
+        add_pedido('','','pedidos',id_pedido);
+
+        datos = {
+            id_cliente : id_cliente,
+        };
+        setTimeout(function(){
+
+
+        $.get('{{url('clientes/inputs_pedidos')}}', datos, function (retorno) {
+            $("#tbody_inputs_pedidos").html(retorno);
+            $('select#id_cliente_venta option[value='+id_cliente+']').attr('selected',true);
+            $('select#id_cliente_venta').attr('disabled',true);
+
+            datos = {
+                id_pedido : id_pedido,
+            };
+            $.get('{{url('pedidos/editar_pedido')}}', datos, function (retorno) {
+                console.log(retorno);
+                $("#fecha_de_entrega").val(retorno[0].fecha_pedido);
+                $("#descripcion").val(retorno[0].descripcion);
+
+                for(var i=0;i<retorno.length;i++){
+                    $("td#td_input_cantidad_"+retorno[i].id_especificacion+" input").val(retorno[i].cantidad_especificacion);
+                    $("td#td_select_agencia_carga_"+retorno[i].id_especificacion+" select option[value='"+retorno[i].id_agencia_carga+"']").attr('selected',true);
+                }
+            }).always(function () {
+                $.LoadingOverlay('hide');
+            });
+
+        })/*.always(function () {
+            $.LoadingOverlay('hide');
+        });*/
+        },300);
+
+    }
+
+
+
+
+
+
+
+
+
+    /*modal_quest('modal_quest_del_documento', '<div class="alert alert-warning text-center">¿Está seguro que desea editar este pedido?</div>',
+            '<i class="fa fa-question-circle-o" aria-hidden="true"></i> Editar pedido', true, false, '<?php echo e(isPC() ? '45%' : ''); ?>', function () {
+                $.LoadingOverlay('show');
+                datos = {
+                    _token: '<?php echo e(csrf_token()); ?>',
+                    id_documento: id
+                };
+                post_jquery('<?php echo e(url('documento/delete_documento')); ?>', datos, function () {
+                    cerrar_modals();
+                });
+                $.LoadingOverlay('hide');
+            });*/
 </script>

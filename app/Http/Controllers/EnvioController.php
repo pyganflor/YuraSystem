@@ -177,17 +177,17 @@ class EnvioController extends Controller
         $busquedacliente = $request->has('id_cliente') ? $request->id_cliente : '';
         $busquedaDesde   = $request->has('desde') ? $request->desde : '';
         $busquedaHasta   = $request->has('hasta') ? $request->hasta : '';
-        $busquedaEsatdo  = $request->has('estado') ? $request->estado : '';
+        $busquedaEstado  = $request->has('estado') ? $request->estado : '';
 
-        $listado = DB::table('envio as e')
+        $listado = DB::table('envio as e')->where('dc.estado',1)
             ->join('detalle_envio as de','e.id_envio','=','de.id_envio')
             ->join('pedido as p', 'e.id_pedido','=','p.id_pedido')
             ->join('cliente as c','p.id_cliente','=','c.id_cliente')
             ->join('detalle_cliente as dc','c.id_cliente','=','dc.id_cliente' )
             ->join('especificacion as es','de.id_especificacion','es.id_especificacion')
             ->join('agencia_transporte as at','de.id_agencia_transporte','=','at.id_agencia_transporte')
-            ->select('p.*','dc.nombre','e.*','de.*','es.nombre','at.nombre as at_nombre','at.tipo_agencia','dc.nombre as c_nombre')
-            ->where('dc.estado',1);
+            ->orderBy('e.id_envio','Desc')
+            ->select('p.*','dc.nombre','e.*','de.*','es.nombre','at.nombre as at_nombre','at.tipo_agencia','dc.nombre as c_nombre');
 
         if ($busquedaAnno != '')
             $listado = $listado->where(DB::raw('YEAR(de.fecha_envio)'), $busquedaAnno );
@@ -195,10 +195,9 @@ class EnvioController extends Controller
             $listado = $listado->where('c.id_cliente',$busquedacliente);
         if ($busquedaDesde != '' && $request->hasta != '')
             $listado = $listado->whereBetween('e.fecha_envio', [$busquedaDesde,$busquedaHasta]);
-        $busquedaEsatdo != '' ?  $listado = $listado->where('de.estado',$request->estado) : $listado = $listado->where('de.estado',0);
+        $busquedaEstado != '' ?  $listado = $listado->where('de.estado',$request->estado) : $listado = $listado->where('de.estado',0);
 
         $listado = $listado->orderBy('e.fecha_envio', 'desc')->distinct()->get();
-
         $groupEnvios = [];
         foreach ($listado as $e) {
             $groupEnvios[$e->id_envio][] = $e;

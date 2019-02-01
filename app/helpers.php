@@ -28,6 +28,7 @@ use yura\Modelos\Especificacion;
 use yura\Modelos\DetalleEspecificacionEmpaque;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Request as Resq;
+use yura\Modelos\Pais;
 use yura\Modelos\InventarioFrio;
 use yura\Modelos\Modulo;
 
@@ -972,6 +973,9 @@ function manualPagination($arrData,$perPage){
     return $data->setPath(Resq::path());
 }
 
+function getPais($codigo){
+    return Pais::where('codigo',$codigo)->select('nombre')->first();
+}
 
 //==================  Funciones involucradas en la facturacion electrónica ======================//
 function generaDigitoVerificador($cadena){

@@ -86,7 +86,7 @@
                     <tr>
                         <td class="text-center" style="padding: 10px 0px 0px">
                             <button class="btn btn-success" type="button" id="btn_guardar_modal_add_cliente"
-                                    onclick="store_pedido('{{$idCliente}}','@if($pedido_fijo) {{true}} @endif','{{csrf_token()}}','{{$vista}}')">
+                                    onclick="store_pedido('{{$idCliente}}','@if($pedido_fijo) {{true}} @endif','{{csrf_token()}}','{{$vista}}',{{$id_pedido}})">
                                 <span class="bootstrap-dialog-button-icon fa fa-fw fa-save"></span>
                                 Guardar
                             </button>
