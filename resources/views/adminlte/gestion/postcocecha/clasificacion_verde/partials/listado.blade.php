@@ -1,5 +1,5 @@
 <div id="table_clasificaciones">
-    @if(sizeof($listado)>0)
+    @if(count($listado)>0)
         @foreach($listado as $item)
             <table width="100%" class="table table-responsive table-bordered sombra_estandar" style="font-size: 0.8em; border-color: #9d9d9d"
                    id="table_content_clasificaciones_{{$item->id_clasificacion_verde}}">

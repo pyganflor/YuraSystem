@@ -98,22 +98,11 @@
 
 
 
+    function add_pedido_personalizado() {
+        get_jquery('{{url('pedidos/add_pedido_personalizado')}}', {}, function (retorno) {
+            modal_view('modal_view_add_pedido_personalizado', retorno, '<i class="fa fa-fw fa-gift"></i> Pedidos personalzados', true, false,
+                '{{isPC() ? '95%' : ''}}');
+        });
+    }
 
-
-
-
-
-
-    /*modal_quest('modal_quest_del_documento', '<div class="alert alert-warning text-center">¿Está seguro que desea editar este pedido?</div>',
-            '<i class="fa fa-question-circle-o" aria-hidden="true"></i> Editar pedido', true, false, '<?php echo e(isPC() ? '45%' : ''); ?>', function () {
-                $.LoadingOverlay('show');
-                datos = {
-                    _token: '<?php echo e(csrf_token()); ?>',
-                    id_documento: id
-                };
-                post_jquery('<?php echo e(url('documento/delete_documento')); ?>', datos, function () {
-                    cerrar_modals();
-                });
-                $.LoadingOverlay('hide');
-            });*/
 </script>

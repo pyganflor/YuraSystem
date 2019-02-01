@@ -87,7 +87,7 @@
     </div>
 
     <div class="row">
-        <div class="col-md-8">
+        <div class="col-md-12">
             <form id="form_store_personal_hora_inicio">
                 <div class="form-group input-group">
                     <span class="input-group-addon" style="background-color: #e9ecef">Personal</span>

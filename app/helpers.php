@@ -691,7 +691,7 @@ function getUnidadesMedida()
 
 function getCalibresRamo()
 {
-    return ClasificacionRamo::All()->where('estado', '=', 1);
+    return ClasificacionRamo::All()->where('estado', '=', 1)->sortBy('nombre');
 }
 
 function getConfiguracionEmpresa()

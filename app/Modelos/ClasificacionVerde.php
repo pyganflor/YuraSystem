@@ -152,7 +152,7 @@ class ClasificacionVerde extends Model
 
     function getRendimiento()
     {
-        if (count($this->detalles) > 0) {
+        if (count($this->detalles) > 0 && $this->personal > 0 && $this->getCantidadHorasTrabajo() > 0) {
             $r = $this->total_tallos() / $this->personal;
             $r = $r / $this->getCantidadHorasTrabajo();
 
