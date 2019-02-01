@@ -98,7 +98,7 @@ class PedidoController extends Controller
 
             foreach ($request->arrFechas as $key => $fechas) {
 
-                $formatgit oFecha = '';
+                $formatoFecha = '';
                 if (isset($request->opcion) && $request->opcion != 3) {
                     $formato = explode("/", $fechas);
                     $formatoFecha = $formato[2] . '-' . $formato[0] . '-' . $formato[1];
