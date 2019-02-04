@@ -37,9 +37,14 @@ class ClasificacionBlancoController extends Controller
         $fecha_fin = opDiasFecha('+', 7, $fecha_min);
 
         $fechas = DB::table('pedido as p')
+            ->join('detalle_pedido as dp', 'dp.id_pedido', '=', 'p.id_pedido')
+            ->join('cliente_pedido_especificacion as cpe', 'cpe.id_cliente_pedido_especificacion', '=', 'dp.id_cliente_especificacion')
+            ->join('especificacion_empaque as ee', 'ee.id_especificacion', '=', 'cpe.id_especificacion')
+            ->join('detalle_especificacionempaque as dee', 'dee.id_especificacion_empaque', '=', 'ee.id_especificacion_empaque')
             ->select('p.fecha_pedido')->distinct()
             ->where('p.estado', '=', 1)
             ->where('p.empaquetado', '=', 0)
+            ->where('dee.id_variedad', '=', $request->variedad)
             ->where('p.fecha_pedido', '<=', $fecha_fin)
             ->orderBy('p.fecha_pedido')
             ->get();
@@ -76,9 +81,11 @@ class ClasificacionBlancoController extends Controller
 
     public function confirmar_pedidos(Request $request)
     {
-        dd($request->all());
         $success = true;
         $msg = '';
+
+        $pedidos = Pedido::All()->where('fecha_pedido', '=', $request->fecha_pedidos);
+
         foreach ($request->arreglo as $item) {
             if ($item['armar'] > 0) {
                 $inventario = new InventarioFrio();
@@ -155,6 +162,34 @@ class ClasificacionBlancoController extends Controller
                 }
             }
         }
+
+        foreach ($pedidos as $item) {
+            $variedades = ['1', '2', '3'];
+            if (in_array($request->id_variedad, $variedades)) {
+                $variedades = array_diff($variedades, [$request->id_variedad]);
+                if (count($variedades) == 0) {
+                    $item->variedad = '';
+                    $item->empaquetado = 1;
+                } else {
+                    $restantes = [];
+                    foreach ($variedades as $v)
+                        array_push($restantes, $v);
+                    $field_variedad = $restantes[0];
+                    for ($i = 1; $i < count($restantes); $i++) {
+                        $field_variedad .= '|' . $restantes[$i];
+                    }
+                    $item->variedad = $field_variedad;
+                }
+                if ($item->save()) {
+                    bitacora('pedido', $item->id_pedido, 'U', 'Modificacion de un pedido');
+                } else {
+                    $success = false;
+                    $msg .= '<div class="alert alert-warning text-center">' .
+                        'Ha ocurrido un problema con un pedido</div>';
+                }
+            }
+        }
+
         if ($success) {
             $msg = '<div class="alert alert-success text-center">Se ha guardado toda la información satisfactoriamente</div>';
         }

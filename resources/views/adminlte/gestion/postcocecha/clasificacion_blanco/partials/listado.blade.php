@@ -12,7 +12,7 @@
                 </button>
                 <ul class="dropdown-menu">
                     <li><a href="javascript:void(0)" onclick="update_stock_empaquetado(0)">Guardar</a></li>
-                    <li><a href="javascript:void(0)" onclick="update_stock_empaquetado(1)">Guardar y terminar</a></li>
+                    {{--<li><a href="javascript:void(0)" onclick="update_stock_empaquetado(1)">Guardar y terminar</a></li>--}}
                 </ul>
             </div>
         @else
