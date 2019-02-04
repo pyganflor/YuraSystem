@@ -211,8 +211,8 @@ class ComprobanteController extends Controller
                     'Email'=> $dataXml->correo,
                     'Teléfono' => $dataXml->telefono,
                     'DAE' => '05520184000859803',
-                    'GUIA_MADRE' => '72969087771',
-                    'GUIA_HIJA' => '72969087771'
+                    'GUIA_MADRE' => !empty($dataEnvio[2]) ? $dataEnvio[2] : null,
+                    'GUIA_HIJA' => !empty($dataEnvio[3]) ? $dataEnvio[3] : null,
                 ];
 
                 foreach ($campos_adicionales as $key => $ca){

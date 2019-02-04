@@ -123,7 +123,7 @@
                 cache: false,
                 contentType: false,
                 processData: false,
-                success: function(data){
+                success: function(retorno){
                     modal_view('modal_view_clasificaciones', retorno, '<i class="fa fa-fw fa-table"></i> Clasificación unitaria', true, false,
                         '{{isPC() ? '50%' : ''}}');
                 }

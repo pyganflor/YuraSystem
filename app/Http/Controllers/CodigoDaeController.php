@@ -171,7 +171,7 @@ class CodigoDaeController extends Controller
             $document = PHPExcel_IOFactory::load($request->file);
             $activeSheetData = $document->getActiveSheet()->toArray(null, true, true, true);
 
-            for ($i = 3; $i < count($activeSheetData); $i++) {
+            for ($i = 3; $i <= count($activeSheetData); $i++) {
                 if($activeSheetData[$i]['A'] !== null && $activeSheetData[$i]['B'] !== null && $activeSheetData[$i]['C'] !== null && $activeSheetData[$i]['D'] !== null && $activeSheetData[$i]['E'] !== null && $activeSheetData[$i]['F'] !== null) {
                     $existPais = Pais::where('codigo',$activeSheetData[$i]['A'])->count();
                     if($existPais > 0){
@@ -193,7 +193,7 @@ class CodigoDaeController extends Controller
                             if($objCodigoDae->save()){
                                 $model = CodigoDae::all()->last();
                                 $msg .= '<div class="alert alert-success text-center">' .
-                                    '<p> Se ha guardado el código DAE para el país' .$activeSheetData[$i]['B'] . '  exitosamente</p>'
+                                    '<p> Se ha guardado el código DAE para el país ' .$activeSheetData[$i]['B'] . '  exitosamente</p>'
                                     . '</div>';
                                 bitacora('codigo_dae', $model->id_codigo_dae, 'I', 'Inserción satisfactoria de un nuevo codigo dae');
                             }else{
@@ -208,7 +208,7 @@ class CodigoDaeController extends Controller
                         }
                     }else{
                         $msg .= '<div class="alert alert-danger text-center">' .
-                            '<p> EL codigo ' .$activeSheetData[$i]['A'] . ' no corresponde al país '.$activeSheetData[$i]['B'].' Exporte nuevamente el archivo excel con este pais y no modifique la columna CÓDIGO PAÍS</p>'
+                            '<p> EL codigo ' .$activeSheetData[$i]['A'] . ' no corresponde al país '.$activeSheetData[$i]['B'].', Exporte nuevamente el archivo excel con este pais y no modifique ningún dato de la columna CÓDIGO PAÍS</p>'
                             . '</div>';
                     }
                 }else{

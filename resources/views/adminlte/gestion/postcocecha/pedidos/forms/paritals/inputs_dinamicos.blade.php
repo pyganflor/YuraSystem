@@ -22,7 +22,6 @@
                 </select>
             </td>
         </tr>
-
     @endfor
 @else
     <tr id="">

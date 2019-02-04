@@ -54,6 +54,8 @@
             arrEnvios.push([
                 j.value,
                 $("#descuento_"+(j.id)).val(),
+                $("#guia_madre_"+(j.id)).val(),
+                $("#guia_hija_"+(j.id)).val(),
                 //$("#muestra_descuento_"+(i+1)).is(":checked")
             ]);
         });

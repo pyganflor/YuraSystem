@@ -54,7 +54,7 @@
     function add_orden_semanal() {
         get_jquery('{{url('pedidos/add_orden_semanal')}}', {}, function (retorno) {
             modal_view('modal-view_add_orden_semanal', retorno, '<i class="fa fa-fw fa-plus"></i> Agregar Orden Semanal', true, false,
-                '{{isPC() ? '95%' : ''}}')
+                '{{isPC() ? '95%' : ''}}');
 
         });
     }
@@ -95,8 +95,6 @@
         },300);
 
     }
-
-
 
     function add_pedido_personalizado() {
         get_jquery('{{url('pedidos/add_pedido_personalizado')}}', {}, function (retorno) {
