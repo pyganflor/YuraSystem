@@ -934,27 +934,28 @@ function getCalibreRamoEstandar()
     return $r;
 }
 
-function getDetalleEspecificacion($id_especificacion){
-    $data =  Especificacion::where('especificacion.id_especificacion',$id_especificacion)
-        ->join('especificacion_empaque as eemp','especificacion.id_especificacion','eemp.id_especificacion')
-        ->join('empaque as e','eemp.id_empaque','e.id_empaque')
-        ->join('detalle_especificacionempaque as deemp','eemp.id_especificacion_empaque','deemp.id_especificacion_empaque')
-        ->join('variedad as v','deemp.id_variedad','v.id_variedad')
-        ->join('empaque as empE','deemp.id_empaque_e','empE.id_empaque')
-        ->join('empaque as empP','deemp.id_empaque_p','empP.id_empaque')
-        ->join('clasificacion_ramo as cr','deemp.id_clasificacion_ramo','cr.id_clasificacion_ramo')
-        ->join('unidad_medida as umCR','cr.id_unidad_medida','umCR.id_unidad_medida')
-        ->join('especificacion_empaque as espemp','especificacion.id_especificacion','espemp.id_especificacion')
-        ->join('especificacion_empaque as EspeEmpa','e.id_empaque','EspeEmpa.id_empaque');
+function getDetalleEspecificacion($id_especificacion)
+{
+    $data = Especificacion::where('especificacion.id_especificacion', $id_especificacion)
+        ->join('especificacion_empaque as eemp', 'especificacion.id_especificacion', 'eemp.id_especificacion')
+        ->join('empaque as e', 'eemp.id_empaque', 'e.id_empaque')
+        ->join('detalle_especificacionempaque as deemp', 'eemp.id_especificacion_empaque', 'deemp.id_especificacion_empaque')
+        ->join('variedad as v', 'deemp.id_variedad', 'v.id_variedad')
+        ->join('empaque as empE', 'deemp.id_empaque_e', 'empE.id_empaque')
+        ->join('empaque as empP', 'deemp.id_empaque_p', 'empP.id_empaque')
+        ->join('clasificacion_ramo as cr', 'deemp.id_clasificacion_ramo', 'cr.id_clasificacion_ramo')
+        ->join('unidad_medida as umCR', 'cr.id_unidad_medida', 'umCR.id_unidad_medida')
+        ->join('especificacion_empaque as espemp', 'especificacion.id_especificacion', 'espemp.id_especificacion')
+        ->join('especificacion_empaque as EspeEmpa', 'e.id_empaque', 'EspeEmpa.id_empaque');
 
-        $existUnidadMedidida = DetalleEspecificacionEmpaque::where('id_detalle_especificacionempaque',$data->first()->id_detalle_especificacionempaque)->first();
-        $a = 0;
-        if($existUnidadMedidida->id_unidad_medida != null){
-            $data->join('unidad_medida as um','deemp.id_unidad_medida','um.id_unidad_medida');
-            $a =1;
-        }
-        $data = $data->select('especificacion.id_especificacion','v.id_variedad','v.nombre as nombre_variedad','empE.nombre as envoltura', 'empP.nombre as presentacion','deemp.cantidad as cantidad_ramos','deemp.tallos_x_ramos','deemp.longitud_ramo', $a==1 ? 'um.siglas as siglas_unidad_medida_longitud': 'e.nombre as nombre_empaque','cr.nombre as nombre_clasificacion_ramo','umCR.siglas as siglas_unidad_medida_clasificacion_ramo','espemp.cantidad as cantidad_cajas','e.nombre as nombre_empaque')->first();
-        return $data->cantidad_cajas." ".$data->nombre_empaque." con " .$data->cantidad_ramos. " ramos c/u de ".$data->nombre_clasificacion_ramo." ". $data->siglas_unidad_medida_clasificacion_ramo ." ".$data->nombre_variedad." ".$data->envoltura." ". $data->presentacion ." ". $data->tallos_x_ramos." tallos por ramo ". $data->longitud_ramo." ". $data->siglas_unidad_medida_longitud;
+    $existUnidadMedidida = DetalleEspecificacionEmpaque::where('id_detalle_especificacionempaque', $data->first()->id_detalle_especificacionempaque)->first();
+    $a = 0;
+    if ($existUnidadMedidida->id_unidad_medida != null) {
+        $data->join('unidad_medida as um', 'deemp.id_unidad_medida', 'um.id_unidad_medida');
+        $a = 1;
+    }
+    $data = $data->select('especificacion.id_especificacion', 'v.id_variedad', 'v.nombre as nombre_variedad', 'empE.nombre as envoltura', 'empP.nombre as presentacion', 'deemp.cantidad as cantidad_ramos', 'deemp.tallos_x_ramos', 'deemp.longitud_ramo', $a == 1 ? 'um.siglas as siglas_unidad_medida_longitud' : 'e.nombre as nombre_empaque', 'cr.nombre as nombre_clasificacion_ramo', 'umCR.siglas as siglas_unidad_medida_clasificacion_ramo', 'espemp.cantidad as cantidad_cajas', 'e.nombre as nombre_empaque')->first();
+    return $data->cantidad_cajas . " " . explode('|', $data->nombre_empaque)[0] . " con " . $data->cantidad_ramos . " ramos c/u de " . $data->nombre_clasificacion_ramo . " " . $data->siglas_unidad_medida_clasificacion_ramo . " " . $data->nombre_variedad . " " . $data->envoltura . " " . $data->presentacion . " " . $data->tallos_x_ramos . " tallos por ramo " . $data->longitud_ramo . " " . $data->siglas_unidad_medida_longitud;
 }
 
 /* ============ Obtener los ramos sacados de apertura para los pedidos de un "fecha" ==============*/
@@ -966,7 +967,8 @@ function getDestinadosToFrioByFecha($fecha, $variedad)
     return 0;
 }
 
-function manualPagination($arrData,$perPage){
+function manualPagination($arrData, $perPage)
+{
     $currentPage = LengthAwarePaginator::resolveCurrentPage();
     $currentItems = array_slice($arrData, $perPage * ($currentPage - 1), $perPage);
     $data = new LengthAwarePaginator($currentItems, count($arrData), $perPage, $currentPage);
@@ -978,7 +980,8 @@ function getPais($codigo){
 }
 
 //==================  Funciones involucradas en la facturacion electrónica ======================//
-function generaDigitoVerificador($cadena){
+function generaDigitoVerificador($cadena)
+{
 
     $arr_num = str_split($cadena);
     $cant_cadena = count($arr_num);
@@ -1010,22 +1013,24 @@ function generaDigitoVerificador($cadena){
     }
 }
 
-function firmarComprobanteXml($archivo_xml){
-    exec('java -Dfile.encoding=UTF-8 -jar '.env('PATH_JAR_FIRMADOR').' '
-        .env('PATH_XML_GENERADOS')." "
-        .$archivo_xml." "
-        .env('PATH_XML_FIRMADOS')." "
-        .env('PATH_FIRMA_DIGITAL')." "
-        .env('CONTRASENA_FIRMA_DIGITAL')." "
-        .env('NOMBRE_ARCHIVO_FIRMA_DIGITAL')." ",
-        $salida,$var);
-    if($var == 0)
+function firmarComprobanteXml($archivo_xml)
+{
+    exec('java -Dfile.encoding=UTF-8 -jar ' . env('PATH_JAR_FIRMADOR') . ' '
+        . env('PATH_XML_GENERADOS') . " "
+        . $archivo_xml . " "
+        . env('PATH_XML_FIRMADOS') . " "
+        . env('PATH_FIRMA_DIGITAL') . " "
+        . env('CONTRASENA_FIRMA_DIGITAL') . " "
+        . env('NOMBRE_ARCHIVO_FIRMA_DIGITAL') . " ",
+        $salida, $var);
+    if ($var == 0)
         return $salida[0];
     if ($var != 0)
         return false;
 }
 
-function mensajeFirmaElectronica($indice, $id_envio){
+function mensajeFirmaElectronica($indice, $id_envio)
+{
     $mensaje = [
         0 => "No se ha obtenido el archivo de la firma digital correctamente, verifique que el path propocionado en la variable de entorno 'PATH_FIRMA_DIGITAL' en el archivo .env coincida con la ubicación actual del archivo la firma digital y el String pasado a la variable 'NOMBRE_ARCHIVO_FIRMA_DIGITAL' corresponda con el nombre del archivo), una vez corregido el error puede filtrar por 'GENERADOS' y proceder a realizar la firma del mismo",
         1 => "Verificar lo explicado en el Índice 0 de este apartado y a su vez verificar que exista el certificado como archivo físico, una vez corregido el error puede filtrar por 'GENERADOS' y proceder a realizar la firma del mismo",
@@ -1037,7 +1042,8 @@ function mensajeFirmaElectronica($indice, $id_envio){
     return $mensaje[$indice];
 }
 
-function enviarComprobante($comprobante_xml, $clave_acceso){
+function enviarComprobante($comprobante_xml, $clave_acceso)
+{
     ini_set('max_execution_time', env('MAX_EXECUTION_TIME'));
     exec('java -Dfile.encoding=UTF-8 -jar ' . env('PATH_JAR_ENVIADOR') . ' '
         . env('PATH_XML_FIRMADOS') . " "
@@ -1066,26 +1072,27 @@ function mensaje_envio_comprobante($indice)
     return $mensaje[$indice];
 }
 
-function getDatosFacturaEnvio($id_envio){
+function getDatosFacturaEnvio($id_envio)
+{
     return Envio::where([
-        ['envio.id_envio',$id_envio],
-        ['dc.estado',1]
-    ])->join('detalle_envio as de', 'envio.id_envio','de.id_envio')
-        ->join('pedido as p', 'envio.id_pedido','p.id_pedido')
-        ->join('detalle_cliente as dc','p.id_cliente','dc.id_cliente')
-        ->join('especificacion as e','de.id_especificacion','e.id_especificacion')
-        ->join('especificacion_empaque as eemp', 'e.id_especificacion','eemp.id_especificacion')
-        ->join('detalle_especificacionempaque as deemp','eemp.id_especificacion_empaque','deemp.id_especificacion_empaque')
-        ->join('empaque as emp','eemp.id_empaque','emp.id_empaque')
-        ->join('configuracion_empresa as ce','emp.id_configuracion_empresa','ce.id_configuracion_empresa')
-        ->join('agencia_transporte as at','de.id_agencia_transporte','at.id_agencia_transporte')
-        ->join('tipo_impuesto as ti','dc.codigo_porcentaje_impuesto','ti.codigo')
-        ->join('variedad as v','deemp.id_variedad','v.id_variedad')
-        ->join('planta as pl','v.id_planta','pl.id_planta')
-        ->join('clasificacion_ramo as cr','deemp.id_clasificacion_ramo','cr.id_clasificacion_ramo')
-        ->join('unidad_medida as umPR','cr.id_unidad_medida','umPR.id_unidad_medida')
-        ->join('unidad_medida as umLR','deemp.id_unidad_medida','umLR.id_unidad_medida')
-        ->select('ce.nombre as nombre_empresa','ce.razon_social','ce.direccion_matriz','ce.direccion_establecimiento','dc.codigo_identificacion','dc.ruc as identificacion','dc.nombre as nombre_cliente','dc.direccion','dc.provincia','dc.telefono','dc.correo','dc.codigo_impuesto','deemp.id_variedad','deemp.id_clasificacion_ramo','de.cantidad as cantidad_detalles','dc.codigo_porcentaje_impuesto as codigo_porcentaje','ti.porcentaje as porcntaje_iva','deemp.cantidad as cantidad_ramos','eemp.cantidad as cantidad_cajas','v.nombre as nombre_variedad','v.siglas as siglas_variedad','cr.nombre as nombre_clasificacion','umPR.siglas as siglas_unidad_medida_peso_ramo','pl.nombre as nombre_planta','deemp.longitud_ramo','umLR.siglas as siglas_unidad_medida_lognitud_ramo');
+        ['envio.id_envio', $id_envio],
+        ['dc.estado', 1]
+    ])->join('detalle_envio as de', 'envio.id_envio', 'de.id_envio')
+        ->join('pedido as p', 'envio.id_pedido', 'p.id_pedido')
+        ->join('detalle_cliente as dc', 'p.id_cliente', 'dc.id_cliente')
+        ->join('especificacion as e', 'de.id_especificacion', 'e.id_especificacion')
+        ->join('especificacion_empaque as eemp', 'e.id_especificacion', 'eemp.id_especificacion')
+        ->join('detalle_especificacionempaque as deemp', 'eemp.id_especificacion_empaque', 'deemp.id_especificacion_empaque')
+        ->join('empaque as emp', 'eemp.id_empaque', 'emp.id_empaque')
+        ->join('configuracion_empresa as ce', 'emp.id_configuracion_empresa', 'ce.id_configuracion_empresa')
+        ->join('agencia_transporte as at', 'de.id_agencia_transporte', 'at.id_agencia_transporte')
+        ->join('tipo_impuesto as ti', 'dc.codigo_porcentaje_impuesto', 'ti.codigo')
+        ->join('variedad as v', 'deemp.id_variedad', 'v.id_variedad')
+        ->join('planta as pl', 'v.id_planta', 'pl.id_planta')
+        ->join('clasificacion_ramo as cr', 'deemp.id_clasificacion_ramo', 'cr.id_clasificacion_ramo')
+        ->join('unidad_medida as umPR', 'cr.id_unidad_medida', 'umPR.id_unidad_medida')
+        ->join('unidad_medida as umLR', 'deemp.id_unidad_medida', 'umLR.id_unidad_medida')
+        ->select('ce.nombre as nombre_empresa', 'ce.razon_social', 'ce.direccion_matriz', 'ce.direccion_establecimiento', 'dc.codigo_identificacion', 'dc.ruc as identificacion', 'dc.nombre as nombre_cliente', 'dc.direccion', 'dc.provincia', 'dc.telefono', 'dc.correo', 'dc.codigo_impuesto', 'deemp.id_variedad', 'deemp.id_clasificacion_ramo', 'de.cantidad as cantidad_detalles', 'dc.codigo_porcentaje_impuesto as codigo_porcentaje', 'ti.porcentaje as porcntaje_iva', 'deemp.cantidad as cantidad_ramos', 'eemp.cantidad as cantidad_cajas', 'v.nombre as nombre_variedad', 'v.siglas as siglas_variedad', 'cr.nombre as nombre_clasificacion', 'umPR.siglas as siglas_unidad_medida_peso_ramo', 'pl.nombre as nombre_planta', 'deemp.longitud_ramo', 'umLR.siglas as siglas_unidad_medida_lognitud_ramo');
 }
 
 /* ============ Calcular la cantidad de cajas equivalentes segun grosor_variedad ==============*/
