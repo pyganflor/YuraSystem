@@ -100,6 +100,18 @@
                                 </button>
                             @endif
                         @endif
+
+                        @if(getPedido($item->id_pedido)->haveDistribucion() == 1)
+                            <button type="button" class="btn btn-xs btn-info" title="Distribuir"
+                                    onclick="distribuir_orden_semanal('{{$item->id_pedido}}')">
+                                <i class="fa fa-fw fa-gift"></i>
+                            </button>
+                        @elseif(getPedido($item->id_pedido)->haveDistribucion() == 2)
+                            <button type="button" class="btn btn-xs btn-info" title="Ver distribución"
+                                    onclick="ver_distribucion_orden_semanal('{{$item->id_pedido}}')">
+                                <i class="fa fa-fw fa-gift"></i>
+                            </button>
+                        @endif
                     </td>
                 </tr>
             @endforeach

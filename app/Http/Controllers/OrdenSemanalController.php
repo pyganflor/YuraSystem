@@ -243,6 +243,7 @@ class OrdenSemanalController extends Controller
     public function distribuir_orden_semanal(Request $request)
     {
         $pedido = Pedido::find($request->id_pedido);
+        $marcaciones = $pedido->detalles[0]->cliente_especificacion->especificacion->especificacionesEmpaque[0]->marcaciones;
         return view('adminlte.gestion.postcocecha.pedidos_ventas.partials.distribucion_orden_semanal', [
             'pedido' => $pedido
         ]);
@@ -339,10 +340,7 @@ class OrdenSemanalController extends Controller
                                 $pedido->descripcion = $texto;
                                 $pedido->variedad = $item['id_variedad'];  // optimizar
                                 $pedido->fecha_pedido = $request->fecha_pedido;
-                                if ($item['check_make_especificacion'] == 'true')
-                                    $pedido->tipo_especificacion = 'N';
-                                else
-                                    $pedido->tipo_especificacion = 'O';
+                                $pedido->tipo_especificacion = 'N';
 
                                 if ($pedido->save()) {
                                     $pedido = Pedido::All()->last();

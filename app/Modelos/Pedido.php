@@ -26,24 +26,33 @@ class Pedido extends Model
         return $this->hasMany('\yura\Modelos\DetallePedido', 'id_pedido');
     }
 
+    public function envios()
+    {
+        return $this->hasMany('\yura\Modelos\Envio', 'id_pedido');
+    }
+
     public function cliente()
     {
         return $this->belongsTo('\yura\Modelos\Cliente', 'id_cliente');
     }
 
-    public function haveDistribucion()
+    public function haveDistribucion()  // 1 -> Es de tipo 'O' y no tiene distribucion; 2 -> es de tipo 'O' y tiene distribucion; 0 -> es 'N'
     {
         if ($this->tipo_especificacion == 'O') {
+            $flag = true;
             foreach ($this->detalles as $detalle) {
                 foreach ($detalle->cliente_especificacion->especificacion->especificacionesEmpaque as $esp_emp) {
                     foreach ($esp_emp->marcaciones as $marcacion) {
                         if (count($marcacion->distribuciones) == 0)
-                            return false;
+                            $flag = false;
                     }
                 }
             }
-            return true;
+            if ($flag)
+                return 2;
+            else
+                return 1;
         } else
-            return false;
+            return 0;
     }
 }

@@ -1,1 +1,1 @@
-{{$pedido->descripcion}}
+crear distribucion para {{$pedido->descripcion}}

@@ -96,14 +96,7 @@
                         if (retorno.success) {
                             alerta_accion(retorno.mensaje, function () {
                                 cerrar_modals();
-                                datos = {
-                                    data: datos,
-                                    id_pedido: retorno.id_pedido
-                                };
-                                get_jquery('{{url('pedidos/distribuir_orden_semanal')}}', datos, function (vista) {
-                                    modal_view('modal-view_distribuir_orden_semanal', vista, '<i class="fa fa-fw fa-gift"></i> Distribución', true, false,
-                                        '{{isPC() ? '95%' : ''}}');
-                                });
+                                distribuir_orden_semanal(retorno.id_pedido);
                                 buscar_listado_pedidos();
                             });
                         } else {

@@ -84,114 +84,137 @@ class ClasificacionBlancoController extends Controller
         $success = true;
         $msg = '';
 
-        $pedidos = Pedido::All()->where('fecha_pedido', '=', $request->fecha_pedidos);
+        if ($request->ramos_armados > 0) {
+            $pedidos = Pedido::All()->where('fecha_pedido', '=', $request->fecha_pedidos);
 
-        foreach ($request->arreglo as $item) {
-            if ($item['armar'] > 0) {
-                $inventario = new InventarioFrio();
-                $inventario->id_variedad = $request->id_variedad;
-                $inventario->id_clasificacion_ramo = $item['clasificacion_ramo'];
-                $inventario->id_empaque_e = $item['id_empaque_e'];
-                $inventario->id_empaque_p = $item['id_empaque_p'];
-                $inventario->tallos_x_ramo = $item['tallos_x_ramo'];
-                $inventario->longitud_ramo = $item['longitud_ramo'];
-                $inventario->id_unidad_medida = $item['id_unidad_medida'];
-                $inventario->fecha_ingreso = date('Y-m-d');
-                $inventario->cantidad = $item['armar'];
-                $inventario->disponibles = $item['armar'];
-                $inventario->descripcion = $item['texto'];
+            /* ============ TABLA INVENTARIO_FRIO ===============*/
+            foreach ($request->arreglo as $item) {
+                if ($item['armar'] > 0) {
+                    $inventario = new InventarioFrio();
+                    $inventario->id_variedad = $request->id_variedad;
+                    $inventario->id_clasificacion_ramo = $item['clasificacion_ramo'];
+                    $inventario->id_empaque_e = $item['id_empaque_e'];
+                    $inventario->id_empaque_p = $item['id_empaque_p'];
+                    $inventario->tallos_x_ramo = $item['tallos_x_ramo'];
+                    $inventario->longitud_ramo = $item['longitud_ramo'];
+                    $inventario->id_unidad_medida = $item['id_unidad_medida'];
+                    $inventario->fecha_ingreso = date('Y-m-d');
+                    $inventario->cantidad = $item['armar'];
+                    $inventario->disponibles = $item['armar'];
+                    $inventario->descripcion = $item['texto'];
 
-                if ($inventario->save()) {
-                    $id = InventarioFrio::All()->last()->id_inventario_frio;
-                    bitacora('inventario_frio', $id, 'I', 'Insercion de un nuevo inventario en frio');
-                } else {
-                    $success = false;
-                    $msg .= '<div class="alert alert-warning text-center">' .
-                        'Ha ocurrido un problema con los armados de "' . $item['texto'] .
-                        '"</div>';
-                }
-            }
-
-            if ($request->check_maduracion == 'true') {
-                $orderBy = 'asc';
-            } else {
-                $orderBy = 'desc';
-            }
-
-            $inventarios = DB::table('inventario_frio as if')
-                ->select('if.id_inventario_frio', 'if.fecha_registro', 'if.disponibles')
-                ->where('estado', '=', 1)
-                ->where('disponibilidad', '=', 1)
-                ->where('id_variedad', '=', $request->id_variedad)
-                ->where('id_clasificacion_ramo', '=', $item['clasificacion_ramo'])
-                ->where('id_empaque_e', '=', $item['id_empaque_e'])
-                ->where('id_empaque_p', '=', $item['id_empaque_p'])
-                ->where('tallos_x_ramo', '=', $item['tallos_x_ramo'])
-                ->where('longitud_ramo', '=', $item['longitud_ramo'])
-                ->where('id_unidad_medida', '=', $item['id_unidad_medida'])
-                ->orderBy('if.fecha_registro', $orderBy)
-                ->get();
-
-            $pedido = $item['pedido'];
-            foreach ($inventarios as $l) {
-                if ($pedido > 0) {
-                    $disponible = $l->disponibles;
-                    $disponibilidad = 1;
-                    if ($pedido >= $disponible) {
-                        $pedido = $pedido - $disponible;
-                        $disponible = 0;
-                    } else {
-                        $disponible = $disponible - $pedido;
-                        $pedido = 0;
-                    }
-                    if ($disponible == 0)
-                        $disponibilidad = 0;
-
-                    $model = InventarioFrio::find($l->id_inventario_frio);
-                    $model->disponibles = $disponible;
-                    $model->disponibilidad = $disponibilidad;
-
-                    if ($model->save()) {
-                        bitacora('inventario_frio', $model->id_inventario_frio, 'U', 'Actualizacion de un inventario en frio');
+                    if ($inventario->save()) {
+                        $id = InventarioFrio::All()->last()->id_inventario_frio;
+                        bitacora('inventario_frio', $id, 'I', 'Insercion de un nuevo inventario en frio');
                     } else {
                         $success = false;
                         $msg .= '<div class="alert alert-warning text-center">' .
-                            'Ha ocurrido un problema al actualizar las cantidades disponibles de los armados de "' . $item['texto'] .
+                            'Ha ocurrido un problema con los armados de "' . $item['texto'] .
                             '"</div>';
                     }
                 }
-            }
-        }
 
-        foreach ($pedidos as $item) {
-            $variedades = ['1', '2', '3'];
-            if (in_array($request->id_variedad, $variedades)) {
-                $variedades = array_diff($variedades, [$request->id_variedad]);
-                if (count($variedades) == 0) {
-                    $item->variedad = '';
-                    $item->empaquetado = 1;
+                if ($request->check_maduracion == 'true') {
+                    $orderBy = 'asc';
                 } else {
-                    $restantes = [];
-                    foreach ($variedades as $v)
-                        array_push($restantes, $v);
-                    $field_variedad = $restantes[0];
-                    for ($i = 1; $i < count($restantes); $i++) {
-                        $field_variedad .= '|' . $restantes[$i];
+                    $orderBy = 'desc';
+                }
+
+                $inventarios = DB::table('inventario_frio as if')
+                    ->select('if.id_inventario_frio', 'if.fecha_registro', 'if.disponibles')
+                    ->where('estado', '=', 1)
+                    ->where('disponibilidad', '=', 1)
+                    ->where('id_variedad', '=', $request->id_variedad)
+                    ->where('id_clasificacion_ramo', '=', $item['clasificacion_ramo'])
+                    ->where('id_empaque_e', '=', $item['id_empaque_e'])
+                    ->where('id_empaque_p', '=', $item['id_empaque_p'])
+                    ->where('tallos_x_ramo', '=', $item['tallos_x_ramo'])
+                    ->where('longitud_ramo', '=', $item['longitud_ramo'])
+                    ->where('id_unidad_medida', '=', $item['id_unidad_medida'])
+                    ->orderBy('if.fecha_registro', $orderBy)
+                    ->get();
+
+                $pedido = $item['pedido'];
+                foreach ($inventarios as $l) {
+                    if ($pedido > 0) {
+                        $disponible = $l->disponibles;
+                        $disponibilidad = 1;
+                        if ($pedido >= $disponible) {
+                            $pedido = $pedido - $disponible;
+                            $disponible = 0;
+                        } else {
+                            $disponible = $disponible - $pedido;
+                            $pedido = 0;
+                        }
+                        if ($disponible == 0)
+                            $disponibilidad = 0;
+
+                        $model = InventarioFrio::find($l->id_inventario_frio);
+                        $model->disponibles = $disponible;
+                        $model->disponibilidad = $disponibilidad;
+
+                        if ($model->save()) {
+                            bitacora('inventario_frio', $model->id_inventario_frio, 'U', 'Actualizacion de un inventario en frio');
+                        } else {
+                            $success = false;
+                            $msg .= '<div class="alert alert-warning text-center">' .
+                                'Ha ocurrido un problema al actualizar las cantidades disponibles de los armados de "' . $item['texto'] .
+                                '"</div>';
+                        }
                     }
-                    $item->variedad = $field_variedad;
-                }
-                if ($item->save()) {
-                    bitacora('pedido', $item->id_pedido, 'U', 'Modificacion de un pedido');
-                } else {
-                    $success = false;
-                    $msg .= '<div class="alert alert-warning text-center">' .
-                        'Ha ocurrido un problema con un pedido</div>';
                 }
             }
-        }
 
-        if ($success) {
-            $msg = '<div class="alert alert-success text-center">Se ha guardado toda la información satisfactoriamente</div>';
+            /* ============ TABLA PEDIDO ===============*/
+            foreach ($pedidos as $item) {
+                $variedades = explode('|', $item->variedad);
+                if (in_array($request->id_variedad, $variedades)) {
+                    $variedades = array_diff($variedades, [$request->id_variedad]);
+                    if (count($variedades) == 0) {
+                        $item->variedad = '';
+                        $item->empaquetado = 1;
+                    } else {
+                        $restantes = [];
+                        foreach ($variedades as $v)
+                            array_push($restantes, $v);
+                        $field_variedad = $restantes[0];
+                        for ($i = 1; $i < count($restantes); $i++) {
+                            $field_variedad .= '|' . $restantes[$i];
+                        }
+                        $item->variedad = $field_variedad;
+                    }
+                    if ($item->save()) {
+                        bitacora('pedido', $item->id_pedido, 'U', 'Modificacion de un pedido');
+                    } else {
+                        $success = false;
+                        $msg .= '<div class="alert alert-warning text-center">' .
+                            'Ha ocurrido un problema con un pedido</div>';
+                    }
+                }
+            }
+
+            /* ============ TABLA STOCK_EMPAQUETADO =============*/
+            /*$empaquetado = StockEmpaquetado::find($request->id_stock_empaquetado);
+            $empaquetado->cantidad_armada = $request->ramos_armados;
+            $empaquetado->empaquetado = 1;
+
+            if ($empaquetado->save()) {
+                bitacora('stock_empaquetado', $empaquetado->id_stock_empaquetado, 'U', 'Actualizacion satisfactoria de un stock_empaquetado');
+            } else {
+                $success = false;
+                $msg = '<div class="alert alert-warning text-center">' .
+                    '<p> Ha ocurrido un problema al guardar la información en el sistema</p>'
+                    . '</div>';
+            }*/
+
+            if ($success) {
+                $msg = '<div class="alert alert-success text-center">Se ha guardado toda la información satisfactoriamente</div>';
+            }
+        } else {
+            $success = false;
+            $msg = '<div class="alert alert-warning text-center">' .
+                '<p> La cantidad de ramos armados no puede ser cero</p>'
+                . '</div>';
         }
 
         return [

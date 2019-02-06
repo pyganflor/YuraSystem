@@ -25,8 +25,13 @@ class Marcacion extends Model
         return $this->belongsTo('\yura\Modelos\EspecificacionEmpaque', 'id_especificacion_empaque');
     }
 
+    public function coloraciones()
+    {
+        return $this->hasMany('\yura\Modelos\Coloracion', 'id_marcacion');
+    }
+
     public function distribuciones()
     {
-        return $this->hasMany('\yura\Modelos\Distribucion', 'id_especificacion_empaque');
+        return $this->hasMany('\yura\Modelos\Distribucion', 'id_marcacion');
     }
 }

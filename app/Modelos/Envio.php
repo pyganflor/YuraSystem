@@ -16,4 +16,9 @@ class Envio extends Model
         'fecha_envio',
         'fecha_registro',
     ];
+
+    public function detalles()
+    {
+        return $this->hasMany('\yura\Modelos\DetalleEnvio', 'id_envio');
+    }
 }

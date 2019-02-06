@@ -30,6 +30,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Request as Resq;
 use yura\Modelos\InventarioFrio;
 use yura\Modelos\Modulo;
+use yura\Modelos\Cliente;
 
 /*
  * -------- BITÁCORA DE LAS ACCIONES ECHAS POR EL USUARIO ------
@@ -651,6 +652,11 @@ function existInSemana($fecha, $variedad, $anno)
 function getClasificacionVerde($id)
 {
     return ClasificacionVerde::find($id);
+}
+
+function getCliente($id)
+{
+    return Cliente::find($id);
 }
 
 function getGrosor($id)
