@@ -617,6 +617,31 @@
         entrada.val(today);
     }
 
+    function set_min_to_date(entrada, date) {
+        var date = new Date(date);
+        var dd = date.getDate();
+        var mm = date.getMonth() + 1; //January is 0!
+        var yyyy = date.getFullYear();
+
+        if (dd < 10) {
+            dd = '0' + dd
+        }
+        if (mm < 10) {
+            mm = '0' + mm
+        }
+
+        date = yyyy + '-' + mm + '-' + dd;
+
+        if (entrada.prop('type') == 'datetime-local') {
+            var hh = date.getHours();
+            var minutes = date.getMinutes();
+            today += ' ' + hh + ':' + minutes;
+        }
+
+        entrada.prop('min', date);
+        entrada.val(date);
+    }
+
     // FUNCION PARA MODIFICAR "MAX = HOY" A UN INPUT "DATE"
     function set_max_today(entrada) {
         var today = new Date();

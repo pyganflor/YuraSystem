@@ -3,6 +3,7 @@
 namespace yura\Modelos;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Marcacion extends Model
 {
@@ -33,5 +34,28 @@ class Marcacion extends Model
     public function distribuciones()
     {
         return $this->hasMany('\yura\Modelos\Distribucion', 'id_marcacion');
+    }
+
+    public function getColoracionByName($nombre)
+    {
+        $r = DB::table('coloracion as c')
+            ->select('c.*')
+            ->where('c.id_marcacion', '=', $this->id_marcacion)
+            ->where('c.nombre', '=', $nombre)
+            ->first();
+
+        if ($r != '')
+            return Coloracion::find($r->id_coloracion);
+        else
+            return '';
+    }
+
+    public function getTotalRamos()
+    {
+        $r = 0;
+        foreach ($this->coloraciones as $item) {
+            $r += $item->cantidad;
+        }
+        return $r;
     }
 }

@@ -11,3 +11,6 @@ Route::get('pedidos/distribuir_orden_semanal', 'OrdenSemanalController@distribui
 Route::get('pedidos/add_pedido_personalizado', 'OrdenSemanalController@add_pedido_personalizado');
 Route::post('pedidos/store_pedido_personalizado', 'OrdenSemanalController@store_pedido_personalizado');
 Route::get('pedidos/listar_agencias_carga', 'OrdenSemanalController@listar_agencias_carga');
+Route::post('pedidos/editar_coloracion', 'OrdenSemanalController@editar_coloracion');
+Route::post('pedidos/editar_marcacion', 'OrdenSemanalController@editar_marcacion');
+Route::post('pedidos/update_distribucion', 'OrdenSemanalController@update_distribucion');

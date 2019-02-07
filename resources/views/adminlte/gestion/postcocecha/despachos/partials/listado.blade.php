@@ -222,12 +222,16 @@
             if (list[i].checked)
                 envios.push(list[i].value);
         }
-
-        datos = {
-            envios: envios
-        };
-        get_jquery('{{url('despachos/ver_envios')}}', datos, function (retorno) {
-            modal_view('modal_view_ver_envios', retorno, '<i class="fa fa-fw fa-send"></i> Envíos', true, false, '{{isPC() ? '95%' : ''}}');
-        });
+        if (envios.length > 0) {
+            datos = {
+                envios: envios
+            };
+            get_jquery('{{url('despachos/ver_envios')}}', datos, function (retorno) {
+                modal_view('modal_view_ver_envios', retorno, '<i class="fa fa-fw fa-send"></i> Envíos', true, false, '{{isPC() ? '95%' : ''}}');
+            });
+        } else {
+            modal_view('modal_view_mensaje_ver_envios', '<div class="alert alert-warning text-center">Al menos seleccione un envío</div>',
+                '<i class="fa fa-fw fa-exclamation-triangle"></i> Mensaje de alerta', true, false, '{{isPC() ? '35%' : ''}}');
+        }
     }
 </script>
