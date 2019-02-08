@@ -12,7 +12,7 @@
                 </button>
                 <ul class="dropdown-menu">
                     <li><a href="javascript:void(0)" onclick="update_stock_empaquetado(0)">Guardar</a></li>
-                    {{--<li><a href="javascript:void(0)" onclick="update_stock_empaquetado(1)">Guardar y terminar</a></li>--}}
+                    <li><a href="javascript:void(0)" onclick="update_stock_empaquetado(1)">Guardar y terminar</a></li>
                 </ul>
             </div>
         @else
@@ -123,7 +123,8 @@
                 <td style="border-color: #9d9d9d; border-bottom-width: {{$pos_fecha == 1 ? '3px' : ''}}; background-color: #e9ecef;
                         border-right-width: {{$pos_fecha == 1 ? '3px' : ''}}; border-left-width: {{$pos_fecha == 1 ? '3px' : ''}};"
                     class="text-center">
-                    <button type="button" class="btn btn-xs btn-primary" title="Mandar a armar">
+                    <button type="button" class="btn btn-xs btn-primary" title="Mandar a armar"
+                            onclick="mostrar_despacho('{{$fecha->fecha_pedido}}')">
                         <i class="fa fa-fw fa-gift"></i>
                     </button>
                     @if($pos_fecha == 1)
@@ -194,6 +195,8 @@
                 id_variedad: $('#id_variedad').val(),
                 arreglo: arreglo,
                 fecha_pedidos: $('#fecha_' + 1).val(),
+                id_stock_empaquetado: $('#id_stock_empaquetado').val(),
+                ramos_armados: $('#ramos_armados').val(),
                 check_maduracion: $('#check_dias_maduracion').prop('checked'),
             };
             post_jquery('{{url('clasificacion_blanco/confirmar_pedidos')}}', datos, function () {
@@ -278,7 +281,7 @@
                 };
                 if (terminar == 1) {
                     modal_quest('modal-quest_update_stock_empaquetado',
-                        '<div class="alert alert-info text-center">¿Desea terminar la clasificación en blanco?</div>',
+                        '<div class="alert alert-info text-center">¿Desea terminar la clasificación en blanco para esta variedad?</div>',
                         '<i class="fa fa-fw fa-exclamation-triangle"></i> Mensaje de alerta', true, false, '{{isPC() ? '35%' : ''}}', function () {
                             post_jquery('{{url('clasificacion_blanco/update_stock_empaquetado')}}', datos, function () {
                                 cerrar_modals();
@@ -291,6 +294,15 @@
                     });
                 }
             }
+        }
+
+        function mostrar_despacho(fecha) {
+            datos = {
+                fecha: fecha
+            };
+            get_jquery('{{url('despachos/listar_resumen_pedidos')}}', datos, function (retorno) {
+                modal_view('modal_view_listar_resumen_pedidos', retorno, '<i class="fa fa-fw fa-list-alt"></i> Despachos', true, false, '{{isPC() ? '95%' : ''}}');
+            });
         }
     </script>
 @else

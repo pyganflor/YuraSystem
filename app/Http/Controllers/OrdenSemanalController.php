@@ -3,6 +3,7 @@
 namespace yura\Http\Controllers;
 
 use Illuminate\Http\Request;
+use yura\Modelos\AgenciaCarga;
 use yura\Modelos\ClasificacionRamo;
 use yura\Modelos\Cliente;
 use yura\Modelos\ClientePedidoEspecificacion;
@@ -16,6 +17,8 @@ use yura\Modelos\Marcacion;
 use yura\Modelos\Pedido;
 use yura\Modelos\UnidadMedida;
 use yura\Modelos\Variedad;
+use Illuminate\Support\Facades\DB;
+use Validator;
 
 class OrdenSemanalController extends Controller
 {
@@ -115,7 +118,7 @@ class OrdenSemanalController extends Controller
                                                 if ($request->matrix[$i][$c] != '' && $request->colores[$c]['nombre'] != '') {
                                                     $coloracion = new Coloracion();
                                                     $coloracion->id_marcacion = $marcacion->id_marcacion;
-                                                    $coloracion->nombre = $request->colores[$c]['nombre'];
+                                                    $coloracion->nombre = str_replace(' ', '_', espacios($request->colores[$c]['nombre']));
                                                     $coloracion->fondo = $request->colores[$c]['fondo'];
                                                     $coloracion->texto = $request->colores[$c]['texto'];
                                                     $coloracion->cantidad = $request->matrix[$i][$c];
@@ -243,9 +246,203 @@ class OrdenSemanalController extends Controller
     public function distribuir_orden_semanal(Request $request)
     {
         $pedido = Pedido::find($request->id_pedido);
+        $marcaciones = $pedido->detalles[0]->cliente_especificacion->especificacion->especificacionesEmpaque[0]->marcaciones;
+        $ids_marcaciones = [];
+        foreach ($marcaciones as $m) {
+            array_push($ids_marcaciones, $m->id_marcacion);
+        }
+        $coloraciones = DB::table('coloracion as c')
+            ->select('c.nombre', 'c.fondo', 'c.texto')->distinct()
+            ->whereIn('c.id_marcacion', $ids_marcaciones)
+            ->get();
+        $esp_emp = $pedido->detalles[0]->cliente_especificacion->especificacion->especificacionesEmpaque[0];
+        $det_esp = $esp_emp->detalles[0];
         return view('adminlte.gestion.postcocecha.pedidos_ventas.partials.distribucion_orden_semanal', [
-            'pedido' => $pedido
+            'pedido' => $pedido,
+            'marcaciones' => $marcaciones,
+            'coloraciones' => $coloraciones,
+            'calibres' => getCalibresRamo(),
+            'variedades' => getVariedades(),
+            'unidades_medida' => getUnidadesMedida(),
+            'agencias' => $pedido->cliente->cliente_agencia_carga,
+            'cajas' => Empaque::All()->where('estado', '=', 1)->where('tipo', '=', 'C'),
+            'envolturas' => Empaque::All()->where('estado', '=', 1)->where('tipo', '=', 'E'),
+            'presentaciones' => Empaque::All()->where('estado', '=', 1)->where('tipo', '=', 'P'),
+            'esp_emp' => $esp_emp,
+            'det_esp' => $det_esp,
         ]);
+    }
+
+    public function editar_coloracion(Request $request)
+    {
+        $valida = Validator::make($request->all(), [
+            'nombre' => 'required|max:250',
+            'color' => 'required|',
+            'pedido' => 'required|',
+            'fondo' => 'required|',
+            'texto' => 'required|',
+        ], [
+            'nombre.required' => 'El nombre es obligatorio',
+            'pedido.required' => 'El pedido es obligatorio',
+            'color.required' => 'El color es obligatorio',
+            'fondo.required' => 'El fondo es obligatorio',
+            'texto.required' => 'El texto es obligatorio',
+            'nombre.max' => 'El nombre es muy grande',
+        ]);
+        $success = true;
+        $msg = '';
+        if (!$valida->fails()) {
+            $pedido = getPedido($request->pedido);
+            $marcaciones = $pedido->detalles[0]->cliente_especificacion->especificacion->especificacionesEmpaque[0]->marcaciones;
+            $ids_marcaciones = [];
+            foreach ($marcaciones as $m) {
+                array_push($ids_marcaciones, $m->id_marcacion);
+            }
+            $coloraciones = DB::table('coloracion as c')
+                ->select('c.id_coloracion', 'c.nombre')
+                ->whereIn('c.id_marcacion', $ids_marcaciones)
+                ->where('c.nombre', '=', $request->color)
+                ->get();
+
+            foreach ($coloraciones as $color) {
+                $model = Coloracion::find($color->id_coloracion);
+                $model->nombre = str_limit(str_replace(' ', '_', espacios($request->nombre)), 250);
+                $model->fondo = $request->fondo;
+                $model->texto = $request->texto;
+
+                if ($model->save()) {
+                    bitacora('coloracion', $model->id_coloracion, 'U', 'Actualización satisfactoria de una coloracion');
+                } else {
+                    $success = false;
+                    $msg = '<div class="alert alert-warning text-center">' .
+                        '<p> Ha ocurrido un problema al guardar la información al sistema</p>'
+                        . '</div>';
+                }
+            }
+            if ($success) {
+                $msg = '<div class="alert alert-success text-center">' .
+                    '<p> Se ha actualizado el color satisfactoriamente</p>'
+                    . '</div>';
+            }
+        } else {
+            $success = false;
+            $errores = '';
+            foreach ($valida->errors()->all() as $mi_error) {
+                if ($errores == '') {
+                    $errores = '<li>' . $mi_error . '</li>';
+                } else {
+                    $errores .= '<li>' . $mi_error . '</li>';
+                }
+            }
+            $msg = '<div class="alert alert-danger">' .
+                '<p class="text-center">¡Por favor corrija los siguientes errores!</p>' .
+                '<ul>' .
+                $errores .
+                '</ul>' .
+                '</div>';
+        }
+        return [
+            'mensaje' => $msg,
+            'success' => $success
+        ];
+    }
+
+    public function editar_marcacion(Request $request)
+    {
+        $valida = Validator::make($request->all(), [
+            'nombre' => 'required|max:250',
+            'id_marcacion' => 'required|',
+            'pedido' => 'required|',
+        ], [
+            'nombre.required' => 'El nombre es obligatorio',
+            'pedido.required' => 'El pedido es obligatorio',
+            'id_marcacion.required' => 'la marcación es obligatoria',
+            'nombre.max' => 'El nombre es muy grande',
+        ]);
+        if (!$valida->fails()) {
+            $model = Marcacion::find($request->id_marcacion);
+            $model->nombre = str_limit(mb_strtoupper(espacios($request->nombre)), 250);
+
+            if ($model->save()) {
+                $success = false;
+                $msg = '<div class="alert alert-success text-center">' .
+                    '<p> Se ha actualizado la marcación satisfactoriamente</p>'
+                    . '</div>';
+                bitacora('marcacion', $model->id_marcacion, 'U', 'Actualización satisfactoria de una marcación');
+            } else {
+                $success = false;
+                $msg = '<div class="alert alert-warning text-center">' .
+                    '<p> Ha ocurrido un problema al guardar la información al sistema</p>'
+                    . '</div>';
+            }
+        } else {
+            $success = false;
+            $errores = '';
+            foreach ($valida->errors()->all() as $mi_error) {
+                if ($errores == '') {
+                    $errores = '<li>' . $mi_error . '</li>';
+                } else {
+                    $errores .= '<li>' . $mi_error . '</li>';
+                }
+            }
+            $msg = '<div class="alert alert-danger">' .
+                '<p class="text-center">¡Por favor corrija los siguientes errores!</p>' .
+                '<ul>' .
+                $errores .
+                '</ul>' .
+                '</div>';
+        }
+        return [
+            'mensaje' => $msg,
+            'success' => $success
+        ];
+    }
+
+    public function update_distribucion(Request $request)
+    {
+        dd($request->all());
+        $valida = Validator::make($request->all(), [
+            'pedido' => 'required|',
+        ], [
+            'pedido.required' => 'El pedido es obligatorio',
+        ]);
+        if (!$valida->fails()) {
+            $model = Marcacion::find($request->id_marcacion);
+            $model->nombre = str_limit(mb_strtoupper(espacios($request->nombre)), 250);
+
+            if ($model->save()) {
+                $success = false;
+                $msg = '<div class="alert alert-success text-center">' .
+                    '<p> Se ha actualizado la marcación satisfactoriamente</p>'
+                    . '</div>';
+                bitacora('marcacion', $model->id_marcacion, 'U', 'Actualización satisfactoria de una marcación');
+            } else {
+                $success = false;
+                $msg = '<div class="alert alert-warning text-center">' .
+                    '<p> Ha ocurrido un problema al guardar la información al sistema</p>'
+                    . '</div>';
+            }
+        } else {
+            $success = false;
+            $errores = '';
+            foreach ($valida->errors()->all() as $mi_error) {
+                if ($errores == '') {
+                    $errores = '<li>' . $mi_error . '</li>';
+                } else {
+                    $errores .= '<li>' . $mi_error . '</li>';
+                }
+            }
+            $msg = '<div class="alert alert-danger">' .
+                '<p class="text-center">¡Por favor corrija los siguientes errores!</p>' .
+                '<ul>' .
+                $errores .
+                '</ul>' .
+                '</div>';
+        }
+        return [
+            'mensaje' => $msg,
+            'success' => $success
+        ];
     }
 
     /* ================ PEDIDOS PERSONALIZDOS ================*/
@@ -339,10 +536,7 @@ class OrdenSemanalController extends Controller
                                 $pedido->descripcion = $texto;
                                 $pedido->variedad = $item['id_variedad'];  // optimizar
                                 $pedido->fecha_pedido = $request->fecha_pedido;
-                                if ($item['check_make_especificacion'] == 'true')
-                                    $pedido->tipo_especificacion = 'N';
-                                else
-                                    $pedido->tipo_especificacion = 'O';
+                                $pedido->tipo_especificacion = 'N';
 
                                 if ($pedido->save()) {
                                     $pedido = Pedido::All()->last();

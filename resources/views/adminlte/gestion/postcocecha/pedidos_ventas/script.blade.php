@@ -5,11 +5,11 @@
         $.LoadingOverlay('show');
         datos = {
             //busqueda: $('#busqueda_pedidos').val().trim(),
-            id_cliente : $("#id_cliente").val(),
-            anno       : $("#anno").val(),
-            desde      : $("#desde").val(),
-            hasta      : $("#hasta").val(),
-            estado     : $("#estado").val()
+            id_cliente: $("#id_cliente").val(),
+            anno: $("#anno").val(),
+            desde: $("#desde").val(),
+            hasta: $("#hasta").val(),
+            estado: $("#estado").val()
         };
         $.get('{{url('pedidos/buscar')}}', datos, function (retorno) {
             $('#div_listado_pedidos').html(retorno);
@@ -99,6 +99,26 @@
     function add_pedido_personalizado() {
         get_jquery('{{url('pedidos/add_pedido_personalizado')}}', {}, function (retorno) {
             modal_view('modal_view_add_pedido_personalizado', retorno, '<i class="fa fa-fw fa-gift"></i> Pedidos personalzados', true, false,
+                '{{isPC() ? '95%' : ''}}');
+        });
+    }
+
+    function distribuir_orden_semanal(id_pedido) {
+        datos = {
+            id_pedido: id_pedido
+        };
+        get_jquery('{{url('pedidos/distribuir_orden_semanal')}}', datos, function (vista) {
+            modal_view('modal-view_distribuir_orden_semanal', vista, '<i class="fa fa-fw fa-gift"></i> Distribución', true, false,
+                '{{isPC() ? '95%' : ''}}');
+        });
+    }
+
+    function ver_distribucion_orden_semanal(id_pedido) {
+        datos = {
+            id_pedido: id_pedido
+        };
+        get_jquery('{{url('pedidos/ver_distribucion_orden_semanal')}}', datos, function (vista) {
+            modal_view('modal-view_ver_distribucion_orden_semanal', vista, '<i class="fa fa-fw fa-gift"></i> Distribución', true, false,
                 '{{isPC() ? '95%' : ''}}');
         });
     }
