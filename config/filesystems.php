@@ -50,7 +50,12 @@ return [
 
         'imagenes' => [
             'driver' => 'local',
-            'root' => public_path('storage/imagenes'),
+            'root' => storage_path('storage/imagenes'),
+        ],
+
+        'xml' => [
+            'driver' => 'local',
+            'root' => storage_path('storage/xml/'),
         ],
 
         'public' => [

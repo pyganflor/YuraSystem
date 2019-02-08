@@ -50,7 +50,6 @@ class EspecificacionController extends Controller
 
     public function cargar_form_detalle_especificacion_empaque(Request $request)
     {
-
         return view('adminlte.gestion.postcocecha.clientes.partials.forms._desgloses', [
             'envolturas'        => Empaque::All()->where('tipo', '=', 'E')->where('estado', '=', 1),
             'presentaciones'    => Empaque::All()->where('tipo', '=', 'P')->where('estado', '=', 1),

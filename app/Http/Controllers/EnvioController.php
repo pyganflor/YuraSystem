@@ -16,6 +16,7 @@ use PHPExcel_Style_Fill;
 use PHPExcel_Style_Border;
 use PHPExcel_Style_Color;
 use PHPExcel_Style_Alignment;
+use yura\Modelos\Pais;
 use yura\Modelos\Pedido;
 
 class EnvioController extends Controller
@@ -178,6 +179,7 @@ class EnvioController extends Controller
         $busquedaDesde   = $request->has('desde') ? $request->desde : '';
         $busquedaHasta   = $request->has('hasta') ? $request->hasta : '';
         $busquedaEstado  = $request->has('estado') ? $request->estado : '';
+        $prefacturado    = $request->has('pre_facturado') ? $request->pre_facturado : '';
 
         $listado = DB::table('envio as e')->where('dc.estado',1)
             ->join('detalle_envio as de','e.id_envio','=','de.id_envio')
@@ -185,9 +187,7 @@ class EnvioController extends Controller
             ->join('cliente as c','p.id_cliente','=','c.id_cliente')
             ->join('detalle_cliente as dc','c.id_cliente','=','dc.id_cliente' )
             ->join('especificacion as es','de.id_especificacion','es.id_especificacion')
-            ->join('agencia_transporte as at','de.id_agencia_transporte','=','at.id_agencia_transporte')
-            ->orderBy('e.id_envio','Desc')
-            ->select('p.*','dc.nombre','e.*','de.*','es.nombre','at.nombre as at_nombre','at.tipo_agencia','dc.nombre as c_nombre');
+            ->join('agencia_transporte as at','de.id_agencia_transporte','=','at.id_agencia_transporte');
 
         if ($busquedaAnno != '')
             $listado = $listado->where(DB::raw('YEAR(de.fecha_envio)'), $busquedaAnno );
@@ -195,18 +195,28 @@ class EnvioController extends Controller
             $listado = $listado->where('c.id_cliente',$busquedacliente);
         if ($busquedaDesde != '' && $request->hasta != '')
             $listado = $listado->whereBetween('e.fecha_envio', [$busquedaDesde,$busquedaHasta]);
+
+        /*if($prefacturado == 0 )
+            $listado = $listado->join('comprobante as comp','de.id_envio','comp.id_envio')->where([
+                    ['comp.estado','!=',1],
+                    ['comp.estado','!=',5]
+                ]);*/
+
         $busquedaEstado != '' ?  $listado = $listado->where('de.estado',$request->estado) : $listado = $listado->where('de.estado',0);
 
-        $listado = $listado->orderBy('e.fecha_envio', 'desc')->distinct()->get();
+        $listado = $listado->orderBy('e.id_envio','Desc')
+            ->select('p.*','dc.codigo_pais','dc.direccion','dc.provincia','e.*','de.*','es.nombre','at.nombre as at_nombre','at.tipo_agencia','dc.nombre as c_nombre')
+            ->orderBy('e.fecha_envio', 'desc')->distinct()->get();
+
         $groupEnvios = [];
         foreach ($listado as $e) {
             $groupEnvios[$e->id_envio][] = $e;
         }
 
         $datos = [
-            'listado' =>  manualPagination($groupEnvios,10),
-            //'listado' => $listado,
+            'listado'   =>  manualPagination($groupEnvios,10),
             'idCliente' => $request->id_cliente,
+            'paises'    => Pais::all()
         ];
 
         return view('adminlte.gestion.postcocecha.envios.partials.listado',$datos);

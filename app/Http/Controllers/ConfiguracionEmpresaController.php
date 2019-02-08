@@ -4,6 +4,7 @@ namespace yura\Http\Controllers;
 
 use Illuminate\Http\Request;
 use PHPUnit\Util\RegularExpressionTest;
+use yura\Modelos\Pais;
 use yura\Modelos\Rol;
 use yura\Modelos\Submenu;
 use yura\Modelos\ConfiguracionEmpresa;
@@ -54,6 +55,7 @@ class ConfiguracionEmpresaController extends Controller
             'empaques' => Empaque::all(),
             'iconoMoneda'=>$moneda,
             'text' => ['titulo' => 'Configuración de la empresa', 'subtitulo' => 'módulo de administración'],
+            'paises'=> Pais::all()
         ]);
     }
 
@@ -94,7 +96,8 @@ class ConfiguracionEmpresaController extends Controller
             'clasifi_unit_tipos' => 'required|Array',
             'clasifi_x_ramos_tipos' => 'required|Array',
             'empaque_nombres' => 'required|Array',
-            'moneda' => 'required|'
+            'moneda' => 'required',
+            'codigo_pais' => 'required'
         ]);
 
         if (!$valida->fails()) {
@@ -110,6 +113,7 @@ class ConfiguracionEmpresaController extends Controller
             $objConfigEmpresa->razon_social = $request->razon_social;
             $objConfigEmpresa->direccion_matriz = $request->matriz;
             $objConfigEmpresa->direccion_establecimiento = $request->establecimiento;
+            $objConfigEmpresa->codigo_pais = $request->codigo_pais;
             $objConfigEmpresa->save();
 
             $idConfiEmpresa = ConfiguracionEmpresa::all()->last();

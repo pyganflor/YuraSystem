@@ -27,13 +27,13 @@
             @foreach($listado as $item)
                 <tr onmouseover="$(this).css('background-color','#add8e6')" onmouseleave="$(this).css('background-color','')"
                     class="{{$item->estado == 1 ? '':'error'}}" id="row_codigo_dae_{{$item->id_codigo_dae}}">
-                    <td style="border-color: #9d9d9d" class="text-center">{{getPais($item->codigo_pais)}}</td>
+                    <td style="border-color: #9d9d9d" class="text-center">{{getPais($item->codigo_pais)->nombre}}</td>
                     <td style="border-color: #9d9d9d" class="text-center">{{$item->dae}}</td>
                     <td style="border-color: #9d9d9d" class="text-center"> {{$item->codigo_dae}} </td>
                     <td style="border-color: #9d9d9d" class="text-center"> {{$item->mes}} </td>
                     <td style="border-color: #9d9d9d" class="text-center"> {{$item->anno}} </td>
                     <td style="border-color: #9d9d9d" class="text-center">
-                        <button class="btn btn-warning">
+                        <button class="btn btn-warning btn-xs" title="Desactivar código" onclick="desactivar_codigo('{{$item->id_codigo_dae}}')">
                             <i class="fa fa-ban" aria-hidden="true"></i>
                         </button>
                     </td>

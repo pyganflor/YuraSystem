@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<factura id="comprobante" version="1.0.0">
+  <infoTributaria>
+    <ambiente>1</ambiente>
+    <tipoEmision>1</tipoEmision>
+    <razonSocial>Pyganflor S.A</razonSocial>
+    <nombreComercial>Pyganflor</nombreComercial>
+    <ruc>1792446325001</ruc>
+    <claveAcceso>0702201901179244632500110010010000001431234567816</claveAcceso>
+    <codDoc>01</codDoc>
+    <estab>001</estab>
+    <ptoEmi>001</ptoEmi>
+    <secuencial>000000143</secuencial>
+    <dirMatriz>Pasaje la Paz E9-01 y Av. 6 de Diciembre</dirMatriz>
+  </infoTributaria>
+  <infoFactura>
+    <fechaEmision>07/02/2019</fechaEmision>
+    <dirEstablecimiento>Vía San Jose de Minas Vía al Pisque</dirEstablecimiento>
+    <obligadoContabilidad>SI</obligadoContabilidad>
+    <tipoIdentificacionComprador>09</tipoIdentificacionComprador>
+    <razonSocialComprador>cliente 3</razonSocialComprador>
+    <identificacionComprador>1</identificacionComprador>
+    <totalSinImpuestos>44.00</totalSinImpuestos>
+    <totalDescuento>0.00</totalDescuento>
+    <totalConImpuestos>
+      <totalImpuesto>
+        <codigo>2</codigo>
+        <codigoPorcentaje>7</codigoPorcentaje>
+        <baseImponible>44.00</baseImponible>
+        <valor>0.00</valor>
+      </totalImpuesto>
+    </totalConImpuestos>
+    <propina>0.00</propina>
+    <importeTotal>44.00</importeTotal>
+    <moneda>DOLAR</moneda>
+  </infoFactura>
+  <detalles>
+    <detalle>
+      <codigoPrincipal>ENV000000048</codigoPrincipal>
+      <descripcion>GYPSOPHILA (GLX) 1250gr </descripcion>
+      <cantidad>20.00</cantidad>
+      <precioUnitario>2.00</precioUnitario>
+      <descuento>0.00</descuento>
+      <precioTotalSinImpuesto>40.00</precioTotalSinImpuesto>
+      <impuestos>
+        <impuesto>
+          <codigo>2</codigo>
+          <codigoPorcentaje>7</codigoPorcentaje>
+          <tarifa>0.00</tarifa>
+          <baseImponible>40.00</baseImponible>
+          <valor>0.00</valor>
+        </impuesto>
+      </impuestos>
+    </detalle>
+    <detalle>
+      <codigoPrincipal>ENV000000048</codigoPrincipal>
+      <descripcion>GYPSOPHILA (XL) 1250gr </descripcion>
+      <cantidad>1.00</cantidad>
+      <precioUnitario>4.00</precioUnitario>
+      <descuento>0.00</descuento>
+      <precioTotalSinImpuesto>4.00</precioTotalSinImpuesto>
+      <impuestos>
+        <impuesto>
+          <codigo>2</codigo>
+          <codigoPorcentaje>7</codigoPorcentaje>
+          <tarifa>0.00</tarifa>
+          <baseImponible>4.00</baseImponible>
+          <valor>0.00</valor>
+        </impuesto>
+      </impuestos>
+    </detalle>
+  </detalles>
+  <infoAdicional>
+    <campoAdicional nombre="Dirección">Florida Este es el cliente 3 (Estados unidos)</campoAdicional>
+    <campoAdicional nombre="Email">cliente3@gmail.com</campoAdicional>
+    <campoAdicional nombre="Teléfono">55588558855</campoAdicional>
+    <campoAdicional nombre="DAE">9875462855</campoAdicional>
+  </infoAdicional>
+</factura>

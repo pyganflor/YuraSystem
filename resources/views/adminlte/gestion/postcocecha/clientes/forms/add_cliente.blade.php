@@ -124,12 +124,4 @@
             </div>
         </div>
     </div>
-    <div class="row">
-        <div class="col-md-12 text-center">
-            <button type="button" class="btn btn-success" onclick="store_cliente()">
-                <i class="fa fa-floppy-o" aria-hidden="true"></i>
-                Guardar
-            </button>
-        </div>
-    </div>
 </form>

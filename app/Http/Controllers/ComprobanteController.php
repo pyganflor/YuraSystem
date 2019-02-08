@@ -5,7 +5,6 @@ namespace yura\Http\Controllers;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use DomDocument;
-use SoapClient;
 use yura\Modelos\Comprobante;
 use yura\Modelos\ClasificacionRamo;
 use yura\Modelos\ImpuestoDetalleFactura;
@@ -16,11 +15,66 @@ use yura\Modelos\InformacionAdicionalFactura;
 use yura\Modelos\Variedad;
 use yura\Modelos\Precio;
 use yura\Modelos\Usuario;
+use yura\Modelos\Submenu;
+use yura\Modelos\TipoComprobante;
+use yura\Modelos\CodigoDae;
+use yura\Modelos\Cliente;
 use Validator;
+use Storage;
+use DB;
 
 class ComprobanteController extends Controller
 {
-    public function generar_factura_cliente(Request $request){
+    public function inicio(Request $request){
+        return view('adminlte.gestion.comprobante.inicio',
+            [
+                'url'             => $request->getRequestUri(),
+                'submenu'         => Submenu::Where('url', '=', substr($request->getRequestUri(), 1))->get()[0],
+                'text'            => ['titulo' => 'Comprobantes', 'subtitulo' => 'módulo de facturación'],
+                'tiposCompbantes' => TipoComprobante::all(),
+                'annos'           => DB::table('comprobante as c')->select(DB::raw('YEAR(c.fecha_emision) as anno'))->distinct()->get(),
+                'clientes'         => Cliente::join('detalle_cliente as dc','cliente.id_cliente','dc.id_cliente')->where('dc.estado',1)->select('nombre','cliente.id_cliente')->get()
+            ]);
+    }
+
+    public function buscar_comprobante(Request $request){
+
+        $busquedaAnno        = $request->has('anno') ? $request->anno : '';
+        $busquedacliente     = $request->has('id_cliente') ? $request->id_cliente : '';
+        $busquedaDesde       = $request->has('desde') ? $request->desde : '';
+        $busquedaHasta       = $request->has('hasta') ? $request->hasta : '';
+        $busquedaComprobante = $request->has('codigo_comprobante') ? $request->codigo_comprobante : '';
+
+        $listado = Comprobante::where([
+            ['comprobante.estado',isset($request->estado) ? $request->estado : 1],
+            ['dc.estado',1],
+            ['tipo_comprobante','!=',"00"]
+        ])->join('tipo_comprobante as tc','comprobante.tipo_comprobante','tc.codigo')
+        ->join('envio as e','comprobante.id_envio','e.id_envio')
+        ->join('pedido as p','e.id_pedido','p.id_pedido')
+        ->join('detalle_cliente as dc','p.id_cliente','dc.id_cliente');
+
+        if ($busquedaAnno != '')
+            $listado = $listado->where(DB::raw('YEAR(de.fecha_emision)'), $busquedaAnno );
+        if ($busquedacliente != '')
+            $listado = $listado->where('dc.id_cliente',$busquedacliente);
+        if ($busquedaHasta != '' && $request->hasta != '')
+            $listado = $listado->whereBetween('comprobante.fecha_emision', [$busquedaDesde == '' ? '2000-01-01' : $busquedaDesde ,$busquedaHasta]);
+        if($busquedaComprobante != '' && $request->codigo_comprobante != '')
+            $listado = $listado->where('comprobante.tipo_comprobante',$busquedaComprobante);
+
+        $listado = $listado->orderBy('id_comprobante','Desc')
+            ->select('comprobante.*','tc.nombre as nombre_comprobante','dc.nombre as nombre_cliente')->paginate(20);
+        $datos = [
+            'listado'            => $listado,
+            'columna_causa'      => ($request->estado == 3 || $request->estado == 4) ? true : false,
+            'firmar_comprobante' => isset($request->estado) ? true : false
+        ];
+
+        return view('adminlte.gestion.comprobante.partials.listado',$datos);
+    }
+
+    public function generar_comprobante_factura(Request $request){
 
         ini_set('max_execution_time', env('MAX_EXECUTION_TIME'));
         $valida= Validator::make($request->all(), [
@@ -31,10 +85,11 @@ class ComprobanteController extends Controller
 
             $inicio_secuencial = env('INICIAL_FACTURA');
             foreach ($request->arrEnvios as $dataEnvio) {
+
                 $datos_xml = getDatosFacturaEnvio($dataEnvio[0]);
                 $precio_total_sin_impuestos=0;
-
                 foreach ($datos_xml->get() as $dataXml) {
+
                     $precio_unitario_individual_sin_impuestos = Precio::where([
                         ['id_variedad',$dataXml->id_variedad],
                         ['id_clasificacion_ramo',$dataXml->id_clasificacion_ramo]
@@ -52,22 +107,24 @@ class ComprobanteController extends Controller
                     $total_individual_ramos  = $dataXml->cantidad_ramos * $dataXml->cantidad_cajas;
                     $precio_total_individual = $total_individual_ramos * $precio_unitario_individual_sin_impuestos->cantidad;
                     $precio_total_sin_impuestos += $precio_total_individual;
-
                 }
+
+                if(!isset(getCodigoDae($dataEnvio[4])->codigo_dae)){
+                    return '<div class="alert alert-danger text-center">' .
+                        '<p> No se ha configurado un código DAE para '.$dataEnvio[6].' en este mes </p>'
+                        . '</div>';
+                }
+
                 if($dataEnvio[1] > $precio_total_sin_impuestos){
                     return '<div class="alert alert-danger text-center">' .
                         '<p> El descuento es mayor que el sub total de la factura perteneciente al envío: N#'.str_pad($dataEnvio[0],9,"0",STR_PAD_LEFT).'<br/> 
                         Sub total: $'.number_format($precio_total_sin_impuestos,2,".","").', Descuento propuesto $'.number_format($dataEnvio[1],2,".","").' </p>'
                         . '</div>';
                 }
+
                 $dataEnvio[1] > 0 ? $precio_total_sin_impuestos = $precio_total_sin_impuestos-$dataEnvio[1] : '';
 
-                $secuencial = $inicio_secuencial+1;
-                $cant_reg = Comprobante::count();
-                if($cant_reg > 0)
-                    $secuencial = $cant_reg + $inicio_secuencial + 1;
-
-                $secuencial = str_pad($secuencial,9,"0",STR_PAD_LEFT);
+                $secuencial = getSecuencial();
                 $xml = new DomDocument('1.0', 'UTF-8');
                 $factura = $xml->createElement('factura');
                 $factura->setAttribute('id','comprobante');
@@ -155,7 +212,7 @@ class ComprobanteController extends Controller
 
                 $detalles = $xml->createElement('detalles');
                 $factura->appendChild($detalles);
-
+                //dd($datos_xml->count());
                 for($j=0; $j<$datos_xml->count(); $j++){
                     $data_arr_consulta = $datos_xml->get()[$j];
                     $precio_unitario_individual_sin_impuestos = Precio::where([
@@ -206,14 +263,19 @@ class ComprobanteController extends Controller
 
                 $informacionAdicional =  $xml->createElement('infoAdicional');
                 $factura->appendChild($informacionAdicional);
+
                 $campos_adicionales = [
                     'Dirección' => $dataXml->provincia." ".$dataXml->direccion,
                     'Email'=> $dataXml->correo,
                     'Teléfono' => $dataXml->telefono,
-                    'DAE' => '05520184000859803',
-                    'GUIA_MADRE' => !empty($dataEnvio[2]) ? $dataEnvio[2] : null,
-                    'GUIA_HIJA' => !empty($dataEnvio[3]) ? $dataEnvio[3] : null,
                 ];
+
+                if(getConfiguracionEmpresa()->codigo_pais != $dataEnvio[4])
+                    $campos_adicionales['DAE'] = getCodigoDae($dataEnvio[4])->codigo_dae;
+                if(!empty($dataEnvio[2]))
+                    $campos_adicionales['GUIA_MADRE'] = $dataEnvio[2];
+                if(!empty($dataEnvio[3]))
+                    $campos_adicionales['GUIA_HIJA'] = $dataEnvio[3];
 
                 foreach ($campos_adicionales as $key => $ca){
                     $campo_adicional = $xml->createElement('campoAdicional',$ca);
@@ -230,7 +292,7 @@ class ComprobanteController extends Controller
                 $obj_comprobante->clave_acceso     = $claveAcceso;
                 $obj_comprobante->id_envio         = $dataEnvio[0];
                 $obj_comprobante->tipo_comprobante = "01"; //CÓDIGO DE FACTURA A CLIENTE EXTERNO
-                $obj_comprobante->monto_total      = $precio_total_con_impuestos;
+                $obj_comprobante->monto_total      = number_format($valorImpuesto+$precio_total_sin_impuestos,2,".","");
 
                 if($obj_comprobante->save()){
                     $model_comprobante = Comprobante::all()->last();
@@ -308,8 +370,11 @@ class ComprobanteController extends Controller
                                 $objInformacionAdicionalFactura->direccion      = $campos_adicionales['Dirección'];
                                 $objInformacionAdicionalFactura->email          = $campos_adicionales['Email'];
                                 $objInformacionAdicionalFactura->telefono       = $campos_adicionales['Teléfono'];
+                                if(isset($campos_adicionales['DAE']))
                                 $objInformacionAdicionalFactura->dae            = $campos_adicionales['DAE'];
+                                if(isset($campos_adicionales['GUIA_MADRE']))
                                 $objInformacionAdicionalFactura->guia_madre     = $campos_adicionales['GUIA_MADRE'];
+                                if(isset($campos_adicionales['GUIA_HIJA']))
                                 $objInformacionAdicionalFactura->guia_hija      = $campos_adicionales['GUIA_HIJA'];
 
                                 if( $objInformacionAdicionalFactura->save()) {
@@ -379,7 +444,7 @@ class ComprobanteController extends Controller
                 }
                 else{
                     $msg .= "<div class='alert text-center  alert-danger'>" .
-                        "<p>Hubo un error al guardar la factura ".$nombre_xml." del envío N#".str_pad($dataEnvio[0],9,"0",STR_PAD_LEFT) ." en la base de datos, por favor intente facturar el envío nuevamente</p>"
+                        "<p>Hubo un error al guardar la factura ".$nombre_xml." del envío N# ENV".str_pad($dataEnvio[0],9,"0",STR_PAD_LEFT) ." en la base de datos, por favor intente facturar el envío nuevamente</p>"
                         . "</div>";
                 }
             }
@@ -403,8 +468,11 @@ class ComprobanteController extends Controller
         return $msg;
     }
 
-    public function comprobante_lote(Request $request){
+    public function generar_comprobante_lote(Request $request){
 
+        $secuencial = getSecuencial();
+        $punto_acceso = Usuario::where('id_usuario',session('id_usuario'))->first()->punto_acceso;
+        $secuencial = str_pad($secuencial,9,"0",STR_PAD_LEFT);
         $xml = new DomDocument('1.0', 'UTF-8');
         $factura = $xml->createElement('lote');
         $factura->setAttribute('version','1.0.0');
@@ -413,10 +481,9 @@ class ComprobanteController extends Controller
         $tipoComprobante = '00';
         $ruc = env('RUC');
         $entorno = env('ENTORNO');
-        $serie = '001001';
-        $secuencial = '000000088';
+        $serie = '001'.$punto_acceso;
         $tipo_emision = '1';
-        $codigo_numerico = '22222228';
+        $codigo_numerico = env('CODIGO_NUMERICO');
         $cadena = $fechaEmision.$tipoComprobante.$ruc.$entorno.$serie.$secuencial.$codigo_numerico.$tipo_emision;
         $digito_verificador = generaDigitoVerificador($cadena);
         $claveAcceso = $cadena.$digito_verificador;
@@ -424,33 +491,70 @@ class ComprobanteController extends Controller
         $factura->appendChild($nodeClaveAcceso);
         $nodeRuc = $xml->createElement('ruc',$ruc);
         $factura->appendChild($nodeRuc);
-        $nodeComprobantes = $xml->createElement('comprobantes');
+        $nodeComprobantes = $xml->createElement('pdf');
         $factura->appendChild($nodeComprobantes);
 
         $path_firmados = env('PATH_XML_FIRMADOS');
-        $xml_firmados= [
-            '1401201901179244632500110010010000000841234567615',
-            '1401201901179244632500110010010000000851234567610',
-            '1401201901179244632500110010010000000861234567616',
-            '1401201901179244632500110010010000000871234567611'
-        ];
-
-        foreach ($xml_firmados as $xml_firmado){
+        foreach ($request->arrPreFacturas as $xml_firmado){
             $data_xml_firmado = file_get_contents($path_firmados.$xml_firmado.".xml");
             $nodeComprobante = $xml->createElement('comprobante',$data_xml_firmado);
             $nodeComprobantes->appendChild($nodeComprobante);
         }
-
         $xml->formatOutput = true;
         $xml->saveXML();
-        $nombre_xml = "lote".$claveAcceso.".xml";
-        $xml->save(env('PATH_XML_GENERADOS').$nombre_xml);
 
+        $nombre_xml = $claveAcceso.".xml";
+        $msg = "<div class='alert text-center  alert-danger'>" .
+                "<p>Hubo un error al realizar el proceso del envío del comprobante, intente el envío nuevamente</p>"
+            . "</div>";
+
+        $obj_comprobante = new Comprobante;
+        $obj_comprobante->clave_acceso     = $claveAcceso;
+        $obj_comprobante->estado           = 1;
+        $obj_comprobante->tipo_comprobante = $tipoComprobante; //CÓDIGO DE ENVIO POR LOTE
+
+        if($obj_comprobante->save()) {
+            $model_comprobante = Comprobante::all()->last();
+
+            $save_xml = $xml->save(env('PATH_XML_FIRMADOS').$nombre_xml);
+            if ($save_xml && $save_xml > 0) {
+                $resultado = enviarComprobante($claveAcceso.".xml",$claveAcceso);
+                if($resultado){
+                    //$obj_comprobante = Comprobante::find($model_comprobante->id_comprobante);
+                    switch ($resultado[0]) {
+                        case '0':
+                            $class = "warning";
+                            //$this->eliminar_registro_archivo_lote($model_comprobante->id_comprobante,$claveAcceso,"firamdos");
+                            //$obj_comprobante->estado = 4;
+                            break;
+                        case '1':
+                            $class = "success";
+                            //$obj_comprobante->estado = 5;
+                            break;
+                        case '2':
+                            $class = "danger";
+                            //$this->eliminar_registro_archivo_lote($model_comprobante->id_comprobante,$claveAcceso,"firamdos");
+                            break;
+                    }
+                    sleep(3);
+                    $msg = respuesta_autorizacion_comprobante($claveAcceso);
+
+                    /*$msg = "<div class='alert text-center  alert-".$class."'>" .
+                        "<p> ".mensaje_envio_comprobante($resultado[0])."</p>"
+                        . "</div>";*/
+                }else{
+                    $this->eliminar_registro_archivo_lote($model_comprobante->id_comprobante,$claveAcceso,"firamdos");
+                }
+            }else{
+                $this->eliminar_registro_archivo_lote($model_comprobante->id_comprobante,$claveAcceso,"");
+            }
+        }
+        return $msg;
     }
 
-    public function enviar_documento_electronico(Request $request){
+    /*public function enviar_documento_electronico(Request $request){
 
-        $resultado = enviarComprobante("2901201901179244632500110010010000001141234567818.xml","2901201901179244632500110010010000001141234567818");
+        $resultado = enviarComprobante("0702201900179244632500110010010000001401234567813.xml","0702201900179244632500110010010000001401234567813");
         if($resultado){
             switch ($resultado[0]) {
                 case '0':
@@ -474,16 +578,18 @@ class ComprobanteController extends Controller
         return $msg;
     }
 
-    public function autorizacion_comprobante(){
-        $cliente = new SoapClient(env('URL_WS_ATURIZACION'));
-        //dd($cliente->__getFunctions());
-        dd($cliente->autorizacionComprobante(["claveAccesoComprobante"=>"1701201901179244632500110010010000000911234567811"]));
+    public function autorizacion_comprobante(Request $request){
+        respuesta_autorizacion_comprobante("0602201900179244632500110010010000001361234567817");
     }
 
     public function formulario_facturacion(Request $request){
         return view('adminlte.gestion.configuracion_facturacion.tipo_comprobantes.forms.form_facturacion');
     }
 
-
-
+    public function eliminar_registro_archivo_lote($id_comprobante,$claveAcceso,$firmados=""){
+        unlink(env('PATH_XML_FIRMADOS').$claveAcceso.".xml");
+        Comprobante::destroy($id_comprobante);
+        if($firmados!="")
+            unlink(env('PATH_XML_FIRMADOS').$claveAcceso.".xml");
+    }*/
 }

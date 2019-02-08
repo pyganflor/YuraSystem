@@ -40,7 +40,7 @@ class CodigoDaeController extends Controller
             $q->Where('cd.pais', 'like', '%' . $bus . '%');
         });
 
-        $listado = $listado->orderBy('cd.nombre', 'asc')->paginate(20);
+        $listado = $listado->orderBy('cd.anno', 'asc')->paginate(20);
 
         $datos = [
             'listado' => $listado
@@ -234,6 +234,29 @@ class CodigoDaeController extends Controller
                 '</div>';
         }
         return  $msg;
+
+    }
+
+    public function descactivar_codigo(Request $request){
+
+        $objCodigoDae = CodigoDae::find($request->id_codigo);
+        $objCodigoDae->estado = 0;
+        if($objCodigoDae->save()){
+            $success = true;
+            $msg = '<div class="alert alert-success text-center">' .
+                '<p> Se ha actualizado exitosamente el estado del código</p>'
+                . '</div>';
+        }else{
+            $success = false;
+            $msg = '<div class="alert alert-danger text-center">' .
+                '<p> Hubo un error al actualizar el estado, intente nuevamente</p>'
+                . '</div>';
+        }
+        return [
+            'mensaje' => $msg,
+            'success' => $success
+        ];
+
 
     }
 }

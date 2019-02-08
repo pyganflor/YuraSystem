@@ -4,7 +4,7 @@
         <input type="hidden" id="id_config"
                value="{!! isset($config_empresa[0]->id_configuracion_empresa) ? $config_empresa[0]->id_configuracion_empresa : '' !!}">
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-4">
                 <div class="form-group input-group">
                     <span class="input-group-addon" style="background-color: #e9ecef">Nombre comercial</span>
                     <input type="text" id="nombre_empresa" name="nombre_empresa" class="form-control" required maxlength="300" minlength="3"
@@ -12,12 +12,22 @@
                            value="{!! isset($config_empresa[0]->nombre) ? $config_empresa[0]->nombre : '' !!}">
                 </div>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-4">
                 <div class="form-group input-group">
                     <span class="input-group-addon" style="background-color: #e9ecef">Razón social</span>
                     <input type="text" id="razon_social" name="razon_social" class="form-control" required maxlength="300" minlength="3"
                            autocomplete="off" placeholder="Razón social"
                            value="{!! isset($config_empresa[0]->razon_social) ? $config_empresa[0]->razon_social : '' !!}">
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group input-group">
+                    <span class="input-group-addon" style="background-color: #e9ecef">País</span>
+                    <select id="codigo_pais" name="codigo_pais" class="form-control">
+                        @foreach($paises as $pais)
+                            <option {{ ($config_empresa[0]->codigo_pais == $pais->codigo) ? "selected" : "" }} value="{{$pais->codigo}}">{{$pais->nombre}}</option>
+                        @endforeach
+                    </select>
                 </div>
             </div>
             <div class="col-md-4">

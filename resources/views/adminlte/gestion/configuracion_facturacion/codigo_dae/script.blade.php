@@ -131,4 +131,20 @@
         }
 
     }
+
+    function desactivar_codigo(id_codigo){
+        modal_quest('modal_update_estado_codigo_dae', '<div class="alert alert-danger text-center"><i class="fa fa-fw fa-exclamation-triangle"></i> ¿Está seguro de desactivar este código DAE? </div>', '<i class="fa fa-fw fa-trash"></i> Desactivar código DAE', true, false, '{{isPC() ? '40%' : ''}}', function () {
+            $.LoadingOverlay('show');
+            var datos = {
+                _token: '{{csrf_token()}}',
+                id_codigo: id_codigo
+            };
+            post_jquery('{{url('codigo_dae/descactivar_codigo')}}', datos, function (retorno) {
+                cerrar_modals();
+                buscar_listado();
+            });
+            $.LoadingOverlay('hide');
+        });
+    }
+
 </script>

@@ -74,10 +74,14 @@ class ClienteController extends Controller
             ['estado',1]])->first()
             : $dataCliente = '';
 
+        isset($dataCliente->codigo_porcentaje_impuesto)
+            ? $tipoImpuesto = TipoImpuesto::where('codigo_impuesto',$dataCliente->codigo_porcentaje_impuesto)->get()
+            : $tipoImpuesto = [];
+
         return view('adminlte.gestion.postcocecha.clientes.forms.add_cliente',[
             'dataPais'=>Pais::all(),
             'dataCliente' => $dataCliente,
-            'tipoImpuestos' => TipoImpuesto::where('codigo_impuesto',$dataCliente->codigo_porcentaje_impuesto)->get(),
+             'tipoImpuestos' => $tipoImpuesto,
             'dataTipoIdentificacion' => TipoIdentificacion::where('estado',1)->get(),
             'impuestos' => Impuesto::all()
         ]);

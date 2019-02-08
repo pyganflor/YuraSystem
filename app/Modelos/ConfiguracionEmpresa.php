@@ -23,7 +23,8 @@ class ConfiguracionEmpresa extends Model
         'estado',
         'tallos_x_ramo',
         'unidad_medida',
-        'ramos_x_caja', // pendiente por programar el campo
+        'ramos_x_caja', // pendiente por programar el
+        'codigo_pais'
     ];
 
     public function clasificaciones_unitarias()

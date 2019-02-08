@@ -8,14 +8,15 @@
                         OPCIONES DE ENTREGA
                     </a>
                     <a href="javascript:void(0)" class="list-group-item list-group-item-action"
-                       title="Editar detalles de usuario" onclick="div_opcion_pedido_fijo(1)">
+                       onclick="div_opcion_pedido_fijo(1)">
                         DÍA SEMANA
                     </a>
                     <a href="javascript:void(0)" class="list-group-item list-group-item-action"
-                       title="Añadir nueva información" onclick="div_opcion_pedido_fijo(2)">
+                       onclick="div_opcion_pedido_fijo(2)">
                         DÍA MES
                     </a>
-                    <a href="javascript:void(0)" class="list-group-item list-group-item-action">
+                    <a href="javascript:void(0)" class="list-group-item list-group-item-action"
+                       onclick="div_opcion_pedido_fijo(3)" >
                         PERSONALIZADO
                     </a>
                 </div>
