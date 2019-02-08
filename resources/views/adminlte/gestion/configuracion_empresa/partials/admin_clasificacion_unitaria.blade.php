@@ -30,7 +30,7 @@
                 <tr>
                     <td class="text-center" style="border-color: #9d9d9d">
                         <input type="text" id="nombre_{{$unitaria->id_clasificacion_unitaria}}" required class="text-center" maxlength="25"
-                               name="nombre_{{$unitaria->id_clasificacion_unitaria}}" value="{{$unitaria->nombre}}">
+                               name="nombre_{{$unitaria->id_clasificacion_unitaria}}" value="{{$unitaria->nombre}}" placeholder="nombre|factor">
                     </td>
                     <td class="text-center" style="border-color: #9d9d9d">
                         <select name="id_unidad_medida_{{$unitaria->id_clasificacion_unitaria}}" required

@@ -15,6 +15,7 @@ class Envio extends Model
         'id_pedido',
         'fecha_envio',
         'fecha_registro',
+        'estado',   // default: 0
     ];
 
     public function detalles()
