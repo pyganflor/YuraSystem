@@ -17,10 +17,12 @@
             var cant_input = $("tbody#" + id_tbody + " tr td div input").length;
             var cant = cant_input + 1;
             var pattern, placeholder, name_span;
-            id_tbody == 'campos_clasifc_x_ramo' ? placeholder = "placeholder='Sólo números'" : '';
+            id_tbody == 'campos_clasifc_x_ramo' ? placeholder = "placeholder='Solo números'" : '';
+            id_tbody == 'campos_clasifc_x_ramo' ? name_span = "Cantidad" : '';
             id_tbody === 'campos_clasifc_unitaria' ? placeholder = "placeholder='30|7'" : '';
+            id_tbody === 'campos_clasifc_unitaria' ? name_span = "Cantidad" : '';
             id_tbody === 'empaques' ? name_span = "Nombre" : '';
-            id_tbody === 'campos_clasifc_x_ramo' ? pattern = "pattern='^([0-9])*$'" : '';
+            //id_tbody === 'campos_clasifc_x_ramo' ? pattern = "pattern='^([0-9])*$'" : '';
 
             if ($.isArray(id_input)) {
                 var datos = {

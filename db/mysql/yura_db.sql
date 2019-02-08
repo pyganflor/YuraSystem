@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 08-02-2019 a las 21:56:52
+-- Tiempo de generación: 08-02-2019 a las 22:32:16
 -- Versión del servidor: 10.1.36-MariaDB
 -- Versión de PHP: 7.2.11
 
@@ -67,6 +67,17 @@ CREATE TABLE `bitacora` (
   `observacion` varchar(180) COLLATE utf8_bin DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
+--
+-- Volcado de datos para la tabla `bitacora`
+--
+
+INSERT INTO `bitacora` (`id_bitacora`, `tabla`, `codigo`, `fecha_registro`, `accion`, `id_usuario`, `ip`, `observacion`) VALUES
+(1, 'CONFIGURACION_EMPRESA', 3, '2019-02-08 16:31:10', 'I', 1, '127.0.0.1', 'INSERCIÓN SATISFACTORIA DE UNA NUEVA CLASIFICACIÓN UNITARIA'),
+(2, 'CLASIFICACION_RAMO', 1, '2019-02-08 16:31:10', 'I', 1, '127.0.0.1', 'INSERCIÓN SATISFACTORIA DE UNA NUEVA CLASIFICACIÓN POR RAMOS'),
+(3, 'CONFIGURACION_EMPRESA', 3, '2019-02-08 16:31:31', 'I', 1, '127.0.0.1', 'INSERCIÓN SATISFACTORIA DE UNA NUEVA CLASIFICACIÓN UNITARIA'),
+(4, 'CLASIFICACION_RAMO', 1, '2019-02-08 16:31:31', 'I', 1, '127.0.0.1', 'INSERCIÓN SATISFACTORIA DE UNA NUEVA CLASIFICACIÓN POR RAMOS'),
+(5, 'CLASIFICACION_RAMO', 1, '2019-02-08 16:31:31', 'I', 1, '127.0.0.1', 'INSERCIÓN SATISFACTORIA DE UN NUEVO EMPAQUE');
+
 -- --------------------------------------------------------
 
 --
@@ -83,6 +94,13 @@ CREATE TABLE `clasificacion_ramo` (
   `estandar` tinyint(1) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
+--
+-- Volcado de datos para la tabla `clasificacion_ramo`
+--
+
+INSERT INTO `clasificacion_ramo` (`id_clasificacion_ramo`, `estado`, `fecha_registro`, `id_configuracion_empresa`, `id_unidad_medida`, `nombre`, `estandar`) VALUES
+(1, 1, '2019-02-08 16:29:31', 1, 2, '250', 1);
+
 -- --------------------------------------------------------
 
 --
@@ -96,10 +114,17 @@ CREATE TABLE `clasificacion_unitaria` (
   `estado` tinyint(1) NOT NULL DEFAULT '1',
   `id_configuracion_empresa` int(11) NOT NULL,
   `id_unidad_medida` int(11) DEFAULT '1',
-  `id_clasificacion_ramo_estandar` int(11) NOT NULL DEFAULT '1',
-  `id_clasificacion_ramo_real` int(11) NOT NULL DEFAULT '1',
+  `id_clasificacion_ramo_estandar` int(11) DEFAULT NULL,
+  `id_clasificacion_ramo_real` int(11) DEFAULT NULL,
   `tallos_x_ramo` int(11) NOT NULL DEFAULT '5'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+--
+-- Volcado de datos para la tabla `clasificacion_unitaria`
+--
+
+INSERT INTO `clasificacion_unitaria` (`id_clasificacion_unitaria`, `nombre`, `fecha_registro`, `estado`, `id_configuracion_empresa`, `id_unidad_medida`, `id_clasificacion_ramo_estandar`, `id_clasificacion_ramo_real`, `tallos_x_ramo`) VALUES
+(3, '10|25', '2019-02-08 16:27:26', 1, 1, 2, 1, 1, 5);
 
 -- --------------------------------------------------------
 
@@ -227,7 +252,7 @@ CREATE TABLE `configuracion_empresa` (
   `ramos_x_caja` int(11) NOT NULL,
   `razon_social` varchar(300) COLLATE utf8_bin NOT NULL,
   `direccion_matriz` varchar(500) COLLATE utf8_bin NOT NULL,
-  `codigo_pais` int(11) NOT NULL,
+  `codigo_pais` char(2) COLLATE utf8_bin NOT NULL,
   `direccion_establecimiento` varchar(300) COLLATE utf8_bin NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
@@ -236,7 +261,7 @@ CREATE TABLE `configuracion_empresa` (
 --
 
 INSERT INTO `configuracion_empresa` (`id_configuracion_empresa`, `nombre`, `cantidad_usuarios`, `cantidad_hectareas`, `propagacion`, `campo`, `postcocecha`, `fecha_registro`, `estado`, `moneda`, `ramos_x_caja`, `razon_social`, `direccion_matriz`, `codigo_pais`, `direccion_establecimiento`) VALUES
-(1, 'Pyganflor', 5, '15000.00', '||', '|', 'Cosecha|Clasificación en verde|Apertura|Clasificación en blanco|Frío', '2018-11-07 08:46:29', 1, 'usd', 40, '', '', 0, '');
+(1, 'Pyganflor', 5, '15000.00', '||', '|', 'Cosecha|Clasificación en verde|Apertura|Clasificación en blanco|Frío', '2018-11-07 08:46:29', 1, 'usd', 40, 'Pyganflor S.A.', 'Pasaje La Paz E-901 y Ave. 6 de Diciembre', 'EC', 'Vía San José de Minas, Vía al Pisque');
 
 -- --------------------------------------------------------
 
@@ -542,6 +567,13 @@ CREATE TABLE `empaque` (
   `fecha_registro` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `tipo` char(1) COLLATE utf8_bin NOT NULL DEFAULT 'C' COMMENT 'C => Caja E => Envoltura P => Presentacion'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+--
+-- Volcado de datos para la tabla `empaque`
+--
+
+INSERT INTO `empaque` (`id_empaque`, `nombre`, `id_configuracion_empresa`, `estado`, `fecha_registro`, `tipo`) VALUES
+(1, 'Half|0.5', 1, 1, '2019-02-08 16:31:31', 'C');
 
 -- --------------------------------------------------------
 
@@ -2974,19 +3006,19 @@ ALTER TABLE `agencia_transporte`
 -- AUTO_INCREMENT de la tabla `bitacora`
 --
 ALTER TABLE `bitacora`
-  MODIFY `id_bitacora` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_bitacora` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `clasificacion_ramo`
 --
 ALTER TABLE `clasificacion_ramo`
-  MODIFY `id_clasificacion_ramo` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_clasificacion_ramo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `clasificacion_unitaria`
 --
 ALTER TABLE `clasificacion_unitaria`
-  MODIFY `id_clasificacion_unitaria` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_clasificacion_unitaria` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `clasificacion_verde`
@@ -3136,7 +3168,7 @@ ALTER TABLE `documento`
 -- AUTO_INCREMENT de la tabla `empaque`
 --
 ALTER TABLE `empaque`
-  MODIFY `id_empaque` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_empaque` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `envio`

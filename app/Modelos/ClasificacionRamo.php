@@ -18,6 +18,7 @@ class ClasificacionRamo extends Model
         'fecha_registro',
         'estado',
         'id_unidad_medida',
+        'estandar',
     ];
 
     public function configuracion_empresa()
