@@ -90,7 +90,7 @@ class EnvioController extends Controller
                                 $accion = 'U';
                             }
                             $objDetalleEnvio->id_especificacion     = $detalle_envio[0];
-                            $objDetalleEnvio->id_envio              =   $model->id_envio;
+                            $objDetalleEnvio->id_envio              = $model->id_envio;
                             $objDetalleEnvio->id_agencia_transporte = $detalle_envio[1];
                             $objDetalleEnvio->cantidad              = $detalle_envio[2];
                             $objDetalleEnvio->envio                 = $detalle_envio[3];
@@ -202,7 +202,7 @@ class EnvioController extends Controller
                     ['comp.estado','!=',5]
                 ]);*/
 
-        $busquedaEstado != '' ?  $listado = $listado->where('de.estado',$request->estado) : $listado = $listado->where('de.estado',0);
+        $busquedaEstado != '' ?  $listado = $listado->where('e.estado',$request->estado) : $listado = $listado->where('e.estado',0);
 
         $listado = $listado->orderBy('e.id_envio','Desc')
             ->select('p.*','dc.codigo_pais','dc.direccion','dc.provincia','e.*','de.*','es.nombre','at.nombre as at_nombre','at.tipo_agencia','dc.nombre as c_nombre')
@@ -274,7 +274,7 @@ class EnvioController extends Controller
         if ($busquedaDesde != '' && $request->hasta != '')
             $listado = $listado->whereBetween('de.fecha_envio', [$busquedaDesde,$busquedaHasta]);
         if($busquedaEsatdo != '')
-            $listado = $listado->where('de.estado',$request->estado);
+            $listado = $listado->where('e.estado',$request->estado);
 
         $listado = $listado->orderBy('e.fecha_envio', 'desc')->distinct()->get(20);
       //  dd($listado);

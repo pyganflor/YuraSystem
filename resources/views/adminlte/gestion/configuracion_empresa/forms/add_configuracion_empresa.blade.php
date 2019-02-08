@@ -217,7 +217,7 @@
                                 <td>
                                     <div class="input-group">
                                         <span class="input-group-addon" style="background-color: #e9ecef">Cantidad</span>
-                                        <input type="text" placeholder="Sólo números" id="clasificacion_unitaria_{{$key +1}}"
+                                        <input type="text" placeholder="Nombre | factor" id="clasificacion_unitaria_{{$key +1}}"
                                                name="clasificacion_unitaria_{{$key +1}}" required="" class="form-control" minlength="1"
                                                maxlength="10"
                                                {!! $clUnit->estado == 0 ? 'disabled' : '' !!} value="{{$clUnit->nombre}}">
@@ -326,7 +326,7 @@
                                         <div class="input-group">
                                             <span class="input-group-addon" style="background-color: #e9ecef">Nombre</span>
                                             <input type="text" id="campo_empaque_{{$key+1}}" name="campo_empaque_{{$key+1}}" required=""
-                                                   class="form-control" minlength="1" maxlength="255"
+                                                   class="form-control" minlength="1" maxlength="255" placeholder="Nombre | Factor"
                                                    {!! $empaque->estado == 0 ? 'disabled' : '' !!} value="{{$empaque->nombre}}">
                                         </div>
                                         <div class="input-group">
