@@ -15,4 +15,5 @@ Route::get('pedidos/listar_agencias_carga', 'OrdenSemanalController@listar_agenc
 Route::post('pedidos/editar_coloracion', 'OrdenSemanalController@editar_coloracion');
 Route::post('pedidos/editar_marcacion', 'OrdenSemanalController@editar_marcacion');
 Route::post('pedidos/update_distribucion', 'OrdenSemanalController@update_distribucion');
+Route::post('pedidos/update_pedido_orden_semanal', 'OrdenSemanalController@update_pedido_orden_semanal');
 

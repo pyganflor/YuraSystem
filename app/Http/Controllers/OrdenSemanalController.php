@@ -3,7 +3,8 @@
 namespace yura\Http\Controllers;
 
 use Illuminate\Http\Request;
-use yura\Modelos\AgenciaCarga;
+use Illuminate\Support\Facades\DB;
+use Validator;
 use yura\Modelos\ClasificacionRamo;
 use yura\Modelos\Cliente;
 use yura\Modelos\ClientePedidoEspecificacion;
@@ -17,8 +18,6 @@ use yura\Modelos\Marcacion;
 use yura\Modelos\Pedido;
 use yura\Modelos\UnidadMedida;
 use yura\Modelos\Variedad;
-use Illuminate\Support\Facades\DB;
-use Validator;
 
 class OrdenSemanalController extends Controller
 {
@@ -263,7 +262,7 @@ class OrdenSemanalController extends Controller
             'coloraciones' => $coloraciones,
             'calibres' => getCalibresRamo(),
             'variedades' => getVariedades(),
-            'unidades_medida' => getUnidadesMedida(),
+            'unidades_medida' => UnidadMedida::All()->where('estado', '=', 1)->where('tipo', '=', 'L'),
             'agencias' => $pedido->cliente->cliente_agencia_carga,
             'cajas' => Empaque::All()->where('estado', '=', 1)->where('tipo', '=', 'C'),
             'envolturas' => Empaque::All()->where('estado', '=', 1)->where('tipo', '=', 'E'),
@@ -364,7 +363,7 @@ class OrdenSemanalController extends Controller
             $model->nombre = str_limit(mb_strtoupper(espacios($request->nombre)), 250);
 
             if ($model->save()) {
-                $success = false;
+                $success = true;
                 $msg = '<div class="alert alert-success text-center">' .
                     '<p> Se ha actualizado la marcación satisfactoriamente</p>'
                     . '</div>';
@@ -400,26 +399,210 @@ class OrdenSemanalController extends Controller
 
     public function update_distribucion(Request $request)
     {
-        dd($request->all());
-        $valida = Validator::make($request->all(), [
-            'pedido' => 'required|',
-        ], [
-            'pedido.required' => 'El pedido es obligatorio',
-        ]);
-        if (!$valida->fails()) {
-            $model = Marcacion::find($request->id_marcacion);
-            $model->nombre = str_limit(mb_strtoupper(espacios($request->nombre)), 250);
+        //dd($request->all());
+        $success = true;
+        $msg = '';
+        if (count($request->arreglo) > 0) {
+            $pedido = Pedido::find($request->pedido);
+            foreach ($request->arreglo as $item) {
+                /* ========= MARCACIONES =========*/
+                if ($item['tipo'] == 'M') {
+                    $model = Marcacion::find($item['id_marcacion']);
+                    $model->nombre = str_limit(mb_strtoupper(espacios($item['nombre'])), 250);
 
-            if ($model->save()) {
-                $success = false;
+                    if ($model->save()) {
+                        bitacora('marcacion', $model->id_marcacion, 'U', 'Actualización satisfactoria de una marcación');
+                    } else {
+                        $success = false;
+                        $msg .= '<div class="alert alert-warning text-center">' .
+                            '<p> Ha ocurrido un problema al guardar la marcación "' . $item['nombre'] . '" al sistema</p>'
+                            . '</div>';
+                    }
+                }
+                /* ========= COLORACIONES =========*/
+                if ($item['tipo'] == 'C') {
+                    $marcaciones = $pedido->detalles[0]->cliente_especificacion->especificacion->especificacionesEmpaque[0]->marcaciones;
+                    $ids_marcaciones = [];
+                    foreach ($marcaciones as $m) {
+                        array_push($ids_marcaciones, $m->id_marcacion);
+                    }
+                    $coloraciones = DB::table('coloracion as c')
+                        ->select('c.id_coloracion', 'c.nombre')
+                        ->whereIn('c.id_marcacion', $ids_marcaciones)
+                        ->where('c.nombre', '=', $item['color'])
+                        ->get();
+
+                    foreach ($coloraciones as $color) {
+                        $model = Coloracion::find($color->id_coloracion);
+                        $model->nombre = str_limit(str_replace(' ', '_', espacios($item['nombre'])), 250);
+                        $model->fondo = $item['fondo'];
+                        $model->texto = $item['texto'];
+
+                        if ($model->save()) {
+                            bitacora('coloracion', $model->id_coloracion, 'U', 'Actualización satisfactoria de una coloracion');
+                        } else {
+                            $success = false;
+                            $msg .= '<div class="alert alert-warning text-center">' .
+                                '<p> Ha ocurrido un problema al guardar la coloración "' . $item['nombre'] . '" al sistema</p>'
+                                . '</div>';
+                        }
+                    }
+                }
+                /* ========= CANTIDADES =========*/
+                if ($item['tipo'] == 'X') {
+                    $marcacion = Marcacion::find($item['id_marcacion']);
+                    $coloracion = $marcacion->getColoracionByName(str_replace(' ', '_', espacios($item['nombre'])));
+                    $accion = 'U';
+                    $observacion = 'Modificación';
+                    if ($coloracion == '') {
+                        $coloracion = new Coloracion();
+                        $coloracion->id_marcacion = $marcacion->id_marcacion;
+                        $coloracion->nombre = str_limit(str_replace(' ', '_', espacios($item['nombre'])), 250);
+                        $coloracion->fondo = $item['fondo'];
+                        $coloracion->texto = $item['texto'];
+                        $accion = 'I';
+                        $observacion = 'Inserción';
+                    }
+                    $coloracion->cantidad = $item['cantidad'];
+
+                    if ($coloracion->save()) {
+                        bitacora('coloracion', $coloracion->id_coloracion, $accion, $observacion . ' satisfactoria de una coloración');
+                    } else {
+                        $success = false;
+                        $msg .= '<div class="alert alert-warning text-center">' .
+                            '<p> Ha ocurrido un problema al guardar la cantidad de ramos para la marcación "' . $marcacion->nombre .
+                            '" y coloración "' . espacios($item['nombre']) .
+                            '" al sistema</p>'
+                            . '</div>';
+                    }
+                }
+            }
+            if ($success) {
                 $msg = '<div class="alert alert-success text-center">' .
-                    '<p> Se ha actualizado la marcación satisfactoriamente</p>'
+                    '<p> Se ha actualizado la información satisfactoriamente</p>'
                     . '</div>';
-                bitacora('marcacion', $model->id_marcacion, 'U', 'Actualización satisfactoria de una marcación');
+            }
+        } else {
+            $success = false;
+            $msg = '<div class="alert alert-warning text-center">' .
+                '<p> No hay modificaciones que realizar</p>'
+                . '</div>';
+        }
+
+        return [
+            'mensaje' => $msg,
+            'success' => $success
+        ];
+    }
+
+    public function update_pedido_orden_semanal(Request $request)
+    {
+        $valida = Validator::make($request->all(), [
+            'id_pedido' => 'required|',
+            'id_especificacion_empaque' => 'required|',
+            'id_detalle_especificacionempaque' => 'required|',
+            'fecha_pedido' => 'required|',
+            'cantidad_piezas' => 'required|',
+            'id_empaque' => 'required|',
+            'cantidad_ramos' => 'required|',
+            'id_clasificacion_ramo' => 'required|',
+            'id_variedad' => 'required|',
+            'id_empaque_e' => 'required|',
+            'id_empaque_p' => 'required|',
+            'id_agencia_carga' => 'required|',
+        ], [
+            'id_pedido.required' => 'El pedido es obligatorio',
+            'id_especificacion_empaque.required' => 'La especificación-empaque es obligatoria',
+            'id_detalle_especificacionempaque.required' => 'El detalle_especificación-empaque es obligatorio',
+            'fecha_pedido.required' => 'La fecha del pedido es obligatoria',
+            'cantidad_piezas.required' => 'La cantidad de piezas es obligatoria',
+            'id_empaque.required' => 'La pieza es obligatoria',
+            'id_clasificacion_ramo.required' => 'El calibre de los ramos es obligatorio',
+            'id_variedad.required' => 'La variedad es obligatoria',
+            'id_empaque_p.required' => 'La presentación es obligatoria',
+            'id_agencia_carga.required' => 'La agencia de carga es obligatoria',
+        ]);
+        $success = true;
+        $msg = '';
+        if (!$valida->fails()) {
+            /* ============= TABLA PEDIDO ==============*/
+            $pedido = Pedido::find($request->id_pedido);
+            if ($request->fecha_pedido >= date('Y-m-d')) {
+                $pedido->fecha_pedido = $request->fecha_pedido;
+                $descripcion = $request->cantidad_piezas . ' ' . explode('|', Empaque::find($request->id_empaque)->nombre)[0] . ' de ' .
+                    $request->cantidad_ramos . ' ramos ' . ClasificacionRamo::find($request->id_clasificacion_ramo)->nombre .
+                    ClasificacionRamo::find($request->id_clasificacion_ramo)->unidad_medida->siglas . ' ' . Variedad::find($request->id_variedad)->siglas . ' ' .
+                    explode('|', Empaque::find($request->id_empaque_e)->nombre)[0] . ' ' .
+                    explode('|', Empaque::find($request->id_empaque_p)->nombre)[0] . ' ' . $request->tallos_x_ramos . ' ' .
+                    $request->longitud_ramo . (UnidadMedida::find($request->id_unidad_medida) != '' ? UnidadMedida::find($request->id_unidad_medida)->siglas : '');
+                $pedido->descripcion = $descripcion;
+
+                if ($pedido->save()) {
+                    bitacora('pedido', $pedido->id_pedido, 'U', 'Actualización satisfactoria de un pedido');
+
+                    /* ============= TABLA ESPECIFICACION_EMPAQUE ==============*/
+                    $esp_emp = EspecificacionEmpaque::find($request->id_especificacion_empaque);
+                    $esp_emp->cantidad = $request->cantidad_piezas;
+                    $esp_emp->id_empaque = $request->id_empaque;
+
+                    if ($esp_emp->save()) {
+                        bitacora('especificacion_empaque', $esp_emp->id_especificacion_empaque, 'U', 'Actualización satisfactoria de una especificación-empaque');
+
+                        /* ========== TABLA ESPECIFICACION ==============*/
+                        $especificacion = $esp_emp->especificacion;
+                        $especificacion->nombre = $especificacion->descripcion = $descripcion;
+
+                        if ($especificacion->save()) {
+                            bitacora('especificacion', $especificacion->id_especificacion, 'U', 'Actualización satisfactoria de una especificación');
+
+                            /* =========== TABLA DETALLE_ESPECIFICACIONEMPAQUE ==============*/
+                            $det_esp = DetalleEspecificacionEmpaque::find($request->id_detalle_especificacionempaque);
+                            $det_esp->id_variedad = $request->id_variedad;
+                            $det_esp->id_clasificacion_ramo = $request->id_clasificacion_ramo;
+                            $det_esp->cantidad = $request->cantidad_ramos;
+                            $det_esp->id_empaque_e = $request->id_empaque_e;
+                            $det_esp->id_empaque_p = $request->id_empaque_p;
+                            $det_esp->tallos_x_ramos = $request->tallos_x_ramos;
+                            $det_esp->longitud_ramo = $request->longitud_ramo;
+                            $det_esp->id_unidad_medida = $request->id_unidad_medida;
+
+                            if ($det_esp->save()) {
+                                bitacora('especificacion', $especificacion->id_especificacion, 'U', 'Actualización satisfactoria de un detalle-especificación');
+
+                            } else {
+                                $success = false;
+                                $msg = '<div class="alert alert-warning text-center">' .
+                                    '<p> Ha ocurrido un problema al guardar la detalle-especificación</p>'
+                                    . '</div>';
+                            }
+                        } else {
+                            $success = false;
+                            $msg = '<div class="alert alert-warning text-center">' .
+                                '<p> Ha ocurrido un problema al guardar la especificación</p>'
+                                . '</div>';
+                        }
+                    } else {
+                        $success = false;
+                        $msg = '<div class="alert alert-warning text-center">' .
+                            '<p> Ha ocurrido un problema al guardar la especificación-empaque</p>'
+                            . '</div>';
+                    }
+                } else {
+                    $success = false;
+                    $msg = '<div class="alert alert-warning text-center">' .
+                        '<p> Ha ocurrido un problema al guardar el pedido</p>'
+                        . '</div>';
+                }
+
+                if ($success) {
+                    $msg = '<div class="alert alert-success text-center">' .
+                        '<p> Se ha actualizado el pedido satisfactoriamente</p>'
+                        . '</div>';
+                }
             } else {
                 $success = false;
                 $msg = '<div class="alert alert-warning text-center">' .
-                    '<p> Ha ocurrido un problema al guardar la información al sistema</p>'
+                    '<p> La fecha del pedido debe ser a partir de la fecha actual</p>'
                     . '</div>';
             }
         } else {

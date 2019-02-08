@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 18-01-2019 a las 14:51:48
+-- Tiempo de generación: 08-02-2019 a las 21:56:52
 -- Versión del servidor: 10.1.36-MariaDB
 -- Versión de PHP: 7.2.11
 
@@ -36,18 +36,6 @@ CREATE TABLE `agencia_carga` (
   `fecha_registro` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
---
--- Volcado de datos para la tabla `agencia_carga`
---
-
-INSERT INTO `agencia_carga` (`id_agencia_carga`, `nombre`, `codigo`, `estado`, `fecha_registro`) VALUES
-(3, 'Agencia 3', 'AG3', 1, '2018-11-08 16:44:10'),
-(4, 'Agencia 2', 'AG2', 1, '2018-11-08 16:44:15'),
-(5, 'Agencia 1', 'AG1', 1, '2018-11-09 09:29:23'),
-(7, 'Agencia 5', 'AG5', 1, '2018-11-09 10:42:18'),
-(8, 'Agencia 6', 'AG6', 1, '2018-11-09 10:42:30'),
-(9, 'Agencia 4', 'AG4', 1, '2018-11-15 12:51:34');
-
 -- --------------------------------------------------------
 
 --
@@ -61,15 +49,6 @@ CREATE TABLE `agencia_transporte` (
   `estado` tinyint(1) NOT NULL DEFAULT '1',
   `fecha_registro` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
---
--- Volcado de datos para la tabla `agencia_transporte`
---
-
-INSERT INTO `agencia_transporte` (`id_agencia_transporte`, `nombre`, `tipo_agencia`, `estado`, `fecha_registro`) VALUES
-(1, 'AT3', 'A', 1, '2018-12-17 19:13:32'),
-(2, 'AT1', 'A', 1, '2018-12-17 19:12:58'),
-(3, 'AT2', 'A', 1, '2018-12-17 19:13:20');
 
 -- --------------------------------------------------------
 
@@ -88,34 +67,6 @@ CREATE TABLE `bitacora` (
   `observacion` varchar(180) COLLATE utf8_bin DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
---
--- Volcado de datos para la tabla `bitacora`
---
-
-INSERT INTO `bitacora` (`id_bitacora`, `tabla`, `codigo`, `fecha_registro`, `accion`, `id_usuario`, `ip`, `observacion`) VALUES
-(1, 'CLASIFICACION_VERDE', 1, '2019-01-17 17:33:49', 'U', 1, '127.0.0.1', 'TERMINACION SATISFACTIA DE UNA CLASIFICACION EN VERDE'),
-(2, 'LOTE_RE', 1, '2019-01-17 17:33:51', 'I', 1, '127.0.0.1', 'INSERCIÓN SATISFACTORIA DE UN NUEVO LOTE RE'),
-(3, 'STOCK_APERTURA', 1, '2019-01-17 17:33:51', 'I', 1, '127.0.0.1', 'INSERCIÓN SATISFACTORIA DE UN NUEVO LOTE RE A STOCK'),
-(4, 'LOTE_RE', 2, '2019-01-17 17:33:51', 'I', 1, '127.0.0.1', 'INSERCIÓN SATISFACTORIA DE UN NUEVO LOTE RE'),
-(5, 'STOCK_APERTURA', 2, '2019-01-17 17:33:51', 'I', 1, '127.0.0.1', 'INSERCIÓN SATISFACTORIA DE UN NUEVO LOTE RE A STOCK'),
-(6, 'LOTE_RE', 3, '2019-01-17 17:33:51', 'I', 1, '127.0.0.1', 'INSERCIÓN SATISFACTORIA DE UN NUEVO LOTE RE'),
-(7, 'STOCK_APERTURA', 3, '2019-01-17 17:33:51', 'I', 1, '127.0.0.1', 'INSERCIÓN SATISFACTORIA DE UN NUEVO LOTE RE A STOCK'),
-(8, 'LOTE_RE', 4, '2019-01-17 17:33:51', 'I', 1, '127.0.0.1', 'INSERCIÓN SATISFACTORIA DE UN NUEVO LOTE RE'),
-(9, 'STOCK_APERTURA', 4, '2019-01-17 17:33:52', 'I', 1, '127.0.0.1', 'INSERCIÓN SATISFACTORIA DE UN NUEVO LOTE RE A STOCK'),
-(10, 'LOTE_RE', 5, '2019-01-17 17:33:52', 'I', 1, '127.0.0.1', 'INSERCIÓN SATISFACTORIA DE UN NUEVO LOTE RE'),
-(11, 'STOCK_APERTURA', 5, '2019-01-17 17:33:52', 'I', 1, '127.0.0.1', 'INSERCIÓN SATISFACTORIA DE UN NUEVO LOTE RE A STOCK'),
-(12, 'LOTE_RE', 6, '2019-01-17 17:33:52', 'I', 1, '127.0.0.1', 'INSERCIÓN SATISFACTORIA DE UN NUEVO LOTE RE'),
-(13, 'STOCK_APERTURA', 6, '2019-01-17 17:33:52', 'I', 1, '127.0.0.1', 'INSERCIÓN SATISFACTORIA DE UN NUEVO LOTE RE A STOCK'),
-(14, 'LOTE_RE', 7, '2019-01-17 17:33:52', 'I', 1, '127.0.0.1', 'INSERCIÓN SATISFACTORIA DE UN NUEVO LOTE RE'),
-(15, 'STOCK_APERTURA', 7, '2019-01-17 17:33:52', 'I', 1, '127.0.0.1', 'INSERCIÓN SATISFACTORIA DE UN NUEVO LOTE RE A STOCK'),
-(16, 'LOTE_RE', 8, '2019-01-17 17:33:52', 'I', 1, '127.0.0.1', 'INSERCIÓN SATISFACTORIA DE UN NUEVO LOTE RE'),
-(17, 'STOCK_APERTURA', 8, '2019-01-17 17:33:52', 'I', 1, '127.0.0.1', 'INSERCIÓN SATISFACTORIA DE UN NUEVO LOTE RE A STOCK'),
-(18, 'LOTE_RE', 9, '2019-01-17 17:33:52', 'I', 1, '127.0.0.1', 'INSERCIÓN SATISFACTORIA DE UN NUEVO LOTE RE'),
-(19, 'STOCK_APERTURA', 9, '2019-01-17 17:33:53', 'I', 1, '127.0.0.1', 'INSERCIÓN SATISFACTORIA DE UN NUEVO LOTE RE A STOCK'),
-(20, 'LOTE_RE', 10, '2019-01-17 17:33:53', 'I', 1, '127.0.0.1', 'INSERCIÓN SATISFACTORIA DE UN NUEVO LOTE RE'),
-(21, 'STOCK_APERTURA', 10, '2019-01-17 17:33:53', 'I', 1, '127.0.0.1', 'INSERCIÓN SATISFACTORIA DE UN NUEVO LOTE RE A STOCK'),
-(22, 'USUARIO', 1, '2019-01-18 08:17:50', 'L', 1, '127.0.0.1', 'INICIO DE SESIÓN SATISFACTORIO. USUARIO:RAFAEL PRATS RECASEN');
-
 -- --------------------------------------------------------
 
 --
@@ -131,19 +82,6 @@ CREATE TABLE `clasificacion_ramo` (
   `nombre` varchar(25) COLLATE utf8_bin NOT NULL,
   `estandar` tinyint(1) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
---
--- Volcado de datos para la tabla `clasificacion_ramo`
---
-
-INSERT INTO `clasificacion_ramo` (`id_clasificacion_ramo`, `estado`, `fecha_registro`, `id_configuracion_empresa`, `id_unidad_medida`, `nombre`, `estandar`) VALUES
-(1, 1, '2018-11-07 08:46:30', 1, 2, '250', 1),
-(2, 1, '2018-11-16 11:36:15', 1, 2, '500', 0),
-(3, 1, '2018-11-16 11:36:15', 1, 2, '750', 0),
-(4, 1, '2018-11-16 11:36:16', 1, 2, '1000', 0),
-(5, 1, '2018-11-16 11:36:16', 1, 2, '1250', 0),
-(6, 1, '2018-11-20 09:29:38', 1, 1, '250', 0),
-(7, 1, '2018-12-20 16:44:25', 1, 2, '125', 0);
 
 -- --------------------------------------------------------
 
@@ -163,18 +101,6 @@ CREATE TABLE `clasificacion_unitaria` (
   `tallos_x_ramo` int(11) NOT NULL DEFAULT '5'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
---
--- Volcado de datos para la tabla `clasificacion_unitaria`
---
-
-INSERT INTO `clasificacion_unitaria` (`id_clasificacion_unitaria`, `nombre`, `fecha_registro`, `estado`, `id_configuracion_empresa`, `id_unidad_medida`, `id_clasificacion_ramo_estandar`, `id_clasificacion_ramo_real`, `tallos_x_ramo`) VALUES
-(1, '20|12.5', '2018-11-07 08:46:30', 1, 1, 2, 1, 1, 10),
-(2, '30|8.33', '2018-11-07 08:46:30', 1, 1, 2, 1, 3, 5),
-(3, '40|6.25', '2018-11-07 08:46:30', 1, 1, 2, 1, 4, 5),
-(4, '50|5', '2018-11-07 08:46:30', 1, 1, 2, 1, 5, 5),
-(6, '60|20', '2018-11-08 12:11:52', 1, 1, 1, 6, 6, 20),
-(7, '10|25', '2018-12-10 10:37:41', 0, 1, 2, 1, 1, 5);
-
 -- --------------------------------------------------------
 
 --
@@ -188,15 +114,9 @@ CREATE TABLE `clasificacion_verde` (
   `fecha_ingreso` date NOT NULL,
   `id_semana` int(11) NOT NULL,
   `activo` tinyint(1) NOT NULL DEFAULT '1',
-  `personal` int(11) DEFAULT NULL
+  `personal` int(11) DEFAULT NULL,
+  `hora_inicio` varchar(5) COLLATE utf8_bin NOT NULL DEFAULT '08:00'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
---
--- Volcado de datos para la tabla `clasificacion_verde`
---
-
-INSERT INTO `clasificacion_verde` (`id_clasificacion_verde`, `fecha_registro`, `estado`, `fecha_ingreso`, `id_semana`, `activo`, `personal`) VALUES
-(1, '2019-01-16 12:58:03', 1, '2019-01-16', 3, 0, 150);
 
 -- --------------------------------------------------------
 
@@ -209,15 +129,6 @@ CREATE TABLE `cliente` (
   `fecha_registro` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `estado` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
---
--- Volcado de datos para la tabla `cliente`
---
-
-INSERT INTO `cliente` (`id_cliente`, `fecha_registro`, `estado`) VALUES
-(1, '2018-12-17 14:08:39', 1),
-(2, '2018-12-17 15:22:25', 1),
-(3, '2019-01-08 12:43:19', 1);
 
 -- --------------------------------------------------------
 
@@ -233,21 +144,6 @@ CREATE TABLE `cliente_agenciacarga` (
   `fecha_registro` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
---
--- Volcado de datos para la tabla `cliente_agenciacarga`
---
-
-INSERT INTO `cliente_agenciacarga` (`id_cliente_agencia_carga`, `id_cliente`, `id_agencia_carga`, `estado`, `fecha_registro`) VALUES
-(1, 1, 5, 1, '2018-12-17 14:17:04'),
-(2, 1, 4, 1, '2018-12-17 14:17:04'),
-(3, 2, 5, 1, '2018-12-17 15:23:02'),
-(4, 2, 4, 1, '2018-12-17 15:23:02'),
-(5, 2, 3, 1, '2018-12-17 15:23:02'),
-(6, 2, 9, 1, '2018-12-17 15:23:03'),
-(7, 1, 8, 1, '2018-12-17 15:45:36'),
-(8, 3, 5, 1, '2019-01-08 12:44:54'),
-(9, 3, 8, 1, '2019-01-08 12:44:54');
-
 -- --------------------------------------------------------
 
 --
@@ -260,34 +156,39 @@ CREATE TABLE `cliente_pedido_especificacion` (
   `id_especificacion` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
+-- --------------------------------------------------------
+
 --
--- Volcado de datos para la tabla `cliente_pedido_especificacion`
+-- Estructura de tabla para la tabla `codigo_dae`
 --
 
-INSERT INTO `cliente_pedido_especificacion` (`id_cliente_pedido_especificacion`, `id_cliente`, `id_especificacion`) VALUES
-(1, 1, 1),
-(2, 1, 2),
-(3, 1, 3),
-(4, 1, 4),
-(5, 1, 8),
-(6, 1, 9),
-(7, 2, 1),
-(8, 2, 2),
-(9, 2, 3),
-(10, 2, 4),
-(11, 2, 8),
-(12, 2, 9),
-(13, 2, 10),
-(14, 2, 11),
-(15, 2, 12),
-(16, 2, 14),
-(17, 1, 10),
-(18, 1, 11),
-(19, 1, 12),
-(20, 1, 14),
-(21, 2, 15),
-(22, 1, 15),
-(23, 3, 16);
+CREATE TABLE `codigo_dae` (
+  `id_codigo_dae` int(11) NOT NULL,
+  `codigo_pais` varchar(2) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `dae` varchar(5) NOT NULL,
+  `codigo_dae` varchar(20) NOT NULL,
+  `mes` char(2) NOT NULL,
+  `anno` char(4) NOT NULL,
+  `estado` tinyint(1) NOT NULL DEFAULT '1',
+  `fecha_registro` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `coloracion`
+--
+
+CREATE TABLE `coloracion` (
+  `id_coloracion` int(11) NOT NULL,
+  `nombre` varchar(250) COLLATE utf8_bin NOT NULL,
+  `fondo` varchar(25) COLLATE utf8_bin NOT NULL,
+  `texto` varchar(25) COLLATE utf8_bin NOT NULL,
+  `cantidad` int(11) DEFAULT NULL,
+  `estado` tinyint(1) NOT NULL DEFAULT '1',
+  `fecha_registro` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `id_marcacion` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 -- --------------------------------------------------------
 
@@ -299,7 +200,11 @@ CREATE TABLE `comprobante` (
   `id_comprobante` int(11) NOT NULL,
   `id_envio` int(11) DEFAULT NULL,
   `clave_acceso` varchar(49) NOT NULL,
-  `estado` int(1) NOT NULL DEFAULT '0'
+  `estado` int(1) NOT NULL DEFAULT '0',
+  `tipo_comprobante` char(2) NOT NULL,
+  `monto_total` float(10,2) DEFAULT NULL,
+  `fecha_emision` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `causa` varchar(1000) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -310,7 +215,7 @@ CREATE TABLE `comprobante` (
 
 CREATE TABLE `configuracion_empresa` (
   `id_configuracion_empresa` int(11) NOT NULL,
-  `nombre` varchar(255) COLLATE utf8_bin NOT NULL,
+  `nombre` varchar(300) COLLATE utf8_bin NOT NULL,
   `cantidad_usuarios` int(10) NOT NULL,
   `cantidad_hectareas` decimal(10,2) NOT NULL,
   `propagacion` varchar(1000) COLLATE utf8_bin DEFAULT NULL COMMENT 'nombre de procesos',
@@ -319,15 +224,19 @@ CREATE TABLE `configuracion_empresa` (
   `fecha_registro` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `estado` tinyint(1) NOT NULL DEFAULT '1',
   `moneda` varchar(10) COLLATE utf8_bin NOT NULL,
-  `ramos_x_caja` int(11) NOT NULL
+  `ramos_x_caja` int(11) NOT NULL,
+  `razon_social` varchar(300) COLLATE utf8_bin NOT NULL,
+  `direccion_matriz` varchar(500) COLLATE utf8_bin NOT NULL,
+  `codigo_pais` int(11) NOT NULL,
+  `direccion_establecimiento` varchar(300) COLLATE utf8_bin NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 --
 -- Volcado de datos para la tabla `configuracion_empresa`
 --
 
-INSERT INTO `configuracion_empresa` (`id_configuracion_empresa`, `nombre`, `cantidad_usuarios`, `cantidad_hectareas`, `propagacion`, `campo`, `postcocecha`, `fecha_registro`, `estado`, `moneda`, `ramos_x_caja`) VALUES
-(1, 'Pyganflor', 5, '15000.00', '||', '|', 'Recepción|Clasificación en verde|Apertura|Clasificación en blanco|Frío', '2018-11-07 08:46:29', 1, 'usd', 40);
+INSERT INTO `configuracion_empresa` (`id_configuracion_empresa`, `nombre`, `cantidad_usuarios`, `cantidad_hectareas`, `propagacion`, `campo`, `postcocecha`, `fecha_registro`, `estado`, `moneda`, `ramos_x_caja`, `razon_social`, `direccion_matriz`, `codigo_pais`, `direccion_establecimiento`) VALUES
+(1, 'Pyganflor', 5, '15000.00', '||', '|', 'Cosecha|Clasificación en verde|Apertura|Clasificación en blanco|Frío', '2018-11-07 08:46:29', 1, 'usd', 40, '', '', 0, '');
 
 -- --------------------------------------------------------
 
@@ -383,12 +292,37 @@ CREATE TABLE `contacto` (
   `fecha_registro` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
+-- --------------------------------------------------------
+
 --
--- Volcado de datos para la tabla `contacto`
+-- Estructura de tabla para la tabla `cosecha`
 --
 
-INSERT INTO `contacto` (`id_contacto`, `nombre`, `correo`, `telefono`, `direccion`, `estado`, `fecha_registro`) VALUES
-(1, 'Jorge', 'jorge@gmail.com', '59595987454', 'Quito, Ecuador', 1, '2019-01-08 12:44:27');
+CREATE TABLE `cosecha` (
+  `id_cosecha` int(11) NOT NULL,
+  `fecha_ingreso` date NOT NULL,
+  `personal` int(11) NOT NULL,
+  `hora_inicio` varchar(5) COLLATE utf8_bin NOT NULL DEFAULT '08:00',
+  `estado` tinyint(1) NOT NULL DEFAULT '1',
+  `fecha_registro` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `desglose_envio_factura`
+--
+
+CREATE TABLE `desglose_envio_factura` (
+  `id_desglose_envio_factura` int(11) NOT NULL,
+  `id_comprobante` int(11) NOT NULL,
+  `codigo_principal` varchar(12) NOT NULL,
+  `descripcion` varchar(300) NOT NULL,
+  `cantidad` float(10,2) NOT NULL,
+  `precio_unitario` float(10,2) NOT NULL,
+  `descuento` float(10,2) NOT NULL,
+  `precio_total_sin_impuesto` float(10,2) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -403,28 +337,8 @@ CREATE TABLE `desglose_recepcion` (
   `fecha_registro` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `estado` tinyint(1) NOT NULL DEFAULT '1',
   `cantidad_mallas` int(3) NOT NULL,
-  `tallos_x_malla` int(2) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
---
--- Volcado de datos para la tabla `desglose_recepcion`
---
-
-INSERT INTO `desglose_recepcion` (`id_desglose_recepcion`, `id_variedad`, `id_recepcion`, `fecha_registro`, `estado`, `cantidad_mallas`, `tallos_x_malla`) VALUES
-(1, 1, 1, '2019-01-16 12:57:03', 1, 57, 40),
-(2, 2, 1, '2019-01-16 12:57:03', 1, 53, 42);
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `detallepedido_envio`
---
-
-CREATE TABLE `detallepedido_envio` (
-  `id_detallepedido_envio` int(11) NOT NULL,
-  `id_detalle_pedido` int(11) NOT NULL,
-  `id_envio` int(11) NOT NULL,
-  `cantidad` int(11) NOT NULL
+  `tallos_x_malla` int(2) NOT NULL,
+  `id_modulo` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 -- --------------------------------------------------------
@@ -445,42 +359,6 @@ CREATE TABLE `detalle_clasificacion_verde` (
   `fecha_ingreso` varchar(16) COLLATE utf8_bin DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
---
--- Volcado de datos para la tabla `detalle_clasificacion_verde`
---
-
-INSERT INTO `detalle_clasificacion_verde` (`id_detalle_clasificacion_verde`, `id_clasificacion_verde`, `id_clasificacion_unitaria`, `id_variedad`, `cantidad_ramos`, `tallos_x_ramos`, `fecha_registro`, `estado`, `fecha_ingreso`) VALUES
-(1, 1, 1, 1, 8, 10, '2019-01-16 12:58:03', 1, '2019-01-16 12:58'),
-(2, 1, 2, 1, 14, 5, '2019-01-16 12:58:04', 1, '2019-01-16 12:58'),
-(3, 1, 3, 1, 20, 5, '2019-01-16 12:58:04', 1, '2019-01-16 12:58'),
-(4, 1, 4, 1, 16, 5, '2019-01-16 12:58:04', 1, '2019-01-16 12:58'),
-(5, 1, 6, 1, 6, 20, '2019-01-16 12:58:04', 1, '2019-01-16 12:58'),
-(6, 1, 1, 2, 14, 10, '2019-01-16 13:01:29', 1, '2019-01-16 13:01'),
-(7, 1, 2, 2, 12, 5, '2019-01-16 13:01:29', 1, '2019-01-16 13:01'),
-(8, 1, 3, 2, 17, 5, '2019-01-16 13:01:29', 1, '2019-01-16 13:01'),
-(9, 1, 4, 2, 13, 5, '2019-01-16 13:01:30', 1, '2019-01-16 13:01'),
-(10, 1, 6, 2, 8, 20, '2019-01-16 13:01:30', 1, '2019-01-16 13:01'),
-(11, 1, 1, 1, 7, 10, '2019-01-16 13:10:57', 1, '2019-01-16 13:10'),
-(12, 1, 2, 1, 14, 5, '2019-01-16 13:10:57', 1, '2019-01-16 13:10'),
-(13, 1, 3, 1, 13, 5, '2019-01-16 13:10:57', 1, '2019-01-16 13:10'),
-(14, 1, 4, 1, 24, 5, '2019-01-16 13:10:57', 1, '2019-01-16 13:10'),
-(15, 1, 6, 1, 15, 20, '2019-01-16 13:10:57', 1, '2019-01-16 13:10'),
-(16, 1, 1, 2, 16, 10, '2019-01-16 13:11:13', 1, '2019-01-16 13:11'),
-(17, 1, 2, 2, 24, 5, '2019-01-16 13:11:13', 1, '2019-01-16 13:11'),
-(18, 1, 3, 2, 23, 5, '2019-01-16 13:11:13', 1, '2019-01-16 13:11'),
-(19, 1, 4, 2, 31, 5, '2019-01-16 13:11:13', 1, '2019-01-16 13:11'),
-(20, 1, 6, 2, 9, 20, '2019-01-16 13:11:13', 1, '2019-01-16 13:11'),
-(21, 1, 1, 1, 31, 10, '2019-01-16 13:45:06', 1, '2019-01-16 13:45'),
-(22, 1, 2, 1, 24, 5, '2019-01-16 13:45:06', 1, '2019-01-16 13:45'),
-(23, 1, 3, 1, 15, 5, '2019-01-16 13:45:06', 1, '2019-01-16 13:45'),
-(24, 1, 4, 1, 38, 5, '2019-01-16 13:45:06', 1, '2019-01-16 13:45'),
-(25, 1, 6, 1, 20, 20, '2019-01-16 13:45:07', 1, '2019-01-16 13:45'),
-(26, 1, 1, 2, 17, 10, '2019-01-16 13:45:19', 1, '2019-01-16 13:45'),
-(27, 1, 2, 2, 25, 5, '2019-01-16 13:45:20', 1, '2019-01-16 13:45'),
-(28, 1, 3, 2, 28, 5, '2019-01-16 13:45:20', 1, '2019-01-16 13:45'),
-(29, 1, 4, 2, 34, 5, '2019-01-16 13:45:20', 1, '2019-01-16 13:45'),
-(30, 1, 6, 2, 19, 20, '2019-01-16 13:45:20', 1, '2019-01-16 13:45');
-
 -- --------------------------------------------------------
 
 --
@@ -498,17 +376,11 @@ CREATE TABLE `detalle_cliente` (
   `correo` varchar(100) COLLATE utf8_bin NOT NULL,
   `fecha_registro` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `estado` tinyint(1) NOT NULL DEFAULT '1',
-  `id_cliente` int(11) NOT NULL
+  `id_cliente` int(11) NOT NULL,
+  `codigo_identificacion` char(2) COLLATE utf8_bin NOT NULL,
+  `codigo_impuesto` int(1) NOT NULL,
+  `codigo_porcentaje_impuesto` varchar(6) COLLATE utf8_bin NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
---
--- Volcado de datos para la tabla `detalle_cliente`
---
-
-INSERT INTO `detalle_cliente` (`id_detalle_cliente`, `nombre`, `direccion`, `provincia`, `codigo_pais`, `telefono`, `ruc`, `correo`, `fecha_registro`, `estado`, `id_cliente`) VALUES
-(1, 'Julian', 'Buen cliente', 'Quito', 'EC', '094858785', '95846251514275', 'julian@gmail.com', '2018-12-17 14:08:39', 1, 1),
-(2, 'Pedro', 'Segundo cliente', 'Guayaquil', 'EC', '9578428618', '36874125849', 'perdo@gmail.com', '2018-12-17 15:22:25', 1, 2),
-(3, 'Flower Express', 'Milan, Italia', 'Milan', 'IT', '9548156511', 'Paolo Santacroche', 'paolo@flowerexpress.com', '2019-01-08 12:43:19', 1, 3);
 
 -- --------------------------------------------------------
 
@@ -522,13 +394,6 @@ CREATE TABLE `detalle_cliente_contacto` (
   `id_contacto` int(11) NOT NULL,
   `estado` tinyint(1) NOT NULL DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
---
--- Volcado de datos para la tabla `detalle_cliente_contacto`
---
-
-INSERT INTO `detalle_cliente_contacto` (`id_detalle_cliente_contacto`, `id_detalle_cliente`, `id_contacto`, `estado`) VALUES
-(1, 3, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -546,68 +411,6 @@ CREATE TABLE `detalle_empaque` (
   `fecha_registro` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
---
--- Volcado de datos para la tabla `detalle_empaque`
---
-
-INSERT INTO `detalle_empaque` (`id_detalle_empaque`, `id_empaque`, `id_variedad`, `id_clasificacion_ramo`, `cantidad`, `estado`, `fecha_registro`) VALUES
-(1, 4, 1, 1, 50, 1, '2018-12-17 15:12:33'),
-(2, 4, 1, 2, 50, 1, '2018-12-17 15:12:33'),
-(3, 4, 1, 3, 50, 1, '2018-12-17 15:12:33'),
-(4, 4, 1, 4, 50, 1, '2018-12-17 15:12:33'),
-(5, 4, 1, 5, 50, 1, '2018-12-17 15:12:34'),
-(6, 4, 1, 6, 50, 1, '2018-12-17 15:12:34'),
-(7, 4, 2, 1, 50, 1, '2018-12-17 15:12:34'),
-(8, 4, 2, 2, 50, 1, '2018-12-17 15:12:34'),
-(9, 4, 2, 3, 50, 1, '2018-12-17 15:12:34'),
-(10, 4, 2, 4, 50, 1, '2018-12-17 15:12:34'),
-(11, 4, 2, 5, 50, 1, '2018-12-17 15:12:34'),
-(12, 4, 2, 6, 50, 1, '2018-12-17 15:12:34'),
-(13, 4, 3, 1, 50, 1, '2018-12-17 15:16:29'),
-(14, 4, 3, 2, 50, 1, '2018-12-17 15:16:29'),
-(15, 4, 3, 3, 50, 1, '2018-12-17 15:16:29'),
-(16, 4, 3, 4, 50, 1, '2018-12-17 15:16:29'),
-(17, 4, 3, 5, 50, 1, '2018-12-17 15:16:29'),
-(18, 4, 3, 6, 50, 1, '2018-12-17 15:16:29'),
-(19, 2, 1, 1, 50, 1, '2018-12-17 15:18:00'),
-(20, 2, 1, 2, 50, 1, '2018-12-17 15:18:00'),
-(21, 2, 1, 3, 50, 1, '2018-12-17 15:18:00'),
-(22, 2, 1, 4, 50, 1, '2018-12-17 15:18:00'),
-(23, 2, 1, 5, 50, 1, '2018-12-17 15:18:00'),
-(24, 2, 1, 6, 50, 1, '2018-12-17 15:18:00'),
-(25, 2, 2, 2, 50, 1, '2018-12-17 15:18:00'),
-(26, 2, 2, 3, 50, 1, '2018-12-17 15:18:00'),
-(27, 2, 2, 4, 50, 1, '2018-12-17 15:18:01'),
-(28, 2, 2, 5, 50, 1, '2018-12-17 15:18:01'),
-(29, 2, 2, 6, 50, 1, '2018-12-17 15:18:01'),
-(30, 2, 2, 7, 50, 1, '2018-12-17 15:18:01'),
-(31, 3, 1, 1, 50, 1, '2018-12-17 15:19:10'),
-(32, 3, 1, 2, 50, 1, '2018-12-17 15:19:11'),
-(33, 3, 1, 3, 50, 1, '2018-12-17 15:19:11'),
-(34, 3, 1, 4, 50, 1, '2018-12-17 15:19:11'),
-(35, 3, 1, 5, 50, 1, '2018-12-17 15:19:11'),
-(36, 3, 1, 6, 50, 1, '2018-12-17 15:19:11'),
-(37, 3, 2, 1, 50, 1, '2018-12-17 15:19:11'),
-(38, 3, 2, 2, 50, 1, '2018-12-17 15:19:11'),
-(39, 3, 2, 3, 50, 1, '2018-12-17 15:19:11'),
-(40, 3, 2, 4, 50, 1, '2018-12-17 15:19:11'),
-(41, 3, 2, 5, 50, 1, '2018-12-17 15:19:11'),
-(42, 3, 2, 6, 50, 1, '2018-12-17 15:19:11'),
-(43, 1, 1, 1, 50, 1, '2018-12-17 15:20:12'),
-(44, 1, 1, 2, 50, 1, '2018-12-17 15:20:13'),
-(45, 1, 1, 3, 50, 1, '2018-12-17 15:20:13'),
-(46, 1, 1, 4, 50, 1, '2018-12-17 15:20:13'),
-(47, 1, 1, 5, 50, 1, '2018-12-17 15:20:13'),
-(48, 1, 1, 6, 50, 1, '2018-12-17 15:20:13'),
-(49, 1, 2, 1, 50, 1, '2018-12-17 15:20:13'),
-(50, 1, 2, 2, 50, 1, '2018-12-17 15:20:13'),
-(51, 1, 2, 3, 50, 1, '2018-12-17 15:20:13'),
-(52, 1, 2, 4, 50, 1, '2018-12-17 15:20:13'),
-(53, 1, 2, 5, 50, 1, '2018-12-17 15:20:13'),
-(54, 1, 2, 6, 50, 1, '2018-12-17 15:20:13'),
-(55, 1, 1, 7, 40, 1, '2018-12-26 11:18:31'),
-(56, 3, 2, 7, 50, 1, '2018-12-26 13:00:26');
-
 -- --------------------------------------------------------
 
 --
@@ -620,9 +423,8 @@ CREATE TABLE `detalle_envio` (
   `id_especificacion` int(11) NOT NULL,
   `id_agencia_transporte` int(11) NOT NULL,
   `cantidad` int(11) NOT NULL,
-  `fecha_registro` datetime NOT NULL,
+  `fecha_registro` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `envio` int(11) NOT NULL,
-  `estado` tinyint(1) NOT NULL,
   `form` varchar(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -648,24 +450,28 @@ CREATE TABLE `detalle_especificacionempaque` (
   `id_grosor_ramo` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
+-- --------------------------------------------------------
+
 --
--- Volcado de datos para la tabla `detalle_especificacionempaque`
+-- Estructura de tabla para la tabla `detalle_factura`
 --
 
-INSERT INTO `detalle_especificacionempaque` (`id_detalle_especificacionempaque`, `id_especificacion_empaque`, `id_variedad`, `id_clasificacion_ramo`, `cantidad`, `id_empaque_e`, `id_empaque_p`, `estado`, `fecha_registro`, `tallos_x_ramos`, `longitud_ramo`, `id_unidad_medida`, `id_grosor_ramo`) VALUES
-(1, 1, 1, 4, 15, 5, 7, 1, '2018-12-26 10:59:23', NULL, NULL, NULL, 1),
-(2, 2, 1, 3, 20, 5, 7, 1, '2018-12-26 11:00:33', NULL, NULL, NULL, 1),
-(3, 3, 1, 1, 30, 5, 7, 1, '2018-12-26 11:01:50', NULL, NULL, NULL, 2),
-(4, 4, 1, 1, 20, 5, 8, 1, '2018-12-26 11:04:27', 25, 60, 1, 3),
-(8, 8, 1, 1, 10, 5, 7, 1, '2018-12-26 11:14:53', 15, 75, 1, 3),
-(9, 9, 1, 7, 20, 5, 7, 1, '2018-12-26 11:20:34', 5, 75, 1, 3),
-(10, 10, 2, 3, 22, 5, 7, 1, '2018-12-26 12:54:51', NULL, NULL, NULL, 1),
-(11, 11, 2, 5, 14, 6, 7, 1, '2018-12-26 12:59:55', NULL, NULL, NULL, 1),
-(12, 12, 2, 1, 21, 6, 7, 1, '2018-12-26 13:06:15', 20, 60, 1, 3),
-(13, 14, 2, 7, 15, 5, 8, 1, '2018-12-26 13:11:57', 4, 75, 1, 2),
-(14, 15, 1, 3, 25, 5, 7, 1, '2018-12-28 12:01:59', NULL, NULL, NULL, 1),
-(15, 16, 2, 4, 18, 6, 8, 1, '2018-12-28 12:02:00', NULL, NULL, NULL, 1),
-(16, 17, 1, 4, 12, 5, 7, 1, '2019-01-08 12:55:47', 25, 85, 1, 1);
+CREATE TABLE `detalle_factura` (
+  `id_detalle_factura` int(11) NOT NULL,
+  `id_comprobante` int(11) NOT NULL,
+  `razon_social_emisor` varchar(300) NOT NULL,
+  `nombre_comercial_emisor` varchar(300) NOT NULL,
+  `direccion_matriz_emisor` varchar(300) NOT NULL,
+  `direccion_establecimiento_emisor` varchar(300) NOT NULL,
+  `obligado_contabilidad` tinyint(1) NOT NULL,
+  `tipo_identificacion_comprador` char(2) NOT NULL,
+  `razon_social_comprador` varchar(300) NOT NULL,
+  `identificacion_comprador` bigint(20) NOT NULL,
+  `total_sin_impuestos` float(10,2) NOT NULL,
+  `total_descuento` float(10,0) NOT NULL,
+  `propina` float(10,2) NOT NULL,
+  `importe_total` float(10,2) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -683,206 +489,20 @@ CREATE TABLE `detalle_pedido` (
   `fecha_registro` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
+-- --------------------------------------------------------
+
 --
--- Volcado de datos para la tabla `detalle_pedido`
+-- Estructura de tabla para la tabla `distribucion`
 --
 
-INSERT INTO `detalle_pedido` (`id_detalle_pedido`, `id_cliente_especificacion`, `id_pedido`, `id_agencia_carga`, `cantidad`, `estado`, `fecha_registro`) VALUES
-(1, 1, 1, 5, 1, 1, '2018-12-26 11:29:54'),
-(2, 1, 2, 5, 1, 1, '2018-12-26 11:29:54'),
-(3, 1, 3, 5, 1, 1, '2018-12-26 11:29:55'),
-(4, 1, 4, 5, 1, 1, '2018-12-26 11:29:55'),
-(5, 1, 5, 5, 1, 1, '2018-12-26 11:29:55'),
-(6, 1, 6, 5, 1, 1, '2018-12-26 11:29:55'),
-(7, 4, 7, 8, 1, 1, '2018-12-26 11:59:26'),
-(8, 4, 8, 8, 1, 1, '2018-12-26 11:59:26'),
-(9, 4, 9, 8, 1, 1, '2018-12-26 11:59:26'),
-(10, 4, 10, 8, 1, 1, '2018-12-26 11:59:26'),
-(11, 4, 11, 8, 1, 1, '2018-12-26 11:59:27'),
-(12, 4, 12, 8, 1, 1, '2018-12-26 11:59:27'),
-(13, 4, 13, 8, 1, 1, '2018-12-26 11:59:27'),
-(14, 4, 14, 8, 1, 1, '2018-12-26 11:59:27'),
-(15, 4, 15, 8, 1, 1, '2018-12-26 11:59:27'),
-(16, 13, 16, 9, 1, 1, '2018-12-26 13:13:46'),
-(17, 13, 17, 9, 1, 1, '2018-12-26 13:13:47'),
-(18, 13, 18, 9, 1, 1, '2018-12-26 13:13:47'),
-(19, 13, 19, 9, 1, 1, '2018-12-26 13:13:47'),
-(20, 13, 20, 9, 1, 1, '2018-12-26 13:13:47'),
-(21, 13, 21, 9, 1, 1, '2018-12-26 13:13:48'),
-(22, 13, 22, 9, 1, 1, '2018-12-26 13:13:48'),
-(23, 20, 23, 4, 1, 1, '2018-12-26 13:24:33'),
-(24, 20, 24, 4, 1, 1, '2018-12-26 13:24:33'),
-(25, 20, 25, 4, 1, 1, '2018-12-26 13:24:33'),
-(26, 20, 26, 4, 1, 1, '2018-12-26 13:24:33'),
-(27, 20, 27, 4, 1, 1, '2018-12-26 13:24:33'),
-(28, 20, 28, 4, 1, 1, '2018-12-26 13:24:34'),
-(29, 20, 29, 4, 1, 1, '2018-12-26 13:24:34'),
-(30, 20, 30, 4, 1, 1, '2018-12-26 13:24:34'),
-(31, 14, 31, 3, 1, 1, '2018-12-26 14:53:42'),
-(32, 14, 32, 3, 1, 1, '2018-12-26 14:53:42'),
-(33, 14, 33, 3, 1, 1, '2018-12-26 14:53:43'),
-(34, 14, 34, 3, 1, 1, '2018-12-26 14:53:43'),
-(35, 14, 35, 3, 1, 1, '2018-12-26 14:53:43'),
-(36, 14, 36, 3, 1, 1, '2018-12-26 14:53:43'),
-(37, 14, 37, 3, 1, 1, '2018-12-26 14:53:43'),
-(38, 14, 38, 3, 1, 1, '2018-12-26 14:53:43'),
-(39, 14, 39, 3, 1, 1, '2018-12-26 14:53:44'),
-(40, 14, 40, 3, 1, 1, '2018-12-26 14:53:44'),
-(41, 14, 41, 3, 1, 1, '2018-12-26 14:53:44'),
-(42, 14, 42, 3, 1, 1, '2018-12-26 14:53:44'),
-(43, 14, 43, 3, 1, 1, '2018-12-26 14:53:44'),
-(44, 14, 44, 3, 1, 1, '2018-12-26 14:53:44'),
-(45, 14, 45, 3, 1, 1, '2018-12-26 14:53:44'),
-(46, 14, 46, 3, 1, 1, '2018-12-26 14:53:44'),
-(47, 14, 47, 3, 1, 1, '2018-12-26 14:53:45'),
-(48, 14, 48, 3, 1, 1, '2018-12-26 14:53:45'),
-(49, 14, 49, 3, 1, 1, '2018-12-26 14:53:45'),
-(50, 14, 50, 3, 1, 1, '2018-12-26 14:53:45'),
-(51, 14, 51, 3, 1, 1, '2018-12-26 14:53:45'),
-(52, 14, 52, 3, 1, 1, '2018-12-26 14:53:45'),
-(53, 14, 53, 3, 1, 1, '2018-12-26 14:53:45'),
-(54, 14, 54, 3, 1, 1, '2018-12-26 14:53:45'),
-(55, 14, 55, 3, 1, 1, '2018-12-26 14:53:45'),
-(56, 14, 56, 3, 1, 1, '2018-12-26 14:53:46'),
-(57, 14, 57, 3, 1, 1, '2018-12-26 14:53:46'),
-(58, 14, 58, 3, 1, 1, '2018-12-26 14:53:46'),
-(59, 14, 59, 3, 1, 1, '2018-12-26 14:53:46'),
-(60, 14, 60, 3, 1, 1, '2018-12-26 14:53:46'),
-(61, 14, 61, 3, 1, 1, '2018-12-26 14:53:46'),
-(62, 14, 62, 3, 1, 1, '2018-12-26 14:53:46'),
-(63, 14, 63, 3, 1, 1, '2018-12-26 14:53:46'),
-(64, 14, 64, 3, 1, 1, '2018-12-26 14:53:46'),
-(65, 14, 65, 3, 1, 1, '2018-12-26 14:53:47'),
-(66, 14, 66, 3, 1, 1, '2018-12-26 14:53:47'),
-(67, 14, 67, 3, 1, 1, '2018-12-26 14:53:47'),
-(68, 14, 68, 3, 1, 1, '2018-12-26 14:53:47'),
-(69, 14, 69, 3, 1, 1, '2018-12-26 14:53:47'),
-(70, 14, 70, 3, 1, 1, '2018-12-26 14:53:47'),
-(71, 14, 71, 3, 1, 1, '2018-12-26 14:53:47'),
-(72, 14, 72, 3, 1, 1, '2018-12-26 14:53:47'),
-(73, 14, 73, 3, 1, 1, '2018-12-26 14:53:47'),
-(74, 14, 74, 3, 1, 1, '2018-12-26 14:53:48'),
-(75, 14, 75, 3, 1, 1, '2018-12-26 14:53:48'),
-(76, 14, 76, 3, 1, 1, '2018-12-26 14:53:48'),
-(77, 14, 77, 3, 1, 1, '2018-12-26 14:53:48'),
-(78, 14, 78, 3, 1, 1, '2018-12-26 14:53:48'),
-(79, 14, 79, 3, 1, 1, '2018-12-26 14:53:48'),
-(80, 14, 80, 3, 1, 1, '2018-12-26 14:53:48'),
-(81, 14, 81, 3, 1, 1, '2018-12-26 14:53:48'),
-(82, 14, 82, 3, 1, 1, '2018-12-26 14:53:48'),
-(83, 17, 83, 8, 2, 1, '2018-12-26 16:05:12'),
-(84, 9, 84, 4, 2, 1, '2018-12-26 16:27:54'),
-(85, 9, 85, 4, 2, 1, '2018-12-26 16:27:54'),
-(86, 9, 86, 4, 2, 1, '2018-12-26 16:27:54'),
-(87, 9, 87, 4, 2, 1, '2018-12-26 16:27:54'),
-(88, 9, 88, 4, 2, 1, '2018-12-26 16:27:54'),
-(89, 9, 89, 4, 2, 1, '2018-12-26 16:27:54'),
-(90, 9, 90, 4, 2, 1, '2018-12-26 16:27:55'),
-(91, 9, 91, 4, 2, 1, '2018-12-26 16:27:55'),
-(92, 9, 92, 4, 2, 1, '2018-12-26 16:27:55'),
-(93, 9, 93, 4, 2, 1, '2018-12-26 16:27:55'),
-(94, 9, 94, 4, 2, 1, '2018-12-26 16:27:55'),
-(95, 9, 95, 4, 2, 1, '2018-12-26 16:27:55'),
-(96, 9, 96, 4, 2, 1, '2018-12-26 16:27:55'),
-(97, 9, 97, 4, 2, 1, '2018-12-26 16:27:56'),
-(98, 9, 98, 4, 2, 1, '2018-12-26 16:27:56'),
-(99, 9, 99, 4, 2, 1, '2018-12-26 16:27:56'),
-(100, 9, 100, 4, 2, 1, '2018-12-26 16:27:56'),
-(101, 9, 101, 4, 2, 1, '2018-12-26 16:27:56'),
-(102, 9, 102, 4, 2, 1, '2018-12-26 16:27:56'),
-(103, 9, 103, 4, 2, 1, '2018-12-26 16:27:56'),
-(104, 9, 104, 4, 2, 1, '2018-12-26 16:27:56'),
-(105, 9, 105, 4, 2, 1, '2018-12-26 16:27:57'),
-(106, 9, 106, 4, 2, 1, '2018-12-26 16:27:57'),
-(107, 9, 107, 4, 2, 1, '2018-12-26 16:27:57'),
-(108, 9, 108, 4, 2, 1, '2018-12-26 16:27:57'),
-(109, 9, 109, 4, 2, 1, '2018-12-26 16:27:57'),
-(110, 9, 110, 4, 2, 1, '2018-12-26 16:27:57'),
-(111, 9, 111, 4, 2, 1, '2018-12-26 16:27:57'),
-(112, 9, 112, 4, 2, 1, '2018-12-26 16:27:58'),
-(113, 9, 113, 4, 2, 1, '2018-12-26 16:27:58'),
-(114, 9, 114, 4, 2, 1, '2018-12-26 16:27:58'),
-(115, 9, 115, 4, 2, 1, '2018-12-26 16:27:58'),
-(116, 9, 116, 4, 2, 1, '2018-12-26 16:27:58'),
-(117, 9, 117, 4, 2, 1, '2018-12-26 16:27:58'),
-(118, 9, 118, 4, 2, 1, '2018-12-26 16:27:59'),
-(119, 9, 119, 4, 2, 1, '2018-12-26 16:27:59'),
-(120, 9, 120, 4, 2, 1, '2018-12-26 16:27:59'),
-(121, 9, 121, 4, 2, 1, '2018-12-26 16:27:59'),
-(122, 9, 122, 4, 2, 1, '2018-12-26 16:27:59'),
-(123, 9, 123, 4, 2, 1, '2018-12-26 16:27:59'),
-(124, 9, 124, 4, 2, 1, '2018-12-26 16:27:59'),
-(125, 9, 125, 4, 2, 1, '2018-12-26 16:27:59'),
-(126, 9, 126, 4, 2, 1, '2018-12-26 16:28:00'),
-(127, 9, 127, 4, 2, 1, '2018-12-26 16:28:00'),
-(128, 9, 128, 4, 2, 1, '2018-12-26 16:28:00'),
-(129, 9, 129, 4, 2, 1, '2018-12-26 16:28:00'),
-(130, 9, 130, 4, 2, 1, '2018-12-26 16:28:00'),
-(131, 9, 131, 4, 2, 1, '2018-12-26 16:28:00'),
-(132, 9, 132, 4, 2, 1, '2018-12-26 16:28:00'),
-(133, 9, 133, 4, 2, 1, '2018-12-26 16:28:01'),
-(134, 9, 134, 4, 2, 1, '2018-12-26 16:28:01'),
-(135, 9, 135, 4, 2, 1, '2018-12-26 16:28:01'),
-(136, 9, 136, 4, 2, 1, '2018-12-26 16:28:01'),
-(137, 21, 137, 5, 1, 1, '2018-12-28 12:16:32'),
-(138, 21, 138, 5, 1, 1, '2018-12-28 12:16:32'),
-(139, 21, 139, 5, 1, 1, '2018-12-28 12:16:32'),
-(140, 21, 140, 5, 1, 1, '2018-12-28 12:16:32'),
-(141, 21, 141, 5, 1, 1, '2018-12-28 12:16:33'),
-(142, 23, 142, 5, 1, 1, '2019-01-08 13:02:57'),
-(143, 23, 143, 5, 1, 1, '2019-01-08 13:02:57'),
-(144, 23, 144, 5, 1, 1, '2019-01-08 13:02:57'),
-(145, 23, 145, 5, 1, 1, '2019-01-08 13:02:57'),
-(146, 23, 146, 5, 1, 1, '2019-01-08 13:02:57'),
-(147, 23, 147, 5, 1, 1, '2019-01-08 13:02:57'),
-(148, 23, 148, 5, 1, 1, '2019-01-08 13:02:57'),
-(149, 23, 149, 5, 1, 1, '2019-01-08 13:02:57'),
-(150, 23, 150, 5, 1, 1, '2019-01-08 13:02:58'),
-(151, 23, 151, 5, 1, 1, '2019-01-08 13:02:58'),
-(152, 23, 152, 5, 1, 1, '2019-01-08 13:02:58'),
-(153, 23, 153, 5, 1, 1, '2019-01-08 13:02:58'),
-(154, 23, 154, 5, 1, 1, '2019-01-08 13:02:58'),
-(155, 23, 155, 5, 1, 1, '2019-01-08 13:02:58'),
-(156, 23, 156, 5, 1, 1, '2019-01-08 13:02:58'),
-(157, 23, 157, 5, 1, 1, '2019-01-08 13:02:58'),
-(158, 23, 158, 5, 1, 1, '2019-01-08 13:02:58'),
-(159, 23, 159, 5, 1, 1, '2019-01-08 13:02:59'),
-(160, 23, 160, 5, 1, 1, '2019-01-08 13:02:59'),
-(161, 23, 161, 5, 1, 1, '2019-01-08 13:02:59'),
-(162, 23, 162, 5, 1, 1, '2019-01-08 13:02:59'),
-(163, 23, 163, 5, 1, 1, '2019-01-08 13:02:59'),
-(164, 23, 164, 5, 1, 1, '2019-01-08 13:02:59'),
-(165, 23, 165, 5, 1, 1, '2019-01-08 13:02:59'),
-(166, 23, 166, 5, 1, 1, '2019-01-08 13:03:00'),
-(167, 23, 167, 5, 1, 1, '2019-01-08 13:03:00'),
-(168, 23, 168, 5, 1, 1, '2019-01-08 13:03:00'),
-(169, 23, 169, 5, 1, 1, '2019-01-08 13:03:00'),
-(170, 23, 170, 5, 1, 1, '2019-01-08 13:03:00'),
-(171, 23, 171, 5, 1, 1, '2019-01-08 13:03:00'),
-(172, 23, 172, 5, 1, 1, '2019-01-08 13:03:00'),
-(173, 23, 173, 5, 1, 1, '2019-01-08 13:03:00'),
-(174, 23, 174, 5, 1, 1, '2019-01-08 13:03:00'),
-(175, 23, 175, 5, 1, 1, '2019-01-08 13:03:00'),
-(176, 23, 176, 5, 1, 1, '2019-01-08 13:03:01'),
-(177, 23, 177, 5, 1, 1, '2019-01-08 13:03:01'),
-(178, 23, 178, 5, 1, 1, '2019-01-08 13:03:01'),
-(179, 23, 179, 5, 1, 1, '2019-01-08 13:03:01'),
-(180, 23, 180, 5, 1, 1, '2019-01-08 13:03:01'),
-(181, 23, 181, 5, 1, 1, '2019-01-08 13:03:01'),
-(182, 23, 182, 5, 1, 1, '2019-01-08 13:03:01'),
-(183, 23, 183, 5, 1, 1, '2019-01-08 13:03:01'),
-(184, 23, 184, 5, 1, 1, '2019-01-08 13:03:01'),
-(185, 23, 185, 5, 1, 1, '2019-01-08 13:03:01'),
-(186, 23, 186, 5, 1, 1, '2019-01-08 13:03:02'),
-(187, 23, 187, 5, 1, 1, '2019-01-08 13:03:02'),
-(188, 23, 188, 5, 1, 1, '2019-01-08 13:03:02'),
-(189, 23, 189, 5, 1, 1, '2019-01-08 13:03:02'),
-(190, 23, 190, 5, 1, 1, '2019-01-08 13:03:02'),
-(191, 23, 191, 5, 1, 1, '2019-01-08 13:03:02'),
-(192, 23, 192, 5, 1, 1, '2019-01-08 13:03:02'),
-(193, 23, 193, 5, 1, 1, '2019-01-08 13:03:02'),
-(194, 23, 194, 5, 1, 1, '2019-01-08 13:03:02'),
-(195, 23, 195, 5, 1, 1, '2019-01-08 13:06:37');
+CREATE TABLE `distribucion` (
+  `id_distribucion` int(11) NOT NULL,
+  `id_marcacion` int(11) NOT NULL,
+  `id_coloracion` int(11) NOT NULL,
+  `cantidad` int(11) NOT NULL,
+  `estado` tinyint(1) NOT NULL DEFAULT '1',
+  `fecha_registro` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 -- --------------------------------------------------------
 
@@ -923,20 +543,6 @@ CREATE TABLE `empaque` (
   `tipo` char(1) COLLATE utf8_bin NOT NULL DEFAULT 'C' COMMENT 'C => Caja E => Envoltura P => Presentacion'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
---
--- Volcado de datos para la tabla `empaque`
---
-
-INSERT INTO `empaque` (`id_empaque`, `nombre`, `id_configuracion_empresa`, `estado`, `fecha_registro`, `tipo`) VALUES
-(1, 'Octavo|0.125', 1, 1, '2018-12-17 15:10:46', 'C'),
-(2, 'Cuarto|0.25', 1, 1, '2018-12-17 15:10:47', 'C'),
-(3, 'Half|0.5', 1, 1, '2018-12-17 15:10:47', 'C'),
-(4, 'Full|1', 1, 1, '2018-12-17 15:10:47', 'C'),
-(5, 'Capuchón', 1, 1, '2018-12-17 15:10:47', 'E'),
-(6, 'Bounche', 1, 1, '2018-12-17 15:10:47', 'E'),
-(7, 'Papel Blanco', 1, 1, '2018-12-17 15:10:47', 'P'),
-(8, 'Plástico', 1, 1, '2018-12-17 15:10:47', 'P');
-
 -- --------------------------------------------------------
 
 --
@@ -947,7 +553,8 @@ CREATE TABLE `envio` (
   `id_envio` int(11) NOT NULL,
   `fecha_registro` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `fecha_envio` datetime NOT NULL,
-  `id_pedido` int(11) NOT NULL
+  `id_pedido` int(11) NOT NULL,
+  `estado` tinyint(1) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 -- --------------------------------------------------------
@@ -959,28 +566,11 @@ CREATE TABLE `envio` (
 CREATE TABLE `especificacion` (
   `id_especificacion` int(11) NOT NULL,
   `nombre` varchar(250) COLLATE utf8_bin NOT NULL,
-  `descripcion` varchar(4000) COLLATE utf8_bin NOT NULL,
+  `descripcion` varchar(4000) COLLATE utf8_bin DEFAULT NULL,
   `fecha_registro` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `estado` tinyint(1) NOT NULL DEFAULT '1'
+  `estado` tinyint(1) NOT NULL DEFAULT '1',
+  `tipo` char(1) COLLATE utf8_bin NOT NULL DEFAULT 'N'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
---
--- Volcado de datos para la tabla `especificacion`
---
-
-INSERT INTO `especificacion` (`id_especificacion`, `nombre`, `descripcion`, `fecha_registro`, `estado`) VALUES
-(1, 'Combo 1', '2 Half de 15 ramos de 1000gr de Galaxy c/u', '2018-12-26 10:59:23', 1),
-(2, 'Combo 2', '3 Cuartos de 20 ramos de 750gr de Galaxy c/u', '2018-12-26 11:00:33', 1),
-(3, 'Combo 3', '1 Half de 30 ramos de 250gr de Galaxy', '2018-12-26 11:01:50', 1),
-(4, 'Combo Especifico 1', '2 Cuartos de 20 ramos de 250gr de Galaxy, 25 tallos por ramo, 60cm c/u', '2018-12-26 11:04:27', 1),
-(8, 'Combo Especifico 2', '4 Octavos de 10 ramos 250gr Galaxy, 15 tallos por ramo, 75cm c/u', '2018-12-26 11:14:53', 1),
-(9, 'Combo Especifico 3', '4 Octavos de 20 ramos de 125gr de Xlence, 5 tallos por ramo, 75cm c/u', '2018-12-26 11:20:34', 1),
-(10, 'Combo 4', '4 Half de 22 ramos de 750gr de Xc/u', '2018-12-26 12:54:50', 1),
-(11, 'Combo 5', '2 Cuartos de 14 ramos 1250gr de Xlence c/u', '2018-12-26 12:59:55', 1),
-(12, 'Combo Especifico 4', '3 Half de 21 ramos 250gr de Xlence, 20 tallos por ramo, 60cm c/u', '2018-12-26 13:06:14', 1),
-(14, 'Combo Especifico 5', '4 Cuartos de 15 ramos 125gr Xlence, 4 tallos por ramo, 75cm c/u', '2018-12-26 13:11:57', 1),
-(15, 'Combo 6', '3 Half de 25 ramos 750gr Galaxy c/u, y 2 Cuartos de 18 ramos 1000gr Xlence', '2018-12-28 12:01:58', 1),
-(16, '1000gr 25 tallos', 'Tallos de 40gr', '2019-01-08 12:55:47', 1);
 
 -- --------------------------------------------------------
 
@@ -996,39 +586,6 @@ CREATE TABLE `especificacion_empaque` (
   `imagen` varchar(250) COLLATE utf8_bin DEFAULT NULL,
   `estado` tinyint(1) NOT NULL DEFAULT '1',
   `fecha_registro` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
---
--- Volcado de datos para la tabla `especificacion_empaque`
---
-
-INSERT INTO `especificacion_empaque` (`id_especificacion_empaque`, `id_especificacion`, `id_empaque`, `cantidad`, `imagen`, `estado`, `fecha_registro`) VALUES
-(1, 1, 3, 2, '', 1, '2018-12-26 10:59:23'),
-(2, 2, 2, 3, '', 1, '2018-12-26 11:00:33'),
-(3, 3, 3, 1, '', 1, '2018-12-26 11:01:50'),
-(4, 4, 2, 2, '', 1, '2018-12-26 11:04:27'),
-(8, 8, 1, 4, '', 1, '2018-12-26 11:14:53'),
-(9, 9, 1, 4, '', 1, '2018-12-26 11:20:34'),
-(10, 10, 3, 4, '', 1, '2018-12-26 12:54:51'),
-(11, 11, 2, 2, '', 1, '2018-12-26 12:59:55'),
-(12, 12, 3, 3, '', 1, '2018-12-26 13:06:14'),
-(14, 14, 2, 4, '', 1, '2018-12-26 13:11:57'),
-(15, 15, 3, 3, '', 1, '2018-12-28 12:01:58'),
-(16, 15, 2, 2, '', 1, '2018-12-28 12:02:00'),
-(17, 16, 3, 1, '', 1, '2019-01-08 12:55:47');
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `factura`
---
-
-CREATE TABLE `factura` (
-  `id_factura` int(11) NOT NULL,
-  `id_pedido` int(11) NOT NULL,
-  `estado` tinyint(1) NOT NULL DEFAULT '1',
-  `fecha_registro` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `fecha_ingreso` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 -- --------------------------------------------------------
@@ -1665,6 +1222,74 @@ INSERT INTO `icono` (`id_icono`, `nombre`, `estado`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `impuesto`
+--
+
+CREATE TABLE `impuesto` (
+  `id_impuesto` int(11) NOT NULL,
+  `codigo` int(1) NOT NULL,
+  `nombre` varchar(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcado de datos para la tabla `impuesto`
+--
+
+INSERT INTO `impuesto` (`id_impuesto`, `codigo`, `nombre`) VALUES
+(1, 2, 'IVA'),
+(2, 3, 'ICE'),
+(3, 5, 'IRBPNR ');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `impuesto_desglose_envio_factura`
+--
+
+CREATE TABLE `impuesto_desglose_envio_factura` (
+  `id_impuesto_desglose_envio_factura` int(11) NOT NULL,
+  `id_desglose_envio_factura` int(11) NOT NULL,
+  `codigo_impuesto` int(11) NOT NULL,
+  `codigo_porcentaje` varchar(6) NOT NULL,
+  `base_imponible` float(10,2) NOT NULL,
+  `valor` float(10,2) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `impuesto_detalle_factura`
+--
+
+CREATE TABLE `impuesto_detalle_factura` (
+  `id_impuesto_detalle_factura` int(11) NOT NULL,
+  `id_detalle_factura` int(11) NOT NULL,
+  `codigo_impuesto` int(1) NOT NULL,
+  `codigo_porcentaje` varchar(6) NOT NULL,
+  `base_imponible` float(10,2) NOT NULL,
+  `valor` float(12,2) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `informacion_adicional_factura`
+--
+
+CREATE TABLE `informacion_adicional_factura` (
+  `id_informacion_adicional_factura` int(11) NOT NULL,
+  `id_comprobante` int(11) NOT NULL,
+  `direccion` varchar(300) NOT NULL,
+  `email` varchar(300) NOT NULL,
+  `telefono` bigint(11) NOT NULL,
+  `dae` bigint(20) DEFAULT NULL,
+  `guia_madre` bigint(20) DEFAULT NULL,
+  `guia_hija` bigint(20) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `inventario_frio`
 --
 
@@ -1727,21 +1352,20 @@ CREATE TABLE `lote_re` (
   `stock_frio` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
+-- --------------------------------------------------------
+
 --
--- Volcado de datos para la tabla `lote_re`
+-- Estructura de tabla para la tabla `marcacion`
 --
 
-INSERT INTO `lote_re` (`id_lote_re`, `cantidad_tallos`, `id_variedad`, `id_clasificacion_unitaria`, `id_clasificacion_verde`, `estado`, `fecha_registro`, `etapa`, `guarde_clasificacion`, `apertura`, `guarde_apertura`, `empaquetado`, `dias_guarde_clasificacion`, `dias_guarde_apertura`, `stock_frio`) VALUES
-(1, 460, 1, 1, 1, 1, '2019-01-17 17:33:51', 'A', NULL, '2019-01-16', NULL, NULL, NULL, NULL, NULL),
-(2, 260, 1, 2, 1, 1, '2019-01-17 17:33:51', 'A', NULL, '2019-01-16', NULL, NULL, NULL, NULL, NULL),
-(3, 240, 1, 3, 1, 1, '2019-01-17 17:33:51', 'A', NULL, '2019-01-16', NULL, NULL, NULL, NULL, NULL),
-(4, 390, 1, 4, 1, 1, '2019-01-17 17:33:51', 'A', NULL, '2019-01-16', NULL, NULL, NULL, NULL, NULL),
-(5, 820, 1, 6, 1, 1, '2019-01-17 17:33:52', 'A', NULL, '2019-01-16', NULL, NULL, NULL, NULL, NULL),
-(6, 470, 2, 1, 1, 1, '2019-01-17 17:33:52', 'A', NULL, '2019-01-16', NULL, NULL, NULL, NULL, NULL),
-(7, 305, 2, 2, 1, 1, '2019-01-17 17:33:52', 'A', NULL, '2019-01-16', NULL, NULL, NULL, NULL, NULL),
-(8, 340, 2, 3, 1, 1, '2019-01-17 17:33:52', 'A', NULL, '2019-01-16', NULL, NULL, NULL, NULL, NULL),
-(9, 390, 2, 4, 1, 1, '2019-01-17 17:33:52', 'A', NULL, '2019-01-16', NULL, NULL, NULL, NULL, NULL),
-(10, 720, 2, 6, 1, 1, '2019-01-17 17:33:53', 'A', NULL, '2019-01-16', NULL, NULL, NULL, NULL, NULL);
+CREATE TABLE `marcacion` (
+  `id_marcacion` int(11) NOT NULL,
+  `estado` tinyint(1) NOT NULL DEFAULT '1',
+  `fecha_registro` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `nombre` varchar(250) COLLATE utf8_bin NOT NULL,
+  `cantidad` int(11) NOT NULL,
+  `id_especificacion_empaque` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 -- --------------------------------------------------------
 
@@ -1755,16 +1379,6 @@ CREATE TABLE `marcas` (
   `descripcion` varchar(500) COLLATE utf8_bin NOT NULL,
   `estado` tinyint(1) DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
---
--- Volcado de datos para la tabla `marcas`
---
-
-INSERT INTO `marcas` (`id_marca`, `nombre`, `descripcion`, `estado`) VALUES
-(1, 'Marca 2', 'MRC2', 1),
-(2, 'Marca 1', 'MRC1', 1),
-(3, 'Marca 4', 'MRC4', 1),
-(4, 'Marca 3', 'MRC3', 1);
 
 -- --------------------------------------------------------
 
@@ -1791,7 +1405,8 @@ INSERT INTO `menu` (`id_menu`, `nombre`, `fecha_registro`, `estado`, `id_grupo_m
 (4, 'Contable', '2018-10-24 09:32:29', 'I', 1, 433),
 (5, 'Procesos', '2018-10-24 09:36:00', 'A', 2, 92),
 (6, 'Configuración empresa', '2018-11-05 11:54:52', 'I', 1, 256),
-(7, 'Ventas', '2018-11-06 08:30:09', 'A', 2, 433);
+(7, 'Ventas', '2018-11-06 08:30:09', 'A', 2, 433),
+(8, 'Parámetros de facturación', '2019-01-18 08:58:39', 'A', 1, 77);
 
 -- --------------------------------------------------------
 
@@ -1808,6 +1423,13 @@ CREATE TABLE `modulo` (
   `descripcion` varchar(1000) COLLATE utf8_bin DEFAULT NULL,
   `id_sector` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+--
+-- Volcado de datos para la tabla `modulo`
+--
+
+INSERT INTO `modulo` (`id_modulo`, `nombre`, `estado`, `fecha_registro`, `area`, `descripcion`, `id_sector`) VALUES
+(1, '1', 1, '2019-01-22 12:32:25', 2, '', 1);
 
 -- --------------------------------------------------------
 
@@ -2084,209 +1706,9 @@ CREATE TABLE `pedido` (
   `fecha_pedido` date NOT NULL,
   `fecha_registro` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `empaquetado` tinyint(1) NOT NULL DEFAULT '0',
-  `variedades` varchar(500) COLLATE utf8_bin DEFAULT NULL
+  `variedad` varchar(500) COLLATE utf8_bin NOT NULL,
+  `tipo_especificacion` char(1) COLLATE utf8_bin NOT NULL DEFAULT 'N' COMMENT 'N => Normal; O => Orden Semanal'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
---
--- Volcado de datos para la tabla `pedido`
---
-
-INSERT INTO `pedido` (`id_pedido`, `id_cliente`, `estado`, `descripcion`, `fecha_pedido`, `fecha_registro`, `empaquetado`, `variedades`) VALUES
-(1, 1, 1, 'Pedidos personalizados de Julian (1)', '2019-01-01', '2018-12-26 11:29:54', 0, NULL),
-(2, 1, 1, 'Pedidos personalizados de Julian (1)', '2019-01-02', '2018-12-26 11:29:54', 0, NULL),
-(3, 1, 1, 'Pedidos personalizados de Julian (1)', '2019-01-04', '2018-12-26 11:29:55', 0, NULL),
-(4, 1, 1, 'Pedidos personalizados de Julian (1)', '2019-01-01', '2018-12-26 11:29:55', 0, NULL),
-(5, 1, 1, 'Pedidos personalizados de Julian (1)', '2019-01-07', '2018-12-26 11:29:55', 0, NULL),
-(6, 1, 1, 'Pedidos personalizados de Julian (1)', '2019-01-08', '2018-12-26 11:29:55', 0, NULL),
-(7, 1, 1, 'Pedidos especificos de 1 Combo Especifico 1', '2019-01-01', '2018-12-26 11:59:26', 0, NULL),
-(8, 1, 1, 'Pedidos especificos de 1 Combo Especifico 1', '2019-01-02', '2018-12-26 11:59:26', 0, NULL),
-(9, 1, 1, 'Pedidos especificos de 1 Combo Especifico 1', '2019-01-02', '2018-12-26 11:59:26', 0, NULL),
-(10, 1, 1, 'Pedidos especificos de 1 Combo Especifico 1', '2019-01-01', '2018-12-26 11:59:26', 0, NULL),
-(11, 1, 1, 'Pedidos especificos de 1 Combo Especifico 1', '2019-01-02', '2018-12-26 11:59:27', 0, NULL),
-(12, 1, 1, 'Pedidos especificos de 1 Combo Especifico 1', '2019-01-03', '2018-12-26 11:59:27', 0, NULL),
-(13, 1, 1, 'Pedidos especificos de 1 Combo Especifico 1', '2019-01-08', '2018-12-26 11:59:27', 0, NULL),
-(14, 1, 1, 'Pedidos especificos de 1 Combo Especifico 1', '2019-01-09', '2018-12-26 11:59:27', 0, NULL),
-(15, 1, 1, 'Pedidos especificos de 1 Combo Especifico 1', '2019-01-10', '2018-12-26 11:59:27', 0, NULL),
-(16, 2, 1, 'Pedidos especificos de 1 Combo 4', '2019-01-01', '2018-12-26 13:13:46', 0, NULL),
-(17, 2, 1, 'Pedidos especificos de 1 Combo 4', '2019-01-02', '2018-12-26 13:13:47', 0, NULL),
-(18, 2, 1, 'Pedidos especificos de 1 Combo 4', '2019-01-03', '2018-12-26 13:13:47', 0, NULL),
-(19, 2, 1, 'Pedidos especificos de 1 Combo 4', '2019-01-04', '2018-12-26 13:13:47', 0, NULL),
-(20, 2, 1, 'Pedidos especificos de 1 Combo 4', '2019-01-02', '2018-12-26 13:13:47', 0, NULL),
-(21, 2, 1, 'Pedidos especificos de 1 Combo 4', '2019-01-04', '2018-12-26 13:13:47', 0, NULL),
-(22, 2, 1, 'Pedidos especificos de 1 Combo 4', '2019-01-07', '2018-12-26 13:13:48', 0, NULL),
-(23, 1, 1, 'Pedidos personalizados de 1 Combo Especifico 5', '2019-01-01', '2018-12-26 13:24:33', 0, NULL),
-(24, 1, 1, 'Pedidos personalizados de 1 Combo Especifico 5', '2019-01-02', '2018-12-26 13:24:33', 0, NULL),
-(25, 1, 1, 'Pedidos personalizados de 1 Combo Especifico 5', '2019-01-04', '2018-12-26 13:24:33', 0, NULL),
-(26, 1, 1, 'Pedidos personalizados de 1 Combo Especifico 5', '2019-01-01', '2018-12-26 13:24:33', 0, NULL),
-(27, 1, 1, 'Pedidos personalizados de 1 Combo Especifico 5', '2019-01-02', '2018-12-26 13:24:33', 0, NULL),
-(28, 1, 1, 'Pedidos personalizados de 1 Combo Especifico 5', '2019-01-04', '2018-12-26 13:24:34', 0, NULL),
-(29, 1, 1, 'Pedidos personalizados de 1 Combo Especifico 5', '2019-01-07', '2018-12-26 13:24:34', 0, NULL),
-(30, 1, 1, 'Pedidos personalizados de 1 Combo Especifico 5', '2019-01-09', '2018-12-26 13:24:34', 0, NULL),
-(31, 2, 1, 'Pedidos de los lunes de 1 Combo 5', '2019-01-04', '2018-12-26 14:53:42', 0, NULL),
-(32, 2, 1, 'Pedidos de los lunes de 1 Combo 5', '2019-01-07', '2018-12-26 14:53:42', 0, NULL),
-(33, 2, 1, 'Pedidos de los lunes de 1 Combo 5', '2019-01-14', '2018-12-26 14:53:43', 0, NULL),
-(34, 2, 1, 'Pedidos de los lunes de 1 Combo 5', '2019-01-21', '2018-12-26 14:53:43', 0, NULL),
-(35, 2, 1, 'Pedidos de los lunes de 1 Combo 5', '2019-01-28', '2018-12-26 14:53:43', 0, NULL),
-(36, 2, 1, 'Pedidos de los lunes de 1 Combo 5', '2019-02-04', '2018-12-26 14:53:43', 0, NULL),
-(37, 2, 1, 'Pedidos de los lunes de 1 Combo 5', '2019-02-11', '2018-12-26 14:53:43', 0, NULL),
-(38, 2, 1, 'Pedidos de los lunes de 1 Combo 5', '2019-02-18', '2018-12-26 14:53:43', 0, NULL),
-(39, 2, 1, 'Pedidos de los lunes de 1 Combo 5', '2019-02-25', '2018-12-26 14:53:43', 0, NULL),
-(40, 2, 1, 'Pedidos de los lunes de 1 Combo 5', '2019-03-04', '2018-12-26 14:53:44', 0, NULL),
-(41, 2, 1, 'Pedidos de los lunes de 1 Combo 5', '2019-03-11', '2018-12-26 14:53:44', 0, NULL),
-(42, 2, 1, 'Pedidos de los lunes de 1 Combo 5', '2019-03-18', '2018-12-26 14:53:44', 0, NULL),
-(43, 2, 1, 'Pedidos de los lunes de 1 Combo 5', '2019-03-25', '2018-12-26 14:53:44', 0, NULL),
-(44, 2, 1, 'Pedidos de los lunes de 1 Combo 5', '2019-04-01', '2018-12-26 14:53:44', 0, NULL),
-(45, 2, 1, 'Pedidos de los lunes de 1 Combo 5', '2019-04-08', '2018-12-26 14:53:44', 0, NULL),
-(46, 2, 1, 'Pedidos de los lunes de 1 Combo 5', '2019-04-15', '2018-12-26 14:53:44', 0, NULL),
-(47, 2, 1, 'Pedidos de los lunes de 1 Combo 5', '2019-04-22', '2018-12-26 14:53:44', 0, NULL),
-(48, 2, 1, 'Pedidos de los lunes de 1 Combo 5', '2019-04-29', '2018-12-26 14:53:45', 0, NULL),
-(49, 2, 1, 'Pedidos de los lunes de 1 Combo 5', '2019-05-06', '2018-12-26 14:53:45', 0, NULL),
-(50, 2, 1, 'Pedidos de los lunes de 1 Combo 5', '2019-05-13', '2018-12-26 14:53:45', 0, NULL),
-(51, 2, 1, 'Pedidos de los lunes de 1 Combo 5', '2019-05-20', '2018-12-26 14:53:45', 0, NULL),
-(52, 2, 1, 'Pedidos de los lunes de 1 Combo 5', '2019-05-27', '2018-12-26 14:53:45', 0, NULL),
-(53, 2, 1, 'Pedidos de los lunes de 1 Combo 5', '2019-06-03', '2018-12-26 14:53:45', 0, NULL),
-(54, 2, 1, 'Pedidos de los lunes de 1 Combo 5', '2019-06-10', '2018-12-26 14:53:45', 0, NULL),
-(55, 2, 1, 'Pedidos de los lunes de 1 Combo 5', '2019-06-17', '2018-12-26 14:53:45', 0, NULL),
-(56, 2, 1, 'Pedidos de los lunes de 1 Combo 5', '2019-06-24', '2018-12-26 14:53:45', 0, NULL),
-(57, 2, 1, 'Pedidos de los lunes de 1 Combo 5', '2019-07-01', '2018-12-26 14:53:46', 0, NULL),
-(58, 2, 1, 'Pedidos de los lunes de 1 Combo 5', '2019-07-08', '2018-12-26 14:53:46', 0, NULL),
-(59, 2, 1, 'Pedidos de los lunes de 1 Combo 5', '2019-07-15', '2018-12-26 14:53:46', 0, NULL),
-(60, 2, 1, 'Pedidos de los lunes de 1 Combo 5', '2019-07-22', '2018-12-26 14:53:46', 0, NULL),
-(61, 2, 1, 'Pedidos de los lunes de 1 Combo 5', '2019-07-29', '2018-12-26 14:53:46', 0, NULL),
-(62, 2, 1, 'Pedidos de los lunes de 1 Combo 5', '2019-08-05', '2018-12-26 14:53:46', 0, NULL),
-(63, 2, 1, 'Pedidos de los lunes de 1 Combo 5', '2019-08-12', '2018-12-26 14:53:46', 0, NULL),
-(64, 2, 1, 'Pedidos de los lunes de 1 Combo 5', '2019-08-19', '2018-12-26 14:53:46', 0, NULL),
-(65, 2, 1, 'Pedidos de los lunes de 1 Combo 5', '2019-08-26', '2018-12-26 14:53:47', 0, NULL),
-(66, 2, 1, 'Pedidos de los lunes de 1 Combo 5', '2019-09-02', '2018-12-26 14:53:47', 0, NULL),
-(67, 2, 1, 'Pedidos de los lunes de 1 Combo 5', '2019-09-09', '2018-12-26 14:53:47', 0, NULL),
-(68, 2, 1, 'Pedidos de los lunes de 1 Combo 5', '2019-09-16', '2018-12-26 14:53:47', 0, NULL),
-(69, 2, 1, 'Pedidos de los lunes de 1 Combo 5', '2019-09-23', '2018-12-26 14:53:47', 0, NULL),
-(70, 2, 1, 'Pedidos de los lunes de 1 Combo 5', '2019-09-30', '2018-12-26 14:53:47', 0, NULL),
-(71, 2, 1, 'Pedidos de los lunes de 1 Combo 5', '2019-10-07', '2018-12-26 14:53:47', 0, NULL),
-(72, 2, 1, 'Pedidos de los lunes de 1 Combo 5', '2019-10-14', '2018-12-26 14:53:47', 0, NULL),
-(73, 2, 1, 'Pedidos de los lunes de 1 Combo 5', '2019-10-21', '2018-12-26 14:53:47', 0, NULL),
-(74, 2, 1, 'Pedidos de los lunes de 1 Combo 5', '2019-10-28', '2018-12-26 14:53:48', 0, NULL),
-(75, 2, 1, 'Pedidos de los lunes de 1 Combo 5', '2019-11-04', '2018-12-26 14:53:48', 0, NULL),
-(76, 2, 1, 'Pedidos de los lunes de 1 Combo 5', '2019-11-11', '2018-12-26 14:53:48', 0, NULL),
-(77, 2, 1, 'Pedidos de los lunes de 1 Combo 5', '2019-11-18', '2018-12-26 14:53:48', 0, NULL),
-(78, 2, 1, 'Pedidos de los lunes de 1 Combo 5', '2019-11-25', '2018-12-26 14:53:48', 0, NULL),
-(79, 2, 1, 'Pedidos de los lunes de 1 Combo 5', '2019-12-02', '2018-12-26 14:53:48', 0, NULL),
-(80, 2, 1, 'Pedidos de los lunes de 1 Combo 5', '2019-12-09', '2018-12-26 14:53:48', 0, NULL),
-(81, 2, 1, 'Pedidos de los lunes de 1 Combo 5', '2019-12-16', '2018-12-26 14:53:48', 0, NULL),
-(82, 2, 1, 'Pedidos de los lunes de 1 Combo 5', '2019-12-23', '2018-12-26 14:53:48', 0, NULL),
-(83, 1, 1, 'Pedido del miercoles 26 de Dic del 2018, de 2 Combo 4', '2019-01-01', '2018-12-26 16:05:12', 0, NULL),
-(84, 2, 1, 'Pedidos de los miercoles de 2 Combo 3', '2019-01-01', '2018-12-26 16:27:53', 0, NULL),
-(85, 2, 1, 'Pedidos de los miercoles de 2 Combo 3', '2019-01-02', '2018-12-26 16:27:54', 0, NULL),
-(86, 2, 1, 'Pedidos de los miercoles de 2 Combo 3', '2019-01-09', '2018-12-26 16:27:54', 0, NULL),
-(87, 2, 1, 'Pedidos de los miercoles de 2 Combo 3', '2019-01-16', '2018-12-26 16:27:54', 0, NULL),
-(88, 2, 1, 'Pedidos de los miercoles de 2 Combo 3', '2019-01-23', '2018-12-26 16:27:54', 0, NULL),
-(89, 2, 1, 'Pedidos de los miercoles de 2 Combo 3', '2019-01-30', '2018-12-26 16:27:54', 0, NULL),
-(90, 2, 1, 'Pedidos de los miercoles de 2 Combo 3', '2019-02-06', '2018-12-26 16:27:54', 0, NULL),
-(91, 2, 1, 'Pedidos de los miercoles de 2 Combo 3', '2019-02-13', '2018-12-26 16:27:55', 0, NULL),
-(92, 2, 1, 'Pedidos de los miercoles de 2 Combo 3', '2019-02-20', '2018-12-26 16:27:55', 0, NULL),
-(93, 2, 1, 'Pedidos de los miercoles de 2 Combo 3', '2019-02-27', '2018-12-26 16:27:55', 0, NULL),
-(94, 2, 1, 'Pedidos de los miercoles de 2 Combo 3', '2019-03-06', '2018-12-26 16:27:55', 0, NULL),
-(95, 2, 1, 'Pedidos de los miercoles de 2 Combo 3', '2019-03-13', '2018-12-26 16:27:55', 0, NULL),
-(96, 2, 1, 'Pedidos de los miercoles de 2 Combo 3', '2019-03-20', '2018-12-26 16:27:55', 0, NULL),
-(97, 2, 1, 'Pedidos de los miercoles de 2 Combo 3', '2019-03-27', '2018-12-26 16:27:56', 0, NULL),
-(98, 2, 1, 'Pedidos de los miercoles de 2 Combo 3', '2019-04-03', '2018-12-26 16:27:56', 0, NULL),
-(99, 2, 1, 'Pedidos de los miercoles de 2 Combo 3', '2019-04-10', '2018-12-26 16:27:56', 0, NULL),
-(100, 2, 1, 'Pedidos de los miercoles de 2 Combo 3', '2019-04-17', '2018-12-26 16:27:56', 0, NULL),
-(101, 2, 1, 'Pedidos de los miercoles de 2 Combo 3', '2019-04-24', '2018-12-26 16:27:56', 0, NULL),
-(102, 2, 1, 'Pedidos de los miercoles de 2 Combo 3', '2019-05-01', '2018-12-26 16:27:56', 0, NULL),
-(103, 2, 1, 'Pedidos de los miercoles de 2 Combo 3', '2019-05-08', '2018-12-26 16:27:56', 0, NULL),
-(104, 2, 1, 'Pedidos de los miercoles de 2 Combo 3', '2019-05-15', '2018-12-26 16:27:56', 0, NULL),
-(105, 2, 1, 'Pedidos de los miercoles de 2 Combo 3', '2019-05-22', '2018-12-26 16:27:57', 0, NULL),
-(106, 2, 1, 'Pedidos de los miercoles de 2 Combo 3', '2019-05-29', '2018-12-26 16:27:57', 0, NULL),
-(107, 2, 1, 'Pedidos de los miercoles de 2 Combo 3', '2019-06-05', '2018-12-26 16:27:57', 0, NULL),
-(108, 2, 1, 'Pedidos de los miercoles de 2 Combo 3', '2019-06-12', '2018-12-26 16:27:57', 0, NULL),
-(109, 2, 1, 'Pedidos de los miercoles de 2 Combo 3', '2019-06-19', '2018-12-26 16:27:57', 0, NULL),
-(110, 2, 1, 'Pedidos de los miercoles de 2 Combo 3', '2019-06-26', '2018-12-26 16:27:57', 0, NULL),
-(111, 2, 1, 'Pedidos de los miercoles de 2 Combo 3', '2019-07-03', '2018-12-26 16:27:57', 0, NULL),
-(112, 2, 1, 'Pedidos de los miercoles de 2 Combo 3', '2019-07-10', '2018-12-26 16:27:58', 0, NULL),
-(113, 2, 1, 'Pedidos de los miercoles de 2 Combo 3', '2019-07-17', '2018-12-26 16:27:58', 0, NULL),
-(114, 2, 1, 'Pedidos de los miercoles de 2 Combo 3', '2019-07-24', '2018-12-26 16:27:58', 0, NULL),
-(115, 2, 1, 'Pedidos de los miercoles de 2 Combo 3', '2019-07-31', '2018-12-26 16:27:58', 0, NULL),
-(116, 2, 1, 'Pedidos de los miercoles de 2 Combo 3', '2019-08-07', '2018-12-26 16:27:58', 0, NULL),
-(117, 2, 1, 'Pedidos de los miercoles de 2 Combo 3', '2019-08-14', '2018-12-26 16:27:58', 0, NULL),
-(118, 2, 1, 'Pedidos de los miercoles de 2 Combo 3', '2019-08-21', '2018-12-26 16:27:59', 0, NULL),
-(119, 2, 1, 'Pedidos de los miercoles de 2 Combo 3', '2019-08-28', '2018-12-26 16:27:59', 0, NULL),
-(120, 2, 1, 'Pedidos de los miercoles de 2 Combo 3', '2019-09-04', '2018-12-26 16:27:59', 0, NULL),
-(121, 2, 1, 'Pedidos de los miercoles de 2 Combo 3', '2019-09-11', '2018-12-26 16:27:59', 0, NULL),
-(122, 2, 1, 'Pedidos de los miercoles de 2 Combo 3', '2019-09-18', '2018-12-26 16:27:59', 0, NULL),
-(123, 2, 1, 'Pedidos de los miercoles de 2 Combo 3', '2019-09-25', '2018-12-26 16:27:59', 0, NULL),
-(124, 2, 1, 'Pedidos de los miercoles de 2 Combo 3', '2019-10-02', '2018-12-26 16:27:59', 0, NULL),
-(125, 2, 1, 'Pedidos de los miercoles de 2 Combo 3', '2019-10-09', '2018-12-26 16:27:59', 0, NULL),
-(126, 2, 1, 'Pedidos de los miercoles de 2 Combo 3', '2019-10-16', '2018-12-26 16:27:59', 0, NULL),
-(127, 2, 1, 'Pedidos de los miercoles de 2 Combo 3', '2019-10-23', '2018-12-26 16:28:00', 0, NULL),
-(128, 2, 1, 'Pedidos de los miercoles de 2 Combo 3', '2019-10-30', '2018-12-26 16:28:00', 0, NULL),
-(129, 2, 1, 'Pedidos de los miercoles de 2 Combo 3', '2019-11-06', '2018-12-26 16:28:00', 0, NULL),
-(130, 2, 1, 'Pedidos de los miercoles de 2 Combo 3', '2019-11-13', '2018-12-26 16:28:00', 0, NULL),
-(131, 2, 1, 'Pedidos de los miercoles de 2 Combo 3', '2019-11-20', '2018-12-26 16:28:00', 0, NULL),
-(132, 2, 1, 'Pedidos de los miercoles de 2 Combo 3', '2019-11-27', '2018-12-26 16:28:00', 0, NULL),
-(133, 2, 1, 'Pedidos de los miercoles de 2 Combo 3', '2019-12-04', '2018-12-26 16:28:01', 0, NULL),
-(134, 2, 1, 'Pedidos de los miercoles de 2 Combo 3', '2019-12-11', '2018-12-26 16:28:01', 0, NULL),
-(135, 2, 1, 'Pedidos de los miercoles de 2 Combo 3', '2019-12-18', '2018-12-26 16:28:01', 0, NULL),
-(136, 2, 1, 'Pedidos de los miercoles de 2 Combo 3', '2019-12-25', '2018-12-26 16:28:01', 0, NULL),
-(137, 2, 1, 'Pedidos personalizados de 1 Combo 6', '2019-01-01', '2018-12-28 12:16:32', 0, NULL),
-(138, 2, 1, 'Pedidos personalizados de 1 Combo 6', '2019-01-03', '2018-12-28 12:16:32', 0, NULL),
-(139, 2, 1, 'Pedidos personalizados de 1 Combo 6', '2019-01-04', '2018-12-28 12:16:32', 0, NULL),
-(140, 2, 1, 'Pedidos personalizados de 1 Combo 6', '2019-01-02', '2018-12-28 12:16:32', 0, NULL),
-(141, 2, 1, 'Pedidos personalizados de 1 Combo 6', '2019-01-04', '2018-12-28 12:16:33', 0, NULL),
-(142, 3, 1, 'Pedidos de los lunes de 1000gr de 25 tallos', '2019-01-07', '2019-01-08 13:02:56', 0, NULL),
-(143, 3, 1, 'Pedidos de los lunes de 1000gr de 25 tallos', '2019-01-14', '2019-01-08 13:02:57', 0, NULL),
-(144, 3, 1, 'Pedidos de los lunes de 1000gr de 25 tallos', '2019-01-21', '2019-01-08 13:02:57', 0, NULL),
-(145, 3, 1, 'Pedidos de los lunes de 1000gr de 25 tallos', '2019-01-28', '2019-01-08 13:02:57', 0, NULL),
-(146, 3, 1, 'Pedidos de los lunes de 1000gr de 25 tallos', '2019-02-04', '2019-01-08 13:02:57', 0, NULL),
-(147, 3, 1, 'Pedidos de los lunes de 1000gr de 25 tallos', '2019-02-11', '2019-01-08 13:02:57', 0, NULL),
-(148, 3, 1, 'Pedidos de los lunes de 1000gr de 25 tallos', '2019-02-18', '2019-01-08 13:02:57', 0, NULL),
-(149, 3, 1, 'Pedidos de los lunes de 1000gr de 25 tallos', '2019-02-25', '2019-01-08 13:02:57', 0, NULL),
-(150, 3, 1, 'Pedidos de los lunes de 1000gr de 25 tallos', '2019-03-04', '2019-01-08 13:02:57', 0, NULL),
-(151, 3, 1, 'Pedidos de los lunes de 1000gr de 25 tallos', '2019-03-11', '2019-01-08 13:02:58', 0, NULL),
-(152, 3, 1, 'Pedidos de los lunes de 1000gr de 25 tallos', '2019-03-18', '2019-01-08 13:02:58', 0, NULL),
-(153, 3, 1, 'Pedidos de los lunes de 1000gr de 25 tallos', '2019-03-25', '2019-01-08 13:02:58', 0, NULL),
-(154, 3, 1, 'Pedidos de los lunes de 1000gr de 25 tallos', '2019-04-01', '2019-01-08 13:02:58', 0, NULL),
-(155, 3, 1, 'Pedidos de los lunes de 1000gr de 25 tallos', '2019-04-08', '2019-01-08 13:02:58', 0, NULL),
-(156, 3, 1, 'Pedidos de los lunes de 1000gr de 25 tallos', '2019-04-15', '2019-01-08 13:02:58', 0, NULL),
-(157, 3, 1, 'Pedidos de los lunes de 1000gr de 25 tallos', '2019-04-22', '2019-01-08 13:02:58', 0, NULL),
-(158, 3, 1, 'Pedidos de los lunes de 1000gr de 25 tallos', '2019-04-29', '2019-01-08 13:02:58', 0, NULL),
-(159, 3, 1, 'Pedidos de los lunes de 1000gr de 25 tallos', '2019-05-06', '2019-01-08 13:02:59', 0, NULL),
-(160, 3, 1, 'Pedidos de los lunes de 1000gr de 25 tallos', '2019-05-13', '2019-01-08 13:02:59', 0, NULL),
-(161, 3, 1, 'Pedidos de los lunes de 1000gr de 25 tallos', '2019-05-20', '2019-01-08 13:02:59', 0, NULL),
-(162, 3, 1, 'Pedidos de los lunes de 1000gr de 25 tallos', '2019-05-27', '2019-01-08 13:02:59', 0, NULL),
-(163, 3, 1, 'Pedidos de los lunes de 1000gr de 25 tallos', '2019-06-03', '2019-01-08 13:02:59', 0, NULL),
-(164, 3, 1, 'Pedidos de los lunes de 1000gr de 25 tallos', '2019-06-10', '2019-01-08 13:02:59', 0, NULL),
-(165, 3, 1, 'Pedidos de los lunes de 1000gr de 25 tallos', '2019-06-17', '2019-01-08 13:02:59', 0, NULL),
-(166, 3, 1, 'Pedidos de los lunes de 1000gr de 25 tallos', '2019-06-24', '2019-01-08 13:02:59', 0, NULL),
-(167, 3, 1, 'Pedidos de los lunes de 1000gr de 25 tallos', '2019-07-01', '2019-01-08 13:03:00', 0, NULL),
-(168, 3, 1, 'Pedidos de los lunes de 1000gr de 25 tallos', '2019-07-08', '2019-01-08 13:03:00', 0, NULL),
-(169, 3, 1, 'Pedidos de los lunes de 1000gr de 25 tallos', '2019-07-15', '2019-01-08 13:03:00', 0, NULL),
-(170, 3, 1, 'Pedidos de los lunes de 1000gr de 25 tallos', '2019-07-22', '2019-01-08 13:03:00', 0, NULL),
-(171, 3, 1, 'Pedidos de los lunes de 1000gr de 25 tallos', '2019-07-29', '2019-01-08 13:03:00', 0, NULL),
-(172, 3, 1, 'Pedidos de los lunes de 1000gr de 25 tallos', '2019-08-05', '2019-01-08 13:03:00', 0, NULL),
-(173, 3, 1, 'Pedidos de los lunes de 1000gr de 25 tallos', '2019-08-12', '2019-01-08 13:03:00', 0, NULL),
-(174, 3, 1, 'Pedidos de los lunes de 1000gr de 25 tallos', '2019-08-19', '2019-01-08 13:03:00', 0, NULL),
-(175, 3, 1, 'Pedidos de los lunes de 1000gr de 25 tallos', '2019-08-26', '2019-01-08 13:03:00', 0, NULL),
-(176, 3, 1, 'Pedidos de los lunes de 1000gr de 25 tallos', '2019-09-02', '2019-01-08 13:03:01', 0, NULL),
-(177, 3, 1, 'Pedidos de los lunes de 1000gr de 25 tallos', '2019-09-09', '2019-01-08 13:03:01', 0, NULL),
-(178, 3, 1, 'Pedidos de los lunes de 1000gr de 25 tallos', '2019-09-16', '2019-01-08 13:03:01', 0, NULL),
-(179, 3, 1, 'Pedidos de los lunes de 1000gr de 25 tallos', '2019-09-23', '2019-01-08 13:03:01', 0, NULL),
-(180, 3, 1, 'Pedidos de los lunes de 1000gr de 25 tallos', '2019-09-30', '2019-01-08 13:03:01', 0, NULL),
-(181, 3, 1, 'Pedidos de los lunes de 1000gr de 25 tallos', '2019-10-07', '2019-01-08 13:03:01', 0, NULL),
-(182, 3, 1, 'Pedidos de los lunes de 1000gr de 25 tallos', '2019-10-14', '2019-01-08 13:03:01', 0, NULL),
-(183, 3, 1, 'Pedidos de los lunes de 1000gr de 25 tallos', '2019-10-21', '2019-01-08 13:03:01', 0, NULL),
-(184, 3, 1, 'Pedidos de los lunes de 1000gr de 25 tallos', '2019-10-28', '2019-01-08 13:03:01', 0, NULL),
-(185, 3, 1, 'Pedidos de los lunes de 1000gr de 25 tallos', '2019-11-04', '2019-01-08 13:03:01', 0, NULL),
-(186, 3, 1, 'Pedidos de los lunes de 1000gr de 25 tallos', '2019-11-11', '2019-01-08 13:03:02', 0, NULL),
-(187, 3, 1, 'Pedidos de los lunes de 1000gr de 25 tallos', '2019-11-18', '2019-01-08 13:03:02', 0, NULL),
-(188, 3, 1, 'Pedidos de los lunes de 1000gr de 25 tallos', '2019-11-25', '2019-01-08 13:03:02', 0, NULL),
-(189, 3, 1, 'Pedidos de los lunes de 1000gr de 25 tallos', '2019-12-02', '2019-01-08 13:03:02', 0, NULL),
-(190, 3, 1, 'Pedidos de los lunes de 1000gr de 25 tallos', '2019-12-09', '2019-01-08 13:03:02', 0, NULL),
-(191, 3, 1, 'Pedidos de los lunes de 1000gr de 25 tallos', '2019-12-16', '2019-01-08 13:03:02', 0, NULL),
-(192, 3, 1, 'Pedidos de los lunes de 1000gr de 25 tallos', '2019-12-23', '2019-01-08 13:03:02', 0, NULL),
-(193, 3, 1, 'Pedidos de los lunes de 1000gr de 25 tallos', '2019-12-30', '2019-01-08 13:03:02', 0, NULL),
-(194, 3, 1, 'Pedidos de los lunes de 1000gr de 25 tallos', '2020-01-06', '2019-01-08 13:03:02', 0, NULL),
-(195, 3, 1, 'pedido 3', '2019-01-09', '2019-01-08 13:06:37', 0, NULL);
 
 -- --------------------------------------------------------
 
@@ -2323,15 +1745,6 @@ CREATE TABLE `precio` (
   `fecha_registro` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
---
--- Volcado de datos para la tabla `precio`
---
-
-INSERT INTO `precio` (`id_precio`, `id_variedad`, `id_clasificacion_ramo`, `cantidad`, `estado`, `fecha_registro`) VALUES
-(3, 1, 1, 36, 1, '2018-11-16 09:47:09'),
-(24, 1, 2, 24, 1, '2018-11-16 12:39:14'),
-(25, 1, 3, 15, 1, '2018-11-16 15:04:23');
-
 -- --------------------------------------------------------
 
 --
@@ -2343,15 +1756,9 @@ CREATE TABLE `recepcion` (
   `id_semana` int(11) NOT NULL,
   `fecha_ingreso` datetime NOT NULL,
   `fecha_registro` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `estado` tinyint(1) NOT NULL DEFAULT '1'
+  `estado` tinyint(1) NOT NULL DEFAULT '1',
+  `id_cosecha` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
---
--- Volcado de datos para la tabla `recepcion`
---
-
-INSERT INTO `recepcion` (`id_recepcion`, `id_semana`, `fecha_ingreso`, `fecha_registro`, `estado`) VALUES
-(1, 3, '2019-01-16 12:53:00', '2019-01-16 12:57:03', 1);
 
 -- --------------------------------------------------------
 
@@ -2366,13 +1773,6 @@ CREATE TABLE `recepcion_clasificacion_verde` (
   `estado` tinyint(1) NOT NULL DEFAULT '1',
   `fecha_registro` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
---
--- Volcado de datos para la tabla `recepcion_clasificacion_verde`
---
-
-INSERT INTO `recepcion_clasificacion_verde` (`id_recepcion_clasificacion_verde`, `id_recepcion`, `id_clasificacion_verde`, `estado`, `fecha_registro`) VALUES
-(1, 1, 1, 1, '2019-01-16 12:58:03');
 
 -- --------------------------------------------------------
 
@@ -2433,26 +1833,13 @@ INSERT INTO `rol_submenu` (`id_rol_submenu`, `id_rol`, `id_submenu`, `fecha_regi
 (16, 1, 16, '2018-12-05 09:55:51', 'A'),
 (17, 1, 17, '2018-12-17 15:54:50', 'A'),
 (18, 1, 18, '2018-12-20 09:46:25', 'A'),
-(19, 1, 19, '2019-01-08 15:12:40', 'A');
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `ruta_facturacion_electronica`
---
-
-CREATE TABLE `ruta_facturacion_electronica` (
-  `id_ruta_facturacion_electronica` int(11) NOT NULL,
-  `nombre_certificado_digital` varchar(100) NOT NULL,
-  `contrasena_certificado_digital` varchar(100) NOT NULL,
-  `ruta_certificado_firma_digital` varchar(500) NOT NULL,
-  `ruta_xml_generado` varchar(500) NOT NULL,
-  `ruta_xml_firmado` varchar(500) NOT NULL,
-  `ruta_xml_rautorizado` varchar(500) NOT NULL,
-  `ruta_xml_enviado` varchar(500) NOT NULL,
-  `ruta_xml_no_autorizado` varchar(500) NOT NULL,
-  `ruta_xml_rechazado` varchar(500) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+(19, 1, 19, '2019-01-08 15:12:40', 'A'),
+(20, 1, 22, '2019-01-18 09:01:13', 'A'),
+(21, 1, 20, '2019-01-18 09:01:26', 'A'),
+(22, 1, 21, '2019-01-18 09:01:39', 'A'),
+(23, 1, 23, '2019-02-04 08:35:43', 'A'),
+(24, 1, 24, '2019-02-04 08:37:10', 'A'),
+(25, 1, 25, '2019-02-08 15:37:36', 'A');
 
 -- --------------------------------------------------------
 
@@ -2468,6 +1855,13 @@ CREATE TABLE `sector` (
   `area` int(11) DEFAULT NULL,
   `descripcion` varchar(1000) COLLATE utf8_bin DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+--
+-- Volcado de datos para la tabla `sector`
+--
+
+INSERT INTO `sector` (`id_sector`, `nombre`, `fecha_registro`, `estado`, `area`, `descripcion`) VALUES
+(1, 'LAS PALMAS', '2019-01-22 12:32:09', 1, 5, '');
 
 -- --------------------------------------------------------
 
@@ -2777,22 +2171,6 @@ CREATE TABLE `stock_apertura` (
   `id_lote_re` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
---
--- Volcado de datos para la tabla `stock_apertura`
---
-
-INSERT INTO `stock_apertura` (`id_stock_apertura`, `id_variedad`, `id_clasificacion_unitaria`, `cantidad_tallos`, `fecha_inicio`, `fecha_fin`, `cantidad_disponible`, `disponibilidad`, `estado`, `fecha_registro`, `dias`, `id_lote_re`) VALUES
-(1, 1, 1, 460, '2019-01-16', NULL, 460, 1, 1, '2019-01-17 17:33:51', 7, 1),
-(2, 1, 2, 260, '2019-01-16', NULL, 260, 1, 1, '2019-01-17 17:33:51', 7, 2),
-(3, 1, 3, 240, '2019-01-16', NULL, 240, 1, 1, '2019-01-17 17:33:51', 7, 3),
-(4, 1, 4, 390, '2019-01-16', NULL, 390, 1, 1, '2019-01-17 17:33:52', 7, 4),
-(5, 1, 6, 820, '2019-01-16', NULL, 820, 1, 1, '2019-01-17 17:33:52', 7, 5),
-(6, 2, 1, 470, '2019-01-16', NULL, 470, 1, 1, '2019-01-17 17:33:52', 7, 6),
-(7, 2, 2, 305, '2019-01-16', NULL, 305, 1, 1, '2019-01-17 17:33:52', 7, 7),
-(8, 2, 3, 340, '2019-01-16', NULL, 340, 1, 1, '2019-01-17 17:33:52', 7, 8),
-(9, 2, 4, 390, '2019-01-16', NULL, 390, 1, 1, '2019-01-17 17:33:53', 7, 9),
-(10, 2, 6, 720, '2019-01-16', NULL, 720, 1, 1, '2019-01-17 17:33:53', 7, 10);
-
 -- --------------------------------------------------------
 
 --
@@ -2805,7 +2183,8 @@ CREATE TABLE `stock_empaquetado` (
   `cantidad_ingresada` float NOT NULL DEFAULT '0',
   `estado` tinyint(1) NOT NULL DEFAULT '1',
   `fecha_registro` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `empaquetado` tinyint(1) NOT NULL DEFAULT '0'
+  `empaquetado` tinyint(1) NOT NULL DEFAULT '0',
+  `cantidad_armada` float NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 -- --------------------------------------------------------
@@ -2878,7 +2257,7 @@ INSERT INTO `submenu` (`id_submenu`, `nombre`, `fecha_registro`, `estado`, `id_m
 (5, 'Sectores y módulos', '2018-10-24 09:31:35', 'A', 3, 'sectores_modulos'),
 (6, 'Semanas', '2018-10-24 09:31:57', 'A', 3, 'semanas'),
 (7, 'Marcas', '2018-10-24 09:32:47', 'A', 7, 'marcas'),
-(8, '1- Recepción', '2018-10-24 09:36:44', 'A', 5, 'recepcion'),
+(8, '1- Cosecha', '2018-10-24 09:36:44', 'A', 5, 'recepcion'),
 (9, '2- Clasificación en verde', '2018-11-05 11:55:17', 'A', 5, 'clasificacion_verde'),
 (10, 'Configuración empresa', '2018-11-05 16:48:42', 'A', 1, 'configuracion'),
 (11, 'Cliente', '2018-11-06 08:30:27', 'A', 7, 'clientes'),
@@ -2886,10 +2265,16 @@ INSERT INTO `submenu` (`id_submenu`, `nombre`, `fecha_registro`, `estado`, `id_m
 (13, '3- Apertura', '2018-11-14 09:37:28', 'A', 5, 'apertura'),
 (14, 'Lotes', '2018-12-03 09:32:27', 'A', 5, 'lotes'),
 (15, 'Pedidos', '2018-12-03 11:15:47', 'A', 7, 'pedidos'),
-(16, 'Agencias de Transporte', '2018-12-05 09:54:47', 'A', 7, 'agencias_transporte'),
+(16, 'Medio de Transporte', '2018-12-05 09:54:47', 'A', 7, 'agencias_transporte'),
 (17, 'Envíos', '2018-12-17 15:54:22', 'A', 7, 'envio'),
 (18, '4- Clasificación en blanco', '2018-12-20 09:45:33', 'A', 5, 'clasificacion_blanco'),
-(19, 'Despachos', '2019-01-08 15:09:51', 'A', 5, 'despachos');
+(19, 'Despachos', '2019-01-08 15:09:51', 'A', 5, 'despachos'),
+(20, 'Tipos comprobantes', '2019-01-18 08:59:05', 'A', 8, 'tipo_comprobante'),
+(21, 'Tipos de identificación', '2019-01-18 08:59:36', 'A', 8, 'tipo_identificacion'),
+(22, 'Tipos impuestos', '2019-01-18 08:59:57', 'A', 8, 'tipo_impuesto'),
+(23, 'Emisión comprobantes', '2019-02-04 08:35:21', 'A', 8, 'emision_comprobantes'),
+(24, 'Códigos DAE', '2019-02-04 08:36:45', 'A', 8, 'codigo_dae'),
+(25, 'Comprobantes', '2019-02-08 15:37:18', 'A', 7, 'comprobante');
 
 -- --------------------------------------------------------
 
@@ -2914,7 +2299,8 @@ INSERT INTO `tipo_comprobante` (`id_tipo_comprobante`, `codigo`, `nombre`, `fech
 (2, '02', 'NOTA DE CRÉDITO', '2019-01-16 08:56:43', 1),
 (3, '05', 'NOTA DE DÉBITO', '2019-01-16 08:56:53', 1),
 (4, '06', 'GUÍA DE REMISIÓN', '2019-01-16 08:57:07', 1),
-(5, '07', 'COMPROBANTE DE RETENCIÓN', '2019-01-16 08:57:18', 1);
+(5, '07', 'COMPROBANTE DE RETENCIÓN', '2019-01-16 08:57:18', 1),
+(6, '00', 'LOTE', '2019-02-08 15:38:38', 0);
 
 -- --------------------------------------------------------
 
@@ -2935,33 +2321,38 @@ CREATE TABLE `tipo_identificacion` (
 --
 
 INSERT INTO `tipo_identificacion` (`id_tipo_identificacion`, `nombre`, `codigo`, `estado`, `fecha_registro`) VALUES
-(1, 'vgdasgvwe', 'gvwergerw11', 1, '2018-12-26 13:08:16'),
-(2, 'fdbdf', 'bdfbdf', 1, '2018-12-26 13:13:50'),
-(3, '3214234324', '23reqrqwe', 1, '2018-12-26 13:13:58');
+(1, 'RUC', '04', 1, '2018-12-26 13:08:16'),
+(2, 'CÉDULA', '05', 1, '2018-12-26 13:13:50'),
+(3, 'PASAPORTE', '06', 1, '2018-12-26 13:13:58'),
+(4, 'VENTA A CONSUMIDOR FINAL', '07', 1, '2019-02-08 15:40:32'),
+(5, 'IDENTIFICACIÓN DEL EXTERIOR', '08', 1, '2019-02-08 15:40:32'),
+(6, 'PLACA', '09', 1, '2019-02-08 15:40:32');
 
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `tipo_iva`
+-- Estructura de tabla para la tabla `tipo_impuesto`
 --
 
-CREATE TABLE `tipo_iva` (
-  `id_tipo_iva` int(11) NOT NULL,
-  `codigo` char(2) NOT NULL,
+CREATE TABLE `tipo_impuesto` (
+  `id_tipo_impuesto` int(11) NOT NULL,
+  `codigo_impuesto` int(2) NOT NULL,
+  `codigo` varchar(6) NOT NULL,
+  `descripcion` varchar(500) NOT NULL,
   `porcentaje` varchar(50) NOT NULL,
   `estado` tinyint(1) NOT NULL DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
--- Volcado de datos para la tabla `tipo_iva`
+-- Volcado de datos para la tabla `tipo_impuesto`
 --
 
-INSERT INTO `tipo_iva` (`id_tipo_iva`, `codigo`, `porcentaje`, `estado`) VALUES
-(1, '0', '0', 1),
-(2, '2', '12', 1),
-(3, '3', '14', 1),
-(4, '6', 'No Objeto de Impuesto', 1),
-(5, '7', 'Exento de IVA', 1);
+INSERT INTO `tipo_impuesto` (`id_tipo_impuesto`, `codigo_impuesto`, `codigo`, `descripcion`, `porcentaje`, `estado`) VALUES
+(8, 2, '0', 'IVA 0%', '0', 1),
+(9, 2, '2', 'IVA 12%', '12', 1),
+(10, 2, '3', 'IVA 14%', '14', 1),
+(11, 2, '6', 'NO OBJETO DE IMPUESTO', 'NO OBJETO DE IMPUESTO', 1),
+(12, 2, '7', 'EXENTO DE IVA', 'EXENTO DE IVA', 1);
 
 -- --------------------------------------------------------
 
@@ -3001,17 +2392,18 @@ CREATE TABLE `usuario` (
   `id_rol` int(11) DEFAULT NULL,
   `fecha_registro` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `estado` char(1) COLLATE utf8_bin NOT NULL DEFAULT 'A',
-  `imagen_perfil` varchar(250) COLLATE utf8_bin NOT NULL DEFAULT 'logo_usuario.png'
+  `imagen_perfil` varchar(250) COLLATE utf8_bin NOT NULL DEFAULT 'logo_usuario.png',
+  `punto_acceso` char(3) COLLATE utf8_bin DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 --
 -- Volcado de datos para la tabla `usuario`
 --
 
-INSERT INTO `usuario` (`id_usuario`, `nombre_completo`, `correo`, `username`, `password`, `id_rol`, `fecha_registro`, `estado`, `imagen_perfil`) VALUES
-(1, 'RAFAEL PRATS RECASEN', 'prats@pyganflor.com', 'rprats', '$2y$10$EQdvjE1T2lQDOICvTtSEB.KtLIW7GheK3HoqzBqiEpMdvYnbGVw8y', 1, '2018-10-02 10:50:24', 'A', 'imagen_perfil_2018_10_10_15_22_32-rprats.jpg'),
-(2, 'EDUARDO DAVALOS', 'eduardo.p@pyganflor.com', 'eduardo.p', '$2y$10$tYY0mK2AupU1bRt.QUws8uRK9QRdCv6Th.juwX8dgThMDJt8J9QV2', 2, '2018-10-04 15:35:13', 'I', 'logo_usuario.png'),
-(3, 'OBRIAN VILLASMIL', 'orbian@pyganflor.com', 'obrian', '$2y$10$gu0puJhnBYh9xIDBa3zW2eacJ8yqy.c/tc5ItuankGB5rtmYuukv.', 1, '2018-11-05 11:57:32', 'A', 'logo_usuario.png');
+INSERT INTO `usuario` (`id_usuario`, `nombre_completo`, `correo`, `username`, `password`, `id_rol`, `fecha_registro`, `estado`, `imagen_perfil`, `punto_acceso`) VALUES
+(1, 'RAFAEL PRATS RECASEN', 'prats@pyganflor.com', 'rprats', '$2y$10$EQdvjE1T2lQDOICvTtSEB.KtLIW7GheK3HoqzBqiEpMdvYnbGVw8y', 1, '2018-10-02 10:50:24', 'A', 'imagen_perfil_2018_10_10_15_22_32-rprats.jpg', NULL),
+(2, 'EDUARDO DAVALOS', 'eduardo.p@pyganflor.com', 'eduardo.p', '$2y$10$tYY0mK2AupU1bRt.QUws8uRK9QRdCv6Th.juwX8dgThMDJt8J9QV2', 2, '2018-10-04 15:35:13', 'I', 'logo_usuario.png', NULL),
+(3, 'OBRIAN VILLASMIL', 'orbian@pyganflor.com', 'obrian', '$2y$10$gu0puJhnBYh9xIDBa3zW2eacJ8yqy.c/tc5ItuankGB5rtmYuukv.', 1, '2018-11-05 11:57:32', 'A', 'logo_usuario.png', NULL);
 
 -- --------------------------------------------------------
 
@@ -3023,23 +2415,23 @@ CREATE TABLE `variedad` (
   `id_variedad` int(11) NOT NULL,
   `nombre` varchar(250) COLLATE utf8_bin NOT NULL,
   `siglas` varchar(25) COLLATE utf8_bin NOT NULL,
-  `cantidad` int(11) NOT NULL,
   `minimo_apertura` int(11) NOT NULL,
   `maximo_apertura` int(11) NOT NULL,
   `fecha_registro` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `estado` tinyint(1) NOT NULL DEFAULT '1',
   `id_planta` int(11) NOT NULL,
-  `estandar_apertura` int(11) NOT NULL
+  `estandar_apertura` int(11) NOT NULL,
+  `tallos_x_malla` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 --
 -- Volcado de datos para la tabla `variedad`
 --
 
-INSERT INTO `variedad` (`id_variedad`, `nombre`, `siglas`, `cantidad`, `minimo_apertura`, `maximo_apertura`, `fecha_registro`, `estado`, `id_planta`, `estandar_apertura`) VALUES
-(1, 'GALAXY', 'GLX', 5, 5, 9, '2018-10-25 09:01:47', 1, 1, 7),
-(2, 'XLENCE', 'XL', 5, 5, 9, '2018-10-25 09:02:30', 1, 1, 7),
-(3, 'MILLION STAR', 'MS', 5, 3, 10, '2018-10-25 09:03:46', 1, 1, 7);
+INSERT INTO `variedad` (`id_variedad`, `nombre`, `siglas`, `minimo_apertura`, `maximo_apertura`, `fecha_registro`, `estado`, `id_planta`, `estandar_apertura`, `tallos_x_malla`) VALUES
+(1, 'GALAXY', 'GLX', 5, 9, '2018-10-25 09:01:47', 1, 1, 7, 50),
+(2, 'XLENCE', 'XL', 5, 9, '2018-10-25 09:02:30', 1, 1, 7, 30),
+(3, 'MILLION STAR', 'MS', 3, 10, '2018-10-25 09:03:46', 1, 1, 7, 50);
 
 --
 -- Índices para tablas volcadas
@@ -3114,10 +2506,26 @@ ALTER TABLE `cliente_pedido_especificacion`
   ADD KEY `id_especificacion` (`id_especificacion`);
 
 --
+-- Indices de la tabla `codigo_dae`
+--
+ALTER TABLE `codigo_dae`
+  ADD PRIMARY KEY (`id_codigo_dae`),
+  ADD KEY `codigo_pais` (`codigo_pais`);
+
+--
+-- Indices de la tabla `coloracion`
+--
+ALTER TABLE `coloracion`
+  ADD PRIMARY KEY (`id_coloracion`),
+  ADD KEY `FK_Coloracion_Marcacion` (`id_marcacion`);
+
+--
 -- Indices de la tabla `comprobante`
 --
 ALTER TABLE `comprobante`
-  ADD PRIMARY KEY (`id_comprobante`);
+  ADD PRIMARY KEY (`id_comprobante`),
+  ADD KEY `id_envio` (`id_envio`),
+  ADD KEY `tipo_comprobante` (`tipo_comprobante`);
 
 --
 -- Indices de la tabla `configuracion_empresa`
@@ -3146,20 +2554,25 @@ ALTER TABLE `contacto`
   ADD PRIMARY KEY (`id_contacto`);
 
 --
+-- Indices de la tabla `cosecha`
+--
+ALTER TABLE `cosecha`
+  ADD PRIMARY KEY (`id_cosecha`);
+
+--
+-- Indices de la tabla `desglose_envio_factura`
+--
+ALTER TABLE `desglose_envio_factura`
+  ADD PRIMARY KEY (`id_desglose_envio_factura`),
+  ADD KEY `id_comprobante` (`id_comprobante`);
+
+--
 -- Indices de la tabla `desglose_recepcion`
 --
 ALTER TABLE `desglose_recepcion`
   ADD PRIMARY KEY (`id_desglose_recepcion`),
   ADD KEY `FK_DesgloseRecepcion_Variedad` (`id_variedad`),
   ADD KEY `FK_DesgloseRecepcion_Recepcion` (`id_recepcion`);
-
---
--- Indices de la tabla `detallepedido_envio`
---
-ALTER TABLE `detallepedido_envio`
-  ADD PRIMARY KEY (`id_detallepedido_envio`),
-  ADD KEY `id_envio` (`id_envio`),
-  ADD KEY `FK_DetallePedidoEnvio_DetallePedido` (`id_detalle_pedido`);
 
 --
 -- Indices de la tabla `detalle_clasificacion_verde`
@@ -3217,12 +2630,25 @@ ALTER TABLE `detalle_especificacionempaque`
   ADD KEY `FK_DetalleEspecificacionEmpaque_UnidadMedida` (`id_unidad_medida`);
 
 --
+-- Indices de la tabla `detalle_factura`
+--
+ALTER TABLE `detalle_factura`
+  ADD PRIMARY KEY (`id_detalle_factura`),
+  ADD KEY `id_comprobante` (`id_comprobante`);
+
+--
 -- Indices de la tabla `detalle_pedido`
 --
 ALTER TABLE `detalle_pedido`
   ADD PRIMARY KEY (`id_detalle_pedido`),
   ADD KEY `FK_DetallePedido_Pedido` (`id_pedido`),
   ADD KEY `FK_DetallePedido_ClienteEspecificacion` (`id_cliente_especificacion`);
+
+--
+-- Indices de la tabla `distribucion`
+--
+ALTER TABLE `distribucion`
+  ADD PRIMARY KEY (`id_distribucion`);
 
 --
 -- Indices de la tabla `documento`
@@ -3260,13 +2686,6 @@ ALTER TABLE `especificacion_empaque`
   ADD KEY `FK_EspecificacionEmpaque_Empaque` (`id_empaque`);
 
 --
--- Indices de la tabla `factura`
---
-ALTER TABLE `factura`
-  ADD PRIMARY KEY (`id_factura`),
-  ADD KEY `FK_Factura_Pedido` (`id_pedido`);
-
---
 -- Indices de la tabla `grosor_ramo`
 --
 ALTER TABLE `grosor_ramo`
@@ -3285,6 +2704,38 @@ ALTER TABLE `grupo_menu`
 ALTER TABLE `icono`
   ADD PRIMARY KEY (`id_icono`),
   ADD UNIQUE KEY `nombre` (`nombre`);
+
+--
+-- Indices de la tabla `impuesto`
+--
+ALTER TABLE `impuesto`
+  ADD PRIMARY KEY (`id_impuesto`),
+  ADD KEY `codigo` (`codigo`);
+
+--
+-- Indices de la tabla `impuesto_desglose_envio_factura`
+--
+ALTER TABLE `impuesto_desglose_envio_factura`
+  ADD PRIMARY KEY (`id_impuesto_desglose_envio_factura`),
+  ADD KEY `codigo_impuesto` (`codigo_impuesto`),
+  ADD KEY `id_desglose_envio_factura` (`id_desglose_envio_factura`),
+  ADD KEY `codigo_porcentaje` (`codigo_porcentaje`);
+
+--
+-- Indices de la tabla `impuesto_detalle_factura`
+--
+ALTER TABLE `impuesto_detalle_factura`
+  ADD PRIMARY KEY (`id_impuesto_detalle_factura`),
+  ADD KEY `id_detalle_comprobante` (`id_detalle_factura`),
+  ADD KEY `codigo_impuesto` (`codigo_impuesto`),
+  ADD KEY `codigo_porcentaje` (`codigo_porcentaje`);
+
+--
+-- Indices de la tabla `informacion_adicional_factura`
+--
+ALTER TABLE `informacion_adicional_factura`
+  ADD PRIMARY KEY (`id_informacion_adicional_factura`),
+  ADD KEY `id_comprobante` (`id_comprobante`);
 
 --
 -- Indices de la tabla `inventario_frio`
@@ -3312,6 +2763,13 @@ ALTER TABLE `lote_re`
   ADD KEY `FK_LoteRE_Variedad` (`id_variedad`),
   ADD KEY `FK_LoteRE_ClasificacionUnitaria` (`id_clasificacion_unitaria`),
   ADD KEY `FK_LoteRE_ClasificacionVerde` (`id_clasificacion_verde`);
+
+--
+-- Indices de la tabla `marcacion`
+--
+ALTER TABLE `marcacion`
+  ADD PRIMARY KEY (`id_marcacion`),
+  ADD KEY `FK_Marcacion_EspecificacionEmpaque` (`id_especificacion_empaque`);
 
 --
 -- Indices de la tabla `marcas`
@@ -3369,7 +2827,8 @@ ALTER TABLE `precio`
 --
 ALTER TABLE `recepcion`
   ADD PRIMARY KEY (`id_recepcion`),
-  ADD KEY `FK_Recepcion_Semana` (`id_semana`);
+  ADD KEY `FK_Recepcion_Semana` (`id_semana`),
+  ADD KEY `FK_Recepcion_Cosecha` (`id_cosecha`);
 
 --
 -- Indices de la tabla `recepcion_clasificacion_verde`
@@ -3392,12 +2851,6 @@ ALTER TABLE `rol_submenu`
   ADD PRIMARY KEY (`id_rol_submenu`),
   ADD KEY `FK_RolSubmenu_Rol` (`id_rol`),
   ADD KEY `FK_RolSubmenu_Submenu` (`id_submenu`);
-
---
--- Indices de la tabla `ruta_facturacion_electronica`
---
-ALTER TABLE `ruta_facturacion_electronica`
-  ADD PRIMARY KEY (`id_ruta_facturacion_electronica`);
 
 --
 -- Indices de la tabla `sector`
@@ -3471,10 +2924,12 @@ ALTER TABLE `tipo_identificacion`
   ADD PRIMARY KEY (`id_tipo_identificacion`);
 
 --
--- Indices de la tabla `tipo_iva`
+-- Indices de la tabla `tipo_impuesto`
 --
-ALTER TABLE `tipo_iva`
-  ADD PRIMARY KEY (`id_tipo_iva`);
+ALTER TABLE `tipo_impuesto`
+  ADD PRIMARY KEY (`id_tipo_impuesto`),
+  ADD KEY `codigo_impuesto` (`codigo_impuesto`),
+  ADD KEY `codigo` (`codigo`);
 
 --
 -- Indices de la tabla `unidad_medida`
@@ -3507,61 +2962,73 @@ ALTER TABLE `variedad`
 -- AUTO_INCREMENT de la tabla `agencia_carga`
 --
 ALTER TABLE `agencia_carga`
-  MODIFY `id_agencia_carga` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id_agencia_carga` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `agencia_transporte`
 --
 ALTER TABLE `agencia_transporte`
-  MODIFY `id_agencia_transporte` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id_agencia_transporte` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `bitacora`
 --
 ALTER TABLE `bitacora`
-  MODIFY `id_bitacora` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `id_bitacora` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `clasificacion_ramo`
 --
 ALTER TABLE `clasificacion_ramo`
-  MODIFY `id_clasificacion_ramo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id_clasificacion_ramo` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `clasificacion_unitaria`
 --
 ALTER TABLE `clasificacion_unitaria`
-  MODIFY `id_clasificacion_unitaria` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id_clasificacion_unitaria` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `clasificacion_verde`
 --
 ALTER TABLE `clasificacion_verde`
-  MODIFY `id_clasificacion_verde` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_clasificacion_verde` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `cliente`
 --
 ALTER TABLE `cliente`
-  MODIFY `id_cliente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id_cliente` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `cliente_agenciacarga`
 --
 ALTER TABLE `cliente_agenciacarga`
-  MODIFY `id_cliente_agencia_carga` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id_cliente_agencia_carga` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `cliente_pedido_especificacion`
 --
 ALTER TABLE `cliente_pedido_especificacion`
-  MODIFY `id_cliente_pedido_especificacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+  MODIFY `id_cliente_pedido_especificacion` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `codigo_dae`
+--
+ALTER TABLE `codigo_dae`
+  MODIFY `id_codigo_dae` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `coloracion`
+--
+ALTER TABLE `coloracion`
+  MODIFY `id_coloracion` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `comprobante`
 --
 ALTER TABLE `comprobante`
-  MODIFY `id_comprobante` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `id_comprobante` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `configuracion_empresa`
@@ -3585,43 +3052,49 @@ ALTER TABLE `consumo`
 -- AUTO_INCREMENT de la tabla `contacto`
 --
 ALTER TABLE `contacto`
-  MODIFY `id_contacto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_contacto` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `cosecha`
+--
+ALTER TABLE `cosecha`
+  MODIFY `id_cosecha` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `desglose_envio_factura`
+--
+ALTER TABLE `desglose_envio_factura`
+  MODIFY `id_desglose_envio_factura` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `desglose_recepcion`
 --
 ALTER TABLE `desglose_recepcion`
-  MODIFY `id_desglose_recepcion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
-
---
--- AUTO_INCREMENT de la tabla `detallepedido_envio`
---
-ALTER TABLE `detallepedido_envio`
-  MODIFY `id_detallepedido_envio` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_desglose_recepcion` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `detalle_clasificacion_verde`
 --
 ALTER TABLE `detalle_clasificacion_verde`
-  MODIFY `id_detalle_clasificacion_verde` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+  MODIFY `id_detalle_clasificacion_verde` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `detalle_cliente`
 --
 ALTER TABLE `detalle_cliente`
-  MODIFY `id_detalle_cliente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id_detalle_cliente` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `detalle_cliente_contacto`
 --
 ALTER TABLE `detalle_cliente_contacto`
-  MODIFY `id_detalle_cliente_contacto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_detalle_cliente_contacto` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `detalle_empaque`
 --
 ALTER TABLE `detalle_empaque`
-  MODIFY `id_detalle_empaque` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=57;
+  MODIFY `id_detalle_empaque` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `detalle_envio`
@@ -3633,13 +3106,25 @@ ALTER TABLE `detalle_envio`
 -- AUTO_INCREMENT de la tabla `detalle_especificacionempaque`
 --
 ALTER TABLE `detalle_especificacionempaque`
-  MODIFY `id_detalle_especificacionempaque` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `id_detalle_especificacionempaque` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `detalle_factura`
+--
+ALTER TABLE `detalle_factura`
+  MODIFY `id_detalle_factura` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `detalle_pedido`
 --
 ALTER TABLE `detalle_pedido`
-  MODIFY `id_detalle_pedido` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=196;
+  MODIFY `id_detalle_pedido` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `distribucion`
+--
+ALTER TABLE `distribucion`
+  MODIFY `id_distribucion` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `documento`
@@ -3651,7 +3136,7 @@ ALTER TABLE `documento`
 -- AUTO_INCREMENT de la tabla `empaque`
 --
 ALTER TABLE `empaque`
-  MODIFY `id_empaque` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id_empaque` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `envio`
@@ -3663,19 +3148,13 @@ ALTER TABLE `envio`
 -- AUTO_INCREMENT de la tabla `especificacion`
 --
 ALTER TABLE `especificacion`
-  MODIFY `id_especificacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `id_especificacion` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `especificacion_empaque`
 --
 ALTER TABLE `especificacion_empaque`
-  MODIFY `id_especificacion_empaque` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
-
---
--- AUTO_INCREMENT de la tabla `factura`
---
-ALTER TABLE `factura`
-  MODIFY `id_factura` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_especificacion_empaque` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `grosor_ramo`
@@ -3696,6 +3175,30 @@ ALTER TABLE `icono`
   MODIFY `id_icono` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=863;
 
 --
+-- AUTO_INCREMENT de la tabla `impuesto`
+--
+ALTER TABLE `impuesto`
+  MODIFY `id_impuesto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT de la tabla `impuesto_desglose_envio_factura`
+--
+ALTER TABLE `impuesto_desglose_envio_factura`
+  MODIFY `id_impuesto_desglose_envio_factura` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `impuesto_detalle_factura`
+--
+ALTER TABLE `impuesto_detalle_factura`
+  MODIFY `id_impuesto_detalle_factura` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `informacion_adicional_factura`
+--
+ALTER TABLE `informacion_adicional_factura`
+  MODIFY `id_informacion_adicional_factura` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT de la tabla `inventario_frio`
 --
 ALTER TABLE `inventario_frio`
@@ -3711,31 +3214,37 @@ ALTER TABLE `lote`
 -- AUTO_INCREMENT de la tabla `lote_re`
 --
 ALTER TABLE `lote_re`
-  MODIFY `id_lote_re` int(111) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id_lote_re` int(111) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `marcacion`
+--
+ALTER TABLE `marcacion`
+  MODIFY `id_marcacion` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `marcas`
 --
 ALTER TABLE `marcas`
-  MODIFY `id_marca` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id_marca` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `menu`
 --
 ALTER TABLE `menu`
-  MODIFY `id_menu` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id_menu` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT de la tabla `modulo`
 --
 ALTER TABLE `modulo`
-  MODIFY `id_modulo` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_modulo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `pedido`
 --
 ALTER TABLE `pedido`
-  MODIFY `id_pedido` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=196;
+  MODIFY `id_pedido` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `planta`
@@ -3747,19 +3256,19 @@ ALTER TABLE `planta`
 -- AUTO_INCREMENT de la tabla `precio`
 --
 ALTER TABLE `precio`
-  MODIFY `id_precio` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `id_precio` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `recepcion`
 --
 ALTER TABLE `recepcion`
-  MODIFY `id_recepcion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_recepcion` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `recepcion_clasificacion_verde`
 --
 ALTER TABLE `recepcion_clasificacion_verde`
-  MODIFY `id_recepcion_clasificacion_verde` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_recepcion_clasificacion_verde` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `rol`
@@ -3771,19 +3280,13 @@ ALTER TABLE `rol`
 -- AUTO_INCREMENT de la tabla `rol_submenu`
 --
 ALTER TABLE `rol_submenu`
-  MODIFY `id_rol_submenu` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
-
---
--- AUTO_INCREMENT de la tabla `ruta_facturacion_electronica`
---
-ALTER TABLE `ruta_facturacion_electronica`
-  MODIFY `id_ruta_facturacion_electronica` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_rol_submenu` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- AUTO_INCREMENT de la tabla `sector`
 --
 ALTER TABLE `sector`
-  MODIFY `id_sector` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_sector` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `semana`
@@ -3795,7 +3298,7 @@ ALTER TABLE `semana`
 -- AUTO_INCREMENT de la tabla `stock_apertura`
 --
 ALTER TABLE `stock_apertura`
-  MODIFY `id_stock_apertura` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id_stock_apertura` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `stock_empaquetado`
@@ -3819,25 +3322,25 @@ ALTER TABLE `stock_guarde`
 -- AUTO_INCREMENT de la tabla `submenu`
 --
 ALTER TABLE `submenu`
-  MODIFY `id_submenu` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `id_submenu` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- AUTO_INCREMENT de la tabla `tipo_comprobante`
 --
 ALTER TABLE `tipo_comprobante`
-  MODIFY `id_tipo_comprobante` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id_tipo_comprobante` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de la tabla `tipo_identificacion`
 --
 ALTER TABLE `tipo_identificacion`
-  MODIFY `id_tipo_identificacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id_tipo_identificacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
--- AUTO_INCREMENT de la tabla `tipo_iva`
+-- AUTO_INCREMENT de la tabla `tipo_impuesto`
 --
-ALTER TABLE `tipo_iva`
-  MODIFY `id_tipo_iva` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+ALTER TABLE `tipo_impuesto`
+  MODIFY `id_tipo_impuesto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT de la tabla `unidad_medida`
@@ -3898,10 +3401,28 @@ ALTER TABLE `cliente_pedido_especificacion`
   ADD CONSTRAINT `FK_ClientePedidoEspecificacion_Especificacion` FOREIGN KEY (`id_especificacion`) REFERENCES `especificacion` (`id_especificacion`) ON DELETE NO ACTION ON UPDATE CASCADE;
 
 --
+-- Filtros para la tabla `codigo_dae`
+--
+ALTER TABLE `codigo_dae`
+  ADD CONSTRAINT `FK_codigo_dae_pais` FOREIGN KEY (`codigo_pais`) REFERENCES `pais` (`codigo`) ON DELETE NO ACTION ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `coloracion`
+--
+ALTER TABLE `coloracion`
+  ADD CONSTRAINT `FK_Coloracion_Marcacion` FOREIGN KEY (`id_marcacion`) REFERENCES `marcacion` (`id_marcacion`) ON DELETE NO ACTION ON UPDATE CASCADE;
+
+--
 -- Filtros para la tabla `configuracion_user`
 --
 ALTER TABLE `configuracion_user`
   ADD CONSTRAINT `FK_ConfiguracionUser_Usuario` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id_usuario`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `desglose_envio_factura`
+--
+ALTER TABLE `desglose_envio_factura`
+  ADD CONSTRAINT `FK_desglose_envio_factura_comprobante` FOREIGN KEY (`id_comprobante`) REFERENCES `comprobante` (`id_comprobante`) ON DELETE NO ACTION ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `desglose_recepcion`
@@ -3909,13 +3430,6 @@ ALTER TABLE `configuracion_user`
 ALTER TABLE `desglose_recepcion`
   ADD CONSTRAINT `FK_DesgloseRecepcion_Recepcion` FOREIGN KEY (`id_recepcion`) REFERENCES `recepcion` (`id_recepcion`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `FK_DesgloseRecepcion_Variedad` FOREIGN KEY (`id_variedad`) REFERENCES `variedad` (`id_variedad`) ON DELETE NO ACTION ON UPDATE CASCADE;
-
---
--- Filtros para la tabla `detallepedido_envio`
---
-ALTER TABLE `detallepedido_envio`
-  ADD CONSTRAINT `FK_DetallePedidoEnvio_DetallePedido` FOREIGN KEY (`id_detalle_pedido`) REFERENCES `detalle_pedido` (`id_detalle_pedido`) ON DELETE NO ACTION ON UPDATE CASCADE,
-  ADD CONSTRAINT `FK_DetallePedidoEnvio_Envio` FOREIGN KEY (`id_envio`) REFERENCES `envio` (`id_envio`) ON DELETE NO ACTION ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `detalle_clasificacion_verde`
@@ -3967,6 +3481,12 @@ ALTER TABLE `detalle_especificacionempaque`
   ADD CONSTRAINT `FK_DetalleEspecificacionEmpaque_Variedad` FOREIGN KEY (`id_variedad`) REFERENCES `variedad` (`id_variedad`) ON DELETE NO ACTION ON UPDATE CASCADE;
 
 --
+-- Filtros para la tabla `detalle_factura`
+--
+ALTER TABLE `detalle_factura`
+  ADD CONSTRAINT `FK_detalle_comprobante_comprobante` FOREIGN KEY (`id_comprobante`) REFERENCES `comprobante` (`id_comprobante`) ON DELETE NO ACTION ON UPDATE CASCADE;
+
+--
 -- Filtros para la tabla `detalle_pedido`
 --
 ALTER TABLE `detalle_pedido`
@@ -3993,10 +3513,17 @@ ALTER TABLE `especificacion_empaque`
   ADD CONSTRAINT `FK_EspecificacionEmpaque_Especificacion` FOREIGN KEY (`id_especificacion`) REFERENCES `especificacion` (`id_especificacion`) ON DELETE NO ACTION ON UPDATE CASCADE;
 
 --
--- Filtros para la tabla `factura`
+-- Filtros para la tabla `impuesto_detalle_factura`
 --
-ALTER TABLE `factura`
-  ADD CONSTRAINT `FK_Factura_Pedido` FOREIGN KEY (`id_pedido`) REFERENCES `pedido` (`id_pedido`) ON DELETE NO ACTION ON UPDATE CASCADE;
+ALTER TABLE `impuesto_detalle_factura`
+  ADD CONSTRAINT `FK_impuesto_detalle_factura_detalle_factura` FOREIGN KEY (`id_detalle_factura`) REFERENCES `detalle_factura` (`id_detalle_factura`) ON DELETE NO ACTION ON UPDATE CASCADE,
+  ADD CONSTRAINT `FK_impuesto_detalle_factura_impuesto` FOREIGN KEY (`codigo_impuesto`) REFERENCES `impuesto` (`codigo`) ON DELETE NO ACTION ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `informacion_adicional_factura`
+--
+ALTER TABLE `informacion_adicional_factura`
+  ADD CONSTRAINT `FK_informacion_adicional_factura_comprobante` FOREIGN KEY (`id_comprobante`) REFERENCES `comprobante` (`id_comprobante`) ON DELETE NO ACTION ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `inventario_frio`
@@ -4021,6 +3548,12 @@ ALTER TABLE `lote_re`
   ADD CONSTRAINT `FK_LoteRE_ClasificacionUnitaria` FOREIGN KEY (`id_clasificacion_unitaria`) REFERENCES `clasificacion_unitaria` (`id_clasificacion_unitaria`) ON DELETE NO ACTION ON UPDATE CASCADE,
   ADD CONSTRAINT `FK_LoteRE_ClasificacionVerde` FOREIGN KEY (`id_clasificacion_verde`) REFERENCES `clasificacion_verde` (`id_clasificacion_verde`) ON DELETE NO ACTION ON UPDATE CASCADE,
   ADD CONSTRAINT `FK_LoteRE_Variedad` FOREIGN KEY (`id_variedad`) REFERENCES `variedad` (`id_variedad`) ON DELETE NO ACTION ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `marcacion`
+--
+ALTER TABLE `marcacion`
+  ADD CONSTRAINT `FK_Marcacion_EspecificacionEmpaque` FOREIGN KEY (`id_especificacion_empaque`) REFERENCES `especificacion_empaque` (`id_especificacion_empaque`) ON DELETE NO ACTION ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `menu`
@@ -4051,6 +3584,7 @@ ALTER TABLE `precio`
 -- Filtros para la tabla `recepcion`
 --
 ALTER TABLE `recepcion`
+  ADD CONSTRAINT `FK_Recepcion_Cosecha` FOREIGN KEY (`id_cosecha`) REFERENCES `cosecha` (`id_cosecha`) ON DELETE NO ACTION ON UPDATE CASCADE,
   ADD CONSTRAINT `FK_Recepcion_Semana` FOREIGN KEY (`id_semana`) REFERENCES `semana` (`id_semana`) ON DELETE NO ACTION ON UPDATE CASCADE;
 
 --

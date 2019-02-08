@@ -217,7 +217,7 @@
                                 <td>
                                     <div class="input-group">
                                         <span class="input-group-addon" style="background-color: #e9ecef">Cantidad</span>
-                                        <input type="text" placeholder="Nombre | factor" id="clasificacion_unitaria_{{$key +1}}"
+                                        <input type="text" placeholder="30|7" id="clasificacion_unitaria_{{$key +1}}"
                                                name="clasificacion_unitaria_{{$key +1}}" required="" class="form-control" minlength="1"
                                                maxlength="10"
                                                {!! $clUnit->estado == 0 ? 'disabled' : '' !!} value="{{$clUnit->nombre}}">
@@ -238,8 +238,8 @@
                             <td>
                                 <div class="input-group">
                                     <span class="input-group-addon" style="background-color: #e9ecef">Cantidad</span>
-                                    <input type="text" placeholder="Sólo números" id="clasificacion_unitaria_1" name="clasificacion_unitaria_1"
-                                           required="" class="form-control" minlength="1" maxlength="10" pattern="^([0-9])*$" placeholder="30|7">
+                                    <input type="text" placeholder="30|7" id="clasificacion_unitaria_1" name="clasificacion_unitaria_1"
+                                           required="" class="form-control" minlength="1" maxlength="10" pattern="^([0-9])*$">
                                 </div>
                             </td>
                         </tr>
@@ -326,7 +326,7 @@
                                         <div class="input-group">
                                             <span class="input-group-addon" style="background-color: #e9ecef">Nombre</span>
                                             <input type="text" id="campo_empaque_{{$key+1}}" name="campo_empaque_{{$key+1}}" required=""
-                                                   class="form-control" minlength="1" maxlength="255" placeholder="Nombre | Factor"
+                                                   class="form-control" minlength="1" maxlength="255" placeholder="nombre|factor"
                                                    {!! $empaque->estado == 0 ? 'disabled' : '' !!} value="{{$empaque->nombre}}">
                                         </div>
                                         <div class="input-group">
@@ -342,7 +342,7 @@
                                     </div>
                                 </td>
                                 <td class="text-center">
-                                    <input type="hidden" id="id_campo_empaque_{{$key+1}}"
+                                    <input type="hidden" id="id_campo_empaque_{{$key+1}}" placeholder="nombre|factor"
                                            value="{!! isset($empaque->id_empaque) ? $empaque->id_empaque : '' !!}">
                                     <button type="button" class="btn btn-xs btn-{!! $empaque->estado == 1 ? 'warning' : 'success' !!}"
                                             title="{!! $empaque->estado == 1 ? 'Desactivar' : 'Activar' !!} campo"
@@ -360,7 +360,7 @@
                             <div class="form-inline">
                                 <div class="input-group">
                                     <span class="input-group-addon" style="background-color: #e9ecef">Nombre</span>
-                                    <input type="text" id="campo_empaque_1" name="campo_empaque_1" required=""
+                                    <input type="text" id="campo_empaque_1" name="campo_empaque_1" required="" placeholder="nombre|factor"
                                            class="form-control" minlength="1" maxlength="255">
                                 </div>
                                 <div class="input-group">
