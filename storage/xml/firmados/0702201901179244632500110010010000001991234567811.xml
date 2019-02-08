@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<factura id="comprobante" version="1.0.0">
+  <infoTributaria>
+    <ambiente>1</ambiente>
+    <tipoEmision>1</tipoEmision>
+    <razonSocial>Pyganflor S.A</razonSocial>
+    <nombreComercial>Pyganflor</nombreComercial>
+    <ruc>1792446325001</ruc>
+    <claveAcceso>0702201901179244632500110010010000001991234567811</claveAcceso>
+    <codDoc>01</codDoc>
+    <estab>001</estab>
+    <ptoEmi>001</ptoEmi>
+    <secuencial>000000199</secuencial>
+    <dirMatriz>Pasaje la Paz E9-01 y Av. 6 de Diciembre</dirMatriz>
+  </infoTributaria>
+  <infoFactura>
+    <fechaEmision>07/02/2019</fechaEmision>
+    <dirEstablecimiento>Vía San Jose de Minas Vía al Pisque</dirEstablecimiento>
+    <obligadoContabilidad>SI</obligadoContabilidad>
+    <tipoIdentificacionComprador>07</tipoIdentificacionComprador>
+    <razonSocialComprador>CONSUMIDOR FINAL</razonSocialComprador>
+    <identificacionComprador>9999999999999</identificacionComprador>
+    <totalSinImpuestos>4.00</totalSinImpuestos>
+    <totalDescuento>0.00</totalDescuento>
+    <totalConImpuestos>
+      <totalImpuesto>
+        <codigo>2</codigo>
+        <codigoPorcentaje>2</codigoPorcentaje>
+        <baseImponible>4.00</baseImponible>
+        <valor>0.48</valor>
+      </totalImpuesto>
+    </totalConImpuestos>
+    <propina>0.00</propina>
+    <importeTotal>4.48</importeTotal>
+    <moneda>DOLAR</moneda>
+  </infoFactura>
+  <detalles>
+    <detalle>
+      <codigoPrincipal>ENV000000082</codigoPrincipal>
+      <descripcion>GYPSOPHILA (XL) 1250gr </descripcion>
+      <cantidad>1.00</cantidad>
+      <precioUnitario>4.00</precioUnitario>
+      <descuento>0.00</descuento>
+      <precioTotalSinImpuesto>4.00</precioTotalSinImpuesto>
+      <impuestos>
+        <impuesto>
+          <codigo>2</codigo>
+          <codigoPorcentaje>2</codigoPorcentaje>
+          <tarifa>12.00</tarifa>
+          <baseImponible>4.00</baseImponible>
+          <valor>0.48</valor>
+        </impuesto>
+      </impuestos>
+    </detalle>
+  </detalles>
+  <infoAdicional>
+    <campoAdicional nombre="Dirección">Pichincha Este es el cliente cuatro (Consumidor final)</campoAdicional>
+    <campoAdicional nombre="Email">cliente4@gmail.com</campoAdicional>
+    <campoAdicional nombre="Teléfono">852136547</campoAdicional>
+  </infoAdicional>
+<ds:Signature Id="Signature18132" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:etsi="http://uri.etsi.org/01903/v1.3.2#">
+<ds:SignedInfo Id="Signature-SignedInfo1009667">
+<ds:CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/>
+<ds:SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/>
+<ds:Reference Id="SignedPropertiesID615659" Type="http://uri.etsi.org/01903#SignedProperties" URI="#Signature18132-SignedProperties484704">
+<ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
+<ds:DigestValue>pjkERG4qy2Eab81J+VWlYVTzf6A=</ds:DigestValue>
+</ds:Reference>
+<ds:Reference URI="#Certificate1176016">
+<ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
+<ds:DigestValue>Wx9OA4jO7420J57butg6FhrHZno=</ds:DigestValue>
+</ds:Reference>
+<ds:Reference Id="Reference-ID-406483" URI="#comprobante">
+<ds:Transforms>
+<ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/>
+</ds:Transforms>
+<ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
+<ds:DigestValue>pZf0yPdo8WBM/KUKtHmmyHylBnE=</ds:DigestValue>
+</ds:Reference>
+</ds:SignedInfo>
+<ds:SignatureValue Id="SignatureValue36780">
+HodlEnyM02rAiHzAV0hA5+BqKVmSEjWYV7qBTEubV5R98JiPQoV59ss8tgnLIituSZb4rsu/6RHS
+DZm6xafX5a+T4RuNGAtt9hucX9jQNxtCTm23ZQLbeYHVjBgYVdF4tVrcYdEODVMQosoGFQDV3mVP
+mj1TSk152pSpcOaUZmhL5wsfah+UDqnX+obeHgsrLMGSIhPuHrW5LJdh9YHuEBvJc2m4y3L4FveJ
+RzrAkena+BNM3SIpbFcLCRzRhNRpj1zSzsJcwK9/ZaTA+mcVRXDK3NEh+0ol8EcrZ2ITX8tin0QJ
+Dap5Cu4hZvCDD+o537/8eQpwc7EXuu8GUj70lw==
+</ds:SignatureValue>
+<ds:KeyInfo Id="Certificate1176016">
+<ds:X509Data>
+<ds:X509Certificate>
+MIIJmzCCCIOgAwIBAgIEVNGKGzANBgkqhkiG9w0BAQsFADCBkzELMAkGA1UEBhMCRUMxGzAZBgNV
+BAoTElNFQ1VSSVRZIERBVEEgUy5BLjEwMC4GA1UECxMnRU5USURBRCBERSBDRVJUSUZJQ0FDSU9O
+IERFIElORk9STUFDSU9OMTUwMwYDVQQDEyxBVVRPUklEQUQgREUgQ0VSVElGSUNBQ0lPTiBTVUIg
+U0VDVVJJVFkgREFUQTAeFw0xODA2MjUxNjE4MTBaFw0yMTA2MjUxNjQ4MTBaMIGYMQswCQYDVQQG
+EwJFQzEbMBkGA1UEChMSU0VDVVJJVFkgREFUQSBTLkEuMTAwLgYDVQQLEydFTlRJREFEIERFIENF
+UlRJRklDQUNJT04gREUgSU5GT1JNQUNJT04xOjATBgNVBAUTDDI1MDYxODExNDExMDAjBgNVBAMT
+HEpPU0UgRU5SSVFVRSBDSVNORVJPUyBST01FUk8wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEK
+AoIBAQDA3jbKh8zoZ2Kk9vQ8YkO1108cqXPfeEIx9NU4Xcv4kYDHU5zGzKwljICd5k5jZrQPZVEc
+7Tmd2UD4qA1eXMGD6u38hM9WTCPZneFQkMNHlHJB2K8UP1tWPUfR929jMlckbg/Lrdpgw52uAy6B
+4rgHAYiSQEHDiIOThomFBQC/NjrRykEHV5GgX1ZqK16zrf5ach1wMBYNs1L1Vbl4hkbhAlr4j/YQ
+a1EfzCPp123AziozJfBfbb4Vv/vBt7rsuTGanWVK/k8rltf/tPA3BMzgEbH6N4qeJdX3SVRdPK5v
+2x6qqgSfveBl0ry8QM6nVbSqQPP4Tdv+7oD4D6z3qQnPAgMBAAGjggXuMIIF6jALBgNVHQ8EBAMC
+BeAwWQYIKwYBBQUHAQEETTBLMEkGCCsGAQUFBzABhj1odHRwOi8vb2NzcGd3LnNlY3VyaXR5ZGF0
+YS5uZXQuZWMvZWpiY2EvcHVibGljd2ViL3N0YXR1cy9vY3NwMIHKBgNVHSAEgcIwgb8wPwYKKwYB
+BAGCpnICCjAxMC8GCCsGAQUFBwICMCMaIUNlcnRpZmljYWRvIGRlIE1pZW1icm8gZGUgRW1wcmVz
+YTB8BgorBgEEAYKmcgIEMG4wbAYIKwYBBQUHAgEWYGh0dHBzOi8vd3d3LnNlY3VyaXR5ZGF0YS5u
+ZXQuZWMvbGV5ZXNfbm9ybWF0aXZhcy9Qb2xpdGljYXMgZGUgQ2VydGlmaWNhZG8gTWllbWJybyBk
+ZSBFbXByZXNhLnBkZjAeBgorBgEEAYKmcgMKBBATDkRBU0FMRkxPUiBTLkEuMB0GCisGAQQBgqZy
+AwsEDxMNMTc5MjQ0NjMyNTAwMTAaBgorBgEEAYKmcgMBBAwTCjE3MDQxNDUxODIwHAYKKwYBBAGC
+pnIDAgQOEwxKT1NFIEVOUklRVUUwGAYKKwYBBAGCpnIDAwQKEwhDSVNORVJPUzAWBgorBgEEAYKm
+cgMEBAgTBlJPTUVSTzAaBgorBgEEAYKmcgMFBAwTClBSRVNJREVOVEUwOAYKKwYBBAGCpnIDBwQq
+EyhQQVNBSkUgTEEgUEFaIEU5LTAxIFkgQVYuIDYgREUgRElDSUVNQlJFMBsGCisGAQQBgqZyAwgE
+DRMLNTkzMjI1MDgwNDgwFQYKKwYBBAGCpnIDCQQHEwVRVUlUTzAXBgorBgEEAYKmcgMMBAkTB0VD
+VUFET1IwHwYKKwYBBAGCpnIDIAQREw8wMDIwMDEwMDAwMjQwOTgwEwYKKwYBBAGCpnIDIQQFEwNQ
+RlgwHQYDVR0RBBYwFIESaW5mb0BkYXNhbGZsb3IuY29tMIICewYDVR0fBIICcjCCAm4wggJqoIIC
+ZqCCAmKGPWh0dHA6Ly9vY3NwZ3cuc2VjdXJpdHlkYXRhLm5ldC5lYy9lamJjYS9wdWJsaWN3ZWIv
+c3RhdHVzL29jc3CGgdVsZGFwOi8vZGlyZWN0LnNlY3VyaXR5ZGF0YS5uZXQuZWMvY249Q1JMMjE5
+LGNuPUFVVE9SSURBRCUyMERFJTIwQ0VSVElGSUNBQ0lPTiUyMFNVQiUyMFNFQ1VSSVRZJTIwREFU
+QSxvdT1FTlRJREFEJTIwREUlMjBDRVJUSUZJQ0FDSU9OJTIwREUlMjBJTkZPUk1BQ0lPTixvPVNF
+Q1VSSVRZJTIwREFUQSUyMFMuQS4sYz1FQz9jZXJ0aWZpY2F0ZVJldm9jYXRpb25MaXN0P2Jhc2WG
+gZ5odHRwczovL2RpcmVjdC5zZWN1cml0eWRhdGEubmV0LmVjL35jcmwvYXV0b3JpZGFkX2RlX2Nl
+cnRpZmljYWNpb25fc3ViX3NlY3VyaXR5X2RhdGFfZW50aWRhZF9kZV9jZXJ0aWZpY2FjaW9uX2Rl
+X2luZm9ybWFjaW9uX2N1cml0eV9kYXRhX3MuYS5fY19lY19jcmxmaWxlLmNybKSBpzCBpDELMAkG
+A1UEBhMCRUMxGzAZBgNVBAoTElNFQ1VSSVRZIERBVEEgUy5BLjEwMC4GA1UECxMnRU5USURBRCBE
+RSBDRVJUSUZJQ0FDSU9OIERFIElORk9STUFDSU9OMTUwMwYDVQQDEyxBVVRPUklEQUQgREUgQ0VS
+VElGSUNBQ0lPTiBTVUIgU0VDVVJJVFkgREFUQTEPMA0GA1UEAxMGQ1JMMjE5MCsGA1UdEAQkMCKA
+DzIwMTgwNjI1MTYxODEwWoEPMjAyMTA2MjUxNjQ4MTBaMB8GA1UdIwQYMBaAFPcvTOB152KjeJZb
+BrYucTvMbD+QMB0GA1UdDgQWBBQ92f2qZfksDHx/aKt0wlgrcDuSQDAJBgNVHRMEAjAAMBkGCSqG
+SIb2fQdBAAQMMAobBFY4LjEDAgOoMA0GCSqGSIb3DQEBCwUAA4IBAQBoMjxNr9ZNoW7a53Coj8VZ
+0P1lOY4xp+PMNy3lzQfqNYYJe0CeYwt1gq7NqbUa5Ne53TmODfpBCkifeLSkecxjB9kbpsZRMFDT
+p407yXmynCr2ocjZiQM4N02WDJBbsIreOMTRGzhKOE7J/mSFl+UjZxiR+bnaFJ0x7jQ7VmUyQy2a
+7dr7CxkL9XbBnk6NjuVTD/yR6G05dx7FHnf3VvfTTorXmq4p5+uM3b2dmJrJD1+iS6IK39QptNv2
+yFq0+yQpy5I9F4QaT7ZM+ZGGwYh9cjikK9PRO+plcc4Tru7NErvPXH6vAxW4U1tdaoSBX3k8Vycq
+ss4L3TcSRBqOXpbi
+</ds:X509Certificate>
+</ds:X509Data>
+<ds:KeyValue>
+<ds:RSAKeyValue>
+<ds:Modulus>
+wN42yofM6GdipPb0PGJDtddPHKlz33hCMfTVOF3L+JGAx1OcxsysJYyAneZOY2a0D2VRHO05ndlA
++KgNXlzBg+rt/ITPVkwj2Z3hUJDDR5RyQdivFD9bVj1H0fdvYzJXJG4Py63aYMOdrgMugeK4BwGI
+kkBBw4iDk4aJhQUAvzY60cpBB1eRoF9Waites63+WnIdcDAWDbNS9VW5eIZG4QJa+I/2EGtRH8wj
+6ddtwM4qMyXwX22+Fb/7wbe67Lkxmp1lSv5PK5bX/7TwNwTM4BGx+jeKniXV90lUXTyub9seqqoE
+n73gZdK8vEDOp1W0qkDz+E3b/u6A+A+s96kJzw==
+</ds:Modulus>
+<ds:Exponent>AQAB</ds:Exponent>
+</ds:RSAKeyValue>
+</ds:KeyValue>
+</ds:KeyInfo>
+<ds:Object Id="Signature18132-Object132591"><etsi:QualifyingProperties Target="#Signature18132"><etsi:SignedProperties Id="Signature18132-SignedProperties484704"><etsi:SignedSignatureProperties><etsi:SigningTime>2019-02-07T16:52:44-05:00</etsi:SigningTime><etsi:SigningCertificate><etsi:Cert><etsi:CertDigest><ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/><ds:DigestValue>clR4Qu0EEHTVKWgf5xSqOJkwlMw=</ds:DigestValue></etsi:CertDigest><etsi:IssuerSerial><ds:X509IssuerName>CN=AUTORIDAD DE CERTIFICACION SUB SECURITY DATA,OU=ENTIDAD DE CERTIFICACION DE INFORMACION,O=SECURITY DATA S.A.,C=EC</ds:X509IssuerName><ds:X509SerialNumber>1423018523</ds:X509SerialNumber></etsi:IssuerSerial></etsi:Cert></etsi:SigningCertificate></etsi:SignedSignatureProperties><etsi:SignedDataObjectProperties><etsi:DataObjectFormat ObjectReference="#Reference-ID-406483"><etsi:Description>contenido comprobante</etsi:Description><etsi:MimeType>text/xml</etsi:MimeType></etsi:DataObjectFormat></etsi:SignedDataObjectProperties></etsi:SignedProperties></etsi:QualifyingProperties></ds:Object></ds:Signature></factura>

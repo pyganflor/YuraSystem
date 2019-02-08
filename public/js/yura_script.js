@@ -1,8 +1,9 @@
-function add_pedido(id_cliente, pedido_fijo, vista) {
+function add_pedido(id_cliente, pedido_fijo, vista,id_pedido) {
     datos = {
-        id_cliente: id_cliente,
-        pedido_fijo: pedido_fijo,
-        vista: vista
+        id_cliente  : id_cliente,
+        pedido_fijo : pedido_fijo,
+        vista       : vista,
+        id_pedido   : id_pedido
     };
     get_jquery('/clientes/add_pedido', datos, function (retorno) {
         modal_view('modal_add_pedido', retorno, '<i class="fa fa-fw fa-plus"></i> Agregar pedido', true, false, '70%');
@@ -15,7 +16,6 @@ function add_pedido(id_cliente, pedido_fijo, vista) {
 }
 
 function add_campos(value, id_cliente, cant_especificaciones) {
-    console.log(id_cliente);
     $.LoadingOverlay('show');
     //var cant_tr = $('tbody#tbody_inputs_pedidos tr').length;
     //cant_tr > -1 ? $('#btn_delete_inputs').removeClass('hide') : '';
@@ -140,38 +140,44 @@ function habilitar_campos() {
     $("#fecha_hasta_pedido_fijo").attr('disabled', false);
 }
 
-function store_pedido(id_cliente, pedido_fijo, csrf_token, vista) {
+function store_pedido(id_cliente, pedido_fijo, csrf_token, vista, id_pedido) {
 
-    var cant_tr = $('tbody#tbody_inputs_pedidos tr').length;
-    var arrDataDetallesPedido = [];
-    var variedades = '';
-    for (var i = 1; i <= cant_tr; i++) {
-        if($("#cantidad_" + i).val() != ""){
-            var inputs_variedad = $("tbody#tbody_inputs_pedidos tr#tr_inputs_pedido_"+i+" td ul input[name='id_variedad']").length;
-            var id_variedad = '';
+    if(id_pedido){
+        var texto = 'Si este pedido posee envíos al editarlo seran borrados y deberá crearlos nuevamente';
+    }else{
+        var texto = 'Desea guardar este pedido?'
+    }
 
-            for(var z=1; z<=inputs_variedad;z++){
-                id_variedad += $("#id_variedad_"+i+"_"+z).val()+"|";
+    modal_quest('modal_edit_pedido', texto , 'Editar pedido', true, false, '40%', function () {
+        var cant_tr = $('tbody#tbody_inputs_pedidos tr').length;
+        var arrDataDetallesPedido = [];
+        var variedades = '';
+        for (var i = 1; i <= cant_tr; i++) {
+            if($("#cantidad_" + i).val() != ""){
+                var inputs_variedad = $("tbody#tbody_inputs_pedidos tr#tr_inputs_pedido_"+i+" td ul input[name='id_variedad']").length;
+                var id_variedad = '';
+
+                for(var z=1; z<=inputs_variedad;z++){
+                    id_variedad += $("#id_variedad_"+i+"_"+z).val()+"|";
+                }
+                variedades += id_variedad;
+                arrDataDetallesPedido.push([
+                    $("#cantidad_" + i).val(),
+                    $("#id_especificacion_" + i).val(),
+                    $("#id_agencia_carga_" + i).val(),
+                ]);
             }
-            variedades += id_variedad;
-            arrDataDetallesPedido.push([
-                $("#cantidad_" + i).val(),
-                $("#id_especificacion_" + i).val(),
-                $("#id_agencia_carga_" + i).val(),
-            ]);
         }
-    }
 
-    if(arrDataDetallesPedido.length < 1){
-        modal_view('modal_status_pedidos','<div class="alert alert-danger text-center"><p> Debe colocar la cantidad en al menos una especificación</p> </div>','<i class="fa fa-times" aria-hidden="true"></i> Estado pedido', true, false, '50%');
-        return false;
-    }
+        if(arrDataDetallesPedido.length < 1){
+            modal_view('modal_status_pedidos','<div class="alert alert-danger text-center"><p> Debe colocar la cantidad en al menos una especificación</p> </div>','<i class="fa fa-times" aria-hidden="true"></i> Estado pedido', true, false, '50%');
+            return false;
+        }
 
-    if ($('#form_add_pedido').valid()) {
-        //var result = confirm("Una vez guardado el pedido no puede ser editado");
-        //if (result) {
+        if ($('#form_add_pedido').valid()) {
+            //var result = confirm("Una vez guardado el pedido no puede ser editado");
+            //if (result) {
             var arrFechas = [];
-
             if (pedido_fijo && ($("#opcion_pedido_fijo").val() == 1) || $("#opcion_pedido_fijo").val() == 2) {
                 var fechaDesde = moment($("#fecha_desde_pedido_fijo").val());
                 var fechaHasta = moment($("#fecha_hasta_pedido_fijo").val());
@@ -216,23 +222,29 @@ function store_pedido(id_cliente, pedido_fijo, csrf_token, vista) {
                 arrDataDetallesPedido: arrDataDetallesPedido,
                 descripcion: $('#descripcion').val(),
                 fecha_de_entrega: $('#fecha_de_entrega').length ? $('#fecha_de_entrega').val() : '',
-                id_cliente: id_cliente == '' ? $("#id_cliente_venta").val() : id_cliente,
-                id_pedido: $('#id_pedido').val(),
-                arrFechas: arrFechas.length < 1 ? '' : arrFechas,
-                pedido_fijo: $("#opcion_pedido_fijo").length > 0 ? $("#opcion_pedido_fijo").val() : '',
-                opcion: $("#opcion_pedido_fijo").val(),
-                variedades : variedades.split("|")
+                id_cliente      : id_cliente == '' ? $("#id_cliente_venta").val() : id_cliente,
+                id_pedido       : $('#id_pedido').val(),
+                arrFechas       : arrFechas.length < 1 ? '' : arrFechas,
+                pedido_fijo     : $("#opcion_pedido_fijo").length > 0 ? $("#opcion_pedido_fijo").val() : '',
+                opcion          : $("#opcion_pedido_fijo").val(),
+                variedades      : variedades.split("|"),
+                id_pedido       : id_pedido
             };
             post_jquery('clientes/store_pedidos', datos, function () {
                 cerrar_modals();
-
+                buscar_listado_pedidos();
                 if (vista != 'pedidos') {
                     detalles_cliente(id_cliente == '' ? id_cliente = $("#id_cliente_venta").val() : id_cliente);
                 }
             });
             $.LoadingOverlay('hide');
-        //}
-    }
+            //}
+        }
+    });
+}
+
+function peticion() {
+
 }
 
 function cancelar_pedidos(id_pedido, id_cliente, estado, token) {

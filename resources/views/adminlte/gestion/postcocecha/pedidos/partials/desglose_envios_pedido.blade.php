@@ -95,7 +95,7 @@
     </div>--}}
 </div>
 <script>
-    function genera_comprobante_cliente(){
+    /*function genera_comprobante_cliente(){
         arrEnvios = [];
         $.each($('input:checkbox[name=check_envio]:checked'), function (i, j) {
             arrEnvios.push([
@@ -146,7 +146,7 @@
         var id = input_descuento.id.split("_")[1];
         $("#"+input_descuento.id,).removeAttr("readonly");
         $("#muestra_descuento_"+id).removeAttr("disabled");
-    }
+    }*/
 
     $(function () {
         $('[data-toggle="popover"]').popover()

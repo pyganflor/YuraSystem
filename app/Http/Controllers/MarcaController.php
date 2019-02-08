@@ -17,10 +17,9 @@ class MarcaController extends Controller
             [
                 'url' => $request->getRequestUri(),
                 'submenu' => Submenu::Where('url', '=', substr($request->getRequestUri(), 1))->get()[0],
-                'text' => ['titulo' => 'Clientes', 'subtitulo' => 'mmódulo de postcocecha']
+                'text' => ['titulo' => 'Clientes', 'subtitulo' => 'módulo de postcocecha']
             ]);
     }
-
 
     public function buscar_marcas(Request $request)
     {

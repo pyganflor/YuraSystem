@@ -9,3 +9,5 @@ Route::post('clientes/cancelar_pedido', 'PedidoController@cancelar_pedido');
 Route::get('clientes/opcion_pedido_fijo', 'PedidoController@opcion_pedido_fijo');
 Route::get('clientes/add_fechas_pedido_fijo_personalizado', 'PedidoController@add_fechas_pedido_fijo_personalizado');
 Route::get('clientes/buscar_saldos', 'YuraController@buscar_saldos');
+
+

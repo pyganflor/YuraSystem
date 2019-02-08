@@ -13,7 +13,7 @@ class EmisionComprobanteController extends Controller
         return view('adminlte.gestion.configuracion_facturacion.emision_comprobantes.incio', [
             'url' => $request->getRequestUri(),
             'submenu' => Submenu::Where('url', '=', substr($request->getRequestUri(), 1))->get()[0],
-            'text' => ['titulo'=>'Emisión comprobantes','subtitulo'=>'módulo de emision de comprobantes'],
+            'text' => ['titulo'=>'Emisión pdf','subtitulo'=>'módulo de emision de pdf'],
             'exist_punto_acceso' => Usuario::where('punto_acceso','!=',null)->get(),
             'usuario'  => Usuario::where('id_rol','!=',1)->get(),
         ]);

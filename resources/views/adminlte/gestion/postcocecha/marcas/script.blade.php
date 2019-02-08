@@ -13,6 +13,7 @@
             $.LoadingOverlay('hide');
         });
     }
+
     function add_marca(id_marca) {
         datos = {
             id_marca : id_marca

@@ -3,12 +3,14 @@
 namespace yura\Http\Controllers;
 
 use Illuminate\Http\Request;
+use yura\Modelos\DetalleEnvio;
 use yura\Modelos\DetalleEspecificacionEmpaque;
 use yura\Modelos\Pedido;
 use yura\Modelos\Especificacion;
 use yura\Modelos\ClientePedidoEspecificacion;
 use yura\Modelos\DetallePedido;
 use yura\Modelos\AgenciaCarga;
+use yura\Modelos\Envio;
 use Validator;
 use DB;
 
@@ -75,12 +77,12 @@ class PedidoController extends Controller
                 'clientes' => DB::table('cliente as c')
                     ->join('detalle_cliente as dt', 'c.id_cliente', '=', 'dt.id_cliente')
                     ->where('dt.estado', 1)->get(),
+                'id_pedido' => $request->id_pedido
             ]);
     }
 
     public function store_pedidos(Request $request)
     {
-
         $valida = Validator::make($request->all(), [
             'arrDataPedido' => 'Array',
             'id_cliente' => 'required',
@@ -104,6 +106,16 @@ class PedidoController extends Controller
 
                 (isset($request->opcion) && $request->opcion != 3) ? $fechaFormateada = $formatoFecha : $fechaFormateada = $fechas;
 
+                if(!empty($request->id_pedido)){
+                    $dataEnvio = Envio::where('id_pedido',$request->id_pedido)->select('id_envio')->first();
+                    if($dataEnvio !== null){
+                        DetalleEnvio::where('id_envio',$dataEnvio->id_envio)->delete();
+                        Envio::where('id_pedido',$request->id_pedido)->delete();
+                    }
+                    DetallePedido::where('id_pedido',$request->id_pedido)->delete();
+                    Pedido::destroy($request->id_pedido);
+                }
+
                 $objPedido = new Pedido;
                 $objPedido->id_cliente = $request->id_cliente;
                 $objPedido->descripcion = $request->descripcion;
@@ -126,8 +138,11 @@ class PedidoController extends Controller
                                 . '</div>';
                             bitacora('pedido|detalle_pedido', $model->id_pedido, 'I', 'Inserción satisfactoria de un nuevo pedido');
                         } else {
-                            $deletePedido = Pedido::find($model->id_pedido);
-                            $deletePedido->destroy();
+                            Pedido::destroy($model->id_pedido);
+                            $success = false;
+                            $msg = '<div class="alert alert-danger text-center">' .
+                                '<p> Hubo un error al guardar la información en el sistema</p>'
+                                . '</div>';
                         }
                     }
                 }
@@ -165,7 +180,7 @@ class PedidoController extends Controller
         foreach ($data_especificaciones->get() as $data){
            $arr_data_cliente_especificacion[] = ClientePedidoEspecificacion::where('id_cliente_pedido_especificacion',$data->id_cliente_pedido_especificacion)->get();
         }
-       //dd($arr_data_cliente_especificacion);
+
         return view('adminlte.gestion.postcocecha.pedidos.forms.paritals.inputs_dinamicos',
             [
                 'especificaciones' => $data_especificaciones->get(),
