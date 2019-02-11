@@ -18,16 +18,18 @@ use DB;
 
 class AgenciaTransporteController extends Controller
 {
-    public function index(Request $request){
+    public function index(Request $request)
+    {
         return view('adminlte.gestion.postcocecha.agencia_transporte.incio', [
             'url' => $request->getRequestUri(),
             'submenu' => Submenu::Where('url', '=', substr($request->getRequestUri(), 1))->get()[0],
             'roles' => Rol::All(),
-            'text' => ['titulo'=>'Configuración de agencias de transporte','subtitulo'=>'módulo de administración']
+            'text' => ['titulo' => 'Configuración de agencias de transporte', 'subtitulo' => 'módulo de administración']
         ]);
     }
 
-    public function list_agencias_transporte(Request $request){
+    public function list_agencias_transporte(Request $request)
+    {
 
         $busqueda = $request->has('busqueda') ? espacios($request->busqueda) : '';
         $bus = str_replace(' ', '%%', $busqueda);
@@ -46,20 +48,23 @@ class AgenciaTransporteController extends Controller
             'listado' => $listado
         ];
 
-        return view('adminlte.gestion.postcocecha.agencia_transporte.partials.list_agencias_transporte',$datos);
+        return view('adminlte.gestion.postcocecha.agencia_transporte.partials.list_agencias_transporte', $datos);
     }
 
-    public function crear_agencias_transporte(Request $request){
-
+    public function crear_agencias_transporte(Request $request)
+    {
         $request->id_agencia_transporte != '' ? $dataAgencia = AgenciaTransporte::find($request->id_agencia_transporte) : $dataAgencia = '';
 
-        return view('adminlte.gestion.postcocecha.agencia_transporte.partials.forms.form_agencia_transporte',['dataAgencia'=>$dataAgencia]);
+        return view('adminlte.gestion.postcocecha.agencia_transporte.partials.forms.form_agencia_transporte', [
+            'dataAgencia' => $dataAgencia
+        ]);
     }
 
-    public function  store_agencias_transporte(Request $request){
+    public function store_agencias_transporte(Request $request)
+    {
 
         $valida = Validator::make($request->all(), [
-            'nombre'                => 'required',
+            'nombre' => 'required',
             'agencia_transporte' => 'required',
         ]);
 
@@ -67,17 +72,17 @@ class AgenciaTransporteController extends Controller
 
             //dd($request->all());
 
-            empty($request->id_agencia_transporte ) ? $objAgenciaTransporte = new AgenciaTransporte : $objAgenciaTransporte = AgenciaTransporte::find($request->id_agencia_transporte);
+            empty($request->id_agencia_transporte) ? $objAgenciaTransporte = new AgenciaTransporte : $objAgenciaTransporte = AgenciaTransporte::find($request->id_agencia_transporte);
 
-            $objAgenciaTransporte->nombre       = $request->nombre;
+            $objAgenciaTransporte->nombre = $request->nombre;
             $objAgenciaTransporte->tipo_agencia = $request->agencia_transporte;
-            $msg='';
+            $msg = '';
 
-            if($objAgenciaTransporte->save()) {
+            if ($objAgenciaTransporte->save()) {
                 $model = AgenciaTransporte::all()->last();
                 $success = true;
                 $msg .= '<div class="alert alert-success text-center">' .
-                    '<p> Se ha guardado la agencia de transporte '. $objAgenciaTransporte->nombre .'  exitosamente</p>'
+                    '<p> Se ha guardado la agencia de transporte ' . $objAgenciaTransporte->nombre . '  exitosamente</p>'
                     . '</div>';
                 bitacora('agencia_tranposrte', $model->id_agencia_transporte, 'I', 'Inserción satisfactoria de una nueva agencia de transporte');
             } else {
@@ -115,7 +120,7 @@ class AgenciaTransporteController extends Controller
         if ($model != '') {
             $model->estado = $model->estado == 1 ? 0 : 1;
             if ($model->save()) {
-                bitacora('agencia_transporte', $model->id_agencia_transporte, 'U', 'Actualización satisfactoria del estado de la agencia de transporte'. $model->nombre);
+                bitacora('agencia_transporte', $model->id_agencia_transporte, 'U', 'Actualización satisfactoria del estado de la agencia de transporte' . $model->nombre);
 
                 return [
                     'success' => true,

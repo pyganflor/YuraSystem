@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<factura id="comprobante" version="1.0.0">
+  <infoTributaria>
+    <ambiente>1</ambiente>
+    <tipoEmision>1</tipoEmision>
+    <razonSocial>Pyganflor S.A.</razonSocial>
+    <nombreComercial>Pyganflor</nombreComercial>
+    <ruc>1792446325001</ruc>
+    <claveAcceso>1102201901179244632500110010010000001721234567810</claveAcceso>
+    <codDoc>01</codDoc>
+    <estab>001</estab>
+    <ptoEmi>001</ptoEmi>
+    <secuencial>000000172</secuencial>
+    <dirMatriz>Pasaje La Paz E-901 y Ave. 6 de Diciembre</dirMatriz>
+  </infoTributaria>
+  <infoFactura>
+    <fechaEmision>11/02/2019</fechaEmision>
+    <dirEstablecimiento>Vía San José de Minas, Vía al Pisque</dirEstablecimiento>
+    <obligadoContabilidad/>
+    <tipoIdentificacionComprador>08</tipoIdentificacionComprador>
+    <razonSocialComprador>Flower Express</razonSocialComprador>
+    <identificacionComprador>98745687</identificacionComprador>
+    <totalSinImpuestos>1350.00</totalSinImpuestos>
+    <totalDescuento>0.00</totalDescuento>
+    <totalConImpuestos>
+      <totalImpuesto>
+        <codigo>2</codigo>
+        <codigoPorcentaje>7</codigoPorcentaje>
+        <baseImponible>1350.00</baseImponible>
+        <valor>0.00</valor>
+      </totalImpuesto>
+    </totalConImpuestos>
+    <propina>0.00</propina>
+    <importeTotal>1350.00</importeTotal>
+    <moneda>DOLAR</moneda>
+  </infoFactura>
+  <detalles>
+    <detalle>
+      <codigoPrincipal>ENV000000004</codigoPrincipal>
+      <descripcion>GYPSOPHILA (XL) 250gr cm</descripcion>
+      <cantidad>75.00</cantidad>
+      <precioUnitario>18.00</precioUnitario>
+      <descuento>0.00</descuento>
+      <precioTotalSinImpuesto>1350.00</precioTotalSinImpuesto>
+      <impuestos>
+        <impuesto>
+          <codigo>2</codigo>
+          <codigoPorcentaje>7</codigoPorcentaje>
+          <tarifa>0.00</tarifa>
+          <baseImponible>1350.00</baseImponible>
+          <valor>0.00</valor>
+        </impuesto>
+      </impuestos>
+    </detalle>
+  </detalles>
+  <infoAdicional>
+    <campoAdicional nombre="Dirección">Florida Miami</campoAdicional>
+    <campoAdicional nombre="Email">copa@copa.com</campoAdicional>
+    <campoAdicional nombre="Teléfono">0987598413244</campoAdicional>
+    <campoAdicional nombre="DAE">9875462855</campoAdicional>
+  </infoAdicional>
+</factura>
