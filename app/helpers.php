@@ -994,7 +994,6 @@ function getPais($codigo){
 //==================  Funciones involucradas en la comprobante electrónica ======================//
 function generaDigitoVerificador($cadena)
 {
-
     $arr_num = str_split($cadena);
     $cant_cadena = count($arr_num);
     $total = 0;

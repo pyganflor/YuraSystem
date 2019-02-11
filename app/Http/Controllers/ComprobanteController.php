@@ -491,7 +491,7 @@ class ComprobanteController extends Controller
         $factura->appendChild($nodeClaveAcceso);
         $nodeRuc = $xml->createElement('ruc',$ruc);
         $factura->appendChild($nodeRuc);
-        $nodeComprobantes = $xml->createElement('pdf');
+        $nodeComprobantes = $xml->createElement('compobantes');
         $factura->appendChild($nodeComprobantes);
 
         $path_firmados = env('PATH_XML_FIRMADOS');
@@ -538,7 +538,6 @@ class ComprobanteController extends Controller
                     }
                     sleep(3);
                     $msg = respuesta_autorizacion_comprobante($claveAcceso);
-
                     /*$msg = "<div class='alert text-center  alert-".$class."'>" .
                         "<p> ".mensaje_envio_comprobante($resultado[0])."</p>"
                         . "</div>";*/
