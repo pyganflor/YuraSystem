@@ -1,0 +1,6 @@
+TRUNCATE `comprobante`;
+TRUNCATE `desglose_envio_factura`;
+TRUNCATE `detalle_factura`;
+TRUNCATE `impuesto_desglose_envio_factura`;
+TRUNCATE `impuesto_detalle_factura`;
+TRUNCATE `informacion_adicional_factura`;

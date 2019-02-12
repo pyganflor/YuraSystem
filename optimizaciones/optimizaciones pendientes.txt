@@ -1,6 +1,25 @@
-Programar un filtro de columnas para las tablas con demasiadas columnas:
+**Programar un filtro de columnas para las tablas con demasiadas columnas:
 	-permitir mostrar/ocultar las columnas deseadas por el usuario
 
 En la ventana de cliente, en la sección de agencia de carga, añadir la opcion de crear una nueva agencia de carga desde ese formulario
 
 Añadir un Submenu de especificaciones, donde se pueda ver por cada especificación qué clientes la poseen
+
+Hacer la funcion explode('|', nombre_calibre_ramo) en cada lugar donde aparece la clasificacion por ramo
+
+Poner por defecto en el formulario de especificaciones, dentro del select T. Ud. medida, PESO
+
+Poner por defecto la fecha en los campos de los formularios:
+	-Pedido Normal
+	-Despachos
+
+Revisar el formulario de envios
+
+Falta llenar el campo pedido.variedad con los ids de las variedades que se encuentren en un pedido, desde el formulario
+Pedido fijo y Pedido Normal
+
+En el formulario de Precios hay que añadir en el select de calibres, la unidad de medida
+
+En el formulario de Códigos DAE, al teminar de cargar el archivo, realizar una actualziacion por debajo de los añadidos
+
+En el formulario de Añadir submenus en la pagina de Permisos, listaro solo los elementos activos

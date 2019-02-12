@@ -62,7 +62,6 @@
                     count += 100 / cantidad_envios;
                     $.LoadingOverlay("progress", count);
                 }, tiempo);
-                return false;
                 datos = {
                     _token: '{{csrf_token()}}',
                     arrPreFacturas: arrPreFacturas
