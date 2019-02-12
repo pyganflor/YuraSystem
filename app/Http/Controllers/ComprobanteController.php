@@ -296,7 +296,7 @@ class ComprobanteController extends Controller
 
                 if($obj_comprobante->save()){
                     $model_comprobante = Comprobante::all()->last();
-
+                    bitacora('comprobante', $model_comprobante->id_comprpobante, 'I', 'Creación de un nuevo comprobante electrónico');
                     $objDetalleFactura = new DetalleFactura;
                     $objDetalleFactura->id_comprobante                   = $model_comprobante->id_comprobante;
                     $objDetalleFactura->razon_social_emisor              = $informacionTributaria['razonSocial'];
@@ -314,7 +314,7 @@ class ComprobanteController extends Controller
 
                     if($objDetalleFactura->save()){
                         $model_detalle_factura = DetalleFactura::all()->last();
-
+                        bitacora('detalle_factura', $model_detalle_factura->id_detalle_factura, 'I', 'Creación de un nuevo detalle de factura');
                         $objImpuestoDetalleFactura = new ImpuestoDetalleFactura;
                         $objImpuestoDetalleFactura->id_detalle_factura = $model_detalle_factura->id_detalle_factura;
                         $objImpuestoDetalleFactura->codigo_impuesto    = $informacionImpuestos['codigo'];
@@ -323,7 +323,8 @@ class ComprobanteController extends Controller
                         $objImpuestoDetalleFactura->valor              = $informacionImpuestos['valor'];
 
                         if($objImpuestoDetalleFactura->save()){
-
+                            $model_impuesto_detalle_factura = ImpuestoDetalleFactura::all()->last();
+                            bitacora('impuesto_detalle_factura', $model_impuesto_detalle_factura->id_impuesto_detalle_factura, 'I', 'Creación de un nuevo impuesto de detalle de factura');
                             $iteracion = 0;
                             for($p=0;$p<$datos_xml->count();$p++) {
 
@@ -348,14 +349,13 @@ class ComprobanteController extends Controller
                                 $objDesgloseEnvioFactura->precio_total_sin_impuesto = number_format($precio_total_individual,2,".","");
 
                                 if($objDesgloseEnvioFactura->save()){
-
+                                    bitacora('impuesto_detalle_factura', $model_impuesto_detalle_factura->id_impuesto_detalle_factura, 'I', 'Creación de un nuevo impuesto de detalle de factura');
                                     $model_desglose_envio_factura = DesgloseEnvioFactura::all()->last();
 
                                     $objImpuestoDesgloseEnvioFactura = new ImpuestoDesgloseEnvioFactura;
                                     $objImpuestoDesgloseEnvioFactura->id_desglose_envio_factura = $model_desglose_envio_factura->id_desglose_envio_factura;
                                     $objImpuestoDesgloseEnvioFactura->codigo_impuesto           = $datos_xml_iteracion->codigo_impuesto;
                                     $objImpuestoDesgloseEnvioFactura->codigo_porcentaje	        = $datos_xml_iteracion->codigo_porcentaje;
-                                    //$objImpuestoDesgloseEnvioFactura->tarifa                    = is_numeric($datos_xml_iteracion->porcntaje_iva) ? number_format($datos_xml_iteracion->porcntaje_iva,2,".","") : "0.00";
                                     $objImpuestoDesgloseEnvioFactura->base_imponible            = number_format($precio_total_individual,2,".","");
                                     $objImpuestoDesgloseEnvioFactura->valor                     = is_numeric($datos_xml_iteracion->porcntaje_iva) ? number_format($precio_total_individual*($datos_xml_iteracion->porcntaje_iva/100),2,".","") : "0.00";
                                     $objImpuestoDesgloseEnvioFactura->save() ?  $iteracion++ : '';
@@ -378,6 +378,7 @@ class ComprobanteController extends Controller
                                 $objInformacionAdicionalFactura->guia_hija      = $campos_adicionales['GUIA_HIJA'];
 
                                 if( $objInformacionAdicionalFactura->save()) {
+                                    $model_informacion_adicional_factura = InformacionAdicionalFactura::all()->last();
                                     $save_xml = $xml->save(env('PATH_XML_GENERADOS') . $nombre_xml);
                                     if ($save_xml && $save_xml > 0) {
                                         $resultado = firmarComprobanteXml($nombre_xml);
@@ -389,6 +390,7 @@ class ComprobanteController extends Controller
                                                 $obj_comprobante->estado = 1;
                                                 $obj_comprobante->save();
                                             }
+                                            bitacora('informacion_adicional_factura', $model_informacion_adicional_factura->id_informacion_adicional_factura , 'I', 'Creación de una nueva información de factura');
                                             $msg .= "<div class='alert text-center  alert-" . $class . "'>" .
                                                 "<p> " . mensajeFirmaElectronica($resultado, str_pad($dataEnvio[0], 9, "0", STR_PAD_LEFT)) . "</p>"
                                                 . "</div>";
@@ -583,12 +585,12 @@ class ComprobanteController extends Controller
 
     public function formulario_facturacion(Request $request){
         return view('adminlte.gestion.configuracion_facturacion.tipo_comprobantes.forms.form_facturacion');
-    }
+    }*/
 
     public function eliminar_registro_archivo_lote($id_comprobante,$claveAcceso,$firmados=""){
         unlink(env('PATH_XML_FIRMADOS').$claveAcceso.".xml");
         Comprobante::destroy($id_comprobante);
         if($firmados!="")
             unlink(env('PATH_XML_FIRMADOS').$claveAcceso.".xml");
-    }*/
+    }
 }
