@@ -1,6 +1,8 @@
 **Programar un filtro de columnas para las tablas con demasiadas columnas:
 	-permitir mostrar/ocultar las columnas deseadas por el usuario
 
+**Optimizar los ingresos de los permisos
+
 En la ventana de cliente, en la sección de agencia de carga, añadir la opcion de crear una nueva agencia de carga desde ese formulario
 
 Añadir un Submenu de especificaciones, donde se pueda ver por cada especificación qué clientes la poseen

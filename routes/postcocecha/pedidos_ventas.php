@@ -16,4 +16,5 @@ Route::post('pedidos/editar_coloracion', 'OrdenSemanalController@editar_coloraci
 Route::post('pedidos/editar_marcacion', 'OrdenSemanalController@editar_marcacion');
 Route::post('pedidos/update_distribucion', 'OrdenSemanalController@update_distribucion');
 Route::post('pedidos/update_pedido_orden_semanal', 'OrdenSemanalController@update_pedido_orden_semanal');
-
+Route::get('pedidos/distribuir_marcaciones', 'OrdenSemanalController@distribuir_marcaciones');
+Route::post('pedidos/calcular_distribucion', 'OrdenSemanalController@calcular_distribucion');

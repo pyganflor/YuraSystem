@@ -187,6 +187,9 @@
                             <i class="fa fa-fw fa-pencil"></i> Guardar
                         </button>
                     </th>
+                    <th class="text-center" style="border-color: #9d9d9d; width: 150px; background-color: #9d9d9d; color: white">
+                        <p style="padding: 10px">Distribuciones</p>
+                    </th>
                 </tr>
                 @php
                     $matriz = [];
@@ -194,13 +197,15 @@
                 @endphp
                 @foreach($marcaciones as $marca)
                     <tr id="row_marcacion_{{$marca->id_marcacion}}">
-                        <td class="text-center" style="border-color: #9d9d9d">
-                            <form id="form_marcacion_{{$marca->id_marcacion}}">
+                        <td class="text-center" style="border-color: #9d9d9d; padding: 0">
+                            <form id="form_marcacion_{{$marca->id_marcacion}}" style="padding: 0;">
                                 <input type="text" value="{{$marca->nombre}}" id="nombre_marcacion_{{$marca->id_marcacion}}"
                                        name="nombre_marcacion_{{$marca->id_marcacion}}" class="text-center form-control"
                                        onchange="editar_marcacion('{{$marca->id_marcacion}}')" required
                                        style="width: 150px">
                             </form>
+                            <input type="hidden" id="id_marcacion_{{$marca->id_marcacion}}" name="id_marcacion_{{$marca->id_marcacion}}"
+                                   class="id_marcacion" value="{{$marca->id_marcacion}}">
                         </td>
                         @php
                             $fila = [];
@@ -228,6 +233,14 @@
                         </td>
                         <td class="text-center" style="border-color: #9d9d9d">
                             <input type="text" value="{{$marca->nombre}}" class="text-center form-control" disabled style="width: 150px">
+                        </td>
+                        <td class="text-center" style="border-color: #9d9d9d; padding: 0">
+                            <select name="cantidad_distribuciones_{{$marca->id_marcacion}}" class="form-control cantidad_distribuciones"
+                                    id="cantidad_distribuciones_{{$marca->id_marcacion}}">
+                                @for($d = 1; $d <= round($marca->getTotalRamos() / $det_esp->cantidad, 2); $d++)
+                                    <option value="{{$d}}">{{$d}}</option>
+                                @endfor
+                            </select>
                         </td>
                     </tr>
                     @php
@@ -268,6 +281,12 @@
                     </th>
                     <th class="text-center" style="border-color: #9d9d9d; width: 150px; background-color: #9d9d9d; color: white">
                         Total
+                    </th>
+                    <th class="text-center" style="border-color: #9d9d9d; width: 150px; background-color: #9d9d9d; color: white" colspan="2"
+                        rowspan="2">
+                        <button type="button" class="btn btn-primary btn-xs" onclick="distribuir_marcaciones('{{$pedido->id_pedido}}')">
+                            <i class="fa fa-fw fa-gift"></i> Distribuir
+                        </button>
                     </th>
                 </tr>
 
@@ -513,5 +532,26 @@
                 buscar_listado_pedidos();
             });
         }
+    }
+
+    function distribuir_marcaciones(pedido) {
+        ids_marcacion = $('.id_marcacion');
+        arreglo = [];
+        for (i = 0; i < ids_marcacion.length; i++) {
+            data = {
+                id_marcacion: ids_marcacion[i].value,
+                distribuciones: $('#cantidad_distribuciones_' + ids_marcacion[i].value).val()
+            };
+
+            arreglo.push(data);
+        }
+        datos = {
+            arreglo: arreglo,
+            id_pedido: pedido
+        };
+        get_jquery('{{url('pedidos/distribuir_marcaciones')}}', datos, function (retorno) {
+            modal_view('modal_view_distribuir_marcaciones', retorno, '<i class="fa fa-fw fa-gift"></i> Distribuir marcaciones', true, false,
+                '{{isPC() ? '95%' : ''}}');
+        });
     }
 </script>
