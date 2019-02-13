@@ -60,47 +60,44 @@ class EspecificacionController extends Controller
     }
 
     public function sotre_asignacion_especificacion(Request $request){
-        $msg= '';
-        foreach ($request->arrClientes as $cliente){
-
-            $clientePedidoEspecificacion =  DB::table('cliente_pedido_especificacion')
-                ->where([
-                    ['id_especificacion', $cliente[0]],
-                    ['id_cliente',$cliente[1]]
-                ])->select('id_cliente_pedido_especificacion')->first();
-
-            /*$existDetallePedido = DetallePedido::where('id_cliente_especificacion',$clientePedidoEspecificacion->id_cliente_pedido_especificacion)->count();
-            if($existDetallePedido > 0){
-                $detalle_cliente = Cliente::where('cliente.id_cliente',$cliente[1])->join('detalle_cliente as dc', 'cliente.id_cliente','dc.id_cliente')
-                    ->where('dc.estado',1)->select('nombre')->first();
-                $msg .= '<div class="alert alert-danger text-center">' .
-                            '<p> No se le puede quitar esta especificación al cliente '.$detalle_cliente->nombre.', debido a que ya posee pedidos realizados con esta especificación</p>'
-                     . '</div>';
-            }*/
-            if($clientePedidoEspecificacion == null){
-                /*$existClienteEspecificacion =  DB::table('cliente_pedido_especificacion')
-                    ->where([
-                        ['id_especificacion', $cliente[0]],
-                        ['id_cliente',$cliente[1]]
-                    ])->delete();*/
-                $detalle_cliente = Cliente::where('cliente.id_cliente',$cliente[1])->join('detalle_cliente as dc', 'cliente.id_cliente','dc.id_cliente')
-                    ->where('dc.estado',1)->select('nombre')->first();
-                $objClientePedidoEspecificacion = new ClientePedidoEspecificacion;
-                $objClientePedidoEspecificacion->id_cliente        = $cliente[1];
-                $objClientePedidoEspecificacion->id_especificacion = $cliente[0];
-
-                if($objClientePedidoEspecificacion->save()){
-                    $msg .= '<div class="alert alert-success text-center">' .
-                        '<p> Se ha agregado exitosamente la especificación al cliente '.$detalle_cliente->nombre.'</p>'
-                        . '</div>';
-                }else{
-                    $msg .= '<div class="alert alert-danger text-center">' .
-                        '<p> hubo un error asignando la especificación al cliente '.$detalle_cliente->nombre.', intente nuevamente</p>'
-                        . '</div>';
-                }
-            }
-
+        $objClientePedidoEspecificacion = new ClientePedidoEspecificacion;
+        $objClientePedidoEspecificacion->id_cliente        = $request->id_cliente;
+        $objClientePedidoEspecificacion->id_especificacion = $request->id_especificacion;
+        $detalle_cliente = getDatosCliente($request->id_cliente)->select('nombre')->first();
+        if($objClientePedidoEspecificacion->save()){
+            $msg = '<div class="alert alert-success text-center">' .
+                '<p> Se ha agregado exitosamente la especificación al cliente '.$detalle_cliente->nombre.'</p>'
+                . '</div>';
+        }else{
+            $msg = '<div class="alert alert-danger text-center">' .
+                '<p> hubo un error asignando la especificación al cliente '.$detalle_cliente->nombre.', intente nuevamente</p>'
+                . '</div>';
         }
         return $msg;
+    }
+
+    public function verificar_pedido_especificacion(Request $request){
+
+        $cliente_especificacion = ClientePedidoEspecificacion::where([
+            ['id_cliente',$request->id_cliente],
+            ['id_especificacion',$request->id_especificacion]
+        ])->select('id_cliente_pedido_especificacion')->first();
+        $existDetallePedido = 0;
+        if($cliente_especificacion != null)
+            $existDetallePedido = DetallePedido::where('id_cliente_especificacion',$cliente_especificacion->id_cliente_pedido_especificacion)->count();
+
+        return $existDetallePedido;
+    }
+
+    public function delete_asignacion_especificacion(Request $request){
+
+        $existClienteEspecificacion =  DB::table('cliente_pedido_especificacion')->where([
+                ['id_especificacion',$request->id_especificacion],
+                ['id_cliente',$request->id_cliente]
+            ])->delete();
+        $detalle_cliente = getDatosCliente($request->id_cliente)->select('nombre')->first();
+        return '<div class="alert alert-success text-center">' .
+            '<p> Se ha eliminado la especificación al cliente '.$detalle_cliente->nombre.', con éxito</p>'
+            . '</div>';
     }
 }

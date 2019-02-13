@@ -1,25 +1,29 @@
 **Programar un filtro de columnas para las tablas con demasiadas columnas:
 	-permitir mostrar/ocultar las columnas deseadas por el usuario
 
+**Optimizar los ingresos de los permisos
+
 En la ventana de cliente, en la secci�n de agencia de carga, a�adir la opcion de crear una nueva agencia de carga desde ese formulario (LISTO)
 
-A�adir un Submenu de especificaciones, donde se pueda ver por cada especificaci�n qu� clientes la poseen
+A�adir un Submenu de especificaciones, donde se pueda ver por cada especificaci�n qu� clientes la poseen (LISTO)
 
 Hacer la funcion explode('|', nombre_calibre_ramo) en cada lugar donde aparece la clasificacion por ramo
 
-Poner por defecto en el formulario de especificaciones, dentro del select T. Ud. medida, PESO
+Poner por defecto en el formulario de especificaciones, dentro del select T. Ud. medida, PESO (LISTO)
 
-Poner por defecto la fecha en los campos de los formularios:
+Poner por defecto la fecha en los campos de los formularios: (LISTO)
 	-Pedido Normal
 	-Despachos
 
 Revisar el formulario de envios
 
 Falta llenar el campo pedido.variedad con los ids de las variedades que se encuentren en un pedido, desde el formulario
-Pedido fijo y Pedido Normal
+Pedido fijo y Pedido Normal (LISTO)
 
-En el formulario de Precios hay que a�adir en el select de calibres, la unidad de medida
+En el formulario de Precios hay que a�adir en el select de calibres, la unidad de medida (LISTO)
 
-En el formulario de C�digos DAE, al teminar de cargar el archivo, realizar una actualziacion por debajo de los a�adidos
+Arreglar los temas responsive en:
 
-En el formulario de A�adir submenus en la pagina de Permisos, listaro solo los elementos activos
+En el formulario de C�digos DAE, al teminar de cargar el archivo, realizar una actualziacion por debajo de los a�adidos (LISTO)
+
+En el formulario de A�adir submenus en la pagina de Permisos, listaro solo los elementos activos (LISTO)

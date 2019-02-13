@@ -48,6 +48,7 @@ class PermisoController extends Controller
             if ($g != '')
                 $menus = $g->menus;
         }
+       //dd($menus);
         return view('adminlte.gestion.permisos.forms.partials.select_menus', [
             'menus' => $menus
         ]);

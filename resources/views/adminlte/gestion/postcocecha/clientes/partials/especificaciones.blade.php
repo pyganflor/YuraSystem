@@ -27,14 +27,14 @@
 
 <script>
 
-    function add_especificacion(id_cliente) {
+   /* function add_especificacion(id_cliente) {
         datos = {
             id_cliente: id_cliente
         };
         get_jquery('{{url('clientes/add_especificacion')}}', datos, function (retorno) {
             $('#div_content').html(retorno);
         });
-    }
+    }*/
 
 
     function ver_especificaciones(id_cliente) {

@@ -43,7 +43,7 @@
                     <td style="border-color: #9d9d9d" class="text-center">{{$item->descripcion}}</td>
                     <td style="border-color: #9d9d9d" class="text-center">
                         <a href="javascript:void(0)" class="btn btn-{{$item->estado == 1 ? 'warning':'success'}} btn-xs" title="{{$item->estado == 1 ? 'Deshabilitar':'Habilitar'}}"
-                           onclick="update_especificacion('{{$item->id_especificacion}}','{{$item->estado}}')">
+                           onclick="update_especificacion('{{$item->id_especificacion}}','{{$item->estado}}','{{csrf_token()}}',true)">
                             <i class="fa fa-fw fa-{{$item->estado == 1 ? 'ban':'check'}}" style="color: white" ></i>
                         </a>
                     </td>
@@ -58,7 +58,7 @@
     @endif
 </div>
 <script>
-    function update_especificacion(id_especificacion,estado) {
+    /*function update_especificacion(id_especificacion,estado) {
 
         $.LoadingOverlay('show');
         datos = {
@@ -77,7 +77,7 @@
 
         });
         $.LoadingOverlay('hide');
-    }
+    }*/
 
     function asignar_especificacion_cliente(id_check,id_especificacion) {
         $.LoadingOverlay('show');

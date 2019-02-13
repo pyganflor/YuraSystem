@@ -30,6 +30,8 @@ class EspecificacionClienteController extends Controller
     {
         return view('adminlte.gestion.postcocecha.clientes.partials.forms.add_especificacion', [
             'cliente' => Cliente::find($request->id_cliente),
+            'clientes'=> Cliente::join('detalle_cliente as dc','cliente.id_cliente','dc.id_cliente')
+                                  ->where('dc.estado',1)->select('cliente.id_cliente','dc.nombre')->get()
         ]);
     }
 
@@ -398,6 +400,5 @@ class EspecificacionClienteController extends Controller
         return UnidadMedida::where('tipo',$request->tipo_unidad_medida)
         ->join('clasificacion_ramo as cr','unidad_medida.id_unidad_medida','=','cr.id_unidad_medida')
         ->get();
-
     }
 }

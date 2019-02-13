@@ -11,10 +11,10 @@
             <span class="input-group-addon" style="background-color: #e9ecef">T. Ud. medida</span>
             <select name="tipo_unidad_medida_{{$pos_form_detalles}}_{{$cant_desgloses}}"
                     id="unidad_medida_{{$pos_form_detalles}}_{{$cant_desgloses}}"
-                    class="form-control" onchange="tipo_unidad_medida(this.id)" required>
-                <option value="">Seleccione</option>
-                <option value="L">Longitud</option>
+                    class="form-control" onchange="tipo_unidad_medida(this.id,'{{csrf_token()}}')" required>
                 <option value="P">Peso</option>
+                <option value="L">Longitud</option>
+
             </select>
         </div>
     </div>
@@ -109,3 +109,4 @@
         </div>
     </div>
 </div>
+<script>tipo_unidad_medida('unidad_medida_{{$pos_form_detalles}}_{{$cant_desgloses}}','{{csrf_token()}}');</script>

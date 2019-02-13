@@ -33,9 +33,15 @@
                     <td style="border-color: #9d9d9d" class="text-center">  {{$item->tipo == "N" ? "Normal": "Otros"}} </td>
                     <td style="border-color: #9d9d9d" class="text-center">  {{$item->estado == 0 ? "Descativado": "Activo"}} </td>
                     <td style="border-color: #9d9d9d" class="text-center">
+                        @if($item->tipo == "N" && $item->estado == 1)
                         <button type="button" class="btn btn-default btn-xs" title="Ver asignaciones" onclick="asignar_especificacicon('{{$item->id_especificacion}}','{{getDetalleEspecificacion($item->id_especificacion)}}')">
                             <i class="fa fa-eye" aria-hidden="true"></i>
                         </button>
+                        @endif
+                            <a href="javascript:void(0)" class="btn btn-{{$item->estado == 1 ? 'warning':'success'}} btn-xs" title="{{$item->estado == 1 ? 'Deshabilitar':'Habilitar'}}"
+                               onclick="update_especificacion('{{$item->id_especificacion}}','{{$item->estado}}','{{csrf_token()}}')">
+                                <i class="fa fa-fw fa-{{$item->estado == 1 ? 'ban':'check'}}" style="color: white" ></i>
+                            </a>
                     </td>
                 </tr>
             @endforeach

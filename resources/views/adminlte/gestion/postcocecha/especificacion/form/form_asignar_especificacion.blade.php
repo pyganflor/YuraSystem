@@ -14,7 +14,7 @@
         @foreach($listado as $item)
             <tr onmouseover="$(this).css('background-color','#add8e6')" onmouseleave="$(this).css('background-color','')">
                 <td style="border-color: #9d9d9d" class="text-center">{{$item->nombre}}</td>
-                <td style="border-color: #9d9d9d" class="text-center">
+                <td style="border-color: #9d9d9d" class="text-center error_{{$item->id_cliente}}">
                     @php
                         $check = '';
                         foreach ($asginacion as $a) {
@@ -23,7 +23,7 @@
                         }
                     @endphp
                     <input type="checkbox" {{$check}} id="cliente_{{$item->id_cliente}}" name="cliente"
-                           onclick="verificar_pedido_especificacion()" value="{{$id_especificacion}}">
+                           onclick="verificar_pedido_especificacion('{{$item->id_cliente}}','{{$id_especificacion}}',this.id)" value="{{$id_especificacion}}">
                 </td>
             </tr>
         @endforeach

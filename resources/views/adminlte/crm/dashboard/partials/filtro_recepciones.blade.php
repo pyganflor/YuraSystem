@@ -1,46 +1,48 @@
 <div class="row">
-    <div class="col-md-6 well">
-        <ul class="list-unstyled">
-            <li>
-                <input type="checkbox" id="check_filtro_anual" class="check_filtro_recepciones"
-                       onchange="select_checkbox_recepciones('check_filtro_anual')">
-                <label for="check_filtro_anual">Anual</label>
-            </li>
-            <legend style="margin-bottom: 0"></legend>
-            <li>
-                <input type="checkbox" id="check_filtro_semestral" class="check_filtro_recepciones"
-                       onchange="select_checkbox_recepciones('check_filtro_semestral')">
-                <label for="check_filtro_semestral">Semestral</label>
-            </li>
-            <li>
-                <input type="checkbox" id="check_filtro_trimestral" class="check_filtro_recepciones"
-                       onchange="select_checkbox_recepciones('check_filtro_trimestral')">
-                <label for="check_filtro_trimestral">Trimestral</label>
-            </li>
-            <legend style="margin-bottom: 0"></legend>
-            <li>
-                <input type="checkbox" id="check_filtro_mensual" class="check_filtro_recepciones"
-                       onchange="select_checkbox_recepciones('check_filtro_mensual')">
-                <label for="check_filtro_mensual">Mensual</label>
-            </li>
-            <li>
-                <input type="checkbox" id="check_filtro_semanal" class="check_filtro_recepciones"
-                       onchange="select_checkbox_recepciones('check_filtro_semanal')">
-                <label for="check_filtro_semanal">Semanal</label>
-            </li>
-            <li>
-                <input type="checkbox" id="check_filtro_diario" class="check_filtro_recepciones"
-                       onchange="select_checkbox_recepciones('check_filtro_diario')">
-                <label for="check_filtro_diario">Diario</label>
-            </li>
-            <legend style="margin-bottom: 0"></legend>
-            <li>
-                <input type="checkbox" id="check_filtro_x_variedad">
-                <label for="check_filtro_x_variedad">Por Variedad</label>
-            </li>
-        </ul>
-    </div>
     <div class="col-md-6">
+        <div class="well">
+            <ul class="list-unstyled">
+                <li>
+                    <input type="checkbox" id="check_filtro_anual" class="check_filtro_recepciones"
+                           onchange="select_checkbox_recepciones('check_filtro_anual')">
+                    <label for="check_filtro_anual">Anual</label>
+                </li>
+                <legend style="margin-bottom: 0"></legend>
+                <li>
+                    <input type="checkbox" id="check_filtro_semestral" class="check_filtro_recepciones"
+                           onchange="select_checkbox_recepciones('check_filtro_semestral')">
+                    <label for="check_filtro_semestral">Semestral</label>
+                </li>
+                <li>
+                    <input type="checkbox" id="check_filtro_trimestral" class="check_filtro_recepciones"
+                           onchange="select_checkbox_recepciones('check_filtro_trimestral')">
+                    <label for="check_filtro_trimestral">Trimestral</label>
+                </li>
+                <legend style="margin-bottom: 0"></legend>
+                <li>
+                    <input type="checkbox" id="check_filtro_mensual" class="check_filtro_recepciones"
+                           onchange="select_checkbox_recepciones('check_filtro_mensual')">
+                    <label for="check_filtro_mensual">Mensual</label>
+                </li>
+                <li>
+                    <input type="checkbox" id="check_filtro_semanal" class="check_filtro_recepciones"
+                           onchange="select_checkbox_recepciones('check_filtro_semanal')">
+                    <label for="check_filtro_semanal">Semanal</label>
+                </li>
+                <li>
+                    <input type="checkbox" id="check_filtro_diario" class="check_filtro_recepciones"
+                           onchange="select_checkbox_recepciones('check_filtro_diario')">
+                    <label for="check_filtro_diario">Diario</label>
+                </li>
+                <legend style="margin-bottom: 0"></legend>
+                <li>
+                    <input type="checkbox" id="check_filtro_x_variedad">
+                    <label for="check_filtro_x_variedad">Por Variedad</label>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="col-md-6 text-center">
         <ul class="list-unstyled">
             <li style="margin-bottom: 10px">
                 <label for="check_filtro_desde">Desde</label>

@@ -234,7 +234,7 @@
         $.LoadingOverlay('hide');
     }
 
-    function tipo_unidad_medida(data) {
+    /*function tipo_unidad_medida(data) {
         datos = {
             _token: '{{csrf_token()}}',
             tipo_unidad_medida: $('#'+data).val()
@@ -248,13 +248,9 @@
                 select_clasif_x_ramo.append('<option id="option_dinamic" value="'+j.id_clasificacion_ramo+'"> '+j.nombre+' </option>');
             });
 
-          /*if(datos.tipo_unidad_medida === "L"){
-                $("#input_tallo_x_ramo").removeClass('hide');
-            }else{
-                $("#input_tallo_x_ramo").addClass('hide');
-            }*/
+
         });
-    }
+    }*/
 
     function cosumidor_final() {
         if ($("#tipo_identificacion").val() == 07) {

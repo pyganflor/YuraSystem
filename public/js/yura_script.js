@@ -230,6 +230,7 @@ function store_pedido(id_cliente, pedido_fijo, csrf_token, vista, id_pedido) {
                 variedades      : variedades.split("|"),
                 id_pedido       : id_pedido
             };
+
             post_jquery('clientes/store_pedidos', datos, function () {
                 cerrar_modals();
                 buscar_listado_pedidos();
@@ -651,3 +652,77 @@ function cargar_opcion(div, id_cliente = '', url, add) {
     $.LoadingOverlay('hide');
 }
 
+function update_especificacion(id_especificacion,estado,token,cliente) {
+
+    $.LoadingOverlay('show');
+    datos = {
+        _token: token ,
+        id_especificacion: id_especificacion,
+        estado: estado,
+    };
+    post_jquery('clientes/update_especificaciones', datos, function () {
+        cerrar_modals();
+        if(cliente){
+            detalles_cliente($('#id_cliente').val());
+            admin_especificaciones($('#id_cliente').val());
+            setTimeout(function () {
+            ver_especificaciones(($('#id_cliente').val()));
+            },1000);
+        }else{
+            buscar_listado_especificaciones();
+        }
+    });
+    $.LoadingOverlay('hide');
+}
+
+function buscar_listado_especificaciones() {
+    $.LoadingOverlay('show');
+    datos = {
+        busqueda    : $('#busqueda_especifiaciones').val().trim(),
+        id_cliente  : $("#cliente_id").val(),
+        tipo        : $("#tipo").val(),
+        estado      : $("#estado").val()
+    };
+    $.get('especificacion/listado', datos, function (retorno) {
+        $('#div_listado_especificaciones').html(retorno);
+        estructura_tabla('table_content_especificaciones');
+    }).always(function () {
+        $.LoadingOverlay('hide');
+    });
+}
+
+function add_especificacion(id_cliente,cliente) {
+
+    datos = {
+        id_cliente: id_cliente
+    };
+    get_jquery('clientes/add_especificacion', datos, function (retorno) {
+        if(cliente) {
+            $('#div_content').html(retorno);
+        }else{
+            modal_view('modal_admin_especificaciones', retorno, '<i class="fa fa-plus" aria-hidden="true"></i> Crear Especificaciones', true, false,'85%');
+        }
+    });
+}
+
+function tipo_unidad_medida(data,token) {
+    datos = {
+        _token: token,
+        tipo_unidad_medida: $('#'+data).val()
+    };
+    get_jquery('clientes/obtener_calsificacion_ramos', datos, function (retorno) {
+
+        var select_clasif_x_ramo = $("#id_clasificacion_ramo_"+data.split('_')[2]+"_"+data.split('_')[3]);
+        $('select#id_clasificacion_ramo_'+data.split('_')[2]+"_"+data.split('_')[3]+' option#option_dinamic').remove();
+        //console.log(retorno);
+        $.each(retorno,function (i,j) {
+            select_clasif_x_ramo.append('<option id="option_dinamic" value="'+j.id_clasificacion_ramo+'"> '+j.nombre+' </option>');
+        });
+
+        /*if(datos.tipo_unidad_medida === "L"){
+              $("#input_tallo_x_ramo").removeClass('hide');
+          }else{
+              $("#input_tallo_x_ramo").addClass('hide');
+          }*/
+    });
+}

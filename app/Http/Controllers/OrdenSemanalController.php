@@ -628,6 +628,88 @@ class OrdenSemanalController extends Controller
         ];
     }
 
+    public function distribuir_marcaciones(Request $request)
+    {
+        $pedido = Pedido::find($request->id_pedido);
+        $marcaciones = $pedido->detalles[0]->cliente_especificacion->especificacion->especificacionesEmpaque[0]->marcaciones;
+        $ids_marcaciones = [];
+        foreach ($marcaciones as $m) {
+            array_push($ids_marcaciones, $m->id_marcacion);
+        }
+        $marcas = [];
+        foreach ($request->arreglo as $item) {
+            array_push($marcas, [
+                'marcacion' => Marcacion::find($item['id_marcacion']),
+                'cant_distribuciones' => $item['distribuciones'],
+            ]);
+        }
+        $coloraciones = DB::table('coloracion as c')
+            ->select('c.nombre', 'c.fondo', 'c.texto')->distinct()
+            ->whereIn('c.id_marcacion', $ids_marcaciones)
+            ->get();
+        $esp_emp = $pedido->detalles[0]->cliente_especificacion->especificacion->especificacionesEmpaque[0];
+        $det_esp = $esp_emp->detalles[0];
+        return view('adminlte.gestion.postcocecha.pedidos_ventas.partials._distribuir_marcaciones', [
+            'pedido' => $pedido,
+            'marcaciones' => $marcaciones,
+            'marcas' => $marcas,
+            'coloraciones' => $coloraciones,
+            'esp_emp' => $esp_emp,
+            'det_esp' => $det_esp,
+        ]);
+    }
+
+    public function calcular_distribucion(Request $request)
+    {
+        $marcacion = Marcacion::find($request->id_marcacion);
+        $msg = '';
+        $success = true;
+        $matriz = [];
+        if ($request->piezas <= round($marcacion->getTotalRamos() / $request->ramos, 2)) {
+            $coloraciones = [];
+            foreach ($marcacion->coloraciones as $c) {
+                array_push($coloraciones, [
+                    'color' => str_replace(' ', '_', espacios($c->nombre)),
+                    'cantidad' => $c->cantidad
+                ]);
+            }
+            $ramos = $request->ramos;
+            foreach ($request->arreglo_piezas as $piezas) {
+                $current = 0;
+                $meta = $piezas * $ramos;
+                $arreglo = [];
+                for ($i = 0; $i < count($coloraciones); $i++) {
+                    if (($coloraciones[$i]['cantidad'] + $current) >= $meta) {
+                        $data = [
+                            'color' => str_replace(' ', '_', espacios($coloraciones[$i]['color'])),
+                            'cantidad' => $meta - $current
+                        ];
+                        $coloraciones[$i]['cantidad'] = $coloraciones[$i]['cantidad'] - ($meta - $current);
+                        $current = $meta;
+                    } else {
+                        $data = [
+                            'color' => str_replace(' ', '_', espacios($coloraciones[$i]['color'])),
+                            'cantidad' => $coloraciones[$i]['cantidad']
+                        ];
+                        $current += $coloraciones[$i]['cantidad'];
+                        $coloraciones[$i]['cantidad'] = 0;
+                    }
+                    array_push($arreglo, $data);
+                }
+                array_push($matriz, $arreglo);
+            }
+        } else {
+            $success = false;
+            $msg = '<div class="alert alert-warning text-center">La cantidad de piezas es superior a la ingresada previamente</div>';
+        }
+        return [
+            'success' => $success,
+            'mensaje' => $msg,
+            'marcacion' => $marcacion->id_marcacion,
+            'matriz' => $matriz,
+        ];
+    }
+
     /* ================ PEDIDOS PERSONALIZDOS ================*/
     public function add_pedido_personalizado(Request $request)
     {

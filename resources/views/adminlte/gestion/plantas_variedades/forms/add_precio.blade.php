@@ -20,14 +20,14 @@
                         <select id="id_clasificacion_por_ramo_{{$key+1}}" class="form-control" required
                                 onchange="comprabar('{{$key+1}}')" {!! $precio->estado == 0 ? 'disabled' : '' !!}>
                             <option disabled selected> Seleccione</option>
-                            @foreach($adataClasificacionRamos as $clasificacionRamos)
+                            @foreach($dataClasificacionRamos as $clasificacionRamos)
                                 @php
                                     $selected='';
                                         if($clasificacionRamos->id_clasificacion_ramo === $precio->id_clasificacion_ramo){
                                         $selected='selected=selected';
                                         }
                                     @endphp
-                                <option {{$selected}} value="{{$clasificacionRamos->id_clasificacion_ramo}}">{{$clasificacionRamos->nombre}}</option>
+                                <option {{$selected}} value="{{$clasificacionRamos->id_clasificacion_ramo}}">{{$clasificacionRamos->nombre." ".$clasificacionRamos->siglas}}</option>
                                 @endforeach
                         </select>
                     </td>
@@ -47,7 +47,6 @@
             @endforeach
         @endif()
         </tbody>
-
     </table>
 </form>
 

@@ -6,6 +6,16 @@
                 <span class="input-group-addon" style="background-color: #e9ecef">Nombre</span>
                 <input type="text" id="nombre" name="nombre" class="form-control" maxlength="250" required placeholder="Escriba el nombre">
             </div>
+            @if(!isset($cliente))
+            <div class="form-group input-group">
+                <span class="input-group-addon" style="background-color: #e9ecef">Clientes</span>
+                <select id="cliente" name="cliente" class="form-control" onchange="asignar_cliente(this.id)">
+                    @foreach($clientes as $c)
+                        <option value="{{$c->id_cliente}}">{{$c->nombre}}</option>
+                    @endforeach
+                </select>
+            </div>
+            @endif
         </div>
         <div class="col-md-7">
             <div class="form-group input-group">
@@ -30,11 +40,11 @@
     <table width="100%" id="table_forms_especificaciones">
     </table>
     <input type="hidden" id="cant_forms_detalles" name="cant_forms_detalles" value="0">
-    <input type="hidden" id="id_cliente" name="id_cliente" value="{{$cliente->id_cliente}}">
+    <input type="hidden" id="id_cliente" name="id_cliente" value="{{isset($cliente) ? $cliente->id_cliente : ""}}">
 </form>
 
 <div class="text-center">
-    <button type="button" class="btn btn-success" onclick="store_especificacion()">
+    <button type="button" class="btn btn-success" onclick="store_especificacion({{isset($cliente) ? true : false}})">
         <i class="fa fa-fw fa-save"></i> Guardar
     </button>
 </div>
@@ -114,7 +124,7 @@
             $('#btn_del_desgloses_' + pos_form_detalles).hide();
     }
 
-    function store_especificacion() {
+    function store_especificacion(cliente) {
         if ($('#form-add_especificacion').valid()) {
             formulario = $('#form-add_especificacion');
             var formData = new FormData(formulario[0]);
@@ -133,8 +143,12 @@
                     if (retorno2.success) {
                         alerta_accion(retorno2.mensaje, function () {
                             cerrar_modals();
-                            detalles_cliente($('#id_cliente').val());
-                            admin_especificaciones($('#id_cliente').val());
+                           if(cliente) {
+                               detalles_cliente($('#id_cliente').val());
+                               admin_especificaciones($('#id_cliente').val());
+                           }else{
+                               buscar_listado_especificaciones();
+                           }
                         });
                     } else {
                         alerta(retorno2.mensaje);
@@ -151,4 +165,16 @@
             });
         }
     }
+
+    function asignar_cliente(id) {
+        $("#id_cliente").val($("#"+id).val());
+    }
+
+    $(window).ready(function () {
+        console.log($("#cliente_id").length == 1);
+        if($("#cliente_id").length == 1)
+        $("#id_cliente").val($("#cliente").val());
+    });
+
+
 </script>

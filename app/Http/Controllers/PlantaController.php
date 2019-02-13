@@ -420,12 +420,12 @@ class PlantaController extends Controller
         $dataMondea = DB::table('configuracion_empresa')->select('moneda')->first();
         $dataPrecio = Precio::where('precio.id_variedad', $request->id_variedad)
             ->join('variedad as v', 'precio.id_variedad', '=', 'v.id_variedad')->get();
-        $adataClasificacionRamos = ClasificacionRamo::where('estado', 1)->get();
+        $dataClasificacionRamos = ClasificacionRamo::join('unidad_medida as um','clasificacion_ramo.id_unidad_medida','um.id_unidad_medida')->where('clasificacion_ramo.estado', 1)->select('clasificacion_ramo.nombre','um.siglas','id_clasificacion_ramo')->get();
         return view('adminlte.gestion.plantas_variedades.forms.add_precio',
             [
                 'moneda' => $dataMondea,
                 'dataPrecio' => $dataPrecio,
-                'adataClasificacionRamos' => $adataClasificacionRamos
+                'dataClasificacionRamos' => $dataClasificacionRamos
             ]);
 
     }
@@ -499,11 +499,10 @@ class PlantaController extends Controller
 
     public function add_inptus_precio_variedad(Request $request)
     {
-
-        $adataClasificacionRamos = ClasificacionRamo::where('estado', 1)->get();
+        $dataClasificacionRamos = ClasificacionRamo::join('unidad_medida as um','clasificacion_ramo.id_unidad_medida','um.id_unidad_medida')->where('clasificacion_ramo.estado', 1)->select('clasificacion_ramo.nombre','um.siglas','id_clasificacion_ramo')->get();
         return view('adminlte.gestion.plantas_variedades.forms.partials.add_inputs_precio',
             [
-                'adataClasificacionRamos' => $adataClasificacionRamos,
+                'dataClasificacionRamos' => $dataClasificacionRamos,
                 'cntTr' => $request->cant_tr
 
             ]);

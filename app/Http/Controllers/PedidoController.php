@@ -175,10 +175,13 @@ class PedidoController extends Controller
         $data_especificaciones = DB::table('cliente_pedido_especificacion as cpe')
             ->join('especificacion as esp', 'cpe.id_especificacion', '=', 'esp.id_especificacion')
             ->where('cpe.id_cliente', $request->id_cliente);
-
+        //dd($data_especificaciones->get());
         $arr_data_cliente_especificacion = [];
         foreach ($data_especificaciones->get() as $data){
-           $arr_data_cliente_especificacion[] = ClientePedidoEspecificacion::where('id_cliente_pedido_especificacion',$data->id_cliente_pedido_especificacion)->get();
+           $arr_data_cliente_especificacion[] = ClientePedidoEspecificacion::where('cliente_pedido_especificacion.id_cliente_pedido_especificacion',$data->id_cliente_pedido_especificacion)
+               ->join('especificacion_empaque as espemp','cliente_pedido_especificacion.id_especificacion','espemp.id_especificacion')
+               ->join('detalle_especificacionempaque as detespemp','espemp.id_especificacion_empaque','detespemp.id_especificacion_empaque')
+               ->select('espemp.id_especificacion','detespemp.id_variedad','cliente_pedido_especificacion.id_cliente_pedido_especificacion')->get();
         }
 
         return view('adminlte.gestion.postcocecha.pedidos.forms.paritals.inputs_dinamicos',

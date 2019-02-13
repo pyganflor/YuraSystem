@@ -4,7 +4,9 @@
         @if(count($menus) > 0)
             <option value="">Seleccione</option>
             @foreach($menus as $m)
+                @if($m->estado == 'A')
                 <option value="{{$m->id_menu}}">{{$m->nombre}}</option>
+                @endif
             @endforeach
         @else
             <option value="">Seleccione un grupo</option>

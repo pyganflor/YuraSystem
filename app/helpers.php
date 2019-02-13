@@ -666,6 +666,11 @@ function getCliente($id)
     return Cliente::find($id);
 }
 
+function getDatosCliente($id_cliente){
+   return Cliente::where('cliente.id_cliente',$id_cliente)->join('detalle_cliente as dc', 'cliente.id_cliente','dc.id_cliente')
+        ->where('dc.estado',1);
+}
+
 function getGrosor($id)
 {
     return Grosor::find($id);

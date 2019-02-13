@@ -114,7 +114,6 @@
         $.LoadingOverlay('hide');
     }
 
-
     $(document).on("click", "#pagination_listado_pedidos .pagination li a", function (e) {
         $.LoadingOverlay("show");
         //para que la pagina se cargen los elementos

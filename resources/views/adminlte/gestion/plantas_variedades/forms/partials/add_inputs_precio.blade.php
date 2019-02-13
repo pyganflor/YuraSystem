@@ -2,8 +2,8 @@
     <td>
         <select id="id_clasificacion_por_ramo_{{$cntTr+1}}" class="form-control" required>
             <option disabled selected> Seleccione </option>
-            @foreach($adataClasificacionRamos as $clasificacionRamos)
-                <option value="{{$clasificacionRamos->id_clasificacion_ramo}}">{{$clasificacionRamos->nombre}}</option>@endforeach
+            @foreach($dataClasificacionRamos as $clasificacionRamos)
+                <option value="{{$clasificacionRamos->id_clasificacion_ramo}}">{{$clasificacionRamos->nombre." ".$clasificacionRamos->siglas}}</option>@endforeach
         </select>
     </td>
     <td>

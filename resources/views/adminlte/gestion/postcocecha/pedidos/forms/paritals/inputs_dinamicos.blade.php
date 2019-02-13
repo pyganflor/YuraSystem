@@ -9,6 +9,7 @@
                 <ul style="padding: 0">
                     @foreach($arr_data_cliente_especificacion[$i] as $key => $especificacion)
                     <li style="list-style: none;font-size:10pt">{{getDetalleEspecificacion($especificacion->id_especificacion)}}</li>
+
                         <input type="hidden" id="id_variedad_{{$i+1}}_{{$key+1}}" name="id_variedad" value="{{$especificacion->id_variedad}}">
                     @endforeach
                     <input type="hidden" id="id_especificacion_{{$i+1}}" name="id_especificacion_{{$i+1}}"  value="{{$arr_data_cliente_especificacion[$i][0]->id_cliente_pedido_especificacion}}">

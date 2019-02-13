@@ -2,6 +2,7 @@
     buscar_listado();
 
     function buscar_listado() {
+        console.log("buscar");
         $.LoadingOverlay('show');
         datos = {
             busqueda: $('#busqueda_codigo_dae').val().trim(),
@@ -111,11 +112,9 @@
     }
     
     function  importar_codigo_dae() {
-
         if($("#form_add_codigo_dae").valid()){
             var formData = new FormData($("#form_add_codigo_dae")[0]);
             formData.append('_token','{{csrf_token()}}');
-            console.log("hola");
             $.ajax({
                 url: '{{url('codigo_dae/importar_codigo_dae')}}',
                 type: 'POST',
@@ -124,8 +123,9 @@
                 contentType: false,
                 processData: false,
                 success: function(retorno){
-                    modal_view('modal_view_clasificaciones', retorno, '<i class="fa fa-fw fa-table"></i> Clasificación unitaria', true, false,
+                    modal_view('modal_view_codigo_dae', retorno, '<i class="fa fa-fw fa-table"></i> Codigo DAE', true, false,
                         '{{isPC() ? '50%' : ''}}');
+                    buscar_listado();
                 }
             });
         }

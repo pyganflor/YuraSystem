@@ -25,7 +25,7 @@
                             <div class="form-inline">
                                 <div class="form-group">
                                     <label for="anno">Clientes</label><br />
-                                    <select id="id_cliente" name="id_cliente" class="form-control">
+                                    <select id="cliente_id" name="cliente_id" class="form-control">
                                         <option value="">Seleccione</option>
                                         @foreach($clientes as $cliente)
                                             <option value="{{$cliente->id_cliente}}">{{$cliente->nombre}}</option>
@@ -65,7 +65,7 @@
                                 <div class="form-group">
                                     <label style="visibility: hidden;"> .</label><br/>
                                     <span >
-                                        <button class="btn btn-default" onclick="buscar_listado()"
+                                        <button class="btn btn-default" onclick="buscar_listado_especificaciones()"
                                                 onmouseover="$('#title_btn_buscar').html('Buscar')"
                                                 onmouseleave="$('#title_btn_buscar').html('')">
                                             <i class="fa fa-fw fa-search" style="color: #0c0c0c"></i> <em
@@ -73,9 +73,10 @@
                                         </button>
                                     </span>
                                     <span >
-                                        <button class="btn btn-primary" onclick="add_marca()"
+                                        <button class="btn btn-primary"
                                                 onmouseover="$('#title_btn_add').html('Añadir')"
-                                                onmouseleave="$('#title_btn_add').html('')">
+                                                onmouseleave="$('#title_btn_add').html('')"
+                                                onclick="add_especificacion()">
                                             <i class="fa fa-fw fa-plus" style="color: #0c0c0c"></i> <em
                                                 id="title_btn_add"></em>
                                         </button>
