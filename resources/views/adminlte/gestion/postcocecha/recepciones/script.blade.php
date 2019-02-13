@@ -47,7 +47,7 @@
     function add_recepcion() {
         $.LoadingOverlay('show');
         $.get('{{url('recepcion/add_recepcion')}}', {}, function (retorno) {
-            modal_form('modal_add_recepcion', retorno, '<i class="fa fa-fw fa-plus"></i> Añadir cosecha', true, false, '{{isPC() ? '50%' : ''}}', function () {
+            modal_form('modal_add_recepcion', retorno, '<i class="fa fa-fw fa-plus"></i> Añadir cosecha', true, false, '{{isPC() ? '85%' : ''}}', function () {
                 store_recepcion();
                 $.LoadingOverlay('hide');
             });

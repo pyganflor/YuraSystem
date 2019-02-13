@@ -6,10 +6,14 @@
                     Añadir pedidos
                 </h3>
             </div>
-            <div class="col-md-6">
-                <div class="form-group input-group pull-right">
+            <div class="col-md-3">
+                <div class="form-group input-group pull-right" style="margin-bottom: 1px">
                     <span class="input-group-addon" style="background-color: #e9ecef">Fecha de pedidos</span>
                     <input type="date" id="fecha_pedido" name="fecha_pedido" class="form-control">
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group input-group pull-right" style="margin-bottom: 1px">
                     <span class="input-group-addon" style="background-color: #e9ecef">Añadir # formularios</span>
                     <input type="number" id="cantidad_formularios" name="cantidad_formularios" min="1" max="20" class="form-control">
                     <span class="input-group-btn">
@@ -29,136 +33,138 @@
     </div>
     <div class="box-body">
         <form id="form-add_pedido_personalizado">
-            <table class="table-striped table-responsive table-bordered" width="100%" style="border: 1px solid #9d9d9d"
-                   id="table_add_pedido_personalizado">
-                <tr>
-                    <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
-                        Cliente
-                    </th>
-                    <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white" width="7%">
-                        Cant. Piezas
-                    </th>
-                    <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
-                        Pieza
-                    </th>
-                    <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white" width="7%">
-                        Cant. Ramos
-                    </th>
-                    <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
-                        Calibre
-                    </th>
-                    <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
-                        Variedad
-                    </th>
-                    <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
-                        Envoltura
-                    </th>
-                    <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
-                        Presentación
-                    </th>
-                    <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white" width="7%">
-                        Tallos
-                    </th>
-                    <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white" width="7%">
-                        Longitud
-                    </th>
-                    <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
-                        U. Medida
-                    </th>
-                    <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
-                        Agencias
-                    </th>
-                    <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white"
-                        title="Hacer especificaciones">
-                        <input type="checkbox" id="check_make_especificacion_all" name="check_make_especificacion_all"
-                               onchange="select_check_all()">
-                    </th>
-                </tr>
-                <tr id="row_form_1">
-                    <td class="text-center" style="border-color: #9d9d9d">
-                        <select name="id_cliente_1" id="id_cliente_1" required style="width: 100%" onchange="listar_agencias_carga(1)">
-                            @foreach($clientes as $cliente)
-                                <option value="{{$cliente->id_cliente}}">{{$cliente->detalle()->nombre}}</option>
-                            @endforeach
-                        </select>
-                    </td>
-                    <td class="text-center" style="border-color: #9d9d9d">
-                        <input type="number" id="cantidad_piezas_1" name="cantidad_piezas_1" required style="width: 100%"
-                               onkeypress="return isNumber(event)" min="1">
-                    </td>
-                    <td class="text-center" style="border-color: #9d9d9d">
-                        <select name="id_empaque_1" id="id_empaque_1" required style="width: 100%">
-                            @foreach($cajas as $caja)
-                                <option value="{{$caja->id_empaque}}">{{explode('|',$caja->nombre)[0]}}</option>
-                            @endforeach
-                        </select>
-                    </td>
-                    <td class="text-center" style="border-color: #9d9d9d">
-                        <input type="number" id="cantidad_ramos_1" name="cantidad_ramos_1" required style="width: 100%"
-                               onkeypress="return isNumber(event)" min="1">
-                    </td>
-                    <td class="text-center" style="border-color: #9d9d9d">
-                        <select name="id_clasificacion_ramo_1" id="id_clasificacion_ramo_1" required style="width: 100%">
-                            @foreach($calibres as $item)
-                                @if($item->unidad_medida->tipo == 'P')
-                                    <option value="{{$item->id_clasificacion_ramo}}">
-                                        {{$item->nombre}}{{$item->unidad_medida->siglas}}
+            <div style="overflow-x: scroll">
+                <table class="table-striped table-responsive table-bordered" width="100%" style="border: 1px solid #9d9d9d"
+                       id="table_add_pedido_personalizado">
+                    <tr>
+                        <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
+                            Cliente
+                        </th>
+                        <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white" width="7%">
+                            Cant. Piezas
+                        </th>
+                        <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
+                            Pieza
+                        </th>
+                        <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white" width="7%">
+                            Cant. Ramos
+                        </th>
+                        <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
+                            Calibre
+                        </th>
+                        <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
+                            Variedad
+                        </th>
+                        <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
+                            Envoltura
+                        </th>
+                        <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
+                            Presentación
+                        </th>
+                        <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white" width="7%">
+                            Tallos
+                        </th>
+                        <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white" width="7%">
+                            Longitud
+                        </th>
+                        <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
+                            U. Medida
+                        </th>
+                        <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
+                            Agencias
+                        </th>
+                        <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white"
+                            title="Hacer especificaciones">
+                            <input type="checkbox" id="check_make_especificacion_all" name="check_make_especificacion_all"
+                                   onchange="select_check_all()">
+                        </th>
+                    </tr>
+                    <tr id="row_form_1">
+                        <td class="text-center" style="border-color: #9d9d9d">
+                            <select name="id_cliente_1" id="id_cliente_1" required style="width: 100%" onchange="listar_agencias_carga(1)">
+                                @foreach($clientes as $cliente)
+                                    <option value="{{$cliente->id_cliente}}">{{$cliente->detalle()->nombre}}</option>
+                                @endforeach
+                            </select>
+                        </td>
+                        <td class="text-center" style="border-color: #9d9d9d">
+                            <input type="number" id="cantidad_piezas_1" name="cantidad_piezas_1" required style="width: 100%"
+                                   onkeypress="return isNumber(event)" min="1">
+                        </td>
+                        <td class="text-center" style="border-color: #9d9d9d">
+                            <select name="id_empaque_1" id="id_empaque_1" required style="width: 100%">
+                                @foreach($cajas as $caja)
+                                    <option value="{{$caja->id_empaque}}">{{explode('|',$caja->nombre)[0]}}</option>
+                                @endforeach
+                            </select>
+                        </td>
+                        <td class="text-center" style="border-color: #9d9d9d">
+                            <input type="number" id="cantidad_ramos_1" name="cantidad_ramos_1" required style="width: 100%"
+                                   onkeypress="return isNumber(event)" min="1">
+                        </td>
+                        <td class="text-center" style="border-color: #9d9d9d">
+                            <select name="id_clasificacion_ramo_1" id="id_clasificacion_ramo_1" required style="width: 100%">
+                                @foreach($calibres as $item)
+                                    @if($item->unidad_medida->tipo == 'P')
+                                        <option value="{{$item->id_clasificacion_ramo}}">
+                                            {{$item->nombre}}{{$item->unidad_medida->siglas}}
+                                        </option>
+                                    @endif
+                                @endforeach
+                            </select>
+                        </td>
+                        <td class="text-center" style="border-color: #9d9d9d">
+                            <select name="id_variedad_1" id="id_variedad_1" required style="width: 100%">
+                                @foreach($variedades as $item)
+                                    <option value="{{$item->id_variedad}}">
+                                        {{$item->siglas}}
                                     </option>
-                                @endif
-                            @endforeach
-                        </select>
-                    </td>
-                    <td class="text-center" style="border-color: #9d9d9d">
-                        <select name="id_variedad_1" id="id_variedad_1" required style="width: 100%">
-                            @foreach($variedades as $item)
-                                <option value="{{$item->id_variedad}}">
-                                    {{$item->siglas}}
-                                </option>
-                            @endforeach
-                        </select>
-                    </td>
-                    <td class="text-center" style="border-color: #9d9d9d">
-                        <select name="id_empaque_e_1" id="id_empaque_e_1" required style="width: 100%">
-                            @foreach($envolturas as $item)
-                                <option value="{{$item->id_empaque}}">
-                                    {{explode('|',$item->nombre)[0]}}
-                                </option>
-                            @endforeach
-                        </select>
-                    </td>
-                    <td class="text-center" style="border-color: #9d9d9d">
-                        <select name="id_empaque_p_1" id="id_empaque_p_1" required style="width: 100%">
-                            @foreach($presentaciones as $item)
-                                <option value="{{$item->id_empaque}}">
-                                    {{explode('|',$item->nombre)[0]}}
-                                </option>
-                            @endforeach
-                        </select>
-                    </td>
-                    <td class="text-center" style="border-color: #9d9d9d">
-                        <input type="number" id="tallos_x_ramo_1" name="tallos_x_ramo_1" style="width: 100%"
-                               onkeypress="return isNumber(event)" min="1">
-                    </td>
-                    <td class="text-center" style="border-color: #9d9d9d">
-                        <input type="number" id="longitud_ramo_1" name="longitud_ramo_1" style="width: 100%"
-                               onkeypress="return isNumber(event)" min="1">
-                    </td>
-                    <td class="text-center" style="border-color: #9d9d9d">
-                        <select name="id_unidad_medida_1" id="id_unidad_medida_1" style="width: 100%">
-                            @foreach($unidades_medida as $item)
-                                <option value="{{$item->id_unidad_medida}}">
-                                    {{$item->siglas}}
-                                </option>
-                            @endforeach
-                        </select>
-                    </td>
-                    <td class="text-center" style="border-color: #9d9d9d" id="td_agencia_carga_1"></td>
-                    <td class="text-center" style="border-color: #9d9d9d" title="Hacer especificaciones">
-                        <input type="checkbox" class="check_make_especificacion" id="check_make_especificacion_1"
-                               name="check_make_especificacion_1">
-                    </td>
-                </tr>
-            </table>
+                                @endforeach
+                            </select>
+                        </td>
+                        <td class="text-center" style="border-color: #9d9d9d">
+                            <select name="id_empaque_e_1" id="id_empaque_e_1" required style="width: 100%">
+                                @foreach($envolturas as $item)
+                                    <option value="{{$item->id_empaque}}">
+                                        {{explode('|',$item->nombre)[0]}}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </td>
+                        <td class="text-center" style="border-color: #9d9d9d">
+                            <select name="id_empaque_p_1" id="id_empaque_p_1" required style="width: 100%">
+                                @foreach($presentaciones as $item)
+                                    <option value="{{$item->id_empaque}}">
+                                        {{explode('|',$item->nombre)[0]}}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </td>
+                        <td class="text-center" style="border-color: #9d9d9d">
+                            <input type="number" id="tallos_x_ramo_1" name="tallos_x_ramo_1" style="width: 100%"
+                                   onkeypress="return isNumber(event)" min="1">
+                        </td>
+                        <td class="text-center" style="border-color: #9d9d9d">
+                            <input type="number" id="longitud_ramo_1" name="longitud_ramo_1" style="width: 100%"
+                                   onkeypress="return isNumber(event)" min="1">
+                        </td>
+                        <td class="text-center" style="border-color: #9d9d9d">
+                            <select name="id_unidad_medida_1" id="id_unidad_medida_1" style="width: 100%">
+                                @foreach($unidades_medida as $item)
+                                    <option value="{{$item->id_unidad_medida}}">
+                                        {{$item->siglas}}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </td>
+                        <td class="text-center" style="border-color: #9d9d9d" id="td_agencia_carga_1"></td>
+                        <td class="text-center" style="border-color: #9d9d9d" title="Hacer especificaciones">
+                            <input type="checkbox" class="check_make_especificacion" id="check_make_especificacion_1"
+                                   name="check_make_especificacion_1">
+                        </td>
+                    </tr>
+                </table>
+            </div>
             <div class="text-center" style="margin-top: 10px">
                 <button type="button" class="btn btn-xs btn-success" title="Guardar" onclick="store_pedido_personalizado()">
                     <i class="fa fa-fw fa-save"></i> Guardar

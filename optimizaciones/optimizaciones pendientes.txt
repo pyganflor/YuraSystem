@@ -22,6 +22,8 @@ Pedido fijo y Pedido Normal
 
 En el formulario de Precios hay que añadir en el select de calibres, la unidad de medida
 
+Arreglar los temas responsive en:
+	-Pedidos (el filtro)
 En el formulario de Códigos DAE, al teminar de cargar el archivo, realizar una actualziacion por debajo de los añadidos
 
 En el formulario de Añadir submenus en la pagina de Permisos, listaro solo los elementos activos

@@ -16,7 +16,7 @@
                         DÍA MES
                     </a>
                     <a href="javascript:void(0)" class="list-group-item list-group-item-action"
-                       onclick="div_opcion_pedido_fijo(3)" >
+                       onclick="div_opcion_pedido_fijo(3)">
                         PERSONALIZADO
                     </a>
                 </div>
@@ -29,7 +29,7 @@
             <table width="100%" class="table table-responsive table-bordered" style="font-size: 0.8em; border-color: white"
                    id="table_content_recepciones">
                 <thead>
-                <tr style="border: none;border-color: white">
+                <tr style="border: none; border-color: white">
                     <th colspan="2" style="border: none;padding: 0 0 5px ;">
                         @if(!$pedido_fijo)
                             <div class="col-md-3">
@@ -68,7 +68,7 @@
                     </th>
                     <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
                         style="border-color: #9d9d9d">
-                       DESCRIPCIÓN ESPECIFICIACIONES
+                        DESCRIPCIÓN ESPECIFICIACIONES
                     </th>
                     <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
                         style="border-color: #9d9d9d">
@@ -111,8 +111,8 @@
 
             $("#div_content_saldos").LoadingOverlay('show', {
                 background: "rgba(250, 250, 250, 0.5)",
-                image       : "",
-                fontawesome : "fa fa-cog fa-spin"
+                image: "",
+                fontawesome: "fa fa-cog fa-spin"
             });
 
             $.get('{{url('clientes/buscar_saldos')}}', datos, function (retorno) {
