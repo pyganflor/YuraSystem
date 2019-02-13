@@ -87,7 +87,7 @@
                 });
                 var count = 0;
                 var cantidad_envios = arrEnvios.length;
-                var tiempo = cantidad_envios * 2200;
+                var tiempo = cantidad_envios * 1500;
                 var interval = setInterval(function () {
                     if(count>=15 && count<99)
                         $.LoadingOverlay("text", "Firmado documento electróinco...");

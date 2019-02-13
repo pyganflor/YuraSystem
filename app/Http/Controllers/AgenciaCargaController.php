@@ -7,6 +7,7 @@ use PHPUnit\Util\RegularExpressionTest;
 use yura\Modelos\Rol;
 use yura\Modelos\Submenu;
 use yura\Modelos\AgenciaCarga;
+use yura\Modelos\ClienteAgenciaCarga;
 use Validator;
 use DB;
 use PHPExcel;
@@ -20,8 +21,6 @@ use PHPExcel_Style_Alignment;
 class AgenciaCargaController extends Controller
 {
     public function index(Request $request){
-
-
         return view('adminlte.gestion.agencias_carga.inicio', [
             'url' => $request->getRequestUri(),
             'submenu' => Submenu::Where('url', '=', substr($request->getRequestUri(), 1))->get()[0],
@@ -43,7 +42,7 @@ class AgenciaCargaController extends Controller
                 ->orWhere('ac.codigo', 'like', '%' . $bus . '%');
         });
 
-        $listado = $listado->orderBy('ac.nombre', 'asc')->paginate(20);
+        $listado = $listado->orderBy('id_agencia_carga', 'desc')->paginate(20);
 
         $datos = [
             'listado' => $listado
@@ -63,12 +62,10 @@ class AgenciaCargaController extends Controller
 
         $valida = Validator::make($request->all(), [
             'nombre' => 'required',
-            'codigo' => 'required',
+            'codigo' => 'required|unique:agencia_carga,codigo',
         ]);
 
         if (!$valida->fails()) {
-
-            //dd($request->all());
 
             empty($request->id_agencia_carga) ? $objAgenciaCarga = new AgenciaCarga : $objAgenciaCarga = AgenciaCarga::find($request->id_agencia_carga);
 
@@ -78,22 +75,48 @@ class AgenciaCargaController extends Controller
 
             if($objAgenciaCarga->save()) {
                 $model = AgenciaCarga::all()->last();
+                bitacora('configuracion_empresa', $model->id_agencia_carga, 'I', 'Inserción satisfactoria de una nueva agencia de carga');
+                if($request->id_cliente == "true"){
+                    $objClienteAgenciaCarga = new ClienteAgenciaCarga;
+                    $objClienteAgenciaCarga->id_cliente       = $request->id_cliente;
+                    $objClienteAgenciaCarga->id_agencia_carga = $model->id_agencia_carga;
+
+                    if($objClienteAgenciaCarga->save()){
+                        $model_cliente_agencia_carga = ClienteAgenciaCarga::all()->last();
+                        bitacora('cliente_agenciacarga', $model_cliente_agencia_carga->id_cliente_agencia_carga, 'I', 'Inserción satisfactoria de la asignación de una agencia de carga a un cliente');
+                    }
+                }
                 $success = true;
                 $msg .= '<div class="alert alert-success text-center">' .
                     '<p> Se ha guardado la agencia de carga '. $objAgenciaCarga->nombre .'  exitosamente</p>'
                     . '</div>';
-                bitacora('configuracion_empresa', $model->id_agencia_carga, 'I', 'Inserción satisfactoria de una nueva agencia de carga');
             } else {
                 $success = false;
                 $msg .= '<div class="alert alert-warning text-center">' .
                     '<p> Ha ocurrido un problema al guardar la información al sistema</p>'
                     . '</div>';
             }
-            return [
-                'mensaje' => $msg,
-                'success' => $success
-            ];
+        }else {
+            $success = false;
+            $errores = '';
+            foreach ($valida->errors()->all() as $mi_error) {
+                if ($errores == '') {
+                    $errores = '<li>' . $mi_error . '</li>';
+                } else {
+                    $errores .= '<li>' . $mi_error . '</li>';
+                }
+            }
+            $msg = '<div class="alert alert-danger">' .
+                '<p class="text-center">¡Por favor corrija los siguientes errores!</p>' .
+                '<ul>' .
+                $errores .
+                '</ul>' .
+                '</div>';
         }
+        return [
+            'mensaje' => $msg,
+            'success' => $success
+        ];
     }
 
     public function actualizarEstadoAgenciaCarga(Request $request)
@@ -154,7 +177,6 @@ class AgenciaCargaController extends Controller
 
     public function excelAgenciasCarga($objPHPExcel, $request)
     {
-
         $busqueda = $request->has('busqueda') ? espacios($request->busqueda) : '';
         $bus = str_replace(' ', '%%', $busqueda);
 

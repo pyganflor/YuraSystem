@@ -27,7 +27,6 @@ use PHPExcel_Style_Alignment;
 class ClienteController extends Controller
 {
     public function inicio(Request $request){
-
         return view('adminlte.gestion.postcocecha.clientes.inicio', [
             'url' => $request->getRequestUri(),
             'submenu' => Submenu::Where('url', '=', substr($request->getRequestUri(), 1))->get()[0],
@@ -47,7 +46,6 @@ class ClienteController extends Controller
             ->join('detalle_cliente as dc', 'dc.id_cliente', '=', 'cl.id_cliente')
             ->join('pais as pa',  'dc.codigo_pais', '=', 'pa.codigo')
             ->select('cl.estado', 'dc.nombre','dc.direccion','dc.ruc','dc.correo','pa.nombre as pa_nombre','cl.id_cliente');
-
 
         if ($request->busqueda != '') $listado = $listado->Where(function ($q) use ($mi_busqueda_toupper, $mi_busqueda_tolower) {
             $q->Where('dc.nombre', 'like', '%' . $mi_busqueda_toupper . '%')
@@ -270,7 +268,6 @@ class ClienteController extends Controller
 
     public function excel_clientes($objPHPExcel, $request)
     {
-
         $busqueda = $request->has('busqueda') ? espacios($request->busqueda) : '';
         $bus = str_replace(' ', '%%', $busqueda);
 
@@ -369,12 +366,12 @@ class ClienteController extends Controller
 
     public function detales_cliente(Request $request){
 
-        $dataAgenciasCarga         = AgenciaCarga::all();
+        $dataAgenciasCarga         = AgenciaCarga::orderBy('id_agencia_carga','desc')->get();
         $dataCliente               = DetalleCliente::where([
             ['id_cliente',$request->id_cliente],
             ['estado',1]
         ])->first();
-        $dataClienteAgenciasCarga  = ClienteAgenciaCarga::where('id_cliente',$request->id_cliente)->get();
+        $dataClienteAgenciasCarga  = ClienteAgenciaCarga::where('id_cliente',$request->id_cliente)->orderBy('id_cliente_agencia_carga','desc')->get();
         $pais         = Pais::where('codigo',$dataCliente->codigo_pais)->first();
         $dataContacto = DB::table('detalle_cliente as dc')
             ->where('id_cliente',$request->id_cliente)
@@ -395,7 +392,6 @@ class ClienteController extends Controller
     public function ver_agencia_carga(Request $request){
 
         $dataAgenciaCargo = AgenciaCarga::all();
-
         return view('adminlte.gestion.postcocecha.clientes.partials.select_agencias_carga',
             [
                 'dataAgenciaCargo'=> $dataAgenciaCargo,
@@ -492,7 +488,7 @@ class ClienteController extends Controller
     }
 
     public function store_contactos(Request $request){
-        //dd($request->all());
+
         $valida = Validator::make($request->all(), [
             'data_contactos' => 'required|Array',
         ]);

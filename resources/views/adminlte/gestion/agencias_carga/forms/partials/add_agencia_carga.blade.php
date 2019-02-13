@@ -10,7 +10,7 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label for="Código">Código de la agencia de carga</label>
-                <input type="text" id="codigo_agencia" name="codigo_agencia" class="form-control" required maxlength="25" autocomplete="off" value="{!! !empty($dataAgencia->codigo) ? $dataAgencia->codigo : '' !!}"  required="" minlength="3">
+                <input type="text" id="codigo_agencia" name="codigo_agencia" class="form-control" required maxlength="10" autocomplete="off" value="{!! !empty($dataAgencia->codigo) ? $dataAgencia->codigo : '' !!}"  required="" minlength="2">
             </div>
         </div>
     </div>

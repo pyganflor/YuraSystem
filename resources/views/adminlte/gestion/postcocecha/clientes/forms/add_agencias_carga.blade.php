@@ -13,6 +13,9 @@
                             <button type="button" class="btn btn-xs btn-default" title="Añadir campo" onclick="cargar_opcion('campos_agencia_carga','','clientes/ver_agencias_carga','add')">
                                 <i class="fa fa-fw fa-plus"></i>
                             </button>
+                            <button type="button" class="btn btn-xs btn-default" title="Crear agencia de carga" onclick="create_agencia_carga('','{{csrf_token()}}','{{$dataCliente->id_cliente}}')">
+                                <i class="fa fa-cubes" aria-hidden="true"></i>
+                            </button>
                         </th>
                     </tr>
                     </thead>

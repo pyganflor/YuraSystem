@@ -560,3 +560,94 @@ function estrechar_tabla(id, flag) {
 
 }
 
+function create_agencia_carga(id_agencia_carga,token,id_cliente) {
+    $.LoadingOverlay('show');
+    datos={
+        id_agencia_carga: id_agencia_carga
+    };
+    $.get('agrencias_carga/create_agencia',datos ,function (retorno) {
+        modal_form('modal_add_agencia_carga', retorno, '<i class="fa fa-fw fa-plus"></i> Añadir Agencia de carga', true, false, '50%', function () {
+            store_agencia_carga(token,id_cliente);
+        });
+    });
+    $.LoadingOverlay('hide');
+}
+
+function store_agencia_carga(token,id_cliente) {
+
+    if ($('#form_add_agencia_carga').valid()) {
+        $.LoadingOverlay('show');
+        datos = {
+            _token              : token,//'{{csrf_token()}}'
+            id_agencia_carga    : $("#id_agencia_carga").val(),
+            nombre              : $("#nombre_agencia").val(),
+            codigo              : $("#codigo_agencia").val(),
+            id_cliente          : id_cliente
+        };
+        post_jquery('agrencias_carga/store_agencia', datos, function () {
+            cerrar_modals();
+            if(!id_cliente){
+                location.reload();
+            }else{
+                detalles_cliente(id_cliente);
+                cargar_opcion('campos_agencia_carga','','clientes/ver_agencias_carga');
+            }
+
+        });
+        $.LoadingOverlay('hide');
+    }
+}
+
+function cargar_opcion(div, id_cliente = '', url, add) {
+
+    $.LoadingOverlay('show');
+
+    if (div === 'campos_agencia_carga') {
+        var cant_tr = $("tbody#campos_agencia_carga tr").length;
+    } else if (div === 'campos_contactos') {
+        var cant_tr = $("tbody#campos_contactos tr").length;
+    }
+
+    datos = {
+        id_cliente: id_cliente,
+        cant_tr: typeof cant_tr === "undefined" ? '' : cant_tr
+    };
+
+    get_jquery('/' + url, datos, function (retorno) {
+
+        if (div === 'campos_agencia_carga') {
+            $('#include_agencia_carga').removeClass('hide');
+            $('#include_contactos_cliente,#div_content_opciones').addClass('hide');
+            $("#div_content_opciones").html('');
+            if (add === 'add') {
+                $('#' + div).append(retorno);
+            } else {
+                $("#div_content_opciones").html(retorno);
+            }
+        } else if (div === 'campos_contactos') {
+
+            $('#include_agencia_carga,#div_content_opciones').addClass('hide');
+            $('#include_contactos_cliente').removeClass('hide');
+            $("#div_content_opciones").html('');
+            if (add === 'add') {
+                $('#' + div).append(retorno);
+            } else {
+                $("#div_content_opciones").html(retorno);
+            }
+
+        } else if (div == 'div_content_opciones') {
+            $("#div_content_opciones").removeClass('hide');
+            $('#include_contactos_cliente,#include_agencia_carga').addClass('hide');
+
+            $("#div_content_opciones").html(retorno);
+
+        }else if(div == 'div_pedidos'){
+            $('#include_contactos_cliente,#include_agencia_carga').addClass('hide');
+            $("#div_content_opciones").removeClass('hide');
+            $("#div_content_opciones").html(retorno);
+        }
+
+    });
+    $.LoadingOverlay('hide');
+}
+

@@ -30,36 +30,6 @@
         });
     });
 
-    function create_agencia_carga(id_agencia_carga) {
-        $.LoadingOverlay('show');
-        datos={
-            id_agencia_carga: id_agencia_carga
-        };
-        $.get('{{route('create.agencias_carga')}}',datos ,function (retorno) {
-            modal_form('modal_add_agencia_carga', retorno, '<i class="fa fa-fw fa-plus"></i> Añadir Agencia de carga', true, false, '{{isPC() ? '50%' : ''}}', function () {
-                store_agencia_carga();
-            });
-        });
-        $.LoadingOverlay('hide');
-    }
-
-    function store_agencia_carga() {
-        if ($('#form_add_agencia_carga').valid()) {
-            $.LoadingOverlay('show');
-            datos = {
-                _token          : '{{csrf_token()}}',
-                id_agencia_carga: $("#id_agencia_carga").val(),
-                nombre          : $("#nombre_agencia").val(),
-                codigo          : $("#codigo_agencia").val()
-            };
-            post_jquery('{{route('store.agencias_carga')}}', datos, function () {
-                cerrar_modals();
-                location.reload();
-            });
-            $.LoadingOverlay('hide');
-        }
-    }
-
     function actualizar_agencia_carga(id_agencia_carga, estado_agencia_carga) {
         mensaje = {
             title: estado_agencia_carga == 1 ? '<i class="fa fa-fw fa-trash"></i> Desactivar agencia de carga' : '<i class="fa fa-fw fa-unlock"></i> Activar agencia de carga',

@@ -1,9 +1,9 @@
 **Programar un filtro de columnas para las tablas con demasiadas columnas:
 	-permitir mostrar/ocultar las columnas deseadas por el usuario
 
-En la ventana de cliente, en la sección de agencia de carga, añadir la opcion de crear una nueva agencia de carga desde ese formulario
+En la ventana de cliente, en la secciï¿½n de agencia de carga, aï¿½adir la opcion de crear una nueva agencia de carga desde ese formulario (LISTO)
 
-Añadir un Submenu de especificaciones, donde se pueda ver por cada especificación qué clientes la poseen
+Aï¿½adir un Submenu de especificaciones, donde se pueda ver por cada especificaciï¿½n quï¿½ clientes la poseen
 
 Hacer la funcion explode('|', nombre_calibre_ramo) en cada lugar donde aparece la clasificacion por ramo
 
@@ -18,8 +18,8 @@ Revisar el formulario de envios
 Falta llenar el campo pedido.variedad con los ids de las variedades que se encuentren en un pedido, desde el formulario
 Pedido fijo y Pedido Normal
 
-En el formulario de Precios hay que añadir en el select de calibres, la unidad de medida
+En el formulario de Precios hay que aï¿½adir en el select de calibres, la unidad de medida
 
-En el formulario de Códigos DAE, al teminar de cargar el archivo, realizar una actualziacion por debajo de los añadidos
+En el formulario de Cï¿½digos DAE, al teminar de cargar el archivo, realizar una actualziacion por debajo de los aï¿½adidos
 
-En el formulario de Añadir submenus en la pagina de Permisos, listaro solo los elementos activos
+En el formulario de Aï¿½adir submenus en la pagina de Permisos, listaro solo los elementos activos

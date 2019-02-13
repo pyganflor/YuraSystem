@@ -97,7 +97,6 @@
     }
 
     function store_cliente() {
-
         if ($('#form_add_cliente').valid()) {
             $.LoadingOverlay('show');
             datos = {
@@ -124,59 +123,8 @@
             $.LoadingOverlay('hide');
         }
     }
-    
-    function cargar_opcion(div, id_cliente = '', url, add) {
 
-        $.LoadingOverlay('show');
 
-        if (div === 'campos_agencia_carga') {
-            var cant_tr = $("tbody#campos_agencia_carga tr").length;
-        } else if (div === 'campos_contactos') {
-            var cant_tr = $("tbody#campos_contactos tr").length;
-        }
-
-        datos = {
-            id_cliente: id_cliente,
-            cant_tr: typeof cant_tr === "undefined" ? '' : cant_tr
-        };
-
-        get_jquery('{{url('')}}/' + url, datos, function (retorno) {
-
-            if (div === 'campos_agencia_carga') {
-                $('#include_agencia_carga').removeClass('hide');
-                $('#include_contactos_cliente,#div_content_opciones').addClass('hide');
-                $("#div_content_opciones").html('');
-                if (add === 'add') {
-                    $('#' + div).append(retorno);
-                } else {
-                    $("#div_content_opciones").html(retorno);
-                }
-            } else if (div === 'campos_contactos') {
-
-                $('#include_agencia_carga,#div_content_opciones').addClass('hide');
-                $('#include_contactos_cliente').removeClass('hide');
-                $("#div_content_opciones").html('');
-                if (add === 'add') {
-                    $('#' + div).append(retorno);
-                } else {
-                    $("#div_content_opciones").html(retorno);
-                }
-
-            } else if (div == 'div_content_opciones') {
-                $("#div_content_opciones").removeClass('hide');
-                $('#include_contactos_cliente,#include_agencia_carga').addClass('hide');
-
-                $("#div_content_opciones").html(retorno);
-
-            }else if(div == 'div_pedidos'){
-                $('#include_contactos_cliente,#include_agencia_carga').addClass('hide');
-                $("#div_content_opciones").removeClass('hide');
-                $("#div_content_opciones").html(retorno);
-            }
-
-        });
-        $.LoadingOverlay('hide');
-    }
 
     /* ============= ESPECIFICACIONES =====================*/
     function admin_especificaciones(id_cliente) {

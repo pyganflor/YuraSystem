@@ -13,3 +13,4 @@ yarn-error.log
 .env
 .phpunit.result.cache
 /app/facturacion_electronica/firma_digital
+/storage

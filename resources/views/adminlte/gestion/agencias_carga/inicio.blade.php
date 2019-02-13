@@ -28,7 +28,7 @@
                     </button>
                 </span>
                                 <span class="input-group-btn">
-                    <button class="btn btn-primary" onclick="create_agencia_carga()"
+                    <button class="btn btn-primary" onclick="create_agencia_carga('','{{csrf_token()}}',false)"
                             onmouseover="$('#title_btn_add').html('Añadir')"
                             onmouseleave="$('#title_btn_add').html('')">
                           <i class="fa fa-fw fa-plus" style="color: #0c0c0c"></i> <em id="title_btn_add"></em>

@@ -15,5 +15,5 @@ Route::get('clientes/ver_contactos_clientes', 'ClienteController@ver_contactos_c
 Route::post('clientes/store_contactos', 'ClienteController@store_contactos');
 Route::post('clientes/actualizar_estado_contacto', 'ClienteController@actualizar_estado_contacto');
 
-include 'especificaciones.php';
+include 'especificaciones_cliente.php';
 include 'pedidos.php';

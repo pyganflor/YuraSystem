@@ -32,7 +32,7 @@
                     <td style="border-color: #9d9d9d" class="text-center">
                         <div class="btn-group">
                             <button type="button" class="btn btn-default btn-xs" title="Editar"
-                                    onclick="create_agencia_carga('{{$item->id_agencia_carga}}')" id="ver_agencia_carga">
+                                    onclick="create_agencia_carga('{{$item->id_agencia_carga}}','{{csrf_token()}}')" id="ver_agencia_carga">
                                 <i class="fa fa-fw fa-pencil" style="color: black"></i>
                             </button>
                             <button type="button" class="btn {{$item->estado == 1 ? 'btn-success' : 'btn-danger'}} btn-xs" title="Desactivar"
