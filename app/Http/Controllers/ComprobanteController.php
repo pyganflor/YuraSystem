@@ -492,7 +492,7 @@ class ComprobanteController extends Controller
         $factura->appendChild($nodeClaveAcceso);
         $nodeRuc = $xml->createElement('ruc', $ruc);
         $factura->appendChild($nodeRuc);
-        $nodeComprobantes = $xml->createElement('compobantes');
+        $nodeComprobantes = $xml->createElement('comprobantes');
         $factura->appendChild($nodeComprobantes);
         $path_firmados = env('PATH_XML_FIRMADOS');
         foreach ($request->arrPreFacturas as $xml_firmado) {

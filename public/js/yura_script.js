@@ -527,7 +527,7 @@ function delete_input(id_form) {
     var rows_new = $("#div_inputs_envios_" + id_form + " #rows");
     var cant_new = $("#cantidad_" + id_form + "_" + rows_new.length).val();
 
-    cant = parseInt(cant) + parseInt(cant_new);
+    /*cant = parseInt(cant) + parseInt(cant_new);
 
     if(rows_new.length != 1){
         if(cant !== null && !isNaN(cant)) {
@@ -537,7 +537,7 @@ function delete_input(id_form) {
                 $("#cantidad_" + id_form + "_" + rows_new.length).append("<option " + selected + " value=" + x + ">" + x + "</option>");
             }
         }
-    }
+    }*/
     var_cant_inputs = $("#div_inputs_envios_" + id_form + " div#rows").length;
     $("#cantidad_" + id_form + "_" + (var_cant_inputs)).attr('disabled', false);
     $.LoadingOverlay('hide');
