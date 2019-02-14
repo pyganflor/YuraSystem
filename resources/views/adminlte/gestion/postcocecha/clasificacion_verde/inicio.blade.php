@@ -75,11 +75,15 @@
                                                onkeypress="return isNumber(event)" maxlength="4" minlength="4" onchange="buscar_listado()">
                                     </div>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-3">
                                     <div class="form-group input-group">
                                         <span class="input-group-addon" style="background-color: #e9ecef">Desde</span>
                                         <input type="date" id="fecha_desde_search" name="fecha_desde_search" class="form-control"
                                                onchange="buscar_listado()">
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group input-group">
                                         <span class="input-group-addon" style="background-color: #e9ecef">Hasta</span>
                                         <input type="date" id="fecha_hasta_search" name="fecha_hasta_search" class="form-control"
                                                onchange="buscar_listado()">
@@ -89,8 +93,13 @@
                         </td>
                     </tr>
                 </table>
-                <label for="check_mandar_apertura_auto" class="pull-right" style="margin-left: 5px">Mandar automáticamente a aperturas</label>
-                <input type="checkbox" id="check_mandar_apertura_auto" class="pull-right" checked>
+                <div class="row">
+                    <div class="col-md-12">
+                        <label for="check_mandar_apertura_auto" class="pull-right" style="margin-left: 5px">Mandar automáticamente a
+                            aperturas</label>
+                        <input type="checkbox" id="check_mandar_apertura_auto" class="pull-right" checked>
+                    </div>
+                </div>
                 <div id="div_listado_clasificaciones"></div>
             </div>
         </div>
