@@ -50,7 +50,7 @@
             fecha: fecha
         };
         $.get('{{url('clasificacion_verde/add_verde')}}', datos, function (retorno) {
-            modal_view('modal_add_clasificacion_verde', retorno, '<i class="fa fa-fw fa-plus"></i> Añadir clasificación', true, false, '{{isPC() ? '65%' : ''}}');
+            modal_view('modal_add_clasificacion_verde', retorno, '<i class="fa fa-fw fa-plus"></i> Añadir clasificación', true, false, '{{isPC() ? '85%' : ''}}');
         });
         $.LoadingOverlay('hide');
     }
