@@ -15,7 +15,7 @@ Poner por defecto la fecha en los campos de los formularios: (LISTO)
 	-Pedido Normal
 	-Despachos
 
-Revisar el formulario de envios
+Revisar el formulario de envios (LISTO)
 
 Falta llenar el campo pedido.variedad con los ids de las variedades que se encuentren en un pedido, desde el formulario
 Pedido fijo y Pedido Normal (LISTO)

@@ -516,6 +516,7 @@ function ver_envio(id_pedido) {
 }
 
 function delete_input(id_form) {
+
     $.LoadingOverlay('show');
     var div = $('div#div_inputs_envios_' + id_form + ' div#rows:last-child');
     var rows = $("#div_inputs_envios_" + id_form + " #rows");
@@ -528,10 +529,14 @@ function delete_input(id_form) {
 
     cant = parseInt(cant) + parseInt(cant_new);
 
-    $("#cantidad_" + id_form + "_" + rows_new.length + " option").remove();
-    for (var x = 1; x <= cant; x++) {
-        cant == x ? selected = "selected='selected'" : selected = "";
-        $("#cantidad_" + id_form + "_" + rows_new.length).append("<option " + selected + " value=" + x + ">" + x + "</option>");
+    if(rows_new.length != 1){
+        if(cant !== null && !isNaN(cant)) {
+            $("#cantidad_" + id_form + "_" + rows_new.length + " option").remove();
+            for (var x = 1; x <= cant; x++) {
+                cant == x ? selected = "selected='selected'" : selected = "";
+                $("#cantidad_" + id_form + "_" + rows_new.length).append("<option " + selected + " value=" + x + ">" + x + "</option>");
+            }
+        }
     }
     var_cant_inputs = $("#div_inputs_envios_" + id_form + " div#rows").length;
     $("#cantidad_" + id_form + "_" + (var_cant_inputs)).attr('disabled', false);
