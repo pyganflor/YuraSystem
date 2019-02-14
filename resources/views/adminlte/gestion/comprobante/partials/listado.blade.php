@@ -92,22 +92,22 @@
                 </tr>
             @endforeach
         </table>
-    @if($item->estado !=5)
-        @if($item->estado == 0)
-            <div class="text-center">
-                <button class="btn btn-success" onclick="firmar_comprobante()">
-                    <i class="fa fa-floppy-o" aria-hidden="true"></i>
-                    Pre facturar
-                </button>
-            </div>
-        @else
-            <div class="text-center">
-                <button class="btn btn-success" onclick="facturar_comprobante()">
-                    <i class="fa fa-file-text" aria-hidden="true"></i>
-                    Facturar
-                </button>
-            </div>
-        @endif
+        @if($item->estado !=5 && $item->estado != 3 && $item->estado != 4)
+            @if($item->estado == 0)
+                <div class="text-center">
+                    <button class="btn btn-success" onclick="firmar_comprobante()">
+                        <i class="fa fa-floppy-o" aria-hidden="true"></i>
+                        Firmar comprobante
+                    </button>
+                </div>
+            @elseif($item->estado == 1)
+                <div class="text-center">
+                    <button class="btn btn-success" onclick="facturar_comprobante()">
+                        <i class="fa fa-file-text" aria-hidden="true"></i>
+                        Facturar
+                    </button>
+                </div>
+            @endif
         @endif
         <div id="pagination_listado_comprobante">
             {!! str_replace('/?','?',$listado->render()) !!}

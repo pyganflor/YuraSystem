@@ -505,7 +505,7 @@ class ComprobanteController extends Controller
 
         $nombre_xml = $claveAcceso . ".xml";
         $msg = "<div class='alert text-center  alert-danger'>" .
-            "<p>Hubo un error al realizar el proceso del envío del comprobante, intente el envío nuevamente</p>"
+            "<p>Hubo un error al realizar el proceso del envío del comprobante, intente facturar el envío nuevamente</p>"
             . "</div>";
 
         $obj_comprobante = new Comprobante;
@@ -546,6 +546,32 @@ class ComprobanteController extends Controller
                 }
             } else {
                 $this->eliminar_registro_archivo_lote($model_comprobante->id_comprobante, $claveAcceso, "");
+            }
+        }
+        return $msg;
+    }
+
+    public function firmar_comprobante(Request $request){
+
+        foreach ($request->arrNoFirmados as $idComprobante) {
+            $comprobante = Comprobante::where('id_comprobante', $idComprobante)->first();
+            $msg = '';
+            $resultado = firmarComprobanteXml($comprobante->clave_acceso.".xml");
+            if ($resultado) {
+                $class = 'warning';
+                if ($resultado == 5) {
+                    $class = 'success';
+                    $obj_comprobante = Comprobante::find($idComprobante);
+                    $obj_comprobante->estado = 1;
+                    $obj_comprobante->save();
+                }
+                $msg .= "<div class='alert text-center  alert-" . $class . "'>" .
+                    "<p> " . mensajeFirmaElectronica($resultado, str_pad($comprobante->id_envio, 9, "0", STR_PAD_LEFT)) . "</p>"
+                    . "</div>";
+            } else {
+                $msg .= "<div class='alert text-center  alert-danger'>" .
+                    "<p>Hubo un error al realizar el proceso de la firma de la factura N# " . $comprobante->clave_acceso.".xml" . " del envío N#" . str_pad($comprobante->id_envio, 9, "0", STR_PAD_LEFT) . ", intente nuevamente realizar la firma del mismo filtrando por GENERADOS</p>"
+                    . "</div>";
             }
         }
         return $msg;
