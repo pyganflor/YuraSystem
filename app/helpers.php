@@ -1040,9 +1040,6 @@ function firmarComprobanteXml($archivo_xml)
         . env('NOMBRE_ARCHIVO_FIRMA_DIGITAL') . " ",
         $salida, $var);
 
-    /*
-    java -Dfile.encoding=UTF-8 -jar C:/xampp/htdocs/yura/app/facturacion_electronica/firmador/QuijoteLuiFirmador/dist/QuijoteLuiFirmador-1.3.jar C:\\xampp\\htdocs\\yura\\storage\\xml\\generados\\ 0802201901179244632500110010010000001671234567811.xml C:\\xampp\\htdocs\\yura\\storage\\xml\\firmados\\ C:\\xampp\\htdocs\\yura\\app\\facturacion_electronica\\firma_digital\\ 1792446325001 DASALFLOR.P12
-    */
     if ($var == 0)
         return $salida[0];
     if ($var != 0)
@@ -1057,7 +1054,7 @@ function mensajeFirmaElectronica($indice, $id_envio)
         2 => "No se pudo acceder al contenido del archivo del certificado electrónico, verifique los indicies 0 y 1 de este apartado  y a su vez que el String pasado en la variable 'CONTRASENA_FIRMA_DIGITAL' en el archivo .env coincida con la propocionada por el ente certificador, una vez corregido el error puede filtrar por 'GENERADOS' y proceder a realizar la firma del mismo",
         3 => "Se produjo un error al momento de generar la firma electrónica del xml pertenciente a la factura del envío N# " . $id_envio . ", por favor comunicarse con el deparatmento de tecnología, una vez corregido el error puede filtrar por 'GENERADOS' y proceder a realizar la firma del mismo",
         4 => "El archivo firamado xml pertenciente a la factura del envío N# " . $id_envio . " no pudo ser guardado en su respectiva carpeta, verifique que el path propocionado en la variable de entorno 'PATH_XML_FIRMADOS' en el archivo .env coincida con la carpeta creada en esa ruta, una vez corregido el error puede filtrar por 'GENERADOS' y proceder a realizar la firma del mismo",
-        5 => "La factura pertenciente al envío N# " . $id_envio . " se ha generado y firmado con exito",
+        5 => "El comprobante pertenciente al envío N# " . $id_envio . " se ha generado y firmado con exito",
     ];
     return $mensaje[$indice];
 }
@@ -1230,7 +1227,7 @@ function accionAutorizacion($autorizacion, $path, $msg, $tipoDocumento = false)
 
 function FacturaPDF($autorizacion)
 {
-
+    $pdf = PDF::loadView('pdf.invoice', $autorizacion)->save(env('PDF_FACTURAS')."pdf");
 }
 
 function getDetallesClaveAcceso($detalle)

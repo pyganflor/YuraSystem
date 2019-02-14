@@ -76,7 +76,8 @@ class AgenciaCargaController extends Controller
             if($objAgenciaCarga->save()) {
                 $model = AgenciaCarga::all()->last();
                 bitacora('configuracion_empresa', $model->id_agencia_carga, 'I', 'Inserción satisfactoria de una nueva agencia de carga');
-                if($request->id_cliente == "true"){
+
+                if($request->id_cliente != "false"){
                     $objClienteAgenciaCarga = new ClienteAgenciaCarga;
                     $objClienteAgenciaCarga->id_cliente       = $request->id_cliente;
                     $objClienteAgenciaCarga->id_agencia_carga = $model->id_agencia_carga;
