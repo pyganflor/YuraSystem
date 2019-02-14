@@ -58,7 +58,7 @@
     function add_rol() {
         $.LoadingOverlay('show');
         $.get('{{url('permisos/add_rol')}}', {}, function (retorno) {
-            modal_form('modal_add_rol', retorno, '<i class="fa fa-fw fa-plus"></i> Añadir Rol', true, false, '{{isPC() ? '20%' : ''}}', function () {
+            modal_form('modal_add_rol', retorno, '<i class="fa fa-fw fa-plus"></i> Añadir Rol', true, false, '{{isPC() ? '60%' : ''}}', function () {
                 store_rol();
             });
         });
@@ -86,7 +86,7 @@
     function add_submenu() {
         $.LoadingOverlay('show');
         $.get('{{url('permisos/add_submenu')}}', {}, function (retorno) {
-            modal_form('modal_add_submenu', retorno, '<i class="fa fa-fw fa-plus"></i> Añadir submenú', true, false, '{{isPC() ? '35%' : ''}}', function () {
+            modal_form('modal_add_submenu', retorno, '<i class="fa fa-fw fa-plus"></i> Añadir submenú', true, false, '{{isPC() ? '60%' : ''}}', function () {
                 store_submenu();
             });
         });
@@ -118,7 +118,7 @@
             id_rol: $('#rol_selected').val()
         };
         $.get('{{url('permisos/add_usuario')}}', datos, function (retorno) {
-            modal_form('modal_add_usuario', retorno, '<i class="fa fa-fw fa-plus"></i> Añadir usuario', true, false, '{{isPC() ? '30%' : ''}}', function () {
+            modal_form('modal_add_usuario', retorno, '<i class="fa fa-fw fa-plus"></i> Añadir usuario', true, false, '{{isPC() ? '60%' : ''}}', function () {
                 store_usuario();
             });
         });
