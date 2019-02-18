@@ -87,10 +87,10 @@
                                 <input type="number" onkeypress="return isNumber(event)" id="descuento_{{$x}}"
                                        {{getFacturado($item[0]->id_envio) != 0 ? "disabled='disabled'" : ""}} name="descuento_{{$x}}"
                                        ondblclick="activar(this)" value="0.00" readonly><br/>
-                                <input type="text" style="margin-top:5px" placeholder="Guía madre"
+                                <input type="number" style="margin-top:5px" placeholder="Guía madre"
                                        {{getFacturado($item[0]->id_envio) != 0 ? "disabled='disabled'" : ""}}
                                        id="guia_madre_{{$x}}" name="guia_madre_{{$x}}"><br/>
-                                <input type="text" placeholder="Guía hija" id="guia_hija_{{$x}}" name="guia_hija_{{$x}}"
+                                <input type="number" placeholder="Guía hija" id="guia_hija_{{$x}}" name="guia_hija_{{$x}}"
                                         {{getFacturado($item[0]->id_envio) != 0 ? "disabled='disabled'" : ""}}><br/>
                                 <select id="codigo_pais_{{$x}}" name="codigo_pais_{{$x}}" style="margin-left: 1px;width: 128px;"
                                         {{getFacturado($item[0]->id_envio) != 0 ? "disabled='disabled'" : ""}}>
@@ -111,9 +111,10 @@
                                                    style="margin: 0;position: relative;top: 3px;" title="Generar documento electrónico">
                                         </button>
                                     @else
-                                        <button class="btn btn-default btn-xs" title="Ver comprobante electrónico" onclick="ver_factura()">
+                                        {{--<button class="btn btn-default btn-xs" title="Ver comprobante electrónico" onclick="ver_factura()">
                                             <i class="fa fa-file-text-o" aria-hidden="true"></i>
-                                        </button>
+                                        </button>--}}
+                                        Factura generada
                                     @endif
                                 @else
                                     <button class="btn  btn-default btn-xs" type="button" title="Editar envío" id="edit_envio"

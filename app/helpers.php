@@ -30,14 +30,15 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Request as Resq;
 use yura\Modelos\Pais;
 use yura\Modelos\InventarioFrio;
-//use SoapClient;
+use CodeItNow\BarcodeBundle\Utils\BarcodeGenerator;
 use Carbon\Carbon;
 use yura\Modelos\Comprobante;
 use yura\Modelos\CodigoDae;
 use yura\Modelos\Modulo;
-use Barryvdh\DomPDF\PDF;
+use Barryvdh\DomPDF\Facade as PDF;
+use Illuminate\Support\Facades\Mail;
+use yura\Mail\CorreoFactura;
 use yura\Modelos\Cliente;
-
 
 /*
  * -------- BITÁCORA DE LAS ACCIONES ECHAS POR EL USUARIO ------
@@ -1109,13 +1110,16 @@ function getDatosFacturaEnvio($id_envio)
         ->join('clasificacion_ramo as cr', 'deemp.id_clasificacion_ramo', 'cr.id_clasificacion_ramo')
         ->join('unidad_medida as umPR', 'cr.id_unidad_medida', 'umPR.id_unidad_medida');
 
+    //dd( $data->get());
     $existUnidadMedidida = DetalleEspecificacionEmpaque::where('id_detalle_especificacionempaque', $data->get()[0]->id_detalle_especificacionempaque)->first();
     $a = 0;
-    if ($existUnidadMedidida->id_unidad_medida != null) {
+
+    /*if ($existUnidadMedidida->id_unidad_medida != null) {
         $data->join('unidad_medida as umLR', 'deemp.id_unidad_medida', 'umLR.id_unidad_medida');
         $a = 1;
-    }
-    return $data->select('ce.nombre as nombre_empresa', 'ce.razon_social', 'ce.direccion_matriz', 'ce.direccion_establecimiento', 'dc.codigo_identificacion', 'dc.ruc as identificacion', 'dc.nombre as nombre_cliente', 'dc.direccion', 'dc.provincia', 'dc.telefono', 'dc.correo', 'dc.codigo_impuesto', 'dc.codigo_pais as CodigoDae', 'deemp.id_variedad', 'deemp.id_clasificacion_ramo', 'de.cantidad as cantidad_detalles', 'dc.codigo_porcentaje_impuesto as codigo_porcentaje', 'ti.porcentaje as porcntaje_iva', 'deemp.cantidad as cantidad_ramos', 'eemp.cantidad as cantidad_cajas', 'v.nombre as nombre_variedad', 'v.siglas as siglas_variedad', 'cr.nombre as nombre_clasificacion', 'umPR.siglas as siglas_unidad_medida_peso_ramo', 'pl.nombre as nombre_planta', 'deemp.longitud_ramo', $a == 1 ? 'umLR.siglas as siglas_unidad_medida_lognitud_ramo' : 'deemp.longitud_ramo');
+    }*/
+    //dd($data->count());
+    return $data->select('ce.nombre as nombre_empresa', 'ce.razon_social', 'at.nombre as nombre_agencia_transporte', 'ce.direccion_matriz', 'ce.direccion_establecimiento', 'dc.codigo_identificacion', 'dc.ruc as identificacion', 'dc.nombre as nombre_cliente', 'dc.direccion', 'dc.provincia', 'dc.telefono', 'dc.correo', 'dc.codigo_impuesto', 'dc.codigo_pais as CodigoDae', 'deemp.id_variedad', 'deemp.id_clasificacion_ramo', 'de.cantidad as cantidad_detalles', 'dc.codigo_porcentaje_impuesto as codigo_porcentaje', 'ti.porcentaje as porcntaje_iva', 'deemp.cantidad as cantidad_ramos', 'eemp.cantidad as cantidad_cajas', 'v.nombre as nombre_variedad', 'v.siglas as siglas_variedad', 'cr.nombre as nombre_clasificacion', 'umPR.siglas as siglas_unidad_medida_peso_ramo', 'pl.nombre as nombre_planta', 'deemp.longitud_ramo', $a == 1 ? 'umLR.siglas as siglas_unidad_medida_lognitud_ramo' : 'deemp.longitud_ramo');
 }
 
 function getCodigoDae($codigoPais)
@@ -1159,10 +1163,11 @@ function respuesta_autorizacion_comprobante($clave_acceso_lote)
                 $xmlEnviado = simplexml_load_string($autorizacion->comprobante);
                 $claveAcceso = (string)$xmlEnviado->infoTributaria->claveAcceso;
                 $tipoDocumento = (string)$xmlEnviado->infoTributaria->codDoc;
-
+                $mailCliente = (string)$xmlEnviado->infoAdicional->campoAdicional[1];
+                $nombreCliente = (string)$xmlEnviado->infoFactura->razonSocialComprador;
                 if ($estado === "AUTORIZADO") {
                     $msg = "La factura del comprobante " . $claveAcceso . " ha sido aprobada por el SRI y se ha enviado el correo correspondiente al cliente";
-                    $response .= accionAutorizacion($autorizacion, env('PATH_XML_AUTORIZADOS'), $msg, $tipoDocumento);
+                    $response .= accionAutorizacion($autorizacion, env('PATH_XML_AUTORIZADOS'), $msg, $tipoDocumento,$mailCliente,$nombreCliente);
                 } else if ($estado === "RECHAZADA" || $estado === "DEVUELTA") {
                     $msg = "La factura del comprobante " . $claveAcceso . " ha sido rechazada por el SRI, verifique la causa en el listado de pdf y realice nuevamente el proceso de facturación del envío";
                     $response .= accionAutorizacion($autorizacion, env('PATH_XML_RECHAZADOS'), $msg);
@@ -1176,23 +1181,25 @@ function respuesta_autorizacion_comprobante($clave_acceso_lote)
     return $response;
 }
 
-function accionAutorizacion($autorizacion, $path, $msg, $tipoDocumento = false)
+function accionAutorizacion($autorizacion, $path, $msg, $tipoDocumento = false,$mailCliente=false,$nombreCliente=false)
 {
-    $numeroAutorizacion = $autorizacion->numeroAutorizacion;
-    $fechaAutorizacion = $autorizacion->fechaAutorizacion;
-    $ambiente = $autorizacion->ambiente;
-    $dataXML = $autorizacion->comprobante;
+    $numeroAutorizacion = (String)$autorizacion->numeroAutorizacion;
+    $fechaAutorizacion = (String)$autorizacion->fechaAutorizacion;
+    $ambiente = (String)$autorizacion->ambiente;
+    $dataXML = (String)$autorizacion->comprobante;
 
     $actualizaEstado = 1;
-    if ($autorizacion->estado === "AUTORIZADO") {
+    if ((String)$autorizacion->estado === "AUTORIZADO") {
         $actualizaEstado = 5;
+        $numeroComprobante = (String)"001".getPuntoAcceso().getDetallesClaveAcceso($numeroAutorizacion,'SECUENCIAL');
         $class = 'success';
         if ($tipoDocumento == "01")
-            FacturaPDF($autorizacion);
+            generaFacturaPDF($autorizacion,$numeroComprobante);
 
     } else {
         $class = 'danger';
         $actualizaEstado = 4;
+        $numeroComprobante = null;
         $causa = "";
         foreach ($autorizacion->mensajes as $mensaje)
             $causa .= $mensaje->mensaje . ": " . $mensaje->informacionAdicional . ", Tipo: " . $mensaje->tipo . ", ";
@@ -1200,8 +1207,9 @@ function accionAutorizacion($autorizacion, $path, $msg, $tipoDocumento = false)
 
     $objComprobante = Comprobante::where('clave_acceso', $numeroAutorizacion);
     $objComprobante->estado = $actualizaEstado;
+
     $autorizacion->estado !== "AUTORIZADO" ? $objComprobante->update(['cuasa' => $causa]) : "";
-    $objComprobante->update(['estado' => $actualizaEstado,]);
+    $objComprobante->update(['estado' => $actualizaEstado,'numero_comprobante'=>$numeroComprobante]);
 
     $xml = new DOMDocument(1.0, 'UTF-8');
     $xml->loadXML($dataXML);
@@ -1220,21 +1228,44 @@ function accionAutorizacion($autorizacion, $path, $msg, $tipoDocumento = false)
     $nuevoXml->saveXML();
     $nuevoXml->save($path . $numeroAutorizacion . ".xml");
 
+    (String)$autorizacion->estado === "AUTORIZADO"
+        ? enviarMailComprobantelCliente($tipoDocumento,$mailCliente,$nombreCliente,$numeroAutorizacion,$numeroComprobante)
+        : "";
+
     return "<div class='alert text-center  alert-" . $class . "'>" .
         "<p>" . $msg . "</p>"
         . "</div>";
 }
 
-function FacturaPDF($autorizacion)
+function generaFacturaPDF($autorizacion,$numeroComprobante)
 {
-    $pdf = PDF::loadView('pdf.invoice', $autorizacion)->save(env('PDF_FACTURAS')."pdf");
+    $numero_autorizacion = (String)$autorizacion->numeroAutorizacion;
+    $barcode = new BarcodeGenerator();
+    $barcode->setText($numero_autorizacion);
+    $barcode->setType(BarcodeGenerator::Gs1128);
+    $barcode->setNoLengthLimit(true);
+    $barcode->setAllowsUnknownIdentifier(true);
+    $code = $barcode->generate();
+    $data = [
+        'autorizacion' => $autorizacion,
+        'img_clave_acceso' => $code,
+        'obj_xml' => simplexml_load_string($autorizacion->comprobante),
+        'numeroComprobante' => $numeroComprobante
+    ];
+    PDF::loadView('adminlte.gestion.comprobante.partials.pdf.factura', compact('data'))->save(env('PDF_FACTURAS').$autorizacion->numeroAutorizacion.".pdf");
 }
 
-function getDetallesClaveAcceso($detalle)
+function enviarMailComprobantelCliente($tipoDocumento,$correoCliente,$nombreCliente,$nombreArchivo,$numeroComprobante){
+    if($tipoDocumento == "01"){
+        Mail::to("pruebas-c26453@inbox.mailtrap.io")->send(new CorreoFactura($correoCliente,$nombreCliente,$nombreArchivo,$numeroComprobante));
+    }
+}
+
+function getDetallesClaveAcceso($numeroAutorizacion,$detalle)
 {
     switch ($detalle) {
         case 'RUC':
-            //$cadena = substr($detalle);
+
             break;
         case 'FECHA_EMISION':
 
@@ -1245,7 +1276,11 @@ function getDetallesClaveAcceso($detalle)
         case 'AMBIENTE':
 
             break;
+        case 'SECUENCIAL':
+            $resultado = substr($numeroAutorizacion,30,9);
+            break;
     }
+    return $resultado;
 }
 
 function getSecuencial()
@@ -1258,6 +1293,11 @@ function getSecuencial()
 
     return str_pad($secuencial, 9, "0", STR_PAD_LEFT);
 }
+
+function getPuntoAcceso(){
+    return Usuario::where('id_usuario',Session::get('id_usuario'))->select('punto_acceso')->first()->punto_acceso;
+}
+
 
 /* ============ Calcular la cantidad de cajas equivalentes segun grosor_variedad ==============*/
 function getEquivalentesByGrosorVariedad($fecha, $grosor, $variedad)

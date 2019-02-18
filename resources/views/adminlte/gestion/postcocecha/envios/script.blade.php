@@ -74,7 +74,7 @@
 
             modal_quest('modal_message_facturar_envios',
                 '<div class="alert alert-warning text-center"><i class="fa fa-fw fa-exclamation-triangle"></i> ¿Esta seguro que desea generar el comprobante electrónico de los envíos seleccionados?</div>',
-                '<i class="fa fa-fw fa-trash"></i> Facturar envios', true, false, '{{isPC() ? '40%' : ''}}', function () {
+                '<i class="fa fa-file-code-o" aria-hidden="true"></i> Generar facturas', true, false, '{{isPC() ? '40%' : ''}}', function () {
                 cerrar_modals();
                 $.LoadingOverlay("show", {
                     image: "",
@@ -90,7 +90,7 @@
                 var tiempo = cantidad_envios * 1500;
                 var interval = setInterval(function () {
                     if(count>=15 && count<99)
-                        $.LoadingOverlay("text", "Firmado documento electróinco...");
+                        $.LoadingOverlay("text", "Firmado documento electrónico...");
 
                     if (count >= 100) {
                         clearInterval(interval);

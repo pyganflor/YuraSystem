@@ -68,7 +68,6 @@ class AgenciaCargaController extends Controller
         if (!$valida->fails()) {
 
             empty($request->id_agencia_carga) ? $objAgenciaCarga = new AgenciaCarga : $objAgenciaCarga = AgenciaCarga::find($request->id_agencia_carga);
-
             $objAgenciaCarga->nombre = $request->nombre;
             $objAgenciaCarga->codigo = $request->codigo;
             $msg='';

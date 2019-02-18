@@ -17,6 +17,7 @@ class Comprobante extends Model
         'estado',
         'fecha_emision',
         'tipo_comprobante',
-        'monto_total'
+        'monto_total',
+        'numero_comprobante'
     ];
 }
