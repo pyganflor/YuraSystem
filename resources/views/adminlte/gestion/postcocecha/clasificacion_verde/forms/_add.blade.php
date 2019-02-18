@@ -231,8 +231,8 @@
     }
 
     function store_verde() {
-        if ($('#form-add_clasificacion_verde_x_variedad_' + $('#id_variedad').val())) {
-            if (parseInt($('#input_tallos_x_variedad_' + $('#id_variedad').val()).val()) + parseInt($('#recepcion_' + $('#id_variedad').val()).val())) {
+        if ($('#form-add_clasificacion_verde_x_variedad_' + $('#id_variedad').valid())) {
+            if (parseInt($('#input_tallos_x_variedad_' + $('#id_variedad').val()).val()) <= parseInt($('#recepcion_' + $('#id_variedad').val()).val())) {
                 modal_quest('modal_quest_store_clasificacion_verde', '<div class="alert alert-info text-center">' +
                     '¿Está seguro de guardar la información en el sistema?</div>',
                     '<i class="fa fa-fw fa-exclamation-triangle"></i> Mensaje de alerta', true, false, '{{isPC() ? '35%' : ''}}', function () {
@@ -315,7 +315,6 @@
         if ($('#personal').val() != '' && $('#hora_inicio').val() != '') {
             datos = {
                 _token: '{{csrf_token()}}',
-                recepciones: $('#recepciones').val(),
                 fecha_ingreso: $('#fecha_ingreso').val(),
                 personal: $('#personal').val(),
                 hora_inicio: $('#hora_inicio').val(),
@@ -325,6 +324,7 @@
             post_jquery('{{url('clasificacion_verde/store_personal')}}', datos, function () {
                 cerrar_modals();
                 add_verde($('#fecha_recepciones').val());
+                buscar_listado();
             });
         }
     }

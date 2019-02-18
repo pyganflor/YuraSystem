@@ -72,7 +72,6 @@ class ClasificacionVerde extends Model
         foreach ($this->recepciones as $item) {
             $r += $item->recepcion->cantidad_tallos();
         }
-
         return $r;
     }
 

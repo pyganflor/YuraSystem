@@ -18,7 +18,31 @@ Route::get('comprobante/prueba', function () {
     $barcode->setAllowsUnknownIdentifier(true);
     $code = $barcode->generate();
     echo '<img src="data:image/png;base64,'.$code.'" />';*/
-    $autorizacion="hola";
-    $pdf = PDF::loadView('adminlte.gestion.comprobante.partials.pdf.factura', compact('autorizacion'))->save(env('PDF_FACTURAS').".pdf");
-    dd($pdf);
+
+    /* ========== CODIGO PARA BORRAR DATOS DUPLICADOS EN RECPCION_CLASIFICACION_VERDE ==========    segun id_recepcion; id_clasificacion_verde*/
+    /*$listado = \Illuminate\Support\Facades\DB::table('recepcion_clasificacion_verde')
+        ->select('id_recepcion', 'id_clasificacion_verde')->distinct()
+        ->get();
+
+    $arreglo = [];
+    foreach ($listado as $r) {
+        $r = \yura\Modelos\RecepcionClasificacionVerde::All()
+            ->where('id_recepcion', '=', $r->id_recepcion)
+            ->where('id_clasificacion_verde', '=', $r->id_clasificacion_verde)->first();
+        $targets = \yura\Modelos\RecepcionClasificacionVerde::All()
+            ->where('id_recepcion_clasificacion_verde', '!=', $r->id_recepcion_clasificacion_verde)
+            ->where('id_recepcion', '=', $r->id_recepcion)
+            ->where('id_clasificacion_verde', '=', $r->id_clasificacion_verde);
+
+        array_push($arreglo, [
+            'relacion' => ['id: ' . $r->id_recepcion_clasificacion_verde, 'par: ' . $r->id_recepcion . ' ; ' . $r->id_clasificacion_verde],
+            'targets' => $targets
+        ]);
+    }
+    foreach ($arreglo as $item) {
+        foreach ($item['targets'] as $t) {
+            $t->delete();
+        }
+    }*/
+
 });

@@ -952,26 +952,6 @@ class ClasificacionVerdeController extends Controller
                 if (ClasificacionVerde::find($request->id_clasificacion_verde) == '')
                     $model = ClasificacionVerde::All()->last();
                 bitacora('clasificacion_verde', $model->id_clasificacion_verde, 'U', 'Actualización satisfactia de una clasificacion en verde');
-
-                /* ================= GUARDAR TABLA RECEPCION_CLASIFICACION_VERDE ===================*/
-                foreach (explode('|', $request->recepciones) as $id) {
-                    $relacion = new RecepcionClasificacionVerde();
-                    $relacion->id_recepcion = $id;
-                    $relacion->id_clasificacion_verde = $model->id_clasificacion_verde;
-                    $relacion->fecha_registro = date('Y-m-d H:i:s');
-
-                    if ($relacion->save()) {
-                        $relacion = ClasificacionVerde::All()->last();
-                        bitacora('recepcion_clasificacion_verde', $relacion->id_recepcion_clasificacion_verde, 'I', 'Inserción satisfactoria de una nueva relacion recepcion-clasificación en verde');
-                    } else {
-                        return [
-                            'success' => true,
-                            'mensaje' => '<div class="alert alert-warning text-center">' .
-                                '<p> Ha ocurrido un problema al guardar una de las recepciones de la fecha indicada</p>'
-                                . '</div>'
-                        ];
-                    }
-                }
                 return [
                     'success' => true,
                     'mensaje' => '<div class="alert alert-success text-center">Se ha guardado satisfactoriamente el personal</div>'

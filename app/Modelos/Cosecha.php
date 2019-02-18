@@ -35,6 +35,25 @@ class Cosecha extends Model
         return $r;
     }
 
+    public function getTotalTallosByVariedad($variedad)
+    {
+        $r = 0;
+        foreach ($this->recepciones as $recepcion) {
+            $r += $recepcion->tallos_x_variedad($variedad);
+        }
+        return $r;
+    }
+
+    public function getVariedades()
+    {
+        $listado = DB::table('desglose_recepcion as dr')
+            ->join('recepcion as r', 'r.id_recepcion', '=', 'dr.id_recepcion')
+            ->select('dr.id_variedad')->distinct()
+            ->where('r.id_cosecha', '=', $this->id_cosecha)
+            ->get();
+        return $listado;
+    }
+
     public function getTotalTallosByIntervalo($inicio, $fin)
     {
         $r = DB::table('desglose_recepcion as dr')

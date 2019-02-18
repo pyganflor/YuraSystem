@@ -44,30 +44,25 @@
                         <td>
                             <div class="row">
                                 <div class="col-md-2">
-                                    <select name="anno_search" id="anno_search" class="form-control">
-                                        <option value="">Año</option>
-                                        @foreach($annos as $item)
-                                            <option value="{{$item->anno}}">{{$item->anno}}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <div class="col-md-3">
                                     <input type="date" id="fecha_ingreso_search" name="fecha_ingreso_search"
-                                           class="form-control">
+                                           class="form-control" onchange="buscar_listado(); buscar_cosecha()">
                                 </div>
-                                <div class="col-md-7">
-                                    <div class="form-group input-group" style="padding: 0px">
-                                        <input type="text" class="form-control" placeholder="Búsqueda"
-                                               id="busqueda_recepciones"
-                                               name="busqueda_recepciones">
-                                        <span class="input-group-btn">
-                                    <button class="btn btn-default" onclick="buscar_listado()"
-                                            onmouseover="$('#title_btn_buscar').html('Buscar')"
-                                            onmouseleave="$('#title_btn_buscar').html('')">
-                                        <i class="fa fa-fw fa-search" style="color: #0c0c0c"></i> <em
-                                                id="title_btn_buscar"></em>
-                                    </button>
-                                </span>
+                                <div class="col-md-2">
+                                    <input type="text" readonly id="datos_cosecha" name="datos_cosecha" class="form-control text-center"
+                                           placeholder="Cosecha">
+                                </div>
+                                <div class="col-md-2">
+                                    <select name="datos_cosecha_x_variedad" id="datos_cosecha_x_variedad" class="form-control"
+                                            style="display: none"></select>
+                                </div>
+                                <div class="col-md-2">
+                                    <input type="text" readonly id="rendimiento_cosecha" name="rendimiento_cosecha"
+                                           class="form-control text-center" placeholder="Rendimiento">
+                                </div>
+                                <div class="col-md-2" id="html_ver_rendimiento">
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="btn-group pull-right" style="padding: 0px">
                                         <span class="input-group-btn">
                                     <button class="btn btn-primary" onclick="add_recepcion()"
                                             onmouseover="$('#title_btn_add').html('Añadir')"

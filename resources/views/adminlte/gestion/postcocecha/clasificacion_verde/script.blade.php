@@ -56,6 +56,7 @@
     }
 
     function store_verde() {
+        alert('store_verde()_script');
         if ($('#form-add-verde').valid()) {
             $.LoadingOverlay('show');
             arreglo = [];

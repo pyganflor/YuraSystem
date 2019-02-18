@@ -10,3 +10,4 @@ Route::get('recepcion/exportar_recepciones', 'RecepcionController@exportar_recep
 Route::get('recepcion/buscarCosechaByFecha', 'RecepcionController@getIdCosechaByFecha');
 Route::post('recepcion/store_cosecha', 'RecepcionController@store_cosecha');
 Route::get('recepcion/ver_rendimiento', 'RecepcionController@ver_rendimiento');
+Route::post('recepcion/buscar_cosecha', 'RecepcionController@buscar_cosecha');
