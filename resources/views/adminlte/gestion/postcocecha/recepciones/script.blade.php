@@ -1,12 +1,16 @@
 <script>
+    set_max_today($('#fecha_ingreso_search'));
+
     buscar_listado();
+
+    buscar_cosecha();
 
     function buscar_listado() {
         $.LoadingOverlay('show');
         datos = {
-            busqueda: $('#busqueda_recepciones').val().trim(),
+            //busqueda: $('#busqueda_recepciones').val().trim(),
             fecha_ingreso: $('#fecha_ingreso_search').val(),
-            anno: $('#anno_search').val(),
+            //anno: $('#anno_search').val(),
         };
         $.get('{{url('recepcion/buscar_recepciones')}}', datos, function (retorno) {
             $('#div_listado_recepciones').html(retorno);
@@ -25,9 +29,7 @@
         //para que la pagina se cargen los elementos
         e.preventDefault();
         var url = $(this).attr("href");
-        url = url.replace('?', '?busqueda=' + $('#busqueda_recepciones').val().trim() +
-            '&fecha_ingreso=' + $('#fecha_ingreso_search').val() +
-            '&anno=' + $('#anno_search').val() + '&');
+        url = url.replace('?', '?fecha_ingreso=' + $('#fecha_ingreso_search').val() + '&');
         $('#div_listado_recepciones').html($('#table_recepciones').html());
         $.get(url, function (resul) {
             $('#div_listado_recepciones').html(resul);
@@ -77,9 +79,9 @@
                 cantidad: arreglo
             };
             post_jquery('{{url('recepcion/store_recepcion')}}', datos, function () {
-                add_recepcion();
                 cerrar_modals();
                 buscar_listado();
+                buscar_cosecha();
                 set_max_today($('#fecha_ingreso'));
             });
             $.LoadingOverlay('hide');
@@ -156,13 +158,56 @@
         $.LoadingOverlay('hide');
     }
 
+    function buscar_cosecha() {
+        $('#datos_cosecha_x_variedad').html('');
+        $('#datos_cosecha_x_variedad').hide();
+        if ($('#fecha_ingreso_search').val()) {
+            datos = {
+                _token: '{{csrf_token()}}',
+                fecha_ingreso: $('#fecha_ingreso_search').val()
+            };
+            $.LoadingOverlay('show');
+            $.post('{{url('recepcion/buscar_cosecha')}}', datos, function (retorno) {
+                $('#datos_cosecha').val(retorno.total_cosecha + ' tallos');
+                if (retorno.listado_x_variedad.length > 0) {
+                    $('#datos_cosecha_x_variedad').show();
+                    for (i = 0; i < retorno.listado_x_variedad.length; i++) {
+                        $('#datos_cosecha_x_variedad').append('<option value="">' +
+                            retorno.listado_x_variedad[i]['variedad'] + ' ' + retorno.listado_x_variedad[i]['cantidad'] + ' tallos' +
+                            '</option>'
+                        );
+                    }
+                }
+                $('#rendimiento_cosecha').val(retorno.rendimiento + ' tallos/horas');
+                $('#html_ver_rendimiento').html('<button class="btn btn-default" onclick="ver_rendimiento_ini(' + retorno.id_cosecha + ')">' +
+                    '<i class="fa fa-fw fa-eye"></i> Ver rendimiento' +
+                    '</button>');
+            }, 'json').fail(function (retorno) {
+                console.log(retorno);
+                alerta_errores(retorno.responseText);
+                alerta('Ha ocurrido un problema al enviar la información');
+            }).always(function () {
+                $.LoadingOverlay('hide');
+            })
+        } else {
+            $('#datos_cosecha').val('');
+        }
+    }
+
+    function ver_rendimiento_ini(id_cosecha) {
+        datos = {
+            id_cosecha: id_cosecha
+        };
+        get_jquery('{{url('recepcion/ver_rendimiento')}}', datos, function (retorno) {
+            modal_view('modal_view_ver_rendimiento', retorno, '<i class="fa fa-fw fa-balance-scale"></i> Rendimiento', true, false,
+                '{{isPC() ? '65%' : ''}}');
+        });
+    }
+
     /* ============= FUNCION PARA AÑADIR DOCUMENTO =================*/
     function add_info(codigo) {
         add_documento('recepcion', codigo, function () {
             ver_recepcion(codigo);
         });
     }
-
-    set_max_today($('#fecha_ingreso_search'));
-    $('#fecha_ingreso_search').val('');
 </script>

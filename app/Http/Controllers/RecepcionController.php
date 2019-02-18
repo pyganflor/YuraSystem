@@ -28,9 +28,9 @@ class RecepcionController extends Controller
         return view('adminlte.gestion.postcocecha.recepciones.inicio', [
             'url' => $request->getRequestUri(),
             'submenu' => Submenu::Where('url', '=', substr($request->getRequestUri(), 1))->get()[0],
-            'annos' => DB::table('semana as s')
+            /*'annos' => DB::table('semana as s')
                 ->select('s.anno')->distinct()
-                ->where('s.estado', '=', 1)->orderBy('s.anno')->get()
+                ->where('s.estado', '=', 1)->orderBy('s.anno')->get()*/
         ]);
     }
 
@@ -51,7 +51,7 @@ class RecepcionController extends Controller
                 ->orWhere('s.anno', 'like', '%' . $bus . '%');
         });
         if ($request->fecha_ingreso != '')
-            $listado = $listado->where('r.fecha_ingreso', '=', $request->fecha_ingreso);
+            $listado = $listado->where('r.fecha_ingreso', 'like', $request->fecha_ingreso . '%');
         if ($request->anno != '')
             $listado = $listado->where('s.anno', '=', $request->anno);
         if ($request->semana != '')
@@ -386,5 +386,32 @@ class RecepcionController extends Controller
         return view('adminlte.gestion.postcocecha.recepciones.partials.rendimiento', [
             'cosecha' => $cosecha
         ]);
+    }
+
+    public function buscar_cosecha(Request $request)
+    {
+        $cosecha = Cosecha::All()->where('fecha_ingreso', '=', $request->fecha_ingreso)->first();
+        if ($cosecha != '') {
+            $arreglo = [];
+            foreach ($cosecha->getVariedades() as $v) {
+                array_push($arreglo, [
+                    'variedad' => getVariedad($v->id_variedad)->siglas,
+                    'cantidad' => $cosecha->getTotalTallosByVariedad($v->id_variedad),
+                ]);
+            }
+            return [
+                'id_cosecha' => $cosecha->id_cosecha,
+                'total_cosecha' => $cosecha->getTotalTallos(),
+                'listado_x_variedad' => $arreglo,
+                'rendimiento' => $cosecha->getRendimiento()
+            ];
+        } else {
+            return [
+                'id_cosecha' => '',
+                'total_cosecha' => 0,
+                'listado_x_variedad' => [],
+                'rendimiento' => 0
+            ];
+        }
     }
 }

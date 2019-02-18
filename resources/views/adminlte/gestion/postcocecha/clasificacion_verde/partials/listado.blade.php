@@ -23,6 +23,14 @@
                         </th>
                         <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
                             style="border-color: #9d9d9d">
+                            RAMOS ESTANDAR
+                        </th>
+                        <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
+                            style="border-color: #9d9d9d">
+                            CALIBRE
+                        </th>
+                        <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
+                            style="border-color: #9d9d9d">
                             DESECHO
                         </th>
                         <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
@@ -49,6 +57,13 @@
                             {{getClasificacionVerde($item->id_clasificacion_verde)->total_tallos()}}
                         </td>
                         <td style="border-color: #9d9d9d" class="text-center">
+                            {{getClasificacionVerde($item->id_clasificacion_verde)->getTotalRamosEstandar()}}
+                        </td>
+                        <td style="border-color: #9d9d9d" class="text-center">
+                            {{round(getClasificacionVerde($item->id_clasificacion_verde)->total_tallos() /
+                            getClasificacionVerde($item->id_clasificacion_verde)->getTotalRamosEstandar(),2)}}
+                        </td>
+                        <td style="border-color: #9d9d9d" class="text-center">
                             {{getClasificacionVerde($item->id_clasificacion_verde)->desecho()}}%
                         </td>
                         <td style="border-color: #9d9d9d" class="text-center">
@@ -68,8 +83,8 @@
                         </td>
                     </tr>
                     <tr>
-                        <td colspan="8" style="border-color: #9d9d9d; padding: 0;">
-                            <div style="overflow-y: scroll; height: 170px">
+                        <td colspan="10" style="border-color: #9d9d9d; padding: 0;">
+                            <div style="overflow-y: scroll; height: 171px">
                                 <table width="100%" class="table table-responsive table-bordered"
                                        style="border: 1px solid #9d9d9d; margin-bottom: 0">
                                     <tr>
@@ -81,12 +96,18 @@
                                             {{getClasificacionVerde($item->id_clasificacion_verde)->total_tallos()}} Tallos
                                         </th>
                                         <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
+                                            Ramos estandar
+                                        </th>
+                                        <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
+                                            Calibre
+                                        </th>
+                                        <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
                                             Desechos
                                         </th>
                                     </tr>
                                     @foreach(getClasificacionVerde($item->id_clasificacion_verde)->variedades() as $variedad)
                                         <tr>
-                                            <th style="border-color: #9d9d9d" class="text-center">
+                                            <th style="border-color: #9d9d9d; margin-bottom: 0" class="text-center">
                                                 {{$variedad->planta->nombre}} - {{$variedad->siglas}}
                                                 <br>
                                                 @if(count(getClasificacionVerde($item->id_clasificacion_verde)->lotes_reByVariedad($variedad->id_variedad)) > 0)
@@ -107,7 +128,7 @@
                                                     </script>
                                                 @endif
                                             </th>
-                                            <td style="border-color: #9d9d9d; padding: 0" class="text-center">
+                                            <td style="border-color: #9d9d9d; padding: 0; margin-bottom: 0" class="text-center">
                                                 <table width="100%" class="table table-responsive table-bordered"
                                                        style="border: 1px solid #9d9d9d; margin-bottom: 0">
                                                     <tr>
@@ -132,7 +153,14 @@
                                                     </tr>
                                                 </table>
                                             </td>
-                                            <th style="border-color: #9d9d9d" class="text-center">
+                                            <td style="border-color: #9d9d9d; padding: 10px; margin-bottom: 0" class="text-center" width="10%">
+                                                {{getClasificacionVerde($item->id_clasificacion_verde)->getTotalRamosEstandarByVariedad($variedad->id_variedad)}}
+                                            </td>
+                                            <td style="border-color: #9d9d9d; padding: 10px; margin-bottom: 0" class="text-center" width="5%">
+                                                {{round(getClasificacionVerde($item->id_clasificacion_verde)->tallos_x_variedad($variedad->id_variedad) /
+                                                getClasificacionVerde($item->id_clasificacion_verde)->getTotalRamosEstandarByVariedad($variedad->id_variedad),2)}}
+                                            </td>
+                                            <th style="border-color: #9d9d9d; margin-bottom: 0" class="text-center">
                                         <span class="badge" title="Tallos en recepción">
                                             {{getClasificacionVerde($item->id_clasificacion_verde)->total_tallos_recepcionByVariedad($variedad->id_variedad)}}
                                         </span>

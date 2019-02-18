@@ -667,9 +667,10 @@ function getCliente($id)
     return Cliente::find($id);
 }
 
-function getDatosCliente($id_cliente){
-   return Cliente::where('cliente.id_cliente',$id_cliente)->join('detalle_cliente as dc', 'cliente.id_cliente','dc.id_cliente')
-        ->where('dc.estado',1);
+function getDatosCliente($id_cliente)
+{
+    return Cliente::where('cliente.id_cliente', $id_cliente)->join('detalle_cliente as dc', 'cliente.id_cliente', 'dc.id_cliente')
+        ->where('dc.estado', 1);
 }
 
 function getGrosor($id)
@@ -1298,6 +1299,14 @@ function getPuntoAcceso(){
     return Usuario::where('id_usuario',Session::get('id_usuario'))->select('punto_acceso')->first()->punto_acceso;
 }
 
+function getDetallesVerdeByFecha($fecha)
+{
+    $listado = DB::table('detalle_clasificacion_verde')
+        ->where('estado', '=', 1)
+        ->where('fecha_ingreso', 'like', $fecha . '%')
+        ->get();
+    return $listado;
+}
 
 /* ============ Calcular la cantidad de cajas equivalentes segun grosor_variedad ==============*/
 function getEquivalentesByGrosorVariedad($fecha, $grosor, $variedad)

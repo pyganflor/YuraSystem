@@ -66,13 +66,21 @@ class ClasificacionVerde extends Model
         return $r;
     }
 
+    public function total_tallos_rendimiento()
+    {
+        $r = 0;
+        foreach (getDetallesVerdeByFecha($this->fecha_ingreso) as $item) {
+            $r += ($item->cantidad_ramos * $item->tallos_x_ramos);
+        }
+        return $r;
+    }
+
     public function total_tallos_recepcion()
     {
         $r = 0;
         foreach ($this->recepciones as $item) {
             $r += $item->recepcion->cantidad_tallos();
         }
-
         return $r;
     }
 
@@ -153,7 +161,7 @@ class ClasificacionVerde extends Model
     function getRendimiento()
     {
         if (count($this->detalles) > 0 && $this->personal > 0 && $this->getCantidadHorasTrabajo() > 0) {
-            $r = $this->total_tallos() / $this->personal;
+            $r = $this->total_tallos_rendimiento() / $this->personal;
             $r = $r / $this->getCantidadHorasTrabajo();
 
             return round($r, 2);
@@ -166,7 +174,7 @@ class ClasificacionVerde extends Model
     {
         $listado = DetalleClasificacionVerde::All()
             ->where('estado', '=', 1)
-            ->where('id_clasificacion_verde', '=', $this->id_clasificacion_verde)
+            //->where('id_clasificacion_verde', '=', $this->id_clasificacion_verde)
             ->where('fecha_ingreso', '=', $fecha)
             ->sortBy('id_variedad');
         return $listado;
@@ -178,7 +186,7 @@ class ClasificacionVerde extends Model
         $listado_fechas = DB::table('detalle_clasificacion_verde')
             ->select('fecha_registro')->distinct()
             ->where('estado', '=', 1)
-            ->where('id_clasificacion_verde', '=', $this->id_clasificacion_verde)
+            ->where('fecha_ingreso', 'like', $this->fecha_ingreso . '%')
             ->get();
 
         $listado = [];
@@ -207,7 +215,7 @@ class ClasificacionVerde extends Model
         $listado = DB::table('detalle_clasificacion_verde as dc')
             ->select('dc.id_variedad')->distinct()
             ->where('estado', '=', 1)
-            ->where('id_clasificacion_verde', '=', $this->id_clasificacion_verde)
+            ->where('fecha_ingreso', 'like', $this->fecha_ingreso . '%')
             ->where('fecha_registro', '>=', $inicio)
             ->where('fecha_registro', '<', $fin)
             ->get();
@@ -220,7 +228,7 @@ class ClasificacionVerde extends Model
         $listado = DB::table('detalle_clasificacion_verde as dc')
             ->select('dc.id_variedad', 'dc.id_clasificacion_unitaria', DB::raw('sum(cantidad_ramos * tallos_x_ramos) as cantidad'))
             ->where('estado', '=', 1)
-            ->where('id_clasificacion_verde', '=', $this->id_clasificacion_verde)
+            ->where('fecha_ingreso', 'like', $this->fecha_ingreso . '%')
             ->where('fecha_registro', '>=', $inicio)
             ->where('fecha_registro', '<', $fin)
             ->groupBy('dc.id_variedad', 'dc.id_clasificacion_unitaria')
@@ -235,7 +243,7 @@ class ClasificacionVerde extends Model
         $r = DB::table('detalle_clasificacion_verde')
             ->select(DB::raw('max(fecha_registro) as fecha'))
             ->where('estado', '=', 1)
-            ->where('id_clasificacion_verde', '=', $this->id_clasificacion_verde)
+            ->where('fecha_ingreso', 'like', $this->fecha_ingreso . '%')
             ->get();
         if (count($r) > 0)
             return $r[0]->fecha;
@@ -259,7 +267,7 @@ class ClasificacionVerde extends Model
         $r = DB::table('detalle_clasificacion_verde as dc')
             ->select(DB::raw('sum(cantidad_ramos * tallos_x_ramos) as cantidad'))
             ->where('estado', '=', 1)
-            ->where('id_clasificacion_verde', '=', $this->id_clasificacion_verde)
+            ->where('fecha_ingreso', 'like', $this->fecha_ingreso . '%')
             ->where('id_variedad', '=', $variedad)
             ->where('fecha_registro', '>=', $inicio)
             ->where('fecha_registro', '<', $fin)
@@ -271,5 +279,38 @@ class ClasificacionVerde extends Model
             return $r[0]->cantidad;
         else
             return 0;
+    }
+
+    function getTotalRamosEstandar()
+    {
+        $r = 0;
+        $listado = DB::table('detalle_clasificacion_verde as d')
+            ->join('variedad as v', 'v.id_variedad', '=', 'd.id_variedad')
+            ->select('d.id_variedad', 'd.id_clasificacion_unitaria')->distinct()
+            ->where('d.id_clasificacion_verde', '=', $this->id_clasificacion_verde)
+            ->orderBy('v.nombre', 'asc')->simplePaginate(10);
+
+        foreach ($listado as $item) {
+            $r += round($this->getTallosByvariedadUnitaria($item->id_variedad, $item->id_clasificacion_unitaria) /
+                explode('|', getUnitaria($item->id_clasificacion_unitaria)->nombre)[1], 2);
+        }
+        return $r;
+    }
+
+    function getTotalRamosEstandarByVariedad($variedad)
+    {
+        $r = 0;
+        $listado = DB::table('detalle_clasificacion_verde as d')
+            ->join('variedad as v', 'v.id_variedad', '=', 'd.id_variedad')
+            ->select('d.id_variedad', 'd.id_clasificacion_unitaria')->distinct()
+            ->where('d.id_clasificacion_verde', '=', $this->id_clasificacion_verde)
+            ->where('d.id_variedad', '=', $variedad)
+            ->orderBy('v.nombre', 'asc')->simplePaginate(10);
+
+        foreach ($listado as $item) {
+            $r += round($this->getTallosByvariedadUnitaria($item->id_variedad, $item->id_clasificacion_unitaria) /
+                explode('|', getUnitaria($item->id_clasificacion_unitaria)->nombre)[1], 2);
+        }
+        return $r;
     }
 }

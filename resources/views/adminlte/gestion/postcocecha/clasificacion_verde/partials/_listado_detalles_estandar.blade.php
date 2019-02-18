@@ -23,20 +23,37 @@
             </tr>
             </thead>
             @foreach($listado as $item)
-                <tr onmouseover="$(this).css('background-color','#add8e6')" onmouseleave="$(this).css('background-color','')">
-                    <td style="border-color: #9d9d9d" class="text-center">{{getVariedad($item->id_variedad)->nombre}}</td>
-                    <td style="border-color: #9d9d9d" class="text-center">
-                        {{explode('|',getUnitaria($item->id_clasificacion_unitaria)->nombre)[0].''.getUnitaria($item->id_clasificacion_unitaria)->unidad_medida->siglas}}
-                    </td>
-                    <td style="border-color: #9d9d9d" class="text-center">
-                        {{round($clasificacion->getTallosByvariedadUnitaria($item->id_variedad, $item->id_clasificacion_unitaria) /
-                        explode('|',getUnitaria($item->id_clasificacion_unitaria)->nombre)[1],2)}}
-                    </td>
-                    <td style="border-color: #9d9d9d" class="text-center">
-                        {{$clasificacion->getTallosByvariedadUnitaria($item->id_variedad, $item->id_clasificacion_unitaria)}}
-                    </td>
-                </tr>
+                @if(round($clasificacion->getTallosByvariedadUnitaria($item->id_variedad, $item->id_clasificacion_unitaria) /
+                        explode('|',getUnitaria($item->id_clasificacion_unitaria)->nombre)[1],2) > 0)
+                    <tr onmouseover="$(this).css('background-color','#add8e6')" onmouseleave="$(this).css('background-color','')">
+                        <td style="border-color: #9d9d9d" class="text-center">{{getVariedad($item->id_variedad)->nombre}}</td>
+                        <td style="border-color: #9d9d9d" class="text-center">
+                            {{explode('|',getUnitaria($item->id_clasificacion_unitaria)->nombre)[0].''.getUnitaria($item->id_clasificacion_unitaria)->unidad_medida->siglas}}
+                        </td>
+                        <td style="border-color: #9d9d9d" class="text-center">
+                            {{round($clasificacion->getTallosByvariedadUnitaria($item->id_variedad, $item->id_clasificacion_unitaria) /
+                            explode('|',getUnitaria($item->id_clasificacion_unitaria)->nombre)[1],2)}}
+                        </td>
+                        <td style="border-color: #9d9d9d" class="text-center">
+                            {{$clasificacion->getTallosByvariedadUnitaria($item->id_variedad, $item->id_clasificacion_unitaria)}}
+                        </td>
+                    </tr>
+                @endif
             @endforeach
+            <tr>
+                <th class="text-center" style="border-color: #9d9d9d">
+                </th>
+                <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
+                    style="border-color: #9d9d9d">
+                    Total
+                </th>
+                <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
+                    {{$clasificacion->getTotalRamosEstandar()}}
+                </th>
+                <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
+                    {{$clasificacion->total_tallos()}}
+                </th>
+            </tr>
         </table>
         <div id="pagination_listado_detalles_estandar">
             {!! str_replace('/?','?',$listado->render()) !!}

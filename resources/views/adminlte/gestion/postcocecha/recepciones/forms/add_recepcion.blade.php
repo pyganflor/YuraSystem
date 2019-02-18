@@ -9,23 +9,31 @@
         </div>
     </div>
     <input type="hidden" id="id_cosecha" name="id_cosecha">
-    <div class="form-group input-group">
-        <span class="input-group-addon" style="background-color: #e9ecef">Personal</span>
-        <input type="number" class="form-control" id="personal" name="personal" required min="1">
-        <span class="input-group-addon" style="background-color: #e9ecef">Hora inicio</span>
-        <input type="time" class="form-control" id="hora_inicio" name="hora_inicio" required>
-        <span class="input-group-addon" style="background-color: #e9ecef">Rendimiento</span>
-        <span class="input-group-addon" id="html_rendimiento"></span>
-        <span class="input-group-btn">
-            <button type="button" class="btn btn-default" title="Ver rendimiento" onclick="ver_rendimiento()">
-                <i class="fa fa-fw fa-eye"></i>
-            </button>
-        </span>
-        <span class="input-group-btn">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group input-group">
+                <span class="input-group-addon" style="background-color: #e9ecef">Personal</span>
+                <input type="number" class="form-control" id="personal" name="personal" required min="1">
+                <span class="input-group-addon" style="background-color: #e9ecef">Hora inicio</span>
+                <input type="time" class="form-control" id="hora_inicio" name="hora_inicio" required>
+                <span class="input-group-btn">
             <button type="button" class="btn btn-success" title="Guardar" onclick="store_cosecha()">
                 <i class="fa fa-fw fa-save"></i>
             </button>
         </span>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group input-group">
+                <span class="input-group-addon" style="background-color: #e9ecef">Rendimiento</span>
+                <span class="input-group-addon" id="html_rendimiento"></span>
+                <span class="input-group-btn">
+            <button type="button" class="btn btn-default" title="Ver rendimiento" onclick="ver_rendimiento()">
+                <i class="fa fa-fw fa-eye"></i>
+            </button>
+        </span>
+            </div>
+        </div>
     </div>
     <table width="100%" class="table table-responsive table-bordered" style="font-size: 0.8em; border-color: #9d9d9d"
            id="table_forms_tallos_mallas">

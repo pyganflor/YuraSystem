@@ -1,4 +1,4 @@
-**Programar un filtro de columnas para las tablas con demasiadas columnas:
+﻿**Programar un filtro de columnas para las tablas con demasiadas columnas:
 	-permitir mostrar/ocultar las columnas deseadas por el usuario
 
 **Optimizar los ingresos de los permisos
@@ -27,3 +27,5 @@ Arreglar los temas responsive en:
 En el formulario de C�digos DAE, al teminar de cargar el archivo, realizar una actualziacion por debajo de los a�adidos (LISTO)
 
 En el formulario de A�adir submenus en la pagina de Permisos, listaro solo los elementos activos (LISTO)
+
+Sustituir Envoltura y Presentacion por solamente Presentacion

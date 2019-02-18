@@ -87,8 +87,8 @@
     </div>
 
     <div class="row">
-        <div class="col-md-12">
-            <form id="form_store_personal_hora_inicio">
+        <form id="form_store_personal_hora_inicio">
+            <div class="col-md-4">
                 <div class="form-group input-group">
                     <span class="input-group-addon" style="background-color: #e9ecef">Personal</span>
                     @if($clasificacion_verde != '')
@@ -98,6 +98,10 @@
                         <input type="number" onkeypress="return isNumber(event)" id="personal" name="personal" class="form-control text-center"
                                min="1" value="" required>
                     @endif
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group input-group">
                     <span class="input-group-addon" style="background-color: #e9ecef">Hora inicio</span>
                     @if($clasificacion_verde != '')
                         <input type="time" id="hora_inicio" name="hora_inicio" class="form-control text-center"
@@ -106,11 +110,19 @@
                         <input type="time" id="hora_inicio" name="hora_inicio" class="form-control text-center"
                                value="08:00" required>
                     @endif
-                    <span class="input-group-btn" title="Guardar personal">
-                    <button type="button" class="btn btn-success" onclick="store_personal()">
-                        <i class="fa fa-fw fa-save"></i>
-                    </button>
-                </span>
+                    @if($clasificacion_verde != '')
+                        @if($clasificacion_verde->activo == 1)
+                            <span class="input-group-btn" title="Guardar personal">
+                                <button type="button" class="btn btn-success" onclick="store_personal()">
+                                    <i class="fa fa-fw fa-save"></i>
+                                </button>
+                            </span>
+                        @endif
+                    @endif
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group input-group">
                     @if($clasificacion_verde != '')
                         @if($clasificacion_verde->personal != '')
                             <span class="input-group-addon" style="background-color: #e9ecef">
@@ -128,8 +140,8 @@
                         @endif
                     @endif
                 </div>
-            </form>
-        </div>
+            </div>
+        </form>
     </div>
 
     @if($clasificacion_verde != '')
@@ -231,8 +243,8 @@
     }
 
     function store_verde() {
-        if ($('#form-add_clasificacion_verde_x_variedad_' + $('#id_variedad').val())) {
-            if (parseInt($('#input_tallos_x_variedad_' + $('#id_variedad').val()).val()) + parseInt($('#recepcion_' + $('#id_variedad').val()).val())) {
+        if ($('#form-add_clasificacion_verde_x_variedad_' + $('#id_variedad').valid())) {
+            if (parseInt($('#input_tallos_x_variedad_' + $('#id_variedad').val()).val()) <= parseInt($('#recepcion_' + $('#id_variedad').val()).val())) {
                 modal_quest('modal_quest_store_clasificacion_verde', '<div class="alert alert-info text-center">' +
                     '¿Está seguro de guardar la información en el sistema?</div>',
                     '<i class="fa fa-fw fa-exclamation-triangle"></i> Mensaje de alerta', true, false, '{{isPC() ? '35%' : ''}}', function () {
@@ -315,7 +327,6 @@
         if ($('#personal').val() != '' && $('#hora_inicio').val() != '') {
             datos = {
                 _token: '{{csrf_token()}}',
-                recepciones: $('#recepciones').val(),
                 fecha_ingreso: $('#fecha_ingreso').val(),
                 personal: $('#personal').val(),
                 hora_inicio: $('#hora_inicio').val(),
@@ -325,6 +336,7 @@
             post_jquery('{{url('clasificacion_verde/store_personal')}}', datos, function () {
                 cerrar_modals();
                 add_verde($('#fecha_recepciones').val());
+                buscar_listado();
             });
         }
     }

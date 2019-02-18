@@ -669,7 +669,6 @@
         } else {
             today = yyyy + '-' + mm + '-' + dd;
         }
-
         entrada.prop('max', today);
         entrada.val(today);
     }

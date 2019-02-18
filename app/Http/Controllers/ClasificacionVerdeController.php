@@ -86,7 +86,8 @@ class ClasificacionVerdeController extends Controller
     {
         $listado = DB::table('detalle_clasificacion_verde as d')
             ->join('variedad as v', 'v.id_variedad', '=', 'd.id_variedad')
-            ->select('d.id_variedad', 'd.id_clasificacion_unitaria')->distinct();
+            ->select('d.id_variedad', 'd.id_clasificacion_unitaria')->distinct()
+            ->where('d.id_clasificacion_verde', '=', $request->id_clasificacion_verde);
 
         if ($request->id_variedad != '')
             $listado = $listado->where('d.id_variedad', '=', $request->id_variedad);
@@ -217,6 +218,7 @@ class ClasificacionVerdeController extends Controller
                                 $detalle->cantidad_ramos = $item['cantidad_ramos'];
                                 $detalle->tallos_x_ramos = $item['tallos_x_ramos'];
                                 $detalle->fecha_registro = date('Y-m-d H:i:s');
+                                $detalle->fecha_ingreso = date('Y-m-d H:i');
 
                                 if ($detalle->save()) {
                                     $detalle = DetalleClasificacionVerde::All()->last();
@@ -952,26 +954,6 @@ class ClasificacionVerdeController extends Controller
                 if (ClasificacionVerde::find($request->id_clasificacion_verde) == '')
                     $model = ClasificacionVerde::All()->last();
                 bitacora('clasificacion_verde', $model->id_clasificacion_verde, 'U', 'Actualización satisfactia de una clasificacion en verde');
-
-                /* ================= GUARDAR TABLA RECEPCION_CLASIFICACION_VERDE ===================*/
-                foreach (explode('|', $request->recepciones) as $id) {
-                    $relacion = new RecepcionClasificacionVerde();
-                    $relacion->id_recepcion = $id;
-                    $relacion->id_clasificacion_verde = $model->id_clasificacion_verde;
-                    $relacion->fecha_registro = date('Y-m-d H:i:s');
-
-                    if ($relacion->save()) {
-                        $relacion = ClasificacionVerde::All()->last();
-                        bitacora('recepcion_clasificacion_verde', $relacion->id_recepcion_clasificacion_verde, 'I', 'Inserción satisfactoria de una nueva relacion recepcion-clasificación en verde');
-                    } else {
-                        return [
-                            'success' => true,
-                            'mensaje' => '<div class="alert alert-warning text-center">' .
-                                '<p> Ha ocurrido un problema al guardar una de las recepciones de la fecha indicada</p>'
-                                . '</div>'
-                        ];
-                    }
-                }
                 return [
                     'success' => true,
                     'mensaje' => '<div class="alert alert-success text-center">Se ha guardado satisfactoriamente el personal</div>'
@@ -998,7 +980,7 @@ class ClasificacionVerdeController extends Controller
         $listado = DB::table('detalle_clasificacion_verde')
             ->select(DB::raw('sum(tallos_x_ramos * cantidad_ramos) as cantidad'), 'fecha_ingreso as fecha')
             ->where('estado', '=', 1)
-            ->where('id_clasificacion_verde', '=', $request->id_clasificacion_verde)
+            ->where('fecha_ingreso', 'like', $clasificacion_verde->fecha_ingreso . '%')
             ->groupBy('fecha_ingreso')
             ->orderBy('fecha_ingreso')
             ->get();

@@ -1,4 +1,6 @@
 <script>
+    listar_resumen_pedidos($('#fecha_pedidos_search').val());
+
     function listar_resumen_pedidos(fecha) {
         $.LoadingOverlay('show');
         datos = {

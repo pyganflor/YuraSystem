@@ -120,7 +120,7 @@
                     Total
                 </th>
                 <th class="text-center" style="border-color: #9d9d9d" id="th_total_tallos">
-                    {{$clasificacion_verde->total_tallos()}}
+                    {{$clasificacion_verde->total_tallos_rendimiento()}}
                 </th>
             </tr>
         </table>
@@ -240,7 +240,7 @@
                     Total
                 </th>
                 <th class="text-center" style="border-color: #9d9d9d" id="th_total_tallos_x_horas">
-                    {{$clasificacion_verde->total_tallos()}}
+                    {{$clasificacion_verde->total_tallos_rendimiento()}}
                 </th>
             </tr>
         </table>
