@@ -10,7 +10,7 @@
         <div class="form-group input-group">
             <span class="input-group-addon" style="background-color: #e9ecef">Variedades</span>
             <select name="_id_variedad_search" id="_id_variedad_search" class="form-control" onchange="buscar_detalles_estandar()">
-                <option value="">Seleccione...</option>
+                <option value="">Todas...</option>
                 @foreach($variedades as $item)
                     <option value="{{$item->id_variedad}}">{{$item->planta->nombre}} - {{$item->siglas}}</option>
                 @endforeach

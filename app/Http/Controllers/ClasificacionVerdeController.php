@@ -86,7 +86,8 @@ class ClasificacionVerdeController extends Controller
     {
         $listado = DB::table('detalle_clasificacion_verde as d')
             ->join('variedad as v', 'v.id_variedad', '=', 'd.id_variedad')
-            ->select('d.id_variedad', 'd.id_clasificacion_unitaria')->distinct();
+            ->select('d.id_variedad', 'd.id_clasificacion_unitaria')->distinct()
+            ->where('d.id_clasificacion_verde', '=', $request->id_clasificacion_verde);
 
         if ($request->id_variedad != '')
             $listado = $listado->where('d.id_variedad', '=', $request->id_variedad);
@@ -217,6 +218,7 @@ class ClasificacionVerdeController extends Controller
                                 $detalle->cantidad_ramos = $item['cantidad_ramos'];
                                 $detalle->tallos_x_ramos = $item['tallos_x_ramos'];
                                 $detalle->fecha_registro = date('Y-m-d H:i:s');
+                                $detalle->fecha_ingreso = date('Y-m-d H:i');
 
                                 if ($detalle->save()) {
                                     $detalle = DetalleClasificacionVerde::All()->last();
@@ -978,7 +980,7 @@ class ClasificacionVerdeController extends Controller
         $listado = DB::table('detalle_clasificacion_verde')
             ->select(DB::raw('sum(tallos_x_ramos * cantidad_ramos) as cantidad'), 'fecha_ingreso as fecha')
             ->where('estado', '=', 1)
-            ->where('id_clasificacion_verde', '=', $request->id_clasificacion_verde)
+            ->where('fecha_ingreso', 'like', $clasificacion_verde->fecha_ingreso . '%')
             ->groupBy('fecha_ingreso')
             ->orderBy('fecha_ingreso')
             ->get();

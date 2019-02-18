@@ -666,9 +666,10 @@ function getCliente($id)
     return Cliente::find($id);
 }
 
-function getDatosCliente($id_cliente){
-   return Cliente::where('cliente.id_cliente',$id_cliente)->join('detalle_cliente as dc', 'cliente.id_cliente','dc.id_cliente')
-        ->where('dc.estado',1);
+function getDatosCliente($id_cliente)
+{
+    return Cliente::where('cliente.id_cliente', $id_cliente)->join('detalle_cliente as dc', 'cliente.id_cliente', 'dc.id_cliente')
+        ->where('dc.estado', 1);
 }
 
 function getGrosor($id)
@@ -1227,7 +1228,7 @@ function accionAutorizacion($autorizacion, $path, $msg, $tipoDocumento = false)
 
 function FacturaPDF($autorizacion)
 {
-    $pdf = PDF::loadView('pdf.invoice', $autorizacion)->save(env('PDF_FACTURAS')."pdf");
+    $pdf = PDF::loadView('pdf.invoice', $autorizacion)->save(env('PDF_FACTURAS') . "pdf");
 }
 
 function getDetallesClaveAcceso($detalle)
@@ -1257,6 +1258,15 @@ function getSecuencial()
         $secuencial = $cant_reg + $inicio_secuencial + 1;
 
     return str_pad($secuencial, 9, "0", STR_PAD_LEFT);
+}
+
+function getDetallesVerdeByFecha($fecha)
+{
+    $listado = DB::table('detalle_clasificacion_verde')
+        ->where('estado', '=', 1)
+        ->where('fecha_ingreso', 'like', $fecha . '%')
+        ->get();
+    return $listado;
 }
 
 /* ============ Calcular la cantidad de cajas equivalentes segun grosor_variedad ==============*/

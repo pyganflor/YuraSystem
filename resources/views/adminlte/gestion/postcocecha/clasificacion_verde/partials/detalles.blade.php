@@ -36,10 +36,39 @@
             <tr>
                 <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
                     style="border-color: #9d9d9d">
+                    RAMOS ESTANDAR
+                </th>
+                <td style="border-color: #9d9d9d" class="text-center">
+                    {{$clasificacion->getTotalRamosEstandar()}}
+                </td>
+            </tr>
+            <tr>
+                <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
+                    style="border-color: #9d9d9d">
+                    CALIBRE
+                </th>
+                <td style="border-color: #9d9d9d" class="text-center">
+                    {{round($clasificacion->total_tallos()/$clasificacion->getTotalRamosEstandar(),2)}}
+                </td>
+            </tr>
+            <tr>
+                <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
+                    style="border-color: #9d9d9d">
                     DESECHO
                 </th>
                 <td style="border-color: #9d9d9d" class="text-center">
                     {{$clasificacion->desecho()}}%
+                </td>
+            </tr>
+            <tr>
+                <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
+                    style="border-color: #9d9d9d">
+                    RENDIMIENTO
+                </th>
+                <td style="border-color: #9d9d9d" class="text-center">
+                    <a href="javascript:void(0)" onclick="ver_rendimiento('{{$clasificacion->id_clasificacion_verde}}')">
+                        {{$clasificacion->getRendimiento()}}
+                    </a>
                 </td>
             </tr>
         </table>
