@@ -960,7 +960,7 @@ function getDetalleEspecificacion($id_especificacion)
         ->join('empaque as e', 'eemp.id_empaque', 'e.id_empaque')
         ->join('detalle_especificacionempaque as deemp', 'eemp.id_especificacion_empaque', 'deemp.id_especificacion_empaque')
         ->join('variedad as v', 'deemp.id_variedad', 'v.id_variedad')
-        ->join('empaque as empE', 'deemp.id_empaque_e', 'empE.id_empaque')
+        //->join('empaque as empE', 'deemp.id_empaque_e', 'empE.id_empaque')
         ->join('empaque as empP', 'deemp.id_empaque_p', 'empP.id_empaque')
         ->join('clasificacion_ramo as cr', 'deemp.id_clasificacion_ramo', 'cr.id_clasificacion_ramo')
         ->join('unidad_medida as umCR', 'cr.id_unidad_medida', 'umCR.id_unidad_medida')
@@ -973,8 +973,8 @@ function getDetalleEspecificacion($id_especificacion)
         $data->join('unidad_medida as um', 'deemp.id_unidad_medida', 'um.id_unidad_medida');
         $a = 1;
     }
-    $data = $data->select('especificacion.id_especificacion', 'v.id_variedad', 'v.nombre as nombre_variedad', 'empE.nombre as envoltura', 'empP.nombre as presentacion', 'deemp.cantidad as cantidad_ramos', 'deemp.tallos_x_ramos', 'deemp.longitud_ramo', $a == 1 ? 'um.siglas as siglas_unidad_medida_longitud' : 'e.nombre as nombre_empaque', 'cr.nombre as nombre_clasificacion_ramo', 'umCR.siglas as siglas_unidad_medida_clasificacion_ramo', 'espemp.cantidad as cantidad_cajas', 'e.nombre as nombre_empaque')->first();
-    return $data->cantidad_cajas . " " . explode('|', $data->nombre_empaque)[0] . " con " . $data->cantidad_ramos . " ramos c/u de " . $data->nombre_clasificacion_ramo . " " . $data->siglas_unidad_medida_clasificacion_ramo . " " . $data->nombre_variedad . " " . $data->envoltura . " " . $data->presentacion . " " . $data->tallos_x_ramos . " tallos por ramo " . $data->longitud_ramo . " " . $data->siglas_unidad_medida_longitud;
+    $data = $data->select('especificacion.id_especificacion', 'v.id_variedad', 'v.nombre as nombre_variedad', /*'empE.nombre as envoltura',*/ 'empP.nombre as presentacion', 'deemp.cantidad as cantidad_ramos', 'deemp.tallos_x_ramos', 'deemp.longitud_ramo', $a == 1 ? 'um.siglas as siglas_unidad_medida_longitud' : 'e.nombre as nombre_empaque', 'cr.nombre as nombre_clasificacion_ramo', 'umCR.siglas as siglas_unidad_medida_clasificacion_ramo', 'espemp.cantidad as cantidad_cajas', 'e.nombre as nombre_empaque')->first();
+    return $data->cantidad_cajas . " " . explode('|', $data->nombre_empaque)[0] . " con " . $data->cantidad_ramos . " ramos c/u de " . $data->nombre_clasificacion_ramo . " " . $data->siglas_unidad_medida_clasificacion_ramo . " " . $data->nombre_variedad . " " /*. $data->envoltura . " "*/ . $data->presentacion . " " . $data->tallos_x_ramos . " tallos por ramo " . $data->longitud_ramo . " " . $data->siglas_unidad_medida_longitud;
 }
 
 /* ============ Obtener los ramos sacados de apertura para los pedidos de un "fecha" ==============*/
@@ -1230,7 +1230,7 @@ function accionAutorizacion($autorizacion, $path, $msg, $tipoDocumento = false,$
     $nuevoXml->save($path . $numeroAutorizacion . ".xml");
 
     (String)$autorizacion->estado === "AUTORIZADO"
-        ? enviarMailComprobantelCliente($tipoDocumento,$mailCliente,$nombreCliente,$numeroAutorizacion,$numeroComprobante)
+        ? enviarMailComprobanteCliente($tipoDocumento,$mailCliente,$nombreCliente,$numeroAutorizacion,$numeroComprobante)
         : "";
 
     return "<div class='alert text-center  alert-" . $class . "'>" .
@@ -1256,8 +1256,9 @@ function generaFacturaPDF($autorizacion,$numeroComprobante)
     PDF::loadView('adminlte.gestion.comprobante.partials.pdf.factura', compact('data'))->save(env('PDF_FACTURAS').$autorizacion->numeroAutorizacion.".pdf");
 }
 
-function enviarMailComprobantelCliente($tipoDocumento,$correoCliente,$nombreCliente,$nombreArchivo,$numeroComprobante){
+function enviarMailComprobanteCliente($tipoDocumento,$correoCliente,$nombreCliente,$nombreArchivo,$numeroComprobante){
     if($tipoDocumento == "01"){
+                    //$correoCliente
         Mail::to("pruebas-c26453@inbox.mailtrap.io")->send(new CorreoFactura($correoCliente,$nombreCliente,$nombreArchivo,$numeroComprobante));
     }
 }

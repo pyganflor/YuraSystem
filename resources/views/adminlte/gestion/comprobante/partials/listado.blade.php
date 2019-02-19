@@ -66,10 +66,13 @@
                     @endif
                     <td style="border-color: #9d9d9d" class="text-center">
                         @if($item->estado==5)
-                            <button class="btn btn-default btn-xs" title="Ver factura" onclick="ver_factura()">
+                            {{--<a target="_blank" href="{{storage_path('pdf/facturas/').$item->clave_acceso.".pdf"}}" class="btn btn-default btn-xs" title="Ver factura" >
+                                <i class="fa fa-file-text-o" aria-hidden="true"></i>
+                            </a>--}}
+                            <button class="btn btn-default btn-xs" title="Ver factura" onclick="ver_factura('{{$item->clave_acceso}}')">
                                 <i class="fa fa-file-text-o" aria-hidden="true"></i>
                             </button>
-                            <button class="btn btn-default btn-xs" title="Reenviar correo" onclick="reenviar_correo()">
+                            <button class="btn btn-default btn-xs" title="Reenviar correo" onclick="reenviar_correo('{{$item->clave_acceso}}')">
                                 <i class="fa fa-envelope-o" aria-hidden="true"></i>
                             </button>
                         @endif

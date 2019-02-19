@@ -122,4 +122,30 @@
                 });
             });
     }
+
+    function ver_factura(documento){
+        $.LoadingOverlay('show');
+
+        div = '<div id="example1"></div>';
+        modal_view('modal_view_factura', div, '<i class="fa fa-fw fa-table"></i> Factura PDF', true, false,
+            '{{isPC() ? '90%' : ''}}');
+        $.LoadingOverlay('hide');
+        setTimeout(function () {
+            PDFObject.embed("{{env('PDF_FACTURAS')}}"+documento+".pdf", "#example1");
+        },500)
+
+    }
+
+    function reenviar_correo(comprobante) {
+        $.LoadingOverlay('show');
+        datos = {
+            comprobante : comprobante
+        };
+        $.get('{{url('comprobante/reenviar_correo')}}', datos, function (retorno) {
+            modal_view('modal_view_email', retorno, '<i class="fa fa-envelope-o" aria-hidden="true"></i> Reenvio de mail', true, false,
+                '{{isPC() ? '50%' : ''}}');
+        }).always(function () {
+            $.LoadingOverlay('hide');
+        });
+    }
 </script>

@@ -203,7 +203,7 @@ class EspecificacionClienteController extends Controller
                             $objEspecificacionEmpaqueDetalle->id_variedad              = $request->input('id_variedad_' . $i . '_' . $j);
                             $objEspecificacionEmpaqueDetalle->id_clasificacion_ramo    = $request->input('id_clasificacion_ramo_' . $i . '_' . $j);
                             $objEspecificacionEmpaqueDetalle->cantidad                 = $request->input('cantidad_' . $i . '_' . $j);
-                            $objEspecificacionEmpaqueDetalle->id_empaque_e             = $request->input('id_empaque_e_' . $i . '_' . $j);
+                            //$objEspecificacionEmpaqueDetalle->id_empaque_e             = $request->input('id_empaque_e_' . $i . '_' . $j);
                             $objEspecificacionEmpaqueDetalle->id_empaque_p             = $request->input('id_empaque_p_' . $i . '_' . $j);
                             !empty($request->input('tallos_x_ramos_'.$i.'_'.$j))  ? $objEspecificacionEmpaqueDetalle->tallos_x_ramos   = $request->input('tallos_x_ramos_'.$i.'_'.$j) : '';
                             !empty($request->input('id_ud_medida_'.$i.'_'.$j))    ? $objEspecificacionEmpaqueDetalle->id_unidad_medida = $request->input('id_ud_medida_'.$i.'_'.$j)   : '';

@@ -58,6 +58,11 @@ return [
             'root' => storage_path('storage/xml/'),
         ],
 
+        'pdf' => [
+            'driver' => 'local',
+            'root' => storage_path('pdf/facturas/'),
+        ],
+
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),

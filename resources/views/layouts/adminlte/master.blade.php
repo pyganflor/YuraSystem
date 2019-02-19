@@ -151,6 +151,8 @@
 <!-- jQuery textcounter-->
 <script src="{{url('js/textcounter.min.js')}}" type="text/javascript"></script>
 
+<script src="{{url('js/pdfObject.min.js')}}" type="text/javascript"></script>
+
 <script src="{{asset('js/yura_script.js')}}"></script>
 <script>
     //Para generar un BEEP en javascript ---------------------------------------------------------------------------------

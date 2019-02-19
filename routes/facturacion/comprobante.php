@@ -10,6 +10,8 @@ Route::get('comprobante/generar_comprobante_lote', 'ComprobanteController@genera
 Route::get('comprobante/firmar_comprobante', 'ComprobanteController@firmar_comprobante');
 Route::get('comprobante/autorizacion_comprobante', 'ComprobanteController@autorizacion_comprobante');
 Route::get('comprobante/formulario_facturacion', 'ComprobanteController@formulario_facturacion');
+Route::get('comprobante/reenviar_correo', 'ComprobanteController@reenviar_correo');
+Route::get('comprobante/ver_factura', 'ComprobanteController@ver_factura');
 Route::get('comprobante/prueba', function () {
 
     /*$barcode = new BarcodeGenerator();
@@ -45,6 +47,7 @@ Route::get('comprobante/prueba', function () {
             $t->delete();
         }
     }*/
+    
 
 });
 

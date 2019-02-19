@@ -475,6 +475,7 @@ class ComprobanteController extends Controller
 
     public function generar_comprobante_lote(Request $request)
     {
+        ini_set('max_execution_time', env('MAX_EXECUTION_TIME'));
         $secuencial = getSecuencial();
         $punto_acceso = Usuario::where('id_usuario', session('id_usuario'))->first()->punto_acceso;
         $secuencial = str_pad($secuencial, 9, "0", STR_PAD_LEFT);
@@ -557,25 +558,32 @@ class ComprobanteController extends Controller
 
     public function firmar_comprobante(Request $request){
 
+        ini_set('max_execution_time', env('MAX_EXECUTION_TIME'));
         foreach ($request->arrNoFirmados as $idComprobante) {
-            $comprobante = Comprobante::where('id_comprobante', $idComprobante)->first();
             $msg = '';
-            $resultado = firmarComprobanteXml($comprobante->clave_acceso.".xml");
-            if ($resultado) {
-                $class = 'warning';
-                if ($resultado == 5) {
-                    $class = 'success';
-                    $obj_comprobante = Comprobante::find($idComprobante);
-                    $obj_comprobante->estado = 1;
-                    $obj_comprobante->save();
-                }
-                $msg .= "<div class='alert text-center  alert-" . $class . "'>" .
-                    "<p> " . mensajeFirmaElectronica($resultado, str_pad($comprobante->id_envio, 9, "0", STR_PAD_LEFT)) . "</p>"
-                    . "</div>";
-            } else {
+            $comprobante = Comprobante::where('id_comprobante', $idComprobante)->first();
+            if(!file_exists(env('PATH_XML_GENERADOS').$comprobante->clave_acceso.".xml")){
                 $msg .= "<div class='alert text-center  alert-danger'>" .
-                    "<p>Hubo un error al realizar el proceso de la firma de la factura N# " . $comprobante->clave_acceso.".xml" . " del envío N#" . str_pad($comprobante->id_envio, 9, "0", STR_PAD_LEFT) . ", intente nuevamente realizar la firma del mismo filtrando por GENERADOS</p>"
+                    "<p> No se encontro el comprobante electrónico generado relacionado a este registro</p>"
                     . "</div>";
+            }else {
+                $resultado = firmarComprobanteXml($comprobante->clave_acceso . ".xml");
+                if ($resultado) {
+                    $class = 'warning';
+                    if ($resultado == 5) {
+                        $class = 'success';
+                        $obj_comprobante = Comprobante::find($idComprobante);
+                        $obj_comprobante->estado = 1;
+                        $obj_comprobante->save();
+                    }
+                    $msg .= "<div class='alert text-center  alert-" . $class . "'>" .
+                        "<p> " . mensajeFirmaElectronica($resultado, str_pad($comprobante->id_envio, 9, "0", STR_PAD_LEFT)) . "</p>"
+                        . "</div>";
+                } else {
+                    $msg .= "<div class='alert text-center  alert-danger'>" .
+                        "<p>Hubo un error al realizar el proceso de la firma de la factura N# " . $comprobante->clave_acceso . ".xml" . " del envío N#" . str_pad($comprobante->id_envio, 9, "0", STR_PAD_LEFT) . ", intente nuevamente realizar la firma del mismo filtrando por GENERADOS</p>"
+                        . "</div>";
+                }
             }
         }
         return $msg;
@@ -620,5 +628,29 @@ class ComprobanteController extends Controller
         Comprobante::destroy($id_comprobante);
         if($firmados!="")
             unlink(env('PATH_XML_FIRMADOS').$claveAcceso.".xml");
+    }
+
+    public function reenviar_correo(Request $request){
+
+        ini_set('max_execution_time', env('MAX_EXECUTION_TIME'));
+        $msg = "<div class='alert text-center  alert-success'>" .
+            "<p> El correo ha sido enviado con éxito al cliente </p>"
+            . "</div>";
+        $comprobante = Comprobante::join('envio as e','comprobante.id_envio','e.id_envio')
+            ->join('pedido as p','e.id_pedido','p.id_pedido')
+            ->join('detalle_cliente as dc','p.id_cliente','dc.id_cliente')
+            ->where([
+                ['dc.estado',1],
+                ['comprobante.clave_acceso',$request->comprobante]
+        ])->select('dc.nombre','dc.correo','comprobante.numero_comprobante')->first();
+
+        if($comprobante->numero_comprobante == null){
+            $msg = "<div class='alert text-center  alert-danger'>" .
+            "<p> El mail no puede ser enviado debido a que este registro no posee número de comprobante, comuníquese con el departamento de tecnología </p>"
+            . "</div>";
+        }else {
+            enviarMailComprobanteCliente("01", $comprobante->correo, $comprobante->nombre, $request->comprobante, $comprobante->numero_comprobante);
+        }
+        return $msg;
     }
 }
