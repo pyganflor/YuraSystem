@@ -89,6 +89,7 @@ class ComprobanteController extends Controller
 
                 $datos_xml = getDatosFacturaEnvio($dataEnvio[0]);
                 $precio_total_sin_impuestos = 0;
+
                 foreach ($datos_xml->get() as $dataXml) {
 
                     $precio_unitario_individual_sin_impuestos = Precio::where([
@@ -228,13 +229,14 @@ class ComprobanteController extends Controller
 
                     $detalle = $xml->createElement('detalle');
                     $detalles->appendChild($detalle);
-
+                    $descripcion_detalle = $data_arr_consulta->nombre_planta . " (" . $data_arr_consulta->siglas_variedad . ") " . $data_arr_consulta->nombre_clasificacion . $data_arr_consulta->siglas_unidad_medida_peso_ramo . " " . $data_arr_consulta->longitud_ramo  /*$data_arr_consulta->siglas_unidad_medida_lognitud_ramo*/;
+                    if($data_arr_consulta->longitud_ramo != null) $descripcion_detalle .= " cm";
                     $informacionDetalle = [
                         'codigoPrincipal' => 'ENV' . str_pad($dataEnvio[0], 9, "0", STR_PAD_LEFT),
-                        'descripcion' => $data_arr_consulta->nombre_planta . " (" . $data_arr_consulta->siglas_variedad . ") " . $data_arr_consulta->nombre_clasificacion . $data_arr_consulta->siglas_unidad_medida_peso_ramo . " " . $data_arr_consulta->longitud_ramo . $data_arr_consulta->siglas_unidad_medida_lognitud_ramo,
+                        'descripcion' => $descripcion_detalle,
                         'cantidad' => number_format($data_arr_consulta->cantidad_ramos * $data_arr_consulta->cantidad_cajas, 2, ".", ""),
                         'precioUnitario' => number_format($precio_unitario_individual_sin_impuestos->cantidad, 2, ".", ""),
-                        'descuento' => $dataEnvio[1] > 0 ? $dataEnvio[1] / $datos_xml->count() : '0.00',
+                        'descuento' => $dataEnvio[1] > 0 ? number_format(($dataEnvio[1] / $datos_xml->count()),2,".","") : '0.00',
                         'precioTotalSinImpuesto' => number_format($precio_total_individual, 2, ".", "")
                     ];
 
@@ -266,9 +268,10 @@ class ComprobanteController extends Controller
                 $factura->appendChild($informacionAdicional);
 
                 $campos_adicionales = [
-                    'Dirección' => $dataXml->provincia . " " . $dataXml->direccion,
-                    'Email' => $dataXml->correo,
+                    'Dirección'=> $dataXml->provincia . " " . $dataXml->direccion,
+                    'Email'    => $dataXml->correo,
                     'Teléfono' => $dataXml->telefono,
+                    'Carguera' => $dataXml->nombre_agencia_transporte
                 ];
 
                 if (getConfiguracionEmpresa()->codigo_pais != $dataEnvio[4])
@@ -285,6 +288,7 @@ class ComprobanteController extends Controller
                 }
                 $xml->formatOutput = true;
                 $xml->saveXML();
+                //dd($xml);
                 $nombre_xml = $claveAcceso . ".xml";
 
                 //////////// GUARDAR ARCHIVO XML Y DATA EN BD //////////////
@@ -343,7 +347,7 @@ class ComprobanteController extends Controller
                                 $objDesgloseEnvioFactura = new DesgloseEnvioFactura;
                                 $objDesgloseEnvioFactura->id_comprobante = $model_comprobante->id_comprobante;
                                 $objDesgloseEnvioFactura->codigo_principal = 'ENV' . str_pad($dataEnvio[0], 9, "0", STR_PAD_LEFT);
-                                $objDesgloseEnvioFactura->descripcion = $datos_xml_iteracion->nombre_planta . " (" . $datos_xml_iteracion->siglas_variedad . ") " . $datos_xml_iteracion->nombre_clasificacion . $datos_xml_iteracion->siglas_unidad_medida_peso_ramo . " " . $datos_xml_iteracion->longitud_ramo . $datos_xml_iteracion->siglas_unidad_medida_lognitud_ramo;
+                                $objDesgloseEnvioFactura->descripcion = $datos_xml_iteracion->nombre_planta . " (" . $datos_xml_iteracion->siglas_variedad . ") " . $datos_xml_iteracion->nombre_clasificacion . $datos_xml_iteracion->siglas_unidad_medida_peso_ramo . " " . $datos_xml_iteracion->longitud_ramo . $data_arr_consulta->longitud_ramo =!"" ? "cm" : ""/*. $datos_xml_iteracion->siglas_unidad_medida_lognitud_ramo*/;
                                 $objDesgloseEnvioFactura->cantidad = number_format($datos_xml_iteracion->cantidad_ramos * $datos_xml_iteracion->cantidad_cajas, 2, ".", "");
                                 $objDesgloseEnvioFactura->precio_unitario = number_format($precio_unitario_individual_sin_impuestos->cantidad, 2, ".", "");
                                 $objDesgloseEnvioFactura->descuento = $dataEnvio[1] > 0 ? $dataEnvio[1] / $datos_xml_iteracion->count() : '0.00';

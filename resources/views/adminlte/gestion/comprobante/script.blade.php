@@ -38,7 +38,7 @@
                 $.LoadingOverlay("show", {
                     image: "",
                     progress: true,
-                    text: "Generando factura...",
+                    text: "Facturando...",
                     textColor: "#fff",
                     progressColor : "#00a65a",
                     progressResizeFactor: "0.20",
@@ -50,8 +50,6 @@
                 var interval = setInterval(function () {
                     if(count>=15 && count<25)
                         $.LoadingOverlay("text", "Enviando datos al SRI...");
-                    if(count>=25 && count<40)
-                        $.LoadingOverlay("text", "Facturando...");
                     if(count>=40 && count<=95)
                         $.LoadingOverlay("text", "Enviando correo electrónico al cliente...");
                     if (count >= 100) {

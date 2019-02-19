@@ -11,6 +11,7 @@ Route::get('comprobante/firmar_comprobante', 'ComprobanteController@firmar_compr
 Route::get('comprobante/autorizacion_comprobante', 'ComprobanteController@autorizacion_comprobante');
 Route::get('comprobante/formulario_facturacion', 'ComprobanteController@formulario_facturacion');
 Route::get('comprobante/prueba', function () {
+
     /*$barcode = new BarcodeGenerator();
     $barcode->setText("0801201901200100200001369417924463252");
     $barcode->setType(BarcodeGenerator::Gs1128);
@@ -46,3 +47,4 @@ Route::get('comprobante/prueba', function () {
     }*/
 
 });
+
