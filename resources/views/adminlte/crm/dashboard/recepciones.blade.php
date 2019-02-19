@@ -12,6 +12,7 @@
     <div class="box-body">
         <div class="row">
             <div class="col-md-8" id="div_chart_recepciones">
+                @include('adminlte.crm.dashboard.partials.chart_recepciones')
             </div>
             <div class="col-md-4">
                 <legend style="font-size: 1.1em; margin-bottom: 10px" class="text-center">Filtro</legend>

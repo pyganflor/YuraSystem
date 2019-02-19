@@ -29,3 +29,6 @@ En el formulario de C�digos DAE, al teminar de cargar el archivo, realizar una
 En el formulario de A�adir submenus en la pagina de Permisos, listaro solo los elementos activos (LISTO)
 
 Sustituir Envoltura y Presentacion por solamente Presentacion
+
+CAMBIOS EN LA BASE DE DATOS:
+	-crear campo comprobante.numero_comprobante

@@ -384,7 +384,7 @@ class RecepcionController extends Controller
         $cosecha = Cosecha::find($request->id_cosecha);
 
         return view('adminlte.gestion.postcocecha.recepciones.partials.rendimiento', [
-            'cosecha' => $cosecha
+            'cosecha' => $cosecha,
         ]);
     }
 

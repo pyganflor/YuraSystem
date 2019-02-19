@@ -200,7 +200,7 @@
         };
         get_jquery('{{url('recepcion/ver_rendimiento')}}', datos, function (retorno) {
             modal_view('modal_view_ver_rendimiento', retorno, '<i class="fa fa-fw fa-balance-scale"></i> Rendimiento', true, false,
-                '{{isPC() ? '65%' : ''}}');
+                '{{isPC() ? '75%' : ''}}');
         });
     }
 

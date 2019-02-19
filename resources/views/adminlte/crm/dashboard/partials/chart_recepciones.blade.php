@@ -4,20 +4,20 @@
     labels = [];
     data = [];
     @foreach($labels as $l)
-    labels.push("{{getMeses()[$l->mes - 1] . '-' . $l->year}}");
+    labels.push("{{$l->mes}}");
     data.push("{{$l->cantidad}}");
             @endforeach
 
     var ctx = document.getElementById("chart_recepciones").getContext('2d');
     var myChart = new Chart(ctx, {
-        type: 'bar',
+        type: 'line',
         data: {
             labels: labels,
             datasets: [{
                 label: 'Tallos ',
                 data: data,
-                backgroundColor: '#B9FFB4',
-                borderColor: '#ce8483',
+                // backgroundColor: '#B9FFB4',
+                borderColor: 'red',
                 borderWidth: 1
             }]
         },
@@ -29,11 +29,15 @@
                     }
                 }]
             },
+            tooltips: {
+                mode: 'point' // nearest, point, index, dataset, x, y
+            },
             legend: {
                 display: true,
-                position: 'bottom',
+                position: 'top',
                 fullWidth: false,
                 onClick: function () {
+                    alert('ok')
                 },
                 onHover: function () {
                 },
