@@ -34,9 +34,9 @@
                     <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
                         Variedad
                     </th>
-                    <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
+                    {{--<th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
                         Envoltura
-                    </th>
+                    </th>--}}
                     <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
                         Presentación
                     </th>
@@ -97,7 +97,7 @@
                             @endforeach
                         </select>
                     </td>
-                    <td class="text-center" style="border-color: #9d9d9d">
+                    {{--<td class="text-center" style="border-color: #9d9d9d">
                         <select name="id_empaque_e" id="id_empaque_e" required style="width: 100%">
                             @foreach($envolturas as $item)
                                 <option value="{{$item->id_empaque}}" {{$item->id_empaque == $det_esp->id_empaque_e ? 'selected' : ''}}>
@@ -105,7 +105,7 @@
                                 </option>
                             @endforeach
                         </select>
-                    </td>
+                    </td>--}}
                     <td class="text-center" style="border-color: #9d9d9d">
                         <select name="id_empaque_p" id="id_empaque_p" required style="width: 100%">
                             @foreach($presentaciones as $item)
@@ -473,7 +473,7 @@
                         cantidad_ramos: $('#cantidad_ramos').val(),
                         id_clasificacion_ramo: $('#id_clasificacion_ramo').val(),
                         id_variedad: $('#id_variedad').val(),
-                        id_empaque_e: $('#id_empaque_e').val(),
+                        /*id_empaque_e: $('#id_empaque_e').val(),*/
                         id_empaque_p: $('#id_empaque_p').val(),
                         tallos_x_ramos: $('#tallos_x_ramo').val(),
                         longitud_ramo: $('#longitud_ramo').val(),
@@ -518,7 +518,7 @@
                 cantidad_ramos: $('#cantidad_ramos').val(),
                 id_clasificacion_ramo: $('#id_clasificacion_ramo').val(),
                 id_variedad: $('#id_variedad').val(),
-                id_empaque_e: $('#id_empaque_e').val(),
+                /*id_empaque_e: $('#id_empaque_e').val(),*/
                 id_empaque_p: $('#id_empaque_p').val(),
                 tallos_x_ramos: $('#tallos_x_ramo').val(),
                 longitud_ramo: $('#longitud_ramo').val(),

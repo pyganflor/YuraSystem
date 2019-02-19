@@ -4,7 +4,7 @@
             Ingresos por variedad
         </h3>
     </div>
-    <div class="box-body">
+    <div class="box-body" style="overflow-x: scroll">
         <table width="100%" class="table table-responsive table-bordered"
                style="border: 1px solid #9d9d9d; margin-bottom: 0; font-size: 0.8em">
             <tr>
@@ -14,6 +14,15 @@
                 <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
                     {{$clasificacion->total_ramos()}} Ramos /
                     {{$clasificacion->total_tallos()}} Tallos
+                </th>
+                <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
+                    Ramos estandar
+                </th>
+                <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
+                    Cajas eq.
+                </th>
+                <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
+                    Calibre
                 </th>
                 <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
                     Desechos
@@ -64,6 +73,17 @@
                                 @endforeach
                             </tr>
                         </table>
+                    </td>
+                    <td style="border-color: #9d9d9d; padding: 10px; margin-bottom: 0" class="text-center" width="10%">
+                        {{$clasificacion->getTotalRamosEstandarByVariedad($variedad->id_variedad)}}
+                    </td>
+                    <td style="border-color: #9d9d9d; padding: 10px; margin-bottom: 0" class="text-center" width="10%">
+                        {{round($clasificacion->getTotalRamosEstandarByVariedad($variedad->id_variedad) /
+                        getConfiguracionEmpresa()->ramos_x_caja, 2)}}
+                    </td>
+                    <td style="border-color: #9d9d9d; padding: 10px; margin-bottom: 0" class="text-center" width="5%">
+                        {{round($clasificacion->tallos_x_variedad($variedad->id_variedad) /
+                        $clasificacion->getTotalRamosEstandarByVariedad($variedad->id_variedad),2)}}
                     </td>
                     <th style="border-color: #9d9d9d" class="text-center">
                         <span class="badge" title="Tallos en recepción">

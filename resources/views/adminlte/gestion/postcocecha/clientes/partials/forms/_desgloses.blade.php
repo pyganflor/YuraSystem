@@ -44,7 +44,7 @@
         </div>
     </div>
     <div class="col-md-4">
-        <div class="form-group input-group">
+        {{--<div class="form-group input-group">
             <span class="input-group-addon" style="background-color: #e9ecef">Envoltura</span>
             <select name="id_empaque_e_{{$pos_form_detalles}}_{{$cant_desgloses}}" id="id_empaque_e_{{$pos_form_detalles}}_{{$cant_desgloses}}"
                     class="form-control"
@@ -54,7 +54,7 @@
                     <option value="{{$envoltura->id_empaque}}">{{$envoltura->nombre}}</option>
                 @endforeach
             </select>
-        </div>
+        </div>--}}
         <div class="form-group input-group">
             <span class="input-group-addon" style="background-color: #e9ecef">Presentación</span>
             <select name="id_empaque_p_{{$pos_form_detalles}}_{{$cant_desgloses}}" id="id_empaque_p_{{$pos_form_detalles}}_{{$cant_desgloses}}"

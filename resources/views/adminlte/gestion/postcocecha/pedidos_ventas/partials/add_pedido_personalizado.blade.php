@@ -55,9 +55,9 @@
                         <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
                             Variedad
                         </th>
-                        <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
+                        {{--<th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
                             Envoltura
-                        </th>
+                        </th>--}}
                         <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
                             Presentación
                         </th>
@@ -122,7 +122,7 @@
                                 @endforeach
                             </select>
                         </td>
-                        <td class="text-center" style="border-color: #9d9d9d">
+                        {{--<td class="text-center" style="border-color: #9d9d9d">
                             <select name="id_empaque_e_1" id="id_empaque_e_1" required style="width: 100%">
                                 @foreach($envolturas as $item)
                                     <option value="{{$item->id_empaque}}">
@@ -130,7 +130,7 @@
                                     </option>
                                 @endforeach
                             </select>
-                        </td>
+                        </td>--}}
                         <td class="text-center" style="border-color: #9d9d9d">
                             <select name="id_empaque_p_1" id="id_empaque_p_1" required style="width: 100%">
                                 @foreach($presentaciones as $item)
@@ -219,11 +219,11 @@
                 $('#id_variedad_1').html() +
                 '</select>' +
                 '</td>' +
-                '<td class="text-center" style="border-color: #9d9d9d">' +
+                /*'<td class="text-center" style="border-color: #9d9d9d">' +
                 '<select name="id_empaque_e_' + i + '" id="id_empaque_e_' + i + '" required style="width: 100%">' +
                 $('#id_empaque_e_1').html() +
                 '</select>' +
-                '</td>' +
+                '</td>' +*/
                 '<td class="text-center" style="border-color: #9d9d9d">' +
                 '<select name="id_empaque_p_' + i + '" id="id_empaque_p_' + i + '" required style="width: 100%">' +
                 $('#id_empaque_p_1').html() +
@@ -290,7 +290,7 @@
                     cantidad_ramos: $('#cantidad_ramos_' + i).val(),
                     id_clasificacion_ramo: $('#id_clasificacion_ramo_' + i).val(),
                     id_variedad: $('#id_variedad_' + i).val(),
-                    id_empaque_e: $('#id_empaque_e_' + i).val(),
+                    /*id_empaque_e: $('#id_empaque_e_' + i).val(),*/
                     id_empaque_p: $('#id_empaque_p_' + i).val(),
                     tallos_x_ramo: $('#tallos_x_ramo_' + i).val(),
                     longitud_ramo: $('#longitud_ramo_' + i).val(),

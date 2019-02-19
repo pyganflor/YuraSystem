@@ -55,8 +55,7 @@
                                                     @if(!empty($det->tallos_x_ramos))
                                                            {{ " de ".$det->tallos_x_ramos." Tallos por ramos"}}
                                                     @endif
-                                                    con envoltura de {{$det->empaque_e->nombre}}
-                                               y presentación de {{$det->empaque_p->nombre}}
+                                                    con presentación de {{$det->empaque_p->nombre}}
                                        @endforeach
                                        @endforeach">
                                         {{$detalle->cantidad}}: {{$detalle->cliente_especificacion->especificacion->nombre}}

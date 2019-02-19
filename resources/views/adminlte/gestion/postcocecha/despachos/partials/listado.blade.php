@@ -73,7 +73,7 @@
                                     {{explode('|',$esp_emp->empaque->nombre)[0]}}
                                 </td>
                                 <td class="text-center" style="border-color: #9d9d9d">
-                                    {{explode('|',$det_esp->empaque_e->nombre)[0]}}
+                                    {{--{{explode('|',$det_esp->empaque_e->nombre)[0]}}--}}
                                     {{explode('|',$det_esp->empaque_p->nombre)[0]}}
                                 </td>
                                 <td class="text-center" style="border-color: #9d9d9d">

@@ -83,7 +83,7 @@
                         <input type="hidden" id="clasificacion_ramo_resto_{{$pos_resto}}" value="{{$item['clasificacion_ramo']}}">
                         <input type="hidden" id="tallos_x_ramo_resto_{{$pos_resto}}" value="{{$item['tallos_x_ramo']}}">
                         <input type="hidden" id="longitud_ramo_resto_{{$pos_resto}}" value="{{$item['longitud_ramo']}}">
-                        <input type="hidden" id="id_empaque_e_resto_{{$pos_resto}}" value="{{$item['id_empaque_e']}}">
+                        {{--<input type="hidden" id="id_empaque_e_resto_{{$pos_resto}}" value="{{$item['id_empaque_e']}}">--}}
                         <input type="hidden" id="id_empaque_p_resto_{{$pos_resto}}" value="{{$item['id_empaque_p']}}">
                         <input type="hidden" id="id_unidad_medida_resto_{{$pos_resto}}" value="{{$item['id_unidad_medida']}}">
                         <input type="hidden" id="basura_resto_{{$pos_resto}}" value="0">
@@ -105,7 +105,7 @@
                     <input type="hidden" id="clasificacion_ramo_resto_{{$pos_resto}}" value="{{$clasificacion_ramo}}">
                     <input type="hidden" id="tallos_x_ramo_resto_{{$pos_resto}}" value="{{$tallos_x_ramo}}">
                     <input type="hidden" id="longitud_ramo_resto_{{$pos_resto}}" value="{{$longitud_ramo}}">
-                    <input type="hidden" id="id_empaque_e_resto_{{$pos_resto}}" value="{{$id_empaque_e}}">
+                    {{--<input type="hidden" id="id_empaque_e_resto_{{$pos_resto}}" value="{{$id_empaque_e}}">--}}
                     <input type="hidden" id="id_empaque_p_resto_{{$pos_resto}}" value="{{$id_empaque_p}}">
                     <input type="hidden" id="id_unidad_medida_resto_{{$pos_resto}}" value="{{$id_unidad_medida}}">
                     <input type="hidden" id="basura_resto_{{$pos_resto}}" value="1">
@@ -149,7 +149,7 @@
                         clasificacion_ramo: $('#clasificacion_ramo_resto_' + i).val(),
                         tallos_x_ramo: $('#tallos_x_ramo_resto_' + i).val(),
                         longitud_ramo: $('#longitud_ramo_resto_' + i).val(),
-                        id_empaque_e: $('#id_empaque_e_resto_' + i).val(),
+                        /*id_empaque_e: $('#id_empaque_e_resto_' + i).val(),*/
                         id_empaque_p: $('#id_empaque_p_resto_' + i).val(),
                         id_unidad_medida: $('#id_unidad_medida_resto_' + i).val(),
                         basura: $('#basura_resto_' + i).val(),

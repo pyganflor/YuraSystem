@@ -335,7 +335,7 @@
                                                     {!! $empaque->estado == 0 ? 'disabled' : '' !!} id="tipo_empaque_{{$key+1}}">
                                                 <option selected disabled="">Seleccione</option>
                                                 <option value="C" {!! $empaque->tipo == 'C' ? 'selected' :'' !!} >Caja</option>
-                                                <option value="E" {!! $empaque->tipo == 'E' ? 'selected' :'' !!} >Envoltura</option>
+                                                {{--<option value="E" {!! $empaque->tipo == 'E' ? 'selected' :'' !!} >Envoltura</option>--}}
                                                 <option value="P" {!! $empaque->tipo == 'P' ? 'selected' :'' !!} >Presentación</option>
                                             </select>
                                         </div>
@@ -368,7 +368,7 @@
                                     <select class="form-control" id="tipo_empaque_1">
                                         <option selected disabled="">Seleccione</option>
                                         <option value="C">Caja</option>
-                                        <option value="E">Envoltura</option>
+                                        {{--<option value="E">Envoltura</option>--}}
                                         <option value="P">Presentación</option>
                                     </select>
                                 </div>

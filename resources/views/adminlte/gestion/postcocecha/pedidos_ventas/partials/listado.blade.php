@@ -57,17 +57,15 @@
                                                              {{$det->clasificacion_ramo->nombre}} gr
                                                                 @if(!empty($det->longitud_ramo))
                                        {{" y ".$det->longitud_ramo}}
-                                           @if(!empty($det->id_unidad_medida))
-                                           {{getUnidadMedida($det->id_unidad_medida)->siglas}}
-                                           @endif
+                                       @if(!empty($det->id_unidad_medida))
+                                       {{getUnidadMedida($det->id_unidad_medida)->siglas}}
+                                       @endif
                                        @endif
                                                c/u,
                                         @if(!empty($det->tallos_x_ramos))
-                                        {{" de ".$det->tallos_x_ramos." Tallos por ramos"}}
+                                       {{" de ".$det->tallos_x_ramos." Tallos por ramos"}}
                                        @endif
-
-                                               con envoltura de {{$det->empaque_e->nombre}}
-                                               y presentación de {{$det->empaque_p->nombre}}
+                                               con presentación de {{$det->empaque_p->nombre}}
                                        @endforeach
                                        @endforeach">
                                         {{$detalle->cantidad}}: {{$detalle->cliente_especificacion->especificacion->nombre}}
@@ -99,9 +97,10 @@
                             </button>
                         @endif
                         @if($item->empaquetado == 0)
-                        <button type="button" class="btn btn-default btn-xs" title="Editar pedido" onclick="editar_pedido('{{$item->id_cliente}}','{{$item->id_pedido}}')">
-                            <i class="fa fa-pencil" aria-hidden="true"></i>
-                        </button>
+                            <button type="button" class="btn btn-default btn-xs" title="Editar pedido"
+                                    onclick="editar_pedido('{{$item->id_cliente}}','{{$item->id_pedido}}')">
+                                <i class="fa fa-pencil" aria-hidden="true"></i>
+                            </button>
                         @endif
 
                         @if(getPedido($item->id_pedido)->haveDistribucion() == 1)

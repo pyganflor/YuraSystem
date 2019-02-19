@@ -27,7 +27,6 @@ class OrdenSemanalController extends Controller
         $descripcion = $request->cantidad_cajas . ' ' . explode('|', Empaque::find($request->id_empaque)->nombre)[0] . ' de ' .
             $request->cantidad_ramos . ' ramos ' . ClasificacionRamo::find($request->id_clasificacion_ramo)->nombre .
             ClasificacionRamo::find($request->id_clasificacion_ramo)->unidad_medida->siglas . ' ' . Variedad::find($request->id_variedad)->siglas . ' ' .
-            explode('|', Empaque::find($request->id_empaque_e)->nombre)[0] . ' ' .
             explode('|', Empaque::find($request->id_empaque_p)->nombre)[0] . ' ' . $request->tallos_x_ramos . ' ' .
             $request->longitud_ramo . (UnidadMedida::find($request->id_unidad_medida) != '' ? UnidadMedida::find($request->id_unidad_medida)->siglas : '');
         $especificacion->nombre = $especificacion->descripcion = espacios($descripcion);
@@ -53,7 +52,7 @@ class OrdenSemanalController extends Controller
                 $det_espemp->id_variedad = $request->id_variedad;
                 $det_espemp->id_clasificacion_ramo = $request->id_clasificacion_ramo;
                 $det_espemp->cantidad = $request->cantidad_ramos;
-                $det_espemp->id_empaque_e = $request->id_empaque_e;
+                //$det_espemp->id_empaque_e = $request->id_empaque_e;
                 $det_espemp->id_empaque_p = $request->id_empaque_p;
                 $det_espemp->tallos_x_ramos = $request->tallos_x_ramos;
                 $det_espemp->longitud_ramo = $request->longitud_ramo;
@@ -265,7 +264,7 @@ class OrdenSemanalController extends Controller
             'unidades_medida' => UnidadMedida::All()->where('estado', '=', 1)->where('tipo', '=', 'L'),
             'agencias' => $pedido->cliente->cliente_agencia_carga,
             'cajas' => Empaque::All()->where('estado', '=', 1)->where('tipo', '=', 'C'),
-            'envolturas' => Empaque::All()->where('estado', '=', 1)->where('tipo', '=', 'E'),
+            //'envolturas' => Empaque::All()->where('estado', '=', 1)->where('tipo', '=', 'E'),
             'presentaciones' => Empaque::All()->where('estado', '=', 1)->where('tipo', '=', 'P'),
             'esp_emp' => $esp_emp,
             'det_esp' => $det_esp,
@@ -507,7 +506,7 @@ class OrdenSemanalController extends Controller
             'cantidad_ramos' => 'required|',
             'id_clasificacion_ramo' => 'required|',
             'id_variedad' => 'required|',
-            'id_empaque_e' => 'required|',
+            //'id_empaque_e' => 'required|',
             'id_empaque_p' => 'required|',
             'id_agencia_carga' => 'required|',
         ], [
@@ -532,7 +531,6 @@ class OrdenSemanalController extends Controller
                 $descripcion = $request->cantidad_piezas . ' ' . explode('|', Empaque::find($request->id_empaque)->nombre)[0] . ' de ' .
                     $request->cantidad_ramos . ' ramos ' . ClasificacionRamo::find($request->id_clasificacion_ramo)->nombre .
                     ClasificacionRamo::find($request->id_clasificacion_ramo)->unidad_medida->siglas . ' ' . Variedad::find($request->id_variedad)->siglas . ' ' .
-                    explode('|', Empaque::find($request->id_empaque_e)->nombre)[0] . ' ' .
                     explode('|', Empaque::find($request->id_empaque_p)->nombre)[0] . ' ' . $request->tallos_x_ramos . ' ' .
                     $request->longitud_ramo . (UnidadMedida::find($request->id_unidad_medida) != '' ? UnidadMedida::find($request->id_unidad_medida)->siglas : '');
                 $pedido->descripcion = $descripcion;
@@ -560,7 +558,7 @@ class OrdenSemanalController extends Controller
                             $det_esp->id_variedad = $request->id_variedad;
                             $det_esp->id_clasificacion_ramo = $request->id_clasificacion_ramo;
                             $det_esp->cantidad = $request->cantidad_ramos;
-                            $det_esp->id_empaque_e = $request->id_empaque_e;
+                            //$det_esp->id_empaque_e = $request->id_empaque_e;
                             $det_esp->id_empaque_p = $request->id_empaque_p;
                             $det_esp->tallos_x_ramos = $request->tallos_x_ramos;
                             $det_esp->longitud_ramo = $request->longitud_ramo;
@@ -718,7 +716,7 @@ class OrdenSemanalController extends Controller
             'cajas' => Empaque::All()->where('estado', '=', 1)->where('tipo', '=', 'C'),
             'calibres' => getCalibresRamo(),
             'variedades' => getVariedades(),
-            'envolturas' => Empaque::All()->where('estado', '=', 1)->where('tipo', '=', 'E'),
+            //'envolturas' => Empaque::All()->where('estado', '=', 1)->where('tipo', '=', 'E'),
             'presentaciones' => Empaque::All()->where('estado', '=', 1)->where('tipo', '=', 'P'),
             'unidades_medida' => UnidadMedida::All()->where('estado', '=', 1)->where('tipo', '=', 'L'),
         ]);
@@ -741,7 +739,6 @@ class OrdenSemanalController extends Controller
                 $texto = $item['cantidad_piezas'] . ' ' . explode('|', Empaque::find($item['id_empaque'])->nombre)[0] . ' de ' .
                     $item['cantidad_ramos'] . ' ramos ' . ClasificacionRamo::find($item['id_clasificacion_ramo'])->nombre .
                     ClasificacionRamo::find($item['id_clasificacion_ramo'])->unidad_medida->siglas . ' ' . Variedad::find($item['id_variedad'])->siglas . ' ' .
-                    explode('|', Empaque::find($item['id_empaque_e'])->nombre)[0] . ' ' .
                     explode('|', Empaque::find($item['id_empaque_p'])->nombre)[0] . ' ' . $item['tallos_x_ramo'] . ' ' .
                     $item['longitud_ramo'] . (UnidadMedida::find($item['id_unidad_medida']) != '' ? UnidadMedida::find($item['id_unidad_medida'])->siglas : '');
 
@@ -774,7 +771,7 @@ class OrdenSemanalController extends Controller
                         $det_esp_emp->id_variedad = $item['id_variedad'];
                         $det_esp_emp->id_clasificacion_ramo = $item['id_clasificacion_ramo'];
                         $det_esp_emp->cantidad = $item['cantidad_ramos'];
-                        $det_esp_emp->id_empaque_e = $item['id_empaque_e'];
+                        //$det_esp_emp->id_empaque_e = $item['id_empaque_e'];
                         $det_esp_emp->id_empaque_p = $item['id_empaque_p'];
                         $det_esp_emp->tallos_x_ramos = $item['tallos_x_ramo'];
                         $det_esp_emp->longitud_ramo = $item['longitud_ramo'];

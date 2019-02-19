@@ -61,7 +61,7 @@
                 else
                     $longitud_ramo = '';
                 $texto = getCalibreRamoById($item->id_clasificacion_ramo)->nombre.' '.getCalibreRamoById($item->id_clasificacion_ramo)->unidad_medida->siglas.' '.
-                    $tallos_x_ramo.''.$longitud_ramo.''.getEmpaque($item->id_empaque_e)->nombre.' '.getEmpaque($item->id_empaque_p)->nombre;
+                    $tallos_x_ramo.''.$longitud_ramo.''.getEmpaque($item->id_empaque_p)->nombre;
             @endphp
             <tr>
                 <th class="text-center" style="background-color: #e9ecef; border-color: #9d9d9d" id="th_pedidos_{{$pos_comb}}">
@@ -75,7 +75,7 @@
                     <input type="hidden" id="clasificacion_ramo_{{$pos_comb}}" value="{{$item->id_clasificacion_ramo}}">
                     <input type="hidden" id="tallos_x_ramo_{{$pos_comb}}" value="{{$item->tallos_x_ramos}}">
                     <input type="hidden" id="longitud_ramo_{{$pos_comb}}" value="{{$item->longitud_ramo}}">
-                    <input type="hidden" id="id_empaque_e_{{$pos_comb}}" value="{{$item->id_empaque_e}}">
+                    {{--<input type="hidden" id="id_empaque_e_{{$pos_comb}}" value="{{$item->id_empaque_e}}">--}}
                     <input type="hidden" id="id_empaque_p_{{$pos_comb}}" value="{{$item->id_empaque_p}}">
                     <input type="hidden" id="id_unidad_medida_{{$pos_comb}}" value="{{$item->id_unidad_medida}}">
                 </th>
@@ -86,9 +86,9 @@
                     <td class="text-center"
                         style="border-color: #9d9d9d; border-right-width: {{$pos_fecha == 1 ? '3px' : ''}}; border-left-width: {{$pos_fecha == 1 ? '3px' : ''}};"
                         onmouseover="$(this).css('background-color','#ADD8E6')" onmouseleave="$(this).css('background-color','')">
-                        {{getCantidadRamosPedidosForCB($fecha->fecha_pedido,$item->id_variedad,$item->id_clasificacion_ramo,$item->id_empaque_e,$item->id_empaque_p,
+                        {{getCantidadRamosPedidosForCB($fecha->fecha_pedido,$item->id_variedad,$item->id_clasificacion_ramo,/*$item->id_empaque_e,*/$item->id_empaque_p,
                         $item->tallos_x_ramos,$item->longitud_ramo,$item->id_unidad_medida)}}
-                        <input type="hidden" id="pedido_{{$pos_comb}}_{{$pos_fecha}}" value="{{getCantidadRamosPedidosForCB($fecha->fecha_pedido,$item->id_variedad,$item->id_clasificacion_ramo,$item->id_empaque_e,$item->id_empaque_p,
+                        <input type="hidden" id="pedido_{{$pos_comb}}_{{$pos_fecha}}" value="{{getCantidadRamosPedidosForCB($fecha->fecha_pedido,$item->id_variedad,$item->id_clasificacion_ramo,/*$item->id_empaque_e,*/$item->id_empaque_p,
                         $item->tallos_x_ramos,$item->longitud_ramo,$item->id_unidad_medida)}}">
                     </td>
                     @php
@@ -96,11 +96,11 @@
                     @endphp
                 @endforeach
                 <td class="text-center" style=" border-color: #9d9d9d;" width="7%">
-                    <input type="hidden" id="inventario_frio_{{$pos_comb}}" value="{{getDisponibleInventarioFrio($item->id_variedad,$item->id_clasificacion_ramo,$item->id_empaque_e,$item->id_empaque_p,
+                    <input type="hidden" id="inventario_frio_{{$pos_comb}}" value="{{getDisponibleInventarioFrio($item->id_variedad,$item->id_clasificacion_ramo,/*$item->id_empaque_e,*/$item->id_empaque_p,
                         $item->tallos_x_ramos,$item->longitud_ramo,$item->id_unidad_medida)}}">
                     <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
                             aria-expanded="false" id="btn_inventario_{{$pos_comb}}" onclick="maduracion('{{$pos_comb}}')">
-                        {{getDisponibleInventarioFrio($item->id_variedad,$item->id_clasificacion_ramo,$item->id_empaque_e,$item->id_empaque_p,
+                        {{getDisponibleInventarioFrio($item->id_variedad,$item->id_clasificacion_ramo,/*$item->id_empaque_e,*/$item->id_empaque_p,
                     $item->tallos_x_ramos,$item->longitud_ramo,$item->id_unidad_medida)}}
                     </button>
                 </td>
@@ -175,7 +175,7 @@
                     clasificacion_ramo: $('#clasificacion_ramo_' + i).val(),
                     tallos_x_ramo: $('#tallos_x_ramo_' + i).val(),
                     longitud_ramo: $('#longitud_ramo_' + i).val(),
-                    id_empaque_e: $('#id_empaque_e_' + i).val(),
+                    /*id_empaque_e: $('#id_empaque_e_' + i).val(),*/
                     id_empaque_p: $('#id_empaque_p_' + i).val(),
                     id_unidad_medida: $('#id_unidad_medida_' + i).val(),
                     texto: $('#texto_' + i).val()
@@ -216,7 +216,7 @@
                     clasificacion_ramo: $('#clasificacion_ramo_' + i).val(),
                     tallos_x_ramo: $('#tallos_x_ramo_' + i).val(),
                     longitud_ramo: $('#longitud_ramo_' + i).val(),
-                    id_empaque_e: $('#id_empaque_e_' + i).val(),
+                    /*id_empaque_e: $('#id_empaque_e_' + i).val(),*/
                     id_empaque_p: $('#id_empaque_p_' + i).val(),
                     id_unidad_medida: $('#id_unidad_medida_' + i).val(),
                     texto: $('#texto_' + i).val()
@@ -247,7 +247,7 @@
                         clasificacion_ramo: $('#clasificacion_ramo_' + i).val(),
                         tallos_x_ramo: $('#tallos_x_ramo_' + i).val(),
                         longitud_ramo: $('#longitud_ramo_' + i).val(),
-                        id_empaque_e: $('#id_empaque_e_' + i).val(),
+                        /*id_empaque_e: $('#id_empaque_e_' + i).val(),*/
                         id_empaque_p: $('#id_empaque_p_' + i).val(),
                         id_unidad_medida: $('#id_unidad_medida_' + i).val(),
                         texto: $('#texto_' + i).val()
@@ -260,7 +260,7 @@
                 clasificacion_ramo: $('#clasificacion_ramo_' + pos_comb).val(),
                 tallos_x_ramo: $('#tallos_x_ramo_' + pos_comb).val(),
                 longitud_ramo: $('#longitud_ramo_' + pos_comb).val(),
-                id_empaque_e: $('#id_empaque_e_' + pos_comb).val(),
+                /*id_empaque_e: $('#id_empaque_e_' + pos_comb).val(),*/
                 id_empaque_p: $('#id_empaque_p_' + pos_comb).val(),
                 id_unidad_medida: $('#id_unidad_medida_' + pos_comb).val(),
                 texto: $('#texto_' + pos_comb).val(),

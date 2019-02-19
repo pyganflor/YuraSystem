@@ -96,7 +96,7 @@
                         </div>
                     </div>
                     <div class="col-md-2">
-                        <div class="form-group input-group">
+                        {{--<div class="form-group input-group">
                             <span class="input-group-addon" style="background-color: #e9ecef">Envoltura</span>
                             <select name="id_empaque_e" id="id_empaque_e" class="form-control" required>
                                 <option value="">...</option>
@@ -106,7 +106,7 @@
                                     </option>
                                 @endforeach
                             </select>
-                        </div>
+                        </div>--}}
                         <div class="form-group input-group">
                             <span class="input-group-addon" style="background-color: #e9ecef">Presentación</span>
                             <select name="id_empaque_p" id="id_empaque_p" class="form-control" required>

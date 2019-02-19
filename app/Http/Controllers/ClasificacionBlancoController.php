@@ -60,13 +60,13 @@ class ClasificacionBlancoController extends Controller
             ->join('variedad as v', 'v.id_variedad', '=', 'dee.id_variedad')
             ->select(DB::raw('sum(dee.cantidad * ee.cantidad * dp.cantidad) as cantidad'),
                 'dee.id_variedad', 'dee.id_clasificacion_ramo', 'dee.tallos_x_ramos', 'dee.longitud_ramo', 'dee.id_unidad_medida'
-                , 'dee.id_empaque_e', 'dee.id_empaque_p')
+                , 'dee.id_empaque_p')
             ->where('p.estado', '=', 1)
             ->where('p.empaquetado', '=', 0)
             ->where('p.fecha_pedido', '<=', $fecha_fin)
             ->where('dee.id_variedad', '=', $request->variedad)
             ->groupBy('dee.id_variedad', 'dee.id_clasificacion_ramo', 'dee.tallos_x_ramos', 'dee.longitud_ramo', 'dee.id_unidad_medida'
-                , 'dee.id_empaque_e', 'dee.id_empaque_p')
+                , 'dee.id_empaque_p')
             ->orderBy('v.siglas', 'asc')
             ->get();
 
@@ -93,7 +93,7 @@ class ClasificacionBlancoController extends Controller
                     $inventario = new InventarioFrio();
                     $inventario->id_variedad = $request->id_variedad;
                     $inventario->id_clasificacion_ramo = $item['clasificacion_ramo'];
-                    $inventario->id_empaque_e = $item['id_empaque_e'];
+                    //$inventario->id_empaque_e = $item['id_empaque_e'];
                     $inventario->id_empaque_p = $item['id_empaque_p'];
                     $inventario->tallos_x_ramo = $item['tallos_x_ramo'];
                     $inventario->longitud_ramo = $item['longitud_ramo'];
@@ -126,7 +126,7 @@ class ClasificacionBlancoController extends Controller
                     ->where('disponibilidad', '=', 1)
                     ->where('id_variedad', '=', $request->id_variedad)
                     ->where('id_clasificacion_ramo', '=', $item['clasificacion_ramo'])
-                    ->where('id_empaque_e', '=', $item['id_empaque_e'])
+                    //->where('id_empaque_e', '=', $item['id_empaque_e'])
                     ->where('id_empaque_p', '=', $item['id_empaque_p'])
                     ->where('tallos_x_ramo', '=', $item['tallos_x_ramo'])
                     ->where('longitud_ramo', '=', $item['longitud_ramo'])
@@ -233,7 +233,7 @@ class ClasificacionBlancoController extends Controller
                 $inventario = new InventarioFrio();
                 $inventario->id_variedad = $request->id_variedad;
                 $inventario->id_clasificacion_ramo = $item['clasificacion_ramo'];
-                $inventario->id_empaque_e = $item['id_empaque_e'];
+                //$inventario->id_empaque_e = $item['id_empaque_e'];
                 $inventario->id_empaque_p = $item['id_empaque_p'];
                 $inventario->tallos_x_ramo = $item['tallos_x_ramo'];
                 $inventario->longitud_ramo = $item['longitud_ramo'];
@@ -288,7 +288,7 @@ class ClasificacionBlancoController extends Controller
             ->where('disponibilidad', '=', 1)
             ->where('id_variedad', '=', $request->id_variedad)
             ->where('id_clasificacion_ramo', '=', $request['clasificacion_ramo'])
-            ->where('id_empaque_e', '=', $request['id_empaque_e'])
+            //->where('id_empaque_e', '=', $request['id_empaque_e'])
             ->where('id_empaque_p', '=', $request['id_empaque_p'])
             ->where('tallos_x_ramo', '=', $request['tallos_x_ramo'])
             ->where('longitud_ramo', '=', $request['longitud_ramo'])
@@ -305,7 +305,7 @@ class ClasificacionBlancoController extends Controller
             'clasificacion_ramo' => $request->clasificacion_ramo,
             'tallos_x_ramo' => $request->tallos_x_ramo,
             'longitud_ramo' => $request->longitud_ramo,
-            'id_empaque_e' => $request->id_empaque_e,
+            //'id_empaque_e' => $request->id_empaque_e,
             'id_empaque_p' => $request->id_empaque_p,
             'id_unidad_medida' => $request->id_unidad_medida,
         ]);
@@ -320,7 +320,7 @@ class ClasificacionBlancoController extends Controller
                 $inventario = new InventarioFrio();
                 $inventario->id_variedad = $request->id_variedad;
                 $inventario->id_clasificacion_ramo = $item['clasificacion_ramo'];
-                $inventario->id_empaque_e = $item['id_empaque_e'];
+                //$inventario->id_empaque_e = $item['id_empaque_e'];
                 $inventario->id_empaque_p = $item['id_empaque_p'];
                 $inventario->tallos_x_ramo = $item['tallos_x_ramo'];
                 $inventario->longitud_ramo = $item['longitud_ramo'];

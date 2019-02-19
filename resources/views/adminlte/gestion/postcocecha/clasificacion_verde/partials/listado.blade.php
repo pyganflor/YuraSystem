@@ -27,6 +27,10 @@
                         </th>
                         <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
                             style="border-color: #9d9d9d">
+                            CAJAS EQ.
+                        </th>
+                        <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
+                            style="border-color: #9d9d9d">
                             CALIBRE
                         </th>
                         <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
@@ -60,6 +64,9 @@
                             {{getClasificacionVerde($item->id_clasificacion_verde)->getTotalRamosEstandar()}}
                         </td>
                         <td style="border-color: #9d9d9d" class="text-center">
+                            {{round(getClasificacionVerde($item->id_clasificacion_verde)->getTotalRamosEstandar() / getConfiguracionEmpresa()->ramos_x_caja, 2)}}
+                        </td>
+                        <td style="border-color: #9d9d9d" class="text-center">
                             {{round(getClasificacionVerde($item->id_clasificacion_verde)->total_tallos() /
                             getClasificacionVerde($item->id_clasificacion_verde)->getTotalRamosEstandar(),2)}}
                         </td>
@@ -83,7 +90,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td colspan="10" style="border-color: #9d9d9d; padding: 0;">
+                        <td colspan="11" style="border-color: #9d9d9d; padding: 0;">
                             <div style="overflow-y: scroll; height: 171px">
                                 <table width="100%" class="table table-responsive table-bordered"
                                        style="border: 1px solid #9d9d9d; margin-bottom: 0">
@@ -97,6 +104,9 @@
                                         </th>
                                         <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
                                             Ramos estandar
+                                        </th>
+                                        <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
+                                            Cajas eq.
                                         </th>
                                         <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
                                             Calibre
@@ -155,6 +165,10 @@
                                             </td>
                                             <td style="border-color: #9d9d9d; padding: 10px; margin-bottom: 0" class="text-center" width="10%">
                                                 {{getClasificacionVerde($item->id_clasificacion_verde)->getTotalRamosEstandarByVariedad($variedad->id_variedad)}}
+                                            </td>
+                                            <td style="border-color: #9d9d9d; padding: 10px; margin-bottom: 0" class="text-center" width="10%">
+                                                {{round(getClasificacionVerde($item->id_clasificacion_verde)->getTotalRamosEstandarByVariedad($variedad->id_variedad) /
+                                                getConfiguracionEmpresa()->ramos_x_caja, 2)}}
                                             </td>
                                             <td style="border-color: #9d9d9d; padding: 10px; margin-bottom: 0" class="text-center" width="5%">
                                                 {{round(getClasificacionVerde($item->id_clasificacion_verde)->tallos_x_variedad($variedad->id_variedad) /
