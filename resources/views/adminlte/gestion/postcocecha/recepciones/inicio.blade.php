@@ -39,12 +39,12 @@
                 </h3>
             </div>
             <div class="box-body" id="div_content_recepciones">
-                <table width="100%">
+                <table width="100%" style="margin-bottom: 5px">
                     <tr>
                         <td>
                             <div class="row">
                                 <div class="col-md-2">
-                                    <input type="date" id="fecha_ingreso_search" name="fecha_ingreso_search"
+                                    <input type="date" id="fecha_ingreso_search" name="fecha_ingreso_search" required
                                            class="form-control" onchange="buscar_listado(); buscar_cosecha()">
                                 </div>
                                 <div class="col-md-2">
@@ -92,5 +92,8 @@
 @endsection
 
 @section('script_final')
+    {{-- JS de Chart.js --}}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
+
     @include('adminlte.gestion.postcocecha.recepciones.script')
 @endsection

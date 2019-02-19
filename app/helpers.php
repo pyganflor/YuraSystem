@@ -1335,7 +1335,7 @@ function getEquivalentesByGrosorVariedad($fecha, $grosor, $variedad)
 }
 
 /* ============ Cantidad de ramos pedidos segun fecha, variedad, clasificacion_ramo, envoltura, presentacion, tallos_x_ramo, longitud_ramo, unidad_medida ==============*/
-function getCantidadRamosPedidosForCB($fecha, $variedad, $clasificacion_ramo, $envoltura, $presentacion, $tallos_x_ramos, $longitud_ramo, $unidad_medida)
+function getCantidadRamosPedidosForCB($fecha, $variedad, $clasificacion_ramo, /*$envoltura, */$presentacion, $tallos_x_ramos, $longitud_ramo, $unidad_medida)
 {
     $r = DB::table('pedido as p')
         ->join('detalle_pedido as dp', 'dp.id_pedido', '=', 'p.id_pedido')
@@ -1349,7 +1349,7 @@ function getCantidadRamosPedidosForCB($fecha, $variedad, $clasificacion_ramo, $e
         ->where('p.fecha_pedido', '=', $fecha)
         ->where('dee.id_variedad', '=', $variedad)
         ->where('dee.id_clasificacion_ramo', '=', $clasificacion_ramo)
-        ->where('dee.id_empaque_e', '=', $envoltura)
+        //->where('dee.id_empaque_e', '=', $envoltura)
         ->where('dee.id_empaque_p', '=', $presentacion);
 
     if ($tallos_x_ramos != '')
@@ -1366,7 +1366,7 @@ function getCantidadRamosPedidosForCB($fecha, $variedad, $clasificacion_ramo, $e
 }
 
 /* ============ Obtener Inventario en frío ==============*/
-function getDisponibleInventarioFrio($variedad, $clasificacion_ramo, $envoltura, $presentacion, $tallos_x_ramos, $longitud_ramo, $unidad_medida)
+function getDisponibleInventarioFrio($variedad, $clasificacion_ramo, /*$envoltura, */$presentacion, $tallos_x_ramos, $longitud_ramo, $unidad_medida)
 {
     $r = DB::table('inventario_frio as if')
         ->select(DB::raw('sum(if.disponibles) as cantidad'))
@@ -1374,7 +1374,7 @@ function getDisponibleInventarioFrio($variedad, $clasificacion_ramo, $envoltura,
         ->where('disponibilidad', '=', 1)
         ->where('id_variedad', '=', $variedad)
         ->where('id_clasificacion_ramo', '=', $clasificacion_ramo)
-        ->where('id_empaque_e', '=', $envoltura)
+        //->where('id_empaque_e', '=', $envoltura)
         ->where('id_empaque_p', '=', $presentacion);
 
     if ($tallos_x_ramos != '')

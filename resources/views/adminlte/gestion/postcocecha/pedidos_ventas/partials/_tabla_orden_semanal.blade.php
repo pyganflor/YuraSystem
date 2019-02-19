@@ -81,7 +81,7 @@
                         cantidad_ramos: $('#cantidad_ramos').val(),
                         id_clasificacion_ramo: $('#id_clasificacion_ramo').val(),
                         id_variedad: $('#id_variedad').val(),
-                        id_empaque_e: $('#id_empaque_e').val(),
+                        /*id_empaque_e: $('#id_empaque_e').val(),*/
                         id_empaque_p: $('#id_empaque_p').val(),
                         longitud_ramo: $('#longitud_ramo').val(),
                         tallos_x_ramos: $('#tallos_x_ramos').val(),

@@ -11,7 +11,7 @@
                 <select class="form-control" id="tipo_empaque_{{$cnatInptus+1}}">
                     <option selected disabled="">Seleccione</option>
                     <option value="C">Caja</option>
-                    <option value="E">Envoltura</option>
+                    {{--<option value="E">Envoltura</option>--}}
                     <option value="P">Presentación</option>
                 </select>
             </div>

@@ -41,18 +41,18 @@
                 @endif
             @endforeach
             <tr>
-                <th class="text-center" style="border-color: #9d9d9d">
-                </th>
-                <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
+                <td class="text-center" style="border-color: #9d9d9d">
+                </td>
+                <td class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
                     style="border-color: #9d9d9d">
                     Total
-                </th>
-                <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
+                </td>
+                <td class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
                     {{$clasificacion->getTotalRamosEstandar()}}
-                </th>
-                <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
+                </td>
+                <td class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
                     {{$clasificacion->total_tallos()}}
-                </th>
+                </td>
             </tr>
         </table>
         <div id="pagination_listado_detalles_estandar">

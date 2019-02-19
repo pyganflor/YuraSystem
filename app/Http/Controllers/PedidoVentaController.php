@@ -86,7 +86,7 @@ class PedidoVentaController extends Controller
         return view('adminlte.gestion.postcocecha.pedidos_ventas.partials.add_orden_semanal', [
             'clientes' => Cliente::All()->where('estado', '=', 1),
             'empaques' => Empaque::All()->where('estado', '=', 1)->where('tipo', '=', 'C'),
-            'envolturas' => Empaque::All()->where('estado', '=', 1)->where('tipo', '=', 'E'),
+            //'envolturas' => Empaque::All()->where('estado', '=', 1)->where('tipo', '=', 'E'),
             'presentaciones' => Empaque::All()->where('estado', '=', 1)->where('tipo', '=', 'P')
         ]);
     }
