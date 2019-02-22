@@ -758,7 +758,7 @@ class OrdenSemanalController extends Controller
                     $esp_emp = new EspecificacionEmpaque();
                     $esp_emp->id_especificacion = $especificacion->id_especificacion;
                     $esp_emp->id_empaque = $item['id_empaque'];
-                    $esp_emp->cantidad = $item['cantidad_piezas'];
+                    $esp_emp->cantidad = 1;
 
                     if ($esp_emp->save()) {
                         $esp_emp = EspecificacionEmpaque::All()->last();
@@ -810,7 +810,7 @@ class OrdenSemanalController extends Controller
                                     $det_pedido->id_pedido = $pedido->id_pedido;
                                     $det_pedido->id_cliente_especificacion = $cli_ped_esp->id_cliente_pedido_especificacion;
                                     $det_pedido->id_agencia_carga = $item['id_agencia_carga'];
-                                    $det_pedido->cantidad = 1;
+                                    $det_pedido->cantidad = $item['cantidad_piezas'];
 
                                     if ($det_pedido->save()) {
                                         $det_pedido = DetallePedido::All()->last();

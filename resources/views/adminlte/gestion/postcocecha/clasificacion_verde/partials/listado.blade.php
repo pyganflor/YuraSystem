@@ -171,8 +171,7 @@
                                                 getConfiguracionEmpresa()->ramos_x_caja, 2)}}
                                             </td>
                                             <td style="border-color: #9d9d9d; padding: 10px; margin-bottom: 0" class="text-center" width="5%">
-                                                {{round(getClasificacionVerde($item->id_clasificacion_verde)->tallos_x_variedad($variedad->id_variedad) /
-                                                getClasificacionVerde($item->id_clasificacion_verde)->getTotalRamosEstandarByVariedad($variedad->id_variedad),2)}}
+                                                {{getClasificacionVerde($item->id_clasificacion_verde)->calibreByVariedad($variedad->id_variedad)}}
                                             </td>
                                             <th style="border-color: #9d9d9d; margin-bottom: 0" class="text-center">
                                         <span class="badge" title="Tallos en recepción">
@@ -184,10 +183,7 @@
                                                 <br>
                                                 <br>
                                                 <span class="badge" title="Desecho" style="background-color: #ce8483">
-                                            {{round(100 - (
-                                            (getClasificacionVerde($item->id_clasificacion_verde)->tallos_x_variedad($variedad->id_variedad) * 100) /
-                                            getClasificacionVerde($item->id_clasificacion_verde)->total_tallos_recepcionByVariedad($variedad->id_variedad)),2)}}
-                                                    %
+                                            {{getClasificacionVerde($item->id_clasificacion_verde)->desechoByVariedad($variedad->id_variedad)}}%
                                         </span>
                                             </th>
                                         </tr>

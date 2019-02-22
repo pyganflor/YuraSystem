@@ -37,12 +37,23 @@
                 <h3 class="box-title">
                     Stock
                 </h3>
-                <div class="form-group pull-right" id="div_form_group_coches" style="display: none">
-                    <label for="check_coches">Ramos por coches</label>
-                    <input type="number" onkeypress="return isNumber(event)" id="ramos_x_coche" min="1"
-                           placeholder=" cantidad de ramos" onchange="calcular_ramos_x_coche()">
+                <div class="form-group pull-right" style="margin-right: 10px; margin-bottom: 0">
+                    <label for="variedad_search" style="margin-left: 10px">Variedad</label>
+                    <select name="variedad_search" id="variedad_search" onchange="buscar_listado()">
+                        <option value="">Variedad</option>
+                        @foreach($variedades as $item)
+                            <option value="{{$item->id_variedad}}">
+                                {{$item->planta->nombre}} - {{$item->nombre}}
+                            </option>
+                        @endforeach
+                    </select>
                 </div>
-                <div class="form-group pull-right" style="margin-right: 10px">
+                <div class="form-group pull-right" id="div_form_group_coches" style="display: none; margin-bottom: 0">
+                    <label for="check_coches">Tallos por coches</label>
+                    <input type="number" onkeypress="return isNumber(event)" id="tallos_x_coche" min="1"
+                           placeholder=" cantidad de tallos" onchange="calcular_tallos_x_coche()">
+                </div>
+                <div class="form-group pull-right" style="margin-right: 10px; margin-bottom: 0">
                     <label for="clasificacion_ramo_search" style="margin-right: 10px">Calibre del ramo</label>
                     <select name="clasificacion_ramo_search" id="clasificacion_ramo_search" onchange="calcularConvercion($(this).val())">
                         @foreach(getCalibresRamo() as $calibre)
@@ -52,24 +63,16 @@
                         @endforeach
                     </select>
                 </div>
+                <div class="form-group pull-right" style="margin-right: 10px; margin-bottom: 0">
+                    <label for="check_filtro" style="margin-right: 10px">Filtro</label>
+                    <input type="checkbox" class="pull-right" id="check_filtro" onchange="show_hide_filtro()">
+                </div>
             </div>
             <div class="box-body" id="div_content_aperturas">
-                <table width="100%">
+                <table width="100%" id="table_filtro" style="display: none">
                     <tr>
                         <td>
                             <div class="row">
-                                <div class="col-md-4">
-                                    <div class="form-group input-group" style="width: 100%">
-                                        <select name="variedad_search" id="variedad_search" class="form-control" onchange="buscar_listado()">
-                                            <option value="">Variedad</option>
-                                            @foreach($variedades as $item)
-                                                <option value="{{$item->id_variedad}}">
-                                                    {{$item->planta->nombre}} - {{$item->nombre}}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
                                 <div class="col-md-2">
                                     <div class="form-group input-group" style="width: 100%">
                                         <select name="unitaria_search" id="unitaria_search" class="form-control" onchange="buscar_listado()">
@@ -82,22 +85,33 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <div class="form-group input-group" style="padding: 0px">
                                         <span class="input-group-addon" style="background-color: #e9ecef">Desde</span>
                                         <input type="date" id="fecha_desde_search" name="fecha_desde_search" class="form-control"
                                                onchange="buscar_listado()">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group input-group" style="padding: 0px">
                                         <span class="input-group-addon" style="background-color: #e9ecef">Hasta</span>
                                         <input type="date" id="fecha_hasta_search" name="fecha_hasta_search" class="form-control"
                                                onchange="buscar_listado()">
-                                        <span class="input-group-btn">
-                                </span>
                                     </div>
                                 </div>
                             </div>
                         </td>
                     </tr>
                 </table>
+
+                <div style="margin-bottom: 10px">
+                    <span class="pull-right badge" id="html_current_sacar" title="Ramos seleccionados" style="margin-right: 5px"></span>
+                    <a href="javascript:void(0)" class="badge btn-success pull-right" id="btn_sacar" title="Sacar de apertura"
+                       style="display: none; margin-right: 5px" onclick="sacar_aperturas()">
+                        <i class="fa fa-fw fa-share-square-o"></i> Sacar
+                    </a>
+                </div>
+
                 <div id="div_listado_aperturas"></div>
             </div>
         </div>

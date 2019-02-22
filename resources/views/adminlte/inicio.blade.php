@@ -13,21 +13,19 @@
     <!-- Content Header (Page header) -->
     <section class="content-header">
         <h1>
-            Dashboard
-            <small>módulo de administrador</small>
+            Bienvenido
+            <small>a <a href="{{url('')}}">{{explode('//',url(''))[1]}}</a></small>
         </h1>
         <ol class="breadcrumb">
-            <li><a href="javascript:void(0)" onclick="cargar_url('')"><i class="fa fa-home"></i> Inicio</a></li>
             <li class="active">
                 <a href="javascript:void(0)" onclick="location.reload()">
-                    <i class="fa fa-fw fa-refresh"></i> Dashboard
+                    <i class="fa fa-fw fa-refresh"></i> Inicio
                 </a>
             </li>
         </ol>
     </section>
 
     <section class="content">
-        <div id="div_recepciones"></div>
     </section>
 @endsection
 
@@ -36,7 +34,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
 
     <script>
-        cargar_recepciones();
+        //cargar_recepciones();
 
         function cargar_recepciones() {
             get_jquery('{{url('dashboard/recepciones')}}', {}, function (retorno) {

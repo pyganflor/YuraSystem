@@ -83,10 +83,17 @@
         }
     }
 
-    function calcular_ramos_x_coche() {
+    function calcular_tallos_x_coche() {
         ids_apertura = $('.ids_apertura');
-        ramos_x_coche = $('#ramos_x_coche').val();
-        if (ramos_x_coche != '' && ramos_x_coche > 0) {
+        tallos_x_coche = $('#tallos_x_coche').val();
+        if (tallos_x_coche != '' && tallos_x_coche > 0) {
+
+            for (i = 0; i < ids_apertura.length; i++) {
+                id_apertura = ids_apertura[i].value;
+                $('#sacar_' + id_apertura).prop('max', Math.round(($('#sacar_ini_' + id_apertura).val() / tallos_x_coche) * 10000) / 10000);
+                //if (!$('#checkbox_sacar_' + id_apertura).prop('checked'))
+                $('#sacar_' + id_apertura).val(Math.round(($('#sacar_ini_' + id_apertura).val() / tallos_x_coche) * 10000) / 10000);
+            }
 
             listado = $('.checkbox_sacar');
             $('#btn_sacar').hide();
@@ -94,19 +101,22 @@
             for (i = 0; i < listado.length; i++) {
                 if (listado[i].checked) {
                     $('#btn_sacar').show();
-                    cantidad_seleccionada += parseFloat($('#sacar_' + listado[i].id.substr(15)).val()) * ramos_x_coche;
+                    factor = $('#factor_calibre_unitario_' + listado[i].id.substr(15)).val();
+                    seleccionados = parseFloat($('#sacar_' + listado[i].id.substr(15)).val()) * tallos_x_coche;
+                    cantidad_seleccionada += (Math.round((seleccionados / factor) * 100) / 100);
                     $('#html_current_sacar').html('Seleccionados: ' + Math.round(cantidad_seleccionada * 100) / 100);
                 }
             }
-
-            for (i = 0; i < ids_apertura.length; i++) {
-                id_apertura = ids_apertura[i].value;
-                $('#sacar_' + id_apertura).prop('max', Math.round(($('#sacar_ini_' + id_apertura).val() / ramos_x_coche) * 10000) / 10000);
-                if (!$('#checkbox_sacar_' + id_apertura).prop('checked'))
-                    $('#sacar_' + id_apertura).val(Math.round(($('#sacar_ini_' + id_apertura).val() / ramos_x_coche) * 10000) / 10000);
-            }
         } else {
             buscar_listado();
+        }
+    }
+
+    function show_hide_filtro() {
+        if ($('#check_filtro').prop('checked')) {
+            $('#table_filtro').show();
+        } else {
+            $('#table_filtro').hide();
         }
     }
 </script>

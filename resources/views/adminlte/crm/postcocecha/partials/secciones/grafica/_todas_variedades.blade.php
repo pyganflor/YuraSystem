@@ -1,0 +1,2 @@
+todas variedades
+{{$periodo}}

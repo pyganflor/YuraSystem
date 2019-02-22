@@ -88,10 +88,11 @@
             id_cliente: id_cliente
         };
         $.get('{{url('clientes/add')}}', datos, function (retorno) {
-            modal_form('modal_add_cliente', retorno, '<i class="fa fa-fw fa-plus"></i> Añadir cliente', true, false, '{{isPC() ? '60%' : ''}}', function () {
-                store_cliente();
-                $.LoadingOverlay('hide');
-            });
+            modal_view('modal_admin_especificaciones', retorno, '<i class="fa fa-fw fa-gift"></i> Añadir cliente', true, false,'{{isPC() ? '90%' : ''}}');
+            //modal_view('modal_add_cliente', retorno, '<i class="fa fa-fw fa-plus"></i> Añadir cliente', true, false, '{{isPC() ? '60%' : ''}}', function () {
+                //store_cliente();
+               // $.LoadingOverlay('hide');
+            //});
         });
         $.LoadingOverlay('hide');
     }
@@ -114,17 +115,14 @@
                 tipo_impuesto : $('#tipo_impuesto').val()
             };
 
-            console.log(datos);
             post_jquery('{{url('clientes/store')}}', datos, function () {
                 cerrar_modals();
-                buscar_listado();
                 detalles_cliente($('#id_cliente').val());
+                buscar_listado();
             });
             $.LoadingOverlay('hide');
         }
     }
-
-
 
     /* ============= ESPECIFICACIONES =====================*/
     function admin_especificaciones(id_cliente) {
@@ -234,26 +232,8 @@
         $.LoadingOverlay('hide');
     }
 
-    /*function tipo_unidad_medida(data) {
-        datos = {
-            _token: '{{csrf_token()}}',
-            tipo_unidad_medida: $('#'+data).val()
-        };
-        get_jquery('{{url('clientes/obtener_calsificacion_ramos')}}', datos, function (retorno) {
-
-            var select_clasif_x_ramo = $("#id_clasificacion_ramo_"+data.split('_')[2]+"_"+data.split('_')[3]);
-            $('select#id_clasificacion_ramo_'+data.split('_')[2]+"_"+data.split('_')[3]+' option#option_dinamic').remove();
-            //console.log(retorno);
-            $.each(retorno,function (i,j) {
-                select_clasif_x_ramo.append('<option id="option_dinamic" value="'+j.id_clasificacion_ramo+'"> '+j.nombre+' </option>');
-            });
-
-
-        });
-    }*/
-
     function cosumidor_final() {
-        if ($("#tipo_identificacion").val() == 07) {
+        if ($("#tipo_identificacion").val() == "07") {
             $("#identificacion").val("9999999999999");
             $("#identificacion").attr('disabled', true);
         }else{

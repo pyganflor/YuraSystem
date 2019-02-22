@@ -112,7 +112,7 @@
         <div class="col-md-4">
             <div class="form-group">
                 <label for="telefono">Teléfono</label>
-                <input type="number" onkeypress="isNumber()" id="telefono" name="telefono" class="form-control" required  maxlength="25" autocomplete="off" value="{!! !empty($dataCliente) ? $dataCliente->telefono : $dataCliente !!}">
+                <input type="number" onkeypress="return isNumber()" id="telefono" name="telefono" class="form-control" required  maxlength="25" autocomplete="off" value="{!! !empty($dataCliente) ? $dataCliente->telefono : $dataCliente !!}">
             </div>
         </div>
     </div>
@@ -123,5 +123,10 @@
                 <textarea  rows="5"  id="direccion" name="direccion" class="form-control" required  maxlength="500" autocomplete="off" >{!! !empty($dataCliente) ? $dataCliente->direccion : $dataCliente !!}</textarea>
             </div>
         </div>
+    </div>
+    <div class="text-center">
+    <button class="btn btn-success" type="button" id="btn_guardar_modal_add_cliente" onclick="store_cliente('{{csrf_token()}}')">
+        <span class="bootstrap-dialog-button-icon fa fa-fw fa-save">
+        </span>Guardar</button>
     </div>
 </form>
