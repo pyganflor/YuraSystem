@@ -96,8 +96,6 @@
                 $.LoadingOverlay('hide');
             }
         });
-
-
     }
 
     function subir_codigo_dae() {
@@ -129,7 +127,6 @@
                 }
             });
         }
-
     }
 
     function desactivar_codigo(id_codigo){

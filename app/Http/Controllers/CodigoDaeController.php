@@ -217,7 +217,8 @@ class CodigoDaeController extends Controller
                         . '</div>';
                 }
             }
-        }else {
+        }
+        else {
             $errores = '';
             foreach ($valida->errors()->all() as $mi_error) {
                 if ($errores == '') {

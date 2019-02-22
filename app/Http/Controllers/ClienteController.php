@@ -86,7 +86,7 @@ class ClienteController extends Controller
     }
 
     public function store_clientes(Request $request){
-       // dd($request->all());
+
         $valida = Validator::make($request->all(), [
             'nombre'              => 'required',
             'identificacion'      => 'required',
@@ -138,10 +138,10 @@ class ClienteController extends Controller
                             '<p> Ha ocurrido un problema al guardar la información al sistema</p>'
                             . '</div>';
                     }
-                    return [
+                    /*return [
                         'mensaje' => $msg,
                         'success' => $success
-                    ];
+                    ];*/
 
                 }else {
 
@@ -161,10 +161,10 @@ class ClienteController extends Controller
                         '</ul>' .
                         '</div>';
                 }
-                return [
+                /*return [
                     'mensaje' => $msg,
                     'success' => $success
-                ];
+                ];*/
 
             }else{ //Actualizar
 
@@ -191,7 +191,7 @@ class ClienteController extends Controller
                     $objDetalleCliente->codigo_identificacion         = $request->tipo_identificacion;
                     $objDetalleCliente->codigo_impuesto               = $request->codigo_impuesto;
                     $msg= '';
-                    
+
                     if($objDetalleCliente->save()) {
 
                         $model = DetalleCliente::all()->last();
@@ -206,11 +206,10 @@ class ClienteController extends Controller
                             '<p> Ha ocurrido un problema al guardar la información al sistema</p>'
                             . '</div>';
                     }
-                    return [
+                    /*return [
                         'mensaje' => $msg,
                         'success' => $success
-                    ];
-
+                    ];*/
                 }
             }
         } else {
@@ -218,10 +217,10 @@ class ClienteController extends Controller
             $errores = '';
             foreach ($valida->errors()->all() as $mi_error) {
                 if ($errores == '') {
-                $errores = '<li>' . $mi_error . '</li>';
-            } else {
-                $errores .= '<li>' . $mi_error . '</li>';
-            }
+                    $errores = '<li>' . $mi_error . '</li>';
+                } else {
+                    $errores .= '<li>' . $mi_error . '</li>';
+                }
             }
             $msg = '<div class="alert alert-danger">' .
                 '<p class="text-center">¡Por favor corrija los siguientes errores!</p>' .
