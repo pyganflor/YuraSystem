@@ -78,7 +78,7 @@
                         {{$item->descripcion}}
                     </td>
                     <td class="text-center" style="border-color: #9d9d9d">
-                        @if(now()->toDateString() < $item->fecha_pedido)
+                        @if($item->empaquetado == 0)
                             <button class="btn  btn-{!! $item->estado == 1 ? 'success' : 'warning' !!} btn-xs" type="button"
                                     title="{!! $item->estado == 1 ? 'Pedido activo' : 'Pedido cancelado' !!}"
                                     id="edit_pedidos"
