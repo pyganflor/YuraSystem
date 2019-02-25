@@ -65,7 +65,9 @@
                     <select name="clasificacion_ramo_search" id="clasificacion_ramo_search" onchange="calcularConvercion($(this).val())">
                         @foreach(getCalibresRamo() as $calibre)
                             @if($calibre->unidad_medida->tipo == 'P')
-                                <option value="{{$calibre->nombre}}">{{$calibre->nombre}}</option>
+                                <option value="{{$calibre->nombre}}" {{$calibre->nombre == getCalibreRamoEstandar()->nombre ? 'selected' : ''}}>
+                                    {{$calibre->nombre}}
+                                </option>
                             @endif
                         @endforeach
                     </select>

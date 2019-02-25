@@ -41,6 +41,10 @@
                         Real
                     </th>
                     <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
+                        style="border-color: #9d9d9d">
+                        Cajas
+                    </th>
+                    <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
                         style="border-color: #9d9d9d" width="5%">
                         Sacar
                     </th>
@@ -49,6 +53,7 @@
                 @php
                     $current_fecha = substr($listado[0]->fecha_inicio,0,10);
 
+                    $total_cajas = 0;
                     $tallos_entrantes = 0;
                     $tallos_restantes = 0;
                     $total_disponibles = 0;
@@ -56,6 +61,7 @@
                     $ids_apertura = '';
                     $i=0;
                 @endphp
+                <tbody>
                 @foreach($listado as $apertura)
                     <tr onmouseover="$(this).css('background-color','#ADD8E6')" onmouseleave="$(this).css('background-color','')"
                         style="color: {{getStockById($apertura->id_stock_apertura)->clasificacion_unitaria->unidad_medida->tipo == 'L' ? 'blue' : ''}}">
@@ -141,17 +147,23 @@
                                 </span>
                         </td>
                         <td class="text-center" style="border-color: #9d9d9d">
+                            <span class="badge" style="color: #0a0a0a; background-color: #3cf7ff" title="Real">
+                                {{round(getStockById($apertura->id_stock_apertura)->getDisponibles('estandar') / getConfiguracionEmpresa()->ramos_x_caja, 2)}}
+                            </span>
+                        </td>
+                        <td class="text-center" style="border-color: #9d9d9d">
                             <input type="number" class="text-center input_sacar" {{--onkeypress="return isNumber(event)"--}}
                             id="sacar_{{$apertura->id_stock_apertura}}" min="1" width="100%"
                                    max="{{getStockById($apertura->id_stock_apertura)->cantidad_disponible}}"
                                    onchange="seleccionar_apertura_sacar('{{$apertura->id_stock_apertura}}')"
-                                   value="{{getStockById($apertura->id_stock_apertura)->cantidad_disponible}}">
+                                   value="">
                             <input type="hidden" class="input_sacar_ini"
                                    id="sacar_ini_{{$apertura->id_stock_apertura}}"
                                    value="{{getStockById($apertura->id_stock_apertura)->cantidad_disponible}}">
                         </td>
                     </tr>
                     @php
+                        $total_cajas += round(getStockById($apertura->id_stock_apertura)->getDisponibles('estandar') / getConfiguracionEmpresa()->ramos_x_caja, 2);
                         $tallos_entrantes += getStockById($apertura->id_stock_apertura)->cantidad_tallos;
                         $tallos_restantes += getStockById($apertura->id_stock_apertura)->cantidad_disponible;
                         $total_disponibles += getStockById($apertura->id_stock_apertura)->getDisponibles('estandar');
@@ -169,8 +181,11 @@
                                 <input type="hidden" id="total_ramos_{{substr($apertura->fecha_inicio,0,10)}}"
                                        value="{{$total_ramos}}">
                             </td>
-                            <td style="border-bottom-color: #9d9d9d; border-color: #9d9d9d" colspan="2">
-                                {{substr($apertura->fecha_inicio,0,10)}}
+                            <td style="border-bottom-color: #9d9d9d; border-color: #9d9d9d" colspan="2" class="text-center">
+                                <strong>
+                                    {{getDias(TP_COMPLETO,FR_ARREGLO)[transformDiaPhp(date('w',strtotime(substr($apertura->fecha_inicio,0,10))))]}}
+                                    {{convertDateToText(substr($apertura->fecha_inicio,0,10))}}
+                                </strong>
                             </td>
                             <th class="text-center" style="border-color: #9d9d9d">Total</th>
                             <th class="text-center" style=" border-color: #9d9d9d">
@@ -185,6 +200,9 @@
                             </th>
                             <th class="text-center" style=" border-color: #9d9d9d">{{$total_disponibles}}</th>
                             <td style="border-bottom-color: #9d9d9d; border-right-color: #9d9d9d"></td>
+                            <td style="border-bottom-color: #9d9d9d; border-right-color: #9d9d9d" class="text-center">
+                                {{$total_cajas}}
+                            </td>
                             <td style="border-bottom-color: #9d9d9d; border-right-color: #9d9d9d"></td>
                         </tr>
                         @php
@@ -197,6 +215,7 @@
                         $i++;
                     @endphp
                 @endforeach
+                </tbody>
             </table>
         </div>
     @else

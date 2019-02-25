@@ -149,6 +149,18 @@ class ClasificacionVerde extends Model
         return $r;
     }
 
+    public function getPorcentajeUnitariaByVariedad($variedad, $unitaria)
+    {
+        $parte = $this->getTallosByvariedadUnitaria($variedad, $unitaria);
+        return round(($parte * 100) / $this->tallos_x_variedad($variedad), 2);
+    }
+
+    public function getPorcentajeByVariedad($variedad)
+    {
+        $parte = $this->tallos_x_variedad($variedad);
+        return round(($parte * 100) / $this->total_tallos(), 2);
+    }
+
     public function variedades()
     {
         $l = DB::table('detalle_clasificacion_verde as d')
