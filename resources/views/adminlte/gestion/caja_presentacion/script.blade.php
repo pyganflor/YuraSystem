@@ -129,9 +129,11 @@
             id_empaque : id_empaque
         };
         $.get('{{url('caja_presentacion/detalle_empaque')}}', datos, function (retorno) {
-            modal_form('modal_detalle_empaque', retorno, '<i class="fa fa-list" aria-hidden="true"></i> Detalles empaque <span id="span_nombre_empaque" style="font-weight:900"></span>', true, false, '{{isPC() ? '65%' : ''}}', function () {
+            modal_view('modal_detalle_empaque', retorno, '<i class="fa fa-list" aria-hidden="true"></i> Detalles empaque <span id="span_nombre_empaque" style="font-weight:900"></span>', true, false,'{{isPC() ? '60%' : ''}}');
+
+            /*modal_form('modal_detalle_empaque', retorno, '<i class="fa fa-list" aria-hidden="true"></i> Detalles empaque <span id="span_nombre_empaque" style="font-weight:900"></span>', true, false, '{{isPC() ? '65%' : ''}}', function () {
                store_detalle_empque();
-            });
+            });*/
             setTimeout(function(){
                 $("#span_nombre_empaque").html($("#nombre_empaque").val());
             },500);
@@ -142,17 +144,25 @@
     }
 
     function store_detalle_empque() {
-        datos = {
-            id_empaque : $("#id_empaque").val(),
-            id_variedad : $("#id_variedad").val(),
-            id_clasificacion_ramo : $("#id_clasificacion_ramo").val(),
-            id_unidad_medida     : $("#id_unidad_medida").val(),
-            cantidad_ramo       : $("#cantidad_ramo").val()
-        };
         $.LoadingOverlay('show');
-        $.get('{{url('caja_presentacion/store_empaque')}}', datos, function (retorno) {
-            modal_view('modal_empaque', retorno, '<i class="fa fa-fw fa-gift"></i> Mensaje empaque </span>', true, false,'{{isPC() ? '40%' : ''}}');
+        arrData=[];
+        var cant_inputs = $("form#form_add_detalle_empaque div.row").length;
 
+        for(var i=1;i<=cant_inputs;i++){
+            arrData.push({
+                id_variedad: $("#id_variedad_"+i).val(),
+                clasificacion_ramo :$("#clasificacion_ramo_" + i).val(),
+                id_clasificacion_ramo :$("#id_clasificacion_ramo_" + i).val(),
+                unidad_medida : $("#id_unidad_medida_" + i).val(),
+                cantidad_ramos: $("#cantidad_ramo_" + i).val(),
+                id_detalle_empaque: $("#id_detalle_empaque_" + i).val(),
+            });
+        }
+        datos = {
+            arrData : arrData,
+        };
+        $.get('{{url('caja_presentacion/store_detalle_empaque')}}', datos, function (retorno) {
+            modal_view('modal_empaque', retorno, '<i class="fa fa-fw fa-gift"></i> Mensaje empaque </span>', true, false,'{{isPC() ? '40%' : ''}}');
             buscar_empaques();
             cerrar_modals();
         }).always(function () {
@@ -190,5 +200,5 @@
                 });
             });
     }
-    
+
 </script>
