@@ -53,9 +53,9 @@
                     <select name="tallos_x_coche" id="tallos_x_coche" onchange="calcular_tallos_x_coche()">
                         <option value="">Cantidad de tallos</option>
                         @foreach(getUnitarias() as $unitaria)
-                            <option value="{{explode('|',$unitaria->nombre)[0]}}"
+                            <option value="{{$unitaria->tallos_x_ramo * $unitaria->ramos_x_balde * getConfiguracionEmpresa()->baldes_x_coche}}"
                                     style="background-color: {{explode('|',$unitaria->color)[0]}}; color: {{explode('|',$unitaria->color)[1]}}">
-                                {{explode('|',$unitaria->nombre)[0]}}
+                                {{$unitaria->tallos_x_ramo * $unitaria->ramos_x_balde * getConfiguracionEmpresa()->baldes_x_coche}}
                             </option>
                         @endforeach
                     </select>

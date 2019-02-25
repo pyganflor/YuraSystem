@@ -783,7 +783,7 @@ function getEspeficiacionesPedido($idEspecificacion)
         ->join('empaque as emp', 'espe.id_empaque', '=', 'emp.id_empaque')
         ->join('variedad as v', 'despem.id_variedad', '=', 'v.id_variedad')
         ->join('clasificacion_ramo as cr', 'despem.id_clasificacion_ramo', '=', 'cr.id_clasificacion_ramo')
-        ->select('emp.nombre as emNombre','espe.cantidad', 'v.nombre as vn', 'v.siglas', 'cr.nombre as clNombnre')->get();
+        ->select('emp.nombre as emNombre', 'espe.cantidad', 'v.nombre as vn', 'v.siglas', 'cr.nombre as clNombnre')->get();
     return $dataDetalleEspecificacion;
 }
 
