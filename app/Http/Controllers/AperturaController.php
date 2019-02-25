@@ -364,7 +364,7 @@ class AperturaController extends Controller
         $success = true;
         if (count($request->arreglo) > 0) {
             foreach ($request->arreglo as $item) {
-                $consumo = Consumo::All()->where('fecha_pedidos', '=', $item['fecha_pedido'])->first();
+                $consumo = Consumo::All()->where('fecha_pedidos', '=', date('Y-m-d'))->first();
                 $apertura = StockApertura::find($item['id_stock_apertura']);
 
                 $unitaria = $apertura->clasificacion_unitaria;
@@ -375,7 +375,7 @@ class AperturaController extends Controller
                     if ($consumo == '') {
                         /* ========= CREAR CONSUMO ========== */
                         $consumo = new Consumo();
-                        $consumo->fecha_pedidos = $item['fecha_pedido'];
+                        $consumo->fecha_pedidos = date('Y-m-d');
                         $consumo->fecha_registro = date('Y-m-d H:i:s');
 
                         if ($consumo->save()) {

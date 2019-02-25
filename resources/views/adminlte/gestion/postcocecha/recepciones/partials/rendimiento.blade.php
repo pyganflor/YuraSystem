@@ -29,7 +29,7 @@
                        style="border: 2px solid #9d9d9d; display: none;">
                     <tr>
                         <th class="text-center" style="border-color: #9d9d9d">
-                            Fecha y Hora
+                            Hora
                         </th>
                         <th class="text-center detalle_horas" style="border-color: #9d9d9d">
                             Variedad
@@ -118,7 +118,7 @@
                        style="border: 2px solid #9d9d9d; display: none;">
                     <tr>
                         <th class="text-center" style="border-color: #9d9d9d">
-                            Fecha y Hora
+                            Hora
                         </th>
                         <th class="text-center detalle_ingresos" style="border-color: #9d9d9d">
                             Variedad
@@ -143,7 +143,7 @@
                     @foreach($cosecha->recepciones as $recepcion)
                         <tr>
                             <td class="text-center" style="border-color: #9d9d9d">
-                                {{substr($recepcion->fecha_ingreso, 0, 16)}}
+                                {{substr($recepcion->fecha_ingreso, 11, 5)}}
                             </td>
                             <td class="text-center detalle_ingresos" style="border-color: #9d9d9d">
                                 <ul class="list-unstyled">

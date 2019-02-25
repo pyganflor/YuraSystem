@@ -112,6 +112,21 @@ class ClasificacionVerde extends Model
         return round(100 - round(($this->total_tallos() * 100) / $total, 2), 2);
     }
 
+    public function desechoByVariedad($variedad)
+    {
+        if ($this->total_tallos_recepcionByVariedad($variedad) > 0)
+            return round(100 - (($this->tallos_x_variedad($variedad) * 100) / $this->total_tallos_recepcionByVariedad($variedad)), 2);
+        else return 0;
+    }
+
+    public function calibreByVariedad($variedad)
+    {
+        if ($this->getTotalRamosEstandarByVariedad($variedad))
+            return round($this->tallos_x_variedad($variedad) / $this->getTotalRamosEstandarByVariedad($variedad), 2);
+        else
+            return 0;
+    }
+
     public function getRamosByvariedadUnitaria($variedad, $unitaria)
     {
         $r = 0;
@@ -288,7 +303,7 @@ class ClasificacionVerde extends Model
             ->join('variedad as v', 'v.id_variedad', '=', 'd.id_variedad')
             ->select('d.id_variedad', 'd.id_clasificacion_unitaria')->distinct()
             ->where('d.id_clasificacion_verde', '=', $this->id_clasificacion_verde)
-            ->orderBy('v.nombre', 'asc')->simplePaginate(10);
+            ->orderBy('v.nombre', 'asc')->get();
 
         foreach ($listado as $item) {
             $r += round($this->getTallosByvariedadUnitaria($item->id_variedad, $item->id_clasificacion_unitaria) /

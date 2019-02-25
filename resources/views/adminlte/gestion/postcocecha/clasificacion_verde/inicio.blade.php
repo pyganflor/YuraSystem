@@ -107,5 +107,8 @@
 @endsection
 
 @section('script_final')
+    {{-- JS de Chart.js --}}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
+
     @include('adminlte.gestion.postcocecha.clasificacion_verde.script')
 @endsection

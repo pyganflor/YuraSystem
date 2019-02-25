@@ -45,6 +45,15 @@
             <tr>
                 <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
                     style="border-color: #9d9d9d">
+                    CAJAS EQ.
+                </th>
+                <td style="border-color: #9d9d9d" class="text-center">
+                    {{round($clasificacion->getTotalRamosEstandar() / getConfiguracionEmpresa()->ramos_x_caja, 2)}}
+                </td>
+            </tr>
+            <tr>
+                <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
+                    style="border-color: #9d9d9d">
                     CALIBRE
                 </th>
                 <td style="border-color: #9d9d9d" class="text-center">
