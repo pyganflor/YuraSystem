@@ -973,7 +973,8 @@ function getDetalleEspecificacion($id_especificacion)
         $data->join('unidad_medida as um', 'deemp.id_unidad_medida', 'um.id_unidad_medida');
         $a = 1;
     }
-    $data = $data->select('especificacion.id_especificacion', 'v.id_variedad', 'v.nombre as nombre_variedad', /*'empE.nombre as envoltura',*/ 'empP.nombre as presentacion', 'deemp.cantidad as cantidad_ramos', 'deemp.tallos_x_ramos', 'deemp.longitud_ramo', $a == 1 ? 'um.siglas as siglas_unidad_medida_longitud' : 'e.nombre as nombre_empaque', 'cr.nombre as nombre_clasificacion_ramo', 'umCR.siglas as siglas_unidad_medida_clasificacion_ramo', 'espemp.cantidad as cantidad_cajas', 'e.nombre as nombre_empaque')->first();
+    $data = $data->select('especificacion.id_especificacion', 'v.id_variedad', 'v.nombre as nombre_variedad', /*'empE.nombre as envoltura',*/
+        'empP.nombre as presentacion', 'deemp.cantidad as cantidad_ramos', 'deemp.tallos_x_ramos', 'deemp.longitud_ramo', $a == 1 ? 'um.siglas as siglas_unidad_medida_longitud' : 'e.nombre as nombre_empaque', 'cr.nombre as nombre_clasificacion_ramo', 'umCR.siglas as siglas_unidad_medida_clasificacion_ramo', 'espemp.cantidad as cantidad_cajas', 'e.nombre as nombre_empaque')->first();
     return $data->cantidad_cajas . " " . explode('|', $data->nombre_empaque)[0] . " con " . $data->cantidad_ramos . " ramos c/u de " . $data->nombre_clasificacion_ramo . " " . $data->siglas_unidad_medida_clasificacion_ramo . " " . $data->nombre_variedad . " " /*. $data->envoltura . " "*/ . $data->presentacion . " " . $data->tallos_x_ramos . " tallos por ramo " . $data->longitud_ramo . " " . $data->siglas_unidad_medida_longitud;
 }
 
@@ -1168,7 +1169,7 @@ function respuesta_autorizacion_comprobante($clave_acceso_lote)
                 $nombreCliente = (string)$xmlEnviado->infoFactura->razonSocialComprador;
                 if ($estado === "AUTORIZADO") {
                     $msg = "La factura del comprobante " . $claveAcceso . " ha sido aprobada por el SRI y se ha enviado el correo correspondiente al cliente";
-                    $response .= accionAutorizacion($autorizacion, env('PATH_XML_AUTORIZADOS'), $msg, $tipoDocumento,$mailCliente,$nombreCliente);
+                    $response .= accionAutorizacion($autorizacion, env('PATH_XML_AUTORIZADOS'), $msg, $tipoDocumento, $mailCliente, $nombreCliente);
                 } else if ($estado === "RECHAZADA" || $estado === "DEVUELTA") {
                     $msg = "La factura del comprobante " . $claveAcceso . " ha sido rechazada por el SRI, verifique la causa en el listado de pdf y realice nuevamente el proceso de facturación del envío";
                     $response .= accionAutorizacion($autorizacion, env('PATH_XML_RECHAZADOS'), $msg);
@@ -1182,7 +1183,7 @@ function respuesta_autorizacion_comprobante($clave_acceso_lote)
     return $response;
 }
 
-function accionAutorizacion($autorizacion, $path, $msg, $tipoDocumento = false,$mailCliente=false,$nombreCliente=false)
+function accionAutorizacion($autorizacion, $path, $msg, $tipoDocumento = false, $mailCliente = false, $nombreCliente = false)
 {
     $numeroAutorizacion = (String)$autorizacion->numeroAutorizacion;
     $fechaAutorizacion = (String)$autorizacion->fechaAutorizacion;
@@ -1192,10 +1193,10 @@ function accionAutorizacion($autorizacion, $path, $msg, $tipoDocumento = false,$
     $actualizaEstado = 1;
     if ((String)$autorizacion->estado === "AUTORIZADO") {
         $actualizaEstado = 5;
-        $numeroComprobante = (String)"001".getPuntoAcceso().getDetallesClaveAcceso($numeroAutorizacion,'SECUENCIAL');
+        $numeroComprobante = (String)"001" . getPuntoAcceso() . getDetallesClaveAcceso($numeroAutorizacion, 'SECUENCIAL');
         $class = 'success';
         if ($tipoDocumento == "01")
-            generaFacturaPDF($autorizacion,$numeroComprobante);
+            generaFacturaPDF($autorizacion, $numeroComprobante);
 
     } else {
         $class = 'danger';
@@ -1210,7 +1211,7 @@ function accionAutorizacion($autorizacion, $path, $msg, $tipoDocumento = false,$
     $objComprobante->estado = $actualizaEstado;
 
     $autorizacion->estado !== "AUTORIZADO" ? $objComprobante->update(['cuasa' => $causa]) : "";
-    $objComprobante->update(['estado' => $actualizaEstado,'numero_comprobante'=>$numeroComprobante]);
+    $objComprobante->update(['estado' => $actualizaEstado, 'numero_comprobante' => $numeroComprobante]);
 
     $xml = new DOMDocument(1.0, 'UTF-8');
     $xml->loadXML($dataXML);
@@ -1230,7 +1231,7 @@ function accionAutorizacion($autorizacion, $path, $msg, $tipoDocumento = false,$
     $nuevoXml->save($path . $numeroAutorizacion . ".xml");
 
     (String)$autorizacion->estado === "AUTORIZADO"
-        ? enviarMailComprobanteCliente($tipoDocumento,$mailCliente,$nombreCliente,$numeroAutorizacion,$numeroComprobante)
+        ? enviarMailComprobanteCliente($tipoDocumento, $mailCliente, $nombreCliente, $numeroAutorizacion, $numeroComprobante)
         : "";
 
     return "<div class='alert text-center  alert-" . $class . "'>" .
@@ -1238,7 +1239,7 @@ function accionAutorizacion($autorizacion, $path, $msg, $tipoDocumento = false,$
         . "</div>";
 }
 
-function generaFacturaPDF($autorizacion,$numeroComprobante)
+function generaFacturaPDF($autorizacion, $numeroComprobante)
 {
     $numero_autorizacion = (String)$autorizacion->numeroAutorizacion;
     $barcode = new BarcodeGenerator();
@@ -1253,17 +1254,18 @@ function generaFacturaPDF($autorizacion,$numeroComprobante)
         'obj_xml' => simplexml_load_string($autorizacion->comprobante),
         'numeroComprobante' => $numeroComprobante
     ];
-    PDF::loadView('adminlte.gestion.comprobante.partials.pdf.factura', compact('data'))->save(env('PDF_FACTURAS').$autorizacion->numeroAutorizacion.".pdf");
+    PDF::loadView('adminlte.gestion.comprobante.partials.pdf.factura', compact('data'))->save(env('PDF_FACTURAS') . $autorizacion->numeroAutorizacion . ".pdf");
 }
 
-function enviarMailComprobanteCliente($tipoDocumento,$correoCliente,$nombreCliente,$nombreArchivo,$numeroComprobante){
-    if($tipoDocumento == "01"){
-                    //$correoCliente
-        Mail::to("pruebas-c26453@inbox.mailtrap.io")->send(new CorreoFactura($correoCliente,$nombreCliente,$nombreArchivo,$numeroComprobante));
+function enviarMailComprobanteCliente($tipoDocumento, $correoCliente, $nombreCliente, $nombreArchivo, $numeroComprobante)
+{
+    if ($tipoDocumento == "01") {
+        //$correoCliente
+        Mail::to("pruebas-c26453@inbox.mailtrap.io")->send(new CorreoFactura($correoCliente, $nombreCliente, $nombreArchivo, $numeroComprobante));
     }
 }
 
-function getDetallesClaveAcceso($numeroAutorizacion,$detalle)
+function getDetallesClaveAcceso($numeroAutorizacion, $detalle)
 {
     switch ($detalle) {
         case 'RUC':
@@ -1279,7 +1281,7 @@ function getDetallesClaveAcceso($numeroAutorizacion,$detalle)
 
             break;
         case 'SECUENCIAL':
-            $resultado = substr($numeroAutorizacion,30,9);
+            $resultado = substr($numeroAutorizacion, 30, 9);
             break;
     }
     return $resultado;
@@ -1296,8 +1298,9 @@ function getSecuencial()
     return str_pad($secuencial, 9, "0", STR_PAD_LEFT);
 }
 
-function getPuntoAcceso(){
-    return Usuario::where('id_usuario',Session::get('id_usuario'))->select('punto_acceso')->first()->punto_acceso;
+function getPuntoAcceso()
+{
+    return Usuario::where('id_usuario', Session::get('id_usuario'))->select('punto_acceso')->first()->punto_acceso;
 }
 
 function getDetallesVerdeByFecha($fecha)
@@ -1308,6 +1311,15 @@ function getDetallesVerdeByFecha($fecha)
         ->get();
     return $listado;
 }
+
+function convertToEstandar($ramos, $calibre)
+{
+    $estandar = getCalibreRamoEstandar()->nombre;
+    $factor = round($calibre / $estandar, 2);
+    return round($ramos * $factor);
+}
+
+;
 
 /* ============ Calcular la cantidad de cajas equivalentes segun grosor_variedad ==============*/
 function getEquivalentesByGrosorVariedad($fecha, $grosor, $variedad)
@@ -1335,7 +1347,8 @@ function getEquivalentesByGrosorVariedad($fecha, $grosor, $variedad)
 }
 
 /* ============ Cantidad de ramos pedidos segun fecha, variedad, clasificacion_ramo, envoltura, presentacion, tallos_x_ramo, longitud_ramo, unidad_medida ==============*/
-function getCantidadRamosPedidosForCB($fecha, $variedad, $clasificacion_ramo, /*$envoltura, */$presentacion, $tallos_x_ramos, $longitud_ramo, $unidad_medida)
+function getCantidadRamosPedidosForCB($fecha, $variedad, $clasificacion_ramo, /*$envoltura, */
+                                      $presentacion, $tallos_x_ramos, $longitud_ramo, $unidad_medida)
 {
     $r = DB::table('pedido as p')
         ->join('detalle_pedido as dp', 'dp.id_pedido', '=', 'p.id_pedido')
@@ -1366,7 +1379,8 @@ function getCantidadRamosPedidosForCB($fecha, $variedad, $clasificacion_ramo, /*
 }
 
 /* ============ Obtener Inventario en frío ==============*/
-function getDisponibleInventarioFrio($variedad, $clasificacion_ramo, /*$envoltura, */$presentacion, $tallos_x_ramos, $longitud_ramo, $unidad_medida)
+function getDisponibleInventarioFrio($variedad, $clasificacion_ramo, /*$envoltura, */
+                                     $presentacion, $tallos_x_ramos, $longitud_ramo, $unidad_medida)
 {
     $r = DB::table('inventario_frio as if')
         ->select(DB::raw('sum(if.disponibles) as cantidad'))

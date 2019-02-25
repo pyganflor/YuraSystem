@@ -255,7 +255,6 @@ class CajasPresentacionesController extends Controller
             $msg = '';
             $document = PHPExcel_IOFactory::load($request->file);
             $activeSheetData = $document->getActiveSheet()->toArray(null, true, true, true);
-            dd($activeSheetData);
             for ($i = 3; $i <= count($activeSheetData); $i++) {
                 if(Variedad::where('siglas',$activeSheetData[$i]['C'])->count() == 0 ) {
                     $msg .= '<div class="alert alert-danger text-center">' .
@@ -352,18 +351,35 @@ class CajasPresentacionesController extends Controller
                 ->join('clasificacion_ramo as cr','de.id_clasificacion_ramo','cr.id_clasificacion_ramo')
                 ->join('unidad_medida as um','cr.id_unidad_medida','um.id_unidad_medida')
                 ->where('empaque.id_empaque',$request->id_empaque)
-                ->select('de.id_detalle_empaque','de.cantidad','empaque.id_empaque','cr.id_clasificacion_ramo','v.id_variedad','um.id_unidad_medida','v.nombre as nombre_variedad','cr.nombre as nombre_clasificacion_ramo','empaque.nombre as nombre_empaque')->get(),
+                ->select('de.id_detalle_empaque','de.cantidad','empaque.id_empaque','cr.id_clasificacion_ramo','v.id_variedad','um.id_unidad_medida','um.siglas as siglas_unidad_medida','v.nombre as nombre_variedad','cr.nombre as nombre_clasificacion_ramo','empaque.nombre as nombre_empaque')->get(),
             'variedades' => Variedad::get(),
-            'nombreEmpaque' =>  Empaque::where('id_empaque',$request->id_empaque)->select('nombre')->first()
+            'nombreEmpaque' =>  Empaque::where('id_empaque',$request->id_empaque)->select('nombre')->first(),
+            //'clasificacionRamo' => ClasificacionRamo::select('clasificacion_ramo.nombre','clasificacion_ramo.id_clasificacion_ramo')->distinct()->get()
         ]);
     }
 
     public function store_detalle_empaque(Request $request){
+
         $valida = Validator::make($request->all(), [
-            'file' => 'required',
+            'arrData' => 'required|Array',
         ]);
 
         if (!$valida->fails()) {
+
+            foreach($request->arrData as $data){
+
+                $dataDetalleEmpaque = DetalleEmpaque::where('id_detalle_empaque',$data['id_detalle_empaque'])->first();
+
+                $variedad = DetalleEmpaque::find($data['id_detalle_empaque']);
+                $variedad->update([
+                    'id_variedad'=>$data['id_variedad'],
+                    'cantidad' => $data['cantidad_ramos']
+                ]);
+
+            }
+
+
+
             $dataDetalleEmpaque = Empaque::join('detalle_empaque as de','empaque.id_empaque','de.id_empaque')
                 ->join('variedad as v','de.id_variedad','v.id_variedad')
                 ->join('clasificacion_ramo as cr','de.id_clasificacion_ramo','cr.id_clasificacion_ramo')

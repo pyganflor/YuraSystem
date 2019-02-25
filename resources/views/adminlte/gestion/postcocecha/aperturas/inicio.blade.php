@@ -50,8 +50,15 @@
                 </div>
                 <div class="form-group pull-right" id="div_form_group_coches" style="display: none; margin-bottom: 0">
                     <label for="check_coches">Tallos por coches</label>
-                    <input type="number" onkeypress="return isNumber(event)" id="tallos_x_coche" min="1"
-                           placeholder=" cantidad de tallos" onchange="calcular_tallos_x_coche()">
+                    <select name="tallos_x_coche" id="tallos_x_coche" onchange="calcular_tallos_x_coche()">
+                        <option value="">Cantidad de tallos</option>
+                        @foreach(getUnitarias() as $unitaria)
+                            <option value="{{explode('|',$unitaria->nombre)[0]}}"
+                                    style="background-color: {{explode('|',$unitaria->color)[0]}}; color: {{explode('|',$unitaria->color)[1]}}">
+                                {{explode('|',$unitaria->nombre)[0]}}
+                            </option>
+                        @endforeach
+                    </select>
                 </div>
                 <div class="form-group pull-right" style="margin-right: 10px; margin-bottom: 0">
                     <label for="clasificacion_ramo_search" style="margin-right: 10px">Calibre del ramo</label>

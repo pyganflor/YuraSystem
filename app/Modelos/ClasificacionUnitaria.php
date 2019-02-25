@@ -21,6 +21,7 @@ class ClasificacionUnitaria extends Model
         'id_clasificacion_ramo_estandar',
         'id_clasificacion_ramo_real',
         'tallos_x_ramo',
+        'color',    // white|black
     ];
 
     public function configuracion_empresa()

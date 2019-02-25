@@ -77,12 +77,11 @@ class DespachosController extends Controller
                     ->get();
 
                 $cantidad_ramos = 0;
+
                 foreach ($list as $i) {
                     $calibre = getCalibreRamoById($i->id_clasificacion_ramo);
-                    $estandar = getCalibreRamoEstandar();
                     $cant = $i->cantidad;
-                    $factor = round($calibre->nombre / $estandar->nombre, 2);
-                    $conversion = round($factor * $cant, 2);
+                    $conversion = convertToEstandar($cant, $calibre->nombre);
                     $cantidad_ramos += round($conversion / getConfiguracionEmpresa()->ramos_x_caja, 2);
                 }
                 array_push($cajas_equivalentes, [
@@ -90,6 +89,7 @@ class DespachosController extends Controller
                     'cantidad' => $cantidad_ramos,
                 ]);
             }
+
         }
 
         $datos = [
@@ -101,10 +101,5 @@ class DespachosController extends Controller
         ];
 
         return view('adminlte.gestion.postcocecha.despachos.partials.listado', $datos);
-    }
-
-    public function ver_envios(Request $request)
-    {
-        return 'ok';
     }
 }

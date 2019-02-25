@@ -206,7 +206,7 @@ console.log($("#codigo_pais").val());
         datos = {};
         get_jquery('{{url('configuracion/admin_clasificacion_unitaria')}}', datos, function (retorno) {
             modal_view('modal_view_clasificaciones', retorno, '<i class="fa fa-fw fa-table"></i> Clasificación unitaria', true, false,
-                '{{isPC() ? '50%' : ''}}');
+                '{{isPC() ? '85%' : ''}}');
         });
     }
 
