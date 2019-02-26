@@ -38,9 +38,9 @@
                             <i class="fa fa-eye" aria-hidden="true"></i>
                         </button>
                         @endif
-                            <a href="javascript:void(0)" class="btn btn-{{$item->estado == 1 ? 'warning':'success'}} btn-xs" title="{{$item->estado == 1 ? 'Deshabilitar':'Habilitar'}}"
+                            <a href="javascript:void(0)" class="btn btn-{{$item->estado == 1 ? 'success':'warning'}} btn-xs" title="{{$item->estado == 1 ? 'Habilitada':'Deshabilitada'}}"
                                onclick="update_especificacion('{{$item->id_especificacion}}','{{$item->estado}}','{{csrf_token()}}')">
-                                <i class="fa fa-fw fa-{{$item->estado == 1 ? 'ban':'check'}}" style="color: white" ></i>
+                                <i class="fa fa-fw fa-{{$item->estado == 1 ? 'check':'ban'}}" style="color: white" ></i>
                             </a>
                     </td>
                 </tr>

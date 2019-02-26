@@ -731,3 +731,29 @@ function tipo_unidad_medida(data,token) {
           }*/
     });
 }
+
+function form_codigo_barra() {
+    $.LoadingOverlay('show');
+    $.get('codigo_barra/form_codigo_barra', {}, function (retorno) {
+        modal_form('modal_view_envio_pedido', retorno, '<i class="fa fa-barcode"></i> Crear código de barras', true, false, '50%', function () {
+            genera_codigo_barra($("#prefijo").val(),$("#codigo").val());
+        });
+
+    }).always(function () {
+        $.LoadingOverlay('hide');
+    });
+}
+
+function genera_codigo_barra(prefijo,codigo) {
+    $.LoadingOverlay('show');
+    /*datos = {
+        prefijo : prefijo,
+        codigo  : codigo
+    };*/
+    console.log(prefijo);
+    $.get('codigo_barra/generar_codigo_barra/'+codigo+"/"+prefijo, {}, function (retorno) {
+        console.log(retorno);
+       $("#img_codigo_barra").html(retorno);
+    });
+    $.LoadingOverlay('hide');
+}

@@ -70,5 +70,7 @@ Route::group(['middleware' => 'autenticacion'], function () {
         include 'facturacion/codigo_dae.php';
 
     });
+
+    include 'codigo_barra/rutas.php';
     include 'facturacion/comprobante.php';
 });

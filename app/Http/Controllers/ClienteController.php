@@ -36,6 +36,7 @@ class ClienteController extends Controller
 
     public function buscar_clientes(Request $request)
     {
+
         $busqueda = $request->has('busqueda') ? espacios($request->busqueda) : '';
         $bus = str_replace(' ', '%%', $busqueda);
         $mi_busqueda_toupper = mb_strtoupper($bus);
@@ -47,11 +48,12 @@ class ClienteController extends Controller
             ->join('pais as pa',  'dc.codigo_pais', '=', 'pa.codigo')
             ->select('cl.estado', 'dc.nombre','dc.direccion','dc.ruc','dc.correo','pa.nombre as pa_nombre','cl.id_cliente');
 
-        if ($request->busqueda != '') $listado = $listado->Where(function ($q) use ($mi_busqueda_toupper, $mi_busqueda_tolower) {
-            $q->Where('dc.nombre', 'like', '%' . $mi_busqueda_toupper . '%')
-                ->orWhere('dc.correo', 'like', '%' . $mi_busqueda_tolower . '%')
-                ->orWhere('dc.ruc', 'like', '%' . $mi_busqueda_toupper . '%')
-                ->orWhere('pa.nombre', 'like', '%' . $mi_busqueda_toupper . '%');
+        if ($request->busqueda != '') $listado = $listado->Where(function ($q) use ($busqueda) {
+            $q->Where('dc.nombre', 'like', '%' . $busqueda . '%')
+                ->orWhere('dc.correo', 'like', '%' . $busqueda . '%')
+                ->orWhere('dc.ruc', 'like', '%' . $busqueda . '%')
+                ->orWhere('pa.nombre', 'like', '%' . $busqueda . '%')
+                ->orWhere('dc.direccion', 'like', '%' . $busqueda . '%');
         });
 
         $listado = $listado->orderBy('dc.nombre', 'asc')->paginate(20);
@@ -77,7 +79,7 @@ class ClienteController extends Controller
             : $tipoImpuesto = [];
 
         return view('adminlte.gestion.postcocecha.clientes.forms.add_cliente',[
-            'dataPais'=>Pais::all(),
+            'dataPais'=>Pais::orderBy('nombre','asc')->get(),
             'dataCliente' => $dataCliente,
              'tipoImpuestos' => $tipoImpuesto,
             'dataTipoIdentificacion' => TipoIdentificacion::where('estado',1)->get(),
@@ -261,8 +263,6 @@ class ClienteController extends Controller
         header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
         header("Pragma: no-cache");
         $objWriter->save('php://output');
-
-
     }
 
     public function excel_clientes($objPHPExcel, $request)
@@ -363,9 +363,9 @@ class ClienteController extends Controller
         }
     }
 
-    public function detales_cliente(Request $request){
+    public function detalles_cliente(Request $request){
 
-        $dataAgenciasCarga         = AgenciaCarga::orderBy('id_agencia_carga','desc')->get();
+        $dataAgenciasCarga         = AgenciaCarga::orderBy('id_agencia_carga','desc')->where('estado',1)->get();
         $dataCliente               = DetalleCliente::where([
             ['id_cliente',$request->id_cliente],
             ['estado',1]
@@ -390,7 +390,7 @@ class ClienteController extends Controller
 
     public function ver_agencia_carga(Request $request){
 
-        $dataAgenciaCargo = AgenciaCarga::all();
+        $dataAgenciaCargo = AgenciaCarga::where('estado',1)->get();
         return view('adminlte.gestion.postcocecha.clientes.partials.select_agencias_carga',
             [
                 'dataAgenciaCargo'=> $dataAgenciaCargo,

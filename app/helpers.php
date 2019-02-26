@@ -962,15 +962,29 @@ function getDetalleEspecificacion($id_especificacion)
         ->join('especificacion_empaque as espemp', 'especificacion.id_especificacion', 'espemp.id_especificacion')
         ->join('especificacion_empaque as EspeEmpa', 'e.id_empaque', 'EspeEmpa.id_empaque');
 
-    $existUnidadMedidida = DetalleEspecificacionEmpaque::where('id_detalle_especificacionempaque', $data->first()->id_detalle_especificacionempaque)->first();
-    $a = 0;
-    if ($existUnidadMedidida->id_unidad_medida != null) {
-        $data->join('unidad_medida as um', 'deemp.id_unidad_medida', 'um.id_unidad_medida');
-        $a = 1;
+    //dd($data->get());
+
+    /*foreach ($b as $item) {
+        $existUnidadMedidida = DetalleEspecificacionEmpaque::where('id_detalle_especificacionempaque', $item->id_detalle_especificacionempaque)->first();
+        $a = 0;
+        if ($existUnidadMedidida->id_unidad_medida != null) {
+            $data->join('unidad_medida as um', 'deemp.id_unidad_medida', 'um.id_unidad_medida');
+            $a = 1;
+        }
+        $data = $data->select('especificacion.id_especificacion', 'v.id_variedad', 'v.nombre as nombre_variedad', 'empE.nombre as envoltura', 'empP.nombre as presentacion', 'deemp.cantidad as cantidad_ramos', 'deemp.tallos_x_ramos', 'deemp.longitud_ramo', $a == 1 ? 'um.siglas as siglas_unidad_medida_longitud' : 'e.nombre as nombre_empaque', 'cr.nombre as nombre_clasificacion_ramo', 'umCR.siglas as siglas_unidad_medida_clasificacion_ramo', 'espemp.cantidad as cantidad_cajas', 'e.nombre as nombre_empaque')->get();
     }
+
+
+    $m = "";
+    foreach ($data as $key => $d){
+        $m .=  $d->cantidad_cajas . " " . explode('|',  $d->nombre_empaque)[0] . " con " .  $d->cantidad_ramos . " ramos c/u de " .  $d->nombre_clasificacion_ramo . " " .  $d->siglas_unidad_medida_clasificacion_ramo . " " .  $d->nombre_variedad . " " /*.  $d->envoltura . " " .  $d->presentacion . " " .  $d->tallos_x_ramos . " tallos por ramo " .  $d->longitud_ramo . " " .  $d->siglas_unidad_medida_longitud."<br />";
+
+        return $m;*/
+
     $data = $data->select('especificacion.id_especificacion', 'v.id_variedad', 'v.nombre as nombre_variedad', /*'empE.nombre as envoltura',*/
         'empP.nombre as presentacion', 'deemp.cantidad as cantidad_ramos', 'deemp.tallos_x_ramos', 'deemp.longitud_ramo', $a == 1 ? 'um.siglas as siglas_unidad_medida_longitud' : 'e.nombre as nombre_empaque', 'cr.nombre as nombre_clasificacion_ramo', 'umCR.siglas as siglas_unidad_medida_clasificacion_ramo', 'espemp.cantidad as cantidad_cajas', 'e.nombre as nombre_empaque')->first();
     return $data->cantidad_cajas . " " . explode('|', $data->nombre_empaque)[0] . " con " . $data->cantidad_ramos . " ramos c/u de " . $data->nombre_clasificacion_ramo . " " . $data->siglas_unidad_medida_clasificacion_ramo . " " . $data->nombre_variedad . " " /*. $data->envoltura . " "*/ . $data->presentacion . " " . $data->tallos_x_ramos . " tallos por ramo " . $data->longitud_ramo . " " . $data->siglas_unidad_medida_longitud;
+
 }
 
 /* ============ Obtener los ramos sacados de apertura para los pedidos de un "fecha" ==============*/
@@ -1236,16 +1250,9 @@ function accionAutorizacion($autorizacion, $path, $msg, $tipoDocumento = false, 
 
 function generaFacturaPDF($autorizacion, $numeroComprobante)
 {
-    $numero_autorizacion = (String)$autorizacion->numeroAutorizacion;
-    $barcode = new BarcodeGenerator();
-    $barcode->setText($numero_autorizacion);
-    $barcode->setType(BarcodeGenerator::Gs1128);
-    $barcode->setNoLengthLimit(true);
-    $barcode->setAllowsUnknownIdentifier(true);
-    $code = $barcode->generate();
     $data = [
         'autorizacion' => $autorizacion,
-        'img_clave_acceso' => $code,
+        'img_clave_acceso' => generateCodeBarGs1128((String)$autorizacion->numeroAutorizacion),
         'obj_xml' => simplexml_load_string($autorizacion->comprobante),
         'numeroComprobante' => $numeroComprobante
     ];
@@ -1298,6 +1305,15 @@ function getPuntoAcceso()
     return Usuario::where('id_usuario', Session::get('id_usuario'))->select('punto_acceso')->first()->punto_acceso;
 }
 
+function generateCodeBarGs1128($numero_autorizacion){
+    $barcode = new BarcodeGenerator();
+    $barcode->setText($numero_autorizacion);
+    $barcode->setType(BarcodeGenerator::Gs1128);
+    $barcode->setNoLengthLimit(true);
+    $barcode->setAllowsUnknownIdentifier(true);
+    return $barcode->generate();
+}
+
 function getDetallesVerdeByFecha($fecha)
 {
     $listado = DB::table('detalle_clasificacion_verde')
@@ -1324,6 +1340,8 @@ function convertToEstandar($ramos, $calibre)
 }
 
 ;
+
+
 
 /* ============ Calcular la cantidad de cajas equivalentes segun grosor_variedad ==============*/
 function getEquivalentesByGrosorVariedad($fecha, $grosor, $variedad)

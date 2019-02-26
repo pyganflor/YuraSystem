@@ -8,6 +8,7 @@
             </h3>
         </div>
         <div class="box-body" id="div_content_especificaciones">
+            <input type="hidden" id="listar_todas" value="{{$listar_todas}}">
             <table width="100%">
                 <tr>
                     <td>
@@ -38,7 +39,8 @@
     function buscar_listado(id_cliente) {
         $.LoadingOverlay('show');
         datos = {
-            id_cliente : id_cliente
+            id_cliente : id_cliente,
+            listar_todas : $("#listar_todas").val()
         };
         $.get('{{url('clientes/listar_especificaciones')}}', datos , function (retorno) {
             $('#div_listado_especificaciones').html(retorno);

@@ -20,14 +20,14 @@
                                     {{$item->nombre}}
                                 </td>
                                 <td style="border-color: #9d9d9d" class="text-center">
-                                    <button type="button" class="btn btn-default btn-xs" title="Detalle empaque" onclick="detalle_empaque('{{$item->id_empaque}}')">
+                                    <button type="button" {{$item->estado == 1 ? '' : 'disabled'}} class="btn btn-default btn-xs" title="Detalle empaque" onclick="detalle_empaque('{{$item->id_empaque}}')">
                                         <i class="fa fa-list-ol" aria-hidden="true"></i>
                                     </button>
-                                    <button type="button" class="btn btn-default btn-xs" title="editar" onclick="add_empaque('{{$item->id_empaque}}')">
+                                    <button type="button" {{$item->estado == 1 ? '' : 'disabled'}} class="btn btn-default btn-xs" title="editar" onclick="add_empaque('{{$item->id_empaque}}')">
                                         <i class="fa fa-pencil" aria-hidden="true"></i>
                                     </button>
-                                    <button type="button" class="btn btn-warning btn-xs" title="editar" onclick="update_detalle_empaque('{{$item->id_empaque}}','{{$item->estado}}')">
-                                        <i class="fa fa-ban" aria-hidden="true"></i>
+                                    <button type="button" class="btn btn-{{$item->estado == 1 ? 'success' : 'warning'}} btn-xs" title="editar" onclick="update_detalle_empaque('{{$item->id_empaque}}','{{$item->estado}}')">
+                                        <i class="fa fa-{{$item->estado == 1 ? 'check' : 'ban'}}" aria-hidden="true"></i>
                                     </button>
                                 </td>
                             </tr>
@@ -67,11 +67,11 @@
                                  {{--<button type="button" class="btn btn-default btn-xs" title="Detalle empaque" onclick="detalle_empaque('{{$item->id_empaque}}')">
                                      <i class="fa fa-list-ol" aria-hidden="true"></i>
                                  </button>--}}
-                                 <button type="button" class="btn btn-default btn-xs" title="editar" onclick="add_empaque('{{$item->id_empaque}}')">
+                                 <button type="button" {{$item->estado == 1 ? '' : 'disabled'}} class="btn btn-default btn-xs" title="editar" onclick="add_empaque('{{$item->id_empaque}}')">
                                      <i class="fa fa-pencil" aria-hidden="true"></i>
                                  </button>
-                                 <button type="button" class="btn btn-warning btn-xs" title="editar" onclick="update_detalle_empaque('{{$item->id_empaque}}','{{$item->estado}}')">
-                                     <i class="fa fa-ban" aria-hidden="true"></i>
+                                 <button type="button" class="btn btn-{{$item->estado == 1 ? 'success' : 'warning'}} btn-xs" title="editar" onclick="update_detalle_empaque('{{$item->id_empaque}}','{{$item->estado}}')">
+                                     <i class="fa fa-{{$item->estado == 1 ? 'check' : 'ban'}}" aria-hidden="true"></i>
                                  </button>
                              </td>
                          </tr>

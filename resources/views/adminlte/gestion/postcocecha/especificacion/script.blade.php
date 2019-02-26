@@ -83,7 +83,6 @@
                 modal_view('modal_view_msg_asignacion_especificacion',
                     retorno,
                     '<i class="fa fa-check" aria-hidden="true"></i> Estatus asignación', true, false, '{{isPC() ? '50%' : ''}}');
-
             });
         }
     }

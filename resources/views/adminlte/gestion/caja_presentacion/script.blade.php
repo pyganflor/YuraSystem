@@ -51,10 +51,11 @@
         });
     }
 
-    function update_detalle_empaque(id_empaque) {
+    function update_detalle_empaque(id_empaque,estado) {
         datos = {
             id_empaque : id_empaque,
-            nombre     : $("#nombre_empaque").val()
+            nombre     : $("#nombre_empaque").val(),
+            estado     : estado
         };
         $.LoadingOverlay('show');
         $.get('{{url('caja_presentacion/update_estado_empaque')}}', datos, function (retorno) {

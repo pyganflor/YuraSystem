@@ -26,6 +26,11 @@
                     {{getUsuario(Session::get('id_usuario'))->configuracion->config_online == 'S' ? 'checked' : ''}}> Mostrarme como online
         </label>
     </div>
+    <div class="form-group">
+        <label class="control-sidebar-subheading">
+            <a style="cursor: pointer;" onclick="form_codigo_barra()">Generar código de barras</a>
+        </label>
+    </div>
     <h4 class="control-sidebar-heading">Temas</h4>
     <ul class="list-unstyled clearfix">
         <li style="float:left; width: 33.33333%; padding: 5px;">

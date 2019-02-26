@@ -1,7 +1,5 @@
 <?php
 
-use CodeItNow\BarcodeBundle\Utils\BarcodeGenerator;
-
 Route::get('comprobante', 'ComprobanteController@inicio');
 Route::get('comprobante/buscar', 'ComprobanteController@buscar_comprobante');
 Route::get('comprobante/generar_comprobante_factura', 'ComprobanteController@generar_comprobante_factura');
@@ -14,13 +12,8 @@ Route::get('comprobante/reenviar_correo', 'ComprobanteController@reenviar_correo
 Route::get('comprobante/ver_factura', 'ComprobanteController@ver_factura');
 Route::get('comprobante/prueba', function () {
 
-    /*$barcode = new BarcodeGenerator();
-    $barcode->setText("0801201901200100200001369417924463252");
-    $barcode->setType(BarcodeGenerator::Gs1128);
-    $barcode->setNoLengthLimit(true);
-    $barcode->setAllowsUnknownIdentifier(true);
-    $code = $barcode->generate();
-    echo '<img src="data:image/png;base64,'.$code.'" />';*/
+    $code = generateCodeBarGs1128("0C002");
+    echo '<img src="data:image/png;base64,'.$code.'" />';
 
     /* ========== CODIGO PARA BORRAR DATOS DUPLICADOS EN RECPCION_CLASIFICACION_VERDE ==========    segun id_recepcion; id_clasificacion_verde*/
     /*$listado = \Illuminate\Support\Facades\DB::table('recepcion_clasificacion_verde')
@@ -47,7 +40,7 @@ Route::get('comprobante/prueba', function () {
             $t->delete();
         }
     }*/
-    
+
 
 });
 
