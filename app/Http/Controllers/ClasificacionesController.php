@@ -32,12 +32,16 @@ class ClasificacionesController extends Controller
             'id_clasificacion_unitaria' => 'required|',
             'id_clasificacion_ramo_estandar' => 'required|',
             'id_clasificacion_ramo_real' => 'required|',
+            'color' => 'required|',
+            'ramos_x_balde' => 'required|',
         ], [
             'nombre.required' => 'El nombre es obligatorio',
             'id_clasificacion_ramo_estandar.required' => 'El ramo estandar es obligatorio',
             'id_clasificacion_ramo_real.required' => 'El ramo real es obligatorio',
             'id_clasificacion_unitaria.required' => 'La clasificación es obligatoria',
             'id_unidad_medida.required' => 'La unidad de medida es obligatoria',
+            'color.required' => 'El color es obligatorio',
+            'ramos_x_balde.required' => 'Los ramos por balde son obligatorios',
             'nombre.max' => 'El nombre es muy grande',
         ]);
         if (!$valida->fails()) {
@@ -47,6 +51,8 @@ class ClasificacionesController extends Controller
             $unitaria->id_clasificacion_ramo_real = $request->id_clasificacion_ramo_real;
             $unitaria->id_clasificacion_ramo_estandar = $request->id_clasificacion_ramo_estandar;
             $unitaria->tallos_x_ramo = $request->tallos_x_ramo;
+            $unitaria->ramos_x_balde = $request->ramos_x_balde;
+            $unitaria->color = $request->color . '|' . $request->color_txt;
             if ($unitaria->save()) {
                 $success = true;
                 $msg = '<div class="alert alert-success text-center">' .

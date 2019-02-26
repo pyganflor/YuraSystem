@@ -31,7 +31,11 @@
             @foreach($clasificacion->variedades() as $variedad)
                 <tr>
                     <th style="border-color: #9d9d9d" class="text-center">
-                        {{$variedad->planta->nombre}} - {{$variedad->siglas}}
+                        {{$variedad->planta->nombre}} - {{$variedad->siglas}} -
+                        <em>
+                            {{$clasificacion->getPorcentajeByVariedad($variedad->id_variedad)}}
+                            %
+                        </em>
                         <br>
                         @if(count($clasificacion->lotes_reByVariedad($variedad->id_variedad)) > 0)
                             <button type="button" class="btn btn-xs btn-info" style="margin-top: 10px" title="Ver lotes"
@@ -52,8 +56,13 @@
                             <tr>
                                 @foreach($clasificacion->unitarias() as $unitaria)
                                     @if($clasificacion->getRamosByvariedadUnitaria($variedad->id_variedad, $unitaria->id_clasificacion_unitaria) > 0)
-                                        <th style="border-color: #9d9d9d; background-color: #e9ecef" class="text-center">
-                                            {{explode('|',$unitaria->nombre)[0]}}{{$unitaria->unidad_medida->siglas}}
+                                        <th style="border-color: #9d9d9d; background-color: {{explode('|',$unitaria->color)[0]}}; color: {{explode('|',$unitaria->color)[1]}}"
+                                            class="text-center">
+                                            {{explode('|',$unitaria->nombre)[0]}}{{$unitaria->unidad_medida->siglas}} -
+                                            <em>
+                                                {{$clasificacion->getPorcentajeUnitariaByVariedad($variedad->id_variedad, $unitaria->id_clasificacion_unitaria)}}
+                                                %
+                                            </em>
                                         </th>
                                     @endif
                                 @endforeach

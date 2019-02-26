@@ -50,15 +50,24 @@
                 </div>
                 <div class="form-group pull-right" id="div_form_group_coches" style="display: none; margin-bottom: 0">
                     <label for="check_coches">Tallos por coches</label>
-                    <input type="number" onkeypress="return isNumber(event)" id="tallos_x_coche" min="1"
-                           placeholder=" cantidad de tallos" onchange="calcular_tallos_x_coche()">
+                    <select name="tallos_x_coche" id="tallos_x_coche" onchange="calcular_tallos_x_coche()">
+                        <option value="">Cantidad de tallos</option>
+                        @foreach(getUnitarias() as $unitaria)
+                            <option value="{{$unitaria->tallos_x_ramo * $unitaria->ramos_x_balde * getConfiguracionEmpresa()->baldes_x_coche}}"
+                                    style="background-color: {{explode('|',$unitaria->color)[0]}}; color: {{explode('|',$unitaria->color)[1]}}">
+                                {{$unitaria->tallos_x_ramo * $unitaria->ramos_x_balde * getConfiguracionEmpresa()->baldes_x_coche}}
+                            </option>
+                        @endforeach
+                    </select>
                 </div>
                 <div class="form-group pull-right" style="margin-right: 10px; margin-bottom: 0">
                     <label for="clasificacion_ramo_search" style="margin-right: 10px">Calibre del ramo</label>
                     <select name="clasificacion_ramo_search" id="clasificacion_ramo_search" onchange="calcularConvercion($(this).val())">
                         @foreach(getCalibresRamo() as $calibre)
                             @if($calibre->unidad_medida->tipo == 'P')
-                                <option value="{{$calibre->nombre}}">{{$calibre->nombre}}</option>
+                                <option value="{{$calibre->nombre}}" {{$calibre->nombre == getCalibreRamoEstandar()->nombre ? 'selected' : ''}}>
+                                    {{$calibre->nombre}}
+                                </option>
                             @endif
                         @endforeach
                     </select>

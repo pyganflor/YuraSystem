@@ -27,16 +27,16 @@ class ConfiguracionEmpresaController extends Controller
     public function index(Request $request)
     {
         $config_empresa = ConfiguracionEmpresa::all();
-        $moneda = Icon::where('nombre','usd')
-            ->orWhere('nombre','jpy')
-            ->orWhere('nombre','eur')
-            ->orWhere('nombre','krw')
-            ->orWhere('nombre','try')
-            ->orWhere('nombre','inr')
-            ->orWhere('nombre','gbp')
-            ->orWhere('nombre','rub')
-            ->orderBy('id_icono','desc')
-        ->get();
+        $moneda = Icon::where('nombre', 'usd')
+            ->orWhere('nombre', 'jpy')
+            ->orWhere('nombre', 'eur')
+            ->orWhere('nombre', 'krw')
+            ->orWhere('nombre', 'try')
+            ->orWhere('nombre', 'inr')
+            ->orWhere('nombre', 'gbp')
+            ->orWhere('nombre', 'rub')
+            ->orderBy('id_icono', 'desc')
+            ->get();
 
         !empty($config_empresa[0]->propagacion) ? $arrPropagacion = explode("|", $config_empresa[0]->propagacion) : $arrPropagacion = false;
         !empty($config_empresa[0]->campo) ? $arrCampo = explode("|", $config_empresa[0]->campo) : $arrCampo = false;
@@ -53,9 +53,9 @@ class ConfiguracionEmpresaController extends Controller
             'clasifiUnit' => ClasificacionUnitaria::all(),
             'clasifiXRamo' => ClasificacionRamo::all(),
             'empaques' => Empaque::all(),
-            'iconoMoneda'=>$moneda,
+            'iconoMoneda' => $moneda,
             'text' => ['titulo' => 'Configuración de la empresa', 'subtitulo' => 'módulo de administración'],
-            'paises'=> Pais::all()
+            'paises' => Pais::all()
         ]);
     }
 
@@ -305,7 +305,6 @@ class ConfiguracionEmpresaController extends Controller
 
     }
 
-
     public function guardarDetalleEmpaque(Request $request)
     {
         $valida = Validator::make($request->all(), [
@@ -396,9 +395,10 @@ class ConfiguracionEmpresaController extends Controller
         ]);
     }
 
-    public function campos_empaque(Request $request){
+    public function campos_empaque(Request $request)
+    {
 
         return view('adminlte.gestion.configuracion_empresa.forms.partials.add_empaque',
-            ['cnatInptus'=>$request->cant_tr]);
+            ['cnatInptus' => $request->cant_tr]);
     }
 }

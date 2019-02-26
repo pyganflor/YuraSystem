@@ -158,6 +158,16 @@
         }
     }
 
+    function check_filtro() {
+        if ($('#check_filtro_verde').prop('checked')) {
+            $('#check_filtro_verde').prop('checked', false);
+            $('#table_filtro').hide();
+        } else {
+            $('#check_filtro_verde').prop('checked', true);
+            $('#table_filtro').show();
+        }
+    }
+
     /* ============= FUNCION PARA AÑADIR DOCUMENTO =================*/
     function add_info(codigo) {
         add_documento('clasificacion_verde', codigo, function () {

@@ -28,7 +28,8 @@ class ConfiguracionEmpresa extends Model
         'razon_social',
         'direccion_matriz',
         'direccion_establecimiento',
-        'moneda'
+        'moneda',
+        'baldes_x_coche'    // baldes por coche para sacar en aperturas
     ];
 
     public function clasificaciones_unitarias()

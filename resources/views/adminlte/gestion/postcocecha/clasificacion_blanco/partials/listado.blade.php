@@ -23,10 +23,13 @@
 
     <label for="check_dias_maduracion" class="pull-right" style="margin-left: 5px">Seleccionar flores con mayor días de maduración</label>
     <input type="checkbox" class="pull-right" id="check_dias_maduracion" checked>
-    <table class="table table-bordered table-striped table-responsive" width="100%" id="table_clasificacion_blanco"
+    <table class="table-bordered table-striped table-responsive" width="100%" id="table_clasificacion_blanco"
            style="border: 1px solid #9d9d9d; font-size: 0.8em; margin-top: 10px; margin-bottom: 0">
         <tr>
-            <td style="border-color: #9d9d9d"></td>
+            <th style="border-color: #9d9d9d" width="5%" class="text-center">Calibre</th>
+            <th style="border-color: #9d9d9d" width="10%" class="text-center">Presentación</th>
+            <th style="border-color: #9d9d9d" width="5%" class="text-center">Tallos</th>
+            <th style="border-color: #9d9d9d" width="5%" class="text-center">Longitud</th>
             @php
                 $pos_fecha = 1;
             @endphp
@@ -61,16 +64,11 @@
                 else
                     $longitud_ramo = '';
                 $texto = getCalibreRamoById($item->id_clasificacion_ramo)->nombre.' '.getCalibreRamoById($item->id_clasificacion_ramo)->unidad_medida->siglas.' '.
-                    $tallos_x_ramo.''.$longitud_ramo.''.getEmpaque($item->id_empaque_p)->nombre;
+                    getEmpaque($item->id_empaque_p)->nombre.' '.$tallos_x_ramo.''.$longitud_ramo;
             @endphp
             <tr>
                 <th class="text-center" style="background-color: #e9ecef; border-color: #9d9d9d" id="th_pedidos_{{$pos_comb}}">
-                    <strong class="pull-left">
-                        {{$texto}}
-                    </strong>
-                    <span class="badge pull-right" title="Total">
-                        {{$item->cantidad}}
-                    </span>
+                    {{getCalibreRamoById($item->id_clasificacion_ramo)->nombre.' '.getCalibreRamoById($item->id_clasificacion_ramo)->unidad_medida->siglas}}
                     <input type="hidden" id="texto_{{$pos_comb}}" value="{{$texto}}">
                     <input type="hidden" id="clasificacion_ramo_{{$pos_comb}}" value="{{$item->id_clasificacion_ramo}}">
                     <input type="hidden" id="tallos_x_ramo_{{$pos_comb}}" value="{{$item->tallos_x_ramos}}">
@@ -79,29 +77,50 @@
                     <input type="hidden" id="id_empaque_p_{{$pos_comb}}" value="{{$item->id_empaque_p}}">
                     <input type="hidden" id="id_unidad_medida_{{$pos_comb}}" value="{{$item->id_unidad_medida}}">
                 </th>
+                <th class="text-center" style="background-color: #e9ecef; border-color: #9d9d9d">
+                    {{getEmpaque($item->id_empaque_p)->nombre}}
+                </th>
+                <th class="text-center" style="background-color: #e9ecef; border-color: #9d9d9d">
+                    {{$item->tallos_x_ramos}}
+                </th>
+                <th class="text-center" style="background-color: #e9ecef; border-color: #9d9d9d">
+                    {{$longitud_ramo}}
+                </th>
                 @php
+                    $total_inventario = getDisponibleInventarioFrio($item->id_variedad,$item->id_clasificacion_ramo,/*$item->id_empaque_e,*/$item->id_empaque_p,
+                            $item->tallos_x_ramos,$item->longitud_ramo,$item->id_unidad_medida);
+
                     $pos_fecha = 1;
+                    $acumulado_pedido = 0;
                 @endphp
                 @foreach($fechas as $fecha)
+                    @php
+                        $cant_pedido = getCantidadRamosPedidosForCB($fecha->fecha_pedido,$item->id_variedad,$item->id_clasificacion_ramo,/*$item->id_empaque_e,*/$item->id_empaque_p,
+                            $item->tallos_x_ramos,$item->longitud_ramo,$item->id_unidad_medida);
+                        $acumulado_pedido += $cant_pedido;
+                        $saldo = $total_inventario - $acumulado_pedido;
+                    @endphp
                     <td class="text-center"
                         style="border-color: #9d9d9d; border-right-width: {{$pos_fecha == 1 ? '3px' : ''}}; border-left-width: {{$pos_fecha == 1 ? '3px' : ''}};"
                         onmouseover="$(this).css('background-color','#ADD8E6')" onmouseleave="$(this).css('background-color','')">
-                        {{getCantidadRamosPedidosForCB($fecha->fecha_pedido,$item->id_variedad,$item->id_clasificacion_ramo,/*$item->id_empaque_e,*/$item->id_empaque_p,
-                        $item->tallos_x_ramos,$item->longitud_ramo,$item->id_unidad_medida)}}
-                        <input type="hidden" id="pedido_{{$pos_comb}}_{{$pos_fecha}}" value="{{getCantidadRamosPedidosForCB($fecha->fecha_pedido,$item->id_variedad,$item->id_clasificacion_ramo,/*$item->id_empaque_e,*/$item->id_empaque_p,
-                        $item->tallos_x_ramos,$item->longitud_ramo,$item->id_unidad_medida)}}">
+                        <span class="badge" title="Pedidos">{{$cant_pedido}}</span>
+                        <input type="hidden" id="pedido_{{$pos_comb}}_{{$pos_fecha}}" value="{{$cant_pedido}}">
+
+                        @if($saldo >= 0)
+                            <span class="badge bg-green" title="Armados">{{$saldo}}</span>
+                        @else
+                            <span class="badge bg-red" title="Por armar">{{substr($saldo,1)}}</span>
+                        @endif
                     </td>
                     @php
                         $pos_fecha++;
                     @endphp
                 @endforeach
                 <td class="text-center" style=" border-color: #9d9d9d;" width="7%">
-                    <input type="hidden" id="inventario_frio_{{$pos_comb}}" value="{{getDisponibleInventarioFrio($item->id_variedad,$item->id_clasificacion_ramo,/*$item->id_empaque_e,*/$item->id_empaque_p,
-                        $item->tallos_x_ramos,$item->longitud_ramo,$item->id_unidad_medida)}}">
+                    <input type="hidden" id="inventario_frio_{{$pos_comb}}" value="{{$total_inventario}}">
                     <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
                             aria-expanded="false" id="btn_inventario_{{$pos_comb}}" onclick="maduracion('{{$pos_comb}}')">
-                        {{getDisponibleInventarioFrio($item->id_variedad,$item->id_clasificacion_ramo,/*$item->id_empaque_e,*/$item->id_empaque_p,
-                    $item->tallos_x_ramos,$item->longitud_ramo,$item->id_unidad_medida)}}
+                        {{$total_inventario}}
                     </button>
                 </td>
                 <td class="text-center" style=" border-color: #9d9d9d;" width="7%">
@@ -115,7 +134,7 @@
             @endphp
         @endforeach
         <tr>
-            <td style="border-color: #9d9d9d"></td>
+            <td style="border-color: #9d9d9d" colspan="4"></td>
             @php
                 $pos_fecha = 1;
             @endphp
@@ -152,7 +171,7 @@
     <input type="hidden" id="pos_comb_total" value="{{$pos_comb-1}}">
 
     <div style="border-top: 1px dotted #9d9d9d; padding: 5px; margin-top: 2px" class="well" title="Opciones">
-        <input type="checkbox" id="estrechar_tabla" onchange="estrechar_tabla('table_clasificacion_blanco', $(this).prop('checked'))">
+        <input type="checkbox" id="estrechar_tabla" onchange="estrechar_tabla('table_clasificacion_blanco', $(this).prop('checked'))" checked>
         <label for="estrechar_tabla" class="mouse-hand">Estrechar tabla</label>
     </div>
 
@@ -267,7 +286,7 @@
                 arreglo: arreglo
             };
             get_jquery('{{url('clasificacion_blanco/maduracion')}}', datos, function (retorno) {
-                modal_view('modal_view', retorno, '<i class="fa fa-fw fa-gift"></i> Días de maduración', true, false, '{{isPC() ? '35%' : ''}}');
+                modal_view('modal_view', retorno, '<i class="fa fa-fw fa-gift"></i> Días de maduración', true, false, '{{isPC() ? '65%' : ''}}');
             });
         }
 

@@ -64,32 +64,6 @@ class DespachosController extends Controller
                 ->whereIn('dp.id_pedido', $ids_pedidos)
                 ->get();
 
-            $cajas_equivalentes = [];
-            foreach ($variedades as $item) {
-                $list = DB::table('detalle_especificacionempaque as dee')
-                    ->join('especificacion_empaque as ee', 'dee.id_especificacion_empaque', '=', 'ee.id_especificacion_empaque')
-                    ->join('cliente_pedido_especificacion as cpe', 'ee.id_especificacion', '=', 'cpe.id_especificacion')
-                    ->join('detalle_pedido as dp', 'cpe.id_cliente_pedido_especificacion', '=', 'dp.id_cliente_especificacion')
-                    ->select('dee.id_clasificacion_ramo', DB::raw('sum(dee.cantidad * ee.cantidad * dp.cantidad) as cantidad'))
-                    ->whereIn('dp.id_pedido', $ids_pedidos)
-                    ->where('dee.id_variedad', '=', $item->id_variedad)
-                    ->groupBy('dee.id_clasificacion_ramo')
-                    ->get();
-
-                $cantidad_ramos = 0;
-                foreach ($list as $i) {
-                    $calibre = getCalibreRamoById($i->id_clasificacion_ramo);
-                    $estandar = getCalibreRamoEstandar();
-                    $cant = $i->cantidad;
-                    $factor = round($calibre->nombre / $estandar->nombre, 2);
-                    $conversion = round($factor * $cant, 2);
-                    $cantidad_ramos += round($conversion / getConfiguracionEmpresa()->ramos_x_caja, 2);
-                }
-                array_push($cajas_equivalentes, [
-                    'id_variedad' => $item->id_variedad,
-                    'cantidad' => $cantidad_ramos,
-                ]);
-            }
         }
 
         $datos = [
@@ -97,14 +71,8 @@ class DespachosController extends Controller
             'fecha' => $request->fecha,
             'ramos_x_variedad' => $ramos_x_variedad,
             'variedades' => $variedades,
-            'cajas_equivalentes' => $cajas_equivalentes,
         ];
 
         return view('adminlte.gestion.postcocecha.despachos.partials.listado', $datos);
-    }
-
-    public function ver_envios(Request $request)
-    {
-        return 'ok';
     }
 }

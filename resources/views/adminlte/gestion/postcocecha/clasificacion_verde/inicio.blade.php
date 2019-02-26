@@ -41,19 +41,26 @@
                     <button class="btn btn-primary btn-sm" onclick="add_verde('')"
                             onmouseover="$('#title_btn_add').html('Añadir')"
                             onmouseleave="$('#title_btn_add').html('')">
-                        <i class="fa fa-fw fa-plus" style="color: #0c0c0c"></i> <em
+                        <i class="fa fa-fw fa-plus" style="color: #e9ecef"></i> <em
                                 id="title_btn_add"></em>
                     </button>
                     <button class="btn btn-success btn-sm" onclick="exportar_clasificaciones()"
                             onmouseover="$('#title_btn_exportar').html('Exportar')"
                             onmouseleave="$('#title_btn_exportar').html('')">
-                        <i class="fa fa-fw fa-file-excel-o" style="color: #0c0c0c"></i> <em
+                        <i class="fa fa-fw fa-file-excel-o" style="color: #e9ecef"></i> <em
                                 id="title_btn_exportar"></em>
                     </button>
+                    <button class="btn btn-default btn-sm" onclick="check_filtro()"
+                            onmouseover="$('#title_btn_filtro').html('Filtro')"
+                            onmouseleave="$('#title_btn_filtro').html('')">
+                        <i class="fa fa-fw fa-filter"></i>
+                        <em id="title_btn_filtro"></em>
+                    </button>
+                    <input type="checkbox" id="check_filtro_verde" style="display: none">
                 </div>
             </div>
             <div class="box-body" id="div_content_clasificaciones">
-                <table width="100%">
+                <table width="100%" id="table_filtro" style="display: none;">
                     <tr>
                         <td>
                             <div class="row">

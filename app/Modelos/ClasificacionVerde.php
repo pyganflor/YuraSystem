@@ -75,6 +75,15 @@ class ClasificacionVerde extends Model
         return $r;
     }
 
+    public function total_tallos_rendimientoByVariedad($variedad)
+    {
+        $r = 0;
+        foreach (getDetallesVerdeByFechaVariedad($this->fecha_ingreso, $variedad) as $item) {
+            $r += ($item->cantidad_ramos * $item->tallos_x_ramos);
+        }
+        return $r;
+    }
+
     public function total_tallos_recepcion()
     {
         $r = 0;
@@ -149,6 +158,18 @@ class ClasificacionVerde extends Model
         return $r;
     }
 
+    public function getPorcentajeUnitariaByVariedad($variedad, $unitaria)
+    {
+        $parte = $this->getTallosByvariedadUnitaria($variedad, $unitaria);
+        return round(($parte * 100) / $this->tallos_x_variedad($variedad), 2);
+    }
+
+    public function getPorcentajeByVariedad($variedad)
+    {
+        $parte = $this->tallos_x_variedad($variedad);
+        return round(($parte * 100) / $this->total_tallos(), 2);
+    }
+
     public function variedades()
     {
         $l = DB::table('detalle_clasificacion_verde as d')
@@ -178,6 +199,18 @@ class ClasificacionVerde extends Model
         if (count($this->detalles) > 0 && $this->personal > 0 && $this->getCantidadHorasTrabajo() > 0) {
             $r = $this->total_tallos_rendimiento() / $this->personal;
             $r = $r / $this->getCantidadHorasTrabajo();
+
+            return round($r, 2);
+        } else {
+            return 0;
+        }
+    }
+
+    function getRendimientoByVariedad($variedad)
+    {
+        if (count($this->detalles) > 0 && $this->personal > 0 && $this->getCantidadHorasTrabajoByVariedad($variedad) > 0) {
+            $r = $this->total_tallos_rendimientoByVariedad($variedad) / $this->personal;
+            $r = $r / $this->getCantidadHorasTrabajoByVariedad($variedad);
 
             return round($r, 2);
         } else {
@@ -266,6 +299,20 @@ class ClasificacionVerde extends Model
             return '';
     }
 
+    function getLastFechaClasificacionByVariedad($variedad)
+    {
+        $r = DB::table('detalle_clasificacion_verde')
+            ->select(DB::raw('max(fecha_registro) as fecha'))
+            ->where('id_variedad', '=', $variedad)
+            ->where('estado', '=', 1)
+            ->where('fecha_ingreso', 'like', $this->fecha_ingreso . '%')
+            ->get();
+        if (count($r) > 0)
+            return $r[0]->fecha;
+        else
+            return '';
+    }
+
     function getFechaHoraInicio()
     {
         return $this->fecha_ingreso . ' ' . $this->hora_inicio . ':00';
@@ -274,6 +321,12 @@ class ClasificacionVerde extends Model
     function getCantidadHorasTrabajo()
     {
         $r = difFechas($this->getLastFechaClasificacion(), $this->getFechaHoraInicio());
+        return round($r->h + ($r->i / 60), 2);
+    }
+
+    function getCantidadHorasTrabajoByVariedad($variedad)
+    {
+        $r = difFechas($this->getLastFechaClasificacionByVariedad($variedad), $this->getFechaHoraInicio());
         return round($r->h + ($r->i / 60), 2);
     }
 
