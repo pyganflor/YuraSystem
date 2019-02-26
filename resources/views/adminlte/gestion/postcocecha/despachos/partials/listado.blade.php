@@ -50,6 +50,9 @@
                 $ramos_totales = 0;
                 $ramos_totales_estandar = 0;
                 $cajas_full_totales = 0;
+
+            $variedades = [];
+            $ramos_x_variedades = [];
             @endphp
             @foreach($listado as $pedido)
                 @foreach(getPedido($pedido->id_pedido)->detalles as $det_ped)
@@ -75,10 +78,18 @@
                                     {{$det_esp->cantidad}}
                                 </td>
                                 <td class="text-center" style="border-color: #9d9d9d">
-                                    {{$esp_emp->cantidad * $det_esp->cantidad}}
+                                    {{$esp_emp->cantidad * $det_esp->cantidad}}----
                                     @php
                                         $ramos_totales += $esp_emp->cantidad * $det_esp->cantidad;
                                         $ramos_totales_estandar += convertToEstandar($esp_emp->cantidad * $det_esp->cantidad, $det_esp->clasificacion_ramo->nombre);
+
+                                    if (!in_array($det_esp->id_variedad, $variedades)){
+                                        array_push($variedades, $det_esp->id_variedad);
+                                    }
+                                    array_push($ramos_x_variedades, [
+                                        'id_variedad' => $det_esp->id_variedad,
+                                        'cantidad' => convertToEstandar($esp_emp->cantidad * $det_esp->cantidad, $det_esp->clasificacion_ramo->nombre),
+                                    ]);
                                     @endphp
                                 </td>
                                 <td class="text-center" style="border-color: #9d9d9d">
@@ -141,6 +152,21 @@
                             CAJAS EQUIVALENTES
                         </th>
                     </tr>
+                    @php
+                        $cajas_equivalentes = [];
+                        foreach ($variedades as $variedad){
+                            $cantidad = 0;
+                            foreach($ramos_x_variedades as $ramos){
+                                if($ramos['id_variedad'] == $variedad){
+                                    $cantidad += $ramos['cantidad'];
+                                }
+                            }
+                            array_push($cajas_equivalentes, [
+                                'id_variedad' => $variedad,
+                                'cantidad' => round($cantidad / getConfiguracionEmpresa()->ramos_x_caja, 2),
+                            ]);
+                        }
+                    @endphp
                     @foreach($cajas_equivalentes as $item)
                         <tr>
                             <td class="text-center" style="border-color: #9d9d9d">

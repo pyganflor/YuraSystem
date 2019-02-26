@@ -1,30 +1,53 @@
 @if(count($labels) > 0)
     <div class="row">
-        <div class="col-md-3 col-sm-6 col-xs-12">
+        <div class="col-md-3">
+            <div class="small-box bg-teal-active">
+                <div class="inner">
+                    @foreach($arreglo_variedades as $item)
+                        <h3 class="info-box-number" title="Cajas Equivalentes">
+                            {{$item['cajas']}}
+                            <sup style="font-size: 0.4em" title="Variedad">
+                                <em>{{$item['variedad']->siglas}}</em>
+                            </sup>
+                        </h3>
+                    @endforeach
+                </div>
+                <div class="icon">
+                    <i class="fa fa-fw fa-gift"></i>
+                </div>
+                <a href="javascript:void(0)" class="small-box-footer">
+                    Cosecha cajas <i class="fa fa-arrow-circle-right"></i>
+                </a>
+            </div>
+        </div>
+        <div class="col-md-3">
             <div class="small-box bg-aqua">
                 <div class="inner">
-                    <h3 class="info-box-number" title="Cajas Equivalentes">
-                        {{$cajas}}
-                        <sup style="font-size: 0.4em" title="Ramos">
-                            {{$ramos}} ramos
-                        </sup>
-                    </h3>
+                    @foreach($arreglo_variedades as $item)
+                        <h3 class="info-box-number" title="Tallos">
+                            {{$item['tallos']}}
+                            <sup style="font-size: 0.4em" title="Variedad">
+                                <em>{{$item['variedad']->siglas}}</em>
+                            </sup>
+                        </h3>
+                    @endforeach
                 </div>
                 <div class="icon">
                     <i class="ion ion-leaf"></i>
                 </div>
                 <a href="javascript:void(0)" class="small-box-footer">
-                    Cosecha <i class="fa fa-arrow-circle-right"></i>
+                    Cosecha tallos <i class="fa fa-arrow-circle-right"></i>
                 </a>
             </div>
         </div>
-        <div class="col-md-3 col-sm-6 col-xs-12">
+        <div class="col-md-2">
             <div class="small-box bg-red">
                 <div class="inner">
-                    <h3 class="info-box-number">
-                        {{$desecho}}
-                        <sup style="font-size: 20px">%</sup>
-                    </h3>
+                    @foreach($arreglo_variedades as $item)
+                        <h3 class="info-box-number">
+                            {{$item['desecho']}}<sup style="font-size: 0.4em">% <em>{{$item['variedad']->siglas}}</em></sup>
+                        </h3>
+                    @endforeach
                 </div>
                 <div class="icon">
                     <i class="ion ion-trash-a"></i>
@@ -34,13 +57,14 @@
                 </a>
             </div>
         </div>
-        <div class="col-md-3 col-sm-6 col-xs-12">
+        <div class="col-md-2">
             <div class="small-box bg-green-gradient">
                 <div class="inner">
-                    <h3 class="info-box-number">
-                        {{$rendimiento}}
-                        <sup style="font-size: 0.4em">tallos/hora</sup>
-                    </h3>
+                    @foreach($arreglo_variedades as $item)
+                        <h3 class="info-box-number">
+                            {{$item['rendimiento']}}<sup style="font-size: 0.4em">t/hr <em>{{$item['variedad']->siglas}}</em></sup>
+                        </h3>
+                    @endforeach
                 </div>
                 <div class="icon">
                     <i class="ion ion-ios-people-outline"></i>
@@ -50,13 +74,14 @@
                 </a>
             </div>
         </div>
-        <div class="col-md-3 col-sm-6 col-xs-12">
+        <div class="col-md-2">
             <div class="small-box bg-orange">
                 <div class="inner">
-                    <h3 class="info-box-number">
-                        {{$calibre}}
-                        <sup style="font-size: 0.4em">gr</sup>
-                    </h3>
+                    @foreach($arreglo_variedades as $item)
+                        <h3 class="info-box-number">
+                            {{$item['calibre']}}<sup style="font-size: 0.4em">t/r <em>{{$item['variedad']->siglas}}</em></sup>
+                        </h3>
+                    @endforeach
                 </div>
                 <div class="icon">
                     <i class="fa fa-tint"></i>

@@ -67,7 +67,7 @@
                     getEmpaque($item->id_empaque_p)->nombre.' '.$tallos_x_ramo.''.$longitud_ramo;
             @endphp
             <tr>
-                <th class="text-left" style="background-color: #e9ecef; border-color: #9d9d9d" id="th_pedidos_{{$pos_comb}}">
+                <th class="text-center" style="background-color: #e9ecef; border-color: #9d9d9d" id="th_pedidos_{{$pos_comb}}">
                     {{getCalibreRamoById($item->id_clasificacion_ramo)->nombre.' '.getCalibreRamoById($item->id_clasificacion_ramo)->unidad_medida->siglas}}
                     <input type="hidden" id="texto_{{$pos_comb}}" value="{{$texto}}">
                     <input type="hidden" id="clasificacion_ramo_{{$pos_comb}}" value="{{$item->id_clasificacion_ramo}}">
@@ -77,13 +77,13 @@
                     <input type="hidden" id="id_empaque_p_{{$pos_comb}}" value="{{$item->id_empaque_p}}">
                     <input type="hidden" id="id_unidad_medida_{{$pos_comb}}" value="{{$item->id_unidad_medida}}">
                 </th>
-                <th class="text-left" style="background-color: #e9ecef; border-color: #9d9d9d">
+                <th class="text-center" style="background-color: #e9ecef; border-color: #9d9d9d">
                     {{getEmpaque($item->id_empaque_p)->nombre}}
                 </th>
-                <th class="text-left" style="background-color: #e9ecef; border-color: #9d9d9d">
-                    {{$tallos_x_ramo}}
+                <th class="text-center" style="background-color: #e9ecef; border-color: #9d9d9d">
+                    {{$item->tallos_x_ramos}}
                 </th>
-                <th class="text-left" style="background-color: #e9ecef; border-color: #9d9d9d">
+                <th class="text-center" style="background-color: #e9ecef; border-color: #9d9d9d">
                     {{$longitud_ramo}}
                 </th>
                 @php
@@ -286,7 +286,7 @@
                 arreglo: arreglo
             };
             get_jquery('{{url('clasificacion_blanco/maduracion')}}', datos, function (retorno) {
-                modal_view('modal_view', retorno, '<i class="fa fa-fw fa-gift"></i> Días de maduración', true, false, '{{isPC() ? '35%' : ''}}');
+                modal_view('modal_view', retorno, '<i class="fa fa-fw fa-gift"></i> Días de maduración', true, false, '{{isPC() ? '65%' : ''}}');
             });
         }
 

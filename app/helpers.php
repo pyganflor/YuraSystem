@@ -1306,6 +1306,15 @@ function getDetallesVerdeByFecha($fecha)
         ->get();
     return $listado;
 }
+function getDetallesVerdeByFechaVariedad($fecha, $variedad)
+{
+    $listado = DB::table('detalle_clasificacion_verde')
+        ->where('id_variedad', '=', $variedad)
+        ->where('estado', '=', 1)
+        ->where('fecha_ingreso', 'like', $fecha . '%')
+        ->get();
+    return $listado;
+}
 
 function convertToEstandar($ramos, $calibre)
 {

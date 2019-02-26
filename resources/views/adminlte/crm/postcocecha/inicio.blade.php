@@ -31,25 +31,37 @@
         <div id="div_indicadores">
             @if($verde != '')
                 <div class="row">
-                    <div class="col-md-3 col-sm-6 col-xs-12">
+                    <div class="col-md-3">
+                        <div class="small-box bg-teal-active">
+                            <div class="inner">
+                                <h3 class="info-box-number">
+                                    {{round($verde->getTotalRamosEstandar() / getConfiguracionEmpresa()->ramos_x_caja, 2)}}
+                                </h3>
+                            </div>
+                            <div class="icon">
+                                <i class="fa fa-fw fa-gift"></i>
+                            </div>
+                            <a href="javascript:void(0)" class="small-box-footer">
+                                Cosecha cajas <i class="fa fa-arrow-circle-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
                         <div class="small-box bg-aqua">
                             <div class="inner">
-                                <h3 class="info-box-number" title="Cajas Equivalentes">
-                                    {{round($verde->getTotalRamosEstandar() / getConfiguracionEmpresa()->ramos_x_caja, 2)}}
-                                    <sup style="font-size: 0.4em" title="Ramos">
-                                        {{$verde->getTotalRamosEstandar()}} ramos
-                                    </sup>
+                                <h3 class="info-box-number">
+                                    {{$verde->total_tallos()}}
                                 </h3>
                             </div>
                             <div class="icon">
                                 <i class="ion ion-leaf"></i>
                             </div>
                             <a href="javascript:void(0)" class="small-box-footer">
-                                Cosecha <i class="fa fa-arrow-circle-right"></i>
+                                Cosecha tallos <i class="fa fa-arrow-circle-right"></i>
                             </a>
                         </div>
                     </div>
-                    <div class="col-md-3 col-sm-6 col-xs-12">
+                    <div class="col-md-2">
                         <div class="small-box bg-red">
                             <div class="inner">
                                 <h3 class="info-box-number">
@@ -65,12 +77,12 @@
                             </a>
                         </div>
                     </div>
-                    <div class="col-md-3 col-sm-6 col-xs-12">
+                    <div class="col-md-2">
                         <div class="small-box bg-green-gradient">
                             <div class="inner">
                                 <h3 class="info-box-number">
                                     {{$verde->getRendimiento()}}
-                                    <sup style="font-size: 0.4em">tallos/hora</sup>
+                                    <sup style="font-size: 0.4em">t/hr</sup>
                                 </h3>
                             </div>
                             <div class="icon">
@@ -81,12 +93,12 @@
                             </a>
                         </div>
                     </div>
-                    <div class="col-md-3 col-sm-6 col-xs-12">
+                    <div class="col-md-2">
                         <div class="small-box bg-orange">
                             <div class="inner">
                                 <h3 class="info-box-number">
                                     {{round($verde->total_tallos() / $verde->getTotalRamosEstandar(),2)}}
-                                    <sup style="font-size: 0.4em">gr</sup>
+                                    <sup style="font-size: 0.4em">t/r</sup>
                                 </h3>
                             </div>
                             <div class="icon">
