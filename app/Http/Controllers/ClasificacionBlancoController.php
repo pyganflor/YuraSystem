@@ -58,16 +58,17 @@ class ClasificacionBlancoController extends Controller
             ->join('especificacion_empaque as ee', 'ee.id_especificacion', '=', 'cpe.id_especificacion')
             ->join('detalle_especificacionempaque as dee', 'dee.id_especificacion_empaque', '=', 'ee.id_especificacion_empaque')
             ->join('variedad as v', 'v.id_variedad', '=', 'dee.id_variedad')
+            ->join('clasificacion_ramo as cr', 'dee.id_clasificacion_ramo', '=', 'cr.id_clasificacion_ramo')
             ->select(DB::raw('sum(dee.cantidad * ee.cantidad * dp.cantidad) as cantidad'),
                 'dee.id_variedad', 'dee.id_clasificacion_ramo', 'dee.tallos_x_ramos', 'dee.longitud_ramo', 'dee.id_unidad_medida'
-                , 'dee.id_empaque_p')
+                , 'dee.id_empaque_p', 'cr.nombre')
             ->where('p.estado', '=', 1)
             ->where('p.empaquetado', '=', 0)
             ->where('p.fecha_pedido', '<=', $fecha_fin)
             ->where('dee.id_variedad', '=', $request->variedad)
             ->groupBy('dee.id_variedad', 'dee.id_clasificacion_ramo', 'dee.tallos_x_ramos', 'dee.longitud_ramo', 'dee.id_unidad_medida'
-                , 'dee.id_empaque_p')
-            ->orderBy('v.siglas', 'asc')
+                , 'dee.id_empaque_p', 'cr.nombre')
+            ->orderBy('cr.nombre', 'desc')
             ->get();
 
         return view('adminlte.gestion.postcocecha.clasificacion_blanco.partials.listado', [

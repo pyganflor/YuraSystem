@@ -106,11 +106,6 @@
                     @if($clasificacion_verde != '')
                         <input type="time" id="hora_inicio" name="hora_inicio" class="form-control text-center"
                                value="{{$clasificacion_verde->hora_inicio}}" required>
-                    @else
-                        <input type="time" id="hora_inicio" name="hora_inicio" class="form-control text-center"
-                               value="08:00" required>
-                    @endif
-                    @if($clasificacion_verde != '')
                         @if($clasificacion_verde->activo == 1)
                             <span class="input-group-btn" title="Guardar personal">
                                 <button type="button" class="btn btn-success" onclick="store_personal()">
@@ -118,6 +113,14 @@
                                 </button>
                             </span>
                         @endif
+                    @else
+                        <input type="time" id="hora_inicio" name="hora_inicio" class="form-control text-center"
+                               value="08:00" required>
+                        <span class="input-group-btn" title="Guardar personal">
+                                <button type="button" class="btn btn-success" onclick="store_personal()">
+                                    <i class="fa fa-fw fa-save"></i>
+                                </button>
+                            </span>
                     @endif
                 </div>
             </div>
@@ -328,6 +331,7 @@
             datos = {
                 _token: '{{csrf_token()}}',
                 fecha_ingreso: $('#fecha_ingreso').val(),
+                recepciones: $('#recepciones').val(),
                 personal: $('#personal').val(),
                 hora_inicio: $('#hora_inicio').val(),
                 id_clasificacion_verde: $('#id_clasificacion_verde').val(),
