@@ -88,7 +88,7 @@
             id_cliente: id_cliente
         };
         $.get('{{url('clientes/add')}}', datos, function (retorno) {
-            modal_view('modal_admin_especificaciones', retorno, '<i class="fa fa-fw fa-gift"></i> Añadir cliente', true, false,'{{isPC() ? '90%' : ''}}');
+            modal_view('modal_admin_especificaciones', retorno, '<i class="fa fa-user-plus" aria-hidden="true"></i> Añadir cliente', true, false,'{{isPC() ? '90%' : ''}}');
             //modal_view('modal_add_cliente', retorno, '<i class="fa fa-fw fa-plus"></i> Añadir cliente', true, false, '{{isPC() ? '60%' : ''}}', function () {
                 //store_cliente();
                // $.LoadingOverlay('hide');
@@ -251,9 +251,6 @@
             $.each(retorno,function(i,j){
                 $("#tipo_impuesto").append("<option id='dinamic' value="+j.codigo+">"+   j.descripcion+"</option>")
             });
-
-
-            console.log(retorno);
         });
     }
 </script>

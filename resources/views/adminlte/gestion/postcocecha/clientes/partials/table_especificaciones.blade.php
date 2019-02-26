@@ -22,7 +22,7 @@
             @foreach($listado as $item)
                 <tr onmouseover="$(this).css('background-color','#add8e6')" onmouseleave="$(this).css('background-color','')"
                     class="{{$item->estado == 1 ? '':'error'}}" id="row_especificacion_{{$item->id_especificacion}}">
-                    <td style="border-color: #9d9d9d" class="text-center">
+                    <td style="border-color: #9d9d9d;vertical-align: middle;" class="text-center">
                         @php
                             $check = '';
                             if(count($id_especificaciones) > 0){
@@ -33,7 +33,7 @@
                                 }
                             }
                         @endphp
-                        <input type="checkbox" {{$check}}  {{$item->estado == 1 ? '':'disabled'}} style="top: 4px;position:relative;"
+                        <input type="checkbox" {{$check}}  {{$item->estado == 1 ? '':'disabled'}}
                                name="especificacion_{{$item->id_especificacion}}" id="especificacion_{{$item->id_especificacion}}"
                                value="{{$item->id_especificacion}}"  onchange="asignar_especificacion_cliente(this.id,'{{$item->id_especificacion}}')">
                     </td>
@@ -42,9 +42,9 @@
                     </td>
                     <td style="border-color: #9d9d9d" class="text-center">{{$item->descripcion}}</td>
                     <td style="border-color: #9d9d9d" class="text-center">
-                        <a href="javascript:void(0)" class="btn btn-{{$item->estado == 1 ? 'warning':'success'}} btn-xs" title="{{$item->estado == 1 ? 'Deshabilitar':'Habilitar'}}"
+                        <a href="javascript:void(0)" class="btn btn-{{$item->estado == 1 ? 'success':'warning'}} btn-xs" title="{{$item->estado == 1 ? 'Habilitado':'Deshabilitado'}}"
                            onclick="update_especificacion('{{$item->id_especificacion}}','{{$item->estado}}','{{csrf_token()}}',true)">
-                            <i class="fa fa-fw fa-{{$item->estado == 1 ? 'ban':'check'}}" style="color: white" ></i>
+                            <i class="fa fa-fw fa-{{$item->estado == 1 ? 'check':'ban'}}" style="color: white" ></i>
                         </a>
                     </td>
                 </tr>
@@ -54,31 +54,10 @@
            {!! str_replace('/?','?',$listado->render()) !!}
         </div>
     @else
-        <div class="alert alert-info text-center">No se han encontrado coincidencias</div>
+        <div class="alert alert-info text-center">El cliente no posee especificaciones asignadas</div>
     @endif
 </div>
 <script>
-    /*function update_especificacion(id_especificacion,estado) {
-
-        $.LoadingOverlay('show');
-        datos = {
-            _token: '{{csrf_token()}}',
-            id_especificacion: id_especificacion,
-            estado: estado,
-        };
-        post_jquery('{{url('clientes/update_especificaciones')}}', datos, function () {
-            cerrar_modals();
-            detalles_cliente($('#id_cliente').val());
-            admin_especificaciones($('#id_cliente').val());
-            setTimeout(function () {
-                ver_especificaciones(($('#id_cliente').val()));
-            },1000);
-
-
-        });
-        $.LoadingOverlay('hide');
-    }*/
-
     function asignar_especificacion_cliente(id_check,id_especificacion) {
         $.LoadingOverlay('show');
         datos = {
@@ -91,6 +70,9 @@
             //cerrar_modals();
             //detalles_cliente($('#id_cliente').val());
             //setTimeout(function(){ admin_especificaciones($('#id_cliente').val());  },200);
+            if($('#'+id_check).is(':checked') == false){
+                ver_especificaciones(($('#id_cliente').val()));
+            }
         });
         $.LoadingOverlay('hide');
     }

@@ -48,7 +48,6 @@
         <i class="fa fa-fw fa-save"></i> Guardar
     </button>
 </div>
-
 <script>
     add_detalle_especificacion();
 
@@ -177,4 +176,7 @@
     });
 
 
+    function activar_input(input){
+        $("#"+input.id).attr('readonly',false);
+    }
 </script>

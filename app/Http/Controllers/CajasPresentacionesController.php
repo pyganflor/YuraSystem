@@ -32,7 +32,7 @@ class CajasPresentacionesController extends Controller
     {
         //dd(Empaque::select('nombre','id_empaque','tipo')->where('tipo','P')->orWhere('tipo','C')->get());
         return view('adminlte.gestion.caja_presentacion.partials.listado', [
-            'empaques' => Empaque::select('nombre','id_empaque','tipo')->where('tipo','P')->orWhere('tipo','C')->get()
+            'empaques' => Empaque::select('nombre','id_empaque','tipo','estado')->where('tipo','P')->orWhere('tipo','C')->orderBy('estado','desc')->get()
         ]);
     }
 
@@ -95,12 +95,23 @@ class CajasPresentacionesController extends Controller
     }
 
     public function update_estado_empaque(Request $request){
-        $objEmpaque = DetalleEmpaque::find($request->id_empaque);
-        $objEmpaque->update(['estado',$request->estado == 1 ? 0 : 1]);
-        $request->estado == 1 ? $accion = "Desactivados" : $accion = "Activados";
-        return '<div class="alert alert-success text-center">
-        <p> Los detalles del empaque han sido '.$accion.' con exito</p>
-         </div>';
+        $objEmpaque = Empaque::find($request->id_empaque);
+        $objEmpaque->estado = $request->estado == 1 ? 0 : 1;
+        $request->estado == 1 ? $accion = "desactivado" : $accion = "activado";
+        if($objEmpaque->save()){
+            $objDetalleEmpaque = DetalleEmpaque::where('id_empaque',$request->id_empaque);
+            if($objDetalleEmpaque->update(["estado" => $request->estado == 1 ? 0 : 1])){
+                $msg = '<div class="alert alert-success text-center">
+                <p> El empaque ha sido '.$accion.' con exito</p>
+                 </div>';
+            }
+        }else{
+            $msg = '<div class="alert alert-success text-center">
+                <p> Hubo un error al actualizar el estado del empaque, intente nuevamente </p>
+                 </div>';
+        }
+
+        return $msg;
     }
 
     public function exportar_detalle_empaque(Request $request)
@@ -300,6 +311,7 @@ class CajasPresentacionesController extends Controller
                                     $objEmpaque->save();
                                     $id_empaque = Empaque::all()->last()->id_empaque;
                                 }
+
                                 $objClasificacionRamo = new ClasificacionRamo;
                                 $objClasificacionRamo->id_unidad_medida = $unidadMedida->id_unidad_medida;
                                 $objClasificacionRamo->nombre = explode("|",$activeSheetData[$i]['B'])[0];

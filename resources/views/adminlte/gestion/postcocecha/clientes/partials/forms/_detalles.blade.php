@@ -5,7 +5,7 @@
         <div class="form-group input-group">
             <span class="input-group-addon" style="background-color: #e9ecef">Cantidad</span>
             <input type="number" onkeypress="return isNumber(event)" id="cantidad_{{$cant_detalles}}" name="cantidad_{{$cant_detalles}}"
-                   class="form-control"
+                   readonly class="form-control" ondblclick="activar_input(this)"
                    maxlength="3" max="999" min="1" value="1" required placeholder="Escriba la cantidad">
         </div>
     </div>

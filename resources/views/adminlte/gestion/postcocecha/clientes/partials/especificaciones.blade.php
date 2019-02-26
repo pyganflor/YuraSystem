@@ -9,7 +9,7 @@
             <div class="col-md-3">
                 <div class="list-group">
                     <a href="javascript:void(0)" class="list-group-item list-group-item-action"
-                       onclick="ver_especificaciones('{{$cliente->id_cliente}}')">
+                       onclick="ver_especificaciones('{{$cliente->id_cliente}}',true)">
                         <i class="fa fa-user-plus" aria-hidden="true"></i> Añadir especificación
                     </a>
                     <a href="javascript:void(0)" class="list-group-item list-group-item-action"
@@ -27,20 +27,11 @@
 
 <script>
 
-   /* function add_especificacion(id_cliente) {
-        datos = {
-            id_cliente: id_cliente
-        };
-        get_jquery('{{url('clientes/add_especificacion')}}', datos, function (retorno) {
-            $('#div_content').html(retorno);
-        });
-    }*/
-
-
-    function ver_especificaciones(id_cliente) {
+    function ver_especificaciones(id_cliente,listar_todas) {
         $.LoadingOverlay('show');
         datos = {
-            id_cliente: id_cliente
+            id_cliente: id_cliente,
+            listar_todas : listar_todas
         };
         get_jquery('{{url('clientes/ver_especificaciones')}}', datos, function (retorno) {
 
@@ -48,4 +39,6 @@
         });
         $.LoadingOverlay('hide');
     }
+
+   ver_especificaciones('{{$cliente->id_cliente}}');
 </script>
