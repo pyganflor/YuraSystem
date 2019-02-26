@@ -119,12 +119,14 @@ class ClasificacionVerdeController extends Controller
                 ->select('id_recepcion')->distinct()
                 ->where('fecha_ingreso', 'like', '%' . $request->fecha . '%')
                 ->where('estado', '=', 1)->get();
+
             $ids_recepcion = [];
 
             foreach ($l as $item) {
                 $recepcion = Recepcion::find($item->id_recepcion);
                 array_push($r, $recepcion);
                 array_push($ids_recepcion, $item->id_recepcion);
+
                 if (count(Recepcion::find($item->id_recepcion)->clasificaciones_verdes) > 0)
                     $clasificacion_verde = Recepcion::find($item->id_recepcion)->clasificaciones_verdes[0]->clasificacion_verde;
             }
@@ -937,23 +939,46 @@ class ClasificacionVerdeController extends Controller
 
     public function store_personal(Request $request)
     {
-        $model = ClasificacionVerde::find($request->id_clasificacion_verde);
-        if ($model == '')
-            $model = new ClasificacionVerde();
+        $verde = ClasificacionVerde::find($request->id_clasificacion_verde);
+        if ($verde == '')
+            $verde = new ClasificacionVerde();
         $semana = Semana::All()
             ->where('fecha_inicial', '<=', $request->fecha_ingreso)
             ->where('fecha_final', '>=', $request->fecha_ingreso)->first();
         if ($semana != '') {
-            $model->id_semana = $semana->id_semana;
-            $model->personal = $request->personal;
-            $model->hora_inicio = $request->hora_inicio;
-            $model->fecha_ingreso = $request->fecha_ingreso;
-            $model->fecha_registro = date('Y-m-d H:i:s');
+            $verde->id_semana = $semana->id_semana;
+            $verde->personal = $request->personal;
+            $verde->hora_inicio = $request->hora_inicio;
+            $verde->fecha_ingreso = $request->fecha_ingreso;
+            $verde->fecha_registro = date('Y-m-d H:i:s');
 
-            if ($model->save()) {
+            if ($verde->save()) {
                 if (ClasificacionVerde::find($request->id_clasificacion_verde) == '')
-                    $model = ClasificacionVerde::All()->last();
-                bitacora('clasificacion_verde', $model->id_clasificacion_verde, 'U', 'Actualización satisfactia de una clasificacion en verde');
+                    $verde = ClasificacionVerde::All()->last();
+                bitacora('clasificacion_verde', $verde->id_clasificacion_verde, 'U', 'Actualización satisfactia de una clasificacion en verde');
+
+                /* ================= GUARDAR TABLA RECEPCION_CLASIFICACION_VERDE ===================*/
+                foreach (explode('|', $request->recepciones) as $item) {
+                    $relacion = RecepcionClasificacionVerde::where('id_recepcion', '=', $item)->where('id_clasificacion_verde', '=', $verde->id_clasificacion_verde)->first();
+                    if ($relacion == '') {
+                        $relacion = new RecepcionClasificacionVerde();
+                        $relacion->id_recepcion = $item;
+                        $relacion->id_clasificacion_verde = $verde->id_clasificacion_verde;
+                        $relacion->fecha_registro = date('Y-m-d H:i:s');
+                        if ($relacion->save()) {
+                            $relacion = ClasificacionVerde::All()->last();
+                            bitacora('recepcion_clasificacion_verde', $relacion->id_recepcion_clasificacion_verde, 'I', 'Inserción satisfactoria de una nueva relacion recepcion-clasificación en verde');
+                        } else {
+                            return [
+                                'success' => false,
+                                'mensaje' => '<div class="alert alert-warning text-center">' .
+                                    '<p> Ha ocurrido un problema al guardar la recepción del día ' . Recepcion::find($item)->fecha_ingreso . '</p>'
+                                    . '</div>'
+                            ];
+                        }
+                    }
+                }
+
                 return [
                     'success' => true,
                     'mensaje' => '<div class="alert alert-success text-center">Se ha guardado satisfactoriamente el personal</div>'

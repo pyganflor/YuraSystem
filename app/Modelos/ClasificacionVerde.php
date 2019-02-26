@@ -118,7 +118,10 @@ class ClasificacionVerde extends Model
             $total += $item->recepcion->cantidad_tallos();
         }
 
-        return round(100 - round(($this->total_tallos() * 100) / $total, 2), 2);
+        if ($total > 0)
+            return round(100 - round(($this->total_tallos() * 100) / $total, 2), 2);
+        else
+            return 0;
     }
 
     public function desechoByVariedad($variedad)
