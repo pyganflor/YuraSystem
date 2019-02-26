@@ -23,7 +23,7 @@
     function select_nav(option) {
         $('.nav_header').removeClass('active');
         $('.div_nav').hide();
-        $('#li_nav_' + option).show();
+        $('#li_nav_' + option).addClass('active');
         $('#div_table_' + option).show();
     }
 </script>
