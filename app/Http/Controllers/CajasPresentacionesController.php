@@ -225,7 +225,7 @@ class CajasPresentacionesController extends Controller
                 $objSheet->getCell('F' . ($key + 3))->setValue($empaque->nombre);
             }
 
-            $medidas = UnidadMedida::select('siglas')->get();
+            $medidas = UnidadMedida::select('siglas')->where('tipo','P')->get(); //->where('tipo','P') PARA PYGANFLOR QUE USA SOLO GRAMOS
             foreach ($medidas as $key => $medida) {
                 $objSheet->getCell('K' . ($key + 3))->setValue($medida->siglas);
             }
@@ -277,7 +277,7 @@ class CajasPresentacionesController extends Controller
                         $unidadMedida = UnidadMedida::where('siglas',explode("|",$activeSheetData[$i]['B'])[1])->first();
                         if($unidadMedida == null){
                             $msg .= '<div class="alert alert-danger text-center">' .
-                                '<p> La unidad de medida ' . $activeSheetData[$i]['B'] . ' que se encuentra fila N# '. $i.' del archivo excel no ha sido creada aún</p>'
+                                '<p> La unidad de medida ' . explode("|",$activeSheetData[$i]['B'])[1] . ' que se encuentra fila N# '. $i.' del archivo excel no ha sido creada aún</p>'
                                 . '</div>';
                         }else{
 
@@ -294,7 +294,6 @@ class CajasPresentacionesController extends Controller
 
                                 $objDetalleEmpaque = DetalleEmpaque::find($dataDetalleEmpaque->id_detalle_empaque);
                                 $objDetalleEmpaque->update(["cantidad"=>$activeSheetData[$i]['D']]);
-
                                 $msg .= '<div class="alert alert-success text-center">' .
                                     '<p> La cantidad del empaque ' . $activeSheetData[$i]['A'] ." ". explode("|",$activeSheetData[$i]['B'])[0]. " ". explode("|",$activeSheetData[$i]['B'])[1] ." ". $activeSheetData[$i]['C'].' fue modificada con éxito</p>'
                                     . '</div>';
@@ -312,27 +311,49 @@ class CajasPresentacionesController extends Controller
                                     $id_empaque = Empaque::all()->last()->id_empaque;
                                 }
 
-                                $objClasificacionRamo = new ClasificacionRamo;
-                                $objClasificacionRamo->id_unidad_medida = $unidadMedida->id_unidad_medida;
-                                $objClasificacionRamo->nombre = explode("|",$activeSheetData[$i]['B'])[0];
-                                $objClasificacionRamo->id_configuracion_empresa = 1;
-                                $objClasificacionRamo->save();
-                                $modelClasificacionRamo = ClasificacionRamo::all()->last();
+                                $existClasificacionRamo = ClasificacionRamo::where('nombre',explode("|",$activeSheetData[$i]['B'])[0])->first();
+
+                                if($existClasificacionRamo != null){
+                                    $idClasificacionRamo = $existClasificacionRamo->id_clasificacion_ramo;
+                                }else {
+                                    $objClasificacionRamo = new ClasificacionRamo;
+                                    $objClasificacionRamo->id_unidad_medida = $unidadMedida->id_unidad_medida;
+                                    $objClasificacionRamo->nombre = explode("|", $activeSheetData[$i]['B'])[0];
+                                    $objClasificacionRamo->id_configuracion_empresa = 1;
+                                    $objClasificacionRamo->save();
+                                    $idClasificacionRamo = ClasificacionRamo::all()->last()->id_clasificacion_ramo;
+                                }
 
                                 $dataVariedad = Variedad::where('siglas',$activeSheetData[$i]['C'])->select('id_variedad')->first();
 
-                                $objDetalleEmpaque = new DetalleEmpaque;
-                                $objDetalleEmpaque->id_empaque = $id_empaque;
-                                $objDetalleEmpaque->id_clasificacion_ramo = $modelClasificacionRamo->id_clasificacion_ramo;
-                                $objDetalleEmpaque->id_variedad = $dataVariedad->id_variedad;
-                                $objDetalleEmpaque->cantidad  = $activeSheetData[$i]['D'];
-                                $objDetalleEmpaque->save();
+                                $existDetalleEmpaque = DetalleEmpaque::where([
+                                    ['id_empaque',$id_empaque],
+                                    ['id_variedad',$dataVariedad->id_variedad],
+                                    ['id_clasificacion_ramo',$idClasificacionRamo],
+                                    ['cantidad',$activeSheetData[$i]['D']]
+                                ])->count();
 
-                                $msg .= '<div class="alert alert-success text-center">' .
-                                    '<p> El empaque ' . $activeSheetData[$i]['A'] ." ". explode("|",$activeSheetData[$i]['B'])[0]. " ". explode("|",$activeSheetData[$i]['B'])[1]. " ".$activeSheetData[$i]['C'].' fue agregado con éxito</p>'
-                                    . '</div>';
+                                if($existDetalleEmpaque == 0) {
+                                    $objDetalleEmpaque = new DetalleEmpaque;
+                                    $objDetalleEmpaque->id_empaque = $id_empaque;
+                                    $objDetalleEmpaque->id_clasificacion_ramo = $idClasificacionRamo;
+                                    $objDetalleEmpaque->id_variedad = $dataVariedad->id_variedad;
+                                    $objDetalleEmpaque->cantidad = $activeSheetData[$i]['D'];
+                                    $objDetalleEmpaque->save();
+                                    $msg .= '<div class="alert alert-success text-center">' .
+                                        '<p> El empaque ' . $activeSheetData[$i]['A'] . " " . explode("|", $activeSheetData[$i]['B'])[0] . " " . explode("|", $activeSheetData[$i]['B'])[1] . " " . $activeSheetData[$i]['C'] . ' fue agregado con éxito</p>'
+                                        . '</div>';
+                                }else{
+                                    $msg .= '<div class="alert alert-danger text-center">' .
+                                                '<p> El detalle empaque '." ".$activeSheetData[$i]['A']." ".explode("|", $activeSheetData[$i]['B'])[0]." ".$activeSheetData[$i]['C'] .' ya esta creado </p>'
+                                            .'</div>';
+                                }
                             }
                         }
+                    }else{
+                        $msg .= '<div class="alert alert-danger text-center">' .
+                                '<p> La clasificacion ramo que se encuentra fila N# '. $i.' del archivo excel debe cumplir el formato `Clasificación|unidad de medida`</p>'
+                            . '</div>';
                     }
                 }
             }
