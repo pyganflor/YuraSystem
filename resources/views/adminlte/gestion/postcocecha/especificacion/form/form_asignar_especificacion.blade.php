@@ -1,4 +1,4 @@
-<form>
+
     <table width="100%" class="table table-responsive table-bordered" style="font-size: 0.8em; border-color: #9d9d9d"
            id="table_content_especificaciones">
         <thead>
@@ -31,4 +31,3 @@
     {{--<div id="pagination_listado_especificaciones">
         {!! str_replace('/?','?',$listado->render()) !!}
     </div>--}}
-</form>

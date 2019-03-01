@@ -58,7 +58,7 @@ class PedidoController extends Controller
             $listado = $listado->whereBetween('p.fecha_pedido', [$busquedaDesde, $busquedaHasta]);
 
         $listado = $listado->orderBy('p.fecha_pedido', 'desc')->simplePaginate(20);
-        //dd($listado);
+
         $datos = [
             'listado' => $listado,
             'idCliente' => $request->id_cliente,
@@ -174,10 +174,10 @@ class PedidoController extends Controller
     {
         $data_especificaciones = DB::table('cliente_pedido_especificacion as cpe')
             ->join('especificacion as esp', 'cpe.id_especificacion', '=', 'esp.id_especificacion')
-            ->where('cpe.id_cliente', $request->id_cliente);
-        //dd($data_especificaciones->get());
+            ->where('cpe.id_cliente', $request->id_cliente)->get();
+
         $arr_data_cliente_especificacion = [];
-        foreach ($data_especificaciones->get() as $data){
+        foreach ($data_especificaciones as $data){
            $arr_data_cliente_especificacion[] = ClientePedidoEspecificacion::where('cliente_pedido_especificacion.id_cliente_pedido_especificacion',$data->id_cliente_pedido_especificacion)
                ->join('especificacion_empaque as espemp','cliente_pedido_especificacion.id_especificacion','espemp.id_especificacion')
                ->join('detalle_especificacionempaque as detespemp','espemp.id_especificacion_empaque','detespemp.id_especificacion_empaque')
@@ -186,7 +186,7 @@ class PedidoController extends Controller
 
         return view('adminlte.gestion.postcocecha.pedidos.forms.paritals.inputs_dinamicos',
             [
-                'especificaciones' => $data_especificaciones->get(),
+                'especificaciones' => $data_especificaciones,
                 'agenciasCarga' => DB::table('cliente_agenciacarga as cac')
                     ->join('agencia_carga as ac', 'cac.id_agencia_carga', 'ac.id_agencia_carga')
                     ->where([
@@ -195,7 +195,7 @@ class PedidoController extends Controller
                     ])->get(),
                 //'cantTr' => $request->cant_tr + 1,
                'arr_data_cliente_especificacion' => $arr_data_cliente_especificacion,
-                'cant_especificaciones' => $data_especificaciones->count() > 0 ? $data_especificaciones->get() : []
+                'cant_especificaciones' => count($data_especificaciones) > 0 ? $data_especificaciones : []
             ]);
     }
 

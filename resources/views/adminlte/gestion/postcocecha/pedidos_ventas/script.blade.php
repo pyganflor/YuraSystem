@@ -59,7 +59,8 @@
         });
     }
 
-    function editar_pedido(id_cliente,id_pedido) {
+    function editar_pedido(id_cliente,id_pedido){
+    console.log("hola");
         add_pedido('','','pedidos',id_pedido);
 
         datos = {

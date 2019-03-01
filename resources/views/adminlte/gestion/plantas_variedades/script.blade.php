@@ -187,7 +187,7 @@
         };
 
         $.get('{{url('plantas_variedades/form_precio_variedad')}}', datos, function (retorno) {
-            modal_form('modal_add_precio', retorno, '<i class="fa fa-fw fa-plus"></i> Añadir Precio', true, false, '{{isPC() ? '40%' : ''}}', function () {
+            modal_form('modal_add_precio', retorno, '<i class="fa fa-fw fa-plus"></i> Añadir PrecioController', true, false, '{{isPC() ? '40%' : ''}}', function () {
                 store_precio();
             });
             setInterval(function () {

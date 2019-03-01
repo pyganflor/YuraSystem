@@ -44,7 +44,7 @@
 </form>
 
 <div class="text-center">
-    <button type="button" class="btn btn-success" onclick="store_especificacion({{isset($cliente) ? true : false}})">
+    <button type="button" class="btn btn-success" id="btn_store_especificacion" onclick="store_especificacion({{isset($cliente) ? true : false}})">
         <i class="fa fa-fw fa-save"></i> Guardar
     </button>
 </div>
@@ -125,6 +125,7 @@
 
     function store_especificacion(cliente) {
         if ($('#form-add_especificacion').valid()) {
+            $("#btn_store_especificacion").attr('disabled',true);
             formulario = $('#form-add_especificacion');
             var formData = new FormData(formulario[0]);
             //hacemos la petición ajax
@@ -153,6 +154,7 @@
                         alerta(retorno2.mensaje);
                     }
                     $.LoadingOverlay('hide');
+                    $("#btn_store_especificacion").attr('disabled',false);
                 },
                 //si ha ocurrido un error
                 error: function (retorno2) {
@@ -160,6 +162,7 @@
                     alerta(retorno2.responseText);
                     alert('Hubo un problema en la envío de la información');
                     $.LoadingOverlay('hide');
+                    $("#btn_store_especificacion").attr('disabled',false);
                 }
             });
         }

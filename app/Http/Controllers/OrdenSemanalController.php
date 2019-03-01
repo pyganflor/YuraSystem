@@ -712,7 +712,10 @@ class OrdenSemanalController extends Controller
     public function add_pedido_personalizado(Request $request)
     {
         return view('adminlte.gestion.postcocecha.pedidos_ventas.partials.add_pedido_personalizado', [
-            'clientes' => Cliente::All()->where('estado', '=', 1),
+            'clientes' => Cliente::join('detalle_cliente as dc','cliente.id_cliente','dc.id_cliente')->where([
+                ['cliente.estado', '=', 1],
+                ['dc.estado',1]
+            ])->orderBy('dc.nombre','asc')->get(),
             'cajas' => Empaque::All()->where('estado', '=', 1)->where('tipo', '=', 'C'),
             'calibres' => getCalibresRamo(),
             'variedades' => getVariedades(),
@@ -735,6 +738,7 @@ class OrdenSemanalController extends Controller
         $creados = [];
         if (count($request->arreglo) > 0) {
             foreach ($request->arreglo as $item) {
+                //dd($item['longitud_ramo']);
                 /* ========= TABLA ESPECIFICACION ==========*/
                 $texto = $item['cantidad_piezas'] . ' ' . explode('|', Empaque::find($item['id_empaque'])->nombre)[0] . ' de ' .
                     $item['cantidad_ramos'] . ' ramos ' . ClasificacionRamo::find($item['id_clasificacion_ramo'])->nombre .
@@ -775,7 +779,7 @@ class OrdenSemanalController extends Controller
                         $det_esp_emp->id_empaque_p = $item['id_empaque_p'];
                         $det_esp_emp->tallos_x_ramos = $item['tallos_x_ramo'];
                         $det_esp_emp->longitud_ramo = $item['longitud_ramo'];
-                        $det_esp_emp->id_unidad_medida = $item['id_unidad_medida'];
+                        $det_esp_emp->id_unidad_medida = $item['longitud_ramo'] != null ? $item['id_unidad_medida'] : null;
 
                         if ($det_esp_emp->save()) {
                             $det_esp_emp = DetalleEspecificacionEmpaque::All()->last();

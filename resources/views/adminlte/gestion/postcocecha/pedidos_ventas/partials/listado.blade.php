@@ -13,14 +13,28 @@
                     style="border-color: #9d9d9d">
                     CLIENTE
                 </th>
-                <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
-                    style="border-color: #9d9d9d">
-                    CANTIDAD / ESPECIFICIACIONES
+                <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
+                    VARIEDAD
                 </th>
-                <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
-                    style="border-color: #9d9d9d">
-                    DESCRIPCIÓN
+                <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
+                    CALIBRE
                 </th>
+                <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
+                    CAJA
+                </th>
+                <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
+                    RAMO X CAJA
+                </th>
+                <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
+                    PRESENTACIÓN
+                </th>
+                <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
+                    TALLOS X RAMO
+                </th>
+                <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
+                    LONGITUD
+                </th>
+
                 <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
                     style="border-color: #9d9d9d">
                     OPCIONES
@@ -29,6 +43,10 @@
             </tr>
             </thead>
             @foreach($listado as $item)
+                @php
+                    foreach(getPedido($item->id_pedido)->detalles as $detalle)
+                        $esp = getDetalleEspecificacion($detalle->cliente_especificacion->especificacion->id_especificacion);
+                @endphp
                 <tr onmouseover="$(this).css('background-color','#add8e6')"
                     onmouseleave="$(this).css('background-color','')" class=""
                     id="row_pedidos_">
@@ -41,42 +59,73 @@
                     <td style="border-color: #9d9d9d" class="text-center">
                         {{$item->nombre}}
                     </td>
-                    <td style="border-color: #9d9d9d" class="text-center mouse-hand">
-                        <ul>
-                            @foreach(getPedido($item->id_pedido)->detalles as $detalle)
-                                <li style="list-style: none">
-                                    <a tabindex="0" data-toggle="popover"
-                                       title="Descripción" data-trigger="focus"
-                                       data-content="
-                                         @foreach($detalle->cliente_especificacion->especificacion->especificacionesEmpaque as $espEmp)
-                                       {{$espEmp->cantidad}}:
-                                             {{$espEmp->empaque->nombre}} con las variedades
-                                                @foreach($espEmp->detalles as $det)
-                                       {{$det->variedad->nombre}}
-                                               con {{$det->cantidad}}  ramos de
-                                                             {{$det->clasificacion_ramo->nombre}} gr
-                                                                @if(!empty($det->longitud_ramo))
-                                       {{" y ".$det->longitud_ramo}}
-                                       @if(!empty($det->id_unidad_medida))
-                                       {{getUnidadMedida($det->id_unidad_medida)->siglas}}
-                                       @endif
-                                       @endif
-                                               c/u,
-                                        @if(!empty($det->tallos_x_ramos))
-                                       {{" de ".$det->tallos_x_ramos." Tallos por ramos"}}
-                                       @endif
-                                               con presentación de {{$det->empaque_p->nombre}}
-                                       @endforeach
-                                       @endforeach">
-                                        {{$detalle->cantidad}}: {{$detalle->cliente_especificacion->especificacion->nombre}}
-                                    </a>
+                    <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;" class="text-center">
+                        <ul style="padding: 0;margin:0">
+                            @foreach($esp as $e)
+                                <li style="list-style: none;{{count($esp) != 1 ? "border-bottom: 1px solid silver" : ""}}">
+                                    {{$e["variedad"]}}
                                 </li>
                             @endforeach
                         </ul>
                     </td>
-                    <td style="border-color: #9d9d9d" class="text-center mouse-hand" id="popover_pedidos">
-                        {{$item->descripcion}}
+                    <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;" class="text-center">
+                        <ul style="padding: 0;margin:0">
+                            @foreach($esp as  $e)
+                                <li style="list-style: none;{{count($esp) != 1 ? "border-bottom: 1px solid silver" : ""}}">
+
+                                    {{$e["calibre"]}}
+                                </li>
+                            @endforeach
+                        </ul>
                     </td>
+                    <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;" class="text-center">
+                        <ul style="padding: 0;margin:0">
+                            @foreach($esp as $e)
+                                <li style="list-style: none;{{count($esp) != 1 ? "border-bottom: 1px solid silver" : ""}}">
+                                    {{$e["caja"]}}
+                                </li>
+                            @endforeach
+                        </ul>
+                    </td>
+                    <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;" class="text-center">
+                        <ul style="padding: 0;margin:0">
+                            @foreach($esp as $e)
+                                <li style="list-style: none;{{count($esp) != 1 ? "border-bottom: 1px solid silver" : ""}}">
+                                    {{$e["rxc"]}}
+                                </li>
+                            @endforeach
+                        </ul>
+                    </td>
+                    <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;" class="text-center">
+                        <ul style="padding: 0;margin:0">
+                            @foreach($esp as $e)
+                                <li style="list-style: none;{{count($esp) != 1 ? "border-bottom: 1px solid silver" : ""}}">
+                                    {{$e["presentacion"]}}
+                                </li>
+                            @endforeach
+                        </ul>
+                    </td>
+                    <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;" class="text-center">
+                        <ul style="padding: 0;margin:0">
+                            @foreach($esp as $e)
+                                <li style="list-style: none;{{count($esp) != 1 ? "border-bottom: 1px solid silver" : ""}}">
+                                    {{$e["txr"] == null ? "-" : $e["txr"] }}
+                                </li>
+                            @endforeach
+                        </ul>
+                    </td>
+                    <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;" class="text-center">
+                        <ul style="padding: 0;margin:0">
+                            @foreach($esp as $e)
+                                <li style="list-style: none;{{count($esp) != 1 ? "border-bottom: 1px solid silver" : ""}}">
+                                    {{$e["longitud"] == null ? "-" : $e["longitud"] }} {{($e["unidad_medida_longitud"] == null || $e["longitud"] == null) ? "" : $e["unidad_medida_longitud"]}}
+                                </li>
+                            @endforeach
+                        </ul>
+                    </td>
+                    {{--<td style="border-color: #9d9d9d" class="text-center mouse-hand" id="popover_pedidos">
+                        {{$item->descripcion}}
+                    </td>--}}
                     <td class="text-center" style="border-color: #9d9d9d">
                         @if($item->empaquetado == 0)
                             <button class="btn  btn-{!! $item->estado == 1 ? 'success' : 'warning' !!} btn-xs" type="button"

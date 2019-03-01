@@ -20,13 +20,13 @@
                         Fecha
                     </th>
                     <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white" width="7%">
-                        Cant. Piezas
+                        Cant. Cajas
                     </th>
                     <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
                         Pieza
                     </th>
                     <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white" width="7%">
-                        Cant. Ramos
+                        Ramos x Cajas
                     </th>
                     <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
                         Calibre

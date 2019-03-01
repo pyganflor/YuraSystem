@@ -25,6 +25,7 @@ function add_campos(value, id_cliente, cant_especificaciones) {
         //cant_especificaciones : cant_especificaciones
     };
     $.get('/clientes/inputs_pedidos', datos, function (retorno) {
+
         $('#tbody_inputs_pedidos').append(retorno);
         if ($("#id_cliente_venta").length > 0) {
             cargar_espeicificaciones_cliente(false);
@@ -270,7 +271,7 @@ function cargar_espeicificaciones_cliente(remove) {
     var cant_tr = $('tbody#tbody_inputs_pedidos tr').length;
     datos = {
         id_cliente: $("#id_cliente_venta").val()
-    }
+    };
     get_jquery('pedidos/cargar_especificaciones', datos, function (response) {
         remove ? add_campos(1, '',response['agencias_carga']) : '';
         /*setTimeout(function () {
@@ -713,7 +714,7 @@ function add_especificacion(id_cliente,cliente) {
 function tipo_unidad_medida(data,token) {
     datos = {
         _token: token,
-        tipo_unidad_medida: $('#'+data).val()
+        tipo_unidad_medida: 'P'//$('#'+data).val() COMENTADO SOLO PARA PYGANFLOR, SÓLO USA 'P' (PESO)
     };
     get_jquery('clientes/obtener_calsificacion_ramos', datos, function (retorno) {
 
@@ -746,14 +747,11 @@ function form_codigo_barra() {
 
 function genera_codigo_barra(prefijo,codigo) {
     $.LoadingOverlay('show');
-    /*datos = {
-        prefijo : prefijo,
-        codigo  : codigo
-    };*/
-    console.log(prefijo);
     $.get('codigo_barra/generar_codigo_barra/'+codigo+"/"+prefijo, {}, function (retorno) {
         console.log(retorno);
        $("#img_codigo_barra").html(retorno);
     });
     $.LoadingOverlay('hide');
 }
+
+
