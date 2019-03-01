@@ -70,9 +70,11 @@
                     </td>
                     <td class="text-center" style="border-color: #9d9d9d">
                         <input type="color" id="color_{{$unitaria->id_clasificacion_unitaria}}" value="{{explode('|',$unitaria->color)[0]}}"
-                               name="color_{{explode('|',$unitaria->color)[0]}}" title="Fondo">
-                        <input type="color" id="color_txt_{{$unitaria->id_clasificacion_unitaria}}" value="{{explode('|',$unitaria->color)[1]}}"
-                               name="color_txt_{{explode('|',$unitaria->color)[1]}}" title="Texto">
+                               name="color_{{$unitaria->id_clasificacion_unitaria}}" title="Fondo">
+                        <input type="color" id="color_txt_{{$unitaria->id_clasificacion_unitaria}}"
+                               value="{{$unitaria->color != '' ? explode('|',$unitaria->color)[1] : ''}}"
+                               name="color_txt_{{$unitaria->id_clasificacion_unitaria}}"
+                               title="Texto">
                     </td>
                     <td class="text-center" style="border-color: #9d9d9d">
                         <div class="btn-group">

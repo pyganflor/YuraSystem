@@ -9,7 +9,7 @@
     <section class="content-header">
         <h1>
             {{explode('|',getConfiguracionEmpresa()->postcocecha)[3]}}
-            <small>módulo de postcocecha</small>
+            <small>módulo de postcosecha</small>
         </h1>
 
         <ol class="breadcrumb">
@@ -42,7 +42,7 @@
                         <option value="">Seleccione...</option>
                         @foreach($variedades as $item)
                             <option value="{{$item->id_variedad}}">
-                                {{$item->nombre}}
+                                {{$item->planta->nombre}} - {{$item->nombre}}
                             </option>
                         @endforeach
                     </select>

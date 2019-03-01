@@ -120,6 +120,8 @@
         datos = {
             fecha: $('#fecha_ingreso').val()
         };
+        $('#html_rendimiento').html('');
+
         get_jquery('{{url('recepcion/buscarCosechaByFecha')}}', datos, function (retorno) {
             $('#id_cosecha').val(retorno.id_cosecha);
             $('#personal').val(retorno.personal);

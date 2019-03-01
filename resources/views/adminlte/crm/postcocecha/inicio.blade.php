@@ -1,7 +1,7 @@
 @extends('layouts.adminlte.master')
 
 @section('titulo')
-    Dashboard - Postcocecha
+    Dashboard - Postcosecha
 @endsection
 
 @section('script_inicio')

@@ -12,14 +12,16 @@
         </span>
             <div class="progress sm" style="margin-bottom: 5px">
                 @php
-                    $porcentaje = round((($item['clasificacion'] * 100) /
-                         $item['cosecha']), 2);
-                if ($porcentaje >= 90)
-                $class_bar = 'green';
-                elseif ($porcentaje >= 80)
-                $class_bar = 'warning';
-                else
-                $class_bar = 'red';
+                    $porcentaje = 0;
+                    if ($item['cosecha'] > 0)
+                        $porcentaje = round((($item['clasificacion'] * 100) /
+                             $item['cosecha']), 2);
+                    if ($porcentaje >= 90)
+                    $class_bar = 'green';
+                    elseif ($porcentaje >= 80)
+                    $class_bar = 'warning';
+                    else
+                    $class_bar = 'red';
                 @endphp
                 <div class="progress-bar progress-bar-{{$class_bar}}" title="{{$porcentaje}}%"
                      style="width: {{$porcentaje}}%"></div>

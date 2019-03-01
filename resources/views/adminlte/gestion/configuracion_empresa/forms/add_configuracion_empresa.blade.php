@@ -152,7 +152,7 @@
             </div>
             <div class="col-md-4">
                 <h4 class="box-title">
-                    Procesos de postcocecha
+                    Procesos de postcosecha
                     <!--<small id="texto_seleccionar_rol">seleccione un rol</small>-->
                 </h4>
                 <table width="100%" class="table table-responsive table-bordered" style="font-size: 0.8em; border-color: #9d9d9d">

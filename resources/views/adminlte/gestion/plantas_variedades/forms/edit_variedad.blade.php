@@ -1,6 +1,6 @@
 <form id="form_edit_variedad">
     <div class="row">
-        <div class="col-md-4">
+        <div class="col-md-3">
             <div class="form-group">
                 <label for="nombre">Nombre</label>
                 <input type="text" id="nombre" name="nombre" class="form-control" required maxlength="250" autocomplete="off"
@@ -20,7 +20,7 @@
                 </select>
             </div>
         </div>-->
-        <div class="col-md-4">
+        <div class="col-md-3">
             <div class="form-group">
                 <label for="id_planta">Planta</label>
                 <select name="id_planta" id="id_planta" required class="form-control">
@@ -33,11 +33,17 @@
                 </select>
             </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-3">
             <div class="form-group">
                 <label for="siglas">Siglas</label>
                 <input type="text" id="siglas" name="siglas" class="form-control" required maxlength="25" autocomplete="off"
                        value="{{$variedad->siglas}}">
+            </div>
+        </div>
+        <div class="col-md-3" title="Color para los reportes">
+            <div class="form-group">
+                <label for="color">Color</label>
+                <input type="color" id="color" name="color" class="form-control" required value="{{$variedad->color}}">
             </div>
         </div>
     </div>
