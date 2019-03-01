@@ -9,7 +9,7 @@
     <section class="content-header">
         <h1>
             Lotes
-            <small>módulo de postcocecha</small>
+            <small>módulo de postcosecha</small>
 
         </h1>
 

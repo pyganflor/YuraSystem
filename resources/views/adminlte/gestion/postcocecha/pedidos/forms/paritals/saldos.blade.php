@@ -78,7 +78,7 @@
                         Saldo
                     </th>
                     @foreach(getVariedades() as $variedad)
-                        <td class="text-center" style="border-color: #9d9d9d" title="Cocechado">
+                        <td class="text-center" style="border-color: #9d9d9d" title="Cosechado">
                             @php
                                 $saldo = $variedad->getDisponiblesToFecha($item)['cosechado'] - $variedad->getPedidosToFecha($item);
                             @endphp

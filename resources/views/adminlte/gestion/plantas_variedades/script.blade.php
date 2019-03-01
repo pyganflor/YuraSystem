@@ -64,6 +64,7 @@
                 maximo_apertura: $('#maximo_apertura').val(),
                 estandar: $('#estandar').val(),
                 siglas: $('#siglas').val(),
+                color: $('#color').val(),
                 tallos_x_malla: $('#tallos_x_malla').val(),
             };
             post_jquery('{{url('plantas_variedades/store_variedad')}}', datos, function () {
@@ -150,6 +151,7 @@
                 maximo_apertura: $('#maximo_apertura').val(),
                 estandar: $('#estandar').val(),
                 siglas: $('#siglas').val(),
+                color: $('#color').val(),
                 tallos_x_malla: $('#tallos_x_malla').val(),
             };
             post_jquery('{{url('plantas_variedades/update_variedad')}}', datos, function () {

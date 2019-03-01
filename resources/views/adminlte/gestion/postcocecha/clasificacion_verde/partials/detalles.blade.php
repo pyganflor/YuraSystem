@@ -57,7 +57,11 @@
                     CALIBRE
                 </th>
                 <td style="border-color: #9d9d9d" class="text-center">
-                    {{round($clasificacion->total_tallos()/$clasificacion->getTotalRamosEstandar(),2)}}
+                    @if($clasificacion->getTotalRamosEstandar() > 0)
+                        {{round($clasificacion->total_tallos() / $clasificacion->getTotalRamosEstandar(),2)}}
+                    @else
+                        0
+                    @endif
                 </td>
             </tr>
             <tr>

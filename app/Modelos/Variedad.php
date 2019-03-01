@@ -23,6 +23,7 @@ class Variedad extends Model
         'estado',
         'id_planta',
         'tallos_x_malla',
+        'color',
     ];
 
     public function planta()

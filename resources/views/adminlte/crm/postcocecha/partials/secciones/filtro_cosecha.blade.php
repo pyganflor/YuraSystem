@@ -115,5 +115,7 @@
         get_jquery('{{url('crm_postcosecha/buscar_reporte_cosecha_chart')}}', datos, function (retorno) {
             $('#div_chart_cosecha').html(retorno);
         });
+
+        //select_option_cosecha('cosecha_x_variedad');
     }
 </script>

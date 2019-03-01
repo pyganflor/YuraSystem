@@ -19,11 +19,11 @@
     </div>
 </div>
 
-<form id="form-add_clasificacion_verde">
+<div id="form-add_clasificacion_verde">
     <div id="div_formulario_add">
 
     </div>
-</form>
+</div>
 <script>
     @if($fecha == '')
     set_max_today($('#fecha_recepciones'));

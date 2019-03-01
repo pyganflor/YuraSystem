@@ -51,7 +51,7 @@
                 <div class="inner">
                     <h3 class="info-box-number">
                         {{$rendimiento}}
-                        <sup style="font-size: 0.4em">t/hr</sup>
+                        <sup style="font-size: 0.4em"></sup>
                     </h3>
                 </div>
                 <div class="icon">
@@ -67,7 +67,7 @@
                 <div class="inner">
                     <h3 class="info-box-number">
                         {{$calibre}}
-                        <sup style="font-size: 0.4em">t/r</sup>
+                        <sup style="font-size: 0.4em"></sup>
                     </h3>
                 </div>
                 <div class="icon">

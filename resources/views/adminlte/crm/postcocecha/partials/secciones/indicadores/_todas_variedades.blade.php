@@ -62,7 +62,7 @@
                 <div class="inner">
                     @foreach($arreglo_variedades as $item)
                         <h3 class="info-box-number">
-                            {{$item['rendimiento']}}<sup style="font-size: 0.4em">t/hr <em>{{$item['variedad']->siglas}}</em></sup>
+                            {{$item['rendimiento']}}<sup style="font-size: 0.4em"><em>{{$item['variedad']->siglas}}</em></sup>
                         </h3>
                     @endforeach
                 </div>
@@ -79,7 +79,7 @@
                 <div class="inner">
                     @foreach($arreglo_variedades as $item)
                         <h3 class="info-box-number">
-                            {{$item['calibre']}}<sup style="font-size: 0.4em">t/r <em>{{$item['variedad']->siglas}}</em></sup>
+                            {{$item['calibre']}}<sup style="font-size: 0.4em"><em>{{$item['variedad']->siglas}}</em></sup>
                         </h3>
                     @endforeach
                 </div>

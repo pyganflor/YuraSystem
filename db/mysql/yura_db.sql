@@ -662,7 +662,7 @@ CREATE TABLE `grupo_menu` (
 
 INSERT INTO `grupo_menu` (`id_grupo_menu`, `nombre`, `fecha_registro`, `estado`) VALUES
 (1, 'ADMINISTRACIÓN', '2018-10-02 09:11:52', 'A'),
-(2, '3 - POSTCOCECHA', '2018-10-24 09:33:03', 'A');
+(2, '3 - POSTCOSECHA', '2018-10-24 09:33:03', 'A');
 
 -- --------------------------------------------------------
 

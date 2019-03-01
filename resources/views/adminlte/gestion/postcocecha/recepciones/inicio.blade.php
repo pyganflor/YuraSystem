@@ -9,7 +9,7 @@
     <section class="content-header">
         <h1>
             {{explode('|',getConfiguracionEmpresa()->postcocecha)[0]}}
-            <small>módulo de postcocecha</small>
+            <small>módulo de postcosecha</small>
 
         </h1>
 
