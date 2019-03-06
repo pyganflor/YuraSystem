@@ -49,7 +49,7 @@
         @elseif($periodo == 'anual')
         labels.push("{{$labels[$i]->ano}}");
         @else
-        labels.push("{{$labels[$i]['ano']. ' - '.$labels[$i]['mes']}}");
+        labels.push("{{getMeses(TP_ABREVIADO)[$labels[$i]->mes - 1]. ' - '.$labels[$i]->ano}}");
         @endif
                 @endfor
 
@@ -91,7 +91,7 @@
             label: '{{$variedad['variedad']->nombre}}' + ' ',
             data: data_list,
             backgroundColor: '{{$variedad['variedad']->color}}',
-            borderColor: 'black',
+            borderColor: '{{$variedad['variedad']->color}}',
             borderWidth: 2,
             fill: false,
         });
