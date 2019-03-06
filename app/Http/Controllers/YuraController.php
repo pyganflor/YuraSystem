@@ -19,6 +19,7 @@ class YuraController extends Controller
 {
     public function inicio(Request $request)
     {
+
         return view('adminlte.inicio');
     }
 

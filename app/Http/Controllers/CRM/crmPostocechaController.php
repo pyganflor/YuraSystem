@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use yura\Http\Controllers\Controller;
 use yura\Modelos\ClasificacionVerde;
 use yura\Modelos\Cosecha;
+use yura\Modelos\Semana;
 
 class crmPostocechaController extends Controller
 {
@@ -48,37 +49,13 @@ class crmPostocechaController extends Controller
         $target = '';
         $view = '';
 
-        if ($request->semanal == 'true') {  // semanal
-            $labels = DB::table('semana as s')
-                ->select('s.codigo as semana')->distinct()
-                ->Where(function ($q) use ($desde, $hasta) {
-                    $q->where('s.fecha_inicial', '>=', $desde)
-                        ->where('s.fecha_inicial', '<=', $hasta);
-                })
-                ->orWhere(function ($q) use ($desde, $hasta) {
-                    $q->where('s.fecha_final', '>=', $desde)
-                        ->Where('s.fecha_final', '<=', $hasta);
-                })
-                ->get();
-            $periodo = 'semanal';
-        } else {
-            if ($request->anual == 'true') {    // anual
-                $select = DB::raw('Year(v.fecha_ingreso) as ano');
-                $periodo = 'anual';
-            } else if ($request->mensual == 'true') {   // mensual
-                $select = [DB::raw('Year(v.fecha_ingreso) as ano'), DB::raw('Month(v.fecha_ingreso) as mes')];
-                $periodo = 'mensual';
-            } else if ($request->diario == 'true') {    // diario
-                $select = 'v.fecha_ingreso as dia';
-                $periodo = 'diario';
-            }
+        $select = 'v.fecha_ingreso as dia';
 
-            $labels = DB::table('clasificacion_verde as v')
-                ->select($select)->distinct()
-                ->where('v.fecha_ingreso', '>=', $desde)
-                ->where('v.fecha_ingreso', '<=', $hasta)
-                ->get();
-        }
+        $labels = DB::table('clasificacion_verde as v')
+            ->select($select)->distinct()
+            ->where('v.fecha_ingreso', '>=', $desde)
+            ->where('v.fecha_ingreso', '<=', $hasta)
+            ->get();
 
         if ($request->x_variedad == 'true') {
             if ($request->id_variedad != '') {
@@ -104,173 +81,89 @@ class crmPostocechaController extends Controller
         $rendimiento = 0;
         $calibre = 0;
         $arreglo_variedades = [];
-        if ($periodo == 'diario') {
-            if ($view == 'acumulado') {
-                $cant_verde = 0;
-                foreach ($labels as $dia) {
-                    $verde = ClasificacionVerde::All()->where('fecha_ingreso', '=', $dia->dia)->first();
-                    if ($verde != '') {
-                        $cajas += round($verde->getTotalRamosEstandar() / getConfiguracionEmpresa()->ramos_x_caja, 2);
-                        $ramos += $verde->getTotalRamosEstandar();
-                        $tallos += $verde->total_tallos();
-                        $desecho += $verde->desecho();
-                        $rendimiento += $verde->getRendimiento();
-                        $calibre += round($verde->total_tallos() / $verde->getTotalRamosEstandar(), 2);
-                        $cant_verde++;
-                    }
-                }
-
-                $desecho = $cant_verde > 0 ? round($desecho / $cant_verde, 2) : 0;
-                $rendimiento = $cant_verde > 0 ? round($rendimiento / $cant_verde, 2) : 0;
-                $calibre = $cant_verde > 0 ? round($calibre / $cant_verde, 2) : 0;
-            }
-            if ($view == 'x_variedad') {
-                $cant_verde = 0;
-                foreach ($labels as $dia) {
-                    $verde = ClasificacionVerde::All()->where('fecha_ingreso', '=', $dia->dia)->first();
-                    if ($verde != '') {
-                        $cajas += round($verde->getTotalRamosEstandarByVariedad($target->id_variedad) / getConfiguracionEmpresa()->ramos_x_caja, 2);
-                        $ramos += $verde->getTotalRamosEstandarByVariedad($target->id_variedad);
-                        $tallos += $verde->tallos_x_variedad($target->id_variedad);
-                        $desecho += $verde->desechoByVariedad($target->id_variedad);
-                        $rendimiento += $verde->getRendimientoByVariedad($target->id_variedad);
-                        $calibre += $verde->calibreByVariedad($target->id_variedad);
-                        $cant_verde++;
-                    }
-                }
-
-                $desecho = $cant_verde > 0 ? round($desecho / $cant_verde, 2) : 0;
-                $rendimiento = $cant_verde > 0 ? round($rendimiento / $cant_verde, 2) : 0;
-                $calibre = $cant_verde > 0 ? round($calibre / $cant_verde, 2) : 0;
-            }
-            if ($view == 'todas_variedades') {
-                foreach ($target as $variedad) {
-                    $cant_verde = 0;
-                    $cajas = 0;
-                    $ramos = 0;
-                    $tallos = 0;
-                    $cosecha = 0;
-                    $desecho = 0;
-                    $rendimiento = 0;
-                    $calibre = 0;
-                    foreach ($labels as $dia) {
-                        $verde = ClasificacionVerde::All()->where('fecha_ingreso', '=', $dia->dia)->first();
-                        if ($verde != '') {
-                            $cajas += round($verde->getTotalRamosEstandarByVariedad($variedad->id_variedad) / getConfiguracionEmpresa()->ramos_x_caja, 2);
-                            $ramos += $verde->getTotalRamosEstandarByVariedad($variedad->id_variedad);
-                            $tallos += $verde->tallos_x_variedad($variedad->id_variedad);
-                            $cosecha += $verde->total_tallos_recepcionByVariedad($variedad->id_variedad);
-                            //$desecho += $verde->desechoByVariedad($variedad->id_variedad);
-                            $rendimiento += $verde->getRendimientoByVariedad($variedad->id_variedad);
-                            $calibre += $verde->calibreByVariedad($variedad->id_variedad);
-                            $cant_verde++;
-                        }
-                    }
-
-                    //$desecho = $cant_verde > 0 ? round($desecho / $cant_verde, 2) : 0;
-                    $desecho = $cosecha > 0 ? 100 - round((($tallos * 100) / $cosecha), 2) : 0;
-                    $rendimiento = $cant_verde > 0 ? round($rendimiento / $cant_verde, 2) : 0;
-                    $calibre = $cant_verde > 0 ? round($calibre / $cant_verde, 2) : 0;
-
-                    array_push($arreglo_variedades, [
-                        'variedad' => $variedad,
-                        'cajas' => $cajas,
-                        'ramos' => $ramos,
-                        'tallos' => $tallos,
-                        'cosecha' => $cosecha,
-                        'desecho' => $desecho,
-                        'rendimiento' => $rendimiento,
-                        'calibre' => $calibre,
-                    ]);
+        if ($view == 'acumulado') {
+            $cant_verde = 0;
+            foreach ($labels as $dia) {
+                $verde = ClasificacionVerde::All()->where('fecha_ingreso', '=', $dia->dia)->first();
+                if ($verde != '') {
+                    $cajas += round($verde->getTotalRamosEstandar() / getConfiguracionEmpresa()->ramos_x_caja, 2);
+                    $ramos += $verde->getTotalRamosEstandar();
+                    $tallos += $verde->total_tallos();
+                    $desecho += $verde->desecho();
+                    $rendimiento += $verde->getRendimiento();
+                    $calibre += round($verde->total_tallos() / $verde->getTotalRamosEstandar(), 2);
+                    $cant_verde++;
                 }
             }
+
+            $desecho = $cant_verde > 0 ? round($desecho / $cant_verde, 2) : 0;
+            $rendimiento = $cant_verde > 0 ? round($rendimiento / $cant_verde, 2) : 0;
+            $calibre = $cant_verde > 0 ? round($calibre / $cant_verde, 2) : 0;
         }
-        if ($periodo == 'semanal') {
-            if ($view == 'acumulado') {
+        if ($view == 'x_variedad') {
+            $cant_verde = 0;
+            foreach ($labels as $dia) {
+                $verde = ClasificacionVerde::All()->where('fecha_ingreso', '=', $dia->dia)->first();
+                if ($verde != '') {
+                    $cajas += round($verde->getTotalRamosEstandarByVariedad($target->id_variedad) / getConfiguracionEmpresa()->ramos_x_caja, 2);
+                    $ramos += $verde->getTotalRamosEstandarByVariedad($target->id_variedad);
+                    $tallos += $verde->tallos_x_variedad($target->id_variedad);
+                    $desecho += $verde->desechoByVariedad($target->id_variedad);
+                    $rendimiento += $verde->getRendimientoByVariedad($target->id_variedad);
+                    $calibre += $verde->calibreByVariedad($target->id_variedad);
+                    $cant_verde++;
+                }
+            }
+
+            $desecho = $cant_verde > 0 ? round($desecho / $cant_verde, 2) : 0;
+            $rendimiento = $cant_verde > 0 ? round($rendimiento / $cant_verde, 2) : 0;
+            $calibre = $cant_verde > 0 ? round($calibre / $cant_verde, 2) : 0;
+        }
+        if ($view == 'todas_variedades') {
+            foreach ($target as $variedad) {
                 $cant_verde = 0;
+                $cajas = 0;
+                $ramos = 0;
+                $tallos = 0;
+                $cosecha = 0;
+                $desecho = 0;
+                $rendimiento = 0;
+                $calibre = 0;
                 foreach ($labels as $dia) {
                     $verde = ClasificacionVerde::All()->where('fecha_ingreso', '=', $dia->dia)->first();
                     if ($verde != '') {
-                        $cajas += round($verde->getTotalRamosEstandar() / getConfiguracionEmpresa()->ramos_x_caja, 2);
-                        $ramos += $verde->getTotalRamosEstandar();
-                        $tallos += $verde->total_tallos();
-                        $desecho += $verde->desecho();
-                        $rendimiento += $verde->getRendimiento();
-                        $calibre += round($verde->total_tallos() / $verde->getTotalRamosEstandar(), 2);
+                        $cajas += round($verde->getTotalRamosEstandarByVariedad($variedad->id_variedad) / getConfiguracionEmpresa()->ramos_x_caja, 2);
+                        $ramos += $verde->getTotalRamosEstandarByVariedad($variedad->id_variedad);
+                        $tallos += $verde->tallos_x_variedad($variedad->id_variedad);
+                        $cosecha += $verde->total_tallos_recepcionByVariedad($variedad->id_variedad);
+                        //$desecho += $verde->desechoByVariedad($variedad->id_variedad);
+                        $rendimiento += $verde->getRendimientoByVariedad($variedad->id_variedad);
+                        $calibre += $verde->calibreByVariedad($variedad->id_variedad);
                         $cant_verde++;
                     }
                 }
 
-                $desecho = $cant_verde > 0 ? round($desecho / $cant_verde, 2) : 0;
+                //$desecho = $cant_verde > 0 ? round($desecho / $cant_verde, 2) : 0;
+                $desecho = $cosecha > 0 ? 100 - round((($tallos * 100) / $cosecha), 2) : 0;
                 $rendimiento = $cant_verde > 0 ? round($rendimiento / $cant_verde, 2) : 0;
                 $calibre = $cant_verde > 0 ? round($calibre / $cant_verde, 2) : 0;
-            }
-            if ($view == 'x_variedad') {
-                $cant_verde = 0;
-                foreach ($labels as $dia) {
-                    $verde = ClasificacionVerde::All()->where('fecha_ingreso', '=', $dia->dia)->first();
-                    if ($verde != '') {
-                        $cajas += round($verde->getTotalRamosEstandarByVariedad($target->id_variedad) / getConfiguracionEmpresa()->ramos_x_caja, 2);
-                        $ramos += $verde->getTotalRamosEstandarByVariedad($target->id_variedad);
-                        $tallos += $verde->tallos_x_variedad($target->id_variedad);
-                        $desecho += $verde->desechoByVariedad($target->id_variedad);
-                        $rendimiento += $verde->getRendimientoByVariedad($target->id_variedad);
-                        $calibre += $verde->calibreByVariedad($target->id_variedad);
-                        $cant_verde++;
-                    }
-                }
 
-                $desecho = $cant_verde > 0 ? round($desecho / $cant_verde, 2) : 0;
-                $rendimiento = $cant_verde > 0 ? round($rendimiento / $cant_verde, 2) : 0;
-                $calibre = $cant_verde > 0 ? round($calibre / $cant_verde, 2) : 0;
-            }
-            if ($view == 'todas_variedades') {
-                foreach ($target as $variedad) {
-                    $cant_verde = 0;
-                    $cajas = 0;
-                    $ramos = 0;
-                    $tallos = 0;
-                    $cosecha = 0;
-                    $desecho = 0;
-                    $rendimiento = 0;
-                    $calibre = 0;
-                    foreach ($labels as $dia) {
-                        $verde = ClasificacionVerde::All()->where('fecha_ingreso', '=', $dia->dia)->first();
-                        if ($verde != '') {
-                            $cajas += round($verde->getTotalRamosEstandarByVariedad($variedad->id_variedad) / getConfiguracionEmpresa()->ramos_x_caja, 2);
-                            $ramos += $verde->getTotalRamosEstandarByVariedad($variedad->id_variedad);
-                            $tallos += $verde->tallos_x_variedad($variedad->id_variedad);
-                            $cosecha += $verde->total_tallos_recepcionByVariedad($variedad->id_variedad);
-                            //$desecho += $verde->desechoByVariedad($variedad->id_variedad);
-                            $rendimiento += $verde->getRendimientoByVariedad($variedad->id_variedad);
-                            $calibre += $verde->calibreByVariedad($variedad->id_variedad);
-                            $cant_verde++;
-                        }
-                    }
-
-                    //$desecho = $cant_verde > 0 ? round($desecho / $cant_verde, 2) : 0;
-                    $desecho = $cosecha > 0 ? 100 - round((($tallos * 100) / $cosecha), 2) : 0;
-                    $rendimiento = $cant_verde > 0 ? round($rendimiento / $cant_verde, 2) : 0;
-                    $calibre = $cant_verde > 0 ? round($calibre / $cant_verde, 2) : 0;
-
-                    array_push($arreglo_variedades, [
-                        'variedad' => $variedad,
-                        'cajas' => $cajas,
-                        'ramos' => $ramos,
-                        'tallos' => $tallos,
-                        'cosecha' => $cosecha,
-                        'desecho' => $desecho,
-                        'rendimiento' => $rendimiento,
-                        'calibre' => $calibre,
-                    ]);
-                }
+                array_push($arreglo_variedades, [
+                    'variedad' => $variedad,
+                    'cajas' => $cajas,
+                    'ramos' => $ramos,
+                    'tallos' => $tallos,
+                    'cosecha' => $cosecha,
+                    'desecho' => $desecho,
+                    'rendimiento' => $rendimiento,
+                    'calibre' => $calibre,
+                ]);
             }
         }
 
         return view('adminlte.crm.postcocecha.partials.secciones.indicadores._' . $view, [
             'labels' => $labels,
             'target' => $target,
-            'periodo' => $periodo,
             'cajas' => $cajas,
             'ramos' => $ramos,
             'tallos' => $tallos,
@@ -343,6 +236,7 @@ class crmPostocechaController extends Controller
                     $q->where('s.fecha_final', '>=', $desde)
                         ->Where('s.fecha_final', '<=', $hasta);
                 })
+                ->orderBy('codigo')
                 ->get();
             $periodo = 'semanal';
         } else {
@@ -361,8 +255,8 @@ class crmPostocechaController extends Controller
                 ->select($select)->distinct()
                 ->where('v.fecha_ingreso', '>=', $desde)
                 ->where('v.fecha_ingreso', '<=', $hasta)
+                ->orderBy('fecha_ingreso')
                 ->get();
-
         }
 
         if ($request->x_variedad == 'true') {
@@ -449,8 +343,360 @@ class crmPostocechaController extends Controller
                 }
             }
         }
+        if ($periodo == 'semanal') {
+            if ($view == 'acumulado') {
+                foreach ($labels as $codigo) {
+                    $semana = Semana::All()->where('codigo', '=', $codigo->semana)->first();
+                    $list_verdes = ClasificacionVerde::All()
+                        ->where('fecha_ingreso', '>=', $semana->fecha_inicial)
+                        ->where('fecha_ingreso', '<=', $semana->fecha_final);
+                    $cajas = 0;
+                    $ramos = 0;
+                    $tallos = 0;
+                    $desecho = 0;
+                    $rendimiento = 0;
+                    $calibre = 0;
+                    foreach ($list_verdes as $verde) {
+                        $cajas += round($verde->getTotalRamosEstandar() / getConfiguracionEmpresa()->ramos_x_caja, 2);
+                        $ramos += $verde->getTotalRamosEstandar();
+                        $tallos += $verde->total_tallos();
+                        $desecho += $verde->desecho();
+                        $rendimiento += $verde->getRendimiento();
+                        $calibre += round($verde->total_tallos() / $verde->getTotalRamosEstandar(), 2);
+                    }
+                    $desecho = count($list_verdes) > 0 ? round($desecho / count($list_verdes), 2) : 0;
+                    $rendimiento = count($list_verdes) > 0 ? round($rendimiento / count($list_verdes), 2) : 0;
+                    $calibre = count($list_verdes) > 0 ? round($calibre / count($list_verdes), 2) : 0;
 
-        //dd($arreglo_variedades);
+                    array_push($array_cajas, $cajas);
+                    array_push($array_ramos, $ramos);
+                    array_push($array_tallos, $tallos);
+                    array_push($array_desecho, $desecho);
+                    array_push($array_rendimiento, $rendimiento);
+                    array_push($array_calibre, $calibre);
+                }
+            }
+            if ($view == 'x_variedad') {
+                foreach ($labels as $codigo) {
+                    $semana = Semana::All()->where('codigo', '=', $codigo->semana)->first();
+                    $list_verdes = ClasificacionVerde::All()
+                        ->where('fecha_ingreso', '>=', $semana->fecha_inicial)
+                        ->where('fecha_ingreso', '<=', $semana->fecha_final);
+                    $cajas = 0;
+                    $ramos = 0;
+                    $tallos = 0;
+                    $desecho = 0;
+                    $rendimiento = 0;
+                    $calibre = 0;
+                    foreach ($list_verdes as $verde) {
+                        $cajas += round($verde->getTotalRamosEstandarByVariedad($target->id_variedad) / getConfiguracionEmpresa()->ramos_x_caja, 2);
+                        $ramos += $verde->getTotalRamosEstandarByVariedad($target->id_variedad);
+                        $tallos += $verde->tallos_x_variedad($target->id_variedad);
+                        $desecho += $verde->desechoByVariedad($target->id_variedad);
+                        $rendimiento += $verde->getRendimientoByVariedad($target->id_variedad);
+                        $calibre += $verde->calibreByVariedad($target->id_variedad);
+                    }
+                    $desecho = count($list_verdes) > 0 ? round($desecho / count($list_verdes), 2) : 0;
+                    $rendimiento = count($list_verdes) > 0 ? round($rendimiento / count($list_verdes), 2) : 0;
+                    $calibre = count($list_verdes) > 0 ? round($calibre / count($list_verdes), 2) : 0;
+
+                    array_push($array_cajas, $cajas);
+                    array_push($array_ramos, $ramos);
+                    array_push($array_tallos, $tallos);
+                    array_push($array_desecho, $desecho);
+                    array_push($array_rendimiento, $rendimiento);
+                    array_push($array_calibre, $calibre);
+                }
+            }
+            if ($view == 'todas_variedades') {
+                foreach ($target as $variedad) {
+                    $array_cajas = [];
+                    $array_ramos = [];
+                    $array_tallos = [];
+                    $array_desecho = [];
+                    $array_rendimiento = [];
+                    $array_calibre = [];
+
+                    foreach ($labels as $codigo) {
+                        $semana = Semana::All()->where('codigo', '=', $codigo->semana)->first();
+                        $list_verdes = ClasificacionVerde::All()
+                            ->where('fecha_ingreso', '>=', $semana->fecha_inicial)
+                            ->where('fecha_ingreso', '<=', $semana->fecha_final);
+                        $cajas = 0;
+                        $ramos = 0;
+                        $tallos = 0;
+                        $desecho = 0;
+                        $rendimiento = 0;
+                        $calibre = 0;
+                        foreach ($list_verdes as $verde) {
+                            $cajas += round($verde->getTotalRamosEstandarByVariedad($variedad->id_variedad) / getConfiguracionEmpresa()->ramos_x_caja, 2);
+                            $ramos += $verde->getTotalRamosEstandarByVariedad($variedad->id_variedad);
+                            $tallos += $verde->tallos_x_variedad($variedad->id_variedad);
+                            $desecho += $verde->desechoByVariedad($variedad->id_variedad);
+                            $rendimiento += $verde->getRendimientoByVariedad($variedad->id_variedad);
+                            $calibre += $verde->calibreByVariedad($variedad->id_variedad);
+                        }
+                        $desecho = count($list_verdes) > 0 ? round($desecho / count($list_verdes), 2) : 0;
+                        $rendimiento = count($list_verdes) > 0 ? round($rendimiento / count($list_verdes), 2) : 0;
+                        $calibre = count($list_verdes) > 0 ? round($calibre / count($list_verdes), 2) : 0;
+
+                        array_push($array_cajas, $cajas);
+                        array_push($array_ramos, $ramos);
+                        array_push($array_tallos, $tallos);
+                        array_push($array_desecho, $desecho);
+                        array_push($array_rendimiento, $rendimiento);
+                        array_push($array_calibre, $calibre);
+                    }
+
+                    array_push($arreglo_variedades, [
+                        'variedad' => $variedad,
+                        'cajas' => $array_cajas,
+                        'ramos' => $array_ramos,
+                        'tallos' => $array_tallos,
+                        'desecho' => $array_desecho,
+                        'rendimiento' => $array_rendimiento,
+                        'calibre' => $array_calibre,
+                    ]);
+                }
+            }
+        }
+        if ($periodo == 'mensual') {
+            if ($view == 'acumulado') {
+                foreach ($labels as $mes) {
+                    $list_verdes = DB::table('clasificacion_verde as v')
+                        ->where(DB::raw('Month(fecha_ingreso)'), '=', $mes->mes)
+                        ->where(DB::raw('Year(fecha_ingreso)'), '=', $mes->ano)
+                        ->get();
+                    $cajas = 0;
+                    $ramos = 0;
+                    $tallos = 0;
+                    $desecho = 0;
+                    $rendimiento = 0;
+                    $calibre = 0;
+                    foreach ($list_verdes as $item) {
+                        $verde = ClasificacionVerde::find($item->id_clasificacion_verde);
+                        $cajas += round($verde->getTotalRamosEstandar() / getConfiguracionEmpresa()->ramos_x_caja, 2);
+                        $ramos += $verde->getTotalRamosEstandar();
+                        $tallos += $verde->total_tallos();
+                        $desecho += $verde->desecho();
+                        $rendimiento += $verde->getRendimiento();
+                        $calibre += round($verde->total_tallos() / $verde->getTotalRamosEstandar(), 2);
+                    }
+                    $desecho = count($list_verdes) > 0 ? round($desecho / count($list_verdes), 2) : 0;
+                    $rendimiento = count($list_verdes) > 0 ? round($rendimiento / count($list_verdes), 2) : 0;
+                    $calibre = count($list_verdes) > 0 ? round($calibre / count($list_verdes), 2) : 0;
+
+                    array_push($array_cajas, $cajas);
+                    array_push($array_ramos, $ramos);
+                    array_push($array_tallos, $tallos);
+                    array_push($array_desecho, $desecho);
+                    array_push($array_rendimiento, $rendimiento);
+                    array_push($array_calibre, $calibre);
+                }
+            }
+            if ($view == 'x_variedad') {
+                foreach ($labels as $mes) {
+                    $list_verdes = DB::table('clasificacion_verde as v')
+                        ->where(DB::raw('Month(fecha_ingreso)'), '=', $mes->mes)
+                        ->where(DB::raw('Year(fecha_ingreso)'), '=', $mes->ano)
+                        ->get();
+                    $cajas = 0;
+                    $ramos = 0;
+                    $tallos = 0;
+                    $desecho = 0;
+                    $rendimiento = 0;
+                    $calibre = 0;
+                    foreach ($list_verdes as $item) {
+                        $verde = ClasificacionVerde::find($item->id_clasificacion_verde);
+                        $cajas += round($verde->getTotalRamosEstandarByVariedad($target->id_variedad) / getConfiguracionEmpresa()->ramos_x_caja, 2);
+                        $ramos += $verde->getTotalRamosEstandarByVariedad($target->id_variedad);
+                        $tallos += $verde->tallos_x_variedad($target->id_variedad);
+                        $desecho += $verde->desechoByVariedad($target->id_variedad);
+                        $rendimiento += $verde->getRendimientoByVariedad($target->id_variedad);
+                        $calibre += $verde->calibreByVariedad($target->id_variedad);
+                    }
+                    $desecho = count($list_verdes) > 0 ? round($desecho / count($list_verdes), 2) : 0;
+                    $rendimiento = count($list_verdes) > 0 ? round($rendimiento / count($list_verdes), 2) : 0;
+                    $calibre = count($list_verdes) > 0 ? round($calibre / count($list_verdes), 2) : 0;
+
+                    array_push($array_cajas, $cajas);
+                    array_push($array_ramos, $ramos);
+                    array_push($array_tallos, $tallos);
+                    array_push($array_desecho, $desecho);
+                    array_push($array_rendimiento, $rendimiento);
+                    array_push($array_calibre, $calibre);
+                }
+            }
+            if ($view == 'todas_variedades') {
+                foreach ($target as $variedad) {
+                    $array_cajas = [];
+                    $array_ramos = [];
+                    $array_tallos = [];
+                    $array_desecho = [];
+                    $array_rendimiento = [];
+                    $array_calibre = [];
+
+                    foreach ($labels as $mes) {
+                        $list_verdes = DB::table('clasificacion_verde as v')
+                            ->where(DB::raw('Month(fecha_ingreso)'), '=', $mes->mes)
+                            ->where(DB::raw('Year(fecha_ingreso)'), '=', $mes->ano)
+                            ->get();
+                        $cajas = 0;
+                        $ramos = 0;
+                        $tallos = 0;
+                        $desecho = 0;
+                        $rendimiento = 0;
+                        $calibre = 0;
+                        foreach ($list_verdes as $item) {
+                            $verde = ClasificacionVerde::find($item->id_clasificacion_verde);
+                            $cajas += round($verde->getTotalRamosEstandarByVariedad($variedad->id_variedad) / getConfiguracionEmpresa()->ramos_x_caja, 2);
+                            $ramos += $verde->getTotalRamosEstandarByVariedad($variedad->id_variedad);
+                            $tallos += $verde->tallos_x_variedad($variedad->id_variedad);
+                            $desecho += $verde->desechoByVariedad($variedad->id_variedad);
+                            $rendimiento += $verde->getRendimientoByVariedad($variedad->id_variedad);
+                            $calibre += $verde->calibreByVariedad($variedad->id_variedad);
+                        }
+                        $desecho = count($list_verdes) > 0 ? round($desecho / count($list_verdes), 2) : 0;
+                        $rendimiento = count($list_verdes) > 0 ? round($rendimiento / count($list_verdes), 2) : 0;
+                        $calibre = count($list_verdes) > 0 ? round($calibre / count($list_verdes), 2) : 0;
+
+                        array_push($array_cajas, $cajas);
+                        array_push($array_ramos, $ramos);
+                        array_push($array_tallos, $tallos);
+                        array_push($array_desecho, $desecho);
+                        array_push($array_rendimiento, $rendimiento);
+                        array_push($array_calibre, $calibre);
+                    }
+
+                    array_push($arreglo_variedades, [
+                        'variedad' => $variedad,
+                        'cajas' => $array_cajas,
+                        'ramos' => $array_ramos,
+                        'tallos' => $array_tallos,
+                        'desecho' => $array_desecho,
+                        'rendimiento' => $array_rendimiento,
+                        'calibre' => $array_calibre,
+                    ]);
+                }
+            }
+        }
+        if ($periodo == 'anual') {
+            if ($view == 'acumulado') {
+                foreach ($labels as $mes) {
+                    $list_verdes = DB::table('clasificacion_verde as v')
+                        ->where(DB::raw('Year(fecha_ingreso)'), '=', $mes->ano)
+                        ->get();
+                    $cajas = 0;
+                    $ramos = 0;
+                    $tallos = 0;
+                    $desecho = 0;
+                    $rendimiento = 0;
+                    $calibre = 0;
+                    foreach ($list_verdes as $item) {
+                        $verde = ClasificacionVerde::find($item->id_clasificacion_verde);
+                        $cajas += round($verde->getTotalRamosEstandar() / getConfiguracionEmpresa()->ramos_x_caja, 2);
+                        $ramos += $verde->getTotalRamosEstandar();
+                        $tallos += $verde->total_tallos();
+                        $desecho += $verde->desecho();
+                        $rendimiento += $verde->getRendimiento();
+                        $calibre += round($verde->total_tallos() / $verde->getTotalRamosEstandar(), 2);
+                    }
+                    $desecho = count($list_verdes) > 0 ? round($desecho / count($list_verdes), 2) : 0;
+                    $rendimiento = count($list_verdes) > 0 ? round($rendimiento / count($list_verdes), 2) : 0;
+                    $calibre = count($list_verdes) > 0 ? round($calibre / count($list_verdes), 2) : 0;
+
+                    array_push($array_cajas, $cajas);
+                    array_push($array_ramos, $ramos);
+                    array_push($array_tallos, $tallos);
+                    array_push($array_desecho, $desecho);
+                    array_push($array_rendimiento, $rendimiento);
+                    array_push($array_calibre, $calibre);
+                }
+            }
+            if ($view == 'x_variedad') {
+                foreach ($labels as $mes) {
+                    $list_verdes = DB::table('clasificacion_verde as v')
+                        ->where(DB::raw('Year(fecha_ingreso)'), '=', $mes->ano)
+                        ->get();
+                    $cajas = 0;
+                    $ramos = 0;
+                    $tallos = 0;
+                    $desecho = 0;
+                    $rendimiento = 0;
+                    $calibre = 0;
+                    foreach ($list_verdes as $item) {
+                        $verde = ClasificacionVerde::find($item->id_clasificacion_verde);
+                        $cajas += round($verde->getTotalRamosEstandarByVariedad($target->id_variedad) / getConfiguracionEmpresa()->ramos_x_caja, 2);
+                        $ramos += $verde->getTotalRamosEstandarByVariedad($target->id_variedad);
+                        $tallos += $verde->tallos_x_variedad($target->id_variedad);
+                        $desecho += $verde->desechoByVariedad($target->id_variedad);
+                        $rendimiento += $verde->getRendimientoByVariedad($target->id_variedad);
+                        $calibre += $verde->calibreByVariedad($target->id_variedad);
+                    }
+                    $desecho = count($list_verdes) > 0 ? round($desecho / count($list_verdes), 2) : 0;
+                    $rendimiento = count($list_verdes) > 0 ? round($rendimiento / count($list_verdes), 2) : 0;
+                    $calibre = count($list_verdes) > 0 ? round($calibre / count($list_verdes), 2) : 0;
+
+                    array_push($array_cajas, $cajas);
+                    array_push($array_ramos, $ramos);
+                    array_push($array_tallos, $tallos);
+                    array_push($array_desecho, $desecho);
+                    array_push($array_rendimiento, $rendimiento);
+                    array_push($array_calibre, $calibre);
+                }
+            }
+            if ($view == 'todas_variedades') {
+                foreach ($target as $variedad) {
+                    $array_cajas = [];
+                    $array_ramos = [];
+                    $array_tallos = [];
+                    $array_desecho = [];
+                    $array_rendimiento = [];
+                    $array_calibre = [];
+
+                    foreach ($labels as $mes) {
+                        $list_verdes = DB::table('clasificacion_verde as v')
+                            ->where(DB::raw('Year(fecha_ingreso)'), '=', $mes->ano)
+                            ->get();
+                        $cajas = 0;
+                        $ramos = 0;
+                        $tallos = 0;
+                        $desecho = 0;
+                        $rendimiento = 0;
+                        $calibre = 0;
+                        foreach ($list_verdes as $item) {
+                            $verde = ClasificacionVerde::find($item->id_clasificacion_verde);
+                            $cajas += round($verde->getTotalRamosEstandarByVariedad($variedad->id_variedad) / getConfiguracionEmpresa()->ramos_x_caja, 2);
+                            $ramos += $verde->getTotalRamosEstandarByVariedad($variedad->id_variedad);
+                            $tallos += $verde->tallos_x_variedad($variedad->id_variedad);
+                            $desecho += $verde->desechoByVariedad($variedad->id_variedad);
+                            $rendimiento += $verde->getRendimientoByVariedad($variedad->id_variedad);
+                            $calibre += $verde->calibreByVariedad($variedad->id_variedad);
+                        }
+                        $desecho = count($list_verdes) > 0 ? round($desecho / count($list_verdes), 2) : 0;
+                        $rendimiento = count($list_verdes) > 0 ? round($rendimiento / count($list_verdes), 2) : 0;
+                        $calibre = count($list_verdes) > 0 ? round($calibre / count($list_verdes), 2) : 0;
+
+                        array_push($array_cajas, $cajas);
+                        array_push($array_ramos, $ramos);
+                        array_push($array_tallos, $tallos);
+                        array_push($array_desecho, $desecho);
+                        array_push($array_rendimiento, $rendimiento);
+                        array_push($array_calibre, $calibre);
+                    }
+
+                    array_push($arreglo_variedades, [
+                        'variedad' => $variedad,
+                        'cajas' => $array_cajas,
+                        'ramos' => $array_ramos,
+                        'tallos' => $array_tallos,
+                        'desecho' => $array_desecho,
+                        'rendimiento' => $array_rendimiento,
+                        'calibre' => $array_calibre,
+                    ]);
+                }
+            }
+        }
 
         return view('adminlte.crm.postcocecha.partials.secciones.grafica._' . $view, [
             'target' => $target,

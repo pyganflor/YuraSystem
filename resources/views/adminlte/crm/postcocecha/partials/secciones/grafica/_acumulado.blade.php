@@ -51,7 +51,7 @@
         @elseif($periodo == 'anual')
         labels.push("{{$labels[$i]->ano}}");
         @else
-        labels.push("{{$labels[$i]['ano']. ' - '.$labels[$i]['mes']}}");
+        labels.push("{{getMeses(TP_ABREVIADO)[$labels[$i]->mes - 1]. ' - '.$labels[$i]->ano}}");
         @endif
         if (label == 'Cajas')
             data_list.push("{{$array_cajas[$i]}}");
@@ -71,7 +71,7 @@
             label: label + ' ',
             data: data_list,
             //backgroundColor: '#8c99ff54',
-            borderColor: 'blue',
+            borderColor: 'black',
             borderWidth: 2,
             fill: false,
         }];
