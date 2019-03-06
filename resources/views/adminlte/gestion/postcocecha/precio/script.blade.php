@@ -20,18 +20,26 @@
         };
         $.get('{{url('precio/form_asignar_precio')}}', datos, function (retorno) {
             modal_form('modal_precio_especificaciones', retorno, '<i class="fa fa-user-plus" aria-hidden="true"></i> Asignar precio a la especificación', true, false, '{{isPC() ? '40%' : ''}}', function () {
-                store_precio_especificacion();
+                store_precio_especificacion(id_especificacion);
             });
         }).always(function () {
             $.LoadingOverlay('hide');
         });
     }
 
-    function store_precio_especificacion() {
+    function store_precio_especificacion(id_especificacion) {
         if ($('#form_add_precio').valid()) {
-
+            arrPrecios= [];
+            $.each($('select[name=id_cliente]'), function (i, j) {
+                arrPrecios.push({
+                    'id_cliente' : $("#id_cliente_"+(i+1)).val(),
+                    'precio' : $("#precio_"+(i+1)).val(),
+                    'id_cliente_pedido_especificacion' : $("#id_cliente_pedido_especificacion_"+(i+1)).val()
+                });
+            });
             datos = {
-
+                arrPrecios : arrPrecios,
+                id_especificacion :  id_especificacion
             };
             post_jquery('{{url('clientes/store')}}', datos, function () {
 
