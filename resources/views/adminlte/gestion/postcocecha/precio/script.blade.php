@@ -14,21 +14,21 @@
         });
     }
 
-    function precio_especificacion(id_especificacion){
+    function precio_especificacion_cliente(id_especificacion){
         datos= {
             id_especificacion : id_especificacion
         };
-        $.get('{{url('precio/form_asignar_precio')}}', datos, function (retorno) {
+        $.get('{{url('precio/form_asignar_precio_especificacion_cliente')}}', datos, function (retorno) {
             modal_form('modal_precio_especificaciones', retorno, '<i class="fa fa-user-plus" aria-hidden="true"></i> Asignar precio a la especificación', true, false, '{{isPC() ? '40%' : ''}}', function () {
-                store_precio_especificacion(id_especificacion);
+                store_precio_especificacion_cliente(id_especificacion);
             });
         }).always(function () {
             $.LoadingOverlay('hide');
         });
     }
 
-    function store_precio_especificacion(id_especificacion) {
-        if ($('#form_add_precio').valid()) {
+    function store_precio_especificacion_cliente(id_especificacion) {
+        if ($('#form_add_precio_specificicacion_cliente').valid()) {
             arrPrecios= [];
             $.each($('select[name=id_cliente]'), function (i, j) {
                 arrPrecios.push({
@@ -38,10 +38,11 @@
                 });
             });
             datos = {
+                _token: '{{csrf_token()}}',
                 arrPrecios : arrPrecios,
                 id_especificacion :  id_especificacion
             };
-            post_jquery('{{url('clientes/store')}}', datos, function () {
+            post_jquery('{{url('precio/store_precio_especificacio_cliente')}}', datos, function () {
 
             });
             $.LoadingOverlay('hide');
@@ -71,9 +72,9 @@
                 "        </div>" +
                 "    </div>" +
                 "</div>");
-                for(var x=0;x<retorno.length;x++){
-                    $("#id_cliente_"+(cant_rows+1)).append("<option value='"+retorno[x].id_cliente+"'> "+retorno[x].nombre+" </option>");
-                }
+            for(var x=0;x<retorno.length;x++){
+                $("#id_cliente_"+(cant_rows+1)).append("<option value='"+retorno[x].id_cliente+"'> "+retorno[x].nombre+" </option>");
+            }
         }).always(function () {
             $.LoadingOverlay('hide');
             $("#btn_add_input").attr('disabled',false);
@@ -86,4 +87,41 @@
             $('#row_'+cant_rows).remove();
         }
     }
+
+    function precio_cliente_especificacion(id_cliente){
+        datos= {
+            id_cliente : id_cliente
+        };
+        $.get('{{url('precio/form_asignar_precio_cliente_especificacion')}}', datos, function (retorno) {
+            modal_form('modal_precio_especificaciones', retorno, '<i class="fa fa-user-plus" aria-hidden="true"></i> Asignar precio a las especificaciones del cliente', true, false, '{{isPC() ? '80%' : ''}}', function () {
+                store_precio_cliente_especificacion(id_cliente);
+            });
+        }).always(function () {
+            $.LoadingOverlay('hide');
+        });
+    }
+
+    function store_precio_cliente_especificacion(id_cliente) {
+        if ($('#form_add_precio_cliente_especificicacion').valid()) {
+            arrPrecios= [];
+            $.each($('input[name=id_cliente_pedido_especificacion]'), function (i, j) {
+                arrPrecios.push({
+                    'precio' : $("#precio_"+(i+1)).val(),
+                    'id_cliente_pedido_especificacion' : $("#id_cliente_pedido_especificacion_"+(i+1)).val()
+                });
+            });
+            datos = {
+                _token: '{{csrf_token()}}',
+                arrPrecios : arrPrecios,
+                id_cliente :  id_cliente
+            };
+            console.log(datos);
+            //return false;
+            post_jquery('{{url('precio/store_precio_cliente_especificacion')}}', datos, function () {
+
+            });
+            $.LoadingOverlay('hide');
+        }
+    }
+
 </script>

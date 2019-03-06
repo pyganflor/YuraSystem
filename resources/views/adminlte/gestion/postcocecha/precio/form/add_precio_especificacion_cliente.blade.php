@@ -6,7 +6,7 @@
         <i class="fa fa-minus" aria-hidden="true"></i>
     </button>
 </div>
-<form id="form_add_precio">
+<form id="form_add_precio_specificicacion_cliente">
     @foreach($cliente_pedido_especificacion as $key => $cpe)
         <div class="row" id="row_{{$key+1}}">
             <input type="hidden" id="id_cliente_pedido_especificacion_{{$key+1}}" value="{{$cpe->id_cliente_pedido_especificacion}}">
@@ -23,7 +23,7 @@
             </div>
             <div class="col-md-4">
                 <div class="form-group">
-                    <label for="identificacion">Precio</label>
+                    <label for="identificacion">Precio $</label>
                     <input type="number" id="precio_{{$key+1}}" name="precio" class="form-control" min="1" value="{{$cpe->precio}}" required>
                 </div>
             </div>

@@ -1,7 +1,7 @@
 <div id="table_pedidos" style="margin-top: 20px">
     @if(sizeof($listado)>0)
         <table width="100%" class="table table-responsive table-bordered"
-               style="font-size: 0.8em; border-color: #9d9d9d"
+               style="font-size: 1em; border-color: #9d9d9d"
                id="table_content_pedidos">
             <thead>
             <tr style="background-color: #dd4b39; color: white">
