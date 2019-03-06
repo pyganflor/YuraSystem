@@ -212,33 +212,33 @@ class EspecificacionClienteController extends Controller
 
                             if ($objEspecificacionEmpaqueDetalle->save()) {
                                 $modelEspecificacionEmpaqueDetalle = DetalleEspecificacionEmpaque::all()->last();
+                                bitacora('detalle_especificacionempaque', $modelEspecificacionEmpaqueDetalle->id_detalle_especificacionempaque, $accionLetra, $accion . ' satisfactoria de un nuevo detalle de especificación de empaque');
+                                if($i == 1){
+                                    $objClientePedidoEspecificacion = new ClientePedidoEspecificacion;
+                                    $objClientePedidoEspecificacion->id_cliente        = $request->id_cliente;
+                                    $objClientePedidoEspecificacion->id_especificacion = $modelEspcificacion->id_especificacion;
 
-                                $objClientePedidoEspecificacion = new ClientePedidoEspecificacion;
-                                $objClientePedidoEspecificacion->id_cliente        = $request->id_cliente;
-                                $objClientePedidoEspecificacion->id_especificacion = $modelEspcificacion->id_especificacion;
+                                    if($objClientePedidoEspecificacion->save()){
+                                        $modelClientePedidoEspecificacion = ClientePedidoEspecificacion::all()->last();
+                                        bitacora('cliente_pedido_especificacion', $modelClientePedidoEspecificacion->id_cliente_pedido_especificacion, 'I',' Asignación exitosa de la especificación '. $modelEspcificacion->id_especificacion .' al cliente '. $modelClientePedidoEspecificacion->id_cliente.'');
+                                    }else{
+                                        if ($accion === 'Inserción') {
+                                            Almacenamiento::disk('imagenes')->delete($imagen);
 
-                               if($objClientePedidoEspecificacion->save()){
-                                   bitacora('detalle_especificacionempaque', $modelEspecificacionEmpaqueDetalle->id_detalle_especificacionempaque, $accionLetra, $accion . ' satisfactoria de un nuevo detalle de especificación de empaque');
-                               }else{
-                                   if ($accion === 'Inserción') {
-                                       Almacenamiento::disk('imagenes')->delete($imagen);
+                                            $objEspecificacionEmpaqueDetalleDelete = DetalleEspecificacionEmpaque::find($modelEspcificacionEmpaque->id_especificacion_empaque);
+                                            $objEspecificacionEmpaqueDetalleDelete->delete();
 
-                                       $objEspecificacionEmpaqueDetalleDelete = DetalleEspecificacionEmpaque::find($modelEspcificacionEmpaque->id_especificacion_empaque);
-                                       $objEspecificacionEmpaqueDetalleDelete->delete();
+                                            $objEspecificacionEmpaqueDelete = EspecificacionEmpaque::where('id_especificacion', $modelEspcificacion->id_especificacion);
+                                            $objEspecificacionEmpaqueDelete->delete();
 
-                                       $objEspecificacionEmpaqueDelete = EspecificacionEmpaque::where('id_especificacion', $modelEspcificacion->id_especificacion);
-                                       $objEspecificacionEmpaqueDelete->delete();
-
-                                       $modelEspcificacion = Especificacion::find($modelEspcificacion->id_especificacion);
-                                       $modelEspcificacion->delete();
-
-                                   }
-                                   $success = false;
-                                   $msg = '<div class="alert alert-warning text-center">' .
-                                       '<p> Ha ocurrido un problema al guardar el desglose del detalle de la especificación</p>';
-
-                               }
-
+                                            $modelEspcificacion = Especificacion::find($modelEspcificacion->id_especificacion);
+                                            $modelEspcificacion->delete();
+                                        }
+                                        $success = false;
+                                        $msg = '<div class="alert alert-warning text-center">' .
+                                            '<p> Ha ocurrido un problema al guardar el desglose del detalle de la especificación</p>';
+                                    }
+                                }
                             } else {
 
                                 if ($accion === 'Inserción') {
@@ -322,7 +322,7 @@ class EspecificacionClienteController extends Controller
         }
 
         $datos = [
-            'listado' => $listado->paginate(10),
+            'listado' => $listado->paginate(20),
             'id_especificaciones' => ClientePedidoEspecificacion::where('id_cliente',$request->id_cliente)->select('id_especificacion')->get()
         ];
         return view('adminlte.gestion.postcocecha.clientes.partials.table_especificaciones', $datos);

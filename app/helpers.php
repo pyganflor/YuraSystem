@@ -39,6 +39,7 @@ use Barryvdh\DomPDF\Facade as PDF;
 use Illuminate\Support\Facades\Mail;
 use yura\Mail\CorreoFactura;
 use yura\Modelos\Cliente;
+use yura\Modelos\ClientePedidoEspecificacion;
 
 /*
  * -------- BITÁCORA DE LAS ACCIONES ECHAS POR EL USUARIO ------
@@ -950,41 +951,25 @@ function getCalibreRamoEstandar()
 
 function getDetalleEspecificacion($id_especificacion)
 {
-    $data = Especificacion::where('especificacion.id_especificacion', $id_especificacion)
-        ->join('especificacion_empaque as eemp', 'especificacion.id_especificacion', 'eemp.id_especificacion')
-        ->join('empaque as e', 'eemp.id_empaque', 'e.id_empaque')
-        ->join('detalle_especificacionempaque as deemp', 'eemp.id_especificacion_empaque', 'deemp.id_especificacion_empaque')
-        ->join('variedad as v', 'deemp.id_variedad', 'v.id_variedad')
-        //->join('empaque as empE', 'deemp.id_empaque_e', 'empE.id_empaque')
-        ->join('empaque as empP', 'deemp.id_empaque_p', 'empP.id_empaque')
-        ->join('clasificacion_ramo as cr', 'deemp.id_clasificacion_ramo', 'cr.id_clasificacion_ramo')
-        ->join('unidad_medida as umCR', 'cr.id_unidad_medida', 'umCR.id_unidad_medida')
-        ->join('especificacion_empaque as espemp', 'especificacion.id_especificacion', 'espemp.id_especificacion')
-        ->join('especificacion_empaque as EspeEmpa', 'e.id_empaque', 'EspeEmpa.id_empaque');
+    $data = getEspecificacion($id_especificacion);
+    $arrData = [];
+    foreach ($data->especificacionesEmpaque as $desp)
+        foreach ($desp->detalles as $det)
+            $arrData[] = [
+                'variedad'     => $det->variedad->nombre,
+                'calibre'      => $det->clasificacion_ramo->nombre,
+                'caja'         => $desp->empaque->nombre,
+                'rxc'          => $det->cantidad,
+                'presentacion' => $det->empaque_p->nombre,
+                'txr'          => $det->tallos_x_ramos,
+                'longitud'     => $det->longitud_ramo,
+                'unidad_medida_longitud'=> isset($det->unidad_medida->siglas) ? $det->unidad_medida->siglas : null,
+            ];
+   return $arrData;
+}
 
-    //dd($data->get());
-
-    /*foreach ($b as $item) {
-        $existUnidadMedidida = DetalleEspecificacionEmpaque::where('id_detalle_especificacionempaque', $item->id_detalle_especificacionempaque)->first();
-        $a = 0;
-        if ($existUnidadMedidida->id_unidad_medida != null) {
-            $data->join('unidad_medida as um', 'deemp.id_unidad_medida', 'um.id_unidad_medida');
-            $a = 1;
-        }
-        $data = $data->select('especificacion.id_especificacion', 'v.id_variedad', 'v.nombre as nombre_variedad', 'empE.nombre as envoltura', 'empP.nombre as presentacion', 'deemp.cantidad as cantidad_ramos', 'deemp.tallos_x_ramos', 'deemp.longitud_ramo', $a == 1 ? 'um.siglas as siglas_unidad_medida_longitud' : 'e.nombre as nombre_empaque', 'cr.nombre as nombre_clasificacion_ramo', 'umCR.siglas as siglas_unidad_medida_clasificacion_ramo', 'espemp.cantidad as cantidad_cajas', 'e.nombre as nombre_empaque')->get();
-    }
-
-
-    $m = "";
-    foreach ($data as $key => $d){
-        $m .=  $d->cantidad_cajas . " " . explode('|',  $d->nombre_empaque)[0] . " con " .  $d->cantidad_ramos . " ramos c/u de " .  $d->nombre_clasificacion_ramo . " " .  $d->siglas_unidad_medida_clasificacion_ramo . " " .  $d->nombre_variedad . " " /*.  $d->envoltura . " " .  $d->presentacion . " " .  $d->tallos_x_ramos . " tallos por ramo " .  $d->longitud_ramo . " " .  $d->siglas_unidad_medida_longitud."<br />";
-
-        return $m;*/
-
-    $data = $data->select('especificacion.id_especificacion', 'v.id_variedad', 'v.nombre as nombre_variedad', /*'empE.nombre as envoltura',*/
-        'empP.nombre as presentacion', 'deemp.cantidad as cantidad_ramos', 'deemp.tallos_x_ramos', 'deemp.longitud_ramo', $a == 1 ? 'um.siglas as siglas_unidad_medida_longitud' : 'e.nombre as nombre_empaque', 'cr.nombre as nombre_clasificacion_ramo', 'umCR.siglas as siglas_unidad_medida_clasificacion_ramo', 'espemp.cantidad as cantidad_cajas', 'e.nombre as nombre_empaque')->first();
-    return $data->cantidad_cajas . " " . explode('|', $data->nombre_empaque)[0] . " con " . $data->cantidad_ramos . " ramos c/u de " . $data->nombre_clasificacion_ramo . " " . $data->siglas_unidad_medida_clasificacion_ramo . " " . $data->nombre_variedad . " " /*. $data->envoltura . " "*/ . $data->presentacion . " " . $data->tallos_x_ramos . " tallos por ramo " . $data->longitud_ramo . " " . $data->siglas_unidad_medida_longitud;
-
+function getEspecificacion($idEspecificacion){
+    return Especificacion::find($idEspecificacion);
 }
 
 /* ============ Obtener los ramos sacados de apertura para los pedidos de un "fecha" ==============*/

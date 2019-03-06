@@ -14,7 +14,7 @@
         });
     }
 
-    $(document).on("click", "#pagination_listado_clientes .pagination li a", function (e) {
+    $(document).on("click", "#pagination_listado_clientes_especificacion .pagination li a", function (e) {
         $.LoadingOverlay("show");
         //para que la pagina se cargen los elementos
         e.preventDefault();
@@ -23,7 +23,7 @@
         $('#div_listado_clientes').html($('#table_clientes').html());
         $.get(url, function (resul) {
             $('#div_listado_clientes').html(resul);
-            estructura_tabla();
+            estructura_tabla('table_content_especificaciones');
         }).always(function () {
             $.LoadingOverlay("hide");
         });

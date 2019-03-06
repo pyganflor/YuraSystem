@@ -30,6 +30,8 @@
             });
         });
         $.LoadingOverlay('hide');
+
+
     }
 
     function store_asignacion(){
@@ -85,5 +87,108 @@
                     '<i class="fa fa-check" aria-hidden="true"></i> Estatus asignación', true, false, '{{isPC() ? '50%' : ''}}');
             });
         }
+    }
+
+    function add_row_especificacion(){
+        cant_rows = $("tbody#div_nueva_especificacion tr").length;
+        $("#btn_add_row_especificacion_"+cant_rows).attr('disabled',true);
+        datos = {
+            cant_rows : cant_rows
+        };
+        $.get('especificacion/add_row_especificacion', datos, function (retorno) {
+            $("#td_btn_add_store_"+cant_rows+" button").remove();
+            $("tbody#div_nueva_especificacion").append(retorno);
+            $("#td_btn_add_store_"+(cant_rows+1)).append(
+                "<div class='btn-group' role='group' aria-label='Basic example'>"+
+                "<button type='button' class='btn btn-danger btn-xs' id='"+(cant_rows+1)+"' title='Eliminar fila' onclick='delete_row_especificacion(this.id)'>"+
+                "<i class='fa fa-trash' aria-hidden='true'></i>"+
+                "</button>"+
+                "<button type='button' class='btn btn-success btn-xs' id='btn_add_row_especificacion_"+(cant_rows+1)+"' title='Crear fila' onclick='add_row_especificacion()'>"+
+                "<i class='fa fa-plus' aria-hidden='true'></i>"+
+                "</button>"+
+                "<button type='button' class='btn btn-primary btn-xs' id='btn_store_row_especificacion_"+(cant_rows+1)+"' title='Guardar' onclick='store_nueva_especificacion()'>"+
+                "<i class='fa fa-floppy-o' aria-hidden='true'></i> Guardar"+
+                "</button></div>");
+
+        }).always(function () {
+            $("#btn_add_row_especificacion_"+cant_rows).attr('disabled',false);
+            $.LoadingOverlay('hide');
+        });
+    }
+
+    function delete_row_especificacion(id) {
+        $("tbody#div_nueva_especificacion tr#tr_nueva_especificacion_"+id).remove();
+        if(id > 2){
+            $("td#td_btn_add_store_"+(id-1)).append(
+                "<div class='btn-group' role='group' aria-label='Basic example'>"+
+                "<button type='button' class='btn btn-danger btn-xs' id='"+(id-1)+"' title='Eliminar fila' onclick='delete_row_especificacion(this.id)'>"+
+                "<i class='fa fa-trash' aria-hidden='true'></i>"+
+                "</button>"+
+                "<button type='button' class='btn btn-success btn-xs' title='Crear fila' id='btn_add_row_especificacion_"+(id-1)+"' onclick='add_row_especificacion()'>"+
+                "<i class='fa fa-plus' aria-hidden='true'></i>"+
+                "</button>"+
+                "<button type='button' class='btn btn-primary btn-xs' title='Guardar datos' onclick='store_nueva_especificacion()'>"+
+                "<i class='fa fa-floppy-o' aria-hidden='true'></i> Guardar"+
+                "</button></div>");
+        }else{
+            $("td#td_btn_add_store_"+(id-1)).append(
+                "<div class='btn-group' role='group' aria-label='Basic example'>"+
+                "<button type='button' class='btn btn-success btn-xs' id='btn_add_row_especificacion_"+(id-1)+"' title='Crear fila' onclick='add_row_especificacion()'>"+
+                "<i class='fa fa-plus' aria-hidden='true'></i>"+
+                "</button>"+
+                "<button type='button' class='btn btn-primary btn-xs' id='btn_store_row_especificacion_"+(id-1)+"' title='Guardar datos' onclick='store_nueva_especificacion()'>"+
+                "<i class='fa fa-floppy-o' aria-hidden='true'></i> Guardar"+
+                "</button></div>");
+        }
+    }
+
+    function store_nueva_especificacion() {
+        html = "<div class='col-md-12'><p>Seleccione la forma en la que desea crear la especificación</p></div>" +
+                "<div class='row'>" +
+                    "<div class='col-md-12'>"+
+                        "<div class='col-md-6'>" +
+                                "<input type='radio' id='individual' name='radio' value='0'> "+
+                                " <label>Individual</label>"+
+                            "</div>"+
+                            "<div class='col-md-6'>"+
+                                "<input type='radio' id='agrupado' name='radio' value='1'> "+
+                                " <label>Agrupado</label>"+
+                        "</div>" +
+                    "</div>" +
+                "</div>";
+
+        modal_quest('modal_crear_especificacion', html, "<i class='fa fa-cubes'></i> Seleccione una opción",true, false, '{{isPC() ? '25%' : ''}}', function () {
+
+                $.LoadingOverlay('show');
+                arrData = [];
+                $.each($('select[name=id_variedad]'), function (i, j) {
+                    arrData.push({
+                        'id_variedad' : $("#id_variedad_"+(i+1)).val(),
+                        'id_clasificacion_ramo_' : $("#id_clasificacion_ramo_"+(i+1)).val(),
+                        'id_empaque' : $("#id_empaque_"+(i+1)).val(),
+                        'ramos_x_caja' : $("#ramo_x_caja_"+(i+1)).val(),
+                        'id_presentacion' : $("#id_presentacion_"+(i+1)).val(),
+                        'tallos_x_ramo' : $("#tallos_x_ramo_"+(i+1)).val(),
+                        'longitud' : $("#longitud_"+(i+1)).val(),
+                        'id_unidad_medida' : $("#id_unidad_medida_"+(i+1)).val(),
+                    });
+                });
+                datos = {
+                    arrData : arrData,
+                    modo : $('input:radio[name=radio]:checked').val(),
+                    _token: '{{csrf_token()}}',
+                };
+                $.post('{{url('especificacion/store_row_especificacion')}}', datos, function (retorno) {
+                    modal_view('modal_message_especificaciones', retorno.mensaje, '<i class="fa fa-exclamation-triangle"></i> Especificación', true, false,'{{isPC() ? '50%' : ''}}');
+                    buscar_listado_especificaciones();
+                    cerrar_modals();
+                }, 'json').fail(function (retorno) {
+                    alerta_errores(retorno.responseText);
+                    alerta('Ha ocurrido un problema al enviar la información');
+                }).always(function () {
+                    $.LoadingOverlay('hide');
+                });
+
+        });
     }
 </script>

@@ -41,13 +41,13 @@
                             Cliente
                         </th>
                         <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white" width="7%">
-                            Cant. Piezas
+                            Cant. Cajas
                         </th>
                         <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
                             Pieza
                         </th>
                         <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white" width="7%">
-                            Cant. Ramos
+                            Ramos x Cajas
                         </th>
                         <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
                             Calibre
@@ -81,9 +81,10 @@
                     </tr>
                     <tr id="row_form_1">
                         <td class="text-center" style="border-color: #9d9d9d">
+
                             <select name="id_cliente_1" id="id_cliente_1" required style="width: 100%" onchange="listar_agencias_carga(1)">
                                 @foreach($clientes as $cliente)
-                                    <option value="{{$cliente->id_cliente}}">{{$cliente->detalle()->nombre}}</option>
+                                    <option value="{{$cliente->id_cliente}}">{{$cliente->nombre}}</option>
                                 @endforeach
                             </select>
                         </td>

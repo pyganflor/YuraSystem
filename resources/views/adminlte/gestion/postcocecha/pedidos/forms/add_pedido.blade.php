@@ -30,7 +30,7 @@
                    id="table_content_recepciones">
                 <thead>
                 <tr style="border: none; border-color: white">
-                    <th colspan="2" style="border: none;padding: 0 0 5px ;">
+                    <th colspan="9" style="border: none;padding: 0 0 5px ;">
                         @if(!$pedido_fijo)
                             <div class="col-md-3">
                                 <label for="Fecha de entrega" style="font-size: 11pt">Fecha de entrega</label>
@@ -66,9 +66,26 @@
                         style="border-color: #9d9d9d;">
                         CANTIDAD
                     </th>
-                    <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
-                        style="border-color: #9d9d9d">
-                        DESCRIPCIÓN ESPECIFICIACIONES
+                    <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
+                        VARIEDAD
+                    </th>
+                    <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
+                        CALIBRE
+                    </th>
+                    <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
+                        CAJA
+                    </th>
+                    <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
+                        RAMO X CAJA
+                    </th>
+                    <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
+                        PRESENTACIÓN
+                    </th>
+                    <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
+                        TALLOS X RAMO
+                    </th>
+                    <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
+                        LONGITUD
                     </th>
                     <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
                         style="border-color: #9d9d9d">
