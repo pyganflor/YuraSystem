@@ -115,11 +115,7 @@
                 arrPrecios : arrPrecios,
                 id_cliente :  id_cliente
             };
-            console.log(datos);
-            //return false;
-            post_jquery('{{url('precio/store_precio_cliente_especificacion')}}', datos, function () {
-
-            });
+            post_jquery('{{url('precio/store_precio_cliente_especificacion')}}', datos, function () {});
             $.LoadingOverlay('hide');
         }
     }
