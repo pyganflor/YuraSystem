@@ -1,5 +1,4 @@
 <div id="table_especificaciones"> {{--AQUI TODOS LAS ESPECIFICIACION CON LOS PRECIOS Y AL HACER CLIC VER TODOS LOS CLIENTES PARA ASIGNAR--}}
-    @if(sizeof($listado)>0)
         <table width="100%" class="table table-responsive table-bordered" style="border-color: #9d9d9d"
                id="table_content_especificaciones">
             <thead>
@@ -64,7 +63,7 @@
                     <select id="id_empaque_1" style="width: 100%;height: 25.8px;" name="id_empaque_1">
                         <option selected disabled>Seleccione</option>
                         @foreach($empaque as $e)
-                            <option value="{{$e->id_empaque}}">{{$e->nombre}}</option>
+                            <option value="{{$e->id_empaque}}">{{explode("|",$e->nombre)[0]}}</option>
                         @endforeach
                     </select>
                 </td>
@@ -103,98 +102,99 @@
                 </td>
             </tr>
             </tbody>
-            @foreach($listado as $key => $item)
-                <tr onmouseover="$(this).css('background-color','#add8e6')" onmouseleave="$(this).css('background-color','')"
-                    class="{{$item->estado == 1 ? '':'error'}}" id="row_especificaciones_{{$item->id_especificacion}}">
-                   {{--<td style="border-color: #9d9d9d;vertical-align: middle;" class="text-center">
-                        {{$item->nombre_especificacicon}}</td>--}}
-                    @php $esp = getDetalleEspecificacion($item->id_especificacion);@endphp
-                    {{--<td style="border-color: #9d9d9d;padding: 0px 0px; vertical-align: middle;" class="text-center">  {{$item->tipo == "N" ? "Normal": "Otros"}} </td>--}}
-                    <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;" class="text-center">
-                        <ul style="padding: 0;margin:0">
-                        @foreach($esp as $key => $e)
+            @if(sizeof($listado)>0)
+                @foreach($listado as $key => $item)
+                    <tr onmouseover="$(this).css('background-color','#add8e6')" onmouseleave="$(this).css('background-color','')"
+                        class="{{$item->estado == 1 ? '':'error'}}" id="row_especificaciones_{{$item->id_especificacion}}">
+                       {{--<td style="border-color: #9d9d9d;vertical-align: middle;" class="text-center">
+                            {{$item->nombre_especificacicon}}</td>--}}
+                        @php $esp = getDetalleEspecificacion($item->id_especificacion);@endphp
+                        {{--<td style="border-color: #9d9d9d;padding: 0px 0px; vertical-align: middle;" class="text-center">  {{$item->tipo == "N" ? "Normal": "Otros"}} </td>--}}
+                        <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;" class="text-center">
+                            <ul style="padding: 0;margin:0">
+                            @foreach($esp as $key => $e)
 
-                           <li style="list-style: none;{{count($esp) != 1 ? "border-bottom: 1px solid silver" : ""}}">
-                               {{$e["variedad"]}}
-                           </li>
-                        @endforeach
-                        </ul>
-                    </td>
-                    <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;" class="text-center">
-                        <ul style="padding: 0;margin:0">
-                            @foreach($esp as  $e)
-                                <li style="list-style: none;{{count($esp) != 1 ? "border-bottom: 1px solid silver" : ""}}">
-                                    {{$e["calibre"]}}
-                                </li>
+                               <li style="list-style: none;{{count($esp) != 1 ? "border-bottom: 1px solid silver" : ""}}">
+                                   {{$e["variedad"]}}
+                               </li>
                             @endforeach
-                        </ul>
-                    </td>
-                    <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;" class="text-center">
-                        <ul style="padding: 0;margin:0">
-                            @foreach($esp as $e)
-                                <li style="list-style: none;{{count($esp) != 1 ? "border-bottom: 1px solid silver" : ""}}">
-                                    {{$e["caja"]}}
-                                </li>
-                            @endforeach
-                        </ul>
-                    </td>
-                    <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;" class="text-center">
-                        <ul style="padding: 0;margin:0">
-                            @foreach($esp as $e)
-                                <li style="list-style: none;{{count($esp) != 1 ? "border-bottom: 1px solid silver" : ""}}">
-                                    {{$e["rxc"]}}
-                                </li>
-                            @endforeach
-                        </ul>
-                    </td>
-                    <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;" class="text-center">
-                        <ul style="padding: 0;margin:0">
-                            @foreach($esp as $e)
-                                <li style="list-style: none;{{count($esp) != 1 ? "border-bottom: 1px solid silver" : ""}}">
-                                    {{$e["presentacion"]}}
-                                </li>
-                            @endforeach
-                        </ul>
-                    </td>
-                    <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;" class="text-center">
-                        <ul style="padding: 0;margin:0">
-                            @foreach($esp as $e)
-                                <li style="list-style: none;{{count($esp) != 1 ? "border-bottom: 1px solid silver" : ""}}">
-                                    {{$e["txr"] == null ? "-" : $e["txr"] }}
-                                </li>
-                            @endforeach
-                        </ul>
-                    </td>
-                    <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;" class="text-center">
-                        <ul style="padding: 0;margin:0">
-                            @foreach($esp as $e)
-                                <li style="list-style: none;{{count($esp) != 1 ? "border-bottom: 1px solid silver" : ""}}">
-                                    {{$e["longitud"] == null ? "-" : $e["longitud"] }} {{($e["unidad_medida_longitud"] == null || $e["longitud"] == null) ? "" : $e["unidad_medida_longitud"]}}
-                                </li>
-                            @endforeach
-                        </ul>
-                    </td>
-                    {{--<td style="border-color: #9d9d9d" class="text-center"> {{$item->descripcion}}</td>--}}
-                    {{--<td style="border-color: #9d9d9d;padding: 0px 0px; vertical-align: middle;" class="text-center">  {{$item->estado == 0 ? "Descativado": "Activo"}} </td>--}}
-                    <td style="border-color: #9d9d9d;padding: 0px 0px; vertical-align: middle;" class="text-center">
-                        @if($item->tipo == "N" && $item->estado == 1)
-                        <button type="button" class="btn btn-default btn-xs" title="Ver asignaciones" onclick="asignar_especificacicon('{{$item->id_especificacion}}',' {{$item->nombre_especificacicon}}')">
-                            <i class="fa fa-user-circle-o" aria-hidden="true"></i>
-                        </button>
-                        @endif
-                            <a href="javascript:void(0)" class="btn btn-{{$item->estado == 1 ? 'success':'warning'}} btn-xs" title="{{$item->estado == 1 ? 'Habilitada':'Deshabilitada'}}"
-                               onclick="update_especificacion('{{$item->id_especificacion}}','{{$item->estado}}','{{csrf_token()}}')">
-                                <i class="fa fa-fw fa-{{$item->estado == 1 ? 'check':'ban'}}" style="color: white" ></i>
-                            </a>
-                    </td>
-                </tr>
-            @endforeach
+                            </ul>
+                        </td>
+                        <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;" class="text-center">
+                            <ul style="padding: 0;margin:0">
+                                @foreach($esp as  $e)
+                                    <li style="list-style: none;{{count($esp) != 1 ? "border-bottom: 1px solid silver" : ""}}">
+                                        {{$e["calibre"]}}
+                                    </li>
+                                @endforeach
+                            </ul>
+                        </td>
+                        <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;" class="text-center">
+                            <ul style="padding: 0;margin:0">
+                                @foreach($esp as $e)
+                                    <li style="list-style: none;{{count($esp) != 1 ? "border-bottom: 1px solid silver" : ""}}">
+                                        {{$e["caja"]}}
+                                    </li>
+                                @endforeach
+                            </ul>
+                        </td>
+                        <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;" class="text-center">
+                            <ul style="padding: 0;margin:0">
+                                @foreach($esp as $e)
+                                    <li style="list-style: none;{{count($esp) != 1 ? "border-bottom: 1px solid silver" : ""}}">
+                                        {{$e["rxc"]}}
+                                    </li>
+                                @endforeach
+                            </ul>
+                        </td>
+                        <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;" class="text-center">
+                            <ul style="padding: 0;margin:0">
+                                @foreach($esp as $e)
+                                    <li style="list-style: none;{{count($esp) != 1 ? "border-bottom: 1px solid silver" : ""}}">
+                                        {{$e["presentacion"]}}
+                                    </li>
+                                @endforeach
+                            </ul>
+                        </td>
+                        <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;" class="text-center">
+                            <ul style="padding: 0;margin:0">
+                                @foreach($esp as $e)
+                                    <li style="list-style: none;{{count($esp) != 1 ? "border-bottom: 1px solid silver" : ""}}">
+                                        {{$e["txr"] == null ? "-" : $e["txr"] }}
+                                    </li>
+                                @endforeach
+                            </ul>
+                        </td>
+                        <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;" class="text-center">
+                            <ul style="padding: 0;margin:0">
+                                @foreach($esp as $e)
+                                    <li style="list-style: none;{{count($esp) != 1 ? "border-bottom: 1px solid silver" : ""}}">
+                                        {{$e["longitud"] == null ? "-" : $e["longitud"] }} {{($e["unidad_medida_longitud"] == null || $e["longitud"] == null) ? "" : $e["unidad_medida_longitud"]}}
+                                    </li>
+                                @endforeach
+                            </ul>
+                        </td>
+                        {{--<td style="border-color: #9d9d9d" class="text-center"> {{$item->descripcion}}</td>--}}
+                        {{--<td style="border-color: #9d9d9d;padding: 0px 0px; vertical-align: middle;" class="text-center">  {{$item->estado == 0 ? "Descativado": "Activo"}} </td>--}}
+                        <td style="border-color: #9d9d9d;padding: 0px 0px; vertical-align: middle;" class="text-center">
+                            @if($item->tipo == "N" && $item->estado == 1)
+                            <button type="button" class="btn btn-default btn-xs" title="Ver asignaciones" onclick="asignar_especificacicon('{{$item->id_especificacion}}',' {{$item->nombre_especificacicon}}')">
+                                <i class="fa fa-user-circle-o" aria-hidden="true"></i>
+                            </button>
+                            @endif
+                                <a href="javascript:void(0)" class="btn btn-{{$item->estado == 1 ? 'success':'warning'}} btn-xs" title="{{$item->estado == 1 ? 'Habilitada':'Deshabilitada'}}"
+                                   onclick="update_especificacion('{{$item->id_especificacion}}','{{$item->estado}}','{{csrf_token()}}')">
+                                    <i class="fa fa-fw fa-{{$item->estado == 1 ? 'check':'ban'}}" style="color: white" ></i>
+                                </a>
+                        </td>
+                    </tr>
+                @endforeach
+            @else
+                <div class="alert alert-info text-center">No se han encontrado coincidencias</div>
+            @endif
         </table>
         <div id="pagination_listado_especificaciones">
             {!! str_replace('/?','?',$listado->render()) !!}
         </div>
-    @else
-        <div class="alert alert-info text-center">No se han encontrado coincidencias</div>
-    @endif
 </div>
 
