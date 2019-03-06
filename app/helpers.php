@@ -968,10 +968,6 @@ function getDetalleEspecificacion($id_especificacion)
    return $arrData;
 }
 
-function getClienteEspecificacion(){
-    return ClientePedidoEspecificacion::select('*');
-}
-
 function getEspecificacion($idEspecificacion){
     return Especificacion::find($idEspecificacion);
 }

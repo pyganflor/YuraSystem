@@ -1,4 +1,4 @@
-<div id="table_especificaciones">
+<div id="table_especificaciones"> {{--AQUI TODOS LAS ESPECIFICIACION CON LOS PRECIOS Y AL HACER CLIC VER TODOS LOS CLIENTES PARA ASIGNAR--}}
     @if(sizeof($listado)>0)
         <table width="100%" class="table table-responsive table-bordered" style="border-color: #9d9d9d"
                id="table_content_especificaciones">
