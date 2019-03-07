@@ -23,13 +23,13 @@ class PrecioController extends Controller
 
     public function buscar_cliente(Request $request){
         return view('adminlte.gestion.postcocecha.precio.partials.listado_cliente',[
-            'clientes' => Cliente::join('detalle_cliente as dc','cliente.id_cliente','dc.id_cliente')->where('dc.estado',1)->orderBy('dc.nombre','asc')->paginate(10)
+            'clientes' => Cliente::join('detalle_cliente as dc','cliente.id_cliente','dc.id_cliente')->where('dc.estado',1)->orderBy('dc.nombre','asc')->paginate(20)
         ]);
     }
 
     public function buscar_especificacion(Request $request){
         return view('adminlte.gestion.postcocecha.precio.partials.listado_especificacion',[
-            'especificacion' => Especificacion::where([['tipo','N'],['estado',1]])->paginate(10),
+            'especificacion' => Especificacion::where([['tipo','N'],['estado',1]])->paginate(20),
         ]);
     }
 

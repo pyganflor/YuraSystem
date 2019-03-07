@@ -45,7 +45,7 @@
             <tr id="tr_nueva_especificacion_1">
                 <td style="padding: 5px 0px;border-color: #9d9d9d">
                     <select id="id_variedad_1" style="width: 100%;height: 25.8px;" name="id_variedad">
-                        <option selected disabled>Seleccione</option>
+                        {{--<option selected disabled>Seleccione</option>--}}
                         @foreach($variedades as $v)
                             <option value="{{$v->id_variedad}}">{{$v->nombre}}</option>
                         @endforeach
@@ -53,7 +53,7 @@
                 </td>
                 <td style="padding: 5px 0px;border-color: #9d9d9d">
                     <select id="id_clasificacion_ramo_1" style="width: 100%;height: 25.8px;" name="id_clasificacion_ramo_1">
-                        <option selected disabled>Seleccione</option>
+                        {{--<option selected disabled>Seleccione</option>--}}
                         @foreach($clasificacion_ramo as $c)
                             <option value="{{$c->id_clasificacion_ramo}}">{{$c->nombre}}</option>
                         @endforeach
@@ -61,18 +61,18 @@
                 </td>
                 <td style="padding: 5px 0px;border-color: #9d9d9d">
                     <select id="id_empaque_1" style="width: 100%;height: 25.8px;" name="id_empaque_1">
-                        <option selected disabled>Seleccione</option>
+                        {{--<option selected disabled>Seleccione</option>--}}
                         @foreach($empaque as $e)
                             <option value="{{$e->id_empaque}}">{{explode("|",$e->nombre)[0]}}</option>
                         @endforeach
                     </select>
                 </td>
                 <td style="padding: 5px 0px;border-color: #9d9d9d">
-                    <input type="text" placeholder="Cantidad" id="ramo_x_caja_1" style="width: 100%" name="ramo_x_caja_1">
+                    <input type="text" placeholder="Cantidad" id="ramo_x_caja_1" style="width: 100%" value="1" name="ramo_x_caja_1">
                 </td>
                 <td style="padding: 5px 0px;border-color: #9d9d9d">
                     <select id="id_presentacion_1" style="width: 100%;height: 25.8px;" name="id_presentacion_1">
-                        <option selected disabled>Seleccione</option>
+                        {{--<option selected disabled>Seleccione</option>--}}
                         @foreach($presentacion as $p)
                             <option value="{{$p->id_empaque}}">{{$p->nombre}}</option>
                         @endforeach
