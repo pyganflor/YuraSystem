@@ -6,7 +6,7 @@
         <i class="fa fa-minus" aria-hidden="true"></i>
     </button>
 </div>
-<form id="form_add_precio_specificicacion_cliente">
+<form id="form_add_precio_especificicacion_cliente">
     @foreach($cliente_pedido_especificacion as $key => $cpe)
         <div class="row" id="row_{{$key+1}}">
             <input type="hidden" id="id_cliente_pedido_especificacion_{{$key+1}}" value="{{$cpe->id_cliente_pedido_especificacion}}">

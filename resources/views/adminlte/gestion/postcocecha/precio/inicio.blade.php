@@ -11,7 +11,7 @@
             <div class="box-header with-border">
                 <div class="col-md-6">
                     <h3 class="box-title">
-                        Precios
+                        Precios para especificaciones
                     </h3>
                 </div>
                 {{--<div class="col-md-6 text-right">
@@ -35,7 +35,20 @@
                     </button>
                 </div>--}}
             </div>
-            <div class="box-body" id="div_content_precio"></div>
+            <div class="box-body" id="div_content_precio">
+                <ul class="nav nav-tabs">
+                    <li class="active tab-detalles">
+                        <a href="#listado_clientes" data-toggle="tab">Clientes</a>
+                    </li>
+                    <li class="tab-detalles">
+                        <a href="#listado_especificaciones" data-toggle="tab">Especificaciones</a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane active" id="listado_clientes"></div>
+                    <div class="tab-pane" id="listado_especificaciones"></div>
+                </div>
+            </div>
         </div>
     </section>
 @endsection

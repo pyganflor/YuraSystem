@@ -17,14 +17,19 @@ class PrecioController extends Controller
             [
                 'url' => $request->getRequestUri(),
                 'submenu' => Submenu::Where('url', '=', substr($request->getRequestUri(), 1))->get()[0],
-                'text' => ['titulo' => 'Precios', 'subtitulo' => 'módulo de postcocecha']
+                'text' => ['titulo' => 'Precios', 'subtitulo' => 'módulo de postcosecha']
             ]);
     }
 
-    public function buscar(Request $request){
-        return view('adminlte.gestion.postcocecha.precio.partials.listado',[
-            'especificacion' => Especificacion::where([['tipo','N'],['estado',1]])->paginate(20),
-            'clientes' => Cliente::join('detalle_cliente as dc','cliente.id_cliente','dc.id_cliente')->where('dc.estado',1)->orderBy('dc.nombre','asc')->paginate(30)
+    public function buscar_cliente(Request $request){
+        return view('adminlte.gestion.postcocecha.precio.partials.listado_cliente',[
+            'clientes' => Cliente::join('detalle_cliente as dc','cliente.id_cliente','dc.id_cliente')->where('dc.estado',1)->orderBy('dc.nombre','asc')->paginate(10)
+        ]);
+    }
+
+    public function buscar_especificacion(Request $request){
+        return view('adminlte.gestion.postcocecha.precio.partials.listado_especificacion',[
+            'especificacion' => Especificacion::where([['tipo','N'],['estado',1]])->paginate(10),
         ]);
     }
 
@@ -112,7 +117,6 @@ class PrecioController extends Controller
         ]);
 
         if (!$valida->fails()) {
-
             foreach ($request->arrPrecios as $data) {
                 $msg = '';
                 //dd($data);
