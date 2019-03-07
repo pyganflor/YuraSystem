@@ -958,7 +958,7 @@ function getDetalleEspecificacion($id_especificacion)
             $arrData[] = [
                 'variedad'     => $det->variedad->nombre,
                 'calibre'      => $det->clasificacion_ramo->nombre,
-                'caja'         => $desp->empaque->nombre,
+                'caja'         => explode("|",$desp->empaque->nombre)[0],
                 'rxc'          => $det->cantidad,
                 'presentacion' => $det->empaque_p->nombre,
                 'txr'          => $det->tallos_x_ramos,
