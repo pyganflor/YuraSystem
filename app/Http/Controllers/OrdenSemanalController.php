@@ -712,10 +712,10 @@ class OrdenSemanalController extends Controller
     public function add_pedido_personalizado(Request $request)
     {
         return view('adminlte.gestion.postcocecha.pedidos_ventas.partials.add_pedido_personalizado', [
-            'clientes' => Cliente::join('detalle_cliente as dc','cliente.id_cliente','dc.id_cliente')->where([
+            'clientes' => Cliente::join('detalle_cliente as dc', 'cliente.id_cliente', 'dc.id_cliente')->where([
                 ['cliente.estado', '=', 1],
-                ['dc.estado',1]
-            ])->orderBy('dc.nombre','asc')->get(),
+                ['dc.estado', 1]
+            ])->orderBy('dc.nombre', 'asc')->get(),
             'cajas' => Empaque::All()->where('estado', '=', 1)->where('tipo', '=', 'C'),
             'calibres' => getCalibresRamo(),
             'variedades' => getVariedades(),
@@ -740,7 +740,7 @@ class OrdenSemanalController extends Controller
             foreach ($request->arreglo as $item) {
                 //dd($item['longitud_ramo']);
                 /* ========= TABLA ESPECIFICACION ==========*/
-                $texto = $item['cantidad_piezas'] . ' ' . explode('|', Empaque::find($item['id_empaque'])->nombre)[0] . ' de ' .
+                $texto = explode('|', Empaque::find($item['id_empaque'])->nombre)[0] . ' de ' .
                     $item['cantidad_ramos'] . ' ramos ' . ClasificacionRamo::find($item['id_clasificacion_ramo'])->nombre .
                     ClasificacionRamo::find($item['id_clasificacion_ramo'])->unidad_medida->siglas . ' ' . Variedad::find($item['id_variedad'])->siglas . ' ' .
                     explode('|', Empaque::find($item['id_empaque_p'])->nombre)[0] . ' ' . $item['tallos_x_ramo'] . ' ' .
@@ -799,7 +799,7 @@ class OrdenSemanalController extends Controller
                                 /* ========== TABLA PEDIDO ============*/
                                 $pedido = new Pedido();
                                 $pedido->id_cliente = $item['id_cliente'];
-                                $pedido->descripcion = $texto;
+                                $pedido->descripcion = $item['cantidad_piezas'] . ' ' . $texto;
                                 $pedido->variedad = $item['id_variedad'];  // optimizar
                                 $pedido->fecha_pedido = $request->fecha_pedido;
                                 $pedido->tipo_especificacion = 'N';

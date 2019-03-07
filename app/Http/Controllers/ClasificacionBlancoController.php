@@ -82,6 +82,7 @@ class ClasificacionBlancoController extends Controller
 
     public function confirmar_pedidos(Request $request)
     {
+
         $success = true;
         $msg = '';
 
