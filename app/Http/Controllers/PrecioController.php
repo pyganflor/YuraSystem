@@ -12,7 +12,8 @@ use Validator;
 
 class PrecioController extends Controller
 {
-    public function inicio(Request $request){
+    public function inicio(Request $request)
+    {
         return view('adminlte.gestion.postcocecha.precio.inicio',
             [
                 'url' => $request->getRequestUri(),
@@ -21,6 +22,32 @@ class PrecioController extends Controller
             ]);
     }
 
+<<<<<<< HEAD
+    public function buscar(Request $request)
+    {
+        return view('adminlte.gestion.postcocecha.precio.partials.listado', [
+            'especificacion' => Especificacion::where([['tipo', 'N'], ['estado', 1]])->paginate(20),
+            'clientes' => Cliente::join('detalle_cliente as dc', 'cliente.id_cliente', 'dc.id_cliente')->where('dc.estado', 1)->orderBy('dc.nombre', 'asc')->paginate(20)
+        ]);
+    }
+
+    public function form_asignar_precio(Request $request)
+    {
+        return view('adminlte.gestion.postcocecha.precio.form.add_precio_especificacion', [
+            'clientes' => DetalleCliente::where('estado', 1)->select('nombre', 'id_cliente')->get(),
+            'cliente_pedido_especificacion' => ClientePedidoEspecificacion::where('id_especificacion', $request->id_especificacion)->get()
+        ]);
+    }
+
+    public function add_input(Request $request)
+    {
+        return DetalleCliente::where('estado', 1)->select('nombre', 'id_cliente')->get();
+    }
+
+    public function store_precio(Request $request)
+    {
+        dd($request->all());
+=======
     public function buscar_cliente(Request $request){
         return view('adminlte.gestion.postcocecha.precio.partials.listado_cliente',[
             'clientes' => Cliente::join('detalle_cliente as dc','cliente.id_cliente','dc.id_cliente')->where('dc.estado',1)->orderBy('dc.nombre','asc')->paginate(20)
@@ -162,5 +189,6 @@ class PrecioController extends Controller
             'mensaje' => $msg,
             'success' => $success
         ];
+>>>>>>> dc9987e7fb2f6c2b68fa761c3d613f4ec22384ec
     }
 }

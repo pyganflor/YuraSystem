@@ -34,15 +34,19 @@ class ClasificacionVerdeController extends Controller
 
     public function buscar_clasificaciones(Request $request)
     {
-        //dd($request->all());
         $listado = DB::table('clasificacion_verde as c')
             ->join('semana as s', 's.id_semana', '=', 'c.id_semana')
             ->select('c.*', 's.codigo as semana')->distinct();
 
-        if ($request->fecha_desde != '')
-            $listado = $listado->where('c.fecha_ingreso', '>=', $request->fecha_desde);
-        if ($request->fecha_hasta != '')
-            $listado = $listado->where('c.fecha_ingreso', '<=', $request->fecha_hasta);
+
+        if ($request->fecha_verde != '')
+            $listado = $listado->where('c.fecha_ingreso', '=', $request->fecha_verde);
+        else {
+            if ($request->fecha_desde != '')
+                $listado = $listado->where('c.fecha_ingreso', '>=', $request->fecha_desde);
+            if ($request->fecha_hasta != '')
+                $listado = $listado->where('c.fecha_ingreso', '<=', $request->fecha_hasta);
+        }
         if ($request->semana_desde != '')
             $listado = $listado->where('s.codigo', '>=', $request->semana_desde);
         if ($request->semana_hasta != '')

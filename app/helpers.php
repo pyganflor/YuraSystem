@@ -832,6 +832,11 @@ function getStockToFecha($variedad, $unitaria, $fecha, $dias)
     return $r;
 }
 
+function getModuloById($id)
+{
+    return Modulo::find($id);
+}
+
 function getSemanaByDate($fecha)
 {
     $r = Semana::All()
@@ -957,19 +962,20 @@ function getDetalleEspecificacion($id_especificacion)
     foreach ($data->especificacionesEmpaque as $desp)
         foreach ($desp->detalles as $det)
             $arrData[] = [
-                'variedad'     => $det->variedad->nombre,
-                'calibre'      => $det->clasificacion_ramo->nombre,
-                'caja'         => explode("|",$desp->empaque->nombre)[0],
-                'rxc'          => $det->cantidad,
+                'variedad' => $det->variedad->nombre,
+                'calibre' => $det->clasificacion_ramo->nombre,
+                'caja' => explode("|", $desp->empaque->nombre)[0],
+                'rxc' => $det->cantidad,
                 'presentacion' => $det->empaque_p->nombre,
-                'txr'          => $det->tallos_x_ramos,
-                'longitud'     => $det->longitud_ramo,
-                'unidad_medida_longitud'=> isset($det->unidad_medida->siglas) ? $det->unidad_medida->siglas : null,
+                'txr' => $det->tallos_x_ramos,
+                'longitud' => $det->longitud_ramo,
+                'unidad_medida_longitud' => isset($det->unidad_medida->siglas) ? $det->unidad_medida->siglas : null,
             ];
-   return $arrData;
+    return $arrData;
 }
 
-function getEspecificacion($idEspecificacion){
+function getEspecificacion($idEspecificacion)
+{
     return Especificacion::find($idEspecificacion);
 }
 
@@ -1291,7 +1297,8 @@ function getPuntoAcceso()
     return Usuario::where('id_usuario', Session::get('id_usuario'))->select('punto_acceso')->first()->punto_acceso;
 }
 
-function generateCodeBarGs1128($numero_autorizacion){
+function generateCodeBarGs1128($numero_autorizacion)
+{
     $barcode = new BarcodeGenerator();
     $barcode->setText($numero_autorizacion);
     $barcode->setType(BarcodeGenerator::Gs1128);
@@ -1308,6 +1315,7 @@ function getDetallesVerdeByFecha($fecha)
         ->get();
     return $listado;
 }
+
 function getDetallesVerdeByFechaVariedad($fecha, $variedad)
 {
     $listado = DB::table('detalle_clasificacion_verde')
@@ -1326,7 +1334,6 @@ function convertToEstandar($ramos, $calibre)
 }
 
 ;
-
 
 
 /* ============ Calcular la cantidad de cajas equivalentes segun grosor_variedad ==============*/
