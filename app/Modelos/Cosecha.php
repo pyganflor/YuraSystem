@@ -133,13 +133,13 @@ class Cosecha extends Model
     {
         $r = DB::table('desglose_recepcion as dr')
             ->join('recepcion as r', 'r.id_recepcion', '=', 'dr.id_recepcion')
-            ->select(DB::raw('sum(dr.cantidad_mallas * dr.tallos_x_malla) as cantidad'), 'dr.id_variedad')
+            ->select(DB::raw('sum(dr.cantidad_mallas * dr.tallos_x_malla) as cantidad'), 'dr.id_variedad', 'dr.id_modulo')
             ->where('r.estado', '=', 1)
             ->where('dr.estado', '=', 1)
             ->where('r.id_cosecha', '=', $this->id_cosecha)
             ->where('r.fecha_ingreso', '>=', $inicio)
             ->where('r.fecha_ingreso', '<', $fin)
-            ->groupBy('dr.id_variedad')
+            ->groupBy('dr.id_variedad', 'dr.id_modulo')
             ->get();
 
         return $r;

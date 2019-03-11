@@ -35,6 +35,9 @@
                             Variedad
                         </th>
                         <th class="text-center detalle_horas" style="border-color: #9d9d9d">
+                            Módulo
+                        </th>
+                        <th class="text-center detalle_horas" style="border-color: #9d9d9d">
                             Cantidad
                         </th>
                         <th class="text-center" style="border-color: #9d9d9d">
@@ -62,6 +65,15 @@
                                     @foreach($cosecha->getDetallesByIntervalo($intervalo['fecha_inicio_full'], $intervalo['fecha_fin_full']) as $detalle)
                                         <li style="border: 1px solid #9d9d9d">
                                             {{getVariedad($detalle->id_variedad)->siglas}}
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            </td>
+                            <td class="text-center detalle_horas" style="border-color: #9d9d9d">
+                                <ul class="list-unstyled">
+                                    @foreach($cosecha->getDetallesByIntervalo($intervalo['fecha_inicio_full'], $intervalo['fecha_fin_full']) as $detalle)
+                                        <li style="border: 1px solid #9d9d9d">
+                                            {{getModuloById($detalle->id_modulo)->nombre}}
                                         </li>
                                     @endforeach
                                 </ul>

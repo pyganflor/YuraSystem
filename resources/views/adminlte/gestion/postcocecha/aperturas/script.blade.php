@@ -92,7 +92,7 @@
                 id_apertura = ids_apertura[i].value;
                 $('#sacar_' + id_apertura).prop('max', Math.round(($('#sacar_ini_' + id_apertura).val() / tallos_x_coche) * 10000) / 10000);
                 //if (!$('#checkbox_sacar_' + id_apertura).prop('checked'))
-                $('#sacar_' + id_apertura).val(Math.round(($('#sacar_ini_' + id_apertura).val() / tallos_x_coche) * 10000) / 10000);
+                //$('#sacar_' + id_apertura).val(Math.round(($('#sacar_ini_' + id_apertura).val() / tallos_x_coche) * 10000) / 10000);
             }
 
             listado = $('.checkbox_sacar');

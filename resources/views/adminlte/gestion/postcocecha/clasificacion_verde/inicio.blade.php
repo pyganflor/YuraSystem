@@ -58,6 +58,10 @@
                     </button>
                     <input type="checkbox" id="check_filtro_verde" style="display: none">
                 </div>
+                <div class="form-group pull-right" style="margin-bottom: 0; margin-right: 10px">
+                    <label for="fecha_verde_search">Fecha</label>
+                    <input type="date" id="fecha_verde_search" name="fecha_verde_search" onchange="buscar_listado()">
+                </div>
             </div>
             <div class="box-body" id="div_content_clasificaciones">
                 <table width="100%" id="table_filtro" style="display: none;">

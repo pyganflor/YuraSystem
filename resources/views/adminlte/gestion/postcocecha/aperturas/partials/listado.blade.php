@@ -1,6 +1,6 @@
 <div id="table_aperturas">
     @if(sizeof($listado)>0)
-        <div style="overflow-x: scroll">
+        <div style="overflow-x: scroll" class="pull-left">
             <table width="100%" class="table table-responsive table-bordered" style="font-size: 0.8em; border-color: #9d9d9d"
                    id="table_content_aperturas">
                 <thead>
@@ -235,33 +235,57 @@
                 texto = 'por encima del estandar';
 
             if (texto != '') {
-                modal_quest('modal_quest_input_sacar',
-                    '<div class="alert alert-info text-center">Está seleccionando flores con días de maduración ' + texto + ' permitido</div>',
-                    '<i class="fa fa-fw fa-exclamation-triangle"></i> Mensaje de alerta', true, false, '{{isPC() ? '35%' : ''}}', function () {
-                        tallos_x_coche = $('#tallos_x_coche').val();
-                        if (tallos_x_coche == '' || tallos_x_coche <= 0)
-                            tallos_x_coche = 1;
+                if (!$('#check_dont_verify').prop('checked')) {
+                    modal_quest('modal_quest_input_sacar',
+                        '<div class="alert alert-info text-center">Está seleccionando flores con días de maduración ' + texto + ' permitido</div>',
+                        '<i class="fa fa-fw fa-exclamation-triangle"></i> Mensaje de alerta', true, false, '{{isPC() ? '35%' : ''}}', function () {
+                            tallos_x_coche = $('#tallos_x_coche').val();
+                            if (tallos_x_coche == '' || tallos_x_coche <= 0)
+                                tallos_x_coche = 1;
 
-                        $('#checkbox_sacar_' + apertura).prop('checked', true);
-                        $('#btn_sacar').show();
+                            $('#checkbox_sacar_' + apertura).prop('checked', true);
+                            $('#btn_sacar').show();
 
-                        $('#html_current_sacar').html('');
+                            $('#html_current_sacar').html('');
 
-                        listado = $('.checkbox_sacar');
-                        $('#btn_sacar').hide();
-                        cantidad_seleccionada = 0;
-                        for (i = 0; i < listado.length; i++) {
-                            if (listado[i].checked) {
-                                $('#btn_sacar').show();
-                                factor = $('#factor_calibre_unitario_' + listado[i].id.substr(15)).val();
-                                seleccionados = parseFloat($('#sacar_' + listado[i].id.substr(15)).val()) * tallos_x_coche;
-                                cantidad_seleccionada += (Math.round((seleccionados / factor) * 100) / 100);
-                                $('#html_current_sacar').html('Seleccionados: ' + (Math.round(cantidad_seleccionada * 100) / 100));
+                            listado = $('.checkbox_sacar');
+                            $('#btn_sacar').hide();
+                            cantidad_seleccionada = 0;
+                            for (i = 0; i < listado.length; i++) {
+                                if (listado[i].checked) {
+                                    $('#btn_sacar').show();
+                                    factor = $('#factor_calibre_unitario_' + listado[i].id.substr(15)).val();
+                                    seleccionados = parseFloat($('#sacar_' + listado[i].id.substr(15)).val()) * tallos_x_coche;
+                                    cantidad_seleccionada += (Math.round((seleccionados / factor) * 100) / 100);
+                                    $('#html_current_sacar').html('Seleccionados: ' + (Math.round(cantidad_seleccionada * 100) / 100));
+                                }
                             }
-                        }
 
-                        cerrar_modals();
-                    });
+                            cerrar_modals();
+                        });
+                } else {
+                    tallos_x_coche = $('#tallos_x_coche').val();
+                    if (tallos_x_coche == '' || tallos_x_coche <= 0)
+                        tallos_x_coche = 1;
+
+                    $('#checkbox_sacar_' + apertura).prop('checked', true);
+                    $('#btn_sacar').show();
+
+                    $('#html_current_sacar').html('');
+
+                    listado = $('.checkbox_sacar');
+                    $('#btn_sacar').hide();
+                    cantidad_seleccionada = 0;
+                    for (i = 0; i < listado.length; i++) {
+                        if (listado[i].checked) {
+                            $('#btn_sacar').show();
+                            factor = $('#factor_calibre_unitario_' + listado[i].id.substr(15)).val();
+                            seleccionados = parseFloat($('#sacar_' + listado[i].id.substr(15)).val()) * tallos_x_coche;
+                            cantidad_seleccionada += (Math.round((seleccionados / factor) * 100) / 100);
+                            $('#html_current_sacar').html('Seleccionados: ' + (Math.round(cantidad_seleccionada * 100) / 100));
+                        }
+                    }
+                }
             } else {
                 $('#checkbox_sacar_' + apertura).prop('checked', true);
                 $('#btn_sacar').show();
@@ -292,7 +316,7 @@
             if ($('#estandar_estandar_' + apertura).prop('checked'))
                 texto = 'por encima del estandar';
 
-            if (texto != '') {
+            if (texto != '' && !$('#check_dont_verify').prop('checked')) {
                 if ($('#sacar_' + current.prop('id').substr(15)).val() > 0) {
                     modal_quest('modal_quest_input_sacar',
                         '<div class="alert alert-info text-center">Está seleccionando flores con días de maduración ' + texto + ' permitido</div>',

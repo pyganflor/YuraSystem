@@ -61,7 +61,7 @@
                     </select>
                 </div>
                 <div class="form-group pull-right" style="margin-right: 10px; margin-bottom: 0">
-                    <label for="clasificacion_ramo_search" style="margin-right: 10px">Calibre del ramo</label>
+                    <label for="clasificacion_ramo_search" style="margin-right: 5px">Calibre del ramo</label>
                     <select name="clasificacion_ramo_search" id="clasificacion_ramo_search" onchange="calcularConvercion($(this).val())">
                         @foreach(getCalibresRamo() as $calibre)
                             @if($calibre->unidad_medida->tipo == 'P')
@@ -73,8 +73,12 @@
                     </select>
                 </div>
                 <div class="form-group pull-right" style="margin-right: 10px; margin-bottom: 0">
-                    <label for="check_filtro" style="margin-right: 10px">Filtro</label>
-                    <input type="checkbox" class="pull-right" id="check_filtro" onchange="show_hide_filtro()">
+                    <label for="check_filtro" style="margin-right: 5px" class="mouse-hand">Filtro</label>
+                    <input type="checkbox" class="pull-right mouse-hand" id="check_filtro" onchange="show_hide_filtro()">
+                </div>
+                <div class="form-group pull-right" style="margin-right: 10px; margin-bottom: 0">
+                    <label for="check_dont_verify" style="margin-right: 5px" class="mouse-hand">Sacar siempre</label>
+                    <input type="checkbox" class="pull-right mouse-hand" id="check_dont_verify">
                 </div>
             </div>
             <div class="box-body" id="div_content_aperturas">
