@@ -29,13 +29,13 @@
 
     <section class="content">
         <div id="div_indicadores">
-            @if($verde != '')
+            @if($cant_verde > 0)
                 <div class="row">
                     <div class="col-md-3">
                         <div class="small-box bg-teal-active">
                             <div class="inner">
                                 <h3 class="info-box-number">
-                                    {{round($verde->getTotalRamosEstandar() / getConfiguracionEmpresa()->ramos_x_caja, 2)}}
+                                    {{$indicadores['cajas']}}
                                 </h3>
                             </div>
                             <div class="icon">
@@ -50,7 +50,7 @@
                         <div class="small-box bg-aqua">
                             <div class="inner">
                                 <h3 class="info-box-number">
-                                    {{$verde->total_tallos()}}
+                                    {{$indicadores['tallos']}}
                                 </h3>
                             </div>
                             <div class="icon">
@@ -65,7 +65,7 @@
                         <div class="small-box bg-red">
                             <div class="inner">
                                 <h3 class="info-box-number">
-                                    {{$verde->desecho()}}
+                                    {{$indicadores['desecho']}}
                                     <sup style="font-size: 20px">%</sup>
                                 </h3>
                             </div>
@@ -81,7 +81,7 @@
                         <div class="small-box bg-green-gradient">
                             <div class="inner">
                                 <h3 class="info-box-number">
-                                    {{$verde->getRendimiento()}}
+                                    {{$indicadores['rendimiento']}}
                                     <sup style="font-size: 0.4em">t/hr</sup>
                                 </h3>
                             </div>
@@ -97,7 +97,7 @@
                         <div class="small-box bg-orange">
                             <div class="inner">
                                 <h3 class="info-box-number">
-                                    {{round($verde->total_tallos() / $verde->getTotalRamosEstandar(),2)}}
+                                    {{$indicadores['calibre']}}
                                     <sup style="font-size: 0.4em">t/r</sup>
                                 </h3>
                             </div>

@@ -59,6 +59,12 @@
                     $total_disponibles = 0;
                     $total_ramos = 0;
                     $ids_apertura = '';
+
+                    $ramos_totales = 0;
+                    $cajas_totales = 0;
+                    $tallos_entrantes_totales = 0;
+                    $tallos_restrantes_totales = 0;
+
                     $i=0;
                 @endphp
                 <tbody>
@@ -206,7 +212,14 @@
                             <td style="border-bottom-color: #9d9d9d; border-right-color: #9d9d9d"></td>
                         </tr>
                         @php
+                            $cajas_totales += $total_cajas;
+                            $ramos_totales += $total_ramos;
+                            $tallos_entrantes_totales += $tallos_entrantes;
+                            $tallos_restrantes_totales += $tallos_restantes;
                             $total_ramos = 0;
+                            $total_cajas = 0;
+                            $tallos_entrantes = 0;
+                            $tallos_restantes = 0;
                             $total_disponibles = 0;
                             $ids_apertura = '';
                         @endphp
@@ -215,6 +228,26 @@
                         $i++;
                     @endphp
                 @endforeach
+                <tr style="background-color: #357CA5; color: white">
+                    <td style="border-bottom-color: #9d9d9d; border-left-color: #9d9d9d">
+                    </td>
+                    <th style="border-bottom-color: #9d9d9d; border-color: #9d9d9d" colspan="3" class="text-center">
+                        TOTALES
+                    </th>
+                    <th class="text-center" style=" border-color: #9d9d9d">
+                        {{$tallos_entrantes_totales}}
+                    </th>
+                    <th class="text-center" style=" border-color: #9d9d9d">
+                        {{$tallos_restrantes_totales}}
+                    </th>
+                    <th class="text-center" style=" border-color: #9d9d9d">-</th>
+                    <th class="text-center" style=" border-color: #9d9d9d">{{$ramos_totales}}</th>
+                    <td style="border-bottom-color: #9d9d9d; border-right-color: #9d9d9d"></td>
+                    <th style="border-bottom-color: #9d9d9d; border-right-color: #9d9d9d" class="text-center">
+                        {{$cajas_totales}}
+                    </th>
+                    <td style="border-bottom-color: #9d9d9d; border-right-color: #9d9d9d"></td>
+                </tr>
                 </tbody>
             </table>
         </div>

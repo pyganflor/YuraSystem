@@ -87,8 +87,8 @@ class ClasificacionVerde extends Model
     public function total_tallos_recepcion()
     {
         $r = 0;
-        foreach (Recepcion::All()->where('fecha_ingreso', '=', $this->fecha_ingreso) as $item) {
-            $r += $item->cantidad_tallos();
+        foreach (DB::table('recepcion')->where('fecha_ingreso', 'like', $this->fecha_ingreso . '%')->get() as $item) {
+            $r += getRecepcion($item->id_recepcion)->cantidad_tallos();
         }
         return $r;
     }
@@ -96,8 +96,8 @@ class ClasificacionVerde extends Model
     public function total_tallos_recepcionByVariedad($variedad)
     {
         $r = 0;
-        foreach (Recepcion::All()->where('fecha_ingreso', '=', $this->fecha_ingreso) as $item) {
-            $r += $item->tallos_x_variedad($variedad);
+        foreach (DB::table('recepcion')->where('fecha_ingreso', 'like', $this->fecha_ingreso . '%')->get() as $item) {
+            $r += getRecepcion($item->id_recepcion)->tallos_x_variedad($variedad);
         }
         return $r;
     }

@@ -13,27 +13,101 @@ class crmPostocechaController extends Controller
 {
     public function inicio(Request $request)
     {
+        $labels = DB::table('clasificacion_verde as v')
+            ->select('v.fecha_ingreso as dia')->distinct()
+            ->where('v.fecha_ingreso', '>=', opDiasFecha('-', 7, date('Y-m-d')))
+            ->where('v.fecha_ingreso', '<=', date('Y-m-d'))
+            ->get();
+
+        $cajas = 0;
+        $ramos = 0;
+        $tallos = 0;
+        $desecho = 0;
+        $rendimiento = 0;
+        $calibre = 0;
+
+        $cant_verde = 0;
+        foreach ($labels as $dia) {
+            $verde = ClasificacionVerde::All()->where('fecha_ingreso', '=', $dia->dia)->first();
+            if ($verde != '') {
+                $cajas += round($verde->getTotalRamosEstandar() / getConfiguracionEmpresa()->ramos_x_caja, 2);
+                $ramos += $verde->getTotalRamosEstandar();
+                $tallos += $verde->total_tallos();
+                $desecho += $verde->desecho();
+                $rendimiento += $verde->getRendimiento();
+                $calibre += round($verde->total_tallos() / $verde->getTotalRamosEstandar(), 2);
+                $cant_verde++;
+            }
+        }
+
+        $desecho = $cant_verde > 0 ? round($desecho / $cant_verde, 2) : 0;
+        $rendimiento = $cant_verde > 0 ? round($rendimiento / $cant_verde, 2) : 0;
+        $calibre = $cant_verde > 0 ? round($calibre / $cant_verde, 2) : 0;
+
+        $indicadores = [
+            'cajas' => $cajas,
+            'ramos' => $ramos,
+            'tallos' => $tallos,
+            'desecho' => $desecho,
+            'rendimiento' => $rendimiento,
+            'calibre' => $calibre,
+        ];
+
         $cosecha = Cosecha::All()->where('fecha_ingreso', '=', date('Y-m-d'))->first();
         $verde = ClasificacionVerde::All()->where('fecha_ingreso', '=', date('Y-m-d'))->first();
 
         return view('adminlte.crm.postcocecha.inicio', [
             'cosecha' => $cosecha,
             'verde' => $verde,
+            'indicadores' => $indicadores,
+            'cant_verde' => $cant_verde,
         ]);
     }
 
     public function cargar_cosecha(Request $request)
     {
+        $labels = DB::table('clasificacion_verde as v')
+            ->select('v.fecha_ingreso as dia')->distinct()
+            ->where('v.fecha_ingreso', '>=', opDiasFecha('-', 30, date('Y-m-d')))
+            ->where('v.fecha_ingreso', '<=', date('Y-m-d'))
+            ->get();
+
         $cosecha = Cosecha::All()->where('fecha_ingreso', '=', date('Y-m-d'))->first();
         $verde = ClasificacionVerde::All()->where('fecha_ingreso', '=', date('Y-m-d'))->first();
         $listado_variedades = [];
         if ($verde != '') {
             $listado_variedades = $verde->variedades();
         }
+
+        $array_cajas = [];
+        $array_ramos = [];
+        $array_tallos = [];
+        $array_desecho = [];
+        $array_rendimiento = [];
+        $array_calibre = [];
+        foreach ($labels as $dia) {
+            $verde = ClasificacionVerde::All()->where('fecha_ingreso', '=', $dia->dia)->first();
+            if ($verde != '') {
+                array_push($array_cajas, round($verde->getTotalRamosEstandar() / getConfiguracionEmpresa()->ramos_x_caja, 2));
+                array_push($array_ramos, $verde->getTotalRamosEstandar());
+                array_push($array_tallos, $verde->total_tallos());
+                array_push($array_desecho, $verde->desecho());
+                array_push($array_rendimiento, $verde->getRendimiento());
+                array_push($array_calibre, round($verde->total_tallos() / $verde->getTotalRamosEstandar(), 2));
+            }
+        }
         return view('adminlte.crm.postcocecha.partials.cosecha', [
             'cosecha' => $cosecha,
             'verde' => $verde,
             'listado_variedades' => $listado_variedades,
+            'periodo' => 'diario',
+            'labels' => $labels,
+            'array_cajas' => $array_cajas,
+            'array_ramos' => $array_ramos,
+            'array_tallos' => $array_tallos,
+            'array_desecho' => $array_desecho,
+            'array_rendimiento' => $array_rendimiento,
+            'array_calibre' => $array_calibre,
         ]);
     }
 
