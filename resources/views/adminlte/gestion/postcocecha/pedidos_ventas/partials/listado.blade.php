@@ -85,7 +85,7 @@
                         {{$item->nombre}}
                     </td>
                     <td style="border-color: #9d9d9d" class="text-center">
-
+                        {{$item->cantidad * getCantidadCajas($item->id_pedido)}}
                     </td>
                     <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;" class="text-center">
                         <ul style="padding: 0;margin:0">
