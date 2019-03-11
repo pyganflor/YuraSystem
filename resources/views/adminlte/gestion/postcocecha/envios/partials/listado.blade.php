@@ -63,7 +63,7 @@
                             <ul style="padding: 0;">
                                 @foreach($item as $especificacion)
                                     <li style="list-style: none">
-                                        {{$especificacion->cantidad}} x {{getDetalleEspecificacion($especificacion->id_especificacion)}}
+                                        {{$especificacion->cantidad}} x
                                         . {{--{{$especificacion->nombre}}--}}
                                     </li>
                                 @endforeach
@@ -111,10 +111,10 @@
                                                    style="margin: 0;position: relative;top: 3px;" title="Generar documento electrónico">
                                         </button>
                                     @else
-                                        {{--<button class="btn btn-default btn-xs" title="Ver comprobante electrónico" onclick="ver_factura()">
+
+                                        Factura generada{{--<button class="btn btn-default btn-xs" title="Ver comprobante electrónico" onclick="ver_factura()">
                                             <i class="fa fa-file-text-o" aria-hidden="true"></i>
                                         </button>--}}
-                                        Factura generada
                                     @endif
                                 @else
                                     <button class="btn  btn-default btn-xs" type="button" title="Editar envío" id="edit_envio"
@@ -129,7 +129,7 @@
                             </td>
                         @else
                             <td class="text-center" style="border-color: #9d9d9d;vertical-align: middle">
-                                Su usario no tiene permitido la facturación
+                                No tiene permitido la facturación
                             </td>
                         @endif
                         {{--<td class="text-center"  style="border-color: #9d9d9d;vertical-align: middle">

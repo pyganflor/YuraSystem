@@ -4,7 +4,7 @@
         <div class="col-md-5">
             <div class="form-group input-group">
                 <span class="input-group-addon" style="background-color: #e9ecef">Nombre</span>
-                <input type="text" id="nombre" name="nombre" class="form-control" maxlength="250" required placeholder="Escriba el nombre">
+                <input type="text" id="nombre" name="nombre" class="form-control" maxlength="250" placeholder="Escriba el nombre">
             </div>
             @if(!isset($cliente))
             <div class="form-group input-group">

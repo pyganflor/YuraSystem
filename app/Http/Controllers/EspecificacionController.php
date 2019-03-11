@@ -54,9 +54,8 @@ class EspecificacionController extends Controller
             ['e.tipo',$tipo != '' ? $tipo : 'N'],
             ['e.estado',$estado != '' ? $estado : 1]
         ])->orderBy('e.id_especificacion', 'desc')
-            ->select('e.nombre as nombre_especificacicon','e.id_especificacion','e.descripcion','e.tipo','e.estado')
+            ->select('e.nombre as nombre_especificacion','e.id_especificacion','e.descripcion','e.tipo','e.estado')
             ->distinct()->paginate(20);
-
         $datos = [
             'listado' => $listado,
             'variedades' => Variedad::select('nombre','id_variedad')->get(),

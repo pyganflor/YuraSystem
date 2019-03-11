@@ -36,7 +36,8 @@ class PrecioController extends Controller
     public function form_asignar_precio_especificacion_cliente(Request $request){
         return view('adminlte.gestion.postcocecha.precio.form.add_precio_especificacion_cliente',[
             'clientes' => DetalleCliente::where('estado',1)->select('nombre','id_cliente')->get(),
-            'cliente_pedido_especificacion' => ClientePedidoEspecificacion::where('id_especificacion',$request->id_especificacion)->get()
+            'cliente_pedido_especificacion' => ClientePedidoEspecificacion::where('id_especificacion',$request->id_especificacion)->get(),
+            'id_especificacion' => $request->id_especificacion
         ]);
     }
 

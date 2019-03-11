@@ -40,6 +40,7 @@ use Illuminate\Support\Facades\Mail;
 use yura\Mail\CorreoFactura;
 use yura\Modelos\Cliente;
 use yura\Modelos\ClientePedidoEspecificacion;
+use yura\Modelos\AgenciaCarga;
 
 /*
  * -------- BITÁCORA DE LAS ACCIONES ECHAS POR EL USUARIO ------
@@ -469,7 +470,7 @@ function getParroquias($ciudad, $formato = FR_CONSULTA, $selecionada = -1)  //Ob
 
 /*
  * --------------------FUNCIONES PARA OBTENER LOS DATOS DE PROVINCIAS, CIUDADES, SECTORES Y PARROQUIAS ------------------------------
- 
+
 
 function getProvincia($id = -1)
 {
@@ -1411,3 +1412,6 @@ function getDisponibleInventarioFrio($variedad, $clasificacion_ramo, /*$envoltur
         return 0;
 }
 
+function getAgenciaCarga($idAgenciaCarga){
+  return  AgenciaCarga::find($idAgenciaCarga);
+}

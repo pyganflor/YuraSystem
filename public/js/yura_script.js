@@ -25,7 +25,6 @@ function add_campos(value, id_cliente, cant_especificaciones) {
         //cant_especificaciones : cant_especificaciones
     };
     $.get('/clientes/inputs_pedidos', datos, function (retorno) {
-
         $('#tbody_inputs_pedidos').append(retorno);
         if ($("#id_cliente_venta").length > 0) {
             cargar_espeicificaciones_cliente(false);
@@ -273,17 +272,8 @@ function cargar_espeicificaciones_cliente(remove) {
         id_cliente: $("#id_cliente_venta").val()
     };
     get_jquery('pedidos/cargar_especificaciones', datos, function (response) {
+        console.log(response);
         remove ? add_campos(1, '',response['agencias_carga']) : '';
-        /*setTimeout(function () {
-            for(var x=0;x<cant_tr;x++){
-                $.each(response['especificaciones'], function (i, j) {
-                    $("#id_especificacion_" + (x+1)).append('<option value="' + j.id_cliente_pedido_especificacion + '">' + j.nombre + '</option>');
-                });
-                $.each(response['agencias_carga'], function (i, j) {
-                    $("#id_agencia_carga_" + (x+1)).append('<option value="' + j.id_agencia_carga + '">' + j.nombre + '</option>');
-                });
-            }
-        },300);*/
         $("#btn_add_campos").attr('disabled', false);
     });
     $.LoadingOverlay('hide');

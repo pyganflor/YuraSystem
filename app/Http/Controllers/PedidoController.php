@@ -174,7 +174,10 @@ class PedidoController extends Controller
     {
         $data_especificaciones = DB::table('cliente_pedido_especificacion as cpe')
             ->join('especificacion as esp', 'cpe.id_especificacion', '=', 'esp.id_especificacion')
-            ->where('cpe.id_cliente', $request->id_cliente)->get();
+            ->where([
+                ['cpe.id_cliente', $request->id_cliente],
+                ['esp.tipo','N']
+            ])->get();
 
         $arr_data_cliente_especificacion = [];
         foreach ($data_especificaciones as $data){

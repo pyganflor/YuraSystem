@@ -44,7 +44,7 @@
             id_pedido: id_pedido
         };
         $.get('{{url('pedidos/ver_envio')}}', datos, function (retorno) {
-            modal_view('modal_view_envios_facturas', retorno, '<i class="fa fa-plane" aria-hidden="true"></i> Desglose de los envíos del pedido', true, false, '75%');
+            modal_view('modal_view_envios_facturas', retorno, '<i class="fa fa-plane" aria-hidden="true"></i> Desglose de los envíos del pedido', true, false, '85%');
             //estructura_tabla('table_content_pedidos');
         }).always(function () {
             $.LoadingOverlay('hide');
