@@ -19,6 +19,7 @@
     <div class="box-body">
         <div class="row">
             <div class="col-md-8" id="div_chart_cosecha">
+                @include('adminlte.crm.postcocecha.partials.secciones.chart_cosecha')
             </div>
             <div class="col-md-4">
                 <div id="div_filtro_cosecha" class="div_option_cosecha" style="display: none">

@@ -978,6 +978,16 @@ function getEspecificacion($idEspecificacion)
     return Especificacion::find($idEspecificacion);
 }
 
+function getCantidadDetallesEspecificacionByPedido($id_pedido)
+{
+    $r = 0;
+    foreach (getPedido($id_pedido)->detalles as $det_ped)
+        foreach ($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $esp_emp)
+            foreach ($esp_emp->detalles as $det_esp)
+                $r++;
+    return $r;
+}
+
 /* ============ Obtener los ramos sacados de apertura para los pedidos de un "fecha" ==============*/
 function getDestinadosToFrioByFecha($fecha, $variedad)
 {

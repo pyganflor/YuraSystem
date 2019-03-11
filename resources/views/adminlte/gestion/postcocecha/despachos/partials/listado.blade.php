@@ -44,6 +44,9 @@
                 <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
                     CAJAS FULL
                 </th>
+                <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
+                    PEDIDO
+                </th>
             </tr>
             @php
                 $piezas_totales = 0;
@@ -55,9 +58,9 @@
             $ramos_x_variedades = [];
             @endphp
             @foreach($listado as $pedido)
-                @foreach(getPedido($pedido->id_pedido)->detalles as $det_ped)
-                    @foreach($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $esp_emp)
-                        @foreach($esp_emp->detalles as $det_esp)
+                @foreach(getPedido($pedido->id_pedido)->detalles as $pos_det_ped => $det_ped)
+                    @foreach($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $pos_esp => $esp_emp)
+                        @foreach($esp_emp->detalles as $pos_det_esp => $det_esp)
                             <tr style="background-color: {{!in_array($det_esp->id_variedad,explode('|',$pedido->variedad)) ? '#b9ffb4' : ''}}"
                                 title="{{!in_array($det_esp->id_variedad,explode('|',$pedido->variedad)) ? 'Confirmado' : 'Por confirmar'}}">
                                 <td class="text-center" style="border-color: #9d9d9d">
@@ -78,32 +81,38 @@
                                     {{$det_esp->cantidad}}
                                 </td>
                                 <td class="text-center" style="border-color: #9d9d9d">
-                                    {{$esp_emp->cantidad * $det_esp->cantidad}}----
+                                    {{$det_esp->cantidad * $esp_emp->cantidad * $det_ped->cantidad}}
                                     @php
-                                        $ramos_totales += $esp_emp->cantidad * $det_esp->cantidad;
-                                        $ramos_totales_estandar += convertToEstandar($esp_emp->cantidad * $det_esp->cantidad, $det_esp->clasificacion_ramo->nombre);
+                                        $ramos_totales += $det_esp->cantidad * $esp_emp->cantidad * $det_ped->cantidad;
+                                        $ramos_totales_estandar += convertToEstandar($det_esp->cantidad * $esp_emp->cantidad * $det_ped->cantidad, $det_esp->clasificacion_ramo->nombre);
 
                                     if (!in_array($det_esp->id_variedad, $variedades)){
                                         array_push($variedades, $det_esp->id_variedad);
                                     }
                                     array_push($ramos_x_variedades, [
                                         'id_variedad' => $det_esp->id_variedad,
-                                        'cantidad' => convertToEstandar($esp_emp->cantidad * $det_esp->cantidad, $det_esp->clasificacion_ramo->nombre),
+                                        'cantidad' => convertToEstandar($det_esp->cantidad * $esp_emp->cantidad * $det_ped->cantidad, $det_esp->clasificacion_ramo->nombre),
                                     ]);
                                     @endphp
                                 </td>
                                 <td class="text-center" style="border-color: #9d9d9d">
-                                    {{$esp_emp->cantidad}}
+                                    {{$esp_emp->cantidad * $det_ped->cantidad}}
                                     @php
-                                        $piezas_totales += $esp_emp->cantidad;
+                                        $piezas_totales += ($esp_emp->cantidad * $det_ped->cantidad);
                                     @endphp
                                 </td>
                                 <td class="text-center" style="border-color: #9d9d9d">
-                                    {{$esp_emp->cantidad * explode('|',$esp_emp->empaque->nombre)[1]}}
+                                    {{($esp_emp->cantidad * $det_ped->cantidad) * explode('|',$esp_emp->empaque->nombre)[1]}}
                                     @php
-                                        $cajas_full_totales += $esp_emp->cantidad * explode('|',$esp_emp->empaque->nombre)[1];
+                                        $cajas_full_totales += ($esp_emp->cantidad * $det_ped->cantidad) * explode('|',$esp_emp->empaque->nombre)[1];
                                     @endphp
                                 </td>
+                                @if($pos_det_esp == 0 && $pos_esp == 0 && $pos_det_ped == 0)
+                                    <td class="text-center" style="border-color: #9d9d9d"
+                                        rowspan="{{getCantidadDetallesEspecificacionByPedido($pedido->id_pedido)}}">
+                                        PED-0{{$pedido->id_pedido}}
+                                    </td>
+                                @endif
                             </tr>
                         @endforeach
                     @endforeach
