@@ -55,7 +55,7 @@ class ClienteController extends Controller
                 ->orWhere('dc.direccion', 'like', '%' . $busqueda . '%');
         });
 
-        $listado = $listado->orderBy('dc.nombre', 'asc')->paginate(2);
+        $listado = $listado->orderBy('dc.nombre', 'asc')->paginate(20);
 
         $datos = [
             'listado' => $listado
