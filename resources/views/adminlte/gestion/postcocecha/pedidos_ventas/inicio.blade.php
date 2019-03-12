@@ -6,9 +6,7 @@
 
 @section('contenido')
     <!-- Content Header (Page header) -->
-    <section class="content-header">
-        @include('adminlte.gestion.partials.breadcrumb')
-    </section>
+    @include('adminlte.gestion.partials.breadcrumb')
 
     <!-- Main content -->
     <section class="content">
@@ -19,12 +17,12 @@
                 </h3>
             </div>
             <div class="box-body" id="div_content_pedidos">
-                <table width="100%">
+                {{--<table width="100%">
                     <tr>
                         <td>
                             <div class="pull-right" style="padding: 0px">
                                 <div class="form-inline">
-                                    {{--<div class="form-group">
+                                    --}}{{--<div class="form-group">
                                         <label for="anno">Estado</label><br/>
                                         <select class="form-control" id="estado" name="estado">
                                             <option value=""> Seleccione</option>
@@ -57,7 +55,7 @@
                                     <div class="form-group">
                                         <label> Hasta</label><br/>
                                         <input type="date" class="form-control" id="hasta" name="hasta">
-                                    </div>--}}
+                                    </div>--}}{{--
                                     <div class="form-group">
                                         <label> Fecha pedidos</label><br/>
                                         <input type="date" class="form-control" id="fecha" name="fecha"
@@ -103,7 +101,7 @@
                             </div>
                         </td>
                     </tr>
-                </table>
+                </table>--}}
                 <div id="div_listado_blanco"></div>
             </div>
         </div>

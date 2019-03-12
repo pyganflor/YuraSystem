@@ -252,7 +252,7 @@
             $('#check_rendimiento_ingresos').prop('checked', false);
             if ($('#check_rendimiento_horas').prop('checked')) {
                 $('.detalle_horas').show();
-                $('#th_total_horas').prop('colspan', 3);
+                $('#th_total_horas').prop('colspan', 4);
             } else {
                 $('.detalle_horas').hide();
                 $('#th_total_horas').prop('colspan', 1);

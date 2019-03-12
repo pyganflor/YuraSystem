@@ -41,7 +41,7 @@
                             <div class="icon">
                                 <i class="fa fa-fw fa-gift"></i>
                             </div>
-                            <a href="javascript:void(0)" class="small-box-footer">
+                            <a href="javascript:void(0)" class="small-box-footer" onclick="show_data_cajas('{{$desde}}', '{{$hasta}}')">
                                 Cosecha cajas <i class="fa fa-arrow-circle-right"></i>
                             </a>
                         </div>
