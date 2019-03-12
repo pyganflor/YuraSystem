@@ -53,7 +53,7 @@ class EspecificacionController extends Controller
             ['e.tipo',($tipo != '' && $tipo != null) ? $tipo : 'N'],
             ['e.estado',$estado != '' ? $estado : 1]
         ])->orderBy('e.id_especificacion', 'desc')
-            ->select('e.id_especificacion','e.tipo','e.estado')->distinct()->paginate(2);
+            ->select('e.id_especificacion','e.tipo','e.estado')->distinct()->paginate(20);
         //dd($listado);
         $datos = [
             'listado' => $listado,
