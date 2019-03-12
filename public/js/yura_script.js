@@ -755,7 +755,7 @@ function listar_resumen_pedidos(fecha,opciones) {
     });
 }
 
-function calcular_precio() {
+function calcular_precio_pedido() {
     cant_rows = $("#tbody_inputs_pedidos tr").length-(1);
     total = 0.00;
     for(i=1;i<=cant_rows; i++){
