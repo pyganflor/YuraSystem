@@ -288,7 +288,6 @@ class ComprobanteController extends Controller
                 }
                 $xml->formatOutput = true;
                 $xml->saveXML();
-                //dd($xml);
                 $nombre_xml = $claveAcceso . ".xml";
 
                 //////////// GUARDAR ARCHIVO XML Y DATA EN BD //////////////

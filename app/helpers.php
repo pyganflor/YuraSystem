@@ -40,6 +40,8 @@ use Illuminate\Support\Facades\Mail;
 use yura\Mail\CorreoFactura;
 use yura\Modelos\Cliente;
 use yura\Modelos\ClientePedidoEspecificacion;
+use yura\Modelos\AgenciaCarga;
+use yura\Modelos\DetallePedido;
 
 /*
  * -------- BITÁCORA DE LAS ACCIONES ECHAS POR EL USUARIO ------
@@ -469,7 +471,7 @@ function getParroquias($ciudad, $formato = FR_CONSULTA, $selecionada = -1)  //Ob
 
 /*
  * --------------------FUNCIONES PARA OBTENER LOS DATOS DE PROVINCIAS, CIUDADES, SECTORES Y PARROQUIAS ------------------------------
- 
+
 
 function getProvincia($id = -1)
 {
@@ -1342,9 +1344,6 @@ function convertToEstandar($ramos, $calibre)
     return round($ramos * $factor);
 }
 
-;
-
-
 /* ============ Calcular la cantidad de cajas equivalentes segun grosor_variedad ==============*/
 function getEquivalentesByGrosorVariedad($fecha, $grosor, $variedad)
 {
@@ -1428,3 +1427,13 @@ function getDisponibleInventarioFrio($variedad, $clasificacion_ramo, /*$envoltur
         return 0;
 }
 
+function getAgenciaCarga($idAgenciaCarga){
+  return  AgenciaCarga::find($idAgenciaCarga);
+}
+
+function getCantidadCajas($idPedido){
+    return  DetallePedido::where('id_pedido',$idPedido)
+        ->join('cliente_pedido_especificacion as cpe','detalle_pedido.id_cliente_especificacion','cpe.id_cliente_pedido_especificacion')
+        ->join('especificacion as esp','cpe.id_especificacion','esp.id_especificacion')
+        ->join('especificacion_empaque as eemp','esp.id_especificacion','eemp.id_especificacion')->count();
+}

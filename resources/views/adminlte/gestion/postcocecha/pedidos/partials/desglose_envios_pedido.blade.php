@@ -14,8 +14,30 @@
             </th>
             <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
                 style="border-color: #9d9d9d">
-                CANTIDAD x ESPECIFICIACIONES
+                CANTIDAD
             </th>
+            <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
+                VARIEDAD
+            </th>
+            <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
+                CALIBRE
+            </th>
+            <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
+                CAJA
+            </th>
+            <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
+                RAMO X CAJA
+            </th>
+            <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
+                PRESENTACIÓN
+            </th>
+            <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
+                TALLOS X RAMO
+            </th>
+            <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
+                LONGITUD
+            </th>
+
             <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
                 style="border-color: #9d9d9d">
                 CLIENTE
@@ -40,6 +62,7 @@
         </thead>
        {{-- @php $x =1; @endphp--}}
         @foreach($data_envios as $key => $item)
+            @php $esp = getDetalleEspecificacion($item[0]->id_especificacion);@endphp
             <tr onmouseover="$(this).css('background-color','#add8e6')"
                 onmouseleave="$(this).css('background-color','')" class="" id="row_pedidos_">
                 <td style="border-color: #9d9d9d" class="text-center mouse-hand">
@@ -48,11 +71,72 @@
                 <td style="border-color: #9d9d9d" class="text-center mouse-hand"  id="popover_pedidos">
                     {{\Carbon\Carbon::parse($item[0]->fecha_pedido)->format('d-m-Y')}}
                 </td>
+                <td style="border-color: #9d9d9d" class="text-center mouse-hand"  id="popover_pedidos">
+                    @foreach($item as $i)
+                        {{$i->cantidad}}
+                    @endforeach
+                </td>
+                <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;" class="text-center">
+                    <ul style="padding: 0;margin:0">
+                        @foreach($esp as $key => $e)
 
-                <td style="border-color: #9d9d9d" class="text-center mouse-hand">
-                    <ul style="padding: 0;">
-                        @foreach($item as $i)
-                            <li style="list-style:none"> {{$i->cantidad}} x {{getDetalleEspecificacion($i->id_especificacion)}}</li>
+                            <li style="list-style: none;{{count($esp) != 1 ? "border-bottom: 1px solid silver" : ""}}">
+                                {{$e["variedad"]}}
+                            </li>
+                        @endforeach
+                    </ul>
+                </td>
+                <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;" class="text-center">
+                    <ul style="padding: 0;margin:0">
+                        @foreach($esp as  $e)
+                            <li style="list-style: none;{{count($esp) != 1 ? "border-bottom: 1px solid silver" : ""}}">
+                                {{$e["calibre"]}}
+                            </li>
+                        @endforeach
+                    </ul>
+                </td>
+                <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;" class="text-center">
+                    <ul style="padding: 0;margin:0">
+                        @foreach($esp as $e)
+                            <li style="list-style: none;{{count($esp) != 1 ? "border-bottom: 1px solid silver" : ""}}">
+                                {{$e["caja"]}}
+                            </li>
+                        @endforeach
+                    </ul>
+                </td>
+                <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;" class="text-center">
+                    <ul style="padding: 0;margin:0">
+                        @foreach($esp as $e)
+                            <li style="list-style: none;{{count($esp) != 1 ? "border-bottom: 1px solid silver" : ""}}">
+                                {{$e["rxc"]}}
+                            </li>
+                        @endforeach
+                    </ul>
+                </td>
+                <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;" class="text-center">
+                    <ul style="padding: 0;margin:0">
+                        @foreach($esp as $e)
+                            <li style="list-style: none;{{count($esp) != 1 ? "border-bottom: 1px solid silver" : ""}}">
+                                {{$e["presentacion"]}}
+                            </li>
+                        @endforeach
+                    </ul>
+                </td>
+                <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;" class="text-center">
+                    <ul style="padding: 0;margin:0">
+                        @foreach($esp as $e)
+                            <li style="list-style: none;{{count($esp) != 1 ? "border-bottom: 1px solid silver" : ""}}">
+                                {{$e["txr"] == null ? "-" : $e["txr"] }}
+                            </li>
+                        @endforeach
+                    </ul>
+                </td>
+                <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;" class="text-center">
+                    <ul style="padding: 0;margin:0">
+                        @foreach($esp as $e)
+                            <li style="list-style: none;{{count($esp) != 1 ? "border-bottom: 1px solid silver" : ""}}">
+                                {{$e["longitud"] == null ? "-" : $e["longitud"] }} {{($e["unidad_medida_longitud"] == null || $e["longitud"] == null) ? "" : $e["unidad_medida_longitud"]}}
+                            </li>
                         @endforeach
                     </ul>
                 </td>

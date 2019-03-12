@@ -19,7 +19,7 @@
         <select id="id_empaque_{{$cant_row+1}}" style="width: 100%;height: 25.8px;" name="id_empaque">
             {{--<option selected disabled>Seleccione</option>--}}
             @foreach($empaque as $e)
-                <option value="{{$e->id_empaque}}">{{$e->nombre}}</option>
+                <option value="{{$e->id_empaque}}">{{explode("|",$e->nombre)[0]}}</option>
             @endforeach
         </select>
     </td>

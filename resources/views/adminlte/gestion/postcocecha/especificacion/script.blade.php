@@ -25,7 +25,7 @@
             id_especificacion : id_especificacion
         };
         $.get('{{url('especificacion/form_asignacion_especificacion')}}', datos, function (retorno) {
-            modal_view('modal_asignar_especificacion', retorno, '<i class="fa fa-fw fa-plus"></i> <b>Especificación</b>:    '+nombre_especificacion+' ', true, false, '{{isPC() ? '50%' : ''}}', function () {
+            modal_view('modal_asignar_especificacion', retorno, '<i class="fa fa-fw fa-plus"></i> <b>Especificación</b>: ', true, false, '{{isPC() ? '70%' : ''}}', function () {
                 $.LoadingOverlay('hide');
             });
         });

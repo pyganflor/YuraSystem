@@ -18,6 +18,7 @@ use PHPExcel_Style_Color;
 use PHPExcel_Style_Alignment;
 use yura\Modelos\Pais;
 use yura\Modelos\Pedido;
+use Carbon\Carbon;
 
 class EnvioController extends Controller
 {
@@ -27,9 +28,8 @@ class EnvioController extends Controller
             [
                 'cantForms'           => $dataDetallePedido->count(),
                 'dataDetallesPedidos' => $dataDetallePedido->join('cliente_pedido_especificacion as cpe','detalle_pedido.id_cliente_especificacion','=','cpe.id_cliente_pedido_especificacion')
-                                                           ->join('especificacion as e','cpe.id_especificacion','=','e.id_especificacion')
-                                                           ->select('detalle_pedido.cantidad','detalle_pedido.id_detalle_pedido','e.nombre','cpe.id_especificacion','cpe.id_cliente')->get()
-
+                    ->join('especificacion as e','cpe.id_especificacion','=','e.id_especificacion')
+                    ->select('detalle_pedido.cantidad','detalle_pedido.id_detalle_pedido','e.nombre','cpe.id_especificacion','cpe.id_cliente')->get()
                 ]);
     }
 
@@ -195,6 +195,9 @@ class EnvioController extends Controller
             $listado = $listado->where('c.id_cliente',$busquedacliente);
         if ($busquedaDesde != '' && $request->hasta != '')
             $listado = $listado->whereBetween('e.fecha_envio', [$busquedaDesde,$busquedaHasta]);
+        else
+            $listado = $listado->where('e.fecha_envio',Carbon::now()->toDateString());
+
 
         /*if($prefacturado == 0 )
             $listado = $listado->join('comprobante as comp','de.id_envio','comp.id_envio')->where([

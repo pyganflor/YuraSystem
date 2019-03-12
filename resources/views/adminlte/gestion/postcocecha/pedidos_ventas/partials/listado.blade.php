@@ -1,17 +1,42 @@
-<div id="table_pedidos" style="margin-top: 20px">
+{{--<div id="table_pedidos" style="margin-top: 20px">
     @if(sizeof($listado)>0)
+        @if(!$columnaFecha)
+            <table>
+                <tr>
+                    <td style="padding: 0px 0px 0px 5px">
+                        <b>Fecha: </b> {{Carbon\Carbon::parse($listado[0]->fecha_pedido)->format('d-m-Y') }}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding: 0px 0px 0px 5px">
+                        <b>Día: </b> {{getDias()[transformDiaPhp(date('w', strtotime($listado[0]->fecha_pedido)))]}}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding: 0px 0px 0px 5px">
+                        <b>Semana:</b> {{getSemanaByDate($listado[0]->fecha_pedido)->codigo}}
+                    </td>
+                </tr>
+            </table>
+        @endif
         <table width="100%" class="table table-responsive table-bordered"
-               style="font-size: 1em; border-color: #9d9d9d"
+               style="font-size: 0.85em; border-color: #9d9d9d"
                id="table_content_pedidos">
             <thead>
             <tr style="background-color: #dd4b39; color: white">
+                @if($columnaFecha)
+                    <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
+                        style="border-color: #9d9d9d">
+                        FECHA
+                    </th>
+                @endif
                 <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
-                    style="border-color: #9d9d9d">
-                    FECHA
+                    style="border-color: #9d9d9d;">
+                    CLIENTE
                 </th>
                 <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
                     style="border-color: #9d9d9d">
-                    CLIENTE
+                    PIEZAS
                 </th>
                 <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
                     VARIEDAD
@@ -22,7 +47,7 @@
                 <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
                     CAJA
                 </th>
-                <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
+                <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d;width: 32px;">
                     RAMO X CAJA
                 </th>
                 <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
@@ -34,11 +59,12 @@
                 <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
                     LONGITUD
                 </th>
-
+                <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
+                    AGENCIA DE CARGA
+                </th>
                 <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
-                    style="border-color: #9d9d9d">
+                    style="border-color: #9d9d9d;width: 85px;">
                     OPCIONES
-
                 </th>
             </tr>
             </thead>
@@ -50,14 +76,16 @@
                 <tr onmouseover="$(this).css('background-color','#add8e6')"
                     onmouseleave="$(this).css('background-color','')" class=""
                     id="row_pedidos_">
-                    <td style="border-color: #9d9d9d" class="text-center">
-                        {{$item->fecha_pedido}}
-                        <em>
-                            {{getDias()[transformDiaPhp(date('w', strtotime($item->fecha_pedido)))]}}
-                        </em>
-                    </td>
+                    @if($columnaFecha)
+                        <td style="border-color: #9d9d9d" class="text-center">
+                            {{$item->fecha_pedido}}
+                        </td>
+                    @endif
                     <td style="border-color: #9d9d9d" class="text-center">
                         {{$item->nombre}}
+                    </td>
+                    <td style="border-color: #9d9d9d" class="text-center">
+                        {{$item->cantidad * getCantidadCajas($item->id_pedido)}}
                     </td>
                     <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;" class="text-center">
                         <ul style="padding: 0;margin:0">
@@ -123,9 +151,9 @@
                             @endforeach
                         </ul>
                     </td>
-                    {{--<td style="border-color: #9d9d9d" class="text-center mouse-hand" id="popover_pedidos">
-                        {{$item->descripcion}}
-                    </td>--}}
+                    <td style="border-color: #9d9d9d" class="text-center mouse-hand" id="popover_pedidos">
+                        {{getAgenciaCarga($item->id_agencia_carga)->nombre}}
+                    </td>
                     <td class="text-center" style="border-color: #9d9d9d">
                         @if($item->empaquetado == 0)
                             <button class="btn  btn-{!! $item->estado == 1 ? 'success' : 'warning' !!} btn-xs" type="button"
@@ -174,8 +202,9 @@
         <div class="alert alert-info text-center">No se han creado pedidos</div>
     @endif
 </div>
-<script>
-    $(function () {
-        $('[data-toggle="popover"]').popover()
-    });
-</script>
+<style>
+    div#table_content_pedidos_wrapper div.row:first-child{
+        display: none;
+    }
+</style>--}}
+

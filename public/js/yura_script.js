@@ -25,7 +25,6 @@ function add_campos(value, id_cliente, cant_especificaciones) {
         //cant_especificaciones : cant_especificaciones
     };
     $.get('/clientes/inputs_pedidos', datos, function (retorno) {
-
         $('#tbody_inputs_pedidos').append(retorno);
         if ($("#id_cliente_venta").length > 0) {
             cargar_espeicificaciones_cliente(false);
@@ -258,9 +257,8 @@ function cancelar_pedidos(id_pedido, id_cliente, estado, token) {
     };
     post_jquery('clientes/cancelar_pedido', datos, function () {
         cerrar_modals();
-        detalles_cliente(id_cliente);
-        buscar_listado_pedidos();
-        // modal_view('modal_status_pedidos', retorno, '<i class="fa fa-fw fa-plus"></i> Estado pedido', true, false, '50%');
+        //detalles_cliente(id_cliente);
+        listar_resumen_pedidos($("#fecha").val(),true);
     });
     $.LoadingOverlay('hide');
 }
@@ -273,17 +271,8 @@ function cargar_espeicificaciones_cliente(remove) {
         id_cliente: $("#id_cliente_venta").val()
     };
     get_jquery('pedidos/cargar_especificaciones', datos, function (response) {
+        console.log(response);
         remove ? add_campos(1, '',response['agencias_carga']) : '';
-        /*setTimeout(function () {
-            for(var x=0;x<cant_tr;x++){
-                $.each(response['especificaciones'], function (i, j) {
-                    $("#id_especificacion_" + (x+1)).append('<option value="' + j.id_cliente_pedido_especificacion + '">' + j.nombre + '</option>');
-                });
-                $.each(response['agencias_carga'], function (i, j) {
-                    $("#id_agencia_carga_" + (x+1)).append('<option value="' + j.id_agencia_carga + '">' + j.nombre + '</option>');
-                });
-            }
-        },300);*/
         $("#btn_add_campos").attr('disabled', false);
     });
     $.LoadingOverlay('hide');
@@ -754,4 +743,15 @@ function genera_codigo_barra(prefijo,codigo) {
     $.LoadingOverlay('hide');
 }
 
-
+function listar_resumen_pedidos(fecha,opciones) {
+    $.LoadingOverlay('show');
+    datos = {
+        fecha : fecha,
+        opciones : opciones
+    };
+    $.get('despachos/listar_resumen_pedidos', datos, function (retorno) {
+        $('#div_listado_blanco').html(retorno);
+    }).always(function () {
+        $.LoadingOverlay('hide');
+    });
+}

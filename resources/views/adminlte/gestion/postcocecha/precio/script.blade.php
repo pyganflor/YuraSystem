@@ -55,7 +55,7 @@
             id_especificacion : id_especificacion
         };
         $.get('{{url('precio/form_asignar_precio_especificacion_cliente')}}', datos, function (retorno) {
-            modal_form('modal_precio_especificaciones', retorno, '<i class="fa fa-user-plus" aria-hidden="true"></i> Asignar precio a la especificación', true, false, '{{isPC() ? '40%' : ''}}', function () {
+            modal_form('modal_precio_especificaciones', retorno, '<i class="fa fa-user-plus" aria-hidden="true"></i> Asignar precio a la especificación', true, false, '{{isPC() ? '70%' : ''}}', function () {
                 store_precio_especificacion_cliente(id_especificacion);
             });
         }).always(function () {

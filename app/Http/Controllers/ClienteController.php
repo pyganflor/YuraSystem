@@ -36,7 +36,6 @@ class ClienteController extends Controller
 
     public function buscar_clientes(Request $request)
     {
-
         $busqueda = $request->has('busqueda') ? espacios($request->busqueda) : '';
         $bus = str_replace(' ', '%%', $busqueda);
         $mi_busqueda_toupper = mb_strtoupper($bus);
@@ -56,7 +55,7 @@ class ClienteController extends Controller
                 ->orWhere('dc.direccion', 'like', '%' . $busqueda . '%');
         });
 
-        $listado = $listado->orderBy('dc.nombre', 'asc')->paginate(20);
+        $listado = $listado->orderBy('dc.nombre', 'asc')->paginate(2);
 
         $datos = [
             'listado' => $listado

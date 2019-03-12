@@ -13,6 +13,7 @@ use yura\Modelos\DetalleCliente;
 use yura\Modelos\ClientePedidoEspecificacion;
 use yura\Modelos\ClienteAgenciaCarga;
 use yura\Modelos\Envio;
+use Carbon\Carbon;
 
 class PedidoVentaController extends Controller
 {
@@ -24,8 +25,8 @@ class PedidoVentaController extends Controller
                 'submenu' => Submenu::Where('url', '=', substr($request->getRequestUri(), 1))->get()[0],
                 'text' => ['titulo' => 'Pedidos', 'subtitulo' => 'módulo de pedidos'],
                 'clientes' => DB::table('cliente as c')
-                    ->join('detalle_cliente as dt', 'c.id_cliente', '=', 'dt.id_cliente')
-                    ->where('dt.estado', 1)->get(),
+                    ->join('detalle_cliente as dc', 'c.id_cliente', '=', 'dc.id_cliente')
+                    ->where('dc.estado', 1)->get(),
                 'annos' => DB::table('pedido as p')->select(DB::raw('YEAR(p.fecha_pedido) as anno'))
                     ->distinct()->get(),
             ]);
@@ -42,19 +43,22 @@ class PedidoVentaController extends Controller
             ->where('p.estado',$request->estado != '' ? $request->estado : 1 )
             ->join('cliente_pedido_especificacion as cpe', 'p.id_cliente', '=', 'cpe.id_cliente')
             ->join('especificacion as esp', 'cpe.id_especificacion', '=', 'esp.id_especificacion')
-            ->join('detalle_cliente as dt', 'p.id_cliente', '=', 'dt.id_cliente')
-            ->select('p.*', 'dt.nombre', 'p.fecha_pedido','p.id_cliente','dt.id_cliente')->where('dt.estado', 1);
+            ->join('detalle_cliente as dc', 'p.id_cliente', '=', 'dc.id_cliente')
+            ->join('detalle_pedido as dp','p.id_pedido','dp.id_pedido')
+            ->select('p.*','dp.*' ,'dc.nombre', 'p.fecha_pedido','p.id_cliente','dc.id_cliente')->where('dc.estado', 1);
 
         if ($request->anno != '')
             $listado = $listado->where(DB::raw('YEAR(p.fecha_pedido)'), $busquedaAnno);
 
-        $ultimoPedido = null;
-        if ($busquedaHasta == "")
-            $ultimoPedido = Pedido::select('fecha_pedido')->orderBy('fecha_pedido', 'desc')->first();
-
-        !empty($ultimoPedido) ? $ultimoPedido = $ultimoPedido->fecha_pedido : $ultimoPedido = '';
-
-        $listado = $listado->whereBetween('p.fecha_pedido', [!empty($busquedaDesde) ? $busquedaDesde : '2000-01-01', !empty($busquedaHasta) ? $busquedaHasta : $ultimoPedido]);
+        if($busquedaDesde != '' && $request->hasta != ''){
+            $listado = $listado->whereBetween('p.fecha_pedido', [$busquedaDesde,$busquedaHasta]);
+            (Carbon::parse($busquedaHasta)->diffInDays($busquedaDesde)>0)
+                ? $a = true
+                : $a = false;
+        }else{
+            $listado = $listado->where('p.fecha_pedido',Carbon::now()->toDateString());
+            $a = false;
+        }
 
         if ($request->id_cliente != '')
             $listado = $listado->where('p.id_cliente', $busquedaCliente);
@@ -64,6 +68,7 @@ class PedidoVentaController extends Controller
         $datos = [
             'listado' => $listado,
             'idCliente' => $request->id_cliente,
+            'columnaFecha' => $a
         ];
 
         return view('adminlte.gestion.postcocecha.pedidos_ventas.partials.listado', $datos);
