@@ -7,7 +7,8 @@
             onmouseleave="$(this).css('background-color','')">
             <input type="hidden" id="id_detalle_pedido_{{$i+1}}" value="">
             <td style="border-color: #9d9d9d;padding: 0px;" id="td_input_cantidad_{{$especificaciones[$i]->id_especificacion}}">
-                <input type="number" id="cantidad_{{$i+1}}" name="cantidad_{{$i+1}}" min="1" class="form-control" onkeypress="return isNumber(event)">
+                <input type="number" id="cantidad_{{$i+1}}" name="cantidad_{{$i+1}}" min="1" class="form-control"
+                      onblur="calcular_precio()" onkeypress="return isNumber(event)">
             </td>
             <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;" class="text-center">
                 <ul style="padding: 0;margin:0">
@@ -81,9 +82,25 @@
                     @endforeach
                 </select>
             </td>
+            <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;" class="text-center">
+                <input type="number" id="precio_{{$i+1}}" name="precio_{{$i+1}}"
+                       value="{{$especificacion->precio}}" onblur="calcular_precio()" class="form-control">
+            </td>
             <input type="hidden" id="id_especificacion_{{$i+1}}" name="id_especificacion_{{$i+1}}"  value="{{$arr_data_cliente_especificacion[$i][0]->id_cliente_pedido_especificacion}}">
         </tr>
     @endfor
+    <tr>
+        <td style="border:none"></td>
+        <td style="border:none"></td>
+        <td style="border:none"></td>
+        <td style="border:none"></td>
+        <td style="border:none"></td>
+        <td style="border:none"></td>
+        <td style="border:none"></td>
+        <td style="border:none"></td>
+        <td><b>TOTAL:</b></td>
+        <td id="total_pedido" style="font-size: 14px"></td>
+    </tr>
 @else
     <tr id="">
         <td colspan="9">
@@ -93,3 +110,8 @@
         </td>
     </tr>
 @endif
+<script>
+  setTimeout(function () {
+
+  },1000)
+</script>

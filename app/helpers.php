@@ -1018,7 +1018,7 @@ function generaDigitoVerificador($cadena)
 {
     $arr_num = str_split($cadena);
     $cant_cadena = count($arr_num);
-    $total = 0;
+    $total = 0.00;
     if ($cant_cadena === 48) {
         $x = 2;
         for ($i = 47; $i >= 0; $i--) {

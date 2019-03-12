@@ -271,7 +271,6 @@ function cargar_espeicificaciones_cliente(remove) {
         id_cliente: $("#id_cliente_venta").val()
     };
     get_jquery('pedidos/cargar_especificaciones', datos, function (response) {
-        console.log(response);
         remove ? add_campos(1, '',response['agencias_carga']) : '';
         $("#btn_add_campos").attr('disabled', false);
     });
@@ -754,4 +753,17 @@ function listar_resumen_pedidos(fecha,opciones) {
     }).always(function () {
         $.LoadingOverlay('hide');
     });
+}
+
+function calcular_precio() {
+    cant_rows = $("#tbody_inputs_pedidos tr").length-(1);
+    total = 0.00;
+    for(i=1;i<=cant_rows; i++){
+        if($("#cantidad_"+i).val() != undefined) {
+            cantidad = $("#cantidad_" + i).val();
+            precio = $("#precio_" + i).val();
+            total += parseFloat(cantidad * precio);
+        }
+        $("td#total_pedido").html("$"+parseFloat(total));
+    }
 }
