@@ -38,7 +38,7 @@
         });
     });*/
 
-    listar_resumen_pedidos('{{date('Y-m-d')}}', true);
+    listar_resumen_pedidos($("#fecha_pedidos_search").val(), true);
 
     function ver_envio(id_pedido) {
         $.LoadingOverlay('show');
@@ -84,6 +84,7 @@
                         $("td#td_input_cantidad_" + retorno[i].id_especificacion + " input").val(retorno[i].cantidad_especificacion);
                         $("td#td_select_agencia_carga_" + retorno[i].id_especificacion + " select option[value='" + retorno[i].id_agencia_carga + "']").attr('selected', true);
                     }
+                    calcular_precio_pedido();
                 }).always(function () {
                     $.LoadingOverlay('hide');
                 });

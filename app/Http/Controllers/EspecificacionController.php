@@ -31,18 +31,17 @@ class EspecificacionController extends Controller
 
     public function listado_especificaciones(Request $request)
     {
+        //dd($request->all());
         $busqueda   = $request->has('busqueda') ? espacios($request->busqueda) : '';
         $id_cliente = $request->has('id_cliente') ? $request->id_cliente : '';
         $estado     = $request->has('estado') ? $request->estado : '';
         $tipo       = $request->has('tipo') ? $request->tipo : '';
-        $id_cliente = str_replace(' ', '%%', $id_cliente);
 
-        $listado = DB::table('especificacion as e')
-            ->join('especificacion_empaque as espemp','e.id_especificacion','espemp.id_especificacion');
+        $listado = DB::table('especificacion as e');
 
-        if($busqueda != '')
+        if($busqueda != '' && $busqueda != null)
             $listado->where('e.nombre', 'like', '%' . $busqueda . '%');
-        if($id_cliente != '')
+        if($id_cliente != '' && $id_cliente != 'undefined')
             $listado->join('cliente_pedido_especificacion as cpe','e.id_especificacion','cpe.id_especificacion')
                 ->join('detalle_cliente as dc','cpe.id_cliente','dc.id_cliente')
                 ->where([
@@ -51,11 +50,11 @@ class EspecificacionController extends Controller
                 ]);
 
         $listado = $listado->where([
-            ['e.tipo',$tipo != '' ? $tipo : 'N'],
+            ['e.tipo',($tipo != '' && $tipo != null) ? $tipo : 'N'],
             ['e.estado',$estado != '' ? $estado : 1]
         ])->orderBy('e.id_especificacion', 'desc')
-            ->select('e.nombre as nombre_especificacion','e.id_especificacion','e.descripcion','e.tipo','e.estado')
-            ->distinct()->paginate(20);
+            ->select('e.id_especificacion','e.tipo','e.estado')->distinct()->paginate(20);
+        //dd($listado);
         $datos = [
             'listado' => $listado,
             'variedades' => Variedad::select('nombre','id_variedad')->get(),
@@ -73,6 +72,7 @@ class EspecificacionController extends Controller
                 ['estado',1]
             ])->get()
         ];
+        //dd($datos);
         return view('adminlte.gestion.postcocecha.especificacion.partials.listado', $datos);
     }
 

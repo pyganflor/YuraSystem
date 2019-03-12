@@ -165,6 +165,7 @@ function store_pedido(id_cliente, pedido_fijo, csrf_token, vista, id_pedido) {
                     $("#cantidad_" + i).val(),
                     $("#id_especificacion_" + i).val(),
                     $("#id_agencia_carga_" + i).val(),
+                    $("#precio_" + i).val(),
                 ]);
             }
         }
@@ -233,7 +234,7 @@ function store_pedido(id_cliente, pedido_fijo, csrf_token, vista, id_pedido) {
 
             post_jquery('clientes/store_pedidos', datos, function () {
                 cerrar_modals();
-                buscar_listado_pedidos();
+                listar_resumen_pedidos($("#fecha_pedidos_search").val(),true);
                 if (vista != 'pedidos') {
                     detalles_cliente(id_cliente == '' ? id_cliente = $("#id_cliente_venta").val() : id_cliente);
                 }
@@ -271,7 +272,6 @@ function cargar_espeicificaciones_cliente(remove) {
         id_cliente: $("#id_cliente_venta").val()
     };
     get_jquery('pedidos/cargar_especificaciones', datos, function (response) {
-        console.log(response);
         remove ? add_campos(1, '',response['agencias_carga']) : '';
         $("#btn_add_campos").attr('disabled', false);
     });
@@ -754,4 +754,17 @@ function listar_resumen_pedidos(fecha,opciones) {
     }).always(function () {
         $.LoadingOverlay('hide');
     });
+}
+
+function calcular_precio_pedido() {
+    cant_rows = $("#tbody_inputs_pedidos tr").length-(1);
+    total = 0.00;
+    for(i=1;i<=cant_rows; i++){
+        if($("#cantidad_"+i).val() != undefined) {
+            cantidad = $("#cantidad_" + i).val();
+            precio = $("#precio_" + i).val();
+            total += parseFloat(cantidad * precio);
+        }
+    }
+    $("td#total_pedido").html("$"+parseFloat(total));
 }

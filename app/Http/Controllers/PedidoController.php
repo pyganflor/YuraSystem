@@ -130,7 +130,7 @@ class PedidoController extends Controller
                         $objDetallePedido->id_pedido = $model->id_pedido;
                         $objDetallePedido->id_agencia_carga = $item[2];
                         $objDetallePedido->cantidad = $item[0];
-
+                        $objDetallePedido->precio = $item[3];
                         if ($objDetallePedido->save()) {
                             $success = true;
                             $msg = '<div class="alert alert-success text-center">' .
@@ -195,7 +195,7 @@ class PedidoController extends Controller
            $arr_data_cliente_especificacion[] = ClientePedidoEspecificacion::where('cliente_pedido_especificacion.id_cliente_pedido_especificacion',$data->id_cliente_pedido_especificacion)
                ->join('especificacion_empaque as espemp','cliente_pedido_especificacion.id_especificacion','espemp.id_especificacion')
                ->join('detalle_especificacionempaque as detespemp','espemp.id_especificacion_empaque','detespemp.id_especificacion_empaque')
-               ->select('espemp.id_especificacion','detespemp.id_variedad','cliente_pedido_especificacion.id_cliente_pedido_especificacion')->get();
+               ->select('espemp.id_especificacion','detespemp.id_variedad','cliente_pedido_especificacion.id_cliente_pedido_especificacion','cliente_pedido_especificacion.precio')->get();
         }
 
         return view('adminlte.gestion.postcocecha.pedidos.forms.paritals.inputs_dinamicos',

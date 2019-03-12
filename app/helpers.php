@@ -964,6 +964,7 @@ function getDetalleEspecificacion($id_especificacion)
         foreach ($desp->detalles as $det)
             $arrData[] = [
                 'variedad' => $det->variedad->nombre,
+                'id_variedad' => $det->variedad->id_variedad,
                 'calibre' => $det->clasificacion_ramo->nombre,
                 'caja' => explode("|", $desp->empaque->nombre)[0],
                 'rxc' => $det->cantidad,
@@ -1017,7 +1018,7 @@ function generaDigitoVerificador($cadena)
 {
     $arr_num = str_split($cadena);
     $cant_cadena = count($arr_num);
-    $total = 0;
+    $total = 0.00;
     if ($cant_cadena === 48) {
         $x = 2;
         for ($i = 47; $i >= 0; $i--) {
