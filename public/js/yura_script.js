@@ -165,6 +165,7 @@ function store_pedido(id_cliente, pedido_fijo, csrf_token, vista, id_pedido) {
                     $("#cantidad_" + i).val(),
                     $("#id_especificacion_" + i).val(),
                     $("#id_agencia_carga_" + i).val(),
+                    $("#precio_" + i).val(),
                 ]);
             }
         }
@@ -233,7 +234,7 @@ function store_pedido(id_cliente, pedido_fijo, csrf_token, vista, id_pedido) {
 
             post_jquery('clientes/store_pedidos', datos, function () {
                 cerrar_modals();
-                buscar_listado_pedidos();
+                listar_resumen_pedidos($("#fecha_pedidos_search").val(),true);
                 if (vista != 'pedidos') {
                     detalles_cliente(id_cliente == '' ? id_cliente = $("#id_cliente_venta").val() : id_cliente);
                 }
@@ -764,6 +765,6 @@ function calcular_precio_pedido() {
             precio = $("#precio_" + i).val();
             total += parseFloat(cantidad * precio);
         }
-        $("td#total_pedido").html("$"+parseFloat(total));
     }
+    $("td#total_pedido").html("$"+parseFloat(total));
 }

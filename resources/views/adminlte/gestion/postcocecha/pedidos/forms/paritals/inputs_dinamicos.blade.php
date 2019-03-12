@@ -84,7 +84,7 @@
             </td>
             <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;" class="text-center">
                 <input type="number" id="precio_{{$i+1}}" name="precio_{{$i+1}}"
-                       value="{{$especificacion->precio}}" onblur="calcular_precio_pedido()" class="form-control">
+                       value="{{$especificacion->precio}}" onblur="calcular_precio_pedido()" class="form-control" required>
             </td>
             <input type="hidden" id="id_especificacion_{{$i+1}}" name="id_especificacion_{{$i+1}}"  value="{{$arr_data_cliente_especificacion[$i][0]->id_cliente_pedido_especificacion}}">
         </tr>
@@ -110,8 +110,3 @@
         </td>
     </tr>
 @endif
-<script>
-  setTimeout(function () {
-
-  },1000)
-</script>

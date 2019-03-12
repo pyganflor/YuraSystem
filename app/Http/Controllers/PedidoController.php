@@ -130,7 +130,7 @@ class PedidoController extends Controller
                         $objDetallePedido->id_pedido = $model->id_pedido;
                         $objDetallePedido->id_agencia_carga = $item[2];
                         $objDetallePedido->cantidad = $item[0];
-
+                        $objDetallePedido->precio = $item[3];
                         if ($objDetallePedido->save()) {
                             $success = true;
                             $msg = '<div class="alert alert-success text-center">' .
