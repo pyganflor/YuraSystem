@@ -38,7 +38,7 @@
         });
     });*/
 
-    listar_resumen_pedidos('{{date('Y-m-d')}}', true);
+    listar_resumen_pedidos($("#fecha_pedidos_search").val(), true);
 
     function ver_envio(id_pedido) {
         $.LoadingOverlay('show');

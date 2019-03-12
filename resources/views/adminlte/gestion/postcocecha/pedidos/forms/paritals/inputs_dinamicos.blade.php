@@ -15,7 +15,7 @@
                         <li style="list-style: none;{{count($esp) != 1 ? "border-bottom: 1px solid silver" : ""}}">
                             {{$e["variedad"]}}
                         </li>
-                        <input type="hidden" id="id_variedad_{{$i+1}}_{{$key+1}}" name="id_variedad" value="{{$especificacion->id_variedad}}">
+                        <input type="hidden" id="id_variedad_{{$i+1}}_{{$key+1}}" name="id_variedad" value="{{$e['id_variedad']}}">
                     @endforeach
                 </ul>
             </td>

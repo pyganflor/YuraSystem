@@ -964,6 +964,7 @@ function getDetalleEspecificacion($id_especificacion)
         foreach ($desp->detalles as $det)
             $arrData[] = [
                 'variedad' => $det->variedad->nombre,
+                'id_variedad' => $det->variedad->id_variedad,
                 'calibre' => $det->clasificacion_ramo->nombre,
                 'caja' => explode("|", $desp->empaque->nombre)[0],
                 'rxc' => $det->cantidad,
