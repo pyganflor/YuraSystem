@@ -1,3 +1,4 @@
+<div id="table_especificaciones">
 <table width="100%" class="table table-responsive table-bordered" style="border-color: #9d9d9d;margin-top:20px">
     <thead>
     <tr style="background-color: #dd4b39; color: white">
@@ -89,10 +90,6 @@
     </tr>
     </tbody>
 </table>
-
-
-
-<div id="table_especificaciones">
         <table width="100%" class="table table-responsive table-bordered" style="border-color: #9d9d9d"
                id="table_content_especificaciones">
             <thead>
@@ -212,7 +209,7 @@
                         {{--<td style="border-color: #9d9d9d;padding: 0px 0px; vertical-align: middle;" class="text-center">  {{$item->estado == 0 ? "Descativado": "Activo"}} </td>--}}
                         <td style="border-color: #9d9d9d;padding: 0px 0px; vertical-align: middle;" class="text-center">
                             @if($item->tipo == "N" && $item->estado == 1)
-                            <button type="button" class="btn btn-default btn-xs" title="Ver asignaciones" onclick="asignar_especificacicon('{{$item->id_especificacion}}',' {{$item->nombre_especificacion}}')">
+                            <button type="button" class="btn btn-default btn-xs" title="Ver asignaciones" onclick="asignar_especificacicon('{{$item->id_especificacion}}')">
                                 <i class="fa fa-user-circle-o" aria-hidden="true"></i>
                             </button>
                             @endif
