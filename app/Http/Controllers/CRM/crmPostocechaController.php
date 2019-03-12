@@ -844,4 +844,34 @@ class crmPostocechaController extends Controller
             'arreglo_variedades' => $arreglo_variedades
         ]);
     }
+
+    public function show_data_tallos(Request $request)
+    {
+        $labels = DB::table('clasificacion_verde as v')
+            ->select('v.fecha_ingreso as dia')->distinct()
+            ->where('v.fecha_ingreso', '>=', $request->desde)
+            ->where('v.fecha_ingreso', '<=', $request->hasta)
+            ->get();
+        $target = getVariedades();
+
+        $arreglo_variedades = [];
+        foreach ($target as $variedad) {
+            $cant_verde = 0;
+            $tallos = 0;
+            foreach ($labels as $dia) {
+                $verde = ClasificacionVerde::All()->where('fecha_ingreso', '=', $dia->dia)->first();
+                if ($verde != '') {
+                    $tallos += $verde->tallos_x_variedad($variedad->id_variedad);
+                    $cant_verde++;
+                }
+            }
+            array_push($arreglo_variedades, [
+                'variedad' => $variedad,
+                'tallos' => $tallos,
+            ]);
+        }
+        return view('adminlte.crm.postcocecha.partials.secciones.indicadores.modals.data_tallos', [
+            'arreglo_variedades' => $arreglo_variedades
+        ]);
+    }
 }
