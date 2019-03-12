@@ -3,7 +3,7 @@
     <ul class="nav nav-pills nav-justified">
         <li class="active"><a href="#cajas-chart" data-toggle="tab" aria-expanded="true">Cajas</a></li>
         <li class=""><a href="#tallos-chart" data-toggle="tab" aria-expanded="false">Tallos</a></li>
-        <li class=""><a href="#ramos-chart" data-toggle="tab" aria-expanded="false">Ramos</a></li>
+        {{--<li class=""><a href="#ramos-chart" data-toggle="tab" aria-expanded="false">Ramos</a></li>--}}
         <li class=""><a href="#desechos-chart" data-toggle="tab" aria-expanded="false">Desechos</a></li>
         <li class=""><a href="#rendimientos-chart" data-toggle="tab" aria-expanded="false">Rendimientos</a></li>
         <li class=""><a href="#calibres-chart" data-toggle="tab" aria-expanded="false">Calibres</a></li>
@@ -15,9 +15,9 @@
         <div class="chart tab-pane" id="tallos-chart" style="position: relative; height: 300px;">
             <canvas id="chart_acumulado_tallos" width="100%" height="40" style="margin-top: 5px"></canvas>
         </div>
-        <div class="chart tab-pane" id="ramos-chart" style="position: relative; height: 300px;">
+        {{--<div class="chart tab-pane" id="ramos-chart" style="position: relative; height: 300px;">
             <canvas id="chart_acumulado_ramos" width="100%" height="40" style="margin-top: 5px"></canvas>
-        </div>
+        </div>--}}
         <div class="chart tab-pane" id="desechos-chart" style="position: relative; height: 300px;">
             <canvas id="chart_acumulado_desechos" width="100%" height="40" style="margin-top: 5px"></canvas>
         </div>
@@ -32,7 +32,7 @@
 
 <script>
     construir_char_acumulado('Cajas', 'chart_acumulado_cajas');
-    construir_char_acumulado('Ramos', 'chart_acumulado_ramos');
+    //construir_char_acumulado('Ramos', 'chart_acumulado_ramos');
     construir_char_acumulado('Tallos', 'chart_acumulado_tallos');
     construir_char_acumulado('Desechos', 'chart_acumulado_desechos');
     construir_char_acumulado('Rendimientos', 'chart_acumulado_rendimientos');
@@ -61,11 +61,11 @@
             data_list.push("{{$caja}}");
             @endforeach
         }
-        else if (label == 'Ramos') {
-            @foreach($variedad['ramos'] as $ramos)
-            data_list.push("{{$ramos}}");
-            @endforeach
-        }
+        /*else if (label == 'Ramos') {
+            foreach($variedad['ramos'] as $ramos)
+            data_list.push("{$ramos}}");
+            endforeach
+        }*/
         else if (label == 'Tallos') {
             @foreach($variedad['tallos'] as $tallos)
             data_list.push("{{$tallos}}");
