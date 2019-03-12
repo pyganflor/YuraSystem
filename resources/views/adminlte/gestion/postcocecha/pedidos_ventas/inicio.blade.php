@@ -24,7 +24,7 @@
                         <td>
                             <div class="pull-right" style="padding: 0px">
                                 <div class="form-inline">
-                                    <div class="form-group">
+                                    {{--<div class="form-group">
                                         <label for="anno">Estado</label><br/>
                                         <select class="form-control" id="estado" name="estado">
                                             <option value=""> Seleccione</option>
@@ -57,49 +57,54 @@
                                     <div class="form-group">
                                         <label> Hasta</label><br/>
                                         <input type="date" class="form-control" id="hasta" name="hasta">
+                                    </div>--}}
+                                    <div class="form-group">
+                                        <label> Fecha pedidos</label><br/>
+                                        <input type="date" class="form-control" id="fecha" name="fecha"
+                                               value="{{\Carbon\Carbon::now()->toDateString()}}" onchange="listar_resumen_pedidos($(this).val(),true)">
                                     </div>
                                     <div class="form-group">
                                         <label style="visibility: hidden;"> .</label><br/>
                                         <!--<input type="text" class="form-control" placeholder="Búsqueda" id="busqueda_pedidos"
-                                             size="35"  name="busqueda_pedidos">-->
+                                             size="35"  name="busqueda_pedidos">
                                         <span class="">
-                                    <button class="btn btn-default" onclick="buscar_listado_pedidos()"
+                                            <button class="btn btn-default" onclick="buscar_listado_pedidos()"
                                             onmouseover="$('#title_btn_buscar_pedido').html('Buscar')"
                                             onmouseleave="$('#title_btn_buscar_pedido').html('')">
                                         <i class="fa fa-fw fa-search" style="color: #0c0c0c"></i> <em
                                                 id="title_btn_buscar_pedido"></em>
                                     </button>
-                                </span>
+                                        </span>-->
                                         <span class="dropdown">
-                                        <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
-                                            <i class="fa fa-plus" aria-hidden="true"></i> Añadir pedidos
-                                        <span class="caret"></span></button>
-                                        <ul class="dropdown-menu dropdown-menu-right">
-                                            <li onclick="add_pedido('','','pedidos')" class="btn btn-default text-left"
-                                                style="cursor:pointer;padding:5px 3px;width:100%;">
-                                                <em id="title_btn_add_pedido"> Pedido</em>
-                                            </li>
-                                            <li onclick="add_pedido('', $fijo = true,'pedidos')" class="btn btn-default text-left"
-                                                style="cursor:pointer;padding:5px 3px;width:100%;">
-                                                <em id="title_btn_add_pedido_fijo"> Pedido fijo</em>
-                                            </li>
-                                            <li onclick="add_orden_semanal()" class="btn btn-default text-left"
-                                                style="cursor:pointer;padding:5px 3px;width:100%;">
-                                                <em id="title_btn_add_orden_semanal"> Orden semanal</em>
-                                            </li>
-                                            <li onclick="add_pedido_personalizado()" class="btn btn-default text-left"
-                                                style="cursor:pointer;padding:5px 3px;width:100%;">
-                                                <em id="title_btn_add_pedido_personalizado"> Pedido personalizado</em>
-                                            </li>
-                                        </ul>
-                                    </span>
+                                            <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
+                                                <i class="fa fa-plus" aria-hidden="true"></i> Añadir pedidos
+                                            <span class="caret"></span></button>
+                                            <ul class="dropdown-menu dropdown-menu-right">
+                                                <li onclick="add_pedido('','','pedidos')" class="btn btn-default text-left"
+                                                    style="cursor:pointer;padding:5px 3px;width:100%;">
+                                                    <em id="title_btn_add_pedido"> Pedido</em>
+                                                </li>
+                                                <li onclick="add_pedido('', $fijo = true,'pedidos')" class="btn btn-default text-left"
+                                                    style="cursor:pointer;padding:5px 3px;width:100%;">
+                                                    <em id="title_btn_add_pedido_fijo"> Pedido fijo</em>
+                                                </li>
+                                                <li onclick="add_orden_semanal()" class="btn btn-default text-left"
+                                                    style="cursor:pointer;padding:5px 3px;width:100%;">
+                                                    <em id="title_btn_add_orden_semanal"> Orden semanal</em>
+                                                </li>
+                                                <li onclick="add_pedido_personalizado()" class="btn btn-default text-left"
+                                                    style="cursor:pointer;padding:5px 3px;width:100%;">
+                                                    <em id="title_btn_add_pedido_personalizado"> Pedido personalizado</em>
+                                                </li>
+                                            </ul>
+                                        </span>
                                     </div>
                                 </div>
                             </div>
                         </td>
                     </tr>
                 </table>
-                <div id="div_listado_pedidos"></div>
+                <div id="div_listado_blanco"></div>
             </div>
         </div>
     </section>

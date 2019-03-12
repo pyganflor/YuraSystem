@@ -22,32 +22,7 @@ class PrecioController extends Controller
             ]);
     }
 
-<<<<<<< HEAD
-    public function buscar(Request $request)
-    {
-        return view('adminlte.gestion.postcocecha.precio.partials.listado', [
-            'especificacion' => Especificacion::where([['tipo', 'N'], ['estado', 1]])->paginate(20),
-            'clientes' => Cliente::join('detalle_cliente as dc', 'cliente.id_cliente', 'dc.id_cliente')->where('dc.estado', 1)->orderBy('dc.nombre', 'asc')->paginate(20)
-        ]);
-    }
 
-    public function form_asignar_precio(Request $request)
-    {
-        return view('adminlte.gestion.postcocecha.precio.form.add_precio_especificacion', [
-            'clientes' => DetalleCliente::where('estado', 1)->select('nombre', 'id_cliente')->get(),
-            'cliente_pedido_especificacion' => ClientePedidoEspecificacion::where('id_especificacion', $request->id_especificacion)->get()
-        ]);
-    }
-
-    public function add_input(Request $request)
-    {
-        return DetalleCliente::where('estado', 1)->select('nombre', 'id_cliente')->get();
-    }
-
-    public function store_precio(Request $request)
-    {
-        dd($request->all());
-=======
     public function buscar_cliente(Request $request){
         return view('adminlte.gestion.postcocecha.precio.partials.listado_cliente',[
             'clientes' => Cliente::join('detalle_cliente as dc','cliente.id_cliente','dc.id_cliente')->where('dc.estado',1)->orderBy('dc.nombre','asc')->paginate(20)
@@ -63,14 +38,22 @@ class PrecioController extends Controller
     public function form_asignar_precio_especificacion_cliente(Request $request){
         return view('adminlte.gestion.postcocecha.precio.form.add_precio_especificacion_cliente',[
             'clientes' => DetalleCliente::where('estado',1)->select('nombre','id_cliente')->get(),
-            'cliente_pedido_especificacion' => ClientePedidoEspecificacion::where('id_especificacion',$request->id_especificacion)->get(),
+            'cliente_pedido_especificacion' => ClientePedidoEspecificacion::join('especificacion as esp','cliente_pedido_especificacion.id_especificacion','esp.id_especificacion')
+                ->where([
+                    ['id_especificacion',$request->id_especificacion],
+                    ['tipo','N']
+                ])->get(),
             'id_especificacion' => $request->id_especificacion
         ]);
     }
 
     public function form_asignar_precio_cliente_especificacion(Request $request){
         return view('adminlte.gestion.postcocecha.precio.form.add_precio_cliente_especificacion',[
-            'especificaciones_cliente' => ClientePedidoEspecificacion::where('id_cliente',$request->id_cliente)->get(),
+            'especificaciones_cliente' => ClientePedidoEspecificacion::join('especificacion as esp','cliente_pedido_especificacion.id_especificacion','esp.id_especificacion')
+                ->where([
+                    ['id_cliente',$request->id_cliente],
+                    ['tipo','N']
+                ])->get(),
         ]);
     }
 
@@ -189,6 +172,5 @@ class PrecioController extends Controller
             'mensaje' => $msg,
             'success' => $success
         ];
->>>>>>> dc9987e7fb2f6c2b68fa761c3d613f4ec22384ec
     }
 }

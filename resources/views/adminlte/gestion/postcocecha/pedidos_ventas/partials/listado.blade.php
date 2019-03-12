@@ -1,4 +1,4 @@
-<div id="table_pedidos" style="margin-top: 20px">
+{{--<div id="table_pedidos" style="margin-top: 20px">
     @if(sizeof($listado)>0)
         @if(!$columnaFecha)
             <table>
@@ -206,4 +206,5 @@
     div#table_content_pedidos_wrapper div.row:first-child{
         display: none;
     }
-</style>
+</style>--}}
+

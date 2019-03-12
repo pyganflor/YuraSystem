@@ -1,5 +1,5 @@
 <script>
-    buscar_listado_pedidos();
+    /*buscar_listado_pedidos();
 
     function buscar_listado_pedidos() {
         $.LoadingOverlay('show');
@@ -36,7 +36,9 @@
         }).always(function () {
             $.LoadingOverlay("hide");
         });
-    });
+    });*/
+
+    listar_resumen_pedidos($("#fecha").val(),true);
 
     function ver_envio(id_pedido) {
         $.LoadingOverlay('show');
@@ -60,15 +62,12 @@
     }
 
     function editar_pedido(id_cliente,id_pedido){
-    console.log("hola");
         add_pedido('','','pedidos',id_pedido);
-
         datos = {
             id_cliente : id_cliente,
+            id_pedido : id_pedido
         };
         setTimeout(function(){
-
-
         $.get('{{url('clientes/inputs_pedidos')}}', datos, function (retorno) {
             $("#tbody_inputs_pedidos").html(retorno);
             $('select#id_cliente_venta option[value='+id_cliente+']').attr('selected',true);
@@ -78,7 +77,6 @@
                 id_pedido : id_pedido,
             };
             $.get('{{url('pedidos/editar_pedido')}}', datos, function (retorno) {
-                console.log(retorno);
                 $("#fecha_de_entrega").val(retorno[0].fecha_pedido);
                 $("#descripcion").val(retorno[0].descripcion);
 

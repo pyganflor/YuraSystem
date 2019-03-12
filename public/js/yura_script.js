@@ -257,9 +257,8 @@ function cancelar_pedidos(id_pedido, id_cliente, estado, token) {
     };
     post_jquery('clientes/cancelar_pedido', datos, function () {
         cerrar_modals();
-        detalles_cliente(id_cliente);
-        buscar_listado_pedidos();
-        // modal_view('modal_status_pedidos', retorno, '<i class="fa fa-fw fa-plus"></i> Estado pedido', true, false, '50%');
+        //detalles_cliente(id_cliente);
+        listar_resumen_pedidos($("#fecha").val(),true);
     });
     $.LoadingOverlay('hide');
 }
@@ -744,4 +743,15 @@ function genera_codigo_barra(prefijo,codigo) {
     $.LoadingOverlay('hide');
 }
 
-
+function listar_resumen_pedidos(fecha,opciones) {
+    $.LoadingOverlay('show');
+    datos = {
+        fecha : fecha,
+        opciones : opciones
+    };
+    $.get('despachos/listar_resumen_pedidos', datos, function (retorno) {
+        $('#div_listado_blanco').html(retorno);
+    }).always(function () {
+        $.LoadingOverlay('hide');
+    });
+}

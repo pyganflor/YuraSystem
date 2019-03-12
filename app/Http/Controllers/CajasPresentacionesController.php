@@ -131,7 +131,7 @@ class CajasPresentacionesController extends Controller
         header("Content-Type: application/force-download");
         header("Content-Type: application/octet-stream");
         header("Content-Type: application/download");
-        header('Content-Disposition:inline;filename="codigos_DAE.xlsx"');
+        header('Content-Disposition:inline;filename="detalles_empaques.xlsx"');
         header("Content-Transfer-Encoding: binary");
         header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
         header("Cache-Control: must-revalidate, post-check=0, pre-check=0");

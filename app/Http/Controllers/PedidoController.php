@@ -172,12 +172,23 @@ class PedidoController extends Controller
 
     public function inputs_pedidos(Request $request)
     {
+        $tipo_especificacion = DetallePedido::where('id_pedido',$request->id_pedido)
+            ->join('cliente_pedido_especificacion as cpe','detalle_pedido.id_cliente_especificacion','cpe.id_cliente_pedido_especificacion')
+            ->join('especificacion as esp','cpe.id_especificacion','esp.id_especificacion')->select('tipo')->first();
+
         $data_especificaciones = DB::table('cliente_pedido_especificacion as cpe')
             ->join('especificacion as esp', 'cpe.id_especificacion', '=', 'esp.id_especificacion')
             ->where([
                 ['cpe.id_cliente', $request->id_cliente],
-                ['esp.tipo','N']
-            ])->get();
+                ['esp.tipo',isset($tipo_especificacion->tipo) ? $tipo_especificacion->tipo : "N"],
+                ['esp.estado',1]
+            ]);
+
+        if(isset($tipo_especificacion->tipo) && $tipo_especificacion->tipo == "O"){
+            $data_especificaciones = $data_especificaciones->join('detalle_pedido as dp','cpe.id_cliente_pedido_especificacion','dp.id_cliente_especificacion')
+                ->where('id_pedido',$request->id_pedido);
+        }
+        $data_especificaciones = $data_especificaciones->get();
 
         $arr_data_cliente_especificacion = [];
         foreach ($data_especificaciones as $data){

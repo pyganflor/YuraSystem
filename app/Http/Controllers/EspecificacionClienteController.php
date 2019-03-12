@@ -315,10 +315,16 @@ class EspecificacionClienteController extends Controller
 
     public function listar_especificaciones(Request $request){
 
-        $listado = DB::table('especificacion as e')->where('tipo','N')->orderBy('nombre', 'asc');
+        $listado = DB::table('especificacion as e')->where([
+            ['tipo','N'],
+            ['e.estado',1]
+        ])->orderBy('nombre', 'asc');
         if($request->listar_todas != true) {
             $listado->join('cliente_pedido_especificacion as cpe', 'e.id_especificacion', 'cpe.id_especificacion')
-                ->where('cpe.id_cliente', $request->id_cliente);
+                ->where([
+                    ['cpe.id_cliente', $request->id_cliente],
+                    ['e.estado',1]
+                ]);
         }
 
         $datos = [
