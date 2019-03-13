@@ -1,11 +1,11 @@
-<table class="table-striped table-responsive table-bordered" width="100%" style="border: 1px solid #9d9d9d; margin-top: 10px">
+<table class="table-striped table-responsive table-bordered" width="100%" style="border: 1px solid #9d9d9d">
     <tr>
         <th class="text-center" style="border-color: #9d9d9d; padding: 0" id="th_menu">
             <input type="number" id="num_marcaciones" name="num_marcaciones" onkeypress="return isNumber(event)" placeholder="Marcaciones"
                    min="1" class="text-center">
             <input type="number" id="num_colores" name="num_colores" onkeypress="return isNumber(event)" placeholder="Colores"
                    min="1" class="text-center">
-            <button type="button" class="btn btn-xs btn-primary" onclick="construir_tabla()">
+            <button type="button" class="btn btn-xs btn-primary" onclick="construir_tabla()" style="margin-top: 0">
                 <i class="fa fa-fw fa-check"></i> Siguiente
             </button>
         </th>
@@ -22,6 +22,8 @@
         </tr>
     </table>
 </div>
+
+<div id="div_especificaciones_orden_semanal" style="margin-top: 10px"></div>
 
 <div class="text-center" style="margin-top: 10px">
     <button type="button" class="btn btn-xs btn-success" onclick="store_orden_semanal()">
@@ -64,10 +66,11 @@
                     }
 
                     for (i = 1; i <= col; i++) {
+                        id_color = $('#titles_columnas_' + i).val();
                         colores.push({
-                            nombre: $('#titles_columnas_' + i).val(),
-                            fondo: $('#color_picker_bg_' + i).val(),
-                            texto: $('#color_picker_tx_' + i).val(),
+                            nombre: $('#nombre_color_' + id_color).val(),
+                            fondo: $('#fondo_color_' + id_color).val(),
+                            texto: $('#texto_color_' + id_color).val(),
                         });
                     }
 
@@ -95,6 +98,7 @@
                     $.post('{{url('pedidos/store_orden_semanal')}}', datos, function (retorno) {
                         if (retorno.success) {
                             alerta_accion(retorno.mensaje, function () {
+                                alert(5555);
                                 cerrar_modals();
                                 distribuir_orden_semanal(retorno.id_pedido);
                                 buscar_listado_pedidos();

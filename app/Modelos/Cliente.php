@@ -30,8 +30,8 @@ class Cliente extends Model
         return $this->hasMany('\yura\Modelos\ClienteAgenciaCarga', 'id_cliente');
     }
 
-    public function especificaciones()
+    public function cliente_pedido_especificaciones()
     {
-        return $this->hasMany('\yura\Modelos\Especificacion', 'id_cliente');
+        return $this->hasMany('\yura\Modelos\ClientePedidoEspecificacion', 'id_cliente');
     }
 }

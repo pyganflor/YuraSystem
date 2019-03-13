@@ -23,6 +23,8 @@ class OrdenSemanalController extends Controller
 {
     public function store_orden_semanal(Request $request)
     {
+        dd($request->all());
+
         $especificacion = new Especificacion();
         $descripcion = $request->cantidad_cajas . ' ' . explode('|', Empaque::find($request->id_empaque)->nombre)[0] . ' de ' .
             $request->cantidad_ramos . ' ramos ' . ClasificacionRamo::find($request->id_clasificacion_ramo)->nombre .
@@ -706,6 +708,14 @@ class OrdenSemanalController extends Controller
             'marcacion' => $marcacion->id_marcacion,
             'matriz' => $matriz,
         ];
+    }
+
+    public function listar_especificaciones_x_cliente(Request $request)
+    {
+        $cliente = Cliente::find($request->id_cliente);
+        return view('adminlte.gestion.postcocecha.pedidos_ventas.partials._especificacion_orden_semanal', [
+            'cliente' => $cliente,
+        ]);
     }
 
     /* ================ PEDIDOS PERSONALIZDOS ================*/

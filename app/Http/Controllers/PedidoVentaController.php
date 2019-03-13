@@ -4,6 +4,7 @@ namespace yura\Http\Controllers;
 
 use Illuminate\Http\Request;
 use yura\Modelos\Cliente;
+use yura\Modelos\Color;
 use yura\Modelos\DetalleEnvio;
 use yura\Modelos\Empaque;
 use yura\Modelos\Pedido;
@@ -40,23 +41,23 @@ class PedidoVentaController extends Controller
         $busquedaHasta = $request->has('hasta') ? $request->hasta : '';
 
         $listado = DB::table('pedido as p')
-            ->where('p.estado',$request->estado != '' ? $request->estado : 1 )
+            ->where('p.estado', $request->estado != '' ? $request->estado : 1)
             ->join('cliente_pedido_especificacion as cpe', 'p.id_cliente', '=', 'cpe.id_cliente')
             ->join('especificacion as esp', 'cpe.id_especificacion', '=', 'esp.id_especificacion')
             ->join('detalle_cliente as dc', 'p.id_cliente', '=', 'dc.id_cliente')
-            ->join('detalle_pedido as dp','p.id_pedido','dp.id_pedido')
-            ->select('p.*','dp.*' ,'dc.nombre', 'p.fecha_pedido','p.id_cliente','dc.id_cliente')->where('dc.estado', 1);
+            ->join('detalle_pedido as dp', 'p.id_pedido', 'dp.id_pedido')
+            ->select('p.*', 'dp.*', 'dc.nombre', 'p.fecha_pedido', 'p.id_cliente', 'dc.id_cliente')->where('dc.estado', 1);
 
         if ($request->anno != '')
             $listado = $listado->where(DB::raw('YEAR(p.fecha_pedido)'), $busquedaAnno);
 
-        if($busquedaDesde != '' && $request->hasta != ''){
-            $listado = $listado->whereBetween('p.fecha_pedido', [$busquedaDesde,$busquedaHasta]);
-            (Carbon::parse($busquedaHasta)->diffInDays($busquedaDesde)>0)
+        if ($busquedaDesde != '' && $request->hasta != '') {
+            $listado = $listado->whereBetween('p.fecha_pedido', [$busquedaDesde, $busquedaHasta]);
+            (Carbon::parse($busquedaHasta)->diffInDays($busquedaDesde) > 0)
                 ? $a = true
                 : $a = false;
-        }else{
-            $listado = $listado->where('p.fecha_pedido',Carbon::now()->toDateString());
+        } else {
+            $listado = $listado->where('p.fecha_pedido', Carbon::now()->toDateString());
             $a = false;
         }
 
@@ -92,18 +93,20 @@ class PedidoVentaController extends Controller
             'clientes' => Cliente::All()->where('estado', '=', 1),
             'empaques' => Empaque::All()->where('estado', '=', 1)->where('tipo', '=', 'C'),
             //'envolturas' => Empaque::All()->where('estado', '=', 1)->where('tipo', '=', 'E'),
-            'presentaciones' => Empaque::All()->where('estado', '=', 1)->where('tipo', '=', 'P')
+            'presentaciones' => Empaque::All()->where('estado', '=', 1)->where('tipo', '=', 'P'),
+            'colores' => Color::All()->where('estado', '=', 1),
         ]);
     }
 
-    public function editar_pedido(Request $request){
+    public function editar_pedido(Request $request)
+    {
 
         return Pedido::where([
-            ['pedido.id_pedido',$request->id_pedido],
-            ['dc.estado',1]
-        ])->join('detalle_pedido as dp','pedido.id_pedido','dp.id_pedido')
-            ->join('detalle_cliente as dc','pedido.id_cliente','dc.id_cliente')
-            ->join('cliente_pedido_especificacion as cpe','dp.id_cliente_especificacion','cpe.id_cliente_pedido_especificacion')
-            ->select('dp.cantidad as cantidad_especificacion','dp.id_agencia_carga','dc.id_cliente','pedido.fecha_pedido','pedido.descripcion','cpe.id_especificacion')->get();
+            ['pedido.id_pedido', $request->id_pedido],
+            ['dc.estado', 1]
+        ])->join('detalle_pedido as dp', 'pedido.id_pedido', 'dp.id_pedido')
+            ->join('detalle_cliente as dc', 'pedido.id_cliente', 'dc.id_cliente')
+            ->join('cliente_pedido_especificacion as cpe', 'dp.id_cliente_especificacion', 'cpe.id_cliente_pedido_especificacion')
+            ->select('dp.cantidad as cantidad_especificacion', 'dp.id_agencia_carga', 'dc.id_cliente', 'pedido.fecha_pedido', 'pedido.descripcion', 'cpe.id_especificacion')->get();
     }
 }
