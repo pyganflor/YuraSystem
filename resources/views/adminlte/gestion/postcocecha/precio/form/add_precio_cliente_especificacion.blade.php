@@ -98,7 +98,7 @@
                         </ul>
                     </td>
                     <td style="border-color: #9d9d9d;padding: 0px 0px; vertical-align: middle;" class="text-center" id="td_precio_{{$x+1}}">
-                        <input type="number" class="form-control" id="precio_{{$x+1}}" name="precio_{{$x+1}}" value="{{$item->precio}}" required>
+                        <input type="text" class="form-control" id="precio_{{$x+1}}" name="precio_{{$x+1}}" value="{{$item->precio}}" onkeypress="return barra_string(this,event)" required>
                         <input type="hidden" id="id_cliente_pedido_especificacion_{{$x+1}}" name="id_cliente_pedido_especificacion" value="{{$item->id_cliente_pedido_especificacion}}">
                     </td>
                 </tr>

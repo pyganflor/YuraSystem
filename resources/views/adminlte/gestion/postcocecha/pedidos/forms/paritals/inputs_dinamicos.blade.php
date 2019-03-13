@@ -82,9 +82,12 @@
                     @endforeach
                 </select>
             </td>
-            <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;" class="text-center">
-                <input type="number" id="precio_{{$i+1}}" name="precio_{{$i+1}}"
-                       value="{{$especificacion->precio}}" onblur="calcular_precio_pedido()" class="form-control" required>
+            <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle" class="text-center">
+                <select id="precio_{{$i+1}}" name="precio_{{$i+1}}" class="form-control">
+                    @foreach(getOptionsPrecios($especificacion->id_cliente,$especificaciones[$i]->id_especificacion) as $precio)
+                        <option value="{{$precio}}">{{$precio}}</option>
+                    @endforeach
+                </select>
             </td>
             <input type="hidden" id="id_especificacion_{{$i+1}}" name="id_especificacion_{{$i+1}}"  value="{{$arr_data_cliente_especificacion[$i][0]->id_cliente_pedido_especificacion}}">
         </tr>

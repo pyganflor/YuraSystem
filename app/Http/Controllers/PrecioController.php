@@ -40,7 +40,7 @@ class PrecioController extends Controller
             'clientes' => DetalleCliente::where('estado',1)->select('nombre','id_cliente')->get(),
             'cliente_pedido_especificacion' => ClientePedidoEspecificacion::join('especificacion as esp','cliente_pedido_especificacion.id_especificacion','esp.id_especificacion')
                 ->where([
-                    ['id_especificacion',$request->id_especificacion],
+                    ['cliente_pedido_especificacion.id_especificacion',$request->id_especificacion],
                     ['tipo','N']
                 ])->get(),
             'id_especificacion' => $request->id_especificacion

@@ -122,8 +122,9 @@
             </div>
             <div class="col-md-4">
                 <div class="form-group">
-                    <label for="identificacion">Precio $</label>
-                    <input type="number" id="precio_{{$key+1}}" name="precio" class="form-control" min="1" value="{{$cpe->precio}}" required>
+                    <label for="Precio">Precio $</label>
+                    <input type="text" id="precio_{{$key+1}}" name="precio" class="form-control" min="1"
+                           onkeypress="return barra_string(this,event)" value="{{$cpe->precio}}" required>
                 </div>
             </div>
         </div>
