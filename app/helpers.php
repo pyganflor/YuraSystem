@@ -1438,3 +1438,14 @@ function getCantidadCajas($idPedido){
         ->join('especificacion as esp','cpe.id_especificacion','esp.id_especificacion')
         ->join('especificacion_empaque as eemp','esp.id_especificacion','eemp.id_especificacion')->count();
 }
+
+function getOptionsPrecios($idCliente,$idEspecificacion){
+
+    $data =ClientePedidoEspecificacion::where([
+        ['id_cliente',$idCliente],
+        ['id_especificacion',$idEspecificacion]
+    ])->select('precio')->first();
+
+    return explode("|",$data->precio);
+
+}

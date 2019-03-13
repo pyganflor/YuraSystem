@@ -768,3 +768,16 @@ function calcular_precio_pedido() {
     }
     $("td#total_pedido").html("$"+parseFloat(total));
 }
+
+function barra_string(input,event){
+    value_input = $("#"+input.id).val();
+    tecla = event.which || event.keyCode;
+    if(tecla !== 46 && isNaN(String.fromCharCode(tecla)))
+        return false;
+    if(tecla === 46)
+        if(value_input.indexOf(".") > -1)
+            return false;
+    if(tecla === 32)
+        value_input += "|";
+    $("#"+input.id).val(value_input.replace(" ",""));
+}
