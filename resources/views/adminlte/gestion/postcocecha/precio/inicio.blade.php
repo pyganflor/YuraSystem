@@ -40,13 +40,13 @@
                     <li class="active tab-detalles">
                         <a href="#listado_clientes" data-toggle="tab">Clientes</a>
                     </li>
-                    <li class="tab-detalles">
+                    {{--<li class="tab-detalles">
                         <a href="#listado_especificaciones" data-toggle="tab">Especificaciones</a>
-                    </li>
+                    </li>--}}
                 </ul>
                 <div class="tab-content">
                     <div class="tab-pane active" id="listado_clientes"></div>
-                    <div class="tab-pane" id="listado_especificaciones"></div>
+                    {{--<div class="tab-pane" id="listado_especificaciones"></div>--}}
                 </div>
             </div>
         </div>

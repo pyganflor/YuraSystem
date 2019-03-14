@@ -23,8 +23,6 @@ class OrdenSemanalController extends Controller
 {
     public function store_orden_semanal(Request $request)
     {
-        dd($request->all());
-
         $especificacion = new Especificacion();
         $descripcion = $request->cantidad_cajas . ' ' . explode('|', Empaque::find($request->id_empaque)->nombre)[0] . ' de ' .
             $request->cantidad_ramos . ' ramos ' . ClasificacionRamo::find($request->id_clasificacion_ramo)->nombre .
@@ -105,7 +103,7 @@ class OrdenSemanalController extends Controller
                                         $marcacion = new Marcacion();
                                         $marcacion->nombre = $request->marcaciones[$i];
                                         $marcacion->cantidad = $request->matrix[$i][$cant_colores];
-                                        $marcacion->id_especificacion_empaque = $esp_emp->id_especificacion_empaque;
+                                        $marcacion->id_detalle_pedido = $det_pedido->id_detalle_pedido;
 
                                         if ($marcacion->save()) {
                                             $marcacion = Marcacion::All()->last();
@@ -246,7 +244,7 @@ class OrdenSemanalController extends Controller
     public function distribuir_orden_semanal(Request $request)
     {
         $pedido = Pedido::find($request->id_pedido);
-        $marcaciones = $pedido->detalles[0]->cliente_especificacion->especificacion->especificacionesEmpaque[0]->marcaciones;
+        $marcaciones = $pedido->detalles[0]->marcaciones;
         $ids_marcaciones = [];
         foreach ($marcaciones as $m) {
             array_push($ids_marcaciones, $m->id_marcacion);
@@ -631,7 +629,7 @@ class OrdenSemanalController extends Controller
     public function distribuir_marcaciones(Request $request)
     {
         $pedido = Pedido::find($request->id_pedido);
-        $marcaciones = $pedido->detalles[0]->cliente_especificacion->especificacion->especificacionesEmpaque[0]->marcaciones;
+        $marcaciones = $pedido->detalles[0]->marcaciones;
         $ids_marcaciones = [];
         foreach ($marcaciones as $m) {
             array_push($ids_marcaciones, $m->id_marcacion);

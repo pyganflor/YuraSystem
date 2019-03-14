@@ -41,11 +41,9 @@ class Pedido extends Model
         if ($this->tipo_especificacion == 'O') {
             $flag = true;
             foreach ($this->detalles as $detalle) {
-                foreach ($detalle->cliente_especificacion->especificacion->especificacionesEmpaque as $esp_emp) {
-                    foreach ($esp_emp->marcaciones as $marcacion) {
-                        if (count($marcacion->distribuciones) == 0)
-                            $flag = false;
-                    }
+                foreach ($detalle->marcaciones as $marcacion) {
+                    if (count($marcacion->distribuciones) == 0)
+                        $flag = false;
                 }
             }
             if ($flag)

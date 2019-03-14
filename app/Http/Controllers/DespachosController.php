@@ -54,6 +54,7 @@ class DespachosController extends Controller
                     DB::raw('sum(dee.cantidad * ee.cantidad * dp.cantidad) as cantidad'))
                 ->whereIn('dp.id_pedido', $ids_pedidos)
                 ->groupBy('dee.id_variedad', 'dee.id_clasificacion_ramo', 'dee.tallos_x_ramos', 'dee.longitud_ramo', 'dee.id_unidad_medida')
+                ->orderBy('dp.id_pedido', 'desc')
                 ->get();
 
             $variedades = DB::table('detalle_especificacionempaque as dee')
@@ -63,7 +64,6 @@ class DespachosController extends Controller
                 ->select('dee.id_variedad')->distinct()
                 ->whereIn('dp.id_pedido', $ids_pedidos)
                 ->get();
-
         }
 
         $datos = [

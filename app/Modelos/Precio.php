@@ -13,20 +13,20 @@ class Precio extends Model
 
     protected $fillable = [
         'id_precio',
-        'id_variedad',
+        'id_cliente',
         'fecha_registro',
         'estado',
         'cantidad',
-        'id_clasificacion_ramo',
+        'id_detalle_especificacionempaque',
     ];
 
-    public function variedad()
+    public function cliente()
     {
-        return $this->belongsTo('\yura\Modelos\Variedad', 'id_variedad');
+        return $this->belongsTo('\yura\Modelos\Cliente', 'id_cliente');
     }
 
-    public function clasificacion_ramo()
+    public function detalle_especificacion_empaque()
     {
-        return $this->belongsTo('\yura\Modelos\ClasificacionRamo', 'id_clasificacion_ramo');
+        return $this->belongsTo('\yura\Modelos\DetalleEspecificacionEmpaque', 'id_detalle_especificacion_empaque');
     }
 }

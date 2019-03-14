@@ -77,7 +77,7 @@
                                     {{$det_esp->variedad->siglas}}
                                     {{explode('|',$det_esp->clasificacion_ramo->nombre)[0]}}{{$det_esp->clasificacion_ramo->unidad_medida->siglas}}
                                 </td>
-                                @if($pos_esp_emp == 0 && $pos_det_esp == 0)
+                                @if($pos_det_esp == 0)
                                     <td class="text-center" style="border-color: #9d9d9d" rowspan="{{count($esp_emp->detalles)}}">
                                         {{explode('|',$esp_emp->empaque->nombre)[0]}}
                                     </td>
@@ -86,7 +86,7 @@
                                     {{--{{explode('|',$det_esp->empaque_e->nombre)[0]}}--}}
                                     {{explode('|',$det_esp->empaque_p->nombre)[0]}}
                                 </td>
-                                @if($pos_esp_emp == 0 && $pos_det_esp == 0)
+                                @if($pos_det_esp == 0)
                                     <td class="text-center" style="border-color: #9d9d9d" rowspan="{{count($esp_emp->detalles)}}">
                                         {{$esp_emp->cantidad * $det_ped->cantidad}}
                                         @php

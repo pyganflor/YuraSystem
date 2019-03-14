@@ -42,6 +42,7 @@ use yura\Modelos\Cliente;
 use yura\Modelos\ClientePedidoEspecificacion;
 use yura\Modelos\AgenciaCarga;
 use yura\Modelos\DetallePedido;
+use yura\Modelos\Precio;
 
 /*
  * -------- BITÁCORA DE LAS ACCIONES ECHAS POR EL USUARIO ------
@@ -1000,6 +1001,12 @@ function getCantidadDetallesByEspecificacion($id_especificacion)
     return $r;
 }
 
+function getPrecioByClienteDetEspEmp($cliente, $det_esp)
+{
+    $precio = Precio::All()->where('id_cliente', $cliente)->where('id_detalle_especificacionempaque', $det_esp)->first();
+    return $precio;
+}
+
 /* ============ Obtener los ramos sacados de apertura para los pedidos de un "fecha" ==============*/
 function getDestinadosToFrioByFecha($fecha, $variedad)
 {
@@ -1450,10 +1457,11 @@ function getCantidadCajas($idPedido)
         ->join('especificacion_empaque as eemp', 'esp.id_especificacion', 'eemp.id_especificacion')->count();
 }
 
-function getOptionsPrecios($idCliente,$idEspecificacion){
-    $data =ClientePedidoEspecificacion::where([
-        ['id_cliente',$idCliente],
-        ['id_especificacion',$idEspecificacion]
+function getOptionsPrecios($idCliente, $idEspecificacion)
+{
+    $data = ClientePedidoEspecificacion::where([
+        ['id_cliente', $idCliente],
+        ['id_especificacion', $idEspecificacion]
     ])->select('precio')->first();
-    return explode("|",$data->precio);
+    return explode("|", $data->precio);
 }

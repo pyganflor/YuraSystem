@@ -190,14 +190,13 @@ class PedidoController extends Controller
         }
         $data_especificaciones = $data_especificaciones->get();
 
-        $arr_data_cliente_especificacion = [];
+        /*$arr_data_cliente_especificacion = [];
         foreach ($data_especificaciones as $data){
            $arr_data_cliente_especificacion[] = ClientePedidoEspecificacion::where('cliente_pedido_especificacion.id_cliente_pedido_especificacion',$data->id_cliente_pedido_especificacion)
                ->join('especificacion_empaque as espemp','cliente_pedido_especificacion.id_especificacion','espemp.id_especificacion')
                ->join('detalle_especificacionempaque as detespemp','espemp.id_especificacion_empaque','detespemp.id_especificacion_empaque')
-               ->select('espemp.id_especificacion','detespemp.id_variedad','cliente_pedido_especificacion.id_cliente','cliente_pedido_especificacion.id_cliente_pedido_especificacion','cliente_pedido_especificacion.precio')->get();
-        }
-
+               ->select('espemp.id_especificacion','detespemp.id_variedad','cliente_pedido_especificacion.id_cliente','cliente_pedido_especificacion.id_cliente_pedido_especificacion')->get();
+        }*/
         return view('adminlte.gestion.postcocecha.pedidos.forms.paritals.inputs_dinamicos',
             [
                 'especificaciones' => $data_especificaciones,
@@ -208,8 +207,8 @@ class PedidoController extends Controller
                         ['cac.estado', 1]
                     ])->get(),
                 //'cantTr' => $request->cant_tr + 1,
-               'arr_data_cliente_especificacion' => $arr_data_cliente_especificacion,
-                'cant_especificaciones' => count($data_especificaciones) > 0 ? $data_especificaciones : []
+               //'arr_data_cliente_especificacion' => $arr_data_cliente_especificacion,
+                //'cant_especificaciones' => count($data_especificaciones) > 0 ? $data_especificaciones : []
             ]);
     }
 

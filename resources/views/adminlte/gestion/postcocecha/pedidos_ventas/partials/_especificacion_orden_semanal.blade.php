@@ -1,7 +1,7 @@
 @if($cliente != '')
     @foreach($cliente->cliente_pedido_especificaciones as $cli_ped_esp)
         @if($cli_ped_esp->especificacion->tipo == 'N')
-            <div class="well sombra_estandar">
+            <div class="well sombra_estandar" id="well_{{$cli_ped_esp->id_especificacion}}">
                 <table width="100%" class="table-responsive table-bordered table-striped"
                        style="font-size: 0.9em; margin-top: 10px; border: 3px solid #9d9d9d"
                        id="table_especificacion_orden_semanal_{{$cli_ped_esp->id_especificacion}}">
@@ -37,6 +37,17 @@
                         <th class="text-center" style="border-color: #9d9d9d" width="85px">
                             PRECIO
                         </th>
+                        <th class="text-center" style="border-color: #9d9d9d" width="65px">
+                            MARCACIONES
+                        </th>
+                        <th class="text-center" style="border-color: #9d9d9d" width="65px">
+                            COLORACIONES
+                        </th>
+                        <th class="text-center" style="border-color: #9d9d9d">
+                            <button type="button" class="btn btn-xs btn-danger" onclick="ocultar_well('{{$cli_ped_esp->id_especificacion}}')">
+                                <i class="fa fa-fw fa-times"></i>
+                            </button>
+                        </th>
                     </tr>
                     </thead>
                     @foreach($cli_ped_esp->especificacion->especificacionesEmpaque as $pos_esp_emp => $esp_emp)
@@ -55,12 +66,14 @@
                                 <td class="text-center" style="border-color: #9d9d9d">
                                     {{$det_esp_emp->clasificacion_ramo->nombre}}{{$det_esp_emp->clasificacion_ramo->unidad_medida->siglas}}
                                 </td>
-                                <td class="text-center" style="border-color: #9d9d9d">
-                                    {{explode('|',$esp_emp->empaque->nombre)[0]}}
-                                </td>
+                                @if($pos_det_esp_emp == 0)
+                                    <td class="text-center" style="border-color: #9d9d9d" rowspan="{{count($esp_emp->detalles)}}">
+                                        {{explode('|',$esp_emp->empaque->nombre)[0]}}
+                                    </td>
+                                @endif
                                 <td class="text-center" style="border-color: #9d9d9d">
                                     {{$det_esp_emp->cantidad}}
-                                    <input type="hidden" id="cantidad_ramos_esp_{{$cli_ped_esp->id_especificacion}}"
+                                    <input type="hidden" id="cantidad_ramos_esp_{{$esp_emp->id_especificacion_emp}}"
                                            value="{{$det_esp_emp->cantidad}}">
                                 </td>
                                 <td class="text-center" style="border-color: #9d9d9d">
@@ -89,41 +102,44 @@
                                         </select>
                                     </td>
                                 @endif
+                                @if($pos_det_esp_emp == 0)
+                                    <td class="text-center" style="border-color: #9d9d9d" rowspan="{{count($esp_emp->detalles)}}">
+                                        <input type="number" id="num_marcaciones_{{$esp_emp->id_especificacion_empaque}}"
+                                               name="num_marcaciones_{{$esp_emp->id_especificacion_empaque}}" onkeypress="return isNumber(event)"
+                                               placeholder="Marcaciones" min="1" class="text-center form-control">
+                                    </td>
+                                    <td class="text-center" style="border-color: #9d9d9d" rowspan="{{count($esp_emp->detalles)}}">
+                                        <input type="number" id="num_colores_{{$esp_emp->id_especificacion_empaque}}"
+                                               name="num_colores_{{$esp_emp->id_especificacion_empaque}}" onkeypress="return isNumber(event)"
+                                               placeholder="Colores"
+                                               min="1" class="text-center form-control">
+                                    </td>
+                                    <td class="text-center" style="border-color: #9d9d9d" rowspan="{{count($esp_emp->detalles)}}">
+                                        <button type="button" class="btn btn-xs btn-primary"
+                                                onclick="construir_tabla_especificacion_orden_semanal('{{$esp_emp->id_especificacion_empaque}}')"
+                                                style="margin-top: 0">
+                                            <i class="fa fa-fw fa-check"></i> Tabla
+                                        </button>
+                                    </td>
+                                @endif
                             </tr>
                         @endforeach
                     @endforeach
                 </table>
 
-                <table class="table-striped table-responsive table-bordered" width="100%" style="border: 1px solid #9d9d9d">
-                    <tr>
-                        <th class="text-center" style="border-color: #9d9d9d; padding: 0" id="th_menu">
-                            <input type="number" id="num_marcaciones_{{$cli_ped_esp->id_especificacion}}"
-                                   name="num_marcaciones_{{$cli_ped_esp->id_especificacion}}" onkeypress="return isNumber(event)"
-                                   placeholder="Marcaciones" min="1" class="text-center">
-                            <input type="number" id="num_colores_{{$cli_ped_esp->id_especificacion}}"
-                                   name="num_colores_{{$cli_ped_esp->id_especificacion}}" onkeypress="return isNumber(event)"
-                                   placeholder="Colores"
-                                   min="1" class="text-center">
-                            <button type="button" class="btn btn-xs btn-primary"
-                                    onclick="construir_tabla_especificacion_orden_semanal('{{$cli_ped_esp->id_especificacion}}')"
-                                    style="margin-top: 0">
-                                <i class="fa fa-fw fa-check"></i> Siguiente
-                            </button>
-                        </th>
-                    </tr>
-                </table>
-
-                <div style="width: 100%; overflow-x: scroll; display: none"
-                     id="div_tabla_distribucion_pedido_{{$cli_ped_esp->id_especificacion}}">
-                    <table class="table-striped table-bordered" width="100%" style="border: 2px solid #9d9d9d; margin-top: 10px">
-                        <tr>
-                            <td style="border-color: #9d9d9d; padding: 0;" width="100%">
-                                <table class="table-striped table-responsive table-bordered" width="100%" style="border: 1px solid #9d9d9d"
-                                       id="table_marcaciones_x_colores_{{$cli_ped_esp->id_especificacion}}"></table>
-                            </td>
-                        </tr>
-                    </table>
-                </div>
+                @foreach($cli_ped_esp->especificacion->especificacionesEmpaque as $pos_esp_emp => $esp_emp)
+                    <div style="width: 100%; overflow-x: scroll; display: none"
+                         id="div_tabla_distribucion_pedido_{{$esp_emp->id_especificacion_empaque}}">
+                        <table class="table-striped table-bordered" width="100%" style="border: 2px solid #9d9d9d; margin-top: 10px">
+                            <tr>
+                                <td style="border-color: #9d9d9d; padding: 0;" width="100%">
+                                    <table class="table-striped table-responsive table-bordered" width="100%" style="border: 1px solid #9d9d9d"
+                                           id="table_marcaciones_x_colores_{{$esp_emp->id_especificacion_empaque}}"></table>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                @endforeach
             </div>
         @endif
     @endforeach
@@ -133,6 +149,10 @@
     function cambiar_input_precio(id_esp) {
         $('#td_precio_esp_' + id_esp).html('<input type="number" id="precio_esp_' + id_esp + '" ' +
             'name="precio_esp_' + id_esp + '" class="form-control">');
+    }
+
+    function ocultar_well(id_esp) {
+        $('#well_' + id_esp).hide();
     }
 
     function construir_tabla_especificacion_orden_semanal(id_esp) {

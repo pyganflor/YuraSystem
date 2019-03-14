@@ -26,7 +26,7 @@
     @endif
     <div>
         <div id="table_recepciones">
-            <table width="100%" class="table table-responsive table-bordered" style="font-size: 0.8em; border-color: white"
+            <table width="100%" class="table-responsive table-bordered" style="font-size: 0.8em; border-color: white"
                    id="table_content_recepciones">
                 <thead>
                 <tr style="border: none; border-color: white">
@@ -153,10 +153,9 @@
             });
         }
 
-        function cambiar_input(input){
-            html = "<input class='form-control' type='text' id='"+$('#'+input.id).attr('id')+"' name='"+$('#'+input.id).attr('name')+"' onkeypress='return barra_string(this,event,false)' required>";
-            $("#"+input.id).remove();
-            $("td#td_precio_"+input.id.split("_")[1]).html(html);
+        function cambiar_input_precio(id_det) {
+            $('#td_precio_' + id_det).html('<input type="number" id="precio_' + id_det + '" ' +
+                'name="precio_' + id_det + '" class="text-center" style="background-color: beige; width: 100%">');
         }
 
     </script>
