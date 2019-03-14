@@ -6,7 +6,7 @@ function add_pedido(id_cliente, pedido_fijo, vista,id_pedido) {
         id_pedido   : id_pedido
     };
     get_jquery('/clientes/add_pedido', datos, function (retorno) {
-        modal_view('modal_add_pedido', retorno, '<i class="fa fa-fw fa-plus"></i> Agregar pedido', true, false, '70%');
+        modal_view('modal_add_pedido', retorno, '<i class="fa fa-fw fa-plus"></i> Agregar pedido', true, false, '90%');
         id_cliente !== '' ? add_campos(1, id_cliente) : '';
         pedido_fijo != '' ? div_opcion_pedido_fijo(1) : '';
         setTimeout(function () {
@@ -756,28 +756,58 @@ function listar_resumen_pedidos(fecha,opciones) {
     });
 }
 
-function calcular_precio_pedido() {
+function calcular_precio_pedido(ramos, calibre) {
     cant_rows = $("#tbody_inputs_pedidos tr").length-(1);
     total = 0.00;
-    for(i=1;i<=cant_rows; i++){
-        if($("#cantidad_"+i).val() != undefined) {
-            cantidad = $("#cantidad_" + i).val();
-            precio = $("#precio_" + i).val();
-            total += parseFloat(cantidad * precio);
+    total_ramos = 0.00;
+    $.LoadingOverlay('show');
+    $.get('pedidos/datos_pedido', {}, function (retorno) {
+
+        for(i=1;i<=cant_rows; i++){
+            if($("#cantidad_"+i).val() != undefined) {
+                cantidad = $("#cantidad_" + i).val();
+
+               cant_variedad = $("#td_variedad_"+i+"  ul li").length;
+               total_ramos_especificacion = 0.00;
+               for(x=1;x<=cant_variedad;x++){
+                   //MULTIPLICAR RAMOS POR CAJA
+                   ramo_x_caja_x_variedad = $("#td_ramos_x_caja_"+i+" ul li#li_rxc_"+x).html();
+                   total_ramos_especificacion += (parseFloat(ramo_x_caja_x_variedad)*cantidad);
+               }
+               factor = calibre/retorno.estandar;
+               estandar = factor/retorno.ramos_x_caja;
+
+
+
+
+
+               precio = $("#precio_" + i).val();
+               total += parseFloat(cantidad * precio * total_ramos_especificacion);
+               console.log(total_ramos_especificacion);
+               total_ramos += total_ramos_especificacion;
+               $("#td_total_ramos_especificacion"+i).html(parseFloat(total_ramos_especificacion).toFixed(2));
+           }
         }
-    }
-    $("td#total_pedido").html("$"+parseFloat(total));
+
+        $("td#total_pedido").html("$"+parseFloat(total).toFixed(2));
+        $("td#total_ramos").html(total_ramos)
+    }).always(function () {
+        $.LoadingOverlay('hide');
+    });
 }
 
-function barra_string(input,event){
+function barra_string(input,event,barra=true){
     value_input = $("#"+input.id).val();
     tecla = event.which || event.keyCode;
     if(tecla !== 46 && isNaN(String.fromCharCode(tecla)))
         return false;
     if(tecla === 46)
-        if(value_input.indexOf(".") > -1)
+        if(value_input.indexOf(".") > -1 && value_input.indexOf("|") == -1)
             return false;
-    if(tecla === 32)
-        value_input += "|";
+    if(barra)
+        if(tecla === 32)
+            value_input += "|";
+
     $("#"+input.id).val(value_input.replace(" ",""));
 }
+

@@ -1440,12 +1440,9 @@ function getCantidadCajas($idPedido){
 }
 
 function getOptionsPrecios($idCliente,$idEspecificacion){
-
     $data =ClientePedidoEspecificacion::where([
         ['id_cliente',$idCliente],
         ['id_especificacion',$idEspecificacion]
     ])->select('precio')->first();
-
     return explode("|",$data->precio);
-
 }

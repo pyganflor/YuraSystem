@@ -63,23 +63,30 @@
                 </tr>
                 <tr style="background-color: #dd4b39; color: white">
                     <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
+                        style="border-color: #9d9d9d;width: 80px">
+                        PIEZAS
+                    </th>
+                    <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
                         style="border-color: #9d9d9d;width: 50px">
-                        CANTIDAD
+                        CAJAS FULL
                     </th>
                     <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
                         VARIEDAD
                     </th>
                     <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
-                        CALIBRE
+                        PESO
                     </th>
                     <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
                         CAJA
                     </th>
                     <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
+                        PRESENTACIÓN
+                    </th>
+                    <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
                         RAMO X CAJA
                     </th>
                     <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
-                        PRESENTACIÓN
+                        TOTAL RAMOS
                     </th>
                     <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
                         TALLOS X RAMO
@@ -88,12 +95,16 @@
                         LONGITUD
                     </th>
                     <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
+                        style="border-color: #9d9d9d;width:100px">
+                        PRECIO
+                    </th>
+                    <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
                         style="border-color: #9d9d9d">
                         AGENCIA DE CARGA
                     </th>
                     <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
-                        style="border-color: #9d9d9d;width:100px">
-                        PRECIO
+                        style="border-color: #9d9d9d;width:100px;width: 20px;">
+                        OPCIONES
                     </th>
                 </tr>
                 </thead>
@@ -140,6 +151,12 @@
             }).always(function () {
                 $("#div_content_saldos").LoadingOverlay('hide');
             });
+        }
+
+        function cambiar_input(input){
+            html = "<input class='form-control' type='text' id='"+$('#'+input.id).attr('id')+"' name='"+$('#'+input.id).attr('name')+"' onkeypress='return barra_string(this,event,false)' required>";
+            $("#"+input.id).remove();
+            $("td#td_precio_"+input.id.split("_")[1]).html(html);
         }
 
     </script>

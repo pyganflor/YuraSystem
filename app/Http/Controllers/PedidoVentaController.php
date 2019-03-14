@@ -106,4 +106,5 @@ class PedidoVentaController extends Controller
             ->join('cliente_pedido_especificacion as cpe','dp.id_cliente_especificacion','cpe.id_cliente_pedido_especificacion')
             ->select('dp.cantidad as cantidad_especificacion','dp.id_agencia_carga','dc.id_cliente','pedido.fecha_pedido','pedido.descripcion','cpe.id_especificacion')->get();
     }
+
 }
