@@ -63,11 +63,11 @@
             @endphp
             @foreach($listado as $pedido)
                 @foreach(getPedido($pedido->id_pedido)->detalles as $pos_det_ped => $det_ped)
-                    @foreach($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $pos_esp => $esp_emp)
+                    @foreach($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $pos_esp_emp => $esp_emp)
                         @foreach($esp_emp->detalles as $pos_det_esp => $det_esp)
                             <tr style="background-color: {{!in_array($det_esp->id_variedad,explode('|',$pedido->variedad)) ? '#b9ffb4' : ''}}; border-bottom: 2px solid #9d9d9d"
                                 title="{{!in_array($det_esp->id_variedad,explode('|',$pedido->variedad)) ? 'Confirmado' : 'Por confirmar'}}">
-                                @if($pos_det_esp == 0 && $pos_esp == 0 && $pos_det_ped == 0)
+                                @if($pos_det_esp == 0 && $pos_esp_emp == 0 && $pos_det_ped == 0)
                                     <td class="text-center" style="border-color: #9d9d9d"
                                         rowspan="{{getCantidadDetallesEspecificacionByPedido($pedido->id_pedido)}}">
                                         {{getCliente($pedido->id_cliente)->detalle()->nombre}}
@@ -77,9 +77,9 @@
                                     {{$det_esp->variedad->siglas}}
                                     {{explode('|',$det_esp->clasificacion_ramo->nombre)[0]}}{{$det_esp->clasificacion_ramo->unidad_medida->siglas}}
                                 </td>
-                                <td class="text-center" style="border-color: #9d9d9d">
-                                    {{explode('|',$esp_emp->empaque->nombre)[0]}}
-                                </td>
+                                    <td class="text-center" style="border-color: #9d9d9d">
+                                        {{explode('|',$esp_emp->empaque->nombre)[0]}}
+                                    </td>
                                 <td class="text-center" style="border-color: #9d9d9d">
                                     {{--{{explode('|',$det_esp->empaque_e->nombre)[0]}}--}}
                                     {{explode('|',$det_esp->empaque_p->nombre)[0]}}
@@ -114,7 +114,7 @@
                                 <td class="text-center" style="border-color: #9d9d9d">
                                     {{$det_esp->cantidad}}
                                 </td>
-                                @if($opciones && $pos_det_esp == 0 && $pos_esp == 0 && $pos_det_ped == 0)
+                                @if($opciones && $pos_det_esp == 0 && $pos_esp_emp == 0 && $pos_det_ped == 0)
                                     <td style="border-color: #9d9d9d" class="text-center "
                                         rowspan="{{getCantidadDetallesEspecificacionByPedido($pedido->id_pedido)}}">
                                         {{getAgenciaCarga($det_ped->id_agencia_carga)->nombre}}
