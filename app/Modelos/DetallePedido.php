@@ -34,4 +34,9 @@ class DetallePedido extends Model
     {
         return $this->belongsTo('yura\Modelos\Pedido', 'id_pedido');
     }
+
+    public function marcaciones()
+    {
+        return $this->hasMany('\yura\Modelos\Marcacion', 'id_detalle_pedido');
+    }
 }

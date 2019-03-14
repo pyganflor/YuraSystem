@@ -21,4 +21,14 @@
             modal_view('modal_view-show_data_cajas', retorno, '<i class="fa fa-fw fa-gift"></i> Reporte de Cajas', true, false, '{{isPC() ? '60%' : ''}}');
         });
     }
+
+    function show_data_tallos(desde, hasta) {
+        datos = {
+            desde: desde,
+            hasta: hasta
+        };
+        get_jquery('{{url('crm_postcosecha/show_data_tallos')}}', datos, function (retorno) {
+            modal_view('modal_view-show_data_tallos', retorno, '<i class="fa fa-fw fa-gift"></i> Reporte de Tallos', true, false, '{{isPC() ? '60%' : ''}}');
+        });
+    }
 </script>

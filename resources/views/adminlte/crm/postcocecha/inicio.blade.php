@@ -56,7 +56,7 @@
                             <div class="icon">
                                 <i class="ion ion-leaf"></i>
                             </div>
-                            <a href="javascript:void(0)" class="small-box-footer">
+                            <a href="javascript:void(0)" class="small-box-footer" onclick="show_data_tallos('{{$desde}}', '{{$hasta}}')">
                                 Cosecha tallos <i class="fa fa-arrow-circle-right"></i>
                             </a>
                         </div>

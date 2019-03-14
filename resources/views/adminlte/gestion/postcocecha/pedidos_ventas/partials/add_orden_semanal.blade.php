@@ -12,7 +12,7 @@
             </th>
             <td class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
                 <select name="id_cliente_orden_semanal" id="id_cliente_orden_semanal" required style="width: 100%" class="form-control"
-                        onchange="buscar_agencia_carga()">
+                        onchange="buscar_agencia_carga(); listar_especificaciones_x_cliente()">
                     <option value="">Seleccione...</option>
                     @foreach($clientes as $item)
                         <option value="{{$item->id_cliente}}">
@@ -29,49 +29,56 @@
             </td>
         </tr>
         <tr>
-            <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef" colspan="6">
-                <table class="table-striped table-bordered table-responsive" width="100%">
+            <td colspan="6">
+                <table class="table-responsive table-bordered" style="width: 100%; border: 1px solid #9d9d9d; font-size: 0.9em">
                     <tr>
-                        <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
-                            Cantidad
+                        <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef" width="75px">
+                            CANTIDAD
                         </th>
-                        <td class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef" width="40%">
+                        <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
+                            VARIEDAD
+                        </th>
+                        <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef" width="150px">
+                            CALIBRE
+                        </th>
+                        <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
+                            CAJA
+                        </th>
+                        <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef" width="75px">
+                            RAMOS X CAJA
+                        </th>
+                        <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
+                            PRESENTACIÓN
+                        </th>
+                        <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef" width="75px">
+                            TALLOS X RAMO
+                        </th>
+                        <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef" width="75px">
+                            LONGITUD
+                        </th>
+                        <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
+                            U. MEDIDA
+                        </th>
+                        <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef" width="85px">
+                            PRECIO
+                        </th>
+                    </tr>
+                    <tr>
+                        <td class="text-center">
                             <input type="number" id="cantidad_cajas" name="cantidad_cajas" class="form-control" required
                                    onkeypress="return isNumber(event)">
                         </td>
-                        <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
-                            Pieza
-                        </th>
-                        <td class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef" width="40%">
-                            <select name="id_empaque" id="id_empaque" class="form-control" required>
-                                <option value="">Seleccione...</option>
-                                @foreach($empaques as $item)
-                                    <option value="{{$item->id_empaque}}">
-                                        {{explode('|',$item->nombre)[0]}}
+                        <td class="text-center">
+                            <select name="id_variedad" id="id_variedad" class="form-control" required>
+                                @foreach(getVariedades() as $item)
+                                    <option value="{{$item->id_variedad}}">
+                                        {{$item->nombre}}
                                     </option>
                                 @endforeach
                             </select>
                         </td>
-                    </tr>
-                </table>
-            </th>
-        </tr>
-        <tr>
-            <td style="border-color: #9d9d9d" class="text-center" colspan="6">
-                <div class="row" style="margin-top: 10px">
-                    <div class="col-md-2">
-                        <div class="form-group input-group">
-                            <span class="input-group-addon" style="background-color: #e9ecef">Ramos</span>
-                            <input type="number" id="cantidad_ramos" name="cantidad_ramos" onkeypress="return isNumber(event)"
-                                   class="form-control"
-                                   style="width: 100%" required>
-                        </div>
-                    </div>
-                    <div class="col-md-2">
-                        <div class="form-group input-group">
-                            <span class="input-group-addon" style="background-color: #e9ecef">Clasificación</span>
+                        <td class="text-center">
                             <select name="id_clasificacion_ramo" id="id_clasificacion_ramo" class="form-control" required>
-                                <option value="">...</option>
                                 @foreach(getCalibresRamo() as $item)
                                     @if($item->unidad_medida->tipo == 'P')
                                         <option value="{{$item->id_clasificacion_ramo}}">
@@ -80,76 +87,72 @@
                                     @endif
                                 @endforeach
                             </select>
-                        </div>
-                    </div>
-                    <div class="col-md-2">
-                        <div class="form-group input-group">
-                            <span class="input-group-addon" style="background-color: #e9ecef">Variedad</span>
-                            <select name="id_variedad" id="id_variedad" class="form-control" required>
-                                <option value="">...</option>
-                                @foreach(getVariedades() as $item)
-                                    <option value="{{$item->id_variedad}}">
-                                        {{$item->nombre}}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-md-2">
-                        {{--<div class="form-group input-group">
-                            <span class="input-group-addon" style="background-color: #e9ecef">Envoltura</span>
-                            <select name="id_empaque_e" id="id_empaque_e" class="form-control" required>
-                                <option value="">...</option>
-                                @foreach($envolturas as $item)
+                        </td>
+                        <td class="text-center">
+                            <select name="id_empaque" id="id_empaque" class="form-control" required>
+                                @foreach($empaques as $item)
                                     <option value="{{$item->id_empaque}}">
-                                        {{$item->nombre}}
+                                        {{explode('|',$item->nombre)[0]}}
                                     </option>
                                 @endforeach
                             </select>
-                        </div>--}}
-                        <div class="form-group input-group">
-                            <span class="input-group-addon" style="background-color: #e9ecef">Presentación</span>
+                        </td>
+                        <td class="text-center">
+                            <input type="number" id="cantidad_ramos" name="cantidad_ramos" onkeypress="return isNumber(event)"
+                                   class="form-control" style="width: 100%" required>
+                        </td>
+                        <td class="text-center">
                             <select name="id_empaque_p" id="id_empaque_p" class="form-control" required>
-                                <option value="">...</option>
                                 @foreach($presentaciones as $item)
                                     <option value="{{$item->id_empaque}}">
                                         {{$item->nombre}}
                                     </option>
                                 @endforeach
                             </select>
-                        </div>
-                    </div>
-                    <div class="col-md-2">
-                        <div class="form-group input-group">
-                            <span class="input-group-addon" style="background-color: #e9ecef">Longitud</span>
-                            <input type="number" id="longitud_ramo" name="longitud_ramo" onkeypress="return isNumber(event)" class="form-control"
-                                   style="width: 100%" min="1">
-                        </div>
-                        <div class="form-group input-group">
-                            <span class="input-group-addon" style="background-color: #e9ecef">Tallos</span>
+                        </td>
+                        <td class="text-center">
                             <input type="number" id="tallos_x_ramos" name="tallos_x_ramos" onkeypress="return isNumber(event)"
                                    class="form-control"
                                    style="width: 100%" min="1">
-                        </div>
-                    </div>
-                    <div class="col-md-2">
-                        <div class="form-group input-group">
-                            <span class="input-group-addon" style="background-color: #e9ecef">U. medida</span>
+                        </td>
+                        <td class="text-center">
+                            <input type="number" id="longitud_ramo" name="longitud_ramo" onkeypress="return isNumber(event)" class="form-control"
+                                   style="width: 100%" min="1">
+                        </td>
+                        <td class="text-center">
                             <select name="id_unidad_medida" id="id_unidad_medida" class="form-control">
-                                <option value="">...</option>
                                 @foreach(getUnidadesMedida() as $item)
-                                    <option value="{{$item->id_unidad_medida}}">
-                                        {{$item->nombre}}
-                                    </option>
+                                    @if($item->tipo == 'L')
+                                        <option value="{{$item->id_unidad_medida}}">
+                                            {{$item->siglas}}
+                                        </option>
+                                    @endif
                                 @endforeach
                             </select>
-                        </div>
-                    </div>
-                </div>
+                        </td>
+                        <td class="text-center">
+                            <input type="number" id="precio" name="precio" class="form-control" required>
+                        </td>
+                    </tr>
+                </table>
             </td>
         </tr>
     </table>
 </form>
+
+{{-- COLORES --}}
+<select name="select_colores" id="select_colores" style="display: none">
+    @foreach($colores as $c)
+        <option value="{{$c->id_color}}" style="background-color: {{$c->fondo}}; color: {{$c->texto}}">{{$c->nombre}}</option>
+    @endforeach
+</select>
+
+@foreach($colores as $c)
+    <input type="hidden" id="fondo_color_{{$c->id_color}}" value="{{$c->fondo}}">
+    <input type="hidden" id="texto_color_{{$c->id_color}}" value="{{$c->texto}}">
+    <input type="hidden" id="nombre_color_{{$c->id_color}}" value="{{$c->nombre}}">
+@endforeach
+{{-- COLORES --}}
 
 @include('adminlte.gestion.postcocecha.pedidos_ventas.partials._tabla_orden_semanal')
 
@@ -174,8 +177,10 @@
                     ' style="width: 150px" class="text-center input_ramos_marc_col_' + c + '" onchange="calcular_total_ramos(' + c + ',' + f + ')">' +
                     '</td>';
                 titles_columnas += '<th class="text-center" style="border-color: #9d9d9d">' +
-                    '<input type="text" id="titles_columnas_' + c + '" name="titles_columnas_' + c + '"' +
-                    ' style="width: 150px" placeholder="C #' + c + '" class="text-center">' +
+                    '<select id="titles_columnas_' + c + '" name="titles_columnas_' + c + '"' +
+                    ' style="width: 150px" class="text-center" onchange="seleccionar_color(' + c + ')">' +
+                    '<option value="">C # ' + c + '</option>' + $('#select_colores').html() +
+                    '</select>' +
                     '</th>';
                 colorpickers_bg += '<td class="text-center" style="border-color: #9d9d9d">' +
                     '<input type="color" id="color_picker_bg_' + c + '" name="color_picker_bg_' + c + '"' +
@@ -188,12 +193,6 @@
             }
             if (f == 0) {
                 $('#table_marcaciones_x_colores').append('<tr class="row_marcaciones_colores">' +
-                    '<th class="text-center" style="border-color: #9d9d9d; width: 350px">Texto</th>' + colorpickers_tx +
-                    '</tr>' +
-                    '<tr class="row_marcaciones_colores">' +
-                    '<th class="text-center" style="border-color: #9d9d9d; width: 350px">Fondo</th>' + colorpickers_bg +
-                    '</tr>' +
-                    '<tr class="row_marcaciones_colores">' +
                     '<th class="text-center" style="border-color: #9d9d9d; width: 350px">Color</th>' + titles_columnas +
                     '<th class="text-center" style="border-color: #9d9d9d; width: 200px">Total</th>' +
                     '<th class="text-center" style="border-color: #9d9d9d; width: 200px">Piezas</th>' +
@@ -237,8 +236,10 @@
     }
 
     function seleccionar_color(c) {
-        $('.input_ramos_marc_col_' + c).css('background-color', $('#color_picker_bg_' + c).val());
-        $('.input_ramos_marc_col_' + c).css('color', $('#color_picker_tx_' + c).val());
+        fondo = $('#fondo_color_' + $('#titles_columnas_' + c).val()).val();
+        texto = $('#texto_color_' + $('#titles_columnas_' + c).val()).val();
+        $('.input_ramos_marc_col_' + c).css('background-color', fondo);
+        $('.input_ramos_marc_col_' + c).css('color', texto);
     }
 
     function calcular_total_ramos(c, f) {
@@ -281,6 +282,15 @@
         };
         get_jquery('{{url('pedidos/buscar_agencia_carga')}}', datos, function (retorno) {
             $('#div_agenia_carga').html(retorno);
+        });
+    }
+
+    function listar_especificaciones_x_cliente() {
+        datos = {
+            id_cliente: $('#id_cliente_orden_semanal').val()
+        };
+        get_jquery('{{url('pedidos/orden_semanal/listar_especificaciones_x_cliente')}}', datos, function (retorno) {
+            $('#div_especificaciones_orden_semanal').html(retorno);
         });
     }
 </script>

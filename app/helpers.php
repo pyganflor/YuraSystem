@@ -991,6 +991,15 @@ function getCantidadDetallesEspecificacionByPedido($id_pedido)
     return $r;
 }
 
+function getCantidadDetallesByEspecificacion($id_especificacion)
+{
+    $r = 0;
+    foreach (Especificacion::find($id_especificacion)->especificacionesEmpaque as $esp_emp)
+        foreach ($esp_emp->detalles as $det_esp)
+            $r++;
+    return $r;
+}
+
 /* ============ Obtener los ramos sacados de apertura para los pedidos de un "fecha" ==============*/
 function getDestinadosToFrioByFecha($fecha, $variedad)
 {
@@ -1428,15 +1437,17 @@ function getDisponibleInventarioFrio($variedad, $clasificacion_ramo, /*$envoltur
         return 0;
 }
 
-function getAgenciaCarga($idAgenciaCarga){
-  return  AgenciaCarga::find($idAgenciaCarga);
+function getAgenciaCarga($idAgenciaCarga)
+{
+    return AgenciaCarga::find($idAgenciaCarga);
 }
 
-function getCantidadCajas($idPedido){
-    return  DetallePedido::where('id_pedido',$idPedido)
-        ->join('cliente_pedido_especificacion as cpe','detalle_pedido.id_cliente_especificacion','cpe.id_cliente_pedido_especificacion')
-        ->join('especificacion as esp','cpe.id_especificacion','esp.id_especificacion')
-        ->join('especificacion_empaque as eemp','esp.id_especificacion','eemp.id_especificacion')->count();
+function getCantidadCajas($idPedido)
+{
+    return DetallePedido::where('id_pedido', $idPedido)
+        ->join('cliente_pedido_especificacion as cpe', 'detalle_pedido.id_cliente_especificacion', 'cpe.id_cliente_pedido_especificacion')
+        ->join('especificacion as esp', 'cpe.id_especificacion', 'esp.id_especificacion')
+        ->join('especificacion_empaque as eemp', 'esp.id_especificacion', 'eemp.id_especificacion')->count();
 }
 
 function getOptionsPrecios($idCliente,$idEspecificacion){

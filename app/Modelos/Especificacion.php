@@ -13,7 +13,6 @@ class Especificacion extends Model
 
     protected $fillable = [
         'id_especificacion',
-        'id_cliente',
         'fecha_registro',
         'estado',
         'nombre',

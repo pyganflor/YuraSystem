@@ -18,12 +18,12 @@ class Marcacion extends Model
         'fecha_registro',
         'estado',
         'cantidad',
-        'id_especificacion_empaque',
+        'id_detalle_pedido',
     ];
 
-    public function especificacion_empaque()
+    public function detalle_pedido()
     {
-        return $this->belongsTo('\yura\Modelos\EspecificacionEmpaque', 'id_especificacion_empaque');
+        return $this->belongsTo('\yura\Modelos\DetallePedido', 'id_detalle_pedido');
     }
 
     public function coloraciones()
