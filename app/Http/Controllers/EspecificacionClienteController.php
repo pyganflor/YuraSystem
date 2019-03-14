@@ -67,7 +67,7 @@ class EspecificacionClienteController extends Controller
     public function store_especificacion(Request $request)
     {
         $validaDataGeneral = Validator::make($request->all(), [
-            'nombre' => 'required',
+            //'nombre' => 'required',
             //'descripcion' => 'required',
         ]);
 
