@@ -24,7 +24,6 @@ class PrecioController extends Controller
             ]);
     }
 
-
     public function buscar_cliente(Request $request)
     {
         return view('adminlte.gestion.postcocecha.precio.partials.listado_cliente', [
@@ -70,7 +69,6 @@ class PrecioController extends Controller
 
     public function store_precio_especificacio_cliente(Request $request)
     {
-
         $valida = Validator::make($request->all(), [
             'arrPrecios' => 'required|Array',
         ]);
@@ -134,7 +132,7 @@ class PrecioController extends Controller
     {
         $valida = Validator::make($request->all(), [
             'arrPrecios' => 'required|Array',
-            'id_cliente' => 'required|',
+            'id_cliente' => 'required',
         ]);
         $msg = '';
         $success = true;
@@ -152,9 +150,10 @@ class PrecioController extends Controller
                 $precio->cantidad = $data['precio'];
 
                 if ($precio->save()) {
-                    if ($new)
+                    if ($new) {
                         $precio = Precio::all()->last();
-                    bitacora('precio', $precio->id_precio, 'U', 'Actualización satisfactoria de los precios de las especificaciones del cliente');
+                        bitacora('precio', $precio->id_precio, 'U', 'Actualización satisfactoria de los precios de las especificaciones del cliente');
+                    }
                 } else {
                     $success = false;
                     $det_esp = DetalleEspecificacionEmpaque::find($data['id_detalle_especificacionempaque']);

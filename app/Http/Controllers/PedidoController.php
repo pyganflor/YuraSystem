@@ -76,7 +76,7 @@ class PedidoController extends Controller
                 'vista' => $request->vista,
                 'clientes' => DB::table('cliente as c')
                     ->join('detalle_cliente as dt', 'c.id_cliente', '=', 'dt.id_cliente')
-                    ->where('dt.estado', 1)->get(),
+                    ->where('dt.estado', 1)->orderBy('dt.nombre','asc')->get(),
                 'id_pedido' => $request->id_pedido
             ]);
     }
@@ -97,7 +97,6 @@ class PedidoController extends Controller
             empty($request->arrFechas) ? $request->arrFechas = [$request->fecha_de_entrega] : $request->arrFechas;
 
             foreach ($request->arrFechas as $key => $fechas) {
-
                 $formatoFecha = '';
                 if (isset($request->opcion) && $request->opcion != 3) {
                     $formato = explode("/", $fechas);
@@ -126,11 +125,11 @@ class PedidoController extends Controller
                     $model = Pedido::all()->last();
                     foreach ($request->arrDataDetallesPedido as $key => $item) {
                         $objDetallePedido = new DetallePedido;
-                        $objDetallePedido->id_cliente_especificacion = $item[1];
+                        $objDetallePedido->id_cliente_especificacion = $item['id_cliente_pedido_especificacion'];
                         $objDetallePedido->id_pedido = $model->id_pedido;
-                        $objDetallePedido->id_agencia_carga = $item[2];
-                        $objDetallePedido->cantidad = $item[0];
-                        $objDetallePedido->precio = $item[3];
+                        $objDetallePedido->id_agencia_carga = $item['id_agencia_carga'];
+                        $objDetallePedido->cantidad = $item['cantidad'];
+                        $objDetallePedido->precio = substr($item['precio'], 0, -1);
                         if ($objDetallePedido->save()) {
                             $success = true;
                             $msg = '<div class="alert alert-success text-center">' .
@@ -188,18 +187,10 @@ class PedidoController extends Controller
             $data_especificaciones = $data_especificaciones->join('detalle_pedido as dp','cpe.id_cliente_pedido_especificacion','dp.id_cliente_especificacion')
                 ->where('id_pedido',$request->id_pedido);
         }
-        $data_especificaciones = $data_especificaciones->get();
 
-        /*$arr_data_cliente_especificacion = [];
-        foreach ($data_especificaciones as $data){
-           $arr_data_cliente_especificacion[] = ClientePedidoEspecificacion::where('cliente_pedido_especificacion.id_cliente_pedido_especificacion',$data->id_cliente_pedido_especificacion)
-               ->join('especificacion_empaque as espemp','cliente_pedido_especificacion.id_especificacion','espemp.id_especificacion')
-               ->join('detalle_especificacionempaque as detespemp','espemp.id_especificacion_empaque','detespemp.id_especificacion_empaque')
-               ->select('espemp.id_especificacion','detespemp.id_variedad','cliente_pedido_especificacion.id_cliente','cliente_pedido_especificacion.id_cliente_pedido_especificacion')->get();
-        }*/
         return view('adminlte.gestion.postcocecha.pedidos.forms.paritals.inputs_dinamicos',
             [
-                'especificaciones' => $data_especificaciones,
+                'especificaciones' => $data_especificaciones->orderBy('id_cliente_pedido_especificacion','asc')->get(),
                 'agenciasCarga' => DB::table('cliente_agenciacarga as cac')
                     ->join('agencia_carga as ac', 'cac.id_agencia_carga', 'ac.id_agencia_carga')
                     ->where([

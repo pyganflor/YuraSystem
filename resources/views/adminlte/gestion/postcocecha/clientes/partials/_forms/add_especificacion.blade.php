@@ -126,7 +126,9 @@
     }
 
     function store_especificacion() {
+
         if ($('#form-add_especificacion').valid()) {
+            $.LoadingOverlay('show');
             formulario = $('#form-add_especificacion');
             var formData = new FormData(formulario[0]);
             //hacemos la petición ajax

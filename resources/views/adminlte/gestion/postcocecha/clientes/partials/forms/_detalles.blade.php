@@ -15,7 +15,7 @@
             <select name="id_empaque_{{$cant_detalles}}" id="id_empaque_{{$cant_detalles}}" class="form-control" required>
                 <option value="">Seleccione</option>
                 @foreach($cajas as $caja)
-                    <option value="{{$caja->id_empaque}}">{{$caja->nombre}}</option>
+                    <option value="{{$caja->id_empaque}}">{{explode("|",$caja->nombre)[0]}}</option>
                 @endforeach
             </select>
         </div>

@@ -953,7 +953,6 @@ function getResumenPedidosByFechaOfTallos($fecha, $variedad)
 function getCalibreRamoEstandar()
 {
     $r = ClasificacionRamo::All()->where('estado', '=', 1)->where('estandar', '=', 1)->first();
-
     return $r;
 }
 
@@ -961,20 +960,29 @@ function getDetalleEspecificacion($id_especificacion)
 {
     $data = getEspecificacion($id_especificacion);
     $arrData = [];
-    foreach ($data->especificacionesEmpaque as $desp)
-        foreach ($desp->detalles as $det)
+    foreach ($data->especificacionesEmpaque as $espEmp)
+        foreach ($espEmp->detalles as $det)
             $arrData[] = [
                 'variedad' => $det->variedad->nombre,
                 'id_variedad' => $det->variedad->id_variedad,
                 'calibre' => $det->clasificacion_ramo->nombre,
-                'caja' => explode("|", $desp->empaque->nombre)[0],
+                'caja' => explode("|", $espEmp->empaque->nombre)[0],
                 'rxc' => $det->cantidad,
                 'presentacion' => $det->empaque_p->nombre,
                 'txr' => $det->tallos_x_ramos,
                 'longitud' => $det->longitud_ramo,
                 'unidad_medida_longitud' => isset($det->unidad_medida->siglas) ? $det->unidad_medida->siglas : null,
+                'id_especificacion_empaque' =>$espEmp->id_especificacion_empaque
             ];
     return $arrData;
+}
+
+function getCantDetEspEmp($idEsp){
+    $data = getEspecificacion($idEsp);
+    $a = 0;
+    foreach ($data->especificacionesEmpaque as $espEmp)
+        $a += count($espEmp->detalles);
+    return $a;
 }
 
 function getEspecificacion($idEspecificacion)
@@ -1464,4 +1472,12 @@ function getOptionsPrecios($idCliente, $idEspecificacion)
         ['id_especificacion', $idEspecificacion]
     ])->select('precio')->first();
     return explode("|", $data->precio);
+}
+
+function verificarPrecio($id_cliente,$id_detalle_especificacion_empaque){
+     $precios = Precio::where([
+        ['id_cliente',$id_cliente],
+        ['id_detalle_especificacionempaque',$id_detalle_especificacion_empaque]
+    ])->select('cantidad')->first();
+    return explode("|",$precios);
 }

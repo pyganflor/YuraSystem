@@ -35,7 +35,7 @@ class EspecificacionClienteController extends Controller
         ]);
     }
 
-    public function ver_especificacion(Request $request)
+    public function ver_especiaficacion(Request $request)
     {
         return view('adminlte.gestion.postcocecha.clientes.partials._forms.add_especificacion', [
             'especificacion' => Especificacion::find($request->id_especificacion),
@@ -66,6 +66,7 @@ class EspecificacionClienteController extends Controller
 
     public function store_especificacion(Request $request)
     {
+
         $validaDataGeneral = Validator::make($request->all(), [
             //'nombre' => 'required',
             //'descripcion' => 'required',
@@ -93,11 +94,11 @@ class EspecificacionClienteController extends Controller
            /* $objEspecificacion->id_cliente  = $request->id_cliente;*/
             $objEspecificacion->nombre      = $request->nombre;
             $objEspecificacion->descripcion = $request->descripcion;
+            $objEspecificacion->estado      = 1;
+            $objEspecificacion->tipo        = "N";
             //
             if ($objEspecificacion->save()) {
-
                 $modelEspcificacion = Especificacion::all()->last();
-
                 bitacora('especificacion', $modelEspcificacion->nombre, $accionLetra, $accion . ' satisfactoria de un nuevo empaque');
 
                 for ($i = 1; $i <= $request->cant_forms_detalles; $i++) {
@@ -175,30 +176,6 @@ class EspecificacionClienteController extends Controller
                                 $accionLetra = 'U';
                             }
 
-                            if($request->input('cant_forms_desgloses_'.$i) == 1){
-
-                                if(!valida_especificacion($request->input('id_variedad_'.$i.'_'.$j),$request->input('id_clasificacion_ramo_'.$i.'_'.$j),$request->input('id_empaque_'.$i), $request->input('cantidad_'.$i.'_'.$j))){
-
-                                    if($accion === 'Inserción'){
-                                        $objEspecificacionEmpaqueDelete = EspecificacionEmpaque::where('id_especificacion', $modelEspcificacion->id_especificacion);
-                                        $objEspecificacionEmpaqueDelete->delete();
-
-                                        $modelEspcificacion = Especificacion::find($modelEspcificacion->id_especificacion);
-                                        $modelEspcificacion->delete();
-
-                                        $success = false;
-                                        $msg = '<div class="alert alert-warning text-center">' .
-                                                    '<p> No se puede crear un paquete con las especificaciones antes descritas ya que sobrepasa la cantidad de ramos por empaque configuradas o no existe el detalle del empaque</p>'.
-                                                '</div>';
-                                        return [
-                                            'mensaje' => $msg,
-                                            'success' => $success
-                                        ];
-                                    }
-                                }
-
-                            }
-
                             $objEspecificacionEmpaqueDetalle->id_especificacion_empaque = $modelEspcificacionEmpaque->id_especificacion_empaque;
                             $objEspecificacionEmpaqueDetalle->id_variedad              = $request->input('id_variedad_' . $i . '_' . $j);
                             $objEspecificacionEmpaqueDetalle->id_clasificacion_ramo    = $request->input('id_clasificacion_ramo_' . $i . '_' . $j);
@@ -213,32 +190,7 @@ class EspecificacionClienteController extends Controller
                             if ($objEspecificacionEmpaqueDetalle->save()) {
                                 $modelEspecificacionEmpaqueDetalle = DetalleEspecificacionEmpaque::all()->last();
                                 bitacora('detalle_especificacionempaque', $modelEspecificacionEmpaqueDetalle->id_detalle_especificacionempaque, $accionLetra, $accion . ' satisfactoria de un nuevo detalle de especificación de empaque');
-                                if($i == 1){
-                                    $objClientePedidoEspecificacion = new ClientePedidoEspecificacion;
-                                    $objClientePedidoEspecificacion->id_cliente        = $request->id_cliente;
-                                    $objClientePedidoEspecificacion->id_especificacion = $modelEspcificacion->id_especificacion;
 
-                                    if($objClientePedidoEspecificacion->save()){
-                                        $modelClientePedidoEspecificacion = ClientePedidoEspecificacion::all()->last();
-                                        bitacora('cliente_pedido_especificacion', $modelClientePedidoEspecificacion->id_cliente_pedido_especificacion, 'I',' Asignación exitosa de la especificación '. $modelEspcificacion->id_especificacion .' al cliente '. $modelClientePedidoEspecificacion->id_cliente.'');
-                                    }else{
-                                        if ($accion === 'Inserción') {
-                                            Almacenamiento::disk('imagenes')->delete($imagen);
-
-                                            $objEspecificacionEmpaqueDetalleDelete = DetalleEspecificacionEmpaque::find($modelEspcificacionEmpaque->id_especificacion_empaque);
-                                            $objEspecificacionEmpaqueDetalleDelete->delete();
-
-                                            $objEspecificacionEmpaqueDelete = EspecificacionEmpaque::where('id_especificacion', $modelEspcificacion->id_especificacion);
-                                            $objEspecificacionEmpaqueDelete->delete();
-
-                                            $modelEspcificacion = Especificacion::find($modelEspcificacion->id_especificacion);
-                                            $modelEspcificacion->delete();
-                                        }
-                                        $success = false;
-                                        $msg = '<div class="alert alert-warning text-center">' .
-                                            '<p> Ha ocurrido un problema al guardar el desglose del detalle de la especificación</p>';
-                                    }
-                                }
                             } else {
 
                                 if ($accion === 'Inserción') {
@@ -275,6 +227,65 @@ class EspecificacionClienteController extends Controller
                         $success = false;
                         $msg = '<div class="alert alert-warning text-center">' .
                             '<p> Ha ocurrido un problema al guardar la información al sistema</p>';
+                    }
+
+                    if($i === 1){
+                        $objClientePedidoEspecificacion = new ClientePedidoEspecificacion;
+                        $objClientePedidoEspecificacion->id_cliente        = $request->id_cliente;
+                        $objClientePedidoEspecificacion->id_especificacion = $modelEspcificacion->id_especificacion;//AQUI
+
+                        if($objClientePedidoEspecificacion->save()){
+                            $modelClientePedidoEspecificacion = ClientePedidoEspecificacion::all()->last();
+                            bitacora('cliente_pedido_especificacion', $modelClientePedidoEspecificacion->id_cliente_pedido_especificacion, 'I',' Asignación exitosa de la especificación '. $modelEspcificacion->id_especificacion .' al cliente '. $modelClientePedidoEspecificacion->id_cliente.'');
+
+                            if($request->input('cant_forms_desgloses_'.$i) == 1){
+
+                                if(!valida_especificacion($request->input('id_variedad_'.$i.'_'.$j),$request->input('id_clasificacion_ramo_'.$i.'_'.$j),$request->input('id_empaque_'.$i), $request->input('cantidad_'.$i.'_'.$j))){
+
+                                    if($accion === 'Inserción'){
+
+                                        $objClientePedidoEspecificacion = ClientePedidoEspecificacion::find($modelClientePedidoEspecificacion->id_cliente_pedido_especificacion);
+                                        $objClientePedidoEspecificacion->delete();
+
+                                        $objDetalleEspecificacionEmpaque = DetalleEspecificacionEmpaque::find($modelEspecificacionEmpaqueDetalle->id_detalle_especificacionempaque);
+                                        $objDetalleEspecificacionEmpaque->delete();
+
+                                        $objEspecificacionEmpaqueDelete = EspecificacionEmpaque::where('id_especificacion', $modelEspcificacion->id_especificacion);
+                                        $objEspecificacionEmpaqueDelete->delete();
+
+                                        $modelEspcificacion = Especificacion::find($modelEspcificacion->id_especificacion);
+                                        $modelEspcificacion->delete();
+
+                                        $success = false;
+                                        $msg = '<div class="alert alert-warning text-center">' .
+                                            '<p> No se puede crear un paquete con las especificaciones de la caja N# '.$i.' ya que sobrepasa la cantidad de ramos por empaque configuradas o no existe el detalle del empaque</p>'.
+                                            '</div>';
+                                        return [
+                                            'mensaje' => $msg,
+                                            'success' => $success
+                                        ];
+                                    }
+                                }
+
+                            }
+
+                        }else{
+                            if ($accion === 'Inserción') {
+                                Almacenamiento::disk('imagenes')->delete($imagen);
+
+                                $objEspecificacionEmpaqueDetalleDelete = DetalleEspecificacionEmpaque::find($modelEspcificacionEmpaque->id_especificacion_empaque);
+                                $objEspecificacionEmpaqueDetalleDelete->delete();
+
+                                $objEspecificacionEmpaqueDelete = EspecificacionEmpaque::where('id_especificacion', $modelEspcificacion->id_especificacion);
+                                $objEspecificacionEmpaqueDelete->delete();
+
+                                $modelEspcificacion = Especificacion::find($modelEspcificacion->id_especificacion);
+                                $modelEspcificacion->delete();
+                            }
+                            $success = false;
+                            $msg = '<div class="alert alert-warning text-center">' .
+                                '<p> Ha ocurrido un problema al guardar el desglose del detalle de la especificación</p>';
+                        }
                     }
                 }
             } else {

@@ -1,42 +1,4 @@
 <script>
-    /*buscar_listado_pedidos();
-
-    function buscar_listado_pedidos() {
-        $.LoadingOverlay('show');
-        datos = {
-            //busqueda: $('#busqueda_pedidos').val().trim(),
-            id_cliente: $("#id_cliente").val(),
-            anno: $("#anno").val(),
-            desde: $("#desde").val(),
-            hasta: $("#hasta").val(),
-            estado: $("#estado").val()
-        };
-        $.get('{{url('pedidos/buscar')}}', datos, function (retorno) {
-            $('#div_listado_pedidos').html(retorno);
-            estructura_tabla('table_content_pedidos');
-        }).always(function () {
-            $.LoadingOverlay('hide');
-        });
-    }
-
-    $(document).on("click", "#pagination_listado_pedidos .pagination li a", function (e) {
-        $.LoadingOverlay("show");
-        //para que la pagina se cargen los elementos
-        e.preventDefault();
-        var url = $(this).attr("href");
-        url = url.replace('?', '?busquedaAnno=' + $('#anno').val() +
-            '&desde=' + $('#desde').val() + '&' +
-            '&hasta=' + $('#hasta').val() + '&' +
-            '&busqueda_pedidos=' + $('#busqueda_pedidos').val() + '&');
-        $('#div_listado_pedidos').html($('#table_pedidos').html());
-        $.get(url, function (resul) {
-            //console.log(resul);
-            $('#div_listado_pedidos').html(resul);
-            estructura_tabla('table_content_pedidos');
-        }).always(function () {
-            $.LoadingOverlay("hide");
-        });
-    });*/
 
     listar_resumen_pedidos($("#fecha_pedidos_search").val(), true);
 
@@ -78,11 +40,22 @@
                 };
                 $.get('{{url('pedidos/editar_pedido')}}', datos, function (retorno) {
                     $("#fecha_de_entrega").val(retorno[0].fecha_pedido);
-                    $("#descripcion").val(retorno[0].descripcion);
+                    //$("#descripcion").val(retorno[0].descripcion);
+                    for (i = 0; i < retorno.length; i++) {
 
-                    for (var i = 0; i < retorno.length; i++) {
-                        $("td#td_input_cantidad_" + retorno[i].id_especificacion + " input").val(retorno[i].cantidad_especificacion);
-                        $("td#td_select_agencia_carga_" + retorno[i].id_especificacion + " select option[value='" + retorno[i].id_agencia_carga + "']").attr('selected', true);
+                        data_precio = retorno[i].precio.split("|");
+                        data_option = [];
+                        $.each(data_precio,function (a,b) {
+                            arr_precio = b.split(";");
+                            precio = parseFloat(arr_precio[0]);
+                            $(".cantidad_"+arr_precio[1]).val(retorno[i].cantidad_especificacion);
+                            $("#precio_"+arr_precio[1]+"_"+(i+1)+" option[value='" + precio + "']").remove();
+                            $("#precio_"+arr_precio[1]+"_"+(i+1)).append("<option value='" + precio + "'>" + precio + "</option>");
+                            $("#precio_"+arr_precio[1]+"_"+(i+1)+" option[value='" + precio + "']").attr('selected', true);
+                            $("#precio_"+arr_precio[1]+"_"+(a+1)).val(precio);
+                            $("select#id_agencia_carga_"+arr_precio[1] +" option[value='" + retorno[i].id_agencia_carga + "']").attr('selected', true);
+                        });
+
                     }
                     calcular_precio_pedido();
                 }).always(function () {

@@ -23,3 +23,4 @@ Route::get('pedidos/datos_pedido', function (){ return response()->json([
     'estandar' => getCalibreRamoEstandar()->nombre,
     'ramos_x_caja' => getConfiguracionEmpresa()->ramos_x_caja
 ]); });
+Route::get('pedidos/duplicar_especificacion', 'PedidoVentaController@duplicar_especificacion');

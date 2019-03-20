@@ -40,10 +40,10 @@
 
                 <td style="border-color: #9d9d9d" class="text-center">
                     <div class="btn-group">
-                        <button class="btn btn-xs btn-default" type="button" title="Precio"
+                        {{--<button class="btn btn-xs btn-default" type="button" title="Precio"
                                 onclick="add_precio('{{$v->id_variedad}}')">
                             <i class="fa fa-usd"></i>
-                        </button>
+                        </button>--}}
                         <button class="btn btn-xs btn-default" type="button" title="Editar"
                                 onclick="edit_variedad('{{$v->id_variedad}}')">
                             <i class="fa fa-fw fa-pencil"></i>
