@@ -35,7 +35,7 @@
                         <div class="small-box bg-teal-active">
                             <div class="inner">
                                 <h3 class="info-box-number">
-                                    {{$indicadores['cajas']}}
+                                    {{number_format($indicadores['cajas'], 2)}}
                                 </h3>
                             </div>
                             <div class="icon">
@@ -50,7 +50,7 @@
                         <div class="small-box bg-aqua">
                             <div class="inner">
                                 <h3 class="info-box-number">
-                                    {{$indicadores['tallos']}}
+                                    {{number_format($indicadores['tallos'], 2)}}
                                 </h3>
                             </div>
                             <div class="icon">

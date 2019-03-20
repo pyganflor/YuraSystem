@@ -51,7 +51,7 @@ class ClasificacionBlancoController extends Controller
 
         $ids_pedidos = [];
         foreach ($pedidos as $id_ped) {
-            if (in_array($request->id_variedad, explode('|', getPedido($id_ped->id_pedido)->variedad)))
+            if (in_array($request->variedad, explode('|', getPedido($id_ped->id_pedido)->variedad)))
                 array_push($ids_pedidos, $id_ped->id_pedido);
         }
         $fechas = DB::table('pedido')

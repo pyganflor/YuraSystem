@@ -1,5 +1,5 @@
 <p class="text-center">
-    <strong>Cosecha por variedades</strong>
+    <strong>Cosecha del día</strong>
 </p>
 @if(count($listado_variedades) > 0)
     @foreach($listado_variedades as $variedad)

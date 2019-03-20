@@ -2,6 +2,7 @@
     @foreach($cliente->cliente_pedido_especificaciones as $cli_ped_esp)
         @if($cli_ped_esp->especificacion->tipo == 'N')
             <div class="well sombra_estandar" id="well_{{$cli_ped_esp->id_especificacion}}">
+                <input type="hidden" class="id_especificacion" value="{{$cli_ped_esp->especificacion->id_especificacion}}">
                 <table width="100%" class="table-responsive table-bordered table-striped"
                        style="font-size: 0.9em; margin-top: 10px; border: 3px solid #357ca5"
                        id="table_especificacion_orden_semanal_{{$cli_ped_esp->id_especificacion}}">
@@ -109,11 +110,13 @@
                                         {{$det_esp_emp->unidad_medida->siglas}}
                                     @endif
                                 </td>
-                                <td class="text-center" style="border-color: #9d9d9d" id="td_precio_det_esp_{{$det_esp_emp->id_especificacion}}"
-                                    rowspan="{{getCantidadDetallesByEspecificacion($det_esp_emp->id_especificacion)}}">
-                                    <select name="precio_esp_{{$det_esp_emp->id_especificacion}}" class="form-control"
-                                            id="precio_esp_{{$det_esp_emp->id_especificacion}}"
-                                            ondblclick="cambiar_input_precio('{{$det_esp_emp->id_especificacion}}')">
+                                <td class="text-center" style="border-color: #9d9d9d"
+                                    id="td_precio_det_{{$det_esp_emp->id_detalle_especificacionempaque}}_esp_{{$cli_ped_esp->id_especificacion}}">
+                                    <select name="precio_det_{{$det_esp_emp->id_detalle_especificacionempaque}}_esp_{{$cli_ped_esp->id_especificacion}}"
+                                            class="form-control"
+                                            id="precio_det_{{$det_esp_emp->id_detalle_especificacionempaque}}_esp_{{$cli_ped_esp->id_especificacion}}"
+                                            ondblclick="cambiar_input_precio('{{$det_esp_emp->id_detalle_especificacionempaque}}',
+                                                    '{{$cli_ped_esp->id_especificacion}}')">
                                         @foreach(explode('|',$det_esp_emp->precioByCliente($cli_ped_esp->id_cliente)->cantidad) as $precio)
                                             <option value="{{$precio}}">{{$precio}}</option>
                                         @endforeach
@@ -238,9 +241,9 @@
 @endif
 
 <script>
-    function cambiar_input_precio(id_esp) {
-        $('#td_precio_esp_' + id_esp).html('<input type="number" id="precio_esp_' + id_esp + '" ' +
-            'name="precio_esp_' + id_esp + '" class="form-control">');
+    function cambiar_input_precio(id_det, id_esp) {
+        $('#td_precio_det_' + id_det + '_esp_' + id_esp).html('<input type="number" id="precio_det_' + id_det + '_esp_' + id_esp + '" ' +
+            'name="precio_det_' + id_det + '_esp_' + id_esp + '" class="form-control">');
     }
 
     function ocultar_well(id_esp) {

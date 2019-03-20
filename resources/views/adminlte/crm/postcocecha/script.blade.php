@@ -89,6 +89,24 @@
                 $('#check_filtro_mensual').prop('checked', true);
             }
 
+            id_variedad = '';
+            x_variedad = false;
+            total = false;
+            if ($('#filtro_predeterminado_variedad').val() == 'T') {
+                total = true;
+                $('#check_filtro_todas_variedad').prop('checked', true);
+                select_checkbox_cosecha_variedad('check_filtro_todas_variedad');
+            } else if ($('#filtro_predeterminado_variedad').val() != 'A') {
+                id_variedad = $('#filtro_predeterminado_variedad').val();
+                $('#check_filtro_x_variedad').prop('checked', true);
+                select_checkbox_cosecha_variedad('check_filtro_x_variedad');
+                $('#check_filtro_variedad').val(id_variedad);
+            } else {
+                $('#check_filtro_todas_variedad').prop('checked', false);
+                $('#check_filtro_x_variedad').prop('checked', false);
+                $('.op_check_filtro_x_variedad').hide();
+            }
+
             $('#check_filtro_desde').val(desde);
             $('#check_filtro_hasta').val(rest_dias(1));
 
@@ -97,11 +115,11 @@
                 mensual: mensual,
                 semanal: semanal,
                 diario: diario,
-                x_variedad: false,
-                total: false,
+                x_variedad: x_variedad,
+                total: total,
                 desde: desde,
                 hasta: rest_dias(1),
-                id_variedad: '',
+                id_variedad: id_variedad,
             };
 
             get_jquery('{{url('crm_postcosecha/buscar_reporte_cosecha_chart')}}', datos, function (retorno) {
