@@ -7,3 +7,6 @@ Route::get('crm_postcosecha/buscar_reporte_cosecha_comparacion', 'CRM\crmPostoce
 Route::get('crm_postcosecha/buscar_reporte_cosecha_chart', 'CRM\crmPostocechaController@buscar_reporte_cosecha_chart');
 Route::get('crm_postcosecha/show_data_cajas', 'CRM\crmPostocechaController@show_data_cajas');
 Route::get('crm_postcosecha/show_data_tallos', 'CRM\crmPostocechaController@show_data_tallos');
+Route::get('crm_postcosecha/show_data_desechos', 'CRM\crmPostocechaController@show_data_desechos');
+Route::get('crm_postcosecha/show_data_rendimientos', 'CRM\crmPostocechaController@show_data_rendimientos');
+Route::get('crm_postcosecha/show_data_calibres', 'CRM\crmPostocechaController@show_data_calibres');

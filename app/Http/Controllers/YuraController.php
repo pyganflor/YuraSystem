@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 use phpseclib\Crypt\RSA;
+use yura\Modelos\ClasificacionVerde;
 use yura\Modelos\ConfiguracionUser;
 use yura\Modelos\Rol;
 use yura\Modelos\StockApertura;
@@ -19,8 +20,28 @@ class YuraController extends Controller
 {
     public function inicio(Request $request)
     {
+        $labels = DB::table('clasificacion_verde as v')
+            ->select('v.fecha_ingreso as dia')->distinct()
+            ->where('v.fecha_ingreso', '>=', opDiasFecha('-', 7, date('Y-m-d')))
+            ->where('v.fecha_ingreso', '<=', date('Y-m-d'))
+            ->get();
 
-        return view('adminlte.inicio');
+        $calibre = 0;
+
+        $cant_verde = 0;
+        foreach ($labels as $dia) {
+            $verde = ClasificacionVerde::All()->where('fecha_ingreso', '=', $dia->dia)->first();
+            if ($verde != '') {
+                $calibre += round($verde->total_tallos() / $verde->getTotalRamosEstandar(), 2);
+                $cant_verde++;
+            }
+        }
+
+        $calibre = $cant_verde > 0 ? round($calibre / $cant_verde, 2) : 0;
+
+        return view('adminlte.inicio', [
+            'calibre' => $calibre,
+        ]);
     }
 
     public function login(Request $request)

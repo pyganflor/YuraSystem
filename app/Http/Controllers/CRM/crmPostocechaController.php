@@ -15,8 +15,8 @@ class crmPostocechaController extends Controller
     {
         $labels = DB::table('clasificacion_verde as v')
             ->select('v.fecha_ingreso as dia')->distinct()
-            ->where('v.fecha_ingreso', '>=', opDiasFecha('-', 7, date('Y-m-d')))
-            ->where('v.fecha_ingreso', '<=', date('Y-m-d'))
+            ->where('v.fecha_ingreso', '>=', opDiasFecha('-', 8, date('Y-m-d')))
+            ->where('v.fecha_ingreso', '<=', opDiasFecha('-', 1, date('Y-m-d')))
             ->get();
 
         $cajas = 0;
@@ -871,6 +871,113 @@ class crmPostocechaController extends Controller
             ]);
         }
         return view('adminlte.crm.postcocecha.partials.secciones.indicadores.modals.data_tallos', [
+            'arreglo_variedades' => $arreglo_variedades
+        ]);
+    }
+
+    public function show_data_desechos(Request $request)
+    {
+        $labels = DB::table('clasificacion_verde as v')
+            ->select('v.fecha_ingreso as dia')->distinct()
+            ->where('v.fecha_ingreso', '>=', $request->desde)
+            ->where('v.fecha_ingreso', '<=', $request->hasta)
+            ->get();
+        $target = getVariedades();
+
+        $arreglo_variedades = [];
+        foreach ($target as $variedad) {
+            $cant_verde = 0;
+            $tallos = 0;
+            $cosecha = 0;
+            $desecho = 0;
+            foreach ($labels as $dia) {
+                $verde = ClasificacionVerde::All()->where('fecha_ingreso', '=', $dia->dia)->first();
+                if ($verde != '') {
+                    $tallos += $verde->tallos_x_variedad($variedad->id_variedad);
+                    $cosecha += $verde->total_tallos_recepcionByVariedad($variedad->id_variedad);
+                    //$desecho += $verde->desechoByVariedad($variedad->id_variedad);
+                    $cant_verde++;
+                }
+            }
+
+            //$desecho = $cant_verde > 0 ? round($desecho / $cant_verde, 2) : 0;
+            $desecho = $cosecha > 0 ? 100 - round((($tallos * 100) / $cosecha), 2) : 0;
+
+            array_push($arreglo_variedades, [
+                'variedad' => $variedad,
+                'tallos' => $tallos,
+                'cosecha' => $cosecha,
+                'desechos' => $desecho,
+            ]);
+        }
+        return view('adminlte.crm.postcocecha.partials.secciones.indicadores.modals.data_desechos', [
+            'arreglo_variedades' => $arreglo_variedades
+        ]);
+    }
+
+    public function show_data_rendimientos(Request $request)
+    {
+        $labels = DB::table('clasificacion_verde as v')
+            ->select('v.fecha_ingreso as dia')->distinct()
+            ->where('v.fecha_ingreso', '>=', $request->desde)
+            ->where('v.fecha_ingreso', '<=', $request->hasta)
+            ->get();
+        $target = getVariedades();
+
+        $arreglo_variedades = [];
+        foreach ($target as $variedad) {
+            $cant_verde = 0;
+            $rendimiento = 0;
+            foreach ($labels as $dia) {
+                $verde = ClasificacionVerde::All()->where('fecha_ingreso', '=', $dia->dia)->first();
+                if ($verde != '') {
+                    $rendimiento += $verde->getRendimientoByVariedad($variedad->id_variedad);
+                    $cant_verde++;
+                }
+            }
+
+            $rendimiento = $cant_verde > 0 ? round($rendimiento / $cant_verde, 2) : 0;
+
+            array_push($arreglo_variedades, [
+                'variedad' => $variedad,
+                'rendimientos' => $rendimiento,
+            ]);
+        }
+        return view('adminlte.crm.postcocecha.partials.secciones.indicadores.modals.data_rendimientos', [
+            'arreglo_variedades' => $arreglo_variedades
+        ]);
+    }
+
+    public function show_data_calibres(Request $request)
+    {
+        $labels = DB::table('clasificacion_verde as v')
+            ->select('v.fecha_ingreso as dia')->distinct()
+            ->where('v.fecha_ingreso', '>=', $request->desde)
+            ->where('v.fecha_ingreso', '<=', $request->hasta)
+            ->get();
+        $target = getVariedades();
+
+        $arreglo_variedades = [];
+        foreach ($target as $variedad) {
+            $cant_verde = 0;
+            $calibre = 0;
+            foreach ($labels as $dia) {
+                $verde = ClasificacionVerde::All()->where('fecha_ingreso', '=', $dia->dia)->first();
+                if ($verde != '') {
+                    $calibre += $verde->calibreByVariedad($variedad->id_variedad);
+                    $cant_verde++;
+                }
+            }
+
+            //$desecho = $cant_verde > 0 ? round($desecho / $cant_verde, 2) : 0;
+            $calibre = $cant_verde > 0 ? round($calibre / $cant_verde, 2) : 0;
+
+            array_push($arreglo_variedades, [
+                'variedad' => $variedad,
+                'calibres' => $calibre,
+            ]);
+        }
+        return view('adminlte.crm.postcocecha.partials.secciones.indicadores.modals.data_calibres', [
             'arreglo_variedades' => $arreglo_variedades
         ]);
     }

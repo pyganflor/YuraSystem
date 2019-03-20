@@ -1,8 +1,15 @@
-<div class="box box-info">
+<div class="box box-primary">
     <div class="box-header with-border">
-        <h3 class="box-title">
+        <h4 class="box-title">
             Gráficas
-        </h3>
+
+            <select name="filtro_predeterminado" id="filtro_predeterminado" onchange="filtrar_predeterminado()">
+                <option value="1">1 Mes</option>
+                <option value="2">3 Meses</option>
+                <option value="3">6 Meses</option>
+                <option value="4">1 Año</option>
+            </select>
+        </h4>
         <div class="box-tools pull-right">
             <button type="button" class="btn btn-box-tool" title="Cosecha por variedades"
                     onclick="select_option_cosecha('cosecha_x_variedad')">
@@ -19,7 +26,7 @@
     <div class="box-body">
         <div class="row">
             <div class="col-md-8" id="div_chart_cosecha">
-                @include('adminlte.crm.postcocecha.partials.secciones.chart_cosecha')
+                {{--@include('adminlte.crm.postcocecha.partials.secciones.chart_cosecha')--}}
             </div>
             <div class="col-md-4">
                 <div id="div_filtro_cosecha" class="div_option_cosecha" style="display: none">
@@ -34,3 +41,7 @@
         </div>
     </div>
 </div>
+
+<script>
+    filtrar_predeterminado();
+</script>

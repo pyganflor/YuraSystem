@@ -8,7 +8,7 @@
         colores = [];
         data_list = [];
         @for($i = 0; $i < count($arreglo_variedades); $i++)
-        labels.push("{{$arreglo_variedades[$i]['variedad']->nombre.': '.$arreglo_variedades[$i]['tallos']}}");
+        labels.push("{{$arreglo_variedades[$i]['variedad']->nombre}}");
         data_list.push("{{$arreglo_variedades[$i]['tallos']}}");
         colores.push("{{$arreglo_variedades[$i]['variedad']->color}}");
         @endfor

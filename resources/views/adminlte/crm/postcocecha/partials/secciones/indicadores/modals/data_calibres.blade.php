@@ -1,4 +1,4 @@
-<canvas id="chart_data_cajas" width="100%" height="40" style="margin-top: 5px"></canvas>
+<canvas id="chart_data_calibres" width="100%" height="40" style="margin-top: 5px"></canvas>
 
 <script>
     construir_char();
@@ -9,7 +9,7 @@
         data_list = [];
         @for($i = 0; $i < count($arreglo_variedades); $i++)
         labels.push("{{$arreglo_variedades[$i]['variedad']->nombre}}");
-        data_list.push("{{$arreglo_variedades[$i]['cajas']}}");
+        data_list.push("{{$arreglo_variedades[$i]['calibres']}}");
         colores.push("{{$arreglo_variedades[$i]['variedad']->color}}");
         @endfor
 
@@ -22,7 +22,7 @@
             hoverBorderWidth: 5,
         }];
 
-        ctx = document.getElementById('chart_data_cajas').getContext('2d');
+        ctx = document.getElementById('chart_data_calibres').getContext('2d');
         myChart = new Chart(ctx, {
             type: 'pie',
             data: {

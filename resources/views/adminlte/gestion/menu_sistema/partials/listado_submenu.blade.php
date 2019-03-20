@@ -3,6 +3,7 @@
     <thead>
     <tr class="table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}">
         <th class="text-center" style="border-color: #9d9d9d">SUBMENÚ</th>
+        <th class="text-center" style="border-color: #9d9d9d">TIPO</th>
         <th class="text-center" style="border-color: #9d9d9d">
             <button type="button" class="btn btn-xs btn-default" title="Añadir Submenú" onclick="add_submenu()">
                 <i class="fa fa-fw fa-plus"></i>
@@ -16,6 +17,15 @@
                 class="row_submenu {{$s->estado == 'A' ? '' : 'error'}}" id="row_submenu_{{$s->id_submenu}}">
                 <td style="border-color: #9d9d9d" class="text-center">
                     {{$s->nombre}}
+                </td>
+                <td style="border-color: #9d9d9d" class="text-center">
+                    @if($s->tipo == 'C')
+                        CRM
+                    @elseif($s->tipo == 'R')
+                        Reporte
+                    @elseif($s->tipo == 'N')
+                        Normal
+                    @endif
                 </td>
                 <td style="border-color: #9d9d9d" class="text-center">
                     <div class="btn-group">

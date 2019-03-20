@@ -1465,3 +1465,8 @@ function getOptionsPrecios($idCliente, $idEspecificacion)
     ])->select('precio')->first();
     return explode("|", $data->precio);
 }
+
+function getSubmenusByTipo($tipo)
+{
+    return Submenu::All()->where('tipo', $tipo);
+}

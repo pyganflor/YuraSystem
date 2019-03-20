@@ -101,7 +101,7 @@
                                 alert(5555);
                                 cerrar_modals();
                                 distribuir_orden_semanal(retorno.id_pedido);
-                                buscar_listado_pedidos();
+                                listar_resumen_pedidos($("#fecha_pedidos_search").val(), true);
                             });
                         } else {
                             alerta(retorno.mensaje);

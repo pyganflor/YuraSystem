@@ -31,4 +31,82 @@
             modal_view('modal_view-show_data_tallos', retorno, '<i class="fa fa-fw fa-gift"></i> Reporte de Tallos', true, false, '{{isPC() ? '60%' : ''}}');
         });
     }
+
+    function show_data_desechos(desde, hasta) {
+        datos = {
+            desde: desde,
+            hasta: hasta
+        };
+        get_jquery('{{url('crm_postcosecha/show_data_desechos')}}', datos, function (retorno) {
+            modal_view('modal_view-show_data_desechos', retorno, '<i class="fa fa-fw fa-gift"></i> Reporte de % Desechos', true, false, '{{isPC() ? '60%' : ''}}');
+        });
+    }
+
+    function show_data_rendimientos(desde, hasta) {
+        datos = {
+            desde: desde,
+            hasta: hasta
+        };
+        get_jquery('{{url('crm_postcosecha/show_data_rendimientos')}}', datos, function (retorno) {
+            modal_view('modal_view-show_data_rendimientos', retorno, '<i class="fa fa-fw fa-gift"></i> Reporte de Rendimientos', true, false,
+                '{{isPC() ? '60%' : ''}}');
+        });
+    }
+
+    function show_data_calibres(desde, hasta) {
+        datos = {
+            desde: desde,
+            hasta: hasta
+        };
+        get_jquery('{{url('crm_postcosecha/show_data_calibres')}}', datos, function (retorno) {
+            modal_view('modal_view-show_data_calibres', retorno, '<i class="fa fa-fw fa-gift"></i> Reporte de Calibres', true, false,
+                '{{isPC() ? '60%' : ''}}');
+        });
+    }
+
+    function filtrar_predeterminado() {
+        if ($('#filtro_predeterminado').val() != '') {
+            diario = false;
+            mensual = false;
+            semanal = false;
+            $('.check_filtro_cosecha').prop('checked', false);
+            $('.check_filtro_cosecha_variedad').prop('checked', false);
+            if ($('#filtro_predeterminado').val() == 1) {
+                diario = true;
+                desde = rest_dias(30);
+                $('#check_filtro_diario').prop('checked', true);
+            } else if ($('#filtro_predeterminado').val() == 2) {
+                semanal = true;
+                desde = rest_dias(90);
+                $('#check_filtro_semanal').prop('checked', true);
+            } else if ($('#filtro_predeterminado').val() == 3) {
+                mensual = true;
+                desde = rest_dias(180);
+                $('#check_filtro_mensual').prop('checked', true);
+            } else if ($('#filtro_predeterminado').val() == 4) {
+                mensual = true;
+                desde = rest_dias(365);
+                $('#check_filtro_mensual').prop('checked', true);
+            }
+
+            $('#check_filtro_desde').val(desde);
+            $('#check_filtro_hasta').val(rest_dias(1));
+
+            datos = {
+                anual: false,
+                mensual: mensual,
+                semanal: semanal,
+                diario: diario,
+                x_variedad: false,
+                total: false,
+                desde: desde,
+                hasta: rest_dias(1),
+                id_variedad: '',
+            };
+
+            get_jquery('{{url('crm_postcosecha/buscar_reporte_cosecha_chart')}}', datos, function (retorno) {
+                $('#div_chart_cosecha').html(retorno);
+            });
+        }
+    }
 </script>

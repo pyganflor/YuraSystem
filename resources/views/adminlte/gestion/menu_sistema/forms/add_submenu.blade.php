@@ -35,6 +35,18 @@
             </div>
         </div>
     </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="form-group">
+                <label for="tipo">Tipo</label>
+                <select name="tipo" id="tipo" class="form-control" required>
+                    <option value="N">Normal</option>
+                    <option value="C">CRM</option>
+                    <option value="R">Reporte</option>
+                </select>
+            </div>
+        </div>
+    </div>
 </form>
 
 <script>

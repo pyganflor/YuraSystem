@@ -174,11 +174,11 @@
             for (c = 1; c <= col; c++) {
                 html_columnas += '<td class="text-center" style="border-color: #9d9d9d">' +
                     '<input type="number" id="ramos_marcacion_color_' + f + '_' + c + '" name="ramos_marcacion_color_' + f + '_' + c + '" onkeypress="return isNumber(event)"' +
-                    ' style="width: 150px" class="text-center input_ramos_marc_col_' + c + '" onchange="calcular_total_ramos(' + c + ',' + f + ')">' +
+                    ' style="width: 60px" class="text-center input_ramos_marc_col_' + c + '" onchange="calcular_total_ramos(' + c + ',' + f + ')">' +
                     '</td>';
                 titles_columnas += '<th class="text-center" style="border-color: #9d9d9d">' +
                     '<select id="titles_columnas_' + c + '" name="titles_columnas_' + c + '"' +
-                    ' style="width: 150px" class="text-center" onchange="seleccionar_color(' + c + ')">' +
+                    ' style="width: 60px" class="text-center" onchange="seleccionar_color(' + c + ')">' +
                     '<option value="">C # ' + c + '</option>' + $('#select_colores').html() +
                     '</select>' +
                     '</th>';
@@ -193,9 +193,9 @@
             }
             if (f == 0) {
                 $('#table_marcaciones_x_colores').append('<tr class="row_marcaciones_colores">' +
-                    '<th class="text-center" style="border-color: #9d9d9d; width: 350px">Color</th>' + titles_columnas +
-                    '<th class="text-center" style="border-color: #9d9d9d; width: 200px">Total</th>' +
-                    '<th class="text-center" style="border-color: #9d9d9d; width: 200px">Piezas</th>' +
+                    '<th class="text-center" style="border-color: #9d9d9d; width: 85px">Color</th>' + titles_columnas +
+                    '<th class="text-center" style="border-color: #9d9d9d; width: 60px">Total</th>' +
+                    '<th class="text-center" style="border-color: #9d9d9d; width: 60px">Piezas</th>' +
                     '</tr>');
             } else {
                 $('#table_marcaciones_x_colores').append('<tr class="row_marcaciones_colores">' +
@@ -205,11 +205,11 @@
                     '</th>' + html_columnas +
                     '<td class="text-center" style="border-color: #9d9d9d">' +
                     '<input type="text" class="text-center" readonly id="input_total_ramos_marcacion_' + f + '" value="0"' +
-                    ' style="background-color: #357CA5; color: white">' +
+                    ' style="background-color: #357CA5; color: white; width: 60px">' +
                     '</td>' +
                     '<td class="text-center" style="border-color: #9d9d9d">' +
                     '<input type="text" class="text-center" readonly id="input_total_piezas_' + f + '" value="0"' +
-                    ' style="background-color: #357CA5; color: white">' +
+                    ' style="background-color: #357CA5; color: white; width: 60px">' +
                     '</td>' +
                     '</tr>');
             }
@@ -217,20 +217,20 @@
 
         total_ramos = '';
         for (c = 1; c <= col; c++) {
-            total_ramos += '<td class="text-center" style="border-color: #9d9d9d; background-color: #357CA5">' +
+            total_ramos += '<td class="text-center" style="border-color: #9d9d9d">' +
                 '<input type="text" class="text-center" readonly id="input_total_ramos_' + c + '" value="0"' +
-                ' style="background-color: #357CA5; color: white">' +
+                ' style="background-color: #357CA5; color: white; width: 60px">' +
                 '</td>';
         }
         $('#table_marcaciones_x_colores').append('<tr class="row_marcaciones_colores">' +
             '<th class="text-center" style="border-color: #9d9d9d">Ramos</th>' + total_ramos +
             '<th class="text-center" style="border-color: #9d9d9d">' +
             '<input type="text" readonly id="total_ramos_' + fil + '_' + col + '" name="total_ramos_' + fil + '_' + col + '"' +
-            ' value="0" style="background-color: #9d9d9d; color: white; width: 100%" class="text-center">' +
+            ' value="0" style="background-color: #9d9d9d; color: white; width: 60px" class="text-center">' +
             '</th>' +
             '<th class="text-center" style="border-color: #9d9d9d">' +
             '<input type="text" readonly id="total_piezas_' + fil + '_' + col + '" name="total_piezas_' + fil + '_' + col + '"' +
-            ' value="0" style="background-color: #9d9d9d; color: white; width: 100%" class="text-center">' +
+            ' value="0" style="background-color: #9d9d9d; color: white; width: 60px" class="text-center">' +
             '</th>' +
             '</tr>');
     }

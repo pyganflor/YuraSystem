@@ -36,18 +36,28 @@ class ClasificacionBlancoController extends Controller
 
         $fecha_fin = opDiasFecha('+', 7, $fecha_min);
 
-        $fechas = DB::table('pedido as p')
+        $pedidos = DB::table('pedido as p')
             ->join('detalle_pedido as dp', 'dp.id_pedido', '=', 'p.id_pedido')
             ->join('cliente_pedido_especificacion as cpe', 'cpe.id_cliente_pedido_especificacion', '=', 'dp.id_cliente_especificacion')
             ->join('especificacion_empaque as ee', 'ee.id_especificacion', '=', 'cpe.id_especificacion')
             ->join('detalle_especificacionempaque as dee', 'dee.id_especificacion_empaque', '=', 'ee.id_especificacion_empaque')
-            ->select('p.fecha_pedido')->distinct()
+            ->select('p.id_pedido')->distinct()
             ->where('p.estado', '=', 1)
             ->where('p.empaquetado', '=', 0)
             ->where('dee.id_variedad', '=', $request->variedad)
             ->where('p.fecha_pedido', '<=', $fecha_fin)
             ->orderBy('p.fecha_pedido')
             ->get();
+
+        $ids_pedidos = [];
+        foreach ($pedidos as $id_ped) {
+            if (in_array($request->id_variedad, explode('|', getPedido($id_ped->id_pedido)->variedad)))
+                array_push($ids_pedidos, $id_ped->id_pedido);
+        }
+        $fechas = DB::table('pedido')
+            ->select('fecha_pedido')->distinct()
+            ->whereIn('id_pedido', $ids_pedidos)
+            ->orderBy('fecha_pedido')->get();
 
         $stock_apertura = StockEmpaquetado::All()->where('id_variedad', '=', $request->variedad)
             ->where('empaquetado', '=', 0)->first();
