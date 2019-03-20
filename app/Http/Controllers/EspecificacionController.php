@@ -37,23 +37,24 @@ class EspecificacionController extends Controller
         $estado     = $request->has('estado') ? $request->estado : '';
         $tipo       = $request->has('tipo') ? $request->tipo : '';
 
-        $listado = DB::table('especificacion as e');
+        $listado = Especificacion::where([
+                ['especificacion.tipo',($tipo != '' && $tipo != null) ? $tipo : 'N'],
+                ['especificacion.estado', $estado != '' ? $estado : 1]
+            ]);
 
         if($busqueda != '' && $busqueda != null)
-            $listado->where('e.nombre', 'like', '%' . $busqueda . '%');
+            $listado->where('especificacion.nombre', 'like', '%' . $busqueda . '%');
+
         if($id_cliente != '' && $id_cliente != 'undefined')
-            $listado->join('cliente_pedido_especificacion as cpe','e.id_especificacion','cpe.id_especificacion')
+            $listado->join('cliente_pedido_especificacion as cpe','especificacion.id_especificacion','cpe.id_especificacion')
                 ->join('detalle_cliente as dc','cpe.id_cliente','dc.id_cliente')
                 ->where([
                     ['cpe.id_cliente',$id_cliente],
                     ['dc.estado',1]
                 ]);
 
-        $listado = $listado->where([
-            ['e.tipo',($tipo != '' && $tipo != null) ? $tipo : 'N'],
-            ['e.estado',$estado != '' ? $estado : 1]
-        ])->orderBy('e.id_especificacion', 'desc')
-            ->select('e.id_especificacion','e.tipo','e.estado')->distinct()->paginate(20);
+        $listado = $listado->orderBy('especificacion.id_especificacion', 'desc')
+            ->select('especificacion.id_especificacion','especificacion.tipo','especificacion.estado')->distinct()->paginate(20);
         //dd($listado);
         $datos = [
             'listado' => $listado,
@@ -83,6 +84,7 @@ class EspecificacionController extends Controller
                 ['cliente.estado',1]
             ])->orderBy('dc.nombre','asc')->get(),
             'id_especificacion' => $request->id_especificacion,
+            'data_especificacion' => Especificacion::where('id_especificacion',$request->id_especificacion)->get(),
             'asginacion'  => ClientePedidoEspecificacion::where('id_especificacion',$request->id_especificacion)->select('id_cliente')->get()
         ]);
     }

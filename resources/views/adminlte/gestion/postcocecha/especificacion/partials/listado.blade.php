@@ -90,61 +90,96 @@
     </tr>
     </tbody>
 </table>
-        <table width="100%" class="table table-responsive table-bordered" style="border-color: #9d9d9d"
-               id="table_content_especificaciones">
-            <thead>
-            <tr style="background-color: #dd4b39; color: white">
-                {{--<th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
-                     NOMBRE ESPECIFACIÓN
-                 </th>--}}
-                {{--<th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
-                     TIPO
-                 </th>--}}
-                <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
-                    VARIEDAD
-                </th>
-                <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
-                    CALIBRE
-                </th>
-                <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
-                    CAJA
-                </th>
-                <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
-                    RAMO X CAJA
-                </th>
-                <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
-                    PRESENTACIÓN
-                </th>
-                <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
-                    TALLOS X RAMO
-                </th>
-                <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
-                    LONGITUD
-                </th>
-                {{--<th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
-                    DESCRIPCIÓN
-                </th>--}}
-                {{--<th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
-                    ESTADO
-                </th>--}}
-                <th style="width: 80px;border-color: #9d9d9d" class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}">
-                    OPCIONES
-                </th>
-            </tr>
-            </thead>
-
-            @if(sizeof($listado)>0)
-                @foreach($listado as $key => $item)
+<table width="100%" class="table table-responsive table-bordered" style="border-color: #9d9d9d" id="table_content_especificaciones">
+    <thead>
+    <tr style="background-color: #dd4b39; color: white">
+        <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
+            VARIEDAD
+        </th>
+        <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
+            CALIBRE
+        </th>
+        <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
+            CAJA
+        </th>
+        <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
+            RAMO X CAJA
+        </th>
+        <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
+            PRESENTACIÓN
+        </th>
+        <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
+            TALLOS X RAMO
+        </th>
+        <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
+            LONGITUD
+        </th>
+        <th style="width: 80px;border-color: #9d9d9d" class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}">
+            OPCIONES
+        </th>
+    </tr>
+    </thead>
+    @if(sizeof($listado)>0)
+        @php  $anterior = ''; @endphp
+        @foreach($listado as $x => $item)
+            @foreach($item->especificacionesEmpaque as $y => $esp_emp)
+                @foreach($esp_emp->detalles as $z => $det_esp_emp)
+                    <tr style="border-top: {{$item->id_especificacion != $anterior ? '2px solid #9d9d9d' : ''}}">
+                        <td style="border-color: #9d9d9d; padding: 0px; vertical-align: middle; width: 100px; "
+                            class="text-center">
+                            {{$det_esp_emp->variedad->nombre}}
+                        </td>
+                        <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;" class="text-center">
+                            {{$det_esp_emp->clasificacion_ramo->nombre}}
+                        </td>
+                        @if($z == 0)
+                            <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;" class="text-center"
+                                rowspan="{{count($esp_emp->detalles)}}">
+                                {{explode('|',$esp_emp->empaque->nombre)[0]}}
+                            </td>
+                        @endif
+                        <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;" class="text-center">
+                            {{$det_esp_emp->cantidad}}
+                        </td>
+                        <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;" class="text-center">
+                            {{$det_esp_emp->empaque_p->nombre}}
+                        </td>
+                        <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;" class="text-center">
+                            {{isset($det_esp_emp->tallos_x_ramos) ? $det_esp_emp->tallos_x_ramos : "-"}}
+                        </td>
+                        <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;" class="text-center">
+                            {{isset($det_esp_emp->longitud_ramo) ? $det_esp_emp->longitud_ramo." ".$det_esp_emp->unidad_medida->siglas : "-"}}
+                        </td>
+                        @if($item->id_especificacion != $anterior)
+                            <td style="border-color: #9d9d9d;padding: 0px 0px; vertical-align: middle;" class="text-center"
+                                id="td_precio_{{$x+1}}" rowspan="{{getCantDetEspEmp($item->id_especificacion)}}">
+                                @if($item->tipo == "N" && $item->estado == 1)
+                                    <button type="button" class="btn btn-default btn-xs" title="Ver asignaciones" onclick="asignar_especificacicon('{{$item->id_especificacion}}')">
+                                        <i class="fa fa-user-circle-o" aria-hidden="true"></i>
+                                    </button>
+                                @endif
+                                <a href="javascript:void(0)" class="btn btn-{{$item->estado == 1 ? 'danger':'success'}} btn-xs" title="{{$item->estado == 1 ? 'Deshabilitar':'Habilitar'}}"
+                                   onclick="update_especificacion('{{$item->id_especificacion}}','{{$item->estado}}','{{csrf_token()}}')">
+                                    <i class="fa fa-fw fa-{{$item->estado == 1 ? 'trash':'undo'}}" style="color: white" ></i>
+                                </a>
+                            </td>
+                        @endif
+                    </tr>
+                    @php  $anterior = $item->id_especificacion;  @endphp
+                @endforeach
+            @endforeach
+        @endforeach
+    @else
+        <div class="alert alert-info text-center">No se han encontrado coincidencias</div>
+    @endif
+    {{--@if(sizeof($listado)>0)
+        @foreach($listado as $key => $item)
                     <tr onmouseover="$(this).css('background-color','#add8e6')" onmouseleave="$(this).css('background-color','')"
                         class="{{$item->estado == 1 ? '':'error'}}" id="row_especificaciones_{{$item->id_especificacion}}">
-                       {{--<td style="border-color: #9d9d9d;vertical-align: middle;" class="text-center">
-                            {{$item->nombre_especificacion}}</td>--}}
                         @php $esp = getDetalleEspecificacion($item->id_especificacion);@endphp
-                        {{--<td style="border-color: #9d9d9d;padding: 0px 0px; vertical-align: middle;" class="text-center">  {{$item->tipo == "N" ? "Normal": "Otros"}} </td>--}}
                         <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;" class="text-center">
                             <ul style="padding: 0;margin:0">
                             @foreach($esp as $key => $e)
-
                                <li style="list-style: none;{{count($esp) != 1 ? "border-bottom: 1px solid silver" : ""}}">
                                    {{$e["variedad"]}}
                                </li>
@@ -162,10 +197,17 @@
                         </td>
                         <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;" class="text-center">
                             <ul style="padding: 0;margin:0">
-                                @foreach($esp as $e)
-                                    <li style="list-style: none;{{count($esp) != 1 ? "border-bottom: 1px solid silver" : ""}}">
-                                        {{$e["caja"]}}
-                                    </li>
+                                @php $b = 1; @endphp
+                                @foreach($esp as $f => $e)
+                                    @for($a=1;$a<=getCantDetEspEmp($e["id_especificacion_empaque"]); $a++)
+
+                                        @if(($f+1) == $b)
+                                        <li style="list-style: none;{{count($esp) != 1 ? "border-bottom: 1px solid silver" : ""}}">
+                                            {{$e["caja"]}}
+                                        </li>
+                                        @endif
+                                          @php $b++ @endphp
+                                    @endfor
                                 @endforeach
                             </ul>
                         </td>
@@ -205,8 +247,6 @@
                                 @endforeach
                             </ul>
                         </td>
-                        {{--<td style="border-color: #9d9d9d" class="text-center"> {{$item->descripcion}}</td>--}}
-                        {{--<td style="border-color: #9d9d9d;padding: 0px 0px; vertical-align: middle;" class="text-center">  {{$item->estado == 0 ? "Descativado": "Activo"}} </td>--}}
                         <td style="border-color: #9d9d9d;padding: 0px 0px; vertical-align: middle;" class="text-center">
                             @if($item->tipo == "N" && $item->estado == 1)
                             <button type="button" class="btn btn-default btn-xs" title="Ver asignaciones" onclick="asignar_especificacicon('{{$item->id_especificacion}}')">
@@ -220,12 +260,12 @@
                         </td>
                     </tr>
                 @endforeach
-            @else
-                <div class="alert alert-info text-center">No se han encontrado coincidencias</div>
-            @endif
-        </table>
-        <div id="pagination_listado_especificaciones">
-            {!! str_replace('/?','?',$listado->render()) !!}
-        </div>
+    @else
+        <div class="alert alert-info text-center">No se han encontrado coincidencias</div>
+    @endif--}}
+</table>
+<div id="pagination_listado_especificaciones">
+    {!! str_replace('/?','?',$listado->render()) !!}
+</div>
 </div>
 

@@ -61,7 +61,7 @@
                                 {{$det_esp_emp->empaque_p->nombre}}
                             </td>
                             <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;" class="text-center">
-                                {{$det_esp_emp->tallos_x_ramo}}
+                                {{$det_esp_emp->tallos_x_ramos}}
                             </td>
                             <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;" class="text-center">
                                 @if($det_esp_emp->longitud_ramo != '' && $det_esp_emp->id_unidad_medida != '')

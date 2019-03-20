@@ -30,16 +30,16 @@
                    id="table_content_recepciones">
                 <thead>
                 <tr style="border: none; border-color: white">
-                    <th colspan="9" style="border: none;padding: 0 0 5px ;">
+                    <tr style="border: none;padding: 0 0 5px ;">
                         @if(!$pedido_fijo)
-                            <div class="col-md-3">
+                            <td colspan="4" style="border: none;">
                                 <label for="Fecha de entrega" style="font-size: 11pt">Fecha de entrega</label>
                                 <input type="date" id="fecha_de_entrega" name="fecha_de_entrega" onchange="buscar_saldos($(this).val(), 3, 3)"
                                        value="{{\Carbon\Carbon::now()->toDateString()}}" class="form-control" required>
-                            </div>
+                            </td>
                         @endif
                         @if($vista === 'pedidos')
-                            <div class="col-md-6">
+                            <td colspan="4  " style="border: none;">
                                 <label for="Cliente" style="font-size: 11pt">Cliente</label>
                                 <select class="form-control" id="id_cliente_venta" name="id_cliente_venta"
                                         onchange="cargar_espeicificaciones_cliente(true)" required>
@@ -48,11 +48,17 @@
                                         <option value="{{$cliente->id_cliente}}"> {{$cliente->nombre}} </option>
                                     @endforeach
                                 </select>
-                            </div>
+                            </td>
+                            <td colspan="4" style="border:none"></td>
+                            <td style="border:none;vertical-align: bottom;" class="hide text-center" id="btn_remove_especificacicon">
+                                <button type='button' class='btn btn-xs btn-danger' onclick='borrar_duplicado()'>
+                                    <i class='fa fa-fw fa-trash'></i>
+                                </button>
+                            </td>
                         @else
                             <input type="hidden" value="{{$idCliente}}" id="id_cliente_venta">
                         @endif
-                    </th>
+                    </tr>
                     <th style="border: none"></th>
                     {{-- <th style="border: none;text-align: right">
                        <button type="button" id="btn_add_campos" onclick="add_campos(1,'{{$idCliente}}')" class="btn btn-success btn-xs"><i
@@ -66,10 +72,10 @@
                         style="border-color: #9d9d9d;width: 80px">
                         PIEZAS
                     </th>
-                    <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
+                   {{--<th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
                         style="border-color: #9d9d9d;width: 50px">
                         CAJAS FULL
-                    </th>
+                    </th>--}}
                     <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
                         VARIEDAD
                     </th>
@@ -96,7 +102,11 @@
                     </th>
                     <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
                         style="border-color: #9d9d9d;width:100px">
-                        PRECIO
+                        PRECIO X VARIEDAD
+                    </th>
+                    <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
+                        style="border-color: #9d9d9d;width:100px">
+                        PRECIO X ESPECIFICACIÓN
                     </th>
                     <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
                         style="border-color: #9d9d9d">
@@ -109,13 +119,23 @@
                 </tr>
                 </thead>
                 <tbody id="tbody_inputs_pedidos"></tbody>
-                <table>
+                <table style="width: 100%;text-align: right;margin-top:20px">
                     <tr>
+                        <td><b>TOTAL DE RAMOS:</b></td>
+                        <td style="vertical-align: middle;font-size: 14px;text-align: right; width: 80px;" id="total_ramos">0</td>
+                    </tr>
+                    <tr>
+                        <td><b>MONTO DEL PEDIDO:</b></td>
+                        <td id="monto_total_pedido" style="font-size: 14px;vertical-align: middle;text-align:rigth">$0.00</td>
+                    </tr>
+                </table>
+                <table style="width: 100%;">
+                    {{--<tr>
                         <td>
                             <label for="Descripcion">Descripcion</label>
                             <textarea name="descripcion" id="descripcion" cols="200" rows="5" class="form-control"></textarea>
                         </td>
-                    </tr>
+                    </tr>--}}
                     <tr>
                         <td class="text-center" style="padding: 10px 0px 0px">
                             <button class="btn btn-success" type="button" id="btn_guardar_modal_add_cliente"
@@ -153,9 +173,18 @@
             });
         }
 
-        function cambiar_input_precio(id_det) {
-            $('#td_precio_' + id_det).html('<input type="number" id="precio_' + id_det + '" ' +
-                'name="precio_' + id_det + '" class="text-center" style="background-color: beige; width: 100%">');
+        function cambiar_input_precio(idDetEmp,id_precio,posicon_variedad) {
+            $('#td_precio_variedad_'+ idDetEmp+'_'+id_precio).html('<input type="number" id="precio_' + id_precio + '_' + posicon_variedad + '" ' +
+                'name="precio_' + idDetEmp + '" min="0" onchange="calcular_precio_pedido()" class="form-control text-center precio_'+id_precio+'" style="background-color: beige; width: 100%">');
+        }
+        
+        function borrar_duplicado() {
+            $(".tr_remove_"+$("#cant_esp").val()).remove();
+            if(parseInt($("#cant_esp_fijas").val()) != parseInt($("#cant_esp").val()))
+                $("#cant_esp").val(parseInt($("#cant_esp").val())-1);
+            if(parseInt($("#cant_esp_fijas").val()) == parseInt($("#cant_esp").val()))
+                $("#btn_remove_especificacicon").addClass('hide');
+            calcular_precio_pedido();
         }
 
     </script>
