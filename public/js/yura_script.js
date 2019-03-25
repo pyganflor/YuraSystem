@@ -139,8 +139,8 @@ function habilitar_campos() {
 function store_pedido(id_cliente, pedido_fijo, csrf_token, vista, id_pedido) {
     if ($('#form_add_pedido').valid()) {
         id_pedido
-            ?  texto = 'Si este pedido posee envíos al editarlo seran borrados y deberá crearlos nuevamente'
-            : texto = 'Desea guardar este pedido?';
+            ? texto = '<div class="alert alert-warning text-center"><p>Si este pedido posee envíos al editarlo seran borrados y deberá crearlos nuevamente</p></div>'
+            : texto = '<div class="alert alert-info text-center"><p>Desea guardar este pedido?</p></div>';
 
         modal_quest('modal_edit_pedido', texto, 'Editar pedido', true, false, '40%', function () {
             id_variedades = '';
@@ -780,7 +780,6 @@ function calcular_precio_pedido(input) {
             }
         }
     }
-
     monto_total = 0.00;
     total_ramos = 0.00;
     cant_rows = $(".input_cantidad").length;
@@ -792,7 +791,7 @@ function calcular_precio_pedido(input) {
                 ramos_totales_especificacion += (q.value * b.value);
             });
             $.each($(".precio_" + i), function (y, z) {
-                precio_variedad = z.value;
+                precio_variedad = z.value == "" ? 0 : z.value;
                 ramos_x_caja = $(".input_ramos_x_caja_"+i+"_"+(y+1)).val();
                 precio_especificacion += (parseFloat(precio_variedad)*parseFloat(ramos_x_caja)*q.value);
             });
@@ -859,3 +858,9 @@ function formatear_numero(numero) {
         return numero
 }
 
+function setValueInput(input,value,calcular){
+    if(input.value == "" || input.value == undefined)
+        $("#"+input.id).val(value);
+    if(calcular)
+        calcular_precio_pedido();
+}

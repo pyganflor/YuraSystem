@@ -42,14 +42,10 @@
                     $("#fecha_de_entrega").val(retorno.pedido[0].fecha_pedido);
                     calcular_precio_pedido();
                     //$("#descripcion").val(retorno[0].descripcion);
-                }).always(function () {
-                    $.LoadingOverlay('hide');
                 });
-
-            })
-            /*.always(function () {
-                        $.LoadingOverlay('hide');
-                    });*/
+            }).always(function () {
+                $.LoadingOverlay('hide');
+            });
         }, 300);
 
     }
