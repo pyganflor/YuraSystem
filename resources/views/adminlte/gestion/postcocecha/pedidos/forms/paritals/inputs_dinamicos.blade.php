@@ -1,4 +1,3 @@
-<form id="form_add_pedido">
     <table width="100%" class="table-responsive table-bordered" style="font-size: 0.8em; border-color: white" id="table_content_recepciones">
         <thead>
         <tr style="background-color: #dd4b39; color: white">
@@ -167,5 +166,5 @@
             @endif
         </tbody>
     </table>
-</form>
+
 
