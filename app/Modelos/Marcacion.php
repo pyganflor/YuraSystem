@@ -48,6 +48,7 @@ class Marcacion extends Model
         $r = Coloracion::where('id_marcacion', $this->id_marcacion)
             ->where('id_color', $color)
             ->where('id_detalle_especificacionempaque', $det_esp)->first();
+        return $r;
     }
 
     public function getTotalRamos()

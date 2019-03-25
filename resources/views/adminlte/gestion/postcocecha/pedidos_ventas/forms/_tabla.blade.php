@@ -51,14 +51,74 @@
                                             <span class="input-group-addon" style="background-color: #e9ecef">
                                                 P-{{$pos_det_esp + 1}}
                                             </span>
-                                            <input type="number" value="{{getMarcacion($marca->id_marcacion)}}"
+                                            @php
+                                                $coloracion = getMarcacion($marca->id_marcacion)->getColoracionByColorDetEsp($color->id_color, $det_esp->id_detalle_especificacionempaque);
+                                            @endphp
+                                            <input type="number"
+                                                   value="{{$coloracion != '' ? $coloracion->cantidad : ''}}"
                                                    id="ramos_marcacion_{{$pos_marca}}_{{$pos_color}}_{{$det_esp->id_detalle_especificacionempaque}}"
                                                    name="ramos_marcacion_{{$pos_marca}}_{{$pos_color}}_{{$det_esp->id_detalle_especificacionempaque}}"
                                                    onkeypress="return isNumber(event)"
                                                    style="width: 100%; background-color: {{getColor($color->id_color)->fondo}};
                                                            color: {{getColor($color->id_color)->texto}}"
                                                    class="text-center elemento_color_{{$pos_color}}"
-                                                   onchange="calcular_totales()">
+                                                   onchange="calcular_totales_tinturado()">
+                                        </div>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        </th>
+                    @endforeach
+                    @if(count($esp_emp->detalles) > 1)
+                        <th class="text-center" style="border-color: #9d9d9d;" width="100px">
+                            <ul class="list-unstyled">
+                                @foreach($esp_emp->detalles as $pos_det_esp => $det_esp)
+                                    <li>
+                                        <div class="input-group" style="width: 100px">
+                                            <span class="input-group-addon" style="background-color: #e9ecef">
+                                                P-{{$pos_det_esp + 1}}
+                                            </span>
+                                            <input type="number"
+                                                   id="parcial_marcacion_{{$pos_marca}}_{{$det_esp->id_detalle_especificacionempaque}}"
+                                                   name="parcial_marcacion_{{$pos_marca}}_{{$det_esp->id_detalle_especificacionempaque}}"
+                                                   style="width: 100%; background-color: #357ca5; color: white" readonly
+                                                   class="text-center">
+                                        </div>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        </th>
+                    @endif
+                    <td class="text-center" style="border-color: #9d9d9d">
+                        <input type="text" id="total_ramos_marcacion_{{$pos_marca}}" name="total_ramos_marcacion_{{$pos_marca}}" readonly
+                               class="text-center" value="{{getMarcacion($marca->id_marcacion)->ramos}}"
+                               style="background-color: #357ca5; color: white; width: 85px">
+                    </td>
+                    <td class="text-center" style="border-color: #9d9d9d">
+                        <input type="text" id="total_piezas_marcacion_{{$pos_marca}}" name="total_piezas_marcacion_{{$pos_marca}}" readonly
+                               class="text-center" value="{{getMarcacion($marca->id_marcacion)->piezas}}"
+                               style="background-color: #357ca5; color: white; width: 85px">
+                    </td>
+                </tr>
+            @endforeach
+            <tr>
+                <td class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef"
+                    rowspan="{{count($esp_emp->detalles) > 1 ? 2 : ''}}">
+                    Totales
+                </td>
+                @if(count($esp_emp->detalles) > 1)
+                    @foreach($det_ped->getDistinctMarcacionesColoracionesByEspEmp($esp_emp->id_especificacion_empaque)['coloraciones'] as $pos_color => $color)
+                        <th class="text-center" style="border-color: #9d9d9d;" width="100px">
+                            <ul class="list-unstyled">
+                                @foreach($esp_emp->detalles as $pos_det_esp => $det_esp)
+                                    <li>
+                                        <div class="input-group" style="width: 100px">
+                                            <span class="input-group-addon" style="background-color: #e9ecef">
+                                                P-{{$pos_det_esp + 1}}
+                                            </span>
+                                            <input type="number" id="parcial_color_{{$pos_color}}_{{$det_esp->id_detalle_especificacionempaque}}"
+                                                   name="parcial_color_{{$pos_color}}_{{$det_esp->id_detalle_especificacionempaque}}"
+                                                   readonly style="width: 100%; background-color: #357ca5; color: white" class="text-center">
                                         </div>
                                     </li>
                                 @endforeach
@@ -70,20 +130,30 @@
                             @foreach($esp_emp->detalles as $pos_det_esp => $det_esp)
                                 <li>
                                     <div class="input-group" style="width: 100px">
-                                            <span class="input-group-addon" style="background-color: #e9ecef">
-                                                P-{{$pos_det_esp + 1}}
-                                            </span>
-                                        <input type="number" id="ramos_marcacion_color_1_1_1_det_1"
-                                               name="ramos_marcacion_color_1_1_1_det_1" onkeypress="return isNumber(event)"
-                                               style="width: 100%; background-color: #357ca5; color: white"
-                                               class="text-center input_ramos_marc_col_1_1"
-                                               onchange="calcular_total_ramos_x_esp(1,1, 1, 1)" value=""></div>
+                                        <span class="input-group-addon" style="background-color: #e9ecef">
+                                            P-{{$pos_det_esp + 1}}
+                                        </span>
+                                        <input type="number" id="parcial_{{$det_esp->id_detalle_especificacionempaque}}"
+                                               name="parcial_{{$det_esp->id_detalle_especificacionempaque}}"
+                                               style="width: 100%; background-color: #357ca5; color: white" readonly class="text-center">
+                                    </div>
                                 </li>
                             @endforeach
                         </ul>
                     </th>
-                </tr>
-            @endforeach
+                @endif
+
+                <td class="text-center" style="border-color: #9d9d9d">
+                    <input type="text" id="total_ramos_marcacion_{{$pos_marca}}" name="total_ramos_marcacion_{{$pos_marca}}" readonly
+                           class="text-center" value="{{getMarcacion($marca->id_marcacion)->ramos}}"
+                           style="background-color: #357ca5; color: white; width: 85px">
+                </td>
+                <td class="text-center" style="border-color: #9d9d9d">
+                    <input type="text" id="total_piezas_marcacion_{{$pos_marca}}" name="total_piezas_marcacion_{{$pos_marca}}" readonly
+                           class="text-center" value="{{getMarcacion($marca->id_marcacion)->piezas}}"
+                           style="background-color: #357ca5; color: white; width: 85px">
+                </td>
+            </tr>
         </table>
     </div>
 @endforeach
