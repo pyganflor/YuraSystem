@@ -43,18 +43,11 @@ class Marcacion extends Model
         return $this->hasMany('\yura\Modelos\Distribucion', 'id_marcacion');
     }
 
-    public function getColoracionByName($nombre)
+    public function getColoracionByColorDetEsp($color, $det_esp)
     {
-        $r = DB::table('coloracion as c')
-            ->select('c.*')
-            ->where('c.id_marcacion', '=', $this->id_marcacion)
-            ->where('c.nombre', '=', $nombre)
-            ->first();
-
-        if ($r != '')
-            return Coloracion::find($r->id_coloracion);
-        else
-            return '';
+        $r = Coloracion::where('id_marcacion', $this->id_marcacion)
+            ->where('id_color', $color)
+            ->where('id_detalle_especificacionempaque', $det_esp)->first();
     }
 
     public function getTotalRamos()
