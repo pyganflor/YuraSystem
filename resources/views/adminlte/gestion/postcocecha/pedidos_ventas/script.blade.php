@@ -23,6 +23,37 @@
         });
     }
 
+    function editar_pedido(id_cliente, id_pedido) {
+        add_pedido('', '', 'pedidos', id_pedido);
+        datos = {
+            id_cliente: id_cliente,
+            id_pedido: id_pedido
+        };
+        setTimeout(function () {
+            $.get('{{url('clientes/inputs_pedidos_edit')}}', datos, function (retorno) {
+                $("#table_campo_pedido").html(retorno);
+                $('select#id_cliente_venta option[value=' + id_cliente + ']').attr('selected', true);
+                $('select#id_cliente_venta').attr('disabled', true);
+                datos = {
+                    id_pedido: id_pedido,
+                };
+
+                $.get('{{url('pedidos/editar_pedido')}}', datos, function (retorno) {
+                    $("#fecha_de_entrega").val(retorno.pedido[0].fecha_pedido);
+                    calcular_precio_pedido();
+                    //$("#descripcion").val(retorno[0].descripcion);
+                }).always(function () {
+                    $.LoadingOverlay('hide');
+                });
+
+            })
+            /*.always(function () {
+                        $.LoadingOverlay('hide');
+                    });*/
+        }, 300);
+
+    }
+
     function add_pedido_personalizado() {
         get_jquery('{{url('pedidos/add_pedido_personalizado')}}', {}, function (retorno) {
             modal_view('modal_view_add_pedido_personalizado', retorno, '<i class="fa fa-fw fa-gift"></i> Pedidos personalzados', true, false,
@@ -60,4 +91,5 @@
                 '{{isPC() ? '98%' : ''}}');
         }, 'td_opciones_' + id_pedido);
     }
+
 </script>

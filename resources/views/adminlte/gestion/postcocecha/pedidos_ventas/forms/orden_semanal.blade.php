@@ -31,6 +31,9 @@
                     Nº Empaque
                 </th>
                 <th class="text-center" style="border-color: #9d9d9d">
+                    Nº Presentación
+                </th>
+                <th class="text-center" style="border-color: #9d9d9d">
                     VARIEDAD
                 </th>
                 <th class="text-center" style="border-color: #9d9d9d">
@@ -85,6 +88,9 @@
                                 EMP-{{$pos_esp_emp + 1}}
                             </td>
                         @endif
+                        <td class="text-center" style="border-color: #9d9d9d">
+                            P-{{$pos_det_esp + 1}}
+                        </td>
                         <td class="text-center" style="border-color: #9d9d9d">
                             {{$det_esp->variedad->nombre}}
                         </td>

@@ -6,7 +6,7 @@
                 @if($id_especificacion != $anterior)
                     <td style="border-color: #9d9d9d; padding: 0px; vertical-align: middle; width: 100px; "
                         class="text-center" rowspan="{{getCantidadDetallesByEspecificacion($id_especificacion)}}">
-                        <input type="number" min="0" id="cantidad_piezas_{{($cant_esp+1)}}" style="border: none" onchange="calcular_precio_pedido()"
+                        <input type="number" min="0" id="cantidad_piezas_{{($cant_esp+1)}}" style="border: none" onchange="calcular_precio_pedido(this)"
                                name="cantidad_piezas_{{$id_especificacion}}" class="text-center form-control cantidad_{{($cant_esp+1)}} input_cantidad" value="">
                         <input type="hidden" id="id_cliente_pedido_especificacion_{{($cant_esp+1)}}" value="{{getClienteEspecificacion($id_cliente,$id_especificacion)->id_cliente_pedido_especificacion}}">
                     </td>

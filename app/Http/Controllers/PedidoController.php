@@ -136,16 +136,15 @@ class PedidoController extends Controller
                         $objDetallePedido->precio = substr($item['precio'], 0, -1);
                         if ($objDetallePedido->save()) {
                             $modelDetallePedido = DetallePedido::all()->last();
-                            if($request->arrDatosExportacion!='')
-                                //foreach ($request->arrDatosExportacion as $datosExportacion){
-                                    foreach ($request->arrDatosExportacion[$key] as $de){
-                                        $objDetallePedidoDatoExportacion = new DetallePedidoDatoExportacion;
-                                        $objDetallePedidoDatoExportacion->id_detalle_pedido = $modelDetallePedido->id_detalle_pedido;
-                                        $objDetallePedidoDatoExportacion->id_dato_exportacion = $de['id_dato_exportacion'];
-                                        $objDetallePedidoDatoExportacion->valor = $de['valor'];
-                                        $objDetallePedidoDatoExportacion->save();
-                                    }
-                                //}
+                            if($request->arrDatosExportacion!=''){
+                                foreach ($request->arrDatosExportacion[$key] as $de){
+                                    $objDetallePedidoDatoExportacion = new DetallePedidoDatoExportacion;
+                                    $objDetallePedidoDatoExportacion->id_detalle_pedido = $modelDetallePedido->id_detalle_pedido;
+                                    $objDetallePedidoDatoExportacion->id_dato_exportacion = $de['id_dato_exportacion'];
+                                    $objDetallePedidoDatoExportacion->valor = $de['valor'];
+                                    $objDetallePedidoDatoExportacion->save();
+                                }
+                            }
                             $success = true;
                             $msg = '<div class="alert alert-success text-center">' .
                                 '<p> Se ha guardado el pedido exitosamente</p>'
