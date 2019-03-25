@@ -73,7 +73,6 @@ class EspecificacionController extends Controller
                 ['estado',1]
             ])->get()
         ];
-        //dd($datos);
         return view('adminlte.gestion.postcocecha.especificacion.partials.listado', $datos);
     }
 
@@ -115,7 +114,6 @@ class EspecificacionController extends Controller
         $existDetallePedido = 0;
         if($cliente_especificacion != null)
             $existDetallePedido = DetallePedido::where('id_cliente_especificacion',$cliente_especificacion->id_cliente_pedido_especificacion)->count();
-
         return $existDetallePedido;
     }
 

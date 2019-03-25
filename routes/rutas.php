@@ -59,6 +59,7 @@ Route::group(['middleware' => 'autenticacion'], function () {
         include 'postcocecha/especificacion.php';
         include 'postcocecha/cajas_presentaciones.php';
         include 'postcocecha/precio.php';
+        include 'postcocecha/dato_exportacion.php';
 
         /* ========================== CRM ========================*/
         include 'crm/postcosecha.php';

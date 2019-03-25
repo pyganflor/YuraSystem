@@ -17,6 +17,7 @@ use yura\Modelos\Envio;
 use Carbon\Carbon;
 use yura\Modelos\Especificacion;
 use yura\Modelos\AgenciaCarga;
+use yura\Modelos\DatosExportacion;
 
 class PedidoVentaController extends Controller
 {
@@ -102,111 +103,28 @@ class PedidoVentaController extends Controller
 
     public function editar_pedido(Request $request)
     {
-        return Pedido::where([
+        $pedido = Pedido::where([
             ['pedido.id_pedido', $request->id_pedido],
             ['dc.estado', 1]
         ])->join('detalle_pedido as dp', 'pedido.id_pedido', 'dp.id_pedido')
             ->join('detalle_cliente as dc', 'pedido.id_cliente', 'dc.id_cliente')
             ->join('cliente_pedido_especificacion as cpe', 'dp.id_cliente_especificacion', 'cpe.id_cliente_pedido_especificacion')
             ->select('dp.cantidad as cantidad_especificacion', 'dp.precio','dp.id_agencia_carga', 'dc.id_cliente', 'pedido.fecha_pedido', 'pedido.descripcion', 'cpe.id_especificacion')->get();
+            return [
+                'pedido' =>$pedido,
+            ];
     }
 
     public function duplicar_especificacion(Request $request){
-        $clienteEspecificacion = DB::table('cliente_pedido_especificacion as cpe')
-            ->join('especificacion as esp', 'cpe.id_especificacion', '=', 'esp.id_especificacion')
-            ->where([
-                ['cpe.id_cliente', $request->id_cliente],
-                ['esp.id_especificacion',$request->id_especificacion]
-            ])->select('cpe.id_cliente_pedido_especificacion')->first();
         $agenciasCarga = AgenciaCarga::where('c_ac.id_cliente',$request->id_cliente)
             ->join('cliente_agenciacarga as c_ac','agencia_carga.id_agencia_carga','c_ac.id_agencia_carga')->get();
-        $html= '';
-        $a = 1;
-        $total_precio_variedad = 0.00;
-        $identificador_especificacion = $request->cant_esp+1;
-        $tdRowspan = getCantidadDetallesByEspecificacion($request->id_especificacion);
-        $b=1;
-        foreach(getEspecificacion($request->id_especificacion)->especificacionesEmpaque as $y => $esp_emp){
-            foreach($esp_emp->detalles as $z => $det_esp_emp){
-                $options_precios = "";
-                $options_agencias_carga = "";
-                $html .="<tr style='border-top: 2px solid #9d9d9d' class='tr_remove_".$identificador_especificacion."'>";
-                if($a==1)
-                $html .= "<td style='border-color: #9d9d9d; padding: 0px; vertical-align: middle; width: 100px; '
-                            class='text-center' rowspan='".$tdRowspan."'>
-                            <input type='number' min='0' id='cantidad_piezas_".$identificador_especificacion."' style='border: none' onchange='calcular_precio_pedido()'
-                                   name='cantidad_piezas_".$request->id_especificacion."' class='input_cantidad text-center form-control cantidad_".$identificador_especificacion."'>
-                                   <input type='hidden' id='id_cliente_pedido_especificacion_".$identificador_especificacion."' value='".$clienteEspecificacion->id_cliente_pedido_especificacion."'>
-                         </td>";
-                $html .= "<td style='border-color: #9d9d9d; padding: 0px; vertical-align: middle; width: 60px;'  class='text-center'>"
-                            .$det_esp_emp->variedad->siglas.
-                            "<input type='hidden' class='input_variedad_".$identificador_especificacion."' id='id_variedad_".$identificador_especificacion."_".$b."' value='".$det_esp_emp->variedad->id_variedad."'>";
-                         "</td>";
-                $html .= "<td style='border-color: #9d9d9d; padding: 0px; vertical-align: middle; width: 60px;'  class='text-center'>"
-                            .$det_esp_emp->clasificacion_ramo->nombre." ".$det_esp_emp->clasificacion_ramo->unidad_medida->siglas.
-                            "<input type='hidden' id='id_detalle_especificacion_empaque_".$identificador_especificacion."_".$b."' value='".$det_esp_emp->id_detalle_especificacionempaque."'>";
-                         "</td>";
-                if($z == 0)
-                $html .= "<td style='border-color: #9d9d9d; padding: 0px; vertical-align: middle; width: 60px;'  class='text-center'  rowspan=".count($esp_emp->detalles).">"
-                                .explode('|',$esp_emp->empaque->nombre)[0].
-                         "</td>";
-                $html .= "<td style='border-color: #9d9d9d; padding: 0px; vertical-align: middle; width: 60px;'  class='text-center'>"
-                            .$det_esp_emp->empaque_p->nombre.
-                         "</td>";
-                $html .= "<td style='border-color: #9d9d9d; padding: 0px; vertical-align: middle; width: 60px;'  class='text-center'>"
-                            .$det_esp_emp->cantidad.
-                            "<input type='hidden' class='input_ramos_x_caja_".$identificador_especificacion.'_'.$b."  td_ramos_x_caja_".$identificador_especificacion."' value='".$det_esp_emp->cantidad."'>";
-                         "</td>";
-                if($a==1)
-                $html .= "<td id='td_total_ramos_".$identificador_especificacion."' style='border-color: #9d9d9d; padding: 0px; vertical-align: middle; width: 60px;'  class='text-center' rowspan='".$tdRowspan."'></td>";
-                $html .= "<td style='border-color: #9d9d9d; padding: 0px; vertical-align: middle; width: 60px;'  class='text-center'>"
-                            .$det_esp_emp->tallos_x_ramos.
-                         "</td>";
-                $html .= "<td style='border-color: #9d9d9d; padding: 0px; vertical-align: middle; width: 60px;'  class='text-center'>"
-                            .(($det_esp_emp->longitud_ramo != '' && $det_esp_emp->id_unidad_medida != '') == 1 ? $det_esp_emp->longitud_ramo.' '.$det_esp_emp->unidad_medida->siglas : '-').
-                        "</td>";
-                foreach(explode('|',getPrecioByClienteDetEspEmp($request->id_cliente, $det_esp_emp->id_detalle_especificacionempaque)->cantidad) as $precio){
-                    $options_precios .= "<option value=".$precio.">".$precio."</option>";
-                }
-                $html .= "<td id='td_precio_variedad_".$det_esp_emp->id_detalle_especificacionempaque."_".$identificador_especificacion."' style='border-color: #9d9d9d; padding: 0px; vertical-align: middle; width: 60px;'  class='text-center'>";
-                    if(getPrecioByClienteDetEspEmp($request->id_cliente, $det_esp_emp->id_detalle_especificacionempaque) != ''){
-                        $htmlb ="<select name='precio_".$det_esp_emp->id_detalle_especificacionempaque."'
-                                     ondblclick='cambiar_input_precio($det_esp_emp->id_detalle_especificacionempaque,$identificador_especificacion,$b)'
-                                     id='precio_".$identificador_especificacion."_".$b."' style='background-color: beige; width: 100%' onchange='calcular_precio_pedido()' class='form-control precio_".$identificador_especificacion."' required>"
-                            .$options_precios.
-                            "</select>";
-                    }else{
-                        $htmlb = "<input type='number'
-                                   name='precio_".$identificador_especificacion."' id='precio_".$identificador_especificacion."_".$b."' class='form-control text-center precio_".$identificador_especificacion." form-control'
-                                   style='background-color: beige; width: 100%' onchange='calcular_precio_pedido()' min='0' value='0' required>";
-                    }
-                    $html .= $htmlb."</td>";
-                if($a==1)
-                $html .= "<td id='td_precio_especificacion_".$identificador_especificacion."' style='border-color: #9d9d9d; padding: 0px; vertical-align: middle; width: 60px;'  class='text-center' rowspan='".$tdRowspan."'>               
-                         </td>";
-                if($a==1) {
-                    foreach($agenciasCarga as $ac){
-                        $options_agencias_carga .= "<option value=".$ac->id_agencia_carga.">".$ac->nombre."</option>";
-                    }
-                    $html .= "<td style='border-color: #9d9d9d; padding: 0px; vertical-align: middle; width: 60px;'  class='text-center' rowspan='" . $tdRowspan . "'>
-                                    <select name='id_agencia_carga_".$request->id_especificacion."' id='id_agencia_carga_".$identificador_especificacion."'
-                                         class='text-center form-control' style='border: none; width: 100%'>
-                                             ".$options_agencias_carga."                      
-                                    </select>
-                             </td>";
-                }
-                if($a==1){
-                    $html .= "<td style='border-color: #9d9d9d; padding: 0px; vertical-align: middle; width: 60px;'  class='text-center' rowspan='".$tdRowspan."'>
-                                 <button type='button' title='Duplicar especificación' class='btn btn-xs btn-primary' onclick='duplicar_especificacion($request->id_especificacion)'>
-                                     <i class='fa fa-fw fa-copy'></i>
-                                 </button>
-                             </td>";
-                }
-                $html .= "</tr>";
-                $b++;
-                $a++;
-            }
-        }
-        return $html;
+        return view('adminlte.gestion.postcocecha.pedidos.forms.paritals.duplicar_especificacion',[
+            'id_especificacion' => $request->id_especificacion,
+            'agenciasCarga' => $agenciasCarga,
+            'cant_esp' => $request->cant_esp,
+            'id_cliente' => $request->id_cliente,
+            'datos_exportacion' => DatosExportacion::join('cliente_datoexportacion as cde','dato_exportacion.id_dato_exportacion','cde.id_dato_exportacion')
+                ->where('id_cliente',$request->id_cliente)->get(),
+        ]);
     }
 }

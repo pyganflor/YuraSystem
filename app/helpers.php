@@ -43,8 +43,12 @@ use yura\Modelos\ClientePedidoEspecificacion;
 use yura\Modelos\AgenciaCarga;
 use yura\Modelos\DetallePedido;
 use yura\Modelos\Precio;
+<<<<<<< HEAD
 use yura\Modelos\Color;
 use yura\Modelos\Marcacion;
+=======
+use yura\Modelos\DetallePedidoDatoExportacion;
+>>>>>>> e0a93478826ff7bd8e67590ee62fdc60b87d83dd
 
 /*
  * -------- BITÁCORA DE LAS ACCIONES ECHAS POR EL USUARIO ------
@@ -1484,6 +1488,21 @@ function getOptionsPrecios($idCliente, $idEspecificacion)
         ['id_especificacion', $idEspecificacion]
     ])->select('precio')->first();
     return explode("|", $data->precio);
+}
+
+function getDatosExportacion($id_detalle_pedido,$id_dato_exportacion){
+    return DetallePedidoDatoExportacion::where([
+        ['id_detalle_pedido',$id_detalle_pedido],
+        ['id_dato_exportacion',$id_dato_exportacion]
+    ])->first();
+}
+
+function getClienteEspecificacion($id_cliente,$id_especificacion)
+{
+    return ClientePedidoEspecificacion::where([
+        ['id_cliente', $id_cliente],
+        ['id_especificacion', $id_especificacion]
+    ])->select('id_cliente_pedido_especificacion')->first();
 }
 
 function getSubmenusByTipo($tipo)

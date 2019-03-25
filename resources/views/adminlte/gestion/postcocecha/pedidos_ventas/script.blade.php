@@ -30,19 +30,45 @@
             id_pedido: id_pedido
         };
         setTimeout(function () {
-            $.get('{{url('clientes/inputs_pedidos')}}', datos, function (retorno) {
-                $("#tbody_inputs_pedidos").html(retorno);
+            $.get('{{url('clientes/inputs_pedidos_edit')}}', datos, function (retorno) {
+                $("#table_campo_pedido").html(retorno);
                 $('select#id_cliente_venta option[value=' + id_cliente + ']').attr('selected', true);
                 $('select#id_cliente_venta').attr('disabled', true);
-
                 datos = {
                     id_pedido: id_pedido,
                 };
-                $.get('{{url('pedidos/editar_pedido')}}', datos, function (retorno) {
-                    $("#fecha_de_entrega").val(retorno[0].fecha_pedido);
-                    //$("#descripcion").val(retorno[0].descripcion);
-                    for (i = 0; i < retorno.length; i++) {
 
+                $.get('{{url('pedidos/editar_pedido')}}', datos, function (retorno) {
+                    $("#fecha_de_entrega").val(retorno.pedido[0].fecha_pedido);
+                    calcular_precio_pedido();
+                    //$("#descripcion").val(retorno[0].descripcion);
+                        /*for(p=0;p<retorno.duplicados.length;p++){
+                            duplicar = retorno.duplicados[p].cant_esp_dup-1;
+                            if(duplicar > 0)
+                                for(q=0;q<duplicar;q++){
+                                    duplicar_especificacion(retorno.duplicados[p].id_especificacion);
+                                }
+                        }*/
+                        /*setTimeout(function () {
+                            for (i = 0; i < retorno.pedido.length; i++) {
+                                data_precio = retorno.pedido[i].precio.split("|");
+                                data_option = [];
+                                $.each(data_precio,function (a,b) {
+                                    arr_precio = b.split(";");
+                                    precio = parseFloat(arr_precio[0]);
+                                    $(".cantidad_"+arr_precio[1]).val(retorno.pedido[i].cantidad_especificacion);
+                                    $("#precio_"+arr_precio[1]+"_"+(i+1)+" option[value='" + precio + "']").remove();
+                                    $("#precio_"+arr_precio[1]+"_"+(i+1)).append("<option value='" + precio + "'>" + precio + "</option>");
+                                    $("#precio_"+arr_precio[1]+"_"+(i+1)+" option[value='" + precio + "']").attr('selected', true);
+                                    $("#precio_"+arr_precio[1]+"_"+(a+1)).val(precio);
+                                    $("select#id_agencia_carga_"+arr_precio[1] +" option[value='" + retorno.pedido[i].id_agencia_carga + "']").attr('selected', true);
+                                });
+                            }
+                            calcular_precio_pedido();
+                            $.LoadingOverlay('hide');
+                        },1000);*/
+
+<<<<<<< HEAD
                         data_precio = retorno[i].precio.split("|");
                         data_option = [];
                         $.each(data_precio, function (a, b) {
@@ -58,15 +84,17 @@
 
                     }
                     calcular_precio_pedido();
+=======
+>>>>>>> e0a93478826ff7bd8e67590ee62fdc60b87d83dd
                 }).always(function () {
-                    $.LoadingOverlay('hide');
+
                 });
 
             })
             /*.always(function () {
                         $.LoadingOverlay('hide');
                     });*/
-        }, 300);
+        },300);
 
     }
 
