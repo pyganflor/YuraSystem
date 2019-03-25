@@ -1,4 +1,4 @@
-<form id="form_add_pedido">
+
     <table width="100%" class="table-responsive table-bordered" style="font-size: 0.8em; border-color: white"
            id="table_content_recepciones">
         <thead>
@@ -274,4 +274,4 @@
             {{--FIN ESPECIFICACIONES RESTANTES--}}
         </tbody>
     </table>
-</form>
+
