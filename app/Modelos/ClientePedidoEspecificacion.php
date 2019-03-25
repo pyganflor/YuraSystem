@@ -16,7 +16,6 @@ class ClientePedidoEspecificacion extends Model
         'id_especificacion',
         'fecha_registro',
         'estado',
-        'precio'
     ];
 
     public function cliente()

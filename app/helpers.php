@@ -43,6 +43,7 @@ use yura\Modelos\ClientePedidoEspecificacion;
 use yura\Modelos\AgenciaCarga;
 use yura\Modelos\DetallePedido;
 use yura\Modelos\Precio;
+use yura\Modelos\DetallePedidoDatoExportacion;
 
 /*
  * -------- BITÁCORA DE LAS ACCIONES ECHAS POR EL USUARIO ------
@@ -1474,10 +1475,16 @@ function getOptionsPrecios($idCliente, $idEspecificacion)
     return explode("|", $data->precio);
 }
 
-function verificarPrecio($id_cliente,$id_detalle_especificacion_empaque){
-     $precios = Precio::where([
+function getDatosExportacion($id_detalle_pedido,$id_dato_exportacion){
+    return DetallePedidoDatoExportacion::where([
+        ['id_detalle_pedido',$id_detalle_pedido],
+        ['id_dato_exportacion',$id_dato_exportacion]
+    ])->first();
+}
+
+function getClienteEspecificacion($id_cliente,$id_especificacion){
+   return ClientePedidoEspecificacion::where([
         ['id_cliente',$id_cliente],
-        ['id_detalle_especificacionempaque',$id_detalle_especificacion_empaque]
-    ])->select('cantidad')->first();
-    return explode("|",$precios);
+        ['id_especificacion',$id_especificacion]
+    ])->select('id_cliente_pedido_especificacion')->first();
 }

@@ -6,7 +6,7 @@ function add_pedido(id_cliente, pedido_fijo, vista,id_pedido) {
         id_pedido   : id_pedido
     };
     get_jquery('/clientes/add_pedido', datos, function (retorno) {
-        modal_view('modal_add_pedido', retorno, '<i class="fa fa-fw fa-plus"></i> Agregar pedido', true, false, '90%');
+        modal_view('modal_add_pedido', retorno, '<i class="fa fa-fw fa-plus"></i> Agregar pedido', true, false, '98%');
         id_cliente !== '' ? add_campos(1, id_cliente) : '';
         pedido_fijo != '' ? div_opcion_pedido_fijo(1) : '';
         setTimeout(function () {
@@ -17,18 +17,13 @@ function add_pedido(id_cliente, pedido_fijo, vista,id_pedido) {
 
 function add_campos(value, id_cliente, cant_especificaciones) {
     $.LoadingOverlay('show');
-    //var cant_tr = $('tbody#tbody_inputs_pedidos tr').length;
-    //cant_tr > -1 ? $('#btn_delete_inputs').removeClass('hide') : '';
     datos = {
-        //cant_tr: cant_tr,
         id_cliente: id_cliente == "" ? $("#id_cliente_venta").val() : id_cliente,
-        //cant_especificaciones : cant_especificaciones
     };
     $.get('/clientes/inputs_pedidos', datos, function (retorno) {
-        $('#tbody_inputs_pedidos').append(retorno);
+        $('#table_campo_pedido').append(retorno);
         if ($("#id_cliente_venta").length > 0) {
             cargar_espeicificaciones_cliente(false);
-
         }
     }).always(function () {
         $.LoadingOverlay('hide');
@@ -142,17 +137,36 @@ function habilitar_campos() {
 }
 
 function store_pedido(id_cliente, pedido_fijo, csrf_token, vista, id_pedido) {
-
-    if(id_pedido){
-        var texto = 'Si este pedido posee envíos al editarlo seran borrados y deberá crearlos nuevamente';
-    }else{
-        var texto = 'Desea guardar este pedido?'
-    }
+    id_pedido
+        ?  texto = 'Si este pedido posee envíos al editarlo seran borrados y deberá crearlos nuevamente'
+        : texto = 'Desea guardar este pedido?';
 
     modal_quest('modal_edit_pedido', texto , 'Editar pedido', true, false, '40%', function () {
         id_variedades = '';
-        variedades='';
+        variedades = '';
         arrDataDetallesPedido = [];
+        cant_datos_exportacion = $(".th_datos_exportacion").length;
+        arrDatosExportacion = [];
+        if (cant_datos_exportacion > 0){
+            cant_especificaciones = $('tbody#tbody_inputs_pedidos input.input_cantidad').length;
+            for (b = 1; b <= cant_especificaciones; b++) {
+                arrDatosExportacionEspecificacion = [];
+                for (a = 1; a <= cant_datos_exportacion; a++) {
+                    nombre_columna_dato_exportacion = $("#th_datos_exportacion_" + a).text().trim().toUpperCase();
+                        arrDatosExportacionEspecificacion.push({
+                            valor: $("#input_" + nombre_columna_dato_exportacion + "_" + b).val(),
+                            id_dato_exportacion: $("#id_dato_exportacion_" + nombre_columna_dato_exportacion + "_" + b).val()
+                        });
+                }
+                if($("#input_" + nombre_columna_dato_exportacion + "_" + b).val() != "")
+                    arrDatosExportacion.push(arrDatosExportacionEspecificacion);
+            }
+            if(arrDatosExportacion.length < 1){
+                modal_view('modal_status_pedidos','<div class="alert alert-danger text-center"><p> Debe llenar todos los datos de exportación</p> </div>','<i class="fa fa-times" aria-hidden="true"></i> Estado pedido', true, false, '50%');
+                return false;
+            }
+        }
+
         $.each($('tbody#tbody_inputs_pedidos input.input_cantidad'),function (i,j) {
             precio ='';
             if(j.value != "" || j.value != 0){
@@ -167,7 +181,6 @@ function store_pedido(id_cliente, pedido_fijo, csrf_token, vista, id_pedido) {
                     id_agencia_carga : $("#id_agencia_carga_" +(i+1)).val(),
                     precio : precio,
                 });
-
             }
         });
         if(arrDataDetallesPedido.length < 1){
@@ -176,8 +189,6 @@ function store_pedido(id_cliente, pedido_fijo, csrf_token, vista, id_pedido) {
         }
 
         if ($('#form_add_pedido').valid()) {
-            //var result = confirm("Una vez guardado el pedido no puede ser editado");
-            //if (result) {
             var arrFechas = [];
             if (pedido_fijo && ($("#opcion_pedido_fijo").val() == 1) || $("#opcion_pedido_fijo").val() == 2) {
                 var fechaDesde = moment($("#fecha_desde_pedido_fijo").val());
@@ -229,7 +240,8 @@ function store_pedido(id_cliente, pedido_fijo, csrf_token, vista, id_pedido) {
                 pedido_fijo     : $("#opcion_pedido_fijo").length > 0 ? $("#opcion_pedido_fijo").val() : '',
                 opcion          : $("#opcion_pedido_fijo").val(),
                 variedades      : variedades.split("|"),
-                id_pedido       : id_pedido
+                id_pedido       : id_pedido,
+                arrDatosExportacion : arrDatosExportacion
             };
 
             post_jquery('clientes/store_pedidos', datos, function () {
@@ -240,7 +252,6 @@ function store_pedido(id_cliente, pedido_fijo, csrf_token, vista, id_pedido) {
                 }
             });
             $.LoadingOverlay('hide');
-            //}
         }
     });
 }
@@ -266,7 +277,7 @@ function cancelar_pedidos(id_pedido, id_cliente, estado, token) {
 
 function cargar_espeicificaciones_cliente(remove) {
     $.LoadingOverlay('show');
-    remove ? $("#tbody_inputs_pedidos tr").remove() : '';
+    remove ? $("#table_campo_pedido table").remove() : '';
     var cant_tr = $('tbody#tbody_inputs_pedidos tr').length;
     datos = {
         id_cliente: $("#id_cliente_venta").val()
@@ -762,7 +773,7 @@ function calcular_precio_pedido() {
    //$.get('pedidos/datos_pedido', {}, function (retorno) {
         monto_total = 0.00;
         total_ramos = 0.00;
-        cant_rows = $("#cant_esp").val();
+        cant_rows = $(".input_cantidad").length;
         for (i = 1; i <= cant_rows; i++) {
             precio_especificacion = 0.00;
             ramos_totales_especificacion = 0.00;
@@ -774,6 +785,7 @@ function calcular_precio_pedido() {
                 $.each($(".precio_" + i), function (y, z) {
                     precio_variedad = z.value;
                     ramos_x_caja = $(".input_ramos_x_caja_"+i+"_"+(y+1)).val();
+                    console.log(ramos_x_caja);
                     precio_especificacion += (parseFloat(precio_variedad)*parseFloat(ramos_x_caja)*q.value);
                 });
                 monto_total += parseFloat(precio_especificacion);
@@ -787,7 +799,7 @@ function calcular_precio_pedido() {
             $("#td_precio_especificacion_" + i).html("$" + parseFloat(precio_especificacion).toFixed(2));
         }
         $("#total_ramos").html(total_ramos);
-        $("#monto_total_pedido").html("$" + monto_total.toFixed(2));
+        $(".monto_total_pedido").html("$" + monto_total.toFixed(2));
 
     ////}).always(function () {
         ////$.LoadingOverlay('hide');
@@ -809,16 +821,20 @@ function barra_string(input,event,barra=true){
     $("#"+input.id).val(value_input.replace(" ",""));
 }
 
-function duplicar_especificacion(id_especificacion) {
+function duplicar_especificacion(id_especificacion,especificacion_pedido) {
+    if($("#cantidad_piezas_"+especificacion_pedido).val()==""){
+        modal_view('modal_duplicar_especificacion','<div class="alert alert-warning text-center"><p> Debe llenar todos los datos de la especififación antes de duplicarla</p> </div>','<i class="fa fa-times" aria-hidden="true"></i> Estado pedido', true, false, '50%');
+        return false;
+    }
     $.LoadingOverlay('show');
     datos = {
         id_especificacion : id_especificacion,
         id_cliente : $("#id_cliente_venta").val(),
-        cant_esp : $("#cant_esp").val()
+        cant_esp : $(".input_cantidad").length
     };
     $.get('pedidos/duplicar_especificacion', datos, function (retorno) {
         $("#tbody_inputs_pedidos").append(retorno);
-        $("#cant_esp").val(parseInt($("#cant_esp").val())+1);
+        //$("#cant_esp").val(parseInt($("#cant_esp").val())+1);
         calcular_precio_pedido();
         $("#btn_remove_especificacicon").removeClass('hide');
     }).always(function () {

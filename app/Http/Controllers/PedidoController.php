@@ -3,14 +3,13 @@
 namespace yura\Http\Controllers;
 
 use Illuminate\Http\Request;
+use yura\Modelos\ClienteDatoExportacion;
+use yura\Modelos\DatosExportacion;
 use yura\Modelos\DetalleEnvio;
-use yura\Modelos\DetalleEspecificacionEmpaque;
 use yura\Modelos\Pedido;
-use yura\Modelos\Especificacion;
-use yura\Modelos\ClientePedidoEspecificacion;
 use yura\Modelos\DetallePedido;
-use yura\Modelos\AgenciaCarga;
 use yura\Modelos\Envio;
+use yura\Modelos\DetallePedidoDatoExportacion;
 use Validator;
 use DB;
 
@@ -77,7 +76,9 @@ class PedidoController extends Controller
                 'clientes' => DB::table('cliente as c')
                     ->join('detalle_cliente as dt', 'c.id_cliente', '=', 'dt.id_cliente')
                     ->where('dt.estado', 1)->orderBy('dt.nombre','asc')->get(),
-                'id_pedido' => $request->id_pedido
+                'id_pedido' => $request->id_pedido,
+                'datos_exportacion' => ClienteDatoExportacion::where('id_cliente',$request->id_cliente)->get()
+
             ]);
     }
 
@@ -111,6 +112,9 @@ class PedidoController extends Controller
                         DetalleEnvio::where('id_envio',$dataEnvio->id_envio)->delete();
                         Envio::where('id_pedido',$request->id_pedido)->delete();
                     }
+                    foreach (getPedido($request->id_pedido)->detalles as $det_ped){
+                        DetallePedidoDatoExportacion::where('id_detalle_pedido',$det_ped->id_detalle_pedido)->delete();
+                    }
                     DetallePedido::where('id_pedido',$request->id_pedido)->delete();
                     Pedido::destroy($request->id_pedido);
                 }
@@ -131,6 +135,17 @@ class PedidoController extends Controller
                         $objDetallePedido->cantidad = $item['cantidad'];
                         $objDetallePedido->precio = substr($item['precio'], 0, -1);
                         if ($objDetallePedido->save()) {
+                            $modelDetallePedido = DetallePedido::all()->last();
+                            if($request->arrDatosExportacion!='')
+                                //foreach ($request->arrDatosExportacion as $datosExportacion){
+                                    foreach ($request->arrDatosExportacion[$key] as $de){
+                                        $objDetallePedidoDatoExportacion = new DetallePedidoDatoExportacion;
+                                        $objDetallePedidoDatoExportacion->id_detalle_pedido = $modelDetallePedido->id_detalle_pedido;
+                                        $objDetallePedidoDatoExportacion->id_dato_exportacion = $de['id_dato_exportacion'];
+                                        $objDetallePedidoDatoExportacion->valor = $de['valor'];
+                                        $objDetallePedidoDatoExportacion->save();
+                                    }
+                                //}
                             $success = true;
                             $msg = '<div class="alert alert-success text-center">' .
                                 '<p> Se ha guardado el pedido exitosamente</p>'
@@ -197,9 +212,59 @@ class PedidoController extends Controller
                         ['cac.id_cliente', $request->id_cliente],
                         ['cac.estado', 1]
                     ])->get(),
-                //'cantTr' => $request->cant_tr + 1,
-               //'arr_data_cliente_especificacion' => $arr_data_cliente_especificacion,
-                //'cant_especificaciones' => count($data_especificaciones) > 0 ? $data_especificaciones : []
+                'datos_exportacion' => DatosExportacion::join('cliente_datoexportacion as cde','dato_exportacion.id_dato_exportacion','cde.id_dato_exportacion')
+                                    ->where('id_cliente',$request->id_cliente)->get(),
+                /*'duplicados' => Pedido::where([
+                    ['pedido.id_pedido', $request->id_pedido],
+                ])->join('detalle_pedido as dp', 'pedido.id_pedido', 'dp.id_pedido')
+                    ->join('cliente_pedido_especificacion as cpe','dp.id_cliente_especificacion','cpe.id_cliente_pedido_especificacion')
+                    ->select(DB::table('detalle_pedido')->raw('count(id_cliente_especificacion) as esp_dup, cpe.id_especificacion'))
+                    ->groupBy('cpe.id_especificacion')->get()*/
+            ]);
+    }
+
+    public function inputs_pedidos_edit(Request $request){
+        $tipo_especificacion = DetallePedido::where('id_pedido',$request->id_pedido)
+            ->join('cliente_pedido_especificacion as cpe','detalle_pedido.id_cliente_especificacion','cpe.id_cliente_pedido_especificacion')
+            ->join('especificacion as esp','cpe.id_especificacion','esp.id_especificacion')->select('tipo')->first();
+
+        $esp_creadas =[];
+        foreach(getPedido($request->id_pedido)->detalles as $det_ped){
+           $esp_creadas[] = $det_ped->cliente_especificacion->especificacion->id_especificacion;
+        }
+
+        $data_especificaciones = DB::table('cliente_pedido_especificacion as cpe')
+            ->join('especificacion as esp', 'cpe.id_especificacion', '=', 'esp.id_especificacion')
+            ->where([
+                ['cpe.id_cliente', $request->id_cliente],
+                ['esp.tipo',isset($tipo_especificacion->tipo) ? $tipo_especificacion->tipo : "N"],
+                ['esp.estado',1]
+            ])->whereNotIn('esp.id_especificacion',$esp_creadas);
+
+        if(isset($tipo_especificacion->tipo) && $tipo_especificacion->tipo == "O"){
+            $data_especificaciones = $data_especificaciones->join('detalle_pedido as dp','cpe.id_cliente_pedido_especificacion','dp.id_cliente_especificacion')
+                ->where('id_pedido',$request->id_pedido);
+        }
+        return view('adminlte.gestion.postcocecha.pedidos.forms.paritals.inputs_dinamicos_edit',
+            [
+                'id_pedido' => $request->id_pedido,
+                'datos_exportacion' => DatosExportacion::join('cliente_datoexportacion as cde','dato_exportacion.id_dato_exportacion','cde.id_dato_exportacion')
+                    ->where('id_cliente',$request->id_cliente)->get(),
+                'agenciasCarga' => DB::table('cliente_agenciacarga as cac')
+                    ->join('agencia_carga as ac', 'cac.id_agencia_carga', 'ac.id_agencia_carga')
+                    ->where([
+                        ['cac.id_cliente', $request->id_cliente],
+                        ['cac.estado', 1]
+                    ])->get(),
+                'especificaciones' => $data_especificaciones->orderBy('id_cliente_pedido_especificacion','asc')->get(),
+
+
+                /*'duplicados' => Pedido::where([
+                    ['pedido.id_pedido', $request->id_pedido],
+                ])->join('detalle_pedido as dp', 'pedido.id_pedido', 'dp.id_pedido')
+                    ->join('cliente_pedido_especificacion as cpe','dp.id_cliente_especificacion','cpe.id_cliente_pedido_especificacion')
+                    ->select(DB::table('detalle_pedido')->raw('count(id_cliente_especificacion) as esp_dup, cpe.id_especificacion'))
+                    ->groupBy('cpe.id_especificacion')->get()*/
             ]);
     }
 
