@@ -858,9 +858,3 @@ function formatear_numero(numero) {
         return numero
 }
 
-function setValueInput(input,value,calcular){
-    if(input.value == "" || input.value == undefined)
-        $("#"+input.id).val(value);
-    if(calcular)
-        calcular_precio_pedido();
-}

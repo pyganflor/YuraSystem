@@ -131,7 +131,7 @@
                                         <input type="number"
                                                name="precio_{{($x+1)}}" id="precio_{{($x+1)}}_{{$b}}" class="form-control text-center precio_{{($x+1)}} form-control"
                                                style="background-color: beige; width: 100%;text-align: left" min="0"
-                                               onchange="calcular_precio_pedido()" value="{{explode(";",explode('|',$det_ped->precio)[$b-1])[0]}}" onkeyup="setValueInput(this,0,true)" required>
+                                               onchange="calcular_precio_pedido()" value="{{explode(";",explode('|',$det_ped->precio)[$b-1])[0]}}"  required>
                                     {{--@endif--}}
                                 </td>
                                 @if($det_ped->cliente_especificacion->especificacion->id_especificacion != $anterior)
