@@ -10,6 +10,7 @@ Route::get('pedidos/buscar_agencia_carga', 'OrdenSemanalController@buscar_agenci
 Route::get('pedidos/distribuir_orden_semanal', 'OrdenSemanalController@distribuir_orden_semanal');
 Route::get('pedidos/orden_semanal/listar_especificaciones_x_cliente', 'OrdenSemanalController@listar_especificaciones_x_cliente');
 Route::get('pedidos/editar_pedido', 'PedidoVentaController@editar_pedido');
+Route::get('pedidos/editar_pedido_tinturado', 'OrdenSemanalController@editar_pedido_tinturado');
 Route::get('pedidos/add_pedido_personalizado', 'OrdenSemanalController@add_pedido_personalizado');
 Route::post('pedidos/store_pedido_personalizado', 'OrdenSemanalController@store_pedido_personalizado');
 Route::get('pedidos/listar_agencias_carga', 'OrdenSemanalController@listar_agencias_carga');

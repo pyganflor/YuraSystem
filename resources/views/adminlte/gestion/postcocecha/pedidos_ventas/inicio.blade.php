@@ -20,7 +20,8 @@
                     <input type="date" name="fecha_pedidos_search" id="fecha_pedidos_search"
                            value="{{\Carbon\Carbon::now()->toDateString()}}" onchange="listar_resumen_pedidos($(this).val(),true)">
                     <span class="dropdown">
-                            <button class="btn btn-primary btn-xs dropdown-toggle" type="button" data-toggle="dropdown" style="padding-top: 3px;padding-bottom: 3px;position: relative;bottom: 2px;">
+                            <button class="btn btn-primary btn-xs dropdown-toggle" type="button" data-toggle="dropdown"
+                                    style="padding-top: 3px;padding-bottom: 3px;position: relative;bottom: 2px;">
                                 <i class="fa fa-plus" aria-hidden="true"></i> Añadir pedidos
                                 <span class="caret"></span></button>
                             <ul class="dropdown-menu dropdown-menu-right">
@@ -34,7 +35,7 @@
                                 </li>
                                 <li onclick="add_orden_semanal()" class="btn btn-default text-left"
                                     style="cursor:pointer;padding:5px 3px;width:100%;">
-                                    <em id="title_btn_add_orden_semanal"> Orden semanal</em>
+                                    <em id="title_btn_add_orden_semanal"> Flor tinturada</em>
                                 </li>
                                 <li onclick="add_pedido_personalizado()" class="btn btn-default text-left"
                                     style="cursor:pointer;padding:5px 3px;width:100%;">

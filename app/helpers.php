@@ -43,6 +43,8 @@ use yura\Modelos\ClientePedidoEspecificacion;
 use yura\Modelos\AgenciaCarga;
 use yura\Modelos\DetallePedido;
 use yura\Modelos\Precio;
+use yura\Modelos\Color;
+use yura\Modelos\Marcacion;
 
 /*
  * -------- BITÁCORA DE LAS ACCIONES ECHAS POR EL USUARIO ------
@@ -1016,6 +1018,15 @@ function getPrecioByClienteDetEspEmp($cliente, $det_esp)
     return $precio;
 }
 
+function getPrecioByDetEsp($string, $det_esp)
+{
+    foreach (explode('|', $string) as $x) {
+        if (explode(';', $x)[1] == $det_esp)
+            return explode(';', $x)[0];
+    }
+    return '';
+}
+
 /* ============ Obtener los ramos sacados de apertura para los pedidos de un "fecha" ==============*/
 function getDestinadosToFrioByFecha($fecha, $variedad)
 {
@@ -1478,4 +1489,27 @@ function getOptionsPrecios($idCliente, $idEspecificacion)
 function getSubmenusByTipo($tipo)
 {
     return Submenu::All()->where('tipo', $tipo);
+}
+
+function porcentaje($a, $b, $tipo)
+{
+    if ($tipo == 1) { // a es el % de b
+        $r = round(($a / $b) * 100, 2);
+    }
+    return $r;
+}
+
+function getMarcacion($id)
+{
+    return Marcacion::find($id);
+}
+
+function getColor($id)
+{
+    return Color::find($id);
+}
+
+function getColores()
+{
+    return Color::All()->where('estado', 1);
 }

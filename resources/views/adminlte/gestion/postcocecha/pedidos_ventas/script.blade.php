@@ -45,15 +45,15 @@
 
                         data_precio = retorno[i].precio.split("|");
                         data_option = [];
-                        $.each(data_precio,function (a,b) {
+                        $.each(data_precio, function (a, b) {
                             arr_precio = b.split(";");
                             precio = parseFloat(arr_precio[0]);
-                            $(".cantidad_"+arr_precio[1]).val(retorno[i].cantidad_especificacion);
-                            $("#precio_"+arr_precio[1]+"_"+(i+1)+" option[value='" + precio + "']").remove();
-                            $("#precio_"+arr_precio[1]+"_"+(i+1)).append("<option value='" + precio + "'>" + precio + "</option>");
-                            $("#precio_"+arr_precio[1]+"_"+(i+1)+" option[value='" + precio + "']").attr('selected', true);
-                            $("#precio_"+arr_precio[1]+"_"+(a+1)).val(precio);
-                            $("select#id_agencia_carga_"+arr_precio[1] +" option[value='" + retorno[i].id_agencia_carga + "']").attr('selected', true);
+                            $(".cantidad_" + arr_precio[1]).val(retorno[i].cantidad_especificacion);
+                            $("#precio_" + arr_precio[1] + "_" + (i + 1) + " option[value='" + precio + "']").remove();
+                            $("#precio_" + arr_precio[1] + "_" + (i + 1)).append("<option value='" + precio + "'>" + precio + "</option>");
+                            $("#precio_" + arr_precio[1] + "_" + (i + 1) + " option[value='" + precio + "']").attr('selected', true);
+                            $("#precio_" + arr_precio[1] + "_" + (a + 1)).val(precio);
+                            $("select#id_agencia_carga_" + arr_precio[1] + " option[value='" + retorno[i].id_agencia_carga + "']").attr('selected', true);
                         });
 
                     }
@@ -97,4 +97,14 @@
         });
     }
 
+    function editar_pedido_tinturado(id_pedido, pos_det_ped) {
+        datos = {
+            id_pedido: id_pedido,
+            pos_det_ped: pos_det_ped
+        };
+        get_jquery('{{url('pedidos/editar_pedido_tinturado')}}', datos, function (retorno) {
+            modal_view('modal-view_editar_pedido_tinturado', retorno, '<i class="fa fa-fw fa-pencil"></i> Editar pedido', true, false,
+                '{{isPC() ? '98%' : ''}}');
+        }, 'td_opciones_' + id_pedido);
+    }
 </script>

@@ -50,7 +50,7 @@
                         <div class="small-box bg-aqua">
                             <div class="inner">
                                 <h3 class="info-box-number">
-                                    {{number_format($indicadores['tallos'], 2)}}
+                                    {{number_format($indicadores['tallos'])}}
                                 </h3>
                             </div>
                             <div class="icon">
@@ -81,7 +81,7 @@
                         <div class="small-box bg-green-gradient">
                             <div class="inner">
                                 <h3 class="info-box-number">
-                                    {{$indicadores['rendimiento']}}
+                                    {{number_format($indicadores['rendimiento'], 2)}}
                                     <sup style="font-size: 0.4em">t/hr</sup>
                                 </h3>
                             </div>

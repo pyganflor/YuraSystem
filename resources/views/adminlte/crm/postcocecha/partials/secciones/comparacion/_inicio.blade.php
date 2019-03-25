@@ -1,5 +1,8 @@
 <p class="text-center">
     <strong>Cosecha por variedades</strong>
+    <a href="javascript:void(0)" class="pull-right btn btn-xs" onclick="actualizar_cosecha_x_variedad()">
+        <i class="fa fa-fw fa-refresh"></i>
+    </a>
 </p>
 @if(count($listado_variedades) > 0)
     @foreach($listado_variedades as $item)
@@ -23,8 +26,12 @@
                     else
                     $class_bar = 'red';
                 @endphp
-                <div class="progress-bar progress-bar-{{$class_bar}}" title="{{$porcentaje}}%"
-                     style="width: {{$porcentaje}}%"></div>
+                <div class="progress progress-sm active">
+                    <div class="progress-bar progress-bar-{{$class_bar}} progress-bar-striped" role="progressbar" aria-valuenow="20"
+                         aria-valuemin="0"
+                         aria-valuemax="100" style="width: {{$porcentaje}}%" title="{{$porcentaje}}%">
+                    </div>
+                </div>
             </div>
         </div>
     @endforeach

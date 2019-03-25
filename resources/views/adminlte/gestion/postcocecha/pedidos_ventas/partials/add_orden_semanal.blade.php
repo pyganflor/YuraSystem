@@ -297,8 +297,9 @@
     function store_orden_semanal() {
         if ($('#id_cliente_orden_semanal').val() != '') {
             nueva_esp = '';
+            arreglo_esp = [];
             if ($('#cantidad_cajas').val() > 0)
-                if ($('#form_add_orden_semanal').valid()) {
+                if ($('#form_add_orden_semanal').valid() && $('#form_marcas_colores').valid()) {
                     col = $('#num_colores').val();
                     fil = $('#num_marcaciones').val();
 
@@ -306,43 +307,34 @@
                         if ($('#total_ramos_' + fil + '_' + col).val() == parseInt($('#cantidad_ramos').val()) * parseInt($('#cantidad_cajas').val()) &&
                             $('#total_piezas_' + fil + '_' + col).val() == $('#cantidad_cajas').val()) {
                             marcaciones = [];
-                            colores = [];
-                            matrix = [];
 
                             for (f = 1; f <= fil; f++) {
-                                if ($('#nombre_marcacion_' + c).val() != '') {
-                                    columnas = [];
+                                if ($('#nombre_marcacion_' + f).val() != '') {
+                                    coloraciones = [];
                                     for (c = 1; c <= col; c++) {
                                         if ($('#titles_columnas_' + c).val() != '') {
-                                            columnas.push($('#ramos_marcacion_color_' + f + '_' + c).val());
+                                            coloraciones.push({
+                                                id_color: $('#titles_columnas_' + c).val(),
+                                                cantidad: $('#ramos_marcacion_color_' + f + '_' + c).val()
+                                            });
                                         } else {
                                             alert('Faltan datos (nombre de colores) por ingresar en la tabla.');
                                             return false;
                                         }
                                     }
-                                    columnas.push($('#input_total_ramos_marcacion_' + f).val());
-                                    columnas.push($('#input_total_piezas_' + f).val());
-                                    matrix.push(columnas);
-                                    marcaciones.push($('#nombre_marcacion_' + f).val());
+                                    marcaciones.push({
+                                        nombre: $('#nombre_marcacion_' + f).val(),
+                                        ramos: $('#input_total_ramos_marcacion_' + f).val(),
+                                        piezas: $('#input_total_piezas_' + f).val(),
+                                        coloraciones: coloraciones
+                                    });
                                 } else {
-                                    alert('Faltan datos (nombre de marcaciones) por ingresar en la tabla.');
+                                    alert('Faltan datos (nombres de marcaciones) por ingresar en la tabla.');
                                     return false;
                                 }
                             }
 
-                            for (i = 1; i <= col; i++) {
-                                id_color = $('#titles_columnas_' + i).val();
-                                colores.push({
-                                    nombre: $('#nombre_color_' + id_color).val(),
-                                    fondo: $('#fondo_color_' + id_color).val(),
-                                    texto: $('#texto_color_' + id_color).val(),
-                                });
-                            }
-
                             nueva_esp = {
-                                fecha_pedido: $('#fecha_pedido').val(),
-                                id_cliente: $('#id_cliente_orden_semanal').val(),
-                                id_agencia_carga: $('#id_agencia_carga').val(),
                                 cantidad_cajas: $('#cantidad_cajas').val(),
                                 id_empaque: $('#id_empaque').val(),
                                 cantidad_ramos: $('#cantidad_ramos').val(),
@@ -353,9 +345,10 @@
                                 longitud_ramo: $('#longitud_ramo').val(),
                                 tallos_x_ramos: $('#tallos_x_ramos').val(),
                                 id_unidad_medida: $('#id_unidad_medida').val(),
-                                matrix: matrix,
+                                precio: $('#precio').val(),
+                                num_marcaciones: $('#num_marcaciones').val(),
+                                num_colores: $('#num_colores').val(),
                                 marcaciones: marcaciones,
-                                colores: colores,
                             };
                         } else {
                             alerta('<div class="alert alert-info text-center">' +
@@ -366,33 +359,122 @@
                     }
                 }   // NUEVA ESPECIFICACION
             ids_especificacion = $('.id_especificacion');
-            for (esp = 0; esp < ids_especificacion.length; esp++) {
+            for (esp = 0; esp < ids_especificacion.length; esp++) { // ESPECIFICACIONES
+                id_esp = ids_especificacion[esp].value;
+                if (parseInt($('#cant_piezas_esp_' + id_esp).val()) > 0) {
+                    if ($('#form_especificacion_' + id_esp).valid()) {
+                        arreglo_esp_emp = [];
+                        ids_esp_emp = $('.id_especificacion_empaque_' + id_esp);
+                        for (esp_emp = 0; esp_emp < ids_esp_emp.length; esp_emp++) {    // ESPECIFICACIONES_EMPAQUE
+                            id_esp_emp = ids_esp_emp[esp_emp].value;
+                            ids_det_esp = $('.id_det_esp_' + id_esp_emp);
+                            arreglo_det_esp = [];
+                            for (det_esp = 0; det_esp < ids_det_esp.length; det_esp++) {    //DETALLES_ESPECIFICACION_EMPAQUE
+                                id_det_esp = ids_det_esp[det_esp].value;
+                                arreglo_det_esp.push({
+                                    id_det_esp: id_det_esp,
+                                    precio: $('#precio_det_' + id_det_esp + '_esp_' + id_esp_emp).val()
+                                });
+                            }
+                            if (ids_det_esp.length > 1) {   // mixta
+                                tipo = 1;
+                            } else {    // sencilla
+                                tipo = 0;
+                            }
 
+                            num_marcaciones = $('#num_marcaciones_' + id_esp_emp).val();
+                            num_colores = $('#num_colores_' + id_esp_emp).val();
+                            marcaciones = [];
+                            for (f = 1; f <= num_marcaciones; f++) {
+                                if ($('#nombre_marcacion_' + f + '_' + id_esp_emp).val() != '') {
+                                    arreglo_colores = [];
+                                    for (c = 1; c <= num_colores; c++) {
+                                        if ($('#titles_columnas_' + c + '_' + id_esp_emp).val() != '') {
+                                            cant_x_det_esp = [];
+                                            if (tipo == 1) {    // mixta
+                                                for (det_esp = 0; det_esp < ids_det_esp.length; det_esp++) {    //DETALLES_ESPECIFICACION_EMPAQUE
+                                                    id_det_esp = ids_det_esp[det_esp].value;
+                                                    if (parseInt($('#ramos_marcacion_color_' + f + '_' + c + '_' + id_esp_emp + '_det_' + id_det_esp).val()) > 0)
+                                                        cant_x_det_esp.push({
+                                                            id_det_esp: id_det_esp,
+                                                            cantidad: $('#ramos_marcacion_color_' + f + '_' + c + '_' + id_esp_emp + '_det_' + id_det_esp).val()
+                                                        });
+                                                }
+                                            } else {    // sencilla
+                                                id_det_esp = ids_det_esp[0].value;
+                                                cant_x_det_esp.push({
+                                                    id_det_esp: id_det_esp,
+                                                    cantidad: $('#ramos_marcacion_color_' + f + '_' + c + '_' + id_esp_emp).val()
+                                                });
+                                            }
+                                            arreglo_colores.push({
+                                                id_color: $('#titles_columnas_' + c + '_' + id_esp_emp).val(),
+                                                cant_x_det_esp: cant_x_det_esp
+                                            });
+                                        } else {
+                                            alert('Faltan datos (nombres de colores) por ingresar en la tabla.');
+                                            return false;
+                                        }
+                                    }
+                                    marcaciones.push({
+                                        nombre: $('#nombre_marcacion_' + f + '_' + id_esp_emp).val(),
+                                        ramos: $('#input_total_ramos_marcacion_' + f + '_' + id_esp_emp).val(),
+                                        piezas: $('#input_total_piezas_' + f + '_' + id_esp_emp).val(),
+                                        arreglo_colores: arreglo_colores
+                                    });
+                                } else {
+                                    alert('Faltan datos (nombres de marcaciones) por ingresar en la tabla.');
+                                    return false;
+                                }
+                            }
+
+                            arreglo_esp_emp.push({
+                                id_esp_emp: id_esp_emp,
+                                tipo: tipo,
+                                num_marcaciones: num_marcaciones,
+                                num_colores: num_colores,
+                                marcaciones: marcaciones,
+                                arreglo_det_esp: arreglo_det_esp
+                            });
+                        }
+                        arreglo_esp.push({
+                            id_esp: id_esp,
+                            cant_piezas: $('#cant_piezas_esp_' + id_esp).val(),
+                            arreglo_esp_emp: arreglo_esp_emp
+                        });
+                    }
+                }
             }
 
-            datos = {
-                _token: '{{csrf_token()}}',
-                nueva_esp: nueva_esp
-            };
-            $.LoadingOverlay('show');
-            $.post('{{url('pedidos/store_orden_semanal')}}', datos, function (retorno) {
-                if (retorno.success) {
-                    alerta_accion(retorno.mensaje, function () {
-                        cerrar_modals();
-                        distribuir_orden_semanal(retorno.id_pedido);
-                        listar_resumen_pedidos($("#fecha_pedidos_search").val(), true);
-                    });
-                } else {
-                    alerta(retorno.mensaje);
-                }
+            if (nueva_esp != '' || arreglo_esp.length > 0) {
+                datos = {
+                    _token: '{{csrf_token()}}',
+                    fecha_pedido: $('#fecha_pedido').val(),
+                    id_cliente: $('#id_cliente_orden_semanal').val(),
+                    id_agencia_carga: $('#id_agencia_carga').val(),
+                    nueva_esp: nueva_esp,
+                    arreglo_esp: arreglo_esp,
+                };
+                $.LoadingOverlay('show');
+                $.post('{{url('pedidos/store_orden_semanal')}}', datos, function (retorno) {
+                    if (retorno.success) {
+                        alerta_accion(retorno.mensaje, function () {
+                            cerrar_modals();
+                            editar_pedido_tinturado(retorno.id_pedido, 0);
+                            listar_resumen_pedidos($("#fecha_pedidos_search").val(), true);
+                        });
+                    } else {
+                        alerta(retorno.mensaje);
+                    }
 
-            }, 'json').fail(function (retorno) {
-                console.log(retorno);
-                alerta_errores(retorno.responseText);
-                alerta('Ha ocurrido un problema');
-            }).always(function () {
-                $.LoadingOverlay('hide');
-            });
+                }, 'json').fail(function (retorno) {
+                    console.log(retorno);
+                    alerta_errores(retorno.responseText);
+                    alerta('Ha ocurrido un problema');
+                }).always(function () {
+                    $.LoadingOverlay('hide');
+                });
+            }
         }
     }
 </script>
