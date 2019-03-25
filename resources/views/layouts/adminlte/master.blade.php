@@ -396,7 +396,6 @@
         });
     }
 
-
     function post_jquery(url, datos, success) {
         $.LoadingOverlay('show');
         $.post(url, datos, function (retorno) {
@@ -416,12 +415,12 @@
         });
     }
 
-    function get_jquery(url, datos, funcion) {
-        $.LoadingOverlay('show');
+    function get_jquery(url, datos, funcion, div = false) {
+        div == false ? $.LoadingOverlay('show') : $('#' + div).LoadingOverlay('show');
         $.get(url, datos, function (retorno) {
             funcion(retorno);
         }).always(function () {
-            $.LoadingOverlay('hide');
+            div == false ? $.LoadingOverlay('hide') : $('#' + div).LoadingOverlay('hide');
         });
     }
 
@@ -696,6 +695,7 @@
 
         return fecha;
     }
+
     function rest_dias(dias) {
         var fecha = new Date();
         fecha.setDate(fecha.getDate() - dias);

@@ -4,7 +4,7 @@
             <div class="small-box bg-teal-active">
                 <div class="inner">
                     <h3 class="info-box-number">
-                        {{$cajas}}
+                        {{number_format($cajas, 2)}}
                     </h3>
                 </div>
                 <div class="icon">
@@ -19,7 +19,7 @@
             <div class="small-box bg-aqua">
                 <div class="inner">
                     <h3 class="info-box-number">
-                        {{$tallos}}
+                        {{number_format($tallos)}}
                     </h3>
                 </div>
                 <div class="icon">
@@ -50,7 +50,7 @@
             <div class="small-box bg-green-gradient">
                 <div class="inner">
                     <h3 class="info-box-number">
-                        {{$rendimiento}}
+                        {{number_format($rendimiento, 2)}}
                         <sup style="font-size: 0.4em"></sup>
                     </h3>
                 </div>

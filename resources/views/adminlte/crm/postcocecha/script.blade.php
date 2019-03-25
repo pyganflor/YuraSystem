@@ -97,6 +97,7 @@
                 $('#check_filtro_todas_variedad').prop('checked', true);
                 select_checkbox_cosecha_variedad('check_filtro_todas_variedad');
             } else if ($('#filtro_predeterminado_variedad').val() != 'A') {
+                x_variedad = true;
                 id_variedad = $('#filtro_predeterminado_variedad').val();
                 $('#check_filtro_x_variedad').prop('checked', true);
                 select_checkbox_cosecha_variedad('check_filtro_x_variedad');
@@ -126,5 +127,13 @@
                 $('#div_chart_cosecha').html(retorno);
             });
         }
+    }
+
+    function actualizar_cosecha_x_variedad() {
+        datos = {};
+        /* ============= COMPARACION ===========*/
+        get_jquery('{{url('crm_postcosecha/actualizar_cosecha_x_variedad')}}', datos, function (retorno) {
+            $('#div_cosecha_x_variedad_cosecha').html(retorno);
+        }, 'div_cosecha_x_variedad_cosecha');
     }
 </script>

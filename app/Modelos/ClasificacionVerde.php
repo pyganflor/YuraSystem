@@ -131,9 +131,17 @@ class ClasificacionVerde extends Model
         else return 0;
     }
 
+    public function getCalibre()
+    {
+        if ($this->getTotalRamosEstandar() > 0) {
+            return round($this->total_tallos() / $this->getTotalRamosEstandar(), 2);
+        } else
+            return 0;
+    }
+
     public function calibreByVariedad($variedad)
     {
-        if ($this->getTotalRamosEstandarByVariedad($variedad))
+        if ($this->getTotalRamosEstandarByVariedad($variedad) > 0)
             return round($this->tallos_x_variedad($variedad) / $this->getTotalRamosEstandarByVariedad($variedad), 2);
         else
             return 0;

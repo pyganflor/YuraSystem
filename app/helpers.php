@@ -43,7 +43,12 @@ use yura\Modelos\ClientePedidoEspecificacion;
 use yura\Modelos\AgenciaCarga;
 use yura\Modelos\DetallePedido;
 use yura\Modelos\Precio;
+<<<<<<< HEAD
+use yura\Modelos\Color;
+use yura\Modelos\Marcacion;
+=======
 use yura\Modelos\DetallePedidoDatoExportacion;
+>>>>>>> e0a93478826ff7bd8e67590ee62fdc60b87d83dd
 
 /*
  * -------- BITÁCORA DE LAS ACCIONES ECHAS POR EL USUARIO ------
@@ -1017,6 +1022,15 @@ function getPrecioByClienteDetEspEmp($cliente, $det_esp)
     return $precio;
 }
 
+function getPrecioByDetEsp($string, $det_esp)
+{
+    foreach (explode('|', $string) as $x) {
+        if (explode(';', $x)[1] == $det_esp)
+            return explode(';', $x)[0];
+    }
+    return '';
+}
+
 /* ============ Obtener los ramos sacados de apertura para los pedidos de un "fecha" ==============*/
 function getDestinadosToFrioByFecha($fecha, $variedad)
 {
@@ -1494,4 +1508,27 @@ function getClienteEspecificacion($id_cliente,$id_especificacion)
 function getSubmenusByTipo($tipo)
 {
     return Submenu::All()->where('tipo', $tipo);
+}
+
+function porcentaje($a, $b, $tipo)
+{
+    if ($tipo == 1) { // a es el % de b
+        $r = round(($a / $b) * 100, 2);
+    }
+    return $r;
+}
+
+function getMarcacion($id)
+{
+    return Marcacion::find($id);
+}
+
+function getColor($id)
+{
+    return Color::find($id);
+}
+
+function getColores()
+{
+    return Color::All()->where('estado', 1);
 }

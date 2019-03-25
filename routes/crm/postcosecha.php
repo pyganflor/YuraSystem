@@ -10,3 +10,4 @@ Route::get('crm_postcosecha/show_data_tallos', 'CRM\crmPostocechaController@show
 Route::get('crm_postcosecha/show_data_desechos', 'CRM\crmPostocechaController@show_data_desechos');
 Route::get('crm_postcosecha/show_data_rendimientos', 'CRM\crmPostocechaController@show_data_rendimientos');
 Route::get('crm_postcosecha/show_data_calibres', 'CRM\crmPostocechaController@show_data_calibres');
+Route::get('crm_postcosecha/actualizar_cosecha_x_variedad', 'CRM\crmPostocechaController@actualizar_cosecha_x_variedad');

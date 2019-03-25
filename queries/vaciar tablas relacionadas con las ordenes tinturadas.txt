@@ -1,0 +1,4 @@
+TRUNCATE `coloracion`;
+TRUNCATE `marcacion`;
+TRUNCATE `detalle_pedido`;
+TRUNCATE `pedido`;

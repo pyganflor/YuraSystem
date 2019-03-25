@@ -123,7 +123,7 @@
                                         rowspan="{{getCantidadDetallesEspecificacionByPedido($pedido->id_pedido)}}">
                                         {{getAgenciaCarga($det_ped->id_agencia_carga)->nombre}}
                                     </td>
-                                    <td class="text-center" style="border-color: #9d9d9d"
+                                    <td class="text-center" style="border-color: #9d9d9d" id="td_opciones_{{$pedido->id_pedido}}"
                                         rowspan="{{getCantidadDetallesEspecificacionByPedido($pedido->id_pedido)}}">
                                         @if($pedido->empaquetado == 0)
                                             <button class="btn  btn-{!! $det_ped->estado == 1 ? 'success' : 'warning' !!} btn-xs" type="button"
@@ -145,10 +145,17 @@
                                             </button>
                                         @endif
                                         @if($pedido->empaquetado == 0)
-                                            <button type="button" class="btn btn-default btn-xs" title="Editar pedido"
-                                                    onclick="editar_pedido('{{$pedido->id_cliente}}','{{$pedido->id_pedido}}')">
-                                                <i class="fa fa-pencil" aria-hidden="true"></i>
-                                            </button>
+                                            @if($pedido->tipo_especificacion == 'T')
+                                                <button type="button" class="btn btn-default btn-xs" title="Editar pedido"
+                                                        onclick="editar_pedido_tinturado('{{$pedido->id_pedido}}', 0)">
+                                                    <i class="fa fa-pencil" aria-hidden="true"></i>
+                                                </button>
+                                            @else
+                                                <button type="button" class="btn btn-default btn-xs" title="Editar pedido"
+                                                        onclick="editar_pedido('{{$pedido->id_cliente}}','{{$pedido->id_pedido}}')">
+                                                    <i class="fa fa-pencil" aria-hidden="true"></i>
+                                                </button>
+                                            @endif
                                         @endif
 
                                         @if(getPedido($pedido->id_pedido)->haveDistribucion() == 1)

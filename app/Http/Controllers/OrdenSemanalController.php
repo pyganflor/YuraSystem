@@ -8,6 +8,7 @@ use Validator;
 use yura\Modelos\ClasificacionRamo;
 use yura\Modelos\Cliente;
 use yura\Modelos\ClientePedidoEspecificacion;
+use yura\Modelos\Color;
 use yura\Modelos\Coloracion;
 use yura\Modelos\DetalleEspecificacionEmpaque;
 use yura\Modelos\DetallePedido;
@@ -23,215 +24,375 @@ class OrdenSemanalController extends Controller
 {
     public function store_orden_semanal(Request $request)
     {
-        dd($request->all());
-        $especificacion = new Especificacion();
-        $descripcion = $request->cantidad_cajas . ' ' . explode('|', Empaque::find($request->id_empaque)->nombre)[0] . ' de ' .
-            $request->cantidad_ramos . ' ramos ' . ClasificacionRamo::find($request->id_clasificacion_ramo)->nombre .
-            ClasificacionRamo::find($request->id_clasificacion_ramo)->unidad_medida->siglas . ' ' . Variedad::find($request->id_variedad)->siglas . ' ' .
-            explode('|', Empaque::find($request->id_empaque_p)->nombre)[0] . ' ' . $request->tallos_x_ramos . ' ' .
-            $request->longitud_ramo . (UnidadMedida::find($request->id_unidad_medida) != '' ? UnidadMedida::find($request->id_unidad_medida)->siglas : '');
-        $especificacion->nombre = $especificacion->descripcion = espacios($descripcion);
-        $especificacion->tipo = 'O';
+        if ($request->nueva_esp != '') {    // NUEVA ESPECIFICACION
+            $esp = new Especificacion();
+            $esp->tipo = 'O';
 
-        if ($especificacion->save()) {
-            $especificacion = Especificacion::All()->last();
-            bitacora('especificacion', $especificacion->id_especificacion, 'I', 'Insercion de una nueva especificacion');
+            if ($esp->save()) {
+                $esp = Especificacion::All()->last();
+                bitacora('especificacion', $esp->id_especificacion, 'I', 'Insercion de una nueva especificacion');
 
-            /* =========== TABLA ESPECIFICACION_EMPAQUE ==========*/
-            $esp_emp = new EspecificacionEmpaque();
-            $esp_emp->id_especificacion = $especificacion->id_especificacion;
-            $esp_emp->id_empaque = $request->id_empaque;
-            $esp_emp->cantidad = $request->cantidad_cajas;
+                /* =========== TABLA ESPECIFICACION_EMPAQUE ==========*/
+                $esp_emp = new EspecificacionEmpaque();
+                $esp_emp->id_especificacion = $esp->id_especificacion;
+                $esp_emp->id_empaque = $request->nueva_esp['id_empaque'];
+                $esp_emp->cantidad = 1;
 
-            if ($esp_emp->save()) {
-                $esp_emp = EspecificacionEmpaque::All()->last();
-                bitacora('especificacion_empaque', $esp_emp->id_especificacion_empaque, 'I', 'Insercion de una nueva especificacion-empaque');
+                if ($esp_emp->save()) {
+                    $esp_emp = EspecificacionEmpaque::All()->last();
+                    bitacora('especificacion_empaque', $esp_emp->id_especificacion_empaque, 'I', 'Insercion de una nueva especificacion-empaque');
 
-                /* ========== TABLA DETALLE_ESPECIFICACION_EMPAQUE ============*/
-                $det_espemp = new DetalleEspecificacionEmpaque();
-                $det_espemp->id_especificacion_empaque = $esp_emp->id_especificacion_empaque;
-                $det_espemp->id_variedad = $request->id_variedad;
-                $det_espemp->id_clasificacion_ramo = $request->id_clasificacion_ramo;
-                $det_espemp->cantidad = $request->cantidad_ramos;
-                //$det_espemp->id_empaque_e = $request->id_empaque_e;
-                $det_espemp->id_empaque_p = $request->id_empaque_p;
-                $det_espemp->tallos_x_ramos = $request->tallos_x_ramos;
-                $det_espemp->longitud_ramo = $request->longitud_ramo;
-                $det_espemp->id_unidad_medida = $request->id_unidad_medida;
+                    /* ========== TABLA DETALLE_ESPECIFICACION_EMPAQUE ============*/
+                    $det_espemp = new DetalleEspecificacionEmpaque();
+                    $det_espemp->id_especificacion_empaque = $esp_emp->id_especificacion_empaque;
+                    $det_espemp->id_variedad = $request->nueva_esp['id_variedad'];
+                    $det_espemp->id_clasificacion_ramo = $request->nueva_esp['id_clasificacion_ramo'];
+                    $det_espemp->cantidad = $request->nueva_esp['cantidad_ramos'];
+                    //$det_espemp->id_empaque_e = $request->id_empaque_e;
+                    $det_espemp->id_empaque_p = $request->nueva_esp['id_empaque_p'];
+                    $det_espemp->tallos_x_ramos = $request->nueva_esp['tallos_x_ramos'];
+                    $det_espemp->longitud_ramo = $request->nueva_esp['longitud_ramo'];
+                    $det_espemp->id_unidad_medida = $request->nueva_esp['id_unidad_medida'];
 
-                if ($det_espemp->save()) {
-                    $det_espemp = DetalleEspecificacionEmpaque::All()->last();
-                    bitacora('detalle_especificacionempaque', $det_espemp->id_detalle_especificacionempaque, 'I', 'Insercion de una nueva detalle-especificación-empaque');
+                    if ($det_espemp->save()) {
+                        $det_espemp = DetalleEspecificacionEmpaque::All()->last();
+                        bitacora('detalle_especificacionempaque', $det_espemp->id_detalle_especificacionempaque, 'I', 'Insercion de una nueva detalle-especificación-empaque');
 
-                    /* =========== TABLA CLIENTE_PEDIDO_ESPECIFICACION ==========*/
-                    $cli_ped_esp = new ClientePedidoEspecificacion();
-                    $cli_ped_esp->id_especificacion = $especificacion->id_especificacion;
-                    $cli_ped_esp->id_cliente = $request->id_cliente;
+                        /* =========== TABLA CLIENTE_PEDIDO_ESPECIFICACION ==========*/
+                        $cli_ped_esp = new ClientePedidoEspecificacion();
+                        $cli_ped_esp->id_especificacion = $esp->id_especificacion;
+                        $cli_ped_esp->id_cliente = $request->id_cliente;
 
-                    if ($cli_ped_esp->save()) {
-                        $cli_ped_esp = ClientePedidoEspecificacion::All()->last();
-                        bitacora('cliente_pedido_especificacion', $cli_ped_esp->id_cliente_pedido_especificacion, 'I', 'Insercion de una nueva cliente-pedido-especificación');
+                        if ($cli_ped_esp->save()) {
+                            $cli_ped_esp = ClientePedidoEspecificacion::All()->last();
+                            bitacora('cliente_pedido_especificacion', $cli_ped_esp->id_cliente_pedido_especificacion, 'I', 'Insercion de una nueva cliente-pedido-especificación');
 
-                        /* ========== TABLA PEDIDO ============*/
-                        $pedido = new Pedido();
-                        $pedido->id_cliente = $request->id_cliente;
-                        $pedido->descripcion = $descripcion;
-                        $pedido->variedad = $request->id_variedad;  // optimizar
-                        $pedido->fecha_pedido = $request->fecha_pedido;
-                        $pedido->tipo_especificacion = 'O';
+                            /* ========== TABLA PEDIDO ============*/
+                            $pedido = new Pedido();
+                            $pedido->id_cliente = $request->id_cliente;
+                            $pedido->descripcion = 'Flor tinturada';
+                            $pedido->variedad = $request->nueva_esp['id_variedad'];  // optimizar
+                            $pedido->fecha_pedido = $request->fecha_pedido;
+                            $pedido->tipo_especificacion = 'T'; // Flor tinturada
 
-                        if ($pedido->save()) {
-                            $pedido = Pedido::All()->last();
-                            bitacora('pedido', $pedido->id_pedido, 'I', 'Insercion de un nuevo pedido');
+                            if ($pedido->save()) {
+                                $pedido = Pedido::All()->last();
+                                bitacora('pedido', $pedido->id_pedido, 'I', 'Insercion de un nuevo pedido');
 
-                            /* ========= TABLA DETALLE_PEDIDO ===========*/
-                            $det_pedido = new DetallePedido();
-                            $det_pedido->id_pedido = $pedido->id_pedido;
-                            $det_pedido->id_cliente_especificacion = $cli_ped_esp->id_cliente_pedido_especificacion;
-                            $det_pedido->id_agencia_carga = $request->id_agencia_carga;
-                            $det_pedido->cantidad = 1;
+                                /* ========= TABLA DETALLE_PEDIDO ===========*/
+                                $det_pedido = new DetallePedido();
+                                $det_pedido->id_pedido = $pedido->id_pedido;
+                                $det_pedido->id_cliente_especificacion = $cli_ped_esp->id_cliente_pedido_especificacion;
+                                $det_pedido->id_agencia_carga = $request->id_agencia_carga;
+                                $det_pedido->cantidad = $request->nueva_esp['cantidad_cajas'];
+                                $det_pedido->precio = $request->nueva_esp['precio'] . ';' . $det_espemp->id_detalle_especificacionempaque;
 
-                            if ($det_pedido->save()) {
-                                $det_pedido = DetallePedido::All()->last();
-                                bitacora('detalle_pedido', $det_pedido->id_detalle_pedido, 'I', 'Insercion de un nuevo detalle-pedido');
+                                if ($det_pedido->save()) {
+                                    $det_pedido = DetallePedido::All()->last();
+                                    bitacora('detalle_pedido', $det_pedido->id_detalle_pedido, 'I', 'Insercion de un nuevo detalle-pedido');
 
-                                /* =========== TABLA MARCACION ===========*/
-                                $cant_marcaciones = count($request->marcaciones);
-                                $cant_colores = count($request->colores);
-                                $marcas_creadas = [];
-                                for ($i = 0; $i < $cant_marcaciones; $i++) {
-                                    if ($request->marcaciones[$i] != '' && $request->matrix[$i][$cant_colores] > 0) {
+                                    /* =========== TABLA MARCACION ===========*/
+                                    $arreglo_marcaciones = [];
+                                    $arreglo_coloraciones = [];
+                                    foreach ($request->nueva_esp['marcaciones'] as $m) {
                                         $marcacion = new Marcacion();
-                                        $marcacion->nombre = $request->marcaciones[$i];
-                                        $marcacion->cantidad = $request->matrix[$i][$cant_colores];
+                                        $marcacion->nombre = $m['nombre'];
+                                        $marcacion->ramos = $m['ramos'];
+                                        $marcacion->piezas = $m['piezas'];
                                         $marcacion->id_detalle_pedido = $det_pedido->id_detalle_pedido;
+                                        $marcacion->id_especificacion_empaque = $esp_emp->id_especificacion_empaque;
 
                                         if ($marcacion->save()) {
                                             $marcacion = Marcacion::All()->last();
                                             bitacora('marcacion', $marcacion->id_marcacion, 'I', 'Insercion de una nueva marcacion');
-                                            array_push($marcas_creadas, $marcacion);
+                                            array_push($arreglo_marcaciones, $marcacion);
 
-                                            /* ========= TABLA COLORACION ===========*/
-                                            $colores_creados = [];
-                                            for ($c = 0; $c < $cant_colores; $c++) {
-                                                if ($request->matrix[$i][$c] != '' && $request->colores[$c]['nombre'] != '') {
-                                                    $coloracion = new Coloracion();
-                                                    $coloracion->id_marcacion = $marcacion->id_marcacion;
-                                                    $coloracion->nombre = str_replace(' ', '_', espacios($request->colores[$c]['nombre']));
-                                                    $coloracion->fondo = $request->colores[$c]['fondo'];
-                                                    $coloracion->texto = $request->colores[$c]['texto'];
-                                                    $coloracion->cantidad = $request->matrix[$i][$c];
+                                            /* =========== TABLA COLORACION ===========*/
+                                            foreach ($m['coloraciones'] as $c) {
+                                                $coloracion = new Coloracion();
+                                                $coloracion->cantidad = $c['cantidad'] != '' ? $c['cantidad'] : 0;
+                                                $coloracion->id_color = $c['id_color'];
+                                                $coloracion->id_marcacion = $marcacion->id_marcacion;
+                                                $coloracion->id_detalle_especificacionempaque = $det_espemp->id_detalle_especificacionempaque;
 
-                                                    if ($coloracion->save()) {
-                                                        $coloracion = Coloracion::All()->last();
-                                                        bitacora('coloracion', $coloracion->id_coloracion, 'I', 'Insercion de una nueva coloracion');
-                                                        array_push($colores_creados, $coloracion);
-                                                    } else {
-                                                        foreach ($colores_creados as $color_creado)
-                                                            $color_creado->delete();
-                                                        foreach ($marcas_creadas as $marc_creada)
-                                                            $marc_creada->delete();
-                                                        $pedido->delete();
-                                                        $cli_ped_esp->delete();
-                                                        $det_espemp->delete();
-                                                        $esp_emp->delete();
-                                                        $especificacion->delete();
+                                                if ($coloracion->save()) {
+                                                    $coloracion = Coloracion::All()->last();
+                                                    bitacora('coloracion', $coloracion->id_coloracion, 'I', 'Insercion de una nueva coloracion');
+                                                    array_push($arreglo_coloraciones, $coloracion);
 
-                                                        return [
-                                                            'id_pedido' => '',
-                                                            'success' => false,
-                                                            'mensaje' => '<div class="alert alert-warning text-center">Ha ocurrido un problema con una coloración</div>',
-                                                        ];
-                                                    }
+                                                } else {
+                                                    foreach ($arreglo_coloraciones as $item)
+                                                        $item->delete();
+                                                    foreach ($arreglo_marcaciones as $item)
+                                                        $item->delete();
+                                                    $det_pedido->delete();
+                                                    $pedido->delete();
+                                                    $cli_ped_esp->delete();
+                                                    $det_espemp->delete();
+                                                    $esp_emp->delete();
+                                                    $esp->delete();
+
+                                                    return [
+                                                        'id_pedido' => '',
+                                                        'success' => false,
+                                                        'mensaje' => '<div class="alert alert-warning text-center">No se ha podido crear la relación marcación-coloración "' .
+                                                            $m['nombre'] . ' - ' . Color::find($c['id_color'])->nombre
+                                                            . '"</div>',
+                                                    ];
                                                 }
                                             }
                                         } else {
-                                            foreach ($marcas_creadas as $marc_creada)
-                                                $marc_creada->delete();
+                                            foreach ($arreglo_marcaciones as $item)
+                                                $item->delete();
+                                            $det_pedido->delete();
                                             $pedido->delete();
                                             $cli_ped_esp->delete();
                                             $det_espemp->delete();
                                             $esp_emp->delete();
-                                            $especificacion->delete();
+                                            $esp->delete();
 
                                             return [
                                                 'id_pedido' => '',
                                                 'success' => false,
-                                                'mensaje' => '<div class="alert alert-warning text-center">Ha ocurrido un problema con una marcación</div>',
+                                                'mensaje' => '<div class="alert alert-warning text-center">No se ha podido crear la marcación "' .
+                                                    $m['nombre']
+                                                    . '"</div>',
                                             ];
                                         }
                                     }
+                                } else {
+                                    $pedido->delete();
+                                    $cli_ped_esp->delete();
+                                    $det_espemp->delete();
+                                    $esp_emp->delete();
+                                    $esp->delete();
+
+                                    return [
+                                        'id_pedido' => '',
+                                        'success' => false,
+                                        'mensaje' => '<div class="alert alert-warning text-center">No se ha podido crear el detalle-pedido</div>',
+                                    ];
                                 }
-
-                                return [
-                                    'id_pedido' => $pedido->id_pedido,
-                                    'success' => true,
-                                    'mensaje' => '<div class="alert alert-success text-center">' .
-                                        'Se ha guardado toda la información satisfactoriamente'
-                                        . '</div>',
-                                ];
-
                             } else {
-                                $pedido->delete();
                                 $cli_ped_esp->delete();
                                 $det_espemp->delete();
                                 $esp_emp->delete();
-                                $especificacion->delete();
+                                $esp->delete();
 
                                 return [
                                     'id_pedido' => '',
                                     'success' => false,
-                                    'mensaje' => '<div class="alert alert-warning text-center">No se ha podido crear el detalle-pedido</div>',
+                                    'mensaje' => '<div class="alert alert-warning text-center">No se ha podido crear el pedido</div>',
                                 ];
                             }
                         } else {
-                            $cli_ped_esp->delete();
                             $det_espemp->delete();
                             $esp_emp->delete();
-                            $especificacion->delete();
+                            $esp->delete();
 
                             return [
                                 'id_pedido' => '',
                                 'success' => false,
-                                'mensaje' => '<div class="alert alert-warning text-center">No se ha podido crear el pedido</div>',
+                                'mensaje' => '<div class="alert alert-warning text-center">No se ha podido crear el cliente-pedido-especificación</div>',
                             ];
                         }
                     } else {
-                        $det_espemp->delete();
                         $esp_emp->delete();
-                        $especificacion->delete();
+                        $esp->delete();
 
                         return [
                             'id_pedido' => '',
                             'success' => false,
-                            'mensaje' => '<div class="alert alert-warning text-center">No se ha podido crear el cliente-pedido-especificación</div>',
+                            'mensaje' => '<div class="alert alert-warning text-center">No se ha podido crear el detalle-especificación-empaque</div>',
                         ];
                     }
                 } else {
-                    $esp_emp->delete();
-                    $especificacion->delete();
-
+                    $esp->delete();
                     return [
                         'id_pedido' => '',
                         'success' => false,
-                        'mensaje' => '<div class="alert alert-warning text-center">No se ha podido crear el detalle-especificación-empaque</div>',
+                        'mensaje' => '<div class="alert alert-warning text-center">No se ha podido crear la especificación-empaque</div>',
                     ];
                 }
             } else {
-                $especificacion->delete();
                 return [
                     'id_pedido' => '',
                     'success' => false,
-                    'mensaje' => '<div class="alert alert-warning text-center">No se ha podido crear la especificación-empaque</div>',
+                    'mensaje' => '<div class="alert alert-warning text-center">No se ha podido crear la especificación</div>',
                 ];
             }
         } else {
-            return [
-                'id_pedido' => '',
-                'success' => false,
-                'mensaje' => '<div class="alert alert-warning text-center">No se ha podido crear la especificación</div>',
-            ];
+            /* ============ CREAR PEDIDO SI NO HAY NUEVA ESPECIFICACION ============ */
+            $pedido = new Pedido();
+            $pedido->id_cliente = $request->id_cliente;
+            $pedido->descripcion = 'Flor tinturada';
+            $pedido->variedad = ''; // se calcula más abajo
+            $pedido->fecha_pedido = $request->fecha_pedido;
+            $pedido->tipo_especificacion = 'T'; // Flor tinturada
+            if ($pedido->save()) {
+                $pedido = Pedido::All()->last();
+                bitacora('pedido', $pedido->id_pedido, 'I', 'Insercion de un nuevo pedido');
+            } else {
+                return [
+                    'id_pedido' => '',
+                    'success' => false,
+                    'mensaje' => '<div class="alert alert-warning text-center error">No se ha podido crear el pedido</div>',
+                ];
+            }
         }
+        if (count($request->arreglo_esp) > 0) {
+            $arreglo_variedades = [];
+            /* ============ TABLA DETALLE_PEDIDO ============ */
+            $arreglo_det_pedidos = [];
+            $arreglo_marcaciones = [];
+            $arreglo_coloraciones = [];
+            foreach ($request->arreglo_esp as $pos_esp => $esp) {
+                $arreglo_det_esp = [];
+                $cli_ped_esp = ClientePedidoEspecificacion::where('id_cliente', $request->id_cliente)
+                    ->where('id_especificacion', $esp['id_esp'])->first();
+                $det_pedido = new DetallePedido();
+                $det_pedido->id_pedido = $pedido->id_pedido;
+                $det_pedido->id_cliente_especificacion = $cli_ped_esp->id_cliente_pedido_especificacion;
+                $det_pedido->id_agencia_carga = $request->id_agencia_carga;
+                $det_pedido->cantidad = $esp['cant_piezas'];
+                $det_pedido->precio = $esp['arreglo_esp_emp'][0]['arreglo_det_esp'][0]['precio'] . ';' .
+                    $esp['arreglo_esp_emp'][0]['arreglo_det_esp'][0]['id_det_esp'];   // se termina de calcular más abajo
+
+                /* ========== OBTENER LOS PRECIOS POR DETALLES_ESPECIFICACION_EMPAQUE ========= */
+                foreach ($esp['arreglo_esp_emp'] as $pos_esp_emp => $esp_emp) {
+                    foreach ($esp_emp['arreglo_det_esp'] as $pos_precio => $precio) {
+                        if (($pos_esp_emp == 0 && $pos_precio > 0) || $pos_esp_emp > 0)
+                            $det_pedido->precio .= '|' . $precio['precio'] . ';' . $precio['id_det_esp'];
+                    }
+                }
+                if ($det_pedido->save()) {
+                    $det_pedido = DetallePedido::All()->last();
+                    bitacora('detalle_pedido', $det_pedido->id_detalle_pedido, 'I', 'Insercion de un nuevo detalle-pedido');
+                    array_push($arreglo_det_pedidos, $det_pedido);
+
+                    /* ============== TABLA MARCACION ===========*/
+                    foreach ($esp['arreglo_esp_emp'] as $esp_emp) {
+                        foreach ($esp_emp['marcaciones'] as $m) {
+                            $marcacion = new Marcacion();
+                            $marcacion->nombre = $m['nombre'];
+                            $marcacion->ramos = $m['ramos'];
+                            $marcacion->piezas = $m['piezas'];
+                            $marcacion->id_detalle_pedido = $det_pedido->id_detalle_pedido;
+                            $marcacion->id_especificacion_empaque = $esp_emp['id_esp_emp'];
+
+                            if ($marcacion->save()) {
+                                $marcacion = Marcacion::All()->last();
+                                bitacora('marcacion', $marcacion->id_marcacion, 'I', 'Insercion de una nueva marcacion');
+                                array_push($arreglo_marcaciones, $marcacion);
+
+                                /* =========== TABLA COLORACION =========== */
+                                foreach ($m['arreglo_colores'] as $c) {
+                                    if (isset($c['cant_x_det_esp']))
+                                        foreach ($c['cant_x_det_esp'] as $det_esp) {
+                                            $coloracion = new Coloracion();
+                                            $coloracion->id_marcacion = $marcacion->id_marcacion;
+                                            $coloracion->id_color = $c['id_color'];
+                                            $coloracion->id_detalle_especificacionempaque = $det_esp['id_det_esp'];
+                                            $coloracion->cantidad = $det_esp['cantidad'] != '' ? $det_esp['cantidad'] : 0;
+
+                                            if ($coloracion->save()) {
+                                                $coloracion = Coloracion::All()->last();
+                                                bitacora('coloracion', $coloracion->id_coloracion, 'I', 'Insercion de una nueva coloracion');
+                                                array_push($arreglo_coloraciones, $coloracion);
+
+                                                /* ======== OBTENER LAS VARIEDADES INCLUIDAS EN EL PEDIDO ======= */
+                                                $det_esp = DetalleEspecificacionEmpaque::find($coloracion->id_detalle_especificacionempaque);
+                                                if (!in_array($det_esp->id_variedad, $arreglo_variedades)) {
+                                                    array_push($arreglo_variedades, $det_esp->id_variedad);
+                                                }
+                                            } else {
+                                                foreach ($arreglo_coloraciones as $item)
+                                                    $item->delete();
+                                                foreach ($arreglo_marcaciones as $item)
+                                                    $item->delete();
+                                                foreach ($arreglo_det_pedidos as $item)
+                                                    $item->delete();
+                                                return [
+                                                    'id_pedido' => '',
+                                                    'success' => false,
+                                                    'mensaje' => '<div class="alert alert-warning text-center error">No se ha podido crear la coloración ' .
+                                                        Color::find($c['id_color'])->nombre . ' de la marcación ' .
+                                                        $m['nombre'] . ' del detalle-pedido #' .
+                                                        $pos_esp . '</div>',
+                                                ];
+                                            }
+                                        }
+                                }
+                            } else {
+                                foreach ($arreglo_marcaciones as $item)
+                                    $item->delete();
+                                foreach ($arreglo_det_pedidos as $item)
+                                    $item->delete();
+                                return [
+                                    'id_pedido' => '',
+                                    'success' => false,
+                                    'mensaje' => '<div class="alert alert-warning text-center error">No se ha podido crear la marcación ' .
+                                        $m['nombre'] . ' del detalle-pedido #' .
+                                        $pos_esp . '</div>',
+                                ];
+                            }
+                        }
+                    }
+                } else {
+                    foreach ($arreglo_det_pedidos as $item)
+                        $item->delete();
+                    return [
+                        'id_pedido' => '',
+                        'success' => false,
+                        'mensaje' => '<div class="alert alert-warning text-center error">No se ha podido crear el detalle-pedido #' .
+                            $pos_esp . '</div>',
+                    ];
+                }
+            }
+
+            /* ========== COMPLETAR EL CAMPO variedad DEL PEDIDO =========== */
+            $variedades = $arreglo_variedades[0];
+            foreach ($arreglo_variedades as $i => $v) {
+                if ($i > 0)
+                    $variedades .= '|' . $v;
+            }
+            if ($pedido->variedad == '') {
+                $pedido->variedad = $variedades;
+            } else {
+                $pedido->variedad .= '|' . $variedades;
+            }
+            if ($pedido->save()) {
+                bitacora('pedido', $pedido->id_pedido, 'U', 'Modificacion del campo variedad de un pedido (Flor tinturada)');
+            } else {
+                return [
+                    'id_pedido' => '',
+                    'success' => false,
+                    'mensaje' => '<div class="alert alert-warning text-center error">No se ha podido terminar de guardar el pedido</div>',
+                ];
+            }
+        }
+
+        return [
+            'id_pedido' => $pedido->id_pedido,
+            'success' => true,
+            'mensaje' => '<div class="alert alert-success text-center">' .
+                'Se ha guardado toda la información satisfactoriamente'
+                . '</div>',
+        ];
+
+    }
+
+    public function editar_pedido_tinturado(Request $request)
+    {
+        $pedido = Pedido::find($request->id_pedido);
+        $have_next = false;
+        if (count($pedido->detalles) > $request->pos_det_ped)
+            $have_next = true;
+        return view('adminlte.gestion.postcocecha.pedidos_ventas.forms.orden_semanal', [
+            'pedido' => $pedido,
+            'pos_det_ped' => $request->pos_det_ped,
+            'have_next' => $have_next
+        ]);
     }
 
     public function buscar_agencia_carga(Request $request)
