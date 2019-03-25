@@ -307,7 +307,7 @@
                 arreglo: arreglo
             };
             post_jquery('{{url('pedidos/store_pedido_personalizado')}}', datos, function () {
-                buscar_listado_pedidos();
+                listar_resumen_pedidos($("#fecha_pedidos_search").val(), true);
                 cerrar_modals();
                 add_pedido_personalizado();
             });

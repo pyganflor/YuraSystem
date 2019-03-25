@@ -23,6 +23,7 @@ class OrdenSemanalController extends Controller
 {
     public function store_orden_semanal(Request $request)
     {
+        dd($request->all());
         $especificacion = new Especificacion();
         $descripcion = $request->cantidad_cajas . ' ' . explode('|', Empaque::find($request->id_empaque)->nombre)[0] . ' de ' .
             $request->cantidad_ramos . ' ramos ' . ClasificacionRamo::find($request->id_clasificacion_ramo)->nombre .
@@ -235,7 +236,11 @@ class OrdenSemanalController extends Controller
 
     public function buscar_agencia_carga(Request $request)
     {
-        $listado = Cliente::find($request->id_cliente)->cliente_agencia_carga;
+        $listado = Cliente::find($request->id_cliente);
+        if ($listado != '')
+            $listado = $listado->cliente_agencia_carga;
+        else
+            $listado = [];
         return view('adminlte.gestion.postcocecha.pedidos_ventas.partials._select_agencias_carga', [
             'listado' => $listado
         ]);

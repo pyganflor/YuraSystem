@@ -973,12 +973,13 @@ function getDetalleEspecificacion($id_especificacion)
                 'txr' => $det->tallos_x_ramos,
                 'longitud' => $det->longitud_ramo,
                 'unidad_medida_longitud' => isset($det->unidad_medida->siglas) ? $det->unidad_medida->siglas : null,
-                'id_especificacion_empaque' =>$espEmp->id_especificacion_empaque
+                'id_especificacion_empaque' => $espEmp->id_especificacion_empaque
             ];
     return $arrData;
 }
 
-function getCantDetEspEmp($idEsp){
+function getCantDetEspEmp($idEsp)
+{
     $data = getEspecificacion($idEsp);
     $a = 0;
     foreach ($data->especificacionesEmpaque as $espEmp)
@@ -1482,9 +1483,15 @@ function getDatosExportacion($id_detalle_pedido,$id_dato_exportacion){
     ])->first();
 }
 
-function getClienteEspecificacion($id_cliente,$id_especificacion){
-   return ClientePedidoEspecificacion::where([
-        ['id_cliente',$id_cliente],
-        ['id_especificacion',$id_especificacion]
+function getClienteEspecificacion($id_cliente,$id_especificacion)
+{
+    return ClientePedidoEspecificacion::where([
+        ['id_cliente', $id_cliente],
+        ['id_especificacion', $id_especificacion]
     ])->select('id_cliente_pedido_especificacion')->first();
+}
+
+function getSubmenusByTipo($tipo)
+{
+    return Submenu::All()->where('tipo', $tipo);
 }

@@ -696,6 +696,25 @@
 
         return fecha;
     }
+    function rest_dias(dias) {
+        var fecha = new Date();
+        fecha.setDate(fecha.getDate() - dias);
+
+        var dd = fecha.getDate();
+        var mm = fecha.getMonth() + 1; //January is 0!
+        var yyyy = fecha.getFullYear();
+
+        if (dd < 10) {
+            dd = '0' + dd
+        }
+        if (mm < 10) {
+            mm = '0' + mm
+        }
+
+        fecha = yyyy + '-' + mm + '-' + dd;
+
+        return fecha;
+    }
 
     // Permitir solo numeros como entrada en un input
     function isNumber(event) {

@@ -28,4 +28,13 @@ class Rol extends Model
     {
         return $this->hasMany('\yura\Modelos\Usuario', 'id_rol');
     }
+
+    public function getSubmenusByTipo($tipo)
+    {
+        $r = [];
+        foreach ($this->submenus as $s)
+            if ($s->submenu->tipo == $tipo)
+                array_push($r, $s->submenu);
+        return $r;
+    }
 }

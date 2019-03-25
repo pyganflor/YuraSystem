@@ -190,10 +190,12 @@ class MenuSistemaController extends Controller
             'nombre' => 'required|max:50',
             'url' => 'required|max:25',
             'id_menu' => 'required|',
+            'tipo' => 'required|',
         ], [
             'nombre.required' => 'El nombre es obligatorio',
             'url.required' => 'La ruta es obligatoria',
             'id_menu.required' => 'El menú es obligatorio',
+            'tipo.required' => 'El tipo es obligatorio',
             'nombre.max' => 'El nombre es muy grande',
             'url.max' => 'La ruta es muy grande',
         ]);
@@ -204,6 +206,7 @@ class MenuSistemaController extends Controller
                 $model->nombre = str_limit((espacios($request->nombre)), 50);
                 $model->url = str_limit(mb_strtolower(espacios($request->url)), 25);
                 $model->id_menu = $request->id_menu;
+                $model->tipo = $request->tipo;
                 $model->fecha_registro = date('Y-m-d H:i:s');
 
                 if ($model->save()) {
@@ -493,10 +496,12 @@ class MenuSistemaController extends Controller
             'url' => 'required|max:25',
             'id_menu' => 'required|',
             'id_submenu' => 'required|',
+            'tipo' => 'required|',
         ], [
             'nombre.required' => 'El nombre es obligatorio',
             'url.required' => 'La ruta es obligatoria',
             'id_menu.required' => 'El menú es obligatorio',
+            'tipo.required' => 'El tipo es obligatorio',
             'id_submenu.required' => 'El submenú es obligatorio',
             'nombre.max' => 'El nombre es muy grande',
             'url.max' => 'La ruta es muy grande',
@@ -509,6 +514,7 @@ class MenuSistemaController extends Controller
                 $model->nombre = str_limit((espacios($request->nombre)), 50);
                 $model->url = str_limit(mb_strtolower(espacios($request->url)), 25);
                 $model->id_menu = $request->id_menu;
+                $model->tipo = $request->tipo;
                 if ($model->save()) {
                     $success = true;
                     $msg = '<div class="alert alert-success text-center">' .

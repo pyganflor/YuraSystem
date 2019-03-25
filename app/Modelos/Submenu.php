@@ -18,6 +18,7 @@ class Submenu extends Model
         'id_menu',
         'fecha_registro',
         'estado',
+        'tipo', // C=>CRM, N=>Normal, R=>Reporte
     ];
 
     public function menu()

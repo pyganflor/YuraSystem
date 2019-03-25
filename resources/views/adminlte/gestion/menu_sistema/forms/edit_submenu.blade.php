@@ -44,6 +44,18 @@
                 puede provocar problemas en el acceso a los datos</p>
         </div>
     </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="form-group">
+                <label for="tipo">Tipo</label>
+                <select name="tipo" id="tipo" class="form-control" required>
+                    <option value="N" {{$submenu->tipo == 'N' ? 'selected' : ''}}>Normal</option>
+                    <option value="C" {{$submenu->tipo == 'C' ? 'selected' : ''}}>CRM</option>
+                    <option value="R" {{$submenu->tipo == 'R' ? 'selected' : ''}}>Reporte</option>
+                </select>
+            </div>
+        </div>
+    </div>
 
     <input type="hidden" id="id_submenu" name="id_submenu" value="{{$submenu->id_submenu}}">
 </form>

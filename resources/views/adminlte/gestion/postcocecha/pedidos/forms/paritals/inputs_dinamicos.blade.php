@@ -1,5 +1,4 @@
-<table width="100%" class="table-responsive table-bordered" style="font-size: 0.8em; border-color: white"
-                   id="table_content_recepciones">
+<table width="100%" class="table-responsive table-bordered" style="font-size: 0.8em; border-color: white" id="table_content_recepciones">
     <thead>
     <tr style="background-color: #dd4b39; color: white">
         <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"

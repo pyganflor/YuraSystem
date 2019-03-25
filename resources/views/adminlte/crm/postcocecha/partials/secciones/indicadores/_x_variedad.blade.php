@@ -25,7 +25,7 @@
                 <div class="icon">
                     <i class="ion ion-leaf"></i>
                 </div>
-                <a href="javascript:void(0)" class="small-box-footer">
+                <a href="javascript:void(0)" class="small-box-footer" onclick="show_data_tallos('{{$desde}}', '{{$hasta}}')">
                     Cosecha tallos <i class="fa fa-arrow-circle-right"></i>
                 </a>
             </div>
@@ -41,7 +41,7 @@
                 <div class="icon">
                     <i class="ion ion-trash-a"></i>
                 </div>
-                <a href="javascript:void(0)" class="small-box-footer">
+                <a href="javascript:void(0)" class="small-box-footer" onclick="show_data_desechos('{{$desde}}', '{{$hasta}}')">
                     Desechos <i class="fa fa-arrow-circle-right"></i>
                 </a>
             </div>
@@ -57,7 +57,7 @@
                 <div class="icon">
                     <i class="ion ion-ios-people-outline"></i>
                 </div>
-                <a href="javascript:void(0)" class="small-box-footer">
+                <a href="javascript:void(0)" class="small-box-footer" onclick="show_data_rendimientos('{{$desde}}', '{{$hasta}}')">
                     Rendimiento <i class="fa fa-arrow-circle-right"></i>
                 </a>
             </div>
@@ -73,7 +73,7 @@
                 <div class="icon">
                     <i class="fa fa-tint"></i>
                 </div>
-                <a href="javascript:void(0)" class="small-box-footer">
+                <a href="javascript:void(0)" class="small-box-footer" onclick="show_data_calibres('{{$desde}}', '{{$hasta}}')">
                     Calibre <i class="fa fa-arrow-circle-right"></i>
                 </a>
             </div>

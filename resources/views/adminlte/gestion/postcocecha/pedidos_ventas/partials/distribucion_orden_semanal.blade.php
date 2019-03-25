@@ -492,7 +492,7 @@
                         post_jquery('{{url('pedidos/update_distribucion')}}', datos, function () {
                             cerrar_modals();
                             distribuir_orden_semanal(id_pedido);
-                            buscar_listado_pedidos();
+                            listar_resumen_pedidos($("#fecha_pedidos_search").val(), true);
                         });
                     });
                 }
@@ -529,7 +529,7 @@
             post_jquery('{{url('pedidos/update_pedido_orden_semanal')}}', datos, function () {
                 cerrar_modals();
                 distribuir_orden_semanal(datos['id_pedido']);
-                buscar_listado_pedidos();
+                listar_resumen_pedidos($("#fecha_pedidos_search").val(), true);
             });
         }
     }

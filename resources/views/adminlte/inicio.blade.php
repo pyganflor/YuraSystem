@@ -26,7 +26,28 @@
     </section>
 
     <section class="content">
-
+        @if(count(getUsuario(Session::get('id_usuario'))->rol()->getSubmenusByTipo('C')) > 0)
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title">
+                        CRM
+                    </h3>
+                </div>
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="info-box bg-green-gradient mouse-hand" onclick="location.href='{{url('crm_postcosecha')}}'">
+                                <span class="info-box-icon"><i class="fa fa-fw fa-leaf"></i></span>
+                                <div class="info-box-content">
+                                    <strong class="info-box-text" style="font-size: 1.2em">Postcosecha</strong>
+                                    <span class="info-box-number">{{$calibre}} t/r</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endif
     </section>
 @endsection
 

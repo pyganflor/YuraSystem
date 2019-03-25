@@ -15,12 +15,12 @@
                 </li>
                 <li>
                     <input type="checkbox" id="check_filtro_semanal" class="check_filtro_cosecha"
-                           onchange="select_checkbox_cosecha('check_filtro_semanal')" checked>
+                           onchange="select_checkbox_cosecha('check_filtro_semanal')">
                     <label for="check_filtro_semanal" class="mouse-hand">Semanal</label>
                 </li>
                 <li>
                     <input type="checkbox" id="check_filtro_diario" class="check_filtro_cosecha"
-                           onchange="select_checkbox_cosecha('check_filtro_diario')">
+                           onchange="select_checkbox_cosecha('check_filtro_diario')" checked>
                     <label for="check_filtro_diario" class="mouse-hand">Diario</label>
                 </li>
                 <legend style="margin-bottom: 0"></legend>
@@ -30,7 +30,7 @@
                     <label for="check_filtro_x_variedad" class="mouse-hand">Por Variedad</label>
                 </li>
                 <li>
-                    <input type="checkbox" id="check_filtro_todas_variedad" checked
+                    <input type="checkbox" id="check_filtro_todas_variedad"
                            onchange="select_checkbox_cosecha_variedad('check_filtro_todas_variedad')"
                            class="check_filtro_cosecha_variedad">
                     <label for="check_filtro_todas_variedad" class="mouse-hand">Todas</label>

@@ -121,6 +121,7 @@
                 nombre: $('#nombre').val(),
                 id_menu: $('#id_menu').val(),
                 url: $('#url').val(),
+                tipo: $('#tipo').val(),
             };
             post_jquery('{{url('menu_sistema/store_submenu')}}', datos, function () {
                 cerrar_modals();
@@ -262,6 +263,7 @@
                 _token: '{{csrf_token()}}',
                 nombre: $('#nombre').val(),
                 url: $('#url').val(),
+                tipo: $('#tipo').val(),
                 id_submenu: $('#id_submenu').val(),
                 id_menu: $('#id_menu').val(),
             };

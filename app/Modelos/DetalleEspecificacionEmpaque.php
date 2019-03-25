@@ -61,4 +61,10 @@ class DetalleEspecificacionEmpaque extends Model
     {
         return $this->belongsTo('\yura\Modelos\Grosor', 'id_grosor_ramo');
     }
+
+    public function precioByCliente($cliente)
+    {
+        return Precio::All()->where('id_cliente', $cliente)
+            ->where('id_detalle_especificacionempaque', $this->id_detalle_especificacionempaque)->first();
+    }
 }
