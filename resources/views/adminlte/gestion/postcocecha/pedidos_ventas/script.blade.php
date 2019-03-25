@@ -42,31 +42,6 @@
                     $("#fecha_de_entrega").val(retorno.pedido[0].fecha_pedido);
                     calcular_precio_pedido();
                     //$("#descripcion").val(retorno[0].descripcion);
-                        /*for(p=0;p<retorno.duplicados.length;p++){
-                            duplicar = retorno.duplicados[p].cant_esp_dup-1;
-                            if(duplicar > 0)
-                                for(q=0;q<duplicar;q++){
-                                    duplicar_especificacion(retorno.duplicados[p].id_especificacion);
-                                }
-                        }*/
-                        /*setTimeout(function () {
-                            for (i = 0; i < retorno.pedido.length; i++) {
-                                data_precio = retorno.pedido[i].precio.split("|");
-                                data_option = [];
-                                $.each(data_precio,function (a,b) {
-                                    arr_precio = b.split(";");
-                                    precio = parseFloat(arr_precio[0]);
-                                    $(".cantidad_"+arr_precio[1]).val(retorno.pedido[i].cantidad_especificacion);
-                                    $("#precio_"+arr_precio[1]+"_"+(i+1)+" option[value='" + precio + "']").remove();
-                                    $("#precio_"+arr_precio[1]+"_"+(i+1)).append("<option value='" + precio + "'>" + precio + "</option>");
-                                    $("#precio_"+arr_precio[1]+"_"+(i+1)+" option[value='" + precio + "']").attr('selected', true);
-                                    $("#precio_"+arr_precio[1]+"_"+(a+1)).val(precio);
-                                    $("select#id_agencia_carga_"+arr_precio[1] +" option[value='" + retorno.pedido[i].id_agencia_carga + "']").attr('selected', true);
-                                });
-                            }
-                            calcular_precio_pedido();
-                            $.LoadingOverlay('hide');
-                        },1000);*/
                 }).always(function () {
                     $.LoadingOverlay('hide');
                 });
