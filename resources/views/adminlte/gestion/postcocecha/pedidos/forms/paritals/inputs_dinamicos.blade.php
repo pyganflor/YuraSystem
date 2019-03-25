@@ -55,9 +55,7 @@
         </thead>
         <tbody id="tbody_inputs_pedidos">
             @if(count($especificaciones) >0)
-                @php
-                    $anterior = '';
-                @endphp
+                @php $anterior = ''; @endphp
                 @foreach($especificaciones as $x => $item)
                     @php $b=1 @endphp
                     @foreach(getEspecificacion($item->id_especificacion)->especificacionesEmpaque as $y => $esp_emp)
@@ -148,10 +146,7 @@
                                         </td>
                                     @endif
                             </tr>
-                            @php
-                                $anterior = $item->id_especificacion;
-                            @endphp
-                            @php $b++ @endphp
+                            @php $b++; $anterior = $item->id_especificacion; @endphp
                         @endforeach
                     @endforeach
                 @endforeach

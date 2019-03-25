@@ -168,6 +168,7 @@
                         @php $b++ @endphp
                     @endforeach
                 @endforeach
+                @php $anterior = ''; @endphp
             @endforeach
             {{--FIN ESPECIFICACIONES SOLICITADAS EN EL PEDIDO--}}
 
@@ -264,10 +265,7 @@
                                 </td>
                             @endif
                         </tr>
-                        @php
-                            $anterior_2 = $item->id_especificacion;
-                        @endphp
-                        @php $b++; @endphp
+                        @php $b++; $anterior_2 = $item->id_especificacion; @endphp
                     @endforeach
                 @endforeach
             @endforeach

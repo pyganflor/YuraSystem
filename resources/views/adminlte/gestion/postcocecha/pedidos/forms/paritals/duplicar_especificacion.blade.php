@@ -58,7 +58,7 @@
                     @else
                         <input type="number"
                                name="precio_{{($cant_esp+1)}}" id="precio_{{($cant_esp+1)}}_{{$b}}" class="form-control text-center precio_{{($cant_esp+1)}} form-control"
-                               style="background-color: beige; width: 100%" min="0" onchange="calcular_precio_pedido()" value="0" required>
+                               style="background-color: beige; width: 100%;text-align: left" min="0" onchange="calcular_precio_pedido()" value="0" required>
                     @endif
                 </td>
                 @if($id_especificacion != $anterior)
