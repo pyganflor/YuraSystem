@@ -43,12 +43,9 @@ use yura\Modelos\ClientePedidoEspecificacion;
 use yura\Modelos\AgenciaCarga;
 use yura\Modelos\DetallePedido;
 use yura\Modelos\Precio;
-<<<<<<< HEAD
 use yura\Modelos\Color;
 use yura\Modelos\Marcacion;
-=======
 use yura\Modelos\DetallePedidoDatoExportacion;
->>>>>>> e0a93478826ff7bd8e67590ee62fdc60b87d83dd
 
 /*
  * -------- BITÁCORA DE LAS ACCIONES ECHAS POR EL USUARIO ------

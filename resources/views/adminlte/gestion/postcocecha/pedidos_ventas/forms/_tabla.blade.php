@@ -38,10 +38,17 @@
                 <tr>
                     <td class="text-center" style="border-color: #9d9d9d">
                         <input type="text" id="nombre_marcacion_{{$marca->id_marcacion}}" name="nombre_marcacion_{{$marca->id_marcacion}}"
-                               value="{{getMarcacion($marca->id_marcacion)->nombre}}">
+                               value="{{getMarcacion($marca->id_marcacion)->nombre}}" width="150px" style="border: none" class="text-center">
                         <input type="hidden" id="nombre_marcacion_{{$pos_marca}}" name="nombre_marcacion_{{$pos_marca}}"
                                value="{{$marca->id_marcacion}}">
                     </td>
+                    @foreach($det_ped->getDistinctMarcacionesColoracionesByEspEmp($esp_emp->id_especificacion_empaque)['coloraciones'] as $pos_color => $color)
+                        <th class="text-center elemento_color_{{$color->id_color}}"
+                            style="border-color: #9d9d9d; background-color: {{getColor($color->id_color)->fondo}}"
+                            width="100px">
+
+                        </th>
+                    @endforeach
                 </tr>
             @endforeach
         </table>
