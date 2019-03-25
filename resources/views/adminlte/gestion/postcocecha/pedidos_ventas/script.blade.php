@@ -67,9 +67,8 @@
                             calcular_precio_pedido();
                             $.LoadingOverlay('hide');
                         },1000);*/
-
                 }).always(function () {
-
+                    $.LoadingOverlay('hide');
                 });
 
             })
