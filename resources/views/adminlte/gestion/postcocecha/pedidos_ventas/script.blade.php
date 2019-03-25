@@ -50,7 +50,7 @@
             /*.always(function () {
                         $.LoadingOverlay('hide');
                     });*/
-        },300);
+        }, 300);
 
     }
 
@@ -79,6 +79,17 @@
             modal_view('modal-view_ver_distribucion_orden_semanal', vista, '<i class="fa fa-fw fa-gift"></i> Distribución', true, false,
                 '{{isPC() ? '95%' : ''}}');
         });
+    }
+
+    function editar_pedido_tinturado(id_pedido, pos_det_ped) {
+        datos = {
+            id_pedido: id_pedido,
+            pos_det_ped: pos_det_ped
+        };
+        get_jquery('{{url('pedidos/editar_pedido_tinturado')}}', datos, function (retorno) {
+            modal_view('modal-view_editar_pedido_tinturado', retorno, '<i class="fa fa-fw fa-pencil"></i> Editar pedido', true, false,
+                '{{isPC() ? '98%' : ''}}');
+        }, 'td_opciones_' + id_pedido);
     }
 
 </script>

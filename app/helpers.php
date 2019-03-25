@@ -47,7 +47,6 @@ use yura\Modelos\Color;
 use yura\Modelos\Marcacion;
 use yura\Modelos\DetallePedidoDatoExportacion;
 
-
 /*
  * -------- BITÁCORA DE LAS ACCIONES ECHAS POR EL USUARIO ------
  * INSERTAR (I)
