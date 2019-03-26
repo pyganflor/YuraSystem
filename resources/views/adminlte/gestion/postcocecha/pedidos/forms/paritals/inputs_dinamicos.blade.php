@@ -116,7 +116,7 @@
                                         @else
                                             <input type="number"
                                                    name="precio_{{($x+1)}}" id="precio_{{($x+1)}}_{{$b}}" class="form-control text-center precio_{{($x+1)}} form-control"
-                                                   style="background-color: beige; width: 100%;text-align: left" min="0" onchange="calcular_precio_pedido()" onkeypress="setValueInput(this,0,true)" value="0" required>
+                                                   style="background-color: beige; width: 100%;text-align: left" min="0" onchange="calcular_precio_pedido()" value="0" required>
                                         @endif
                                     </td>
                                     @if($item->id_especificacion != $anterior)
@@ -149,6 +149,7 @@
                             @php $b++; $anterior = $item->id_especificacion; @endphp
                         @endforeach
                     @endforeach
+                    @php $anterior = ''; @endphp
                 @endforeach
             @else
                 <tr id="">

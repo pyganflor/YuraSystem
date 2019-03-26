@@ -147,7 +147,7 @@ class PedidoController extends Controller
                             }
                             $success = true;
                             $msg = '<div class="alert alert-success text-center">' .
-                                '<p> Se ha guardado el pedido exitosamente</p>'
+                                '<p> Se ha guardado el pedido '.$request->crear_envio == 'true' ? " y se ha creado el envío" : "".' exitosamente</p>'
                                 . '</div>';
                             bitacora('pedido|detalle_pedido', $model->id_pedido, 'I', 'Inserción satisfactoria de un nuevo pedido');
                         } else {
@@ -157,6 +157,25 @@ class PedidoController extends Controller
                                 '<p> Hubo un error al guardar la información en el sistema</p>'
                                 . '</div>';
                         }
+                    }
+                }
+            }
+            if($success && $request->crear_envio == "true"){
+                $objEnvio = new Envio;
+                $objEnvio->fecha_envio = $request->fecha_envio;
+                $objEnvio->id_pedido = $model->id_pedido;
+                if($objEnvio->save()){
+                    $modelEnvio = Envio::all()->last();
+                    $dataDetallePedido = DetallePedido::where('id_pedido',$model->id_pedido)
+                        ->join('cliente_pedido_especificacion as cpe','detalle_pedido.id_cliente_especificacion','cpe.id_cliente_pedido_especificacion')
+                        ->select('cpe.id_especificacion','detalle_pedido.cantidad')->get();
+                    foreach ($dataDetallePedido as $detallePeido){
+                        $objDetalleEnvio = new DetalleEnvio;
+                        $objDetalleEnvio->id_envio = $modelEnvio->id_envio;
+                        $objDetalleEnvio->id_especificacion = $detallePeido->id_especificacion;
+                        $objDetalleEnvio->id_agencia_transporte = 1;
+                        $objDetalleEnvio->cantidad = $detallePeido->cantidad;
+                        $objDetalleEnvio->save();
                     }
                 }
             }

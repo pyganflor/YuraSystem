@@ -137,12 +137,31 @@ function habilitar_campos() {
 }
 
 function store_pedido(id_cliente, pedido_fijo, csrf_token, vista, id_pedido) {
+
     if ($('#form_add_pedido').valid()) {
-        id_pedido
-            ? texto = '<div class="alert alert-warning text-center"><p>Si este pedido posee envíos al editarlo seran borrados y deberá crearlos nuevamente</p></div>'
-            : texto = '<div class="alert alert-info text-center"><p>Desea guardar este pedido?</p></div>';
+        if ($("#envio_automatico").is(":checked")) {
+            texto = "<label for='fecha_envio'>Seleccione la fecha de envío</label>" +
+                "<div>" +
+                "<input type='date' id='fecha_envio' name='fecha_envio' class='form-control' value='" + moment().format('YYYY-MM-DD') + "'>" +
+                "<span id='error_fecha_envio'></span>" +
+                "</div>";
+        } else {
+            id_pedido
+                ? texto = '<div class="alert alert-warning text-center">' +
+                '<p>Si este pedido posee envíos al editarlo seran borrados y deberá crearlos nuevamente</p>' +
+                '</div>'
+                : texto = '<div class="alert alert-info text-center"><p>Desea guardar este pedido?</p></div>';
+        }
 
         modal_quest('modal_edit_pedido', texto, 'Editar pedido', true, false, '40%', function () {
+            if ($("#envio_automatico").is(":checked"))
+                if ($("#fecha_envio").val() == "") {
+                    $("#error_fecha_envio").html('<p style="color: red;">Debe seleccionar una fecha para realizar el envío</p>');
+                    return false;
+                } else {
+                    $("#error_fecha_envio").html("");
+                }
+
             id_variedades = '';
             variedades = '';
             arrDataDetallesPedido = [];
@@ -219,13 +238,6 @@ function store_pedido(id_cliente, pedido_fijo, csrf_token, vista, id_pedido) {
                         }
                     }
                 }
-            } else if (pedido_fijo && $("#opcion_pedido_fijo").val() == 3) {
-                $cant_pedidos = $("#td_fechas_pedido_fijo_personalizado div.col-md-4").length;
-                for (var i = 0; i < $cant_pedidos; i++) {
-                    arrFechas.push(
-                        $("input#fecha_desde_pedido_fijo_" + (i + 1)).val()
-                    );
-                }
             }
             $.LoadingOverlay('show');
 
@@ -241,7 +253,9 @@ function store_pedido(id_cliente, pedido_fijo, csrf_token, vista, id_pedido) {
                 opcion: $("#opcion_pedido_fijo").val(),
                 variedades: variedades.split("|"),
                 id_pedido: id_pedido,
-                arrDatosExportacion: arrDatosExportacion
+                arrDatosExportacion: arrDatosExportacion,
+                crear_envio: $("#envio_automatico").is(":checked"),
+                fecha_envio: $("#envio_automatico").is(":checked") ? $("#fecha_envio").val() : ""
             };
 
             post_jquery('clientes/store_pedidos', datos, function () {
@@ -270,8 +284,7 @@ function cancelar_pedidos(id_pedido, id_cliente, estado, token) {
     };
     post_jquery('clientes/cancelar_pedido', datos, function () {
         cerrar_modals();
-        //detalles_cliente(id_cliente);
-        listar_resumen_pedidos($("#fecha").val(), true);
+        listar_resumen_pedidos($("#fecha_pedidos_search").val(), true);
     });
     $.LoadingOverlay('hide');
 }
@@ -700,7 +713,6 @@ function buscar_listado_especificaciones() {
 }
 
 function add_especificacion(id_cliente, cliente) {
-
     datos = {
         id_cliente: id_cliente
     };
@@ -719,19 +731,11 @@ function tipo_unidad_medida(data, token) {
         tipo_unidad_medida: 'P'//$('#'+data).val() COMENTADO SOLO PARA PYGANFLOR, SÓLO USA 'P' (PESO)
     };
     get_jquery('clientes/obtener_calsificacion_ramos', datos, function (retorno) {
-
         var select_clasif_x_ramo = $("#id_clasificacion_ramo_" + data.split('_')[2] + "_" + data.split('_')[3]);
         $('select#id_clasificacion_ramo_' + data.split('_')[2] + "_" + data.split('_')[3] + ' option#option_dinamic').remove();
-        //console.log(retorno);
         $.each(retorno, function (i, j) {
             select_clasif_x_ramo.append('<option id="option_dinamic" value="' + j.id_clasificacion_ramo + '"> ' + j.nombre + ' </option>');
         });
-
-        /*if(datos.tipo_unidad_medida === "L"){
-              $("#input_tallo_x_ramo").removeClass('hide');
-          }else{
-              $("#input_tallo_x_ramo").addClass('hide');
-          }*/
     });
 }
 
@@ -858,10 +862,17 @@ function formatear_numero(numero) {
         return numero
 }
 
-function setValueInput(input, value, calcular) {
-    if (input.value === "" || input.value === undefined)
-        $("#" + input.id).val(value);
-    if (calcular){
-        calcular_precio_pedido();
-    }
+function duplicar_pedido(id_pedido, id_cliente) {
+    $.LoadingOverlay('show');
+    datos = {
+        id_pedido: id_pedido,
+        id_cliente: id_cliente
+    };
+    $.get('pedidos/form_duplicar_pedido', datos, function (retorno) {
+        modal_view('modal_duplicar_pedido', retorno, '<i class="fa fa-files-o" aria-hidden="true"></i> Duplicar pedido', true, false, '70%');
+    }).always(function () {
+        $.LoadingOverlay('hide');
+    });
 }
+
+

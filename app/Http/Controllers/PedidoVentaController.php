@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use yura\Modelos\Cliente;
 use yura\Modelos\Color;
 use yura\Modelos\DetalleEnvio;
+use yura\Modelos\DetallePedido;
 use yura\Modelos\Empaque;
 use yura\Modelos\Pedido;
 use DB;
@@ -18,6 +19,7 @@ use Carbon\Carbon;
 use yura\Modelos\Especificacion;
 use yura\Modelos\AgenciaCarga;
 use yura\Modelos\DatosExportacion;
+use Validator;
 
 class PedidoVentaController extends Controller
 {
@@ -126,5 +128,80 @@ class PedidoVentaController extends Controller
             'datos_exportacion' => DatosExportacion::join('cliente_datoexportacion as cde','dato_exportacion.id_dato_exportacion','cde.id_dato_exportacion')
                 ->where('id_cliente',$request->id_cliente)->get(),
         ]);
+    }
+
+    public function form_duplicar_pedido(Request $request){
+        return view('adminlte.gestion.postcocecha.pedidos_ventas.forms.form_duplicar_pedido',[
+            'id_pedido'=>$request->id_pedido,
+            'datos_exportacion' => DatosExportacion::join('cliente_datoexportacion as cde','dato_exportacion.id_dato_exportacion','cde.id_dato_exportacion')
+                ->where('id_cliente',$request->id_cliente)->get(),
+            'agenciasCarga'=> AgenciaCarga::where('c_ac.id_cliente',$request->id_cliente)
+                ->join('cliente_agenciacarga as c_ac','agencia_carga.id_agencia_carga','c_ac.id_agencia_carga')->get()
+        ]);
+    }
+
+    public function store_duplicar_pedido(Request $request){
+        $valida = Validator::make($request->all(), [
+            'arrFechas' => 'required|Array',
+            'id_pedido' => 'required',
+        ]);
+        $success = false;
+        $msg = '<div class="alert alert-danger text-center">' .
+                    '<p> Ha ocurrido un problema al guardar la información al sistema</p>'
+                . '</div>';
+
+        if (!$valida->fails()) {
+            $dataPedido = Pedido::where('id_pedido',$request->id_pedido)->first();
+            //dd($dataPedido->id_pedido);
+            foreach($request->arrFechas as $fecha){
+                $objPedido = new Pedido;
+                $objPedido->id_cliente = $dataPedido->id_cliente;
+                $objPedido->fecha_pedido = $fecha['fecha'];
+                $objPedido->empaquetado = $dataPedido->empaquetado;
+                $objPedido->variedad = $dataPedido->variedad;
+                $objPedido->tipo_especificacion = $dataPedido->tipo_especificacion;
+                if($objPedido->save()){
+                    $modelPedido = Pedido::all()->last();
+                    $dataDetallePedido = DetallePedido::where('id_pedido',$request->id_pedido)->get();
+                    bitacora('pedido', $modelPedido->id_pedido, 'I', 'Inserción satisfactoria de un duplicado de pedido');
+                    foreach ($dataDetallePedido as $detallePedido) {
+                        $objDetallePedido = new DetallePedido;
+                        $objDetallePedido->id_cliente_especificacion = $detallePedido->id_cliente_especificacion;
+                        $objDetallePedido->id_pedido =  $modelPedido->id_pedido;
+                        $objDetallePedido->id_agencia_carga = $detallePedido->id_agencia_carga;
+                        $objDetallePedido->cantidad  = $detallePedido->cantidad;
+                        $objDetallePedido->precio = $detallePedido->precio;
+                        if($objDetallePedido->save()){
+                            $model_detalle_pedido = DetallePedido::all()->last();
+                            bitacora('detalle_pedido', $model_detalle_pedido->id_detalle_pedido, 'I', 'Inserción satisfactoria del duplicado de un detalle pedio');
+                            $success = true;
+                            $msg = '<div class="alert alert-success text-center">' .
+                                '<p> Se ha duplicado el pedido exitosamente</p>'
+                                . '</div>';
+                        }
+                    }
+                }
+            }
+        }else {
+            $success = false;
+            $errores = '';
+            foreach ($valida->errors()->all() as $mi_error) {
+                if ($errores == '') {
+                    $errores = '<li>' . $mi_error . '</li>';
+                } else {
+                    $errores .= '<li>' . $mi_error . '</li>';
+                }
+            }
+            $msg = '<div class="alert alert-danger">' .
+                '<p class="text-center">¡Por favor corrija los siguientes errores!</p>' .
+                '<ul>' .
+                $errores .
+                '</ul>' .
+                '</div>';
+        }
+        return [
+            'mensaje' => $msg,
+            'success' => $success
+        ];
     }
 }

@@ -36,7 +36,7 @@
 
                 @endif
                 @if($vista === 'pedidos')
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <label for="Cliente" style="font-size: 11pt">Cliente</label>
                         <select class="form-control" id="id_cliente_venta" name="id_cliente_venta"
                                 onchange="cargar_espeicificaciones_cliente(true)" required>
@@ -46,7 +46,13 @@
                             @endforeach
                         </select>
                     </div>
-                    <div class="col-md-2" style="margin-top: 30px;text-align: right;">
+                    <div class="col-md-3">
+                        <label for="envio" style="font-size: 11pt;margin-top: 30px">Envío automático</label>
+                        <button type='button' id="" class='btn btn-xs btn-default' onclick='borrar_duplicado()'>
+                            <input type="checkbox" id="envio_automatico" name="envio_automatico" checked >
+                        </button>
+                    </div>
+                    <div class="col-md-1" style="margin-top: 30px;text-align: right;">
                         <button type='button' class='btn btn-xs btn-danger' onclick='borrar_duplicado()'>
                             <i class='fa fa-fw fa-trash'></i>
                         </button>
@@ -122,7 +128,7 @@
 
         function cambiar_input_precio(idDetEmp,id_precio,posicon_variedad) {
             $('#td_precio_variedad_'+ idDetEmp+'_'+id_precio).html('<input type="number" id="precio_' + id_precio + '_' + posicon_variedad + '" ' +
-                'name="precio_' + idDetEmp + '" min="0" value="0" onchange="calcular_precio_pedido()" onkeyup="setValueInput(this,0,true)" class="form-control text-center precio_'+id_precio+'" style="background-color: beige; width: 100%;text-align: left">');
+                'name="precio_' + idDetEmp + '" min="0" value="0" onchange="calcular_precio_pedido()" class="form-control text-center precio_'+id_precio+'" style="background-color: beige; width: 100%;text-align: left" required>');
 
         }
         
