@@ -146,8 +146,12 @@ class PedidoController extends Controller
                                 }
                             }
                             $success = true;
+                            $request->crear_envio == 'true'
+                                ? $text =  "y se ha creado el envío"
+                                : $text = "";
+
                             $msg = '<div class="alert alert-success text-center">' .
-                                '<p> Se ha guardado el pedido '.$request->crear_envio == 'true' ? " y se ha creado el envío" : "".' exitosamente</p>'
+                                '<p> Se ha guardado el pedido '.$text.' exitosamente</p>'
                                 . '</div>';
                             bitacora('pedido|detalle_pedido', $model->id_pedido, 'I', 'Inserción satisfactoria de un nuevo pedido');
                         } else {

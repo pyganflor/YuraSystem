@@ -34,10 +34,6 @@
             style="border-color: #9d9d9d;width:100px">
             PRECIO X VARIEDAD
         </th>
-        {{--<th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
-            style="border-color: #9d9d9d;width:100px">
-            PRECIO X ESPECIFICACIÓN
-        </th>--}}
         <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
             style="border-color: #9d9d9d">
             AGENCIA DE CARGA
