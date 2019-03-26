@@ -41,24 +41,18 @@ class DetallePedido extends Model
         return $this->hasMany('\yura\Modelos\Marcacion', 'id_detalle_pedido');
     }
 
-    public function getDistinctMarcacionesColoracionesByEspEmp($esp_emp)
+    public function coloraciones()
     {
-        $m = DB::table('marcacion as m')
-            ->select('m.id_marcacion')->distinct()
-            ->where('m.id_detalle_pedido', '=', $this->id_detalle_pedido)
-            ->where('m.id_especificacion_empaque', '=', $esp_emp)
-            ->get();
+        return $this->hasMany('\yura\Modelos\Coloracion', 'id_detalle_pedido');
+    }
 
-        $c = DB::table('coloracion as c')
-            ->join('marcacion as m', 'm.id_marcacion', '=', 'c.id_marcacion')
-            ->select('c.id_color')->distinct()
-            ->where('m.id_detalle_pedido', '=', $this->id_detalle_pedido)
-            ->where('m.id_especificacion_empaque', '=', $esp_emp)
-            ->get();
-
+    public function getColoracionesMarcacionesByEspEmp($esp_emp)
+    {
         return [
-            'marcaciones' => $m,
-            'coloraciones' => $c,
+            'coloraciones' => Coloracion::where('id_detalle_pedido', $this->id_detalle_pedido)
+                ->where('id_especificacion_empaque', $esp_emp)->get(),
+            'marcaciones' => Marcacion::where('id_detalle_pedido', $this->id_detalle_pedido)
+                ->where('id_especificacion_empaque', $esp_emp)->get(),
         ];
     }
 }

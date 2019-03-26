@@ -307,26 +307,29 @@
                         if ($('#total_ramos_' + fil + '_' + col).val() == parseInt($('#cantidad_ramos').val()) * parseInt($('#cantidad_cajas').val()) &&
                             $('#total_piezas_' + fil + '_' + col).val() == $('#cantidad_cajas').val()) {
                             marcaciones = [];
+                            coloraciones = [];
 
                             for (f = 1; f <= fil; f++) {
                                 if ($('#nombre_marcacion_' + f).val() != '') {
-                                    coloraciones = [];
+                                    cantidades = [];
                                     for (c = 1; c <= col; c++) {
                                         if ($('#titles_columnas_' + c).val() != '') {
-                                            coloraciones.push({
-                                                id_color: $('#titles_columnas_' + c).val(),
+                                            cantidades.push({
                                                 cantidad: $('#ramos_marcacion_color_' + f + '_' + c).val()
                                             });
                                         } else {
                                             alert('Faltan datos (nombre de colores) por ingresar en la tabla.');
                                             return false;
                                         }
+                                        if (f == 1) {
+                                            coloraciones.push($('#titles_columnas_' + c).val());
+                                        }
                                     }
                                     marcaciones.push({
                                         nombre: $('#nombre_marcacion_' + f).val(),
                                         ramos: $('#input_total_ramos_marcacion_' + f).val(),
                                         piezas: $('#input_total_piezas_' + f).val(),
-                                        coloraciones: coloraciones
+                                        coloraciones: cantidades
                                     });
                                 } else {
                                     alert('Faltan datos (nombres de marcaciones) por ingresar en la tabla.');
@@ -349,6 +352,7 @@
                                 num_marcaciones: $('#num_marcaciones').val(),
                                 num_colores: $('#num_colores').val(),
                                 marcaciones: marcaciones,
+                                coloraciones: coloraciones,
                             };
                         } else {
                             alerta('<div class="alert alert-info text-center">' +
@@ -385,6 +389,7 @@
                             num_marcaciones = $('#num_marcaciones_' + id_esp_emp).val();
                             num_colores = $('#num_colores_' + id_esp_emp).val();
                             marcaciones = [];
+                            coloraciones = [];
                             for (f = 1; f <= num_marcaciones; f++) {
                                 if ($('#nombre_marcacion_' + f + '_' + id_esp_emp).val() != '') {
                                     arreglo_colores = [];
@@ -408,9 +413,10 @@
                                                 });
                                             }
                                             arreglo_colores.push({
-                                                id_color: $('#titles_columnas_' + c + '_' + id_esp_emp).val(),
                                                 cant_x_det_esp: cant_x_det_esp
                                             });
+                                            if (f == 1)
+                                                coloraciones.push($('#titles_columnas_' + c + '_' + id_esp_emp).val());
                                         } else {
                                             alert('Faltan datos (nombres de colores) por ingresar en la tabla.');
                                             return false;
@@ -434,6 +440,7 @@
                                 num_marcaciones: num_marcaciones,
                                 num_colores: num_colores,
                                 marcaciones: marcaciones,
+                                coloraciones: coloraciones,
                                 arreglo_det_esp: arreglo_det_esp
                             });
                         }

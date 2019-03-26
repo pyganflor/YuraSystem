@@ -70,6 +70,9 @@
 
 <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
+
+        @include('layouts.adminlte.partials.html_adicional')
+
         @yield('contenido')
     </div>
     <!-- /.content-wrapper -->

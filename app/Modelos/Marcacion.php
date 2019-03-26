@@ -33,9 +33,9 @@ class Marcacion extends Model
         return $this->belongsTo('\yura\Modelos\EspecificacionEmpaque', 'id_especificacion_empaque');
     }
 
-    public function coloraciones()
+    public function marcaciones_coloraciones()
     {
-        return $this->hasMany('\yura\Modelos\Coloracion', 'id_marcacion');
+        return $this->hasMany('\yura\Modelos\MarcacionColoracion', 'id_marcacion');
     }
 
     public function distribuciones()
@@ -43,20 +43,11 @@ class Marcacion extends Model
         return $this->hasMany('\yura\Modelos\Distribucion', 'id_marcacion');
     }
 
-    public function getColoracionByColorDetEsp($color, $det_esp)
+    public function getMarcacionColoracionByDetEsp($color, $det_esp)
     {
-        $r = Coloracion::where('id_marcacion', $this->id_marcacion)
-            ->where('id_color', $color)
+        $r = MarcacionColoracion::where('id_marcacion', $this->id_marcacion)
+            ->where('id_coloracion', $color)
             ->where('id_detalle_especificacionempaque', $det_esp)->first();
-        return $r;
-    }
-
-    public function getTotalRamos()
-    {
-        $r = 0;
-        foreach ($this->coloraciones as $item) {
-            $r += $item->cantidad;
-        }
         return $r;
     }
 }

@@ -16,14 +16,13 @@ class Coloracion extends Model
         'id_color',
         'fecha_registro',
         'estado',
-        'cantidad',
-        'id_marcacion',
-        'id_detalle_especificacionempaque',
+        'id_detalle_pedido',
+        'id_especificacion_empaque',
     ];
 
-    public function marcacion()
+    public function detalle_pedido()
     {
-        return $this->belongsTo('\yura\Modelos\Marcacion', 'id_marcacion');
+        return $this->belongsTo('\yura\Modelos\Detalle_Pedido', 'id_detalle_pedido');
     }
 
     public function color()
@@ -31,8 +30,8 @@ class Coloracion extends Model
         return $this->belongsTo('\yura\Modelos\Color', 'id_color');
     }
 
-    public function detalle_especificacionempaque()
+    public function especificacion_empaque()
     {
-        return $this->belongsTo('\yura\Modelos\DetalleEspecificacionEmpaque', 'id_detalle_especificacionempaque');
+        return $this->belongsTo('\yura\Modelos\EspecificacionEmpaque', 'id_especificacion_empaque');
     }
 }

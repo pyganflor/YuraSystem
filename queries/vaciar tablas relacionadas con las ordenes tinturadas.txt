@@ -1,3 +1,4 @@
+TRUNCATE `marcacion_coloracion`;
 TRUNCATE `coloracion`;
 TRUNCATE `marcacion`;
 TRUNCATE `detalle_pedido`;
