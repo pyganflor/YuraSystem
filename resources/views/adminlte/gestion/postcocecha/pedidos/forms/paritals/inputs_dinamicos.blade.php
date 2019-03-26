@@ -149,6 +149,7 @@
                             @php $b++; $anterior = $item->id_especificacion; @endphp
                         @endforeach
                     @endforeach
+                    @php $anterior = ''; @endphp
                 @endforeach
             @else
                 <tr id="">

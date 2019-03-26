@@ -108,31 +108,8 @@
                                     @endif
                                 </td>
                                 <td id="td_precio_variedad_{{$det_esp_emp->id_detalle_especificacionempaque}}_{{($x+1)}}" style="border-color: #9d9d9d;padding: 0px 0px; vertical-align: middle;" >
-                                    {{--@if((getPrecioByClienteDetEspEmp($det_ped->cliente_especificacion->id_cliente, $det_esp_emp->id_detalle_especificacionempaque) != ''))
-
-                                        @php $arrPrecio = explode('|',$det_ped->precio); $option_extra = false; @endphp
-                                        <select name="precio_{{$det_esp_emp->id_detalle_especificacionempaque}}"
-                                                ondblclick="cambiar_input_precio('{{$det_esp_emp->id_detalle_especificacionempaque}}','{{($x+1)}}','{{$b}}')"
-                                                id="precio_{{($x+1)}}_{{$b}}" style="background-color: beige; width: 100%" onchange="calcular_precio_pedido()"
-                                                class="precio_{{($x+1)}} form-control" required>
-                                            @foreach(explode('|',getPrecioByClienteDetEspEmp($det_ped->cliente_especificacion->id_cliente, $det_esp_emp->id_detalle_especificacionempaque)->cantidad) as $l => $precio)
-                                                @php
-                                                    $selected ="";
-                                                       foreach($arrPrecio as $p){
-                                                           if( explode(";",$p)[0] == $precio){
-                                                               $selected = "selected";
-                                                           }
-                                                       }
-                                                @endphp
-                                                <option {{$selected}} value="{{$precio}}">{{$precio}}</option>
-                                            @endforeach
-                                        </select>
-                                    @else--}}
-                                        <input type="number"
-                                               name="precio_{{($x+1)}}" id="precio_{{($x+1)}}_{{$b}}" class="form-control text-center precio_{{($x+1)}} form-control"
-                                               style="background-color: beige; width: 100%;text-align: left" min="0"
-                                               onchange="calcular_precio_pedido()" value="{{explode(";",explode('|',$det_ped->precio)[$b-1])[0]}}"  required>
-                                    {{--@endif--}}
+                                    <input type="number" name="precio_{{($x+1)}}" id="precio_{{($x+1)}}_{{$b}}" class="form-control text-center precio_{{($x+1)}} form-control"
+                                           style="background-color: beige; width: 100%;text-align: left" min="0" onchange="calcular_precio_pedido()" value="{{explode(";",explode('|',$det_ped->precio)[$b-1])[0]}}"  required>
                                 </td>
                                 @if($det_ped->cliente_especificacion->especificacion->id_especificacion != $anterior)
                                     <td id="td_precio_especificacion_{{($x+1)}}" style="border-color: #9d9d9d;padding: 0px 0px; vertical-align: middle;" class="text-center" rowspan="{{getCantidadDetallesByEspecificacion($det_ped->cliente_especificacion->especificacion->id_especificacion)}}">

@@ -20,8 +20,6 @@ Route::post('pedidos/update_distribucion', 'OrdenSemanalController@update_distri
 Route::post('pedidos/update_pedido_orden_semanal', 'OrdenSemanalController@update_pedido_orden_semanal');
 Route::get('pedidos/distribuir_marcaciones', 'OrdenSemanalController@distribuir_marcaciones');
 Route::post('pedidos/calcular_distribucion', 'OrdenSemanalController@calcular_distribucion');
-Route::get('pedidos/datos_pedido', function (){ return response()->json([
-    'estandar' => getCalibreRamoEstandar()->nombre,
-    'ramos_x_caja' => getConfiguracionEmpresa()->ramos_x_caja
-]); });
 Route::get('pedidos/duplicar_especificacion', 'PedidoVentaController@duplicar_especificacion');
+Route::get('pedidos/form_duplicar_pedido', 'PedidoVentaController@form_duplicar_pedido');
+Route::post('pedidos/store_duplicar_pedido', 'PedidoVentaController@store_duplicar_pedido');

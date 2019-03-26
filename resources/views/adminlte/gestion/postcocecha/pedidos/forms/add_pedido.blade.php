@@ -36,7 +36,7 @@
 
                 @endif
                 @if($vista === 'pedidos')
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <label for="Cliente" style="font-size: 11pt">Cliente</label>
                         <select class="form-control" id="id_cliente_venta" name="id_cliente_venta"
                                 onchange="cargar_espeicificaciones_cliente(true)" required>
@@ -46,7 +46,13 @@
                             @endforeach
                         </select>
                     </div>
-                    <div class="col-md-2" style="margin-top: 30px;text-align: right;">
+                    <div class="col-md-3">
+                        <label for="envio" style="font-size: 11pt;margin-top: 30px">Envío automático</label>
+                        <button type='button' id="" class='btn btn-xs btn-default' onclick='borrar_duplicado()'>
+                            <input type="checkbox" id="envio_automatico" name="envio_automatico" checked >
+                        </button>
+                    </div>
+                    <div class="col-md-1" style="margin-top: 30px;text-align: right;">
                         <button type='button' class='btn btn-xs btn-danger' onclick='borrar_duplicado()'>
                             <i class='fa fa-fw fa-trash'></i>
                         </button>
