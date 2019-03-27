@@ -1529,3 +1529,12 @@ function getColores()
 {
     return Color::All()->where('estado', 1);
 }
+
+function getDatosExportacionCliente($idCliente){
+   return DatosExportacion::join('cliente_datoexportacion as cde','dato_exportacion.id_dato_exportacion','cde.id_dato_exportacion')
+        ->where('id_cliente',$idCliente)->get();
+}
+
+function getEnvio($idEnvio){
+    return Envio::find($idEnvio);
+}

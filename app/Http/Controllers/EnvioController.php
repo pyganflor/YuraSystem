@@ -19,6 +19,7 @@ use PHPExcel_Style_Alignment;
 use yura\Modelos\Pais;
 use yura\Modelos\Pedido;
 use Carbon\Carbon;
+use yura\Modelos\DatosExportacion;
 
 class EnvioController extends Controller
 {
@@ -173,8 +174,7 @@ class EnvioController extends Controller
     }
 
     public function buscar_envio(Request $request){
-
-        $busquedaAnno    = $request->has('anno') ? $request->anno : '';
+        /*$busquedaAnno    = $request->has('anno') ? $request->anno : '';
         $busquedacliente = $request->has('id_cliente') ? $request->id_cliente : '';
         $busquedaDesde   = $request->has('desde') ? $request->desde : '';
         $busquedaHasta   = $request->has('hasta') ? $request->hasta : '';
@@ -193,17 +193,11 @@ class EnvioController extends Controller
             $listado = $listado->where(DB::raw('YEAR(de.fecha_envio)'), $busquedaAnno );
         if ($busquedacliente != '')
             $listado = $listado->where('c.id_cliente',$busquedacliente);
-        if ($busquedaDesde != '' && $request->hasta != '')
+        if ($busquedaDesde != '' && $request->hasta != ''){
             $listado = $listado->whereBetween('e.fecha_envio', [$busquedaDesde,$busquedaHasta]);
-        else
+        } else{
             $listado = $listado->where('e.fecha_envio',Carbon::now()->toDateString());
-
-
-        /*if($prefacturado == 0 )
-            $listado = $listado->join('comprobante as comp','de.id_envio','comp.id_envio')->where([
-                    ['comp.estado','!=',1],
-                    ['comp.estado','!=',5]
-                ]);*/
+        }
 
         $busquedaEstado != '' ?  $listado = $listado->where('e.estado',$request->estado) : $listado = $listado->where('e.estado',0);
 
@@ -215,14 +209,17 @@ class EnvioController extends Controller
         foreach ($listado as $e) {
             $groupEnvios[$e->id_envio][] = $e;
         }
-
         $datos = [
             'listado'   =>  manualPagination($groupEnvios,10),
             'idCliente' => $request->id_cliente,
             'paises'    => Pais::all()
-        ];
-
-        return view('adminlte.gestion.postcocecha.envios.partials.listado',$datos);
+        ];*/
+       // $envios = Envio::get();
+        return view('adminlte.gestion.postcocecha.envios.partials.listado',[
+            'envios' => Envio::paginate(10),
+            'datos_exportacion_' => DatosExportacion::join('cliente_datoexportacion as cde','dato_exportacion.id_dato_exportacion','cde.id_dato_exportacion')
+                ->where('id_cliente',$request->id_cliente)->get(),
+        ]);
     }
 
     public function generar_excel_envios(Request $request)
@@ -374,8 +371,7 @@ class EnvioController extends Controller
     }
 
     public function ver_envios(Request $request){
-
-        $dataEnvio = Pedido::where([
+        /*$dataEnvio = Pedido::where([
             ['dc.estado',1],
             ['pedido.id_pedido',$request->id_pedido]
         ])->join('envio as e','pedido.id_pedido','e.id_pedido')
@@ -389,9 +385,20 @@ class EnvioController extends Controller
         $groupEnvios = [];
         foreach ($dataEnvio as $dE) {
             $groupEnvios[$dE->id_envio][] = $dE;
-        }
+        }*/
+
+        $dataPedido = Pedido::where('pedido.id_pedido',$request->id_pedido)->select('id_cliente','id_pedido')->first();
         return view('adminlte.gestion.postcocecha.pedidos.partials.desglose_envios_pedido',[
-            'data_envios' => $groupEnvios
+            //'data_envios' => $groupEnvios,
+            'id_pedido' => $dataPedido->id_pedido,
+            'datos_exportacion' => DatosExportacion::join('cliente_datoexportacion as cde','dato_exportacion.id_dato_exportacion','cde.id_dato_exportacion')
+            ->where('id_cliente',$dataPedido->id_cliente)->get(),
+            'agenciasCarga' => DB::table('cliente_agenciacarga as cac')
+                ->join('agencia_carga as ac', 'cac.id_agencia_carga', 'ac.id_agencia_carga')
+                ->where([
+                    ['cac.id_cliente', $dataPedido->id_cliente],
+                    ['cac.estado', 1]
+                ])->get(),
         ]);
     }
 }
