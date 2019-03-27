@@ -80,11 +80,11 @@
                 desde = rest_dias(90);
                 $('#check_filtro_semanal').prop('checked', true);
             } else if ($('#filtro_predeterminado').val() == 3) {
-                mensual = true;
+                semanal = true;
                 desde = rest_dias(180);
                 $('#check_filtro_mensual').prop('checked', true);
             } else if ($('#filtro_predeterminado').val() == 4) {
-                mensual = true;
+                semanal = true;
                 desde = rest_dias(365);
                 $('#check_filtro_mensual').prop('checked', true);
             }

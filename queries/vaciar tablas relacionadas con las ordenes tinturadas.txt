@@ -3,3 +3,9 @@ TRUNCATE `coloracion`;
 TRUNCATE `marcacion`;
 TRUNCATE `detalle_pedido`;
 TRUNCATE `pedido`;
+
+
+TRUNCATE `cliente_pedido_especificacion`;
+TRUNCATE `especificacion_empaque`;
+TRUNCATE `detalle_especificacionempaque`;
+TRUNCATE `especificacion`;

@@ -1,43 +1,58 @@
 <canvas id="chart_data_calibres" width="100%" height="40" style="margin-top: 5px"></canvas>
 
 <script>
-    construir_char();
+    construir_char_acumulado('Calibres', 'chart_data_calibres');
 
-    function construir_char() {
+    function construir_char_acumulado(label, id) {
         labels = [];
-        colores = [];
-        data_list = [];
-        @for($i = 0; $i < count($arreglo_variedades); $i++)
-        labels.push("{{$arreglo_variedades[$i]['variedad']->nombre}}");
-        data_list.push("{{$arreglo_variedades[$i]['calibres']}}");
-        colores.push("{{$arreglo_variedades[$i]['variedad']->color}}");
+        datasets = [];
+        @for($i = 0; $i < count($labels); $i++)
+        labels.push("{{$labels[$i]->dia}}");
         @endfor
 
-            datasets = [{
-            data: data_list,
-            backgroundColor: colores,
-            borderColor: colores,
-            borderWidth: 0,
-            hoverBorderColor: colores,
-            hoverBorderWidth: 5,
-        }];
+                {{-- Data_list --}}
+                @foreach($arreglo_variedades as $variedad)
+            data_list = [];
+        @foreach($variedad['calibre'] as $calibres)
+        data_list.push("{{$calibres}}");
+        @endforeach
 
-        ctx = document.getElementById('chart_data_calibres').getContext('2d');
+        datasets.push({
+            label: '{{$variedad['variedad']->nombre}}' + ' ',
+            data: data_list,
+            backgroundColor: '{{$variedad['variedad']->color}}',
+            borderColor: '{{$variedad['variedad']->color}}',
+            borderWidth: 2,
+            fill: false,
+        });
+        @endforeach
+
+            ctx = document.getElementById(id).getContext('2d');
         myChart = new Chart(ctx, {
-            type: 'pie',
+            type: 'bar',
             data: {
                 labels: labels,
                 datasets: datasets
             },
             options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: false
+                        }
+                    }]
+                },
+                elements: {
+                    line: {
+                        tension: 0, // disables bezier curves
+                    }
+                },
                 tooltips: {
                     mode: 'point' // nearest, point, index, dataset, x, y
                 },
-                cutoutPercentage: 50,
-                //circumference: 1,
                 legend: {
                     display: true,
-                    position: 'right',
+                    position: 'bottom',
                     fullWidth: false,
                     onClick: function () {
                     },
@@ -45,6 +60,8 @@
                     },
                     reverse: true,
                 },
+                showLines: true, // for all datasets
+                borderCapStyle: 'round',    // "butt" || "round" || "square"
             }
         });
     }

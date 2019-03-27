@@ -132,14 +132,81 @@
     }
 
     function add_marcacion(esp_emp) {
-        fil = $('#marcaciones_' + esp_emp).val();
+        fil = parseInt($('#marcaciones_' + esp_emp).val());
+        col = parseInt($('#coloraciones_' + esp_emp).val());
 
         tabla = $('#tabla_marcacion_coloracion_' + esp_emp);
 
-        html = '';
-        $('<tr></tr>').insertAfter($(tabla).find('tr')[fil]);
+        tr = '<tr style="border: 2px solid #9d9d9d">' +
+            '<td class="text-center" style="border-color: #9d9d9d">' +
+            '<input type="text" id="nombre_marcacion_' + fil + '_' + esp_emp + '" name="nombre_marcacion_' + fil + '_' + esp_emp + '" ' +
+            'placeholder="Marc ' + (fil + 1) + '" width="150px" style="border: none" class="text-center">' +
+            '<input type="hidden" id="id_marcacion_' + fil + '_' + esp_emp + '" name="id_marcacion_' + fil + '_' + esp_emp + '" value="">' +
+            '</td>';
+        for (c = 0; c < col; c++) {
+            ids_det_esp = $('.id_det_esp_' + esp_emp);
+            inputs = '';
+            for (det = 0; det < ids_det_esp.length; det++) {
+                inputs += '<li>' +
+                    '<div class="input-group" style="width: 100px">' +
+                    '<span class="input-group-addon" style="background-color: #e9ecef">' +
+                    'P-' + (det + 1) +
+                    '</span>' +
+                    '<input type="number" value="0" id="ramos_marcacion_' + fil + '_' + c + '_' + ids_det_esp[det].value + '_' + esp_emp + '" ' +
+                    'name="ramos_marcacion_' + fil + '_' + c + '_' + ids_det_esp[det].value + '_' + esp_emp + '" ' +
+                    'onkeypress="return isNumber(event)" style="width: 100%;" ' +
+                    'class="text-center elemento_color_' + c + '_' + esp_emp + '" onchange="calcular_totales_tinturado(' + esp_emp + ')">' +
+                    '</div>' +
+                    '</li>';
+            }
+            tr += '<td class="text-center" style="border-color: #9d9d9d">' +
+                '<ul class="list-unstyled">' +
+                inputs +
+                '</ul>' +
+                '</td>';
+        }
 
-        $('#marcaciones' + esp_emp).val(fil++);
+        if (ids_det_esp.length > 1) {    // mixta
+            ids_det_esp = $('.id_det_esp_' + esp_emp);
+            inputs = '';
+            for (det = 0; det < ids_det_esp.length; det++) {
+                inputs += '<li>' +
+                    '<div class="input-group" style="width: 100px">' +
+                    '<span class="input-group-addon" style="background-color: #e9ecef">' +
+                    'P-' + (det + 1) +
+                    '</span>' +
+                    '<input type="number" id="parcial_marcacion_' + fil + '_' + ids_det_esp[det].value + '_' + esp_emp + '" ' +
+                    'name="parcial_marcacion_' + fil + '_' + ids_det_esp[det].value + '_' + esp_emp + '" value="0" ' +
+                    'style="width: 100%; background-color: #357ca5; color: white" class="text-center">' +
+                    '</div>' +
+                    '</li>';
+            }
+            tr += '<td class="text-center" style="border-color: #9d9d9d" width="100px">' +
+                '<ul class="list-unstyled">' +
+                inputs +
+                '</ul>' +
+                '</td>';
+        }
+
+        tr += '<td class="text-center" style="border-color: #9d9d9d">' +
+            '<input type="text" id="total_ramos_marcacion_' + fil + '_' + esp_emp + '" name="total_ramos_marcacion_' + fil + '_' + esp_emp + '" ' +
+            'readonly class="text-center" value="0" ' +
+            'style="background-color: #357ca5; color: white; width: 85px">' +
+            '</td>' +
+            '<td class="text-center" style="border-color: #9d9d9d">' +
+            '<input type="text" id="total_piezas_marcacion_' + fil + '_' + esp_emp + '" name="total_piezas_marcacion_' + fil + '_' + esp_emp + '" ' +
+            'readonly class="text-center" value="0" ' +
+            'style="background-color: #357ca5; color: white; width: 85px">' +
+            '</td>';
+
+        $(tr + '</tr>').insertAfter($(tabla).find('tr')[fil]);
+
+        for (c = 0; c < col; c++) {
+            cambiar_color($('#color_' + c + '_' + esp_emp).val(), c, esp_emp);
+        }
+
+        fil++;
+        $('#marcaciones_' + esp_emp).val(fil);
     }
 </script>
 
@@ -312,6 +379,7 @@
                            value="{{$det_esp->id_detalle_especificacionempaque}}">
                 @endforeach
                 <input type="hidden" id="ramos_x_caja_{{$esp_emp->id_especificacion_empaque}}" value="{{$ramos_x_caja}}">
+                <input type="hidden" class="id_esp_emp" value="{{$esp_emp->id_especificacion_empaque}}">
             @endforeach
         </table>
     </div>
@@ -320,14 +388,17 @@
 @include('adminlte.gestion.postcocecha.pedidos_ventas.forms._tabla')
 
 <div class="text-center" style="margin-top: 10px">
+    <button type="button" class="btn btn-xs btn-success" onclick="update_orden_tinturada()">
+        <i class="fa fa-fw fa-save"></i> Actualizar
+    </button>
     @if($have_prev)
-        <button type="button" class="btn btn-xs btn-success"
+        <button type="button" class="btn btn-xs btn-primary"
                 onclick="editar_pedido_tinturado('{{$pedido->id_pedido}}', '{{$pos_det_ped - 1}}', false)">
             <i class="fa fa-fw fa-long-arrow-left"></i> Anterior
         </button>
     @endif
     @if($have_next)
-        <button type="button" class="btn btn-xs btn-success"
+        <button type="button" class="btn btn-xs btn-primary"
                 onclick="editar_pedido_tinturado('{{$pedido->id_pedido}}', '{{$pos_det_ped + 1}}', false)">
             <i class="fa fa-fw fa-long-arrow-right"></i> Siguiente
         </button>
@@ -336,4 +407,90 @@
             <i class="fa fa-fw fa-times"></i> Terminar
         </button>
     @endif
+    <button type="button" class="btn btn-xs btn-danger" onclick="eliminar_detalle_pedido('{{$det_ped->id_detalle_pedido}}')">
+        <i class="fa fa-fw fa-trash"></i> Eliminar
+    </button>
 </div>
+
+<input type="hidden" id="id_detalle_pedido" value="{{$det_ped->id_detalle_pedido}}">
+<input type="hidden" id="id_pedido" value="{{$pedido->id_pedido}}">
+<input type="hidden" id="pos_det_ped" value="{{$pos_det_ped}}">
+
+<script>
+    function update_orden_tinturada() {
+        if ($('#form-update_orden_semanal').valid()) {
+            ids_esp_emp = $('.id_esp_emp');
+            arreglo_esp_emp = [];
+            for (ee = 0; ee < ids_esp_emp.length; ee++) {
+                ids_det_esp = $('.id_det_esp_' + ids_esp_emp[ee].value);
+                /* ========= PRECIOS ========== */
+                arreglo_precios = [];
+                for (det = 0; det < ids_det_esp.length; det++) {
+                    arreglo_precios.push({
+                        id_det_esp: ids_det_esp[det].value,
+                        precio: $('#precio_det_esp_' + ids_det_esp[det].value).val()
+                    });
+                }
+                /* ========= MARCACIONES_COLORACIONES ========== */
+                fil = $('#marcaciones_' + ids_esp_emp[ee].value).val();
+                col = $('#coloraciones_' + ids_esp_emp[ee].value).val();
+                arreglo_marcaciones = [];
+                arreglo_coloraciones = [];
+                for (f = 0; f < fil; f++) {
+                    colores = [];
+                    for (c = 0; c < col; c++) {
+                        cant_x_det_esp = [];
+                        if (f == 0) {
+                            arreglo_coloraciones.push({
+                                id_color: $('#color_' + c + '_' + ids_esp_emp[ee].value).val()
+                            });
+                        }
+                        for (det = 0; det < ids_det_esp.length; det++) {
+                            cant_x_det_esp.push({
+                                id_det_esp: ids_det_esp[det].value,
+                                cantidad: $('#ramos_marcacion_' + f + '_' + c + '_' + ids_det_esp[det].value + '_' + ids_esp_emp[ee].value).val()
+                            });
+                        }
+                        colores.push({
+                            cant_x_det_esp: cant_x_det_esp
+                        });
+                    }
+                    arreglo_marcaciones.push({
+                        nombre: $('#nombre_marcacion_' + f + '_' + ids_esp_emp[ee].value).val(),
+                        ramos: $('#total_ramos_marcacion_' + f + '_' + ids_esp_emp[ee].value).val(),
+                        piezas: $('#total_piezas_marcacion_' + f + '_' + ids_esp_emp[ee].value).val(),
+                        colores: colores
+                    });
+                }
+
+                arreglo_esp_emp.push({
+                    id_esp_emp: ids_esp_emp[ee].value,
+                    arreglo_precios: arreglo_precios,
+                    arreglo_marcaciones: arreglo_marcaciones,
+                    arreglo_coloraciones: arreglo_coloraciones,
+                });
+            }
+            datos = {
+                _token: '{{csrf_token()}}',
+                id_pedido: $('#id_pedido').val(),
+                id_detalle_pedido: $('#id_detalle_pedido').val(),
+                fecha_pedido: $('#fecha_pedido').val(),
+                cantidad_piezas: $('#cantidad_piezas').val(),
+                id_agencia_carga: $('#id_agencia_carga').val(),
+                arreglo_esp_emp: arreglo_esp_emp,
+            };
+
+            post_jquery('{{url('pedidos/update_orden_tinturada')}}', datos, function () {
+                editar_pedido_tinturado(datos['id_pedido'], $('#pos_det_ped').val(), false);
+            });
+        }
+    }
+
+    function eliminar_detalle_pedido(det_ped) {
+        datos = {
+            _token: '{{csrf_token()}}',
+            id_detalle_pedio: det_ped,
+        };
+
+    }
+</script>

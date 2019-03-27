@@ -73,6 +73,7 @@ Route::group(['middleware' => 'autenticacion'], function () {
 
     });
 
+    include 'colores/rutas.php';
     include 'codigo_barra/rutas.php';
     include 'facturacion/comprobante.php';
 });

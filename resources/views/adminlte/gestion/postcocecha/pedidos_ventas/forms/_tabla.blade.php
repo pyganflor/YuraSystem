@@ -18,7 +18,7 @@
                     Color
                 </th>
                 @foreach($det_ped->getColoracionesMarcacionesByEspEmp($esp_emp->id_especificacion_empaque)['coloraciones'] as $pos_color => $color)
-                    <th class="text-center" style="border-color: #9d9d9d}}" width="100px"
+                    <th class="text-center" style="border-color: #9d9d9d" width="100px"
                         id="celda_col_{{$pos_color}}_{{$esp_emp->id_especificacion_empaque}}">
                         <select name="color_{{$pos_color}}_{{$esp_emp->id_especificacion_empaque}}"
                                 onchange="cambiar_color($(this).val(), '{{$pos_color}}', '{{$esp_emp->id_especificacion_empaque}}')"

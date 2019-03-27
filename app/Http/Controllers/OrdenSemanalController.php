@@ -471,6 +471,11 @@ class OrdenSemanalController extends Controller
         ]);
     }
 
+    public function update_orden_tinturada(Request $request)
+    {
+        dd($request->all());
+    }
+
     public function buscar_agencia_carga(Request $request)
     {
         $listado = Cliente::find($request->id_cliente);
