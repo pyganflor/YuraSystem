@@ -23,6 +23,11 @@
                 <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
                     CLIENTE
                 </th>
+                @if($opciones)
+                    <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
+                        DATOS EXPORTACIÓN
+                    </th>
+                @endif
                 <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
                     FLOR
                 </th>
@@ -49,9 +54,6 @@
                         CUARTO FRÍO
                     </th>
                     <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
-                        DATOS EXPORTACIÓN
-                    </th>
-                    <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
                         PEDIDO
                     </th>
                 @endif
@@ -74,6 +76,18 @@
                                     <td class="text-center" style="border-color: #9d9d9d"
                                         rowspan="{{getCantidadDetallesEspecificacionByPedido($pedido->id_pedido)}}">
                                         {{getCliente($pedido->id_cliente)->detalle()->nombre}}
+                                    </td>
+                                @endif
+                                @if($pos_det_esp == 0 && $pos_esp_emp == 0)
+                                    <td class="text-center" style="border-color: #9d9d9d;vertical-align: middle" id="td_datos_exportacion_{{$pedido->id_pedido}}"
+                                        rowspan="{{getCantidadDetallesByEspecificacion($det_ped->cliente_especificacion->id_especificacion)}}">
+                                        @if(count(getDatosExportacionCliente($det_ped->id_detalle_pedido))>0)
+                                            <ul style="padding: 0">
+                                                @foreach(getDatosExportacionCliente($det_ped->id_detalle_pedido) as $de)
+                                                    <li style="list-style: none"><b>{{strtoupper($de->nombre)}}:</b> {{$de->valor}} </li>
+                                                @endforeach
+                                            </ul>
+                                        @endif
                                     </td>
                                 @endif
                                 <td class="text-center" style="border-color: #9d9d9d">
@@ -126,10 +140,6 @@
                                         rowspan="{{getCantidadDetallesEspecificacionByPedido($pedido->id_pedido)}}">
                                         {{getAgenciaCarga($det_ped->id_agencia_carga)->nombre}}
                                     </td>
-                                    <td class="text-center" style="border-color: #9d9d9d" id="td_datos_exportacion_{{$pedido->id_pedido}}"
-                                            rowspan="{{getCantidadDetallesEspecificacionByPedido($pedido->id_pedido)}}">
-
-                                    </td>
                                     <td class="text-center" style="border-color: #9d9d9d" id="td_opciones_{{$pedido->id_pedido}}"
                                         rowspan="{{getCantidadDetallesEspecificacionByPedido($pedido->id_pedido)}}">
                                         @if($pedido->empaquetado == 0)
@@ -174,9 +184,11 @@
                                                 <i class="fa fa-fw fa-gift"></i>
                                             </button>
                                         @endif
+                                        @if($pedido->empaquetado == 0)
                                         <button class="btn btn-primary btn-xs" title="Duplicar pedido" onclick="duplicar_pedido('{{$pedido->id_pedido}}','{{$pedido->id_cliente}}')">
                                             <i class="fa fa-files-o" aria-hidden="true"></i>
                                         </button>
+                                        @endif
                                     </td>
                                 @endif
                             </tr>

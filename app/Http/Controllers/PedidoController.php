@@ -236,12 +236,6 @@ class PedidoController extends Controller
                     ])->get(),
                 'datos_exportacion' => DatosExportacion::join('cliente_datoexportacion as cde','dato_exportacion.id_dato_exportacion','cde.id_dato_exportacion')
                                     ->where('id_cliente',$request->id_cliente)->get(),
-                /*'duplicados' => Pedido::where([
-                    ['pedido.id_pedido', $request->id_pedido],
-                ])->join('detalle_pedido as dp', 'pedido.id_pedido', 'dp.id_pedido')
-                    ->join('cliente_pedido_especificacion as cpe','dp.id_cliente_especificacion','cpe.id_cliente_pedido_especificacion')
-                    ->select(DB::table('detalle_pedido')->raw('count(id_cliente_especificacion) as esp_dup, cpe.id_especificacion'))
-                    ->groupBy('cpe.id_especificacion')->get()*/
             ]);
     }
 
