@@ -841,7 +841,7 @@ function guion_bajo_string(input, event, guion = true) {
     if (guion)
         if (tecla === 32)
             value_input += "_";
-c
+
     $("#" + input.id).val(value_input.replace(" ", ""));
 }
 
