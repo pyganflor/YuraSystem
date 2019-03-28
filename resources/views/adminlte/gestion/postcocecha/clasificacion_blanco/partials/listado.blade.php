@@ -324,6 +324,7 @@
             });
         }
     </script>
+
 @else
     <div class="well text-center">
         No se han encontrado datos que mostrar
