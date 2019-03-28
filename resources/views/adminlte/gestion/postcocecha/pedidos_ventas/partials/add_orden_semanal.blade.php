@@ -2,10 +2,16 @@
     <table class="table-striped table-responsive table-bordered" width="100%">
         <tr>
             <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
-                Fecha
+                Fecha Pedido
             </th>
             <td class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
                 <input type="date" id="fecha_pedido" name="fecha_pedido" required style="width: 100%" class="form-control">
+            </td>
+            <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
+                <i class="fa fa-fw fa-plane"></i> Fecha Envío
+            </th>
+            <td class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
+                <input type="date" id="fecha_envio" name="fecha_envio" required style="width: 100%" class="form-control">
             </td>
             <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
                 Cliente
@@ -29,7 +35,7 @@
             </td>
         </tr>
         <tr>
-            <td colspan="6">
+            <td colspan="8">
                 <table class="table-responsive table-bordered" style="width: 100%; border: 1px solid #9d9d9d; font-size: 0.9em">
                     <tr>
                         <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef" width="75px">
@@ -66,7 +72,7 @@
                     <tr>
                         <td class="text-center">
                             <input type="number" id="cantidad_cajas" name="cantidad_cajas" class="form-control" required
-                                   onkeypress="return isNumber(event)">
+                                   onkeypress="return isNumber(event)" min="1">
                         </td>
                         <td class="text-center">
                             <select name="id_variedad" id="id_variedad" class="form-control" required>
@@ -99,7 +105,7 @@
                         </td>
                         <td class="text-center">
                             <input type="number" id="cantidad_ramos" name="cantidad_ramos" onkeypress="return isNumber(event)"
-                                   class="form-control" style="width: 100%" required>
+                                   class="form-control" style="width: 100%" required min="1">
                         </td>
                         <td class="text-center">
                             <select name="id_empaque_p" id="id_empaque_p" class="form-control" required>
@@ -158,6 +164,7 @@
 
 <script>
     set_min_today($('#fecha_pedido'));
+    set_min_today($('#fecha_envío'));
 
     function construir_tabla() {
         col = $('#num_colores').val();
@@ -304,62 +311,69 @@
                     fil = $('#num_marcaciones').val();
 
                     if (col > 0 && fil > 0) {
-                        if ($('#total_ramos_' + fil + '_' + col).val() == parseInt($('#cantidad_ramos').val()) * parseInt($('#cantidad_cajas').val()) &&
-                            $('#total_piezas_' + fil + '_' + col).val() == $('#cantidad_cajas').val()) {
-                            marcaciones = [];
-                            coloraciones = [];
+                        if ($('#total_piezas_' + fil + '_' + col).val() == $('#cantidad_cajas').val()) {
+                            if ($('#total_ramos_' + fil + '_' + col).val() == parseInt($('#cantidad_ramos').val()) * parseInt($('#cantidad_cajas').val()) &&
+                                $('#total_piezas_' + fil + '_' + col).val() == $('#cantidad_cajas').val()) {
+                                marcaciones = [];
+                                coloraciones = [];
 
-                            for (f = 1; f <= fil; f++) {
-                                if ($('#nombre_marcacion_' + f).val() != '') {
-                                    cantidades = [];
-                                    for (c = 1; c <= col; c++) {
-                                        if ($('#titles_columnas_' + c).val() != '') {
-                                            cantidades.push({
-                                                cantidad: $('#ramos_marcacion_color_' + f + '_' + c).val()
-                                            });
-                                        } else {
-                                            alert('Faltan datos (nombre de colores) por ingresar en la tabla.');
-                                            return false;
+                                for (f = 1; f <= fil; f++) {
+                                    if ($('#nombre_marcacion_' + f).val() != '') {
+                                        cantidades = [];
+                                        for (c = 1; c <= col; c++) {
+                                            if ($('#titles_columnas_' + c).val() != '') {
+                                                cantidades.push({
+                                                    cantidad: $('#ramos_marcacion_color_' + f + '_' + c).val()
+                                                });
+                                            } else {
+                                                alert('Faltan datos (nombre de colores) por ingresar en la tabla.');
+                                                return false;
+                                            }
+                                            if (f == 1) {
+                                                coloraciones.push($('#titles_columnas_' + c).val());
+                                            }
                                         }
-                                        if (f == 1) {
-                                            coloraciones.push($('#titles_columnas_' + c).val());
-                                        }
+                                        marcaciones.push({
+                                            nombre: $('#nombre_marcacion_' + f).val(),
+                                            ramos: $('#input_total_ramos_marcacion_' + f).val(),
+                                            piezas: $('#input_total_piezas_' + f).val(),
+                                            coloraciones: cantidades
+                                        });
+                                    } else {
+                                        alert('Faltan datos (nombres de marcaciones) por ingresar en la tabla.');
+                                        return false;
                                     }
-                                    marcaciones.push({
-                                        nombre: $('#nombre_marcacion_' + f).val(),
-                                        ramos: $('#input_total_ramos_marcacion_' + f).val(),
-                                        piezas: $('#input_total_piezas_' + f).val(),
-                                        coloraciones: cantidades
-                                    });
-                                } else {
-                                    alert('Faltan datos (nombres de marcaciones) por ingresar en la tabla.');
-                                    return false;
                                 }
-                            }
 
-                            nueva_esp = {
-                                cantidad_cajas: $('#cantidad_cajas').val(),
-                                id_empaque: $('#id_empaque').val(),
-                                cantidad_ramos: $('#cantidad_ramos').val(),
-                                id_clasificacion_ramo: $('#id_clasificacion_ramo').val(),
-                                id_variedad: $('#id_variedad').val(),
-                                /*id_empaque_e: $('#id_empaque_e').val(),*/
-                                id_empaque_p: $('#id_empaque_p').val(),
-                                longitud_ramo: $('#longitud_ramo').val(),
-                                tallos_x_ramos: $('#tallos_x_ramos').val(),
-                                id_unidad_medida: $('#id_unidad_medida').val(),
-                                precio: $('#precio').val(),
-                                num_marcaciones: $('#num_marcaciones').val(),
-                                num_colores: $('#num_colores').val(),
-                                marcaciones: marcaciones,
-                                coloraciones: coloraciones,
-                            };
+                                nueva_esp = {
+                                    cantidad_cajas: $('#cantidad_cajas').val(),
+                                    id_empaque: $('#id_empaque').val(),
+                                    cantidad_ramos: $('#cantidad_ramos').val(),
+                                    id_clasificacion_ramo: $('#id_clasificacion_ramo').val(),
+                                    id_variedad: $('#id_variedad').val(),
+                                    /*id_empaque_e: $('#id_empaque_e').val(),*/
+                                    id_empaque_p: $('#id_empaque_p').val(),
+                                    longitud_ramo: $('#longitud_ramo').val(),
+                                    tallos_x_ramos: $('#tallos_x_ramos').val(),
+                                    id_unidad_medida: $('#id_unidad_medida').val(),
+                                    precio: $('#precio').val(),
+                                    num_marcaciones: $('#num_marcaciones').val(),
+                                    num_colores: $('#num_colores').val(),
+                                    marcaciones: marcaciones,
+                                    coloraciones: coloraciones,
+                                };
+                            } else {
+                                alerta('<div class="alert alert-info text-center">' +
+                                    'La cantidad de ramos totales no coinciden con la cantidad de ramos especificados en el pedido</div>');
+                            }
                         } else {
-                            alerta('<div class="alert alert-info text-center">' +
-                                'La cantidad de ramos totales no coinciden con la cantidad de ramos especificados en el pedido</div>');
+                            alerta('<div class="alert alert-warning text-center">Las cantidades de piezas distribuidas no coinciden con las pedidas</div>');
+                            $('#cantidad_cajas').addClass('error');
+                            return false;
                         }
                     } else {
-                        alerta('<div class="alert alert-info text-center">Faltan los datos de las marcaciones/colores</div>');
+                        alerta('<div class="alert alert-warning text-center">Faltan los datos de las marcaciones/colores</div>');
+                        return false;
                     }
                 }   // NUEVA ESPECIFICACION
             ids_especificacion = $('.id_especificacion');
@@ -372,6 +386,26 @@
                         for (esp_emp = 0; esp_emp < ids_esp_emp.length; esp_emp++) {    // ESPECIFICACIONES_EMPAQUE
                             id_esp_emp = ids_esp_emp[esp_emp].value;
                             ids_det_esp = $('.id_det_esp_' + id_esp_emp);
+
+                            num_marcaciones = $('#num_marcaciones_' + id_esp_emp).val();
+                            num_colores = $('#num_colores_' + id_esp_emp).val();
+
+                            if (ids_det_esp.length > 1) {   // mixta
+                                tipo = 1;
+                                if ($('#cant_piezas_esp_' + id_esp).val() != $('#total_piezas_' + id_esp_emp).val()) {
+                                    alerta('<div class="alert alert-warning text-center">Las cantidades de piezas distribuidas no coinciden con las pedidas</div>');
+                                    $('#cant_piezas_esp_' + id_esp).addClass('error');
+                                    return false;
+                                }
+                            } else {    // sencilla
+                                tipo = 0;
+                                if ($('#cant_piezas_esp_' + id_esp).val() != $('#total_piezas_' + num_marcaciones + '_' + num_colores +
+                                    '_' + id_esp_emp).val()) {
+                                    alerta('<div class="alert alert-warning text-center">Las cantidades de piezas distribuidas no coinciden con las pedidas</div>');
+                                    $('#cant_piezas_esp_' + id_esp).addClass('error');
+                                    return false;
+                                }
+                            }
                             arreglo_det_esp = [];
                             for (det_esp = 0; det_esp < ids_det_esp.length; det_esp++) {    //DETALLES_ESPECIFICACION_EMPAQUE
                                 id_det_esp = ids_det_esp[det_esp].value;
@@ -380,14 +414,7 @@
                                     precio: $('#precio_det_' + id_det_esp + '_esp_' + id_esp_emp).val()
                                 });
                             }
-                            if (ids_det_esp.length > 1) {   // mixta
-                                tipo = 1;
-                            } else {    // sencilla
-                                tipo = 0;
-                            }
 
-                            num_marcaciones = $('#num_marcaciones_' + id_esp_emp).val();
-                            num_colores = $('#num_colores_' + id_esp_emp).val();
                             marcaciones = [];
                             coloraciones = [];
                             for (f = 1; f <= num_marcaciones; f++) {
@@ -457,6 +484,7 @@
                 datos = {
                     _token: '{{csrf_token()}}',
                     fecha_pedido: $('#fecha_pedido').val(),
+                    fecha_envio: $('#fecha_envio').val(),
                     id_cliente: $('#id_cliente_orden_semanal').val(),
                     id_agencia_carga: $('#id_agencia_carga').val(),
                     nueva_esp: nueva_esp,

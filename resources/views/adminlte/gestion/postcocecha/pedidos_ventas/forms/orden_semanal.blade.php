@@ -415,6 +415,8 @@
 <input type="hidden" id="id_detalle_pedido" value="{{$det_ped->id_detalle_pedido}}">
 <input type="hidden" id="id_pedido" value="{{$pedido->id_pedido}}">
 <input type="hidden" id="pos_det_ped" value="{{$pos_det_ped}}">
+<input type="hidden" id="have_next" value="{{$have_next ? 1 : 0}}">
+<input type="hidden" id="have_prev" value="{{$have_prev ? 1 : 0}}">
 
 <script>
     function update_orden_tinturada() {
@@ -434,6 +436,11 @@
                 /* ========= MARCACIONES_COLORACIONES ========== */
                 fil = $('#marcaciones_' + ids_esp_emp[ee].value).val();
                 col = $('#coloraciones_' + ids_esp_emp[ee].value).val();
+                if ($('#cantidad_piezas').val() != $('#total_piezas_' + ids_esp_emp[ee].value).val()) {
+                    alerta('<div class="alert alert-warning text-center">Las cantidades de piezas distribuidas no coinciden con las pedidas</div>');
+                    $('#cantidad_piezas').addClass('error');
+                    return false;
+                }
                 arreglo_marcaciones = [];
                 arreglo_coloraciones = [];
                 for (f = 0; f < fil; f++) {
@@ -489,8 +496,18 @@
     function eliminar_detalle_pedido(det_ped) {
         datos = {
             _token: '{{csrf_token()}}',
-            id_detalle_pedio: det_ped,
+            id_detalle_pedido: det_ped,
         };
-
+        modal_quest('modal-quest_eliminar_detalle_pedido',
+            '<div class="alert alert-warning text-center">¿Está seguro de eliminar este detalle del pedido?</div>',
+            '<i class="fa fa-fw fa-exclamation-triangle"></i> Mensaje de alerta', true, false, '{{isPC() ? '35%' : ''}}', function () {
+                post_jquery('{{url('pedidos/eliminar_detalle_pedido_tinturado')}}', datos, function () {
+                    cerrar_modals();
+                    if ($('#have_next').val() == 1 || $('#have_prev').val() == 1) {
+                        editar_pedido_tinturado($('#id_pedido').val(), 0);
+                    }
+                    listar_resumen_pedidos($('#fecha_pedidos_search').val(), true);
+                });
+            });
     }
 </script>
