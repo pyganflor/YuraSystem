@@ -51,7 +51,7 @@
                     <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
                         CUARTO FRÍO
                     </th>
-                    <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
+                    <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white;width:100px">
                         PEDIDO
                     </th>
                 @endif
