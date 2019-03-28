@@ -2,6 +2,8 @@
         <thead>
         <tr style="background-color: #dd4b39; color: white">
             <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
+                style="border-color: #9d9d9d;width: 15px;text-align:center"> </th>
+            <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
                 style="border-color: #9d9d9d;width: 80px">
                 PIEZAS
             </th>
@@ -62,6 +64,11 @@
                         @foreach($esp_emp->detalles as $z => $det_esp_emp)
                             <tr style="border-top: {{$item->id_especificacion != $anterior ? '2px solid #9d9d9d' : ''}}" >
                                 @if($item->id_especificacion != $anterior)
+                                    <td style="border-color: #9d9d9d; padding: 0px; vertical-align: middle; width: 15px; text-align:center"
+                                        class="text-center" rowspan="{{getCantidadDetallesByEspecificacion($item->id_especificacion)}}">
+                                        <input type="checkbox" class="seleccion_invidual"  name="seleccion_invidual" id="seleccion_invidual_{{($x+1)}}"
+                                               checked onclick="calcular_precio_pedido()">
+                                    </td>
                                     <td style="border-color: #9d9d9d; padding: 0px; vertical-align: middle; width: 100px; "
                                         class="text-center" rowspan="{{getCantidadDetallesByEspecificacion($item->id_especificacion)}}">
                                         <input type="number" min="0" id="cantidad_piezas_{{($x+1)}}" style="border: none" onchange="calcular_precio_pedido(this)"

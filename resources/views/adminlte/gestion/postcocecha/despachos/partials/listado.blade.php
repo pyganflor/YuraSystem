@@ -13,7 +13,7 @@
                         </li>
                     </ul>
                 </th>
-                <th style="border-color: #9d9d9d; background-color: #e9ecef" class="text-right" colspan="{{$opciones ? "8" : "7"}}">
+                <th style="border-color: #9d9d9d; background-color: #e9ecef" class="text-right" colspan="{{$opciones ? "9" : "8"}}">
                     <button type="button" class="btn btn-xs btn-success">
                         <i class="fa fa-fw fa-file-excel-o"></i> Exportar a Excel
                     </button>
@@ -47,6 +47,9 @@
                 @if($opciones)
                     <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
                         CUARTO FRÍO
+                    </th>
+                    <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
+                        DATOS EXPORTACIÓN
                     </th>
                     <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
                         PEDIDO
@@ -123,6 +126,10 @@
                                         rowspan="{{getCantidadDetallesEspecificacionByPedido($pedido->id_pedido)}}">
                                         {{getAgenciaCarga($det_ped->id_agencia_carga)->nombre}}
                                     </td>
+                                    <td class="text-center" style="border-color: #9d9d9d" id="td_datos_exportacion_{{$pedido->id_pedido}}"
+                                            rowspan="{{getCantidadDetallesEspecificacionByPedido($pedido->id_pedido)}}">
+
+                                    </td>
                                     <td class="text-center" style="border-color: #9d9d9d" id="td_opciones_{{$pedido->id_pedido}}"
                                         rowspan="{{getCantidadDetallesEspecificacionByPedido($pedido->id_pedido)}}">
                                         @if($pedido->empaquetado == 0)
@@ -145,17 +152,17 @@
                                                 </button>
                                             @endif
                                         @endif
-                                        @if(yura\Modelos\Envio::where('id_pedido',$pedido->id_pedido)->count() == 0)
-                                                {{--<button class="btn btn-default btn-xs" title="Realizar envío"
-                                                        onclick="add_envio('{{$pedido->id_pedido}}','{{@csrf_token()}}')">
-                                                    <i class="fa fa-plane" aria-hidden="true"></i>
-                                                </button>--}}
-                                            @else
-                                                <button class="btn btn-default btn-xs" title="Ver envío"
-                                                        onclick="ver_envio('{{$pedido->id_pedido}}')">
-                                                    <i class="fa fa-eye" aria-hidden="true"></i>
-                                                </button>
-                                            @endif
+                                            {{--<@if(yura\Modelos\Envio::where('id_pedido',$pedido->id_pedido)->count() == 0)
+                                                    button class="btn btn-default btn-xs" title="Realizar envío"
+                                                            onclick="add_envio('{{$pedido->id_pedido}}','{{@csrf_token()}}')">
+                                                        <i class="fa fa-plane" aria-hidden="true"></i>
+                                                    </button>
+                                                @else
+                                                    <button class="btn btn-default btn-xs" title="Ver envío"
+                                                            onclick="ver_envio('{{$pedido->id_pedido}}')">
+                                                        <i class="fa fa-eye" aria-hidden="true"></i>
+                                                    </button>
+                                                @endif--}}
                                         @if(getPedido($pedido->id_pedido)->haveDistribucion() == 1)
                                             <button type="button" class="btn btn-xs btn-info" title="Distribuir"
                                                     onclick="distribuir_orden_semanal('{{$pedido->id_pedido}}')">

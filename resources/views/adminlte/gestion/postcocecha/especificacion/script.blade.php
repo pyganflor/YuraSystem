@@ -2,7 +2,7 @@
     buscar_listado_especificaciones();
 
     $(document).on("click", "#pagination_listado_especificaciones .pagination li a", function (e) {
-        $.LoadingOverlay("show");
+       // $.LoadingOverlay("show");
         //para que la pagina se cargen los elementos
         e.preventDefault();
         var url = $(this).attr("href");
@@ -15,7 +15,7 @@
             $('#div_listado_especificaciones').html(resul);
             estructura_tabla('table_content_especificaciones');
         }).always(function () {
-            $.LoadingOverlay("hide");
+           // $.LoadingOverlay("hide");
         });
     });
 

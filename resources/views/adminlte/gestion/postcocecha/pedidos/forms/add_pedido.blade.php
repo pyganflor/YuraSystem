@@ -48,7 +48,7 @@
                     </div>
                     <div class="col-md-3">
                         <label for="envio" style="font-size: 11pt;margin-top: 30px">Envío automático</label>
-                        <button type='button' id="" class='btn btn-xs btn-default' onclick='borrar_duplicado()'>
+                        <button type='button' id="" class='btn btn-xs btn-default'>
                             <input type="checkbox" id="envio_automatico" name="envio_automatico" checked >
                         </button>
                     </div>
@@ -67,6 +67,10 @@
             <div class="row">
                 <div class="col-md-12">
                     <table style="width: 100%;text-align: right;margin-top:20px">
+                        <tr>
+                            <td><b>TOTAL DE PIEZAS:</b></td>
+                            <td style="vertical-align: middle;font-size: 14px;text-align: right; width: 80px;" id="total_piezas">0</td>
+                        </tr>
                         <tr>
                             <td><b>TOTAL DE RAMOS:</b></td>
                             <td style="vertical-align: middle;font-size: 14px;text-align: right; width: 80px;" id="total_ramos">0</td>
