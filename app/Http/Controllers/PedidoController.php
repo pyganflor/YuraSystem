@@ -126,6 +126,7 @@ class PedidoController extends Controller
 
                 if ($objPedido->save()) {
                     $model = Pedido::all()->last();
+                    bitacora('pedido', $model->id_pedido, 'I', 'Inserción satisfactoria de un nuevo pedido');
                     foreach ($request->arrDataDetallesPedido as $key => $item) {
                         $objDetallePedido = new DetallePedido;
                         $objDetallePedido->id_cliente_especificacion = $item['id_cliente_pedido_especificacion'];
@@ -135,6 +136,7 @@ class PedidoController extends Controller
                         $objDetallePedido->precio = substr($item['precio'], 0, -1);
                         if ($objDetallePedido->save()) {
                             $modelDetallePedido = DetallePedido::all()->last();
+                            bitacora('detalle_pedido', $modelDetallePedido->id_detalle_pedido, 'I', 'Inserción satisfactoria de un nuevo detalle pedido');
                             if($request->arrDatosExportacion!=''){
                                 foreach ($request->arrDatosExportacion[$key] as $de){
                                     if( $de['valor'] != null){
@@ -142,7 +144,10 @@ class PedidoController extends Controller
                                         $objDetallePedidoDatoExportacion->id_detalle_pedido = $modelDetallePedido->id_detalle_pedido;
                                         $objDetallePedidoDatoExportacion->id_dato_exportacion = $de['id_dato_exportacion'];
                                         $objDetallePedidoDatoExportacion->valor = $de['valor'];
-                                        $objDetallePedidoDatoExportacion->save();
+                                        if($objDetallePedidoDatoExportacion->save()){
+                                            $modelDetallePedidoDatoExportacion = DetallePedidoDatoExportacion::all()->last();
+                                            bitacora('detallepedido_datoexportacion', $modelDetallePedidoDatoExportacion->id_detallepedido_datoexportacion, 'I', 'Inserción satisfactoria de un nuevo detallepedido_datoexportacion');
+                                        }
                                     }
                                 }
                             }
@@ -154,7 +159,6 @@ class PedidoController extends Controller
                             $msg = '<div class="alert alert-success text-center">' .
                                 '<p> Se ha guardado el pedido '.$text.' exitosamente</p>'
                                 . '</div>';
-                            bitacora('pedido|detalle_pedido', $model->id_pedido, 'I', 'Inserción satisfactoria de un nuevo pedido');
                         } else {
                             Pedido::destroy($model->id_pedido);
                             $success = false;
@@ -171,6 +175,7 @@ class PedidoController extends Controller
                 $objEnvio->id_pedido = $model->id_pedido;
                 if($objEnvio->save()){
                     $modelEnvio = Envio::all()->last();
+                    bitacora('envio', $modelEnvio->id_envio, 'I', 'Inserción satisfactoria de un nuevo envío');
                     $dataDetallePedido = DetallePedido::where('id_pedido',$model->id_pedido)
                         ->join('cliente_pedido_especificacion as cpe','detalle_pedido.id_cliente_especificacion','cpe.id_cliente_pedido_especificacion')
                         ->select('cpe.id_especificacion','detalle_pedido.cantidad')->get();
@@ -179,7 +184,10 @@ class PedidoController extends Controller
                         $objDetalleEnvio->id_envio = $modelEnvio->id_envio;
                         $objDetalleEnvio->id_especificacion = $detallePeido->id_especificacion;
                         $objDetalleEnvio->cantidad = $detallePeido->cantidad;
-                        $objDetalleEnvio->save();
+                        if($objDetalleEnvio->save()){
+                            $modelDetalleEnvio = DetalleEnvio::all()->last();
+                            bitacora('detalle_envio', $modelDetalleEnvio->id_detalle_envio, 'I', 'Inserción satisfactoria de un nuevo detalle envío');
+                        }
                     }
                 }
             }
