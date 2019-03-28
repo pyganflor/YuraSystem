@@ -742,9 +742,19 @@ function tipo_unidad_medida(data, token) {
 function form_codigo_barra() {
     $.LoadingOverlay('show');
     $.get('codigo_barra/form_codigo_barra', {}, function (retorno) {
-        modal_form('modal_view_envio_pedido', retorno, '<i class="fa fa-barcode"></i> Crear código de barras', true, false, '50%', function () {
+        modal_form('modal_form_codigo_barra', retorno, '<i class="fa fa-barcode"></i> Crear código de barras', true, false, '85%', function () {
             genera_codigo_barra($("#prefijo").val(), $("#codigo").val());
         });
+
+    }).always(function () {
+        $.LoadingOverlay('hide');
+    });
+}
+
+function admin_colores() {
+    $.LoadingOverlay('show');
+    $.get('admin_colores', {}, function (retorno) {
+        modal_view('modal_view_admin_colores', retorno, '<i class="fa fa-tint"></i> Administrar colores', true, false, '85%');
 
     }).always(function () {
         $.LoadingOverlay('hide');
