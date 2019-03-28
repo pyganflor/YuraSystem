@@ -141,13 +141,13 @@ function store_pedido(id_cliente, pedido_fijo, csrf_token, vista, id_pedido) {
     if ($('#form_add_pedido').valid()) {
         option_agencias_transporte = [];
         if ($("#envio_automatico").is(":checked")) {
-                texto = "<div class='row'>" +
-                    "<div class='col-md-12'>" +
-                    "<label for='fecha_envio'>Seleccione la fecha de envío</label>"+
-                    "<input type='date' id='fecha_envio' name='fecha_envio' class='form-control' value='" + moment().format('YYYY-MM-DD') + "'>" +
-                    "<span id='error_fecha_envio'></span>" +
-                    "</div>"+
-                    "</div>";
+            texto = "<div class='row'>" +
+                "<div class='col-md-12'>" +
+                "<label for='fecha_envio'>Seleccione la fecha de envío</label>" +
+                "<input type='date' id='fecha_envio' name='fecha_envio' class='form-control' value='" + moment().format('YYYY-MM-DD') + "'>" +
+                "<span id='error_fecha_envio'></span>" +
+                "</div>" +
+                "</div>";
         } else {
             id_pedido
                 ? texto = '<div class="alert alert-warning text-center">' +
@@ -168,12 +168,12 @@ function store_pedido(id_cliente, pedido_fijo, csrf_token, vista, id_pedido) {
             variedades = '';
             arrDataDetallesPedido = [];
             arrDatosExportacion = [];
-            cant_especificaciones  = $('tbody#tbody_inputs_pedidos input.input_cantidad').length;
+            cant_especificaciones = $('tbody#tbody_inputs_pedidos input.input_cantidad').length;
             cant_datos_exportacion = $(".th_datos_exportacion").length;
             if (cant_datos_exportacion > 0) {
                 for (b = 1; b <= cant_especificaciones; b++) {
                     arrDatosExportacionEspecificacion = [];
-                    if($(".cantidad_"+b).val() != ''){
+                    if ($(".cantidad_" + b).val() != '') {
                         for (a = 1; a <= cant_datos_exportacion; a++) {
                             nombre_columna_dato_exportacion = $("#th_datos_exportacion_" + a).text().trim().toUpperCase();
                             console.log($("#input_" + nombre_columna_dato_exportacion + "_" + b).val());
@@ -817,12 +817,12 @@ function calcular_precio_pedido(input) {
         total_ramos += ramos_totales_especificacion;
         $("#td_precio_especificacion_" + i).html("$" + parseFloat(precio_especificacion).toFixed(2));
         //if($(".cantidad_"+i).val() != "")
-           // total_piezas += parseInt($(".cantidad_"+i).val());
+        // total_piezas += parseInt($(".cantidad_"+i).val());
     }
 
-    $.each($(".seleccion_invidual"),function (n,m) {
-        if($(".cantidad_"+(n+1)).val() != "" && $("#seleccion_invidual_"+(n+1)).is(":checked"))
-            total_piezas += parseInt($(".cantidad_"+(n+1)).val());
+    $.each($(".seleccion_invidual"), function (n, m) {
+        if ($(".cantidad_" + (n + 1)).val() != "" && $("#seleccion_invidual_" + (n + 1)).is(":checked"))
+            total_piezas += parseInt($(".cantidad_" + (n + 1)).val());
     });
     $("#total_piezas").html(total_piezas);
     $("#total_ramos").html(total_ramos);

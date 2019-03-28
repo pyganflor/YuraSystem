@@ -14,7 +14,7 @@ class DetalleEnvio extends Model
     protected $fillable = [
         'id_especificacion',
         'id_envio',
-        'id_agencia_transporte',
+        'id_agencia_transporte',    // default: null
         'cantidad',
         'envio', //agrupción de los detalles de envíos
         'form'

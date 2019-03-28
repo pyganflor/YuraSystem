@@ -12,15 +12,10 @@ Route::get('pedidos/orden_semanal/listar_especificaciones_x_cliente', 'OrdenSema
 Route::get('pedidos/editar_pedido', 'PedidoVentaController@editar_pedido');
 Route::get('pedidos/editar_pedido_tinturado', 'OrdenSemanalController@editar_pedido_tinturado');
 Route::post('pedidos/update_orden_tinturada', 'OrdenSemanalController@update_orden_tinturada');
+Route::post('pedidos/eliminar_detalle_pedido_tinturado', 'OrdenSemanalController@eliminar_detalle_pedido_tinturado');
 Route::get('pedidos/add_pedido_personalizado', 'OrdenSemanalController@add_pedido_personalizado');
 Route::post('pedidos/store_pedido_personalizado', 'OrdenSemanalController@store_pedido_personalizado');
 Route::get('pedidos/listar_agencias_carga', 'OrdenSemanalController@listar_agencias_carga');
-Route::post('pedidos/editar_coloracion', 'OrdenSemanalController@editar_coloracion');
-Route::post('pedidos/editar_marcacion', 'OrdenSemanalController@editar_marcacion');
-Route::post('pedidos/update_distribucion', 'OrdenSemanalController@update_distribucion');
-Route::post('pedidos/update_pedido_orden_semanal', 'OrdenSemanalController@update_pedido_orden_semanal');
-Route::get('pedidos/distribuir_marcaciones', 'OrdenSemanalController@distribuir_marcaciones');
-Route::post('pedidos/calcular_distribucion', 'OrdenSemanalController@calcular_distribucion');
 Route::get('pedidos/duplicar_especificacion', 'PedidoVentaController@duplicar_especificacion');
 Route::get('pedidos/form_duplicar_pedido', 'PedidoVentaController@form_duplicar_pedido');
 Route::post('pedidos/store_duplicar_pedido', 'PedidoVentaController@store_duplicar_pedido');
