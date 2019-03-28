@@ -474,6 +474,151 @@ class OrdenSemanalController extends Controller
     public function update_orden_tinturada(Request $request)
     {
         dd($request->all());
+        $valida = Validator::make($request->all(), [
+            'id_pedido' => 'required',
+            'id_detalle_pedido' => 'required',
+            'fecha_pedido' => 'required',
+            'cantidad_piezas' => 'required',
+            'id_agencia_carga' => 'required',
+            'arreglo_esp_emp' => 'required|Array',
+        ], [
+            'id_pedido.required' => 'El pedido es obligatorio',
+            'id_detalle_pedido.required' => 'El detalle del pedido es obligatorio',
+            'fecha_pedido.required' => 'La fecha del pedido es obligatoria',
+            'cantidad_piezas.required' => 'La cantidad de piezas es obligatoria',
+            'id_agencia_carga.required' => 'La agencia de carga es obligatoria',
+            'arreglo_esp_emp.required' => 'Las especificaciones son obligatorias',
+            'arreglo_esp_emp.Array' => 'Las especificaciones deben ser un listado',
+        ]);
+        $msg = '';
+        $success = true;
+        if (!$valida->fails()) {
+            /* ========== PEDIDO ============ */
+            $pedido = Pedido::find($request->id_pedido);
+            $pedido->fecha_pedido = $request->fecha_pedido;
+
+            if ($pedido->save()) {
+                bitacora('pedido', $pedido->id_pedido, 'U', 'Actualizacion de un pedido');
+
+                /* ========== DETALLE_PEDIDO ============ */
+                $last_det_ped = DetallePedido::find($request->id_detalle_pedido);
+
+                $det_pedido = new DetallePedido();
+                $det_pedido->id_cliente_especificacion = $last_det_ped->id_cliente_especificacion;
+                $det_pedido->id_pedido = $request->id_pedido;
+                $det_pedido->id_agencia_carga = $request->id_agencia_carga;
+                $det_pedido->cantidad = $request->cantidad_piezas;
+                $det_pedido->precio = '';
+
+                if ($det_pedido->save()) {
+                    $det_pedido = Color::All()->last();
+                    bitacora('detalle_pedido', $det_pedido->id_detalle_pedido, 'I', 'Inserción satisfactoria de un nuevo detalle_pedido');
+
+                    foreach ($request->arreglo_esp_emp as $esp_emp) {
+                        /* ========= COLORACIONES ========== */
+                        $arreglo_coloraciones = [];
+                        foreach ($esp_emp['arreglo_coloraciones'] as $col) {
+                            $coloracion = new Coloracion();
+                            $coloracion->id_color = $col['id_color'];
+                            $coloracion->id_detalle_pedido = $det_pedido->id_detalle_pedido;
+                            $coloracion->id_especificacion_empaque = $esp_emp->id_esp_emp;
+
+                            if ($coloracion->save()) {
+                                $coloracion = Coloracion::All()->last();
+                                bitacora('coloracion', 'I', 'Insercion de una nueva coloracion');
+                                array_push($arreglo_coloraciones, $coloracion);
+                            } else {
+                                $det_pedido->delete();
+                                return [
+                                    'success' => false,
+                                    'mensaje' => '<div class="alert alert-warning text-center">' .
+                                        '<p> Ha ocurrido un problema al guardar la coloración ' . getColor($col['id_color'])->nombre . '</p>'
+                                        . '</div>'
+                                ];
+                            }
+                        }
+
+                        /* ========= MARCACIONES ========== */
+                        foreach ($esp_emp['arreglo_marcaciones'] as $marc) {
+                            $marcacion = new Marcacion();
+                            $marcacion->nombre = $marc['nombre'];
+                            $marcacion->ramos = $marc['ramos'];
+                            $marcacion->piezas = $marc['piezas'];
+                            $marcacion->id_detalle_pedido = $det_pedido->id_detalle_pedido;
+                            $marcacion->id_especificacion_empaque = $esp_emp->id_esp_emp;
+
+                            if ($marcacion->save()) {
+                                $marcacion = Marcacion::All()->last();
+                                bitacora('coloracion', 'I', 'Insercion de una nueva coloracion');
+
+                                /* ========== MARCACIONES_COLORACIONES ========= */
+                                foreach ($marc['colores'] as $pos_col => $col) {
+                                    foreach ($col['cant_x_det_esp'] as $mc) {
+                                        $marc_col = new MarcacionColoracion();
+                                        $marc_col->id_marcacion = $marcacion->id_marcacion;
+                                        $marc_col->id_coloracion = $arreglo_coloraciones[$pos_col]->id_coloracion;
+                                        $marc_col->cantidad = $mc['cantidad'];
+                                        $marc_col->id_detalle_especificacionempaque = $mc['id_det_esp'];
+
+                                        if ($marc_col->save()) {
+                                            $marc_col = MarcacionColoracion::All()->last();
+                                            bitacora('marcacion_coloracion', $marc_col->id_marcacion_coloracion, 'I', 'Insercion de una nueva marcacion-coloracion');
+                                        } else {
+                                            $det_pedido->delete();
+                                            return [
+                                                'success' => false,
+                                                'mensaje' => '<div class="alert alert-warning text-center">' .
+                                                    '<p> Ha ocurrido un problema al guardar la marcación-coloración ' . $marc['nombre'] . '-' .
+                                                    $coloracion->color->nombre . '</p>'
+                                                    . '</div>'
+                                            ];
+                                        }
+                                    }
+                                }
+                            } else {
+                                $det_pedido->delete();
+                                return [
+                                    'success' => false,
+                                    'mensaje' => '<div class="alert alert-warning text-center">' .
+                                        '<p> Ha ocurrido un problema al guardar la marcación ' . $marc['nombre'] . '</p>'
+                                        . '</div>'
+                                ];
+                            }
+                        }
+                    }
+                } else {
+                    $success = false;
+                    $msg = '<div class="alert alert-warning text-center">' .
+                        '<p> Ha ocurrido un problema al guardar el detalle-pedido</p>'
+                        . '</div>';
+                }
+            } else {
+                $success = false;
+                $msg = '<div class="alert alert-warning text-center">' .
+                    '<p> Ha ocurrido un problema al guardar el pedido</p>'
+                    . '</div>';
+            }
+        } else {
+            $success = false;
+            $errores = '';
+            foreach ($valida->errors()->all() as $mi_error) {
+                if ($errores == '') {
+                    $errores = '<li>' . $mi_error . '</li>';
+                } else {
+                    $errores .= '<li>' . $mi_error . '</li>';
+                }
+            }
+            $msg = '<div class="alert alert-danger">' .
+                '<p class="text-center">¡Por favor corrija los siguientes errores!</p>' .
+                '<ul>' .
+                $errores .
+                '</ul>' .
+                '</div>';
+        }
+        return [
+            'mensaje' => $msg,
+            'success' => $success
+        ];
     }
 
     public function buscar_agencia_carga(Request $request)
