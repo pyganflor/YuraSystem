@@ -764,7 +764,6 @@ function admin_colores() {
 function genera_codigo_barra(prefijo, codigo) {
     $.LoadingOverlay('show');
     $.get('codigo_barra/generar_codigo_barra/' + codigo + "/" + prefijo, {}, function (retorno) {
-        console.log(retorno);
         $("#img_codigo_barra").html(retorno);
     });
     $.LoadingOverlay('hide');

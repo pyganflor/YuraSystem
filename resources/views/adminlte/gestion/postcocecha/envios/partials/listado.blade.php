@@ -140,7 +140,8 @@
                 @endforeach
             </table>--}}
             @foreach($envios as $envio)
-                <div class="box box-solid box-default">
+                @php $facturado = getFacturado($envio->id_envio); @endphp
+                <div class="box box-solid box-primary">
                     <div class="box-header with-border">
                         <div class="box-title col-md-4"><b>Envío N#:</b> ENV{{str_pad($envio->id_envio,9,"0",STR_PAD_LEFT)}}</div>
                         <div class="box-title col-md-5"><b>Cliente:</b> {{$envio->nombre}}</div>
@@ -263,7 +264,6 @@
                                                              </select>
                                                          </td>
                                                  @endif
-
                                              </tr>
                                              @php
                                                  $anterior = $det_ped->cliente_especificacion->especificacion->id_especificacion;
@@ -275,7 +275,40 @@
                                 @endforeach
                             </tbody>
                         </table>
-                        @if(!empty(yura\Modelos\Usuario::where('id_usuario',session::get('id_usuario'))->first()->punto_acceso))
+                        <div class="row" style="margin-top:30px">
+                            <div class="col-md-12">
+                                <div class="box">
+                                    <div class="box-header with-border">
+                                        <h3 class="box-title">DATOS DE EXPORTACIÓN</h3>
+                                    </div>
+                                    <div class="box-body">
+                                        <div class="row">
+                                        <div class="col-md-4">
+                                            <label for="guia_madre">Guía madre</label>
+                                            <input type="number" style="margin-top:5px" placeholder="Guía madre" class="form-control"
+                                                   {{$facturado != 0 ? "disabled='disabled'" : ""}}
+                                                   id="guia_madre_" name="guia_madre_">
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label for="guia_hija">Guía hija</label>
+                                            <input type="number" style="margin-top:5px" placeholder="Guía hija" class="form-control"
+                                                   {{$facturado != 0 ? "disabled='disabled'" : ""}}
+                                                   id="guia_hija_" name="guia_hija_">
+                                        </div>
+                                        <div class="col-md-4">
+                                            <select id="codigo_pais_" name="codigo_pais_" style="margin-left: 1px;width: 128px;"
+                                                {{$facturado != 0 ? "disabled='disabled'" : ""}}>
+                                                @foreach($paises as $pais)
+                                                    <option {{ ($item[0]->codigo_pais == $pais->codigo) ? "selected" : "" }} value="{{$pais->codigo}}">{{$pais->nombre}}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        @if(!empty(yura\Modelos\Usuario::where('id_usuario',session::get('id_usuario'))->first()->punto_acceso) && $envio->confirmado)
                             <div class="text-center" style="margin-top: 30px">
                                 <button type="button" class="btn btn-success" onclick="genera_comprobante_cliente()">
                                     <i class="fa fa-file-text-o" aria-hidden="true"></i>
@@ -294,6 +327,7 @@
                     <!-- box-footer -->
                 </div>
                 <!-- /.box -->
+                <hr />
             @endforeach
 
         </form>

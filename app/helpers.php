@@ -46,6 +46,7 @@ use yura\Modelos\Precio;
 use yura\Modelos\Color;
 use yura\Modelos\Marcacion;
 use yura\Modelos\DetallePedidoDatoExportacion;
+use yura\Modelos\DatosExportacion;
 
 /*
  * -------- BITÁCORA DE LAS ACCIONES ECHAS POR EL USUARIO ------
@@ -1530,9 +1531,9 @@ function getColores()
     return Color::All()->where('estado', 1);
 }
 
-function getDatosExportacionCliente($idCliente){
-   return DatosExportacion::join('cliente_datoexportacion as cde','dato_exportacion.id_dato_exportacion','cde.id_dato_exportacion')
-        ->where('id_cliente',$idCliente)->get();
+function getDatosExportacionCliente($idDetallePedido){
+   return DetallePedidoDatoExportacion::where('id_detalle_pedido',$idDetallePedido)
+       ->join('dato_exportacion as de','detallepedido_datoexportacion.id_dato_exportacion','de.id_dato_exportacion')->get();
 }
 
 function getEnvio($idEnvio){

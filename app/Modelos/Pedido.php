@@ -19,6 +19,7 @@ class Pedido extends Model
         'empaquetado',
         'variedad', // String con los ids de las variedades incluidas en el pedido separados por "|"
         'tipo_especificacion',  // N => Normal; T => Flor Tinturada
+        'confirmado',
     ];
 
     public function detalles()
