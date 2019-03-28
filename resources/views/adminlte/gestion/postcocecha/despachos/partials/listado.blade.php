@@ -23,11 +23,9 @@
                 <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
                     CLIENTE
                 </th>
-                @if($opciones)
-                    <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
-                        DATOS EXPORTACIÓN
-                    </th>
-                @endif
+                 <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
+                        MARACACIONES
+                 </th>
                 <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
                     FLOR
                 </th>

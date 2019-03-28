@@ -193,6 +193,7 @@ class EnvioController extends Controller
             'envios' => $listado->paginate(10),
             'datos_exportacion_' => DatosExportacion::join('cliente_datoexportacion as cde','dato_exportacion.id_dato_exportacion','cde.id_dato_exportacion')
                 ->where('id_cliente',$request->id_cliente)->get(),
+            'paises'    => Pais::all()
         ]);
     }
 

@@ -283,26 +283,35 @@
                                     </div>
                                     <div class="box-body">
                                         <div class="row">
-                                        <div class="col-md-4">
-                                            <label for="guia_madre">Guía madre</label>
-                                            <input type="number" style="margin-top:5px" placeholder="Guía madre" class="form-control"
-                                                   {{$facturado != 0 ? "disabled='disabled'" : ""}}
-                                                   id="guia_madre_" name="guia_madre_">
-                                        </div>
-                                        <div class="col-md-4">
-                                            <label for="guia_hija">Guía hija</label>
-                                            <input type="number" style="margin-top:5px" placeholder="Guía hija" class="form-control"
-                                                   {{$facturado != 0 ? "disabled='disabled'" : ""}}
-                                                   id="guia_hija_" name="guia_hija_">
-                                        </div>
-                                        <div class="col-md-4">
-                                            <select id="codigo_pais_" name="codigo_pais_" style="margin-left: 1px;width: 128px;"
-                                                {{$facturado != 0 ? "disabled='disabled'" : ""}}>
-                                                @foreach($paises as $pais)
-                                                    <option {{ ($item[0]->codigo_pais == $pais->codigo) ? "selected" : "" }} value="{{$pais->codigo}}">{{$pais->nombre}}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
+                                            <div class="col-md-3">
+                                                <label for="guia_madre">DAE</label>
+                                                <select id="codigo_dae_" name="codigo_dae_" class="form-control" disabled>
+                                                    @foreach($paises as $pais)
+                                                        <option {{ ($envio->codigo_pais == $pais->codigo) ? "selected" : "" }} value="{{$pais->codigo}}">{{$pais->nombre}}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <label for="guia_madre">Guía madre</label>
+                                                <input type="number" style="margin-top:5px" placeholder="Guía madre" class="form-control"
+                                                       {{$facturado != 0 ? "disabled='disabled'" : ""}}
+                                                       id="guia_madre_" name="guia_madre_">
+                                            </div>
+                                            <div class="col-md-3">
+                                                <label for="guia_hija">Guía hija</label>
+                                                <input type="number" style="margin-top:5px" placeholder="Guía hija" class="form-control"
+                                                       {{$facturado != 0 ? "disabled='disabled'" : ""}}
+                                                       id="guia_hija_" name="guia_hija_">
+                                            </div>
+                                            <div class="col-md-3">
+                                                <label for="pais">País</label>
+                                                <select id="codigo_pais_" name="codigo_pais_" class="form-control"
+                                                    {{$facturado != 0 ? "disabled='disabled'" : ""}}>
+                                                    @foreach($paises as $pais)
+                                                        <option {{ ($envio->codigo_pais == $pais->codigo) ? "selected" : "" }} value="{{$pais->codigo}}">{{$pais->nombre}}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
