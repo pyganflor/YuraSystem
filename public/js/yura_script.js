@@ -139,12 +139,15 @@ function habilitar_campos() {
 function store_pedido(id_cliente, pedido_fijo, csrf_token, vista, id_pedido) {
 
     if ($('#form_add_pedido').valid()) {
+        option_agencias_transporte = [];
         if ($("#envio_automatico").is(":checked")) {
-            texto = "<label for='fecha_envio'>Seleccione la fecha de envío</label>" +
-                "<div>" +
-                "<input type='date' id='fecha_envio' name='fecha_envio' class='form-control' value='" + moment().format('YYYY-MM-DD') + "'>" +
-                "<span id='error_fecha_envio'></span>" +
-                "</div>";
+                texto = "<div class='row'>" +
+                    "<div class='col-md-12'>" +
+                    "<label for='fecha_envio'>Seleccione la fecha de envío</label>"+
+                    "<input type='date' id='fecha_envio' name='fecha_envio' class='form-control' value='" + moment().format('YYYY-MM-DD') + "'>" +
+                    "<span id='error_fecha_envio'></span>" +
+                    "</div>"+
+                    "</div>";
         } else {
             id_pedido
                 ? texto = '<div class="alert alert-warning text-center">' +
@@ -152,7 +155,6 @@ function store_pedido(id_cliente, pedido_fijo, csrf_token, vista, id_pedido) {
                 '</div>'
                 : texto = '<div class="alert alert-info text-center"><p>Desea guardar este pedido?</p></div>';
         }
-
         modal_quest('modal_edit_pedido', texto, 'Editar pedido', true, false, '40%', function () {
             if ($("#envio_automatico").is(":checked"))
                 if ($("#fecha_envio").val() == "") {
@@ -165,25 +167,23 @@ function store_pedido(id_cliente, pedido_fijo, csrf_token, vista, id_pedido) {
             id_variedades = '';
             variedades = '';
             arrDataDetallesPedido = [];
-            cant_datos_exportacion = $(".th_datos_exportacion").length;
             arrDatosExportacion = [];
+            cant_especificaciones  = $('tbody#tbody_inputs_pedidos input.input_cantidad').length;
+            cant_datos_exportacion = $(".th_datos_exportacion").length;
             if (cant_datos_exportacion > 0) {
-                cant_especificaciones = $('tbody#tbody_inputs_pedidos input.input_cantidad').length;
                 for (b = 1; b <= cant_especificaciones; b++) {
                     arrDatosExportacionEspecificacion = [];
-                    for (a = 1; a <= cant_datos_exportacion; a++) {
-                        nombre_columna_dato_exportacion = $("#th_datos_exportacion_" + a).text().trim().toUpperCase();
-                        arrDatosExportacionEspecificacion.push({
-                            valor: $("#input_" + nombre_columna_dato_exportacion + "_" + b).val(),
-                            id_dato_exportacion: $("#id_dato_exportacion_" + nombre_columna_dato_exportacion + "_" + b).val()
-                        });
-                    }
-                    if ($("#input_" + nombre_columna_dato_exportacion + "_" + b).val() != "")
+                    if($(".cantidad_"+b).val() != ''){
+                        for (a = 1; a <= cant_datos_exportacion; a++) {
+                            nombre_columna_dato_exportacion = $("#th_datos_exportacion_" + a).text().trim().toUpperCase();
+                            console.log($("#input_" + nombre_columna_dato_exportacion + "_" + b).val());
+                            arrDatosExportacionEspecificacion.push({
+                                valor: $("#input_" + nombre_columna_dato_exportacion + "_" + b).val(),
+                                id_dato_exportacion: $("#id_dato_exportacion_" + nombre_columna_dato_exportacion + "_" + b).val()
+                            });
+                        }
                         arrDatosExportacion.push(arrDatosExportacionEspecificacion);
-                }
-                if (arrDatosExportacion.length < 1) {
-                    modal_view('modal_status_pedidos', '<div class="alert alert-danger text-center"><p> Debe llenar todos los datos de exportación</p> </div>', '<i class="fa fa-times" aria-hidden="true"></i> Estado pedido', true, false, '50%');
-                    return false;
+                    }
                 }
             }
 
@@ -255,7 +255,7 @@ function store_pedido(id_cliente, pedido_fijo, csrf_token, vista, id_pedido) {
                 id_pedido: id_pedido,
                 arrDatosExportacion: arrDatosExportacion,
                 crear_envio: $("#envio_automatico").is(":checked"),
-                fecha_envio: $("#envio_automatico").is(":checked") ? $("#fecha_envio").val() : ""
+                fecha_envio: $("#envio_automatico").is(":checked") ? $("#fecha_envio").val() : "",
             };
 
             post_jquery('clientes/store_pedidos', datos, function () {
@@ -697,7 +697,7 @@ function update_especificacion(id_especificacion, estado, token, cliente) {
 }
 
 function buscar_listado_especificaciones() {
-    $.LoadingOverlay('show');
+    //$.LoadingOverlay('show');
     datos = {
         busqueda: $('#busqueda_especifiaciones').val().trim(),
         id_cliente: $("#cliente_id").val(),
@@ -708,7 +708,7 @@ function buscar_listado_especificaciones() {
         $('#div_listado_especificaciones').html(retorno);
         //estructura_tabla('table_content_especificaciones');
     }).always(function () {
-        $.LoadingOverlay('hide');
+        //$.LoadingOverlay('hide');
     });
 }
 
@@ -784,7 +784,7 @@ function listar_resumen_pedidos(fecha, opciones) {
 }
 
 function calcular_precio_pedido(input) {
-    for (p = 1; p <= $(".th_datos_exportacion").length; p++) {
+    /*for (p = 1; p <= $(".th_datos_exportacion").length; p++) {
         if (input !== undefined) {
             nombre_th_exportacion = $("#th_datos_exportacion_" + p).html();
             if (input.value !== "" || input.value > 0) {
@@ -793,9 +793,12 @@ function calcular_precio_pedido(input) {
                 $("#input_" + nombre_th_exportacion.trim() + "_" + input.id.split("_")[2]).attr('required', false);
             }
         }
-    }
+    }*/
+
+
     monto_total = 0.00;
     total_ramos = 0.00;
+    total_piezas = 0.00;
     cant_rows = $(".input_cantidad").length;
     for (i = 1; i <= cant_rows; i++) {
         precio_especificacion = 0.00;
@@ -814,7 +817,15 @@ function calcular_precio_pedido(input) {
         $("#td_total_ramos_" + i).html(parseFloat(ramos_totales_especificacion));
         total_ramos += ramos_totales_especificacion;
         $("#td_precio_especificacion_" + i).html("$" + parseFloat(precio_especificacion).toFixed(2));
+        //if($(".cantidad_"+i).val() != "")
+           // total_piezas += parseInt($(".cantidad_"+i).val());
     }
+
+    $.each($(".seleccion_invidual"),function (n,m) {
+        if($(".cantidad_"+(n+1)).val() != "" && $("#seleccion_invidual_"+(n+1)).is(":checked"))
+            total_piezas += parseInt($(".cantidad_"+(n+1)).val());
+    });
+    $("#total_piezas").html(total_piezas);
     $("#total_ramos").html(total_ramos);
     $(".monto_total_pedido").html("$" + monto_total.toFixed(2));
 }
@@ -830,6 +841,16 @@ function barra_string(input, event, barra = true) {
     if (barra)
         if (tecla === 32)
             value_input += "|";
+
+    $("#" + input.id).val(value_input.replace(" ", ""));
+}
+
+function guion_bajo_string(input, event, guion = true) {
+    value_input = $("#" + input.id).val();
+    tecla = event.which || event.keyCode;
+    if (guion)
+        if (tecla === 32)
+            value_input += "_";
 
     $("#" + input.id).val(value_input.replace(" ", ""));
 }

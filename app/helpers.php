@@ -1538,3 +1538,12 @@ function getDatosExportacionCliente($idCliente){
 function getEnvio($idEnvio){
     return Envio::find($idEnvio);
 }
+
+function getAgenciaCargaCliente($idCliente){
+    return DB::table('cliente_agenciacarga as cac')
+        ->join('agencia_carga as ac', 'cac.id_agencia_carga', 'ac.id_agencia_carga')
+        ->where([
+            ['cac.id_cliente', $idCliente],
+            ['cac.estado', 1]
+        ])->get();
+}

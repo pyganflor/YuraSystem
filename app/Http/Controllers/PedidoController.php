@@ -88,7 +88,6 @@ class PedidoController extends Controller
             'arrDataPedido' => 'Array',
             'id_cliente' => 'required',
         ]);
-
         if (!$valida->fails()) {
             $success = false;
             $msg = '<div class="alert alert-danger text-center">' .
@@ -138,11 +137,13 @@ class PedidoController extends Controller
                             $modelDetallePedido = DetallePedido::all()->last();
                             if($request->arrDatosExportacion!=''){
                                 foreach ($request->arrDatosExportacion[$key] as $de){
-                                    $objDetallePedidoDatoExportacion = new DetallePedidoDatoExportacion;
-                                    $objDetallePedidoDatoExportacion->id_detalle_pedido = $modelDetallePedido->id_detalle_pedido;
-                                    $objDetallePedidoDatoExportacion->id_dato_exportacion = $de['id_dato_exportacion'];
-                                    $objDetallePedidoDatoExportacion->valor = $de['valor'];
-                                    $objDetallePedidoDatoExportacion->save();
+                                    if( $de['valor'] != null){
+                                        $objDetallePedidoDatoExportacion = new DetallePedidoDatoExportacion;
+                                        $objDetallePedidoDatoExportacion->id_detalle_pedido = $modelDetallePedido->id_detalle_pedido;
+                                        $objDetallePedidoDatoExportacion->id_dato_exportacion = $de['id_dato_exportacion'];
+                                        $objDetallePedidoDatoExportacion->valor = $de['valor'];
+                                        $objDetallePedidoDatoExportacion->save();
+                                    }
                                 }
                             }
                             $success = true;
@@ -177,7 +178,6 @@ class PedidoController extends Controller
                         $objDetalleEnvio = new DetalleEnvio;
                         $objDetalleEnvio->id_envio = $modelEnvio->id_envio;
                         $objDetalleEnvio->id_especificacion = $detallePeido->id_especificacion;
-                        $objDetalleEnvio->id_agencia_transporte = 1;
                         $objDetalleEnvio->cantidad = $detallePeido->cantidad;
                         $objDetalleEnvio->save();
                     }
@@ -280,13 +280,6 @@ class PedidoController extends Controller
                     ])->get(),
                 'especificaciones' => $data_especificaciones->orderBy('id_cliente_pedido_especificacion','asc')->get(),
 
-
-                /*'duplicados' => Pedido::where([
-                    ['pedido.id_pedido', $request->id_pedido],
-                ])->join('detalle_pedido as dp', 'pedido.id_pedido', 'dp.id_pedido')
-                    ->join('cliente_pedido_especificacion as cpe','dp.id_cliente_especificacion','cpe.id_cliente_pedido_especificacion')
-                    ->select(DB::table('detalle_pedido')->raw('count(id_cliente_especificacion) as esp_dup, cpe.id_especificacion'))
-                    ->groupBy('cpe.id_especificacion')->get()*/
             ]);
     }
 

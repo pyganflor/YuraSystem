@@ -2,18 +2,17 @@
     buscar_listado_envios();
 
     function buscar_listado_envios() {
+        console.log("hola");
         $.LoadingOverlay('show');
         datos = {
-            anno       : $('#anno').val(),
             id_cliente : $('#id_cliente').val(),
-            desde      : $('#desde').val(),
-            hasta      : $('#hasta').val(),
+            fecha      : $('#fecha').val(),
             estado     : $('#estado').val(),
-            pre_facturado : $("#pre_facturado").val()
         };
         $.get('{{url('envio/buscar')}}', datos, function (retorno) {
             $('#div_listado_envios').html(retorno);
             estructura_tabla('table_content_envios');
+            calcular_precio_pedido();
         }).always(function () {
             $.LoadingOverlay('hide');
         });

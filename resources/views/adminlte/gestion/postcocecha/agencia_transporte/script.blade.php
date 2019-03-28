@@ -44,19 +44,19 @@
     }
 
     function store_agencia_transporte() {
-        console.log($("#id_agencia_transporte").val());
         if ($('#form_add_agencia_transporte').valid()) {
             $.LoadingOverlay('show');
             datos = {
                 _token             : '{{csrf_token()}}',
                 nombre             : $("#nombre_agencia").val(),
                 agencia_transporte : $("#agencia_transporte").val(),
-                id_agencia_transporte: $("#id_agencia_transporte").val()
+                id_agencia_transporte: $("#id_agencia_transporte").val(),
+                codigo              : $("#codigo").val()
             };
 
             post_jquery('{{url('agencias_transporte/store')}}', datos, function () {
                 cerrar_modals();
-                location.reload();
+                buscar_listado();
             });
             $.LoadingOverlay('hide');
         }

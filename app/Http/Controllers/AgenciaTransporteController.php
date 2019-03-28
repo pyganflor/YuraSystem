@@ -66,6 +66,7 @@ class AgenciaTransporteController extends Controller
         $valida = Validator::make($request->all(), [
             'nombre' => 'required',
             'agencia_transporte' => 'required',
+            'codigo' => 'required',
         ]);
 
         if (!$valida->fails()) {
@@ -76,6 +77,7 @@ class AgenciaTransporteController extends Controller
 
             $objAgenciaTransporte->nombre = $request->nombre;
             $objAgenciaTransporte->tipo_agencia = $request->agencia_transporte;
+            $objAgenciaTransporte->codigo = $request->codigo;
             $msg = '';
 
             if ($objAgenciaTransporte->save()) {
