@@ -82,7 +82,7 @@
                                     <td class="text-center" style="border-color: #9d9d9d;vertical-align: middle" id="td_datos_exportacion_{{$pedido->id_pedido}}"
                                         rowspan="{{getCantidadDetallesByEspecificacion($det_ped->cliente_especificacion->id_especificacion)}}">
                                         @if(count(getDatosExportacionCliente($det_ped->id_detalle_pedido))>0)
-                                            <ul style="padding: 0">
+                                            <ul style="padding: 0;margin-bottom: 0">
                                                 @foreach(getDatosExportacionCliente($det_ped->id_detalle_pedido) as $de)
                                                     <li style="list-style: none"><b>{{strtoupper($de->nombre)}}:</b> {{$de->valor}} </li>
                                                 @endforeach
