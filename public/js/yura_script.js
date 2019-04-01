@@ -209,6 +209,7 @@ function store_pedido(id_cliente, pedido_fijo, csrf_token, vista, id_pedido) {
             }
 
             var arrFechas = [];
+            console.log(pedido_fijo,$("#opcion_pedido_fijo").val());
             if (pedido_fijo && ($("#opcion_pedido_fijo").val() == 1) || $("#opcion_pedido_fijo").val() == 2) {
                 var fechaDesde = moment($("#fecha_desde_pedido_fijo").val());
                 var fechaHasta = moment($("#fecha_hasta_pedido_fijo").val());
@@ -237,6 +238,13 @@ function store_pedido(id_cliente, pedido_fijo, csrf_token, vista, id_pedido) {
                             arrFechas.push(fechas);
                         }
                     }
+                }
+            }else if (pedido_fijo && $("#opcion_pedido_fijo").val() == 3) {
+                $cant_pedidos = $("#td_fechas_pedido_fijo_personalizado div.col-md-4").length;
+                for (var i = 0; i < $cant_pedidos; i++) {
+                    arrFechas.push(
+                        $("input#fecha_desde_pedido_fijo_" + (i + 1)).val()
+                    );
                 }
             }
             $.LoadingOverlay('show');
@@ -783,18 +791,6 @@ function listar_resumen_pedidos(fecha, opciones) {
 }
 
 function calcular_precio_pedido(input) {
-    /*for (p = 1; p <= $(".th_datos_exportacion").length; p++) {
-        if (input !== undefined) {
-            nombre_th_exportacion = $("#th_datos_exportacion_" + p).html();
-            if (input.value !== "" || input.value > 0) {
-                $("#input_" + nombre_th_exportacion.trim() + "_" + input.id.split("_")[2]).attr('required', true);
-            } else {
-                $("#input_" + nombre_th_exportacion.trim() + "_" + input.id.split("_")[2]).attr('required', false);
-            }
-        }
-    }*/
-
-
     monto_total = 0.00;
     total_ramos = 0.00;
     total_piezas = 0.00;
