@@ -47,6 +47,8 @@ use yura\Modelos\Color;
 use yura\Modelos\Marcacion;
 use yura\Modelos\DetallePedidoDatoExportacion;
 use yura\Modelos\DatosExportacion;
+use yura\Modelos\Coloracion;
+use yura\Modelos\EspecificacionEmpaque;
 
 /*
  * -------- BITÁCORA DE LAS ACCIONES ECHAS POR EL USUARIO ------
@@ -673,6 +675,22 @@ function getClasificacionVerde($id)
 function getCliente($id)
 {
     return Cliente::find($id);
+}
+
+function getClientes()
+{
+    $l = DB::table('cliente as c')
+        ->select('c.id_cliente')
+        ->join('detalle_cliente as dc', 'dc.id_cliente', '=', 'c.id_cliente')
+        ->where('c.estado', '=', 1)
+        ->where('dc.estado', '=', 1)
+        ->orderBy('dc.nombre', 'asc')
+        ->get();
+    $r = [];
+    foreach ($l as $item) {
+        array_push($r, getCliente($item->id_cliente));
+    }
+    return $r;
 }
 
 function getDatosCliente($id_cliente)
@@ -1488,14 +1506,15 @@ function getOptionsPrecios($idCliente, $idEspecificacion)
     return explode("|", $data->precio);
 }
 
-function getDatosExportacion($id_detalle_pedido,$id_dato_exportacion){
+function getDatosExportacion($id_detalle_pedido, $id_dato_exportacion)
+{
     return DetallePedidoDatoExportacion::where([
-        ['id_detalle_pedido',$id_detalle_pedido],
-        ['id_dato_exportacion',$id_dato_exportacion]
+        ['id_detalle_pedido', $id_detalle_pedido],
+        ['id_dato_exportacion', $id_dato_exportacion]
     ])->first();
 }
 
-function getClienteEspecificacion($id_cliente,$id_especificacion)
+function getClienteEspecificacion($id_cliente, $id_especificacion)
 {
     return ClientePedidoEspecificacion::where([
         ['id_cliente', $id_cliente],
@@ -1531,20 +1550,33 @@ function getColores()
     return Color::All()->where('estado', 1);
 }
 
-function getDatosExportacionCliente($idDetallePedido){
-   return DetallePedidoDatoExportacion::where('id_detalle_pedido',$idDetallePedido)
-       ->join('dato_exportacion as de','detallepedido_datoexportacion.id_dato_exportacion','de.id_dato_exportacion')->get();
+function getDatosExportacionCliente($idDetallePedido)
+{
+    return DetallePedidoDatoExportacion::where('id_detalle_pedido', $idDetallePedido)
+        ->join('dato_exportacion as de', 'detallepedido_datoexportacion.id_dato_exportacion', 'de.id_dato_exportacion')->get();
 }
 
-function getEnvio($idEnvio){
+function getEnvio($idEnvio)
+{
     return Envio::find($idEnvio);
 }
 
-function getAgenciaCargaCliente($idCliente){
+function getAgenciaCargaCliente($idCliente)
+{
     return DB::table('cliente_agenciacarga as cac')
         ->join('agencia_carga as ac', 'cac.id_agencia_carga', 'ac.id_agencia_carga')
         ->where([
             ['cac.id_cliente', $idCliente],
             ['cac.estado', 1]
         ])->get();
+}
+
+function getColoracion($id)
+{
+    return Coloracion::find($id);
+}
+
+function getEspecificacionEmpaque($id)
+{
+    return EspecificacionEmpaque::find($id);
 }

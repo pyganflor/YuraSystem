@@ -95,7 +95,7 @@ class PedidoVentaController extends Controller
     public function add_orden_semanal(Request $request)
     {
         return view('adminlte.gestion.postcocecha.pedidos_ventas.partials.add_orden_semanal', [
-            'clientes' => Cliente::All()->where('estado', '=', 1),
+            'clientes' => getClientes(),
             'empaques' => Empaque::All()->where('estado', '=', 1)->where('tipo', '=', 'C'),
             //'envolturas' => Empaque::All()->where('estado', '=', 1)->where('tipo', '=', 'E'),
             'presentaciones' => Empaque::All()->where('estado', '=', 1)->where('tipo', '=', 'P'),
@@ -111,67 +111,70 @@ class PedidoVentaController extends Controller
         ])->join('detalle_pedido as dp', 'pedido.id_pedido', 'dp.id_pedido')
             ->join('detalle_cliente as dc', 'pedido.id_cliente', 'dc.id_cliente')
             ->join('cliente_pedido_especificacion as cpe', 'dp.id_cliente_especificacion', 'cpe.id_cliente_pedido_especificacion')
-            ->select('dp.cantidad as cantidad_especificacion', 'dp.precio','dp.id_agencia_carga', 'dc.id_cliente', 'pedido.fecha_pedido', 'pedido.descripcion', 'cpe.id_especificacion')->get();
-            return [
-                'pedido' =>$pedido,
-            ];
+            ->select('dp.cantidad as cantidad_especificacion', 'dp.precio', 'dp.id_agencia_carga', 'dc.id_cliente', 'pedido.fecha_pedido', 'pedido.descripcion', 'cpe.id_especificacion')->get();
+        return [
+            'pedido' => $pedido,
+        ];
     }
 
-    public function duplicar_especificacion(Request $request){
-        $agenciasCarga = AgenciaCarga::where('c_ac.id_cliente',$request->id_cliente)
-            ->join('cliente_agenciacarga as c_ac','agencia_carga.id_agencia_carga','c_ac.id_agencia_carga')->get();
-        return view('adminlte.gestion.postcocecha.pedidos.forms.paritals.duplicar_especificacion',[
+    public function duplicar_especificacion(Request $request)
+    {
+        $agenciasCarga = AgenciaCarga::where('c_ac.id_cliente', $request->id_cliente)
+            ->join('cliente_agenciacarga as c_ac', 'agencia_carga.id_agencia_carga', 'c_ac.id_agencia_carga')->get();
+        return view('adminlte.gestion.postcocecha.pedidos.forms.paritals.duplicar_especificacion', [
             'id_especificacion' => $request->id_especificacion,
             'agenciasCarga' => $agenciasCarga,
             'cant_esp' => $request->cant_esp,
             'id_cliente' => $request->id_cliente,
-            'datos_exportacion' => DatosExportacion::join('cliente_datoexportacion as cde','dato_exportacion.id_dato_exportacion','cde.id_dato_exportacion')
-                ->where('id_cliente',$request->id_cliente)->get(),
+            'datos_exportacion' => DatosExportacion::join('cliente_datoexportacion as cde', 'dato_exportacion.id_dato_exportacion', 'cde.id_dato_exportacion')
+                ->where('id_cliente', $request->id_cliente)->get(),
         ]);
     }
 
-    public function form_duplicar_pedido(Request $request){
-        return view('adminlte.gestion.postcocecha.pedidos_ventas.forms.form_duplicar_pedido',[
-            'id_pedido'=>$request->id_pedido,
-            'datos_exportacion' => DatosExportacion::join('cliente_datoexportacion as cde','dato_exportacion.id_dato_exportacion','cde.id_dato_exportacion')
-                ->where('id_cliente',$request->id_cliente)->get(),
-            'agenciasCarga'=> AgenciaCarga::where('c_ac.id_cliente',$request->id_cliente)
-                ->join('cliente_agenciacarga as c_ac','agencia_carga.id_agencia_carga','c_ac.id_agencia_carga')->get()
+    public function form_duplicar_pedido(Request $request)
+    {
+        return view('adminlte.gestion.postcocecha.pedidos_ventas.forms.form_duplicar_pedido', [
+            'id_pedido' => $request->id_pedido,
+            'datos_exportacion' => DatosExportacion::join('cliente_datoexportacion as cde', 'dato_exportacion.id_dato_exportacion', 'cde.id_dato_exportacion')
+                ->where('id_cliente', $request->id_cliente)->get(),
+            'agenciasCarga' => AgenciaCarga::where('c_ac.id_cliente', $request->id_cliente)
+                ->join('cliente_agenciacarga as c_ac', 'agencia_carga.id_agencia_carga', 'c_ac.id_agencia_carga')->get()
         ]);
     }
 
-    public function store_duplicar_pedido(Request $request){
+    public function store_duplicar_pedido(Request $request)
+    {
         $valida = Validator::make($request->all(), [
             'arrFechas' => 'required|Array',
             'id_pedido' => 'required',
         ]);
         $success = false;
         $msg = '<div class="alert alert-danger text-center">' .
-                    '<p> Ha ocurrido un problema al guardar la información al sistema</p>'
-                . '</div>';
+            '<p> Ha ocurrido un problema al guardar la información al sistema</p>'
+            . '</div>';
 
         if (!$valida->fails()) {
-            $dataPedido = Pedido::where('id_pedido',$request->id_pedido)->first();
+            $dataPedido = Pedido::where('id_pedido', $request->id_pedido)->first();
             //dd($dataPedido->id_pedido);
-            foreach($request->arrFechas as $fecha){
+            foreach ($request->arrFechas as $fecha) {
                 $objPedido = new Pedido;
                 $objPedido->id_cliente = $dataPedido->id_cliente;
                 $objPedido->fecha_pedido = $fecha['fecha'];
                 $objPedido->empaquetado = $dataPedido->empaquetado;
                 $objPedido->variedad = $dataPedido->variedad;
                 $objPedido->tipo_especificacion = $dataPedido->tipo_especificacion;
-                if($objPedido->save()){
+                if ($objPedido->save()) {
                     $modelPedido = Pedido::all()->last();
-                    $dataDetallePedido = DetallePedido::where('id_pedido',$request->id_pedido)->get();
+                    $dataDetallePedido = DetallePedido::where('id_pedido', $request->id_pedido)->get();
                     bitacora('pedido', $modelPedido->id_pedido, 'I', 'Inserción satisfactoria de un duplicado de pedido');
                     foreach ($dataDetallePedido as $detallePedido) {
                         $objDetallePedido = new DetallePedido;
                         $objDetallePedido->id_cliente_especificacion = $detallePedido->id_cliente_especificacion;
-                        $objDetallePedido->id_pedido =  $modelPedido->id_pedido;
+                        $objDetallePedido->id_pedido = $modelPedido->id_pedido;
                         $objDetallePedido->id_agencia_carga = $detallePedido->id_agencia_carga;
-                        $objDetallePedido->cantidad  = $detallePedido->cantidad;
+                        $objDetallePedido->cantidad = $detallePedido->cantidad;
                         $objDetallePedido->precio = $detallePedido->precio;
-                        if($objDetallePedido->save()){
+                        if ($objDetallePedido->save()) {
                             $model_detalle_pedido = DetallePedido::all()->last();
                             bitacora('detalle_pedido', $model_detalle_pedido->id_detalle_pedido, 'I', 'Inserción satisfactoria del duplicado de un detalle pedio');
                             $success = true;
@@ -182,7 +185,7 @@ class PedidoVentaController extends Controller
                     }
                 }
             }
-        }else {
+        } else {
             $success = false;
             $errores = '';
             foreach ($valida->errors()->all() as $mi_error) {

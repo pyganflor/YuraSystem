@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 26-03-2019 a las 18:34:56
+-- Tiempo de generación: 01-04-2019 a las 22:12:10
 -- Versión del servidor: 10.1.36-MariaDB
 -- Versión de PHP: 7.2.11
 
@@ -46,7 +46,10 @@ CREATE TABLE `marcacion_coloracion` (
 -- Indices de la tabla `marcacion_coloracion`
 --
 ALTER TABLE `marcacion_coloracion`
-  ADD PRIMARY KEY (`id_marcacion_coloracion`);
+  ADD PRIMARY KEY (`id_marcacion_coloracion`),
+  ADD KEY `FK_MarcacionColoracion_Marcacion` (`id_marcacion`),
+  ADD KEY `FK_MarcacionColoracion_Coloracion` (`id_coloracion`),
+  ADD KEY `FK_MarcacionColoracion_DetalleEspecificacionEmpaque` (`id_detalle_especificacionempaque`);
 
 --
 -- AUTO_INCREMENT de las tablas volcadas
@@ -57,6 +60,18 @@ ALTER TABLE `marcacion_coloracion`
 --
 ALTER TABLE `marcacion_coloracion`
   MODIFY `id_marcacion_coloracion` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- Restricciones para tablas volcadas
+--
+
+--
+-- Filtros para la tabla `marcacion_coloracion`
+--
+ALTER TABLE `marcacion_coloracion`
+  ADD CONSTRAINT `FK_MarcacionColoracion_Coloracion` FOREIGN KEY (`id_coloracion`) REFERENCES `coloracion` (`id_coloracion`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `FK_MarcacionColoracion_DetalleEspecificacionEmpaque` FOREIGN KEY (`id_detalle_especificacionempaque`) REFERENCES `detalle_especificacionempaque` (`id_detalle_especificacionempaque`) ON DELETE NO ACTION ON UPDATE CASCADE,
+  ADD CONSTRAINT `FK_MarcacionColoracion_Marcacion` FOREIGN KEY (`id_marcacion`) REFERENCES `marcacion` (`id_marcacion`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

@@ -27,7 +27,6 @@ class OrdenSemanalController extends Controller
 {
     public function store_orden_semanal(Request $request)
     {
-        dd($request->all());
         if ($request->nueva_esp != '') {    // NUEVA ESPECIFICACION
             $esp = new Especificacion();
             $esp->tipo = 'O';
@@ -570,9 +569,21 @@ class OrdenSemanalController extends Controller
                             $coloracion->id_detalle_pedido = $det_pedido->id_detalle_pedido;
                             $coloracion->id_especificacion_empaque = $esp_emp['id_esp_emp'];
 
+                            $precio_col = '';
+                            foreach ($col['arreglo_precios_x_col'] as $p) {
+                                if ($p['precio'] != '') {
+                                    if ($precio_col == '') {
+                                        $precio_col = $p['precio'] . ';' . $p['id_det_esp'];
+                                    } else {
+                                        $precio_col .= '|' . $p['precio'] . ';' . $p['id_det_esp'];
+                                    }
+                                }
+                            }
+                            $coloracion->precio = $precio_col;
+
                             if ($coloracion->save()) {
                                 $coloracion = Coloracion::All()->last();
-                                bitacora('coloracion', 'I', 'Insercion de una nueva coloracion');
+                                bitacora('coloracion', $coloracion->id_coloracion, 'I', 'Insercion de una nueva coloracion');
                                 array_push($arreglo_coloraciones, $coloracion);
                             } else {
                                 $det_pedido->delete();
@@ -596,7 +607,7 @@ class OrdenSemanalController extends Controller
 
                             if ($marcacion->save()) {
                                 $marcacion = Marcacion::All()->last();
-                                bitacora('coloracion', 'I', 'Insercion de una nueva coloracion');
+                                bitacora('coloracion', $marcacion->id_marcacion, 'I', 'Insercion de una nueva coloracion');
 
                                 /* ========== MARCACIONES_COLORACIONES ========= */
                                 foreach ($marc['colores'] as $pos_col => $col) {
@@ -641,6 +652,46 @@ class OrdenSemanalController extends Controller
                         /* ========= PRECIOS ========= */
                     }
                     $last_det_ped->delete();
+
+                    /* =========== ENVIO ========= */
+                    foreach ($pedido->envios as $item) {
+                        $item->delete();
+                    }
+
+                    $envio = new Envio();
+                    $envio->id_pedido = $pedido->id_pedido;
+                    $envio->fecha_envio = $request->fecha_envio;
+
+                    if ($envio->save()) {
+                        $envio = Envio::All()->last();
+                        bitacora('envio', $envio->id_envio, 'I', 'Insercion de un nuevo envio');
+
+                        foreach ($pedido->detalles as $det) {
+                            $det_envio = new DetalleEnvio();
+                            $det_envio->id_envio = $envio->id_envio;
+                            $det_envio->id_especificacion = $det->cliente_especificacion->id_especificacion;
+                            $det_envio->cantidad = $det->cantidad;
+
+                            if ($det_envio->save()) {
+                                $det_envio = DetalleEnvio::All()->last();
+                                bitacora('detalle_envio', $det_envio->id_detalle_envio, 'I', 'Insercion de un nuevo detalle-envio');
+                            } else {
+                                $pedido->delete();
+                                return [
+                                    'id_pedido' => '',
+                                    'success' => false,
+                                    'mensaje' => '<div class="alert alert-warning text-center error">No se ha podido crear el detalle-envío</div>',
+                                ];
+                            }
+                        }
+                    } else {
+                        $pedido->delete();
+                        return [
+                            'id_pedido' => '',
+                            'success' => false,
+                            'mensaje' => '<div class="alert alert-warning text-center error">No se ha podido crear el envío</div>',
+                        ];
+                    }
 
                     if ($success) {
                         $msg = '<div class="alert alert-success text-center">' .
@@ -727,6 +778,19 @@ class OrdenSemanalController extends Controller
         $cliente = Cliente::find($request->id_cliente);
         return view('adminlte.gestion.postcocecha.pedidos_ventas.partials._especificacion_orden_semanal', [
             'cliente' => $cliente,
+        ]);
+    }
+
+    public function distribuir_pedido_tinturado(Request $request)
+    {
+        $det_ped = DetallePedido::find($request->id_det_ped);
+        $pedido = $det_ped->pedido;
+        $last_distr = $pedido->getLastDistribucion();
+
+        return view('adminlte.gestion.postcocecha.pedidos_ventas.forms._distribucion', [
+            'data' => $request->all(),
+            'last_distr' => $last_distr,
+            'det_ped' => $det_ped,
         ]);
     }
 
