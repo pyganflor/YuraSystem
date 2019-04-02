@@ -132,7 +132,7 @@ class EnvioController extends Controller
                             $msg = '<div class="alert alert-success text-center">' .
                                 '<p> Se ha guardado el envio  exitosamente</p>'
                                 . '</div>';
-                           // bitacora('Detalle_envio', $existDataEnvio->id_marca, $accion, $palabra . ' satisfactoria de un nuevo envio');
+                           // bitacora('detalle_envio', $existDataEnvio->id_marca, $accion, $palabra . ' satisfactoria de un nuevo envio');
                         } else {
                             $success = false;
                             $msg = '<div class="alert alert-warning text-center">' .
@@ -193,6 +193,7 @@ class EnvioController extends Controller
             'envios' => $listado->paginate(10),
             'datos_exportacion_' => DatosExportacion::join('cliente_datoexportacion as cde','dato_exportacion.id_dato_exportacion','cde.id_dato_exportacion')
                 ->where('id_cliente',$request->id_cliente)->get(),
+            'paises'    => Pais::all()
         ]);
     }
 
@@ -345,22 +346,6 @@ class EnvioController extends Controller
     }
 
     public function ver_envios(Request $request){
-        /*$dataEnvio = Pedido::where([
-            ['dc.estado',1],
-            ['pedido.id_pedido',$request->id_pedido]
-        ])->join('envio as e','pedido.id_pedido','e.id_pedido')
-            ->join('detalle_envio as de','e.id_envio','de.id_envio')
-            ->join('especificacion as es','de.id_especificacion','es.id_especificacion')
-            ->join('agencia_transporte as at','de.id_agencia_transporte','at.id_agencia_transporte')
-            ->join('detalle_cliente as dc','pedido.id_cliente','dc.id_cliente')
-            ->select('e.*','es.*','de.*','dc.nombre as nombre_cl','pedido.*','at.nombre as at_nombre','at.tipo_agencia')
-            ->get();
-
-        $groupEnvios = [];
-        foreach ($dataEnvio as $dE) {
-            $groupEnvios[$dE->id_envio][] = $dE;
-        }*/
-
         $dataPedido = Pedido::where('pedido.id_pedido',$request->id_pedido)->select('id_cliente','id_pedido')->first();
         return view('adminlte.gestion.postcocecha.pedidos.partials.desglose_envios_pedido',[
             //'data_envios' => $groupEnvios,
@@ -374,5 +359,77 @@ class EnvioController extends Controller
                     ['cac.estado', 1]
                 ])->get(),
         ]);
+    }
+
+    public function actualizar_envio(Request $request)
+    {
+        $valida = Validator::make($request->all(), [
+            'dae' => 'required',
+            'guia_madre' => 'required',
+            'codigo_pais' => 'required',
+            'email' => 'required',
+            'telefono' => 'required',
+            'direccion' => 'required',
+            'fecha_envio' => 'required',
+        ]);
+
+        if (!$valida->fails()) {
+
+            $objEnvio = Envio::find($request->id_envio);
+            $objEnvio->dae = $request->dae;
+            $objEnvio->guia_madre = $request->guia_madre;
+            $objEnvio->guia_hija = $request->guia_hija;
+            $objEnvio->codigo_pais = $request->codigo_pais;
+            $objEnvio->email = $request->email;
+            $objEnvio->telefono = $request->telefono;
+            $objEnvio->direccion = $request->direccion;
+            $objEnvio->fecha_envio = $request->fecha_envio;
+
+            if($objEnvio->save()){
+                bitacora('envio', $request->id_envio, 'U', 'Actualización satisfactoria del envío');
+                $dataDetallePedido = Envio::where('id_envio',$request->id_envio)->select('id_pedido')
+                    ->join('detalle_pedido as dp','envio.id_pedido','dp.id_pedido')->select('id_detalle_pedido')->get();
+                foreach ($dataDetallePedido as $key => $detallePedido) {
+
+                    $objDetallePedido = DetallePedido::where('id_detalle_pedido',$detallePedido->id_detalle_pedido);
+                    if($objDetallePedido->update([
+                        'precio'=> substr($request->precios[$key]['precios'],0,-1),
+                        'cantidad' =>$request->precios[$key]['piezas']
+                    ])){
+                        $modelDetallePedido = DetallePedido::all()->last();
+                        bitacora('detalle_pedido', $modelDetallePedido->id_detalle_pedido, 'U', 'Actualización del precio del detalle del pedido '.$detallePedido->id_pedido.'');
+                    }
+                }
+                $success = true;
+                $msg = '<div class="alert alert-success text-center">' .
+                    '<p> Se han actualizado exitosamente los datos del envío</p>'
+                    . '</div>';
+            }else{
+                $success = false;
+                $msg = '<div class="alert alert-warning text-center">' .
+                    '<p> Ha ocurrido un problema al actualizar la información del envío</p>'
+                    . '</div>';
+            }
+        } else {
+            $success = false;
+            $errores = '';
+            foreach ($valida->errors()->all() as $mi_error) {
+                if ($errores == '') {
+                    $errores = '<li>' . $mi_error . '</li>';
+                } else {
+                    $errores .= '<li>' . $mi_error . '</li>';
+                }
+            }
+            $msg = '<div class="alert alert-danger">' .
+                '<p class="text-center">¡Por favor corrija los siguientes errores!</p>' .
+                '<ul>' .
+                $errores .
+                '</ul>' .
+                '</div>';
+        }
+        return [
+            'mensaje' => $msg,
+            'success' => $success
+        ];
     }
 }

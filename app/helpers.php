@@ -1193,11 +1193,11 @@ function getDatosFacturaEnvio($id_envio)
     return $data->select('ce.nombre as nombre_empresa', 'ce.razon_social', 'at.nombre as nombre_agencia_transporte', 'ce.direccion_matriz', 'ce.direccion_establecimiento', 'dc.codigo_identificacion', 'dc.ruc as identificacion', 'dc.nombre as nombre_cliente', 'dc.direccion', 'dc.provincia', 'dc.telefono', 'dc.correo', 'dc.codigo_impuesto', 'dc.codigo_pais as CodigoDae', 'deemp.id_variedad', 'deemp.id_clasificacion_ramo', 'de.cantidad as cantidad_detalles', 'dc.codigo_porcentaje_impuesto as codigo_porcentaje', 'ti.porcentaje as porcntaje_iva', 'deemp.cantidad as cantidad_ramos', 'eemp.cantidad as cantidad_cajas', 'v.nombre as nombre_variedad', 'v.siglas as siglas_variedad', 'cr.nombre as nombre_clasificacion', 'umPR.siglas as siglas_unidad_medida_peso_ramo', 'pl.nombre as nombre_planta', 'deemp.longitud_ramo', $a == 1 ? 'umLR.siglas as siglas_unidad_medida_lognitud_ramo' : 'deemp.longitud_ramo');
 }
 
-function getCodigoDae($codigoPais)
+function getCodigoDae($codigoPais,$mes,$anno)
 {
     return CodigoDae::where([
-        ['mes', Carbon::now()->format('m')],
-        ['anno', Carbon::now()->format('Y')],
+        ['mes', $mes],
+        ['anno', $anno],
         ['codigo_pais', $codigoPais],
         ['estado', 1]
     ])->select('codigo_dae')->first();

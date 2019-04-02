@@ -16,6 +16,14 @@ class Envio extends Model
         'fecha_envio',
         'fecha_registro',
         'estado',   // default: 0
+        'guia_madre',
+        'guia_hija',
+        'dae',
+        'email',
+        'telefono',
+        'direccion',
+        'codigo_pais'
+
     ];
 
     public function detalles()
