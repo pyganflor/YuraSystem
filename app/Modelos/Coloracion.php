@@ -18,6 +18,7 @@ class Coloracion extends Model
         'estado',
         'id_detalle_pedido',
         'id_especificacion_empaque',
+        'precio',
     ];
 
     public function detalle_pedido()
@@ -33,5 +34,16 @@ class Coloracion extends Model
     public function especificacion_empaque()
     {
         return $this->belongsTo('\yura\Modelos\EspecificacionEmpaque', 'id_especificacion_empaque');
+    }
+
+    public function getPrecioByDetEsp($det_esp)
+    {
+        if ($this->precio != '')
+            foreach (explode('|', $this->precio) as $item) {
+                if (explode(';', $item)[1] == $det_esp)
+                    return explode(';', $item)[0];
+            }
+        else
+            return '';
     }
 }

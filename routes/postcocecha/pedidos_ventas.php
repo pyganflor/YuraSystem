@@ -13,6 +13,7 @@ Route::get('pedidos/editar_pedido', 'PedidoVentaController@editar_pedido');
 Route::get('pedidos/editar_pedido_tinturado', 'OrdenSemanalController@editar_pedido_tinturado');
 Route::post('pedidos/update_orden_tinturada', 'OrdenSemanalController@update_orden_tinturada');
 Route::post('pedidos/eliminar_detalle_pedido_tinturado', 'OrdenSemanalController@eliminar_detalle_pedido_tinturado');
+Route::get('pedidos/distribuir_pedido_tinturado', 'OrdenSemanalController@distribuir_pedido_tinturado');
 Route::get('pedidos/add_pedido_personalizado', 'OrdenSemanalController@add_pedido_personalizado');
 Route::post('pedidos/store_pedido_personalizado', 'OrdenSemanalController@store_pedido_personalizado');
 Route::get('pedidos/listar_agencias_carga', 'OrdenSemanalController@listar_agencias_carga');

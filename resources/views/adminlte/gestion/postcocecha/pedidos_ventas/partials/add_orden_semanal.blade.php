@@ -118,8 +118,7 @@
                         </td>
                         <td class="text-center">
                             <input type="number" id="tallos_x_ramos" name="tallos_x_ramos" onkeypress="return isNumber(event)"
-                                   class="form-control"
-                                   style="width: 100%" min="1">
+                                   class="form-control" style="width: 100%" min="1">
                         </td>
                         <td class="text-center">
                             <input type="number" id="longitud_ramo" name="longitud_ramo" onkeypress="return isNumber(event)" class="form-control"
@@ -164,7 +163,7 @@
 
 <script>
     set_min_today($('#fecha_pedido'));
-    set_min_today($('#fecha_envío'));
+    set_min_today($('#fecha_envio'));
 
     function construir_tabla() {
         col = $('#num_colores').val();

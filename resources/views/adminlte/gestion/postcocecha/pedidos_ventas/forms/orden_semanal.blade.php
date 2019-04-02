@@ -4,7 +4,7 @@
         listar_resumen_pedidos($('#fecha_pedidos_search').val(), true);
     }
 
-    function calcular_totales_tinturado(esp_emp) {
+    function calcular_totales_tinturado(esp_emp, ini = false) {
         fil = $('#marcaciones_' + esp_emp).val();
         col = $('#coloraciones_' + esp_emp).val();
         ramos_x_caja = $('#ramos_x_caja_' + esp_emp).val();
@@ -56,6 +56,9 @@
             }
             $('#parcial_' + ids_det_esp[det].value + '_' + esp_emp).val(parcial);
         }
+
+        if (!ini)
+            $('.elemento_distribuir').hide();
     }
 
     function add_coloracion(esp_emp) {
@@ -78,7 +81,7 @@
                             '<input type="hidden" id="id_color_' + col + '_' + esp_emp + '" name="id_color_' + col + '_' + esp_emp + '" ' +
                             'value="' + $('#select_colores').val() + '">' +
                             '</th>').insertAfter(primer_td);
-                    } else {
+                    } else if (f == $(tabla).find('tr').length - 2) {
                         ids_det_esp = $('.id_det_esp_' + esp_emp);
                         inputs = '';
                         for (det = 0; det < ids_det_esp.length; det++) {
@@ -90,6 +93,26 @@
                                 '<input type="number" id="parcial_color_' + col + '_' + ids_det_esp[det].value + '_' + esp_emp + '" ' +
                                 'name="parcial_color_' + col + '_' + ids_det_esp[det].value + '_' + esp_emp + '" value="0" ' +
                                 'style="width: 100%; background-color: #357ca5; color: white" class="text-center">' +
+                                '</div>' +
+                                '</li>';
+                        }
+                        $('<th class="text-center" style="border-color: #9d9d9d" width="100px">' +
+                            '<ul class="list-unstyled">' +
+                            inputs +
+                            '</ul>' +
+                            '</th>').insertAfter(primer_td);
+                    } else {
+                        ids_det_esp = $('.id_det_esp_' + esp_emp);
+                        inputs = '';
+                        for (det = 0; det < ids_det_esp.length; det++) {
+                            inputs += '<li>' +
+                                '<div class="input-group" style="width: 100px">' +
+                                '<span class="input-group-addon" style="background-color: #e9ecef">' +
+                                'P-' + (det + 1) +
+                                '</span>' +
+                                '<input type="number" id="precio_color_' + col + '_' + ids_det_esp[det].value + '_' + esp_emp + '" ' +
+                                'name="precio_color_' + col + '_' + ids_det_esp[det].value + '_' + esp_emp + '" ' +
+                                'style="width: 100%; background-color: #e9ecef" class="text-center">' +
                                 '</div>' +
                                 '</li>';
                         }
@@ -129,6 +152,7 @@
         cambiar_color($('#select_colores').val(), col, esp_emp);
         col++;
         $('#coloraciones_' + esp_emp).val(col);
+        $('.elemento_distribuir').hide();
     }
 
     function add_marcacion(esp_emp) {
@@ -207,6 +231,7 @@
 
         fil++;
         $('#marcaciones_' + esp_emp).val(fil);
+        $('.elemento_distribuir').hide();
     }
 </script>
 
@@ -214,10 +239,19 @@
     <table class="table-bordered" width="100%" style="margin-bottom: 10px">
         <tr>
             <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
-                Fecha
+                Fecha Pedido
             </th>
             <th class="text-center" style="border-color: #9d9d9d" width="85px">
                 <input type="date" id="fecha_pedido" name="fecha_pedido" value="{{$pedido->fecha_pedido}}" required width="100%"
+                       class="form-control">
+            </th>
+            <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
+                <i class="fa fa-fw fa-plane"></i> Fecha Envío
+            </th>
+            <th class="text-center" style="border-color: #9d9d9d" width="85px">
+                <input type="date" id="fecha_envio" name="fecha_envio"
+                       value="{{count($pedido->envios) == 1 ? substr($pedido->envios[0]->fecha_envio, 0, 10) : $pedido->fecha_pedido}}" required
+                       width="100%"
                        class="form-control">
             </th>
             <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
@@ -298,7 +332,7 @@
                             <td class="text-center" style="border-color: #9d9d9d"
                                 rowspan="{{getCantidadDetallesEspecificacionByPedido($pedido->id_pedido)}}">
                                 <input type="number" id="cantidad_piezas" name="cantidad_piezas" value="{{$det_ped->cantidad}}" required
-                                       onkeypress="return isNumber(event)" style="border: none" class="text-center">
+                                       onkeypress="return isNumber(event)" style="border: none" class="text-center" min="1">
                             </td>
                         @endif
                         @if($pos_det_esp == 0)
@@ -385,11 +419,16 @@
     </div>
 </form>
 
-@include('adminlte.gestion.postcocecha.pedidos_ventas.forms._tabla')
+<div id="div_tabla_distribucion">
+    @include('adminlte.gestion.postcocecha.pedidos_ventas.forms._tabla')
+</div>
 
 <div class="text-center" style="margin-top: 10px">
+    <button type="button" class="btn btn-xs btn-default" onclick="editar_pedido_tinturado('{{$pedido->id_pedido}}', '{{$pos_det_ped}}',false)">
+        <i class="fa fa-fw fa-refresh"></i> Refrescar
+    </button>
     <button type="button" class="btn btn-xs btn-success" onclick="update_orden_tinturada()">
-        <i class="fa fa-fw fa-save"></i> Actualizar
+        <i class="fa fa-fw fa-save"></i> Guardar
     </button>
     @if($have_prev)
         <button type="button" class="btn btn-xs btn-primary"
@@ -425,7 +464,7 @@
             arreglo_esp_emp = [];
             for (ee = 0; ee < ids_esp_emp.length; ee++) {
                 ids_det_esp = $('.id_det_esp_' + ids_esp_emp[ee].value);
-                /* ========= PRECIOS ========== */
+                /* ========= PRECIOS x DETALLE ESPECIFICACION ========== */
                 arreglo_precios = [];
                 for (det = 0; det < ids_det_esp.length; det++) {
                     arreglo_precios.push({
@@ -444,30 +483,45 @@
                 arreglo_marcaciones = [];
                 arreglo_coloraciones = [];
                 for (f = 0; f < fil; f++) {
-                    colores = [];
-                    for (c = 0; c < col; c++) {
-                        cant_x_det_esp = [];
-                        if (f == 0) {
-                            arreglo_coloraciones.push({
-                                id_color: $('#color_' + c + '_' + ids_esp_emp[ee].value).val()
+                    if ($('#nombre_marcacion_' + f + '_' + ids_esp_emp[ee].value).val() != '') {
+                        colores = [];
+                        for (c = 0; c < col; c++) {
+                            cant_x_det_esp = [];
+                            if (f == 0) {
+                                /* =========== PRECIOS x COLORACION ========= */
+                                arreglo_precios_x_col = [];
+                                for (det = 0; det < ids_det_esp.length; det++) {
+                                    arreglo_precios_x_col.push({
+                                        id_det_esp: ids_det_esp[det].value,
+                                        precio: $('#precio_color_' + c + '_' + ids_det_esp[det].value + '_' + ids_esp_emp[ee].value).val()
+                                    });
+                                }
+                                arreglo_coloraciones.push({
+                                    id_color: $('#color_' + c + '_' + ids_esp_emp[ee].value).val(),
+                                    arreglo_precios_x_col: arreglo_precios_x_col
+                                });
+                            }
+                            for (det = 0; det < ids_det_esp.length; det++) {
+                                cant_x_det_esp.push({
+                                    id_det_esp: ids_det_esp[det].value,
+                                    cantidad: $('#ramos_marcacion_' + f + '_' + c + '_' + ids_det_esp[det].value + '_' + ids_esp_emp[ee].value).val()
+                                });
+                            }
+                            colores.push({
+                                cant_x_det_esp: cant_x_det_esp
                             });
                         }
-                        for (det = 0; det < ids_det_esp.length; det++) {
-                            cant_x_det_esp.push({
-                                id_det_esp: ids_det_esp[det].value,
-                                cantidad: $('#ramos_marcacion_' + f + '_' + c + '_' + ids_det_esp[det].value + '_' + ids_esp_emp[ee].value).val()
-                            });
-                        }
-                        colores.push({
-                            cant_x_det_esp: cant_x_det_esp
+                        arreglo_marcaciones.push({
+                            nombre: $('#nombre_marcacion_' + f + '_' + ids_esp_emp[ee].value).val(),
+                            ramos: $('#total_ramos_marcacion_' + f + '_' + ids_esp_emp[ee].value).val(),
+                            piezas: $('#total_piezas_marcacion_' + f + '_' + ids_esp_emp[ee].value).val(),
+                            colores: colores
                         });
+                    } else {
+                        alerta('<div class="alert alert-warning text-center">Faltan datos (nombre de marcación) por ingresar</div>');
+                        $('#nombre_marcacion_' + f + '_' + ids_esp_emp[ee].value).addClass('error');
+                        return false;
                     }
-                    arreglo_marcaciones.push({
-                        nombre: $('#nombre_marcacion_' + f + '_' + ids_esp_emp[ee].value).val(),
-                        ramos: $('#total_ramos_marcacion_' + f + '_' + ids_esp_emp[ee].value).val(),
-                        piezas: $('#total_piezas_marcacion_' + f + '_' + ids_esp_emp[ee].value).val(),
-                        colores: colores
-                    });
                 }
 
                 arreglo_esp_emp.push({
@@ -482,12 +536,14 @@
                 id_pedido: $('#id_pedido').val(),
                 id_detalle_pedido: $('#id_detalle_pedido').val(),
                 fecha_pedido: $('#fecha_pedido').val(),
+                fecha_envio: $('#fecha_envio').val(),
                 cantidad_piezas: $('#cantidad_piezas').val(),
                 id_agencia_carga: $('#id_agencia_carga').val(),
                 arreglo_esp_emp: arreglo_esp_emp,
             };
 
             post_jquery('{{url('pedidos/update_orden_tinturada')}}', datos, function () {
+                cerrar_modals();
                 editar_pedido_tinturado(datos['id_pedido'], $('#pos_det_ped').val(), false);
             });
         }
@@ -509,5 +565,36 @@
                     listar_resumen_pedidos($('#fecha_pedidos_search').val(), true);
                 });
             });
+    }
+
+    function distribuir_pedido_tinturado(det_ped) {
+        ids_esp_emp = $('.id_esp_emp');
+        arreglo_esp_emp = [];
+        for (ee = 0; ee < ids_esp_emp.length; ee++) {
+            esp_emp = ids_esp_emp[ee].value;
+            fil = $('#marcaciones_' + esp_emp).val();
+            marcaciones = [];
+
+            for (f = 0; f < fil; f++) {
+                marcaciones.push({
+                    id: $('#id_marcacion_' + f + '_' + esp_emp).val(),
+                    distribucion: $('#distribucion_marcacion_' + f + '_' + esp_emp).val(),
+                });
+            }
+
+            arreglo_esp_emp.push({
+                id_esp_emp: esp_emp,
+                marcaciones: marcaciones,
+            });
+        }
+
+        datos = {
+            id_det_ped: det_ped,
+            arreglo_esp_emp: arreglo_esp_emp,
+        };
+
+        get_jquery('{{url('pedidos/distribuir_pedido_tinturado')}}', datos, function (retorno) {
+            $('#div_tabla_distribucion').html(retorno);
+        });
     }
 </script>

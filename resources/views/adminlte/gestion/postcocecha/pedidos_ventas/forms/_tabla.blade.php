@@ -8,6 +8,10 @@
             <button type="button" class="btn btn-xs btn-primary" onclick="add_coloracion('{{$esp_emp->id_especificacion_empaque}}')">
                 <i class="fa fa-fw fa-plus"></i> Coloración
             </button>
+            <button type="button" class="btn btn-xs btn-default pull-right elemento_distribuir"
+                    onclick="distribuir_pedido_tinturado('{{$det_ped->id_detalle_pedido}}')">
+                <i class="fa fa-fw fa-exchange"></i> Distribuir
+            </button>
         </strong>
     </legend>
     <div style="overflow-x: scroll">
@@ -44,6 +48,9 @@
                 <th class="text-center" style="border-color: #9d9d9d; background-color: #357ca5; color: white" width="60px">
                     Piezas
                 </th>
+                <th class="text-center elemento_distribuir" style="border-color: #9d9d9d; background-color: #357ca5; color: white" width="60px">
+                    Distribución
+                </th>
             </tr>
             @foreach($det_ped->getColoracionesMarcacionesByEspEmp($esp_emp->id_especificacion_empaque)['marcaciones'] as $pos_marca => $marca)
                 <tr style="border: 2px solid #9d9d9d">
@@ -73,7 +80,7 @@
                                                    name="ramos_marcacion_{{$pos_marca}}_{{$pos_color}}_{{$det_esp->id_detalle_especificacionempaque}}_{{$esp_emp->id_especificacion_empaque}}"
                                                    onkeypress="return isNumber(event)"
                                                    style="width: 100%; background-color: {{getColor($color->id_color)->fondo}};
-                                                           color: {{getColor($color->id_color)->texto}}"
+                                                           color: {{getColor($color->id_color)->texto}}" min="0"
                                                    class="text-center elemento_color_{{$pos_color}}_{{$esp_emp->id_especificacion_empaque}}"
                                                    onchange="calcular_totales_tinturado('{{$esp_emp->id_especificacion_empaque}}')">
                                         </div>
@@ -114,11 +121,19 @@
                                class="text-center" value="{{getMarcacion($marca->id_marcacion)->piezas}}"
                                style="background-color: #357ca5; color: white; width: 85px">
                     </td>
+                    <td class="text-center elemento_distribuir" style="border-color: #9d9d9d">
+                        <select name="distribucion_marcacion_{{$pos_marca}}_{{$esp_emp->id_especificacion_empaque}}"
+                                id="distribucion_marcacion_{{$pos_marca}}_{{$esp_emp->id_especificacion_empaque}}"
+                                style="background-color: #357ca5; color: white; width: 60px;">
+                            @for($i = getMarcacion($marca->id_marcacion)->piezas; $i > 0; $i--)
+                                <option value="{{$i}}">{{$i}}</option>
+                            @endfor
+                        </select>
+                    </td>
                 </tr>
             @endforeach
             <tr>
-                <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef"
-                    rowspan="{{count($esp_emp->detalles) > 1 ? 2 : ''}}">
+                <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
                     Totales
                 </th>
                 @foreach($det_ped->getColoracionesMarcacionesByEspEmp($esp_emp->id_especificacion_empaque)['coloraciones'] as $pos_color => $color)
@@ -133,7 +148,7 @@
                                         <input type="number"
                                                id="parcial_color_{{$pos_color}}_{{$det_esp->id_detalle_especificacionempaque}}_{{$esp_emp->id_especificacion_empaque}}"
                                                name="parcial_color_{{$pos_color}}_{{$det_esp->id_detalle_especificacionempaque}}_{{$esp_emp->id_especificacion_empaque}}"
-                                               readonly style="width: 100%; background-color: #357ca5; color: white" class="text-center">
+                                               readonly style="width: 100%; background-color: #357ca5; color: white" class="text-center" min="0">
                                     </div>
                                 </li>
                             @endforeach
@@ -171,10 +186,43 @@
                            style="background-color: #357ca5; color: white; width: 85px">
                 </td>
             </tr>
+            <tr>
+                <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef"
+                    rowspan="{{count($esp_emp->detalles) > 1 ? 2 : ''}}">
+                    Precios
+                </th>
+                @foreach($det_ped->getColoracionesMarcacionesByEspEmp($esp_emp->id_especificacion_empaque)['coloraciones'] as $pos_color => $color)
+                    <th class="text-center" style="border-color: #9d9d9d;" width="100px">
+                        <ul class="list-unstyled">
+                            @foreach($esp_emp->detalles as $pos_det_esp => $det_esp)
+                                <li>
+                                    <div class="input-group" style="width: 100px">
+                                            <span class="input-group-addon" style="background-color: #e9ecef">
+                                                P-{{$pos_det_esp + 1}}
+                                            </span>
+                                        <input type="number"
+                                               id="precio_color_{{$pos_color}}_{{$det_esp->id_detalle_especificacionempaque}}_{{$esp_emp->id_especificacion_empaque}}"
+                                               name="precio_color_{{$pos_color}}_{{$det_esp->id_detalle_especificacionempaque}}_{{$esp_emp->id_especificacion_empaque}}"
+                                               style="width: 100%; background-color: #e9ecef" class="text-center" min="0"
+                                               value="{{$color->getPrecioByDetEsp($det_esp->id_detalle_especificacionempaque)}}"
+                                        >
+                                    </div>
+                                </li>
+                            @endforeach
+                        </ul>
+                    </th>
+                @endforeach
+                <th class="text-center" style="border-color: #9d9d9d">
+                    PRECIO TOTAL
+                </th>
+                <th class="text-center" style="border-color: #9d9d9d">
+                    $$
+                </th>
+            </tr>
         </table>
     </div>
 
     <script>
-        calcular_totales_tinturado('{{$esp_emp->id_especificacion_empaque}}');
+        calcular_totales_tinturado('{{$esp_emp->id_especificacion_empaque}}', true);
     </script>
 @endforeach

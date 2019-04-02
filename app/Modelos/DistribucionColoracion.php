@@ -4,25 +4,28 @@ namespace yura\Modelos;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Distribucion extends Model
+class DistribucionColoracion extends Model
 {
-    protected $table = 'distribucion';
-    protected $primaryKey = 'id_distribucion';
+    protected $table = 'distribucion_coloracion';
+    protected $primaryKey = 'id_distribucion_coloracion';
     public $incrementing = false;
     public $timestamps = false;
 
     protected $fillable = [
-        'id_distribucion',
+        'id_coloracion',
         'id_marcacion',
-        'ramos',
-        'piezas',
+        'cantidad',
         'fecha_registro',
         'estado',
-        'pos_pieza',
     ];
 
     public function marcacion()
     {
         return $this->belongsTo('\yura\Modelos\Marcacion', 'id_marcacion');
+    }
+
+    public function coloracion()
+    {
+        return $this->belongsTo('\yura\Modelos\Coloracion', 'id_coloracion');
     }
 }
