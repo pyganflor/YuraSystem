@@ -47,6 +47,8 @@ use yura\Modelos\Color;
 use yura\Modelos\Marcacion;
 use yura\Modelos\DetallePedidoDatoExportacion;
 use yura\Modelos\DatosExportacion;
+use yura\Modelos\TipoImpuesto;
+use yura\Modelos\AgenciaTransporte;
 
 /*
  * -------- BITÁCORA DE LAS ACCIONES ECHAS POR EL USUARIO ------
@@ -1163,15 +1165,15 @@ function getDatosFacturaEnvio($id_envio)
         ->join('clasificacion_ramo as cr', 'deemp.id_clasificacion_ramo', 'cr.id_clasificacion_ramo')
         ->join('unidad_medida as umPR', 'cr.id_unidad_medida', 'umPR.id_unidad_medida');
 
-    //dd( $data->get());
-    $existUnidadMedidida = DetalleEspecificacionEmpaque::where('id_detalle_especificacionempaque', $data->get()[0]->id_detalle_especificacionempaque)->first();
     $a = 0;
+    /*$existUnidadMedidida = DetalleEspecificacionEmpaque::where('id_detalle_especificacionempaque', $data->get()[0]->id_detalle_especificacionempaque)->first();
 
-    /*if ($existUnidadMedidida->id_unidad_medida != null) {
+
+    if ($existUnidadMedidida->id_unidad_medida != null) {
         $data->join('unidad_medida as umLR', 'deemp.id_unidad_medida', 'umLR.id_unidad_medida');
         $a = 1;
     }*/
-    //dd($data->count());
+
     return $data->select('ce.nombre as nombre_empresa', 'ce.razon_social', 'at.nombre as nombre_agencia_transporte', 'ce.direccion_matriz', 'ce.direccion_establecimiento', 'dc.codigo_identificacion', 'dc.ruc as identificacion', 'dc.nombre as nombre_cliente', 'dc.direccion', 'dc.provincia', 'dc.telefono', 'dc.correo', 'dc.codigo_impuesto', 'dc.codigo_pais as CodigoDae', 'deemp.id_variedad', 'deemp.id_clasificacion_ramo', 'de.cantidad as cantidad_detalles', 'dc.codigo_porcentaje_impuesto as codigo_porcentaje', 'ti.porcentaje as porcntaje_iva', 'deemp.cantidad as cantidad_ramos', 'eemp.cantidad as cantidad_cajas', 'v.nombre as nombre_variedad', 'v.siglas as siglas_variedad', 'cr.nombre as nombre_clasificacion', 'umPR.siglas as siglas_unidad_medida_peso_ramo', 'pl.nombre as nombre_planta', 'deemp.longitud_ramo', $a == 1 ? 'umLR.siglas as siglas_unidad_medida_lognitud_ramo' : 'deemp.longitud_ramo');
 }
 
@@ -1547,4 +1549,20 @@ function getAgenciaCargaCliente($idCliente){
             ['cac.id_cliente', $idCliente],
             ['cac.estado', 1]
         ])->get();
+}
+
+function getTipoImpuesto($codigoImpuesto,$codigoPorcentajeIpuesto){
+    return TipoImpuesto::where([
+        ['codigo_impuesto',$codigoImpuesto],
+        ['codigo',$codigoPorcentajeIpuesto ],
+        ['estado',1]
+    ])->first();
+}
+
+function getClasificacionRamo($idClasificacionRamo){
+    return ClasificacionRamo::find($idClasificacionRamo);
+}
+
+function getAgenciaTransporte($idAgenciaTranporte){
+    return AgenciaTransporte::find($idAgenciaTranporte);
 }

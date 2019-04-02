@@ -29,4 +29,6 @@ class DetalleEnvio extends Model
     {
         return $this->belongsTo('\yura\Modelos\Especificacion', 'id_especificacion');
     }
+
+
 }

@@ -47,9 +47,11 @@
         $.LoadingOverlay('hide');
     }
 
-    function genera_comprobante_cliente(){
-        if ($('#form_envios').valid()) {
-            arrEnvios = [];
+    function genera_comprobante_cliente(id_envio,form){
+        if ($('#'+form).valid()) {
+            id_form = form.split("_")[2];
+
+            /*arrEnvios = [];
             $.each($('input:checkbox[name=check_envio]:checked'), function (i, j) {
                 arrEnvios.push([
                     j.value,
@@ -67,11 +69,25 @@
                     '<div class="alert text-center  alert-warning"><p>Debe seleccionar al menos un envío para facturar</p></div>',
                     '<i class="fa fa-fw fa-table"></i> Estatus facturas', true, false, '{{isPC() ? '50%' : ''}}');
                 return false;
-            }
+            }*/
 
+            datos = {
+                _token: '{{csrf_token()}}',
+                id_envio : id_envio,
+                guia_madre : $("form#"+form+ " #guia_madre").val(),
+                guia_hija : $("form#"+form+ " #guia_hija").val(),
+                codigo_pais : $("form#"+form+ " #codigo_pais").val(),
+                dae : $("form#"+form+ " #dae").val(),
+                destino : $("form#"+form+ " #direccion").val(),
+                email : $("form#"+form+ " #email").val(),
+                telefono : $("form#"+form+ " #telefono").val(),
+                pais : $("form#"+form+ " #codigo_pais option:selected").text(),
+                fecha_envio : $("form#"+form+ " #fecha_envio").val(),
+            };
+            console.log(datos);
             modal_quest('modal_message_facturar_envios',
-                '<div class="alert alert-warning text-center"><i class="fa fa-fw fa-exclamation-triangle"></i> ¿Esta seguro que desea generar el comprobante electrónico de los envíos seleccionados?</div>',
-                '<i class="fa fa-file-code-o" aria-hidden="true"></i> Generar facturas', true, false, '{{isPC() ? '40%' : ''}}', function () {
+                '<div class="alert alert-warning text-center"><i class="fa fa-fw fa-exclamation-triangle"></i> ¿Esta seguro que desea generar el comprobante electrónico para este envío?</div>',
+                '<i class="fa fa-file-code-o" aria-hidden="true"></i> Generar factura', true, false, '{{isPC() ? '40%' : ''}}', function () {
                 cerrar_modals();
                 $.LoadingOverlay("show", {
                     image: "",
@@ -83,28 +99,25 @@
                     background: "rgba(0, 0, 0, 0.75)"
                 });
                 var count = 0;
-                var cantidad_envios = arrEnvios.length;
-                var tiempo = cantidad_envios * 1500;
+
+                var tiempo = 1500;
                 var interval = setInterval(function () {
                     if(count>=15 && count<99)
                         $.LoadingOverlay("text", "Firmado documento electrónico...");
-
                     if (count >= 100) {
                         clearInterval(interval);
                         return;
                     }
-                    count += 100 / cantidad_envios;
+                    count += 100;
                     $.LoadingOverlay("progress", count);
                 }, tiempo);
-                datos = {
-                    _token: '{{csrf_token()}}',
-                    arrEnvios: arrEnvios
-                };
                 $.get('{{url('comprobante/generar_comprobante_factura')}}', datos, function (retorno) {
-                    $.LoadingOverlay("hide");
+
                     modal_view('modal_view_msg_factura', retorno, '<i class="fa fa-check" aria-hidden="true"></i> Estatus facturas', true, false,
                         '{{isPC() ? '50%' : ''}}');
                     buscar_listado_envios();
+                }).always(function () {
+                    $.LoadingOverlay("hide");
                 });
             });
         }
@@ -166,7 +179,12 @@
         };
         $.get('{{url('envio/buscar_codigo_dae')}}', datos, function (retorno) {
             $("form#"+form+" #dae").val(retorno.codigo_dae);
-            retorno === "" ? $("form#"+form+" #dae").removeAttr('disabled') : $("form#"+form+" #dae").attr('disabled','disabled');
+            console.log( retorno.codigo_dae);
+            retorno.codigo_dae == "" ? $("form#"+form+" #dae").removeAttr('disabled') : $("form#"+form+" #dae").attr('disabled','disabled');
+            (retorno.codigo_empresa == datos.codigo_pais)
+                ? $("form#"+form+ " #dae").removeAttr('required').val('')
+                : $("form#"+form+ " #dae").attr('required',true).val(retorno.codigo_dae)
+
         }).always(function () {
             $.LoadingOverlay('hide');
         });
@@ -202,6 +220,7 @@
                 telefono : $("form#"+form+ " #telefono").val(),
                 direccion : $("form#"+form+ " #direccion").val(),
                 fecha_envio : $("form#"+form+ " #fecha_envio").val(),
+                agencia_transporte : $("form#"+form+ " #agencia_transporte").val(),
                 precios : arrDataPrecio
            };
             $.post('{{url('envio/actualizar_envio')}}', datos, function (retorno) {

@@ -5,6 +5,7 @@
 @endsection
 
 @section('contenido')
+    @include('adminlte.gestion.partials.breadcrumb')
     <section class="content">
         <div class="box box-info">
             <div class="box-header with-border">

@@ -21,6 +21,7 @@ class DetalleCliente extends Model
         'correo',
         'id_cliente',
         'codigo_iva',
-        'codigo_identificacion'
+        'codigo_identificacion',
+        'estado'
     ];
 }
