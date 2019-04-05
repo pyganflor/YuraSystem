@@ -379,7 +379,7 @@ class EnvioController extends Controller
             'telefono' => 'required',
             'direccion' => 'required',
             'fecha_envio' => 'required',
-            'aerolineas' => 'required',
+            'aerolinea' => 'required',
         ]);
 
         if (!$valida->fails()) {

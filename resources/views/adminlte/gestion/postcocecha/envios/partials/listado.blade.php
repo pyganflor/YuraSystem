@@ -254,8 +254,8 @@
                                                            id="telefono" name="telefono_{{$i+1}}" value="{{$telefono}}" required>
                                                 </div>
                                                 <div class="col-md-3">
-                                                    <label for="agencia_de_transporte">Agencia de transporte</label>
-                                                    <select id="agencia_transporte" name="agencia_transporte" class="form-control"
+                                                    <label for="aerolinea">Agencia de transporte</label>
+                                                    <select id="aerolinea" name="aerolinea" class="form-control"
                                                             {{($facturado) ? "disabled='disabled'" : ""}} required>
                                                         @if(getEnvio($envio->id_envio)->detalles[0]->id_aerolinea == null)
                                                             <option selected disabled value="">Seleccione</option>

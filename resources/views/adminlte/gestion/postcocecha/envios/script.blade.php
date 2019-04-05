@@ -203,7 +203,7 @@
                 telefono : $("form#"+form+ " #telefono").val(),
                 direccion : $("form#"+form+ " #direccion").val(),
                 fecha_envio : $("form#"+form+ " #fecha_envio").val(),
-                agencia_transporte : $("form#"+form+ " #aerolineas").val(),
+                aerolinea : $("form#"+form+ " #aerolinea").val(),
                 precios : arrDataPrecio,
                 almacen : $("form#"+form+ " #almacen").val(),
            };
