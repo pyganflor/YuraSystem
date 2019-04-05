@@ -7,6 +7,8 @@ use Carbon\Carbon;
 use DomDocument;
 use yura\Modelos\Comprobante;
 use yura\Modelos\ClasificacionRamo;
+use yura\Modelos\ConfiguracionEmpresa;
+use yura\Modelos\DetalleCliente;
 use yura\Modelos\ImpuestoDetalleFactura;
 use yura\Modelos\DetalleFactura;
 use yura\Modelos\DesgloseEnvioFactura;
@@ -79,222 +81,244 @@ class ComprobanteController extends Controller
     {
         ini_set('max_execution_time', env('MAX_EXECUTION_TIME'));
         $valida = Validator::make($request->all(), [
-            'arrEnvios' => 'required|Array'
+            'id_envio' => 'required',
+            'guia_madre' => 'required',
+            'codigo_pais' => 'required',
+            'destino' => 'required',
+            'email' => 'required',
+            'telefono' => 'required',
         ]);
         $msg = "";
         if (!$valida->fails()) {
 
             $inicio_secuencial = env('INICIAL_FACTURA');
-            foreach ($request->arrEnvios as $dataEnvio) {
-
-                $datos_xml = getDatosFacturaEnvio($dataEnvio[0]);
-                $precio_total_sin_impuestos = 0;
-
-                foreach ($datos_xml->get() as $dataXml) {
-
-                    $precio_unitario_individual_sin_impuestos = Precio::where([
-                        ['id_variedad', $dataXml->id_variedad],
-                        ['id_clasificacion_ramo', $dataXml->id_clasificacion_ramo]
-                    ])->select('cantidad')->first();
-
-                    if (!isset($precio_unitario_individual_sin_impuestos->cantidad)) {
-                        $variedad = Variedad::where('id_variedad', $dataXml->id_variedad)->first();
-                        $clasificacion_ramo = ClasificacionRamo::where('id_clasificacion_ramo', $dataXml->id_clasificacion_ramo)
-                            ->join('unidad_medida as um', 'clasificacion_ramo.id_unidad_medida', 'um.id_unidad_medida')->select('clasificacion_ramo.nombre as nombre_clasificiacion_ramo', 'um.siglas')->first();
-                        return '<div class="alert alert-danger text-center">' .
-                            '<p> No se ha configurado precio para la variedad ' . $variedad->nombre . ' de ' . $clasificacion_ramo->nombre_clasificiacion_ramo . ' ' . $clasificacion_ramo->siglas . ' </p>'
-                            . '</div>';
+            //foreach ($request->arrEnvios as $dataEnvio) {
+            //$datos_xml = getDatosFacturaEnvio($request->id_envio);
+            $precio_total_sin_impuestos = 0.00;
+            $envio = getEnvio($request->id_envio);
+            foreach($envio->pedido->detalles as $x => $det_ped){
+                $precio_x_especificacion = 0.00;
+                if($envio->pedido->tipo_especificacion === "N"){ //FLOR NO TINTURADA
+                    $precio = explode("|",$det_ped->precio);
+                }else if($envio->pedido->tipo_especificacion === "T"){ //FLOR TINTURADA
+                    $precio = 0;
+                }
+                $piezas_esp_emp = $det_ped->cliente_especificacion->especificacion->especificacionesEmpaque[$x]->cantidad;
+                $i=0;
+                foreach($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $m => $esp_emp){
+                    foreach ($esp_emp->detalles as $n => $det_esp_emp){
+                      $precio_x_variedad = ($det_esp_emp->cantidad * ((float)explode(";",$precio[$i])[0]) * $piezas_esp_emp * $det_ped->cantidad);
+                      $precio_total_sin_impuestos += $precio_x_variedad;
+                      $i++;
                     }
-
-                    $total_individual_ramos = $dataXml->cantidad_ramos * $dataXml->cantidad_cajas;
-                    $precio_total_individual = $total_individual_ramos * $precio_unitario_individual_sin_impuestos->cantidad;
-                    $precio_total_sin_impuestos += $precio_total_individual;
                 }
+            }
 
-                if (!isset(getCodigoDae($dataEnvio[4])->codigo_dae)) {
-                    return '<div class="alert alert-danger text-center">' .
-                        '<p> No se ha configurado un código DAE para ' . $dataEnvio[6] . ' en este mes </p>'
-                        . '</div>';
-                }
+            if ((strtoupper(getConfiguracionEmpresa()->codigo_pais) != strtoupper($request->codigo_pais))
+                && (!isset(getCodigoDae(strtoupper($request->codigo_pais),Carbon::parse($request->fecha_envio)->format('m'),Carbon::parse($request->fecha_envio)->format('Y'))->codigo_dae))
+                && $request->dae == null) {
+                return '<div class="alert alert-danger text-center">' .
+                    '<p> No se ha configurado un código DAE para ' . $request->pais . ' en la fecha seleccionada </p>'
+                    . '</div>';
+            }
 
-                if ($dataEnvio[1] > $precio_total_sin_impuestos) {
-                    return '<div class="alert alert-danger text-center">' .
-                        '<p> El descuento es mayor que el sub total de la factura perteneciente al envío: N#' . str_pad($dataEnvio[0], 9, "0", STR_PAD_LEFT) . '<br/> 
-                        Sub total: $' . number_format($precio_total_sin_impuestos, 2, ".", "") . ', Descuento propuesto $' . number_format($dataEnvio[1], 2, ".", "") . ' </p>'
-                        . '</div>';
-                }
+            $datosEmpresa = getConfiguracionEmpresa();
+            $secuencial = getSecuencial();
+            $xml = new DomDocument('1.0', 'UTF-8');
+            $factura = $xml->createElement('factura');
+            $factura->setAttribute('id', 'comprobante');
+            $factura->setAttribute('version', '1.0.0');
+            $xml->appendChild($factura);
+            $infoTributaria = $xml->createElement('infoTributaria');
+            $factura->appendChild($infoTributaria);
+            $fechaEmision = Carbon::now()->format('dmY');
+            $tipoComprobante = '01';
+            $ruc = env('RUC');
+            $entorno = env('ENTORNO');
+            $punto_acceso = getUsuario(session('id_usuario'))->punto_acceso;
+            $serie = '001' . $punto_acceso;
+            $codigo_numerico = env('CODIGO_NUMERICO');
+            $tipo_emision = '1';
+            $cadena = $fechaEmision . $tipoComprobante . $ruc . $entorno . $serie . $secuencial . $codigo_numerico . $tipo_emision;
+            $digito_verificador = generaDigitoVerificador($cadena);
+            $claveAcceso = $cadena . $digito_verificador;
+            $informacionTributaria = [
+                'ambiente' => $entorno,
+                'tipoEmision' => $tipo_emision,
+                'razonSocial' => $datosEmpresa->razon_social,
+                'nombreComercial' => $datosEmpresa->nombre,
+                'ruc' => $ruc,
+                'claveAcceso' => $claveAcceso,
+                'codDoc' => '01',
+                'estab' => '001',
+                'ptoEmi' => $punto_acceso,
+                'secuencial' => $secuencial,
+                'dirMatriz' => $datosEmpresa->direccion_matriz
+            ];
 
-                $dataEnvio[1] > 0 ? $precio_total_sin_impuestos = $precio_total_sin_impuestos - $dataEnvio[1] : '';
+            foreach ($informacionTributaria as $key => $it) {
+                $nodo = $xml->createElement($key, $it);
+                $infoTributaria->appendChild($nodo);
+            }
+            $dataCliente = DetalleCliente::where([
+                ['id_cliente' , $envio->pedido->cliente->id_cliente],
+                ['estado', 1]
+            ])->first();
+            $tipoImpuesto = getTipoImpuesto($dataCliente->codigo_impuesto,$dataCliente->codigo_porcentaje_impuesto);
 
-                $secuencial = getSecuencial();
-                $xml = new DomDocument('1.0', 'UTF-8');
-                $factura = $xml->createElement('factura');
-                $factura->setAttribute('id', 'comprobante');
-                $factura->setAttribute('version', '1.0.0');
-                $xml->appendChild($factura);
-                $infoTributaria = $xml->createElement('infoTributaria');
-                $factura->appendChild($infoTributaria);
-                $fechaEmision = Carbon::now()->format('dmY');
-                $tipoComprobante = '01';
-                $ruc = env('RUC');
-                $entorno = env('ENTORNO');
-                $punto_acceso = Usuario::where('id_usuario', session('id_usuario'))->first()->punto_acceso;
-                $serie = '001' . $punto_acceso;
-                $codigo_numerico = env('CODIGO_NUMERICO');
-                $tipo_emision = '1';
-                $cadena = $fechaEmision . $tipoComprobante . $ruc . $entorno . $serie . $secuencial . $codigo_numerico . $tipo_emision;
-                $digito_verificador = generaDigitoVerificador($cadena);
-                $claveAcceso = $cadena . $digito_verificador;
-                $informacionTributaria = [
-                    'ambiente' => $entorno,
-                    'tipoEmision' => $tipo_emision,
-                    'razonSocial' => $dataXml->razon_social,
-                    'nombreComercial' => $dataXml->nombre_empresa,
-                    'ruc' => $ruc,
-                    'claveAcceso' => $claveAcceso,
-                    'codDoc' => '01',
-                    'estab' => '001',
-                    'ptoEmi' => $punto_acceso,
-                    'secuencial' => $secuencial,
-                    'dirMatriz' => $dataXml->direccion_matriz
+            if (!isset($tipoImpuesto->porcentaje)) {
+                return '<div class="alert alert-danger text-center">' .
+                    '<p> El tipo de impuesto asignado al cliente '.$dataCliente->nombre.' está deshabilitado, por favor habilítelo o asignele otro </p>'
+                    . '</div>';
+            }
+            $infoFactura = $xml->createElement('infoFactura');
+            $factura->appendChild($infoFactura);
+            $informacionFactura = [
+                'fechaEmision' => now()->format('d/m/Y'),
+                'dirEstablecimiento' => $datosEmpresa->direccion_establecimiento,
+                'obligadoContabilidad' => env('OBLIGADO_CONTABILIDAD'),
+                'tipoIdentificacionComprador' => $dataCliente->codigo_identificacion,
+                'razonSocialComprador' => $dataCliente->ruc == "9999999999999" ? "CONSUMIDOR FINAL" : $dataCliente->nombre,
+                'identificacionComprador' => $dataCliente->ruc,
+                'totalSinImpuestos' => number_format($precio_total_sin_impuestos, 2, ".", ""),
+                'totalDescuento' => "0.00",
+            ];
+
+            foreach ($informacionFactura as $key => $if) {
+                $nodo = $xml->createElement($key, $if);
+                $infoFactura->appendChild($nodo);
+            }
+
+            $totalConImpuestos = $xml->createElement('totalConImpuestos');
+            $infoFactura->appendChild($totalConImpuestos);
+            $precio_total_con_impuestos = is_numeric($tipoImpuesto->porcentaje) ? number_format($precio_total_sin_impuestos * ($tipoImpuesto->porcentaje / 100), 2, ".", "") : "0.00";
+            $valorImpuesto = $precio_total_con_impuestos;
+            $cantidad_impuestos = 1; //Número que indica la cantidad de impuestos que tiene la factura
+            for ($i = 0; $i < $cantidad_impuestos; $i++) {
+                $informacionImpuestos = [
+                    'codigo' => $dataCliente->codigo_impuesto,
+                    'codigoPorcentaje' => $dataCliente->codigo_porcentaje,
+                    'baseImponible' => number_format($precio_total_sin_impuestos, 2, ".", ""),
+                    //'tarifa'=>  is_numeric($tipoImpuesto->porcentaje) ? $tipoImpuesto->porcentaje : "0.00",
+                    'valor' => $valorImpuesto
                 ];
-
-                foreach ($informacionTributaria as $key => $it) {
-                    $nodo = $xml->createElement($key, $it);
-                    $infoTributaria->appendChild($nodo);
+                $totalImpuesto = $xml->createElement('totalImpuesto');
+                $totalConImpuestos->appendChild($totalImpuesto);
+                foreach ($informacionImpuestos as $key => $iI) {
+                    $nodo = $xml->createElement($key, $iI);
+                    $totalImpuesto->appendChild($nodo);
                 }
+            }
+            $propina = $xml->createElement('propina', '0.00');
+            $infoFactura->appendChild($propina);
+            $importeTotal = $xml->createElement('importeTotal', number_format($valorImpuesto + $precio_total_sin_impuestos, 2, ".", ""));
+            $infoFactura->appendChild($importeTotal);
+            switch (getConfiguracionEmpresa()->moneda){
+                    case "usd":
+                        $m = 'DOLAR';
+                        break;
+            }
+            $moneda = $xml->createElement('moneda', $m);
+            $infoFactura->appendChild($moneda);
+            $detalles = $xml->createElement('detalles');
+            $factura->appendChild($detalles);
 
-                $infoFactura = $xml->createElement('infoFactura');
-                $factura->appendChild($infoFactura);
-                $informacionFactura = [
-                    'fechaEmision' => Carbon::now()->format('d/m/Y'),
-                    'dirEstablecimiento' => $dataXml->direccion_establecimiento,
-                    'obligadoContabilidad' => env('OBLIGADO_CONTABILIDAD'),
-                    'tipoIdentificacionComprador' => $dataXml->codigo_identificacion,
-                    'razonSocialComprador' => $dataXml->identificacion == "9999999999999" ? "CONSUMIDOR FINAL" : $dataXml->nombre_cliente,
-                    'identificacionComprador' => $dataXml->identificacion,
-                    'totalSinImpuestos' => number_format($precio_total_sin_impuestos, 2, ".", ""),
-                    'totalDescuento' => $dataEnvio[1] > 0 ? number_format($dataEnvio[1], 2, ".", "") : "0.00",
-                ];
-
-                foreach ($informacionFactura as $key => $if) {
-                    $nodo = $xml->createElement($key, $if);
-                    $infoFactura->appendChild($nodo);
+            foreach($envio->pedido->detalles as $x => $det_ped){
+                $precio_x_especificacion = 0.00;
+                if($envio->pedido->tipo_especificacion === "N"){ //FLOR NO TINTURADA
+                    $precio = explode("|",$det_ped->precio);
+                }else if($envio->pedido->tipo_especificacion === "T"){ //FLOR TINTURADA
+                    $precio = 0;
                 }
+                $piezas_esp_emp = $det_ped->cliente_especificacion->especificacion->especificacionesEmpaque[$x]->cantidad;
+                $i=0;
+                foreach($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $m => $esp_emp){
+                    foreach ($esp_emp->detalles as $n => $det_esp_emp){
+                        $precio_x_variedad = ($det_esp_emp->cantidad * ((float)explode(";",$precio[$i])[0]) * $piezas_esp_emp * $det_ped->cantidad);
 
-                $totalConImpuestos = $xml->createElement('totalConImpuestos');
-                $infoFactura->appendChild($totalConImpuestos);
-                $precio_total_con_impuestos = is_numeric($dataXml->porcntaje_iva) ? number_format($precio_total_sin_impuestos * ($dataXml->porcntaje_iva / 100), 2, ".", "") : "0.00";
-                $valorImpuesto = $precio_total_con_impuestos;
-                $cantidad_impuestos = 1; //Número que indica la cantidad de impuestos que tiene la factura
-                for ($i = 0; $i < $cantidad_impuestos; $i++) {
-                    $informacionImpuestos = [
-                        'codigo' => $dataXml->codigo_impuesto,
-                        'codigoPorcentaje' => $dataXml->codigo_porcentaje,
-                        //'descuentoAdicional'=>'0.00',
-                        'baseImponible' => number_format($precio_total_sin_impuestos, 2, ".", ""),
-                        //'tarifa'=> '0.00',
-                        'valor' => $valorImpuesto
-                    ];
+                        $detalle = $xml->createElement('detalle');
+                        $detalles->appendChild($detalle);
+                        $variedad = getVariedad($det_esp_emp->id_variedad);
+                        if($det_esp_emp->longitud_ramo != null){
+                            foreach (getUnidadesMedida($det_esp_emp->id_unidad_medida) as $umLongitud)
+                                if($umLongitud->tipo == "L")
+                                    $umL = $umLongitud->siglas;
+                        }else{
+                            $umL ="";
+                        }
+                        $longitudRamo = $det_esp_emp->longitud_ramo != "" ? $det_esp_emp->longitud_ramo : "";
+                        $clasificacionRamo = getClasificacionRamo($det_esp_emp->id_clasificacion_ramo);
+                        foreach (getUnidadesMedida($clasificacionRamo->id_unidad_medida) as $umPeso)
+                            $umPeso->tipo == "P" ? $umPeso = $umPeso->siglas : $umPeso ="";
+                        $descripcion_detalle = $variedad->planta->nombre . " (" . $variedad->siglas . ") " . $clasificacionRamo->nombre.$umPeso . " " . $longitudRamo.$umL;
+                        $detalle = $xml->createElement('detalle');
+                        $detalles->appendChild($detalle);
+                        $informacionDetalle = [
+                            'codigoPrincipal' => 'ENV' . str_pad($request->id_envio, 9, "0", STR_PAD_LEFT),
+                            'descripcion' => $descripcion_detalle,
+                            'cantidad' => number_format(($det_esp_emp->cantidad*$piezas_esp_emp * $det_ped->cantidad), 2, ".", ""),
+                            'precioUnitario' => number_format(explode(";",$precio[$i])[0], 2, ".", ""),
+                            'descuento' => '0.00',
+                            'precioTotalSinImpuesto' => number_format($precio_x_variedad, 2, ".", "")
+                        ];
+                        foreach ($informacionDetalle as $key => $iD) {
+                            $nodo = $xml->createElement($key, $iD);
+                            $detalle->appendChild($nodo);
+                        }
 
-                    $totalImpuesto = $xml->createElement('totalImpuesto');
-                    $totalConImpuestos->appendChild($totalImpuesto);
+                        $impuestos = $xml->createElement('impuestos');
+                        $detalle->appendChild($impuestos);
 
-                    foreach ($informacionImpuestos as $key => $iI) {
-                        $nodo = $xml->createElement($key, $iI);
-                        $totalImpuesto->appendChild($nodo);
+                        $impuesto = $xml->createElement('impuesto');
+                        $impuestos->appendChild($impuesto);
+
+                        $informacionImpuesto = [
+                            'codigo' => $dataCliente->codigo_impuesto,
+                            'codigoPorcentaje' => $dataCliente->codigo_porcentaje_impuesto,
+                            'tarifa' => is_numeric($tipoImpuesto->porcentaje) ? number_format($tipoImpuesto->porcentaje, 2, ".", "") : "0.00",
+                            'baseImponible' => number_format($precio_x_variedad, 2, ".", ""),
+                            'valor' => is_numeric($tipoImpuesto->porcentaje) ? number_format($precio_x_variedad * ($tipoImpuesto->porcentaje / 100), 2, ".", "") : "0.00"
+                        ];
+
+                        foreach ($informacionImpuesto as $key => $iIp) {
+                            $nodo = $xml->createElement($key, $iIp);
+                            $impuesto->appendChild($nodo);
+                        }
+                        $informacionAdicional = $xml->createElement('infoAdicional');
+                        $factura->appendChild($informacionAdicional);
+                        $i++;
                     }
                 }
-                $propina = $xml->createElement('propina', '0.00');
-                $infoFactura->appendChild($propina);
-                $importeTotal = $xml->createElement('importeTotal', number_format($valorImpuesto + $precio_total_sin_impuestos, 2, ".", ""));
-                $infoFactura->appendChild($importeTotal);
-                $moneda = $xml->createElement('moneda', 'DOLAR');
-                $infoFactura->appendChild($moneda);
+            }
+            $campos_adicionales = [
+                'Dirección'=> $dataCliente->provincia . " " . $dataCliente->direccion,
+                'Email'    => $dataCliente->correo,
+                'Teléfono' => $dataCliente->telefono,
+                'Carguera' => getAgenciaTransporte($envio->detalles[0]->id_agencia_transporte)->nombre
+            ];
 
-                $detalles = $xml->createElement('detalles');
-                $factura->appendChild($detalles);
-                //dd($datos_xml->count());
-                for ($j = 0; $j < $datos_xml->count(); $j++) {
-                    $data_arr_consulta = $datos_xml->get()[$j];
-                    $precio_unitario_individual_sin_impuestos = Precio::where([
-                        ['id_variedad', $data_arr_consulta->id_variedad],
-                        ['id_clasificacion_ramo', $data_arr_consulta->id_clasificacion_ramo]
-                    ])->select('cantidad')->first();
+            if ((strtoupper(getConfiguracionEmpresa()->codigo_pais) != strtoupper($request->codigo_pais)))
+                $campos_adicionales['DAE'] = $request->dae;
+            if (!empty($request->guia_madre))
+                $campos_adicionales['GUIA_MADRE'] = $request->guia_madre;
+            if (!empty($request->guia_hija))
+                $campos_adicionales['GUIA_HIJA'] = $request->guia_hija;
 
-                    $total_individual_ramos = $data_arr_consulta->cantidad_ramos * $data_arr_consulta->cantidad_cajas;
-                    $precio_total_individual = $total_individual_ramos * $precio_unitario_individual_sin_impuestos->cantidad;
-
-                    $dataEnvio[1] > 0 ? $precio_total_individual = $precio_total_individual - ($dataEnvio[1] / $datos_xml->count()) : '';
-
-                    $detalle = $xml->createElement('detalle');
-                    $detalles->appendChild($detalle);
-                    $descripcion_detalle = $data_arr_consulta->nombre_planta . " (" . $data_arr_consulta->siglas_variedad . ") " . $data_arr_consulta->nombre_clasificacion . $data_arr_consulta->siglas_unidad_medida_peso_ramo . " " . $data_arr_consulta->longitud_ramo  /*$data_arr_consulta->siglas_unidad_medida_lognitud_ramo*/;
-                    if($data_arr_consulta->longitud_ramo != null) $descripcion_detalle .= " cm";
-                    $informacionDetalle = [
-                        'codigoPrincipal' => 'ENV' . str_pad($dataEnvio[0], 9, "0", STR_PAD_LEFT),
-                        'descripcion' => $descripcion_detalle,
-                        'cantidad' => number_format($data_arr_consulta->cantidad_ramos * $data_arr_consulta->cantidad_cajas, 2, ".", ""),
-                        'precioUnitario' => number_format($precio_unitario_individual_sin_impuestos->cantidad, 2, ".", ""),
-                        'descuento' => $dataEnvio[1] > 0 ? number_format(($dataEnvio[1] / $datos_xml->count()),2,".","") : '0.00',
-                        'precioTotalSinImpuesto' => number_format($precio_total_individual, 2, ".", "")
-                    ];
-
-                    foreach ($informacionDetalle as $key => $iD) {
-                        $nodo = $xml->createElement($key, $iD);
-                        $detalle->appendChild($nodo);
-                    }
-
-                    $impuestos = $xml->createElement('impuestos');
-                    $detalle->appendChild($impuestos);
-
-                    $impuesto = $xml->createElement('impuesto');
-                    $impuestos->appendChild($impuesto);
-                    $informacionImpuesto = [
-                        'codigo' => $dataXml->codigo_impuesto,
-                        'codigoPorcentaje' => $dataXml->codigo_porcentaje,
-                        //'descuentoAdicional'=>'0.00',
-                        'tarifa' => is_numeric($dataXml->porcntaje_iva) ? number_format($dataXml->porcntaje_iva, 2, ".", "") : "0.00",
-                        'baseImponible' => number_format($precio_total_individual, 2, ".", ""),
-                        'valor' => is_numeric($dataXml->porcntaje_iva) ? number_format($precio_total_individual * ($dataXml->porcntaje_iva / 100), 2, ".", "") : "0.00"
-                    ];
-                    foreach ($informacionImpuesto as $key => $iIp) {
-                        $nodo = $xml->createElement($key, $iIp);
-                        $impuesto->appendChild($nodo);
-                    }
-                }
-
-                $informacionAdicional = $xml->createElement('infoAdicional');
-                $factura->appendChild($informacionAdicional);
-
-                $campos_adicionales = [
-                    'Dirección'=> $dataXml->provincia . " " . $dataXml->direccion,
-                    'Email'    => $dataXml->correo,
-                    'Teléfono' => $dataXml->telefono,
-                    'Carguera' => $dataXml->nombre_agencia_transporte
-                ];
-
-                if (getConfiguracionEmpresa()->codigo_pais != $dataEnvio[4])
-                    $campos_adicionales['DAE'] = getCodigoDae($dataEnvio[4])->codigo_dae;
-                if (!empty($dataEnvio[2]))
-                    $campos_adicionales['GUIA_MADRE'] = $dataEnvio[2];
-                if (!empty($dataEnvio[3]))
-                    $campos_adicionales['GUIA_HIJA'] = $dataEnvio[3];
-
-                foreach ($campos_adicionales as $key => $ca) {
-                    $campo_adicional = $xml->createElement('campoAdicional', $ca);
-                    $campo_adicional->setAttribute('nombre', $key);
-                    $informacionAdicional->appendChild($campo_adicional);
-                }
-                $xml->formatOutput = true;
-                $xml->saveXML();
-                $nombre_xml = $claveAcceso . ".xml";
+            foreach ($campos_adicionales as $key => $ca) {
+                $campo_adicional = $xml->createElement('campoAdicional', $ca);
+                $campo_adicional->setAttribute('nombre', $key);
+                $informacionAdicional->appendChild($campo_adicional);
+            }
+            $xml->formatOutput = true;
+            dd($xml);
+            $xml->saveXML();
+            $nombre_xml = $claveAcceso . ".xml";
 
                 //////////// GUARDAR ARCHIVO XML Y DATA EN BD //////////////
 
                 $obj_comprobante = new Comprobante;
                 $obj_comprobante->clave_acceso = $claveAcceso;
-                $obj_comprobante->id_envio = $dataEnvio[0];
+                $obj_comprobante->id_envio = $request->id_envio;
                 $obj_comprobante->tipo_comprobante = "01"; //CÓDIGO DE FACTURA A CLIENTE EXTERNO
                 $obj_comprobante->monto_total = number_format($valorImpuesto + $precio_total_sin_impuestos, 2, ".", "");
 
@@ -331,7 +355,6 @@ class ComprobanteController extends Controller
                             bitacora('impuesto_detalle_factura', $model_impuesto_detalle_factura->id_impuesto_detalle_factura, 'I', 'Creación de un nuevo impuesto de detalle de factura');
                             $iteracion = 0;
                             for ($p = 0; $p < $datos_xml->count(); $p++) {
-
                                 $datos_xml_iteracion = $datos_xml->get()[$p];
                                 $precio_unitario_individual_sin_impuestos = Precio::where([
                                     ['id_variedad', $datos_xml_iteracion->id_variedad],
@@ -341,15 +364,14 @@ class ComprobanteController extends Controller
                                 $total_individual_ramos = $datos_xml_iteracion->cantidad_ramos * $datos_xml_iteracion->cantidad_cajas;
                                 $precio_total_individual = $total_individual_ramos * $precio_unitario_individual_sin_impuestos->cantidad;
 
-                                $dataEnvio[1] > 0 ? $precio_total_individual = $precio_total_individual - ($dataEnvio[1] / $datos_xml_iteracion->count()) : '';
 
                                 $objDesgloseEnvioFactura = new DesgloseEnvioFactura;
                                 $objDesgloseEnvioFactura->id_comprobante = $model_comprobante->id_comprobante;
-                                $objDesgloseEnvioFactura->codigo_principal = 'ENV' . str_pad($dataEnvio[0], 9, "0", STR_PAD_LEFT);
+                                $objDesgloseEnvioFactura->codigo_principal = 'ENV' . str_pad($request->id_envio, 9, "0", STR_PAD_LEFT);
                                 $objDesgloseEnvioFactura->descripcion = $datos_xml_iteracion->nombre_planta . " (" . $datos_xml_iteracion->siglas_variedad . ") " . $datos_xml_iteracion->nombre_clasificacion . $datos_xml_iteracion->siglas_unidad_medida_peso_ramo . " " . $datos_xml_iteracion->longitud_ramo . $data_arr_consulta->longitud_ramo =!"" ? "cm" : ""/*. $datos_xml_iteracion->siglas_unidad_medida_lognitud_ramo*/;
                                 $objDesgloseEnvioFactura->cantidad = number_format($datos_xml_iteracion->cantidad_ramos * $datos_xml_iteracion->cantidad_cajas, 2, ".", "");
                                 $objDesgloseEnvioFactura->precio_unitario = number_format($precio_unitario_individual_sin_impuestos->cantidad, 2, ".", "");
-                                $objDesgloseEnvioFactura->descuento = $dataEnvio[1] > 0 ? $dataEnvio[1] / $datos_xml_iteracion->count() : '0.00';
+                                $objDesgloseEnvioFactura->descuento = '0.00';
                                 $objDesgloseEnvioFactura->precio_total_sin_impuesto = number_format($precio_total_individual, 2, ".", "");
 
                                 if($objDesgloseEnvioFactura->save()){
@@ -367,53 +389,25 @@ class ComprobanteController extends Controller
                             }
 
                             if ($iteracion === $datos_xml->count()) {
-
-                                $objInformacionAdicionalFactura = new InformacionAdicionalFactura;
-                                $objInformacionAdicionalFactura->id_comprobante = $model_comprobante->id_comprobante;
-                                $objInformacionAdicionalFactura->direccion      = $campos_adicionales['Dirección'];
-                                $objInformacionAdicionalFactura->email          = $campos_adicionales['Email'];
-                                $objInformacionAdicionalFactura->telefono       = $campos_adicionales['Teléfono'];
-                                if(isset($campos_adicionales['DAE']))
-                                $objInformacionAdicionalFactura->dae            = $campos_adicionales['DAE'];
-                                if(isset($campos_adicionales['GUIA_MADRE']))
-                                $objInformacionAdicionalFactura->guia_madre     = $campos_adicionales['GUIA_MADRE'];
-                                if(isset($campos_adicionales['GUIA_HIJA']))
-                                $objInformacionAdicionalFactura->guia_hija      = $campos_adicionales['GUIA_HIJA'];
-
-                                if( $objInformacionAdicionalFactura->save()) {
-                                    $model_informacion_adicional_factura = InformacionAdicionalFactura::all()->last();
-                                    $save_xml = $xml->save(env('PATH_XML_GENERADOS') . $nombre_xml);
-                                    if ($save_xml && $save_xml > 0) {
-                                        $resultado = firmarComprobanteXml($nombre_xml);
-                                        if ($resultado) {
-                                            $class = 'warning';
-                                            if ($resultado == 5) {
-                                                $class = 'success';
-                                                $obj_comprobante = Comprobante::find($model_comprobante->id_comprobante);
-                                                $obj_comprobante->estado = 1;
-                                                $obj_comprobante->save();
-                                            }
-                                            bitacora('informacion_adicional_factura', $model_informacion_adicional_factura->id_informacion_adicional_factura , 'I', 'Creación de una nueva información de factura');
-                                            $msg .= "<div class='alert text-center  alert-" . $class . "'>" .
-                                                "<p> " . mensajeFirmaElectronica($resultado, str_pad($dataEnvio[0], 9, "0", STR_PAD_LEFT)) . "</p>"
-                                                . "</div>";
-                                        } else {
-                                            $msg .= "<div class='alert text-center  alert-danger'>" .
-                                                "<p>Hubo un error al realizar el proceso de la firma de la factura N# " . $nombre_xml . " del envío N#" . str_pad($dataEnvio[0], 9, "0", STR_PAD_LEFT) . ", intente nuevamente realizar la firma del mismo filtrando por GENERADOS</p>"
-                                                . "</div>";
+                                $save_xml = $xml->save(env('PATH_XML_GENERADOS') . $nombre_xml);
+                                if ($save_xml && $save_xml > 0) {
+                                    $resultado = firmarComprobanteXml($nombre_xml);
+                                    if ($resultado) {
+                                        $class = 'warning';
+                                        if ($resultado == 5) {
+                                            $class = 'success';
+                                            $obj_comprobante = Comprobante::find($model_comprobante->id_comprobante);
+                                            $obj_comprobante->estado = 1;
+                                            $obj_comprobante->save();
                                         }
+                                        $msg .= "<div class='alert text-center  alert-" . $class . "'>" .
+                                            "<p> " . mensajeFirmaElectronica($resultado, str_pad($request->id_envio, 9, "0", STR_PAD_LEFT)) . "</p>"
+                                            . "</div>";
                                     } else {
-                                        InformacionAdicionalFactura::where('id_comprobante', $model_comprobante->id_comprobante)->delete();
-                                        ImpuestoDesgloseEnvioFactura::where('id_desglose_envio_factura', $model_desglose_envio_factura->id_desglose_envio_factura)->delete();
-                                        DesgloseEnvioFactura::where('id_comprobante', $model_comprobante->id_comprobante)->delete();
-                                        ImpuestoDetalleFactura::where('id_detalle_factura', $model_detalle_factura->id_detalle_factura)->delete();
-                                        DetalleFactura::where('id_comprobante', $model_comprobante->id_comprobante)->delete();
-                                        Comprobante::destroy($model_comprobante->id_comprobante);
                                         $msg .= "<div class='alert text-center  alert-danger'>" .
-                                            "<p>La factura " . $nombre_xml . " del envío N#" . str_pad($dataEnvio[0], 9, "0", STR_PAD_LEFT) . " no pudo ser generada, por favor intente facturarla nuevamente</p>"
+                                            "<p>Hubo un error al realizar el proceso de la firma de la factura N# " . $nombre_xml . " del envío N#" . str_pad($request->id_envio, 9, "0", STR_PAD_LEFT) . ", intente nuevamente realizar la firma del mismo filtrando por GENERADOS</p>"
                                             . "</div>";
                                     }
-
                                 } else {
                                     ImpuestoDesgloseEnvioFactura::where('id_desglose_envio_factura', $model_desglose_envio_factura->id_desglose_envio_factura)->delete();
                                     DesgloseEnvioFactura::where('id_comprobante', $model_comprobante->id_comprobante)->delete();
@@ -421,7 +415,7 @@ class ComprobanteController extends Controller
                                     DetalleFactura::where('id_comprobante', $model_comprobante->id_comprobante)->delete();
                                     Comprobante::destroy($model_comprobante->id_comprobante);
                                     $msg .= "<div class='alert text-center  alert-danger'>" .
-                                        "<p>La factura " . $nombre_xml . " del envío N#" . str_pad($dataEnvio[0], 9, "0", STR_PAD_LEFT) . " no pudo ser generada, por favor intente facturarla nuevamente</p>"
+                                        "<p>La factura " . $nombre_xml . " del envío N#" . str_pad($request->id_envio, 9, "0", STR_PAD_LEFT) . " no pudo ser generada, por favor intente facturarla nuevamente</p>"
                                         . "</div>";
                                 }
                             } else {
@@ -430,28 +424,28 @@ class ComprobanteController extends Controller
                                 DetalleFactura::where('id_comprobante', $model_comprobante->id_comprobante)->delete();
                                 Comprobante::destroy($model_comprobante->id_comprobante);
                                 $msg .= "<div class='alert text-center  alert-danger'>" .
-                                    "<p>La factura " . $nombre_xml . " del envío N#" . str_pad($dataEnvio[0], 9, "0", STR_PAD_LEFT) . " no pudo ser generada, por favor intente facturarla nuevamente</p>"
+                                    "<p>La factura " . $nombre_xml . " del envío N#" . str_pad($request->id_envio, 9, "0", STR_PAD_LEFT) . " no pudo ser generada, por favor intente facturarla nuevamente</p>"
                                     . "</div>";
                             }
                         } else {
                             DetalleFactura::where('id_comprobante', $model_detalle_factura->id_detalle_factura)->delete();
                             Comprobante::destroy($model_comprobante->id_comprobante);
                             $msg .= "<div class='alert text-center  alert-danger'>" .
-                                "<p>Hubo un error al guardar la factura " . $nombre_xml . " del envío N#" . str_pad($dataEnvio[0], 9, "0", STR_PAD_LEFT) . " en la base de datos, por favor intente facturar el envío nuevamente</p>"
+                                "<p>Hubo un error al guardar la factura " . $nombre_xml . " del envío N#" . str_pad($request->id_envio, 9, "0", STR_PAD_LEFT) . " en la base de datos, por favor intente facturar el envío nuevamente</p>"
                                 . "</div>";
                         }
                     } else {
                         Comprobante::destroy($model_comprobante->id_comprobante);
                         $msg .= "<div class='alert text-center  alert-danger'>" .
-                            "<p>Hubo un error al guardar la factura " . $nombre_xml . " del envío N#" . str_pad($dataEnvio[0], 9, "0", STR_PAD_LEFT) . " en la base de datos, por favor intente facturar el envío nuevamente</p>"
+                            "<p>Hubo un error al guardar la factura " . $nombre_xml . " del envío N#" . str_pad($request->id_envio, 9, "0", STR_PAD_LEFT) . " en la base de datos, por favor intente facturar el envío nuevamente</p>"
                             . "</div>";
                     }
                 } else {
                     $msg .= "<div class='alert text-center  alert-danger'>" .
-                        "<p>Hubo un error al guardar la factura " . $nombre_xml . " del envío N# ENV" . str_pad($dataEnvio[0], 9, "0", STR_PAD_LEFT) . " en la base de datos, por favor intente facturar el envío nuevamente</p>"
+                        "<p>Hubo un error al guardar la factura " . $nombre_xml . " del envío N# ENV" . str_pad($request->id_envio, 9, "0", STR_PAD_LEFT) . " en la base de datos, por favor intente facturar el envío nuevamente</p>"
                         . "</div>";
                 }
-            }
+
         } else {
             $success = false;
             $errores = '';

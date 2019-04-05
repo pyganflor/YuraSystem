@@ -30,4 +30,9 @@ class Envio extends Model
     {
         return $this->hasMany('\yura\Modelos\DetalleEnvio', 'id_envio');
     }
+
+    public function pedido()
+    {
+        return $this->belongsTo('\yura\Modelos\Pedido', 'id_pedido');
+    }
 }

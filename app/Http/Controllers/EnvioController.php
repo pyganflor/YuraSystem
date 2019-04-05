@@ -20,6 +20,8 @@ use yura\Modelos\Pais;
 use yura\Modelos\Pedido;
 use Carbon\Carbon;
 use yura\Modelos\DatosExportacion;
+use yura\Modelos\Submenu;
+use yura\Modelos\Rol;
 
 class EnvioController extends Controller
 {
@@ -30,7 +32,7 @@ class EnvioController extends Controller
                 'cantForms'           => $dataDetallePedido->count(),
                 'dataDetallesPedidos' => $dataDetallePedido->join('cliente_pedido_especificacion as cpe','detalle_pedido.id_cliente_especificacion','=','cpe.id_cliente_pedido_especificacion')
                     ->join('especificacion as e','cpe.id_especificacion','=','e.id_especificacion')
-                    ->select('detalle_pedido.cantidad','detalle_pedido.id_detalle_pedido','e.nombre','cpe.id_especificacion','cpe.id_cliente')->get()
+                    ->select('detalle_pedido.cantidad','detalle_pedido.id_detalle_pedido','e.nombre','cpe.id_especificacion','cpe.id_cliente')->get(),
                 ]);
     }
 
@@ -169,7 +171,11 @@ class EnvioController extends Controller
         [
             'annos'    => DB::table('envio as e')->select(DB::raw('YEAR(e.fecha_envio) as anno'))->distinct()->get(),
             'clientes' => DB::table('cliente as c')->join('detalle_cliente as dc', 'c.id_cliente','=','dc.id_cliente')
-                          ->where('dc.estado',1)->get()
+                          ->where('dc.estado',1)->get(),
+            'url' => $request->getRequestUri(),
+            'submenu' => Submenu::Where('url', '=', substr($request->getRequestUri(), 1))->get()[0],
+            'roles' => Rol::All(),
+            'text' => ['titulo'=>'Envíos de pedidos','subtitulo'=>'módulo de postcosecha']
         ]);
     }
 
@@ -184,7 +190,8 @@ class EnvioController extends Controller
             ['envio.fecha_envio',$fecha != "" ? $fecha : Carbon::now()->toDateString()]
         ])->join('pedido as p', 'envio.id_pedido','=','p.id_pedido')
             ->join('detalle_cliente as dc','p.id_cliente','=','dc.id_cliente' )
-            ->orderBy('envio.id_envio','Desc');
+            ->orderBy('envio.id_envio','Desc')
+        ->select('p.*','envio.*','dc.nombre','dc.direccion','dc.provincia','dc.codigo_pais as pais_cliente','dc.telefono','dc.correo');
 
         if ($cliente != '')
             $listado = $listado->where('dc.id_cliente',$cliente);
@@ -193,7 +200,8 @@ class EnvioController extends Controller
             'envios' => $listado->paginate(10),
             'datos_exportacion_' => DatosExportacion::join('cliente_datoexportacion as cde','dato_exportacion.id_dato_exportacion','cde.id_dato_exportacion')
                 ->where('id_cliente',$request->id_cliente)->get(),
-            'paises'    => Pais::all()
+            'paises'    => Pais::all(),
+            'agenciasTransporte' => AgenciaTransporte::all()
         ]);
     }
 
@@ -364,13 +372,13 @@ class EnvioController extends Controller
     public function actualizar_envio(Request $request)
     {
         $valida = Validator::make($request->all(), [
-            'dae' => 'required',
             'guia_madre' => 'required',
             'codigo_pais' => 'required',
             'email' => 'required',
             'telefono' => 'required',
             'direccion' => 'required',
             'fecha_envio' => 'required',
+            'agencia_transporte' => 'required',
         ]);
 
         if (!$valida->fails()) {
@@ -389,13 +397,17 @@ class EnvioController extends Controller
                 bitacora('envio', $request->id_envio, 'U', 'Actualización satisfactoria del envío');
                 $dataDetallePedido = Envio::where('id_envio',$request->id_envio)->select('id_pedido')
                     ->join('detalle_pedido as dp','envio.id_pedido','dp.id_pedido')->select('id_detalle_pedido')->get();
+
+                DetalleEnvio::where('id_envio',$request->id_envio)->update(['id_agencia_transporte' => $request->agencia_transporte]);
+
                 foreach ($dataDetallePedido as $key => $detallePedido) {
 
                     $objDetallePedido = DetallePedido::where('id_detalle_pedido',$detallePedido->id_detalle_pedido);
-                    if($objDetallePedido->update([
+                    $objDetallePedido->update([
                         'precio'=> substr($request->precios[$key]['precios'],0,-1),
-                        'cantidad' =>$request->precios[$key]['piezas']
-                    ])){
+                        'cantidad' =>$request->precios[$key]['piezas'],
+                    ]);
+                    if($objDetallePedido){
                         $modelDetallePedido = DetallePedido::all()->last();
                         bitacora('detalle_pedido', $modelDetallePedido->id_detalle_pedido, 'U', 'Actualización del precio del detalle del pedido '.$detallePedido->id_pedido.'');
                     }
