@@ -69,7 +69,7 @@ class EnvioController extends Controller
                     ->join('pedido as p','e.id_pedido','=','p.id_pedido')
                     ->where([
                         //['id_especificaion',$detalle_envio[0]],
-                        ['detalle_envio.id_agencia_transporte',$detalle_envio[1]],
+                        ['detalle_envio.id_aerolinea',$detalle_envio[1]],
                         ['e.fecha_envio',$detalle_envio[4]],
                         ['e.id_pedido',$request->id_pedido]
                     ])->first();
@@ -94,7 +94,7 @@ class EnvioController extends Controller
                             }
                             $objDetalleEnvio->id_especificacion     = $detalle_envio[0];
                             $objDetalleEnvio->id_envio              = $model->id_envio;
-                            $objDetalleEnvio->id_agencia_transporte = $detalle_envio[1];
+                            $objDetalleEnvio->id_aerolinea = $detalle_envio[1];
                             $objDetalleEnvio->cantidad              = $detalle_envio[2];
                             $objDetalleEnvio->envio                 = $detalle_envio[3];
                             $objDetalleEnvio->form                  = $detalle_envio[5];
@@ -124,7 +124,7 @@ class EnvioController extends Controller
                         }
                         $objDetalleEnvio->id_especificacion      = $detalle_envio[0];
                         $objDetalleEnvio->id_envio               = $existDataEnvio->id_envio;
-                        $objDetalleEnvio->id_agencia_transporte  = $detalle_envio[1];
+                        $objDetalleEnvio->id_aerolinea           = $detalle_envio[1];
                         $objDetalleEnvio->cantidad               = $detalle_envio[2];
                         $objDetalleEnvio->envio                  = $detalle_envio[3];
                         $objDetalleEnvio->form                   = $detalle_envio[5];
@@ -202,7 +202,7 @@ class EnvioController extends Controller
             'datos_exportacion_' => DatosExportacion::join('cliente_datoexportacion as cde','dato_exportacion.id_dato_exportacion','cde.id_dato_exportacion')
                 ->where('id_cliente',$request->id_cliente)->get(),
             'paises'    => Pais::all(),
-            'agenciasTransporte' => Aerolinea::all()
+            'aerolineas' => Aerolinea::all()
         ]);
     }
 
@@ -247,8 +247,8 @@ class EnvioController extends Controller
             ->join('cliente as c','p.id_cliente','=','c.id_cliente')
             ->join('detalle_cliente as dc','c.id_cliente','=','dc.id_cliente' )
             ->join('especificacion as es','de.id_especificacion','es.id_especificacion')
-            ->join('aerolineas as at','de.id_agencia_transporte','=','at.id_agencia_transporte')
-            ->select('p.*','dc.nombre','e.*','de.*','es.nombre','at.nombre as at_nombre','at.tipo_agencia','dc.nombre as c_nombre')
+            ->join('aerolineas as a','de.id_aerolinea','=','a.id_aerolinea')
+            ->select('p.*','dc.nombre','e.*','de.*','es.nombre','a.nombre as a_nombre','a.tipo_agencia','dc.nombre as c_nombre')
             ->where('dc.estado',1);
 
         if ($busquedaAnno != '')
@@ -281,7 +281,7 @@ class EnvioController extends Controller
             $objSheet->getCell('A3')->setValue('Fecha de envío ');
             $objSheet->getCell('B3')->setValue('Cantidad / Especificaciones');
             $objSheet->getCell('C3')->setValue('Cliente');
-            $objSheet->getCell('D3')->setValue('Agencia de Transporte');
+            $objSheet->getCell('D3')->setValue('Aerolinea');
             $objSheet->getCell('E3')->setValue('Tipo de agencia');
 
 
@@ -400,7 +400,7 @@ class EnvioController extends Controller
                 $dataDetallePedido = Envio::where('id_envio',$request->id_envio)->select('id_pedido')
                     ->join('detalle_pedido as dp','envio.id_pedido','dp.id_pedido')->select('id_detalle_pedido')->get();
 
-                DetalleEnvio::where('id_envio',$request->id_envio)->update(['id_agencia_transporte' => $request->agencia_transporte]);
+                DetalleEnvio::where('id_envio',$request->id_envio)->update(['id_aerolinea' => $request->id_aerolinea]);
 
                 foreach ($dataDetallePedido as $key => $detallePedido) {
 
