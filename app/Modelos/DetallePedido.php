@@ -61,4 +61,17 @@ class DetallePedido extends Model
                 ->where('id_especificacion_empaque', $esp_emp)->get(),
         ];
     }
+
+    public function haveDistribucion()
+    {
+        if (count($this->marcaciones) > 0) {
+            foreach ($this->marcaciones as $m) {
+                if (count($m->distribuciones) == 0)
+                    return false;
+            }
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

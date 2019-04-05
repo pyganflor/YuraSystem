@@ -50,4 +50,11 @@ class Marcacion extends Model
             ->where('id_detalle_especificacionempaque', $det_esp)->first();
         return $r;
     }
+
+    public function eliminarDistribuciones()
+    {
+        foreach ($this->distribuciones as $d) {
+            $d->delete();
+        }
+    }
 }

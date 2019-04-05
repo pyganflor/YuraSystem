@@ -409,6 +409,9 @@
                             </td>
                         @endif
                     </tr>
+                    <input type="hidden"
+                           id="ramos_x_caja_det_esp_{{$det_esp->id_detalle_especificacionempaque}}_{{$esp_emp->id_especificacion_empaque}}"
+                           value="{{$det_esp->cantidad}}">
                     <input type="hidden" class="id_det_esp_{{$esp_emp->id_especificacion_empaque}}"
                            value="{{$det_esp->id_detalle_especificacionempaque}}">
                 @endforeach
@@ -427,7 +430,10 @@
     <button type="button" class="btn btn-xs btn-default" onclick="editar_pedido_tinturado('{{$pedido->id_pedido}}', '{{$pos_det_ped}}',false)">
         <i class="fa fa-fw fa-refresh"></i> Refrescar
     </button>
-    <button type="button" class="btn btn-xs btn-success" onclick="update_orden_tinturada()">
+    <button type="button" class="btn btn-xs btn-success" onclick="update_orden_tinturada()" id="btn_update_orden_tinturada">
+        <i class="fa fa-fw fa-save"></i> Guardar
+    </button>
+    <button type="button" class="btn btn-xs btn-success" onclick="guardar_distribucion()" id="btn_guardar_distribucion" style="display: none;">
         <i class="fa fa-fw fa-save"></i> Guardar
     </button>
     @if($have_prev)
@@ -460,92 +466,96 @@
 <script>
     function update_orden_tinturada() {
         if ($('#form-update_orden_semanal').valid()) {
-            ids_esp_emp = $('.id_esp_emp');
-            arreglo_esp_emp = [];
-            for (ee = 0; ee < ids_esp_emp.length; ee++) {
-                ids_det_esp = $('.id_det_esp_' + ids_esp_emp[ee].value);
-                /* ========= PRECIOS x DETALLE ESPECIFICACION ========== */
-                arreglo_precios = [];
-                for (det = 0; det < ids_det_esp.length; det++) {
-                    arreglo_precios.push({
-                        id_det_esp: ids_det_esp[det].value,
-                        precio: $('#precio_det_esp_' + ids_det_esp[det].value).val()
-                    });
-                }
-                /* ========= MARCACIONES_COLORACIONES ========== */
-                fil = $('#marcaciones_' + ids_esp_emp[ee].value).val();
-                col = $('#coloraciones_' + ids_esp_emp[ee].value).val();
-                if ($('#cantidad_piezas').val() != $('#total_piezas_' + ids_esp_emp[ee].value).val()) {
-                    alerta('<div class="alert alert-warning text-center">Las cantidades de piezas distribuidas no coinciden con las pedidas</div>');
-                    $('#cantidad_piezas').addClass('error');
-                    return false;
-                }
-                arreglo_marcaciones = [];
-                arreglo_coloraciones = [];
-                for (f = 0; f < fil; f++) {
-                    if ($('#nombre_marcacion_' + f + '_' + ids_esp_emp[ee].value).val() != '') {
-                        colores = [];
-                        for (c = 0; c < col; c++) {
-                            cant_x_det_esp = [];
-                            if (f == 0) {
-                                /* =========== PRECIOS x COLORACION ========= */
-                                arreglo_precios_x_col = [];
-                                for (det = 0; det < ids_det_esp.length; det++) {
-                                    arreglo_precios_x_col.push({
-                                        id_det_esp: ids_det_esp[det].value,
-                                        precio: $('#precio_color_' + c + '_' + ids_det_esp[det].value + '_' + ids_esp_emp[ee].value).val()
-                                    });
-                                }
-                                arreglo_coloraciones.push({
-                                    id_color: $('#color_' + c + '_' + ids_esp_emp[ee].value).val(),
-                                    arreglo_precios_x_col: arreglo_precios_x_col
-                                });
-                            }
-                            for (det = 0; det < ids_det_esp.length; det++) {
-                                cant_x_det_esp.push({
-                                    id_det_esp: ids_det_esp[det].value,
-                                    cantidad: $('#ramos_marcacion_' + f + '_' + c + '_' + ids_det_esp[det].value + '_' + ids_esp_emp[ee].value).val()
-                                });
-                            }
-                            colores.push({
-                                cant_x_det_esp: cant_x_det_esp
+            modal_quest('modal_quest_update_orden_tinturada', '<div class="alert alert-info text-center">' +
+                '¿Está seguro de modificar los datos de este pedido? (Se perderán las distribuciones relacionadas a esta especificación)</div>',
+                '<i class="fa fa-fw fa-exclamation-triangle"></i> Mensaje de alerta', true, false, '{{isPC() ? '35%' : ''}}', function () {
+                    ids_esp_emp = $('.id_esp_emp');
+                    arreglo_esp_emp = [];
+                    for (ee = 0; ee < ids_esp_emp.length; ee++) {
+                        ids_det_esp = $('.id_det_esp_' + ids_esp_emp[ee].value);
+                        /* ========= PRECIOS x DETALLE ESPECIFICACION ========== */
+                        arreglo_precios = [];
+                        for (det = 0; det < ids_det_esp.length; det++) {
+                            arreglo_precios.push({
+                                id_det_esp: ids_det_esp[det].value,
+                                precio: $('#precio_det_esp_' + ids_det_esp[det].value).val()
                             });
                         }
-                        arreglo_marcaciones.push({
-                            nombre: $('#nombre_marcacion_' + f + '_' + ids_esp_emp[ee].value).val(),
-                            ramos: $('#total_ramos_marcacion_' + f + '_' + ids_esp_emp[ee].value).val(),
-                            piezas: $('#total_piezas_marcacion_' + f + '_' + ids_esp_emp[ee].value).val(),
-                            colores: colores
+                        /* ========= MARCACIONES_COLORACIONES ========== */
+                        fil = $('#marcaciones_' + ids_esp_emp[ee].value).val();
+                        col = $('#coloraciones_' + ids_esp_emp[ee].value).val();
+                        if ($('#cantidad_piezas').val() != $('#total_piezas_' + ids_esp_emp[ee].value).val()) {
+                            alerta('<div class="alert alert-warning text-center">Las cantidades de piezas distribuidas no coinciden con las pedidas</div>');
+                            $('#cantidad_piezas').addClass('error');
+                            return false;
+                        }
+                        arreglo_marcaciones = [];
+                        arreglo_coloraciones = [];
+                        for (f = 0; f < fil; f++) {
+                            if ($('#nombre_marcacion_' + f + '_' + ids_esp_emp[ee].value).val() != '') {
+                                colores = [];
+                                for (c = 0; c < col; c++) {
+                                    cant_x_det_esp = [];
+                                    if (f == 0) {
+                                        /* =========== PRECIOS x COLORACION ========= */
+                                        arreglo_precios_x_col = [];
+                                        for (det = 0; det < ids_det_esp.length; det++) {
+                                            arreglo_precios_x_col.push({
+                                                id_det_esp: ids_det_esp[det].value,
+                                                precio: $('#precio_color_' + c + '_' + ids_det_esp[det].value + '_' + ids_esp_emp[ee].value).val()
+                                            });
+                                        }
+                                        arreglo_coloraciones.push({
+                                            id_color: $('#color_' + c + '_' + ids_esp_emp[ee].value).val(),
+                                            arreglo_precios_x_col: arreglo_precios_x_col
+                                        });
+                                    }
+                                    for (det = 0; det < ids_det_esp.length; det++) {
+                                        cant_x_det_esp.push({
+                                            id_det_esp: ids_det_esp[det].value,
+                                            cantidad: $('#ramos_marcacion_' + f + '_' + c + '_' + ids_det_esp[det].value + '_' + ids_esp_emp[ee].value).val()
+                                        });
+                                    }
+                                    colores.push({
+                                        cant_x_det_esp: cant_x_det_esp
+                                    });
+                                }
+                                arreglo_marcaciones.push({
+                                    nombre: $('#nombre_marcacion_' + f + '_' + ids_esp_emp[ee].value).val(),
+                                    ramos: $('#total_ramos_marcacion_' + f + '_' + ids_esp_emp[ee].value).val(),
+                                    piezas: $('#total_piezas_marcacion_' + f + '_' + ids_esp_emp[ee].value).val(),
+                                    colores: colores
+                                });
+                            } else {
+                                alerta('<div class="alert alert-warning text-center">Faltan datos (nombre de marcación) por ingresar</div>');
+                                $('#nombre_marcacion_' + f + '_' + ids_esp_emp[ee].value).addClass('error');
+                                return false;
+                            }
+                        }
+
+                        arreglo_esp_emp.push({
+                            id_esp_emp: ids_esp_emp[ee].value,
+                            arreglo_precios: arreglo_precios,
+                            arreglo_marcaciones: arreglo_marcaciones,
+                            arreglo_coloraciones: arreglo_coloraciones,
                         });
-                    } else {
-                        alerta('<div class="alert alert-warning text-center">Faltan datos (nombre de marcación) por ingresar</div>');
-                        $('#nombre_marcacion_' + f + '_' + ids_esp_emp[ee].value).addClass('error');
-                        return false;
                     }
-                }
+                    datos = {
+                        _token: '{{csrf_token()}}',
+                        id_pedido: $('#id_pedido').val(),
+                        id_detalle_pedido: $('#id_detalle_pedido').val(),
+                        fecha_pedido: $('#fecha_pedido').val(),
+                        fecha_envio: $('#fecha_envio').val(),
+                        cantidad_piezas: $('#cantidad_piezas').val(),
+                        id_agencia_carga: $('#id_agencia_carga').val(),
+                        arreglo_esp_emp: arreglo_esp_emp,
+                    };
 
-                arreglo_esp_emp.push({
-                    id_esp_emp: ids_esp_emp[ee].value,
-                    arreglo_precios: arreglo_precios,
-                    arreglo_marcaciones: arreglo_marcaciones,
-                    arreglo_coloraciones: arreglo_coloraciones,
+                    post_jquery('{{url('pedidos/update_orden_tinturada')}}', datos, function () {
+                        cerrar_modals();
+                        editar_pedido_tinturado(datos['id_pedido'], $('#pos_det_ped').val(), false);
+                    });
                 });
-            }
-            datos = {
-                _token: '{{csrf_token()}}',
-                id_pedido: $('#id_pedido').val(),
-                id_detalle_pedido: $('#id_detalle_pedido').val(),
-                fecha_pedido: $('#fecha_pedido').val(),
-                fecha_envio: $('#fecha_envio').val(),
-                cantidad_piezas: $('#cantidad_piezas').val(),
-                id_agencia_carga: $('#id_agencia_carga').val(),
-                arreglo_esp_emp: arreglo_esp_emp,
-            };
-
-            post_jquery('{{url('pedidos/update_orden_tinturada')}}', datos, function () {
-                cerrar_modals();
-                editar_pedido_tinturado(datos['id_pedido'], $('#pos_det_ped').val(), false);
-            });
         }
     }
 
@@ -595,6 +605,98 @@
 
         get_jquery('{{url('pedidos/distribuir_pedido_tinturado')}}', datos, function (retorno) {
             $('#div_tabla_distribucion').html(retorno);
+            $('#btn_guardar_distribucion').show();
+            $('#btn_update_orden_tinturada').hide();
         });
+    }
+
+    function guardar_distribucion() {
+        ids_esp_emp = $('.id_esp_emp');
+        arreglo_esp_emp = [];
+        for (ee = 0; ee < ids_esp_emp.length; ee++) {
+            id_esp_emp = ids_esp_emp[ee].value;
+            ids_det_esp = $('.id_det_esp_' + id_esp_emp);
+            marcaciones = [];
+            ids_marcaciones = $('.id_marcacion_' + id_esp_emp);
+            for (m = 0; m < ids_marcaciones.length; m++) {
+                id_marca = ids_marcaciones[m].value;
+                distribuciones = [];
+                cant_distr = parseInt($('#cantidad_distribuciones_' + id_marca + '_' + id_esp_emp).val());
+                for (d = 1; d <= cant_distr; d++) {
+                    ids_coloraciones = $('.id_coloracion_' + id_esp_emp);
+                    coloraciones = [];
+                    r = 0;
+                    for (c = 0; c < ids_coloraciones.length; c++) {
+                        id_col = ids_coloraciones[c].value;
+                        detalles_esp = [];
+                        for (det = 0; det < ids_det_esp.length; det++) {
+                            id_det_esp = ids_det_esp[det].value;
+                            detalles_esp.push({
+                                id_det_esp: id_det_esp,
+                                cant: $('#distribucion_' + id_marca + '_' + id_col + '_' + id_det_esp + '_' + d + '_' + id_esp_emp).val()
+                            });
+
+                            /* ======= VALIDAR CANTIDADES ======= */
+                            r += parseInt($('#distribucion_' + id_marca + '_' + id_col + '_' + id_det_esp + '_' + d + '_' + id_esp_emp).val());
+                        }
+                        coloraciones.push({
+                            id_coloracion: id_col,
+                            detalles_esp: detalles_esp
+                        });
+                    }
+                    if (r != parseInt($('#input_ramos_distribucion_' + id_marca + '_' + d + '_' + id_esp_emp).val())) {
+                        alerta('La distribución de los ramos no coinciden con los totales');
+                        $('#celda_ramos_' + id_marca + '_' + d + '_' + id_esp_emp).addClass('error');
+                        return false;
+                    }
+                    distribuciones.push({
+                        ramos: $('#input_ramos_distribucion_' + id_marca + '_' + d + '_' + id_esp_emp).val(),
+                        piezas: $('#select_distribuir_' + id_marca + '_' + d + '_' + id_esp_emp).val(),
+                        pos_pieza: $('#n_cajas_' + id_marca + '_' + d + '_' + id_esp_emp).val(),
+                        coloraciones: coloraciones
+                    });
+                }
+                marcaciones.push({
+                    id_marcacion: id_marca,
+                    distribuciones: distribuciones
+                });
+            }
+            arreglo_esp_emp.push({
+                id_esp_emp: id_esp_emp,
+                marcaciones: marcaciones
+            });
+        }
+        datos = {
+            _token: '{{csrf_token()}}',
+            arreglo_esp_emp: arreglo_esp_emp
+        };
+        post_jquery('{{url('pedidos/guardar_distribucion')}}', datos, function () {
+
+        });
+    }
+
+    function ver_distribucion(det_ped) {
+        datos = {
+            id_det_ped: det_ped
+        };
+        get_jquery('{{url('pedidos/ver_distribucion')}}', datos, function (retorno) {
+            $('#div_tabla_distribucion').html(retorno);
+            $('#btn_guardar_distribucion').hide();
+            $('#btn_update_orden_tinturada').hide();
+        });
+    }
+
+    function quitar_distribuciones(id_ped) {
+        datos = {
+            _token: '{{csrf_token()}}',
+            id_ped: id_ped
+        };
+        modal_quest('modal-quest_quitar_distribuciones', '<div class="alert alert-info text-center">' +
+            '¿Está seguro de eliminar todas las distribuciones del pedido?</div>',
+            '<i class="fa fa-fw fa-exclamation-triangle"></i> Mensaje de alerta', true, false, '{{isPC() ? '35%' : ''}}', function () {
+                post_jquery('{{url('pedidos/quitar_distribuciones')}}', datos, function (retorno) {
+                    editar_pedido_tinturado(id_ped, 0, false);
+                });
+            });
     }
 </script>

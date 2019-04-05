@@ -29,6 +29,6 @@
 
 <div class="text-center" style="margin-top: 10px">
     <button type="button" class="btn btn-xs btn-success" onclick="store_orden_semanal()">
-        <i class="fa fa-fw fa-check"></i> Continuar
+        <i class="fa fa-fw fa-check"></i> Guardar
     </button>
 </div>
