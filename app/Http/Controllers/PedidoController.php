@@ -4,8 +4,13 @@ namespace yura\Http\Controllers;
 
 use Illuminate\Http\Request;
 use yura\Modelos\ClienteDatoExportacion;
+use yura\Modelos\Comprobante;
 use yura\Modelos\DatosExportacion;
+use yura\Modelos\DesgloseEnvioFactura;
 use yura\Modelos\DetalleEnvio;
+use yura\Modelos\DetalleFactura;
+use yura\Modelos\ImpuestoDesgloseEnvioFactura;
+use yura\Modelos\ImpuestoDetalleFactura;
 use yura\Modelos\Pedido;
 use yura\Modelos\DetallePedido;
 use yura\Modelos\Envio;
@@ -107,7 +112,25 @@ class PedidoController extends Controller
 
                 if(!empty($request->id_pedido)){
                     $dataEnvio = Envio::where('id_pedido',$request->id_pedido)->select('id_envio')->first();
-                    if($dataEnvio !== null){
+                    if($dataEnvio->id_envio !== null){
+                        //$dataComprobante = Comprobante::where('id_envio',$dataEnvio->id_envio)->select('id_comprobante','clave_acceso')->first();
+                        $dataComprobante = Comprobante::where('id_envio',$dataEnvio->id_envio)
+                            ->join('detalle_factura as df','comprobante.id_comprobante','df.id_comprobante')
+                            ->join('impuesto_detalle_factura as idf','df.id_detalle_factura','idf.id_detalle_factura')
+                            ->join('desglose_envio_factura as def','comprobante.id_comprobante','def.id_comprobante')
+                            ->join('impuesto_desglose_envio_factura as idef','def.id_desglose_envio_factura','idef.id_desglose_envio_factura')
+                            ->select('clave_acceso','comprobante.id_comprobante','df.id_detalle_factura','id_impuesto_desglose_envio_factura')->get();
+                        if(count($dataComprobante)>0 && $dataComprobante[0]->id_comprobante != null){
+                            unlink(env('PATH_XML_FIRMADOS').$dataComprobante[0]->clave_acceso.".xml");
+                            unlink(env('PATH_XML_GENERADOS').$dataComprobante[0]->clave_acceso.".xml");
+                            foreach ($dataComprobante as $item)
+                                ImpuestoDesgloseEnvioFactura::where('id_desglose_envio_factura', $item->id_impuesto_desglose_envio_factura)->delete();
+                            DesgloseEnvioFactura::where('id_comprobante',$dataComprobante[0]->id_comprobante)->delete();
+                            ImpuestoDetalleFactura::where('id_detalle_factura', $dataComprobante[0]->id_detalle_factura)->delete();
+                            DetalleFactura::where('id_comprobante', $dataComprobante[0]->id_comprobante)->delete();
+                            Comprobante::destroy($dataComprobante[0]->id_comprobante);
+                        }
+
                         DetalleEnvio::where('id_envio',$dataEnvio->id_envio)->delete();
                         Envio::where('id_pedido',$request->id_pedido)->delete();
                     }

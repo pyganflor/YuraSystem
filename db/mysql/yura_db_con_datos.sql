@@ -47,7 +47,7 @@ INSERT INTO `agencia_carga` (`id_agencia_carga`, `nombre`, `codigo`, `estado`, `
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `agencia_transporte`
+-- Estructura de tabla para la tabla `aerolineas`
 --
 
 CREATE TABLE `agencia_transporte` (
@@ -59,7 +59,7 @@ CREATE TABLE `agencia_transporte` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 --
--- Volcado de datos para la tabla `agencia_transporte`
+-- Volcado de datos para la tabla `aerolineas`
 --
 
 INSERT INTO `agencia_transporte` (`id_agencia_transporte`, `nombre`, `tipo_agencia`, `estado`, `fecha_registro`) VALUES
@@ -2574,7 +2574,7 @@ ALTER TABLE `agencia_carga`
   ADD UNIQUE KEY `nombre` (`nombre`);
 
 --
--- Indices de la tabla `agencia_transporte`
+-- Indices de la tabla `aerolineas`
 --
 ALTER TABLE `agencia_transporte`
   ADD PRIMARY KEY (`id_agencia_transporte`);
@@ -3095,7 +3095,7 @@ ALTER TABLE `agencia_carga`
   MODIFY `id_agencia_carga` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
--- AUTO_INCREMENT de la tabla `agencia_transporte`
+-- AUTO_INCREMENT de la tabla `aerolineas`
 --
 ALTER TABLE `agencia_transporte`
   MODIFY `id_agencia_transporte` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;

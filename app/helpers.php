@@ -48,7 +48,7 @@ use yura\Modelos\Marcacion;
 use yura\Modelos\DetallePedidoDatoExportacion;
 use yura\Modelos\DatosExportacion;
 use yura\Modelos\TipoImpuesto;
-use yura\Modelos\AgenciaTransporte;
+use yura\Modelos\Aerolinea;
 use yura\Modelos\Coloracion;
 use yura\Modelos\EspecificacionEmpaque;
 
@@ -1072,7 +1072,7 @@ function getPais($codigo)
     return Pais::where('codigo', $codigo)->select('nombre')->first();
 }
 
-//==================  Funciones involucradas en la comprobante electrónica ======================//
+//==================  Funciones involucradas en la facturación electrónica ======================//
 function generaDigitoVerificador($cadena)
 {
     $arr_num = str_split($cadena);
@@ -1177,7 +1177,7 @@ function getDatosFacturaEnvio($id_envio)
         ->join('detalle_especificacionempaque as deemp', 'eemp.id_especificacion_empaque', 'deemp.id_especificacion_empaque')
         ->join('empaque as emp', 'eemp.id_empaque', 'emp.id_empaque')
         ->join('configuracion_empresa as ce', 'emp.id_configuracion_empresa', 'ce.id_configuracion_empresa')
-        ->join('agencia_transporte as at', 'de.id_agencia_transporte', 'at.id_agencia_transporte')
+        ->join('aerolineas as at', 'de.id_agencia_transporte', 'at.id_agencia_transporte')
         ->join('tipo_impuesto as ti', 'dc.codigo_porcentaje_impuesto', 'ti.codigo')
         ->join('variedad as v', 'deemp.id_variedad', 'v.id_variedad')
         ->join('planta as pl', 'v.id_planta', 'pl.id_planta')
@@ -1206,15 +1206,13 @@ function getCodigoDae($codigoPais,$mes,$anno)
     ])->select('codigo_dae')->first();
 }
 
-function getFacturado($idEnvio)
-{
-    return Comprobante::where([
+function getFacturado($idEnvio,$estado){
+  $f =  Comprobante::where([
         ['id_envio', $idEnvio],
-        ['estado', 1]
-    ])->orWhere([
-        ['id_envio', $idEnvio],
-        ['estado', 5]
+        ['estado', $estado]
     ])->count();
+    ($f > 0) ? $facturado = true : $facturado = null;
+    return $f;
 }
 
 function respuesta_autorizacion_comprobante($clave_acceso_lote)
@@ -1265,7 +1263,7 @@ function accionAutorizacion($autorizacion, $path, $msg, $tipoDocumento = false, 
     $actualizaEstado = 1;
     if ((String)$autorizacion->estado === "AUTORIZADO") {
         $actualizaEstado = 5;
-        $numeroComprobante = (String)"001" . getPuntoAcceso() . getDetallesClaveAcceso($numeroAutorizacion, 'SECUENCIAL');
+        $numeroComprobante = getDetallesClaveAcceso($numeroAutorizacion, 'SERIE') . getDetallesClaveAcceso($numeroAutorizacion, 'SECUENCIAL');
         $class = 'success';
         if ($tipoDocumento == "01")
             generaFacturaPDF($autorizacion, $numeroComprobante);
@@ -1313,47 +1311,58 @@ function accionAutorizacion($autorizacion, $path, $msg, $tipoDocumento = false, 
 
 function generaFacturaPDF($autorizacion, $numeroComprobante)
 {
+    $dataComprobante = Comprobante::where('clave_acceso',$numeroComprobante) ->select('numero_comprobante')->first();
     $data = [
         'autorizacion' => $autorizacion,
         'img_clave_acceso' => generateCodeBarGs1128((String)$autorizacion->numeroAutorizacion),
         'obj_xml' => simplexml_load_string($autorizacion->comprobante),
-        'numeroComprobante' => $numeroComprobante
+        'numeroComprobante' => isset($dataComprobante->numero_comprobante)
+            ? $dataComprobante->numero_comprobante
+            : getDetallesClaveAcceso((String)$autorizacion->comprobante, 'SERIE').getDetallesClaveAcceso((String)$autorizacion->comprobante, 'PUNTO_ACCESO').getDetallesClaveAcceso((String)$autorizacion->comprobante, 'SECUENCIAL')
     ];
     PDF::loadView('adminlte.gestion.comprobante.partials.pdf.factura', compact('data'))->save(env('PDF_FACTURAS') . $autorizacion->numeroAutorizacion . ".pdf");
 }
 
-function enviarMailComprobanteCliente($tipoDocumento, $correoCliente, $nombreCliente, $nombreArchivo, $numeroComprobante)
-{
+function enviarMailComprobanteCliente($tipoDocumento, $correoCliente, $nombreCliente, $nombreArchivo, $numeroComprobante){
     if ($tipoDocumento == "01") {
         //$correoCliente
         Mail::to("pruebas-c26453@inbox.mailtrap.io")->send(new CorreoFactura($correoCliente, $nombreCliente, $nombreArchivo, $numeroComprobante));
     }
 }
 
-function getDetallesClaveAcceso($numeroAutorizacion, $detalle)
-{
+function getDetallesClaveAcceso($numeroAutorizacion, $detalle){
     switch ($detalle) {
         case 'RUC':
-
+            $resultado = substr($numeroAutorizacion, 10, 13);
             break;
         case 'FECHA_EMISION':
-
+            $resultado = substr($numeroAutorizacion, 0, 8);
             break;
-        case 'AMBIENTE':
-
+        case 'ENTORNO':
+            $resultado = substr($numeroAutorizacion, 22, 1);
             break;
-        case 'AMBIENTE':
-
+        case 'SERIE':
+            $resultado = substr($numeroAutorizacion, 24, 6);
             break;
         case 'SECUENCIAL':
             $resultado = substr($numeroAutorizacion, 30, 9);
             break;
+        case 'TIPO_EMISION':
+            $resultado = substr($numeroAutorizacion, 47, 1);
+            break;
+        case 'CODIGO_NUMERICO':
+            $resultado = substr($numeroAutorizacion, 39, 8);
+            break;
+        case 'TIPO_COMPROBANTE':
+            $resultado = substr($numeroAutorizacion, 8, 2);
+            break;
+        case 'PUNTO_ACCESO':
+            $resultado = substr($numeroAutorizacion, 27, 3);
     }
     return $resultado;
 }
 
-function getSecuencial()
-{
+function getSecuencial(){
     $inicio_secuencial = env('INICIAL_FACTURA');
     $secuencial = $inicio_secuencial + 1;
     $cant_reg = Comprobante::count();
@@ -1363,8 +1372,7 @@ function getSecuencial()
     return str_pad($secuencial, 9, "0", STR_PAD_LEFT);
 }
 
-function getPuntoAcceso()
-{
+function getPuntoAcceso(){
     return Usuario::where('id_usuario', Session::get('id_usuario'))->select('punto_acceso')->first()->punto_acceso;
 }
 
@@ -1587,7 +1595,7 @@ function getClasificacionRamo($idClasificacionRamo){
 }
 
 function getAgenciaTransporte($idAgenciaTranporte){
-    return AgenciaTransporte::find($idAgenciaTranporte);
+    return Aerolinea::find($idAgenciaTranporte);
 }
 
 function getColoracion($id)

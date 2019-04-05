@@ -5,7 +5,7 @@ namespace yura\Http\Controllers;
 use Illuminate\Http\Request;
 use yura\Modelos\Submenu;
 use yura\Modelos\Rol;
-use yura\Modelos\AgenciaTransporte;
+use yura\Modelos\Aerolinea;
 use PHPExcel;
 use PHPExcel_IOFactory;
 use PHPExcel_Worksheet;
@@ -16,53 +16,50 @@ use PHPExcel_Style_Alignment;
 use Validator;
 use DB;
 
-class AgenciaTransporteController extends Controller
+class AerolineaController extends Controller
 {
     public function index(Request $request)
     {
-        return view('adminlte.gestion.postcocecha.agencia_transporte.incio', [
+        return view('adminlte.gestion.postcocecha.aerolineas.incio', [
             'url' => $request->getRequestUri(),
             'submenu' => Submenu::Where('url', '=', substr($request->getRequestUri(), 1))->get()[0],
             'roles' => Rol::All(),
-            'text' => ['titulo' => 'Configuración de agencias de transporte', 'subtitulo' => 'módulo de administración']
+            'text' => ['titulo' => 'Configuración de las Aerolíneas', 'subtitulo' => 'módulo de administración']
         ]);
     }
 
-    public function list_agencias_transporte(Request $request)
+    public function list_aerolinea(Request $request)
     {
-
         $busqueda = $request->has('busqueda') ? espacios($request->busqueda) : '';
         $bus = str_replace(' ', '%%', $busqueda);
 
-        $listado = DB::table('agencia_transporte as at');
-        //dd($listado);
+        $listado = DB::table('aerolinea as a');
 
         if ($request->busqueda != '') $listado = $listado->Where(function ($q) use ($bus) {
-            $q->Where('at.nombre', 'like', '%' . $bus . '%')
-                ->orWhere('at.tipo_agencia', 'like', '%' . $bus . '%');
+            $q->Where('a.nombre', 'like', '%' . $bus . '%')
+                ->orWhere('a.tipo_agencia', 'like', '%' . $bus . '%');
         });
 
-        $listado = $listado->orderBy('at.nombre', 'asc')->paginate(20);
+        $listado = $listado->orderBy('a.nombre', 'asc')->paginate(20);
 
         $datos = [
             'listado' => $listado
         ];
 
-        return view('adminlte.gestion.postcocecha.agencia_transporte.partials.list_agencias_transporte', $datos);
+        return view('adminlte.gestion.postcocecha.aerolineas.partials.listado', $datos);
     }
 
-    public function crear_agencias_transporte(Request $request)
+    public function crear_aerolinea(Request $request)
     {
-        $request->id_agencia_transporte != '' ? $dataAgencia = AgenciaTransporte::find($request->id_agencia_transporte) : $dataAgencia = '';
+        $request->id_aerolinea != '' ? $dataAgencia = Aerolinea::find($request->id_aerolinea) : $dataAgencia = '';
 
-        return view('adminlte.gestion.postcocecha.agencia_transporte.partials.forms.form_agencia_transporte', [
+        return view('adminlte.gestion.postcocecha.aerolineas.partials.forms.form_aerolinea', [
             'dataAgencia' => $dataAgencia
         ]);
     }
 
-    public function store_agencias_transporte(Request $request)
+    public function store_aerolinea(Request $request)
     {
-
         $valida = Validator::make($request->all(), [
             'nombre' => 'required',
             'agencia_transporte' => 'required',
@@ -73,7 +70,7 @@ class AgenciaTransporteController extends Controller
 
             //dd($request->all());
 
-            empty($request->id_agencia_transporte) ? $objAgenciaTransporte = new AgenciaTransporte : $objAgenciaTransporte = AgenciaTransporte::find($request->id_agencia_transporte);
+            empty($request->id_aerolinea) ? $objAgenciaTransporte = new Aerolinea : $objAgenciaTransporte = Aerolinea::find($request->id_aerolinea);
 
             $objAgenciaTransporte->nombre = $request->nombre;
             $objAgenciaTransporte->tipo_agencia = $request->agencia_transporte;
@@ -81,12 +78,12 @@ class AgenciaTransporteController extends Controller
             $msg = '';
 
             if ($objAgenciaTransporte->save()) {
-                $model = AgenciaTransporte::all()->last();
+                $model = Aerolinea::all()->last();
                 $success = true;
                 $msg .= '<div class="alert alert-success text-center">' .
                     '<p> Se ha guardado la agencia de transporte ' . $objAgenciaTransporte->nombre . '  exitosamente</p>'
                     . '</div>';
-                bitacora('agencia_tranposrte', $model->id_agencia_transporte, 'I', 'Inserción satisfactoria de una nueva agencia de transporte');
+                bitacora('agencia_tranposrte', $model->id_aerolinea, 'I', 'Inserción satisfactoria de una nueva agencia de transporte');
             } else {
                 $success = false;
                 $msg .= '<div class="alert alert-warning text-center">' .
@@ -116,13 +113,13 @@ class AgenciaTransporteController extends Controller
         ];
     }
 
-    public function update_agencias_transporte(Request $request)
+    public function update_aerolinea(Request $request)
     {
-        $model = AgenciaTransporte::find($request->id_agencia_transporte);
+        $model = Aerolinea::find($request->id_aerolinea);
         if ($model != '') {
             $model->estado = $model->estado == 1 ? 0 : 1;
             if ($model->save()) {
-                bitacora('agencia_transporte', $model->id_agencia_transporte, 'U', 'Actualización satisfactoria del estado de la agencia de transporte' . $model->nombre);
+                bitacora('aerolinea', $model->id_aerolinea, 'U', 'Actualización satisfactoria del estado de la aerolínea' . $model->nombre);
 
                 return [
                     'success' => true,
@@ -145,7 +142,7 @@ class AgenciaTransporteController extends Controller
         }
     }
 
-    public function excel_agencias_transporte(Request $request)
+    public function excel_aerolinea(Request $request)
     {
         //---------------------- EXCEL --------------------------------------
         $objPHPExcel = new PHPExcel;
@@ -154,10 +151,9 @@ class AgenciaTransporteController extends Controller
         $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, "Excel2007");
         $currencyFormat = '#,#0.## \€;[Red]-#,#0.## \€';
         $numberFormat = '#,#0.##;[Red]-#,#0.##';
-
         $objPHPExcel->removeSheetByIndex(0); //Eliminar la hoja inicial por defecto
 
-        $this->excelAgenciasCarga($objPHPExcel, $request);
+        $this->excelAerolinea($objPHPExcel, $request);
 
         //--------------------------- GUARDAR EL EXCEL -----------------------
 
@@ -172,24 +168,23 @@ class AgenciaTransporteController extends Controller
         $objWriter->save('php://output');
     }
 
-    public function excelAgenciasCarga($objPHPExcel, $request)
+    public function excelAerolinea($objPHPExcel, $request)
     {
-
         $busqueda = $request->has('busqueda') ? espacios($request->busqueda) : '';
         $bus = str_replace(' ', '%%', $busqueda);
 
-        $listado = DB::table('agencia_transporte as at');
+        $listado = DB::table('aerolinea as a');
         //dd($listado);
 
         if ($request->busqueda != '') $listado = $listado->Where(function ($q) use ($bus) {
-            $q->Where('at.nombre', 'like', '%' . $bus . '%')
-                ->orWhere('at.tipo_agencia', 'like', '%' . $bus . '%');
+            $q->Where('a.nombre', 'like', '%' . $bus . '%')
+                ->orWhere('a.tipo_agencia', 'like', '%' . $bus . '%');
         });
 
-        $listado = $listado->orderBy('at.nombre', 'asc')->paginate(20);
+        $listado = $listado->orderBy('a.nombre', 'asc')->paginate(20);
 
         if (count($listado) > 0) {
-            $objSheet = new PHPExcel_Worksheet($objPHPExcel, 'Agencias Transporte');
+            $objSheet = new PHPExcel_Worksheet($objPHPExcel, 'Aerolíneas');
             $objPHPExcel->addSheet($objSheet, 0);
 
             $objSheet->mergeCells('A1:B1');
@@ -205,7 +200,7 @@ class AgenciaTransporteController extends Controller
 
             $objSheet->getCell('A3')->setValue('Nombre ');
             $objSheet->getCell('B3')->setValue('Tipo de Agencia');
-
+            $objSheet->getCell('C3')->setValue('Código');
 
             $objSheet->getStyle('A3:B3')->getFont()->setBold(true)->setSize(12);
 
@@ -222,6 +217,14 @@ class AgenciaTransporteController extends Controller
                 ->getStartColor()
                 ->setRGB('CCFFCC');
 
+            $objSheet->getStyle('A3:C3')->getFont()->setBold(true)->setSize(12);
+
+            $objSheet->getStyle('A3:C3')
+                ->getFill()
+                ->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
+                ->getStartColor()
+                ->setRGB('CCFFCC');
+
             //--------------------------- LLENAR LA TABLA ---------------------------------------------
             for ($i = 0; $i < sizeof($listado); $i++) {
 
@@ -230,6 +233,7 @@ class AgenciaTransporteController extends Controller
 
                 $objSheet->getCell('A' . ($i + 4))->setValue($listado[$i]->nombre);
                 $objSheet->getCell('B' . ($i + 4))->setValue($listado[$i]->tipo_agencia);
+                $objSheet->getCell('C' . ($i + 4))->setValue($listado[$i]->codigo);
             }
 
             $objSheet->getColumnDimension('A')->setAutoSize(true);

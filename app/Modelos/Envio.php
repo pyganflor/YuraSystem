@@ -22,7 +22,8 @@ class Envio extends Model
         'email',
         'telefono',
         'direccion',
-        'codigo_pais'
+        'codigo_pais',
+        'almacen'
 
     ];
 

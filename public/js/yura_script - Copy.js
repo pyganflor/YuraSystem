@@ -139,16 +139,10 @@ function habilitar_campos() {
 function store_pedido(id_cliente, pedido_fijo, csrf_token, vista, id_pedido) {
 
     if ($('#form_add_pedido').valid()) {
-        id_pedido
-            ? msg = '<div class="alert alert-warning text-center">' +
-            '<p>Si este pedido posee envíos prefacturados al editarlo seran borrados y se deberán crea nuevamente</p>' +
-            '</div>'
-            : msg = '';
         option_agencias_transporte = [];
         if ($("#envio_automatico").is(":checked")) {
             texto = "<div class='row'>" +
                 "<div class='col-md-12'>" +
-                ""+msg+""+
                 "<label for='fecha_envio'>Seleccione la fecha de envío</label>" +
                 "<input type='date' id='fecha_envio' name='fecha_envio' class='form-control' value='" + moment().format('YYYY-MM-DD') + "'>" +
                 "<span id='error_fecha_envio'></span>" +

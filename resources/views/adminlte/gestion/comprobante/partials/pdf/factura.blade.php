@@ -42,7 +42,13 @@
                     <td style="font-size:13px;padding:5px">NÚMERO DE AUTORIZACIÓN</td>
                 </tr>
                 <tr>
-                    <td style="font-size:13px;padding:5px">{{(String)$data['obj_xml']->infoTributaria->claveAcceso}}</td>
+                    <td style="font-size:13px;padding:5px">
+                        @if($data['img_clave_acceso'] != null)
+                        {{(String)$data['obj_xml']->infoTributaria->claveAcceso}}|
+                        @else
+                            SIN VALOR TRIBUTARIO
+                        @endif
+                    </td>
                 </tr>
                 <tr>
                     <td style="font-size:13px;padding:5px">FECHA Y HORA <br/>DE AUTORIZACIÓN: {{(String)$data['autorizacion']->fechaAutorizacion}}</td>
@@ -58,7 +64,11 @@
                 </tr>
                 <tr>
                     <td>
+                        @if($data['img_clave_acceso'] != null)
                         <img src="data:image/png;base64,{{$data['img_clave_acceso']}}" style="width: 350px;height: 50px"/>
+                        @else
+                            SIN VALOR TRIBUTARIO
+                        @endif
                     </td>
                 </tr>
             </table>
@@ -99,14 +109,15 @@
                 @php
                     $a = (Array)$data['obj_xml']->detalles;
                     $b = $a['detalle'];
-                    !is_array($b)
-                    ? $b = [$b]
-                    : "";
+                    !is_array($b) ? $b = [$b] : "";
+
                 @endphp
-                @foreach($b as $c)
+                @foreach($b as $key => $c)
                 <tr style="width: 750px">
                         <td style="font-size: 12px;;border:1px solid black;padding-left: 5px">{{(String)$c->codigoPrincipal}}</td>
-                        <td style="font-size: 12px;border:1px solid black;padding-left: 5px">{{(String)$c->cantidad}}</td>
+                        <td style="font-size: 12px;border:1px solid black;padding-left: 5px">
+                            {{(String)$c->cantidad}}
+                        </td>
                         <td style="font-size: 12px;width: 205px;border:1px solid black;padding-left: 5px">{{(String)$c->descripcion}}</td>
                         <td style="font-size: 12px;border:1px solid black;padding-left: 5px">{{(String)$c->precioUnitario}}</td>
                         <td style="font-size: 12px;border:1px solid black;padding-left: 5px">{{(String)$c->descuento}}</td>
@@ -133,26 +144,53 @@
                 <tr>
                     <td style="font-size:13px;padding:5px">Correo: {{(String)$data['obj_xml']->infoAdicional->campoAdicional[1]}}</td>
                 </tr>
-                @if(isset($data['obj_xml']->infoAdicional->campoAdicional[4]))
+                @if(isset($data['obj_xml']->infoAdicional->campoAdicional[7]))
                     <tr>
-                        <td style="font-size:13px;padding:5px">DAE: {{(String)$data['obj_xml']->infoAdicional->campoAdicional[4]}}</td>
+                        <td style="font-size:13px;padding:5px">DAE: {{(String)$data['obj_xml']->infoAdicional->campoAdicional[7]}}</td>
                     </tr>
                 @endif
-                @if(isset($data['obj_xml']->infoAdicional->campoAdicional[5]))
+                @if(isset($data['obj_xml']->infoAdicional->campoAdicional[4]))
                 <tr>
-                    <td style="font-size:13px;padding:5px">GUÍA MADRE: {{(String)$data['obj_xml']->infoAdicional->campoAdicional[5]}}</td>
+                    <td style="font-size:13px;padding:5px">GUÍA MADRE: {{(String)$data['obj_xml']->infoAdicional->campoAdicional[4]}}</td>
                 </tr>
                 @endif
                 @if(isset($data['obj_xml']->infoAdicional->campoAdicional[6]))
                 <tr>
-                    <td style="font-size:13px;padding:5px">GUÍA HIJA: {{(String)$data['obj_xml']->infoAdicional->campoAdicional[6]}}</td>
+                    <td style="font-size:13px;padding:5px">GUÍA HIJA: {{(String)$data['obj_xml']->infoAdicional->campoAdicional[5]}}</td>
                 </tr>
                 @endif
+                @if(isset($data['obj_xml']->infoAdicional->campoAdicional[6]))
+                    <tr>
+                        <td style="font-size:13px;padding:5px">ANDEN: {{(String)$data['obj_xml']->infoAdicional->campoAdicional[6]}}</td>
+                    </tr>
+                @endif
                 <tr>
-                    <td style="font-size:13px;padding:5px">TOTALES</td>
+                    <td style="font-size:13px;padding:5px">TOTALES:
+                    @php
+                        $piezas = 0;
+                           foreach(getPedido(getEnvio($data['detalles_envio'][0]->id_envio)->id_pedido)->detalles as $det_ped){
+                               $piezas += $det_ped->cantidad;
+                           }
+                    @endphp
+                        {{$piezas." Piezas"}}
+                    </td>
                 </tr>
                 <tr>
-                    <td style="font-size:13px;padding:5px">TALLOS</td>
+                    <td style="font-size:13px;padding:5px">TALLOS TOTALES:
+                        @php
+                            $total_tallos = 0;
+                            foreach($data['detalles_envio'] as $det_env){
+                                $i = 0;
+                                foreach ($det_env->especificacion->especificacionesEmpaque as $esp_emp) {
+                                    foreach ($esp_emp->detalles as $det_esp_emp){
+                                        $total_tallos += ((int)$b[$i]->cantidad*$det_esp_emp->tallos_x_ramos);
+                                        $i++;
+                                    }
+                                }
+                            }
+                        @endphp
+                        {{$total_tallos}}
+                    </td>
                 </tr>
             </table>
         </td>

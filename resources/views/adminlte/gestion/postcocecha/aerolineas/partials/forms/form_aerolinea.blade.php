@@ -1,6 +1,6 @@
-<form id="form_add_agencia_transporte" name="form_add_agencia_transporte">
-    <input type="hidden" value="{!! isset($dataAgencia->id_agencia_transporte) ? $dataAgencia->id_agencia_transporte : '' !!}"
-           id="id_agencia_transporte">
+<form id="form_add_aerolinea" name="form_add_aerolinea">
+    <input type="hidden" value="{!! isset($dataAgencia->id_aerolinea) ? $dataAgencia->id_aerolinea : '' !!}"
+           id="id_aerolinea">
     <div class="row">
         <div class="col-md-2">
             <div class="form-group">
@@ -12,7 +12,7 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label for="nombre">Aerolinea</label>
-                <input type="text" id="nombre_agencia" name="nombre_agencia" class="form-control" required maxlength="25" autocomplete="off"
+                <input type="text" id="nombre" name="nombre" class="form-control" required maxlength="25" autocomplete="off"
                        value="{!! !empty($dataAgencia->nombre) ? $dataAgencia->nombre : '' !!}" required="" minlength="3">
             </div>
         </div>

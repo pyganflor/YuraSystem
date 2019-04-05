@@ -7,8 +7,7 @@
             anno               : $('#anno').val(),
             id_cliente         : $('#id_cliente').val(),
             codigo_comprobante : $("#codigo_comprobante").val(),
-            desde              : $('#desde').val(),
-            hasta              : $('#hasta').val(),
+            fecha              : $('#fecha').val(),
             estado             : $('#estado').val()
         };
         $.get('{{url('comprobante/buscar')}}', datos, function (retorno) {
@@ -121,19 +120,6 @@
                     buscar_listado_comprobante();
                 });
             });
-    }
-
-    function ver_factura(documento){
-        $.LoadingOverlay('show');
-
-        div = '<div id="example1"></div>';
-        modal_view('modal_view_factura', div, '<i class="fa fa-fw fa-table"></i> Factura PDF', true, false,
-            '{{isPC() ? '90%' : ''}}');
-        $.LoadingOverlay('hide');
-        setTimeout(function () {
-            PDFObject.embed("{{env('PDF_FACTURAS')}}"+documento+".pdf", "#example1");
-        },500)
-
     }
 
     function reenviar_correo(comprobante) {

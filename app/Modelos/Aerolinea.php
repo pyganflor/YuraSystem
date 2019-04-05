@@ -4,10 +4,10 @@ namespace yura\Modelos;
 
 use Illuminate\Database\Eloquent\Model;
 
-class AgenciaTransporte extends Model
+class Aerolinea extends Model
 {
-    protected $table = 'agencia_transporte';
-    protected $primaryKey = 'id_agencia_transporte';
+    protected $table = 'aerolinea';
+    protected $primaryKey = 'id_aerolinea';
     public $incrementing = false;
     public $timestamps = false;
 
