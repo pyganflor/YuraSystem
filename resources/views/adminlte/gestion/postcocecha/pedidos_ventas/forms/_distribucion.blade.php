@@ -19,7 +19,7 @@
                                 onclick="mostrar_ocultar_distribuciones('{{$col->id_coloracion}}', '{{$esp_emp['id_esp_emp']}}')">
                             <i class="fa fa-fw fa-eye"></i>
                         </button>
-                        <input type="hidden" id="id_coloracion_{{$col->id_coloracion}}">
+                        <input type="hidden" class="id_coloracion_{{$esp_emp['id_esp_emp']}}" value="{{$col->id_coloracion}}">
                     </th>
                 @endforeach
                 <th class="text-center" width="40px" style="border-color: #9d9d9d; background-color: #357ca5; color: white">
@@ -65,7 +65,8 @@
                                                        id="distribucion_{{$marc['id']}}_{{$col->id_coloracion}}_{{$det_esp->id_detalle_especificacionempaque}}_{{$d}}_{{$esp_emp['id_esp_emp']}}"
                                                        onkeypress="return isNumber(event)"
                                                        style="width: 100%; background-color: {{$col->color->fondo}};
-                                                               color: {{$col->color->texto}}" class="text-center"
+                                                               color: {{$col->color->texto}}"
+                                                       class="text-center distribucion_{{$marc['id']}}_{{$det_esp->id_detalle_especificacionempaque}}_{{$d}}_{{$esp_emp['id_esp_emp']}}"
                                                        onchange="calcular_totales_distribucion('{{$esp_emp['id_esp_emp']}}')">
                                             </div>
                                         </li>
@@ -75,8 +76,7 @@
                             @if($d == 1)
                                 <td class="text-center td_coloracion_{{$col->id_coloracion}}_{{$esp_emp['id_esp_emp']}}" width="100px"
                                     rowspan="{{$marc['distribucion']}}"
-                                    style="border-color: #9d9d9d; background-color: {{$col->color->fondo}}; color: {{$col->color->texto}};
-                                            display: none;">
+                                    style="border-color: #9d9d9d; background-color: {{$col->color->fondo}}; color: {{$col->color->texto}}; display: none;">
                                     <ul class="list-unstyled">
                                         @foreach(getEspecificacionEmpaque($esp_emp['id_esp_emp'])->detalles as $pos_det_esp => $det_esp)
                                             @php
@@ -106,6 +106,7 @@
                             id="celda_ramos_{{$marc['id']}}_{{$d}}_{{$esp_emp['id_esp_emp']}}">
                             0
                         </th>
+                        <input type="hidden" id="input_ramos_distribucion_{{$marc['id']}}_{{$d}}_{{$esp_emp['id_esp_emp']}}">
                         <th class="text-center" width="40px" style="border-color: #9d9d9d; background-color: #add8e6"
                             id="celda_distribuir_{{$marc['id']}}_{{$d}}_{{$esp_emp['id_esp_emp']}}">
                             @if($d == 1)
@@ -127,10 +128,17 @@
                         <th class="text-center celda_n_cajas_{{$esp_emp['id_esp_emp']}}" width="40px"
                             style="border-color: #9d9d9d; background-color: #add8e6"
                             id="celda_n_cajas_{{$marc['id']}}_{{$d}}_{{$esp_emp['id_esp_emp']}}">
-                            {{$pos_marc == 0 && $d == 1 ? 1 : 0}}
+                            @php
+                                if($last_distr != ''){
+                                $caja_ini = $last_distr->pos_pieza + $last_distr->piezas;
+                                } else {
+                                    $caja_ini = $pos_marc == 0 && $d == 1 ? 1 : 0;
+                                    }
+                            @endphp
+                            {{$pos_marc == 0 && $d == 1 ? $caja_ini : 0}}
                         </th>
                         <input type="hidden" id="n_cajas_{{$marc['id']}}_{{$d}}_{{$esp_emp['id_esp_emp']}}"
-                               value="{{$pos_marc == 0 && $d == 1 ? 1 : 0}}" class="n_cajas_{{$esp_emp['id_esp_emp']}}">
+                               value="{{$pos_marc == 0 && $d == 1 ? $caja_ini : 0}}" class="n_cajas_{{$esp_emp['id_esp_emp']}}">
                         @if($d == 1)
                             <th class="text-center" style="border-color: #9d9d9d" rowspan="{{$marc['distribucion']}}">
                                 {{getMarcacion($marc['id'])->nombre}}
@@ -179,6 +187,7 @@
         /* ===== CALCULAR RAMOS y NºCAJAS ====== */
         ramox_x_caja = parseInt($('#ramos_x_caja_' + esp_emp).val());
         $('#celda_ramos_' + marc + '_' + pos + '_' + esp_emp).html(num_piezas * ramox_x_caja);
+        $('#input_ramos_distribucion_' + marc + '_' + pos + '_' + esp_emp).val(num_piezas * ramox_x_caja);
 
         celdas_n_cajas = $('.celda_n_cajas_' + esp_emp);
         n_cajas = $('.n_cajas_' + esp_emp);
@@ -188,6 +197,37 @@
             prev_piezas = parseInt(piezas_distr[i - 1].value);
             n_cajas[i].value = prev_cajas + prev_piezas;
             $('#' + celdas_n_cajas[i].id).html(prev_cajas + prev_piezas);
+        }
+
+        /* ===== DISTRIBUIR RAMOS ====== */
+        ids_coloracion = $('.id_coloracion_' + esp_emp);
+
+        ids_det_esp = $('.id_det_esp_' + esp_emp);
+
+        for (det = 0; det < ids_det_esp.length; det++) {
+            id_det_esp = ids_det_esp[det].value;
+            ramos_x_caja = parseInt($('#ramos_x_caja_det_esp_' + id_det_esp + '_' + esp_emp).val());
+            meta = (num_piezas * ramos_x_caja);
+            for (c = 0; c < ids_coloracion.length; c++) {
+                rest_ramos = parseInt($('#marcacion_coloracion_' + marc + '_' + ids_coloracion[c].value + '_' + id_det_esp + '_' + esp_emp).val());
+                distr = 0;
+
+                if (meta > 0) {
+                    if (rest_ramos >= meta) {
+                        rest_ramos -= meta;
+                        distr = meta;
+                        meta = 0;
+                    } else {
+                        meta -= rest_ramos;
+                        distr = rest_ramos;
+                        rest_ramos = 0;
+                    }
+                }
+                /* ======= PRINT ======= */
+                $('#distribucion_' + marc + '_' + ids_coloracion[c].value + '_' + id_det_esp + '_' + pos + '_' + esp_emp).val(distr);
+                /* ======= RESIDUO ======= */
+                $('#marcacion_coloracion_' + marc + '_' + ids_coloracion[c].value + '_' + id_det_esp + '_' + esp_emp).val(rest_ramos);
+            }
         }
     }
 

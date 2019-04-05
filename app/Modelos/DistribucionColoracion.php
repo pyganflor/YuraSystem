@@ -12,20 +12,20 @@ class DistribucionColoracion extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'id_coloracion',
-        'id_marcacion',
+        'id_marcacion_coloracion',
+        'id_distribucion',
         'cantidad',
         'fecha_registro',
         'estado',
     ];
 
-    public function marcacion()
+    public function distribucion()
     {
-        return $this->belongsTo('\yura\Modelos\Marcacion', 'id_marcacion');
+        return $this->belongsTo('\yura\Modelos\Distribucion', 'id_distribucion');
     }
 
-    public function coloracion()
+    public function marcacion_coloracion()
     {
-        return $this->belongsTo('\yura\Modelos\Coloracion', 'id_coloracion');
+        return $this->belongsTo('\yura\Modelos\MarcacionColoracion', 'id_marcacion_coloracion');
     }
 }

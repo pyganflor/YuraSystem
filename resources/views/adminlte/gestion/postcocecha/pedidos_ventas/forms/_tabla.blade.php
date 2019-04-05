@@ -8,10 +8,21 @@
             <button type="button" class="btn btn-xs btn-primary" onclick="add_coloracion('{{$esp_emp->id_especificacion_empaque}}')">
                 <i class="fa fa-fw fa-plus"></i> Coloración
             </button>
-            <button type="button" class="btn btn-xs btn-default pull-right elemento_distribuir"
-                    onclick="distribuir_pedido_tinturado('{{$det_ped->id_detalle_pedido}}')">
-                <i class="fa fa-fw fa-exchange"></i> Distribuir
-            </button>
+            @if($det_ped->haveDistribucion())
+                <button type="button" class="btn btn-xs btn-danger pull-right elemento_distribuir"
+                        onclick="quitar_distribuciones('{{$det_ped->id_pedido}}')">
+                    <i class="fa fa-fw fa-times"></i> Quitar Distribuciones
+                </button>
+                <button type="button" class="btn btn-xs btn-primary pull-right elemento_distribuir"
+                        onclick="ver_distribucion('{{$det_ped->id_detalle_pedido}}')">
+                    <i class="fa fa-fw fa-eye"></i> Ver Distribución
+                </button>
+            @else
+                <button type="button" class="btn btn-xs btn-primary pull-right elemento_distribuir"
+                        onclick="distribuir_pedido_tinturado('{{$det_ped->id_detalle_pedido}}')">
+                    <i class="fa fa-fw fa-exchange"></i> Distribuir
+                </button>
+            @endif
         </strong>
     </legend>
     <div style="overflow-x: scroll">

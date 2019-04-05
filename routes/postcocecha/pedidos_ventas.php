@@ -14,6 +14,9 @@ Route::get('pedidos/editar_pedido_tinturado', 'OrdenSemanalController@editar_ped
 Route::post('pedidos/update_orden_tinturada', 'OrdenSemanalController@update_orden_tinturada');
 Route::post('pedidos/eliminar_detalle_pedido_tinturado', 'OrdenSemanalController@eliminar_detalle_pedido_tinturado');
 Route::get('pedidos/distribuir_pedido_tinturado', 'OrdenSemanalController@distribuir_pedido_tinturado');
+Route::post('pedidos/guardar_distribucion', 'OrdenSemanalController@guardar_distribucion');
+Route::get('pedidos/ver_distribucion', 'OrdenSemanalController@ver_distribucion');
+Route::post('pedidos/quitar_distribuciones', 'OrdenSemanalController@quitar_distribuciones');
 Route::get('pedidos/add_pedido_personalizado', 'OrdenSemanalController@add_pedido_personalizado');
 Route::post('pedidos/store_pedido_personalizado', 'OrdenSemanalController@store_pedido_personalizado');
 Route::get('pedidos/listar_agencias_carga', 'OrdenSemanalController@listar_agencias_carga');

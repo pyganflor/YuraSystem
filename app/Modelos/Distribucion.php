@@ -25,4 +25,15 @@ class Distribucion extends Model
     {
         return $this->belongsTo('\yura\Modelos\Marcacion', 'id_marcacion');
     }
+
+    public function distribuciones_coloraciones()
+    {
+        return $this->hasMany('\yura\Modelos\DistribucionColoracion', 'id_distribucion');
+    }
+
+    public function getDistribucionMarcacionByMarcCol($marc_col)
+    {
+        return DistribucionColoracion::All()->where('id_distribucion', $this->id_distribucion)
+            ->where('id_marcacion_coloracion', $marc_col)->first();
+    }
 }

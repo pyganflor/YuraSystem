@@ -13,6 +13,8 @@ use yura\Modelos\Coloracion;
 use yura\Modelos\DetalleEnvio;
 use yura\Modelos\DetalleEspecificacionEmpaque;
 use yura\Modelos\DetallePedido;
+use yura\Modelos\Distribucion;
+use yura\Modelos\DistribucionColoracion;
 use yura\Modelos\Empaque;
 use yura\Modelos\Envio;
 use yura\Modelos\Especificacion;
@@ -792,6 +794,98 @@ class OrdenSemanalController extends Controller
             'last_distr' => $last_distr,
             'det_ped' => $det_ped,
         ]);
+    }
+
+    public function guardar_distribucion(Request $request)
+    {
+        if (count($request->arreglo_esp_emp) > 0) {
+            foreach ($request->arreglo_esp_emp as $esp_emp) {
+                foreach ($esp_emp['marcaciones'] as $marc) {
+                    Marcacion::find($marc['id_marcacion'])->eliminarDistribuciones();
+
+                    /* =========== DISTRIBUCION =========== */
+                    foreach ($marc['distribuciones'] as $distr) {
+                        $distribucion = new Distribucion();
+                        $distribucion->id_marcacion = $marc['id_marcacion'];
+                        $distribucion->ramos = $distr['ramos'];
+                        $distribucion->piezas = $distr['piezas'];
+                        $distribucion->pos_pieza = $distr['pos_pieza'];
+
+                        if ($distribucion->save()) {
+                            $distribucion = Distribucion::All()->last();
+                            bitacora('distribucion', $distribucion->id_distribucion, 'I', 'Inserción de una nueva distribucion');
+
+                            /* =========== DISTRIBUCION_COLORACION =========== */
+                            foreach ($distr['coloraciones'] as $col) {
+                                foreach ($col['detalles_esp'] as $det_esp) {
+                                    $marc_col = MarcacionColoracion::All()->where('id_marcacion', $marc['id_marcacion'])
+                                        ->where('id_coloracion', $col['id_coloracion'])
+                                        ->where('id_detalle_especificacionempaque', $det_esp['id_det_esp'])->first();
+
+                                    $distr_col = new DistribucionColoracion();
+                                    $distr_col->id_marcacion_coloracion = $marc_col->id_marcacion_coloracion;
+                                    $distr_col->id_distribucion = $distribucion->id_distribucion;
+                                    $distr_col->cantidad = $det_esp['cant'];
+
+                                    if ($distr_col->save()) {
+                                        $distr_col = DistribucionColoracion::All()->last();
+                                        bitacora('distribucion_coloracion', $distr_col->id_distribucion_coloracion, 'I', 'Inserción de una nueva distribucion-coloracion');
+                                    } else {
+                                        return [
+                                            'mensaje' => '<div class="alert alert-warning text-center">'
+                                                . 'Ha ocurrido un problema al guardar parte de la información</div>',
+                                            'success' => false,
+                                        ];
+                                    }
+                                }
+                            }
+                        } else {
+                            return [
+                                'mensaje' => '<div class="alert alert-warning text-center">'
+                                    . 'Ha ocurrido un problema al guardar la distribución</div>',
+                                'success' => false,
+                            ];
+                        }
+                    }
+                }
+            }
+
+            return [
+                'mensaje' => '<div class="alert alert-success text-center">'
+                    . 'Se ha guardado la distribución satisfactoriamente</div>',
+                'success' => true,
+            ];
+        } else {
+            return [
+                'mensaje' => '<div class="alert alert-warning text-center">'
+                    . 'No se han encontrado especificaciones</div>',
+                'success' => false,
+            ];
+        }
+    }
+
+    public function ver_distribucion(Request $request)
+    {
+        $det_ped = DetallePedido::find($request->id_det_ped);
+        return view('adminlte.gestion.postcocecha.pedidos_ventas.forms._ver_distribucion', [
+            'det_ped' => $det_ped
+        ]);
+    }
+
+    public function quitar_distribuciones(Request $request)
+    {
+        $pedido = Pedido::find($request->id_ped);
+        foreach ($pedido->detalles as $det_ped) {
+            foreach ($det_ped->marcaciones as $marc) {
+                foreach ($marc->distribuciones as $distr) {
+                    $distr->delete();
+                }
+            }
+        }
+        return [
+            'mensaje' => '<div class="alert alert-success text-center">Se han eliminado las distribuciones del pedido satisfactoriamente</div>',
+            'success' => true
+        ];
     }
 
     /* ================ PEDIDOS PERSONALIZDOS ================*/
