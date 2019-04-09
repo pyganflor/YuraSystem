@@ -9,3 +9,4 @@ TRUNCATE `cliente_pedido_especificacion`;
 TRUNCATE `especificacion_empaque`;
 TRUNCATE `detalle_especificacionempaque`;
 TRUNCATE `especificacion`;
+

@@ -14,5 +14,6 @@ class DetallePedidoDatoExportacion extends Model
     protected $fillable = [
         'id_detalle_pedido',
         'id_dato_exportacion',
+        'valor',
     ];
 }
