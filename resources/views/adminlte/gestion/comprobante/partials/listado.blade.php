@@ -69,9 +69,9 @@
                             {{--<a target="_blank" href="{{storage_path('pdf/facturas/').$item->clave_acceso.".pdf"}}" class="btn btn-default btn-xs" title="Ver factura" >
                                 <i class="fa fa-file-text-o" aria-hidden="true"></i>
                             </a>--}}
-                            <button class="btn btn-default btn-xs" title="Ver factura" onclick="ver_factura('{{$item->clave_acceso}}')">
+                            <a target="_blank" href="{{url('comprobante/ver_factura_aprobada_sri',$item->clave_acceso)}}" class="btn btn-default btn-xs" title="Ver factura" >
                                 <i class="fa fa-file-text-o" aria-hidden="true"></i>
-                            </button>
+                            </a>
                             <button class="btn btn-default btn-xs" title="Reenviar correo" onclick="reenviar_correo('{{$item->clave_acceso}}')">
                                 <i class="fa fa-envelope-o" aria-hidden="true"></i>
                             </button>
@@ -80,6 +80,12 @@
                             <button class="btn btn-default btn-xs">
                                 <input type="checkbox" id="facturar_{{$key+1}}" name="facturar"  title="{{$item->nombre_comprobante=="FACTURA" ? "Facturar" : "Enviar al SRI"}}" value="{{$item->clave_acceso}}" style="margin:0;position:relative;top:3px">
                             </button>
+                            <a target="_blank" href="{{url('comprobante/ver_pre_factura',$item->clave_acceso)}}" class="btn btn-primary btn-xs" title="Ver comprobante elctrónico">
+                                <i class="fa fa-eye" aria-hidden="true"></i>
+                            </a>
+                            {{--<button class="btn btn-danger btn-xs" title="Eliminar comprobante elctrónico" onclick="elimnar_comprobante()">
+                                <i class="fa fa-trash" aria-hidden="true"></i>
+                            </button>--}}
                         @endif
                         {{--@if($item->estado == 1 || $item->estado == 3 || $item->estado == 4)
                             <button class="btn btn-warning btn-xs" title="Cancelar pre factura" onclick="cancelar_factura('{{$item->id_comprobante}}')">

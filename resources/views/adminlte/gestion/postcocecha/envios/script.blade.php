@@ -1,6 +1,8 @@
 <script>
     buscar_listado_envios();
-    calcular_precio_envio();
+    setTimeout(function () {
+        calcular_precio_envio();
+    },1000)
 
     function buscar_listado_envios() {
         $.LoadingOverlay('show');
@@ -29,9 +31,9 @@
             '&id_cliente=' + $('#id_cliente').val() + '&');
         $('#div_listado_envios').html($('#table_envios').html());
         $.get(url, function (resul) {
-            //console.log(resul);
             $('#div_listado_envios').html(resul);
             estructura_tabla('table_content_envios');
+            calcular_precio_envio();
         }).always(function () {
             $.LoadingOverlay("hide");
         });
@@ -47,29 +49,9 @@
         $.LoadingOverlay('hide');
     }
 
-    function genera_comprobante_cliente(id_envio,form){
+    function genera_comprobante_cliente(id_envio,form,action){
         if ($('#'+form).valid()) {
             id_form = form.split("_")[2];
-
-            /*arrEnvios = [];
-            $.each($('input:checkbox[name=check_envio]:checked'), function (i, j) {
-                arrEnvios.push([
-                    j.value,
-                    $("#descuento_" + (j.id)).val(),
-                    $("#guia_madre_" + (j.id)).val(),
-                    $("#guia_hija_" + (j.id)).val(),
-                    $("#codigo_pais_" + (j.id)).val(),
-                    $("#destino_" + (j.id)).val(),
-                    $("#codigo_pais_"+(j.id)+" option:selected").text()
-                ]);
-            });
-
-            if (arrEnvios.length === 0) {
-                modal_view('modal_view_msg_factura',
-                    '<div class="alert text-center  alert-warning"><p>Debe seleccionar al menos un envío para facturar</p></div>',
-                    '<i class="fa fa-fw fa-table"></i> Estatus facturas', true, false, '{{isPC() ? '50%' : ''}}');
-                return false;
-            }*/
 
             datos = {
                 _token: '{{csrf_token()}}',
@@ -83,8 +65,11 @@
                 telefono : $("form#"+form+ " #telefono").val(),
                 pais : $("form#"+form+ " #codigo_pais option:selected").text(),
                 fecha_envio : $("form#"+form+ " #fecha_envio").val(),
+                cant_variedades : $("form#"+form+ " table tbody#tbody_inputs_pedidos tr").length,
+                update : action =='update' ? true : false,
+                almacen : $("form#"+form+ " #almacen").val(),
             };
-            console.log(datos);
+
             modal_quest('modal_message_facturar_envios',
                 '<div class="alert alert-warning text-center"><i class="fa fa-fw fa-exclamation-triangle"></i> ¿Esta seguro que desea generar el comprobante electrónico para este envío?</div>',
                 '<i class="fa fa-file-code-o" aria-hidden="true"></i> Generar factura', true, false, '{{isPC() ? '40%' : ''}}', function () {
@@ -99,8 +84,7 @@
                     background: "rgba(0, 0, 0, 0.75)"
                 });
                 var count = 0;
-
-                var tiempo = 1500;
+                var tiempo = 1300;
                 var interval = setInterval(function () {
                     if(count>=15 && count<99)
                         $.LoadingOverlay("text", "Firmado documento electrónico...");
@@ -112,7 +96,6 @@
                     $.LoadingOverlay("progress", count);
                 }, tiempo);
                 $.get('{{url('comprobante/generar_comprobante_factura')}}', datos, function (retorno) {
-
                     modal_view('modal_view_msg_factura', retorno, '<i class="fa fa-check" aria-hidden="true"></i> Estatus facturas', true, false,
                         '{{isPC() ? '50%' : ''}}');
                     buscar_listado_envios();
@@ -220,8 +203,9 @@
                 telefono : $("form#"+form+ " #telefono").val(),
                 direccion : $("form#"+form+ " #direccion").val(),
                 fecha_envio : $("form#"+form+ " #fecha_envio").val(),
-                agencia_transporte : $("form#"+form+ " #agencia_transporte").val(),
-                precios : arrDataPrecio
+                aerolinea : $("form#"+form+ " #aerolinea").val(),
+                precios : arrDataPrecio,
+                almacen : $("form#"+form+ " #almacen").val(),
            };
             $.post('{{url('envio/actualizar_envio')}}', datos, function (retorno) {
                 if (retorno.success) {

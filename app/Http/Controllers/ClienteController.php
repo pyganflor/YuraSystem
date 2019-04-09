@@ -98,7 +98,7 @@ class ClienteController extends Controller
             'direccion'           => 'required',
             'codigo_impuesto'     => 'required',
             'tipo_identificacion' => 'required',
-            'tipo_impuesto'       => 'required'
+            'tipo_impuesto'       => 'required',
         ]);
 
         if(!$valida->fails()) {
@@ -123,6 +123,7 @@ class ClienteController extends Controller
                     $objDetalleCliente->codigo_porcentaje_impuesto    = $request->tipo_impuesto;
                     $objDetalleCliente->codigo_identificacion         = $request->tipo_identificacion;
                     $objDetalleCliente->codigo_impuesto               = $request->codigo_impuesto;
+                    $objDetalleCliente->almacen                       = $request->almacen;
 
                     $msg= '';
                     if($objDetalleCliente->save()) {
@@ -191,6 +192,7 @@ class ClienteController extends Controller
                     $objDetalleCliente->codigo_porcentaje_impuesto    = $request->tipo_impuesto;
                     $objDetalleCliente->codigo_identificacion         = $request->tipo_identificacion;
                     $objDetalleCliente->codigo_impuesto               = $request->codigo_impuesto;
+                    $objDetalleCliente->almacen                       = $request->almacen;
                     $msg= '';
 
                     if($objDetalleCliente->save()) {

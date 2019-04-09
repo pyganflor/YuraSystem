@@ -4,7 +4,7 @@ namespace yura\Http\Controllers;
 
 use Illuminate\Http\Request;
 use yura\Modelos\DetallePedido;
-use yura\Modelos\AgenciaTransporte;
+use yura\Modelos\Aerolinea;
 use yura\Modelos\Envio;
 use yura\Modelos\DetalleEnvio;
 use Validator;
@@ -41,7 +41,7 @@ class EnvioController extends Controller
         return view('adminlte.gestion.postcocecha.envios.forms.inputs_detalles_envio',
             [
                 'rows'=>$request->rows,
-                'agencia_transporte' => AgenciaTransporte::all(),
+                'aerolineas' => Aerolinea::all(),
                 'cantidad'           => $request->cant_pedidos,
                 'form'               => $request->id_form
             ]);
@@ -69,7 +69,7 @@ class EnvioController extends Controller
                     ->join('pedido as p','e.id_pedido','=','p.id_pedido')
                     ->where([
                         //['id_especificaion',$detalle_envio[0]],
-                        ['detalle_envio.id_agencia_transporte',$detalle_envio[1]],
+                        ['detalle_envio.id_aerolinea',$detalle_envio[1]],
                         ['e.fecha_envio',$detalle_envio[4]],
                         ['e.id_pedido',$request->id_pedido]
                     ])->first();
@@ -94,7 +94,7 @@ class EnvioController extends Controller
                             }
                             $objDetalleEnvio->id_especificacion     = $detalle_envio[0];
                             $objDetalleEnvio->id_envio              = $model->id_envio;
-                            $objDetalleEnvio->id_agencia_transporte = $detalle_envio[1];
+                            $objDetalleEnvio->id_aerolinea = $detalle_envio[1];
                             $objDetalleEnvio->cantidad              = $detalle_envio[2];
                             $objDetalleEnvio->envio                 = $detalle_envio[3];
                             $objDetalleEnvio->form                  = $detalle_envio[5];
@@ -124,7 +124,7 @@ class EnvioController extends Controller
                         }
                         $objDetalleEnvio->id_especificacion      = $detalle_envio[0];
                         $objDetalleEnvio->id_envio               = $existDataEnvio->id_envio;
-                        $objDetalleEnvio->id_agencia_transporte  = $detalle_envio[1];
+                        $objDetalleEnvio->id_aerolinea           = $detalle_envio[1];
                         $objDetalleEnvio->cantidad               = $detalle_envio[2];
                         $objDetalleEnvio->envio                  = $detalle_envio[3];
                         $objDetalleEnvio->form                   = $detalle_envio[5];
@@ -187,11 +187,12 @@ class EnvioController extends Controller
         $listado = Envio::where([
             ['dc.estado',1],
             ['envio.estado',$estado != "" ? $estado : 0],
-            ['envio.fecha_envio',$fecha != "" ? $fecha : Carbon::now()->toDateString()]
+            ['envio.fecha_envio',$fecha != "" ? $fecha : Carbon::now()->toDateString()],
+            ['p.estado',1]
         ])->join('pedido as p', 'envio.id_pedido','=','p.id_pedido')
             ->join('detalle_cliente as dc','p.id_cliente','=','dc.id_cliente' )
             ->orderBy('envio.id_envio','Desc')
-        ->select('p.*','envio.*','dc.nombre','dc.direccion','dc.provincia','dc.codigo_pais as pais_cliente','dc.telefono','dc.correo');
+        ->select('p.*','envio.*','dc.nombre','dc.direccion as direccion_cliente','dc.almacen as almacen_cliente','dc.provincia','dc.codigo_pais as pais_cliente','dc.telefono as telefono_cliente','dc.correo');
 
         if ($cliente != '')
             $listado = $listado->where('dc.id_cliente',$cliente);
@@ -201,7 +202,7 @@ class EnvioController extends Controller
             'datos_exportacion_' => DatosExportacion::join('cliente_datoexportacion as cde','dato_exportacion.id_dato_exportacion','cde.id_dato_exportacion')
                 ->where('id_cliente',$request->id_cliente)->get(),
             'paises'    => Pais::all(),
-            'agenciasTransporte' => AgenciaTransporte::all()
+            'aerolineas' => Aerolinea::all()
         ]);
     }
 
@@ -246,8 +247,8 @@ class EnvioController extends Controller
             ->join('cliente as c','p.id_cliente','=','c.id_cliente')
             ->join('detalle_cliente as dc','c.id_cliente','=','dc.id_cliente' )
             ->join('especificacion as es','de.id_especificacion','es.id_especificacion')
-            ->join('agencia_transporte as at','de.id_agencia_transporte','=','at.id_agencia_transporte')
-            ->select('p.*','dc.nombre','e.*','de.*','es.nombre','at.nombre as at_nombre','at.tipo_agencia','dc.nombre as c_nombre')
+            ->join('aerolineas as a','de.id_aerolinea','=','a.id_aerolinea')
+            ->select('p.*','dc.nombre','e.*','de.*','es.nombre','a.nombre as a_nombre','a.tipo_agencia','dc.nombre as c_nombre')
             ->where('dc.estado',1);
 
         if ($busquedaAnno != '')
@@ -280,7 +281,7 @@ class EnvioController extends Controller
             $objSheet->getCell('A3')->setValue('Fecha de envío ');
             $objSheet->getCell('B3')->setValue('Cantidad / Especificaciones');
             $objSheet->getCell('C3')->setValue('Cliente');
-            $objSheet->getCell('D3')->setValue('Agencia de Transporte');
+            $objSheet->getCell('D3')->setValue('Aerolinea');
             $objSheet->getCell('E3')->setValue('Tipo de agencia');
 
 
@@ -345,7 +346,7 @@ class EnvioController extends Controller
                                                       ->join('especificacion as e','cpe.id_especificacion','=','e.id_especificacion')
                                                       ->select('detalle_pedido.cantidad','detalle_pedido.id_detalle_pedido','e.nombre','cpe.id_especificacion','cpe.id_cliente')->get(),
             'dataDetalleEnvio' => $detalleEnvio->get(),
-            'agencia_transporte' => AgenciaTransporte::all(),
+            'aerolineas' => Aerolinea::all(),
             'id_detalle_envio' => $request->id_detalle_envio,
             'cant_detalles' =>  $detalleEnvio->distinct()->count(),
             'fechaEnvio' => $detalleEnvio->select('fecha_envio')->get(),
@@ -378,7 +379,7 @@ class EnvioController extends Controller
             'telefono' => 'required',
             'direccion' => 'required',
             'fecha_envio' => 'required',
-            'agencia_transporte' => 'required',
+            'aerolinea' => 'required',
         ]);
 
         if (!$valida->fails()) {
@@ -392,13 +393,14 @@ class EnvioController extends Controller
             $objEnvio->telefono = $request->telefono;
             $objEnvio->direccion = $request->direccion;
             $objEnvio->fecha_envio = $request->fecha_envio;
+            $objEnvio->almacen = $request->almacen;
 
             if($objEnvio->save()){
                 bitacora('envio', $request->id_envio, 'U', 'Actualización satisfactoria del envío');
                 $dataDetallePedido = Envio::where('id_envio',$request->id_envio)->select('id_pedido')
                     ->join('detalle_pedido as dp','envio.id_pedido','dp.id_pedido')->select('id_detalle_pedido')->get();
 
-                DetalleEnvio::where('id_envio',$request->id_envio)->update(['id_agencia_transporte' => $request->agencia_transporte]);
+                DetalleEnvio::where('id_envio',$request->id_envio)->update(['id_aerolinea' => $request->id_aerolinea]);
 
                 foreach ($dataDetallePedido as $key => $detallePedido) {
 

@@ -56,12 +56,8 @@
                                     </select>
                                 </div>
                                 <div class="form-group">
-                                    <label> Desde</label><br />
-                                    <input type="date" class="form-control" id="desde" name="desde">
-                                </div>
-                                <div class="form-group">
-                                    <label> Hasta</label><br />
-                                    <input type="date" class="form-control" id="hasta" name="hasta">
+                                    <label> Fecha</label><br />
+                                    <input type="date" class="form-control" id="fecha" name="fecha" value="{{\Carbon\Carbon::now()->toDateString()}}">
                                 </div>
                                 <div class="form-group">
                                     <label style="visibility: hidden;"> .</label><br />

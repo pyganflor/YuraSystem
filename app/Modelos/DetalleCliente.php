@@ -22,6 +22,7 @@ class DetalleCliente extends Model
         'id_cliente',
         'codigo_iva',
         'codigo_identificacion',
-        'estado'
+        'estado',
+        'almacen'
     ];
 }

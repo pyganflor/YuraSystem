@@ -112,9 +112,9 @@
                 direccion: $("#direccion").val(),
                 codigo_impuesto: $("#codigo_impuesto").val(),
                 tipo_identificacion : $('#tipo_identificacion').val(),
-                tipo_impuesto : $('#tipo_impuesto').val()
+                tipo_impuesto : $('#tipo_impuesto').val(),
+                almacen : $('#almacen').val()
             };
-
             post_jquery('{{url('clientes/store')}}', datos, function () {
                 cerrar_modals();
                 detalles_cliente($('#id_cliente').val());

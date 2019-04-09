@@ -140,12 +140,23 @@
                                     </td>
                                     <td class="text-center" style="border-color: #9d9d9d" id="td_opciones_{{$pedido->id_pedido}}"
                                         rowspan="{{getCantidadDetallesEspecificacionByPedido($pedido->id_pedido)}}">
+                                        @php
+                                            if(isset(getPedido($pedido->id_pedido)->envios[0]->id_envio)){
+                                                $firmado = getFacturado(getPedido($pedido->id_pedido)->envios[0]->id_envio,1);
+                                                $facturado = getFacturado(getPedido($pedido->id_pedido)->envios[0]->id_envio,5);
+                                            }else{
+                                                $firmado = null;
+                                                $facturado = null;
+                                            }
+                                        @endphp
                                         @if($pedido->empaquetado == 0)
+                                            @if($facturado == null || $firmado == null)
                                             <button class="btn  btn-{!! $det_ped->estado == 1 ? 'danger' : 'success' !!} btn-xs" type="button"
                                                     title="{!! $det_ped->estado == 1 ? 'Cancelar pedido' : 'Activar pedido' !!}" id="edit_pedidos"
                                                     onclick="cancelar_pedidos('{{$pedido->id_pedido}}','','{{$det_ped->estado}}','{{@csrf_token()}}')">
                                                 <i class="fa fa-{!! $det_ped->estado == 1 ? 'trash' : 'undo' !!}" aria-hidden="true"></i>
                                             </button>
+                                            @endif
                                         @endif
                                         @if($pedido->empaquetado == 0)
                                             @if($pedido->tipo_especificacion == 'T')
@@ -154,10 +165,12 @@
                                                     <i class="fa fa-pencil" aria-hidden="true"></i>
                                                 </button>
                                             @else
+                                                @if($facturado==null || $firmado==null)
                                                 <button type="button" class="btn btn-default btn-xs" title="Editar pedido"
                                                         onclick="editar_pedido('{{$pedido->id_cliente}}','{{$pedido->id_pedido}}')">
                                                     <i class="fa fa-pencil" aria-hidden="true"></i>
                                                 </button>
+                                                @endif
                                             @endif
                                         @endif
                                             {{--<@if(yura\Modelos\Envio::where('id_pedido',$pedido->id_pedido)->count() == 0)

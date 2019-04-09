@@ -24,6 +24,9 @@ use yura\Modelos\Cliente;
 use Validator;
 use Storage;
 use DB;
+use SoapClient;
+use Barryvdh\DomPDF\Facade as PDF;
+
 
 class ComprobanteController extends Controller
 {
@@ -44,14 +47,14 @@ class ComprobanteController extends Controller
     {
         $busquedaAnno = $request->has('anno') ? $request->anno : '';
         $busquedacliente = $request->has('id_cliente') ? $request->id_cliente : '';
-        $busquedaDesde = $request->has('desde') ? $request->desde : '';
-        $busquedaHasta = $request->has('hasta') ? $request->hasta : '';
+        $fecha = $request->has('fecha') ? $request->fecha : '';
         $busquedaComprobante = $request->has('codigo_comprobante') ? $request->codigo_comprobante : '';
-
         $listado = Comprobante::where([
             ['comprobante.estado', isset($request->estado) ? $request->estado : 1],
             ['dc.estado', 1],
-            ['tipo_comprobante', '!=', "00"]
+            ['tipo_comprobante', '!=', "00"],
+            ['p.estado',1]
+            //['comprobante.fecha_emision', $fecha]
         ])->join('tipo_comprobante as tc', 'comprobante.tipo_comprobante', 'tc.codigo')
             ->join('envio as e', 'comprobante.id_envio', 'e.id_envio')
             ->join('pedido as p', 'e.id_pedido', 'p.id_pedido')
@@ -61,8 +64,6 @@ class ComprobanteController extends Controller
             $listado = $listado->where(DB::raw('YEAR(de.fecha_emision)'), $busquedaAnno);
         if ($busquedacliente != '')
             $listado = $listado->where('dc.id_cliente', $busquedacliente);
-        if ($busquedaHasta != '' && $request->hasta != '')
-            $listado = $listado->whereBetween('comprobante.fecha_emision', [$busquedaDesde == '' ? '2000-01-01' : $busquedaDesde, $busquedaHasta]);
         if ($busquedaComprobante != '' && $request->codigo_comprobante != '')
             $listado = $listado->where('comprobante.tipo_comprobante', $busquedaComprobante);
 
@@ -90,14 +91,9 @@ class ComprobanteController extends Controller
         ]);
         $msg = "";
         if (!$valida->fails()) {
-
-            $inicio_secuencial = env('INICIAL_FACTURA');
-            //foreach ($request->arrEnvios as $dataEnvio) {
-            //$datos_xml = getDatosFacturaEnvio($request->id_envio);
             $precio_total_sin_impuestos = 0.00;
             $envio = getEnvio($request->id_envio);
             foreach($envio->pedido->detalles as $x => $det_ped){
-                $precio_x_especificacion = 0.00;
                 if($envio->pedido->tipo_especificacion === "N"){ //FLOR NO TINTURADA
                     $precio = explode("|",$det_ped->precio);
                 }else if($envio->pedido->tipo_especificacion === "T"){ //FLOR TINTURADA
@@ -122,8 +118,45 @@ class ComprobanteController extends Controller
                     . '</div>';
             }
 
+            if($request->update === "true"){
+                $dataComprobante = Comprobante::where('id_envio',$request->id_envio)
+                    ->join('detalle_factura as df','comprobante.id_comprobante','df.id_comprobante')
+                    ->join('impuesto_detalle_factura as idf','df.id_detalle_factura','idf.id_detalle_factura')
+                    ->join('desglose_envio_factura as def','comprobante.id_comprobante','def.id_comprobante')
+                    ->join('impuesto_desglose_envio_factura as idef','def.id_desglose_envio_factura','idef.id_desglose_envio_factura')
+                    ->select('clave_acceso','comprobante.id_comprobante','df.id_detalle_factura','id_impuesto_desglose_envio_factura')->get();
+              
+                $secuencial = getDetallesClaveAcceso($dataComprobante[0]->clave_acceso, 'SECUENCIAL');
+                $fechaEmision = getDetallesClaveAcceso($dataComprobante[0]->clave_acceso, 'FECHA_EMISION');
+                $ruc = getDetallesClaveAcceso($dataComprobante[0]->clave_acceso, 'RUC');
+                $codigo_numerico = getDetallesClaveAcceso($dataComprobante[0]->clave_acceso, 'CODIGO_NUMERICO');
+                $tipoComprobante = getDetallesClaveAcceso($dataComprobante[0]->clave_acceso, 'TIPO_COMPROBANTE');
+                $entorno = getDetallesClaveAcceso($dataComprobante[0]->clave_acceso, 'ENTORNO');
+                $serie = getDetallesClaveAcceso($dataComprobante[0]->clave_acceso, 'SERIE');
+                $tipo_emision = getDetallesClaveAcceso($dataComprobante[0]->clave_acceso, 'TIPO_EMISION');
+
+                $punto_acceso=  getDetallesClaveAcceso($dataComprobante[0]->clave_acceso, 'PUNTO_ACCESO');
+
+                foreach ($dataComprobante as $item)
+                    ImpuestoDesgloseEnvioFactura::where('id_desglose_envio_factura', $item->id_impuesto_desglose_envio_factura)->delete();
+                DesgloseEnvioFactura::where('id_comprobante',$dataComprobante[0]->id_comprobante)->delete();
+                ImpuestoDetalleFactura::where('id_detalle_factura', $dataComprobante[0]->id_detalle_factura)->delete();
+                DetalleFactura::where('id_comprobante', $dataComprobante[0]->id_comprobante)->delete();
+                Comprobante::destroy($dataComprobante[0]->id_comprobante);
+
+            }else{
+                $secuencial = getSecuencial();
+                $fechaEmision = Carbon::now()->format('dmY');
+                $ruc = env('RUC');
+                $codigo_numerico = env('CODIGO_NUMERICO');
+                $tipoComprobante = '01';
+                $entorno = env('ENTORNO');
+                $punto_acceso = getUsuario(session('id_usuario'))->punto_acceso;
+                $serie = '001' . $punto_acceso;
+                $tipo_emision = '1';
+            }
+
             $datosEmpresa = getConfiguracionEmpresa();
-            $secuencial = getSecuencial();
             $xml = new DomDocument('1.0', 'UTF-8');
             $factura = $xml->createElement('factura');
             $factura->setAttribute('id', 'comprobante');
@@ -131,14 +164,6 @@ class ComprobanteController extends Controller
             $xml->appendChild($factura);
             $infoTributaria = $xml->createElement('infoTributaria');
             $factura->appendChild($infoTributaria);
-            $fechaEmision = Carbon::now()->format('dmY');
-            $tipoComprobante = '01';
-            $ruc = env('RUC');
-            $entorno = env('ENTORNO');
-            $punto_acceso = getUsuario(session('id_usuario'))->punto_acceso;
-            $serie = '001' . $punto_acceso;
-            $codigo_numerico = env('CODIGO_NUMERICO');
-            $tipo_emision = '1';
             $cadena = $fechaEmision . $tipoComprobante . $ruc . $entorno . $serie . $secuencial . $codigo_numerico . $tipo_emision;
             $digito_verificador = generaDigitoVerificador($cadena);
             $claveAcceso = $cadena . $digito_verificador;
@@ -197,9 +222,8 @@ class ComprobanteController extends Controller
             for ($i = 0; $i < $cantidad_impuestos; $i++) {
                 $informacionImpuestos = [
                     'codigo' => $dataCliente->codigo_impuesto,
-                    'codigoPorcentaje' => $dataCliente->codigo_porcentaje,
+                    'codigoPorcentaje' => $dataCliente->codigo_porcentaje_impuesto,
                     'baseImponible' => number_format($precio_total_sin_impuestos, 2, ".", ""),
-                    //'tarifa'=>  is_numeric($tipoImpuesto->porcentaje) ? $tipoImpuesto->porcentaje : "0.00",
                     'valor' => $valorImpuesto
                 ];
                 $totalImpuesto = $xml->createElement('totalImpuesto');
@@ -235,9 +259,6 @@ class ComprobanteController extends Controller
                 foreach($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $m => $esp_emp){
                     foreach ($esp_emp->detalles as $n => $det_esp_emp){
                         $precio_x_variedad = ($det_esp_emp->cantidad * ((float)explode(";",$precio[$i])[0]) * $piezas_esp_emp * $det_ped->cantidad);
-
-                        $detalle = $xml->createElement('detalle');
-                        $detalles->appendChild($detalle);
                         $variedad = getVariedad($det_esp_emp->id_variedad);
                         if($det_esp_emp->longitud_ramo != null){
                             foreach (getUnidadesMedida($det_esp_emp->id_unidad_medida) as $umLongitud)
@@ -284,25 +305,27 @@ class ComprobanteController extends Controller
                             $nodo = $xml->createElement($key, $iIp);
                             $impuesto->appendChild($nodo);
                         }
-                        $informacionAdicional = $xml->createElement('infoAdicional');
-                        $factura->appendChild($informacionAdicional);
                         $i++;
                     }
                 }
             }
+            $informacionAdicional = $xml->createElement('infoAdicional');
+            $factura->appendChild($informacionAdicional);
             $campos_adicionales = [
                 'Dirección'=> $dataCliente->provincia . " " . $dataCliente->direccion,
                 'Email'    => $dataCliente->correo,
                 'Teléfono' => $dataCliente->telefono,
-                'Carguera' => getAgenciaTransporte($envio->detalles[0]->id_agencia_transporte)->nombre
+                'Carguera' => getAgenciaTransporte($envio->detalles[0]->id_agencia_transporte)->nombre,
             ];
 
-            if ((strtoupper(getConfiguracionEmpresa()->codigo_pais) != strtoupper($request->codigo_pais)))
-                $campos_adicionales['DAE'] = $request->dae;
             if (!empty($request->guia_madre))
                 $campos_adicionales['GUIA_MADRE'] = $request->guia_madre;
             if (!empty($request->guia_hija))
                 $campos_adicionales['GUIA_HIJA'] = $request->guia_hija;
+            if(!empty($request->almacen))
+                $campos_adicionales['ALMACEN'] = $request->almacen;
+            if ((strtoupper(getConfiguracionEmpresa()->codigo_pais) != strtoupper($request->codigo_pais)))
+                $campos_adicionales['DAE'] = $request->dae;
 
             foreach ($campos_adicionales as $key => $ca) {
                 $campo_adicional = $xml->createElement('campoAdicional', $ca);
@@ -310,7 +333,6 @@ class ComprobanteController extends Controller
                 $informacionAdicional->appendChild($campo_adicional);
             }
             $xml->formatOutput = true;
-            dd($xml);
             $xml->saveXML();
             $nombre_xml = $claveAcceso . ".xml";
 
@@ -354,41 +376,57 @@ class ComprobanteController extends Controller
                             $model_impuesto_detalle_factura = ImpuestoDetalleFactura::all()->last();
                             bitacora('impuesto_detalle_factura', $model_impuesto_detalle_factura->id_impuesto_detalle_factura, 'I', 'Creación de un nuevo impuesto de detalle de factura');
                             $iteracion = 0;
-                            for ($p = 0; $p < $datos_xml->count(); $p++) {
-                                $datos_xml_iteracion = $datos_xml->get()[$p];
-                                $precio_unitario_individual_sin_impuestos = Precio::where([
-                                    ['id_variedad', $datos_xml_iteracion->id_variedad],
-                                    ['id_clasificacion_ramo', $datos_xml_iteracion->id_clasificacion_ramo]
-                                ])->select('cantidad')->first();
 
-                                $total_individual_ramos = $datos_xml_iteracion->cantidad_ramos * $datos_xml_iteracion->cantidad_cajas;
-                                $precio_total_individual = $total_individual_ramos * $precio_unitario_individual_sin_impuestos->cantidad;
+                            foreach($envio->pedido->detalles as $x => $det_ped){
+                                if($envio->pedido->tipo_especificacion === "N"){ //FLOR NO TINTURADA
+                                    $precio = explode("|",$det_ped->precio);
+                                }else if($envio->pedido->tipo_especificacion === "T"){ //FLOR TINTURADA
+                                    $precio = 0;
+                                }
+                                $i=0;
+                                foreach($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $m => $esp_emp){
+                                    foreach ($esp_emp->detalles as $n => $det_esp_emp){
+                                        $piezas_esp_emp = $det_ped->cliente_especificacion->especificacion->especificacionesEmpaque[$x]->cantidad;
+                                        $precio_x_variedad = ($det_esp_emp->cantidad * ((float)explode(";",$precio[$i])[0]) * $piezas_esp_emp * $det_ped->cantidad);
+                                        $variedad = getVariedad($det_esp_emp->id_variedad);
+                                        if($det_esp_emp->longitud_ramo != null){
+                                            foreach (getUnidadesMedida($det_esp_emp->id_unidad_medida) as $umLongitud)
+                                                if($umLongitud->tipo == "L")
+                                                    $umL = $umLongitud->siglas;
+                                        }else{
+                                            $umL ="";
+                                        }
+                                        $longitudRamo = $det_esp_emp->longitud_ramo != "" ? $det_esp_emp->longitud_ramo : "";
+                                        $clasificacionRamo = getClasificacionRamo($det_esp_emp->id_clasificacion_ramo);
+                                        foreach (getUnidadesMedida($clasificacionRamo->id_unidad_medida) as $umPeso)
+                                            $umPeso->tipo == "P" ? $umPeso = $umPeso->siglas : $umPeso ="";
+                                        $objDesgloseEnvioFactura = new DesgloseEnvioFactura;
+                                        $objDesgloseEnvioFactura->id_comprobante = $model_comprobante->id_comprobante;
+                                        $objDesgloseEnvioFactura->codigo_principal = 'ENV' . str_pad($request->id_envio, 9, "0", STR_PAD_LEFT);
+                                        $objDesgloseEnvioFactura->descripcion = $variedad->planta->nombre . " (" . $variedad->siglas . ") " . $clasificacionRamo->nombre.$umPeso . " " . $longitudRamo.$umL;
+                                        $objDesgloseEnvioFactura->cantidad = number_format(($det_esp_emp->cantidad*$piezas_esp_emp * $det_ped->cantidad), 2, ".", "");
+                                        $objDesgloseEnvioFactura->precio_unitario = number_format(explode(";",$precio[$i])[0], 2, ".", "");
+                                        $objDesgloseEnvioFactura->descuento = '0.00';
+                                        $objDesgloseEnvioFactura->precio_total_sin_impuesto = number_format($precio_x_variedad, 2, ".", "");
 
+                                        if($objDesgloseEnvioFactura->save()){
+                                            bitacora('impuesto_detalle_factura', $model_impuesto_detalle_factura->id_impuesto_detalle_factura, 'I', 'Creación de un nuevo impuesto de detalle de factura');
+                                            $model_desglose_envio_factura = DesgloseEnvioFactura::all()->last();
 
-                                $objDesgloseEnvioFactura = new DesgloseEnvioFactura;
-                                $objDesgloseEnvioFactura->id_comprobante = $model_comprobante->id_comprobante;
-                                $objDesgloseEnvioFactura->codigo_principal = 'ENV' . str_pad($request->id_envio, 9, "0", STR_PAD_LEFT);
-                                $objDesgloseEnvioFactura->descripcion = $datos_xml_iteracion->nombre_planta . " (" . $datos_xml_iteracion->siglas_variedad . ") " . $datos_xml_iteracion->nombre_clasificacion . $datos_xml_iteracion->siglas_unidad_medida_peso_ramo . " " . $datos_xml_iteracion->longitud_ramo . $data_arr_consulta->longitud_ramo =!"" ? "cm" : ""/*. $datos_xml_iteracion->siglas_unidad_medida_lognitud_ramo*/;
-                                $objDesgloseEnvioFactura->cantidad = number_format($datos_xml_iteracion->cantidad_ramos * $datos_xml_iteracion->cantidad_cajas, 2, ".", "");
-                                $objDesgloseEnvioFactura->precio_unitario = number_format($precio_unitario_individual_sin_impuestos->cantidad, 2, ".", "");
-                                $objDesgloseEnvioFactura->descuento = '0.00';
-                                $objDesgloseEnvioFactura->precio_total_sin_impuesto = number_format($precio_total_individual, 2, ".", "");
-
-                                if($objDesgloseEnvioFactura->save()){
-                                    bitacora('impuesto_detalle_factura', $model_impuesto_detalle_factura->id_impuesto_detalle_factura, 'I', 'Creación de un nuevo impuesto de detalle de factura');
-                                    $model_desglose_envio_factura = DesgloseEnvioFactura::all()->last();
-
-                                    $objImpuestoDesgloseEnvioFactura = new ImpuestoDesgloseEnvioFactura;
-                                    $objImpuestoDesgloseEnvioFactura->id_desglose_envio_factura = $model_desglose_envio_factura->id_desglose_envio_factura;
-                                    $objImpuestoDesgloseEnvioFactura->codigo_impuesto           = $datos_xml_iteracion->codigo_impuesto;
-                                    $objImpuestoDesgloseEnvioFactura->codigo_porcentaje	        = $datos_xml_iteracion->codigo_porcentaje;
-                                    $objImpuestoDesgloseEnvioFactura->base_imponible            = number_format($precio_total_individual,2,".","");
-                                    $objImpuestoDesgloseEnvioFactura->valor                     = is_numeric($datos_xml_iteracion->porcntaje_iva) ? number_format($precio_total_individual*($datos_xml_iteracion->porcntaje_iva/100),2,".","") : "0.00";
-                                    $objImpuestoDesgloseEnvioFactura->save() ?  $iteracion++ : '';
+                                            $objImpuestoDesgloseEnvioFactura = new ImpuestoDesgloseEnvioFactura;
+                                            $objImpuestoDesgloseEnvioFactura->id_desglose_envio_factura = $model_desglose_envio_factura->id_desglose_envio_factura;
+                                            $objImpuestoDesgloseEnvioFactura->codigo_impuesto           = $dataCliente->codigo_impuesto;
+                                            $objImpuestoDesgloseEnvioFactura->codigo_porcentaje	        = $dataCliente->codigo_porcentaje_impuesto;
+                                            $objImpuestoDesgloseEnvioFactura->base_imponible            = number_format($precio_x_variedad,2,".","");
+                                            $objImpuestoDesgloseEnvioFactura->valor                     = is_numeric($tipoImpuesto->porcentaje) ? number_format($precio_x_variedad * ($tipoImpuesto->porcentaje / 100), 2, ".", "") : "0.00";
+                                            $objImpuestoDesgloseEnvioFactura->save() ?  $iteracion++ : '';
+                                        }
+                                        $i++;
+                                    }
                                 }
                             }
 
-                            if ($iteracion === $datos_xml->count()) {
+                            if ($iteracion === (int)$request->cant_variedades) {
                                 $save_xml = $xml->save(env('PATH_XML_GENERADOS') . $nombre_xml);
                                 if ($save_xml && $save_xml > 0) {
                                     $resultado = firmarComprobanteXml($nombre_xml);
@@ -415,16 +453,17 @@ class ComprobanteController extends Controller
                                     DetalleFactura::where('id_comprobante', $model_comprobante->id_comprobante)->delete();
                                     Comprobante::destroy($model_comprobante->id_comprobante);
                                     $msg .= "<div class='alert text-center  alert-danger'>" .
-                                        "<p>La factura " . $nombre_xml . " del envío N#" . str_pad($request->id_envio, 9, "0", STR_PAD_LEFT) . " no pudo ser generada, por favor intente facturarla nuevamente</p>"
+                                        "<p>La factura " . $nombre_xml . " del envío N#" . str_pad($request->id_envio, 9, "0", STR_PAD_LEFT) . " no pudo ser generada, por favor intente facturar el envío nuevamente</p>"
                                         . "</div>";
                                 }
                             } else {
+
                                 DesgloseEnvioFactura::where('id_comprobante', $model_comprobante->id_comprobante)->delete();
                                 ImpuestoDetalleFactura::where('id_detalle_factura', $model_detalle_factura->id_detalle_factura)->delete();
                                 DetalleFactura::where('id_comprobante', $model_comprobante->id_comprobante)->delete();
                                 Comprobante::destroy($model_comprobante->id_comprobante);
                                 $msg .= "<div class='alert text-center  alert-danger'>" .
-                                    "<p>La factura " . $nombre_xml . " del envío N#" . str_pad($request->id_envio, 9, "0", STR_PAD_LEFT) . " no pudo ser generada, por favor intente facturarla nuevamente</p>"
+                                    "<p>La factura " . $nombre_xml . " del envío N#" . str_pad($request->id_envio, 9, "0", STR_PAD_LEFT) . " no pudo ser generada, por favor intente facturar el envío nuevamente</p>"
                                     . "</div>";
                             }
                         } else {
@@ -476,7 +515,7 @@ class ComprobanteController extends Controller
         $factura = $xml->createElement('lote');
         $factura->setAttribute('version', '1.0.0');
         $xml->appendChild($factura);
-        $fechaEmision = Carbon::now()->format('dmY');
+        $fechaEmision = now()->format('dmY');
         $tipoComprobante = '00';
         $ruc = env('RUC');
         $entorno = env('ENTORNO');
@@ -645,5 +684,42 @@ class ComprobanteController extends Controller
             enviarMailComprobanteCliente("01", $comprobante->correo, $comprobante->nombre, $request->comprobante, $comprobante->numero_comprobante);
         }
         return $msg;
+    }
+
+    public function  ver_factura_aprobada_sri($clave_acceso){
+        $cliente = new SoapClient(env('URL_WS_ATURIZACION'));
+        $response = $cliente->autorizacionComprobante(["claveAccesoComprobante" => $clave_acceso]);
+        $autorizacion = $response->RespuestaAutorizacionComprobante->autorizaciones->autorizacion;
+        $dataComprobante = Comprobante::where('clave_acceso',$clave_acceso)->select('numero_comprobante','id_envio')->first();
+        $data = [
+            'autorizacion' => $autorizacion,
+            'img_clave_acceso' => generateCodeBarGs1128((String)$autorizacion->numeroAutorizacion),
+            'obj_xml' => simplexml_load_string($autorizacion->comprobante),
+            'numeroComprobante' => $dataComprobante->numero_comprobante,
+            'detalles_envio' => getEnvio($dataComprobante->id_envio)->detalles
+        ];
+       return PDF::loadView('adminlte.gestion.comprobante.partials.pdf.factura', compact('data'))->stream();
+    }
+
+    public function ver_pre_factura($clave_acceso){
+        if (file_exists(env('PATH_XML_FIRMADOS').$clave_acceso.".xml")){
+            $archivo = file_get_contents(env('PATH_XML_FIRMADOS').$clave_acceso.".xml");
+            $dataComprobante = Comprobante::where('clave_acceso',$clave_acceso)->select('id_envio')->first();
+            $autorizacion = simplexml_load_string($archivo);
+            $data = [
+                'autorizacion' => $autorizacion,
+                'img_clave_acceso' => null,
+                'obj_xml' => $autorizacion,
+                'numeroComprobante' => getDetallesClaveAcceso((String)$autorizacion->infoTributaria->claveAcceso, 'SERIE').getDetallesClaveAcceso((String)$autorizacion->infoTributaria->claveAcceso, 'PUNTO_ACCESO').getDetallesClaveAcceso((String)$autorizacion->infoTributaria->claveAcceso, 'SECUENCIAL'),
+                'detalles_envio' => getEnvio($dataComprobante->id_envio)->detalles
+            ];
+            return PDF::loadView('adminlte.gestion.comprobante.partials.pdf.factura', compact('data'))->stream();
+        }else{
+            $msg = "<div class='alert text-center  alert-danger'>" .
+            "<p> El archivo del documento no existe, por favor contactarse con el área de sistemas. </p>"
+            . "</div>";
+            return $msg;
+        }
+
     }
 }
