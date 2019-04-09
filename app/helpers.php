@@ -51,6 +51,7 @@ use yura\Modelos\TipoImpuesto;
 use yura\Modelos\Aerolinea;
 use yura\Modelos\Coloracion;
 use yura\Modelos\EspecificacionEmpaque;
+use yura\Modelos\FacturaClienteTercero;
 
 
 /*
@@ -1311,14 +1312,15 @@ function accionAutorizacion($autorizacion, $path, $msg, $tipoDocumento = false, 
 
 function generaFacturaPDF($autorizacion, $numeroComprobante)
 {
-    $dataComprobante = Comprobante::where('clave_acceso',$numeroComprobante) ->select('numero_comprobante')->first();
+    $dataComprobante = Comprobante::where('clave_acceso',$numeroComprobante) ->select('numero_comprobante','id_envio')->first();
     $data = [
         'autorizacion' => $autorizacion,
         'img_clave_acceso' => generateCodeBarGs1128((String)$autorizacion->numeroAutorizacion),
         'obj_xml' => simplexml_load_string($autorizacion->comprobante),
         'numeroComprobante' => isset($dataComprobante->numero_comprobante)
             ? $dataComprobante->numero_comprobante
-            : getDetallesClaveAcceso((String)$autorizacion->comprobante, 'SERIE').getDetallesClaveAcceso((String)$autorizacion->comprobante, 'PUNTO_ACCESO').getDetallesClaveAcceso((String)$autorizacion->comprobante, 'SECUENCIAL')
+            : getDetallesClaveAcceso((String)$autorizacion->comprobante, 'SERIE').getDetallesClaveAcceso((String)$autorizacion->comprobante, 'PUNTO_ACCESO').getDetallesClaveAcceso((String)$autorizacion->comprobante, 'SECUENCIAL'),
+        'detalles_envio' => getEnvio($dataComprobante->id_envio)->detalles
     ];
     PDF::loadView('adminlte.gestion.comprobante.partials.pdf.factura', compact('data'))->save(env('PDF_FACTURAS') . $autorizacion->numeroAutorizacion . ".pdf");
 }
@@ -1608,3 +1610,6 @@ function getEspecificacionEmpaque($id)
     return EspecificacionEmpaque::find($id);
 }
 
+function getFacturaClienteTercero($idEnvio){
+    return FacturaClienteTercero::where('id_envio',$idEnvio)->first();
+}

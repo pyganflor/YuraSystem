@@ -16,12 +16,16 @@ use PHPExcel_Style_Fill;
 use PHPExcel_Style_Border;
 use PHPExcel_Style_Color;
 use PHPExcel_Style_Alignment;
+use yura\Modelos\FacturaClienteTercero;
+use yura\Modelos\Impuesto;
 use yura\Modelos\Pais;
 use yura\Modelos\Pedido;
 use Carbon\Carbon;
 use yura\Modelos\DatosExportacion;
 use yura\Modelos\Submenu;
 use yura\Modelos\Rol;
+use yura\Modelos\TipoIdentificacion;
+use yura\Modelos\TipoImpuesto;
 
 class EnvioController extends Controller
 {
@@ -191,16 +195,16 @@ class EnvioController extends Controller
             ['p.estado',1]
         ])->join('pedido as p', 'envio.id_pedido','=','p.id_pedido')
             ->join('detalle_cliente as dc','p.id_cliente','=','dc.id_cliente' )
+            ->join('impuesto as i','dc.codigo_impuesto','i.codigo')
+            ->join('tipo_impuesto as ti','dc.codigo_porcentaje_impuesto','ti.codigo')
             ->orderBy('envio.id_envio','Desc')
-        ->select('p.*','envio.*','dc.nombre','dc.direccion as direccion_cliente','dc.almacen as almacen_cliente','dc.provincia','dc.codigo_pais as pais_cliente','dc.telefono as telefono_cliente','dc.correo');
+        ->select('p.*','envio.*','i.nombre as nombre_impuesto','ti.porcentaje','dc.nombre','dc.direccion as direccion_cliente','dc.almacen as almacen_cliente','dc.provincia','dc.codigo_pais as pais_cliente','dc.telefono as telefono_cliente','dc.correo');
 
         if ($cliente != '')
             $listado = $listado->where('dc.id_cliente',$cliente);
 
         return view('adminlte.gestion.postcocecha.envios.partials.listado',[
             'envios' => $listado->paginate(10),
-            'datos_exportacion_' => DatosExportacion::join('cliente_datoexportacion as cde','dato_exportacion.id_dato_exportacion','cde.id_dato_exportacion')
-                ->where('id_cliente',$request->id_cliente)->get(),
             'paises'    => Pais::all(),
             'aerolineas' => Aerolinea::all()
         ]);
@@ -357,7 +361,6 @@ class EnvioController extends Controller
     public function ver_envios(Request $request){
         $dataPedido = Pedido::where('pedido.id_pedido',$request->id_pedido)->select('id_cliente','id_pedido')->first();
         return view('adminlte.gestion.postcocecha.pedidos.partials.desglose_envios_pedido',[
-            //'data_envios' => $groupEnvios,
             'id_pedido' => $dataPedido->id_pedido,
             'datos_exportacion' => DatosExportacion::join('cliente_datoexportacion as cde','dato_exportacion.id_dato_exportacion','cde.id_dato_exportacion')
             ->where('id_cliente',$dataPedido->id_cliente)->get(),
@@ -400,7 +403,7 @@ class EnvioController extends Controller
                 $dataDetallePedido = Envio::where('id_envio',$request->id_envio)->select('id_pedido')
                     ->join('detalle_pedido as dp','envio.id_pedido','dp.id_pedido')->select('id_detalle_pedido')->get();
 
-                DetalleEnvio::where('id_envio',$request->id_envio)->update(['id_aerolinea' => $request->id_aerolinea]);
+                DetalleEnvio::where('id_envio',$request->id_envio)->update(['id_aerolinea' => $request->aerolinea]);
 
                 foreach ($dataDetallePedido as $key => $detallePedido) {
 
@@ -440,6 +443,109 @@ class EnvioController extends Controller
                 $errores .
                 '</ul>' .
                 '</div>';
+        }
+        return [
+            'mensaje' => $msg,
+            'success' => $success
+        ];
+    }
+
+    public function factura_cliente_tercero(Request $request){
+        return view('adminlte.gestion.postcocecha.envios.forms.factura_cliente_tercero',[
+            'dataCliente' => FacturaClienteTercero::where('id_envio',$request->id_envio)->first(),
+            'dataTipoIdentificacion' => TipoIdentificacion::all(),
+            'impuestos' => Impuesto::all(),
+            'tipoImpuestos' => TipoImpuesto::all(),
+            'dataPais' => Pais::all(),
+            'facturado' =>  getFacturado($request->id_envio,5)
+        ]);
+    }
+
+    public function store_datos_factura_cliente_tercero(Request $request){
+
+        $valida = Validator::make($request->all(), [
+            'id_envio'            => 'required',
+            'nombre'              => 'required',
+            'tipo_identificacion' => 'required',
+            'codigo_pais'         => 'required',
+            'provincia'           => 'required',
+            'correo'              => 'required',
+            'telefono'            => 'required',
+            'direccion'           => 'required',
+            'codigo_impuesto'     => 'required',
+            'tipo_identificacion' => 'required',
+            'codigo_impuesto'     => 'required',
+            'codigo_impuesto_porcentaje' => 'required',
+        ]);
+
+        $msg= '';
+        if(!$valida->fails()) {
+            $objFacturaClienteTercero = empty($request->id_factura_cliente_tercero)
+                ? new FacturaClienteTercero
+                : FacturaClienteTercero::find($request->id_factura_cliente_tercero);
+            $objFacturaClienteTercero->id_envio                   = $request->id_envio;
+            $objFacturaClienteTercero->nombre_cliente_tercero     = $request->nombre;
+            $objFacturaClienteTercero->identificacion             = $request->identificacion;
+            $objFacturaClienteTercero->codigo_pais                = $request->codigo_pais;
+            $objFacturaClienteTercero->provincia                  = $request->provincia;
+            $objFacturaClienteTercero->correo                     = $request->correo;
+            $objFacturaClienteTercero->telefono                   = $request->telefono;
+            $objFacturaClienteTercero->direccion                  = $request->direccion;
+            $objFacturaClienteTercero->codigo_impuesto            = $request->codigo_impuesto;
+            $objFacturaClienteTercero->codigo_identificacion      = $request->tipo_identificacion;
+            $objFacturaClienteTercero->codigo_impuesto_porcentaje = $request->codigo_impuesto_porcentaje;
+            $objFacturaClienteTercero->almacen                    = $request->almacen;
+            $objFacturaClienteTercero->dae                        = $request->dae;
+
+            if($objFacturaClienteTercero->save()){
+                $model= FacturaClienteTercero::all()->last();
+                $success = true;
+                $msg .= '<div class="alert alert-success text-center">' .
+                    '<p> Se han guardado los datos de la persona a facturar '. $objFacturaClienteTercero->nombre .'  exitosamente</p>'
+                    . '</div>';
+                bitacora('factura_cliente_tercero', $model->id_factura_cliente_tercero, 'I', 'Inserción satisfactoria de una persona a facturar');
+            }else {
+                $success = false;
+                $msg .= '<div class="alert alert-warning text-center">' .
+                    '<p> Ha ocurrido un problema al guardar la información al sistema</p>'
+                    . '</div>';
+            }
+        } else {
+            $success = false;
+            $errores = '';
+            foreach ($valida->errors()->all() as $mi_error) {
+                if ($errores == '') {
+                    $errores = '<li>' . $mi_error . '</li>';
+                } else {
+                    $errores .= '<li>' . $mi_error . '</li>';
+                }
+            }
+            $msg = '<div class="alert alert-danger">' .
+                '<p class="text-center">¡Por favor corrija los siguientes errores!</p>' .
+                '<ul>' .
+                $errores .
+                '</ul>' .
+                '</div>';
+        }
+        return [
+            'mensaje' => $msg,
+            'success' => $success
+        ];
+    }
+
+    public function delete_datos_factura_cliente_tercero(Request $request){
+        $msg = "";
+        $objFacturaClienteTercero = FacturaClienteTercero::where('id_envio',$request->id_envio)->delete();
+        if($objFacturaClienteTercero){
+            $success = true;
+            $msg .= '<div class="alert alert-success text-center">' .
+                '<p> Se han eliminado los datos de la persona a facturar exitosamente</p>'
+                . '</div>';
+        }else{
+            $success = false;
+            $msg .= '<div class="alert alert-warning text-center">' .
+                '<p> Ha ocurrido un problema al elimninar la información al sistema</p>'
+                . '</div>';
         }
         return [
             'mensaje' => $msg,

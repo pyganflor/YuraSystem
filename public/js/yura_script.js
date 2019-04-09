@@ -818,8 +818,6 @@ function calcular_precio_pedido(input) {
         $("#td_total_ramos_" + i).html(parseFloat(ramos_totales_especificacion));
         total_ramos += ramos_totales_especificacion;
         $("#td_precio_especificacion_" + i).html("$" + parseFloat(precio_especificacion).toFixed(2));
-        //if($(".cantidad_"+i).val() != "")
-        // total_piezas += parseInt($(".cantidad_"+i).val());
     }
 
     $.each($(".seleccion_invidual"), function (n, m) {
@@ -907,4 +905,20 @@ function duplicar_pedido(id_pedido, id_cliente) {
     });
 }
 
+function porcentaje_impuesto() {
+    datos = {
+        codigo_impuesto: $("#codigo_impuesto").val()
+    };
+    get_jquery('tipo_impuesto/get_tipo_impuesto', datos, function (retorno) {
+        $("option#dinamic").remove();
+        $.each(retorno,function(i,j){
+            $("#tipo_impuesto").append("<option id='dinamic' value="+j.codigo+">"+   j.descripcion+"</option>");
+        });
+    });
+}
 
+function cosumidor_final() {
+    $("#tipo_identificacion").val() == "07"
+        ? $("#identificacion").val("9999999999999").attr('disabled', true)
+        : $("#identificacion").attr('disabled', false).val("");
+}

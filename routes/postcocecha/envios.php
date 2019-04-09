@@ -19,3 +19,7 @@ Route::get('envio/buscar_codigo_dae',function (Request $request){
         'codigo_empresa' => ConfiguracionEmpresa::select('codigo_pais')->first()->codigo_pais
    ]);
 });
+Route::get('envio/factura_cliente_tercero', 'EnvioController@factura_cliente_tercero');
+Route::post('envio/store_datos_factura_cliente_tercero', 'EnvioController@store_datos_factura_cliente_tercero');
+Route::post('envio/delete_datos_factura_cliente_tercero', 'EnvioController@delete_datos_factura_cliente_tercero');
+
