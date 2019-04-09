@@ -34,4 +34,9 @@ class Cliente extends Model
     {
         return $this->hasMany('\yura\Modelos\ClientePedidoEspecificacion', 'id_cliente');
     }
+
+    public function cliente_datoexportacion()
+    {
+        return $this->hasMany('\yura\Modelos\ClienteDatoExportacion', 'id_cliente');
+    }
 }

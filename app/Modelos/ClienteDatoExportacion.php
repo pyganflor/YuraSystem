@@ -15,4 +15,14 @@ class ClienteDatoExportacion extends Model
         'id_dato_exportacion',
         'id_cliente'
     ];
+
+    public function datos_exportacion()
+    {
+        return $this->belongsTo('\yura\Modelos\DatosExportacion', 'id_dato_exportacion');
+    }
+
+    public function cliente()
+    {
+        return $this->belongsTo('\yura\Modelos\Cliente', 'id_cliente');
+    }
 }

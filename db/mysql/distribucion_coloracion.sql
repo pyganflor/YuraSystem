@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 01-04-2019 a las 22:12:28
+-- Tiempo de generación: 05-04-2019 a las 19:10:19
 -- Versión del servidor: 10.1.36-MariaDB
 -- Versión de PHP: 7.2.11
 
@@ -31,7 +31,7 @@ SET time_zone = "+00:00";
 CREATE TABLE `distribucion_coloracion` (
   `id_distribucion_coloracion` int(11) NOT NULL,
   `id_distribucion` int(11) NOT NULL,
-  `id_coloracion` int(11) NOT NULL,
+  `id_marcacion_coloracion` int(11) NOT NULL,
   `cantidad` int(11) NOT NULL,
   `estado` tinyint(1) NOT NULL DEFAULT '1',
   `fecha_registro` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
@@ -47,7 +47,7 @@ CREATE TABLE `distribucion_coloracion` (
 ALTER TABLE `distribucion_coloracion`
   ADD PRIMARY KEY (`id_distribucion_coloracion`),
   ADD KEY `FK_DistribucionColoracion_Distribucion` (`id_distribucion`),
-  ADD KEY `FK_DistribucionColoracion_Coloracion` (`id_coloracion`);
+  ADD KEY `FK_DistribucionColoracion_MarcacionColoracion` (`id_marcacion_coloracion`);
 
 --
 -- AUTO_INCREMENT de las tablas volcadas
@@ -67,8 +67,8 @@ ALTER TABLE `distribucion_coloracion`
 -- Filtros para la tabla `distribucion_coloracion`
 --
 ALTER TABLE `distribucion_coloracion`
-  ADD CONSTRAINT `FK_DistribucionColoracion_Coloracion` FOREIGN KEY (`id_coloracion`) REFERENCES `coloracion` (`id_coloracion`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `FK_DistribucionColoracion_Distribucion` FOREIGN KEY (`id_distribucion`) REFERENCES `distribucion` (`id_distribucion`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `FK_DistribucionColoracion_Distribucion` FOREIGN KEY (`id_distribucion`) REFERENCES `distribucion` (`id_distribucion`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `FK_DistribucionColoracion_MarcacionColoracion` FOREIGN KEY (`id_marcacion_coloracion`) REFERENCES `marcacion_coloracion` (`id_marcacion_coloracion`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

@@ -235,6 +235,9 @@
     }
 </script>
 
+@php
+    $det_ped = $pedido->detalles[$pos_det_ped];
+@endphp
 <form id="form-update_orden_semanal">
     <table class="table-bordered" width="100%" style="margin-bottom: 10px">
         <tr>
@@ -260,6 +263,21 @@
             <th class="text-center" style="border-color: #9d9d9d">
                 {{$pedido->cliente->detalle()->nombre}}
             </th>
+            @foreach($pedido->cliente->cliente_datoexportacion as $cli_dat_exp)
+                @php
+                    $detped_datexp = getDatosExportacion($det_ped->id_detalle_pedido, $cli_dat_exp->id_dato_exportacion);
+                @endphp
+                <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
+                    {{$cli_dat_exp->datos_exportacion->nombre}}
+                </th>
+                <th class="text-center" style="border-color: #9d9d9d">
+                    <input type="text" id="dato_exportacion_{{$cli_dat_exp->id_dato_exportacion}}" class="form-control"
+                           value="{{$detped_datexp != '' ? $detped_datexp->valor : ''}}" minlength="1"
+                           style="text-transform: uppercase">
+                </th>
+
+                <input type="hidden" class="id_dato_exportacion" value="{{$cli_dat_exp->id_dato_exportacion}}">
+            @endforeach
         </tr>
     </table>
 
@@ -316,9 +334,6 @@
                     AGENCIA CARGA
                 </th>
             </tr>
-            @php
-                $det_ped = $pedido->detalles[$pos_det_ped];
-            @endphp
             @foreach($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $pos_esp_emp => $esp_emp)
                 @php
                     $ramos_x_caja = 0;
@@ -540,6 +555,16 @@
                             arreglo_coloraciones: arreglo_coloraciones,
                         });
                     }
+
+                    ids_datos_exportacion = $('.id_dato_exportacion');
+                    arreglo_dat_exp = [];
+                    for (dat = 0; dat < ids_datos_exportacion.length; dat++) {
+                        id_dat_exp = ids_datos_exportacion[dat].value;
+                        arreglo_dat_exp.push({
+                            id_dat_exp: id_dat_exp,
+                            valor: $('#dato_exportacion_' + id_dat_exp).val().toUpperCase()
+                        });
+                    }
                     datos = {
                         _token: '{{csrf_token()}}',
                         id_pedido: $('#id_pedido').val(),
@@ -549,6 +574,7 @@
                         cantidad_piezas: $('#cantidad_piezas').val(),
                         id_agencia_carga: $('#id_agencia_carga').val(),
                         arreglo_esp_emp: arreglo_esp_emp,
+                        arreglo_dat_exp: arreglo_dat_exp
                     };
 
                     post_jquery('{{url('pedidos/update_orden_tinturada')}}', datos, function () {
