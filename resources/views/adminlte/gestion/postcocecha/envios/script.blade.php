@@ -1,8 +1,6 @@
 <script>
     buscar_listado_envios();
-    setTimeout(function () {
-        calcular_precio_envio();
-    },1000)
+    $(document).on('load',function () { calcular_precio_envio(); });
 
     function buscar_listado_envios() {
         $.LoadingOverlay('show');
@@ -123,7 +121,7 @@
     function calcular_precio_envio() {
         cant_forms = $("div#table_envios form").length;
         for (o=1;o<=cant_forms;o++){
-            monto_total = 0.00;
+            sub_total = 0.00;
             total_ramos = 0.00;
             total_piezas = 0.00;
             cant_rows = $(".input_cantidad_"+o).length;
@@ -140,34 +138,45 @@
                         precio_especificacion += (parseFloat(precio_variedad) * parseFloat(ramos_x_caja) * q.value);
                     });
                 });
-                monto_total += parseFloat(precio_especificacion);
+                sub_total += parseFloat(precio_especificacion);
                 $("#td_total_ramos_"+o+"_"+i).html(parseFloat(ramos_totales_especificacion));
                 total_ramos += ramos_totales_especificacion;
                 $("#td_precio_especificacion_"+o+"_"+i).html("$" + parseFloat(precio_especificacion).toFixed(2));
                 total_piezas += parseInt($(".cantidad_"+o+"_"+i).val());
             }
+            console.log(!isNaN($("#porcentaje_impuesto_"+o).val()));
+            !isNaN($("#porcentaje_impuesto_"+o).val())
+                ? total = (parseFloat(sub_total)+parseFloat(((sub_total*parseFloat($("#porcentaje_impuesto_"+o).val()))/100).toFixed(2))).toFixed(2)
+                : total = sub_total;
 
             $("#total_piezas_"+o).html(total_piezas);
             $("#total_ramos_"+o).html(total_ramos);
-            $("#total_monto_"+o).html(monto_total.toFixed(2));
+            $("#sub_total_"+o).html(sub_total.toFixed(2));
+            $("#total_"+o).html(total);
         }
 
     }
 
-    function buscar_codigo_dae(input,form){
+    function buscar_codigo_dae(input,form,factura_cliente_tercero){
         $.LoadingOverlay('show');
         datos = {
             codigo_pais : input.value,
             fecha_envio : $("form#"+form+" #fecha_envio").val()
         };
         $.get('{{url('envio/buscar_codigo_dae')}}', datos, function (retorno) {
-            $("form#"+form+" #dae").val(retorno.codigo_dae);
-            console.log( retorno.codigo_dae);
-            retorno.codigo_dae == "" ? $("form#"+form+" #dae").removeAttr('disabled') : $("form#"+form+" #dae").attr('disabled','disabled');
-            (retorno.codigo_empresa == datos.codigo_pais)
-                ? $("form#"+form+ " #dae").removeAttr('required').val('')
-                : $("form#"+form+ " #dae").attr('required',true).val(retorno.codigo_dae)
+            factura_cliente_tercero
+                ? $("form#"+form+" #dae_cliente_tercero").val(retorno.codigo_dae)
+                : $("form#"+form+" #dae").val(retorno.codigo_dae);
 
+            retorno.codigo_dae == "" ? $("form#"+form+" #dae").removeAttr('disabled') : $("form#"+form+" #dae").attr('disabled','disabled');
+
+            if(retorno.codigo_empresa == datos.codigo_pais){
+               $("form#"+form+ " #dae").removeAttr('required').val('');
+               $("form#"+form+ " #dae_cliente_tercero").removeAttr('required').val('');
+            }else{
+               $("form#"+form+ " #dae").attr('required',true).val(retorno.codigo_dae);
+               $("form#"+form+ " #dae_cliente_tercero").attr('required',true).val(retorno.codigo_dae);
+            }
         }).always(function () {
             $.LoadingOverlay('hide');
         });
@@ -194,18 +203,18 @@
 
            datos = {
                _token : '{{@csrf_token()}}',
-                id_envio : id_envio,
-                dae : $("form#"+form+ " #dae").val(),
-                guia_madre : $("form#"+form+ " #guia_madre").val(),
-                guia_hija : $("form#"+form+ " #guia_hija").val(),
-                codigo_pais : $("form#"+form+ " #codigo_pais").val(),
-                email : $("form#"+form+ " #email").val(),
-                telefono : $("form#"+form+ " #telefono").val(),
-                direccion : $("form#"+form+ " #direccion").val(),
-                fecha_envio : $("form#"+form+ " #fecha_envio").val(),
-                aerolinea : $("form#"+form+ " #aerolinea").val(),
-                precios : arrDataPrecio,
-                almacen : $("form#"+form+ " #almacen").val(),
+               id_envio : id_envio,
+               dae : $("form#"+form+ " #dae").val(),
+               guia_madre : $("form#"+form+ " #guia_madre").val(),
+               guia_hija : $("form#"+form+ " #guia_hija").val(),
+               codigo_pais : $("form#"+form+ " #codigo_pais").val(),
+               email : $("form#"+form+ " #email").val(),
+               telefono : $("form#"+form+ " #telefono").val(),
+               direccion : $("form#"+form+ " #direccion").val(),
+               fecha_envio : $("form#"+form+ " #fecha_envio").val(),
+               aerolinea : $("form#"+form+ " #aerolinea").val(),
+               precios : arrDataPrecio,
+               almacen : $("form#"+form+ " #almacen").val(),
            };
             $.post('{{url('envio/actualizar_envio')}}', datos, function (retorno) {
                 if (retorno.success) {
@@ -219,7 +228,68 @@
                 alerta('Ha ocurrido un problema al guardar los datos del envío');
             }).always(function () {
                 $.LoadingOverlay('hide');
-            })
+            });
         }
+    }
+
+    function factura_tercero(id_envio) {
+        datos = {
+            id_envio : id_envio
+        };
+        $.get('{{url('envio/factura_cliente_tercero')}}', datos, function (retorno) {
+            modal_form('modal_factura_cliente_tercero', retorno, '<i class="fa fa-user-plus" aria-hidden="true">' +
+                '</i> Datos del cliente a facturar', true, false, '75%', function () {
+              store_datos_factura_cliente_tercero(id_envio);
+            });
+        }).always(function () {
+            $.LoadingOverlay("hide");
+        });
+    }
+
+    function store_datos_factura_cliente_tercero(id_envio) {
+        if ($('#form_add_cliente_factura_tercero').valid()) {
+            $.LoadingOverlay('show');
+            datos = {
+                _token: '{{csrf_token()}}',
+                id_factura_cliente_tercero: $('#id_factura_cliente_tercero').val(),
+                id_envio: id_envio,
+                nombre: $('#nombre_cliente_tercero').val(),
+                identificacion: $('#identificacion').val(),
+                codigo_pais: $("#pais_cliente_tercero").val(),
+                provincia: $("#provincia_cliente_tercero").val(),
+                correo: $("#correo_cliente_tercero").val(),
+                telefono: $("#telefono_cliente_tercero").val(),
+                direccion: $("#direccion_cliente_tercero").val(),
+                codigo_impuesto: $("#codigo_impuesto").val(),
+                tipo_identificacion : $('#tipo_identificacion').val(),
+                codigo_impuesto_porcentaje : $('#tipo_impuesto').val(),
+                almacen : $('#almacen_cliente_tercero').val(),
+                dae : $('#dae_cliente_tercero').val()
+            };
+            post_jquery('{{url('envio/store_datos_factura_cliente_tercero')}}', datos, function () {
+                buscar_listado_envios();
+                calcular_precio_envio();
+                cerrar_modals();
+            });
+            $.LoadingOverlay('hide');
+        }
+    }
+
+    function delete_factura_tercero(id_envio){
+        modal_quest('modal_message_delete_factura_tercero',
+            '<div class="alert alert-warning text-center"><i class="fa fa-fw fa-exclamation-triangle"></i> ¿Esta seguro que desea eliminar los datos del cliente a facturar?</div>',
+            '<i class="fa fa-file-code-o" aria-hidden="true"></i>Datos de facturación', true, false, '{{isPC() ? '40%' : ''}}', function () {
+                $.LoadingOverlay('show');
+                datos = {
+                    _token: '{{csrf_token()}}',
+                    id_envio: id_envio,
+                };
+                post_jquery('{{url('envio/delete_datos_factura_cliente_tercero')}}', datos, function () {
+                    buscar_listado_envios();
+                    calcular_precio_envio();
+                    cerrar_modals();
+                });
+                $.LoadingOverlay('hide');
+            });
     }
 </script>

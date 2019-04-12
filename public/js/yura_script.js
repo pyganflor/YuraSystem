@@ -148,7 +148,7 @@ function store_pedido(id_cliente, pedido_fijo, csrf_token, vista, id_pedido) {
         if ($("#envio_automatico").is(":checked")) {
             texto = "<div class='row'>" +
                 "<div class='col-md-12'>" +
-                ""+msg+""+
+                "" + msg + "" +
                 "<label for='fecha_envio'>Seleccione la fecha de envío</label>" +
                 "<input type='date' id='fecha_envio' name='fecha_envio' class='form-control' value='" + moment().format('YYYY-MM-DD') + "'>" +
                 "<span id='error_fecha_envio'></span>" +
@@ -215,7 +215,7 @@ function store_pedido(id_cliente, pedido_fijo, csrf_token, vista, id_pedido) {
             }
 
             var arrFechas = [];
-            console.log(pedido_fijo,$("#opcion_pedido_fijo").val());
+            console.log(pedido_fijo, $("#opcion_pedido_fijo").val());
             if (pedido_fijo && ($("#opcion_pedido_fijo").val() == 1) || $("#opcion_pedido_fijo").val() == 2) {
                 var fechaDesde = moment($("#fecha_desde_pedido_fijo").val());
                 var fechaHasta = moment($("#fecha_hasta_pedido_fijo").val());
@@ -245,7 +245,7 @@ function store_pedido(id_cliente, pedido_fijo, csrf_token, vista, id_pedido) {
                         }
                     }
                 }
-            }else if (pedido_fijo && $("#opcion_pedido_fijo").val() == 3) {
+            } else if (pedido_fijo && $("#opcion_pedido_fijo").val() == 3) {
                 $cant_pedidos = $("#td_fechas_pedido_fijo_personalizado div.col-md-4").length;
                 for (var i = 0; i < $cant_pedidos; i++) {
                     arrFechas.push(
@@ -818,8 +818,6 @@ function calcular_precio_pedido(input) {
         $("#td_total_ramos_" + i).html(parseFloat(ramos_totales_especificacion));
         total_ramos += ramos_totales_especificacion;
         $("#td_precio_especificacion_" + i).html("$" + parseFloat(precio_especificacion).toFixed(2));
-        //if($(".cantidad_"+i).val() != "")
-        // total_piezas += parseInt($(".cantidad_"+i).val());
     }
 
     $.each($(".seleccion_invidual"), function (n, m) {
@@ -916,3 +914,20 @@ function getRandomColor() {
     return color;
 }
 
+function porcentaje_impuesto() {
+    datos = {
+        codigo_impuesto: $("#codigo_impuesto").val()
+    };
+    get_jquery('tipo_impuesto/get_tipo_impuesto', datos, function (retorno) {
+        $("option#dinamic").remove();
+        $.each(retorno, function (i, j) {
+            $("#tipo_impuesto").append("<option id='dinamic' value=" + j.codigo + ">" + j.descripcion + "</option>");
+        });
+    });
+}
+
+function cosumidor_final() {
+    $("#tipo_identificacion").val() == "07"
+        ? $("#identificacion").val("9999999999999").attr('disabled', true)
+        : $("#identificacion").attr('disabled', false).val("");
+}

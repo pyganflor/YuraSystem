@@ -49,7 +49,7 @@ class EmisionComprobanteController extends Controller
                     $msg = '<div class="alert alert-success text-center">' .
                         '<p> Se han guardado los puntos de acceso exitosamente</p>'
                         . '</div>';
-                    bitacora('usuario', $punto_emsion[1], "update",'usuario actualizado satisfactoriamente');
+                    bitacora('usuario', $punto_emsion[1], 'U','usuario actualizado satisfactoriamente');
                 } else {
                     $msg = '<div class="alert alert-warning text-center">' .
                         '<p> Ha ocurrido un problema al guardar la información al sistema</p>'

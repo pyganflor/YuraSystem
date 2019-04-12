@@ -69,7 +69,7 @@
                             {{--<a target="_blank" href="{{storage_path('pdf/facturas/').$item->clave_acceso.".pdf"}}" class="btn btn-default btn-xs" title="Ver factura" >
                                 <i class="fa fa-file-text-o" aria-hidden="true"></i>
                             </a>--}}
-                            <a target="_blank" href="{{url('comprobante/ver_factura_aprobada_sri',$item->clave_acceso)}}" class="btn btn-default btn-xs" title="Ver factura" >
+                            <a target="_blank" href="{{url('comprobante/factura_aprobada_sri',$item->clave_acceso)}}" class="btn btn-default btn-xs" title="Ver factura" >
                                 <i class="fa fa-file-text-o" aria-hidden="true"></i>
                             </a>
                             <button class="btn btn-default btn-xs" title="Reenviar correo" onclick="reenviar_correo('{{$item->clave_acceso}}')">
@@ -80,7 +80,7 @@
                             <button class="btn btn-default btn-xs">
                                 <input type="checkbox" id="facturar_{{$key+1}}" name="facturar"  title="{{$item->nombre_comprobante=="FACTURA" ? "Facturar" : "Enviar al SRI"}}" value="{{$item->clave_acceso}}" style="margin:0;position:relative;top:3px">
                             </button>
-                            <a target="_blank" href="{{url('comprobante/ver_pre_factura',$item->clave_acceso)}}" class="btn btn-primary btn-xs" title="Ver comprobante elctrónico">
+                            <a target="_blank" href="{{url('comprobante/pre_factura',$item->clave_acceso)}}" class="btn btn-primary btn-xs" title="Ver comprobante elctrónico">
                                 <i class="fa fa-eye" aria-hidden="true"></i>
                             </a>
                             {{--<button class="btn btn-danger btn-xs" title="Eliminar comprobante elctrónico" onclick="elimnar_comprobante()">

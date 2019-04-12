@@ -2,7 +2,12 @@
     @if(sizeof($envios)>0)
             @foreach($envios as $i => $envio)
                 <form id="form_envios_{{$i+1}}">
-                    @php $firmado = getFacturado($envio->id_envio,1); $facturado = getFacturado($envio->id_envio,5); @endphp
+                    <input type="hidden" id="porcentaje_impuesto_{{$i+1}}" value="{{$envio->porcentaje}}">
+                    @php
+                        $firmado = getFacturado($envio->id_envio,1);
+                        $facturado = getFacturado($envio->id_envio,5);
+                        $factura_tercero = getFacturaClienteTercero($envio->id_envio) != "" ? true : false;
+                    @endphp
                     <div class="box box-solid box-primary">
                         <div class="box-header with-border">
                             <div class="box-title col-md-3" style="margin-top: 5px;"><b>Envío N#:</b>
@@ -165,13 +170,20 @@
                                 <div class="col-md-12">
                                     <div class="box">
                                         <div class="box-header with-border">
+                                            <div class="row">
                                             <div class="col-md-6">
                                                 <h3 class="box-title">DATOS DE EXPORTACIÓN</h3>
                                             </div>
                                             <div class="col-md-6 text-right">
-                                                <button type="button" class="btn btn-primary" title="Facturar a otra persona">
+                                                <button type="button" class="btn btn-{{$factura_tercero ?  "primary" : "default"}}" title="Facturar a terceros" onclick="factura_tercero('{{$envio->id_envio}}')">
                                                     <i class="fa fa-user-plus" aria-hidden="true"></i>
                                                 </button>
+                                                @if($factura_tercero)
+                                                    <button type="button" class="btn btn-danger" title="Eliminar factura a tercero" onclick="delete_factura_tercero('{{$envio->id_envio}}')">
+                                                        <i class="fa fa-user-times" aria-hidden="true"></i>
+                                                    </button>
+                                                @endif
+                                            </div>
                                             </div>
                                         </div>
                                         <div class="box-body">
@@ -190,28 +202,81 @@
                                                             $dae = isset($d->codigo_dae) ? $d->codigo_dae : "";
                                                         }
                                                      @endphp
-                                                    <input type="text" placeholder="DAE" class="form-control"
-                                                           {{($facturado) ? "disabled='disabled'" : ""}}
-                                                           {{$dae != "" ? "disabled='disabled'" : ""}}
-                                                           id="dae" name="dae" value="{{$dae}}" {{(strtoupper($p) != getConfiguracionEmpresa()->codigo_pais) ? "required" : "" }} >
+                                                    <input type="text" placeholder="DAE" class="form-control" {{($facturado) ? "disabled='disabled'" : ""}}
+                                                    {{$factura_tercero ?  "disabled" : ""}}  {{$dae != "" ? "disabled='disabled'" : ""}} id="dae" name="dae" value="{{$dae}}"
+                                                        {{(strtoupper($p) != getConfiguracionEmpresa()->codigo_pais) ? "required" : "" }} >
                                                 </div>
                                                 <div class="col-md-3">
                                                     <label for="guia_madre">Guía madre</label>
-                                                    <input type="text" placeholder="Guía madre" class="form-control"
-                                                           {{($facturado) ? "disabled='disabled'" : ""}}
+                                                    <input type="text" placeholder="Guía madre" class="form-control" {{($facturado) ? "disabled='disabled'" : ""}}
                                                            id="guia_madre" name="guia_madre" required value="{{$envio->guia_madre}}">
                                                 </div>
                                                 <div class="col-md-3">
                                                     <label for="guia_hija">Guía hija</label>
-                                                    <input type="text" placeholder="Guía hija" class="form-control"
-                                                           {{($facturado) ? "disabled='disabled'" : ""}}
+                                                    <input type="text" placeholder="Guía hija" class="form-control" {{($facturado) ? "disabled='disabled'" : ""}}
                                                            id="guia_hija" name="guia_hija" value="{{$envio->guia_hija}}">
                                                 </div>
                                                 <div class="col-md-3">
-
+                                                    <label for="aerolinea">Agencia de transporte</label>
+                                                    <select id="aerolinea" name="aerolinea" class="form-control"
+                                                            {{($facturado) ? "disabled='disabled'" : ""}}required>
+                                                        @if(getEnvio($envio->id_envio)->detalles[0]->id_aerolinea == null)
+                                                            <option selected disabled value="">Seleccione</option>
+                                                        @endif
+                                                        @foreach($aerolineas as $a)
+                                                            <option {!! getEnvio($envio->id_envio)->detalles[0]->id_aerolinea ==  $a->id_aerolinea ? "selected" : ""!!} value="{{$a->id_aerolinea}}">{{$a->nombre}}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="row" >
+                                                <div class="col-md-3">
+                                                    <label for="Email">Cliente</label>
+                                                    @php
+                                                        if(isset($envio->email)){
+                                                          $nombre = $envio->nombre;
+                                                        }else{
+                                                            foreach(getCliente($envio->id_cliente)->detalles as $detCliente){
+                                                                if($detCliente->estado==1)
+                                                                    $nombre = $detCliente->nombre;
+                                                            }
+                                                        }
+                                                    @endphp
+                                                    <input type="text" placeholder="Nombre" {{$factura_tercero ?  "disabled" : ""}} class="form-control" {{($facturado) ? "disabled='disabled'" : ""}}
+                                                    id="nombre" name="nombre" value="{{$nombre}}" required >
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <label for="Email">Email</label>
+                                                    @php
+                                                        if(isset($envio->email)){
+                                                          $email = $envio->email;
+                                                        }else{
+                                                            foreach(getCliente($envio->id_cliente)->detalles as $detCliente){
+                                                                if($detCliente->estado==1)
+                                                                    $email = $detCliente->correo;
+                                                            }
+                                                        }
+                                                    @endphp
+                                                    <input type="email" placeholder="Email" {{$factura_tercero ?  "disabled" : ""}} class="form-control" {{($facturado) ? "disabled='disabled'" : ""}}
+                                                           id="email" name="email" value="{{$email}}" required >
+                                                </div>
+                                                <div class="col-md-3">
+                                                    @php
+                                                        if(isset($envio->telefono)){
+                                                            $telefono = $envio->telefono;
+                                                        }else{
+                                                            $telefono = $envio->telefono_cliente;
+                                                        }
+                                                    @endphp
+                                                    <label for="telefono">Teléfono</label>
+                                                    <input type="text" placeholder="Teléfono" {{$factura_tercero ?  "disabled" : ""}}
+                                                        class="form-control" {{($facturado) ? "disabled='disabled'" : ""}} id="telefono" name="telefono_{{$i+1}}"
+                                                        value="{{$telefono}}" required>
+                                                </div>
+                                                <div class="col-md-3">
                                                     <label for="pais">País</label>
-                                                    <select id="codigo_pais" name="codigo_pais" class="form-control" onchange="buscar_codigo_dae(this,'form_envios_{{$i+1}}')"
-                                                        {{($facturado) ? "disabled='disabled'" : ""}} required>
+                                                    <select id="codigo_pais" name="codigo_pais" class="form-control" {{$factura_tercero ?  "disabled" : ""}} onchange="buscar_codigo_dae(this,'form_envios_{{$i+1}}')"
+                                                            {{($facturado) ? "disabled='disabled'" : ""}} required>
                                                         @php
                                                             $envio->codigo_pais == ""
                                                                 ? $p = $envio->pais_cliente
@@ -225,47 +290,6 @@
                                             </div>
                                             <div class="row" >
                                                 <div class="col-md-3">
-                                                    <label for="Email">Email</label>
-                                                    @php
-                                                        if(isset($envio->email)){
-                                                          $email = $envio->email;
-                                                        }else{
-                                                            foreach(getCliente($envio->id_cliente)->detalles as $detCliente){
-                                                                if($detCliente->estado==1)
-                                                                    $email = $detCliente->correo;
-                                                            }
-                                                        }
-                                                    @endphp
-                                                    <input type="email" placeholder="Email" class="form-control"
-                                                           {{($facturado) ? "disabled='disabled'" : ""}}
-                                                           id="email" name="email" value="{{$email}}" required >
-                                                </div>
-                                                <div class="col-md-3">
-                                                    @php
-                                                        if(isset($envio->telefono)){
-                                                            $telefono = $envio->telefono;
-                                                        }else{
-                                                            $telefono = $envio->telefono_cliente;
-                                                        }
-                                                    @endphp
-                                                    <label for="telefono">Teléfono</label>
-                                                    <input type="text" placeholder="Teléfono" class="form-control"
-                                                           {{($facturado) ? "disabled='disabled'" : ""}}
-                                                           id="telefono" name="telefono_{{$i+1}}" value="{{$telefono}}" required>
-                                                </div>
-                                                <div class="col-md-3">
-                                                    <label for="aerolinea">Agencia de transporte</label>
-                                                    <select id="aerolinea" name="aerolinea" class="form-control"
-                                                            {{($facturado) ? "disabled='disabled'" : ""}} required>
-                                                        @if(getEnvio($envio->id_envio)->detalles[0]->id_aerolinea == null)
-                                                            <option selected disabled value="">Seleccione</option>
-                                                        @endif
-                                                        @foreach($aerolineas as $a)
-                                                            <option {!! getEnvio($envio->id_envio)->detalles[0]->id_aerolinea ==  $a->id_aerolinea ? "selected" : ""!!} value="{{$a->id_aerolinea}}">{{$a->nombre}}</option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
-                                                <div class="col-md-3">
                                                     @php
                                                         if(isset($envio->almacen)){
                                                             $almacen = $envio->almacen;
@@ -274,24 +298,20 @@
                                                         }
                                                     @endphp
                                                     <label for="almacen_{{$i+1}}">Almacen</label>
-                                                    <input type="text" placeholder="Almacen" class="form-control"
-                                                           {{($facturado) ? "disabled='disabled'" : ""}}
-                                                           id="almacen" name="almacen_{{$i+1}}" value="{{$almacen}}">
+                                                    <input type="text" placeholder="Almacen" class="form-control" {{$factura_tercero ?  "disabled" : ""}} {{($facturado) ? "disabled='disabled'" : ""}}
+                                                    id="almacen" name="almacen_{{$i+1}}" value="{{$almacen}}">
                                                 </div>
-                                            </div>
-                                            <div class="row" >
-                                                <div class="col-md-12">
-                                                        @php
+                                                <div class="col-md-9">
+                                                    @php
                                                             if(isset($envio->direccion)){
                                                               $direccion = $envio->direccion;
                                                             }else{
                                                                 $direccion = $envio->provincia.", ".$envio->direccion_cliente;
                                                             }
                                                         @endphp
-                                                        <label for="direccion">Destino</label>
-                                                        <input type="text" placeholder="Dirección" class="form-control"
-                                                               {{($facturado) ? "disabled='disabled'" : ""}}
-                                                               id="direccion" name="direccion" value="{{$direccion}}" required>
+                                                    <label for="direccion">Destino</label>
+                                                    <input type="text" placeholder="Dirección" {{$factura_tercero ?  "disabled" : ""}} class="form-control" {{($facturado) ? "disabled='disabled'" : ""}}
+                                                           id="direccion" name="direccion" value="{{$direccion}}" required>
                                                 </div>
                                             </div>
                                         </div>
@@ -301,10 +321,11 @@
                         </div>
                         <!-- /.box-body -->
                         <div class="box-footer" style="background: #d2d6de;">
-                            <div class="box-title col-md-3" style="margin-top: 8px"><b>Totales</b></div>
                             <div class="box-title col-md-2" style="margin-top: 8px">Piezas: <span id="total_piezas_{{$i+1}}"></span></div>
                             <div class="box-title col-md-2" style="margin-top: 8px">Ramos: <span id="total_ramos_{{$i+1}}"></span></div>
-                            <div class="box-title col-md-2" style="margin-top: 8px">Monto: $<span id="total_monto_{{$i+1}}"></span> </div>
+                            <div class="box-title col-md-2" style="margin-top: 8px">Sub Total: $<span id="sub_total_{{$i+1}}"></span></div>
+                            <div class="box-title col-md-1" style="margin-top: 8px"><span>{{$envio->nombre_impuesto}}: </span> <span id="iva_{{$i+1}}"> {{$envio->porcentaje.(is_numeric($envio->porcentaje) ? "%" : "")}}</span></div>
+                            <div class="box-title col-md-2" style="margin-top: 8px">Total: $<span id="total_{{$i+1}}"></span> </div>
                             <div class="box-title col-md-3 text-right">
                             @if($facturado == null)
                                 <button type="button" class="btn btn-success" onclick="actualizar_envio('{{$envio->id_envio}}','form_envios_{{$i+1}}')">
