@@ -25,6 +25,9 @@
          folder instead of downloading all of them to reduce the load. -->
     <link rel="stylesheet" href="{{url('adminlte')}}/dist/css/skins/_all-skins.min.css">
 
+    {{-- Select Multiple --}}
+    <link rel="stylesheet" href="{{url('adminlte')}}/bower_components/select2/dist/css/select2.min.css">
+
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -96,6 +99,12 @@
 
 <!-- LoadingOverlay -->
 <script src="https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@2.1.5/dist/loadingoverlay.min.js"></script>
+
+{{-- Select Multiple --}}
+<script src="{{url('adminlte')}}/bower_components/select2/dist/js/select2.full.min.js"></script>
+
+<script src="{{url('adminlte')}}/plugins/timepicker/bootstrap-timepicker.min.js"></script>
+<script src="{{url('adminlte')}}/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
 
 <script>
     //Para generar un BEEP en javascript ---------------------------------------------------------------------------------

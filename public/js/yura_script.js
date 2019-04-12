@@ -148,7 +148,7 @@ function store_pedido(id_cliente, pedido_fijo, csrf_token, vista, id_pedido) {
         if ($("#envio_automatico").is(":checked")) {
             texto = "<div class='row'>" +
                 "<div class='col-md-12'>" +
-                ""+msg+""+
+                "" + msg + "" +
                 "<label for='fecha_envio'>Seleccione la fecha de envío</label>" +
                 "<input type='date' id='fecha_envio' name='fecha_envio' class='form-control' value='" + moment().format('YYYY-MM-DD') + "'>" +
                 "<span id='error_fecha_envio'></span>" +
@@ -215,7 +215,7 @@ function store_pedido(id_cliente, pedido_fijo, csrf_token, vista, id_pedido) {
             }
 
             var arrFechas = [];
-            console.log(pedido_fijo,$("#opcion_pedido_fijo").val());
+            console.log(pedido_fijo, $("#opcion_pedido_fijo").val());
             if (pedido_fijo && ($("#opcion_pedido_fijo").val() == 1) || $("#opcion_pedido_fijo").val() == 2) {
                 var fechaDesde = moment($("#fecha_desde_pedido_fijo").val());
                 var fechaHasta = moment($("#fecha_hasta_pedido_fijo").val());
@@ -245,7 +245,7 @@ function store_pedido(id_cliente, pedido_fijo, csrf_token, vista, id_pedido) {
                         }
                     }
                 }
-            }else if (pedido_fijo && $("#opcion_pedido_fijo").val() == 3) {
+            } else if (pedido_fijo && $("#opcion_pedido_fijo").val() == 3) {
                 $cant_pedidos = $("#td_fechas_pedido_fijo_personalizado div.col-md-4").length;
                 for (var i = 0; i < $cant_pedidos; i++) {
                     arrFechas.push(
@@ -905,14 +905,23 @@ function duplicar_pedido(id_pedido, id_cliente) {
     });
 }
 
+function getRandomColor() {
+    var letters = '0123456789ABCDEF';
+    var color = '#';
+    for (var i = 0; i < 6; i++) {
+        color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+}
+
 function porcentaje_impuesto() {
     datos = {
         codigo_impuesto: $("#codigo_impuesto").val()
     };
     get_jquery('tipo_impuesto/get_tipo_impuesto', datos, function (retorno) {
         $("option#dinamic").remove();
-        $.each(retorno,function(i,j){
-            $("#tipo_impuesto").append("<option id='dinamic' value="+j.codigo+">"+   j.descripcion+"</option>");
+        $.each(retorno, function (i, j) {
+            $("#tipo_impuesto").append("<option id='dinamic' value=" + j.codigo + ">" + j.descripcion + "</option>");
         });
     });
 }

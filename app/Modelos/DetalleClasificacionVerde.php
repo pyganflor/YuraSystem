@@ -20,7 +20,6 @@ class DetalleClasificacionVerde extends Model
         'id_variedad',
         'id_clasificacion_unitaria',
         'id_clasificacion_verde',
-        'id_lote_re',
     ];
 
     public function variedad()

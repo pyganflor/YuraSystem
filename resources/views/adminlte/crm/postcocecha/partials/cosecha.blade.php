@@ -3,14 +3,14 @@
         <h4 class="box-title">
             <strong>Gráficas</strong>
 
-            <select name="filtro_predeterminado" id="filtro_predeterminado" onchange="filtrar_predeterminado()">
+            <select name="filtro_predeterminado" id="filtro_predeterminado" onchange="filtrar_predeterminado(1)">
                 <option value="1">1 Mes</option>
                 <option value="2">3 Meses</option>
                 <option value="3">6 Meses</option>
                 <option value="4">1 Año</option>
             </select>
 
-            <select name="filtro_predeterminado_variedad" id="filtro_predeterminado_variedad" onchange="filtrar_predeterminado()">
+            <select name="filtro_predeterminado_variedad" id="filtro_predeterminado_variedad" onchange="filtrar_predeterminado(1)">
                 @foreach(getVariedades() as $v)
                     <option value="{{$v->id_variedad}}">{{$v->nombre}}</option>
                 @endforeach
@@ -18,6 +18,19 @@
                 <option value="T">Todas las variedades</option>
             </select>
         </h4>
+
+        <select class="select2" multiple="multiple" id="filtro_predeterminado_annos" name="filtro_predeterminado_annos"
+                data-placeholder="Años naturales"
+                style="width: 175px">
+            @foreach($annos as $a)
+                <option value="{{$a->anno}}">{{$a->anno}}</option>
+            @endforeach
+        </select>
+
+        <button type="button" class="btn btn-xs btn-default" onclick="filtrar_predeterminado(0)">
+            <i class="fa fa-fw fa-search"></i>
+        </button>
+
         <div class="box-tools pull-right">
             <button type="button" class="btn btn-box-tool" title="Cosecha por variedades"
                     onclick="select_option_cosecha('cosecha_x_variedad')">
@@ -52,4 +65,5 @@
 
 <script>
     filtrar_predeterminado();
+    $('.select2').select2();
 </script>
