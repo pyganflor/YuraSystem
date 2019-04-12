@@ -167,6 +167,9 @@
 <script src="{{url('adminlte')}}/plugins/timepicker/bootstrap-timepicker.min.js"></script>
 <script src="{{url('adminlte')}}/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
 
+{{-- NOTIFICACIONES --}}
+<script src="{{url('js/push_notification/push.min.js')}}"></script>
+
 <script>
     //Para generar un BEEP en javascript ---------------------------------------------------------------------------------
     function beep() {
@@ -823,6 +826,23 @@
                 });
                 $.LoadingOverlay('hide');
             });
+    }
+
+    function notificar(body, url, accion) {
+        Push.create('Hola {{explode(' ',getUsuario(Session::get('id_usuario'))->nombre_completo)[0]}}', {
+            body: body,
+            icon: '{{url('images/logo_yura.png')}}',
+            link: '/#',
+            timeout: 5000,
+            onClick: function () {
+                if (!!url)
+                    window.focus();
+                if (!!accion)
+                    accion();
+                this.close();
+            },
+            vibrate: [200, 100, 200, 100, 200, 100, 200]
+        });
     }
 
     set_config('');

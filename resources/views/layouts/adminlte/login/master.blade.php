@@ -72,6 +72,9 @@
 <script src="{{url('js/jquery.validate/additional-methods.min.js')}}" type="text/javascript"></script>
 <script src="{{url('js/jquery.validate/messages_es.min.js')}}" type="text/javascript"></script>
 
+{{-- NOTIFICACIONES --}}
+<script src="{{url('js/push_notification/push.min.js')}}"></script>
+
 <script>
     //Para generar un BEEP en javascript ---------------------------------------------------------------------------------
     function beep() {

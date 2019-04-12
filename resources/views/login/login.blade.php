@@ -29,7 +29,7 @@
             {!! csrf_field() !!}
             <div class="form-group has-feedback">
                 <input type="text" class="form-control" placeholder="Nombre de usuario" id="username" name="username"
-                       value="{{old('username')}}" autofocus required autocomplete="off">
+                       value="{{old('username')}}" autofocus required autocomplete="off" style="text-transform: lowercase">
                 <span class="glyphicon glyphicon-user form-control-feedback"></span>
             </div>
             <div class="form-group has-feedback">
@@ -70,6 +70,7 @@
 
         $('#btn_login').on('click', function () {
             if ($('#form_login').valid()) {
+                $('#username').val($('#username').val().toLowerCase());
                 var publickey = "{{$key}}";
                 var rsakey = new RSAKey();
                 rsakey.setPublic(publickey, "10001");

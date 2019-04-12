@@ -38,7 +38,7 @@ class ImportarDataController extends Controller
             'personal_postcosecha' => 'required',
         ]);
         $msg = '';
-        $success = false;
+        $success = true;
         if (!$valida->fails()) {
 
             $document = PHPExcel_IOFactory::load($request->file_postcosecha);
@@ -115,6 +115,7 @@ class ImportarDataController extends Controller
                                                     $det_recep = DesgloseRecepcion::All()->last();
                                                     bitacora('desglose_recepcion', $det_recep->id_desglose_recepcion, 'I', 'Insercion de una nueva desglose-recepcion');
                                                 } else {
+                                                    $success = false;
                                                     $msg .= '<li class="error">Ocurrió un problema con un desglose-recepción del día ' . $fecha .
                                                         ' con la variedad ' . getVariedad(substr(explode('|', $titles[$pos_col])[0], 1))->nombre . '</li>';
                                                 }
@@ -141,6 +142,7 @@ class ImportarDataController extends Controller
                                                     $det_verde = DetalleClasificacionVerde::All()->last();
                                                     bitacora('detalle_clasificacion_verde', $det_verde->id_detalle_clasificacion_verde, 'I', 'Insercion de una nuevo detalle_clasificacion_verde');
                                                 } else {
+                                                    $success = false;
                                                     $msg .= '<li class="error">Ocurrió un problema con un detalle_clasificacion_verde del día ' . $fecha .
                                                         ' con ' . getVariedad(substr(explode('|', $titles[$pos_col])[0], 1))->nombre . ' ' .
                                                         explode('|', ClasificacionUnitaria::find($det_verde->id_clasificacion_unitaria)->nombre)[0] . '</li>';
@@ -149,15 +151,19 @@ class ImportarDataController extends Controller
                                         }
 
                                     } else {
+                                        $success = false;
                                         $msg .= '<li class="error">Ocurrió un problema con la recepción del día ' . $fecha . '</li>';
                                     }
                                 } else {
+                                    $success = false;
                                     $msg .= '<li class="error">Ocurrió un problema con la recepción del día ' . $fecha . '</li>';
                                 }
                             } else {
+                                $success = false;
                                 $msg .= '<li class="error">Ocurrió un problema con la cosecha del día ' . $fecha . '</li>';
                             }
                         } else {
+                            $success = false;
                             $msg .= '<li class="error">Ya se encuentra una cosecha del día ' . $fecha . '</li>';
                         }
                     }
@@ -176,6 +182,7 @@ class ImportarDataController extends Controller
                     $errores .= '<li>' . $mi_error . '</li>';
                 }
             }
+            $success = false;
             $msg = '<div class="alert alert-danger">' .
                 '<p class="text-center">¡Por favor corrija los siguientes errores!</p>' .
                 '<ul>' .

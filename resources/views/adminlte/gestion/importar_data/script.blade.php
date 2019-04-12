@@ -16,6 +16,8 @@
                 processData: false,
 
                 success: function (retorno2) {
+                    notificar('Se ha importado un archivo', '{{url('importar_data')}}');
+
                     if (retorno2.success) {
                         alerta_accion(retorno2.mensaje, function () {
                             location.reload();
