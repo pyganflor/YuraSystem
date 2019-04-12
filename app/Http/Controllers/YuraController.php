@@ -22,7 +22,7 @@ class YuraController extends Controller
     {
         $labels = DB::table('clasificacion_verde as v')
             ->select('v.fecha_ingreso as dia')->distinct()
-            ->where('v.fecha_ingreso', '>=', opDiasFecha('-', 8, date('Y-m-d')))
+            ->where('v.fecha_ingreso', '>=', opDiasFecha('-', 7, date('Y-m-d')))
             ->where('v.fecha_ingreso', '<=', opDiasFecha('-', 1, date('Y-m-d')))
             ->get();
 

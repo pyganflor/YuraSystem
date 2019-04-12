@@ -19,6 +19,7 @@ class DesgloseRecepcion extends Model
         'tallos_x_malla',
         'fecha_registro',
         'estado',
+        'id_modulo',
     ];
 
     public function variedad()
@@ -29,5 +30,10 @@ class DesgloseRecepcion extends Model
     public function recepcion()
     {
         return $this->belongsTo('\yura\Modelos\Recepcion', 'id_recepcion');
+    }
+
+    public function modulo()
+    {
+        return $this->belongsTo('\yura\Modelos\Modulo', 'id_modulo');
     }
 }

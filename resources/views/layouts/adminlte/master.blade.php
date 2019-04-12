@@ -56,6 +56,9 @@
     <!-- DataTables Responsive CSS -->
     <link href="{{url('vendor/datatables-responsive/dataTables.responsive.css')}}" rel="stylesheet" type="text/css">
 
+    {{-- Select Multiple --}}
+    <link rel="stylesheet" href="{{url('adminlte')}}/bower_components/select2/dist/css/select2.min.css">
+
     <link rel="stylesheet" href="{{url('css/yura_estilos.css')}}">
 
     @yield('css_inicio')
@@ -157,6 +160,13 @@
 <script src="{{url('js/pdfObject.min.js')}}" type="text/javascript"></script>
 
 <script src="{{asset('js/yura_script.js')}}"></script>
+
+{{-- Select Multiple --}}
+<script src="{{url('adminlte')}}/bower_components/select2/dist/js/select2.full.min.js"></script>
+
+<script src="{{url('adminlte')}}/plugins/timepicker/bootstrap-timepicker.min.js"></script>
+<script src="{{url('adminlte')}}/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
+
 <script>
     //Para generar un BEEP en javascript ---------------------------------------------------------------------------------
     function beep() {

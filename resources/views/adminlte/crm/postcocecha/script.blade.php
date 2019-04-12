@@ -64,7 +64,7 @@
         });
     }
 
-    function filtrar_predeterminado() {
+    function filtrar_predeterminado(option) {
         if ($('#filtro_predeterminado').val() != '') {
             diario = false;
             mensual = false;
@@ -111,6 +111,12 @@
             $('#check_filtro_desde').val(desde);
             $('#check_filtro_hasta').val(rest_dias(1));
 
+            list_annos = [];
+            li_annos = $('.select2-selection__choice');
+            for (i = 0; i < li_annos.length; i++) {
+                list_annos.push(li_annos[i].title);
+            }
+
             datos = {
                 anual: false,
                 mensual: mensual,
@@ -121,6 +127,7 @@
                 desde: desde,
                 hasta: rest_dias(1),
                 id_variedad: id_variedad,
+                annos: option == 0 ? list_annos : [],
             };
 
             get_jquery('{{url('crm_postcosecha/buscar_reporte_cosecha_chart')}}', datos, function (retorno) {

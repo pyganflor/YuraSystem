@@ -15,7 +15,7 @@ class crmPostocechaController extends Controller
     {
         $labels = DB::table('clasificacion_verde as v')
             ->select('v.fecha_ingreso as dia')->distinct()
-            ->where('v.fecha_ingreso', '>=', opDiasFecha('-', 8, date('Y-m-d')))
+            ->where('v.fecha_ingreso', '>=', opDiasFecha('-', 7, date('Y-m-d')))
             ->where('v.fecha_ingreso', '<=', opDiasFecha('-', 1, date('Y-m-d')))
             ->get();
 
@@ -57,7 +57,7 @@ class crmPostocechaController extends Controller
         $verde = ClasificacionVerde::All()->where('fecha_ingreso', '=', date('Y-m-d'))->first();
 
         return view('adminlte.crm.postcocecha.inicio', [
-            'desde' => opDiasFecha('-', 8, date('Y-m-d')),
+            'desde' => opDiasFecha('-', 7, date('Y-m-d')),
             'hasta' => opDiasFecha('-', 1, date('Y-m-d')),
             'cosecha' => $cosecha,
             'verde' => $verde,
@@ -111,6 +111,11 @@ class crmPostocechaController extends Controller
         if ($last_verde != '' && $verde != '')
             $porcentaje = 100 - porcentaje($verde->getCalibre(), $last_verde->getCalibre(), 1);
 
+        $annos = DB::table('clasificacion_verde as v')
+            ->select(DB::raw('year(v.fecha_ingreso) as anno'))->distinct()
+            ->orderBy(DB::raw('year(v.fecha_ingreso)'))
+            ->get();
+
         return view('adminlte.crm.postcocecha.partials.cosecha', [
             'cosecha' => $cosecha,
             'verde' => $verde,
@@ -125,6 +130,7 @@ class crmPostocechaController extends Controller
             'array_desecho' => $array_desecho,
             'array_rendimiento' => $array_rendimiento,
             'array_calibre' => $array_calibre,
+            'annos' => $annos,
         ]);
     }
 
@@ -351,6 +357,14 @@ class crmPostocechaController extends Controller
                 ->orderBy('fecha_ingreso')
                 ->get();
         }
+        $annos = [];
+
+        $array_cajas = [];
+        $array_ramos = [];
+        $array_tallos = [];
+        $array_desecho = [];
+        $array_rendimiento = [];
+        $array_calibre = [];
 
         if ($request->x_variedad == 'true') {
             if ($request->id_variedad != '') {
@@ -368,15 +382,59 @@ class crmPostocechaController extends Controller
             $view = 'acumulado';
         }
 
+
+        if ($request->has('annos')) {
+            $view = 'annos';
+            $labels = [];
+            foreach ($request->annos as $a) {
+                $fechas = DB::table('clasificacion_verde as v')
+                    ->select('v.fecha_ingreso as dia')->distinct()
+                    ->where('v.fecha_ingreso', '>=', $a . '-01-01')
+                    ->where('v.fecha_ingreso', '<=', $a + 1 . '-12-31')
+                    ->orderBy('fecha_ingreso')
+                    ->get();
+                foreach ($fechas as $l)
+                    if (!in_array(substr(getSemanaByDate($l->dia)->codigo, 2), $labels))
+                        array_push($labels, substr(getSemanaByDate($l->dia)->codigo, 2));
+            }
+
+            foreach ($request->annos as $a) {
+                $cajas = [];
+                $tallos = [];
+                $calibre = [];
+                foreach ($labels as $l) {
+                    $semana = Semana::All()->where('codigo', '=', substr($a, 2) . $l)->first();
+                    $list_verdes = ClasificacionVerde::All()
+                        ->where('fecha_ingreso', '>=', $semana->fecha_inicial)
+                        ->where('fecha_ingreso', '<=', $semana->fecha_final);
+                    $cajas_c = 0;
+                    $tallos_c = 0;
+                    $calibre_c = 0;
+
+                    foreach ($list_verdes as $verde) {
+                        $cajas_c += round($verde->getTotalRamosEstandar() / getConfiguracionEmpresa()->ramos_x_caja, 2);
+                        $tallos_c += $verde->total_tallos();
+                        $calibre_c += round($verde->total_tallos() / $verde->getTotalRamosEstandar(), 2);
+                    }
+                    $calibre_c = count($list_verdes) > 0 ? round($calibre_c / count($list_verdes), 2) : 0;
+
+                    array_push($cajas, $cajas_c);
+                    array_push($tallos, $tallos_c);
+                    array_push($calibre, $calibre_c);
+                }
+
+                array_push($annos, [
+                    'anno' => $a,
+                    'cajas' => $cajas,
+                    'tallos' => $tallos,
+                    'calibre' => $calibre,
+                ]);
+            }
+        }
+
+
         /* ================ OBTENER RESULTADOS =============*/
         $arreglo_variedades = [];
-
-        $array_cajas = [];
-        $array_ramos = [];
-        $array_tallos = [];
-        $array_desecho = [];
-        $array_rendimiento = [];
-        $array_calibre = [];
         if ($periodo == 'diario') {
             if ($view == 'acumulado') {
                 foreach ($labels as $dia) {
@@ -795,6 +853,7 @@ class crmPostocechaController extends Controller
             'target' => $target,
             'labels' => $labels,
             'periodo' => $periodo,
+            'annos' => $annos,
             'arreglo_variedades' => $arreglo_variedades,
             'array_cajas' => $array_cajas,
             'array_ramos' => $array_ramos,

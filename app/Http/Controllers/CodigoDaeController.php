@@ -34,7 +34,7 @@ class CodigoDaeController extends Controller
         $bus = str_replace(' ', '%%', $busqueda);
 
         $listado = DB::table('codigo_dae as cd')->where('cd.estado', 1)
-            ->join('pais as p','cd.codigo_pais','p.codigo');
+            ->join('pais as p', 'cd.codigo_pais', 'p.codigo');
 
         if ($request->busqueda != '') $listado = $listado->Where(function ($q) use ($bus) {
             $q->Where('cd.pais', 'like', '%' . $bus . '%');
@@ -48,27 +48,30 @@ class CodigoDaeController extends Controller
         return view('adminlte.gestion.configuracion_facturacion.codigo_dae.partials.listado', $datos);
     }
 
-    public function seleccionar_pais(){
-        return view('adminlte.gestion.configuracion_facturacion.codigo_dae.partials.lista_paises',[
+    public function seleccionar_pais()
+    {
+        return view('adminlte.gestion.configuracion_facturacion.codigo_dae.partials.lista_paises', [
             'dataPaises' => Pais::all()
         ]);
     }
 
-    public function busqueda_pais_modal(Request $request){
-        $dataPais =  Pais::where('nombre','like',$request->nombre. '%')->get();
+    public function busqueda_pais_modal(Request $request)
+    {
+        $dataPais = Pais::where('nombre', 'like', $request->nombre . '%')->get();
 
         $html = '';
-        foreach ($dataPais as $pais){
-            $html .=  "<div class='col-md-4'>
-                <input type='checkbox' id='codigo_pais_".$pais->codigo."' name='codigo_pais_".$pais->codigo."' onclick='selected(this)' value='".$pais->codigo."'>
-                ".$pais->nombre."
+        foreach ($dataPais as $pais) {
+            $html .= "<div class='col-md-4'>
+                <input type='checkbox' id='codigo_pais_" . $pais->codigo . "' name='codigo_pais_" . $pais->codigo . "' onclick='selected(this)' value='" . $pais->codigo . "'>
+                " . $pais->nombre . "
             </div>";
         }
         return $html;
     }
 
-    public function pais(Request $request){
-        return Pais::where('codigo',$request->codigo)->first();
+    public function pais(Request $request)
+    {
+        return Pais::where('codigo', $request->codigo)->first();
     }
 
     public function exportar_paises(Request $request)
@@ -99,12 +102,13 @@ class CodigoDaeController extends Controller
         ob_end_clean();
         $opResult = array(
             'status' => 1,
-            'data'=>"data:application/vnd.ms-excel;base64,".base64_encode($xlsData)
+            'data' => "data:application/vnd.ms-excel;base64," . base64_encode($xlsData)
         );
         echo json_encode($opResult);
     }
 
-    public function excel_hoja_paises($objPHPExcel, $request){
+    public function excel_hoja_paises($objPHPExcel, $request)
+    {
 
         if (count($request['arreglo']) > 0) {
             $objSheet = new PHPExcel_Worksheet($objPHPExcel, 'codigos DAE');
@@ -142,7 +146,7 @@ class CodigoDaeController extends Controller
             //--------------------------- LLENAR LA TABLA ---------------------------------------------
             for ($i = 0; $i < sizeof($request['arreglo']); $i++) {
                 $objSheet->getCell('A' . ($i + 3))->setValue(substr($request['arreglo'][$i], 0, 16));
-                $objSheet->getCell('B' . ($i + 3))->setValue(Pais::where('codigo',$request['arreglo'][$i])->select('nombre')->first()->nombre);
+                $objSheet->getCell('B' . ($i + 3))->setValue(Pais::where('codigo', $request['arreglo'][$i])->select('nombre')->first()->nombre);
             }
 
             $objSheet->getColumnDimension('A')->setAutoSize(true);
@@ -157,11 +161,13 @@ class CodigoDaeController extends Controller
         }
     }
 
-    public function form_file_codigo_dae(){
+    public function form_file_codigo_dae()
+    {
         return view('adminlte.gestion.configuracion_facturacion.codigo_dae.form.upload_codigo_dae');
     }
 
-    public function importar_codigo_dae(Request $request){
+    public function importar_codigo_dae(Request $request)
+    {
         $valida = Validator::make($request->all(), [
             'file' => 'required',
         ]);
@@ -172,53 +178,52 @@ class CodigoDaeController extends Controller
             $activeSheetData = $document->getActiveSheet()->toArray(null, true, true, true);
 
             for ($i = 3; $i <= count($activeSheetData); $i++) {
-                if($activeSheetData[$i]['A'] !== null && $activeSheetData[$i]['B'] !== null && $activeSheetData[$i]['C'] !== null && $activeSheetData[$i]['D'] !== null && $activeSheetData[$i]['E'] !== null && $activeSheetData[$i]['F'] !== null) {
-                    $existPais = Pais::where('codigo',$activeSheetData[$i]['A'])->count();
-                    if($existPais > 0){
-                        if(is_numeric($activeSheetData[$i]['E'])){
+                if ($activeSheetData[$i]['A'] !== null && $activeSheetData[$i]['B'] !== null && $activeSheetData[$i]['C'] !== null && $activeSheetData[$i]['D'] !== null && $activeSheetData[$i]['E'] !== null && $activeSheetData[$i]['F'] !== null) {
+                    $existPais = Pais::where('codigo', $activeSheetData[$i]['A'])->count();
+                    if ($existPais > 0) {
+                        if (is_numeric($activeSheetData[$i]['E'])) {
                             $existRegistro = CodigoDae::where([
-                                ['codigo_pais',$activeSheetData[$i]['A']],
-                                ['codigo_dae',$activeSheetData[$i]['D']],
-                                ['mes',$activeSheetData[$i]['E']],
-                                ['anno',$activeSheetData[$i]['F']]
+                                ['codigo_pais', $activeSheetData[$i]['A']],
+                                ['codigo_dae', $activeSheetData[$i]['D']],
+                                ['mes', $activeSheetData[$i]['E']],
+                                ['anno', $activeSheetData[$i]['F']]
                             ]);
                             $existRegistro->count() > 0 ? $objCodigoDae = CodigoDae::find($existRegistro->first()->id_codigo_dae) : $objCodigoDae = new CodigoDae;
 
                             $objCodigoDae->codigo_pais = $activeSheetData[$i]['A'];
-                            $objCodigoDae->dae         = $activeSheetData[$i]['C'];
-                            $objCodigoDae->codigo_dae  = $activeSheetData[$i]['D'];
-                            $objCodigoDae->mes         = $activeSheetData[$i]['E'];
-                            $objCodigoDae->anno        = $activeSheetData[$i]['F'];
+                            $objCodigoDae->dae = $activeSheetData[$i]['C'];
+                            $objCodigoDae->codigo_dae = $activeSheetData[$i]['D'];
+                            $objCodigoDae->mes = $activeSheetData[$i]['E'];
+                            $objCodigoDae->anno = $activeSheetData[$i]['F'];
 
-                            if($objCodigoDae->save()){
+                            if ($objCodigoDae->save()) {
                                 $model = CodigoDae::all()->last();
                                 $msg .= '<div class="alert alert-success text-center">' .
-                                    '<p> Se ha guardado el código DAE para el país ' .$activeSheetData[$i]['B'] . '  exitosamente</p>'
+                                    '<p> Se ha guardado el código DAE para el país ' . $activeSheetData[$i]['B'] . '  exitosamente</p>'
                                     . '</div>';
                                 bitacora('codigo_dae', $model->id_codigo_dae, 'I', 'Inserción satisfactoria de un nuevo codigo dae');
-                            }else{
+                            } else {
                                 $msg .= '<div class="alert alert-danger text-center">' .
-                                    '<p> Hubo un error al guardar el código DAE para el país ' .$activeSheetData[$i]['B'] . '  intente nuevamente</p>'
+                                    '<p> Hubo un error al guardar el código DAE para el país ' . $activeSheetData[$i]['B'] . '  intente nuevamente</p>'
                                     . '</div>';
                             }
-                        }else{
+                        } else {
                             $msg .= '<div class="alert alert-danger text-center">' .
-                                '<p> EL campo MES del código dae ' .$activeSheetData[$i]['D'] . ' no es númerico, debe estar entre el 01 y el 12, correspondiendo a los meses del año verifiquelo y cargue nuevamente el archivo excel</p>'
+                                '<p> EL campo MES del código dae ' . $activeSheetData[$i]['D'] . ' no es númerico, debe estar entre el 01 y el 12, correspondiendo a los meses del año verifiquelo y cargue nuevamente el archivo excel</p>'
                                 . '</div>';
                         }
-                    }else{
+                    } else {
                         $msg .= '<div class="alert alert-danger text-center">' .
-                            '<p> EL codigo ' .$activeSheetData[$i]['A'] . ' no corresponde al país '.$activeSheetData[$i]['B'].', Exporte nuevamente el archivo excel con este pais y no modifique ningún dato de la columna CÓDIGO PAÍS</p>'
+                            '<p> EL codigo ' . $activeSheetData[$i]['A'] . ' no corresponde al país ' . $activeSheetData[$i]['B'] . ', Exporte nuevamente el archivo excel con este pais y no modifique ningún dato de la columna CÓDIGO PAÍS</p>'
                             . '</div>';
                     }
-                }else{
+                } else {
                     $msg .= '<div class="alert alert-danger text-center">' .
-                        '<p> EL codigo DAE ' .$activeSheetData[$i]['C'] . ' correspondiente al país '. $activeSheetData[$i]['B'].' no pudo ser guardardo ya que hubo un campo vacío en alguna de las columnas de este registro en el archivo excel cargado, verifiquelo e intente cargarlo nuevamente</p>'
+                        '<p> EL codigo DAE ' . $activeSheetData[$i]['C'] . ' correspondiente al país ' . $activeSheetData[$i]['B'] . ' no pudo ser guardardo ya que hubo un campo vacío en alguna de las columnas de este registro en el archivo excel cargado, verifiquelo e intente cargarlo nuevamente</p>'
                         . '</div>';
                 }
             }
-        }
-        else {
+        } else {
             $errores = '';
             foreach ($valida->errors()->all() as $mi_error) {
                 if ($errores == '') {
@@ -234,20 +239,20 @@ class CodigoDaeController extends Controller
                 '</ul>' .
                 '</div>';
         }
-        return  $msg;
-
+        return $msg;
     }
 
-    public function descactivar_codigo(Request $request){
+    public function descactivar_codigo(Request $request)
+    {
 
         $objCodigoDae = CodigoDae::find($request->id_codigo);
         $objCodigoDae->estado = 0;
-        if($objCodigoDae->save()){
+        if ($objCodigoDae->save()) {
             $success = true;
             $msg = '<div class="alert alert-success text-center">' .
                 '<p> Se ha actualizado exitosamente el estado del código</p>'
                 . '</div>';
-        }else{
+        } else {
             $success = false;
             $msg = '<div class="alert alert-danger text-center">' .
                 '<p> Hubo un error al actualizar el estado, intente nuevamente</p>'

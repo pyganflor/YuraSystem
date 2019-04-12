@@ -20,6 +20,7 @@ class ClasificacionVerde extends Model
         'id_semana',
         'activo',
         'personal',
+        'hora_inicio',
     ];
 
     public function lotes_re()
