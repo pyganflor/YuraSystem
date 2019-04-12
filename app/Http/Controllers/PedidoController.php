@@ -112,7 +112,7 @@ class PedidoController extends Controller
 
                 if(!empty($request->id_pedido)){
                     $dataEnvio = Envio::where('id_pedido',$request->id_pedido)->select('id_envio')->first();
-                    if($dataEnvio->id_envio !== null){
+                    if(isset($dataEnvio->id_envio)){
                         //$dataComprobante = Comprobante::where('id_envio',$dataEnvio->id_envio)->select('id_comprobante','clave_acceso')->first();
                         $dataComprobante = Comprobante::where('id_envio',$dataEnvio->id_envio)
                             ->join('detalle_factura as df','comprobante.id_comprobante','df.id_comprobante')

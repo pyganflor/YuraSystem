@@ -14,7 +14,7 @@ class DetalleEnvio extends Model
     protected $fillable = [
         'id_especificacion',
         'id_envio',
-        'id_agencia_transporte',    // default: null
+        'id_aerolinea',    // default: null
         'cantidad',
         'envio', //agrupción de los detalles de envíos
         'form'
@@ -30,5 +30,9 @@ class DetalleEnvio extends Model
         return $this->belongsTo('\yura\Modelos\Especificacion', 'id_especificacion');
     }
 
+    public function aerolinea(){
+
+        return $this->belongsTo('\yura\Modelos\Aerolinea', 'id_aerolinea');
+    }
 
 }

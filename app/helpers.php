@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Session;
+use yura\Modelos\Despacho;
 use yura\Modelos\Usuario;
 use yura\Modelos\Bitacora;
 use yura\Modelos\GrupoMenu;
@@ -52,7 +53,9 @@ use yura\Modelos\Aerolinea;
 use yura\Modelos\Coloracion;
 use yura\Modelos\EspecificacionEmpaque;
 use yura\Modelos\FacturaClienteTercero;
-
+use \yura\Modelos\Transportista;
+use \yura\Modelos\Camion;
+use \yura\Modelos\Conductor;
 
 /*
  * -------- BITÁCORA DE LAS ACCIONES ECHAS POR EL USUARIO ------
@@ -1612,4 +1615,20 @@ function getEspecificacionEmpaque($id)
 
 function getFacturaClienteTercero($idEnvio){
     return FacturaClienteTercero::where('id_envio',$idEnvio)->first();
+}
+
+function getSecuenciaDespacho(){
+    return env('INICIAL_DESPACHO') + Despacho::count() + 1;
+}
+
+function getTransportista($idTransportista){
+    return Transportista::find($idTransportista);
+}
+
+function getCamion($idCamion){
+    return Camion::find($idCamion);
+}
+
+function getChofer($idChofer){
+    return Conductor::find($idChofer);
 }
