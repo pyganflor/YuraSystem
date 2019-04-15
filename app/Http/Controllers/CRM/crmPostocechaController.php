@@ -414,7 +414,7 @@ class crmPostocechaController extends Controller
                     foreach ($list_verdes as $verde) {
                         $cajas_c += round($verde->getTotalRamosEstandar() / getConfiguracionEmpresa()->ramos_x_caja, 2);
                         $tallos_c += $verde->total_tallos();
-                        $calibre_c += round($verde->total_tallos() / $verde->getTotalRamosEstandar(), 2);
+                        $calibre_c += $verde->getTotalRamosEstandar() > 0 ? round($verde->total_tallos() / $verde->getTotalRamosEstandar(), 2) : 0;
                     }
                     $calibre_c = count($list_verdes) > 0 ? round($calibre_c / count($list_verdes), 2) : 0;
 

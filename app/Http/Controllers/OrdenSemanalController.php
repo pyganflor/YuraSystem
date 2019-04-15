@@ -699,21 +699,23 @@ class OrdenSemanalController extends Controller
                     /* ======== DATOS EXPORTACION ========= */
 
                     foreach ($request->arreglo_dat_exp as $dat_exp) {
-                        $det_datexp = new DetallePedidoDatoExportacion();
-                        $det_datexp->id_detalle_pedido = $det_pedido->id_detalle_pedido;
-                        $det_datexp->id_dato_exportacion = $dat_exp['id_dat_exp'];
-                        $det_datexp->valor = $dat_exp['valor'];
+                        if ($dat_exp['valor'] != '') {
+                            $det_datexp = new DetallePedidoDatoExportacion();
+                            $det_datexp->id_detalle_pedido = $det_pedido->id_detalle_pedido;
+                            $det_datexp->id_dato_exportacion = $dat_exp['id_dat_exp'];
+                            $det_datexp->valor = $dat_exp['valor'];
 
-                        if ($det_datexp->save()) {
-                            $det_datexp = DetallePedidoDatoExportacion::All()->last();
-                            bitacora('detallepedido_datoexportacion', $det_datexp->id_detallepedido_datoexportacion, 'I', 'Insercion de un nuevo detallepedido_datoexportacion');
-                        } else {
-                            return [
-                                'success' => false,
-                                'mensaje' => '<div class="alert alert-warning text-center">' .
-                                    '<p> Ha ocurrido un problema al guardar la marcación ' . $dat_exp['valor'] . '</p>'
-                                    . '</div>'
-                            ];
+                            if ($det_datexp->save()) {
+                                $det_datexp = DetallePedidoDatoExportacion::All()->last();
+                                bitacora('detallepedido_datoexportacion', $det_datexp->id_detallepedido_datoexportacion, 'I', 'Insercion de un nuevo detallepedido_datoexportacion');
+                            } else {
+                                return [
+                                    'success' => false,
+                                    'mensaje' => '<div class="alert alert-warning text-center">' .
+                                        '<p> Ha ocurrido un problema al guardar la marcación ' . $dat_exp['valor'] . '</p>'
+                                        . '</div>'
+                                ];
+                            }
                         }
                     }
 
