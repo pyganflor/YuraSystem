@@ -59,7 +59,7 @@
                         </td>
                     </tr>
                 </table>
-                <div id="div_listado_transportista"></div>
+                <div id="div_listado_transportista" style="margin-top: 20px"></div>
             </div>
         </div>
     </section>

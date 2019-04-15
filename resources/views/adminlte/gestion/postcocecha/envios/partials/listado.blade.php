@@ -297,8 +297,8 @@
                                                             $almacen = $envio->almacen_cliente;
                                                         }
                                                     @endphp
-                                                    <label for="almacen_{{$i+1}}">Almacen</label>
-                                                    <input type="text" placeholder="Almacen" class="form-control" {{$factura_tercero ?  "disabled" : ""}} {{($facturado) ? "disabled='disabled'" : ""}}
+                                                    <label for="almacen_{{$i+1}}">Anden</label>
+                                                    <input type="text" placeholder="Anden" class="form-control" {{$factura_tercero ?  "disabled" : ""}} {{($facturado) ? "disabled='disabled'" : ""}}
                                                     id="almacen" name="almacen_{{$i+1}}" value="{{$almacen}}">
                                                 </div>
                                                 <div class="col-md-9">

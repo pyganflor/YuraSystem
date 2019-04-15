@@ -206,7 +206,7 @@ class EnvioController extends Controller
         return view('adminlte.gestion.postcocecha.envios.partials.listado',[
             'envios' => $listado->paginate(10),
             'paises'    => Pais::all(),
-            'aerolineas' => Aerolinea::all()
+            'aerolineas' => Aerolinea::where('estado',1)->get()
         ]);
     }
 

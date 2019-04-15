@@ -68,4 +68,124 @@
             $.LoadingOverlay('hide');
         }
     }
+    
+    function desactivar_transportista(id_transportista,estado) {
+        modal_quest('modal_desactivar_transportista', 'Esta seguro que desea desctivar este transportista?', "<i class='fa fa-question-circle-o'></i> Descativar transportista",true, false, '{{isPC() ? '80%' : ''}}', function () {
+            $.LoadingOverlay('show');
+            datos = {
+                _token    : '{{csrf_token()}}',
+                id_transportista : id_transportista,
+                estado: estado
+            };
+            post_jquery('{{url('transportista/update_estado')}}', datos, function () {
+                cerrar_modals();
+                buscar_listado_transportista();
+            });
+            $.LoadingOverlay('hide');
+        });
+    }
+
+    function add_camiones_condutores(id_transportista){
+        $.LoadingOverlay('show');
+        datos = {
+            id_transportista : id_transportista,
+        };
+        $.get('{{url('transportista/list_camiones_conductores')}}', datos, function (retorno) {
+            modal_view('modal_camiones_condutores', retorno, '<i class="fa fa-fw fa-plus"></i> <b>Comiones y conductores</b>: ', true, false, '{{isPC() ? '60%' : ''}}', function () {});
+        }).always(function () {
+            $.LoadingOverlay('hide');
+        });
+    }
+
+    function add_camion(id_camion) {
+        $.LoadingOverlay('show');
+        datos = {
+            id_camion : id_camion
+        };
+        $.get('{{url('transportista/add_camion')}}', datos, function (retorno) {
+            modal_form('modal_add_camion', retorno, '<i class="fa fa-fw fa-plus"></i> Añadir camión', true, false, '{{isPC() ? '50%' : ''}}', function () {
+                store_camion(id_camion);
+                $.LoadingOverlay('hide');
+            });
+        }).always(function () {
+            $.LoadingOverlay('hide');
+        });
+    }
+
+    function store_camion(id_camion) {
+        datos = {
+            _token    : '{{csrf_token()}}',
+            id_camion : id_camion,
+            modelo : $("#modelo").val(),
+            placa : $("#placa").val(),
+            id_transportista : $("#id_transportista").val()
+        };
+        post_jquery('{{url('transportista/store_camion')}}', datos, function () {
+            cerrar_modals();
+            add_camiones_condutores($("#id_transportista").val());
+        });
+        $.LoadingOverlay('hide');
+    }
+
+    function update_estado_camion(id_camion,estado) {
+        modal_quest('modal_desactivar_camion', 'Esta seguro que desea desctivar este camión?', "<i class='fa fa-question-circle-o'></i> Descativar camión",true, false, '{{isPC() ? '50%' : ''}}', function () {
+            $.LoadingOverlay('show');
+            datos = {
+                _token    : '{{csrf_token()}}',
+                id_camion : id_camion,
+                estado: estado
+            };
+            post_jquery('{{url('transportista/update_estado_camion')}}', datos, function () {
+                cerrar_modals();
+                add_camiones_condutores($("#id_transportista").val());
+            });
+            $.LoadingOverlay('hide');
+        });
+    }
+
+    function add_conductor(id_conductor) {
+        $.LoadingOverlay('show');
+        datos = {
+            id_conductor : id_conductor
+        };
+        $.get('{{url('transportista/add_conductor')}}', datos, function (retorno) {
+            modal_form('modal_add_conductor', retorno, '<i class="fa fa-fw fa-plus"></i> Añadir conductor', true, false, '{{isPC() ? '50%' : ''}}', function () {
+                store_conductor(id_conductor);
+                $.LoadingOverlay('hide');
+            });
+        }).always(function () {
+            $.LoadingOverlay('hide');
+        });
+    }
+
+    function store_conductor(id_conductor) {
+        datos = {
+            _token    : '{{csrf_token()}}',
+            id_conductor : id_conductor,
+            nombre : $("#nombre").val(),
+            ruc : $("#ruc").val(),
+            id_transportista : $("#id_transportista").val()
+        };
+        post_jquery('{{url('transportista/store_conductor')}}', datos, function () {
+            cerrar_modals();
+            add_camiones_condutores($("#id_transportista").val());
+        });
+        $.LoadingOverlay('hide');
+    }
+
+    function update_estado_conductor(id_conductor,estado) {
+        modal_quest('modal_desactivar_conductor', 'Esta seguro que desea desctivar este conductor?', "<i class='fa fa-question-circle-o'></i> Descativar conductor",true, false, '{{isPC() ? '50%' : ''}}', function () {
+            $.LoadingOverlay('show');
+            datos = {
+                _token    : '{{csrf_token()}}',
+                id_conductor : id_conductor,
+                estado: estado
+            };
+            post_jquery('{{url('transportista/update_estado_conductor')}}', datos, function () {
+                cerrar_modals();
+                add_camiones_condutores($("#id_transportista").val());
+            });
+            $.LoadingOverlay('hide');
+        });
+    }
 </script>

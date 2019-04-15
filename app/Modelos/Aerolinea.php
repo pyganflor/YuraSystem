@@ -14,6 +14,7 @@ class Aerolinea extends Model
     protected $fillable = [
         'nombre',
         'tipo_agencia',
-        'estado'
+        'estado',
+        'codigo'
     ];
 }
