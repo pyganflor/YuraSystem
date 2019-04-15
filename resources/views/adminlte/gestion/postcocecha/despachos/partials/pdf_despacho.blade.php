@@ -139,7 +139,7 @@
 <table width="100%" style="font-size: 0.8em">
     <thead>
         <tr>
-            <td class="text-center" style="border:1px solid #9d9d9d;text-align: center">Cliente</td>
+            <td class="text-center" style="border:1px solid #9d9d9d;text-align: center;width: 170px;">Cliente</td>
             <td class="text-center" style="border:1px solid #9d9d9d;text-align: center">Agencia</td>
             <td class="text-center" style="border:1px solid #9d9d9d;text-align: center">Cajas Full</td>
             <td class="text-center" style="border:1px solid #9d9d9d;text-align: center">Piezas</td>
@@ -150,7 +150,7 @@
             <td class="text-center" style="border:1px solid #9d9d9d;text-align: center">Hora de salida</td>
             <td class="text-center" style="border:1px solid #9d9d9d;text-align: center">Sello inicial</td>
             <td class="text-center" style="border:1px solid #9d9d9d;text-align: center">Sello final</td>
-            <td class="text-center" style="border:1px solid #9d9d9d;text-align: center;width: 220px;">Observaciones</td>
+            <td class="text-center" style="border:1px solid #9d9d9d;text-align: center;width: 110px;">Observaciones</td>
         </tr>
     </thead>
     <tbody>

@@ -56,6 +56,7 @@ use yura\Modelos\FacturaClienteTercero;
 use \yura\Modelos\Transportista;
 use \yura\Modelos\Camion;
 use \yura\Modelos\Conductor;
+use \yura\Modelos\DetalleDespacho;
 
 /*
  * -------- BITÁCORA DE LAS ACCIONES ECHAS POR EL USUARIO ------
@@ -1631,4 +1632,11 @@ function getCamion($idCamion){
 
 function getChofer($idChofer){
     return Conductor::find($idChofer);
+}
+
+function getDespacho($idPedido){
+    return Despacho::join('detalle_despacho as dd','despacho.id_despacho','dd.id_despacho')->where([
+        ['dd.id_pedido',$idPedido],
+        ['despacho.estado',1]
+    ])->count();
 }
