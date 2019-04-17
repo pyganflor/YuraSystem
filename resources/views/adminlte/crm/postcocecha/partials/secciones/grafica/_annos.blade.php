@@ -52,8 +52,8 @@
         datasets.push({
             label: '{{$a['anno']}}' + ' ',
             data: data_list,
-            backgroundColor: '{{getColores()[$pos_a]->fondo}}',
-            borderColor: '{{getColores()[$pos_a]->fondo}}',
+            backgroundColor: '{{getListColores()[$pos_a]}}',
+            borderColor: '{{getListColores()[$pos_a]}}',
             borderWidth: 1,
             fill: false,
         });
