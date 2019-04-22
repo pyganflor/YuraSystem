@@ -36,6 +36,11 @@ class Coloracion extends Model
         return $this->belongsTo('\yura\Modelos\EspecificacionEmpaque', 'id_especificacion_empaque');
     }
 
+    public function marcaciones_coloraciones()
+    {
+        return $this->hasMany('\yura\Modelos\MarcacionColoracion', 'id_coloracion');
+    }
+
     public function getPrecioByDetEsp($det_esp)
     {
         if ($this->precio != '')

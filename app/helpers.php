@@ -112,6 +112,10 @@ define('MESES_MUY_ABREVIADOS', serialize(['En', 'Fb', 'Mz', 'Ab', 'My', 'Jn', 'J
 define('MESES_LETRA', serialize(['E', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D']));
 define('A_Z', serialize(range('A', 'Z')));
 
+function getListColores()
+{
+    return ['red', 'blue', 'green', 'orange', 'yellow', 'gray'];
+}
 
 function getMeses($tipo = TP_COMPLETO, $formato = FR_ARREGLO)
 {  //Devuelve los meses del año o como arreglo o como cadena para formar arreglo
@@ -1202,7 +1206,7 @@ function getDatosFacturaEnvio($id_envio)
     return $data->select('ce.nombre as nombre_empresa', 'ce.razon_social', 'at.nombre as nombre_agencia_transporte', 'ce.direccion_matriz', 'ce.direccion_establecimiento', 'dc.codigo_identificacion', 'dc.ruc as identificacion', 'dc.nombre as nombre_cliente', 'dc.direccion', 'dc.provincia', 'dc.telefono', 'dc.correo', 'dc.codigo_impuesto', 'dc.codigo_pais as CodigoDae', 'deemp.id_variedad', 'deemp.id_clasificacion_ramo', 'de.cantidad as cantidad_detalles', 'dc.codigo_porcentaje_impuesto as codigo_porcentaje', 'ti.porcentaje as porcntaje_iva', 'deemp.cantidad as cantidad_ramos', 'eemp.cantidad as cantidad_cajas', 'v.nombre as nombre_variedad', 'v.siglas as siglas_variedad', 'cr.nombre as nombre_clasificacion', 'umPR.siglas as siglas_unidad_medida_peso_ramo', 'pl.nombre as nombre_planta', 'deemp.longitud_ramo', $a == 1 ? 'umLR.siglas as siglas_unidad_medida_lognitud_ramo' : 'deemp.longitud_ramo');
 }
 
-function getCodigoDae($codigoPais,$mes,$anno)
+function getCodigoDae($codigoPais, $mes, $anno)
 {
     return CodigoDae::where([
         ['mes', $mes],
@@ -1212,8 +1216,9 @@ function getCodigoDae($codigoPais,$mes,$anno)
     ])->select('codigo_dae')->first();
 }
 
-function getFacturado($idEnvio,$estado){
-  $f =  Comprobante::where([
+function getFacturado($idEnvio, $estado)
+{
+    $f = Comprobante::where([
         ['id_envio', $idEnvio],
         ['estado', $estado]
     ])->count();
@@ -1317,27 +1322,29 @@ function accionAutorizacion($autorizacion, $path, $msg, $tipoDocumento = false, 
 
 function generaFacturaPDF($autorizacion, $numeroComprobante)
 {
-    $dataComprobante = Comprobante::where('clave_acceso',$numeroComprobante) ->select('numero_comprobante','id_envio')->first();
+    $dataComprobante = Comprobante::where('clave_acceso', $numeroComprobante)->select('numero_comprobante', 'id_envio')->first();
     $data = [
         'autorizacion' => $autorizacion,
         'img_clave_acceso' => generateCodeBarGs1128((String)$autorizacion->numeroAutorizacion),
         'obj_xml' => simplexml_load_string($autorizacion->comprobante),
         'numeroComprobante' => isset($dataComprobante->numero_comprobante)
             ? $dataComprobante->numero_comprobante
-            : getDetallesClaveAcceso((String)$autorizacion->comprobante, 'SERIE').getDetallesClaveAcceso((String)$autorizacion->comprobante, 'PUNTO_ACCESO').getDetallesClaveAcceso((String)$autorizacion->comprobante, 'SECUENCIAL'),
+            : getDetallesClaveAcceso((String)$autorizacion->comprobante, 'SERIE') . getDetallesClaveAcceso((String)$autorizacion->comprobante, 'PUNTO_ACCESO') . getDetallesClaveAcceso((String)$autorizacion->comprobante, 'SECUENCIAL'),
         'detalles_envio' => getEnvio($dataComprobante->id_envio)->detalles
     ];
     PDF::loadView('adminlte.gestion.comprobante.partials.pdf.factura', compact('data'))->save(env('PDF_FACTURAS') . $autorizacion->numeroAutorizacion . ".pdf");
 }
 
-function enviarMailComprobanteCliente($tipoDocumento, $correoCliente, $nombreCliente, $nombreArchivo, $numeroComprobante){
+function enviarMailComprobanteCliente($tipoDocumento, $correoCliente, $nombreCliente, $nombreArchivo, $numeroComprobante)
+{
     if ($tipoDocumento == "01") {
         //$correoCliente
         Mail::to("pruebas-c26453@inbox.mailtrap.io")->send(new CorreoFactura($correoCliente, $nombreCliente, $nombreArchivo, $numeroComprobante));
     }
 }
 
-function getDetallesClaveAcceso($numeroAutorizacion, $detalle){
+function getDetallesClaveAcceso($numeroAutorizacion, $detalle)
+{
     switch ($detalle) {
         case 'RUC':
             $resultado = substr($numeroAutorizacion, 10, 13);
@@ -1369,7 +1376,8 @@ function getDetallesClaveAcceso($numeroAutorizacion, $detalle){
     return $resultado;
 }
 
-function getSecuencial(){
+function getSecuencial()
+{
     $inicio_secuencial = env('INICIAL_FACTURA');
     $secuencial = $inicio_secuencial + 1;
     $cant_reg = Comprobante::count();
@@ -1379,7 +1387,8 @@ function getSecuencial(){
     return str_pad($secuencial, 9, "0", STR_PAD_LEFT);
 }
 
-function getPuntoAcceso(){
+function getPuntoAcceso()
+{
     return Usuario::where('id_usuario', Session::get('id_usuario'))->select('punto_acceso')->first()->punto_acceso;
 }
 
@@ -1565,7 +1574,7 @@ function getColor($id)
 
 function getColores()
 {
-    return Color::All()->where('estado', 1);
+    return Color::All()->where('estado', 1)->sortBy('nombre');
 }
 
 function getDatosExportacionCliente($idDetallePedido)
@@ -1589,19 +1598,22 @@ function getAgenciaCargaCliente($idCliente)
         ])->get();
 }
 
-function getTipoImpuesto($codigoImpuesto,$codigoPorcentajeIpuesto){
+function getTipoImpuesto($codigoImpuesto, $codigoPorcentajeIpuesto)
+{
     return TipoImpuesto::where([
-        ['codigo_impuesto',$codigoImpuesto],
-        ['codigo',$codigoPorcentajeIpuesto ],
-        ['estado',1]
+        ['codigo_impuesto', $codigoImpuesto],
+        ['codigo', $codigoPorcentajeIpuesto],
+        ['estado', 1]
     ])->first();
 }
 
-function getClasificacionRamo($idClasificacionRamo){
+function getClasificacionRamo($idClasificacionRamo)
+{
     return ClasificacionRamo::find($idClasificacionRamo);
 }
 
-function getAgenciaTransporte($idAgenciaTranporte){
+function getAgenciaTransporte($idAgenciaTranporte)
+{
     return Aerolinea::find($idAgenciaTranporte);
 }
 
@@ -1615,23 +1627,28 @@ function getEspecificacionEmpaque($id)
     return EspecificacionEmpaque::find($id);
 }
 
-function getFacturaClienteTercero($idEnvio){
-    return FacturaClienteTercero::where('id_envio',$idEnvio)->first();
+function getFacturaClienteTercero($idEnvio)
+{
+    return FacturaClienteTercero::where('id_envio', $idEnvio)->first();
 }
 
-function getSecuenciaDespacho(){
+function getSecuenciaDespacho()
+{
     return env('INICIAL_DESPACHO') + Despacho::count() + 1;
 }
 
-function getTransportista($idTransportista){
+function getTransportista($idTransportista)
+{
     return Transportista::find($idTransportista);
 }
 
-function getCamion($idCamion){
+function getCamion($idCamion)
+{
     return Camion::find($idCamion);
 }
 
-function getChofer($idChofer){
+function getChofer($idChofer)
+{
     return Conductor::find($idChofer);
 }
 
