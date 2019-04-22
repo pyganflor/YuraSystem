@@ -114,7 +114,7 @@ define('A_Z', serialize(range('A', 'Z')));
 
 function getListColores()
 {
-    return ['red', 'blue', 'green', 'orange', 'yellow', 'gray'];
+    return ['red', 'blue', 'green', 'orange', 'yellow', 'pink'];
 }
 
 function getMeses($tipo = TP_COMPLETO, $formato = FR_ARREGLO)

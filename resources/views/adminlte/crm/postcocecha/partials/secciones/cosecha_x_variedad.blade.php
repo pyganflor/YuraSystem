@@ -67,6 +67,18 @@
                 <span class="description-text">Calibre</span>
             </div>
         </div>
+        <div class="col-sm-3 col-xs-6">
+            <div class="description-block border-right">
+                <span class="description-percentage" title="Clasificados">
+                    {{$verde != '' ? $verde->total_tallos() : 0}}
+                </span>
+                <h5 class="description-header" title="Cosechados">
+                     {{$cosecha->getTotalTallos()}}
+                </h5>
+                <span class="description-text">Totales</span>
+            </div>
+        </div>
+
     </div>
 @else
     <div class="alert alert-info text-center">No se han encontrado resultados en el rango de fecha indicado</div>

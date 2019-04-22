@@ -63,6 +63,7 @@ Route::group(['middleware' => 'autenticacion'], function () {
 
         /* ========================== CRM ========================*/
         include 'crm/postcosecha.php';
+        include 'crm/ventas.php';
 
         /* ========================== FACTURACIÓN ========================*/
         include 'facturacion/tipo_comprobante.php';

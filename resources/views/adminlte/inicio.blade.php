@@ -45,6 +45,16 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="col-md-3">
+                            <div class="info-box bg-green-gradient mouse-hand sombra_pequeña"
+                                 onclick="location.href='{{url('crm_ventas')}}'">
+                                <span class="info-box-icon"><i class="fa fa-fw fa-usd"></i></span>
+                                <div class="info-box-content">
+                                    <strong class="info-box-text" style="font-size: 1.2em">Ventas</strong>
+                                    <span class="info-box-number">$$</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
