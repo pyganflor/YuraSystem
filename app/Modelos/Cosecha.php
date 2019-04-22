@@ -38,8 +38,13 @@ class Cosecha extends Model
     public function getTotalTallosByVariedad($variedad)
     {
         $r = 0;
+        $a = [];
         foreach ($this->recepciones as $recepcion) {
             $r += $recepcion->tallos_x_variedad($variedad);
+            array_push($a, [
+                'recep' => $recepcion,
+                'cant' => $recepcion->tallos_x_variedad($variedad)
+            ]);
         }
         return $r;
     }

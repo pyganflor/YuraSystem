@@ -43,12 +43,23 @@ class Coloracion extends Model
 
     public function getPrecioByDetEsp($det_esp)
     {
-        if ($this->precio != '')
+        if ($this->precio != '') {
             foreach (explode('|', $this->precio) as $item) {
                 if (explode(';', $item)[1] == $det_esp)
                     return explode(';', $item)[0];
             }
-        else
             return '';
+        } else
+            return '';
+    }
+
+    public function getTotalRamosByDetEsp($det_esp)
+    {
+        $r = 0;
+        foreach ($this->marcaciones_coloraciones as $mar_col) {
+            if ($mar_col->id_detalle_especificacionempaque == $det_esp)
+                $r += $mar_col->cantidad;
+        }
+        return $r;
     }
 }

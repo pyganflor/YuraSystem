@@ -3,6 +3,10 @@ TRUNCATE `coloracion`;
 TRUNCATE `marcacion`;
 TRUNCATE `detalle_pedido`;
 TRUNCATE `pedido`;
+TRUNCATE `distribucion_coloracion`;
+TRUNCATE `distribucion`;
+TRUNCATE `envio`;
+TRUNCATE `detalle_envio`;
 
 
 TRUNCATE `cliente_pedido_especificacion`;

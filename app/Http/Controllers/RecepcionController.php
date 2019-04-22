@@ -91,8 +91,8 @@ class RecepcionController extends Controller
         ]);
         if (!$valida->fails()) {
             $semana = Semana::All()
-                ->where('fecha_inicial', '<=', $request->fecha_ingreso)
-                ->where('fecha_final', '>=', $request->fecha_ingreso)->first();
+                ->where('fecha_inicial', '<=', substr($request->fecha_ingreso, 0, 10))
+                ->where('fecha_final', '>=', substr($request->fecha_ingreso, 0, 10))->first();
             if ($semana != '') {
                 if (count($request->cantidad) > 0) {
                     /* ============= TABLA COSECHA ===============*/
