@@ -400,21 +400,24 @@ class EnvioController extends Controller
 
             if($objEnvio->save()){
                 bitacora('envio', $request->id_envio, 'U', 'Actualización satisfactoria del envío');
-                $dataDetallePedido = Envio::where('id_envio',$request->id_envio)->select('id_pedido')
-                    ->join('detalle_pedido as dp','envio.id_pedido','dp.id_pedido')->select('id_detalle_pedido')->get();
+                $save_det_env = DetalleEnvio::where('id_envio',$request->id_envio)->update(['id_aerolinea' => $request->aerolinea]);
 
-                DetalleEnvio::where('id_envio',$request->id_envio)->update(['id_aerolinea' => $request->aerolinea]);
+                if($save_det_env) {
+                    if ($request->tipo_pedido === "N") { //PEDIDO NO TINTURADO
+                        $dataDetallePedido = Envio::where('id_envio',$request->id_envio)->select('id_pedido')
+                            ->join('detalle_pedido as dp','envio.id_pedido','dp.id_pedido')->select('id_detalle_pedido')->get();
 
-                foreach ($dataDetallePedido as $key => $detallePedido) {
-
-                    $objDetallePedido = DetallePedido::where('id_detalle_pedido',$detallePedido->id_detalle_pedido);
-                    $objDetallePedido->update([
-                        'precio'=> substr($request->precios[$key]['precios'],0,-1),
-                        'cantidad' =>$request->precios[$key]['piezas'],
-                    ]);
-                    if($objDetallePedido){
-                        $modelDetallePedido = DetallePedido::all()->last();
-                        bitacora('detalle_pedido', $modelDetallePedido->id_detalle_pedido, 'U', 'Actualización del precio del detalle del pedido '.$detallePedido->id_pedido.'');
+                        foreach ($dataDetallePedido as $key => $detallePedido) {
+                            $objDetallePedido = DetallePedido::where('id_detalle_pedido', $detallePedido->id_detalle_pedido);
+                            $objDetallePedido->update([
+                                'precio' => substr($request->precios[$key]['precios'], 0, -1),
+                                'cantidad' => $request->precios[$key]['piezas'],
+                            ]);
+                            if ($objDetallePedido) {
+                                $modelDetallePedido = DetallePedido::all()->last();
+                                bitacora('detalle_pedido', $modelDetallePedido->id_detalle_pedido, 'U', 'Actualización del precio del detalle del pedido ' . $detallePedido->id_pedido . '');
+                            }
+                        }
                     }
                 }
                 $success = true;
@@ -552,4 +555,5 @@ class EnvioController extends Controller
             'success' => $success
         ];
     }
+
 }

@@ -10,7 +10,7 @@
             </button>
             @if($det_ped->haveDistribucion())
                 <button type="button" class="btn btn-xs btn-danger pull-right elemento_distribuir"
-                        onclick="quitar_distribuciones('{{$det_ped->id_pedido}}')">
+                        onclick="quitar_distribuciones('{{$det_ped->id_pedido}}','{{csrf_token()}}')">
                     <i class="fa fa-fw fa-times"></i> Quitar Distribuciones
                 </button>
                 <button type="button" class="btn btn-xs btn-primary pull-right elemento_distribuir"

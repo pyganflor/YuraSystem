@@ -56,6 +56,8 @@ use yura\Modelos\FacturaClienteTercero;
 use \yura\Modelos\Transportista;
 use \yura\Modelos\Camion;
 use \yura\Modelos\Conductor;
+use \yura\Modelos\DetalleDespacho;
+use \yura\Modelos\DesgloseEnvioFactura;
 
 /*
  * -------- BITÁCORA DE LAS ACCIONES ECHAS POR EL USUARIO ------
@@ -1648,4 +1650,17 @@ function getCamion($idCamion)
 function getChofer($idChofer)
 {
     return Conductor::find($idChofer);
+}
+
+function getDespacho($idPedido){
+    return Despacho::join('detalle_despacho as dd','despacho.id_despacho','dd.id_despacho')->where([
+        ['dd.id_pedido',$idPedido],
+        ['despacho.estado',1]
+    ])->count();
+}
+
+function getImpuestosDesglosesFacturas($idComprobante){
+    return DesgloseEnvioFactura::where('id_comprobante',$idComprobante)
+        ->join('impuesto_desglose_envio_factura as idef','desglose_envio_factura.id_desglose _envio_factura','idef.id_desglose _envio_factura')
+        ->get();
 }

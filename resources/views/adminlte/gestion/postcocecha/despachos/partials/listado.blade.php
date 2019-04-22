@@ -14,26 +14,30 @@
                     </ul>
                 </th>
                 <th style="border-color: #9d9d9d; background-color: #e9ecef" class="text-right" colspan="{{$opciones ? "10" : "9"}}">
-                    <button type="button" class="btn btn-xs btn-primary" onclick="ver_despachos()">
-                        <i class="fa fa-eye" aria-hidden="true"></i> Ver despachos
-                    </button>
-                    <button type="button" class="btn btn-xs btn-primary" onclick="crear_despacho()">
-                        <i class="fa fa-truck" aria-hidden="true"></i> Crear despacho
-                    </button>
+                    @if(!$opciones)
+                        <button type="button" class="btn btn-xs btn-primary" onclick="ver_despachos()">
+                            <i class="fa fa-eye" aria-hidden="true"></i> Ver despachos
+                        </button>
+                        <button type="button" class="btn btn-xs btn-primary" onclick="crear_despacho()">
+                            <i class="fa fa-truck" aria-hidden="true"></i> Crear despacho
+                        </button>
+                    @endif
                     <button type="button" class="btn btn-xs btn-success">
                         <i class="fa fa-fw fa-file-excel-o"></i> Exportar a Excel
                     </button>
                 </th>
             </tr>
             <tr>
-                <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white;width:50px">
-                    ORDEN
-                </th>
+                @if(!$opciones)
+                    <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white;width:50px">
+                        DESPACHO
+                    </th>
+                @endif
                 <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
                     CLIENTE
                 </th>
                  <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
-                        MARACACIONES
+                     MARACACIONES
                  </th>
                 <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
                     FLOR
@@ -74,17 +78,24 @@
                 $ramos_x_variedades = [];
             @endphp
             @foreach($listado as $pedido)
+                @php $despachado = getDespacho($pedido->id_pedido) @endphp
                 @foreach(getPedido($pedido->id_pedido)->detalles as $pos_det_ped => $det_ped)
                     @foreach($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $pos_esp_emp => $esp_emp)
                         @foreach($esp_emp->detalles as $pos_det_esp => $det_esp)
                             <tr style="background-color: {{!in_array($det_esp->id_variedad,explode('|',$pedido->variedad)) ? '#b9ffb4' : ''}}; border-bottom: 2px solid #9d9d9d"
                                 title="{{!in_array($det_esp->id_variedad,explode('|',$pedido->variedad)) ? 'Confirmado' : 'Por confirmar'}}">
                                 @if($pos_det_esp == 0 && $pos_esp_emp == 0 && $pos_det_ped == 0)
-                                    <td class="text-center" style="border-color: #9d9d9d;vertical-align: middle"
-                                        rowspan="{{getCantidadDetallesEspecificacionByPedido($pedido->id_pedido)}}">
-                                        <input type="number" name="orden_despacho" id="{{$pedido->id_pedido}}" class="form-control orden_despacho"
-                                           min="1" style="width: 56px;border:none;text-align: center">
-                                    </td>
+                                    @if(!$opciones)
+                                        <td class="text-center" style="border-color: #9d9d9d;vertical-align: middle"
+                                            rowspan="{{getCantidadDetallesEspecificacionByPedido($pedido->id_pedido)}}">
+                                            @if($despachado > 0)
+                                                <i class="fa fa-2x fa-check-circle text-success"  title="Despachado" aria-hidden="true"></i>
+                                            @else
+                                                <input type="number" name="orden_despacho" id="{{$pedido->id_pedido}}" class="form-control orden_despacho"
+                                                       min="1" style="width: 56px;border:none;text-align: center">
+                                            @endif
+                                        </td>
+                                    @endif
                                     <td class="text-center" style="border-color: #9d9d9d"
                                         rowspan="{{getCantidadDetallesEspecificacionByPedido($pedido->id_pedido)}}">
                                         {{getCliente($pedido->id_cliente)->detalle()->nombre}}

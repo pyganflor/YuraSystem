@@ -77,18 +77,7 @@
         });
     }
 
-    function editar_pedido_tinturado(id_pedido, pos_det_ped, global = true) {
-        datos = {
-            id_pedido: id_pedido,
-            pos_det_ped: pos_det_ped
-        };
-        div_parametro = global ? 'td_opciones_' + id_pedido : false;
-        get_jquery('{{url('pedidos/editar_pedido_tinturado')}}', datos, function (retorno) {
-            !global ? cerrar_modals() : '';
-            modal_view('modal-view_editar_pedido_tinturado', retorno, '<i class="fa fa-fw fa-pencil"></i> Editar pedido', true, false,
-                '{{isPC() ? '98%' : ''}}');
-        }, div_parametro);
-    }
+
 
 
 

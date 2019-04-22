@@ -2,20 +2,7 @@
     buscar_listado_envios();
     $(document).on('load',function () { calcular_precio_envio(); });
 
-    function buscar_listado_envios() {
-        $.LoadingOverlay('show');
-        datos = {
-            id_cliente : $('#id_cliente').val(),
-            fecha      : $('#fecha').val(),
-            estado     : $('#estado').val(),
-        };
-        $.get('{{url('envio/buscar')}}', datos, function (retorno) {
-            $('#div_listado_envios').html(retorno);
-            calcular_precio_envio();
-        }).always(function () {
-            $.LoadingOverlay('hide');
-        });
-    }
+
 
     $(document).on("click", "#pagination_listado_envios .pagination li a", function (e) {
         $.LoadingOverlay("show");
@@ -118,45 +105,6 @@
         }
     }
 
-    function calcular_precio_envio() {
-        cant_forms = $("div#table_envios form").length;
-        for (o=1;o<=cant_forms;o++){
-            sub_total = 0.00;
-            total_ramos = 0.00;
-            total_piezas = 0.00;
-            cant_rows = $(".input_cantidad_"+o).length;
-            for (i = 1; i <= cant_rows; i++) {
-                precio_especificacion = 0.00;
-                ramos_totales_especificacion = 0.00;
-                $.each($(".cantidad_"+o+"_"+i), function (p, q) {
-                    $.each($(".td_ramos_x_caja_"+o+"_"+i), function (a, b) {
-                        ramos_totales_especificacion += (q.value * b.value);
-                    });
-                    $.each($(".precio_"+o+"_"+i), function (y, z) {
-                        precio_variedad = z.value == "" ? 0 : z.value;
-                        ramos_x_caja = $(".input_ramos_x_caja_"+o+"_"+i + "_" + (y + 1)).val();
-                        precio_especificacion += (parseFloat(precio_variedad) * parseFloat(ramos_x_caja) * q.value);
-                    });
-                });
-                sub_total += parseFloat(precio_especificacion);
-                $("#td_total_ramos_"+o+"_"+i).html(parseFloat(ramos_totales_especificacion));
-                total_ramos += ramos_totales_especificacion;
-                $("#td_precio_especificacion_"+o+"_"+i).html("$" + parseFloat(precio_especificacion).toFixed(2));
-                total_piezas += parseInt($(".cantidad_"+o+"_"+i).val());
-            }
-            console.log(!isNaN($("#porcentaje_impuesto_"+o).val()));
-            !isNaN($("#porcentaje_impuesto_"+o).val())
-                ? total = (parseFloat(sub_total)+parseFloat(((sub_total*parseFloat($("#porcentaje_impuesto_"+o).val()))/100).toFixed(2))).toFixed(2)
-                : total = sub_total;
-
-            $("#total_piezas_"+o).html(total_piezas);
-            $("#total_ramos_"+o).html(total_ramos);
-            $("#sub_total_"+o).html(sub_total.toFixed(2));
-            $("#total_"+o).html(total);
-        }
-
-    }
-
     function buscar_codigo_dae(input,form,factura_cliente_tercero){
         $.LoadingOverlay('show');
         datos = {
@@ -182,7 +130,7 @@
         });
     }
 
-    function actualizar_envio(id_envio,form){
+    function actualizar_envio(id_envio,form,tipo_pedido){
         if($("#"+form).valid()){
             $.LoadingOverlay('show');
 
@@ -215,6 +163,7 @@
                aerolinea : $("form#"+form+ " #aerolinea").val(),
                precios : arrDataPrecio,
                almacen : $("form#"+form+ " #almacen").val(),
+               tipo_pedido : tipo_pedido
            };
             $.post('{{url('envio/actualizar_envio')}}', datos, function (retorno) {
                 if (retorno.success) {
@@ -292,4 +241,5 @@
                 $.LoadingOverlay('hide');
             });
     }
+
 </script>
