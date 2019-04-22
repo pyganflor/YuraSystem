@@ -52,8 +52,4 @@ class Coloracion extends Model
             return '';
     }
 
-    public function marcaciones_coloraciones()
-    {
-        return $this->hasMany('\yura\Modelos\MarcacionColoracion', 'id_coloracion');
-    }
 }
