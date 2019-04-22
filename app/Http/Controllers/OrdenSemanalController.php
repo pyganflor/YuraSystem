@@ -509,6 +509,7 @@ class OrdenSemanalController extends Controller
             'pos_det_ped' => $request->pos_det_ped,
             'have_next' => $have_next,
             'have_prev' => $request->pos_det_ped > 0,
+            'listar_resumen_pedido' => $request->listar_resumen_pedido
         ]);
     }
 
