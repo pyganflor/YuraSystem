@@ -10,7 +10,7 @@
         <div class="col-md-4">
             <div class="form-group">
                 <label for="identificacion">Tipo de identificación</label>
-                <select class="form-control" id="tipo_identificacion" name="tipo_identificacion" onchange="cosumidor_final()" required>
+                <select class="form-control" id="tipo_identificacion" name="tipo_identificacion" onchange="valida_identificacion()" required>
                     <option disabled selected>Seleccione</option>
                     @foreach($dataTipoIdentificacion as $dTI)
                         @php
@@ -30,7 +30,7 @@
             <div class="form-group">
                 <label for="identificacion">Número de identificación</label>
                 <input type="text" id="identificacion" name="identificacion" class="form-control" {{(!empty($dataCliente) && $dataCliente->codigo_identificacion == 07) ? "disabled" : ""}}
-                       required maxlength="25" autocomplete="off" value="{!! !empty($dataCliente) ? $dataCliente->ruc : "" !!}">
+                       required autocomplete="off" value="{!! !empty($dataCliente) ? $dataCliente->ruc : "" !!}">
             </div>
         </div>
     </div>

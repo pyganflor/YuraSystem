@@ -12,7 +12,7 @@
         <div class="col-md-4">
             <div class="form-group">
                 <label for="identificacion">Tipo de identificación</label>
-                <select class="form-control" id="tipo_identificacion" name="tipo_identificacion" onchange="cosumidor_final()" {{$disabled}} required>
+                <select class="form-control" id="tipo_identificacion" name="tipo_identificacion" onchange="valida_identificacion()" {{$disabled}} required>
                     <option disabled selected>Seleccione</option>
                     @foreach($dataTipoIdentificacion as $dTI)
                         <option {{isset($dataCliente->codigo_identificacion) ? ($dataCliente->codigo_identificacion == $dTI->codigo ? "selected" : "") : ""}}
@@ -27,7 +27,7 @@
                 <label for="identificacion">Número de identificación</label>
                 <input type="text" id="identificacion" name="identificacion" class="form-control" {{$disabled}}
                     {{(!empty($dataCliente) && $dataCliente->identificacion == 07) ? "disabled" : ""}}
-                    required maxlength="25" autocomplete="off" value="{{isset($dataCliente->identificacion) ? $dataCliente->identificacion : ""}}">
+                    required autocomplete="off" value="{{isset($dataCliente->identificacion) ? $dataCliente->identificacion : ""}}">
             </div>
         </div>
     </div>
@@ -119,3 +119,8 @@
         </div>
     </div>
 </form>
+<script>
+    valida_identificacion();
+    if('{{$facturado}}' == true)
+        $("#btn_guardar_modal_factura_cliente_tercero").remove();
+</script>

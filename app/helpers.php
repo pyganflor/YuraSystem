@@ -1272,13 +1272,14 @@ function accionAutorizacion($autorizacion, $path, $msg, $tipoDocumento = false, 
     $dataXML = (String)$autorizacion->comprobante;
 
     $actualizaEstado = 1;
+   // dd($autorizacion);
     if ((String)$autorizacion->estado === "AUTORIZADO") {
         $actualizaEstado = 5;
         $numeroComprobante = getDetallesClaveAcceso($numeroAutorizacion, 'SERIE') . getDetallesClaveAcceso($numeroAutorizacion, 'SECUENCIAL');
         $class = 'success';
         if ($tipoDocumento == "01")
-            generaFacturaPDF($autorizacion, $numeroComprobante);
-
+            generaFacturaPDF($autorizacion);
+        ///// AQUÌ VAN LOS DEMAS TIPOS DE DOCUMENTOS ELECTRÒNICOS /////
     } else {
         $class = 'danger';
         $actualizaEstado = 4;
@@ -1289,10 +1290,9 @@ function accionAutorizacion($autorizacion, $path, $msg, $tipoDocumento = false, 
     }
 
     $objComprobante = Comprobante::where('clave_acceso', $numeroAutorizacion);
-    $objComprobante->estado = $actualizaEstado;
-
-    $autorizacion->estado !== "AUTORIZADO" ? $objComprobante->update(['cuasa' => $causa]) : "";
-    $objComprobante->update(['estado' => $actualizaEstado, 'numero_comprobante' => $numeroComprobante]);
+    $autorizacion->estado !== "AUTORIZADO"
+        ? $objComprobante->update(['cuasa' => $causa])
+        : $objComprobante->update(['estado' => $actualizaEstado, 'numero_comprobante' => $numeroComprobante]);
 
     $xml = new DOMDocument(1.0, 'UTF-8');
     $xml->loadXML($dataXML);
@@ -1303,7 +1303,7 @@ function accionAutorizacion($autorizacion, $path, $msg, $tipoDocumento = false, 
     if ($autorizacion->estado === "AUTORIZADO") {
         $nuevoXml->loadXML("<xmlAutorizado><estado>" . $autorizacion->estado . "</estado><ambiente>" . $ambiente . "</ambiente><fechaAutorizacion>" . $fechaAutorizacion . "</fechaAutorizacion><numeroAutorizacion>" . $numeroAutorizacion . "</numeroAutorizacion></xmlAutorizado>");
     } else {
-        $nuevoXml->loadXML("<xmlNoAutorizado><estado>" . $autorizacion->estado . "</estado><ambiente>" . $ambiente . "</ambiente><fechaAutorizacion>" . $fechaAutorizacion . "</fechaAutorizacion><numeroAutorizacion>" . $numeroAutorizacion . "</numeroAutorizacion><causa>" . $causa . "</causa></xmlNoAutorizado>");
+        $nuevoXml->loadXML("<xmlNoAutorizado><estado>" . $autorizacion->estado . "</estado><ambiente>" . $ambiente . "</ambiente><fechaAutorizacion>" . $autorizacion->fechaAutorizacion . "</fechaAutorizacion><numeroAutorizacion>" . $autorizacion->estado . "</numeroAutorizacion><causa>" . $causa . "</causa></xmlNoAutorizado>");
     }
 
     $node = $nuevoXml->importNode($nodo, true);
@@ -1320,16 +1320,14 @@ function accionAutorizacion($autorizacion, $path, $msg, $tipoDocumento = false, 
         . "</div>";
 }
 
-function generaFacturaPDF($autorizacion, $numeroComprobante)
+function generaFacturaPDF($autorizacion)
 {
-    $dataComprobante = Comprobante::where('clave_acceso', $numeroComprobante)->select('numero_comprobante', 'id_envio')->first();
+    $dataComprobante = Comprobante::where('clave_acceso', $autorizacion->numeroAutorizacion)->select('id_envio')->first();
     $data = [
         'autorizacion' => $autorizacion,
         'img_clave_acceso' => generateCodeBarGs1128((String)$autorizacion->numeroAutorizacion),
         'obj_xml' => simplexml_load_string($autorizacion->comprobante),
-        'numeroComprobante' => isset($dataComprobante->numero_comprobante)
-            ? $dataComprobante->numero_comprobante
-            : getDetallesClaveAcceso((String)$autorizacion->comprobante, 'SERIE') . getDetallesClaveAcceso((String)$autorizacion->comprobante, 'PUNTO_ACCESO') . getDetallesClaveAcceso((String)$autorizacion->comprobante, 'SECUENCIAL'),
+        'numeroComprobante' => getDetallesClaveAcceso((String)$autorizacion->numeroAutorizacion, 'SERIE').getDetallesClaveAcceso((String)$autorizacion->numeroAutorizacion, 'SECUENCIAL'),
         'detalles_envio' => getEnvio($dataComprobante->id_envio)->detalles
     ];
     PDF::loadView('adminlte.gestion.comprobante.partials.pdf.factura', compact('data'))->save(env('PDF_FACTURAS') . $autorizacion->numeroAutorizacion . ".pdf");
@@ -1661,6 +1659,6 @@ function getDespacho($idPedido){
 
 function getImpuestosDesglosesFacturas($idComprobante){
     return DesgloseEnvioFactura::where('id_comprobante',$idComprobante)
-        ->join('impuesto_desglose_envio_factura as idef','desglose_envio_factura.id_desglose _envio_factura','idef.id_desglose _envio_factura')
+        ->join('impuesto_desglose_envio_factura as idef','desglose_envio_factura.id_desglose_envio_factura','idef.id_desglose_envio_factura')
         ->get();
 }
