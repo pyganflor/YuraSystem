@@ -72,18 +72,41 @@ class Pedido extends Model
             return 0;
     }
 
-    public function getCajas()
+    public function getRamosEstandar()
     {
         $r = 0;
         foreach ($this->detalles as $det_ped) {
             foreach ($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $esp_emp) {
                 foreach ($esp_emp->detalles as $det_esp) {
                     $ramos = $det_ped->cantidad * $esp_emp->cantidad * $det_esp->cantidad;
-                    $r = convertToEstandar($ramos, explode('|', getCalibreRamoById($det_esp->id_clasificacion_ramo)->nombre)[0]);
+                    $r += convertToEstandar($ramos, explode('|', getCalibreRamoById($det_esp->id_clasificacion_ramo)->nombre)[0]);
                 }
             }
         }
-        return round($r / getConfiguracionEmpresa()->ramos_x_caja, 2);
+        return $r;
+    }
+
+    public function getTallos()
+    {
+        $r = 0;
+        foreach ($this->detalles as $det_ped) {
+            foreach ($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $esp_emp) {
+                foreach ($esp_emp->detalles as $det_esp) {
+                    $ramos = $det_ped->cantidad * $esp_emp->cantidad * $det_esp->cantidad;
+                    if ($det_esp->tallos_x_ramos != '') {
+                        $r += $ramos * $det_esp->tallos_x_ramos;
+                    } else {
+                        $r += 0;
+                    }
+                }
+            }
+        }
+        return $r;
+    }
+
+    public function getCajas()
+    {
+        return round($this->getRamosEstandar() / getConfiguracionEmpresa()->ramos_x_caja, 2);
     }
 
     public function getPrecio()
@@ -107,6 +130,31 @@ class Pedido extends Model
                     $precio_final += $precio_col;
                     $r += $precio_final;
                 }
+            }
+        }
+        if (count($this->envios) > 0)
+            if ($this->envios[0]->comprobante != '') {  // PEDIDO FACTURADO
+                return $this->envios[0]->comprobante->monto_total;
+            } else {
+                if ($this->envios[0]->fatura_cliente_tercero != '') {   // FACTURAR A NOMBRE DE OTRA PERSONA
+                    $impuesto = TipoImpuesto::All()
+                        ->where('codigo', $this->envios[0]->fatura_cliente_tercero->codigo_impuesto_porcentaje)->first()->porcentaje;
+                    if (is_numeric($impuesto)) {
+                        $r += $r * ($impuesto / 100);
+                    }
+                } else {    // FACTURAR A NOMBRE DEL CLIENTE
+                    $impuesto = TipoImpuesto::All()
+                        ->where('codigo', $this->cliente->detalle()->codigo_porcentaje_impuesto)->first()->porcentaje;
+                    if (is_numeric($impuesto)) {
+                        $r += $r * ($impuesto / 100);
+                    }
+                }
+            }
+        else {    // FACTURAR A NOMBRE DEL CLIENTE
+            $impuesto = TipoImpuesto::All()
+                ->where('codigo', $this->cliente->detalle()->codigo_porcentaje_impuesto)->first()->porcentaje;
+            if (is_numeric($impuesto)) {
+                $r += $r * ($impuesto / 100);
             }
         }
         return $r;

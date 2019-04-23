@@ -36,9 +36,9 @@
                 <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
                     CLIENTE
                 </th>
-                 <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
-                     MARACACIONES
-                 </th>
+                <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
+                    MARACACIONES
+                </th>
                 <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
                     FLOR
                 </th>
@@ -76,6 +76,8 @@
                 $cajas_full_totales = 0;
                 $variedades = [];
                 $ramos_x_variedades = [];
+
+                $valor_total = 0;
             @endphp
             @foreach($listado as $pedido)
                 @php $despachado = getDespacho($pedido->id_pedido) @endphp
@@ -89,9 +91,10 @@
                                         <td class="text-center" style="border-color: #9d9d9d;vertical-align: middle"
                                             rowspan="{{getCantidadDetallesEspecificacionByPedido($pedido->id_pedido)}}">
                                             @if($despachado > 0)
-                                                <i class="fa fa-2x fa-check-circle text-success"  title="Despachado" aria-hidden="true"></i>
+                                                <i class="fa fa-2x fa-check-circle text-success" title="Despachado" aria-hidden="true"></i>
                                             @else
-                                                <input type="number" name="orden_despacho" id="{{$pedido->id_pedido}}" class="form-control orden_despacho"
+                                                <input type="number" name="orden_despacho" id="{{$pedido->id_pedido}}"
+                                                       class="form-control orden_despacho"
                                                        min="1" style="width: 56px;border:none;text-align: center">
                                             @endif
                                         </td>
@@ -99,10 +102,18 @@
                                     <td class="text-center" style="border-color: #9d9d9d"
                                         rowspan="{{getCantidadDetallesEspecificacionByPedido($pedido->id_pedido)}}">
                                         {{getCliente($pedido->id_cliente)->detalle()->nombre}}
+                                        <br>
+                                        <strong>
+                                            ${{number_format(getPedido($pedido->id_pedido)->getPrecio(), 2)}}
+                                        </strong>
+                                        @php
+                                            $valor_total += getPedido($pedido->id_pedido)->getPrecio();
+                                        @endphp
                                     </td>
                                 @endif
                                 @if($pos_det_esp == 0 && $pos_esp_emp == 0)
-                                    <td class="text-center" style="border-color: #9d9d9d;vertical-align: middle" id="td_datos_exportacion_{{$pedido->id_pedido}}"
+                                    <td class="text-center" style="border-color: #9d9d9d;vertical-align: middle"
+                                        id="td_datos_exportacion_{{$pedido->id_pedido}}"
                                         rowspan="{{getCantidadDetallesByEspecificacion($det_ped->cliente_especificacion->id_especificacion)}}">
                                         @if(count(getDatosExportacionCliente($det_ped->id_detalle_pedido))>0)
                                             <ul style="padding: 0;margin-bottom: 0">
@@ -176,11 +187,13 @@
                                         @endphp
                                         @if($pedido->empaquetado == 0)
                                             @if($facturado == null || $firmado == null)
-                                            <button class="btn  btn-{!! $det_ped->estado == 1 ? 'danger' : 'success' !!} btn-xs" type="button"
-                                                    title="{!! $det_ped->estado == 1 ? 'Cancelar pedido' : 'Activar pedido' !!}" id="edit_pedidos"
-                                                    onclick="cancelar_pedidos('{{$pedido->id_pedido}}','','{{$det_ped->estado}}','{{@csrf_token()}}')">
-                                                <i class="fa fa-{!! $det_ped->estado == 1 ? 'trash' : 'undo' !!}" aria-hidden="true"></i>
-                                            </button>
+                                                <button class="btn  btn-{!! $det_ped->estado == 1 ? 'danger' : 'success' !!} btn-xs"
+                                                        type="button"
+                                                        title="{!! $det_ped->estado == 1 ? 'Cancelar pedido' : 'Activar pedido' !!}"
+                                                        id="edit_pedidos"
+                                                        onclick="cancelar_pedidos('{{$pedido->id_pedido}}','','{{$det_ped->estado}}','{{@csrf_token()}}')">
+                                                    <i class="fa fa-{!! $det_ped->estado == 1 ? 'trash' : 'undo' !!}" aria-hidden="true"></i>
+                                                </button>
                                             @endif
                                         @endif
                                         @if($pedido->empaquetado == 0)
@@ -191,24 +204,24 @@
                                                 </button>
                                             @else
                                                 @if($facturado==null || $firmado==null)
-                                                <button type="button" class="btn btn-default btn-xs" title="Editar pedido"
-                                                        onclick="editar_pedido('{{$pedido->id_cliente}}','{{$pedido->id_pedido}}')">
-                                                    <i class="fa fa-pencil" aria-hidden="true"></i>
-                                                </button>
+                                                    <button type="button" class="btn btn-default btn-xs" title="Editar pedido"
+                                                            onclick="editar_pedido('{{$pedido->id_cliente}}','{{$pedido->id_pedido}}')">
+                                                        <i class="fa fa-pencil" aria-hidden="true"></i>
+                                                    </button>
                                                 @endif
                                             @endif
                                         @endif
-                                            {{--<@if(yura\Modelos\Envio::where('id_pedido',$pedido->id_pedido)->count() == 0)
-                                                    button class="btn btn-default btn-xs" title="Realizar envío"
-                                                            onclick="add_envio('{{$pedido->id_pedido}}','{{@csrf_token()}}')">
-                                                        <i class="fa fa-plane" aria-hidden="true"></i>
-                                                    </button>
-                                                @else
-                                                    <button class="btn btn-default btn-xs" title="Ver envío"
-                                                            onclick="ver_envio('{{$pedido->id_pedido}}')">
-                                                        <i class="fa fa-eye" aria-hidden="true"></i>
-                                                    </button>
-                                                @endif--}}
+                                        {{--<@if(yura\Modelos\Envio::where('id_pedido',$pedido->id_pedido)->count() == 0)
+                                                button class="btn btn-default btn-xs" title="Realizar envío"
+                                                        onclick="add_envio('{{$pedido->id_pedido}}','{{@csrf_token()}}')">
+                                                    <i class="fa fa-plane" aria-hidden="true"></i>
+                                                </button>
+                                            @else
+                                                <button class="btn btn-default btn-xs" title="Ver envío"
+                                                        onclick="ver_envio('{{$pedido->id_pedido}}')">
+                                                    <i class="fa fa-eye" aria-hidden="true"></i>
+                                                </button>
+                                            @endif--}}
                                         @if(getPedido($pedido->id_pedido)->haveDistribucion() == 1)
                                             <button type="button" class="btn btn-xs btn-info" title="Distribuir"
                                                     onclick="distribuir_orden_semanal('{{$pedido->id_pedido}}')">
@@ -221,9 +234,10 @@
                                             </button>
                                         @endif
                                         @if($pedido->empaquetado == 0)
-                                        <button class="btn btn-primary btn-xs" title="Duplicar pedido" onclick="duplicar_pedido('{{$pedido->id_pedido}}','{{$pedido->id_cliente}}')">
-                                            <i class="fa fa-files-o" aria-hidden="true"></i>
-                                        </button>
+                                            <button class="btn btn-primary btn-xs" title="Duplicar pedido"
+                                                    onclick="duplicar_pedido('{{$pedido->id_pedido}}','{{$pedido->id_cliente}}')">
+                                                <i class="fa fa-files-o" aria-hidden="true"></i>
+                                            </button>
                                         @endif
                                     </td>
                                 @endif
@@ -343,6 +357,14 @@
                         </th>
                         <td class="text-center" style="border-color: #9d9d9d">
                             {{round($ramos_totales_estandar / getConfiguracionEmpresa()->ramos_x_caja,2)}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th class="text-center" style="border-color: #9d9d9d; background-color: #357ca5; color: white">
+                            Valor Total
+                        </th>
+                        <td class="text-center" style="border-color: #9d9d9d">
+                            ${{number_format($valor_total,2)}}
                         </td>
                     </tr>
                 </table>

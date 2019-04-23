@@ -4,7 +4,7 @@
             <div class="small-box bg-teal-active">
                 <div class="inner">
                     <h3 class="info-box-number">
-                        {{number_format(111, 2)}}
+                        {{number_format($semanal['valor'], 2)}}
                     </h3>
                 </div>
                 <div class="icon">
@@ -19,7 +19,7 @@
             <div class="small-box bg-aqua">
                 <div class="inner">
                     <h3 class="info-box-number">
-                        {{number_format(111)}}
+                        {{number_format($semanal['cajas'], 2)}}
                     </h3>
                 </div>
                 <div class="icon">
@@ -34,7 +34,7 @@
             <div class="small-box bg-red">
                 <div class="inner">
                     <h3 class="info-box-number">
-                        {{111}}
+                        {{number_format($semanal['precio_x_ramo'], 2)}}
                     </h3>
                 </div>
                 <div class="icon">
@@ -49,7 +49,7 @@
             <div class="small-box bg-green-gradient">
                 <div class="inner">
                     <h3 class="info-box-number">
-                        {{number_format(111, 2)}}
+                        {{number_format($semanal['precio_x_tallo'], 2)}}
                         <sup style="font-size: 0.4em"></sup>
                     </h3>
                 </div>
@@ -65,7 +65,7 @@
             <div class="small-box bg-orange">
                 <div class="inner">
                     <h3 class="info-box-number">
-?
+                        ?
                     </h3>
                 </div>
                 <div class="icon">

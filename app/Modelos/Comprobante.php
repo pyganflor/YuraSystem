@@ -13,6 +13,7 @@ class Comprobante extends Model
 
     protected $fillable = [
         'id_comprobante',
+        'id_envio',
         'clave_acceso',
         'estado',
         'fecha_emision',
@@ -20,4 +21,9 @@ class Comprobante extends Model
         'monto_total',
         'numero_comprobante'
     ];
+
+    public function envio()
+    {
+        return $this->belongsTo('\yura\Modelos\Envio', 'id_envio');
+    }
 }
