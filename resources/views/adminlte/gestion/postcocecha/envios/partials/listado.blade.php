@@ -212,10 +212,12 @@
                                                 <button type="button" class="btn btn-{{$factura_tercero ?  "primary" : "default"}}" title="Facturar a terceros" onclick="factura_tercero('{{$envio->id_envio}}')">
                                                     <i class="fa fa-user-plus" aria-hidden="true"></i>
                                                 </button>
-                                                @if($factura_tercero)
-                                                    <button type="button" class="btn btn-danger" title="Eliminar factura a tercero" onclick="delete_factura_tercero('{{$envio->id_envio}}')">
-                                                        <i class="fa fa-user-times" aria-hidden="true"></i>
-                                                    </button>
+                                                @if($facturado == null)
+                                                    @if($factura_tercero)
+                                                        <button type="button" class="btn btn-danger" title="Eliminar factura a tercero" onclick="delete_factura_tercero('{{$envio->id_envio}}')">
+                                                            <i class="fa fa-user-times" aria-hidden="true"></i>
+                                                        </button>
+                                                    @endif
                                                 @endif
                                             </div>
                                         </div>

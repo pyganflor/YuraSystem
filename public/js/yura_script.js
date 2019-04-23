@@ -928,10 +928,21 @@ function porcentaje_impuesto() {
     });
 }
 
-function cosumidor_final() {
-    $("#tipo_identificacion").val() == "07"
-        ? $("#identificacion").val("9999999999999").attr('disabled', true)
-        : $("#identificacion").attr('disabled', false).val("");
+function valida_identificacion() {
+    if( $("#tipo_identificacion").val() == "07"){
+        $("#identificacion").val("9999999999999").attr('disabled', true);
+    }else{
+        $("#identificacion").attr('disabled', false);
+    }
+    if($("#tipo_identificacion").val() == "04"){
+        $("#identificacion").attr('minlength', 13);
+        $("#identificacion").attr('maxlength',13);
+    }
+    if($("#tipo_identificacion").val() == "05"){
+        $("#identificacion").attr('minlength', 10);
+        $("#identificacion").attr('maxlength',10);
+    }
+
 }
 
 function editar_pedido_tinturado(id_pedido, pos_det_ped, global = true,listar_resumen_pedido = true) {

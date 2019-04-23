@@ -142,7 +142,7 @@ class ComprobanteController extends Controller
                 $codigo_pais = $request->codigo_pais;
                 $codigo_impuesto = $dataCliente->codigo_impuesto;
                 $codigo_porcentaje_impuesto = $dataCliente->codigo_porcentaje_impuesto;
-                $codigo_identificacion = $dataCliente->codigo_porcentaje_impuesto;
+                $codigo_identificacion = $dataCliente->codigo_identificacion;
                 $identificacion = $dataCliente->ruc;
                 $nombre_cliente = $dataCliente->nombre;
                 $provincia = $dataCliente->provincia;
@@ -372,13 +372,13 @@ class ComprobanteController extends Controller
                             $clasificacionRamo = getClasificacionRamo($m_c->detalle_especificacionempaque->id_clasificacion_ramo);
                             foreach (getUnidadesMedida($clasificacionRamo->id_unidad_medida) as $umPeso)
                                 $umPeso->tipo == "P" ? $umPeso = $umPeso->siglas : $umPeso ="";
-                            $descripcion_detalle = $variedad->planta->nombre . " (" . $variedad->siglas . ") " . $clasificacionRamo->nombre.$umPeso . " " . $longitudRamo.$umL;
+                            $descripcion_detalle = $variedad->planta->nombre . " (" . $variedad->siglas . ") " . $clasificacionRamo->nombre.$umPeso . " " . $longitudRamo.$umL. " ". $coloracion->color->nombre;
                             $detalle = $xml->createElement('detalle');
                             $detalles->appendChild($detalle);
                             $informacionDetalle = [
                                 'codigoPrincipal' => 'ENV' . str_pad($request->id_envio, 9, "0", STR_PAD_LEFT),
                                 'descripcion' => $descripcion_detalle,
-                                'cantidad' => number_format(($m_c->detalle_especificacionempaque->cantidad* $m_c->detalle_especificacionempaque->especificacion_empaque->cantidad * $det_ped->cantidad), 2, ".", ""),
+                                'cantidad' => number_format(($m_c->cantidad * $m_c->detalle_especificacionempaque->especificacion_empaque->cantidad * $m_c->marcacion->piezas), 2, ".", ""),
                                 'precioUnitario' =>number_format($precio, 2, ".", ""),
                                 'descuento' => '0.00',
                                 'precioTotalSinImpuesto' => number_format($precio_x_variedad, 2, ".", "")
@@ -528,7 +528,6 @@ class ComprobanteController extends Controller
                             }
                             else if($envio->pedido->tipo_especificacion === "T"){
                                 foreach ($envio->pedido->detalles as $x => $det_ped) {
-                                    $request->cant_variedades = $det_ped->coloraciones->count();
                                     foreach($det_ped->coloraciones as $y => $coloracion){
                                         $cant_esp_emp = $coloracion->especificacion_empaque->cantidad;
                                         $i=0;
@@ -541,7 +540,7 @@ class ComprobanteController extends Controller
                                                 $precio = explode( ";",explode("|",$coloracion->precio)[$i])[0];
                                             }
                                             $precio_x_variedad = $m_c->cantidad * $precio * $m_c->marcacion->piezas * $cant_esp_emp;
-                                            $variedad = getVariedad($m_c->detalle_especificacionempaque->id_variedad);//getVariedad($det_esp_emp->id_variedad);
+                                            $variedad = getVariedad($m_c->detalle_especificacionempaque->id_variedad);
                                             if($m_c->detalle_especificacionempaque->longitud_ramo != null){
                                                 foreach (getUnidadesMedida($m_c->detalle_especificacionempaque->id_unidad_medida) as $umLongitud)
                                                     if($umLongitud->tipo == "L")
@@ -553,13 +552,14 @@ class ComprobanteController extends Controller
                                             $clasificacionRamo = getClasificacionRamo($m_c->detalle_especificacionempaque->id_clasificacion_ramo);
                                             foreach (getUnidadesMedida($clasificacionRamo->id_unidad_medida) as $umPeso)
                                                 $umPeso->tipo == "P" ? $umPeso = $umPeso->siglas : $umPeso ="";
-                                            $descripcion_detalle = $variedad->planta->nombre . " (" . $variedad->siglas . ") " . $clasificacionRamo->nombre.$umPeso . " " . $longitudRamo.$umL;
+                                            $descripcion_detalle = $variedad->planta->nombre . " (" . $variedad->siglas . ") " . $clasificacionRamo->nombre.$umPeso . " " . $longitudRamo.$umL. " ". $coloracion->color->nombre;
 
                                             $objDesgloseEnvioFactura = new DesgloseEnvioFactura;
                                             $objDesgloseEnvioFactura->id_comprobante = $model_comprobante->id_comprobante;
                                             $objDesgloseEnvioFactura->codigo_principal = 'ENV' . str_pad($request->id_envio, 9, "0", STR_PAD_LEFT);
                                             $objDesgloseEnvioFactura->descripcion = $descripcion_detalle;
-                                            $objDesgloseEnvioFactura->cantidad = number_format(($m_c->detalle_especificacionempaque->cantidad* $m_c->detalle_especificacionempaque->especificacion_empaque->cantidad * $det_ped->cantidad), 2, ".", "");
+                                                                                                         //RAMOS X CAJA                       *           //CANTIDAD CAJAS EN ESPECIFICACION PREDT 1                  * //CANTIDAD CAJAS DEL PEDIDO
+                                            $objDesgloseEnvioFactura->cantidad = number_format(($m_c->cantidad * $m_c->detalle_especificacionempaque->especificacion_empaque->cantidad * $m_c->marcacion->piezas), 2, ".", "");
                                             $objDesgloseEnvioFactura->precio_unitario = number_format($precio, 2, ".", "");
                                             $objDesgloseEnvioFactura->descuento = '0.00';
                                             $objDesgloseEnvioFactura->precio_total_sin_impuesto = number_format($precio_x_variedad, 2, ".", "");
@@ -576,6 +576,7 @@ class ComprobanteController extends Controller
                                                 $objImpuestoDesgloseEnvioFactura->valor = is_numeric($tipoImpuesto->porcentaje) ? number_format($precio_x_variedad * ($tipoImpuesto->porcentaje / 100), 2, ".", "") : "0.00";
                                                 $objImpuestoDesgloseEnvioFactura->save() ? $iteracion++ : '';
                                             }
+                                            $request->cant_variedades = $iteracion;
                                             $i++;
                                         }
                                     }
@@ -612,7 +613,7 @@ class ComprobanteController extends Controller
                                     DetalleFactura::where('id_comprobante', $model_comprobante->id_comprobante)->delete();
                                     Comprobante::destroy($model_comprobante->id_comprobante);
                                     $msg .= "<div class='alert text-center  alert-danger'>" .
-                                        "<p>La factura " . $nombre_xml . " del envío N#" . str_pad($request->id_envio, 9, "0", STR_PAD_LEFT) . " no pudo ser generada, por favor intente facturar el envío nuevamente1</p>"
+                                        "<p>La factura " . $nombre_xml . " del envío N#" . str_pad($request->id_envio, 9, "0", STR_PAD_LEFT) . " no pudo ser guardada, por favor intente facturar el envío nuevamente</p>"
                                         . "</div>";
                                 }
                             } else {
@@ -624,7 +625,7 @@ class ComprobanteController extends Controller
                                 DetalleFactura::where('id_comprobante', $model_comprobante->id_comprobante)->delete();
                                 Comprobante::destroy($model_comprobante->id_comprobante);
                                 $msg .= "<div class='alert text-center  alert-danger'>" .
-                                    "<p>La factura " . $nombre_xml . " del envío N#" . str_pad($request->id_envio, 9, "0", STR_PAD_LEFT) . " no pudo ser generada, por favor intente facturar el envío nuevamente2</p>"
+                                    "<p>La factura " . $nombre_xml . " del envío N#" . str_pad($request->id_envio, 9, "0", STR_PAD_LEFT) . " no pudo ser generada, por favor intente facturar el envío nuevamente</p>"
                                     . "</div>";
                             }
                         } else {
@@ -871,7 +872,7 @@ class ComprobanteController extends Controller
                 'autorizacion' => $autorizacion,
                 'img_clave_acceso' => null,
                 'obj_xml' => $autorizacion,
-                'numeroComprobante' => getDetallesClaveAcceso((String)$autorizacion->infoTributaria->claveAcceso, 'SERIE').getDetallesClaveAcceso((String)$autorizacion->infoTributaria->claveAcceso, 'PUNTO_ACCESO').getDetallesClaveAcceso((String)$autorizacion->infoTributaria->claveAcceso, 'SECUENCIAL'),
+                'numeroComprobante' => getDetallesClaveAcceso((String)$autorizacion->infoTributaria->claveAcceso, 'SERIE').getDetallesClaveAcceso((String)$autorizacion->infoTributaria->claveAcceso, 'SECUENCIAL'),
                 'detalles_envio' => getEnvio($dataComprobante->id_envio)->detalles
             ];
             return PDF::loadView('adminlte.gestion.comprobante.partials.pdf.factura', compact('data'))->stream();
