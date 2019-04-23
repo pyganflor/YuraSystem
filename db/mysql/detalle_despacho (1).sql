@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 15-04-2019 a las 22:23:17
+-- Tiempo de generación: 22-04-2019 a las 23:37:36
 -- Versión del servidor: 10.1.37-MariaDB
 -- Versión de PHP: 7.2.12
 
@@ -19,7 +19,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Base de datos: `yura_db_1`
+-- Base de datos: `yura_db`
 --
 
 -- --------------------------------------------------------
@@ -54,7 +54,7 @@ ALTER TABLE `detalle_despacho`
 -- AUTO_INCREMENT de la tabla `detalle_despacho`
 --
 ALTER TABLE `detalle_despacho`
-  MODIFY `id_detalle_despacho` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=81;
+  MODIFY `id_detalle_despacho` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- Restricciones para tablas volcadas
