@@ -53,6 +53,7 @@ class Coloracion extends Model
             return '';
     }
 
+
     public function getTotalRamosByDetEsp($det_esp)
     {
         $r = 0;
@@ -63,3 +64,4 @@ class Coloracion extends Model
         return $r;
     }
 }
+

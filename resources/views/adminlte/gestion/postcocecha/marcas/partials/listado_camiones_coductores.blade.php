@@ -8,7 +8,7 @@
                         <i class="fa fa-truck" aria-hidden="true"></i> Camiones
                     </div>
                     <div class="col-md-6 text-right">
-                        <button type="button" class="btn btn-success btn-xs" title="Agregar conductor" onclick="add_conductor()">
+                        <button type="button" class="btn btn-success btn-xs" title="Agregar conductor" onclick="add_camion()">
                             <i class="fa fa-plus" aria-hidden="true"></i>
                         </button>
                     </div>
