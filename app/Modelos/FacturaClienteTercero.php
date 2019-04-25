@@ -26,4 +26,9 @@ class FacturaClienteTercero extends Model
         'direccion',
         'dae',
     ];
+
+    public function envio()
+    {
+        return $this->belongsTo('\yura\Modelos\Envio', 'id_envio');
+    }
 }

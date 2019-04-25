@@ -32,6 +32,16 @@ class Envio extends Model
         return $this->hasMany('\yura\Modelos\DetalleEnvio', 'id_envio');
     }
 
+    public function comprobante()
+    {
+        return $this->hasOne('\yura\Modelos\Comprobante', 'id_envio');
+    }
+
+    public function fatura_cliente_tercero()
+    {
+        return $this->hasOne('\yura\Modelos\FacturaClienteTercero', 'id_envio');
+    }
+
     public function pedido()
     {
         return $this->belongsTo('\yura\Modelos\Pedido', 'id_pedido');

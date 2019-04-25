@@ -14,35 +14,38 @@ Route::get('comprobante/pre_factura/{clave_acceso}', 'ComprobanteController@ver_
 Route::post('comprobante/generar_comprobante_guia_remision','ComprobanteController@generar_comprobante_guia_remision');
 /*Route::get('comprobante/prueba', function () {
 
-    $code = generateCodeBarGs1128("0C002");
-    echo '<img src="data:image/png;base64,'.$code.'" />';
+    /* =========== SEMANAL ============= */
+   /* $pedidos_semanal = \yura\Modelos\Pedido::All()->where('estado', 1)
+        ->where('fecha_pedido', '>=', opDiasFecha('-', 7, date('Y-m-d')))
+        ->where('fecha_pedido', '<=', opDiasFecha('-', 1, date('Y-m-d')));
+    $valor = 0;
+    $cajas = 0;
+    $tallos = 0;
 
-     ========== CODIGO PARA BORRAR DATOS DUPLICADOS EN RECPCION_CLASIFICACION_VERDE ==========    segun id_recepcion; id_clasificacion_verde
-    $listado = \Illuminate\Support\Facades\DB::table('recepcion_clasificacion_verde')
-        ->select('id_recepcion', 'id_clasificacion_verde')->distinct()
-        ->get();
+    $test = [];
+    foreach ($pedidos_semanal as $p) {
+        $valor += $p->getPrecio();
+        $cajas += $p->getCajas();
+        $tallos += $p->getTallos();
 
-    $arreglo = [];
-    foreach ($listado as $r) {
-        $r = \yura\Modelos\RecepcionClasificacionVerde::All()
-            ->where('id_recepcion', '=', $r->id_recepcion)
-            ->where('id_clasificacion_verde', '=', $r->id_clasificacion_verde)->first();
-        $targets = \yura\Modelos\RecepcionClasificacionVerde::All()
-            ->where('id_recepcion_clasificacion_verde', '!=', $r->id_recepcion_clasificacion_verde)
-            ->where('id_recepcion', '=', $r->id_recepcion)
-            ->where('id_clasificacion_verde', '=', $r->id_clasificacion_verde);
-
-        array_push($arreglo, [
-            'relacion' => ['id: ' . $r->id_recepcion_clasificacion_verde, 'par: ' . $r->id_recepcion . ' ; ' . $r->id_clasificacion_verde],
-            'targets' => $targets
+        array_push($test, [
+            'pedido' => $p,
+            'valor' => $p->getPrecio(),
+            'cajas' => $p->getCajas(),
         ]);
     }
-    foreach ($arreglo as $item) {
-        foreach ($item['targets'] as $t) {
-            $t->delete();
-        }
-    }
+    $ramos_estandar = $cajas * getConfiguracionEmpresa()->ramos_x_caja;
+    $precio_x_ramo = $ramos_estandar > 0 ? round($valor / $ramos_estandar, 2) : 0;
+    $precio_x_tallo = $tallos > 0 ? round($valor / $tallos, 2) : 0;
 
+    $semanal = [
+        'valor' => $valor,
+        'cajas' => $cajas,
+        'precio_x_ramo' => $precio_x_ramo,
+        'precio_x_tallo' => $precio_x_tallo,
+    ];
 
+    dd($semanal, $pedidos_semanal, $test,
+        getPedido(868)->getPrecio()
+    );
 });*/
-

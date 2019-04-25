@@ -35,13 +35,39 @@
         <div class="box box-success">
             <div class="box-header with-border">
                 <h3 class="box-title">
-                    Gráficas
+                    <strong>Gráficas</strong>
+
+                    <select name="filtro_predeterminado_rango" id="filtro_predeterminado_rango" style="height: 30px;"
+                            onchange="filtrar_predeterminado(1)">
+                        <option value="1">1 Mes</option>
+                        <option value="2">3 Meses</option>
+                        <option value="3">6 Meses</option>
+                        <option value="4">1 Año</option>
+                    </select>
+
+                    <select name="filtro_predeterminado_criterio" id="filtro_predeterminado_criterio" style="height: 30px;"
+                            onchange="filtrar_predeterminado(1)">
+                        @foreach(getClientes() as $c)
+                            <option value="{{$c->id_cliente}}">{{$c->detalle()->nombre}}</option>
+                        @endforeach
+                        <option value="A" selected>Acumulado</option>
+                    </select>
+
+                    <select class="select2" multiple="multiple" id="filtro_predeterminado_annos" name="filtro_predeterminado_annos"
+                            data-placeholder="Años naturales" style="width: 175px; height: 35px">
+                        @foreach($annos as $a)
+                            <option value="{{$a->anno}}">{{$a->anno}}</option>
+                        @endforeach
+                    </select>
+
+                    <button type="button" class="btn btn-sm btn-default" onclick="filtrar_predeterminado(0)">
+                        <i class="fa fa-fw fa-search"></i>
+                    </button>
                 </h3>
             </div>
             <div class="box-body">
                 <div class="row">
                     <div class="col-md-9" id="div_graficas">
-                        @include('adminlte.crm.ventas.partials.graficas')
                     </div>
                     <div class="col-md-3" id="div_today">
                         @include('adminlte.crm.ventas.partials.today')

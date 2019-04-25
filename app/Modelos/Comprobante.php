@@ -30,3 +30,4 @@ class Comprobante extends Model
         return $this->belongsTo('yura\Modelos\DetalleGuia\Remision','id_comprobante');
     }
 }
+

@@ -95,6 +95,8 @@ class ImportarDataController extends Controller
                                         $recep_verde = RecepcionClasificacionVerde::All()->last();
                                         bitacora('recepcion_clasificacion_verde', $recep_verde->id_recepcion_clasificacion_verde, 'I', 'Insercion de una nueva recepcion_clasificacion_verde');
 
+                                        $total_tallos = 0;
+                                        $rest_tallos = 0;
                                         foreach ($row as $pos_col => $col) {
                                             if (explode('|', $titles[$pos_col])[2] == 'T') { // T => Total tallos
                                                 /* ========== DESGLOSE RECEPCION ========== */
@@ -119,6 +121,9 @@ class ImportarDataController extends Controller
                                                     $msg .= '<li class="error">Ocurrió un problema con un desglose-recepción del día ' . $fecha .
                                                         ' con la variedad ' . getVariedad(substr(explode('|', $titles[$pos_col])[0], 1))->nombre . '</li>';
                                                 }
+
+                                                $total_tallos = $col * $f;
+                                                $rest_tallos = 0;
                                             } else if (explode('|', $titles[$pos_col])[2] == 'V') { // V => tallos por calibre unitario
                                                 /* ========== DETALLE CLASIFICACION VERDE ========== */
                                                 $det_verde = new DetalleClasificacionVerde();
@@ -128,15 +133,25 @@ class ImportarDataController extends Controller
                                                 $det_verde->id_clasificacion_verde = $verde->id_clasificacion_verde;
                                                 $det_verde->cantidad_ramos = 1;
 
-                                                if ($request->has('cajas_postcosecha')) { // la informacion indica cajas
-                                                    $estandar = $col * getConfiguracionEmpresa()->ramos_x_caja;
-                                                    $det_verde->tallos_x_ramos = round($estandar * explode('|', ClasificacionUnitaria::find($det_verde->id_clasificacion_unitaria)->nombre)[1]);
-                                                } else {    // la informacion indica tallos
-                                                    while (substr_count($col, '.') > 1) {
-                                                        $col = str_replace_first('.', '', $col);
+                                                if ($det_verde->id_clasificacion_unitaria == 7) {   // CALIBRE USA
+                                                    $det_verde->tallos_x_ramos = $total_tallos - $rest_tallos;
+                                                } else {
+                                                    if ($request->has('cajas_postcosecha')) { // la informacion indica cajas
+                                                        $estandar = $col * getConfiguracionEmpresa()->ramos_x_caja;
+                                                        if ($det_verde->id_clasificacion_unitaria == 3) {    // CALIBRE CON 20 TALLOS x RAMO
+                                                            $factor = 20;
+                                                        } else {
+                                                            $factor = explode('|', ClasificacionUnitaria::find($det_verde->id_clasificacion_unitaria)->nombre)[1];
+                                                        }
+                                                        $det_verde->tallos_x_ramos = round($estandar * $factor);
+                                                    } else {    // la informacion indica tallos
+                                                        while (substr_count($col, '.') > 1) {
+                                                            $col = str_replace_first('.', '', $col);
+                                                        }
+                                                        $f = substr_count($col, '.') == 0 ? 1 : 1000;
+                                                        $det_verde->tallos_x_ramos = $col * $f;
                                                     }
-                                                    $f = substr_count($col, '.') == 0 ? 1 : 1000;
-                                                    $det_verde->tallos_x_ramos = $col * $f;
+                                                    $rest_tallos += $det_verde->tallos_x_ramos;
                                                 }
                                                 if ($det_verde->save()) {
                                                     $det_verde = DetalleClasificacionVerde::All()->last();
