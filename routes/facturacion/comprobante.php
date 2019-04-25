@@ -11,6 +11,7 @@ Route::get('comprobante/formulario_facturacion', 'ComprobanteController@formular
 Route::get('comprobante/reenviar_correo', 'ComprobanteController@reenviar_correo');
 Route::get('comprobante/factura_aprobada_sri/{clave_acceso}', 'ComprobanteController@ver_factura_aprobada_sri');
 Route::get('comprobante/pre_factura/{clave_acceso}', 'ComprobanteController@ver_pre_factura');
+
 Route::get('comprobante/prueba', function () {
 
     /* =========== SEMANAL ============= */
@@ -28,9 +29,9 @@ Route::get('comprobante/prueba', function () {
         $tallos += $p->getTallos();
 
         array_push($test, [
-           'pedido' => $p,
-           'valor' => $p->getPrecio(),
-           'cajas' => $p->getCajas(),
+            'pedido' => $p,
+            'valor' => $p->getPrecio(),
+            'cajas' => $p->getCajas(),
         ]);
     }
     $ramos_estandar = $cajas * getConfiguracionEmpresa()->ramos_x_caja;
@@ -46,7 +47,5 @@ Route::get('comprobante/prueba', function () {
 
     dd($semanal, $pedidos_semanal, $test,
         getPedido(868)->getPrecio()
-        );
-
+    );
 });
-
