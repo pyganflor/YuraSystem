@@ -65,7 +65,6 @@
                     alerta(retorno.mensaje);
                 }
             }, 'json').fail(function (retorno) {
-                console.log(retorno);
                 alerta(retorno.responseText);
                 alerta('Ha ocurrido un problema al cambiar el estado de la agencia de carga');
             }).always(function () {

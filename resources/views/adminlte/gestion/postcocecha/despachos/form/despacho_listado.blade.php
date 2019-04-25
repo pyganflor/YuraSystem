@@ -91,7 +91,7 @@
                 </td>
                 <td class="text-center" id="cant_sellos" style="border-color: #9d9d9d;vertical-align: middle"></td>
                 <td class="text-center" style="border-color: #9d9d9d;vertical-align: middle">
-                    <b>Sello adicionale</b>
+                    <b>Sello adicional</b>
                 </td>
                 <td class="text-center" style="border-color: #9d9d9d;vertical-align: middle">
                     <input type="text" id="sello_adicional" name="sello_adicional" style="width: 100%;border: none;" >
@@ -231,9 +231,11 @@
         <table width="100%" class="table-responsive table-bordered" style=" border-color: white;margin-top:20px">
             <tr>
                 <td class="text-center" style="border-color: #9d9d9d;vertical-align: middle">
-                    <label>Oficina de despacho</label>
-                    <input type="text" id="nombre_oficina_despacho" style="text-align: center" class="form-control input-sm" name="nombre_oficina_despacho"
+                    <label>Oficina de despacho  | Correo</label><br/>
+                    <input type="text" id="nombre_oficina_despacho" style="text-align: center;width:50%;float: left;" class="form-control input-sm" name="nombre_oficina_despacho"
                            value="{{isset($datos_responsables->resp_ofi_despacho) ? $datos_responsables->resp_ofi_despacho : ""}}" required>
+                    <input type="text" id="correo_oficina_despacho" style="text-align: center;width:50%" class="form-control input-sm" name="correo_oficina_despacho"
+                           value="{{isset($datos_responsables->mail_resp_ofi_despacho) ? $datos_responsables->mail_resp_ofi_despacho : ""}}" required>
                 </td>
                 <td class="text-center" style="border-color: #9d9d9d;vertical-align: middle">
                     <label>Aux. Cuarto frio</label>

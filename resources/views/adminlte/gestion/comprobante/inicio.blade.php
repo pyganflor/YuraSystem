@@ -9,7 +9,7 @@
         <div class="box box-info">
             <div class="box-header with-border">
                 <h3 class="box-title">
-                    Administración de comprobantes
+                    Administración de comprobantes electrónicos
                 </h3>
             </div>
             <div class="box-body" id="div_content_comprobante">

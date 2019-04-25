@@ -35,7 +35,6 @@ class AgenciaCargaController extends Controller
         $bus = str_replace(' ', '%%', $busqueda);
 
         $listado = DB::table('agencia_carga as ac');
-        //dd($listado);
 
         if ($request->busqueda != '') $listado = $listado->Where(function ($q) use ($bus) {
             $q->Where('ac.nombre', 'like', '%' . $bus . '%')
@@ -52,17 +51,17 @@ class AgenciaCargaController extends Controller
     }
 
     public function createAgenciaCarga(Request $request){
-
         $request->id_agencia_carga != '' ? $dataAgencia = AgenciaCarga::find($request->id_agencia_carga): $dataAgencia = '';
-
-        return view('adminlte.gestion.agencias_carga.forms.partials.add_agencia_carga',['dataAgencia'=>$dataAgencia]);
+        return view('adminlte.gestion.agencias_carga.forms.partials.add_agencia_carga',
+            ['dataAgencia'=>$dataAgencia]);
     }
 
     public function  storeAgenciaCarga(Request $request){
-
+        //dd($request->all());
         $valida = Validator::make($request->all(), [
             'nombre' => 'required',
-            'codigo' => 'required|unique:agencia_carga,codigo',
+            'codigo' => 'required',
+            'identificacion' => 'required',
         ]);
 
         if (!$valida->fails()) {
@@ -70,13 +69,14 @@ class AgenciaCargaController extends Controller
             empty($request->id_agencia_carga) ? $objAgenciaCarga = new AgenciaCarga : $objAgenciaCarga = AgenciaCarga::find($request->id_agencia_carga);
             $objAgenciaCarga->nombre = $request->nombre;
             $objAgenciaCarga->codigo = $request->codigo;
+            $objAgenciaCarga->identificacion = $request->identificacion;
             $msg='';
 
             if($objAgenciaCarga->save()) {
                 $model = AgenciaCarga::all()->last();
-                bitacora('configuracion_empresa', $model->id_agencia_carga, 'I', 'Inserción satisfactoria de una nueva agencia de carga');
+                bitacora('agencia_carga', $model->id_agencia_carga, 'I', 'Inserción satisfactoria de una nueva agencia de carga');
 
-                if($request->id_cliente != "false"){
+                if($request->has('id_cliente') && $request->id_cliente != "false"){
                     $objClienteAgenciaCarga = new ClienteAgenciaCarga;
                     $objClienteAgenciaCarga->id_cliente       = $request->id_cliente;
                     $objClienteAgenciaCarga->id_agencia_carga = $model->id_agencia_carga;

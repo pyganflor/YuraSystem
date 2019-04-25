@@ -5,8 +5,17 @@
             <thead>
             <tr style="background-color: #dd4b39; color: white">
                 <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
-                    ENVÍO
+                    @if($tipo_comprobante == ""  || $tipo_comprobante=="01")
+                        ENVÍO
+                    @elseif($tipo_comprobante == ""  || $tipo_comprobante=="06")
+                        GUÍA DE REMISIÓN
+                    @endif
                 </th>
+                @if($tipo_comprobante=="06")
+                    <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
+                        FACTURA ATADA
+                    </th>
+                @endif
                 <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
                     COMPROBANTE
                 </th>
@@ -38,7 +47,16 @@
             @foreach($listado as $key => $item)
                 <tr onmouseover="$(this).css('background-color','#add8e6')" onmouseleave="$(this).css('background-color','')"
                      id="row_comprobante_{{$item->id_comprobante}}">
-                    <td style="border-color: #9d9d9d" class="text-center">ENV{{str_pad($item->id_envio,9,"0",STR_PAD_LEFT)}}</td>
+                    <td style="border-color: #9d9d9d" class="text-center">
+                        @if($tipo_comprobante == ""  || $tipo_comprobante=="01")
+                            ENV{{str_pad($item->id_envio,9,"0",STR_PAD_LEFT)}}
+                        @elseif($tipo_comprobante == ""  || $tipo_comprobante=="06")
+                            {{getDetallesClaveAcceso($item->clave_acceso, 'SERIE').getDetallesClaveAcceso($item->clave_acceso, 'SECUENCIAL')}}
+                        @endif
+                    </td>
+                    @if($tipo_comprobante=="06")
+                        <td style="border-color: #9d9d9d" class="text-center"> {{getComprobante($item->id_comprobante)->numero_comprobante}} </td>
+                    @endif
                     <td style="border-color: #9d9d9d" class="text-center"> {{$item->nombre_comprobante}} </td>
                     <td style="border-color: #9d9d9d" class="text-center"> {{$item->clave_acceso}} </td>
                     <td style="border-color: #9d9d9d" class="text-center"> {{$item->nombre_cliente}}</td>
@@ -66,13 +84,15 @@
                     @endif
                     <td style="border-color: #9d9d9d" class="text-center">
                         @if($item->estado==5)
-                            {{--<a target="_blank" href="{{storage_path('pdf/facturas/').$item->clave_acceso.".pdf"}}" class="btn btn-default btn-xs" title="Ver factura" >
-                                <i class="fa fa-file-text-o" aria-hidden="true"></i>
-                            </a>--}}
-                            <a target="_blank" href="{{url('comprobante/factura_aprobada_sri',$item->clave_acceso)}}" class="btn btn-default btn-xs" title="Ver factura" >
-                                <i class="fa fa-file-text-o" aria-hidden="true"></i>
+                            <a target="_blank" href="{{url('comprobante/factura_aprobada_sri',$item->clave_acceso)}}" class="btn btn-info btn-xs" title="Ver factura" >
+                                <i class="fa fa-eye" aria-hidden="true"></i>
                             </a>
-                            <button class="btn btn-default btn-xs" title="Reenviar correo" onclick="reenviar_correo('{{$item->clave_acceso}}')">
+                            @if(getCantDespacho(getComprobante($item->id_comprobante)->envio->pedido->id_pedido)>0)
+                                <button class="btn btn-success btn-xs" title="Crear Guía de Remisión" onclick="crear_guia_remision('{{$item->id_comprobante}}')">
+                                    <i class="fa fa-file-text-o" aria-hidden="true"></i>
+                                </button>
+                            @endif
+                            <button class="btn btn-warning btn-xs" title="Reenviar correo" onclick="reenviar_correo('{{$item->clave_acceso}}')">
                                 <i class="fa fa-envelope-o" aria-hidden="true"></i>
                             </button>
                         @endif

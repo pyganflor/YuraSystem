@@ -12,6 +12,10 @@
                 </th>
                 <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
                     style="border-color: #9d9d9d">
+                    Identificacion
+                </th>
+                <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
+                    style="border-color: #9d9d9d">
                     Código
                 </th>
                 <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
@@ -25,6 +29,9 @@
                     class="{{$item->estado == 1  ? '':'error'}}" id="row_agencia_{{$item->id_agencia_carga}}">
                     <td style="border-color: #9d9d9d" class="text-center">
                         {{$item->nombre}}
+                    </td>
+                    <td style="border-color: #9d9d9d" class="text-center">
+                        {{$item->identificacion}}
                     </td>
                     <td style="border-color: #9d9d9d" class="text-center">
                         {{$item->codigo}}

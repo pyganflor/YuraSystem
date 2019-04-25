@@ -134,4 +134,36 @@
             $.LoadingOverlay('hide');
         });
     }
+
+    function crear_guia_remision(id_comprobante){
+        html = "<div class='row'>" +
+                "<div class='col-md-12'>" +
+                    "<form id='form_guia_ruta' name='form_guia_ruta'>" +
+                    "<p><label for='ruta'>Escriba la ruta par la guía de remisión</label></p>" +
+                        "<div class='row'>" +
+                            "<div class='col-md-12'>" +
+                                "<input type='text' id='ruta' name='ruta' class='form-control' required> "+
+                            "</div>"+
+                        "</div>" +
+                    "</form>" +
+                    "</div>"+
+                "</div>";
+
+        modal_quest('modal_crear_guia_remision', html, "<i class='fa fa-road' ></i> Ruta",true, false, '{{isPC() ? '25%' : ''}}', function () {
+            if($("#form_guia_ruta").valid()){
+                $.LoadingOverlay('show');
+
+                datos = {
+                    _token: '{{csrf_token()}}',
+                    id_comprobante: id_comprobante,
+                    ruta : $("#ruta").val()
+                };
+                post_jquery('comprobante/generar_comprobante_guia_remision', datos, function () {
+                    cerrar_modals();
+                    buscar_listado_comprobante();
+                });
+                $.LoadingOverlay('hide');
+            }
+        });
+    }
 </script>

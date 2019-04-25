@@ -7,9 +7,15 @@
                 <input type="text" id="nombre_agencia" name="nombre_agencia" class="form-control" required maxlength="25" autocomplete="off" value="{!! !empty($dataAgencia->nombre) ? $dataAgencia->nombre : '' !!}"  required="" minlength="3">
             </div>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-4">
             <div class="form-group">
-                <label for="Código">Código de la agencia de carga</label>
+                <label for="identificacion">identificación</label>
+                <input type="text" id="identificacion" name="identificacion" class="form-control" required maxlength="20" autocomplete="off" value="{!! !empty($dataAgencia->identificacion) ? $dataAgencia->identificacion : '' !!}"  required="" minlength="1">
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="form-group">
+                <label for="Código">Código</label>
                 <input type="text" id="codigo_agencia" name="codigo_agencia" class="form-control" required maxlength="10" autocomplete="off" value="{!! !empty($dataAgencia->codigo) ? $dataAgencia->codigo : '' !!}"  required="" minlength="2">
             </div>
         </div>

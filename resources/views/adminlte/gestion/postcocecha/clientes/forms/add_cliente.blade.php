@@ -9,7 +9,7 @@
         </div>
         <div class="col-md-4">
             <div class="form-group">
-                <label for="identificacion">Tipo de identificación</label>
+                <label for="tipo_identificacion">Tipo de identificación</label>
                 <select class="form-control" id="tipo_identificacion" name="tipo_identificacion" onchange="valida_identificacion()" required>
                     <option disabled selected>Seleccione</option>
                     @foreach($dataTipoIdentificacion as $dTI)

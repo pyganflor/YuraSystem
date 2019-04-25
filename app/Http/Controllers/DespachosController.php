@@ -122,7 +122,7 @@ class DespachosController extends Controller
     }
 
     public function store_despacho(Request $request){
-        //dd($request->all());
+
         $valida = Validator::make($request->all(), [
             'fecha_despacho' => 'required',
             'firma_id_transportista' => 'required',
@@ -143,7 +143,8 @@ class DespachosController extends Controller
             'sello_salida' => 'required',
             'sellos' => 'required',
             'semana' => 'required',
-            'pedidos'  => 'required'
+            'pedidos'  => 'required',
+            'correo_oficina_despacho'  => 'required'
         ]);
 
         if (!$valida->fails()) {
@@ -173,6 +174,7 @@ class DespachosController extends Controller
             $objDespacho->id_asist_comrecial_ext = $request->id_asist_comercial;
             $objDespacho->resp_transporte = $request->nombre_transportista;
             $objDespacho->id_resp_transporte = $request->firma_id_transportista;
+            $objDespacho->correo_oficina_despacho = $request->correo_oficina_despacho;
             $objDespacho->n_despacho = getSecuenciaDespacho();
 
             if ($objDespacho->save()) {

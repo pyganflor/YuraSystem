@@ -24,6 +24,6 @@ class FacturaClienteTercero extends Model
         'telefono',
         'almacen',
         'direccion',
-        'dae'
+        'dae',
     ];
 }

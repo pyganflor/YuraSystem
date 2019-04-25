@@ -38,19 +38,20 @@ class Despacho extends Model
         'id_resp_transporte',
         'n_despacho',
         'sello_adicional',
-        'estado'
+        'estado'.
+        'mail_resp_ofi_despacho'
     ];
 
     public function detalles(){
-        $this->hasMany('\yura\Modelos\DetalleDespacho', 'id_despacho');
+       return $this->hasMany('\yura\Modelos\DetalleDespacho', 'id_despacho');
     }
 
     public function conductor(){
-        $this->belongsTo('\yura\Modelos\Conductor', 'id_conductor');
+       return $this->belongsTo('\yura\Modelos\Conductor', 'id_conductor');
     }
 
     public function camion(){
-        $this->belongsTo('\yura\Modelos\Camion', 'id_camion');
+       return $this->belongsTo('\yura\Modelos\Camion', 'id_camion');
     }
 
     public function transportista(){

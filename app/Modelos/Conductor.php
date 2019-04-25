@@ -15,6 +15,7 @@ class Conductor extends Model
         'id_transportista',
         'nombre',
         'ruc',
-        'estado'
+        'estado',
+        'tipo_identificacion'
     ];
 }

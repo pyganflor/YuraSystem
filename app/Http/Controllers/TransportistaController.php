@@ -5,6 +5,7 @@ namespace yura\Http\Controllers;
 use Illuminate\Http\Request;
 use Validator;
 use yura\Modelos\Submenu;
+use yura\Modelos\TipoIdentificacion;
 use yura\Modelos\Transportista;
 use yura\Modelos\Conductor;
 use yura\Modelos\Camion;
@@ -148,7 +149,8 @@ class TransportistaController extends Controller
 
    public function add_conductor(Request $request){
        return view('adminlte.gestion.postcocecha.transportistas.form.add_conductor',[
-           'data_conductor' => Conductor::where('id_conductor',$request->id_conductor)->first()
+           'data_conductor' => Conductor::where('id_conductor',$request->id_conductor)->first(),
+           'dataTipoIdentificacion' => TipoIdentificacion::where('estado',1)->get(),
        ]);
    }
 
@@ -236,7 +238,8 @@ class TransportistaController extends Controller
     public function store_conductor(Request $request){
         $valida = Validator::make($request->all(), [
             'nombre' => 'required',
-            'ruc' => 'required',
+            'identificacion' => 'required',
+            'tipo_identificacion' => 'required',
         ]);
 
         if (!$valida->fails()) {
@@ -252,7 +255,8 @@ class TransportistaController extends Controller
             }
 
             $objConductor->nombre = $request->nombre;
-            $objConductor->ruc = $request->ruc;
+            $objConductor->ruc = $request->identificacion;
+            $objConductor->tipo_identificacion = $request->tipo_identificacion;
             $objConductor->id_transportista = $request->id_transportista;
 
             if ($objConductor->save()) {

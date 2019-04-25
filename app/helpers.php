@@ -1114,12 +1114,12 @@ function generaDigitoVerificador($cadena)
     }
 }
 
-function firmarComprobanteXml($archivo_xml)
+function firmarComprobanteXml($archivo_xml,$carpeta)
 {
     exec("java -Dfile.encoding=UTF-8 -jar " . env('PATH_JAR_FIRMADOR') . " "
-        . env('PATH_XML_GENERADOS') . " "
+        . env('PATH_XML_GENERADOS') . $carpeta. " "
         . $archivo_xml . " "
-        . env('PATH_XML_FIRMADOS') . " "
+        . env('PATH_XML_FIRMADOS') . $carpeta. " "
         . env('PATH_FIRMA_DIGITAL') . " "
         . env('CONTRASENA_FIRMA_DIGITAL') . " "
         . env('NOMBRE_ARCHIVO_FIRMA_DIGITAL') . " ",
@@ -1131,15 +1131,15 @@ function firmarComprobanteXml($archivo_xml)
         return false;
 }
 
-function mensajeFirmaElectronica($indice, $id_envio)
+function mensajeFirmaElectronica($indice, $archivo)
 {
     $mensaje = [
         0 => "No se ha obtenido el archivo de la firma digital correctamente, verifique que el path propocionado en la variable de entorno 'PATH_FIRMA_DIGITAL' en el archivo .env coincida con la ubicación actual del archivo la firma digital y el String pasado a la variable 'NOMBRE_ARCHIVO_FIRMA_DIGITAL' corresponda con el nombre del archivo), una vez corregido el error puede filtrar por 'GENERADOS' y proceder a realizar la firma del mismo",
         1 => "Verificar lo explicado en el Índice 0 de este apartado y a su vez verificar que exista el certificado como archivo físico, una vez corregido el error puede filtrar por 'GENERADOS' y proceder a realizar la firma del mismo",
         2 => "No se pudo acceder al contenido del archivo del certificado electrónico, verifique los indicies 0 y 1 de este apartado  y a su vez que el String pasado en la variable 'CONTRASENA_FIRMA_DIGITAL' en el archivo .env coincida con la propocionada por el ente certificador, una vez corregido el error puede filtrar por 'GENERADOS' y proceder a realizar la firma del mismo",
-        3 => "Se produjo un error al momento de generar la firma electrónica del xml pertenciente a la factura del envío N# " . $id_envio . ", por favor comunicarse con el deparatmento de tecnología, una vez corregido el error puede filtrar por 'GENERADOS' y proceder a realizar la firma del mismo",
-        4 => "El archivo firamado xml pertenciente a la factura del envío N# " . $id_envio . " no pudo ser guardado en su respectiva carpeta, verifique que el path propocionado en la variable de entorno 'PATH_XML_FIRMADOS' en el archivo .env coincida con la carpeta creada en esa ruta, una vez corregido el error puede filtrar por 'GENERADOS' y proceder a realizar la firma del mismo",
-        5 => "El comprobante pertenciente al envío N# " . $id_envio . " se ha generado y firmado con exito",
+        3 => "Se produjo un error al momento de generar la firma electrónica del xml " . $archivo . ", por favor comunicarse con el deparatmento de tecnología, una vez corregido el error puede filtrar por 'GENERADOS' y proceder a realizar la firma del mismo",
+        4 => "El archivo firmado xml N# " . $archivo . " no pudo ser guardado en su respectiva carpeta, verifique que el path propocionado en la variable de entorno 'PATH_XML_FIRMADOS' en el archivo .env coincida con la carpeta creada en esa ruta, una vez corregido el error puede filtrar por 'GENERADOS' y proceder a realizar la firma del mismo",
+        5 => "El comprobante N# " . $archivo . " se ha generado y firmado con exito",
     ];
     return $mensaje[$indice];
 }
@@ -1341,8 +1341,7 @@ function enviarMailComprobanteCliente($tipoDocumento, $correoCliente, $nombreCli
     }
 }
 
-function getDetallesClaveAcceso($numeroAutorizacion, $detalle)
-{
+function getDetallesClaveAcceso($numeroAutorizacion, $detalle){
     switch ($detalle) {
         case 'RUC':
             $resultado = substr($numeroAutorizacion, 10, 13);
@@ -1650,7 +1649,7 @@ function getChofer($idChofer)
     return Conductor::find($idChofer);
 }
 
-function getDespacho($idPedido){
+function getCantDespacho($idPedido){
     return Despacho::join('detalle_despacho as dd','despacho.id_despacho','dd.id_despacho')->where([
         ['dd.id_pedido',$idPedido],
         ['despacho.estado',1]
@@ -1661,4 +1660,12 @@ function getImpuestosDesglosesFacturas($idComprobante){
     return DesgloseEnvioFactura::where('id_comprobante',$idComprobante)
         ->join('impuesto_desglose_envio_factura as idef','desglose_envio_factura.id_desglose_envio_factura','idef.id_desglose_envio_factura')
         ->get();
+}
+
+function getComprobante($idComprobante){
+    return Comprobante::find($idComprobante);
+}
+
+function getDetalleDespacho($idPedido){
+    return DetalleDespacho::where('id_pedido',$idPedido)->first();
 }

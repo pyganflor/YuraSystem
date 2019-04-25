@@ -78,7 +78,7 @@
                 $ramos_x_variedades = [];
             @endphp
             @foreach($listado as $pedido)
-                @php $despachado = getDespacho($pedido->id_pedido) @endphp
+                @php $despachado = getCantDespacho($pedido->id_pedido) @endphp
                 @foreach(getPedido($pedido->id_pedido)->detalles as $pos_det_ped => $det_ped)
                     @foreach($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $pos_esp_emp => $esp_emp)
                         @foreach($esp_emp->detalles as $pos_det_esp => $det_esp)
@@ -107,7 +107,7 @@
                                         @if(count(getDatosExportacionCliente($det_ped->id_detalle_pedido))>0)
                                             <ul style="padding: 0;margin-bottom: 0">
                                                 @foreach(getDatosExportacionCliente($det_ped->id_detalle_pedido) as $de)
-                                                    <li style="list-style: none"><b>{{strtoupper($de->nombre)}}:</b> {{$de->valor}} </li>
+                                                    <li style="list-style: none">{{--<b>{{strtoupper($de->nombre)}}:</b>--}} {{$de->valor}} </li>
                                                 @endforeach
                                             </ul>
                                         @endif

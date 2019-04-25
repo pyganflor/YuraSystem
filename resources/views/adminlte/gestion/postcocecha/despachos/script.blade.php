@@ -85,6 +85,7 @@
                 id_guardia_turno : $("#id_guardia_turno").val(),
                 nombre_asist_comercial : $("#nombre_asist_comercial").val(),
                 id_asist_comercial : $("#id_asist_comercial").val(),
+                correo_oficina_despacho : $("#correo_oficina_despacho").val(),
                 sellos : arr_sellos,
                 pedidos : arr_pedidos
             };

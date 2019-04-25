@@ -113,18 +113,20 @@
     }
 
     function store_camion(id_camion) {
-        datos = {
-            _token    : '{{csrf_token()}}',
-            id_camion : id_camion,
-            modelo : $("#modelo").val(),
-            placa : $("#placa").val(),
-            id_transportista : $("#id_transportista").val()
-        };
-        post_jquery('{{url('transportista/store_camion')}}', datos, function () {
-            cerrar_modals();
-            add_camiones_condutores($("#id_transportista").val());
-        });
-        $.LoadingOverlay('hide');
+        if($("#form_add_camion").valid()) {
+            datos = {
+                _token: '{{csrf_token()}}',
+                id_camion: id_camion,
+                modelo: $("#modelo").val(),
+                placa: $("#placa").val(),
+                id_transportista: $("#id_transportista").val()
+            };
+            post_jquery('{{url('transportista/store_camion')}}', datos, function () {
+                cerrar_modals();
+                add_camiones_condutores($("#id_transportista").val());
+            });
+            $.LoadingOverlay('hide');
+        }
     }
 
     function update_estado_camion(id_camion,estado) {
@@ -144,33 +146,36 @@
     }
 
     function add_conductor(id_conductor) {
-        $.LoadingOverlay('show');
-        datos = {
-            id_conductor : id_conductor
-        };
-        $.get('{{url('transportista/add_conductor')}}', datos, function (retorno) {
-            modal_form('modal_add_conductor', retorno, '<i class="fa fa-fw fa-plus"></i> Añadir conductor', true, false, '{{isPC() ? '50%' : ''}}', function () {
-                store_conductor(id_conductor);
+            $.LoadingOverlay('show');
+            datos = {
+                id_conductor: id_conductor
+            };
+            $.get('{{url('transportista/add_conductor')}}', datos, function (retorno) {
+                modal_form('modal_add_conductor', retorno, '<i class="fa fa-fw fa-plus"></i> Añadir conductor', true, false, '{{isPC() ? '50%' : ''}}', function () {
+                    store_conductor(id_conductor);
+                    $.LoadingOverlay('hide');
+                });
+            }).always(function () {
                 $.LoadingOverlay('hide');
             });
-        }).always(function () {
-            $.LoadingOverlay('hide');
-        });
     }
 
     function store_conductor(id_conductor) {
-        datos = {
-            _token    : '{{csrf_token()}}',
-            id_conductor : id_conductor,
-            nombre : $("#nombre").val(),
-            ruc : $("#ruc").val(),
-            id_transportista : $("#id_transportista").val()
-        };
-        post_jquery('{{url('transportista/store_conductor')}}', datos, function () {
-            cerrar_modals();
-            add_camiones_condutores($("#id_transportista").val());
-        });
-        $.LoadingOverlay('hide');
+        if($("#form_add_conductor").valid()){
+            datos = {
+                _token    : '{{csrf_token()}}',
+                id_conductor : id_conductor,
+                nombre : $("#nombre").val(),
+                tipo_identificacion : $("#tipo_identificacion").val(),
+                identificacion : $("#identificacion").val(),
+                id_transportista : $("#id_transportista").val()
+            };
+            post_jquery('{{url('transportista/store_conductor')}}', datos, function () {
+                cerrar_modals();
+                add_camiones_condutores($("#id_transportista").val());
+            });
+            $.LoadingOverlay('hide');
+        }
     }
 
     function update_estado_conductor(id_conductor,estado) {
