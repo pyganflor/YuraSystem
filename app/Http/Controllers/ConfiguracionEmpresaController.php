@@ -97,11 +97,12 @@ class ConfiguracionEmpresaController extends Controller
             'clasifi_x_ramos_tipos' => 'required|Array',
             'empaque_nombres' => 'required|Array',
             'moneda' => 'required',
+            'correo' => 'required',
+            'telefono' => 'required',
             'codigo_pais' => 'required'
         ]);
 
         if (!$valida->fails()) {
-
             empty($request->id_config) ? $objConfigEmpresa = new ConfiguracionEmpresa : $objConfigEmpresa = ConfiguracionEmpresa::find($request->id_config);
             $objConfigEmpresa->nombre = $request->nombre;
             $objConfigEmpresa->cantidad_usuarios = $request->cantidad_usuarios;
@@ -114,6 +115,9 @@ class ConfiguracionEmpresaController extends Controller
             $objConfigEmpresa->direccion_matriz = $request->matriz;
             $objConfigEmpresa->direccion_establecimiento = $request->establecimiento;
             $objConfigEmpresa->codigo_pais = $request->codigo_pais;
+            $objConfigEmpresa->correo = $request->correo;
+            $objConfigEmpresa->telefono = $request->telefono;
+            $objConfigEmpresa->fax =$request->fax;
             $objConfigEmpresa->save();
 
             $idConfiEmpresa = ConfiguracionEmpresa::all()->last();

@@ -17,6 +17,7 @@ use yura\Modelos\Envio;
 use yura\Modelos\DetallePedidoDatoExportacion;
 use Validator;
 use DB;
+use Barryvdh\DomPDF\Facade as PDF;
 
 class PedidoController extends Controller
 {
@@ -368,5 +369,96 @@ class PedidoController extends Controller
     {
         return view('adminlte.gestion.postcocecha.pedidos.forms.paritals.inputs_fechas_pedido_fijo_personalizado',
             ['cant_div' => $request->cant_div]);
+    }
+
+    public function crear_packing_list($id_pedido){
+        $msg = '<div class="alert alert-danger text-center">' .
+                 '<p> No se ha podido realizar el packing list</p>'
+                . '</div>';
+        $success = false;
+        $pedido = getPedido($id_pedido);
+
+        if($pedido->envios()->count()>0){
+            if($pedido->envios[0]->comprobante !== null){
+                if($pedido->envios[0]->comprobante->estado === 5){
+
+                    $comprobante = $pedido->envios[0]->comprobante;
+                    $empresa = getConfiguracionEmpresa();
+                    $despacho = getDetalleDespacho($pedido->id_pedido)->despacho;
+                    $facturaTercero = getFacturaClienteTercero($pedido->envios[0]->id_envio);
+                    $envio =[
+                        'guia_madre' =>$pedido->envios[0]->guia_madre,
+                        'guia_hija' =>$pedido->envios[0]->guia_hija,
+                        'aerolinea' => getAgenciaTransporte($pedido->envios[0]->detalles[0]->id_aerolinea)->nombre,
+                        'agencia_carga' => getAgenciaCarga($pedido->detalles[0]->id_agencia_carga)->nombre
+                    ];
+
+                    if($facturaTercero !== null){
+                        $cliente = [
+                            'nombre' =>$facturaTercero->nombre_cliente_tercero,
+                            'identificacion' => $facturaTercero->identificacion,
+                            'tipo_identificacion' => getTipoIdentificacion($facturaTercero->codigo_identificacion)->nombre,
+                            'pais' => getPais($facturaTercero->codigo_pais)->nombre,
+                            'provincia' => $facturaTercero->provincia,
+                            'direccion' => $facturaTercero->direccion,
+                            'telefono' => $facturaTercero->telefono,
+                            'dae' => $facturaTercero->dae,
+                        ];
+                    }else{
+                        foreach($pedido->cliente->detalles as $det_cli)
+                            if($det_cli->estado == 1)
+                                $cliente = $det_cli;
+                        $cliente = [
+                            'nombre' =>$cliente->nombre,
+                            'identificacion' => $cliente->ruc,
+                            'tipo_identificacion' => getTipoIdentificacion($cliente->codigo_identificacion)->nombre,
+                            'pais' => getPais($cliente->codigo_pais)->nombre,
+                            'provincia' => $cliente->provincia,
+                            'direccion' => $cliente->direccion,
+                            'telefono' => $cliente->telefono,
+                            'dae' => $pedido->envios[0]->dae
+                        ];
+                    }
+
+                    if($pedido->tipo_especificacion === "T") {
+
+                    }elseif($pedido->tipo_especificacion === "N"){
+                        $env = getEnvio($pedido->envios[0]->id_envio);
+                        $detallePedido = [];
+                        foreach ($env->pedido->detalles as $x => $det_ped) {
+                            foreach ($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $m => $esp_emp) {
+                                foreach ($esp_emp->detalles as $n => $det_esp_emp) {
+                                    $detallePedido[] = [
+                                        'piezas' =>  $det_ped->cantidad,
+                                        'ramos_x_caja' => $det_esp_emp->cantidad,
+                                        'ramos_totales' => $det_ped->cantidad * $det_esp_emp->cantidad * $esp_emp->cantidad,
+                                        'presentacion'=> getVariedad($det_esp_emp->id_variedad)->siglas." ".getClasificacionRamo($det_esp_emp->id_clasificacion_ramo)->nombre." ".(getPrecioByClienteDetEspEmp($pedido->id_cliente, $det_esp_emp->id_detalle_especificacionempaque) !== null ? getPrecioByClienteDetEspEmp($pedido->id_cliente, $det_esp_emp->id_detalle_especificacionempaque)->codigo_presentacion : "")
+                                    ];
+                                }
+                            }
+                        }
+
+                    }
+                    return PDF::loadView('adminlte.gestion.postcocecha.despachos.partials.pdf_packing_list', compact('detallePedido','pedido','cliente','comprobante','empresa','despacho','envio'))->stream();
+                }else{
+                    $msg = '<div class="alert alert-danger text-center">' .
+                             '<p> El pedido no se ha facturado enviado al SRI aún</p>'
+                            . '</div>';
+                }
+            }else{
+                $msg = '<div class="alert alert-danger text-center">' .
+                            '<p> El pedido no se ha facturado aún</p>'
+                        . '</div>';
+            }
+        }else{
+            $msg = '<div class="alert alert-danger text-center">' .
+                        '<p> El pedido no tiene envío realizado</p>'
+                    . '</div>';
+        }
+
+        return [
+            'mensaje' => $msg,
+            'success' => $success
+        ];
     }
 }

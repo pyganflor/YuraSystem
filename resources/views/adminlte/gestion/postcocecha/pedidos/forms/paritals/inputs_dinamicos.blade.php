@@ -132,7 +132,7 @@
                                         <td class="text-center" style="border-color: #9d9d9d; vertical-align: middle"
                                             rowspan="{{getCantidadDetallesByEspecificacion($item->id_especificacion)}}">
                                             <select name="id_agencia_carga_{{$item->id_especificacion}}" id="id_agencia_carga_{{$x+1}}"
-                                                    class="text-center form-control" style="border: none; width: 100%">
+                                                    class="text-center form-control" style="border: none; width: 100%" required>
                                                 @foreach($agenciasCarga as $agencia)
                                                     <option value="{{$agencia->id_agencia_carga}}">{{$agencia->nombre}}</option>
                                                 @endforeach

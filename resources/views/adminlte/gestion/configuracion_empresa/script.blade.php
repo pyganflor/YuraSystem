@@ -80,7 +80,6 @@
 
     function store_data_config() {
         var id_config;
-console.log($("#codigo_pais").val());
         $("#id_config").val().length == 1 ? id_config = $("#id_config").val() : id_config = '';
         var cant_inputs_clasif_unit = $("tbody#campos_clasifc_unitaria tr").length;
         var cant_inputs_clasif_x_ramos = $("tbody#campos_clasifc_x_ramo tr").length;
@@ -131,7 +130,10 @@ console.log($("#codigo_pais").val());
                 unidad_medida: $("#unidad_medida").val(),
                 moneda: $('#moneda').val(),
                 id_config: id_config,
-                codigo_pais : $("#codigo_pais").val()
+                codigo_pais : $("#codigo_pais").val(),
+                telefono : $("#telefono").val(),
+                correo : $("#correo").val(),
+                fax :$("#fax").val()
             };
             post_jquery('{{route('configuracion.store')}}', datos, function () {
                 cerrar_modals();

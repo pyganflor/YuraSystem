@@ -12,7 +12,6 @@ class Comprobante extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'id_comprobante',
         'id_envio',
         'clave_acceso',
         'estado',
@@ -27,7 +26,8 @@ class Comprobante extends Model
     }
 
     public function detalle_guia_remision(){
-        return $this->belongsTo('yura\Modelos\DetalleGuia\Remision','id_comprobante');
+        return $this->belongsTo('\yura\Modelos\DetalleGuiaRemision','id_comprobante_relacionado');
     }
+
 }
 

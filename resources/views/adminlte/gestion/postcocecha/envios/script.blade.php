@@ -37,27 +37,27 @@
     function genera_comprobante_cliente(id_envio,form,action){
         if ($('#'+form).valid()) {
             id_form = form.split("_")[2];
-
-            datos = {
-                _token: '{{csrf_token()}}',
-                id_envio : id_envio,
-                guia_madre : $("form#"+form+ " #guia_madre").val(),
-                guia_hija : $("form#"+form+ " #guia_hija").val(),
-                codigo_pais : $("form#"+form+ " #codigo_pais").val(),
-                dae : $("form#"+form+ " #dae").val(),
-                destino : $("form#"+form+ " #direccion").val(),
-                email : $("form#"+form+ " #email").val(),
-                telefono : $("form#"+form+ " #telefono").val(),
-                pais : $("form#"+form+ " #codigo_pais option:selected").text(),
-                fecha_envio : $("form#"+form+ " #fecha_envio").val(),
-                cant_variedades : $("form#"+form+ " table tbody#tbody_inputs_pedidos tr").length,
-                update : action =='update' ? true : false,
-                almacen : $("form#"+form+ " #almacen").val(),
-            };
-
             modal_quest('modal_message_facturar_envios',
-                '<div class="alert alert-warning text-center"><i class="fa fa-fw fa-exclamation-triangle"></i> ¿Esta seguro que desea generar el comprobante electrónico para este envío?</div>',
-                '<i class="fa fa-file-code-o" aria-hidden="true"></i> Generar factura', true, false, '{{isPC() ? '40%' : ''}}', function () {
+                '<div class="alert alert-info text-center">  <label>Se generará el comprobante electrónico para este envío</label></div>'+
+                '<div class="alert alert-info text-center"> <input type="checkbox" id="envio_correo" name="envio_correo"style="position: relative;top: 3px;" checked> <label for="envio_correo">¿Enviar Correo electrónico a cliente(s) ?</label> </div>',
+                '<i class="fa fa-file-code-o" aria-hidden="true"></i> Se realizaran las siguientes acciones', true, false, '{{isPC() ? '40%' : ''}}', function () {
+                    datos = {
+                        _token: '{{csrf_token()}}',
+                        id_envio : id_envio,
+                        guia_madre : $("form#"+form+ " #guia_madre").val(),
+                        guia_hija : $("form#"+form+ " #guia_hija").val(),
+                        codigo_pais : $("form#"+form+ " #codigo_pais").val(),
+                        dae : $("form#"+form+ " #dae").val(),
+                        destino : $("form#"+form+ " #direccion").val(),
+                        email : $("form#"+form+ " #email").val(),
+                        telefono : $("form#"+form+ " #telefono").val(),
+                        pais : $("form#"+form+ " #codigo_pais option:selected").text(),
+                        fecha_envio : $("form#"+form+ " #fecha_envio").val(),
+                        cant_variedades : $("form#"+form+ " table tbody#tbody_inputs_pedidos tr").length,
+                        update : action == 'update' ? true : false,
+                        almacen : $("form#"+form+ " #almacen").val(),
+                        envio_correo : $("#envio_correo").is(":checked")
+                    };
                 cerrar_modals();
                 $.LoadingOverlay("show", {
                     image: "",
@@ -69,7 +69,7 @@
                     background: "rgba(0, 0, 0, 0.75)"
                 });
                 var count = 0;
-                var tiempo = 1300;
+                var tiempo = 2000;
                 var interval = setInterval(function () {
                     if(count>=15 && count<99)
                         $.LoadingOverlay("text", "Firmado documento electrónico...");

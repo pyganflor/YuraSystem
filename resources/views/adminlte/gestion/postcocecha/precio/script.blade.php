@@ -129,7 +129,7 @@
             id_cliente: id_cliente
         };
         $.get('{{url('precio/form_asignar_precio_cliente_especificacion')}}', datos, function (retorno) {
-            modal_form('modal_precio_especificaciones', retorno, '<i class="fa fa-user-plus" aria-hidden="true"></i> Asignar precio a las especificaciones del cliente', true, false, '{{isPC() ? '80%' : ''}}', function () {
+            modal_form('modal_precio_especificaciones', retorno, '<i class="fa fa-money"></i> Asignar precio a las especificaciones del cliente', true, false, '{{isPC() ? '80%' : ''}}', function () {
                 store_precio_cliente_especificacion(id_cliente);
             });
         }).always(function () {
@@ -143,9 +143,11 @@
             $.each($('.id_detalle_especificacion_empaque'), function (i, j) {
                 arrPrecios.push({
                     'precio': $("#precio_" + (j.value)).val(),
-                    'id_detalle_especificacionempaque': $("#" + (j.id)).val()
+                    'id_detalle_especificacionempaque': $("#" + (j.id)).val(),
+                    'codigo_presentacion' : $("#codigo_presentacion_"+(i+1)).val()
                 });
             });
+
             datos = {
                 _token: '{{csrf_token()}}',
                 arrPrecios: arrPrecios,

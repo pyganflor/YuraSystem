@@ -22,12 +22,14 @@
                 <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
                     CLAVE DE ACCESO
                 </th>
+                @if($tipo_comprobante!="06")
                 <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
                     CLIENTE
                 </th>
                 <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
                     TOTAL
                 </th>
+                @endif
                 <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
                     EMISIÓN
                 </th>
@@ -55,12 +57,16 @@
                         @endif
                     </td>
                     @if($tipo_comprobante=="06")
-                        <td style="border-color: #9d9d9d" class="text-center"> {{getComprobante($item->id_comprobante)->numero_comprobante}} </td>
+                        <td style="border-color: #9d9d9d" class="text-center">
+                            {{getComprobante(getComprobanteRelacionadoGuia($item->id_comprobante)->id_comprobante_relacionado)->numero_comprobante}}
+                        </td>
                     @endif
-                    <td style="border-color: #9d9d9d" class="text-center"> {{$item->nombre_comprobante}} </td>
-                    <td style="border-color: #9d9d9d" class="text-center"> {{$item->clave_acceso}} </td>
-                    <td style="border-color: #9d9d9d" class="text-center"> {{$item->nombre_cliente}}</td>
-                    <td style="border-color: #9d9d9d" class="text-center"> ${{number_format($item->monto_total,2,".","")}}</td>
+                        <td style="border-color: #9d9d9d" class="text-center"> {{$item->nombre_comprobante." N# "."001-".getDetallesClaveAcceso($item->clave_acceso, 'PUNTO_ACCESO')."-".getDetallesClaveAcceso($item->clave_acceso, 'SECUENCIAL')}}  </td>
+                        <td style="border-color: #9d9d9d" class="text-center"> {{$item->clave_acceso}} </td>
+                    @if($tipo_comprobante!="06")
+                        <td style="border-color: #9d9d9d" class="text-center"> {{$item->nombre_cliente}}</td>
+                        <td style="border-color: #9d9d9d" class="text-center"> ${{number_format($item->monto_total,2,".","")}}</td>
+                    @endif
                     <td style="border-color: #9d9d9d" class="text-center"> {{Carbon\Carbon::parse($item->fecha_emision)->format('d-m-Y')}} </td>
                     <td style="border-color: #9d9d9d" class="text-center">
                         @if($item->estado == 0)
@@ -74,7 +80,7 @@
                         @elseif($item->estado == 4)
                             No autoriazo por el SRI
                         @elseif($item->estado == 5)
-                            Facturado
+                            Enviado al SRI
                         @elseif($item->estado == 00)
                             Lote
                         @endif
@@ -84,39 +90,41 @@
                     @endif
                     <td style="border-color: #9d9d9d" class="text-center">
                         @if($item->estado==5)
-                            <a target="_blank" href="{{url('comprobante/factura_aprobada_sri',$item->clave_acceso)}}" class="btn btn-info btn-xs" title="Ver factura" >
+                            <a target="_blank" href="{{url('comprobante/comprobante_aprobado_sri',$item->clave_acceso)}}" class="btn btn-info btn-xs" title="Ver factura" >
                                 <i class="fa fa-eye" aria-hidden="true"></i>
                             </a>
-                            @if(getCantDespacho(getComprobante($item->id_comprobante)->envio->pedido->id_pedido)>0)
-                                <button class="btn btn-success btn-xs" title="Crear Guía de Remisión" onclick="crear_guia_remision('{{$item->id_comprobante}}')">
-                                    <i class="fa fa-file-text-o" aria-hidden="true"></i>
+                            @if($tipo_comprobante=="01" && getComprobanteRelacionadFactura($item->id_comprobante) == null)
+                                @if(getCantDespacho(getComprobante($item->id_comprobante)->envio->pedido->id_pedido)>0)
+                                    <button class="btn btn-success btn-xs" title="Crear Guía de Remisión" onclick="crear_guia_remision('{{$item->id_comprobante}}')">
+                                        <i class="fa fa-file-text-o" aria-hidden="true"></i>
+                                    </button>
+                                @endif
+                            @endif
+                            @if($tipo_comprobante=="01")
+                                <button class="btn btn-warning btn-xs" title="Reenviar correo" onclick="reenviar_correo('{{$item->clave_acceso}}')">
+                                    <i class="fa fa-envelope-o" aria-hidden="true"></i>
                                 </button>
                             @endif
-                            <button class="btn btn-warning btn-xs" title="Reenviar correo" onclick="reenviar_correo('{{$item->clave_acceso}}')">
-                                <i class="fa fa-envelope-o" aria-hidden="true"></i>
-                            </button>
                         @endif
                         @if($item->estado == 1)
                             <button class="btn btn-default btn-xs">
-                                <input type="checkbox" id="facturar_{{$key+1}}" name="facturar"  title="{{$item->nombre_comprobante=="FACTURA" ? "Facturar" : "Enviar al SRI"}}" value="{{$item->clave_acceso}}" style="margin:0;position:relative;top:3px">
+                                <input type="checkbox" id="facturar_{{$key+1}}" name="enviar"  title="Enviar al SRI" value="{{$item->clave_acceso}}" style="margin:0;position:relative;top:3px">
                             </button>
-                            <a target="_blank" href="{{url('comprobante/pre_factura',$item->clave_acceso)}}" class="btn btn-primary btn-xs" title="Ver comprobante elctrónico">
-                                <i class="fa fa-eye" aria-hidden="true"></i>
-                            </a>
-                            {{--<button class="btn btn-danger btn-xs" title="Eliminar comprobante elctrónico" onclick="elimnar_comprobante()">
-                                <i class="fa fa-trash" aria-hidden="true"></i>
-                            </button>--}}
-                        @endif
-                        {{--@if($item->estado == 1 || $item->estado == 3 || $item->estado == 4)
-                            <button class="btn btn-warning btn-xs" title="Cancelar pre factura" onclick="cancelar_factura('{{$item->id_comprobante}}')">
-                                <i class="fa fa-ban" aria-hidden="true"></i>
-                            </button>
-                        @endif--}}
-                        @if($item->estado == 0)
+                            @if($tipo_comprobante!="06")
+                                <a target="_blank" href="{{url('comprobante/pre_factura',$item->clave_acceso)}}" class="btn btn-primary btn-xs" title="Ver comprobante electrónico">
+                                    <i class="fa fa-eye" aria-hidden="true"></i>
+                                </a>
+                            @else
+                                <a target="_blank" href="{{url('comprobante/pre_guia_remision',$item->clave_acceso)}}" class="btn btn-primary btn-xs" title="Ver comprobante electrónico">
+                                    <i class="fa fa-eye" aria-hidden="true"></i>
+                                </a>
+                            @endif
+                        @elseif($item->estado == 0)
                             <button class="btn btn-default btn-xs">
                                 <input type="checkbox" id="firmar_{{$key+1}}" name="firmar" value="{{$item->id_comprobante}}" style="margin:0;position:relative;top:3px">
                             </button>
                         @endif
+
                     </td>
                 </tr>
             @endforeach
@@ -131,9 +139,9 @@
                 </div>
             @elseif($item->estado == 1)
                 <div class="text-center">
-                    <button class="btn btn-success" onclick="facturar_comprobante()">
-                        <i class="fa fa-file-text" aria-hidden="true"></i>
-                        Facturar
+                    <button class="btn btn-success" onclick="enviar_comprobante('{{$tipo_comprobante}}')">
+                        <i class="fa fa-upload" aria-hidden="true"></i>
+                        Enviar al SRI
                     </button>
                 </div>
             @endif

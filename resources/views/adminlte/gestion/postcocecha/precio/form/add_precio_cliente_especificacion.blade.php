@@ -30,6 +30,10 @@
                 style="border-color: #9d9d9d;width: 10%;">
                 PRECIO $
             </th>
+            <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
+                style="border-color: #9d9d9d;width: 10%;">
+                CÓDIGO PPRESENTACIÓN
+            </th>
         </tr>
         </thead>
         @if(count($especificaciones_cliente) > 0)
@@ -78,6 +82,12 @@
                                 <input type="hidden" id="id_detalle_especificacion_empaque_{{$det_esp_emp->id_detalle_especificacionempaque}}"
                                        class="id_detalle_especificacion_empaque"
                                        value="{{$det_esp_emp->id_detalle_especificacionempaque}}">
+                            </td>
+                            <td style="border-color: #9d9d9d;padding: 0px 0px; vertical-align: middle;" class="text-center" id="td_codigo_presentacion_{{$x+1}}">
+                                <input type="text" class="form-control" id="codigo_presentacion_{{$det_esp_emp->id_detalle_especificacionempaque}}"
+                                       name="codigo_presentacion_{{$det_esp_emp->id_detalle_especificacionempaque}}"
+                                       value="{{getPrecioByClienteDetEspEmp($item->id_cliente, $det_esp_emp->id_detalle_especificacionempaque) != '' ?
+                                       getPrecioByClienteDetEspEmp($item->id_cliente, $det_esp_emp->id_detalle_especificacionempaque)->codigo_presentacion : ''}}" style="background-color: beige">
                             </td>
                         </tr>
                         @php

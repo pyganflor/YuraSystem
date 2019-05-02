@@ -21,13 +21,15 @@ class CorreoFactura extends Mailable
     public $nombreCliente;
     public $nombreArchivo;
     public $numeroComprobante;
+    public $preFactura;
 
-    public function __construct($correoCliente,$nombreCliente,$nombreArchivo,$numeroComprobante)
+    public function __construct($correoCliente,$nombreCliente,$nombreArchivo,$numeroComprobante,$preFactura)
     {
         $this->correoCliente     = $correoCliente;
         $this->nombreCliente     = $nombreCliente;
         $this->nombreArchivo     = $nombreArchivo;
         $this->numeroComprobante = $numeroComprobante;
+        $this->preFactura        = $preFactura;
     }
 
     /**
@@ -36,10 +38,16 @@ class CorreoFactura extends Mailable
      * @return $this
      */
     public function build()
-    {                       //$correoCliente
+    {
+        $tipo_comprobante = getDetallesClaveAcceso($this->nombreArchivo,'TIPO_COMPROBANTE');
+        $sub_carpeta = getSubCarpetaArchivo(false,$tipo_comprobante);
+        ($this->preFactura)
+            ? $paht_env = 'PATH_XML_FIRMADOS'
+            : $paht_env = 'PATH_XML_AUTORIZADOS';
+                                //$correoCliente
         return $this->from("pruebas-c26453@inbox.mailtrap.io")
             ->view('adminlte.gestion.mails.correo_factura')
-            ->attach(env('PATH_XML_AUTORIZADOS').$this->nombreArchivo.'.xml',[
+            ->attach(env($paht_env).$sub_carpeta.$this->nombreArchivo.'.xml',[
                 'as' => $this->nombreArchivo.'.xml'
             ])->attach(env('PDF_FACTURAS').$this->nombreArchivo.'.pdf',[
                 'as' => $this->nombreArchivo.'.pdf'

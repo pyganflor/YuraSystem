@@ -1,4 +1,4 @@
-<div style="widows: 90%;margin: 0 auto">
+<div style="width: 90%;margin: 0 auto">
     <p style="font-size: 12pt">
         Estimado Cliente : <b>{{$nombreCliente}}</b>
     </p>

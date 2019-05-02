@@ -29,7 +29,10 @@ class ConfiguracionEmpresa extends Model
         'direccion_matriz',
         'direccion_establecimiento',
         'moneda',
-        'baldes_x_coche'    // baldes por coche para sacar en aperturas
+        'baldes_x_coche',    // baldes por coche para sacar en aperturas
+        'correo',
+        'fax',
+        'telefono'
     ];
 
     public function clasificaciones_unitarias()

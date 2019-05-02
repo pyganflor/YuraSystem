@@ -84,6 +84,15 @@
                 @foreach(getPedido($pedido->id_pedido)->detalles as $pos_det_ped => $det_ped)
                     @foreach($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $pos_esp_emp => $esp_emp)
                         @foreach($esp_emp->detalles as $pos_det_esp => $det_esp)
+                            @php
+                                if(isset(getPedido($pedido->id_pedido)->envios[0]->id_envio)){
+                                    $firmado = getFacturado(getPedido($pedido->id_pedido)->envios[0]->id_envio,1);
+                                    $facturado = getFacturado(getPedido($pedido->id_pedido)->envios[0]->id_envio,5);
+                                }else{
+                                    $firmado = null;
+                                    $facturado = null;
+                                }
+                            @endphp
                             <tr style="background-color: {{!in_array($det_esp->id_variedad,explode('|',$pedido->variedad)) ? '#b9ffb4' : ''}}; border-bottom: 2px solid #9d9d9d"
                                 title="{{!in_array($det_esp->id_variedad,explode('|',$pedido->variedad)) ? 'Confirmado' : 'Por confirmar'}}">
                                 @if($pos_det_esp == 0 && $pos_esp_emp == 0 && $pos_det_ped == 0)
@@ -97,6 +106,7 @@
                                                        class="form-control orden_despacho"
                                                        min="1" style="width: 56px;border:none;text-align: center">
                                             @endif
+
                                         </td>
                                     @endif
                                     <td class="text-center" style="border-color: #9d9d9d"
@@ -109,6 +119,12 @@
                                         @php
                                             $valor_total += getPedido($pedido->id_pedido)->getPrecio();
                                         @endphp
+                                        @if($facturado!=null)
+                                            <br />
+                                            <span class="badge bg-green" style="margin-top:8px;font-size: 13px;">
+                                                <i class="fa fa-check-circle-o" aria-hidden="true"></i> Facturado
+                                            </span>
+                                        @endif
                                     </td>
                                 @endif
                                 @if($pos_det_esp == 0 && $pos_esp_emp == 0)
@@ -176,42 +192,46 @@
                                     </td>
                                     <td class="text-center" style="border-color: #9d9d9d" id="td_opciones_{{$pedido->id_pedido}}"
                                         rowspan="{{getCantidadDetallesEspecificacionByPedido($pedido->id_pedido)}}">
-                                        @php
-                                            if(isset(getPedido($pedido->id_pedido)->envios[0]->id_envio)){
-                                                $firmado = getFacturado(getPedido($pedido->id_pedido)->envios[0]->id_envio,1);
-                                                $facturado = getFacturado(getPedido($pedido->id_pedido)->envios[0]->id_envio,5);
-                                            }else{
-                                                $firmado = null;
-                                                $facturado = null;
-                                            }
-                                        @endphp
-                                        @if($pedido->empaquetado == 0)
-                                            @if($facturado == null || $firmado == null)
+                                        @if($facturado==null)
+                                            @if($pedido->empaquetado == 0)
                                                 <button class="btn  btn-{!! $det_ped->estado == 1 ? 'danger' : 'success' !!} btn-xs"
-                                                        type="button"
-                                                        title="{!! $det_ped->estado == 1 ? 'Cancelar pedido' : 'Activar pedido' !!}"
-                                                        id="edit_pedidos"
-                                                        onclick="cancelar_pedidos('{{$pedido->id_pedido}}','','{{$det_ped->estado}}','{{@csrf_token()}}')">
-                                                    <i class="fa fa-{!! $det_ped->estado == 1 ? 'trash' : 'undo' !!}" aria-hidden="true"></i>
+                                                        type="button"  title="{!! $det_ped->estado == 1 ? 'Cancelar pedido' : 'Activar pedido' !!}"
+                                                        id="edit_pedidos" onclick="cancelar_pedidos('{{$pedido->id_pedido}}','','{{$det_ped->estado}}','{{@csrf_token()}}')">
+                                                        <i class="fa fa-{!! $det_ped->estado == 1 ? 'trash' : 'undo' !!}" aria-hidden="true"></i>
                                                 </button>
-                                            @endif
-                                        @endif
-                                        @if($pedido->empaquetado == 0)
                                             @if($pedido->tipo_especificacion == 'T')
                                                 <button type="button" class="btn btn-default btn-xs" title="Editar pedido"
                                                         onclick="editar_pedido_tinturado('{{$pedido->id_pedido}}', 0)">
-                                                    <i class="fa fa-pencil" aria-hidden="true"></i>
+                                                        <i class="fa fa-pencil" aria-hidden="true"></i>
                                                 </button>
                                             @else
-                                                @if($facturado==null || $firmado==null)
-                                                    <button type="button" class="btn btn-default btn-xs" title="Editar pedido"
-                                                            onclick="editar_pedido('{{$pedido->id_cliente}}','{{$pedido->id_pedido}}')">
+                                                <button type="button" class="btn btn-default btn-xs" title="Editar pedido"
+                                                        onclick="editar_pedido('{{$pedido->id_cliente}}','{{$pedido->id_pedido}}')">
                                                         <i class="fa fa-pencil" aria-hidden="true"></i>
+                                                </button>
+                                            @endif
+                                            @if(getPedido($pedido->id_pedido)->haveDistribucion() == 1)
+                                                    <button type="button" class="btn btn-xs btn-info" title="Distribuir"
+                                                            onclick="distribuir_orden_semanal('{{$pedido->id_pedido}}')">
+                                                        <i class="fa fa-fw fa-gift"></i>
+                                                    </button>
+                                                @elseif(getPedido($pedido->id_pedido)->haveDistribucion() == 2)
+                                                    <button type="button" class="btn btn-xs btn-info" title="Ver distribución"
+                                                            onclick="ver_distribucion_orden_semanal('{{$pedido->id_pedido}}')">
+                                                        <i class="fa fa-fw fa-gift"></i>
                                                     </button>
                                                 @endif
+                                                <button class="btn btn-primary btn-xs" title="Duplicar pedido"
+                                                        onclick="duplicar_pedido('{{$pedido->id_pedido}}','{{$pedido->id_cliente}}')">
+                                                    <i class="fa fa-files-o" aria-hidden="true"></i>
+                                                </button>
                                             @endif
+                                        @else
+                                            <a target="_blank" href="{{url('pedidos/crear_packing_list',$pedido->id_pedido)}}" class="btn btn-info btn-xs" title="Generar packing list">
+                                                <i class="fa fa-cubes" ></i>
+                                            </a>
                                         @endif
-                                        {{--<@if(yura\Modelos\Envio::where('id_pedido',$pedido->id_pedido)->count() == 0)
+                                        {{--@if(yura\Modelos\Envio::where('id_pedido',$pedido->id_pedido)->count() == 0)
                                                 button class="btn btn-default btn-xs" title="Realizar envío"
                                                         onclick="add_envio('{{$pedido->id_pedido}}','{{@csrf_token()}}')">
                                                     <i class="fa fa-plane" aria-hidden="true"></i>
@@ -222,23 +242,6 @@
                                                     <i class="fa fa-eye" aria-hidden="true"></i>
                                                 </button>
                                             @endif--}}
-                                        @if(getPedido($pedido->id_pedido)->haveDistribucion() == 1)
-                                            <button type="button" class="btn btn-xs btn-info" title="Distribuir"
-                                                    onclick="distribuir_orden_semanal('{{$pedido->id_pedido}}')">
-                                                <i class="fa fa-fw fa-gift"></i>
-                                            </button>
-                                        @elseif(getPedido($pedido->id_pedido)->haveDistribucion() == 2)
-                                            <button type="button" class="btn btn-xs btn-info" title="Ver distribución"
-                                                    onclick="ver_distribucion_orden_semanal('{{$pedido->id_pedido}}')">
-                                                <i class="fa fa-fw fa-gift"></i>
-                                            </button>
-                                        @endif
-                                        @if($pedido->empaquetado == 0)
-                                            <button class="btn btn-primary btn-xs" title="Duplicar pedido"
-                                                    onclick="duplicar_pedido('{{$pedido->id_pedido}}','{{$pedido->id_cliente}}')">
-                                                <i class="fa fa-files-o" aria-hidden="true"></i>
-                                            </button>
-                                        @endif
                                     </td>
                                 @endif
                             </tr>
