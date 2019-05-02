@@ -90,11 +90,11 @@
                         <span class="input-group-addon" style="background-color: #e9ecef">
                             Año
                         </span>
-                        <input type="number" id="anno_ventas" name="anno_ventas" class="form-control" min="2000" max="{{date('Y')}}">
+                        <input type="number" id="anno_ventas" name="anno_ventas" class="form-control" min="2000" max="{{date('Y')}}" required>
                         <span class="input-group-addon" style="background-color: #e9ecef">
                             Campo
                         </span>
-                        <select name="campo_ventas" id="campo_ventas" class="form-control">
+                        <select name="campo_ventas" id="campo_ventas" class="form-control" required>
                             <option value="V">Valor</option>
                             <option value="F">Cajas Físicas</option>
                             <option value="Q">Cajas EQ</option>
@@ -103,7 +103,7 @@
                         <span class="input-group-addon" style="background-color: #e9ecef">
                             Variedad
                         </span>
-                        <select name="variedad_ventas" id="variedad_ventas" class="form-control">
+                        <select name="variedad_ventas" id="variedad_ventas" class="form-control" required>
                             @foreach(getVariedades() as $v)
                                 <option value="{{$v->id_variedad}}">{{$v->nombre}}</option>
                             @endforeach
