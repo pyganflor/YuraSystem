@@ -1056,10 +1056,11 @@ function getPrecioByClienteDetEspEmp($cliente, $det_esp)
 function getPrecioByDetEsp($string, $det_esp)
 {
     foreach (explode('|', $string) as $x) {
-        if (explode(';', $x)[1] == $det_esp)
-            return explode(';', $x)[0];
+        if (count(explode(';', $x)) > 0)
+            if (explode(';', $x)[1] == $det_esp)
+                return explode(';', $x)[0];
     }
-    return '';
+    return 1;
 }
 
 /* ============ Obtener los ramos sacados de apertura para los pedidos de un "fecha" ==============*/
@@ -1116,12 +1117,12 @@ function generaDigitoVerificador($cadena)
     }
 }
 
-function firmarComprobanteXml($archivo_xml,$carpeta)
+function firmarComprobanteXml($archivo_xml, $carpeta)
 {
     exec("java -Dfile.encoding=UTF-8 -jar " . env('PATH_JAR_FIRMADOR') . " "
-        . env('PATH_XML_GENERADOS') . $carpeta. " "
+        . env('PATH_XML_GENERADOS') . $carpeta . " "
         . $archivo_xml . " "
-        . env('PATH_XML_FIRMADOS') . $carpeta. " "
+        . env('PATH_XML_FIRMADOS') . $carpeta . " "
         . env('PATH_FIRMA_DIGITAL') . " "
         . env('CONTRASENA_FIRMA_DIGITAL') . " "
         . env('NOMBRE_ARCHIVO_FIRMA_DIGITAL') . " ",
@@ -1252,6 +1253,7 @@ function accionAutorizacion($autorizacion, $path, $msg, $tipoDocumento = false, 
     $dataXML = (String)$autorizacion->comprobante;
 
     $actualizaEstado = 1;
+
     if ((String)$autorizacion->estado === "AUTORIZADO") {
         $actualizaEstado = 5;
         $numeroComprobante = "001-".getDetallesClaveAcceso($numeroAutorizacion, 'PUNTO_ACCESO')."-".getDetallesClaveAcceso($numeroAutorizacion, 'SECUENCIAL');
@@ -1332,7 +1334,8 @@ function enviarMailComprobanteCliente($tipoDocumento, $correoCliente, $nombreCli
     }
 }
 
-function getDetallesClaveAcceso($numeroAutorizacion, $detalle){
+function getDetallesClaveAcceso($numeroAutorizacion, $detalle)
+{
     switch ($detalle) {
         case 'RUC':
             $resultado = substr($numeroAutorizacion, 10, 13);
@@ -1505,6 +1508,8 @@ function getDisponibleInventarioFrio($variedad, $clasificacion_ramo, /*$envoltur
         $r = $r->where('if.tallos_x_ramo', '=', $tallos_x_ramos);
     if ($longitud_ramo != '')
         $r = $r->where('if.longitud_ramo', '=', $longitud_ramo);
+    else
+        $r = $r->whereNull('if.longitud_ramo');
     if ($unidad_medida != '')
         $r = $r->where('if.id_unidad_medida', '=', $unidad_medida);
 
@@ -1659,25 +1664,29 @@ function getChofer($idChofer)
     return Conductor::find($idChofer);
 }
 
-function getCantDespacho($idPedido){
-    return Despacho::join('detalle_despacho as dd','despacho.id_despacho','dd.id_despacho')->where([
-        ['dd.id_pedido',$idPedido],
-        ['despacho.estado',1]
+function getCantDespacho($idPedido)
+{
+    return Despacho::join('detalle_despacho as dd', 'despacho.id_despacho', 'dd.id_despacho')->where([
+        ['dd.id_pedido', $idPedido],
+        ['despacho.estado', 1]
     ])->count();
 }
 
-function getImpuestosDesglosesFacturas($idComprobante){
-    return DesgloseEnvioFactura::where('id_comprobante',$idComprobante)
-        ->join('impuesto_desglose_envio_factura as idef','desglose_envio_factura.id_desglose_envio_factura','idef.id_desglose_envio_factura')
+function getImpuestosDesglosesFacturas($idComprobante)
+{
+    return DesgloseEnvioFactura::where('id_comprobante', $idComprobante)
+        ->join('impuesto_desglose_envio_factura as idef', 'desglose_envio_factura.id_desglose_envio_factura', 'idef.id_desglose_envio_factura')
         ->get();
 }
 
-function getComprobante($idComprobante){
+function getComprobante($idComprobante)
+{
     return Comprobante::find($idComprobante);
 }
 
-function getDetalleDespacho($idPedido){
-    return DetalleDespacho::where('id_pedido',$idPedido)->first();
+function getDetalleDespacho($idPedido)
+{
+    return DetalleDespacho::where('id_pedido', $idPedido)->first();
 }
 
 function getComprobanteRelacionadoGuia($idComprobante){
@@ -1687,4 +1696,3 @@ function getComprobanteRelacionadoGuia($idComprobante){
 function getComprobanteRelacionadFactura($idComprobante){
     return DetalleGuiaRemision::where('id_comprobante_relacionado',$idComprobante)->first();
 }
-

@@ -10,7 +10,7 @@
         $('.check_filtro_cosecha_variedad').prop('checked', false);
         if ($('#filtro_predeterminado_rango').val() == 1) {
             diario = true;
-            desde = rest_dias(30);
+            desde = rest_dias(15);
         } else if ($('#filtro_predeterminado_rango').val() == 2) {
             semanal = true;
             desde = rest_dias(90);
@@ -53,6 +53,16 @@
 
         get_jquery('{{url('crm_ventas/filtrar_graficas')}}', datos, function (retorno) {
             $('#div_graficas').html(retorno);
+        });
+    }
+
+    function desglose_indicador(option) {
+        datos = {
+            option: option
+        };
+        get_jquery('{{url('crm_ventas/desglose_indicador')}}', datos, function (retorno) {
+            modal_view('modal_view_desglose_indicador', retorno, '<i class="fa fa-fw fa-bar-chart"></i> Desglose', true, false,
+                '{{isPC() ? '65%' : ''}}');
         });
     }
 </script>

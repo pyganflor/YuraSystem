@@ -7,6 +7,7 @@ use Validator;
 use PHPExcel;
 use PHPExcel_IOFactory;
 use PHPExcel_Worksheet;
+use yura\Modelos\HistoricoVentas;
 use yura\Modelos\ClasificacionUnitaria;
 use yura\Modelos\ClasificacionVerde;
 use yura\Modelos\Cosecha;
@@ -180,6 +181,98 @@ class ImportarDataController extends Controller
                         } else {
                             $success = false;
                             $msg .= '<li class="error">Ya se encuentra una cosecha del día ' . $fecha . '</li>';
+                        }
+                    }
+                }
+
+                if ($success) {
+                    $msg = '<li class="bg-green">Se ha importado el archivo satisfactoriamente</li>';
+                }
+            }
+        } else {
+            $errores = '';
+            foreach ($valida->errors()->all() as $mi_error) {
+                if ($errores == '') {
+                    $errores = '<li>' . $mi_error . '</li>';
+                } else {
+                    $errores .= '<li>' . $mi_error . '</li>';
+                }
+            }
+            $success = false;
+            $msg = '<div class="alert alert-danger">' .
+                '<p class="text-center">¡Por favor corrija los siguientes errores!</p>' .
+                '<ul>' .
+                $errores .
+                '</ul>' .
+                '</div>';
+        }
+        return [
+            'mensaje' => $msg,
+            'success' => $success,
+        ];
+    }
+
+    public function importar_venta(Request $request)
+    {
+        //dd($request->all());
+        ini_set('max_execution_time', env('MAX_EXECUTION_TIME'));
+        $valida = Validator::make($request->all(), [
+            'file_ventas' => 'required',
+            'variedad_ventas' => 'required',
+            'campo_ventas' => 'required',
+            'anno_ventas' => 'required',
+        ]);
+        $msg = '';
+        $success = true;
+        if (!$valida->fails()) {
+
+            $document = PHPExcel_IOFactory::load($request->file_ventas);
+            $activeSheetData = $document->getActiveSheet()->toArray(null, true, true, true);
+
+            $titles = $activeSheetData[1];
+            foreach ($activeSheetData as $pos_row => $row) {
+                if ($pos_row > 1) {
+                    if ($row['A'] != '') {
+                        $id_cliente = intval($row['A']);
+                        foreach ($row as $pos_col => $col) {
+                            if ($col > 0) {
+                                if ($pos_col != 'A') {
+                                    $historico = HistoricoVentas::All()
+                                        ->where('id_cliente', $id_cliente)
+                                        ->where('id_variedad', $request->variedad_ventas)
+                                        ->where('mes', $titles[$pos_col])
+                                        ->where('anno', $request->anno_ventas)
+                                        ->first();
+
+                                    if ($historico != '') {
+                                        dd(1);
+                                        if ($request->campo_ventas == 'V')
+                                            $historico->valor += str_replace(',', '', $col);
+                                        if ($request->campo_ventas == 'F')
+                                            $historico->cajas_fisicas += str_replace(',', '', $col);
+                                        if ($request->campo_ventas == 'Q')
+                                            $historico->cajas_equivalentes += str_replace(',', '', $col);
+                                        if ($request->campo_ventas == 'P')
+                                            $historico->precio_x_ramo = round(str_replace(',', '', $col) / $historico->precio_x_ramo, 2);
+                                    } else {
+                                        $historico = new HistoricoVentas();
+                                        $historico->id_cliente = $id_cliente;
+                                        $historico->id_variedad = $request->variedad_ventas;
+                                        $historico->anno = $request->anno_ventas;
+                                        $historico->mes = $titles[$pos_col];
+                                        if ($request->campo_ventas == 'V')
+                                            $historico->valor = str_replace(',', '', $col);
+                                        if ($request->campo_ventas == 'F')
+                                            $historico->cajas_fisicas = str_replace(',', '', $col);
+                                        if ($request->campo_ventas == 'Q')
+                                            $historico->cajas_equivalentes = str_replace(',', '', $col);
+                                        if ($request->campo_ventas == 'P')
+                                            $historico->precio_x_ramo = str_replace(',', '', $col) / $historico->precio_x_ramo;
+                                    }
+
+                                    $historico->save();
+                                }
+                            }
                         }
                     }
                 }

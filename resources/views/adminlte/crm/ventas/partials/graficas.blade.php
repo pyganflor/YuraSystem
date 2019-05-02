@@ -1,22 +1,27 @@
 <div class="nav-tabs-custom" style="cursor: move;">
     <!-- Tabs within a box -->
     <ul class="nav nav-pills nav-justified">
-        <li class=""><a href="#valor-chart" data-toggle="tab" aria-expanded="false">Valor</a></li>
-        <li class="active"><a href="#cajas-chart" data-toggle="tab" aria-expanded="true">Cajas</a></li>
+        <li class="active"><a href="#valor-chart" data-toggle="tab" aria-expanded="false">Valor</a></li>
+        <li class=""><a href="#cajas-chart" data-toggle="tab" aria-expanded="true">Cajas</a></li>
+        <li class=""><a href="#precio-chart" data-toggle="tab" aria-expanded="true">Precios</a></li>
     </ul>
     <div class="tab-content no-padding">
-        <div class="chart tab-pane" id="valor-chart" style="position: relative; height: 300px;">
+        <div class="chart tab-pane active" id="valor-chart" style="position: relative">
             <canvas id="chart_valor" width="100%" height="40" style="margin-top: 5px"></canvas>
         </div>
-        <div class="chart tab-pane active" id="cajas-chart" style="position: relative; height: 300px;">
+        <div class="chart tab-pane" id="cajas-chart" style="position: relative">
             <canvas id="chart_cajas" width="100%" height="40" style="margin-top: 5px"></canvas>
+        </div>
+        <div class="chart tab-pane" id="precio-chart" style="position: relative">
+            <canvas id="chart_precio" width="100%" height="40" style="margin-top: 5px"></canvas>
         </div>
     </div>
 </div>
 
 <script>
+    construir_char('Valor', 'chart_valor');
     construir_char('Cajas', 'chart_cajas');
-    construir_char('Ramos', 'chart_valor');
+    construir_char('Precios', 'chart_precio');
 
     function construir_char(label, id) {
         labels = [];
@@ -34,17 +39,11 @@
         labels.push("{{getMeses(TP_ABREVIADO)[$labels[$i]->mes - 1]. ' - '.$labels[$i]->ano}}");
         @endif
         if (label == 'Cajas')
-            data_list.push("{{$array_cajas[$i]}}");
-        /*else if (label == 'Ramos')
-            data_list.push("{$array_ramos[$i]}}");*/
-        else if (label == 'Tallos')
-            data_list.push("{{$array_tallos[$i]}}");
-        else if (label == 'Desechos')
-            data_list.push("{{$array_desecho[$i]}}");
-        else if (label == 'Rendimientos')
-            data_list.push("{{$array_rendimiento[$i]}}");
-        else
-            data_list.push("{{$array_calibre[$i]}}");
+            data_list.push("{{$data['cajas'][$i]}}");
+        else if (label == 'Valor')
+            data_list.push("{{$data['valores'][$i]}}");
+        else if (label == 'Precios')
+            data_list.push("{{$data['precios'][$i]}}");
         @endfor
 
             datasets = [{

@@ -67,8 +67,7 @@
             </div>
             <div class="box-body">
                 <div class="row">
-                    <div class="col-md-9" id="div_graficas">
-                    </div>
+                    <div class="col-md-9" id="div_graficas"></div>
                     <div class="col-md-3" id="div_today">
                         @include('adminlte.crm.ventas.partials.today')
                     </div>

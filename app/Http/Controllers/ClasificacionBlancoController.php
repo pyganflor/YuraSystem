@@ -36,6 +36,8 @@ class ClasificacionBlancoController extends Controller
 
         $fecha_fin = opDiasFecha('+', 7, $fecha_min);
 
+        //dd($fecha_min, $fecha_fin);
+
         $pedidos = DB::table('pedido as p')
             ->join('detalle_pedido as dp', 'dp.id_pedido', '=', 'p.id_pedido')
             ->join('cliente_pedido_especificacion as cpe', 'cpe.id_cliente_pedido_especificacion', '=', 'dp.id_cliente_especificacion')
@@ -92,7 +94,6 @@ class ClasificacionBlancoController extends Controller
 
     public function confirmar_pedidos(Request $request)
     {
-
         $success = true;
         $msg = '';
 
@@ -338,7 +339,7 @@ class ClasificacionBlancoController extends Controller
             'fechas' => $fechas,
             'id_variedad' => $request->id_variedad,
             'texto' => $request->texto,
-            'resto' => $request->arreglo,
+            'resto' => $request->arreglo != '' ? $request->arreglo : [],
             'clasificacion_ramo' => $request->clasificacion_ramo,
             'tallos_x_ramo' => $request->tallos_x_ramo,
             'longitud_ramo' => $request->longitud_ramo,
