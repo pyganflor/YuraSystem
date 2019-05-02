@@ -10,7 +10,7 @@
                 <div class="icon">
                     <i class="fa fa-fw fa-usd"></i>
                 </div>
-                <a href="javascript:void(0)" class="small-box-footer">
+                <a href="javascript:void(0)" class="small-box-footer" onclick="desglose_indicador('valor')">
                     Valor $ <i class="fa fa-arrow-circle-right"></i>
                 </a>
             </div>
@@ -25,13 +25,13 @@
                 <div class="icon">
                     <i class="fa fa-fw fa-gift"></i>
                 </div>
-                <a href="javascript:void(0)" class="small-box-footer">
+                <a href="javascript:void(0)" class="small-box-footer" onclick="desglose_indicador('cajas')">
                     Cajas <i class="fa fa-arrow-circle-right"></i>
                 </a>
             </div>
         </div>
         <div class="col-md-2">
-            <div class="small-box bg-red">
+            <div class="small-box bg-orange">
                 <div class="inner">
                     <h3 class="info-box-number">
                         {{number_format($semanal['precio_x_ramo'], 2)}}
@@ -40,7 +40,7 @@
                 <div class="icon">
                     <i class="fa fa-fw fa-usd"></i>
                 </div>
-                <a href="javascript:void(0)" class="small-box-footer">
+                <a href="javascript:void(0)" class="small-box-footer" onclick="desglose_indicador('precios')">
                     Precio x Ramo <i class="fa fa-arrow-circle-right"></i>
                 </a>
             </div>
@@ -56,13 +56,13 @@
                 <div class="icon">
                     <i class="fa fa-fw fa-usd"></i>
                 </div>
-                <a href="javascript:void(0)" class="small-box-footer">
+                <a href="javascript:void(0)" class="small-box-footer" onclick="desglose_indicador('tallos')">
                     Precio x Tallo <i class="fa fa-arrow-circle-right"></i>
                 </a>
             </div>
         </div>
         <div class="col-md-2">
-            <div class="small-box bg-orange">
+            <div class="small-box bg-red">
                 <div class="inner">
                     <h3 class="info-box-number">
                         ?

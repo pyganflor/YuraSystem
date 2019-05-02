@@ -74,6 +74,7 @@
                 @php
                     $pos_resto = 1;
                 @endphp
+
                 @foreach($resto as $item)
                     <tr>
                         <th class="text-center" style="border-color: #9d9d9d">
@@ -158,7 +159,6 @@
             </div>
         </form>
     </div>
-
     <script>
         function editar_inventario(id) {
             editar = parseFloat($('#editar_inventario_' + id).val());

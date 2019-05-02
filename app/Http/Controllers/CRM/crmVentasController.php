@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use yura\Http\Controllers\Controller;
 use yura\Modelos\Pedido;
+use yura\Modelos\Semana;
 
 class crmVentasController extends Controller
 {
@@ -62,53 +63,235 @@ class crmVentasController extends Controller
 
     public function filtrar_graficas(Request $request)
     {
-
+        $desde = $request->desde;
+        $hasta = $request->hasta;
         if ($request->has('annos')) {
             $view = '_annos';
+
+            $fechas = [];
+
+            $data = [];
+            $periodo = 'mensual';
         } else {
             $view = 'graficas';
 
             if ($request->diario == 'true') {
-                $fechas = DB::table('pedido as p')
-                    ->select('p.fecha_pedido as dia')->distinct()
-                    ->where('p.estado', '=', 1)
-                    ->where('p.fecha_pedido', '>=', $request->desde)
-                    ->where('p.fecha_pedido', '<=', $request->hasta)
-                    ->orderBy('p.fecha_pedido')
-                    ->get();
+                $periodo = 'diario';
 
                 $array_valor = [];
                 $array_cajas = [];
-                foreach ($fechas as $f) {
-                    $pedidos_semanal = Pedido::All()->where('estado', 1)
-                        ->where('fecha_pedido', '=', $f->dia);
-                    $valor = 0;
-                    $cajas = 0;
-                    $tallos = 0;
-                    foreach ($pedidos_semanal as $p) {
-                        $valor += $p->getPrecio();
-                        $cajas += $p->getCajas();
-                        $tallos += $p->getTallos();
-                    }
-                    $ramos_estandar = $cajas * getConfiguracionEmpresa()->ramos_x_caja;
-                    $precio_x_ramo = $ramos_estandar > 0 ? round($valor / $ramos_estandar, 2) : 0;
-                    $precio_x_tallo = $tallos > 0 ? round($valor / $tallos, 2) : 0;
+                $array_precios = [];
+                if ($request->total == 'true') {
+                    $fechas = DB::table('pedido as p')
+                        ->select('p.fecha_pedido as dia')->distinct()
+                        ->where('p.estado', '=', 1)
+                        ->where('p.fecha_pedido', '>=', $request->desde)
+                        ->where('p.fecha_pedido', '<=', $request->hasta)
+                        ->orderBy('p.fecha_pedido')
+                        ->get();
 
-                    array_push($array_valor, $valor);
-                    array_push($array_cajas, $cajas);
+                    foreach ($fechas as $f) {
+                        $pedidos_semanal = Pedido::All()->where('estado', 1)
+                            ->where('fecha_pedido', '=', $f->dia);
+                        $valor = 0;
+                        $cajas = 0;
+                        $tallos = 0;
+                        foreach ($pedidos_semanal as $p) {
+                            $valor += $p->getPrecio();
+                            $cajas += $p->getCajas();
+                            $tallos += $p->getTallos();
+                        }
+                        $ramos_estandar = $cajas * getConfiguracionEmpresa()->ramos_x_caja;
+                        $precio_x_ramo = $ramos_estandar > 0 ? round($valor / $ramos_estandar, 2) : 0;
+                        $precio_x_tallo = $tallos > 0 ? round($valor / $tallos, 2) : 0;
+
+                        array_push($array_valor, $valor);
+                        array_push($array_cajas, $cajas);
+                        array_push($array_precios, $precio_x_ramo);
+                    }
+                } else if ($request->x_cliente == 'true' && $request->id_cliente != '') {
+                    $fechas = DB::table('pedido as p')
+                        ->select('p.fecha_pedido as dia')->distinct()
+                        ->where('p.estado', '=', 1)
+                        ->where('p.fecha_pedido', '>=', $request->desde)
+                        ->where('p.fecha_pedido', '<=', $request->hasta)
+                        ->where('p.id_cliente', '=', $request->id_cliente)
+                        ->orderBy('p.fecha_pedido')
+                        ->get();
+
+                    foreach ($fechas as $f) {
+                        $pedidos_semanal = Pedido::All()->where('estado', 1)
+                            ->where('fecha_pedido', '=', $f->dia)
+                            ->where('id_cliente', '=', $request->id_cliente);
+                        $valor = 0;
+                        $cajas = 0;
+                        $tallos = 0;
+                        foreach ($pedidos_semanal as $p) {
+                            $valor += $p->getPrecio();
+                            $cajas += $p->getCajas();
+                            $tallos += $p->getTallos();
+                        }
+                        $ramos_estandar = $cajas * getConfiguracionEmpresa()->ramos_x_caja;
+                        $precio_x_ramo = $ramos_estandar > 0 ? round($valor / $ramos_estandar, 2) : 0;
+                        $precio_x_tallo = $tallos > 0 ? round($valor / $tallos, 2) : 0;
+
+                        array_push($array_valor, $valor);
+                        array_push($array_cajas, $cajas);
+                        array_push($array_precios, $precio_x_ramo);
+                    }
                 }
-                $arreglos = [
+                $data = [
                     'valores' => $array_valor,
                     'cajas' => $array_cajas,
+                    'precios' => $array_precios,
                 ];
-                dd($fechas, $arreglos);
+            } else if ($request->semanal == 'true') {
+                $periodo = 'semanal';
+
+                $array_valor = [];
+                $array_cajas = [];
+                $array_precios = [];
+                if ($request->total == 'true') {
+                    $fechas = DB::table('semana as s')
+                        ->select('s.codigo as semana')->distinct()
+                        ->Where(function ($q) use ($desde, $hasta) {
+                            $q->where('s.fecha_inicial', '>=', $desde)
+                                ->where('s.fecha_inicial', '<=', $hasta);
+                        })
+                        ->orWhere(function ($q) use ($desde, $hasta) {
+                            $q->where('s.fecha_final', '>=', $desde)
+                                ->Where('s.fecha_final', '<=', $hasta);
+                        })
+                        ->orderBy('codigo')
+                        ->get();
+
+                    foreach ($fechas as $codigo) {
+                        $semana = Semana::All()->where('codigo', '=', $codigo->semana)->first();
+                        $pedidos = Pedido::All()->where('estado', 1)
+                            ->where('fecha_pedido', '>=', $semana->fecha_inicial)
+                            ->where('fecha_pedido', '<=', $semana->fecha_final);
+                        $valor = 0;
+                        $cajas = 0;
+                        $tallos = 0;
+
+                        foreach ($pedidos as $p) {
+                            $valor += $p->getPrecio();
+                            $cajas += $p->getCajas();
+                            $tallos += $p->getTallos();
+                        }
+                        $ramos_estandar = $cajas * getConfiguracionEmpresa()->ramos_x_caja;
+                        $precio_x_ramo = $ramos_estandar > 0 ? round($valor / $ramos_estandar, 2) : 0;
+                        $precio_x_tallo = $tallos > 0 ? round($valor / $tallos, 2) : 0;
+
+                        array_push($array_valor, $valor);
+                        array_push($array_cajas, $cajas);
+                        array_push($array_precios, $precio_x_ramo);
+                    }
+                } else if ($request->x_cliente == 'true' && $request->id_cliente != '') {
+                    $fechas = DB::table('semana as s')
+                        ->select('s.codigo as semana')->distinct()
+                        ->Where(function ($q) use ($desde, $hasta) {
+                            $q->where('s.fecha_inicial', '>=', $desde)
+                                ->where('s.fecha_inicial', '<=', $hasta);
+                        })
+                        ->orWhere(function ($q) use ($desde, $hasta) {
+                            $q->where('s.fecha_final', '>=', $desde)
+                                ->Where('s.fecha_final', '<=', $hasta);
+                        })
+                        ->orderBy('codigo')
+                        ->get();
+
+                    foreach ($fechas as $codigo) {
+                        $semana = Semana::All()->where('codigo', '=', $codigo->semana)->first();
+                        $pedidos = Pedido::All()->where('estado', 1)
+                            ->where('id_cliente', '>=', $request->id_cliente)
+                            ->where('fecha_pedido', '>=', $semana->fecha_inicial)
+                            ->where('fecha_pedido', '<=', $semana->fecha_final);
+                        $valor = 0;
+                        $cajas = 0;
+                        $tallos = 0;
+
+                        foreach ($pedidos as $p) {
+                            $valor += $p->getPrecio();
+                            $cajas += $p->getCajas();
+                            $tallos += $p->getTallos();
+                        }
+                        $ramos_estandar = $cajas * getConfiguracionEmpresa()->ramos_x_caja;
+                        $precio_x_ramo = $ramos_estandar > 0 ? round($valor / $ramos_estandar, 2) : 0;
+                        $precio_x_tallo = $tallos > 0 ? round($valor / $tallos, 2) : 0;
+
+                        array_push($array_valor, $valor);
+                        array_push($array_cajas, $cajas);
+                        array_push($array_precios, $precio_x_ramo);
+                    }
+                }
+
+                $data = [
+                    'valores' => $array_valor,
+                    'cajas' => $array_cajas,
+                    'precios' => $array_precios,
+                ];
             }
         }
-        dd($request->all());
 
         return view('adminlte.crm.ventas.partials.' . $view, [
             'labels' => $fechas,
-            'arreglos' => $arreglos,
+            'data' => $data,
+            'periodo' => $periodo,
+        ]);
+    }
+
+    public function desglose_indicador(Request $request)
+    {
+        $fechas = DB::table('pedido')
+            ->select('fecha_pedido as dia')->distinct()
+            ->where('estado', 1)
+            ->where('fecha_pedido', '>=', opDiasFecha('-', 7, date('Y-m-d')))
+            ->where('fecha_pedido', '<=', opDiasFecha('-', 1, date('Y-m-d')))
+            ->orderBy('fecha_pedido')
+            ->get();
+
+        $arreglo_variedades = [];
+        foreach (getVariedades() as $v) {
+            $array_valores = [];
+            $array_cajas = [];
+            $array_precios = [];
+            $array_tallos = [];
+            foreach ($fechas as $dia) {
+                $pedidos_semanal = Pedido::All()->where('estado', 1)
+                    ->where('fecha_pedido', '=', $dia->dia);
+                $valor = 0;
+                $cajas = 0;
+                $tallos = 0;
+                foreach ($pedidos_semanal as $p) {
+                    $valor += $p->getPrecioByVariedad($v->id_variedad);
+                    $cajas += $p->getCajasByVariedad($v->id_variedad);
+                    $tallos += $p->getTallosByVariedad($v->id_variedad);
+                }
+                $ramos_estandar = $cajas * getConfiguracionEmpresa()->ramos_x_caja;
+                $precio_x_ramo = $ramos_estandar > 0 ? round($valor / $ramos_estandar, 2) : 0;
+                $precio_x_tallo = $tallos > 0 ? round($valor / $tallos, 2) : 0;
+
+                array_push($array_valores, $valor);
+                array_push($array_cajas, $cajas);
+                array_push($array_precios, $precio_x_ramo);
+                array_push($array_tallos, $precio_x_tallo);
+            }
+            array_push($arreglo_variedades, [
+                'variedad' => $v,
+                'valores' => $array_valores,
+                'cajas' => $array_cajas,
+                'precios' => $array_precios,
+                'tallos' => $array_tallos,
+            ]);
+        }
+
+        //dd($arreglo_variedades, $fechas, $request->option);
+
+        return view('adminlte.crm.ventas.partials._desglose_indicador', [
+            'labels' => $fechas,
+            'arreglo_variedades' => $arreglo_variedades,
+            'option' => $request->option,
         ]);
     }
 }

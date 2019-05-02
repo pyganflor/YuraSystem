@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Session;
 use phpseclib\Crypt\RSA;
 use yura\Modelos\ClasificacionVerde;
 use yura\Modelos\ConfiguracionUser;
+use yura\Modelos\Pedido;
 use yura\Modelos\Rol;
 use yura\Modelos\StockApertura;
 use yura\Modelos\Submenu;
@@ -20,14 +21,13 @@ class YuraController extends Controller
 {
     public function inicio(Request $request)
     {
+        /* ========= CALIBRE ========= */
         $labels = DB::table('clasificacion_verde as v')
             ->select('v.fecha_ingreso as dia')->distinct()
             ->where('v.fecha_ingreso', '>=', opDiasFecha('-', 7, date('Y-m-d')))
             ->where('v.fecha_ingreso', '<=', opDiasFecha('-', 1, date('Y-m-d')))
             ->get();
-
         $calibre = 0;
-
         $cant_verde = 0;
         foreach ($labels as $dia) {
             $verde = ClasificacionVerde::All()->where('fecha_ingreso', '=', $dia->dia)->first();
@@ -36,11 +36,24 @@ class YuraController extends Controller
                 $cant_verde++;
             }
         }
-
         $calibre = $cant_verde > 0 ? round($calibre / $cant_verde, 2) : 0;
+
+        /* ======== PRECIO x RAMO ======== */
+        $pedidos_semanal = Pedido::All()->where('estado', 1)
+            ->where('fecha_pedido', '>=', opDiasFecha('-', 7, date('Y-m-d')))
+            ->where('fecha_pedido', '<=', opDiasFecha('-', 1, date('Y-m-d')));
+        $valor = 0;
+        $cajas = 0;
+        foreach ($pedidos_semanal as $p) {
+            $valor += $p->getPrecio();
+            $cajas += $p->getCajas();
+        }
+        $ramos_estandar = $cajas * getConfiguracionEmpresa()->ramos_x_caja;
+        $precio_x_ramo = $ramos_estandar > 0 ? round($valor / $ramos_estandar, 2) : 0;
 
         return view('adminlte.inicio', [
             'calibre' => $calibre,
+            'precio_x_ramo' => $precio_x_ramo,
         ]);
     }
 
