@@ -442,8 +442,8 @@
                                                 </button>
                                             @else
                                                 <span class="badge bg-green" style="margin-top:8px;font-size: 13px;">
-                                            <i class="fa fa-check-circle-o" aria-hidden="true"></i> Facturado
-                                        </span>
+                                                    <i class="fa fa-check-circle-o" aria-hidden="true"></i> Facturado
+                                                </span>
                                             @endif
                                         @endif
                                     @else

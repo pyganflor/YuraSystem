@@ -45,10 +45,9 @@ class ComprobanteController extends Controller
         $busquedaComprobante = $request->has('codigo_comprobante') ? $request->codigo_comprobante : '';
         $listado = Comprobante::where([
             ['comprobante.estado', isset($request->estado) ? $request->estado : 1],
-            ['tipo_comprobante', '!=', "00"]
-            //['comprobante.fecha_emision', $fecha]
+            ['tipo_comprobante', '!=', "00"],
+            ['comprobante.fecha_emision', $fecha]
         ])->join('tipo_comprobante as tc', 'comprobante.tipo_comprobante', 'tc.codigo');
-
 
         if($busquedaComprobante == "" || $busquedaComprobante== "01"){
             $listado->join('envio as e', 'comprobante.id_envio', 'e.id_envio')
@@ -68,20 +67,19 @@ class ComprobanteController extends Controller
             $listado = $listado->where('comprobante.tipo_comprobante', $busquedaComprobante);
 
         $listado = $listado->orderBy('id_comprobante', 'Desc')
-            ->select('comprobante.*', 'tc.nombre as nombre_comprobante', $busquedaComprobante == "01" ? 'dc.nombre as nombre_cliente' : 'comprobante.*')->paginate(20);
+            ->select('comprobante.*', 'tc.nombre as nombre_comprobante', ($busquedaComprobante == "01" ||$busquedaComprobante == "" ) ? 'dc.nombre as nombre_cliente' : 'comprobante.*')->paginate(20);
 
         $datos = [
             'listado' => $listado,
             'columna_causa' => ($request->estado == 3 || $request->estado == 4) ? true : false,
             'firmar_comprobante' => isset($request->estado) ? true : false,
-            'tipo_comprobante' =>$busquedaComprobante
+            'tipo_comprobante' =>$busquedaComprobante == "" ? "01" : $busquedaComprobante
         ];
 
         return view('adminlte.gestion.comprobante.partials.listado', $datos);
     }
 
-    public function generar_comprobante_factura(Request $request)
-    {
+    public function generar_comprobante_factura(Request $request){
         ini_set('max_execution_time', env('MAX_EXECUTION_TIME'));
         $valida = Validator::make($request->all(), [
             'id_envio' => 'required',
@@ -165,7 +163,7 @@ class ComprobanteController extends Controller
 
             if ((strtoupper(getConfiguracionEmpresa()->codigo_pais) != strtoupper($codigo_pais))
                 && (!isset(getCodigoDae(strtoupper($codigo_pais),Carbon::parse($request->fecha_envio)->format('m'),Carbon::parse($request->fecha_envio)->format('Y'))->codigo_dae))
-                && $request->dae == null) {
+                && $dae == null) {
                 return '<div class="alert alert-danger text-center">' .
                     '<p> No se ha configurado un código DAE para ' . $request->pais . ' en la fecha seleccionada </p>'
                     . '</div>';
@@ -296,7 +294,6 @@ class ComprobanteController extends Controller
             $infoFactura->appendChild($moneda);
             $detalles = $xml->createElement('detalles');
             $factura->appendChild($detalles);
-
 
             if($envio->pedido->tipo_especificacion === "N") {
                 foreach ($envio->pedido->detalles as $x => $det_ped) {
@@ -592,14 +589,14 @@ class ComprobanteController extends Controller
                                     }
                                 }
                             }
-                            //dd($iteracion , (int)$request->cant_variedades);
+
                             if ($iteracion === (int)$request->cant_variedades) {
                                 $save_xml = $xml->save(env('PATH_XML_GENERADOS')."/facturas/".$nombre_xml);
                                 if ($save_xml && $save_xml > 0) {
                                     $resultado = firmarComprobanteXml($nombre_xml,"/facturas/");
                                     if ($resultado) {
                                         $class = 'warning';
-                                        if ($resultado == 5) {
+                                        if ($resultado == 5) { //FIRMADO CON ÉXITO
                                             $class = 'success';
                                             $obj_comprobante = Comprobante::find($model_comprobante->id_comprobante);
                                             $obj_comprobante->estado = 1;
@@ -608,6 +605,21 @@ class ComprobanteController extends Controller
                                         $msg .= "<div class='alert text-center  alert-" . $class . "'>" .
                                             "<p> " . mensajeFirmaElectronica($resultado, getDetallesClaveAcceso($claveAcceso, 'SECUENCIAL')) . "</p>"
                                             . "</div>";
+
+                                        if($request->envio_correo == "true"){
+                                            if (file_exists(env('PATH_XML_FIRMADOS')."/facturas/".$claveAcceso.".xml")){
+                                                $archivo = file_get_contents(env('PATH_XML_FIRMADOS')."/facturas/".$claveAcceso.".xml");
+                                                $autorizacion = simplexml_load_string($archivo);
+                                                $numeroComprobante = getDetallesClaveAcceso((String)$autorizacion->infoTributaria->claveAcceso, 'SERIE').getDetallesClaveAcceso((String)$autorizacion->infoTributaria->claveAcceso, 'SECUENCIAL');
+                                                generaDocumentoPDF($autorizacion,"01",true);
+                                                enviarMailComprobanteCliente("01", (String)$autorizacion->infoAdicional->campoAdicional[1], (String)$autorizacion->infoFactura->razonSocialComprador, (String)$autorizacion->infoTributaria->claveAcceso, $numeroComprobante,true);
+                                            }else{
+                                                $msg .= "<div class='alert text-center  alert-danger'>" .
+                                                    "<p> EL correo no pudo ser enviado al cliente debido a que el archivo PDF de la factura creada no existe en el servidor, por favor contactarse con el área de sistemas. </p>"
+                                                    . "</div>";
+                                            }
+                                        }
+
                                     } else {
                                         $msg .= "<div class='alert text-center  alert-danger'>" .
                                             "<p>Hubo un error al realizar el proceso de la firma de la factura N# " . $nombre_xml . " del envío N#" . str_pad($request->id_envio, 9, "0", STR_PAD_LEFT) . ", intente nuevamente realizar la firma del mismo filtrando por GENERADOS</p>"
@@ -677,8 +689,7 @@ class ComprobanteController extends Controller
         return $msg;
     }
 
-    public function generar_comprobante_lote(Request $request)
-    {
+    public function generar_comprobante_lote(Request $request){
         ini_set('max_execution_time', env('MAX_EXECUTION_TIME'));
         $secuencial = getSecuencial();
         $punto_acceso = Usuario::where('id_usuario', session('id_usuario'))->first()->punto_acceso;
@@ -704,8 +715,19 @@ class ComprobanteController extends Controller
         $nodeComprobantes = $xml->createElement('comprobantes');
         $factura->appendChild($nodeComprobantes);
         $path_firmados = env('PATH_XML_FIRMADOS');
-        foreach ($request->arrPreFacturas as $xml_firmado) {
-            $data_xml_firmado = file_get_contents($path_firmados . $xml_firmado . ".xml");
+        $sub_carpeta = getSubCarpetaArchivo(false,$request->tipo_comprobante);
+
+        /*switch ($request->tipo_comprobante) {
+            case '01':
+                $sub_carpeta = '/facturas/';
+                break;
+            case '06':
+                $sub_carpeta = '/guias_remision/';
+                break;
+        }*/
+
+        foreach ($request->arrComprobante as $xml_firmado) {
+            $data_xml_firmado = file_get_contents($path_firmados.$sub_carpeta.$xml_firmado.".xml");
             $nodeComprobante = $xml->createElement('comprobante', $data_xml_firmado);
             $nodeComprobantes->appendChild($nodeComprobante);
         }
@@ -725,9 +747,9 @@ class ComprobanteController extends Controller
         if ($obj_comprobante->save()) {
             $model_comprobante = Comprobante::all()->last();
 
-            $save_xml = $xml->save(env('PATH_XML_FIRMADOS') . $nombre_xml);
+            $save_xml = $xml->save(env('PATH_XML_FIRMADOS') .$sub_carpeta. $nombre_xml);
             if ($save_xml && $save_xml > 0) {
-                $resultado = enviarComprobante($claveAcceso . ".xml", $claveAcceso);
+                $resultado = enviarComprobante($claveAcceso . ".xml", $claveAcceso,$sub_carpeta);
                 if ($resultado) {
                     //$obj_comprobante = Comprobante::find($model_comprobante->id_comprobante);
                     switch ($resultado[0]) {
@@ -745,8 +767,7 @@ class ComprobanteController extends Controller
                             //$this->eliminar_registro_archivo_lote($model_comprobante->id_comprobante,$claveAcceso,"firamdos");
                             break;
                     }
-                    sleep(3);
-                    $msg = respuesta_autorizacion_comprobante($claveAcceso);
+                    $msg = respuesta_autorizacion_comprobante($claveAcceso,$sub_carpeta,$request->envio_correo);
                     /*$msg = "<div class='alert text-center  alert-".$class."'>" .
                         "<p> ".mensaje_envio_comprobante($resultado[0])."</p>"
                         . "</div>";*/
@@ -761,7 +782,6 @@ class ComprobanteController extends Controller
     }
 
     public function firmar_comprobante(Request $request){
-        dd($request->carpeta);
         ini_set('max_execution_time', env('MAX_EXECUTION_TIME'));
         foreach ($request->arrNoFirmados as $idComprobante) {
             $msg = '';
@@ -835,7 +855,6 @@ class ComprobanteController extends Controller
     }
 
     public function reenviar_correo(Request $request){
-
         ini_set('max_execution_time', env('MAX_EXECUTION_TIME'));
         $msg = "<div class='alert text-center  alert-success'>" .
             "<p> El correo ha sido enviado con éxito al cliente </p>"
@@ -848,7 +867,7 @@ class ComprobanteController extends Controller
                 ['comprobante.clave_acceso',$request->comprobante]
         ])->select('dc.nombre','dc.correo','comprobante.numero_comprobante')->first();
 
-        if($comprobante->numero_comprobante == null){
+        if(isset($comprobante->numero_comprobante) && $comprobante->numero_comprobante == null){
             $msg = "<div class='alert text-center  alert-danger'>" .
             "<p> El mail no puede ser enviado debido a que este registro no posee número de comprobante, comuníquese con el departamento de tecnología </p>"
             . "</div>";
@@ -859,23 +878,38 @@ class ComprobanteController extends Controller
     }
 
     public function ver_factura_aprobada_sri($clave_acceso){
+
+        $tipo_documento = getDetallesClaveAcceso($clave_acceso,'TIPO_COMPROBANTE');
+
+        if($tipo_documento == "01")
+            $dataComprobante = Comprobante::where('clave_acceso', $clave_acceso)->select('numero_comprobante','id_envio')->first();
+
+        if($tipo_documento == "06")
+            $dataComprobante = Comprobante::where('clave_acceso', $clave_acceso)
+                ->join('detalle_guia_remision as dgr','comprobante.id_comprobante','dgr.id_comprobante')->select('id_comprobante_relacionado')->first();
+
         $cliente = new SoapClient(env('URL_WS_ATURIZACION'));
         $response = $cliente->autorizacionComprobante(["claveAccesoComprobante" => $clave_acceso]);
         $autorizacion = $response->RespuestaAutorizacionComprobante->autorizaciones->autorizacion;
-        $dataComprobante = Comprobante::where('clave_acceso',$clave_acceso)->select('numero_comprobante','id_envio')->first();
+
         $data = [
             'autorizacion' => $autorizacion,
             'img_clave_acceso' => generateCodeBarGs1128((String)$autorizacion->numeroAutorizacion),
             'obj_xml' => simplexml_load_string($autorizacion->comprobante),
             'numeroComprobante' => $dataComprobante->numero_comprobante,
-            'detalles_envio' => getEnvio($dataComprobante->id_envio)->detalles
+            'detalles_envio' => $tipo_documento == "01" ? getEnvio($dataComprobante->id_envio)->detalles : "",
+            'pedido' => $tipo_documento == "06" ? getComprobante($dataComprobante->id_comprobante_relacionado)->envio->pedido : ""
         ];
-       return PDF::loadView('adminlte.gestion.comprobante.partials.pdf.factura', compact('data'))->stream();
+        if($tipo_documento == "01")
+           return PDF::loadView('adminlte.gestion.comprobante.partials.pdf.factura', compact('data'))->stream();
+        if($tipo_documento == "06")
+           return PDF::loadView('adminlte.gestion.comprobante.partials.pdf.guia', compact('data'))->stream();
     }
 
     public function ver_pre_factura($clave_acceso){
-        if (file_exists(env('PATH_XML_FIRMADOS').$clave_acceso.".xml")){
-            $archivo = file_get_contents(env('PATH_XML_FIRMADOS').$clave_acceso.".xml");
+        $sub_carpeta = getSubCarpetaArchivo($clave_acceso);
+        if (file_exists(env('PATH_XML_FIRMADOS').$sub_carpeta.$clave_acceso.".xml")){
+            $archivo = file_get_contents(env('PATH_XML_FIRMADOS').$sub_carpeta.$clave_acceso.".xml");
             $dataComprobante = Comprobante::where('clave_acceso',$clave_acceso)->select('id_envio')->first();
             $autorizacion = simplexml_load_string($archivo);
             $data = [
@@ -894,241 +928,271 @@ class ComprobanteController extends Controller
         }
     }
 
+    public function ver_pre_guia_remision($clave_acceso){
+        $sub_carpeta = getSubCarpetaArchivo($clave_acceso);
+        if (file_exists(env('PATH_XML_FIRMADOS').$sub_carpeta.$clave_acceso.".xml")){
+            $archivo = file_get_contents(env('PATH_XML_FIRMADOS').$sub_carpeta.$clave_acceso.".xml");
+            $dataComprobante = Comprobante::where('clave_acceso',$clave_acceso)->join('detalle_guia_remision as dgr','comprobante.id_comprobante','dgr.id_comprobante')->select('id_comprobante_relacionado')->first();
+            $autorizacion = simplexml_load_string($archivo);
+
+            $data = [
+                'autorizacion' => $autorizacion,
+                'img_clave_acceso' => null,
+                'obj_xml' => $autorizacion,
+                'numeroComprobante' => getDetallesClaveAcceso((String)$autorizacion->infoTributaria->claveAcceso, 'SERIE').getDetallesClaveAcceso((String)$autorizacion->infoTributaria->claveAcceso, 'SECUENCIAL'),
+                'pedido' => getComprobante($dataComprobante->id_comprobante_relacionado)->envio->pedido
+            ];
+            return PDF::loadView('adminlte.gestion.comprobante.partials.pdf.guia', compact('data'))->stream();
+        }else{
+            $msg = "<div class='alert text-center  alert-danger'>" .
+                "<p> El archivo del documento no existe, por favor contactarse con el área de sistemas. </p>"
+                . "</div>";
+            return $msg;
+        }
+    }
+
     public function generar_comprobante_guia_remision(Request $request){
+        $msg = "";
+        $success =false;
+        $despacho = getDetalleDespacho(getComprobante($request->id_comprobante)->envio->pedido->id_pedido);
+        if($despacho == null){
+            $msg = "<div class='alert text-center  alert-danger'>" .
+                "<p>Debe realizar primero el despacho del pedido de esta factura antes de realizar la guía de remisión</p>"
+                . "</div>";
+        }else{
+            ini_set('max_execution_time', env('MAX_EXECUTION_TIME'));
+            $despacho = $despacho->despacho;
+            $valida = Validator::make($request->all(), [
+                'id_comprobante' => 'required',
+                'ruta' => 'required',
+            ]);
 
-        ini_set('max_execution_time', env('MAX_EXECUTION_TIME'));
-        $valida = Validator::make($request->all(), [
-            'id_comprobante' => 'required',
-            'ruta' => 'required',
-        ]);
+            if(!$valida->fails()) {
+                if($request->update === "true"){
+                    $dataComprobante = Comprobante::where('id_envio',$request->id_envio)
+                        ->join('detalle_factura as df','comprobante.id_comprobante','df.id_comprobante')
+                        ->join('impuesto_detalle_factura as idf','df.id_detalle_factura','idf.id_detalle_factura')
+                        ->join('desglose_envio_factura as def','comprobante.id_comprobante','def.id_comprobante')
+                        ->join('impuesto_desglose_envio_factura as idef','def.id_desglose_envio_factura','idef.id_desglose_envio_factura')
+                        ->select('clave_acceso','comprobante.id_comprobante','df.id_detalle_factura','id_impuesto_desglose_envio_factura')->get();
 
-        if(!$valida->fails()) {
-            $msg = "";
-            $success =false;
-            if($request->update === "true"){
-                $dataComprobante = Comprobante::where('id_envio',$request->id_envio)
-                    ->join('detalle_factura as df','comprobante.id_comprobante','df.id_comprobante')
-                    ->join('impuesto_detalle_factura as idf','df.id_detalle_factura','idf.id_detalle_factura')
-                    ->join('desglose_envio_factura as def','comprobante.id_comprobante','def.id_comprobante')
-                    ->join('impuesto_desglose_envio_factura as idef','def.id_desglose_envio_factura','idef.id_desglose_envio_factura')
-                    ->select('clave_acceso','comprobante.id_comprobante','df.id_detalle_factura','id_impuesto_desglose_envio_factura')->get();
+                    $secuencial = getDetallesClaveAcceso($dataComprobante[0]->clave_acceso, 'SECUENCIAL');
+                    $fechaEmision = getDetallesClaveAcceso($dataComprobante[0]->clave_acceso, 'FECHA_EMISION');
+                    $ruc = getDetallesClaveAcceso($dataComprobante[0]->clave_acceso, 'RUC');
+                    $codigo_numerico = getDetallesClaveAcceso($dataComprobante[0]->clave_acceso, 'CODIGO_NUMERICO');
+                    $tipoComprobante = getDetallesClaveAcceso($dataComprobante[0]->clave_acceso, 'TIPO_COMPROBANTE');
+                    $entorno = getDetallesClaveAcceso($dataComprobante[0]->clave_acceso, 'ENTORNO');
+                    $serie = getDetallesClaveAcceso($dataComprobante[0]->clave_acceso, 'SERIE');
+                    $tipo_emision = getDetallesClaveAcceso($dataComprobante[0]->clave_acceso, 'TIPO_EMISION');
+                    $punto_acceso=  getDetallesClaveAcceso($dataComprobante[0]->clave_acceso, 'PUNTO_ACCESO');
 
-                $secuencial = getDetallesClaveAcceso($dataComprobante[0]->clave_acceso, 'SECUENCIAL');
-                $fechaEmision = getDetallesClaveAcceso($dataComprobante[0]->clave_acceso, 'FECHA_EMISION');
-                $ruc = getDetallesClaveAcceso($dataComprobante[0]->clave_acceso, 'RUC');
-                $codigo_numerico = getDetallesClaveAcceso($dataComprobante[0]->clave_acceso, 'CODIGO_NUMERICO');
-                $tipoComprobante = getDetallesClaveAcceso($dataComprobante[0]->clave_acceso, 'TIPO_COMPROBANTE');
-                $entorno = getDetallesClaveAcceso($dataComprobante[0]->clave_acceso, 'ENTORNO');
-                $serie = getDetallesClaveAcceso($dataComprobante[0]->clave_acceso, 'SERIE');
-                $tipo_emision = getDetallesClaveAcceso($dataComprobante[0]->clave_acceso, 'TIPO_EMISION');
-                $punto_acceso=  getDetallesClaveAcceso($dataComprobante[0]->clave_acceso, 'PUNTO_ACCESO');
+                    foreach ($dataComprobante as $item)
+                        ImpuestoDesgloseEnvioFactura::where('id_desglose_envio_factura', $item->id_impuesto_desglose_envio_factura)->delete();
 
-                foreach ($dataComprobante as $item)
-                    ImpuestoDesgloseEnvioFactura::where('id_desglose_envio_factura', $item->id_impuesto_desglose_envio_factura)->delete();
+                    DesgloseEnvioFactura::where('id_comprobante',$dataComprobante[0]->id_comprobante)->delete();
+                    ImpuestoDetalleFactura::where('id_detalle_factura', $dataComprobante[0]->id_detalle_factura)->delete();
+                    DetalleFactura::where('id_comprobante', $dataComprobante[0]->id_comprobante)->delete();
+                    Comprobante::destroy($dataComprobante[0]->id_comprobante);
 
-                DesgloseEnvioFactura::where('id_comprobante',$dataComprobante[0]->id_comprobante)->delete();
-                ImpuestoDetalleFactura::where('id_detalle_factura', $dataComprobante[0]->id_detalle_factura)->delete();
-                DetalleFactura::where('id_comprobante', $dataComprobante[0]->id_comprobante)->delete();
-                Comprobante::destroy($dataComprobante[0]->id_comprobante);
+                }else{
+                    $secuencial = getSecuencial();
+                    $fechaEmision = Carbon::now()->format('dmY');
+                    $ruc = env('RUC');
+                    $codigo_numerico = env('CODIGO_NUMERICO');
+                    $tipoComprobante = '06';
+                    $entorno = env('ENTORNO');
+                    $punto_acceso = getUsuario(session('id_usuario'))->punto_acceso;
+                    $serie = '001' . $punto_acceso;
+                    $tipo_emision = '1';
+                }
 
-            }else{
-                $secuencial = getSecuencial();
-                $fechaEmision = Carbon::now()->format('dmY');
-                $ruc = env('RUC');
-                $codigo_numerico = env('CODIGO_NUMERICO');
-                $tipoComprobante = '06';
-                $entorno = env('ENTORNO');
-                $punto_acceso = getUsuario(session('id_usuario'))->punto_acceso;
-                $serie = '001' . $punto_acceso;
-                $tipo_emision = '1';
-            }
+                $datosEmpresa = getConfiguracionEmpresa();
+                $xml = new DomDocument('1.0', 'UTF-8');
+                $guiaRemision = $xml->createElement('guiaRemision');
+                $guiaRemision->setAttribute('id', 'comprobante');
+                $guiaRemision->setAttribute('version', '1.0.0');
+                $xml->appendChild($guiaRemision);
+                $infoTributaria = $xml->createElement('infoTributaria');
+                $guiaRemision->appendChild($infoTributaria);
+                $cadena = $fechaEmision . $tipoComprobante . $ruc . $entorno . $serie . $secuencial . $codigo_numerico . $tipo_emision;
+                $digito_verificador = generaDigitoVerificador($cadena);
+                $claveAcceso = $cadena . $digito_verificador;
+                $informacionTributaria = [
+                    'ambiente' => $entorno,
+                    'tipoEmision' => $tipo_emision,
+                    'razonSocial' => $datosEmpresa->razon_social,
+                    'nombreComercial' => $datosEmpresa->nombre,
+                    'ruc' => $ruc,
+                    'claveAcceso' => $claveAcceso,
+                    'codDoc' => '06',
+                    'estab' => '001',
+                    'ptoEmi' => $punto_acceso,
+                    'secuencial' => $secuencial,
+                    'dirMatriz' => $datosEmpresa->direccion_matriz
+                ];
 
-            $datosEmpresa = getConfiguracionEmpresa();
-            $xml = new DomDocument('1.0', 'UTF-8');
-            $guiaRemision = $xml->createElement('guiaRemision');
-            $guiaRemision->setAttribute('id', 'comprobante');
-            $guiaRemision->setAttribute('version', '1.0.0');
-            $xml->appendChild($guiaRemision);
-            $infoTributaria = $xml->createElement('infoTributaria');
-            $guiaRemision->appendChild($infoTributaria);
-            $cadena = $fechaEmision . $tipoComprobante . $ruc . $entorno . $serie . $secuencial . $codigo_numerico . $tipo_emision;
-            $digito_verificador = generaDigitoVerificador($cadena);
-            $claveAcceso = $cadena . $digito_verificador;
-            $informacionTributaria = [
-                'ambiente' => $entorno,
-                'tipoEmision' => $tipo_emision,
-                'razonSocial' => $datosEmpresa->razon_social,
-                'nombreComercial' => $datosEmpresa->nombre,
-                'ruc' => $ruc,
-                'claveAcceso' => $claveAcceso,
-                'codDoc' => '06',
-                'estab' => '001',
-                'ptoEmi' => $punto_acceso,
-                'secuencial' => $secuencial,
-                'dirMatriz' => $datosEmpresa->direccion_matriz
-            ];
+                foreach ($informacionTributaria as $key => $it) {
+                    $nodo = $xml->createElement($key, $it);
+                    $infoTributaria->appendChild($nodo);
+                }
 
-            foreach ($informacionTributaria as $key => $it) {
-                $nodo = $xml->createElement($key, $it);
-                $infoTributaria->appendChild($nodo);
-            }
+                $comprobante = getComprobante($request->id_comprobante);
+                $pedido = $comprobante->envio->pedido;
+                $envio = $comprobante->envio;
+                $infoGuiaRemision = $xml->createElement('infoGuiaRemision');
+                $guiaRemision->appendChild($infoGuiaRemision);
+                $informacionGuiaRemision = [
+                    'dirEstablecimiento' => $datosEmpresa->direccion_establecimiento,
+                    'dirPartida' => $datosEmpresa->direccion_establecimiento,
+                    'razonSocialTransportista' => $despacho->conductor->nombre,
+                    'tipoIdentificacionTransportista'=>$despacho->conductor->tipo_identificacion,
+                    'rucTransportista' => $despacho->conductor->ruc,
+                    'obligadoContabilidad' => env('OBLIGADO_CONTABILIDAD'),
+                    'fechaIniTransporte' => Carbon::parse($despacho->fecha_despacho)->format('d/m/Y'),
+                    'fechaFinTransporte' => Carbon::parse($despacho->fecha_despacho)->format('d/m/Y'),
+                    'placa' => $despacho->camion->placa
+                ];
 
-            $despacho = getDetalleDespacho(getComprobante($request->id_comprobante)->envio->pedido->id_pedido)->despacho;
-            $comprobante = getComprobante($request->id_comprobante);
-            $pedido = getComprobante($request->id_comprobante)->envio->pedido;
-            $envio = getComprobante($request->id_comprobante)->envio;
-            $infoGuiaRemision = $xml->createElement('infoGuiaRemision');
-            $guiaRemision->appendChild($infoGuiaRemision);
-            $informacionGuiaRemision = [
-                'dirEstablecimiento' => $datosEmpresa->direccion_establecimiento,
-                'dirPartida' => $datosEmpresa->direccion_establecimiento,
-                'razonSocialTransportista' => $despacho->conductor->nombre,
-                'rucTransportista' => $despacho->conductor->identificacion,
-                'obligadoContabilidad' => env('OBLIGADO_CONTABILIDAD'),
-                'fechaIniTransporte' => Carbon::parse($despacho->fecha_despacho)->format('d/m/Y'),
-                'fechaFinTransporte' => Carbon::parse($despacho->fecha_despacho)->format('d/m/Y'),
-                'placa' => $despacho->camion->placa
-            ];
+                foreach ($informacionGuiaRemision as $key => $iGR) {
+                    $nodo = $xml->createElement($key, $iGR);
+                    $infoGuiaRemision->appendChild($nodo);
+                }
 
-            foreach ($informacionGuiaRemision as $key => $iGR) {
-                $nodo = $xml->createElement($key, $iGR);
-                $infoGuiaRemision->appendChild($nodo);
-            }
+                $clienteTercero = FacturaClienteTercero::where('id_envio',$envio->id_envio)->first();
+                $detallesPedido = DesgloseEnvioFactura::where('id_comprobante',$request->id_comprobante)->get();
 
-            $clienteTercero = FacturaClienteTercero::where('id_envio',$envio->id_envio)->first();
-            $detallesPedido = DesgloseEnvioFactura::where('id_comprobante',$request->id_comprobante)->get();
-
-            foreach ($pedido->cliente->detalles as $det_cliente)
+                foreach ($pedido->cliente->detalles as $det_cliente)
                     if($pedido->cliente->estado == 1 && $det_cliente->estado == 1)
                         $cliente = $det_cliente;
 
-            $clienteTercero !=null
-                ? $cliente = $clienteTercero
-                : $cliente = $cliente;
+                $clienteTercero !=null
+                    ? $cliente = $clienteTercero
+                    : $cliente = $cliente;
 
-            $destinatarios = $xml->createElement('destinatarios');
-            $guiaRemision->appendChild($destinatarios);
-            $cantidad_destinatarios = 1;
-            for ($i = 0; $i < $cantidad_destinatarios; $i++) {
-                $informacionDestinatario = [
-                    'identificacionDestinatario' => $pedido->detalles[0]->agencia_carga->identificacion,
-                    'razonSocialDestinatario' => isset($cliente->nombre) ? $cliente->nombre : $cliente->nombre_cliente_tercero,
-                    'dirDestinatario' => $pedido->detalles[0]->agencia_carga->nombre,
-                    'motivoTraslado' => 'Egreso por venta',
-                    'ruta' => $request->ruta,
-                    'codDocSustento' => $comprobante->tipo_comprobante,
-                    'numDocSustento' => $comprobante->numero_comprobante,
-                    'numAutDocSustento' => $comprobante->clave_acceso,
-                    'fechaEmisionDocSustento' => Carbon::parse($comprobante->fecha_emision)->format('d/m/Y')
-                ];
-                $destinatario = $xml->createElement('destinatario');
-                $destinatarios->appendChild($destinatario);
-                foreach ($informacionDestinatario as $key => $iI) {
-                    $nodo = $xml->createElement($key, $iI);
-                    $destinatario->appendChild($nodo);
-                }
-
-                $detalles = $xml->createElement('detalles');
-                $destinatario->appendChild($detalles);
-
-                foreach ($detallesPedido as $det_ped) {
-                        $informacionDetallePedido=[
-                        'codigoInterno' => $det_ped->codigo_principal,
-                        'descripcion' => $det_ped->descripcion,
-                        'cantidad' => $det_ped->cantidad
+                $destinatarios = $xml->createElement('destinatarios');
+                $guiaRemision->appendChild($destinatarios);
+                $cantidad_destinatarios = 1;
+                for ($i = 0; $i < $cantidad_destinatarios; $i++) {
+                    $informacionDestinatario = [
+                        'identificacionDestinatario' => $pedido->detalles[0]->agencia_carga->identificacion,
+                        'razonSocialDestinatario' => isset($cliente->nombre) ? $cliente->nombre : $cliente->nombre_cliente_tercero,
+                        'dirDestinatario' => $pedido->detalles[0]->agencia_carga->nombre,
+                        'motivoTraslado' => 'Egreso por venta',
+                        'ruta' => $request->ruta,
+                        'codDocSustento' => $comprobante->tipo_comprobante,
+                        'numDocSustento' => $comprobante->numero_comprobante,
+                        'numAutDocSustento' => $comprobante->clave_acceso,
+                        'fechaEmisionDocSustento' => Carbon::parse($comprobante->fecha_emision)->format('d/m/Y')
                     ];
-                    $detalle = $xml->createElement('detalle');
-                    $detalles->appendChild($detalle);
-                    foreach ($informacionDetallePedido as $key => $iI) {
+                    $destinatario = $xml->createElement('destinatario');
+                    $destinatarios->appendChild($destinatario);
+                    foreach ($informacionDestinatario as $key => $iI) {
                         $nodo = $xml->createElement($key, $iI);
-                        $detalle->appendChild($nodo);
+                        $destinatario->appendChild($nodo);
                     }
-                }
-            }
 
-            $informacionAdicional = $xml->createElement('infoAdicional');
-            $guiaRemision->appendChild($informacionAdicional);
+                    $detalles = $xml->createElement('detalles');
+                    $destinatario->appendChild($detalles);
 
-            $campos_adicionales = [
-                'Dirección'=> $cliente->direccion,
-                'Teléfono' => $cliente->telefono,
-                'Email' => getDetalleDespacho($pedido->id_pedido)->despacho->mail_resp_ofi_despacho,
-            ];
-
-            foreach ($campos_adicionales as $key => $ca) {
-                $campo_adicional = $xml->createElement('campoAdicional', $ca);
-                $campo_adicional->setAttribute('nombre', $key);
-                $informacionAdicional->appendChild($campo_adicional);
-            }
-            $xml->formatOutput = true;
-            $xml->saveXML();
-            $nombre_xml = $claveAcceso . ".xml";
-            //dd($xml);
-
-            $obj_comprobante = new Comprobante;
-            $obj_comprobante->clave_acceso = $claveAcceso;
-            $obj_comprobante->tipo_comprobante = "06"; //CÓDIGO DE GUÍA DE REMISIÓN
-
-            if ($obj_comprobante->save()) {
-                $model_comprobante = Comprobante::all()->last();
-                bitacora('comprobante', $model_comprobante->id_comprobante, 'I', 'Creación de un nuevo comprobante electrónico');
-
-                $objDetalleGuiaRemision = new DetalleGuiaRemision;
-                $objDetalleGuiaRemision->id_comprobante = $model_comprobante->id_comprobante;
-
-                if($objDetalleGuiaRemision->save()){
-                    $model_detalle_guia_remision = DetalleGuiaRemision::all()->last();
-                    bitacora('detalle_guia_remision', $model_detalle_guia_remision->id_detalle_guia_remision, 'I', 'Creación de un nuevo detalle de guía de remisión');
-
-                    $save_xml = $xml->save(env('PATH_XML_GENERADOS') ."/guias_remision/". $nombre_xml);
-                    if ($save_xml && $save_xml > 0) {
-                        $resultado = firmarComprobanteXml($nombre_xml,"/guias_remision/");
-                        if ($resultado) {
-                            $class = 'warning';
-                            if ($resultado == 5) {
-                                $class = 'success';
-                                $obj_comprobante = Comprobante::find($model_comprobante->id_comprobante);
-                                $obj_comprobante->estado = 1;
-                                $obj_comprobante->save();
-                            }
-                            $msg = "<div class='alert text-center  alert-" . $class . "'>" .
-                                "<p> " . mensajeFirmaElectronica($resultado, getDetallesClaveAcceso($claveAcceso, 'SECUENCIAL')) . "</p>"
-                                . "</div>";
-                            $success =true;
-                        } else {
-                            $msg = "<div class='alert text-center  alert-danger'>" .
-                                "<p>Hubo un error al realizar el proceso de la firma de la guía de remisión N# " . getDetallesClaveAcceso($claveAcceso, 'SECUENCIAL') . ", intente nuevamente realizar la firma del mismo filtrando por GENERADOS</p>"
-                                . "</div>";
+                    foreach ($detallesPedido as $det_ped) {
+                        $informacionDetallePedido=[
+                            'codigoInterno' => $det_ped->codigo_principal,
+                            'descripcion' => $det_ped->descripcion,
+                            'cantidad' => $det_ped->cantidad
+                        ];
+                        $detalle = $xml->createElement('detalle');
+                        $detalles->appendChild($detalle);
+                        foreach ($informacionDetallePedido as $key => $iI) {
+                            $nodo = $xml->createElement($key, $iI);
+                            $detalle->appendChild($nodo);
                         }
                     }
+                }
+
+                $informacionAdicional = $xml->createElement('infoAdicional');
+                $guiaRemision->appendChild($informacionAdicional);
+
+                $campos_adicionales = [
+                    'Dirección'=> $cliente->direccion,
+                    'Teléfono' => $cliente->telefono,
+                    'Email' => getDetalleDespacho($pedido->id_pedido)->despacho->mail_resp_ofi_despacho,
+                ];
+
+                foreach ($campos_adicionales as $key => $ca) {
+                    $campo_adicional = $xml->createElement('campoAdicional', $ca);
+                    $campo_adicional->setAttribute('nombre', $key);
+                    $informacionAdicional->appendChild($campo_adicional);
+                }
+                $xml->formatOutput = true;
+                $xml->saveXML();
+                $nombre_xml = $claveAcceso . ".xml";
+
+                $obj_comprobante = new Comprobante;
+                $obj_comprobante->clave_acceso = $claveAcceso;
+                $obj_comprobante->tipo_comprobante = "06"; //CÓDIGO DE GUÍA DE REMISIÓN
+
+                if ($obj_comprobante->save()) {
+                    $model_comprobante = Comprobante::all()->last();
+                    bitacora('comprobante', $model_comprobante->id_comprobante, 'I', 'Creación de un nuevo comprobante electrónico');
+
+                    $objDetalleGuiaRemision = new DetalleGuiaRemision;
+                    $objDetalleGuiaRemision->id_comprobante = $model_comprobante->id_comprobante;
+                    $objDetalleGuiaRemision->id_comprobante_relacionado = Comprobante::where('clave_acceso',$comprobante->clave_acceso)->first()->id_comprobante;
+                    if($objDetalleGuiaRemision->save()){
+                        $model_detalle_guia_remision = DetalleGuiaRemision::all()->last();
+                        bitacora('detalle_guia_remision', $model_detalle_guia_remision->id_detalle_guia_remision, 'I', 'Creación de un nuevo detalle de guía de remisión');
+
+                        $save_xml = $xml->save(env('PATH_XML_GENERADOS') ."/guias_remision/". $nombre_xml);
+                        if ($save_xml && $save_xml > 0) {
+                            $resultado = firmarComprobanteXml($nombre_xml,"/guias_remision/");
+                            if ($resultado) {
+                                $class = 'warning';
+                                if ($resultado == 5) {
+                                    $class = 'success';
+                                    $obj_comprobante = Comprobante::find($model_comprobante->id_comprobante);
+                                    $obj_comprobante->estado = 1;
+                                    $obj_comprobante->save();
+                                }
+                                $msg = "<div class='alert text-center  alert-" . $class . "'>" .
+                                    "<p> " . mensajeFirmaElectronica($resultado, getDetallesClaveAcceso($claveAcceso, 'SECUENCIAL')) . "</p>"
+                                    . "</div>";
+                                $success =true;
+                            } else {
+                                $msg = "<div class='alert text-center  alert-danger'>" .
+                                    "<p>Hubo un error al realizar el proceso de la firma de la guía de remisión N# " . getDetallesClaveAcceso($claveAcceso, 'SECUENCIAL') . ", intente nuevamente realizar la firma del mismo filtrando por GENERADOS</p>"
+                                    . "</div>";
+                            }
+                        }
+                    }else{
+                        Comprobante::destroy($model_comprobante->id_comprpobante);
+                        $msg = "<div class='alert text-center  alert-danger'>" .
+                            "<p>La guía de remisión " . $nombre_xml . str_pad(getDetallesClaveAcceso($claveAcceso, 'SECUENCIAL'), 9, "0", STR_PAD_LEFT) . " no pudo ser generada, por favor intente generarla nuevamente</p>"
+                            . "</div>";
+                    }
                 }else{
-                    Comprobante::destroy($model_comprobante->id_comprpobante);
                     $msg = "<div class='alert text-center  alert-danger'>" .
                         "<p>La guía de remisión " . $nombre_xml . str_pad(getDetallesClaveAcceso($claveAcceso, 'SECUENCIAL'), 9, "0", STR_PAD_LEFT) . " no pudo ser generada, por favor intente generarla nuevamente</p>"
                         . "</div>";
                 }
-            }else{
-                $msg = "<div class='alert text-center  alert-danger'>" .
-                    "<p>La guía de remisión " . $nombre_xml . str_pad(getDetallesClaveAcceso($claveAcceso, 'SECUENCIAL'), 9, "0", STR_PAD_LEFT) . " no pudo ser generada, por favor intente generarla nuevamente</p>"
-                    . "</div>";
-            }
-        }else {
-            $success = false;
-            $errores = '';
-            foreach ($valida->errors()->all() as $mi_error) {
-                if ($errores == '') {
-                    $errores = '<li>' . $mi_error . '</li>';
-                } else {
-                    $errores .= '<li>' . $mi_error . '</li>';
+            }else {
+                $success = false;
+                $errores = '';
+                foreach ($valida->errors()->all() as $mi_error) {
+                    if ($errores == '') {
+                        $errores = '<li>' . $mi_error . '</li>';
+                    } else {
+                        $errores .= '<li>' . $mi_error . '</li>';
+                    }
                 }
+                $msg = '<div class="alert alert-danger">' .
+                    '<p class="text-center">¡Por favor corrija los siguientes errores!</p>' .
+                    '<ul>' .
+                    $errores .
+                    '</ul>' .
+                    '</div>';
             }
-            $msg = '<div class="alert alert-danger">' .
-                '<p class="text-center">¡Por favor corrija los siguientes errores!</p>' .
-                '<ul>' .
-                $errores .
-                '</ul>' .
-                '</div>';
         }
+
         return [
             'mensaje' => $msg,
             'success' => $success

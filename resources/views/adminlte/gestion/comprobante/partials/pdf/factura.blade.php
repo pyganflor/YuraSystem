@@ -36,7 +36,7 @@
                     <td style="font-size:15px;padding:5px">FACTURA</td>
                 </tr>
                 <tr>
-                    <td style="font-size:13px;padding:5px">No. {{$data['numeroComprobante']}}</td>
+                    <td style="font-size:13px;padding:5px">No. {{"001-".getDetallesClaveAcceso((String)$data['obj_xml']->infoTributaria->claveAcceso, 'PUNTO_ACCESO')."-".getDetallesClaveAcceso((String)$data['obj_xml']->infoTributaria->claveAcceso, 'SECUENCIAL')}}</td>
                 </tr>
                 <tr>
                     <td style="font-size:13px;padding:5px">NÚMERO DE AUTORIZACIÓN</td>
@@ -51,10 +51,10 @@
                     </td>
                 </tr>
                 <tr>
-                    <td style="font-size:13px;padding:5px">FECHA Y HORA <br/>DE AUTORIZACIÓN: {{(String)$data['autorizacion']->fechaAutorizacion}}</td>
+                    <td style="font-size:13px;padding:5px">FECHA Y HORA <br/>DE AUTORIZACIÓN: {{isset($data['autorizacion']->fechaAutorizacion) ? (String)$data['autorizacion']->fechaAutorizacion : ""}}</td>
                 </tr>
                 <tr>
-                    <td style="font-size:13px;padding:5px">AMBIENTE: {{(String)$data['autorizacion']->ambiente}}</td>
+                    <td style="font-size:13px;padding:5px">AMBIENTE: {{isset($data['autorizacion']->ambiente) ? (String)$data['autorizacion']->ambiente : ""}}</td>
                 </tr>
                 <tr>
                     <td style="font-size:13px;padding:5px">EMISIÓN: {{(String)$data['obj_xml']->infoTributaria->tipoEmision == 1 ? "NORMAL" : "No se encontró tipo de emisión"}}</td>

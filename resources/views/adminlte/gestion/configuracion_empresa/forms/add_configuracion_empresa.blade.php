@@ -53,11 +53,9 @@
                     </span>
                     <select class="form-control" id="moneda" onchange="icono_moneda()">
                         <option disabled selected>Seleccione</option>
-
                         @foreach($iconoMoneda as $moneda)
                             @php
                                 $config_empresa[0]->moneda === $moneda->nombre ? $selected = 'selected=selected' : $selected = '';
-
                             @endphp
                             <option value="{{$moneda->nombre}}" {{$selected}}>
                                 @if($moneda->nombre==='usd')  {{'Dolar'}} @endif
@@ -71,6 +69,30 @@
                             </option>
                         @endforeach
                     </select>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group input-group">
+                    <span class="input-group-addon" style="background-color: #e9ecef">Teléfono</span>
+                    <input type="text" id="telefono" name="telefono" class="form-control" required maxlength="300"
+                           autocomplete="off" minlength="1"
+                           value="{!! isset($config_empresa[0]->telefono) ? $config_empresa[0]->telefono : '' !!}">
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group input-group">
+                    <span class="input-group-addon" style="background-color: #e9ecef">Fax</span>
+                    <input type="text" id="fax" name="fax" class="form-control" maxlength="300"
+                           autocomplete="off" minlength="1"
+                           value="{!! isset($config_empresa[0]->fax) ? $config_empresa[0]->fax : '' !!}">
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group input-group">
+                    <span class="input-group-addon" style="background-color: #e9ecef">Correo</span>
+                    <input type="email" id="correo" name="correo" class="form-control" required maxlength="300"
+                           autocomplete="off" minlength="1"
+                           value="{!! isset($config_empresa[0]->correo) ? $config_empresa[0]->correo : '' !!}">
                 </div>
             </div>
             <div class="col-md-6">

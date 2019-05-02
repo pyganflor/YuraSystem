@@ -51,7 +51,7 @@
                 </td>
                 <td style="border-color: #9d9d9d;vertical-align: middle">
                     <input type="date" id="fecha_despacho" name="fecha_despacho" value="{{now()->format('Y-m-d')}}"
-                           readonly style="width: 100%;border: none;" required>
+                            style="width: 100%;border: none;" required>
                 </td>
                 <td class="text-center" style="border-color: #9d9d9d;vertical-align: middle">
                     <b>Sello de salida</b>
@@ -188,9 +188,13 @@
                             @php $piezas_totales += $piezas; @endphp
                         </td>
                         <td class="text-center" style="border-color: #9d9d9d;vertical-align: middle">
-                           {{ getPedido($pedido->id_pedido)->envios[0]->detalles[0]->id_aerolinea ==  ""
-                                ? "No se ha asignado aerolínea"
-                                : getPedido($pedido->id_pedido)->envios[0]->detalles[0]->aerolinea->codigo}}
+                            @if(getPedido($pedido->id_pedido)->envios->count() >0)
+                                {{ getPedido($pedido->id_pedido)->envios[0]->detalles[0]->id_aerolinea ==  ""
+                                     ? "No se ha asignado aerolínea"
+                                     : getPedido($pedido->id_pedido)->envios[0]->detalles[0]->aerolinea->codigo}}
+                            @else
+                                {{"No se ha configurado el envío del pedido"}}
+                            @endif
                         </td>
                         <td class="text-center" style="border-color: #9d9d9d;vertical-align: middle">
 
@@ -248,7 +252,7 @@
                            value="{{isset($datos_responsables->resp_transporte) ? $datos_responsables->resp_transporte : ""}}" required>
                 </td>
                 <td class="text-center" style="border-color: #9d9d9d;vertical-align: middle">
-                    <label>Guradia de turno</label>
+                    <label>Guardia de turno</label>
                     <input type="text" id="nombre_guardia_turno" style="text-align: center" class="form-control input-sm" name="nombre_guardia_turno"
                            value="{{isset($datos_responsables->guardia_turno) ? $datos_responsables->guardia_turno : ""}}" required>
                 </td>

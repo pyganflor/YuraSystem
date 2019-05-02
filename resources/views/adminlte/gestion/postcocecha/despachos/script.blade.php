@@ -39,17 +39,17 @@
             _token  : '{{csrf_token()}}',
             pedidos : pedidos
         };
-        $.get('{{url('despachos/crear_despacho')}}', datos, function (retorno) {
+        $.post('{{url('despachos/crear_despacho')}}', datos, function (retorno) {
             modal_form('modal_despacho', retorno, '<i class="fa fa-truck" ></i> Crear despacho', true, false, '{{isPC() ? '80%' : ''}}', function () {
                 store_despacho();
                 $.LoadingOverlay('hide');
             });
         });
-        $.LoadingOverlay('hide');
     }
 
     function store_despacho() {
         if($("#form_despacho").valid()){
+            $.LoadingOverlay('show');
             arr_sellos = [];
             arr_pedidos = [];
             $.each($(".sello"),function (i,j) {
@@ -93,6 +93,7 @@
             post_jquery('despachos/store_despacho', datos, function () {
                 cerrar_modals();
                 listar_resumen_pedidos($('#fecha_pedidos_search').val());
+                $.LoadingOverlay('hide');
             });
 
         }
@@ -172,4 +173,6 @@
             $.LoadingOverlay("hide");
         });
     });
+
+
 </script>

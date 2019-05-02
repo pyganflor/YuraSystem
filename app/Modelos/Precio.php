@@ -18,6 +18,7 @@ class Precio extends Model
         'estado',
         'cantidad',
         'id_detalle_especificacionempaque',
+        'codigo_presentacion'
     ];
 
     public function cliente()

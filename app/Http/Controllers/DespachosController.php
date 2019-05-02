@@ -174,7 +174,7 @@ class DespachosController extends Controller
             $objDespacho->id_asist_comrecial_ext = $request->id_asist_comercial;
             $objDespacho->resp_transporte = $request->nombre_transportista;
             $objDespacho->id_resp_transporte = $request->firma_id_transportista;
-            $objDespacho->correo_oficina_despacho = $request->correo_oficina_despacho;
+            $objDespacho->mail_resp_ofi_despacho = $request->correo_oficina_despacho;
             $objDespacho->n_despacho = getSecuenciaDespacho();
 
             if ($objDespacho->save()) {

@@ -13,8 +13,7 @@ class DetalleGuiaRemision extends Model
 
     protected $fillable = [
         'id_comprobante',
+        'id_comprobante_relacionado'
     ];
-    public function comprobante(){
-        return $this->belongsTo('yura\Modelos\Comprobante','id_comprobante');
-    }
+
 }
