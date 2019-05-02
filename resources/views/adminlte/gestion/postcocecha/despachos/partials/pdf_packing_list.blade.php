@@ -89,10 +89,16 @@
                 <td style="border: 1px solid black;font-size:13px" >DETALLE POR CAJA / BOXES CONTENT</td>
             </tr>
         </thead>
-        <tbody>
-            <tr>
-                <td></td>
-            </tr>
+        <tbody style="border: 1px solid black">
+            @foreach($detallePedido as $det_ped)
+                <tr>
+                    <td style="border: 1px solid black;font-size:13px" >{{$det_ped['piezas']}}</td>
+                    <td style="border: 1px solid black;font-size:13px" >{{$det_ped['ramos_x_caja']}}</td>
+                    <td style="border: 1px solid black;font-size:13px" >B/N</td>
+                    <td style="border: 1px solid black;font-size:13px" >{{$det_ped['ramos_totales']}}</td>
+                    <td style="border: 1px solid black;font-size:13px" >{{$det_ped['presentacion']}}</td>
+                </tr>
+            @endforeach
         </tbody>
     </table>
 @elseif($pedido->tipo_especificacion==="T")
