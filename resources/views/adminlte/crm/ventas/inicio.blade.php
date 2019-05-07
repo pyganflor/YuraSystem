@@ -38,7 +38,7 @@
                     <strong>Gráficas</strong>
 
                     <select name="filtro_predeterminado_rango" id="filtro_predeterminado_rango" style="height: 30px;"
-                            onchange="filtrar_predeterminado(1)">
+                            onchange="filtrar_predeterminado()">
                         <option value="1">1 Mes</option>
                         <option value="2">3 Meses</option>
                         <option value="3">6 Meses</option>
@@ -46,7 +46,7 @@
                     </select>
 
                     <select name="filtro_predeterminado_criterio" id="filtro_predeterminado_criterio" style="height: 30px;"
-                            onchange="filtrar_predeterminado(1)">
+                            onchange="filtrar_predeterminado()">
                         @foreach(getClientes() as $c)
                             <option value="{{$c->id_cliente}}">{{$c->detalle()->nombre}}</option>
                         @endforeach
@@ -60,7 +60,7 @@
                         @endforeach
                     </select>
 
-                    <button type="button" class="btn btn-sm btn-default" onclick="filtrar_predeterminado(0)">
+                    <button type="button" class="btn btn-sm btn-default" onclick="filtrar_predeterminado()">
                         <i class="fa fa-fw fa-search"></i>
                     </button>
                 </h3>

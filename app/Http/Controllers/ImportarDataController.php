@@ -214,7 +214,6 @@ class ImportarDataController extends Controller
 
     public function importar_venta(Request $request)
     {
-        //dd($request->all());
         ini_set('max_execution_time', env('MAX_EXECUTION_TIME'));
         $valida = Validator::make($request->all(), [
             'file_ventas' => 'required',
@@ -229,49 +228,50 @@ class ImportarDataController extends Controller
             $document = PHPExcel_IOFactory::load($request->file_ventas);
             $activeSheetData = $document->getActiveSheet()->toArray(null, true, true, true);
 
+            //dd($activeSheetData, $request->all());
             $titles = $activeSheetData[1];
             foreach ($activeSheetData as $pos_row => $row) {
                 if ($pos_row > 1) {
                     if ($row['A'] != '') {
                         $id_cliente = intval($row['A']);
                         foreach ($row as $pos_col => $col) {
-                            if ($col > 0) {
-                                if ($pos_col != 'A') {
-                                    $historico = HistoricoVentas::All()
-                                        ->where('id_cliente', $id_cliente)
-                                        ->where('id_variedad', $request->variedad_ventas)
-                                        ->where('mes', $titles[$pos_col])
-                                        ->where('anno', $request->anno_ventas)
-                                        ->first();
+                            if (str_replace('$', '', str_replace(',', '', $col)) > 0 && $titles[$pos_col] != '' && $pos_col != 'A') {
+                                $historico = HistoricoVentas::All()
+                                    ->where('id_cliente', $id_cliente)
+                                    ->where('id_variedad', $request->variedad_ventas)
+                                    ->where('mes', $titles[$pos_col])
+                                    ->where('anno', $request->anno_ventas)
+                                    ->first();
 
-                                    if ($historico != '') {
-                                        dd(1);
-                                        if ($request->campo_ventas == 'V')
-                                            $historico->valor += str_replace(',', '', $col);
-                                        if ($request->campo_ventas == 'F')
-                                            $historico->cajas_fisicas += str_replace(',', '', $col);
-                                        if ($request->campo_ventas == 'Q')
-                                            $historico->cajas_equivalentes += str_replace(',', '', $col);
-                                        if ($request->campo_ventas == 'P')
-                                            $historico->precio_x_ramo = round(str_replace(',', '', $col) / $historico->precio_x_ramo, 2);
-                                    } else {
-                                        $historico = new HistoricoVentas();
-                                        $historico->id_cliente = $id_cliente;
-                                        $historico->id_variedad = $request->variedad_ventas;
-                                        $historico->anno = $request->anno_ventas;
-                                        $historico->mes = $titles[$pos_col];
-                                        if ($request->campo_ventas == 'V')
-                                            $historico->valor = str_replace(',', '', $col);
-                                        if ($request->campo_ventas == 'F')
-                                            $historico->cajas_fisicas = str_replace(',', '', $col);
-                                        if ($request->campo_ventas == 'Q')
-                                            $historico->cajas_equivalentes = str_replace(',', '', $col);
-                                        if ($request->campo_ventas == 'P')
-                                            $historico->precio_x_ramo = str_replace(',', '', $col) / $historico->precio_x_ramo;
-                                    }
-
-                                    $historico->save();
+                                if ($historico != '') {
+                                    if ($request->campo_ventas == 'V')
+                                        $historico->valor += str_replace('$', '', str_replace(',', '', $col));
+                                    if ($request->campo_ventas == 'F')
+                                        $historico->cajas_fisicas += str_replace('$', '', str_replace(',', '', $col));
+                                    if ($request->campo_ventas == 'Q')
+                                        $historico->cajas_equivalentes += str_replace('$', '', str_replace(',', '', $col));
+                                    if ($request->campo_ventas == 'P')
+                                        if ($historico->precio_x_ramo > 0)
+                                            $historico->precio_x_ramo = round(str_replace('$', '', str_replace(',', '', $col)) / $historico->precio_x_ramo, 2);
+                                        else
+                                            $historico->precio_x_ramo = str_replace('$', '', str_replace(',', '', $col));
+                                } else {
+                                    $historico = new HistoricoVentas();
+                                    $historico->id_cliente = $id_cliente;
+                                    $historico->id_variedad = $request->variedad_ventas;
+                                    $historico->anno = $request->anno_ventas;
+                                    $historico->mes = $titles[$pos_col];
+                                    if ($request->campo_ventas == 'V')
+                                        $historico->valor = str_replace('$', '', str_replace(',', '', $col));
+                                    if ($request->campo_ventas == 'F')
+                                        $historico->cajas_fisicas = str_replace('$', '', str_replace(',', '', $col));
+                                    if ($request->campo_ventas == 'Q')
+                                        $historico->cajas_equivalentes = str_replace('$', '', str_replace(',', '', $col));
+                                    if ($request->campo_ventas == 'P')
+                                        $historico->precio_x_ramo = str_replace('$', '', str_replace(',', '', $col));
                                 }
+
+                                $historico->save();
                             }
                         }
                     }

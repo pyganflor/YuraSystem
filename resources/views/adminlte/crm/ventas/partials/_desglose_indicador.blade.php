@@ -4,6 +4,7 @@
     construir_char_desglose_indicador('{{$option}}');
 
     function construir_char_desglose_indicador(label) {
+        tipo = 'bar';
         labels = [];
         datasets = [];
         @for($i = 0; $i < count($labels); $i++)
@@ -25,6 +26,7 @@
             @foreach($variedad['precios'] as $item)
             data_list.push("{{$item}}");
             @endforeach
+                tipo = 'line';
         } else if (label == 'precios') {
             @foreach($variedad['precios'] as $item)
             data_list.push("{{$item}}");
@@ -33,8 +35,8 @@
             @foreach($variedad['tallos'] as $item)
             data_list.push("{{$item}}");
             @endforeach
+                tipo = 'line';
         }
-
 
         datasets.push({
             label: '{{$variedad['variedad']->nombre}}' + ' ',
@@ -48,7 +50,7 @@
 
             ctx = document.getElementById('chart_desglose_indicador').getContext('2d');
         myChart = new Chart(ctx, {
-            type: 'bar',
+            type: tipo,
             data: {
                 labels: labels,
                 datasets: datasets

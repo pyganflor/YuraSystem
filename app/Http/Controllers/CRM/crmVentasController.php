@@ -49,9 +49,8 @@ class crmVentasController extends Controller
         ];
 
         /* ======= AÑOS ======= */
-        $annos = DB::table('pedido as p')
-            ->select(DB::raw('year(p.fecha_pedido) as anno'))->distinct()
-            ->where('p.estado', '=', 1)
+        $annos = DB::table('historico_ventas')
+            ->select('anno')->distinct()
             ->get();
 
         return view('adminlte.crm.ventas.inicio', [
@@ -65,6 +64,8 @@ class crmVentasController extends Controller
     {
         $desde = $request->desde;
         $hasta = $request->hasta;
+
+        $arreglo_annos = [];
         if ($request->has('annos')) {
             $view = '_annos';
 
@@ -72,6 +73,48 @@ class crmVentasController extends Controller
 
             $data = [];
             $periodo = 'mensual';
+
+            foreach ($request->annos as $anno) {
+                $arreglo_valores = [];
+                $arreglo_fisicas = [];
+                $arreglo_cajas = [];
+                $arreglo_precios = [];
+
+                foreach (getMeses(TP_NUMERO) as $mes) {
+                    $query = DB::table('historico_ventas')
+                        ->select(DB::raw('sum(valor) as valor'), DB::raw('sum(cajas_fisicas) as cajas_fisicas'),
+                            DB::raw('sum(cajas_equivalentes) as cajas_equivalentes'),
+                            DB::raw('sum(precio_x_ramo) as precio_x_ramo'))
+                        ->where('anno', '=', $anno)
+                        ->where('mes', '=', $mes);
+                    $count_query = DB::table('historico_ventas')
+                        ->select(DB::raw('count(*) as count'))
+                        ->where('anno', '=', $anno)
+                        ->where('mes', '=', $mes);
+
+                    if ($request->x_cliente == 'true' && $request->id_cliente != '') {
+                        $query = $query->where('id_cliente', '=', $request->id_cliente)
+                            ->get();
+                        $count_query = $count_query->where('id_cliente', '=', $request->id_cliente)
+                            ->get();
+                    } else {
+                        $query = $query->get();
+                        $count_query = $count_query->get();
+                    }
+
+                    array_push($arreglo_valores, count($query) > 0 ? round($query[0]->valor, 2) : 0);
+                    array_push($arreglo_fisicas, count($query) > 0 ? round($query[0]->cajas_fisicas, 2) : 0);
+                    array_push($arreglo_cajas, count($query) > 0 ? round($query[0]->cajas_equivalentes, 2) : 0);
+                    array_push($arreglo_precios, (count($query) > 0 && $count_query[0]->count > 0) ? round($query[0]->precio_x_ramo / $count_query[0]->count, 2) : 0);
+                }
+                array_push($arreglo_annos, [
+                    'anno' => $anno,
+                    'valores' => $arreglo_valores,
+                    'fisicas' => $arreglo_fisicas,
+                    'equivalentes' => $arreglo_cajas,
+                    'precios' => $arreglo_precios,
+                ]);
+            }
         } else {
             $view = 'graficas';
 
@@ -236,6 +279,7 @@ class crmVentasController extends Controller
 
         return view('adminlte.crm.ventas.partials.' . $view, [
             'labels' => $fechas,
+            'arreglo_annos' => $arreglo_annos,
             'data' => $data,
             'periodo' => $periodo,
         ]);

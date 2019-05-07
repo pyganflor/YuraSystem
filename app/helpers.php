@@ -103,6 +103,7 @@ define('TP_COMPLETO', 0);
 define('TP_ABREVIADO', 1);
 define('TP_MUY_ABREVIADO', 2);
 define('TP_LETRA', 3);
+define('TP_NUMERO', 4);
 
 define('DIAS_SEMANA', serialize(['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo']));
 define('DIAS_SEMANA_ABREVIADOS', serialize(['Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sáb', 'Dom']));
@@ -112,6 +113,7 @@ define('MESES', serialize(['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio'
 define('MESES_ABREVIADOS', serialize(['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sept', 'Oct', 'Nov', 'Dic']));
 define('MESES_MUY_ABREVIADOS', serialize(['En', 'Fb', 'Mz', 'Ab', 'My', 'Jn', 'Jl', 'Ag', 'Sp', 'Oc', 'Nv', 'Dc']));
 define('MESES_LETRA', serialize(['E', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D']));
+define('MESES_NUMERO', serialize(['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12']));
 define('A_Z', serialize(range('A', 'Z')));
 
 function getListColores()
@@ -133,6 +135,10 @@ function getMeses($tipo = TP_COMPLETO, $formato = FR_ARREGLO)
 
         case TP_LETRA:
             $valor = unserialize(MESES_LETRA);
+            break;
+
+        case TP_NUMERO:
+            $valor = unserialize(MESES_NUMERO);
             break;
         default:
             $valor = unserialize(MESES);
