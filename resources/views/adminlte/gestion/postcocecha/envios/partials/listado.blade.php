@@ -42,9 +42,9 @@
                                id="table_content_recepciones">
                             <thead>
                                 <tr style="background-color: #dd4b39; color: white">
-                                    {{--<th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d; color: white">
+                                    <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d; color: white">
                                         MARACACIONES
-                                    </th>--}}
+                                    </th>
                                     <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
                                         style="border-color: #9d9d9d;width: 80px">
                                         PIEZAS
@@ -100,7 +100,7 @@
                                 @foreach(getEspecificacion($det_ped->cliente_especificacion->especificacion->id_especificacion)->especificacionesEmpaque as $y => $esp_emp)
                                     @foreach($esp_emp->detalles as $z => $det_esp_emp)
                                         <tr style="border-top: {{$det_ped->cliente_especificacion->especificacion->id_especificacion != $anterior ? '2px solid #9d9d9d' : ''}}" >
-                                            {{--@if($z == 0 && $y == 0)
+                                            @if($z == 0 && $y == 0)
                                                 <td class="text-center" style="border-color: #9d9d9d;vertical-align: middle" id="td_datos_exportacion_"
                                                     rowspan="{{getCantidadDetallesByEspecificacion($det_ped->cliente_especificacion->id_especificacion)}}">
                                                     @if(count(getDatosExportacionCliente($det_ped->id_detalle_pedido))>0)
@@ -111,7 +111,7 @@
                                                         </ul>
                                                     @endif
                                                 </td>
-                                            @endif--}}
+                                            @endif
                                             @if($det_ped->cliente_especificacion->especificacion->id_especificacion != $anterior)
                                                 <td style="border-color: #9d9d9d; padding: 0px; vertical-align: middle; width: 100px; "
                                                     class="text-center" rowspan="{{getCantidadDetallesByEspecificacion($det_ped->cliente_especificacion->especificacion->id_especificacion)}}">
@@ -209,12 +209,12 @@
                                                 <h3 class="box-title">DATOS DE EXPORTACIÓN</h3>
                                             </div>
                                             <div class="col-md-6 text-right">
-                                                <button type="button" class="btn btn-{{$factura_tercero ?  "primary" : "default"}}" title="Facturar a terceros" onclick="factura_tercero('{{$envio->id_envio}}')">
+                                                <button type="button" class="btn btn-{{$factura_tercero ?  "primary" : "default"}} btn-xs" title="Facturar a terceros" onclick="factura_tercero('{{$envio->id_envio}}')">
                                                     <i class="fa fa-user-plus" aria-hidden="true"></i>
                                                 </button>
                                                 @if($facturado == null)
                                                     @if($factura_tercero)
-                                                        <button type="button" class="btn btn-danger" title="Eliminar factura a tercero" onclick="delete_factura_tercero('{{$envio->id_envio}}')">
+                                                        <button type="button" class="btn btn-danger btn-xs" title="Eliminar factura a tercero" onclick="delete_factura_tercero('{{$envio->id_envio}}')">
                                                             <i class="fa fa-user-times" aria-hidden="true"></i>
                                                         </button>
                                                     @endif
@@ -350,12 +350,28 @@
                                             </div>
                                         </div>
                                         <hr />
-                                        <div class="row">
-                                            <div class="col-md-12 text-right">
-                                                <button class="btn btn-primary" title="Agregar correo" onclick="agregar_correo('form_envios_{{$i+1}}')">
-                                                    <i class="fa fa-plus" aria-hidden="true"></i>
-                                                </button>
-                                                <div style="margin-top: 10px" id="correos_extras"></div>
+                                        <div class="">
+                                            <div class="box">
+                                                <div class="box-header with-border">
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <h3 class="box-title">ENVÍO DE CORREOS</h3>
+                                                        </div>
+                                                        <div class="col-md-6 text-right">
+                                                            <button  type="button" class="btn btn-primary btn-xs" {{$factura_tercero ?  "disabled" : ""}} title="Agregar correo" onclick="agregar_correo('form_envios_{{$i+1}}')">
+                                                                <i class="fa fa-plus" aria-hidden="true"></i>
+                                                            </button>
+                                                            <button  type="button" class="btn btn-danger btn-xs" {{$factura_tercero ?  "disabled" : ""}} title="Eliminar correo" onclick="eliminar_correo('form_envios_{{$i+1}}')">
+                                                                <i class="fa fa-trash" aria-hidden="true"></i>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="box-body">
+                                                    <div class="row">
+                                                        <div class="text-left" id="correos_extras"></div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>

@@ -1,7 +1,7 @@
 <table style="width:100%">
     <tr>
         <td style="vertical-align: middle;text-align: center">
-            <h4 style="color: #464646">PACKING LIST / LISTA DE EMPAQUE #{{"001-".getDetallesClaveAcceso($comprobante->clave_acceso, 'PUNTO_ACCESO')."-".getDetallesClaveAcceso($comprobante->clave_acceso, 'SECUENCIAL')}}</h4>
+            <h4 style="color: #464646">PACKING LIST / LISTA DE EMPAQUE #{{isset($comprobante->clave_acceso) ? "001-".getDetallesClaveAcceso($comprobante->clave_acceso, 'PUNTO_ACCESO')."-".getDetallesClaveAcceso($comprobante->clave_acceso, 'SECUENCIAL') : null}}</h4>
         </td>
     </tr>
     <tr>
@@ -50,7 +50,7 @@
                     </td>
                     <td style="border: 1px solid black;padding: 0;font-size: 13px">
                         <b>Date / Fecha< br /></b> <br />
-                        {{$despacho->fecha_despacho}}
+                        {{isset($despacho->fecha_despacho) ? $despacho->fecha_despacho : null }}
                     </td>
                 </tr>
                 <tr style="border: 1px solid black;">
@@ -82,21 +82,32 @@
     <table style="width:100%" >
         <thead style="border: 1px solid black" >
             <tr>
-                <td style="border: 1px solid black;font-size:13px" > PIECES<br />Piezas</td>
-                <td style="border: 1px solid black;font-size:13px" >UNITIS / BOX<br />Por Caja</td>
-                <td style="border: 1px solid black;font-size:13px" > ST / BN</td>
-                <td style="border: 1px solid black;font-size:13px" >TOTAL UNITS <br />Total Unidades</td>
-                <td style="border: 1px solid black;font-size:13px" >DETALLE POR CAJA / BOXES CONTENT</td>
+                <td style="padding-left: 5px;border: 1px solid black;font-size:13px" > PIECES<br />Piezas</td>
+                <td style="padding-left: 5px;border: 1px solid black;font-size:13px" >UNITIS / BOX<br />Por Caja</td>
+                <td style="padding-left: 5px;border: 1px solid black;font-size:13px" > ST / BN</td>
+                <td style="padding-left: 5px;border: 1px solid black;font-size:13px" >TOTAL UNITS <br />Total Unidades</td>
+                <td style="padding-left: 5px;border: 1px solid black;font-size:13px" >DETALLE POR CAJA / BOXES CONTENT</td>
             </tr>
         </thead>
         <tbody style="border: 1px solid black">
+            @php
+                $total_piezas = 0;
+                $ramos_estandar = 0;
+            @endphp
             @foreach($detallePedido as $det_ped)
+                @php $re = convertToEstandar($det_ped['ramos_x_caja'],$det_ped['calibre']) @endphp
                 <tr>
-                    <td style="border: 1px solid black;font-size:13px" >{{$det_ped['piezas']}}</td>
-                    <td style="border: 1px solid black;font-size:13px" >{{$det_ped['ramos_x_caja']}}</td>
-                    <td style="border: 1px solid black;font-size:13px" >B/N</td>
-                    <td style="border: 1px solid black;font-size:13px" >{{$det_ped['ramos_totales']}}</td>
-                    <td style="border: 1px solid black;font-size:13px" >{{$det_ped['presentacion']}}</td>
+                    <td style="padding-left: 5px;font-size:13px" >
+                        {{$det_ped['piezas']}}
+                        @php
+                            $ramos_estandar += $re;
+                            $total_piezas += $det_ped['piezas']
+                        @endphp
+                    </td>
+                    <td style="padding-left: 5px;font-size:13px" >{{$det_ped['ramos_x_caja']}}</td>
+                    <td style="padding-left: 5px;font-size:13px" >B/N</td>
+                    <td style="padding-left: 5px;font-size:13px" >{{$det_ped['ramos_totales']}}</td>
+                    <td style="padding-left: 5px;font-size:13px" >{{$det_ped['presentacion']}}</td>
                 </tr>
             @endforeach
         </tbody>
@@ -108,5 +119,52 @@
 
             </td>
         </tr>
+        <tr>
+            <td>
+
+            </td>
+        </tr>
+        <tr>
+            <td>
+
+            </td>
+        </tr>
     </table>
 @endif
+<table style="width:100%;margin-top: 20px;">
+    <tr>
+        <td style="font-size:15px" colspan="2">
+            {{$total_piezas}}  TOTAL PIECES / TOTAL PIEZAS TOTAL UNITS
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2">
+            {{$ramos_estandar / getConfiguracionEmpresa()->ramos_x_caja}} TOTAL FULL BOXES EQUIVALENT / TOTAL CAJAS
+        </td>
+    </tr>
+    <tr>
+        <td style="text-align: center;width: 50%;vertical-align: bottom">
+            <div>
+                FIRMA
+                <div style="height:20px ;border: 1px solid black; ">
+                    {{isset($despacho->resp_ofi_despacho) ? isset($despacho->resp_ofi_despacho) : ""}}
+                </div>
+                <label  style="font-size: 14px">NOMBRE PERSONA DESPACHO</label>
+            </div>
+        </td>
+        <td style="text-align: center;width: 50%;vertical-align: bottom;">
+            <div style="margin-top:60px">
+                <div style="border: 1px solid black;height:20px ">
+                    {{getConfiguracionEmpresa()->razon_social}}
+                </div>
+                <label style="font-size: 14px">MARKETIN NAME / MARCA CAJA</label>
+            </div>
+            <div>
+                <div style="height:20px ;border: 1px solid black; ">
+                    {{getAgenciaCarga($detallePedido[0]['id_agencia_carga'])->nombre}}
+                </div>
+                <label style="font-size: 14px">AGENCIA DE CARGA / FREIGHT FORWARDER</label>
+            </div>
+        </td>
+    </tr>
+</table>

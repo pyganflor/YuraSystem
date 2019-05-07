@@ -559,7 +559,9 @@ class EnvioController extends Controller
     }
 
     public function agregar_correo(Request $request){
-        return view('');
+        return view('adminlte.gestion.postcocecha.envios.partials.input_correo',[
+            'cant_inputs' => $request->cant_input
+        ]);
     }
 
 }

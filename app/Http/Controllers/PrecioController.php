@@ -144,7 +144,6 @@ class PrecioController extends Controller
                     $precio = new Precio();
                     $precio->id_cliente = $request->id_cliente;
                     $precio->id_detalle_especificacionempaque = $data['id_detalle_especificacionempaque'];
-                     $data['codigo_presentacion'] !== "" ? $precio->codigo_presentacion = $data['codigo_presentacion'] : "";
                     $new = true;
                 } else{
                     $precio = Precio::find($precio->id_precio);
@@ -152,7 +151,6 @@ class PrecioController extends Controller
                 }
 
                 $precio->cantidad = $data['precio'];
-                $data['codigo_presentacion'] !== "" ? $precio->codigo_presentacion = $data['codigo_presentacion'] : "";
 
                 if ($precio->save()) {
                     if ($new) {

@@ -1,5 +1,6 @@
 <script>
     buscar_listado_envios();
+
     $(document).on('load',function () { calcular_precio_envio(); });
 
     $(document).on("click", "#pagination_listado_envios .pagination li a", function (e) {
@@ -38,8 +39,13 @@
             modal_quest('modal_message_facturar_envios',
                 '<div class="alert alert-info text-center">  <label>Se generará el comprobante electrónico para este envío</label></div>'+
                 '<div class="alert alert-info text-center"> <input type="checkbox" id="envio_correo" name="envio_correo"style="position: relative;top: 3px;" checked> <label for="envio_correo">¿Enviar Correo electrónico al cliente ?</label> </div>'+
-                '<div class="alert alert-info text-center"> <input type="checkbox" id="envio_correo_agencia_carga" name="envio_correo_agencia_carga"style="position: relative;top: 3px;" checked> <label for="envio_correo">¿Enviar Correo electrónico a la Agencia de carga?</label> </div>',
+                '<div class="alert alert-info text-center"> <input type="checkbox" id="envio_correo_agencia_carga" name="envio_correo_agencia_carga"style="position: relative;top: 3px;" checked> <label for="envio_correo_agencia_carga">¿Enviar Correo electrónico a la Agencia de carga?</label> </div>',
                 '<i class="fa fa-file-code-o" aria-hidden="true"></i> Se realizaran las siguientes acciones', true, false, '{{isPC() ? '40%' : ''}}', function () {
+
+                    arrCorreos= [];
+                    $.each($('input[name=correo_extra]'),function(i,j){
+                        arrCorreos.push({ correo : j.value })
+                    });
                     datos = {
                         _token: '{{csrf_token()}}',
                         id_envio : id_envio,
@@ -56,7 +62,8 @@
                         update : action == 'update' ? true : false,
                         almacen : $("form#"+form+ " #almacen").val(),
                         envio_correo : $("#envio_correo").is(":checked"),
-                        envio_correo_agencia_carga : $("#envio_correo_agencia_carga").is(":checked")
+                        envio_correo_agencia_carga : $("#envio_correo_agencia_carga").is(":checked"),
+                        arrCorreos : arrCorreos
                     };
                 cerrar_modals();
                 $.LoadingOverlay("show", {
@@ -243,12 +250,17 @@
     }
 
     function agregar_correo(form) {
-
-
+        cant_input = $('form#'+form+ " div#correos_extras div#div_correos").length;
+        datos ={
+          cant_input : cant_input
+        };
         $.get('{{url('envio/agregar_correo')}}', datos, function (retorno) {
-
+            $('form#'+form+ " div#correos_extras").append(retorno);
         });
+    }
 
+    function eliminar_correo(form) {
+        $('form#'+form+ " div#correos_extras div:last-child").remove();
     }
 
 </script>

@@ -22,14 +22,16 @@ class CorreoFactura extends Mailable
     public $nombreArchivo;
     public $numeroComprobante;
     public $preFactura;
+    public $correosExtra;
 
-    public function __construct($correoCliente,$nombreCliente,$nombreArchivo,$numeroComprobante,$preFactura)
+    public function __construct($correoCliente,$nombreCliente,$nombreArchivo,$numeroComprobante,$preFactura,$correosExtra)
     {
         $this->correoCliente     = $correoCliente;
         $this->nombreCliente     = $nombreCliente;
         $this->nombreArchivo     = $nombreArchivo;
         $this->numeroComprobante = $numeroComprobante;
         $this->preFactura        = $preFactura;
+        $this->correosExtra      = $correosExtra;
     }
 
     /**
@@ -44,6 +46,12 @@ class CorreoFactura extends Mailable
         ($this->preFactura)
             ? $paht_env = 'PATH_XML_FIRMADOS'
             : $paht_env = 'PATH_XML_AUTORIZADOS';
+
+        $correo_extra = [];
+        if($this->correosExtra !== false) {
+            foreach ($correo_extra as $cE)
+                $correo_extra[] = $cE['correo'];
+        }
                                 //$correoCliente
         return $this->from("pruebas-c26453@inbox.mailtrap.io")
             ->view('adminlte.gestion.mails.correo_factura')
@@ -51,6 +59,6 @@ class CorreoFactura extends Mailable
                 'as' => $this->nombreArchivo.'.xml'
             ])->attach(env('PDF_FACTURAS').$this->nombreArchivo.'.pdf',[
                 'as' => $this->nombreArchivo.'.pdf'
-            ]);
+            ])->cc($correo_extra);
     }
 }

@@ -64,7 +64,7 @@
                     <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
                         CUARTO FRÍO
                     </th>
-                    <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white;width:100px">
+                    <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white;width:120px">
                         PEDIDO
                     </th>
                 @endif
@@ -225,11 +225,10 @@
                                                     <i class="fa fa-files-o" aria-hidden="true"></i>
                                                 </button>
                                             @endif
-                                        @else
+                                        @endif
                                             <a target="_blank" href="{{url('pedidos/crear_packing_list',$pedido->id_pedido)}}" class="btn btn-info btn-xs" title="Generar packing list">
                                                 <i class="fa fa-cubes" ></i>
                                             </a>
-                                        @endif
                                         {{--@if(yura\Modelos\Envio::where('id_pedido',$pedido->id_pedido)->count() == 0)
                                                 button class="btn btn-default btn-xs" title="Realizar envío"
                                                         onclick="add_envio('{{$pedido->id_pedido}}','{{@csrf_token()}}')">
