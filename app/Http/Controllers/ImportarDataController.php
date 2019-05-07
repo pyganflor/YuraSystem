@@ -214,7 +214,6 @@ class ImportarDataController extends Controller
 
     public function importar_venta(Request $request)
     {
-        //dd($request->all());
         ini_set('max_execution_time', env('MAX_EXECUTION_TIME'));
         $valida = Validator::make($request->all(), [
             'file_ventas' => 'required',
@@ -245,7 +244,6 @@ class ImportarDataController extends Controller
                                     ->first();
 
                                 if ($historico != '') {
-                                    dd(1);
                                     if ($request->campo_ventas == 'V')
                                         $historico->valor += str_replace('$', '', str_replace(',', '', $col));
                                     if ($request->campo_ventas == 'F')
@@ -253,7 +251,10 @@ class ImportarDataController extends Controller
                                     if ($request->campo_ventas == 'Q')
                                         $historico->cajas_equivalentes += str_replace('$', '', str_replace(',', '', $col));
                                     if ($request->campo_ventas == 'P')
-                                        $historico->precio_x_ramo = round(str_replace('$', '', str_replace(',', '', $col)) / $historico->precio_x_ramo, 2);
+                                        if ($historico->precio_x_ramo > 0)
+                                            $historico->precio_x_ramo = round(str_replace('$', '', str_replace(',', '', $col)) / $historico->precio_x_ramo, 2);
+                                        else
+                                            $historico->precio_x_ramo = str_replace('$', '', str_replace(',', '', $col));
                                 } else {
                                     $historico = new HistoricoVentas();
                                     $historico->id_cliente = $id_cliente;

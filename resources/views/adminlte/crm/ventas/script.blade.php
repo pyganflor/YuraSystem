@@ -2,7 +2,7 @@
     $('.select2').select2();
     filtrar_predeterminado(1);
 
-    function filtrar_predeterminado(option) {
+    function filtrar_predeterminado() {
         diario = false;
         mensual = false;
         semanal = false;
@@ -48,7 +48,7 @@
             desde: desde,
             hasta: rest_dias(1),
             id_cliente: id_cliente,
-            annos: option == 0 ? list_annos : [],
+            annos: list_annos,
         };
 
         get_jquery('{{url('crm_ventas/filtrar_graficas')}}', datos, function (retorno) {
