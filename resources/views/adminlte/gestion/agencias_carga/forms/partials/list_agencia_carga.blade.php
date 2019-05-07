@@ -20,6 +20,10 @@
                 </th>
                 <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
                     style="border-color: #9d9d9d">
+                    Correo
+                </th>
+                <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
+                    style="border-color: #9d9d9d">
                     OPCIONES
                 </th>
             </tr>
@@ -35,6 +39,9 @@
                     </td>
                     <td style="border-color: #9d9d9d" class="text-center">
                         {{$item->codigo}}
+                    </td>
+                    <td style="border-color: #9d9d9d" class="text-center">
+                        {{$item->correo}}
                     </td>
                     <td style="border-color: #9d9d9d" class="text-center">
                         <div class="btn-group">

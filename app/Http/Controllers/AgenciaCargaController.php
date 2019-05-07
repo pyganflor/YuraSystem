@@ -61,6 +61,7 @@ class AgenciaCargaController extends Controller
         $valida = Validator::make($request->all(), [
             'nombre' => 'required',
             'codigo' => 'required',
+            'correo' => 'required',
             'identificacion' => 'required',
         ]);
 
@@ -69,6 +70,7 @@ class AgenciaCargaController extends Controller
             empty($request->id_agencia_carga) ? $objAgenciaCarga = new AgenciaCarga : $objAgenciaCarga = AgenciaCarga::find($request->id_agencia_carga);
             $objAgenciaCarga->nombre = $request->nombre;
             $objAgenciaCarga->codigo = $request->codigo;
+            $objAgenciaCarga->correo = $request->correo;
             $objAgenciaCarga->identificacion = $request->identificacion;
             $msg='';
 

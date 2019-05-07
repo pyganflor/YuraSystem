@@ -14,7 +14,8 @@ class AgenciaCarga extends Model
     protected $fillable = [
         'nombre',
         'cdigo',
-        'identificacion'
+        'identificacion',
+        'correo'
     ];
 
     public function cliente_agencia_carga()

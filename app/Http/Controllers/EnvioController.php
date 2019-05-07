@@ -98,7 +98,7 @@ class EnvioController extends Controller
                             }
                             $objDetalleEnvio->id_especificacion     = $detalle_envio[0];
                             $objDetalleEnvio->id_envio              = $model->id_envio;
-                            $objDetalleEnvio->id_aerolinea = $detalle_envio[1];
+                            $objDetalleEnvio->id_aerolinea          = $detalle_envio[1];
                             $objDetalleEnvio->cantidad              = $detalle_envio[2];
                             $objDetalleEnvio->envio                 = $detalle_envio[3];
                             $objDetalleEnvio->form                  = $detalle_envio[5];
@@ -420,6 +420,8 @@ class EnvioController extends Controller
                         }
                     }
                 }
+                $confirmar = Pedido::find(getPedido(getEnvio($request->id_envio)->pedido->id_pedido)->id_pedido);
+                $confirmar->update(['confirmado'=> 1]);
                 $success = true;
                 $msg = '<div class="alert alert-success text-center">' .
                     '<p> Se han actualizado exitosamente los datos del envío</p>'
@@ -554,6 +556,10 @@ class EnvioController extends Controller
             'mensaje' => $msg,
             'success' => $success
         ];
+    }
+
+    public function agregar_correo(Request $request){
+        return view('');
     }
 
 }

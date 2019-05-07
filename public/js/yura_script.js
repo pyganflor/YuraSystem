@@ -621,6 +621,7 @@ function store_agencia_carga(token, id_cliente) {
             nombre: $("#nombre_agencia").val(),
             codigo: $("#codigo_agencia").val(),
             id_cliente: id_cliente,
+            correo: $("#correo").val(),
             identificacion : $("#identificacion").val()
         };
         post_jquery('agrencias_carga/store_agencia', datos, function () {
@@ -1313,7 +1314,7 @@ function calcular_precio_envio() {
         $("#total_piezas_"+o).html(total_piezas);
         $("#total_ramos_"+o).html(total_ramos);
         $("#sub_total_"+o).html(sub_total.toFixed(2));
-        $("#total_"+o).html(total);
+        $("#total_"+o).html(parseFloat(total).toFixed(2));
     }
 }
 

@@ -5,8 +5,8 @@
             <tr>
                 <th style="border-color: #9d9d9d; background-color: #e9ecef" colspan="2">
                     <ul class="list-unstyled">
-                        <li>
-                            Semana: {{getSemanaByDate($fecha)->codigo}}
+                        <li>d
+                            Semana: {{isset(getSemanaByDate($fecha)->codigo) ? getSemanaByDate($fecha)->codigo : "Semana no programada"}}
                         </li>
                         <li>
                             Día: {{getDias(TP_COMPLETO,FR_ARREGLO)[transformDiaPhp(date('w',strtotime($fecha)))]}}
@@ -76,7 +76,6 @@
                 $cajas_full_totales = 0;
                 $variedades = [];
                 $ramos_x_variedades = [];
-
                 $valor_total = 0;
             @endphp
             @foreach($listado as $pedido)

@@ -596,6 +596,5 @@ function getRecepcion($id)
 
 function getConfiguracionEmpresa()
 {
-    dd('ok');
     return ConfiguracionEmpresa::All()->where('estado', '=', 1)->first();
 }

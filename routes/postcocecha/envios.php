@@ -22,4 +22,5 @@ Route::get('envio/buscar_codigo_dae',function (Request $request){
 Route::get('envio/factura_cliente_tercero', 'EnvioController@factura_cliente_tercero');
 Route::post('envio/store_datos_factura_cliente_tercero', 'EnvioController@store_datos_factura_cliente_tercero');
 Route::post('envio/delete_datos_factura_cliente_tercero', 'EnvioController@delete_datos_factura_cliente_tercero');
+Route::get('envio/agregar_correo', 'EnvioController@agregar_correo');
 

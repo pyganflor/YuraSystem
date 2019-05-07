@@ -1137,11 +1137,11 @@ function firmarComprobanteXml($archivo_xml, $carpeta)
 function mensajeFirmaElectronica($indice, $archivo)
 {
     $mensaje = [
-        0 => "No se ha obtenido el archivo de la firma digital correctamente, verifique que el path propocionado en la variable de entorno 'PATH_FIRMA_DIGITAL' en el archivo .env coincida con la ubicación actual del archivo la firma digital y el String pasado a la variable 'NOMBRE_ARCHIVO_FIRMA_DIGITAL' corresponda con el nombre del archivo), una vez corregido el error puede filtrar por 'GENERADOS' y proceder a realizar la firma del mismo",
-        1 => "Verificar lo explicado en el Índice 0 de este apartado y a su vez verificar que exista el certificado como archivo físico, una vez corregido el error puede filtrar por 'GENERADOS' y proceder a realizar la firma del mismo",
-        2 => "No se pudo acceder al contenido del archivo del certificado electrónico, verifique los indicies 0 y 1 de este apartado  y a su vez que el String pasado en la variable 'CONTRASENA_FIRMA_DIGITAL' en el archivo .env coincida con la propocionada por el ente certificador, una vez corregido el error puede filtrar por 'GENERADOS' y proceder a realizar la firma del mismo",
-        3 => "Se produjo un error al momento de generar la firma electrónica del xml " . $archivo . ", por favor comunicarse con el deparatmento de tecnología, una vez corregido el error puede filtrar por 'GENERADOS' y proceder a realizar la firma del mismo",
-        4 => "El archivo firmado xml N# " . $archivo . " no pudo ser guardado en su respectiva carpeta, verifique que el path propocionado en la variable de entorno 'PATH_XML_FIRMADOS' en el archivo .env coincida con la carpeta creada en esa ruta, una vez corregido el error puede filtrar por 'GENERADOS' y proceder a realizar la firma del mismo",
+        0 => "No se ha obtenido el archivo de la firma digital correctamente, verifique que el path propocionado en la variable de entorno 'PATH_FIRMA_DIGITAL' en el archivo .env coincida con la ubicación actual del archivo la firma digital y el String pasado a la variable 'NOMBRE_ARCHIVO_FIRMA_DIGITAL' corresponda con el nombre del archivo), una vez corregido el error puede filtrar por 'NO FIRMADOS' en la vista de comprobantes y proceder a realizar la firma del mismo",
+        1 => "Verificar lo explicado en el Índice 0 de este apartado y a su vez verificar que exista el certificado como archivo físico, una vez corregido el error puede filtrar por 'NO FIRMADOS' y proceder a realizar la firma del mismo",
+        2 => "No se pudo acceder al contenido del archivo del certificado electrónico, verifique los indicies 0 y 1 de este apartado  y a su vez que el String pasado en la variable 'CONTRASENA_FIRMA_DIGITAL' en el archivo .env coincida con la propocionada por el ente certificador, una vez corregido el error puede filtrar por 'NO FIRMADOS' en la vista de comprobantes y proceder a realizar la firma del mismo",
+        3 => "Se produjo un error al momento de generar la firma electrónica del xml " . $archivo . ", por favor comunicarse con el deparatmento de tecnología, una vez corregido el error puede filtrar por 'NO FIRMADOS' en la vista de comprobantes y proceder a realizar la firma del mismo",
+        4 => "El archivo firmado xml N# " . $archivo . " no pudo ser guardado en su respectiva carpeta, verifique que el path propocionado en la variable de entorno 'PATH_XML_FIRMADOS' en el archivo .env coincida con la carpeta creada en esa ruta, una vez corregido el error puede filtrar por 'GENERADOS' en la vista de comprobantes y proceder a realizar la firma del mismo",
         5 => "El comprobante N# " . $archivo . " se ha generado y firmado con exito",
     ];
     return $mensaje[$indice];
@@ -1331,6 +1331,13 @@ function enviarMailComprobanteCliente($tipoDocumento, $correoCliente, $nombreCli
     if ($tipoDocumento == "01") {
                    //$correoCliente
         Mail::to("pruebas-c26453@inbox.mailtrap.io")->send(new CorreoFactura($correoCliente, $nombreCliente, $nombreArchivo, $numeroComprobante,$preFactura));
+    }
+}
+
+function enviarMailComprobanteAgenciaCarga($tipoDocumento, $correoAgenciCarga, $nombreAgenciaCarga, $nombreArchivo, $numeroComprobante,$preFactura=false){
+    if ($tipoDocumento == "01") {
+            //$correoAgenciCarga
+        Mail::to("pruebas-c26453@inbox.mailtrap.io")->send(new CorreoFactura($correoAgenciCarga, $nombreAgenciaCarga, $nombreArchivo, $numeroComprobante,$preFactura));
     }
 }
 

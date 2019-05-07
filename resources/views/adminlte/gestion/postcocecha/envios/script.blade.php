@@ -2,8 +2,6 @@
     buscar_listado_envios();
     $(document).on('load',function () { calcular_precio_envio(); });
 
-
-
     $(document).on("click", "#pagination_listado_envios .pagination li a", function (e) {
         $.LoadingOverlay("show");
         //para que la pagina se cargen los elementos
@@ -39,7 +37,8 @@
             id_form = form.split("_")[2];
             modal_quest('modal_message_facturar_envios',
                 '<div class="alert alert-info text-center">  <label>Se generará el comprobante electrónico para este envío</label></div>'+
-                '<div class="alert alert-info text-center"> <input type="checkbox" id="envio_correo" name="envio_correo"style="position: relative;top: 3px;" checked> <label for="envio_correo">¿Enviar Correo electrónico a cliente(s) ?</label> </div>',
+                '<div class="alert alert-info text-center"> <input type="checkbox" id="envio_correo" name="envio_correo"style="position: relative;top: 3px;" checked> <label for="envio_correo">¿Enviar Correo electrónico al cliente ?</label> </div>'+
+                '<div class="alert alert-info text-center"> <input type="checkbox" id="envio_correo_agencia_carga" name="envio_correo_agencia_carga"style="position: relative;top: 3px;" checked> <label for="envio_correo">¿Enviar Correo electrónico a la Agencia de carga?</label> </div>',
                 '<i class="fa fa-file-code-o" aria-hidden="true"></i> Se realizaran las siguientes acciones', true, false, '{{isPC() ? '40%' : ''}}', function () {
                     datos = {
                         _token: '{{csrf_token()}}',
@@ -56,7 +55,8 @@
                         cant_variedades : $("form#"+form+ " table tbody#tbody_inputs_pedidos tr").length,
                         update : action == 'update' ? true : false,
                         almacen : $("form#"+form+ " #almacen").val(),
-                        envio_correo : $("#envio_correo").is(":checked")
+                        envio_correo : $("#envio_correo").is(":checked"),
+                        envio_correo_agencia_carga : $("#envio_correo_agencia_carga").is(":checked")
                     };
                 cerrar_modals();
                 $.LoadingOverlay("show", {
@@ -240,6 +240,15 @@
                 });
                 $.LoadingOverlay('hide');
             });
+    }
+
+    function agregar_correo(form) {
+
+
+        $.get('{{url('envio/agregar_correo')}}', datos, function (retorno) {
+
+        });
+
     }
 
 </script>

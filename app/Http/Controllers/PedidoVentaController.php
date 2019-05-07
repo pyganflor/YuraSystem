@@ -167,6 +167,12 @@ class PedidoVentaController extends Controller
                     $modelPedido = Pedido::all()->last();
                     $dataDetallePedido = DetallePedido::where('id_pedido', $request->id_pedido)->get();
                     bitacora('pedido', $modelPedido->id_pedido, 'I', 'Inserción satisfactoria de un duplicado de pedido');
+
+                    $objEnvio = new Envio;
+                    $objEnvio->fecha_envio = $fecha['fecha'];
+                    $objEnvio->id_pedido = $modelPedido->id_pedido;
+                    if($objEnvio->save()) $modelEnvio = Envio::all()->last();
+
                     foreach ($dataDetallePedido as $detallePedido) {
                         $objDetallePedido = new DetallePedido;
                         $objDetallePedido->id_cliente_especificacion = $detallePedido->id_cliente_especificacion;
@@ -174,6 +180,14 @@ class PedidoVentaController extends Controller
                         $objDetallePedido->id_agencia_carga = $detallePedido->id_agencia_carga;
                         $objDetallePedido->cantidad = $detallePedido->cantidad;
                         $objDetallePedido->precio = $detallePedido->precio;
+
+                        $detalleEnvio = new DetalleEnvio;
+                        $detalleEnvio->id_envio = $modelEnvio->id_envio;
+                        $objClienteEspecificacion = ClientePedidoEspecificacion::find($detallePedido->id_cliente_especificacion);
+                        $detalleEnvio->id_especificacion = $objClienteEspecificacion->id_especificacion;
+                        $detalleEnvio->cantidad = $detallePedido->cantidad;
+                        $detalleEnvio->save();
+
                         if ($objDetallePedido->save()) {
                             $model_detalle_pedido = DetallePedido::all()->last();
                             bitacora('detalle_pedido', $model_detalle_pedido->id_detalle_pedido, 'I', 'Inserción satisfactoria del duplicado de un detalle pedio');

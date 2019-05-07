@@ -119,7 +119,7 @@ class ComprobanteController extends Controller
                             }else{
                                 $precio =explode( ";",explode("|",$coloracion->precio)[$i])[0];
                             }
-                            $precio_x_variedad = $m_c->cantidad * $precio * $m_c->marcacion->piezas * $cant_esp_emp;
+                            $precio_x_variedad = $m_c->cantidad * $precio * $cant_esp_emp;
                             $precio_total_sin_impuestos += $precio_x_variedad;
                             $i++;
                         }
@@ -366,7 +366,7 @@ class ComprobanteController extends Controller
                             }else{
                                 $precio = explode( ";",explode("|",$coloracion->precio)[$i])[0];
                             }
-                            $precio_x_variedad = $m_c->cantidad * $precio * $m_c->marcacion->piezas * $cant_esp_emp;
+                            $precio_x_variedad = $m_c->cantidad * $precio * $cant_esp_emp;
                             $variedad = getVariedad($m_c->detalle_especificacionempaque->id_variedad);//getVariedad($det_esp_emp->id_variedad);
                             if($m_c->detalle_especificacionempaque->longitud_ramo != null){
                                 foreach (getUnidadesMedida($m_c->detalle_especificacionempaque->id_unidad_medida) as $umLongitud)
@@ -454,6 +454,7 @@ class ComprobanteController extends Controller
                 $obj_comprobante->id_envio = $request->id_envio;
                 $obj_comprobante->tipo_comprobante = "01"; //CÓDIGO DE FACTURA A CLIENTE EXTERNO
                 $obj_comprobante->monto_total = number_format($valorImpuesto + $precio_total_sin_impuestos, 2, ".", "");
+                $obj_comprobante->fecha_emision = now()->toDateString();
 
                 if ($obj_comprobante->save()) {
                     $model_comprobante = Comprobante::all()->last();
@@ -546,7 +547,7 @@ class ComprobanteController extends Controller
                                             }else{
                                                 $precio = explode( ";",explode("|",$coloracion->precio)[$i])[0];
                                             }
-                                            $precio_x_variedad = $m_c->cantidad * $precio * $m_c->marcacion->piezas * $cant_esp_emp;
+                                            $precio_x_variedad = $m_c->cantidad * $precio * $cant_esp_emp;
                                             $variedad = getVariedad($m_c->detalle_especificacionempaque->id_variedad);
                                             if($m_c->detalle_especificacionempaque->longitud_ramo != null){
                                                 foreach (getUnidadesMedida($m_c->detalle_especificacionempaque->id_unidad_medida) as $umLongitud)
@@ -620,9 +621,24 @@ class ComprobanteController extends Controller
                                             }
                                         }
 
+                                        if($request->envio_correo_agencia_carga == "true"){
+                                            if (file_exists(env('PATH_XML_FIRMADOS')."/facturas/".$claveAcceso.".xml")){
+                                                $archivo = file_get_contents(env('PATH_XML_FIRMADOS')."/facturas/".$claveAcceso.".xml");
+                                                $autorizacion = simplexml_load_string($archivo);
+                                                $numeroComprobante = getDetallesClaveAcceso((String)$autorizacion->infoTributaria->claveAcceso, 'SERIE').getDetallesClaveAcceso((String)$autorizacion->infoTributaria->claveAcceso, 'SECUENCIAL');
+                                                generaDocumentoPDF($autorizacion,"01",true);
+                                                $agenciaCarga  = getPedido(getEnvio($request->id_envio)->id_pedido)->detalles[0]->agencia_carga;
+                                                enviarMailComprobanteAgenciaCarga("01", $agenciaCarga->correo, $agenciaCarga->nombre, (String)$autorizacion->infoTributaria->claveAcceso, $numeroComprobante,true);
+                                            }else{
+                                                $msg .= "<div class='alert text-center  alert-danger'>" .
+                                                    "<p> EL correo no pudo ser enviado a la agencia de carga debido a que el archivo PDF de la factura creada no existe en el servidor, por favor contactarse con el área de sistemas. </p>"
+                                                    . "</div>";
+                                            }
+                                        }
+
                                     } else {
                                         $msg .= "<div class='alert text-center  alert-danger'>" .
-                                            "<p>Hubo un error al realizar el proceso de la firma de la factura N# " . $nombre_xml . " del envío N#" . str_pad($request->id_envio, 9, "0", STR_PAD_LEFT) . ", intente nuevamente realizar la firma del mismo filtrando por GENERADOS</p>"
+                                            "<p>Hubo un error al realizar el proceso de la firma de la factura N# " . $nombre_xml . " del envío N#" . str_pad($request->id_envio, 9, "0", STR_PAD_LEFT) . ", intente nuevamente realizar la firma del mismo filtrando por 'NO FIRMADOS'</p>"
                                             . "</div>";
                                     }
                                 } else {
@@ -801,8 +817,8 @@ class ComprobanteController extends Controller
                         $obj_comprobante->save();
                     }
                     $msg .= "<div class='alert text-center  alert-" . $class . "'>" .
-                        "<p> " . mensajeFirmaElectronica($resultado, getDetallesClaveAcceso($comprobante->clave_acceso, 'SECUENCIAL')) . "</p>"
-                        . "</div>";
+                                "<p> " . mensajeFirmaElectronica($resultado, getDetallesClaveAcceso($comprobante->clave_acceso, 'SECUENCIAL')) . "</p>"
+                          . "</div>";
                 } else {
                     $msg .= "<div class='alert text-center  alert-danger'>" .
                         "<p>Hubo un error al realizar el proceso de la firma del comprobante N# " .$comprobante->clave_acceso.".xml, intente nuevamente realizar la firma del mismo filtrando por GENERADOS</p>"

@@ -41,57 +41,57 @@
                         <table width="100%" class="table-responsive table-bordered" style="font-size: 0.8em; border-color: white;margin-top:20px"
                                id="table_content_recepciones">
                             <thead>
-                            <tr style="background-color: #dd4b39; color: white">
-                                <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d; color: white">
-                                    MARACACIONES
-                                </th>
-                                <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
-                                    style="border-color: #9d9d9d;width: 80px">
-                                    PIEZAS
-                                </th>
-                                <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
-                                    VARIEDAD
-                                </th>
-                                <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
-                                    PESO
-                                </th>
-                                <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
-                                    CAJA
-                                </th>
-                                <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
-                                    PRESENTACIÓN
-                                </th>
-                                <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
-                                    RAMO X CAJA
-                                </th>
-                                <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
-                                    TOTAL RAMOS
-                                </th>
-                                <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
-                                    TALLOS X RAMO
-                                </th>
-                                <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
-                                    LONGITUD
-                                </th>
-                                <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
-                                    style="border-color: #9d9d9d;width:100px">
+                                <tr style="background-color: #dd4b39; color: white">
+                                    {{--<th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d; color: white">
+                                        MARACACIONES
+                                    </th>--}}
+                                    <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
+                                        style="border-color: #9d9d9d;width: 80px">
+                                        PIEZAS
+                                    </th>
+                                    <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
+                                        VARIEDAD
+                                    </th>
+                                    <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
+                                        PESO
+                                    </th>
+                                    <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
+                                        CAJA
+                                    </th>
+                                    <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
+                                        PRESENTACIÓN
+                                    </th>
+                                    <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
+                                        RAMO X CAJA
+                                    </th>
+                                    <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
+                                        TOTAL RAMOS
+                                    </th>
+                                    <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
+                                        TALLOS X RAMO
+                                    </th>
+                                    <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
+                                        LONGITUD
+                                    </th>
+                                    <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
+                                        style="border-color: #9d9d9d;width:100px">
+                                        @if($envio->pedido->tipo_especificacion=="N")
+                                            PRECIO X VARIEDAD
+                                        @elseif($envio->pedido->tipo_especificacion=="T")
+                                            TINTURADO
+                                        @endif
+                                    </th>
                                     @if($envio->pedido->tipo_especificacion=="N")
-                                        PRECIO X VARIEDAD
-                                    @elseif($envio->pedido->tipo_especificacion=="T")
-                                        TINTURADO
+                                        <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
+                                            style="border-color: #9d9d9d;width:100px">
+                                            PRECIO X ESPECIFICACIÓN
+                                        </th>
                                     @endif
-                                </th>
-                                @if($envio->pedido->tipo_especificacion=="N")
-                                <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
-                                    style="border-color: #9d9d9d;width:100px">
-                                    PRECIO X ESPECIFICACIÓN
-                                </th>
-                                @endif
-                                <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
-                                    style="border-color: #9d9d9d">
-                                    AGENCIA DE CARGA
-                                </th>
-                            </tr>
+                                    <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
+                                        style="border-color: #9d9d9d">
+                                        AGENCIA DE CARGA
+                                    </th>
+                                </tr>
                             </thead>
                             <tbody id="tbody_inputs_pedidos">
                             @php $anterior = '';  @endphp
@@ -100,7 +100,7 @@
                                 @foreach(getEspecificacion($det_ped->cliente_especificacion->especificacion->id_especificacion)->especificacionesEmpaque as $y => $esp_emp)
                                     @foreach($esp_emp->detalles as $z => $det_esp_emp)
                                         <tr style="border-top: {{$det_ped->cliente_especificacion->especificacion->id_especificacion != $anterior ? '2px solid #9d9d9d' : ''}}" >
-                                            @if($z == 0 && $y == 0)
+                                            {{--@if($z == 0 && $y == 0)
                                                 <td class="text-center" style="border-color: #9d9d9d;vertical-align: middle" id="td_datos_exportacion_"
                                                     rowspan="{{getCantidadDetallesByEspecificacion($det_ped->cliente_especificacion->id_especificacion)}}">
                                                     @if(count(getDatosExportacionCliente($det_ped->id_detalle_pedido))>0)
@@ -111,7 +111,7 @@
                                                         </ul>
                                                     @endif
                                                 </td>
-                                            @endif
+                                            @endif--}}
                                             @if($det_ped->cliente_especificacion->especificacion->id_especificacion != $anterior)
                                                 <td style="border-color: #9d9d9d; padding: 0px; vertical-align: middle; width: 100px; "
                                                     class="text-center" rowspan="{{getCantidadDetallesByEspecificacion($det_ped->cliente_especificacion->especificacion->id_especificacion)}}">
@@ -167,7 +167,7 @@
                                                 @elseif($envio->pedido->tipo_especificacion=="T")
                                                     @if($det_ped->cliente_especificacion->especificacion->id_especificacion != $anterior)
                                                         <td rowspan="{{getCantidadDetallesByEspecificacion($det_ped->cliente_especificacion->especificacion->id_especificacion)}}" style="border-color: #9d9d9d;padding: 0px 0px; vertical-align: middle;text-align: center;" >
-                                                            <button type="button" class="btn btn-xs btn-success" title="Ver tinturado" onclick="editar_pedido_tinturado('{{$envio->id_pedido}}', 0,true,false)">
+                                                            <button type="button" class="btn btn-xs btn-success" title="Ver tinturado" onclick="editar_pedido_tinturado('{{$envio->id_pedido}}','{{$x}}',true,false)">
                                                                 <i class="fa fa-eye" aria-hidden="true"></i>
                                                             </button>
                                                         </td>
@@ -175,9 +175,9 @@
                                                 @endif
                                                 @if($det_ped->cliente_especificacion->especificacion->id_especificacion != $anterior)
                                                     @if($envio->pedido->tipo_especificacion=="N")
-                                                    <td id="td_precio_especificacion_{{$i+1}}_{{($x+1)}}" style="border-color: #9d9d9d;padding: 0px 0px; vertical-align: middle;" class="text-center"
-                                                        rowspan="{{getCantidadDetallesByEspecificacion($det_ped->cliente_especificacion->especificacion->id_especificacion)}}">
-                                                    </td>
+                                                        <td id="td_precio_especificacion_{{$i+1}}_{{($x+1)}}" style="border-color: #9d9d9d;padding: 0px 0px; vertical-align: middle;" class="text-center"
+                                                            rowspan="{{getCantidadDetallesByEspecificacion($det_ped->cliente_especificacion->especificacion->id_especificacion)}}">
+                                                        </td>
                                                     @endif
                                                     <td class="text-center" style="border-color: #9d9d9d; vertical-align: middle"
                                                         rowspan="{{getCantidadDetallesByEspecificacion($det_ped->cliente_especificacion->especificacion->id_especificacion)}}">
@@ -238,7 +238,7 @@
                                                             }
                                                 @endphp
                                                 <input type="text" placeholder="DAE" class="form-control" {{($facturado) ? "disabled='disabled'" : ""}}
-                                                {{$factura_tercero ?  "disabled" : ""}}  {{$dae != "" ? "disabled='disabled'" : ""}} id="dae" name="dae" value="{{$dae}}"
+                                                {{$factura_tercero ?  "disabled" : ""}} {{-- {{$dae != "" ? "disabled='disabled'" : ""}}--}} id="dae" name="dae" value="{{$dae}}"
                                                     {{(strtoupper($p) != getConfiguracionEmpresa()->codigo_pais) ? "required" : "" }} >
                                             </div>
                                             <div class="col-md-3">
@@ -259,8 +259,8 @@
                                                         <option selected disabled value="">Seleccione</option>
                                                     @endif
                                                     @foreach($aerolineas as $a)
-                                                            <option {!! getEnvio($envio->id_envio)->detalles[0]->id_aerolinea ==  $a->id_aerolinea ? "selected" : ""!!} value="{{$a->id_aerolinea}}">{{$a->nombre}}</option>
-                                                        @endforeach
+                                                        <option {!! getEnvio($envio->id_envio)->detalles[0]->id_aerolinea ==  $a->id_aerolinea ? "selected" : ""!!} value="{{$a->id_aerolinea}}">{{$a->nombre}}</option>
+                                                    @endforeach
                                                 </select>
                                             </div>
                                         </div>
@@ -349,6 +349,15 @@
                                                 id="direccion" name="direccion" value="{{$direccion}}" required>
                                             </div>
                                         </div>
+                                        <hr />
+                                        <div class="row">
+                                            <div class="col-md-12 text-right">
+                                                <button class="btn btn-primary" title="Agregar correo" onclick="agregar_correo('form_envios_{{$i+1}}')">
+                                                    <i class="fa fa-plus" aria-hidden="true"></i>
+                                                </button>
+                                                <div style="margin-top: 10px" id="correos_extras"></div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -368,22 +377,25 @@
                                     if($pedido->tipo_especificacion == "T"){
                                         $precio_total_sin_impuestos = 0.00;
                                         $precio_total_con_impuestos = 0.00;
-                                        foreach($det_ped->coloraciones as $y => $coloracion){
-                                            $cant_esp_emp = $coloracion->especificacion_empaque->cantidad;
-                                            $z=0;
-                                            foreach($coloracion->marcaciones_coloraciones as $m_c){
-                                                if($coloracion->precio==""){
-                                                    foreach (explode("|", $det_ped->precio) as $p)
-                                                        if($m_c->id_detalle_especificacionempaque == explode(";",$p)[1])
-                                                            $precio = explode(";",$p)[0];
-                                                }else{
-                                                    $precio =explode( ";",explode("|",$coloracion->precio)[$z])[0];
+                                        foreach($pedido->detalles as $dp){
+                                            foreach($dp->coloraciones as $y => $coloracion){
+                                                $cant_esp_emp = $coloracion->especificacion_empaque->cantidad;
+                                                foreach($coloracion->marcaciones_coloraciones as $m_c){ //4
+                                                    if(empty($coloracion->precio) || $coloracion->precio == null){
+                                                        foreach (explode("|", $dp->precio) as $p)
+                                                            if($m_c->id_detalle_especificacionempaque == explode(";",$p)[1])
+                                                                $precio = explode(";",$p)[0];
+                                                    }else{
+                                                        foreach(explode("|",$coloracion->precio) as $p)
+                                                            if($m_c->id_detalle_especificacionempaque == explode(";",$p)[1])
+                                                                 $precio = explode(";",$p)[0];
+                                                    }
+                                                    $precio_x_variedad = $m_c->cantidad * $precio  * $cant_esp_emp;
+                                                    $precio_total_sin_impuestos += $precio_x_variedad;
                                                 }
-                                                $precio_x_variedad = $m_c->cantidad * $precio * $m_c->marcacion->piezas * $cant_esp_emp;
-                                                $precio_total_sin_impuestos += $precio_x_variedad;
-                                                $z++;
                                             }
                                         }
+
                                         $facturaClienTeTercero = getFacturaClienteTercero($envio->id_envio);
                                         $dataCliente = yura\Modelos\DetalleCliente::where([
                                             ['id_cliente' , $pedido->cliente->id_cliente],
