@@ -35,8 +35,9 @@
             <table style="border: 1px solid black;width: 100%">
                 <tr><td style="font-size:13px">{{$cliente['nombre']}}</td></tr>
                 <tr><td style="font-size:13px">{{$cliente['direccion']." ".$cliente['provincia']}}</td></tr>
-                <tr><td style="font-size:13px">{{$cliente['pais']}} - {{$cliente['tipo_identificacion']}} : {{$cliente['identificacion']}}</td></tr>
-                <tr><td style="font-size:13px">{{$cliente['telefono']}}</td></tr>
+                <tr><td style="font-size:13px">{{$cliente['pais']}} </td></tr>
+                <tr><td style="font-size:13px">{{$cliente['tipo_identificacion'] == "IDENTIFICACIÓN DEL EXTERIOR" ? "ID - EXT" : $cliente['tipo_identificacion']}} : {{$cliente['identificacion']}}</td></tr>
+                <tr><td style="font-size:13px">Tlf: {{$cliente['telefono']}}</td></tr>
             </table>
             </div>
         </td>
@@ -143,13 +144,26 @@
         </td>
     </tr>
     <tr>
+        <td colspan="2">
+            <table style="width: 100%;margin-top: 15px;font-size: 15px">
+                <tr>
+                    <td>FULL BOXES : [0.00]</td>
+                    <td>HALF BOXES : [0.00]</td>
+                    <td>1/4 BOXES : [0.00]</td>
+                    <td>1/6 BOXES : [0.00]</td>
+                    <td>1/8 BOXES : [0.00]</td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
         <td style="text-align: center;width: 50%;vertical-align: bottom">
             <div>
                 FIRMA
                 <div style="height:20px ;border: 1px solid black; ">
                     {{isset($despacho->resp_ofi_despacho) ? isset($despacho->resp_ofi_despacho) : ""}}
                 </div>
-                <label  style="font-size: 14px">NOMBRE PERSONA DESPACHO</label>
+                <label  style="font-size: 14px;padding: 15px 0">NOMBRE PERSONA DESPACHO</label>
             </div>
         </td>
         <td style="text-align: center;width: 50%;vertical-align: bottom;">
@@ -157,13 +171,13 @@
                 <div style="border: 1px solid black;height:20px ">
                     {{getConfiguracionEmpresa()->razon_social}}
                 </div>
-                <label style="font-size: 14px">MARKETIN NAME / MARCA CAJA</label>
+                <label style="font-size: 14px;padding: 15px 0">MARKETIN NAME / MARCA CAJA</label>
             </div>
             <div>
                 <div style="height:20px ;border: 1px solid black; ">
                     {{getAgenciaCarga($detallePedido[0]['id_agencia_carga'])->nombre}}
                 </div>
-                <label style="font-size: 14px">AGENCIA DE CARGA / FREIGHT FORWARDER</label>
+                <label style="font-size: 14px;padding: 15px 0">AGENCIA DE CARGA / FREIGHT FORWARDER</label>
             </div>
         </td>
     </tr>
