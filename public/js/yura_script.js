@@ -196,17 +196,15 @@ function store_pedido(id_cliente, pedido_fijo, csrf_token, vista, id_pedido) {
             }
 
             var arr_especificaciones = [], arr_ordenado;
-            $.each($(".orden"),function (i,j) {
+            $.each($("input.orden"),function (i,j) {
                 if(j.value !== '')
                     arr_especificaciones.push(j.value);
             });
             arr_ordenado = arr_especificaciones.sort(menor_mayor);
-            console.log(arr_ordenado);
-            return false;
             for (z=0;z<arr_ordenado.length;z++) {
-                $.each($('tbody#tbody_inputs_pedidos input.input_cantidad'), function (i, j) {
+                $.each($('input.orden'), function (i, j) {
                     precio = '';
-                    if (j.value != "" && j.value != 0) {
+                    if ($(".cantidad_piezas_"+(i+1)).val() != "" && $(".cantidad_piezas_"+(i+1)).val() != 0 && arr_ordenado[z] === j.value) {
                         for (x = 1; x <= $(".input_variedad_" + (i + 1)).length; x++) {
                             id_variedades += $("#id_variedad_" + (i + 1) + "_" + x).val() + "|";
                             precio += $("#precio_" + (i + 1) + "_" + x).val() + ";" + $("#id_detalle_especificacion_empaque_" + (i + 1) + "_" + x).val() + "|"
@@ -222,9 +220,6 @@ function store_pedido(id_cliente, pedido_fijo, csrf_token, vista, id_pedido) {
                     }
                 });
             }
-
-
-
 
             if (arrDataDetallesPedido.length < 1) {
                 modal_view('modal_status_pedidos', '<div class="alert alert-danger text-center"><p> Debe colocar la cantidad de piezas en al menos una especificación</p> </div>', '<i class="fa fa-times" aria-hidden="true"></i> Estado pedido', true, false, '50%');
