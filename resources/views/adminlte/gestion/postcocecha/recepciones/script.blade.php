@@ -178,7 +178,7 @@
                         );
                     }
                 }
-                $('#rendimiento_cosecha').val(retorno.rendimiento + ' tallos/horas');
+                $('#rendimiento_cosecha').val(retorno.rendimiento + ' tallos/hora');
                 $('#html_ver_rendimiento').html('<button class="btn btn-default" onclick="ver_rendimiento_ini(' + retorno.id_cosecha + ')">' +
                     '<i class="fa fa-fw fa-eye"></i> Ver rendimiento' +
                     '</button>');

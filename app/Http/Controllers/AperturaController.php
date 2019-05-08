@@ -4,6 +4,7 @@ namespace yura\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use yura\Modelos\ClasificacionBlanco;
 use yura\Modelos\ClasificacionRamo;
 use yura\Modelos\Consumo;
 use yura\Modelos\StockApertura;
@@ -405,6 +406,9 @@ class AperturaController extends Controller
                     if ($frio->save()) {
                         $frio = StockFrio::All()->last();
                         bitacora('stock_frio', $frio->id_stock_frio, 'I', 'Creacion satisfactoria de un stock frio');
+
+                        /* ============= CLASIFICACION_BLANCO ===============*/
+                        /* PENDIENTE REVISION */
 
                         /* ============= ACTUALIZAR EL STOCK_EMPAQUETADO ===============*/
                         $empaquetado = StockEmpaquetado::All()

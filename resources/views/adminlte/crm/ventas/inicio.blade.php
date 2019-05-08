@@ -50,11 +50,19 @@
                         @foreach(getClientes() as $c)
                             <option value="{{$c->id_cliente}}">{{$c->detalle()->nombre}}</option>
                         @endforeach
-                        <option value="A" selected>Acumulado</option>
+                        <option value="A" selected>Todos los clientes</option>
+                    </select>
+
+                    <select name="filtro_predeterminado_variedad" id="filtro_predeterminado_variedad" style="height: 30px;"
+                            onchange="filtrar_predeterminado()">
+                        <option value="">Todas las variedades</option>
+                        @foreach(getVariedades() as $v)
+                            <option value="{{$v->id_variedad}}">{{$v->nombre}}</option>
+                        @endforeach
                     </select>
 
                     <select class="select2" multiple="multiple" id="filtro_predeterminado_annos" name="filtro_predeterminado_annos"
-                            data-placeholder="Años naturales" style="width: 175px; height: 35px">
+                            data-placeholder="Años naturales" style="width: 205px; height: 35px">
                         @foreach($annos as $a)
                             <option value="{{$a->anno}}">{{$a->anno}}</option>
                         @endforeach
