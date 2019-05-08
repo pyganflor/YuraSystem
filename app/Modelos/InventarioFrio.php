@@ -28,7 +28,13 @@ class InventarioFrio extends Model
         'disponibilidad',
         'descripcion',
         'basura',
+        'id_clasificacion_blanco',
     ];
+
+    public function clasificacion_blanco()
+    {
+        return $this->belongsTo('\yura\Modelos\ClasificacionBlanco', 'id_clasificacion_blanco');
+    }
 
     public function variedad()
     {

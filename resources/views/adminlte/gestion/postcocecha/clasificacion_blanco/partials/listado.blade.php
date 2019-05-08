@@ -4,9 +4,22 @@
         <span class="badge">{{$stock_apertura->cantidad_ingresada}}</span> ramos de <span
                 class="badge">{{$variedad->nombre}}</span> sacados de apertura -
         @if($stock_apertura->empaquetado == 0)
-            <input type="number" id="ramos_armados" placeholder="armados" min="0" required value="{{$stock_apertura->cantidad_armada}}">
+            <input type="number" title="Ramos armados" id="ramos_armados" style="width: 75px" placeholder="armados" min="0" required class="text-center"
+                   value="{{$stock_apertura->cantidad_armada}}">
+            <input type="time" title="Hora inicial" id="hora_inicio" placeholder="07:00" required class="text-center"
+                   value="{{isset($blanco) ? $blanco->hora_inicio : '07:00'}}">
+            <input type="number" title="Personal" id="personal" style="width: 75px" placeholder="personal" required class="text-center"
+                   value="{{isset($blanco) ?  $blanco->personal : ''}}" min="1">
+
+            <input type="hidden" id="id_blanco" value="{{isset($blanco) ? $blanco->id_clasificacion_blanco : ''}}">
+
             <div class="btn-group">
-                <button type="button" class="btn btn-xs btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
+                @if(isset($blanco))
+                    <button class="btn btn-sm btn-default" title="Rendimiento">
+                        {{$blanco->getRendimiento()}} ramos/hr
+                    </button>
+                @endif
+                <button type="button" class="btn btn-sm btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
                         aria-expanded="false">
                     Opciones <span class="caret"></span>
                 </button>
@@ -246,6 +259,7 @@
             if (armar > 0) {
                 datos = {
                     _token: '{{csrf_token()}}',
+                    blanco: $('#id_blanco').val(),
                     id_variedad: $('#id_variedad').val(),
                     id_stock_empaquetado: $('#id_stock_empaquetado').val(),
                     arreglo: arreglo,
@@ -296,6 +310,9 @@
                     _token: '{{csrf_token()}}',
                     id_stock_empaquetado: $('#id_stock_empaquetado').val(),
                     cantidad: $('#ramos_armados').val(),
+                    hora_inicio: $('#hora_inicio').val(),
+                    personal: $('#personal').val(),
+                    blanco: $('#id_blanco').val(),
                     terminar: terminar
                 };
                 if (terminar == 1) {

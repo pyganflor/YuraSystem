@@ -4,6 +4,7 @@ namespace yura\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use yura\Modelos\ClasificacionBlanco;
 use yura\Modelos\ClasificacionRamo;
 use yura\Modelos\InventarioFrio;
 use yura\Modelos\Pedido;
@@ -16,10 +17,13 @@ class ClasificacionBlancoController extends Controller
 {
     public function inicio(Request $request)
     {
+        $blanco = ClasificacionBlanco::All()->where('fecha_ingreso', date('Y-m-d'))->first();
+
         return view('adminlte.gestion.postcocecha.clasificacion_blanco.inicio', [
             'url' => $request->getRequestUri(),
             'submenu' => Submenu::Where('url', '=', substr($request->getRequestUri(), 1))->get()[0],
             'variedades' => Variedad::All()->where('estado', '=', 1),
+            'blanco' => $blanco,
         ]);
     }
 
@@ -83,7 +87,22 @@ class ClasificacionBlancoController extends Controller
             ->orderBy('cr.nombre', 'desc')
             ->get();
 
+        $blanco = ClasificacionBlanco::All()->where('fecha_ingreso', $request->fecha_blanco)->first();
+
+        if ($blanco == '') {
+            $blanco = new ClasificacionBlanco();
+            $blanco->fecha_ingreso = $request->fecha_blanco;
+
+            if ($blanco->save()) {
+                $blanco = ClasificacionBlanco::All()->last();
+                bitacora('clasificacion_blanco', $blanco->id_clasificacion_blanco, 'I', 'Creacion de una nueva clasificacion en blanco');
+            } else {
+                return '<div class="alert alert-danger text-center">Ha ocurrido un problema al guardar la información</div>';
+            }
+        }
+
         return view('adminlte.gestion.postcocecha.clasificacion_blanco.partials.listado', [
+            'blanco' => $blanco,
             'fecha_fin' => $fecha_fin,
             'fechas' => $fechas,
             'stock_apertura' => $stock_apertura,
@@ -255,6 +274,7 @@ class ClasificacionBlancoController extends Controller
                 $inventario->cantidad = $item['armar'];
                 $inventario->disponibles = $item['armar'];
                 $inventario->descripcion = $item['texto'];
+                $inventario->id_clasificacion_blanco = $request->blanco;
 
                 if ($inventario->save()) {
                     $id = InventarioFrio::All()->last()->id_inventario_frio;
@@ -296,7 +316,7 @@ class ClasificacionBlancoController extends Controller
     public function maduracion(Request $request)
     {
         $inventarios = DB::table('inventario_frio')
-            //->select(DB::raw('sum(disponibles) as cantidad'), 'fecha_ingreso')
+            ->select(DB::raw('sum(disponibles) as cantidad'), 'fecha_ingreso')
             ->where('estado', '=', 1)
             ->where('disponibilidad', '=', 1)
             ->where('id_variedad', '=', $request->id_variedad)
@@ -306,7 +326,7 @@ class ClasificacionBlancoController extends Controller
             ->where('tallos_x_ramo', '=', $request['tallos_x_ramo'])
             ->where('longitud_ramo', '=', $request['longitud_ramo'])
             ->where('id_unidad_medida', '=', $request['id_unidad_medida'])
-            //->groupBy('fecha_ingreso')
+            ->groupBy('fecha_ingreso')
             ->orderBy('fecha_registro')
             ->get();
 
@@ -385,19 +405,36 @@ class ClasificacionBlancoController extends Controller
             }
         }
 
-        $model = InventarioFrio::find($request->id_inventario_frio);
-        $model->disponibles = $model->disponibles - $request->editar;
-        if ($model->disponibles == 0)
-            $model->disponibilidad = 0;
+        $models = InventarioFrio::where('disponibilidad', 1)
+            ->where('estado', 1)
+            ->where('basura', 0)
+            ->where('fecha_ingreso', $request->fecha_inventario_frio)->get();
 
-        if ($model->save()) {
-            $id = $model->id_inventario_frio;
-            bitacora('inventario_frio', $id, 'U', 'Actualizacion de un inventario en frio');
-        } else {
-            $success = false;
-            $msg .= '<div class="alert alert-warning text-center">' .
-                'Ha ocurrido un problema al actualzar el inventario seleccionado' .
-                '</div>';
+        $meta = $request->editar;
+
+        foreach ($models as $pos => $model) {
+            if ($meta > 0) {
+                if ($model->disponibles >= $meta) {
+                    $model->disponibles = $model->disponibles - $meta;
+                    $meta = 0;
+                } else {
+                    $meta -= $model->disponibles;
+                    $model->disponibles = 0;
+                }
+
+                if ($model->disponibles == 0)
+                    $model->disponibilidad = 0;
+
+                if ($model->save()) {
+                    $id = $model->id_inventario_frio;
+                    bitacora('inventario_frio', $id, 'U', 'Actualizacion de un inventario en frio');
+                } else {
+                    $success = false;
+                    $msg .= '<div class="alert alert-warning text-center">' .
+                        'Ha ocurrido un problema al actualzar el inventario seleccionado' .
+                        '</div>';
+                }
+            }
         }
 
         if ($success) {
@@ -414,7 +451,13 @@ class ClasificacionBlancoController extends Controller
         $valida = Validator::make($request->all(), [
             'cantidad' => 'required|max:11',
             'id_stock_empaquetado' => 'required|',
+            'blanco' => 'required|',
+            'personal' => 'required|',
+            'hora_inicio' => 'required|',
         ], [
+            'blanco.required' => 'La clasificación en blanco es obligatoria',
+            'personal.required' => 'La cantidad de trabajadores es obligatoria',
+            'hora_inicio.required' => 'La hora de inicio es obligatoria',
             'cantidad.required' => 'La cantidad es obligatoria',
             'id_stock_empaquetado.required' => 'El stock es obligatorio',
             'cantidad.max' => 'La cantidad es muy grande',
@@ -425,11 +468,25 @@ class ClasificacionBlancoController extends Controller
             $model->empaquetado = $request->terminar;
 
             if ($model->save()) {
-                $success = true;
                 $msg = '<div class="alert alert-success text-center">' .
                     '<p> Se ha guardado satisfactoriamente</p>'
                     . '</div>';
                 bitacora('stock_empaquetado', $model->id_stock_empaquetado, 'U', 'Actualizacion satisfactoria de un stock_empaquetado');
+
+                /* ========== CLASIFICACION_BLANCO ========== */
+                $blanco = ClasificacionBlanco::find($request->blanco);
+                $blanco->personal = $request->personal;
+                $blanco->hora_inicio = $request->hora_inicio;
+
+                if ($blanco->save()) {
+                    $success = true;
+                    bitacora('clasificacion_blanco', $blanco->id_clasificacion_blanco, 'U', 'Actualizacion satisfactoria de una clasificacion_blanco');
+                } else {
+                    $success = false;
+                    $msg = '<div class="alert alert-warning text-center">' .
+                        '<p> Ha ocurrido un problema al guardar la información de la calsificación en blanco en el sistema</p>'
+                        . '</div>';
+                }
             } else {
                 $success = false;
                 $msg = '<div class="alert alert-warning text-center">' .
@@ -459,4 +516,32 @@ class ClasificacionBlancoController extends Controller
         ];
     }
 
+    public function store_blanco(Request $request)
+    {
+        $blanco = ClasificacionBlanco::All()->where('fecha_ingreso', date('Y-m-d'))->first();
+        if ($blanco == '') {
+            $blanco = new ClasificacionBlanco();
+            $blanco->fecha_ingreso = date('Y-m-d');
+
+            if ($blanco->save()) {
+                $blanco = ClasificacionBlanco::All()->last();
+                bitacora('clasificacion_blanco', $blanco->id_clasificacion_blanco, 'I', 'Creacion de una nueva clasificacion en blanco');
+
+                return [
+                    'mensaje' => '<div class="alert alert-success text-center">Se ha creado satisfactoriamente la clasificación en blanco</div>',
+                    'success' => true,
+                ];
+            } else {
+                return [
+                    'mensaje' => '<div class="alert alert-danger text-center">Ha ocurrido un problema al guardar la información</div>',
+                    'success' => false,
+                ];
+            }
+        } else {
+            return [
+                'mensaje' => '<div class="alert alert-info text-center">Ya existe una clasificación en blanco para hoy</div>',
+                'success' => true,
+            ];
+        }
+    }
 }

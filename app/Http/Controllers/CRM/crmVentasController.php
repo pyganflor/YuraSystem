@@ -92,15 +92,17 @@ class crmVentasController extends Controller
                         ->where('anno', '=', $anno)
                         ->where('mes', '=', $mes);
 
-                    if ($request->x_cliente == 'true' && $request->id_cliente != '') {
-                        $query = $query->where('id_cliente', '=', $request->id_cliente)
-                            ->get();
-                        $count_query = $count_query->where('id_cliente', '=', $request->id_cliente)
-                            ->get();
-                    } else {
-                        $query = $query->get();
-                        $count_query = $count_query->get();
+                    if ($request->id_variedad != '') {
+                        $query = $query->where('id_variedad', '=', $request->id_variedad);
+                        $count_query = $count_query->where('id_variedad', '=', $request->id_variedad);
                     }
+                    if ($request->x_cliente == 'true' && $request->id_cliente != '') {
+                        $query = $query->where('id_cliente', '=', $request->id_cliente);
+                        $count_query = $count_query->where('id_cliente', '=', $request->id_cliente);
+                    }
+                    $query = $query->get();
+                    $count_query = $count_query->get();
+
 
                     array_push($arreglo_valores, count($query) > 0 ? round($query[0]->valor, 2) : 0);
                     array_push($arreglo_fisicas, count($query) > 0 ? round($query[0]->cajas_fisicas, 2) : 0);
@@ -301,6 +303,8 @@ class crmVentasController extends Controller
             $array_cajas = [];
             $array_precios = [];
             $array_tallos = [];
+
+            $flag = false;
             foreach ($fechas as $dia) {
                 $pedidos_semanal = Pedido::All()->where('estado', 1)
                     ->where('fecha_pedido', '=', $dia->dia);
@@ -311,6 +315,8 @@ class crmVentasController extends Controller
                     $valor += $p->getPrecioByVariedad($v->id_variedad);
                     $cajas += $p->getCajasByVariedad($v->id_variedad);
                     $tallos += $p->getTallosByVariedad($v->id_variedad);
+                    if ($valor > 0)
+                        $flag = true;
                 }
                 $ramos_estandar = $cajas * getConfiguracionEmpresa()->ramos_x_caja;
                 $precio_x_ramo = $ramos_estandar > 0 ? round($valor / $ramos_estandar, 2) : 0;
@@ -321,16 +327,16 @@ class crmVentasController extends Controller
                 array_push($array_precios, $precio_x_ramo);
                 array_push($array_tallos, $precio_x_tallo);
             }
-            array_push($arreglo_variedades, [
-                'variedad' => $v,
-                'valores' => $array_valores,
-                'cajas' => $array_cajas,
-                'precios' => $array_precios,
-                'tallos' => $array_tallos,
-            ]);
-        }
 
-        //dd($arreglo_variedades, $fechas, $request->option);
+            if ($flag == true)
+                array_push($arreglo_variedades, [
+                    'variedad' => $v,
+                    'valores' => $array_valores,
+                    'cajas' => $array_cajas,
+                    'precios' => $array_precios,
+                    'tallos' => $array_tallos,
+                ]);
+        }
 
         return view('adminlte.crm.ventas.partials._desglose_indicador', [
             'labels' => $fechas,

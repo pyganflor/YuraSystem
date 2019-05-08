@@ -19,7 +19,7 @@
                     Opciones
                 </th>
             </tr>
-            @foreach($listado as $item)
+            @foreach($listado as $pos_item => $item)
                 <tr>
                     <td class="text-center" style="border-color: #9d9d9d">
                         {{$item->fecha_ingreso}}
@@ -28,14 +28,14 @@
                         {{difFechas(date('Y-m-d'),$item->fecha_ingreso)->days}}
                     </td>
                     <td class="text-center" style="border-color: #9d9d9d">
-                        {{$item->disponibles}}
+                        {{$item->cantidad}}
                     </td>
                     <td class="text-center" style="border-color: #9d9d9d">
-                        <input type="number" id="editar_inventario_{{$item->id_inventario_frio}}" style="width: 100%" value="0"
+                        <input type="number" id="editar_inventario_{{$item->fecha_ingreso}}" style="width: 100%" value="0"
                                min="0" max="{{$item->cantidad}}">
                     </td>
                     <td class="text-center" style="border-color: #9d9d9d">
-                        <button type="button" class="btn btn-xs btn-primary" onclick="editar_inventario('{{$item->id_inventario_frio}}')">
+                        <button type="button" class="btn btn-xs btn-primary" onclick="editar_inventario('{{$item->fecha_ingreso}}')">
                             <i class="fa fa-fw fa-edit"></i> Editar
                         </button>
                     </td>
@@ -149,7 +149,7 @@
                     </th>
                 </tr>
             </table>
-            <input type="hidden" id="id_inventario_frio">
+            <input type="hidden" id="fecha_inventario_frio">
             <input type="hidden" id="editar_inventario_frio">
             <input type="hidden" id="pos_resto" value="{{$pos_resto}}">
             <div class="text-center">
@@ -160,13 +160,13 @@
         </form>
     </div>
     <script>
-        function editar_inventario(id) {
-            editar = parseFloat($('#editar_inventario_' + id).val());
-            if (editar > 0 && editar != '' && editar <= $('#editar_inventario_' + id).prop('max')) {
+        function editar_inventario(fecha) {
+            editar = parseFloat($('#editar_inventario_' + fecha).val());
+            if (editar > 0 && editar != '' && editar <= $('#editar_inventario_' + fecha).prop('max')) {
                 $('#div_resto_inventarios').show();
                 $('#div_listado_maduracion').hide();
                 $('#badge_cantidad_seleccionada').html('Cambiar ' + editar + ' ramos de');
-                $('#id_inventario_frio').val(id);
+                $('#fecha_inventario_frio').val(fecha);
                 $('#editar_inventario_frio').val(editar);
 
                 pos_resto = $('#pos_resto').val();
@@ -207,7 +207,7 @@
                 if (editar > 0) {
                     datos = {
                         _token: '{{csrf_token()}}',
-                        id_inventario_frio: $('#id_inventario_frio').val(),
+                        fecha_inventario_frio: $('#fecha_inventario_frio').val(),
                         id_variedad: $('#id_variedad').val(),
                         editar: parseFloat($('#editar_inventario_frio').val()),
                         arreglo: arreglo,

@@ -7,20 +7,21 @@
         <li class=""><a href="#precio-chart" data-toggle="tab" aria-expanded="false">Precio x Ramo</a></li>
     </ul>
     <div class="tab-content no-padding">
-        <div class="chart tab-pane active" id="valor-chart" style="position: relative; height: 380px;">
+        <div class="chart tab-pane active" id="valor-chart" style="position: relative">
             <canvas id="chart_annos_valor" width="100%" height="33" style="margin-top: 5px"></canvas>
         </div>
-        <div class="chart tab-pane" id="fisicas-chart" style="position: relative; height: 380px;">
+        <div class="chart tab-pane" id="fisicas-chart" style="position: relative">
             <canvas id="chart_annos_fisicas" width="100%" height="33" style="margin-top: 5px"></canvas>
         </div>
-        <div class="chart tab-pane" id="equivalentes-chart" style="position: relative; height: 380px;">
+        <div class="chart tab-pane" id="equivalentes-chart" style="position: relative">
             <canvas id="chart_annos_equivalentes" width="100%" height="33" style="margin-top: 5px"></canvas>
         </div>
-        <div class="chart tab-pane" id="precio-chart" style="position: relative; height: 380px;">
+        <div class="chart tab-pane" id="precio-chart" style="position: relative">
             <canvas id="chart_annos_precio" width="100%" height="33" style="margin-top: 5px"></canvas>
         </div>
     </div>
 </div>
+
 
 <script>
     construir_char_annos('Valor', 'chart_annos_valor');

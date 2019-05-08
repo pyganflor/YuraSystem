@@ -38,6 +38,8 @@
             list_annos.push(li_annos[i].title);
         }
 
+        if (list_annos.length == 0)
+            $('#filtro_predeterminado_variedad').val('');
         datos = {
             anual: false,
             mensual: mensual,
@@ -48,6 +50,7 @@
             desde: desde,
             hasta: rest_dias(1),
             id_cliente: id_cliente,
+            id_variedad: $('#filtro_predeterminado_variedad').val(),
             annos: list_annos,
         };
 
