@@ -136,6 +136,8 @@ function habilitar_campos() {
     $("#fecha_hasta_pedido_fijo").attr('disabled', false);
 }
 
+
+
 function store_pedido(id_cliente, pedido_fijo, csrf_token, vista, id_pedido) {
 
     if ($('#form_add_pedido').valid()) {
@@ -193,29 +195,43 @@ function store_pedido(id_cliente, pedido_fijo, csrf_token, vista, id_pedido) {
                 }
             }
 
-            $.each($('tbody#tbody_inputs_pedidos input.input_cantidad'), function (i, j) {
-                precio = '';
-                if (j.value != "" || j.value != 0) {
-                    for (x = 1; x <= $(".input_variedad_" + (i + 1)).length; x++) {
-                        id_variedades += $("#id_variedad_" + (i + 1) + "_" + x).val() + "|";
-                        precio += $("#precio_" + (i + 1) + "_" + x).val() + ";" + $("#id_detalle_especificacion_empaque_" + (i + 1) + "_" + x).val() + "|"
-                    }
-                    variedades += id_variedades;
-                    arrDataDetallesPedido.push({
-                        cantidad: $("#cantidad_piezas_" + (i + 1)).val(),
-                        id_cliente_pedido_especificacion: $("#id_cliente_pedido_especificacion_" + (i + 1)).val(),
-                        id_agencia_carga: $("#id_agencia_carga_" + (i + 1)).val(),
-                        precio: precio,
-                    });
-                }
+            var arr_especificaciones = [], arr_ordenado;
+            $.each($(".orden"),function (i,j) {
+                if(j.value !== '')
+                    arr_especificaciones.push(j.value);
             });
+            arr_ordenado = arr_especificaciones.sort(menor_mayor);
+            console.log(arr_ordenado);
+            return false;
+            for (z=0;z<arr_ordenado.length;z++) {
+                $.each($('tbody#tbody_inputs_pedidos input.input_cantidad'), function (i, j) {
+                    precio = '';
+                    if (j.value != "" && j.value != 0) {
+                        for (x = 1; x <= $(".input_variedad_" + (i + 1)).length; x++) {
+                            id_variedades += $("#id_variedad_" + (i + 1) + "_" + x).val() + "|";
+                            precio += $("#precio_" + (i + 1) + "_" + x).val() + ";" + $("#id_detalle_especificacion_empaque_" + (i + 1) + "_" + x).val() + "|"
+                        }
+                        variedades += id_variedades;
+
+                        arrDataDetallesPedido.push({
+                            cantidad: $("#cantidad_piezas_" + (i + 1)).val(),
+                            id_cliente_pedido_especificacion: $("#id_cliente_pedido_especificacion_" + (i + 1)).val(),
+                            id_agencia_carga: $("#id_agencia_carga_" + (i + 1)).val(),
+                            precio: precio,
+                        });
+                    }
+                });
+            }
+
+
+
+
             if (arrDataDetallesPedido.length < 1) {
-                modal_view('modal_status_pedidos', '<div class="alert alert-danger text-center"><p> Debe colocar la cantidad en al menos una especificación</p> </div>', '<i class="fa fa-times" aria-hidden="true"></i> Estado pedido', true, false, '50%');
+                modal_view('modal_status_pedidos', '<div class="alert alert-danger text-center"><p> Debe colocar la cantidad de piezas en al menos una especificación</p> </div>', '<i class="fa fa-times" aria-hidden="true"></i> Estado pedido', true, false, '50%');
                 return false;
             }
 
             var arrFechas = [];
-            console.log(pedido_fijo, $("#opcion_pedido_fijo").val());
             if (pedido_fijo && ($("#opcion_pedido_fijo").val() == 1) || $("#opcion_pedido_fijo").val() == 2) {
                 var fechaDesde = moment($("#fecha_desde_pedido_fijo").val());
                 var fechaHasta = moment($("#fecha_hasta_pedido_fijo").val());
@@ -1426,6 +1442,7 @@ function ver_distribucion(det_ped) {
         $('#btn_update_orden_tinturada').hide();
     });
 }
+function menor_mayor(elem1, elem2) {return elem1-elem2;}
 
 function quitar_distribuciones(id_ped,token) {
     datos = {
@@ -1439,4 +1456,28 @@ function quitar_distribuciones(id_ped,token) {
             editar_pedido_tinturado(id_ped, 0, false);
         });
     });
+}
+function crear_orden_pedido(input){
+    id_campo = input.id.split("_")[2];
+    orden = 0;
+    $.each($('.orden'),function (i,j) {
+        if(j.value !== "")
+            orden++;
+    });
+    if($("#orden_"+id_campo).val() == "")
+        $("#orden_"+id_campo).val(orden+1);
+
+    if($("#cantidad_piezas_"+id_campo).val()==""){
+        orden--;
+        $("#orden_"+id_campo).val("");
+    }
+}
+
+function reiniciar_orden_pedido(){
+    $.each($('.orden'),function (i,j) {
+        j.value = ""
+    });
+    $.each($('.input_cantidad'),function (i,j) {
+        j.value = ""
+    })
 }

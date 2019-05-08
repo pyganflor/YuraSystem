@@ -192,25 +192,25 @@ class PedidoController extends Controller
                         }
                     }
                 }
-            }
-            if($success && $request->crear_envio == "true"){
-                $objEnvio = new Envio;
-                $objEnvio->fecha_envio = $request->fecha_envio;
-                $objEnvio->id_pedido = $model->id_pedido;
-                if($objEnvio->save()){
-                    $modelEnvio = Envio::all()->last();
-                    bitacora('envio', $modelEnvio->id_envio, 'I', 'Inserción satisfactoria de un nuevo envío');
-                    $dataDetallePedido = DetallePedido::where('id_pedido',$model->id_pedido)
-                        ->join('cliente_pedido_especificacion as cpe','detalle_pedido.id_cliente_especificacion','cpe.id_cliente_pedido_especificacion')
-                        ->select('cpe.id_especificacion','detalle_pedido.cantidad')->get();
-                    foreach ($dataDetallePedido as $detallePeido){
-                        $objDetalleEnvio = new DetalleEnvio;
-                        $objDetalleEnvio->id_envio = $modelEnvio->id_envio;
-                        $objDetalleEnvio->id_especificacion = $detallePeido->id_especificacion;
-                        $objDetalleEnvio->cantidad = $detallePeido->cantidad;
-                        if($objDetalleEnvio->save()){
-                            $modelDetalleEnvio = DetalleEnvio::all()->last();
-                            bitacora('detalle_envio', $modelDetalleEnvio->id_detalle_envio, 'I', 'Inserción satisfactoria de un nuevo detalle envío');
+                if($success && $request->crear_envio == "true"){
+                    $objEnvio = new Envio;
+                    $objEnvio->fecha_envio = $fechaFormateada;
+                    $objEnvio->id_pedido = $model->id_pedido;
+                    if($objEnvio->save()){
+                        $modelEnvio = Envio::all()->last();
+                        bitacora('envio', $modelEnvio->id_envio, 'I', 'Inserción satisfactoria de un nuevo envío');
+                        $dataDetallePedido = DetallePedido::where('id_pedido',$model->id_pedido)
+                            ->join('cliente_pedido_especificacion as cpe','detalle_pedido.id_cliente_especificacion','cpe.id_cliente_pedido_especificacion')
+                            ->select('cpe.id_especificacion','detalle_pedido.cantidad')->get();
+                        foreach ($dataDetallePedido as $detallePeido){
+                            $objDetalleEnvio = new DetalleEnvio;
+                            $objDetalleEnvio->id_envio = $modelEnvio->id_envio;
+                            $objDetalleEnvio->id_especificacion = $detallePeido->id_especificacion;
+                            $objDetalleEnvio->cantidad = $detallePeido->cantidad;
+                            if($objDetalleEnvio->save()){
+                                $modelDetalleEnvio = DetalleEnvio::all()->last();
+                                bitacora('detalle_envio', $modelDetalleEnvio->id_detalle_envio, 'I', 'Inserción satisfactoria de un nuevo detalle envío');
+                            }
                         }
                     }
                 }
@@ -431,10 +431,11 @@ class PedidoController extends Controller
                         $detallePedido[] = [
                             'piezas' =>  $det_ped->cantidad,
                             'ramos_x_caja' => $det_esp_emp->cantidad,
-                            'calibre' =>getClasificacionRamo($det_esp_emp->id_clasificacion_ramo)->nombre,
+                            'calibre' => getClasificacionRamo($det_esp_emp->id_clasificacion_ramo)->nombre,
                             'ramos_totales' => $det_ped->cantidad * $det_esp_emp->cantidad * $esp_emp->cantidad,
                             'presentacion'=> getVariedad($det_esp_emp->id_variedad)->siglas." ".getClasificacionRamo($det_esp_emp->id_clasificacion_ramo)->nombre." ".(getPrecioByClienteDetEspEmp($pedido->id_cliente, $det_esp_emp->id_detalle_especificacionempaque) !== null ? getPrecioByClienteDetEspEmp($pedido->id_cliente, $det_esp_emp->id_detalle_especificacionempaque)->codigo_presentacion : ""). "" . $dato_expotacion,
-                            'id_agencia_carga' => $det_ped->id_agencia_carga
+                            'id_agencia_carga' => $det_ped->id_agencia_carga,
+                            'id_detalle_pedido' => $det_ped->id_detalle_pedido
                         ];
                     }
                 }

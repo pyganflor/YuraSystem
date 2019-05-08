@@ -94,14 +94,43 @@
             @php
                 $total_piezas = 0;
                 $ramos_estandar = 0;
+                $full = 0;
+                $half = 0;
+                $cuarto = 0;
+                $sexto = 0;
+                $octavo = 0;
+                $full_equivalente_real = 0;
             @endphp
             @foreach($detallePedido as $det_ped)
-                @php $re = convertToEstandar($det_ped['ramos_x_caja'],$det_ped['calibre']) @endphp
+                @php
+                    $dp = getDetallePedido($det_ped['id_detalle_pedido']);
+                    foreach ($dp->cliente_especificacion->especificacion->especificacionesEmpaque as $esp_emp){
+                        foreach($esp_emp->detalles as $det_esp_emp){
+                            $full_equivalente_real += explode("|",$esp_emp->empaque->nombre)[1]*$dp->cantidad;
+                            switch (explode("|",$esp_emp->empaque->nombre)[1]) {
+                                case '1':
+                                    $full += $dp->cantidad;
+                                    break;
+                                case '0.5':
+                                    $half += $dp->cantidad;
+                                    break;
+                                case '0.25':
+                                    $cuarto +=$dp->cantidad;
+                                    break;
+                                case '0.17':
+                                    $sexto +=$dp->cantidad;
+                                    break;
+                                case '0.125':
+                                    $octavo +=$dp->cantidad;
+                                    break;
+                            }
+                        }
+                    }
+                @endphp
                 <tr>
                     <td style="padding-left: 5px;font-size:13px" >
                         {{$det_ped['piezas']}}
                         @php
-                            $ramos_estandar += $re;
                             $total_piezas += $det_ped['piezas']
                         @endphp
                     </td>
@@ -114,6 +143,7 @@
         </tbody>
     </table>
 @elseif($pedido->tipo_especificacion==="T")
+
     <table style="width:100%">
         <tr>
             <td>
@@ -140,18 +170,18 @@
     </tr>
     <tr>
         <td colspan="2">
-            {{$ramos_estandar / getConfiguracionEmpresa()->ramos_x_caja}} TOTAL FULL BOXES EQUIVALENT / TOTAL CAJAS
+            {{round($full_equivalente_real,2)}} TOTAL FULL BOXES EQUIVALENT / TOTAL CAJAS
         </td>
     </tr>
     <tr>
         <td colspan="2">
             <table style="width: 100%;margin-top: 15px;font-size: 15px">
                 <tr>
-                    <td>FULL BOXES : [0.00]</td>
-                    <td>HALF BOXES : [0.00]</td>
-                    <td>1/4 BOXES : [0.00]</td>
-                    <td>1/6 BOXES : [0.00]</td>
-                    <td>1/8 BOXES : [0.00]</td>
+                    <td>FULL BOXES : [{{number_format($full,2,".","")}}]</td>
+                    <td>HALF BOXES : [{{number_format($half,2,".","")}}]</td>
+                    <td>1/4 BOXES : [{{number_format($cuarto,2,".","")}}]</td>
+                    <td>1/6 BOXES : [{{number_format($sexto,2,".","")}}]</td>
+                    <td>1/8 BOXES : [{{number_format($octavo,2,".","")}}]</td>
                 </tr>
             </table>
         </td>

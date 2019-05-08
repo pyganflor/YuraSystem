@@ -1710,3 +1710,7 @@ function getComprobanteRelacionadoGuia($idComprobante){
 function getComprobanteRelacionadFactura($idComprobante){
     return DetalleGuiaRemision::where('id_comprobante_relacionado',$idComprobante)->first();
 }
+
+function getDetallePedido($idDetallePedido){
+    return DetallePedido::find($idDetallePedido);
+}

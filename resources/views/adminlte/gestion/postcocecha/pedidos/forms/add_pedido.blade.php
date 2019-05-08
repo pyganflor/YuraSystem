@@ -98,7 +98,10 @@
                                     <span class="badge bg-green monto_total_pedido" >$0.00</span>
                                     <i class="fa fa-shopping-cart"></i> Guardar
                                 </button>
-
+                                <button type="button" class=" btn btn-app btn-xs btn-success"
+                                        onclick="reiniciar_orden_pedido()">
+                                    <i class="fa fa-refresh" aria-hidden="true"></i> Reiniciar orden
+                                </button>
                             </td>
                         </tr>
                     </table>
@@ -140,6 +143,5 @@
             $(".tr_remove_"+$(".input_cantidad").length).remove();
             calcular_precio_pedido();
         }
-
     </script>
 @endif

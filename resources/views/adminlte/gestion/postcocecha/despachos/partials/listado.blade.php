@@ -5,7 +5,7 @@
             <tr>
                 <th style="border-color: #9d9d9d; background-color: #e9ecef" colspan="2">
                     <ul class="list-unstyled">
-                        <li>d
+                        <li>
                             Semana: {{isset(getSemanaByDate($fecha)->codigo) ? getSemanaByDate($fecha)->codigo : "Semana no programada"}}
                         </li>
                         <li>
@@ -152,13 +152,16 @@
                                     {{--{{explode('|',$det_esp->empaque_e->nombre)[0]}}--}}
                                     {{explode('|',$det_esp->empaque_p->nombre)[0]}}
                                 </td>
-                                @if($pos_det_esp == 0)
-                                    <td class="text-center" style="border-color: #9d9d9d" rowspan="{{count($esp_emp->detalles)}}">
+
+                                    @if($pos_det_esp == 0 && $pos_esp_emp == 0)
+                                    <td class="text-center" style="border-color: #9d9d9d" rowspan="{{getCantidadDetallesByEspecificacion($det_ped->cliente_especificacion->id_especificacion)}}">
                                         {{$esp_emp->cantidad * $det_ped->cantidad}}
                                         @php
                                             $piezas_totales += ($esp_emp->cantidad * $det_ped->cantidad);
                                         @endphp
                                     </td>
+                                @endif
+                                @if($pos_det_esp == 0)
                                     <td class="text-center" style="border-color: #9d9d9d" rowspan="{{count($esp_emp->detalles)}}">
                                         {{($esp_emp->cantidad * $det_ped->cantidad) * explode('|',$esp_emp->empaque->nombre)[1]}}
                                         @php

@@ -13,10 +13,8 @@
         });
     }
 
-    function menor_mayor(elem1, elem2) {return elem1-elem2;}
-
     function crear_despacho() {
-       var arr_pedidos = [], arr_ordenado, pedidos =[];
+        var arr_pedidos = [], arr_ordenado, pedidos =[];
         $.each($(".orden_despacho"),function (i,j) {
             if(j.value !== '')
                 arr_pedidos.push(j.value);

@@ -258,7 +258,6 @@ class DespachosController extends Controller
     }
 
     public function update_estado_despachos(Request $request){
-        //dd($request->estado);
         $despacho = Despacho::find($request->id_despacho);
         if($despacho->update(['estado'=>$request->estado == 1 ? 0 :1])){
             $success = true;

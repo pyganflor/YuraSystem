@@ -4,6 +4,10 @@
             <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
                 style="border-color: #9d9d9d;width: 15px;text-align:center"> </th>
             <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
+                style="border-color: #9d9d9d;width: 30px">
+                ORDEN
+            </th>
+            <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
                 style="border-color: #9d9d9d;width: 80px">
                 PIEZAS
             </th>
@@ -69,10 +73,14 @@
                                         <input type="checkbox" class="seleccion_invidual"  name="seleccion_invidual" id="seleccion_invidual_{{($x+1)}}"
                                                checked onclick="calcular_precio_pedido()">
                                     </td>
+                                    <td style="border-color: #9d9d9d; padding: 0px; vertical-align: middle; width: 15px; text-align:center"
+                                        class="text-center" rowspan="{{getCantidadDetallesByEspecificacion($item->id_especificacion)}}" >
+                                        <input type="number" min="1" name="orden" class="orden" id="orden_{{($x+1)}}" style="border: none;text-align: center;" readonly>
+                                    </td>
                                     <td style="border-color: #9d9d9d; padding: 0px; vertical-align: middle; width: 100px; "
                                         class="text-center" rowspan="{{getCantidadDetallesByEspecificacion($item->id_especificacion)}}">
-                                        <input type="number" min="0" id="cantidad_piezas_{{($x+1)}}" style="border: none" onchange="calcular_precio_pedido(this)"
-                                               name="cantidad_piezas_{{$item->id_especificacion}}" class="text-center form-control cantidad_{{($x+1)}} input_cantidad" value="">
+                                        <input type="number" min="0" id="cantidad_piezas_{{($x+1)}}" style="border: none;" onkeyup="crear_orden_pedido(this)" onchange="calcular_precio_pedido(this)"
+                                               name="cantidad_piezas_{{$item->id_especificacion}}"  class="text-center form-control cantidad_{{($x+1)}} input_cantidad" value="">
                                         <input type="hidden" id="id_cliente_pedido_especificacion_{{($x+1)}}" value="{{$item->id_cliente_pedido_especificacion}}">
                                     </td>
                                 @endif
@@ -169,5 +177,3 @@
             @endif
         </tbody>
     </table>
-
-
