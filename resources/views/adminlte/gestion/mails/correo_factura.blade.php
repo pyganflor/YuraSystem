@@ -6,6 +6,6 @@
         Para: <b>{{$nombreCliente}}</b>
     </p>
     <p style="font-size: 12pt">
-        Le informamos que hemos emitido la factura N# {{"001-".getDetallesClaveAcceso($numeroComprobante,'PUNTO_ACCESO')."-".getDetallesClaveAcceso($numeroComprobante,'SECUENCIAL')}}, la misma se encuentra adjuntada en el presente correo en su formato .XML y .PDF,
+        Le informamos que hemos emitido la factura N# {{$numeroComprobante}}, la misma se encuentra adjuntada en el presente correo en su formato .XML y .PDF,
     </p>
 </div>

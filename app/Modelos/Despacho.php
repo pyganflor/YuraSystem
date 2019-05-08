@@ -38,7 +38,7 @@ class Despacho extends Model
         'id_resp_transporte',
         'n_despacho',
         'sello_adicional',
-        'estado'.
+        'estado',
         'mail_resp_ofi_despacho'
     ];
 

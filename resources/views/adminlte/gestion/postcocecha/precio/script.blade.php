@@ -143,8 +143,7 @@
             $.each($('.id_detalle_especificacion_empaque'), function (i, j) {
                 arrPrecios.push({
                     'precio': $("#precio_" + (j.value)).val(),
-                    'id_detalle_especificacionempaque': $("#" + (j.id)).val(),
-                    'codigo_presentacion' : $("#codigo_presentacion_"+(i+1)).val()
+                    'id_detalle_especificacionempaque': $("#" + (j.id)).val()
                 });
             });
 

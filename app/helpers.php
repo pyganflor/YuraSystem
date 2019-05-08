@@ -1333,17 +1333,18 @@ function generaDocumentoPDF($autorizacion,$tipo_documento,$pre_factura=false)
 }
 
 
-function enviarMailComprobanteCliente($tipoDocumento, $correoCliente, $nombreCliente, $nombreArchivo, $numeroComprobante,$preFactura=false){
+function enviarMailComprobanteCliente($tipoDocumento, $correoCliente, $nombreCliente, $nombreArchivo, $numeroComprobante,$preFactura=false,$correosExtra=false){
+    //dd($correo_extra);
     if ($tipoDocumento == "01") {
                    //$correoCliente
-        Mail::to("pruebas-c26453@inbox.mailtrap.io")->send(new CorreoFactura($correoCliente, $nombreCliente, $nombreArchivo, $numeroComprobante,$preFactura));
+        Mail::to("pruebas-c26453@inbox.mailtrap.io")->send(new CorreoFactura($correoCliente, $nombreCliente, $nombreArchivo, $numeroComprobante,$preFactura,$correosExtra));
     }
 }
 
 function enviarMailComprobanteAgenciaCarga($tipoDocumento, $correoAgenciCarga, $nombreAgenciaCarga, $nombreArchivo, $numeroComprobante,$preFactura=false){
     if ($tipoDocumento == "01") {
             //$correoAgenciCarga
-        Mail::to("pruebas-c26453@inbox.mailtrap.io")->send(new CorreoFactura($correoAgenciCarga, $nombreAgenciaCarga, $nombreArchivo, $numeroComprobante,$preFactura));
+        Mail::to("pruebas-c26453@inbox.mailtrap.io")->send(new CorreoFactura($correoAgenciCarga, $nombreAgenciaCarga, $nombreArchivo, $numeroComprobante,$preFactura,$correosExtra=false));
     }
 }
 

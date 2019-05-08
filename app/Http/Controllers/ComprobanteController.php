@@ -168,7 +168,7 @@ class ComprobanteController extends Controller
                     '<p> No se ha configurado un código DAE para ' . $request->pais . ' en la fecha seleccionada </p>'
                     . '</div>';
             }
-
+            $fechaEmision = Carbon::now()->format('dmY');
             if($request->update === "true"){
                 $dataComprobante = Comprobante::where('id_envio',$request->id_envio)
                     ->join('detalle_factura as df','comprobante.id_comprobante','df.id_comprobante')
@@ -178,7 +178,6 @@ class ComprobanteController extends Controller
                     ->select('clave_acceso','comprobante.id_comprobante','df.id_detalle_factura','id_impuesto_desglose_envio_factura')->get();
 
                 $secuencial = getDetallesClaveAcceso($dataComprobante[0]->clave_acceso, 'SECUENCIAL');
-                $fechaEmision = getDetallesClaveAcceso($dataComprobante[0]->clave_acceso, 'FECHA_EMISION');
                 $ruc = getDetallesClaveAcceso($dataComprobante[0]->clave_acceso, 'RUC');
                 $codigo_numerico = getDetallesClaveAcceso($dataComprobante[0]->clave_acceso, 'CODIGO_NUMERICO');
                 $tipoComprobante = getDetallesClaveAcceso($dataComprobante[0]->clave_acceso, 'TIPO_COMPROBANTE');
@@ -197,7 +196,6 @@ class ComprobanteController extends Controller
 
             }else{
                 $secuencial = getSecuencial();
-                $fechaEmision = Carbon::now()->format('dmY');
                 $ruc = env('RUC');
                 $codigo_numerico = env('CODIGO_NUMERICO');
                 $tipoComprobante = '01';
@@ -613,7 +611,7 @@ class ComprobanteController extends Controller
                                                 $autorizacion = simplexml_load_string($archivo);
                                                 $numeroComprobante = getDetallesClaveAcceso((String)$autorizacion->infoTributaria->claveAcceso, 'SERIE').getDetallesClaveAcceso((String)$autorizacion->infoTributaria->claveAcceso, 'SECUENCIAL');
                                                 generaDocumentoPDF($autorizacion,"01",true);
-                                                enviarMailComprobanteCliente("01", (String)$autorizacion->infoAdicional->campoAdicional[1], (String)$autorizacion->infoFactura->razonSocialComprador, (String)$autorizacion->infoTributaria->claveAcceso, $numeroComprobante,true);
+                                                enviarMailComprobanteCliente("01", (String)$autorizacion->infoAdicional->campoAdicional[1], (String)$autorizacion->infoFactura->razonSocialComprador, (String)$autorizacion->infoTributaria->claveAcceso, $numeroComprobante,true,$request->arrCorreos);
                                             }else{
                                                 $msg .= "<div class='alert text-center  alert-danger'>" .
                                                     "<p> EL correo no pudo ser enviado al cliente debido a que el archivo PDF de la factura creada no existe en el servidor, por favor contactarse con el área de sistemas. </p>"
@@ -759,6 +757,7 @@ class ComprobanteController extends Controller
         $obj_comprobante->clave_acceso = $claveAcceso;
         $obj_comprobante->estado = 1;
         $obj_comprobante->tipo_comprobante = $tipoComprobante; //CÓDIGO DE ENVIO POR LOTE
+        $obj_comprobante->fecha_emision = now()->toDateString();
 
         if ($obj_comprobante->save()) {
             $model_comprobante = Comprobante::all()->last();
@@ -982,7 +981,7 @@ class ComprobanteController extends Controller
                 'id_comprobante' => 'required',
                 'ruta' => 'required',
             ]);
-
+            $fechaEmision = Carbon::now()->format('dmY');
             if(!$valida->fails()) {
                 if($request->update === "true"){
                     $dataComprobante = Comprobante::where('id_envio',$request->id_envio)
@@ -993,7 +992,6 @@ class ComprobanteController extends Controller
                         ->select('clave_acceso','comprobante.id_comprobante','df.id_detalle_factura','id_impuesto_desglose_envio_factura')->get();
 
                     $secuencial = getDetallesClaveAcceso($dataComprobante[0]->clave_acceso, 'SECUENCIAL');
-                    $fechaEmision = getDetallesClaveAcceso($dataComprobante[0]->clave_acceso, 'FECHA_EMISION');
                     $ruc = getDetallesClaveAcceso($dataComprobante[0]->clave_acceso, 'RUC');
                     $codigo_numerico = getDetallesClaveAcceso($dataComprobante[0]->clave_acceso, 'CODIGO_NUMERICO');
                     $tipoComprobante = getDetallesClaveAcceso($dataComprobante[0]->clave_acceso, 'TIPO_COMPROBANTE');
@@ -1012,7 +1010,6 @@ class ComprobanteController extends Controller
 
                 }else{
                     $secuencial = getSecuencial();
-                    $fechaEmision = Carbon::now()->format('dmY');
                     $ruc = env('RUC');
                     $codigo_numerico = env('CODIGO_NUMERICO');
                     $tipoComprobante = '06';
@@ -1146,6 +1143,7 @@ class ComprobanteController extends Controller
                 $obj_comprobante = new Comprobante;
                 $obj_comprobante->clave_acceso = $claveAcceso;
                 $obj_comprobante->tipo_comprobante = "06"; //CÓDIGO DE GUÍA DE REMISIÓN
+                $obj_comprobante->fecha_emision = now()->toDateString();
 
                 if ($obj_comprobante->save()) {
                     $model_comprobante = Comprobante::all()->last();

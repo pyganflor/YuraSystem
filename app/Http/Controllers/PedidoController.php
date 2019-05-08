@@ -378,87 +378,68 @@ class PedidoController extends Controller
         $success = false;
         $pedido = getPedido($id_pedido);
 
-        if($pedido->envios()->count()>0){
-            if($pedido->envios[0]->comprobante !== null){
-                if($pedido->envios[0]->comprobante->estado === 5){
-
-                    $comprobante = $pedido->envios[0]->comprobante;
-                    $empresa = getConfiguracionEmpresa();
-                    $despacho = getDetalleDespacho($pedido->id_pedido)->despacho;
-                    $facturaTercero = getFacturaClienteTercero($pedido->envios[0]->id_envio);
-                    $envio =[
-                        'guia_madre' =>$pedido->envios[0]->guia_madre,
-                        'guia_hija' =>$pedido->envios[0]->guia_hija,
-                        'aerolinea' => getAgenciaTransporte($pedido->envios[0]->detalles[0]->id_aerolinea)->nombre,
-                        'agencia_carga' => getAgenciaCarga($pedido->detalles[0]->id_agencia_carga)->nombre
-                    ];
-
-                    if($facturaTercero !== null){
-                        $cliente = [
-                            'nombre' =>$facturaTercero->nombre_cliente_tercero,
-                            'identificacion' => $facturaTercero->identificacion,
-                            'tipo_identificacion' => getTipoIdentificacion($facturaTercero->codigo_identificacion)->nombre,
-                            'pais' => getPais($facturaTercero->codigo_pais)->nombre,
-                            'provincia' => $facturaTercero->provincia,
-                            'direccion' => $facturaTercero->direccion,
-                            'telefono' => $facturaTercero->telefono,
-                            'dae' => $facturaTercero->dae,
-                        ];
-                    }else{
-                        foreach($pedido->cliente->detalles as $det_cli)
-                            if($det_cli->estado == 1)
-                                $cliente = $det_cli;
-                        $cliente = [
-                            'nombre' =>$cliente->nombre,
-                            'identificacion' => $cliente->ruc,
-                            'tipo_identificacion' => getTipoIdentificacion($cliente->codigo_identificacion)->nombre,
-                            'pais' => getPais($cliente->codigo_pais)->nombre,
-                            'provincia' => $cliente->provincia,
-                            'direccion' => $cliente->direccion,
-                            'telefono' => $cliente->telefono,
-                            'dae' => $pedido->envios[0]->dae
-                        ];
-                    }
-
-                    if($pedido->tipo_especificacion === "T") {
-
-                    }elseif($pedido->tipo_especificacion === "N"){
-                        $env = getEnvio($pedido->envios[0]->id_envio);
-                        $detallePedido = [];
-                        foreach ($env->pedido->detalles as $x => $det_ped) {
-                            foreach ($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $m => $esp_emp) {
-                                foreach ($esp_emp->detalles as $n => $det_esp_emp) {
-                                    $detallePedido[] = [
-                                        'piezas' =>  $det_ped->cantidad,
-                                        'ramos_x_caja' => $det_esp_emp->cantidad,
-                                        'ramos_totales' => $det_ped->cantidad * $det_esp_emp->cantidad * $esp_emp->cantidad,
-                                        'presentacion'=> getVariedad($det_esp_emp->id_variedad)->siglas." ".getClasificacionRamo($det_esp_emp->id_clasificacion_ramo)->nombre." ".(getPrecioByClienteDetEspEmp($pedido->id_cliente, $det_esp_emp->id_detalle_especificacionempaque) !== null ? getPrecioByClienteDetEspEmp($pedido->id_cliente, $det_esp_emp->id_detalle_especificacionempaque)->codigo_presentacion : "")
-                                    ];
-                                }
-                            }
-                        }
-
-                    }
-                    return PDF::loadView('adminlte.gestion.postcocecha.despachos.partials.pdf_packing_list', compact('detallePedido','pedido','cliente','comprobante','empresa','despacho','envio'))->stream();
-                }else{
-                    $msg = '<div class="alert alert-danger text-center">' .
-                             '<p> El pedido no se ha facturado enviado al SRI aún</p>'
-                            . '</div>';
-                }
-            }else{
-                $msg = '<div class="alert alert-danger text-center">' .
-                            '<p> El pedido no se ha facturado aún</p>'
-                        . '</div>';
-            }
-        }else{
-            $msg = '<div class="alert alert-danger text-center">' .
-                        '<p> El pedido no tiene envío realizado</p>'
-                    . '</div>';
-        }
-
-        return [
-            'mensaje' => $msg,
-            'success' => $success
+        $comprobante = isset($pedido->envios[0]->comprobante) ? $pedido->envios[0]->comprobante : null;
+        $empresa = getConfiguracionEmpresa();
+        $despacho = isset(getDetalleDespacho($pedido->id_pedido)->despacho) ? getDetalleDespacho($pedido->id_pedido)->despacho : null;
+        $facturaTercero = isset($pedido->envios) ? getFacturaClienteTercero($pedido->envios[0]->id_envio) : null;
+        $envio =[
+            'guia_madre' =>isset($pedido->envios[0]->guia_madre) ? $pedido->envios[0]->guia_madre : null,
+            'guia_hija' =>isset($pedido->envios[0]->guia_hija) ? $pedido->envios[0]->guia_hija : null,
+            'aerolinea' => isset($pedido->envios[0]->detalles[0]->id_aerolinea) ? getAgenciaTransporte($pedido->envios[0]->detalles[0]->id_aerolinea)->nombre : null,
+            'agencia_carga' => getAgenciaCarga($pedido->detalles[0]->id_agencia_carga)->nombre
         ];
+        if($facturaTercero !== null){
+            $cliente = [
+                'nombre' =>$facturaTercero->nombre_cliente_tercero,
+                'identificacion' => $facturaTercero->identificacion,
+                'tipo_identificacion' => getTipoIdentificacion($facturaTercero->codigo_identificacion)->nombre,
+                'pais' => getPais($facturaTercero->codigo_pais)->nombre,
+                'provincia' => $facturaTercero->provincia,
+                'direccion' => $facturaTercero->direccion,
+                'telefono' => $facturaTercero->telefono,
+                'dae' => $facturaTercero->dae,
+            ];
+        }else{
+            foreach($pedido->cliente->detalles as $det_cli)
+                if($det_cli->estado == 1)
+                    $cliente = $det_cli;
+                $cliente = [
+                    'nombre' =>$cliente->nombre,
+                    'identificacion' => $cliente->ruc,
+                    'tipo_identificacion' => getTipoIdentificacion($cliente->codigo_identificacion)->nombre,
+                    'pais' => getPais($cliente->codigo_pais)->nombre,
+                    'provincia' => $cliente->provincia,
+                    'direccion' => $cliente->direccion,
+                    'telefono' => $cliente->telefono,
+                    'dae' => $pedido->envios[0]->dae
+                ];
+        }
+        if($pedido->tipo_especificacion === "T") {
+
+                        //PACKING LIST PEDIO TINTURADO
+        }elseif($pedido->tipo_especificacion === "N"){
+            $env = getEnvio($pedido->envios[0]->id_envio);
+            $detallePedido = [];
+            foreach ($env->pedido->detalles as $x => $det_ped) {
+                foreach ($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $m => $esp_emp) {
+                    foreach ($esp_emp->detalles as $n => $det_esp_emp) {
+                        $dato_expotacion = "";
+                        foreach($pedido->cliente->cliente_datoexportacion as $cde){
+                            $valor = isset(getDatosExportacion($det_ped->id_detalle_pedido, $cde->datos_exportacion->id_dato_exportacion)->valor) ? getDatosExportacion($det_ped->id_detalle_pedido, $cde->datos_exportacion->id_dato_exportacion)->valor : "";
+                            $dato_expotacion.= $valor;
+                        }
+                        $detallePedido[] = [
+                            'piezas' =>  $det_ped->cantidad,
+                            'ramos_x_caja' => $det_esp_emp->cantidad,
+                            'calibre' =>getClasificacionRamo($det_esp_emp->id_clasificacion_ramo)->nombre,
+                            'ramos_totales' => $det_ped->cantidad * $det_esp_emp->cantidad * $esp_emp->cantidad,
+                            'presentacion'=> getVariedad($det_esp_emp->id_variedad)->siglas." ".getClasificacionRamo($det_esp_emp->id_clasificacion_ramo)->nombre." ".(getPrecioByClienteDetEspEmp($pedido->id_cliente, $det_esp_emp->id_detalle_especificacionempaque) !== null ? getPrecioByClienteDetEspEmp($pedido->id_cliente, $det_esp_emp->id_detalle_especificacionempaque)->codigo_presentacion : ""). "" . $dato_expotacion,
+                            'id_agencia_carga' => $det_ped->id_agencia_carga
+                        ];
+                    }
+                }
+            }
+        }
+        return PDF::loadView('adminlte.gestion.postcocecha.despachos.partials.pdf_packing_list', compact('detallePedido','pedido','cliente','comprobante','empresa','despacho','envio'))->stream();
     }
 }

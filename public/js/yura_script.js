@@ -145,7 +145,7 @@ function store_pedido(id_cliente, pedido_fijo, csrf_token, vista, id_pedido) {
             '</div>'
             : msg = '';
         option_agencias_transporte = [];
-        if ($("#envio_automatico").is(":checked")) {
+        /*if ($("#envio_automatico").is(":checked")) {
             texto = "<div class='row'>" +
                 "<div class='col-md-12'>" +
                 "" + msg + "" +
@@ -154,13 +154,13 @@ function store_pedido(id_cliente, pedido_fijo, csrf_token, vista, id_pedido) {
                 "<span id='error_fecha_envio'></span>" +
                 "</div>" +
                 "</div>";
-        } else {
+        } else {*/
             id_pedido
                 ? texto = '<div class="alert alert-warning text-center">' +
                 '<p>Si este pedido posee envíos al editarlo seran borrados y deberá crearlos nuevamente</p>' +
                 '</div>'
                 : texto = '<div class="alert alert-info text-center"><p>Desea guardar este pedido?</p></div>';
-        }
+      /*  }*/
         modal_quest('modal_edit_pedido', texto, 'Editar pedido', true, false, '40%', function () {
             if ($("#envio_automatico").is(":checked"))
                 if ($("#fecha_envio").val() == "") {
@@ -269,7 +269,7 @@ function store_pedido(id_cliente, pedido_fijo, csrf_token, vista, id_pedido) {
                 id_pedido: id_pedido,
                 arrDatosExportacion: arrDatosExportacion,
                 crear_envio: $("#envio_automatico").is(":checked"),
-                fecha_envio: $("#envio_automatico").is(":checked") ? $("#fecha_envio").val() : "",
+                fecha_envio:  $("#fecha_de_entrega").val(),
             };
 
             post_jquery('clientes/store_pedidos', datos, function () {
