@@ -38,18 +38,13 @@
 
                 </h3>
                 <div class="form-group pull-right" style="margin: 0">
-                    @if($blanco == '')
-                        <button type="button" class="btn btn-block btn-primary" onclick="store_blanco()">
-                            Crear Clasificación en Blanco para el día de hoy
-                        </button>
-                    @else
-                        <label class="psull-right">
-                            Trabajar con la Clasificación en Blanco correspondiente a la fecha:
-                        </label>
+                    <label class="psull-right">
+                        Trabajar con la Clasificación en Blanco correspondiente a la fecha:
+                    </label>
 
-                        <input type="date" id="fecha_blanco" name="fecha_blanco" value="{{$blanco->fecha_ingreso}}" class="text-center"
-                                   required style="margin-right: 10px">
-                    @endif
+                    <input type="date" id="fecha_blanco" name="fecha_blanco" onchange="listar_clasificacion_blanco($('#variedad_search').val())"
+                           value="{{isset($blanco) ? $blanco->fecha_ingreso : date('Y-m-d')}}" class="text-center"
+                           required style="margin-right: 10px">
                     <label for="variedad_search" style="margin-right: 10px">Variedad</label>
                     <select name="variedad_search" id="variedad_search" onchange="listar_clasificacion_blanco($(this).val())">
                         <option value="">Seleccione...</option>
@@ -70,5 +65,8 @@
 @endsection
 
 @section('script_final')
+    {{-- JS de Chart.js --}}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
+
     @include('adminlte.gestion.postcocecha.clasificacion_blanco.script')
 @endsection

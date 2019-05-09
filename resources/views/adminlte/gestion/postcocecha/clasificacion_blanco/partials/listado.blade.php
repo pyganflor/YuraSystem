@@ -4,7 +4,8 @@
         <span class="badge">{{$stock_apertura->cantidad_ingresada}}</span> ramos de <span
                 class="badge">{{$variedad->nombre}}</span> sacados de apertura -
         @if($stock_apertura->empaquetado == 0)
-            <input type="number" title="Ramos armados" id="ramos_armados" style="width: 75px" placeholder="armados" min="0" required class="text-center"
+            <input type="number" title="Ramos armados" id="ramos_armados" style="width: 75px" placeholder="armados" min="0" required
+                   class="text-center"
                    value="{{$stock_apertura->cantidad_armada}}">
             <input type="time" title="Hora inicial" id="hora_inicio" placeholder="07:00" required class="text-center"
                    value="{{isset($blanco) ? $blanco->hora_inicio : '07:00'}}">
@@ -15,8 +16,8 @@
 
             <div class="btn-group">
                 @if(isset($blanco))
-                    <button class="btn btn-sm btn-default" title="Rendimiento">
-                        {{$blanco->getRendimiento()}} ramos/hr
+                    <button class="btn btn-sm btn-default" type="button" title="Rendimiento" onclick="ver_rendimiento({{$blanco->id_clasificacion_blanco}})">
+                        <strong>{{$blanco->getRendimiento()}}</strong> ramos/hr
                     </button>
                 @endif
                 <button type="button" class="btn btn-sm btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
