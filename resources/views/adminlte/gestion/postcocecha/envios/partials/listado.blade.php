@@ -209,12 +209,12 @@
                                                 <h3 class="box-title">DATOS DE EXPORTACIÓN</h3>
                                             </div>
                                             <div class="col-md-6 text-right">
-                                                <button type="button" class="btn btn-{{$factura_tercero ?  "primary" : "default"}} btn-xs" title="Facturar a terceros" onclick="factura_tercero('{{$envio->id_envio}}')">
+                                                <button type="button" class="btn btn-{{$factura_tercero ?  "primary" : "default"}} btn-xs" title="Facturar a terceros" onclick="factura_tercero('{{$envio->id_envio}}','{{csrf_token()}}','{{$envio->id_pedido}}','{{$vista}}')">
                                                     <i class="fa fa-user-plus" aria-hidden="true"></i>
                                                 </button>
                                                 @if($facturado == null)
                                                     @if($factura_tercero)
-                                                        <button type="button" class="btn btn-danger btn-xs" title="Eliminar factura a tercero" onclick="delete_factura_tercero('{{$envio->id_envio}}')">
+                                                        <button type="button" class="btn btn-danger btn-xs" title="Eliminar factura a tercero" onclick="delete_factura_tercero('{{$envio->id_envio}}','{{csrf_token()}}','{{$envio->id_pedido}}','{{$vista}}')">
                                                             <i class="fa fa-user-times" aria-hidden="true"></i>
                                                         </button>
                                                     @endif
@@ -358,10 +358,10 @@
                                                             <h3 class="box-title">ENVÍO DE CORREOS</h3>
                                                         </div>
                                                         <div class="col-md-6 text-right">
-                                                            <button  type="button" class="btn btn-primary btn-xs" {{$factura_tercero ?  "disabled" : ""}} title="Agregar correo" onclick="agregar_correo('form_envios_{{$i+1}}')">
+                                                            <button  type="button" class="btn btn-primary btn-xs"  title="Agregar correo" onclick="agregar_correo('form_envios_{{$i+1}}')">
                                                                 <i class="fa fa-plus" aria-hidden="true"></i>
                                                             </button>
-                                                            <button  type="button" class="btn btn-danger btn-xs" {{$factura_tercero ?  "disabled" : ""}} title="Eliminar correo" onclick="eliminar_correo('form_envios_{{$i+1}}')">
+                                                            <button  type="button" class="btn btn-danger btn-xs"  title="Eliminar correo" onclick="eliminar_correo('form_envios_{{$i+1}}')">
                                                                 <i class="fa fa-trash" aria-hidden="true"></i>
                                                             </button>
                                                         </div>
@@ -457,14 +457,14 @@
                                 @endif
                                 <td class="text-right" style="border: none; vertical-align: middle;width:26%">
                                     @if($facturado == null)
-                                        <button type="button" class="btn btn-success" onclick="actualizar_envio('{{$envio->id_envio}}','form_envios_{{$i+1}}','{{getPedido($envio->id_pedido)->tipo_especificacion}}')">
+                                        <button type="button" class="btn btn-success" onclick="actualizar_envio('{{$envio->id_envio}}','form_envios_{{$i+1}}','{{getPedido($envio->id_pedido)->tipo_especificacion}}','{{csrf_token()}}','{{$envio->id_pedido}}','{{$vista}}')">
                                             <i class="fa fa-floppy-o" aria-hidden="true"></i>  Guardar
                                         </button>
                                     @endif
                                     @if(!empty(getUsuario(session::get('id_usuario'))->punto_acceso))
                                         @if($envio->confirmado)
                                             @if($facturado == null)
-                                                <button type="button" class="btn btn-success" onclick="genera_comprobante_cliente('{{$envio->id_envio}}','form_envios_{{$i+1}}','{!! $firmado ? "update" : "" !!}')">
+                                                <button type="button" class="btn btn-success" onclick="genera_comprobante_cliente('{{$envio->id_envio}}','form_envios_{{$i+1}}','{!! $firmado ? "update" : "" !!}','{{csrf_token()}}')">
                                                     <i class="fa fa-file-text-o" aria-hidden="true"></i>
                                                     {!! $firmado ? "Actualizar" : "Generar" !!} factura
                                                 </button>
@@ -499,4 +499,5 @@
     $(function () {
         $('[data-toggle="popover"]').popover()
     });
+    calcular_precio_envio();
 </script>

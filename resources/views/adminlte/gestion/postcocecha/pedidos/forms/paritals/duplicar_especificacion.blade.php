@@ -9,13 +9,13 @@
                         <input type="checkbox" class="seleccion_invidual"  name="seleccion_invidual" id="seleccion_invidual_{{($cant_esp+1)}}"
                                checked onclick="calcular_precio_pedido()">
                     </td>
-                    <td style="border-color: #9d9d9d; padding: 0px; vertical-align: middle; width: 15px; text-align:center"
+                    <td style="border-color: #9d9d9d; padding: 0px; vertical-align: middle;width: 30px; text-align:center"
                         class="text-center" rowspan="{{getCantidadDetallesByEspecificacion($id_especificacion)}}" >
-                        <input type="number" min="1" name="orden" class="orden" id="orden_{{($cant_esp+1)}}" style="border: none;text-align: center;" readonly>
+                        <input type="number" min="1" name="orden" class="orden" id="orden_{{($cant_esp+1)}}" style="border: none;text-align: center;width: 30px;" readonly>
                     </td>
-                    <td style="border-color: #9d9d9d; padding: 0px; vertical-align: middle; width: 100px; "
+                    <td style="border-color: #9d9d9d; padding: 0px; vertical-align: middle; "
                         class="text-center" rowspan="{{getCantidadDetallesByEspecificacion($id_especificacion)}}">
-                        <input type="number" min="0" id="cantidad_piezas_{{($cant_esp+1)}}" style="border: none" onkeyup="crear_orden_pedido(this)"  onchange="calcular_precio_pedido(this)"
+                        <input type="number" min="0" id="cantidad_piezas_{{($cant_esp+1)}}" style="border: none;" onkeyup="crear_orden_pedido(this)"  onchange="calcular_precio_pedido(this)"
                                name="cantidad_piezas_{{$id_especificacion}}" class="text-center form-control cantidad_{{($cant_esp+1)}} input_cantidad" value="">
                         <input type="hidden" id="id_cliente_pedido_especificacion_{{($cant_esp+1)}}" value="{{getClienteEspecificacion($id_cliente,$id_especificacion)->id_cliente_pedido_especificacion}}">
                     </td>

@@ -3,8 +3,10 @@
            id="table_content_recepciones">
         <thead>
             <tr style="background-color: #dd4b39; color: white">
-            <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
-                    style="border-color: #9d9d9d;width: 15px;text-align:center">
+            <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"  style="border-color: #9d9d9d;width: 15px;text-align:center">
+            </th>
+            <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"  style="border-color: #9d9d9d;width: 30px">
+                ORDEN
             </th>
             <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
                 style="border-color: #9d9d9d;width: 80px">
@@ -69,12 +71,16 @@
                             @if($det_ped->cliente_especificacion->especificacion->id_especificacion != $anterior)
                                 <td style="border-color: #9d9d9d; padding: 0px; vertical-align: middle; width: 15px; text-align:center"
                                     class="text-center" rowspan="{{getCantidadDetallesByEspecificacion($det_ped->cliente_especificacion->especificacion->id_especificacion)}}">
-                                    <input type="checkbox" class="seleccion_invidual"  name="seleccion_invidual" id="seleccion_invidual_{{($x+1)}}"
+                                    <input type="checkbox" class="seleccion_invidual" style="font-size: 14px;"  name="seleccion_invidual" id="seleccion_invidual_{{($x+1)}}"
                                            checked onclick="calcular_precio_pedido()">
+                                </td>
+                                <td style="border-color: #9d9d9d; padding: 0px; vertical-align: middle; width: 30px; text-align:center"
+                                    class="text-center" rowspan="{{getCantidadDetallesByEspecificacion($det_ped->cliente_especificacion->especificacion->id_especificacion)}}" >
+                                    <input type="number" min="1" name="orden" class="orden" id="orden_{{($x+1)}}" style="border: none;text-align: center;width: 30px" readonly>
                                 </td>
                                 <td style="border-color: #9d9d9d; padding: 0px; vertical-align: middle; width: 100px; "
                                     class="text-center" rowspan="{{getCantidadDetallesByEspecificacion($det_ped->cliente_especificacion->especificacion->id_especificacion)}}">
-                                    <input type="number" min="0" id="cantidad_piezas_{{($x+1)}}" style="border: none" onchange="calcular_precio_pedido(this)"
+                                    <input type="number" min="0" id="cantidad_piezas_{{($x+1)}}" style="border: none" onkeyup="crear_orden_pedido(this)" onchange="calcular_precio_pedido(this)"
                                            name="cantidad_piezas_{{$det_ped->cliente_especificacion->especificacion->id_especificacion}}" class="text-center form-control cantidad_{{($x+1)}} input_cantidad" value="{{$det_ped->cantidad}}">
                                     @if($x ==0) <input type="hidden" id="cant_esp" value="">
                                     <input type="hidden" id="cant_esp_fijas" value="">  @endif

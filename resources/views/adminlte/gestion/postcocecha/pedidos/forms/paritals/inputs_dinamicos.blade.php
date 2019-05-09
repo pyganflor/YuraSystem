@@ -73,9 +73,9 @@
                                         <input type="checkbox" class="seleccion_invidual"  name="seleccion_invidual" id="seleccion_invidual_{{($x+1)}}"
                                                checked onclick="calcular_precio_pedido()">
                                     </td>
-                                    <td style="border-color: #9d9d9d; padding: 0px; vertical-align: middle; width: 15px; text-align:center"
+                                    <td style="border-color: #9d9d9d; padding: 0px; vertical-align: middle;width: 30px; text-align:center"
                                         class="text-center" rowspan="{{getCantidadDetallesByEspecificacion($item->id_especificacion)}}" >
-                                        <input type="number" min="1" name="orden" class="orden" id="orden_{{($x+1)}}" style="border: none;text-align: center;" readonly>
+                                        <input type="number" min="1" name="orden" class="orden" id="orden_{{($x+1)}}" style="border: none;text-align: center; width: 30px;font-size: 14px" readonly>
                                     </td>
                                     <td style="border-color: #9d9d9d; padding: 0px; vertical-align: middle; width: 100px; "
                                         class="text-center" rowspan="{{getCantidadDetallesByEspecificacion($item->id_especificacion)}}">

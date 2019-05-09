@@ -2,7 +2,9 @@
 
 namespace yura\Http\Controllers;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use yura\Modelos\Aerolinea;
 use yura\Modelos\ClienteDatoExportacion;
 use yura\Modelos\Comprobante;
 use yura\Modelos\DatosExportacion;
@@ -11,6 +13,7 @@ use yura\Modelos\DetalleEnvio;
 use yura\Modelos\DetalleFactura;
 use yura\Modelos\ImpuestoDesgloseEnvioFactura;
 use yura\Modelos\ImpuestoDetalleFactura;
+use yura\Modelos\Pais;
 use yura\Modelos\Pedido;
 use yura\Modelos\DetallePedido;
 use yura\Modelos\Envio;
@@ -443,4 +446,33 @@ class PedidoController extends Controller
         }
         return PDF::loadView('adminlte.gestion.postcocecha.despachos.partials.pdf_packing_list', compact('detallePedido','pedido','cliente','comprobante','empresa','despacho','envio'))->stream();
     }
+    
+    public function facturar_pedido(Request $request){
+
+        if(getPedido($request->id_pedido)->envios->count() === 0){
+            return '<div class="alert alert-danger text-center">' .
+                '<p> El pedido no posee envío creado, edite el pedido y deje el Check "Envío autmático" activado para realizar el envío</p>'
+            . '</div>';
+        }
+
+        $listado = Envio::where([
+            ['id_envio',getPedido($request->id_pedido)->envios[0]->id_envio],
+            ['dc.estado',1],
+            ['envio.estado', 0],
+            ['p.estado',1]
+        ])->join('pedido as p', 'envio.id_pedido','=','p.id_pedido')
+            ->join('detalle_cliente as dc','p.id_cliente','=','dc.id_cliente' )
+            ->join('impuesto as i','dc.codigo_impuesto','i.codigo')
+            ->join('tipo_impuesto as ti','dc.codigo_porcentaje_impuesto','ti.codigo')
+            ->orderBy('envio.id_envio','Desc')
+            ->select('p.*','envio.*','i.nombre as nombre_impuesto','ti.porcentaje','dc.nombre','dc.direccion as direccion_cliente','dc.almacen as almacen_cliente','dc.provincia','dc.codigo_pais as pais_cliente','dc.telefono as telefono_cliente','dc.correo');
+
+        return view('adminlte.gestion.postcocecha.envios.partials.listado',[
+            'envios' => $listado->paginate(10),
+            'paises'    => Pais::all(),
+            'aerolineas' => Aerolinea::where('estado',1)->get(),
+            'vista' => $request->path()
+        ]);
+    }
+    
 }
