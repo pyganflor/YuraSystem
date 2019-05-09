@@ -64,8 +64,8 @@
                     <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
                         CUARTO FRÍO
                     </th>
-                    <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white;width:120px">
-                        PEDIDO
+                    <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white;width:140px">
+                        OPCIONES
                     </th>
                 @endif
             </tr>
@@ -227,22 +227,22 @@
                                                         onclick="duplicar_pedido('{{$pedido->id_pedido}}','{{$pedido->id_cliente}}')">
                                                     <i class="fa fa-files-o" aria-hidden="true"></i>
                                                 </button>
+
                                             @endif
+                                                <button type="button" class="btn btn-success btn-xs" title="Facturar pedido"
+                                                        onclick="facturar_pedido('{{$pedido->id_pedido}}')">
+                                                    <i class="fa fa-usd" aria-hidden="true"></i>
+                                                </button>
+                                            @else
+                                            <a href="#" class="btn btn-default btn-xs" title="Ver factura"
+                                               onclick="ver_factura('{{$pedido->id_pedido}}')">
+                                                <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
+                                            </a>
                                         @endif
                                             <a target="_blank" href="{{url('pedidos/crear_packing_list',$pedido->id_pedido)}}" class="btn btn-info btn-xs" title="Generar packing list">
                                                 <i class="fa fa-cubes" ></i>
                                             </a>
-                                        {{--@if(yura\Modelos\Envio::where('id_pedido',$pedido->id_pedido)->count() == 0)
-                                                button class="btn btn-default btn-xs" title="Realizar envío"
-                                                        onclick="add_envio('{{$pedido->id_pedido}}','{{@csrf_token()}}')">
-                                                    <i class="fa fa-plane" aria-hidden="true"></i>
-                                                </button>
-                                            @else
-                                                <button class="btn btn-default btn-xs" title="Ver envío"
-                                                        onclick="ver_envio('{{$pedido->id_pedido}}')">
-                                                    <i class="fa fa-eye" aria-hidden="true"></i>
-                                                </button>
-                                            @endif--}}
+
                                     </td>
                                 @endif
                             </tr>
