@@ -35,11 +35,33 @@ class ClasificacionBlanco extends Model
         return $r;
     }
 
+    public function total_ramosByVariedad($variedad)
+    {
+        $r = 0;
+        foreach ($this->inventarios_frio as $inv) {
+            if ($inv->id_variedad == $variedad)
+                $r += $inv->cantidad;
+        }
+        return $r;
+    }
+
     function getRendimiento()
     {
         if (count($this->inventarios_frio) > 0 && $this->personal > 0 && $this->getCantidadHorasTrabajo() > 0) {
             $r = $this->total_ramos() / $this->personal;
             $r = $r / $this->getCantidadHorasTrabajo();
+
+            return round($r, 2);
+        } else {
+            return 0;
+        }
+    }
+
+    function getRendimientoByVariedad($variedad)
+    {
+        if (count($this->inventarios_frio) > 0 && $this->personal > 0 && $this->getCantidadHorasTrabajoByVariedad($variedad) > 0) {
+            $r = $this->total_ramosByVariedad($variedad) / $this->personal;
+            $r = $r / $this->getCantidadHorasTrabajoByVariedad($variedad);
 
             return round($r, 2);
         } else {
@@ -53,11 +75,31 @@ class ClasificacionBlanco extends Model
         return round($r->h + ($r->i / 60), 2);
     }
 
+    function getCantidadHorasTrabajoByVariedad($variedad)
+    {
+        $r = difFechas($this->getLastFechaClasificacionByVariedad($variedad), $this->getFechaHoraInicio());
+        return round($r->h + ($r->i / 60), 2);
+    }
+
     function getLastFechaClasificacion()
     {
         $r = DB::table('inventario_frio')
             ->select(DB::raw('max(fecha_registro) as fecha'))
             ->where('estado', '=', 1)
+            ->where('fecha_ingreso', 'like', $this->fecha_ingreso . '%')
+            ->get();
+        if (count($r) > 0)
+            return $r[0]->fecha;
+        else
+            return '';
+    }
+
+    function getLastFechaClasificacionByVariedad($variedad)
+    {
+        $r = DB::table('inventario_frio')
+            ->select(DB::raw('max(fecha_registro) as fecha'))
+            ->where('estado', '=', 1)
+            ->where('id_variedad', '=', $variedad)
             ->where('fecha_ingreso', 'like', $this->fecha_ingreso . '%')
             ->get();
         if (count($r) > 0)
@@ -158,5 +200,36 @@ class ClasificacionBlanco extends Model
             $r += $inv->cantidad;
         }
         return $r;
+    }
+
+    function getDesecho()
+    {
+        $stock = DB::table('stock_empaquetado')
+            ->select(DB::raw('sum(cantidad_ingresada) as ingreso'), DB::raw('sum(cantidad_armada) as armada'))
+            ->where('estado', '=', 1)
+            ->where('fecha_registro', 'like', $this->fecha_ingreso . '%')
+            ->get();
+
+        if ($stock[0]->ingreso > 0 && $stock[0]->armada > 0) {
+            return round(($stock[0]->armada / $stock[0]->ingreso) * 100, 2) - 100;
+        } else {
+            return 0;
+        }
+    }
+
+    function getDesechoByVariedad($variedad)
+    {
+        $stock = DB::table('stock_empaquetado')
+            ->select(DB::raw('sum(cantidad_ingresada) as ingreso'), DB::raw('sum(cantidad_armada) as armada'))
+            ->where('estado', '=', 1)
+            ->where('id_variedad', '=', $variedad)
+            ->where('fecha_registro', 'like', $this->fecha_ingreso . '%')
+            ->get();
+
+        if ($stock[0]->ingreso > 0 && $stock[0]->armada > 0) {
+            return round(($stock[0]->armada / $stock[0]->ingreso) * 100, 2) - 100;
+        } else {
+            return 0;
+        }
     }
 }

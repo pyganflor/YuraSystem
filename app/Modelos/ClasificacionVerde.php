@@ -218,6 +218,18 @@ class ClasificacionVerde extends Model
         }
     }
 
+    function getRendimientoRamos()
+    {
+        if (count($this->detalles) > 0 && $this->personal > 0 && $this->getCantidadHorasTrabajo() > 0) {
+            $r = $this->total_ramos() / $this->personal;
+            $r = $r / $this->getCantidadHorasTrabajo();
+
+            return round($r, 2);
+        } else {
+            return 0;
+        }
+    }
+
     function getRendimientoByVariedad($variedad)
     {
         if (count($this->detalles) > 0 && $this->personal > 0 && $this->getCantidadHorasTrabajoByVariedad($variedad) > 0) {
