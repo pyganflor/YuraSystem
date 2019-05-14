@@ -1,0 +1,379 @@
+@php
+    $empresa = getConfiguracionEmpresa();
+    $comprobante = getComprobante(\yura\Modelos\Comprobante::where('clave_acceso',(String)$data['obj_xml']->infoTributaria->claveAcceso)->first()->id_comprobante);
+    $cliente = getCliente(getEnvio($comprobante->envio->id_envio)->pedido->id_cliente)->detalle();
+    $envio = getEnvio($comprobante->envio->id_envio);
+@endphp
+<table style="width:100%;font-family:arial, sans-serif">
+    <tr>
+        <td style="vertical-align: middle;text-align: center">
+            <h4>COMERCIAL INVOICE / FACTURA COMERCIAL </h4>
+        </td>
+    </tr>
+    <tr>
+</table>
+<table style="width:100%;font-family:arial, sans-serif">
+    <tr>
+        <td>
+            <div style="width: 300px;">
+                <table>
+                    <tr>
+                        <td>
+                            <b> SHIPPER (Empresa):</b>
+                        </td>
+                    </tr>
+                </table>
+                <table style="width: 100%">
+                    <tr><td style="font-size: 18px;">{{$empresa->razon_social}}</td></tr>
+                    <tr><td style="font-size:12px">{{$empresa->direccion_matriz}}</td></tr>
+                    <tr><td style="font-size:12px">Quito - {{getPais($empresa->codigo_pais)->nombre}}</td></tr>
+                    <tr><td style="font-size:12px">Teléfono: {{$empresa->telefono}}</td></tr>
+                    <tr><td style="font-size:12px">Fax: {{$empresa->fax}}</td></tr>
+                    <tr><td style="font-size:12px">Email: {{$empresa->correo}}</td></tr>
+                </table>
+                <table style="margin-top: 10px;">
+                    <tr>
+                        <td>
+                            <b> BUYER (comprador):</b>
+                        </td>
+                    </tr>
+                </table>
+                <table style="width: 100%">
+                    <tr><td style="font-size:12px">{{$cliente->nombre}}</td></tr>
+                    <tr><td style="font-size:12px">{{$cliente->direccion." ".$cliente->provincia}}</td></tr>
+                    <tr><td style="font-size:12px">{{getPais($cliente->codigo_pais)->nombre ." ". $cliente->provincia}}</td></tr>
+                    <tr><td style="font-size:12px">{{"ID: ".$cliente->ruc}}</td></tr>
+                </table>
+                <table style="margin-top: 10px;">
+                    <tr>
+                        <td>
+                            <b>AQUI LA MARACACIÓN </b>
+                        </td>
+                    </tr>
+                </table>
+                <table style="margin-top: 10px;">
+                    <tr>
+                        <td>
+                            <b> BILL TO (Facturado a):</b>
+                        </td>
+                    </tr>
+                </table>
+                <table style="width: 100%">
+                    @php $factura_tercero = getFacturaClienteTercero(getComprobante($comprobante->id_comprobante)->id_envio);  @endphp
+                    <tr><td style="font-size:12px">{{$data['obj_xml']->infoFactura->razonSocialComprador}}</td></tr>
+                    <tr><td style="font-size:12px">{{$factura_tercero !== null ? getPais($factura_tercero->codigo)->nombre : getPais($cliente->codigo_pais)->nombre}} - {{$data['obj_xml']->infoAdicional->campoAdicional[0]}} </td></tr>
+                    <tr><td style="font-size:12px">ID:{{$data['obj_xml']->infoFactura->identificacionComprador}}</td></tr>
+                </table>
+
+            </div>
+        </td>
+        <td>
+            <div style="width:300px">
+                <table>
+                    <tr>
+                        <td style="text-align: center;font-size: 16px;vertical-align: top">
+                            <b> FACTURA <br />
+                                No. {{getDetallesClaveAcceso((String)(String)$data['obj_xml']->infoTributaria->claveAcceso, 'SERIE').getDetallesClaveAcceso((String)(String)$data['obj_xml']->infoTributaria->claveAcceso, 'SECUENCIAL')}}</b>
+                        </td>
+                    </tr>
+                    <tr> <td style="font-size: 12px">RUC: {{env('RUC')}}</td> </tr>
+                    <tr> <td style="font-size: 12px">AUT. SRI. No: {{(String)$data['obj_xml']->infoTributaria->claveAcceso}}</td> </tr>
+                </table>
+                <table style="width: 100%;" >
+                    <tr style="border: 1px solid black;">
+                        <td style="border: 1px solid black;padding: 0;font-size: 12px;width:60% ">
+                            <b>Farm Code / Código de Finca</b><br /><br />
+                            {{$empresa->razon_social}}
+                        </td>
+                        <td style="border: 1px solid black;padding: 0;font-size: 12px">
+                            <b>Date / Fecha</b> <br /> <br />
+                            {{\Carbon\Carbon::parse(now()->toDateString())->format('d-m-Y') }}
+                        </td>
+                    </tr>
+                    <tr style="border: 1px solid black;">
+                        <td style="border: 1px solid black;padding: 0;font-size: 12px;">
+                            <b>Country Code / País</b><br /> <br />
+                            {{getPais($empresa->codigo_pais)->nombre}}
+                        </td>
+                        <td style="border: 1px solid black;padding: 0;font-size: 12px">
+                            <b>Invoice No.</b><br /> <br />
+                            {{getDetallesClaveAcceso((String)(String)$data['obj_xml']->infoTributaria->claveAcceso, 'SERIE').getDetallesClaveAcceso((String)(String)$data['obj_xml']->infoTributaria->claveAcceso, 'SECUENCIAL')}}
+                        </td>
+                    </tr>
+                    <tr style="border: 1px solid black;">
+                        <td style="border: 1px solid black;padding: 0;font-size: 12px;width: 60% ">
+                            <b>AWB No. / Guía No.</b><br /> <br />
+                            {{$envio->guia_madre}}
+                        </td>
+                        <td style="border: 1px solid black;padding: 0;font-size: 12px">
+                            <b>HAWB No.</b><br /> <br />
+                            {{$envio->guia_hija}}
+                        </td>
+                    </tr>
+                    <tr style="border: 1px solid black;">
+                        <td style="border: 1px solid black;padding: 0;font-size: 12px;width: 60% ">
+                            <b>Carrier / Transportador</b><br /> <br />
+                            {{getAgenciaTransporte($envio->detalles[0]->id_aerolinea)->nombre}}
+                        </td>
+                        <td style="border: 1px solid black;padding: 0;font-size: 12px">
+                            <b>Add Case No. DAE</b><br /> <br />
+                            {{$envio->dae}}
+                        </td>
+                    </tr>
+                    <tr style="border: 1px solid black;">
+                        <td style="border: 1px solid black;padding: 0;font-size: 12px;width: 60% ">
+                            <b>Port of entry / Puerto de ent</b><br /> <br />
+                            {{$factura_tercero !== null ? $factura_tercero->puerto_entrada :  $cliente->puerto_entrada}}
+                        </td>
+                        <td style="border: 1px solid black;padding: 0;font-size: 12px">
+                            <b>Final destination</b><br /> <br />
+                            {{$factura_tercero !== null ? getPais($factura_tercero->codigo_pais)->nombre : getPais($cliente->codigo_pais)->nombre}}
+                        </td>
+                    </tr>
+                    <tr style="border: 1px solid black;">
+                        <td style="border: 1px solid black;padding: 0;font-size: 12px;width: 60% ">
+                            <b>Net Weight Kg. </b><br />
+                            <b>Gross Weight Kg. </b><br />
+                        </td>
+                        <td style="border: 1px solid black;padding: 0;font-size: 12px">
+                            <b>Fecha embarque</b><br />
+                            {{\Carbon\Carbon::parse(now()->toDateString())->addDay(1)->format('d-m-Y')}}
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </td>
+    </tr>
+</table>
+<table style="width:100%;font-family:arial, sans-serif;">
+    <thead style="border-bottom: 1px solid;border-top: 1px solid">
+        <tr >
+            <th style="font-size: 11px;vertical-align: top">
+                PIECES<br />
+                Piezas
+            </th>
+            <th style="font-size: 11px;vertical-align: top">
+                DESCRIPTION<br />
+                Descripción
+            </th>
+            <th style="font-size: 11px;vertical-align: top">
+                SGP
+            </th>
+            <th style="font-size: 11px;vertical-align: top">
+                HTS<br />
+                Tarifa
+            </th>
+            <th style="font-size: 11px;vertical-align: top">
+                NANDINA
+            </th>
+            <th style="font-size: 11px;vertical-align: top">
+                Bunches/Box<br />
+                Ramos/Caja
+            </th>
+            <th style="font-size: 11px;vertical-align: top">
+                ST/BN
+            </th>
+            <th style="font-size: 11px;vertical-align: top">
+                TOTAL ST/BN
+            </th>
+            <th style="font-size: 11px;vertical-align: top;width:70px">
+                PRICE UNIT<br />
+                Precio US$
+            </th>
+            <th style="font-size: 11px;vertical-align: top">
+                TOTAL <br />US$
+            </th>
+        </tr>
+    </thead>
+    <tbody style="border-bottom: 1px solid">
+    @php
+        $precio_total_sin_impuestos = 0.00;
+        $total_ramos = 0.00;
+        $total_piezas = 0.00;
+        $full_equivalente_real = 0.00;
+       $full = 0;
+       $half = 0;
+       $cuarto = 0;
+       $sexto = 0;
+       $octavo = 0;
+    @endphp
+    @if($envio->pedido->tipo_especificacion === "N")
+        @foreach($envio->pedido->detalles as $x => $det_ped)
+            @php
+                $precio = explode("|", $det_ped->precio);
+                 $dp = getDetallePedido($det_ped->id_detalle_pedido);
+                $i = 0;
+            @endphp
+            @foreach($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $m => $esp_emp)
+                @foreach ($esp_emp->detalles as $n => $det_esp_emp)
+                    @php
+                        $full_equivalente_real += explode("|",$esp_emp->empaque->nombre)[1]*$dp->cantidad;
+                        switch (explode("|",$esp_emp->empaque->nombre)[1]) {
+                            case '1':
+                                $full += $dp->cantidad;
+                                break;
+                            case '0.5':
+                                $half += $dp->cantidad;
+                                break;
+                            case '0.25':
+                                $cuarto +=$dp->cantidad;
+                                break;
+                            case '0.17':
+                                $sexto +=$dp->cantidad;
+                                break;
+                            case '0.125':
+                                $octavo +=$dp->cantidad;
+                                break;
+                        }
+                    @endphp
+                    <tr>
+                        <td style="font-size:11px"> {{number_format($det_ped->cantidad,2,".","")}}</td>
+                        @php $total_piezas += $det_ped->cantidad @endphp
+                        <td style="font-size:11px"> {{substr($det_esp_emp->variedad->planta->nombre, 0, 3) .", ". $det_esp_emp->variedad->nombre}}</td>
+                        <td style="font-size:11px"> {{"A"}}</td>
+                        <td style="font-size:11px"> {{"A"}}</td>
+                        <td style="font-size:11px"> {{"A"}}</td>
+                        <td style="font-size:11px"> {{$det_esp_emp->cantidad}}</td>
+                        <td style="font-size:11px"> BN </td>
+                        <td style="font-size:11px"> {{number_format(($det_ped->cantidad*$det_esp_emp->cantidad),2,".","")}} </td>
+                        @php $total_ramos += number_format(($det_ped->cantidad*$det_esp_emp->cantidad),2,".","") @endphp
+                        <td style="font-size:11px;"> {{"$".number_format(explode(";", $precio[$i])[0],2,".","")}} </td>
+                        <td style="font-size:11px"> {{"$".number_format(($det_esp_emp->cantidad * ((float)explode(";", $precio[$i])[0]) * $esp_emp->cantidad * $det_ped->cantidad),2,".","")}} </td>
+                    </tr>
+                    @php $precio_total_sin_impuestos +=  ($det_esp_emp->cantidad * ((float)explode(";", $precio[$i])[0]) * $esp_emp->cantidad * $det_ped->cantidad); @endphp
+                    @php  $i++;  @endphp
+                @endforeach
+            @endforeach
+        @endforeach
+    @elseif($envio->pedido->tipo_especificacion === "T")
+                @foreach ($envio->pedido->detalles as $x => $det_ped)
+                    @foreach($det_ped->coloraciones as $y => $coloracion)
+                        @php
+                            $cant_esp_emp = $coloracion->especificacion_empaque->cantidad;
+                            $i=0;
+                        @endphp
+                        @foreach($coloracion->marcaciones_coloraciones as $m_c)
+                            @if($coloracion->precio=="")
+                                @foreach(explode("|", $det_ped->precio) as $p)
+                                    @php
+                                        if($m_c->id_detalle_especificacionempaque == explode(";",$p)[1])
+                                            $precio = explode(";",$p)[0];
+                                    @endphp
+                                @endforeach
+                            @else
+                                @php
+                                    $precio =explode( ";",explode("|",$coloracion->precio)[$i])[0];
+                                @endphp
+                            @endif
+                                @php
+                                    $precio_x_variedad = $m_c->cantidad * $precio * $cant_esp_emp;
+                                    $precio_total_sin_impuestos += $precio_x_variedad;
+                                        $i++;
+                                @endphp
+                        @endforeach
+                    @endforeach
+                @endforeach
+            @endif
+    {{--@php
+            $a = (Array)$data['obj_xml']->detalles;
+            $b = $a['detalle'];
+            !is_array($b) ? $b = [$b] : "";
+        @endphp
+        @foreach($b as $key => $c)
+                <tr>
+                    <td style="font-size:12px"></td>
+                    <td style="font-size:11px">{{(String)$c->descripcion}}</td>
+                    <td style="font-size:11px">{{"A"}}</td>
+                    <td style="font-size:11px">{{"11111111"}}</td>
+                    <td style="font-size:11px">{{"11111111"}}</td>
+                    <td style="font-size:11px"></td>
+                    <td style="font-size:11px">BN</td>
+                    <td style="font-size:11px">{{(String)$c->cantidad}}</td>
+                    <td style="font-size:11px"> {{"$".(String)$c->precioUnitario}} </td>
+                    <td style="font-size:11px"> {{"$".(String)$c->precioTotalSinImpuesto}} </td>
+                </tr>
+            @endforeach--}}
+    </tbody>
+</table>
+<table style="width: 100%">
+    <tr>
+        <td style="font-size:11px;font-family: arial, sans-serif;width:50px"> <b>{{number_format($total_ramos,2,".","")}}</b> </td>
+        <td style="font-size:11px;font-family: arial, sans-serif;width:300px"><b>TOTAL BN</b></td>
+        <td style="font-size:11px;font-family: arial, sans-serif;text_align:right">SUBTOTAL : ${{number_format($precio_total_sin_impuestos,2,".","")}}</td>
+    </tr>
+    <tr>
+        <td style="font-size:11px;font-family: arial, sans-serif;width:50px"> <b></b> </td>
+        <td style="font-size:11px;font-family: arial, sans-serif;width:300px"><b>TOTAL STEMS</b></td>
+        @php $tipoImpuesto = getTipoImpuesto((String)$data['obj_xml']->infoFactura->totalConImpuestos->totalImpuesto->codigo,(String)$data['obj_xml']->infoFactura->totalConImpuestos->totalImpuesto->codigoPorcentaje); @endphp
+        <td style="font-size:11px;font-family: arial, sans-serif;text_align:right">{{$tipoImpuesto->nombre}} : ${{is_numeric($tipoImpuesto->porcentaje) ? number_format($precio_total_sin_impuestos * ($tipoImpuesto->porcentaje / 100), 2, ".", "") : "0.00"}}</td>
+    </tr>
+    <tr>
+        <td style="font-size:11px;font-family: arial, sans-serif;width:50px"> <b>{{number_format($total_piezas,2,".","")}}</b> </td>
+        <td style="font-size:11px;font-family: arial, sans-serif;width:300px"><b>TOTAL PIECES / TOTAL PIEZAS</b></td>
+        @php $tipoImpuesto = getTipoImpuesto((String)$data['obj_xml']->infoFactura->totalConImpuestos->totalImpuesto->codigo,(String)$data['obj_xml']->infoFactura->totalConImpuestos->totalImpuesto->codigoPorcentaje); @endphp
+        <td style="font-size:11px;font-family: arial, sans-serif;text_align:right">TOTAL : ${{is_numeric($tipoImpuesto->porcentaje) ? number_format($precio_total_sin_impuestos + ($precio_total_sin_impuestos * ($tipoImpuesto->porcentaje / 100)), 2, ".", "") : number_format($precio_total_sin_impuestos, 2, ".", "")}}</td>
+    </tr>
+    <tr>
+        <td style="font-size:11px;font-family: arial, sans-serif;width:50px"> <b>{{$full_equivalente_real}}</b> </td>
+        <td colspan="2" style="font-size:11px;font-family: arial, sans-serif"><b>TOTAL FULL BOXES EQUIVALENT / TOTAL CAJAS </b></td>
+    </tr>
+</table>
+<table style="width:100%">
+    <tr>
+        <td style="font-size:11px;font-family: arial, sans-serif"> <b> FULL BOXES : [{{number_format($full,2,".","")}}]</b></td>
+        <td style="font-size:11px;font-family: arial, sans-serif"> <b> HALF BOXES : [{{number_format($half,2,".","")}}]</b></td>
+        <td style="font-size:11px;font-family: arial, sans-serif"> <b> 1/4 BOXES : [{{number_format($cuarto,2,".","")}}]</b></td>
+        <td style="font-size:11px;font-family: arial, sans-serif"> <b> 1/6 BOXES : [{{number_format($sexto,2,".","")}}]</b></td>
+        <td style="font-size:11px;font-family: arial, sans-serif"> <b> 1/8 BOXES : [{{number_format($octavo,2,".","")}}]</b></td>
+    </tr>
+</table>
+<table style="width: 100%;margin-top:30px">
+    <tr>
+        <td style="text-align: center;vertical-align: bottom;font-family:arial, sans-serif;font-size: 11px">
+            <hr style="width: 50%" />
+            FIRMA
+        </td>
+        <td style="text-align: center;vertical-align: bottom;font-family:arial, sans-serif;font-size: 11px;width:50%">
+            <label >MARKETIN NAME</label>
+            <div style="border: 1px solid;height: 30px"></div>
+        </td>
+    </tr>
+    <tr>
+        <td style="text-align: center;vertical-align: bottom;font-family:arial, sans-serif;font-size: 11px">
+            FABIOLA SIERRA
+        </td>
+        <td style="text-align: center;vertical-align: bottom;font-family:arial, sans-serif;font-size: 11px">
+            FREIGHT FORWARDER
+        </td>
+    </tr>
+    <tr>
+        <td style="text-align: center;vertical-align: bottom;font-family:arial, sans-serif;font-size: 11px">
+            NAME AND TITLE OF PERSON PREPARING INVOICE
+        </td>
+        <td style="text-align: center;vertical-align: bottom;font-family:arial, sans-serif;font-size: 11px">
+            <div style="border: 1px solid;height: 30px"></div>
+        </td>
+    </tr>
+
+</table>
+<table style="margin-top: 20px;width: 100%;">
+    <tr>
+        <td colspan="2" style="vertical-align: bottom;font-family:arial, sans-serif;font-size: 11px">
+           <b> FORMA DE PAGO</b>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2" style="vertical-align: bottom;font-family:arial, sans-serif;font-size: 12px">
+            The flower and plants on this invoice were who
+        </td>
+    </tr>
+    <tr>
+        <td style="text-align: center;vertical-align: middle;font-family:arial, sans-serif;font-size: 11px;width:50%;border: 1px solid;height: 20px">
+            CUSTOM USE ONLY
+        </td>
+        <td style="text-align: center;vertical-align: middle;font-family:arial, sans-serif;font-size: 11px;width:50%;border: 1px solid;height: 20px">
+            USDA APHIS P.P.Q USE ONLY
+        </td>
+    </tr>
+</table>
+

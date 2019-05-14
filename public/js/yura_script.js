@@ -1480,7 +1480,7 @@ function reiniciar_orden_pedido(){
     })
 }
 
-function facturar_pedido(id_pedido){
+    function facturar_pedido(id_pedido){
     $.LoadingOverlay('show');
     datos = {
         id_pedido : id_pedido
@@ -1667,7 +1667,6 @@ function factura_tercero(id_envio,token,id_pedido,vista) {
 }
 
 function store_datos_factura_cliente_tercero(id_envio,token,id_pedido,vista) {
-    console.log(token);
     if ($('#form_add_cliente_factura_tercero').valid()) {
         $.LoadingOverlay('show');
         datos = {
@@ -1685,7 +1684,9 @@ function store_datos_factura_cliente_tercero(id_envio,token,id_pedido,vista) {
             tipo_identificacion : $('#tipo_identificacion').val(),
             codigo_impuesto_porcentaje : $('#tipo_impuesto').val(),
             almacen : $('#almacen_cliente_tercero').val(),
-            dae : $('#dae_cliente_tercero').val()
+            dae : $('#dae_cliente_tercero').val(),
+            puerto_entrada : $('#puerto_entrada').val(),
+            tipo_credito : $('#tipo_credito').val(),
         };
         post_jquery('envio/store_datos_factura_cliente_tercero', datos, function () {
             cerrar_modals();

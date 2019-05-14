@@ -1327,6 +1327,7 @@ function generaDocumentoPDF($autorizacion,$tipo_documento,$pre_factura=false)
     ];
     if($tipo_documento == "01")
         PDF::loadView('adminlte.gestion.comprobante.partials.pdf.factura', compact('data'))->save(env('PDF_FACTURAS') . (isset($autorizacion->numeroAutorizacion) ? $autorizacion->numeroAutorizacion : (String)$autorizacion->infoTributaria->claveAcceso). ".pdf");
+        PDF::loadView('adminlte.gestion.comprobante.partials.pdf.factura_cliente', compact('data'))->save(env('PDF_FACTURAS')."cliente_".(isset($autorizacion->numeroAutorizacion) ? $autorizacion->numeroAutorizacion : (String)$autorizacion->infoTributaria->claveAcceso). ".pdf");
     if($tipo_documento == "06")
         PDF::loadView('adminlte.gestion.comprobante.partials.pdf.guia', compact('data'))->save(env('PATH_PDF_GUIAS') . $autorizacion->numeroAutorizacion . ".pdf");
 
@@ -1624,9 +1625,9 @@ function getTipoImpuesto($codigoImpuesto, $codigoPorcentajeIpuesto)
 {
     return TipoImpuesto::where([
         ['codigo_impuesto', $codigoImpuesto],
-        ['codigo', $codigoPorcentajeIpuesto],
-        ['estado', 1]
-    ])->first();
+        ['tipo_impuesto.codigo', $codigoPorcentajeIpuesto],
+        ['tipo_impuesto.estado', 1]
+    ])->join('impuesto as imp','tipo_impuesto.codigo_impuesto','imp.codigo')->first();
 }
 
 function getTipoIdentificacion($codigoIdentificacion){

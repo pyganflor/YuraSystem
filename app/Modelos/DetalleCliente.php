@@ -23,6 +23,8 @@ class DetalleCliente extends Model
         'codigo_iva',
         'codigo_identificacion',
         'estado',
-        'almacen'
+        'almacen',
+        'puerto_entrada',
+        'tipo_credito'
     ];
 }

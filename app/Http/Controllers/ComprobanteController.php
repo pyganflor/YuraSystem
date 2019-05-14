@@ -921,7 +921,7 @@ class ComprobanteController extends Controller
            return PDF::loadView('adminlte.gestion.comprobante.partials.pdf.guia', compact('data'))->stream();
     }
 
-    public function ver_pre_factura($clave_acceso){
+    public function ver_pre_factura($clave_acceso,$cliente=false){
         $sub_carpeta = getSubCarpetaArchivo($clave_acceso);
         if (file_exists(env('PATH_XML_FIRMADOS').$sub_carpeta.$clave_acceso.".xml")){
             $archivo = file_get_contents(env('PATH_XML_FIRMADOS').$sub_carpeta.$clave_acceso.".xml");
@@ -934,7 +934,12 @@ class ComprobanteController extends Controller
                 'numeroComprobante' => getDetallesClaveAcceso((String)$autorizacion->infoTributaria->claveAcceso, 'SERIE').getDetallesClaveAcceso((String)$autorizacion->infoTributaria->claveAcceso, 'SECUENCIAL'),
                 'detalles_envio' => getEnvio($dataComprobante->id_envio)->detalles
             ];
-            return PDF::loadView('adminlte.gestion.comprobante.partials.pdf.factura', compact('data'))->stream();
+            if(!$cliente){
+                return PDF::loadView('adminlte.gestion.comprobante.partials.pdf.factura', compact('data'))->stream();
+            }else{
+                return PDF::loadView('adminlte.gestion.comprobante.partials.pdf.factura_cliente', compact('data'))->stream();
+            }
+
         }else{
             $msg = "<div class='alert text-center  alert-danger'>" .
             "<p> El archivo del documento no existe, por favor contactarse con el área de sistemas. </p>"

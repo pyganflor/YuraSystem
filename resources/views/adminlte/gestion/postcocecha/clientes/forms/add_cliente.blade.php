@@ -1,13 +1,13 @@
 <form id="form_add_cliente">
     <input type="hidden" id="id_cliente" value="{!! !empty($dataCliente) ? $dataCliente->id_cliente : "" !!}">
     <div class="row">
-        <div class="col-md-4">
+        <div class="col-md-3">
             <div class="form-group">
                 <label for="nombre_completo">Nombre</label>
                 <input type="text" id="nombre" name="nombre" class="form-control" required maxlength="250" autocomplete="off" value="{!! !empty($dataCliente) ? $dataCliente->nombre : "" !!}">
             </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-3">
             <div class="form-group">
                 <label for="tipo_identificacion">Tipo de identificación</label>
                 <select class="form-control" id="tipo_identificacion" name="tipo_identificacion" onchange="valida_identificacion()" required>
@@ -26,16 +26,22 @@
                 </select>
             </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-3">
             <div class="form-group">
                 <label for="identificacion">Número de identificación</label>
                 <input type="text" id="identificacion" name="identificacion" class="form-control" {{(!empty($dataCliente) && $dataCliente->codigo_identificacion == 07) ? "disabled" : ""}}
                        required autocomplete="off" value="{!! !empty($dataCliente) ? $dataCliente->ruc : "" !!}">
             </div>
         </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="telefono">Teléfono</label>
+                <input type="number" onkeypress="return isNumber()" id="telefono" name="telefono" class="form-control" required  maxlength="25" autocomplete="off" value="{!! !empty($dataCliente) ? $dataCliente->telefono : "" !!}">
+            </div>
+        </div>
     </div>
     <div class="row">
-        <div class="col-md-4">
+        <div class="col-md-3">
             <div class="form-group">
                 <label for="pais">Impuesto</label>
                 <select id="codigo_impuesto" name="codigo_impuesto" class="form-control" required onchange="porcentaje_impuesto()">
@@ -54,7 +60,7 @@
                 </select>
             </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-3">
             <div class="form-group">
                 <label for="pais">Tipo de impuesto</label>
                 <select id="tipo_impuesto" name="tipo_impuesto" class="form-control" required>
@@ -76,7 +82,7 @@
                 <input type="hidden" value="">
             </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-3">
             <div class="form-group">
                 <label for="pais">País</label>
                 <select id="pais" name="pais" class="form-control" required>
@@ -95,14 +101,15 @@
                 </select>
             </div>
         </div>
-    </div>
-    <div class="row">
         <div class="col-md-3">
             <div class="form-group">
-                <label for="provincia">Provincia</label>
+                <label for="provincia">Ciudad</label>
                 <input type="text" id="provincia" name="provincia" class="form-control" required  maxlength="255" autocomplete="off" value="{!! !empty($dataCliente) ? $dataCliente->provincia : "" !!}">
             </div>
         </div>
+
+    </div>
+    <div class="row">
         <div class="col-md-3">
             <div class="form-group">
                 <label for="correo">Correo</label>
@@ -111,8 +118,14 @@
         </div>
         <div class="col-md-3">
             <div class="form-group">
-                <label for="telefono">Teléfono</label>
-                <input type="number" onkeypress="return isNumber()" id="telefono" name="telefono" class="form-control" required  maxlength="25" autocomplete="off" value="{!! !empty($dataCliente) ? $dataCliente->telefono : "" !!}">
+                <label for="puerto_entrada">Puerto de entrada</label>
+                <input type="text" id="puerto_entrada" name="puerto_entrada" class="form-control" value="{!! !empty($dataCliente) ? $dataCliente->puerto_entrada : "" !!}" required>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="tipo_credito">Tiempo de crédito</label>
+                <input type="text" id="tipo_credito" name="tipo_credito" class="form-control" value="{!! !empty($dataCliente) ? $dataCliente->tipo_credito : "" !!}" required>
             </div>
         </div>
         <div class="col-md-3">

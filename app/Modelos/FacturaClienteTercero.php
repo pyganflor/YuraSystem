@@ -25,6 +25,8 @@ class FacturaClienteTercero extends Model
         'almacen',
         'direccion',
         'dae',
+        'puerto_entrada',
+        'tipo_credito'
     ];
 
     public function envio()

@@ -87,7 +87,6 @@ class ClienteController extends Controller
     }
 
     public function store_clientes(Request $request){
-
         $valida = Validator::make($request->all(), [
             'nombre'              => 'required',
             'identificacion'      => 'required',
@@ -99,6 +98,8 @@ class ClienteController extends Controller
             'codigo_impuesto'     => 'required',
             'tipo_identificacion' => 'required',
             'tipo_impuesto'       => 'required',
+            'puerto_entrada'      => 'required',
+            'tipo_credito'        => 'required',
         ]);
 
         if(!$valida->fails()) {
@@ -124,10 +125,11 @@ class ClienteController extends Controller
                     $objDetalleCliente->codigo_identificacion         = $request->tipo_identificacion;
                     $objDetalleCliente->codigo_impuesto               = $request->codigo_impuesto;
                     $objDetalleCliente->almacen                       = $request->almacen;
+                    $objDetalleCliente->puerto_entrada                = $request->puerto_entrada;
+                    $objDetalleCliente->tipo_credito                  = $request->tipo_credito;
 
                     $msg= '';
                     if($objDetalleCliente->save()) {
-
                         $model = DetalleCliente::all()->last();
                         $success = true;
                         $msg .= '<div class="alert alert-success text-center">' .
@@ -140,11 +142,6 @@ class ClienteController extends Controller
                             '<p> Ha ocurrido un problema al guardar la información al sistema</p>'
                             . '</div>';
                     }
-                    /*return [
-                        'mensaje' => $msg,
-                        'success' => $success
-                    ];*/
-
                 }else {
 
                     $success = false;
@@ -193,6 +190,8 @@ class ClienteController extends Controller
                     $objDetalleCliente->codigo_identificacion         = $request->tipo_identificacion;
                     $objDetalleCliente->codigo_impuesto               = $request->codigo_impuesto;
                     $objDetalleCliente->almacen                       = $request->almacen;
+                    $objDetalleCliente->puerto_entrada                = $request->puerto_entrada;
+                    $objDetalleCliente->tipo_credito                  = $request->tipo_credito;
                     $msg= '';
 
                     if($objDetalleCliente->save()) {

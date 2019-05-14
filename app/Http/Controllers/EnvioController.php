@@ -482,6 +482,8 @@ class EnvioController extends Controller
             'tipo_identificacion' => 'required',
             'codigo_impuesto'     => 'required',
             'codigo_impuesto_porcentaje' => 'required',
+            'puerto_entrada'      => 'required',
+            'tipo_credito'        => 'required',
         ]);
 
         $msg= '';
@@ -502,6 +504,8 @@ class EnvioController extends Controller
             $objFacturaClienteTercero->codigo_impuesto_porcentaje = $request->codigo_impuesto_porcentaje;
             $objFacturaClienteTercero->almacen                    = $request->almacen;
             $objFacturaClienteTercero->dae                        = $request->dae;
+            $objFacturaClienteTercero->puerto_entrada             = $request->puerto_entrada;
+            $objFacturaClienteTercero->tipo_credito               = $request->tipo_credito;
 
             if($objFacturaClienteTercero->save()){
                 $model= FacturaClienteTercero::all()->last();

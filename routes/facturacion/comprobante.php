@@ -10,10 +10,10 @@ Route::get('comprobante/autorizacion_comprobante', 'ComprobanteController@autori
 Route::get('comprobante/formulario_facturacion', 'ComprobanteController@formulario_facturacion');
 Route::get('comprobante/reenviar_correo', 'ComprobanteController@reenviar_correo');
 Route::get('comprobante/comprobante_aprobado_sri/{clave_acceso}', 'ComprobanteController@ver_factura_aprobada_sri');
-Route::get('comprobante/pre_factura/{clave_acceso}', 'ComprobanteController@ver_pre_factura');
+Route::get('comprobante/pre_factura/{clave_acceso}/{cliente?}', 'ComprobanteController@ver_pre_factura');
 Route::post('comprobante/generar_comprobante_guia_remision','ComprobanteController@generar_comprobante_guia_remision');
 Route::get('comprobante/pre_guia_remision/{clave_acceso}', 'ComprobanteController@ver_pre_guia_remision');
-/*Route::get('comprobante/prueba', function () {
+Route::get('comprobante/prueba', function () {
 
     /* =========== SEMANAL ============= */
    /* $pedidos_semanal = \yura\Modelos\Pedido::All()->where('estado', 1)
@@ -48,5 +48,5 @@ Route::get('comprobante/pre_guia_remision/{clave_acceso}', 'ComprobanteControlle
 
     dd($semanal, $pedidos_semanal, $test,
         getPedido(868)->getPrecio()
-    );
-});*/
+    );*/
+});
