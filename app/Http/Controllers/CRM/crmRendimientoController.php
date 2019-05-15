@@ -88,9 +88,28 @@ class crmRendimientoController extends Controller
         ];
 
         /* ======= AÑOS ======= */
-        $annos = DB::table('historico_ventas')
-            ->select('anno')->distinct()
+        $annos_cosecha = DB::table('cosecha')
+            ->select(DB::raw('year(fecha_ingreso) as anno'))->distinct()
             ->get();
+        $annos_verde = DB::table('clasificacion_verde')
+            ->select(DB::raw('year(fecha_ingreso) as anno'))->distinct()
+            ->get();
+        $annos_blanco = DB::table('clasificacion_blanco')
+            ->select(DB::raw('year(fecha_ingreso) as anno'))->distinct()
+            ->get();
+
+        $annos = [];
+        foreach ($annos_cosecha as $item) {
+            array_push($annos, $item->anno);
+        }
+        foreach ($annos_verde as $item) {
+            if (!in_array($item->anno, $annos))
+                array_push($annos, $item->anno);
+        }
+        foreach ($annos_blanco as $item) {
+            if (!in_array($item->anno, $annos))
+                array_push($annos, $item->anno);
+        }
 
         return view('adminlte.crm.rendimiento_desecho.inicio', [
             'today' => $today,
@@ -104,56 +123,147 @@ class crmRendimientoController extends Controller
         $desde = $request->desde;
         $hasta = $request->hasta;
 
-        $arreglo_annos = [];
+        $fechas = [];
+        $data = [];
+        $a_cos = [];
+        $a_ver = [];
+        $a_bla = [];
+        $s_cos = [];
+        $s_ver = [];
+        $s_bla = [];
         if ($request->has('annos')) {
             $view = '_annos';
+            $periodo = 'semanal';
 
-            $fechas = [];
+            /* ======== Obtener las semanas donde se ha trabajado para cosecha-verde-blanco ======= */
+            foreach ($request->annos as $a) {
+                $labels = DB::table('cosecha')
+                    ->select('fecha_ingreso as dia')->distinct()
+                    ->where('fecha_ingreso', '>=', $a . '-01-01')
+                    ->where('fecha_ingreso', '<=', $a + 1 . '-12-31')
+                    ->orderBy('fecha_ingreso')
+                    ->get();
 
-            $data = [];
-            $periodo = 'mensual';
+                foreach ($labels as $l)
+                    if (!in_array(substr(getSemanaByDate($l->dia)->codigo, 2), $s_cos))
+                        array_push($s_cos, substr(getSemanaByDate($l->dia)->codigo, 2));
+            }
+            foreach ($request->annos as $a) {
+                $labels = DB::table('clasificacion_verde')
+                    ->select('fecha_ingreso as dia')->distinct()
+                    ->where('fecha_ingreso', '>=', $a . '-01-01')
+                    ->where('fecha_ingreso', '<=', $a + 1 . '-12-31')
+                    ->orderBy('fecha_ingreso')
+                    ->get();
 
-            foreach ($request->annos as $anno) {
-                $arreglo_valores = [];
-                $arreglo_fisicas = [];
-                $arreglo_cajas = [];
-                $arreglo_precios = [];
+                foreach ($labels as $l)
+                    if (!in_array(substr(getSemanaByDate($l->dia)->codigo, 2), $s_ver))
+                        array_push($s_ver, substr(getSemanaByDate($l->dia)->codigo, 2));
+            }
+            foreach ($request->annos as $a) {
+                $labels = DB::table('clasificacion_blanco')
+                    ->select('fecha_ingreso as dia')->distinct()
+                    ->where('fecha_ingreso', '>=', $a . '-01-01')
+                    ->where('fecha_ingreso', '<=', $a + 1 . '-12-31')
+                    ->orderBy('fecha_ingreso')
+                    ->get();
 
-                foreach (getMeses(TP_NUMERO) as $mes) {
-                    $query = DB::table('historico_ventas')
-                        ->select(DB::raw('sum(valor) as valor'), DB::raw('sum(cajas_fisicas) as cajas_fisicas'),
-                            DB::raw('sum(cajas_equivalentes) as cajas_equivalentes'),
-                            DB::raw('sum(precio_x_ramo) as precio_x_ramo'))
-                        ->where('anno', '=', $anno)
-                        ->where('mes', '=', $mes);
-                    $count_query = DB::table('historico_ventas')
-                        ->select(DB::raw('count(*) as count'))
-                        ->where('anno', '=', $anno)
-                        ->where('mes', '=', $mes);
+                foreach ($labels as $l)
+                    if (!in_array(substr(getSemanaByDate($l->dia)->codigo, 2), $s_bla))
+                        array_push($s_bla, substr(getSemanaByDate($l->dia)->codigo, 2));
+            }
 
-                    if ($request->id_variedad != '') {
-                        $query = $query->where('id_variedad', '=', $request->id_variedad);
-                        $count_query = $count_query->where('id_variedad', '=', $request->id_variedad);
+            foreach ($request->annos as $a) {
+                /* ====== Obtener data de cosecha ======= Rendimiento ======= */
+                $arreglo_cos = [];
+                foreach ($s_cos as $l) {
+                    $semana = Semana::All()->where('codigo', '=', substr($a, 2) . $l)->first();
+                    $objects = Cosecha::All()
+                        ->where('fecha_ingreso', '>=', $semana->fecha_inicial)
+                        ->where('fecha_ingreso', '<=', $semana->fecha_final);
+                    $valor = 0;
+
+                    foreach ($objects as $item) {
+                        if ($request->id_variedad == '')
+                            $valor += $item->getRendimiento();
+                        else
+                            $valor += $item->getRendimientoByVariedad($request->id_variedad);
                     }
-                    if ($request->x_cliente == 'true' && $request->id_cliente != '') {
-                        $query = $query->where('id_cliente', '=', $request->id_cliente);
-                        $count_query = $count_query->where('id_cliente', '=', $request->id_cliente);
-                    }
-                    $query = $query->get();
-                    $count_query = $count_query->get();
+                    $valor = count($objects) > 0 ? round($valor / count($objects), 2) : 0;
 
-
-                    array_push($arreglo_valores, count($query) > 0 ? round($query[0]->valor, 2) : 0);
-                    array_push($arreglo_fisicas, count($query) > 0 ? round($query[0]->cajas_fisicas, 2) : 0);
-                    array_push($arreglo_cajas, count($query) > 0 ? round($query[0]->cajas_equivalentes, 2) : 0);
-                    array_push($arreglo_precios, (count($query) > 0 && $count_query[0]->count > 0) ? round($query[0]->precio_x_ramo / $count_query[0]->count, 2) : 0);
+                    array_push($arreglo_cos, $valor);
                 }
-                array_push($arreglo_annos, [
-                    'anno' => $anno,
-                    'valores' => $arreglo_valores,
-                    'fisicas' => $arreglo_fisicas,
-                    'equivalentes' => $arreglo_cajas,
-                    'precios' => $arreglo_precios,
+                /* ====== Obtener data de verde ======= Rendimiento-Desecho ======= */
+                $arreglo_ver = [];
+                foreach ($s_ver as $l) {
+                    $semana = Semana::All()->where('codigo', '=', substr($a, 2) . $l)->first();
+                    $objects = ClasificacionVerde::All()
+                        ->where('fecha_ingreso', '>=', $semana->fecha_inicial)
+                        ->where('fecha_ingreso', '<=', $semana->fecha_final);
+                    $valor = 0;
+
+                    foreach ($objects as $item) {
+                        if ($request->criterio == 'R') {
+                            if ($request->id_variedad == '')
+                                $valor += $item->getRendimiento();
+                            else
+                                $valor += $item->getRendimientoByVariedad($request->id_variedad);
+                        }
+                        if ($request->criterio == 'D') {
+                            if ($request->id_variedad == '')
+                                $valor += $item->desecho();
+                            else
+                                $valor += $item->desechoByVariedad($request->id_variedad);
+                        }
+                    }
+                    $valor = count($objects) > 0 ? round($valor / count($objects), 2) : 0;
+
+                    array_push($arreglo_ver, $valor);
+                }
+                /* ====== Obtener data de verde ======= Rendimiento-Desecho ======= */
+                $arreglo_bla = [];
+                foreach ($s_bla as $l) {
+                    $semana = Semana::All()->where('codigo', '=', substr($a, 2) . $l)->first();
+                    $objects = ClasificacionBlanco::All()
+                        ->where('fecha_ingreso', '>=', $semana->fecha_inicial)
+                        ->where('fecha_ingreso', '<=', $semana->fecha_final);
+                    $valor = 0;
+
+                    foreach ($objects as $item) {
+                        if ($request->criterio == 'R') {
+                            if ($request->id_variedad == '')
+                                $valor += $item->getRendimiento();
+                            else
+                                $valor += $item->getRendimientoByVariedad($request->id_variedad);
+                        }
+                        if ($request->criterio == 'D') {
+                            if ($request->id_variedad == '')
+                                $valor += $item->getDesecho();
+                            else
+                                $valor += $item->getDesechoByVariedad($request->id_variedad);
+                        }
+                    }
+                    $valor = count($objects) > 0 ? round($valor / count($objects), 2) : 0;
+
+                    array_push($arreglo_bla, $valor);
+                }
+
+                /* ========= GUARDAR AÑO COSECHA ========= */
+                array_push($a_cos, [
+                    'anno' => $a,
+                    'arreglo' => $arreglo_cos,
+                ]);
+
+                /* ========= GUARDAR AÑO VERDE ========= */
+                array_push($a_ver, [
+                    'anno' => $a,
+                    'arreglo' => $arreglo_ver,
+                ]);
+
+                /* ========= GUARDAR AÑO BLANCO ========= */
+                array_push($a_bla, [
+                    'anno' => $a,
+                    'arreglo' => $arreglo_bla,
                 ]);
             }
         } else {
@@ -241,76 +351,86 @@ class crmRendimientoController extends Controller
                 $array_verde = [];
                 $array_blanco = [];
 
-                if ($request->id_variedad == '') {
-                    $fechas = [];
 
-                    for ($i = $desde; $i >= 1; $i--) {  /* ======== Construir el arreglo de semanas [codigo1, codigo2, ..., codigoN]*/
-                        $semana = Semana::All()->where('estado', 1)
-                            ->where('fecha_inicial', '<=', opDiasFecha('-', $i, date('Y-m-d')))
-                            ->where('fecha_final', '>=', opDiasFecha('-', $i, date('Y-m-d')))
-                            ->first();
+                $fechas = [];
 
-                        if (!in_array($semana->codigo, $fechas))
-                            array_push($fechas, $semana->codigo);
-                    }
+                for ($i = $desde; $i >= 1; $i--) {  /* ======== Construir el arreglo de semanas [codigo1, codigo2, ..., codigoN]*/
+                    $semana = Semana::All()->where('estado', 1)
+                        ->where('fecha_inicial', '<=', opDiasFecha('-', $i, date('Y-m-d')))
+                        ->where('fecha_final', '>=', opDiasFecha('-', $i, date('Y-m-d')))
+                        ->first();
 
-                    foreach ($fechas as $f) {   /* =========== Recorro las semanas =========== */
-                        $semana = Semana::All()->where('estado', 1)->where('codigo', $f)->first();  // Obtengo la semana por el codigo
+                    if (!in_array($semana->codigo, $fechas))
+                        array_push($fechas, $semana->codigo);
+                }
 
-                        /* ======== Obtengo los arreglos de las cosechas, verdes y blancos de cada semana ========= */
-                        $cosecha = Cosecha::All()->where('estado', 1)
-                            ->where('fecha_ingreso', '>=', $semana->fecha_inicial)
-                            ->where('fecha_ingreso', '<=', $semana->fecha_final);
-                        $verde = ClasificacionVerde::All()->where('estado', 1)
-                            ->where('fecha_ingreso', '>=', $semana->fecha_inicial)
-                            ->where('fecha_ingreso', '<=', $semana->fecha_final);
-                        $blanco = ClasificacionBlanco::All()->where('estado', 1)
-                            ->where('fecha_ingreso', '>=', $semana->fecha_inicial)
-                            ->where('fecha_ingreso', '<=', $semana->fecha_final);
+                foreach ($fechas as $f) {   /* =========== Recorro las semanas =========== */
+                    $semana = Semana::All()->where('estado', 1)->where('codigo', $f)->first();  // Obtengo la semana por el codigo
 
-                        /* ========== Obtengo el rendimiento de las cosechas en la semana i ========== */
-                        $r_cos = 0;
-                        foreach ($cosecha as $c) {
+                    /* ======== Obtengo los arreglos de las cosechas, verdes y blancos de cada semana ========= */
+                    $cosecha = Cosecha::All()->where('estado', 1)
+                        ->where('fecha_ingreso', '>=', $semana->fecha_inicial)
+                        ->where('fecha_ingreso', '<=', $semana->fecha_final);
+                    $verde = ClasificacionVerde::All()->where('estado', 1)
+                        ->where('fecha_ingreso', '>=', $semana->fecha_inicial)
+                        ->where('fecha_ingreso', '<=', $semana->fecha_final);
+                    $blanco = ClasificacionBlanco::All()->where('estado', 1)
+                        ->where('fecha_ingreso', '>=', $semana->fecha_inicial)
+                        ->where('fecha_ingreso', '<=', $semana->fecha_final);
+
+                    /* ========== Obtengo el rendimiento de las cosechas en la semana i ========== */
+                    $r_cos = 0;
+                    foreach ($cosecha as $c) {
+                        if ($request->id_variedad == '')
                             $r_cos += $c->getRendimiento();
-                        }
-                        array_push($array_cosecha, count($cosecha) > 0 ? [
-                            'rendimiento' => round($r_cos / count($cosecha), 2)]
-                            : [
-                                'rendimiento' => 0,
-                            ]);
+                        else
+                            $r_cos += $c->getRendimientoByVariedad($request->id_variedad);
+                    }
+                    array_push($array_cosecha, count($cosecha) > 0 ? [
+                        'rendimiento' => round($r_cos / count($cosecha), 2)]
+                        : [
+                            'rendimiento' => 0,
+                        ]);
 
-                        /* ========== Obtengo el rendimiento-desecho de los verdes en la semana i ========== */
-                        $r_ver = 0;
-                        $d_ver = 0;
-                        foreach ($verde as $v) {
+                    /* ========== Obtengo el rendimiento-desecho de los verdes en la semana i ========== */
+                    $r_ver = 0;
+                    $d_ver = 0;
+                    foreach ($verde as $v) {
+                        if ($request->id_variedad == '') {
                             $r_ver += $v->getRendimiento();
                             $d_ver += $v->desecho();
+                        } else {
+                            $r_ver += $v->getRendimientoByVariedad($request->id_variedad);
+                            $d_ver += $v->desechoByVariedad($request->id_variedad);
                         }
-                        array_push($array_verde, count($verde) > 0 ? [
-                            'rendimiento' => round($r_ver / count($verde), 2),
-                            'desecho' => round($d_ver / count($verde), 2)]
-                            : [
-                                'rendimiento' => 0,
-                                'desecho' => 0
-                            ]);
+                    }
+                    array_push($array_verde, count($verde) > 0 ? [
+                        'rendimiento' => round($r_ver / count($verde), 2),
+                        'desecho' => round($d_ver / count($verde), 2)]
+                        : [
+                            'rendimiento' => 0,
+                            'desecho' => 0
+                        ]);
 
-                        /* ========== Obtengo el rendimiento-desecho de los blancos en la semana i ========== */
-                        $r_bla = 0;
-                        $d_bla = 0;
-                        foreach ($blanco as $b) {
+                    /* ========== Obtengo el rendimiento-desecho de los blancos en la semana i ========== */
+                    $r_bla = 0;
+                    $d_bla = 0;
+                    foreach ($blanco as $b) {
+                        if ($request->id_variedad == '') {
                             $r_bla += $b->getRendimiento();
                             $d_bla += $b->getDesecho();
+                        } else {
+                            $r_bla += $b->getRendimientoByVariedad($request->id_variedad);
+                            $d_bla += $b->getDesechoByVariedad($request->id_variedad);
                         }
-                        array_push($array_blanco, count($blanco) > 0 ? [
-                            'rendimiento' => round($r_bla / count($blanco), 2),
-                            'desecho' => round($d_bla / count($blanco), 2)]
-                            : [
-                                'rendimiento' => 0,
-                                'desecho' => 0
-                            ]);
                     }
-                } else {
-                    dd(55);
+                    array_push($array_blanco, count($blanco) > 0 ? [
+                        'rendimiento' => round($r_bla / count($blanco), 2),
+                        'desecho' => round($d_bla / count($blanco), 2)]
+                        : [
+                            'rendimiento' => 0,
+                            'desecho' => 0
+                        ]);
                 }
 
                 $data = [
@@ -323,7 +443,12 @@ class crmRendimientoController extends Controller
 
         return view('adminlte.crm.rendimiento_desecho.partials.' . $view, [
             'labels' => $fechas,
-            'arreglo_annos' => $arreglo_annos,
+            's_cos' => $s_cos,
+            'a_cos' => $a_cos,
+            's_ver' => $s_ver,
+            'a_ver' => $a_ver,
+            's_bla' => $s_bla,
+            'a_bla' => $a_bla,
             'data' => $data,
             'periodo' => $periodo,
             'criterio' => $request->criterio,
@@ -332,39 +457,127 @@ class crmRendimientoController extends Controller
 
     public function desglose_indicador(Request $request)
     {
+        //dd($request->all());
+
         $fechas = [];
-        for ($i = 1; $i <= 7; $i++) {
+        for ($i = 7; $i >= 1; $i--) {
             array_push($fechas, opDiasFecha('-', $i, date('Y-m-d')));
         }
 
+        $max_min = DB::table('recepcion')
+            ->select(DB::raw('min(fecha_registro) as min'), DB::raw('max(fecha_registro) as max'))
+            ->where('estado', '=', 1)
+            ->where('fecha_ingreso', '>=', opDiasFecha('-', 7, date('Y-m-d')))
+            ->where('fecha_ingreso', '<=', opDiasFecha('-', 1, date('Y-m-d')))
+            ->get();
+
+        $arreglo_horarios = [];
         $arreglo_dias = [];
         foreach ($fechas as $f) {
-            $cosecha = Cosecha::All()->where('estado', 1)->where('fecha_ingreso', $f)->first();
+            $flag = false;
 
-            $horas_x_dia = [];
-            foreach (getIntervalosHorasDiarias() as $int) {
-                $inicio = $f . ' ' . $int['inicio'];
-                $fin = $f . ' ' . $int['fin'];
-                if ($cosecha != '' && $cosecha->personal != '')
-                    array_push($horas_x_dia, [
-                        'intervalo' => $int['inicio'] . '-' . $int['fin'],
-                        'valor' => round($cosecha->getTotalTallosByIntervalo($inicio, $fin) / $cosecha->personal, 2)
-                    ]);
-                else
-                    array_push($horas_x_dia, [
-                        'intervalo' => $int['inicio'] . '-' . $int['fin'],
-                        'valor' => 0
-                    ]);
+            if ($request->option == 'cosecha')
+                $object = Cosecha::All()->where('estado', 1)->where('fecha_ingreso', $f)->first();
+            if ($request->option == 'verde')
+                $object = ClasificacionVerde::All()->where('estado', 1)->where('fecha_ingreso', $f)->first();
+            if ($request->option == 'blanco')
+                $object = ClasificacionBlanco::All()->where('estado', 1)->where('fecha_ingreso', $f)->first();
+
+            if ($request->criterio_desglose == '' || $request->criterio_desglose == 1) {    // Mostrar por Horarios
+                $horas_x_dia = [];
+                foreach (getIntervalosHorasDiarias() as $int) {
+                    if (1) {    // optimizar rango visible en la grafica
+                        $inicio = $f . ' ' . $int['inicio'];
+                        $fin = $f . ' ' . $int['fin'];
+                        if ($object != '' && $object->personal != '') {
+                            if ($request->id_variedad == '') {
+                                if ($request->option == 'cosecha')
+                                    $valor = round($object->getTotalTallosByIntervalo($inicio, $fin) / $object->personal, 2);
+                                if ($request->option == 'verde')
+                                    $valor = round($object->getTotalTallosByIntervalo($inicio, $fin) / $object->personal, 2);
+                                if ($request->option == 'blanco')
+                                    $valor = round($object->getTotalRamosByIntervaloFecha($inicio, $fin) / $object->personal, 2);
+                                array_push($horas_x_dia, [
+                                    'intervalo' => $int['inicio'] . '-' . $int['fin'],
+                                    'valor' => $valor
+                                ]);
+                            } else {
+                                if ($request->option == 'cosecha')
+                                    $valor = round($object->getTotalTallosByIntervaloVariedad($inicio, $fin, $request->id_variedad) / $object->personal, 2);
+                                if ($request->option == 'verde')
+                                    $valor = round($object->getTotalTallosByVariedadIntervaloFecha($request->id_variedad, $inicio, $fin) / $object->personal, 2);
+                                if ($request->option == 'blanco')
+                                    $valor = round($object->getTotalRamosByVariedadIntervaloFecha($request->id_variedad, $inicio, $fin) / $object->personal, 2);
+                                array_push($horas_x_dia, [
+                                    'intervalo' => $int['inicio'] . '-' . $int['fin'],
+                                    'valor' => $valor
+                                ]);
+                            }
+
+                            $flag = true;
+                        } else {
+                            array_push($horas_x_dia, [
+                                'intervalo' => $int['inicio'] . '-' . $int['fin'],
+                                'valor' => 0
+                            ]);
+                        }
+                    }
+                }
+
+                if ($flag)
+                    array_push($arreglo_horarios, [
+                        'fecha' => $f,
+                        'arreglo' => $horas_x_dia]);
             }
 
-            array_push($arreglo_dias, [
-                'fecha' => $f,
-                'arreglo' => $horas_x_dia]);
+            if ($request->criterio_desglose == 2) { // Mostrar por días
+                if ($object != '' && $object->personal > 0) {
+                    if ($request->id_variedad == '') {
+                        if ($request->option == 'cosecha')
+                            array_push($arreglo_dias, $object->getRendimiento());
+                        if ($request->option == 'verde') {
+                            if ($request->criterio_tipo == 'R')
+                                array_push($arreglo_dias, $object->getRendimiento());
+                            if ($request->criterio_tipo == 'D')
+                                array_push($arreglo_dias, $object->desecho());
+                        }
+                        if ($request->option == 'blanco') {
+                            if ($request->criterio_tipo == 'R')
+                                array_push($arreglo_dias, $object->getRendimiento());
+                            if ($request->criterio_tipo == 'D')
+                                array_push($arreglo_dias, $object->getDesecho());
+                        }
+                    } else {
+                        if ($request->option == 'cosecha')
+                            array_push($arreglo_dias, $object->getRendimientoByVariedad($request->id_variedad));
+                        if ($request->option == 'verde') {
+                            if ($request->criterio_tipo == 'R')
+                                array_push($arreglo_dias, $object->getRendimientoByVariedad($request->id_variedad));
+                            if ($request->criterio_tipo == 'D')
+                                array_push($arreglo_dias, $object->desechoByVariedad($request->id_variedad));
+                        }
+                        if ($request->option == 'blanco') {
+                            if ($request->criterio_tipo == 'R')
+                                array_push($arreglo_dias, $object->getRendimientoByVariedad($request->id_variedad));
+                            if ($request->criterio_tipo == 'D')
+                                array_push($arreglo_dias, $object->getDesechoByVariedad($request->id_variedad));
+                        }
+                    }
+                } else {
+                    array_push($arreglo_dias, 0);
+                }
+            }
         }
 
+        //dd($request->all());
         return view('adminlte.crm.rendimiento_desecho.partials.desgloses_indicador.' . $request->option, [
             'fechas' => $fechas,
+            'arreglo_horarios' => $arreglo_horarios,
             'arreglo_dias' => $arreglo_dias,
+            'max_min' => $max_min,
+            'id_variedad' => $request->id_variedad,
+            'criterio_desglose' => $request->criterio_desglose != '' ? $request->criterio_desglose : 1,
+            'criterio_tipo' => $request->criterio_tipo != '' ? $request->criterio_tipo : 'R',
         ]);
     }
 }
