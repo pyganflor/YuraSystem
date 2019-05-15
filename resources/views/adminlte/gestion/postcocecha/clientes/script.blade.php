@@ -113,7 +113,10 @@
                 codigo_impuesto: $("#codigo_impuesto").val(),
                 tipo_identificacion : $('#tipo_identificacion').val(),
                 tipo_impuesto : $('#tipo_impuesto').val(),
-                almacen : $('#almacen').val()
+                almacen : $('#almacen').val(),
+                puerto_entrada : $("#puerto_entrada").val(),
+                tipo_credito : $("#tipo_credito").val(),
+                marca : $("#marca").val()
             };
             post_jquery('{{url('clientes/store')}}', datos, function () {
                 cerrar_modals();

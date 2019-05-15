@@ -4,7 +4,7 @@ namespace yura\Http\Controllers;
 
 use Illuminate\Http\Request;
 use yura\Modelos\Submenu;
-use yura\Modelos\marca;
+use yura\Modelos\Marca;
 use Validator;
 use DB;
 
@@ -45,7 +45,7 @@ class MarcaController extends Controller
     public function add_marcas(Request $request)
     {
         !empty($request->id_marca)
-            ? $dataMarca = marca::where([
+            ? $dataMarca = Marca::where([
             ['id_marca', $request->id_marca],
             ['estado', 1]
         ])->first()
@@ -66,11 +66,11 @@ class MarcaController extends Controller
         if (!$valida->fails()) {
             $msg = '';
             if(empty($request->id_marca)){
-                $objMarca = new marca;
+                $objMarca = new Marca;
                 $palabra = 'Inserción';
                 $accion   = 'I';
             }else{
-                $objMarca = marca::find($request->id_marca);
+                $objMarca = Marca::find($request->id_marca);
                 $palabra = 'Actualización';
                 $accion   = 'U';
             }
@@ -79,12 +79,12 @@ class MarcaController extends Controller
             $objMarca->descripcion = $request->descripcion;
 
             if ($objMarca->save()) {
-                $model = marca::all()->last();
+                $model = Marca::all()->last();
                 $success = true;
                 $msg = '<div class="alert alert-success text-center">' .
                     '<p> Se ha guardado la marca ' . $objMarca->nombre . '  exitosamente</p>'
                     . '</div>';
-                bitacora('marca', $model->id_marca, $accion, $palabra . ' satisfactoria de una nueva marca');
+                bitacora('marcas', $model->id_marca, $accion, $palabra . ' satisfactoria de una nueva marca');
             }else{
                 $success = false;
                 $msg = '<div class="alert alert-warning text-center">' .

@@ -11,7 +11,7 @@
                     </td>
                     <td style="border-color: #9d9d9d; padding: 0px; vertical-align: middle;width: 30px; text-align:center"
                         class="text-center" rowspan="{{getCantidadDetallesByEspecificacion($id_especificacion)}}" >
-                        <input type="number" min="1" name="orden" class="orden" id="orden_{{($cant_esp+1)}}" style="border: none;text-align: center;width: 30px;" readonly>
+                        <input type="number" min="1" name="orden" class="orden" id="orden_{{($cant_esp+1)}}" style="border: none;text-align: center;width: 30px;">
                     </td>
                     <td style="border-color: #9d9d9d; padding: 0px; vertical-align: middle; "
                         class="text-center" rowspan="{{getCantidadDetallesByEspecificacion($id_especificacion)}}">

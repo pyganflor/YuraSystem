@@ -12,6 +12,7 @@ Route::get('clientes/add_fechas_pedido_fijo_personalizado', 'PedidoController@ad
 Route::get('clientes/buscar_saldos', 'YuraController@buscar_saldos');
 Route::get('pedidos/crear_packing_list/{id_pedido}', 'PedidoController@crear_packing_list');
 Route::get('pedidos/facturar_pedido', 'PedidoController@facturar_pedido');
+Route::get('pedidos/ver_factura_pedido/{id_pedido}', 'PedidoController@ver_factura_pedido');
 
 
 

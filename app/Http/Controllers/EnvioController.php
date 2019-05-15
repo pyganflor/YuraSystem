@@ -18,6 +18,7 @@ use PHPExcel_Style_Color;
 use PHPExcel_Style_Alignment;
 use yura\Modelos\FacturaClienteTercero;
 use yura\Modelos\Impuesto;
+use yura\Modelos\Marca;
 use yura\Modelos\Pais;
 use yura\Modelos\Pedido;
 use Carbon\Carbon;
@@ -463,7 +464,8 @@ class EnvioController extends Controller
             'impuestos' => Impuesto::all(),
             'tipoImpuestos' => TipoImpuesto::all(),
             'dataPais' => Pais::all(),
-            'facturado' =>  getFacturado($request->id_envio,5)
+            'facturado' =>  getFacturado($request->id_envio,5),
+            'marcas' => Marca::all()
         ]);
     }
 
@@ -482,6 +484,9 @@ class EnvioController extends Controller
             'tipo_identificacion' => 'required',
             'codigo_impuesto'     => 'required',
             'codigo_impuesto_porcentaje' => 'required',
+            'puerto_entrada'      => 'required',
+            'tipo_credito'        => 'required',
+            'marca'               => 'required',
         ]);
 
         $msg= '';
@@ -489,6 +494,7 @@ class EnvioController extends Controller
             $objFacturaClienteTercero = empty($request->id_factura_cliente_tercero)
                 ? new FacturaClienteTercero
                 : FacturaClienteTercero::find($request->id_factura_cliente_tercero);
+
             $objFacturaClienteTercero->id_envio                   = $request->id_envio;
             $objFacturaClienteTercero->nombre_cliente_tercero     = $request->nombre;
             $objFacturaClienteTercero->identificacion             = $request->identificacion;
@@ -502,6 +508,9 @@ class EnvioController extends Controller
             $objFacturaClienteTercero->codigo_impuesto_porcentaje = $request->codigo_impuesto_porcentaje;
             $objFacturaClienteTercero->almacen                    = $request->almacen;
             $objFacturaClienteTercero->dae                        = $request->dae;
+            $objFacturaClienteTercero->puerto_entrada             = $request->puerto_entrada;
+            $objFacturaClienteTercero->tipo_credito               = $request->tipo_credito;
+            $objFacturaClienteTercero->id_marca                   = $request->marca;
 
             if($objFacturaClienteTercero->save()){
                 $model= FacturaClienteTercero::all()->last();
@@ -513,7 +522,7 @@ class EnvioController extends Controller
             }else {
                 $success = false;
                 $msg .= '<div class="alert alert-warning text-center">' .
-                    '<p> Ha ocurrido un problema al guardar la información al sistema</p>'
+                    '<p> Ha ocurrido un problema al guardar la información al sistema</pyura_db@servidor_amazon>'
                     . '</div>';
             }
         } else {

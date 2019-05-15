@@ -78,7 +78,7 @@
                 $ramos_x_variedades = [];
                 $valor_total = 0;
             @endphp
-            @foreach($listado as $pedido)
+            @foreach($listado as $x=> $pedido)
                 @php $despachado = getCantDespacho($pedido->id_pedido) @endphp
                 @foreach(getPedido($pedido->id_pedido)->detalles as $pos_det_ped => $det_ped)
                     @foreach($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $pos_esp_emp => $esp_emp)
@@ -213,33 +213,30 @@
                                                     <button type="button" class="btn btn-default btn-xs" title="Editar pedido"
                                                             onclick="editar_pedido('{{$pedido->id_cliente}}','{{$pedido->id_pedido}}')">
                                                         <i class="fa fa-pencil" aria-hidden="true"></i>
+
                                                     </button>
                                                 @endif
                                                 @if(getPedido($pedido->id_pedido)->haveDistribucion() == 1)
                                                     <button type="button" class="btn btn-xs btn-info" title="Distribuir"
                                                             onclick="distribuir_orden_semanal('{{$pedido->id_pedido}}')">
                                                         <i class="fa fa-fw fa-gift"></i>
+
                                                     </button>
                                                 @elseif(getPedido($pedido->id_pedido)->haveDistribucion() == 2)
-                                                    <button type="button" class="btn btn-xs btn-info" title="Ver distribución"
-                                                            onclick="ver_distribucion_orden_semanal('{{$pedido->id_pedido}}')">
-                                                        <i class="fa fa-fw fa-gift"></i>
+                                                    <button onclick="ver_distribucion_orden_semanal('{{$pedido->id_pedido}}')" class="btn btn-default text-left" style="cursor:pointer;padding:5px 3px;width:100%;">
+                                                        <em> Ver distribución</em>
                                                     </button>
                                                 @endif
-                                                <button class="btn btn-primary btn-xs" title="Duplicar pedido"
-                                                        onclick="duplicar_pedido('{{$pedido->id_pedido}}','{{$pedido->id_cliente}}')">
+                                                <button onclick="duplicar_pedido('{{$pedido->id_pedido}}','{{$pedido->id_cliente}}')" class="btn btn-primary  btn-xs " >
                                                     <i class="fa fa-files-o" aria-hidden="true"></i>
                                                 </button>
-
                                             @endif
-                                            <button type="button" class="btn btn-success btn-xs" title="Facturar pedido"
-                                                    onclick="facturar_pedido('{{$pedido->id_pedido}}')">
-                                                <i class="fa fa-usd" aria-hidden="true"></i>
-                                            </button>
+                                                <button onclick="facturar_pedido('{{$pedido->id_pedido}}')" class="btn btn-success btn-xs">
+                                                    <i class="fa fa-usd" aria-hidden="true"></i>
+                                                </button>
                                         @else
-                                            <a href="javascript:void(0)" class="btn btn-default btn-xs" title="Ver factura"
-                                               onclick="ver_factura('{{$pedido->id_pedido}}')">
-                                                <i class="fa fa-file-pdf-o" aria-hidden="true"></i>
+                                            <a target="_blank" href="{{url('pedidos/ver_factura_pedido',$pedido->id_pedido)}}" class="btn btn-default btn-xs" title="Ver factura SRI">
+                                                <i class="fa fa-eye" aria-hidden="true"></i>
                                             </a>
                                         @endif
                                         <a target="_blank" href="{{url('pedidos/crear_packing_list',$pedido->id_pedido)}}"

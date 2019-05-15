@@ -86,7 +86,7 @@
                         @endif
                     </td>
                     @if($columna_causa)
-                    <td style="border-color: #9d9d9d" class="text-center"> {{!empty($item->causa) ? $item->causa : "-"}} </td>
+                        <td style="border-color: #9d9d9d" class="text-center"> {{!empty($item->causa) ? $item->causa : "-"}} </td>
                     @endif
                     <td style="border-color: #9d9d9d" class="text-center">
                         @if($item->estado==5)
@@ -111,7 +111,10 @@
                                 <input type="checkbox" id="facturar_{{$key+1}}" name="enviar"  title="Enviar al SRI" value="{{$item->clave_acceso}}" style="margin:0;position:relative;top:3px">
                             </button>
                             @if($tipo_comprobante!="06")
-                                <a target="_blank" href="{{url('comprobante/pre_factura',$item->clave_acceso)}}" class="btn btn-primary btn-xs" title="Ver comprobante electrónico">
+                                <a target="_blank" href="{{url('comprobante/pre_factura',[$item->clave_acceso,true])}}" class="btn btn-info btn-xs" title="Ver factura Cliente">
+                                    <i class="fa fa-user-circle-o" aria-hidden="true"></i>
+                                </a>
+                                <a target="_blank" href="{{url('comprobante/pre_factura',$item->clave_acceso)}}" class="btn btn-primary btn-xs" title="Ver factura SRI">
                                     <i class="fa fa-eye" aria-hidden="true"></i>
                                 </a>
                             @else

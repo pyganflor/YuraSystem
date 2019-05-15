@@ -4,6 +4,7 @@ namespace yura\Http\Controllers;
 
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use SoapClient;
 use yura\Modelos\Aerolinea;
 use yura\Modelos\ClienteDatoExportacion;
 use yura\Modelos\Comprobante;
@@ -161,6 +162,7 @@ class PedidoController extends Controller
                         $objDetallePedido->id_agencia_carga = $item['id_agencia_carga'];
                         $objDetallePedido->cantidad = $item['cantidad'];
                         $objDetallePedido->precio = substr($item['precio'], 0, -1);
+                        $objDetallePedido->orden =  $item['orden'];
                         if ($objDetallePedido->save()) {
                             $modelDetallePedido = DetallePedido::all()->last();
                             bitacora('detalle_pedido', $modelDetallePedido->id_detalle_pedido, 'I', 'Inserción satisfactoria de un nuevo detalle pedido');
@@ -473,6 +475,33 @@ class PedidoController extends Controller
             'aerolineas' => Aerolinea::where('estado',1)->get(),
             'vista' => $request->path()
         ]);
+    }
+
+    public function ver_factura_pedido($id_pedido){
+
+        $clave_acceso = getPedido($id_pedido)->envios[0]->comprobante->clave_acceso;
+        $tipo_documento = getDetallesClaveAcceso($clave_acceso,'TIPO_COMPROBANTE');
+
+        if($tipo_documento == "01")
+            $dataComprobante = Comprobante::where('clave_acceso', $clave_acceso)->select('numero_comprobante','id_envio')->first();
+
+        if($tipo_documento == "06")
+            $dataComprobante = Comprobante::where('clave_acceso', $clave_acceso)
+                ->join('detalle_guia_remision as dgr','comprobante.id_comprobante','dgr.id_comprobante')->select('id_comprobante_relacionado')->first();
+
+        $cliente = new SoapClient(env('URL_WS_ATURIZACION'));
+        $response = $cliente->autorizacionComprobante(["claveAccesoComprobante" => $clave_acceso]);
+        $autorizacion = $response->RespuestaAutorizacionComprobante->autorizaciones->autorizacion;
+
+        $data = [
+            'autorizacion' => $autorizacion,
+            'img_clave_acceso' => generateCodeBarGs1128((String)$autorizacion->numeroAutorizacion),
+            'obj_xml' => simplexml_load_string($autorizacion->comprobante),
+            'numeroComprobante' => $dataComprobante->numero_comprobante,
+            'detalles_envio' => $tipo_documento == "01" ? getEnvio($dataComprobante->id_envio)->detalles : "",
+            'pedido' => $tipo_documento == "06" ? getComprobante($dataComprobante->id_comprobante_relacionado)->envio->pedido : ""
+        ];
+            return PDF::loadView('adminlte.gestion.comprobante.partials.pdf.factura', compact('data'))->stream();
     }
     
 }
