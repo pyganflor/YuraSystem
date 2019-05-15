@@ -25,6 +25,15 @@ class DetalleCliente extends Model
         'estado',
         'almacen',
         'puerto_entrada',
-        'tipo_credito'
+        'tipo_credito',
+        'id_marca'
     ];
+
+    public function informacion_adicional($nombre_campo){
+        return $this->hasMany('yura\Modelos\Documento','codigo')->where('nombre_campo',$nombre_campo)->first();
+    }
+
+    public function marca_caja(){
+        return $this->belongsTo('yura\Modelos\Marca','id_marca');
+    }
 }

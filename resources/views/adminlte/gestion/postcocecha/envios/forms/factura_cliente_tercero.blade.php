@@ -110,28 +110,37 @@
         </div>
     </div>
     <div class="row">
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <div class="form-group">
                     <label for="almacen_cliente_tercero">Anden</label>
                     <input type="text" id="almacen_cliente_tercero" name="almacen_cliente_tercero" class="form-control"   maxlength="100" autocomplete="off"
                            {{$disabled}} value="{!! !empty($dataCliente) ? $dataCliente->almacen : "" !!}">
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <div class="form-group">
                     <label for="tipo_credito">Tiempo de crédito</label>
                     <input type="text" id="tipo_credito" name="tipo_credito" class="form-control"   maxlength="100" autocomplete="off"
                            {{$disabled}} value="{!! !empty($dataCliente) ? $dataCliente->tipo_credito : "" !!}">
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <div class="form-group">
                     <label for="direccion_cliente_tercero">Direccion</label>
                     <input type="text" id="direccion_cliente_tercero" name="direccion_cliente_terceroireccion" class="form-control"   maxlength="100" autocomplete="off"
                            {{$disabled}} value="{!! !empty($dataCliente) ? $dataCliente->direccion : "" !!}" required>
                 </div>
             </div>
-
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label for="marca">Marca de caja</label>
+                    <select name="marca" id="marca" class="form-control">
+                        @foreach($marcas as $marca)
+                            <option {!! !empty($dataCliente) ? ($dataCliente->id_marca === $marca->id_marca ? "selected" : "") : "" !!} value="{{$marca->id_marca}}">{{$marca->nombre}} </option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
     </div>
 
 </form>

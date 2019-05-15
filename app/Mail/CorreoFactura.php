@@ -57,8 +57,8 @@ class CorreoFactura extends Mailable
             ->view('adminlte.gestion.mails.correo_factura')
             ->attach(env($paht_env).$sub_carpeta.$this->nombreArchivo.'.xml',[
                 'as' => $this->nombreArchivo.'.xml'
-            ])->attach(env('PDF_FACTURAS').$this->nombreArchivo.'.pdf',[
-                'as' => $this->nombreArchivo.'.pdf'
+            ])->attach(env('PDF_FACTURAS')."cliente_".$this->nombreArchivo.'.pdf',[
+                'as' =>$this->nombreArchivo.'.pdf'
             ])->cc($correo_extra);
     }
 }

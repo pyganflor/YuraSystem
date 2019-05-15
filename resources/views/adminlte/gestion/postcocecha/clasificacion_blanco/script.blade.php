@@ -23,4 +23,14 @@
             location.reload();
         });
     }
+
+    function ver_rendimiento(blanco) {
+        datos = {
+            blanco: blanco
+        };
+        get_jquery('{{url('clasificacion_blanco/ver_rendimiento')}}', datos, function (retorno) {
+            modal_view('moda-view_ver_rendimiento', retorno, '<i class="fa fa-fw fa-balance-scale"></i> Rendimiento', true, false,
+                '{{isPC() ? '80%' : ''}}');
+        });
+    }
 </script>

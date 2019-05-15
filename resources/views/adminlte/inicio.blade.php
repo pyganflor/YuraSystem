@@ -55,6 +55,30 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="col-md-3">
+                            <div class="info-box bg-teal mouse-hand sombra_pequeña"
+                                 onclick="location.href='{{url('crm_rendimiento')}}'">
+                                <span class="info-box-icon"><i class="ion ion-ios-people-outline"></i></span>
+                                <div class="info-box-content">
+                                    <strong class="info-box-text" style="font-size: 1.2em">Rendimiento</strong>
+                                    <span class="info-box-number">
+                                        {{number_format(round(($rendimiento_desecho['blanco']['rendimiento'] + $rendimiento_desecho['verde']['rendimiento_ramos'])/2,2) , 2)}}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="info-box bg-red-gradient mouse-hand sombra_pequeña"
+                                 onclick="location.href='{{url('crm_rendimiento')}}'">
+                                <span class="info-box-icon"><i class="ion ion-ios-trash-outline"></i></span>
+                                <div class="info-box-content">
+                                    <strong class="info-box-text" style="font-size: 1.2em">Desecho</strong>
+                                    <span class="info-box-number">
+                                        {{number_format(round(($rendimiento_desecho['blanco']['desecho'] + $rendimiento_desecho['verde']['desecho'])/2,2) , 2)}}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

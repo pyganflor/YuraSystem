@@ -142,8 +142,8 @@
             @endforeach
         </tbody>
     </table>
-@elseif($pedido->tipo_especificacion==="T")
 
+@elseif($pedido->tipo_especificacion==="T")
     <table style="width:100%">
         <tr>
             <td>
@@ -175,7 +175,7 @@
     </tr>
     <tr>
         <td colspan="2">
-            <table style="width: 100%;margin-top: 15px;font-size: 15px">
+            <table style="width: 100%;margin-top: 15px;font-size: 13px">
                 <tr>
                     <td>FULL BOXES : [{{number_format($full,2,".","")}}]</td>
                     <td>HALF BOXES : [{{number_format($half,2,".","")}}]</td>

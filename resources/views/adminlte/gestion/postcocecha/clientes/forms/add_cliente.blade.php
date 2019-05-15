@@ -130,6 +130,16 @@
         </div>
         <div class="col-md-3">
             <div class="form-group">
+                <label for="marca">Marca de caja</label>
+                <select name="marca" id="marca" class="form-control">
+                    @foreach($marcas as $marca)
+                        <option {!! !empty($dataCliente) ? ($dataCliente->id_marca=== $marca->id_marca ? "selected" : "") : "" !!} value="{{$marca->id_marca}}">{{$marca->nombre}} </option>
+                    @endforeach
+                </select>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
                 <label for="almacen">Anden</label>
                 <input type="text" id="almacen" name="almacen" class="form-control"   maxlength="100" autocomplete="off" value="{!! !empty($dataCliente) ? $dataCliente->almacen : "" !!}">
             </div>

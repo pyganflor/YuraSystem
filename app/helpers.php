@@ -61,6 +61,7 @@ use \yura\Modelos\DesgloseEnvioFactura;
 use yura\Modelos\DetalleGuiaRemision;
 use yura\Mail\CorreoErrorEnvioComprobanteElectronico;
 use yura\Modelos\TipoIdentificacion;
+
 /*
  * -------- BITÁCORA DE LAS ACCIONES ECHAS POR EL USUARIO ------
  * INSERTAR (I)
@@ -118,7 +119,25 @@ define('A_Z', serialize(range('A', 'Z')));
 
 function getListColores()
 {
-    return ['red', 'blue', 'green', 'orange', 'yellow', 'pink'];
+    return ['red', 'blue', 'green', 'orange', 'yellow', 'purple', 'gray', 'pink'];
+}
+
+function getHorasDiarias()
+{
+    return ['00:01', '01:02', '02:03', '03:04', '04:05', '05:06', '06:07', '07:08', '08:09', '09:10', '10:11', '11:12', '12:13', '13:14', '14:15',
+        '15:16', '16:17', '17:18', '18:19', '19:20', '20:21', '21:22', '22:23', '23:00'];
+}
+
+function getIntervalosHorasDiarias()
+{
+    return [['inicio' => '00:00', 'fin' => '01:00'], ['inicio' => '01:00', 'fin' => '02:00'], ['inicio' => '02:00', 'fin' => '03:00'],
+        ['inicio' => '03:00', 'fin' => '04:00'], ['inicio' => '04:00', 'fin' => '05:00'], ['inicio' => '05:00', 'fin' => '06:00'],
+        ['inicio' => '06:00', 'fin' => '07:00'], ['inicio' => '07:00', 'fin' => '08:00'], ['inicio' => '08:00', 'fin' => '09:00'],
+        ['inicio' => '09:00', 'fin' => '10:00'], ['inicio' => '10:00', 'fin' => '11:00'], ['inicio' => '11:00', 'fin' => '12:00'],
+        ['inicio' => '12:00', 'fin' => '13:00'], ['inicio' => '13:00', 'fin' => '14:00'], ['inicio' => '14:00', 'fin' => '15:00'],
+        ['inicio' => '15:00', 'fin' => '16:00'], ['inicio' => '16:00', 'fin' => '17:00'], ['inicio' => '17:00', 'fin' => '18:00'],
+        ['inicio' => '18:00', 'fin' => '19:00'], ['inicio' => '19:00', 'fin' => '20:00'], ['inicio' => '20:00', 'fin' => '21:00'],
+        ['inicio' => '21:00', 'fin' => '22:00'], ['inicio' => '22:00', 'fin' => '23:00'], ['inicio' => '23:00', 'fin' => '00:00']];
 }
 
 function getMeses($tipo = TP_COMPLETO, $formato = FR_ARREGLO)
@@ -1153,16 +1172,16 @@ function mensajeFirmaElectronica($indice, $archivo)
     return $mensaje[$indice];
 }
 
-function enviarComprobante($comprobante_xml, $clave_acceso,$carpeta)
+function enviarComprobante($comprobante_xml, $clave_acceso, $carpeta)
 {
     ini_set('max_execution_time', env('MAX_EXECUTION_TIME'));
     exec('java -Dfile.encoding=UTF-8 -jar ' . env('PATH_JAR_ENVIADOR') . ' '
-        . env('PATH_XML_FIRMADOS') . $carpeta. " "
+        . env('PATH_XML_FIRMADOS') . $carpeta . " "
         . $comprobante_xml . " "
-        . env('PATH_XML_ENVIADOS') . $carpeta. " "
-        . env('PATH_XML_RECHAZADOS') . $carpeta. " "
-        . env('PATH_XML_AUTORIZADOS') . $carpeta. " "
-        . env('PATH_XML_NO_AUTORIZADOS') . $carpeta. " "
+        . env('PATH_XML_ENVIADOS') . $carpeta . " "
+        . env('PATH_XML_RECHAZADOS') . $carpeta . " "
+        . env('PATH_XML_AUTORIZADOS') . $carpeta . " "
+        . env('PATH_XML_NO_AUTORIZADOS') . $carpeta . " "
         . env('URL_WS_RECEPCION') . " "
         . env('URL_WS_ATURIZACION') . " "
         . $clave_acceso . " ",
@@ -1203,20 +1222,20 @@ function getFacturado($idEnvio, $estado)
     return $f;
 }
 
-function respuesta_autorizacion_comprobante($clave_acceso_lote,$sub_carpeta,$envio_correo)
+function respuesta_autorizacion_comprobante($clave_acceso_lote, $sub_carpeta, $envio_correo)
 {
     $cliente = new SoapClient(env('URL_WS_ATURIZACION'));
     $response = $cliente->autorizacionComprobanteLote(["claveAccesoLote" => $clave_acceso_lote]);
     /*$message = "<div class='alert text-center  alert-danger'>" .
         "<p>No se pudo consultar la factura enviada al SRI</p>"
         . "</div>";*/
-    if($response->RespuestaAutorizacionLote->numeroComprobantesLote == 0){
-                    //CORREO SISTEMAS
-        Mail::to("pruebas-c26453@inbox.mailtrap.io")->send(new CorreoErrorEnvioComprobanteElectronico($response->RespuestaAutorizacionLote->claveAccesoLoteConsultada,$sub_carpeta));
-        $response =  "<div class='alert text-center  alert-warning'>" .
-                        "<p>EL SRI no ha aprobado el comprobante enviado, un correo electrónico ha sido enviado al áera de sistema para poder solucionar el inconveniente</p>"
-                    . "</div>";
-    }else{
+    if ($response->RespuestaAutorizacionLote->numeroComprobantesLote == 0) {
+        //CORREO SISTEMAS
+        Mail::to("pruebas-c26453@inbox.mailtrap.io")->send(new CorreoErrorEnvioComprobanteElectronico($response->RespuestaAutorizacionLote->claveAccesoLoteConsultada, $sub_carpeta));
+        $response = "<div class='alert text-center  alert-warning'>" .
+            "<p>EL SRI no ha aprobado el comprobante enviado, un correo electrónico ha sido enviado al áera de sistema para poder solucionar el inconveniente</p>"
+            . "</div>";
+    } else {
         if ($response->RespuestaAutorizacionLote->autorizaciones != "") {
             if ($response->RespuestaAutorizacionLote->numeroComprobantesLote > 0) {
                 is_array($response->RespuestaAutorizacionLote->autorizaciones->autorizacion)
@@ -1235,14 +1254,14 @@ function respuesta_autorizacion_comprobante($clave_acceso_lote,$sub_carpeta,$env
                         ? $msg_correo = "y se ha enviado el correo correspondiente al cliente"
                         : $msg_correo = "";
                     if ($estado === "AUTORIZADO") {
-                        $msg = "La factura del comprobante " . $claveAcceso . " ha sido aprobada por el SRI ".$msg_correo;
-                        $response .= accionAutorizacion($autorizacion, env('PATH_XML_AUTORIZADOS').$sub_carpeta, $msg, $tipoDocumento, $mailCliente, $nombreCliente,$envio_correo);
+                        $msg = "La factura del comprobante " . $claveAcceso . " ha sido aprobada por el SRI " . $msg_correo;
+                        $response .= accionAutorizacion($autorizacion, env('PATH_XML_AUTORIZADOS') . $sub_carpeta, $msg, $tipoDocumento, $mailCliente, $nombreCliente, $envio_correo);
                     } else if ($estado === "RECHAZADA" || $estado === "DEVUELTA") {
                         $msg = "La factura del comprobante " . $claveAcceso . " ha sido rechazada por el SRI, verifique la causa en el listado de pdf y realice nuevamente el proceso de facturación del envío";
-                        $response .= accionAutorizacion($autorizacion, env('PATH_XML_RECHAZADOS').$sub_carpeta, $msg);
+                        $response .= accionAutorizacion($autorizacion, env('PATH_XML_RECHAZADOS') . $sub_carpeta, $msg);
                     } else if ($estado === "NO AUTORIZADO") {
                         $msg = "La factura del comprobante " . $claveAcceso . " no ha sido aprobada por el SRI, verifique la causa en el listado de pdf y realice nuevamente el proceso de facturación del envío";
-                        $response .= accionAutorizacion($autorizacion, env('PATH_XML_NO_AUTORIZADOS').$sub_carpeta, $msg);
+                        $response .= accionAutorizacion($autorizacion, env('PATH_XML_NO_AUTORIZADOS') . $sub_carpeta, $msg);
                     }
                 }
             }
@@ -1251,7 +1270,8 @@ function respuesta_autorizacion_comprobante($clave_acceso_lote,$sub_carpeta,$env
     return $response;
 }
 
-function accionAutorizacion($autorizacion, $path, $msg, $tipoDocumento = false, $mailCliente = false, $nombreCliente = false,$envio_correo=false){
+function accionAutorizacion($autorizacion, $path, $msg, $tipoDocumento = false, $mailCliente = false, $nombreCliente = false, $envio_correo = false)
+{
 
     $numeroAutorizacion = (String)$autorizacion->numeroAutorizacion;
     $fechaAutorizacion = (String)$autorizacion->fechaAutorizacion;
@@ -1262,9 +1282,9 @@ function accionAutorizacion($autorizacion, $path, $msg, $tipoDocumento = false, 
 
     if ((String)$autorizacion->estado === "AUTORIZADO") {
         $actualizaEstado = 5;
-        $numeroComprobante = "001-".getDetallesClaveAcceso($numeroAutorizacion, 'PUNTO_ACCESO')."-".getDetallesClaveAcceso($numeroAutorizacion, 'SECUENCIAL');
+        $numeroComprobante = "001-" . getDetallesClaveAcceso($numeroAutorizacion, 'PUNTO_ACCESO') . "-" . getDetallesClaveAcceso($numeroAutorizacion, 'SECUENCIAL');
         $class = 'success';
-        generaDocumentoPDF($autorizacion,$tipoDocumento);
+        generaDocumentoPDF($autorizacion, $tipoDocumento);
     } else {
         $class = 'danger';
         $actualizaEstado = 4;
@@ -1281,10 +1301,10 @@ function accionAutorizacion($autorizacion, $path, $msg, $tipoDocumento = false, 
 
     $xml = new DOMDocument(1.0, 'UTF-8');
     $xml->loadXML($dataXML);
-    if($tipoDocumento == "01")
+    if ($tipoDocumento == "01")
         $nodo = $xml->getElementsByTagName("factura")->item(0);
 
-    if($tipoDocumento == "06")
+    if ($tipoDocumento == "06")
         $nodo = $xml->getElementsByTagName("guiaRemision")->item(0);
 
     $nuevoXml = new DOMDocument(1.0, 'UTF-8');
@@ -1300,7 +1320,7 @@ function accionAutorizacion($autorizacion, $path, $msg, $tipoDocumento = false, 
     $nuevoXml->saveXML();
     $nuevoXml->save($path . $numeroAutorizacion . ".xml");
 
-    if((String)$autorizacion->estado === "AUTORIZADO" && $envio_correo== "true")
+    if ((String)$autorizacion->estado === "AUTORIZADO" && $envio_correo == "true")
         enviarMailComprobanteCliente($tipoDocumento, $mailCliente, $nombreCliente, $numeroAutorizacion, $numeroComprobante);
 
     return "<div class='alert text-center  alert-" . $class . "'>" .
@@ -1308,20 +1328,20 @@ function accionAutorizacion($autorizacion, $path, $msg, $tipoDocumento = false, 
         . "</div>";
 }
 
-function generaDocumentoPDF($autorizacion,$tipo_documento,$pre_factura=false)
+function generaDocumentoPDF($autorizacion, $tipo_documento, $pre_factura = false)
 {
-    if($tipo_documento == "01")
+    if ($tipo_documento == "01")
         $dataComprobante = Comprobante::where('clave_acceso', isset($autorizacion->numeroAutorizacion) ? (String)$autorizacion->numeroAutorizacion : (String)$autorizacion->infoTributaria->claveAcceso)->select('id_envio')->first();
 
-    if($tipo_documento == "06")
+    if ($tipo_documento == "06")
         $dataComprobante = Comprobante::where('clave_acceso', isset($autorizacion->numeroAutorizacion) ? (String)$autorizacion->numeroAutorizacion : (String)$autorizacion->infoTributaria->claveAcceso)
-                            ->join('detalle_guia_remision as dgr','comprobante.id_comprobante','dgr.id_comprobante')->select('id_comprobante_relacionado')->first();
+            ->join('detalle_guia_remision as dgr', 'comprobante.id_comprobante', 'dgr.id_comprobante')->select('id_comprobante_relacionado')->first();
 
     $data = [
         'autorizacion' => $autorizacion,
         'img_clave_acceso' => $pre_factura == false ? generateCodeBarGs1128((String)$autorizacion->numeroAutorizacion) : null,
         'obj_xml' => isset($autorizacion->comprobante) ? simplexml_load_string($autorizacion->comprobante) : $autorizacion,
-        'numeroComprobante' => getDetallesClaveAcceso((String)$autorizacion->numeroAutorizacion, 'SERIE').getDetallesClaveAcceso((String)$autorizacion->numeroAutorizacion, 'SECUENCIAL'),
+        'numeroComprobante' => getDetallesClaveAcceso((String)$autorizacion->numeroAutorizacion, 'SERIE') . getDetallesClaveAcceso((String)$autorizacion->numeroAutorizacion, 'SECUENCIAL'),
         'detalles_envio' => $tipo_documento == "01" ? getEnvio($dataComprobante->id_envio)->detalles : "",
         'pedido' => $tipo_documento == "06" ? getComprobante($dataComprobante->id_comprobante_relacionado)->envio->pedido : ""
     ];
@@ -1334,18 +1354,20 @@ function generaDocumentoPDF($autorizacion,$tipo_documento,$pre_factura=false)
 }
 
 
-function enviarMailComprobanteCliente($tipoDocumento, $correoCliente, $nombreCliente, $nombreArchivo, $numeroComprobante,$preFactura=false,$correosExtra=false){
+function enviarMailComprobanteCliente($tipoDocumento, $correoCliente, $nombreCliente, $nombreArchivo, $numeroComprobante, $preFactura = false, $correosExtra = false)
+{
     //dd($correo_extra);
     if ($tipoDocumento == "01") {
-                   //$correoCliente
-        Mail::to("pruebas-c26453@inbox.mailtrap.io")->send(new CorreoFactura($correoCliente, $nombreCliente, $nombreArchivo, $numeroComprobante,$preFactura,$correosExtra));
+        //$correoCliente
+        Mail::to("pruebas-c26453@inbox.mailtrap.io")->send(new CorreoFactura($correoCliente, $nombreCliente, $nombreArchivo, $numeroComprobante, $preFactura, $correosExtra));
     }
 }
 
-function enviarMailComprobanteAgenciaCarga($tipoDocumento, $correoAgenciCarga, $nombreAgenciaCarga, $nombreArchivo, $numeroComprobante,$preFactura=false){
+function enviarMailComprobanteAgenciaCarga($tipoDocumento, $correoAgenciCarga, $nombreAgenciaCarga, $nombreArchivo, $numeroComprobante, $preFactura = false)
+{
     if ($tipoDocumento == "01") {
-            //$correoAgenciCarga
-        Mail::to("pruebas-c26453@inbox.mailtrap.io")->send(new CorreoFactura($correoAgenciCarga, $nombreAgenciaCarga, $nombreArchivo, $numeroComprobante,$preFactura,$correosExtra=false));
+        //$correoAgenciCarga
+        Mail::to("pruebas-c26453@inbox.mailtrap.io")->send(new CorreoFactura($correoAgenciCarga, $nombreAgenciaCarga, $nombreArchivo, $numeroComprobante, $preFactura, $correosExtra = false));
     }
 }
 
@@ -1407,7 +1429,8 @@ function generateCodeBarGs1128($numero_autorizacion)
     return $barcode->generate();
 }
 
-function getSubCarpetaArchivo($clave_acceso,$tipo_comprobante=false){
+function getSubCarpetaArchivo($clave_acceso, $tipo_comprobante = false)
+{
     ($clave_acceso != false)
         ? $tipo_comprobante = getDetallesClaveAcceso($clave_acceso, "TIPO_COMPROBANTE")
         : $tipo_comprobante = $tipo_comprobante;
@@ -1630,8 +1653,9 @@ function getTipoImpuesto($codigoImpuesto, $codigoPorcentajeIpuesto)
     ])->join('impuesto as imp','tipo_impuesto.codigo_impuesto','imp.codigo')->first();
 }
 
-function getTipoIdentificacion($codigoIdentificacion){
-    return TipoIdentificacion::where('codigo',$codigoIdentificacion)->first();
+function getTipoIdentificacion($codigoIdentificacion)
+{
+    return TipoIdentificacion::where('codigo', $codigoIdentificacion)->first();
 }
 
 function getClasificacionRamo($idClasificacionRamo)
@@ -1704,14 +1728,18 @@ function getDetalleDespacho($idPedido)
     return DetalleDespacho::where('id_pedido', $idPedido)->first();
 }
 
-function getComprobanteRelacionadoGuia($idComprobante){
-    return DetalleGuiaRemision::where('id_comprobante',$idComprobante)->first();
+function getComprobanteRelacionadoGuia($idComprobante)
+{
+    return DetalleGuiaRemision::where('id_comprobante', $idComprobante)->first();
 }
 
-function getComprobanteRelacionadFactura($idComprobante){
-    return DetalleGuiaRemision::where('id_comprobante_relacionado',$idComprobante)->first();
+function getComprobanteRelacionadFactura($idComprobante)
+{
+    return DetalleGuiaRemision::where('id_comprobante_relacionado', $idComprobante)->first();
 }
 
-function getDetallePedido($idDetallePedido){
+function getDetallePedido($idDetallePedido)
+{
     return DetallePedido::find($idDetallePedido);
 }
+

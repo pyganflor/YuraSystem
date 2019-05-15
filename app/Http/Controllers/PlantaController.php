@@ -42,6 +42,8 @@ class PlantaController extends Controller
     {
         $valida = Validator::make($request->all(), [
             'nombre' => 'required|max:250|unique:planta',
+            'tarifa' => 'required',
+            'nandina' => 'required'
         ], [
             'nombre.unique' => 'El nombre ya existe',
             'nombre.required' => 'El nombre es obligatorio',
@@ -50,6 +52,8 @@ class PlantaController extends Controller
         if (!$valida->fails()) {
             $model = new Planta();
             $model->nombre = str_limit(mb_strtoupper(espacios($request->nombre)), 250);
+            $model->tarifa = $request->tarifa;
+            $model->nandina = $request->nandina;
             $model->fecha_registro = date('Y-m-d H:i:s');
 
             if ($model->save()) {
@@ -204,6 +208,8 @@ class PlantaController extends Controller
         $valida = Validator::make($request->all(), [
             'nombre' => 'required|max:250',
             'id_planta' => 'required|',
+            'tarifa' => 'required',
+            'nandina' => 'required'
         ], [
             'nombre.required' => 'El nombre es obligatorio',
             'id_planta.required' => 'La platna es obligatoria',
@@ -214,6 +220,8 @@ class PlantaController extends Controller
                     ->where('id_planta', '!=', $request->id_planta)) == 0) {
                 $model = Planta::find($request->id_planta);
                 $model->nombre = str_limit(mb_strtoupper(espacios($request->nombre)), 250);
+                $model->tarifa = $request->tarifa;
+                $model->nandina = $request->nandina;
 
                 if ($model->save()) {
                     $success = true;

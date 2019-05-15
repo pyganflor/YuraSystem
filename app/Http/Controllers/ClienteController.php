@@ -14,6 +14,7 @@ use yura\Modelos\DetalleClienteContacto;
 use yura\Modelos\TipoImpuesto;
 use yura\Modelos\TipoIdentificacion;
 use yura\Modelos\Impuesto;
+use yura\Modelos\Marca;
 use DB;
 use Validator;
 use PHPExcel;
@@ -82,7 +83,8 @@ class ClienteController extends Controller
             'dataCliente' => $dataCliente,
              'tipoImpuestos' => $tipoImpuesto,
             'dataTipoIdentificacion' => TipoIdentificacion::where('estado',1)->get(),
-            'impuestos' => Impuesto::all()
+            'impuestos' => Impuesto::all(),
+            'marcas' => Marca::all()
         ]);
     }
 
@@ -100,6 +102,7 @@ class ClienteController extends Controller
             'tipo_impuesto'       => 'required',
             'puerto_entrada'      => 'required',
             'tipo_credito'        => 'required',
+            'marca'               => 'required',
         ]);
 
         if(!$valida->fails()) {
@@ -127,6 +130,7 @@ class ClienteController extends Controller
                     $objDetalleCliente->almacen                       = $request->almacen;
                     $objDetalleCliente->puerto_entrada                = $request->puerto_entrada;
                     $objDetalleCliente->tipo_credito                  = $request->tipo_credito;
+                    $objDetalleCliente->id_marca                      = $request->marca;
 
                     $msg= '';
                     if($objDetalleCliente->save()) {
@@ -192,6 +196,7 @@ class ClienteController extends Controller
                     $objDetalleCliente->almacen                       = $request->almacen;
                     $objDetalleCliente->puerto_entrada                = $request->puerto_entrada;
                     $objDetalleCliente->tipo_credito                  = $request->tipo_credito;
+                    $objDetalleCliente->id_marca                      = $request->marca;
                     $msg= '';
 
                     if($objDetalleCliente->save()) {

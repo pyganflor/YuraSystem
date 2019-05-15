@@ -162,6 +162,7 @@ class PedidoController extends Controller
                         $objDetallePedido->id_agencia_carga = $item['id_agencia_carga'];
                         $objDetallePedido->cantidad = $item['cantidad'];
                         $objDetallePedido->precio = substr($item['precio'], 0, -1);
+                        $objDetallePedido->orden =  $item['orden'];
                         if ($objDetallePedido->save()) {
                             $modelDetallePedido = DetallePedido::all()->last();
                             bitacora('detalle_pedido', $modelDetallePedido->id_detalle_pedido, 'I', 'Inserción satisfactoria de un nuevo detalle pedido');

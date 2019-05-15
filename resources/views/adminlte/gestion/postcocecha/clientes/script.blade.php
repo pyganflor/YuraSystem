@@ -115,7 +115,8 @@
                 tipo_impuesto : $('#tipo_impuesto').val(),
                 almacen : $('#almacen').val(),
                 puerto_entrada : $("#puerto_entrada").val(),
-                tipo_credito : $("#tipo_credito").val()
+                tipo_credito : $("#tipo_credito").val(),
+                marca : $("#marca").val()
             };
             post_jquery('{{url('clientes/store')}}', datos, function () {
                 cerrar_modals();

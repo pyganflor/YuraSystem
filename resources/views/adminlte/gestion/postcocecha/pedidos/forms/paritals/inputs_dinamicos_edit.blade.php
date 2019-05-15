@@ -76,7 +76,7 @@
                                 </td>
                                 <td style="border-color: #9d9d9d; padding: 0px; vertical-align: middle; width: 30px; text-align:center"
                                     class="text-center" rowspan="{{getCantidadDetallesByEspecificacion($det_ped->cliente_especificacion->especificacion->id_especificacion)}}" >
-                                    <input type="number" min="1" name="orden" class="orden" id="orden_{{($x+1)}}" style="border: none;text-align: center;width: 30px" readonly>
+                                    <input type="number" min="1" name="orden" class="orden" id="orden_{{($x+1)}}" style="border: none;text-align: center;width: 30px" value="{{$det_ped->orden}}">
                                 </td>
                                 <td style="border-color: #9d9d9d; padding: 0px; vertical-align: middle; width: 100px; "
                                     class="text-center" rowspan="{{getCantidadDetallesByEspecificacion($det_ped->cliente_especificacion->especificacion->id_especificacion)}}">
@@ -178,7 +178,7 @@
                                 </td>
                                 <td style="border-color: #9d9d9d; padding: 0px; vertical-align: middle; width: 30px; text-align:center"
                                     class="text-center" rowspan="{{getCantidadDetallesByEspecificacion($item->id_especificacion)}}" >
-                                    <input type="number" min="1" name="orden" class="orden" id="orden_{{($x+$cant_esp_creadas)}}" style="border: none;text-align: center;width: 30px" readonly>
+                                    <input type="number" min="1" name="orden" class="orden" id="orden_{{($x+$cant_esp_creadas)}}" style="border: none;text-align: center;width: 30px">
                                 </td>
                                 <td style="border-color: #9d9d9d; padding: 0px; vertical-align: middle; width: 100px; "
                                     class="text-center" rowspan="{{getCantidadDetallesByEspecificacion($item->id_especificacion)}}">

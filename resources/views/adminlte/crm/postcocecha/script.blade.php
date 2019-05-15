@@ -143,4 +143,29 @@
             $('#div_cosecha_x_variedad_cosecha').html(retorno);
         }, 'div_cosecha_x_variedad_cosecha');
     }
+
+    function ver_rendimiento_cosecha(id_cosecha) {
+        if (id_cosecha != '') {
+            datos = {
+                id_cosecha: id_cosecha
+            };
+            get_jquery('{{url('recepcion/ver_rendimiento')}}', datos, function (retorno) {
+                modal_view('modal_view_ver_rendimiento', retorno, '<i class="fa fa-fw fa-balance-scale"></i> Rendimiento', true, false,
+                    '{{isPC() ? '75%' : ''}}');
+            });
+        }
+    }
+
+    function ver_rendimiento_verde(verde) {
+        if (verde != '') {
+            datos = {
+                id_clasificacion_verde: verde
+            };
+
+            get_jquery('{{url('clasificacion_verde/ver_rendimiento')}}', datos, function (retorno) {
+                modal_view('modal_view_ver_rendimiento', retorno, '<i class="fa fa-fw fa-balance-scale"></i> Rendimiento', true, false, '{{isPC() ? '65%' : ''}}');
+            });
+        }
+    }
+
 </script>

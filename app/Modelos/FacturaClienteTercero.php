@@ -26,11 +26,16 @@ class FacturaClienteTercero extends Model
         'direccion',
         'dae',
         'puerto_entrada',
-        'tipo_credito'
+        'tipo_credito',
+        'id_marca'
     ];
 
     public function envio()
     {
         return $this->belongsTo('\yura\Modelos\Envio', 'id_envio');
+    }
+
+    public function marca_caja(){
+        return $this->belongsTo('\yura\Modelos\Marca','id_marca');
     }
 }

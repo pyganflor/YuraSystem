@@ -93,11 +93,40 @@ class Cosecha extends Model
         }
     }
 
+    public function getCantidadHorasTrabajoByVariedad($variedad)
+    {
+        $last_ingreso = DB::table('desglose_recepcion as dr')
+            ->join('recepcion as r', 'r.id_recepcion', '=', 'dr.id_recepcion')
+            ->select(DB::raw('max(dr.fecha_registro) as fecha'))
+            ->where('dr.estado', '=', 1)
+            ->where('r.id_cosecha', '=', $this->id_cosecha)
+            ->where('dr.id_variedad', '=', $variedad)
+            ->get();
+
+        if ($last_ingreso[0]->fecha != '') {
+            $horas = difFechas($last_ingreso[0]->fecha, $this->fecha_ingreso . ' ' . $this->hora_inicio)->h;
+            $horas += round(difFechas($last_ingreso[0]->fecha, $this->fecha_ingreso . ' ' . $this->hora_inicio, 2)->i / 60);
+
+            return $horas;
+        } else {
+            return 0;
+        }
+    }
+
     public function getRendimiento()
     {
         if ($this->getCantidadHorasTrabajo() != 0) {
             $r = $this->getTotalTallos() / $this->personal;
             return round($r / $this->getCantidadHorasTrabajo(), 2);
+        } else
+            return 0;
+    }
+
+    public function getRendimientoByVariedad($variedad)
+    {
+        if ($this->getCantidadHorasTrabajoByVariedad($variedad) != 0) {
+            $r = $this->getTotalTallosByVariedad($variedad) / $this->personal;
+            return round($r / $this->getCantidadHorasTrabajoByVariedad($variedad), 2);
         } else
             return 0;
     }

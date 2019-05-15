@@ -544,4 +544,12 @@ class ClasificacionBlancoController extends Controller
             ];
         }
     }
+
+    public function ver_rendimiento(Request $request)
+    {
+        $blanco = ClasificacionBlanco::find($request->blanco);
+        return view('adminlte.gestion.postcocecha.clasificacion_blanco.partials.rendimiento', [
+            'blanco' => $blanco
+        ]);
+    }
 }

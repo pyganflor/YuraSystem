@@ -64,7 +64,10 @@
                 <h5 class="description-header">
                     {{$verde != '' ? $verde->getCalibre() : 0}}
                 </h5>
-                <span class="description-text">Calibre</span>
+                <a href="javascript:void(0)" class="btn btn-link"
+                   onclick="ver_rendimiento_verde('{{$verde != '' ? $verde->id_clasificacion_verde : ''}}')">
+                    <strong class="description-text">Calibre</strong>
+                </a>
             </div>
         </div>
         <div class="col-sm-3 col-xs-6">
@@ -73,9 +76,12 @@
                     {{$verde != '' ? $verde->total_tallos() : 0}}
                 </span>
                 <h5 class="description-header" title="Cosechados">
-                     {{$cosecha->getTotalTallos()}}
+                    {{$cosecha->getTotalTallos()}}
                 </h5>
-                <span class="description-text">Totales</span>
+                <a href="javascript:void(0)" class="btn btn-link"
+                   onclick="ver_rendimiento_cosecha('{{$cosecha != '' ? $cosecha->id_cosecha : ''}}')">
+                    <strong class="description-text">Totales</strong>
+                </a>
             </div>
         </div>
 

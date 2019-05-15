@@ -136,8 +136,6 @@ function habilitar_campos() {
     $("#fecha_hasta_pedido_fijo").attr('disabled', false);
 }
 
-
-
 function store_pedido(id_cliente, pedido_fijo, csrf_token, vista, id_pedido) {
 
     if ($('#form_add_pedido').valid()) {
@@ -216,11 +214,11 @@ function store_pedido(id_cliente, pedido_fijo, csrf_token, vista, id_pedido) {
                             id_cliente_pedido_especificacion: $("#id_cliente_pedido_especificacion_" + (i + 1)).val(),
                             id_agencia_carga: $("#id_agencia_carga_" + (i + 1)).val(),
                             precio: precio,
+                            orden : $("#orden_" + (i + 1)).val(),
                         });
                     }
                 });
             }
-
             if (arrDataDetallesPedido.length < 1) {
                 modal_view('modal_status_pedidos', '<div class="alert alert-danger text-center"><p> Debe colocar la cantidad de piezas en al menos una especificación</p> </div>', '<i class="fa fa-times" aria-hidden="true"></i> Estado pedido', true, false, '50%');
                 return false;
@@ -1440,6 +1438,7 @@ function ver_distribucion(det_ped) {
         $('#btn_update_orden_tinturada').hide();
     });
 }
+
 function menor_mayor(elem1, elem2) {return elem1-elem2;}
 
 function quitar_distribuciones(id_ped,token) {
@@ -1455,6 +1454,7 @@ function quitar_distribuciones(id_ped,token) {
         });
     });
 }
+
 function crear_orden_pedido(input){
     id_campo = input.id.split("_")[2];
     orden = 0;
@@ -1480,7 +1480,7 @@ function reiniciar_orden_pedido(){
     })
 }
 
-    function facturar_pedido(id_pedido){
+function facturar_pedido(id_pedido){
     $.LoadingOverlay('show');
     datos = {
         id_pedido : id_pedido
@@ -1491,8 +1491,6 @@ function reiniciar_orden_pedido(){
         $.LoadingOverlay('hide');
     });
 }
-
-
 
 function genera_comprobante_cliente(id_envio,form,action,token){
     if ($('#'+form).valid()) {
@@ -1687,6 +1685,7 @@ function store_datos_factura_cliente_tercero(id_envio,token,id_pedido,vista) {
             dae : $('#dae_cliente_tercero').val(),
             puerto_entrada : $('#puerto_entrada').val(),
             tipo_credito : $('#tipo_credito').val(),
+            marca : $('#marca').val()
         };
         post_jquery('envio/store_datos_factura_cliente_tercero', datos, function () {
             cerrar_modals();
