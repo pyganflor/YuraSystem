@@ -438,7 +438,7 @@ class PedidoController extends Controller
                             'ramos_x_caja' => $det_esp_emp->cantidad,
                             'calibre' => getClasificacionRamo($det_esp_emp->id_clasificacion_ramo)->nombre,
                             'ramos_totales' => $det_ped->cantidad * $det_esp_emp->cantidad * $esp_emp->cantidad,
-                            'presentacion'=> getVariedad($det_esp_emp->id_variedad)->siglas." ".getClasificacionRamo($det_esp_emp->id_clasificacion_ramo)->nombre." ".(getPrecioByClienteDetEspEmp($pedido->id_cliente, $det_esp_emp->id_detalle_especificacionempaque) !== null ? getPrecioByClienteDetEspEmp($pedido->id_cliente, $det_esp_emp->id_detalle_especificacionempaque)->codigo_presentacion : ""). "" . $dato_expotacion,
+                            'presentacion'=> getVariedad($det_esp_emp->id_variedad)->siglas." ".getClasificacionRamo($det_esp_emp->id_clasificacion_ramo)->nombre. " " . $dato_expotacion,
                             'id_agencia_carga' => $det_ped->id_agencia_carga,
                             'id_detalle_pedido' => $det_ped->id_detalle_pedido
                         ];

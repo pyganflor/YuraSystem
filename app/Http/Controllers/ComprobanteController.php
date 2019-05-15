@@ -33,7 +33,8 @@ class ComprobanteController extends Controller
                 'text' => ['titulo' => 'Comprobantes', 'subtitulo' => 'módulo de facturación'],
                 'tiposCompbantes' => TipoComprobante::all(),
                 'annos' => DB::table('comprobante as c')->select(DB::raw('YEAR(c.fecha_emision) as anno'))->distinct()->get(),
-                'clientes' => Cliente::join('detalle_cliente as dc', 'cliente.id_cliente', 'dc.id_cliente')->where('dc.estado', 1)->select('nombre', 'cliente.id_cliente')->get()
+                'clientes' => Cliente::join('detalle_cliente as dc', 'cliente.id_cliente', 'dc.id_cliente')->where('dc.estado', 1)->select('nombre', 'cliente.id_cliente')
+                    ->orderBy('dc.nombre','asc')->get()
             ]);
     }
 
@@ -452,7 +453,7 @@ class ComprobanteController extends Controller
                 $obj_comprobante->id_envio = $request->id_envio;
                 $obj_comprobante->tipo_comprobante = "01"; //CÓDIGO DE FACTURA A CLIENTE EXTERNO
                 $obj_comprobante->monto_total = number_format($valorImpuesto + $precio_total_sin_impuestos, 2, ".", "");
-                $obj_comprobante->fecha_emision = now()->toDateString();
+                $obj_comprobante->fecha_emision = $request->fecha_pedidos_search;//now()->toDateString();
 
                 if ($obj_comprobante->save()) {
                     $model_comprobante = Comprobante::all()->last();

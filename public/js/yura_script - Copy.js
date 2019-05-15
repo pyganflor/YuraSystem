@@ -1522,8 +1522,7 @@ function genera_comprobante_cliente(id_envio,form,action,token){
                 almacen : $("form#"+form+ " #almacen").val(),
                 envio_correo : $("#envio_correo").is(":checked"),
                 envio_correo_agencia_carga : $("#envio_correo_agencia_carga").is(":checked"),
-                arrCorreos : arrCorreos,
-                fecha_pedidos_search : $("#fecha_pedidos_search").val()
+                arrCorreos : arrCorreos
             };
             cerrar_modals();
             $.LoadingOverlay("show", {
