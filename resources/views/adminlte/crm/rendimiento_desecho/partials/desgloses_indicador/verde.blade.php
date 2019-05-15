@@ -5,7 +5,8 @@
 
             <select name="filtro_desglose_tipo" id="filtro_desglose_tipo" style="height: 30px;"
                     onchange="filtrar_desglose_indicador()">
-                <option value="R" selected>Rendimiento</option>
+                <option value="R" {{isset($criterio_tipo) && $criterio_tipo == 'R' ? 'selected' : ''}}>Rendimiento</option>
+                <option value="D" {{isset($criterio_tipo) && $criterio_tipo == 'D' ? 'selected' : ''}}>Desecho</option>
             </select>
 
             <select name="filtro_desglose_variedad" id="filtro_desglose_variedad" style="height: 30px;"
@@ -32,7 +33,8 @@
     @if($criterio_desglose == 1)
     chart_desgloses_x_hora();
     @else
-        chart_desgloses_x_dias();
+    chart_desgloses_x_dias();
+
     @endif
 
     function chart_desgloses_x_hora() {
@@ -110,8 +112,14 @@
         data_list.push("{{$a}}");
         @endforeach
 
+            label = '';
+        if ($('#filtro_desglose_tipo').val() == 'R')
+            label = 'Rendimiento';
+        if ($('#filtro_desglose_tipo').val() == 'D')
+            label = 'Desecho';
+
         datasets.push({
-            label: 'Rendimiento ',
+            label: label + ' ',
             data: data_list,
             backgroundColor: 'black',
             borderColor: 'black',
@@ -159,8 +167,10 @@
     }
 
     function filtrar_desglose_indicador() {
+        if ($('#filtro_desglose_tipo').val() == 'D')
+            $('#filtro_desglose_criterio').val(2);
         datos = {
-            option: 'cosecha',
+            option: 'verde',
             criterio_tipo: $('#filtro_desglose_tipo').val(),
             criterio_desglose: $('#filtro_desglose_criterio').val(),
             id_variedad: $('#filtro_desglose_variedad').val(),

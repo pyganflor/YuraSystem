@@ -26,48 +26,74 @@
     function construir_char(label, id) {
         labels = [];
         datasets = [];
-        data_list = [];
-        @for($i = 0; $i < count($labels); $i++)
-        @if($periodo == 'diario')
-        labels.push("{{$labels[$i]}}");
-        @elseif($periodo == 'semanal')
-        labels.push("{{$labels[$i]}}");
-        @elseif($periodo == 'anual')
-        labels.push("{{$labels[$i]->ano}}");
-        @else
-        labels.push("{{getMeses(TP_ABREVIADO)[$labels[$i]->mes - 1]. ' - '.$labels[$i]->ano}}");
-        @endif
+        if (label == 'Cosecha') {
+            @for($i = 0; $i < count($s_cos); $i++)
+            labels.push("{{$s_cos[$i]}}");
+            @endfor
+        }
         if (label == 'Verde') {
-            @if($criterio == 'R')
-            data_list.push("{{$data['verde'][$i]['rendimiento']}}");
-            @else
-            data_list.push("{{$data['verde'][$i]['desecho']}}");
-            @endif
+            @for($i = 0; $i < count($s_ver); $i++)
+            labels.push("{{$s_ver[$i]}}");
+            @endfor
         }
-        else if (label == 'Cosecha') {
-            @if($criterio == 'R')
-            data_list.push("{{$data['cosecha'][$i]['rendimiento']}}");
-            @else
-            data_list.push(0);
-            @endif
+        if (label == 'Blanco') {
+            @for($i = 0; $i < count($s_bla); $i++)
+            labels.push("{{$s_bla[$i]}}");
+            @endfor
         }
-        else if (label == 'Blanco') {
-            @if($criterio == 'R')
-            data_list.push("{{$data['blanco'][$i]['rendimiento']}}");
-            @else
-            data_list.push("{{$data['blanco'][$i]['desecho']}}");
-            @endif
-        }
-        @endfor
 
-            datasets = [{
-            label: label + ' ',
-            data: data_list,
-            //backgroundColor: '#8c99ff54',
-            borderColor: 'black',
-            borderWidth: 2,
-            fill: false,
-        }];
+        {{-- Data_list --}}
+        if (label == 'Cosecha') {
+            @foreach($a_cos as $pos_a => $a)
+                data_list = [];
+            @foreach($a['arreglo'] as $valor)
+            data_list.push("{{$valor}}");
+            @endforeach
+
+            datasets.push({
+                label: '{{$a['anno']}}' + ' ',
+                data: data_list,
+                backgroundColor: '{{getListColores()[$pos_a]}}',
+                borderColor: '{{getListColores()[$pos_a]}}',
+                borderWidth: 1,
+                fill: false,
+            });
+            @endforeach
+        }
+        if (label == 'Verde') {
+            @foreach($a_ver as $pos_a => $a)
+                data_list = [];
+            @foreach($a['arreglo'] as $valor)
+            data_list.push("{{$valor}}");
+            @endforeach
+
+            datasets.push({
+                label: '{{$a['anno']}}' + ' ',
+                data: data_list,
+                backgroundColor: '{{getListColores()[$pos_a]}}',
+                borderColor: '{{getListColores()[$pos_a]}}',
+                borderWidth: 1,
+                fill: false,
+            });
+            @endforeach
+        }
+        if (label == 'Blanco') {
+            @foreach($a_bla as $pos_a => $a)
+                data_list = [];
+            @foreach($a['arreglo'] as $valor)
+            data_list.push("{{$valor}}");
+            @endforeach
+
+            datasets.push({
+                label: '{{$a['anno']}}' + ' ',
+                data: data_list,
+                backgroundColor: '{{getListColores()[$pos_a]}}',
+                borderColor: '{{getListColores()[$pos_a]}}',
+                borderWidth: 1,
+                fill: false,
+            });
+            @endforeach
+        }
 
         ctx = document.getElementById(id).getContext('2d');
         myChart = new Chart(ctx, {

@@ -74,6 +74,22 @@ class Cosecha extends Model
         return $r->cantidad;
     }
 
+    public function getTotalTallosByIntervaloVariedad($inicio, $fin, $variedad)
+    {
+        $r = DB::table('desglose_recepcion as dr')
+            ->join('recepcion as r', 'r.id_recepcion', '=', 'dr.id_recepcion')
+            ->select(DB::raw('sum(dr.cantidad_mallas * dr.tallos_x_malla) as cantidad'))
+            ->where('r.estado', '=', 1)
+            ->where('dr.estado', '=', 1)
+            ->where('dr.id_variedad', '=', $variedad)
+            ->where('r.id_cosecha', '=', $this->id_cosecha)
+            ->where('r.fecha_ingreso', '>=', $inicio)
+            ->where('r.fecha_ingreso', '<', $fin)
+            ->get()[0];
+
+        return $r->cantidad;
+    }
+
     public function getCantidadHorasTrabajo()
     {
         $last_ingreso = DB::table('desglose_recepcion as dr')

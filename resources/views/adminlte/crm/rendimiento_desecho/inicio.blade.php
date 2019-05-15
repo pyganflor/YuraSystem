@@ -62,7 +62,7 @@
                     <select class="select2" multiple="multiple" id="filtro_predeterminado_annos" name="filtro_predeterminado_annos"
                             data-placeholder="Años naturales" style="width: 205px; height: 35px">
                         @foreach($annos as $a)
-                            <option value="{{$a->anno}}">{{$a->anno}}</option>
+                            <option value="{{$a}}">{{$a}}</option>
                         @endforeach
                     </select>
 

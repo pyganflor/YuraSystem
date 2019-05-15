@@ -373,6 +373,22 @@ class ClasificacionVerde extends Model
             return 0;
     }
 
+    function getTotalTallosByIntervalo($inicio, $fin)
+    {
+        $r = DB::table('detalle_clasificacion_verde as dc')
+            ->select(DB::raw('sum(cantidad_ramos * tallos_x_ramos) as cantidad'))
+            ->where('estado', '=', 1)
+            ->where('fecha_ingreso', 'like', $this->fecha_ingreso . '%')
+            ->where('fecha_registro', '>=', $inicio)
+            ->where('fecha_registro', '<', $fin)
+            ->get();
+
+        if (count($r) > 0)
+            return $r[0]->cantidad;
+        else
+            return 0;
+    }
+
     function getTotalRamosEstandar()
     {
         $r = 0;
