@@ -70,7 +70,7 @@
                             @php
                                 $selected ='';
                                 if(!empty($dataCliente)){
-                                    if($dataCliente->codigo_impuesto == $tipoImpuesto->codigo){
+                                    if($dataCliente->codigo_porcentaje_impuesto == $tipoImpuesto->codigo){
                                         $selected = 'selected=selected';
                                     }
                                 }

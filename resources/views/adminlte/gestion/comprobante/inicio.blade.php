@@ -29,7 +29,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="anno">Cliente</label><br />
-                                    <select class="form-control" id="id_cliente" name="id_cliente">
+                                    <select class="form-control" id="id_cliente" name="id_cliente" style="width: 250px;">
                                         <option value=""> Seleccione </option>
                                         @foreach($clientes as $cliente)
                                             <option value="{{$cliente->id_cliente}}"> {{$cliente->nombre}} </option>

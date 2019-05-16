@@ -171,4 +171,24 @@
             }
         });
     }
+
+    $(document).on("click", "#pagination_listado_comprobante li a", function (e) {
+        $.LoadingOverlay("show");
+        //para que la pagina se cargen los elementos
+        e.preventDefault();
+        var url = $(this).attr("href");
+        url = url.replace('?', '?codigo_comprobante=' + $('#codigo_comprobante').val().trim()+
+            '&anno=' + $('#anno').val().trim()+
+            '&id_cliente=' + $('#id_cliente').val().trim()+
+            '&estado=' + $('#estado').val().trim()+
+            '&fecha=' + $('#fecha').val().trim() + '&');
+        $('#div_listado_comprobante').html($('#table_comprobante').html());
+        $.get(url, function (resul) {
+            console.log(resul);
+            $('#div_listado_comprobante').html(resul);
+            estructura_tabla('table_content_comprobante');
+        }).always(function () {
+            $.LoadingOverlay("hide");
+        });
+    });
 </script>

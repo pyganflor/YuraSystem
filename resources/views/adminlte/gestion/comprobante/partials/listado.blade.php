@@ -153,6 +153,6 @@
             {!! str_replace('/?','?',$listado->render()) !!}
         </div>
     @else
-        <div class="alert alert-info text-center">No se han encontrado coincidencias</div>
+        <div class="alert alert-info text-center">No se han encontrado coincidencias1</div>
     @endif
 </div>
