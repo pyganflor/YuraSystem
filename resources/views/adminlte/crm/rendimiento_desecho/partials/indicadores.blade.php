@@ -39,7 +39,7 @@
             <div class="inner">
                 <h3 class="info-box-number">
                     {{number_format($semanal['blanco']['rendimiento'], 2)}}
-                    <small style="color: black">t/hr</small>
+                    <small style="color: black">r/hr</small>
                     <br>
                     {{number_format($semanal['blanco']['desecho'], 2)}}
                     <small style="color: black">%</small>
@@ -58,7 +58,7 @@
             <div class="inner">
                 <h3 class="info-box-number">
                     {{number_format(round(($semanal['blanco']['rendimiento'] + $semanal['verde']['rendimiento_ramos'])/2,2) , 2)}}
-                    <small style="color: white">t/hr</small>
+                    <small style="color: white">r/hr</small>
                 </h3>
             </div>
             <div class="icon">

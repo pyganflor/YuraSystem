@@ -119,7 +119,7 @@ define('A_Z', serialize(range('A', 'Z')));
 
 function getListColores()
 {
-    return ['red', 'blue', 'green', 'orange', 'yellow', 'purple', 'gray', 'pink'];
+    return ['red', 'blue', 'green', 'orange', 'black', 'purple', 'gray', 'pink'];
 }
 
 function getHorasDiarias()

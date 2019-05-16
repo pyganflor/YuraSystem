@@ -40,7 +40,7 @@
                         </th>
                         @foreach($v['cajas'] as $pos => $valor)
                             <td class="text-center" style="border-color: #9d9d9d">
-                                {{$valor}}
+                                {{number_format($valor, 2)}}
                             </td>
                             @php
                                 $total += $valor;
@@ -48,7 +48,7 @@
                             @endphp
                         @endforeach
                         <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
-                            {{$total}}
+                            {{number_format($total, 2)}}
                         </th>
                     </tr>
                 @endforeach
@@ -61,14 +61,14 @@
                     @endphp
                     @foreach($totales_dia as $valor)
                         <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
-                            {{$valor}}
+                            {{number_format($valor, 2)}}
                         </th>
                         @php
                             $total += $valor;
                         @endphp
                     @endforeach
                     <th class="text-center" style="border-color: #9d9d9d; background-color: #357ca5; color: white">
-                        {{$total}}*
+                        {{number_format($total, 2)}}*
                     </th>
                 </tr>
             </table>

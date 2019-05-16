@@ -24,7 +24,24 @@
         </h3>
     </div>
     <div class="box-body">
-        <canvas id="chart_desglose" width="100%" height="33" style="margin-top: 5px"></canvas>
+        <div class="nav-tabs-custom">
+            <ul class="nav nav-pills nav-justified">
+                <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="true">Gráfica</a></li>
+                <li class=""><a href="#tab_2" data-toggle="tab" aria-expanded="false">Tabla</a></li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane active" id="tab_1">
+                    <canvas id="chart_desglose" width="100%" height="33" style="margin-top: 5px"></canvas>
+                </div>
+                <div class="tab-pane" id="tab_2">
+                    @if($criterio_desglose == 1)
+                        @include('adminlte.crm.rendimiento_desecho.partials.desgloses_indicador._tbl_horario')
+                    @else
+                        @include('adminlte.crm.rendimiento_desecho.partials.desgloses_indicador._tbl_diario')
+                    @endif
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -32,7 +49,8 @@
     @if($criterio_desglose == 1)
     chart_desgloses_x_hora();
     @else
-        chart_desgloses_x_dias();
+    chart_desgloses_x_dias();
+
     @endif
 
     function chart_desgloses_x_hora() {
