@@ -1743,3 +1743,6 @@ function getDetallePedido($idDetallePedido)
     return DetallePedido::find($idDetallePedido);
 }
 
+function getDetalleEspecificacionEmpaque($idEspecificacionEmpaque){
+    return DetalleEspecificacionEmpaque::find($idEspecificacionEmpaque);
+}

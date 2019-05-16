@@ -419,10 +419,38 @@ class PedidoController extends Controller
                     'dae' => $pedido->envios[0]->dae
                 ];
         }
-        if($pedido->tipo_especificacion === "T") {
+        /*if($pedido->tipo_especificacion === "T") {
+            $env = getEnvio($pedido->envios[0]->id_envio);
+            foreach ($env->pedido->detalles as $x => $det_ped) {
 
+
+                foreach($det_ped->coloraciones as $y => $coloracion){
+                    $cant_esp_emp = $coloracion->especificacion_empaque->cantidad;
+                    $i=0;
+                    foreach($coloracion->marcaciones_coloraciones as $m_c){
+                        $det_esp_emp = getDetalleEspecificacionEmpaque($m_c->id_detalle_especificacionempaque);
+                        $dato_expotacion = "";
+                        foreach($pedido->cliente->cliente_datoexportacion as $cde){
+                            $valor = isset(getDatosExportacion($det_ped->id_detalle_pedido, $cde->datos_exportacion->id_dato_exportacion)->valor) ? getDatosExportacion($det_ped->id_detalle_pedido, $cde->datos_exportacion->id_dato_exportacion)->valor : "";
+                            $dato_expotacion.= $valor;
+                        }
+                        $detallePedido[] = [
+                            'piezas' =>  $det_ped->cantidad,
+                            'ramos_x_caja' => $det_esp_emp->cantidad,
+                            'calibre' => getClasificacionRamo($det_esp_emp->id_clasificacion_ramo)->nombre,
+                            'ramos_totales' => $det_ped->cantidad * $det_esp_emp->cantidad * $coloracion->especificacion_empaque->cantidad,
+                            'presentacion'=> getVariedad($det_esp_emp->id_variedad)->siglas." ".getClasificacionRamo($det_esp_emp->id_clasificacion_ramo)->nombre. " " . $dato_expotacion,
+                            'id_agencia_carga' => $det_ped->id_agencia_carga,
+                            'id_detalle_pedido' => $det_ped->id_detalle_pedido
+                        ];
+                        $i++;
+                    }
+                }
+
+            }
                         //PACKING LIST PEDIO TINTURADO
-        }elseif($pedido->tipo_especificacion === "N"){
+        }*/
+        if($pedido->tipo_especificacion === "N"){
             $env = getEnvio($pedido->envios[0]->id_envio);
             $detallePedido = [];
             foreach ($env->pedido->detalles as $x => $det_ped) {
