@@ -515,7 +515,6 @@ class OrdenSemanalController extends Controller
 
     public function update_orden_tinturada(Request $request)
     {
-        dd($request->all());
         $valida = Validator::make($request->all(), [
             'id_pedido' => 'required',
             'id_detalle_pedido' => 'required',

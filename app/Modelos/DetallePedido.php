@@ -42,6 +42,11 @@ class DetallePedido extends Model
         return $this->hasMany('\yura\Modelos\Marcacion', 'id_detalle_pedido');
     }
 
+    public function marcacionesByEspEmp($esp_emp)
+    {
+        return Marcacion::All()->where('id_detalle_pedido', $this->id_detalle_pedido)
+            ->where('id_especificacion_empaque', $esp_emp);}
+
     public function coloraciones()
     {
         return $this->hasMany('\yura\Modelos\Coloracion', 'id_detalle_pedido');

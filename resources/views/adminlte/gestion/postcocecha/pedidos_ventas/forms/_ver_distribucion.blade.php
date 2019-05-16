@@ -34,7 +34,7 @@
             @php
                 $anterior = '';
             @endphp
-            @foreach($det_ped->marcaciones as $pos_marc => $marc)
+            @foreach($det_ped->marcacionesByEspEmp($esp_emp->id_especificacion_empaque) as $pos_marc => $marc)
                 @foreach($marc->distribuciones as $pos_distr => $distr)
                     <tr style="border-top: {{$anterior != $marc->id_marcacion ? '2px solid black' : ''}}">
                         @if($pos_distr == 0)
@@ -42,7 +42,7 @@
                                 {{$marc->nombre}}
                             </th>
                         @endif
-                        @foreach($det_ped->coloraciones as $pos_col => $col)
+                        @foreach($det_ped->coloracionesByEspEmp($esp_emp->id_especificacion_empaque) as $pos_col => $col)
                             <th class="text-center"
                                 style="border-color: #9d9d9d; width: 100px; background-color: {{$col->color->fondo}}; color: {{$col->color->texto}}">
                                 <ul class="list-unstyled">
