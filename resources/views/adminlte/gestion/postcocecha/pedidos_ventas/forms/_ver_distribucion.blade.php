@@ -18,7 +18,7 @@
                 <th class="text-center" style="border-color: #9d9d9d; width: 150px">
                     Marcación/Coloración
                 </th>
-                @foreach($det_ped->coloraciones as $pos_col => $col)
+                @foreach($det_ped->coloracionesByEspEmp($esp_emp->id_especificacion_empaque) as $pos_col => $col)
                     <th class="text-center"
                         style="border-color: #9d9d9d; width: 100px; background-color: {{$col->color->fondo}}; color: {{$col->color->texto}}">
                         {{$col->color->nombre}}
