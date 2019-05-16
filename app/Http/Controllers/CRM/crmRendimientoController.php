@@ -575,6 +575,7 @@ class crmRendimientoController extends Controller
             'arreglo_horarios' => $arreglo_horarios,
             'arreglo_dias' => $arreglo_dias,
             'max_min' => $max_min,
+            'option' => $request->option,
             'id_variedad' => $request->id_variedad,
             'criterio_desglose' => $request->criterio_desglose != '' ? $request->criterio_desglose : 1,
             'criterio_tipo' => $request->criterio_tipo != '' ? $request->criterio_tipo : 'R',

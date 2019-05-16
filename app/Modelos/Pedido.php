@@ -226,31 +226,6 @@ class Pedido extends Model
                 }
             }
         }
-        if (count($this->envios) > 0)
-            if ($this->envios[0]->comprobante != '') {  // PEDIDO FACTURADO
-                return $this->envios[0]->comprobante->monto_total;
-            } else {
-                if ($this->envios[0]->fatura_cliente_tercero != '') {   // FACTURAR A NOMBRE DE OTRA PERSONA
-                    $impuesto = TipoImpuesto::All()
-                        ->where('codigo', $this->envios[0]->fatura_cliente_tercero->codigo_impuesto_porcentaje)->first()->porcentaje;
-                    if (is_numeric($impuesto)) {
-                        $r += $r * ($impuesto / 100);
-                    }
-                } else {    // FACTURAR A NOMBRE DEL CLIENTE
-                    $impuesto = TipoImpuesto::All()
-                        ->where('codigo', $this->cliente->detalle()->codigo_porcentaje_impuesto)->first()->porcentaje;
-                    if (is_numeric($impuesto)) {
-                        $r += $r * ($impuesto / 100);
-                    }
-                }
-            }
-        else {    // FACTURAR A NOMBRE DEL CLIENTE
-            $impuesto = TipoImpuesto::All()
-                ->where('codigo', $this->cliente->detalle()->codigo_porcentaje_impuesto)->first()->porcentaje;
-            if (is_numeric($impuesto)) {
-                $r += $r * ($impuesto / 100);
-            }
-        }
         return $r;
     }
 }

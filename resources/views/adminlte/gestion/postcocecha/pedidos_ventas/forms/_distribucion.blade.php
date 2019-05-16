@@ -135,10 +135,11 @@
                                     $caja_ini = $pos_marc == 0 && $d == 1 ? 1 : 0;
                                     }
                             @endphp
-                            {{$pos_marc == 0 && $d == 1 ? $caja_ini : 0}}
+                            <input type="number" id="n_cajas_{{$marc['id']}}_{{$d}}_{{$esp_emp['id_esp_emp']}}"
+                                   value="{{$pos_marc == 0 && $d == 1 ? $caja_ini : 0}}" class="n_cajas_{{$esp_emp['id_esp_emp']}}"
+                                   style="width: 40px" min="1">
                         </th>
-                        <input type="hidden" id="n_cajas_{{$marc['id']}}_{{$d}}_{{$esp_emp['id_esp_emp']}}"
-                               value="{{$pos_marc == 0 && $d == 1 ? $caja_ini : 0}}" class="n_cajas_{{$esp_emp['id_esp_emp']}}">
+
                         @if($d == 1)
                             <th class="text-center" style="border-color: #9d9d9d" rowspan="{{$marc['distribucion']}}">
                                 {{getMarcacion($marc['id'])->nombre}}
@@ -196,7 +197,7 @@
             prev_cajas = parseInt(n_cajas[i - 1].value);
             prev_piezas = parseInt(piezas_distr[i - 1].value);
             n_cajas[i].value = prev_cajas + prev_piezas;
-            $('#' + celdas_n_cajas[i].id).html(prev_cajas + prev_piezas);
+            //$('#' + celdas_n_cajas[i].id).html(prev_cajas + prev_piezas);   // ======================
         }
 
         /* ===== DISTRIBUIR RAMOS ====== */
