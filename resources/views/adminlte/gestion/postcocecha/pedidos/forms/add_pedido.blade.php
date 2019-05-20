@@ -133,15 +133,5 @@
             });
         }
 
-        function cambiar_input_precio(idDetEmp,id_precio,posicon_variedad) {
-            $('#td_precio_variedad_'+ idDetEmp+'_'+id_precio).html('<input type="number" id="precio_' + id_precio + '_' + posicon_variedad + '" ' +
-                'name="precio_' + idDetEmp + '" min="0" value="0" onchange="calcular_precio_pedido()" class="form-control text-center precio_'+id_precio+'" style="background-color: beige; width: 100%;text-align: left" required>');
-
-        }
-        
-        function borrar_duplicado() {
-            $(".tr_remove_"+$(".input_cantidad").length).remove();
-            calcular_precio_pedido();
-        }
     </script>
 @endif

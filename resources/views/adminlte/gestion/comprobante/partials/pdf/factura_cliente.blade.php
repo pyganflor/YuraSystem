@@ -2,6 +2,7 @@
     $empresa = getConfiguracionEmpresa();
     $comprobante = getComprobante(\yura\Modelos\Comprobante::where('clave_acceso',(String)$data['obj_xml']->infoTributaria->claveAcceso)->first()->id_comprobante);
     $cliente = getCliente(getEnvio($comprobante->envio->id_envio)->pedido->id_cliente)->detalle();
+    $factura_tercero = getFacturaClienteTercero(getComprobante($comprobante->id_comprobante)->id_envio);
     $envio = getEnvio($comprobante->envio->id_envio);
     $precio_total_sin_impuestos = 0.00;
     $total_ramos = 0.00;
@@ -15,6 +16,8 @@
     $peso_neto = 0;
     $peso_bruto = 0;
     $peso_caja=0;
+    $descripcion= "";
+    $piezas = 0;
 @endphp
 <table style="width:100%;font-family:arial, sans-serif">
     <tr>
@@ -70,7 +73,6 @@
                     </tr>
                 </table>
                 <table style="width: 100%">
-                    @php $factura_tercero = getFacturaClienteTercero(getComprobante($comprobante->id_comprobante)->id_envio);  @endphp
                     <tr><td style="font-size:12px">{{$data['obj_xml']->infoFactura->razonSocialComprador}}</td></tr>
                     <tr><td style="font-size:12px">{{$factura_tercero !== null ? getPais($factura_tercero->codigo)->nombre : getPais($cliente->codigo_pais)->nombre}} - {{$data['obj_xml']->infoAdicional->campoAdicional[0]}} </td></tr>
                     <tr><td style="font-size:12px">ID:{{$data['obj_xml']->infoFactura->identificacionComprador}}</td></tr>
@@ -164,10 +166,6 @@
                     @elseif($envio->pedido->tipo_especificacion === "T")
                         @foreach ($envio->pedido->detalles as $x => $det_ped)
                             @foreach($det_ped->coloraciones as $y => $coloracion)
-                                @php
-                                    $cant_esp_emp = $coloracion->especificacion_empaque->cantidad;
-                                    $i=0;
-                                @endphp
                                 @foreach($coloracion->marcaciones_coloraciones as $m_c)
                                     @if($coloracion->precio=="")
                                         @foreach(explode("|", $det_ped->precio) as $p)
@@ -178,13 +176,15 @@
                                         @endforeach
                                     @else
                                         @php
-                                            $precio =explode( ";",explode("|",$coloracion->precio)[$i])[0];
+                                            foreach(explode("|",$coloracion->precio) as $p)
+                                                if($m_c->id_detalle_especificacionempaque == explode(";",$p)[1])
+                                                    $precio = explode(";",$p)[0];
+                                                /*$precio =explode( ";",explode("|",$coloracion->precio)[$i])[0];*/
                                         @endphp
                                     @endif
                                     @php
-                                        $precio_x_variedad = $m_c->cantidad * $precio * $cant_esp_emp;
+                                        $precio_x_variedad = $m_c->cantidad * $precio * $coloracion->especificacion_empaque->cantidad;
                                         $precio_total_sin_impuestos += $precio_x_variedad;
-                                            $i++;
                                     @endphp
                                 @endforeach
                             @endforeach
@@ -248,9 +248,52 @@
         @foreach($envio->pedido->detalles as $x => $det_ped)
             @php
                 $precio = explode("|", $det_ped->precio);
-              //  $dp = getDetallePedido($det_ped->id_detalle_pedido);
                 $i = 0;
             @endphp
+            @foreach($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $m => $esp_emp)
+                @foreach ($esp_emp->detalles as $n => $det_esp_emp)
+                    @php
+                        $full_equivalente_real += explode("|",$esp_emp->empaque->nombre)[1]*$det_ped->cantidad;
+                        $descripcion = substr($det_esp_emp->variedad->planta->nombre, 0, 3) .", ". $det_esp_emp->variedad->nombre;
+                        switch (explode("|",$esp_emp->empaque->nombre)[1]) {
+                            case '1':
+                                $full += $det_ped->cantidad;
+                                break;
+                            case '0.5':
+                                $half += $det_ped->cantidad;
+                                break;
+                            case '0.25':
+                                $cuarto +=$det_ped->cantidad;
+                                break;
+                            case '0.17':
+                                $sexto +=$det_ped->cantidad;
+                                break;
+                            case '0.125':
+                                $octavo +=$det_ped->cantidad;
+                                break;
+                        }
+                    @endphp
+                    <tr>
+                        <td style="font-size:11px"> {{number_format($det_ped->cantidad,2,".","")}}</td>
+                        @php $total_piezas += $det_ped->cantidad @endphp
+                        <td style="font-size:11px">{{$descripcion}}</td>
+                        <td style="font-size:11px"> A</td>
+                        <td style="font-size:11px"> {{$det_esp_emp->variedad->planta->tarifa}}</td>
+                        <td style="font-size:11px"> {{$det_esp_emp->variedad->planta->nandina}}</td>
+                        <td style="font-size:11px"> {{$det_esp_emp->cantidad}}</td>
+                        <td style="font-size:11px"> BN </td>
+                        <td style="font-size:11px"> {{number_format(($det_ped->cantidad*$det_esp_emp->cantidad),2,".","")}} </td>
+                        @php $total_ramos += number_format(($det_ped->cantidad*$det_esp_emp->cantidad),2,".",""); @endphp
+                        <td style="font-size:11px;"> {{"$".number_format(explode(";", $precio[$i])[0],2,".","")}} </td>
+                        <td style="font-size:11px"> {{"$".number_format(($det_esp_emp->cantidad * ((float)explode(";", $precio[$i])[0]) * $esp_emp->cantidad * $det_ped->cantidad),2,".","")}} </td>
+                    </tr>
+                    @php $precio_total_sin_impuestos +=  ($det_esp_emp->cantidad * ((float)explode(";", $precio[$i])[0]) * $esp_emp->cantidad * $det_ped->cantidad); @endphp
+                    @php  $i++;  @endphp
+                @endforeach
+            @endforeach
+        @endforeach
+    @elseif($envio->pedido->tipo_especificacion === "T")
+        @foreach ($envio->pedido->detalles as $x => $det_ped)
             @foreach($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $m => $esp_emp)
                 @foreach ($esp_emp->detalles as $n => $det_esp_emp)
                     @php
@@ -273,58 +316,59 @@
                                 break;
                         }
                     @endphp
+                @endforeach
+            @endforeach
+            @foreach($det_ped->coloraciones as $y => $coloracion)
+                @foreach($coloracion->marcaciones_coloraciones as $m_c)
+                    @if($coloracion->precio=="")
+                        @foreach (explode("|", $det_ped->precio) as $p)
+                            @php
+                                if($m_c->id_detalle_especificacionempaque == explode(";",$p)[1])
+                                    $precio = explode(";",$p)[0];
+                            @endphp
+                        @endforeach
+                    @else
+                        @foreach(explode("|",$coloracion->precio) as $p)
+                            @php
+                                if($m_c->id_detalle_especificacionempaque == explode(";",$p)[1])
+                                    $precio = explode(";",$p)[0];
+                            @endphp
+                        @endforeach
+                    @endif
                     <tr>
-                        <td style="font-size:11px"> {{number_format($det_ped->cantidad,2,".","")}}</td>
-                        @php $total_piezas += $det_ped->cantidad @endphp
-                        <td style="font-size:11px">{{substr($det_esp_emp->variedad->planta->nombre, 0, 3) .", ". $det_esp_emp->variedad->nombre}}</td>
-                        <td style="font-size:11px"> {{"A"}}</td>
-                        <td style="font-size:11px"> {{$det_esp_emp->variedad->planta->tarifa}}</td>
-                        <td style="font-size:11px"> {{$det_esp_emp->variedad->planta->nandina}}</td>
-                        <td style="font-size:11px"> {{$det_esp_emp->cantidad}}</td>
-                        <td style="font-size:11px"> BN </td>
-                        <td style="font-size:11px"> {{number_format(($det_ped->cantidad*$det_esp_emp->cantidad),2,".","")}} </td>
-                        @php $total_ramos += number_format(($det_ped->cantidad*$det_esp_emp->cantidad),2,".",""); @endphp
-                        <td style="font-size:11px;"> {{"$".number_format(explode(";", $precio[$i])[0],2,".","")}} </td>
-                        <td style="font-size:11px"> {{"$".number_format(($det_esp_emp->cantidad * ((float)explode(";", $precio[$i])[0]) * $esp_emp->cantidad * $det_ped->cantidad),2,".","")}} </td>
+                        <td style="font-size:12px">
+                            @foreach($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $m => $esp_emp)
+                                @foreach ($esp_emp->detalles as $n => $det_esp_emp)
+                                    @if($det_esp_emp->id_detalle_especificacionempaque === $m_c->id_detalle_especificacionempaque)
+                                       @php
+                                           $piezas = $m_c->cantidad/$det_esp_emp->cantidad;
+                                           $descripcion = substr($det_esp_emp->variedad->planta->nombre, 0, 3) .", ". $det_esp_emp->variedad->nombre;
+                                            $total_piezas += $piezas;
+                                       @endphp
+                                    @endif
+                                @endforeach
+                            @endforeach
+                            {{number_format($piezas,2,".","")}}
+                        </td>
+                        <td style="font-size:12px">{{$descripcion}}</td>
+                        <td style="font-size:12px">A</td>
+                        <td style="font-size:12px">{{$det_ped->cliente_especificacion->especificacion->especificacionesEmpaque[0]->detalles[0]->variedad->planta->tarifa}}</td>
+                        <td style="font-size:12px">{{$det_ped->cliente_especificacion->especificacion->especificacionesEmpaque[0]->detalles[0]->variedad->planta->nandina}}</td>
+                        <td style="font-size:12px">{{number_format(($m_c->cantidad/$piezas),2,".","")}}</td>
+                        <td style="font-size:12px">BN</td>
+                        <td style="font-size:12px">
+                            {{number_format($m_c->cantidad,2,".","")}}
+                            @php $total_ramos += number_format($m_c->cantidad,2,".","") @endphp
+                        </td>
+                        <td style="font-size:12px">${{number_format($precio,2,".","")}}</td>
+                        <td style="font-size:12px">${{number_format($precio*$m_c->cantidad,2,".","")}}</td>
                     </tr>
-                    @php $precio_total_sin_impuestos +=  ($det_esp_emp->cantidad * ((float)explode(";", $precio[$i])[0]) * $esp_emp->cantidad * $det_ped->cantidad); @endphp
-                    @php  $i++;  @endphp
                 @endforeach
             @endforeach
         @endforeach
-
-            @elseif($envio->pedido->tipo_especificacion === "T")
-                @foreach ($envio->pedido->detalles as $x => $det_ped)
-                    @foreach($det_ped->coloraciones as $y => $coloracion)
-                        @php
-                            $cant_esp_emp = $coloracion->especificacion_empaque->cantidad;
-                            $i=0;
-                        @endphp
-                        @foreach($coloracion->marcaciones_coloraciones as $m_c)
-                            @if($coloracion->precio=="")
-                                @foreach(explode("|", $det_ped->precio) as $p)
-                                    @php
-                                        if($m_c->id_detalle_especificacionempaque == explode(";",$p)[1])
-                                            $precio = explode(";",$p)[0];
-                                    @endphp
-                                @endforeach
-                            @else
-                                @php
-                                    $precio =explode( ";",explode("|",$coloracion->precio)[$i])[0];
-                                @endphp
-                            @endif
-                                @php
-                                    $precio_x_variedad = $m_c->cantidad * $precio * $cant_esp_emp;
-                                    $precio_total_sin_impuestos += $precio_x_variedad;
-                                        $i++;
-                                @endphp
-                        @endforeach
-                    @endforeach
-                @endforeach
-            @endif
+    @endif
     </tbody>
 </table>
-
 <table style="width: 100%">
     <tr>
         <td style="font-size:11px;font-family: arial, sans-serif;width:50px"> <b>{{number_format($total_ramos,2,".","")}}</b> </td>

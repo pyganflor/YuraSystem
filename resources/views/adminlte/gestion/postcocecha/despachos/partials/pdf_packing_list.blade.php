@@ -66,8 +66,13 @@
                 </tr>
                 <tr style="border: 1px solid black;">
                     <td style="border: 1px solid black;padding: 0;font-size: 13px;width: 60% ">
-                        <b>Carrier / Transportador</b><br />
-                        {{$envio['aerolinea']}}
+                        @if($pedido->tipo_especificacion === "N")
+                            <b>Carrier / Transportador</b><br />
+                            {{$envio['aerolinea']}}
+                        @elseif($pedido->tipo_especificacion === "T")
+                            <b>INOVICE</b><br />
+                            {{ isset($comprobante) ? getDetallesClaveAcceso($comprobante->clave_acceso,'SERIE').getDetallesClaveAcceso($comprobante->clave_acceso,'SECUENCIAL') : ""}}
+                        @endif
                     </td>
                     <td style="border: 1px solid black;padding: 0;font-size: 13px">
                         <b>ADD CASE No</b><br />
@@ -166,31 +171,6 @@
             </table>
         </td>
     </tr>
-    <tr>
-        <td style="text-align: center;width: 50%;vertical-align: bottom">
-            <div>
-                FIRMA
-                <div style="height:20px ;border: 1px solid black; ">
-                    {{isset($despacho->resp_ofi_despacho) ? isset($despacho->resp_ofi_despacho) : ""}}
-                </div>
-                <label  style="font-size: 14px;padding: 15px 0">NOMBRE PERSONA DESPACHO</label>
-            </div>
-        </td>
-        <td style="text-align: center;width: 50%;vertical-align: bottom;">
-            <div style="margin-top:60px">
-                <div style="border: 1px solid black;height:20px ">
-                    {{getConfiguracionEmpresa()->razon_social}}
-                </div>
-                <label style="font-size: 14px;padding: 15px 0">MARKETIN NAME / MARCA CAJA</label>
-            </div>
-            <div>
-                <div style="height:20px ;border: 1px solid black; ">
-                    {{getAgenciaCarga($detallePedido[0]['id_agencia_carga'])->nombre}}
-                </div>
-                <label style="font-size: 14px;padding: 15px 0">AGENCIA DE CARGA / FREIGHT FORWARDER</label>
-            </div>
-        </td>
-    </tr>
 </table>
 @elseif($pedido->tipo_especificacion === "T")
     @php $env = getEnvio($pedido->envios[0]->id_envio) @endphp
@@ -204,7 +184,7 @@
                 <td style="padding-left: 5px;border: 1px solid black;font-size:12px" > INITIAL <br /> BOX</td>
                 <td style="padding-left: 5px;border: 1px solid black;font-size:12px" >FINAL <br /> BOX</td>
                 <td style="padding-left: 5px;border: 1px solid black;font-size:12px" >TOTAL <br /> BOXES</td>
-                <td style="padding-left: 5px;border: 1px solid black;font-size:12px" >COLOR</td>
+                <td style="padding-left: 5px;border: 1px solid black;font-size:12px;width: 250px;" >COLOR</td>
             </tr>
         </thead>
         <tbody style="border: 1px solid black">
@@ -237,3 +217,30 @@
         </tbody>
     </table>
 @endif
+<table style="width:100%;font-family: arial, sans-serif">
+    <tr>
+        <td style="text-align: center;width: 50%;vertical-align: bottom">
+            <div>
+                FIRMA
+                <div style="height:20px ;border: 1px solid black; ">
+                    {{isset($despacho->resp_ofi_despacho) ? isset($despacho->resp_ofi_despacho) : ""}}
+                </div>
+                <label  style="font-size: 14px;padding: 15px 0">NOMBRE PERSONA DESPACHO</label>
+            </div>
+        </td>
+        <td style="text-align: center;width: 50%;vertical-align: bottom;">
+            <div style="margin-top:60px">
+                <div style="border: 1px solid black;height:20px ">
+                    {{getConfiguracionEmpresa()->razon_social}}
+                </div>
+                <label style="font-size: 14px;padding: 15px 0">MARKETIN NAME / MARCA CAJA</label>
+            </div>
+            <div>
+                <div style="height:20px ;border: 1px solid black; ">
+                    {{getAgenciaCarga($pedido->detalles[0]->id_agencia_carga)->nombre}}
+                </div>
+                <label style="font-size: 14px;padding: 15px 0">AGENCIA DE CARGA / FREIGHT FORWARDER</label>
+            </div>
+        </td>
+    </tr>
+</table>
