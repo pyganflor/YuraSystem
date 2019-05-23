@@ -1,4 +1,4 @@
-<table style="width:100%">
+<table style="width:100%;font-family: arial, sans-serif">
     <tr>
         <td style="vertical-align: middle;text-align: center">
             <h4 style="color: #464646">PACKING LIST / LISTA DE EMPAQUE #{{isset($comprobante->clave_acceso) ? "001-".getDetallesClaveAcceso($comprobante->clave_acceso, 'PUNTO_ACCESO')."-".getDetallesClaveAcceso($comprobante->clave_acceso, 'SECUENCIAL') : null}}</h4>
@@ -6,7 +6,7 @@
     </tr>
     <tr>
 </table>
-<table style="width:100%">
+<table style="width:100%;font-family: arial, sans-serif">
     <tr>
         <td>
             <div style="width: 300px;">
@@ -66,8 +66,13 @@
                 </tr>
                 <tr style="border: 1px solid black;">
                     <td style="border: 1px solid black;padding: 0;font-size: 13px;width: 60% ">
-                        <b>Carrier / Transportador</b><br />
-                        {{$envio['aerolinea']}}
+                        @if($pedido->tipo_especificacion === "N")
+                            <b>Carrier / Transportador</b><br />
+                            {{$envio['aerolinea']}}
+                        @elseif($pedido->tipo_especificacion === "T")
+                            <b>INOVICE</b><br />
+                            {{ isset($comprobante) ? getDetallesClaveAcceso($comprobante->clave_acceso,'SERIE').getDetallesClaveAcceso($comprobante->clave_acceso,'SECUENCIAL') : ""}}
+                        @endif
                     </td>
                     <td style="border: 1px solid black;padding: 0;font-size: 13px">
                         <b>ADD CASE No</b><br />
@@ -79,8 +84,8 @@
         </td>
     </tr>
 </table>
-@if($pedido->tipo_especificacion==="N")
-    <table style="width:100%" >
+@if($pedido->tipo_especificacion === "N")
+<table style="width:100%;font-family: arial, sans-serif" >
         <thead style="border: 1px solid black" >
             <tr>
                 <td style="padding-left: 5px;border: 1px solid black;font-size:13px" > PIECES<br />Piezas</td>
@@ -142,27 +147,7 @@
             @endforeach
         </tbody>
     </table>
-
-@elseif($pedido->tipo_especificacion==="T")
-    <table style="width:100%">
-        <tr>
-            <td>
-
-            </td>
-        </tr>
-        <tr>
-            <td>
-
-            </td>
-        </tr>
-        <tr>
-            <td>
-
-            </td>
-        </tr>
-    </table>
-@endif
-<table style="width:100%;margin-top: 20px;">
+<table style="width:100%;margin-top: 20px;font-family: arial, sans-serif">
     <tr>
         <td style="font-size:15px" colspan="2">
             {{$total_piezas}}  TOTAL PIECES / TOTAL PIEZAS TOTAL UNITS
@@ -186,6 +171,53 @@
             </table>
         </td>
     </tr>
+</table>
+@elseif($pedido->tipo_especificacion === "T")
+    @php $env = getEnvio($pedido->envios[0]->id_envio) @endphp
+    <table style="width:100%;font-family: arial, sans-serif" >
+        <thead style="border: 1px solid black" >
+            <tr>
+                <td style="padding-left: 5px;border: 1px solid black;font-size:12px" > DESCRIPCIÓN <br />
+                    {{substr($env->pedido->detalles[0]->cliente_especificacion->especificacion->especificacionesEmpaque[0]->detalles[0]->variedad->planta->nombre,0,3)}}
+                </td>
+                <td style="padding-left: 5px;border: 1px solid black;font-size:12px" >BOUNCHES <br /> BOX</td>
+                <td style="padding-left: 5px;border: 1px solid black;font-size:12px" > INITIAL <br /> BOX</td>
+                <td style="padding-left: 5px;border: 1px solid black;font-size:12px" >FINAL <br /> BOX</td>
+                <td style="padding-left: 5px;border: 1px solid black;font-size:12px" >TOTAL <br /> BOXES</td>
+                <td style="padding-left: 5px;border: 1px solid black;font-size:12px;width: 250px;" >COLOR</td>
+            </tr>
+        </thead>
+        <tbody style="border: 1px solid black">
+            @foreach ($env->pedido->detalles as $x => $det_ped) {
+                @foreach ($det_ped->marcaciones as $marcion){
+                    @foreach ($marcion->distribuciones as $distribucion){
+                        <tr>
+                            <td style="font-size:12px">{{$marcion->nombre}}</td>
+                            <td style="font-size:12px">{{$distribucion->ramos}}</td>
+                            <td style="font-size:12px">{{$distribucion->pos_pieza}}</td>
+                            <td style="font-size:12px">
+                                @if ($distribucion->piezas === 1 )
+                                    {{$distribucion->pos_pieza}}
+                                @else
+                                    {{($distribucion->pos_pieza-1)+$distribucion->piezas}}
+                                @endif
+                            </td>
+                            <td style="font-size:12px">{{$distribucion->piezas}}</td>
+                            <td style="font-size:12px">
+                                @foreach ($distribucion->distribuciones_coloraciones as $distribucion_coloracion)
+                                    @if($distribucion_coloracion->cantidad !== 0)
+                                        {{$distribucion_coloracion->cantidad ." ".$distribucion_coloracion->marcacion_coloracion->coloracion->color->nombre.","}}
+                                    @endif
+                                @endforeach
+                            </td>
+                        </tr>
+                    @endforeach
+                @endforeach
+            @endforeach
+        </tbody>
+    </table>
+@endif
+<table style="width:100%;font-family: arial, sans-serif">
     <tr>
         <td style="text-align: center;width: 50%;vertical-align: bottom">
             <div>
@@ -205,7 +237,7 @@
             </div>
             <div>
                 <div style="height:20px ;border: 1px solid black; ">
-                    {{getAgenciaCarga($detallePedido[0]['id_agencia_carga'])->nombre}}
+                    {{getAgenciaCarga($pedido->detalles[0]->id_agencia_carga)->nombre}}
                 </div>
                 <label style="font-size: 14px;padding: 15px 0">AGENCIA DE CARGA / FREIGHT FORWARDER</label>
             </div>

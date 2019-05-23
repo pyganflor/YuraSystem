@@ -110,10 +110,9 @@
                     $a = (Array)$data['obj_xml']->detalles;
                     $b = $a['detalle'];
                     !is_array($b) ? $b = [$b] : "";
-
                 @endphp
                 @foreach($b as $key => $c)
-                <tr style="width: 750px">
+                    <tr style="width: 750px">
                         <td style="font-size: 12px;;border:1px solid black;padding-left: 5px">{{(String)$c->codigoPrincipal}}</td>
                         <td style="font-size: 12px;border:1px solid black;padding-left: 5px">
                             {{(String)$c->cantidad}}

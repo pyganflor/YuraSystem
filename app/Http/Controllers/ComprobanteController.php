@@ -113,16 +113,21 @@ class ComprobanteController extends Controller
                         $cant_esp_emp = $coloracion->especificacion_empaque->cantidad;
                         $i=0;
                         foreach($coloracion->marcaciones_coloraciones as $m_c){
-                            if($coloracion->precio==""){
-                                foreach (explode("|", $det_ped->precio) as $p)
-                                    if($m_c->id_detalle_especificacionempaque == explode(";",$p)[1])
-                                        $precio = explode(";",$p)[0];
-                            }else{
-                                $precio =explode( ";",explode("|",$coloracion->precio)[$i])[0];
+                            if($m_c->cantidad >0){
+                                if($coloracion->precio==""){
+                                    foreach (explode("|", $det_ped->precio) as $p)
+                                        if($m_c->id_detalle_especificacionempaque == explode(";",$p)[1])
+                                            $precio = explode(";",$p)[0];
+                                }else{
+                                    foreach(explode("|",$coloracion->precio) as $p)
+                                        if($m_c->id_detalle_especificacionempaque == explode(";",$p)[1])
+                                            $precio = explode(";",$p)[0];
+                                    //$precio =explode( ";",explode("|",$coloracion->precio)[$i])[0];
+                                }
+                                $precio_x_variedad = $m_c->cantidad * $precio * $cant_esp_emp;
+                                $precio_total_sin_impuestos += $precio_x_variedad;
+                                $i++;
                             }
-                            $precio_x_variedad = $m_c->cantidad * $precio * $cant_esp_emp;
-                            $precio_total_sin_impuestos += $precio_x_variedad;
-                            $i++;
                         }
                     }
                 }
@@ -358,61 +363,66 @@ class ComprobanteController extends Controller
                         $cant_esp_emp = $coloracion->especificacion_empaque->cantidad;
                         $i=0;
                         foreach($coloracion->marcaciones_coloraciones as $m_c){
-                            if($coloracion->precio==""){
-                                foreach (explode("|", $det_ped->precio) as $p)
-                                    if($m_c->id_detalle_especificacionempaque == explode(";",$p)[1])
-                                        $precio = explode(";",$p)[0];
-                            }else{
-                                $precio = explode( ";",explode("|",$coloracion->precio)[$i])[0];
-                            }
-                            $precio_x_variedad = $m_c->cantidad * $precio * $cant_esp_emp;
-                            $variedad = getVariedad($m_c->detalle_especificacionempaque->id_variedad);//getVariedad($det_esp_emp->id_variedad);
-                            if($m_c->detalle_especificacionempaque->longitud_ramo != null){
-                                foreach (getUnidadesMedida($m_c->detalle_especificacionempaque->id_unidad_medida) as $umLongitud)
-                                    if($umLongitud->tipo == "L")
-                                        $umL = $umLongitud->siglas;
-                            }else{
-                                $umL ="";
-                            }
-                            $longitudRamo = $m_c->detalle_especificacionempaque->longitud_ramo != "" ? $m_c->detalle_especificacionempaque->longitud_ramo : "";
-                            $clasificacionRamo = getClasificacionRamo($m_c->detalle_especificacionempaque->id_clasificacion_ramo);
-                            foreach (getUnidadesMedida($clasificacionRamo->id_unidad_medida) as $umPeso)
-                                $umPeso->tipo == "P" ? $umPeso = $umPeso->siglas : $umPeso ="";
-                            $descripcion_detalle = $variedad->planta->nombre . " (" . $variedad->siglas . ") " . $clasificacionRamo->nombre.$umPeso . " " . $longitudRamo.$umL. " ". $coloracion->color->nombre;
-                            $detalle = $xml->createElement('detalle');
-                            $detalles->appendChild($detalle);
-                            $informacionDetalle = [
-                                'codigoPrincipal' => 'ENV' . str_pad($request->id_envio, 9, "0", STR_PAD_LEFT),
-                                'descripcion' => $descripcion_detalle,
-                                'cantidad' => number_format(($m_c->cantidad * $m_c->detalle_especificacionempaque->especificacion_empaque->cantidad * $m_c->marcacion->piezas), 2, ".", ""),
-                                'precioUnitario' =>number_format($precio, 2, ".", ""),
-                                'descuento' => '0.00',
-                                'precioTotalSinImpuesto' => number_format($precio_x_variedad, 2, ".", "")
-                            ];
-                            foreach ($informacionDetalle as $key => $iD) {
-                                $nodo = $xml->createElement($key, $iD);
-                                $detalle->appendChild($nodo);
-                            }
+                            if($m_c->cantidad > 0){
+                                if($coloracion->precio==""){
+                                    foreach (explode("|", $det_ped->precio) as $p)
+                                        if($m_c->id_detalle_especificacionempaque == explode(";",$p)[1])
+                                            $precio = explode(";",$p)[0];
+                                }else{
+                                    foreach(explode("|",$coloracion->precio) as $p)
+                                        if($m_c->id_detalle_especificacionempaque == explode(";",$p)[1])
+                                            $precio = explode(";",$p)[0];
+                                    //$precio = explode( ";",explode("|",$coloracion->precio)[$i])[0];
+                                }
+                                $precio_x_variedad = $m_c->cantidad * $precio * $cant_esp_emp;
+                                $variedad = getVariedad($m_c->detalle_especificacionempaque->id_variedad);//getVariedad($det_esp_emp->id_variedad);
+                                if($m_c->detalle_especificacionempaque->longitud_ramo != null){
+                                    foreach (getUnidadesMedida($m_c->detalle_especificacionempaque->id_unidad_medida) as $umLongitud)
+                                        if($umLongitud->tipo == "L")
+                                            $umL = $umLongitud->siglas;
+                                }else{
+                                    $umL ="";
+                                }
+                                $longitudRamo = $m_c->detalle_especificacionempaque->longitud_ramo != "" ? $m_c->detalle_especificacionempaque->longitud_ramo : "";
+                                $clasificacionRamo = getClasificacionRamo($m_c->detalle_especificacionempaque->id_clasificacion_ramo);
+                                foreach (getUnidadesMedida($clasificacionRamo->id_unidad_medida) as $umPeso)
+                                    $umPeso->tipo == "P" ? $umPeso = $umPeso->siglas : $umPeso ="";
+                                $descripcion_detalle = $variedad->planta->nombre . " (" . $variedad->siglas . ") " . $clasificacionRamo->nombre.$umPeso . " " . $longitudRamo.$umL. " ". $coloracion->color->nombre;
+                                $detalle = $xml->createElement('detalle');
+                                $detalles->appendChild($detalle);
+                                $informacionDetalle = [
+                                    'codigoPrincipal' => 'ENV' . str_pad($request->id_envio, 9, "0", STR_PAD_LEFT),
+                                    'descripcion' => $descripcion_detalle,
+                                    'cantidad' => number_format($m_c->cantidad, 2, ".", ""),
+                                    'precioUnitario' =>number_format($precio, 2, ".", ""),
+                                    'descuento' => '0.00',
+                                    'precioTotalSinImpuesto' => number_format($precio_x_variedad, 2, ".", "")
+                                ];
+                                foreach ($informacionDetalle as $key => $iD) {
+                                    $nodo = $xml->createElement($key, $iD);
+                                    $detalle->appendChild($nodo);
+                                }
 
-                            $impuestos = $xml->createElement('impuestos');
-                            $detalle->appendChild($impuestos);
+                                $impuestos = $xml->createElement('impuestos');
+                                $detalle->appendChild($impuestos);
 
-                            $impuesto = $xml->createElement('impuesto');
-                            $impuestos->appendChild($impuesto);
+                                $impuesto = $xml->createElement('impuesto');
+                                $impuestos->appendChild($impuesto);
 
-                            $informacionImpuesto = [
-                                'codigo' => $codigo_impuesto,
-                                'codigoPorcentaje' => $codigo_porcentaje_impuesto,
-                                'tarifa' => is_numeric($tipoImpuesto->porcentaje) ? number_format($tipoImpuesto->porcentaje, 2, ".", "") : "0.00",
-                                'baseImponible' => number_format($precio_x_variedad, 2, ".", ""),
-                                'valor' => is_numeric($tipoImpuesto->porcentaje) ? number_format($precio_x_variedad * ($tipoImpuesto->porcentaje / 100), 2, ".", "") : "0.00"
-                            ];
+                                $informacionImpuesto = [
+                                    'codigo' => $codigo_impuesto,
+                                    'codigoPorcentaje' => $codigo_porcentaje_impuesto,
+                                    'tarifa' => is_numeric($tipoImpuesto->porcentaje) ? number_format($tipoImpuesto->porcentaje, 2, ".", "") : "0.00",
+                                    'baseImponible' => number_format($precio_x_variedad, 2, ".", ""),
+                                    'valor' => is_numeric($tipoImpuesto->porcentaje) ? number_format($precio_x_variedad * ($tipoImpuesto->porcentaje / 100), 2, ".", "") : "0.00"
+                                ];
 
-                            foreach ($informacionImpuesto as $key => $iIp) {
-                                $nodo = $xml->createElement($key, $iIp);
-                                $impuesto->appendChild($nodo);
+                                foreach ($informacionImpuesto as $key => $iIp) {
+                                    $nodo = $xml->createElement($key, $iIp);
+                                    $impuesto->appendChild($nodo);
+                                }
+                                $i++;
                             }
-                            $i++;
                         }
                     }
                 }
@@ -539,52 +549,57 @@ class ComprobanteController extends Controller
                                         $cant_esp_emp = $coloracion->especificacion_empaque->cantidad;
                                         $i=0;
                                         foreach($coloracion->marcaciones_coloraciones as $m_c){
-                                            if($coloracion->precio==""){
-                                                foreach (explode("|", $det_ped->precio) as $p)
-                                                    if($m_c->id_detalle_especificacionempaque == explode(";",$p)[1])
-                                                        $precio = explode(";",$p)[0];
-                                            }else{
-                                                $precio = explode( ";",explode("|",$coloracion->precio)[$i])[0];
-                                            }
-                                            $precio_x_variedad = $m_c->cantidad * $precio * $cant_esp_emp;
-                                            $variedad = getVariedad($m_c->detalle_especificacionempaque->id_variedad);
-                                            if($m_c->detalle_especificacionempaque->longitud_ramo != null){
-                                                foreach (getUnidadesMedida($m_c->detalle_especificacionempaque->id_unidad_medida) as $umLongitud)
-                                                    if($umLongitud->tipo == "L")
-                                                        $umL = $umLongitud->siglas;
-                                            }else{
-                                                $umL ="";
-                                            }
-                                            $longitudRamo = $m_c->detalle_especificacionempaque->longitud_ramo != "" ? $m_c->detalle_especificacionempaque->longitud_ramo : "";
-                                            $clasificacionRamo = getClasificacionRamo($m_c->detalle_especificacionempaque->id_clasificacion_ramo);
-                                            foreach (getUnidadesMedida($clasificacionRamo->id_unidad_medida) as $umPeso)
-                                                $umPeso->tipo == "P" ? $umPeso = $umPeso->siglas : $umPeso ="";
-                                            $descripcion_detalle = $variedad->planta->nombre . " (" . $variedad->siglas . ") " . $clasificacionRamo->nombre.$umPeso . " " . $longitudRamo.$umL. " ". $coloracion->color->nombre;
+                                            if($m_c->cantidad > 0 ){
+                                                if($coloracion->precio==""){
+                                                    foreach (explode("|", $det_ped->precio) as $p)
+                                                        if($m_c->id_detalle_especificacionempaque == explode(";",$p)[1])
+                                                            $precio = explode(";",$p)[0];
+                                                }else{
+                                                    foreach(explode("|",$coloracion->precio) as $p)
+                                                        if($m_c->id_detalle_especificacionempaque == explode(";",$p)[1])
+                                                            $precio = explode(";",$p)[0];
+                                                    //$precio = explode( ";",explode("|",$coloracion->precio)[$i])[0];
+                                                }
+                                                $precio_x_variedad = $m_c->cantidad * $precio * $cant_esp_emp;
+                                                $variedad = getVariedad($m_c->detalle_especificacionempaque->id_variedad);
+                                                if($m_c->detalle_especificacionempaque->longitud_ramo != null){
+                                                    foreach (getUnidadesMedida($m_c->detalle_especificacionempaque->id_unidad_medida) as $umLongitud)
+                                                        if($umLongitud->tipo == "L")
+                                                            $umL = $umLongitud->siglas;
+                                                }else{
+                                                    $umL ="";
+                                                }
+                                                $longitudRamo = $m_c->detalle_especificacionempaque->longitud_ramo != "" ? $m_c->detalle_especificacionempaque->longitud_ramo : "";
+                                                $clasificacionRamo = getClasificacionRamo($m_c->detalle_especificacionempaque->id_clasificacion_ramo);
+                                                foreach (getUnidadesMedida($clasificacionRamo->id_unidad_medida) as $umPeso)
+                                                    $umPeso->tipo == "P" ? $umPeso = $umPeso->siglas : $umPeso ="";
+                                                $descripcion_detalle = $variedad->planta->nombre . " (" . $variedad->siglas . ") " . $clasificacionRamo->nombre.$umPeso . " " . $longitudRamo.$umL. " ". $coloracion->color->nombre;
 
-                                            $objDesgloseEnvioFactura = new DesgloseEnvioFactura;
-                                            $objDesgloseEnvioFactura->id_comprobante = $model_comprobante->id_comprobante;
-                                            $objDesgloseEnvioFactura->codigo_principal = 'ENV' . str_pad($request->id_envio, 9, "0", STR_PAD_LEFT);
-                                            $objDesgloseEnvioFactura->descripcion = $descripcion_detalle;
-                                                                                                         //RAMOS X CAJA                       *           //CANTIDAD CAJAS EN ESPECIFICACION PREDT 1                  * //CANTIDAD CAJAS DEL PEDIDO
-                                            $objDesgloseEnvioFactura->cantidad = number_format(($m_c->cantidad * $m_c->detalle_especificacionempaque->especificacion_empaque->cantidad * $m_c->marcacion->piezas), 2, ".", "");
-                                            $objDesgloseEnvioFactura->precio_unitario = number_format($precio, 2, ".", "");
-                                            $objDesgloseEnvioFactura->descuento = '0.00';
-                                            $objDesgloseEnvioFactura->precio_total_sin_impuesto = number_format($precio_x_variedad, 2, ".", "");
+                                                $objDesgloseEnvioFactura = new DesgloseEnvioFactura;
+                                                $objDesgloseEnvioFactura->id_comprobante = $model_comprobante->id_comprobante;
+                                                $objDesgloseEnvioFactura->codigo_principal = 'ENV' . str_pad($request->id_envio, 9, "0", STR_PAD_LEFT);
+                                                $objDesgloseEnvioFactura->descripcion = $descripcion_detalle;
+                                                //RAMOS X CAJA                       *           //CANTIDAD CAJAS EN ESPECIFICACION PREDT 1                  * //CANTIDAD CAJAS DEL PEDIDO
+                                                $objDesgloseEnvioFactura->cantidad = number_format(($m_c->cantidad * $m_c->detalle_especificacionempaque->especificacion_empaque->cantidad * $m_c->marcacion->piezas), 2, ".", "");
+                                                $objDesgloseEnvioFactura->precio_unitario = number_format($precio, 2, ".", "");
+                                                $objDesgloseEnvioFactura->descuento = '0.00';
+                                                $objDesgloseEnvioFactura->precio_total_sin_impuesto = number_format($precio_x_variedad, 2, ".", "");
 
-                                            if ($objDesgloseEnvioFactura->save()) {
-                                                bitacora('impuesto_detalle_factura', $model_impuesto_detalle_factura->id_impuesto_detalle_factura, 'I', 'Creación de un nuevo impuesto de detalle de factura');
-                                                $model_desglose_envio_factura = DesgloseEnvioFactura::all()->last();
+                                                if ($objDesgloseEnvioFactura->save()) {
+                                                    bitacora('impuesto_detalle_factura', $model_impuesto_detalle_factura->id_impuesto_detalle_factura, 'I', 'Creación de un nuevo impuesto de detalle de factura');
+                                                    $model_desglose_envio_factura = DesgloseEnvioFactura::all()->last();
 
-                                                $objImpuestoDesgloseEnvioFactura = new ImpuestoDesgloseEnvioFactura;
-                                                $objImpuestoDesgloseEnvioFactura->id_desglose_envio_factura = $model_desglose_envio_factura->id_desglose_envio_factura;
-                                                $objImpuestoDesgloseEnvioFactura->codigo_impuesto = $codigo_impuesto;
-                                                $objImpuestoDesgloseEnvioFactura->codigo_porcentaje = $codigo_porcentaje_impuesto;
-                                                $objImpuestoDesgloseEnvioFactura->base_imponible = number_format($precio_x_variedad, 2, ".", "");
-                                                $objImpuestoDesgloseEnvioFactura->valor = is_numeric($tipoImpuesto->porcentaje) ? number_format($precio_x_variedad * ($tipoImpuesto->porcentaje / 100), 2, ".", "") : "0.00";
-                                                $objImpuestoDesgloseEnvioFactura->save() ? $iteracion++ : '';
+                                                    $objImpuestoDesgloseEnvioFactura = new ImpuestoDesgloseEnvioFactura;
+                                                    $objImpuestoDesgloseEnvioFactura->id_desglose_envio_factura = $model_desglose_envio_factura->id_desglose_envio_factura;
+                                                    $objImpuestoDesgloseEnvioFactura->codigo_impuesto = $codigo_impuesto;
+                                                    $objImpuestoDesgloseEnvioFactura->codigo_porcentaje = $codigo_porcentaje_impuesto;
+                                                    $objImpuestoDesgloseEnvioFactura->base_imponible = number_format($precio_x_variedad, 2, ".", "");
+                                                    $objImpuestoDesgloseEnvioFactura->valor = is_numeric($tipoImpuesto->porcentaje) ? number_format($precio_x_variedad * ($tipoImpuesto->porcentaje / 100), 2, ".", "") : "0.00";
+                                                    $objImpuestoDesgloseEnvioFactura->save() ? $iteracion++ : '';
+                                                }
+                                                $request->cant_variedades = $iteracion;
+                                                $i++;
                                             }
-                                            $request->cant_variedades = $iteracion;
-                                            $i++;
                                         }
                                     }
                                 }
@@ -731,15 +746,6 @@ class ComprobanteController extends Controller
         $factura->appendChild($nodeComprobantes);
         $path_firmados = env('PATH_XML_FIRMADOS');
         $sub_carpeta = getSubCarpetaArchivo(false,$request->tipo_comprobante);
-
-        /*switch ($request->tipo_comprobante) {
-            case '01':
-                $sub_carpeta = '/facturas/';
-                break;
-            case '06':
-                $sub_carpeta = '/guias_remision/';
-                break;
-        }*/
 
         foreach ($request->arrComprobante as $xml_firmado) {
             $data_xml_firmado = file_get_contents($path_firmados.$sub_carpeta.$xml_firmado.".xml");
