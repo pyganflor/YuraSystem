@@ -6,18 +6,19 @@
             desde: parseInt($('#desde').val()),
             hasta: parseInt($('#hasta').val()),
             annos: $('#annos').val(),
+            cliente: $('#cliente').val(),
             variedad: $('#variedad').val(),
             criterio: $('#criterio').val(),
             rango: $('#rango').val(),
         };
         if (datos['desde'] <= datos['hasta']) {
-            get_jquery('{{url('tbl_postcosecha/filtrar_tablas')}}', datos, function (retorno) {
+            get_jquery('{{url('tbl_ventas/filtrar_tablas')}}', datos, function (retorno) {
                 $('#div_contentido_tablas').html(retorno);
             });
         }
     }
 
-    function navegar_tabla(rango, criterio, periodo, tipo, anno, variedad, desde = null, hasta = null) {
+    function navegar_tabla(rango, criterio, periodo, tipo, anno, cliente, desde = null, hasta = null) {
         $('.li_anno').removeClass('bg-aqua-active');
         $('#li_anno_' + anno).addClass('bg-aqua-active');
         $('#annos').val(anno);
@@ -26,14 +27,15 @@
             tipo: tipo,
             periodo: periodo,
             anno: anno,
-            variedad: variedad,
+            cliente: cliente,
             criterio: criterio,
             rango: rango,
             desde: desde,
             hasta: hasta,
-            filtro_variedad: $('#variedad').val()
+            filtro_cliente: $('#cliente').val(),
+            filtro_variedad: $('#variedad').val(),
         };
-        get_jquery('{{url('tbl_postcosecha/navegar_tabla')}}', datos, function (retorno) {
+        get_jquery('{{url('tbl_ventas/navegar_tabla')}}', datos, function (retorno) {
             $('#div_contentido_tablas').html(retorno);
         });
     }
@@ -74,32 +76,5 @@
         $('#li_mes_' + option + '_' + m).addClass('bg-aqua-active');
 
         $('#' + option).val(text);
-    }
-
-    function select_rango(value) {
-        if (value == 'M') {
-            $('.btn_desde-hasta_M').show();
-            $('.btn_desde-hasta_S').hide();
-
-            $('#desde').val('{{date('m')}}');
-            $('#hasta').val('{{date('m')}}');
-
-            $('#desde').prop('readonly', true);
-            $('#hasta').prop('readonly', true);
-
-            $('.li_mes_desde').removeClass('bg-aqua-active');
-            $('#li_mes_desde_' + parseInt('{{date('m')}}')).addClass('bg-aqua-active');
-            $('.li_mes_hasta').removeClass('bg-aqua-active');
-            $('#li_mes_hasta_' + parseInt('{{date('m')}}')).addClass('bg-aqua-active');
-        } else {
-            $('.btn_desde-hasta_M').hide();
-            $('.btn_desde-hasta_S').show();
-
-            $('#desde').val('{{substr(getSemanaByDate(date('Y-m-d'))->codigo, 2)}}');
-            $('#hasta').val('{{substr(getSemanaByDate(date('Y-m-d'))->codigo, 2)}}');
-
-            $('#desde').prop('readonly', false);
-            $('#hasta').prop('readonly', false);
-        }
     }
 </script>
