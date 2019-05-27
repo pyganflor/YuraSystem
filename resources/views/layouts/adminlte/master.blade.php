@@ -600,10 +600,10 @@
         arreglo_modals_form = [];
     }
 
-    function estructura_tabla(id) {
+    function estructura_tabla(id, responsive = true) {
         $('#' + id).DataTable({
             order: [],
-            responsive: true,
+            responsive: responsive,
             paging: false,
             info: false,
             search: false,

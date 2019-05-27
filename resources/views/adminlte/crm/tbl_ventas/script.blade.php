@@ -10,6 +10,7 @@
             variedad: $('#variedad').val(),
             criterio: $('#criterio').val(),
             rango: $('#rango').val(),
+            acumulado: $('#acumulado').prop('checked'),
         };
         if (datos['desde'] <= datos['hasta']) {
             get_jquery('{{url('tbl_ventas/filtrar_tablas')}}', datos, function (retorno) {
@@ -34,6 +35,7 @@
             hasta: hasta,
             filtro_cliente: $('#cliente').val(),
             filtro_variedad: $('#variedad').val(),
+            acumulado: $('#acumulado').prop('checked'),
         };
         get_jquery('{{url('tbl_ventas/navegar_tabla')}}', datos, function (retorno) {
             $('#div_contentido_tablas').html(retorno);

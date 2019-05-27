@@ -3,6 +3,8 @@
         @php
             $totales_anno = [];
         @endphp
+
+        <thead>
         <tr>
             <th class="text-center" style="border-color: white; background-color: #357ca5; color: white; width: 80px">
                 Cliente
@@ -26,11 +28,17 @@
                 @endif
             </th>
         </tr>
+        </thead>
+        <tbody>
         @foreach($data['filas'] as $fila)
             <tr>
                 <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef;">
                     @if($fila['encabezado'] != '')
-                        {{$fila['encabezado']->detalle()->nombre}}
+                        @if($cliente == 'P')
+                            {{$fila['encabezado']->nombre}}
+                        @else
+                            {{$fila['encabezado']->detalle()->nombre}}
+                        @endif
                     @else
                         Todos
                     @endif
@@ -73,40 +81,47 @@
                 </th>
             </tr>
         @endforeach
-        <tr>
-            <th class="text-center" style="border-color: white; background-color: #357ca5; color: white; width: 80px">
-                @if($criterio == 'V' || $criterio == 'F' || $criterio == 'Q')
-                    Total
-                @else
-                    Promedio
-                @endif
-            </th>
-            @php
-                $total = 0;
-            @endphp
-            @foreach($totales_anno as $valor)
-                <th class="text-center" style="border-color: white; background-color: #357ca5; color: white">
+        </tbody>
+        <tfooter>
+            <tr>
+                <th class="text-center" style="border-color: white; background-color: #357ca5; color: white; width: 80px">
                     @if($criterio == 'V' || $criterio == 'F' || $criterio == 'Q')
-                        {{number_format($valor['valor'], 2)}}
+                        Total
                     @else
-                        {{$valor['count_positivo'] > 0 ? number_format(round($valor['valor'] / $valor['count_positivo'], 2), 2) : 0}}
+                        Promedio
                     @endif
                 </th>
                 @php
-                    if($criterio == 'V' || $criterio == 'F' || $criterio == 'Q')
-                        $total += $valor['valor'];
-                    else
-                        $total += $valor['count_positivo'] > 0 ? number_format(round($valor['valor'] / $valor['count_positivo'], 2), 2) : 0;
+                    $total = 0;
                 @endphp
-            @endforeach
+                @foreach($totales_anno as $valor)
+                    <th class="text-center" style="border-color: white; background-color: #357ca5; color: white">
+                        @if($criterio == 'V' || $criterio == 'F' || $criterio == 'Q')
+                            {{number_format($valor['valor'], 2)}}
+                        @else
+                            {{$valor['count_positivo'] > 0 ? number_format(round($valor['valor'] / $valor['count_positivo'], 2), 2) : 0}}
+                        @endif
+                    </th>
+                    @php
+                        if($criterio == 'V' || $criterio == 'F' || $criterio == 'Q')
+                            $total += $valor['valor'];
+                        else
+                            $total += $valor['count_positivo'] > 0 ? number_format(round($valor['valor'] / $valor['count_positivo'], 2), 2) : 0;
+                    @endphp
+                @endforeach
 
-            <th class="text-center" style="border-color: white; background-color: #357ca5; color: white; width: 80px">
-                @if($criterio == 'V' || $criterio == 'F' || $criterio == 'Q')
-                    {{number_format($total, 2)}}
-                @else
-                    {{number_format(round($total / count($data['labels']), 2), 2)}}
-                @endif
-            </th>
-        </tr>
+                <th class="text-center" style="border-color: white; background-color: #357ca5; color: white; width: 80px">
+                    @if($criterio == 'V' || $criterio == 'F' || $criterio == 'Q')
+                        {{number_format($total, 2)}}
+                    @else
+                        {{number_format(round($total / count($data['labels']), 2), 2)}}
+                    @endif
+                </th>
+            </tr>
+        </tfooter>
     </table>
 </div>
+
+<script>
+    estructura_tabla('table_anual', false);
+</script>

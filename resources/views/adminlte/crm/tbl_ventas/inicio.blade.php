@@ -95,7 +95,7 @@
                 </div>
                 <div class="input-group">
                     <div class="input-group-addon bg-gray">
-                        <i class="fa fa-leaf"></i> Cliente
+                        <i class="fa fa-user-circle"></i> Cliente
                     </div>
                     <select name="cliente" id="cliente" class="form-control" style="width: 150px">
                         <option value="A">Acumulado</option>
@@ -123,13 +123,16 @@
                         <option value="Q">Equivalentes</option>
                         <option value="P">Precios</option>
                     </select>
+                    <div class="input-group-addon bg-gray mouse-hand">
+                        <input type="checkbox" id="acumulado" name="acumulado" class="mouse-hand">
+                        <label for="acumulado" class="mouse-hand">Mostrar Acumulados</label>
+                    </div>
 
                     <div class="input-group-btn">
                         <button type="button" id="btn_filtrar" class="btn btn-default" onclick="filtrar_tablas()" title="Buscar">
                             <i class="fa fa-fw fa-search"></i>
                         </button>
                     </div>
-
                 </div>
             </div>
 
