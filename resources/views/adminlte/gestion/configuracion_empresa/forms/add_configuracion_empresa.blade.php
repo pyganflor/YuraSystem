@@ -8,7 +8,7 @@
                 <div class="form-group input-group">
                     <span class="input-group-addon" style="background-color: #e9ecef">Nombre comercial</span>
                     <input type="text" id="nombre_empresa" name="nombre_empresa" class="form-control" required maxlength="300" minlength="3"
-                           autocomplete="off" placeholder="Nombre de la Empresa" pattern="[A-Za-z]+"
+                           autocomplete="off" placeholder="Nombre de la Empresa"
                            value="{!! isset($config_empresa[0]->nombre) ? $config_empresa[0]->nombre : '' !!}">
                 </div>
             </div>

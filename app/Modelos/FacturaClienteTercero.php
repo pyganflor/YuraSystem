@@ -27,7 +27,8 @@ class FacturaClienteTercero extends Model
         'dae',
         'puerto_entrada',
         'tipo_credito',
-        'id_marca'
+        'id_marca',
+        'codigo_dae'
     ];
 
     public function envio()

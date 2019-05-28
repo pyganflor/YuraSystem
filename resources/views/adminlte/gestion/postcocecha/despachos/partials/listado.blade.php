@@ -111,10 +111,12 @@
                                     <td class="text-center" style="border-color: #9d9d9d"
                                         rowspan="{{getCantidadDetallesEspecificacionByPedido($pedido->id_pedido)}}">
                                         {{getCliente($pedido->id_cliente)->detalle()->nombre}}
-                                        <br>
-                                        <strong>
-                                            ${{number_format(getPedido($pedido->id_pedido)->getPrecio(), 2)}}
-                                        </strong>
+                                        @if($opciones)
+                                            <br>
+                                            <strong>
+                                                ${{number_format(getPedido($pedido->id_pedido)->getPrecio(), 2)}}
+                                            </strong>
+                                        @endif
                                         @php
                                             $valor_total += getPedido($pedido->id_pedido)->getPrecio();
                                         @endphp
@@ -364,14 +366,16 @@
                             {{round($ramos_totales_estandar / getConfiguracionEmpresa()->ramos_x_caja,2)}}
                         </td>
                     </tr>
-                    <tr>
-                        <th class="text-center" style="border-color: #9d9d9d; background-color: #357ca5; color: white">
-                            Valor Total
-                        </th>
-                        <td class="text-center" style="border-color: #9d9d9d">
-                            ${{number_format($valor_total,2)}}
-                        </td>
-                    </tr>
+                    @if($opciones)
+                        <tr>
+                            <th class="text-center" style="border-color: #9d9d9d; background-color: #357ca5; color: white">
+                                Valor Total
+                            </th>
+                            <td class="text-center" style="border-color: #9d9d9d">
+                                ${{number_format($valor_total,2)}}
+                            </td>
+                        </tr>
+                    @endif
                 </table>
             </div>
         </div>

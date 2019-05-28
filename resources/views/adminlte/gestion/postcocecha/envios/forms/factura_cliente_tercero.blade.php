@@ -80,28 +80,36 @@
         </div>
         <div class="col-md-3">
             <div class="form-group">
-                <label for="dae">DAE</label>
-                <input type="text" id="dae_cliente_tercero" name="dae_cliente_tercero" class="form-control" {{$disabled}}
-                required autocomplete="off" value="{{isset($dataCliente->dae) ? $dataCliente->dae : ""}}">
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-4">
-            <div class="form-group">
                 <label for="correo">Correo</label>
                 <input type="email" id="correo_cliente_tercero" name="correo_cliente_tercero" class="form-control" required  maxlength="255"
                        {{$disabled}} autocomplete="off" value="{!! !empty($dataCliente) ? $dataCliente->correo : "" !!}">
             </div>
         </div>
-        <div class="col-md-4">
+
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="dae">CÓDIGO DAE</label>
+                <input type="text"  id="codigo_dae_cliente_tercero" name="codigo_dae_cliente_tercero" class="form-control" {{$disabled}}
+                required autocomplete="off" value="{{isset($dataCliente->codigo_dae) ? $dataCliente->codigo_dae : ""}}">
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="dae">DAE</label>
+                <input type="text" id="dae_cliente_tercero" name="dae_cliente_tercero" class="form-control" {{$disabled}}
+                required autocomplete="off" value="{{isset($dataCliente->dae) ? $dataCliente->dae : ""}}">
+            </div>
+        </div>
+        <div class="col-md-3">
             <div class="form-group">
                 <label for="telefono">Teléfono</label>
                 <input type="number" onkeypress="return isNumber()" id="telefono_cliente_tercero" name="telefono_cliente_tercero" class="form-control"
                        {{$disabled}} required  maxlength="25" autocomplete="off" value="{!! !empty($dataCliente) ? $dataCliente->telefono : "" !!}">
             </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-3">
             <div class="form-group">
                 <label for="puerto_entrada">Puerto de entrada</label>
                 <input type="text" id="puerto_entrada" name="puerto_entrada" class="form-control"   maxlength="100" autocomplete="off"

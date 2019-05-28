@@ -144,10 +144,10 @@
         html = "<div class='row'>" +
                 "<div class='col-md-12'>" +
                     "<form id='form_guia_ruta' name='form_guia_ruta'>" +
-                    "<p><label for='ruta'>Escriba la ruta par la guía de remisión</label></p>" +
+                    "<p><label for='ruta'>Escriba la ruta para la guía de remisión</label></p>" +
                         "<div class='row'>" +
                             "<div class='col-md-12'>" +
-                                "<input type='text' id='ruta' name='ruta' class='form-control' required> "+
+                                "<input type='text' id='ruta' name='ruta' class='form-control' value='TABABELA' required> "+
                             "</div>"+
                         "</div>" +
                     "</form>" +

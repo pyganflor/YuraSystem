@@ -18,7 +18,8 @@ class Comprobante extends Model
         'fecha_emision',
         'tipo_comprobante',
         'monto_total',
-        'numero_comprobante'
+        'numero_comprobante',
+        'peso'
     ];
 
     public function envio(){

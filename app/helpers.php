@@ -1209,7 +1209,7 @@ function getCodigoDae($codigoPais, $mes, $anno)
         ['anno', $anno],
         ['codigo_pais', $codigoPais],
         ['estado', 1]
-    ])->select('codigo_dae')->first();
+    ])->first();
 }
 
 function getFacturado($idEnvio, $estado)
@@ -1745,4 +1745,11 @@ function getDetallePedido($idDetallePedido)
 
 function getDetalleEspecificacionEmpaque($idEspecificacionEmpaque){
     return DetalleEspecificacionEmpaque::find($idEspecificacionEmpaque);
+}
+
+function getDae($dae=null,$codigo=null){
+    if($dae!=null)
+        return CodigoDae::where('dae',$dae)->first();
+    if($codigo!=null)
+        return CodigoDae::where('codigo_dae',$codigo)->first();
 }

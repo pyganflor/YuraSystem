@@ -14,7 +14,8 @@ class DetalleDespacho extends Model
     protected $fillable = [
         'id_despacho',
         'id_pedido',
-        'fecha_registro'
+        'fecha_registro',
+        'cantidad'
     ];
 
     public function pedidos(){

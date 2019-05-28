@@ -11,4 +11,5 @@ Route::post('despachos/store_despacho', 'DespachosController@store_despacho');
 Route::get('despachos/descargar_despacho/{n_despacho}', 'DespachosController@descargar_despacho');
 Route::get('despachos/ver_despachos', 'DespachosController@ver_despachos');
 Route::post('despachos/update_estado_despachos', 'DespachosController@update_estado_despachos');
-
+Route::get('despachos/distribuir_despacho', 'DespachosController@distribuir_despacho');
+Route::get('despachos/add_pedido_piezas', 'DespachosController@add_pedido_piezas');

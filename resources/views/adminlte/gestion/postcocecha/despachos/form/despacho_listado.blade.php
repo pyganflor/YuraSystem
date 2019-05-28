@@ -1,166 +1,86 @@
-<form id="form_despacho">
-    <div class="box box-solid box-primary">
+<div class="box box-solid box-primary">
     <div class="box-header with-border">
-        <div class="box-title col-md-4 " ><b>Despacho N#: {{str_pad((getSecuenciaDespacho()), 9, "0", STR_PAD_LEFT)}}</b>
+        <div class="box-title col-md-6 text-left" >
+            <b>DESPACHO DE FINCA</b>
         </div>
-        <div class="box-title col-md-4 text-center" ><b>DESPACHO DE FINCA</b>
-
-        </div>
-        <div class="box-title col-md-4 text-right"><b>{{strtoupper($empresa->razon_social)}}</b>
-            {{--<input type="date"  id="fecha_envio" name="fecha_envio" style="color:black"
-                   value="{{now()->format('Y-m-d')}}">--}}
+        <div class="box-title col-md-6 text-right">
+            <b>{{strtoupper($empresa->razon_social)}}</b>
         </div>
     </div>
     <!-- /.box-header -->
     <div class="box-body">
-            <div class="col md-12 text-center" style="font-weight: bold">
-                DATOS GENERALES
-            </div>
-        <table width="100%" class="table-responsive table-bordered" style=" border-color: white;margin-top:20px">
-            <tr>
-                <td class="text-center" style="border-color: #9d9d9d;vertical-align: middle"><b>Transportisa</b></td>
-                <td class="text-center" style="border-color: #9d9d9d;vertical-align: middle">
-                    <select id="id_transportista" name="id_transportista" style="width: 100%;border: none;" required>
-                        @foreach ($transportistas as $t)
-                            <option value="{{$t->id_transportista}}">{{$t->nombre_empresa}}</option>
-                        @endforeach
-                    </select>
-                </td>
-                <td class="text-center" style="border-color: #9d9d9d;vertical-align: middle">
-                    <b>Camión</b>
-                </td>
-                <td class="text-center" style="border-color: #9d9d9d;vertical-align: middle">
-                    <select id="id_camion" style="width: 100%;border: none" onchange="busqueda_placa_camion()" required></select>
-                </td>
-                <td class="text-center" style="border-color: #9d9d9d;vertical-align: middle">
-                    <b>Placa</b>
-                </td>
-                <td class="text-center" style="border-color: #9d9d9d;vertical-align: middle">
-                    <input type="text" id="n_placa" style="width: 100%;border: none;" required>
-                </td>
-                <td class="text-center" style="border-color: #9d9d9d;vertical-align: middle">
-                    <b>Chofer</b>
-                </td>
-                <td class="text-center" style="border-color: #9d9d9d;vertical-align: middle">
-                    <select id="id_chofer" style="width: 100%;border: none;" required></select>
-                </td>
-            </tr>
-            <tr>
-                <td class="text-center" style="border-color: #9d9d9d;vertical-align: middle">
-                    <b>Fecha</b>
-                </td>
-                <td style="border-color: #9d9d9d;vertical-align: middle">
-                    <input type="date" id="fecha_despacho" name="fecha_despacho" value="{{now()->format('Y-m-d')}}"
-                            style="width: 100%;border: none;" required>
-                </td>
-                <td class="text-center" style="border-color: #9d9d9d;vertical-align: middle">
-                    <b>Sello de salida</b>
-                </td>
-                <td class="text-center" style="border-color: #9d9d9d;vertical-align: middle">
-                    <input type="text" id="sello_salida" name="sello_salida" style="width: 100%;border: none;" required>
-                </td>
-                <td class="text-center" style="border-color: #9d9d9d;vertical-align: middle">
-                    <b>Responsable</b>
-                </td>
-                <td class="text-center" style="border-color: #9d9d9d;vertical-align: middle" >
-                    <input type="text" id="responsable" name="responsable" onkeyup="duplicar_nombre(this)" style="width: 100%;border: none;" required>
-                </td>
-                <td class="text-center" style="border-color: #9d9d9d;vertical-align: middle">
-                    <b>Horario</b>
-                </td>
-                <td class="text-center" style="border-color: #9d9d9d;vertical-align: middle">
-                    <input type="text" id="horario" name="horario" style="width: 100%;border: none;" >
-                </td>
-            </tr>
-            <tr>
-                <td  class="text-center" style="border-color: #9d9d9d;vertical-align: middle">
-                    <b>Semana</b>
-                </td>
-                <td style="border-color: #9d9d9d;vertical-align: middle">
-                    <input type="text" id="semana" name="semana" value="{{getSemanaByDate(now()->toDateString())->codigo}}"
-                        readonly style="width: 100%;border: none;" required>
-                </td>
-                <td class="text-center" style="border-color: #9d9d9d;vertical-align: middle">
-                    <b>Rango Tmp</b>
-                </td>
-                <td class="text-center" style="border-color: #9d9d9d;vertical-align: middle">
-                    <input type="text" id="rango_temp" name="rango_temp" style="width: 100%;border: none;" >
-                </td>
-                <td class="text-center" style="border-color: #9d9d9d;vertical-align: middle">
-                    <b>Sellos entregados</b>
-                </td>
-                <td class="text-center" id="cant_sellos" style="border-color: #9d9d9d;vertical-align: middle"></td>
-                <td class="text-center" style="border-color: #9d9d9d;vertical-align: middle">
-                    <b>Sello adicional</b>
-                </td>
-                <td class="text-center" style="border-color: #9d9d9d;vertical-align: middle">
-                    <input type="text" id="sello_adicional" name="sello_adicional" style="width: 100%;border: none;" >
-                </td>
-            </tr>
-            <tr>
-                <td class="text-center" style="border-color: #9d9d9d;vertical-align: middle">
-                    <b>Viaje N#</b>
-                </td>
-                <td class="text-center" style="border-color: #9d9d9d;vertical-align: middle">
-                    <input value="1" type="number" id="n_viaje" name="n_viaje" style="width: 100%;border: none;" required>
-                </td>
-                <td class="text-center" style="border-color: #9d9d9d;vertical-align: middle">
-                    <b>Hora de salida</b>
-                </td>
-                <td class="text-center" style="border-color: #9d9d9d;vertical-align: middle">
-                    <input type="text" id="horas_salida" name="horas_salida" style="width: 100%;border: none;">
-                </td>
-                <td class="text-center" style="border-color: #9d9d9d;vertical-align: middle">
-                    <b>Temperatura</b>
-                </td>
-                <td class="text-center" style="border-color: #9d9d9d;vertical-align: middle">
-                    <input type="text" id="temperatura" name="temperatura" style="width: 100%;border: none;" >
-                </td>
-                <td class="text-center" style="border-color: #9d9d9d;vertical-align: middle">
-                    <b>Kilometraje</b>
-                </td>
-                <td class="text-center" style="border-color: #9d9d9d;vertical-align: middle">
-                    <input type="text" id="kilometraje" name="kilometraje" style="width: 100%;border: none;" >
-                </td>
-            </tr>
-            <tr>
-                <td class="text-center" style="border-color: #9d9d9d;vertical-align: middle">
-                    <b>Sellos</b>
-                </td>
-                @for ($i = 0; $i < 7; $i++)
-                    <td class="text-center" style="border-color: #9d9d9d;vertical-align: middle">
-                        <input type="text" class="sello" name="sello" style="width: 100%;border: none;" {{$i==0 ? "required" : ""}}>
-                    </td>
-                @endfor
-            </tr>
-        </table>
         <div class="col md-12 text-center" style="font-weight: bold;margin-top: 20px">
-            DESPACHO
+            DESPACHO COMPLETO
         </div>
-        <table width="100%" class="table-responsive table-bordered" style=" border-color: white;margin-top:20px">
+        <table width="100%" class="table-responsive table-bordered" style=" border-color: white">
             <thead>
+                <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">Pedido</th>
                 <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">Cliente</th>
                 <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">Agencia</th>
                 <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">Cajas Full</th>
                 <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">Piezas</th>
-                <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">Guia</th>
-                <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">Temp</th>
-                <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">Persona que recibe</th>
-                <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">Hora de llegada</th>
-                <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">Hora de salida</th>
-                <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">Sello inicial</th>
-                <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">Sello final</th>
-                <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">Observaciones</th>
+                <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">Full Boxes </th>
+                <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">Half Boxes</th>
+                <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">1/4 Boxes</th>
+                <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">1/6 Boxes </th>
+                <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">1/8 Boxes</th>
+                <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">Guía</th>
             </thead>
             <tbody>
-            @php $total_caja_full = 0; $piezas_totales = 0; @endphp
-                @foreach($pedidos as $pedido)
+                @php
+                    $total_caja_full = 0;
+                    $piezas_totales = 0;
+                    $full = 0;
+                    $half = 0;
+                    $cuarto = 0;
+                    $sexto = 0;
+                    $octavo = 0;
+                @endphp
+                @foreach($pedidos as $x => $pedido)
+                    @php
+                        $full_det_esp_emp = 0;
+                        $half_det_esp_emp = 0;
+                        $cuarto_det_esp_emp = 0;
+                        $sexto_det_esp_emp = 0;
+                        $octavo_det_esp_emp = 0;
+                        foreach($pedido->detalles as $det_ped){
+                            foreach($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $m => $esp_emp){
+                                foreach ($esp_emp->detalles as $n => $det_esp_emp){
+                                    switch (explode("|",$esp_emp->empaque->nombre)[1]) {
+                                        case '1':
+                                            $full += $det_ped->cantidad;
+                                            $full_det_esp_emp += $det_ped->cantidad;
+                                            break;
+                                        case '0.5':
+                                            $half += $det_ped->cantidad;
+                                            $half_det_esp_emp += $det_ped->cantidad;
+                                            break;
+                                        case '0.25':
+                                            $cuarto +=$det_ped->cantidad;
+                                            $cuarto_det_esp_emp +=$det_ped->cantidad;
+                                            break;
+                                        case '0.17':
+                                            $sexto +=$det_ped->cantidad;
+                                            $sexto_det_esp_emp+=$det_ped->cantidad;
+                                            break;
+                                        case '0.125':
+                                            $octavo +=$det_ped->cantidad;
+                                            $octavo_det_esp_emp+=$det_ped->cantidad;
+                                            break;
+                                    }
+                                }
+                            }
+                        }
+                    @endphp
                     <tr id="tr_despachos">
                         <td class="text-center" style="border-color: #9d9d9d;vertical-align: middle">
-                           @foreach(getPedido($pedido->id_pedido)->cliente->detalles as $det_cliente)
+                           #{{$x+1}}
+                        </td>
+                        <td class="text-center" style="border-color: #9d9d9d;vertical-align: middle">
+                            @foreach(getPedido($pedido->id_pedido)->cliente->detalles as $det_cliente)
                                 {{$det_cliente->estado == 1 ? $det_cliente->nombre : "" }}
                             @endforeach
-                            <input type="hidden" class="id_pedido" name="id_pedido" value="{{$pedido->id_pedido}}">
+                            <input type="hidden" class="id_pedido id_pedido_{{$x+1}}" name="id_pedido" value="{{$pedido->id_pedido}}">
                         </td>
                         <td class="text-center" style="border-color: #9d9d9d;vertical-align: middle">
                             {{getPedido($pedido->id_pedido)->detalles[0]->agencia_carga->nombre}}
@@ -176,63 +96,98 @@
                             {{$caja_full}}
                         </td>
                         <td class="text-center" style="border-color: #9d9d9d;vertical-align: middle">
-                           @php $piezas = 0; @endphp
+                            @php $piezas = 0; @endphp
                             @foreach(getPedido($pedido->id_pedido)->detalles as $det_ped)
                                 @foreach($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $esp_emp)
-                                    @foreach($esp_emp->detalles as $x => $det_esp)
-                                        @php  if($x == 0) $piezas += ($esp_emp->cantidad * $det_ped->cantidad); @endphp
+                                    @foreach($esp_emp->detalles as $det_esp)
+                                        @php  $piezas += ($esp_emp->cantidad * $det_ped->cantidad); @endphp
                                     @endforeach
                                 @endforeach
                             @endforeach
                             {{$piezas}}
                             @php $piezas_totales += $piezas; @endphp
                         </td>
-                        <td class="text-center" style="border-color: #9d9d9d;vertical-align: middle">
+                        <td class="text-center full full_{{$x+1}}"  style="border-color: #9d9d9d;vertical-align: middle">
+                            {{$full_det_esp_emp}}
+                            <input type="hidden" class="full " value="{{$full_det_esp_emp}}">
+                        </td>
+                        <td class="text-center half_{{$x+1}}"  style="border-color: #9d9d9d;vertical-align: middle">
+                            {{$half_det_esp_emp}}
+                            <input type="hidden" class="half" value="{{$half_det_esp_emp}}">
+                        </td>
+                        <td class="text-center cuarto cuarto_{{$x+1}}"  style="border-color: #9d9d9d;vertical-align: middle">
+                            {{$cuarto_det_esp_emp}}
+                            <input type="hidden" class="cuarto" value="{{$cuarto_det_esp_emp}}">
+                        </td>
+                        <td class="text-center sexto sexto_{{$x+1}}"  style="border-color: #9d9d9d;vertical-align: middle">
+                            {{$sexto_det_esp_emp}}
+                            <input type="hidden" class="sexto" value="{{$sexto_det_esp_emp}}">
+                        </td>
+                        <td class="text-center octavo octavo_{{$x+1}}"  style="border-color: #9d9d9d;vertical-align: middle">
+                            {{$octavo_det_esp_emp}}
+                            <input type="hidden" class="octavo" value="{{$octavo_det_esp_emp}}">
+                        </td>
+                        <td class="text-center"  style="border-color: #9d9d9d;vertical-align: middle">
                             @if(getPedido($pedido->id_pedido)->envios->count() >0)
-                                {{ getPedido($pedido->id_pedido)->envios[0]->detalles[0]->id_aerolinea ==  ""
-                                     ? "No se ha asignado aerolínea"
-                                     : getPedido($pedido->id_pedido)->envios[0]->detalles[0]->aerolinea->codigo}}
+                                {!! getPedido($pedido->id_pedido)->envios[0]->detalles[0]->id_aerolinea ==  ""
+                                     ? "<span style='color:red'>No se ha asignado aerolínea</span>"
+                                     : getPedido($pedido->id_pedido)->envios[0]->detalles[0]->aerolinea->codigo !!}
                             @else
-                                {{"No se ha configurado el envío del pedido"}}
+                                <span style='color:red'>{{"No se ha configurado el envío del pedido"}}</span>
                             @endif
-                        </td>
-                        <td class="text-center" style="border-color: #9d9d9d;vertical-align: middle">
-
-                        </td>
-                        <td class="text-center" style="border-color: #9d9d9d;vertical-align: middle">
-
-                        </td>
-                        <td class="text-center" style="border-color: #9d9d9d;vertical-align: middle">
-
-                        </td>
-                        <td class="text-center" style="border-color: #9d9d9d;vertical-align: middle">
-
-                        </td>
-                        <td class="text-center" style="border-color: #9d9d9d;vertical-align: middle">
-
-                        </td>
-                        <td class="text-center" style="border-color: #9d9d9d;vertical-align: middle">
-
-                        </td>
-                        <td class="text-center" style="border-color: #9d9d9d;vertical-align: middle">
-
                         </td>
                     </tr>
                 @endforeach
-                    <tr>
-                        <td></td>
-                        <td class="text-center" style="border-color: #9d9d9d;vertical-align: middle">Total:</td>
-                        <td class="text-center" style="border-color: #9d9d9d;vertical-align: middle"> {{$total_caja_full}}</td>
-                        <td class="text-center" style="border-color: #9d9d9d;vertical-align: middle"> {{$piezas_totales}}</td>
-                    </tr>
-                    <tr>
-                    </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td class="text-center" style="border-color: #9d9d9d;vertical-align: middle">Total:</td>
+                <td class="text-center" style="border-color: #9d9d9d;vertical-align: middle"> {{$total_caja_full}}</td>
+                <td class="text-center" style="border-color: #9d9d9d;vertical-align: middle"> <span id="piezas_totales">{{$piezas_totales}}</span></td>
+                <td colspan="6" id="msg" style="border: none"></td>
+            </tr>
+            <tr>
+            </tr>
             </tbody>
         </table>
-        <div class="col md-12 text-center" style="font-weight: bold;margin-top: 20px">
+        <div class="col md-12 text-center" style="font-weight: bold;margin-top:20px">
+            DATOS GENERALES
+        </div>
+        <table width="100%" class="table-responsive table-bordered" style=" border-color: white;">
+            <tr>
+                <td class="text-center"  style="border-color: #9d9d9d;vertical-align: middle;" >
+                    <b> Cajas Totales</b>
+                </td>
+                <td class="text-center"  style="border-color: #9d9d9d;vertical-align: middle">
+                    <b>FULL BOXES : [<span id="full_box">{{number_format($full,2,".","")}}</span>]</b>
+                </td>
+                <td class="text-center"  style="border-color: #9d9d9d;vertical-align: middle">
+                    <b> HALF BOXES : [<span id="half_box">{{number_format($half,2,".","")}}</span>]</b>
+                </td>
+                <td class="text-center"  style="border-color: #9d9d9d;vertical-align: middle">
+                    <b> 1/4 BOXES : [<span id="cuarto_box">{{number_format($cuarto,2,".","")}}</span>]</b>
+                </td>
+                <td class="text-center"  style="border-color: #9d9d9d;vertical-align: middle">
+                    <b> 1/6 BOXES : [<span id="sexto_box">{{number_format($sexto,2,".","")}}</span>]</b>
+                </td>
+                <td class="text-center"  style="border-color: #9d9d9d;vertical-align: middle">
+                    <b> 1/8 BOXES : [<span id="octavo_box">{{number_format($octavo,2,".","")}}</span>]</b>
+                </td>
+                <td class="text-center"  style="border-color: #9d9d9d;vertical-align: middle">
+                    <button type="button" class="btn btn-primary btn-xs" title="Agregar Camión" onclick="distribucion_despacho()">
+                        <i class="fa fa-plus" aria-hidden="true"></i>
+                    </button>
+                    <button type="button" class="btn btn-danger btn-xs" title="Quitar Camión" onclick="delete_distribucion()">
+                        <i class="fa fa-minus" aria-hidden="true"></i>
+                    </button>
+                </td>
+            </tr>
+        </table>
+        <div id="despachos"></div>
+        <div class="col md-12 text-center" style="font-weight: bold;margin-top: 40px">
             RESPONSABLES
         </div>
-        <table width="100%" class="table-responsive table-bordered" style=" border-color: white;margin-top:20px">
+        <table width="100%" class="table-responsive table-bordered" style=" border-color: white;">
             <tr>
                 <td class="text-center" style="border-color: #9d9d9d;vertical-align: middle">
                     <label>Oficina de despacho  | Correo</label><br/>
@@ -292,5 +247,25 @@
         </table>
     </div>
 </div>
-</form>
-<script>  busqueda_camiones_conductores(); </script>
+<script>
+    distribucion_despacho();
+    function distribucion_despacho(){
+        cant_form = $("div#despachos form").length;
+
+        $.LoadingOverlay('show');
+        datos = {
+            cant_form : cant_form,
+        };
+        $.get('{{url('despachos/distribuir_despacho')}}', datos, function (retorno) {
+            $("#despachos").append(retorno);
+        });
+        $.LoadingOverlay('hide');
+    }
+
+    function delete_distribucion(){
+        cant_form = $("div#despachos form").length;
+        if(cant_form > 1) $("div#despachos form#form_despacho_"+cant_form).remove();
+        if(cant_form <= 2) $("select.pedido").removeAttr('required');
+    }
+
+</script>

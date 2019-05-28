@@ -1578,17 +1578,22 @@ function buscar_codigo_dae(input,form,factura_cliente_tercero){
         fecha_envio : $("form#"+form+" #fecha_envio").val()
     };
     $.get('envio/buscar_codigo_dae', datos, function (retorno) {
-        factura_cliente_tercero
-            ? $("form#"+form+" #dae_cliente_tercero").val(retorno.codigo_dae)
-            : $("form#"+form+" #dae").val(retorno.codigo_dae);
+        if(factura_cliente_tercero){
+            $("form#"+form+" #dae_cliente_tercero").val(retorno.codigo_dae);
+            $("form#"+form+" #codigo_dae_cliente_tercero").val(retorno.dae);
+        }else{
+            $("form#"+form+" #dae").val(retorno.codigo_dae);
+            $("form#"+form+ " #codigo_dae").val(retorno.dae);
+        }
+        //retorno.codigo_dae == "" ? $("form#"+form+" #dae").removeAttr('disabled') : $("form#"+form+" #dae").attr('disabled','disabled');
 
-        retorno.codigo_dae == "" ? $("form#"+form+" #dae").removeAttr('disabled') : $("form#"+form+" #dae").attr('disabled','disabled');
-
-        if(retorno.codigo_empresa == datos.codigo_pais){
+        if(retorno.codigo_empresa === datos.codigo_pais){
             $("form#"+form+ " #dae").removeAttr('required').val('');
+            $("form#"+form+ " #codigo_dae").removeAttr('required').val('');
             $("form#"+form+ " #dae_cliente_tercero").removeAttr('required').val('');
         }else{
             $("form#"+form+ " #dae").attr('required',true).val(retorno.codigo_dae);
+            $("form#"+form+ " #codigo_dae").attr('required',true).val(retorno.dae);
             $("form#"+form+ " #dae_cliente_tercero").attr('required',true).val(retorno.codigo_dae);
         }
     }).always(function () {
@@ -1629,7 +1634,8 @@ function actualizar_envio(id_envio,form,tipo_pedido,token,id_pedido,vista){
             aerolinea : $("form#"+form+ " #aerolinea").val(),
             precios : arrDataPrecio,
             almacen : $("form#"+form+ " #almacen").val(),
-            tipo_pedido : tipo_pedido
+            tipo_pedido : tipo_pedido,
+            codigo_dae:  $("#codigo_dae").val()
         };
         $.post('envio/actualizar_envio', datos, function (retorno) {
             if (retorno.success) {
@@ -1686,7 +1692,8 @@ function store_datos_factura_cliente_tercero(id_envio,token,id_pedido,vista) {
             dae : $('#dae_cliente_tercero').val(),
             puerto_entrada : $('#puerto_entrada').val(),
             tipo_credito : $('#tipo_credito').val(),
-            marca : $('#marca').val()
+            marca : $('#marca').val(),
+            codigo_dae : $("#codigo_dae_cliente_tercero").val()
         };
         post_jquery('envio/store_datos_factura_cliente_tercero', datos, function () {
             cerrar_modals();
@@ -1742,4 +1749,34 @@ function cambiar_input_precio(idDetEmp,id_precio,posicon_variedad) {
 function borrar_duplicado() {
     $(".tr_remove_"+$(".input_cantidad").length).remove();
     calcular_precio_pedido();
+}
+
+function busqueda_camiones_conductores(id_form) {
+    datos = {
+        id_transportista : $("form#"+id_form+" #id_transportista").val()
+    };
+    $.get('despachos/list_camiones_conductores', datos, function (retorno) {
+        $.each(retorno.camiones,function (i,j) {
+            $("form#"+id_form+" #id_camion").append("<option id='camion_dinamic' value='"+j.id_camion+"'>"+j.modelo+"</option>");
+            if(i === 0)
+                $("#n_placa").val(j.placa);
+        });
+        $.each(retorno.conductores,function (i,j) {
+            $("form#"+id_form+" #id_chofer").append("<option id='chofer_dinamic' value='"+j.id_conductor+"'>"+j.nombre+"</option>")
+        });
+
+    }).always(function () {
+        $.LoadingOverlay('hide');
+    });
+}
+
+function busqueda_placa_camion(id_form) {
+    datos = {
+        id_camion : $("form#"+id_form+" #id_camion").val()
+    };
+    $.get('despachos/list_placa_camion', datos, function (retorno) {
+        $("form#"+id_form+" #n_placa").val(retorno.placa);
+    }).always(function () {
+        $.LoadingOverlay('hide');
+    });
 }

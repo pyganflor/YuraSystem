@@ -74,7 +74,7 @@
                 </table>
                 <table style="width: 100%">
                     <tr><td style="font-size:12px">{{$data['obj_xml']->infoFactura->razonSocialComprador}}</td></tr>
-                    <tr><td style="font-size:12px">{{$factura_tercero !== null ? getPais($factura_tercero->codigo)->nombre : getPais($cliente->codigo_pais)->nombre}} - {{$data['obj_xml']->infoAdicional->campoAdicional[0]}} </td></tr>
+                    <tr><td style="font-size:12px">{{$factura_tercero !== null ? getPais($factura_tercero->codigo_pais)->nombre : getPais($cliente->codigo_pais)->nombre}} - {{$data['obj_xml']->infoAdicional->campoAdicional[0]}} </td></tr>
                     <tr><td style="font-size:12px">ID:{{$data['obj_xml']->infoFactura->identificacionComprador}}</td></tr>
                 </table>
 
@@ -150,7 +150,6 @@
                             @php
                                 $precio = explode("|", $det_ped->precio);
                                  $dp = getDetallePedido($det_ped->id_detalle_pedido);
-                                $i = 0;
                             @endphp
                             @foreach($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $m => $esp_emp)
                                 @foreach ($esp_emp->detalles as $n => $det_esp_emp)
@@ -158,13 +157,21 @@
                                         $total_ramos += number_format(($det_ped->cantidad*$det_esp_emp->cantidad),2,".","");
                                         $peso_neto += (int)$det_esp_emp->clasificacion_ramo->nombre * number_format(($det_ped->cantidad*$det_esp_emp->cantidad),2,".","");
                                         $peso_caja += isset(explode("|",$det_esp_emp->especificacion_empaque->empaque->nombre)[2]) ? explode("|",$det_esp_emp->especificacion_empaque->empaque->nombre)[2] : 0;
-                                        $i++;
                                     @endphp
                                 @endforeach
                             @endforeach
                         @endforeach
                     @elseif($envio->pedido->tipo_especificacion === "T")
                         @foreach ($envio->pedido->detalles as $x => $det_ped)
+                             @foreach($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $m => $esp_emp)
+                                  @foreach ($esp_emp->detalles as $n => $det_esp_emp)
+                                       @php
+                                            $total_ramos += number_format(($det_ped->cantidad*$det_esp_emp->cantidad),2,".","");
+                                            $peso_neto += (int)$det_esp_emp->clasificacion_ramo->nombre * number_format(($det_ped->cantidad*$det_esp_emp->cantidad),2,".","");
+                                            $peso_caja += isset(explode("|",$det_esp_emp->especificacion_empaque->empaque->nombre)[2]) ? (explode("|",$det_esp_emp->especificacion_empaque->empaque->nombre)[2]*$det_ped->cantidad) : 0;
+                                       @endphp
+                                  @endforeach
+                             @endforeach
                             @foreach($det_ped->coloraciones as $y => $coloracion)
                                 @foreach($coloracion->marcaciones_coloraciones as $m_c)
                                     @if($coloracion->precio=="")
@@ -179,7 +186,6 @@
                                             foreach(explode("|",$coloracion->precio) as $p)
                                                 if($m_c->id_detalle_especificacionempaque == explode(";",$p)[1])
                                                     $precio = explode(";",$p)[0];
-                                                /*$precio =explode( ";",explode("|",$coloracion->precio)[$i])[0];*/
                                         @endphp
                                     @endif
                                     @php
@@ -191,7 +197,7 @@
                         @endforeach
                     @endif
                             <b>Net Weight Kg. {{number_format(($peso_neto/1000),2,".","")}}</b><br />
-                            <b>Gross Weight Kg. {{number_format(($peso_neto/1000),2,".","")+($peso_caja/1000)}}</b><br />
+                            <b>Gross Weight Kg. {{number_format(($peso_neto/1000),2,".","")+($peso_caja/1000),2,".",""}}</b>
                         </td>
                         <td style="border: 1px solid black;padding: 0;font-size: 12px">
                             <b>Fecha embarque</b><br />
@@ -410,7 +416,7 @@
         </td>
         <td style="text-align: center;vertical-align: bottom;font-family:arial, sans-serif;font-size: 12px;width:50%">
             <label >MARKETING NAME</label>
-            <div style="border: 1px solid;height: 20px"><b>{{strtoupper($factura_tercero !== null ? 8 : $cliente->marca_caja->nombre)}}</b></div>
+            <div style="border: 1px solid;height: 20px"><b>{{strtoupper($factura_tercero !== null ? $factura_tercero->marca_caja->nombre : $cliente->marca_caja->nombre)}}</b></div>
         </td>
     </tr>
     <tr>

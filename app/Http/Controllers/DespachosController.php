@@ -93,8 +93,7 @@ class DespachosController extends Controller
             return view('adminlte.gestion.postcocecha.despachos.form.despacho_listado',[
                 'pedidos' => $arr_data_pedido,
                 'empresa' => getConfiguracionEmpresa(),
-                'transportistas' => Transportista::where('estado',1)->get(),
-                'datos_responsables' => Despacho::all()->last()
+                'datos_responsables' => Despacho::all()->last(),
             ]);
         }else{
 
@@ -124,100 +123,109 @@ class DespachosController extends Controller
     public function store_despacho(Request $request){
 
         $valida = Validator::make($request->all(), [
-            'fecha_despacho' => 'required',
-            'firma_id_transportista' => 'required',
-            'id_asist_comercial' => 'required',
-            'id_camion' => 'required',
-            'id_conductor' => 'required',
-            'id_cuarto_frio' => 'required',
-            'id_guardia_turno' => 'required',
-            'id_oficina_despacho' => 'required',
-            'id_transportista' => 'required',
-            'n_placa' => 'required',
-            'n_viaje' => 'required',
-            'nombre_asist_comercial' => 'required',
-            'nombre_cuarto_frio' => 'required',
-            'nombre_guardia_turno' => 'required',
-            'nombre_oficina_despacho' => 'required',
-            'nombre_transportista' => 'required',
-            'sello_salida' => 'required',
-            'sellos' => 'required',
-            'semana' => 'required',
-            'pedidos'  => 'required',
-            'correo_oficina_despacho'  => 'required'
+            'data_despacho.*.fecha_despacho' => 'required',
+            'data_despacho.*.firma_id_transportista' => 'required',
+            'data_despacho.*.id_asist_comercial' => 'required',
+            'data_despacho.*.id_camion' => 'required',
+            'data_despacho.*.id_conductor' => 'required',
+            'data_despacho.*.id_cuarto_frio' => 'required',
+            'data_despacho.*.id_guardia_turno' => 'required',
+            'data_despacho.*.id_oficina_despacho' => 'required',
+            'data_despacho.*.id_transportista' => 'required',
+            'data_despacho.*.n_placa' => 'required',
+            'data_despacho.*.n_viaje' => 'required',
+            'data_despacho.*.nombre_asist_comercial' => 'required',
+            'data_despacho.*.nombre_cuarto_frio' => 'required',
+            'data_despacho.*.nombre_guardia_turno' => 'required',
+            'data_despacho.*.nombre_oficina_despacho' => 'required',
+            'data_despacho.*.nombre_transportista' => 'required',
+            'data_despacho.*.arr_sellos' => 'required|Array',
+            'data_despacho.*.semana' => 'required',
+            'data_despacho.*.correo_oficina_despacho'  => 'required'
         ]);
 
         if (!$valida->fails()) {
             $msg = '';
-            $objDespacho = new Despacho;
-            $objDespacho->id_transportista = $request->id_transportista;
-            $objDespacho->id_camion = $request->id_camion;
-            $objDespacho->id_conductor = $request->id_conductor;
-            $objDespacho->fecha_despacho = $request->fecha_despacho;
-            $objDespacho->sello_salida = $request->sello_salida;
-            $objDespacho->semana = $request->semana;
-            $objDespacho->rango_temp = $request->rango_temp;
-            $objDespacho->n_viaje = $request->n_viaje;
-            $objDespacho->hora_salida = $request->horas_salida;
-            $objDespacho->temp = $request->temperatura;
-            $objDespacho->kilometraje = $request->kilometraje;
-            $objDespacho->sellos = substr(implode("|",$request->sellos), 0, -1);
-            $objDespacho->sello_adicional =$request->sello_adicional;
-            $objDespacho->horario = $request->horario;
-            $objDespacho->resp_ofi_despacho = $request->nombre_oficina_despacho;
-            $objDespacho->id_resp_ofi_despacho = $request->id_oficina_despacho;
-            $objDespacho->aux_cuarto_fri = $request->nombre_cuarto_frio;
-            $objDespacho->id_aux_cuarto_fri = $request->id_cuarto_frio;
-            $objDespacho->guardia_turno = $request->nombre_guardia_turno;
-            $objDespacho->id_guardia_turno = $request->id_guardia_turno;
-            $objDespacho->asist_comercial_ext = $request->nombre_asist_comercial;
-            $objDespacho->id_asist_comrecial_ext = $request->id_asist_comercial;
-            $objDespacho->resp_transporte = $request->nombre_transportista;
-            $objDespacho->id_resp_transporte = $request->firma_id_transportista;
-            $objDespacho->mail_resp_ofi_despacho = $request->correo_oficina_despacho;
-            $objDespacho->n_despacho = getSecuenciaDespacho();
+            //dd($request->all());
+            foreach($request->data_despacho as $despacho){
+                $s='';
+                foreach ($despacho['arr_sellos'] as $sellos) $s .= $sellos."|";
+                $distribucion = substr($despacho['distribucion'], 0, -1);
+                $objDespacho = new Despacho;
+                $objDespacho->id_transportista = $despacho['id_transportista'];
+                $objDespacho->id_camion = $despacho['id_camion'];
+                $objDespacho->id_conductor = $despacho['id_conductor'];
+                $objDespacho->fecha_despacho = $despacho['fecha_despacho'];
+                $objDespacho->sello_salida = $despacho['sello_salida'];
+                $objDespacho->semana = $despacho['semana'];
+                $objDespacho->rango_temp = $despacho['rango_temp'];
+                $objDespacho->n_viaje = $despacho['n_viaje'];
+                $objDespacho->hora_salida = $despacho['horas_salida'];
+                $objDespacho->temp = $despacho['temperatura'];
+                $objDespacho->kilometraje = $despacho['kilometraje'];
+                $objDespacho->sellos = substr($s, 0, -1);
+                $objDespacho->sello_adicional =$despacho['sello_adicional'];
+                $objDespacho->horario = $despacho['horario'];
+                $objDespacho->resp_ofi_despacho = $despacho['nombre_oficina_despacho'];
+                $objDespacho->id_resp_ofi_despacho = $despacho['id_oficina_despacho'];
+                $objDespacho->aux_cuarto_fri = $despacho['nombre_cuarto_frio'];
+                $objDespacho->id_aux_cuarto_fri = $despacho['id_cuarto_frio'];
+                $objDespacho->guardia_turno = $despacho['nombre_guardia_turno'];
+                $objDespacho->id_guardia_turno = $despacho['id_guardia_turno'];
+                $objDespacho->asist_comercial_ext = $despacho['nombre_asist_comercial'];
+                $objDespacho->id_asist_comrecial_ext = $despacho['id_asist_comercial'];
+                $objDespacho->resp_transporte = $despacho['nombre_transportista'];
+                $objDespacho->id_resp_transporte = $despacho['firma_id_transportista'];
+                $objDespacho->mail_resp_ofi_despacho = $despacho['correo_oficina_despacho'];
+                $objDespacho->n_despacho = getSecuenciaDespacho();
 
-            if ($objDespacho->save()) {
-                $modelDespacho = Despacho::all()->last();
-                bitacora('despacho', $modelDespacho->id_despacho, 'I', 'Inserción satisfactoria de un nuevo despacho');
-                foreach ($request->pedidos as $p){
-                    $objDetalleDespacho = new DetalleDespacho;
-                    $objDetalleDespacho->id_despacho = $modelDespacho->id_despacho;
-                    $objDetalleDespacho->id_pedido = $p;
-                    if($objDetalleDespacho->save()){
-                        $modelDetalleDespacho = DetalleDespacho::all()->last();
-                        bitacora('detalle_despacho', $modelDetalleDespacho->id_detalle_despacho, 'I', 'Inserción satisfactoria de un nuevo detalle de despacho');
-                        $success = true;
-                        $msg = '<div class="alert alert-success text-center">' .
-                            '<p> Se ha guardado el despacho ' . str_pad($objDespacho->n_despacho, 9, "0", STR_PAD_LEFT) . '  exitosamente, 
-                            <a target="_blank" href="'.url('despachos/descargar_despacho/'.$objDespacho->n_despacho.'').'">  clic aquí para ver y descargar</a></p>'
-                            . '</div>';
-                    }else{
-                        DetalleDespacho::where('id_despacho',$modelDespacho->id_despacho)->delete();
-                        Despacho::destroy($modelDespacho->id_despacho);
-                        $msg = '<div class="alert alert-warning text-center">' .
-                            '<p> Ha ocurrido un problema al guardar la información al sistema</p>'
-                            . '</div>';
-                        $success = false;
-                        return [
-                            'mensaje' => $msg,
-                            'success' => $success
-                        ];
+                if ($objDespacho->save()) {
+                    $modelDespacho = Despacho::all()->last();
+                    bitacora('despacho', $modelDespacho->id_despacho, 'I', 'Inserción satisfactoria de un nuevo despacho');
+                    $distribucion = explode(";",$distribucion);
+
+                    foreach ($distribucion as $d) {
+                        $objDetalleDespacho = new DetalleDespacho;
+                        $objDetalleDespacho->id_despacho = $modelDespacho->id_despacho;
+                        $objDetalleDespacho->id_pedido = explode("|",$d)[0];
+                        $objDetalleDespacho->cantidad = explode("|",$d)[1];
+                        if($objDetalleDespacho->save()){
+                            $modelDetalleDespacho = DetalleDespacho::all()->last();
+                            bitacora('detalle_despacho', $modelDetalleDespacho->id_detalle_despacho, 'I', 'Inserción satisfactoria de un nuevo detalle de despacho');
+                            $success = true;
+
+                        }else{
+                            DetalleDespacho::where('id_despacho',$modelDespacho->id_despacho)->delete();
+                            Despacho::destroy($modelDespacho->id_despacho);
+                            $msg = '<div class="alert alert-warning text-center">' .
+                                '<p> Ha ocurrido un problema al guardar la información al sistema</p>'
+                                . '</div>';
+                            $success = false;
+                            return [
+                                'mensaje' => $msg,
+                                'success' => $success
+                            ];
+                        }
                     }
+                    $msg .= '<div class="alert alert-success text-center">' .
+                        '<p> Se ha guardado el despacho ' . str_pad($objDespacho->n_despacho, 9, "0", STR_PAD_LEFT) . '  exitosamente, 
+                            <a target="_blank" href="'.url('despachos/descargar_despacho/'.$objDespacho->n_despacho.'').'">  clic aquí para ver y descargar</a></p>'
+                        . '</div>';
+                    $data = [
+                        'empresa' => getConfiguracionEmpresa(),
+                        'despacho' => Despacho::where('n_despacho',(getSecuenciaDespacho()-1))
+                            ->join('detalle_despacho as dd','despacho.id_despacho','dd.id_despacho')->get()
+                    ];
+                    PDF::loadView('adminlte.gestion.postcocecha.despachos.partials.pdf_despacho', compact('data'))->setPaper('a4', 'landscape')
+                        ->save(env('PATH_PDF_DESPACHOS') . str_pad((getSecuenciaDespacho()-1), 9, "0", STR_PAD_LEFT) . ".pdf");
+                }else{
+                    $success = false;
+                    $msg = '<div class="alert alert-warning text-center">' .
+                        '<p> Ha ocurrido un problema al guardar la información al sistema</p>'
+                        . '</div>';
                 }
-                $data = [
-                    'empresa' => getConfiguracionEmpresa(),
-                    'despacho' => Despacho::where('n_despacho',(getSecuenciaDespacho()-1))
-                        ->join('detalle_despacho as dd','despacho.id_despacho','dd.id_despacho')->get()
-                ];
-                PDF::loadView('adminlte.gestion.postcocecha.despachos.partials.pdf_despacho', compact('data'))->setPaper('a4', 'landscape')
-                    ->save(env('PATH_PDF_DESPACHOS') . str_pad((getSecuenciaDespacho()-1), 9, "0", STR_PAD_LEFT) . ".pdf");
-            }else{
-                $success = false;
-                $msg = '<div class="alert alert-warning text-center">' .
-                    '<p> Ha ocurrido un problema al guardar la información al sistema</p>'
-                    . '</div>';
             }
+
         } else {
             $success = false;
             $errores = '';
@@ -274,5 +282,20 @@ class DespachosController extends Controller
             'mensaje' => $msg,
             'success' => $success,
         ];
+    }
+
+    public function distribuir_despacho(Request $request){
+        return view('adminlte.gestion.postcocecha.despachos.partials.distribucion',[
+            'transportistas' => Transportista::where('estado',1)->get(),
+            'cant_form' => $request->cant_form,
+        ]);
+    }
+
+    public function add_pedido_piezas(Request $request){
+        return view('adminlte.gestion.postcocecha.despachos.partials.add_pedido_piezas',[
+            'sec'=> $request->secuencial,
+            'arr_pedidos' => $request->arr_pedidos,
+            'cant_form'=> $request->cant_form
+        ]);
     }
 }

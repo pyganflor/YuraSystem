@@ -224,19 +224,25 @@
                                     </div>
                                     <div class="box-body">
                                         <div class="row">
+                                            @php
+                                                $envio->codigo_pais == ""
+                                                    ? $p = $envio->pais_cliente
+                                                    : $p = $envio->codigo_pais;
+                                                        if(isset($envio->dae)){
+                                                            $dae = $envio->dae;
+                                                        }else{
+                                                            $d = getCodigoDae(strtoupper($p),Carbon\Carbon::parse($envio->fecha_envio)->format('m'),Carbon\Carbon::parse($envio->fecha_envio)->format('Y'));
+                                                            $dae = isset($d->codigo_dae) ? $d->codigo_dae : "";
+                                                        }
+                                            @endphp
+                                            <div class="col-md-3">
+                                                <label for="dae">CÓDIGO DAE</label>
+                                                <input type="text" placeholder="CODÍGO DAE" class="form-control" {{($facturado) ? "disabled='disabled'" : ""}}
+                                                {{$factura_tercero ?  "disabled" : ""}} {{-- {{$dae != "" ? "disabled='disabled'" : ""}}--}} id="codigo_dae" name="codigo_dae" value="{{isset($envio->codigo_dae) ? $envio->codigo_dae : ""}}"
+                                                    {{(strtoupper($p) != getConfiguracionEmpresa()->codigo_pais) ? "required" : "" }} >
+                                            </div>
                                             <div class="col-md-3">
                                                 <label for="dae">DAE</label>
-                                                @php
-                                                    $envio->codigo_pais == ""
-                                                        ? $p = $envio->pais_cliente
-                                                        : $p = $envio->codigo_pais;
-                                                            if(isset($envio->dae)){
-                                                                $dae = $envio->dae;
-                                                            }else{
-                                                                $d = getCodigoDae(strtoupper($p),Carbon\Carbon::parse($envio->fecha_envio)->format('m'),Carbon\Carbon::parse($envio->fecha_envio)->format('Y'));
-                                                                $dae = isset($d->codigo_dae) ? $d->codigo_dae : "";
-                                                            }
-                                                @endphp
                                                 <input type="text" placeholder="DAE" class="form-control" {{($facturado) ? "disabled='disabled'" : ""}}
                                                 {{$factura_tercero ?  "disabled" : ""}} {{-- {{$dae != "" ? "disabled='disabled'" : ""}}--}} id="dae" name="dae" value="{{$dae}}"
                                                     {{(strtoupper($p) != getConfiguracionEmpresa()->codigo_pais) ? "required" : "" }} >
@@ -251,6 +257,9 @@
                                                 <input type="text" placeholder="Guía hija" class="form-control" {{($facturado) ? "disabled='disabled'" : ""}}
                                                 id="guia_hija" name="guia_hija" value="{{$envio->guia_hija}}">
                                             </div>
+
+                                        </div>
+                                        <div class="row" >
                                             <div class="col-md-3">
                                                 <label for="aerolinea">Agencia de transporte</label>
                                                 <select id="aerolinea" name="aerolinea" class="form-control"
@@ -263,8 +272,6 @@
                                                     @endforeach
                                                 </select>
                                             </div>
-                                        </div>
-                                        <div class="row" >
                                             <div class="col-md-3">
                                                 <label for="Email">Cliente</label>
                                                 @php
@@ -308,6 +315,8 @@
                                                 class="form-control" {{($facturado) ? "disabled='disabled'" : ""}} id="telefono" name="telefono_{{$i+1}}"
                                                        value="{{$telefono}}" required>
                                             </div>
+                                        </div>
+                                        <div class="row" >
                                             <div class="col-md-3">
                                                 <label for="pais">País</label>
                                                 <select id="codigo_pais" name="codigo_pais" class="form-control" {{$factura_tercero ?  "disabled" : ""}} onchange="buscar_codigo_dae(this,'form_envios_{{$i+1}}')"
@@ -322,8 +331,6 @@
                                                     @endforeach
                                                 </select>
                                             </div>
-                                        </div>
-                                        <div class="row" >
                                             <div class="col-md-3">
                                                 @php
                                                     if(isset($envio->almacen)){
@@ -336,7 +343,7 @@
                                                 <input type="text" placeholder="Anden" class="form-control" {{$factura_tercero ?  "disabled" : ""}} {{($facturado) ? "disabled='disabled'" : ""}}
                                                 id="almacen" name="almacen_{{$i+1}}" value="{{$almacen}}">
                                             </div>
-                                            <div class="col-md-9">
+                                            <div class="col-md-6">
                                                 @php
                                                     if(isset($envio->direccion)){
                                                         $direccion = $envio->direccion;
