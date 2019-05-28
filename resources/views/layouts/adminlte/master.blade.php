@@ -34,6 +34,11 @@
     <!-- bootstrap wysihtml5 - text editor -->
     <link rel="stylesheet" href="{{url('adminlte/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css')}}">
 
+    <!-- daterange picker -->
+    <link rel="stylesheet" href="{{url('adminlte/bower_components/bootstrap-daterangepicker/daterangepicker.css')}}">
+    <!-- bootstrap datepicker -->
+    <link rel="stylesheet" href="{{url('adminlte/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css')}}">
+
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -156,6 +161,12 @@
 
 <!-- jQuery textcounter-->
 <script src="{{url('js/textcounter.min.js')}}" type="text/javascript"></script>
+
+<!-- date-range-picker -->
+<script src="{{url('adminlte/bower_components/moment/min/moment.min.js')}}"></script>
+<script src="{{url('adminlte/bower_components/bootstrap-daterangepicker/daterangepicker.js')}}"></script>
+<!-- bootstrap datepicker -->
+<script src="{{url('adminlte/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js')}}"></script>
 
 <script src="{{url('js/pdfObject.min.js')}}" type="text/javascript"></script>
 
@@ -589,10 +600,10 @@
         arreglo_modals_form = [];
     }
 
-    function estructura_tabla(id) {
+    function estructura_tabla(id, responsive = true) {
         $('#' + id).DataTable({
             order: [],
-            responsive: true,
+            responsive: responsive,
             paging: false,
             info: false,
             search: false,

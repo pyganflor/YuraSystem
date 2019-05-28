@@ -59,7 +59,7 @@
             <div class="description-block border-right">
                 <span class="description-percentage text-{{$class_porcent}}">
                     <i class="fa fa-caret-{{$class_icon}}"></i>
-                    {{$porcent}} %
+                    {{round($porcent,2)}} %
                 </span>
                 <h5 class="description-header">
                     {{$verde != '' ? $verde->getCalibre() : 0}}
