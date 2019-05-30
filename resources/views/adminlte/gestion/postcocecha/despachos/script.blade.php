@@ -46,48 +46,82 @@
     }
 
     function store_despacho() {
-        if($("#form_despacho").valid()){
+        form_valid = true;
+        cant_form = $("div#despachos form").length;
+        for (i=1;i<=cant_form;i++)
+            if(!$("#form_despacho_"+i).valid()) form_valid = false;
+
+        if(form_valid){
             $.LoadingOverlay('show');
+            arr_datos = [];
             arr_sellos = [];
-            arr_pedidos = [];
-            $.each($(".sello"),function (i,j) {
-                if(j.value != "")
-                    arr_sellos.push(j.value);
-            });
-            $.each($(".id_pedido"),function (i,j) {
-                arr_pedidos.push(j.value);
-            });
+            //arr_pedidos = [];
+            for (i=1;i<=cant_form;i++){
+                data = "";
+                data_sellos = [];
+                $.each($("form#form_despacho_"+i+" .sello"),function (i,j) { if(j.value != "") data_sellos.push(j.value); });
+
+                if($("#table_despacho_2").length == 1){
+                    tr_piezas = $("form#form_despacho_"+i+" tr#tr_pedido_piezas").length;
+                    for (j=1; j <= tr_piezas; j++){
+                        id_pedido = $("select#pedido_"+i+"_"+j).val();
+                        cant_piezas_camion = 0;
+                        cantidad="";
+                        $.each($("input.caja_"+i+"_"+j),function (l,m) { if(m.value > 0) cant_piezas_camion += parseInt(m.value); });
+                        cantidad += cant_piezas_camion+";";
+                        data += id_pedido+"|"+cantidad;
+                    }
+                }else{
+                    pedidos = $("table tr#tr_despachos").length;
+                    for (j=1; j<=pedidos; j++) {
+                        id_pedido = $(".id_pedido_"+j).val();
+                        full = $("td.full_"+j+" input.full").val();
+                        half = $("td.half_"+j+" input.half").val();
+                        cuarto = $("td.cuarto_"+j+" input.cuarto").val();
+                        sexto = $("td.sexto_"+j+" input.sexto").val();
+                        octavo = $("td.octavo_"+j+" input.octavo").val();
+                        cantidad = parseInt(full) + parseInt(half) + parseInt(cuarto) + parseInt(sexto) + parseInt(octavo);
+                        data += id_pedido+"|"+cantidad+";";
+                    }
+                }
+                arr_datos.push({
+                    arr_sellos : data_sellos,
+                    id_transportista : $("form#form_despacho_"+i+" #id_transportista").val(),
+                    id_camion : $("form#form_despacho_"+i+" #id_camion").val(),
+                    n_placa : $("form#form_despacho_"+i+" #n_placa").val(),
+                    id_conductor : $("form#form_despacho_"+i+" #id_chofer").val(),
+                    fecha_despacho : $("form#form_despacho_"+i+" #fecha_despacho").val(),
+                    sello_salida : $("form#form_despacho_"+i+" #sello_salida").val(),
+                    horario : $("form#form_despacho_"+i+" #horario").val(),
+                    semana : $("form#form_despacho_"+i+" #semana").val(),
+                    rango_temp : $("form#form_despacho_"+i+" #rango_temp").val(),
+                    sello_adicional : $("form#form_despacho_"+i+" #sello_adicional").val(),
+                    n_viaje : $("form#form_despacho_"+i+" #n_viaje").val(),
+                    horas_salida : $("form#form_despacho_"+i+" #horas_salida").val(),
+                    temperatura : $("form#form_despacho_"+i+" #temperatura").val(),
+                    kilometraje : $("form#form_despacho_"+i+" #kilometraje").val(),
+                    nombre_oficina_despacho : $("#nombre_oficina_despacho").val(),
+                    id_oficina_despacho : $("#id_oficina_despacho").val(),
+                    nombre_cuarto_frio : $("#nombre_cuarto_frio").val(),
+                    id_cuarto_frio : $("#id_cuarto_frio").val(),
+                    nombre_transportista : $("form#form_despacho_"+i+" #responsable").val(),
+                    firma_id_transportista : $("#firma_id_transportista").val(),
+                    nombre_guardia_turno : $("#nombre_guardia_turno").val(),
+                    id_guardia_turno : $("#id_guardia_turno").val(),
+                    nombre_asist_comercial : $("#nombre_asist_comercial").val(),
+                    id_asist_comercial : $("#id_asist_comercial").val(),
+                    correo_oficina_despacho : $("#correo_oficina_despacho").val(),
+                    distribucion : data
+                });
+            }
+            console.log(arr_datos);
+
+            //$.each($(".id_pedido"),function (i,j) { arr_pedidos.push(j.value); });
             datos = {
                 _token: '{{csrf_token()}}',
-                id_transportista : $("#id_transportista").val(),
-                id_camion : $("#id_camion").val(),
-                n_placa : $("#n_placa").val(),
-                id_conductor : $("#id_chofer").val(),
-                fecha_despacho : $("#fecha_despacho").val(),
-                sello_salida : $("#sello_salida").val(),
-                horario : $("#horario").val(),
-                semana : $("#semana").val(),
-                rango_temp : $("#rango_temp").val(),
-                sello_adicional : $("#sello_adicional").val(),
-                n_viaje : $("#n_viaje").val(),
-                horas_salida : $("#horas_salida").val(),
-                temperatura : $("#temperatura").val(),
-                kilometraje : $("#kilometraje").val(),
-                nombre_oficina_despacho : $("#nombre_oficina_despacho").val(),
-                id_oficina_despacho : $("#id_oficina_despacho").val(),
-                nombre_cuarto_frio : $("#nombre_cuarto_frio").val(),
-                id_cuarto_frio : $("#id_cuarto_frio").val(),
-                nombre_transportista : $("#nombre_transportista").val(),
-                firma_id_transportista : $("#firma_id_transportista").val(),
-                nombre_guardia_turno : $("#nombre_guardia_turno").val(),
-                id_guardia_turno : $("#id_guardia_turno").val(),
-                nombre_asist_comercial : $("#nombre_asist_comercial").val(),
-                id_asist_comercial : $("#id_asist_comercial").val(),
-                correo_oficina_despacho : $("#correo_oficina_despacho").val(),
-                sellos : arr_sellos,
-                pedidos : arr_pedidos
+                data_despacho : arr_datos,
+                //arr_pedidos : arr_pedidos,
             };
-
             post_jquery('despachos/store_despacho', datos, function () {
                 cerrar_modals();
                 listar_resumen_pedidos($('#fecha_pedidos_search').val());
@@ -95,36 +129,6 @@
             });
 
         }
-    }
-
-    function busqueda_camiones_conductores() {
-        datos = {
-            id_transportista : $("#id_transportista").val()
-        };
-        $.get('{{url('despachos/list_camiones_conductores')}}', datos, function (retorno) {
-            $.each(retorno.camiones,function (i,j) {
-                $("#id_camion").append("<option id='camion_dinamic' value='"+j.id_camion+"'>"+j.modelo+"</option>")
-                if(i === 0)
-                    $("#n_placa").val(j.placa);
-            });
-            $.each(retorno.conductores,function (i,j) {
-                $("#id_chofer").append("<option id='chofer_dinamic' value='"+j.id_conductor+"'>"+j.nombre+"</option>")
-            });
-
-        }).always(function () {
-            $.LoadingOverlay('hide');
-        });
-    }
-
-    function busqueda_placa_camion() {
-        datos = {
-            id_camion : $("#id_camion").val()
-        };
-        $.get('{{url('despachos/list_placa_camion')}}', datos, function (retorno) {
-            $("#n_placa").val(retorno.placa)
-        }).always(function () {
-            $.LoadingOverlay('hide');
-        });
     }
 
     function duplicar_nombre(input){

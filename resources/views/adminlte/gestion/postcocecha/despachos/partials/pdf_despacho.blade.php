@@ -141,7 +141,7 @@
         <tr>
             <td class="text-center" style="border:1px solid #9d9d9d;text-align: center;width: 170px;">Cliente</td>
             <td class="text-center" style="border:1px solid #9d9d9d;text-align: center">Agencia</td>
-            <td class="text-center" style="border:1px solid #9d9d9d;text-align: center">Cajas Full</td>
+            {{--<td class="text-center" style="border:1px solid #9d9d9d;text-align: center">Cajas Full</td>--}}
             <td class="text-center" style="border:1px solid #9d9d9d;text-align: center">Piezas</td>
             <td class="text-center" style="border:1px solid #9d9d9d;text-align: center">Guia</td>
             <td class="text-center" style="border:1px solid #9d9d9d;text-align: center">Temp</td>
@@ -154,6 +154,7 @@
         </tr>
     </thead>
     <tbody>
+
         @php $total_caja_full = 0; $piezas_totales = 0; @endphp
         @foreach($data['despacho'] as $pedido)
             <tr>
@@ -166,7 +167,7 @@
                 <td class="text-center" style="border:1px solid #9d9d9d;vertical-align: middle">
                     {{getPedido($pedido->id_pedido)->detalles[0]->agencia_carga->nombre}}
                 </td>
-                <td class="text-center" style="border:1px solid #9d9d9d;vertical-align: middle">
+                {{--<td class="text-center" style="border:1px solid #9d9d9d;vertical-align: middle">
                     @php $caja_full = 0; @endphp
                     @foreach(getPedido($pedido->id_pedido)->detalles as $det_ped)
                         @foreach($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $esp_emp)
@@ -175,18 +176,10 @@
                     @endforeach
                     @php $total_caja_full +=  $caja_full@endphp
                     {{$caja_full}}
-                </td>
+                </td>--}}
                 <td class="text-center" style="border:1px solid #9d9d9d;vertical-align: middle">
-                    @php $piezas = 0; @endphp
-                    @foreach(getPedido($pedido->id_pedido)->detalles as $det_ped)
-                        @foreach($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $esp_emp)
-                            @foreach($esp_emp->detalles as $x => $det_esp)
-                                @php  if($x == 0) $piezas += ($esp_emp->cantidad * $det_ped->cantidad); @endphp
-                            @endforeach
-                        @endforeach
-                    @endforeach
-                    {{$piezas}}
-                    @php $piezas_totales += $piezas; @endphp
+                    {{$pedido['cantidad']}}
+                    @php $piezas_totales += $pedido['cantidad']; @endphp
                 </td>
                 <td class="text-center" style="border:1px solid #9d9d9d;vertical-align: middle">
                     {{ getPedido($pedido->id_pedido)->envios[0]->detalles[0]->id_aerolinea ==  ""
@@ -205,7 +198,7 @@
     <tr>
         <td></td>
         <td class="text-center" style="border:1px solid #9d9d9d;vertical-align: middle">Total:</td>
-        <td class="text-center" style="border:1px solid #9d9d9d;vertical-align: middle"> {{$total_caja_full}}</td>
+        {{--<td class="text-center" style="border:1px solid #9d9d9d;vertical-align: middle"> {{$total_caja_full}}</td>--}}
         <td class="text-center" style="border:1px solid #9d9d9d;vertical-align: middle"> {{$piezas_totales}}</td>
     </tr>
     <tr>
@@ -239,7 +232,7 @@
             <br/>
             {{$data['despacho'][0]->resp_transporte}}
             <br/>
-            {{"CI: ".$data['despacho'][0]->id_resp_transporte}}
+            CI:
         </td>
         <td class="text-center" style="vertical-align: middle">
             __________________________

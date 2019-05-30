@@ -93,6 +93,9 @@ class ComprobanteController extends Controller
         $msg = "";
         if (!$valida->fails()) {
             $precio_total_sin_impuestos = 0.00;
+            $peso_neto = 0;
+            $peso_bruto = 0;
+            $peso_caja=0;
             $envio = getEnvio($request->id_envio);
 
             if($envio->pedido->tipo_especificacion === "N") {
@@ -101,6 +104,8 @@ class ComprobanteController extends Controller
                     $i = 0;
                     foreach ($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $m => $esp_emp) {
                         foreach ($esp_emp->detalles as $n => $det_esp_emp) {
+                            $peso_neto += (int)$det_esp_emp->clasificacion_ramo->nombre * number_format(($det_ped->cantidad*$det_esp_emp->cantidad),2,".","");
+                            $peso_caja += isset(explode("|",$det_esp_emp->especificacion_empaque->empaque->nombre)[2]) ? explode("|",$det_esp_emp->especificacion_empaque->empaque->nombre)[2] : 0;
                             $precio_x_variedad = ($det_esp_emp->cantidad * ((float)explode(";", $precio[$i])[0]) * $esp_emp->cantidad * $det_ped->cantidad);
                             $precio_total_sin_impuestos += $precio_x_variedad;
                             $i++;
@@ -109,6 +114,12 @@ class ComprobanteController extends Controller
                 }
             }else if($envio->pedido->tipo_especificacion === "T"){
                 foreach ($envio->pedido->detalles as $x => $det_ped) {
+                    foreach($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $m => $esp_emp){
+                        foreach ($esp_emp->detalles as $n => $det_esp_emp){
+                            $peso_neto += (int)$det_esp_emp->clasificacion_ramo->nombre * number_format(($det_ped->cantidad*$det_esp_emp->cantidad),2,".","");
+                            $peso_caja += isset(explode("|",$det_esp_emp->especificacion_empaque->empaque->nombre)[2]) ? (explode("|",$det_esp_emp->especificacion_empaque->empaque->nombre)[2]*$det_ped->cantidad) : 0;
+                        }
+                    }
                     foreach($det_ped->coloraciones as $y => $coloracion){
                         $cant_esp_emp = $coloracion->especificacion_empaque->cantidad;
                         $i=0;
@@ -372,7 +383,6 @@ class ComprobanteController extends Controller
                                     foreach(explode("|",$coloracion->precio) as $p)
                                         if($m_c->id_detalle_especificacionempaque == explode(";",$p)[1])
                                             $precio = explode(";",$p)[0];
-                                    //$precio = explode( ";",explode("|",$coloracion->precio)[$i])[0];
                                 }
                                 $precio_x_variedad = $m_c->cantidad * $precio * $cant_esp_emp;
                                 $variedad = getVariedad($m_c->detalle_especificacionempaque->id_variedad);//getVariedad($det_esp_emp->id_variedad);
@@ -464,6 +474,7 @@ class ComprobanteController extends Controller
                 $obj_comprobante->tipo_comprobante = "01"; //CÓDIGO DE FACTURA A CLIENTE EXTERNO
                 $obj_comprobante->monto_total = number_format($valorImpuesto + $precio_total_sin_impuestos, 2, ".", "");
                 $obj_comprobante->fecha_emision = $request->fecha_pedidos_search;//now()->toDateString();
+                $obj_comprobante->peso = number_format(($peso_neto/1000)+($peso_caja/1000),2,".","");
 
                 if ($obj_comprobante->save()) {
                     $model_comprobante = Comprobante::all()->last();

@@ -399,6 +399,7 @@ class EnvioController extends Controller
             $objEnvio->direccion = $request->direccion;
             $objEnvio->fecha_envio = $request->fecha_envio;
             $objEnvio->almacen = $request->almacen;
+            $objEnvio->codigo_dae = $request->codigo_dae;
 
             if($objEnvio->save()){
                 bitacora('envio', $request->id_envio, 'U', 'Actualización satisfactoria del envío');
@@ -511,6 +512,7 @@ class EnvioController extends Controller
             $objFacturaClienteTercero->puerto_entrada             = $request->puerto_entrada;
             $objFacturaClienteTercero->tipo_credito               = $request->tipo_credito;
             $objFacturaClienteTercero->id_marca                   = $request->marca;
+            $objFacturaClienteTercero->codigo_dae                 = $request->codigo_dae;
 
             if($objFacturaClienteTercero->save()){
                 $model= FacturaClienteTercero::all()->last();
