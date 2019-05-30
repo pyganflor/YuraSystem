@@ -29,11 +29,13 @@ class YuraController extends Controller
             ->where('v.fecha_ingreso', '<=', opDiasFecha('-', 1, date('Y-m-d')))
             ->get();
         $calibre = 0;
+        $tallos = 0;
         $cant_verde = 0;
         foreach ($labels as $dia) {
             $verde = ClasificacionVerde::All()->where('fecha_ingreso', '=', $dia->dia)->first();
             if ($verde != '') {
                 $calibre += round($verde->total_tallos() / $verde->getTotalRamosEstandar(), 2);
+                $tallos += $verde->total_tallos();
                 $cant_verde++;
             }
         }
@@ -96,7 +98,9 @@ class YuraController extends Controller
 
         return view('adminlte.inicio', [
             'calibre' => $calibre,
+            'tallos' => $tallos,
             'precio_x_ramo' => $precio_x_ramo,
+            'valor' => $valor,
             'rendimiento_desecho' => $rendimiento_desecho,
         ]);
     }

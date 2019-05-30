@@ -41,7 +41,9 @@
                                 <span class="info-box-icon"><i class="fa fa-fw fa-leaf"></i></span>
                                 <div class="info-box-content">
                                     <strong class="info-box-text" style="font-size: 1.2em">Postcosecha</strong>
-                                    <span class="info-box-number">{{$calibre}} t/r</span>
+                                    <span class="info-box-number">{{$calibre}}
+                                        <small>t/r</small></span>
+                                    <em title="Tallos">{{number_format($tallos)}}</em>
                                 </div>
                             </div>
                         </div>
@@ -52,6 +54,7 @@
                                 <div class="info-box-content">
                                     <strong class="info-box-text" style="font-size: 1.2em">Ventas</strong>
                                     <span class="info-box-number">{{number_format($precio_x_ramo, 2)}}</span>
+                                    <em title="Valor">{{number_format($valor, 2)}}</em>
                                 </div>
                             </div>
                         </div>
@@ -63,19 +66,12 @@
                                     <strong class="info-box-text" style="font-size: 1.2em">Rendimiento</strong>
                                     <span class="info-box-number">
                                         {{number_format(round(($rendimiento_desecho['blanco']['rendimiento'] + $rendimiento_desecho['verde']['rendimiento_ramos'])/2,2) , 2)}}
+                                        <small>r/hr</small>
                                     </span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="info-box bg-red-gradient mouse-hand sombra_pequeña"
-                                 onclick="location.href='{{url('crm_rendimiento')}}'">
-                                <span class="info-box-icon"><i class="ion ion-ios-trash-outline"></i></span>
-                                <div class="info-box-content">
-                                    <strong class="info-box-text" style="font-size: 1.2em">Desecho</strong>
-                                    <span class="info-box-number">
+                                    <em title="Desecho">
                                         {{number_format(round(($rendimiento_desecho['blanco']['desecho'] + $rendimiento_desecho['verde']['desecho'])/2,2) , 2)}}
-                                    </span>
+                                        <small>%</small>
+                                    </em>
                                 </div>
                             </div>
                         </div>

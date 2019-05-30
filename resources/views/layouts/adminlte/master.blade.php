@@ -600,11 +600,11 @@
         arreglo_modals_form = [];
     }
 
-    function estructura_tabla(id, responsive = true) {
+    function estructura_tabla(id, responsive = false, paging = false) {
         $('#' + id).DataTable({
             order: [],
             responsive: responsive,
-            paging: false,
+            paging: paging,
             info: false,
             search: false,
             columnDefs: [
@@ -615,7 +615,14 @@
                 }
             ],
             language: {
-                sSearch: "Filtrar en este listado: "
+                sSearch: "Filtrar en este listado: ",
+                paginate: {
+                    first: "Primero: ",
+                    previous: "Anterior: ",
+                    next: "Siguiente: ",
+                    last: "Último: ",
+                },
+                lengthMenu: "Mostrar _MENU_ filas"
             }
         });
     }

@@ -61,20 +61,16 @@ class SectorController extends Controller
         $valida = Validator::make($request->all(), [
             'nombre' => 'required|max:250|unique:sector',
             'descripcion' => 'max:1000',
-            'area' => 'max:11|numeric',
         ], [
             'nombre.unique' => 'El nombre ya existe',
             'nombre.required' => 'El nombre es obligatorio',
             'nombre.max' => 'El nombre es muy grande',
-            'area.max' => 'El área es muy grande',
-            'area.numeric' => 'El área debe ser un número',
             'descripcion.max' => 'La descripción es muy grande',
         ]);
         if (!$valida->fails()) {
             $model = new Sector();
             $model->nombre = str_limit(mb_strtoupper(espacios($request->nombre)), 250);
             $model->descripcion = str_limit((espacios($request->descripcion)), 1000);
-            $model->area = $request->area;
             $model->fecha_registro = date('Y-m-d H:i:s');
 
             if ($model->save()) {
@@ -125,12 +121,12 @@ class SectorController extends Controller
         $valida = Validator::make($request->all(), [
             'nombre' => 'required|max:25',
             'id_sector' => 'required|',
+            'area' => 'required|',
             'descripcion' => 'max:1000',
-            'area' => 'max:11|',
         ], [
             'nombre.required' => 'El nombre es obligatorio',
+            'area.required' => 'El área es obligatorio',
             'id_sector.required' => 'El sector es obligatorio',
-            'area.max' => 'El área es muy grande',
             'descripcion.max' => 'La descripción es muy grande',
             'nombre.max' => 'El nombre es muy grande',
         ]);
@@ -140,8 +136,8 @@ class SectorController extends Controller
                 $model = new Modulo();
                 $model->nombre = str_limit(mb_strtoupper(espacios($request->nombre)), 25);
                 $model->id_sector = $request->id_sector;
-                $model->descripcion = str_limit((espacios($request->descripcion)), 1000);
                 $model->area = $request->area;
+                $model->descripcion = str_limit((espacios($request->descripcion)), 1000);
                 $model->fecha_registro = date('Y-m-d H:i:s');
 
                 if ($model->save()) {
@@ -282,13 +278,11 @@ class SectorController extends Controller
         $valida = Validator::make($request->all(), [
             'nombre' => 'required|max:25',
             'id_sector' => 'required|',
-            'area' => 'max:11|',
             'descripcion' => 'max:1000|',
         ], [
             'nombre.required' => 'El nombre es obligatorio',
             'id_sector.required' => 'El sector es obligatorio',
             'nombre.max' => 'El nombre es muy grande',
-            'area.max' => 'El área es muy grande',
             'descripcion.max' => 'La descripción es muy grande',
         ]);
         if (!$valida->fails()) {
@@ -297,7 +291,6 @@ class SectorController extends Controller
                 $model = Sector::find($request->id_sector);
                 $model->nombre = str_limit(mb_strtoupper(espacios($request->nombre)), 250);
                 $model->descripcion = str_limit((espacios($request->descripcion)), 1000);
-                $model->area = $request->area;
 
                 if ($model->save()) {
                     $success = true;
@@ -394,12 +387,12 @@ class SectorController extends Controller
         $valida = Validator::make($request->all(), [
             'nombre' => 'required|max:25',
             'id_modulo' => 'required|',
+            'area' => 'required|',
             'id_sector' => 'required|',
-            'area' => 'max:11|',
             'descripcion' => 'max:1000|',
         ], [
             'nombre.required' => 'El nombre es obligatorio',
-            'area.max' => 'El área es muy grande',
+            'area.required' => 'El área es obligatorio',
             'descripcion.max' => 'La descripción es muy grande',
             'id_modulo.required' => 'El módulo es obligatorio',
             'id_sector.required' => 'El sector es obligatorio',
@@ -412,8 +405,8 @@ class SectorController extends Controller
                 $model = Modulo::find($request->id_modulo);
                 $model->nombre = str_limit(mb_strtoupper(espacios($request->nombre)), 25);
                 $model->descripcion = str_limit((espacios($request->descripcion)), 1000);
-                $model->id_sector = $request->id_sector;
                 $model->area = $request->area;
+                $model->id_sector = $request->id_sector;
 
                 if ($model->save()) {
                     $success = true;

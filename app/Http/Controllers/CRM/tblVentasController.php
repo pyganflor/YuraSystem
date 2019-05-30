@@ -346,8 +346,13 @@ class tblVentasController extends Controller
                         $ventas = DB::table('historico_ventas')
                             ->select('id_historico_ventas as id')->distinct()
                             ->where(DB::raw('anno'), '=', $l)
-                            ->where(DB::raw('mes'), '=', $m)
                             ->where(DB::raw('id_cliente'), '=', $cli->id_cliente);
+
+                        if ($acumulado == 'true') {
+                            $ventas = $ventas->where(DB::raw('mes'), '>=', 1)->where(DB::raw('mes'), '<=', $m);
+                        } else {
+                            $ventas = $ventas->where(DB::raw('mes'), '=', $m);
+                        }
 
                         if ($variedad != 'A')
                             $ventas = $ventas->where('id_variedad', $variedad);
@@ -402,8 +407,13 @@ class tblVentasController extends Controller
                             ->select('h.id_historico_ventas as id')->distinct()
                             ->where('dc.estado', '=', 1)
                             ->where('dc.codigo_pais', '=', $pais->codigo)
-                            ->where(DB::raw('h.anno'), '=', $l)
-                            ->where(DB::raw('h.mes'), '=', $m);
+                            ->where(DB::raw('h.anno'), '=', $l);
+
+                        if ($acumulado == 'true') {
+                            $ventas = $ventas->where(DB::raw('mes'), '>=', 1)->where(DB::raw('mes'), '<=', $m);
+                        } else {
+                            $ventas = $ventas->where(DB::raw('mes'), '=', $m);
+                        }
 
                         if ($variedad != 'A')
                             $ventas = $ventas->where('h.id_variedad', $variedad);
@@ -453,8 +463,13 @@ class tblVentasController extends Controller
                     $ventas = DB::table('historico_ventas')
                         ->select('id_historico_ventas as id')->distinct()
                         ->where(DB::raw('anno'), '=', $l)
-                        ->where(DB::raw('mes'), '=', $m)
                         ->where(DB::raw('id_cliente'), '=', $cliente);
+
+                    if ($acumulado == 'true') {
+                        $ventas = $ventas->where(DB::raw('mes'), '>=', 1)->where(DB::raw('mes'), '<=', $m);
+                    } else {
+                        $ventas = $ventas->where(DB::raw('mes'), '=', $m);
+                    }
 
                     if ($variedad != 'A')
                         $ventas = $ventas->where('id_variedad', $variedad);

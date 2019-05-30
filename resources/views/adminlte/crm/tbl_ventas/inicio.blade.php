@@ -97,7 +97,7 @@
                     <div class="input-group-addon bg-gray">
                         <i class="fa fa-user-circle"></i> Cliente
                     </div>
-                    <select name="cliente" id="cliente" class="form-control" style="width: 150px">
+                    <select name="cliente" id="cliente" class="form-control">
                         <option value="A">Acumulado</option>
                         @foreach($clientes as $c)
                             <option value="{{$c->id_cliente}}">{{$c->detalle()->nombre}}</option>
@@ -108,7 +108,7 @@
                     <div class="input-group-addon bg-gray">
                         <i class="fa fa-leaf"></i> Variedad
                     </div>
-                    <select name="variedad" id="variedad" class="form-control" style="width: 150px">
+                    <select name="variedad" id="variedad" class="form-control">
                         <option value="A" selected>Acumulado</option>
                         @foreach(getVariedades() as $item)
                             <option value="{{$item->id_variedad}}">{{$item->nombre}}</option>

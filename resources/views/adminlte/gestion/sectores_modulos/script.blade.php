@@ -62,7 +62,6 @@
                 _token: '{{csrf_token()}}',
                 nombre: $('#nombre').val().toUpperCase(),
                 descripcion: $('#descripcion').val(),
-                area: $('#area').val(),
             };
             post_jquery('{{url('sectores_modulos/store_sector')}}', datos, function () {
                 cerrar_modals();
@@ -89,8 +88,8 @@
                 _token: '{{csrf_token()}}',
                 nombre: $('#nombre').val().toUpperCase(),
                 id_sector: $('#id_sector').val(),
-                descripcion: $('#descripcion').val(),
                 area: $('#area').val(),
+                descripcion: $('#descripcion').val(),
             };
             post_jquery('{{url('sectores_modulos/store_modulo')}}', datos, function () {
                 cerrar_modals();
@@ -150,7 +149,6 @@
                 _token: '{{csrf_token()}}',
                 nombre: $('#nombre').val().toUpperCase(),
                 id_sector: $('#id_sector').val(),
-                area: $('#area').val(),
                 descripcion: $('#descripcion').val(),
             };
             post_jquery('{{url('sectores_modulos/update_sector')}}', datos, function () {
@@ -200,8 +198,8 @@
                 _token: '{{csrf_token()}}',
                 nombre: $('#nombre').val().toUpperCase(),
                 id_sector: $('#id_sector').val(),
-                id_modulo: $('#id_modulo').val(),
                 area: $('#area').val(),
+                id_modulo: $('#id_modulo').val(),
                 descripcion: $('#descripcion').val(),
             };
             post_jquery('{{url('sectores_modulos/update_modulo')}}', datos, function () {
@@ -280,5 +278,110 @@
                 location.reload();
             });
         });
+    }
+
+    /* ====================== CICLOS =================== */
+    listar_ciclos();
+
+    function listar_ciclos() {
+        datos = {
+            variedad: $('#variedad_ciclos').val(),
+            tipo: $('#tipo_ciclos').val(),
+        };
+        get_jquery('{{url('sectores_modulos/listar_ciclos')}}', datos, function (retorno) {
+            $('#div_ciclos').html(retorno);
+            estructura_tabla('table_listado_ciclos', false, true);
+        });
+    }
+
+    function ver_ciclos(mod) {
+        datos = {
+            modulo: mod,
+        };
+        get_jquery('{{url('sectores_modulos/ver_ciclos')}}', datos, function (retorno) {
+            modal_view('modal-view_ver_ciclos', retorno, '<i class="fa fa-fw fa-refresh"></i> Ciclos', true, false, '{{isPC() ? '95%' : ''}}');
+        });
+    }
+
+    function terminar_ciclo(mod) {
+        datos = {
+            _token: '{{csrf_token()}}',
+            modulo: mod,
+        };
+        if ($('#ciclo_fecha_cosecha_' + mod).val() != '' && $('#ciclo_fecha_fin_' + mod) != '') {
+            modal_quest('modal-quest_terminar_ciclo', '<div class="alert alert-info text-center">¿Está seguro de terminar este ciclo?</div>',
+                '<i class="fa fa-fw fa-exclamation-triangle"></i> Confirmar acción', true, false, '{{isPC() ? '35%' : ''}}', function () {
+                    post_jquery('{{url('sectores_modulos/terminar_ciclo')}}', datos, function () {
+                        listar_ciclos();
+                        cerrar_modals();
+                    });
+                });
+        } else {
+            alerta('<div class="alert alert-warning text-center">Faltan las fechas necesarias para terminar el ciclo</div>');
+        }
+    }
+
+    function eliminar_ciclo(ciclo) {
+        datos = {
+            _token: '{{csrf_token()}}',
+            ciclo: ciclo,
+        };
+        modal_quest('modal-quest_eliminar_ciclo', '<div class="alert alert-info text-center">¿Está seguro de eliminar este ciclo?</div>',
+            '<i class="fa fa-fw fa-exclamation-triangle"></i> Confirmar acción', true, false, '{{isPC() ? '35%' : ''}}', function () {
+                post_jquery('{{url('sectores_modulos/eliminar_ciclo')}}', datos, function () {
+                    listar_ciclos();
+                    cerrar_modals();
+                    ver_ciclos($('#id_modulo').val());
+                });
+            });
+    }
+
+    function store_ciclo(mod) {
+        datos = {
+            _token: '{{csrf_token()}}',
+            modulo: mod,
+            area: $('#ciclo_area_' + mod).val(),
+            variedad: $('#variedad_ciclos').val(),
+            fecha_inicio: $('#ciclo_fecha_inicio_' + mod).val(),
+            poda_siembra: $('#ciclo_poda_siembra_' + mod).val(),
+            fecha_cosecha: $('#ciclo_fecha_cosecha_' + mod).val(),
+            fecha_fin: $('#ciclo_fecha_fin_' + mod).val(),
+        };
+
+        if (datos['area'] != '' && datos['variedad'] != '' && datos['fecha_inicio'] != '' && datos['poda_siembra'] != '')
+            post_jquery('{{url('sectores_modulos/store_ciclo')}}', datos, function () {
+                listar_ciclos();
+            });
+        else
+            alerta('<div class="alert alert-warning text-center">Faltan datos necesario para iniciar un nuevo ciclo</div>');
+    }
+
+    function update_ciclo(ciclo, mod) {
+        datos = {
+            _token: '{{csrf_token()}}',
+            ciclo: ciclo,
+            area: $('#ciclo_area_' + mod).val(),
+            variedad: $('#variedad_ciclos').val(),
+            fecha_inicio: $('#ciclo_fecha_inicio_' + mod).val(),
+            poda_siembra: $('#ciclo_poda_siembra_' + mod).val(),
+            fecha_cosecha: $('#ciclo_fecha_cosecha_' + mod).val(),
+            fecha_fin: $('#ciclo_fecha_fin_' + mod).val(),
+        };
+
+        if (datos['area'] != '' && datos['variedad'] != '' && datos['fecha_inicio'] != '' && datos['poda_siembra'] != '') {
+         modal_quest('modal-quest_terminar_ciclo', '<div class="alert alert-info text-center">¿Está seguro de terminar este ciclo?</div>',
+             '<i class="fa fa-fw fa-exclamation-triangle"></i> Confirmar acción', true, false, '{{isPC() ? '35%' : ''}}', function () {
+                 post_jquery('{{url('sectores_modulos/update_ciclo')}}', datos, function () {
+                     listar_ciclos();
+                 });
+             });
+        }
+        else
+            alerta('<div class="alert alert-warning text-center">Faltan datos necesario para modificar el ciclo</div>');
+    }
+
+    function editar_ciclo(ciclo) {
+        $('.elemento_view_' + ciclo).hide();
+        $('.elemento_input_' + ciclo).show();
     }
 </script>
