@@ -49,7 +49,7 @@
     function reporte_fue() {
         $.LoadingOverlay('show');
         $.get('{{url('fue/reporte_fue')}}',{}, function (retorno) {
-            modal_view('modal_reporte_fue', retorno, '<i class="fa fa-fw fa-plus"></i> <b>Reporte de Facturas por DAE</b>: ', true, false, '{{isPC() ? '80%' : ''}}', function () {
+            modal_view('modal_reporte_fue', retorno, '<i class="fa fa-fw fa-plus"></i> <b>Reporte de Facturas por DAE</b>: ', true, false, '{{isPC() ? '90%' : ''}}', function () {
                 $.LoadingOverlay('hide');
             });
         }).always(function () {

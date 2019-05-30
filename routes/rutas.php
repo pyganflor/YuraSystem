@@ -66,11 +66,9 @@ Route::group(['middleware' => 'autenticacion'], function () {
         include 'crm/ventas.php';
         include 'crm/rendimiento_desecho.php';
         include 'crm/tbl_postcosecha.php';
-<<<<<<< HEAD
         include 'crm/fue.php';
-=======
         include 'crm/tbl_ventas.php';
->>>>>>> eeabbea399e92e870b2c07f93d395239414cb77f
+
 
         /* ========================== FACTURACIÓN ========================*/
         include 'facturacion/tipo_comprobante.php';

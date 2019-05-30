@@ -5,9 +5,15 @@ namespace yura\Http\Controllers;
 use Illuminate\Http\Request;
 use yura\Modelos\Cliente;
 use yura\Modelos\Color;
+use yura\Modelos\Coloracion;
 use yura\Modelos\DetalleEnvio;
 use yura\Modelos\DetallePedido;
+use yura\Modelos\Distribucion;
+use yura\Modelos\DistribucionColoracion;
 use yura\Modelos\Empaque;
+use yura\Modelos\Marca;
+use yura\Modelos\Marcacion;
+use yura\Modelos\MarcacionColoracion;
 use yura\Modelos\Pedido;
 use DB;
 use yura\Modelos\Submenu;
@@ -163,9 +169,11 @@ class PedidoVentaController extends Controller
                 $objPedido->empaquetado = $dataPedido->empaquetado;
                 $objPedido->variedad = $dataPedido->variedad;
                 $objPedido->tipo_especificacion = $dataPedido->tipo_especificacion;
+
                 if ($objPedido->save()) {
                     $modelPedido = Pedido::all()->last();
                     $dataDetallePedido = DetallePedido::where('id_pedido', $request->id_pedido)->get();
+
                     bitacora('pedido', $modelPedido->id_pedido, 'I', 'Inserción satisfactoria de un duplicado de pedido');
 
                     $objEnvio = new Envio;
@@ -189,8 +197,87 @@ class PedidoVentaController extends Controller
                         $detalleEnvio->save();
 
                         if ($objDetallePedido->save()) {
+
                             $model_detalle_pedido = DetallePedido::all()->last();
                             bitacora('detalle_pedido', $model_detalle_pedido->id_detalle_pedido, 'I', 'Inserción satisfactoria del duplicado de un detalle pedio');
+                            if($modelPedido->tipo_especificacion === "T") {
+                                foreach ($detallePedido->cliente_especificacion->especificacion->especificacionesEmpaque as $z => $esp_emp){
+                                    $dataColoraciones = Coloracion::where([
+                                        ['id_detalle_pedido', $detallePedido->id_detalle_pedido],
+                                        ['id_especificacion_empaque',$esp_emp->id_especificacion_empaque]
+                                    ])->get();
+                                    $dataMarcaciones = Marcacion::where([
+                                        ['id_detalle_pedido', $detallePedido->id_detalle_pedido],
+                                        ['id_especificacion_empaque',$esp_emp->id_especificacion_empaque]
+                                    ])->get();
+
+                                    $arr_colores = [];
+
+                                    foreach ($dataColoraciones as $dC) {
+                                        $objColoracion = new Coloracion;
+                                        $objColoracion->id_color = $dC->id_color;
+                                        $objColoracion->id_especificacion_empaque = $dC->id_especificacion_empaque;
+                                        $objColoracion->id_detalle_pedido = $model_detalle_pedido->id_detalle_pedido;
+                                        $objColoracion->precio = $dC->precio;
+                                        if ($objColoracion->save()) {
+                                            $model_coloraciones = Coloracion::all()->last();
+                                            $arr_colores[] = $model_coloraciones->id_coloracion;
+                                        }
+                                    }
+
+                                    foreach ($dataMarcaciones as $x => $dM) {
+                                        $arr_marcacion_coloracion = [];
+                                        $dataMarcacionColoracion = [];
+                                        $objMarcacion = new Marcacion;
+                                        $objMarcacion->nombre = $dM->nombre;
+                                        $objMarcacion->ramos = $dM->ramos;
+                                        $objMarcacion->id_detalle_pedido = $model_detalle_pedido->id_detalle_pedido;
+                                        $objMarcacion->id_especificacion_empaque = $dM->id_especificacion_empaque;
+                                        $objMarcacion->piezas = $dM->piezas;
+                                        if ($objMarcacion->save()) {
+                                            $model_marcacion = Marcacion::all()->last();
+                                            $dataMarcacionColoracion[] = MarcacionColoracion::where('id_marcacion', $dM->id_marcacion)->get();
+                                            foreach ($dataMarcacionColoracion as $dMc) {
+                                                foreach ($dMc as $y => $mc) {
+                                                    $objMarcacionColoracion = new MarcacionColoracion;
+                                                    $objMarcacionColoracion->id_marcacion = $model_marcacion->id_marcacion;
+                                                    $objMarcacionColoracion->id_coloracion = $arr_colores[$y];
+                                                    $objMarcacionColoracion->id_detalle_especificacionempaque = $mc->id_detalle_especificacionempaque;
+                                                    $objMarcacionColoracion->cantidad = $mc->cantidad;
+                                                    if($objMarcacionColoracion->save())
+                                                        $arr_marcacion_coloracion[] = MarcacionColoracion::all()->last();
+                                                }
+                                            }
+
+                                            $dataDistribucion = Distribucion::where('id_marcacion',$dM->id_marcacion)->get();
+
+                                            //if(isset($dataDistribucion->id_distribucion)){
+
+                                                if($dataDistribucion->count() > 0){
+                                                    foreach ($dataDistribucion as $d){
+                                                        $objDistribucion = new Distribucion;
+                                                        $objDistribucion->id_marcacion = $model_marcacion->id_marcacion;
+                                                        $objDistribucion->ramos = $d->ramos;
+                                                        $objDistribucion->piezas = $d->piezas;
+                                                        $objDistribucion->pos_pieza = $d->pos_pieza;
+                                                        if($objDistribucion->save()){
+                                                            $dataDistribucionColoracion  = DistribucionColoracion::where('id_distribucion',$d->id_distribucion)->get();
+                                                            $model_distribucion = Distribucion::All()->last();
+                                                            foreach ($dataDistribucionColoracion as $z => $dC) {
+                                                                $objDistribucionColoracion = new DistribucionColoracion;
+                                                                $objDistribucionColoracion->id_distribucion = $model_distribucion->id_distribucion;
+                                                                $objDistribucionColoracion->id_marcacion_coloracion = $arr_marcacion_coloracion[$z]->id_marcacion_coloracion;
+                                                                $objDistribucionColoracion->cantidad = $dC->cantidad;
+                                                                $objDistribucionColoracion->save();
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                           // }
+                                        }
+                                    }
+                                }
+                            }
                             $success = true;
                             $msg = '<div class="alert alert-success text-center">' .
                                 '<p> Se ha duplicado el pedido exitosamente</p>'

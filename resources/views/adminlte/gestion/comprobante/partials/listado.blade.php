@@ -101,12 +101,12 @@
                                 @endif
                             @endif
                             @if($tipo_comprobante=="01")
-                                <button class="btn btn-warning btn-xs" title="Reenviar correo" onclick="reenviar_correo('{{$item->clave_acceso}}')">
-                                    <i class="fa fa-envelope-o" aria-hidden="true"></i>
-                                </button>
                                 <a target="_blank" href="{{url('comprobante/pre_factura',[$item->clave_acceso,true])}}" class="btn btn-info btn-xs" title="Ver factura Cliente">
                                     <i class="fa fa-user-circle-o" aria-hidden="true"></i>
                                 </a>
+                                <button class="btn btn-warning btn-xs" title="Reenviar correo" onclick="reenviar_correo('{{$item->clave_acceso}}')">
+                                    <i class="fa fa-envelope-o" aria-hidden="true"></i>
+                                </button>
                             @endif
                         @endif
                         @if($item->estado == 1)
