@@ -16,7 +16,6 @@ class Sector extends Model
         'nombre',   // unico
         'fecha_registro',
         'estado',
-        'area',
         'descripcion',
     ];
 

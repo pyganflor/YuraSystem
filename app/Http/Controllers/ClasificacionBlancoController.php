@@ -373,10 +373,12 @@ class ClasificacionBlancoController extends Controller
     {
         $success = true;
         $msg = '';
+
         foreach ($request->arreglo as $item) {
             if ($item['editar'] > 0) {
                 $inventario = new InventarioFrio();
                 $inventario->id_variedad = $request->id_variedad;
+                $inventario->id_clasificacion_blanco = $request->id_blanco;
                 $inventario->id_clasificacion_ramo = $item['clasificacion_ramo'];
                 //$inventario->id_empaque_e = $item['id_empaque_e'];
                 $inventario->id_empaque_p = $item['id_empaque_p'];
@@ -408,7 +410,13 @@ class ClasificacionBlancoController extends Controller
         $models = InventarioFrio::where('disponibilidad', 1)
             ->where('estado', 1)
             ->where('basura', 0)
-            ->where('fecha_ingreso', $request->fecha_inventario_frio)->get();
+            ->where('fecha_ingreso', $request->fecha_inventario_frio)
+            ->where('id_clasificacion_ramo', $request->clasificacion_ramo)
+            ->where('tallos_x_ramo', $request->tallos_x_ramo)
+            ->where('longitud_ramo', $request->longitud_ramo)
+            ->where('id_empaque_p', $request->id_empaque_p)
+            ->where('id_unidad_medida', $request->id_unidad_medida)
+            ->get();
 
         $meta = $request->editar;
 

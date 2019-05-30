@@ -22,3 +22,11 @@ Route::post('sectores_modulos/cambiar_estado_modulo', 'SectorController@cambiar_
 Route::get('sectores_modulos/edit_lote', 'SectorController@edit_lote');
 Route::post('sectores_modulos/update_lote', 'SectorController@update_lote');
 Route::post('sectores_modulos/cambiar_estado_lote', 'SectorController@cambiar_estado_lote');
+
+/* =================== CICLOS ==================*/
+Route::get('sectores_modulos/listar_ciclos', 'CiclosController@listar_ciclos');
+Route::get('sectores_modulos/ver_ciclos', 'CiclosController@ver_ciclos');
+Route::post('sectores_modulos/store_ciclo', 'CiclosController@store_ciclo');
+Route::post('sectores_modulos/terminar_ciclo', 'CiclosController@terminar_ciclo');
+Route::post('sectores_modulos/update_ciclo', 'CiclosController@update_ciclo');
+Route::post('sectores_modulos/eliminar_ciclo', 'CiclosController@eliminar_ciclo');

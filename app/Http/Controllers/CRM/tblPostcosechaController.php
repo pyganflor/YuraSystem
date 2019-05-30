@@ -36,14 +36,14 @@ class tblPostcosechaController extends Controller
             } else if ($request->rango == 'M') {
                 if ($request->desde >= 1 && $request->desde <= 12 && $request->hasta >= 1 && $request->hasta <= 12 && $request->desde <= $request->hasta) {
                     $view = 'mensual';
-                    $data = $this->getTablasByRangoMensual($request->desde, $request->hasta, $request->variedad, $annos, $request->criterio);
+                    $data = $this->getTablasByRangoMensual($request->desde, $request->hasta, $request->variedad, $annos, $request->criterio, $request->acumulado);
                 } else {
                     return '<div class="alert alert-warning text-center">Los meses ingresados están incorrectos</div>';
                 }
             } else if ($request->rango == 'S') {
                 if ($request->desde >= 1 && $request->desde <= 53 && $request->hasta >= 1 && $request->hasta <= 53 && $request->desde <= $request->hasta) {
                     $view = 'semanal';
-                    $data = $this->getTablasByRangoSemanal($request->desde, $request->hasta, $request->variedad, $annos, $request->criterio);
+                    $data = $this->getTablasByRangoSemanal($request->desde, $request->hasta, $request->variedad, $annos, $request->criterio, $request->acumulado);
                 } else {
                     return '<div class="alert alert-warning text-center">Las semanas ingresadas están incorrectas</div>';
                 }
@@ -54,6 +54,7 @@ class tblPostcosechaController extends Controller
 
             return view('adminlte.crm.tbl_postcosecha.partials.' . $view, [
                 'data' => $data,
+                'acumulado' => $request->acumulado,
                 'criterio' => $request->criterio,
                 'variedad' => $request->variedad,
                 'desde' => $request->desde,
@@ -73,7 +74,7 @@ class tblPostcosechaController extends Controller
             if ($variedad == '')
                 $variedad = 'A';
 
-            $data = $this->getTablasByRangoSemanal($request->desde, $request->hasta, $request->filtro_variedad, [$request->anno], $request->criterio);
+            $data = $this->getTablasByRangoSemanal($request->desde, $request->hasta, $request->filtro_variedad, [$request->anno], $request->criterio, $request->acumulado);
         } else {
             $view = 'diario';
 
@@ -110,6 +111,7 @@ class tblPostcosechaController extends Controller
 
         return view('adminlte.crm.tbl_postcosecha.partials.' . $view, [
             'data' => $data,
+            'acumulado' => $request->acumulado,
             'criterio' => $request->criterio,
             'variedad' => $request->variedad,
         ]);
@@ -282,7 +284,7 @@ class tblPostcosechaController extends Controller
         ];
     }
 
-    public function getTablasByRangoMensual($mes_inicial, $mes_final, $variedad, $annos, $criterio)
+    public function getTablasByRangoMensual($mes_inicial, $mes_final, $variedad, $annos, $criterio, $acumulado)
     {
         sort($annos);
         $labels = $annos;
@@ -303,9 +305,16 @@ class tblPostcosechaController extends Controller
                     $verdes = DB::table('clasificacion_verde')
                         ->select('id_clasificacion_verde as id')->distinct()
                         ->where('estado', '=', 1)
-                        ->where(DB::raw('year(fecha_ingreso)'), '=', $l)
-                        ->where(DB::raw('month(fecha_ingreso)'), '=', $m)
-                        ->get();
+                        ->where(DB::raw('year(fecha_ingreso)'), '=', $l);
+
+                    if ($acumulado == 'true') {
+                        $verdes = $verdes->where(DB::raw('month(fecha_ingreso)'), '>=', 1)
+                            ->where(DB::raw('month(fecha_ingreso)'), '<=', $m);
+                    } else {
+                        $verdes = $verdes->where(DB::raw('month(fecha_ingreso)'), '=', $m);
+                    }
+
+                    $verdes = $verdes->get();
 
                     $valor = 0;
 
@@ -362,9 +371,16 @@ class tblPostcosechaController extends Controller
                         $verdes = DB::table('clasificacion_verde')
                             ->select('id_clasificacion_verde as id')->distinct()
                             ->where('estado', '=', 1)
-                            ->where(DB::raw('year(fecha_ingreso)'), '=', $l)
-                            ->where(DB::raw('month(fecha_ingreso)'), '=', $m)
-                            ->get();
+                            ->where(DB::raw('year(fecha_ingreso)'), '=', $l);
+
+                        if ($acumulado == 'true') {
+                            $verdes = $verdes->where(DB::raw('month(fecha_ingreso)'), '>=', 1)
+                                ->where(DB::raw('month(fecha_ingreso)'), '<=', $m);
+                        } else {
+                            $verdes = $verdes->where(DB::raw('month(fecha_ingreso)'), '=', $m);
+                        }
+
+                        $verdes = $verdes->get();
 
                         $valor = 0;
 
@@ -419,9 +435,16 @@ class tblPostcosechaController extends Controller
                     $verdes = DB::table('clasificacion_verde')
                         ->select('id_clasificacion_verde as id')->distinct()
                         ->where('estado', '=', 1)
-                        ->where(DB::raw('year(fecha_ingreso)'), '=', $l)
-                        ->where(DB::raw('month(fecha_ingreso)'), '=', $m)
-                        ->get();
+                        ->where(DB::raw('year(fecha_ingreso)'), '=', $l);
+
+                    if ($acumulado == 'true') {
+                        $verdes = $verdes->where(DB::raw('month(fecha_ingreso)'), '>=', 1)
+                            ->where(DB::raw('month(fecha_ingreso)'), '<=', $m);
+                    } else {
+                        $verdes = $verdes->where(DB::raw('month(fecha_ingreso)'), '=', $m);
+                    }
+
+                    $verdes = $verdes->get();
 
                     $valor = 0;
 
@@ -466,7 +489,7 @@ class tblPostcosechaController extends Controller
         ];
     }
 
-    public function getTablasByRangoSemanal($semana_inicial, $semana_final, $variedad, $annos, $criterio)
+    public function getTablasByRangoSemanal($semana_inicial, $semana_final, $variedad, $annos, $criterio, $acumulado)
     {
         sort($annos);
         $labels = $annos;
@@ -485,15 +508,23 @@ class tblPostcosechaController extends Controller
                     }
                     $semana = Semana::All()->where('estado', 1)->where('codigo', substr($l, 2) . $s)->first();
 
-                    if ($semana != '')
+                    if ($semana != '') {
                         $verdes = DB::table('clasificacion_verde')
                             ->select('id_clasificacion_verde as id')->distinct()
                             ->where('estado', '=', 1)
                             ->where(DB::raw('year(fecha_ingreso)'), '=', $l)
-                            ->where(DB::raw('fecha_ingreso'), '>=', $semana->fecha_inicial)
-                            ->where(DB::raw('fecha_ingreso'), '<=', $semana->fecha_final)
-                            ->get();
-                    else
+                            ->where(DB::raw('fecha_ingreso'), '<=', $semana->fecha_final);
+
+                        if ($acumulado == 'true') {
+                            $semana_1 = Semana::All()->where('estado', 1)->where('codigo', substr($l, 2) . '01')->first();
+
+                            $verdes = $verdes->where(DB::raw('fecha_ingreso'), '>=', $semana_1->fecha_inicial);
+                        } else {
+                            $verdes = $verdes->where(DB::raw('fecha_ingreso'), '>=', $semana->fecha_inicial);
+                        }
+
+                        $verdes = $verdes->get();
+                    } else
                         $verdes = [];
 
                     $valor = 0;
@@ -549,15 +580,23 @@ class tblPostcosechaController extends Controller
                         }
                         $semana = Semana::All()->where('estado', 1)->where('codigo', substr($l, 2) . $s)->first();
 
-                        if ($semana != '')
+                        if ($semana != '') {
                             $verdes = DB::table('clasificacion_verde')
                                 ->select('id_clasificacion_verde as id')->distinct()
                                 ->where('estado', '=', 1)
                                 ->where(DB::raw('year(fecha_ingreso)'), '=', $l)
-                                ->where(DB::raw('fecha_ingreso'), '>=', $semana->fecha_inicial)
-                                ->where(DB::raw('fecha_ingreso'), '<=', $semana->fecha_final)
-                                ->get();
-                        else
+                                ->where(DB::raw('fecha_ingreso'), '<=', $semana->fecha_final);
+
+                            if ($acumulado == 'true') {
+                                $semana_1 = Semana::All()->where('estado', 1)->where('codigo', substr($l, 2) . '01')->first();
+
+                                $verdes = $verdes->where(DB::raw('fecha_ingreso'), '>=', $semana_1->fecha_inicial);
+                            } else {
+                                $verdes = $verdes->where(DB::raw('fecha_ingreso'), '>=', $semana->fecha_inicial);
+                            }
+
+                            $verdes = $verdes->get();
+                        } else
                             $verdes = [];
 
                         $valor = 0;
@@ -611,15 +650,23 @@ class tblPostcosechaController extends Controller
                     }
                     $semana = Semana::All()->where('estado', 1)->where('codigo', substr($l, 2) . $s)->first();
 
-                    if ($semana != '')
+                    if ($semana != '') {
                         $verdes = DB::table('clasificacion_verde')
                             ->select('id_clasificacion_verde as id')->distinct()
                             ->where('estado', '=', 1)
                             ->where(DB::raw('year(fecha_ingreso)'), '=', $l)
-                            ->where(DB::raw('fecha_ingreso'), '>=', $semana->fecha_inicial)
-                            ->where(DB::raw('fecha_ingreso'), '<=', $semana->fecha_final)
-                            ->get();
-                    else
+                            ->where(DB::raw('fecha_ingreso'), '<=', $semana->fecha_final);
+
+                        if ($acumulado == 'true') {
+                            $semana_1 = Semana::All()->where('estado', 1)->where('codigo', substr($l, 2) . '01')->first();
+
+                            $verdes = $verdes->where(DB::raw('fecha_ingreso'), '>=', $semana_1->fecha_inicial);
+                        } else {
+                            $verdes = $verdes->where(DB::raw('fecha_ingreso'), '>=', $semana->fecha_inicial);
+                        }
+
+                        $verdes = $verdes->get();
+                    } else
                         $verdes = [];
 
                     $valor = 0;

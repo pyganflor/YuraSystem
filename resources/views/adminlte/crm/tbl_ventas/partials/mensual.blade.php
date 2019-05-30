@@ -1,5 +1,5 @@
 <div style="overflow-x: scroll; width: 100%">
-    <table class="table-bordered table-responsive" width="100%" style="border: 2px solid #9d9d9d" id="table_mensual">
+    <table class="table-bordered table-responsive" width="100%" style="border: 2px solid #9d9d9d" id="table_mensual_ventas">
         @php
             $totales_mes = [];
         @endphp
@@ -14,13 +14,15 @@
                     {{$label}}
                 </th>
             @endforeach
-            <th class="text-center" style="border-color: white; background-color: #357ca5; color: white; width: 80px" rowspan="2">
-                @if($criterio == 'V' || $criterio == 'F' || $criterio == 'Q')
-                    Total
-                @else
-                    Promedio
-                @endif
-            </th>
+            @if($acumulado == 'false')
+                <th class="text-center" style="border-color: white; background-color: #357ca5; color: white; width: 80px" rowspan="2">
+                    @if($criterio == 'V' || $criterio == 'F' || $criterio == 'Q')
+                        Total
+                    @else
+                        Promedio
+                    @endif
+                </th>
+            @endif
         </tr>
         <tr>
             @foreach($data['labels'] as $pos_a => $label)
@@ -101,13 +103,15 @@
                         }
                     @endphp
                 @endforeach
-                <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef; padding: 5px">
-                    @if($criterio == 'V' || $criterio == 'F' || $criterio == 'Q')
-                        {{number_format($total,2)}}
-                    @else
-                        {{$count_positivos > 0 ? number_format(round($total / $count_positivos, 2),2) : 0}}
-                    @endif
-                </th>
+                @if($acumulado == 'false')
+                    <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef; padding: 5px">
+                        @if($criterio == 'V' || $criterio == 'F' || $criterio == 'Q')
+                            {{number_format($total,2)}}
+                        @else
+                            {{$count_positivos > 0 ? number_format(round($total / $count_positivos, 2),2) : 0}}
+                        @endif
+                    </th>
+                @endif
             </tr>
         @endforeach
         </tbody>
@@ -125,8 +129,7 @@
                 $count_parcial = count($data['meses']);
             @endphp
             @foreach($totales_mes as $pos => $valor)
-                <th class="text-center"
-                    style="border-color: white; background-color: #357ca5; color: white; padding: 5px">
+                <th class="text-center" style="border-color: white; background-color: #357ca5; color: white; padding: 5px">
                     @if($criterio == 'V' || $criterio == 'F' || $criterio == 'Q')
                         {{number_format($valor['valor'], 2)}}
                     @else
@@ -178,7 +181,7 @@
 </div>
 
 <script>
-    estructura_tabla('table_mensual', false);
+    estructura_tabla('table_mensual_ventas', false);
 
     $('#table_mensual').DataTable({
         responsive: false,

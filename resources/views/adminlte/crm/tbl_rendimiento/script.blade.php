@@ -9,10 +9,11 @@
             variedad: $('#variedad').val(),
             criterio: $('#criterio').val(),
             rango: $('#rango').val(),
-            acumulado: $('#acumulado').prop('checked'),
+            area: $('#area').val(),
+            //acumulado: $('#acumulado').prop('checked'),
         };
         if (datos['desde'] <= datos['hasta']) {
-            get_jquery('{{url('tbl_postcosecha/filtrar_tablas')}}', datos, function (retorno) {
+            get_jquery('{{url('tbl_rendimiento/filtrar_tablas')}}', datos, function (retorno) {
                 $('#div_contentido_tablas').html(retorno);
             });
         }
@@ -33,9 +34,10 @@
             desde: desde,
             hasta: hasta,
             filtro_variedad: $('#variedad').val(),
-            acumulado: $('#acumulado').prop('checked'),
+            filtro_area: $('#area').val(),
+            //acumulado: $('#acumulado').prop('checked'),
         };
-        get_jquery('{{url('tbl_postcosecha/navegar_tabla')}}', datos, function (retorno) {
+        get_jquery('{{url('tbl_rendimiento/navegar_tabla')}}', datos, function (retorno) {
             $('#div_contentido_tablas').html(retorno);
         });
     }

@@ -17,8 +17,8 @@
                 <td style="border-color: #9d9d9d" class="text-center mouse-hand" onclick="select_modulo('{{$item->id_modulo}}')">
                     <i class="fa fa-fw fa-check hidden icon_hidden_m" id="icon_modulo_{{$item->id_modulo}}"></i> {{$item->nombre}}
                 </td>
-                <td style="border-color: #9d9d9d" class="text-center">
-                    {{$item->area != '' ? $item->area : 0}} ha
+                <td style="border-color: #9d9d9d" class="text-center mouse-hand" onclick="select_modulo('{{$item->id_modulo}}')">
+                    {{$item->area}}m<sup>2</sup>
                 </td>
                 <td style="border-color: #9d9d9d" class="text-center">
                     <div class="btn-group">
@@ -37,7 +37,7 @@
     @else
         <tr onmouseover="$(this).css('background-color','#add8e6')" onmouseleave="$(this).css('background-color','')">
             <td style="border-color: #9d9d9d" class="text-center" colspan="3">
-                No hay menús registrados en este grupo
+                No hay módulos registrados en este sector
             </td>
         </tr>
     @endif

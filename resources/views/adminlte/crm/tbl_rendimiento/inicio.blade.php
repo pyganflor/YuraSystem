@@ -1,7 +1,7 @@
 @extends('layouts.adminlte.master')
 
 @section('titulo')
-    Tablas - Postcosecha
+    Tablas - Rendimiento y Desecho
 @endsection
 
 @section('script_inicio')
@@ -14,14 +14,14 @@
     <section class="content-header">
         <h1>
             Tablas
-            <small>Postcosecha</small>
+            <small>Rendimiento y Desecho</small>
         </h1>
         <ol class="breadcrumb">
             <li><a href="javascript:void(0)" onclick="cargar_url('')"><i class="fa fa-home"></i> Inicio</a></li>
             <li><a href="javascript:void(0)"><i class="fa fa-table"></i> Tablas</a></li>
             <li class="active">
                 <a href="javascript:void(0)" onclick="location.reload()">
-                    <i class="fa fa-fw fa-refresh"></i> Postcosecha
+                    <i class="fa fa-fw fa-refresh"></i> Rendimiento y Desecho
                 </a>
             </li>
         </ol>
@@ -90,9 +90,9 @@
                             <ul class="dropdown-menu">
                                 @foreach($annos as $a)
                                     <li>
-                                        <a href="javascript:void(0)" onclick="select_anno('{{$a->anno}}')"
-                                           class="{{$a->anno == date('Y') ? 'bg-aqua-active' : ''}} li_anno" id="li_anno_{{$a->anno}}">
-                                            {{$a->anno}}
+                                        <a href="javascript:void(0)" onclick="select_anno('{{$a}}')"
+                                           class="{{$a == date('Y') ? 'bg-aqua-active' : ''}} li_anno" id="li_anno_{{$a}}">
+                                            {{$a}}
                                         </a>
                                     </li>
                                 @endforeach
@@ -115,16 +115,21 @@
                             <i class="fa fa-filter"></i> Criterio
                         </div>
                         <select name="criterio" id="criterio" class="form-control">
-                            <option value="C">Cajas</option>
-                            <option value="T">Tallos</option>
-                            <option value="D">Desecho</option>
                             <option value="R">Rendimiento</option>
-                            <option value="Q">Calibre</option>
+                            <option value="D">Desecho</option>
                         </select>
-                        <div class="input-group-addon bg-gray mouse-hand">
+                        <div class="input-group-addon bg-gray">
+                            <i class="fa fa-sitemap"></i> Area
+                        </div>
+                        <select name="area" id="area" class="form-control">
+                            <option value="C">Cosecha</option>
+                            <option value="V">Verde</option>
+                            <option value="B">Blanco</option>
+                        </select>
+                        {{--<div class="input-group-addon bg-gray mouse-hand">
                             <input type="checkbox" id="acumulado" name="acumulado" class="mouse-hand">
                             <label for="acumulado" class="mouse-hand">Mostrar Acumulados</label>
-                        </div>
+                        </div>--}}
 
                         <div class="input-group-btn">
                             <button type="button" id="btn_filtrar" class="btn btn-default" onclick="filtrar_tablas()" title="Buscar">
@@ -141,5 +146,5 @@
 @endsection
 
 @section('script_final')
-    @include('adminlte.crm.tbl_postcosecha.script')
+    @include('adminlte.crm.tbl_rendimiento.script')
 @endsection

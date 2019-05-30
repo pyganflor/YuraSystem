@@ -38,7 +38,7 @@
         <tr onmouseover="$(this).css('background-color','#add8e6')" onmouseleave="$(this).css('background-color','')"
             class="row_lote">
             <td style="border-color: #9d9d9d" class="text-center" colspan="3">
-                No hay submenús registrados en este módulo
+                No hay lotes registrados en este módulo
             </td>
         </tr>
     @endif

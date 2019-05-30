@@ -8,6 +8,7 @@ use yura\Modelos\Apertura;
 use yura\Modelos\ClasificacionVerde;
 use yura\Modelos\Cosecha;
 use yura\Modelos\DesgloseRecepcion;
+use yura\Modelos\Modulo;
 use yura\Modelos\Recepcion;
 use yura\Modelos\Semana;
 use yura\Modelos\Submenu;
@@ -134,6 +135,21 @@ class RecepcionController extends Controller
                                 if ($model->save()) {
                                     $cantidad_total += ($item['cantidad_mallas'] * $item['tallos_x_malla']);
                                     bitacora('desglose_recepcion', $model->id_desglose_recepcion, 'I', 'Inserción satisfactoria de un nuevo desglose de recepción');
+
+                                    /* ============= ACTUALIZR CICLO DEL MODULO ========== */
+                                    $modulo = Modulo::find($model->id_modulo);
+                                    $ciclo = $modulo->getCicloByFecha($cosecha->fecha_ingreso);
+                                    if ($ciclo != '') {
+                                        if ($ciclo->fecha_cosecha == '' || $cosecha->fecha_ingreso < $ciclo->fecha_cosecha) {
+                                            $ciclo->fecha_cosecha = $cosecha->fecha_ingreso;
+                                        }
+                                        if ($ciclo->fecha_fin == '' || $cosecha->fecha_ingreso > $ciclo->fecha_fin) {
+                                            $ciclo->fecha_fin = $cosecha->fecha_ingreso;
+                                        }
+
+                                        $ciclo->save();
+                                        bitacora('ciclo', $ciclo->id_ciclo, 'U', 'Actualizacion satisfactoria de un ciclo desde el ingreso de la cosecha: ' . $cosecha->id_cosecha);
+                                    }
                                 } else {
                                     $success = false;
                                     $msg .= '<div class="alert alert-warning text-center">' .

@@ -209,8 +209,14 @@
                         _token: '{{csrf_token()}}',
                         fecha_inventario_frio: $('#fecha_inventario_frio').val(),
                         id_variedad: $('#id_variedad').val(),
+                        id_blanco: $('#id_blanco').val(),
                         editar: parseFloat($('#editar_inventario_frio').val()),
                         arreglo: arreglo,
+                        clasificacion_ramo: $('#clasificacion_ramo_resto_' + pos_resto).val(),
+                        tallos_x_ramo: $('#tallos_x_ramo_resto_' + pos_resto).val(),
+                        longitud_ramo: $('#longitud_ramo_resto_' + pos_resto).val(),
+                        id_empaque_p: $('#id_empaque_p_resto_' + pos_resto).val(),
+                        id_unidad_medida: $('#id_unidad_medida_resto_' + pos_resto).val(),
                     };
                     post_jquery('{{url('clasificacion_blanco/update_inventario')}}', datos, function () {
                         cerrar_modals();

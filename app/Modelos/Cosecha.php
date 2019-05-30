@@ -26,6 +26,17 @@ class Cosecha extends Model
         return $this->hasMany('\yura\Modelos\Recepcion', 'id_cosecha');
     }
 
+    public function getTotalTallosByModulo($modulo)
+    {
+        $r = 0;
+        foreach ($this->recepciones as $recepcion) {
+            foreach ($recepcion->desgloses->where('id_modulo', $modulo) as $desglose) {
+                $r += ($desglose->cantidad_mallas * $desglose->tallos_x_malla);
+            }
+        }
+        return $r;
+    }
+
     public function getTotalTallos()
     {
         $r = 0;

@@ -19,13 +19,13 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-md-2">
+        <div class="col-md-3">
             <div class="form-group">
-                <label for="nombre">Área <em>(hectáreas)</em></label>
-                <input type="number" id="area" name="area" class="form-control text-center" maxlength="11" min="1" max="500">
+                <label for="nombre">Área <em>(m<sup>2</sup>)</em></label>
+                <input type="number" id="area" name="area" class="form-control text-center" maxlength="11" min="1">
             </div>
         </div>
-        <div class="col-md-10">
+        <div class="col-md-9">
             <div class="form-group">
                 <label for="nombre">Descripción</label>
                 <textarea name="descripcion" id="descripcion" rows="3" class="form-control text-justify contador" style="width: 100%"
