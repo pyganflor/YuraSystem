@@ -310,7 +310,7 @@
             abrir: false,
         };
         if ($('#ciclo_fecha_cosecha_' + mod).val() != '' && $('#ciclo_fecha_fin_' + mod) != '') {
-            modal_quest('modal-quest_terminar_ciclo', '<div class="alert alert-info text-center">¿Está seguro de terminar este ciclo?</div>',
+            modal_quest('modal-quest_terminar_ciclo', '<div class="alert alert-info text-center">¿Está seguro de <strong>TERMINAR</strong> este ciclo?</div>',
                 '<i class="fa fa-fw fa-exclamation-triangle"></i> Confirmar acción', true, false, '{{isPC() ? '35%' : ''}}', function () {
                     post_jquery('{{url('sectores_modulos/terminar_ciclo')}}', datos, function () {
                         listar_ciclos();
@@ -330,7 +330,7 @@
             ciclo: ciclo,
             abrir: true,
         };
-        modal_quest('modal-quest_terminar_ciclo', '<div class="alert alert-info text-center">¿Está seguro de abrir este ciclo?</div>',
+        modal_quest('modal-quest_terminar_ciclo', '<div class="alert alert-info text-center">¿Está seguro de <strong>ABRIR</strong> este ciclo?</div>',
             '<i class="fa fa-fw fa-exclamation-triangle"></i> Confirmar acción', true, false, '{{isPC() ? '35%' : ''}}', function () {
                 post_jquery('{{url('sectores_modulos/abrir_ciclo')}}', datos, function () {
                     listar_ciclos();
@@ -346,7 +346,7 @@
             _token: '{{csrf_token()}}',
             ciclo: ciclo,
         };
-        modal_quest('modal-quest_eliminar_ciclo', '<div class="alert alert-info text-center">¿Está seguro de eliminar este ciclo?</div>',
+        modal_quest('modal-quest_eliminar_ciclo', '<div class="alert alert-info text-center">¿Está seguro de <strong>ELIMINAR</strong> este ciclo?</div>',
             '<i class="fa fa-fw fa-exclamation-triangle"></i> Confirmar acción', true, false, '{{isPC() ? '35%' : ''}}', function () {
                 post_jquery('{{url('sectores_modulos/eliminar_ciclo')}}', datos, function () {
                     listar_ciclos();
@@ -369,7 +369,7 @@
         };
 
         if (datos['area'] != '' && datos['variedad'] != '' && datos['fecha_inicio'] != '' && datos['poda_siembra'] != '')
-            modal_quest('modal-quest_terminar_ciclo', '<div class="alert alert-info text-center">¿Está seguro de empezar este ciclo?</div>',
+            modal_quest('modal-quest_terminar_ciclo', '<div class="alert alert-info text-center">¿Está seguro de <strong>EMPEZAR</strong> este ciclo?</div>',
                 '<i class="fa fa-fw fa-exclamation-triangle"></i> Confirmar acción', true, false, '{{isPC() ? '35%' : ''}}', function () {
                     post_jquery('{{url('sectores_modulos/store_ciclo')}}', datos, function () {
                         listar_ciclos();
@@ -393,7 +393,7 @@
         };
 
         if (datos['area'] != '' && datos['variedad'] != '' && datos['fecha_inicio'] != '' && datos['poda_siembra'] != '') {
-            modal_quest('modal-quest_terminar_ciclo', '<div class="alert alert-info text-center">¿Está seguro de terminar este ciclo?</div>',
+            modal_quest('modal-quest_terminar_ciclo', '<div class="alert alert-info text-center">¿Está seguro de <strong>MODIFICAR</strong> este ciclo?</div>',
                 '<i class="fa fa-fw fa-exclamation-triangle"></i> Confirmar acción', true, false, '{{isPC() ? '35%' : ''}}', function () {
                     post_jquery('{{url('sectores_modulos/update_ciclo')}}', datos, function () {
                         listar_ciclos();
@@ -423,7 +423,7 @@
                 alerta('<div class="alert alert-warning text-center">Faltan fechas necesarias para modificar el ciclo</div>');
                 return false;
             }
-            modal_quest('modal-quest_terminar_ciclo', '<div class="alert alert-info text-center">¿Está seguro de modificar este ciclo?</div>',
+            modal_quest('modal-quest_terminar_ciclo', '<div class="alert alert-info text-center">¿Está seguro de <strong>MODIFICAR</strong> este ciclo?</div>',
                 '<i class="fa fa-fw fa-exclamation-triangle"></i> Confirmar acción', true, false, '{{isPC() ? '35%' : ''}}', function () {
                     post_jquery('{{url('sectores_modulos/update_ciclo')}}', datos, function () {
                         listar_ciclos();

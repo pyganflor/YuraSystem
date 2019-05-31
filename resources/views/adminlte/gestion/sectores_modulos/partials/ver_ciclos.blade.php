@@ -98,7 +98,7 @@
                         {{$ciclo->get80Porciento()}}
                     </th>
                     <th class="text-center" style="border-color: #9d9d9d">
-                        {{$ciclo->getTallosCosechados()}}
+                        {{number_format($ciclo->getTallosCosechados())}}
                     </th>
                     <th class="text-center" style="border-color: #9d9d9d">
                         <span class="elemento_view_{{$ciclo->id_ciclo}}">

@@ -5,7 +5,7 @@
             <th class="text-center" style="border-color: white; color: white; background-color: #357ca5" rowspan="2">
                 Módulo
             </th>
-            <th class="text-center" style="border-color: white; color: white; background-color: #357ca5" colspan="6">
+            <th class="text-center" style="border-color: white; color: white; background-color: #357ca5" colspan="{{$tipo == 1 ? 9 : 6}}">
                 Ciclos
             </th>
             <th class="text-center" style="border-color: white; color: white; background-color: #357ca5" rowspan="2">
@@ -22,6 +22,17 @@
             <th class="text-center" style="border-color: white; color: white; background-color: #357ca5">
                 Dias
             </th>
+            @if($tipo == 1)
+                <th class="text-center" style="border-color: white; color: white; background-color: #357ca5">
+                    1ra Flor
+                </th>
+                <th class="text-center" style="border-color: white; color: white; background-color: #357ca5">
+                    80%
+                </th>
+                <th class="text-center" style="border-color: white; color: white; background-color: #357ca5">
+                    Tallos Cosechados
+                </th>
+            @endif
             <th class="text-center" style="border-color: white; color: white; background-color: #357ca5">
                 Cosecha
             </th>
@@ -63,6 +74,23 @@
                         00
                     @endif
                 </td>
+                @if($tipo == 1)
+                    <th class="text-center" style="border-color: #9d9d9d">
+                        @if($modulo->cicloActual() != '')
+                            @if($modulo->cicloActual()->fecha_cosecha != '')
+                                {{difFechas($modulo->cicloActual()->fecha_cosecha, $modulo->cicloActual()->fecha_inicio)->days}}
+                            @else
+                                0
+                            @endif
+                        @endif
+                    </th>
+                    <th class="text-center" style="border-color: #9d9d9d">
+                        {{$modulo->cicloActual() != '' ? $modulo->cicloActual()->get80Porciento() : ''}}
+                    </th>
+                    <th class="text-center" style="border-color: #9d9d9d">
+                        {{$modulo->cicloActual() != '' ? number_format($modulo->cicloActual()->getTallosCosechados()) : ''}}
+                    </th>
+                @endif
                 <td class="text-center" style="border-color: #9d9d9d">
                     <span class="hidden">{{$tipo == 1 ? $modulo->cicloActual()->fecha_cosecha : ''}}</span>
                     <input type="date" id="ciclo_fecha_cosecha_{{$modulo->id_modulo}}" name="ciclo_fecha_cosecha_{{$modulo->id_modulo}}"
