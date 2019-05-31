@@ -32,10 +32,13 @@
                     <ul class="text-left">
                         @foreach(getRecepcion($recepcion->id_recepcion)->desgloses as $item)
                             <li>
-                                {{$item->variedad->planta->nombre}} - {{$item->variedad->siglas}}:
-                                <strong>{{$item->cantidad_mallas}}</strong> mallas
-                                de <strong>{{$item->tallos_x_malla}}</strong> tallos =
-                                <strong>{{$item->cantidad_mallas * $item->tallos_x_malla}}</strong>
+                                <a href="javascript:void(0)" onclick="editar_desglose_recepcion('{{$item->id_desglose_recepcion}}')">
+                                    {{$item->variedad->planta->nombre}} - {{$item->variedad->siglas}}:
+                                    <strong class="text-black">{{$item->cantidad_mallas}}</strong> mallas
+                                    de <strong class="text-black">{{$item->tallos_x_malla}}</strong> tallos =
+                                    <strong class="text-black">{{$item->cantidad_mallas * $item->tallos_x_malla}}</strong> módulo:
+                                    <strong class="text-black">{{$item->modulo->nombre}}</strong>
+                                </a>
                             </li>
                         @endforeach
                     </ul>
@@ -55,6 +58,10 @@
                     Ver información personalizada
                 </a>
             @endif
+            <a href="#div_content_opciones" class="list-group-item list-group-item-action"
+               onclick="cargar_opcion('add_desglose', '{{$recepcion->id_recepcion}}')">
+                Añadir desglose
+            </a>
             <a href="#div_content_opciones" class="list-group-item list-group-item-action"
                onclick="add_info('{{$recepcion->id_recepcion}}')">
                 Añadir información personalizada

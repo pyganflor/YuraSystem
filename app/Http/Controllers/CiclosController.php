@@ -72,7 +72,7 @@ class CiclosController extends Controller
             $ciclo->area = $request->area;
             $ciclo->fecha_inicio = $request->fecha_inicio;
             $ciclo->poda_siembra = $request->poda_siembra;
-            $ciclo->fecha_cosecha = $request->fecha_cosecha;
+            $ciclo->fecha_cosecha = opDiasFecha('+', $request->fecha_cosecha, $request->fecha_inicio);
             $ciclo->fecha_fin = $request->fecha_fin;
 
             if ($ciclo->save()) {
@@ -160,7 +160,7 @@ class CiclosController extends Controller
             $ciclo->area = $request->area;
             $ciclo->fecha_inicio = $request->fecha_inicio;
             $ciclo->poda_siembra = $request->poda_siembra;
-            $ciclo->fecha_cosecha = $request->fecha_cosecha;
+            $ciclo->fecha_cosecha = opDiasFecha('+', $request->fecha_cosecha, $request->fecha_inicio);
             $ciclo->fecha_fin = $request->fecha_fin;
 
             if ($ciclo->save()) {

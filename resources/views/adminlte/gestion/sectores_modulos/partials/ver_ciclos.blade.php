@@ -90,9 +90,10 @@
                                 {{difFechas(date('Y-m-d'), $ciclo->fecha_inicio)->days}}
                             </span>
                         @endif
-                        <input type="date" id="fecha_cosecha_ciclo_modal_{{$ciclo->id_ciclo}}" value="{{$ciclo->fecha_cosecha}}"
+                        <input type="text" id="fecha_cosecha_ciclo_modal_{{$ciclo->id_ciclo}}"
+                               value="{{$ciclo->fecha_cosecha != '' ? difFechas($ciclo->fecha_cosecha, $ciclo->fecha_inicio)->days : ''}}"
                                class="elemento_input_{{$ciclo->id_ciclo}} text-center {{$ciclo->activo == 1 ? 'bg-green-gradient' : ''}}"
-                               style="width: 100%; display: none" required>
+                               style="width: 100%; display: none" required onkeypress="return isNumber(event)" maxlength="3">
                     </th>
                     <th class="text-center" style="border-color: #9d9d9d">
                         {{$ciclo->get80Porciento()}}

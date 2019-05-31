@@ -93,8 +93,10 @@
                 @endif
                 <td class="text-center" style="border-color: #9d9d9d">
                     <span class="hidden">{{$tipo == 1 ? $modulo->cicloActual()->fecha_cosecha : ''}}</span>
-                    <input type="date" id="ciclo_fecha_cosecha_{{$modulo->id_modulo}}" name="ciclo_fecha_cosecha_{{$modulo->id_modulo}}"
-                           style="width: 100%" value="{{$tipo == 1 ? $modulo->cicloActual()->fecha_cosecha : ''}}" class="text-center" required>
+                    <input type="text" id="ciclo_fecha_cosecha_{{$modulo->id_modulo}}" name="ciclo_fecha_cosecha_{{$modulo->id_modulo}}"
+                           style="width: 100%" onkeypress="return isNumber(event)" maxlength="3"
+                           value="{{$tipo == 1 && $modulo->cicloActual()->fecha_cosecha != '' ? difFechas($modulo->cicloActual()->fecha_cosecha, $modulo->cicloActual()->fecha_inicio)->days : ''}}"
+                           class="text-center" required>
                 </td>
                 <td class="text-center" style="border-color: #9d9d9d">
                     <span class="hidden">{{$tipo == 1 ? $modulo->cicloActual()->fecha_fin : ''}}</span>

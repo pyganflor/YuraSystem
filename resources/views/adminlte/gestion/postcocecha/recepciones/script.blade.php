@@ -88,6 +88,80 @@
         }
     }
 
+    function update_desglose(desglose) {
+        if ($('#form-update_desglose').valid()) {
+            datos = {
+                _token: '{{csrf_token()}}',
+                id_desglose: desglose,
+                id_modulo: $('#id_modulo_desglose').val(),
+                id_variedad: $('#id_variedad_desglose').val(),
+                cantidad_mallas: $('#cantidad_mallas_desglose').val(),
+                tallos_x_malla: $('#tallos_x_malla_desglose').val(),
+            };
+            modal_quest('modal-quest_update_desglose', '<div class="alert alert-info text-center">' +
+                '¿Está seguro de <strong>MODIFICAR</strong> esta cosecha? <br>' +
+                '<em class="error"><i class="fa fa-fw fa-exclamation-triangle"></i></em> <br>' +
+                '<em class="error">Al modificar esta información puede alterar otros datos relacionados al ciclo de los módulos correspondientes.</em> <br>' +
+                '<em class="error">Se recomienda notificar al personal encargado de esta área sobre dicha acción.</em>' +
+                '</div>',
+                '<i class="fa fa-fw fa-exclamation-triangle"></i> Confirmar acción', true, false, '{{isPC() ? '35%' : ''}}', function () {
+                    post_jquery('{{url('recepcion/update_desglose')}}', datos, function () {
+                        cerrar_modals();
+                        buscar_listado();
+                        ver_recepcion($('#id_recepcion_desglose').val());
+                    });
+                });
+        }
+    }
+
+    function store_desglose(recepcion) {
+        if ($('#form-store_desglose').valid()) {
+            datos = {
+                _token: '{{csrf_token()}}',
+                id_recepcion: recepcion,
+                id_modulo: $('#id_modulo_desglose').val(),
+                id_variedad: $('#id_variedad_desglose').val(),
+                cantidad_mallas: $('#cantidad_mallas_desglose').val(),
+                tallos_x_malla: $('#tallos_x_malla_desglose').val(),
+            };
+            modal_quest('modal-quest_update_desglose', '<div class="alert alert-info text-center">' +
+                '¿Está seguro de <strong>GUARDAR</strong> esta cosecha? <br>' +
+                '<em class="error"><i class="fa fa-fw fa-exclamation-triangle"></i></em> <br>' +
+                '<em class="error">Al guardar esta información puede alterar otros datos relacionados al ciclo de los módulos correspondientes.</em> <br>' +
+                '<em class="error">Se recomienda notificar al personal encargado de esta área sobre dicha acción.</em>' +
+                '</div>',
+                '<i class="fa fa-fw fa-exclamation-triangle"></i> Confirmar acción', true, false, '{{isPC() ? '35%' : ''}}', function () {
+                    post_jquery('{{url('recepcion/store_desglose')}}', datos, function () {
+                        cerrar_modals();
+                        buscar_listado();
+                        ver_recepcion($('#id_recepcion_desglose').val());
+                    });
+                });
+        }
+    }
+
+    function delete_desglose(desglose) {
+        if ($('#form-update_desglose').valid()) {
+            datos = {
+                _token: '{{csrf_token()}}',
+                id_desglose: desglose,
+            };
+            modal_quest('modal-quest_update_desglose', '<div class="alert alert-info text-center">' +
+                '¿Está seguro de <strong>ELIMINAR</strong> esta cosecha? <br>' +
+                '<em class="error"><i class="fa fa-fw fa-exclamation-triangle"></i></em> <br>' +
+                '<em class="error">Al eliminar esta información puede alterar otros datos relacionados al ciclo de los módulos correspondientes.</em> <br>' +
+                '<em class="error">Se recomienda notificar al personal encargado de esta área sobre dicha acción.</em>' +
+                '</div>',
+                '<i class="fa fa-fw fa-exclamation-triangle"></i> Confirmar acción', true, false, '{{isPC() ? '35%' : ''}}', function () {
+                    post_jquery('{{url('recepcion/delete_desglose')}}', datos, function () {
+                        cerrar_modals();
+                        buscar_listado();
+                        ver_recepcion($('#id_recepcion_desglose').val());
+                    });
+                });
+        }
+    }
+
     function ver_recepcion(id_recepcion) {
         $.LoadingOverlay('show');
         datos = {
@@ -153,6 +227,17 @@
             id_recepcion: id
         };
         get_jquery('{{url('recepcion')}}/' + opcion, datos, function (retorno) {
+            $('#div_content_opciones').html(retorno);
+        });
+        $.LoadingOverlay('hide');
+    }
+
+    function editar_desglose_recepcion(id) {
+        $.LoadingOverlay('show');
+        datos = {
+            id_desglose_recepcion: id
+        };
+        get_jquery('{{url('recepcion/editar_desglose_recepcion')}}', datos, function (retorno) {
             $('#div_content_opciones').html(retorno);
         });
         $.LoadingOverlay('hide');

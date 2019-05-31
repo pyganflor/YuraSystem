@@ -45,6 +45,7 @@
                             <strong>{{$recepcion->cantidad_mallas}}</strong> mallas
                             de <strong>{{$recepcion->tallos_x_malla}}</strong> tallos =
                             <strong>{{$recepcion->cantidad_mallas * $recepcion->tallos_x_malla}}</strong>
+                            módulo <strong>{{$recepcion->modulo->nombre}}</strong>
                             <br>
                         @endforeach
                     </td>
