@@ -28,5 +28,6 @@ Route::get('sectores_modulos/listar_ciclos', 'CiclosController@listar_ciclos');
 Route::get('sectores_modulos/ver_ciclos', 'CiclosController@ver_ciclos');
 Route::post('sectores_modulos/store_ciclo', 'CiclosController@store_ciclo');
 Route::post('sectores_modulos/terminar_ciclo', 'CiclosController@terminar_ciclo');
+Route::post('sectores_modulos/abrir_ciclo', 'CiclosController@abrir_ciclo');
 Route::post('sectores_modulos/update_ciclo', 'CiclosController@update_ciclo');
 Route::post('sectores_modulos/eliminar_ciclo', 'CiclosController@eliminar_ciclo');

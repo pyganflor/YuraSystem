@@ -216,7 +216,7 @@ class CiclosController extends Controller
                     $msg = '<div class="alert alert-success text-center">' .
                         '<p> Se ha terminado el ciclo satisfactoriamente</p>'
                         . '</div>';
-                    bitacora('ciclo', $ciclo->id_ciclo, 'U', 'Actualizacion satisfactoria de un ciclo');
+                    bitacora('ciclo', $ciclo->id_ciclo, 'U', 'Actualizacion satisfactoria de un ciclo (terminar ciclo)');
                 } else {
                     $success = false;
                     $msg = '<div class="alert alert-warning text-center">' .
@@ -227,6 +227,55 @@ class CiclosController extends Controller
                 $success = false;
                 $msg = '<div class="alert alert-warning text-center">' .
                     '<p>Faltan las fechas necesarias para terminar el ciclo</p>'
+                    . '</div>';
+            }
+        } else {
+            $success = false;
+            $errores = '';
+            foreach ($valida->errors()->all() as $mi_error) {
+                if ($errores == '') {
+                    $errores = '<li>' . $mi_error . '</li>';
+                } else {
+                    $errores .= '<li>' . $mi_error . '</li>';
+                }
+            }
+            $msg = '<div class="alert alert-danger">' .
+                '<p class="text-center">¡Por favor corrija los siguientes errores!</p>' .
+                '<ul>' .
+                $errores .
+                '</ul>' .
+                '</div>';
+        }
+        return [
+            'mensaje' => $msg,
+            'success' => $success
+        ];
+    }
+
+    public function abrir_ciclo(Request $request)
+    {
+        $valida = Validator::make($request->all(), [
+            'ciclo' => 'required',
+        ], [
+            'ciclo.required' => 'El ciclo es obligatorio',
+        ]);
+        if (!$valida->fails()) {
+            $ciclo = Ciclo::find($request->ciclo);
+            if ($request->abrir == 'true')
+                $ciclo->activo = 1;
+            else
+                $ciclo->activo = 0;
+
+            if ($ciclo->save()) {
+                $success = true;
+                $msg = '<div class="alert alert-success text-center">' .
+                    '<p> Se ha terminado el ciclo satisfactoriamente</p>'
+                    . '</div>';
+                bitacora('ciclo', $ciclo->id_ciclo, 'U', 'Actualizacion satisfactoria de un ciclo (abrir ciclo)');
+            } else {
+                $success = false;
+                $msg = '<div class="alert alert-warning text-center">' .
+                    '<p> Ha ocurrido un problema al guardar la información al sistema</p>'
                     . '</div>';
             }
         } else {
