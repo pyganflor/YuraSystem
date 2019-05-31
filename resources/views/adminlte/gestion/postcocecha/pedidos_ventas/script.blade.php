@@ -7,14 +7,14 @@
         datos = {
             id_pedido: id_pedido
         };
-            $.LoadingOverlay('hide');
-        });        $.get('{{url('pedidos/ver_envio')}}', datos, function (retorno) {
+
+        $.get('{{url('pedidos/ver_envio')}}', datos, function (retorno) {
             modal_view('modal_view_envios_facturas', retorno, '<i class="fa fa-plane" aria-hidden="true"></i> Desglose de los envíos del pedido', true, false, '85%');
             //estructura_tabla('table_content_pedidos');
         }).always(function () {
-
-        }
-
+            $.LoadingOverlay('hide');
+        });
+    }
     function add_orden_semanal() {
         get_jquery('{{url('pedidos/add_orden_semanal')}}', {}, function (retorno) {
             modal_view('modal-view_add_orden_semanal', retorno, '<i class="fa fa-fw fa-plus"></i> Agregar Orden Semanal', true, false,

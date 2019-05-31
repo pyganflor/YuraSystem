@@ -1753,3 +1753,7 @@ function getDae($dae=null,$codigo=null){
     if($codigo!=null)
         return CodigoDae::where('codigo_dae',$codigo)->first();
 }
+
+function getAerolinea($idAerolinea){
+    return Aerolinea::find($idAerolinea);
+}

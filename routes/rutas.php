@@ -70,6 +70,7 @@ Route::group(['middleware' => 'autenticacion'], function () {
         include 'crm/tbl_ventas.php';
         include 'crm/tbl_rendimiento.php';
 
+
         /* ========================== FACTURACIÓN ========================*/
         include 'facturacion/tipo_comprobante.php';
         include 'facturacion/tipo_identificacion.php';

@@ -18,6 +18,7 @@
     $peso_caja=0;
     $descripcion= "";
     $piezas = 0;
+    $total_tallos = 0;
 @endphp
 <table style="width:100%;font-family:arial, sans-serif">
     <tr>
@@ -154,7 +155,7 @@
                             @foreach($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $m => $esp_emp)
                                 @foreach ($esp_emp->detalles as $n => $det_esp_emp)
                                     @php
-                                        $total_ramos += number_format(($det_ped->cantidad*$det_esp_emp->cantidad),2,".","");
+                                        $total_ramos += number_format(($det_ped->cantidad*$esp_emp->cantidad*$det_esp_emp->cantidad),2,".","");
                                         $peso_neto += (int)$det_esp_emp->clasificacion_ramo->nombre * number_format(($det_ped->cantidad*$det_esp_emp->cantidad),2,".","");
                                         $peso_caja += isset(explode("|",$det_esp_emp->especificacion_empaque->empaque->nombre)[2]) ? explode("|",$det_esp_emp->especificacion_empaque->empaque->nombre)[2] : 0;
                                     @endphp
@@ -166,7 +167,7 @@
                              @foreach($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $m => $esp_emp)
                                   @foreach ($esp_emp->detalles as $n => $det_esp_emp)
                                        @php
-                                            $total_ramos += number_format(($det_ped->cantidad*$det_esp_emp->cantidad),2,".","");
+                                            $total_ramos += number_format(($det_ped->cantidad*$esp_emp->cantidad*$det_esp_emp->cantidad),2,".","");
                                             $peso_neto += (int)$det_esp_emp->clasificacion_ramo->nombre * number_format(($det_ped->cantidad*$det_esp_emp->cantidad),2,".","");
                                             $peso_caja += isset(explode("|",$det_esp_emp->especificacion_empaque->empaque->nombre)[2]) ? (explode("|",$det_esp_emp->especificacion_empaque->empaque->nombre)[2]*$det_ped->cantidad) : 0;
                                        @endphp
@@ -259,6 +260,7 @@
             @foreach($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $m => $esp_emp)
                 @foreach ($esp_emp->detalles as $n => $det_esp_emp)
                     @php
+                        $total_tallos += number_format(($det_ped->cantidad*$esp_emp->cantidad*$det_esp_emp->cantidad*$det_esp_emp->tallos_x_ramos),2,".","");
                         $full_equivalente_real += explode("|",$esp_emp->empaque->nombre)[1]*$det_ped->cantidad;
                         $descripcion = substr($det_esp_emp->variedad->planta->nombre, 0, 3) .", ". $det_esp_emp->variedad->nombre;
                         switch (explode("|",$esp_emp->empaque->nombre)[1]) {
@@ -303,6 +305,7 @@
             @foreach($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $m => $esp_emp)
                 @foreach ($esp_emp->detalles as $n => $det_esp_emp)
                     @php
+                        $total_tallos += number_format(($det_ped->cantidad*$esp_emp->cantidad*$det_esp_emp->cantidad*$det_esp_emp->tallos_x_ramos),2,".","");
                         $full_equivalente_real += explode("|",$esp_emp->empaque->nombre)[1]*$det_ped->cantidad;
                         switch (explode("|",$esp_emp->empaque->nombre)[1]) {
                             case '1':
@@ -382,7 +385,7 @@
         <td style="font-size:11px;font-family: arial, sans-serif;text_align:right">SUBTOTAL : ${{number_format($precio_total_sin_impuestos,2,".","")}}</td>
     </tr>
     <tr>
-        <td style="font-size:11px;font-family: arial, sans-serif;width:50px"> <b></b> </td>
+        <td style="font-size:11px;font-family: arial, sans-serif;width:50px"> <b>{{$total_tallos}}</b> </td>
         <td style="font-size:11px;font-family: arial, sans-serif;width:300px"><b>TOTAL STEMS</b></td>
         @php $tipoImpuesto = getTipoImpuesto((String)$data['obj_xml']->infoFactura->totalConImpuestos->totalImpuesto->codigo,(String)$data['obj_xml']->infoFactura->totalConImpuestos->totalImpuesto->codigoPorcentaje); @endphp
         <td style="font-size:11px;font-family: arial, sans-serif;text_align:right">{{$tipoImpuesto->nombre}} : ${{is_numeric($tipoImpuesto->porcentaje) ? number_format($precio_total_sin_impuestos * ($tipoImpuesto->porcentaje / 100), 2, ".", "") : "0.00"}}</td>

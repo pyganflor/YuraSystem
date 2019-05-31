@@ -2,10 +2,20 @@
 
 namespace yura\Http\Controllers;
 
+use DB;
 use Illuminate\Http\Request;
+use PHPExcel;
+use PHPExcel_IOFactory;
+use PHPExcel_Style_Alignment;
+use PHPExcel_Style_Border;
+use PHPExcel_Style_Color;
+use PHPExcel_Style_Fill;
+use PHPExcel_Worksheet;
 use Validator;
+use yura\Modelos\Cliente;
 use yura\Modelos\Envio;
 use yura\Modelos\FacturaClienteTercero;
+use yura\Modelos\Pais;
 use yura\Modelos\Submenu;
 use yura\Modelos\Comprobante;
 
@@ -96,11 +106,185 @@ class FueController extends Controller
         ];
     }
 
-
     public function reporte_fue(){
-        return view('adminlte.crm.fue.partials.listado_inicio');
+        return view('adminlte.crm.fue.partials.listado_inicio',[
+            'clientes' => Cliente::all()
+        ]);
     }
-    public function reporte_fue_filtrado(Request $request){
-        return view('adminlte.crm.fue.partials.listado_filtrado');
+
+    public function reporte_fue_filtrado(Request $request,$excel=false){
+
+        $data = Comprobante::join('envio as e', 'comprobante.id_envio','e.id_envio')
+                ->join('pedido as p','e.id_pedido','p.id_pedido')
+                ->join('cliente as c','p.id_cliente','c.id_cliente')
+                ->join('detalle_cliente as dc','c.id_cliente','dc.id_cliente')
+                ->where([
+                    ['dc.estado',1],
+                    ['comprobante.estado','05'],
+                ]);
+
+        if($request->get('id_cliente') != null)
+            $data->where('c.id_cliente',$request->get('id_cliente'));
+        if($request->get('codigo_dae') != null)
+            $data->where('e.codigo_dae',trim($request->get('codigo_dae')));
+        if($request->get('guia_madre') != null)
+            $data->where('e.guia_madre',trim($request->get('guia_madre')));
+        if($request->get('dae') != null)
+            $data->where('e.dae',trim($request->get('dae')));
+        if($request->get('desde') != null && $request->get('hasta') != null)
+            $data->whereBetween('comprobante.fecha_emision',[$request->get('desde'),$request->get('hasta')]);
+
+        if($excel){
+            return $data->select('comprobante.*','e.*','p.*','dc.nombre','c.id_cliente')->get();
+        }else{
+            return view('adminlte.crm.fue.partials.listado_filtrado',[
+                'listado' =>$data->select('comprobante.*','e.*','p.*','dc.nombre','c.id_cliente')->get()
+            ]);
+        }
+
+    }
+
+    public function exportar_reporte_dae(Request $request)
+    {
+        //---------------------- EXCEL --------------------------------------
+        $objPHPExcel = new PHPExcel;
+        $objPHPExcel->getDefaultStyle()->getFont()->setName('Calibri');
+        $objPHPExcel->getDefaultStyle()->getFont()->setSize(12);
+        $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, "Excel2007");
+
+        $objPHPExcel->removeSheetByIndex(0); //Eliminar la hoja inicial por defecto
+
+        $this->excel_reporte_facturas($objPHPExcel, $request);
+
+        //--------------------------- GUARDAR EL EXCEL -----------------------
+
+        header("Content-Type: application/force-download");
+        header("Content-Type: application/octet-stream");
+        header("Content-Type: application/download");
+        header('Content-Disposition:inline;filename="Reporte_Facturas_DAE.xlsx"');
+        header("Content-Transfer-Encoding: binary");
+        header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
+        header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+        header("Pragma: no-cache");
+        ob_start();
+        $objWriter->save('php://output');
+        $xlsData = ob_get_contents();
+        ob_end_clean();
+        $opResult = array(
+            'status' => 1,
+            'data' => "data:application/vnd.ms-excel;base64," . base64_encode($xlsData)
+        );
+        echo json_encode($opResult);
+    }
+
+    public function excel_reporte_facturas($objPHPExcel, $request)
+    {
+        if ($this->reporte_fue_filtrado($request,true)->count() > 0) {
+            $datos = $this->reporte_fue_filtrado($request,true);
+            $objSheet = new PHPExcel_Worksheet($objPHPExcel, 'Reporte Facturas DAE');
+            $objPHPExcel->addSheet($objSheet, 0);
+
+            $objSheet->mergeCells('A1:T1');
+            $objSheet->getStyle('A1:T1')->getFont()->setBold(true)->setSize(12);
+            $objSheet->getStyle('A1:T1')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+            $objSheet->getStyle('A1:T1')->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('CCFFCC');
+
+            $objSheet->getCell('A1')->setValue('Reporte de facturas por Dae');
+
+            $objSheet->getCell('A2')->setValue('N#');
+            $objSheet->getCell('B2')->setValue('CLAVE SRI');
+            $objSheet->getCell('C2')->setValue('DAE');
+            $objSheet->getCell('D2')->setValue('CÓDIGO DAE');
+            $objSheet->getCell('E2')->setValue('EXPORTADOR');
+            $objSheet->getCell('F2')->setValue('GUÍA MADRE');
+            $objSheet->getCell('G2')->setValue('GUÍA HIJA');
+            $objSheet->getCell('H2')->setValue('FECHA GUÍA');
+            $objSheet->getCell('I2')->setValue('FACTURA');
+            $objSheet->getCell('J2')->setValue('FECHA');
+            $objSheet->getCell('K2')->setValue('MANIFIESTO');
+            $objSheet->getCell('L2')->setValue('AEROLÍNEA');
+            $objSheet->getCell('M2')->setValue('AGENCIA CARGA');
+            $objSheet->getCell('N2')->setValue('CLIENTE');
+            $objSheet->getCell('O2')->setValue('RAMOS VAR');
+            $objSheet->getCell('P2')->setValue('CAJAS FULL');
+            $objSheet->getCell('Q2')->setValue('TALLOS');
+            $objSheet->getCell('R2')->setValue('PIEZAS');
+            $objSheet->getCell('S2')->setValue('NETO DOLARES');
+            $objSheet->getCell('T2')->setValue('PESO GUÍA Kg.');
+
+            $objSheet->getStyle('A2:T2')->getFont()->setBold(true)->setSize(12);
+
+            $objSheet->getStyle('A2:T2')
+                ->getBorders()
+                ->getAllBorders()
+                ->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN)
+                ->getColor()
+                ->setRGB(PHPExcel_Style_Color::COLOR_BLACK);
+
+            $objSheet->getStyle('A2:T2')
+                ->getFill()
+                ->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
+                ->getStartColor()
+                ->setRGB('CCFFCC');
+
+            //--------------------------- LLENAR LA TABLA ---------------------------------------------
+            foreach ($datos as $x => $d) {
+                $total_piezas = 0;
+                $total_ramos = 0;
+                $total_tallos = 0;
+                $full_equivalente_real= 0;
+                foreach (getPedido($d->id_pedido)->detalles as $det_ped)
+                    foreach($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $m => $esp_emp)
+                        foreach ($esp_emp->detalles as $n => $det_esp_emp){
+                            $total_ramos += number_format(($det_ped->cantidad*$esp_emp->cantidad*$det_esp_emp->cantidad),2,".","");
+                            $full_equivalente_real += explode("|",$esp_emp->empaque->nombre)[1]*$det_ped->cantidad;
+                            $total_tallos += number_format(($det_ped->cantidad*$esp_emp->cantidad*$det_esp_emp->cantidad*$det_esp_emp->tallos_x_ramos),2,".","");
+                        }
+                foreach (getPedido($d->id_pedido)->detalles as $det_ped) $total_piezas += $det_ped->cantidad;
+                $objSheet->getCell('A' . (($x+1) + 3))->setValue(($x+1));
+                $objSheet->getCell('B' . (($x+1) + 3))->setValue($d->clave_acceso);
+                $objSheet->getCell('C' . (($x+1) + 3))->setValue($d->dae);
+                $objSheet->getCell('D' . (($x+1) + 3))->setValue($d->codigo_dae);
+                $objSheet->getCell('E' . (($x+1) + 3))->setValue(getConfiguracionEmpresa()->razon_social);
+                $objSheet->getCell('F' . (($x+1) + 3))->setValue($d->guia_madre);
+                $objSheet->getCell('G' . (($x+1) + 3))->setValue($d->guia_hija);
+                $objSheet->getCell('H' . (($x+1) + 3))->setValue(\Carbon\Carbon::parse($d->fecha_pedido)->addDay(1)->format('d/m/Y'));
+                $objSheet->getCell('I' . (($x+1) + 3))->setValue($d->numero_comprobante);
+                $objSheet->getCell('J' . (($x+1) + 3))->setValue(\Carbon\Carbon::parse($d->fecha_pedido)->format('d/m/Y'));
+                $objSheet->getCell('K' . (($x+1) + 3))->setValue($d->manifiesto);
+                $objSheet->getCell('L' . (($x+1) + 3))->setValue(getAerolinea(getPedido($d->id_pedido)->envios[0]->detalles[0]->id_aerolinea)->nombre);
+                $objSheet->getCell('M' . (($x+1) + 3))->setValue(getAgenciaCarga(getPedido($d->id_pedido)->detalles[0]->id_agencia_carga)->nombre);
+                $objSheet->getCell('N' . (($x+1) + 3))->setValue($d->nombre);
+                $objSheet->getCell('O' . (($x+1) + 3))->setValue($total_ramos);
+                $objSheet->getCell('P' . (($x+1) + 3))->setValue($full_equivalente_real);
+                $objSheet->getCell('Q' . (($x+1) + 3))->setValue($total_tallos);
+                $objSheet->getCell('R' . (($x+1) + 3))->setValue($total_piezas);
+                $objSheet->getCell('S' . (($x+1) + 3))->setValue("$".$d->monto_total);
+                $objSheet->getCell('T' . (($x+1) + 3))->setValue($d->peso);
+            }
+
+            $objSheet->getColumnDimension('A')->setAutoSize(true);
+            $objSheet->getColumnDimension('B')->setAutoSize(true);
+            $objSheet->getColumnDimension('C')->setAutoSize(true);
+            $objSheet->getColumnDimension('D')->setAutoSize(true);
+            $objSheet->getColumnDimension('E')->setAutoSize(true);
+            $objSheet->getColumnDimension('F')->setAutoSize(true);
+            $objSheet->getColumnDimension('G')->setAutoSize(true);
+            $objSheet->getColumnDimension('H')->setAutoSize(true);
+            $objSheet->getColumnDimension('I')->setAutoSize(true);
+            $objSheet->getColumnDimension('J')->setAutoSize(true);
+            $objSheet->getColumnDimension('K')->setAutoSize(true);
+            $objSheet->getColumnDimension('L')->setAutoSize(true);
+            $objSheet->getColumnDimension('M')->setAutoSize(true);
+            $objSheet->getColumnDimension('N')->setAutoSize(true);
+            $objSheet->getColumnDimension('O')->setAutoSize(true);
+            $objSheet->getColumnDimension('P')->setAutoSize(true);
+            $objSheet->getColumnDimension('Q')->setAutoSize(true);
+            $objSheet->getColumnDimension('R')->setAutoSize(true);
+            $objSheet->getColumnDimension('S')->setAutoSize(true);
+            $objSheet->getColumnDimension('T')->setAutoSize(true);
+        } else {
+            return '<div>No se han encontrado coincidencias</div>';
+        }
     }
 }

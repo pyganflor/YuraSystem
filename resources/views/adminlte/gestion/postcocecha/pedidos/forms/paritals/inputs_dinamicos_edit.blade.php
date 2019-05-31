@@ -182,7 +182,7 @@
                                 </td>
                                 <td style="border-color: #9d9d9d; padding: 0px; vertical-align: middle; width: 100px; "
                                     class="text-center" rowspan="{{getCantidadDetallesByEspecificacion($item->id_especificacion)}}">
-                                    <input type="number" min="0" id="cantidad_piezas_{{($x+$cant_esp_creadas)}}" style="border: none" onchange="calcular_precio_pedido(this)"
+                                    <input type="number" min="0" id="cantidad_piezas_{{($x+$cant_esp_creadas)}}" style="border: none" onkeyup="crear_orden_pedido(this)" onchange="calcular_precio_pedido(this)"
                                            name="cantidad_piezas_{{$item->id_especificacion}}" class="text-center form-control cantidad_{{($x+$cant_esp_creadas)}} input_cantidad" value="">
                                     <input type="hidden" id="id_cliente_pedido_especificacion_{{($x+$cant_esp_creadas)}}" value="{{$item->id_cliente_pedido_especificacion}}">
                                 </td>
