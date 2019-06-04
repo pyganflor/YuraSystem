@@ -310,9 +310,11 @@ function cancelar_pedidos(id_pedido, id_cliente, estado, token) {
             $.LoadingOverlay('show');
             post_jquery('clientes/cancelar_pedido', datos, function () {
                 cerrar_modals();
+                console.log($("#listar_resumen_pedido").val());
                 $("#listar_resumen_pedido").val() == 'true'
                     ? listar_resumen_pedidos($('#fecha_pedidos_search').val(), true)
                     : "";
+
             });
             $.LoadingOverlay('hide');
         });
@@ -1640,7 +1642,6 @@ function actualizar_envio(id_envio, form, tipo_pedido, token, id_pedido, vista) 
             almacen : $("form#"+form+ " #almacen").val(),
             tipo_pedido : tipo_pedido,
             codigo_dae:  $("#codigo_dae").val()
-
         };
         $.post('envio/actualizar_envio', datos, function (retorno) {
             if (retorno.success) {

@@ -99,6 +99,7 @@ class PedidoController extends Controller
             'id_cliente' => 'required',
         ]);
         if (!$valida->fails()) {
+
             $success = false;
             $msg = '<div class="alert alert-danger text-center">' .
                 '<p> Ha ocurrido un problema al guardar la información al sistema</p>'
@@ -116,24 +117,31 @@ class PedidoController extends Controller
                 (isset($request->opcion) && $request->opcion != 3) ? $fechaFormateada = $formatoFecha : $fechaFormateada = $fechas;
 
                 if(!empty($request->id_pedido)){
-                    $dataEnvio = Envio::where('id_pedido',$request->id_pedido)->select('id_envio')->first();
+                    $dataEnvio = Envio::where('id_pedido',$request->id_pedido)->first();
                     if(isset($dataEnvio->id_envio)){
-                        //$dataComprobante = Comprobante::where('id_envio',$dataEnvio->id_envio)->select('id_comprobante','clave_acceso')->first();
                         $dataComprobante = Comprobante::where('id_envio',$dataEnvio->id_envio)
                             ->join('detalle_factura as df','comprobante.id_comprobante','df.id_comprobante')
                             ->join('impuesto_detalle_factura as idf','df.id_detalle_factura','idf.id_detalle_factura')
                             ->join('desglose_envio_factura as def','comprobante.id_comprobante','def.id_comprobante')
                             ->join('impuesto_desglose_envio_factura as idef','def.id_desglose_envio_factura','idef.id_desglose_envio_factura')
-                            ->select('clave_acceso','comprobante.id_comprobante','df.id_detalle_factura','id_impuesto_desglose_envio_factura')->get();
-                        if(count($dataComprobante)>0 && $dataComprobante[0]->id_comprobante != null){
-                            unlink(env('PATH_XML_FIRMADOS').$dataComprobante[0]->clave_acceso.".xml");
-                            unlink(env('PATH_XML_GENERADOS').$dataComprobante[0]->clave_acceso.".xml");
-                            foreach ($dataComprobante as $item)
-                                ImpuestoDesgloseEnvioFactura::where('id_desglose_envio_factura', $item->id_impuesto_desglose_envio_factura)->delete();
-                            DesgloseEnvioFactura::where('id_comprobante',$dataComprobante[0]->id_comprobante)->delete();
-                            ImpuestoDetalleFactura::where('id_detalle_factura', $dataComprobante[0]->id_detalle_factura)->delete();
-                            DetalleFactura::where('id_comprobante', $dataComprobante[0]->id_comprobante)->delete();
-                            Comprobante::destroy($dataComprobante[0]->id_comprobante);
+                            ->select('clave_acceso','comprobante.id_comprobante')->get();
+                        if($dataComprobante->count() > 0){
+                            $objComprobante = Comprobante::find($dataComprobante[0]->id_comprobante);
+                            $objComprobante->habilitado = false;
+                            $objComprobante->id_envio = null;
+                            $objComprobante->save();
+                            unlink(env('PATH_XML_FIRMADOS').'/facturas/'.$dataComprobante[0]->clave_acceso.".xml");
+                            unlink(env('PATH_XML_GENERADOS').'/facturas/'.$dataComprobante[0]->clave_acceso.".xml");
+                            $codigo_dae = $dataEnvio->codigo_dae;
+                            $dae = $dataEnvio->dae;
+                            $guia_madre = $dataEnvio->guia_madre;
+                            $guia_hija = $dataEnvio->guia_hija;
+                            $email = $dataEnvio->email;
+                            $telefono = $dataEnvio->telefono;
+                            $direccion = $dataEnvio->direccion;
+                            $codigo_pais = $dataEnvio->codigo_pais;
+                            $almacen = $dataEnvio->almacen;
+                            $aerolinea = getEnvio($dataEnvio->id_envio)->detalles[0]->id_aerolinea;
                         }
 
                         DetalleEnvio::where('id_envio',$dataEnvio->id_envio)->delete();
@@ -151,6 +159,10 @@ class PedidoController extends Controller
                 $objPedido->descripcion = $request->descripcion;
                 $objPedido->fecha_pedido = $fechaFormateada;
                 $objPedido->variedad = substr(implode("|",array_unique($request->variedades)), 0, -1);
+                if(isset($dataEnvio->id_envio) && count($dataComprobante) > 0){
+                    $objPedido->clave_acceso_temporal = $dataComprobante[0]->clave_acceso;
+                    $objPedido->id_comprobante_temporal = $dataComprobante[0]->id_comprobante;
+                }
 
                 if ($objPedido->save()) {
                     $model = Pedido::all()->last();
@@ -201,6 +213,17 @@ class PedidoController extends Controller
                     $objEnvio = new Envio;
                     $objEnvio->fecha_envio = $fechaFormateada;
                     $objEnvio->id_pedido = $model->id_pedido;
+                    if(isset($codigo_dae)) {
+                        $objEnvio->codigo_dae = $codigo_dae;
+                        $objEnvio->dae = $dae;
+                        $objEnvio->guia_madre = $guia_madre;
+                        $objEnvio->guia_hija = $guia_hija;
+                        $objEnvio->email = $email;
+                        $objEnvio->telefono = $telefono;
+                        $objEnvio->direccion = $direccion;
+                        $objEnvio->codigo_pais = $codigo_pais;
+                        $objEnvio->almacen = $almacen;
+                    }
                     if($objEnvio->save()){
                         $modelEnvio = Envio::all()->last();
                         bitacora('envio', $modelEnvio->id_envio, 'I', 'Inserción satisfactoria de un nuevo envío');
@@ -212,6 +235,7 @@ class PedidoController extends Controller
                             $objDetalleEnvio->id_envio = $modelEnvio->id_envio;
                             $objDetalleEnvio->id_especificacion = $detallePeido->id_especificacion;
                             $objDetalleEnvio->cantidad = $detallePeido->cantidad;
+                            isset($aerolinea) ? $objDetalleEnvio->id_aerolinea = $aerolinea : "";
                             if($objDetalleEnvio->save()){
                                 $modelDetalleEnvio = DetalleEnvio::all()->last();
                                 bitacora('detalle_envio', $modelDetalleEnvio->id_detalle_envio, 'I', 'Inserción satisfactoria de un nuevo detalle envío');

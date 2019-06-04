@@ -10,6 +10,7 @@ use yura\Modelos\Cliente;
 use yura\Modelos\ClientePedidoEspecificacion;
 use yura\Modelos\Color;
 use yura\Modelos\Coloracion;
+use yura\Modelos\Comprobante;
 use yura\Modelos\DetalleEnvio;
 use yura\Modelos\DetalleEspecificacionEmpaque;
 use yura\Modelos\DetallePedido;
@@ -515,6 +516,7 @@ class OrdenSemanalController extends Controller
 
     public function update_orden_tinturada(Request $request)
     {
+
         $valida = Validator::make($request->all(), [
             'id_pedido' => 'required',
             'id_detalle_pedido' => 'required',
@@ -535,8 +537,22 @@ class OrdenSemanalController extends Controller
         $success = true;
         if (!$valida->fails()) {
             /* ========== PEDIDO ============ */
+            $p = getPedido($request->id_pedido);
+            //dd($p->envios[0]->comprobante);
             $pedido = Pedido::find($request->id_pedido);
             $pedido->fecha_pedido = $request->fecha_pedido;
+
+            if(isset($p->envios[0]->comprobante)){
+                $e = getEnvio($p->envios[0]->id_envio);
+                $c = getComprobante($p->envios[0]->comprobante->id_comprobante);
+                $id_aerolinea = $e->detalles[0]->id_aerolinea;
+                $objComprobante = Comprobante::find($c->id_comprobante);
+                $objComprobante->id_envio = null;
+                $objComprobante->habilitado = 0;
+                $objComprobante->save();
+                $pedido->clave_acceso_temporal = $c->clave_acceso;
+                $pedido->id_comprobante_temporal = $c->id_comprobante;
+            }
 
             if ($pedido->save()) {
                 bitacora('pedido', $pedido->id_pedido, 'U', 'Actualizacion de un pedido');
@@ -665,6 +681,17 @@ class OrdenSemanalController extends Controller
                     $envio = new Envio();
                     $envio->id_pedido = $pedido->id_pedido;
                     $envio->fecha_envio = $request->fecha_envio;
+                    if(isset($e)){
+                        $envio->guia_madre = $e->guia_madre;
+                        $envio->guia_hija = $e->guia_hija;
+                        $envio->dae = $e->dae;
+                        $envio->email = $e->email;
+                        $envio->telefono = $e->telefono;
+                        $envio->direccion = $e->direccion;
+                        $envio->codigo_pais = $e->codigo_pais;
+                        $envio->almacen = $e->almacen;
+                        $envio->codigo_dae = $e->codigo_dae;
+                    }
 
                     if ($envio->save()) {
                         $envio = Envio::All()->last();
@@ -675,6 +702,7 @@ class OrdenSemanalController extends Controller
                             $det_envio->id_envio = $envio->id_envio;
                             $det_envio->id_especificacion = $det->cliente_especificacion->id_especificacion;
                             $det_envio->cantidad = $det->cantidad;
+                            if(isset($e)) $det_envio->id_aerolinea = $id_aerolinea;
 
                             if ($det_envio->save()) {
                                 $det_envio = DetalleEnvio::All()->last();

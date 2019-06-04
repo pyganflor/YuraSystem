@@ -1216,7 +1216,8 @@ function getFacturado($idEnvio, $estado)
 {
     $f = Comprobante::where([
         ['id_envio', $idEnvio],
-        ['estado', $estado]
+        ['estado', $estado],
+        ['comprobante.habilitado',true]
     ])->count();
     ($f > 0) ? $facturado = true : $facturado = null;
     return $f;
