@@ -75,6 +75,14 @@ class RecepcionController extends Controller
         ]);
     }
 
+    public function add_desglose(Request $request)
+    {
+        return view('adminlte.gestion.postcocecha.recepciones.forms.add_desglose', [
+            'variedades' => Variedad::All()->where('estado', '=', 1),
+            'recepcion' => Recepcion::find($request->id_recepcion)
+        ]);
+    }
+
     public function store_recepcion(Request $request)
     {
         $msg = '';
@@ -210,6 +218,189 @@ class RecepcionController extends Controller
         ];
     }
 
+    public function update_desglose(Request $request)
+    {
+        $msg = '';
+        $success = true;
+        $valida = Validator::make($request->all(), [
+            'id_desglose' => 'required',
+            'id_modulo' => 'required',
+            'id_variedad' => 'required',
+            'cantidad_mallas' => 'required',
+            'tallos_x_malla' => 'required',
+        ], [
+            'id_desglose.required' => 'El desglose es obligatorio',
+            'id_modulo.required' => 'El módulo es obligatorio',
+            'id_variedad.required' => 'La variedad es obligatoria',
+            'cantidad_mallas.required' => 'La cantidad de mallas es obligatoria',
+            'tallos_x_malla.required' => 'La cantidad de tallos por malla es obligatoria',
+        ]);
+        if (!$valida->fails()) {
+            /* ========= TABLA DESGLOSE_RECPCION ============*/
+            $model = DesgloseRecepcion::find($request->id_desglose);
+            $model->id_variedad = $request->id_variedad;
+            $model->cantidad_mallas = $request->cantidad_mallas;
+            $model->tallos_x_malla = $request->tallos_x_malla;
+            $model->id_modulo = $request->id_modulo;
+
+            if ($model->save()) {
+                bitacora('desglose_recepcion', $model->id_desglose_recepcion, 'U', 'Inserción satisfactoria de un nuevo desglose de recepción');
+                $msg .= '<div class="alert alert-success text-center">' .
+                    '<p> Se ha actualizado satisfactoriamente la información en el sistema</p>'
+                    . '</div>';
+            } else {
+                $success = false;
+                $msg .= '<div class="alert alert-warning text-center">' .
+                    '<p> Ha ocurrido un problema al guardar la información al sistema</p>'
+                    . '</div>';
+            }
+        } else {
+            $success = false;
+            $errores = '';
+            foreach ($valida->errors()->all() as $mi_error) {
+                if ($errores == '') {
+                    $errores = '<li>' . $mi_error . '</li>';
+                } else {
+                    $errores .= '<li>' . $mi_error . '</li>';
+                }
+            }
+            $msg = '<div class="alert alert-danger">' .
+                '<p class="text-center">¡Por favor corrija los siguientes errores!</p>' .
+                '<ul>' .
+                $errores .
+                '</ul>' .
+                '</div>';
+        }
+        return [
+            'mensaje' => $msg,
+            'success' => $success
+        ];
+    }
+
+    public function store_desglose(Request $request)
+    {
+        $msg = '';
+        $success = true;
+        $valida = Validator::make($request->all(), [
+            'id_recepcion' => 'required',
+            'id_modulo' => 'required',
+            'id_variedad' => 'required',
+            'cantidad_mallas' => 'required',
+            'tallos_x_malla' => 'required',
+        ], [
+            'id_recepcion.required' => 'La recepción es obligatorio',
+            'id_modulo.required' => 'El módulo es obligatorio',
+            'id_variedad.required' => 'La variedad es obligatoria',
+            'cantidad_mallas.required' => 'La cantidad de mallas es obligatoria',
+            'tallos_x_malla.required' => 'La cantidad de tallos por malla es obligatoria',
+        ]);
+        if (!$valida->fails()) {
+            /* ========= TABLA DESGLOSE_RECPCION ============*/
+            $model = new DesgloseRecepcion();
+            $model->id_recepcion = $request->id_recepcion;
+            $model->id_variedad = $request->id_variedad;
+            $model->cantidad_mallas = $request->cantidad_mallas;
+            $model->tallos_x_malla = $request->tallos_x_malla;
+            $model->id_modulo = $request->id_modulo;
+
+            if ($model->save()) {
+                $model = DesgloseRecepcion::All()->last();
+                bitacora('desglose_recepcion', $model->id_desglose_recepcion, 'U', 'Inserción satisfactoria de un nuevo desglose de recepción');
+                $msg .= '<div class="alert alert-success text-center">' .
+                    '<p> Se ha guardado satisfactoriamente la información en el sistema</p>'
+                    . '</div>';
+
+                /* ============= ACTUALIZR CICLO DEL MODULO ========== */
+                $modulo = Modulo::find($model->id_modulo);
+                $ciclo = $modulo->getCicloByFecha($model->recepcion->cosecha->fecha_ingreso);
+                if ($ciclo != '') {
+                    if ($ciclo->fecha_cosecha == '' || $model->recepcion->cosecha->fecha_ingreso < $ciclo->fecha_cosecha) {
+                        $ciclo->fecha_cosecha = $model->recepcion->cosecha->fecha_ingreso;
+                    }
+                    if ($ciclo->fecha_fin == '' || $model->recepcion->cosecha->fecha_ingreso > $ciclo->fecha_fin) {
+                        $ciclo->fecha_fin = $model->recepcion->cosecha->fecha_ingreso;
+                    }
+
+                    $ciclo->save();
+                    bitacora('ciclo', $ciclo->id_ciclo, 'U', 'Actualizacion satisfactoria de un ciclo desde el ingreso de la cosecha: ' . $model->recepcion->id_cosecha);
+                }
+            } else {
+                $success = false;
+                $msg .= '<div class="alert alert-warning text-center">' .
+                    '<p> Ha ocurrido un problema al guardar la información al sistema</p>'
+                    . '</div>';
+            }
+        } else {
+            $success = false;
+            $errores = '';
+            foreach ($valida->errors()->all() as $mi_error) {
+                if ($errores == '') {
+                    $errores = '<li>' . $mi_error . '</li>';
+                } else {
+                    $errores .= '<li>' . $mi_error . '</li>';
+                }
+            }
+            $msg = '<div class="alert alert-danger">' .
+                '<p class="text-center">¡Por favor corrija los siguientes errores!</p>' .
+                '<ul>' .
+                $errores .
+                '</ul>' .
+                '</div>';
+        }
+        return [
+            'mensaje' => $msg,
+            'success' => $success
+        ];
+    }
+
+    public function delete_desglose(Request $request)
+    {
+        $msg = '';
+        $success = true;
+        $valida = Validator::make($request->all(), [
+            'id_desglose' => 'required',
+        ], [
+            'id_desglose.required' => 'El desglose es obligatorio',
+        ]);
+        if (!$valida->fails()) {
+            /* ========= TABLA DESGLOSE_RECPCION ============*/
+            $model = DesgloseRecepcion::find($request->id_desglose);
+            $model->estado = 0;
+
+            if ($model->save()) {
+                bitacora('desglose_recepcion', $model->id_desglose_recepcion, 'U', 'Inserción satisfactoria de un nuevo desglose de recepción');
+                $msg .= '<div class="alert alert-success text-center">' .
+                    '<p> Se ha actualizado satisfactoriamente la información en el sistema</p>'
+                    . '</div>';
+            } else {
+                $success = false;
+                $msg .= '<div class="alert alert-warning text-center">' .
+                    '<p> Ha ocurrido un problema al guardar la información al sistema</p>'
+                    . '</div>';
+            }
+        } else {
+            $success = false;
+            $errores = '';
+            foreach ($valida->errors()->all() as $mi_error) {
+                if ($errores == '') {
+                    $errores = '<li>' . $mi_error . '</li>';
+                } else {
+                    $errores .= '<li>' . $mi_error . '</li>';
+                }
+            }
+            $msg = '<div class="alert alert-danger">' .
+                '<p class="text-center">¡Por favor corrija los siguientes errores!</p>' .
+                '<ul>' .
+                $errores .
+                '</ul>' .
+                '</div>';
+        }
+        return [
+            'mensaje' => $msg,
+            'success' => $success
+        ];
+    }
+
     public function ver_recepcion(Request $request)
     {
         if ($request->has('id_recepcion')) {
@@ -222,7 +413,7 @@ class RecepcionController extends Controller
                 return '<div class="alert alert-warning text-center">No se ha encontrado el usuario en el sistema</div>';
             }
         } else {
-            return '<div class="alert alert-warning text-center">No se ha seleccionado ningún usuario</div>';
+            return '<div class="alert alert-warning text-center">No se ha seleccionado ninguna recepción</div>';
         }
     }
 
@@ -429,5 +620,12 @@ class RecepcionController extends Controller
                 'rendimiento' => 0
             ];
         }
+    }
+
+    public function editar_desglose_recepcion(Request $request)
+    {
+        return view('adminlte.gestion.postcocecha.recepciones.forms.editar_desglose_recepcion', [
+            'desglose' => DesgloseRecepcion::find($request->id_desglose_recepcion)
+        ]);
     }
 }
