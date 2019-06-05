@@ -103,6 +103,7 @@ class UsuarioController extends Controller
 
     public function store_usuarios(Request $request)
     {
+        dd(55);
         $msg = '';
         $success = true;
 
@@ -180,6 +181,7 @@ class UsuarioController extends Controller
                     return [
                         'mensaje' => '<div class="alert alert-danger text-center">' .
                             '<p>¡Ha ocurrido un problema al guardar la imagen en el sistema!</p>' .
+                            $e->getMessage() .
                             '</div>',
                         'success' => false
                     ];
@@ -343,6 +345,7 @@ class UsuarioController extends Controller
 
     public function update_image_perfil(Request $request)
     {
+        dd(55);
         $model = Usuario::find($request->id_usuario);
         //------------------------------    GRABAR LA IMAGEN DE PERFIL  -----------------------------------------
         try {
@@ -421,6 +424,7 @@ class UsuarioController extends Controller
             return [
                 'mensaje' => '<div class="alert alert-danger text-center">' .
                     '<p>¡Ha ocurrido un problema al guardar la imagen en el sistema!</p>' .
+                    $e->getMessage() .
                     '</div>',
                 'success' => false
             ];

@@ -386,6 +386,7 @@ class YuraController extends Controller
 
     public function update_image_perfil(Request $request)
     {
+
         $model = Usuario::find($request->id_usuario);
         //------------------------------    GRABAR LA IMAGEN DE PERFIL  -----------------------------------------
         try {
@@ -463,7 +464,8 @@ class YuraController extends Controller
         } catch (\Exception $e) {
             return [
                 'mensaje' => '<div class="alert alert-danger text-center">' .
-                    '<p>¡Ha ocurrido un problema al guardar la imagen en el sistema!</p>' .
+                    '<p>¡Ha ocurrido un problema al guardar la imagen en el sistema! **</p>' .
+                    $e->getMessage() .
                     '</div>',
                 'success' => false
             ];
