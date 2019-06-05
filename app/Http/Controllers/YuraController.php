@@ -471,7 +471,6 @@ class YuraController extends Controller
             ];
         }
 
-
     }
 
     public function get_usuario_json(Request $request)
