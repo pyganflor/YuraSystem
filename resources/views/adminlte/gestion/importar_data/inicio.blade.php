@@ -117,6 +117,38 @@
                 </form>
             </div>
         </div>
+
+        <div class="box box-info">
+            <div class="box-body">
+                <form id="form-importar_area" action="{{url('importar_data/area')}}" method="POST">
+                    {!! csrf_field() !!}
+                    <div class="input-group">
+                        <span class="input-group-addon" style="background-color: #e9ecef">
+                            Área
+                        </span>
+                        <input type="file" id="file_area" name="file_area" required class="form-control input-group-addon"
+                               accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel">
+                        <span class="input-group-addon" style="background-color: #e9ecef">
+                            <input type="checkbox" id="activo_area" name="activo_area">
+                            <label for="activo_area" class="mouse-hand">Activo</label>
+                        </span>
+                        <span class="input-group-addon" style="background-color: #e9ecef">
+                            Variedad
+                        </span>
+                        <select name="variedad_area" id="variedad_area" class="form-control" required>
+                            @foreach(getVariedades() as $v)
+                                <option value="{{$v->id_variedad}}">{{$v->nombre}}</option>
+                            @endforeach
+                        </select>
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-primary" onclick="importar_area()">
+                                <i class="fa fa-fw fa-check"></i>
+                            </button>
+                        </span>
+                    </div>
+                </form>
+            </div>
+        </div>
     </section>
 @endsection
 

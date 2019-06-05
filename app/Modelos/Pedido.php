@@ -226,6 +226,72 @@ class Pedido extends Model
                 }
             }
         }
+        if (count($this->envios) > 0)
+            if ($this->envios[0]->comprobante != '') {  // PEDIDO FACTURADO
+                return $this->envios[0]->comprobante->monto_total;
+            } else {
+                if ($this->envios[0]->fatura_cliente_tercero != '') {   // FACTURAR A NOMBRE DE OTRA PERSONA
+                    $impuesto = TipoImpuesto::All()
+                        ->where('codigo', $this->envios[0]->fatura_cliente_tercero->codigo_impuesto_porcentaje)->first()->porcentaje;
+                    if (is_numeric($impuesto)) {
+                        $r += $r * ($impuesto / 100);
+                    }
+                } else {    // FACTURAR A NOMBRE DEL CLIENTE
+                    $impuesto = TipoImpuesto::All()
+                        ->where('codigo', $this->cliente->detalle()->codigo_porcentaje_impuesto)->first()->porcentaje;
+                    if (is_numeric($impuesto)) {
+                        $r += $r * ($impuesto / 100);
+                    }
+                }
+            }
+        else {    // FACTURAR A NOMBRE DEL CLIENTE
+            $impuesto = TipoImpuesto::All()
+                ->where('codigo', $this->cliente->detalle()->codigo_porcentaje_impuesto)->first()->porcentaje;
+            if (is_numeric($impuesto)) {
+                $r += $r * ($impuesto / 100);
+            }
+        }
+        return $r;
+    }
+
+    public function getVariedades() // optimizar consulta
+    {
+        $r = [];
+        foreach ($this->detalles as $det_ped) {
+            foreach ($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $esp_emp) {
+                foreach ($esp_emp->detalles as $det_esp) {
+                    if (!in_array($det_esp->id_variedad, $r)) {
+                        array_push($r, $det_esp->id_variedad);
+                    }
+                }
+            }
+        }
+        return $r;
+    }
+
+    public function getCajasFisicas()
+    {
+        $r = DB::table('detalle_pedido as dp')
+            ->select(DB::raw('sum(dp.cantidad) as cantidad'))
+            ->where('dp.estado', '=', 1)
+            ->where('dp.id_pedido', '=', $this->id_pedido)
+            ->get()[0]->cantidad;
+
+        return $r;
+    }
+
+    public function getCajasFisicasByVariedad($variedad)
+    {
+        $r = DB::table('detalle_pedido as dp')
+            ->join('cliente_pedido_especificacion as cpe', 'cpe.id_cliente_pedido_especificacion', '=', 'dp.id_cliente_especificacion')
+            ->join('especificacion_empaque as esp_emp', 'esp_emp.id_especificacion', '=', 'cpe.id_especificacion')
+            ->join('detalle_especificacionempaque as det_esp', 'det_esp.id_especificacion_empaque', '=', 'esp_emp.id_especificacion_empaque')
+            ->select(DB::raw('sum(dp.cantidad) as cantidad'))
+            ->where('dp.estado', '=', 1)
+            ->where('dp.id_pedido', '=', $this->id_pedido)
+            ->where('det_esp.id_variedad', '=', $variedad)
+            ->get()[0]->cantidad;
+
         return $r;
     }
 }

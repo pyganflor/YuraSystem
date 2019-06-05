@@ -440,4 +440,13 @@
         $('.elemento_view_' + ciclo).hide();
         $('.elemento_input_' + ciclo).show();
     }
+
+    function ver_cosechas(ciclo) {
+        datos = {
+            ciclo: ciclo,
+        };
+        get_jquery('{{url('sectores_modulos/ver_cosechas')}}', datos, function (retorno) {
+            modal_view('modal-view_ver_cosechas', retorno, '<i class="fa fa-fw fa-le"></i> Cosechas', true, false, '{{isPC() ? '95%' : ''}}');
+        });
+    }
 </script>

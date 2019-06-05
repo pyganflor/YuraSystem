@@ -111,6 +111,10 @@
                     </th>
                     <th class="text-center" style="border-color: #9d9d9d">
                         <div class="btn-group">
+                            <button type="button" class="btn btn-xs btn-primary" title="Ver cosechas"
+                                    onclick="ver_cosechas('{{$ciclo->id_ciclo}}')">
+                                <i class="fa fa-fw fa-leaf"></i>
+                            </button>
                             @if($ciclo->activo == 1)
                                 <button type="button" class="btn btn-xs btn-warning" title="Terminar ciclo"
                                         onclick="terminar_ciclo('{{$modulo->id_modulo}}', true)">

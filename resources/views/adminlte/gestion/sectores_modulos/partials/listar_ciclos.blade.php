@@ -125,7 +125,7 @@
                                 <i class="fa fa-fw fa-save"></i>
                             </button>
                         @endif
-                        @if(count($modulo->ciclos) > 0)
+                        @if(count($modulo->ciclos->where('estado',1)) > 0)
                             <button type="button" class="btn btn-xs btn-info" title="Ver Ciclos"
                                     onclick="ver_ciclos('{{$modulo->id_modulo}}')">
                                 <i class="fa fa-fw fa-eye"></i>

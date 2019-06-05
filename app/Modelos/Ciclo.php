@@ -36,18 +36,31 @@ class Ciclo extends Model
         return $this->belongsTo('\yura\Modelos\Modulo', 'id_modulo');
     }
 
-    public function getTallosCosechados()   // optimizar consulta de cosechas
+    public function getTallosCosechados()
     {
-        $cosechas = Cosecha::All()
-            ->where('estado', 1)
-            ->where('fecha_ingreso', '>=', $this->fecha_inicio);
-        if ($this->fecha_fin != '')
-            $cosechas = $cosechas->where('fecha_ingreso', '<=', $this->fecha_fin);
+        $r = DB::table('desglose_recepcion as dr')
+            ->join('recepcion as r', 'r.id_recepcion', '=', 'dr.id_recepcion')
+            ->select(DB::raw('sum(dr.cantidad_mallas * dr.tallos_x_malla) as cantidad'))
+            ->where('dr.estado', '=', 1)
+            ->where('r.estado', '=', 1)
+            ->where('dr.id_modulo', '=', $this->id_modulo)
+            ->where('r.fecha_ingreso', '>=', opDiasFecha('+', 1, $this->fecha_inicio))
+            ->get()[0]->cantidad;
 
-        $r = 0;
-        foreach ($cosechas as $c) {
-            $r += $c->getTotalTallosByModulo($this->id_modulo);
-        }
+        return $r;
+    }
+
+    public function getTallosCosechadosByFecha($fecha)
+    {
+        $r = DB::table('desglose_recepcion as dr')
+            ->join('recepcion as r', 'r.id_recepcion', '=', 'dr.id_recepcion')
+            ->select(DB::raw('sum(dr.cantidad_mallas * dr.tallos_x_malla) as cantidad'))
+            ->where('dr.estado', '=', 1)
+            ->where('r.estado', '=', 1)
+            ->where('dr.id_modulo', '=', $this->id_modulo)
+            ->where('r.fecha_ingreso', 'like', $fecha . '%')
+            ->where('r.fecha_ingreso', '>=', opDiasFecha('+', 1, $this->fecha_inicio))
+            ->get()[0]->cantidad;
 
         return $r;
     }
@@ -61,7 +74,7 @@ class Ciclo extends Model
             ->select('c.id_cosecha as id')->distinct()
             ->where('c.estado', '=', 1)
             ->where('dr.id_modulo', '=', $this->id_modulo)
-            ->where('c.fecha_ingreso', '>=', $this->fecha_inicio);
+            ->where('c.fecha_ingreso', '>=', opDiasFecha('+', 1, $this->fecha_inicio));
         if ($this->fecha_fin != '')
             $cosechas = $cosechas->where('c.fecha_ingreso', '<=', $this->fecha_fin);
         $cosechas = $cosechas->orderBy('c.fecha_ingreso')->get();

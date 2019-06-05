@@ -5,6 +5,7 @@ namespace yura\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use yura\Modelos\Ciclo;
+use yura\Modelos\Cosecha;
 use yura\Modelos\Modulo;
 use yura\Modelos\Sector;
 use Validator;
@@ -16,12 +17,12 @@ class CiclosController extends Controller
         $r = [];
 
         if ($request->tipo == 0) {  // inactivos
-            foreach (Modulo::All()->where('estado', 1) as $m) {
+            foreach (Modulo::All()->where('estado', 1)->sortBy('nombre') as $m) {
                 if ($m->cicloActual() == '')
                     array_push($r, Modulo::find($m->id_modulo));
             }
         } else {
-            foreach (Modulo::All()->where('estado', 1) as $m) {
+            foreach (Modulo::All()->where('estado', 1)->sortBy('nombre') as $m) {
                 if ($m->cicloActual() != '' && $m->cicloActual()->id_variedad == $request->variedad)
                     array_push($r, Modulo::find($m->id_modulo));
             }
@@ -38,6 +39,30 @@ class CiclosController extends Controller
     {
         return view('adminlte.gestion.sectores_modulos.partials.ver_ciclos', [
             'modulo' => getModuloById($request->modulo),
+        ]);
+    }
+
+    public function ver_cosechas(Request $request)
+    {
+        $ciclo = Ciclo::find($request->ciclo);
+        $cosechas = DB::table('desglose_recepcion as dr')
+            ->join('recepcion as r', 'r.id_recepcion', '=', 'dr.id_recepcion')
+            ->select('r.id_cosecha as id')->distinct()
+            ->where('dr.estado', '=', 1)
+            ->where('r.estado', '=', 1)
+            ->where('dr.id_modulo', '=', $ciclo->id_modulo)
+            ->where('r.fecha_ingreso', '>', opDiasFecha('+', 1, $ciclo->fecha_inicio))
+            ->orderBy('r.fecha_ingreso')
+            ->get();
+
+        $r = [];
+        foreach ($cosechas as $c)
+            array_push($r, Cosecha::find($c->id));
+
+        return view('adminlte.gestion.sectores_modulos.partials.ver_cosechas', [
+            'modulo' => getModuloById($ciclo->id_modulo),
+            'cosechas' => $r,
+            'ciclo' => $ciclo,
         ]);
     }
 
@@ -72,7 +97,8 @@ class CiclosController extends Controller
             $ciclo->area = $request->area;
             $ciclo->fecha_inicio = $request->fecha_inicio;
             $ciclo->poda_siembra = $request->poda_siembra;
-            $ciclo->fecha_cosecha = opDiasFecha('+', $request->fecha_cosecha, $request->fecha_inicio);
+            if ($request->fecha_cosecha != '')
+                $ciclo->fecha_cosecha = opDiasFecha('+', $request->fecha_cosecha, $request->fecha_inicio);
             $ciclo->fecha_fin = $request->fecha_fin;
 
             if ($ciclo->save()) {
@@ -160,7 +186,8 @@ class CiclosController extends Controller
             $ciclo->area = $request->area;
             $ciclo->fecha_inicio = $request->fecha_inicio;
             $ciclo->poda_siembra = $request->poda_siembra;
-            $ciclo->fecha_cosecha = opDiasFecha('+', $request->fecha_cosecha, $request->fecha_inicio);
+            if ($request->fecha_cosecha != '')
+                $ciclo->fecha_cosecha = opDiasFecha('+', $request->fecha_cosecha, $request->fecha_inicio);
             $ciclo->fecha_fin = $request->fecha_fin;
 
             if ($ciclo->save()) {
@@ -310,6 +337,7 @@ class CiclosController extends Controller
         ]);
         if (!$valida->fails()) {
             $ciclo = Ciclo::find($request->ciclo);
+            $ciclo->activo = 0;
             $ciclo->estado = 0;
 
             if ($ciclo->save()) {

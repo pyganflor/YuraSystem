@@ -205,4 +205,9 @@ class Cosecha extends Model
 
         return $r;
     }
+
+    public function getClasificacionVerdeByFecha()
+    {
+        return ClasificacionVerde::All()->where('estado', 1)->where('fecha_ingreso', $this->fecha_ingreso)->first();
+    }
 }

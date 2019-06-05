@@ -7,6 +7,7 @@ use Validator;
 use PHPExcel;
 use PHPExcel_IOFactory;
 use PHPExcel_Worksheet;
+use yura\Modelos\Ciclo;
 use yura\Modelos\HistoricoVentas;
 use yura\Modelos\ClasificacionUnitaria;
 use yura\Modelos\ClasificacionVerde;
@@ -14,6 +15,7 @@ use yura\Modelos\Cosecha;
 use yura\Modelos\DesgloseRecepcion;
 use yura\Modelos\DetalleClasificacionVerde;
 use yura\Modelos\GrupoMenu;
+use yura\Modelos\Modulo;
 use yura\Modelos\Recepcion;
 use yura\Modelos\RecepcionClasificacionVerde;
 use yura\Modelos\Submenu;
@@ -272,6 +274,76 @@ class ImportarDataController extends Controller
                                 }
 
                                 $historico->save();
+                            }
+                        }
+                    }
+                }
+
+                if ($success) {
+                    $msg = '<li class="bg-green">Se ha importado el archivo satisfactoriamente</li>';
+                }
+            }
+        } else {
+            $errores = '';
+            foreach ($valida->errors()->all() as $mi_error) {
+                if ($errores == '') {
+                    $errores = '<li>' . $mi_error . '</li>';
+                } else {
+                    $errores .= '<li>' . $mi_error . '</li>';
+                }
+            }
+            $success = false;
+            $msg = '<div class="alert alert-danger">' .
+                '<p class="text-center">¡Por favor corrija los siguientes errores!</p>' .
+                '<ul>' .
+                $errores .
+                '</ul>' .
+                '</div>';
+        }
+        return [
+            'mensaje' => $msg,
+            'success' => $success,
+        ];
+    }
+
+    public function importar_area(Request $request)
+    {
+        ini_set('max_execution_time', env('MAX_EXECUTION_TIME'));
+        $valida = Validator::make($request->all(), [
+            'file_area' => 'required',
+            'variedad_area' => 'required',
+            'activo_area' => 'required',
+        ]);
+        $msg = '';
+        $success = true;
+        if (!$valida->fails()) {
+
+            $document = PHPExcel_IOFactory::load($request->file_area);
+            $activeSheetData = $document->getActiveSheet()->toArray(null, true, true, true);
+
+            //dd($activeSheetData, $request->all());
+            $titles = $activeSheetData[1];
+            foreach ($activeSheetData as $pos_row => $row) {
+                if ($pos_row > 1) {
+                    if ($row['A'] != '') {
+                        $modulo = Modulo::All()->where('nombre', $row['A'])->first();
+
+                        if ($modulo != '') {
+                            $ciclo = new Ciclo();
+                            $ciclo->id_modulo = $modulo->id_modulo;
+                            $ciclo->id_variedad = $request->variedad_area;
+                            $ciclo->activo = $request->activo_area == 'on' ? 1 : 0;
+                            $ciclo->fecha_inicio = date("Y-m-d", strtotime($row['B']));
+                            if ($row['C'] != '')
+                                $ciclo->fecha_fin = opDiasFecha('+', $row['C'], $ciclo->fecha_inicio);
+                            if ($row['E'] != '')
+                                $ciclo->fecha_cosecha = opDiasFecha('+', $row['E'], $ciclo->fecha_inicio);
+                            $ciclo->poda_siembra = $row['D'] != 0 ? 'P' : 'S';
+                            $ciclo->area = str_replace(',', '', $row['F']);
+
+                            if (!$ciclo->save()) {
+                                $success = false;
+                                $msg .= '<li class="error">Ha ocurrido un problema con el registro en la fila #' . $pos_row . '</li>';
                             }
                         }
                     }
