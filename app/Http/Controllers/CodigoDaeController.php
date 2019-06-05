@@ -37,7 +37,7 @@ class CodigoDaeController extends Controller
             ->join('pais as p', 'cd.codigo_pais', 'p.codigo');
 
         if ($request->busqueda != '') $listado = $listado->Where(function ($q) use ($bus) {
-            $q->Where('cd.pais', 'like', '%' . $bus . '%');
+            $q->Where('cd.codigo_pais', 'like', '%' . $bus . '%');
         });
 
         $listado = $listado->orderBy('cd.anno', 'asc')->paginate(20);
