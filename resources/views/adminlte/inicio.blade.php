@@ -40,7 +40,7 @@
                                  onclick="location.href='{{url('crm_postcosecha')}}'">
                                 <span class="info-box-icon"><i class="fa fa-fw fa-usd"></i></span>
                                 <div class="info-box-content">
-                                    <strong class="info-box-text text-center" style="font-size: 1.2em">Ventas/m <sup>2</sup></strong>
+                                    <strong class="info-box-text text-center" style="font-size: 1.2em">Ventas/m<sup>2</sup></strong>
                                     <span class="info-box-number text-center">
                                         00
                                         <small><i class="fa fa-fw fa-usd"></i>/m <sup>2</sup></small></span>

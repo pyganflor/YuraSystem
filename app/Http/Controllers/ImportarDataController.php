@@ -312,7 +312,6 @@ class ImportarDataController extends Controller
         $valida = Validator::make($request->all(), [
             'file_area' => 'required',
             'variedad_area' => 'required',
-            'activo_area' => 'required',
         ]);
         $msg = '';
         $success = true;
