@@ -12,6 +12,7 @@ use yura\Modelos\ImpuestoDetalleFactura;
 use yura\Modelos\DetalleFactura;
 use yura\Modelos\DesgloseEnvioFactura;
 use yura\Modelos\ImpuestoDesgloseEnvioFactura;
+use yura\Modelos\Pedido;
 use yura\Modelos\Usuario;
 use yura\Modelos\Submenu;
 use yura\Modelos\TipoComprobante;
@@ -47,7 +48,8 @@ class ComprobanteController extends Controller
         $listado = Comprobante::where([
             ['comprobante.estado', isset($request->estado) ? $request->estado : 1],
             ['tipo_comprobante', '!=', "00"],
-            ['comprobante.fecha_emision', $fecha]
+            ['comprobante.fecha_emision', $fecha],
+            ['comprobante.habilitado',true]
         ])->join('tipo_comprobante as tc', 'comprobante.tipo_comprobante', 'tc.codigo');
 
         if($busquedaComprobante == "" || $busquedaComprobante== "01"){
@@ -97,7 +99,7 @@ class ComprobanteController extends Controller
             $peso_bruto = 0;
             $peso_caja=0;
             $envio = getEnvio($request->id_envio);
-
+            //dd($envio);
             if($envio->pedido->tipo_especificacion === "N") {
                 foreach ($envio->pedido->detalles as $x => $det_ped) {
                     $precio = explode("|", $det_ped->precio);
@@ -146,7 +148,7 @@ class ComprobanteController extends Controller
 
             $facturaClienTeTercero = getFacturaClienteTercero($envio->id_envio);
             $dataCliente = DetalleCliente::where([
-                ['id_cliente' , $envio->pedido->cliente->id_cliente],
+                ['id_cliente', $envio->pedido->cliente->id_cliente],
                 ['estado', 1]
             ])->first();
 
@@ -186,7 +188,9 @@ class ComprobanteController extends Controller
                     . '</div>';
             }
             $fechaEmision = Carbon::now()->format('dmY');
-            if($request->update === "true"){
+           // dd($request->update , $request->id_envio);
+            if($request->update == "true"){
+
                 $dataComprobante = Comprobante::where('id_envio',$request->id_envio)
                     ->join('detalle_factura as df','comprobante.id_comprobante','df.id_comprobante')
                     ->join('impuesto_detalle_factura as idf','df.id_detalle_factura','idf.id_detalle_factura')
@@ -204,7 +208,7 @@ class ComprobanteController extends Controller
                 $punto_acceso=  getDetallesClaveAcceso($dataComprobante[0]->clave_acceso, 'PUNTO_ACCESO');
 
                 foreach ($dataComprobante as $item)
-                    ImpuestoDesgloseEnvioFactura::where('id_desglose_envio_factura', $item->id_impuesto_desglose_envio_factura)->delete();
+                    ImpuestoDesgloseEnvioFactura::destroy($item->id_impuesto_desglose_envio_factura);
 
                 DesgloseEnvioFactura::where('id_comprobante',$dataComprobante[0]->id_comprobante)->delete();
                 ImpuestoDetalleFactura::where('id_detalle_factura', $dataComprobante[0]->id_detalle_factura)->delete();
@@ -212,7 +216,10 @@ class ComprobanteController extends Controller
                 Comprobante::destroy($dataComprobante[0]->id_comprobante);
 
             }else{
-                $secuencial = getSecuencial();
+                ($envio->pedido->clave_acceso_temporal != null && $envio->pedido->clave_acceso_temporal != "")
+                    ? $secuencial = getDetallesClaveAcceso($envio->pedido->clave_acceso_temporal, "SECUENCIAL")
+                    : $secuencial = getSecuencial();
+
                 $ruc = env('RUC');
                 $codigo_numerico = env('CODIGO_NUMERICO');
                 $tipoComprobante = '01';
@@ -478,7 +485,7 @@ class ComprobanteController extends Controller
 
                 if ($obj_comprobante->save()) {
                     $model_comprobante = Comprobante::all()->last();
-                    bitacora('comprobante', $model_comprobante->id_comprpobante, 'I', 'Creación de un nuevo comprobante electrónico');
+                    bitacora('comprobante', $model_comprobante->id_comprobante, 'I', 'Creación de un nuevo comprobante electrónico (factura)');
                     $objDetalleFactura = new DetalleFactura;
                     $objDetalleFactura->id_comprobante = $model_comprobante->id_comprobante;
                     $objDetalleFactura->razon_social_emisor = $informacionTributaria['razonSocial'];
@@ -508,7 +515,6 @@ class ComprobanteController extends Controller
                             $model_impuesto_detalle_factura = ImpuestoDetalleFactura::all()->last();
                             bitacora('impuesto_detalle_factura', $model_impuesto_detalle_factura->id_impuesto_detalle_factura, 'I', 'Creación de un nuevo impuesto de detalle de factura');
                             $iteracion = 0;
-
                             if($envio->pedido->tipo_especificacion === "N") {
                                 foreach ($envio->pedido->detalles as $x => $det_ped) {
                                     $precio = explode("|", $det_ped->precio);
@@ -526,8 +532,7 @@ class ComprobanteController extends Controller
                                             }
                                             $longitudRamo = $det_esp_emp->longitud_ramo != "" ? $det_esp_emp->longitud_ramo : "";
                                             $clasificacionRamo = getClasificacionRamo($det_esp_emp->id_clasificacion_ramo);
-                                            foreach (getUnidadesMedida($clasificacionRamo->id_unidad_medida) as $umPeso)
-                                                $umPeso->tipo == "P" ? $umPeso = $umPeso->siglas : $umPeso = "";
+                                            foreach (getUnidadesMedida($clasificacionRamo->id_unidad_medida) as $umPeso) $umPeso->tipo == "P" ? $umPeso = $umPeso->siglas : $umPeso = "";
                                             $objDesgloseEnvioFactura = new DesgloseEnvioFactura;
                                             $objDesgloseEnvioFactura->id_comprobante = $model_comprobante->id_comprobante;
                                             $objDesgloseEnvioFactura->codigo_principal = 'ENV' . str_pad($request->id_envio, 9, "0", STR_PAD_LEFT);
@@ -538,16 +543,19 @@ class ComprobanteController extends Controller
                                             $objDesgloseEnvioFactura->precio_total_sin_impuesto = number_format($precio_x_variedad, 2, ".", "");
 
                                             if ($objDesgloseEnvioFactura->save()) {
-                                                bitacora('impuesto_detalle_factura', $model_impuesto_detalle_factura->id_impuesto_detalle_factura, 'I', 'Creación de un nuevo impuesto de detalle de factura');
                                                 $model_desglose_envio_factura = DesgloseEnvioFactura::all()->last();
-
+                                                bitacora('desglose_envio_factura', $model_desglose_envio_factura->id_desglose_envio_factura, 'I', 'Creación de un nuevo desglose de envio de factura 123');
                                                 $objImpuestoDesgloseEnvioFactura = new ImpuestoDesgloseEnvioFactura;
                                                 $objImpuestoDesgloseEnvioFactura->id_desglose_envio_factura = $model_desglose_envio_factura->id_desglose_envio_factura;
                                                 $objImpuestoDesgloseEnvioFactura->codigo_impuesto = $codigo_impuesto;
                                                 $objImpuestoDesgloseEnvioFactura->codigo_porcentaje = $codigo_porcentaje_impuesto;
                                                 $objImpuestoDesgloseEnvioFactura->base_imponible = number_format($precio_x_variedad, 2, ".", "");
                                                 $objImpuestoDesgloseEnvioFactura->valor = is_numeric($tipoImpuesto->porcentaje) ? number_format($precio_x_variedad * ($tipoImpuesto->porcentaje / 100), 2, ".", "") : "0.00";
-                                                $objImpuestoDesgloseEnvioFactura->save() ? $iteracion++ : '';
+                                                if($objImpuestoDesgloseEnvioFactura->save()){
+                                                    $omdel_impuesto_desglose_envio_factura = ImpuestoDesgloseEnvioFactura::all()->last();
+                                                    $iteracion++;
+                                                    bitacora('impuesto_desglose_envio_factura', $omdel_impuesto_desglose_envio_factura->id_impuesto_desglose_envio_factura, 'I', 'Creación de un nuevo impuesto del desglose de una factura');
+                                                }
                                             }
                                             $i++;
                                         }
@@ -597,17 +605,20 @@ class ComprobanteController extends Controller
                                                 $objDesgloseEnvioFactura->precio_total_sin_impuesto = number_format($precio_x_variedad, 2, ".", "");
 
                                                 if ($objDesgloseEnvioFactura->save()) {
-                                                    bitacora('impuesto_detalle_factura', $model_impuesto_detalle_factura->id_impuesto_detalle_factura, 'I', 'Creación de un nuevo impuesto de detalle de factura');
                                                     $model_desglose_envio_factura = DesgloseEnvioFactura::all()->last();
-
+                                                    bitacora('desglose_envio_factura', $model_desglose_envio_factura->id_desglose_envio_factura, 'I', 'Creación de un nuevo desglose de envio de factura');
                                                     $objImpuestoDesgloseEnvioFactura = new ImpuestoDesgloseEnvioFactura;
                                                     $objImpuestoDesgloseEnvioFactura->id_desglose_envio_factura = $model_desglose_envio_factura->id_desglose_envio_factura;
                                                     $objImpuestoDesgloseEnvioFactura->codigo_impuesto = $codigo_impuesto;
                                                     $objImpuestoDesgloseEnvioFactura->codigo_porcentaje = $codigo_porcentaje_impuesto;
                                                     $objImpuestoDesgloseEnvioFactura->base_imponible = number_format($precio_x_variedad, 2, ".", "");
                                                     $objImpuestoDesgloseEnvioFactura->valor = is_numeric($tipoImpuesto->porcentaje) ? number_format($precio_x_variedad * ($tipoImpuesto->porcentaje / 100), 2, ".", "") : "0.00";
-                                                    $objImpuestoDesgloseEnvioFactura->save() ? $iteracion++ : '';
-                                                }
+                                                    if($objImpuestoDesgloseEnvioFactura->save()){
+                                                        $iteracion++;
+                                                        $omdel_impuesto_desglose_envio_factura = ImpuestoDesgloseEnvioFactura::all()->last();
+                                                        bitacora('impuesto_desglose_envio_factura', $omdel_impuesto_desglose_envio_factura->id_impuesto_desglose_envio_factura, 'I', 'Creación de un nuevo impuesto del desglose de una factura');
+                                                    }
+                                                 }
                                                 $request->cant_variedades = $iteracion;
                                                 $i++;
                                             }
@@ -627,6 +638,28 @@ class ComprobanteController extends Controller
                                             $obj_comprobante = Comprobante::find($model_comprobante->id_comprobante);
                                             $obj_comprobante->estado = 1;
                                             $obj_comprobante->save();
+
+                                            if($envio->pedido->id_comprobante_temporal != null && $envio->pedido->id_comprobante_temporal != ""){
+
+                                                $dataComprobanteObsoleto = Comprobante::where('comprobante.id_comprobante',$envio->pedido->id_comprobante_temporal)
+                                                    ->join('detalle_factura as df','comprobante.id_comprobante','df.id_comprobante')
+                                                    ->join('impuesto_detalle_factura as idf','df.id_detalle_factura','idf.id_detalle_factura')
+                                                    ->join('desglose_envio_factura as def','comprobante.id_comprobante','def.id_comprobante')
+                                                    ->join('impuesto_desglose_envio_factura as idef','def.id_desglose_envio_factura','idef.id_desglose_envio_factura')
+                                                    ->select('clave_acceso','comprobante.id_comprobante','df.id_detalle_factura','id_impuesto_desglose_envio_factura')->get();
+                                                //dd($envio->pedido, $dataComprobanteObsoleto);
+                                                if($dataComprobanteObsoleto != null && $dataComprobanteObsoleto != ""){
+                                                    foreach ($dataComprobanteObsoleto as $item) ImpuestoDesgloseEnvioFactura::destroy($item->id_impuesto_desglose_envio_factura);
+                                                    DesgloseEnvioFactura::where('id_comprobante',$dataComprobanteObsoleto[0]->id_comprobante)->delete();
+                                                    ImpuestoDetalleFactura::where('id_detalle_factura', $dataComprobanteObsoleto[0]->id_detalle_factura)->delete();
+                                                    DetalleFactura::where('id_comprobante', $dataComprobanteObsoleto[0]->id_comprobante)->delete();
+                                                    Comprobante::destroy($dataComprobanteObsoleto[0]->id_comprobante);
+                                                    $p = Pedido::find($envio->pedido->id_pedido);
+                                                    $p->clave_acceso_temporal = null;
+                                                    $p->id_comprobante_temporal = null;
+                                                    $p->save();
+                                                }
+                                            }
                                         }
                                         $msg .= "<div class='alert text-center  alert-" . $class . "'>" .
                                             "<p> " . mensajeFirmaElectronica($resultado, getDetallesClaveAcceso($claveAcceso, 'SECUENCIAL')) . "</p>"

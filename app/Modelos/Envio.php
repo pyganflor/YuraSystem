@@ -23,7 +23,8 @@ class Envio extends Model
         'telefono',
         'direccion',
         'codigo_pais',
-        'almacen'
+        'almacen',
+        'codigo_dae'
 
     ];
 

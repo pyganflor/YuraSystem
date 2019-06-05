@@ -32,9 +32,10 @@ class FueController extends Controller
     public function buscar(Request $request){
         return view('adminlte.crm.fue.partials.listado',[
             'facturas' => Comprobante::where([
-                'tipo_comprobante'=>'01',
-                'estado'=>'5',
-                'fecha_emision' => ($request->get('busqueda') != null && !empty($request->get('busqueda')) ? $request->get('busqueda') : now()->toDateString())
+                ['tipo_comprobante'=>'01'],
+                ['estado'=>'5'],
+                ['fecha_emision' => ($request->get('busqueda') != null && !empty($request->get('busqueda')) ? $request->get('busqueda') : now()->toDateString())],
+                ['comprobante.habilitado',true]
             ])->get()
         ]);
     }
@@ -121,6 +122,7 @@ class FueController extends Controller
                 ->where([
                     ['dc.estado',1],
                     ['comprobante.estado','05'],
+                    ['comprobante.habilitado',true]
                 ]);
 
         if($request->get('id_cliente') != null)
