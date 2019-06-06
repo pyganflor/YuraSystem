@@ -31,9 +31,9 @@ class EtiquetaController extends Controller
             ['habilitado',1]
         ])->select('id_comprobante');
 
-        /*$request->hasta =! ""
+        $request->hasta =! ""
             ? $data->whereBetween('fecha_emision',[$request->desde,$request->hasta])
-            : $data->where('fecha_emision',$request->desde);*/
+            : $data->where('fecha_emision',$request->desde);
 
 
         return view('adminlte.gestion.postcocecha.etiquetas.partials.listado',[
