@@ -39,6 +39,5 @@ class PruebaCommand extends Command
     public function handle()
     {
         Log::info('caca pura');
-        dd('mas caca');
     }
 }
