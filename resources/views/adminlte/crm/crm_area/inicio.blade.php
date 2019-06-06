@@ -47,8 +47,8 @@
 
                     <select name="filtro_predeterminado_criterio" id="filtro_predeterminado_criterio" style="height: 30px;"
                             onchange="filtrar_predeterminado()">
-                        @foreach(getClientes() as $c)
-                            <option value="{{$c->id_cliente}}">{{$c->detalle()->nombre}}</option>
+                        @foreach($annos as $item)
+                            <option value="{{$item->anno}}">{{$item->anno}}</option>
                         @endforeach
                         <option value="A" selected>Todos los clientes</option>
                     </select>

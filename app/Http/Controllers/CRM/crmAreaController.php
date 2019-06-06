@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use yura\Http\Controllers\Controller;
 use yura\Modelos\Ciclo;
 use yura\Modelos\ClasificacionVerde;
+use yura\Modelos\Cosecha;
 
 class crmAreaController extends Controller
 {
@@ -34,14 +35,12 @@ class crmAreaController extends Controller
 
         $area = 0;
         $ciclo = 0;
-        $tallos = 0;
         foreach ($ciclos_ini as $c) {
             $area += $c->area;
             $fin = date('Y-m-d');
             if ($c->fecha_fin != '')
                 $fin = $c->fecha_fin;
             $ciclo += difFechas($fin, $c->fecha_inicio)->days;
-            $tallos += $c->getTallosCosechados();
         }
         $ciclo = count($ciclos_ini) > 0 ? round($ciclo / count($ciclos_ini), 2) : 0;
 
@@ -50,11 +49,14 @@ class crmAreaController extends Controller
             ->where('v.fecha_ingreso', '>=', opDiasFecha('-', 7, date('Y-m-d')))
             ->where('v.fecha_ingreso', '<=', opDiasFecha('-', 1, date('Y-m-d')))
             ->get();
+        $tallos = 0;
         $ramos = 0;
         foreach ($labels as $dia) {
             $verde = ClasificacionVerde::All()->where('fecha_ingreso', '=', $dia->dia)->first();
+            $cosecha = Cosecha::All()->where('fecha_ingreso', '=', $dia->dia)->first();
             if ($verde != '') {
                 $ramos += $verde->getTotalRamosEstandar();
+                $tallos += $cosecha->getTotalTallos();
             }
         }
 
@@ -65,17 +67,14 @@ class crmAreaController extends Controller
             'ramos' => $ramos,
         ];
 
-        dd($semanal);
-
         /* ======= AÑOS ======= */
-        /*$annos = DB::table('historico_ventas')
-            ->select('anno')->distinct()
-            ->get();*/
+        $annos = DB::table('ciclo')
+            ->select(DB::raw('year(fecha_inicio) as anno'))->distinct()
+            ->get();
 
         return view('adminlte.crm.crm_area.inicio', [
-            /*'today' => $today,
             'semanal' => $semanal,
-            'annos' => $annos,*/
+            'annos' => $annos,
         ]);
     }
 
