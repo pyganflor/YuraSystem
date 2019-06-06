@@ -45,18 +45,19 @@
                         <option value="4">1 Año</option>
                     </select>
 
-                    <select name="filtro_predeterminado_criterio" id="filtro_predeterminado_criterio" style="height: 30px;"
+                    <select name="filtro_predeterminado_variedad" id="filtro_predeterminado_variedad" style="height: 30px;"
                             onchange="filtrar_predeterminado()">
-                        @foreach($annos as $item)
-                            <option value="{{$item->anno}}">{{$item->anno}}</option>
+                        <option value="A" selected>Acumulado</option>
+                        @foreach(getVariedades() as $v)
+                            <option value="{{$v->id_variedad}}">{{$v->nombre}}</option>
                         @endforeach
-                        <option value="A" selected>Todos los clientes</option>
+                        <option value="T">Todas las variedades</option>
                     </select>
 
                     <select class="select2" multiple="multiple" id="filtro_predeterminado_annos" name="filtro_predeterminado_annos"
                             data-placeholder="Años naturales" style="width: 205px; height: 35px">
-                        @foreach(getVariedades() as $v)
-                            <option value="{{$v->id_variedad}}">{{$v->nombre}}</option>
+                        @foreach($annos as $item)
+                            <option value="{{$item->anno}}">{{$item->anno}}</option>
                         @endforeach
                     </select>
 

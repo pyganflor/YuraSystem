@@ -70,6 +70,7 @@ class crmAreaController extends Controller
         /* ======= AÑOS ======= */
         $annos = DB::table('ciclo')
             ->select(DB::raw('year(fecha_inicio) as anno'))->distinct()
+            ->orderBy(DB::raw('year(fecha_inicio)'))
             ->get();
 
         return view('adminlte.crm.crm_area.inicio', [
