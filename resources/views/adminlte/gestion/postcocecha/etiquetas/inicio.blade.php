@@ -20,31 +20,26 @@
                         <tr>
                             <td>
                                 <label>Desde</label>
-                                <input type="date" class="form-control" id="desde" name="desde">
+                                <input type="date" class="form-control" id="desde" name="desde" value="{{now()->toDateString()}}">
                             </td>
                             <td>
                                 <label>Hasta</label>
-                                <input type="date" class="form-control"  id="hasta" name="hasta">
+                                <input type="date" class="form-control"  id="hasta" name="hasta" value="">
                             </td>
                             <td>
                                 <label style="visibility: hidden">.</label><br/>
-                                <button class="btn btn-default" onclick="listado_etiquetas()"
-                                        onmouseover="$('#title_btn_buscar').html('Buscar')"
-                                        onmouseleave="$('#title_btn_buscar').html('')">
+                                <button class="btn btn-default" onclick="listado_etiquetas()">
                                     <i class="fa fa-fw fa-search" style="color: #0c0c0c"></i> <em
-                                        id="title_btn_buscar"></em>
+                                        id="title_btn_buscar">Buscar</em>
                                 </button>
                             </td>
                         </tr>
                     </table>
                 </div>
-                <div id="div_listado_etiquetas"></div>
+                <div class="col-md-12" id="div_listado_etiquetas"></div>
             </div>
         </div>
     </section>
-
-
-
 @endsection
 @section('script_final')
     @include('adminlte.gestion.postcocecha.etiquetas.script')
