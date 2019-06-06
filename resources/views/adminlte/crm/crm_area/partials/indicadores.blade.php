@@ -18,14 +18,14 @@
         <div class="small-box bg-aqua">
             <div class="inner">
                 <h3 class="info-box-number">
-                    {{number_format($semanal['area'], 2)}}
+                    {{number_format($semanal['ciclo'], 2)}}
                 </h3>
             </div>
             <div class="icon">
-                <i class="fa fa-fw fa-gift"></i>
+                <i class="fa fa-fw fa-refresh"></i>
             </div>
-            <a href="javascript:void(0)" class="small-box-footer" onclick="desglose_indicador('area')">
-                Cajas <i class="fa fa-arrow-circle-right"></i>
+            <a href="javascript:void(0)" class="small-box-footer" onclick="desglose_indicador('ciclo')">
+                Ciclo <i class="fa fa-arrow-circle-right"></i>
             </a>
         </div>
     </div>
