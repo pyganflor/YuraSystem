@@ -22,8 +22,6 @@ class crmPostocechaController extends Controller
         $cajas = 0;
         $ramos = 0;
         $tallos = 0;
-        $desecho = 0;
-        $rendimiento = 0;
         $calibre = 0;
 
         $cant_verde = 0;
@@ -33,23 +31,17 @@ class crmPostocechaController extends Controller
                 $cajas += round($verde->getTotalRamosEstandar() / getConfiguracionEmpresa()->ramos_x_caja, 2);
                 $ramos += $verde->getTotalRamosEstandar();
                 $tallos += $verde->total_tallos();
-                $desecho += $verde->desecho();
-                $rendimiento += $verde->getRendimiento();
                 $calibre += round($verde->total_tallos() / $verde->getTotalRamosEstandar(), 2);
                 $cant_verde++;
             }
         }
 
-        $desecho = $cant_verde > 0 ? round($desecho / $cant_verde, 2) : 0;
-        $rendimiento = $cant_verde > 0 ? round($rendimiento / $cant_verde, 2) : 0;
         $calibre = $cant_verde > 0 ? round($calibre / $cant_verde, 2) : 0;
 
         $indicadores = [
             'cajas' => $cajas,
             'ramos' => $ramos,
             'tallos' => $tallos,
-            'desecho' => $desecho,
-            'rendimiento' => $rendimiento,
             'calibre' => $calibre,
         ];
 
@@ -77,8 +69,6 @@ class crmPostocechaController extends Controller
         $array_cajas = [];
         $array_ramos = [];
         $array_tallos = [];
-        $array_desecho = [];
-        $array_rendimiento = [];
         $array_calibre = [];
         foreach ($labels as $dia) {
             $verde = ClasificacionVerde::All()->where('fecha_ingreso', '=', $dia->dia)->first();
@@ -86,8 +76,6 @@ class crmPostocechaController extends Controller
                 array_push($array_cajas, round($verde->getTotalRamosEstandar() / getConfiguracionEmpresa()->ramos_x_caja, 2));
                 array_push($array_ramos, $verde->getTotalRamosEstandar());
                 array_push($array_tallos, $verde->total_tallos());
-                array_push($array_desecho, $verde->desecho());
-                array_push($array_rendimiento, $verde->getRendimiento());
                 array_push($array_calibre, round($verde->total_tallos() / $verde->getTotalRamosEstandar(), 2));
             }
         }
@@ -127,8 +115,6 @@ class crmPostocechaController extends Controller
             'array_cajas' => $array_cajas,
             'array_ramos' => $array_ramos,
             'array_tallos' => $array_tallos,
-            'array_desecho' => $array_desecho,
-            'array_rendimiento' => $array_rendimiento,
             'array_calibre' => $array_calibre,
             'annos' => $annos,
         ]);
@@ -174,8 +160,6 @@ class crmPostocechaController extends Controller
         $cajas = 0;
         $ramos = 0;
         $tallos = 0;
-        $desecho = 0;
-        $rendimiento = 0;
         $calibre = 0;
         $arreglo_variedades = [];
         if ($view == 'acumulado') {
@@ -186,15 +170,11 @@ class crmPostocechaController extends Controller
                     $cajas += round($verde->getTotalRamosEstandar() / getConfiguracionEmpresa()->ramos_x_caja, 2);
                     $ramos += $verde->getTotalRamosEstandar();
                     $tallos += $verde->total_tallos();
-                    $desecho += $verde->desecho();
-                    $rendimiento += $verde->getRendimiento();
                     $calibre += round($verde->total_tallos() / $verde->getTotalRamosEstandar(), 2);
                     $cant_verde++;
                 }
             }
 
-            $desecho = $cant_verde > 0 ? round($desecho / $cant_verde, 2) : 0;
-            $rendimiento = $cant_verde > 0 ? round($rendimiento / $cant_verde, 2) : 0;
             $calibre = $cant_verde > 0 ? round($calibre / $cant_verde, 2) : 0;
         }
         if ($view == 'x_variedad') {
@@ -205,15 +185,11 @@ class crmPostocechaController extends Controller
                     $cajas += round($verde->getTotalRamosEstandarByVariedad($target->id_variedad) / getConfiguracionEmpresa()->ramos_x_caja, 2);
                     $ramos += $verde->getTotalRamosEstandarByVariedad($target->id_variedad);
                     $tallos += $verde->tallos_x_variedad($target->id_variedad);
-                    $desecho += $verde->desechoByVariedad($target->id_variedad);
-                    $rendimiento += $verde->getRendimientoByVariedad($target->id_variedad);
                     $calibre += $verde->calibreByVariedad($target->id_variedad);
                     $cant_verde++;
                 }
             }
 
-            $desecho = $cant_verde > 0 ? round($desecho / $cant_verde, 2) : 0;
-            $rendimiento = $cant_verde > 0 ? round($rendimiento / $cant_verde, 2) : 0;
             $calibre = $cant_verde > 0 ? round($calibre / $cant_verde, 2) : 0;
         }
         if ($view == 'todas_variedades') {
@@ -223,8 +199,6 @@ class crmPostocechaController extends Controller
                 $ramos = 0;
                 $tallos = 0;
                 $cosecha = 0;
-                $desecho = 0;
-                $rendimiento = 0;
                 $calibre = 0;
                 foreach ($labels as $dia) {
                     $verde = ClasificacionVerde::All()->where('fecha_ingreso', '=', $dia->dia)->first();
@@ -233,16 +207,11 @@ class crmPostocechaController extends Controller
                         $ramos += $verde->getTotalRamosEstandarByVariedad($variedad->id_variedad);
                         $tallos += $verde->tallos_x_variedad($variedad->id_variedad);
                         $cosecha += $verde->total_tallos_recepcionByVariedad($variedad->id_variedad);
-                        //$desecho += $verde->desechoByVariedad($variedad->id_variedad);
-                        $rendimiento += $verde->getRendimientoByVariedad($variedad->id_variedad);
                         $calibre += $verde->calibreByVariedad($variedad->id_variedad);
                         $cant_verde++;
                     }
                 }
 
-                //$desecho = $cant_verde > 0 ? round($desecho / $cant_verde, 2) : 0;
-                $desecho = $cosecha > 0 ? 100 - round((($tallos * 100) / $cosecha), 2) : 0;
-                $rendimiento = $cant_verde > 0 ? round($rendimiento / $cant_verde, 2) : 0;
                 $calibre = $cant_verde > 0 ? round($calibre / $cant_verde, 2) : 0;
 
                 array_push($arreglo_variedades, [
@@ -251,8 +220,6 @@ class crmPostocechaController extends Controller
                     'ramos' => $ramos,
                     'tallos' => $tallos,
                     'cosecha' => $cosecha,
-                    'desecho' => $desecho,
-                    'rendimiento' => $rendimiento,
                     'calibre' => $calibre,
                 ]);
             }
@@ -266,8 +233,6 @@ class crmPostocechaController extends Controller
             'cajas' => $cajas,
             'ramos' => $ramos,
             'tallos' => $tallos,
-            'desecho' => $desecho,
-            'rendimiento' => $rendimiento,
             'calibre' => $calibre,
             'arreglo_variedades' => $arreglo_variedades,
         ]);
@@ -362,8 +327,6 @@ class crmPostocechaController extends Controller
         $array_cajas = [];
         $array_ramos = [];
         $array_tallos = [];
-        $array_desecho = [];
-        $array_rendimiento = [];
         $array_calibre = [];
 
         if ($request->x_variedad == 'true') {
@@ -443,8 +406,6 @@ class crmPostocechaController extends Controller
                         array_push($array_cajas, round($verde->getTotalRamosEstandar() / getConfiguracionEmpresa()->ramos_x_caja, 2));
                         array_push($array_ramos, $verde->getTotalRamosEstandar());
                         array_push($array_tallos, $verde->total_tallos());
-                        array_push($array_desecho, $verde->desecho());
-                        array_push($array_rendimiento, $verde->getRendimiento());
                         array_push($array_calibre, round($verde->total_tallos() / $verde->getTotalRamosEstandar(), 2));
                     }
                 }
@@ -456,8 +417,6 @@ class crmPostocechaController extends Controller
                         array_push($array_cajas, round($verde->getTotalRamosEstandarByVariedad($target->id_variedad) / getConfiguracionEmpresa()->ramos_x_caja, 2));
                         array_push($array_ramos, $verde->getTotalRamosEstandarByVariedad($target->id_variedad));
                         array_push($array_tallos, $verde->tallos_x_variedad($target->id_variedad));
-                        array_push($array_desecho, $verde->desechoByVariedad($target->id_variedad));
-                        array_push($array_rendimiento, $verde->getRendimientoByVariedad($target->id_variedad));
                         array_push($array_calibre, $verde->calibreByVariedad($target->id_variedad));
                     }
                 }
@@ -467,8 +426,6 @@ class crmPostocechaController extends Controller
                     $array_cajas = [];
                     $array_ramos = [];
                     $array_tallos = [];
-                    $array_desecho = [];
-                    $array_rendimiento = [];
                     $array_calibre = [];
                     foreach ($labels as $dia) {
                         $verde = ClasificacionVerde::All()->where('fecha_ingreso', '=', $dia->dia)->first();
@@ -476,8 +433,6 @@ class crmPostocechaController extends Controller
                             array_push($array_cajas, round($verde->getTotalRamosEstandarByVariedad($variedad->id_variedad) / getConfiguracionEmpresa()->ramos_x_caja, 2));
                             array_push($array_ramos, $verde->getTotalRamosEstandarByVariedad($variedad->id_variedad));
                             array_push($array_tallos, $verde->tallos_x_variedad($variedad->id_variedad));
-                            array_push($array_desecho, $verde->desechoByVariedad($variedad->id_variedad));
-                            array_push($array_rendimiento, $verde->getRendimientoByVariedad($variedad->id_variedad));
                             array_push($array_calibre, $verde->calibreByVariedad($variedad->id_variedad));
                         }
                     }
@@ -487,8 +442,6 @@ class crmPostocechaController extends Controller
                         'cajas' => $array_cajas,
                         'ramos' => $array_ramos,
                         'tallos' => $array_tallos,
-                        'desecho' => $array_desecho,
-                        'rendimiento' => $array_rendimiento,
                         'calibre' => $array_calibre,
                     ]);
                 }
@@ -504,26 +457,18 @@ class crmPostocechaController extends Controller
                     $cajas = 0;
                     $ramos = 0;
                     $tallos = 0;
-                    $desecho = 0;
-                    $rendimiento = 0;
                     $calibre = 0;
                     foreach ($list_verdes as $verde) {
                         $cajas += round($verde->getTotalRamosEstandar() / getConfiguracionEmpresa()->ramos_x_caja, 2);
                         $ramos += $verde->getTotalRamosEstandar();
                         $tallos += $verde->total_tallos();
-                        $desecho += $verde->desecho();
-                        $rendimiento += $verde->getRendimiento();
                         $calibre += round($verde->total_tallos() / $verde->getTotalRamosEstandar(), 2);
                     }
-                    $desecho = count($list_verdes) > 0 ? round($desecho / count($list_verdes), 2) : 0;
-                    $rendimiento = count($list_verdes) > 0 ? round($rendimiento / count($list_verdes), 2) : 0;
                     $calibre = count($list_verdes) > 0 ? round($calibre / count($list_verdes), 2) : 0;
 
                     array_push($array_cajas, $cajas);
                     array_push($array_ramos, $ramos);
                     array_push($array_tallos, $tallos);
-                    array_push($array_desecho, $desecho);
-                    array_push($array_rendimiento, $rendimiento);
                     array_push($array_calibre, $calibre);
                 }
             }
@@ -536,26 +481,18 @@ class crmPostocechaController extends Controller
                     $cajas = 0;
                     $ramos = 0;
                     $tallos = 0;
-                    $desecho = 0;
-                    $rendimiento = 0;
                     $calibre = 0;
                     foreach ($list_verdes as $verde) {
                         $cajas += round($verde->getTotalRamosEstandarByVariedad($target->id_variedad) / getConfiguracionEmpresa()->ramos_x_caja, 2);
                         $ramos += $verde->getTotalRamosEstandarByVariedad($target->id_variedad);
                         $tallos += $verde->tallos_x_variedad($target->id_variedad);
-                        $desecho += $verde->desechoByVariedad($target->id_variedad);
-                        $rendimiento += $verde->getRendimientoByVariedad($target->id_variedad);
                         $calibre += $verde->calibreByVariedad($target->id_variedad);
                     }
-                    $desecho = count($list_verdes) > 0 ? round($desecho / count($list_verdes), 2) : 0;
-                    $rendimiento = count($list_verdes) > 0 ? round($rendimiento / count($list_verdes), 2) : 0;
                     $calibre = count($list_verdes) > 0 ? round($calibre / count($list_verdes), 2) : 0;
 
                     array_push($array_cajas, $cajas);
                     array_push($array_ramos, $ramos);
                     array_push($array_tallos, $tallos);
-                    array_push($array_desecho, $desecho);
-                    array_push($array_rendimiento, $rendimiento);
                     array_push($array_calibre, $calibre);
                 }
             }
@@ -564,8 +501,6 @@ class crmPostocechaController extends Controller
                     $array_cajas = [];
                     $array_ramos = [];
                     $array_tallos = [];
-                    $array_desecho = [];
-                    $array_rendimiento = [];
                     $array_calibre = [];
 
                     foreach ($labels as $codigo) {
@@ -583,19 +518,13 @@ class crmPostocechaController extends Controller
                             $cajas += round($verde->getTotalRamosEstandarByVariedad($variedad->id_variedad) / getConfiguracionEmpresa()->ramos_x_caja, 2);
                             $ramos += $verde->getTotalRamosEstandarByVariedad($variedad->id_variedad);
                             $tallos += $verde->tallos_x_variedad($variedad->id_variedad);
-                            $desecho += $verde->desechoByVariedad($variedad->id_variedad);
-                            $rendimiento += $verde->getRendimientoByVariedad($variedad->id_variedad);
                             $calibre += $verde->calibreByVariedad($variedad->id_variedad);
                         }
-                        $desecho = count($list_verdes) > 0 ? round($desecho / count($list_verdes), 2) : 0;
-                        $rendimiento = count($list_verdes) > 0 ? round($rendimiento / count($list_verdes), 2) : 0;
                         $calibre = count($list_verdes) > 0 ? round($calibre / count($list_verdes), 2) : 0;
 
                         array_push($array_cajas, $cajas);
                         array_push($array_ramos, $ramos);
                         array_push($array_tallos, $tallos);
-                        array_push($array_desecho, $desecho);
-                        array_push($array_rendimiento, $rendimiento);
                         array_push($array_calibre, $calibre);
                     }
 
@@ -604,8 +533,6 @@ class crmPostocechaController extends Controller
                         'cajas' => $array_cajas,
                         'ramos' => $array_ramos,
                         'tallos' => $array_tallos,
-                        'desecho' => $array_desecho,
-                        'rendimiento' => $array_rendimiento,
                         'calibre' => $array_calibre,
                     ]);
                 }
@@ -621,27 +548,19 @@ class crmPostocechaController extends Controller
                     $cajas = 0;
                     $ramos = 0;
                     $tallos = 0;
-                    $desecho = 0;
-                    $rendimiento = 0;
                     $calibre = 0;
                     foreach ($list_verdes as $item) {
                         $verde = ClasificacionVerde::find($item->id_clasificacion_verde);
                         $cajas += round($verde->getTotalRamosEstandar() / getConfiguracionEmpresa()->ramos_x_caja, 2);
                         $ramos += $verde->getTotalRamosEstandar();
                         $tallos += $verde->total_tallos();
-                        $desecho += $verde->desecho();
-                        $rendimiento += $verde->getRendimiento();
                         $calibre += round($verde->total_tallos() / $verde->getTotalRamosEstandar(), 2);
                     }
-                    $desecho = count($list_verdes) > 0 ? round($desecho / count($list_verdes), 2) : 0;
-                    $rendimiento = count($list_verdes) > 0 ? round($rendimiento / count($list_verdes), 2) : 0;
                     $calibre = count($list_verdes) > 0 ? round($calibre / count($list_verdes), 2) : 0;
 
                     array_push($array_cajas, $cajas);
                     array_push($array_ramos, $ramos);
                     array_push($array_tallos, $tallos);
-                    array_push($array_desecho, $desecho);
-                    array_push($array_rendimiento, $rendimiento);
                     array_push($array_calibre, $calibre);
                 }
             }
@@ -654,27 +573,19 @@ class crmPostocechaController extends Controller
                     $cajas = 0;
                     $ramos = 0;
                     $tallos = 0;
-                    $desecho = 0;
-                    $rendimiento = 0;
                     $calibre = 0;
                     foreach ($list_verdes as $item) {
                         $verde = ClasificacionVerde::find($item->id_clasificacion_verde);
                         $cajas += round($verde->getTotalRamosEstandarByVariedad($target->id_variedad) / getConfiguracionEmpresa()->ramos_x_caja, 2);
                         $ramos += $verde->getTotalRamosEstandarByVariedad($target->id_variedad);
                         $tallos += $verde->tallos_x_variedad($target->id_variedad);
-                        $desecho += $verde->desechoByVariedad($target->id_variedad);
-                        $rendimiento += $verde->getRendimientoByVariedad($target->id_variedad);
                         $calibre += $verde->calibreByVariedad($target->id_variedad);
                     }
-                    $desecho = count($list_verdes) > 0 ? round($desecho / count($list_verdes), 2) : 0;
-                    $rendimiento = count($list_verdes) > 0 ? round($rendimiento / count($list_verdes), 2) : 0;
                     $calibre = count($list_verdes) > 0 ? round($calibre / count($list_verdes), 2) : 0;
 
                     array_push($array_cajas, $cajas);
                     array_push($array_ramos, $ramos);
                     array_push($array_tallos, $tallos);
-                    array_push($array_desecho, $desecho);
-                    array_push($array_rendimiento, $rendimiento);
                     array_push($array_calibre, $calibre);
                 }
             }
@@ -683,8 +594,6 @@ class crmPostocechaController extends Controller
                     $array_cajas = [];
                     $array_ramos = [];
                     $array_tallos = [];
-                    $array_desecho = [];
-                    $array_rendimiento = [];
                     $array_calibre = [];
 
                     foreach ($labels as $mes) {
@@ -695,27 +604,19 @@ class crmPostocechaController extends Controller
                         $cajas = 0;
                         $ramos = 0;
                         $tallos = 0;
-                        $desecho = 0;
-                        $rendimiento = 0;
                         $calibre = 0;
                         foreach ($list_verdes as $item) {
                             $verde = ClasificacionVerde::find($item->id_clasificacion_verde);
                             $cajas += round($verde->getTotalRamosEstandarByVariedad($variedad->id_variedad) / getConfiguracionEmpresa()->ramos_x_caja, 2);
                             $ramos += $verde->getTotalRamosEstandarByVariedad($variedad->id_variedad);
                             $tallos += $verde->tallos_x_variedad($variedad->id_variedad);
-                            $desecho += $verde->desechoByVariedad($variedad->id_variedad);
-                            $rendimiento += $verde->getRendimientoByVariedad($variedad->id_variedad);
                             $calibre += $verde->calibreByVariedad($variedad->id_variedad);
                         }
-                        $desecho = count($list_verdes) > 0 ? round($desecho / count($list_verdes), 2) : 0;
-                        $rendimiento = count($list_verdes) > 0 ? round($rendimiento / count($list_verdes), 2) : 0;
                         $calibre = count($list_verdes) > 0 ? round($calibre / count($list_verdes), 2) : 0;
 
                         array_push($array_cajas, $cajas);
                         array_push($array_ramos, $ramos);
                         array_push($array_tallos, $tallos);
-                        array_push($array_desecho, $desecho);
-                        array_push($array_rendimiento, $rendimiento);
                         array_push($array_calibre, $calibre);
                     }
 
@@ -724,8 +625,6 @@ class crmPostocechaController extends Controller
                         'cajas' => $array_cajas,
                         'ramos' => $array_ramos,
                         'tallos' => $array_tallos,
-                        'desecho' => $array_desecho,
-                        'rendimiento' => $array_rendimiento,
                         'calibre' => $array_calibre,
                     ]);
                 }
@@ -740,27 +639,19 @@ class crmPostocechaController extends Controller
                     $cajas = 0;
                     $ramos = 0;
                     $tallos = 0;
-                    $desecho = 0;
-                    $rendimiento = 0;
                     $calibre = 0;
                     foreach ($list_verdes as $item) {
                         $verde = ClasificacionVerde::find($item->id_clasificacion_verde);
                         $cajas += round($verde->getTotalRamosEstandar() / getConfiguracionEmpresa()->ramos_x_caja, 2);
                         $ramos += $verde->getTotalRamosEstandar();
                         $tallos += $verde->total_tallos();
-                        $desecho += $verde->desecho();
-                        $rendimiento += $verde->getRendimiento();
                         $calibre += round($verde->total_tallos() / $verde->getTotalRamosEstandar(), 2);
                     }
-                    $desecho = count($list_verdes) > 0 ? round($desecho / count($list_verdes), 2) : 0;
-                    $rendimiento = count($list_verdes) > 0 ? round($rendimiento / count($list_verdes), 2) : 0;
                     $calibre = count($list_verdes) > 0 ? round($calibre / count($list_verdes), 2) : 0;
 
                     array_push($array_cajas, $cajas);
                     array_push($array_ramos, $ramos);
                     array_push($array_tallos, $tallos);
-                    array_push($array_desecho, $desecho);
-                    array_push($array_rendimiento, $rendimiento);
                     array_push($array_calibre, $calibre);
                 }
             }
@@ -772,27 +663,19 @@ class crmPostocechaController extends Controller
                     $cajas = 0;
                     $ramos = 0;
                     $tallos = 0;
-                    $desecho = 0;
-                    $rendimiento = 0;
                     $calibre = 0;
                     foreach ($list_verdes as $item) {
                         $verde = ClasificacionVerde::find($item->id_clasificacion_verde);
                         $cajas += round($verde->getTotalRamosEstandarByVariedad($target->id_variedad) / getConfiguracionEmpresa()->ramos_x_caja, 2);
                         $ramos += $verde->getTotalRamosEstandarByVariedad($target->id_variedad);
                         $tallos += $verde->tallos_x_variedad($target->id_variedad);
-                        $desecho += $verde->desechoByVariedad($target->id_variedad);
-                        $rendimiento += $verde->getRendimientoByVariedad($target->id_variedad);
                         $calibre += $verde->calibreByVariedad($target->id_variedad);
                     }
-                    $desecho = count($list_verdes) > 0 ? round($desecho / count($list_verdes), 2) : 0;
-                    $rendimiento = count($list_verdes) > 0 ? round($rendimiento / count($list_verdes), 2) : 0;
                     $calibre = count($list_verdes) > 0 ? round($calibre / count($list_verdes), 2) : 0;
 
                     array_push($array_cajas, $cajas);
                     array_push($array_ramos, $ramos);
                     array_push($array_tallos, $tallos);
-                    array_push($array_desecho, $desecho);
-                    array_push($array_rendimiento, $rendimiento);
                     array_push($array_calibre, $calibre);
                 }
             }
@@ -801,8 +684,6 @@ class crmPostocechaController extends Controller
                     $array_cajas = [];
                     $array_ramos = [];
                     $array_tallos = [];
-                    $array_desecho = [];
-                    $array_rendimiento = [];
                     $array_calibre = [];
 
                     foreach ($labels as $mes) {
@@ -812,27 +693,19 @@ class crmPostocechaController extends Controller
                         $cajas = 0;
                         $ramos = 0;
                         $tallos = 0;
-                        $desecho = 0;
-                        $rendimiento = 0;
                         $calibre = 0;
                         foreach ($list_verdes as $item) {
                             $verde = ClasificacionVerde::find($item->id_clasificacion_verde);
                             $cajas += round($verde->getTotalRamosEstandarByVariedad($variedad->id_variedad) / getConfiguracionEmpresa()->ramos_x_caja, 2);
                             $ramos += $verde->getTotalRamosEstandarByVariedad($variedad->id_variedad);
                             $tallos += $verde->tallos_x_variedad($variedad->id_variedad);
-                            $desecho += $verde->desechoByVariedad($variedad->id_variedad);
-                            $rendimiento += $verde->getRendimientoByVariedad($variedad->id_variedad);
                             $calibre += $verde->calibreByVariedad($variedad->id_variedad);
                         }
-                        $desecho = count($list_verdes) > 0 ? round($desecho / count($list_verdes), 2) : 0;
-                        $rendimiento = count($list_verdes) > 0 ? round($rendimiento / count($list_verdes), 2) : 0;
                         $calibre = count($list_verdes) > 0 ? round($calibre / count($list_verdes), 2) : 0;
 
                         array_push($array_cajas, $cajas);
                         array_push($array_ramos, $ramos);
                         array_push($array_tallos, $tallos);
-                        array_push($array_desecho, $desecho);
-                        array_push($array_rendimiento, $rendimiento);
                         array_push($array_calibre, $calibre);
                     }
 
@@ -841,8 +714,6 @@ class crmPostocechaController extends Controller
                         'cajas' => $array_cajas,
                         'ramos' => $array_ramos,
                         'tallos' => $array_tallos,
-                        'desecho' => $array_desecho,
-                        'rendimiento' => $array_rendimiento,
                         'calibre' => $array_calibre,
                     ]);
                 }
@@ -858,8 +729,6 @@ class crmPostocechaController extends Controller
             'array_cajas' => $array_cajas,
             'array_ramos' => $array_ramos,
             'array_tallos' => $array_tallos,
-            'array_desecho' => $array_desecho,
-            'array_rendimiento' => $array_rendimiento,
             'array_calibre' => $array_calibre,
         ]);
 
@@ -926,72 +795,6 @@ class crmPostocechaController extends Controller
             ]);
         }
         return view('adminlte.crm.postcocecha.partials.secciones.indicadores.modals.data_tallos', [
-            'target' => $target,
-            'labels' => $labels,
-            'arreglo_variedades' => $arreglo_variedades
-        ]);
-    }
-
-    public function show_data_desechos(Request $request)
-    {
-        $labels = DB::table('clasificacion_verde as v')
-            ->select('v.fecha_ingreso as dia')->distinct()
-            ->where('v.fecha_ingreso', '>=', $request->desde)
-            ->where('v.fecha_ingreso', '<=', $request->hasta)
-            ->get();
-        $target = getVariedades();
-
-        /* ================ OBTENER RESULTADOS =============*/
-        $arreglo_variedades = [];
-
-        foreach ($target as $variedad) {
-            $array_desecho = [];
-            foreach ($labels as $dia) {
-                $verde = ClasificacionVerde::All()->where('fecha_ingreso', '=', $dia->dia)->first();
-                if ($verde != '') {
-                    array_push($array_desecho, $verde->desechoByVariedad($variedad->id_variedad));
-                }
-            }
-
-            array_push($arreglo_variedades, [
-                'variedad' => $variedad,
-                'desecho' => $array_desecho,
-            ]);
-        }
-        return view('adminlte.crm.postcocecha.partials.secciones.indicadores.modals.data_desechos', [
-            'target' => $target,
-            'labels' => $labels,
-            'arreglo_variedades' => $arreglo_variedades
-        ]);
-    }
-
-    public function show_data_rendimientos(Request $request)
-    {
-        $labels = DB::table('clasificacion_verde as v')
-            ->select('v.fecha_ingreso as dia')->distinct()
-            ->where('v.fecha_ingreso', '>=', $request->desde)
-            ->where('v.fecha_ingreso', '<=', $request->hasta)
-            ->get();
-        $target = getVariedades();
-
-        /* ================ OBTENER RESULTADOS =============*/
-        $arreglo_variedades = [];
-
-        foreach ($target as $variedad) {
-            $array_rendimiento = [];
-            foreach ($labels as $dia) {
-                $verde = ClasificacionVerde::All()->where('fecha_ingreso', '=', $dia->dia)->first();
-                if ($verde != '') {
-                    array_push($array_rendimiento, $verde->getRendimientoByVariedad($variedad->id_variedad));
-                }
-            }
-
-            array_push($arreglo_variedades, [
-                'variedad' => $variedad,
-                'rendimiento' => $array_rendimiento,
-            ]);
-        }
-        return view('adminlte.crm.postcocecha.partials.secciones.indicadores.modals.data_rendimientos', [
             'target' => $target,
             'labels' => $labels,
             'arreglo_variedades' => $arreglo_variedades

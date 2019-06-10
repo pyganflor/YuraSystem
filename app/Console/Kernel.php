@@ -4,7 +4,7 @@ namespace yura\Console;
 
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
-use yura\Console\Commands\PruebaCommand;
+use yura\Console\Commands\FechaFinalCiclo;
 use yura\Console\Commands\UpdateHistoricoVentas;
 
 class Kernel extends ConsoleKernel
@@ -16,7 +16,7 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         UpdateHistoricoVentas::class,
-        PruebaCommand::class
+        FechaFinalCiclo::class
     ];
 
     /**
@@ -30,7 +30,7 @@ class Kernel extends ConsoleKernel
         // $schedule->command('inspire')
         //          ->hourly();
 
-        $schedule->command('comando:prueba')->everyMinute()/*->runInBackground()*/;
+        $schedule->command('ciclo:fecha_fin')->everyMinute()->runInBackground();
     }
 
     /**

@@ -1,6 +1,6 @@
 @if(count($labels) > 0)
     <div class="row">
-        <div class="col-md-3">
+        <div class="col-md-4">
             <div class="small-box bg-teal-active">
                 <div class="inner">
                     @foreach($arreglo_variedades as $item)
@@ -20,7 +20,7 @@
                 </a>
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-4">
             <div class="small-box bg-aqua">
                 <div class="inner">
                     @foreach($arreglo_variedades as $item)
@@ -40,41 +40,7 @@
                 </a>
             </div>
         </div>
-        <div class="col-md-2">
-            <div class="small-box bg-red">
-                <div class="inner">
-                    @foreach($arreglo_variedades as $item)
-                        <h3 class="info-box-number">
-                            {{$item['desecho']}}<sup style="font-size: 0.4em">% <em>{{$item['variedad']->siglas}}</em></sup>
-                        </h3>
-                    @endforeach
-                </div>
-                <div class="icon">
-                    <i class="ion ion-trash-a"></i>
-                </div>
-                <a href="javascript:void(0)" class="small-box-footer" onclick="show_data_desechos('{{$desde}}', '{{$hasta}}')">
-                    Desechos <i class="fa fa-arrow-circle-right"></i>
-                </a>
-            </div>
-        </div>
-        <div class="col-md-2">
-            <div class="small-box bg-green-gradient">
-                <div class="inner">
-                    @foreach($arreglo_variedades as $item)
-                        <h3 class="info-box-number">
-                            {{number_format($item['rendimiento'], 2)}}<sup style="font-size: 0.4em"><em>{{$item['variedad']->siglas}}</em></sup>
-                        </h3>
-                    @endforeach
-                </div>
-                <div class="icon">
-                    <i class="ion ion-ios-people-outline"></i>
-                </div>
-                <a href="javascript:void(0)" class="small-box-footer" onclick="show_data_rendimientos('{{$desde}}', '{{$hasta}}')">
-                    Rendimiento <i class="fa fa-arrow-circle-right"></i>
-                </a>
-            </div>
-        </div>
-        <div class="col-md-2">
+        <div class="col-md-4">
             <div class="small-box bg-orange">
                 <div class="inner">
                     @foreach($arreglo_variedades as $item)
@@ -94,6 +60,6 @@
     </div>
 @else
     <div class="alert alert-info text-center">
-        No se ha trabajado aún el día de hoy
+        No se han encotnrado resultados que mostrar
     </div>
 @endif

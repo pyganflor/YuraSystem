@@ -110,7 +110,7 @@ class crmRendimientoController extends Controller
             if (!in_array($item->anno, $annos))
                 array_push($annos, $item->anno);
         }
-
+        sort($annos);
         return view('adminlte.crm.rendimiento_desecho.inicio', [
             'today' => $today,
             'semanal' => $semanal,

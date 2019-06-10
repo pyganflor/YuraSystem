@@ -28,22 +28,23 @@
     <section class="content">
         @if(count(getUsuario(Session::get('id_usuario'))->rol()->getSubmenusByTipo('C')) > 0)
             <div class="box box-primary" style="background-color: #18ef152b">
-                <div class="box-header with-border">
-                    <h3 class="box-title">
-                        DASHBOARD
-                    </h3>
-                </div>
                 <div class="box-body">
                     <div class="row">
                         <div class="col-md-6 col-md-offset-3">
                             <div class="info-box mouse-hand sombra_pequeña" style="background-color: #fffb1f"
-                                 onclick="location.href='{{url('crm_postcosecha')}}'">
-                                <span class="info-box-icon"><i class="fa fa-fw fa-usd"></i></span>
+                                 onclick="location.href='{{url('crm_ventas')}}'">
+                                <span class="info-box-icon"><i class="fa fa-fw fa-diamond"></i></span>
                                 <div class="info-box-content">
-                                    <strong class="info-box-text text-center" style="font-size: 1.2em">Ventas/m<sup>2</sup></strong>
+                                    <strong class="info-box-text text-center" style="font-size: 1.2em">Ventas/
+                                        <small>m<sup>2</sup></small>
+                                    </strong>
                                     <span class="info-box-number text-center">
-                                        00
-                                        <small><i class="fa fa-fw fa-usd"></i>/m <sup>2</sup></small></span>
+                                        @if($area['area'] > 0)
+                                            {{number_format(round($valor / $area['area'], 2), 2)}}
+                                        @else
+                                            0
+                                        @endif
+                                        <small>$/m<sup>2</sup></small></span>
                                 </div>
                             </div>
                         </div>
@@ -57,7 +58,9 @@
                                     <strong class="info-box-text" style="font-size: 1.2em">Postcosecha</strong>
                                     <span class="info-box-number">{{$calibre}}
                                         <small>t/r calibre</small></span>
-                                    <strong class="info-box-number" title="Tallos">{{number_format($tallos)}} <small>tallos</small></strong>
+                                    <strong class="info-box-number" title="Tallos">{{number_format($tallos)}}
+                                        <small>tallos</small>
+                                    </strong>
                                 </div>
                             </div>
                         </div>
@@ -67,8 +70,12 @@
                                 <span class="info-box-icon"><i class="fa fa-fw fa-usd"></i></span>
                                 <div class="info-box-content">
                                     <strong class="info-box-text" style="font-size: 1.2em">Ventas</strong>
-                                    <span class="info-box-number">{{number_format($precio_x_ramo, 2)}} <small>precio</small></span>
-                                    <span class="info-box-number" title="Valor">{{number_format($valor, 2)}} <small>ventas</small></span>
+                                    <span class="info-box-number">{{number_format($precio_x_ramo, 2)}}
+                                        <small>precio</small></span>
+                                    <span class="info-box-number" title="Valor">
+                                        <small>$</small>
+                                        {{number_format($valor, 2)}}
+                                    </span>
                                 </div>
                             </div>
                         </div>
@@ -90,17 +97,17 @@
                             </div>
                         </div>
                         <div class="col-md-3">
-                            <div class="info-box bg-gray-active mouse-hand sombra_pequeña"
-                                 onclick="location.href='{{url('crm_rendimiento')}}'">
+                            <div class="info-box bg-fuchsia mouse-hand sombra_pequeña"
+                                 onclick="location.href='{{url('crm_area')}}'">
                                 <span class="info-box-icon"><i class="fa fa-fw fa-cube"></i></span>
                                 <div class="info-box-content">
                                     <strong class="info-box-text" style="font-size: 1.2em">Área</strong>
                                     <span class="info-box-number">
-                                        00
+                                        {{number_format($area['area'], 2)}}
                                         <small>m <sup>2</sup></small>
                                     </span>
                                     <span class="info-box-number" title="Ramos/m2">
-                                        00
+                                        {{number_format($area['ramos'], 2)}}
                                         <small>r/m <sup>2</sup></small>
                                     </span>
                                 </div>

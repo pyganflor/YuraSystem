@@ -34,37 +34,69 @@
 
         <div class="box box-success">
             <div class="box-header with-border">
-                <h3 class="box-title">
+                <h4 class="box-title">
                     <strong>Gráficas</strong>
+                </h4>
 
-                    <select name="filtro_predeterminado_rango" id="filtro_predeterminado_rango" style="height: 30px;"
+                <div class="input-group">
+                    <div class="input-group-addon bg-gray">
+                        <i class="fa fa-calendar-check-o"></i> Rango
+                    </div>
+                    <select name="filtro_predeterminado_rango" id="filtro_predeterminado_rango" class="form-control"
                             onchange="filtrar_predeterminado()">
-                        <option value="1">1 Mes</option>
                         <option value="2">3 Meses</option>
                         <option value="3">6 Meses</option>
                         <option value="4">1 Año</option>
                     </select>
 
-                    <select name="filtro_predeterminado_variedad" id="filtro_predeterminado_variedad" style="height: 30px;"
+                    <div class="input-group-addon bg-gray">
+                        <i class="fa fa-fw fa-filter"></i> Módulo
+                    </div>
+                    <select name="filtro_predeterminado_criterio" id="filtro_predeterminado_criterio" class="form-control"
                             onchange="filtrar_predeterminado()">
                         <option value="A" selected>Acumulado</option>
+                        @foreach(getModulos()->sortBy('nombre') as $m)
+                            <option value="{{$m->id_modulo}}">{{$m->nombre}}</option>
+                        @endforeach
+                    </select>
+
+                    <div class="input-group-addon bg-gray">
+                        <i class="fa fa-fw fa-leaf"></i> Variedad
+                    </div>
+                    <select name="filtro_predeterminado_variedad" id="filtro_predeterminado_variedad" class="form-control"
+                            onchange="filtrar_predeterminado()">
+                        <option value="">Todas las variedades</option>
                         @foreach(getVariedades() as $v)
                             <option value="{{$v->id_variedad}}">{{$v->nombre}}</option>
                         @endforeach
-                        <option value="T">Todas las variedades</option>
                     </select>
 
-                    <select class="select2" multiple="multiple" id="filtro_predeterminado_annos" name="filtro_predeterminado_annos"
-                            data-placeholder="Años naturales" style="width: 205px; height: 35px">
-                        @foreach($annos as $item)
-                            <option value="{{$item->anno}}">{{$item->anno}}</option>
-                        @endforeach
-                    </select>
+                    <div class="input-group-btn bg-gray">
+                        <button type="button" class="btn btn-default dropdown-toggle bg-gray" data-toggle="dropdown" aria-haspopup="true"
+                                aria-expanded="false">
+                            <i class="fa fa-calendar-minus-o"></i> Años
+                            <span class="caret"></span></button>
+                        <ul class="dropdown-menu">
+                            @foreach($annos as $a)
+                                <li>
+                                    <a href="javascript:void(0)" onclick="select_anno('{{$a->anno}}')"
+                                       class="li_anno" id="li_anno_{{$a->anno}}">
+                                        {{$a->anno}}
+                                    </a>
+                                </li>
+                            @endforeach
+                        </ul>
+                    </div>
+                    <input type="text" class="form-control" placeholder="Años" id="filtro_predeterminado_annos"
+                           name="filtro_predeterminado_annos" readonly>
 
-                    <button type="button" class="btn btn-sm btn-default" onclick="filtrar_predeterminado()">
-                        <i class="fa fa-fw fa-search"></i>
-                    </button>
-                </h3>
+                    <div class="input-group-btn">
+                        <button type="button" id="btn_filtrar" class="btn btn-default" onclick="filtrar_predeterminado()" title="Buscar">
+                            <i class="fa fa-fw fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+
             </div>
             <div class="box-body">
                 <div class="row">
