@@ -4,6 +4,7 @@ namespace yura\Console;
 
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use yura\Console\Commands\DeleteRecepciones;
 use yura\Console\Commands\FechaFinalCiclo;
 use yura\Console\Commands\UpdateHistoricoVentas;
 
@@ -16,7 +17,8 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         UpdateHistoricoVentas::class,
-        FechaFinalCiclo::class
+        FechaFinalCiclo::class,
+        DeleteRecepciones::class
     ];
 
     /**
@@ -30,7 +32,8 @@ class Kernel extends ConsoleKernel
         // $schedule->command('inspire')
         //          ->hourly();
 
-        $schedule->command('ciclo:fecha_fin')->everyMinute()->runInBackground();
+        $schedule->command('ciclo:fecha_fin')->everyMinute()->runInBackground();    // FechaFinalCiclo::class
+        $schedule->command('recepciones:delete')->everyMinute()->runInBackground(); // DeleteRecepciones::class
     }
 
     /**

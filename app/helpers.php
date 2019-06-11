@@ -61,6 +61,7 @@ use \yura\Modelos\DesgloseEnvioFactura;
 use yura\Modelos\DetalleGuiaRemision;
 use yura\Mail\CorreoErrorEnvioComprobanteElectronico;
 use yura\Modelos\TipoIdentificacion;
+use yura\Modelos\Ciclo;
 
 /*
  * -------- BITÁCORA DE LAS ACCIONES ECHAS POR EL USUARIO ------
@@ -1843,5 +1844,37 @@ function getAreaCiclosByRango($semana_ini, $semana_fin, $variedad)
     return [
         'variedades' => $variedades,
         'semanas' => $semanas,
+    ];
+}
+
+function getCiclosCerradosByRango($semana_ini, $semana_fin, $variedad)
+{
+    $semana_ini = Semana::All()->where('codigo', $semana_ini)->first();
+    $semana_fin = Semana::All()->where('codigo', $semana_fin)->first();
+
+    $ciclos_fin = Ciclo::All()
+        ->where('estado', 1)
+        ->where('activo', 0)
+        ->where('fecha_fin', '>=', $semana_ini->fecha_inicial)
+        ->where('fecha_fin', '<=', $semana_fin->fecha_final);
+
+    if ($variedad != 'T')   // T => Todas
+        $ciclos_fin = $ciclos_fin->where('id_variedad', $variedad);
+
+    $ciclo = 0;
+    $area_cerrada = 0;
+
+    foreach ($ciclos_fin as $c) {
+        $area_cerrada += $c->area;
+        $fin = date('Y-m-d');
+        if ($c->fecha_fin != '')
+            $fin = $c->fecha_fin;
+        $ciclo += difFechas($fin, $c->fecha_inicio)->days;
+    }
+
+    return [
+        'ciclos' => $ciclos_fin,
+        'ciclo' => count($ciclos_fin) > 0 ? round($ciclo / count($ciclos_fin), 2) : 0,
+        'area_cerrada' => $area_cerrada,
     ];
 }

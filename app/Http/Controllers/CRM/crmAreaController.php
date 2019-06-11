@@ -15,7 +15,7 @@ class crmAreaController extends Controller
     public function inicio(Request $request)
     {
         /* =========== MENSUAL ============= */
-        $desde = opDiasFecha('-', 30, date('Y-m-d'));
+        $desde = opDiasFecha('-', 28, date('Y-m-d'));
         $hasta = opDiasFecha('-', 7, date('Y-m-d'));
 
         $fechas = DB::table('semana as s')
@@ -32,52 +32,25 @@ class crmAreaController extends Controller
             ->get();
 
         $area = 0;
-        $area_cerrada = 0;
-        $ciclo = 0;
-        $cant_ciclo = 0;
+
+        $data_semana_acutal = getAreaCiclosByRango($fechas[0]->semana, $fechas[3]->semana, 'T');
+
+        foreach ($data_semana_acutal['variedades'] as $var) {
+            foreach ($var['ciclos'] as $c) {
+                foreach ($c['areas'] as $a) {
+                    $area += $a;
+                }
+            }
+        }
+
+
+        $data_ciclos = getCiclosCerradosByRango($fechas[0]->semana, $fechas[3]->semana, 'T');
+        $ciclo = $data_ciclos['ciclo'];
+        $area_cerrada = $data_ciclos['area_cerrada'];
         $tallos = 0;
         $ramos = 0;
         foreach ($fechas as $codigo) {
             $semana = Semana::All()->where('codigo', '=', $codigo->semana)->first();
-
-            /* ========== area ========== */
-            $ciclos_area = DB::table('ciclo')
-                ->select('id_ciclo as id')->distinct()
-                ->where('estado', '=', 1)
-                ->Where(function ($q) use ($semana) {
-                    $q->where('fecha_fin', '>=', $semana->fecha_inicial)
-                        ->where('fecha_fin', '<=', $semana->fecha_final)
-                        ->orWhere(function ($q) use ($semana) {
-                            $q->where('fecha_inicio', '>=', $semana->fecha_inicial)
-                                ->where('fecha_inicio', '<=', $semana->fecha_final);
-                        })
-                        ->orWhere(function ($q) use ($semana) {
-                            $q->where('fecha_inicio', '<', $semana->fecha_inicial)
-                                ->where('fecha_fin', '>', $semana->fecha_final);
-                        });
-                })
-                ->get();
-
-            foreach ($ciclos_area as $item) {
-                $item = Ciclo::find($item->id);
-                $area += $item->area;
-            }
-
-            /* ========== ciclo ========== */
-            $ciclos_fin = Ciclo::All()
-                ->where('estado', 1)
-                ->where('activo', 0)
-                ->where('fecha_fin', '>=', $semana->fecha_inicial)
-                ->where('fecha_fin', '<=', $semana->fecha_final);
-
-            foreach ($ciclos_fin as $c) {
-                $area_cerrada += $c->area;
-                $fin = date('Y-m-d');
-                if ($c->fecha_fin != '')
-                    $fin = $c->fecha_fin;
-                $ciclo += difFechas($fin, $c->fecha_inicio)->days;
-            }
-            $cant_ciclo += count($ciclos_fin);
 
             $labels = DB::table('clasificacion_verde as v')
                 ->select('v.fecha_ingreso as dia')->distinct()
@@ -94,7 +67,6 @@ class crmAreaController extends Controller
                 }
             }
         }
-        $ciclo = $cant_ciclo > 0 ? round($ciclo / $cant_ciclo, 2) : 0;
         $ciclo_ano = $area_cerrada > 0 ? round(365 / $ciclo, 2) : 0;
 
         $mensual = [
@@ -112,26 +84,14 @@ class crmAreaController extends Controller
         /* ========== area ========== */
         $area = 0;
 
-        $ciclos_area = DB::table('ciclo')
-            ->select('id_ciclo as id')->distinct()
-            ->where('estado', '=', 1)
-            ->Where(function ($q) use ($semana_actual) {
-                $q->where('fecha_fin', '>=', $semana_actual->fecha_inicial)
-                    ->where('fecha_fin', '<=', $semana_actual->fecha_final)
-                    ->orWhere(function ($q) use ($semana_actual) {
-                        $q->where('fecha_inicio', '>=', $semana_actual->fecha_inicial)
-                            ->where('fecha_inicio', '<=', $semana_actual->fecha_final);
-                    })
-                    ->orWhere(function ($q) use ($semana_actual) {
-                        $q->where('fecha_inicio', '<', $semana_actual->fecha_inicial)
-                            ->where('fecha_fin', '>', $semana_actual->fecha_final);
-                    });
-            })
-            ->get();
+        $data_semana_acutal = getAreaCiclosByRango($semana_actual->codigo, $semana_actual->codigo, 'T');
 
-        foreach ($ciclos_area as $item) {
-            $item = Ciclo::find($item->id);
-            $area += $item->area;
+        foreach ($data_semana_acutal['variedades'] as $var) {
+            foreach ($var['ciclos'] as $c) {
+                foreach ($c['areas'] as $a) {
+                    $area += $a;
+                }
+            }
         }
 
         /* ========== ciclo ========== */
@@ -475,7 +435,7 @@ class crmAreaController extends Controller
 
     public function buscar_listado(Request $request)
     {
-        $data = getAreaCiclosByRango($request->desde, $request->hasta, $request->id_variedad);
+        $data = getAreaCiclosByRango($request->desde, $request->hasta, $request->variedad);
         return view('adminlte.crm.regalias_semanas.partials.listado', [
             'variedades' => $data['variedades'],
             'semanas' => $data['semanas']

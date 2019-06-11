@@ -59,7 +59,9 @@
                                         {{getSemanaByDate($ciclo['ciclo']->fecha_inicio)->codigo}}
                                     </td>
                                     @foreach($ciclo['areas'] as $pos_area => $area)
-                                        <td class="text-left" style="border-color: #9d9d9d; background-color: #e9ecef">
+                                        <td class="text-left"
+                                            style="border-color: #9d9d9d; background-color: #e9ecef"
+                                            title="Final: '{{$ciclo['ciclo']->fecha_fin}}'">
                                             {{number_format($area, 2)}}
                                         </td>
                                         @php
