@@ -28,7 +28,7 @@ class Marcacion extends Model
         return $this->belongsTo('\yura\Modelos\DetallePedido', 'id_detalle_pedido');
     }
 
-    public function especificacion_empaque()
+    public function especificacion_mepaque()
     {
         return $this->belongsTo('\yura\Modelos\EspecificacionEmpaque', 'id_especificacion_empaque');
     }

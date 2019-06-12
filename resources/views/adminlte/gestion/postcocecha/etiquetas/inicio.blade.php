@@ -15,16 +15,12 @@
                 </h3>
             </div>
             <div class="box-body" id="div_content_etiquetas">
-                <div class="col-md-8 col-md-offset-2">
+                <div class="col-md-4 col-md-offset-4">
                     <table width="100%">
                         <tr>
                             <td>
-                                <label>Desde</label>
+                                <label>Selecciona una fecha</label>
                                 <input type="date" class="form-control" id="desde" name="desde" value="{{now()->toDateString()}}">
-                            </td>
-                            <td>
-                                <label>Hasta</label>
-                                <input type="date" class="form-control"  id="hasta" name="hasta" value="">
                             </td>
                             <td>
                                 <label style="visibility: hidden">.</label><br/>

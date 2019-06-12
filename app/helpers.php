@@ -1758,3 +1758,12 @@ function getDae($dae=null,$codigo=null){
 function getAerolinea($idAerolinea){
     return Aerolinea::find($idAerolinea);
 }
+
+function getColoracionByDetPed($id_det_ped){
+    return Coloracion::where('id_detalle_pedido',$id_det_ped)->get();
+}
+
+function getDatosExportacionByDetPed($id_detalle_pedido)
+{
+    return DetallePedidoDatoExportacion::where('id_detalle_pedido', $id_detalle_pedido)->get();
+}
