@@ -2,7 +2,7 @@
        id="table_content_sectores">
     <thead>
     <tr class="table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}">
-        <th class="text-center" style="border-color: #9d9d9d">SECTOR</th>
+        <th class="text-center" style="border-color: #9d9d9d" colspan="2">SECTOR</th>
         <th class="text-center" style="border-color: #9d9d9d">
             <button type="button" class="btn btn-xs btn-default" title="Añadir Sector" onclick="add_sector()">
                 <i class="fa fa-fw fa-plus"></i>
@@ -16,6 +16,9 @@
                 class="{{$item->estado == 1 ? '' : 'error'}}" id="row_sector_{{$item->id_sector}}">
                 <td style="border-color: #9d9d9d" class="text-center mouse-hand" onclick="select_sector('{{$item->id_sector}}')">
                     <i class="fa fa-fw fa-check hidden icon_hidden_s" id="icon_sector_{{$item->id_sector}}"></i> {{$item->nombre}}
+                </td>
+                <td style="border-color: #9d9d9d" class="text-center mouse-hand" onclick="select_sector('{{$item->id_sector}}')">
+                    {{number_format($item->getAreaTotal(), 2)}} m<sup>2</sup>
                 </td>
                 <td style="border-color: #9d9d9d" class="text-center">
                     <div class="btn-group">

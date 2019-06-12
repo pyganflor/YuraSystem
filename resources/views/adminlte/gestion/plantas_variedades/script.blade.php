@@ -20,7 +20,7 @@
     function add_planta() {
         $.LoadingOverlay('show');
         $.get('{{url('plantas_variedades/add_planta')}}', {}, function (retorno) {
-            modal_form('modal_add_planta', retorno, '<i class="fa fa-fw fa-plus"></i> Añadir Planta', true, false, '{{isPC() ? '45%' : ''}}', function () {
+            modal_form('modal_add_planta', retorno, '<i class="fa fa-fw fa-plus"></i> Añadir Planta', true, false, '{{isPC() ? '65%' : ''}}', function () {
                 store_planta();
             });
         });
@@ -33,8 +33,9 @@
             datos = {
                 _token: '{{csrf_token()}}',
                 nombre: $('#nombre').val(),
-                tarifa : $("#tarifa").val(),
-                nandina : $("#nandina").val()
+                tarifa: $("#tarifa").val(),
+                nandina: $("#nandina").val(),
+                siglas: $("#siglas").val(),
             };
             post_jquery('{{url('plantas_variedades/store_planta')}}', datos, function () {
                 cerrar_modals();
@@ -85,7 +86,7 @@
             id_planta: p,
         };
         $.get('{{url('plantas_variedades/edit_planta')}}', datos, function (retorno) {
-            modal_form('modal_edit_planta', retorno, '<i class="fa fa-fw fa-plus"></i> Editar Planta', true, false, '{{isPC() ? '45%' : ''}}', function () {
+            modal_form('modal_edit_planta', retorno, '<i class="fa fa-fw fa-plus"></i> Editar Planta', true, false, '{{isPC() ? '65%' : ''}}', function () {
                 update_planta();
             });
         });
@@ -99,8 +100,9 @@
                 _token: '{{csrf_token()}}',
                 nombre: $('#nombre').val(),
                 id_planta: $('#id_planta').val(),
-                tarifa : $("#tarifa").val(),
-                nandina : $("#nandina").val()
+                tarifa: $("#tarifa").val(),
+                nandina: $("#nandina").val(),
+                siglas: $("#siglas").val(),
             };
             post_jquery('{{url('plantas_variedades/update_planta')}}', datos, function () {
                 cerrar_modals();

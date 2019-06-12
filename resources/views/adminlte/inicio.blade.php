@@ -37,14 +37,15 @@
                                 <div class="info-box-content">
                                     <strong class="info-box-text text-center" style="font-size: 1.2em">Ventas/
                                         <small>m<sup>2</sup></small>
+                                        /año
                                     </strong>
                                     <span class="info-box-number text-center">
                                         @if($area['area_cerrada'] > 0)
-                                            {{number_format(round($venta_mensual['valor'] / $area['area'], 2), 2)}}
+                                            {{number_format(round(($venta_mensual['valor'] / $area['area_cerrada']) * $area['ciclo_ano'], 2), 2)}}
                                         @else
                                             0
                                         @endif
-                                        <small>$/m<sup>2</sup></small></span>
+                                        <small>$/m<sup>2</sup>/año</small></span>
                                 </div>
                             </div>
                         </div>
@@ -108,7 +109,7 @@
                                     </span>
                                     <span class="info-box-number" title="Ramos/m2">
                                         {{number_format($area['ramos_anno'], 2)}}
-                                        <small>r/m <sup>2</sup></small>
+                                        <small>r/m<sup>2</sup>/año</small>
                                     </span>
                                 </div>
                             </div>

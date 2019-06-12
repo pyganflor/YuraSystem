@@ -63,6 +63,7 @@ use yura\Mail\CorreoErrorEnvioComprobanteElectronico;
 use yura\Modelos\TipoIdentificacion;
 use yura\Modelos\Ciclo;
 use yura\Modelos\Cosecha;
+use yura\Modelos\Planta;
 
 /*
  * -------- BITÁCORA DE LAS ACCIONES ECHAS POR EL USUARIO ------
@@ -759,6 +760,25 @@ function getVariedad($id)
 function getVariedades()
 {
     return Variedad::All()->where('estado', '=', 1);
+}
+
+function getVariedadesByPlanta($p, $formato = 'option')
+{
+    $p = Planta::find($p);
+    if ($formato == 'option') {
+        $r = '';
+        foreach ($p->variedades as $v) {
+            $r .= '<option value="' . $v->id_variedad . '">' . $v->nombre . '</option>';
+        }
+        return $r;
+    } else {
+        return $p->variedades;
+    }
+}
+
+function getPlantas()
+{
+    return Planta::All()->where('estado', 1);
 }
 
 function getUnitaria($id)
@@ -1892,7 +1912,8 @@ function getCiclosCerradosByRangoVariedades($semana_ini, $semana_fin)
             ->where('activo', 0)
             ->where('id_variedad', $v->id_variedad)
             ->where('fecha_fin', '>=', $semana_ini->fecha_inicial)
-            ->where('fecha_fin', '<=', $semana_fin->fecha_final);
+            ->where('fecha_fin', '<=', $semana_fin->fecha_final)
+            ->sortBy('fecha_fin');
 
         $ciclo = 0;
         $area_cerrada = 0;

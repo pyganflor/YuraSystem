@@ -28,6 +28,8 @@ Route::group(['middleware' => 'autenticacion'], function () {
 
     Route::post('usuarios/get_usuario_json', 'UsuarioController@get_usuario_json');
 
+    Route::get('select_planta', 'YuraController@select_planta');
+
     include 'documento/rutas.php';
     include 'crm/dashboard.php';
 

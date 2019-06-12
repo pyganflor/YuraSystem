@@ -19,16 +19,6 @@
             desde = rest_dias(365);
         }
 
-        id_modulo = '';
-        x_modulo = false;
-        total = false;
-        if ($('#filtro_predeterminado_criterio').val() == 'A') {
-            total = true;
-        } else {
-            x_modulo = true;
-            id_modulo = $('#filtro_predeterminado_criterio').val();
-        }
-
         list_annos = [];
         if ($('#filtro_predeterminado_annos').val() != '') {
             li_annos = $('#filtro_predeterminado_annos').val().split(' - ');
@@ -45,11 +35,8 @@
             mensual: mensual,
             semanal: semanal,
             diario: diario,
-            x_modulo: x_modulo,
-            total: total,
             desde: desde,
-            hasta: rest_dias(1),
-            id_modulo: id_modulo,
+            hasta: rest_dias(7),
             id_variedad: $('#filtro_predeterminado_variedad').val(),
             annos: list_annos,
         };

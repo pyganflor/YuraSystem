@@ -14,16 +14,25 @@
                 <option value="3">6 Meses</option>
                 <option value="4">1 Año</option>
             </select>
+
             <div class="input-group-addon bg-gray">
-                <i class="fa fa-leaf"></i> Variedad
+                <i class="fa fa-fw fa-leaf"></i> Variedad
             </div>
-            <select name="filtro_predeterminado_variedad" id="filtro_predeterminado_variedad" onchange="filtrar_predeterminado(1)"
-                    class="form-control">
-                @foreach(getVariedades() as $v)
-                    <option value="{{$v->id_variedad}}">{{$v->nombre}}</option>
+            <select name="filtro_predeterminado_planta" id="filtro_predeterminado_planta" class="form-control"
+                    onchange="select_planta($(this).val(), 'filtro_predeterminado_variedad', 'div_cargar_variedades',
+                    '<option value=A selected>Acumulado</option><option value=T>Todos los tipos</option>')">
+                <option value="">Todas las variedades</option>
+                @foreach(getPlantas() as $p)
+                    <option value="{{$p->id_planta}}">{{$p->nombre}}</option>
                 @endforeach
+            </select>
+            <div class="input-group-addon bg-gray" id="div_cargar_variedades">
+                <i class="fa fa-fw fa-leaf"></i> Tipo
+            </div>
+            <select name="filtro_predeterminado_variedad" id="filtro_predeterminado_variedad" class="form-control"
+                    onchange="filtrar_predeterminado(1)">
                 <option value="A" selected>Acumulado</option>
-                <option value="T">Todas las variedades</option>
+                <option value="T">Todos los tipos</option>
             </select>
 
             <div class="input-group-btn bg-gray">

@@ -639,4 +639,9 @@ class YuraController extends Controller
             'despues' => $despues,
         ]);
     }
+
+    public function select_planta(Request $request)
+    {
+        return getVariedadesByPlanta($request->planta);
+    }
 }
