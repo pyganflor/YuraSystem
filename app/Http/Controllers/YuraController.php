@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 use phpseclib\Crypt\RSA;
+use yura\Modelos\Ciclo;
 use yura\Modelos\ClasificacionBlanco;
 use yura\Modelos\ClasificacionVerde;
 use yura\Modelos\ConfiguracionUser;
@@ -30,12 +31,14 @@ class YuraController extends Controller
             ->get();
         $calibre = 0;
         $tallos = 0;
+        $ramos = 0;
         $cant_verde = 0;
         foreach ($labels as $dia) {
             $verde = ClasificacionVerde::All()->where('fecha_ingreso', '=', $dia->dia)->first();
             if ($verde != '') {
                 $calibre += round($verde->total_tallos() / $verde->getTotalRamosEstandar(), 2);
                 $tallos += $verde->total_tallos();
+                $ramos += $verde->getTotalRamosEstandar();
                 $cant_verde++;
             }
         }
@@ -96,12 +99,41 @@ class YuraController extends Controller
             ]
         ];
 
+        /* ============ AREA =========== */
+        $semana14 = getSemanaByDate(opDiasFecha('-', 7 * getConfiguracionEmpresa()->semanas_ciclo, date('Y-m-d')));
+
+        $ciclos_ini = Ciclo::All()->where('estado', 1)
+            ->where('fecha_inicio', '>=', $semana14->fecha_inicial)
+            ->where('fecha_inicio', '<=', $semana14->fecha_final);
+
+        $area = 0;
+        $ciclo = 0;
+        foreach ($ciclos_ini as $c) {
+            $area += $c->area;
+            $fin = date('Y-m-d');
+            if ($c->fecha_fin != '')
+                $fin = $c->fecha_fin;
+            $ciclo += difFechas($fin, $c->fecha_inicio)->days;
+        }
+        $ciclo = count($ciclos_ini) > 0 ? round($ciclo / count($ciclos_ini), 2) : 0;
+
+        $ciclo_ano = $area > 0 ? round(365 / $ciclo, 2) : 0;
+        $area = [
+            'ciclo_ano' => $ciclo_ano,
+            'area' => $area,
+            'ciclo' => $ciclo,
+            'tallos' => $area > 0 ? round($tallos / $area, 2) : 0,
+            'ramos' => $area > 0 ? round($ramos / $area, 2) : 0,
+            'ramos_anno' => $area > 0 ? round($ciclo_ano * round($ramos / $area, 2), 2) : 0,
+        ];
+
         return view('adminlte.inicio', [
             'calibre' => $calibre,
             'tallos' => $tallos,
             'precio_x_ramo' => $precio_x_ramo,
             'valor' => $valor,
             'rendimiento_desecho' => $rendimiento_desecho,
+            'area' => $area,
         ]);
     }
 

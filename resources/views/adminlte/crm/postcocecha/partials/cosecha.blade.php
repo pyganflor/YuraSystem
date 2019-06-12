@@ -2,34 +2,55 @@
     <div class="box-header with-border">
         <h4 class="box-title">
             <strong>Gráficas</strong>
+        </h4>
 
-            <select name="filtro_predeterminado" id="filtro_predeterminado" onchange="filtrar_predeterminado(1)">
+        <div class="input-group">
+            <div class="input-group-addon bg-gray">
+                <i class="fa fa-calendar-check-o"></i> Rango
+            </div>
+            <select name="filtro_predeterminado" id="filtro_predeterminado" onchange="filtrar_predeterminado(1)" class="form-control">
                 <option value="1">1 Mes</option>
                 <option value="2">3 Meses</option>
                 <option value="3">6 Meses</option>
                 <option value="4">1 Año</option>
             </select>
-
-            <select name="filtro_predeterminado_variedad" id="filtro_predeterminado_variedad" onchange="filtrar_predeterminado(1)">
+            <div class="input-group-addon bg-gray">
+                <i class="fa fa-leaf"></i> Variedad
+            </div>
+            <select name="filtro_predeterminado_variedad" id="filtro_predeterminado_variedad" onchange="filtrar_predeterminado(1)"
+                    class="form-control">
                 @foreach(getVariedades() as $v)
                     <option value="{{$v->id_variedad}}">{{$v->nombre}}</option>
                 @endforeach
                 <option value="A" selected>Acumulado</option>
                 <option value="T">Todas las variedades</option>
             </select>
-        </h4>
 
-        <select class="select2" multiple="multiple" id="filtro_predeterminado_annos" name="filtro_predeterminado_annos"
-                data-placeholder="Años naturales"
-                style="width: 175px">
-            @foreach($annos as $a)
-                <option value="{{$a->anno}}">{{$a->anno}}</option>
-            @endforeach
-        </select>
+            <div class="input-group-btn bg-gray">
+                <button type="button" class="btn btn-default dropdown-toggle bg-gray" data-toggle="dropdown" aria-haspopup="true"
+                        aria-expanded="false">
+                    <i class="fa fa-calendar-minus-o"></i> Años
+                    <span class="caret"></span></button>
+                <ul class="dropdown-menu">
+                    @foreach($annos as $a)
+                        <li>
+                            <a href="javascript:void(0)" onclick="select_anno('{{$a->anno}}')"
+                               class="li_anno" id="li_anno_{{$a->anno}}">
+                                {{$a->anno}}
+                            </a>
+                        </li>
+                    @endforeach
+                </ul>
+            </div>
+            <input type="text" class="form-control" placeholder="Años" id="filtro_predeterminado_annos"
+                   name="filtro_predeterminado_annos" readonly>
 
-        <button type="button" class="btn btn-xs btn-default" onclick="filtrar_predeterminado(0)">
-            <i class="fa fa-fw fa-search"></i>
-        </button>
+            <div class="input-group-btn">
+                <button type="button" id="btn_filtrar" class="btn btn-default" onclick="filtrar_predeterminado(0)" title="Buscar">
+                    <i class="fa fa-fw fa-search"></i>
+                </button>
+            </div>
+        </div>
 
         <div class="box-tools pull-right">
             <button type="button" class="btn btn-box-tool" title="Cosecha por variedades"
@@ -65,5 +86,4 @@
 
 <script>
     filtrar_predeterminado();
-    $('.select2').select2();
 </script>

@@ -61,6 +61,7 @@ use \yura\Modelos\DesgloseEnvioFactura;
 use yura\Modelos\DetalleGuiaRemision;
 use yura\Mail\CorreoErrorEnvioComprobanteElectronico;
 use yura\Modelos\TipoIdentificacion;
+use yura\Modelos\Ciclo;
 
 /*
  * -------- BITÁCORA DE LAS ACCIONES ECHAS POR EL USUARIO ------
@@ -1217,7 +1218,7 @@ function getFacturado($idEnvio, $estado)
     $f = Comprobante::where([
         ['id_envio', $idEnvio],
         ['estado', $estado],
-        ['comprobante.habilitado',true]
+        ['comprobante.habilitado', true]
     ])->count();
     ($f > 0) ? $facturado = true : $facturado = null;
     return $f;
@@ -1346,10 +1347,10 @@ function generaDocumentoPDF($autorizacion, $tipo_documento, $pre_factura = false
         'detalles_envio' => $tipo_documento == "01" ? getEnvio($dataComprobante->id_envio)->detalles : "",
         'pedido' => $tipo_documento == "06" ? getComprobante($dataComprobante->id_comprobante_relacionado)->envio->pedido : ""
     ];
-    if($tipo_documento == "01")
-        PDF::loadView('adminlte.gestion.comprobante.partials.pdf.factura', compact('data'))->save(env('PDF_FACTURAS') . (isset($autorizacion->numeroAutorizacion) ? $autorizacion->numeroAutorizacion : (String)$autorizacion->infoTributaria->claveAcceso). ".pdf");
-        PDF::loadView('adminlte.gestion.comprobante.partials.pdf.factura_cliente', compact('data'))->save(env('PDF_FACTURAS')."cliente_".(isset($autorizacion->numeroAutorizacion) ? $autorizacion->numeroAutorizacion : (String)$autorizacion->infoTributaria->claveAcceso). ".pdf");
-    if($tipo_documento == "06")
+    if ($tipo_documento == "01")
+        PDF::loadView('adminlte.gestion.comprobante.partials.pdf.factura', compact('data'))->save(env('PDF_FACTURAS') . (isset($autorizacion->numeroAutorizacion) ? $autorizacion->numeroAutorizacion : (String)$autorizacion->infoTributaria->claveAcceso) . ".pdf");
+    PDF::loadView('adminlte.gestion.comprobante.partials.pdf.factura_cliente', compact('data'))->save(env('PDF_FACTURAS') . "cliente_" . (isset($autorizacion->numeroAutorizacion) ? $autorizacion->numeroAutorizacion : (String)$autorizacion->infoTributaria->claveAcceso) . ".pdf");
+    if ($tipo_documento == "06")
         PDF::loadView('adminlte.gestion.comprobante.partials.pdf.guia', compact('data'))->save(env('PATH_PDF_GUIAS') . $autorizacion->numeroAutorizacion . ".pdf");
 
 }
@@ -1651,7 +1652,7 @@ function getTipoImpuesto($codigoImpuesto, $codigoPorcentajeIpuesto)
         ['codigo_impuesto', $codigoImpuesto],
         ['tipo_impuesto.codigo', $codigoPorcentajeIpuesto],
         ['tipo_impuesto.estado', 1]
-    ])->join('impuesto as imp','tipo_impuesto.codigo_impuesto','imp.codigo')->first();
+    ])->join('impuesto as imp', 'tipo_impuesto.codigo_impuesto', 'imp.codigo')->first();
 }
 
 function getTipoIdentificacion($codigoIdentificacion)
@@ -1744,20 +1745,24 @@ function getDetallePedido($idDetallePedido)
     return DetallePedido::find($idDetallePedido);
 }
 
-function getDetalleEspecificacionEmpaque($idEspecificacionEmpaque){
+function getDetalleEspecificacionEmpaque($idEspecificacionEmpaque)
+{
     return DetalleEspecificacionEmpaque::find($idEspecificacionEmpaque);
 }
 
-function getDae($dae=null,$codigo=null){
-    if($dae!=null)
-        return CodigoDae::where('dae',$dae)->first();
-    if($codigo!=null)
-        return CodigoDae::where('codigo_dae',$codigo)->first();
+function getDae($dae = null, $codigo = null)
+{
+    if ($dae != null)
+        return CodigoDae::where('dae', $dae)->first();
+    if ($codigo != null)
+        return CodigoDae::where('codigo_dae', $codigo)->first();
 }
 
-function getAerolinea($idAerolinea){
+function getAerolinea($idAerolinea)
+{
     return Aerolinea::find($idAerolinea);
 }
+
 
 function getColoracionByDetPed($id_det_ped){
     return Coloracion::where('id_detalle_pedido',$id_det_ped)->get();
@@ -1767,3 +1772,120 @@ function getDatosExportacionByDetPed($id_detalle_pedido)
 {
     return DetallePedidoDatoExportacion::where('id_detalle_pedido', $id_detalle_pedido)->get();
 }
+
+function getAreaCiclosByRango($semana_ini, $semana_fin, $variedad)
+{
+    $variedades = [];
+    $semanas = [];
+    for ($i = $semana_ini; $i <= $semana_fin; $i++) {
+        $sem = Semana::All()->where('codigo', $i)->first();
+        if ($sem != '')
+            array_push($semanas, $sem);
+    }
+
+    if (count($semanas) > 0) {
+        $desde = $semanas[0];
+        $hasta = $semanas[count($semanas) - 1];
+
+        foreach (getVariedades() as $var) {
+            if ($var->id_variedad == $variedad || $variedad == 'T') {
+                $ciclos = [];
+                $query = DB::table('ciclo')
+                    ->select('id_ciclo as id')->distinct()
+                    ->where('estado', '=', 1)
+                    ->where('id_variedad', '=', $var->id_variedad)
+                    ->Where(function ($q) use ($desde, $hasta) {
+                        $q->where('fecha_fin', '>=', $desde->fecha_inicial)
+                            ->where('fecha_fin', '<=', $hasta->fecha_final)
+                            ->orWhere(function ($q) use ($desde, $hasta) {
+                                $q->where('fecha_inicio', '>=', $desde->fecha_inicial)
+                                    ->where('fecha_inicio', '<=', $hasta->fecha_final);
+                            })
+                            ->orWhere(function ($q) use ($desde, $hasta) {
+                                $q->where('fecha_inicio', '<', $desde->fecha_inicial)
+                                    ->where('fecha_fin', '>', $hasta->fecha_final);
+                            });
+                    })
+                    ->orderBy('fecha_inicio')
+                    ->get();
+
+                foreach ($query as $q) {
+                    $flag = false;
+                    $ciclo = Ciclo::find($q->id);
+                    $areas = [];
+                    foreach ($semanas as $sem) {
+                        if (($ciclo->fecha_fin >= $sem->fecha_inicial && $ciclo->fecha_fin <= $sem->fecha_final) ||
+                            ($ciclo->fecha_inicio >= $sem->fecha_inicial && $ciclo->fecha_inicio <= $sem->fecha_final) ||
+                            ($ciclo->fecha_inicio < $sem->fecha_inicial && $ciclo->fecha_fin > $sem->fecha_final)) {
+                            $exist_other = DB::table('ciclo')
+                                ->select('*')
+                                ->where('estado', '=', 1)
+                                ->where('id_modulo', '=', $ciclo->id_modulo)
+                                ->where('id_variedad', '=', $var->id_variedad)
+                                ->where('id_ciclo', '!=', $ciclo->id_ciclo)
+                                ->Where(function ($q) use ($sem) {
+                                    $q->where('fecha_inicio', '>=', $sem->fecha_inicial)
+                                        ->where('fecha_inicio', '<=', $sem->fecha_final);
+                                })
+                                ->get();
+                            if (count($exist_other) > 0) {
+                                $area = 0;
+                            } else {
+                                $area = $ciclo->area;
+                                $flag = true;
+                            }
+                        } else
+                            $area = 0;
+                        array_push($areas, round($area, 2));
+                    }
+                    if ($flag)
+                        array_push($ciclos, [
+                            'ciclo' => $ciclo,
+                            'areas' => $areas
+                        ]);
+                }
+                array_push($variedades, [
+                    'variedad' => $var,
+                    'ciclos' => $ciclos
+                ]);
+            }
+        }
+    }
+    return [
+        'variedades' => $variedades,
+        'semanas' => $semanas,
+    ];
+}
+
+function getCiclosCerradosByRango($semana_ini, $semana_fin, $variedad)
+{
+    $semana_ini = Semana::All()->where('codigo', $semana_ini)->first();
+    $semana_fin = Semana::All()->where('codigo', $semana_fin)->first();
+
+    $ciclos_fin = Ciclo::All()
+        ->where('estado', 1)
+        ->where('activo', 0)
+        ->where('fecha_fin', '>=', $semana_ini->fecha_inicial)
+        ->where('fecha_fin', '<=', $semana_fin->fecha_final);
+
+    if ($variedad != 'T')   // T => Todas
+        $ciclos_fin = $ciclos_fin->where('id_variedad', $variedad);
+
+    $ciclo = 0;
+    $area_cerrada = 0;
+
+    foreach ($ciclos_fin as $c) {
+        $area_cerrada += $c->area;
+        $fin = date('Y-m-d');
+        if ($c->fecha_fin != '')
+            $fin = $c->fecha_fin;
+        $ciclo += difFechas($fin, $c->fecha_inicio)->days;
+    }
+
+    return [
+        'ciclos' => $ciclos_fin,
+        'ciclo' => count($ciclos_fin) > 0 ? round($ciclo / count($ciclos_fin), 2) : 0,
+        'area_cerrada' => $area_cerrada,
+    ];
+}
+

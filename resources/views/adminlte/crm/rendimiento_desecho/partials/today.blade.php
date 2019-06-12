@@ -48,7 +48,7 @@
             <span class="badge btn-link">{{$today['blanco']['rendimiento']}}</span>
         </th>
         <th class="text-center" style="border-color: #9d9d9d">
-            <span class="badge {{$today['blanco']['desecho'] >= 0 ? 'bg-green' : 'bg-red'}}">{{$today['blanco']['desecho']}}</span>
+            <span class="badge {{$today['blanco']['desecho'] >= 0 ? 'bg-green' : 'bg-red'}}">{{round($today['blanco']['desecho'], 2)}}</span>
         </th>
     </tr>
 </table>

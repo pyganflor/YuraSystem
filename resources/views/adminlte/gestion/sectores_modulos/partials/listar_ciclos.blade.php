@@ -45,6 +45,9 @@
         </tr>
         </thead>
         <tbody>
+        @php
+            $total_area = 0;
+        @endphp
         @foreach($modulos as $pos_mdl => $modulo)
             <tr>
                 <td class="text-center" style="border-color: #9d9d9d">
@@ -104,7 +107,10 @@
                            style="width: 100%" value="{{$tipo == 1 ? $modulo->cicloActual()->fecha_fin : ''}}" class="text-center" required>
                 </td>
                 <td class="text-center" style="border-color: #9d9d9d">
-                    <span class="hidden">{{$tipo == 1 ? $modulo->cicloActual()->area : $modulo->area}}</span>
+                    @php
+                        $total_area += $tipo == 1 ? $modulo->cicloActual()->area : $modulo->area;
+                    @endphp
+                    <span class="hidden">{{number_format($tipo == 1 ? $modulo->cicloActual()->area : $modulo->area, 2)}}</span>
                     <input type="number" id="ciclo_area_{{$modulo->id_modulo}}" name="ciclo_area_{{$modulo->id_modulo}}" class="text-center"
                            value="{{$tipo == 1 ? $modulo->cicloActual()->area : $modulo->area}}" style="width: 100%" required>
                 </td>
@@ -136,6 +142,17 @@
             </tr>
         @endforeach
         </tbody>
+        <tr>
+            <th class="text-center" style="border-color: #9d9d9d" colspan="{{$tipo == 1 ? 9 : 6}}">
+                Total
+            </th>
+            <th class="text-center" style="border-color: #9d9d9d">
+                {{number_format($total_area, 2)}}
+            </th>
+            <th class="text-center" style="border-color: #9d9d9d">
+
+            </th>
+        </tr>
     </table>
 @else
     <div class="alert alert-info text-center">

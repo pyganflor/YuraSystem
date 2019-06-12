@@ -32,27 +32,6 @@
         });
     }
 
-    function show_data_desechos(desde, hasta) {
-        datos = {
-            desde: desde,
-            hasta: hasta
-        };
-        get_jquery('{{url('crm_postcosecha/show_data_desechos')}}', datos, function (retorno) {
-            modal_view('modal_view-show_data_desechos', retorno, '<i class="fa fa-fw fa-gift"></i> Reporte de % Desechos', true, false, '{{isPC() ? '60%' : ''}}');
-        });
-    }
-
-    function show_data_rendimientos(desde, hasta) {
-        datos = {
-            desde: desde,
-            hasta: hasta
-        };
-        get_jquery('{{url('crm_postcosecha/show_data_rendimientos')}}', datos, function (retorno) {
-            modal_view('modal_view-show_data_rendimientos', retorno, '<i class="fa fa-fw fa-gift"></i> Reporte de Rendimientos', true, false,
-                '{{isPC() ? '60%' : ''}}');
-        });
-    }
-
     function show_data_calibres(desde, hasta) {
         datos = {
             desde: desde,
@@ -112,9 +91,11 @@
             $('#check_filtro_hasta').val(rest_dias(1));
 
             list_annos = [];
-            li_annos = $('.select2-selection__choice');
-            for (i = 0; i < li_annos.length; i++) {
-                list_annos.push(li_annos[i].title);
+            if ($('#filtro_predeterminado_annos').val() != '') {
+                li_annos = $('#filtro_predeterminado_annos').val().split(' - ');
+                for (i = 0; i < li_annos.length; i++) {
+                    list_annos.push(li_annos[i]);
+                }
             }
 
             datos = {
@@ -133,6 +114,37 @@
             get_jquery('{{url('crm_postcosecha/buscar_reporte_cosecha_chart')}}', datos, function (retorno) {
                 $('#div_chart_cosecha').html(retorno);
             });
+        }
+    }
+
+    function select_anno(a) {
+        text = $('#filtro_predeterminado_annos').val();
+        if (text == '') {
+            $('#filtro_predeterminado_annos').val(a);
+            $('#li_anno_' + a).addClass('bg-aqua-active');
+        }
+        else {
+            arreglo = $('#filtro_predeterminado_annos').val().split(' - ');
+            if (arreglo.includes(a)) {  // año seleccionado: quitar año de la lista
+                pos = arreglo.indexOf(a);
+                arreglo.splice(pos, 1);
+
+                $('#filtro_predeterminado_annos').val('');
+
+                for (i = 0; i < arreglo.length; i++) {
+                    text = $('#filtro_predeterminado_annos').val();
+                    if (i == 0)
+                        $('#filtro_predeterminado_annos').val(arreglo[i]);
+                    else
+                        $('#filtro_predeterminado_annos').val(text + ' - ' + arreglo[i]);
+                }
+
+                $('#li_anno_' + a).removeClass('bg-aqua-active');
+            }
+            else {  // año no seleccionado: agregar año a la lista
+                $('#filtro_predeterminado_annos').val(text + ' - ' + a);
+                $('#li_anno_' + a).addClass('bg-aqua-active');
+            }
         }
     }
 

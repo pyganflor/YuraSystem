@@ -167,7 +167,7 @@ class CiclosController extends Controller
                         return [
                             'success' => false,
                             'mensaje' => '<div class="alert alert-warning text-center">' .
-                                '<p>La fecha fin ya se encuentra incluida en un ciclo anterior</p>'
+                                '<p>La fecha fin ya se encuentra incluida en un ciclo anterior: ' . $c->fecha_inicio . ' / ' . $c->fecha_fin . '</p>'
                                 . '</div>',
                         ];
                 }
@@ -229,14 +229,17 @@ class CiclosController extends Controller
     {
         $valida = Validator::make($request->all(), [
             'modulo' => 'required',
+            'fecha_fin' => 'required',
         ], [
             'modulo.required' => 'El módulo es obligatorio',
+            'fecha_fin.required' => 'La fecha final es obligatoria',
         ]);
         if (!$valida->fails()) {
             $modulo = Modulo::find($request->modulo);
             $ciclo = $modulo->cicloActual();
             if ($ciclo->fecha_cosecha != '' && $ciclo->fecha_fin != '') {
                 $ciclo->activo = 0;
+                $ciclo->fecha_fin = $request->fecha_fin;
 
                 if ($ciclo->save()) {
                     $success = true;

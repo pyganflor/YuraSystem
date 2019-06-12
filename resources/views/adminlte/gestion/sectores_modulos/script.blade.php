@@ -308,6 +308,7 @@
             _token: '{{csrf_token()}}',
             modulo: mod,
             abrir: false,
+            fecha_fin: $('#ciclo_fecha_fin_' + mod).val(),
         };
         if ($('#ciclo_fecha_cosecha_' + mod).val() != '' && $('#ciclo_fecha_fin_' + mod) != '') {
             modal_quest('modal-quest_terminar_ciclo', '<div class="alert alert-info text-center">¿Está seguro de <strong>TERMINAR</strong> este ciclo?</div>',

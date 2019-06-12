@@ -51,6 +51,7 @@ class crmVentasController extends Controller
         /* ======= AÑOS ======= */
         $annos = DB::table('historico_ventas')
             ->select('anno')->distinct()
+            ->orderBy('anno')->distinct()
             ->get();
 
         return view('adminlte.crm.ventas.inicio', [
@@ -66,7 +67,7 @@ class crmVentasController extends Controller
         $hasta = $request->hasta;
 
         $arreglo_annos = [];
-        if ($request->has('annos')) {
+        if ($request->has('annos') && count($request->annos) > 0) {
             $view = '_annos';
 
             $fechas = [];

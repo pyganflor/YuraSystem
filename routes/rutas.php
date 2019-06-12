@@ -69,6 +69,7 @@ Route::group(['middleware' => 'autenticacion'], function () {
         include 'crm/rendimiento_desecho.php';
         include 'crm/tbl_postcosecha.php';
         include 'crm/fue.php';
+        include 'crm/regalias_semanas.php';
         include 'crm/tbl_ventas.php';
         include 'crm/tbl_rendimiento.php';
 
