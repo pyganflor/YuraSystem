@@ -90,4 +90,13 @@
         }
     }
 
+    function desglose_indicador(option) {
+        datos = {
+            option: option
+        };
+        get_jquery('{{url('crm_area/desglose_indicador')}}', datos, function (retorno) {
+            modal_view('modal-view_desglose_indicador', retorno, '<i class="fa fa-fw fa-bar-chart"></i> Desglose de indicador', true, false,
+                '{{isPC() ? '90%' : ''}}');
+        });
+    }
 </script>

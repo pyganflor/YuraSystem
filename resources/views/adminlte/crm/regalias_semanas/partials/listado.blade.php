@@ -59,8 +59,7 @@
                                         {{getSemanaByDate($ciclo['ciclo']->fecha_inicio)->codigo}}
                                     </td>
                                     @foreach($ciclo['areas'] as $pos_area => $area)
-                                        <td class="text-left"
-                                            style="border-color: #9d9d9d; background-color: #e9ecef"
+                                        <td class="text-left" style="border-color: #9d9d9d; background-color: #e9ecef"
                                             title="Final: '{{$ciclo['ciclo']->fecha_fin}}'">
                                             {{number_format($area, 2)}}
                                         </td>
@@ -93,9 +92,6 @@
                     </div>
                 </div>
             </div>
-            <script>
-                estructura_tabla('table_variedad_{{$variedad['variedad']->id_variedad}}', false, true);
-            </script>
         @endforeach
         {{-- TABLA TOTAL --}}
         @php
@@ -212,9 +208,6 @@
             </div>
         </div>
     </div>
-    <script>
-        estructura_tabla('table_total', false, true);
-    </script>
 @else
     <div class="alert alert-info text-center">
         No se han encontrado resultados que mostrar

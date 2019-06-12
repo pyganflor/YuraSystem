@@ -16,7 +16,7 @@
             <tr onmouseover="$(this).css('background-color','#add8e6')" onmouseleave="$(this).css('background-color','')"
                 class="row_submenu {{$s->estado == 'A' ? '' : 'error'}}" id="row_submenu_{{$s->id_submenu}}">
                 <td style="border-color: #9d9d9d" class="text-center">
-                    {{$s->nombre}}
+                    {!! $s->nombre !!}
                 </td>
                 <td style="border-color: #9d9d9d" class="text-center">
                     @if($s->tipo == 'C')

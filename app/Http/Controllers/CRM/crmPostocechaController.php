@@ -8,6 +8,7 @@ use yura\Http\Controllers\Controller;
 use yura\Modelos\ClasificacionVerde;
 use yura\Modelos\Cosecha;
 use yura\Modelos\Semana;
+use yura\Modelos\Submenu;
 
 class crmPostocechaController extends Controller
 {
@@ -55,6 +56,9 @@ class crmPostocechaController extends Controller
             'verde' => $verde,
             'indicadores' => $indicadores,
             'cant_verde' => $cant_verde,
+
+            'url' => $request->getRequestUri(),
+            'submenu' => Submenu::Where('url', '=', substr($request->getRequestUri(), 1))->get()[0],
         ]);
     }
 

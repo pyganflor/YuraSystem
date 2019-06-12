@@ -9,6 +9,7 @@ use yura\Modelos\ClasificacionBlanco;
 use yura\Modelos\ClasificacionVerde;
 use yura\Modelos\Cosecha;
 use yura\Modelos\Semana;
+use yura\Modelos\Submenu;
 
 class tblRendimientoController extends Controller
 {
@@ -39,7 +40,10 @@ class tblRendimientoController extends Controller
         }
 
         return view('adminlte.crm.tbl_rendimiento.inicio', [
-            'annos' => $annos
+            'annos' => $annos,
+
+            'url' => $request->getRequestUri(),
+            'submenu' => Submenu::Where('url', '=', substr($request->getRequestUri(), 1))->get()[0],
         ]);
     }
 

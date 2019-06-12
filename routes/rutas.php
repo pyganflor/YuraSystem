@@ -65,6 +65,7 @@ Route::group(['middleware' => 'autenticacion'], function () {
         /* ========================== CRM ========================*/
         include 'crm/postcosecha.php';
         include 'crm/ventas.php';
+        include 'crm/ventas_m2.php';
         include 'crm/crm_area.php';
         include 'crm/rendimiento_desecho.php';
         include 'crm/tbl_postcosecha.php';

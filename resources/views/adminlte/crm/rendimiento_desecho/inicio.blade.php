@@ -18,10 +18,16 @@
         </h1>
         <ol class="breadcrumb">
             <li><a href="javascript:void(0)" onclick="cargar_url('')"><i class="fa fa-home"></i> Inicio</a></li>
-            <li><a href="javascript:void(0)"><i class="fa fa-line-chart"></i> Dashboard</a></li>
+            <li>
+                {{$submenu->menu->grupo_menu->nombre}}
+            </li>
+            <li>
+                {{$submenu->menu->nombre}}
+            </li>
+
             <li class="active">
-                <a href="javascript:void(0)" onclick="location.reload()">
-                    <i class="fa fa-fw fa-refresh"></i> Rendimiento y Desecho
+                <a href="javascript:void(0)" onclick="cargar_url('{{$submenu->url}}')">
+                    <i class="fa fa-fw fa-refresh"></i> {{$submenu->nombre}}
                 </a>
             </li>
         </ol>
