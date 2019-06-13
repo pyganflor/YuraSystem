@@ -282,6 +282,22 @@ class crmAreaController extends Controller
         $semana_ini = getSemanaByDate(opDiasFecha('-', 28, date('Y-m-d')));
         $semana_fin = getSemanaByDate(opDiasFecha('-', 7, date('Y-m-d')));
 
+        $query = DB::table('semana as s')
+            ->select('s.codigo')->distinct()
+            ->Where(function ($q) use ($semana_ini, $semana_fin) {
+                $q->where('s.fecha_inicial', '>=', $semana_ini->fecha_inicial)
+                    ->where('s.fecha_inicial', '<=', $semana_fin->fecha_final);
+            })
+            ->orWhere(function ($q) use ($semana_ini, $semana_fin) {
+                $q->where('s.fecha_final', '>=', $semana_ini->fecha_inicial)
+                    ->Where('s.fecha_final', '<=', $semana_fin->fecha_final);
+            })
+            ->orderBy('codigo')
+            ->get();
+        $semanas = [];
+        foreach ($query as $s)
+            array_push($semanas, Semana::All()->where('codigo', $s->codigo)->first());
+
         if ($request->option == 'area') {
             $data = getAreaCiclosByRango($semana_ini->codigo, $semana_fin->codigo, 'T');
             return view('adminlte.crm.regalias_semanas.partials.listado', [
@@ -291,7 +307,38 @@ class crmAreaController extends Controller
         } else if ($request->option == 'ciclo') {
             $data = getCiclosCerradosByRangoVariedades($semana_ini->codigo, $semana_fin->codigo);
             return view('adminlte.crm.crm_area.partials._ciclo_desglose', [
-                'data' => $data
+                'data' => $data,
+                'colores_semana' => ['#ADD8E6', '#FFEF92', '#FFC1A6', '#E9ECEF'],
+                'semanas' => $semanas,
+            ]);
+        } else if ($request->option == 'tallos') {
+            $data = [];
+            foreach (getVariedades() as $variedad) {
+                $array_tallos = [];
+                $array_ciclos = [];
+                foreach ($semanas as $semana) {
+                    /* =========== ciclo ========== */
+                    $data_ciclos = getCiclosCerradosByRango($semana->codigo, $semana->codigo, $variedad->id_variedad);
+                    $ciclos = $data_ciclos['ciclos'];
+                    $ciclo = $data_ciclos['ciclo'];
+                    $area_cerrada = $data_ciclos['area_cerrada'];
+
+                    $tallos = 0;
+
+                    array_push($array_tallos, $area_cerrada > 0 ? round($tallos / $area_cerrada, 2) : 0);
+                    array_push($array_ciclos, $ciclos);
+                }
+                array_push($data, [
+                    'variedad' => $variedad,
+                    'tallos' => $array_tallos,
+                    'ciclos' => $array_ciclos,
+                ]);
+            }
+
+            return view('adminlte.crm.crm_area.partials._tallos_desglose', [
+                'data' => $data,
+                'colores_semana' => ['#ADD8E6', '#FFEF92', '#FFC1A6', '#E9ECEF'],
+                'semanas' => $semanas,
             ]);
         }
     }
