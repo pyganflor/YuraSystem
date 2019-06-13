@@ -9,6 +9,7 @@ use yura\Modelos\Ciclo;
 use yura\Modelos\ClasificacionVerde;
 use yura\Modelos\Cosecha;
 use yura\Modelos\Semana;
+use yura\Modelos\Submenu;
 
 class crmAreaController extends Controller
 {
@@ -32,10 +33,9 @@ class crmAreaController extends Controller
             ->get();
 
         $area = 0;
+        $data_4semanas = getAreaCiclosByRango($fechas[0]->semana, $fechas[3]->semana, 'T');
 
-        $data_semana_acutal = getAreaCiclosByRango($fechas[0]->semana, $fechas[3]->semana, 'T');
-
-        foreach ($data_semana_acutal['variedades'] as $var) {
+        foreach ($data_4semanas['variedades'] as $var) {
             foreach ($var['ciclos'] as $c) {
                 foreach ($c['areas'] as $a) {
                     $area += $a;
@@ -43,30 +43,14 @@ class crmAreaController extends Controller
             }
         }
 
-
         $data_ciclos = getCiclosCerradosByRango($fechas[0]->semana, $fechas[3]->semana, 'T');
         $ciclo = $data_ciclos['ciclo'];
         $area_cerrada = $data_ciclos['area_cerrada'];
-        $tallos = 0;
-        $ramos = 0;
-        foreach ($fechas as $codigo) {
-            $semana = Semana::All()->where('codigo', '=', $codigo->semana)->first();
 
-            $labels = DB::table('clasificacion_verde as v')
-                ->select('v.fecha_ingreso as dia')->distinct()
-                ->where('v.fecha_ingreso', '>=', $semana->fecha_inicial)
-                ->where('v.fecha_ingreso', '<=', $semana->fecha_final)
-                ->get();
+        $data_cosecha = getCosechaByRango($fechas[0]->semana, $fechas[3]->semana, 'T');
+        $tallos = $data_cosecha['tallos_cosechados'];
+        $ramos = $data_cosecha['ramos_estandar'];
 
-            foreach ($labels as $dia) {
-                $verde = ClasificacionVerde::All()->where('fecha_ingreso', '=', $dia->dia)->first();
-                $cosecha = Cosecha::All()->where('fecha_ingreso', '=', $dia->dia)->first();
-                if ($verde != '') {
-                    $ramos += $verde->getTotalRamosEstandar();
-                    $tallos += $cosecha->getTotalTallos();
-                }
-            }
-        }
         $ciclo_ano = $area_cerrada > 0 ? round(365 / $ciclo, 2) : 0;
 
         $mensual = [
@@ -83,7 +67,6 @@ class crmAreaController extends Controller
 
         /* ========== area ========== */
         $area = 0;
-
         $data_semana_acutal = getAreaCiclosByRango($semana_actual->codigo, $semana_actual->codigo, 'T');
 
         foreach ($data_semana_acutal['variedades'] as $var) {
@@ -95,40 +78,16 @@ class crmAreaController extends Controller
         }
 
         /* ========== ciclo ========== */
-        $ciclos_fin = Ciclo::All()
-            ->where('estado', 1)
-            ->where('activo', 0)
-            ->where('fecha_fin', '>=', $semana_actual->fecha_inicial)
-            ->where('fecha_fin', '<=', $semana_actual->fecha_final);
+        $data_ciclos = getCiclosCerradosByRango($semana_actual->codigo, $semana_actual->codigo, 'T');
+        $ciclo = $data_ciclos['ciclo'];
+        $area_cerrada = $data_ciclos['area_cerrada'];
 
-        $ciclo = 0;
-        $area_cerrada = 0;
-        foreach ($ciclos_fin as $c) {
-            $area_cerrada += $c->area;
-            $fin = date('Y-m-d');
-            if ($c->fecha_fin != '')
-                $fin = $c->fecha_fin;
-            $ciclo += difFechas($fin, $c->fecha_inicio)->days;
-        }
-        $ciclo = count($ciclos_fin) > 0 ? round($ciclo / count($ciclos_fin), 2) : 0;
-
-        $labels = DB::table('clasificacion_verde as v')
-            ->select('v.fecha_ingreso as dia')->distinct()
-            ->where('v.fecha_ingreso', '>=', opDiasFecha('-', 14, date('Y-m-d')))
-            ->where('v.fecha_ingreso', '<=', opDiasFecha('-', 7, date('Y-m-d')))
-            ->get();
-        $tallos = 0;
-        $ramos = 0;
-        foreach ($labels as $dia) {
-            $verde = ClasificacionVerde::All()->where('fecha_ingreso', '=', $dia->dia)->first();
-            $cosecha = Cosecha::All()->where('fecha_ingreso', '=', $dia->dia)->first();
-            if ($verde != '') {
-                $ramos += $verde->getTotalRamosEstandar();
-                $tallos += $cosecha->getTotalTallos();
-            }
-        }
+        $data_cosecha = getCosechaByRango($semana_actual->codigo, $semana_actual->codigo, 'T');
+        $tallos = $data_cosecha['tallos_cosechados'];
+        $ramos = $data_cosecha['ramos_estandar'];
 
         $ciclo_ano = $ciclo > 0 ? round(365 / $ciclo, 2) : 0;
+
         $semanal = [
             'ciclo_ano' => $ciclo_ano,
             'area' => $area,
@@ -149,6 +108,9 @@ class crmAreaController extends Controller
             'semanal' => $semanal,
             'annos' => $annos,
             'semana_actual' => $semana_actual,
+
+            'url' => $request->getRequestUri(),
+            'submenu' => Submenu::Where('url', '=', substr($request->getRequestUri(), 1))->get()[0],
         ]);
     }
 
@@ -156,6 +118,19 @@ class crmAreaController extends Controller
     {
         $desde = $request->desde;
         $hasta = $request->hasta;
+
+        $fechas = DB::table('semana as s')
+            ->select('s.codigo as semana')->distinct()
+            ->Where(function ($q) use ($desde, $hasta) {
+                $q->where('s.fecha_inicial', '>=', $desde)
+                    ->where('s.fecha_inicial', '<=', $hasta);
+            })
+            ->orWhere(function ($q) use ($desde, $hasta) {
+                $q->where('s.fecha_final', '>=', $desde)
+                    ->Where('s.fecha_final', '<=', $hasta);
+            })
+            ->orderBy('codigo')
+            ->get();
 
         $arreglo_annos = [];
         if ($request->has('annos') && count($request->annos) > 0) {
@@ -219,194 +194,69 @@ class crmAreaController extends Controller
             $array_tallos = [];
             $array_ramos = [];
             $array_ramos_anno = [];
-            if ($request->total == 'true' && $request->id_modulo == '' && $request->id_variedad == '') {
-                $fechas = DB::table('semana as s')
-                    ->select('s.codigo as semana')->distinct()
-                    ->Where(function ($q) use ($desde, $hasta) {
-                        $q->where('s.fecha_inicial', '>=', $desde)
-                            ->where('s.fecha_inicial', '<=', $hasta);
-                    })
-                    ->orWhere(function ($q) use ($desde, $hasta) {
-                        $q->where('s.fecha_final', '>=', $desde)
-                            ->Where('s.fecha_final', '<=', $hasta);
-                    })
-                    ->orderBy('codigo')
-                    ->get();
-
-                foreach ($fechas as $codigo) {
-                    $semana = Semana::All()->where('codigo', '=', $codigo->semana)->first();
-
-                    /* ========== area ========== */
+            if ($request->id_variedad == 'T') {
+                foreach ($fechas as $semana) {
+                    $semana = Semana::All()->where('codigo', $semana->semana)->first();
+                    /* =========== area ========== */
                     $area = 0;
+                    $data_area = getAreaCiclosByRango($semana->codigo, $semana->codigo, 'T');
 
-                    $ciclos_area = DB::table('ciclo')
-                        ->select('id_ciclo as id')->distinct()
-                        ->where('estado', '=', 1)
-                        ->Where(function ($q) use ($semana) {
-                            $q->where('fecha_fin', '>=', $semana->fecha_inicial)
-                                ->where('fecha_fin', '<=', $semana->fecha_final);
-                        })
-                        ->orWhere(function ($q) use ($semana) {
-                            $q->where('fecha_inicio', '>=', $semana->fecha_inicial)
-                                ->where('fecha_inicio', '<=', $semana->fecha_final);
-                        })
-                        ->orWhere(function ($q) use ($semana) {
-                            $q->where('fecha_inicio', '<', $semana->fecha_inicial)
-                                ->where('fecha_fin', '>', $semana->fecha_final);
-                        })
-                        ->get();
-
-                    foreach ($ciclos_area as $item) {
-                        $item = Ciclo::find($item->id);
-                        $area += $item->area;
-                    }
-
-                    /* ========== ciclo ========== */
-                    $ciclos_fin = Ciclo::All()
-                        ->where('estado', 1)
-                        ->where('activo', 0)
-                        ->where('fecha_fin', '>=', $semana->fecha_inicial)
-                        ->where('fecha_fin', '<=', $semana->fecha_final);
-
-                    $ciclo = 0;
-                    $area_cerrada = 0;
-                    foreach ($ciclos_fin as $c) {
-                        $area_cerrada += $c->area;
-                        $fin = date('Y-m-d');
-                        if ($c->fecha_fin != '')
-                            $fin = $c->fecha_fin;
-                        $ciclo += difFechas($fin, $c->fecha_inicio)->days;
-                    }
-                    $ciclo = count($ciclos_fin) > 0 ? round($ciclo / count($ciclos_fin), 2) : 0;
-
-                    $labels = DB::table('clasificacion_verde as v')
-                        ->select('v.fecha_ingreso as dia')->distinct()
-                        ->where('v.fecha_ingreso', '>=', opDiasFecha('-', 14, date('Y-m-d')))
-                        ->where('v.fecha_ingreso', '<=', opDiasFecha('-', 7, date('Y-m-d')))
-                        ->get();
-                    $tallos = 0;
-                    $ramos = 0;
-                    foreach ($labels as $dia) {
-                        $verde = ClasificacionVerde::All()->where('fecha_ingreso', '=', $dia->dia)->first();
-                        $cosecha = Cosecha::All()->where('fecha_ingreso', '=', $dia->dia)->first();
-                        if ($verde != '') {
-                            $ramos += $verde->getTotalRamosEstandar();
-                            $tallos += $cosecha->getTotalTallos();
+                    foreach ($data_area['variedades'] as $var) {
+                        foreach ($var['ciclos'] as $c) {
+                            foreach ($c['areas'] as $a) {
+                                $area += $a;
+                            }
                         }
                     }
 
-                    $ciclo_ano = $ciclo > 0 ? round(365 / $ciclo, 2) : 0;
+                    /* =========== ciclo ========== */
+                    $data_ciclos = getCiclosCerradosByRango($semana->codigo, $semana->codigo, 'T');
+                    $ciclo = $data_ciclos['ciclo'];
+                    $area_cerrada = $data_ciclos['area_cerrada'];
 
-                    array_push($array_area, $area);
+                    $data_cosecha = getCosechaByRango($semana->codigo, $semana->codigo, 'T');
+                    $tallos = $data_cosecha['tallos_cosechados'];
+                    $ramos = $data_cosecha['ramos_estandar'];
+
+                    $ciclo_ano = $area_cerrada > 0 ? round(365 / $ciclo, 2) : 0;
+
+                    array_push($array_area, round($area / 10000, 2));
                     array_push($array_ciclo, $ciclo);
                     array_push($array_tallos, $area_cerrada > 0 ? round($tallos / $area_cerrada, 2) : 0);
                     array_push($array_ramos, $area_cerrada > 0 ? round($ramos / $area_cerrada, 2) : 0);
                     array_push($array_ramos_anno, $area_cerrada > 0 ? round($ciclo_ano * round($ramos / $area_cerrada, 2), 2) : 0);
                 }
             } else {
-                $semanas_ciclo = DB::table('semana as s')
-                    ->select('s.codigo as semana')->distinct()
-                    ->Where(function ($q) use ($desde, $hasta) {
-                        $q->where('s.fecha_inicial', '>=', $desde)
-                            ->where('s.fecha_inicial', '<=', $hasta);
-                    })
-                    ->orWhere(function ($q) use ($desde, $hasta) {
-                        $q->where('s.fecha_final', '>=', $desde)
-                            ->Where('s.fecha_final', '<=', $hasta);
-                    })
-                    ->orderBy('codigo')
-                    ->get();
-
-                $fechas = [];
-
-                foreach ($semanas_ciclo as $codigo) {
-                    $semana = Semana::All()->where('codigo', '=', $codigo->semana)->first();
-
-                    /* ========== area ========== */
+                foreach ($fechas as $semana) {
+                    $semana = Semana::All()->where('codigo', $semana->semana)->first();
+                    /* =========== area ========== */
                     $area = 0;
+                    $data_area = getAreaCiclosByRango($semana->codigo, $semana->codigo, $request->id_variedad);
 
-                    $ciclos_area = DB::table('ciclo')
-                        ->select('id_ciclo as id')->distinct()
-                        ->where('estado', '=', 1)
-                        ->Where(function ($q) use ($semana) {
-                            $q->where('fecha_fin', '>=', $semana->fecha_inicial)
-                                ->where('fecha_fin', '<=', $semana->fecha_final);
-                        })
-                        ->orWhere(function ($q) use ($semana) {
-                            $q->where('fecha_inicio', '>=', $semana->fecha_inicial)
-                                ->where('fecha_inicio', '<=', $semana->fecha_final);
-                        })
-                        ->orWhere(function ($q) use ($semana) {
-                            $q->where('fecha_inicio', '<', $semana->fecha_inicial)
-                                ->where('fecha_fin', '>', $semana->fecha_final);
-                        })
-                        ->get();
-
-                    foreach ($ciclos_area as $item) {
-                        $item = Ciclo::find($item->id);
-                        $area += $item->area;
-                    }
-
-                    /* ========== ciclo ========== */
-                    $ciclos_fin = Ciclo::All()
-                        ->where('estado', 1)
-                        ->where('activo', 0)
-                        ->where('fecha_fin', '>=', $semana->fecha_inicial)
-                        ->where('fecha_fin', '<=', $semana->fecha_final);
-                    if ($request->id_modulo != '')
-                        $ciclos_fin = $ciclos_fin->where('id_modulo', $request->id_modulo);
-                    if ($request->id_variedad != '')
-                        $ciclos_fin = $ciclos_fin->where('id_variedad', $request->id_variedad);
-
-                    if (count($ciclos_fin) > 0) {
-                        array_push($fechas, $codigo);
-
-                        $ciclo = 0;
-                        $area_cerrada = 0;
-                        foreach ($ciclos_fin as $pos => $c) {
-                            $area_cerrada += $c->area;
-                            $fin = date('Y-m-d');
-                            if ($c->fecha_fin != '')
-                                $fin = $c->fecha_fin;
-                            $ciclo += difFechas($fin, $c->fecha_inicio)->days;
-                        }
-                        $ciclo = count($ciclos_fin) > 0 ? round($ciclo / count($ciclos_fin), 2) : 0;
-
-                        $labels = DB::table('clasificacion_verde as v')
-                            ->select('v.fecha_ingreso as dia')->distinct()
-                            ->where('v.fecha_ingreso', '>=', opDiasFecha('-', 14, date('Y-m-d')))
-                            ->where('v.fecha_ingreso', '<=', opDiasFecha('-', 7, date('Y-m-d')))
-                            ->get();
-                        $tallos = 0;
-                        $ramos = 0;
-                        foreach ($labels as $dia) {
-                            $verde = ClasificacionVerde::All()->where('fecha_ingreso', '=', $dia->dia)->first();
-                            $cosecha = Cosecha::All()->where('fecha_ingreso', '=', $dia->dia)->first();
-                            if ($verde != '') {
-                                if ($request->id_variedad != '') {
-                                    $ramos += $verde->getTotalRamosEstandarByVariedad($request->id_variedad);
-                                    if ($request->id_modulo != '')
-                                        $tallos += $cosecha->getTotalTallosByModuloVariedad($request->id_modulo, $request->id_variedad);
-                                    else
-                                        $tallos += $cosecha->getTotalTallosByVariedad($request->id_variedad);
-                                } else if ($request->id_modulo != '') {
-                                    $ramos += $verde->getTotalRamosEstandar();
-                                    $tallos += $cosecha->getTotalTallosByModulo($request->id_modulo);
-                                } else {
-                                    $ramos += $verde->getTotalRamosEstandar();
-                                    $tallos += $cosecha->getTotalTallos();
-                                }
+                    foreach ($data_area['variedades'] as $var) {
+                        foreach ($var['ciclos'] as $c) {
+                            foreach ($c['areas'] as $a) {
+                                $area += $a;
                             }
                         }
-
-                        $ciclo_ano = $ciclo > 0 ? round(365 / $ciclo, 2) : 0;
-
-                        array_push($array_area, $area);
-                        array_push($array_ciclo, $ciclo);
-                        array_push($array_tallos, $area_cerrada > 0 ? round($tallos / $area_cerrada, 2) : 0);
-                        array_push($array_ramos, $area_cerrada > 0 ? round($ramos / $area_cerrada, 2) : 0);
-                        array_push($array_ramos_anno, $area_cerrada > 0 ? round($ciclo_ano * round($ramos / $area_cerrada, 2), 2) : 0);
                     }
+
+                    /* =========== ciclo ========== */
+                    $data_ciclos = getCiclosCerradosByRango($semana->codigo, $semana->codigo, $request->id_variedad);
+                    $ciclo = $data_ciclos['ciclo'];
+                    $area_cerrada = $data_ciclos['area_cerrada'];
+
+                    $data_cosecha = getCosechaByRango($semana->codigo, $semana->codigo, $request->id_variedad);
+                    $tallos = $data_cosecha['tallos_cosechados'];
+                    $ramos = $data_cosecha['ramos_estandar'];
+
+                    $ciclo_ano = $area_cerrada > 0 ? round(365 / $ciclo, 2) : 0;
+
+                    array_push($array_area, round($area / 10000, 2));
+                    array_push($array_ciclo, $ciclo);
+                    array_push($array_tallos, $area_cerrada > 0 ? round($tallos / $area_cerrada, 2) : 0);
+                    array_push($array_ramos, $area_cerrada > 0 ? round($ramos / $area_cerrada, 2) : 0);
+                    array_push($array_ramos_anno, $area_cerrada > 0 ? round($ciclo_ano * round($ramos / $area_cerrada, 2), 2) : 0);
                 }
             }
 
@@ -427,10 +277,32 @@ class crmAreaController extends Controller
         ]);
     }
 
+    public function desglose_indicador(Request $request)
+    {
+        $semana_ini = getSemanaByDate(opDiasFecha('-', 28, date('Y-m-d')));
+        $semana_fin = getSemanaByDate(opDiasFecha('-', 7, date('Y-m-d')));
+
+        if ($request->option == 'area') {
+            $data = getAreaCiclosByRango($semana_ini->codigo, $semana_fin->codigo, 'T');
+            return view('adminlte.crm.regalias_semanas.partials.listado', [
+                'variedades' => $data['variedades'],
+                'semanas' => $data['semanas']
+            ]);
+        } else if ($request->option == 'ciclo') {
+            $data = getCiclosCerradosByRangoVariedades($semana_ini->codigo, $semana_fin->codigo);
+            return view('adminlte.crm.crm_area.partials._ciclo_desglose', [
+                'data' => $data
+            ]);
+        }
+    }
+
     /* ===================== REGALIAS SEMANAS ===================== */
     public function regalias_semanas(Request $request)
     {
-        return view('adminlte.crm.regalias_semanas.inicio');
+        return view('adminlte.crm.regalias_semanas.inicio', [
+            'url' => $request->getRequestUri(),
+            'submenu' => Submenu::Where('url', '=', substr($request->getRequestUri(), 1))->get()[0],
+        ]);
     }
 
     public function buscar_listado(Request $request)

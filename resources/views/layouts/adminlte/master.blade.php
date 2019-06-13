@@ -865,7 +865,18 @@
 
     set_config('');
 
-
+    function select_planta(p, input_variedad, elemento_load, li_adicional = '') {
+        if (p != '') {
+            datos = {
+                planta: p
+            };
+            get_jquery('{{url('select_planta')}}', datos, function (retorno) {
+                $('#' + input_variedad).html(li_adicional);
+                $('#' + input_variedad).append(retorno);
+            }, elemento_load);
+        } else
+            $('#' + input_variedad).html(li_adicional);
+    }
 </script>
 
 @yield('css_final')

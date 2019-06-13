@@ -28,6 +28,8 @@ Route::group(['middleware' => 'autenticacion'], function () {
 
     Route::post('usuarios/get_usuario_json', 'UsuarioController@get_usuario_json');
 
+    Route::get('select_planta', 'YuraController@select_planta');
+
     include 'documento/rutas.php';
     include 'crm/dashboard.php';
 
@@ -65,6 +67,7 @@ Route::group(['middleware' => 'autenticacion'], function () {
         /* ========================== CRM ========================*/
         include 'crm/postcosecha.php';
         include 'crm/ventas.php';
+        include 'crm/ventas_m2.php';
         include 'crm/crm_area.php';
         include 'crm/rendimiento_desecho.php';
         include 'crm/tbl_postcosecha.php';

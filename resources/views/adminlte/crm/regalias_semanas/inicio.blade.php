@@ -16,15 +16,7 @@
             Dashboard
             <small>Regalías Semanas</small>
         </h1>
-        <ol class="breadcrumb">
-            <li><a href="javascript:void(0)" onclick="cargar_url('')"><i class="fa fa-home"></i> Inicio</a></li>
-            <li><a href="javascript:void(0)"><i class="fa fa-line-chart"></i> Dashboard</a></li>
-            <li class="active">
-                <a href="javascript:void(0)" onclick="location.reload()">
-                    <i class="fa fa-fw fa-refresh"></i> Regalías Semanas
-                </a>
-            </li>
-        </ol>
+
     </section>
 
     <section class="content">

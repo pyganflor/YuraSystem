@@ -37,7 +37,7 @@
                                     @if(isActive_action($s->id_submenu))
                                         <li>
                                             <a href="javascript:void(0)" onclick="cargar_url('{{$s->url}}')">
-                                                <i class="fa fa-circle-o"></i> {{$s->nombre}}
+                                                <i class="fa fa-circle-o"></i> {!! $s->nombre !!}
                                             </a>
                                         </li>
                                     @endif

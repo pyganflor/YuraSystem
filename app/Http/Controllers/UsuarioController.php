@@ -103,7 +103,6 @@ class UsuarioController extends Controller
 
     public function store_usuarios(Request $request)
     {
-        dd(55);
         $msg = '';
         $success = true;
 

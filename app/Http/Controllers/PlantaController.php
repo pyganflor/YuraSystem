@@ -42,11 +42,13 @@ class PlantaController extends Controller
     {
         $valida = Validator::make($request->all(), [
             'nombre' => 'required|max:250|unique:planta',
+            'siglas' => 'required',
             'tarifa' => 'required',
             'nandina' => 'required'
         ], [
             'nombre.unique' => 'El nombre ya existe',
             'nombre.required' => 'El nombre es obligatorio',
+            'siglas.required' => 'Las siglas son obligatorias',
             'nombre.max' => 'El nombre es muy grande',
         ]);
         if (!$valida->fails()) {
@@ -54,6 +56,7 @@ class PlantaController extends Controller
             $model->nombre = str_limit(mb_strtoupper(espacios($request->nombre)), 250);
             $model->tarifa = $request->tarifa;
             $model->nandina = $request->nandina;
+            $model->siglas = $request->siglas;
             $model->fecha_registro = date('Y-m-d H:i:s');
 
             if ($model->save()) {
@@ -208,11 +211,13 @@ class PlantaController extends Controller
         $valida = Validator::make($request->all(), [
             'nombre' => 'required|max:250',
             'id_planta' => 'required|',
+            'siglas' => 'required',
             'tarifa' => 'required',
             'nandina' => 'required'
         ], [
             'nombre.required' => 'El nombre es obligatorio',
             'id_planta.required' => 'La platna es obligatoria',
+            'siglas.required' => 'Las siglas son obligatorias',
             'nombre.max' => 'El nombre es muy grande',
         ]);
         if (!$valida->fails()) {
@@ -222,6 +227,7 @@ class PlantaController extends Controller
                 $model->nombre = str_limit(mb_strtoupper(espacios($request->nombre)), 250);
                 $model->tarifa = $request->tarifa;
                 $model->nandina = $request->nandina;
+                $model->siglas = $request->siglas;
 
                 if ($model->save()) {
                     $success = true;

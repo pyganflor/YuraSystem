@@ -32,19 +32,20 @@
                     <div class="row">
                         <div class="col-md-6 col-md-offset-3">
                             <div class="info-box mouse-hand sombra_pequeña" style="background-color: #fffb1f"
-                                 onclick="location.href='{{url('crm_ventas')}}'">
+                                 onclick="location.href='{{url('ventas_m2')}}'">
                                 <span class="info-box-icon"><i class="fa fa-fw fa-diamond"></i></span>
                                 <div class="info-box-content">
                                     <strong class="info-box-text text-center" style="font-size: 1.2em">Ventas/
                                         <small>m<sup>2</sup></small>
+                                        /año
                                     </strong>
                                     <span class="info-box-number text-center">
-                                        @if($area['area'] > 0)
-                                            {{number_format(round($valor / $area['area'], 2), 2)}}
+                                        @if($area['area_cerrada'] > 0)
+                                            {{number_format(round(($venta_mensual['valor'] / $area['area_cerrada']) * $area['ciclo_ano'], 2), 2)}}
                                         @else
                                             0
                                         @endif
-                                        <small>$/m<sup>2</sup></small></span>
+                                        <small>$/m<sup>2</sup>/año</small></span>
                                 </div>
                             </div>
                         </div>
@@ -103,12 +104,12 @@
                                 <div class="info-box-content">
                                     <strong class="info-box-text" style="font-size: 1.2em">Área</strong>
                                     <span class="info-box-number">
-                                        {{number_format($area['area'], 2)}}
-                                        <small>m <sup>2</sup></small>
+                                        {{number_format(round($area['area'] / 10000, 2), 2)}}
+                                        <small> <sup>ha</sup></small>
                                     </span>
                                     <span class="info-box-number" title="Ramos/m2">
-                                        {{number_format($area['ramos'], 2)}}
-                                        <small>r/m <sup>2</sup></small>
+                                        {{number_format($area['ramos_anno'], 2)}}
+                                        <small>r/m<sup>2</sup>/año</small>
                                     </span>
                                 </div>
                             </div>
@@ -123,14 +124,4 @@
 @section('script_final')
     {{-- JS de Chart.js --}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
-
-    <script>
-        //cargar_recepciones();
-
-        function cargar_recepciones() {
-            get_jquery('{{url('dashboard/recepciones')}}', {}, function (retorno) {
-                $('#div_recepciones').html(retorno);
-            });
-        }
-    </script>
 @endsection

@@ -1,6 +1,6 @@
 <div class="nav-tabs-custom" style="cursor: move;">
     <ul class="nav nav-pills nav-justified">
-        <li class="active"><a href="#area-chart" data-toggle="tab" aria-expanded="false">Área m<sup>2</sup></a></li>
+        <li class="active"><a href="#area-chart" data-toggle="tab" aria-expanded="false">Área <sup>ha</sup></a></li>
         <li class=""><a href="#ciclo-chart" data-toggle="tab" aria-expanded="true">Ciclo</a></li>
         <li class=""><a href="#tallos-chart" data-toggle="tab" aria-expanded="true">Tallos/m<sup>2</sup></a></li>
         <li class=""><a href="#ramos-chart" data-toggle="tab" aria-expanded="true">Ramos/m<sup>2</sup></a></li>

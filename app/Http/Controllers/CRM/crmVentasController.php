@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use yura\Http\Controllers\Controller;
 use yura\Modelos\Pedido;
 use yura\Modelos\Semana;
+use yura\Modelos\Submenu;
 
 class crmVentasController extends Controller
 {
@@ -58,6 +59,9 @@ class crmVentasController extends Controller
             'today' => $today,
             'semanal' => $semanal,
             'annos' => $annos,
+
+            'url' => $request->getRequestUri(),
+            'submenu' => Submenu::Where('url', '=', substr($request->getRequestUri(), 1))->get()[0],
         ]);
     }
 

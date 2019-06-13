@@ -18,10 +18,16 @@
         </h1>
         <ol class="breadcrumb">
             <li><a href="javascript:void(0)" onclick="cargar_url('')"><i class="fa fa-home"></i> Inicio</a></li>
-            <li><a href="javascript:void(0)"><i class="fa fa-line-chart"></i> Dashboard</a></li>
+            <li>
+                {{$submenu->menu->grupo_menu->nombre}}
+            </li>
+            <li>
+                {{$submenu->menu->nombre}}
+            </li>
+
             <li class="active">
-                <a href="javascript:void(0)" onclick="location.reload()">
-                    <i class="fa fa-fw fa-refresh"></i> Área
+                <a href="javascript:void(0)" onclick="cargar_url('{{$submenu->url}}')">
+                    <i class="fa fa-fw fa-refresh"></i> {{$submenu->nombre}}
                 </a>
             </li>
         </ol>
@@ -49,7 +55,7 @@
                         <option value="4">1 Año</option>
                     </select>
 
-                    <div class="input-group-addon bg-gray">
+                    {{--<div class="input-group-addon bg-gray">
                         <i class="fa fa-fw fa-filter"></i> Módulo
                     </div>
                     <select name="filtro_predeterminado_criterio" id="filtro_predeterminado_criterio" class="form-control"
@@ -58,17 +64,24 @@
                         @foreach(getModulos()->sortBy('nombre') as $m)
                             <option value="{{$m->id_modulo}}">{{$m->nombre}}</option>
                         @endforeach
-                    </select>
+                    </select>--}}
 
                     <div class="input-group-addon bg-gray">
                         <i class="fa fa-fw fa-leaf"></i> Variedad
                     </div>
+                    <select name="filtro_predeterminado_planta" id="filtro_predeterminado_planta" class="form-control"
+                            onchange="select_planta($(this).val(), 'filtro_predeterminado_variedad', 'div_cargar_variedades', '<option value=T selected>Todos los tipos</option>')">
+                        <option value="">Todas las variedades</option>
+                        @foreach(getPlantas() as $p)
+                            <option value="{{$p->id_planta}}">{{$p->nombre}}</option>
+                        @endforeach
+                    </select>
+                    <div class="input-group-addon bg-gray" id="div_cargar_variedades">
+                        <i class="fa fa-fw fa-leaf"></i> Tipo
+                    </div>
                     <select name="filtro_predeterminado_variedad" id="filtro_predeterminado_variedad" class="form-control"
                             onchange="filtrar_predeterminado()">
-                        <option value="">Todas las variedades</option>
-                        @foreach(getVariedades() as $v)
-                            <option value="{{$v->id_variedad}}">{{$v->nombre}}</option>
-                        @endforeach
+                        <option value="T" selected>Todos los tipos</option>
                     </select>
 
                     <div class="input-group-btn bg-gray">

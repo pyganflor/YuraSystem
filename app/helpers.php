@@ -62,6 +62,8 @@ use yura\Modelos\DetalleGuiaRemision;
 use yura\Mail\CorreoErrorEnvioComprobanteElectronico;
 use yura\Modelos\TipoIdentificacion;
 use yura\Modelos\Ciclo;
+use yura\Modelos\Cosecha;
+use yura\Modelos\Planta;
 
 /*
  * -------- BITÁCORA DE LAS ACCIONES ECHAS POR EL USUARIO ------
@@ -758,6 +760,25 @@ function getVariedad($id)
 function getVariedades()
 {
     return Variedad::All()->where('estado', '=', 1);
+}
+
+function getVariedadesByPlanta($p, $formato = 'option')
+{
+    $p = Planta::find($p);
+    if ($formato == 'option') {
+        $r = '';
+        foreach ($p->variedades as $v) {
+            $r .= '<option value="' . $v->id_variedad . '">' . $v->nombre . '</option>';
+        }
+        return $r;
+    } else {
+        return $p->variedades;
+    }
+}
+
+function getPlantas()
+{
+    return Planta::All()->where('estado', 1);
 }
 
 function getUnitaria($id)
@@ -1886,6 +1907,100 @@ function getCiclosCerradosByRango($semana_ini, $semana_fin, $variedad)
         'ciclos' => $ciclos_fin,
         'ciclo' => count($ciclos_fin) > 0 ? round($ciclo / count($ciclos_fin), 2) : 0,
         'area_cerrada' => $area_cerrada,
+    ];
+}
+
+function getCiclosCerradosByRangoVariedades($semana_ini, $semana_fin)
+{
+    $semana_ini = Semana::All()->where('codigo', $semana_ini)->first();
+    $semana_fin = Semana::All()->where('codigo', $semana_fin)->first();
+
+    $variedades = [];
+    foreach (getVariedades() as $v) {
+        $ciclos_fin = Ciclo::All()
+            ->where('estado', 1)
+            ->where('activo', 0)
+            ->where('id_variedad', $v->id_variedad)
+            ->where('fecha_fin', '>=', $semana_ini->fecha_inicial)
+            ->where('fecha_fin', '<=', $semana_fin->fecha_final)
+            ->sortBy('fecha_fin');
+
+        $ciclo = 0;
+        $area_cerrada = 0;
+
+        foreach ($ciclos_fin as $c) {
+            $area_cerrada += $c->area;
+            $fin = date('Y-m-d');
+            if ($c->fecha_fin != '')
+                $fin = $c->fecha_fin;
+            $ciclo += difFechas($fin, $c->fecha_inicio)->days;
+        }
+
+        array_push($variedades, [
+            'variedad' => $v,
+            'ciclos' => $ciclos_fin,
+            'ciclo' => count($ciclos_fin) > 0 ? round($ciclo / count($ciclos_fin), 2) : 0,
+            'area_cerrada' => $area_cerrada,
+        ]);
+    }
+
+    return [
+        'variedades' => $variedades
+    ];
+}
+
+function getCosechaByRango($semana_ini, $semana_fin, $variedad)
+{
+    $semana_ini = Semana::All()->where('codigo', $semana_ini)->first();
+    $semana_fin = Semana::All()->where('codigo', $semana_fin)->first();
+
+    $query = DB::table('clasificacion_verde as v')
+        ->select('v.fecha_ingreso as dia')->distinct()
+        ->where('v.fecha_ingreso', '>=', $semana_ini->fecha_inicial)
+        ->where('v.fecha_ingreso', '<=', $semana_fin->fecha_final)
+        ->get();
+
+    $ramos_estandar = 0;
+    $tallos_cosechados = 0;
+
+    foreach ($query as $dia) {
+        $verde = ClasificacionVerde::All()->where('fecha_ingreso', '=', $dia->dia)->first();
+        $cosecha = Cosecha::All()->where('fecha_ingreso', '=', $dia->dia)->first();
+        if ($verde != '') {
+            if ($variedad == 'T') { // Todas las variedades
+                $ramos_estandar += $verde->getTotalRamosEstandar();
+                $tallos_cosechados += $cosecha->getTotalTallos();
+            } else {    // por variedad
+                $ramos_estandar += $verde->getTotalRamosEstandarByVariedad($variedad);
+                $tallos_cosechados += $cosecha->getTotalTallosByVariedad($variedad);
+            }
+        }
+    }
+    return [
+        'ramos_estandar' => $ramos_estandar,
+        'tallos_cosechados' => $tallos_cosechados,
+    ];
+}
+
+function getVentaByRango($semana_ini, $semana_fin, $variedad)
+{
+    $semana_ini = Semana::All()->where('codigo', $semana_ini)->first();
+    $semana_fin = Semana::All()->where('codigo', $semana_fin)->first();
+
+    $query = Pedido::All()
+        ->where('fecha_pedido', '>=', $semana_ini->fecha_inicial)
+        ->where('fecha_pedido', '<=', $semana_fin->fecha_final);
+
+    $r = 0;
+    foreach ($query as $p) {
+        if ($variedad == 'T') {
+            $r += $p->getPrecio();
+        } else {
+            $r += $p->getPrecioByVariedad($variedad);
+        }
+    }
+    return [
+        'valor' => $r
     ];
 }
 
