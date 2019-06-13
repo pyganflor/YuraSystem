@@ -53,6 +53,7 @@
                 '<i class="fa fa-clone"></i> Etiquetas', true, false, '{{isPC() ? '50%' : ''}}');
             return false;
         }
+
         modal_quest('modal_exportar_etiquetas', "Desea exportar el excel con las facturas seleccionadas?", "<i class='fa fa-cubes'></i> Seleccione una opción",true, false, '{{isPC() ? '35%' : ''}}', function () {
             $.LoadingOverlay('show');
             $.ajax({
@@ -66,7 +67,6 @@
                 },
                 success: function (data) {
                     var opResult = JSON.parse(data);
-
                     var $a = $("<a>");
                     $a.attr("href", opResult.data);
                     $("body").append($a);
