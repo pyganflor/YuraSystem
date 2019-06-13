@@ -55,7 +55,7 @@
             </select>
         </td>
         <td style="padding: 5px 0px;border-color: #9d9d9d">
-            <input type="text" placeholder="Cantidad" id="ramo_x_caja_1" style="width: 100%" value="1" name="ramo_x_caja_1">
+            <input type="text" placeholder="Cantidad" id="ramo_x_caja_1" style="width: 100%" value="1" name="ramo_x_caja_1" required>
         </td>
         <td style="padding: 5px 0px;border-color: #9d9d9d">
             <select id="id_presentacion_1" style="width: 100%;height: 25.8px;" name="id_presentacion_1">

@@ -99,7 +99,8 @@ class ConfiguracionEmpresaController extends Controller
             'moneda' => 'required',
             'correo' => 'required',
             'telefono' => 'required',
-            'codigo_pais' => 'required'
+            'codigo_pais' => 'required',
+            'permiso_agrocalidad' => 'required'
         ]);
 
         if (!$valida->fails()) {
@@ -117,7 +118,8 @@ class ConfiguracionEmpresaController extends Controller
             $objConfigEmpresa->codigo_pais = $request->codigo_pais;
             $objConfigEmpresa->correo = $request->correo;
             $objConfigEmpresa->telefono = $request->telefono;
-            $objConfigEmpresa->fax =$request->fax;
+            $objConfigEmpresa->fax = $request->fax;
+            $objConfigEmpresa->permiso_agrocalidad = $request->permiso_agrocalidad;
             $objConfigEmpresa->save();
 
             $idConfiEmpresa = ConfiguracionEmpresa::all()->last();

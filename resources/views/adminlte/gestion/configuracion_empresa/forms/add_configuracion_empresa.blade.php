@@ -95,7 +95,14 @@
                            value="{!! isset($config_empresa[0]->correo) ? $config_empresa[0]->correo : '' !!}">
                 </div>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-4">
+                <div class="form-group input-group">
+                    <span class="input-group-addon" style="background-color: #e9ecef">Permiso agrocalidad</span>
+                    <input type="text" id="permiso_agrocalidad" name="permiso_agrocalidad" class="form-control" required maxlength="50"
+                           autocomplete="off" minlength="3" value="{!! isset($config_empresa[0]->permiso_agrocalidad) ? $config_empresa[0]->permiso_agrocalidad : '' !!}">
+                </div>
+            </div>
+            <div class="col-md-4">
                 <div class="form-group input-group">
                     <span class="input-group-addon" style="background-color: #e9ecef">Matriz</span>
                     <input type="text" id="matriz" name="matriz" class="form-control" required maxlength="300"
@@ -103,7 +110,7 @@
                            value="{!! isset($config_empresa[0]->direccion_matriz) ? $config_empresa[0]->direccion_matriz : '' !!}">
                 </div>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-4">
                 <div class="form-group input-group">
                     <span class="input-group-addon" style="background-color: #e9ecef">Establecimiento</span>
                     <input type="text" id="establecimiento" name="establecimiento" class="form-control" required maxlength="300"

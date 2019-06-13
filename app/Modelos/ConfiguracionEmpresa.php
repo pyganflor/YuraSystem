@@ -32,7 +32,8 @@ class ConfiguracionEmpresa extends Model
         'baldes_x_coche',    // baldes por coche para sacar en aperturas
         'correo',
         'fax',
-        'telefono'
+        'telefono',
+        'permiso_agrocalidad'
     ];
 
     public function clasificaciones_unitarias()

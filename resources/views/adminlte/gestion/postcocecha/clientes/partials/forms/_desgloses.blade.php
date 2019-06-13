@@ -71,9 +71,9 @@
             <span class="input-group-addon" style="background-color: #e9ecef">Tallos por ramos </span>
             <input type="number" onkeypress="return isNumber(event)" id="tallos_x_ramo_{{$pos_form_detalles}}_{{$cant_desgloses}}"
                    name="tallos_x_ramos_{{$pos_form_detalles}}_{{$cant_desgloses}}"
-                   class="form-control" maxlength="3" max="999" min="1" placeholder="Cantidad">
+                   class="form-control" maxlength="3" max="999" min="1" placeholder="Cantidad" required>
         </div>
-    </div>
+    </div>re
     <div class="col-md-4">
         <div class="form-group input-group">
             <span class="input-group-addon" style="background-color: #e9ecef"> longitud ramo </span>

@@ -31,6 +31,11 @@ class Distribucion extends Model
         return $this->hasMany('\yura\Modelos\DistribucionColoracion', 'id_distribucion');
     }
 
+    public function distribuciones_coloraciones_mayor_cero()
+    {
+        return $this->hasMany('\yura\Modelos\DistribucionColoracion', 'id_distribucion')->where('cantidad','>',0);
+    }
+
     public function getDistribucionMarcacionByMarcCol($marc_col)
     {
         return DistribucionColoracion::All()->where('id_distribucion', $this->id_distribucion)
