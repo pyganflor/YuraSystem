@@ -17,7 +17,8 @@
     <div class="form-group">
         <label class="control-sidebar-subheading">
             <input type="checkbox" class="pull-right" id="config_color" onclick="set_config('')"
-                    {{getUsuario(Session::get('id_usuario'))->configuracion->toggle_color_config == 'S' ? 'checked' : ''}}> Cambiar color del menú derecho
+                    {{getUsuario(Session::get('id_usuario'))->configuracion->toggle_color_config == 'S' ? 'checked' : ''}}> Cambiar color del
+            menú derecho
         </label>
     </div>
     <div class="form-group">
@@ -36,7 +37,12 @@
             <a style="cursor: pointer;" onclick="admin_colores()">Administrar colores</a>
         </label>
     </div>
-    <h4 class="control-sidebar-heading">Temas</h4>
+    <h4 class="control-sidebar-heading">
+        Temas
+        @if(rand(0,99) > 90)
+            <span style="color: #222d32" class="pull-right">{｡^◕‿◕^｡}</span>
+        @endif
+    </h4>
     <ul class="list-unstyled clearfix">
         <li style="float:left; width: 33.33333%; padding: 5px;">
             <a href="javascript:void(0)" onclick="set_config('skin-blue')" style="display: block; box-shadow: 0 0 3px rgba(0,0,0,0.4)"

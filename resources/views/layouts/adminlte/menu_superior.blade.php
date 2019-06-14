@@ -37,7 +37,9 @@
                         </li>
                         <li class="user-footer">
                             <div class="pull-left">
-                                <a href="javascript:void(0)" class="btn btn-default btn-flat" onclick="cargar_url('perfil')">Mi Perfil</a>
+                                <a href="javascript:void(0)" class="btn btn-default btn-flat" onclick="cargar_url('perfil')">
+                                    Mi Perfil
+                                </a>
                             </div>
                             <div class="pull-right">
                                 <a href="javascript:void(0)" onclick="cargar_url('logout')" class="btn btn-default btn-flat">Salir</a>
