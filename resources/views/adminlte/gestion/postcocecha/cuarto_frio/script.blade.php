@@ -22,7 +22,6 @@
     }
 
     function editar_inventario(pos_inv) {
-<<<<<<< HEAD
         var add = [];
         var edit = [];
         for (i = 0; i <= 9; i++) {
@@ -162,8 +161,5 @@
             alerta('<div class="alert alert-warning text-center">La cantidad de ramos total ingresada (' + total_convert + ') ' +
                 'es mayor a la cantidad a editar (' + data['editar'] + ')</div>');
         }
-=======
-        datos = {}
->>>>>>> ded73910bf17211896927d0e5421607f049512c9
     }
 </script>

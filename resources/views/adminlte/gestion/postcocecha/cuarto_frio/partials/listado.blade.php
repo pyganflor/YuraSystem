@@ -54,7 +54,6 @@
 
             <tbody>
             @foreach($inventarios as $pos_inv => $inv)
-<<<<<<< HEAD
                 <tr onmouseover="$(this).addClass('bg-aqua')" onmouseleave="$(this).removeClass('bg-aqua')">
                     <th class="text-center" style="border-color: #9d9d9d">
                         <input type="hidden" id="variedad_{{$pos_inv}}" value="{{$inv['variedad']->id_variedad}}">
@@ -65,14 +64,6 @@
                         <input type="hidden" id="longitud_ramo_{{$pos_inv}}" value="{{$inv['longitud_ramo']}}">
                         <input type="hidden" id="unidad_medida_{{$pos_inv}}" value="{{$inv['unidad_medida']->id_unidad_medida}}">
 
-=======
-                <input type="hidden" id="variedad_{{$pos_inv}}" value="{{$inv['variedad']->id_variedad}}">
-                <input type="hidden" id="peso_{{$pos_inv}}" value="{{$inv['peso']->id_clasificacion_ramo}}">
-                <input type="hidden" id="presentacion_{{$pos_inv}}" value="{{$inv['presentacion']->id_empaque_p}}">
-
-                <tr onmouseover="$(this).addClass('bg-aqua')" onmouseleave="$(this).removeClass('bg-aqua')">
-                    <th class="text-center" style="border-color: #9d9d9d">
->>>>>>> ded73910bf17211896927d0e5421607f049512c9
                         {{$inv['variedad']->siglas}}
                     </th>
                     <th class="text-center" style="border-color: #9d9d9d">
@@ -97,19 +88,13 @@
                         @endphp
                         <td class="text-center" style="border-color: #0a0a0a; background-color: #e9ecef; color: #0a0a0a;"
                             title="{{$fecha}}">
-<<<<<<< HEAD
                             <div class="btn-group span_editar_{{$pos_dia}}" id="span_editar_{{$pos_inv}}_{{$pos_dia}}">
                                 <span type="button" class="dropdown-toggle mouse-hand span_editar_{{$pos_dia}}"
-=======
-                            <div class="btn-group" id="span_editar_{{$pos_inv}}_{{$pos_dia}}">
-                                <span type="button" class="dropdown-toggle mouse-hand"
->>>>>>> ded73910bf17211896927d0e5421607f049512c9
                                       style="padding-bottom: 0; padding-top: 0; padding-left: 20px; padding-right: 20px"
                                       data-toggle="dropdown" aria-expanded="false">
                                     {{$dia['cantidad'] != '' ? $dia['cantidad'] : '-'}}
                                 </span>
                                 <ul class="dropdown-menu" style="width: 30px">
-<<<<<<< HEAD
                                     @if($dia['cantidad'] != '')
                                         <li>
                                             <a href="javascript:void(0)" onclick="editar_dia('{{$pos_inv}}', '{{$pos_dia}}')" title="Editar">
@@ -117,13 +102,6 @@
                                             </a>
                                         </li>
                                     @endif
-=======
-                                    <li>
-                                        <a href="javascript:void(0)" onclick="editar_dia('{{$pos_inv}}', '{{$pos_dia}}')" title="Editar">
-                                            <i class="fa fa-fw fa-edit"></i> Editar
-                                        </a>
-                                    </li>
->>>>>>> ded73910bf17211896927d0e5421607f049512c9
                                     <li>
                                         <a href="javascript:void(0)" onclick="add_dia('{{$pos_inv}}', '{{$pos_dia}}')" title="Ingresar">
                                             <i class="fa fa-fw fa-plus-circle"></i> Ingresar
@@ -131,7 +109,6 @@
                                     </li>
                                 </ul>
                             </div>
-<<<<<<< HEAD
                             <input type="number" onkeypress="return isNumber(event)" id="input_editar_{{$pos_inv}}_{{$pos_dia}}"
                                    max="{{$dia['cantidad']}}" min="0" value="{{$dia['cantidad']}}" style="width: 100%; display: none"
                                    maxlength="5" class="text-center">
@@ -139,14 +116,6 @@
                                    name="add_{{$pos_inv}}" min="0" value="" style="width: 100%; display: none" maxlength="5"
                                    class="text-center input_add_{{$pos_dia}}">
                             <input type="text" id="input_accion_{{$pos_inv}}_{{$pos_dia}}" style="display: none">
-=======
-                            <input type="text" onkeypress="return isNumber(event)" id="input_editar_{{$pos_inv}}_{{$pos_dia}}"
-                                   value="{{$dia['cantidad']}}" style="width: 100%; display: none" maxlength="5" class="text-center">
-                            <input type="text" onkeypress="return isNumber(event)" id="input_add_{{$pos_inv}}_{{$pos_dia}}"
-                                   value="" style="width: 100%; display: none" maxlength="5" class="text-center">
-                            <input type="text" id="input_accion_{{$pos_inv}}_{{$pos_dia}}" style="display: none"
-                                   class="text-center">
->>>>>>> ded73910bf17211896927d0e5421607f049512c9
                         </td>
                     @endforeach
                     <th class="text-center" style="border-color: #9d9d9d">
@@ -158,18 +127,11 @@
                                     style="display: none" onclick="editar_inventario('{{$pos_inv}}')">
                                 <i class="fa fa-fw fa-save"></i>
                             </button>
-<<<<<<< HEAD
-=======
-                            <button type="button" class="btn btn-xs btn-danger" title="Botar todo">
-                                <i class="fa fa-fw fa-trash"></i>
-                            </button>
->>>>>>> ded73910bf17211896927d0e5421607f049512c9
                         </div>
                     </th>
                 </tr>
             @endforeach
             </tbody>
-<<<<<<< HEAD
             <tr id="tr_basura" style="display: none">
                 <th class="text-center" colspan="5" style="border-color: #9d9d9d">
                     Basura
@@ -222,8 +184,6 @@
                 @endfor
                 <th colspan="2" style="border-color: #9d9d9d"></th>
             </tr>
-=======
->>>>>>> ded73910bf17211896927d0e5421607f049512c9
         </table>
     </div>
 @else

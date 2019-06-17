@@ -76,11 +76,11 @@ class CuartoFrioController extends Controller
             'inventarios' => $inventarios
         ]);
     }
-<<<<<<< HEAD
 
     public function add_inventario(Request $request)
     {
         dd($request->all());
+
     }
 
     public function delete_dia(Request $request)
@@ -92,6 +92,4 @@ class CuartoFrioController extends Controller
     {
         dd($request->all());
     }
-=======
->>>>>>> ded73910bf17211896927d0e5421607f049512c9
 }

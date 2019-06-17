@@ -128,12 +128,15 @@
                             <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
                                 style="border-color: #9d9d9d">
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
                                 Total
                             </th>
                             <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
                                 style="border-color: #9d9d9d">
 >>>>>>> ded73910bf17211896927d0e5421607f049512c9
+=======
+>>>>>>> f654e29487fcbf1d0fcb45b41e1dd5c6822f21bc
                                 Promedio
                             </th>
                         </tr>
@@ -158,11 +161,14 @@
                                 @endforeach
                                 <th class="text-center" style="border-color: #9d9d9d">
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
                                     {{number_format(round($total_parcial / 10000, 2), 2)}}
                                 </th>
                                 <th class="text-center" style="border-color: #9d9d9d">
 >>>>>>> ded73910bf17211896927d0e5421607f049512c9
+=======
+>>>>>>> f654e29487fcbf1d0fcb45b41e1dd5c6822f21bc
                                     {{number_format(round(($total_parcial / 10000) / count($semanas), 2), 2)}}
                                 </th>
                             </tr>
