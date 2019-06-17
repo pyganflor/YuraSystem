@@ -1887,7 +1887,8 @@ function getCiclosCerradosByRango($semana_ini, $semana_fin, $variedad)
         ->where('estado', 1)
         ->where('activo', 0)
         ->where('fecha_fin', '>=', $semana_ini->fecha_inicial)
-        ->where('fecha_fin', '<=', $semana_fin->fecha_final);
+        ->where('fecha_fin', '<=', $semana_fin->fecha_final)
+        ->sortBy('fecha_fin');
 
     if ($variedad != 'T')   // T => Todas
         $ciclos_fin = $ciclos_fin->where('id_variedad', $variedad);

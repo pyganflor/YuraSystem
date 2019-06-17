@@ -181,4 +181,87 @@
             ];
         @endphp
     @endforeach
+    <div class="panel box box-primary">
+        <div class="box-header with-border text-right">
+            <h4 class="box-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#collapseGrafica" aria-expanded="false"
+                   class="collapsed text-black">
+                    <i class="fa fa-fw fa-line-chart"></i> Gráfica
+                </a>
+            </h4>
+        </div>
+        <div id="collapseGrafica" class="panel-collapse collapse" aria-expanded="false">
+            <div class="box-body">
+                <canvas id="chart_tallos_desglose" width="100%" height="33" style="margin-top: 5px"></canvas>
+
+                <script>
+                    construir_char_annos('Tallos', 'chart_tallos_desglose');
+
+                    function construir_char_annos(label, id) {
+                        labels = [];
+                        datasets = [];
+                        @foreach($semanas as $sem)
+                        labels.push("{{$sem->codigo}}");
+                        @endforeach
+
+                                {{-- Data_list --}}
+                                @foreach($grafica as $pos_a => $a)
+                            data_list = [];
+
+                        @foreach($a['valores'] as $item)
+                        data_list.push("{{$item}}");
+                        @endforeach
+
+                        datasets.push({
+                            label: '{{$a['variedad']->siglas}}' + ' ',
+                            data: data_list,
+                            backgroundColor: '{{$a['variedad']->color}}',
+                            borderColor: '{{$a['variedad']->color}}',
+                            borderWidth: 1,
+                            fill: false,
+                        });
+                        @endforeach
+
+                            ctx = document.getElementById(id).getContext('2d');
+                        myChart = new Chart(ctx, {
+                            type: 'line',
+                            data: {
+                                labels: labels,
+                                datasets: datasets
+                            },
+                            options: {
+                                scales: {
+                                    yAxes: [{
+                                        ticks: {
+                                            beginAtZero: false
+                                        }
+                                    }]
+                                },
+                                elements: {
+                                    line: {
+                                        tension: 0, // disables bezier curves
+                                    }
+                                },
+                                tooltips: {
+                                    mode: 'point' // nearest, point, index, dataset, x, y
+                                },
+                                legend: {
+                                    display: true,
+                                    position: 'bottom',
+                                    fullWidth: false,
+                                    onClick: function () {
+                                    },
+                                    onHover: function () {
+                                    },
+                                    reverse: true,
+                                },
+                                showLines: true, // for all datasets
+                                borderCapStyle: 'round',    // "butt" || "round" || "square"
+                            }
+                        });
+                    }
+                </script>
+            </div>
+        </div>
+    </div>
 </div>
