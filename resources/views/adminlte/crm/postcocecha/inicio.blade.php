@@ -18,10 +18,16 @@
         </h1>
         <ol class="breadcrumb">
             <li><a href="javascript:void(0)" onclick="cargar_url('')"><i class="fa fa-home"></i> Inicio</a></li>
-            <li><a href="javascript:void(0)"><i class="fa fa-line-chart"></i> Dashboard</a></li>
+            <li>
+                {{$submenu->menu->grupo_menu->nombre}}
+            </li>
+            <li>
+                {{$submenu->menu->nombre}}
+            </li>
+
             <li class="active">
-                <a href="javascript:void(0)" onclick="location.reload()">
-                    <i class="fa fa-fw fa-refresh"></i> Postcosecha
+                <a href="javascript:void(0)" onclick="cargar_url('{{$submenu->url}}')">
+                    <i class="fa fa-fw fa-refresh"></i> {{$submenu->nombre}}
                 </a>
             </li>
         </ol>
@@ -31,7 +37,7 @@
         <div id="div_indicadores">
             @if($cant_verde > 0)
                 <div class="row">
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         <div class="small-box bg-teal-active">
                             <div class="inner">
                                 <h3 class="info-box-number">
@@ -46,7 +52,7 @@
                             </a>
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         <div class="small-box bg-aqua">
                             <div class="inner">
                                 <h3 class="info-box-number">
@@ -61,39 +67,7 @@
                             </a>
                         </div>
                     </div>
-                    <div class="col-md-2">
-                        <div class="small-box bg-red">
-                            <div class="inner">
-                                <h3 class="info-box-number">
-                                    {{$indicadores['desecho']}}
-                                    <sup style="font-size: 20px">%</sup>
-                                </h3>
-                            </div>
-                            <div class="icon">
-                                <i class="ion ion-trash-a"></i>
-                            </div>
-                            <a href="javascript:void(0)" class="small-box-footer" onclick="show_data_desechos('{{$desde}}', '{{$hasta}}')">
-                                Desechos <i class="fa fa-arrow-circle-right"></i>
-                            </a>
-                        </div>
-                    </div>
-                    <div class="col-md-2">
-                        <div class="small-box bg-green-gradient">
-                            <div class="inner">
-                                <h3 class="info-box-number">
-                                    {{number_format($indicadores['rendimiento'], 2)}}
-                                    <sup style="font-size: 0.4em">t/hr</sup>
-                                </h3>
-                            </div>
-                            <div class="icon">
-                                <i class="ion ion-ios-people-outline"></i>
-                            </div>
-                            <a href="javascript:void(0)" class="small-box-footer" onclick="show_data_rendimientos('{{$desde}}', '{{$hasta}}')">
-                                Rendimiento <i class="fa fa-arrow-circle-right"></i>
-                            </a>
-                        </div>
-                    </div>
-                    <div class="col-md-2">
+                    <div class="col-md-4">
                         <div class="small-box bg-orange">
                             <div class="inner">
                                 <h3 class="info-box-number">

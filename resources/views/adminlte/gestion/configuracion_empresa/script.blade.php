@@ -133,7 +133,8 @@
                 codigo_pais : $("#codigo_pais").val(),
                 telefono : $("#telefono").val(),
                 correo : $("#correo").val(),
-                fax :$("#fax").val()
+                fax :$("#fax").val(),
+                permiso_agrocalidad : $("#permiso_agrocalidad").val(),
             };
             post_jquery('{{route('configuracion.store')}}', datos, function () {
                 cerrar_modals();

@@ -37,6 +37,17 @@ class Cosecha extends Model
         return $r;
     }
 
+    public function getTotalTallosByModuloVariedad($modulo, $variedad)
+    {
+        $r = 0;
+        foreach ($this->recepciones as $recepcion) {
+            foreach ($recepcion->desgloses->where('id_modulo', $modulo)->where('id_variedad', $variedad) as $desglose) {
+                $r += ($desglose->cantidad_mallas * $desglose->tallos_x_malla);
+            }
+        }
+        return $r;
+    }
+
     public function getTotalTallos()
     {
         $r = 0;

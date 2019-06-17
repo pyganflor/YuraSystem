@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use yura\Http\Controllers\Controller;
 use yura\Modelos\Pedido;
 use yura\Modelos\Semana;
+use yura\Modelos\Submenu;
 
 class crmVentasController extends Controller
 {
@@ -51,12 +52,16 @@ class crmVentasController extends Controller
         /* ======= AÑOS ======= */
         $annos = DB::table('historico_ventas')
             ->select('anno')->distinct()
+            ->orderBy('anno')->distinct()
             ->get();
 
         return view('adminlte.crm.ventas.inicio', [
             'today' => $today,
             'semanal' => $semanal,
             'annos' => $annos,
+
+            'url' => $request->getRequestUri(),
+            'submenu' => Submenu::Where('url', '=', substr($request->getRequestUri(), 1))->get()[0],
         ]);
     }
 
@@ -66,7 +71,7 @@ class crmVentasController extends Controller
         $hasta = $request->hasta;
 
         $arreglo_annos = [];
-        if ($request->has('annos')) {
+        if ($request->has('annos') && count($request->annos) > 0) {
             $view = '_annos';
 
             $fechas = [];

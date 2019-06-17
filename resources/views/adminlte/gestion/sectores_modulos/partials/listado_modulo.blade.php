@@ -18,7 +18,7 @@
                     <i class="fa fa-fw fa-check hidden icon_hidden_m" id="icon_modulo_{{$item->id_modulo}}"></i> {{$item->nombre}}
                 </td>
                 <td style="border-color: #9d9d9d" class="text-center mouse-hand" onclick="select_modulo('{{$item->id_modulo}}')">
-                    {{$item->area}}m<sup>2</sup>
+                    {{number_format($item->area, 2)}}m<sup>2</sup>
                 </td>
                 <td style="border-color: #9d9d9d" class="text-center">
                     <div class="btn-group">

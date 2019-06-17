@@ -3,6 +3,7 @@
 namespace yura\Modelos;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Sector extends Model
 {
@@ -27,5 +28,14 @@ class Sector extends Model
     public function modulos_activos()
     {
         return $this->hasMany('\yura\Modelos\Modulo', 'id_sector')->where('estado', '=', 1);
+    }
+
+    public function getAreaTotal()
+    {
+        return DB::table('modulo')
+            ->select(DB::raw('sum(area) as cant'))
+            ->where('estado', '=', 1)
+            ->where('id_sector', '=', $this->id_sector)
+            ->get()[0]->cant;
     }
 }

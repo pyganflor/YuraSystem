@@ -23,7 +23,7 @@
                             {{$item->submenu->menu->nombre}}
                         </li>
                         <li>
-                            <strong>{{$item->submenu->nombre}}</strong>
+                            <strong>{!! $item->submenu->nombre !!}</strong>
                         </li>
                     </ol>
                 </td>

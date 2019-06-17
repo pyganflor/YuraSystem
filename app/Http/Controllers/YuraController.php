@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 use phpseclib\Crypt\RSA;
+use yura\Modelos\Ciclo;
 use yura\Modelos\ClasificacionBlanco;
 use yura\Modelos\ClasificacionVerde;
 use yura\Modelos\ConfiguracionUser;
@@ -22,87 +23,146 @@ class YuraController extends Controller
 {
     public function inicio(Request $request)
     {
-        /* ========= CALIBRE ========= */
-        $labels = DB::table('clasificacion_verde as v')
-            ->select('v.fecha_ingreso as dia')->distinct()
-            ->where('v.fecha_ingreso', '>=', opDiasFecha('-', 7, date('Y-m-d')))
-            ->where('v.fecha_ingreso', '<=', opDiasFecha('-', 1, date('Y-m-d')))
-            ->get();
-        $calibre = 0;
-        $tallos = 0;
-        $cant_verde = 0;
-        foreach ($labels as $dia) {
-            $verde = ClasificacionVerde::All()->where('fecha_ingreso', '=', $dia->dia)->first();
-            if ($verde != '') {
-                $calibre += round($verde->total_tallos() / $verde->getTotalRamosEstandar(), 2);
-                $tallos += $verde->total_tallos();
-                $cant_verde++;
+        if (count(getUsuario(Session::get('id_usuario'))->rol()->getSubmenusByTipo('C')) > 0) {
+            /* ========= CALIBRE ========= */
+            $labels = DB::table('clasificacion_verde as v')
+                ->select('v.fecha_ingreso as dia')->distinct()
+                ->where('v.fecha_ingreso', '>=', opDiasFecha('-', 7, date('Y-m-d')))
+                ->where('v.fecha_ingreso', '<=', opDiasFecha('-', 1, date('Y-m-d')))
+                ->get();
+            $calibre = 0;
+            $tallos = 0;
+            $ramos = 0;
+            $cant_verde = 0;
+            foreach ($labels as $dia) {
+                $verde = ClasificacionVerde::All()->where('fecha_ingreso', '=', $dia->dia)->first();
+                if ($verde != '') {
+                    $calibre += round($verde->total_tallos() / $verde->getTotalRamosEstandar(), 2);
+                    $tallos += $verde->total_tallos();
+                    $ramos += $verde->getTotalRamosEstandar();
+                    $cant_verde++;
+                }
             }
-        }
-        $calibre = $cant_verde > 0 ? round($calibre / $cant_verde, 2) : 0;
+            $calibre = $cant_verde > 0 ? round($calibre / $cant_verde, 2) : 0;
 
-        /* ======== PRECIO x RAMO ======== */
-        $pedidos_semanal = Pedido::All()->where('estado', 1)
-            ->where('fecha_pedido', '>=', opDiasFecha('-', 7, date('Y-m-d')))
-            ->where('fecha_pedido', '<=', opDiasFecha('-', 1, date('Y-m-d')));
-        $valor = 0;
-        $cajas = 0;
-        foreach ($pedidos_semanal as $p) {
-            $valor += $p->getPrecio();
-            $cajas += $p->getCajas();
-        }
-        $ramos_estandar = $cajas * getConfiguracionEmpresa()->ramos_x_caja;
-        $precio_x_ramo = $ramos_estandar > 0 ? round($valor / $ramos_estandar, 2) : 0;
-
-        /* ========= RENDIMIENTO DESECHO =========== */
-        $fechas = [];
-        for ($i = 1; $i <= 7; $i++) {
-            array_push($fechas, opDiasFecha('-', $i, date('Y-m-d')));
-        }
-
-        $r_ver = 0;
-        $r_ver_r = 0;
-        $d_ver = 0;
-        $count_ver = 0;
-        $r_bla = 0;
-        $d_bla = 0;
-        $count_bla = 0;
-        foreach ($fechas as $f) {
-            $verde = ClasificacionVerde::All()->where('estado', 1)->where('fecha_ingreso', $f)->first();
-            $blanco = ClasificacionBlanco::All()->where('estado', 1)->where('fecha_ingreso', $f)->first();
-
-            if ($verde != '') {
-                $r_ver += $verde->getRendimiento();
-                $r_ver_r += $verde->getRendimientoRamos();
-                $d_ver += $verde->desecho();
-                $count_ver++;
+            /* ======== PRECIO x RAMO ======== */
+            $pedidos_semanal = Pedido::All()->where('estado', 1)
+                ->where('fecha_pedido', '>=', opDiasFecha('-', 7, date('Y-m-d')))
+                ->where('fecha_pedido', '<=', opDiasFecha('-', 1, date('Y-m-d')));
+            $valor = 0;
+            $cajas = 0;
+            foreach ($pedidos_semanal as $p) {
+                $valor += $p->getPrecio();
+                $cajas += $p->getCajas();
             }
-            if ($blanco != '') {
-                $r_bla += $blanco->getRendimiento();
-                $d_bla += $blanco->getDesecho();
-                $count_bla++;
+            $ramos_estandar = $cajas * getConfiguracionEmpresa()->ramos_x_caja;
+            $precio_x_ramo = $ramos_estandar > 0 ? round($valor / $ramos_estandar, 2) : 0;
+
+            /* ========= RENDIMIENTO DESECHO =========== */
+            $fechas = [];
+            for ($i = 1; $i <= 7; $i++) {
+                array_push($fechas, opDiasFecha('-', $i, date('Y-m-d')));
             }
+
+            $r_ver = 0;
+            $r_ver_r = 0;
+            $d_ver = 0;
+            $count_ver = 0;
+            $r_bla = 0;
+            $d_bla = 0;
+            $count_bla = 0;
+            foreach ($fechas as $f) {
+                $verde = ClasificacionVerde::All()->where('estado', 1)->where('fecha_ingreso', $f)->first();
+                $blanco = ClasificacionBlanco::All()->where('estado', 1)->where('fecha_ingreso', $f)->first();
+
+                if ($verde != '') {
+                    $r_ver += $verde->getRendimiento();
+                    $r_ver_r += $verde->getRendimientoRamos();
+                    $d_ver += $verde->desecho();
+                    $count_ver++;
+                }
+                if ($blanco != '') {
+                    $r_bla += $blanco->getRendimiento();
+                    $d_bla += $blanco->getDesecho();
+                    $count_bla++;
+                }
+            }
+
+            $rendimiento_desecho = [
+                'verde' => [
+                    'rendimiento' => $count_ver > 0 ? round($r_ver / $count_ver, 2) : 0,
+                    'rendimiento_ramos' => $count_ver > 0 ? round($r_ver_r / $count_ver, 2) : 0,
+                    'desecho' => $count_ver > 0 ? round($d_ver / $count_ver, 2) : 0
+                ],
+                'blanco' => [
+                    'rendimiento' => $count_bla > 0 ? round($r_bla / $count_bla, 2) : 0,
+                    'desecho' => $count_bla > 0 ? round($d_bla / $count_bla, 2) : 0
+                ]
+            ];
+
+            /* ============ AREA =========== */
+            $desde = opDiasFecha('-', 28, date('Y-m-d'));
+            $hasta = opDiasFecha('-', 7, date('Y-m-d'));
+
+            $semanas_4 = DB::table('semana as s')
+                ->select('s.codigo as semana')->distinct()
+                ->Where(function ($q) use ($desde, $hasta) {
+                    $q->where('s.fecha_inicial', '>=', $desde)
+                        ->where('s.fecha_inicial', '<=', $hasta);
+                })
+                ->orWhere(function ($q) use ($desde, $hasta) {
+                    $q->where('s.fecha_final', '>=', $desde)
+                        ->Where('s.fecha_final', '<=', $hasta);
+                })
+                ->orderBy('codigo')
+                ->get();
+
+            $area = 0;
+            $data_4semanas = getAreaCiclosByRango($semanas_4[0]->semana, $semanas_4[3]->semana, 'T');
+
+            foreach ($data_4semanas['variedades'] as $var) {
+                foreach ($var['ciclos'] as $c) {
+                    foreach ($c['areas'] as $a) {
+                        $area += $a;
+                    }
+                }
+            }
+
+            $data_ciclos = getCiclosCerradosByRango($semanas_4[0]->semana, $semanas_4[3]->semana, 'T');
+            $ciclo = $data_ciclos['ciclo'];
+            $area_cerrada = $data_ciclos['area_cerrada'];
+
+            $data_cosecha = getCosechaByRango($semanas_4[0]->semana, $semanas_4[3]->semana, 'T');
+            $tallos_ciclo = $data_cosecha['tallos_cosechados'];
+            $ramos_ciclo = $data_cosecha['ramos_estandar'];
+
+            $ciclo_ano = $area_cerrada > 0 ? round(365 / $ciclo, 2) : 0;
+
+            $mensual = [
+                'ciclo_ano' => $ciclo_ano,
+                'area' => round($area / count($semanas_4), 2),
+                'ciclo' => $ciclo,
+                'area_cerrada' => $area_cerrada,
+                'tallos' => $area_cerrada > 0 ? round($tallos_ciclo / $area_cerrada, 2) : 0,
+                'ramos' => $area_cerrada > 0 ? round($ramos_ciclo / $area_cerrada, 2) : 0,
+                'ramos_anno' => $area_cerrada > 0 ? round($ciclo_ano * round($ramos_ciclo / $area_cerrada, 2), 2) : 0,
+            ];
+
+            /* ================= venta en 4 semanas =================== */
+            $data_venta_mensual = getVentaByRango($semanas_4[0]->semana, $semanas_4[3]->semana, 'T');
+
+            return view('adminlte.inicio', [
+                'calibre' => $calibre,
+                'tallos' => $tallos,
+                'precio_x_ramo' => $precio_x_ramo,
+                'valor' => $valor,
+                'rendimiento_desecho' => $rendimiento_desecho,
+                'area' => $mensual,
+                'venta_mensual' => $data_venta_mensual,
+            ]);
         }
 
-        $rendimiento_desecho = [
-            'verde' => [
-                'rendimiento' => $count_ver > 0 ? round($r_ver / $count_ver, 2) : 0,
-                'rendimiento_ramos' => $count_ver > 0 ? round($r_ver_r / $count_ver, 2) : 0,
-                'desecho' => $count_ver > 0 ? round($d_ver / $count_ver, 2) : 0
-            ],
-            'blanco' => [
-                'rendimiento' => $count_bla > 0 ? round($r_bla / $count_bla, 2) : 0,
-                'desecho' => $count_bla > 0 ? round($d_bla / $count_bla, 2) : 0
-            ]
-        ];
-
-        return view('adminlte.inicio', [
-            'calibre' => $calibre,
-            'tallos' => $tallos,
-            'precio_x_ramo' => $precio_x_ramo,
-            'valor' => $valor,
-            'rendimiento_desecho' => $rendimiento_desecho,
-        ]);
+        return view('adminlte.inicio');
     }
 
     public function login(Request $request)
@@ -578,5 +638,10 @@ class YuraController extends Controller
             'antes' => $antes,
             'despues' => $despues,
         ]);
+    }
+
+    public function select_planta(Request $request)
+    {
+        return getVariedadesByPlanta($request->planta);
     }
 }

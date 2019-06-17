@@ -9,6 +9,7 @@ use yura\Modelos\ClasificacionBlanco;
 use yura\Modelos\ClasificacionVerde;
 use yura\Modelos\Cosecha;
 use yura\Modelos\Semana;
+use yura\Modelos\Submenu;
 
 class crmRendimientoController extends Controller
 {
@@ -110,11 +111,14 @@ class crmRendimientoController extends Controller
             if (!in_array($item->anno, $annos))
                 array_push($annos, $item->anno);
         }
-
+        sort($annos);
         return view('adminlte.crm.rendimiento_desecho.inicio', [
             'today' => $today,
             'semanal' => $semanal,
             'annos' => $annos,
+
+            'url' => $request->getRequestUri(),
+            'submenu' => Submenu::Where('url', '=', substr($request->getRequestUri(), 1))->get()[0],
         ]);
     }
 

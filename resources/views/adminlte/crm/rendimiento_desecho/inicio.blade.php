@@ -18,10 +18,16 @@
         </h1>
         <ol class="breadcrumb">
             <li><a href="javascript:void(0)" onclick="cargar_url('')"><i class="fa fa-home"></i> Inicio</a></li>
-            <li><a href="javascript:void(0)"><i class="fa fa-line-chart"></i> Dashboard</a></li>
+            <li>
+                {{$submenu->menu->grupo_menu->nombre}}
+            </li>
+            <li>
+                {{$submenu->menu->nombre}}
+            </li>
+
             <li class="active">
-                <a href="javascript:void(0)" onclick="location.reload()">
-                    <i class="fa fa-fw fa-refresh"></i> Rendimiento y Desecho
+                <a href="javascript:void(0)" onclick="cargar_url('{{$submenu->url}}')">
+                    <i class="fa fa-fw fa-refresh"></i> {{$submenu->nombre}}
                 </a>
             </li>
         </ol>
@@ -36,40 +42,73 @@
             <div class="box-header with-border">
                 <h3 class="box-title">
                     <strong>Gráficas</strong>
+                </h3>
 
-                    <select name="filtro_predeterminado_rango" id="filtro_predeterminado_rango" style="height: 30px;"
-                            onchange="filtrar_predeterminado()">
+                <div class="input-group">
+                    <div class="input-group-addon bg-gray">
+                        <i class="fa fa-fw fa-calendar-check-o"></i> Rango
+                    </div>
+                    <select name="filtro_predeterminado_rango" id="filtro_predeterminado_rango"
+                            onchange="filtrar_predeterminado()" class="form-control">
                         <option value="1">1 Mes</option>
                         <option value="2">3 Meses</option>
                         <option value="3">6 Meses</option>
                         <option value="4">1 Año</option>
                     </select>
 
-                    <select name="filtro_predeterminado_criterio" id="filtro_predeterminado_criterio" style="height: 30px;"
-                            onchange="filtrar_predeterminado()">
+                    <div class="input-group-addon bg-gray">
+                        <i class="fa fa-fw fa-filter"></i> Criterio
+                    </div>
+                    <select name="filtro_predeterminado_criterio" id="filtro_predeterminado_criterio"
+                            onchange="filtrar_predeterminado()" class="form-control">
                         <option value="R" selected>Rendimiento</option>
                         <option value="D">Desecho</option>
                     </select>
 
-                    <select name="filtro_predeterminado_variedad" id="filtro_predeterminado_variedad" style="height: 30px;"
-                            onchange="filtrar_predeterminado()">
+                    <div class="input-group-addon bg-gray">
+                        <i class="fa fa-fw fa-leaf"></i> Variedad
+                    </div>
+                    <select name="filtro_predeterminado_planta" id="filtro_predeterminado_planta" class="form-control"
+                            onchange="select_planta($(this).val(), 'filtro_predeterminado_variedad', 'div_cargar_variedades',
+                    '<option value=T selected>Todos los tipos</option>')">
                         <option value="">Todas las variedades</option>
-                        @foreach(getVariedades() as $v)
-                            <option value="{{$v->id_variedad}}">{{$v->nombre}}</option>
+                        @foreach(getPlantas() as $p)
+                            <option value="{{$p->id_planta}}">{{$p->nombre}}</option>
                         @endforeach
                     </select>
-
-                    <select class="select2" multiple="multiple" id="filtro_predeterminado_annos" name="filtro_predeterminado_annos"
-                            data-placeholder="Años naturales" style="width: 205px; height: 35px">
-                        @foreach($annos as $a)
-                            <option value="{{$a}}">{{$a}}</option>
-                        @endforeach
+                    <div class="input-group-addon bg-gray" id="div_cargar_variedades">
+                        <i class="fa fa-fw fa-leaf"></i> Tipo
+                    </div>
+                    <select name="filtro_predeterminado_variedad" id="filtro_predeterminado_variedad" class="form-control"
+                            onchange="filtrar_predeterminado()">
+                        <option value="T" selected>Todos los tipos</option>
                     </select>
 
-                    <button type="button" class="btn btn-sm btn-default" onclick="filtrar_predeterminado()">
-                        <i class="fa fa-fw fa-search"></i>
-                    </button>
-                </h3>
+                    <div class="input-group-btn bg-gray">
+                        <button type="button" class="btn btn-default dropdown-toggle bg-gray" data-toggle="dropdown" aria-haspopup="true"
+                                aria-expanded="false">
+                            <i class="fa fa-calendar-minus-o"></i> Años
+                            <span class="caret"></span></button>
+                        <ul class="dropdown-menu">
+                            @foreach($annos as $a)
+                                <li>
+                                    <a href="javascript:void(0)" onclick="select_anno('{{$a}}')"
+                                       class="li_anno" id="li_anno_{{$a}}">
+                                        {{$a}}
+                                    </a>
+                                </li>
+                            @endforeach
+                        </ul>
+                    </div>
+                    <input type="text" class="form-control" placeholder="Años" id="filtro_predeterminado_annos"
+                           name="filtro_predeterminado_annos" readonly>
+
+                    <div class="input-group-btn">
+                        <button type="button" id="btn_filtrar" class="btn btn-default" onclick="filtrar_predeterminado()" title="Buscar">
+                            <i class="fa fa-fw fa-search"></i>
+                        </button>
+                    </div>
+                </div>
             </div>
             <div class="box-body">
                 <div class="row">

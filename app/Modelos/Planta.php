@@ -14,6 +14,7 @@ class Planta extends Model
     protected $fillable = [
         'id_planta',
         'nombre',   // unico
+        'siglas',   // unico
         'fecha_registro',
         'estado',
     ];

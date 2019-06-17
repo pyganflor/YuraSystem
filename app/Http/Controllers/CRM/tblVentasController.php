@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use yura\Http\Controllers\Controller;
 use yura\Modelos\HistoricoVentas;
 use yura\Modelos\Pais;
+use yura\Modelos\Submenu;
 
 class tblVentasController extends Controller
 {
@@ -21,6 +22,9 @@ class tblVentasController extends Controller
         return view('adminlte.crm.tbl_ventas.inicio', [
             'annos' => $annos,
             'clientes' => getClientes(),
+
+            'url' => $request->getRequestUri(),
+            'submenu' => Submenu::Where('url', '=', substr($request->getRequestUri(), 1))->get()[0],
         ]);
     }
 
