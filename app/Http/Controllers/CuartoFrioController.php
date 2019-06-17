@@ -76,4 +76,20 @@ class CuartoFrioController extends Controller
             'inventarios' => $inventarios
         ]);
     }
+
+    public function add_inventario(Request $request)
+    {
+        dd($request->all());
+
+    }
+
+    public function delete_dia(Request $request)
+    {
+        dd($request->all());
+    }
+
+    public function save_dia(Request $request)
+    {
+        dd($request->all());
+    }
 }

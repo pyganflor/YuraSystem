@@ -127,10 +127,6 @@
                             @endforeach
                             <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
                                 style="border-color: #9d9d9d">
-                                Total
-                            </th>
-                            <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
-                                style="border-color: #9d9d9d">
                                 Promedio
                             </th>
                         </tr>
@@ -153,9 +149,6 @@
                                         $total_parcial += $area;
                                     @endphp
                                 @endforeach
-                                <th class="text-center" style="border-color: #9d9d9d">
-                                    {{number_format(round($total_parcial / 10000, 2), 2)}}
-                                </th>
                                 <th class="text-center" style="border-color: #9d9d9d">
                                     {{number_format(round(($total_parcial / 10000) / count($semanas), 2), 2)}}
                                 </th>
