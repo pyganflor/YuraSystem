@@ -22,7 +22,7 @@
                             <i class="fa fa-truck" aria-hidden="true"></i> Crear despacho
                         </button>
                     @endif
-                    <button type="button" class="btn btn-xs btn-success">
+                    <button type="button" class="btn btn-xs btn-success" onclick="exportar_listado_despacho()">
                         <i class="fa fa-fw fa-file-excel-o"></i> Exportar a Excel
                     </button>
                 </th>
@@ -178,13 +178,13 @@
                                         $ramos_totales += $det_esp->cantidad * $esp_emp->cantidad * $det_ped->cantidad;
                                         $ramos_totales_estandar += convertToEstandar($det_esp->cantidad * $esp_emp->cantidad * $det_ped->cantidad, $det_esp->clasificacion_ramo->nombre);
 
-                                    if (!in_array($det_esp->id_variedad, $variedades)){
-                                        array_push($variedades, $det_esp->id_variedad);
-                                    }
-                                    array_push($ramos_x_variedades, [
-                                        'id_variedad' => $det_esp->id_variedad,
-                                        'cantidad' => convertToEstandar($det_esp->cantidad * $esp_emp->cantidad * $det_ped->cantidad, $det_esp->clasificacion_ramo->nombre),
-                                    ]);
+                                        if (!in_array($det_esp->id_variedad, $variedades)){
+                                            array_push($variedades, $det_esp->id_variedad);
+                                        }
+                                        array_push($ramos_x_variedades, [
+                                            'id_variedad' => $det_esp->id_variedad,
+                                            'cantidad' => convertToEstandar($det_esp->cantidad * $esp_emp->cantidad * $det_ped->cantidad, $det_esp->clasificacion_ramo->nombre),
+                                        ]);
                                     @endphp
                                 </td>
                                 <td class="text-center" style="border-color: #9d9d9d">

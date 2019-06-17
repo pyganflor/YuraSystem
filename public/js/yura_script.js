@@ -1787,3 +1787,28 @@ function busqueda_placa_camion(id_form) {
         $.LoadingOverlay('hide');
     });
 }
+
+function exportar_listado_despacho(){
+    $.LoadingOverlay('show');
+    $.ajax({
+        type: "POST",
+        dataType: "html",
+        contentType: "application/x-www-form-urlencoded",
+        url: '{{url('despachos/exportar_pedidos_despacho')}}',
+        data: {
+        fecha_pedido : $("#fecha_pedidos_search").val(),
+            _token: '{{csrf_token()}}'
+    },
+    success: function (data) {
+        var opResult = JSON.parse(data);
+        var $a = $("<a>");
+        $a.attr("href", opResult.data);
+        $("body").append($a);
+        $a.attr("download", "Despachos "+$("#fecha_pedidos_search").val()+" .xlsx");
+        $a[0].click();
+        $a.remove();
+        cerrar_modals();
+        $.LoadingOverlay('hide');
+    }
+});
+}
