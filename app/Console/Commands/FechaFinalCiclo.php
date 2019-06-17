@@ -44,6 +44,13 @@ class FechaFinalCiclo extends Command
             ->where('fecha_fin', '!=', date('Y-m-d'));
 
         if (count($ciclos_fin) > 0) {
+<<<<<<< HEAD
+            foreach ($ciclos_fin as $c) {
+                $c->fecha_fin = date('Y-m-d');
+                $c->save();
+                Log::info('La fecha_fin del ciclo #' . $c->id_ciclo . ' ha sido actualizada a ' . date('Y-m-d'));
+            }
+=======
             Log::info('<<<<< ! >>>>> Ejecutando comando "ciclo:fecha_fin" <<<<< ! >>>>>');
             foreach ($ciclos_fin as $c) {
                 $c->fecha_fin = date('Y-m-d');
@@ -51,6 +58,7 @@ class FechaFinalCiclo extends Command
                 Log::info('La fecha_fin del "ciclo" #' . $c->id_ciclo . ' ha sido actualizada a "' . date('Y-m-d') . '"');
             }
             Log::info('<<<<< * >>>>> Fin satisfactorio del comando "ciclo:fecha_fin" <<<<< * >>>>>');
+>>>>>>> ded73910bf17211896927d0e5421607f049512c9
         }
         return false;
     }
