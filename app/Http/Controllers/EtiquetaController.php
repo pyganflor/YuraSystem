@@ -72,7 +72,7 @@ class EtiquetaController extends Controller
 
     public function excel_facturas_etiquetas($objPHPExcel, $request)
     {
-        $objSheet = new PHPExcel_Worksheet($objPHPExcel, 'codigos DAE');
+        $objSheet = new PHPExcel_Worksheet($objPHPExcel, 'Etiquetas');
         $objPHPExcel->addSheet($objSheet, 0);
 
         $objSheet->getCell('A1')->setValue('Guía');
