@@ -122,7 +122,8 @@ class FueController extends Controller
                 ->where([
                     ['dc.estado',1],
                     ['comprobante.estado',5],
-                    ['comprobante.habilitado',1]
+                    ['comprobante.habilitado',1],
+                    ['comprobante.tipo_comprobante',01]
                 ]);
 
         if($request->get('id_cliente') != null)
