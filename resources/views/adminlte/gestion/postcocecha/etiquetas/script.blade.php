@@ -46,7 +46,10 @@
                 }
             });
         }
+<<<<<<< HEAD
         console.log(arr_facturas);
+=======
+>>>>>>> ded73910bf17211896927d0e5421607f049512c9
         if (arr_facturas.length === 0) {
             modal_view('modal_view_msg_factura',
                 '<div class="alert text-center  alert-warning"><p><i class="fa fa-fw fa-exclamation-triangle"></i> Debe seleccionar al menos una factura para generar la(s) etiqueta(s)</p></div>',
