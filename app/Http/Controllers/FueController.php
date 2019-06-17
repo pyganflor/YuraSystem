@@ -121,8 +121,8 @@ class FueController extends Controller
                 ->join('detalle_cliente as dc','c.id_cliente','dc.id_cliente')
                 ->where([
                     ['dc.estado',1],
-                    ['comprobante.estado','05'],
-                    ['comprobante.habilitado',true]
+                    ['comprobante.estado',5],
+                    ['comprobante.habilitado',1]
                 ]);
 
         if($request->get('id_cliente') != null)
@@ -136,6 +136,7 @@ class FueController extends Controller
         if($request->get('desde') != null && $request->get('hasta') != null)
             $data->whereBetween('comprobante.fecha_emision',[$request->get('desde'),$request->get('hasta')]);
 
+     //   dd($data->select('comprobante.*','e.*','p.*','dc.nombre','c.id_cliente')->get());
         if($excel){
             return $data->select('comprobante.*','e.*','p.*','dc.nombre','c.id_cliente')->get();
         }else{
