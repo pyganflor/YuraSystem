@@ -139,7 +139,7 @@ class FueController extends Controller
         if($request->get('desde') != null && $request->get('hasta') != null)
             $data->whereBetween('comprobante.fecha_emision',[$request->get('desde'),$request->get('hasta')]);
 
-        dd($data->select('comprobante.*','e.*','p.*','dc.nombre','c.id_cliente')->get());
+//        dd($data->select('comprobante.*','e.*','p.*','dc.nombre','c.id_cliente')->get());
         if($excel){
             return $data->select('comprobante.*','e.*','p.*','dc.nombre','c.id_cliente')->get();
         }else{
