@@ -22,7 +22,7 @@
                             <i class="fa fa-truck" aria-hidden="true"></i> Crear despacho
                         </button>
                     @endif
-                    <button type="button" class="btn btn-xs btn-success" onclick="exportar_listado_despacho()">
+                    <button type="button" class="btn btn-xs btn-success" onclick="exportar_listado_despacho('{{csrf_token()}}')">
                         <i class="fa fa-fw fa-file-excel-o"></i> Exportar a Excel
                     </button>
                 </th>

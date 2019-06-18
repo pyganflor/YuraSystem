@@ -204,9 +204,9 @@
                             </td>
                             <td style="font-size:12px">{{$distribucion->piezas}}</td>
                             <td style="font-size:12px">
-                                @foreach ($distribucion->distribuciones_coloraciones as $distribucion_coloracion)
+                                @foreach ($distribucion->distribuciones_coloraciones as $x => $distribucion_coloracion)
                                     @if($distribucion_coloracion->cantidad !== 0)
-                                        {{$distribucion_coloracion->cantidad ." ".$distribucion_coloracion->marcacion_coloracion->coloracion->color->nombre.","}}
+                                        {{$distribucion_coloracion->cantidad ." ".$distribucion_coloracion->marcacion_coloracion->coloracion->color->nombre. ","}}
                                     @endif
                                 @endforeach
                             </td>
