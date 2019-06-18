@@ -114,7 +114,8 @@
             tallos_x_ramo: $('#tallos_x_ramo_' + pos_inv).val(),
             longitud_ramo: $('#longitud_ramo_' + pos_inv).val(),
             unidad_medida: $('#unidad_medida_' + pos_inv).val(),
-            editar: $('#input_editar_' + pos_inv + '_' + dia).val()
+            editar: $('#input_editar_' + pos_inv + '_' + dia).val(),
+            dia: dia
         };
         basura = $('#basura_dia_' + dia).val();
         arreglo = [];
