@@ -410,6 +410,7 @@ class ClasificacionBlancoController extends Controller
         $models = InventarioFrio::where('disponibilidad', 1)
             ->where('estado', 1)
             ->where('basura', 0)
+            ->where('id_variedad', $request->id_variedad)
             ->where('fecha_ingreso', $request->fecha_inventario_frio)
             ->where('id_clasificacion_ramo', $request->clasificacion_ramo)
             ->where('tallos_x_ramo', $request->tallos_x_ramo)

@@ -167,5 +167,37 @@ class CuartoFrioController extends Controller
     public function save_dia(Request $request)
     {
         dd($request->all());
+        $fecha = opDiasFecha('-', $request->data['dia'], date('Y-m-d'));
+        $models = InventarioFrio::where('disponibilidad', 1)
+            ->where('estado', 1)
+            ->where('basura', 0)
+            ->where('fecha_ingreso', $fecha)
+            ->where('id_variedad', $request->data['variedad'])
+            ->where('id_clasificacion_ramo', $request->data['peso'])
+            ->where('tallos_x_ramo', $request->data['tallos_x_ramo'])
+            ->where('longitud_ramo', $request->data['longitud_ramo'])
+            ->where('id_empaque_p', $request->data['presentacion'])
+            ->where('id_unidad_medida', $request->data['unidad_medida'])
+            ->get();
+
+        $meta = $request->data['editar'];
+
+        foreach ($models as $pos => $model) {
+            if ($meta > 0) {
+                if ($model->disponibles >= $meta) {
+                    $model->disponibles = $model->disponibles - $meta;
+                    $meta = 0;
+                } else {
+                    $meta -= $model->disponibles;
+                    $model->disponibles = 0;
+                }
+
+                if ($model->disponibles == 0)
+                    $model->disponibilidad = 0;
+
+                $model->save();
+                bitacora('inventario_frio', $model->id_inventario_frio, 'U', 'Actualizacion de un inventario en frio');
+            }
+        }
     }
 }
