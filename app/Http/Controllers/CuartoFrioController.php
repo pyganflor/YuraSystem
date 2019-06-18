@@ -127,11 +127,17 @@ class CuartoFrioController extends Controller
     public function delete_dia(Request $request)
     {
         $fecha = opDiasFecha('-', $request->dia, date('Y-m-d'));
-        $list = InventarioFrio::All()->where('fecha_ingreso', $fecha)
+        $list = InventarioFrio::All()
             ->where('estado', 1)
             ->where('disponibilidad', 1)
             ->where('basura', 0)
             ->where('disponibles', '>', 0);
+
+        if ($request->dia == 9) {
+            $list = $list->where('fecha_ingreso', '<=', $fecha);
+        } else
+            $list = $list->where('fecha_ingreso', $fecha);
+
         foreach ($list as $inv) {
             $basura = $inv->disponibles;
             $inv->disponibles = 0;
@@ -172,7 +178,6 @@ class CuartoFrioController extends Controller
             ->where('estado', 1)
             ->where('basura', 0)
             ->where('disponibles', '>', 0)
-            ->where('fecha_ingreso', $fecha)
             ->where('id_variedad', $request->data['variedad'])
             ->where('id_clasificacion_ramo', $request->data['peso'])
             ->where('tallos_x_ramo', $request->data['tallos_x_ramo'])
@@ -180,6 +185,11 @@ class CuartoFrioController extends Controller
             ->where('id_empaque_p', $request->data['presentacion'])
             ->where('id_unidad_medida', $request->data['unidad_medida'])
             ->get();
+
+        if ($request->data['dia'] == 9) {
+            $models = $models->where('fecha_ingreso', '<=', $fecha);
+        } else
+            $models = $models->where('fecha_ingreso', $fecha);
 
         $meta = $request->data['editar'];
 

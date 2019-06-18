@@ -70,7 +70,7 @@
                     </div>
                     <select name="filtro_predeterminado_planta" id="filtro_predeterminado_planta" class="form-control"
                             onchange="select_planta($(this).val(), 'filtro_predeterminado_variedad', 'div_cargar_variedades',
-                    '<option value=T selected>Todos los tipos</option>')">
+                    '<option value= selected>Todos los tipos</option>')">
                         <option value="">Todas las variedades</option>
                         @foreach(getPlantas() as $p)
                             <option value="{{$p->id_planta}}">{{$p->nombre}}</option>
@@ -81,7 +81,7 @@
                     </div>
                     <select name="filtro_predeterminado_variedad" id="filtro_predeterminado_variedad" class="form-control"
                             onchange="filtrar_predeterminado()">
-                        <option value="T" selected>Todos los tipos</option>
+                        <option value="" selected>Todos los tipos</option>
                     </select>
 
                     <div class="input-group-btn bg-gray">

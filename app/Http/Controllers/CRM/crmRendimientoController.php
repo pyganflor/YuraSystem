@@ -281,65 +281,74 @@ class crmRendimientoController extends Controller
                 $array_blanco = [];
                 if ($request->id_variedad == '') {
                     $fechas = [];
+                    $dias = [];
                     for ($i = $desde; $i >= 1; $i--) {
-                        array_push($fechas, opDiasFecha('-', $i, date('Y-m-d')));
+                        array_push($dias, opDiasFecha('-', $i, date('Y-m-d')));
                     }
 
-                    foreach ($fechas as $f) {
+                    foreach ($dias as $f) {
                         $cosecha = Cosecha::All()->where('estado', 1)->where('fecha_ingreso', $f)->first();
                         $verde = ClasificacionVerde::All()->where('estado', 1)->where('fecha_ingreso', $f)->first();
                         $blanco = ClasificacionBlanco::All()->where('estado', 1)->where('fecha_ingreso', $f)->first();
 
-                        array_push($array_cosecha, $cosecha != '' ? [
-                            'rendimiento' => $cosecha->getRendimiento(),]
-                            : [
-                                'rendimiento' => 0,
-                            ]);
-                        array_push($array_verde, $verde != '' ? [
-                            'rendimiento' => $verde->getRendimiento(),
-                            'desecho' => $verde->desecho()]
-                            : [
-                                'rendimiento' => 0,
-                                'desecho' => 0
-                            ]);
-                        array_push($array_blanco, $blanco != '' ? [
-                            'rendimiento' => $blanco->getRendimiento(),
-                            'desecho' => $blanco->getDesecho()]
-                            : [
-                                'rendimiento' => 0,
-                                'desecho' => 0
-                            ]);
+                        if ($cosecha != '' && $verde != '' && $blanco != '') {
+                            array_push($fechas, $f);
+
+                            array_push($array_cosecha, $cosecha != '' ? [
+                                'rendimiento' => $cosecha->getRendimiento(),]
+                                : [
+                                    'rendimiento' => 0,
+                                ]);
+                            array_push($array_verde, $verde != '' ? [
+                                'rendimiento' => $verde->getRendimiento(),
+                                'desecho' => $verde->desecho()]
+                                : [
+                                    'rendimiento' => 0,
+                                    'desecho' => 0
+                                ]);
+                            array_push($array_blanco, $blanco != '' ? [
+                                'rendimiento' => $blanco->getRendimiento(),
+                                'desecho' => $blanco->getDesecho()]
+                                : [
+                                    'rendimiento' => 0,
+                                    'desecho' => 0
+                                ]);
+                        }
                     }
                 } else {
                     $fechas = [];
+                    $dias = [];
                     for ($i = $desde; $i >= 1; $i--) {
-                        array_push($fechas, opDiasFecha('-', $i, date('Y-m-d')));
+                        array_push($dias, opDiasFecha('-', $i, date('Y-m-d')));
                     }
 
-                    foreach ($fechas as $f) {
+                    foreach ($dias as $f) {
                         $cosecha = Cosecha::All()->where('estado', 1)->where('fecha_ingreso', $f)->first();
                         $verde = ClasificacionVerde::All()->where('estado', 1)->where('fecha_ingreso', $f)->first();
                         $blanco = ClasificacionBlanco::All()->where('estado', 1)->where('fecha_ingreso', $f)->first();
 
-                        array_push($array_cosecha, $cosecha != '' ? [
-                            'rendimiento' => $cosecha->getRendimientoByVariedad($request->id_variedad),]
-                            : [
-                                'rendimiento' => 0,
-                            ]);
-                        array_push($array_verde, $verde != '' ? [
-                            'rendimiento' => $verde->getRendimientoByVariedad($request->id_variedad),
-                            'desecho' => $verde->desechoByVariedad($request->id_variedad)]
-                            : [
-                                'rendimiento' => 0,
-                                'desecho' => 0
-                            ]);
-                        array_push($array_blanco, $blanco != '' ? [
-                            'rendimiento' => $blanco->getRendimientoByVariedad($request->id_variedad),
-                            'desecho' => $blanco->getDesechoByVariedad($request->id_variedad)]
-                            : [
-                                'rendimiento' => 0,
-                                'desecho' => 0
-                            ]);
+                        if ($cosecha != '' && $verde != '' && $blanco != '') {
+                            array_push($fechas, $f);
+                            array_push($array_cosecha, $cosecha != '' ? [
+                                'rendimiento' => $cosecha->getRendimientoByVariedad($request->id_variedad),]
+                                : [
+                                    'rendimiento' => 0,
+                                ]);
+                            array_push($array_verde, $verde != '' ? [
+                                'rendimiento' => $verde->getRendimientoByVariedad($request->id_variedad),
+                                'desecho' => $verde->desechoByVariedad($request->id_variedad)]
+                                : [
+                                    'rendimiento' => 0,
+                                    'desecho' => 0
+                                ]);
+                            array_push($array_blanco, $blanco != '' ? [
+                                'rendimiento' => $blanco->getRendimientoByVariedad($request->id_variedad),
+                                'desecho' => $blanco->getDesechoByVariedad($request->id_variedad)]
+                                : [
+                                    'rendimiento' => 0,
+                                    'desecho' => 0
+                                ]);
+                        }
                     }
                 }
 
