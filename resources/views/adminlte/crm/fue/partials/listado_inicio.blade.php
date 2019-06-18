@@ -84,11 +84,11 @@
             url: '{{url('fue/exportar_reporte_dae')}}',
             data: {
                 id_cliente : $("#id_cliente").val(),
-                codigo_dae : $("#codigo_dae").val(),
-                guia_madre : $("#guia_madre").val(),
-                dae : $("#dae_completa").val(),
-                desde : $("#desde").val(),
-                hasta : $("#hasta").val(),
+                codigo_dae : $("#filtro_codigo_dae").val(),
+                guia_madre : $("#filtro_guia_madre").val(),
+                dae : $("#filtro_dae_completa").val(),
+                desde : $("#filtro_desde").val(),
+                hasta : $("#filtro_hasta").val(),
                 _token: '{{csrf_token()}}',
             },
             success: function (data) {
