@@ -501,13 +501,13 @@ class DespachosController extends Controller
                             $objSheet->getStyle('G'.$inicio_tinturado_d.':G'.($final_tinturado_d + $inicio_tinturado_d-1))->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB(substr($coloracion->color->fondo,1));
                             $objSheet->getStyle('G'. ($w + 1))->getFont()->getColor()->applyFromArray( array('rgb' => substr($coloracion->color->texto,1)));
                             $w++;
-                            $objSheet->getColumnDimension('A')->setWidth('150px');
-                            $objSheet->getColumnDimension('B')->setWidth('150px');
-                            $objSheet->getColumnDimension('C')->setWidth('150px');
-                            $objSheet->getColumnDimension('D')->setWidth('150px');
-                            $objSheet->getColumnDimension('E')->setWidth('150px');
-                            $objSheet->getColumnDimension('F')->setWidth('150px');
-                            $objSheet->getColumnDimension('G')->setWidth('150px');
+                            $objSheet->getColumnDimension('A')->setWidth(20);
+                            $objSheet->getColumnDimension('B')->setWidth(20);
+                            $objSheet->getColumnDimension('C')->setWidth(20);
+                            $objSheet->getColumnDimension('D')->setWidth(20);
+                            $objSheet->getColumnDimension('E')->setWidth(20);
+                            $objSheet->getColumnDimension('F')->setWidth(20);
+                            $objSheet->getColumnDimension('G')->setWidth(20);
 
 
                         }
@@ -615,15 +615,15 @@ class DespachosController extends Controller
             $objSheet1->getStyle('G'. ($x + 4 + $a))->getFont()->getColor()->applyFromArray( array('rgb' => 'ffffff'));
             $objSheet1->getCell('G' . ($x + 4 + $a))->setValue(round($ramos_totales_estandar_no_tinturados / getConfiguracionEmpresa()->ramos_x_caja,2));
 
-            $objSheet1->getColumnDimension('A')->setAutoSize(true);
-            $objSheet1->getColumnDimension('B')->setAutoSize(true);
-            $objSheet1->getColumnDimension('C')->setAutoSize(true);
-            $objSheet1->getColumnDimension('D')->setAutoSize(true);
-            $objSheet1->getColumnDimension('E')->setAutoSize(true);
-            $objSheet1->getColumnDimension('F')->setAutoSize(true);
-            $objSheet1->getColumnDimension('G')->setAutoSize(true);
-            $objSheet1->getColumnDimension('H')->setAutoSize(true);
-            $objSheet1->getColumnDimension('I')->setAutoSize(true);
+            $objSheet1->getColumnDimension('A')->setWidth(15);
+            $objSheet1->getColumnDimension('B')->setWidth(15);
+            $objSheet1->getColumnDimension('C')->setWidth(15);
+            $objSheet1->getColumnDimension('D')->setWidth(15);
+            $objSheet1->getColumnDimension('E')->setWidth(15);
+            $objSheet1->getColumnDimension('F')->setWidth(15);
+            $objSheet1->getColumnDimension('G')->setWidth(15);
+            $objSheet1->getColumnDimension('H')->setWidth(15);
+            $objSheet1->getColumnDimension('I')->setWidth(15);
             $objSheet1->getStyle('A1:I1')->getFont()->setBold(true);
         }
 
@@ -708,9 +708,7 @@ class DespachosController extends Controller
             $objSheet->getStyle('C'. ($w + 5 + $w_ramo_x_variedad_tinturado+1))->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('357ca5');
             $objSheet->getStyle('C'. ($w + 5 + $w_ramo_x_variedad_tinturado+1))->getFont()->getColor()->applyFromArray( array('rgb' => 'ffffff'));
 
-
             $b = 1;
-
             foreach($cajas_equivalentes_tinturados as $caja_equivalente_tinturado){
                 $objSheet->mergeCells('E'.($w + 4 + $b).':F'.($w + 4 + $b));
                 $objSheet->getCell('E' . ($w + 4 + $b))->setValue(getVariedad($caja_equivalente_tinturado['id_variedad']->id_variedad)->nombre." (".getVariedad($caja_equivalente_tinturado['id_variedad']->id_variedad)->siglas.")");
