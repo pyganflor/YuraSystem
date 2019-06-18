@@ -29,10 +29,11 @@
             valor = '';
             if (accion == 'A') {
                 valor = $('#input_add_' + pos_inv + '_' + i).val();
-                add.push({
-                    valor: valor,
-                    dia: i,
-                });
+                if (valor > 0)
+                    add.push({
+                        valor: valor,
+                        dia: i,
+                    });
             }
             if (accion == 'E') {
                 valor = $('#input_editar_' + pos_inv + '_' + i).val();
@@ -98,6 +99,7 @@
         };
         post_jquery('{{url('cuarto_frio/delete_dia')}}', datos, function () {
             cerrar_modals();
+            $.LoadingOverlay('show');
             location.reload();
         });
     }
@@ -112,7 +114,8 @@
             tallos_x_ramo: $('#tallos_x_ramo_' + pos_inv).val(),
             longitud_ramo: $('#longitud_ramo_' + pos_inv).val(),
             unidad_medida: $('#unidad_medida_' + pos_inv).val(),
-            editar: $('#input_editar_' + pos_inv + '_' + dia).val()
+            editar: $('#input_editar_' + pos_inv + '_' + dia).val(),
+            dia: dia
         };
         basura = $('#basura_dia_' + dia).val();
         arreglo = [];
@@ -155,6 +158,7 @@
             };
             post_jquery('{{url('cuarto_frio/save_dia')}}', datos, function () {
                 cerrar_modals();
+                $.LoadingOverlay('show');
                 location.reload();
             });
         } else {
