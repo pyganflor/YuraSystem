@@ -26,13 +26,13 @@ class EtiquetaController extends Controller
     }
 
     public function listado(Request $request){
+//dd($request->desde);
         return view('adminlte.gestion.postcocecha.etiquetas.partials.listado',[
             'facturas' => Comprobante::where([
-                ['estado',5],
                 ['tipo_comprobante',01],
-                ['habilitado',1],
-                ['fecha_emision',$request->desde]
-            ])->orWhere('estado',1)->select('id_comprobante')->get()
+                ['habilitado',1]
+            ])->whereIn('estado',[1,5])
+		->where('fecha_emision',$request->desde)->select('id_comprobante')->get()
         ]);
     }
 
