@@ -26,10 +26,11 @@
             </tr>
             </thead>
             <tbody id="tbody_etiquetas_facturas">
+
                 @foreach($facturas as $x => $item)
                     @php $comprobante = getComprobante($item->id_comprobante) @endphp
                     <tr onmouseover="$(this).css('background-color','#add8e6')" onmouseleave="$(this).css('background-color','')">
-                        <td style="border-color: #9d9d9d" class="text-center">{{$comprobante->numero_comprobante}}</td>
+                        <td style="border-color: #9d9d9d" class="text-center">{{isset($comprobante->numero_comprobante) ? $comprobante->numero_comprobante : "No facturado aún"}}</td>
                         <td style="border-color: #9d9d9d" class="text-center">{{$comprobante->envio->pedido->cliente->detalle()->nombre}}</td>
                         <td style="border-color: #9d9d9d" class="text-center">{{$comprobante->envio->pedido->detalles[0]->agencia_carga->nombre}}</td>
                         <td style="border-color: #9d9d9d" class="text-center">
