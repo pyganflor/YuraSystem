@@ -501,13 +501,13 @@ class DespachosController extends Controller
                             $objSheet->getStyle('G'.$inicio_tinturado_d.':G'.($final_tinturado_d + $inicio_tinturado_d-1))->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB(substr($coloracion->color->fondo,1));
                             $objSheet->getStyle('G'. ($w + 1))->getFont()->getColor()->applyFromArray( array('rgb' => substr($coloracion->color->texto,1)));
                             $w++;
-                            $objSheet->getColumnDimension('A')->setAutoSize(true);
-                            $objSheet->getColumnDimension('B')->setAutoSize(true);
-                            $objSheet->getColumnDimension('C')->setAutoSize(true);
-                            $objSheet->getColumnDimension('D')->setAutoSize(true);
-                            $objSheet->getColumnDimension('E')->setAutoSize(true);
-                            $objSheet->getColumnDimension('F')->setAutoSize(true);
-                            $objSheet->getColumnDimension('G')->setAutoSize(true);
+                            $objSheet->getColumnDimension('A')->setWidth('150px');
+                            $objSheet->getColumnDimension('B')->setWidth('150px');
+                            $objSheet->getColumnDimension('C')->setWidth('150px');
+                            $objSheet->getColumnDimension('D')->setWidth('150px');
+                            $objSheet->getColumnDimension('E')->setWidth('150px');
+                            $objSheet->getColumnDimension('F')->setWidth('150px');
+                            $objSheet->getColumnDimension('G')->setWidth('150px');
 
 
                         }
