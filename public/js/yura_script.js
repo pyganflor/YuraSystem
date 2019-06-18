@@ -1788,7 +1788,7 @@ function busqueda_placa_camion(id_form) {
     });
 }
 
-function exportar_listado_despacho(){
+function exportar_listado_despacho(token){
     $.LoadingOverlay('show');
     $.ajax({
         type: "POST",
@@ -1797,7 +1797,7 @@ function exportar_listado_despacho(){
         url: 'despachos/exportar_pedidos_despacho',
         data: {
         fecha_pedido : $("#fecha_pedidos_search").val(),
-            _token: '{{csrf_token()}}'
+        _token: token
     },
     success: function (data) {
         var opResult = JSON.parse(data);
