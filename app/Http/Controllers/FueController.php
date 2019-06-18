@@ -114,7 +114,7 @@ class FueController extends Controller
     }
 
     public function reporte_fue_filtrado(Request $request,$excel=false){
-        dd($request->all());
+
         $data = Comprobante::join('envio as e', 'comprobante.id_envio','e.id_envio')
                 ->join('pedido as p','e.id_pedido','p.id_pedido')
                 ->join('cliente as c','p.id_cliente','c.id_cliente')
