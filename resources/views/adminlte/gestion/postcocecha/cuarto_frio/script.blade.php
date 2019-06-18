@@ -89,6 +89,8 @@
 
                 $('#inventario_target_' + edit[i]['dia']).val(pos_inv);
             }
+        } else {
+            location.reload();
         }
     }
 

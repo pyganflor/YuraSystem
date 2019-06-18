@@ -166,11 +166,12 @@ class CuartoFrioController extends Controller
 
     public function save_dia(Request $request)
     {
-        dd($request->all());
         $fecha = opDiasFecha('-', $request->data['dia'], date('Y-m-d'));
+
         $models = InventarioFrio::where('disponibilidad', 1)
             ->where('estado', 1)
             ->where('basura', 0)
+            ->where('disponibles', '>', 0)
             ->where('fecha_ingreso', $fecha)
             ->where('id_variedad', $request->data['variedad'])
             ->where('id_clasificacion_ramo', $request->data['peso'])
@@ -197,7 +198,70 @@ class CuartoFrioController extends Controller
 
                 $model->save();
                 bitacora('inventario_frio', $model->id_inventario_frio, 'U', 'Actualizacion de un inventario en frio');
+            } else
+                break;
+        }
+
+        /* ============== INVENTARIOS NUEVOS ============= */
+        if ($request->has('arreglo')) {
+            foreach ($request->arreglo as $item) {
+                $inv = new InventarioFrio();
+                $inv->disponibilidad = 1;
+                $inv->basura = 0;
+                $inv->fecha_ingreso = $fecha;
+                $inv->id_variedad = $item['inventario']['variedad'];
+                $inv->id_clasificacion_ramo = $item['inventario']['peso'];
+                $inv->tallos_x_ramo = $item['inventario']['tallos_x_ramo'];
+                $inv->longitud_ramo = $item['inventario']['longitud_ramo'];
+                $inv->id_empaque_p = $item['inventario']['presentacion'];
+                $inv->id_unidad_medida = $item['inventario']['unidad_medida'];
+                $inv->cantidad = $item['inventario']['add'];
+                $inv->disponibles = $item['inventario']['add'];
+
+                $texto = getVariedad($item['inventario']['variedad'])->siglas;
+                $texto .= ' ' . explode('|', ClasificacionRamo::find($item['inventario']['peso'])->nombre)[0];
+                $texto .= ClasificacionRamo::find($item['inventario']['peso'])->unidad_medida->siglas;
+                $texto .= ' ' . explode('|', getEmpaque($item['inventario']['presentacion'])->nombre)[0];
+                $texto .= $item['inventario']['tallos_x_ramo'] != '' ? ', ' . $item['inventario']['tallos_x_ramo'] : '';
+                $texto .= $item['inventario']['longitud_ramo'] != '' ? ' ' . $item['inventario']['longitud_ramo'] . getUnidadMedida($item['inventario']['unidad_medida'])->siglas : '';
+
+                $inv->descripcion = $texto;
+                $inv->save();
+                $inv = InventarioFrio::All()->last();
+                bitacora('inventario_frio', $inv->id_inventario_frio, 'I', 'Insercion de un nuevo inventario a cuarto frio');
             }
         }
+        /* ============== BASURA ============= */
+        if ($request->basura > 0) {
+            $inv = new InventarioFrio();
+            $inv->disponibilidad = 0;
+            $inv->basura = 1;
+            $inv->fecha_ingreso = $fecha;
+            $inv->id_variedad = $request->data['variedad'];
+            $inv->id_clasificacion_ramo = $request->data['peso'];
+            $inv->tallos_x_ramo = $request->data['tallos_x_ramo'];
+            $inv->longitud_ramo = $request->data['longitud_ramo'];
+            $inv->id_empaque_p = $request->data['presentacion'];
+            $inv->id_unidad_medida = $request->data['unidad_medida'];
+            $inv->cantidad = $request->basura;
+            $inv->disponibles = 0;
+
+            $texto = getVariedad($request->data['variedad'])->siglas;
+            $texto .= ' ' . explode('|', ClasificacionRamo::find($request->data['peso'])->nombre)[0];
+            $texto .= ClasificacionRamo::find($request->data['peso'])->unidad_medida->siglas;
+            $texto .= ' ' . explode('|', getEmpaque($request->data['presentacion'])->nombre)[0];
+            $texto .= $request->data['tallos_x_ramo'] != '' ? ', ' . $request->data['tallos_x_ramo'] : '';
+            $texto .= $request->data['longitud_ramo'] != '' ? ' ' . $request->data['longitud_ramo'] . getUnidadMedida($request->data['unidad_medida'])->siglas : '';
+
+            $inv->descripcion = $texto;
+            $inv->save();
+            $inv = InventarioFrio::All()->last();
+            bitacora('inventario_frio', $inv->id_inventario_frio, 'I', 'Insercion de un nuevo inventario a cuarto frio');
+        }
+
+        return [
+            'success' => true,
+            'mensaje' => '<div class="alert alert-success text-center">Se han modificado satisfactoriamente los ramos en inventario de cuarto frío</div>',
+        ];
     }
 }
