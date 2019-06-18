@@ -59,7 +59,7 @@
                         <input type="hidden" id="variedad_{{$pos_inv}}" value="{{$inv['variedad']->id_variedad}}">
                         <input type="hidden" id="peso_{{$pos_inv}}" value="{{$inv['peso']->id_clasificacion_ramo}}">
                         <input type="hidden" id="nombre_peso_{{$pos_inv}}" value="{{explode('|', $inv['peso']->nombre)[0]}}">
-                        <input type="hidden" id="presentacion_{{$pos_inv}}" value="{{$inv['presentacion']->id_empaque_p}}">
+                        <input type="hidden" id="presentacion_{{$pos_inv}}" value="{{$inv['presentacion']->id_empaque}}">
                         <input type="hidden" id="tallos_x_ramo_{{$pos_inv}}" value="{{$inv['tallos_x_ramo']}}">
                         <input type="hidden" id="longitud_ramo_{{$pos_inv}}" value="{{$inv['longitud_ramo']}}">
                         <input type="hidden" id="unidad_medida_{{$pos_inv}}" value="{{$inv['unidad_medida']->id_unidad_medida}}">

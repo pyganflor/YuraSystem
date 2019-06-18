@@ -99,7 +99,6 @@
         };
         post_jquery('{{url('cuarto_frio/delete_dia')}}', datos, function () {
             cerrar_modals();
-            $.LoadingOverlay('show');
             location.reload();
         });
     }
@@ -157,7 +156,6 @@
             };
             post_jquery('{{url('cuarto_frio/save_dia')}}', datos, function () {
                 cerrar_modals();
-                $.LoadingOverlay('show');
                 location.reload();
             });
         } else {
