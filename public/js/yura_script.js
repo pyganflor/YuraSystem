@@ -1794,7 +1794,7 @@ function exportar_listado_despacho(){
         type: "POST",
         dataType: "html",
         contentType: "application/x-www-form-urlencoded",
-        url: '{{url('despachos/exportar_pedidos_despacho')}}',
+        url: 'despachos/exportar_pedidos_despacho',
         data: {
         fecha_pedido : $("#fecha_pedidos_search").val(),
             _token: '{{csrf_token()}}'

@@ -32,9 +32,9 @@ class FueController extends Controller
     public function buscar(Request $request){
         return view('adminlte.crm.fue.partials.listado',[
             'facturas' => Comprobante::where([
-                ['tipo_comprobante'=>01],
-                ['estado'=>'5'],
-                ['fecha_emision' => ($request->get('busqueda') != null && !empty($request->get('busqueda')) ? $request->get('busqueda') : now()->toDateString())],
+                ['tipo_comprobante',01],
+                ['estado',5],
+                ['fecha_emision' , ($request->get('busqueda') != null && !empty($request->get('busqueda')) ? $request->get('busqueda') : now()->toDateString())],
                 ['comprobante.habilitado',true]
             ])->get()
         ]);
@@ -121,9 +121,12 @@ class FueController extends Controller
                 ->join('detalle_cliente as dc','c.id_cliente','dc.id_cliente')
                 ->where([
                     ['dc.estado',1],
-                    ['comprobante.estado','05'],
-                    ['comprobante.habilitado',true]
+                    ['comprobante.estado',5],
+                    ['comprobante.habilitado',1],
+                    ['comprobante.tipo_comprobante',01]
                 ]);
+
+           //dd($request->all());
 
         if($request->get('id_cliente') != null)
             $data->where('c.id_cliente',$request->get('id_cliente'));
@@ -136,6 +139,7 @@ class FueController extends Controller
         if($request->get('desde') != null && $request->get('hasta') != null)
             $data->whereBetween('comprobante.fecha_emision',[$request->get('desde'),$request->get('hasta')]);
 
+//        dd($data->select('comprobante.*','e.*','p.*','dc.nombre','c.id_cliente')->get());
         if($excel){
             return $data->select('comprobante.*','e.*','p.*','dc.nombre','c.id_cliente')->get();
         }else{
