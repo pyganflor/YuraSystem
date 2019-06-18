@@ -15,23 +15,23 @@
                         </td>
                         <td>
                             <label > Código dae</label><br />
-                            <input type="text" class="form-control"id="codigo_dae" value="" name="codigo_dae">
+                            <input type="text" class="form-control"id="filtro_codigo_dae" value="" name="filtro_codigo_dae">
                         </td>
                         <td>
                             <label >Dae completa</label><br />
-                            <input type="text" class="form-control" id="dae_completa" value="" name="dae_completa" placeholder="">
+                            <input type="text" class="form-control" id="filtro_dae_completa" value="" name="filtro_dae_completa" placeholder="">
                         </td>
                         <td>
                             <label > Guía madre</label><br />
-                            <input type="text" class="form-control" id="guia_madre" value="" name="guia_madre" placeholder="">
+                            <input type="text" class="form-control" id="filtro_guia_madre" value="" name="filtro_guia_madre" placeholder="">
                         </td>
                         <td>
                              <label > Fecha desde</label><br />
-                            <input type="date" class="form-control" id="desde" value="{{now()->toDateString()}}" name="desde">
+                            <input type="date" class="form-control" id="filtro_desde" value="{{now()->toDateString()}}" name="filtro_desde">
                         </td>
                         <td>
                              <label > Fecha hasta</label><br />
-                            <input type="date" class="form-control" id="hasta" value="{{\Carbon\Carbon::parse(now()->toDateString())->addDay(1)->toDateString()}}" name="hasta">
+                            <input type="date" class="form-control" id="filtro_hasta" name="filtro_hasta" value="{{\Carbon\Carbon::parse(now()->toDateString())->addDay(1)->toDateString()}}" >
                         </td>
                         <td>
                              <label style="visibility: hidden"> .</label><br />
@@ -60,11 +60,11 @@
         $.LoadingOverlay('show');
         datos = {
             id_cliente : $("#id_cliente").val(),
-            codigo_dae : $("#codigo_dae").val(),
-            guia_madre : $("#guia_madre").val(),
-            dae : $("#dae_completa").val(),
-            desde : $("#desde").val(),
-            hasta : $("#hasta").val(),
+            codigo_dae : $("#filtro_codigo_dae").val(),
+            guia_madre : $("#filtro_guia_madre").val(),
+            dae : $("#filtro_dae_completa").val(),
+            desde : $("#filtro_desde").val(),
+            hasta : $("#filtro_hasta").val(),
         };
         $.get('{{url('fue/reporte_fue_filtrado')}}',datos, function (retorno) {
             $("#div_listado_datos_exportacion").html(retorno);
