@@ -45,8 +45,13 @@ class VentasM2Controller extends Controller
                 $x++;
             }
         }
-        dd($desde, $hasta, $meses, $x);
+        foreach ($meses as $mes) {
+            dd(getHistoricoVentaByMes($mes['mes'], $mes['anno']));
+        }
+
+
         return view('adminlte.crm.ventas_m2.partials.chart_m2', [
+            'meses' => $meses
         ]);
     }
 

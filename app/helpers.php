@@ -64,6 +64,7 @@ use yura\Modelos\TipoIdentificacion;
 use yura\Modelos\Ciclo;
 use yura\Modelos\Cosecha;
 use yura\Modelos\Planta;
+use yura\Modelos\HistoricoVentas;
 
 /*
  * -------- BITÁCORA DE LAS ACCIONES ECHAS POR EL USUARIO ------
@@ -1784,9 +1785,9 @@ function getAerolinea($idAerolinea)
     return Aerolinea::find($idAerolinea);
 }
 
-
-function getColoracionByDetPed($id_det_ped){
-    return Coloracion::where('id_detalle_pedido',$id_det_ped)->get();
+function getColoracionByDetPed($id_det_ped)
+{
+    return Coloracion::where('id_detalle_pedido', $id_det_ped)->get();
 }
 
 function getDatosExportacionByDetPed($id_detalle_pedido)
@@ -2005,3 +2006,16 @@ function getVentaByRango($semana_ini, $semana_fin, $variedad)
     ];
 }
 
+function getHistoricoVentaByMes($mes, $anno, $variedad = '')
+{
+    $r = DB::table('historico_ventas')
+        ->select(DB::raw('sum(valor) as cant'))
+        ->where('mes', $mes)
+        ->where('anno', $anno);
+    if ($variedad != '')
+        $r = $r->where('id_variedad', $variedad);
+
+    $r = $r->get()[0]->cant;
+
+    return $r;
+}
