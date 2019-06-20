@@ -9,7 +9,7 @@
         data_list = [];
         data_tallos = [];
         @for($i = 0; $i < count($meses); $i++)
-        labels.push("{{$meses[$i]['mes']. ' - '.$meses[$i]['anno']}}");
+        labels.push("{{getMeses(TP_ABREVIADO)[$meses[$i]['mes'] - 1]. '-'.$meses[$i]['anno']}}");
 
         data_list.push("{{$array_valor[$i]}}");
         @endfor
