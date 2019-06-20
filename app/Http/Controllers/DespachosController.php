@@ -196,7 +196,7 @@ class DespachosController extends Controller
                 $objDespacho->asist_comercial_ext = $despacho['nombre_asist_comercial'];
                 $objDespacho->id_asist_comrecial_ext = $despacho['id_asist_comercial'];
                 $objDespacho->resp_transporte = $despacho['nombre_transportista'];
-                $objDespacho->id_resp_transporte = $despacho['firma_id_transportista'];
+               // $objDespacho->id_resp_transporte = $despacho['firma_id_transportista'];
                 $objDespacho->mail_resp_ofi_despacho = $despacho['correo_oficina_despacho'];
                 $objDespacho->n_despacho = getSecuenciaDespacho();
 
