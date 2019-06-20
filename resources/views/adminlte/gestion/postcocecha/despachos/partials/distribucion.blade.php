@@ -46,7 +46,7 @@
                 <b>Responsable</b>
             </td>
             <td class="text-center" style="border-color: #9d9d9d;vertical-align: middle" >
-                <input type="text" id="responsable" name="responsable" onkeyup="duplicar_nombre(this)" style="width: 100%;border: none;" required>
+                <input type="text" id="responsable" name="responsable" onkeyup="duplicar_nombre(this)" style="width: 100%;border: none;" value="{{isset($resp_transporte->resp_transporte) ? $resp_transporte->resp_transporte : ""}}" required>
             </td>
             <td class="text-center" style="border-color: #9d9d9d;vertical-align: middle">
                 <b>Horario</b>
@@ -112,7 +112,7 @@
             </td>
             @for ($i = 0; $i < 7; $i++)
                 <td class="text-center" style="border-color: #9d9d9d;vertical-align: middle">
-                    <input type="text" class="sello" name="sello" style="width: 100%;border: none;" {{$i==0 ? "required" : ""}}>
+                    <input type="text" class="sello" name="sello" style="width: 100%;border: none;" {{--{{$i==0 ? "required" : ""}}--}}>
                 </td>
             @endfor
         </tr>

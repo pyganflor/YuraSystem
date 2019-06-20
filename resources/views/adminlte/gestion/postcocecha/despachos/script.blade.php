@@ -105,7 +105,7 @@
                     nombre_cuarto_frio : $("#nombre_cuarto_frio").val(),
                     id_cuarto_frio : $("#id_cuarto_frio").val(),
                     nombre_transportista : $("form#form_despacho_"+i+" #responsable").val(),
-                    firma_id_transportista : $("#firma_id_transportista").val(),
+                    //firma_id_transportista : $("#firma_id_transportista").val(),
                     nombre_guardia_turno : $("#nombre_guardia_turno").val(),
                     id_guardia_turno : $("#id_guardia_turno").val(),
                     nombre_asist_comercial : $("#nombre_asist_comercial").val(),
@@ -115,7 +115,7 @@
                 });
             }
             console.log(arr_datos);
-
+            //return false;
             //$.each($(".id_pedido"),function (i,j) { arr_pedidos.push(j.value); });
             datos = {
                 _token: '{{csrf_token()}}',
