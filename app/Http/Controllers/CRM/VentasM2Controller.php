@@ -90,7 +90,8 @@ class VentasM2Controller extends Controller
             $ciclos = getCiclosCerradosByRango($sem->codigo, $sem->codigo, $request->variedad, true);
             $area_cerrada = $ciclos['area_cerrada'];
             $ciclo_anno = $ciclos['ciclo'] > 0 ? round(365 / $ciclos['ciclo'], 2) : 0;
-            $valor = $area_cerrada > 0 ? round(($venta / $area_cerrada) * $ciclo_anno, 2) : 0;
+            $venta_m2 = $area_cerrada > 0 ? round($venta / $area_cerrada, 2) : 0;
+            $valor = $venta_m2 * $ciclo_anno;
 
             array_push($array_valor, $valor);
         }
