@@ -2,6 +2,7 @@
 
 namespace yura\Http\Controllers\CRM;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use yura\Http\Controllers\Controller;
 use yura\Modelos\Submenu;
@@ -45,13 +46,19 @@ class VentasM2Controller extends Controller
                 $x++;
             }
         }
+        $array_valor = [];
         foreach ($meses as $mes) {
-            dd(getHistoricoVentaByMes($mes['mes'], $mes['anno']));
+            $venta = getHistoricoVentaByMes($mes['mes'], $mes['anno']);
+            $area_cerrada = getCiclosCerradosByRango($mes['anno'] . '-' . $mes['mes'] . '-01', date("Y-m-t", strtotime($mes['anno'] . '-' . $mes['mes'] . '-01')), 'T', false);
+            $area_cerrada = $area_cerrada['area_cerrada'];
+            $valor = round($venta / $area_cerrada, 2);
+
+            array_push($array_valor, $valor);
         }
 
-
         return view('adminlte.crm.ventas_m2.partials.chart_m2', [
-            'meses' => $meses
+            'meses' => $meses,
+            'array_valor' => $array_valor,
         ]);
     }
 

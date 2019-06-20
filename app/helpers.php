@@ -1879,16 +1879,18 @@ function getAreaCiclosByRango($semana_ini, $semana_fin, $variedad)
     ];
 }
 
-function getCiclosCerradosByRango($semana_ini, $semana_fin, $variedad)
+function getCiclosCerradosByRango($semana_ini, $semana_fin, $variedad, $by_semana = true)
 {
-    $semana_ini = Semana::All()->where('codigo', $semana_ini)->first();
-    $semana_fin = Semana::All()->where('codigo', $semana_fin)->first();
+    if ($by_semana) {
+        $semana_ini = Semana::All()->where('codigo', $semana_ini)->first()->fecha_inicial;
+        $semana_fin = Semana::All()->where('codigo', $semana_fin)->first()->fecha_final;
+    }
 
     $ciclos_fin = Ciclo::All()
         ->where('estado', 1)
         ->where('activo', 0)
-        ->where('fecha_fin', '>=', $semana_ini->fecha_inicial)
-        ->where('fecha_fin', '<=', $semana_fin->fecha_final)
+        ->where('fecha_fin', '>=', $semana_ini)
+        ->where('fecha_fin', '<=', $semana_fin)
         ->sortBy('fecha_fin');
 
     if ($variedad != 'T')   // T => Todas
@@ -2006,16 +2008,16 @@ function getVentaByRango($semana_ini, $semana_fin, $variedad)
     ];
 }
 
-function getHistoricoVentaByMes($mes, $anno, $variedad = '')
+function getHistoricoVentaByMes($mes, $anno, $variedad = 'T')
 {
     $r = DB::table('historico_ventas')
         ->select(DB::raw('sum(valor) as cant'))
         ->where('mes', $mes)
         ->where('anno', $anno);
-    if ($variedad != '')
+    if ($variedad != 'T')
         $r = $r->where('id_variedad', $variedad);
 
     $r = $r->get()[0]->cant;
 
-    return $r;
+    return round($r, 2);
 }
