@@ -169,7 +169,8 @@ class DespachosController extends Controller
             //dd($request->all());
             foreach($request->data_despacho as $despacho){
                 $s='';
-                foreach ($despacho['arr_sellos'] as $sellos) $s .= $sellos."|";
+                if(isset($despacho['arr_sellos'] ))
+                    foreach ($despacho['arr_sellos'] as $sellos) $s .= $sellos."|";
                 $distribucion = substr($despacho['distribucion'], 0, -1);
                 $objDespacho = new Despacho;
                 $objDespacho->id_transportista = $despacho['id_transportista'];
