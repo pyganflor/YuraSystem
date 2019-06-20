@@ -11,7 +11,7 @@
         @for($i = 0; $i < count($semanas); $i++)
         labels.push("{{$semanas[$i]->codigo}}");
 
-        data_list.push("0");
+        data_list.push("{{$array_valor[$i]}}");
         @endfor
 
             datasets = [{
