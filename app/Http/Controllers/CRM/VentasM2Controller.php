@@ -66,7 +66,8 @@ class VentasM2Controller extends Controller
 
     public function chart_m2_anno(Request $request)
     {
-        $semanas = [];
+        /* ===================== POR SEMANAS =================== */
+        /*$semanas = [];
         $semana_actual = getSemanaByDate(date('Y-m-d'))->codigo;
         if (substr($semana_actual, 2) == '52') {
             $semana_inicial = substr(date('Y'), 2) . '01';
@@ -86,7 +87,7 @@ class VentasM2Controller extends Controller
         $array_valor = [];
 
         foreach ($semanas as $sem) {
-            $venta = getVentaByRango($sem->codigo, $sem->codigo, $request->variedad);
+            $venta = getVentaByRango($sem->codigo, $sem->codigo, $request->variedad)['valor'];
             $ciclos = getCiclosCerradosByRango($sem->codigo, $sem->codigo, $request->variedad, true);
             $area_cerrada = $ciclos['area_cerrada'];
             $ciclo_anno = $ciclos['ciclo'] > 0 ? round(365 / $ciclos['ciclo'], 2) : 0;
@@ -97,6 +98,52 @@ class VentasM2Controller extends Controller
         }
         return view('adminlte.crm.ventas_m2.partials.chart_m2_anno', [
             'semanas' => $semanas,
+            'array_valor' => $array_valor,
+        ]);*/
+
+        /* =================== POR MESES ====================== */
+        $hasta = date('m');
+        $desde = date('m');
+
+        if ($desde == '12') {
+            $desde = '01';
+            $desde_anno = date('Y');
+        } else {
+            $desde = $desde + 1;
+            $desde_anno = date('Y') - 1;
+        }
+        if (strlen($desde) != 2)
+            $desde = '0' . $desde;
+
+        $desde = $desde_anno . '-' . $desde . '-01';
+        $hasta = date('Y') . '-' . $hasta . '-01';
+
+        $meses = [];
+        for ($i = 1, $x = 1; $x <= 12; $i += 28) {
+            $item = [
+                'mes' => substr(opDiasFecha('+', $i, $desde), 5, 2),
+                'anno' => substr(opDiasFecha('+', $i, $desde), 0, 4),
+            ];
+            if (!in_array($item, $meses)) {
+                array_push($meses, $item);
+                $x++;
+            }
+        }
+
+        $array_valor = [];
+        foreach ($meses as $mes) {
+            $venta = getHistoricoVentaByMes($mes['mes'], $mes['anno'], $request->variedad);
+            $ciclos = getCiclosCerradosByRango($mes['anno'] . '-' . $mes['mes'] . '-01', date("Y-m-t", strtotime($mes['anno'] . '-' . $mes['mes'] . '-01')), $request->variedad, false);
+            $area_cerrada = $ciclos['area_cerrada'];
+            $ciclo_anno = $ciclos['ciclo'] > 0 ? round(365 / $ciclos['ciclo'], 2) : 0;
+            $venta_m2 = $area_cerrada > 0 ? round($venta / $area_cerrada, 2) : 0;
+            $valor = round($venta_m2 * $ciclo_anno, 2);
+
+            array_push($array_valor, $valor);
+        }
+
+        return view('adminlte.crm.ventas_m2.partials.chart_m2_anno', [
+            'meses' => $meses,
             'array_valor' => $array_valor,
         ]);
     }
