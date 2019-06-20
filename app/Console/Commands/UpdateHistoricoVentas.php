@@ -41,8 +41,6 @@ class UpdateHistoricoVentas extends Command
      */
     public function handle()
     {
-        $msg = [];
-
         $pedidos = Pedido::All()->where('estado', 1)
             ->where('historico', 0)
             ->where('fecha_pedido', '<', date('Y-m-d'));
@@ -77,14 +75,13 @@ class UpdateHistoricoVentas extends Command
                     }
 
                     if (!$historico->save()) {
-                        $msg[] = 'ERROR: Ocurrió un problema con el pedido #' . $p->id_pedido . ' - variedad ' . $v->siglas;
+                        Log::info('ERROR: Ocurrió un problema con el pedido #' . $p->id_pedido . ' - variedad ' . $v->siglas);
                         return false;
                     }
                 }
                 $p->historico = 1;
                 $p->save();
                 Log::info('Pedido #' . $p->id_pedido . ' procesado');
-                $msg[] = 'Pedido #' . $p->id_pedido . ' procesado';
             }
             Log::info('<<<<< * >>>>> Fin satisfactorio del comando "historico_ventas:update" <<<<< * >>>>>');
         }
