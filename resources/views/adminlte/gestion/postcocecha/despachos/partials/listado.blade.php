@@ -64,10 +64,10 @@
                     <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
                         CUARTO FRÍO
                     </th>
-                    <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white;width:140px">
-                        OPCIONES
-                    </th>
                 @endif
+                <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white;width:140px">
+                    OPCIONES
+                </th>
             </tr>
             @php
                 $piezas_totales = 0;
@@ -190,12 +190,13 @@
                                 <td class="text-center" style="border-color: #9d9d9d">
                                     {{$det_esp->cantidad}}
                                 </td>
-                                @if($opciones && $pos_det_esp == 0 && $pos_esp_emp == 0 && $pos_det_ped == 0)
-                                    <td style="border-color: #9d9d9d" class="text-center "
-                                        rowspan="{{getCantidadDetallesEspecificacionByPedido($pedido->id_pedido)}}">
-                                        {{getAgenciaCarga($det_ped->id_agencia_carga)->nombre}}
-                                    </td>
-                                    <td class="text-center" style="border-color: #9d9d9d" id="td_opciones_{{$pedido->id_pedido}}"
+                                @if($pos_det_esp == 0 && $pos_esp_emp == 0 && $pos_det_ped == 0)
+                                    @if($opciones)
+                                        <td style="border-color: #9d9d9d" class="text-center "
+                                            rowspan="{{getCantidadDetallesEspecificacionByPedido($pedido->id_pedido)}}">
+                                            {{getAgenciaCarga($det_ped->id_agencia_carga)->nombre}}
+                                        </td>
+                                        <td class="text-center" style="border-color: #9d9d9d" id="td_opciones_{{$pedido->id_pedido}}"
                                         rowspan="{{getCantidadDetallesEspecificacionByPedido($pedido->id_pedido)}}">
                                         @if($facturado==null)
                                             @if($pedido->empaquetado == 0)
@@ -241,12 +242,20 @@
                                                 <i class="fa fa-eye" aria-hidden="true"></i>
                                             </a>
                                         @endif
-                                        <a target="_blank" href="{{url('pedidos/crear_packing_list',$pedido->id_pedido)}}"
-                                           class="btn btn-info btn-xs" title="Generar packing list">
+                                            <a target="_blank" href="{{url('pedidos/crear_packing_list',$pedido->id_pedido)}}"
+                                               class="btn btn-info btn-xs" title="Generar packing list">
+                                                <i class="fa fa-cubes"></i>
+                                            </a>
+                                        </td>
+                                    @endif
+
+                                    @if(!$opciones)
+                                        <td rowspan="{{getCantidadDetallesEspecificacionByPedido($pedido->id_pedido)}}" class="text-center" style="border-color: #9d9d9d">
+                                        <a target="_blank" href="{{url('pedidos/crear_packing_list',[$pedido->id_pedido,true])}}" class="btn btn-info btn-xs" title="Packing list">
                                             <i class="fa fa-cubes"></i>
                                         </a>
-
-                                    </td>
+                                        </td>
+                                    @endif
                                 @endif
                             </tr>
                         @endforeach

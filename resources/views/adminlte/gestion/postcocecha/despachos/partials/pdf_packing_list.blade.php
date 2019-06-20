@@ -1,15 +1,16 @@
-<table style="width:100%;font-family: arial, sans-serif">
+<table style="width:100%;font-family: arial, sans-serif;border-collapse: collapse;">
     <tr>
         <td style="vertical-align: middle;text-align: center">
-            <h4 style="color: #464646">PACKING LIST / LISTA DE EMPAQUE #{{isset($comprobante->clave_acceso) ? "001-".getDetallesClaveAcceso($comprobante->clave_acceso, 'PUNTO_ACCESO')."-".getDetallesClaveAcceso($comprobante->clave_acceso, 'SECUENCIAL') : null}}</h4>
+            <h4 style="color: #464646">PACKING LIST / LISTA DE EMPAQUE @if(!$vista_despacho) #{{isset($comprobante->clave_acceso) ? "001-".getDetallesClaveAcceso($comprobante->clave_acceso, 'PUNTO_ACCESO')."-".getDetallesClaveAcceso($comprobante->clave_acceso, 'SECUENCIAL') : null}} @endif</h4>
         </td>
     </tr>
     <tr>
 </table>
-<table style="width:100%;font-family: arial, sans-serif">
+<table style="width:100%;font-family: arial, sans-serif;border-collapse: collapse;">
     <tr>
         <td>
             <div style="width: 300px;">
+
                 <table>
                     <tr>
                         <td>
@@ -25,74 +26,77 @@
                     <tr><td style="font-size:13px">Fax: {{$empresa->fax}}</td></tr>
                     <tr><td style="font-size:13px">Email: {{$empresa->correo}}</td></tr>
             </table>
-            <table style="margin-top: 10px;">
-                <tr>
-                    <td>
-                       <b> BUYER (comprador):</b>
-                    </td>
-                </tr>
-            </table>
-            <table style="border: 1px solid black;width: 100%">
-                <tr><td style="font-size:13px">{{$cliente['nombre']}}</td></tr>
-                <tr><td style="font-size:13px">{{$cliente['direccion']." ".$cliente['provincia']}}</td></tr>
-                <tr><td style="font-size:13px">{{$cliente['pais']}} </td></tr>
-                <tr><td style="font-size:13px">{{$cliente['tipo_identificacion'] == "IDENTIFICACIÓN DEL EXTERIOR" ? "ID - EXT" : $cliente['tipo_identificacion']}} : {{$cliente['identificacion']}}</td></tr>
-                <tr><td style="font-size:13px">Tlf: {{$cliente['telefono']}}</td></tr>
-            </table>
+
+                <table style="margin-top: 10px;">
+                    <tr>
+                        <td>
+                           <b> BUYER (comprador):</b>
+                        </td>
+                    </tr>
+                </table>
+                <table style="border: 1px solid black;width: 100%">
+                    <tr><td style="font-size:13px">{{$cliente['nombre']}}</td></tr>
+                    <tr><td style="font-size:13px">{{$cliente['direccion']." ".$cliente['provincia']}}</td></tr>
+                    <tr><td style="font-size:13px">{{$cliente['pais']}} </td></tr>
+                    <tr><td style="font-size:13px">{{$cliente['tipo_identificacion'] == "IDENTIFICACIÓN DEL EXTERIOR" ? "ID - EXT" : $cliente['tipo_identificacion']}} : {{$cliente['identificacion']}}</td></tr>
+                    <tr><td style="font-size:13px">Tlf: {{$cliente['telefono']}}</td></tr>
+                </table>
             </div>
         </td>
-        <td>
-            <div style="width:300px">
-                <table style="width: 100%;"  >
-                <tr style="border: 1px solid black;">
-                    <td style="border: 1px solid black;padding: 0;font-size: 13px;width: 60% ">
-                        <b>Farm Code / Código de Finca</b><br />
-                        {{$empresa->razon_social}}
-                    </td>
-                    <td style="border: 1px solid black;padding: 0;font-size: 13px">
-                        <b>Date / Fecha< br /></b> <br />
-                        {{isset($despacho->fecha_despacho) ? $despacho->fecha_despacho : null }}
-                    </td>
-                </tr>
-                <tr style="border: 1px solid black;">
-                    <td style="border: 1px solid black;padding: 0;font-size: 13px;width: 60% ">
-                        <b>AWB No. / Guía No.</b><br />
-                        {{$envio['guia_madre']}}
-                    </td>
-                    <td style="border: 1px solid black;padding: 0;font-size: 13px">
-                        <b>HAWB No.</b><br />
-                        {{$envio['guia_hija']}}
-                    </td>
-                </tr>
-                <tr style="border: 1px solid black;">
-                    <td style="border: 1px solid black;padding: 0;font-size: 13px;width: 60% ">
-                        @if($pedido->tipo_especificacion === "N")
-                            <b>Carrier / Transportador</b><br />
-                            {{$envio['aerolinea']}}
-                        @elseif($pedido->tipo_especificacion === "T")
-                            <b>INOVICE</b><br />
-                            {{ isset($comprobante) ? getDetallesClaveAcceso($comprobante->clave_acceso,'SERIE').getDetallesClaveAcceso($comprobante->clave_acceso,'SECUENCIAL') : ""}}
-                        @endif
-                    </td>
-                    <td style="border: 1px solid black;padding: 0;font-size: 13px">
-                        <b>ADD CASE No</b><br />
-                        OE {{$cliente['dae']}}
-                    </td>
-                </tr>
-            </table>
-            </div>
-        </td>
+        @if(!$vista_despacho)
+            <td>
+                <div style="width:300px">
+                    <table style="width: 100%;"  >
+                    <tr style="border: 1px solid black;">
+                        <td style="border: 1px solid black;padding: 0;font-size: 13px;width: 60% ">
+                            <b>Farm Code / Código de Finca</b><br />
+                            {{$empresa->razon_social}}
+                        </td>
+                        <td style="border: 1px solid black;padding: 0;font-size: 13px">
+                            <b>Date / Fecha< br /></b> <br />
+                            {{isset($despacho->fecha_despacho) ? $despacho->fecha_despacho : null }}
+                        </td>
+                    </tr>
+                    <tr style="border: 1px solid black;">
+                        <td style="border: 1px solid black;padding: 0;font-size: 13px;width: 60% ">
+                            <b>AWB No. / Guía No.</b><br />
+                            {{$envio['guia_madre']}}
+                        </td>
+                        <td style="border: 1px solid black;padding: 0;font-size: 13px">
+                            <b>HAWB No.</b><br />
+                            {{$envio['guia_hija']}}
+                        </td>
+                    </tr>
+                    <tr style="border: 1px solid black;">
+                        <td style="border: 1px solid black;padding: 0;font-size: 13px;width: 60% ">
+                            @if($pedido->tipo_especificacion === "N")
+                                <b>Carrier / Transportador</b><br />
+                                {{$envio['aerolinea']}}
+                            @elseif($pedido->tipo_especificacion === "T")
+                                <b>INOVICE</b><br />
+                                {{ isset($comprobante) ? getDetallesClaveAcceso($comprobante->clave_acceso,'SERIE').getDetallesClaveAcceso($comprobante->clave_acceso,'SECUENCIAL') : ""}}
+                            @endif
+                        </td>
+                        <td style="border: 1px solid black;padding: 0;font-size: 13px">
+                            <b>ADD CASE No</b><br />
+                            OE {{$cliente['dae']}}
+                        </td>
+                    </tr>
+                </table>
+                </div>
+            </td>
+        @endif
     </tr>
 </table>
 @if($pedido->tipo_especificacion === "N")
-<table style="width:100%;font-family: arial, sans-serif" >
+<table style="width:100%;font-family: arial, sans-serif;border-collapse: collapse;" >
         <thead style="border: 1px solid black" >
             <tr>
-                <td style="padding-left: 5px;border: 1px solid black;font-size:13px" > PIECES<br />Piezas</td>
-                <td style="padding-left: 5px;border: 1px solid black;font-size:13px" >UNITIS / BOX<br />Por Caja</td>
-                <td style="padding-left: 5px;border: 1px solid black;font-size:13px" > ST / BN</td>
-                <td style="padding-left: 5px;border: 1px solid black;font-size:13px" >TOTAL UNITS <br />Total Unidades</td>
-                <td style="padding-left: 5px;border: 1px solid black;font-size:13px" >DETALLE POR CAJA / BOXES CONTENT</td>
+                <td style="padding-left: 5px;border: 1px solid black;font-size:13px;border:1px solid black" > PIECES<br />Piezas</td>
+                <td style="padding-left: 5px;border: 1px solid black;font-size:13px;border:1px solid black" >UNITIS / BOX<br />Por Caja</td>
+                <td style="padding-left: 5px;border: 1px solid black;font-size:13px;border:1px solid black" > ST / BN</td>
+                <td style="padding-left: 5px;border: 1px solid black;font-size:13px;border:1px solid black" >TOTAL UNITS <br />Total Unidades</td>
+                <td style="padding-left: 5px;border: 1px solid black;font-size:13px;border:1px solid black" >DETALLE POR CAJA / BOXES CONTENT</td>
             </tr>
         </thead>
         <tbody style="border: 1px solid black">
@@ -133,16 +137,16 @@
                     }
                 @endphp
                 <tr>
-                    <td style="padding-left: 5px;font-size:13px" >
+                    <td style="padding-left: 5px;font-size:13px;border:1px solid black" >
                         {{$det_ped['piezas']}}
                         @php
                             $total_piezas += $det_ped['piezas']
                         @endphp
                     </td>
-                    <td style="padding-left: 5px;font-size:13px" >{{$det_ped['ramos_x_caja']}}</td>
-                    <td style="padding-left: 5px;font-size:13px" >B/N</td>
-                    <td style="padding-left: 5px;font-size:13px" >{{$det_ped['ramos_totales']}}</td>
-                    <td style="padding-left: 5px;font-size:13px" >{{$det_ped['presentacion']}}</td>
+                    <td style="padding-left: 5px;font-size:13px;border:1px solid black" >{{$det_ped['ramos_x_caja']}}</td>
+                    <td style="padding-left: 5px;font-size:13px;border:1px solid black" >B/N</td>
+                    <td style="padding-left: 5px;font-size:13px;border:1px solid black" >{{$det_ped['ramos_totales']}}</td>
+                    <td style="padding-left: 5px;font-size:13px;border:1px solid black" >{{$det_ped['presentacion']}}</td>
                 </tr>
             @endforeach
         </tbody>
@@ -174,16 +178,16 @@
 </table>
 @elseif($pedido->tipo_especificacion === "T")
     @php $env = getEnvio($pedido->envios[0]->id_envio) @endphp
-    <table style="width:100%;font-family: arial, sans-serif" >
+    <table style="width:100%;font-family: arial, sans-serif;border-collapse: collapse;" >
         <thead style="border: 1px solid black" >
             <tr>
                 <td style="padding-left: 5px;border: 1px solid black;font-size:12px" > DESCRIPCIÓN <br />
                     {{substr($env->pedido->detalles[0]->cliente_especificacion->especificacion->especificacionesEmpaque[0]->detalles[0]->variedad->planta->nombre,0,3)}}
                 </td>
-                <td style="padding-left: 5px;border: 1px solid black;font-size:12px" >BOUNCHES <br /> BOX</td>
-                <td style="padding-left: 5px;border: 1px solid black;font-size:12px" > INITIAL <br /> BOX</td>
-                <td style="padding-left: 5px;border: 1px solid black;font-size:12px" >FINAL <br /> BOX</td>
-                <td style="padding-left: 5px;border: 1px solid black;font-size:12px" >TOTAL <br /> BOXES</td>
+                <td style="padding-left: 5px;font-size:12px" >BOUNCHES <br /> BOX</td>
+                <td style="padding-left: 5px;font-size:12px" > INITIAL <br /> BOX</td>
+                <td style="padding-left: 5px;font-size:12px" >FINAL <br /> BOX</td>
+                <td style="padding-left: 5px;font-size:12px" >TOTAL <br /> BOXES</td>
                 <td style="padding-left: 5px;border: 1px solid black;font-size:12px;width: 250px;" >COLOR</td>
             </tr>
         </thead>
@@ -192,18 +196,18 @@
                 @foreach ($det_ped->marcaciones as $marcion){
                     @foreach ($marcion->distribuciones as $distribucion){
                         <tr>
-                            <td style="font-size:12px">{{$marcion->nombre}}</td>
-                            <td style="font-size:12px">{{$distribucion->ramos}}</td>
-                            <td style="font-size:12px">{{$distribucion->pos_pieza}}</td>
-                            <td style="font-size:12px">
+                            <td style="font-size:12px;border:1px solid black">{{$marcion->nombre}}</td>
+                            <td style=";font-size:12px;border:1px solid black">{{$distribucion->ramos}}</td>
+                            <td style="font-size:12px;border:1px solid black">{{$distribucion->pos_pieza}}</td>
+                            <td style="font-size:12px;border:1px solid black">
                                 @if ($distribucion->piezas === 1 )
                                     {{$distribucion->pos_pieza}}
                                 @else
                                     {{($distribucion->pos_pieza-1)+$distribucion->piezas}}
                                 @endif
                             </td>
-                            <td style="font-size:12px">{{$distribucion->piezas}}</td>
-                            <td style="font-size:12px">
+                            <td style="font-size:12px;border:1px solid black">{{$distribucion->piezas}}</td>
+                            <td style="font-size:12px;border:1px solid black">
                                 @foreach ($distribucion->distribuciones_coloraciones as $x => $distribucion_coloracion)
                                     @if($distribucion_coloracion->cantidad !== 0)
                                         {{$distribucion_coloracion->cantidad ." ".$distribucion_coloracion->marcacion_coloracion->coloracion->color->nombre. ","}}
@@ -217,6 +221,7 @@
         </tbody>
     </table>
 @endif
+@if(!$vista_despacho)
 <table style="width:100%;font-family: arial, sans-serif">
     <tr>
         <td style="text-align: center;width: 50%;vertical-align: bottom">
@@ -244,3 +249,4 @@
         </td>
     </tr>
 </table>
+@endif
