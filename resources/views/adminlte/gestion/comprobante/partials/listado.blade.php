@@ -110,9 +110,12 @@
                             @endif
                         @endif
                         @if($item->estado == 1)
-                            <button class="btn btn-default btn-xs">
-                                <input type="checkbox" id="facturar_{{$key+1}}" name="enviar"  title="Enviar al SRI" value="{{$item->clave_acceso}}" style="margin:0;position:relative;top:3px">
-                            </button>
+                                <button class="btn btn-default btn-xs">
+                                    <input type="checkbox" id="integrar_{{$key+1}}" name="integrar" {{$item->integrado ? "disabled" : "" }}  title="Integrar con el Venture" value="{{$item->id_comprobante}}" style="margin:0;position:relative;top:3px">
+                                </button>
+                            {{--<button class="btn btn-default btn-xs">
+                                <input type="checkbox" id="facturar_{{$key+1}}" name="enviar" {{$item->integrado ? "disabled" : "" }}  title="Enviar al SRI" value="{{$item->clave_acceso}}" style="margin:0;position:relative;top:3px">
+                            </button>--}}
                             @if($tipo_comprobante!="06")
                                 <a target="_blank" href="{{url('comprobante/pre_factura',[$item->clave_acceso,true])}}" class="btn btn-info btn-xs" title="Ver factura Cliente">
                                     <i class="fa fa-user-circle-o" aria-hidden="true"></i>
@@ -145,10 +148,14 @@
                 </div>
             @elseif($item->estado == 1)
                 <div class="text-center">
-                    <button class="btn btn-success" onclick="enviar_comprobante('{{$tipo_comprobante}}')">
+                    <button class="btn btn-success" onclick="integrar_comprobante()">
+                        <i class="fa fa-upload" aria-hidden="true"></i>
+                        Integrar con el venture
+                    </button>
+                    {{--<button class="btn btn-success" onclick="enviar_comprobante('{{$tipo_comprobante}}')">
                         <i class="fa fa-upload" aria-hidden="true"></i>
                         Enviar al SRI
-                    </button>
+                    </button>--}}
                 </div>
             @endif
         @endif

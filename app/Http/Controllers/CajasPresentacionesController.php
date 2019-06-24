@@ -95,19 +95,17 @@ class CajasPresentacionesController extends Controller
     }
 
     public function update_estado_empaque(Request $request){
+        $msg = '<div class="alert alert-danger text-center">
+                <p> Hubo un error al actualizar el estado del empaque, intente nuevamente </p>
+                 </div>';
         $objEmpaque = Empaque::find($request->id_empaque);
         $objEmpaque->estado = $request->estado == 1 ? 0 : 1;
         $request->estado == 1 ? $accion = "desactivado" : $accion = "activado";
         if($objEmpaque->save()){
             $objDetalleEmpaque = DetalleEmpaque::where('id_empaque',$request->id_empaque);
-            if($objDetalleEmpaque->update(["estado" => $request->estado == 1 ? 0 : 1])){
+            $objDetalleEmpaque->update(["estado" => ($request->estado == 1 ? 0 : 1)]);
                 $msg = '<div class="alert alert-success text-center">
                 <p> El empaque ha sido '.$accion.' con exito</p>
-                 </div>';
-            }
-        }else{
-            $msg = '<div class="alert alert-success text-center">
-                <p> Hubo un error al actualizar el estado del empaque, intente nuevamente </p>
                  </div>';
         }
 
