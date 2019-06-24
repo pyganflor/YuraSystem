@@ -73,7 +73,7 @@
                    name="tallos_x_ramos_{{$pos_form_detalles}}_{{$cant_desgloses}}"
                    class="form-control" maxlength="3" max="999" min="1" placeholder="Cantidad" required>
         </div>
-    </div>re
+    </div>
     <div class="col-md-4">
         <div class="form-group input-group">
             <span class="input-group-addon" style="background-color: #e9ecef"> longitud ramo </span>
