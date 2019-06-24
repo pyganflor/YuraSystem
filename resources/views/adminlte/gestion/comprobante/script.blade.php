@@ -191,4 +191,51 @@
             $.LoadingOverlay("hide");
         });
     });
+
+    function integrar_comprobante(){
+        arrComprobante = [];
+        $.each($('input:checkbox[name=integrar]:checked'), function (i, j) {
+            arrComprobante.push(j.value);
+        });
+
+        if (arrComprobante.length === 0) {
+            modal_view('modal_view_msg_factura',
+                '<div class="alert text-center  alert-warning"><p><i class="fa fa-fw fa-exclamation-triangle"></i> Debe seleccionar al menos un documento electrónico para integrar al Venture</p></div>',
+                '<i class="fa fa-file-text-o" aria-hidden="true"></i> Comprobante electrónicos', true, false, '{{isPC() ? '50%' : ''}}');
+            return false;
+        }
+        $.LoadingOverlay("show");
+
+        /*datos = {
+            _token: '{{csrf_token()}}',
+            arrComprobante: arrComprobante,
+        };*/
+
+        $.ajax({
+            type: "POST",
+            dataType: "html",
+            contentType: "application/x-www-form-urlencoded",
+            url: '{{url('comprobante/integrar_comprobante')}}',
+            data: {
+                arrComprobante : arrComprobante,
+                _token: '{{csrf_token()}}'
+            },
+            success: function (data) {
+                console.log(data);
+               // var opResult = JSON.parse(data);
+                var $a = $("<a>");
+                $a.attr("href", data);
+                $("body").append($a);
+                $a.attr("download", "text_integrador.txt");
+                $a[0].click();
+                $a.remove();
+                $.LoadingOverlay('hide');
+            }
+        });
+
+        /*post_jquery('{{url('comprobante/integrar_comprobante')}}', datos, function () {
+
+        });*/
+        $.LoadingOverlay('hide');
+    }
 </script>

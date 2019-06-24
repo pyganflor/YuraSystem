@@ -20,7 +20,8 @@ class Comprobante extends Model
         'monto_total',
         'numero_comprobante',
         'peso',
-        'habilitado'
+        'habilitado',
+        'integrado'
     ];
 
     public function envio(){

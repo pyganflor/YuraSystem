@@ -53,7 +53,8 @@
                                         <option value="1"> Generados </option>
                                         <option value="3"> Devueltos </option>
                                         <option value="4"> Rechazados </option>
-                                        <option value="5"> Enviado al SRI </option>
+                                        <option value="5"> Integrado al venture </option>
+                                        {{--<option value="5"> Enviado al SRI </option>--}}
                                     </select>
                                 </div>
                                 <div class="form-group">

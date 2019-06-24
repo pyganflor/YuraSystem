@@ -6,7 +6,7 @@
                     <thead>
                     <tr style="background-color: #dd4b39; color: white">
                         <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d;width:70%">
-                            NOMBRE CAJAS
+                            NOMBRE CAJAS | FACTOR DE CONVERCIÓN | PESO CAJA (gr)
                         </th>
                         <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
                             OPCIONES
@@ -26,8 +26,8 @@
                                     <button type="button" {{$item->estado == 1 ? '' : 'disabled'}} class="btn btn-default btn-xs" title="editar" onclick="add_empaque('{{$item->id_empaque}}')">
                                         <i class="fa fa-pencil" aria-hidden="true"></i>
                                     </button>
-                                    <button type="button" class="btn btn-{{$item->estado == 1 ? 'success' : 'warning'}} btn-xs" title="editar" onclick="update_detalle_empaque('{{$item->id_empaque}}','{{$item->estado}}')">
-                                        <i class="fa fa-{{$item->estado == 1 ? 'check' : 'ban'}}" aria-hidden="true"></i>
+                                    <button type="button" class="btn btn-{{$item->estado == 1 ? 'warning' : 'success'}} btn-xs" title="{{$item->estado == 1 ? 'Deshabilitar' : 'Habilitar'}}" onclick="update_detalle_empaque('{{$item->id_empaque}}','{{$item->estado}}')">
+                                        <i class="fa fa-{{$item->estado == 1 ? 'ban' : 'check'}}" aria-hidden="true"></i>
                                     </button>
                                 </td>
                             </tr>
@@ -70,8 +70,8 @@
                                  <button type="button" {{$item->estado == 1 ? '' : 'disabled'}} class="btn btn-default btn-xs" title="editar" onclick="add_empaque('{{$item->id_empaque}}')">
                                      <i class="fa fa-pencil" aria-hidden="true"></i>
                                  </button>
-                                 <button type="button" class="btn btn-{{$item->estado == 1 ? 'success' : 'warning'}} btn-xs" title="editar" onclick="update_detalle_empaque('{{$item->id_empaque}}','{{$item->estado}}')">
-                                     <i class="fa fa-{{$item->estado == 1 ? 'check' : 'ban'}}" aria-hidden="true"></i>
+                                 <button type="button" class="btn btn-{{$item->estado == 1 ? 'warning' : 'success'}} btn-xs" title="{{$item->estado == 1 ? 'Deshabilitar' : 'Habilitar'}}" onclick="update_detalle_empaque('{{$item->id_empaque}}','{{$item->estado}}')">
+                                     <i class="fa fa-{{$item->estado == 1 ? 'ban' : 'check'}}" aria-hidden="true"></i>
                                  </button>
                              </td>
                          </tr>

@@ -1269,4 +1269,59 @@ class ComprobanteController extends Controller
         ];
     }
 
+    public function integrar_comprobante(Request $request){
+        $valida = Validator::make($request->all(), [
+            'arrComprobante' => 'required|Array',
+        ],['arrComprobante.required' => 'Debe seleccionar al menos un comprobante']);
+
+        $msg = "";
+        $success = false;
+        if (!$valida->fails()) {
+
+            $archivo = fopen('text_integrador.txt','a');
+            fwrite($archivo,'16516958');
+            fclose($archivo);
+
+            header("Content-Type: application/force-download");
+            header("Content-Type: application/octet-stream");
+            header("Content-Type: application/download");
+            header('Content-Disposition:inline;filename="text_integrador.txt"');
+            header("Content-Transfer-Encoding: binary");
+            header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
+            header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+            header("Pragma: no-cache");
+            ob_start();
+            $request_body = stream_get_contents('php://input');
+            //dd($request_body);
+            $txtData = ob_get_contents();
+            ob_end_clean();
+            $opResult = array(
+                'status' => 1,
+                'data' => "data:application/vnd.ms-excel;base64," . base64_encode($txtData)
+            );
+            echo json_encode($opResult);
+
+        }else {
+
+            $errores = '';
+            foreach ($valida->errors()->all() as $mi_error) {
+                if ($errores == '') {
+                    $errores = '<li>' . $mi_error . '</li>';
+                } else {
+                    $errores .= '<li>' . $mi_error . '</li>';
+                }
+            }
+            $msg = '<div class="alert alert-danger">' .
+                '<p class="text-center">¡Por favor corrija los siguientes errores!</p>' .
+                '<ul>' .
+                $errores .
+                '</ul>' .
+                '</div>';
+        }
+       /* return [
+            'mensaje' => $msg,
+            'success' => $success
+        ];*/
+    }
+
 }

@@ -13,6 +13,7 @@ Route::get('comprobante/comprobante_aprobado_sri/{clave_acceso}', 'ComprobanteCo
 Route::get('comprobante/pre_factura/{clave_acceso}/{cliente?}', 'ComprobanteController@ver_pre_factura');
 Route::post('comprobante/generar_comprobante_guia_remision','ComprobanteController@generar_comprobante_guia_remision');
 Route::get('comprobante/pre_guia_remision/{clave_acceso}', 'ComprobanteController@ver_pre_guia_remision');
+Route::post('comprobante/integrar_comprobante', 'ComprobanteController@integrar_comprobante');
 Route::get('comprobante/prueba', function () {
 
     /* =========== SEMANAL ============= */
