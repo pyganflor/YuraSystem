@@ -8,8 +8,8 @@
         datasets = [];
         data_list = [];
         data_tallos = [];
-        @for($i = 0; $i < count($semanas); $i++)
-        labels.push("{{$semanas[$i]->codigo}}");
+        @for($i = 0; $i < count($meses); $i++)
+        labels.push("{{getMeses(TP_ABREVIADO)[$meses[$i]['mes'] - 1]. '-'.$meses[$i]['anno']}}");
 
         data_list.push("{{$array_valor[$i]}}");
         @endfor
@@ -25,7 +25,7 @@
 
         ctx = document.getElementById(id).getContext('2d');
         myChart = new Chart(ctx, {
-            type: 'line',
+            type: 'bar',
             data: {
                 labels: labels,
                 datasets: datasets
