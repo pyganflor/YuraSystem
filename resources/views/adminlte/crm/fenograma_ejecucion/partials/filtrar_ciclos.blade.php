@@ -93,7 +93,7 @@
                 Totales
             </th>
             <th class="text-center" style="border-color: #9d9d9d">
-                {{$total_area}}
+                {{number_format($total_area, 2)}}
             </th>
             <th class="text-center" style="border-color: #9d9d9d">
                 {{count($ciclos) > 0 ? round($ciclo / count($ciclos), 2) : 0}}
