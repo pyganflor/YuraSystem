@@ -58,7 +58,7 @@
                         <i class="fa fa-fw fa-calendar"></i> Fecha
                     </div>
                     <input type="date" class="form-control" id="filtro_predeterminado_fecha" name="filtro_predeterminado_fecha" required
-                           value="{{date('Y-m-d')}}">
+                           value="{{date('Y-m-d')}}" onchange="filtrar_ciclos()">
                 </div>
             </div>
             <div class="box-body" id="div_listado_ciclos"></div>
