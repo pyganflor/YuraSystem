@@ -201,11 +201,11 @@
                     <input type="text" id="nombre_cuarto_frio" style="text-align: center" class="form-control input-sm" name="nombre_cuarto_frio"
                            value="{{isset($datos_responsables->aux_cuarto_fri) ? $datos_responsables->aux_cuarto_fri : ""}}" required>
                 </td>
-                <td class="text-center" style="border-color: #9d9d9d;vertical-align: middle">
+                {{--<td class="text-center" style="border-color: #9d9d9d;vertical-align: middle">
                     <label>Transportista</label>
                     <input type="text" id="nombre_transportista" style="text-align: center" class="form-control input-sm" name="nombre_transportista"
                            value="{{isset($datos_responsables->resp_transporte) ? $datos_responsables->resp_transporte : ""}}" required>
-                </td>
+                </td>--}}
                 <td class="text-center" style="border-color: #9d9d9d;vertical-align: middle">
                     <label>Guardia de turno</label>
                     <input type="text" id="nombre_guardia_turno" style="text-align: center" class="form-control input-sm" name="nombre_guardia_turno"
@@ -228,11 +228,11 @@
                     <input type="text" id="id_cuarto_frio" style="text-align: center" class="form-control input-sm" name="id_cuarto_frio"
                            value="{{isset($datos_responsables->id_aux_cuarto_fri) ? $datos_responsables->id_aux_cuarto_fri : ""}}" required>
                 </td>
-                <td class="text-center" style="border-color: #9d9d9d;vertical-align: middle">
+                {{--<td class="text-center" style="border-color: #9d9d9d;vertical-align: middle">
                     <label>Identificación</label>
                     <input type="text" id="firma_id_transportista" style="text-align: center" class="form-control input-sm" name="firma_id_transportista"
                            value="{{isset($datos_responsables->id_resp_transporte) ? $datos_responsables->id_resp_transporte : ""}}"  required>
-                </td>
+                </td>--}}
                 <td class="text-center" style="border-color: #9d9d9d;vertical-align: middle">
                     <label>Identificación</label>
                     <input type="text" id="id_guardia_turno" style="text-align: center" class="form-control input-sm" name="id_guardia_turno"

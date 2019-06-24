@@ -129,7 +129,7 @@ class DespachosController extends Controller
 
         $valida = Validator::make($request->all(), [
             'data_despacho.*.fecha_despacho' => 'required',
-            'data_despacho.*.firma_id_transportista' => 'required',
+            //'data_despacho.*.firma_id_transportista' => 'required',
             'data_despacho.*.id_asist_comercial' => 'required',
             'data_despacho.*.id_camion' => 'required',
             'data_despacho.*.id_conductor' => 'required',
@@ -144,9 +144,24 @@ class DespachosController extends Controller
             'data_despacho.*.nombre_guardia_turno' => 'required',
             'data_despacho.*.nombre_oficina_despacho' => 'required',
             'data_despacho.*.nombre_transportista' => 'required',
-            'data_despacho.*.arr_sellos' => 'required|Array',
+            //'data_despacho.*.arr_sellos' => 'required|Array',
             'data_despacho.*.semana' => 'required',
             'data_despacho.*.correo_oficina_despacho'  => 'required'
+        ],[
+            'data_despacho.*.fecha_despacho.required' => 'Debe colocar la fecha de despacho para el camión',
+            'data_despacho.*.id_camion.required' => 'Debe seleccionar el camión',
+            'data_despacho.*.n_placa.required' =>  'Debe escribir la placa del camión',
+            'data_despacho.*.semana.required' => 'Debe escribir la semana',
+            'data_despacho.*.correo_oficina_despacho.required' => 'Debe escribir el correo de la persona de la oficina de despacho',
+            'data_despacho.*.nombre_transportista.required' => 'Debe escribir el nombre del transportista',
+            'data_despacho.*.nombre_oficina_despacho.required' => 'Debe escribir el nombre de la persona de la oficina de despacho',
+            'data_despacho.*.nombre_guardia_turno.required' => 'Debe escribir el nombre del guardia de turno',
+            'data_despacho.*.id_guardia_turno.required' => 'Debe escribir la identificación del guardia de turno',
+            'data_despacho.*.nombre_cuarto_frio.required' => 'Debe escribir el nombre de la persona del cuarto frio',
+            'data_despacho.*.id_cuarto_frio.required' => 'Debe escribir la identificación de la persona del cuarto frio',
+            'data_despacho.*.id_conductor.required' => 'Debe seleccionar el conductor del camión',
+            'data_despacho.*.id_transportista.required' => 'Debe seleccionar una agencia de transporte',
+            'data_despacho.*.id_asist_comercial.required' => 'Debe escribir la identificación del asistente comercial'
         ]);
 
         if (!$valida->fails()) {
@@ -154,7 +169,8 @@ class DespachosController extends Controller
             //dd($request->all());
             foreach($request->data_despacho as $despacho){
                 $s='';
-                foreach ($despacho['arr_sellos'] as $sellos) $s .= $sellos."|";
+                if(isset($despacho['arr_sellos'] ))
+                    foreach ($despacho['arr_sellos'] as $sellos) $s .= $sellos."|";
                 $distribucion = substr($despacho['distribucion'], 0, -1);
                 $objDespacho = new Despacho;
                 $objDespacho->id_transportista = $despacho['id_transportista'];
@@ -180,7 +196,7 @@ class DespachosController extends Controller
                 $objDespacho->asist_comercial_ext = $despacho['nombre_asist_comercial'];
                 $objDespacho->id_asist_comrecial_ext = $despacho['id_asist_comercial'];
                 $objDespacho->resp_transporte = $despacho['nombre_transportista'];
-                $objDespacho->id_resp_transporte = $despacho['firma_id_transportista'];
+               // $objDespacho->id_resp_transporte = $despacho['firma_id_transportista'];
                 $objDespacho->mail_resp_ofi_despacho = $despacho['correo_oficina_despacho'];
                 $objDespacho->n_despacho = getSecuenciaDespacho();
 
@@ -293,6 +309,7 @@ class DespachosController extends Controller
         return view('adminlte.gestion.postcocecha.despachos.partials.distribucion',[
             'transportistas' => Transportista::where('estado',1)->get(),
             'cant_form' => $request->cant_form,
+            'resp_transporte' => Despacho::select('resp_transporte')->get()->last(),
         ]);
     }
 
