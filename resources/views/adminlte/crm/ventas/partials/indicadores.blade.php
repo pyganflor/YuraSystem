@@ -1,5 +1,5 @@
 <div class="row">
-    <div class="col-md-3">
+    <div class="col-md-4">
         <div class="small-box bg-teal-active">
             <div class="inner">
                 <h3 class="info-box-number">
@@ -14,7 +14,7 @@
             </a>
         </div>
     </div>
-    <div class="col-md-3">
+    <div class="col-md-4">
         <div class="small-box bg-aqua">
             <div class="inner">
                 <h3 class="info-box-number">
@@ -29,7 +29,7 @@
             </a>
         </div>
     </div>
-    <div class="col-md-2">
+    <div class="col-md-4">
         <div class="small-box bg-orange">
             <div class="inner">
                 <h3 class="info-box-number">
@@ -44,7 +44,7 @@
             </a>
         </div>
     </div>
-    <div class="col-md-2">
+    <div class="col-md-4">
         <div class="small-box bg-green-gradient">
             <div class="inner">
                 <h3 class="info-box-number">
@@ -57,21 +57,6 @@
             </div>
             <a href="javascript:void(0)" class="small-box-footer" onclick="desglose_indicador('tallos')">
                 Precio x Tallo <i class="fa fa-arrow-circle-right"></i>
-            </a>
-        </div>
-    </div>
-    <div class="col-md-2">
-        <div class="small-box bg-red">
-            <div class="inner">
-                <h3 class="info-box-number">
-                    ?
-                </h3>
-            </div>
-            <div class="icon">
-                <i class="fa fa-fw fa-question"></i>
-            </div>
-            <a href="javascript:void(0)" class="small-box-footer">
-                ? <i class="fa fa-arrow-circle-right"></i>
             </a>
         </div>
     </div>
