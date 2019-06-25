@@ -273,7 +273,8 @@
     <button type="button" class="btn btn-xs btn-success" onclick="update_orden_tinturada('{{csrf_token()}}')" id="btn_update_orden_tinturada">
         <i class="fa fa-fw fa-save"></i> Guardar
     </button>
-    <button type="button" class="btn btn-xs btn-success" onclick="guardar_distribucion('{{csrf_token()}}')" id="btn_guardar_distribucion" style="display: none;">
+    <button type="button" class="btn btn-xs btn-success" onclick="guardar_distribucion('{{csrf_token()}}')" id="btn_guardar_distribucion"
+            style="display: none;">
         <i class="fa fa-fw fa-save"></i> Guardar
     </button>
     @if($have_prev)
@@ -304,9 +305,6 @@
 <input type="hidden" id="have_prev" value="{{$have_prev ? 1 : 0}}">
 
 <script>
-
-
-
 
 
 </script>

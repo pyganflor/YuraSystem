@@ -1333,7 +1333,7 @@ function calcular_precio_envio() {
     }
 }
 
-function distribuir_pedido_tinturado(det_ped) {
+function distribuir_pedido_tinturado(det_ped, auto = false) {
     ids_esp_emp = $('.id_esp_emp');
     arreglo_esp_emp = [];
     for (ee = 0; ee < ids_esp_emp.length; ee++) {
@@ -1583,23 +1583,23 @@ function buscar_codigo_dae(input, form, factura_cliente_tercero) {
         fecha_envio: $("form#" + form + " #fecha_envio").val()
     };
     $.get('envio/buscar_codigo_dae', datos, function (retorno) {
-        if(factura_cliente_tercero){
-            $("form#"+form+" #dae_cliente_tercero").val(retorno.codigo_dae);
-            $("form#"+form+" #codigo_dae_cliente_tercero").val(retorno.dae);
-        }else{
-            $("form#"+form+" #dae").val(retorno.codigo_dae);
-            $("form#"+form+ " #codigo_dae").val(retorno.dae);
+        if (factura_cliente_tercero) {
+            $("form#" + form + " #dae_cliente_tercero").val(retorno.codigo_dae);
+            $("form#" + form + " #codigo_dae_cliente_tercero").val(retorno.dae);
+        } else {
+            $("form#" + form + " #dae").val(retorno.codigo_dae);
+            $("form#" + form + " #codigo_dae").val(retorno.dae);
         }
         //retorno.codigo_dae == "" ? $("form#"+form+" #dae").removeAttr('disabled') : $("form#"+form+" #dae").attr('disabled','disabled');
 
-        if(retorno.codigo_empresa === datos.codigo_pais){
-            $("form#"+form+ " #dae").removeAttr('required').val('');
-            $("form#"+form+ " #codigo_dae").removeAttr('required').val('');
-            $("form#"+form+ " #dae_cliente_tercero").removeAttr('required').val('');
-        }else{
-            $("form#"+form+ " #dae").attr('required',true).val(retorno.codigo_dae);
-            $("form#"+form+ " #codigo_dae").attr('required',true).val(retorno.dae);
-            $("form#"+form+ " #dae_cliente_tercero").attr('required',true).val(retorno.codigo_dae);
+        if (retorno.codigo_empresa === datos.codigo_pais) {
+            $("form#" + form + " #dae").removeAttr('required').val('');
+            $("form#" + form + " #codigo_dae").removeAttr('required').val('');
+            $("form#" + form + " #dae_cliente_tercero").removeAttr('required').val('');
+        } else {
+            $("form#" + form + " #dae").attr('required', true).val(retorno.codigo_dae);
+            $("form#" + form + " #codigo_dae").attr('required', true).val(retorno.dae);
+            $("form#" + form + " #dae_cliente_tercero").attr('required', true).val(retorno.codigo_dae);
 
         }
     }).always(function () {
@@ -1627,21 +1627,21 @@ function actualizar_envio(id_envio, form, tipo_pedido, token, id_pedido, vista) 
         }
 
         datos = {
-            _token : token,
-            id_envio : id_envio,
-            dae : $("form#"+form+ " #dae").val(),
-            guia_madre : $("form#"+form+ " #guia_madre").val(),
-            guia_hija : $("form#"+form+ " #guia_hija").val(),
-            codigo_pais : $("form#"+form+ " #codigo_pais").val(),
-            email : $("form#"+form+ " #email").val(),
-            telefono : $("form#"+form+ " #telefono").val(),
-            direccion : $("form#"+form+ " #direccion").val(),
-            fecha_envio : $("form#"+form+ " #fecha_envio").val(),
-            aerolinea : $("form#"+form+ " #aerolinea").val(),
-            precios : arrDataPrecio,
-            almacen : $("form#"+form+ " #almacen").val(),
-            tipo_pedido : tipo_pedido,
-            codigo_dae:  $("#codigo_dae").val()
+            _token: token,
+            id_envio: id_envio,
+            dae: $("form#" + form + " #dae").val(),
+            guia_madre: $("form#" + form + " #guia_madre").val(),
+            guia_hija: $("form#" + form + " #guia_hija").val(),
+            codigo_pais: $("form#" + form + " #codigo_pais").val(),
+            email: $("form#" + form + " #email").val(),
+            telefono: $("form#" + form + " #telefono").val(),
+            direccion: $("form#" + form + " #direccion").val(),
+            fecha_envio: $("form#" + form + " #fecha_envio").val(),
+            aerolinea: $("form#" + form + " #aerolinea").val(),
+            precios: arrDataPrecio,
+            almacen: $("form#" + form + " #almacen").val(),
+            tipo_pedido: tipo_pedido,
+            codigo_dae: $("#codigo_dae").val()
         };
         $.post('envio/actualizar_envio', datos, function (retorno) {
             if (retorno.success) {
@@ -1693,14 +1693,14 @@ function store_datos_factura_cliente_tercero(id_envio, token, id_pedido, vista) 
             direccion: $("#direccion_cliente_tercero").val(),
             codigo_impuesto: $("#codigo_impuesto").val(),
 
-            tipo_identificacion : $('#tipo_identificacion').val(),
-            codigo_impuesto_porcentaje : $('#tipo_impuesto').val(),
-            almacen : $('#almacen_cliente_tercero').val(),
-            dae : $('#dae_cliente_tercero').val(),
-            puerto_entrada : $('#puerto_entrada').val(),
-            tipo_credito : $('#tipo_credito').val(),
-            marca : $('#marca').val(),
-            codigo_dae : $("#codigo_dae_cliente_tercero").val()
+            tipo_identificacion: $('#tipo_identificacion').val(),
+            codigo_impuesto_porcentaje: $('#tipo_impuesto').val(),
+            almacen: $('#almacen_cliente_tercero').val(),
+            dae: $('#dae_cliente_tercero').val(),
+            puerto_entrada: $('#puerto_entrada').val(),
+            tipo_credito: $('#tipo_credito').val(),
+            marca: $('#marca').val(),
+            codigo_dae: $("#codigo_dae_cliente_tercero").val()
         };
         post_jquery('envio/store_datos_factura_cliente_tercero', datos, function () {
             cerrar_modals();
@@ -1760,16 +1760,16 @@ function borrar_duplicado() {
 
 function busqueda_camiones_conductores(id_form) {
     datos = {
-        id_transportista : $("form#"+id_form+" #id_transportista").val()
+        id_transportista: $("form#" + id_form + " #id_transportista").val()
     };
     $.get('despachos/list_camiones_conductores', datos, function (retorno) {
-        $.each(retorno.camiones,function (i,j) {
-            $("form#"+id_form+" #id_camion").append("<option id='camion_dinamic' value='"+j.id_camion+"'>"+j.modelo+"</option>");
-            if(i === 0)
+        $.each(retorno.camiones, function (i, j) {
+            $("form#" + id_form + " #id_camion").append("<option id='camion_dinamic' value='" + j.id_camion + "'>" + j.modelo + "</option>");
+            if (i === 0)
                 $("#n_placa").val(j.placa);
         });
-        $.each(retorno.conductores,function (i,j) {
-            $("form#"+id_form+" #id_chofer").append("<option id='chofer_dinamic' value='"+j.id_conductor+"'>"+j.nombre+"</option>")
+        $.each(retorno.conductores, function (i, j) {
+            $("form#" + id_form + " #id_chofer").append("<option id='chofer_dinamic' value='" + j.id_conductor + "'>" + j.nombre + "</option>")
         });
 
     }).always(function () {
@@ -1779,16 +1779,16 @@ function busqueda_camiones_conductores(id_form) {
 
 function busqueda_placa_camion(id_form) {
     datos = {
-        id_camion : $("form#"+id_form+" #id_camion").val()
+        id_camion: $("form#" + id_form + " #id_camion").val()
     };
     $.get('despachos/list_placa_camion', datos, function (retorno) {
-        $("form#"+id_form+" #n_placa").val(retorno.placa);
+        $("form#" + id_form + " #n_placa").val(retorno.placa);
     }).always(function () {
         $.LoadingOverlay('hide');
     });
 }
 
-function exportar_listado_despacho(token){
+function exportar_listado_despacho(token) {
     $.LoadingOverlay('show');
     $.ajax({
         type: "POST",
@@ -1796,19 +1796,19 @@ function exportar_listado_despacho(token){
         contentType: "application/x-www-form-urlencoded",
         url: 'despachos/exportar_pedidos_despacho',
         data: {
-        fecha_pedido : $("#fecha_pedidos_search").val(),
-        _token: token
-    },
-    success: function (data) {
-        var opResult = JSON.parse(data);
-        var $a = $("<a>");
-        $a.attr("href", opResult.data);
-        $("body").append($a);
-        $a.attr("download", "Despachos "+$("#fecha_pedidos_search").val()+" .xlsx");
-        $a[0].click();
-        $a.remove();
-        cerrar_modals();
-        $.LoadingOverlay('hide');
-    }
-});
+            fecha_pedido: $("#fecha_pedidos_search").val(),
+            _token: token
+        },
+        success: function (data) {
+            var opResult = JSON.parse(data);
+            var $a = $("<a>");
+            $a.attr("href", opResult.data);
+            $("body").append($a);
+            $a.attr("download", "Despachos " + $("#fecha_pedidos_search").val() + " .xlsx");
+            $a[0].click();
+            $a.remove();
+            cerrar_modals();
+            $.LoadingOverlay('hide');
+        }
+    });
 }
