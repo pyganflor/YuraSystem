@@ -1,5 +1,5 @@
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-3">
         <div class="small-box bg-teal-active">
             <div class="inner">
                 <h3 class="info-box-number">
@@ -14,7 +14,7 @@
             </a>
         </div>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-3">
         <div class="small-box bg-aqua">
             <div class="inner">
                 <h3 class="info-box-number">
@@ -29,7 +29,7 @@
             </a>
         </div>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-3">
         <div class="small-box bg-orange">
             <div class="inner">
                 <h3 class="info-box-number">
@@ -44,7 +44,7 @@
             </a>
         </div>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-3">
         <div class="small-box bg-green-gradient">
             <div class="inner">
                 <h3 class="info-box-number">
