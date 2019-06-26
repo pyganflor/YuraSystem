@@ -1333,7 +1333,7 @@ function calcular_precio_envio() {
     }
 }
 
-function distribuir_pedido_tinturado(det_ped, auto = false) {
+function distribuir_pedido_tinturado(det_ped, auto = false, token) {
     ids_esp_emp = $('.id_esp_emp');
     arreglo_esp_emp = [];
     for (ee = 0; ee < ids_esp_emp.length; ee++) {
@@ -1354,16 +1354,31 @@ function distribuir_pedido_tinturado(det_ped, auto = false) {
         });
     }
 
-    datos = {
-        id_det_ped: det_ped,
-        arreglo_esp_emp: arreglo_esp_emp,
-    };
-
-    get_jquery('pedidos/distribuir_pedido_tinturado', datos, function (retorno) {
-        $('#div_tabla_distribucion').html(retorno);
-        $('#btn_guardar_distribucion').show();
-        $('#btn_update_orden_tinturada').hide();
-    });
+    if (auto == true) {
+        modal_quest('modal-quest_auto_distribuir',
+            '<div class="alert alert-info text-center">¿Desea realizar la distribución automaticamente?</div>',
+            '<i class="fa fa-fw fa-exclamation-triangle"></i> Mensaje de confirmación', true, false, '', function () {
+                datos = {
+                    _token: token,
+                    id_det_ped: det_ped,
+                    arreglo_esp_emp: arreglo_esp_emp,
+                };
+                post_jquery('pedidos/auto_distribuir_pedido_tinturado', datos, function () {
+                    cerrar_modals();
+                    editar_pedido_tinturado($('#id_pedido').val(), 0);
+                });
+            });
+    } else {
+        datos = {
+            id_det_ped: det_ped,
+            arreglo_esp_emp: arreglo_esp_emp,
+        };
+        get_jquery('pedidos/distribuir_pedido_tinturado', datos, function (retorno) {
+            $('#div_tabla_distribucion').html(retorno);
+            $('#btn_guardar_distribucion').show();
+            $('#btn_update_orden_tinturada').hide();
+        });
+    }
 }
 
 function guardar_distribucion(token) {
