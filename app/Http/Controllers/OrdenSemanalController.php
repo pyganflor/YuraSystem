@@ -542,7 +542,7 @@ class OrdenSemanalController extends Controller
             $pedido = Pedido::find($request->id_pedido);
             $pedido->fecha_pedido = $request->fecha_pedido;
 
-            if(isset($p->envios[0]->comprobante)){
+            if (isset($p->envios[0]->comprobante)) {
                 $e = getEnvio($p->envios[0]->id_envio);
                 $c = getComprobante($p->envios[0]->comprobante->id_comprobante);
                 $id_aerolinea = $e->detalles[0]->id_aerolinea;
@@ -681,7 +681,7 @@ class OrdenSemanalController extends Controller
                     $envio = new Envio();
                     $envio->id_pedido = $pedido->id_pedido;
                     $envio->fecha_envio = $request->fecha_envio;
-                    if(isset($e)){
+                    if (isset($e)) {
                         $envio->guia_madre = $e->guia_madre;
                         $envio->guia_hija = $e->guia_hija;
                         $envio->dae = $e->dae;
@@ -702,7 +702,7 @@ class OrdenSemanalController extends Controller
                             $det_envio->id_envio = $envio->id_envio;
                             $det_envio->id_especificacion = $det->cliente_especificacion->id_especificacion;
                             $det_envio->cantidad = $det->cantidad;
-                            if(isset($e)) $det_envio->id_aerolinea = $id_aerolinea;
+                            if (isset($e)) $det_envio->id_aerolinea = $id_aerolinea;
 
                             if ($det_envio->save()) {
                                 $det_envio = DetalleEnvio::All()->last();
@@ -848,6 +848,121 @@ class OrdenSemanalController extends Controller
             'last_distr' => $last_distr,
             'det_ped' => $det_ped,
         ]);
+    }
+
+    public function auto_distribuir_pedido_tinturado(Request $request)
+    {
+        /* =================== OBTENER DISTRIBUCION ================= */
+        $det_ped = DetallePedido::find($request->id_det_ped);
+        $array_marc = [];
+        foreach ($request->arreglo_esp_emp as $esp_emp) {
+            $esp_empaque = EspecificacionEmpaque::find($esp_emp['id_esp_emp']);
+            foreach ($esp_emp['marcaciones'] as $marc) {
+                $marca = Marcacion::find($marc['id']);
+
+                $array_distr = [];
+                for ($x = 1; $x <= $marca->piezas; $x++) array_push($array_distr, '');
+
+                $array_det_esp = [];
+                foreach ($esp_empaque->detalles as $det_esp) {
+                    $array_marc_col = [];
+                    $ramos = 0;
+                    foreach ($det_ped->coloracionesByEspEmp($esp_emp['id_esp_emp']) as $pos_col => $color) {
+                        $mc = $marca->getMarcacionColoracionByDetEsp($color->id_coloracion, $det_esp->id_detalle_especificacionempaque);
+                        if ($mc != '') {
+                            $array_marc_col[] = [
+                                'id' => $mc->id_marcacion_coloracion,
+                                'cantidad' => $mc->cantidad,
+                            ];
+                            $ramos += $mc->cantidad;
+                        } else {
+                            $array_marc_col[] = [
+                                'id' => '',
+                                'cantidad' => 0,
+                            ];
+                        }
+                    }
+
+                    for ($i = 0; $i < $marca->piezas; $i++) {
+                        $meta = $det_esp->cantidad; // ramos x caja
+                        $array_distcol = [];
+                        foreach ($array_marc_col as $pos => $item) {
+                            if ($meta > 0) {
+                                if ($item['cantidad'] >= $meta) {
+                                    $item['cantidad'] = $item['cantidad'] - $meta;
+                                    $array_marc_col[$pos]['cantidad'] = $item['cantidad'];
+                                    $array_distcol[] = [
+                                        'mc' => $item['id'],
+                                        'cantidad' => $meta
+                                    ];
+                                    $ramos -= $meta;
+                                    $meta = 0;
+                                } else {
+                                    $meta -= $item['cantidad'];
+                                    $array_distcol[] = [
+                                        'mc' => $item['id'],
+                                        'cantidad' => $item['cantidad']
+                                    ];
+                                    $ramos -= $item['cantidad'];
+                                    $item['cantidad'] = 0;
+                                    $array_marc_col[$pos]['cantidad'] = $item['cantidad'];
+                                }
+                            } else
+                                $array_distcol[] = [
+                                    'mc' => $item['id'],
+                                    'cantidad' => 0
+                                ];
+                        }
+                        $array_distr[$i] = $array_distcol;
+                    }
+
+                    array_push($array_det_esp, [
+                        'det_esp' => $det_esp->id_detalle_especificacionempaque,
+                        'arreglo' => $array_distr
+                    ]);
+                }
+
+                array_push($array_marc, [
+                    'marca' => $marca,
+                    'array' => $array_det_esp,
+                ]);
+            }
+        }
+
+        /* =================== GUARDAR DISTRIBUCION ================= */
+        $last_distr = $det_ped->pedido->getLastDistribucion();
+        if ($last_distr == '') $last_distr = 0;
+        foreach ($array_marc as $marc) {
+            for ($d = 0; $d < $marc['marca']->piezas; $d++) {
+                $last_distr++;
+                $distr = new Distribucion();
+                $distr->id_marcacion = $marc['marca']->id_marcacion;
+                $distr->ramos = intval($marc['marca']->ramos / $marc['marca']->piezas);
+                $distr->pos_pieza = $last_distr;
+                $distr->piezas = 1;
+
+                $distr->save();
+                $distr = Distribucion::All()->last();
+                bitacora('distribucion', $distr->id_distribucion, 'I', 'Creacion de una nueva distribucion');
+
+                foreach ($marc['array'] as $array) {
+                    foreach ($array['arreglo'][$d] as $item) {
+                        $dc = new DistribucionColoracion();
+                        $dc->id_distribucion = $distr->id_distribucion;
+                        $dc->id_marcacion_coloracion = $item['mc'];
+                        $dc->cantidad = $item['cantidad'];
+
+                        $dc->save();
+                        $dc = DistribucionColoracion::All()->last();
+                        bitacora('distribucion_coloracion', $dc->id_distribucion_coloracion, 'I', 'Creacion de una nueva id_distribucion_coloracion');
+                    }
+                }
+            }
+        }
+        return [
+            'mensaje' => '<div class="alert alert-success text-center">Se han distribuido satisfactoriamente los ramos del pedido</div>',
+            'success' => true,
+        ];
     }
 
     public function guardar_distribucion(Request $request)

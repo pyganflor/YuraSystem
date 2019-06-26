@@ -18,13 +18,13 @@
                     <i class="fa fa-fw fa-eye"></i> Ver Distribución
                 </button>
             @else
-                <button type="button" class="btn btn-xs btn-info pull-right elemento_distribuir"
-                        onclick="distribuir_pedido_tinturado('{{$det_ped->id_detalle_pedido}}')">
-                    <i class="fa fa-fw fa-exchange"></i> Auto-Distribuir
-                </button>
                 <button type="button" class="btn btn-xs btn-primary pull-right elemento_distribuir"
                         onclick="distribuir_pedido_tinturado('{{$det_ped->id_detalle_pedido}}')">
                     <i class="fa fa-fw fa-exchange"></i> Distribuir
+                </button>
+                <button type="button" class="btn btn-xs btn-info pull-right elemento_distribuir"
+                        onclick="distribuir_pedido_tinturado('{{$det_ped->id_detalle_pedido}}', true, '{{csrf_token()}}')">
+                    <i class="fa fa-fw fa-exchange"></i> Auto-Distribuir
                 </button>
             @endif
         </strong>

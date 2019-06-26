@@ -430,6 +430,11 @@
                                                             id_det_esp: id_det_esp,
                                                             cantidad: $('#ramos_marcacion_color_' + f + '_' + c + '_' + id_esp_emp + '_det_' + id_det_esp).val()
                                                         });
+                                                    else
+                                                        cant_x_det_esp.push({
+                                                            id_det_esp: id_det_esp,
+                                                            cantidad: 0
+                                                        });
                                                 }
                                             } else {    // sencilla
                                                 id_det_esp = ids_det_esp[0].value;
