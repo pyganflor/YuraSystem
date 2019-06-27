@@ -19,6 +19,26 @@
         }
     }
 
+    function exportar_tabla() {
+        datos = {
+            desde: parseInt($('#desde').val()),
+            hasta: parseInt($('#hasta').val()),
+            annos: $('#annos').val(),
+            cliente: $('#cliente').val(),
+            variedad: $('#variedad').val(),
+            criterio: $('#criterio').val(),
+            rango: $('#rango').val(),
+            acumulado: $('#acumulado').prop('checked'),
+        };
+        if (datos['desde'] <= datos['hasta']) {
+            $.LoadingOverlay('show');
+            window.open('{{url('tbl_ventas/exportar_tabla')}}' + '?desde=' + datos['desde'] + '&hasta=' + datos['hasta'] +
+                '&annos=' + datos['annos'] + '&cliente=' + datos['cliente'] + '&variedad=' + datos['variedad'] +
+                '&criterio=' + datos['criterio'] + '&rango=' + datos['rango'] + '&acumulado=' + datos['acumulado'], '_blank');
+            $.LoadingOverlay('hide');
+        }
+    }
+
     function navegar_tabla(rango, criterio, periodo, tipo, anno, cliente, desde = null, hasta = null) {
         $('.li_anno').removeClass('bg-aqua-active');
         $('#li_anno_' + anno).addClass('bg-aqua-active');
