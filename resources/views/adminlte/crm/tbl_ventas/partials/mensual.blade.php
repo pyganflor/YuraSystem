@@ -6,7 +6,11 @@
         <thead>
         <tr>
             <th class="text-center" style="border-color: white; background-color: #357ca5; color: white; width: 80px" rowspan="2">
-                Cliente
+                @if($cliente == 'P')
+                    País
+                @else
+                    Cliente
+                @endif
             </th>
             @foreach($data['labels'] as $pos => $label)
                 <th class="text-center" style="border-color: white; background-color: #357ca5; color: white"
@@ -168,14 +172,16 @@
                         $total += $valor['count_positivo'] > 0 ? number_format(round($valor['valor'] / $valor['count_positivo'], 2), 2) : 0;
                 @endphp
             @endforeach
-            <th class="text-center" style="border-color: white; background-color: #357ca5; color: white; width: 80px; padding: 5px"
-                rowspan="2">
-                @if($criterio == 'V' || $criterio == 'F' || $criterio == 'Q')
-                    {{number_format($total, 2)}}
-                @else
-                    {{number_format(round($total / (count($data['labels']) * count($data['meses'])), 2), 2)}}
-                @endif
-            </th>
+            @if($acumulado == 'false')
+                <th class="text-center" style="border-color: white; background-color: #357ca5; color: white; width: 80px; padding: 5px"
+                    rowspan="2">
+                    @if($criterio == 'V' || $criterio == 'F' || $criterio == 'Q')
+                        {{number_format($total, 2)}}
+                    @else
+                        {{number_format(round($total / (count($data['labels']) * count($data['meses'])), 2), 2)}}
+                    @endif
+                </th>
+            @endif
         </tr>
     </table>
 </div>
