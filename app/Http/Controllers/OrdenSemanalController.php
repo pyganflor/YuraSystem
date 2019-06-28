@@ -932,6 +932,7 @@ class OrdenSemanalController extends Controller
         /* =================== GUARDAR DISTRIBUCION ================= */
         $last_distr = $det_ped->pedido->getLastDistribucion();
         if ($last_distr == '') $last_distr = 0;
+        else $last_distr = $last_distr->pos_pieza;
         foreach ($array_marc as $marc) {
             for ($d = 0; $d < $marc['marca']->piezas; $d++) {
                 $last_distr++;
