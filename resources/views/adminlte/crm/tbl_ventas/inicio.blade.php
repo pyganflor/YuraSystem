@@ -4,9 +4,11 @@
     Tablas - Ventas
 @endsection
 
+@section('css_inicio')
+@endsection
+
 @section('script_inicio')
-    <script>
-    </script>
+
 @endsection
 
 @section('contenido')
@@ -97,7 +99,6 @@
                         </ul>
                     </div>
                     <input type="text" class="form-control" placeholder="Años" id="annos" name="annos" readonly value="{{date('Y')}}">
-
                 </div>
                 <div class="input-group">
                     <div class="input-group-addon bg-gray">
@@ -137,6 +138,11 @@
                     <div class="input-group-btn">
                         <button type="button" id="btn_filtrar" class="btn btn-default" onclick="filtrar_tablas()" title="Buscar">
                             <i class="fa fa-fw fa-search"></i>
+                        </button>
+                    </div>
+                    <div class="input-group-btn">
+                        <button type="button" id="btn_exportar" class="btn btn-success" onclick="exportar_tabla()" title="Exportar">
+                            <i class="fa fa-fw fa-file-excel-o"></i>
                         </button>
                     </div>
                 </div>
