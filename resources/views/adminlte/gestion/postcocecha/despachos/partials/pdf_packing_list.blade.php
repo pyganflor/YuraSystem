@@ -10,23 +10,23 @@
     <tr>
         <td>
             <div style="width: 300px;">
-
-                <table>
-                    <tr>
-                        <td>
-                            <b>  SHIPPER (Empresa):</b>
-                        </td>
-                    </tr>
-                </table>
-                <table style="border: 1px solid black;width: 100%">
-                    <tr><td>{{$empresa->razon_social}}</td></tr>
-                    <tr><td style="font-size:13px">{{$empresa->direccion_matriz}}</td></tr>
-                    <tr><td style="font-size:13px">Quito - {{getPais($empresa->codigo_pais)->nombre}}</td></tr>
-                    <tr><td style="font-size:13px">Teléfono: {{$empresa->telefono}}</td></tr>
-                    <tr><td style="font-size:13px">Fax: {{$empresa->fax}}</td></tr>
-                    <tr><td style="font-size:13px">Email: {{$empresa->correo}}</td></tr>
-            </table>
-
+                @if(!$vista_despacho)
+                    <table>
+                        <tr>
+                            <td>
+                                <b>  SHIPPER (Empresa):</b>
+                            </td>
+                        </tr>
+                    </table>
+                    <table style="border: 1px solid black;width: 100%">
+                        <tr><td>{{$empresa->razon_social}}</td></tr>
+                        <tr><td style="font-size:13px">{{$empresa->direccion_matriz}}</td></tr>
+                        <tr><td style="font-size:13px">Quito - {{getPais($empresa->codigo_pais)->nombre}}</td></tr>
+                        <tr><td style="font-size:13px">Teléfono: {{$empresa->telefono}}</td></tr>
+                        <tr><td style="font-size:13px">Fax: {{$empresa->fax}}</td></tr>
+                        <tr><td style="font-size:13px">Email: {{$empresa->correo}}</td></tr>
+                    </table>
+                @endif
                 <table style="margin-top: 10px;">
                     <tr>
                         <td>
@@ -89,7 +89,7 @@
     </tr>
 </table>
 @if($pedido->tipo_especificacion === "N")
-<table style="width:100%;font-family: arial, sans-serif;border-collapse: collapse;" >
+    <table style="width:100%;font-family: arial, sans-serif;border-collapse: collapse;" >
         <thead style="border: 1px solid black" >
             <tr>
                 <td style="padding-left: 5px;border: 1px solid black;font-size:13px;border:1px solid black" > PIECES<br />Piezas</td>
@@ -151,31 +151,31 @@
             @endforeach
         </tbody>
     </table>
-<table style="width:100%;margin-top: 20px;font-family: arial, sans-serif">
-    <tr>
-        <td style="font-size:15px" colspan="2">
-            {{$total_piezas}}  TOTAL PIECES / TOTAL PIEZAS TOTAL UNITS
-        </td>
-    </tr>
-    <tr>
-        <td colspan="2">
-            {{round($full_equivalente_real,2)}} TOTAL FULL BOXES EQUIVALENT / TOTAL CAJAS
-        </td>
-    </tr>
-    <tr>
-        <td colspan="2">
-            <table style="width: 100%;margin-top: 15px;font-size: 13px">
-                <tr>
-                    <td>FULL BOXES : [{{number_format($full,2,".","")}}]</td>
-                    <td>HALF BOXES : [{{number_format($half,2,".","")}}]</td>
-                    <td>1/4 BOXES : [{{number_format($cuarto,2,".","")}}]</td>
-                    <td>1/6 BOXES : [{{number_format($sexto,2,".","")}}]</td>
-                    <td>1/8 BOXES : [{{number_format($octavo,2,".","")}}]</td>
-                </tr>
-            </table>
-        </td>
-    </tr>
-</table>
+    <table style="width:100%;margin-top: 20px;font-family: arial, sans-serif">
+        <tr>
+            <td style="font-size:15px" colspan="2">
+                {{$total_piezas}}  TOTAL PIECES / TOTAL PIEZAS TOTAL UNITS
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                {{round($full_equivalente_real,2)}} TOTAL FULL BOXES EQUIVALENT / TOTAL CAJAS
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <table style="width: 100%;margin-top: 15px;font-size: 13px">
+                    <tr>
+                        <td>FULL BOXES : [{{number_format($full,2,".","")}}]</td>
+                        <td>HALF BOXES : [{{number_format($half,2,".","")}}]</td>
+                        <td>1/4 BOXES : [{{number_format($cuarto,2,".","")}}]</td>
+                        <td>1/6 BOXES : [{{number_format($sexto,2,".","")}}]</td>
+                        <td>1/8 BOXES : [{{number_format($octavo,2,".","")}}]</td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
 @elseif($pedido->tipo_especificacion === "T")
     @php $env = getEnvio($pedido->envios[0]->id_envio) @endphp
     <table style="width:100%;font-family: arial, sans-serif;border-collapse: collapse;" >
@@ -192,7 +192,36 @@
             </tr>
         </thead>
         <tbody style="border: 1px solid black">
-            @foreach ($env->pedido->detalles as $x => $det_ped) {
+
+                @foreach($env->pedido->pedidoMarcacionesOrderAsc as $distribucion)
+                    <tr>
+                        <td style="font-size:12px;border:1px solid black">{{$distribucion->nombre}}</td>
+                        <td style=";font-size:12px;border:1px solid black">{{$distribucion->ramos}}</td>
+                        <td style="font-size:12px;border:1px solid black">{{$distribucion->pos_pieza}}</td>
+                        <td style="font-size:12px;border:1px solid black">
+                            @if ($distribucion->piezas === 1 )
+                                {{$distribucion->pos_pieza}}
+                            @else
+                                {{($distribucion->pos_pieza-1)+$distribucion->piezas}}
+                            @endif
+                        </td>
+                        <td style="font-size:12px;border:1px solid black">{{$distribucion->piezas}}</td>
+                        <td style="font-size:12px;border:1px solid black">
+                            @foreach($distribucion->marcaciones as $x => $marcacion)
+                                @foreach ($marcacion->distribuciones as $y => $dist)
+                                    @if($x == 0 && $y == 0)
+                                        @foreach ($dist->distribuciones_coloraciones as $distribucion_coloracion)
+                                            @if($distribucion_coloracion->cantidad !== 0)
+                                                {{$distribucion_coloracion->cantidad ." ". $distribucion_coloracion->marcacion_coloracion->coloracion->color->nombre. ","}}
+                                            @endif
+                                        @endforeach
+                                    @endif
+                                @endforeach
+                            @endforeach
+                        </td>
+                    </tr>
+                @endforeach
+            {{---@foreach ($env->pedido->detalles as $x => $det_ped) {
                 @foreach ($det_ped->marcaciones as $marcion){
                     @foreach ($marcion->distribuciones as $distribucion){
                         <tr>
@@ -217,7 +246,7 @@
                         </tr>
                     @endforeach
                 @endforeach
-            @endforeach
+            @endforeach--}}
         </tbody>
     </table>
 @endif

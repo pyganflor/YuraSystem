@@ -4,13 +4,13 @@
                id="table_content_comprobante">
             <thead>
             <tr style="background-color: #dd4b39; color: white">
-                <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
+                {{--<th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
                     @if($tipo_comprobante == ""  || $tipo_comprobante=="01")
                         ENVÍO
                     @elseif($tipo_comprobante == ""  || $tipo_comprobante=="06")
                         GUÍA DE REMISIÓN
                     @endif
-                </th>
+                </th>--}}
                 @if($tipo_comprobante=="06")
                     <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
                         FACTURA ATADA
@@ -49,19 +49,19 @@
             @foreach($listado as $key => $item)
                 <tr onmouseover="$(this).css('background-color','#add8e6')" onmouseleave="$(this).css('background-color','')"
                      id="row_comprobante_{{$item->id_comprobante}}">
-                    <td style="border-color: #9d9d9d" class="text-center">
+                    {{--<td style="border-color: #9d9d9d" class="text-center">
                         @if($tipo_comprobante == ""  || $tipo_comprobante=="01")
                             ENV{{str_pad($item->id_envio,9,"0",STR_PAD_LEFT)}}
                         @elseif($tipo_comprobante == ""  || $tipo_comprobante=="06")
                             {{getDetallesClaveAcceso($item->clave_acceso, 'SERIE').getDetallesClaveAcceso($item->clave_acceso, 'SECUENCIAL')}}
                         @endif
-                    </td>
+                    </td>--}}
                     @if($tipo_comprobante=="06")
                         <td style="border-color: #9d9d9d" class="text-center">
                             {{getComprobante(getComprobanteRelacionadoGuia($item->id_comprobante)->id_comprobante_relacionado)->numero_comprobante}}
                         </td>
                     @endif
-                        <td style="border-color: #9d9d9d" class="text-center"> {{$item->nombre_comprobante." N# "."001-".getDetallesClaveAcceso($item->clave_acceso, 'PUNTO_ACCESO')."-".getDetallesClaveAcceso($item->clave_acceso, 'SECUENCIAL')}}  </td>
+                        <td style="border-color: #9d9d9d" class="text-center">{{$item->nombre_comprobante}} - {{$item->secuencial}}  {{-- {{$item->nombre_comprobante." N# "."001-".{{--getDetallesClaveAcceso($item->clave_acceso, 'PUNTO_ACCESO')."-".getDetallesClaveAcceso($item->clave_acceso, 'SECUENCIAL')}} COMENTADO PARA QUE LA FACTURACION FUNCIONE CON EL VENTURE --}}</td>
                         <td style="border-color: #9d9d9d" class="text-center"> {{$item->clave_acceso}} </td>
                     @if($tipo_comprobante!="06")
                         <td style="border-color: #9d9d9d" class="text-center"> {{$item->nombre_cliente}}</td>
@@ -101,6 +101,7 @@
                                 @endif
                             @endif
                             @if($tipo_comprobante=="01")
+                                {{dd($item->secuentical)}}
                                 <a target="_blank" href="{{url('comprobante/pre_factura',[$item->clave_acceso,true])}}" class="btn btn-info btn-xs" title="Ver factura Cliente">
                                     <i class="fa fa-user-circle-o" aria-hidden="true"></i>
                                 </a>
@@ -111,16 +112,19 @@
                         @endif
                         @if($item->estado == 1)
                                 <button class="btn btn-default btn-xs">
-                                    <input type="checkbox" id="integrar_{{$key+1}}" name="integrar" {{$item->integrado ? "disabled" : "" }}  title="Integrar con el Venture" value="{{$item->id_comprobante}}" style="margin:0;position:relative;top:3px">
+                                    <input type="checkbox" id="integrar_{{$key+1}}" name="integrar" {{$item->integrado ? "disabled" : "" }}
+                                        title="Integrar con el Venture" value="{{$item->id_comprobante}}" style="margin:0;position:relative;top:3px">
                                 </button>
                             {{--<button class="btn btn-default btn-xs">
                                 <input type="checkbox" id="facturar_{{$key+1}}" name="enviar" {{$item->integrado ? "disabled" : "" }}  title="Enviar al SRI" value="{{$item->clave_acceso}}" style="margin:0;position:relative;top:3px">
                             </button>--}}
                             @if($tipo_comprobante!="06")
-                                <a target="_blank" href="{{url('comprobante/pre_factura',[$item->clave_acceso,true])}}" class="btn btn-info btn-xs" title="Ver factura Cliente">
+                                {{--<a target="_blank" href="{{url('comprobante/pre_factura',[$item->clave_acceso,true])}}" class="btn btn-info btn-xs" title="Ver factura Cliente"> COMENTADO PARA QUE LA FACTURACION FUNCIONE CON EL VENTURE --}}
+                                    <a target="_blank" href="{{url('comprobante/pre_factura',[$item->secuencial,true])}}" class="btn btn-info btn-xs" title="Ver factura Cliente">
                                     <i class="fa fa-user-circle-o" aria-hidden="true"></i>
                                 </a>
-                                <a target="_blank" href="{{url('comprobante/pre_factura',$item->clave_acceso)}}" class="btn btn-primary btn-xs" title="Ver factura SRI">
+                                {{--<a target="_blank" href="{{url('comprobante/pre_factura',$item->clave_acceso)}}" class="btn btn-primary btn-xs" title="Ver factura SRI"> COMENTADO PARA QUE LA FACTURACION FUNCIONE CON EL VENTURE --}}
+                                <a target="_blank" href="{{url('comprobante/pre_factura',$item->secuencial)}}" class="btn btn-primary btn-xs" title="Ver factura SRI">
                                     <i class="fa fa-eye" aria-hidden="true"></i>
                                 </a>
                             @else

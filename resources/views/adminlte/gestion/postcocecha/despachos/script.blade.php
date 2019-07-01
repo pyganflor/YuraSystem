@@ -114,8 +114,7 @@
                     distribucion : data
                 });
             }
-            console.log(arr_datos);
-            //return false;
+
             //$.each($(".id_pedido"),function (i,j) { arr_pedidos.push(j.value); });
             datos = {
                 _token: '{{csrf_token()}}',

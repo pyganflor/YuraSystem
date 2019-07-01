@@ -516,7 +516,6 @@ class OrdenSemanalController extends Controller
 
     public function update_orden_tinturada(Request $request)
     {
-
         $valida = Validator::make($request->all(), [
             'id_pedido' => 'required',
             'id_detalle_pedido' => 'required',
@@ -550,7 +549,7 @@ class OrdenSemanalController extends Controller
                 $objComprobante->id_envio = null;
                 $objComprobante->habilitado = 0;
                 $objComprobante->save();
-                $pedido->clave_acceso_temporal = $c->clave_acceso;
+                $pedido->clave_acceso_temporal = $c->secuencial;
                 $pedido->id_comprobante_temporal = $c->id_comprobante;
             }
 

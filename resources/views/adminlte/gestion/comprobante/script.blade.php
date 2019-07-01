@@ -195,7 +195,7 @@
     function integrar_comprobante(){
         arrComprobante = [];
         $.each($('input:checkbox[name=integrar]:checked'), function (i, j) {
-            arrComprobante.push(j.value);
+            arrComprobante.push({id_comprobante: j.value});
         });
 
         if (arrComprobante.length === 0) {
@@ -204,38 +204,32 @@
                 '<i class="fa fa-file-text-o" aria-hidden="true"></i> Comprobante electrónicos', true, false, '{{isPC() ? '50%' : ''}}');
             return false;
         }
-        $.LoadingOverlay("show");
-
-        /*datos = {
-            _token: '{{csrf_token()}}',
-            arrComprobante: arrComprobante,
-        };*/
-
-        $.ajax({
-            type: "POST",
-            dataType: "html",
-            contentType: "application/x-www-form-urlencoded",
-            url: '{{url('comprobante/integrar_comprobante')}}',
-            data: {
-                arrComprobante : arrComprobante,
-                _token: '{{csrf_token()}}'
-            },
-            success: function (data) {
-                console.log(data);
-               // var opResult = JSON.parse(data);
-                var $a = $("<a>");
-                $a.attr("href", data);
-                $("body").append($a);
-                $a.attr("download", "text_integrador.txt");
-                $a[0].click();
-                $a.remove();
+        modal_quest('modal_crear_especificacion',
+            '<div class="alert alert-warning text-center"><p>Al integrar estas facturas no podran ser modificado el pedido ni la facturación.!</p></div>',
+            "<i class='fa fa-exclamation-triangle' ></i> Alerta",true, false, '{{isPC() ? '50%' : ''}}', function () {
+                $.LoadingOverlay("show");
+                $.ajax({
+                type: "POST",
+                dataType: "html",
+                contentType: "application/x-www-form-urlencoded",
+                url: '{{url('comprobante/integrar_comprobante')}}',
+                data: {
+                    arrComprobante: arrComprobante,
+                    _token: '{{csrf_token()}}',
+                },
+                success: function (data) {
+                    var opResult = JSON.parse(data);
+                    var $a = $("<a>");
+                    $a.attr("href", opResult.data);
+                    $("body").append($a);
+                    $a.attr("download", "text_integrador_" + opResult.fecha + ".txt");
+                    $a[0].click();
+                    $a.remove();
+                }
+            }).always(function () {
                 $.LoadingOverlay('hide');
-            }
+                cerrar_modals();
+            });
         });
-
-        /*post_jquery('{{url('comprobante/integrar_comprobante')}}', datos, function () {
-
-        });*/
-        $.LoadingOverlay('hide');
     }
 </script>
