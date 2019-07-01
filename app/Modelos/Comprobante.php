@@ -21,7 +21,10 @@ class Comprobante extends Model
         'numero_comprobante',
         'peso',
         'habilitado',
-        'integrado'
+        'integrado',
+        'fecha_autorizacion',
+        'secuencial',
+        'rehusar'
     ];
 
     public function envio(){

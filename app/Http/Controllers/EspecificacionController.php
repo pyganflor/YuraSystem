@@ -154,7 +154,7 @@ class EspecificacionController extends Controller
         $valida = Validator::make($request->all(), [
             'arrData' => 'required|Array',
             'modo' => 'required',
-        ]);
+        ],['modo.required' => 'Debe seleccionar el modo de como quiere que se cree la especificación']);
 
         if (!$valida->fails()) {
             foreach ($request->arrData as $key => $data){

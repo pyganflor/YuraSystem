@@ -395,7 +395,6 @@ class DespachosController extends Controller
         $piezas_totales_no_tinturados = 0;
         $ramos_totales_estandar_no_tinturados = 0;
         $cajas_full_totales_no_tinturados = 0;
-
         $piezas_totales_tinturados = 0;
         $ramos_totales_tinturados = 0;
         $cajas_full_totales_tinturados = 0;
@@ -458,8 +457,6 @@ class DespachosController extends Controller
                         }
                     }
                 }
-
-
 
             }else if($p->tipo_especificacion === "T") {
                 $count_pedido_tinturado =true;
@@ -737,7 +734,6 @@ class DespachosController extends Controller
             $objSheet->getStyle('G'. ($w + 4 + $b))->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('357ca5');
             $objSheet->getStyle('G'. ($w + 4 + $b))->getFont()->getColor()->applyFromArray( array('rgb' => 'ffffff'));
             $objSheet->getCell('G' . ($w + 4 + $b))->setValue(round($ramos_totales_estandar_tinturados / getConfiguracionEmpresa()->ramos_x_caja,2));
-
 
         }
         $style = array(
