@@ -124,4 +124,9 @@
 @section('script_final')
     {{-- JS de Chart.js --}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
+
+    <script>
+        notificar('Bienvenid@ {{explode(' ',getUsuario(Session::get('id_usuario'))->nombre_completo)[0]}}',
+            '{{url('')}}');
+    </script>
 @endsection

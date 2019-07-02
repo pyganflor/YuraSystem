@@ -847,7 +847,7 @@
     }
 
     function notificar(body, url, accion) {
-        Push.create('Hola {{explode(' ',getUsuario(Session::get('id_usuario'))->nombre_completo)[0]}}', {
+        Push.create('Hola', {
             body: body,
             icon: '{{url('images/logo_yura.png')}}',
             link: '/#',

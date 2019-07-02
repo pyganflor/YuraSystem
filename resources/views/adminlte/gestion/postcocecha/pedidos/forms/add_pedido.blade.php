@@ -94,7 +94,7 @@
                         <tr>
                             <td class="text-center" style="padding: 10px 0px 0px">
                                 <button type="button" class=" btn btn-app btn-xs btn-success"
-                                        onclick="store_pedido('{{$idCliente}}','@if($pedido_fijo) {{true}} @endif','{{csrf_token()}}','{{$vista}}',{{$id_pedido}})">
+                                        onclick="store_pedido('{{$idCliente}}','@if($pedido_fijo) {{true}} @endif','{{csrf_token()}}','{{$vista}}','{{$id_pedido}}','{{$comprobante}}')">
                                     <span class="badge bg-green monto_total_pedido" >$0.00</span>
                                     <i class="fa fa-shopping-cart"></i> Guardar
                                 </button>

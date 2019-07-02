@@ -40,9 +40,7 @@ class Pedido extends Model
         return $this->hasMany('\yura\Modelos\DetallePedido', 'id_pedido')
             ->join('marcacion as m','detalle_pedido.id_detalle_pedido','=','m.id_detalle_pedido')
             ->join('distribucion as d','m.id_marcacion','=','d.id_marcacion')->orderBy('d.pos_pieza','asc');
-
-     }
-
+    }
 
     public function cliente()
     {

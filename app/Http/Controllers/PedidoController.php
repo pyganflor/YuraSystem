@@ -87,7 +87,8 @@ class PedidoController extends Controller
                     ->join('detalle_cliente as dt', 'c.id_cliente', '=', 'dt.id_cliente')
                     ->where('dt.estado', 1)->orderBy('dt.nombre','asc')->get(),
                 'id_pedido' => $request->id_pedido,
-                'datos_exportacion' => ClienteDatoExportacion::where('id_cliente',$request->id_cliente)->get()
+                'datos_exportacion' => ClienteDatoExportacion::where('id_cliente',$request->id_cliente)->get(),
+                'comprobante' => isset($request->id_pedido) ? (getPedido($request->id_pedido)->envios[0]->comprobante != "" ? true : null) : null
 
             ]);
     }
@@ -119,19 +120,28 @@ class PedidoController extends Controller
                 if(!empty($request->id_pedido)){
                     $dataEnvio = Envio::where('id_pedido',$request->id_pedido)->first();
                     if(isset($dataEnvio->id_envio)){
+
                         $dataComprobante = Comprobante::where('id_envio',$dataEnvio->id_envio)
                             ->join('detalle_factura as df','comprobante.id_comprobante','df.id_comprobante')
                             ->join('impuesto_detalle_factura as idf','df.id_detalle_factura','idf.id_detalle_factura')
                             ->join('desglose_envio_factura as def','comprobante.id_comprobante','def.id_comprobante')
                             ->join('impuesto_desglose_envio_factura as idef','def.id_desglose_envio_factura','idef.id_desglose_envio_factura')
-                            ->select('clave_acceso','comprobante.id_comprobante')->get();
+                            ->select('clave_acceso','comprobante.id_comprobante','comprobante.secuencial')->get();
+
                         if($dataComprobante->count() > 0){
+
                             $objComprobante = Comprobante::find($dataComprobante[0]->id_comprobante);
                             $objComprobante->habilitado = false;
                             $objComprobante->id_envio = null;
                             $objComprobante->save();
-                            unlink(env('PATH_XML_FIRMADOS').'/facturas/'.$dataComprobante[0]->clave_acceso.".xml");
-                            unlink(env('PATH_XML_GENERADOS').'/facturas/'.$dataComprobante[0]->clave_acceso.".xml");
+                            $archivo_generado = env('PATH_XML_FIRMADOS').'/facturas/'.$dataComprobante[0]->clave_acceso.".xml";
+                            $archivo_firmado = env('PATH_XML_GENERADOS').'/facturas/'.$dataComprobante[0]->clave_acceso.".xml";
+
+                            if(file_exists($archivo_generado))
+                                unlink($archivo_generado);
+                            if(file_exists($archivo_firmado))
+                                unlink($archivo_firmado);
+
                             $codigo_dae = $dataEnvio->codigo_dae;
                             $dae = $dataEnvio->dae;
                             $guia_madre = $dataEnvio->guia_madre;
@@ -147,9 +157,7 @@ class PedidoController extends Controller
                         DetalleEnvio::where('id_envio',$dataEnvio->id_envio)->delete();
                         Envio::where('id_pedido',$request->id_pedido)->delete();
                     }
-                    foreach (getPedido($request->id_pedido)->detalles as $det_ped){
-                        DetallePedidoDatoExportacion::where('id_detalle_pedido',$det_ped->id_detalle_pedido)->delete();
-                    }
+                    foreach (getPedido($request->id_pedido)->detalles as $det_ped) DetallePedidoDatoExportacion::where('id_detalle_pedido',$det_ped->id_detalle_pedido)->delete();
                     DetallePedido::where('id_pedido',$request->id_pedido)->delete();
                     Pedido::destroy($request->id_pedido);
                 }
@@ -160,7 +168,7 @@ class PedidoController extends Controller
                 $objPedido->fecha_pedido = $fechaFormateada;
                 $objPedido->variedad = substr(implode("|",array_unique($request->variedades)), 0, -1);
                 if(isset($dataEnvio->id_envio) && count($dataComprobante) > 0){
-                    $objPedido->clave_acceso_temporal = $dataComprobante[0]->clave_acceso;
+                    $objPedido->clave_acceso_temporal = $dataComprobante[0]->secuencial;  //$dataComprobante[0]->clave_acceso; COMENTANDO PARA QUE LA FACTURACION FUNCIONE CON EL VENTURE
                     $objPedido->id_comprobante_temporal = $dataComprobante[0]->id_comprobante;
                 }
 
@@ -365,21 +373,29 @@ class PedidoController extends Controller
 
     public function cancelar_pedido(Request $request)
     {
-        $objPedido = Pedido::find($request->id_pedido);
-        $objPedido->estado = $request->estado == 0 ? 1 : 0;
+        $pedido = getPedido($request->id_pedido);
 
-        if ($objPedido->save()) {
+        if($pedido->envios[0]->comprobante != null && $pedido->envios[0]->comprobante != ""){
+            $objComprobante = Comprobante::find($pedido->envios[0]->comprobante->id_comprobante);
+            $objComprobante->update(['id_envio'=>null,'rehusar'=>true]);
+        }
+
+
+        //$objPedido = Pedido::find($request->id_pedido);
+        //$objPedido->estado = $request->estado == 0 ? 1 : 0;
+
+        if ( Pedido::destroy($request->id_pedido)) {
             $model = Pedido::all()->last();
             $success = true;
-            $objPedido->estado == 0 ? $palabra = 'cancelado' : $palabra = 'activado';
+           // $objPedido->estado == 0 ? $palabra = 'cancelado' : $palabra = 'activado';
             $msg = '<div class="alert alert-success text-center">' .
-                '<p> Se ha ' . $palabra . ' el pedido exitosamente</p>'
-                . '</div>';
-            bitacora('pedido', $model->id_pedido, 'U', 'Actualizacion satisfactoria del estado de un pedido');
+                        '<p> Se ha cancelado el pedido exitosamente</p>'
+                    . '</div>';
+            bitacora('pedido', $model->id_pedido, 'D', 'Pedido eliminado con exito');
         } else {
             $success = false;
             $msg = '<div class="alert alert-danger text-center">' .
-                '<p> Ha ocurrido un problema al guardar la información al sistema</p>'
+                '<p> Ha ocurrido un problema al cancelar el pedido, intente nuevamente</p>'
                 . '</div>';
         }
         return [

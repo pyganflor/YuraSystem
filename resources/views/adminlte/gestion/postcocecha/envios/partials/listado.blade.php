@@ -19,7 +19,18 @@
             <form id="form_envios_{{$i+1}}">
                 <input type="hidden" id="porcentaje_impuesto_{{$i+1}}" value="{{$tipoImpuestoCliente->porcentaje}}">
                 @php
-                    $firmado = getFacturado($envio->id_envio,1);
+
+                    //$firmado = getFacturado($envio->id_envio,1); COMENTADO PARA QUE LA FACTURACION FUNCIONE CON EL VENTURE
+                       $exist_comprobante=null;
+                       if(isset($envio->pedido->id_comprobante_temporal) && $envio->pedido->id_comprobante_temporal != "")
+                            $exist_comprobante = getComprobante($envio->pedido->id_comprobante_temporal);
+
+                       if($envio->comprobante != null)
+                           $exist_comprobante = $envio->comprobante;
+
+                    ($exist_comprobante !="" && $exist_comprobante !=null)
+                        ? $firmado = true
+                        : $firmado = false;
                     $facturado = getFacturado($envio->id_envio,5);
                     $factura_tercero = getFacturaClienteTercero($envio->id_envio) != "" ? true : false;
                 @endphp
@@ -471,7 +482,7 @@
                                     @if(!empty(getUsuario(session::get('id_usuario'))->punto_acceso))
                                         @if($envio->confirmado)
                                             @if($facturado == null)
-                                                <button type="button" class="btn btn-success" onclick="genera_comprobante_cliente('{{$envio->id_envio}}','form_envios_{{$i+1}}','{!! $firmado ? "update" : "" !!}','{{csrf_token()}}')">
+                                                <button type="button" class="btn btn-success" onclick="genera_comprobante_cliente('{{$envio->id_envio}}','form_envios_{{$i+1}}','{!! $firmado ? "update" : "" !!}','{{csrf_token()}}','{!! $firmado ? $envio->pedido->id_comprobante_temporal : "" !!}')">
                                                     <i class="fa fa-file-text-o" aria-hidden="true"></i>
                                                     {!! $firmado ? "Actualizar" : "Generar" !!} factura
                                                 </button>

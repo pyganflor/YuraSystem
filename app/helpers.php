@@ -1243,7 +1243,7 @@ function getFacturado($idEnvio, $estado)
         ['comprobante.habilitado', true]
     ])->count();
     ($f > 0) ? $facturado = true : $facturado = null;
-    return $f;
+    return $facturado;
 }
 
 function respuesta_autorizacion_comprobante($clave_acceso_lote, $sub_carpeta, $envio_correo)
@@ -1428,11 +1428,21 @@ function getDetallesClaveAcceso($numeroAutorizacion, $detalle)
     return $resultado;
 }
 
-function getSecuencial()
+function getSecuencial($tipoComprobante)
 {
-    $inicio_secuencial = env('INICIAL_FACTURA');
+    switch($tipoComprobante){
+        case '01':
+            $inicio_secuencial = env('INICIAL_FACTURA');
+            break;
+        case '06':
+            $inicio_secuencial = env('INICIAL_GUIA_REMISION');
+            break;
+        case '00':
+            $inicio_secuencial = env('INICIAL_LOTE');
+            break;
+    }
     $secuencial = $inicio_secuencial + 1;
-    $cant_reg = Comprobante::count();
+    $cant_reg = Comprobante::where('tipo_comprobante',$tipoComprobante)->count();
     if ($cant_reg > 0)
         $secuencial = $cant_reg + $inicio_secuencial + 1;
 
