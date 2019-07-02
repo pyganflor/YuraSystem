@@ -188,6 +188,11 @@
         snd.play();
     }
 
+    function beep_notificar() {
+        var sound = new Audio('{{url('sounds/notification1.mp3')}}');
+        sound.play();
+    }
+
     function inicializa(elemento) {
         if (!elemento || elemento === 'file') {
             $(".file").fileinput({
@@ -846,12 +851,12 @@
             });
     }
 
-    function notificar(body, url, accion) {
+    function notificar(body, url, accion, timeout) {
         Push.create('Hola', {
             body: body,
             icon: '{{url('images/logo_yura.png')}}',
             link: '/#',
-            timeout: 5000,
+            timeout: timeout == null ? 5000 : timeout,
             onClick: function () {
                 if (!!url)
                     window.focus();
@@ -861,6 +866,7 @@
             },
             vibrate: [200, 100, 200, 100, 200, 100, 200]
         });
+        beep_notificar();
     }
 
     set_config('');
