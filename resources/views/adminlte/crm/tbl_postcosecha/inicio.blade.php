@@ -137,6 +137,11 @@
                                 <i class="fa fa-fw fa-search"></i>
                             </button>
                         </div>
+                        <div class="input-group-btn">
+                            <button type="button" id="btn_exportar" class="btn btn-success" onclick="exportar_tabla()" title="Exportar">
+                                <i class="fa fa-fw fa-file-excel-o"></i>
+                            </button>
+                        </div>
                     </div>
                 </h3>
             </div>

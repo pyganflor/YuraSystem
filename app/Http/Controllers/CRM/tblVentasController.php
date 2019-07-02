@@ -584,22 +584,21 @@ class tblVentasController extends Controller
                 }
             }
 
-            [
+            ([
                 'data' => $data,
                 'acumulado' => $request->acumulado,
                 'criterio' => $request->criterio,
                 'cliente' => $request->cliente,
                 'desde' => $request->desde,
                 'hasta' => $request->hasta,
-            ];
+            ]);
             $criterios = ['V' => 'Valor', 'F' => 'Cajas Físicas', 'Q' => 'Cajas Equivalentes', 'P' => 'Precios'];
             $title_variedad = 'Acumulado';
             if ($request->variedad != 'A')
                 $title_variedad = getVariedad($request->variedad)->siglas;
+            $objSheet = new PHPExcel_Worksheet($objPHPExcel, $criterios[$request->criterio] . ' - ' . $title_variedad);
+            $objPHPExcel->addSheet($objSheet, 0);
             if ($view == 'mensual') {
-                $objSheet = new PHPExcel_Worksheet($objPHPExcel, $criterios[$request->criterio] . ' - ' . $title_variedad);
-                $objPHPExcel->addSheet($objSheet, 0);
-
                 /* ============== MERGE CELDAS =============*/
                 $objSheet->mergeCells('A1:A2');
 
@@ -826,7 +825,131 @@ class tblVentasController extends Controller
                 }
 
             } else {
-                dd('En desarrollo excel anual');
+                /* ============== ENCABEZADO =============*/
+                $objSheet->getCell('A1')->setValue($request->cliente == 'P' ? 'País' : 'Cliente');
+
+                $pos_col = 1;
+                $array_totales = [];
+                foreach ($data['labels'] as $anno) {
+                    array_push($array_totales, [
+                        'valor' => 0,
+                        'positivos' => 0,
+                    ]);
+                    $objSheet->getCell($columnas[$pos_col] . '1')->setValue($anno);      // <th> año
+                    $pos_col++;
+                }
+                $objSheet->getCell($columnas[$pos_col] . '1')
+                    ->setValue($request->criterio == 'V' || $request->criterio == 'F' || $request->criterio == 'Q' ? 'Total' : 'Promedio');
+
+                /* ============== LETRAS NEGRITAS =============*/
+                $objSheet->getStyle('A1:' . $columnas[$pos_col] . '1')->getFont()->setBold(true)->setSize(12);
+                /* ============== CENTRAR =============*/
+                $objSheet->getStyle('A1:' . $columnas[$pos_col] . intval(2 + count($data['filas'])))
+                    ->getAlignment()
+                    ->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER)
+                    ->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+                /* ============== BACKGROUND COLOR =============*/
+                $objSheet->getStyle('A1:' . $columnas[$pos_col] . '1')
+                    ->getFill()
+                    ->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
+                    ->getStartColor()
+                    ->setRGB('357ca5');
+                /* ============== TEXT COLOR =============*/
+                $objSheet->getStyle('A1:' . $columnas[$pos_col] . '1')
+                    ->getFont()
+                    ->getColor()
+                    ->setRGB('ffffff');
+                /* ============== BORDE COLOR =============*/
+                $objSheet->getStyle('A1:' . $columnas[$pos_col] . intval(2 + count($data['filas'])))
+                    ->getBorders()
+                    ->getAllBorders()
+                    ->setBorderStyle(PHPExcel_Style_Border::BORDER_MEDIUM)
+                    ->getColor()
+                    ->setRGB('000000');// <th> Total/Promedio
+
+                //--------------------------- LLENAR LA TABLA ---------------------------------------------
+                $pos_fila = 2;
+                $positivos = 0;
+                foreach ($data['filas'] as $fila) {
+                    if ($fila['encabezado'] != '')
+                        $objSheet->getCell('A' . $pos_fila)
+                            ->setValue($request->cliente == 'P' ? $fila['encabezado']->nombre : $fila['encabezado']->detalle()->nombre);
+                    else
+                        $objSheet->getCell('A' . $pos_fila)->setValue('Todos');
+
+                    $col = 1;
+                    $total_fila = 0;
+                    $total_positivos = 0;
+
+                    foreach ($fila['valores'] as $pos_val => $valor) {
+                        $objSheet->getCell($columnas[$col] . $pos_fila)->setValue($valor);
+                        $total_fila += $valor;
+                        $array_totales[$pos_val]['valor'] += $valor;
+                        if ($valor > 0) {
+                            $total_positivos++;
+                            $array_totales[$pos_val]['positivos']++;
+                            $positivos++;
+                        }
+                        $col++;
+                    }
+
+                    /* ============== LETRAS NEGRITAS =============*/
+                    $objSheet->getStyle($columnas[$col] . $pos_fila)->getFont()->setBold(true)->setSize(12);
+                    $objSheet->getStyle('A' . $pos_fila)->getFont()->setBold(true)->setSize(12);
+
+                    if ($request->criterio == 'V' || $request->criterio == 'F' || $request->criterio == 'Q')
+                        $objSheet->getCell($columnas[$col] . $pos_fila)->setValue(number_format($total_fila, 2)); // total fila
+                    else
+                        $objSheet->getCell($columnas[$col] . $pos_fila)
+                            ->setValue(number_format($total_positivos > 0 ? round($total_fila / $total_positivos, 2) : 0, 2)); // total fila
+
+                    $pos_fila++;
+                }
+
+                /* ============== LETRAS NEGRITAS =============*/
+                $objSheet->getStyle($columnas[$col] . $pos_fila)->getFont()->setBold(true)->setSize(12);
+                /* ============== BACKGROUND COLOR =============*/
+                $objSheet->getStyle('A2:A' . intval(count($data['filas']) + 1))
+                    ->getFill()
+                    ->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
+                    ->getStartColor()
+                    ->setRGB('e9ecef');
+                $objSheet->getStyle($columnas[$pos_col] . '2:' . $columnas[$pos_col] . intval(count($data['filas']) + 1))
+                    ->getFill()
+                    ->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
+                    ->getStartColor()
+                    ->setRGB('e9ecef');
+
+                /* ---------------------------- FILA TOTALES ---------------------------- */
+                /* ============== LETRAS NEGRITAS =============*/
+                $objSheet->getStyle('A' . $pos_fila . ':' . $columnas[$pos_col] . $pos_fila)->getFont()->setBold(true)->setSize(12);
+                /* ============== BACKGROUND COLOR =============*/
+                $objSheet->getStyle('A' . $pos_fila . ':' . $columnas[$pos_col] . $pos_fila)->getFill()
+                    ->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('357ca5');
+                /* ============== TEXT COLOR =============*/
+                $objSheet->getStyle('A' . $pos_fila . ':' . $columnas[$pos_col] . $pos_fila)->getFont()->getColor()->setRGB('ffffff');
+                /* ============================================================================================================================ */
+                $objSheet->getCell('A' . $pos_fila)
+                    ->setValue($request->criterio == 'V' || $request->criterio == 'F' || $request->criterio == 'Q' ? 'Total' : 'Promedio');
+
+                $col = 1;
+                $total = 0;
+                foreach ($array_totales as $valor) {
+                    if ($request->criterio == 'V' || $request->criterio == 'F' || $request->criterio == 'Q')
+                        $objSheet->getCell($columnas[$col] . $pos_fila)->setValue(number_format($valor['valor'], 2));
+                    else
+                        $objSheet->getCell($columnas[$col] . $pos_fila)
+                            ->setValue(number_format($valor['positivos'] > 0 ? round($valor['valor'] / $valor['positivos'], 2) : 0, 2));
+                    $total += $valor['valor'];
+                    $col++;
+                }
+
+                if ($request->criterio == 'V' || $request->criterio == 'F' || $request->criterio == 'Q')
+                    $objSheet->getCell($columnas[$pos_col] . $pos_fila)->setValue(number_format($total, 2)); // total fila
+                else
+                    $objSheet->getCell($columnas[$pos_col] . $pos_fila)
+                        ->setValue(number_format($positivos > 0 ? round($total / $positivos, 2) : 0, 2)); // total fila
+
             }
 
         } else {
