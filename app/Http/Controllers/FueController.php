@@ -126,6 +126,8 @@ class FueController extends Controller
 
            //dd($request->all());
 
+//dd($request->get('desde'));
+
         if($request->get('id_cliente') != null)
             $data->where('c.id_cliente',$request->get('id_cliente'));
         if($request->get('codigo_dae') != null)
