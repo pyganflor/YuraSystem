@@ -1,4 +1,6 @@
 <script>
+    estructura_tabla('table_listado_notificaciones');
+
     var new_not_count = 0;
 
     function add_notificacion() {

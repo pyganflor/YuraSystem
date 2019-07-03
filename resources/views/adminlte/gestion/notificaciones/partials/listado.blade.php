@@ -21,12 +21,18 @@
             <td class="text-center" style="border-color: #9d9d9d">
                 <input type="text" class="text-center" id="nombre_not_{{$item->id_notificacion}}" value="{{$item->nombre}}" required
                        style="width: 100%">
+                <p style="display: none">{{$item->nombre}}</p>
             </td>
             <td class="text-center" style="border-color: #9d9d9d">
                 <select id="tipo_not_{{$item->id_notificacion}}" style="width: 100%;">
                     <option value="S" {{$item->tipo == 'S' ? 'selected' : ''}}>Sistema</option>
                     <option value="M" {{$item->tipo == 'M' ? 'selected' : ''}}>Mensaje</option>
                 </select>
+                @if($item->tipo == 'S')
+                    <p style="display: none">Sistema</p>
+                @else
+                    <p style="display: none">Mensaje</p>
+                @endif
             </td>
             <td class="text-center" style="border-color: #9d9d9d">
                 <select id="icon_not_{{$item->id_notificacion}}" style="width: 100%;">
@@ -34,6 +40,7 @@
                         <option value="{{$i->id_icono}}" {{$item->id_icono == $i->id_icono ? 'selected' : ''}}>{{$i->nombre}}</option>
                     @endforeach
                 </select>
+                <p style="display: none">{{$item->icono->nombre}}</p>
             </td>
             <td class="text-center" style="border-color: #9d9d9d">
                 <div class="btn-group">
