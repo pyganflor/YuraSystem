@@ -243,13 +243,12 @@
                             @foreach($distribucion->marcaciones as $x => $marcacion)
                                 @foreach ($marcacion->distribuciones as $y => $dist)
                                         @foreach ($dist->distribuciones_coloraciones as $z => $distribucion_coloracion)
-
+                                            @if($x == 0 && $y == 0)
                                                 @if($distribucion_coloracion->cantidad !== 0)
                                                     {{$distribucion_coloracion->cantidad ." ". $distribucion_coloracion->marcacion_coloracion->coloracion->color->nombre. ","}}
                                                 @endif
-                                            
+                                            @endif
                                         @endforeach
-
                                 @endforeach
                             @endforeach
                         </td>
