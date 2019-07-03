@@ -255,13 +255,15 @@
                                             </a>
                                         </td>
                                     @endif
-                                    @if(!$opciones && $pedido->tipo_especificacion === "T")
+
                                         <td rowspan="{{getCantidadDetallesEspecificacionByPedido($pedido->id_pedido)}}" class="text-center" style="border-color: #9d9d9d">
+                                            @if(!$opciones && $pedido->tipo_especificacion === "T")
                                             <a target="_blank" href="{{url('pedidos/crear_packing_list',[$pedido->id_pedido,true])}}" class="btn btn-info btn-xs" title="Packing list">
                                                 <i class="fa fa-cubes"></i>
                                             </a>
+                                            @endif
                                         </td>
-                                    @endif
+
                                 @endif
                             </tr>
                         @endforeach
