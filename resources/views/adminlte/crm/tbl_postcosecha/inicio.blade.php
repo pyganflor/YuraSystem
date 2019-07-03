@@ -123,6 +123,7 @@
                         <select name="criterio" id="criterio" class="form-control">
                             <option value="C">Cajas</option>
                             <option value="T">Tallos</option>
+                            <option value="E">Ramos</option>
                             <option value="D">Desecho</option>
                             <option value="R">Rendimiento</option>
                             <option value="Q">Calibre</option>
