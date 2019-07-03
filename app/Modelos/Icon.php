@@ -13,5 +13,6 @@ class Icon extends Model
 
     protected $fillable = [
         'estado',
+        'nombre',
     ];
 }
