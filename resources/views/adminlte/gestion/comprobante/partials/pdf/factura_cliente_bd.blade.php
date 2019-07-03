@@ -1,9 +1,10 @@
 @php
-    $empresa = getConfiguracionEmpresa();
-    $comprobante = getComprobante(\yura\Modelos\Comprobante::where('clave_acceso',(String)$data['obj_xml']->infoTributaria->claveAcceso)->first()->id_comprobante);
-    $cliente = getCliente(getEnvio($comprobante->envio->id_envio)->pedido->id_cliente)->detalle();
-    $factura_tercero = getFacturaClienteTercero(getComprobante($comprobante->id_comprobante)->id_envio);
-    $envio = getEnvio($comprobante->envio->id_envio);
+    $detalleFactura = getDetalleFactura($data['comprobante']->id_comprobante);
+    $cliente = getCliente(getEnvio($data['comprobante']->envio->id_envio)->pedido->id_cliente)->detalle();
+    $factura_tercero = getFacturaClienteTercero(getComprobante($data['comprobante']->id_comprobante)->id_envio);
+    $envio = getEnvio($data['comprobante']->envio->id_envio);
+    /*$comprobante = getComprobante(\yura\Modelos\Comprobante::where('clave_acceso',(String)$data['obj_xml']->infoTributaria->claveAcceso)->first()->id_comprobante);
+    ;*/
     $precio_total_sin_impuestos = 0.00;
     $total_ramos = 0.00;
     $total_piezas = 0.00;
@@ -40,12 +41,12 @@
                     </tr>
                 </table>
                 <table style="width: 100%">
-                    <tr><td style="font-size: 18px;">{{$empresa->razon_social}}</td></tr>
-                    <tr><td style="font-size:12px">{{$empresa->direccion_matriz}}</td></tr>
-                    <tr><td style="font-size:12px">Quito - {{getPais($empresa->codigo_pais)->nombre}}</td></tr>
-                    <tr><td style="font-size:12px">Teléfono: {{$empresa->telefono}}</td></tr>
-                    <tr><td style="font-size:12px">Fax: {{$empresa->fax}}</td></tr>
-                    <tr><td style="font-size:12px">Email: {{$empresa->correo}}</td></tr>
+                    <tr><td style="font-size: 18px;">{{$detalleFactura->nombre_comercial_emisor}}</td></tr>
+                    <tr><td style="font-size:12px">{{$detalleFactura->direccion_matriz_emisor}}</td></tr>
+                    <tr><td style="font-size:12px">Quito - {{getPais($data['empresa']->codigo_pais)->nombre}}</td></tr>
+                    <tr><td style="font-size:12px">Teléfono: {{$data['empresa']->telefono}}</td></tr>
+                    <tr><td style="font-size:12px">Fax: {{$data['empresa']->fax}}</td></tr>
+                    <tr><td style="font-size:12px">Email: {{$data['empresa']->correo}}</td></tr>
                 </table>
                 <table style="margin-top: 10px;">
                     <tr>
@@ -74,9 +75,9 @@
                     </tr>
                 </table>
                 <table style="width: 100%">
-                    <tr><td style="font-size:12px">{{$data['obj_xml']->infoFactura->razonSocialComprador}}</td></tr>
-                    <tr><td style="font-size:12px">{{$factura_tercero !== null ? getPais($factura_tercero->codigo_pais)->nombre : getPais($cliente->codigo_pais)->nombre}} - {{$data['obj_xml']->infoAdicional->campoAdicional[0]}} </td></tr>
-                    <tr><td style="font-size:12px">ID:{{$data['obj_xml']->infoFactura->identificacionComprador}}</td></tr>
+                    <tr><td style="font-size:12px">{{$detalleFactura->razon_social_comprador}}</td></tr>
+                    <tr><td style="font-size:12px">{{$factura_tercero !== null ? getPais($factura_tercero->codigo_pais)->nombre : getPais($cliente->codigo_pais)->nombre}} -  {{$factura_tercero !== null ? $factura_tercero->provincia : $cliente->provincia }}</td></tr>
+                    <tr><td style="font-size:12px">ID:{{$detalleFactura->identificacion_comprador}}</td></tr>
                 </table>
 
             </div>
@@ -87,31 +88,31 @@
                     <tr>
                         <td style="text-align: center;font-size: 16px;vertical-align: top">
                             <b> FACTURA <br />
-                                No. {{getDetallesClaveAcceso((String)(String)$data['obj_xml']->infoTributaria->claveAcceso, 'SERIE').getDetallesClaveAcceso((String)(String)$data['obj_xml']->infoTributaria->claveAcceso, 'SECUENCIAL')}}</b>
+                                No. {{$data['secuencial']}}</b>
                         </td>
                     </tr>
                     <tr> <td style="font-size: 12px">RUC: {{env('RUC')}}</td> </tr>
-                    <tr> <td style="font-size: 12px">AUT. SRI. No: {{$comprobante->estado === 5 ? (String)$data['obj_xml']->infoTributaria->claveAcceso : "Sin valor tributario"}}</td> </tr>
+                    <tr> <td style="font-size: 12px">AUT. SRI. No: {{$data['comprobante']->estado === 5 ? $data['comprobante']->clave_acceso : "Sin valor tributario"}}</td></tr>
                 </table>
                 <table style="width: 100%;" >
                     <tr style="border: 1px solid black;">
                         <td style="border: 1px solid black;padding: 0;font-size: 12px;width:60% ">
                             <b>Farm Code / Código de Finca</b><br /><br />
-                            {{$empresa->razon_social}}
+                            {{$detalleFactura->razon_social_emisor}}
                         </td>
                         <td style="border: 1px solid black;padding: 0;font-size: 12px">
                             <b>Date / Fecha</b> <br /> <br />
-                            {{\Carbon\Carbon::parse($comprobante->fecha_emision)->format('d-m-Y') }}
+                            {{\Carbon\Carbon::parse($data['comprobante']->fecha_emision)->format('d-m-Y')}}
                         </td>
                     </tr>
                     <tr style="border: 1px solid black;">
                         <td style="border: 1px solid black;padding: 0;font-size: 12px;">
                             <b>Country Code / País</b><br /> <br />
-                            {{getPais($empresa->codigo_pais)->nombre}}
+                            {{getPais($data['empresa']->codigo_pais)->nombre}}
                         </td>
                         <td style="border: 1px solid black;padding: 0;font-size: 12px">
                             <b>Invoice No.</b><br /> <br />
-                            {{getDetallesClaveAcceso((String)(String)$data['obj_xml']->infoTributaria->claveAcceso, 'SERIE').getDetallesClaveAcceso((String)(String)$data['obj_xml']->infoTributaria->claveAcceso, 'SECUENCIAL')}}
+                            {{$data['secuencial']}}
                         </td>
                     </tr>
                     <tr style="border: 1px solid black;">
@@ -202,7 +203,7 @@
                         </td>
                         <td style="border: 1px solid black;padding: 0;font-size: 12px">
                             <b>Fecha embarque</b><br />
-                            {{\Carbon\Carbon::parse($comprobante->fecha_emision)->addDay(1)->format('d-m-Y')}}
+                            {{\Carbon\Carbon::parse($data['comprobante']->fecha_emision)->addDay(1)->format('d-m-Y')}}
                         </td>
                     </tr>
                 </table>
@@ -387,13 +388,13 @@
     <tr>
         <td style="font-size:11px;font-family: arial, sans-serif;width:50px"> <b>{{$total_tallos}}</b> </td>
         <td style="font-size:11px;font-family: arial, sans-serif;width:300px"><b>TOTAL STEMS</b></td>
-        @php $tipoImpuesto = getTipoImpuesto((String)$data['obj_xml']->infoFactura->totalConImpuestos->totalImpuesto->codigo,(String)$data['obj_xml']->infoFactura->totalConImpuestos->totalImpuesto->codigoPorcentaje); @endphp
+        @php $tipoImpuesto = getTipoImpuesto($envio->pedido->cliente->detalle()->codigo_impuesto, $envio->pedido->cliente->detalle()->codigo_porcentaje_impuesto); @endphp
         <td style="font-size:11px;font-family: arial, sans-serif;text_align:right">{{$tipoImpuesto->nombre}} : ${{is_numeric($tipoImpuesto->porcentaje) ? number_format($precio_total_sin_impuestos * ($tipoImpuesto->porcentaje / 100), 2, ".", "") : "0.00"}}</td>
     </tr>
     <tr>
         <td style="font-size:11px;font-family: arial, sans-serif;width:50px"> <b>{{number_format($total_piezas,2,".","")}}</b> </td>
         <td style="font-size:11px;font-family: arial, sans-serif;width:300px"><b>TOTAL PIECES / TOTAL PIEZAS</b></td>
-        @php $tipoImpuesto = getTipoImpuesto((String)$data['obj_xml']->infoFactura->totalConImpuestos->totalImpuesto->codigo,(String)$data['obj_xml']->infoFactura->totalConImpuestos->totalImpuesto->codigoPorcentaje); @endphp
+        @php $tipoImpuesto = $tipoImpuesto = getTipoImpuesto($envio->pedido->cliente->detalle()->codigo_impuesto, $envio->pedido->cliente->detalle()->codigo_porcentaje_impuesto); @endphp
         <td style="font-size:11px;font-family: arial, sans-serif;text_align:right">TOTAL : ${{is_numeric($tipoImpuesto->porcentaje) ? number_format($precio_total_sin_impuestos + ($precio_total_sin_impuestos * ($tipoImpuesto->porcentaje / 100)), 2, ".", "") : number_format($precio_total_sin_impuestos, 2, ".", "")}}</td>
     </tr>
     <tr>

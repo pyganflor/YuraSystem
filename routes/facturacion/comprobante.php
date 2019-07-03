@@ -14,4 +14,6 @@ Route::get('comprobante/pre_factura/{clave_acceso}/{cliente?}', 'ComprobanteCont
 Route::post('comprobante/generar_comprobante_guia_remision','ComprobanteController@generar_comprobante_guia_remision');
 Route::get('comprobante/pre_guia_remision/{clave_acceso}', 'ComprobanteController@ver_pre_guia_remision');
 Route::post('comprobante/integrar_comprobante', 'ComprobanteController@integrar_comprobante');
-
+//RUTA PARA QUE LA FACTURACION FUNCIONE CON EL VENTURE (LEE LOS DATOS DE LA PRE-FACTURA DESDE LA BD)
+Route::get('comprobante/documento_pre_factura/{secuencial}/{cliente?}', 'ComprobanteController@ver_pre_factura_bd');
+Route::post('comprobante/enviar_correo', 'ComprobanteController@enviar_correo');

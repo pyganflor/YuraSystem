@@ -22,6 +22,8 @@ use Validator;
 use DB;
 use SoapClient;
 use Barryvdh\DomPDF\Facade as PDF;
+use yura\Mail\CorreoFacturaVenture;
+use Illuminate\Support\Facades\Mail;
 
 class ComprobanteController extends Controller
 {
@@ -228,10 +230,6 @@ class ComprobanteController extends Controller
                 $objPedido = Pedido::find($id_pedido);
                 $objPedido->update(['clave_acceso_temporal'=>null,'id_comprobante_temporal'=>null]);
                 Comprobante::destroy($dataComprobante[0]->id_comprobante);
-
-
-
-
 
             }else{
 
@@ -1030,8 +1028,7 @@ class ComprobanteController extends Controller
 
     public function ver_pre_factura($clave_acceso,$cliente=false){
 
-        //COMENTADO PARA QUE LA FACTURACION FUNCIONE CON EL VENTURE
-        /*$sub_carpeta = getSubCarpetaArchivo($clave_acceso);
+        $sub_carpeta = getSubCarpetaArchivo($clave_acceso);
         if (file_exists(env('PATH_XML_FIRMADOS').$sub_carpeta.$clave_acceso.".xml")){
             $archivo = file_get_contents(env('PATH_XML_FIRMADOS').$sub_carpeta.$clave_acceso.".xml");
             $dataComprobante = Comprobante::where('clave_acceso',$clave_acceso)->select('id_envio')->first();
@@ -1054,12 +1051,38 @@ class ComprobanteController extends Controller
             "<p> El archivo del documento no existe, por favor contactarse con el área de sistemas. </p>"
             . "</div>";
             return $msg;
-        }*/
+        }
+
+    }
+
+    //FUNCION PARA QUE LA FACTURACION FUNCIONE CON EL VENTURE (SE LEEN LOS DATOS DESDE LA BD PARA CREAR LA PRE-FACTURA)
+    public function ver_pre_factura_bd(Request $request, $secuencial,$cliente=false){
+        $path = explode('/',$request->path())[0];
+        if($path === "comprobante"){
+            $comprobante = Comprobante::where('secuencial',$secuencial)->first();
+        }elseif($path=== "pedidos"){
+            $comprobante = getPedido($secuencial)->envios[0]->comprobante;
+        }
+
+        if($comprobante == null){
+            $data = null;
+        }else{
+
+            $img_clave_acceso = null;
+            if($comprobante->clave_acceso != null)
+                $img_clave_acceso = generateCodeBarGs1128($comprobante->clave_acceso);
+            $data = [
+                'empresa' => getConfiguracionEmpresa(),
+                'secuencial' => $comprobante->secuencial,
+                'comprobante' => $comprobante,
+                'img_clave_acceso' => $img_clave_acceso
+            ];
+        }
 
         if(!$cliente){
-            return PDF::loadView('adminlte.gestion.comprobante.partials.pdf.factura', compact('data'))->stream();
+            return PDF::loadView('adminlte.gestion.comprobante.partials.pdf.factura_bd', compact('data'))->stream();
         }else{
-            return PDF::loadView('adminlte.gestion.comprobante.partials.pdf.factura_cliente', compact('data'))->stream();
+            return PDF::loadView('adminlte.gestion.comprobante.partials.pdf.factura_cliente_bd', compact('data'))->stream();
         }
     }
 
@@ -1402,4 +1425,57 @@ class ComprobanteController extends Controller
         ];*/
     }
 
+    public function enviar_correo(Request $request){
+        ini_set('max_execution_time', env('MAX_EXECUTION_TIME'));
+        $comprobante = Comprobante::where('id_comprobante',$request->id_comprobante)->first();
+
+        $img_clave_acceso = null;
+        if($comprobante->clave_acceso != null)
+            $img_clave_acceso = generateCodeBarGs1128($comprobante->clave_acceso);
+        $data = [
+            'empresa' => getConfiguracionEmpresa(),
+            'secuencial' => $comprobante->secuencial,
+            'comprobante' => $comprobante,
+            'img_clave_acceso' => $img_clave_acceso
+        ];
+
+        $correos = [];
+
+        if($request->cliente == "true"){
+            $comprobante->envio->fatura_cliente_tercero != null
+                ? $mail = $comprobante->envio->fatura_cliente_tercero->correo
+                : $mail = $comprobante->envio->pedido->cliente->detalle()->correo;
+            $correos[] = $mail;
+        }
+       
+        if($request->agencia_carga == "true")
+            $correos[] = $comprobante->envio->pedido->detalles[0]->agencia_carga->correo;
+
+        foreach ($comprobante->envio->pedido->cliente->detalle()->informacion_adicional_correo() as $correo)
+            $correos[] =$correo->varchar;
+
+        if($request->factura_sri == "true")
+            PDF::loadView('adminlte.gestion.comprobante.partials.pdf.factura_bd', compact('data'))->save(env('PDF_FACTURAS_TEMPORAL')."fact_sri_".$comprobante->secuencial.".pdf");
+        if($request->factura_cliente == "true")
+            PDF::loadView('adminlte.gestion.comprobante.partials.pdf.factura_cliente_bd', compact('data'))->save(env('PDF_FACTURAS_TEMPORAL')."fact_cliente_".$comprobante->secuencial.".pdf");
+
+        //$correos[0]
+        Mail::to("pruebas-c26453@inbox.mailtrap.io")
+            ->cc($correos)->send(new CorreoFacturaVenture($request->factura_cliente,$request->factura_sri,$comprobante->secuencial,$correos));
+
+        if($request->factura_sri == "true" && file_exists(env('PDF_FACTURAS_TEMPORAL')."fact_sri_".$comprobante->secuencial.'.pdf'))
+            unlink(env('PDF_FACTURAS_TEMPORAL')."fact_sri_".$comprobante->secuencial.'.pdf');
+
+        if($request->factura_cliente == "true" && file_exists(env('PDF_FACTURAS_TEMPORAL')."fact_cliente_".$comprobante->secuencial.'.pdf'))
+            unlink(env('PDF_FACTURAS_TEMPORAL')."fact_cliente_".$comprobante->secuencial.'.pdf');
+        return[
+            'mensaje' => '<div class="alert text-center  alert-success">' .
+                          '<p>Se han enviado los correos con exito </p>'
+                    .'</div>',
+            'success' => true,
+        ];
+
+    }
+
 }
+

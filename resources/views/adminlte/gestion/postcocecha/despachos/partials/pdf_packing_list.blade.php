@@ -192,7 +192,6 @@
             </tr>
         </thead>
         <tbody style="border: 1px solid black">
-
                 @foreach($env->pedido->pedidoMarcacionesOrderAsc as $distribucion)
                     <tr>
                         <td style="font-size:12px;border:1px solid black">{{$distribucion->nombre}}</td>

@@ -101,7 +101,6 @@
                                 @endif
                             @endif
                             @if($tipo_comprobante=="01")
-                                {{dd($item->secuentical)}}
                                 <a target="_blank" href="{{url('comprobante/pre_factura',[$item->clave_acceso,true])}}" class="btn btn-info btn-xs" title="Ver factura Cliente">
                                     <i class="fa fa-user-circle-o" aria-hidden="true"></i>
                                 </a>
@@ -120,13 +119,17 @@
                             </button>--}}
                             @if($tipo_comprobante!="06")
                                 {{--<a target="_blank" href="{{url('comprobante/pre_factura',[$item->clave_acceso,true])}}" class="btn btn-info btn-xs" title="Ver factura Cliente"> COMENTADO PARA QUE LA FACTURACION FUNCIONE CON EL VENTURE --}}
-                                    <a target="_blank" href="{{url('comprobante/pre_factura',[$item->secuencial,true])}}" class="btn btn-info btn-xs" title="Ver factura Cliente">
+                                <a target="_blank" href="{{url('comprobante/documento_pre_factura',[$item->secuencial,true])}}" class="btn btn-info btn-xs" title="Ver factura Cliente">
                                     <i class="fa fa-user-circle-o" aria-hidden="true"></i>
                                 </a>
                                 {{--<a target="_blank" href="{{url('comprobante/pre_factura',$item->clave_acceso)}}" class="btn btn-primary btn-xs" title="Ver factura SRI"> COMENTADO PARA QUE LA FACTURACION FUNCIONE CON EL VENTURE --}}
-                                <a target="_blank" href="{{url('comprobante/pre_factura',$item->secuencial)}}" class="btn btn-primary btn-xs" title="Ver factura SRI">
+                                <a target="_blank" href="{{url('comprobante/documento_pre_factura',$item->secuencial)}}" class="btn btn-primary btn-xs" title="Ver factura SRI">
                                     <i class="fa fa-eye" aria-hidden="true"></i>
                                 </a>
+                                {{--PARA QUE LA FACTURACION FUNCIONE CON EL VENTURE--}}
+                                <button class="btn btn-warning btn-xs" title="Enviar correo" onclick="enviar_correo('{{$item->id_comprobante}}')">
+                                    <i class="fa fa-envelope-o" aria-hidden="true"></i>
+                                </button>
                             @else
                                 <a target="_blank" href="{{url('comprobante/pre_guia_remision',$item->clave_acceso)}}" class="btn btn-primary btn-xs" title="Ver comprobante electrónico">
                                     <i class="fa fa-eye" aria-hidden="true"></i>
@@ -137,7 +140,6 @@
                                 <input type="checkbox" id="firmar_{{$key+1}}" name="firmar" value="{{$item->id_comprobante}}" style="margin:0;position:relative;top:3px">
                             </button>
                         @endif
-
                     </td>
                 </tr>
             @endforeach
@@ -152,14 +154,15 @@
                 </div>
             @elseif($item->estado == 1)
                 <div class="text-center">
-                    <button class="btn btn-success" onclick="integrar_comprobante()">
-                        <i class="fa fa-upload" aria-hidden="true"></i>
-                        Integrar con el venture
-                    </button>
+                    {{--COMENTADO PARA QUE LA FACTURACION FUNCIONE CON EL SRI--}}
                     {{--<button class="btn btn-success" onclick="enviar_comprobante('{{$tipo_comprobante}}')">
                         <i class="fa fa-upload" aria-hidden="true"></i>
                         Enviar al SRI
                     </button>--}}
+                    <button class="btn btn-success" onclick="integrar_comprobante()">
+                        <i class="fa fa-upload" aria-hidden="true"></i>
+                        Integrar con el venture
+                    </button>
                 </div>
             @endif
         @endif

@@ -17,7 +17,7 @@
             $.LoadingOverlay('hide');
         });
     }
-    
+
     function enviar_comprobante(tipo_comprobante) {
         arrComprobante = [];
         $.each($('input:checkbox[name=enviar]:checked'), function (i, j) {
@@ -140,17 +140,63 @@
         });
     }
 
+    function enviar_correo(id_comprobante){
+        html = "<div class='row'>" +
+                    "<div class='col-md-12'>" +
+                        "<form id='form_envio_correo' name='form_envio_correo'>" +
+                            "<p><label for='ruta'>Seleccione las opciones para el envio del correo</label></p>" +
+                            "<div class='row'>" +
+                                "<div class='col-md-6'>" +
+                                    "<input type='checkbox' id='cliente' name='cliente' checked style='position:relative;top:3px'> "+
+                                    "<label for='cliente'>Enviar al cliente</label>" +
+                                "</div>"+
+                                "<div class='col-md-6'>" +
+                                    "<input type='checkbox' id='agencia_carga' name='agencia_carga' style='position:relative;top:3px'> "+
+                                    "<label for='agencia_carga'>Enviar a la agencia de carga</label>" +
+                                "</div>"+
+                                "<div class='col-md-6'>" +
+                                    "<input type='checkbox' id='factura_cliente' name='factura_cliente' checke style='position:relative;top:3px'> "+
+                                    "<label for='factura_cliente'>Enviar factura del cliente</label>" +
+                                "</div>"+
+                                "<div class='col-md-6'>" +
+                                    "<input type='checkbox' id='factura_sri' name='factura_sri' style='position:relative;top:3px'> "+
+                                    "<label for='factura_sri'>Enviar factura del SRI</label>" +
+                                "</div>"+
+                            "</div>" +
+                        "</form>" +
+                    "</div>"+
+                "</div>";
+
+        modal_quest('modal_enviar_correo', html, "<i class='fa fa-envelope-o' ></i> Envio de correos",true, false, '{{isPC() ? '50%' : ''}}', function () {
+            $.LoadingOverlay('show');
+            datos = {
+                _token: '{{csrf_token()}}',
+                id_comprobante : id_comprobante,
+                cliente : $("#cliente").is(':checked'),
+                agencia_carga : $("#agencia_carga").is(':checked'),
+                factura_cliente : $("#factura_cliente").is(':checked'),
+                factura_sri : $("#factura_sri").is(':checked')
+            };
+            post_jquery('comprobante/enviar_correo', datos, function () {
+
+                //buscar_listado_comprobante();
+            });
+            cerrar_modals();
+            $.LoadingOverlay('hide');
+        });
+    }
+
     function crear_guia_remision(id_comprobante){
         html = "<div class='row'>" +
-                "<div class='col-md-12'>" +
-                    "<form id='form_guia_ruta' name='form_guia_ruta'>" +
-                    "<p><label for='ruta'>Escriba la ruta para la guía de remisión</label></p>" +
-                        "<div class='row'>" +
-                            "<div class='col-md-12'>" +
-                                "<input type='text' id='ruta' name='ruta' class='form-control' value='TABABELA' required> "+
-                            "</div>"+
-                        "</div>" +
-                    "</form>" +
+                    "<div class='col-md-12'>" +
+                        "<form id='form_guia_ruta' name='form_guia_ruta'>" +
+                        "<p><label for='ruta'>Escriba la ruta para la guía de remisión</label></p>" +
+                            "<div class='row'>" +
+                                "<div class='col-md-12'>" +
+                                    "<input type='text' id='ruta' name='ruta' class='form-control' value='TABABELA' required> "+
+                                "</div>"+
+                            "</div>" +
+                        "</form>" +
                     "</div>"+
                 "</div>";
 

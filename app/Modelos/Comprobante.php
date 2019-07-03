@@ -31,9 +31,14 @@ class Comprobante extends Model
         return $this->belongsTo('yura\Modelos\Envio', 'id_envio');
     }
 
+    public function desglose_envio_factura(){
+        return $this->hasMany('yura\Modelos\DesgloseEnvioFactura', 'id_comprobante');
+    }
+
     public function detalle_guia_remision(){
         return $this->belongsTo('\yura\Modelos\DetalleGuiaRemision','id_comprobante_relacionado');
     }
+
 
 }
 
