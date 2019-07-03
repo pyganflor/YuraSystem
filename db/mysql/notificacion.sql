@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 08-05-2019 a las 20:03:40
+-- Tiempo de generación: 04-07-2019 a las 01:26:33
 -- Versión del servidor: 10.1.36-MariaDB
 -- Versión de PHP: 7.2.11
 
@@ -25,16 +25,15 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `clasificacion_blanco`
+-- Estructura de tabla para la tabla `notificacion`
 --
 
-CREATE TABLE `clasificacion_blanco` (
-  `id_clasificacion_blanco` int(11) NOT NULL,
-  `fecha_ingreso` date NOT NULL,
-  `hora_inicio` varchar(5) COLLATE utf8_bin DEFAULT '07:00',
-  `personal` int(11) DEFAULT NULL,
+CREATE TABLE `notificacion` (
+  `id_notificacion` int(11) NOT NULL,
+  `nombre` varchar(50) COLLATE utf8_bin NOT NULL,
+  `tipo` char(1) COLLATE utf8_bin NOT NULL DEFAULT 'S',
   `estado` tinyint(1) NOT NULL DEFAULT '1',
-  `fecha_registro` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+  `id_icono` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 --
@@ -42,20 +41,20 @@ CREATE TABLE `clasificacion_blanco` (
 --
 
 --
--- Indices de la tabla `clasificacion_blanco`
+-- Indices de la tabla `notificacion`
 --
-ALTER TABLE `clasificacion_blanco`
-  ADD PRIMARY KEY (`id_clasificacion_blanco`);
+ALTER TABLE `notificacion`
+  ADD PRIMARY KEY (`id_notificacion`);
 
 --
 -- AUTO_INCREMENT de las tablas volcadas
 --
 
 --
--- AUTO_INCREMENT de la tabla `clasificacion_blanco`
+-- AUTO_INCREMENT de la tabla `notificacion`
 --
-ALTER TABLE `clasificacion_blanco`
-  MODIFY `id_clasificacion_blanco` int(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `notificacion`
+  MODIFY `id_notificacion` int(11) NOT NULL AUTO_INCREMENT;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

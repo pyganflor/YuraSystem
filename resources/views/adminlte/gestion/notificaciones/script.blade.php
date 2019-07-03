@@ -37,7 +37,6 @@
         post_jquery('{{url('notificaciones/store_notificacion')}}', datos, function () {
             cerrar_modals();
             $('#btn_store_' + pos).hide();
-            $('#row_new_' + pos).addClass('bg-green');
         });
     }
 
