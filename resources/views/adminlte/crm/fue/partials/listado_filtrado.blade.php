@@ -70,7 +70,7 @@
                 <tr onmouseover="$(this).css('background-color','#add8e6')" onmouseleave="$(this).css('background-color','')"
                     class="{{$item->estado == 1 ? '':'error'}}" id="row_marcas_{{$item->id_marca}}">
                     <td style="border-color: #9d9d9d" class="text-center">{{$x+1}}</td>
-                    <td style="border-color: #9d9d9d" class="text-center">{{$item->clave_acceso}}</td>
+                    <td style="border-color: #9d9d9d" class="text-center">{{isset($item->clave_acceso) ? $item->clave_acceso : "No facturado aún"}}</td>
                     <td style="border-color: #9d9d9d" class="text-center">{{$item->dae}}</td>
                     <td style="border-color: #9d9d9d" class="text-center">{{$item->codigo_dae}}</td>
                     <td style="border-color: #9d9d9d" class="text-center">{{getConfiguracionEmpresa()->razon_social}}</td>

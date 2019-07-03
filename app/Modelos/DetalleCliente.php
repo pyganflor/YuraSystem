@@ -33,6 +33,10 @@ class DetalleCliente extends Model
         return $this->hasMany('yura\Modelos\Documento','codigo')->where('nombre_campo',$nombre_campo)->first();
     }
 
+    public function informacion_adicional_correo(){
+        return $this->hasMany('yura\Modelos\Documento','codigo')->where('nombre_campo','correo')->get();
+    }
+
     public function marca_caja(){
         return $this->belongsTo('yura\Modelos\Marca','id_marca');
     }

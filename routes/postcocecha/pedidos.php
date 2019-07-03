@@ -13,6 +13,8 @@ Route::get('clientes/buscar_saldos', 'YuraController@buscar_saldos');
 Route::get('pedidos/crear_packing_list/{id_pedido}/{despacho?}', 'PedidoController@crear_packing_list');
 Route::get('pedidos/facturar_pedido', 'PedidoController@facturar_pedido');
 Route::get('pedidos/ver_factura_pedido/{id_pedido}', 'PedidoController@ver_factura_pedido');
+//URL PARA QUE LA FACTURACION FUNCIONE OCN EL VENTURE
+Route::get('pedidos/documento_pre_factura/{secuencial}/{cliente?}', 'ComprobanteController@ver_pre_factura_bd');
 
 
 

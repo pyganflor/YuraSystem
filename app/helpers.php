@@ -18,6 +18,7 @@ use yura\Modelos\DetalleEmpaque;
 use yura\Modelos\ClasificacionVerde;
 use yura\Modelos\ClasificacionUnitaria;
 use yura\Modelos\StockApertura;
+use \yura\Modelos\DetalleFactura;
 use yura\Modelos\Semana;
 use yura\Modelos\LoteRE;
 use yura\Modelos\UnidadMedida;
@@ -2030,4 +2031,9 @@ function getHistoricoVentaByMes($mes, $anno, $variedad = 'T')
     $r = $r->get()[0]->cant;
 
     return round($r, 2);
+}
+
+
+function getDetalleFactura($idComprobante){
+    return DetalleFactura::where('id_comprobante',$idComprobante)->first();
 }

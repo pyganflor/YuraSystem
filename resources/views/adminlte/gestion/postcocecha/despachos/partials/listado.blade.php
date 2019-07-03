@@ -65,7 +65,7 @@
                         CUARTO FRÍO
                     </th>
                 @endif
-                <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white;width:140px">
+                <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white;width:165px">
                     OPCIONES
                 </th>
             </tr>
@@ -154,7 +154,6 @@
                                     {{--{{explode('|',$det_esp->empaque_e->nombre)[0]}}--}}
                                     {{explode('|',$det_esp->empaque_p->nombre)[0]}}
                                 </td>
-
                                 @if($pos_det_esp == 0 && $pos_esp_emp == 0)
                                     <td class="text-center" style="border-color: #9d9d9d"
                                         rowspan="{{getCantidadDetallesByEspecificacion($det_ped->cliente_especificacion->id_especificacion)}}">
@@ -238,9 +237,17 @@
                                                     <i class="fa fa-usd" aria-hidden="true"></i>
                                                 </button>
                                         @else
-                                            <a target="_blank" href="{{url('pedidos/ver_factura_pedido',$pedido->id_pedido)}}" class="btn btn-default btn-xs" title="Ver factura SRI">
+                                            {{--<a target="_blank" href="{{url('pedidos/ver_factura_pedido',$pedido->id_pedido)}}" class="btn btn-default btn-xs" title="Ver factura SRI">
                                                 <i class="fa fa-eye" aria-hidden="true"></i>
+                                            </a>--}}
+                                            <a target="_blank" href="{{url('pedidos/documento_pre_factura',[$pedido->id_pedido,true])}}" class="btn btn-info btn-xs" title="Ver factura Cliente">
+                                                <i class="fa fa-user-circle-o" aria-hidden="true"></i>
                                             </a>
+                                        @endif
+                                        @if($firmado != null)
+                                                <a target="_blank" href="{{url('pedidos/documento_pre_factura',[$pedido->id_pedido,true])}}" class="btn btn-info btn-xs" title="Ver factura Cliente">
+                                                    <i class="fa fa-user-circle-o" aria-hidden="true"></i>
+                                                </a>
                                         @endif
                                             <a target="_blank" href="{{url('pedidos/crear_packing_list',$pedido->id_pedido)}}"
                                                class="btn btn-info btn-xs" title="Generar packing list">
@@ -249,13 +256,14 @@
                                         </td>
                                     @endif
 
-                                    @if(!$opciones)
                                         <td rowspan="{{getCantidadDetallesEspecificacionByPedido($pedido->id_pedido)}}" class="text-center" style="border-color: #9d9d9d">
-                                        <a target="_blank" href="{{url('pedidos/crear_packing_list',[$pedido->id_pedido,true])}}" class="btn btn-info btn-xs" title="Packing list">
-                                            <i class="fa fa-cubes"></i>
-                                        </a>
+                                            @if(!$opciones && $pedido->tipo_especificacion === "T")
+                                            <a target="_blank" href="{{url('pedidos/crear_packing_list',[$pedido->id_pedido,true])}}" class="btn btn-info btn-xs" title="Packing list">
+                                                <i class="fa fa-cubes"></i>
+                                            </a>
+                                            @endif
                                         </td>
-                                    @endif
+
                                 @endif
                             </tr>
                         @endforeach
