@@ -16,7 +16,7 @@
             @endforeach
             @if($acumulado == 'false')
                 <th class="text-center" style="border-color: white; background-color: #357ca5; color: white; width: 80px" rowspan="2">
-                    @if($criterio == 'C' || $criterio == 'T')
+                    @if($criterio == 'C' || $criterio == 'T' || $criterio == 'E')
                         Total
                     @else
                         Promedio
@@ -90,7 +90,7 @@
                         @if($acumulado == 'false')
                             <th class="text-center bg-gray"
                                 style="border-color: #9d9d9d; border-right-width: 3px; padding: 5px">
-                                @if($criterio == 'C' || $criterio == 'T')
+                                @if($criterio == 'C' || $criterio == 'T' || $criterio == 'E')
                                     {{number_format($parcial, 2)}}
                                 @else
                                     {{number_format(round($parcial / count($data['semanas']), 2), 2)}}
@@ -124,7 +124,7 @@
                 @endforeach
                 @if($acumulado == 'false')
                     <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
-                        @if($criterio == 'C' || $criterio == 'T')
+                        @if($criterio == 'C' || $criterio == 'T' || $criterio == 'E')
                             {{number_format($total,2)}}
                         @else
                             {{$count_positivos > 0 ? number_format(round($total / $count_positivos, 2),2) : 0}}
@@ -136,7 +136,7 @@
         </tbody>
         <tr>
             <th class="text-center" style="border-color: white; background-color: #357ca5; color: white; width: 80px">
-                @if($criterio == 'C' || $criterio == 'T')
+                @if($criterio == 'C' || $criterio == 'T' || $criterio == 'E')
                     Total
                 @else
                     Promedio
@@ -149,7 +149,7 @@
             @foreach($totales_mes as $pos => $valor)
                 <th class="text-center"
                     style="border-color: white; background-color: #357ca5; color: white; border-right-width: {{($pos + 1) % count($data['semanas']) == 0 ? '3px' : '1px'}}">
-                    @if($criterio == 'C' || $criterio == 'T')
+                    @if($criterio == 'C' || $criterio == 'T' || $criterio == 'E')
                         {{number_format($valor['valor'], 2)}}
                     @else
                         {{$valor['count_positivo'] > 0 ? number_format(round($valor['valor'] / $valor['count_positivo'], 2), 2) : 0}}
@@ -162,7 +162,7 @@
                     @if($acumulado == 'false')
                         <th class="text-center bg-gray"
                             style="border-color: #9d9d9d; border-right-width: 3px; padding: 5px">
-                            @if($criterio == 'C' || $criterio == 'T')
+                            @if($criterio == 'C' || $criterio == 'T' || $criterio == 'E')
                                 {{number_format($parcial, 2)}}
                             @else
                                 {{number_format(round($parcial / count($data['semanas']), 2), 2)}}
@@ -180,7 +180,7 @@
                     @endphp
                 @endif
                 @php
-                    if($criterio == 'C' || $criterio == 'T'){
+                    if($criterio == 'C' || $criterio == 'T' || $criterio == 'E'){
                         $total += $valor['valor'];
                     }
                     else
@@ -189,7 +189,7 @@
             @endforeach
             @if($acumulado == 'false')
                 <th class="text-center" style="border-color: white; background-color: #357ca5; color: white; width: 80px">
-                    @if($criterio == 'C' || $criterio == 'T')
+                    @if($criterio == 'C' || $criterio == 'T' || $criterio == 'E')
                         {{number_format($total, 2)}}
                     @else
                         {{number_format(round($total / (count($data['labels']) * count($data['semanas'])), 2), 2)}}

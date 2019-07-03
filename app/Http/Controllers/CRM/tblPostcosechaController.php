@@ -164,6 +164,8 @@ class tblPostcosechaController extends Controller
                             $valor += round($verde->getTotalRamosEstandar() / getConfiguracionEmpresa()->ramos_x_caja, 2);
                         if ($criterio == 'T')
                             $valor += $verde->total_tallos();
+                        if ($criterio == 'E')
+                            $valor += $verde->getTotalRamosEstandar();
                         if ($criterio == 'D')
                             $valor += $verde->desecho();
                         if ($criterio == 'R')
@@ -176,6 +178,8 @@ class tblPostcosechaController extends Controller
                 if ($criterio == 'C')
                     array_push($valores, $valor);
                 if ($criterio == 'T')
+                    array_push($valores, $valor);
+                if ($criterio == 'E')
                     array_push($valores, $valor);
                 if ($criterio == 'D')
                     array_push($valores, count($verdes) > 0 ? round($valor / count($verdes), 2) : 0);
@@ -214,6 +218,8 @@ class tblPostcosechaController extends Controller
                                 $valor += round($verde->getTotalRamosEstandarByVariedad($var->id_variedad) / getConfiguracionEmpresa()->ramos_x_caja, 2);
                             if ($criterio == 'T')
                                 $valor += $verde->tallos_x_variedad($var->id_variedad);
+                            if ($criterio == 'E')
+                                $valor += $verde->getTotalRamosEstandarByVariedad($var->id_variedad);
                             if ($criterio == 'D')
                                 $valor += $verde->desechoByVariedad($var->id_variedad);
                             if ($criterio == 'R')
@@ -226,6 +232,8 @@ class tblPostcosechaController extends Controller
                     if ($criterio == 'C')
                         array_push($valores, $valor);
                     if ($criterio == 'T')
+                        array_push($valores, $valor);
+                    if ($criterio == 'E')
                         array_push($valores, $valor);
                     if ($criterio == 'D')
                         array_push($valores, count($verdes) > 0 ? round($valor / count($verdes), 2) : 0);
@@ -263,6 +271,8 @@ class tblPostcosechaController extends Controller
                             $valor += round($verde->getTotalRamosEstandarByVariedad($variedad) / getConfiguracionEmpresa()->ramos_x_caja, 2);
                         if ($criterio == 'T')
                             $valor += $verde->tallos_x_variedad($variedad);
+                        if ($criterio == 'E')
+                            $valor += $verde->getTotalRamosEstandarByVariedad($variedad);
                         if ($criterio == 'D')
                             $valor += $verde->desechoByVariedad($variedad);
                         if ($criterio == 'R')
@@ -275,6 +285,8 @@ class tblPostcosechaController extends Controller
                 if ($criterio == 'C')
                     array_push($valores, $valor);
                 if ($criterio == 'T')
+                    array_push($valores, $valor);
+                if ($criterio == 'E')
                     array_push($valores, $valor);
                 if ($criterio == 'D')
                     array_push($valores, count($verdes) > 0 ? round($valor / count($verdes), 2) : 0);
@@ -339,6 +351,9 @@ class tblPostcosechaController extends Controller
                         if ($criterio == 'T') {
                             $valor += $verde->total_tallos();
                         }
+                        if ($criterio == 'E') {
+                            $valor += $verde->getTotalRamosEstandar();
+                        }
                         if ($criterio == 'D') {
                             $valor += $verde->desecho();
                         }
@@ -353,6 +368,8 @@ class tblPostcosechaController extends Controller
                     if ($criterio == 'C')
                         array_push($valores, $valor);
                     if ($criterio == 'T')
+                        array_push($valores, $valor);
+                    if ($criterio == 'E')
                         array_push($valores, $valor);
                     if ($criterio == 'D')
                         array_push($valores, count($verdes) > 0 ? round($valor / count($verdes), 2) : 0);
@@ -405,6 +422,9 @@ class tblPostcosechaController extends Controller
                             if ($criterio == 'T') {
                                 $valor += $verde->tallos_x_variedad($var->id_variedad);
                             }
+                            if ($criterio == 'E') {
+                                $valor += $verde->getTotalRamosEstandarByVariedad($var->id_variedad);
+                            }
                             if ($criterio == 'D') {
                                 $valor += $verde->desechoByVariedad($var->id_variedad);
                             }
@@ -419,6 +439,8 @@ class tblPostcosechaController extends Controller
                         if ($criterio == 'C')
                             array_push($valores, $valor);
                         if ($criterio == 'T')
+                            array_push($valores, $valor);
+                        if ($criterio == 'E')
                             array_push($valores, $valor);
                         if ($criterio == 'D')
                             array_push($valores, count($verdes) > 0 ? round($valor / count($verdes), 2) : 0);
@@ -467,6 +489,8 @@ class tblPostcosechaController extends Controller
                             $valor += round($verde->getTotalRamosEstandarByVariedad($variedad) / getConfiguracionEmpresa()->ramos_x_caja, 2);
                         if ($criterio == 'T')
                             $valor += $verde->tallos_x_variedad($variedad);
+                        if ($criterio == 'E')
+                            $valor += $verde->getTotalRamosEstandarByVariedad($variedad);
                         if ($criterio == 'D')
                             $valor += $verde->desechoByVariedad($variedad);
                         if ($criterio == 'R')
@@ -478,6 +502,8 @@ class tblPostcosechaController extends Controller
                     if ($criterio == 'C')
                         array_push($valores, $valor);
                     if ($criterio == 'T')
+                        array_push($valores, $valor);
+                    if ($criterio == 'E')
                         array_push($valores, $valor);
                     if ($criterio == 'D')
                         array_push($valores, count($verdes) > 0 ? round($valor / count($verdes), 2) : 0);
@@ -550,6 +576,9 @@ class tblPostcosechaController extends Controller
                         if ($criterio == 'T') {
                             $valor += $verde->total_tallos();
                         }
+                        if ($criterio == 'E') {
+                            $valor += $verde->getTotalRamosEstandar();
+                        }
                         if ($criterio == 'D') {
                             $valor += $verde->desecho();
                         }
@@ -564,6 +593,8 @@ class tblPostcosechaController extends Controller
                     if ($criterio == 'C')
                         array_push($valores, $valor);
                     if ($criterio == 'T')
+                        array_push($valores, $valor);
+                    if ($criterio == 'E')
                         array_push($valores, $valor);
                     if ($criterio == 'D')
                         array_push($valores, count($verdes) > 0 ? round($valor / count($verdes), 2) : 0);
@@ -622,6 +653,9 @@ class tblPostcosechaController extends Controller
                             if ($criterio == 'T') {
                                 $valor += $verde->tallos_x_variedad($var->id_variedad);
                             }
+                            if ($criterio == 'E') {
+                                $valor += $verde->getTotalRamosEstandarByVariedad($var->id_variedad);
+                            }
                             if ($criterio == 'D') {
                                 $valor += $verde->desechoByVariedad($var->id_variedad);
                             }
@@ -636,6 +670,8 @@ class tblPostcosechaController extends Controller
                         if ($criterio == 'C')
                             array_push($valores, $valor);
                         if ($criterio == 'T')
+                            array_push($valores, $valor);
+                        if ($criterio == 'E')
                             array_push($valores, $valor);
                         if ($criterio == 'D')
                             array_push($valores, count($verdes) > 0 ? round($valor / count($verdes), 2) : 0);
@@ -690,6 +726,8 @@ class tblPostcosechaController extends Controller
                             $valor += round($verde->getTotalRamosEstandarByVariedad($variedad) / getConfiguracionEmpresa()->ramos_x_caja, 2);
                         if ($criterio == 'T')
                             $valor += $verde->tallos_x_variedad($variedad);
+                        if ($criterio == 'E')
+                            $valor += $verde->getTotalRamosEstandarByVariedad($variedad);
                         if ($criterio == 'D')
                             $valor += $verde->desechoByVariedad($variedad);
                         if ($criterio == 'R')
@@ -701,6 +739,8 @@ class tblPostcosechaController extends Controller
                     if ($criterio == 'C')
                         array_push($valores, $valor);
                     if ($criterio == 'T')
+                        array_push($valores, $valor);
+                    if ($criterio == 'E')
                         array_push($valores, $valor);
                     if ($criterio == 'D')
                         array_push($valores, count($verdes) > 0 ? round($valor / count($verdes), 2) : 0);
@@ -757,6 +797,9 @@ class tblPostcosechaController extends Controller
                         if ($criterio == 'T') {
                             $valor += $verde->total_tallos();
                         }
+                        if ($criterio == 'E') {
+                            $valor += $verde->getTotalRamosEstandar();
+                        }
                         if ($criterio == 'D') {
                             $valor += $verde->desecho();
                         }
@@ -771,6 +814,8 @@ class tblPostcosechaController extends Controller
                     if ($criterio == 'C')
                         array_push($valores, $valor);
                     if ($criterio == 'T')
+                        array_push($valores, $valor);
+                    if ($criterio == 'E')
                         array_push($valores, $valor);
                     if ($criterio == 'D')
                         array_push($valores, count($verdes) > 0 ? round($valor / count($verdes), 2) : 0);
@@ -811,6 +856,9 @@ class tblPostcosechaController extends Controller
                             if ($criterio == 'T') {
                                 $valor += $verde->tallos_x_variedad($var->id_variedad);
                             }
+                            if ($criterio == 'E') {
+                                $valor += $verde->getTotalRamosEstandarByVariedad($var->id_variedad);
+                            }
                             if ($criterio == 'D') {
                                 $valor += $verde->desechoByVariedad($var->id_variedad);
                             }
@@ -825,6 +873,8 @@ class tblPostcosechaController extends Controller
                         if ($criterio == 'C')
                             array_push($valores, $valor);
                         if ($criterio == 'T')
+                            array_push($valores, $valor);
+                        if ($criterio == 'E')
                             array_push($valores, $valor);
                         if ($criterio == 'D')
                             array_push($valores, count($verdes) > 0 ? round($valor / count($verdes), 2) : 0);
@@ -862,6 +912,8 @@ class tblPostcosechaController extends Controller
                             $valor += round($verde->getTotalRamosEstandarByVariedad($variedad) / getConfiguracionEmpresa()->ramos_x_caja, 2);
                         if ($criterio == 'T')
                             $valor += $verde->tallos_x_variedad($variedad);
+                        if ($criterio == 'E')
+                            $valor += $verde->getTotalRamosEstandarByVariedad($variedad);
                         if ($criterio == 'D')
                             $valor += $verde->desechoByVariedad($variedad);
                         if ($criterio == 'R')
@@ -873,6 +925,8 @@ class tblPostcosechaController extends Controller
                     if ($criterio == 'C')
                         array_push($valores, $valor);
                     if ($criterio == 'T')
+                        array_push($valores, $valor);
+                    if ($criterio == 'E')
                         array_push($valores, $valor);
                     if ($criterio == 'D')
                         array_push($valores, count($verdes) > 0 ? round($valor / count($verdes), 2) : 0);
@@ -972,7 +1026,7 @@ class tblPostcosechaController extends Controller
                 'hasta' => $request->hasta,
             ]);
 
-            $criterios = ['C' => 'Cajas', 'T' => 'Tallos', 'D' => 'Desecho', 'R' => 'Rendimiento', 'Q' => 'Calibre'];
+            $criterios = ['C' => 'Cajas', 'T' => 'Tallos', 'E' => 'Ramos', 'D' => 'Desecho', 'R' => 'Rendimiento', 'Q' => 'Calibre'];
             $title_variedad = 'Todas las variedades';
             if ($request->variedad != 'T')
                 $title_variedad = getVariedad($request->variedad)->siglas;
@@ -1056,7 +1110,7 @@ class tblPostcosechaController extends Controller
 
                 if ($request->acumulado == 'false') {
                     $objSheet->getCell($columnas[$pos_col] . '1')
-                        ->setValue($request->criterio == 'C' || $request->criterio == 'T' ? 'Total' : 'Promedio');
+                        ->setValue($request->criterio == 'C' || $request->criterio == 'T' || $request->criterio == 'E' ? 'Total' : 'Promedio');
                 }
 
                 //--------------------------- LLENAR LA TABLA ---------------------------------------------
@@ -1098,7 +1152,7 @@ class tblPostcosechaController extends Controller
                                 ->getStartColor()
                                 ->setRGB('d2d6de');
 
-                            if ($request->criterio == 'C' || $request->criterio == 'T') {
+                            if ($request->criterio == 'C' || $request->criterio == 'T' || $request->criterio == 'E') {
                                 $objSheet->getCell($columnas[$col] . $pos_fila)->setValue(number_format($subtotal, 2)); // subtotal
                             } else {
                                 $objSheet->getCell($columnas[$col] . $pos_fila)
@@ -1114,7 +1168,7 @@ class tblPostcosechaController extends Controller
                         /* ============== LETRAS NEGRITAS =============*/
                         $objSheet->getStyle($columnas[$col] . $pos_fila)->getFont()->setBold(true)->setSize(12);
 
-                        if ($request->criterio == 'C' || $request->criterio == 'T')
+                        if ($request->criterio == 'C' || $request->criterio == 'T' || $request->criterio == 'E')
                             $objSheet->getCell($columnas[$col] . $pos_fila)->setValue(number_format($total_fila, 2)); // total fila
                         else
                             $objSheet->getCell($columnas[$col] . $pos_fila)
@@ -1134,14 +1188,14 @@ class tblPostcosechaController extends Controller
                 $objSheet->getStyle('A' . $pos_fila . ':' . $columnas[$pos_col] . $pos_fila)->getFont()->getColor()->setRGB('ffffff');
                 /* ============================================================================================================================ */
                 $objSheet->getCell('A' . $pos_fila)
-                    ->setValue($request->criterio == 'C' || $request->criterio == 'T' ? 'Total' : 'Promedio');
+                    ->setValue($request->criterio == 'C' || $request->criterio == 'T' || $request->criterio == 'E' ? 'Total' : 'Promedio');
                 $col_fil = 0;
                 $col = 1;
                 $total_fila = 0;
                 $total_positivos = 0;
                 for ($a = 1; $a <= count($data['labels']); $a++) {  // for años
                     for ($m = 1; $m <= count($data[$view]); $m++) {  // for meses
-                        if ($request->criterio == 'C' || $request->criterio == 'T')
+                        if ($request->criterio == 'C' || $request->criterio == 'T' || $request->criterio == 'E')
                             $objSheet->getCell($columnas[$col] . $pos_fila)
                                 ->setValue(number_format($array_totales[$col_fil]['valor'], 2));
                         else
@@ -1161,7 +1215,7 @@ class tblPostcosechaController extends Controller
                         /* ============== TEXT COLOR =============*/
                         $objSheet->getStyle($columnas[$col] . $pos_fila)->getFont()->getColor()->setRGB('000000');
 
-                        if ($request->criterio == 'C' || $request->criterio == 'T')
+                        if ($request->criterio == 'C' || $request->criterio == 'T' || $request->criterio == 'E')
                             $objSheet->getCell($columnas[$col] . $pos_fila)->setValue(number_format($array_subtotales[$a - 1]['valor'], 2)); // subtotal
                         else
                             $objSheet->getCell($columnas[$col] . $pos_fila)
@@ -1175,7 +1229,7 @@ class tblPostcosechaController extends Controller
                     /* ============== LETRAS NEGRITAS =============*/
                     $objSheet->getStyle($columnas[$col] . $pos_fila)->getFont()->setBold(true)->setSize(12);
 
-                    if ($request->criterio == 'C' || $request->criterio == 'T')
+                    if ($request->criterio == 'C' || $request->criterio == 'T' || $request->criterio == 'E')
                         $objSheet->getCell($columnas[$col] . $pos_fila)->setValue(number_format($total_fila, 2)); // total fila
                     else
                         $objSheet->getCell($columnas[$col] . $pos_fila)
@@ -1220,7 +1274,7 @@ class tblPostcosechaController extends Controller
                     $pos_col++;
                 }
                 $objSheet->getCell($columnas[$pos_col] . '1')
-                    ->setValue($request->criterio == 'C' || $request->criterio == 'T' ? 'Total' : 'Promedio');
+                    ->setValue($request->criterio == 'C' || $request->criterio == 'T' || $request->criterio == 'E' ? 'Total' : 'Promedio');
 
                 /* ============== LETRAS NEGRITAS =============*/
                 $objSheet->getStyle('A1:' . $columnas[$pos_col] . '1')->getFont()->setBold(true)->setSize(12);
@@ -1278,7 +1332,7 @@ class tblPostcosechaController extends Controller
                     $objSheet->getStyle($columnas[$col] . $pos_fila)->getFont()->setBold(true)->setSize(12);
                     $objSheet->getStyle('A' . $pos_fila)->getFont()->setBold(true)->setSize(12);
 
-                    if ($request->criterio == 'C' || $request->criterio == 'T')
+                    if ($request->criterio == 'C' || $request->criterio == 'T' || $request->criterio == 'E')
                         $objSheet->getCell($columnas[$col] . $pos_fila)->setValue(number_format($total_fila, 2)); // total fila
                     else
                         $objSheet->getCell($columnas[$col] . $pos_fila)
@@ -1311,12 +1365,12 @@ class tblPostcosechaController extends Controller
                 $objSheet->getStyle('A' . $pos_fila . ':' . $columnas[$pos_col] . $pos_fila)->getFont()->getColor()->setRGB('ffffff');
                 /* ============================================================================================================================ */
                 $objSheet->getCell('A' . $pos_fila)
-                    ->setValue($request->criterio == 'C' || $request->criterio == 'T' ? 'Total' : 'Promedio');
+                    ->setValue($request->criterio == 'C' || $request->criterio == 'T' || $request->criterio == 'E' ? 'Total' : 'Promedio');
 
                 $col = 1;
                 $total = 0;
                 foreach ($array_totales as $valor) {
-                    if ($request->criterio == 'C' || $request->criterio == 'T')
+                    if ($request->criterio == 'C' || $request->criterio == 'T' || $request->criterio == 'E')
                         $objSheet->getCell($columnas[$col] . $pos_fila)->setValue(number_format($valor['valor'], 2));
                     else
                         $objSheet->getCell($columnas[$col] . $pos_fila)
@@ -1325,7 +1379,7 @@ class tblPostcosechaController extends Controller
                     $col++;
                 }
 
-                if ($request->criterio == 'C' || $request->criterio == 'T')
+                if ($request->criterio == 'C' || $request->criterio == 'T' || $request->criterio == 'E')
                     $objSheet->getCell($columnas[$pos_col] . $pos_fila)->setValue(number_format($total, 2)); // total fila
                 else
                     $objSheet->getCell($columnas[$pos_col] . $pos_fila)
