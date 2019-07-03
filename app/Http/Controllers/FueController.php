@@ -120,10 +120,9 @@ class FueController extends Controller
                 ->join('detalle_cliente as dc','c.id_cliente','dc.id_cliente')
                 ->where([
                     ['dc.estado',1],
-                    ['comprobante.estado',5],
                     ['comprobante.habilitado',1],
                     ['comprobante.tipo_comprobante',01]
-                ]);
+                ])->whereIn('comprobante.estado',[1,5]);
 
            //dd($request->all());
 
