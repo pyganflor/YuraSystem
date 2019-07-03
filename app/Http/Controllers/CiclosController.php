@@ -18,13 +18,14 @@ class CiclosController extends Controller
 
         if ($request->tipo == 0) {  // inactivos
             foreach (Modulo::All()->where('estado', 1)->sortBy('nombre') as $m) {
-                if ($m->cicloActual() == '')
-                    array_push($r, Modulo::find($m->id_modulo));
+                if ($m->cicloActual() == '') {
+                    array_push($r, $m);
+                }
             }
         } else {
             foreach (Modulo::All()->where('estado', 1)->sortBy('nombre') as $m) {
                 if ($m->cicloActual() != '' && $m->cicloActual()->id_variedad == $request->variedad)
-                    array_push($r, Modulo::find($m->id_modulo));
+                    array_push($r, $m);
             }
         }
 

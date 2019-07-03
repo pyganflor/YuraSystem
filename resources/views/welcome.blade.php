@@ -4,9 +4,8 @@
     TEST
 @endsection
 
-@section('script_inicio')
-    <script>
-    </script>
+@section('contenido')
+
 @endsection
 
 @section('script_final')
