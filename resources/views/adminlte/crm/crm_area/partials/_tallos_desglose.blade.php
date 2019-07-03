@@ -117,7 +117,7 @@
                                     </td>
                                     <td class="text-center"
                                         style="border-color: #9d9d9d">
-                                        {{round($tallos / $ciclo->area)}}
+                                        {{round($tallos / $ciclo->area, 2)}}
                                     </td>
                                     <td class="text-center"
                                         style="border-color: #9d9d9d">

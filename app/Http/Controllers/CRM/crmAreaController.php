@@ -15,6 +15,43 @@ class crmAreaController extends Controller
 {
     public function inicio(Request $request)
     {
+        /* =========== SEMANAL ============= */
+        $semana_actual = getSemanaByDate(opDiasFecha('-', 7, date('Y-m-d')));
+
+        /* ========== area ========== */
+        $area = 0;
+        $data_semana_acutal = getAreaCiclosByRango($semana_actual->codigo, $semana_actual->codigo, 'T');
+
+        foreach ($data_semana_acutal['variedades'] as $var) {
+            foreach ($var['ciclos'] as $c) {
+                foreach ($c['areas'] as $a) {
+                    $area += $a;
+                }
+            }
+        }
+
+        /* ========== ciclo ========== */
+        $data_ciclos = getCiclosCerradosByRango($semana_actual->codigo, $semana_actual->codigo, 'T');
+        $ciclo = $data_ciclos['ciclo'];
+        $area_cerrada = $data_ciclos['area_cerrada'];
+
+        $data_cosecha = getCosechaByRango($semana_actual->codigo, $semana_actual->codigo, 'T');
+        $tallos = $data_cosecha['tallos_cosechados'];
+        $ramos = $data_cosecha['ramos_estandar'];
+
+        $ciclo_ano = $ciclo > 0 ? round(365 / $ciclo, 2) : 0;
+
+        //dd($area_cerrada, $tallos, $semana_actual->codigo);
+
+        $semanal = [
+            'ciclo_ano' => $ciclo_ano,
+            'area' => $area,
+            'ciclo' => $ciclo,
+            'tallos' => $area_cerrada > 0 ? round($tallos / $area_cerrada, 2) : 0,
+            'ramos' => $area_cerrada > 0 ? round($ramos / $area_cerrada, 2) : 0,
+            'ramos_anno' => $area_cerrada > 0 ? round($ciclo_ano * round($ramos / $area_cerrada, 2), 2) : 0,
+        ];
+
         /* =========== MENSUAL ============= */
         $desde = opDiasFecha('-', 28, date('Y-m-d'));
         $hasta = opDiasFecha('-', 7, date('Y-m-d'));
@@ -56,41 +93,6 @@ class crmAreaController extends Controller
         $mensual = [
             'ciclo_ano' => $ciclo_ano,
             'area' => round($area / count($fechas), 2),
-            'ciclo' => $ciclo,
-            'tallos' => $area_cerrada > 0 ? round($tallos / $area_cerrada, 2) : 0,
-            'ramos' => $area_cerrada > 0 ? round($ramos / $area_cerrada, 2) : 0,
-            'ramos_anno' => $area_cerrada > 0 ? round($ciclo_ano * round($ramos / $area_cerrada, 2), 2) : 0,
-        ];
-
-        /* =========== SEMANAL ============= */
-        $semana_actual = getSemanaByDate(opDiasFecha('-', 7, date('Y-m-d')));
-
-        /* ========== area ========== */
-        $area = 0;
-        $data_semana_acutal = getAreaCiclosByRango($semana_actual->codigo, $semana_actual->codigo, 'T');
-
-        foreach ($data_semana_acutal['variedades'] as $var) {
-            foreach ($var['ciclos'] as $c) {
-                foreach ($c['areas'] as $a) {
-                    $area += $a;
-                }
-            }
-        }
-
-        /* ========== ciclo ========== */
-        $data_ciclos = getCiclosCerradosByRango($semana_actual->codigo, $semana_actual->codigo, 'T');
-        $ciclo = $data_ciclos['ciclo'];
-        $area_cerrada = $data_ciclos['area_cerrada'];
-
-        $data_cosecha = getCosechaByRango($semana_actual->codigo, $semana_actual->codigo, 'T');
-        $tallos = $data_cosecha['tallos_cosechados'];
-        $ramos = $data_cosecha['ramos_estandar'];
-
-        $ciclo_ano = $ciclo > 0 ? round(365 / $ciclo, 2) : 0;
-
-        $semanal = [
-            'ciclo_ano' => $ciclo_ano,
-            'area' => $area,
             'ciclo' => $ciclo,
             'tallos' => $area_cerrada > 0 ? round($tallos / $area_cerrada, 2) : 0,
             'ramos' => $area_cerrada > 0 ? round($ramos / $area_cerrada, 2) : 0,
