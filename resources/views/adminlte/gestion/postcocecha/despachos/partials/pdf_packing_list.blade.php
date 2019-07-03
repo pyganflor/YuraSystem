@@ -209,6 +209,7 @@
             </td>
         </tr>
     </table>
+
 @elseif($pedido->tipo_especificacion === "T")
     @php $env = getEnvio($pedido->envios[0]->id_envio) @endphp
     <table style="width:100%;font-family: arial, sans-serif;border-collapse: collapse;" >
@@ -217,11 +218,11 @@
                 <td style="padding-left: 5px;border: 1px solid black;font-size:12px" > DESCRIPCIÓN <br />
                     {{substr($env->pedido->detalles[0]->cliente_especificacion->especificacion->especificacionesEmpaque[0]->detalles[0]->variedad->planta->nombre,0,3)}}
                 </td>
-                <td style="padding-left: 5px;font-size:12px" >BOUNCHES <br /> BOX</td>
-                <td style="padding-left: 5px;font-size:12px" > INITIAL <br /> BOX</td>
-                <td style="padding-left: 5px;font-size:12px" >FINAL <br /> BOX</td>
-                <td style="padding-left: 5px;font-size:12px" >TOTAL <br /> BOXES</td>
-                <td style="padding-left: 5px;border: 1px solid black;font-size:12px;width: 250px;" >COLOR</td>
+                <td style="padding-left: 5px;font-size:12px;border: 1px solid black">BOUNCHES <br /> BOX</td>
+                <td style="padding-left: 5px;font-size:12px;border: 1px solid black"> INITIAL <br /> BOX</td>
+                <td style="padding-left: 5px;font-size:12px;border: 1px solid black">FINAL <br /> BOX</td>
+                <td style="padding-left: 5px;font-size:12px;border: 1px solid black">TOTAL <br /> BOXES</td>
+                <td style="padding-left: 5px;border: 1px solid black;font-size:12px;width: 250px;">COLOR</td>
             </tr>
         </thead>
         <tbody style="border: 1px solid black">
@@ -241,13 +242,14 @@
                         <td style="font-size:12px;border:1px solid black">
                             @foreach($distribucion->marcaciones as $x => $marcacion)
                                 @foreach ($marcacion->distribuciones as $y => $dist)
-                                    @if($x == 0 && $y == 0)
-                                        @foreach ($dist->distribuciones_coloraciones as $distribucion_coloracion)
-                                            @if($distribucion_coloracion->cantidad !== 0)
-                                                {{$distribucion_coloracion->cantidad ." ". $distribucion_coloracion->marcacion_coloracion->coloracion->color->nombre. ","}}
-                                            @endif
+                                        @foreach ($dist->distribuciones_coloraciones as $z => $distribucion_coloracion)
+
+                                                @if($distribucion_coloracion->cantidad !== 0)
+                                                    {{$distribucion_coloracion->cantidad ." ". $distribucion_coloracion->marcacion_coloracion->coloracion->color->nombre. ","}}
+                                                @endif
+                                            
                                         @endforeach
-                                    @endif
+
                                 @endforeach
                             @endforeach
                         </td>
