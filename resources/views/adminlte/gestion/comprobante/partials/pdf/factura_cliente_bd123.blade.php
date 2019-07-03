@@ -364,7 +364,7 @@
                         <td style="font-size:12px">A</td>
                         <td style="font-size:12px">{{$det_ped->cliente_especificacion->especificacion->especificacionesEmpaque[0]->detalles[0]->variedad->planta->tarifa}}</td>
                         <td style="font-size:12px">{{$det_ped->cliente_especificacion->especificacion->especificacionesEmpaque[0]->detalles[0]->variedad->planta->nandina}}</td>
-                        <td style="font-size:12px"> {{var_dump($m_c->cantidad)}}{{var_dump($piezas)}}  </td>
+                        <td style="font-size:12px">{{number_format(($m_c->cantidad/$piezas),2,".","")}}</td>
                         <td style="font-size:12px">BN</td>
                         <td style="font-size:12px">
                             {{number_format($m_c->cantidad,2,".","")}}

@@ -146,13 +146,13 @@
                                 $dato_exportacion = "";
                                 foreach($pedido->cliente->cliente_datoexportacion as $cde){
                                     $valor = isset(getDatosExportacion($det_ped->id_detalle_pedido, $cde->datos_exportacion->id_dato_exportacion)->valor) ? getDatosExportacion($det_ped->id_detalle_pedido, $cde->datos_exportacion->id_dato_exportacion)->valor : "";
-                                    $dato_exportacion.= " - ".$valor." ";
+                                    $dato_exportacion.= "  ".$valor." ";
                                 }
 
                             @endphp
                             <tr>
                                 @if($y == 0 && $z == 0)
-                                    <td style="padding-left: 5px;font-size:13px;{{($y == 0 && $z == 0) ? "border-top:2px solid black;border-left:1px solid black;border-right:1px solid black;border-bottom:1px solid black ":"border:1px solid black"}}"
+                                    <td style="padding-left: 5px;font-size:13px;{{($y == 0 && $z == 0) ? "border:2px solid black ":"border:1px solid black"}}"
                                         rowspan="{{getCantidadDetallesByEspecificacion($det_ped->cliente_especificacion->id_especificacion)}}">
                                         {{$det_ped->cantidad}}
                                         @php
@@ -160,10 +160,24 @@
                                         @endphp
                                     </td>
                                 @endif
-                                <td style="padding-left: 5px;font-size:13px;{{($y == 0 && $z == 0) ? "border-top:2px solid black;border-left:1px solid black;border-right:1px solid black ":"border:1px solid black"}}" >{{$det_esp_emp->cantidad}}</td>
-                                <td style="padding-left: 5px;font-size:13px;{{($y == 0 && $z == 0) ? "border-top:2px solid black;border-left:1px solid black;border-right:1px solid black ":"border:1px solid black"}}" >B/N</td>
-                                <td style="padding-left: 5px;font-size:13px;{{($y == 0 && $z == 0) ? "border-top:2px solid black;border-left:1px solid black;border-right:1px solid black ":"border:1px solid black"}}" >{{$det_ped->cantidad * $det_esp_emp->cantidad * $esp_emp->cantidad}}</td>
-                                <td style="padding-left: 5px;font-size:13px;{{($y == 0 && $z == 0) ? "border-top:2px solid black;border-left:1px solid black;border-right:1px solid black ":"border:1px solid black"}}" >{{getVariedad($det_esp_emp->id_variedad)->siglas." ".getClasificacionRamo($det_esp_emp->id_clasificacion_ramo)->nombre. " " . $dato_exportacion}}</td>
+                                <td style="padding-left: 5px;font-size:13px;
+                                        {{($y == 0 && $z == 0) ? "border-top:2px solid black":"border:1px solid black"}}
+                                        {{(($z+1) == getCantidadDetallesByEspecificacion($det_ped->cliente_especificacion->id_especificacion)) ? ";border-bottom:2px solid black" : ";border-bottom:1px solid black"}}" >
+                                    {{$det_esp_emp->cantidad}}
+                                </td>
+                                <td style="padding-left: 5px;font-size:13px;
+                                    {{($y == 0 && $z == 0) ? "border-top:2px solid black;border-left:1px solid black;border-right:1px solid black ":"border:1px solid black"}}
+                                    {{(($z+1) == getCantidadDetallesByEspecificacion($det_ped->cliente_especificacion->id_especificacion)) ? ";border-bottom:2px solid black" : ";border-bottom:1px solid black"}}" >
+                                    B/N
+                                </td>
+                                <td style="padding-left: 5px;font-size:13px;
+                                    {{($y == 0 && $z == 0) ? "border-top:2px solid black;border-left:1px solid black;border-right:1px solid black ":"border:1px solid black"}}
+                                    {{(($z+1) == getCantidadDetallesByEspecificacion($det_ped->cliente_especificacion->id_especificacion)) ? ";border-bottom:2px solid black" : ";border-bottom:1px solid black"}}" >
+                                    {{$det_ped->cantidad * $det_esp_emp->cantidad * $esp_emp->cantidad}}</td>
+                                <td style="padding-left: 5px;font-size:13px;
+                                    {{($y == 0 && $z == 0) ? "border-top:2px solid black;border-left:1px solid black;border-right:1px solid black ":"border:1px solid black"}}
+                                    {{(($z+1) == getCantidadDetallesByEspecificacion($det_ped->cliente_especificacion->id_especificacion)) ? ";border-bottom:2px solid black" : ";border-bottom:1px solid black"}}" >
+                                    {{getVariedad($det_esp_emp->id_variedad)->siglas." ".getClasificacionRamo($det_esp_emp->id_clasificacion_ramo)->nombre. " " . $dato_exportacion}}</td>
                             </tr>
                         @endforeach
                     @endforeach
