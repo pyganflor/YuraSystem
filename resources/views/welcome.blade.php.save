@@ -5,14 +5,15 @@
 @endsection
 
 @section('contenido')
-
+    @php
+        $model = new \yura\Modelos\Sector();
+        $model->nombre = 'HHHH';
+        $model->save();
+    @endphp
 @endsection
 
 @section('script_final')
-    <script>
+   <script>
         notificar('Notificación en desarrollo', '{{url('')}}', '', 10000);
     </script>
 @endsection
-<script>
-alert(55);
-</script>
