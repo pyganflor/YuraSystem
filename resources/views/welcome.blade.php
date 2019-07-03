@@ -13,6 +13,3 @@
         notificar('Notificación en desarrollo', '{{url('')}}', '', 10000);
     </script>
 @endsection
-<script>
-alert(55);
-</script>
