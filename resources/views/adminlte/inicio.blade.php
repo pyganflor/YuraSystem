@@ -119,6 +119,12 @@
             </div>
         @endif
     </section>
+
+    <input type="number" class="form-control text-center" id="test_input" value="0">
+
+    <button class="btn btn-block btn-lg btn-primary" onclick="test_function()">
+        <i class="fa fa-fw fa-check"></i>
+    </button>
 @endsection
 
 @section('script_final')
@@ -129,5 +135,13 @@
         notificar('Bienvenid@ {{explode(' ',getUsuario(Session::get('id_usuario'))->nombre_completo)[0]}}',
             '{{url('')}}', function () {
             });
+
+        function test_function() {
+            cant = $('#test_input').val();
+            cant++;
+            $('#test_input').val(cant);
+        }
+
+        setInterval('test_function()', 1000);
     </script>
 @endsection
