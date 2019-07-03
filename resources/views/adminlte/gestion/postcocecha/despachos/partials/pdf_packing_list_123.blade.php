@@ -1,16 +1,7 @@
 <table style="width:100%;font-family: arial, sans-serif;border-collapse: collapse;">
     <tr>
         <td style="vertical-align: middle;text-align: center">
-            <h4 style="color: #464646">
-                @if(!$vista_despacho)
-                    PACKING LIST / LISTA DE EMPAQUE
-                @else
-                    ORDER DE EMPAQUE
-                @endif
-                @if(!$vista_despacho)
-                    {{isset($pedido->envios[0]->comprobante->clave_acceso) ? "# 001-".getDetallesClaveAcceso($pedido->envios[0]->comprobante->clave_acceso, 'PUNTO_ACCESO')."-".getDetallesClaveAcceso($pedido->envios[0]->comprobante->clave_acceso, 'SECUENCIAL') : null}}
-                @endif
-            </h4>
+            <h4 style="color: #464646">PACKING LIST / LISTA DE EMPAQUE @if(!$vista_despacho) #{{isset($comprobante->clave_acceso) ? "001-".getDetallesClaveAcceso($comprobante->clave_acceso, 'PUNTO_ACCESO')."-".getDetallesClaveAcceso($comprobante->clave_acceso, 'SECUENCIAL') : null}} @endif</h4>
         </td>
     </tr>
     <tr>
@@ -69,24 +60,25 @@
                     <tr style="border: 1px solid black;">
                         <td style="border: 1px solid black;padding: 0;font-size: 13px;width: 60% ">
                             <b>AWB No. / Guía No.</b><br />
-                            {{$pedido->envios[0]->guia_madre}}
+                            {{$envio['guia_madre']}}
                         </td>
                         <td style="border: 1px solid black;padding: 0;font-size: 13px">
                             <b>HAWB No.</b><br />
-                            {{$pedido->envios[0]->guia_hija}}
+                            {{$envio['guia_hija']}}
                         </td>
                     </tr>
                     <tr style="border: 1px solid black;">
                         <td style="border: 1px solid black;padding: 0;font-size: 13px;width: 60% ">
                             @if($pedido->tipo_especificacion === "N")
                                 <b>Carrier / Transportador</b><br />
-                                {{isset($pedido->envios[0]->detalles[0]->id_aerolinea) ? getAgenciaTransporte($pedido->envios[0]->detalles[0]->id_aerolinea)->nombre : null}}
+                                {{$envio['aerolinea']}}
                             @elseif($pedido->tipo_especificacion === "T")
                                 <b>INOVICE</b><br />
-                                {{ isset($pedido->envios[0]->comprobante) ? getDetallesClaveAcceso($pedido->envios[0]->comprobante->clave_acceso,'SERIE').getDetallesClaveAcceso($pedido->envios[0]->comprobante->clave_acceso,'SECUENCIAL') : ""}}
+                                {{ isset($comprobante) ? getDetallesClaveAcceso($comprobante->clave_acceso,'SERIE').getDetallesClaveAcceso($comprobante->clave_acceso,'SECUENCIAL') : ""}}
                             @endif
                         </td>
                         <td style="border: 1px solid black;padding: 0;font-size: 13px">
+                            <b>ADD CASE No</b><br />
                             OE {{$cliente['dae']}}
                         </td>
                     </tr>
@@ -118,55 +110,44 @@
                 $octavo = 0;
                 $full_equivalente_real = 0;
             @endphp
-            @foreach($pedido->detalles as $x => $det_ped)
-                @php $dp = getDetallePedido($det_ped->id_detalle_pedido); @endphp
-                    @foreach ($dp->cliente_especificacion->especificacion->especificacionesEmpaque as $y => $esp_emp)
-                        @php
+            @foreach($detallePedido as $det_ped)
+                @php
+                    $dp = getDetallePedido($det_ped['id_detalle_pedido']);
+                    foreach ($dp->cliente_especificacion->especificacion->especificacionesEmpaque as $esp_emp){
+                        foreach($esp_emp->detalles as $det_esp_emp){
                             $full_equivalente_real += explode("|",$esp_emp->empaque->nombre)[1]*$dp->cantidad;
-                                    switch (explode("|",$esp_emp->empaque->nombre)[1]) {
-                                        case '1':
-                                            $full += $dp->cantidad;
-                                            break;
-                                        case '0.5':
-                                            $half += $dp->cantidad;
-                                            break;
-                                        case '0.25':
-                                            $cuarto +=$dp->cantidad;
-                                            break;
-                                        case '0.17':
-                                            $sexto +=$dp->cantidad;
-                                            break;
-                                        case '0.125':
-                                            $octavo +=$dp->cantidad;
-                                            break;
-                                    }
+                            switch (explode("|",$esp_emp->empaque->nombre)[1]) {
+                                case '1':
+                                    $full += $dp->cantidad;
+                                    break;
+                                case '0.5':
+                                    $half += $dp->cantidad;
+                                    break;
+                                case '0.25':
+                                    $cuarto +=$dp->cantidad;
+                                    break;
+                                case '0.17':
+                                    $sexto +=$dp->cantidad;
+                                    break;
+                                case '0.125':
+                                    $octavo +=$dp->cantidad;
+                                    break;
+                            }
+                        }
+                    }
+                @endphp
+                <tr>
+                    <td style="padding-left: 5px;font-size:13px;border:1px solid black" >
+                        {{$det_ped['piezas']}}
+                        @php
+                            $total_piezas += $det_ped['piezas']
                         @endphp
-                        @foreach($esp_emp->detalles as $z => $det_esp_emp)
-                            @php
-                                $dato_exportacion = "";
-                                foreach($pedido->cliente->cliente_datoexportacion as $cde){
-                                    $valor = isset(getDatosExportacion($det_ped->id_detalle_pedido, $cde->datos_exportacion->id_dato_exportacion)->valor) ? getDatosExportacion($det_ped->id_detalle_pedido, $cde->datos_exportacion->id_dato_exportacion)->valor : "";
-                                    $dato_exportacion.= " - ".$valor." ";
-                                }
-
-                            @endphp
-                            <tr>
-                                @if($y == 0 && $z == 0)
-                                    <td style="padding-left: 5px;font-size:13px;{{($y == 0 && $z == 0) ? "border-top:2px solid black;border-left:1px solid black;border-right:1px solid black;border-bottom:1px solid black ":"border:1px solid black"}}"
-                                        rowspan="{{getCantidadDetallesByEspecificacion($det_ped->cliente_especificacion->id_especificacion)}}">
-                                        {{$det_ped->cantidad}}
-                                        @php
-                                            $total_piezas += $det_ped->cantidad
-                                        @endphp
-                                    </td>
-                                @endif
-                                <td style="padding-left: 5px;font-size:13px;{{($y == 0 && $z == 0) ? "border-top:2px solid black;border-left:1px solid black;border-right:1px solid black ":"border:1px solid black"}}" >{{$det_esp_emp->cantidad}}</td>
-                                <td style="padding-left: 5px;font-size:13px;{{($y == 0 && $z == 0) ? "border-top:2px solid black;border-left:1px solid black;border-right:1px solid black ":"border:1px solid black"}}" >B/N</td>
-                                <td style="padding-left: 5px;font-size:13px;{{($y == 0 && $z == 0) ? "border-top:2px solid black;border-left:1px solid black;border-right:1px solid black ":"border:1px solid black"}}" >{{$det_ped->cantidad * $det_esp_emp->cantidad * $esp_emp->cantidad}}</td>
-                                <td style="padding-left: 5px;font-size:13px;{{($y == 0 && $z == 0) ? "border-top:2px solid black;border-left:1px solid black;border-right:1px solid black ":"border:1px solid black"}}" >{{getVariedad($det_esp_emp->id_variedad)->siglas." ".getClasificacionRamo($det_esp_emp->id_clasificacion_ramo)->nombre. " " . $dato_exportacion}}</td>
-                            </tr>
-                        @endforeach
-                    @endforeach
+                    </td>
+                    <td style="padding-left: 5px;font-size:13px;border:1px solid black" >{{$det_ped['ramos_x_caja']}}</td>
+                    <td style="padding-left: 5px;font-size:13px;border:1px solid black" >B/N</td>
+                    <td style="padding-left: 5px;font-size:13px;border:1px solid black" >{{$det_ped['ramos_totales']}}</td>
+                    <td style="padding-left: 5px;font-size:13px;border:1px solid black" >{{$det_ped['presentacion']}}</td>
+                </tr>
             @endforeach
         </tbody>
     </table>
