@@ -95,3 +95,7 @@ Route::group(['middleware' => 'autenticacion'], function () {
     include 'codigo_barra/rutas.php';
     include 'facturacion/comprobante.php';
 });
+
+Route::get('test_notificacion', function () {
+    return view('welcome');
+});
