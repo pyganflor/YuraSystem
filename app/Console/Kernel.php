@@ -32,9 +32,9 @@ class Kernel extends ConsoleKernel
         // $schedule->command('inspire')
         //          ->hourly();
 
-        $schedule->command('historico_ventas:update')->everyMinute()->runInBackground();    // UpdateHistoricoVentas::class
-        $schedule->command('ciclo:fecha_fin')->everyMinute()->runInBackground();    // FechaFinalCiclo::class
-        $schedule->command('recepciones:delete')->everyMinute()->runInBackground(); // DeleteRecepciones::class
+        $schedule->command('historico_ventas:update')->daily()->runInBackground();    // UpdateHistoricoVentas::class
+        $schedule->command('ciclo:fecha_fin')->everyTenMinutes()->runInBackground();    // FechaFinalCiclo::class
+        $schedule->command('recepciones:delete')->everyThirtyMinutes()->runInBackground(); // DeleteRecepciones::class
     }
 
     /**

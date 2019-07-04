@@ -89,6 +89,9 @@ Route::group(['middleware' => 'autenticacion'], function () {
         /* ================== IMPORTAR DATA =================== */
         include 'importar_data/rutas.php';
 
+        /* ================== NOTIFICACIONES =================== */
+        include 'notificaciones/rutas.php';
+
     });
 
     include 'colores/rutas.php';

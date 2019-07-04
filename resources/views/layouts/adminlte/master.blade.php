@@ -255,6 +255,7 @@
 
     //Sustituto de la funcion alert de javascrip por aleta en ventana modal html -------------
     function alerta(mensaje, foco) {
+        session_count = 0;
         BootstrapDialog.alert({
             title: '<i class="fa fa-info-circle"></i> Información',
             message: $('<div></div>').html(mensaje),
@@ -280,6 +281,7 @@
     }
 
     function alerta_accion(mensaje, accion) {
+        session_count = 0;
         BootstrapDialog.alert({
             title: '<i class="fa fa-info-circle"></i> Información',
             message: $('<div></div>').html(mensaje),
@@ -298,6 +300,7 @@
     }
 
     function alerta_errores(mensaje, accion) {
+        session_count = 0;
         BootstrapDialog.alert({
             type: BootstrapDialog.TYPE_DANGER,
             closable: true,
@@ -321,6 +324,7 @@
     arreglo_modals_form = [];
 
     function modal_form(id_modal, mensaje, title, draggable, closable, size, accion) {
+        session_count = 0;
         BootstrapDialog.show({
             title: title,
             closable: closable,
@@ -361,6 +365,7 @@
     }
 
     function modal_view(id_modal, mensaje, title, draggable, closable, size) {
+        session_count = 0;
         BootstrapDialog.show({
             title: title,
             closable: closable,
@@ -389,6 +394,7 @@
     }
 
     function modal_quest(id_modal, mensaje, title, draggable, closable, size, accion) {
+        session_count = 0;
         BootstrapDialog.show({
             title: title,
             closable: closable,
@@ -448,6 +454,7 @@
     }
 
     function get_jquery(url, datos, funcion, div = false) {
+        session_count = 0;
         div == false ? $.LoadingOverlay('show') : $('#' + div).LoadingOverlay('show');
         $.get(url, datos, function (retorno) {
             funcion(retorno);
@@ -599,6 +606,7 @@
     }
 
     function cerrar_modals() {
+        session_count = 0;
         for (i = 0; i < arreglo_modals_form.length; i++) {
             arreglo_modals_form[i].close();
         }
