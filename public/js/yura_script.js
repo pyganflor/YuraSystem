@@ -182,29 +182,13 @@ function store_pedido(id_cliente, pedido_fijo, csrf_token, vista, id_pedido, com
             arrDatosExportacion = [];
             cant_especificaciones = $('tbody#tbody_inputs_pedidos input.input_cantidad').length;
             cant_datos_exportacion = $(".th_datos_exportacion").length;
-            if (cant_datos_exportacion > 0) {
-                for (b = 1; b <= cant_especificaciones; b++) {
-                    arrDatosExportacionEspecificacion = [];
-                    if ($(".cantidad_" + b).val() != '') {
-                        for (a = 1; a <= cant_datos_exportacion; a++) {
-                            nombre_columna_dato_exportacion = $("#th_datos_exportacion_" + a).text().trim().toUpperCase();
-                            console.log($("#input_" + nombre_columna_dato_exportacion + "_" + b).val());
-                            arrDatosExportacionEspecificacion.push({
-                                valor: $("#input_" + nombre_columna_dato_exportacion + "_" + b).val(),
-                                id_dato_exportacion: $("#id_dato_exportacion_" + nombre_columna_dato_exportacion + "_" + b).val()
-                            });
-                        }
-                        arrDatosExportacion.push(arrDatosExportacionEspecificacion);
-                    }
-                }
-            }
-
             var arr_especificaciones = [], arr_ordenado;
             $.each($("input.orden"), function (i, j) {
                 if (j.value !== '')
                     arr_especificaciones.push(j.value);
             });
             arr_ordenado = arr_especificaciones.sort(menor_mayor);
+
             for (z = 0; z < arr_ordenado.length; z++) {
                 $.each($('input.orden'), function (i, j) {
                     precio = '';
@@ -224,7 +208,25 @@ function store_pedido(id_cliente, pedido_fijo, csrf_token, vista, id_pedido, com
                         });
                     }
                 });
+
+                if (cant_datos_exportacion > 0) {
+                    $.each($('input.orden'), function (i, j) {
+                        arrDatosExportacionEspecificacion = [];
+                        if ($(".cantidad_piezas_" + (i + 1)).val() != "" && $(".cantidad_piezas_" + (i + 1)).val() != 0 && arr_ordenado[z] === j.value) {
+                            for (a = 1; a <= cant_datos_exportacion; a++) { //1
+                                nombre_columna_dato_exportacion = $("#th_datos_exportacion_" + a).text().trim().toUpperCase();
+                                console.log("#input_" + nombre_columna_dato_exportacion + "_" + (i+1));
+                                arrDatosExportacionEspecificacion.push({
+                                    valor: $("#input_" + nombre_columna_dato_exportacion + "_" + (i+1)).val(),
+                                    id_dato_exportacion: $("#id_dato_exportacion_" + nombre_columna_dato_exportacion + "_" + (i+1)).val()
+                                });
+                            }
+                            arrDatosExportacion.push(arrDatosExportacionEspecificacion);
+                        }
+                    });
+                }
             }
+
             if (arrDataDetallesPedido.length < 1) {
                 modal_view('modal_status_pedidos', '<div class="alert alert-danger text-center"><p> Debe colocar la cantidad de piezas en al menos una especificación</p> </div>', '<i class="fa fa-times" aria-hidden="true"></i> Estado pedido', true, false, '50%');
                 return false;
