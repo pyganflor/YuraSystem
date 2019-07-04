@@ -151,7 +151,7 @@ class NotificacionesController extends Controller
         $notificacion = Notificacion::find($request->id);
         return view('adminlte.gestion.notificaciones.partials.usuarios', [
             'notificacion' => $notificacion,
-            'usuarios' => Usuario::All()->where('estado', 'A'),
+            'usuarios' => Usuario::All()->where('estado', 'A')->sortBy('nombre_completo'),
         ]);
     }
 
