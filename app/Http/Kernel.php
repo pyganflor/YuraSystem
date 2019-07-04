@@ -4,6 +4,7 @@ namespace yura\Http;
 
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 use yura\Http\Middleware\Autenticacion;
+use yura\Http\Middleware\ControlSession;
 use yura\Http\Middleware\Permiso;
 
 class Kernel extends HttpKernel
@@ -63,5 +64,6 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'autenticacion' => Autenticacion::class,
         'permiso' => Permiso::class,
+        'controlsession' => ControlSession::class,
     ];
 }

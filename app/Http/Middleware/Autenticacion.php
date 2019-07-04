@@ -4,6 +4,7 @@ namespace yura\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Redirect;
 
 class Autenticacion
 {
@@ -24,6 +25,7 @@ class Autenticacion
                     return new Response(view('errores.usuario_inactivo'));
             }
         }
-        return redirect('login');
+        return response(redirect('login'));
+        //return Redirect::to('login')->header('Cache-Control', 'no-store, no-cache, must-revalidate');
     }
 }

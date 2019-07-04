@@ -18,87 +18,84 @@ Route::get('configuracion/inputs_dinamicos_detalle_empaque', 'ConfiguracionEmpre
 Route::get('configuracion/campos_empaques', 'ConfiguracionEmpresaController@campos_empaque')->name('view.campos_empaque');
 
 Route::group(['middleware' => 'autenticacion'], function () {
+    Route::group(['middleware' => 'controlsession'], function () {
+        Route::get('/', 'YuraController@inicio');
+        Route::post('save_config_user', 'YuraController@save_config_user');
+        Route::get('perfil', 'YuraController@perfil');
+        Route::post('perfil/update_usuario', 'YuraController@update_usuario');
+        Route::post('perfil/update_image_perfil', 'YuraController@update_image_perfil');
+        Route::post('perfil/update_password', 'YuraController@update_password');
 
-    Route::get('/', 'YuraController@inicio');
-    Route::post('save_config_user', 'YuraController@save_config_user');
-    Route::get('perfil', 'YuraController@perfil');
-    Route::post('perfil/update_usuario', 'YuraController@update_usuario');
-    Route::post('perfil/update_image_perfil', 'YuraController@update_image_perfil');
-    Route::post('perfil/update_password', 'YuraController@update_password');
+        Route::post('usuarios/get_usuario_json', 'UsuarioController@get_usuario_json');
 
-    Route::post('usuarios/get_usuario_json', 'UsuarioController@get_usuario_json');
+        Route::get('select_planta', 'YuraController@select_planta');
 
-    Route::get('select_planta', 'YuraController@select_planta');
+        include 'documento/rutas.php';
+        include 'crm/dashboard.php';
 
-    include 'documento/rutas.php';
-    include 'crm/dashboard.php';
+        Route::group(['middleware' => 'permiso'], function () {
+            /* ========================== POSTCPCECHA ========================*/
+            include 'postcocecha/lotes.php';
+            include 'postcocecha/clasificacion_blanco.php';
+            include 'postcocecha/cuarto_frio.php';
+            include 'postcocecha/despachos.php';
+            include 'postcocecha/apertura.php';
+            include 'postcocecha/clasificacion_verde.php';
+            include 'postcocecha/recepcion.php';
+            include 'postcocecha/clientes.php';
 
-    Route::group(['middleware' => 'permiso'], function () {
-        /* ========================== POSTCPCECHA ========================*/
-        include 'postcocecha/lotes.php';
-        include 'postcocecha/clasificacion_blanco.php';
-        include 'postcocecha/cuarto_frio.php';
-        include 'postcocecha/despachos.php';
-        include 'postcocecha/apertura.php';
-        include 'postcocecha/clasificacion_verde.php';
-        include 'postcocecha/recepcion.php';
-        include 'postcocecha/clientes.php';
+            include 'sectores_modulos/rutas.php';
+            include 'semanas/rutas.php';
+            include 'plantas_variedades/rutas.php';
 
-        include 'sectores_modulos/rutas.php';
-        include 'semanas/rutas.php';
-        include 'plantas_variedades/rutas.php';
+            include 'menu_sistema/rutas.php';
+            include 'permisos/rutas.php';
+            include 'usuarios/rutas.php';
 
-        include 'menu_sistema/rutas.php';
-        include 'permisos/rutas.php';
-        include 'usuarios/rutas.php';
+            include 'configuracion_empresa/rutas.php';
+            include 'postcocecha/agencias_carga.php';
+            include 'postcocecha/marcas.php';
+            include 'postcocecha/pedidos_ventas.php';
+            include 'postcocecha/envios.php';
+            include 'postcocecha/aerolinea.php';
+            include 'postcocecha/especificacion.php';
+            include 'postcocecha/cajas_presentaciones.php';
+            include 'postcocecha/precio.php';
+            include 'postcocecha/dato_exportacion.php';
+            include 'postcocecha/transportista.php';
+            include 'postcocecha/etiqueta.php';
 
-        include 'configuracion_empresa/rutas.php';
-        include 'postcocecha/agencias_carga.php';
-        include 'postcocecha/marcas.php';
-        include 'postcocecha/pedidos_ventas.php';
-        include 'postcocecha/envios.php';
-        include 'postcocecha/aerolinea.php';
-        include 'postcocecha/especificacion.php';
-        include 'postcocecha/cajas_presentaciones.php';
-        include 'postcocecha/precio.php';
-        include 'postcocecha/dato_exportacion.php';
-        include 'postcocecha/transportista.php';
-        include 'postcocecha/etiqueta.php';
-
-        /* ========================== CRM ========================*/
-        include 'crm/postcosecha.php';
-        include 'crm/ventas.php';
-        include 'crm/ventas_m2.php';
-        include 'crm/crm_area.php';
-        include 'crm/rendimiento_desecho.php';
-        include 'crm/tbl_postcosecha.php';
-        include 'crm/fue.php';
-        include 'crm/regalias_semanas.php';
-        include 'crm/tbl_ventas.php';
-        include 'crm/tbl_rendimiento.php';
-        include 'crm/fenograma_ejecucion.php';
+            /* ========================== CRM ========================*/
+            include 'crm/postcosecha.php';
+            include 'crm/ventas.php';
+            include 'crm/ventas_m2.php';
+            include 'crm/crm_area.php';
+            include 'crm/rendimiento_desecho.php';
+            include 'crm/tbl_postcosecha.php';
+            include 'crm/fue.php';
+            include 'crm/regalias_semanas.php';
+            include 'crm/tbl_ventas.php';
+            include 'crm/tbl_rendimiento.php';
+            include 'crm/fenograma_ejecucion.php';
 
 
-        /* ========================== FACTURACIÓN ========================*/
-        include 'facturacion/tipo_comprobante.php';
-        include 'facturacion/tipo_identificacion.php';
-        include 'facturacion/tipo_impuesto.php';
-        include 'facturacion/emision_comprobante.php';
-        include 'facturacion/codigo_dae.php';
+            /* ========================== FACTURACIÓN ========================*/
+            include 'facturacion/tipo_comprobante.php';
+            include 'facturacion/tipo_identificacion.php';
+            include 'facturacion/tipo_impuesto.php';
+            include 'facturacion/emision_comprobante.php';
+            include 'facturacion/codigo_dae.php';
 
-        /* ================== IMPORTAR DATA =================== */
-        include 'importar_data/rutas.php';
+            /* ================== IMPORTAR DATA =================== */
+            include 'importar_data/rutas.php';
 
-        /* ================== NOTIFICACIONES =================== */
-        include 'notificaciones/rutas.php';
+            /* ================== NOTIFICACIONES =================== */
+            include 'notificaciones/rutas.php';
 
+        });
+
+        include 'colores/rutas.php';
+        include 'codigo_barra/rutas.php';
+        include 'facturacion/comprobante.php';
     });
-
-    include 'colores/rutas.php';
-    include 'codigo_barra/rutas.php';
-    include 'facturacion/comprobante.php';
-});
-
-Route::get('test_notificacion', function () {
-    return view('welcome');
 });

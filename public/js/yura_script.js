@@ -1,16 +1,3 @@
-/* ====================== CONTROL DE SESSION abierta/cerrada ================= */
-var session_count = 0;
-
-setInterval('contador_session()', 1000);
-
-function contador_session() {
-    session_count++;
-    if (session_count >= 1200) {
-        $.LoadingOverlay('show');
-        location.href = '/logout';
-    }
-}
-
 /* ================ OTRAS FUNCIONES ======================== */
 
 function add_pedido(id_cliente, pedido_fijo, vista, id_pedido) {
@@ -1341,7 +1328,7 @@ function calcular_precio_envio() {
     }
 }
 
-function distribuir_pedido_tinturado(det_ped, auto = false, token) {
+function distribuir_pedido_tinturado(det_ped, auto = false, id_esp_emp = false, token) {
     ids_esp_emp = $('.id_esp_emp');
     arreglo_esp_emp = [];
     for (ee = 0; ee < ids_esp_emp.length; ee++) {
@@ -1370,6 +1357,7 @@ function distribuir_pedido_tinturado(det_ped, auto = false, token) {
                     _token: token,
                     id_det_ped: det_ped,
                     arreglo_esp_emp: arreglo_esp_emp,
+                    id_esp_emp: id_esp_emp
                 };
                 post_jquery('pedidos/auto_distribuir_pedido_tinturado', datos, function () {
                     cerrar_modals();
