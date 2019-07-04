@@ -46,7 +46,8 @@ class DetallePedido extends Model
     public function marcacionesByEspEmp($esp_emp)
     {
         return Marcacion::All()->where('id_detalle_pedido', $this->id_detalle_pedido)
-            ->where('id_especificacion_empaque', $esp_emp);}
+            ->where('id_especificacion_empaque', $esp_emp);
+    }
 
     public function coloraciones()
     {
@@ -73,6 +74,19 @@ class DetallePedido extends Model
     {
         if (count($this->marcaciones) > 0) {
             foreach ($this->marcaciones as $m) {
+                if (count($m->distribuciones) == 0)
+                    return false;
+            }
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function haveDistribucionByEspEmp($esp_emp)
+    {
+        if (count($this->marcaciones) > 0) {
+            foreach ($this->marcacionesByEspEmp($esp_emp) as $m) {
                 if (count($m->distribuciones) == 0)
                     return false;
             }

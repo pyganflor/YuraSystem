@@ -8,7 +8,7 @@
             <button type="button" class="btn btn-xs btn-primary" onclick="add_coloracion('{{$esp_emp->id_especificacion_empaque}}')">
                 <i class="fa fa-fw fa-plus"></i> Coloración
             </button>
-            @if($det_ped->haveDistribucion())
+            @if($det_ped->haveDistribucionByEspEmp($esp_emp->id_especificacion_empaque))
                 <button type="button" class="btn btn-xs btn-danger pull-right elemento_distribuir"
                         onclick="quitar_distribuciones('{{$det_ped->id_pedido}}','{{csrf_token()}}')">
                     <i class="fa fa-fw fa-times"></i> Quitar Distribuciones

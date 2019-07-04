@@ -855,76 +855,78 @@ class OrdenSemanalController extends Controller
         $det_ped = DetallePedido::find($request->id_det_ped);
         $array_marc = [];
         foreach ($request->arreglo_esp_emp as $esp_emp) {
-            $esp_empaque = EspecificacionEmpaque::find($esp_emp['id_esp_emp']);
-            foreach ($esp_emp['marcaciones'] as $marc) {
-                $marca = Marcacion::find($marc['id']);
+            if ($esp_emp['id_esp_emp'] == $request->id_esp_emp) {
+                $esp_empaque = EspecificacionEmpaque::find($esp_emp['id_esp_emp']);
+                foreach ($esp_emp['marcaciones'] as $marc) {
+                    $marca = Marcacion::find($marc['id']);
 
-                $array_distr = [];
-                for ($x = 1; $x <= $marca->piezas; $x++) array_push($array_distr, '');
+                    $array_distr = [];
+                    for ($x = 1; $x <= $marca->piezas; $x++) array_push($array_distr, '');
 
-                $array_det_esp = [];
-                foreach ($esp_empaque->detalles as $det_esp) {
-                    $array_marc_col = [];
-                    $ramos = 0;
-                    foreach ($det_ped->coloracionesByEspEmp($esp_emp['id_esp_emp']) as $pos_col => $color) {
-                        $mc = $marca->getMarcacionColoracionByDetEsp($color->id_coloracion, $det_esp->id_detalle_especificacionempaque);
-                        if ($mc != '') {
-                            $array_marc_col[] = [
-                                'id' => $mc->id_marcacion_coloracion,
-                                'cantidad' => $mc->cantidad,
-                            ];
-                            $ramos += $mc->cantidad;
-                        } else {
-                            $array_marc_col[] = [
-                                'id' => '',
-                                'cantidad' => 0,
-                            ];
-                        }
-                    }
-
-                    for ($i = 0; $i < $marca->piezas; $i++) {
-                        $meta = $det_esp->cantidad; // ramos x caja
-                        $array_distcol = [];
-                        foreach ($array_marc_col as $pos => $item) {
-                            if ($meta > 0) {
-                                if ($item['cantidad'] >= $meta) {
-                                    $item['cantidad'] = $item['cantidad'] - $meta;
-                                    $array_marc_col[$pos]['cantidad'] = $item['cantidad'];
-                                    $array_distcol[] = [
-                                        'mc' => $item['id'],
-                                        'cantidad' => $meta
-                                    ];
-                                    $ramos -= $meta;
-                                    $meta = 0;
-                                } else {
-                                    $meta -= $item['cantidad'];
-                                    $array_distcol[] = [
-                                        'mc' => $item['id'],
-                                        'cantidad' => $item['cantidad']
-                                    ];
-                                    $ramos -= $item['cantidad'];
-                                    $item['cantidad'] = 0;
-                                    $array_marc_col[$pos]['cantidad'] = $item['cantidad'];
-                                }
-                            } else
-                                $array_distcol[] = [
-                                    'mc' => $item['id'],
-                                    'cantidad' => 0
+                    $array_det_esp = [];
+                    foreach ($esp_empaque->detalles as $det_esp) {
+                        $array_marc_col = [];
+                        $ramos = 0;
+                        foreach ($det_ped->coloracionesByEspEmp($esp_emp['id_esp_emp']) as $pos_col => $color) {
+                            $mc = $marca->getMarcacionColoracionByDetEsp($color->id_coloracion, $det_esp->id_detalle_especificacionempaque);
+                            if ($mc != '') {
+                                $array_marc_col[] = [
+                                    'id' => $mc->id_marcacion_coloracion,
+                                    'cantidad' => $mc->cantidad,
                                 ];
+                                $ramos += $mc->cantidad;
+                            } else {
+                                $array_marc_col[] = [
+                                    'id' => '',
+                                    'cantidad' => 0,
+                                ];
+                            }
                         }
-                        $array_distr[$i] = $array_distcol;
+
+                        for ($i = 0; $i < $marca->piezas; $i++) {
+                            $meta = $det_esp->cantidad; // ramos x caja
+                            $array_distcol = [];
+                            foreach ($array_marc_col as $pos => $item) {
+                                if ($meta > 0) {
+                                    if ($item['cantidad'] >= $meta) {
+                                        $item['cantidad'] = $item['cantidad'] - $meta;
+                                        $array_marc_col[$pos]['cantidad'] = $item['cantidad'];
+                                        $array_distcol[] = [
+                                            'mc' => $item['id'],
+                                            'cantidad' => $meta
+                                        ];
+                                        $ramos -= $meta;
+                                        $meta = 0;
+                                    } else {
+                                        $meta -= $item['cantidad'];
+                                        $array_distcol[] = [
+                                            'mc' => $item['id'],
+                                            'cantidad' => $item['cantidad']
+                                        ];
+                                        $ramos -= $item['cantidad'];
+                                        $item['cantidad'] = 0;
+                                        $array_marc_col[$pos]['cantidad'] = $item['cantidad'];
+                                    }
+                                } else
+                                    $array_distcol[] = [
+                                        'mc' => $item['id'],
+                                        'cantidad' => 0
+                                    ];
+                            }
+                            $array_distr[$i] = $array_distcol;
+                        }
+
+                        array_push($array_det_esp, [
+                            'det_esp' => $det_esp->id_detalle_especificacionempaque,
+                            'arreglo' => $array_distr
+                        ]);
                     }
 
-                    array_push($array_det_esp, [
-                        'det_esp' => $det_esp->id_detalle_especificacionempaque,
-                        'arreglo' => $array_distr
+                    array_push($array_marc, [
+                        'marca' => $marca,
+                        'array' => $array_det_esp,
                     ]);
                 }
-
-                array_push($array_marc, [
-                    'marca' => $marca,
-                    'array' => $array_det_esp,
-                ]);
             }
         }
 
