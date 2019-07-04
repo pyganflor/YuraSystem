@@ -40,7 +40,7 @@ class FueController extends Controller
     }
 
     public function actualizar_fue(Request $request){
-        $valida = Validator::make($request->all(), [
+        /*$valida = Validator::make($request->all(), [
             'arr_datos.*.codigo_dae' => 'required',
             'arr_datos.*.guia_madre' => 'required',
             'arr_datos.*.guia_hija' => 'required',
@@ -48,9 +48,16 @@ class FueController extends Controller
             'arr_datos.*.dae' => 'required',
             'arr_datos.*.peso' => 'required',
             'arr_datos.*.id_comprobante' => 'required'
-        ]);
+        ],[
+        'arr_datos.*.codigo_dae' => 'Debe ingresar el código DAE',
+        arr_datos.*.guia_madre' => 'Debe ingresar la Guía madre',
+        'arr_datos.*.guia_hija' => 'Debe ingresar la Guía hija',
+        'arr_datos.*.manifiesto' => 'Debe ingresar el manifiesto',
+        'arr_datos.*.dae' => 'Debe ingresar la DAE completa',
+        'arr_datos.*.peso' => 'Debe ingresar el peso',
+        ]);*/
 
-        if (!$valida->fails()) {
+        //if (!$valida->fails()) {
             $success = false;
             $msg = '<div class="alert alert-warning text-center">' .
                 '<p> Ha ocurrido un problema al guardar la información al sistema</p>'
@@ -83,7 +90,7 @@ class FueController extends Controller
                         . '</div>';
                 }
             }
-        }else {
+        /*}else {
             $success = false;
             $errores = '';
             foreach ($valida->errors()->all() as $mi_error) {
@@ -99,7 +106,7 @@ class FueController extends Controller
                 $errores .
                 '</ul>' .
                 '</div>';
-        }
+        }*/
         return [
             'mensaje' => $msg,
             'success' => $success
