@@ -57,7 +57,7 @@
                         </td>
                         <td style="border-color: #9d9d9d" class="text-center" style="vertical-align: middle">
                             <input type="text" value="{{isset($comprobante->manifiesto) ? $comprobante->manifiesto : ""}}" name="manifiesto" id="manifiesto"
-                                   required style="border: none;width:100%;text-align: center">
+                                   style="border: none;width:100%;text-align: center">
                         </td>
                         <td style="border-color: #9d9d9d" class="text-center" style="vertical-align: middle">
                             <input type="text" value="{{$factura_tercero !=null ? $factura_tercero->dae : (isset($comprobante->envio->dae) ? $comprobante->envio->dae : "")}}"
