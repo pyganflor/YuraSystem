@@ -37,7 +37,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('historico_ventas:update')->daily()->runInBackground();    // UpdateHistoricoVentas::class
         $schedule->command('ciclo:fecha_fin')->everyTenMinutes()->runInBackground();    // FechaFinalCiclo::class
         $schedule->command('recepciones:delete')->everyThirtyMinutes()->runInBackground(); // DeleteRecepciones::class
-        $schedule->command('notificaciones:sistema')->everyMinute()->runInBackground(); // NotificacionesSistema::class
+        $schedule->command('notificaciones:sistema')->everyTenMinutes()->runInBackground(); // NotificacionesSistema::class
     }
 
     /**
