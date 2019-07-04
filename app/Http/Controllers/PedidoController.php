@@ -417,22 +417,10 @@ class PedidoController extends Controller
     }
 
     public function crear_packing_list($id_pedido,$vista_despacho = false){
-        $msg = '<div class="alert alert-danger text-center">' .
-                 '<p> No se ha podido realizar el packing list</p>'
-                . '</div>';
-        $success = false;
         $pedido = getPedido($id_pedido);
-
-        $comprobante = isset($pedido->envios[0]->comprobante) ? $pedido->envios[0]->comprobante : null;
         $empresa = getConfiguracionEmpresa();
         $despacho = isset(getDetalleDespacho($pedido->id_pedido)->despacho) ? getDetalleDespacho($pedido->id_pedido)->despacho : null;
         $facturaTercero = isset($pedido->envios) ? getFacturaClienteTercero($pedido->envios[0]->id_envio) : null;
-        $envio =[
-            'guia_madre' =>isset($pedido->envios[0]->guia_madre) ? $pedido->envios[0]->guia_madre : null,
-            'guia_hija' =>isset($pedido->envios[0]->guia_hija) ? $pedido->envios[0]->guia_hija : null,
-            'aerolinea' => isset($pedido->envios[0]->detalles[0]->id_aerolinea) ? getAgenciaTransporte($pedido->envios[0]->detalles[0]->id_aerolinea)->nombre : null,
-            'agencia_carga' => getAgenciaCarga($pedido->detalles[0]->id_agencia_carga)->nombre
-        ];
         if($facturaTercero !== null){
             $cliente = [
                 'nombre' =>$facturaTercero->nombre_cliente_tercero,
@@ -448,17 +436,26 @@ class PedidoController extends Controller
             foreach($pedido->cliente->detalles as $det_cli)
                 if($det_cli->estado == 1)
                     $cliente = $det_cli;
-                $cliente = [
-                    'nombre' =>$cliente->nombre,
-                    'identificacion' => $cliente->ruc,
-                    'tipo_identificacion' => getTipoIdentificacion($cliente->codigo_identificacion)->nombre,
-                    'pais' => getPais($cliente->codigo_pais)->nombre,
-                    'provincia' => $cliente->provincia,
-                    'direccion' => $cliente->direccion,
-                    'telefono' => $cliente->telefono,
-                    'dae' => $pedido->envios[0]->dae
-                ];
+            $cliente = [
+                'nombre' =>$cliente->nombre,
+                'identificacion' => $cliente->ruc,
+                'tipo_identificacion' => getTipoIdentificacion($cliente->codigo_identificacion)->nombre,
+                'pais' => getPais($cliente->codigo_pais)->nombre,
+                'provincia' => $cliente->provincia,
+                'direccion' => $cliente->direccion,
+                'telefono' => $cliente->telefono,
+                'dae' => $pedido->envios[0]->dae
+            ];
         }
+
+        /*$comprobante = isset($pedido->envios[0]->comprobante) ? $pedido->envios[0]->comprobante : null;
+        $envio =[
+            'guia_madre' =>isset($pedido->envios[0]->guia_madre) ? $pedido->envios[0]->guia_madre : null,
+            'guia_hija' =>isset($pedido->envios[0]->guia_hija) ? $pedido->envios[0]->guia_hija : null,
+            'aerolinea' => isset($pedido->envios[0]->detalles[0]->id_aerolinea) ? getAgenciaTransporte($pedido->envios[0]->detalles[0]->id_aerolinea)->nombre : null,
+            'agencia_carga' => getAgenciaCarga($pedido->detalles[0]->id_agencia_carga)->nombre
+        ];
+
         if($pedido->tipo_especificacion === "N"){
             $env = getEnvio($pedido->envios[0]->id_envio);
             $detallePedido = [];
@@ -482,8 +479,8 @@ class PedidoController extends Controller
                     }
                 }
             }
-        }
-        return PDF::loadView('adminlte.gestion.postcocecha.despachos.partials.pdf_packing_list', compact('detallePedido','pedido','cliente','comprobante','empresa','despacho','envio','vista_despacho'))->stream();
+        }*/
+        return PDF::loadView('adminlte.gestion.postcocecha.despachos.partials.pdf_packing_list', compact('pedido','vista_despacho','empresa','despacho','cliente'))->stream();
     }
     
     public function facturar_pedido(Request $request){
