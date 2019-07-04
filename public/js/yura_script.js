@@ -1,16 +1,3 @@
-/* ====================== CONTROL DE SESSION abierta/cerrada ================= */
-var session_count = 0;
-
-setInterval('contador_session()', 1000);
-
-function contador_session() {
-    session_count++;
-    if (session_count >= 1200) {
-        $.LoadingOverlay('show');
-        location.href = '/logout';
-    }
-}
-
 /* ================ OTRAS FUNCIONES ======================== */
 
 function add_pedido(id_cliente, pedido_fijo, vista, id_pedido) {

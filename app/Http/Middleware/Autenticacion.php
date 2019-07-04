@@ -24,6 +24,6 @@ class Autenticacion
                     return new Response(view('errores.usuario_inactivo'));
             }
         }
-        return redirect('login');
+        return new Response(view('login.login'));
     }
 }
