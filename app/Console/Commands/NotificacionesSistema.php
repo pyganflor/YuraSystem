@@ -62,8 +62,9 @@ class NotificacionesSistema extends Command
             ->where('estado', 1)
             ->where('id_notificacion', $not->id_notificacion);
         foreach ($models as $m) {   // desactivar las anteriores
-            $m->estado = 0;
-            $m->save();
+            /*$m->estado = 0;
+            $m->save();*/
+            $m->delete();
         }
         if ($sum > 0) { // crear las nuevas notificaciones
             foreach ($not->usuarios as $not_user) {
