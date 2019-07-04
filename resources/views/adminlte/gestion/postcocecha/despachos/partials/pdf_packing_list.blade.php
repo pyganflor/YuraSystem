@@ -226,7 +226,8 @@
             </tr>
         </thead>
         <tbody style="border: 1px solid black">
-                @foreach($env->pedido->pedidoMarcacionesOrderAsc as $distribucion)
+
+                @foreach($env->pedido->pedidoMarcacionesOrderAsc as $w => $distribucion)
                     <tr>
                         <td style="font-size:12px;border:1px solid black">{{$distribucion->nombre}}</td>
                         <td style=";font-size:12px;border:1px solid black">{{$distribucion->ramos}}</td>
@@ -240,17 +241,21 @@
                         </td>
                         <td style="font-size:12px;border:1px solid black">{{$distribucion->piezas}}</td>
                         <td style="font-size:12px;border:1px solid black">
-                            @foreach($distribucion->marcaciones as $x => $marcacion)
-                                @foreach ($marcacion->distribuciones as $y => $dist)
-                                        @foreach ($dist->distribuciones_coloraciones as $z => $distribucion_coloracion)
-                                            @if($x == 0 && $y == 0)
+
+
+
+
+
+
+                                        @foreach (getDistribucion($distribucion->id_distribucion)->distribuciones_coloraciones as $z => $distribucion_coloracion)
+
                                                 @if($distribucion_coloracion->cantidad !== 0)
                                                     {{$distribucion_coloracion->cantidad ." ". $distribucion_coloracion->marcacion_coloracion->coloracion->color->nombre. ","}}
                                                 @endif
-                                            @endif
+                                            
                                         @endforeach
-                                @endforeach
-                            @endforeach
+
+
                         </td>
                     </tr>
                 @endforeach

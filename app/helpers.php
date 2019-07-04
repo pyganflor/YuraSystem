@@ -65,6 +65,7 @@ use yura\Modelos\TipoIdentificacion;
 use yura\Modelos\Ciclo;
 use yura\Modelos\Cosecha;
 use yura\Modelos\Planta;
+use \yura\Modelos\Distribucion;
 use yura\Modelos\HistoricoVentas;
 
 /*
@@ -2036,4 +2037,7 @@ function getHistoricoVentaByMes($mes, $anno, $variedad = 'T')
 
 function getDetalleFactura($idComprobante){
     return DetalleFactura::where('id_comprobante',$idComprobante)->first();
+}
+function getDistribucion($idDistribucion){
+    return Distribucion::find($idDistribucion);
 }
