@@ -19,7 +19,7 @@
 
         <div class="navbar-custom-menu">
             <ul class="nav navbar-nav">
-                <li class="dropdown notifications-menu">
+                <li class="dropdown notifications-menu" title="Notifícame">
                     <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"
                        onclick="buscar_notificaciones('S')">
                         <i class="fa fa-bell-o"></i>

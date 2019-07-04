@@ -519,15 +519,17 @@
             if (retorno.cant_news > 0) {
                 retorno.cant_news == 1 ? texto = 'Usted tiene ' + retorno.cant_news + ' notificación' : 'Usted tiene ' + retorno.cant_news + ' notificaciones';
 
+                if (parseInt($('#link_not').html()) < retorno.cant_news)
+                    beep_notificar();
+
                 $('#link_not').html(retorno.cant_news);
                 $('#header_not').html(texto);
                 $('#list_not').append(retorno.news);
 
-                beep_notificar();
                 for (i = 0; i < retorno.array.length; i++) {
                     notificar(retorno.array[i]['texto'], true, function () {
                         window.open('{{url('')}}/' + retorno.array[i]['url'], '_blank');
-                    }, 5000);
+                    }, 5000, false);
                 }
             } else {
                 $('#link_not').html('');
@@ -891,7 +893,7 @@
             });
     }
 
-    function notificar(body, url, accion, timeout) {
+    function notificar(body, url, accion, timeout, beep = true) {
         Push.create('Hola', {
             body: body,
             icon: '{{url('images/logo_yura.png')}}',
@@ -906,7 +908,8 @@
             },
             vibrate: [200, 100, 200, 100, 200, 100, 200]
         });
-        beep_notificar();
+        if (beep)
+            beep_notificar();
     }
 
     set_config('');
