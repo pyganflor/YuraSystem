@@ -49,7 +49,7 @@
                         <i class="fa fa-fw fa-save"></i>
                     </button>
                     @if($item->estado == 1)
-                        <button class="btn btn-xs btn-primary" title="Usuarios">
+                        <button class="btn btn-xs btn-primary" title="Usuarios" onclick="admin_usuarios('{{$item->id_notificacion}}')">
                             <i class="fa fa-fw fa-users"></i>
                         </button>
                         <button class="btn btn-xs btn-danger" title="Desactivar notificación"

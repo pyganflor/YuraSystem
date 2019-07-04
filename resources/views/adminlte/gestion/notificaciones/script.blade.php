@@ -65,4 +65,25 @@
             location.reload();
         });
     }
+
+    function save_notificacion_usuario(user, not) {
+        datos = {
+            _token: '{{csrf_token()}}',
+            not: not,
+            user: user,
+        };
+        post_jquery('{{url('notificaciones/save_notificacion_usuario')}}', datos, function () {
+        });
+    }
+
+    function admin_usuarios(not) {
+        datos = {
+            id: not
+        };
+        get_jquery('{{url('notificaciones/admin_usuarios')}}', datos, function (retorno) {
+            modal_view('modal-view_admin_usuarios', retorno, '<i class="fa fa-fw fa-users"></i> Usuarios', true, false, '{{isPC() ? '65%' : ''}}');
+        });
+    }
+
+
 </script>

@@ -23,4 +23,15 @@ class Notificacion extends Model
     {
         return $this->belongsTo('\yura\Modelos\Icon', 'id_icono');
     }
+
+    public function usuarios()
+    {
+        return $this->hasMany('\yura\Modelos\NotificacionUsuario', 'id_notificacion');
+    }
+
+    public function getNotificacionUsuario($id_user)
+    {
+        $r = $this->usuarios->where('id_usuario', $id_user)->first();
+        return $r;
+    }
 }
