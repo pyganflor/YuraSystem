@@ -509,6 +509,38 @@
         $.LoadingOverlay('hide');
     }
 
+    function buscar_notificaciones(tipo) {
+        datos = {
+            _token: '{{csrf_token()}}',
+            tipo: tipo
+        };
+        $.post('notificaciones/buscar_notificaciones', datos, function (retorno) {
+            $('#list_not').html('');
+            if (retorno.cant_news > 0) {
+                retorno.cant_news == 1 ? texto = 'Usted tiene ' + retorno.cant_news + ' notificación' : 'Usted tiene ' + retorno.cant_news + ' notificaciones';
+
+                $('#link_not').html(retorno.cant_news);
+                $('#header_not').html(texto);
+                $('#list_not').append(retorno.news);
+
+                beep_notificar();
+                for (i = 0; i < retorno.array.length; i++) {
+                    notificar(retorno.array[i]['texto'], true, function () {
+                        window.open('{{url('')}}/' + retorno.array[i]['url'], '_blank');
+                    }, 5000);
+                }
+            } else {
+                $('#link_not').html('');
+                $('#header_not').html('No hay novedades para usted');
+            }
+        }, 'json').fail(function (retorno) {
+            console.log(retorno);
+        });
+    }
+
+    buscar_notificaciones("S");
+    setInterval('buscar_notificaciones("S")', 300000);
+
     /* =============== Variables para configuracion =====================*/
     var $pushMenu = $('[data-toggle="push-menu"]').data('lte.pushmenu')
     var $controlSidebar = $('[data-toggle="control-sidebar"]').data('lte.controlsidebar')

@@ -3,11 +3,15 @@
 namespace yura\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Session;
 use yura\Modelos\Icon;
 use yura\Modelos\Notificacion;
 use yura\Modelos\NotificacionUsuario;
 use yura\Modelos\Submenu;
 use Validator;
+use yura\Modelos\UserNotification;
 use yura\Modelos\Usuario;
 
 class NotificacionesController extends Controller
@@ -173,6 +177,34 @@ class NotificacionesController extends Controller
         return [
             'success' => true,
             'mensaje' => '<div class="alert alert-success text-center">Se ha actualizado satisfactoriamente</div>',
+        ];
+    }
+
+    /* ============================ OTRAS ================================= */
+    public function buscar_notificaciones(Request $request)
+    {
+        $news = DB::table('user_notification as un')
+            ->join('notificacion as n', 'n.id_notificacion', '=', 'un.id_notificacion')
+            ->select('un.*')->distinct()
+            ->where('un.estado', '=', 1)
+            ->where('un.id_usuario', '=', Session::get('id_usuario'))
+            ->where('n.tipo', '=', $request->tipo)
+            ->get();
+        if (count($news) > 0) {
+            $li = '';
+            foreach ($news as $n) {
+                $n = UserNotification::find($n->id_user_notification);
+                $n->url = "'" . $n->url . "'";
+                $li .= '<li title="' . $n->texto . '">
+                <a href="javascript:void(0)" onclick="cargar_url(' . $n->url . ')">
+                <i class="fa fa-' . $n->notificacion->icono->nombre . '"></i> ' . $n->texto . '
+                </a></li>';
+            }
+        }
+        return [
+            'news' => $li,
+            'cant_news' => count($news),
+            'array' => $news
         ];
     }
 }

@@ -19,6 +19,21 @@
 
         <div class="navbar-custom-menu">
             <ul class="nav navbar-nav">
+                <li class="dropdown notifications-menu">
+                    <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"
+                       onclick="buscar_notificaciones('S')">
+                        <i class="fa fa-bell-o"></i>
+                        <span class="label label-warning" id="link_not"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li class="header text-center" id="header_not"></li>
+                        <li>
+                            <ul class="menu" id="list_not">
+                            </ul>
+                        </li>
+                        {{--<li class="footer"><a href="javascript:void(0)">Marcar todo como leído</a></li>--}}
+                    </ul>
+                </li>
                 <li class="dropdown user user-menu">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         <img src="{{url('storage/imagenes').'/'.getUsuario(Session::get('id_usuario'))->imagen_perfil}}" class="user-image"
