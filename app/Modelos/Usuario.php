@@ -33,6 +33,11 @@ class Usuario extends Model
         return $this->hasOne('\yura\Modelos\ConfiguracionUser', 'id_usuario');
     }
 
+    public function notificaciones()
+    {
+        return $this->hasMany('\yura\Modelos\NotificacionUsuario', 'id_usuario');
+    }
+
     public function cantidades()
     {
         return 3;

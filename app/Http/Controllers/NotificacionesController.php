@@ -5,8 +5,10 @@ namespace yura\Http\Controllers;
 use Illuminate\Http\Request;
 use yura\Modelos\Icon;
 use yura\Modelos\Notificacion;
+use yura\Modelos\NotificacionUsuario;
 use yura\Modelos\Submenu;
 use Validator;
+use yura\Modelos\Usuario;
 
 class NotificacionesController extends Controller
 {
@@ -141,6 +143,36 @@ class NotificacionesController extends Controller
         return [
             'success' => true,
             'mensaje' => '<div class="alert alert-success text-center">Se ha cambiado el estado satisfactoriamente</div>',
+        ];
+    }
+
+    public function admin_usuarios(Request $request)
+    {
+        $notificacion = Notificacion::find($request->id);
+        return view('adminlte.gestion.notificaciones.partials.usuarios', [
+            'notificacion' => $notificacion,
+            'usuarios' => Usuario::All()->where('estado', 'A'),
+        ]);
+    }
+
+    public function save_notificacion_usuario(Request $request)
+    {
+        $model = NotificacionUsuario::All()->where('id_usuario', $request->user)->where('id_notificacion', $request->not)->first();
+        if ($model == '') {
+            $model = new NotificacionUsuario();
+            $model->id_notificacion = $request->not;
+            $model->id_usuario = $request->user;
+            $model->save();
+            $model = NotificacionUsuario::All()->last();
+            bitacora('notificacion_usuario', $model->id_notificacion_usuario, 'I', 'Inserción de una nueva notificacion-usuario');
+        } else {
+            $model->estado == 1 ? $model->estado = 0 : $model->estado = 1;
+            $model->save();
+            bitacora('notificacion_usuario', $model->id_notificacion_usuario, 'U', 'Cambio de estado de una notificacion-usuario');
+        }
+        return [
+            'success' => true,
+            'mensaje' => '<div class="alert alert-success text-center">Se ha actualizado satisfactoriamente</div>',
         ];
     }
 }
