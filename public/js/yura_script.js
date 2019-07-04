@@ -306,7 +306,7 @@ function cancelar_pedidos(id_pedido, id_cliente, estado, token) {
             post_jquery('clientes/cancelar_pedido', datos, function () {
                 cerrar_modals();
                 console.log($("#listar_resumen_pedido").val());
-                $("#listar_resumen_pedido").val() == 'true'
+                ($("#listar_resumen_pedido").val() == 'true' || $("#listar_resumen_pedido").val() == undefined)
                     ? listar_resumen_pedidos($('#fecha_pedidos_search').val(), true)
                     : "";
 
