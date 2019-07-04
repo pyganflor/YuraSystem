@@ -1326,7 +1326,7 @@ function calcular_precio_envio() {
     }
 }
 
-function distribuir_pedido_tinturado(det_ped, auto = false, token) {
+function distribuir_pedido_tinturado(det_ped, auto = false, id_esp_emp = false, token) {
     ids_esp_emp = $('.id_esp_emp');
     arreglo_esp_emp = [];
     for (ee = 0; ee < ids_esp_emp.length; ee++) {
@@ -1355,6 +1355,7 @@ function distribuir_pedido_tinturado(det_ped, auto = false, token) {
                     _token: token,
                     id_det_ped: det_ped,
                     arreglo_esp_emp: arreglo_esp_emp,
+                    id_esp_emp: id_esp_emp
                 };
                 post_jquery('pedidos/auto_distribuir_pedido_tinturado', datos, function () {
                     cerrar_modals();

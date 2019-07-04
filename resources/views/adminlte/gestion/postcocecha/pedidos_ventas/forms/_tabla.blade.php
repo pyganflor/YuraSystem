@@ -23,7 +23,7 @@
                     <i class="fa fa-fw fa-exchange"></i> Distribuir
                 </button>
                 <button type="button" class="btn btn-xs btn-info pull-right elemento_distribuir"
-                        onclick="distribuir_pedido_tinturado('{{$det_ped->id_detalle_pedido}}', true, '{{csrf_token()}}')">
+                        onclick="distribuir_pedido_tinturado('{{$det_ped->id_detalle_pedido}}', true, '{{$esp_emp->id_especificacion_empaque}}', '{{csrf_token()}}')">
                     <i class="fa fa-fw fa-exchange"></i> Auto-Distribuir
                 </button>
             @endif

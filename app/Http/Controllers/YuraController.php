@@ -226,6 +226,7 @@ class YuraController extends Controller
 
                         $err_pss = false;
                         Session::put('logeado', true);
+                        Session::put('last_quest', date('Y-m-d H:i:s'));
 
                         Session::put('id_usuario', $usuarios->id_usuario);
 
