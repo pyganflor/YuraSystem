@@ -128,6 +128,6 @@
     <script>
         notificar('Bienvenid@ {{explode(' ',getUsuario(Session::get('id_usuario'))->nombre_completo)[0]}}',
             '{{url('')}}', function () {
-            });
+            }, null, false);
     </script>
 @endsection

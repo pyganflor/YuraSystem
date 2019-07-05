@@ -202,10 +202,10 @@ function store_pedido(id_cliente, pedido_fijo, csrf_token, vista, id_pedido, com
                         if ($(".cantidad_piezas_" + (i + 1)).val() != "" && $(".cantidad_piezas_" + (i + 1)).val() != 0 && arr_ordenado[z] === j.value) {
                             for (a = 1; a <= cant_datos_exportacion; a++) { //1
                                 nombre_columna_dato_exportacion = $("#th_datos_exportacion_" + a).text().trim().toUpperCase();
-                                console.log("#input_" + nombre_columna_dato_exportacion + "_" + (i+1));
+                                console.log("#input_" + nombre_columna_dato_exportacion + "_" + (i + 1));
                                 arrDatosExportacionEspecificacion.push({
-                                    valor: $("#input_" + nombre_columna_dato_exportacion + "_" + (i+1)).val(),
-                                    id_dato_exportacion: $("#id_dato_exportacion_" + nombre_columna_dato_exportacion + "_" + (i+1)).val()
+                                    valor: $("#input_" + nombre_columna_dato_exportacion + "_" + (i + 1)).val(),
+                                    id_dato_exportacion: $("#id_dato_exportacion_" + nombre_columna_dato_exportacion + "_" + (i + 1)).val()
                                 });
                             }
                             arrDatosExportacion.push(arrDatosExportacionEspecificacion);

@@ -33,12 +33,12 @@
                         Ramos
                     </th>
                     <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
-                        style="border-color: #9d9d9d">
-                        Estandar
+                        style="border-color: #9d9d9d" width="80px">
+                        Estandar Acumulado
                     </th>
                     <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
-                        style="border-color: #9d9d9d">
-                        Real
+                        style="border-color: #9d9d9d" width="80px">
+                        Real Acumulado
                     </th>
                     <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
                         style="border-color: #9d9d9d">
@@ -46,7 +46,7 @@
                     </th>
                     <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
                         style="border-color: #9d9d9d" width="5%">
-                        Sacar
+                        Sacar Tallos
                     </th>
                 </tr>
                 </thead>
