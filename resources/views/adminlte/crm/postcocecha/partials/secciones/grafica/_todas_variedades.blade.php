@@ -8,25 +8,25 @@
     </ul>
     <div class="tab-content no-padding">
         <div class="chart tab-pane active" id="cajas-chart" style="position: relative; height: 300px;">
-            <canvas id="chart_acumulado_cajas" width="100%" height="40" style="margin-top: 5px"></canvas>
+            <canvas id="chart_cajas" width="100%" height="40" style="margin-top: 5px"></canvas>
         </div>
         <div class="chart tab-pane" id="tallos-chart" style="position: relative; height: 300px;">
-            <canvas id="chart_acumulado_tallos" width="100%" height="40" style="margin-top: 5px"></canvas>
+            <canvas id="chart_tallos" width="100%" height="40" style="margin-top: 5px"></canvas>
         </div>
         {{--<div class="chart tab-pane" id="ramos-chart" style="position: relative; height: 300px;">
-            <canvas id="chart_acumulado_ramos" width="100%" height="40" style="margin-top: 5px"></canvas>
+            <canvas id="chart_ramos" width="100%" height="40" style="margin-top: 5px"></canvas>
         </div>--}}
         <div class="chart tab-pane" id="calibres-chart" style="position: relative; height: 300px;">
-            <canvas id="chart_acumulado_calibres" width="100%" height="40" style="margin-top: 5px"></canvas>
+            <canvas id="chart_calibres" width="100%" height="40" style="margin-top: 5px"></canvas>
         </div>
     </div>
 </div>
 
 <script>
-    construir_char_acumulado('Cajas', 'chart_acumulado_cajas');
-    //construir_char_acumulado('Ramos', 'chart_acumulado_ramos');
-    construir_char_acumulado('Tallos', 'chart_acumulado_tallos');
-    construir_char_acumulado('Calibres', 'chart_acumulado_calibres');
+    construir_char_acumulado('Cajas', 'chart_cajas');
+    //construir_char_acumulado('Ramos', 'chart_ramos');
+    construir_char_acumulado('Tallos', 'chart_tallos');
+    construir_char_acumulado('Calibres', 'chart_calibres');
 
     function construir_char_acumulado(label, id) {
         labels = [];

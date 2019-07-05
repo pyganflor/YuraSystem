@@ -6,6 +6,7 @@
                     <h3 class="info-box-number">
                         {{number_format($cajas, 2)}}
                     </h3>
+                    <input type="hidden" id="indicador_cajas" value="{{$cajas}}">
                 </div>
                 <div class="icon">
                     <i class="fa fa-fw fa-gift"></i>
@@ -21,6 +22,7 @@
                     <h3 class="info-box-number">
                         {{number_format($tallos)}}
                     </h3>
+                    <input type="hidden" id="indicador_tallos" value="{{$tallos}}">
                 </div>
                 <div class="icon">
                     <i class="ion ion-leaf"></i>
@@ -37,6 +39,7 @@
                         {{$calibre}}
                         <sup style="font-size: 0.4em"></sup>
                     </h3>
+                    <input type="hidden" id="indicador_calibre" value="{{$calibre}}">
                 </div>
                 <div class="icon">
                     <i class="fa fa-tint"></i>

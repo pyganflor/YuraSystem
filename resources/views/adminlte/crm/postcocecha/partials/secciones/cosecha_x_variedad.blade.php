@@ -25,12 +25,19 @@
                 <span class="badge bg-{{$class_bar}}" title="Calibre">
                     {{$verde != '' ? $verde->calibreByVariedad($variedad->id_variedad) : 0}}
                 </span>
+                <input type="hidden" id="calibre_var_{{$variedad->id_variedad}}"
+                       value="{{$verde != '' ? $verde->calibreByVariedad($variedad->id_variedad) : 0}}">
             </span>
             <span class="progress-number">
                 <strong title="Clasificados">{{$verde != '' ? $verde->tallos_x_variedad($variedad->id_variedad) : 0}}</strong> /
                 <span title="Cosechados">
                     {{$cosecha->getTotalTallosByVariedad($variedad->id_variedad)}}
                 </span>
+
+                <input type="hidden" id="clasificados_var_{{$variedad->id_variedad}}"
+                       value="{{$verde != '' ? $verde->tallos_x_variedad($variedad->id_variedad) : 0}}">
+                <input type="hidden" id="cosechados_var_{{$variedad->id_variedad}}"
+                       value="{{$cosecha->getTotalTallosByVariedad($variedad->id_variedad)}}">
             </span>
             <div class="progress sm" style="margin-bottom: 5px">
                 <div class="progress progress-sm active">
@@ -41,6 +48,7 @@
                 </div>
             </div>
         </div>
+        <input type="hidden" class="listado_variedades" value="{{$variedad->id_variedad}}">
     @endforeach
     <div class="row">
         <div class="col-sm-3 col-xs-6">
@@ -61,9 +69,11 @@
                     <i class="fa fa-caret-{{$class_icon}}"></i>
                     {{round($porcent,2)}} %
                 </span>
+                <input type="hidden" id="porcentaje_calibre" value="{{$porcent}}">
                 <h5 class="description-header">
                     {{$verde != '' ? $verde->getCalibre() : 0}}
                 </h5>
+                <input type="hidden" id="calibre_dia" value="{{$verde != '' ? $verde->getCalibre() : 0}}">
                 <a href="javascript:void(0)" class="btn btn-link"
                    onclick="ver_rendimiento_verde('{{$verde != '' ? $verde->id_clasificacion_verde : ''}}')">
                     <strong class="description-text">Calibre</strong>
@@ -75,17 +85,20 @@
                 <span class="description-percentage" title="Clasificados">
                     {{$verde != '' ? $verde->total_tallos() : 0}}
                 </span>
+                <input type="hidden" id="clasificados_dia" {{$verde != '' ? $verde->total_tallos() : 0}}>
                 <h5 class="description-header" title="Cosechados">
                     {{$cosecha->getTotalTallos()}}
                 </h5>
+                <input type="hidden" id="cosechados_dia" {{$cosecha->getTotalTallos()}}>
                 <a href="javascript:void(0)" class="btn btn-link"
                    onclick="ver_rendimiento_cosecha('{{$cosecha != '' ? $cosecha->id_cosecha : ''}}')">
                     <strong class="description-text">Totales</strong>
                 </a>
             </div>
         </div>
-
     </div>
 @else
     <div class="alert alert-info text-center">No se han encontrado resultados en el rango de fecha indicado</div>
 @endif
+
+{{url('images/logo_yura_full.png')}}

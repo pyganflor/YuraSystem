@@ -11,3 +11,4 @@ Route::get('crm_postcosecha/show_data_desechos', 'CRM\crmPostocechaController@sh
 Route::get('crm_postcosecha/show_data_rendimientos', 'CRM\crmPostocechaController@show_data_rendimientos');
 Route::get('crm_postcosecha/show_data_calibres', 'CRM\crmPostocechaController@show_data_calibres');
 Route::get('crm_postcosecha/actualizar_cosecha_x_variedad', 'CRM\crmPostocechaController@actualizar_cosecha_x_variedad');
+Route::post('crm_postcosecha/exportar_dashboard', 'CRM\crmPostocechaController@exportar_dashboard');

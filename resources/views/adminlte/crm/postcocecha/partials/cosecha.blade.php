@@ -62,14 +62,14 @@
         </div>
 
         <div class="box-tools pull-right">
-            <button type="button" class="btn btn-box-tool" title="Cosecha por variedades"
+            {{--<button type="button" class="btn btn-box-tool" title="Cosecha por variedades"
                     onclick="select_option_cosecha('cosecha_x_variedad')">
                 <i class="fa fa-fw fa-leaf"></i>
-            </button>
-            <button type="button" class="btn btn-box-tool" title="Filtrar" onclick="select_option_cosecha('filtro')">
+            </button>--}}
+            {{--<button type="button" class="btn btn-box-tool" title="Filtrar" onclick="select_option_cosecha('filtro')">
                 <i class="fa fa-fw fa-filter"></i>
-            </button>
-            <button type="button" class="btn btn-box-tool" title="Exportar a Excel">
+            </button>--}}
+            <button type="button" class="btn btn-box-tool" title="Exportar a Excel" onclick="exportar_excel()">
                 <i class="fa fa-fw fa-file-excel-o"></i>
             </button>
         </div>

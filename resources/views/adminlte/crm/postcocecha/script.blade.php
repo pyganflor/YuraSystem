@@ -180,4 +180,107 @@
         }
     }
 
+    function exportar_excel() {
+        if ($('#filtro_predeterminado').val() != '') {
+            diario = false;
+            mensual = false;
+            semanal = false;
+            $('.check_filtro_cosecha').prop('checked', false);
+            $('.check_filtro_cosecha_variedad').prop('checked', false);
+            if ($('#filtro_predeterminado').val() == 1) {
+                diario = true;
+                desde = rest_dias(30);
+                $('#check_filtro_diario').prop('checked', true);
+            } else if ($('#filtro_predeterminado').val() == 2) {
+                semanal = true;
+                desde = rest_dias(90);
+                $('#check_filtro_semanal').prop('checked', true);
+            } else if ($('#filtro_predeterminado').val() == 3) {
+                semanal = true;
+                desde = rest_dias(180);
+                $('#check_filtro_mensual').prop('checked', true);
+            } else if ($('#filtro_predeterminado').val() == 4) {
+                semanal = true;
+                desde = rest_dias(365);
+                $('#check_filtro_mensual').prop('checked', true);
+            }
+
+            id_variedad = '';
+            x_variedad = false;
+            total = false;
+            if ($('#filtro_predeterminado_variedad').val() == 'T') {
+                total = true;
+                $('#check_filtro_todas_variedad').prop('checked', true);
+                select_checkbox_cosecha_variedad('check_filtro_todas_variedad');
+            } else if ($('#filtro_predeterminado_variedad').val() != 'A') {
+                x_variedad = true;
+                id_variedad = $('#filtro_predeterminado_variedad').val();
+                $('#check_filtro_x_variedad').prop('checked', true);
+                select_checkbox_cosecha_variedad('check_filtro_x_variedad');
+                $('#check_filtro_variedad').val(id_variedad);
+            } else {
+                $('#check_filtro_todas_variedad').prop('checked', false);
+                $('#check_filtro_x_variedad').prop('checked', false);
+                $('.op_check_filtro_x_variedad').hide();
+            }
+
+            $('#check_filtro_desde').val(desde);
+            $('#check_filtro_hasta').val(rest_dias(1));
+
+            list_annos = [];
+            if ($('#filtro_predeterminado_annos').val() != '') {
+                li_annos = $('#filtro_predeterminado_annos').val().split(' - ');
+                for (i = 0; i < li_annos.length; i++) {
+                    list_annos.push(li_annos[i]);
+                }
+            }
+
+            list_variedades = $('.listado_variedades');
+            array_variedades = [];
+            for (i = 0; i < list_variedades.length; i++) {
+                id = list_variedades[i].value;
+                array_variedades.push({
+                    id: id,
+                    calibre: $('#calibre_var_' + id).val(),
+                    cosechados: $('#cosechados_var_' + id).val(),
+                    clasificados: $('#clasificados_var_' + id).val(),
+                });
+            }
+
+            datos = {
+                _token: '{{csrf_token()}}',
+                anual: false,
+                mensual: mensual,
+                semanal: semanal,
+                diario: diario,
+                x_variedad: x_variedad,
+                total: total,
+                desde: desde,
+                hasta: rest_dias(1),
+                id_variedad: id_variedad,
+                annos: list_annos,
+
+                indicador_cajas: $('#indicador_cajas').val(),
+                indicador_tallos: $('#indicador_tallos').val(),
+                indicador_calibre: $('#indicador_calibre').val(),
+                array_variedades: array_variedades
+            };
+
+            convertCanvasToImage('chart_cajas');
+            convertCanvasToImage('chart_tallos');
+            convertCanvasToImage('chart_calibres');
+
+            post_jquery('{{url('crm_postcosecha/exportar_dashboard')}}', datos, function () {
+                cerrar_modals();
+            });
+        }
+    }
+
+    function convertCanvasToImage(id_canvas) {
+        //var image = document.getElementById('imagen_' + id_canvas);
+        var canvas = document.getElementById(id_canvas);
+        var src = canvas.toDataURL("image/png");
+
+        $('#src_imagen_' + id_canvas).val(src);
+    }
 </script>

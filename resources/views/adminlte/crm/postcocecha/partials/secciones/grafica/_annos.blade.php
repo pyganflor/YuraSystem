@@ -7,21 +7,21 @@
     </ul>
     <div class="tab-content no-padding">
         <div class="chart tab-pane active" id="cajas-chart" style="position: relative; height: 300px;">
-            <canvas id="chart_annos_cajas" width="100%" height="40" style="margin-top: 5px"></canvas>
+            <canvas id="chart_cajas" width="100%" height="40" style="margin-top: 5px"></canvas>
         </div>
         <div class="chart tab-pane" id="tallos-chart" style="position: relative; height: 300px;">
-            <canvas id="chart_annos_tallos" width="100%" height="40" style="margin-top: 5px"></canvas>
+            <canvas id="chart_tallos" width="100%" height="40" style="margin-top: 5px"></canvas>
         </div>
         <div class="chart tab-pane" id="calibres-chart" style="position: relative; height: 300px;">
-            <canvas id="chart_annos_calibres" width="100%" height="40" style="margin-top: 5px"></canvas>
+            <canvas id="chart_calibres" width="100%" height="40" style="margin-top: 5px"></canvas>
         </div>
     </div>
 </div>
 
 <script>
-    construir_char_annos('Cajas', 'chart_annos_cajas');
-    construir_char_annos('Tallos', 'chart_annos_tallos');
-    construir_char_annos('Calibres', 'chart_annos_calibres');
+    construir_char_annos('Cajas', 'chart_cajas');
+    construir_char_annos('Tallos', 'chart_tallos');
+    construir_char_annos('Calibres', 'chart_calibres');
 
     function construir_char_annos(label, id) {
         labels = [];
