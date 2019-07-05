@@ -32,7 +32,7 @@ class EtiquetaController extends Controller
                 ['tipo_comprobante',01],
                 ['habilitado',1],
                 ['fecha_emision',$request->desde]
-            ])->whereIn('estado',[1,5])->select('id_comprobante')->get()
+            ])->whereIn('estado',[1,5])->select('id_comprobante')->get(),
         ]);
     }
 
