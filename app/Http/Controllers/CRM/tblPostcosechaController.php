@@ -1027,7 +1027,7 @@ class tblPostcosechaController extends Controller
             ]);
 
             $criterios = ['C' => 'Cajas', 'T' => 'Tallos', 'E' => 'Ramos', 'D' => 'Desecho', 'R' => 'Rendimiento', 'Q' => 'Calibre'];
-            $title_variedad = 'Todas las variedades';
+            $title_variedad = 'Todas';
             if ($request->variedad != 'T')
                 $title_variedad = getVariedad($request->variedad)->siglas;
             $objSheet = new PHPExcel_Worksheet($objPHPExcel, $criterios[$request->criterio] . ' - ' . $title_variedad);
