@@ -9,6 +9,14 @@ use yura\Modelos\ClasificacionVerde;
 use yura\Modelos\Cosecha;
 use yura\Modelos\Semana;
 use yura\Modelos\Submenu;
+use PHPExcel;
+use PHPExcel_IOFactory;
+use PHPExcel_Worksheet;
+use PHPExcel_Worksheet_MemoryDrawing;
+use PHPExcel_Style_Fill;
+use PHPExcel_Style_Border;
+use PHPExcel_Style_Color;
+use PHPExcel_Style_Alignment;
 
 class crmPostocechaController extends Controller
 {
@@ -864,5 +872,93 @@ class crmPostocechaController extends Controller
             'last_verde' => $last_verde,
             'listado_variedades' => $listado_variedades,
         ]);
+    }
+
+    /* ======================== EXCEL ===================== */
+
+    public function exportar_dashboard(Request $request)
+    {
+        //---------------------- EXCEL --------------------------------------
+        $objPHPExcel = new PHPExcel;
+        $objPHPExcel->getDefaultStyle()->getFont()->setName('Calibri');
+        $objPHPExcel->getDefaultStyle()->getFont()->setSize(12);
+        $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, "Excel2007");
+        $currencyFormat = '#,#0.## \€;[Red]-#,#0.## \€';
+        $numberFormat = '#,#0.##;[Red]-#,#0.##';
+
+        $objPHPExcel->removeSheetByIndex(0); //Eliminar la hoja inicial por defecto
+
+        $this->excel_hoja($objPHPExcel, $request);
+
+        //--------------------------- GUARDAR EL EXCEL -----------------------
+
+        header("Content-Type: application/force-download");
+        header("Content-Type: application/octet-stream");
+        header("Content-Type: application/download");
+        header('Content-Disposition:inline;filename="Dashboard Postcosecha.xlsx"');
+        header("Content-Transfer-Encoding: binary");
+        header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
+        header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+        header("Pragma: no-cache");
+        $objWriter->save('php://output');
+    }
+
+    public function excel_hoja($objPHPExcel, $request)
+    {
+        $data = base64_decode(explode(',', $request->src_imagen_chart_cajas)[1]);
+        file_put_contents(public_path() . '/images/caca.png', $data);
+
+        return [
+            'success' => true,
+            'mensaje' => '<div class="alert alert-success text-center">Se ha exportado el archivo excel</div>'
+        ];
+
+
+        $columnas = [0 => 'A', 1 => 'B', 2 => 'C', 3 => 'D', 4 => 'E', 5 => 'F', 6 => 'G', 7 => 'H', 8 => 'I', 9 => 'J', 10 => 'K', 11 => 'L',
+            12 => 'M', 13 => 'N', 14 => 'O', 15 => 'P', 16 => 'Q', 17 => 'R', 18 => 'S', 19 => 'T', 20 => 'U', 21 => 'V', 22 => 'W', 23 => 'X',
+            24 => 'Y', 25 => 'Z', 26 => 'AA', 27 => 'AB', 28 => 'AC', 29 => 'AD', 30 => 'AE', 31 => 'AF', 32 => 'AG', 33 => 'AH', 34 => 'AI',
+            35 => 'AJ', 36 => 'AK', 37 => 'AL', 38 => 'AM', 39 => 'AN', 40 => 'AO', 41 => 'AP', 42 => 'AQ', 43 => 'AR', 44 => 'AS', 45 => 'AT',
+            46 => 'AU', 47 => 'AV', 48 => 'AW', 49 => 'AX', 50 => 'AY', 51 => 'AZ', 52 => 'BA', 53 => 'BB', 54 => 'BC', 55 => 'BD', 56 => 'BE',
+            57 => 'BF', 58 => 'BG', 59 => 'BH', 60 => 'BI', 61 => 'BJ', 62 => 'BK', 63 => 'BL', 64 => 'BM', 65 => 'BN', 66 => 'BO', 67 => 'BP',
+            68 => 'BQ', 69 => 'BR', 70 => 'BS', 71 => 'BT', 72 => 'BU', 73 => 'BV', 74 => 'BW', 75 => 'BX', 76 => 'BY', 77 => 'BZ'];
+
+        $objSheet = new PHPExcel_Worksheet($objPHPExcel, 'Dashboard');
+        $objPHPExcel->addSheet($objSheet, 0);
+
+        /* ============== MERGE CELDAS =============*/
+        $objSheet->mergeCells('A1:A2');
+
+        /* ============== ENCABEZADO =============*/
+        $objSheet->getCell('A1')->setValue($request->cliente == 'P' ? 'País' : 'Cliente');
+
+        /* ============== LETRAS NEGRITAS =============*/
+        $objSheet->getStyle('A1:' . $columnas[$pos_col] . '2')->getFont()->setBold(true)->setSize(12);
+        /* ============== CENTRAR =============*/
+        $objSheet->getStyle('A1:' . $columnas[$pos_col] . intval(2 + count($data['filas']) + 1))
+            ->getAlignment()
+            ->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER)
+            ->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+        /* ============== BACKGROUND COLOR =============*/
+        $objSheet->getStyle('A1:' . $columnas[$pos_col] . '1')
+            ->getFill()
+            ->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
+            ->getStartColor()
+            ->setRGB('357ca5');
+        /* ============== TEXT COLOR =============*/
+        $objSheet->getStyle('A1:' . $columnas[$pos_col] . '1')
+            ->getFont()
+            ->getColor()
+            ->setRGB('ffffff');
+        /* ============== BORDE COLOR =============*/
+        $objSheet->getStyle('A1:' . $columnas[$pos_col] . intval(2 + count($data['filas']) + 1))
+            ->getBorders()
+            ->getAllBorders()
+            ->setBorderStyle(PHPExcel_Style_Border::BORDER_MEDIUM)
+            ->getColor()
+            ->setRGB('000000');
+
+        foreach ($columnas as $c) {
+            $objSheet->getColumnDimension($c)->setAutoSize(true);
+        }
     }
 }

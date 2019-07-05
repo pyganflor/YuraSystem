@@ -10,6 +10,8 @@
                                 <em>{{$item['variedad']->siglas}}</em>
                             </sup>
                         </h3>
+                        <input type="hidden" id="indicador_cajas_var_{{$item['variedad']->id_variedad}}" class="indicador_var"
+                               value="{{$item['cajas']}}">
                     @endforeach
                 </div>
                 <div class="icon">
@@ -30,6 +32,8 @@
                                 <em>{{$item['variedad']->siglas}}</em>
                             </sup>
                         </h3>
+                        <input type="hidden" id="indicador_tallos_var_{{$item['variedad']->id_variedad}}" class="indicador_var"
+                               value="{{$item['tallos']}}">
                     @endforeach
                 </div>
                 <div class="icon">
@@ -47,6 +51,8 @@
                         <h3 class="info-box-number">
                             {{$item['calibre']}}<sup style="font-size: 0.4em"><em>{{$item['variedad']->siglas}}</em></sup>
                         </h3>
+                        <input type="hidden" id="indicador_calibre_var_{{$item['variedad']->id_variedad}}" class="indicador_var"
+                               value="{{$item['calibre']}}">
                     @endforeach
                 </div>
                 <div class="icon">

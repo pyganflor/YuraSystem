@@ -190,8 +190,8 @@ class NotificacionesController extends Controller
             ->where('un.id_usuario', '=', Session::get('id_usuario'))
             ->where('n.tipo', '=', $request->tipo)
             ->get();
+        $li = '';
         if (count($news) > 0) {
-            $li = '';
             foreach ($news as $n) {
                 $n = UserNotification::find($n->id_user_notification);
                 $n->url = "'" . $n->url . "'";
