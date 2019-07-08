@@ -900,20 +900,19 @@ class crmPostocechaController extends Controller
         header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
         header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
         header("Pragma: no-cache");
+        ob_start();
         $objWriter->save('php://output');
+        $xlsData = ob_get_contents();
+        ob_end_clean();
+        $opResult = array(
+            'status' => 1,
+            'data' => "data:application/vnd.ms-excel;base64," . base64_encode($xlsData)
+        );
+        echo json_encode($opResult);
     }
 
     public function excel_hoja($objPHPExcel, $request)
     {
-        $data = base64_decode(explode(',', $request->src_imagen_chart_cajas)[1]);
-        file_put_contents(public_path() . '/images/caca.png', $data);
-
-        return [
-            'success' => true,
-            'mensaje' => '<div class="alert alert-success text-center">Se ha exportado el archivo excel</div>'
-        ];
-
-
         $columnas = [0 => 'A', 1 => 'B', 2 => 'C', 3 => 'D', 4 => 'E', 5 => 'F', 6 => 'G', 7 => 'H', 8 => 'I', 9 => 'J', 10 => 'K', 11 => 'L',
             12 => 'M', 13 => 'N', 14 => 'O', 15 => 'P', 16 => 'Q', 17 => 'R', 18 => 'S', 19 => 'T', 20 => 'U', 21 => 'V', 22 => 'W', 23 => 'X',
             24 => 'Y', 25 => 'Z', 26 => 'AA', 27 => 'AB', 28 => 'AC', 29 => 'AD', 30 => 'AE', 31 => 'AF', 32 => 'AG', 33 => 'AH', 34 => 'AI',
@@ -926,36 +925,90 @@ class crmPostocechaController extends Controller
         $objPHPExcel->addSheet($objSheet, 0);
 
         /* ============== MERGE CELDAS =============*/
-        $objSheet->mergeCells('A1:A2');
-
+        $objSheet->mergeCells('A1:L1');
         /* ============== ENCABEZADO =============*/
-        $objSheet->getCell('A1')->setValue($request->cliente == 'P' ? 'País' : 'Cliente');
-
+        $objSheet->getCell('A1')->setValue('Últimos 7 días');
         /* ============== LETRAS NEGRITAS =============*/
-        $objSheet->getStyle('A1:' . $columnas[$pos_col] . '2')->getFont()->setBold(true)->setSize(12);
+        $objSheet->getStyle('A1:L4')->getFont()->setBold(true)->setSize(12);   // para todo
         /* ============== CENTRAR =============*/
-        $objSheet->getStyle('A1:' . $columnas[$pos_col] . intval(2 + count($data['filas']) + 1))
-            ->getAlignment()
+        $objSheet->getStyle('A1:L4')// para todo
+        ->getAlignment()
             ->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER)
             ->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-        /* ============== BACKGROUND COLOR =============*/
-        $objSheet->getStyle('A1:' . $columnas[$pos_col] . '1')
-            ->getFill()
-            ->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
-            ->getStartColor()
-            ->setRGB('357ca5');
-        /* ============== TEXT COLOR =============*/
-        $objSheet->getStyle('A1:' . $columnas[$pos_col] . '1')
-            ->getFont()
-            ->getColor()
-            ->setRGB('ffffff');
         /* ============== BORDE COLOR =============*/
-        $objSheet->getStyle('A1:' . $columnas[$pos_col] . intval(2 + count($data['filas']) + 1))
-            ->getBorders()
+        $objSheet->getStyle('A1:L4')//para todo
+        ->getBorders()
             ->getAllBorders()
             ->setBorderStyle(PHPExcel_Style_Border::BORDER_MEDIUM)
             ->getColor()
             ->setRGB('000000');
+
+        /* ================================= INDICADORES ================================ */
+        /* ============== TEXT COLOR =============*/
+        $objSheet->getStyle('A2:L4')// para todos
+        ->getFont()
+            ->getColor()
+            ->setRGB('ffffff');
+
+        /* ============== MERGE CELDAS =============*/
+        $objSheet->mergeCells('A2:D3');
+        /* ============== MERGE CELDAS =============*/
+        $objSheet->mergeCells('A4:D4');
+        /* ============== BACKGROUND COLOR =============*/
+        $objSheet->getStyle('A2')
+            ->getFill()
+            ->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
+            ->getStartColor()
+            ->setRGB('30bbbb');
+        $objSheet->getStyle('A4')
+            ->getFill()
+            ->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
+            ->getStartColor()
+            ->setRGB('2ba8a8');
+        $objSheet->getCell('A2')->setValue(number_format($request->indicador_cajas, 2));
+        $objSheet->getCell('A4')->setValue('Cosecha cajas');
+
+        /* ============== MERGE CELDAS =============*/
+        $objSheet->mergeCells('E2:H3');
+        /* ============== MERGE CELDAS =============*/
+        $objSheet->mergeCells('E4:H4');
+        /* ============== BACKGROUND COLOR =============*/
+        $objSheet->getStyle('E2')
+            ->getFill()
+            ->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
+            ->getStartColor()
+            ->setRGB('00c0ef');
+        $objSheet->getStyle('E4')
+            ->getFill()
+            ->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
+            ->getStartColor()
+            ->setRGB('00acd7');
+        $objSheet->getCell('E2')->setValue(number_format($request->indicador_tallos, 2));
+        $objSheet->getCell('E4')->setValue('Cosecha tallos');
+
+        /* ============== MERGE CELDAS =============*/
+        $objSheet->mergeCells('I2:L3');
+        /* ============== MERGE CELDAS =============*/
+        $objSheet->mergeCells('I4:L4');
+        /* ============== BACKGROUND COLOR =============*/
+        $objSheet->getStyle('I2')
+            ->getFill()
+            ->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
+            ->getStartColor()
+            ->setRGB('ff851b');
+        $objSheet->getStyle('I4')
+            ->getFill()
+            ->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
+            ->getStartColor()
+            ->setRGB('e57718');
+        $objSheet->getCell('I2')->setValue(number_format($request->indicador_calibre, 2));
+        $objSheet->getCell('I4')->setValue('Calibre');
+
+        /* ================================= GRAFICAS ================================ */
+
+
+        /*$data = base64_decode(explode(',', $request->src_imagen_chart_cajas)[1]);
+        file_put_contents(public_path() . '/images/caca.png', $data);*/
 
         foreach ($columnas as $c) {
             $objSheet->getColumnDimension($c)->setAutoSize(true);

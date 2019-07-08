@@ -247,32 +247,51 @@
                 });
             }
 
-            datos = {
-                _token: '{{csrf_token()}}',
-                anual: false,
-                mensual: mensual,
-                semanal: semanal,
-                diario: diario,
-                x_variedad: x_variedad,
-                total: total,
-                desde: desde,
-                hasta: rest_dias(1),
-                id_variedad: id_variedad,
-                annos: list_annos,
-
-                indicador_cajas: $('#indicador_cajas').val(),
-                indicador_tallos: $('#indicador_tallos').val(),
-                indicador_calibre: $('#indicador_calibre').val(),
-                array_variedades: array_variedades
-            };
-
             convertCanvasToImage('chart_cajas');
             convertCanvasToImage('chart_tallos');
             convertCanvasToImage('chart_calibres');
 
-            post_jquery('{{url('crm_postcosecha/exportar_dashboard')}}', datos, function () {
-                cerrar_modals();
+            $.LoadingOverlay('show');
+            $.ajax({
+                type: "POST",
+                dataType: "html",
+                contentType: "application/x-www-form-urlencoded",
+                url: '{{url('crm_postcosecha/exportar_dashboard')}}',
+                data: {
+                    _token: '{{csrf_token()}}',
+                    anual: false,
+                    mensual: mensual,
+                    semanal: semanal,
+                    diario: diario,
+                    x_variedad: x_variedad,
+                    total: total,
+                    desde: desde,
+                    hasta: rest_dias(1),
+                    id_variedad: id_variedad,
+                    annos: list_annos,
+
+                    indicador_cajas: $('#indicador_cajas').val(),
+                    indicador_tallos: $('#indicador_tallos').val(),
+                    indicador_calibre: $('#indicador_calibre').val(),
+                    src_imagen_chart_cajas: $('#src_imagen_chart_cajas').val(),
+                    src_imagen_chart_tallos: $('#src_imagen_chart_tallos').val(),
+                    src_imagen_chart_calibres: $('#src_imagen_chart_calibres').val(),
+                    filtro_predeterminado: $('#filtro_predeterminado').val(),
+                    filtro_predeterminado_variedad: $('#filtro_predeterminado_variedad').val(),
+                    filtro_predeterminado_annos: $('#filtro_predeterminado_annos').val(),
+                    array_variedades: array_variedades
+                },
+                success: function (data) {
+                    var opResult = JSON.parse(data);
+                    var $a = $("<a>");
+                    $a.attr("href", opResult.data);
+                    $("body").append($a);
+                    $a.attr("download", "DASHBOARD-Postcosecha.xlsx");
+                    $a[0].click();
+                    $a.remove();
+                }
             });
+            $.LoadingOverlay('hide');
         }
     }
 

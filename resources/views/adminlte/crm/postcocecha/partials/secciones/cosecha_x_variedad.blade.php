@@ -100,5 +100,3 @@
 @else
     <div class="alert alert-info text-center">No se han encontrado resultados en el rango de fecha indicado</div>
 @endif
-
-{{url('images/logo_yura_full.png')}}
