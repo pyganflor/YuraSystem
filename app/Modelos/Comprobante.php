@@ -39,6 +39,8 @@ class Comprobante extends Model
         return $this->belongsTo('\yura\Modelos\DetalleGuiaRemision','id_comprobante_relacionado');
     }
 
-
+    public function etiqueta_factura(){
+        return $this->hasOne('\yura\Modelos\EtiquetaFactura','id_comprobante');
+    }
 }
 

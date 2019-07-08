@@ -416,7 +416,6 @@
 <table style="width: 100%;margin-top:30px">
     <tr>
         <td style="text-align: center;vertical-align: bottom;font-family:arial, sans-serif;font-size: 11px">
-
             <img src="./images/firma_FABIOLA_SIERRA.jpg">
             <hr style="width: 60%;margin: 0 auto"/>
             FIRMA

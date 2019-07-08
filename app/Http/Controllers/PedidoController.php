@@ -384,7 +384,7 @@ class PedidoController extends Controller
         //$objPedido = Pedido::find($request->id_pedido);
         //$objPedido->estado = $request->estado == 0 ? 1 : 0;
 
-        if ( Pedido::destroy($request->id_pedido)) {
+        if (Pedido::destroy($request->id_pedido)) {
             $model = Pedido::all()->last();
             $success = true;
            // $objPedido->estado == 0 ? $palabra = 'cancelado' : $palabra = 'activado';

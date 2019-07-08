@@ -85,7 +85,6 @@ class DespachosController extends Controller
             'variedades' => $variedades,
             'opciones' => $request->opciones,
         ];
-
         return view('adminlte.gestion.postcocecha.despachos.partials.listado', $datos);
     }
 
