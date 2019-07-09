@@ -1093,9 +1093,9 @@ class crmPostocechaController extends Controller
                     $objSheet->getCell($columnas[$pos_col] . '54')
                         ->setValue(getMeses(TP_ABREVIADO)[$label->mes - 1] . ' - ' . $label->ano);
                 }
-                $objSheet->getCell($columnas[$pos_col] . '21')->setValue($listado['array_cajas'][$pos_l]);
-                $objSheet->getCell($columnas[$pos_col] . '38')->setValue($listado['array_tallos'][$pos_l]);
-                $objSheet->getCell($columnas[$pos_col] . '55')->setValue($listado['array_calibre'][$pos_l]);
+                $objSheet->getCell($columnas[$pos_col] . '21')->setValue(number_format($listado['array_cajas'][$pos_l], 2));
+                $objSheet->getCell($columnas[$pos_col] . '38')->setValue(number_format($listado['array_tallos'][$pos_l], 2));
+                $objSheet->getCell($columnas[$pos_col] . '55')->setValue(number_format($listado['array_calibre'][$pos_l], 2));
                 /* ============== BACKGROUND COLOR =============*/
                 $objSheet->getStyle('A20:' . $columnas[$pos_col] . '20')
                     ->getFill()
@@ -1165,7 +1165,7 @@ class crmPostocechaController extends Controller
                     /* ============== BACKGROUND COLOR =============*/
                     $objSheet->getStyle($columnas[$pos_v] . $pos_fila)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
                         ->getStartColor()->setRGB(str_replace('#', '', $variedad['variedad']->color));
-                    $objSheet->getCell($columnas[$pos_v] . $pos_fila)->setValue($valor);
+                    $objSheet->getCell($columnas[$pos_v] . $pos_fila)->setValue(number_format($valor, 2));
                 }
             }
 
@@ -1216,7 +1216,7 @@ class crmPostocechaController extends Controller
                     /* ============== BACKGROUND COLOR =============*/
                     $objSheet->getStyle($columnas[$pos_v] . $pos_fila)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
                         ->getStartColor()->setRGB(str_replace('#', '', $variedad['variedad']->color));
-                    $objSheet->getCell($columnas[$pos_v] . $pos_fila)->setValue($valor);
+                    $objSheet->getCell($columnas[$pos_v] . $pos_fila)->setValue(number_format($valor, 2));
                 }
             }
 
@@ -1267,7 +1267,7 @@ class crmPostocechaController extends Controller
                     /* ============== BACKGROUND COLOR =============*/
                     $objSheet->getStyle($columnas[$pos_v] . $pos_fila)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
                         ->getStartColor()->setRGB(str_replace('#', '', $variedad['variedad']->color));
-                    $objSheet->getCell($columnas[$pos_v] . $pos_fila)->setValue($valor);
+                    $objSheet->getCell($columnas[$pos_v] . $pos_fila)->setValue(number_format($valor, 2));
                 }
             }
         } else {    // annos
@@ -1291,7 +1291,7 @@ class crmPostocechaController extends Controller
                     /* ============== BACKGROUND COLOR =============*/
                     $objSheet->getStyle($columnas[$pos_v] . $pos_fila)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
                         ->getStartColor()->setRGB(str_replace('#', '', getListColores()[$pos_a]));
-                    $objSheet->getCell($columnas[$pos_v] . $pos_fila)->setValue($valor);
+                    $objSheet->getCell($columnas[$pos_v] . $pos_fila)->setValue(number_format($valor, 2));
                 }
             }
 
@@ -1333,7 +1333,7 @@ class crmPostocechaController extends Controller
                     /* ============== BACKGROUND COLOR =============*/
                     $objSheet->getStyle($columnas[$pos_v] . $pos_fila)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
                         ->getStartColor()->setRGB(str_replace('#', '', getListColores()[$pos_a]));
-                    $objSheet->getCell($columnas[$pos_v] . $pos_fila)->setValue($valor);
+                    $objSheet->getCell($columnas[$pos_v] . $pos_fila)->setValue(number_format($valor, 2));
                 }
             }
 
@@ -1375,7 +1375,7 @@ class crmPostocechaController extends Controller
                     /* ============== BACKGROUND COLOR =============*/
                     $objSheet->getStyle($columnas[$pos_v] . $pos_fila)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
                         ->getStartColor()->setRGB(str_replace('#', '', getListColores()[$pos_a]));
-                    $objSheet->getCell($columnas[$pos_v] . $pos_fila)->setValue($valor);
+                    $objSheet->getCell($columnas[$pos_v] . $pos_fila)->setValue(number_format($valor, 2));
                 }
             }
         }
@@ -1410,9 +1410,9 @@ class crmPostocechaController extends Controller
         }
         $pos_fila++;
         $objSheet->getCell('A' . $pos_fila)->setValue('Resumen');
-        $objSheet->getCell('B' . $pos_fila)->setValue($request->calibre_dia);
-        $objSheet->getCell('C' . $pos_fila)->setValue($request->clasificados_dia);
-        $objSheet->getCell('D' . $pos_fila)->setValue($request->cosechados_dia);
+        $objSheet->getCell('B' . $pos_fila)->setValue(number_format($request->calibre_dia, 2));
+        $objSheet->getCell('C' . $pos_fila)->setValue(number_format($request->clasificados_dia, 2));
+        $objSheet->getCell('D' . $pos_fila)->setValue(number_format($request->cosechados_dia, 2));
         /* ============== BACKGROUND COLOR =============*/
         $objSheet->getStyle('A' . $pos_fila . ':D' . $pos_fila)
             ->getFill()
