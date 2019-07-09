@@ -63,7 +63,7 @@
                         </td>
                         <td style="border: 1px solid black;padding: 0;font-size: 13px">
                             <b>Date / Fecha< br /></b> <br />
-                            {{isset($despacho->fecha_despacho) ? $despacho->fecha_despacho : null }}
+                            {{isset($despacho->fecha_despacho) ? $despacho->fecha_despacho : "No despachado" }}
                         </td>
                     </tr>
                     <tr style="border: 1px solid black;">
