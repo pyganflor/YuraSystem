@@ -1464,40 +1464,43 @@ class ComprobanteController extends Controller
             $total_ramos = 0;
             $total_monto = 0;
 
-            foreach ($comprobante->etiqueta_factura->detalles as $x =>  $detalle) {
-                $id_det_esp_emp = explode("|",$detalle->id_detalle_especificacion_empaque);
-                foreach($id_det_esp_emp as $id){
-                    $det_esp_emp = getDetalleEspecificacionEmpaque($id);
-                    $variedad = getVariedad($det_esp_emp->id_variedad);
-                    $clasificacionRamo = getClasificacionRamo($det_esp_emp->id_clasificacion_ramo);
-                    if($det_esp_emp->longitud_ramo != null){
-                        foreach (getUnidadesMedida($clasificacionRamo->id_unidad_medida) as $umPeso)
-                            $umPeso->tipo == "P" ? $umPeso = $umPeso->siglas : $umPeso ="";
-                    }
-                    foreach ($comprobante->envio->pedido->detalles as $det_ped){
-                        $i=0;
-                        $precio = explode("|", $det_ped->precio);
-                        foreach ($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $esp_emp){
-                            foreach ($esp_emp->detalles as $z=> $det_esp_emp){
-                                if($det_esp_emp->id_detalle_especificacionempaque == $id){
-                                    $det_esp_emp_cantidad = $det_esp_emp->cantidad;
-                                    $precio_presentacion = (float)explode(";", $precio[$i])[0];
-                                    break;
+            if(isset($comprobante->etiqueta_factura->detalles)){
+                foreach ($comprobante->etiqueta_factura->detalles as $x =>  $detalle) {
+                    $id_det_esp_emp = explode("|",$detalle->id_detalle_especificacion_empaque);
+                    foreach($id_det_esp_emp as $id){
+                        $det_esp_emp = getDetalleEspecificacionEmpaque($id);
+                        $variedad = getVariedad($det_esp_emp->id_variedad);
+                        $clasificacionRamo = getClasificacionRamo($det_esp_emp->id_clasificacion_ramo);
+                        if($det_esp_emp->longitud_ramo != null){
+                            foreach (getUnidadesMedida($clasificacionRamo->id_unidad_medida) as $umPeso)
+                                $umPeso->tipo == "P" ? $umPeso = $umPeso->siglas : $umPeso ="";
+                        }
+                        foreach ($comprobante->envio->pedido->detalles as $det_ped){
+                            $i=0;
+                            $precio = explode("|", $det_ped->precio);
+                            foreach ($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $esp_emp){
+                                foreach ($esp_emp->detalles as $z=> $det_esp_emp){
+                                    if($det_esp_emp->id_detalle_especificacionempaque == $id){
+                                        $det_esp_emp_cantidad = $det_esp_emp->cantidad;
+                                        $precio_presentacion = (float)explode(";", $precio[$i])[0];
+                                        break;
+                                    }
+                                    $i++;
                                 }
-                                $i++;
                             }
                         }
+                        $presentaciones = substr($variedad->planta->nombre,0,3)." ". $variedad->siglas . " " . $clasificacionRamo->nombre.$umPeso. " ";
+                        $ramos_x_caja = $det_esp_emp_cantidad * $det_esp_emp->especificacion_empaque->cantidad;
+                        $etiqueta = $comprobante->etiqueta_factura->detalles[$x];
+                        $cadena .= $detalle->cantidad.",".$presentaciones.",".$ramos_x_caja.",".($ramos_x_caja*$detalle->cantidad).",".$precio_presentacion.",".$precio_presentacion*($ramos_x_caja*$detalle->cantidad).",".$etiqueta->et_inicial." - ".$etiqueta->et_final."\n";
+                        $total_piezas +=$detalle->cantidad;
+                        $total_ramos += $ramos_x_caja*$detalle->cantidad;
+                        $total_monto += ($precio_presentacion*$ramos_x_caja*$detalle->cantidad);
                     }
-                    $presentaciones = substr($variedad->planta->nombre,0,3)." ". $variedad->siglas . " " . $clasificacionRamo->nombre.$umPeso. " ";
-                    $ramos_x_caja = $det_esp_emp_cantidad * $det_esp_emp->especificacion_empaque->cantidad;
-                    $etiqueta = $comprobante->etiqueta_factura->detalles[$x];
-                    $cadena .= $detalle->cantidad.",".$presentaciones.",".$ramos_x_caja.",".($ramos_x_caja*$detalle->cantidad).",".$precio_presentacion.",".$precio_presentacion*($ramos_x_caja*$detalle->cantidad).",".$etiqueta->et_inicial." - ".$etiqueta->et_final."\n";
-                    $total_piezas +=$detalle->cantidad;
-                    $total_ramos += $ramos_x_caja*$detalle->cantidad;
-                    $total_monto += ($precio_presentacion*$ramos_x_caja*$detalle->cantidad);
                 }
+                $cadena.= $total_piezas.","."TOTALS".",".",".$total_ramos.",".",".$total_monto."\n";
             }
-            $cadena.= $total_piezas.","."TOTALS".",".",".$total_ramos.",".",".$total_monto."\n";
+
             fwrite($f,substr($cadena,0,-1));
             fclose($f);
 
