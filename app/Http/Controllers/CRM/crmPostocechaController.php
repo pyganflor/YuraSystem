@@ -900,20 +900,19 @@ class crmPostocechaController extends Controller
         header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
         header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
         header("Pragma: no-cache");
+        ob_start();
         $objWriter->save('php://output');
+        $xlsData = ob_get_contents();
+        ob_end_clean();
+        $opResult = array(
+            'status' => 1,
+            'data' => "data:application/vnd.ms-excel;base64," . base64_encode($xlsData)
+        );
+        echo json_encode($opResult);
     }
 
     public function excel_hoja($objPHPExcel, $request)
     {
-        $data = base64_decode(explode(',', $request->src_imagen_chart_cajas)[1]);
-        file_put_contents(public_path() . '/images/caca.png', $data);
-
-        return [
-            'success' => true,
-            'mensaje' => '<div class="alert alert-success text-center">Se ha exportado el archivo excel</div>'
-        ];
-
-
         $columnas = [0 => 'A', 1 => 'B', 2 => 'C', 3 => 'D', 4 => 'E', 5 => 'F', 6 => 'G', 7 => 'H', 8 => 'I', 9 => 'J', 10 => 'K', 11 => 'L',
             12 => 'M', 13 => 'N', 14 => 'O', 15 => 'P', 16 => 'Q', 17 => 'R', 18 => 'S', 19 => 'T', 20 => 'U', 21 => 'V', 22 => 'W', 23 => 'X',
             24 => 'Y', 25 => 'Z', 26 => 'AA', 27 => 'AB', 28 => 'AC', 29 => 'AD', 30 => 'AE', 31 => 'AF', 32 => 'AG', 33 => 'AH', 34 => 'AI',
@@ -926,39 +925,754 @@ class crmPostocechaController extends Controller
         $objPHPExcel->addSheet($objSheet, 0);
 
         /* ============== MERGE CELDAS =============*/
-        $objSheet->mergeCells('A1:A2');
-
-        /* ============== ENCABEZADO =============*/
-        $objSheet->getCell('A1')->setValue($request->cliente == 'P' ? 'País' : 'Cliente');
-
-        /* ============== LETRAS NEGRITAS =============*/
-        $objSheet->getStyle('A1:' . $columnas[$pos_col] . '2')->getFont()->setBold(true)->setSize(12);
-        /* ============== CENTRAR =============*/
-        $objSheet->getStyle('A1:' . $columnas[$pos_col] . intval(2 + count($data['filas']) + 1))
-            ->getAlignment()
-            ->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER)
-            ->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+        $objSheet->mergeCells('A1:L1');
         /* ============== BACKGROUND COLOR =============*/
-        $objSheet->getStyle('A1:' . $columnas[$pos_col] . '1')
+        $objSheet->getStyle('A1')
             ->getFill()
             ->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
             ->getStartColor()
-            ->setRGB('357ca5');
-        /* ============== TEXT COLOR =============*/
-        $objSheet->getStyle('A1:' . $columnas[$pos_col] . '1')
-            ->getFont()
-            ->getColor()
-            ->setRGB('ffffff');
+            ->setRGB('d2d6de');
+        /* ============== ENCABEZADO =============*/
+        $objSheet->getCell('A1')->setValue('Últimos 7 días');
         /* ============== BORDE COLOR =============*/
-        $objSheet->getStyle('A1:' . $columnas[$pos_col] . intval(2 + count($data['filas']) + 1))
-            ->getBorders()
+        $objSheet->getStyle('A1:L4')//para todo
+        ->getBorders()
             ->getAllBorders()
             ->setBorderStyle(PHPExcel_Style_Border::BORDER_MEDIUM)
             ->getColor()
             ->setRGB('000000');
 
+        /* ================================= INDICADORES ================================ */
+        /* ============== TEXT COLOR =============*/
+        $objSheet->getStyle('A2:L4')// para todos
+        ->getFont()
+            ->getColor()
+            ->setRGB('ffffff');
+
+        /* ============== MERGE CELDAS =============*/
+        $objSheet->mergeCells('A2:D3');
+        /* ============== MERGE CELDAS =============*/
+        $objSheet->mergeCells('A4:D4');
+        /* ============== BACKGROUND COLOR =============*/
+        $objSheet->getStyle('A2')
+            ->getFill()
+            ->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
+            ->getStartColor()
+            ->setRGB('30bbbb');
+        $objSheet->getStyle('A4')
+            ->getFill()
+            ->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
+            ->getStartColor()
+            ->setRGB('2ba8a8');
+        $objSheet->getCell('A2')->setValue(number_format($request->indicador_cajas, 2));
+        $objSheet->getCell('A4')->setValue('Cosecha cajas');
+
+        /* ============== MERGE CELDAS =============*/
+        $objSheet->mergeCells('E2:H3');
+        /* ============== MERGE CELDAS =============*/
+        $objSheet->mergeCells('E4:H4');
+        /* ============== BACKGROUND COLOR =============*/
+        $objSheet->getStyle('E2')
+            ->getFill()
+            ->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
+            ->getStartColor()
+            ->setRGB('00c0ef');
+        $objSheet->getStyle('E4')
+            ->getFill()
+            ->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
+            ->getStartColor()
+            ->setRGB('00acd7');
+        $objSheet->getCell('E2')->setValue(number_format($request->indicador_tallos, 2));
+        $objSheet->getCell('E4')->setValue('Cosecha tallos');
+
+        /* ============== MERGE CELDAS =============*/
+        $objSheet->mergeCells('I2:L3');
+        /* ============== MERGE CELDAS =============*/
+        $objSheet->mergeCells('I4:L4');
+        /* ============== BACKGROUND COLOR =============*/
+        $objSheet->getStyle('I2')
+            ->getFill()
+            ->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
+            ->getStartColor()
+            ->setRGB('ff851b');
+        $objSheet->getStyle('I4')
+            ->getFill()
+            ->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
+            ->getStartColor()
+            ->setRGB('e57718');
+        $objSheet->getCell('I2')->setValue(number_format($request->indicador_calibre, 2));
+        $objSheet->getCell('I4')->setValue('Calibre');
+
+        /* ================================= COSECHA DEL DÍA ================================ */
+
+
+        /* ================================= GRAFICAS ================================ */
+        $data = base64_decode(explode(',', $request->src_imagen_chart_cajas)[1]);
+        file_put_contents(public_path() . '/images/cajas.png', $data);
+        $data = base64_decode(explode(',', $request->src_imagen_chart_tallos)[1]);
+        file_put_contents(public_path() . '/images/tallos.png', $data);
+        $data = base64_decode(explode(',', $request->src_imagen_chart_calibres)[1]);
+        file_put_contents(public_path() . '/images/calibres.png', $data);
+
+        /* ============== MERGE CELDAS =============*/
+        $objSheet->mergeCells('A6:P19');
+
+        $img_cajas = imagecreatefrompng(public_path() . '/images/cajas.png');
+        $img_tallos = imagecreatefrompng(public_path() . '/images/tallos.png');
+        $img_calibres = imagecreatefrompng(public_path() . '/images/calibres.png');
+
+        $background = imagecolorallocate($img_cajas, 0, 0, 0);
+        // removing the black from the placeholder
+        imagecolortransparent($img_cajas, $background);
+        imagecolortransparent($img_tallos, $background);
+        imagecolortransparent($img_calibres, $background);
+
+        $objDrawing = new PHPExcel_Worksheet_MemoryDrawing();
+        $objDrawing->setName('CAJAS');
+        $objDrawing->setDescription('CAJAS');
+        $objDrawing->setImageResource($img_cajas);
+        $objDrawing->setRenderingFunction(PHPExcel_Worksheet_MemoryDrawing::RENDERING_PNG);
+        $objDrawing->setMimeType(PHPExcel_Worksheet_MemoryDrawing::MIMETYPE_PNG);
+        //$objDrawing->setHeight();
+        $objDrawing->setCoordinates('A6');
+        $objDrawing->setWorksheet($objSheet);
+
+        $listado = $this->obtener_data_grafica($request);
+        if ($listado['view'] == 'acumulado' || $listado['view'] == 'x_variedad') {  // acumulado o por variedad
+            /* ============== MERGE CELDAS =============*/
+            $objSheet->mergeCells('A23:P36');
+            $objSheet->mergeCells('A40:P53');
+
+            $objDrawing = new PHPExcel_Worksheet_MemoryDrawing();
+            $objDrawing->setName('TALLOS');
+            $objDrawing->setDescription('TALLOS');
+            $objDrawing->setImageResource($img_tallos);
+            $objDrawing->setRenderingFunction(PHPExcel_Worksheet_MemoryDrawing::RENDERING_PNG);
+            $objDrawing->setMimeType(PHPExcel_Worksheet_MemoryDrawing::MIMETYPE_PNG);
+            //$objDrawing->setHeight();
+            $objDrawing->setCoordinates('A23');
+            $objDrawing->setWorksheet($objSheet);
+
+            $objDrawing = new PHPExcel_Worksheet_MemoryDrawing();
+            $objDrawing->setName('CALIBRES');
+            $objDrawing->setDescription('CALIBRES');
+            $objDrawing->setImageResource($img_calibres);
+            $objDrawing->setRenderingFunction(PHPExcel_Worksheet_MemoryDrawing::RENDERING_PNG);
+            $objDrawing->setMimeType(PHPExcel_Worksheet_MemoryDrawing::MIMETYPE_PNG);
+            //$objDrawing->setHeight();
+            $objDrawing->setCoordinates('A40');
+            $objDrawing->setWorksheet($objSheet);
+
+            $pos_col = 0;
+            foreach ($listado['labels'] as $pos_l => $label) {
+                if ($listado['periodo'] == 'diario') {
+                    $objSheet->getCell($columnas[$pos_col] . '20')->setValue($label->dia);
+                    $objSheet->getCell($columnas[$pos_col] . '37')->setValue($label->dia);
+                    $objSheet->getCell($columnas[$pos_col] . '54')->setValue($label->dia);
+                } else if ($listado['periodo'] == 'semanal') {
+                    $objSheet->getCell($columnas[$pos_col] . '20')->setValue($label->semana);
+                    $objSheet->getCell($columnas[$pos_col] . '37')->setValue($label->semana);
+                    $objSheet->getCell($columnas[$pos_col] . '54')->setValue($label->semana);
+                } else if ($listado['periodo'] == 'anual') {
+                    $objSheet->getCell($columnas[$pos_col] . '20')->setValue($label->ano);
+                    $objSheet->getCell($columnas[$pos_col] . '37')->setValue($label->ano);
+                    $objSheet->getCell($columnas[$pos_col] . '54')->setValue($label->ano);
+                } else {
+                    $objSheet->getCell($columnas[$pos_col] . '20')
+                        ->setValue(getMeses(TP_ABREVIADO)[$label->mes - 1] . ' - ' . $label->ano);
+                    $objSheet->getCell($columnas[$pos_col] . '37')
+                        ->setValue(getMeses(TP_ABREVIADO)[$label->mes - 1] . ' - ' . $label->ano);
+                    $objSheet->getCell($columnas[$pos_col] . '54')
+                        ->setValue(getMeses(TP_ABREVIADO)[$label->mes - 1] . ' - ' . $label->ano);
+                }
+                $objSheet->getCell($columnas[$pos_col] . '21')->setValue($listado['array_cajas'][$pos_l]);
+                $objSheet->getCell($columnas[$pos_col] . '38')->setValue($listado['array_tallos'][$pos_l]);
+                $objSheet->getCell($columnas[$pos_col] . '55')->setValue($listado['array_calibre'][$pos_l]);
+                /* ============== BACKGROUND COLOR =============*/
+                $objSheet->getStyle('A20:' . $columnas[$pos_col] . '20')
+                    ->getFill()
+                    ->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
+                    ->getStartColor()
+                    ->setRGB('d2d6de');
+                $objSheet->getStyle('A37:' . $columnas[$pos_col] . '37')
+                    ->getFill()
+                    ->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
+                    ->getStartColor()
+                    ->setRGB('d2d6de');
+                $objSheet->getStyle('A54:' . $columnas[$pos_col] . '54')
+                    ->getFill()
+                    ->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
+                    ->getStartColor()
+                    ->setRGB('d2d6de');
+                /* ============== BORDE COLOR =============*/
+                $objSheet->getStyle('A20:' . $columnas[$pos_col] . '21')
+                    ->getBorders()
+                    ->getAllBorders()
+                    ->setBorderStyle(PHPExcel_Style_Border::BORDER_MEDIUM)
+                    ->getColor()
+                    ->setRGB('000000');
+                $objSheet->getStyle('A37:' . $columnas[$pos_col] . '38')
+                    ->getBorders()
+                    ->getAllBorders()
+                    ->setBorderStyle(PHPExcel_Style_Border::BORDER_MEDIUM)
+                    ->getColor()
+                    ->setRGB('000000');
+                $objSheet->getStyle('A54:' . $columnas[$pos_col] . '55')
+                    ->getBorders()
+                    ->getAllBorders()
+                    ->setBorderStyle(PHPExcel_Style_Border::BORDER_MEDIUM)
+                    ->getColor()
+                    ->setRGB('000000');
+                $pos_col++;
+            }
+        } else if ($listado['view'] == 'todas_variedades') {    // todas las variedades
+            /* --------------------- cajas ---------------------------- */
+            $pos_fila = 20;
+            /* ============== BORDE COLOR =============*/
+            $objSheet
+                ->getStyle('A' . $pos_fila . ':' . $columnas[count($listado['labels'])] . intval($pos_fila + count($listado['arreglo_variedades'])))
+                ->getBorders()->getAllBorders()
+                ->setBorderStyle(PHPExcel_Style_Border::BORDER_MEDIUM)->getColor()->setRGB('000000');
+            foreach ($listado['labels'] as $pos_l => $label) {
+                /* ============== BACKGROUND COLOR =============*/
+                $objSheet->getStyle($columnas[$pos_l] . $pos_fila)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
+                    ->getStartColor()->setRGB('d2d6de');
+                if ($listado['periodo'] == 'diario') {
+                    $objSheet->getCell($columnas[$pos_l] . $pos_fila)->setValue($label->dia);
+                } else if ($listado['periodo'] == 'semanal') {
+                    $objSheet->getCell($columnas[$pos_l] . $pos_fila)->setValue($label->semana);
+                } else if ($listado['periodo'] == 'anual') {
+                    $objSheet->getCell($columnas[$pos_l] . $pos_fila)->setValue($label->ano);
+                } else {
+                    $objSheet->getCell($columnas[$pos_l] . $pos_fila)
+                        ->setValue(getMeses(TP_ABREVIADO)[$label->mes - 1] . ' - ' . $label->ano);
+                }
+            }
+
+            foreach ($listado['arreglo_variedades'] as $variedad) {
+                $pos_fila++;
+                foreach ($variedad['cajas'] as $pos_v => $valor) {
+                    /* ============== BACKGROUND COLOR =============*/
+                    $objSheet->getStyle($columnas[$pos_v] . $pos_fila)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
+                        ->getStartColor()->setRGB(str_replace('#', '', $variedad['variedad']->color));
+                    $objSheet->getCell($columnas[$pos_v] . $pos_fila)->setValue($valor);
+                }
+
+            }
+
+            /* --------------------- tallos ---------------------------- */
+            $pos_fila += 2;
+            /* ============== MERGE CELDAS =============*/
+            $objSheet->mergeCells('A' . $pos_fila . ':' . $columnas[count($listado['labels'])] . intval($pos_fila + 14));
+
+            $objDrawing = new PHPExcel_Worksheet_MemoryDrawing();
+            $objDrawing->setName('TALLOS');
+            $objDrawing->setDescription('TALLOS');
+            $objDrawing->setImageResource($img_tallos);
+            $objDrawing->setRenderingFunction(PHPExcel_Worksheet_MemoryDrawing::RENDERING_PNG);
+            $objDrawing->setMimeType(PHPExcel_Worksheet_MemoryDrawing::MIMETYPE_PNG);
+            //$objDrawing->setHeight();
+            $objDrawing->setCoordinates('A' . $pos_fila);
+            $objDrawing->setWorksheet($objSheet);
+            /* ============== BORDE COLOR =============*/
+            $objSheet
+                ->getStyle('A' . $pos_fila . ':' . $columnas[count($listado['labels'])] . intval($pos_fila + count($listado['arreglo_variedades'])))
+                ->getBorders()->getAllBorders()
+                ->setBorderStyle(PHPExcel_Style_Border::BORDER_MEDIUM)->getColor()->setRGB('000000');
+            foreach ($listado['labels'] as $pos_l => $label) {
+                /* ============== BACKGROUND COLOR =============*/
+                $objSheet->getStyle($columnas[$pos_l] . $pos_fila)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
+                    ->getStartColor()->setRGB('d2d6de');
+                if ($listado['periodo'] == 'diario') {
+                    $objSheet->getCell($columnas[$pos_l] . $pos_fila)->setValue($label->dia);
+                } else if ($listado['periodo'] == 'semanal') {
+                    $objSheet->getCell($columnas[$pos_l] . $pos_fila)->setValue($label->semana);
+                } else if ($listado['periodo'] == 'anual') {
+                    $objSheet->getCell($columnas[$pos_l] . $pos_fila)->setValue($label->ano);
+                } else {
+                    $objSheet->getCell($columnas[$pos_l] . $pos_fila)
+                        ->setValue(getMeses(TP_ABREVIADO)[$label->mes - 1] . ' - ' . $label->ano);
+                }
+            }
+
+            foreach ($listado['arreglo_variedades'] as $variedad) {
+                $pos_fila++;
+                foreach ($variedad['cajas'] as $pos_v => $valor) {
+                    /* ============== BACKGROUND COLOR =============*/
+                    $objSheet->getStyle($columnas[$pos_v] . $pos_fila)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
+                        ->getStartColor()->setRGB(str_replace('#', '', $variedad['variedad']->color));
+                    $objSheet->getCell($columnas[$pos_v] . $pos_fila)->setValue($valor);
+                }
+
+            }
+        } else {    // annos
+
+        }
+
+        /* ============== LETRAS NEGRITAS =============*/
+        $objSheet->getStyle('A1:' . $columnas[count($listado['labels'])] . '56')->getFont()->setBold(true)->setSize(12);   // para todo
+        /* ============== CENTRAR =============*/
+        $objSheet->getStyle('A1:' . $columnas[count($listado['labels'])] . '56')// para todo
+        ->getAlignment()
+            ->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER)
+            ->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
         foreach ($columnas as $c) {
             $objSheet->getColumnDimension($c)->setAutoSize(true);
         }
+    }
+
+    public function obtener_data_grafica(Request $request)
+    {
+        $desde = '1990-01-01';
+        if ($request->desde != '')
+            $desde = $request->desde;
+        $hasta = date('Y-m-d');
+        if ($request->hasta != '')
+            $hasta = $request->hasta;
+
+        $target = '';
+        $view = '';
+
+        if ($request->semanal == 'true') {  // semanal
+            $labels = DB::table('semana as s')
+                ->select('s.codigo as semana')->distinct()
+                ->Where(function ($q) use ($desde, $hasta) {
+                    $q->where('s.fecha_inicial', '>=', $desde)
+                        ->where('s.fecha_inicial', '<=', $hasta);
+                })
+                ->orWhere(function ($q) use ($desde, $hasta) {
+                    $q->where('s.fecha_final', '>=', $desde)
+                        ->Where('s.fecha_final', '<=', $hasta);
+                })
+                ->orderBy('codigo')
+                ->get();
+            $periodo = 'semanal';
+        } else {
+            if ($request->anual == 'true') {    // anual
+                $select = DB::raw('Year(v.fecha_ingreso) as ano');
+                $periodo = 'anual';
+            } else if ($request->mensual == 'true') {   // mensual
+                $select = [DB::raw('Year(v.fecha_ingreso) as ano'), DB::raw('Month(v.fecha_ingreso) as mes')];
+                $periodo = 'mensual';
+            } else if ($request->diario == 'true') {    // diario
+                $select = 'v.fecha_ingreso as dia';
+                $periodo = 'diario';
+            }
+
+            $labels = DB::table('clasificacion_verde as v')
+                ->select($select)->distinct()
+                ->where('v.fecha_ingreso', '>=', $desde)
+                ->where('v.fecha_ingreso', '<=', $hasta)
+                ->orderBy('fecha_ingreso')
+                ->get();
+        }
+        $annos = [];
+
+        $array_cajas = [];
+        $array_ramos = [];
+        $array_tallos = [];
+        $array_calibre = [];
+
+        if ($request->x_variedad == 'true') {
+            if ($request->id_variedad != '') {
+                $target = getVariedad($request->id_variedad);
+                $view = 'x_variedad';
+            } else {
+                return '<div class="alert alert-warning text-center">Indique la variedad por la que desea filtrar</div>';
+            }
+        }
+        if ($request->total == 'true') {
+            $target = getVariedades();
+            $view = 'todas_variedades';
+        }
+        if ($request->total == 'false' && $request->x_variedad == 'false') {
+            $view = 'acumulado';
+        }
+
+        if ($request->has('annos')) {
+            $view = 'annos';
+            $labels = [];
+            foreach ($request->annos as $a) {
+                $fechas = DB::table('clasificacion_verde as v')
+                    ->select('v.fecha_ingreso as dia')->distinct()
+                    ->where('v.fecha_ingreso', '>=', $a . '-01-01')
+                    ->where('v.fecha_ingreso', '<=', $a + 1 . '-12-31')
+                    ->orderBy('fecha_ingreso')
+                    ->get();
+                foreach ($fechas as $l)
+                    if (!in_array(substr(getSemanaByDate($l->dia)->codigo, 2), $labels))
+                        array_push($labels, substr(getSemanaByDate($l->dia)->codigo, 2));
+            }
+
+            foreach ($request->annos as $a) {
+                $cajas = [];
+                $tallos = [];
+                $calibre = [];
+                foreach ($labels as $l) {
+                    $semana = Semana::All()->where('codigo', '=', substr($a, 2) . $l)->first();
+                    $list_verdes = ClasificacionVerde::All()
+                        ->where('fecha_ingreso', '>=', $semana->fecha_inicial)
+                        ->where('fecha_ingreso', '<=', $semana->fecha_final);
+                    $cajas_c = 0;
+                    $tallos_c = 0;
+                    $calibre_c = 0;
+
+                    foreach ($list_verdes as $verde) {
+                        $cajas_c += round($verde->getTotalRamosEstandar() / getConfiguracionEmpresa()->ramos_x_caja, 2);
+                        $tallos_c += $verde->total_tallos();
+                        $calibre_c += $verde->getTotalRamosEstandar() > 0 ? round($verde->total_tallos() / $verde->getTotalRamosEstandar(), 2) : 0;
+                    }
+                    $calibre_c = count($list_verdes) > 0 ? round($calibre_c / count($list_verdes), 2) : 0;
+
+                    array_push($cajas, $cajas_c);
+                    array_push($tallos, $tallos_c);
+                    array_push($calibre, $calibre_c);
+                }
+
+                array_push($annos, [
+                    'anno' => $a,
+                    'cajas' => $cajas,
+                    'tallos' => $tallos,
+                    'calibre' => $calibre,
+                ]);
+            }
+        }
+
+        /* ================ OBTENER RESULTADOS =============*/
+        $arreglo_variedades = [];
+        if ($periodo == 'diario') {
+            if ($view == 'acumulado') {
+                foreach ($labels as $dia) {
+                    $verde = ClasificacionVerde::All()->where('fecha_ingreso', '=', $dia->dia)->first();
+                    if ($verde != '') {
+                        array_push($array_cajas, round($verde->getTotalRamosEstandar() / getConfiguracionEmpresa()->ramos_x_caja, 2));
+                        array_push($array_ramos, $verde->getTotalRamosEstandar());
+                        array_push($array_tallos, $verde->total_tallos());
+                        array_push($array_calibre, round($verde->total_tallos() / $verde->getTotalRamosEstandar(), 2));
+                    }
+                }
+            }
+            if ($view == 'x_variedad') {
+                foreach ($labels as $dia) {
+                    $verde = ClasificacionVerde::All()->where('fecha_ingreso', '=', $dia->dia)->first();
+                    if ($verde != '') {
+                        array_push($array_cajas, round($verde->getTotalRamosEstandarByVariedad($target->id_variedad) / getConfiguracionEmpresa()->ramos_x_caja, 2));
+                        array_push($array_ramos, $verde->getTotalRamosEstandarByVariedad($target->id_variedad));
+                        array_push($array_tallos, $verde->tallos_x_variedad($target->id_variedad));
+                        array_push($array_calibre, $verde->calibreByVariedad($target->id_variedad));
+                    }
+                }
+            }
+            if ($view == 'todas_variedades') {
+                foreach ($target as $variedad) {
+                    $array_cajas = [];
+                    $array_ramos = [];
+                    $array_tallos = [];
+                    $array_calibre = [];
+                    foreach ($labels as $dia) {
+                        $verde = ClasificacionVerde::All()->where('fecha_ingreso', '=', $dia->dia)->first();
+                        if ($verde != '') {
+                            array_push($array_cajas, round($verde->getTotalRamosEstandarByVariedad($variedad->id_variedad) / getConfiguracionEmpresa()->ramos_x_caja, 2));
+                            array_push($array_ramos, $verde->getTotalRamosEstandarByVariedad($variedad->id_variedad));
+                            array_push($array_tallos, $verde->tallos_x_variedad($variedad->id_variedad));
+                            array_push($array_calibre, $verde->calibreByVariedad($variedad->id_variedad));
+                        }
+                    }
+
+                    array_push($arreglo_variedades, [
+                        'variedad' => $variedad,
+                        'cajas' => $array_cajas,
+                        'ramos' => $array_ramos,
+                        'tallos' => $array_tallos,
+                        'calibre' => $array_calibre,
+                    ]);
+                }
+            }
+        }
+        if ($periodo == 'semanal') {
+            if ($view == 'acumulado') {
+                foreach ($labels as $codigo) {
+                    $semana = Semana::All()->where('codigo', '=', $codigo->semana)->first();
+                    $list_verdes = ClasificacionVerde::All()
+                        ->where('fecha_ingreso', '>=', $semana->fecha_inicial)
+                        ->where('fecha_ingreso', '<=', $semana->fecha_final);
+                    $cajas = 0;
+                    $ramos = 0;
+                    $tallos = 0;
+                    $calibre = 0;
+                    foreach ($list_verdes as $verde) {
+                        $cajas += round($verde->getTotalRamosEstandar() / getConfiguracionEmpresa()->ramos_x_caja, 2);
+                        $ramos += $verde->getTotalRamosEstandar();
+                        $tallos += $verde->total_tallos();
+                        $calibre += round($verde->total_tallos() / $verde->getTotalRamosEstandar(), 2);
+                    }
+                    $calibre = count($list_verdes) > 0 ? round($calibre / count($list_verdes), 2) : 0;
+
+                    array_push($array_cajas, $cajas);
+                    array_push($array_ramos, $ramos);
+                    array_push($array_tallos, $tallos);
+                    array_push($array_calibre, $calibre);
+                }
+            }
+            if ($view == 'x_variedad') {
+                foreach ($labels as $codigo) {
+                    $semana = Semana::All()->where('codigo', '=', $codigo->semana)->first();
+                    $list_verdes = ClasificacionVerde::All()
+                        ->where('fecha_ingreso', '>=', $semana->fecha_inicial)
+                        ->where('fecha_ingreso', '<=', $semana->fecha_final);
+                    $cajas = 0;
+                    $ramos = 0;
+                    $tallos = 0;
+                    $calibre = 0;
+                    foreach ($list_verdes as $verde) {
+                        $cajas += round($verde->getTotalRamosEstandarByVariedad($target->id_variedad) / getConfiguracionEmpresa()->ramos_x_caja, 2);
+                        $ramos += $verde->getTotalRamosEstandarByVariedad($target->id_variedad);
+                        $tallos += $verde->tallos_x_variedad($target->id_variedad);
+                        $calibre += $verde->calibreByVariedad($target->id_variedad);
+                    }
+                    $calibre = count($list_verdes) > 0 ? round($calibre / count($list_verdes), 2) : 0;
+
+                    array_push($array_cajas, $cajas);
+                    array_push($array_ramos, $ramos);
+                    array_push($array_tallos, $tallos);
+                    array_push($array_calibre, $calibre);
+                }
+            }
+            if ($view == 'todas_variedades') {
+                foreach ($target as $variedad) {
+                    $array_cajas = [];
+                    $array_ramos = [];
+                    $array_tallos = [];
+                    $array_calibre = [];
+
+                    foreach ($labels as $codigo) {
+                        $semana = Semana::All()->where('codigo', '=', $codigo->semana)->first();
+                        $list_verdes = ClasificacionVerde::All()
+                            ->where('fecha_ingreso', '>=', $semana->fecha_inicial)
+                            ->where('fecha_ingreso', '<=', $semana->fecha_final);
+                        $cajas = 0;
+                        $ramos = 0;
+                        $tallos = 0;
+                        $desecho = 0;
+                        $rendimiento = 0;
+                        $calibre = 0;
+                        foreach ($list_verdes as $verde) {
+                            $cajas += round($verde->getTotalRamosEstandarByVariedad($variedad->id_variedad) / getConfiguracionEmpresa()->ramos_x_caja, 2);
+                            $ramos += $verde->getTotalRamosEstandarByVariedad($variedad->id_variedad);
+                            $tallos += $verde->tallos_x_variedad($variedad->id_variedad);
+                            $calibre += $verde->calibreByVariedad($variedad->id_variedad);
+                        }
+                        $calibre = count($list_verdes) > 0 ? round($calibre / count($list_verdes), 2) : 0;
+
+                        array_push($array_cajas, $cajas);
+                        array_push($array_ramos, $ramos);
+                        array_push($array_tallos, $tallos);
+                        array_push($array_calibre, $calibre);
+                    }
+
+                    array_push($arreglo_variedades, [
+                        'variedad' => $variedad,
+                        'cajas' => $array_cajas,
+                        'ramos' => $array_ramos,
+                        'tallos' => $array_tallos,
+                        'calibre' => $array_calibre,
+                    ]);
+                }
+            }
+        }
+        if ($periodo == 'mensual') {
+            if ($view == 'acumulado') {
+                foreach ($labels as $mes) {
+                    $list_verdes = DB::table('clasificacion_verde as v')
+                        ->where(DB::raw('Month(fecha_ingreso)'), '=', $mes->mes)
+                        ->where(DB::raw('Year(fecha_ingreso)'), '=', $mes->ano)
+                        ->get();
+                    $cajas = 0;
+                    $ramos = 0;
+                    $tallos = 0;
+                    $calibre = 0;
+                    foreach ($list_verdes as $item) {
+                        $verde = ClasificacionVerde::find($item->id_clasificacion_verde);
+                        $cajas += round($verde->getTotalRamosEstandar() / getConfiguracionEmpresa()->ramos_x_caja, 2);
+                        $ramos += $verde->getTotalRamosEstandar();
+                        $tallos += $verde->total_tallos();
+                        $calibre += round($verde->total_tallos() / $verde->getTotalRamosEstandar(), 2);
+                    }
+                    $calibre = count($list_verdes) > 0 ? round($calibre / count($list_verdes), 2) : 0;
+
+                    array_push($array_cajas, $cajas);
+                    array_push($array_ramos, $ramos);
+                    array_push($array_tallos, $tallos);
+                    array_push($array_calibre, $calibre);
+                }
+            }
+            if ($view == 'x_variedad') {
+                foreach ($labels as $mes) {
+                    $list_verdes = DB::table('clasificacion_verde as v')
+                        ->where(DB::raw('Month(fecha_ingreso)'), '=', $mes->mes)
+                        ->where(DB::raw('Year(fecha_ingreso)'), '=', $mes->ano)
+                        ->get();
+                    $cajas = 0;
+                    $ramos = 0;
+                    $tallos = 0;
+                    $calibre = 0;
+                    foreach ($list_verdes as $item) {
+                        $verde = ClasificacionVerde::find($item->id_clasificacion_verde);
+                        $cajas += round($verde->getTotalRamosEstandarByVariedad($target->id_variedad) / getConfiguracionEmpresa()->ramos_x_caja, 2);
+                        $ramos += $verde->getTotalRamosEstandarByVariedad($target->id_variedad);
+                        $tallos += $verde->tallos_x_variedad($target->id_variedad);
+                        $calibre += $verde->calibreByVariedad($target->id_variedad);
+                    }
+                    $calibre = count($list_verdes) > 0 ? round($calibre / count($list_verdes), 2) : 0;
+
+                    array_push($array_cajas, $cajas);
+                    array_push($array_ramos, $ramos);
+                    array_push($array_tallos, $tallos);
+                    array_push($array_calibre, $calibre);
+                }
+            }
+            if ($view == 'todas_variedades') {
+                foreach ($target as $variedad) {
+                    $array_cajas = [];
+                    $array_ramos = [];
+                    $array_tallos = [];
+                    $array_calibre = [];
+
+                    foreach ($labels as $mes) {
+                        $list_verdes = DB::table('clasificacion_verde as v')
+                            ->where(DB::raw('Month(fecha_ingreso)'), '=', $mes->mes)
+                            ->where(DB::raw('Year(fecha_ingreso)'), '=', $mes->ano)
+                            ->get();
+                        $cajas = 0;
+                        $ramos = 0;
+                        $tallos = 0;
+                        $calibre = 0;
+                        foreach ($list_verdes as $item) {
+                            $verde = ClasificacionVerde::find($item->id_clasificacion_verde);
+                            $cajas += round($verde->getTotalRamosEstandarByVariedad($variedad->id_variedad) / getConfiguracionEmpresa()->ramos_x_caja, 2);
+                            $ramos += $verde->getTotalRamosEstandarByVariedad($variedad->id_variedad);
+                            $tallos += $verde->tallos_x_variedad($variedad->id_variedad);
+                            $calibre += $verde->calibreByVariedad($variedad->id_variedad);
+                        }
+                        $calibre = count($list_verdes) > 0 ? round($calibre / count($list_verdes), 2) : 0;
+
+                        array_push($array_cajas, $cajas);
+                        array_push($array_ramos, $ramos);
+                        array_push($array_tallos, $tallos);
+                        array_push($array_calibre, $calibre);
+                    }
+
+                    array_push($arreglo_variedades, [
+                        'variedad' => $variedad,
+                        'cajas' => $array_cajas,
+                        'ramos' => $array_ramos,
+                        'tallos' => $array_tallos,
+                        'calibre' => $array_calibre,
+                    ]);
+                }
+            }
+        }
+        if ($periodo == 'anual') {
+            if ($view == 'acumulado') {
+                foreach ($labels as $mes) {
+                    $list_verdes = DB::table('clasificacion_verde as v')
+                        ->where(DB::raw('Year(fecha_ingreso)'), '=', $mes->ano)
+                        ->get();
+                    $cajas = 0;
+                    $ramos = 0;
+                    $tallos = 0;
+                    $calibre = 0;
+                    foreach ($list_verdes as $item) {
+                        $verde = ClasificacionVerde::find($item->id_clasificacion_verde);
+                        $cajas += round($verde->getTotalRamosEstandar() / getConfiguracionEmpresa()->ramos_x_caja, 2);
+                        $ramos += $verde->getTotalRamosEstandar();
+                        $tallos += $verde->total_tallos();
+                        $calibre += round($verde->total_tallos() / $verde->getTotalRamosEstandar(), 2);
+                    }
+                    $calibre = count($list_verdes) > 0 ? round($calibre / count($list_verdes), 2) : 0;
+
+                    array_push($array_cajas, $cajas);
+                    array_push($array_ramos, $ramos);
+                    array_push($array_tallos, $tallos);
+                    array_push($array_calibre, $calibre);
+                }
+            }
+            if ($view == 'x_variedad') {
+                foreach ($labels as $mes) {
+                    $list_verdes = DB::table('clasificacion_verde as v')
+                        ->where(DB::raw('Year(fecha_ingreso)'), '=', $mes->ano)
+                        ->get();
+                    $cajas = 0;
+                    $ramos = 0;
+                    $tallos = 0;
+                    $calibre = 0;
+                    foreach ($list_verdes as $item) {
+                        $verde = ClasificacionVerde::find($item->id_clasificacion_verde);
+                        $cajas += round($verde->getTotalRamosEstandarByVariedad($target->id_variedad) / getConfiguracionEmpresa()->ramos_x_caja, 2);
+                        $ramos += $verde->getTotalRamosEstandarByVariedad($target->id_variedad);
+                        $tallos += $verde->tallos_x_variedad($target->id_variedad);
+                        $calibre += $verde->calibreByVariedad($target->id_variedad);
+                    }
+                    $calibre = count($list_verdes) > 0 ? round($calibre / count($list_verdes), 2) : 0;
+
+                    array_push($array_cajas, $cajas);
+                    array_push($array_ramos, $ramos);
+                    array_push($array_tallos, $tallos);
+                    array_push($array_calibre, $calibre);
+                }
+            }
+            if ($view == 'todas_variedades') {
+                foreach ($target as $variedad) {
+                    $array_cajas = [];
+                    $array_ramos = [];
+                    $array_tallos = [];
+                    $array_calibre = [];
+
+                    foreach ($labels as $mes) {
+                        $list_verdes = DB::table('clasificacion_verde as v')
+                            ->where(DB::raw('Year(fecha_ingreso)'), '=', $mes->ano)
+                            ->get();
+                        $cajas = 0;
+                        $ramos = 0;
+                        $tallos = 0;
+                        $calibre = 0;
+                        foreach ($list_verdes as $item) {
+                            $verde = ClasificacionVerde::find($item->id_clasificacion_verde);
+                            $cajas += round($verde->getTotalRamosEstandarByVariedad($variedad->id_variedad) / getConfiguracionEmpresa()->ramos_x_caja, 2);
+                            $ramos += $verde->getTotalRamosEstandarByVariedad($variedad->id_variedad);
+                            $tallos += $verde->tallos_x_variedad($variedad->id_variedad);
+                            $calibre += $verde->calibreByVariedad($variedad->id_variedad);
+                        }
+                        $calibre = count($list_verdes) > 0 ? round($calibre / count($list_verdes), 2) : 0;
+
+                        array_push($array_cajas, $cajas);
+                        array_push($array_ramos, $ramos);
+                        array_push($array_tallos, $tallos);
+                        array_push($array_calibre, $calibre);
+                    }
+
+                    array_push($arreglo_variedades, [
+                        'variedad' => $variedad,
+                        'cajas' => $array_cajas,
+                        'ramos' => $array_ramos,
+                        'tallos' => $array_tallos,
+                        'calibre' => $array_calibre,
+                    ]);
+                }
+            }
+        }
+
+        return [
+            'view' => $view,
+            'target' => $target,
+            'labels' => $labels,
+            'periodo' => $periodo,
+            'annos' => $annos,
+            'arreglo_variedades' => $arreglo_variedades,
+            'array_cajas' => $array_cajas,
+            //'array_ramos' => $array_ramos,
+            'array_tallos' => $array_tallos,
+            'array_calibre' => $array_calibre,
+        ];
     }
 }
