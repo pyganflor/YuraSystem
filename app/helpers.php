@@ -90,6 +90,7 @@ function bitacora($tabla, $id, $accion = 'U', $observaciones = '')
         $bitacora->id_usuario = (Session::has('id_usuario') ? Session::get('id_usuario') : -1);
         $bitacora->observacion = str_limit(mb_strtoupper($observaciones), 180);
         $bitacora->ip = \Request::ip();
+        $bitacora->fecha_registro = date('Y-m-d H:i:s');
         $bitacora->save();
     } catch (\Exception $e) {
         $ok = false;
@@ -125,7 +126,7 @@ define('A_Z', serialize(range('A', 'Z')));
 
 function getListColores()
 {
-    return ['red', 'blue', 'green', 'orange', 'black', 'purple', 'gray', 'pink'];
+    return ['#ff0000', '#1000ff', '#33ff00', '#ff851b', '#00c0ef', '#e000ef', '#ebef00', '#b400ef'];
 }
 
 function getHorasDiarias()
@@ -1432,7 +1433,7 @@ function getDetallesClaveAcceso($numeroAutorizacion, $detalle)
 
 function getSecuencial($tipoComprobante)
 {
-    switch($tipoComprobante){
+    switch ($tipoComprobante) {
         case '01':
             $inicio_secuencial = env('INICIAL_FACTURA');
             break;
@@ -1444,7 +1445,7 @@ function getSecuencial($tipoComprobante)
             break;
     }
     $secuencial = $inicio_secuencial + 1;
-    $cant_reg = Comprobante::where('tipo_comprobante',$tipoComprobante)->count();
+    $cant_reg = Comprobante::where('tipo_comprobante', $tipoComprobante)->count();
     if ($cant_reg > 0)
         $secuencial = $cant_reg + $inicio_secuencial + 1;
 
@@ -2035,9 +2036,12 @@ function getHistoricoVentaByMes($mes, $anno, $variedad = 'T')
 }
 
 
-function getDetalleFactura($idComprobante){
-    return DetalleFactura::where('id_comprobante',$idComprobante)->first();
+function getDetalleFactura($idComprobante)
+{
+    return DetalleFactura::where('id_comprobante', $idComprobante)->first();
 }
-function getDistribucion($idDistribucion){
+
+function getDistribucion($idDistribucion)
+{
     return Distribucion::find($idDistribucion);
 }
