@@ -357,11 +357,13 @@ class crmPostocechaController extends Controller
             $view = 'acumulado';
         }
 
-
         if ($request->has('annos')) {
             $view = 'annos';
             $labels = [];
-            foreach ($request->annos as $a) {
+            $request_annos = $request->annos;
+            sort($request_annos);
+
+            foreach ($request_annos as $a) {
                 $fechas = DB::table('clasificacion_verde as v')
                     ->select('v.fecha_ingreso as dia')->distinct()
                     ->where('v.fecha_ingreso', '>=', $a . '-01-01')
@@ -373,7 +375,7 @@ class crmPostocechaController extends Controller
                         array_push($labels, substr(getSemanaByDate($l->dia)->codigo, 2));
             }
 
-            foreach ($request->annos as $a) {
+            foreach ($request_annos as $a) {
                 $cajas = [];
                 $tallos = [];
                 $calibre = [];
@@ -406,7 +408,6 @@ class crmPostocechaController extends Controller
                 ]);
             }
         }
-
 
         /* ================ OBTENER RESULTADOS =============*/
         $arreglo_variedades = [];
@@ -1510,7 +1511,9 @@ class crmPostocechaController extends Controller
         if ($request->has('annos')) {
             $view = 'annos';
             $labels = [];
-            foreach ($request->annos as $a) {
+            $request_annos = $request->annos;
+            sort($request_annos);
+            foreach ($request_annos as $a) {
                 $fechas = DB::table('clasificacion_verde as v')
                     ->select('v.fecha_ingreso as dia')->distinct()
                     ->where('v.fecha_ingreso', '>=', $a . '-01-01')
@@ -1522,7 +1525,7 @@ class crmPostocechaController extends Controller
                         array_push($labels, substr(getSemanaByDate($l->dia)->codigo, 2));
             }
 
-            foreach ($request->annos as $a) {
+            foreach ($request_annos as $a) {
                 $cajas = [];
                 $tallos = [];
                 $calibre = [];
