@@ -1003,9 +1003,6 @@ class crmPostocechaController extends Controller
         $objSheet->getCell('I2')->setValue(number_format($request->indicador_calibre, 2));
         $objSheet->getCell('I4')->setValue('Calibre');
 
-        /* ================================= COSECHA DEL DÍA ================================ */
-
-
         /* ================================= GRAFICAS ================================ */
         $data = base64_decode(explode(',', $request->src_imagen_chart_cajas)[1]);
         file_put_contents(public_path() . '/images/cajas.png', $data);
@@ -1382,12 +1379,55 @@ class crmPostocechaController extends Controller
             }
         }
 
+        /* ================================= COSECHA DEL DÍA ================================ */
+        $pos_fila += 2;
+        /* ============== MERGE CELDAS =============*/
+        $objSheet->mergeCells('A' . $pos_fila . ':D' . $pos_fila);
+        $objSheet->getCell('A' . $pos_fila)->setValue('Cosecha del día: ' . date('d-m-Y'));
+        /* ============== BACKGROUND COLOR =============*/
+        $objSheet->getStyle('A' . $pos_fila . ':D' . intval($pos_fila + 1))
+            ->getFill()
+            ->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
+            ->getStartColor()
+            ->setRGB('d2d6de');
+        /* ============== BORDE COLOR =============*/
+        $objSheet->getStyle('A' . $pos_fila . ':D' . intval($pos_fila + 2 + count($request->array_variedades)))
+            ->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_MEDIUM)
+            ->getColor()->setRGB('000000');
+        $pos_fila++;
+        $objSheet->getCell('A' . $pos_fila)->setValue('Variedad');
+        $objSheet->getCell('B' . $pos_fila)->setValue('Calibre');
+        $objSheet->getCell('C' . $pos_fila)->setValue('Clasificados');
+        $objSheet->getCell('D' . $pos_fila)->setValue('Cosechados');
+
+        foreach ($request->array_variedades as $variedad) {
+            $pos_fila++;
+            $objSheet->getCell('A' . $pos_fila)->setValue(getVariedad($variedad['id'])->siglas);
+            $objSheet->getCell('B' . $pos_fila)->setValue($variedad['calibre']);
+            $objSheet->getCell('C' . $pos_fila)->setValue($variedad['clasificados']);
+            $objSheet->getCell('D' . $pos_fila)->setValue($variedad['cosechados']);
+        }
+        $pos_fila++;
+        $objSheet->getCell('A' . $pos_fila)->setValue('Resumen');
+        $objSheet->getCell('B' . $pos_fila)->setValue($request->calibre_dia);
+        $objSheet->getCell('C' . $pos_fila)->setValue($request->clasificados_dia);
+        $objSheet->getCell('D' . $pos_fila)->setValue($request->cosechados_dia);
+        /* ============== BACKGROUND COLOR =============*/
+        $objSheet->getStyle('A' . $pos_fila . ':D' . $pos_fila)
+            ->getFill()
+            ->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
+            ->getStartColor()
+            ->setRGB('d2d6de');
+
+
         /* ============== LETRAS NEGRITAS =============*/
+        $objSheet->getStyle('A1:L4')->getFont()->setBold(true)->setSize(12);   // para todo
         $objSheet->getStyle('A1:' . $columnas[count($listado['labels'])] . $pos_fila)->getFont()->setBold(true)->setSize(12);   // para todo
         /* ============== CENTRAR =============*/
-        $objSheet->getStyle('A1:' . $columnas[count($listado['labels'])] . $pos_fila)// para todo
-        ->getAlignment()
-            ->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER)
+        $objSheet->getStyle('A1:L4')->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER)
+            ->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+        $objSheet->getStyle('A1:' . $columnas[count($listado['labels'])] . $pos_fila)
+            ->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER)
             ->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
         foreach ($columnas as $c) {
             $objSheet->getColumnDimension($c)->setAutoSize(true);

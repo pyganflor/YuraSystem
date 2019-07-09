@@ -279,6 +279,9 @@
                     filtro_predeterminado: $('#filtro_predeterminado').val(),
                     filtro_predeterminado_variedad: $('#filtro_predeterminado_variedad').val(),
                     filtro_predeterminado_annos: $('#filtro_predeterminado_annos').val(),
+                    calibre_dia: $('#calibre_dia').val(),
+                    clasificados_dia: $('#clasificados_dia').val(),
+                    cosechados_dia: $('#cosechados_dia').val(),
                     array_variedades: array_variedades,
                 },
                 success: function (data) {
