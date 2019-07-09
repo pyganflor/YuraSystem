@@ -140,27 +140,42 @@
         });
     }
 
-    function enviar_correo(id_comprobante){
+    function enviar_correo(id_comprobante,tipo_pedido){
+
+        if(tipo_pedido === "N"){
+            check = "<div class='col-md-4'>" +
+                        "<input type='checkbox' id='csv_etiqueta' name='csv_etiqueta' checked style='position:relative;top:3px'> "+
+                        "<label for='csv_etiqueta'>CSV de etiquetas</label>" +
+                    "</div>";
+        }else if(tipo_pedido === "T"){
+            check = "<div class='col-md-4'>" +
+                        "<input type='checkbox' id='dist_cajas' name='dist_cajas' style='position:relative;top:3px'> "+
+                        "<label for='dist_cajas'>Lista de distribución</label>" +
+                    "</div>";
+        }
+
         html = "<div class='row'>" +
                     "<div class='col-md-12'>" +
                         "<form id='form_envio_correo' name='form_envio_correo'>" +
                             "<p><label for='ruta'>Seleccione las opciones para el envio del correo</label></p>" +
                             "<div class='row'>" +
-                                "<div class='col-md-6'>" +
+                                "<div class='col-md-4'>" +
                                     "<input type='checkbox' id='cliente' name='cliente' checked style='position:relative;top:3px'> "+
                                     "<label for='cliente'>Enviar al cliente</label>" +
                                 "</div>"+
-                                "<div class='col-md-6'>" +
+                                "<div class='col-md-8'>" +
                                     "<input type='checkbox' id='agencia_carga' name='agencia_carga' style='position:relative;top:3px'> "+
                                     "<label for='agencia_carga'>Enviar a la agencia de carga</label>" +
                                 "</div>"+
-                                "<div class='col-md-6'>" +
-                                    "<input type='checkbox' id='factura_cliente' name='factura_cliente' checke style='position:relative;top:3px'> "+
-                                    "<label for='factura_cliente'>Enviar factura del cliente</label>" +
+                                "<div class='col-md-4'>" +
+                                    "<input type='checkbox' id='factura_cliente' name='factura_cliente' checked style='position:relative;top:3px'> "+
+                                    "<label for='factura_cliente'>Factura del cliente</label>" +
                                 "</div>"+
-                                "<div class='col-md-6'>" +
+                                    check
+                                +
+                                "<div class='col-md-4'>" +
                                     "<input type='checkbox' id='factura_sri' name='factura_sri' style='position:relative;top:3px'> "+
-                                    "<label for='factura_sri'>Enviar factura del SRI</label>" +
+                                    "<label for='factura_sri'>Factura del SRI</label>" +
                                 "</div>"+
                             "</div>" +
                         "</form>" +
@@ -175,11 +190,12 @@
                 cliente : $("#cliente").is(':checked'),
                 agencia_carga : $("#agencia_carga").is(':checked'),
                 factura_cliente : $("#factura_cliente").is(':checked'),
-                factura_sri : $("#factura_sri").is(':checked')
+                factura_sri : $("#factura_sri").is(':checked'),
+                csv_etiqueta : $("#csv_etiqueta").is(':checked'),
+                dist_cajas : $("#dist_cajas").is(':checked')
             };
             post_jquery('comprobante/enviar_correo', datos, function () {
 
-                //buscar_listado_comprobante();
             });
             cerrar_modals();
             $.LoadingOverlay('hide');

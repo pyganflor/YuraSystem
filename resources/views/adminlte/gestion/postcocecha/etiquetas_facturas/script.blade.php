@@ -96,14 +96,18 @@
     }
 
 
-    function delete_etiquetas_factura(id_comprobante){
+    function delete_etiquetas_factura(id_comprobante,csrf_token){
         datos = {
             _token: csrf_token,
             id_comprobante: id_comprobante,
         };
-        post_jquery('etiqueta_factura/delete_etiqueta_factura', datos, function () {
-            cerrar_modals();
+        modal_quest('modal_crear_especificacion', '<div class="alert alert-warning text-center"><p>Desea eliminar la etiqueta?</p></div>',
+            "<i class='fa fa-cubes'></i> Seleccione una opción",true, false, '{{isPC() ? '25%' : ''}}', function () {
+            post_jquery('etiqueta_factura/delete_etiqueta_factura', datos, function () {
+                cerrar_modals();
+                form_etiqueta_factura(id_comprobante);
+            });
+            $.LoadingOverlay('hide');
         });
-        $.LoadingOverlay('hide');
     }
 </script>

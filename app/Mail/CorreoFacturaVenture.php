@@ -19,12 +19,15 @@ class CorreoFacturaVenture extends Mailable
     public $factura_cliente;
     public $factura_sri;
     public $secuencial;
-    public $correos;
-    public function __construct($factura_cliente,$factura_sri,$secuencial)
+    public $csv_etiqueta;
+    public $dist_cajas;
+    public function __construct($factura_cliente,$factura_sri,$secuencial,$csv_etiqueta,$dist_cajas)
     {
         $this->factura_cliente  = $factura_cliente;
         $this->factura_sri = $factura_sri;
         $this->secuencial = $secuencial;
+        $this->csv_etiqueta = $csv_etiqueta;
+        $this->dist_cajas = $dist_cajas;
     }
 
     /**
@@ -45,6 +48,16 @@ class CorreoFacturaVenture extends Mailable
         if($this->factura_sri == "true")
             $correo->attach(env('PDF_FACTURAS_TEMPORAL')."fact_sri_".$this->secuencial.'.pdf',[
                 'as' =>"fact_sri_".$this->secuencial.'.pdf'
+            ]);
+
+        if($this->csv_etiqueta == "true")
+            $correo->attach(env('ETIQUETAS_FACTURAS_TEMPORAL')."label_fact_".$this->secuencial.'.csv',[
+                'as' =>"label_fact_".$this->secuencial.'.csv'
+            ]);
+
+        if($this->dist_cajas == "true")
+            $correo->attach(env('PDF_FACTURAS_TEMPORAL')."dist_cajas_".$this->secuencial.'.pdf',[
+                'as' =>"dist_cajas_".$this->secuencial.'.pdf'
             ]);
 
         $correo->with(['factura'=>$this->secuencial]);

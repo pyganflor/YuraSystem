@@ -55,12 +55,14 @@ class EtiquetaFacturaController extends Controller
             'data.*.et_inicial' => 'required',
             'data.*.et_final' => 'required',
             'data.*.id_det_esp_emp' => 'required',
+            'data.*.empaque' => 'required',
         ], [
             'data.*.siglas.required' => 'Debe escribir las siglas de la etiqueta',
             'data.*.cajas.required' => 'Debe escribir la cantidad de cajas',
             'data.*.et_inicial.required' => 'Debe escribir la etiqueta inicial',
             'data.*.et_final.required' => 'Debe escribir la etiqueta final',
             'data.*.id_det_esp_emp.required' => 'Debe seleccionar la presentación',
+            'data.*.empaque.required' => 'Debe seleccionar el empaque',
         ]);
         if (!$valida->fails()) {
 
@@ -116,6 +118,25 @@ class EtiquetaFacturaController extends Controller
             'success' => $success
         ];
 
+
+    }
+
+    public function delete_etiqueta_factura(Request $request){
+        $success = false;
+        $msg = '<div class="alert alert-danger text-center">' .
+            '<p> Ha ocurrido un problema al eliminar las etiquetas, intente de nuevo</p>'
+            . '</div>';
+        $etiqueta_comprobante = EtiquetaFactura::where('id_comprobante',$request->id_comprobante);
+        if($etiqueta_comprobante->delete()){
+            $success = true;
+            $msg = '<div class="alert alert-success text-center">' .
+                '<p> Se han eliminado exitosamente las etiquetas</p>'
+                . '</div>';
+        }
+        return [
+            'mensaje' => $msg,
+            'success' => $success
+        ];
 
     }
 }

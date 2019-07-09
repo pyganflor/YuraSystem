@@ -19,7 +19,43 @@
                 <button type="button" class="btn btn-dafault dropdown-toggle bg-default"
                         data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" style="width:100%">
                     <i class="fa fa-leaf"></i> Presentaciones
-                    <span id="span_presentaciones_{{$x}}"></span>
+                    <span id="span_presentaciones_{{$x}}">
+                        @php
+                            $presentaciones  ="";
+                            if(isset($comprobante->etiqueta_factura->detalles[($x-1)])){
+                                $id_det_esp_emp = explode("|",$comprobante->etiqueta_factura->detalles[($x-1)]->id_detalle_especificacion_empaque);
+                                foreach($id_det_esp_emp as $id){
+                                    $det_esp_emp = getDetalleEspecificacionEmpaque($id);
+                                    $variedad = getVariedad($det_esp_emp->id_variedad);
+                                     $clasificacionRamo = getClasificacionRamo($det_esp_emp->id_clasificacion_ramo);
+                                    if($det_esp_emp->longitud_ramo != null){
+                                        foreach (getUnidadesMedida($det_esp_emp->id_unidad_medida) as $umLongitud)
+                                            if($umLongitud->tipo == "L"){
+                                                $umL = $umLongitud->siglas;
+                                            }else{
+                                                $umL ="";
+                                            }
+                                            $longitudRamo = $det_esp_emp->longitud_ramo != "" ? $det_esp_emp->longitud_ramo : "";
+                                        foreach (getUnidadesMedida($clasificacionRamo->id_unidad_medida) as $umPeso)
+                                            $umPeso->tipo == "P" ? $umPeso = $umPeso->siglas : $umPeso ="";
+                                    }
+                                    $det_ped_cantidad = 0;
+                                    foreach ($comprobante->envio->pedido->detalles as $det_ped)
+                                        foreach ($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $esp_emp)
+                                            foreach ($esp_emp->detalles as $z=> $det_esp_emp)
+                                                if($det_esp_emp->id_detalle_especificacionempaque == $id){
+                                                    $det_ped_cantidad = $det_ped->cantidad;
+                                                    $det_esp_emp_cantidad = $det_esp_emp->cantidad;
+                                                    break;
+                                                }
+                                    $presentaciones .= (substr($variedad->planta->nombre,0,3)." ". $variedad->siglas . " " . $clasificacionRamo->nombre.$umPeso. " ". $longitudRamo.$umL." Ramos por caja: ") ." ".($det_esp_emp_cantidad * $det_esp_emp->especificacion_empaque->cantidad)." <br />";
+                                }
+                            }
+                        @endphp
+                        @if(isset($comprobante->etiqueta_factura->detalles[($x-1)]))
+                            {!!"<br />". substr($presentaciones,0,-6) !!}
+                        @endif
+                    </span>
                     <span class="caret"></span>
                 </button>
                 <input type="hidden" id="ids_det_esp_emp_{{$x}}" name="ids_det_esp_emp_{{$x}}">
@@ -54,7 +90,7 @@
                                             @endif
                                             <td style="border: 1px solid black"  class="td_{{$x}}_{{$y}}">
                                                 <label style="font-weight: 600" id="{{$det_esp_emp->id_detalle_especificacionempaque}}">
-                                                    {{ substr($variedad->planta->nombre,0,3)." ". $variedad->siglas . " " . $clasificacionRamo->nombre.$umPeso. " ". $longitudRamo.$umL." Ramos por caja: " }}    {{$det_esp_emp->cantidad * $esp_emp->cantidad * $det_ped->cantidad}}
+                                                    {{ substr($variedad->planta->nombre,0,3)." ". $variedad->siglas . " " . $clasificacionRamo->nombre.$umPeso. " ". $longitudRamo.$umL." Ramos por caja: " }} {{$det_esp_emp->cantidad * $esp_emp->cantidad}}
                                                 </label>
                                             </td>
                                         </tr>

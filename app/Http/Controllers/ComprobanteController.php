@@ -5,6 +5,8 @@ namespace yura\Http\Controllers;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use DomDocument;
+use PHPExcel;
+use PHPExcel_IOFactory;
 use yura\Modelos\Comprobante;
 use yura\Modelos\DetalleCliente;
 use yura\Modelos\FacturaClienteTercero;
@@ -1428,18 +1430,18 @@ class ComprobanteController extends Controller
     public function enviar_correo(Request $request){
         ini_set('max_execution_time', env('MAX_EXECUTION_TIME'));
         $comprobante = Comprobante::where('id_comprobante',$request->id_comprobante)->first();
-
         $img_clave_acceso = null;
+        $correos = [];
+
         if($comprobante->clave_acceso != null)
             $img_clave_acceso = generateCodeBarGs1128($comprobante->clave_acceso);
+
         $data = [
             'empresa' => getConfiguracionEmpresa(),
             'secuencial' => $comprobante->secuencial,
             'comprobante' => $comprobante,
             'img_clave_acceso' => $img_clave_acceso
         ];
-
-        $correos = [];
 
         if($request->cliente == "true"){
             $comprobante->envio->fatura_cliente_tercero != null
@@ -1454,23 +1456,113 @@ class ComprobanteController extends Controller
         foreach ($comprobante->envio->pedido->cliente->detalle()->informacion_adicional_correo() as $correo)
             $correos[] =$correo->varchar;
 
+        if($request->csv_etiqueta == "true"){
+            $f =fopen(env('ETIQUETAS_FACTURAS_TEMPORAL').'label_fact_'.$comprobante->secuencial.'.csv','w');
+            $cadena = $comprobante->detalle_factura->razon_social_emisor.", "."\n"."Invoice No. ,".$comprobante->secuencial."\n"."AWB No. ,".$comprobante->envio->guia_madre."\n"."DATE : ,".$comprobante->fecha_emision."\n";
+            $cadena .= "PIECES,ITEM,BUNCHES/BOX,BUNCHES,PRICE,PRICE/BUNCHES,BARCODE"."\n";
+            $total_piezas = 0;
+            $total_ramos = 0;
+            $total_monto = 0;
+
+            foreach ($comprobante->etiqueta_factura->detalles as $x =>  $detalle) {
+                $id_det_esp_emp = explode("|",$detalle->id_detalle_especificacion_empaque);
+                foreach($id_det_esp_emp as $id){
+                    $det_esp_emp = getDetalleEspecificacionEmpaque($id);
+                    $variedad = getVariedad($det_esp_emp->id_variedad);
+                    $clasificacionRamo = getClasificacionRamo($det_esp_emp->id_clasificacion_ramo);
+                    if($det_esp_emp->longitud_ramo != null){
+                        foreach (getUnidadesMedida($clasificacionRamo->id_unidad_medida) as $umPeso)
+                            $umPeso->tipo == "P" ? $umPeso = $umPeso->siglas : $umPeso ="";
+                    }
+                    foreach ($comprobante->envio->pedido->detalles as $det_ped){
+                        $i=0;
+                        $precio = explode("|", $det_ped->precio);
+                        foreach ($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $esp_emp){
+                            foreach ($esp_emp->detalles as $z=> $det_esp_emp){
+                                if($det_esp_emp->id_detalle_especificacionempaque == $id){
+                                    $det_esp_emp_cantidad = $det_esp_emp->cantidad;
+                                    $precio_presentacion = (float)explode(";", $precio[$i])[0];
+                                    break;
+                                }
+                                $i++;
+                            }
+                        }
+                    }
+                    $presentaciones = substr($variedad->planta->nombre,0,3)." ". $variedad->siglas . " " . $clasificacionRamo->nombre.$umPeso. " ";
+                    $ramos_x_caja = $det_esp_emp_cantidad * $det_esp_emp->especificacion_empaque->cantidad;
+                    $etiqueta = $comprobante->etiqueta_factura->detalles[$x];
+                    $cadena .= $detalle->cantidad.",".$presentaciones.",".$ramos_x_caja.",".($ramos_x_caja*$detalle->cantidad).",".$precio_presentacion.",".$precio_presentacion*($ramos_x_caja*$detalle->cantidad).",".$etiqueta->et_inicial." - ".$etiqueta->et_final."\n";
+                    $total_piezas +=$detalle->cantidad;
+                    $total_ramos += $ramos_x_caja*$detalle->cantidad;
+                    $total_monto += ($precio_presentacion*$ramos_x_caja*$detalle->cantidad);
+                }
+            }
+            $cadena.= $total_piezas.","."TOTALS".",".",".$total_ramos.",".",".$total_monto."\n";
+            fwrite($f,substr($cadena,0,-1));
+            fclose($f);
+
+        }
+
+        if($request->dist_cajas === "true"){
+            $pedido = getPedido($comprobante->envio->pedido->id_pedido);
+            $empresa = getConfiguracionEmpresa();
+            $despacho = isset(getDetalleDespacho($pedido->id_pedido)->despacho) ? getDetalleDespacho($pedido->id_pedido)->despacho : null;
+            $facturaTercero = isset($pedido->envios) ? getFacturaClienteTercero($pedido->envios[0]->id_envio) : null;
+            if($facturaTercero !== null){
+                $cliente = [
+                    'nombre' =>$facturaTercero->nombre_cliente_tercero,
+                    'identificacion' => $facturaTercero->identificacion,
+                    'tipo_identificacion' => getTipoIdentificacion($facturaTercero->codigo_identificacion)->nombre,
+                    'pais' => getPais($facturaTercero->codigo_pais)->nombre,
+                    'provincia' => $facturaTercero->provincia,
+                    'direccion' => $facturaTercero->direccion,
+                    'telefono' => $facturaTercero->telefono,
+                    'dae' => $facturaTercero->dae,
+                ];
+            }else{
+                foreach($pedido->cliente->detalles as $det_cli)
+                    if($det_cli->estado == 1)
+                        $cliente = $det_cli;
+                $cliente = [
+                    'nombre' =>$cliente->nombre,
+                    'identificacion' => $cliente->ruc,
+                    'tipo_identificacion' => getTipoIdentificacion($cliente->codigo_identificacion)->nombre,
+                    'pais' => getPais($cliente->codigo_pais)->nombre,
+                    'provincia' => $cliente->provincia,
+                    'direccion' => $cliente->direccion,
+                    'telefono' => $cliente->telefono,
+                    'dae' => $pedido->envios[0]->dae
+                ];
+            }
+        }
+
         if($request->factura_sri == "true")
             PDF::loadView('adminlte.gestion.comprobante.partials.pdf.factura_bd', compact('data'))->save(env('PDF_FACTURAS_TEMPORAL')."fact_sri_".$comprobante->secuencial.".pdf");
         if($request->factura_cliente == "true")
             PDF::loadView('adminlte.gestion.comprobante.partials.pdf.factura_cliente_bd', compact('data'))->save(env('PDF_FACTURAS_TEMPORAL')."fact_cliente_".$comprobante->secuencial.".pdf");
+        if($request->dist_cajas === "true")
+            PDF::loadView('adminlte.gestion.comprobante.partials.pdf.lista_distribucion', compact('cliente','empresa','despacho','comprobante'))->save(env('PDF_FACTURAS_TEMPORAL')."dist_cajas_".$comprobante->secuencial.".pdf");
 
-        //$correos[0]
+                    //$correos[0]
         Mail::to("pruebas-c26453@inbox.mailtrap.io")
-            ->cc($correos)->send(new CorreoFacturaVenture($request->factura_cliente,$request->factura_sri,$comprobante->secuencial,$correos));
+            ->cc($correos)->send(new CorreoFacturaVenture($request->factura_cliente,$request->factura_sri,$comprobante->secuencial,$request->csv_etiqueta,$request->dist_cajas));
 
         if($request->factura_sri == "true" && file_exists(env('PDF_FACTURAS_TEMPORAL')."fact_sri_".$comprobante->secuencial.'.pdf'))
             unlink(env('PDF_FACTURAS_TEMPORAL')."fact_sri_".$comprobante->secuencial.'.pdf');
 
         if($request->factura_cliente == "true" && file_exists(env('PDF_FACTURAS_TEMPORAL')."fact_cliente_".$comprobante->secuencial.'.pdf'))
             unlink(env('PDF_FACTURAS_TEMPORAL')."fact_cliente_".$comprobante->secuencial.'.pdf');
+
+        if($request->csv_etiqueta == "true" && file_exists(env('ETIQUETAS_FACTURAS_TEMPORAL').'label_fact_'.$comprobante->secuencial.'.csv'))
+            unlink(env('ETIQUETAS_FACTURAS_TEMPORAL')."label_fact_".$comprobante->secuencial.'.csv');
+
+        if($request->dist_cajas === "true" && file_exists(env('PDF_FACTURAS_TEMPORAL')."dist_cajas_".$comprobante->secuencial.'.pdf'))
+            unlink(env('PDF_FACTURAS_TEMPORAL')."dist_cajas_".$comprobante->secuencial.'.pdf');
+
+
         return[
             'mensaje' => '<div class="alert text-center  alert-success">' .
-                          '<p>Se han enviado los correos con exito </p>'
+                          '<p>Se han enviado los correos con éxito </p>'
                     .'</div>',
             'success' => true,
         ];

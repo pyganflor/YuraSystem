@@ -447,39 +447,6 @@ class PedidoController extends Controller
                 'dae' => $pedido->envios[0]->dae
             ];
         }
-
-        /*$comprobante = isset($pedido->envios[0]->comprobante) ? $pedido->envios[0]->comprobante : null;
-        $envio =[
-            'guia_madre' =>isset($pedido->envios[0]->guia_madre) ? $pedido->envios[0]->guia_madre : null,
-            'guia_hija' =>isset($pedido->envios[0]->guia_hija) ? $pedido->envios[0]->guia_hija : null,
-            'aerolinea' => isset($pedido->envios[0]->detalles[0]->id_aerolinea) ? getAgenciaTransporte($pedido->envios[0]->detalles[0]->id_aerolinea)->nombre : null,
-            'agencia_carga' => getAgenciaCarga($pedido->detalles[0]->id_agencia_carga)->nombre
-        ];
-
-        if($pedido->tipo_especificacion === "N"){
-            $env = getEnvio($pedido->envios[0]->id_envio);
-            $detallePedido = [];
-            foreach ($env->pedido->detalles as $x => $det_ped) {
-                foreach ($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $m => $esp_emp) {
-                    foreach ($esp_emp->detalles as $n => $det_esp_emp) {
-                        $dato_expotacion = "";
-                        foreach($pedido->cliente->cliente_datoexportacion as $cde){
-                            $valor = isset(getDatosExportacion($det_ped->id_detalle_pedido, $cde->datos_exportacion->id_dato_exportacion)->valor) ? getDatosExportacion($det_ped->id_detalle_pedido, $cde->datos_exportacion->id_dato_exportacion)->valor : "";
-                            $dato_expotacion.= $valor;
-                        }
-                        $detallePedido[] = [
-                            'piezas' =>  $det_ped->cantidad,
-                            'ramos_x_caja' => $det_esp_emp->cantidad,
-                            'calibre' => getClasificacionRamo($det_esp_emp->id_clasificacion_ramo)->nombre,
-                            'ramos_totales' => $det_ped->cantidad * $det_esp_emp->cantidad * $esp_emp->cantidad,
-                            'presentacion'=> getVariedad($det_esp_emp->id_variedad)->siglas." ".getClasificacionRamo($det_esp_emp->id_clasificacion_ramo)->nombre. " " . $dato_expotacion,
-                            'id_agencia_carga' => $det_ped->id_agencia_carga,
-                            'id_detalle_pedido' => $det_ped->id_detalle_pedido
-                        ];
-                    }
-                }
-            }
-        }*/
         return PDF::loadView('adminlte.gestion.postcocecha.despachos.partials.pdf_packing_list', compact('pedido','vista_despacho','empresa','despacho','cliente'))->stream();
     }
     

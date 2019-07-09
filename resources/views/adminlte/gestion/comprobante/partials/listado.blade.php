@@ -1,4 +1,4 @@
-<div id="table_comprobante">
+    <div id="table_comprobante">
     @if(sizeof($listado)>0)
         <table width="100%" class="table table-responsive table-bordered" style="font-size: 0.8em; border-color: #9d9d9d"
                id="table_content_comprobante">
@@ -127,7 +127,7 @@
                                     <i class="fa fa-eye" aria-hidden="true"></i>
                                 </a>
                                 {{--PARA QUE LA FACTURACION FUNCIONE CON EL VENTURE--}}
-                                <button class="btn btn-warning btn-xs" title="Enviar correo" onclick="enviar_correo('{{$item->id_comprobante}}')">
+                                <button class="btn btn-warning btn-xs" title="Enviar correo" onclick="enviar_correo('{{$item->id_comprobante}}','{{$item->envio->pedido->tipo_especificacion}}')">
                                     <i class="fa fa-envelope-o" aria-hidden="true"></i>
                                 </button>
                             @else
