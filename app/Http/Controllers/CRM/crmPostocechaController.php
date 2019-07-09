@@ -1404,9 +1404,9 @@ class crmPostocechaController extends Controller
         foreach ($request->array_variedades as $variedad) {
             $pos_fila++;
             $objSheet->getCell('A' . $pos_fila)->setValue(getVariedad($variedad['id'])->siglas);
-            $objSheet->getCell('B' . $pos_fila)->setValue($variedad['calibre']);
-            $objSheet->getCell('C' . $pos_fila)->setValue($variedad['clasificados']);
-            $objSheet->getCell('D' . $pos_fila)->setValue($variedad['cosechados']);
+            $objSheet->getCell('B' . $pos_fila)->setValue(number_format($variedad['calibre'], 2));
+            $objSheet->getCell('C' . $pos_fila)->setValue(number_format($variedad['clasificados'], 2));
+            $objSheet->getCell('D' . $pos_fila)->setValue(number_format($variedad['cosechados'], 2));
         }
         $pos_fila++;
         $objSheet->getCell('A' . $pos_fila)->setValue('Resumen');
