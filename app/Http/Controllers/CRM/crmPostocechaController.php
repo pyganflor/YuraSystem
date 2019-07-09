@@ -1307,7 +1307,7 @@ class crmPostocechaController extends Controller
             $objSheet->mergeCells('A' . $pos_fila . ':P' . intval($pos_fila + 14));
 
             $objDrawing = new PHPExcel_Worksheet_MemoryDrawing();
-            $objDrawing->setName('TALLOS');h
+            $objDrawing->setName('TALLOS');
             $objDrawing->setDescription('TALLOS');
             $objDrawing->setImageResource($img_tallos);
             $objDrawing->setRenderingFunction(PHPExcel_Worksheet_MemoryDrawing::RENDERING_PNG);
