@@ -1094,7 +1094,7 @@ class crmPostocechaController extends Controller
                         ->setValue(getMeses(TP_ABREVIADO)[$label->mes - 1] . ' - ' . $label->ano);
                 }
                 $objSheet->getCell($columnas[$pos_col] . '21')->setValue(number_format($listado['array_cajas'][$pos_l], 2));
-                $objSheet->getCell($columnas[$pos_col] . '38')->setValue(number_format($listado['array_tallos'][$pos_l], 2));
+                $objSheet->getCell($columnas[$pos_col] . '38')->setValue(number_format($listado['array_tallos'][$pos_l]));
                 $objSheet->getCell($columnas[$pos_col] . '55')->setValue(number_format($listado['array_calibre'][$pos_l], 2));
                 /* ============== BACKGROUND COLOR =============*/
                 $objSheet->getStyle('A20:' . $columnas[$pos_col] . '20')
@@ -1216,7 +1216,7 @@ class crmPostocechaController extends Controller
                     /* ============== BACKGROUND COLOR =============*/
                     $objSheet->getStyle($columnas[$pos_v] . $pos_fila)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
                         ->getStartColor()->setRGB(str_replace('#', '', $variedad['variedad']->color));
-                    $objSheet->getCell($columnas[$pos_v] . $pos_fila)->setValue(number_format($valor, 2));
+                    $objSheet->getCell($columnas[$pos_v] . $pos_fila)->setValue(number_format($valor));
                 }
             }
 
@@ -1333,7 +1333,7 @@ class crmPostocechaController extends Controller
                     /* ============== BACKGROUND COLOR =============*/
                     $objSheet->getStyle($columnas[$pos_v] . $pos_fila)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
                         ->getStartColor()->setRGB(str_replace('#', '', getListColores()[$pos_a]));
-                    $objSheet->getCell($columnas[$pos_v] . $pos_fila)->setValue(number_format($valor, 2));
+                    $objSheet->getCell($columnas[$pos_v] . $pos_fila)->setValue(number_format($valor));
                 }
             }
 
