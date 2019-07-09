@@ -279,7 +279,7 @@
                     filtro_predeterminado: $('#filtro_predeterminado').val(),
                     filtro_predeterminado_variedad: $('#filtro_predeterminado_variedad').val(),
                     filtro_predeterminado_annos: $('#filtro_predeterminado_annos').val(),
-                    array_variedades: array_variedades
+                    array_variedades: array_variedades,
                 },
                 success: function (data) {
                     var opResult = JSON.parse(data);
