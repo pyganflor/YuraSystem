@@ -1429,6 +1429,11 @@ class crmPostocechaController extends Controller
         $objSheet->getStyle('A1:' . $columnas[count($listado['labels'])] . $pos_fila)
             ->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER)
             ->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+
+        unlink(public_path() . '/images/cajas.png');
+        unlink(public_path() . '/images/tallos.png');
+        unlink(public_path() . '/images/calibres.png');
+
         foreach ($columnas as $c) {
             $objSheet->getColumnDimension($c)->setAutoSize(true);
         }
