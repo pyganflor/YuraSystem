@@ -517,7 +517,7 @@
         $.post('notificaciones/buscar_notificaciones', datos, function (retorno) {
             $('#list_not').html('');
             if (retorno.cant_news > 0) {
-                parseInt(retorno.cant_news) == 1 ? texto = 'Usted tiene 1 notificación' : 'Usted tiene ' + retorno.cant_news + ' notificaciones';
+                retorno.cant_news == 1 ? texto = 'Usted tiene 1 notificación' : texto ='Usted tiene ' + retorno.cant_news + ' notificaciones';
 
                 if (parseInt($('#link_not').html()) < retorno.cant_news)
                     beep_notificar();
