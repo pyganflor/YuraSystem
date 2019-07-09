@@ -890,6 +890,7 @@ class crmPostocechaController extends Controller
         $objPHPExcel->removeSheetByIndex(0); //Eliminar la hoja inicial por defecto
 
         $this->excel_hoja($objPHPExcel, $request);
+        $this->excel_hoja_cajas($objPHPExcel, $request);
 
         //--------------------------- GUARDAR EL EXCEL -----------------------
 
@@ -1440,6 +1441,22 @@ class crmPostocechaController extends Controller
         }
     }
 
+    public function excel_hoja_cajas($objPHPExcel, $request)
+    {
+        $columnas = [0 => 'A', 1 => 'B', 2 => 'C', 3 => 'D', 4 => 'E', 5 => 'F', 6 => 'G', 7 => 'H', 8 => 'I', 9 => 'J', 10 => 'K', 11 => 'L',
+            12 => 'M', 13 => 'N', 14 => 'O', 15 => 'P', 16 => 'Q', 17 => 'R', 18 => 'S', 19 => 'T', 20 => 'U', 21 => 'V', 22 => 'W', 23 => 'X',
+            24 => 'Y', 25 => 'Z', 26 => 'AA', 27 => 'AB', 28 => 'AC', 29 => 'AD', 30 => 'AE', 31 => 'AF', 32 => 'AG', 33 => 'AH', 34 => 'AI',
+            35 => 'AJ', 36 => 'AK', 37 => 'AL', 38 => 'AM', 39 => 'AN', 40 => 'AO', 41 => 'AP', 42 => 'AQ', 43 => 'AR', 44 => 'AS', 45 => 'AT',
+            46 => 'AU', 47 => 'AV', 48 => 'AW', 49 => 'AX', 50 => 'AY', 51 => 'AZ', 52 => 'BA', 53 => 'BB', 54 => 'BC', 55 => 'BD', 56 => 'BE',
+            57 => 'BF', 58 => 'BG', 59 => 'BH', 60 => 'BI', 61 => 'BJ', 62 => 'BK', 63 => 'BL', 64 => 'BM', 65 => 'BN', 66 => 'BO', 67 => 'BP',
+            68 => 'BQ', 69 => 'BR', 70 => 'BS', 71 => 'BT', 72 => 'BU', 73 => 'BV', 74 => 'BW', 75 => 'BX', 76 => 'BY', 77 => 'BZ'];
+
+        $objSheet = new PHPExcel_Worksheet($objPHPExcel, 'Cajas');
+        $objPHPExcel->addSheet($objSheet, 1);
+
+
+    }
+
     public function obtener_data_grafica(Request $request)
     {
         $desde = '1990-01-01';
@@ -1894,6 +1911,40 @@ class crmPostocechaController extends Controller
             //'array_ramos' => $array_ramos,
             'array_tallos' => $array_tallos,
             'array_calibre' => $array_calibre,
+        ];
+    }
+
+    public function obtener_data_cajas_excel(Request $request)
+    {
+        $labels = DB::table('clasificacion_verde as v')
+            ->select('v.fecha_ingreso as dia')->distinct()
+            ->where('v.fecha_ingreso', '>=', $request->desde)
+            ->where('v.fecha_ingreso', '<=', $request->hasta)
+            ->get();
+        $target = getVariedades();
+
+        /* ================ OBTENER RESULTADOS =============*/
+        $arreglo_variedades = [];
+
+        foreach ($target as $variedad) {
+            $array_cajas = [];
+            foreach ($labels as $dia) {
+                $verde = ClasificacionVerde::All()->where('fecha_ingreso', '=', $dia->dia)->first();
+                if ($verde != '') {
+                    array_push($array_cajas, round($verde->getTotalRamosEstandarByVariedad($variedad->id_variedad) / getConfiguracionEmpresa()->ramos_x_caja, 2));
+                }
+            }
+
+            array_push($arreglo_variedades, [
+                'variedad' => $variedad,
+                'cajas' => $array_cajas,
+            ]);
+        }
+
+        return [
+            'target' => $target,
+            'labels' => $labels,
+            'arreglo_variedades' => $arreglo_variedades
         ];
     }
 }
