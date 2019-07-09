@@ -1405,14 +1405,14 @@ class crmPostocechaController extends Controller
             $pos_fila++;
             $objSheet->getCell('A' . $pos_fila)->setValue(getVariedad($variedad['id'])->siglas);
             $objSheet->getCell('B' . $pos_fila)->setValue(number_format($variedad['calibre'], 2));
-            $objSheet->getCell('C' . $pos_fila)->setValue(number_format($variedad['clasificados'], 2));
-            $objSheet->getCell('D' . $pos_fila)->setValue(number_format($variedad['cosechados'], 2));
+            $objSheet->getCell('C' . $pos_fila)->setValue(number_format($variedad['clasificados']));
+            $objSheet->getCell('D' . $pos_fila)->setValue(number_format($variedad['cosechados']));
         }
         $pos_fila++;
         $objSheet->getCell('A' . $pos_fila)->setValue('Resumen');
         $objSheet->getCell('B' . $pos_fila)->setValue(number_format($request->calibre_dia, 2));
-        $objSheet->getCell('C' . $pos_fila)->setValue(number_format($request->clasificados_dia, 2));
-        $objSheet->getCell('D' . $pos_fila)->setValue(number_format($request->cosechados_dia, 2));
+        $objSheet->getCell('C' . $pos_fila)->setValue(number_format($request->clasificados_dia));
+        $objSheet->getCell('D' . $pos_fila)->setValue(number_format($request->cosechados_dia));
         /* ============== BACKGROUND COLOR =============*/
         $objSheet->getStyle('A' . $pos_fila . ':D' . $pos_fila)
             ->getFill()
