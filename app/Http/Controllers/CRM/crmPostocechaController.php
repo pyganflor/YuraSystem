@@ -1761,7 +1761,7 @@ class crmPostocechaController extends Controller
         /* ============== TEXT COLOR =============*/
         $objSheet->getStyle('A' . $pos_fila)
             ->getFont()->getColor()->setRGB('ffffff');
-        $objSheet->getCell('A' . $pos_fila)->setValue('Totales');
+        $objSheet->getCell('A' . $pos_fila)->setValue('Total del día');
         $col = 1;
         $total = 0;
         $positivos = 0;
