@@ -186,7 +186,7 @@
 
     function exportar_excel() {
         if ($('#filtro_predeterminado').val() != '') {
-            setTimeout("enviar_dashboard_exportar()", 0);
+            enviar_dashboard_exportar();
         }
     }
 
