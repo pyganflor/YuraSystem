@@ -509,7 +509,7 @@
         $.LoadingOverlay('hide');
     }
 
-    function buscar_notificaciones(tipo) {
+    function buscar_notificaciones(tipo, push = true) {
         datos = {
             _token: '{{csrf_token()}}',
             tipo: tipo
@@ -526,10 +526,12 @@
                 $('#header_not').html(texto);
                 $('#list_not').append(retorno.news);
 
-                for (i = 0; i < retorno.array.length; i++) {
-                    notificar(retorno.array[i]['texto'], true, function () {
-                        window.open('{{url('')}}/' + retorno.array[i]['url'], '_blank');
-                    }, 5000, false);
+                if (push == false) {
+                    for (i = 0; i < retorno.array.length; i++) {
+                        notificar(retorno.array[i]['texto'], true, function () {
+                            window.open('{{url('')}}/' + retorno.array[i]['url'], '_blank');
+                        }, 5000, false);
+                    }
                 }
             } else {
                 $('#link_not').html('');
@@ -540,7 +542,7 @@
         });
     }
 
-    buscar_notificaciones("S");
+    buscar_notificaciones("S", false);
     setInterval('buscar_notificaciones("S")', 600000);
 
     /* =============== Variables para configuracion =====================*/
