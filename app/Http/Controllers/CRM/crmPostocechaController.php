@@ -895,10 +895,10 @@ class crmPostocechaController extends Controller
 
         $objPHPExcel->removeSheetByIndex(0); //Eliminar la hoja inicial por defecto
 
-        $this->excel_hoja($objPHPExcel, $request);
         $this->excel_hoja_cajas($objPHPExcel, $request);
         $this->excel_hoja_tallos($objPHPExcel, $request);
         $this->excel_hoja_calibres($objPHPExcel, $request);
+        $this->excel_hoja($objPHPExcel, $request);
 
         //--------------------------- GUARDAR EL EXCEL -----------------------
 
