@@ -895,9 +895,9 @@ class crmPostocechaController extends Controller
 
         $objPHPExcel->removeSheetByIndex(0); //Eliminar la hoja inicial por defecto
 
-        $this->excel_hoja_cajas($objPHPExcel, $request);
-        $this->excel_hoja_tallos($objPHPExcel, $request);
-        $this->excel_hoja_calibres($objPHPExcel, $request);
+        $this->excel_hoja_cajas($objPHPExcel);
+        $this->excel_hoja_tallos($objPHPExcel);
+        $this->excel_hoja_calibres($objPHPExcel);
         $this->excel_hoja($objPHPExcel, $request);
 
         //--------------------------- GUARDAR EL EXCEL -----------------------
@@ -1450,7 +1450,7 @@ class crmPostocechaController extends Controller
         }
     }
 
-    public function excel_hoja_cajas($objPHPExcel, $request)
+    public function excel_hoja_cajas($objPHPExcel)
     {
         $columnas = [0 => 'A', 1 => 'B', 2 => 'C', 3 => 'D', 4 => 'E', 5 => 'F', 6 => 'G', 7 => 'H', 8 => 'I', 9 => 'J', 10 => 'K', 11 => 'L',
             12 => 'M', 13 => 'N', 14 => 'O', 15 => 'P', 16 => 'Q', 17 => 'R', 18 => 'S', 19 => 'T', 20 => 'U', 21 => 'V', 22 => 'W', 23 => 'X',
@@ -1564,7 +1564,7 @@ class crmPostocechaController extends Controller
         }
     }
 
-    public function excel_hoja_tallos($objPHPExcel, $request)
+    public function excel_hoja_tallos($objPHPExcel)
     {
         $columnas = [0 => 'A', 1 => 'B', 2 => 'C', 3 => 'D', 4 => 'E', 5 => 'F', 6 => 'G', 7 => 'H', 8 => 'I', 9 => 'J', 10 => 'K', 11 => 'L',
             12 => 'M', 13 => 'N', 14 => 'O', 15 => 'P', 16 => 'Q', 17 => 'R', 18 => 'S', 19 => 'T', 20 => 'U', 21 => 'V', 22 => 'W', 23 => 'X',
@@ -1678,7 +1678,7 @@ class crmPostocechaController extends Controller
         }
     }
 
-    public function excel_hoja_calibres($objPHPExcel, $request)
+    public function excel_hoja_calibres($objPHPExcel)
     {
         $columnas = [0 => 'A', 1 => 'B', 2 => 'C', 3 => 'D', 4 => 'E', 5 => 'F', 6 => 'G', 7 => 'H', 8 => 'I', 9 => 'J', 10 => 'K', 11 => 'L',
             12 => 'M', 13 => 'N', 14 => 'O', 15 => 'P', 16 => 'Q', 17 => 'R', 18 => 'S', 19 => 'T', 20 => 'U', 21 => 'V', 22 => 'W', 23 => 'X',
