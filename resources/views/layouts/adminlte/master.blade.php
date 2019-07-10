@@ -543,7 +543,7 @@
     }
 
     buscar_notificaciones("S", false);
-    setInterval('buscar_notificaciones("S")', 600000);
+    setInterval('buscar_notificaciones("S", true)', 600000);
 
     /* =============== Variables para configuracion =====================*/
     var $pushMenu = $('[data-toggle="push-menu"]').data('lte.pushmenu')

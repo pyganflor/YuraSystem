@@ -34,6 +34,7 @@
                 @foreach($arreglo_variedades as $v)
                     @php
                         $total = 0;
+                        $positivos = 0;
                     @endphp
                     <tr>
                         <th class="text-center" style="border-color: #9d9d9d">
@@ -45,10 +46,12 @@
                             </td>
                             @php
                                 $total += $valor;
+                                if($valor > 0)
+                                    $positivos++;
                             @endphp
                         @endforeach
                         <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
-                            {{round($total / count($labels), 2)}}
+                            {{$positivos > 0 ? round($total / $positivos, 2) : 0}}
                         </th>
                     </tr>
                 @endforeach
