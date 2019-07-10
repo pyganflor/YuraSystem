@@ -1463,7 +1463,7 @@ class crmPostocechaController extends Controller
         $objSheet = new PHPExcel_Worksheet($objPHPExcel, 'Cajas');
         $objPHPExcel->addSheet($objSheet, 1);
 
-        $data = $this->obtener_data_cajas_excel($request);
+        $data = $this->obtener_data_cajas_excel(opDiasFecha('-', 7, date('Y-m-d')), opDiasFecha('-', 1, date('Y-m-d')));
 
         /* ------------------------------- encabezado ------------------------------ */
         $array_totales = [];
@@ -1577,7 +1577,7 @@ class crmPostocechaController extends Controller
         $objSheet = new PHPExcel_Worksheet($objPHPExcel, 'Tallos');
         $objPHPExcel->addSheet($objSheet, 2);
 
-        $data = $this->obtener_data_tallos_excel($request);
+        $data = $this->obtener_data_tallos_excel(opDiasFecha('-', 7, date('Y-m-d')), opDiasFecha('-', 1, date('Y-m-d')));
 
         /* ------------------------------- encabezado ------------------------------ */
         $array_totales = [];
@@ -1691,7 +1691,7 @@ class crmPostocechaController extends Controller
         $objSheet = new PHPExcel_Worksheet($objPHPExcel, 'Calibres');
         $objPHPExcel->addSheet($objSheet, 3);
 
-        $data = $this->obtener_data_calibres_excel($request);
+        $data = $this->obtener_data_calibres_excel(opDiasFecha('-', 7, date('Y-m-d')), opDiasFecha('-', 1, date('Y-m-d')));
 
         /* ------------------------------- encabezado ------------------------------ */
         $array_totales = [];
@@ -2257,12 +2257,12 @@ class crmPostocechaController extends Controller
         ];
     }
 
-    public function obtener_data_cajas_excel(Request $request)
+    public function obtener_data_cajas_excel($desde, $hasta)
     {
         $labels = DB::table('clasificacion_verde as v')
             ->select('v.fecha_ingreso as dia')->distinct()
-            ->where('v.fecha_ingreso', '>=', $request->desde)
-            ->where('v.fecha_ingreso', '<=', $request->hasta)
+            ->where('v.fecha_ingreso', '>=', $desde)
+            ->where('v.fecha_ingreso', '<=', $hasta)
             ->get();
         $target = getVariedades();
 
@@ -2291,12 +2291,12 @@ class crmPostocechaController extends Controller
         ];
     }
 
-    public function obtener_data_tallos_excel(Request $request)
+    public function obtener_data_tallos_excel($desde, $hasta)
     {
         $labels = DB::table('clasificacion_verde as v')
             ->select('v.fecha_ingreso as dia')->distinct()
-            ->where('v.fecha_ingreso', '>=', $request->desde)
-            ->where('v.fecha_ingreso', '<=', $request->hasta)
+            ->where('v.fecha_ingreso', '>=', $desde)
+            ->where('v.fecha_ingreso', '<=', $hasta)
             ->get();
         $target = getVariedades();
 
@@ -2325,12 +2325,12 @@ class crmPostocechaController extends Controller
         ];
     }
 
-    public function obtener_data_calibres_excel(Request $request)
+    public function obtener_data_calibres_excel($desde, $hasta)
     {
         $labels = DB::table('clasificacion_verde as v')
             ->select('v.fecha_ingreso as dia')->distinct()
-            ->where('v.fecha_ingreso', '>=', $request->desde)
-            ->where('v.fecha_ingreso', '<=', $request->hasta)
+            ->where('v.fecha_ingreso', '>=', $desde)
+            ->where('v.fecha_ingreso', '<=', $hasta)
             ->get();
         $target = getVariedades();
 
