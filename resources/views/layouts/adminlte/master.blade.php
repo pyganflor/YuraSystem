@@ -526,7 +526,7 @@
                 $('#header_not').html(texto);
                 $('#list_not').append(retorno.news);
 
-                if (push == false) {
+                if (push == true) {
                     for (i = 0; i < retorno.array.length; i++) {
                         notificar(retorno.array[i]['texto'], true, function () {
                             window.open('{{url('')}}/' + retorno.array[i]['url'], '_blank');
