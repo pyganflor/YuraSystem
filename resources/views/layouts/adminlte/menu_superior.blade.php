@@ -19,6 +19,21 @@
 
         <div class="navbar-custom-menu">
             <ul class="nav navbar-nav">
+                @if(in_array(getUsuario(Session::get('id_usuario'))->rol()->nombre,['SUPER_ADMINISTRADOR', 'ADMINISTRADOR']))
+                    <li class="dropdown notifications-menu">
+                        <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"
+                           onclick="actualizar_cosecha_x_variedad('li_cosecha_hoy', false)">
+                            <i class="fa fa-times"></i>
+                        </a>
+                        <ul class="dropdown-menu" style="">
+                            <li>
+                                <div id="li_cosecha_hoy" style="padding: 10px">
+
+                                </div>
+                            </li>
+                        </ul>
+                    </li>
+                @endif
                 <li class="dropdown notifications-menu" title="Notifícame">
                     <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"
                        onclick="buscar_notificaciones('S', false)">

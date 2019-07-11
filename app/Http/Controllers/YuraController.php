@@ -11,6 +11,7 @@ use yura\Modelos\Ciclo;
 use yura\Modelos\ClasificacionBlanco;
 use yura\Modelos\ClasificacionVerde;
 use yura\Modelos\ConfiguracionUser;
+use yura\Modelos\Cosecha;
 use yura\Modelos\Pedido;
 use yura\Modelos\Rol;
 use yura\Modelos\StockApertura;

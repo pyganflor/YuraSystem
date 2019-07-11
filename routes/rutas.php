@@ -101,5 +101,5 @@ Route::group(['middleware' => 'autenticacion'], function () {
     });
 
 });
-    include 'notificaciones/otras.php';
+include 'notificaciones/otras.php';
 
