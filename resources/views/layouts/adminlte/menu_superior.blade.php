@@ -19,7 +19,7 @@
 
         <div class="navbar-custom-menu">
             <ul class="nav navbar-nav">
-                @if(in_array(getUsuario(Session::get('id_usuario'))->rol()->nombre,['SUPER_ADMINISTRADOR', 'ADMINISTRADOR']))
+                @if(in_array(getUsuario(Session::get('id_usuario'))->rol()->nombre,['SUPER ADMINISTRADOR', 'ADMINISTRADOR']))
                     <li class="dropdown notifications-menu">
                         <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"
                            onclick="actualizar_cosecha_x_variedad('li_cosecha_hoy', false)">
