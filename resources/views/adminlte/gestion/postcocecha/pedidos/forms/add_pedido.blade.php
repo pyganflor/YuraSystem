@@ -91,7 +91,7 @@
                                 <textarea name="descripcion" id="descripcion" cols="200" rows="5" class="form-control"></textarea>
                             </td>
                         </tr>--}}
-                        @if((isset( $comprobante->estado) && $comprobante->estado != 5) && (isset($comprobante->estado) && $comprobante->estado != 6)|| !isset( $comprobante->estado))
+                        @if((isset($comprobante->estado) && $comprobante->estado != 5) && (isset($comprobante->estado) && $comprobante->estado != 6) && (isset(getPedido($id_pedido)->envios[0]->comprobante->integrado) && !getPedido($id_pedido)->envios[0]->comprobante->integrado) || !isset($comprobante->estado))
                             <tr>
                                 <td class="text-center" style="padding: 10px 0px 0px">
                                     <button type="button" class=" btn btn-app btn-xs btn-success"

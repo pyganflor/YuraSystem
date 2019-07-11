@@ -99,20 +99,44 @@
         });
     }
 
-    function store_especificacion_pedido(id_detalle_pedido,id_cliente_pedido_especificacion,orden,id_agencia_carga){
+    function store_especificacion_pedido(id_agencia_carga,id_pedido,vista){
         $.LoadingOverlay('show');
+        var arr_especificaciones = [], arr_ordenado, arrDatosExportacion = [], cant_datos_exportacion = $(".th_datos_exportacion").length;
+        $.each($("input.orden"), function (i, j) {
+            if (j.value !== '')
+                arr_especificaciones.push(j.value);
+        });
+        arr_ordenado = arr_especificaciones.sort(menor_mayor);
+        for (z = 0; z < arr_ordenado.length; z++) {
+            if (cant_datos_exportacion > 0) {
+                $.each($('input.orden'), function (i, j) {
+                    arrDatosExportacionEspecificacion = [];
+                    if (arr_ordenado[z] === j.value) {
+                        for (a = 1; a <= cant_datos_exportacion; a++) { //1
+                            nombre_columna_dato_exportacion = $("#th_datos_exportacion_" + a).text().trim().toUpperCase();
+                            if( $("#input_" + nombre_columna_dato_exportacion + "_" + (i + 1)).val() !== ""){
+                                arrDatosExportacionEspecificacion.push({
+                                    valor: $("#input_" + nombre_columna_dato_exportacion + "_" + (i + 1)).val(),
+                                    id_dato_exportacion : $("#id_dato_exportacion_" + nombre_columna_dato_exportacion + "_" + (i + 1)).val(),
+                                    id_detalle_pedido : $("#id_det_ped_"+(i+1)).val()
+                                });
+                            }
+                        }
+                        arrDatosExportacion.push(arrDatosExportacionEspecificacion);
+                    }
+                });
+            }
+        }
         datos ={
-            id_detalle_pedido : id_detalle_pedido,
-            id_cliente_pedido_especificacion : id_cliente_pedido_especificacion,
-            orden : orden,
-            id_agencia_carga : id_agencia_carga
+            arrDatosExportacion : arrDatosExportacion,
+            id_agencia_carga : $("#id_agencia_carga_1").val(),
+            id_pedido : id_pedido,
+            _token : '{{csrf_token()}}'
         };
         post_jquery('clientes/store_especificacion_pedido', datos, function () {
             cerrar_modals();
             listar_resumen_pedidos($('#fecha_pedidos_search').val(), true);
-            if (vista != 'pedidos') {
-                detalles_cliente(id_cliente == '' ? id_cliente = $("#id_cliente_venta").val() : id_cliente);
-            }
+
         });
         $.LoadingOverlay('hide');
 

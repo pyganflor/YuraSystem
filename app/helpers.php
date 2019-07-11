@@ -1321,7 +1321,10 @@ function accionAutorizacion($autorizacion, $path, $msg, $tipoDocumento = false, 
             $causa .= $mensaje->mensaje . ": " . $mensaje->informacionAdicional . ", Tipo: " . $mensaje->tipo . ", ";
     }
 
-    $objComprobante = Comprobante::where('clave_acceso', $numeroAutorizacion);
+    $objComprobante = Comprobante::where([
+        ['clave_acceso', $numeroAutorizacion],
+        ['tipo_comprobante','01']
+    ]);
     $autorizacion->estado !== "AUTORIZADO"
         ? $objComprobante->update(['cuasa' => $causa])
         : $objComprobante->update(['estado' => $actualizaEstado, 'numero_comprobante' => $numeroComprobante]);
@@ -1358,11 +1361,16 @@ function accionAutorizacion($autorizacion, $path, $msg, $tipoDocumento = false, 
 function generaDocumentoPDF($autorizacion, $tipo_documento, $pre_factura = false)
 {
     if ($tipo_documento == "01")
-        $dataComprobante = Comprobante::where('clave_acceso', isset($autorizacion->numeroAutorizacion) ? (String)$autorizacion->numeroAutorizacion : (String)$autorizacion->infoTributaria->claveAcceso)->select('id_envio')->first();
+        $dataComprobante = Comprobante::where([
+            ['clave_acceso', isset($autorizacion->numeroAutorizacion) ? (String)$autorizacion->numeroAutorizacion : (String)$autorizacion->infoTributaria->claveAcceso],
+            ['tipo_comprobante','01']
+        ])->select('id_envio')->first();
 
     if ($tipo_documento == "06")
-        $dataComprobante = Comprobante::where('clave_acceso', isset($autorizacion->numeroAutorizacion) ? (String)$autorizacion->numeroAutorizacion : (String)$autorizacion->infoTributaria->claveAcceso)
-            ->join('detalle_guia_remision as dgr', 'comprobante.id_comprobante', 'dgr.id_comprobante')->select('id_comprobante_relacionado')->first();
+        $dataComprobante = Comprobante::where([
+            ['clave_acceso', isset($autorizacion->numeroAutorizacion) ? (String)$autorizacion->numeroAutorizacion : (String)$autorizacion->infoTributaria->claveAcceso],
+            ['tipo_comprobante','06']
+        ])->join('detalle_guia_remision as dgr', 'comprobante.id_comprobante', 'dgr.id_comprobante')->select('id_comprobante_relacionado')->first();
 
     $data = [
         'autorizacion' => $autorizacion,

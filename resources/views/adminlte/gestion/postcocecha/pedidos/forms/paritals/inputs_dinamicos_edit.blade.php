@@ -48,7 +48,7 @@
                 AGENCIA DE CARGA
             </th>
             @foreach($datos_exportacion as $key => $de)
-                <th class="th_datos_exportacion text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
+                <th class="th_datos_exportacion th_dato_exportacion_{{$de->id_dato_exportacion}} text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
                     id="th_datos_exportacion_{{$key+1}}" style="border-color: #9d9d9d;width: 80px;">
                     {{strtoupper($de->nombre)}}
                 </th>
@@ -72,6 +72,7 @@
                                     class="text-center" rowspan="{{getCantidadDetallesByEspecificacion($det_ped->cliente_especificacion->especificacion->id_especificacion)}}">
                                     <input type="checkbox" class="seleccion_invidual no_edit" style="font-size: 14px;"  name="seleccion_invidual" id="seleccion_invidual_{{($x+1)}}"
                                            checked onclick="calcular_precio_pedido()">
+                                    <input type="hidden" id="id_det_ped_{{$x+1}}" name="id_det_ped_{{$x+1}}" value="{{$det_ped->id_detalle_pedido}}">
                                 </td>
                                 <td style="border-color: #9d9d9d; padding: 0px; vertical-align: middle; width: 30px; text-align:center"
                                     class="text-center" rowspan="{{getCantidadDetallesByEspecificacion($det_ped->cliente_especificacion->especificacion->id_especificacion)}}" >
@@ -128,7 +129,7 @@
                                 <td class="text-center" style="border-color: #9d9d9d; vertical-align: middle"
                                    rowspan="{{getCantidadDetallesByEspecificacion($det_ped->cliente_especificacion->especificacion->id_especificacion)}}">
                                    <select name="id_agencia_carga_{{$det_ped->cliente_especificacion->especificacion->id_especificacion}}" id="id_agencia_carga_{{$x+1}}"
-                                            class="text-center form-control" style="border: none; width: 100%" required>
+                                            class="text-center form-control agencia_carga" style="border: none; width: 100%" onchange="agencia_selected(this)" required>
                                        @foreach($agenciasCarga as $agencia)
                                            <option {!! ($det_ped->id_agencia_carga == $agencia->id_agencia_carga) ? "selected" : ""!!} value="{{$agencia->id_agencia_carga}}">{{$agencia->nombre}}</option>
                                        @endforeach
@@ -143,10 +144,9 @@
                                 @endforeach
                                 <td class="text-center" style="border-color: #9d9d9d; vertical-align: middle"
                                         rowspan="{{getCantidadDetallesByEspecificacion($det_ped->cliente_especificacion->especificacion->id_especificacion)}}">
-
-                                    @if(isset(getPedido($id_pedido)->envios[0]->comprobante) && getPedido($id_pedido)->envios[0]->comprobante->estado == 5)
-                                        <button type="button" class="btn btn-xs btn-success" onclick="store_especificacion_pedido('{{$det_ped->id_detalle_pedido}}','{{$det_ped->cliente_especificacion->id_cliente_pedido_especificacion}}','{{$det_ped->orden}}','{{$det_ped->id_agencia_carga}}')">
-                                            <i class="fa fa-floppy-o" ></i>
+                                    @if($x == 0 && isset(getPedido($id_pedido)->envios[0]->comprobante) && getPedido($id_pedido)->envios[0]->comprobante->estado == 5 || isset(getPedido($id_pedido)->envios[0]->comprobante->integrado) && getPedido($id_pedido)->envios[0]->comprobante->integrado)
+                                        <button type="button" class="btn btn-xs btn-success" onclick="store_especificacion_pedido('{{$det_ped->id_agencia_carga}}','{{$id_pedido}}')" title="Actualizar datos">
+                                            <i class="fa fa-floppy-o" ></i> Actualizar
                                         </button>
                                     @else
                                         <button type="button" class="btn btn-xs btn-primary" onclick="duplicar_especificacion('{{$det_ped->cliente_especificacion->especificacion->id_especificacion}}','{{$x+1}}')">
@@ -248,7 +248,7 @@
                                 <td class="text-center" style="border-color: #9d9d9d; vertical-align: middle"
                                     rowspan="{{getCantidadDetallesByEspecificacion($item->id_especificacion)}}">
                                     <select name="id_agencia_carga_{{$item->id_especificacion}}" id="id_agencia_carga_{{$x+$cant_esp_creadas}}"
-                                            class="text-center form-control" style="border: none; width: 100%">
+                                            class="text-center form-control agencia_carga" style="border: none; width: 100%" >
                                         @foreach($agenciasCarga as $agencia)
                                             <option value="{{$agencia->id_agencia_carga}}">{{$agencia->nombre}}</option>
                                         @endforeach
@@ -264,9 +264,11 @@
                                 <td class="text-center" style="border-color: #9d9d9d; vertical-align: middle"
                                     rowspan="{{getCantidadDetallesByEspecificacion($item->id_especificacion)}}">
                                     @if(!isset(getPedido($id_pedido)->envios[0]->comprobante))
-                                    <button type="button" class="btn btn-xs btn-primary" onclick="duplicar_especificacion('{{$item->id_especificacion}}','{{$x+$cant_esp_creadas}}')">
-                                        <i class="fa fa-fw fa-copy"></i>
-                                    </button>
+                                        @if(!isset(getPedido($id_pedido)->envios[0]->comprobante) && (isset(getPedido($id_pedido)->envios[0]->comprobante->estado) && getPedido($id_pedido)->envios[0]->comprobante->estado == 1))
+                                            <button type="button" class="btn btn-xs btn-primary" onclick="duplicar_especificacion('{{$item->id_especificacion}}','{{$x+$cant_esp_creadas}}')">
+                                                <i class="fa fa-fw fa-copy"></i>
+                                            </button>
+                                        @endif
                                     @endif
                                 </td>
                             @endif
@@ -278,7 +280,7 @@
             {{--FIN ESPECIFICACIONES RESTANTES--}}
         </tbody>
     </table>
-    @if(isset(getPedido($id_pedido)->envios[0]->comprobante) && getPedido($id_pedido)->envios[0]->comprobante->estado == 5)
+    @if(isset(getPedido($id_pedido)->envios[0]->comprobante) && getPedido($id_pedido)->envios[0]->comprobante->estado == 5 )
         <script>
             $.each($(".modal-content input.no_edit"),function (i,j) {
                 $(j).attr('disabled', true);
@@ -286,6 +288,12 @@
             $.each($(".modal-content select.no_edit"),function (i,j) {
                 $(j).attr('disabled', true);
             });
+            function agencia_selected(select){
+                $.each($(".agencia_carga option[value='"+select.value+"']"),function(i,j){
+                    $(j).removeAttr('selected');
+                    $(j).attr('selected', true);
+                });
+            }
         </script>
     @endif
 

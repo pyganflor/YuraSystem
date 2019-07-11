@@ -1004,11 +1004,16 @@ class ComprobanteController extends Controller
         $tipo_documento = getDetallesClaveAcceso($clave_acceso,'TIPO_COMPROBANTE');
 
         if($tipo_documento == "01")
-            $dataComprobante = Comprobante::where('clave_acceso', $clave_acceso)->select('numero_comprobante','id_envio')->first();
+            $dataComprobante = Comprobante::where([
+                ['clave_acceso', $clave_acceso],
+                ['tipo_comprobante','01']
+            ])->select('numero_comprobante','id_envio')->first();
 
         if($tipo_documento == "06")
-            $dataComprobante = Comprobante::where('clave_acceso', $clave_acceso)
-                ->join('detalle_guia_remision as dgr','comprobante.id_comprobante','dgr.id_comprobante')->select('id_comprobante_relacionado')->first();
+            $dataComprobante = Comprobante::where([
+                ['clave_acceso', $clave_acceso],
+                ['tipo_comprobante','06']
+            ])->join('detalle_guia_remision as dgr','comprobante.id_comprobante','dgr.id_comprobante')->select('id_comprobante_relacionado')->first();
 
         $cliente = new SoapClient(env('URL_WS_ATURIZACION'));
         $response = $cliente->autorizacionComprobante(["claveAccesoComprobante" => $clave_acceso]);
@@ -1061,7 +1066,10 @@ class ComprobanteController extends Controller
     public function ver_pre_factura_bd(Request $request, $secuencial,$cliente=false){
         $path = explode('/',$request->path())[0];
         if($path === "comprobante"){
-            $comprobante = Comprobante::where('secuencial',$secuencial)->first();
+            $comprobante = Comprobante::where([
+                ['secuencial',$secuencial],
+                ['tipo_comprobante', '01']
+            ])->first();
         }elseif($path=== "pedidos"){
             $comprobante = getPedido($secuencial)->envios[0]->comprobante;
         }
@@ -1069,7 +1077,6 @@ class ComprobanteController extends Controller
         if($comprobante == null){
             $data = null;
         }else{
-
             $img_clave_acceso = null;
             if($comprobante->clave_acceso != null)
                 $img_clave_acceso = generateCodeBarGs1128($comprobante->clave_acceso);
@@ -1599,7 +1606,10 @@ class ComprobanteController extends Controller
         ],['fecha.required'=>'Debe elegir un fecha de busqueda']);
 
         if(!$valida->fails()) {
-            $comprobantes = Comprobante::where('fecha_emision',$request->fecha)->get();
+            $comprobantes = Comprobante::where([
+                ['fecha_emision',$request->fecha],
+                ['tipo_comprobante','01']
+            ])->get();
             $msg ="";
             foreach ($comprobantes as $comprobante){
                 if(file_exists(env('PATH_XML_AUTORIZADOS').'facturas/'.'fac_'.$comprobante->secuencial.'.xml')){

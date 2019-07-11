@@ -36,12 +36,12 @@
                 @endphp
                 <div class="box box-solid box-primary">
                     <div class="box-header with-border">
-                        <div class="box-title col-md-3" style="margin-top: 5px;"><b>Envío N#:</b>
-                            ENV{{str_pad($envio->id_envio,9,"0",STR_PAD_LEFT)}}</div>
+                        <div class="box-title col-md-3" style="margin-top: 5px;"><b>Factura# {{isset($envio->comprobante) ? $envio->comprobante->secuencial : ""}}</b>
+                           </div>
                         <div class="box-title col-md-5" style="margin-top: 5px;"><b>Cliente:</b>
                             {{$envio->nombre}}
                         </div>
-                        <div class="box-title col-md-4 text-right"><b>Fecha envío:</b>
+                        <div class="box-title col-md-4 text-right"><b>Fecha:</b>
                             <input type="date"  id="fecha_envio" name="fecha_envio" style="color:black"
                                    {{($facturado) ? "disabled='disabled'" : ""}}
                                    value="{{Carbon\Carbon::parse($envio->fecha_envio)->format('Y-m-d')}}">

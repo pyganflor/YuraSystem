@@ -202,7 +202,6 @@ function store_pedido(id_cliente, pedido_fijo, csrf_token, vista, id_pedido, com
                         if ($(".cantidad_piezas_" + (i + 1)).val() != "" && $(".cantidad_piezas_" + (i + 1)).val() != 0 && arr_ordenado[z] === j.value) {
                             for (a = 1; a <= cant_datos_exportacion; a++) { //1
                                 nombre_columna_dato_exportacion = $("#th_datos_exportacion_" + a).text().trim().toUpperCase();
-                                console.log("#input_" + nombre_columna_dato_exportacion + "_" + (i + 1));
                                 arrDatosExportacionEspecificacion.push({
                                     valor: $("#input_" + nombre_columna_dato_exportacion + "_" + (i + 1)).val(),
                                     id_dato_exportacion: $("#id_dato_exportacion_" + nombre_columna_dato_exportacion + "_" + (i + 1)).val()
@@ -1568,7 +1567,8 @@ function genera_comprobante_cliente(id_envio, form, action, token, id_comprobant
         }, tiempo);
         $.get('comprobante/generar_comprobante_factura', datos, function (retorno) {
             modal_view('modal_view_msg_factura', retorno, '<i class="fa fa-check" aria-hidden="true"></i> Estatus facturas', true, false, '50%');
-            buscar_listado_envios();
+            //buscar_listado_envios();
+            listar_resumen_pedidos($('#fecha_pedidos_search').val(), true);
         }).always(function () {
             $.LoadingOverlay("hide");
         });

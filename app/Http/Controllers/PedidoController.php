@@ -505,15 +505,54 @@ class PedidoController extends Controller
         $msg = '<div class="alert alert-danger text-center">' .
             '<p> Ha ocurrido un problema al guardar la información al sistema, intente nuevamente</p>'
             . '</div>';
+        $save = false;
 
-        $objDetallePedido = DetallePedido::where([
-            'id_detalle_pedido', $request->id_detalle_pedido,
-            'id_cliente_especificacion',  $request->id_cliente_pedido_especificacion,
-            'orden' , $request->orden,
-        ]);
-        if($objDetallePedido->update([ 'id_agencia_carga' => id_agencia_carga ])){
-
+        if($request->arrDatosExportacion != null){
+            foreach($request->arrDatosExportacion as $dato_exportacion){
+                foreach ($dato_exportacion as $de) {
+                    $objDetallePedido = DetallePedido::find($de['id_detalle_pedido']);
+                    if($objDetallePedido->update(['id_agencia_carga' => $request->id_agencia_carga])){
+                        $objDetallePedidoDatoExportacion = DetallePedidoDatoExportacion::where([
+                            ['id_detalle_pedido',$de['id_detalle_pedido']],
+                            ['id_dato_exportacion', $de['id_dato_exportacion']]
+                        ]);
+                        if($objDetallePedidoDatoExportacion->first() == null){
+                            $detallePedidoDatoExportacion = new DetallePedidoDatoExportacion;
+                            $detallePedidoDatoExportacion->id_detalle_pedido = $de['id_detalle_pedido'];
+                            $detallePedidoDatoExportacion->id_dato_exportacion = $de['id_dato_exportacion'];
+                            $detallePedidoDatoExportacion->valor = $de['valor'];
+                            $detallePedidoDatoExportacion->save()
+                                ? $save = true
+                                : $save = false;
+                        }else{
+                            $objDetallePedidoDatoExportacion = DetallePedidoDatoExportacion::find($objDetallePedidoDatoExportacion->first()->id_detallepedido_datoexportacion);
+                            $objDetallePedidoDatoExportacion->update(['valor'=>$de['valor']])
+                                ? $save = true
+                                : $save = false;
+                        }
+                        if($save){
+                            $success = true;
+                            $msg = '<div class="alert alert-success text-center">' .
+                                '<p> Se ha actualizado la información con éxito</p>'
+                                . '</div>';
+                        }
+                    }
+                }
+            }
+        }else{
+            dd($request->id_pedido,$request->id_agencia_carga   );
+            $objDetallePedido = DetallePedido::where('id_pedido',$request->id_pedido);
+            if($objDetallePedido->update(['id_agencia_carga' => $request->id_agencia_carga])){
+                $success = true;
+                $msg = '<div class="alert alert-success text-center">' .
+                    '<p> Se ha actualizado la información con éxito</p>'
+                    . '</div>';
+            }
         }
+        return [
+            'mensaje' => $msg,
+            'success' => $success
+        ];
     }
 
 }
