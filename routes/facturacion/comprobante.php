@@ -17,3 +17,14 @@ Route::post('comprobante/integrar_comprobante', 'ComprobanteController@integrar_
 //RUTA PARA QUE LA FACTURACION FUNCIONE CON EL VENTURE (LEE LOS DATOS DE LA PRE-FACTURA DESDE LA BD)
 Route::get('comprobante/documento_pre_factura/{secuencial}/{cliente?}', 'ComprobanteController@ver_pre_factura_bd');
 Route::post('comprobante/enviar_correo', 'ComprobanteController@enviar_correo');
+Route::post('comprobante/desvincular_factura_venture', 'ComprobanteController@desvincular_factura_venture');
+Route::post('comprobante/actualizar_comprobante_venture', 'ComprobanteController@actualizar_comprobante_venture');
+Route::post('comprobante/anular_factura', 'ComprobanteController@anular_factura');
+
+Route::get('comprobante/prueba',function(){
+    //  $f = scandir('\\\\192.168.154.193\Public\Archivos firma');
+    $a =simplexml_load_string(file_get_contents(env('PATH_XML_RECHAZADOS').'facturas/0705201900179244632500110010010000004791234567816.xml'));
+
+    dd($a);
+
+});

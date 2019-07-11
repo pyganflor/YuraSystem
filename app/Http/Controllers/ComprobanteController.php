@@ -1104,7 +1104,7 @@ class ComprobanteController extends Controller
             return PDF::loadView('adminlte.gestion.comprobante.partials.pdf.guia', compact('data'))->stream();
         }else{
             $msg = "<div class='alert text-center  alert-danger'>" .
-                "<p> El archivo del documento no existe, por favor contactarse con el área de sistemas. </p>"
+                "<p> El archivo del documento no existe, por favor contactarse con el área de sistemas2. </p>"
                 . "</div>";
             return $msg;
         }
@@ -1572,5 +1572,118 @@ class ComprobanteController extends Controller
 
     }
 
-}
+    public function desvincular_factura_venture(Request $request){
+        $success = false;
+        $msg = '<div class="alert alert-warning text-center">' .
+            '<p> Ha ocurrido un problema al desvincular la factura, intente nuevamente</p>'
+            . '</div>';
 
+        $objComprobante = Comprobante::find($request->id_comprobante);
+        if($objComprobante->update(['integrado'=>false])){
+            $success = true;
+            $msg = '<div class="alert alert-success text-center">' .
+                '<p> Se ha desvinculado la facutra exitosamente</p>'
+                . '</div>';
+        }
+
+        return [
+            'success' => $success,
+            'mensaje' => $msg,
+        ];
+
+    }
+
+    public function actualizar_comprobante_venture(Request $request){
+        $valida = Validator::make($request->all(), [
+            'fecha' => 'required',
+        ],['fecha.required'=>'Debe elegir un fecha de busqueda']);
+
+        if(!$valida->fails()) {
+            $comprobantes = Comprobante::where('fecha_emision',$request->fecha)->get();
+            $msg ="";
+            foreach ($comprobantes as $comprobante){
+                if(file_exists(env('PATH_XML_AUTORIZADOS').'facturas/'.'fac_'.$comprobante->secuencial.'.xml')){
+                    $cadena = file_get_contents(env('PATH_XML_AUTORIZADOS').'facturas/'.'fac_'.$comprobante->secuencial.'.xml');
+                    $objXmlAutorizado = simplexml_load_string($cadena);
+                    $objComprobante = Comprobante::find($comprobante->id_comprobante);
+                    if((String)$objXmlAutorizado->estado === "AUTORIZADO"){
+                        $save = $objComprobante->update([
+                            'estado' => 5,
+                            'clave_acceso' => (String)$objXmlAutorizado->numeroAutorizacion,
+                            'fecha_autorizacion' => Carbon::parse((String)$objXmlAutorizado->fechaAutorizacion)->format('Y-m-d H:m:s' ),
+                            'numero_comprobante' => "001-".getDetallesClaveAcceso((String)$objXmlAutorizado->numeroAutorizacion, 'PUNTO_ACCESO')."-".getDetallesClaveAcceso((String)$objXmlAutorizado->numeroAutorizacion, 'SECUENCIAL')
+                        ]);
+                        if($save){
+                            $success = true;
+                            $msg .= '<div class="alert alert-success text-center">' .
+                                        '<p> La factura '.$comprobante->secuencial.' ha sido actualizada con éxito</p>
+                                    </div>';
+                        }
+                    }else if((String)$objXmlAutorizado->estado === "RECHAZADA" || (String)$objXmlAutorizado->estado === "DEVUELTA"){
+                        $objComprobante->update([
+                            'estado' => 3,
+                            'causa' => ""
+                        ]);
+                        $msg .= '<div class="alert alert-warning text-center">' .
+                            '<p> La factura '.$comprobante->secuencial.' no fue autorizada por el SRI verifique su status en el Venture</p>
+                                </div>';
+                    }else if((String)$objXmlAutorizado->estado === "NO AUTORIZADA"){
+                        $objComprobante->update([
+                            'estado' => 4,
+                            'causa' => ""
+                        ]);
+                        $msg .= '<div class="alert alert-warning text-center">' .
+                            '<p> La factura '.$comprobante->secuencial.' no fue autorizada por el SRI verifique su status en el Venture</p>
+                                </div>';
+                    }
+                }else{
+                    $success = false;
+                    $msg .= '<div class="alert alert-warning text-center">' .
+                                '<p> El archivo fac_'.$comprobante->secuencial.'.xml no existe en la ruta '.env('PATH_XML_AUTORIZADOS').'facturas, debe cargar el archivo para porder actualizar el comprobante</p>
+                            </div>';
+                }
+
+            }
+
+        }else {
+            $success = false;
+            $errores = '';
+            foreach ($valida->errors()->all() as $mi_error) {
+                if ($errores == '') {
+                    $errores = '<li>' . $mi_error . '</li>';
+                } else {
+                    $errores .= '<li>' . $mi_error . '</li>';
+                }
+            }
+            $msg = '<div class="alert alert-danger">' .
+                '<p class="text-center">¡Por favor corrija los siguientes errores!</p>' .
+                '<ul>' .
+                $errores .
+                '</ul>' .
+                '</div>';
+        }
+        return [
+            'mensaje' => $msg,
+            'success' => $success
+        ];
+    }
+
+    public function anular_factura(Request $request){
+        $success = false;
+        $msg = '<div class="alert alert-warning text-center">' .
+            '<p> Ha ocurrido un problema al anular la factura, intente nuevamente</p>'
+            . '</div>';
+
+        $objComprobante = Comprobante::find($request->id_comprobante);
+        if($objComprobante->update(['estado'=>6])){
+            $success = true;
+            $msg = '<div class="alert alert-success text-center">' .
+                '<p> Se ha anulado la facutra exitosamente</p>'
+                . '</div>';
+        }
+        return [
+            'success' => $success,
+            'mensaje' => $msg,
+        ];
+    }
+}

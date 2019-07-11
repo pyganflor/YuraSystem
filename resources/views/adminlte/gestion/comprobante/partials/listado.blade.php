@@ -48,7 +48,7 @@
             </thead>
             @foreach($listado as $key => $item)
                 <tr onmouseover="$(this).css('background-color','#add8e6')" onmouseleave="$(this).css('background-color','')"
-                     id="row_comprobante_{{$item->id_comprobante}}">
+                    {{$item->estado== 6 ? 'style=color:red' : ""}} id="row_comprobante_{{$item->id_comprobante}}">
                     {{--<td style="border-color: #9d9d9d" class="text-center">
                         @if($tipo_comprobante == ""  || $tipo_comprobante=="01")
                             ENV{{str_pad($item->id_envio,9,"0",STR_PAD_LEFT)}}
@@ -81,6 +81,8 @@
                             No autoriazo por el SRI
                         @elseif($item->estado == 5)
                             Enviado al SRI
+                        @elseif($item->estado == 6)
+                            Anulada
                         @elseif($item->estado == 00)
                             Lote
                         @endif
@@ -90,9 +92,9 @@
                     @endif
                     <td style="border-color: #9d9d9d" class="text-center">
                         @if($item->estado==5)
-                            <a target="_blank" href="{{url('comprobante/comprobante_aprobado_sri',$item->clave_acceso)}}" class="btn btn-info btn-xs" title="Ver factura" >
+                            {{--<a target="_blank" href="{{url('comprobante/comprobante_aprobado_sri',$item->clave_acceso)}}" class="btn btn-info btn-xs" title="Ver factura" >
                                 <i class="fa fa-eye" aria-hidden="true"></i>
-                            </a>
+                            </a>--}}
                             @if($tipo_comprobante=="01" && getComprobanteRelacionadFactura($item->id_comprobante) == null)
                                 @if(getCantDespacho(getComprobante($item->id_comprobante)->envio->pedido->id_pedido)>0)
                                     <button class="btn btn-success btn-xs" title="Crear Guía de Remisión" onclick="crear_guia_remision('{{$item->id_comprobante}}')">
@@ -101,19 +103,35 @@
                                 @endif
                             @endif
                             @if($tipo_comprobante=="01")
+                                {{-- COMENTADO PARA QUE LA FACTURACION  FUNCIONE CON EL VENTURE
                                 <a target="_blank" href="{{url('comprobante/pre_factura',[$item->clave_acceso,true])}}" class="btn btn-info btn-xs" title="Ver factura Cliente">
                                     <i class="fa fa-user-circle-o" aria-hidden="true"></i>
                                 </a>
                                 <button class="btn btn-warning btn-xs" title="Reenviar correo" onclick="reenviar_correo('{{$item->clave_acceso}}')">
                                     <i class="fa fa-envelope-o" aria-hidden="true"></i>
+                                </button>--}}
+                                <a target="_blank" href="{{url('comprobante/documento_pre_factura',[$item->secuencial,true])}}" class="btn btn-info btn-xs" title="Ver factura Cliente">
+                                    <i class="fa fa-user-circle-o" aria-hidden="true"></i>
+                                </a>
+                                <a target="_blank" href="{{url('comprobante/documento_pre_factura',$item->secuencial)}}" class="btn btn-primary btn-xs" title="Ver factura SRI">
+                                    <i class="fa fa-eye" aria-hidden="true"></i>
+                                </a>
+                                <button class="btn btn-danger btn-xs" title="Anular factura" onclick="anular_factura('{{$item->id_comprobante}}')">
+                                    <i class="fa fa-times" ></i>
                                 </button>
                             @endif
                         @endif
                         @if($item->estado == 1)
-                                <button class="btn btn-default btn-xs">
-                                    <input type="checkbox" id="integrar_{{$key+1}}" name="integrar" {{$item->integrado ? "disabled" : "" }}
+                            @if($item->integrado)
+                                    <button class="btn btn-warning btn-xs" title="Desvincular del venture" onclick="update_integrado('{{$item->id_comprobante}}')">
+                                        <i class="fa fa-ban"></i>
+                                    </button>
+                                @else
+                                    <button class="btn btn-default btn-xs">
+                                        <input type="checkbox" id="integrar_{{$key+1}}" name="integrar" {{$item->integrado ? "disabled" : "" }}
                                         title="Integrar con el Venture" value="{{$item->id_comprobante}}" style="margin:0;position:relative;top:3px">
-                                </button>
+                                    </button>
+                                @endif
                             {{--<button class="btn btn-default btn-xs">
                                 <input type="checkbox" id="facturar_{{$key+1}}" name="enviar" {{$item->integrado ? "disabled" : "" }}  title="Enviar al SRI" value="{{$item->clave_acceso}}" style="margin:0;position:relative;top:3px">
                             </button>--}}
@@ -126,10 +144,6 @@
                                 <a target="_blank" href="{{url('comprobante/documento_pre_factura',$item->secuencial)}}" class="btn btn-primary btn-xs" title="Ver factura SRI">
                                     <i class="fa fa-eye" aria-hidden="true"></i>
                                 </a>
-                                {{--PARA QUE LA FACTURACION FUNCIONE CON EL VENTURE--}}
-                                <button class="btn btn-warning btn-xs" title="Enviar correo" onclick="enviar_correo('{{$item->id_comprobante}}','{{$item->envio->pedido->tipo_especificacion}}')">
-                                    <i class="fa fa-envelope-o" aria-hidden="true"></i>
-                                </button>
                             @else
                                 <a target="_blank" href="{{url('comprobante/pre_guia_remision',$item->clave_acceso)}}" class="btn btn-primary btn-xs" title="Ver comprobante electrónico">
                                     <i class="fa fa-eye" aria-hidden="true"></i>
@@ -140,6 +154,12 @@
                                 <input type="checkbox" id="firmar_{{$key+1}}" name="firmar" value="{{$item->id_comprobante}}" style="margin:0;position:relative;top:3px">
                             </button>
                         @endif
+                            {{--PARA QUE LA FACTURACION FUNCIONE CON EL VENTURE--}}
+                            @if($item->estado != 6)
+                                <button class="btn btn-success btn-xs" title="Enviar correo" onclick="enviar_correo('{{$item->id_comprobante}}','{{$item->envio->pedido->tipo_especificacion}}')">
+                                    <i class="fa fa-envelope-o" aria-hidden="true"></i>
+                                </button>
+                            @endif
                     </td>
                 </tr>
             @endforeach
@@ -160,8 +180,12 @@
                         Enviar al SRI
                     </button>--}}
                     <button class="btn btn-success" onclick="integrar_comprobante()">
-                        <i class="fa fa-upload" aria-hidden="true"></i>
+                        <i class="fa fa-download" ></i>
                         Integrar con el venture
+                    </button>
+                    <button class="btn btn-info" onclick="actualizar_comprobante()">
+                        <i class="fa fa-file-text-o" ></i>
+                        Actualizar comprobantes integrados
                     </button>
                 </div>
             @endif
@@ -170,6 +194,6 @@
             {!! str_replace('/?','?',$listado->render()) !!}
         </div>
     @else
-        <div class="alert alert-info text-center">No se han encontrado coincidencias1</div>
+        <div class="alert alert-info text-center">No se han encontrado coincidencias</div>
     @endif
 </div>

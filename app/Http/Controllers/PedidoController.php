@@ -2,18 +2,13 @@
 
 namespace yura\Http\Controllers;
 
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use SoapClient;
 use yura\Modelos\Aerolinea;
 use yura\Modelos\ClienteDatoExportacion;
 use yura\Modelos\Comprobante;
 use yura\Modelos\DatosExportacion;
-use yura\Modelos\DesgloseEnvioFactura;
 use yura\Modelos\DetalleEnvio;
-use yura\Modelos\DetalleFactura;
-use yura\Modelos\ImpuestoDesgloseEnvioFactura;
-use yura\Modelos\ImpuestoDetalleFactura;
 use yura\Modelos\Pais;
 use yura\Modelos\Pedido;
 use yura\Modelos\DetallePedido;
@@ -88,7 +83,7 @@ class PedidoController extends Controller
                     ->where('dt.estado', 1)->orderBy('dt.nombre','asc')->get(),
                 'id_pedido' => $request->id_pedido,
                 'datos_exportacion' => ClienteDatoExportacion::where('id_cliente',$request->id_cliente)->get(),
-                'comprobante' => isset($request->id_pedido) ? (getPedido($request->id_pedido)->envios[0]->comprobante != "" ? true : null) : null
+                'comprobante' => isset($request->id_pedido) ? (getPedido($request->id_pedido)->envios[0]->comprobante != "" ? getPedido($request->id_pedido)->envios[0]->comprobante : null) : null
 
             ]);
     }
@@ -304,7 +299,7 @@ class PedidoController extends Controller
                         ['cac.estado', 1]
                     ])->get(),
                 'datos_exportacion' => DatosExportacion::join('cliente_datoexportacion as cde','dato_exportacion.id_dato_exportacion','cde.id_dato_exportacion')
-                                    ->where('id_cliente',$request->id_cliente)->get(),
+                    ->where('id_cliente',$request->id_cliente)->get(),
             ]);
     }
 
@@ -315,7 +310,7 @@ class PedidoController extends Controller
 
         $esp_creadas =[];
         foreach(getPedido($request->id_pedido)->detalles as $det_ped){
-           $esp_creadas[] = $det_ped->cliente_especificacion->especificacion->id_especificacion;
+            $esp_creadas[] = $det_ped->cliente_especificacion->especificacion->id_especificacion;
         }
 
         $data_especificaciones = DB::table('cliente_pedido_especificacion as cpe')
@@ -387,10 +382,10 @@ class PedidoController extends Controller
         if (Pedido::destroy($request->id_pedido)) {
             $model = Pedido::all()->last();
             $success = true;
-           // $objPedido->estado == 0 ? $palabra = 'cancelado' : $palabra = 'activado';
+            // $objPedido->estado == 0 ? $palabra = 'cancelado' : $palabra = 'activado';
             $msg = '<div class="alert alert-success text-center">' .
-                        '<p> Se ha cancelado el pedido exitosamente</p>'
-                    . '</div>';
+                '<p> Se ha cancelado el pedido exitosamente</p>'
+                . '</div>';
             bitacora('pedido', $model->id_pedido, 'D', 'Pedido eliminado con exito');
         } else {
             $success = false;
@@ -449,13 +444,13 @@ class PedidoController extends Controller
         }
         return PDF::loadView('adminlte.gestion.postcocecha.despachos.partials.pdf_packing_list', compact('pedido','vista_despacho','empresa','despacho','cliente'))->stream();
     }
-    
+
     public function facturar_pedido(Request $request){
 
         if(getPedido($request->id_pedido)->envios->count() === 0){
             return '<div class="alert alert-danger text-center">' .
                 '<p> El pedido no posee envío creado, edite el pedido y deje el Check "Envío autmático" activado para realizar el envío</p>'
-            . '</div>';
+                . '</div>';
         }
 
         $listado = Envio::where([
@@ -502,7 +497,23 @@ class PedidoController extends Controller
             'detalles_envio' => $tipo_documento == "01" ? getEnvio($dataComprobante->id_envio)->detalles : "",
             'pedido' => $tipo_documento == "06" ? getComprobante($dataComprobante->id_comprobante_relacionado)->envio->pedido : ""
         ];
-            return PDF::loadView('adminlte.gestion.comprobante.partials.pdf.factura', compact('data'))->stream();
+        return PDF::loadView('adminlte.gestion.comprobante.partials.pdf.factura', compact('data'))->stream();
     }
-    
+
+    public function store_especificacion_pedido(Request $request){
+        $success = false;
+        $msg = '<div class="alert alert-danger text-center">' .
+            '<p> Ha ocurrido un problema al guardar la información al sistema, intente nuevamente</p>'
+            . '</div>';
+
+        $objDetallePedido = DetallePedido::where([
+            'id_detalle_pedido', $request->id_detalle_pedido,
+            'id_cliente_especificacion',  $request->id_cliente_pedido_especificacion,
+            'orden' , $request->orden,
+        ]);
+        if($objDetallePedido->update([ 'id_agencia_carga' => id_agencia_carga ])){
+
+        }
+    }
+
 }
