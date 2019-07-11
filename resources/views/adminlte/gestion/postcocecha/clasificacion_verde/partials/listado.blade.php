@@ -95,7 +95,7 @@
                     </tr>
                     <tr>
                         <td colspan="11" style="border-color: #9d9d9d; padding: 0;">
-                            <div style="overflow-y: scroll; height: 171px">
+                            <div style="overflow-y: scroll; height: 250px">
                                 <table width="100%" class="table table-responsive table-bordered"
                                        style="border: 1px solid #9d9d9d; margin-bottom: 0">
                                     <tr>

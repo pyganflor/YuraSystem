@@ -21,11 +21,11 @@
             <ul class="nav navbar-nav">
                 <li class="dropdown notifications-menu" title="Notifícame">
                     <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"
-                       onclick="buscar_notificaciones('S')">
+                       onclick="buscar_notificaciones('S', false)">
                         <i class="fa fa-bell-o"></i>
                         <span class="label label-warning" id="link_not"></span>
                     </a>
-                    <ul class="dropdown-menu">
+                    <ul class="dropdown-menu" style="width: 450px">
                         <li class="header text-center" id="header_not"></li>
                         <li>
                             <ul class="menu" id="list_not">

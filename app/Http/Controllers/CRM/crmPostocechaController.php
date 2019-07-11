@@ -357,11 +357,13 @@ class crmPostocechaController extends Controller
             $view = 'acumulado';
         }
 
-
         if ($request->has('annos')) {
             $view = 'annos';
             $labels = [];
-            foreach ($request->annos as $a) {
+            $request_annos = $request->annos;
+            sort($request_annos);
+
+            foreach ($request_annos as $a) {
                 $fechas = DB::table('clasificacion_verde as v')
                     ->select('v.fecha_ingreso as dia')->distinct()
                     ->where('v.fecha_ingreso', '>=', $a . '-01-01')
@@ -373,7 +375,7 @@ class crmPostocechaController extends Controller
                         array_push($labels, substr(getSemanaByDate($l->dia)->codigo, 2));
             }
 
-            foreach ($request->annos as $a) {
+            foreach ($request_annos as $a) {
                 $cajas = [];
                 $tallos = [];
                 $calibre = [];
@@ -406,7 +408,6 @@ class crmPostocechaController extends Controller
                 ]);
             }
         }
-
 
         /* ================ OBTENER RESULTADOS =============*/
         $arreglo_variedades = [];
@@ -773,6 +774,11 @@ class crmPostocechaController extends Controller
             ]);
         }
 
+        /*dd([
+            'target' => $target,
+            'labels' => $labels,
+            'arreglo_variedades' => $arreglo_variedades
+        ]);*/
         return view('adminlte.crm.postcocecha.partials.secciones.indicadores.modals.data_cajas', [
             'target' => $target,
             'labels' => $labels,
@@ -839,6 +845,7 @@ class crmPostocechaController extends Controller
                 'calibre' => $array_calibre,
             ]);
         }
+
         return view('adminlte.crm.postcocecha.partials.secciones.indicadores.modals.data_calibres', [
             'target' => $target,
             'labels' => $labels,
@@ -888,6 +895,9 @@ class crmPostocechaController extends Controller
 
         $objPHPExcel->removeSheetByIndex(0); //Eliminar la hoja inicial por defecto
 
+        $this->excel_hoja_cajas($objPHPExcel);
+        $this->excel_hoja_tallos($objPHPExcel);
+        $this->excel_hoja_calibres($objPHPExcel);
         $this->excel_hoja($objPHPExcel, $request);
 
         //--------------------------- GUARDAR EL EXCEL -----------------------
@@ -1003,9 +1013,6 @@ class crmPostocechaController extends Controller
         $objSheet->getCell('I2')->setValue(number_format($request->indicador_calibre, 2));
         $objSheet->getCell('I4')->setValue('Calibre');
 
-        /* ================================= COSECHA DEL DÍA ================================ */
-
-
         /* ================================= GRAFICAS ================================ */
         $data = base64_decode(explode(',', $request->src_imagen_chart_cajas)[1]);
         file_put_contents(public_path() . '/images/cajas.png', $data);
@@ -1015,7 +1022,10 @@ class crmPostocechaController extends Controller
         file_put_contents(public_path() . '/images/calibres.png', $data);
 
         /* ============== MERGE CELDAS =============*/
+        $objSheet->mergeCells('A5:P5');
         $objSheet->mergeCells('A6:P19');
+
+        $objSheet->getCell('A5')->setValue('Cajas');
 
         $img_cajas = imagecreatefrompng(public_path() . '/images/cajas.png');
         $img_tallos = imagecreatefrompng(public_path() . '/images/tallos.png');
@@ -1042,6 +1052,13 @@ class crmPostocechaController extends Controller
             /* ============== MERGE CELDAS =============*/
             $objSheet->mergeCells('A23:P36');
             $objSheet->mergeCells('A40:P53');
+
+            /* ============== MERGE CELDAS =============*/
+            $objSheet->mergeCells('A22:P22');
+            $objSheet->getCell('A22')->setValue('Tallos');
+            /* ============== MERGE CELDAS =============*/
+            $objSheet->mergeCells('A39:P39');
+            $objSheet->getCell('A39')->setValue('Calibre');
 
             $objDrawing = new PHPExcel_Worksheet_MemoryDrawing();
             $objDrawing->setName('TALLOS');
@@ -1085,9 +1102,9 @@ class crmPostocechaController extends Controller
                     $objSheet->getCell($columnas[$pos_col] . '54')
                         ->setValue(getMeses(TP_ABREVIADO)[$label->mes - 1] . ' - ' . $label->ano);
                 }
-                $objSheet->getCell($columnas[$pos_col] . '21')->setValue($listado['array_cajas'][$pos_l]);
-                $objSheet->getCell($columnas[$pos_col] . '38')->setValue($listado['array_tallos'][$pos_l]);
-                $objSheet->getCell($columnas[$pos_col] . '55')->setValue($listado['array_calibre'][$pos_l]);
+                $objSheet->getCell($columnas[$pos_col] . '21')->setValue(number_format($listado['array_cajas'][$pos_l], 2));
+                $objSheet->getCell($columnas[$pos_col] . '38')->setValue(number_format($listado['array_tallos'][$pos_l]));
+                $objSheet->getCell($columnas[$pos_col] . '55')->setValue(number_format($listado['array_calibre'][$pos_l], 2));
                 /* ============== BACKGROUND COLOR =============*/
                 $objSheet->getStyle('A20:' . $columnas[$pos_col] . '20')
                     ->getFill()
@@ -1125,6 +1142,8 @@ class crmPostocechaController extends Controller
                     ->setRGB('000000');
                 $pos_col++;
             }
+
+            $pos_fila = 56;
         } else if ($listado['view'] == 'todas_variedades') {    // todas las variedades
             /* --------------------- cajas ---------------------------- */
             $pos_fila = 20;
@@ -1155,15 +1174,18 @@ class crmPostocechaController extends Controller
                     /* ============== BACKGROUND COLOR =============*/
                     $objSheet->getStyle($columnas[$pos_v] . $pos_fila)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
                         ->getStartColor()->setRGB(str_replace('#', '', $variedad['variedad']->color));
-                    $objSheet->getCell($columnas[$pos_v] . $pos_fila)->setValue($valor);
+                    $objSheet->getCell($columnas[$pos_v] . $pos_fila)->setValue(number_format($valor, 2));
                 }
-
             }
 
             /* --------------------- tallos ---------------------------- */
-            $pos_fila += 2;
+            $pos_fila++;
             /* ============== MERGE CELDAS =============*/
-            $objSheet->mergeCells('A' . $pos_fila . ':' . $columnas[count($listado['labels'])] . intval($pos_fila + 14));
+            $objSheet->mergeCells('A' . $pos_fila . ':P' . $pos_fila);
+            $objSheet->getCell('A' . $pos_fila)->setValue('Tallos');
+            $pos_fila++;
+            /* ============== MERGE CELDAS =============*/
+            $objSheet->mergeCells('A' . $pos_fila . ':P' . intval($pos_fila + 14));
 
             $objDrawing = new PHPExcel_Worksheet_MemoryDrawing();
             $objDrawing->setName('TALLOS');
@@ -1174,6 +1196,8 @@ class crmPostocechaController extends Controller
             //$objDrawing->setHeight();
             $objDrawing->setCoordinates('A' . $pos_fila);
             $objDrawing->setWorksheet($objSheet);
+
+            $pos_fila = intval($pos_fila + 15);
             /* ============== BORDE COLOR =============*/
             $objSheet
                 ->getStyle('A' . $pos_fila . ':' . $columnas[count($listado['labels'])] . intval($pos_fila + count($listado['arreglo_variedades'])))
@@ -1197,27 +1221,582 @@ class crmPostocechaController extends Controller
 
             foreach ($listado['arreglo_variedades'] as $variedad) {
                 $pos_fila++;
-                foreach ($variedad['cajas'] as $pos_v => $valor) {
+                foreach ($variedad['tallos'] as $pos_v => $valor) {
                     /* ============== BACKGROUND COLOR =============*/
                     $objSheet->getStyle($columnas[$pos_v] . $pos_fila)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
                         ->getStartColor()->setRGB(str_replace('#', '', $variedad['variedad']->color));
-                    $objSheet->getCell($columnas[$pos_v] . $pos_fila)->setValue($valor);
+                    $objSheet->getCell($columnas[$pos_v] . $pos_fila)->setValue(number_format($valor));
                 }
+            }
 
+            /* --------------------- calibres ---------------------------- */
+            $pos_fila++;
+            /* ============== MERGE CELDAS =============*/
+            $objSheet->mergeCells('A' . $pos_fila . ':P' . $pos_fila);
+            $objSheet->getCell('A' . $pos_fila)->setValue('Calibre');
+            $pos_fila++;
+            /* ============== MERGE CELDAS =============*/
+            $objSheet->mergeCells('A' . $pos_fila . ':P' . intval($pos_fila + 14));
+
+            $objDrawing = new PHPExcel_Worksheet_MemoryDrawing();
+            $objDrawing->setName('CALIRBES');
+            $objDrawing->setDescription('CALIBRES');
+            $objDrawing->setImageResource($img_calibres);
+            $objDrawing->setRenderingFunction(PHPExcel_Worksheet_MemoryDrawing::RENDERING_PNG);
+            $objDrawing->setMimeType(PHPExcel_Worksheet_MemoryDrawing::MIMETYPE_PNG);
+            //$objDrawing->setHeight();
+            $objDrawing->setCoordinates('A' . $pos_fila);
+            $objDrawing->setWorksheet($objSheet);
+
+            $pos_fila = intval($pos_fila + 15);
+            /* ============== BORDE COLOR =============*/
+            $objSheet
+                ->getStyle('A' . $pos_fila . ':' . $columnas[count($listado['labels'])] . intval($pos_fila + count($listado['arreglo_variedades'])))
+                ->getBorders()->getAllBorders()
+                ->setBorderStyle(PHPExcel_Style_Border::BORDER_MEDIUM)->getColor()->setRGB('000000');
+            foreach ($listado['labels'] as $pos_l => $label) {
+                /* ============== BACKGROUND COLOR =============*/
+                $objSheet->getStyle($columnas[$pos_l] . $pos_fila)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
+                    ->getStartColor()->setRGB('d2d6de');
+                if ($listado['periodo'] == 'diario') {
+                    $objSheet->getCell($columnas[$pos_l] . $pos_fila)->setValue($label->dia);
+                } else if ($listado['periodo'] == 'semanal') {
+                    $objSheet->getCell($columnas[$pos_l] . $pos_fila)->setValue($label->semana);
+                } else if ($listado['periodo'] == 'anual') {
+                    $objSheet->getCell($columnas[$pos_l] . $pos_fila)->setValue($label->ano);
+                } else {
+                    $objSheet->getCell($columnas[$pos_l] . $pos_fila)
+                        ->setValue(getMeses(TP_ABREVIADO)[$label->mes - 1] . ' - ' . $label->ano);
+                }
+            }
+
+            foreach ($listado['arreglo_variedades'] as $variedad) {
+                $pos_fila++;
+                foreach ($variedad['calibre'] as $pos_v => $valor) {
+                    /* ============== BACKGROUND COLOR =============*/
+                    $objSheet->getStyle($columnas[$pos_v] . $pos_fila)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
+                        ->getStartColor()->setRGB(str_replace('#', '', $variedad['variedad']->color));
+                    $objSheet->getCell($columnas[$pos_v] . $pos_fila)->setValue(number_format($valor, 2));
+                }
             }
         } else {    // annos
+            /* --------------------- cajas ---------------------------- */
+            $pos_fila = 20;
+            /* ============== BORDE COLOR =============*/
+            $objSheet
+                ->getStyle('A' . $pos_fila . ':' . $columnas[count($listado['labels'])] . intval($pos_fila + count($listado['arreglo_variedades'])))
+                ->getBorders()->getAllBorders()
+                ->setBorderStyle(PHPExcel_Style_Border::BORDER_MEDIUM)->getColor()->setRGB('000000');
+            foreach ($listado['labels'] as $pos_l => $label) {
+                /* ============== BACKGROUND COLOR =============*/
+                $objSheet->getStyle($columnas[$pos_l] . $pos_fila)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
+                    ->getStartColor()->setRGB('d2d6de');
+                $objSheet->getCell($columnas[$pos_l] . $pos_fila)->setValue($label);
+            }
 
+            foreach ($listado['annos'] as $pos_a => $anno) {
+                $pos_fila++;
+                foreach ($anno['cajas'] as $pos_v => $valor) {
+                    /* ============== BACKGROUND COLOR =============*/
+                    $objSheet->getStyle($columnas[$pos_v] . $pos_fila)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
+                        ->getStartColor()->setRGB(str_replace('#', '', getListColores()[$pos_a]));
+                    $objSheet->getCell($columnas[$pos_v] . $pos_fila)->setValue(number_format($valor, 2));
+                }
+            }
+
+            /* --------------------- tallos ---------------------------- */
+            $pos_fila++;
+            /* ============== MERGE CELDAS =============*/
+            $objSheet->mergeCells('A' . $pos_fila . ':P' . $pos_fila);
+            $objSheet->getCell('A' . $pos_fila)->setValue('Tallos');
+            $pos_fila++;
+            /* ============== MERGE CELDAS =============*/
+            $objSheet->mergeCells('A' . $pos_fila . ':P' . intval($pos_fila + 14));
+
+            $objDrawing = new PHPExcel_Worksheet_MemoryDrawing();
+            $objDrawing->setName('TALLOS');
+            $objDrawing->setDescription('TALLOS');
+            $objDrawing->setImageResource($img_tallos);
+            $objDrawing->setRenderingFunction(PHPExcel_Worksheet_MemoryDrawing::RENDERING_PNG);
+            $objDrawing->setMimeType(PHPExcel_Worksheet_MemoryDrawing::MIMETYPE_PNG);
+            //$objDrawing->setHeight();
+            $objDrawing->setCoordinates('A' . $pos_fila);
+            $objDrawing->setWorksheet($objSheet);
+
+            $pos_fila = intval($pos_fila + 15);
+            /* ============== BORDE COLOR =============*/
+            $objSheet
+                ->getStyle('A' . $pos_fila . ':' . $columnas[count($listado['labels'])] . intval($pos_fila + count($listado['arreglo_variedades'])))
+                ->getBorders()->getAllBorders()
+                ->setBorderStyle(PHPExcel_Style_Border::BORDER_MEDIUM)->getColor()->setRGB('000000');
+            foreach ($listado['labels'] as $pos_l => $label) {
+                /* ============== BACKGROUND COLOR =============*/
+                $objSheet->getStyle($columnas[$pos_l] . $pos_fila)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
+                    ->getStartColor()->setRGB('d2d6de');
+                $objSheet->getCell($columnas[$pos_l] . $pos_fila)->setValue($label);
+            }
+
+            foreach ($listado['annos'] as $pos_a => $anno) {
+                $pos_fila++;
+                foreach ($anno['tallos'] as $pos_v => $valor) {
+                    /* ============== BACKGROUND COLOR =============*/
+                    $objSheet->getStyle($columnas[$pos_v] . $pos_fila)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
+                        ->getStartColor()->setRGB(str_replace('#', '', getListColores()[$pos_a]));
+                    $objSheet->getCell($columnas[$pos_v] . $pos_fila)->setValue(number_format($valor));
+                }
+            }
+
+            /* --------------------- calibres ---------------------------- */
+            $pos_fila++;
+            /* ============== MERGE CELDAS =============*/
+            $objSheet->mergeCells('A' . $pos_fila . ':P' . $pos_fila);
+            $objSheet->getCell('A' . $pos_fila)->setValue('Calibre');
+            $pos_fila++;
+            /* ============== MERGE CELDAS =============*/
+            $objSheet->mergeCells('A' . $pos_fila . ':P' . intval($pos_fila + 14));
+
+            $objDrawing = new PHPExcel_Worksheet_MemoryDrawing();
+            $objDrawing->setName('CALIRBES');
+            $objDrawing->setDescription('CALIBRES');
+            $objDrawing->setImageResource($img_calibres);
+            $objDrawing->setRenderingFunction(PHPExcel_Worksheet_MemoryDrawing::RENDERING_PNG);
+            $objDrawing->setMimeType(PHPExcel_Worksheet_MemoryDrawing::MIMETYPE_PNG);
+            //$objDrawing->setHeight();
+            $objDrawing->setCoordinates('A' . $pos_fila);
+            $objDrawing->setWorksheet($objSheet);
+
+            $pos_fila = intval($pos_fila + 15);
+            /* ============== BORDE COLOR =============*/
+            $objSheet
+                ->getStyle('A' . $pos_fila . ':' . $columnas[count($listado['labels'])] . intval($pos_fila + count($listado['arreglo_variedades'])))
+                ->getBorders()->getAllBorders()
+                ->setBorderStyle(PHPExcel_Style_Border::BORDER_MEDIUM)->getColor()->setRGB('000000');
+            foreach ($listado['labels'] as $pos_l => $label) {
+                /* ============== BACKGROUND COLOR =============*/
+                $objSheet->getStyle($columnas[$pos_l] . $pos_fila)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
+                    ->getStartColor()->setRGB('d2d6de');
+                $objSheet->getCell($columnas[$pos_l] . $pos_fila)->setValue($label);
+            }
+
+            foreach ($listado['annos'] as $pos_a => $anno) {
+                $pos_fila++;
+                foreach ($anno['calibre'] as $pos_v => $valor) {
+                    /* ============== BACKGROUND COLOR =============*/
+                    $objSheet->getStyle($columnas[$pos_v] . $pos_fila)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
+                        ->getStartColor()->setRGB(str_replace('#', '', getListColores()[$pos_a]));
+                    $objSheet->getCell($columnas[$pos_v] . $pos_fila)->setValue(number_format($valor, 2));
+                }
+            }
+        }
+
+        /* ================================= COSECHA DEL DÍA ================================ */
+        if ($request->has('array_variedades')) {
+            $pos_fila += 2;
+            /* ============== MERGE CELDAS =============*/
+            $objSheet->mergeCells('A' . $pos_fila . ':D' . $pos_fila);
+            $objSheet->getCell('A' . $pos_fila)->setValue('Cosecha del día: ' . date('d-m-Y'));
+            /* ============== BACKGROUND COLOR =============*/
+            $objSheet->getStyle('A' . $pos_fila . ':D' . intval($pos_fila + 1))
+                ->getFill()
+                ->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
+                ->getStartColor()
+                ->setRGB('d2d6de');
+            /* ============== BORDE COLOR =============*/
+            $objSheet->getStyle('A' . $pos_fila . ':D' . intval($pos_fila + 2 + count($request->array_variedades)))
+                ->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_MEDIUM)
+                ->getColor()->setRGB('000000');
+            $pos_fila++;
+            $objSheet->getCell('A' . $pos_fila)->setValue('Variedad');
+            $objSheet->getCell('B' . $pos_fila)->setValue('Calibre');
+            $objSheet->getCell('C' . $pos_fila)->setValue('Clasificados');
+            $objSheet->getCell('D' . $pos_fila)->setValue('Cosechados');
+
+            foreach ($request->array_variedades as $variedad) {
+                $pos_fila++;
+                $objSheet->getCell('A' . $pos_fila)->setValue(getVariedad($variedad['id'])->siglas);
+                $objSheet->getCell('B' . $pos_fila)->setValue(number_format($variedad['calibre'], 2));
+                $objSheet->getCell('C' . $pos_fila)->setValue(number_format($variedad['clasificados']));
+                $objSheet->getCell('D' . $pos_fila)->setValue(number_format($variedad['cosechados']));
+            }
+            $pos_fila++;
+            $objSheet->getCell('A' . $pos_fila)->setValue('Resumen');
+            $objSheet->getCell('B' . $pos_fila)->setValue(number_format($request->calibre_dia, 2));
+            $objSheet->getCell('C' . $pos_fila)->setValue(number_format($request->clasificados_dia));
+            $objSheet->getCell('D' . $pos_fila)->setValue(number_format($request->cosechados_dia));
+            /* ============== BACKGROUND COLOR =============*/
+            $objSheet->getStyle('A' . $pos_fila . ':D' . $pos_fila)
+                ->getFill()
+                ->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
+                ->getStartColor()
+                ->setRGB('d2d6de');
         }
 
         /* ============== LETRAS NEGRITAS =============*/
-        $objSheet->getStyle('A1:' . $columnas[count($listado['labels'])] . '56')->getFont()->setBold(true)->setSize(12);   // para todo
+        $objSheet->getStyle('A1:L4')->getFont()->setBold(true)->setSize(12);   // para todo
+        $objSheet->getStyle('A1:' . $columnas[count($listado['labels'])] . $pos_fila)->getFont()->setBold(true)->setSize(12);   // para todo
         /* ============== CENTRAR =============*/
-        $objSheet->getStyle('A1:' . $columnas[count($listado['labels'])] . '56')// para todo
-        ->getAlignment()
-            ->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER)
+        $objSheet->getStyle('A1:L4')->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER)
             ->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+        $objSheet->getStyle('A1:' . $columnas[count($listado['labels'])] . $pos_fila)
+            ->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER)
+            ->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+
+        unlink(public_path() . '/images/cajas.png');
+        unlink(public_path() . '/images/tallos.png');
+        unlink(public_path() . '/images/calibres.png');
+
         foreach ($columnas as $c) {
             $objSheet->getColumnDimension($c)->setAutoSize(true);
+        }
+    }
+
+    public function excel_hoja_cajas($objPHPExcel)
+    {
+        $columnas = [0 => 'A', 1 => 'B', 2 => 'C', 3 => 'D', 4 => 'E', 5 => 'F', 6 => 'G', 7 => 'H', 8 => 'I', 9 => 'J', 10 => 'K', 11 => 'L',
+            12 => 'M', 13 => 'N', 14 => 'O', 15 => 'P', 16 => 'Q', 17 => 'R', 18 => 'S', 19 => 'T', 20 => 'U', 21 => 'V', 22 => 'W', 23 => 'X',
+            24 => 'Y', 25 => 'Z', 26 => 'AA', 27 => 'AB', 28 => 'AC', 29 => 'AD', 30 => 'AE', 31 => 'AF', 32 => 'AG', 33 => 'AH', 34 => 'AI',
+            35 => 'AJ', 36 => 'AK', 37 => 'AL', 38 => 'AM', 39 => 'AN', 40 => 'AO', 41 => 'AP', 42 => 'AQ', 43 => 'AR', 44 => 'AS', 45 => 'AT',
+            46 => 'AU', 47 => 'AV', 48 => 'AW', 49 => 'AX', 50 => 'AY', 51 => 'AZ', 52 => 'BA', 53 => 'BB', 54 => 'BC', 55 => 'BD', 56 => 'BE',
+            57 => 'BF', 58 => 'BG', 59 => 'BH', 60 => 'BI', 61 => 'BJ', 62 => 'BK', 63 => 'BL', 64 => 'BM', 65 => 'BN', 66 => 'BO', 67 => 'BP',
+            68 => 'BQ', 69 => 'BR', 70 => 'BS', 71 => 'BT', 72 => 'BU', 73 => 'BV', 74 => 'BW', 75 => 'BX', 76 => 'BY', 77 => 'BZ'];
+
+        $objSheet = new PHPExcel_Worksheet($objPHPExcel, 'Cajas');
+        $objPHPExcel->addSheet($objSheet, 1);
+
+        $data = $this->obtener_data_cajas_excel(opDiasFecha('-', 7, date('Y-m-d')), opDiasFecha('-', 1, date('Y-m-d')));
+
+        /* ------------------------------- encabezado ------------------------------ */
+        $array_totales = [];
+        $total = 0;
+        /* ============== BACKGROUND COLOR =============*/
+        $objSheet->getStyle('A1')->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()
+            ->setRGB('357ca5');
+        /* ============== TEXT COLOR =============*/
+        $objSheet->getStyle('A1')
+            ->getFont()->getColor()->setRGB('ffffff');
+        $objSheet->getCell('A1')->setValue('Variedad');
+
+        $pos_col = 0;
+        foreach ($data['labels'] as $f) {
+            $pos_col++;
+            $objSheet->getCell($columnas[$pos_col] . '1')
+                ->setValue(getDias(TP_COMPLETO, FR_ARREGLO)[transformDiaPhp(date('w', strtotime($f->dia)))] . ' ' . substr($f->dia, 8, 2));
+            /* ============== BACKGROUND COLOR =============*/
+            $objSheet->getStyle($columnas[$pos_col] . '1')->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()
+                ->setRGB('e9ecef');
+
+            array_push($array_totales, 0);
+        }
+
+        $pos_col++;
+        /* ============== BACKGROUND COLOR =============*/
+        $objSheet->getStyle($columnas[$pos_col] . '1')->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()
+            ->setRGB('357ca5');
+        /* ============== TEXT COLOR =============*/
+        $objSheet->getStyle($columnas[$pos_col] . '1')
+            ->getFont()->getColor()->setRGB('ffffff');
+        $objSheet->getCell($columnas[$pos_col] . '1')->setValue('Total');
+
+        /* ----------------------------- listado -------------------------------- */
+        $pos_fila = 1;
+        foreach ($data['arreglo_variedades'] as $variedad) {
+            $pos_fila++;
+            /* ============== BACKGROUND COLOR =============*/
+            $objSheet->getStyle('A' . $pos_fila)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
+                ->getStartColor()->setRGB('e9ecef');
+            $objSheet->getCell('A' . $pos_fila)->setValue($variedad['variedad']->nombre);
+            $col = 1;
+            $total_var = 0;
+            foreach ($variedad['cajas'] as $pos_v => $valor) {
+                $objSheet->getCell($columnas[$col] . $pos_fila)->setValue(number_format($valor, 2));
+                $total_var += $valor;
+                $col++;
+
+                $array_totales[$pos_v] += $valor;
+                $total += $valor;
+            }
+            /* ============== BACKGROUND COLOR =============*/
+            $objSheet->getStyle($columnas[$col] . $pos_fila)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
+                ->getStartColor()->setRGB('e9ecef');
+            $objSheet->getCell($columnas[$col] . $pos_fila)->setValue(number_format($total_var, 2));
+        }
+
+        /* ------------------------------- totales -------------------------------- */
+        $pos_fila++;
+        /* ============== BACKGROUND COLOR =============*/
+        $objSheet->getStyle('A' . $pos_fila)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()
+            ->setRGB('357ca5');
+        /* ============== TEXT COLOR =============*/
+        $objSheet->getStyle('A' . $pos_fila)
+            ->getFont()->getColor()->setRGB('ffffff');
+        $objSheet->getCell('A' . $pos_fila)->setValue('Totales');
+        $col = 1;
+        foreach ($array_totales as $valor) {
+            /* ============== BACKGROUND COLOR =============*/
+            $objSheet->getStyle($columnas[$col] . $pos_fila)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
+                ->getStartColor()->setRGB('e9ecef');
+            $objSheet->getCell($columnas[$col] . $pos_fila)->setValue(number_format($valor, 2));
+            $col++;
+        }
+        /* ============== BACKGROUND COLOR =============*/
+        $objSheet->getStyle($columnas[$pos_col] . $pos_fila)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()
+            ->setRGB('357ca5');
+        /* ============== TEXT COLOR =============*/
+        $objSheet->getStyle($columnas[$pos_col] . $pos_fila)
+            ->getFont()->getColor()->setRGB('ffffff');
+        $objSheet->getCell($columnas[$pos_col] . $pos_fila)->setValue(number_format($total, 2));
+
+
+        /* ============== BORDE COLOR =============*/
+        $objSheet->getStyle('A1:' . $columnas[intval(2 + count($data['labels']))] . intval(2 + count($data['arreglo_variedades'])))
+            ->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_MEDIUM)->getColor()->setRGB('000000');
+        /* ============== LETRAS NEGRITAS =============*/
+        $objSheet->getStyle('A1:' . $columnas[intval(2 + count($data['labels']))] . intval(2 + count($data['arreglo_variedades'])))
+            ->getFont()->setBold(true)->setSize(12);
+        /* ============== CENTRAR =============*/
+        $objSheet->getStyle('A1:' . $columnas[intval(2 + count($data['labels']))] . intval(2 + count($data['arreglo_variedades'])))
+            ->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER)
+            ->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+
+        foreach ($columnas as $pos => $c) {
+            if ($pos <= $pos_col)
+                $objSheet->getColumnDimension($c)->setAutoSize(true);
+        }
+    }
+
+    public function excel_hoja_tallos($objPHPExcel)
+    {
+        $columnas = [0 => 'A', 1 => 'B', 2 => 'C', 3 => 'D', 4 => 'E', 5 => 'F', 6 => 'G', 7 => 'H', 8 => 'I', 9 => 'J', 10 => 'K', 11 => 'L',
+            12 => 'M', 13 => 'N', 14 => 'O', 15 => 'P', 16 => 'Q', 17 => 'R', 18 => 'S', 19 => 'T', 20 => 'U', 21 => 'V', 22 => 'W', 23 => 'X',
+            24 => 'Y', 25 => 'Z', 26 => 'AA', 27 => 'AB', 28 => 'AC', 29 => 'AD', 30 => 'AE', 31 => 'AF', 32 => 'AG', 33 => 'AH', 34 => 'AI',
+            35 => 'AJ', 36 => 'AK', 37 => 'AL', 38 => 'AM', 39 => 'AN', 40 => 'AO', 41 => 'AP', 42 => 'AQ', 43 => 'AR', 44 => 'AS', 45 => 'AT',
+            46 => 'AU', 47 => 'AV', 48 => 'AW', 49 => 'AX', 50 => 'AY', 51 => 'AZ', 52 => 'BA', 53 => 'BB', 54 => 'BC', 55 => 'BD', 56 => 'BE',
+            57 => 'BF', 58 => 'BG', 59 => 'BH', 60 => 'BI', 61 => 'BJ', 62 => 'BK', 63 => 'BL', 64 => 'BM', 65 => 'BN', 66 => 'BO', 67 => 'BP',
+            68 => 'BQ', 69 => 'BR', 70 => 'BS', 71 => 'BT', 72 => 'BU', 73 => 'BV', 74 => 'BW', 75 => 'BX', 76 => 'BY', 77 => 'BZ'];
+
+        $objSheet = new PHPExcel_Worksheet($objPHPExcel, 'Tallos');
+        $objPHPExcel->addSheet($objSheet, 2);
+
+        $data = $this->obtener_data_tallos_excel(opDiasFecha('-', 7, date('Y-m-d')), opDiasFecha('-', 1, date('Y-m-d')));
+
+        /* ------------------------------- encabezado ------------------------------ */
+        $array_totales = [];
+        $total = 0;
+        /* ============== BACKGROUND COLOR =============*/
+        $objSheet->getStyle('A1')->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()
+            ->setRGB('357ca5');
+        /* ============== TEXT COLOR =============*/
+        $objSheet->getStyle('A1')
+            ->getFont()->getColor()->setRGB('ffffff');
+        $objSheet->getCell('A1')->setValue('Variedad');
+
+        $pos_col = 0;
+        foreach ($data['labels'] as $f) {
+            $pos_col++;
+            $objSheet->getCell($columnas[$pos_col] . '1')
+                ->setValue(getDias(TP_COMPLETO, FR_ARREGLO)[transformDiaPhp(date('w', strtotime($f->dia)))] . ' ' . substr($f->dia, 8, 2));
+            /* ============== BACKGROUND COLOR =============*/
+            $objSheet->getStyle($columnas[$pos_col] . '1')->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()
+                ->setRGB('e9ecef');
+
+            array_push($array_totales, 0);
+        }
+
+        $pos_col++;
+        /* ============== BACKGROUND COLOR =============*/
+        $objSheet->getStyle($columnas[$pos_col] . '1')->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()
+            ->setRGB('357ca5');
+        /* ============== TEXT COLOR =============*/
+        $objSheet->getStyle($columnas[$pos_col] . '1')
+            ->getFont()->getColor()->setRGB('ffffff');
+        $objSheet->getCell($columnas[$pos_col] . '1')->setValue('Total');
+
+        /* ----------------------------- listado -------------------------------- */
+        $pos_fila = 1;
+        foreach ($data['arreglo_variedades'] as $variedad) {
+            $pos_fila++;
+            /* ============== BACKGROUND COLOR =============*/
+            $objSheet->getStyle('A' . $pos_fila)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
+                ->getStartColor()->setRGB('e9ecef');
+            $objSheet->getCell('A' . $pos_fila)->setValue($variedad['variedad']->nombre);
+            $col = 1;
+            $total_var = 0;
+            foreach ($variedad['tallos'] as $pos_v => $valor) {
+                $objSheet->getCell($columnas[$col] . $pos_fila)->setValue(number_format($valor));
+                $total_var += $valor;
+                $col++;
+
+                $array_totales[$pos_v] += $valor;
+                $total += $valor;
+            }
+            /* ============== BACKGROUND COLOR =============*/
+            $objSheet->getStyle($columnas[$col] . $pos_fila)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
+                ->getStartColor()->setRGB('e9ecef');
+            $objSheet->getCell($columnas[$col] . $pos_fila)->setValue(number_format($total_var));
+        }
+
+        /* ------------------------------- totales -------------------------------- */
+        $pos_fila++;
+        /* ============== BACKGROUND COLOR =============*/
+        $objSheet->getStyle('A' . $pos_fila)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()
+            ->setRGB('357ca5');
+        /* ============== TEXT COLOR =============*/
+        $objSheet->getStyle('A' . $pos_fila)
+            ->getFont()->getColor()->setRGB('ffffff');
+        $objSheet->getCell('A' . $pos_fila)->setValue('Totales');
+        $col = 1;
+        foreach ($array_totales as $valor) {
+            /* ============== BACKGROUND COLOR =============*/
+            $objSheet->getStyle($columnas[$col] . $pos_fila)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
+                ->getStartColor()->setRGB('e9ecef');
+            $objSheet->getCell($columnas[$col] . $pos_fila)->setValue(number_format($valor));
+            $col++;
+        }
+        /* ============== BACKGROUND COLOR =============*/
+        $objSheet->getStyle($columnas[$pos_col] . $pos_fila)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()
+            ->setRGB('357ca5');
+        /* ============== TEXT COLOR =============*/
+        $objSheet->getStyle($columnas[$pos_col] . $pos_fila)
+            ->getFont()->getColor()->setRGB('ffffff');
+        $objSheet->getCell($columnas[$pos_col] . $pos_fila)->setValue(number_format($total));
+
+
+        /* ============== BORDE COLOR =============*/
+        $objSheet->getStyle('A1:' . $columnas[intval(2 + count($data['labels']))] . intval(2 + count($data['arreglo_variedades'])))
+            ->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_MEDIUM)->getColor()->setRGB('000000');
+        /* ============== LETRAS NEGRITAS =============*/
+        $objSheet->getStyle('A1:' . $columnas[intval(2 + count($data['labels']))] . intval(2 + count($data['arreglo_variedades'])))
+            ->getFont()->setBold(true)->setSize(12);
+        /* ============== CENTRAR =============*/
+        $objSheet->getStyle('A1:' . $columnas[intval(2 + count($data['labels']))] . intval(2 + count($data['arreglo_variedades'])))
+            ->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER)
+            ->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+
+        foreach ($columnas as $pos => $c) {
+            if ($pos <= $pos_col)
+                $objSheet->getColumnDimension($c)->setAutoSize(true);
+        }
+    }
+
+    public function excel_hoja_calibres($objPHPExcel)
+    {
+        $columnas = [0 => 'A', 1 => 'B', 2 => 'C', 3 => 'D', 4 => 'E', 5 => 'F', 6 => 'G', 7 => 'H', 8 => 'I', 9 => 'J', 10 => 'K', 11 => 'L',
+            12 => 'M', 13 => 'N', 14 => 'O', 15 => 'P', 16 => 'Q', 17 => 'R', 18 => 'S', 19 => 'T', 20 => 'U', 21 => 'V', 22 => 'W', 23 => 'X',
+            24 => 'Y', 25 => 'Z', 26 => 'AA', 27 => 'AB', 28 => 'AC', 29 => 'AD', 30 => 'AE', 31 => 'AF', 32 => 'AG', 33 => 'AH', 34 => 'AI',
+            35 => 'AJ', 36 => 'AK', 37 => 'AL', 38 => 'AM', 39 => 'AN', 40 => 'AO', 41 => 'AP', 42 => 'AQ', 43 => 'AR', 44 => 'AS', 45 => 'AT',
+            46 => 'AU', 47 => 'AV', 48 => 'AW', 49 => 'AX', 50 => 'AY', 51 => 'AZ', 52 => 'BA', 53 => 'BB', 54 => 'BC', 55 => 'BD', 56 => 'BE',
+            57 => 'BF', 58 => 'BG', 59 => 'BH', 60 => 'BI', 61 => 'BJ', 62 => 'BK', 63 => 'BL', 64 => 'BM', 65 => 'BN', 66 => 'BO', 67 => 'BP',
+            68 => 'BQ', 69 => 'BR', 70 => 'BS', 71 => 'BT', 72 => 'BU', 73 => 'BV', 74 => 'BW', 75 => 'BX', 76 => 'BY', 77 => 'BZ'];
+
+        $objSheet = new PHPExcel_Worksheet($objPHPExcel, 'Calibres');
+        $objPHPExcel->addSheet($objSheet, 3);
+
+        $data = $this->obtener_data_calibres_excel(opDiasFecha('-', 7, date('Y-m-d')), opDiasFecha('-', 1, date('Y-m-d')));
+
+        /* ------------------------------- encabezado ------------------------------ */
+        $array_totales = [];
+        /* ============== BACKGROUND COLOR =============*/
+        $objSheet->getStyle('A1')->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()
+            ->setRGB('357ca5');
+        /* ============== TEXT COLOR =============*/
+        $objSheet->getStyle('A1')
+            ->getFont()->getColor()->setRGB('ffffff');
+        $objSheet->getCell('A1')->setValue('Variedad');
+
+        $pos_col = 0;
+        foreach ($data['labels'] as $f) {
+            $pos_col++;
+            $objSheet->getCell($columnas[$pos_col] . '1')
+                ->setValue(getDias(TP_COMPLETO, FR_ARREGLO)[transformDiaPhp(date('w', strtotime($f->dia)))] . ' ' . substr($f->dia, 8, 2));
+            /* ============== BACKGROUND COLOR =============*/
+            $objSheet->getStyle($columnas[$pos_col] . '1')->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()
+                ->setRGB('e9ecef');
+
+            array_push($array_totales, ClasificacionVerde::All()->where('fecha_ingreso', $f->dia)->first()->getCalibre());
+        }
+
+        $pos_col++;
+        /* ============== BACKGROUND COLOR =============*/
+        $objSheet->getStyle($columnas[$pos_col] . '1')->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()
+            ->setRGB('357ca5');
+        /* ============== TEXT COLOR =============*/
+        $objSheet->getStyle($columnas[$pos_col] . '1')
+            ->getFont()->getColor()->setRGB('ffffff');
+        $objSheet->getCell($columnas[$pos_col] . '1')->setValue('Total');
+
+        /* ----------------------------- listado -------------------------------- */
+        $pos_fila = 1;
+        foreach ($data['arreglo_variedades'] as $variedad) {
+            $pos_fila++;
+            /* ============== BACKGROUND COLOR =============*/
+            $objSheet->getStyle('A' . $pos_fila)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
+                ->getStartColor()->setRGB('e9ecef');
+            $objSheet->getCell('A' . $pos_fila)->setValue($variedad['variedad']->nombre);
+            $col = 1;
+            $total_var = 0;
+            $positivos_var = 0;
+            foreach ($variedad['calibre'] as $pos_v => $valor) {
+                $objSheet->getCell($columnas[$col] . $pos_fila)->setValue($valor);
+                $total_var += $valor;
+                $col++;
+
+                if ($valor > 0) {
+                    $positivos_var++;
+                }
+            }
+            /* ============== BACKGROUND COLOR =============*/
+            $objSheet->getStyle($columnas[$col] . $pos_fila)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
+                ->getStartColor()->setRGB('e9ecef');
+            if ($positivos_var > 0)
+                $objSheet->getCell($columnas[$col] . $pos_fila)->setValue(number_format(round($total_var / $positivos_var, 2), 2));
+            else
+                $objSheet->getCell($columnas[$col] . $pos_fila)->setValue(0);
+        }
+
+        /* ------------------------------- totales -------------------------------- */
+        $pos_fila++;
+        /* ============== BACKGROUND COLOR =============*/
+        $objSheet->getStyle('A' . $pos_fila)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()
+            ->setRGB('357ca5');
+        /* ============== TEXT COLOR =============*/
+        $objSheet->getStyle('A' . $pos_fila)
+            ->getFont()->getColor()->setRGB('ffffff');
+        $objSheet->getCell('A' . $pos_fila)->setValue('Total del día');
+        $col = 1;
+        $total = 0;
+        $positivos = 0;
+        foreach ($array_totales as $valor) {
+            /* ============== BACKGROUND COLOR =============*/
+            $objSheet->getStyle($columnas[$col] . $pos_fila)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
+                ->getStartColor()->setRGB('e9ecef');
+            $objSheet->getCell($columnas[$col] . $pos_fila)->setValue(number_format($valor, 2));
+            $col++;
+            $total += $valor;
+            $positivos++;
+        }
+        /* ============== BACKGROUND COLOR =============*/
+        $objSheet->getStyle($columnas[$pos_col] . $pos_fila)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()
+            ->setRGB('357ca5');
+        /* ============== TEXT COLOR =============*/
+        $objSheet->getStyle($columnas[$pos_col] . $pos_fila)
+            ->getFont()->getColor()->setRGB('ffffff');
+        $objSheet->getCell($columnas[$pos_col] . $pos_fila)->setValue(number_format(round($total / $positivos, 2), 2));
+
+
+        /* ============== BORDE COLOR =============*/
+        $objSheet->getStyle('A1:' . $columnas[intval(2 + count($data['labels']))] . intval(2 + count($data['arreglo_variedades'])))
+            ->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_MEDIUM)->getColor()->setRGB('000000');
+        /* ============== LETRAS NEGRITAS =============*/
+        $objSheet->getStyle('A1:' . $columnas[intval(2 + count($data['labels']))] . intval(2 + count($data['arreglo_variedades'])))
+            ->getFont()->setBold(true)->setSize(12);
+        /* ============== CENTRAR =============*/
+        $objSheet->getStyle('A1:' . $columnas[intval(2 + count($data['labels']))] . intval(2 + count($data['arreglo_variedades'])))
+            ->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER)
+            ->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+
+        foreach ($columnas as $pos => $c) {
+            if ($pos <= $pos_col)
+                $objSheet->getColumnDimension($c)->setAutoSize(true);
         }
     }
 
@@ -1292,7 +1871,9 @@ class crmPostocechaController extends Controller
         if ($request->has('annos')) {
             $view = 'annos';
             $labels = [];
-            foreach ($request->annos as $a) {
+            $request_annos = $request->annos;
+            sort($request_annos);
+            foreach ($request_annos as $a) {
                 $fechas = DB::table('clasificacion_verde as v')
                     ->select('v.fecha_ingreso as dia')->distinct()
                     ->where('v.fecha_ingreso', '>=', $a . '-01-01')
@@ -1304,7 +1885,7 @@ class crmPostocechaController extends Controller
                         array_push($labels, substr(getSemanaByDate($l->dia)->codigo, 2));
             }
 
-            foreach ($request->annos as $a) {
+            foreach ($request_annos as $a) {
                 $cajas = [];
                 $tallos = [];
                 $calibre = [];
@@ -1675,4 +2256,106 @@ class crmPostocechaController extends Controller
             'array_calibre' => $array_calibre,
         ];
     }
+
+    public function obtener_data_cajas_excel($desde, $hasta)
+    {
+        $labels = DB::table('clasificacion_verde as v')
+            ->select('v.fecha_ingreso as dia')->distinct()
+            ->where('v.fecha_ingreso', '>=', $desde)
+            ->where('v.fecha_ingreso', '<=', $hasta)
+            ->get();
+        $target = getVariedades();
+
+        /* ================ OBTENER RESULTADOS =============*/
+        $arreglo_variedades = [];
+
+        foreach ($target as $variedad) {
+            $array_cajas = [];
+            foreach ($labels as $dia) {
+                $verde = ClasificacionVerde::All()->where('fecha_ingreso', '=', $dia->dia)->first();
+                if ($verde != '') {
+                    array_push($array_cajas, round($verde->getTotalRamosEstandarByVariedad($variedad->id_variedad) / getConfiguracionEmpresa()->ramos_x_caja, 2));
+                }
+            }
+
+            array_push($arreglo_variedades, [
+                'variedad' => $variedad,
+                'cajas' => $array_cajas,
+            ]);
+        }
+
+        return [
+            'target' => $target,
+            'labels' => $labels,
+            'arreglo_variedades' => $arreglo_variedades
+        ];
+    }
+
+    public function obtener_data_tallos_excel($desde, $hasta)
+    {
+        $labels = DB::table('clasificacion_verde as v')
+            ->select('v.fecha_ingreso as dia')->distinct()
+            ->where('v.fecha_ingreso', '>=', $desde)
+            ->where('v.fecha_ingreso', '<=', $hasta)
+            ->get();
+        $target = getVariedades();
+
+        /* ================ OBTENER RESULTADOS =============*/
+        $arreglo_variedades = [];
+
+        foreach ($target as $variedad) {
+            $array_tallos = [];
+            foreach ($labels as $dia) {
+                $verde = ClasificacionVerde::All()->where('fecha_ingreso', '=', $dia->dia)->first();
+                if ($verde != '') {
+                    array_push($array_tallos, $verde->tallos_x_variedad($variedad->id_variedad));
+                }
+            }
+
+            array_push($arreglo_variedades, [
+                'variedad' => $variedad,
+                'tallos' => $array_tallos,
+            ]);
+        }
+
+        return [
+            'target' => $target,
+            'labels' => $labels,
+            'arreglo_variedades' => $arreglo_variedades
+        ];
+    }
+
+    public function obtener_data_calibres_excel($desde, $hasta)
+    {
+        $labels = DB::table('clasificacion_verde as v')
+            ->select('v.fecha_ingreso as dia')->distinct()
+            ->where('v.fecha_ingreso', '>=', $desde)
+            ->where('v.fecha_ingreso', '<=', $hasta)
+            ->get();
+        $target = getVariedades();
+
+        /* ================ OBTENER RESULTADOS =============*/
+        $arreglo_variedades = [];
+
+        foreach ($target as $variedad) {
+            $array_calibre = [];
+            foreach ($labels as $dia) {
+                $verde = ClasificacionVerde::All()->where('fecha_ingreso', '=', $dia->dia)->first();
+                if ($verde != '') {
+                    array_push($array_calibre, $verde->calibreByVariedad($variedad->id_variedad));
+                }
+            }
+
+            array_push($arreglo_variedades, [
+                'variedad' => $variedad,
+                'calibre' => $array_calibre,
+            ]);
+        }
+        return [
+            'target' => $target,
+            'labels' => $labels,
+            'arreglo_variedades' => $arreglo_variedades
+        ];
+    }
+
 }

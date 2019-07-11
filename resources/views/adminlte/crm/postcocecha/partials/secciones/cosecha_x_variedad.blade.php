@@ -85,11 +85,11 @@
                 <span class="description-percentage" title="Clasificados">
                     {{$verde != '' ? $verde->total_tallos() : 0}}
                 </span>
-                <input type="hidden" id="clasificados_dia" {{$verde != '' ? $verde->total_tallos() : 0}}>
+                <input type="hidden" id="clasificados_dia" value="{{$verde != '' ? $verde->total_tallos() : 0}}">
                 <h5 class="description-header" title="Cosechados">
                     {{$cosecha->getTotalTallos()}}
                 </h5>
-                <input type="hidden" id="cosechados_dia" {{$cosecha->getTotalTallos()}}>
+                <input type="hidden" id="cosechados_dia" value="{{$cosecha->getTotalTallos()}}">
                 <a href="javascript:void(0)" class="btn btn-link"
                    onclick="ver_rendimiento_cosecha('{{$cosecha != '' ? $cosecha->id_cosecha : ''}}')">
                     <strong class="description-text">Totales</strong>

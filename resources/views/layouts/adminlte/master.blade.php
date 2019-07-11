@@ -509,7 +509,7 @@
         $.LoadingOverlay('hide');
     }
 
-    function buscar_notificaciones(tipo) {
+    function buscar_notificaciones(tipo, push = true) {
         datos = {
             _token: '{{csrf_token()}}',
             tipo: tipo
@@ -517,7 +517,7 @@
         $.post('notificaciones/buscar_notificaciones', datos, function (retorno) {
             $('#list_not').html('');
             if (retorno.cant_news > 0) {
-                retorno.cant_news == 1 ? texto = 'Usted tiene ' + retorno.cant_news + ' notificación' : 'Usted tiene ' + retorno.cant_news + ' notificaciones';
+                retorno.cant_news == 1 ? texto = 'Usted tiene 1 notificación' : texto = 'Usted tiene ' + retorno.cant_news + ' notificaciones';
 
                 if (parseInt($('#link_not').html()) < retorno.cant_news)
                     beep_notificar();
@@ -526,10 +526,12 @@
                 $('#header_not').html(texto);
                 $('#list_not').append(retorno.news);
 
-                for (i = 0; i < retorno.array.length; i++) {
-                    notificar(retorno.array[i]['texto'], true, function () {
-                        window.open('{{url('')}}/' + retorno.array[i]['url'], '_blank');
-                    }, 5000, false);
+                if (push == true) {
+                    for (i = 0; i < retorno.array.length; i++) {
+                        notificar(retorno.array[i]['texto'], true, function () {
+                            window.open('{{url('')}}/' + retorno.array[i]['url'], '_blank');
+                        }, 5000, false);
+                    }
                 }
             } else {
                 $('#link_not').html('');
@@ -540,8 +542,8 @@
         });
     }
 
-    buscar_notificaciones("S");
-    setInterval('buscar_notificaciones("S")', 600000);
+    buscar_notificaciones("S", false);
+    setInterval('buscar_notificaciones("S", true)', 600000);
 
     /* =============== Variables para configuracion =====================*/
     var $pushMenu = $('[data-toggle="push-menu"]').data('lte.pushmenu')

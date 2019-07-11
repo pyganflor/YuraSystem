@@ -1,22 +1,22 @@
 <div class="nav-tabs-custom" style="cursor: move;">
     <!-- Tabs within a box -->
     <ul class="nav nav-pills nav-justified">
-        <li class="active"><a href="#cajas-chart" data-toggle="tab" aria-expanded="true">Cajas</a></li>
-        <li class=""><a href="#tallos-chart" data-toggle="tab" aria-expanded="false">Tallos</a></li>
+        <li class="active li_tab_chart" id="li_tab_cajas"><a href="#cajas-chart" data-toggle="tab" aria-expanded="true">Cajas</a></li>
+        <li class="li_tab_chart" id="li_tab_tallos"><a href="#tallos-chart" data-toggle="tab" aria-expanded="false">Tallos</a></li>
         {{--<li class=""><a href="#ramos-chart" data-toggle="tab" aria-expanded="false">Ramos</a></li>--}}
-        <li class=""><a href="#calibres-chart" data-toggle="tab" aria-expanded="false">Calibres</a></li>
+        <li class="li_tab_chart" id="li_tab_calibres"><a href="#calibres-chart" data-toggle="tab" aria-expanded="false">Calibres</a></li>
     </ul>
     <div class="tab-content no-padding">
-        <div class="chart tab-pane active" id="cajas-chart" style="position: relative; height: 300px;">
+        <div class="chart tab-pane active div_tab_chart" id="cajas-chart" style="position: relative; height: 300px;">
             <canvas id="chart_cajas" width="100%" height="40" style="margin-top: 5px; background-color: white"></canvas>
         </div>
-        <div class="chart tab-pane" id="tallos-chart" style="position: relative; height: 300px;">
+        <div class="chart tab-pane div_tab_chart" id="tallos-chart" style="position: relative; height: 300px;">
             <canvas id="chart_tallos" width="100%" height="40" style="margin-top: 5px; background-color: white"></canvas>
         </div>
         {{--<div class="chart tab-pane" id="ramos-chart" style="position: relative; height: 300px;">
             <canvas id="chart_ramos" width="100%" height="40" style="margin-top: 5px"></canvas>
         </div>--}}
-        <div class="chart tab-pane" id="calibres-chart" style="position: relative; height: 300px;">
+        <div class="chart tab-pane div_tab_chart" id="calibres-chart" style="position: relative; height: 300px;">
             <canvas id="chart_calibres" width="100%" height="40" style="margin-top: 5px; background-color: white"></canvas>
         </div>
     </div>
