@@ -180,7 +180,7 @@
             $val_recepciones .= '|'.$recepciones[$i]->id_recepcion;
     @endphp
     <input type="hidden" id="recepciones" name="recepciones" value="{{$val_recepciones}}">
-    <input type="hidden" id="id_clasificacion_verde" name="id_clasificacion_verde"
+    <input type="hisdden" id="id_clasificacion_verde" name="id_clasificacion_verde"
            value="{{$clasificacion_verde != '' ? $clasificacion_verde->id_clasificacion_verde : ''}}">
 @else
     <div class="well text-center">
@@ -190,27 +190,6 @@
 
 <script>
     $('#input_escanear').focus();
-
-    function seleccionar_variedad(id_variedad, li) {
-        datos = {
-            id_variedad: id_variedad,
-            id_clasificacion_verde: $('#id_clasificacion_verde').val()
-        };
-        get_jquery('{{url('clasificacion_verde/add/cargar_tabla_variedad')}}', datos, function (retorno) {
-            $('#div_table_x_variedad').html(retorno);
-            $('.list-group-item').removeClass('active');
-            li.addClass('active');
-
-            $('#html_total_tallos').html($('#total_tallos').val());
-            $('#html_total_ramos').html($('#total_ramos').val());
-            $('#html_desechos').html($('#desechos').val() + '%');
-
-            variedades = $('.ids_variedad');
-            for (i = 0; i < variedades.length; i++) {
-                $('#badge_tallos_clasificados_x_variedad_' + variedades[i].id.substr(20)).html($('#tallos_clasificados_' + variedades[i].id.substr(20)).val());
-            }
-        });
-    }
 
     function calcular_totales_verde() {
         id_variedad = $('#id_variedad').val();
