@@ -23,7 +23,7 @@
                     <li class="dropdown notifications-menu">
                         <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"
                            onclick="actualizar_cosecha_x_variedad('li_cosecha_hoy', false)">
-                            <i class="fa fa-times"></i>
+                            <i class="fa fa-leaf"></i>
                         </a>
                         <ul class="dropdown-menu" style="">
                             <li>
