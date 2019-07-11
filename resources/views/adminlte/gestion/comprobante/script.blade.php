@@ -145,12 +145,12 @@
         if(tipo_pedido === "N"){
             check = "<div class='col-md-4'>" +
                         "<input type='checkbox' id='csv_etiqueta' name='csv_etiqueta' checked style='position:relative;top:3px'> "+
-                        "<label for='csv_etiqueta'>CSV de etiquetas</label>" +
+                        "<label style='font-weight:600' for='csv_etiqueta'>CSV de etiquetas</label>" +
                     "</div>";
         }else if(tipo_pedido === "T"){
             check = "<div class='col-md-4'>" +
                         "<input type='checkbox' id='dist_cajas' name='dist_cajas' style='position:relative;top:3px'> "+
-                        "<label for='dist_cajas'>Lista de distribución</label>" +
+                        "<label style='font-weight:600' for='dist_cajas'>Lista de distribución</label>" +
                     "</div>";
         }
 
@@ -158,24 +158,28 @@
                     "<div class='col-md-12'>" +
                         "<form id='form_envio_correo' name='form_envio_correo'>" +
                             "<p><label for='ruta'>Seleccione las opciones para el envio del correo</label></p>" +
+                            "<p style='margin:10px 0px 0px'><label>Enviar a:</label></p>" +
                             "<div class='row'>" +
                                 "<div class='col-md-4'>" +
                                     "<input type='checkbox' id='cliente' name='cliente' checked style='position:relative;top:3px'> "+
-                                    "<label for='cliente'>Enviar al cliente</label>" +
+                                    "<label style='font-weight:600' for='cliente'>Cliente</label>" +
                                 "</div>"+
                                 "<div class='col-md-8'>" +
                                     "<input type='checkbox' id='agencia_carga' name='agencia_carga' style='position:relative;top:3px'> "+
-                                    "<label for='agencia_carga'>Enviar a la agencia de carga</label>" +
+                                    "<label style='font-weight:600' for='agencia_carga'>Agencia de carga</label>" +
                                 "</div>"+
+                            "</div>" +
+                            "<p style='margin:10px 0px 0px;'><label>Adjuntar:</label></p>" +
+                            "<div class='row'>" +
                                 "<div class='col-md-4'>" +
                                     "<input type='checkbox' id='factura_cliente' name='factura_cliente' checked style='position:relative;top:3px'> "+
-                                    "<label for='factura_cliente'>Factura del cliente</label>" +
+                                    "<label style='font-weight:600' for='factura_cliente'>Factura del cliente</label>" +
                                 "</div>"+
                                     check
                                 +
                                 "<div class='col-md-4'>" +
                                     "<input type='checkbox' id='factura_sri' name='factura_sri' style='position:relative;top:3px'> "+
-                                    "<label for='factura_sri'>Factura del SRI</label>" +
+                                    "<label style='font-weight:600' for='factura_sri'>Factura del SRI</label>" +
                                 "</div>"+
                             "</div>" +
                         "</form>" +
@@ -289,9 +293,53 @@
                     $a.remove();
                 }
             }).always(function () {
-                $.LoadingOverlay('hide');
+                buscar_listado_comprobante();
                 cerrar_modals();
+                $.LoadingOverlay('hide');
             });
         });
+    }
+
+    function update_integrado(id_comprobante) {
+        datos = {
+            id_comprobante : id_comprobante,
+            _token : '{{csrf_token()}}'
+        };
+        modal_quest('modal_update_integrado',
+            '<div class="alert alert-warning text-center"><label>Al realizar esta acción los datos de este pedido y de esta factura podrán ser modificados</label></div>',
+            '<i class="fa fa-file-text-o" aria-hidden="true"></i> Actualizar estado de la factura', true, false, '{{isPC() ? '40%' : ''}}', function () {
+                post_jquery('comprobante/desvincular_factura_venture', datos, function () {
+
+                    buscar_listado_comprobante();
+                    cerrar_modals();
+                });
+            });
+    }
+
+
+    function actualizar_comprobante(){
+        datos = {
+            fecha : $("#fecha").val(),
+            _token : '{{csrf_token()}}'
+        };
+        post_jquery('comprobante/actualizar_comprobante_venture', datos, function () {
+            buscar_listado_comprobante();
+            cerrar_modals();
+        });
+    }
+
+    function anular_factura(id_comprobante){
+        datos = {
+            id_comprobante : id_comprobante,
+            _token : '{{csrf_token()}}'
+        };
+        modal_quest('modal_update_integrado',
+            '<div class="alert alert-warning text-center"><label>Esta seguro que desea anular esta factura?</label></div>',
+            '<i class="fa fa-file-text-o" aria-hidden="true"></i> Actualizar estado de la factura', true, false, '{{isPC() ? '40%' : ''}}', function () {
+                post_jquery('comprobante/anular_factura', datos, function () {
+                    buscar_listado_comprobante();
+                    cerrar_modals();
+                });
+            });
     }
 </script>

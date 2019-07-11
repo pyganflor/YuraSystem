@@ -15,6 +15,7 @@
             $.LoadingOverlay('hide');
         });
     }
+
     function add_orden_semanal() {
         get_jquery('{{url('pedidos/add_orden_semanal')}}', {}, function (retorno) {
             modal_view('modal-view_add_orden_semanal', retorno, '<i class="fa fa-fw fa-plus"></i> Agregar Orden Semanal', true, false,
@@ -32,7 +33,7 @@
         setTimeout(function () {
             $.get('{{url('clientes/inputs_pedidos_edit')}}', datos, function (retorno) {
                 $("#table_campo_pedido").html(retorno);
-                $('select#id_cliente_venta option[value=' + id_cliente + ']').attr('selected', true);
+                $('select#id_cliente_venta option[value='+id_cliente+']').attr('selected', true);
                 $('select#id_cliente_venta').attr('disabled', true);
                 datos = {
                     id_pedido: id_pedido,
@@ -97,4 +98,25 @@
             });
         });
     }
+
+    function store_especificacion_pedido(id_detalle_pedido,id_cliente_pedido_especificacion,orden,id_agencia_carga){
+        $.LoadingOverlay('show');
+        datos ={
+            id_detalle_pedido : id_detalle_pedido,
+            id_cliente_pedido_especificacion : id_cliente_pedido_especificacion,
+            orden : orden,
+            id_agencia_carga : id_agencia_carga
+        };
+        post_jquery('clientes/store_especificacion_pedido', datos, function () {
+            cerrar_modals();
+            listar_resumen_pedidos($('#fecha_pedidos_search').val(), true);
+            if (vista != 'pedidos') {
+                detalles_cliente(id_cliente == '' ? id_cliente = $("#id_cliente_venta").val() : id_cliente);
+            }
+        });
+        $.LoadingOverlay('hide');
+
+
+    }
+
 </script>

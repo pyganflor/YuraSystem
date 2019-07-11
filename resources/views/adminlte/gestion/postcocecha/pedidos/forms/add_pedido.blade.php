@@ -91,19 +91,21 @@
                                 <textarea name="descripcion" id="descripcion" cols="200" rows="5" class="form-control"></textarea>
                             </td>
                         </tr>--}}
-                        <tr>
-                            <td class="text-center" style="padding: 10px 0px 0px">
-                                <button type="button" class=" btn btn-app btn-xs btn-success"
-                                        onclick="store_pedido('{{$idCliente}}','@if($pedido_fijo) {{true}} @endif','{{csrf_token()}}','{{$vista}}','{{$id_pedido}}','{{$comprobante}}')">
-                                    <span class="badge bg-green monto_total_pedido" >$0.00</span>
-                                    <i class="fa fa-shopping-cart"></i> Guardar
-                                </button>
-                                <button type="button" class=" btn btn-app btn-xs btn-success"
-                                        onclick="reiniciar_orden_pedido()">
-                                    <i class="fa fa-refresh" aria-hidden="true"></i> Reiniciar orden
-                                </button>
-                            </td>
-                        </tr>
+                        @if((isset( $comprobante->estado) && $comprobante->estado != 5) && (isset($comprobante->estado) && $comprobante->estado != 6)|| !isset( $comprobante->estado))
+                            <tr>
+                                <td class="text-center" style="padding: 10px 0px 0px">
+                                    <button type="button" class=" btn btn-app btn-xs btn-success"
+                                            onclick="store_pedido('{{$idCliente}}','@if($pedido_fijo) {{true}} @endif','{{csrf_token()}}','{{$vista}}','{{$id_pedido}}','{{$comprobante}}')">
+                                        <span class="badge bg-green monto_total_pedido" >$0.00</span>
+                                        <i class="fa fa-shopping-cart"></i> Guardar
+                                    </button>
+                                    <button type="button" class=" btn btn-app btn-xs btn-success"
+                                            onclick="reiniciar_orden_pedido()">
+                                        <i class="fa fa-refresh" aria-hidden="true"></i> Reiniciar orden
+                                    </button>
+                                </td>
+                            </tr>
+                        @endif
                     </table>
                 </div>
             </div>
