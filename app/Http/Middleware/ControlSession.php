@@ -20,7 +20,7 @@ class ControlSession
      */
     public function handle($request, Closure $next)
     {
-        if (strtotime(date('Y-m-d H:i:s')) - strtotime(Session::get('last_quest')) < 1800)
+        if (strtotime(date('Y-m-d H:i:s')) - strtotime(Session::get('last_quest')) < 3600)
             Session::put('last_quest', date('Y-m-d H:i:s'));
         else {
             return response(redirect('logout'));
