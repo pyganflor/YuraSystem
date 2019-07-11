@@ -13,7 +13,7 @@
     </div>
     <div class="col-md-6">
         <div class="form-group input-group">
-            <span class="input-group-addon" style="background-color: #e9ecef">Fecha de ingreso</span>
+            <span class="input-group-addon" style="background-color: #e9ecef">Fecha de Clasf. Verde</span>
             <input type="date" id="fecha_ingreso" name="fecha_ingreso" required class="form-control text-center">
         </div>
     </div>
@@ -51,6 +51,27 @@
         };
         get_jquery('<?php echo e(url('clasificacion_verde/destinar_lotes_form')); ?>', datos, function (retorno) {
             $('#div_destinar_lotes_' + variedad).html(retorno);
+        });
+    }
+
+    function seleccionar_variedad(id_variedad, li) {
+        datos = {
+            id_variedad: id_variedad,
+            id_clasificacion_verde: $('#id_clasificacion_verde').val()
+        };
+        get_jquery('{{url('clasificacion_verde/add/cargar_tabla_variedad')}}', datos, function (retorno) {
+            $('#div_table_x_variedad').html(retorno);
+            $('.list-group-item').removeClass('active');
+            li.addClass('active');
+
+            $('#html_total_tallos').html($('#total_tallos').val());
+            $('#html_total_ramos').html($('#total_ramos').val());
+            $('#html_desechos').html($('#desechos').val() + '%');
+
+            variedades = $('.ids_variedad');
+            for (i = 0; i < variedades.length; i++) {
+                $('#badge_tallos_clasificados_x_variedad_' + variedades[i].id.substr(20)).html($('#tallos_clasificados_' + variedades[i].id.substr(20)).val());
+            }
         });
     }
 </script>

@@ -1,6 +1,6 @@
 <p class="text-center">
     <strong>Cosecha del día</strong>
-    <button type="button" class="pull-right btn btn-xs btn-default" onclick="actualizar_cosecha_x_variedad()">
+    <button type="button" class="pull-right btn btn-xs btn-default" onclick="actualizar_cosecha_x_variedad()" id="btn_actualizar">
         <i class="fa fa-fw fa-refresh"></i>
     </button>
 </p>
@@ -51,7 +51,7 @@
         <input type="hidden" class="listado_variedades" value="{{$variedad->id_variedad}}">
     @endforeach
     <div class="row">
-        <div class="col-sm-3 col-xs-6">
+        <div class="col-sm-6 col-xs-6">
             @php
                 $class_porcent = 'orange';
                 $class_icon = 'left';
@@ -65,35 +65,35 @@
                 }
             @endphp
             <div class="description-block border-right">
-                <span class="description-percentage text-{{$class_porcent}}">
+                <span class="description-percentage text-{{$class_porcent}}" title="Relación con última clasificación">
                     <i class="fa fa-caret-{{$class_icon}}"></i>
                     {{round($porcent,2)}} %
                 </span>
                 <input type="hidden" id="porcentaje_calibre" value="{{$porcent}}">
-                <h5 class="description-header">
+                <h5 class="description-header" title="Calibre">
                     {{$verde != '' ? $verde->getCalibre() : 0}}
                 </h5>
                 <input type="hidden" id="calibre_dia" value="{{$verde != '' ? $verde->getCalibre() : 0}}">
-                <a href="javascript:void(0)" class="btn btn-link"
-                   onclick="ver_rendimiento_verde('{{$verde != '' ? $verde->id_clasificacion_verde : ''}}')">
+                <button type="button" class="btn btn-link btn-xs" title="Ver Rendimiento en Verde"
+                        onclick="ver_rendimiento_verde('{{$verde != '' ? $verde->id_clasificacion_verde : ''}}')">
                     <strong class="description-text">Calibre</strong>
-                </a>
+                </button>
             </div>
         </div>
-        <div class="col-sm-3 col-xs-6">
+        <div class="col-sm-6 col-xs-6">
             <div class="description-block border-right">
                 <span class="description-percentage" title="Clasificados">
-                    {{$verde != '' ? $verde->total_tallos() : 0}}
+                    {{$verde != '' ? number_format($verde->total_tallos()) : 0}}
                 </span>
                 <input type="hidden" id="clasificados_dia" value="{{$verde != '' ? $verde->total_tallos() : 0}}">
                 <h5 class="description-header" title="Cosechados">
-                    {{$cosecha->getTotalTallos()}}
+                    {{number_format($cosecha->getTotalTallos())}}
                 </h5>
                 <input type="hidden" id="cosechados_dia" value="{{$cosecha->getTotalTallos()}}">
-                <a href="javascript:void(0)" class="btn btn-link"
-                   onclick="ver_rendimiento_cosecha('{{$cosecha != '' ? $cosecha->id_cosecha : ''}}')">
+                <button type="button" class="btn btn-link btn-xs" title="Ver Rendimiento en Cosecha"
+                        onclick="ver_rendimiento_cosecha('{{$cosecha != '' ? $cosecha->id_cosecha : ''}}')">
                     <strong class="description-text">Totales</strong>
-                </a>
+                </button>
             </div>
         </div>
     </div>

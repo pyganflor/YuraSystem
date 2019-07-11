@@ -928,6 +928,41 @@
         } else
             $('#' + input_variedad).html(li_adicional);
     }
+
+    function actualizar_cosecha_x_variedad(div = 'div_cosecha_x_variedad_cosecha', btn_actualizar = true) {
+        datos = {};
+        /* ============= COMPARACION ===========*/
+        get_jquery('{{url('crm_postcosecha/actualizar_cosecha_x_variedad')}}', datos, function (retorno) {
+            $('#' + div).html(retorno);
+            if (btn_actualizar == false) {
+                $('#btn_actualizar').hide();
+            }
+        }, div);
+    }
+
+    function ver_rendimiento_cosecha(id_cosecha) {
+        if (id_cosecha != '') {
+            datos = {
+                id_cosecha: id_cosecha
+            };
+            get_jquery('{{url('recepcion/ver_rendimiento')}}', datos, function (retorno) {
+                modal_view('modal_view_ver_rendimiento', retorno, '<i class="fa fa-fw fa-balance-scale"></i> Rendimiento', true, false,
+                    '{{isPC() ? '75%' : ''}}');
+            });
+        }
+    }
+
+    function ver_rendimiento_verde(verde) {
+        if (verde != '') {
+            datos = {
+                id_clasificacion_verde: verde
+            };
+
+            get_jquery('{{url('clasificacion_verde/ver_rendimiento')}}', datos, function (retorno) {
+                modal_view('modal_view_ver_rendimiento', retorno, '<i class="fa fa-fw fa-balance-scale"></i> Rendimiento', true, false, '{{isPC() ? '65%' : ''}}');
+            });
+        }
+    }
 </script>
 
 @yield('css_final')

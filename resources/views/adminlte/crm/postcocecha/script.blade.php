@@ -5,9 +5,9 @@
         get_jquery('{{url('crm_postcosecha/cargar_cosecha')}}', {}, function (retorno) {
             $('#div_cosecha').html(retorno);
 
-            setTimeout("activar_tab('tallos')", 1000);
-            setTimeout("activar_tab('calibres')", 1500);
-            setTimeout("activar_tab('cajas')", 2000);
+            setTimeout("activar_tab('tallos')", 500);
+            setTimeout("activar_tab('calibres')", 600);
+            setTimeout("activar_tab('cajas')", 700);
         });
     }
 
@@ -153,38 +153,6 @@
                 $('#filtro_predeterminado_annos').val(text + ' - ' + a);
                 $('#li_anno_' + a).addClass('bg-aqua-active');
             }
-        }
-    }
-
-    function actualizar_cosecha_x_variedad() {
-        datos = {};
-        /* ============= COMPARACION ===========*/
-        get_jquery('{{url('crm_postcosecha/actualizar_cosecha_x_variedad')}}', datos, function (retorno) {
-            $('#div_cosecha_x_variedad_cosecha').html(retorno);
-        }, 'div_cosecha_x_variedad_cosecha');
-    }
-
-    function ver_rendimiento_cosecha(id_cosecha) {
-        if (id_cosecha != '') {
-            datos = {
-                id_cosecha: id_cosecha
-            };
-            get_jquery('{{url('recepcion/ver_rendimiento')}}', datos, function (retorno) {
-                modal_view('modal_view_ver_rendimiento', retorno, '<i class="fa fa-fw fa-balance-scale"></i> Rendimiento', true, false,
-                    '{{isPC() ? '75%' : ''}}');
-            });
-        }
-    }
-
-    function ver_rendimiento_verde(verde) {
-        if (verde != '') {
-            datos = {
-                id_clasificacion_verde: verde
-            };
-
-            get_jquery('{{url('clasificacion_verde/ver_rendimiento')}}', datos, function (retorno) {
-                modal_view('modal_view_ver_rendimiento', retorno, '<i class="fa fa-fw fa-balance-scale"></i> Rendimiento', true, false, '{{isPC() ? '65%' : ''}}');
-            });
         }
     }
 

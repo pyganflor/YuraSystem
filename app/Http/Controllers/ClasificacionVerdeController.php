@@ -224,7 +224,7 @@ class ClasificacionVerdeController extends Controller
                                 $detalle->cantidad_ramos = $item['cantidad_ramos'];
                                 $detalle->tallos_x_ramos = $item['tallos_x_ramos'];
                                 $detalle->fecha_registro = date('Y-m-d H:i:s');
-                                $detalle->fecha_ingreso = date('Y-m-d H:i');
+                                $detalle->fecha_ingreso = date('Y-m-d H:i');    // ojo
 
                                 if ($detalle->save()) {
                                     $detalle = DetalleClasificacionVerde::All()->last();
@@ -307,7 +307,7 @@ class ClasificacionVerdeController extends Controller
                         $detalle->cantidad_ramos = $item['cantidad_ramos'];
                         $detalle->tallos_x_ramos = $item['tallos_x_ramos'];
                         $detalle->fecha_registro = date('Y-m-d H:i:s');
-                        $detalle->fecha_ingreso = date('Y-m-d H:i');
+                        $detalle->fecha_ingreso = date('Y-m-d H:i');    // ojo
 
                         if ($detalle->save()) {
                             $detalle = DetalleClasificacionVerde::All()->last();
