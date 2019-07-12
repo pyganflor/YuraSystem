@@ -53,7 +53,8 @@
                                         @else
                                             0
                                         @endif
-                                        <small>$/m<sup>2</sup>/año (1 año)</small>
+                                        <small>$/m<sup>2</sup>/año (1 año)</small> -- {{number_format($venta_anual)}}
+                                        / {{number_format($ciclos_anual)}}
                                     </span>
                                 </div>
                             </div>
