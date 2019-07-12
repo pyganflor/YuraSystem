@@ -19,8 +19,8 @@
             <div class="inner">
                 <h3 class="info-box-number">
                     {{number_format($mensual['ciclo'], 2)}}
-                    @if($mensual['ciclo'] > -1)
-                        <small style="font-size: 0.5em; color: white">({{round(365 / 1,2)}})</small>
+                    @if($mensual['ciclo'] > 0)
+                        <small style="font-size: 0.5em; color: white">({{round(365 / $mensual['ciclo'],2)}})</small>
                     @endif
                 </h3>
             </div>
