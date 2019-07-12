@@ -12,6 +12,7 @@ use yura\Modelos\ClasificacionBlanco;
 use yura\Modelos\ClasificacionVerde;
 use yura\Modelos\ConfiguracionUser;
 use yura\Modelos\Cosecha;
+use yura\Modelos\HistoricoVentas;
 use yura\Modelos\Pedido;
 use yura\Modelos\Rol;
 use yura\Modelos\StockApertura;
@@ -153,6 +154,26 @@ class YuraController extends Controller
             /* ================= venta en 4 semanas =================== */
             $data_venta_mensual = getVentaByRango($semanas_4[0]->semana, $semanas_4[3]->semana, 'T');
 
+            /* ================= venta en 1 año =================== */
+            $fecha_anno = opDiasFecha('-', 365, date('Y-m-d'));
+            $historicos_ventas = HistoricoVentas::All()
+                ->where('anno', '>=', substr($fecha_anno, 0, 4))
+                ->where('mes', '>=', substr($fecha_anno, 5, 2));
+            $data_venta_anual = 0;
+            foreach ($historicos_ventas as $item) {
+                $data_venta_anual += $item->valor;
+            }
+            $ciclos_anual = Ciclo::All()
+                ->where('estado', 1)
+                ->where('activo', 0)
+                ->where('fecha_fin', '>=', $fecha_anno)
+                ->where('fecha_fin', '<=', date('Y-m-d'))
+                ->sortBy('fecha_fin');
+            $data_ciclos_anual = 0;
+            foreach ($ciclos_anual as $item) {
+                $data_ciclos_anual += $item->area;
+            }
+
             return view('adminlte.inicio', [
                 'calibre' => $calibre,
                 'tallos' => $tallos,
@@ -161,6 +182,8 @@ class YuraController extends Controller
                 'rendimiento_desecho' => $rendimiento_desecho,
                 'area' => $mensual,
                 'venta_mensual' => $data_venta_mensual,
+                'venta_anual' => $data_venta_anual,
+                'ciclos_anual' => $data_ciclos_anual,
             ]);
         }
 
