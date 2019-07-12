@@ -1323,7 +1323,7 @@ function accionAutorizacion($autorizacion, $path, $msg, $tipoDocumento = false, 
 
     $objComprobante = Comprobante::where([
         ['clave_acceso', $numeroAutorizacion],
-        ['tipo_comprobante','01']
+        ['tipo_comprobante', '01']
     ]);
     $autorizacion->estado !== "AUTORIZADO"
         ? $objComprobante->update(['cuasa' => $causa])
@@ -1363,13 +1363,13 @@ function generaDocumentoPDF($autorizacion, $tipo_documento, $pre_factura = false
     if ($tipo_documento == "01")
         $dataComprobante = Comprobante::where([
             ['clave_acceso', isset($autorizacion->numeroAutorizacion) ? (String)$autorizacion->numeroAutorizacion : (String)$autorizacion->infoTributaria->claveAcceso],
-            ['tipo_comprobante','01']
+            ['tipo_comprobante', '01']
         ])->select('id_envio')->first();
 
     if ($tipo_documento == "06")
         $dataComprobante = Comprobante::where([
             ['clave_acceso', isset($autorizacion->numeroAutorizacion) ? (String)$autorizacion->numeroAutorizacion : (String)$autorizacion->infoTributaria->claveAcceso],
-            ['tipo_comprobante','06']
+            ['tipo_comprobante', '06']
         ])->join('detalle_guia_remision as dgr', 'comprobante.id_comprobante', 'dgr.id_comprobante')->select('id_comprobante_relacionado')->first();
 
     $data = [
@@ -1919,6 +1919,7 @@ function getCiclosCerradosByRango($semana_ini, $semana_fin, $variedad, $by_seman
 
     $ciclo = 0;
     $area_cerrada = 0;
+    $tallos_cosechados = 0;
 
     foreach ($ciclos_fin as $c) {
         $area_cerrada += $c->area;
@@ -1926,12 +1927,14 @@ function getCiclosCerradosByRango($semana_ini, $semana_fin, $variedad, $by_seman
         if ($c->fecha_fin != '')
             $fin = $c->fecha_fin;
         $ciclo += difFechas($fin, $c->fecha_inicio)->days;
+        $tallos_cosechados += $c->getTallosCosechados();
     }
 
     return [
         'ciclos' => $ciclos_fin,
         'ciclo' => count($ciclos_fin) > 0 ? round($ciclo / count($ciclos_fin), 2) : 0,
         'area_cerrada' => $area_cerrada,
+        'tallos_cosechados' => $tallos_cosechados,
     ];
 }
 
@@ -1987,7 +1990,9 @@ function getCosechaByRango($semana_ini, $semana_fin, $variedad)
 
     $ramos_estandar = 0;
     $tallos_cosechados = 0;
+    $calibre = 0;
 
+    $cant_verdes = 0;
     foreach ($query as $dia) {
         $verde = ClasificacionVerde::All()->where('fecha_ingreso', '=', $dia->dia)->first();
         $cosecha = Cosecha::All()->where('fecha_ingreso', '=', $dia->dia)->first();
@@ -1995,15 +2000,19 @@ function getCosechaByRango($semana_ini, $semana_fin, $variedad)
             if ($variedad == 'T') { // Todas las variedades
                 $ramos_estandar += $verde->getTotalRamosEstandar();
                 $tallos_cosechados += $cosecha->getTotalTallos();
+                $calibre += $verde->getCalibre();
             } else {    // por variedad
                 $ramos_estandar += $verde->getTotalRamosEstandarByVariedad($variedad);
                 $tallos_cosechados += $cosecha->getTotalTallosByVariedad($variedad);
+                $calibre += $verde->calibreByVariedad($variedad);
             }
+            $cant_verdes++;
         }
     }
     return [
         'ramos_estandar' => $ramos_estandar,
         'tallos_cosechados' => $tallos_cosechados,
+        'calibre' => $cant_verdes > 0 ? round($calibre / $cant_verdes, 2) : 0,
     ];
 }
 

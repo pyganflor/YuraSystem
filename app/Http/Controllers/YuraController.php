@@ -132,10 +132,11 @@ class YuraController extends Controller
             $data_ciclos = getCiclosCerradosByRango($semanas_4[0]->semana, $semanas_4[3]->semana, 'T');
             $ciclo = $data_ciclos['ciclo'];
             $area_cerrada = $data_ciclos['area_cerrada'];
+            $tallos_ciclo = $data_ciclos['tallos_cosechados'];
 
             $data_cosecha = getCosechaByRango($semanas_4[0]->semana, $semanas_4[3]->semana, 'T');
-            $tallos_ciclo = $data_cosecha['tallos_cosechados'];
-            $ramos_ciclo = $data_cosecha['ramos_estandar'];
+            $calibre_ciclo = $data_cosecha['calibre'];
+            $calibre_ciclo > 0 ? $ramos_ciclo = round($tallos_ciclo / $calibre_ciclo, 2) : $ramos_ciclo = 0;
 
             $ciclo_ano = $area_cerrada > 0 ? round(365 / $ciclo, 2) : 0;
 
