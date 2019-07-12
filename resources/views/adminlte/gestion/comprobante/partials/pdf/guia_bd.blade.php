@@ -20,7 +20,7 @@
                                 <td style="font-size:12px;padding:5px">DIRECCIÓN SUCURSAL: {{$data['comprobante']->detalle_guia_remision->direccion_establecimiento_emisor}}</td>
                             </tr>
                             <tr>
-                                <td style="font-size:12px;padding:5px">OBLIGADO A LLEVAR CONTABILIDAD: {{$data['comprobante']->detalle_guia_remision->obligado_contabilidad}}</td>
+                                <td style="font-size:12px;padding:5px">OBLIGADO A LLEVAR CONTABILIDAD: {{$data['comprobante']->detalle_guia_remision->obligado_contabilidad == 1 ? "SI" : "NO"}}</td>
                             </tr>
                         </table>
                     </td>
