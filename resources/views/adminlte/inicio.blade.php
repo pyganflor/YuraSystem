@@ -45,7 +45,7 @@
                                         @else
                                             0
                                         @endif
-                                        <small>$/m<sup>2</sup>/año</small>
+                                        <small>$/m<sup>2</sup>/año (4 semanas)</small>
                                     </span>
                                     <span class="info-box-number text-center">
                                         @if($ciclos_anual > 0)
@@ -53,7 +53,7 @@
                                         @else
                                             0
                                         @endif
-                                        <small>$/m<sup>2</sup>/año</small>
+                                        <small>$/m<sup>2</sup>/año (1 año)</small>
                                     </span>
                                 </div>
                             </div>
