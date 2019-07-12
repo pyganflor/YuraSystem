@@ -17,7 +17,7 @@
     <div class="col-md-3">
         <div class="small-box bg-aqua">
             <div class="inner">
-                <h3 class="info-box-number">
+                <h3 class="info-box-number text-white">
                     {{number_format($mensual['ciclo'], 2)}}
                     <small>({{round(365 / $mensual['ciclo'],2)}})</small>
                 </h3>
