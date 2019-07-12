@@ -34,14 +34,13 @@ class crmAreaController extends Controller
         $data_ciclos = getCiclosCerradosByRango($semana_actual->codigo, $semana_actual->codigo, 'T');
         $ciclo = $data_ciclos['ciclo'];
         $area_cerrada = $data_ciclos['area_cerrada'];
+        $tallos = $data_ciclos['tallos_cosechados'];
 
         $data_cosecha = getCosechaByRango($semana_actual->codigo, $semana_actual->codigo, 'T');
-        $tallos = $data_cosecha['tallos_cosechados'];
-        $ramos = $data_cosecha['ramos_estandar'];
+        $calibre = $data_cosecha['calibre'];
+        $calibre > 0 ? $ramos = round($tallos / $calibre, 2) : $ramos = 0;
 
         $ciclo_ano = $ciclo > 0 ? round(365 / $ciclo, 2) : 0;
-
-        //dd($area_cerrada, $tallos, $semana_actual->codigo);
 
         $semanal = [
             'ciclo_ano' => $ciclo_ano,
@@ -83,10 +82,11 @@ class crmAreaController extends Controller
         $data_ciclos = getCiclosCerradosByRango($fechas[0]->semana, $fechas[3]->semana, 'T');
         $ciclo = $data_ciclos['ciclo'];
         $area_cerrada = $data_ciclos['area_cerrada'];
+        $tallos = $data_ciclos['tallos_cosechados'];
 
         $data_cosecha = getCosechaByRango($fechas[0]->semana, $fechas[3]->semana, 'T');
-        $tallos = $data_cosecha['tallos_cosechados'];
-        $ramos = $data_cosecha['ramos_estandar'];
+        $calibre = $data_cosecha['calibre'];
+        $calibre > 0 ? $ramos = round($tallos / $calibre, 2) : $ramos = 0;
 
         $ciclo_ano = $area_cerrada > 0 ? round(365 / $ciclo, 2) : 0;
 
@@ -172,10 +172,11 @@ class crmAreaController extends Controller
                     $data_ciclos = getCiclosCerradosByRango($semana->codigo, $semana->codigo, $request->id_variedad);
                     $ciclo = $data_ciclos['ciclo'];
                     $area_cerrada = $data_ciclos['area_cerrada'];
+                    $tallos = $data_ciclos['tallos_cosechados'];
 
                     $data_cosecha = getCosechaByRango($semana->codigo, $semana->codigo, $request->id_variedad);
-                    $tallos = $data_cosecha['tallos_cosechados'];
-                    $ramos = $data_cosecha['ramos_estandar'];
+                    $calibre = $data_cosecha['calibre'];
+                    $calibre > 0 ? $ramos = round($tallos / $calibre, 2) : $ramos = 0;
 
                     $ciclo_ano = $area_cerrada > 0 ? round(365 / $ciclo, 2) : 0;
 
@@ -224,10 +225,11 @@ class crmAreaController extends Controller
                     $data_ciclos = getCiclosCerradosByRango($semana->codigo, $semana->codigo, 'T');
                     $ciclo = $data_ciclos['ciclo'];
                     $area_cerrada = $data_ciclos['area_cerrada'];
+                    $tallos = $data_ciclos['tallos_cosechados'];
 
                     $data_cosecha = getCosechaByRango($semana->codigo, $semana->codigo, 'T');
-                    $tallos = $data_cosecha['tallos_cosechados'];
-                    $ramos = $data_cosecha['ramos_estandar'];
+                    $calibre = $data_cosecha['calibre'];
+                    $calibre > 0 ? $ramos = round($tallos / $calibre, 2) : $ramos = 0;
 
                     $ciclo_ano = $area_cerrada > 0 ? round(365 / $ciclo, 2) : 0;
 
@@ -256,10 +258,11 @@ class crmAreaController extends Controller
                     $data_ciclos = getCiclosCerradosByRango($semana->codigo, $semana->codigo, $request->id_variedad);
                     $ciclo = $data_ciclos['ciclo'];
                     $area_cerrada = $data_ciclos['area_cerrada'];
+                    $tallos = $data_ciclos['tallos_cosechados'];
 
                     $data_cosecha = getCosechaByRango($semana->codigo, $semana->codigo, $request->id_variedad);
-                    $tallos = $data_cosecha['tallos_cosechados'];
-                    $ramos = $data_cosecha['ramos_estandar'];
+                    $calibre = $data_cosecha['calibre'];
+                    $calibre > 0 ? $ramos = round($tallos / $calibre, 2) : $ramos = 0;
 
                     $ciclo_ano = $area_cerrada > 0 ? round(365 / $ciclo, 2) : 0;
 
