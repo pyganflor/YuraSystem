@@ -45,7 +45,16 @@
                                         @else
                                             0
                                         @endif
-                                        <small>$/m<sup>2</sup>/año</small></span>
+                                        <small>$/m<sup>2</sup>/año</small>
+                                    </span>
+                                    <span class="info-box-number text-center">
+                                        @if($ciclos_anual > 0)
+                                            {{number_format(round(($venta_anual / $ciclos_anual), 2), 2)}}
+                                        @else
+                                            0
+                                        @endif
+                                        <small>$/m<sup>2</sup>/año</small>
+                                    </span>
                                 </div>
                             </div>
                         </div>
