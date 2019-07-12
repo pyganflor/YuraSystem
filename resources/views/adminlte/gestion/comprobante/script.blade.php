@@ -140,51 +140,81 @@
         });
     }
 
-    function enviar_correo(id_comprobante,tipo_pedido){
+    function enviar_correo(id_comprobante,tipo_pedido,tipo_comprobante){
+        if(tipo_comprobante === "01"){
+            if(tipo_pedido === "N"){
+                check = "<div class='col-md-4'>" +
+                    "<input type='checkbox' id='csv_etiqueta' name='csv_etiqueta' checked style='position:relative;top:3px'> "+
+                    "<label style='font-weight:600' for='csv_etiqueta'>CSV de etiquetas</label>" +
+                    "</div>";
+            }else if(tipo_pedido === "T"){
+                check = "<div class='col-md-4'>" +
+                    "<input type='checkbox' id='dist_cajas' name='dist_cajas' style='position:relative;top:3px'> "+
+                    "<label style='font-weight:600' for='dist_cajas'>Lista de distribución</label>" +
+                    "</div>";
+            }
+            html = "<div class='row'>" +
+                "<div class='col-md-12'>" +
+                "<form id='form_envio_correo' name='form_envio_correo'>" +
+                "<p><label for='ruta'>Seleccione las opciones para el envio del correo</label></p>" +
+                "<p style='margin:10px 0px 0px'><label>Enviar a:</label></p>" +
+                "<div class='row'>" +
+                "<div class='col-md-4'>" +
+                "<input type='checkbox' id='cliente' name='cliente' checked style='position:relative;top:3px'> "+
+                "<label style='font-weight:600' for='cliente'>Cliente</label>" +
+                "</div>"+
+                "<div class='col-md-8'>" +
+                "<input type='checkbox' id='agencia_carga' name='agencia_carga' style='position:relative;top:3px'> "+
+                "<label style='font-weight:600' for='agencia_carga'>Agencia de carga</label>" +
+                "</div>"+
+                "</div>" +
+                "<p style='margin:10px 0px 0px;'><label>Adjuntar:</label></p>" +
+                "<div class='row'>" +
+                "<div class='col-md-4'>" +
+                "<input type='checkbox' id='factura_cliente' name='factura_cliente' checked style='position:relative;top:3px'> "+
+                "<label style='font-weight:600' for='factura_cliente'>Factura del cliente</label>" +
+                "</div>"+
+                check
+                +
+                "<div class='col-md-4'>" +
+                "<input type='checkbox' id='factura_sri' name='factura_sri' style='position:relative;top:3px'> "+
+                "<label style='font-weight:600' for='factura_sri'>Factura del SRI</label>" +
+                "</div>"+
+                "</div>" +
+                "</form>" +
+                "</div>"+
+                "</div>";
 
-        if(tipo_pedido === "N"){
-            check = "<div class='col-md-4'>" +
-                        "<input type='checkbox' id='csv_etiqueta' name='csv_etiqueta' checked style='position:relative;top:3px'> "+
-                        "<label style='font-weight:600' for='csv_etiqueta'>CSV de etiquetas</label>" +
-                    "</div>";
-        }else if(tipo_pedido === "T"){
-            check = "<div class='col-md-4'>" +
-                        "<input type='checkbox' id='dist_cajas' name='dist_cajas' style='position:relative;top:3px'> "+
-                        "<label style='font-weight:600' for='dist_cajas'>Lista de distribución</label>" +
-                    "</div>";
+        }else if(tipo_comprobante === "06"){
+            html = "<div class='row'>" +
+                "<div class='col-md-12'>" +
+                "<form id='form_envio_correo' name='form_envio_correo'>" +
+                "<p><label for='ruta'>Seleccione las opciones para el envio del correo</label></p>" +
+                "<p style='margin:10px 0px 0px'><label>Enviar a:</label></p>" +
+                "<div class='row'>" +
+                "<div class='col-md-4'>" +
+                "<input type='checkbox' id='cliente' name='cliente' checked style='position:relative;top:3px'> "+
+                "<label style='font-weight:600' for='cliente'>Cliente</label>" +
+                "</div>"+
+                "<div class='col-md-8'>" +
+                "<input type='checkbox' id='agencia_carga' name='agencia_carga' style='position:relative;top:3px'> "+
+                "<label style='font-weight:600' for='agencia_carga'>Agencia de carga</label>" +
+                "</div>"+
+                "</div>" +
+                "<p style='margin:10px 0px 0px;'><label>Adjuntar:</label></p>" +
+                "<div class='row'>" +
+                "<div class='col-md-12'>" +
+                "<input type='checkbox' id='guia_remision' name='guia_remision' checked style='position:relative;top:3px'> "+
+                "<label style='font-weight:600' for='guía de remisión'>Guía de remisión</label>" +
+                "</div>"+
+                "</div>" +
+                "</form>" +
+                "</div>"+
+                "</div>";
         }
 
-        html = "<div class='row'>" +
-                    "<div class='col-md-12'>" +
-                        "<form id='form_envio_correo' name='form_envio_correo'>" +
-                            "<p><label for='ruta'>Seleccione las opciones para el envio del correo</label></p>" +
-                            "<p style='margin:10px 0px 0px'><label>Enviar a:</label></p>" +
-                            "<div class='row'>" +
-                                "<div class='col-md-4'>" +
-                                    "<input type='checkbox' id='cliente' name='cliente' checked style='position:relative;top:3px'> "+
-                                    "<label style='font-weight:600' for='cliente'>Cliente</label>" +
-                                "</div>"+
-                                "<div class='col-md-8'>" +
-                                    "<input type='checkbox' id='agencia_carga' name='agencia_carga' style='position:relative;top:3px'> "+
-                                    "<label style='font-weight:600' for='agencia_carga'>Agencia de carga</label>" +
-                                "</div>"+
-                            "</div>" +
-                            "<p style='margin:10px 0px 0px;'><label>Adjuntar:</label></p>" +
-                            "<div class='row'>" +
-                                "<div class='col-md-4'>" +
-                                    "<input type='checkbox' id='factura_cliente' name='factura_cliente' checked style='position:relative;top:3px'> "+
-                                    "<label style='font-weight:600' for='factura_cliente'>Factura del cliente</label>" +
-                                "</div>"+
-                                    check
-                                +
-                                "<div class='col-md-4'>" +
-                                    "<input type='checkbox' id='factura_sri' name='factura_sri' style='position:relative;top:3px'> "+
-                                    "<label style='font-weight:600' for='factura_sri'>Factura del SRI</label>" +
-                                "</div>"+
-                            "</div>" +
-                        "</form>" +
-                    "</div>"+
-                "</div>";
+
+
 
         modal_quest('modal_enviar_correo', html, "<i class='fa fa-envelope-o' ></i> Envio de correos",true, false, '{{isPC() ? '50%' : ''}}', function () {
             $.LoadingOverlay('show');
@@ -196,7 +226,8 @@
                 factura_cliente : $("#factura_cliente").is(':checked'),
                 factura_sri : $("#factura_sri").is(':checked'),
                 csv_etiqueta : $("#csv_etiqueta").is(':checked'),
-                dist_cajas : $("#dist_cajas").is(':checked')
+                dist_cajas : $("#dist_cajas").is(':checked'),
+                guia_remision : $("#guia_remision").is(':checked')
             };
             post_jquery('comprobante/enviar_correo', datos, function () {
 
@@ -208,9 +239,41 @@
 
     function crear_guia_remision(id_comprobante){
         html = "<div class='row'>" +
+            "<div class='col-md-12'>" +
+            "<form id='form_guia_ruta' name='form_guia_ruta'>" +
+            "<p><label for='ruta'>Escriba la ruta para la guía de remisión</label></p>" +
+            "<div class='row'>" +
+            "<div class='col-md-12'>" +
+            "<input type='text' id='ruta' name='ruta' class='form-control' value='TABABELA' required> "+
+            "</div>"+
+            "</div>" +
+            "</form>" +
+            "</div>"+
+            "</div>";
+
+        modal_quest('modal_crear_guia_remision', html, "<i class='fa fa-road' ></i> Ruta",true, false, '{{isPC() ? '25%' : ''}}', function () {
+            if($("#form_guia_ruta").valid()){
+                $.LoadingOverlay('show');
+
+                datos = {
+                    _token: '{{csrf_token()}}',
+                    id_comprobante: id_comprobante,
+                    ruta : $("#ruta").val()
+                };
+                post_jquery('comprobante/generar_comprobante_guia_remision', datos, function () {
+                    cerrar_modals();
+                    buscar_listado_comprobante();
+                });
+                $.LoadingOverlay('hide');
+            }
+        });
+    }
+
+    function crear_guia_remision_factura(id_comprobante){
+        html = "<div class='row'>" +
                     "<div class='col-md-12'>" +
                         "<form id='form_guia_ruta' name='form_guia_ruta'>" +
-                        "<p><label for='ruta'>Escriba la ruta para la guía de remisión</label></p>" +
+                            "<p><label for='ruta'>Escriba la ruta para la guía de remisión</label></p>" +
                             "<div class='row'>" +
                                 "<div class='col-md-12'>" +
                                     "<input type='text' id='ruta' name='ruta' class='form-control' value='TABABELA' required> "+
@@ -229,7 +292,7 @@
                     id_comprobante: id_comprobante,
                     ruta : $("#ruta").val()
                 };
-                post_jquery('comprobante/generar_comprobante_guia_remision', datos, function () {
+                post_jquery('comprobante/generar_comprobante_guia_remision_factura', datos, function () {
                     cerrar_modals();
                     buscar_listado_comprobante();
                 });
@@ -281,6 +344,7 @@
                 url: '{{url('comprobante/integrar_comprobante')}}',
                 data: {
                     arrComprobante: arrComprobante,
+                    tipo_comprobante : $("#codigo_comprobante").val(),
                     _token: '{{csrf_token()}}',
                 },
                 success: function (data) {
@@ -316,16 +380,20 @@
             });
     }
 
-
     function actualizar_comprobante(){
         datos = {
-            fecha : $("#fecha").val(),
-            _token : '{{csrf_token()}}'
+            fecha: $("#fecha").val(),
+            _token: '{{csrf_token()}}',
+            tipo_comprobante : $("#codigo_comprobante").val()
         };
-        post_jquery('comprobante/actualizar_comprobante_venture', datos, function () {
-            buscar_listado_comprobante();
-            cerrar_modals();
-        });
+        modal_quest('modal_update_integrado',
+            '<div class="alert alert-info text-center"><label>Ha cargado los archivos XML correspondientes a los comprobantes generados el día seleccionado.? </label></div>',
+            '<i class="fa fa-file-text-o" aria-hidden="true"></i> Actualizar comprobantes integrados', true, false, '{{isPC() ? '50%' : ''}}', function () {
+                post_jquery('comprobante/actualizar_comprobante_venture', datos, function () {
+                    buscar_listado_comprobante();
+                    cerrar_modals();
+                });
+            });
     }
 
     function anular_factura(id_comprobante){

@@ -97,12 +97,16 @@
                             </a>--}}
                             @if($tipo_comprobante=="01" && getComprobanteRelacionadFactura($item->id_comprobante) == null)
                                 @if(getCantDespacho(getComprobante($item->id_comprobante)->envio->pedido->id_pedido)>0)
+                                    {{-- COMENTADO PARA QUE LA FACTURACION  FUNCIONE CON EL VENTURE
                                     <button class="btn btn-success btn-xs" title="Crear Guía de Remisión" onclick="crear_guia_remision('{{$item->id_comprobante}}')">
+                                        <i class="fa fa-file-text-o" aria-hidden="true"></i>
+                                    </button>--}}
+                                    <button class="btn btn-success btn-xs" title="Crear Guía de Remisión" onclick="crear_guia_remision_factura('{{$item->id_comprobante}}')">
                                         <i class="fa fa-file-text-o" aria-hidden="true"></i>
                                     </button>
                                 @endif
                             @endif
-                            @if($tipo_comprobante=="01")
+                            @if($tipo_comprobante!="06")
                                 {{-- COMENTADO PARA QUE LA FACTURACION  FUNCIONE CON EL VENTURE
                                 <a target="_blank" href="{{url('comprobante/pre_factura',[$item->clave_acceso,true])}}" class="btn btn-info btn-xs" title="Ver factura Cliente">
                                     <i class="fa fa-user-circle-o" aria-hidden="true"></i>
@@ -119,6 +123,10 @@
                                 <button class="btn btn-danger btn-xs" title="Anular factura" onclick="anular_factura('{{$item->id_comprobante}}')">
                                     <i class="fa fa-times" ></i>
                                 </button>
+                            @else
+                                <a target="_blank" href="{{url('comprobante/guia_remision',$item->secuencial)}}" class="btn btn-primary btn-xs" title="Ver guía de remisión">
+                                    <i class="fa fa-eye" aria-hidden="true"></i>
+                                </a>
                             @endif
                         @endif
                         @if($item->estado == 1)
@@ -145,7 +153,11 @@
                                     <i class="fa fa-eye" aria-hidden="true"></i>
                                 </a>
                             @else
+                                {{--COMENTADO PARA QUE LA FACTURACION FUNCIONE CON EL VENTURE
                                 <a target="_blank" href="{{url('comprobante/pre_guia_remision',$item->clave_acceso)}}" class="btn btn-primary btn-xs" title="Ver comprobante electrónico">
+                                    <i class="fa fa-eye" aria-hidden="true"></i>
+                                </a>--}}
+                                <a target="_blank" href="{{url('comprobante/guia_remision',$item->secuencial)}}" class="btn btn-primary btn-xs" title="Ver guía de remisión">
                                     <i class="fa fa-eye" aria-hidden="true"></i>
                                 </a>
                             @endif
@@ -154,12 +166,14 @@
                                 <input type="checkbox" id="firmar_{{$key+1}}" name="firmar" value="{{$item->id_comprobante}}" style="margin:0;position:relative;top:3px">
                             </button>
                         @endif
-                            {{--PARA QUE LA FACTURACION FUNCIONE CON EL VENTURE--}}
-                            @if($item->estado != 6)
-                                <button class="btn btn-success btn-xs" title="Enviar correo" onclick="enviar_correo('{{$item->id_comprobante}}','{{$item->envio->pedido->tipo_especificacion}}')">
-                                    <i class="fa fa-envelope-o" aria-hidden="true"></i>
-                                </button>
-                            @endif
+
+
+                        {{--PARA QUE LA FACTURACION FUNCIONE CON EL VENTURE--}}
+                        @if($item->estado != 6)
+                            <button class="btn btn-success btn-xs" title="Enviar correo" onclick="enviar_correo('{{$item->id_comprobante}}','{{isset($item->envio->pedido->tipo_especificacion) ? $item->envio->pedido->tipo_especificacion : null}}','{{$item->tipo_comprobante}}')">
+                                <i class="fa fa-envelope-o" aria-hidden="true"></i>
+                            </button>
+                        @endif
                     </td>
                 </tr>
             @endforeach

@@ -24,7 +24,8 @@ class Comprobante extends Model
         'integrado',
         'fecha_autorizacion',
         'secuencial',
-        'rehusar'
+        'rehusar',
+        'ambiente'
     ];
 
     public function envio(){
@@ -40,7 +41,7 @@ class Comprobante extends Model
     }
 
     public function detalle_guia_remision(){
-        return $this->belongsTo('\yura\Modelos\DetalleGuiaRemision','id_comprobante_relacionado');
+        return $this->hasOne('\yura\Modelos\DetalleGuiaRemision','id_comprobante');
     }
 
     public function etiqueta_factura(){

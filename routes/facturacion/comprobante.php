@@ -13,6 +13,7 @@ Route::get('comprobante/comprobante_aprobado_sri/{clave_acceso}', 'ComprobanteCo
 Route::get('comprobante/pre_factura/{clave_acceso}/{cliente?}', 'ComprobanteController@ver_pre_factura');
 Route::post('comprobante/generar_comprobante_guia_remision','ComprobanteController@generar_comprobante_guia_remision');
 Route::get('comprobante/pre_guia_remision/{clave_acceso}', 'ComprobanteController@ver_pre_guia_remision');
+Route::get('comprobanteguia_remision/{secuencial}', 'ComprobanteController@ver_guia_remision');
 Route::post('comprobante/integrar_comprobante', 'ComprobanteController@integrar_comprobante');
 //RUTA PARA QUE LA FACTURACION FUNCIONE CON EL VENTURE (LEE LOS DATOS DE LA PRE-FACTURA DESDE LA BD)
 Route::get('comprobante/documento_pre_factura/{secuencial}/{cliente?}', 'ComprobanteController@ver_pre_factura_bd');
@@ -20,7 +21,8 @@ Route::post('comprobante/enviar_correo', 'ComprobanteController@enviar_correo');
 Route::post('comprobante/desvincular_factura_venture', 'ComprobanteController@desvincular_factura_venture');
 Route::post('comprobante/actualizar_comprobante_venture', 'ComprobanteController@actualizar_comprobante_venture');
 Route::post('comprobante/anular_factura', 'ComprobanteController@anular_factura');
-
+Route::post('comprobante/generar_comprobante_guia_remision_factura','ComprobanteController@generar_comprobante_guia_remision_factura');
+Route::get('comprobante/guia_remision/{secuencial}', 'ComprobanteController@ver_guia_remision_bd');
 Route::get('comprobante/prueba',function(){
     //  $f = scandir('\\\\192.168.154.193\Public\Archivos firma');
     $a =simplexml_load_string(file_get_contents(env('PATH_XML_RECHAZADOS').'facturas/0705201900179244632500110010010000004791234567816.xml'));
