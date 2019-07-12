@@ -13,7 +13,13 @@ class DetalleGuiaRemision extends Model
 
     protected $fillable = [
         'id_comprobante',
-        'id_comprobante_relacionado'
+        'id_comprobante_relacionado',
+        'razon_social_emisor',
+        'direccion_matriz_emisor',
+        'direccion_establecimiento_emisor',
+        'obligado_contabilidad',
+        'destino',
+        'identificacion_emisor'
     ];
 
 }

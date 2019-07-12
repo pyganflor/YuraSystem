@@ -26,4 +26,6 @@ class DetalleDespacho extends Model
         return $this->belongsTo('yura\Modelos\Despacho', 'id_despacho' );
     }
 
+
+
 }

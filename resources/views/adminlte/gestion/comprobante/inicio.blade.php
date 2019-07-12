@@ -41,7 +41,7 @@
                                     <select class="form-control" id="codigo_comprobante" name="codigo_comprobante">
                                         <option value=""> Seleccione </option>
                                         @foreach($tiposCompbantes as $tipoCompbante)
-                                            <option value="{{$tipoCompbante->codigo}}">{{$tipoCompbante->nombre}} </option>
+                                            <option {{$tipoCompbante->nombre === "FACTURA" ? "selected" : ""}} value="{{$tipoCompbante->codigo}}">{{$tipoCompbante->nombre}} </option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -50,7 +50,7 @@
                                     <select class="form-control" id="estado" name="estado">
                                         <option value=""> Seleccione </option>
                                         <option value="0"> No firmados </option>
-                                        <option value="1"> Generados </option>
+                                        <option value="1" selected> Generados </option>
                                         <option value="3"> Devueltos </option>
                                         <option value="4"> Rechazados </option>
                                         <option value="5"> Aprobados por el SRI </option>
