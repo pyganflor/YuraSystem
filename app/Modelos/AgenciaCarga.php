@@ -15,7 +15,9 @@ class AgenciaCarga extends Model
         'nombre',
         'cdigo',
         'identificacion',
-        'correo'
+        'correo',
+        'correo2',
+        'correo3'
     ];
 
     public function cliente_agencia_carga()

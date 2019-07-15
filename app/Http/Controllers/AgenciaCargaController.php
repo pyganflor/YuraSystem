@@ -71,6 +71,8 @@ class AgenciaCargaController extends Controller
             $objAgenciaCarga->nombre = $request->nombre;
             $objAgenciaCarga->codigo = $request->codigo;
             $objAgenciaCarga->correo = $request->correo;
+            $objAgenciaCarga->correo2 = $request->correo2;
+            $objAgenciaCarga->correo3= $request->correo3;
             $objAgenciaCarga->identificacion = $request->identificacion;
             $msg='';
 

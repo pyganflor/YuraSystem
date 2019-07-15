@@ -631,6 +631,8 @@ function store_agencia_carga(token, id_cliente) {
             codigo: $("#codigo_agencia").val(),
             id_cliente: id_cliente,
             correo: $("#correo").val(),
+            correo2: $("#correo2").val(),
+            correo3: $("#correo3").val(),
             identificacion: $("#identificacion").val()
         };
         post_jquery('agrencias_carga/store_agencia', datos, function () {
