@@ -54,7 +54,7 @@
                                             0
                                         @endif
                                         <small>$/m<sup>2</sup>/año (1 año)</small> -- {{number_format($venta_anual, 2)}}
-                                        / {{number_format(round($area_anual/ 10000, 2), 2)}}
+                                        / {{number_format($area_anual, 2)}}
                                     </span>
                                 </div>
                             </div>
