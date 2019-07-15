@@ -1932,7 +1932,7 @@ function getAreaActivaFromData($variedades, $semanas)
     foreach ($totales_semanas as $valor)
         $total_parcial += $valor;
 
-    return $total_parcial;
+    return round(($total_parcial / 10000) / count($semanas), 2);
 }
 
 function getCiclosCerradosByRango($semana_ini, $semana_fin, $variedad, $by_semana = true)
