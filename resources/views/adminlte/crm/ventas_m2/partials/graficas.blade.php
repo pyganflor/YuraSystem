@@ -19,9 +19,7 @@
         <canvas id="chart_anual" width="100%" height="40" style="margin-top: 5px"></canvas>
     </div>
 </div>
-{{$total_mensual}}
---------
-{{$total_anual}}
+
 <script>
     construir_mensual();
     construir_anual();
