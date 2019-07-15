@@ -26,6 +26,7 @@ use SoapClient;
 use Barryvdh\DomPDF\Facade as PDF;
 use yura\Mail\CorreoFacturaVenture;
 use Illuminate\Support\Facades\Mail;
+use DateTime;
 
 class ComprobanteController extends Controller
 {
@@ -1789,7 +1790,9 @@ class ComprobanteController extends Controller
 
                     if($secuencial ===  $comprobante->secuencial){
                         if((String)$objXmlAutorizado->estado === "AUTORIZADO"){
-                            dd(Carbon::parse((String)$objXmlAutorizado->fechaAutorizacion)->format('Y-m-d' ));
+                            $date = new DateTime((String)$objXmlAutorizado->fechaAutorizacion);
+                            dd($date->format('Y-m-d H:m:s'));
+                            dd(Carbon::parse((String)$objXmlAutorizado->fechaAutorizacion)->format('Y-m-d'));
                             $save = $objComprobante->update([
                                 'estado' => 5,
                                 'clave_acceso' => (String)$objXmlAutorizado->numeroAutorizacion,
