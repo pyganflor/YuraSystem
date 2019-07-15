@@ -1790,14 +1790,16 @@ class ComprobanteController extends Controller
 
                     if($secuencial ===  $comprobante->secuencial){
                         if((String)$objXmlAutorizado->estado === "AUTORIZADO"){
-                            $date = new DateTime((String)$objXmlAutorizado->fechaAutorizacion);
-                            dd($date->format('Y-m-d H:m:s'));
-                            dd(Carbon::parse((String)$objXmlAutorizado->fechaAutorizacion)->format('Y-m-d'));
+                            $formato_fecha = explode("/",explode(" ",(String)$objXmlAutorizado->fechaAutorizacion)[0]);
+                            $fecha = $formato_fecha[2]."-".$formato_fecha[1]."-".$formato_fecha[0];
+                            $hora = Carbon::parse(explode(" ",(String)$objXmlAutorizado->fechaAutorizacion)[1])->format('H:m:s');
+                           // dd((String)$objXmlAutorizado->ambiente,(String)$objXmlAutorizado->ambiente == "PRODUCCIÓN");
                             $save = $objComprobante->update([
                                 'estado' => 5,
                                 'clave_acceso' => (String)$objXmlAutorizado->numeroAutorizacion,
-                                'fecha_autorizacion' => Carbon::parse((String)$objXmlAutorizado->fechaAutorizacion)->format('Y-m-d H:m:s' ),
-                                'numero_comprobante' => "001-".getDetallesClaveAcceso((String)$objXmlAutorizado->numeroAutorizacion, 'PUNTO_ACCESO')."-".getDetallesClaveAcceso((String)$objXmlAutorizado->numeroAutorizacion, 'SECUENCIAL')
+                                'fecha_autorizacion' => $fecha ." ".$hora,
+                                'numero_comprobante' => "001-".getDetallesClaveAcceso((String)$objXmlAutorizado->numeroAutorizacion, 'PUNTO_ACCESO')."-".getDetallesClaveAcceso((String)$objXmlAutorizado->numeroAutorizacion, 'SECUENCIAL'),
+                                'ambiente' => ((String)$objXmlAutorizado->ambiente == "PRODUCCIÓN") ? 2 : 1
                             ]);
                             if($save){
                                 $success = true;
