@@ -1,1 +1,1 @@
-grafica
+gráfica
