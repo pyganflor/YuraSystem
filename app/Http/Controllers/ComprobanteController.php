@@ -1789,6 +1789,7 @@ class ComprobanteController extends Controller
 
                     if($secuencial ===  $comprobante->secuencial){
                         if((String)$objXmlAutorizado->estado === "AUTORIZADO"){
+                            dd(Carbon::parse((String)$objXmlAutorizado->fechaAutorizacion)->format('Y-m-d' ));
                             $save = $objComprobante->update([
                                 'estado' => 5,
                                 'clave_acceso' => (String)$objXmlAutorizado->numeroAutorizacion,
@@ -1907,7 +1908,7 @@ class ComprobanteController extends Controller
                         $msg .= "<label class='alert alert-warning text-center' style='width:100%'>Ha ocurrido un error al cargar el  archivo ".$filename." intente nuevamente</label>";
                     }
                 }else{
-                    $msg .= "<label class='alert alert-danger text-center' style='width:100%'>El  archivo ".$filename." debe comenzar con el prefijo 'fac_'</label>";
+                    $msg .= "<label class='alert alert-danger text-center' style='width:100%'>El archivo ".$filename." debe comenzar con el prefijo 'fac_'</label>";
                 }
             }else{
                 $msg .= "<label class='alert alert-danger text-center' style='width:100%'>El archivo ".$filename." debe tener el formato .xml para poder cargarse</label>";
