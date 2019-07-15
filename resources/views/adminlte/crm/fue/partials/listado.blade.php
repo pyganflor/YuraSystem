@@ -41,7 +41,7 @@
                             <input type="checkbox" class="factura_selected" id="factura_selected" value="{{$item->id_comprobante}}" name="factura_selected" checked required>
                         </td>
                         <td style="border-color: #9d9d9d" class="text-center" style="vertical-align: middle">
-                            {{isset($item->numero_comprobante) ? $item->numero_comprobante : "No facturada aún"}}
+                            {{$item->secuencial}}
                         </td>
                         <td style="border-color: #9d9d9d" class="text-center" style="vertical-align: middle">
                             <input type="text" id="codigo_dae" name="codigo_dae" value="{{$factura_tercero !=null ? $factura_tercero->codigo_dae : (isset($comprobante->envio->codigo_dae) ? $comprobante->envio->codigo_dae : "")}}"

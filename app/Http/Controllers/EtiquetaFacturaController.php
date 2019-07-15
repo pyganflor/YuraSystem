@@ -22,7 +22,7 @@ class EtiquetaFacturaController extends Controller
     }
 
     public function listado(Request $request){
-        return view('adminlte.gestion.postcocecha.etiquetas.partials.listado',[
+        return view('adminlte.gestion.postcocecha.etiquetas_facturas.partials.listado',[
             'facturas' => Comprobante::where([
                 ['tipo_comprobante',01],
                 ['habilitado',1],
