@@ -5,8 +5,8 @@
 @endsection
 
 @section('script_inicio')
-    <script>
-    </script>
+    {{-- JS de Chart.js --}}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
 @endsection
 
 @section('contenido')
@@ -46,8 +46,5 @@
 @endsection
 
 @section('script_final')
-    {{-- JS de Chart.js --}}
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
-
     @include('adminlte.crm.ventas_m2.script')
 @endsection
