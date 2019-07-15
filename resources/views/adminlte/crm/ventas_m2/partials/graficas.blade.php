@@ -19,7 +19,9 @@
         <canvas id="chart_anual" width="100%" height="40" style="margin-top: 5px"></canvas>
     </div>
 </div>
-
+{{$total_mensual}}
+--------
+{{$total_anual}}
 <script>
     construir_mensual();
     construir_anual();
@@ -32,7 +34,7 @@
         labels.push("{{$variedades[$i]['variedad']->siglas}}");
         data_colores.push("{{$variedades[$i]['variedad']->color}}");
         @if($variedades[$i]['area_cerrada'] > 0)
-        data_list.push("{{number_format(round(($variedades[$i]['venta'] / $variedades[$i]['area_cerrada']) * $variedades[$i]['ciclo_anno'], 2), 2)}}");
+        data_list.push("{{round(((($variedades[$i]['venta'] / $variedades[$i]['area_cerrada']) * $variedades[$i]['ciclo_anno']) / $total_mensual) * 100, 2)}}");
         @else
         data_list.push(0);
         @endif
@@ -49,7 +51,7 @@
 
         ctx = document.getElementById("chart_mensual").getContext('2d');
         myChart = new Chart(ctx, {
-            type: 'doughnut',
+            type: 'pie',
             data: {
                 labels: labels,
                 datasets: datasets
@@ -94,7 +96,7 @@
         @for($i = 0; $i < count($variedades); $i++)
         labels.push("{{$variedades[$i]['variedad']->siglas}}");
         data_colores.push("{{$variedades[$i]['variedad']->color}}");
-        data_list.push("{{number_format(round(($variedades[$i]['venta_anual'] / round($variedades[$i]['area_anual'] * 10000, 2)), 2), 2)}}");
+        data_list.push("{{round((($variedades[$i]['venta_anual'] / round($variedades[$i]['area_anual'] * 10000, 2)) / $total_anual) * 100, 2)}}");
         @endfor
 
             datasets = [{
