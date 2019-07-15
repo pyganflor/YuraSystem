@@ -23,6 +23,7 @@ Route::post('comprobante/actualizar_comprobante_venture', 'ComprobanteController
 Route::post('comprobante/anular_factura', 'ComprobanteController@anular_factura');
 Route::post('comprobante/generar_comprobante_guia_remision_factura','ComprobanteController@generar_comprobante_guia_remision_factura');
 Route::get('comprobante/guia_remision/{secuencial}', 'ComprobanteController@ver_guia_remision_bd');
+Route::post('comprobante/carga_xml', 'ComprobanteController@carga_xml');
 Route::get('comprobante/prueba',function(){
     //  $f = scandir('\\\\192.168.154.193\Public\Archivos firma');
     $a =simplexml_load_string(file_get_contents(env('PATH_XML_RECHAZADOS').'facturas/0705201900179244632500110010010000004791234567816.xml'));
