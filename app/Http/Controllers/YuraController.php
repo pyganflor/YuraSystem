@@ -173,6 +173,8 @@ class YuraController extends Controller
             $data_area_anual = 0;
 
 
+            $data_area_anual = 0;
+
             return view('adminlte.inicio', [
                 'calibre' => $calibre,
                 'tallos' => $tallos,
