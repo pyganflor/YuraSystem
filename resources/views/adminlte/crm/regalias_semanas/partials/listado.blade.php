@@ -197,6 +197,8 @@
             </div>
         </div>
     </div>
+
+    {{round(getAreaActivaFromData($variedades, $semanas) / 10000, 2)}}
 @else
     <div class="alert alert-info text-center">
         No se han encontrado resultados que mostrar
