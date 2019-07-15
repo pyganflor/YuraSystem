@@ -1900,6 +1900,41 @@ function getAreaCiclosByRango($semana_ini, $semana_fin, $variedad)
     ];
 }
 
+function getAreaActivaFromData($variedades, $semanas)
+{
+    $grafica = [];
+    foreach ($variedades as $pos_var => $variedad) {
+        $total_variedad = [];
+        foreach ($semanas as $pos_sem => $semana)
+            $total_variedad[] = 0;
+        foreach ($variedad['ciclos'] as $ciclo)
+            foreach ($ciclo['areas'] as $pos_area => $area)
+                $total_variedad[$pos_area] += $area;
+        array_push($grafica, [
+            'variedad' => $variedad['variedad'],
+            'valores' => $total_variedad
+        ]);
+    }
+
+    $totales_semanas = [];
+    foreach ($semanas as $pos_sem => $semana)
+        $totales_semanas[] = 0;
+
+    foreach ($variedades as $pos => $var) {
+        $total_parcial = 0;
+        foreach ($grafica[$pos]['valores'] as $pos_area => $area) {
+            $totales_semanas[$pos_area] += $area;
+            $total_parcial += $area;
+        }
+    }
+
+    $total_parcial = 0;
+    foreach ($totales_semanas as $valor)
+        $total_parcial += $valor;
+
+    return $total_parcial;
+}
+
 function getCiclosCerradosByRango($semana_ini, $semana_fin, $variedad, $by_semana = true)
 {
     if ($by_semana) {

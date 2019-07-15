@@ -172,8 +172,10 @@ class YuraController extends Controller
             }
             $data_area_anual = 0;
 
-
-            $data_area_anual = 0;
+            $semana_desde = getSemanaByDate(opDiasFecha('-', 91, date('Y-m-d')));
+            $semana_hasta = getSemanaByDate(date('Y-m-d'));
+            $data = getAreaCiclosByRango($semana_desde->codigo, $semana_hasta->codigo, 'T');
+            $data_area_anual = getAreaActivaFromData($data['variedades'], $data['semanas']);
 
             return view('adminlte.inicio', [
                 'calibre' => $calibre,
