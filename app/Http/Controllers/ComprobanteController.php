@@ -26,6 +26,7 @@ use SoapClient;
 use Barryvdh\DomPDF\Facade as PDF;
 use yura\Mail\CorreoFacturaVenture;
 use Illuminate\Support\Facades\Mail;
+use DateTime;
 
 class ComprobanteController extends Controller
 {
@@ -1789,11 +1790,16 @@ class ComprobanteController extends Controller
 
                     if($secuencial ===  $comprobante->secuencial){
                         if((String)$objXmlAutorizado->estado === "AUTORIZADO"){
+                            $formato_fecha = explode("/",explode(" ",(String)$objXmlAutorizado->fechaAutorizacion)[0]);
+                            $fecha = $formato_fecha[2]."-".$formato_fecha[1]."-".$formato_fecha[0];
+                            $hora = Carbon::parse(explode(" ",(String)$objXmlAutorizado->fechaAutorizacion)[1])->format('H:m:s');
+                           // dd((String)$objXmlAutorizado->ambiente,(String)$objXmlAutorizado->ambiente == "PRODUCCIÓN");
                             $save = $objComprobante->update([
                                 'estado' => 5,
                                 'clave_acceso' => (String)$objXmlAutorizado->numeroAutorizacion,
-                                'fecha_autorizacion' => Carbon::parse((String)$objXmlAutorizado->fechaAutorizacion)->format('Y-m-d H:m:s' ),
-                                'numero_comprobante' => "001-".getDetallesClaveAcceso((String)$objXmlAutorizado->numeroAutorizacion, 'PUNTO_ACCESO')."-".getDetallesClaveAcceso((String)$objXmlAutorizado->numeroAutorizacion, 'SECUENCIAL')
+                                'fecha_autorizacion' => $fecha ." ".$hora,
+                                'numero_comprobante' => "001-".getDetallesClaveAcceso((String)$objXmlAutorizado->numeroAutorizacion, 'PUNTO_ACCESO')."-".getDetallesClaveAcceso((String)$objXmlAutorizado->numeroAutorizacion, 'SECUENCIAL'),
+                                'ambiente' => ((String)$objXmlAutorizado->ambiente == "PRODUCCIÓN") ? 2 : 1
                             ]);
                             if($save){
                                 $success = true;
@@ -1907,7 +1913,7 @@ class ComprobanteController extends Controller
                         $msg .= "<label class='alert alert-warning text-center' style='width:100%'>Ha ocurrido un error al cargar el  archivo ".$filename." intente nuevamente</label>";
                     }
                 }else{
-                    $msg .= "<label class='alert alert-danger text-center' style='width:100%'>El  archivo ".$filename." debe comenzar con el prefijo 'fac_'</label>";
+                    $msg .= "<label class='alert alert-danger text-center' style='width:100%'>El archivo ".$filename." debe comenzar con el prefijo 'fac_'</label>";
                 }
             }else{
                 $msg .= "<label class='alert alert-danger text-center' style='width:100%'>El archivo ".$filename." debe tener el formato .xml para poder cargarse</label>";
