@@ -49,12 +49,12 @@
                                     </span>
                                     <span class="info-box-number text-center">
                                         @if($area_anual > 0)
-                                            {{number_format(round(($venta_anual / $area_anual), 2), 2)}}
+                                            {{number_format(round(($venta_anual / round($area_anual * 10000, 2)), 2), 2)}}
                                         @else
                                             0
                                         @endif
                                         <small>$/m<sup>2</sup>/año (1 año)</small> -- {{number_format($venta_anual, 2)}}
-                                        / {{number_format($area_anual, 2)}}
+                                        / {{number_format(round($area_anual * 10000, 2), 2)}}
                                     </span>
                                 </div>
                             </div>
