@@ -1603,6 +1603,8 @@ class ComprobanteController extends Controller
         if($request->agencia_carga == "true"){
             if($comprobante->tipo_comprobante === "01"){
                 $correos[] = $comprobante->envio->pedido->detalles[0]->agencia_carga->correo;
+                $comprobante->envio->pedido->detalles[0]->agencia_carga->correo2 != null ? $correos[] = $comprobante->envio->pedido->detalles[0]->agencia_carga->correo2 : "";
+                $comprobante->envio->pedido->detalles[0]->agencia_carga->correo3 != null ? $correos[] = $comprobante->envio->pedido->detalles[0]->agencia_carga->correo3 : "";
             }else if($comprobante->tipo_comprobante === "06"){
                 $correos[] = getComprobante($comprobanteRelacionado->id_comprobante_relacionado)->envio->pedido->detalles[0]->agencia_carga->correo;
             }
@@ -1708,6 +1710,7 @@ class ComprobanteController extends Controller
         if($request->guia_remision === "true")
             PDF::loadView('adminlte.gestion.comprobante.partials.pdf.guia_bd', compact('data'))->save(env('PDF_FACTURAS_TEMPORAL')."guia_factura_".$comprobante->secuencial.".pdf");
 
+        $correos[] = "sales@dasalflor.com";
                     //$correos[0]
         Mail::to("pruebas-c26453@inbox.mailtrap.io")
             ->cc($correos)->send(new CorreoFacturaVenture($request->factura_cliente,$request->factura_sri,$comprobante->secuencial,$request->csv_etiqueta,$request->dist_cajas,$request->guia_remision));
