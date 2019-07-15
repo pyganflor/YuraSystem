@@ -170,8 +170,6 @@ class YuraController extends Controller
                     ->where('mes', '<=', substr($fecha_hasta, 5, 2))
                     ->get()[0]->cant;
             }
-            $data_area_anual = 0;
-
             $semana_desde = getSemanaByDate(opDiasFecha('-', 91, date('Y-m-d')));
             $semana_hasta = getSemanaByDate(date('Y-m-d'));
             $data = getAreaCiclosByRango($semana_desde->codigo, $semana_hasta->codigo, 'T');
