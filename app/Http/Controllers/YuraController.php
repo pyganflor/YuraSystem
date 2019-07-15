@@ -155,24 +155,23 @@ class YuraController extends Controller
             $data_venta_mensual = getVentaByRango($semanas_4[0]->semana, $semanas_4[3]->semana, 'T');
 
             /* ================= venta en 1 año =================== */
-            $fecha_anno = opDiasFecha('-', 365, date('Y-m-d'));
-            $historicos_ventas = HistoricoVentas::All()
-                ->where('anno', '>=', substr($fecha_anno, 0, 4))
-                ->where('mes', '>=', substr($fecha_anno, 5, 2));
-            $data_venta_anual = 0;
-            foreach ($historicos_ventas as $item) {
-                $data_venta_anual += $item->valor;
+            $fecha_hasta = date('Y-m-d', strtotime('last month'));
+            $fecha_desde = date('Y-m-d', strtotime('last year'));
+
+            $data_venta_anual = DB::table('historico_ventas')
+                ->select(DB::raw('sum(valor) as cant'))
+                ->where('anno', '=', substr($fecha_desde, 0, 4))
+                ->where('mes', '>=', substr($fecha_desde, 5, 2))
+                ->get()[0]->cant;
+            if (substr($fecha_desde, 0, 4) != substr($fecha_hasta, 0, 4)) {
+                $data_venta_anual += DB::table('historico_ventas')
+                    ->select(DB::raw('sum(valor) as cant'))
+                    ->where('anno', '=', substr($fecha_hasta, 0, 4))
+                    ->where('mes', '<=', substr($fecha_hasta, 5, 2))
+                    ->get()[0]->cant;
             }
-            $ciclos_anual = Ciclo::All()
-                ->where('estado', 1)
-                ->where('activo', 0)
-                ->where('fecha_fin', '>=', $fecha_anno)
-                ->where('fecha_fin', '<=', date('Y-m-d'))
-                ->sortBy('fecha_fin');
-            $data_ciclos_anual = 0;
-            foreach ($ciclos_anual as $item) {
-                $data_ciclos_anual += $item->area;
-            }
+
+            $data_area_anual = 0;
 
             return view('adminlte.inicio', [
                 'calibre' => $calibre,
@@ -183,7 +182,7 @@ class YuraController extends Controller
                 'area' => $mensual,
                 'venta_mensual' => $data_venta_mensual,
                 'venta_anual' => $data_venta_anual,
-                'ciclos_anual' => $data_ciclos_anual,
+                'area_anual' => $data_area_anual,
             ]);
         }
 

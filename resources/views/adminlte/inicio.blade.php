@@ -48,13 +48,13 @@
                                         <small>$/m<sup>2</sup>/año (4 semanas)</small>
                                     </span>
                                     <span class="info-box-number text-center">
-                                        @if($ciclos_anual > 0)
-                                            {{number_format(round(($venta_anual / $ciclos_anual), 2), 2)}}
+                                        @if($area_anual > 0)
+                                            {{number_format(round(($venta_anual / $area_anual), 2), 2)}}
                                         @else
                                             0
                                         @endif
-                                        <small>$/m<sup>2</sup>/año (1 año)</small> -- {{number_format($venta_anual)}}
-                                        / {{number_format($ciclos_anual)}}
+                                        <small>$/m<sup>2</sup>/año (1 año)</small> -- {{number_format($venta_anual, 2)}}
+                                        / {{number_format($area_anual)}}
                                     </span>
                                 </div>
                             </div>
