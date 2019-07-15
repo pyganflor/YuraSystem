@@ -34,7 +34,7 @@
             <tbody id="tbody_etiquetas_facturas">
                 @foreach($facturas as $x => $item)
                     @php $comprobante = getComprobante($item->id_comprobante) @endphp
-                    @if($comprobante->envio->pedido->tipo_especificacion === "N")
+                    {{--@if($comprobante->envio->pedido->tipo_especificacion === "N")--}}
                         <tr onmouseover="$(this).css('background-color','#add8e6')" onmouseleave="$(this).css('background-color','')">
                             <td style="border-color: #9d9d9d" class="text-center">{{$comprobante->secuencial}}</td>
                             <td style="border-color: #9d9d9d" class="text-center">{{$comprobante->envio->pedido->cliente->detalle()->nombre}}</td>
@@ -117,7 +117,7 @@
                                 </td>
                             @endif
                         </tr>
-                    @endif
+                    {{--@endif--}}
                 @endforeach
             </tbody>
         </table>
