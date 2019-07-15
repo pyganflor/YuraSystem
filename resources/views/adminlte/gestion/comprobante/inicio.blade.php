@@ -29,7 +29,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="anno">Cliente</label><br />
-                                    <select class="form-control" id="id_cliente" name="id_cliente" style="width: 250px;">
+                                    <select class="form-control" id="id_cliente" name="id_cliente" style="width: 200px;">
                                         <option value=""> Seleccione </option>
                                         @foreach($clientes as $cliente)
                                             <option value="{{$cliente->id_cliente}}"> {{$cliente->nombre}} </option>
@@ -69,6 +69,17 @@
                                                 onmouseleave="$('#title_btn_buscar_pedido').html('')">
                                             <i class="fa fa-fw fa-search" style="color: #0c0c0c"></i> <em
                                                 id="title_btn_buscar_pedido"></em>
+                                        </button>
+                                    </span>
+                                </div>
+                                <div class="form-group">
+                                    <label style="visibility: hidden;"> .</label><br />
+                                    <span class="">
+                                        <button class="btn btn-primary" onclick="subir_archivos_xml()"
+                                                onmouseover="$('#title_upload').html('Subir xml')"
+                                                onmouseleave="$('#title_upload').html('')">
+                                            <i class="fa fa-cloud-upload"></i>
+                                            <em  id="title_upload"></em>
                                         </button>
                                     </span>
                                 </div>

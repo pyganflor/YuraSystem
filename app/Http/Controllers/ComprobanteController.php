@@ -1780,7 +1780,6 @@ class ComprobanteController extends Controller
                 $carpeta = "guias_remision/";
             }
 
-
             foreach ($comprobantes as $comprobante){
                 if(file_exists(env('PATH_XML_AUTORIZADOS').$carpeta.$arhcivo.$comprobante->secuencial.'.xml')){
                     $cadena = file_get_contents(env('PATH_XML_AUTORIZADOS').$carpeta.$arhcivo.$comprobante->secuencial.'.xml');
@@ -1873,5 +1872,52 @@ class ComprobanteController extends Controller
             'success' => $success,
             'mensaje' => $msg,
         ];
+    }
+
+    public function carga_xml(Request $request){
+
+        $files = $request->file('archivos');
+        $msg = "";
+        $success = false;
+        switch ($request->tipo_comprobante){
+            case '01':
+                $carpeta = 'facturas/';
+                break;
+            case '06':
+                $carpeta = 'guias_remision/';
+                break;
+        }
+
+        foreach($files as $file) {
+            $filename = $file->getClientOriginalName();
+            if($file->getClientMimeType() === "text/xml"){
+                $prefijo = explode("_",$filename)[0];
+                $archivo = true;
+                if($request->tipo_comprobante == '01' && $prefijo!="fac")
+                    $archivo = false;
+                if($request->tipo_comprobante == '06' && $prefijo!="gui")
+                    $archivo = false;
+
+                if($archivo){
+                    $carga_archivo = $file->move(env('PATH_XML_AUTORIZADOS').$carpeta, $filename);
+                    if($carga_archivo){
+                        $msg .= "<label class='alert alert-success text-center' style='width:100%'>El archivo ".$filename." se ha cargado con éxito</label>";
+                        $success = true;
+                    }else{
+                        $msg .= "<label class='alert alert-warning text-center' style='width:100%'>Ha ocurrido un error al cargar el  archivo ".$filename." intente nuevamente</label>";
+                    }
+                }else{
+                    $msg .= "<label class='alert alert-danger text-center' style='width:100%'>El  archivo ".$filename." debe comenzar con el prefijo 'fac_'</label>";
+                }
+            }else{
+                $msg .= "<label class='alert alert-danger text-center' style='width:100%'>El archivo ".$filename." debe tener el formato .xml para poder cargarse</label>";
+            }
+        }
+        return [
+            'mensaje' => $msg,
+            'success' => $success
+        ];
+
+
     }
 }

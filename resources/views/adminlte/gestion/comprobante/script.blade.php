@@ -239,17 +239,17 @@
 
     function crear_guia_remision(id_comprobante){
         html = "<div class='row'>" +
-            "<div class='col-md-12'>" +
-            "<form id='form_guia_ruta' name='form_guia_ruta'>" +
-            "<p><label for='ruta'>Escriba la ruta para la guía de remisión</label></p>" +
-            "<div class='row'>" +
-            "<div class='col-md-12'>" +
-            "<input type='text' id='ruta' name='ruta' class='form-control' value='TABABELA' required> "+
-            "</div>"+
-            "</div>" +
-            "</form>" +
-            "</div>"+
-            "</div>";
+                    "<div class='col-md-12'>" +
+                        "<form id='form_guia_ruta' name='form_guia_ruta'>" +
+                            "<p><label for='ruta'>Escriba la ruta para la guía de remisión</label></p>" +
+                                "<div class='row'>" +
+                                    "<div class='col-md-12'>" +
+                                        "<input type='text' id='ruta' name='ruta' class='form-control' value='TABABELA' required> "+
+                                    "</div>"+
+                            "</div>" +
+                        "</form>" +
+                    "</div>"+
+                "</div>";
 
         modal_quest('modal_crear_guia_remision', html, "<i class='fa fa-road' ></i> Ruta",true, false, '{{isPC() ? '25%' : ''}}', function () {
             if($("#form_guia_ruta").valid()){
@@ -409,5 +409,55 @@
                     cerrar_modals();
                 });
             });
+    }
+
+    function subir_archivos_xml(){
+        if($("#codigo_comprobante").val() === "01")
+            carpeta = "facturas";
+        if($("#codigo_comprobante").val() === "06")
+            carpeta = "guias";
+
+        html = "<div class='row'>" +
+                    "<div class='col-md-12'>" +
+                        "<form id='form_carga_xml' name='form_carga_xml'>" +
+                            "<p><label class='alert alert-warning' style='width: 100%; margin: 0;'>Estos archivos se cargaran en la carpeta de "+carpeta+", es correcto?</label></p>" +
+                                "<div class='row'>" +
+                                    "<div class='col-md-12'>" +
+                                        "<input type='file' id='archivos' accept='text/xml'name='archivos[]' class='form-control' multiple required> "+
+                                    "</div>"+
+                            "</div>" +
+                        "</form>" +
+                    "</div>"+
+                "</div>";
+
+        modal_quest('modal_update_integrado',
+            html,
+            '<i class="fa fa-cloud-upload"></i> Carga de archivos', true, false, '{{isPC() ? '50%' : ''}}', function () {
+                $.LoadingOverlay('show');
+                var formData = new FormData($("#form_carga_xml")[0]);
+                formData.append('tipo_comprobante', $("#codigo_comprobante").val());
+                formData.append('_token', '{{csrf_token()}}');
+                $.ajax({
+                    url: '{{url('comprobante/carga_xml')}}',
+                    type: 'POST',
+                    data: formData,
+                    dataType: 'json',
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    success: function (retorno) {
+                        console.log(retorno);
+                        modal_view('modal_status_carga_xml', retorno.mensaje, '<i class="fa fa-exclamation-triangle"></i> Estado de la carga de archivos', true, false, '60%');
+                    },
+                    error: function (retorno) {
+                        alerta_errores(retorno.responseText);
+                        alerta('Hubo un problema en la envío de la información');
+                    }
+                }).always(function () {
+                    cerrar_modals();
+                    $.LoadingOverlay('hide');
+                });
+            });
+
     }
 </script>
