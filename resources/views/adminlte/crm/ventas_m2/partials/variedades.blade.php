@@ -31,4 +31,3 @@
         </span>
     </div>
 @endforeach
-
