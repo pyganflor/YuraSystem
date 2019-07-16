@@ -101,4 +101,12 @@ class StockApertura extends Model
 
         return $r;
     }
+
+    public function getRamosEstandar()
+    {
+        $factor = explode('|', $this->clasificacion_unitaria->nombre)[1];
+        $r = round($this->cantidad_disponible / $factor, 2);
+
+        return $r;
+    }
 }
