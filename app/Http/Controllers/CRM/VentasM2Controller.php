@@ -336,8 +336,8 @@ class VentasM2Controller extends Controller
         /* ============== LETRAS NEGRITAS =============*/
         $objSheet->getStyle('A1:O' . $pos_fila)->getFont()->setBold(true)->setSize(12);
 
-        foreach ($columnas as $c) {
-            if ($c != 'E')
+        foreach ($columnas as $pos => $c) {
+            if ($c != 'E' && $pos <= 14)
                 $objSheet->getColumnDimension($c)->setWidth(11);
         }
     }
