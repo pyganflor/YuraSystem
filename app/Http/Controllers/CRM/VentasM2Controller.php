@@ -323,6 +323,11 @@ class VentasM2Controller extends Controller
         $objDrawing->setCoordinates('F' . $pos_fila);
         $objDrawing->setWorksheet($objSheet);
 
+        if (count($data['variedades']) > 14)
+            $pos_fila += count($data['variedades']);
+        else
+            $pos_fila += 13;
+
         /* ------------------------------ BORRAR IMAGENES ------------------------------- */
 
         unlink(public_path() . '/images/chart_mensual.png');
@@ -332,7 +337,7 @@ class VentasM2Controller extends Controller
         $objSheet->getStyle('A1:P' . $pos_fila)->getFont()->setBold(true)->setSize(12);
 
         foreach ($columnas as $c) {
-            $objSheet->getColumnDimension($c)->setWidth(10);
+            $objSheet->getColumnDimension($c)->setWidth(11);
         }
     }
 
