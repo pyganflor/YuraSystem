@@ -249,10 +249,10 @@ class VentasM2Controller extends Controller
                 ->setRGB(substr($var['variedad']->color, 1));
             $objSheet->getCell('N' . intval($pos_var + 1))->setValue($var['variedad']->siglas);
             if ($var['area_cerrada'] > 0)
-                $objSheet->getCell('P' . intval($pos_var + 1))
+                $objSheet->getCell('O' . intval($pos_var + 1))
                     ->setValue(round(((($var['venta'] / $var['area_cerrada']) * $var['ciclo_anno']) / $data['total_mensual']) * 100, 2) . '%');
             else
-                $objSheet->getCell('P' . intval($pos_var + 1))
+                $objSheet->getCell('O' . intval($pos_var + 1))
                     ->setValue(0);
 
             $pos_var++;
@@ -293,10 +293,10 @@ class VentasM2Controller extends Controller
                 ->setRGB(substr($var['variedad']->color, 1));
             $objSheet->getCell('N' . intval($pos_var + 1))->setValue($var['variedad']->siglas);
             if ($var['area_anual'] > 0 && $data['total_anual'] > 0)
-                $objSheet->getCell('P' . intval($pos_var + 1))
+                $objSheet->getCell('O' . intval($pos_var + 1))
                     ->setValue(round((($var['venta_anual'] / round($var['area_anual'] * 10000, 2)) / $data['total_anual']) * 100, 2) . '%');
             else
-                $objSheet->getCell('P' . intval($pos_var + 1))
+                $objSheet->getCell('O' . intval($pos_var + 1))
                     ->setValue(0);
 
             $pos_var++;
@@ -334,7 +334,7 @@ class VentasM2Controller extends Controller
         unlink(public_path() . '/images/chart_anual.png');
 
         /* ============== LETRAS NEGRITAS =============*/
-        $objSheet->getStyle('A1:P' . $pos_fila)->getFont()->setBold(true)->setSize(12);
+        $objSheet->getStyle('A1:O' . $pos_fila)->getFont()->setBold(true)->setSize(12);
 
         foreach ($columnas as $c) {
             if ($c != 'E')
