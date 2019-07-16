@@ -180,7 +180,7 @@
             $val_recepciones .= '|'.$recepciones[$i]->id_recepcion;
     @endphp
     <input type="hidden" id="recepciones" name="recepciones" value="{{$val_recepciones}}">
-    <input type="hisdden" id="id_clasificacion_verde" name="id_clasificacion_verde"
+    <input type="hidden" id="id_clasificacion_verde" name="id_clasificacion_verde"
            value="{{$clasificacion_verde != '' ? $clasificacion_verde->id_clasificacion_verde : ''}}">
 @else
     <div class="well text-center">
