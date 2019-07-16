@@ -3,7 +3,7 @@
         convertCanvasToImage('chart_mensual');
         convertCanvasToImage('chart_anual');
 
-        $.LoadingOverlay('show');
+        $('#btn_exportar_excel').LoadingOverlay('show');
         $.ajax({
             type: "POST",
             dataType: "html",
@@ -22,9 +22,9 @@
                 $a.attr("download", "DASHBOARD-Postcosecha.xlsx");
                 $a[0].click();
                 $a.remove();
+                $('#btn_exportar_excel').LoadingOverlay('hide');
             }
         });
-        $.LoadingOverlay('hide');
     }
 
     function convertCanvasToImage(id_canvas) {

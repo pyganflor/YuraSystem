@@ -4,7 +4,7 @@
             <strong>$/m<sup>2</sup>/año (4 semanas)</strong>
         </h3>
         <div class="box-tools pull-right">
-            <button type="button" class="btn btn-box-tool text-green" onclick="exportar_excel()">
+            <button type="button" class="btn btn-box-tool text-green" onclick="exportar_excel()" id="btn_exportar_excel">
                 <i class="fa fa-fw fa-file-excel-o"></i>
             </button>
         </div>
