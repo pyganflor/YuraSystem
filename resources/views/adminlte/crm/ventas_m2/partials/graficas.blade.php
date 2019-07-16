@@ -3,6 +3,11 @@
         <h3 class="box-title">
             <strong>$/m<sup>2</sup>/año (4 semanas)</strong>
         </h3>
+        <div class="box-tools pull-right">
+            <button type="button" class="btn btn-box-tool text-green" onclick="exportar_excel()">
+                <i class="fa fa-fw fa-file-excel-o"></i>
+            </button>
+        </div>
     </div>
     <div class="box-body">
         <canvas id="chart_mensual" width="100%" height="40" style="margin-top: 5px"></canvas>
@@ -19,6 +24,9 @@
         <canvas id="chart_anual" width="100%" height="40" style="margin-top: 5px"></canvas>
     </div>
 </div>
+
+<input type="hidden" id="src_imagen_chart_mensual">
+<input type="hidden" id="src_imagen_chart_anual">
 
 <script>
     construir_mensual();
