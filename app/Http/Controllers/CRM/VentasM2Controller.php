@@ -90,7 +90,7 @@ class VentasM2Controller extends Controller
 
     /* ======================== EXCEL ===================== */
 
-    public function exportar_dashboard(Request $request)
+    public function exportar_excel(Request $request)
     {
         //---------------------- EXCEL --------------------------------------
         $objPHPExcel = new PHPExcel;
@@ -109,7 +109,7 @@ class VentasM2Controller extends Controller
         header("Content-Type: application/force-download");
         header("Content-Type: application/octet-stream");
         header("Content-Type: application/download");
-        header('Content-Disposition:inline;filename="Dashboard Ventas/m2.xlsx"');
+        header('Content-Disposition:inline;filename="Dashboard Ventas_m2.xlsx"');
         header("Content-Transfer-Encoding: binary");
         header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
         header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
@@ -142,28 +142,197 @@ class VentasM2Controller extends Controller
         $pos_fila = 1;
         /* ================================= VARIEDADES ================================ */
         foreach ($data['variedades'] as $var) {
-            /* ============== MERGE CELDAS =============*/
-            $objSheet->mergeCells('A' . $pos_fila . ':D' . intval($pos_fila + 2));
+            /* ============== CENTRAR =============*/
+            $objSheet->getStyle('A' . $pos_fila . ':D' . intval($pos_fila + 2))
+                ->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER)
+                ->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
             /* ============== BACKGROUND COLOR =============*/
             $objSheet->getStyle('A' . $pos_fila . ':D' . intval($pos_fila + 2))
                 ->getFill()
                 ->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
                 ->getStartColor()
                 ->setRGB(substr($var['variedad']->color, 1));
+
+            /* ============== MERGE CELDAS =============*/
+            $objSheet->mergeCells('A' . $pos_fila . ':C' . $pos_fila);
             if ($var['area_cerrada'] > 0)
                 $mensual = number_format(round(($var['venta'] / $var['area_cerrada']) * $var['ciclo_anno'], 2), 2);
             else
                 $mensual = 0;
             $objSheet->getCell('A' . $pos_fila)->setValue($mensual);
+            $objSheet->getCell('D' . $pos_fila)->setValue('(4 semanas)');
+            /* ============== A LA IZQUIERDA =============*/
+            $objSheet->getStyle('A' . $pos_fila . ':D' . $pos_fila)->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER)
+                ->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
 
-            $pos_fila += 4;
+            $pos_fila++;
+            /* ============== MERGE CELDAS =============*/
+            $objSheet->mergeCells('A' . $pos_fila . ':C' . $pos_fila);
+            if ($var['area_anual'] > 0)
+                $anual = number_format(round(($var['venta_anual'] / round($var['area_anual'] * 10000, 2)), 2), 2);
+            else
+                $anual = 0;
+            $objSheet->getCell('A' . $pos_fila)->setValue($anual);
+            $objSheet->getCell('D' . $pos_fila)->setValue('(1 año)');
+
+            $pos_fila++;
+            /* ============== MERGE CELDAS =============*/
+            $objSheet->mergeCells('B' . $pos_fila . ':D' . $pos_fila);
+            $objSheet->getCell('A' . $pos_fila)->setValue('($/m2/año)');
+            $objSheet->getCell('B' . $pos_fila)->setValue($var['variedad']->siglas);
+
+            $pos_fila += 2;
         }
 
+        /* ================================= GRAFICAS ================================ */
+        $data_img = base64_decode(explode(',', $request->src_imagen_chart_mensual)[1]);
+        file_put_contents(public_path() . '/images/chart_mensual.png', $data_img);
+        $data_img = base64_decode(explode(',', $request->src_imagen_chart_anual)[1]);
+        file_put_contents(public_path() . '/images/chart_anual.png', $data_img);
 
+        $img_mensual = imagecreatefrompng(public_path() . '/images/chart_mensual.png');
+        $img_anual = imagecreatefrompng(public_path() . '/images/chart_anual.png');
 
+        $background = imagecolorallocate($img_mensual, 0, 0, 0);
+        // removing the black from the placeholder
+        imagecolortransparent($img_mensual, $background);
+        imagecolortransparent($img_anual, $background);
+
+        /* -------------------------------- MENSUAL ------------------------------------- */
+        $pos_fila = 1;
+        /* ============== MERGE CELDAS =============*/
+        $objSheet->mergeCells('F' . $pos_fila . ':P' . $pos_fila);
+        /* ============== CENTRAR =============*/
+        $objSheet->getStyle('F' . $pos_fila)
+            ->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER)
+            ->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+        /* ============== BACKGROUND COLOR =============*/
+        $objSheet->getStyle('F' . $pos_fila)
+            ->getFill()
+            ->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
+            ->getStartColor()
+            ->setRGB('d2d6de');
+        $objSheet->getCell('F' . $pos_fila)->setValue('4 SEMANAS (% por variedad)');
+
+        $pos_fila++;
+        /* ============== MERGE CELDAS =============*/
+        $objSheet->mergeCells('F' . $pos_fila . ':N' . intval($pos_fila + 13));
+        /* ============== BORDE COLOR =============*/
+        $objSheet->getStyle('F' . $pos_fila)
+            ->getBorders()
+            ->getAllBorders()
+            ->setBorderStyle(PHPExcel_Style_Border::BORDER_MEDIUM)
+            ->getColor()
+            ->setRGB('000000');
+
+        $objDrawing = new PHPExcel_Worksheet_MemoryDrawing();
+        $objDrawing->setName('MENSUAL');
+        $objDrawing->setDescription('MENSUAL');
+        $objDrawing->setImageResource($img_mensual);
+        $objDrawing->setRenderingFunction(PHPExcel_Worksheet_MemoryDrawing::RENDERING_PNG);
+        $objDrawing->setMimeType(PHPExcel_Worksheet_MemoryDrawing::MIMETYPE_PNG);
+        //$objDrawing->setHeight();
+        $objDrawing->setCoordinates('F' . $pos_fila);
+        $objDrawing->setWorksheet($objSheet);
+
+        $pos_var = 1;
+        foreach ($data['variedades'] as $var) {
+            /* ============== CENTRAR =============*/
+            $objSheet->getStyle('O' . intval($pos_var + 1) . ':P' . intval($pos_var + 1))
+                ->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER)
+                ->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+            /* ============== BACKGROUND COLOR =============*/
+            $objSheet->getStyle('O' . intval($pos_var + 1))
+                ->getFill()
+                ->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
+                ->getStartColor()
+                ->setRGB(substr($var['variedad']->color, 1));
+            $objSheet->getCell('O' . intval($pos_var + 1))->setValue($var['variedad']->siglas);
+            if ($var['area_cerrada'] > 0)
+                $objSheet->getCell('P' . intval($pos_var + 1))
+                    ->setValue(round(((($var['venta'] / $var['area_cerrada']) * $var['ciclo_anno']) / $data['total_mensual']) * 100, 2) . '%');
+            else
+                $objSheet->getCell('P' . intval($pos_var + 1))
+                    ->setValue(0);
+
+            $pos_var++;
+        }
+
+        if (count($data['variedades']) > 14)
+            $pos_fila += count($data['variedades']);
+        else
+            $pos_fila += 13;
+
+        /* -------------------------------- ANUAL ------------------------------------- */
+        $pos_fila += 2;
+        /* ============== MERGE CELDAS =============*/
+        $objSheet->mergeCells('F' . $pos_fila . ':P' . $pos_fila);
+        /* ============== CENTRAR =============*/
+        $objSheet->getStyle('F' . $pos_fila)
+            ->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER)
+            ->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+        /* ============== BACKGROUND COLOR =============*/
+        $objSheet->getStyle('F' . $pos_fila)
+            ->getFill()
+            ->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
+            ->getStartColor()
+            ->setRGB('d2d6de');
+        $objSheet->getCell('F' . $pos_fila)->setValue('1 AÑO (% por variedad)');
+
+        $pos_var = $pos_fila;
+        foreach ($data['variedades'] as $var) {
+            /* ============== CENTRAR =============*/
+            $objSheet->getStyle('O' . intval($pos_var + 1) . ':P' . intval($pos_var + 1))
+                ->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER)
+                ->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+            /* ============== BACKGROUND COLOR =============*/
+            $objSheet->getStyle('O' . intval($pos_var + 1))
+                ->getFill()
+                ->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
+                ->getStartColor()
+                ->setRGB(substr($var['variedad']->color, 1));
+            $objSheet->getCell('O' . intval($pos_var + 1))->setValue($var['variedad']->siglas);
+            if ($var['area_anual'] > 0 && $data['total_anual'] > 0)
+                $objSheet->getCell('P' . intval($pos_var + 1))
+                    ->setValue(round((($var['venta_anual'] / round($var['area_anual'] * 10000, 2)) / $data['total_anual']) * 100, 2) . '%');
+            else
+                $objSheet->getCell('P' . intval($pos_var + 1))
+                    ->setValue(0);
+
+            $pos_var++;
+        }
+
+        $pos_fila++;
+        /* ============== MERGE CELDAS =============*/
+        $objSheet->mergeCells('F' . $pos_fila . ':N' . intval($pos_fila + 13));
+        /* ============== BORDE COLOR =============*/
+        $objSheet->getStyle('F' . $pos_fila)
+            ->getBorders()
+            ->getAllBorders()
+            ->setBorderStyle(PHPExcel_Style_Border::BORDER_MEDIUM)
+            ->getColor()
+            ->setRGB('000000');
+
+        $objDrawing = new PHPExcel_Worksheet_MemoryDrawing();
+        $objDrawing->setName('ANUAL');
+        $objDrawing->setDescription('ANUAL');
+        $objDrawing->setImageResource($img_anual);
+        $objDrawing->setRenderingFunction(PHPExcel_Worksheet_MemoryDrawing::RENDERING_PNG);
+        $objDrawing->setMimeType(PHPExcel_Worksheet_MemoryDrawing::MIMETYPE_PNG);
+        //$objDrawing->setHeight();
+        $objDrawing->setCoordinates('F' . $pos_fila);
+        $objDrawing->setWorksheet($objSheet);
+
+        /* ------------------------------ BORRAR IMAGENES ------------------------------- */
+
+        unlink(public_path() . '/images/chart_mensual.png');
+        unlink(public_path() . '/images/chart_anual.png');
+
+        /* ============== LETRAS NEGRITAS =============*/
+        $objSheet->getStyle('A1:P' . $pos_fila)->getFont()->setBold(true)->setSize(12);
 
         foreach ($columnas as $c) {
-            $objSheet->getColumnDimension($c)->setAutoSize(true);
+            $objSheet->getColumnDimension($c)->setWidth(10);
         }
     }
 
