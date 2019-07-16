@@ -201,7 +201,7 @@ class VentasM2Controller extends Controller
         /* -------------------------------- MENSUAL ------------------------------------- */
         $pos_fila = 1;
         /* ============== MERGE CELDAS =============*/
-        $objSheet->mergeCells('F' . $pos_fila . ':P' . $pos_fila);
+        $objSheet->mergeCells('F' . $pos_fila . ':O' . $pos_fila);
         /* ============== CENTRAR =============*/
         $objSheet->getStyle('F' . $pos_fila)
             ->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER)
@@ -216,7 +216,7 @@ class VentasM2Controller extends Controller
 
         $pos_fila++;
         /* ============== MERGE CELDAS =============*/
-        $objSheet->mergeCells('F' . $pos_fila . ':N' . intval($pos_fila + 13));
+        $objSheet->mergeCells('F' . $pos_fila . ':M' . intval($pos_fila + 13));
         /* ============== BORDE COLOR =============*/
         $objSheet->getStyle('F' . $pos_fila)
             ->getBorders()
@@ -238,16 +238,16 @@ class VentasM2Controller extends Controller
         $pos_var = 1;
         foreach ($data['variedades'] as $var) {
             /* ============== CENTRAR =============*/
-            $objSheet->getStyle('O' . intval($pos_var + 1) . ':P' . intval($pos_var + 1))
+            $objSheet->getStyle('N' . intval($pos_var + 1) . ':O' . intval($pos_var + 1))
                 ->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER)
                 ->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
             /* ============== BACKGROUND COLOR =============*/
-            $objSheet->getStyle('O' . intval($pos_var + 1))
+            $objSheet->getStyle('N' . intval($pos_var + 1))
                 ->getFill()
                 ->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
                 ->getStartColor()
                 ->setRGB(substr($var['variedad']->color, 1));
-            $objSheet->getCell('O' . intval($pos_var + 1))->setValue($var['variedad']->siglas);
+            $objSheet->getCell('N' . intval($pos_var + 1))->setValue($var['variedad']->siglas);
             if ($var['area_cerrada'] > 0)
                 $objSheet->getCell('P' . intval($pos_var + 1))
                     ->setValue(round(((($var['venta'] / $var['area_cerrada']) * $var['ciclo_anno']) / $data['total_mensual']) * 100, 2) . '%');
@@ -266,7 +266,7 @@ class VentasM2Controller extends Controller
         /* -------------------------------- ANUAL ------------------------------------- */
         $pos_fila += 2;
         /* ============== MERGE CELDAS =============*/
-        $objSheet->mergeCells('F' . $pos_fila . ':P' . $pos_fila);
+        $objSheet->mergeCells('F' . $pos_fila . ':O' . $pos_fila);
         /* ============== CENTRAR =============*/
         $objSheet->getStyle('F' . $pos_fila)
             ->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER)
@@ -282,16 +282,16 @@ class VentasM2Controller extends Controller
         $pos_var = $pos_fila;
         foreach ($data['variedades'] as $var) {
             /* ============== CENTRAR =============*/
-            $objSheet->getStyle('O' . intval($pos_var + 1) . ':P' . intval($pos_var + 1))
+            $objSheet->getStyle('N' . intval($pos_var + 1) . ':O' . intval($pos_var + 1))
                 ->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER)
                 ->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
             /* ============== BACKGROUND COLOR =============*/
-            $objSheet->getStyle('O' . intval($pos_var + 1))
+            $objSheet->getStyle('N' . intval($pos_var + 1))
                 ->getFill()
                 ->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
                 ->getStartColor()
                 ->setRGB(substr($var['variedad']->color, 1));
-            $objSheet->getCell('O' . intval($pos_var + 1))->setValue($var['variedad']->siglas);
+            $objSheet->getCell('N' . intval($pos_var + 1))->setValue($var['variedad']->siglas);
             if ($var['area_anual'] > 0 && $data['total_anual'] > 0)
                 $objSheet->getCell('P' . intval($pos_var + 1))
                     ->setValue(round((($var['venta_anual'] / round($var['area_anual'] * 10000, 2)) / $data['total_anual']) * 100, 2) . '%');
@@ -304,7 +304,7 @@ class VentasM2Controller extends Controller
 
         $pos_fila++;
         /* ============== MERGE CELDAS =============*/
-        $objSheet->mergeCells('F' . $pos_fila . ':N' . intval($pos_fila + 13));
+        $objSheet->mergeCells('F' . $pos_fila . ':M' . intval($pos_fila + 13));
         /* ============== BORDE COLOR =============*/
         $objSheet->getStyle('F' . $pos_fila)
             ->getBorders()
