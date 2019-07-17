@@ -167,10 +167,6 @@ class YuraController extends Controller
                     ->where('mes', '<=', substr($fecha_hasta, 5, 2))
                     ->get()[0]->cant;
             }
-            $semana_desde = getSemanaByDate(opDiasFecha('-', 91, date('Y-m-d')));
-            $semana_hasta = getSemanaByDate(date('Y-m-d'));
-            $data = getAreaCiclosByRango($semana_desde->codigo, $semana_hasta->codigo, 'T');
-            $data_area_mensual = getAreaActivaFromData($data['variedades'], $data['semanas']);
 
             /* ================= venta en 1 año =================== */
             $fecha_hasta = date('Y-m-d', strtotime('last month'));
@@ -201,7 +197,6 @@ class YuraController extends Controller
                 'rendimiento_desecho' => $rendimiento_desecho,
                 'area' => $mensual,
                 'venta_mensual' => $data_venta_mensual,
-                'area_mensual' => $data_area_mensual,
                 'venta_anual' => $data_venta_anual,
                 'area_anual' => $data_area_anual,
             ]);

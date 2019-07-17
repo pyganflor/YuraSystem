@@ -2,8 +2,8 @@
     <div class="small-box" style="background-color: {{$var['variedad']->color}}">
         <div class="inner">
             <h3 class="info-box-number" style="color: white">
-                @if($var['area_mensual'] > 0)
-                    {{number_format(round(($var['venta_mensual'] / round($var['area_mensual'] * 10000, 2)), 2), 2)}}
+                @if($var['area_anual'] > 0)
+                    {{number_format(round(($var['venta_mensual'] / round($var['area_anual'] * 10000, 2)), 2), 2)}}
                 @else
                     0
                 @endif

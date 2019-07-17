@@ -37,7 +37,7 @@ class VentasM2Controller extends Controller
                 ->where('mes', '>=', substr($fecha_desde, 5, 2))
                 ->get()[0]->cant;
             if (substr($fecha_desde, 0, 4) != substr($fecha_hasta, 0, 4)) {
-                $data_venta_mensual+= DB::table('historico_ventas')
+                $data_venta_mensual += DB::table('historico_ventas')
                     ->select(DB::raw('sum(valor) as cant'))
                     ->where('id_variedad', '=', $var->id_variedad)
                     ->where('anno', '=', substr($fecha_hasta, 0, 4))
@@ -46,8 +46,6 @@ class VentasM2Controller extends Controller
             }
             $semana_desde = getSemanaByDate(opDiasFecha('-', 91, date('Y-m-d')));
             $semana_hasta = getSemanaByDate(date('Y-m-d'));
-            $data = getAreaCiclosByRango($semana_desde->codigo, $semana_hasta->codigo, $var->id_variedad);
-            $data_area_mensual = getAreaActivaFromData($data['variedades'], $data['semanas']);
 
             /* =========================== 1 AÑO ======================== */
             $fecha_hasta = date('Y-m-d', strtotime('last month'));
@@ -67,24 +65,24 @@ class VentasM2Controller extends Controller
                     ->where('mes', '<=', substr($fecha_hasta, 5, 2))
                     ->get()[0]->cant;
             }
+
             $semana_desde = getSemanaByDate(opDiasFecha('-', 91, date('Y-m-d')));
             $semana_hasta = getSemanaByDate(date('Y-m-d'));
             $data = getAreaCiclosByRango($semana_desde->codigo, $semana_hasta->codigo, $var->id_variedad);
             $data_area_anual = getAreaActivaFromData($data['variedades'], $data['semanas']);
 
-            if (($data_venta_mensual > 0 && $data_area_mensual > 0) || ($data_area_anual > 0 && $data_venta_anual > 0)) {
+            if ($data_venta_mensual > 0 || ($data_area_anual > 0 && $data_venta_anual > 0)) {
                 array_push($array_variedades, [
                     'variedad' => $var,
                     'venta_mensual' => $data_venta_mensual,
-                    'area_mensual' => $data_area_mensual,
                     'area_anual' => $data_area_anual,
                     'venta_anual' => $data_venta_anual,
                 ]);
 
-                if ($data_area_mensual > 0)
-                    $total_mensual += round(($data_venta_mensual / round($data_area_mensual * 10000, 2)), 2);
-                if ($data_area_anual > 0)
+                if ($data_area_anual > 0) {
+                    $total_mensual += round(($data_venta_mensual / round($data_area_anual * 10000, 2)), 2);
                     $total_anual += round(($data_venta_anual / round($data_area_anual * 10000, 2)), 2);
+                }
             }
         }
 
@@ -164,8 +162,8 @@ class VentasM2Controller extends Controller
 
             /* ============== MERGE CELDAS =============*/
             $objSheet->mergeCells('A' . $pos_fila . ':C' . $pos_fila);
-            if ($var['area_mensual'] > 0)
-                $mensual = number_format(round(($var['venta_mensual'] / round($var['area_mensual'] * 10000, 2)), 2), 2);
+            if ($var['area_anual'] > 0)
+                $mensual = number_format(round(($var['venta_mensual'] / round($var['area_anual'] * 10000, 2)), 2), 2);
             else
                 $mensual = 0;
             $objSheet->getCell('A' . $pos_fila)->setValue($mensual);
@@ -257,9 +255,9 @@ class VentasM2Controller extends Controller
                 ->getStartColor()
                 ->setRGB(substr($var['variedad']->color, 1));
             $objSheet->getCell('N' . intval($pos_var + 1))->setValue($var['variedad']->siglas);
-            if ($var['area_mensual'] > 0 && $data['total_mensual'] > 0)
+            if ($var['area_anual'] > 0 && $data['total_mensual'] > 0)
                 $objSheet->getCell('O' . intval($pos_var + 1))
-                    ->setValue(round((($var['venta_mensual'] / round($var['area_mensual'] * 10000, 2)) / $data['total_mensual']) * 100, 2) . '%');
+                    ->setValue(round((($var['venta_mensual'] / round($var['area_anual'] * 10000, 2)) / $data['total_mensual']) * 100, 2) . '%');
             else
                 $objSheet->getCell('O' . intval($pos_var + 1))
                     ->setValue(0);
@@ -377,8 +375,6 @@ class VentasM2Controller extends Controller
             }
             $semana_desde = getSemanaByDate(opDiasFecha('-', 91, date('Y-m-d')));
             $semana_hasta = getSemanaByDate(date('Y-m-d'));
-            $data = getAreaCiclosByRango($semana_desde->codigo, $semana_hasta->codigo, $var->id_variedad);
-            $data_area_mensual = getAreaActivaFromData($data['variedades'], $data['semanas']);
 
             /* =========================== 1 AÑO ======================== */
             $fecha_hasta = date('Y-m-d', strtotime('last month'));
@@ -403,19 +399,18 @@ class VentasM2Controller extends Controller
             $data = getAreaCiclosByRango($semana_desde->codigo, $semana_hasta->codigo, $var->id_variedad);
             $data_area_anual = getAreaActivaFromData($data['variedades'], $data['semanas']);
 
-            if (($data_venta_mensual > 0 && $data_area_mensual > 0) || ($data_area_anual > 0 && $data_venta_anual > 0)) {
+            if ($data_venta_mensual > 0 || ($data_area_anual > 0 && $data_venta_anual > 0)) {
                 array_push($array_variedades, [
                     'variedad' => $var,
                     'venta_mensual' => $data_venta_mensual,
-                    'area_mensual' => $data_area_mensual,
                     'area_anual' => $data_area_anual,
                     'venta_anual' => $data_venta_anual,
                 ]);
 
-                if ($data_area_mensual > 0)
-                    $total_mensual += round(($data_venta_mensual / round($data_area_mensual * 10000, 2)), 2);
-                if ($data_area_anual > 0)
+                if ($data_area_anual > 0) {
+                    $total_mensual += round(($data_venta_mensual / round($data_area_anual * 10000, 2)), 2);
                     $total_anual += round(($data_venta_anual / round($data_area_anual * 10000, 2)), 2);
+                }
             }
         }
 

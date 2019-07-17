@@ -40,8 +40,8 @@
                                         /año
                                     </strong>
                                     <span class="info-box-number text-center">
-                                        @if($area_mensual > 0)
-                                            {{number_format(round(($venta_mensual / round($area_mensual * 10000, 2)), 2), 2)}}
+                                        @if($area_anual > 0)
+                                            {{number_format(round(($venta_mensual / round($area_anual * 10000, 2)), 2), 2)}}
                                         @else
                                             0
                                         @endif

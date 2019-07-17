@@ -39,8 +39,8 @@
         @for($i = 0; $i < count($variedades); $i++)
         labels.push("{{$variedades[$i]['variedad']->siglas}}");
         data_colores.push("{{$variedades[$i]['variedad']->color}}");
-        @if($variedades[$i]['area_mensual'] > 0)
-        data_list.push("{{round((($variedades[$i]['venta_mensual'] / round($variedades[$i]['area_mensual'] * 10000, 2)) / $total_mensual) * 100, 2)}}");
+        @if($variedades[$i]['area_anual'] > 0)
+        data_list.push("{{round((($variedades[$i]['venta_mensual'] / round($variedades[$i]['area_anual'] * 10000, 2)) / $total_mensual) * 100, 2)}}");
         @else
         data_list.push(0);
         @endif
@@ -102,8 +102,12 @@
         @for($i = 0; $i < count($variedades); $i++)
         labels.push("{{$variedades[$i]['variedad']->siglas}}");
         data_colores.push("{{$variedades[$i]['variedad']->color}}");
+        @if($variedades[$i]['area_anual'] > 0)
         data_list.push("{{round((($variedades[$i]['venta_anual'] / round($variedades[$i]['area_anual'] * 10000, 2)) / $total_anual) * 100, 2)}}");
-        @endfor
+        @else
+        data_list.push(0);
+                @endif
+                @endfor
 
             datasets = [{
             label: ' ',
