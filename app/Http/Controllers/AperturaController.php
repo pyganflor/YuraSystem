@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use yura\Modelos\ClasificacionBlanco;
 use yura\Modelos\ClasificacionRamo;
 use yura\Modelos\Consumo;
+use yura\Modelos\LoteRE;
 use yura\Modelos\StockApertura;
 use yura\Modelos\StockEmpaquetado;
 use yura\Modelos\StockFrio;
@@ -483,6 +484,88 @@ class AperturaController extends Controller
         return [
             'mensaje' => $msg,
             'success' => $success
+        ];
+    }
+
+    public function mover_fecha(Request $request)
+    {
+        $apertura = StockApertura::find($request->id_apertura);
+
+        return view('adminlte.gestion.postcocecha.aperturas.partials.mover_fecha', [
+            'apertura' => $apertura
+        ]);
+    }
+
+    public function store_mover_fecha(Request $request)
+    {
+        /* ------------------- VALIDAR --------------------- */
+        $apertura = StockApertura::find($request->apertura);
+        $lote_re = $apertura->lote_re;
+        /* ======================= ANTIGUO STOCK ======================== */
+        $apertura->cantidad_disponible = $request->saldo;
+        $apertura->movido = 1;
+        if ($request->saldo == 0) {
+            $apertura->disponibilidad = 0;
+            $apertura->fecha_fin = date('Y-m-d');
+        }
+        $apertura->save();
+        bitacora('stock_apertura', $apertura->id_stock_apertura, 'U', 'Mover tallos de fecha');
+
+        /* ======================= NUEVO STOCK ======================== */
+        $new_lote = LoteRE::All()
+            ->where('id_variedad', $lote_re->id_variedad)
+            ->where('id_clasificacion_unitaria', $lote_re->id_clasificacion_unitaria)
+            ->where('id_clasificacion_verde', $lote_re->id_clasificacion_verde)
+            ->where('estado', 1)
+            ->where('etapa', 'A')
+            ->where('apertura', $request->fecha)
+            ->first();
+        if ($new_lote == '') {
+            $new_lote = new LoteRE();
+            $new_lote->cantidad_tallos = $request->mover;
+            $new_lote->id_variedad = $lote_re->id_variedad;
+            $new_lote->id_clasificacion_unitaria = $lote_re->id_clasificacion_unitaria;
+            $new_lote->id_clasificacion_verde = $lote_re->id_clasificacion_verde;
+            $new_lote->etapa = 'A';
+            $new_lote->apertura = $request->fecha;
+            $new_lote->save();
+            $new_lote = LoteRE::All()->last();
+            bitacora('lote_re', $new_lote->id_lote_re, 'I', 'Mover tallos de fecha');
+        } else {
+            $new_lote->cantidad_tallos += $request->mover;
+            $new_lote->save();
+            bitacora('lote_re', $new_lote->id_lote_re, 'U', 'Mover tallos de fecha');
+        }
+
+        $new_stock = StockApertura::All()
+            ->where('id_variedad', $apertura->id_variedad)
+            ->where('id_clasificacion_unitaria', $apertura->id_clasificacion_unitaria)
+            ->where('fecha_inicio', $request->fecha)
+            ->where('estado', 1)
+            ->where('disponibilidad', 1)
+            ->where('cantidad_disponible', '>', 0)
+            ->first();
+        if ($new_stock == '') {
+            $new_stock = new StockApertura();
+            $new_stock->cantidad_tallos = $request->mover;
+            $new_stock->id_variedad = $apertura->id_variedad;
+            $new_stock->id_clasificacion_unitaria = $apertura->id_clasificacion_unitaria;
+            $new_stock->cantidad_disponible = $request->mover;
+            $new_stock->fecha_inicio = $request->fecha;
+            $new_stock->dias = $apertura->dias;
+            $new_stock->id_lote_re = $new_lote->id_lote_re;
+            $new_stock->save();
+            $new_stock = StockApertura::All()->last();
+            bitacora('lote_re', $new_stock->id_stock_apertura, 'I', 'Mover tallos de fecha');
+        } else {
+            $new_stock->cantidad_disponible += $request->mover;
+            $new_stock->save();
+            bitacora('lote_re', $new_stock->id_stock_apertura, 'U', 'Mover tallos de fecha');
+        }
+
+        return [
+            'success' => true,
+            'mensaje' => '<div class="alert alert-success text-center">Se ha movido de fecha satisfactoriamente la cantidad de tallos indicada</div>'
         ];
     }
 }
