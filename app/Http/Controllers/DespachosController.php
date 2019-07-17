@@ -389,7 +389,7 @@ class DespachosController extends Controller
             )
         );
 
-        $objSheet1->getStyle('A19:I19')->applyFromArray($estilo);
+        $objPHPExcel->getDefaultStyle()->applyFromArray($estilo);
         $w = 1;
         $x = 1;
         $ids_pedidos_tinturados = [];
