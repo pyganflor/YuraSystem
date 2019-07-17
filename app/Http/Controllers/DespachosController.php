@@ -9,6 +9,7 @@ use PHPExcel_IOFactory;
 use PHPExcel_Style_Alignment;
 use PHPExcel_Style_Fill;
 use PHPExcel_Worksheet;
+use PHPExcel_Style_Border;
 use yura\Modelos\Camion;
 use yura\Modelos\Conductor;
 use yura\Modelos\Despacho;
