@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Session;
 use yura\Modelos\Despacho;
+use yura\Modelos\ProductoYuraVenture;
 use yura\Modelos\Usuario;
 use yura\Modelos\Bitacora;
 use yura\Modelos\GrupoMenu;
@@ -2085,7 +2086,6 @@ function getHistoricoVentaByMes($mes, $anno, $variedad = 'T')
     return round($r, 2);
 }
 
-
 function getDetalleFactura($idComprobante)
 {
     return DetalleFactura::where('id_comprobante', $idComprobante)->first();
@@ -2172,9 +2172,22 @@ function getCodigoArticuloVenture(){
         '0011601030027' => 'GYP. EXCELENT 875',
         '0011601030028' => 'GYP. EXCELENT 200 Corta',
         '0011601030029' => 'GYP. EXCELENT 4 Tallos',
+        '001160401' => 'BROMELIAS 90 cm',
+        '001160402' => 'BROMELIAS 80 cm',
+        '001160403' => 'BROMELIAS 70 cm'
     ];
 }
 
-function getPresentacionesYuraSsytem(){
-
+function getProductosVinculadosYuraVenture(){
+    return ProductoYuraVenture::get();
 }
+
+function getCodigoVenturePresentacion($idPlanta,$idVariedad,$idClasificacionRamo,$clasificacionRamoIdUnidadMedida,$tallosXramos,$longitudRamo,$longitudRamoIdUnidadMedida){
+    foreach (getProductosVinculadosYuraVenture() as $prductosVinculados){
+        $datos = explode("|",$prductosVinculados->presentacion_yura);
+        if($datos[0] == $idPlanta && $datos[1] == $idVariedad && $datos[2] == $idClasificacionRamo && $datos[3] == $clasificacionRamoIdUnidadMedida && $datos[4] == $tallosXramos && $datos[5] == $longitudRamo && $datos[6] == $longitudRamoIdUnidadMedida){
+            return $prductosVinculados->codigo_venture;
+        }
+    }
+}
+

@@ -9,6 +9,7 @@ use PHPExcel_IOFactory;
 use PHPExcel_Style_Alignment;
 use PHPExcel_Style_Fill;
 use PHPExcel_Worksheet;
+use PHPExcel_Style_Border;
 use yura\Modelos\Camion;
 use yura\Modelos\Conductor;
 use yura\Modelos\Despacho;
@@ -380,9 +381,15 @@ class DespachosController extends Controller
         $objSheet1->getCell('G1')->setValue('Cajas full');
         $objSheet1->getCell('H1')->setValue('Ramos');
         $objSheet1->getCell('I1')->setValue('Ramos por caja');
+        $estilo = array(
+            'borders' => array(
+                'outline' => array(
+                    'style' => PHPExcel_Style_Border::BORDER_THIN
+                )
+            )
+        );
 
-
-
+        $objSheet1->getStyle('A19:I19')->applyFromArray($estilo);
         $w = 1;
         $x = 1;
         $ids_pedidos_tinturados = [];

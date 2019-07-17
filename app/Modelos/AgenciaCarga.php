@@ -13,7 +13,7 @@ class AgenciaCarga extends Model
 
     protected $fillable = [
         'nombre',
-        'cdigo',
+        'codigo',
         'identificacion',
         'correo',
         'correo2',
