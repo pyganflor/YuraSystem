@@ -16,7 +16,7 @@
                 </th>
                 <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
                     style="border-color: #9d9d9d">
-                    Código
+                    Código Venture
                 </th>
                 <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
                     style="border-color: #9d9d9d">
@@ -24,7 +24,7 @@
                 </th>
                 <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
                     style="border-color: #9d9d9d">
-                    OPCIONES
+                    Opciones
                 </th>
             </tr>
             </thead>
