@@ -1508,11 +1508,6 @@ class ComprobanteController extends Controller
                                     $contenido .= getCodigoVenturePresentacion($det_esp_emp->variedad->planta->id_planta,$det_esp_emp->variedad->id_variedad,$det_esp_emp->clasificacion_ramo->id_clasificacion_ramo,$det_esp_emp->clasificacion_ramo->unidad_medida->id_unidad_medida,$det_esp_emp->tallos_x_ramos,$det_esp_emp->longitud_ramo,$det_esp_emp->unidad_medida->id_unidad_medida)."\t";
                                     $contenido .= ($det_ped->cantidad*$det_esp_emp->cantidad)."\t".explode(";", $precio[$i])[0]."\t".($pedido->cliente->detalle()->codigo_pais != getConfiguracionEmpresa()->codigo_pais ? 0 : 1)."\t".'001009'/*Código venture dasalflor para crédito como forma de pago*/."\t".$pedido->envios[0]->dae."\t".$pedido->envios[0]->dae."\t"."N"."\t"."N"."\t"."1113495085"."\t".$pedido->envios[0]->guia_madre."\t";
                                     $contenido .= $det_ped->cantidad." Piezas. ".$caja_full." FULL BOXES"."\t"." "."\t"."0"."\t"." "."\t"." "."\t"."00101"/*codigo_tvn venture dasalflor*/."\t".$pedido->cliente->detalle()->nombre."\t"."\t"."\t"."\t"."\t".$tallos." Tallos."."\t"."\t"."\t"."\t"."\t". $pedido->envios[0]->guia_hija."\t".$pedido->detalles[0]->agencia_carga->codigo.chr(13).chr(10);
-
-                                    /*$peso_neto += (int)$det_esp_emp->clasificacion_ramo->nombre * number_format(($det_ped->cantidad*$det_esp_emp->cantidad),2,".","");
-                                    $peso_caja += isset(explode("|",$det_esp_emp->especificacion_empaque->empaque->nombre)[2]) ? explode("|",$det_esp_emp->especificacion_empaque->empaque->nombre)[2] : 0;
-                                    $precio_x_variedad = ($det_esp_emp->cantidad * ((float)explode(";", $precio[$i])[0]) * $esp_emp->cantidad * $det_ped->cantidad);
-                                    $precio_total_sin_impuestos += $precio_x_variedad;*/
                                     $i++;
                                 }
                             }
