@@ -41,7 +41,7 @@
             $positivos_tallos_m2 = 0;
         @endphp
         @foreach($ciclos as $item)
-            <tr>
+            <tr style="font-size: 0.8em">
                 <td class="text-center" style="border-color: #9d9d9d">
                     {{$item->modulo->nombre}}
                 </td>

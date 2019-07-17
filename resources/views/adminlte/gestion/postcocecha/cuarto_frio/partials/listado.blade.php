@@ -165,7 +165,8 @@
                 <th colspan="2" style="border-color: #9d9d9d"></th>
             </tr>
             <tr>
-                <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" colspan="5" style="border-color: #9d9d9d">
+                <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" colspan="5"
+                    style="border-color: #9d9d9d">
                     Opciones
                 </th>
                 @for($i = 0; $i <= 9; $i++)
@@ -197,8 +198,10 @@
                         <input type="hidden" id="inventario_target_{{$i}}">
                     </th>
                 @endfor
-                <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">{{$total_ramos}}</th>
-                <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">{{$total_cajas}}</th>
+                <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
+                    style="border-color: #9d9d9d">{{$total_ramos}}</th>
+                <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
+                    style="border-color: #9d9d9d">{{$total_cajas}}</th>
                 <th style="border-color: #9d9d9d"></th>
             </tr>
         </table>
