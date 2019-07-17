@@ -40,12 +40,12 @@
                                         /año
                                     </strong>
                                     <span class="info-box-number text-center">
-                                        @if($area['area_cerrada'] > 0)
-                                            {{number_format(round(($venta_mensual['valor'] / $area['area_cerrada']) * $area['ciclo_ano'], 2), 2)}}
+                                        @if($area_mensual > 0)
+                                            {{number_format(round(($venta_mensual / round($area_mensual * 10000, 2)), 2), 2)}}
                                         @else
                                             0
                                         @endif
-                                        <small>$/m<sup>2</sup>/año (4 semanas)</small>
+                                        <small>$/m<sup>2</sup>/año (4 meses)</small>
                                     </span>
                                     <span class="info-box-number text-center">
                                         @if($area_anual > 0)

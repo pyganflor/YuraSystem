@@ -1,7 +1,7 @@
 <div class="box box-primary">
     <div class="box-header with-border">
         <h3 class="box-title">
-            <strong>$/m<sup>2</sup>/año (4 semanas)</strong>
+            <strong>Porcentaje por variedad - $/m<sup>2</sup>/año (4 meses)</strong>
         </h3>
         <div class="box-tools pull-right">
             <button type="button" class="btn btn-box-tool text-green" onclick="exportar_excel()" id="btn_exportar_excel">
@@ -17,7 +17,7 @@
 <div class="box box-primary">
     <div class="box-header with-border">
         <h3 class="box-title">
-            <strong>$/m<sup>2</sup>/año (1 año)</strong>
+            <strong>Porcentaje por variedad - $/m<sup>2</sup>/año (1 año)</strong>
         </h3>
     </div>
     <div class="box-body">
@@ -39,8 +39,8 @@
         @for($i = 0; $i < count($variedades); $i++)
         labels.push("{{$variedades[$i]['variedad']->siglas}}");
         data_colores.push("{{$variedades[$i]['variedad']->color}}");
-        @if($variedades[$i]['area_cerrada'] > 0)
-        data_list.push("{{round(((($variedades[$i]['venta'] / $variedades[$i]['area_cerrada']) * $variedades[$i]['ciclo_anno']) / $total_mensual) * 100, 2)}}");
+        @if($variedades[$i]['area_mensual'] > 0)
+        data_list.push("{{round((($variedades[$i]['venta_mensual'] / round($variedades[$i]['area_mensual'] * 10000, 2)) / $total_mensual) * 100, 2)}}");
         @else
         data_list.push(0);
         @endif

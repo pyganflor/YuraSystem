@@ -151,8 +151,26 @@ class YuraController extends Controller
                 'ramos_anno' => $area_cerrada > 0 ? round($ciclo_ano * round($ramos_ciclo / $area_cerrada, 2), 2) : 0,
             ];
 
-            /* ================= venta en 4 semanas =================== */
-            $data_venta_mensual = getVentaByRango($semanas_4[0]->semana, $semanas_4[3]->semana, 'T');
+            /* ================= venta/m2/año en 4 meses =================== */
+            $fecha_hasta = date('Y-m-d', strtotime('last month'));
+            $fecha_desde = date('Y-m-d', strtotime('-4 month'));
+
+            $data_venta_mensual = DB::table('historico_ventas')
+                ->select(DB::raw('sum(valor) as cant'))
+                ->where('anno', '=', substr($fecha_desde, 0, 4))
+                ->where('mes', '>=', substr($fecha_desde, 5, 2))
+                ->get()[0]->cant;
+            if (substr($fecha_desde, 0, 4) != substr($fecha_hasta, 0, 4)) {
+                $data_venta_mensual += DB::table('historico_ventas')
+                    ->select(DB::raw('sum(valor) as cant'))
+                    ->where('anno', '=', substr($fecha_hasta, 0, 4))
+                    ->where('mes', '<=', substr($fecha_hasta, 5, 2))
+                    ->get()[0]->cant;
+            }
+            $semana_desde = getSemanaByDate(opDiasFecha('-', 91, date('Y-m-d')));
+            $semana_hasta = getSemanaByDate(date('Y-m-d'));
+            $data = getAreaCiclosByRango($semana_desde->codigo, $semana_hasta->codigo, 'T');
+            $data_area_mensual = getAreaActivaFromData($data['variedades'], $data['semanas']);
 
             /* ================= venta en 1 año =================== */
             $fecha_hasta = date('Y-m-d', strtotime('last month'));
@@ -183,6 +201,7 @@ class YuraController extends Controller
                 'rendimiento_desecho' => $rendimiento_desecho,
                 'area' => $mensual,
                 'venta_mensual' => $data_venta_mensual,
+                'area_mensual' => $data_area_mensual,
                 'venta_anual' => $data_venta_anual,
                 'area_anual' => $data_area_anual,
             ]);
