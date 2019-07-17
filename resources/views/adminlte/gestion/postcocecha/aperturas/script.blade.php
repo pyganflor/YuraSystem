@@ -119,4 +119,13 @@
             $('#table_filtro').hide();
         }
     }
+
+    function mover_fecha(apertura) {
+        datos = {
+            id_apertura: apertura
+        };
+        get_jquery('{{url('apertura/mover_fecha')}}', datos, function (retorno) {
+            modal_view('modal-view_mover_fecha', retorno, '<i class="fa fa-fw fa-calendar"></i> Mover de Fecha', true, false, '{{isPC() ? '50%' : ''}}');
+        })
+    }
 </script>

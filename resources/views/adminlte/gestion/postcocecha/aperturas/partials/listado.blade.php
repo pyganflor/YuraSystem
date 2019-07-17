@@ -48,6 +48,10 @@
                         style="border-color: #9d9d9d" width="5%">
                         Sacar Tallos
                     </th>
+                    <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
+                        style="border-color: #9d9d9d" width="5%">
+                        Opciones
+                    </th>
                 </tr>
                 </thead>
                 @php
@@ -167,6 +171,12 @@
                                    id="sacar_ini_{{$apertura->id_stock_apertura}}"
                                    value="{{getStockById($apertura->id_stock_apertura)->cantidad_disponible}}">
                         </td>
+                        <td class="text-center" style="border-color: #9d9d9d">
+                            <button type="button" class="btn btn-xs btn-default" title="Mover fecha"
+                                    onclick="mover_fecha('{{$apertura->id_stock_apertura}}')">
+                                <i class="fa fa-fw fa-calendar"></i>
+                            </button>
+                        </td>
                     </tr>
                     @php
                         $total_cajas += round(getStockById($apertura->id_stock_apertura)->getRamosEstandar() / getConfiguracionEmpresa()->ramos_x_caja, 2);
@@ -209,7 +219,7 @@
                             <td style="border-bottom-color: #9d9d9d; border-right-color: #9d9d9d" class="text-center">
                                 {{$total_cajas}}
                             </td>
-                            <td style="border-bottom-color: #9d9d9d; border-right-color: #9d9d9d"></td>
+                            <td style="border-bottom-color: #9d9d9d; border-right-color: #9d9d9d" colspan="2"></td>
                         </tr>
                         @php
                             $cajas_totales += $total_cajas;
@@ -245,7 +255,7 @@
                     <th style="border-bottom-color: #9d9d9d; border-right-color: #9d9d9d" class="text-center">
                         {{$cajas_totales}}
                     </th>
-                    <td style="border-bottom-color: #9d9d9d; border-right-color: #9d9d9d"></td>
+                    <td style="border-bottom-color: #9d9d9d; border-right-color: #9d9d9d" colspan="2"></td>
                 </tr>
                 </tbody>
             </table>
