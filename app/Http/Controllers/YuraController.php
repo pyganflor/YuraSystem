@@ -151,8 +151,22 @@ class YuraController extends Controller
                 'ramos_anno' => $area_cerrada > 0 ? round($ciclo_ano * round($ramos_ciclo / $area_cerrada, 2), 2) : 0,
             ];
 
-            /* ================= venta en 4 semanas =================== */
-            $data_venta_mensual = getVentaByRango($semanas_4[0]->semana, $semanas_4[3]->semana, 'T');
+            /* ================= venta/m2/año en 4 meses =================== */
+            $fecha_hasta = date('Y-m-d', strtotime('last month'));
+            $fecha_desde = date('Y-m-d', strtotime('-4 month'));
+
+            $data_venta_mensual = DB::table('historico_ventas')
+                ->select(DB::raw('sum(valor) as cant'))
+                ->where('anno', '=', substr($fecha_desde, 0, 4))
+                ->where('mes', '>=', substr($fecha_desde, 5, 2))
+                ->get()[0]->cant;
+            if (substr($fecha_desde, 0, 4) != substr($fecha_hasta, 0, 4)) {
+                $data_venta_mensual += DB::table('historico_ventas')
+                    ->select(DB::raw('sum(valor) as cant'))
+                    ->where('anno', '=', substr($fecha_hasta, 0, 4))
+                    ->where('mes', '<=', substr($fecha_hasta, 5, 2))
+                    ->get()[0]->cant;
+            }
 
             /* ================= venta en 1 año =================== */
             $fecha_hasta = date('Y-m-d', strtotime('last month'));
