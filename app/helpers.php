@@ -360,7 +360,6 @@ function substituir_caracteres_raros($cadena_original, $es_nombre = false)
     return $cadena_resultante;
 }
 
-
 //---------------------------------------------------------------------------------------
 
 /*
@@ -1388,7 +1387,6 @@ function generaDocumentoPDF($autorizacion, $tipo_documento, $pre_factura = false
 
 }
 
-
 function enviarMailComprobanteCliente($tipoDocumento, $correoCliente, $nombreCliente, $nombreArchivo, $numeroComprobante, $preFactura = false, $correosExtra = false)
 {
     //dd($correo_extra);
@@ -2096,4 +2094,87 @@ function getDetalleFactura($idComprobante)
 function getDistribucion($idDistribucion)
 {
     return Distribucion::find($idDistribucion);
+}
+
+function getCodigoArticuloVenture(){
+    return [
+        '001160101001' => 'GYP. MS. 250 Gr 50 cm',
+        '001160101002' => 'GYP. MS. 250 Gr 60 cm',
+        '001160101003' => 'GYP. MS. 250 Gr 75 cm',
+        '001160101004' => 'GYP. MS. 500 Gr 60 cm',
+        '001160101005' => 'GYP. MS. 500 Gr 75 cm',
+        '001160101006' => 'GYP. MS. 75 Gr 75 cm',
+        '001160101007' => 'GYP. MS. 40 Gr 50 cm',
+        '001160101008' => 'GYP. MS. 150 Gr 60 cm',
+        '001160101009' => 'GYP. MS. 750 Gr 75 cm',
+        '001160101010' => 'GYP. MS. 875 Gr 75 cm',
+        '001160101011' => 'GYP. MS. 1000 Gr 75 cm',
+        '001160101012' => 'GYP. MS. 1250 Gr 75 cm',
+        '001160101013' => 'GYP. MS. 250 Gr 65 cm',
+        '001160101014' => 'GYP. MS. 250 Gr 80 cm',
+        '001160101015' => 'GYP. MS. 200 Gr 60 cm',
+        '001160101016' => 'GYP. MS. 450 Gr 15 cm',
+        '001160101017' => 'GYP. MS. 650 Gr 80 cm',
+        '001160101018' => 'GYP. MS. 150 Gr 75 cm',
+        '001160101019' => 'GYP. MS. 100 Gr 75 cm',
+        '001160101020' => 'GYP. MS. 580 Gr 75 cm',
+        '001160101021' => 'GYP. MS. 180 Gr 75 cm',
+        '001160101022' => 'GYP. MS. 9 Tallos',
+        '001160101023' => 'GYP. MS. 680 Gr',
+        '001160101024' => 'GYP. MS. 350 Gr',
+        '001160101025' => 'GYP. MS. 5 Tallo',
+        '001160101026' => 'GYP. MS. 500 Gr',
+        '001160101027' => 'GYP. MS. 280 Gr',
+        '001160101028' => 'GYP. MS. 5 Tallos Cortan 60 cm',
+        '001160101029' => 'GYP. MS. 220 Gr',
+        '001160101030' => 'GYP. MS. 2 Tallos larga 75 cm',
+        '001160101034' => 'GYP. MS. 3 Tallos Larga 75 cm',
+        '001160101037' => 'GYP. MS. 280 Gr Corta 60 cm',
+        '001160101040' => 'GYP. MS. 220 Gr Corta 60 cm',
+        '001160101041' => 'GYP. MS. 280 Gr Larga 15 Tallos',
+        '001160101042' => 'GYP. MS. 7 Tallos Larga',
+        '001160101043' => 'GYP. MS. 1500 Hojas',
+        '001160101044' => 'GYP. MS. 650 Gr Hojas 70 cm',
+        '001160101045' => 'GYP. MS.  850 Gr Hojas',
+        '001160101046' => 'GYP. MS. 175 Gr Larga',
+        '001160101047' => 'GYP. MS. 170 Gr Larga',
+        '001160101048' => 'GYP. MS. 520 Gr Gr Larga',
+        '001160101049' => 'GYP. MS. 120 Gr Larga',
+        '001160101050' => 'GYP. MS. 1 Tallo 60 cm',
+        '001160101051' => 'GYP. MS. 400 Gr Larga',
+        '001160101052' => 'GYP. MS. 400 Gr Corta',
+        '0011601030001' => 'GYP. EXCELENT  1250',
+        '0011601030002' => 'GYP. EXCELENT 1000',
+        '0011601030003' => 'GYP. EXCELENT 750',
+        '0011601030004' => 'GYP. EXCELENT 250 Corta',
+        '0011601030005' => 'GYP. EXCELENT 250 Larga',
+        '0011601030006' => 'GYP. EXCELENT 180 Larga',
+        '0011601030007' => 'GYP. EXCELENT 500 Larga',
+        '0011601030008' => 'GYP. EXCELENT 550',
+        '0011601030009' => 'GYP. EXCELENT 420',
+        '0011601030010' => 'GYP. EXCELENT 580',
+        '0011601030011' => 'GYP. EXCELENT 75',
+        '0011601030012' => 'GYP. EXCELENT 5 Tallos',
+        '0011601030013' => 'GYP. EXCELENT 2 Tallos',
+        '0011601030014' => 'GYP. EXCELENT 120',
+        '0011601030015' => 'GYP. EXCELENT 400 Larga',
+        '0011601030016' => 'GYP. EXCELENT 170',
+        '0011601030017' => 'GYP. EXCELENT 250',
+        '0011601030018' => 'GYP. EXCELENT 200',
+        '0011601030019' => 'GYP. EXCELENT 40 Gr',
+        '0011601030020' => 'GYP. EXCELENT 175',
+        '0011601030021' => 'GYP. EXCELENT 125',
+        '0011601030022' => 'GYP. EXCELENT 650 Hojas',
+        '0011601030023' => 'GYP. EXCELENT 400 Corta',
+        '0011601030024' => 'GYP. EXCELENT 220',
+        '0011601030025' => 'GYP. EXCELENT 850',
+        '0011601030026' => 'GYP. EXCELENT 550 Corta',
+        '0011601030027' => 'GYP. EXCELENT 875',
+        '0011601030028' => 'GYP. EXCELENT 200 Corta',
+        '0011601030029' => 'GYP. EXCELENT 4 Tallos',
+    ];
+}
+
+function getPresentacionesYuraSsytem(){
+
 }
