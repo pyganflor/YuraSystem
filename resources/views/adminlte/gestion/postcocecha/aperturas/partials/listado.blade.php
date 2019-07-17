@@ -153,8 +153,8 @@
                                 </span>
                         </td>
                         <td class="text-center" style="border-color: #9d9d9d">
-                            <span class="badge" style="color: #0a0a0a; background-color: #3cf7ff" title="Real">
-                                {{round(getStockById($apertura->id_stock_apertura)->getDisponibles('estandar') / getConfiguracionEmpresa()->ramos_x_caja, 2)}}
+                            <span class="badge" style="color: #0a0a0a; background-color: #3cf7ff" title="Cajas">
+                                {{round(getStockById($apertura->id_stock_apertura)->getRamosEstandar() / getConfiguracionEmpresa()->ramos_x_caja, 2)}}
                             </span>
                         </td>
                         <td class="text-center" style="border-color: #9d9d9d">
@@ -169,7 +169,7 @@
                         </td>
                     </tr>
                     @php
-                        $total_cajas += round(getStockById($apertura->id_stock_apertura)->getDisponibles('estandar') / getConfiguracionEmpresa()->ramos_x_caja, 2);
+                        $total_cajas += round(getStockById($apertura->id_stock_apertura)->getRamosEstandar() / getConfiguracionEmpresa()->ramos_x_caja, 2);
                         $tallos_entrantes += getStockById($apertura->id_stock_apertura)->cantidad_tallos;
                         $tallos_restantes += getStockById($apertura->id_stock_apertura)->cantidad_disponible;
                         $total_disponibles += getStockById($apertura->id_stock_apertura)->getDisponibles('estandar');
@@ -240,8 +240,7 @@
                     <th class="text-center" style=" border-color: #9d9d9d">
                         {{$tallos_restrantes_totales}}
                     </th>
-                    <th class="text-center" style=" border-color: #9d9d9d">-</th>
-                    <th class="text-center" style=" border-color: #9d9d9d">{{$ramos_totales}}</th>
+                    <th class="text-center" style=" border-color: #9d9d9d" colspan="2">{{$ramos_totales}}</th>
                     <td style="border-bottom-color: #9d9d9d; border-right-color: #9d9d9d"></td>
                     <th style="border-bottom-color: #9d9d9d; border-right-color: #9d9d9d" class="text-center">
                         {{$cajas_totales}}

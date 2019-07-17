@@ -33,6 +33,10 @@
                 </th>
                 <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" rowspan="2"
                     style="border-color: #9d9d9d">
+                    Cajas
+                </th>
+                <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" rowspan="2"
+                    style="border-color: #9d9d9d">
                     Opciones
                 </th>
             </tr>
@@ -53,6 +57,10 @@
             </thead>
 
             <tbody>
+            @php
+                $total_ramos = 0;
+                $total_cajas = 0;
+            @endphp
             @foreach($inventarios as $pos_inv => $inv)
                 <tr onmouseover="$(this).addClass('bg-aqua')" onmouseleave="$(this).removeClass('bg-aqua')">
                     <th class="text-center" style="border-color: #9d9d9d">
@@ -122,6 +130,9 @@
                         {{$inv['disponibles']}}
                     </th>
                     <th class="text-center" style="border-color: #9d9d9d">
+                        {{round(convertToEstandar($inv['disponibles'], explode('|', $inv['peso']->nombre)[0]) / getConfiguracionEmpresa()->ramos_x_caja, 2)}}
+                    </th>
+                    <th class="text-center" style="border-color: #9d9d9d">
                         <div class="btn-group">
                             <button type="button" class="btn btn-xs btn-success" title="Aceptar" id="btn_save_{{$pos_inv}}"
                                     style="display: none" onclick="editar_inventario('{{$pos_inv}}')">
@@ -130,6 +141,10 @@
                         </div>
                     </th>
                 </tr>
+                @php
+                    $total_ramos += $inv['disponibles'];
+                    $total_cajas += round(convertToEstandar($inv['disponibles'], explode('|', $inv['peso']->nombre)[0]) / getConfiguracionEmpresa()->ramos_x_caja, 2);
+                @endphp
             @endforeach
             </tbody>
             <tr id="tr_basura" style="display: none">
@@ -150,7 +165,7 @@
                 <th colspan="2" style="border-color: #9d9d9d"></th>
             </tr>
             <tr>
-                <th class="text-center" colspan="5" style="border-color: #9d9d9d">
+                <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" colspan="5" style="border-color: #9d9d9d">
                     Opciones
                 </th>
                 @for($i = 0; $i <= 9; $i++)
@@ -182,7 +197,9 @@
                         <input type="hidden" id="inventario_target_{{$i}}">
                     </th>
                 @endfor
-                <th colspan="2" style="border-color: #9d9d9d"></th>
+                <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">{{$total_ramos}}</th>
+                <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">{{$total_cajas}}</th>
+                <th style="border-color: #9d9d9d"></th>
             </tr>
         </table>
     </div>

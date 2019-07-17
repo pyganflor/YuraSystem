@@ -26,7 +26,7 @@
             <i class="fa fa-fw fa-usd"></i>
         </div>
         <span class="small-box-footer">
-            {{$var['variedad']->nombre}}
+            <strong>{{$var['variedad']->nombre}}</strong>
             <small class="pull-left" style="color: white; margin-left: 5px">$/m<sup>2</sup>/año</small>
         </span>
     </div>
