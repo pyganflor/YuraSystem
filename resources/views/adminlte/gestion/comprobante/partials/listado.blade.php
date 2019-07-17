@@ -1,51 +1,54 @@
     <div id="table_comprobante">
     @if(sizeof($listado)>0)
-        <table width="100%" class="table table-responsive table-bordered" style="font-size: 0.8em; border-color: #9d9d9d"
-               id="table_content_comprobante">
+        <table width="100%" class="table table-responsive table-bordered" style="font-size: 0.8em; border-color: #9d9d9d" id="table_content_comprobante">
             <thead>
-            <tr style="background-color: #dd4b39; color: white">
-                {{--<th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
-                    @if($tipo_comprobante == ""  || $tipo_comprobante=="01")
-                        ENVÍO
-                    @elseif($tipo_comprobante == ""  || $tipo_comprobante=="06")
-                        GUÍA DE REMISIÓN
+                <tr style="background-color: #dd4b39; color: white">
+                    {{--<th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
+                        @if($tipo_comprobante == ""  || $tipo_comprobante=="01")
+                            ENVÍO
+                        @elseif($tipo_comprobante == ""  || $tipo_comprobante=="06")
+                            GUÍA DE REMISIÓN
+                        @endif
+                    </th>--}}
+                    @if($tipo_comprobante=="06")
+                        <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
+                            FACTURA ATADA
+                        </th>
                     @endif
-                </th>--}}
-                @if($tipo_comprobante=="06")
                     <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
-                        FACTURA ATADA
+                        COMPROBANTE
                     </th>
-                @endif
-                <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
-                    COMPROBANTE
-                </th>
-                <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
-                    CLAVE DE ACCESO
-                </th>
-                @if($tipo_comprobante!="06")
-                <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
-                    CLIENTE
-                </th>
-                <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
-                    TOTAL
-                </th>
-                @endif
-                <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
-                    EMISIÓN
-                </th>
-                <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
-                    ESTADO
-                </th>
-                @if($columna_causa)
-                <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
-                    CAUSA
-                </th>
-                @endif
-                <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
-                    OPCIONES
-                </th>
-            </tr>
+                    <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
+                        CLAVE DE ACCESO
+                    </th>
+                    @if($tipo_comprobante!="06")
+                        <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
+                            CLIENTE
+                        </th>
+                        <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
+                            TOTAL
+                        </th>
+                        <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
+                            CAJAS
+                        </th>
+                    @endif
+                    <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
+                       AGENCIA DE CARAGA
+                    </th>
+                    {{--<th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
+                        ESTADO
+                    </th>--}}
+                    @if($columna_causa)
+                    <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
+                        CAUSA
+                    </th>
+                    @endif
+                    <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
+                        OPCIONES
+                    </th>
+                </tr>
             </thead>
+            <tbody>
             @foreach($listado as $key => $item)
                 <tr onmouseover="$(this).css('background-color','#add8e6')" onmouseleave="$(this).css('background-color','')"
                     {{$item->estado== 6 ? 'style=color:red' : ""}} id="row_comprobante_{{$item->id_comprobante}}">
@@ -66,9 +69,10 @@
                     @if($tipo_comprobante!="06")
                         <td style="border-color: #9d9d9d" class="text-center"> {{$item->nombre_cliente}}</td>
                         <td style="border-color: #9d9d9d" class="text-center"> ${{number_format($item->monto_total,2,".","")}}</td>
+                        <td style="border-color: #9d9d9d" class="text-center"> </td>
                     @endif
-                    <td style="border-color: #9d9d9d" class="text-center"> {{Carbon\Carbon::parse($item->fecha_emision)->format('d-m-Y')}} </td>
-                    <td style="border-color: #9d9d9d" class="text-center">
+                    <td style="border-color: #9d9d9d" class="text-center"> {{$item->envio->pedido->detalles[0]->agencia_carga->nombre}} </td>
+                    {{--<td style="border-color: #9d9d9d" class="text-center">
                         @if($item->estado == 0)
                             No firmado
                         @elseif($item->estado == 1)
@@ -86,11 +90,11 @@
                         @elseif($item->estado == 00)
                             Lote
                         @endif
-                    </td>
+                    </td>--}}
                     @if($columna_causa)
-                        <td style="border-color: #9d9d9d" class="text-center"> {{!empty($item->causa) ? $item->causa : "-"}} </td>
+                        <td style="border-color: #9d9d9d;" class="text-center"> {{!empty($item->causa) ? $item->causa : "-"}} </td>
                     @endif
-                    <td style="border-color: #9d9d9d" class="text-center">
+                    <td style="border-color: #9d9d9d;width:110px" class="text-center">
                         @if($item->estado==5)
                             {{--<a target="_blank" href="{{url('comprobante/comprobante_aprobado_sri',$item->clave_acceso)}}" class="btn btn-info btn-xs" title="Ver factura" >
                                 <i class="fa fa-eye" aria-hidden="true"></i>
@@ -166,8 +170,6 @@
                                 <input type="checkbox" id="firmar_{{$key+1}}" name="firmar" value="{{$item->id_comprobante}}" style="margin:0;position:relative;top:3px">
                             </button>
                         @endif
-
-
                         {{--PARA QUE LA FACTURACION FUNCIONE CON EL VENTURE--}}
                         @if($item->estado != 6)
                             <button class="btn btn-success btn-xs" title="Enviar correo" onclick="enviar_correo('{{$item->id_comprobante}}','{{isset($item->envio->pedido->tipo_especificacion) ? $item->envio->pedido->tipo_especificacion : null}}','{{$item->tipo_comprobante}}')">
@@ -177,6 +179,7 @@
                     </td>
                 </tr>
             @endforeach
+            </tbody>
         </table>
         @if($item->estado !=5 && $item->estado != 3 && $item->estado != 4)
             @if($item->estado == 0)
