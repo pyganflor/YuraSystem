@@ -40,7 +40,7 @@
         labels.push("{{$variedades[$i]['variedad']->siglas}}");
         data_colores.push("{{$variedades[$i]['variedad']->color}}");
         @if($variedades[$i]['area_anual'] > 0)
-        data_list.push("{{round((($variedades[$i]['venta_mensual'] / round($variedades[$i]['area_anual'] * 10000, 2)) / $total_mensual) * 100, 2)}}");
+        data_list.push("{{round(((($variedades[$i]['venta_mensual'] / round($variedades[$i]['area_anual'] * 10000, 2)) * 3) / $total_mensual) * 100, 2)}}");
         @else
         data_list.push(0);
         @endif

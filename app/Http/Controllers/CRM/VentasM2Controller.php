@@ -80,7 +80,7 @@ class VentasM2Controller extends Controller
                 ]);
 
                 if ($data_area_anual > 0) {
-                    $total_mensual += round(($data_venta_mensual / round($data_area_anual * 10000, 2)), 2);
+                    $total_mensual += round(($data_venta_mensual / round($data_area_anual * 10000, 2)), 2) * 3;
                     $total_anual += round(($data_venta_anual / round($data_area_anual * 10000, 2)), 2);
                 }
             }
@@ -163,7 +163,7 @@ class VentasM2Controller extends Controller
             /* ============== MERGE CELDAS =============*/
             $objSheet->mergeCells('A' . $pos_fila . ':C' . $pos_fila);
             if ($var['area_anual'] > 0)
-                $mensual = number_format(round(($var['venta_mensual'] / round($var['area_anual'] * 10000, 2)), 2), 2);
+                $mensual = number_format(round(($var['venta_mensual'] / round($var['area_anual'] * 10000, 2)), 2) * 3, 2);
             else
                 $mensual = 0;
             $objSheet->getCell('A' . $pos_fila)->setValue($mensual);
@@ -257,7 +257,7 @@ class VentasM2Controller extends Controller
             $objSheet->getCell('N' . intval($pos_var + 1))->setValue($var['variedad']->siglas);
             if ($var['area_anual'] > 0 && $data['total_mensual'] > 0)
                 $objSheet->getCell('O' . intval($pos_var + 1))
-                    ->setValue(round((($var['venta_mensual'] / round($var['area_anual'] * 10000, 2)) / $data['total_mensual']) * 100, 2) . '%');
+                    ->setValue(round((($var['venta_mensual'] / round($var['area_anual'] * 10000, 2)) / $data['total_mensual']) * 100, 2) * 3 . '%');
             else
                 $objSheet->getCell('O' . intval($pos_var + 1))
                     ->setValue(0);
@@ -408,7 +408,7 @@ class VentasM2Controller extends Controller
                 ]);
 
                 if ($data_area_anual > 0) {
-                    $total_mensual += round(($data_venta_mensual / round($data_area_anual * 10000, 2)), 2);
+                    $total_mensual += round(($data_venta_mensual / round($data_area_anual * 10000, 2)), 2) * 3;
                     $total_anual += round(($data_venta_anual / round($data_area_anual * 10000, 2)), 2);
                 }
             }
