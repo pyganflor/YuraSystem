@@ -24,7 +24,7 @@
                     <th class="text-center" style="border-color: #9d9d9d">
                         {{explode('|',$unitaria->nombre)[0]}} {{$unitaria->unidad_medida->siglas}}
 
-                        <input type="hidden" id="nombre_unitaria_{{explode('|',$unitaria->nombre)[0]}}"
+                        <input type="hidden" id="nombre_unitaria_{{explode('|',$unitaria->nombre)[0].$unitaria->unidad_medida->siglas}}"
                                value="{{$unitaria->id_clasificacion_unitaria}}">
                         <input type="hidden" id="unidad_medida_unitaria_{{$unitaria->id_clasificacion_unitaria}}"
                                value="{{$unitaria->unidad_medida->siglas}}">
