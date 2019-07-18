@@ -792,9 +792,9 @@ function admin_colores() {
     });
 }
 
-function genera_codigo_barra(prefijo=null, codigo) {
+function genera_codigo_barra(prefijo, codigo) {
     $.LoadingOverlay('show');
-    ruta = false;
+    console.log(prefijo,codigo);
     if(prefijo != null && prefijo != ""){
       $.get(dominio+'/codigo_barra/generar_codigo_barra/' + codigo + prefijo, {}, function (retorno) {
         $("#img_codigo_barra").html(retorno);
@@ -804,7 +804,7 @@ function genera_codigo_barra(prefijo=null, codigo) {
         $("#img_codigo_barra").html(retorno);
       });
     }
-      ruta = "/" + prefijo;
+    
     
       
     $.LoadingOverlay('hide');
