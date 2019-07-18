@@ -1493,6 +1493,7 @@ class ComprobanteController extends Controller
             header("Pragma: no-cache");
 
             $contenido = "";
+            $total_ramos = 0.00;
             foreach($request->arrComprobante as $comprobante){
                 if($request->tipo_comprobante === "01"){
                     $pedido = getComprobante($comprobante['id_comprobante'])->envio->pedido;
@@ -1513,7 +1514,7 @@ class ComprobanteController extends Controller
                             }
                         }
                     }
-                    else if($pedido->tipo_especificacion === "T"){
+                    else if($pedido->tipo_especificacion === "T") {
 
                     }
 
