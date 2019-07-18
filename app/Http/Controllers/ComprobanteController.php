@@ -1525,13 +1525,13 @@ class ComprobanteController extends Controller
                             @foreach ($coloracion->marcaciones_coloraciones as $m_c)
                             @if ($coloracion->precio == "")
                             @foreach (explode("|", $det_ped->precio) as $p)
-
-                                if ($m_c->id_detalle_especificacionempaque == explode(";", $p)[1])
+                            @php
+                                                if ($m_c->id_detalle_especificacionempaque == explode(";", $p)[1])
                                                     $precio = explode(";", $p)[0];
-
-                             @endforeach
+                                            @endphp
+                                        @endforeach
                                     @else
-
+                                        @php
                                             foreach (explode("|", $coloracion->precio) as $p)
                                                 if ($m_c->id_detalle_especificacionempaque == explode(";", $p)[1])
                                                     $precio = explode(";", $p)[0];
