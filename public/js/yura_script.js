@@ -794,13 +794,19 @@ function admin_colores() {
 
 function genera_codigo_barra(prefijo=null, codigo) {
     $.LoadingOverlay('show');
-    ruta = null;
-    if(prefijo != null && prefijo != "")
+    ruta = false;
+    if(prefijo != null && prefijo != ""){
+      $.get(dominio+'/codigo_barra/generar_codigo_barra/' + codigo + prefijo, {}, function (retorno) {
+        $("#img_codigo_barra").html(retorno);
+      });
+    }else{
+      $.get(dominio+'/codigo_barra/generar_codigo_barra/' + codigo, {}, function (retorno) {
+        $("#img_codigo_barra").html(retorno);
+      });
+    }
       ruta = "/" + prefijo;
     
-      $.get(dominio+'/codigo_barra/generar_codigo_barra/' + codigo + ruta, {}, function (retorno) {
-        $("#img_codigo_barra").html(retorno);
-    });
+      
     $.LoadingOverlay('hide');
 }
 
