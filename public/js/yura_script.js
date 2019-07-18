@@ -1,5 +1,7 @@
 /* ================ OTRAS FUNCIONES ======================== */
 
+const dominio = location.origin;
+
 function add_pedido(id_cliente, pedido_fijo, vista, id_pedido) {
     datos = {
         id_cliente: id_cliente,
@@ -770,7 +772,7 @@ function tipo_unidad_medida(data, token) {
 
 function form_codigo_barra() {
     $.LoadingOverlay('show');
-    $.get('codigo_barra/form_codigo_barra', {}, function (retorno) {
+    $.get(dominio+'/codigo_barra/form_codigo_barra', {}, function (retorno) {
         modal_form('modal_form_codigo_barra', retorno, '<i class="fa fa-barcode"></i> Crear código de barras', true, false, '85%', function () {
             genera_codigo_barra($("#prefijo").val(), $("#codigo").val());
         });
@@ -790,9 +792,13 @@ function admin_colores() {
     });
 }
 
-function genera_codigo_barra(prefijo, codigo) {
+function genera_codigo_barra(prefijo=null, codigo) {
     $.LoadingOverlay('show');
-    $.get('codigo_barra/generar_codigo_barra/' + codigo + "/" + prefijo, {}, function (retorno) {
+    ruta = null;
+    if(prefijo != null && prefijo != "")
+      ruta = "/" + prefijo;
+    
+      $.get(dominio+'/codigo_barra/generar_codigo_barra/' + codigo + ruta, {}, function (retorno) {
         $("#img_codigo_barra").html(retorno);
     });
     $.LoadingOverlay('hide');
