@@ -375,7 +375,7 @@
     }
 
     function scan_calibres(data) {
-        id = $('#nombre_unitaria_' + data).val();
+        id = $('#nombre_unitaria_' + data.toLowerCase()).val();
         if (id != '' && id != undefined) {
             unidad_medida = $('#unidad_medida_unitaria_' + id).val();
             tallos_x_ramos = $('#tallos_x_ramos_' + id).val();
@@ -383,7 +383,7 @@
             texto = $('#texto_unitaria_' + id).val();
 
             $('#html_info_scan').html('Se ha añadido el calibre <span class="badge" style="background-color: ' + fondo + '; color: ' + texto + '">' +
-                data + unidad_medida +
+                data.toLowerCase() +
                 '</span>');
 
             ramos = $('#ramos_x_defecto').val();
@@ -397,7 +397,7 @@
             cant_filas = parseInt($('#cant_filas').val()) + 1;
             $('#table_automatico').append('<tr style="background-color: ' + fondo + '; color: ' + texto + '" id="row_auto_' + cant_filas + '">' +
                 '<td class="text-center" style="border-color: #9d9d9d">' +
-                data + unidad_medida +
+                data.toLowerCase() +
                 '<input type="hidden" class="id_unitaria_auto" id="id_unitaria_auto_' + cant_filas + '" value="' + id + '">' +
                 '</td>' +
                 '<td class="text-center" style="border-color: #9d9d9d">' +
