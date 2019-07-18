@@ -1493,6 +1493,7 @@ class ComprobanteController extends Controller
             header("Pragma: no-cache");
 
             $contenido = "";
+            $total_ramos = 0.00;
             foreach($request->arrComprobante as $comprobante){
                 if($request->tipo_comprobante === "01"){
                     $pedido = getComprobante($comprobante['id_comprobante'])->envio->pedido;
@@ -1513,8 +1514,36 @@ class ComprobanteController extends Controller
                             }
                         }
                     }
-                    else if($pedido->tipo_especificacion === "T"){
+                    else if($pedido->tipo_especificacion === "T") {
+                        foreach ($envio->pedido->detalles as $x => $det_ped)
+                            foreach $det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $m => $esp_emp)
+                            foreach ($esp_emp->detalles as $n => $det_esp_emp)
+                                            $total_ramos += number_format(($det_ped->cantidad * $esp_emp->cantidad * $det_esp_emp->cantidad), 2, ".", "");
 
+
+                            @foreach ($det_ped->coloraciones as $y => $coloracion)
+                            @foreach ($coloracion->marcaciones_coloraciones as $m_c)
+                            @if ($coloracion->precio == "")
+                            @foreach (explode("|", $det_ped->precio) as $p)
+                            @php
+                                                if ($m_c->id_detalle_especificacionempaque == explode(";", $p)[1])
+                                                    $precio = explode(";", $p)[0];
+                                            @endphp
+                                        @endforeach
+                                    @else
+                                        @php
+                                            foreach (explode("|", $coloracion->precio) as $p)
+                                                if ($m_c->id_detalle_especificacionempaque == explode(";", $p)[1])
+                                                    $precio = explode(";", $p)[0];
+
+                                    @endif
+                                    @php
+                                        $precio_x_variedad = $m_c->cantidad * $precio * $coloracion->especificacion_empaque->cantidad;
+                                        $precio_total_sin_impuestos += $precio_x_variedad;
+                                    @endphp
+                                @endforeach
+                            @endforeach
+                        }
                     }
 
                 }elseif($request->tipo_comprobante === "06"){
