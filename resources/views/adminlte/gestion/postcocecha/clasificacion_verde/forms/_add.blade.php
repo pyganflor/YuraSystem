@@ -37,7 +37,8 @@
                 Seleccione una variedad
                 <div class="row">
                     <div class="col-md-4">
-                        <input type="text" placeholder="Listo para escanear" id="input_escanear" style="width: 100%" class="text-center form-control"
+                        <input type="text" placeholder="Listo para escanear" id="input_escanear" style="width: 100%"
+                               class="text-center form-control"
                                onchange="scan()" autocomplete="off">
                     </div>
                     <div class="col-md-8 text-center">
@@ -351,15 +352,15 @@
         var scan = $('#input_escanear').val().toUpperCase();
         var tipo = scan.substr(0, 1);
         var data = scan.substr(1);
-        if (tipo == 'C') {
+        if (tipo == 'C') {  // ejemplo C2, "C" indica calibre y "2" el id_clasificacion_unitaria
             scan_calibres(data);
-        } else if (tipo == 'R') {
+        } else if (tipo == 'R') {   // ejemplo R15, "R" indica ramos y "15" la cantidad de ramos
             scan_ramos(data);
         } else if (tipo == 'G') {
             scan_guardar();
         } else if (tipo == 'X') {
             scan_reiniciar();
-        } else if (tipo == 'V') {
+        } else if (tipo == 'V') {   // ejemplo V1, "V" indica variedad y "1" el id_variedad
             scan_variedad(data);
         } else {
             $('#html_info_scan').html('<span class="error">' +
