@@ -155,7 +155,7 @@ function store_pedido(id_cliente, pedido_fijo, csrf_token, vista, id_pedido, com
             texto = '<div class="alert alert-info text-center"><p>Desea guardar este pedido?</p></div>';
 
         modal_quest('modal_edit_pedido', texto, 'Editar pedido', true, false, '40%', function () {
-            if ($("#envio_automatico").is(":checked"))re
+            if ($("#envio_automatico").is(":checked"));
                 if ($("#fecha_envio").val() == "") {
                     $("#error_fecha_envio").html('<p style="color: red;">Debe seleccionar una fecha para realizar el envío</p>');
                     return false;
