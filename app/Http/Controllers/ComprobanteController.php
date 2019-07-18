@@ -1515,18 +1515,36 @@ class ComprobanteController extends Controller
                         }
                     }
                     else if($pedido->tipo_especificacion === "T") {
+                        foreach ($pedido->envios[0]->pedido->detalles as $x => $det_ped)
+                            foreach ($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $m => $esp_emp)
+                                foreach ($esp_emp->detalles as $n => $det_esp_emp)
+                                    $total_ramos += number_format(($det_ped->cantidad * $esp_emp->cantidad * $det_esp_emp->cantidad), 2, ".", "");
 
+                        foreach ($det_ped->coloraciones as $y => $coloracion){
+                            foreach ($coloracion->marcaciones_coloraciones as $m_c) {
+                                if ($coloracion->precio == "") {
+                                    foreach (explode("|", $det_ped->precio) as $p)
+                                        if ($m_c->id_detalle_especificacionempaque == explode(";", $p)[1])
+                                            $precio = explode(";", $p)[0];
+                                } else {
+                                    foreach (explode("|", $coloracion->precio) as $p)
+                                        if ($m_c->id_detalle_especificacionempaque == explode(";", $p)[1])
+                                            $precio = explode(";", $p)[0];
+                                }
+                                $caja_full = $det_ped->cantidad*explode("|",$esp_emp->empaque->nombre)[1];
+                                $tallos = $det_ped->cantidad*$m_c->detalle_especificacionempaque->tallos_x_ramos;
+                                $contenido .= Carbon::parse($pedido->envios[0]->comprobante->fecha_emision)->format('d/m/Y')."\t".$pedido->envios[0]->comprobante->secuencial."\t".$pedido->cliente->detalle()->informacion_adicional('codigo venture')->varchar."\t". Carbon::parse($pedido->envios[0]->comprobante->fecha_emision)->addDay(21)->format('d/m/Y')."\t";
+                                $contenido .= getCodigoVenturePresentacion($m_c->detalle_especificacionempaque->variedad->planta->id_planta,$m_c->detalle_especificacionempaque->variedad->id_variedad,$m_c->detalle_especificacionempaque->clasificacion_ramo->id_clasificacion_ramo,$m_c->detalle_especificacionempaque->clasificacion_ramo->unidad_medida->id_unidad_medida,$m_c->detalle_especificacionempaque->tallos_x_ramos,$m_c->detalle_especificacionempaque->longitud_ramo,$m_c->detalle_especificacionempaque->unidad_medida->id_unidad_medida)."\t";
+                                $contenido .= $m_c->cantidad."\t".$precio."\t".($pedido->cliente->detalle()->codigo_pais != getConfiguracionEmpresa()->codigo_pais ? 0 : 1)."\t".'001009'/*Código venture dasalflor para crédito como forma de pago*/."\t".$pedido->envios[0]->dae."\t".$pedido->envios[0]->dae."\t"."N"."\t"."N"."\t"."1113495085"."\t".$pedido->envios[0]->guia_madre."\t";
+                                $contenido .= $det_ped->cantidad." Piezas. ".$caja_full." FULL BOXES"."\t"."\t"."\t"."0"."\t"."\t"."\t"."\t"."\t"."00101"/*codigo_tvn venture dasalflor*/."\t".$pedido->cliente->detalle()->nombre."\t"."\t"."\t"."\t"."\t".$tallos." Tallos."."\t"."\t"."\t"."\t"."\t". $pedido->envios[0]->guia_hija."\t".$pedido->detalles[0]->agencia_carga->codigo.chr(13).chr(10);
+                            }
+                        }
                     }
-
-                }elseif($request->tipo_comprobante === "06"){
-                    //DATOS PARA LLENAR EL TXT CUANDO ES GUIA DE REMISION
-                    $contenido .= "";
                 }
-
-
-                $objComprobante = Comprobante::find($comprobante['id_comprobante']);
-                $objComprobante->update(['integrado'=>true]);
             }
+            $objComprobante = Comprobante::find($comprobante['id_comprobante']);
+            $objComprobante->update(['integrado'=>true]);
+
             $opResult = array(
                 'fecha' => now()->toDateString(),
                 'data' => "data:text/plain;base64,".base64_encode($contenido)

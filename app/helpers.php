@@ -2191,3 +2191,6 @@ function getCodigoVenturePresentacion($idPlanta,$idVariedad,$idClasificacionRamo
     }
 }
 
+function getPrductoVenture($codigoVenture){
+    return getCodigoArticuloVenture()[$codigoVenture];
+}
