@@ -48,7 +48,7 @@
     function add_sector() {
         $.LoadingOverlay('show');
         $.get('{{url('sectores_modulos/add_sector')}}', {}, function (retorno) {
-            modal_form('modal_add_sector', retorno, '<i class="fa fa-fw fa-plus"></i> Añadir Sector', true, false, '{{isPC() ? '35%' : ''}}', function () {
+            modal_form('modal_add_sector', retorno, '<i class="fa fa-fw fa-plus"></i> Añadir Sector', true, false, '{{isPC() ? '75%' : ''}}', function () {
                 store_sector();
             });
         });
@@ -74,7 +74,7 @@
     function add_modulo() {
         $.LoadingOverlay('show');
         $.get('{{url('sectores_modulos/add_modulo')}}', {}, function (retorno) {
-            modal_form('modal_add_modulo', retorno, '<i class="fa fa-fw fa-plus"></i> Añadir Módulo', true, false, '{{isPC() ? '50%' : ''}}', function () {
+            modal_form('modal_add_modulo', retorno, '<i class="fa fa-fw fa-plus"></i> Añadir Módulo', true, false, '{{isPC() ? '75%' : ''}}', function () {
                 store_modulo();
             });
         });
@@ -135,7 +135,7 @@
             id_sector: g
         };
         $.get('{{url('sectores_modulos/edit_sector')}}', datos, function (retorno) {
-            modal_form('modal_edit_sector', retorno, '<i class="fa fa-fw fa-plus"></i> Editar Sector', true, false, '{{isPC() ? '35%' : ''}}', function () {
+            modal_form('modal_edit_sector', retorno, '<i class="fa fa-fw fa-plus"></i> Editar Sector', true, false, '{{isPC() ? '75%' : ''}}', function () {
                 update_sector();
             });
         });
@@ -184,7 +184,7 @@
             id_modulo: m
         };
         $.get('{{url('sectores_modulos/edit_modulo')}}', datos, function (retorno) {
-            modal_form('modal_edit_modulo', retorno, '<i class="fa fa-fw fa-plus"></i> Editar módulo', true, false, '{{isPC() ? '50%' : ''}}', function () {
+            modal_form('modal_edit_modulo', retorno, '<i class="fa fa-fw fa-plus"></i> Editar módulo', true, false, '{{isPC() ? '75%' : ''}}', function () {
                 update_modulo();
             });
         });
