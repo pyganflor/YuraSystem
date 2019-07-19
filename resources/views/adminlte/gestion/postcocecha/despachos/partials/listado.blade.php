@@ -80,214 +80,221 @@
             @endphp
             @foreach($listado as $x=> $pedido)
                 @php
-                    $despachado = getCantDespacho($pedido->id_pedido) ;
-                    $ped = getPedido($pedido->id_pedido);
-                    $getCantidadDetallesEspecificacionByPedido = getCantidadDetallesEspecificacionByPedido($pedido->id_pedido);
-                    if(isset($ped->envios[0]->id_envio)){
-                        $firmado = getFacturado($ped->envios[0]->id_envio,1);
-                        $facturado = getFacturado($ped->envios[0]->id_envio,5);
-                    }else{
-                        $firmado = null;
-                        $facturado = null;
-                    }
+                    $listar = true;
+                    if(!$opciones && getFacturaAnulada($pedido->id_pedido))
+                        $listar = false;
                 @endphp
-                @foreach($ped->detalles as $pos_det_ped => $det_ped)
-                    @foreach($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $pos_esp_emp => $esp_emp)
-                        @php $getCantidadDetallesByEspecificacion = getCantidadDetallesByEspecificacion($det_ped->cliente_especificacion->id_especificacion) @endphp
-                        @foreach($esp_emp->detalles as $pos_det_esp => $det_esp)
-                            <tr style="background-color: {{!in_array($det_esp->id_variedad,explode('|',$pedido->variedad)) ? '#b9ffb4' : ''}}; border-bottom: 2px solid #9d9d9d"
-                                title="{{!in_array($det_esp->id_variedad,explode('|',$pedido->variedad)) ? 'Confirmado' : 'Por confirmar'}}">
-                                @if($pos_det_esp == 0 && $pos_esp_emp == 0 && $pos_det_ped == 0)
-                                    @if(!$opciones)
-                                        <td class="text-center" style="border-color: #9d9d9d;vertical-align: middle"
-                                            rowspan="{{$getCantidadDetallesEspecificacionByPedido}}">
-                                            @if($despachado > 0)
-                                                <i class="fa fa-2x fa-check-circle text-success" title="Despachado" aria-hidden="true"></i>
-                                            @else
-                                                <input type="number" name="orden_despacho" id="{{$pedido->id_pedido}}"
-                                                       class="form-control orden_despacho"
-                                                       min="1" style="width: 56px;border:none;text-align: center">
-                                            @endif
-                                        </td>
-                                    @endif
-                                    <td class="text-center" style="border-color: #9d9d9d"
-                                        rowspan="{{$getCantidadDetallesEspecificacionByPedido}}">
-                                        {{getCliente($pedido->id_cliente)->detalle()->nombre}}
-                                        @if($opciones)
-                                            <br>
-                                            <strong>
-                                                ${{number_format($ped->getPrecio(), 2)}}
-                                            </strong>
-                                        @endif
-                                        @php
-                                            if(!getFacturaAnulada($pedido->id_pedido))
-                                                $valor_total += $ped->getPrecio();
-                                        @endphp
-                                        @if($facturado != null)
-                                            <br/>
-                                            <span class="badge bg-green" style="margin-top:8px;font-size: 13px;">
-                                                <i class="fa fa-check-circle-o" aria-hidden="true"></i> Facturado
-                                            </span>
-                                        @endif
-                                        @if(isset($ped->envios[0]->comprobante) && $ped->envios[0]->comprobante->estado == 6)
-                                            <br/>
-                                            <span class="badge bg-red" style="margin-top:8px;font-size: 13px;">
-                                                <i class="fa fa-times" aria-hidden="true"></i> Anulado
-                                            </span>
-                                        @endif
-                                    </td>
-                                @endif
-                                @if($pos_det_esp == 0 && $pos_esp_emp == 0)
-                                    <td class="text-center" style="border-color: #9d9d9d;vertical-align: middle"
-                                        id="td_datos_exportacion_{{$pedido->id_pedido}}"
-                                        rowspan="{{$getCantidadDetallesByEspecificacion}}">
-                                        @if(count(getDatosExportacionCliente($det_ped->id_detalle_pedido))>0)
-                                            <ul style="padding: 0;margin-bottom: 0">
-                                                @foreach(getDatosExportacionCliente($det_ped->id_detalle_pedido) as $de)
-                                                    <li style="list-style: none">{{--<b>{{strtoupper($de->nombre)}}:</b>--}} {{$de->valor}} </li>
-                                                @endforeach
-                                            </ul>
-                                        @endif
-                                    </td>
-                                @endif
-                                <td class="text-center" style="border-color: #9d9d9d">
-                                    {{$det_esp->variedad->siglas}}
-                                    {{explode('|',$det_esp->clasificacion_ramo->nombre)[0]}}{{$det_esp->clasificacion_ramo->unidad_medida->siglas}}
-                                </td>
-                                @if($pos_det_esp == 0)
-                                    <td class="text-center" style="border-color: #9d9d9d" rowspan="{{count($esp_emp->detalles)}}">
-                                        {{explode('|',$esp_emp->empaque->nombre)[0]}}
-                                    </td>
-                                @endif
-                                <td class="text-center" style="border-color: #9d9d9d">
-                                    {{--{{explode('|',$det_esp->empaque_e->nombre)[0]}}--}}
-                                    {{explode('|',$det_esp->empaque_p->nombre)[0]}}
-                                </td>
-                                @if($pos_det_esp == 0 && $pos_esp_emp == 0)
-                                    <td class="text-center" style="border-color: #9d9d9d"
-                                        rowspan="{{$getCantidadDetallesByEspecificacion}}">
-                                        {{$esp_emp->cantidad * $det_ped->cantidad}}
-                                        @php
-                                            if(!getFacturaAnulada($pedido->id_pedido))
-                                                $piezas_totales += ($esp_emp->cantidad * $det_ped->cantidad);
-                                        @endphp
-                                    </td>
-                                @endif
-                                @if($pos_det_esp == 0)
-                                    <td class="text-center" style="border-color: #9d9d9d" rowspan="{{count($esp_emp->detalles)}}">
-                                        {{($esp_emp->cantidad * $det_ped->cantidad) * explode('|',$esp_emp->empaque->nombre)[1]}}
-                                        @php
-                                            if(!getFacturaAnulada($pedido->id_pedido))
-                                                $cajas_full_totales += ($esp_emp->cantidad * $det_ped->cantidad) * explode('|',$esp_emp->empaque->nombre)[1];
-                                        @endphp
-                                    </td>
-                                @endif
-                                <td class="text-center" style="border-color: #9d9d9d">
-                                    {{$det_esp->cantidad * $esp_emp->cantidad * $det_ped->cantidad}}
-                                    @php
-                                        if(!getFacturaAnulada($pedido->id_pedido)){
-                                            $ramos_totales += $det_esp->cantidad * $esp_emp->cantidad * $det_ped->cantidad;
-                                            $ramos_totales_estandar += convertToEstandar($det_esp->cantidad * $esp_emp->cantidad * $det_ped->cantidad, $det_esp->clasificacion_ramo->nombre);
-                                            if (!in_array($det_esp->id_variedad, $variedades)){
-                                                array_push($variedades, $det_esp->id_variedad);
-                                            }
-                                            array_push($ramos_x_variedades, [
-                                                'id_variedad' => $det_esp->id_variedad,
-                                                'cantidad' => convertToEstandar($det_esp->cantidad * $esp_emp->cantidad * $det_ped->cantidad, $det_esp->clasificacion_ramo->nombre),
-                                            ]);
-                                        }
-                                    @endphp
-                                </td>
-                                <td class="text-center" style="border-color: #9d9d9d">
-                                    {{$det_esp->cantidad}}
-                                </td>
-                                @if($pos_det_esp == 0 && $pos_esp_emp == 0 && $pos_det_ped == 0)
-                                    @if($opciones)
-                                        <td style="border-color: #9d9d9d" class="text-center "
-                                            rowspan="{{$getCantidadDetallesEspecificacionByPedido}}">
-                                            {{getAgenciaCarga($det_ped->id_agencia_carga)->nombre}}
-                                        </td>
-                                        <td class="text-center" style="border-color: #9d9d9d" id="td_opciones_{{$pedido->id_pedido}}"
-                                        rowspan="{{$getCantidadDetallesEspecificacionByPedido}}">
-                                            @if($pedido->tipo_especificacion == 'T')
-                                                <button type="button" class="btn btn-default btn-xs" title="{{(isset($ped->envios[0]->comprobante) && $ped->envios[0]->comprobante->estado != 1 ) ? "Ver pedido" : "Editar pedido"}}"
-                                                        onclick="editar_pedido_tinturado('{{$pedido->id_pedido}}', 0)">
-                                                    @if((isset($ped->envios[0]->comprobante) && $ped->envios[0]->comprobante->estado != 1 ))
-                                                        <i class="fa fa-eye" aria-hidden="true"></i>
+                @if($listar)
+                    @php
+                            $despachado = getCantDespacho($pedido->id_pedido) ;
+                            $ped = getPedido($pedido->id_pedido);
+                            $getCantidadDetallesEspecificacionByPedido = getCantidadDetallesEspecificacionByPedido($pedido->id_pedido);
+                            if(isset($ped->envios[0]->id_envio)){
+                                $firmado = getFacturado($ped->envios[0]->id_envio,1);
+                                $facturado = getFacturado($ped->envios[0]->id_envio,5);
+                            }else{
+                                $firmado = null;
+                                $facturado = null;
+                            }
+                        @endphp
+                    @foreach($ped->detalles as $pos_det_ped => $det_ped)
+                            @foreach($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $pos_esp_emp => $esp_emp)
+                                @php $getCantidadDetallesByEspecificacion = getCantidadDetallesByEspecificacion($det_ped->cliente_especificacion->id_especificacion) @endphp
+                                @foreach($esp_emp->detalles as $pos_det_esp => $det_esp)
+                                    <tr style="background-color: {{!in_array($det_esp->id_variedad,explode('|',$pedido->variedad)) ? '#b9ffb4' : ''}}; border-bottom: 2px solid #9d9d9d"
+                                        title="{{!in_array($det_esp->id_variedad,explode('|',$pedido->variedad)) ? 'Confirmado' : 'Por confirmar'}}">
+                                        @if($pos_det_esp == 0 && $pos_esp_emp == 0 && $pos_det_ped == 0)
+                                            @if(!$opciones)
+                                                <td class="text-center" style="border-color: #9d9d9d;vertical-align: middle"
+                                                    rowspan="{{$getCantidadDetallesEspecificacionByPedido}}">
+                                                    @if($despachado > 0)
+                                                        <i class="fa fa-2x fa-check-circle text-success" title="Despachado" aria-hidden="true"></i>
                                                     @else
-                                                        <i class="fa fa-pencil" aria-hidden="true"></i>
+                                                        <input type="number" name="orden_despacho" id="{{$pedido->id_pedido}}"
+                                                               class="form-control orden_despacho"
+                                                               min="1" style="width: 56px;border:none;text-align: center">
                                                     @endif
-                                                </button>
-                                            @else
-                                                <button type="button" class="btn btn-default btn-xs" title="{{(isset($ped->envios[0]->comprobante) && $ped->envios[0]->comprobante->estado != 1 ) ? "Ver pedido" : "Editar pedido"}}"
-                                                        onclick="editar_pedido('{{$pedido->id_cliente}}','{{$pedido->id_pedido}}')">
-                                                    @if((isset($ped->envios[0]->comprobante) && $ped->envios[0]->comprobante->estado != 1 ))
-                                                        <i class="fa fa-eye" aria-hidden="true"></i>
-                                                    @else
-                                                        <i class="fa fa-pencil" aria-hidden="true"></i>
-                                                    @endif
-                                                </button>
+                                                </td>
                                             @endif
-                                            @if((isset($ped->envios[0]->comprobante) && $ped->envios[0]->comprobante->estado != 6) || !isset($ped->envios[0]->comprobante))
-                                            @if($facturado==null)
-                                                @if($pedido->empaquetado == 0)
-                                                    <button class="btn  btn-{!! $det_ped->estado == 1 ? 'danger' : 'success' !!} btn-xs"
-                                                            type="button"
-                                                            title="{!! $det_ped->estado == 1 ? 'Cancelar pedido' : 'Activar pedido' !!}"
-                                                            id="edit_pedidos"
-                                                            onclick="cancelar_pedidos('{{$pedido->id_pedido}}','','{{$det_ped->estado}}','{{@csrf_token()}}')">
-                                                        <i class="fa fa-{!! $det_ped->estado == 1 ? 'trash' : 'undo' !!}" aria-hidden="true"></i>
-                                                    </button>
-                                                    @if($ped->haveDistribucion() == 1)
-                                                        <button type="button" class="btn btn-xs btn-info" title="Distribuir"
-                                                                onclick="distribuir_orden_semanal('{{$pedido->id_pedido}}')">
-                                                            <i class="fa fa-fw fa-gift"></i>
-
-                                                        </button>
-                                                    @elseif($ped->haveDistribucion() == 2)
-                                                        <button onclick="ver_distribucion_orden_semanal('{{$pedido->id_pedido}}')" class="btn btn-default text-left" style="cursor:pointer;padding:5px 3px;width:100%;">
-                                                            <em> Ver distribución</em>
-                                                        </button>
-                                                    @endif
-                                                    <button onclick="duplicar_pedido('{{$pedido->id_pedido}}','{{$pedido->id_cliente}}')" class="btn btn-primary  btn-xs " title="Duplicar pedido">
-                                                        <i class="fa fa-files-o" aria-hidden="true"></i>
-                                                    </button>
+                                            <td class="text-center" style="border-color: #9d9d9d"
+                                                rowspan="{{$getCantidadDetallesEspecificacionByPedido}}">
+                                                {{getCliente($pedido->id_cliente)->detalle()->nombre}}
+                                                @if($opciones)
+                                                    <br>
+                                                    <strong>
+                                                        ${{number_format($ped->getPrecio(), 2)}}
+                                                    </strong>
                                                 @endif
-                                                    <button onclick="facturar_pedido('{{$pedido->id_pedido}}')" class="btn btn-success btn-xs" title="Generar factura">
-                                                        <i class="fa fa-usd" aria-hidden="true"></i>
-                                                    </button>
-                                            @else
-                                                {{--<a target="_blank" href="{{url('pedidos/ver_factura_pedido',$pedido->id_pedido)}}" class="btn btn-default btn-xs" title="Ver factura SRI">
-                                                    <i class="fa fa-eye" aria-hidden="true"></i>
-                                                </a>--}}
-                                                <a target="_blank" href="{{url('pedidos/documento_pre_factura',[$pedido->id_pedido,true])}}" class="btn btn-info btn-xs" title="Ver factura Cliente">
-                                                    <i class="fa fa-user-circle-o" aria-hidden="true"></i>
-                                                </a>
+                                                @php
+                                                    if(!getFacturaAnulada($pedido->id_pedido))
+                                                        $valor_total += $ped->getPrecio();
+                                                @endphp
+                                                @if($facturado != null)
+                                                    <br/>
+                                                    <span class="badge bg-green" style="margin-top:8px;font-size: 13px;">
+                                                        <i class="fa fa-check-circle-o" aria-hidden="true"></i> Facturado
+                                                    </span>
+                                                @endif
+                                                @if(isset($ped->envios[0]->comprobante) && $ped->envios[0]->comprobante->estado == 6)
+                                                    <br/>
+                                                    <span class="badge bg-red" style="margin-top:8px;font-size: 13px;">
+                                                        <i class="fa fa-times" aria-hidden="true"></i> Anulado
+                                                    </span>
+                                                @endif
+                                            </td>
+                                        @endif
+                                        @if($pos_det_esp == 0 && $pos_esp_emp == 0)
+                                            <td class="text-center" style="border-color: #9d9d9d;vertical-align: middle"
+                                                id="td_datos_exportacion_{{$pedido->id_pedido}}"
+                                                rowspan="{{$getCantidadDetallesByEspecificacion}}">
+                                                @if(count(getDatosExportacionCliente($det_ped->id_detalle_pedido))>0)
+                                                    <ul style="padding: 0;margin-bottom: 0">
+                                                        @foreach(getDatosExportacionCliente($det_ped->id_detalle_pedido) as $de)
+                                                            <li style="list-style: none">{{--<b>{{strtoupper($de->nombre)}}:</b>--}} {{$de->valor}} </li>
+                                                        @endforeach
+                                                    </ul>
+                                                @endif
+                                            </td>
+                                        @endif
+                                        <td class="text-center" style="border-color: #9d9d9d">
+                                            {{$det_esp->variedad->siglas}}
+                                            {{explode('|',$det_esp->clasificacion_ramo->nombre)[0]}}{{$det_esp->clasificacion_ramo->unidad_medida->siglas}}
+                                        </td>
+                                        @if($pos_det_esp == 0)
+                                            <td class="text-center" style="border-color: #9d9d9d" rowspan="{{count($esp_emp->detalles)}}">
+                                                {{explode('|',$esp_emp->empaque->nombre)[0]}}
+                                            </td>
+                                        @endif
+                                        <td class="text-center" style="border-color: #9d9d9d">
+                                            {{--{{explode('|',$det_esp->empaque_e->nombre)[0]}}--}}
+                                            {{explode('|',$det_esp->empaque_p->nombre)[0]}}
+                                        </td>
+                                        @if($pos_det_esp == 0 && $pos_esp_emp == 0)
+                                            <td class="text-center" style="border-color: #9d9d9d"
+                                                rowspan="{{$getCantidadDetallesByEspecificacion}}">
+                                                {{$esp_emp->cantidad * $det_ped->cantidad}}
+                                                @php
+                                                    if(!getFacturaAnulada($pedido->id_pedido))
+                                                        $piezas_totales += ($esp_emp->cantidad * $det_ped->cantidad);
+                                                @endphp
+                                            </td>
+                                        @endif
+                                        @if($pos_det_esp == 0)
+                                            <td class="text-center" style="border-color: #9d9d9d" rowspan="{{count($esp_emp->detalles)}}">
+                                                {{($esp_emp->cantidad * $det_ped->cantidad) * explode('|',$esp_emp->empaque->nombre)[1]}}
+                                                @php
+                                                    if(!getFacturaAnulada($pedido->id_pedido))
+                                                        $cajas_full_totales += ($esp_emp->cantidad * $det_ped->cantidad) * explode('|',$esp_emp->empaque->nombre)[1];
+                                                @endphp
+                                            </td>
+                                        @endif
+                                        <td class="text-center" style="border-color: #9d9d9d">
+                                            {{$det_esp->cantidad * $esp_emp->cantidad * $det_ped->cantidad}}
+                                            @php
+                                                if(!getFacturaAnulada($pedido->id_pedido)){
+                                                    $ramos_totales += $det_esp->cantidad * $esp_emp->cantidad * $det_ped->cantidad;
+                                                    $ramos_totales_estandar += convertToEstandar($det_esp->cantidad * $esp_emp->cantidad * $det_ped->cantidad, $det_esp->clasificacion_ramo->nombre);
+                                                    if (!in_array($det_esp->id_variedad, $variedades)){
+                                                        array_push($variedades, $det_esp->id_variedad);
+                                                    }
+                                                    array_push($ramos_x_variedades, [
+                                                        'id_variedad' => $det_esp->id_variedad,
+                                                        'cantidad' => convertToEstandar($det_esp->cantidad * $esp_emp->cantidad * $det_ped->cantidad, $det_esp->clasificacion_ramo->nombre),
+                                                    ]);
+                                                }
+                                            @endphp
+                                        </td>
+                                        <td class="text-center" style="border-color: #9d9d9d">
+                                            {{$det_esp->cantidad}}
+                                        </td>
+                                        @if($pos_det_esp == 0 && $pos_esp_emp == 0 && $pos_det_ped == 0)
+                                            @if($opciones)
+                                                <td style="border-color: #9d9d9d" class="text-center "
+                                                    rowspan="{{$getCantidadDetallesEspecificacionByPedido}}">
+                                                    {{getAgenciaCarga($det_ped->id_agencia_carga)->nombre}}
+                                                </td>
+                                                <td class="text-center" style="border-color: #9d9d9d" id="td_opciones_{{$pedido->id_pedido}}"
+                                                rowspan="{{$getCantidadDetallesEspecificacionByPedido}}">
+                                                    @if($pedido->tipo_especificacion == 'T')
+                                                        <button type="button" class="btn btn-default btn-xs" title="{{(isset($ped->envios[0]->comprobante) && $ped->envios[0]->comprobante->estado != 1 ) ? "Ver pedido" : "Editar pedido"}}"
+                                                                onclick="editar_pedido_tinturado('{{$pedido->id_pedido}}', 0)">
+                                                            @if((isset($ped->envios[0]->comprobante) && $ped->envios[0]->comprobante->estado != 1 ))
+                                                                <i class="fa fa-eye" aria-hidden="true"></i>
+                                                            @else
+                                                                <i class="fa fa-pencil" aria-hidden="true"></i>
+                                                            @endif
+                                                        </button>
+                                                    @else
+                                                        <button type="button" class="btn btn-default btn-xs" title="{{(isset($ped->envios[0]->comprobante) && $ped->envios[0]->comprobante->estado != 1 ) ? "Ver pedido" : "Editar pedido"}}"
+                                                                onclick="editar_pedido('{{$pedido->id_cliente}}','{{$pedido->id_pedido}}')">
+                                                            @if((isset($ped->envios[0]->comprobante) && $ped->envios[0]->comprobante->estado != 1 ))
+                                                                <i class="fa fa-eye" aria-hidden="true"></i>
+                                                            @else
+                                                                <i class="fa fa-pencil" aria-hidden="true"></i>
+                                                            @endif
+                                                        </button>
+                                                    @endif
+                                                    @if((isset($ped->envios[0]->comprobante) && $ped->envios[0]->comprobante->estado != 6) || !isset($ped->envios[0]->comprobante))
+                                                    @if($facturado==null)
+                                                        @if($pedido->empaquetado == 0)
+                                                            <button class="btn  btn-{!! $det_ped->estado == 1 ? 'danger' : 'success' !!} btn-xs"
+                                                                    type="button"
+                                                                    title="{!! $det_ped->estado == 1 ? 'Cancelar pedido' : 'Activar pedido' !!}"
+                                                                    id="edit_pedidos"
+                                                                    onclick="cancelar_pedidos('{{$pedido->id_pedido}}','','{{$det_ped->estado}}','{{@csrf_token()}}')">
+                                                                <i class="fa fa-{!! $det_ped->estado == 1 ? 'trash' : 'undo' !!}" aria-hidden="true"></i>
+                                                            </button>
+                                                            @if($ped->haveDistribucion() == 1)
+                                                                <button type="button" class="btn btn-xs btn-info" title="Distribuir"
+                                                                        onclick="distribuir_orden_semanal('{{$pedido->id_pedido}}')">
+                                                                    <i class="fa fa-fw fa-gift"></i>
+
+                                                                </button>
+                                                            @elseif($ped->haveDistribucion() == 2)
+                                                                <button onclick="ver_distribucion_orden_semanal('{{$pedido->id_pedido}}')" class="btn btn-default text-left" style="cursor:pointer;padding:5px 3px;width:100%;">
+                                                                    <em> Ver distribución</em>
+                                                                </button>
+                                                            @endif
+                                                            <button onclick="duplicar_pedido('{{$pedido->id_pedido}}','{{$pedido->id_cliente}}')" class="btn btn-primary  btn-xs " title="Duplicar pedido">
+                                                                <i class="fa fa-files-o" aria-hidden="true"></i>
+                                                            </button>
+                                                        @endif
+                                                            <button onclick="facturar_pedido('{{$pedido->id_pedido}}')" class="btn btn-success btn-xs" title="Generar factura">
+                                                                <i class="fa fa-usd" aria-hidden="true"></i>
+                                                            </button>
+                                                    @else
+                                                        {{--<a target="_blank" href="{{url('pedidos/ver_factura_pedido',$pedido->id_pedido)}}" class="btn btn-default btn-xs" title="Ver factura SRI">
+                                                            <i class="fa fa-eye" aria-hidden="true"></i>
+                                                        </a>--}}
+                                                        <a target="_blank" href="{{url('pedidos/documento_pre_factura',[$pedido->id_pedido,true])}}" class="btn btn-info btn-xs" title="Ver factura Cliente">
+                                                            <i class="fa fa-user-circle-o" aria-hidden="true"></i>
+                                                        </a>
+                                                    @endif
+                                                    @if($firmado != null)
+                                                            <a target="_blank" href="{{url('pedidos/documento_pre_factura',[$pedido->id_pedido,true])}}" class="btn btn-info btn-xs" title="Ver factura Cliente">
+                                                                <i class="fa fa-user-circle-o" aria-hidden="true"></i>
+                                                            </a>
+                                                    @endif
+                                                        <a target="_blank" href="{{url('pedidos/crear_packing_list',$pedido->id_pedido)}}"
+                                                           class="btn btn-info btn-xs" title="Generar packing list">
+                                                            <i class="fa fa-cubes"></i>
+                                                        </a>
+                                                    @endif
+                                                </td>
                                             @endif
-                                            @if($firmado != null)
-                                                    <a target="_blank" href="{{url('pedidos/documento_pre_factura',[$pedido->id_pedido,true])}}" class="btn btn-info btn-xs" title="Ver factura Cliente">
-                                                        <i class="fa fa-user-circle-o" aria-hidden="true"></i>
+                                                <td rowspan="{{$getCantidadDetallesEspecificacionByPedido}}" class="text-center" style="border-color: #9d9d9d">
+                                                    @if(!$opciones && $pedido->tipo_especificacion === "T")
+                                                    <a target="_blank" href="{{url('pedidos/crear_packing_list',[$pedido->id_pedido,true])}}" class="btn btn-info btn-xs" title="Packing list">
+                                                        <i class="fa fa-cubes"></i>
                                                     </a>
-                                            @endif
-                                                <a target="_blank" href="{{url('pedidos/crear_packing_list',$pedido->id_pedido)}}"
-                                                   class="btn btn-info btn-xs" title="Generar packing list">
-                                                    <i class="fa fa-cubes"></i>
-                                                </a>
-                                            @endif
-                                        </td>
-                                    @endif
-                                        <td rowspan="{{$getCantidadDetallesEspecificacionByPedido}}" class="text-center" style="border-color: #9d9d9d">
-                                            @if(!$opciones && $pedido->tipo_especificacion === "T")
-                                            <a target="_blank" href="{{url('pedidos/crear_packing_list',[$pedido->id_pedido,true])}}" class="btn btn-info btn-xs" title="Packing list">
-                                                <i class="fa fa-cubes"></i>
-                                            </a>
-                                            @endif
-                                        </td>
-                                @endif
-                            </tr>
+                                                    @endif
+                                                </td>
+                                        @endif
+                                    </tr>
+                                @endforeach
+                            @endforeach
                         @endforeach
-                    @endforeach
-                @endforeach
+                @endif
             @endforeach
         </table>
         <div class="row" style="margin-top: 10px">
