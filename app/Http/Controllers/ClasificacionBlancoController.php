@@ -79,6 +79,7 @@ class ClasificacionBlancoController extends Controller
             ->select(DB::raw('sum(dee.cantidad * ee.cantidad * dp.cantidad) as cantidad'),
                 'dee.id_variedad', 'dee.id_clasificacion_ramo', 'dee.tallos_x_ramos', 'dee.longitud_ramo', 'dee.id_unidad_medida'
                 , 'dee.id_empaque_p', 'cr.nombre')
+            ->whereIn('p.id_pedido', $ids_pedidos)
             ->where('p.estado', '=', 1)
             ->where('p.empaquetado', '=', 0)
             ->where('p.fecha_pedido', '<=', $fecha_fin)
@@ -200,28 +201,30 @@ class ClasificacionBlancoController extends Controller
 
             /* ============ TABLA PEDIDO ===============*/
             foreach ($pedidos as $item) {
-                $variedades = explode('|', $item->variedad);
-                if (in_array($request->id_variedad, $variedades)) {
-                    $variedades = array_diff($variedades, [$request->id_variedad]);
-                    if (count($variedades) == 0) {
-                        $item->variedad = '';
-                        $item->empaquetado = 1;
-                    } else {
-                        $restantes = [];
-                        foreach ($variedades as $v)
-                            array_push($restantes, $v);
-                        $field_variedad = $restantes[0];
-                        for ($i = 1; $i < count($restantes); $i++) {
-                            $field_variedad .= '|' . $restantes[$i];
+                if (!getFacturaAnulada($item->id_pedido)) {
+                    $variedades = explode('|', $item->variedad);
+                    if (in_array($request->id_variedad, $variedades)) {
+                        $variedades = array_diff($variedades, [$request->id_variedad]);
+                        if (count($variedades) == 0) {
+                            $item->variedad = '';
+                            $item->empaquetado = 1;
+                        } else {
+                            $restantes = [];
+                            foreach ($variedades as $v)
+                                array_push($restantes, $v);
+                            $field_variedad = $restantes[0];
+                            for ($i = 1; $i < count($restantes); $i++) {
+                                $field_variedad .= '|' . $restantes[$i];
+                            }
+                            $item->variedad = $field_variedad;
                         }
-                        $item->variedad = $field_variedad;
-                    }
-                    if ($item->save()) {
-                        bitacora('pedido', $item->id_pedido, 'U', 'Modificacion de un pedido');
-                    } else {
-                        $success = false;
-                        $msg .= '<div class="alert alert-warning text-center">' .
-                            'Ha ocurrido un problema con un pedido</div>';
+                        if ($item->save()) {
+                            bitacora('pedido', $item->id_pedido, 'U', 'Modificacion de un pedido');
+                        } else {
+                            $success = false;
+                            $msg .= '<div class="alert alert-warning text-center">' .
+                                'Ha ocurrido un problema con un pedido</div>';
+                        }
                     }
                 }
             }

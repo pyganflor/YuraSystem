@@ -703,7 +703,6 @@ class ClasificacionVerdeController extends Controller
 
     public function store_lote_re_from(Request $request)
     {
-        dd(33);
         $msg = '';
         $success = true;
         foreach ($request->arreglo as $object) {

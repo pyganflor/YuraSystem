@@ -18,8 +18,10 @@ class crmVentasController extends Controller
         $cajas = 0;
         $valor = 0;
         foreach ($pedidos_today as $p) {
-            $cajas += $p->getCajas();
-            $valor += $p->getPrecio();
+            if (!getFacturaAnulada($p->id_pedido)) {
+                $cajas += $p->getCajas();
+                $valor += $p->getPrecio();
+            }
         }
         $today = [
             'cajas' => $cajas,
@@ -34,9 +36,11 @@ class crmVentasController extends Controller
         $cajas = 0;
         $tallos = 0;
         foreach ($pedidos_semanal as $p) {
-            $valor += $p->getPrecio();
-            $cajas += $p->getCajas();
-            $tallos += $p->getTallos();
+            if (!getFacturaAnulada($p->id_pedido)) {
+                $valor += $p->getPrecio();
+                $cajas += $p->getCajas();
+                $tallos += $p->getTallos();
+            }
         }
         $ramos_estandar = $cajas * getConfiguracionEmpresa()->ramos_x_caja;
         $precio_x_ramo = $ramos_estandar > 0 ? round($valor / $ramos_estandar, 2) : 0;
@@ -147,9 +151,11 @@ class crmVentasController extends Controller
                         $cajas = 0;
                         $tallos = 0;
                         foreach ($pedidos_semanal as $p) {
-                            $valor += $p->getPrecio();
-                            $cajas += $p->getCajas();
-                            $tallos += $p->getTallos();
+                            if (!getFacturaAnulada($p->id_pedido)) {
+                                $valor += $p->getPrecio();
+                                $cajas += $p->getCajas();
+                                $tallos += $p->getTallos();
+                            }
                         }
                         $ramos_estandar = $cajas * getConfiguracionEmpresa()->ramos_x_caja;
                         $precio_x_ramo = $ramos_estandar > 0 ? round($valor / $ramos_estandar, 2) : 0;
@@ -177,9 +183,11 @@ class crmVentasController extends Controller
                         $cajas = 0;
                         $tallos = 0;
                         foreach ($pedidos_semanal as $p) {
-                            $valor += $p->getPrecio();
-                            $cajas += $p->getCajas();
-                            $tallos += $p->getTallos();
+                            if (!getFacturaAnulada($p->id_pedido)) {
+                                $valor += $p->getPrecio();
+                                $cajas += $p->getCajas();
+                                $tallos += $p->getTallos();
+                            }
                         }
                         $ramos_estandar = $cajas * getConfiguracionEmpresa()->ramos_x_caja;
                         $precio_x_ramo = $ramos_estandar > 0 ? round($valor / $ramos_estandar, 2) : 0;
@@ -225,9 +233,11 @@ class crmVentasController extends Controller
                         $tallos = 0;
 
                         foreach ($pedidos as $p) {
-                            $valor += $p->getPrecio();
-                            $cajas += $p->getCajas();
-                            $tallos += $p->getTallos();
+                            if (!getFacturaAnulada($p->id_pedido)) {
+                                $valor += $p->getPrecio();
+                                $cajas += $p->getCajas();
+                                $tallos += $p->getTallos();
+                            }
                         }
                         $ramos_estandar = $cajas * getConfiguracionEmpresa()->ramos_x_caja;
                         $precio_x_ramo = $ramos_estandar > 0 ? round($valor / $ramos_estandar, 2) : 0;
@@ -262,9 +272,11 @@ class crmVentasController extends Controller
                         $tallos = 0;
 
                         foreach ($pedidos as $p) {
-                            $valor += $p->getPrecio();
-                            $cajas += $p->getCajas();
-                            $tallos += $p->getTallos();
+                            if (!getFacturaAnulada($p->id_pedido)) {
+                                $valor += $p->getPrecio();
+                                $cajas += $p->getCajas();
+                                $tallos += $p->getTallos();
+                            }
                         }
                         $ramos_estandar = $cajas * getConfiguracionEmpresa()->ramos_x_caja;
                         $precio_x_ramo = $ramos_estandar > 0 ? round($valor / $ramos_estandar, 2) : 0;
@@ -317,11 +329,13 @@ class crmVentasController extends Controller
                 $cajas = 0;
                 $tallos = 0;
                 foreach ($pedidos_semanal as $p) {
-                    $valor += $p->getPrecioByVariedad($v->id_variedad);
-                    $cajas += $p->getCajasByVariedad($v->id_variedad);
-                    $tallos += $p->getTallosByVariedad($v->id_variedad);
-                    if ($valor > 0)
-                        $flag = true;
+                    if (!getFacturaAnulada($p->id_pedido)) {
+                        $valor += $p->getPrecioByVariedad($v->id_variedad);
+                        $cajas += $p->getCajasByVariedad($v->id_variedad);
+                        $tallos += $p->getTallosByVariedad($v->id_variedad);
+                        if ($valor > 0)
+                            $flag = true;
+                    }
                 }
                 $ramos_estandar = $cajas * getConfiguracionEmpresa()->ramos_x_caja;
                 $precio_x_ramo = $ramos_estandar > 0 ? round($valor / $ramos_estandar, 2) : 0;
