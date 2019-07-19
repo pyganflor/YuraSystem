@@ -21,18 +21,18 @@
                         Rendimiento por horas
                     </label>
                 </div>
-                <div class="col-md-6 text-right">
+               {{-- <div class="col-md-6 text-right">
                     <input type="checkbox" onchange="ocultar_mostrar_detalles_rendimiento()" checked
                            id="check_mostrar_ocultar_detalles_rendimiento" title="Mostrar/ocultar detalles">
                     <label for="check_mostrar_ocultar_detalles_rendimiento" class="mouse-hand" style="margin-left: 5px"
                            id="label_rendimiento_x_ingresos">
                         Rendimiento por ingresos
                     </label>
-                </div>
+                </div>--}}
             </div>
 
             <div style="overflow-x: scroll">
-                <table id="table_rendimiento_x_ingresos" class="table-responsive table-striped table-bordered" width="100%"
+                {{--<table id="table_rendimiento_x_ingresos" class="table-responsive table-striped table-bordered" width="100%"
                        style="border: 2px solid #9d9d9d; display: none;">
                     <tr style="background-color: #e9ecef">
                         <th class="text-center" style="border-color: #9d9d9d">
@@ -131,7 +131,7 @@
                             {{$clasificacion_verde->total_tallos_rendimiento()}}
                         </th>
                     </tr>
-                </table>
+                </table>--}}
 
                 <table id="table_rendimiento_x_horas" class="table-responsive table-striped table-bordered" width="100%"
                        style="border: 2px solid #9d9d9d; display: none;">
@@ -256,7 +256,7 @@
 
             <canvas id="chart_rendimiento_horas" width="100%" height="40" style="display: none"></canvas>
 
-            <canvas id="chart_rendimiento_ingresos" width="100%" height="40" style="display: none"></canvas>
+            {{--<canvas id="chart_rendimiento_ingresos" width="100%" height="40" style="display: none"></canvas>--}}
         </div>
     </div>
 
@@ -265,7 +265,7 @@
     <script>
         ocultar_mostrar_detalles_rendimiento_x_horas();
         construir_char_horas();
-        construir_char_ingresos();
+        //construir_char_ingresos();
 
         function ocultar_mostrar_detalles_rendimiento() {
             $('#rendimiento_activo').val('ingresos');

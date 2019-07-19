@@ -33,7 +33,7 @@
                 </th>
             </tr>
             @foreach($unitarias as $unitaria)
-                <tr>
+                <tr onmouseover="$(this).css('background-color', '#00c4ff')" onmouseleave="$(this).css('background-color', '')">
                     <td class="text-center" style="border-color: #9d9d9d; padding: 0">
                         <input type="text" id="nombre_{{$unitaria->id_clasificacion_unitaria}}" required class="text-center" maxlength="25"
                                width="100%" name="nombre_{{$unitaria->id_clasificacion_unitaria}}" value="{{$unitaria->nombre}}"
@@ -42,7 +42,7 @@
                     <td class="text-center" style="border-color: #9d9d9d">
                         <select name="id_unidad_medida_{{$unitaria->id_clasificacion_unitaria}}" required
                                 id="id_unidad_medida_{{$unitaria->id_clasificacion_unitaria}}" style="width: 100%"
-                                onchange="seleccionar_unidad_medida('{{$unitaria->id_clasificacion_unitaria}}', 'estandar');seleccionar_unidad_medida('{{$unitaria->id_clasificacion_unitaria}}', 'real')">
+                                {{--onchange="seleccionar_unidad_medida('{{$unitaria->id_clasificacion_unitaria}}', 'estandar');seleccionar_unidad_medida('{{$unitaria->id_clasificacion_unitaria}}', 'real')"--}}>
                             @foreach(getUnidadesMedida() as $u)
                                 <option value="{{$u->id_unidad_medida}}" {{$u->id_unidad_medida == $unitaria->id_unidad_medida ? 'selected' : ''}}>
                                     {{$u->nombre}}
@@ -52,11 +52,27 @@
                     </td>
                     <td class="text-center" style="border-color: #9d9d9d"
                         id="td_clasificacion_estandar_{{$unitaria->id_clasificacion_unitaria}}">
-                        Seleccione unidad de medida
+                        <select name="id_clasificacion_ramo_estandar_{{$unitaria->id_clasificacion_unitaria}}"
+                                id="id_clasificacion_ramo_estandar_{{$unitaria->id_clasificacion_unitaria}}">
+                            @foreach(getCalibresRamo() as $ramo)
+                                <option value="{{$ramo->id_clasificacion_ramo}}"
+                                        {{$ramo->id_clasificacion_ramo == $unitaria->id_clasificacion_ramo_estandar ? 'selected' : ''}}>
+                                    {{explode('|', $ramo->nombre)[0].' '.$ramo->unidad_medida->siglas}}
+                                </option>
+                            @endforeach
+                        </select>
                     </td>
                     <td class="text-center" style="border-color: #9d9d9d"
                         id="td_clasificacion_real_{{$unitaria->id_clasificacion_unitaria}}">
-                        Seleccione unidad de medida
+                        <select name="id_clasificacion_ramo_real_{{$unitaria->id_clasificacion_unitaria}}"
+                                id="id_clasificacion_ramo_real_{{$unitaria->id_clasificacion_unitaria}}">
+                            @foreach(getCalibresRamo() as $ramo)
+                                <option value="{{$ramo->id_clasificacion_ramo}}"
+                                        {{$ramo->id_clasificacion_ramo == $unitaria->id_clasificacion_ramo_real ? 'selected' : ''}}>
+                                    {{explode('|', $ramo->nombre)[0].' '.$ramo->unidad_medida->siglas}}
+                                </option>
+                            @endforeach
+                        </select>
                     </td>
                     <td class="text-center" style="border-color: #9d9d9d">
                         <input type="number" id="tallos_x_ramo_{{$unitaria->id_clasificacion_unitaria}}" value="{{$unitaria->tallos_x_ramo}}"
@@ -85,8 +101,8 @@
                         </div>
                     </td>
                     <script>
-                        seleccionar_unidad_medida('{{$unitaria->id_clasificacion_unitaria}}', 'estandar');
-                        seleccionar_unidad_medida('{{$unitaria->id_clasificacion_unitaria}}', 'real');
+                        //seleccionar_unidad_medida('{{$unitaria->id_clasificacion_unitaria}}', 'estandar');
+                        //seleccionar_unidad_medida('{{$unitaria->id_clasificacion_unitaria}}', 'real');
                     </script>
                 </tr>
             @endforeach
