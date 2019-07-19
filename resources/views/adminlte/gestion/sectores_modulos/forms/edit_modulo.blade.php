@@ -25,7 +25,7 @@
         <div class="col-md-6">
             <div class="form-group">
                 <label for="nombre">Área <em>(m<sup>2</sup>)</em></label>
-                <input type="number" id="area" name="area" class="form-control text-center" maxlength="11" min="1"
+                <input type="number" id="area" name="area" class="form-control text-center" maxlength="11" min="0"
                        value="{{$modulo->area}}">
             </div>
         </div>

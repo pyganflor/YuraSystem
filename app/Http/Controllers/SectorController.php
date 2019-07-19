@@ -60,10 +60,12 @@ class SectorController extends Controller
     {
         $valida = Validator::make($request->all(), [
             'nombre' => 'required|max:250|unique:sector',
+            'interno' => 'required',
             'descripcion' => 'max:1000',
         ], [
             'nombre.unique' => 'El nombre ya existe',
             'nombre.required' => 'El nombre es obligatorio',
+            'interno.required' => 'El campo interno es obligatorio',
             'nombre.max' => 'El nombre es muy grande',
             'descripcion.max' => 'La descripción es muy grande',
         ]);
@@ -71,6 +73,7 @@ class SectorController extends Controller
             $model = new Sector();
             $model->nombre = str_limit(mb_strtoupper(espacios($request->nombre)), 250);
             $model->descripcion = str_limit((espacios($request->descripcion)), 1000);
+            $model->interno = $request->interno;
             $model->fecha_registro = date('Y-m-d H:i:s');
 
             if ($model->save()) {
@@ -275,13 +278,16 @@ class SectorController extends Controller
 
     public function update_sector(Request $request)
     {
+        dd($request->all());
         $valida = Validator::make($request->all(), [
             'nombre' => 'required|max:25',
             'id_sector' => 'required|',
+            'interno' => 'required|',
             'descripcion' => 'max:1000|',
         ], [
             'nombre.required' => 'El nombre es obligatorio',
             'id_sector.required' => 'El sector es obligatorio',
+            'interno.required' => 'El campo interno es obligatorio',
             'nombre.max' => 'El nombre es muy grande',
             'descripcion.max' => 'La descripción es muy grande',
         ]);
@@ -290,6 +296,7 @@ class SectorController extends Controller
                     ->where('id_sector', '!=', $request->id_sector)) == 0) {
                 $model = Sector::find($request->id_sector);
                 $model->nombre = str_limit(mb_strtoupper(espacios($request->nombre)), 250);
+                $model->interno = $request->interno;
                 $model->descripcion = str_limit((espacios($request->descripcion)), 1000);
 
                 if ($model->save()) {
