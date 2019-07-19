@@ -2194,3 +2194,11 @@ function getCodigoVenturePresentacion($idPlanta,$idVariedad,$idClasificacionRamo
 function getPrductoVenture($codigoVenture){
     return getCodigoArticuloVenture()[$codigoVenture];
 }
+
+function getFacturaAnulada($idPedido){
+    $success = false;
+    if(isset(getPedido($idPedido)->envios[0]->comprobante) && getPedido($idPedido)->envios[0]->comprobante->estado === 6)
+        $success = true;
+
+    return $success;
+}

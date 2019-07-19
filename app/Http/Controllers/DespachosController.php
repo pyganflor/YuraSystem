@@ -413,7 +413,6 @@ class DespachosController extends Controller
 
             if($p->tipo_especificacion === "N"){
 
-                $count_pedido_tinturado =false;
                 $ids_pedidos_no_tinturados[] = $p->id_pedido;
                 foreach ($p->detalles as $det => $det_ped) {
                     $datos_exportacion = '';
@@ -465,41 +464,41 @@ class DespachosController extends Controller
                     }
                 }
 
+
             }else if($p->tipo_especificacion === "T") {
                 $count_pedido_tinturado =true;
                 $ids_pedidos_tinturados[] = $p->id_pedido;
                 foreach ($p->detalles as $det_tinturado => $det_ped) {
-
                     $datos_exportacion = '';
                     if (getDatosExportacionByDetPed($det_ped->id_detalle_pedido)->count() > 0)
                         foreach (getDatosExportacionByDetPed($det_ped->id_detalle_pedido) as $dE)
                             $datos_exportacion .= $dE->valor . "-";
 
-                        foreach ($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $sp_t => $esp_emp_t) {
-                            foreach ($esp_emp_t->detalles as $det_sp_t => $det_esp_emp_t) {
-                                $ramos_totales_tinturados += $det_esp_emp_t->cantidad * $esp_emp_t->cantidad * $det_ped->cantidad;
-                                if($det_sp_t == 0) $cajas_full_totales_tinturados += ($esp_emp_t->cantidad * $det_ped->cantidad) * explode('|',$esp_emp_t->empaque->nombre)[1];
-                                if ($sp_t == 0 && $det_sp_t == 0) $piezas_totales_tinturados += ($esp_emp_t->cantidad * $det_ped->cantidad);
-                                $ramos_totales_estandar_tinturados += convertToEstandar($det_esp_emp_t->cantidad * $esp_emp_t->cantidad * $det_ped->cantidad, $det_esp_emp_t->clasificacion_ramo->nombre);
+                    foreach ($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $sp_t => $esp_emp_t) {
+                        foreach ($esp_emp_t->detalles as $det_sp_t => $det_esp_emp_t) {
+                            $ramos_totales_tinturados += $det_esp_emp_t->cantidad * $esp_emp_t->cantidad * $det_ped->cantidad;
+                            if($det_sp_t == 0) $cajas_full_totales_tinturados += ($esp_emp_t->cantidad * $det_ped->cantidad) * explode('|',$esp_emp_t->empaque->nombre)[1];
+                            if ($sp_t == 0 && $det_sp_t == 0) $piezas_totales_tinturados += ($esp_emp_t->cantidad * $det_ped->cantidad);
+                            $ramos_totales_estandar_tinturados += convertToEstandar($det_esp_emp_t->cantidad * $esp_emp_t->cantidad * $det_ped->cantidad, $det_esp_emp_t->clasificacion_ramo->nombre);
 
-                                if (!in_array($det_esp_emp_t->id_variedad, $variedades_tinturados)){
-                                    $variedades_tinturados[] = $det_esp_emp_t->id_variedad;
-                                }
-                                $ramos_x_variedades_tinturados[] = [
-                                    'id_variedad' => $det_esp_emp_t->id_variedad,
-                                    'cantidad' => convertToEstandar($det_esp_emp_t->cantidad * $esp_emp_t->cantidad * $det_ped->cantidad, $det_esp_emp_t->clasificacion_ramo->nombre),
-                                ];
+                            if (!in_array($det_esp_emp_t->id_variedad, $variedades_tinturados)){
+                                $variedades_tinturados[] = $det_esp_emp_t->id_variedad;
                             }
+                            $ramos_x_variedades_tinturados[] = [
+                                'id_variedad' => $det_esp_emp_t->id_variedad,
+                                'cantidad' => convertToEstandar($det_esp_emp_t->cantidad * $esp_emp_t->cantidad * $det_ped->cantidad, $det_esp_emp_t->clasificacion_ramo->nombre),
+                            ];
                         }
-
+                    }
 
                     $final_tinturado_a = 0;
+                    $merge_espcificacion = $w+1;
                     foreach ($det_ped->coloraciones as $col =>$coloracion) {
                         $total_cantidad_mc = 0;
                         foreach($coloracion->marcaciones_coloraciones as $mar_col => $m_c){
                             $det_esp_emp_tinturado = $m_c->detalle_especificacionempaque;
                             $objSheet->getCell('A' . ($w + 1))->setValue($p->cliente->detalle()->nombre);
-                            $objSheet->getCell('B' . ($w + 1))->setValue($datos_exportacion == "" ? "No posee " : substr($datos_exportacion,0,-1));
+                            $objSheet->getCell('B' . ($w + 1))->setValue($m_c->marcacion->nombre);
                             $objSheet->getCell('C' . ($w + 1))->setValue($det_esp_emp_tinturado->variedad->siglas." ".explode('|',$det_esp_emp_tinturado->clasificacion_ramo->nombre)[0]." ".$det_esp_emp_tinturado->clasificacion_ramo->unidad_medida->siglas);
                             $objSheet->getCell('D' . ($w + 1))->setValue(explode("|",$det_esp_emp_tinturado->especificacion_empaque->empaque->nombre)[0]);
                             $objSheet->getCell('E' . ($w + 1))->setValue(explode('|',$det_esp_emp_tinturado->empaque_p->nombre)[0]);
@@ -509,41 +508,34 @@ class DespachosController extends Controller
                                 $inicio_tinturado_a = $w+1;
                                 $count_pedido_tinturado = false;
                             }
-                            if($mar_col == 0) $inicio_tinturado_d = $w+1;
+                            if($mar_col == 0) {
+                                $inicio_tinturado_d = $w+1;
+                                $inicio_merge_especificacion = $merge_espcificacion;
+                            }
                             $final_tinturado_d = count($coloracion->marcaciones_coloraciones);
                             foreach($coloracion->marcaciones_coloraciones as $mar_col => $m_c) $total_cantidad_mc +=  $m_c->cantidad;
-                            $objSheet->mergeCells('F'.$inicio_tinturado_d.':F'.($final_tinturado_d + $inicio_tinturado_d-1));
                             $objSheet->getCell('F' . ($w + 1))->setValue($total_cantidad_mc);
                             $objSheet->mergeCells('C'.$inicio_tinturado_d.':C'.($final_tinturado_d + $inicio_tinturado_d-1));
                             $objSheet->mergeCells('D'.$inicio_tinturado_d.':D'.($final_tinturado_d + $inicio_tinturado_d-1));
                             $objSheet->mergeCells('E'.$inicio_tinturado_d.':E'.($final_tinturado_d + $inicio_tinturado_d-1));
                             $objSheet->mergeCells('G'.$inicio_tinturado_d.':G'.($final_tinturado_d + $inicio_tinturado_d-1));
-                            $objSheet->getCell('G' . ($w + 1))->setValue($coloracion->color->nombre);
+                            $objSheet->getCell('G' . ($w + 1))->setValue($coloracion->color->nombre. " - ".$merge_espcificacion);
                             $objSheet->getStyle('G'.$inicio_tinturado_d.':G'.($final_tinturado_d + $inicio_tinturado_d-1))->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB(substr($coloracion->color->fondo,1));
                             $objSheet->getStyle('G'. ($w + 1))->getFont()->getColor()->applyFromArray( array('rgb' => substr($coloracion->color->texto,1)));
                             $objSheet->getStyle('A'.($w + 1).':G'.($w + 1))->applyFromArray($BStyle);
                             $w++;
-                            $objSheet->getColumnDimension('A')->setWidth(20);
-                            $objSheet->getColumnDimension('B')->setWidth(20);
-                            $objSheet->getColumnDimension('C')->setWidth(20);
-                            $objSheet->getColumnDimension('D')->setWidth(20);
-                            $objSheet->getColumnDimension('E')->setWidth(20);
-                            $objSheet->getColumnDimension('F')->setWidth(20);
-                            $objSheet->getColumnDimension('G')->setWidth(20);
-
-
+                            $merge_espcificacion++;
                         }
                     }
                     $objSheet->mergeCells('A'.$inicio_tinturado_a.':A'.($final_tinturado_a + $inicio_tinturado_a-1));
                     $objSheet->mergeCells('B'.$inicio_tinturado_a.':B'.($final_tinturado_a + $inicio_tinturado_a-1));
-
-
                 }
                 $objSheet->getStyle('A1:I1')->getFont()->setBold(true);
+
             }
         }
 
-
+        //CUADRO VALORES
         if($x > 1){
             $objSheet1->mergeCells('A'. ($x + 4).':B'.($x + 4));
             $objSheet1->getCell('A' . ($x + 4))->setValue("TOTALES RAMOS POR VARIEDAD");
@@ -648,8 +640,8 @@ class DespachosController extends Controller
             $objSheet1->getStyle('A1:I1')->getFont()->setBold(true);
         }
 
+        //CUADRO VALORES
         if($w > 1){
-
             $objSheet->mergeCells('A'. ($w + 4).':C'.($w + 4));
             $objSheet->getCell('A' . ($w + 4))->setValue("TOTALES RAMOS POR VARIEDAD");
             $objSheet->mergeCells('E'. ($w + 4).':G'.($w + 4));
@@ -709,16 +701,15 @@ class DespachosController extends Controller
                 ];
             }
 
-
             $total_ramo_x_variedad_tinutrado =0;
             foreach($ramos_x_variedad_tinturados as $w_ramo_x_variedad_tinturado => $ramo_x_variedad_tinutrado){
-                $objSheet->mergeCells('A'.($w + 5 + $w_ramo_x_variedad_tinturado).':B'.($w + 5 + $w_ramo_x_variedad_tinturado));
+               // $objSheet->mergeCells('A'.($w + 5 + $w_ramo_x_variedad_tinturado).':B'.($w + 5 + $w_ramo_x_variedad_tinturado));
                 $objSheet->getCell('A' . ($w + 5 + $w_ramo_x_variedad_tinturado))->setValue(getVariedad($ramo_x_variedad_tinutrado->id_variedad)->siglas." ".
                     explode('|',getCalibreRamoById($ramo_x_variedad_tinutrado->id_clasificacion_ramo)->nombre)[0]."".
                     getCalibreRamoById($ramo_x_variedad_tinutrado->id_clasificacion_ramo)->unidad_medida->siglas. " ". ($ramo_x_variedad_tinutrado->tallos_x_ramos != '' ? $ramo_x_variedad_tinutrado->tallos_x_ramos." tallos " : "") .
                     ($ramo_x_variedad_tinutrado->longitud_ramo != '' ?  $ramo_x_variedad_tinutrado->longitud_ramo." ".getUnidadMedida($ramo_x_variedad_tinutrado->id_unidad_medida)->siglas : "" ));
                 $objSheet->getCell('C' . ($w + 5 + $w_ramo_x_variedad_tinturado))->setValue($ramo_x_variedad_tinutrado->cantidad);
-                $objSheet->mergeCells('A'.($w + 5 + $w_ramo_x_variedad_tinturado+1).':B'.($w + 5 + $w_ramo_x_variedad_tinturado+1));
+                //$objSheet->mergeCells('A'.($w + 5 + $w_ramo_x_variedad_tinturado+1).':B'.($w + 5 + $w_ramo_x_variedad_tinturado+1));
                 $total_ramo_x_variedad_tinutrado += $ramo_x_variedad_tinutrado->cantidad;
                 $objSheet->getCell('C' . ($w + 5+ $w_ramo_x_variedad_tinturado+1))->setValue($total_ramo_x_variedad_tinutrado);
             }
@@ -743,7 +734,15 @@ class DespachosController extends Controller
             $objSheet->getStyle('G'. ($w + 4 + $b))->getFont()->getColor()->applyFromArray( array('rgb' => 'ffffff'));
             $objSheet->getCell('G' . ($w + 4 + $b))->setValue(round($ramos_totales_estandar_tinturados / getConfiguracionEmpresa()->ramos_x_caja,2));
 
+            $objSheet->getColumnDimension('A')->setWidth(20);
+            $objSheet->getColumnDimension('B')->setWidth(20);
+            $objSheet->getColumnDimension('C')->setWidth(20);
+            $objSheet->getColumnDimension('D')->setWidth(20);
+            $objSheet->getColumnDimension('E')->setWidth(20);
+            $objSheet->getColumnDimension('F')->setWidth(20);
+            $objSheet->getColumnDimension('G')->setWidth(20);
         }
+
         $style = array(
             'alignment' => array(
                 'vertical' => PHPExcel_Style_Alignment::VERTICAL_CENTER,

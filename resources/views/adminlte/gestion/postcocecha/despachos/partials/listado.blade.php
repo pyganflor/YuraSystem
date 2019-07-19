@@ -167,7 +167,8 @@
                                         rowspan="{{$getCantidadDetallesByEspecificacion}}">
                                         {{$esp_emp->cantidad * $det_ped->cantidad}}
                                         @php
-                                            $piezas_totales += ($esp_emp->cantidad * $det_ped->cantidad);
+                                            if(!getFacturaAnulada($pedido->id_pedido))
+                                                $piezas_totales += ($esp_emp->cantidad * $det_ped->cantidad);
                                         @endphp
                                     </td>
                                 @endif
