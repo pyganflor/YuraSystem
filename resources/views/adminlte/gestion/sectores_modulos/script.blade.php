@@ -61,6 +61,7 @@
             datos = {
                 _token: '{{csrf_token()}}',
                 nombre: $('#nombre').val().toUpperCase(),
+                interno: $('#interno').val(),
                 descripcion: $('#descripcion').val(),
             };
             post_jquery('{{url('sectores_modulos/store_sector')}}', datos, function () {
@@ -149,6 +150,7 @@
                 _token: '{{csrf_token()}}',
                 nombre: $('#nombre').val().toUpperCase(),
                 id_sector: $('#id_sector').val(),
+                interno: $('#interno').val(),
                 descripcion: $('#descripcion').val(),
             };
             post_jquery('{{url('sectores_modulos/update_sector')}}', datos, function () {

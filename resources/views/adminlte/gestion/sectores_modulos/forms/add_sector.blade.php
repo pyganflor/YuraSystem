@@ -8,7 +8,16 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-2">
+            <div class="form-group">
+                <label for="interno">Interno</label>
+                <select name="interno" id="interno" class="form-control">
+                    <option value="1">Sí</option>
+                    <option value="0">No</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-md-10">
             <div class="form-group">
                 <label for="nombre">Descripción</label>
                 <textarea name="descripcion" id="descripcion" rows="3" class="form-control text-justify contador" style="width: 100%"
