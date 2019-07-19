@@ -280,8 +280,13 @@ class ClasificacionBlancoController extends Controller
                     $id = InventarioFrio::All()->last()->id_inventario_frio;
                     bitacora('inventario_frio', $id, 'I', 'Registro de un inventario en frio');
 
-                    $factor = ClasificacionRamo::find($item['clasificacion_ramo'])->nombre / getCalibreRamoEstandar()->nombre;
-                    $armados += $item['armar'] * $factor;
+                    $variedad = getVariedad($request->id_variedad);
+                    if ($variedad->tipo == 'P') {
+                        $factor = ClasificacionRamo::find($item['clasificacion_ramo'])->nombre / getCalibreRamoEstandar()->nombre;
+                        $armados += $item['armar'] * $factor;
+                    } else {
+                        $armados += round(($item['tallos_x_ramo'] * $item['armar']) / $variedad->tallos_x_ramo_estandar, 2);
+                    }
                 } else {
                     $success = false;
                     $msg .= '<div class="alert alert-warning text-center">' .

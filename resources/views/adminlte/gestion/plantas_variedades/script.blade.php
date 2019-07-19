@@ -68,6 +68,8 @@
                 estandar: $('#estandar').val(),
                 siglas: $('#siglas').val(),
                 color: $('#color').val(),
+                tipo: $('#tipo').val(),
+                tallos_x_ramo_estandar: $('#tallos_x_ramo_estandar').val(),
                 tallos_x_malla: $('#tallos_x_malla').val(),
             };
             post_jquery('{{url('plantas_variedades/store_variedad')}}', datos, function () {
@@ -158,6 +160,8 @@
                 estandar: $('#estandar').val(),
                 siglas: $('#siglas').val(),
                 color: $('#color').val(),
+                tipo: $('#tipo').val(),
+                tallos_x_ramo_estandar: $('#tallos_x_ramo_estandar').val(),
                 tallos_x_malla: $('#tallos_x_malla').val(),
             };
             post_jquery('{{url('plantas_variedades/update_variedad')}}', datos, function () {
