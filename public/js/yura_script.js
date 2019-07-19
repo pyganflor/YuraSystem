@@ -793,7 +793,7 @@ function form_codigo_barra() {
 }
 
 function genera_codigo_barra(prefijo, codigo) {
-    console.log(codigo);
+
     $.LoadingOverlay('show');
     if(prefijo != null && prefijo != ""){
         $.get(dominio+'/codigo_barra/generar_codigo_barra/' + codigo +"/"+prefijo, {}, function (retorno) {
@@ -804,8 +804,7 @@ function genera_codigo_barra(prefijo, codigo) {
         $("#img_codigo_barra").html(retorno);
       });
     }
-    
-      
+
     $.LoadingOverlay('hide');
 }
 

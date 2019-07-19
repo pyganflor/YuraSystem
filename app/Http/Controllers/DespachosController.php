@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use PHPExcel;
 use PHPExcel_IOFactory;
 use PHPExcel_Style_Alignment;
+use PHPExcel_Style_Color;
 use PHPExcel_Style_Fill;
 use PHPExcel_Worksheet;
 use PHPExcel_Style_Border;
@@ -381,15 +382,7 @@ class DespachosController extends Controller
         $objSheet1->getCell('G1')->setValue('Cajas full');
         $objSheet1->getCell('H1')->setValue('Ramos');
         $objSheet1->getCell('I1')->setValue('Ramos por caja');
-        $estilo = array(
-            'borders' => array(
-                'outline' => array(
-                    'style' => PHPExcel_Style_Border::BORDER_THIN
-                )
-            )
-        );
 
-        $objPHPExcel->getDefaultStyle()->applyFromArray($estilo);
         $w = 1;
         $x = 1;
         $ids_pedidos_tinturados = [];
@@ -456,9 +449,45 @@ class DespachosController extends Controller
                                 'id_variedad' => $det_esp_emp->id_variedad,
                                 'cantidad' => convertToEstandar($det_esp_emp->cantidad * $esp_emp->cantidad * $det_ped->cantidad, $det_esp_emp->clasificacion_ramo->nombre),
                             ];
+<<<<<<< HEAD
+                            /*$objPHPExcel->getDefaultStyle('A'.($x + 1).':I'.($x + 1))
+                                ->getBorders()->getTop()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN)
+                                ->getColor()->setRGB(PHPExcel_Style_Color::COLOR_BLACK);
+                            $objPHPExcel->getDefaultStyle('A'.($x + 1).':I'.($x + 1))
+                                ->getBorders()->getLeft()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN)
+                                ->getColor()->setRGB(PHPExcel_Style_Color::COLOR_BLACK);
+                            $objPHPExcel->getDefaultStyle('A'.($x + 1).':I'.($x + 1))
+                                ->getBorders()->getBottom()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN)
+                                ->setRGB(PHPExcel_Style_Color::COLOR_BLACK);
+                            $objPHPExcel->getDefaultStyle('A'.($x + 1).':I'.($x + 1))
+                                ->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN)
+                                ->getColor()->setRGB(PHPExcel_Style_Color::COLOR_BLACK);*/
+
+                            $BStyle = array(
+                                'borders' => array(
+                                    'allborders' => array(
+                                        'style' => PHPExcel_Style_Border::BORDER_THIN
+                                    )
+                                )
+                            );
+
+                            $objSheet1->getStyle('A'.($x + 1).':I'.($x + 1))->applyFromArray($BStyle);
+
+                            //$objSheet1->getStyle('A'.($x + 1).':J'.($x + 1))->getBorders()->getBottom()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+=======
+                            $objSheet1->getDefaultStyle('A'.($x + 1).':I'.($x + 1))
+                                ->getBorders()->getTop()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+                            $objSheet1->getDefaultStyle('A'.($x + 1).':I'.($x + 1))
+                                ->getBorders()->getLeft()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+                            $objSheet1->getDefaultStyle('A'.($x + 1).':I'.($x + 1))
+                                ->getBorders()->getBottom()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+                            $objSheet1->getDefaultStyle('A'.($x + 1).':I'.($x + 1))
+                                ->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+>>>>>>> 52fb08df37d9df0f71349c7ea3c78d2167d19631
 
                             $objSheet1->getCell('H' . ($x + 1))->setValue($det_esp_emp->cantidad * $esp_emp->cantidad * $det_ped->cantidad);
                             $objSheet1->getCell('I' . ($x + 1))->setValue($det_esp_emp->cantidad);
+
                             $x++;
                         }
                     }
