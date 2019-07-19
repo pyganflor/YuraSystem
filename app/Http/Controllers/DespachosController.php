@@ -449,6 +449,7 @@ class DespachosController extends Controller
                                 'id_variedad' => $det_esp_emp->id_variedad,
                                 'cantidad' => convertToEstandar($det_esp_emp->cantidad * $esp_emp->cantidad * $det_ped->cantidad, $det_esp_emp->clasificacion_ramo->nombre),
                             ];
+<<<<<<< HEAD
                             /*$objPHPExcel->getDefaultStyle('A'.($x + 1).':I'.($x + 1))
                                 ->getBorders()->getTop()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN)
                                 ->getColor()->setRGB(PHPExcel_Style_Color::COLOR_BLACK);
@@ -473,6 +474,16 @@ class DespachosController extends Controller
                             $objSheet1->getStyle('A'.($x + 1).':I'.($x + 1))->applyFromArray($BStyle);
 
                             //$objSheet1->getStyle('A'.($x + 1).':J'.($x + 1))->getBorders()->getBottom()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+=======
+                            $objSheet1->getDefaultStyle('A'.($x + 1).':I'.($x + 1))
+                                ->getBorders()->getTop()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+                            $objSheet1->getDefaultStyle('A'.($x + 1).':I'.($x + 1))
+                                ->getBorders()->getLeft()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+                            $objSheet1->getDefaultStyle('A'.($x + 1).':I'.($x + 1))
+                                ->getBorders()->getBottom()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+                            $objSheet1->getDefaultStyle('A'.($x + 1).':I'.($x + 1))
+                                ->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+>>>>>>> 52fb08df37d9df0f71349c7ea3c78d2167d19631
 
                             $objSheet1->getCell('H' . ($x + 1))->setValue($det_esp_emp->cantidad * $esp_emp->cantidad * $det_ped->cantidad);
                             $objSheet1->getCell('I' . ($x + 1))->setValue($det_esp_emp->cantidad);
