@@ -79,7 +79,7 @@ class ClasificacionBlancoController extends Controller
             ->select(DB::raw('sum(dee.cantidad * ee.cantidad * dp.cantidad) as cantidad'),
                 'dee.id_variedad', 'dee.id_clasificacion_ramo', 'dee.tallos_x_ramos', 'dee.longitud_ramo', 'dee.id_unidad_medida'
                 , 'dee.id_empaque_p', 'cr.nombre')
-            ->whereIn('id_pedido', $ids_pedidos)
+            ->whereIn('p.id_pedido', $ids_pedidos)
             ->where('p.estado', '=', 1)
             ->where('p.empaquetado', '=', 0)
             ->where('p.fecha_pedido', '<=', $fecha_fin)
