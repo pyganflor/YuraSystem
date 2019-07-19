@@ -122,12 +122,12 @@
                                                 @if($opciones)
                                                     <br>
                                                     <strong>
-                                                        ${{number_format($ped->getPrecio(), 2)}}
+                                                        ${{number_format($ped->getPrecioByPedido(), 2)}}
                                                     </strong>
                                                 @endif
                                                 @php
                                                     if(!getFacturaAnulada($pedido->id_pedido))
-                                                        $valor_total += $ped->getPrecio();
+                                                        $valor_total += $ped->getPrecioByPedido();
                                                 @endphp
                                                 @if($facturado != null)
                                                     <br/>
