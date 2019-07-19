@@ -16,7 +16,8 @@
 
             <div class="btn-group">
                 @if(isset($blanco))
-                    <button class="btn btn-sm btn-default" type="button" title="Rendimiento" onclick="ver_rendimiento({{$blanco->id_clasificacion_blanco}})">
+                    <button class="btn btn-sm btn-default" type="button" title="Rendimiento"
+                            onclick="ver_rendimiento({{$blanco->id_clasificacion_blanco}})">
                         <strong>{{$blanco->getRendimiento()}}</strong> ramos/hr
                     </button>
                 @endif

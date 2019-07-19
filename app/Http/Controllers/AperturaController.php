@@ -420,11 +420,20 @@ class AperturaController extends Controller
                             $empaquetado = new StockEmpaquetado();
                             $empaquetado->fecha_registro = date('Y-m-d H:i:s');
                             $empaquetado->id_variedad = $apertura->id_variedad;
+                            $empaquetado->cantidad_ingresada = $frio->cantidad_ramos_estandar;
+
+                            $empaquetado->save();
+                            $empaquetado = StockEmpaquetado::All()->last();
+                            bitacora('stock_empaquetado', $empaquetado->id_stock_empaquetado, 'I', 'Creacion satisfactoria de un stock empaquetado');
+                        } else {
+                            $empaquetado->cantidad_ingresada += $frio->cantidad_ramos_estandar;
+
+                            $empaquetado->save();
+                            bitacora('stock_empaquetado', $empaquetado->id_stock_empaquetado, 'U', 'Actualizacion satisfactoria de un stock empaquetado');
                         }
-                        $empaquetado->cantidad_ingresada += $frio->cantidad_ramos_estandar;
 
                         if ($empaquetado->save()) {
-                            $empaquetado = Consumo::All()->last();
+                            $empaquetado = StockEmpaquetado::All()->last();
                             bitacora('stock_empaquetado', $empaquetado->id_stock_empaquetado, 'I', 'Creacion satisfactoria de un stock empaquetado');
                         } else {
                             $msg .= '<div class="alert alert-warning text-center">' .

@@ -36,4 +36,14 @@ class DetalleClasificacionVerde extends Model
     {
         return $this->belongsTo('\yura\Modelos\ClasificacionVerde', 'id_clasificacion_verde');
     }
+
+    public function cantidad_tallos()
+    {
+        return $this->tallos_x_ramos * $this->cantidad_ramos;
+    }
+
+    public function cantidad_tallos_estandar()
+    {
+        return round($this->cantidad_tallos() / explode('|', $this->clasificacion_unitaria->nombre)[1], 2);
+    }
 }

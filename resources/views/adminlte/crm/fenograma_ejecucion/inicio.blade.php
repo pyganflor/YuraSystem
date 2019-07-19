@@ -59,6 +59,11 @@
                     </div>
                     <input type="date" class="form-control" id="filtro_predeterminado_fecha" name="filtro_predeterminado_fecha" required
                            value="{{date('Y-m-d')}}" onchange="filtrar_ciclos()">
+                    <div class="input-group-btn">
+                        <button type="button" class="btn btn-primary" onclick="filtrar_ciclos()">
+                            <i class="fa fa-fw fa-search"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
             <div class="box-body" id="div_listado_ciclos"></div>

@@ -37,10 +37,19 @@
                 <input type="text" id="siglas" name="siglas" class="form-control" required maxlength="25" autocomplete="off">
             </div>
         </div>
-        <div class="col-md-3" title="Color para los reportes">
+        <div class="col-md-1" title="Color para los reportes">
             <div class="form-group">
                 <label for="color">Color</label>
                 <input type="color" id="color" name="color" class="form-control" required>
+            </div>
+        </div>
+        <div class="col-md-2" title="Tipo">
+            <div class="form-group">
+                <label for="tipo">Tipo</label>
+                <select id="tipo" name="tipo" class="form-control" required>
+                    <option value="P">Peso</option>
+                    <option value="L">Longitud</option>
+                </select>
             </div>
         </div>
     </div>
@@ -61,18 +70,25 @@
                        required onkeypress="return isNumber(event)">
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2">
             <div class="form-group">
                 <label for="estandar">Estandar</label>
                 <input type="number" id="estandar" name="estandar" class="form-control" minlength="1"
                        maxlength="255" value="" required onkeypress="return isNumber(event)">
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2">
             <div class="form-group">
                 <label for="tallos_x_malla">Tallos por malla</label>
                 <input type="number" id="tallos_x_malla" name="tallos_x_malla" class="form-control"
                        min="1" required onkeypress="return isNumber(event)">
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="form-group">
+                <label for="tallos_x_ramo_estandar">Tallos por ramo</label>
+                <input type="number" id="tallos_x_ramo_estandar" name="tallos_x_ramo_estandar" class="form-control"
+                       min="1" onkeypress="return isNumber(event)">
             </div>
         </div>
     </div>

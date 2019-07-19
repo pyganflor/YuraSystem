@@ -22,6 +22,8 @@ class Variedad extends Model
         'fecha_registro',
         'estado',
         'id_planta',
+        'tipo',
+        'tallos_x_ramo_estandar',
         'tallos_x_malla',
         'color',
     ];

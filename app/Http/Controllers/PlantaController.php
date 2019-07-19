@@ -113,12 +113,14 @@ class PlantaController extends Controller
             'minimo_apertura' => 'required|',
             'maximo_apertura' => 'required|',
             'estandar' => 'required|',
+            'tipo' => 'required|',
             'tallos_x_malla' => 'required|',
             'color' => 'required|max:50'
         ], [
             'tallos_x_malla.required' => 'Los tallos por malla son obligatorios',
             'color.required' => 'El color es obligatorio',
             'nombre.required' => 'El nombre es obligatorio',
+            'tipo.required' => 'El tipo es obligatorio',
             'siglas.required' => 'Las siglas son obligatorias',
             'id_planta.required' => 'La planta es obligatoria',
             //'unidad_medida' => 'La unidad de medida es requerida',
@@ -138,6 +140,8 @@ class PlantaController extends Controller
                 $model->siglas = str_limit(mb_strtoupper(espacios($request->siglas)), 25);
                 $model->id_planta = $request->id_planta;
                 $model->color = $request->color;
+                $model->tipo = $request->tipo;
+                $model->tallos_x_ramo_estandar = $request->tallos_x_ramo_estandar;
                 //  $model->unidad_de_medida = $request->unidad_medida;
                 //$model->cantidad = $request->tallos_por_ramo;
                 $model->minimo_apertura = $request->minimo_apertura;
@@ -326,6 +330,7 @@ class PlantaController extends Controller
             'siglas' => 'required|max:25',
             'color' => 'required|max:50',
             'id_planta' => 'required|',
+            'tipo' => 'required|',
             //'unidad_medida'  => 'required|',
             //'tallos_por_ramo' => 'required|',
             'minimo_apertura' => 'required|',
@@ -336,6 +341,7 @@ class PlantaController extends Controller
             'tallos_x_malla.required' => 'Los tallos por malla son obligatorios',
             'color.required' => 'El color es obligatorio',
             'nombre.required' => 'El nombre es obligatorio',
+            'tipo.required' => 'El tipo es obligatorio',
             'siglas.required' => 'Las siglas son obligatorias',
             'id_planta.required' => 'La planta es obligatoria',
             //'unidad_medida' => 'La unidad de medida es requerida',
@@ -356,6 +362,8 @@ class PlantaController extends Controller
                 $model->siglas = str_limit(mb_strtoupper(espacios($request->siglas)), 25);
                 //$model->unidad_de_medida = $request->unidad_medida;
                 //$model->cantidad = $request->tallos_por_ramo;
+                $model->tipo = $request->tipo;
+                $model->tallos_x_ramo_estandar = $request->tallos_x_ramo_estandar;
                 $model->color = $request->color;
                 $model->id_planta = $request->id_planta;
                 $model->minimo_apertura = $request->minimo_apertura;
