@@ -521,7 +521,7 @@ class DespachosController extends Controller
                             $objSheet->getCell('G' . ($w + 1))->setValue($coloracion->color->nombre);
                             $objSheet->getStyle('G'.$inicio_tinturado_d.':G'.($final_tinturado_d + $inicio_tinturado_d-1))->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB(substr($coloracion->color->fondo,1));
                             $objSheet->getStyle('G'. ($w + 1))->getFont()->getColor()->applyFromArray( array('rgb' => substr($coloracion->color->texto,1)));
-                            $objSheet->getStyle('A'.($x + 1).':G'.($x + 1))->applyFromArray($BStyle);
+                            $objSheet->getStyle('A'.($w + 1).':G'.($w + 1))->applyFromArray($BStyle);
                             $w++;
                             $objSheet->getColumnDimension('A')->setWidth(20);
                             $objSheet->getColumnDimension('B')->setWidth(20);
