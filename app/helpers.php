@@ -1545,6 +1545,7 @@ function getEquivalentesByGrosorVariedad($fecha, $grosor, $variedad)
 function getCantidadRamosPedidosForCB($fecha, $variedad, $clasificacion_ramo, /*$envoltura, */
                                       $presentacion, $tallos_x_ramos, $longitud_ramo, $unidad_medida)
 {
+    $pedidos_ok = getIdPedidosValidosByRangoFecha($fecha, $fecha);
     $r = DB::table('pedido as p')
         ->join('detalle_pedido as dp', 'dp.id_pedido', '=', 'p.id_pedido')
         ->join('cliente_pedido_especificacion as cpe', 'cpe.id_cliente_pedido_especificacion', '=', 'dp.id_cliente_especificacion')
@@ -1552,6 +1553,7 @@ function getCantidadRamosPedidosForCB($fecha, $variedad, $clasificacion_ramo, /*
         ->join('detalle_especificacionempaque as dee', 'dee.id_especificacion_empaque', '=', 'ee.id_especificacion_empaque')
         ->join('variedad as v', 'v.id_variedad', '=', 'dee.id_variedad')
         ->select(DB::raw('sum(dee.cantidad * ee.cantidad * dp.cantidad) as cantidad'))
+        ->whereIn('p.id_pedido', $pedidos_ok)
         ->where('p.estado', '=', 1)
         ->where('p.empaquetado', '=', 0)
         ->where('p.fecha_pedido', '=', $fecha)
@@ -1571,6 +1573,22 @@ function getCantidadRamosPedidosForCB($fecha, $variedad, $clasificacion_ramo, /*
         return $r->get()[0]->cantidad != '' ? $r->get()[0]->cantidad : 0;
     else
         return 0;
+}
+
+function getIdPedidosValidosByRangoFecha($desde, $hasta)
+{
+    $query = DB::table('pedido as p')
+        ->select('p.id_pedido')->distinct()
+        ->where('p.estado', '=', 1)
+        ->where('p.fecha_pedido', '>=', $desde)
+        ->where('p.fecha_pedido', '<=', $hasta)
+        ->get();
+    $r = [];
+    foreach ($query as $item)
+        if (!getFacturaAnulada($item->id_pedido) && !in_array($item->id_pedido, $r))
+            array_push($r, $item->id_pedido);
+
+    return $r;
 }
 
 /* ============ Obtener Inventario en frío ==============*/
@@ -2096,7 +2114,8 @@ function getDistribucion($idDistribucion)
     return Distribucion::find($idDistribucion);
 }
 
-function getCodigoArticuloVenture(){
+function getCodigoArticuloVenture()
+{
     return [
         '001160101001' => 'GYP. MS. 250 Gr 50 cm',
         '001160101002' => 'GYP. MS. 250 Gr 60 cm',
@@ -2178,26 +2197,30 @@ function getCodigoArticuloVenture(){
     ];
 }
 
-function getProductosVinculadosYuraVenture(){
+function getProductosVinculadosYuraVenture()
+{
     return ProductoYuraVenture::get();
 }
 
-function getCodigoVenturePresentacion($idPlanta,$idVariedad,$idClasificacionRamo,$clasificacionRamoIdUnidadMedida,$tallosXramos,$longitudRamo,$longitudRamoIdUnidadMedida){
-    foreach (getProductosVinculadosYuraVenture() as $prductosVinculados){
-        $datos = explode("|",$prductosVinculados->presentacion_yura);
-        if($datos[0] == $idPlanta && $datos[1] == $idVariedad && $datos[2] == $idClasificacionRamo && $datos[3] == $clasificacionRamoIdUnidadMedida && $datos[4] == $tallosXramos && $datos[5] == $longitudRamo && $datos[6] == $longitudRamoIdUnidadMedida){
+function getCodigoVenturePresentacion($idPlanta, $idVariedad, $idClasificacionRamo, $clasificacionRamoIdUnidadMedida, $tallosXramos, $longitudRamo, $longitudRamoIdUnidadMedida)
+{
+    foreach (getProductosVinculadosYuraVenture() as $prductosVinculados) {
+        $datos = explode("|", $prductosVinculados->presentacion_yura);
+        if ($datos[0] == $idPlanta && $datos[1] == $idVariedad && $datos[2] == $idClasificacionRamo && $datos[3] == $clasificacionRamoIdUnidadMedida && $datos[4] == $tallosXramos && $datos[5] == $longitudRamo && $datos[6] == $longitudRamoIdUnidadMedida) {
             return $prductosVinculados->codigo_venture;
         }
     }
 }
 
-function getPrductoVenture($codigoVenture){
+function getPrductoVenture($codigoVenture)
+{
     return getCodigoArticuloVenture()[$codigoVenture];
 }
 
-function getFacturaAnulada($idPedido){
+function getFacturaAnulada($idPedido)
+{
     $success = false;
-    if(isset(getPedido($idPedido)->envios[0]->comprobante) && getPedido($idPedido)->envios[0]->comprobante->estado === 6)
+    if (isset(getPedido($idPedido)->envios[0]->comprobante) && getPedido($idPedido)->envios[0]->comprobante->estado === 6)
         $success = true;
 
     return $success;
