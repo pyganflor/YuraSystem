@@ -120,7 +120,8 @@
                                             </strong>
                                         @endif
                                         @php
-                                            $valor_total += $ped->getPrecio();
+                                            if(!getFacturaAnulada($pedido->id_pedido))
+                                                $valor_total += $ped->getPrecio();
                                         @endphp
                                         @if($facturado != null)
                                             <br/>
@@ -176,23 +177,25 @@
                                     <td class="text-center" style="border-color: #9d9d9d" rowspan="{{count($esp_emp->detalles)}}">
                                         {{($esp_emp->cantidad * $det_ped->cantidad) * explode('|',$esp_emp->empaque->nombre)[1]}}
                                         @php
-                                            $cajas_full_totales += ($esp_emp->cantidad * $det_ped->cantidad) * explode('|',$esp_emp->empaque->nombre)[1];
+                                            if(!getFacturaAnulada($pedido->id_pedido))
+                                                $cajas_full_totales += ($esp_emp->cantidad * $det_ped->cantidad) * explode('|',$esp_emp->empaque->nombre)[1];
                                         @endphp
                                     </td>
                                 @endif
                                 <td class="text-center" style="border-color: #9d9d9d">
                                     {{$det_esp->cantidad * $esp_emp->cantidad * $det_ped->cantidad}}
                                     @php
-                                        $ramos_totales += $det_esp->cantidad * $esp_emp->cantidad * $det_ped->cantidad;
-                                        $ramos_totales_estandar += convertToEstandar($det_esp->cantidad * $esp_emp->cantidad * $det_ped->cantidad, $det_esp->clasificacion_ramo->nombre);
-
-                                        if (!in_array($det_esp->id_variedad, $variedades)){
-                                            array_push($variedades, $det_esp->id_variedad);
+                                        if(!getFacturaAnulada($pedido->id_pedido)){
+                                            $ramos_totales += $det_esp->cantidad * $esp_emp->cantidad * $det_ped->cantidad;
+                                            $ramos_totales_estandar += convertToEstandar($det_esp->cantidad * $esp_emp->cantidad * $det_ped->cantidad, $det_esp->clasificacion_ramo->nombre);
+                                            if (!in_array($det_esp->id_variedad, $variedades)){
+                                                array_push($variedades, $det_esp->id_variedad);
+                                            }
+                                            array_push($ramos_x_variedades, [
+                                                'id_variedad' => $det_esp->id_variedad,
+                                                'cantidad' => convertToEstandar($det_esp->cantidad * $esp_emp->cantidad * $det_ped->cantidad, $det_esp->clasificacion_ramo->nombre),
+                                            ]);
                                         }
-                                        array_push($ramos_x_variedades, [
-                                            'id_variedad' => $det_esp->id_variedad,
-                                            'cantidad' => convertToEstandar($det_esp->cantidad * $esp_emp->cantidad * $det_ped->cantidad, $det_esp->clasificacion_ramo->nombre),
-                                        ]);
                                     @endphp
                                 </td>
                                 <td class="text-center" style="border-color: #9d9d9d">
