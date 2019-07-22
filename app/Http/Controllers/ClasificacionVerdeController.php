@@ -427,6 +427,55 @@ class ClasificacionVerdeController extends Controller
         }
     }
 
+    public function clasificaciones_x_fecha(Request $request)
+    {
+        if ($request->has('id_clasificacion_verde')) {
+            $model = ClasificacionVerde::find($request->id_clasificacion_verde);
+            if ($model != '') {
+                $fechas = [];
+                foreach ($model->detalles as $det) {
+                    if (!in_array(substr($det->fecha_ingreso, 0, 10), $fechas))
+                        array_push($fechas, substr($det->fecha_ingreso, 0, 10));
+                }
+
+                $listado = [];
+                foreach ($fechas as $f) {
+                    $variedades = [];
+                    foreach (getVariedades() as $var) {
+                        $calibres = DB::table('detalle_clasificacion_verde')
+                            ->select(DB::raw('sum(cantidad_ramos * tallos_x_ramos) as cant'), 'id_clasificacion_unitaria')
+                            ->where('estado', '=', 1)
+                            ->where('id_variedad', '=', $var->id_variedad)
+                            ->where('id_clasificacion_verde', '=', $model->id_clasificacion_verde)
+                            ->where('fecha_ingreso', 'like', $f . '%')
+                            ->groupBy('id_clasificacion_unitaria')
+                            ->orderBy('id_clasificacion_unitaria')
+                            ->get();
+
+                        if (count($calibres) > 0)
+                            array_push($variedades, [
+                                'variedad' => $var,
+                                'calibres' => $calibres,
+                            ]);
+                    }
+                    array_push($listado, [
+                        'fecha' => $f,
+                        'variedades' => $variedades,
+                    ]);
+                }
+
+                return view('adminlte.gestion.postcocecha.clasificacion_verde.partials._clasificaciones_x_fecha', [
+                    'clasificacion' => $model,
+                    'listado' => $listado,
+                ]);
+            } else {
+                return '<div class="alert alert-warning text-center">No se ha encontrado la clasificación en el sistema</div>';
+            }
+        } else {
+            return '<div class="alert alert-warning text-center">No se ha seleccionado ninguna clasificación</div>';
+        }
+    }
+
     public function detalles_x_variedad(Request $request)
     {
         if ($request->has('id_clasificacion_verde')) {

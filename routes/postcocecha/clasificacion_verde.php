@@ -6,6 +6,7 @@ Route::get('clasificacion_verde/buscar_clasificaciones', 'ClasificacionVerdeCont
 Route::get('clasificacion_verde/ver_clasificacion', 'ClasificacionVerdeController@ver_clasificacion');
 Route::get('clasificacion_verde/detalles_estandar', 'ClasificacionVerdeController@detalles_estandar');
 Route::get('clasificacion_verde/buscar_detalles_estandar', 'ClasificacionVerdeController@buscar_detalles_estandar');
+Route::get('clasificacion_verde/clasificaciones_x_fecha', 'ClasificacionVerdeController@clasificaciones_x_fecha');
 Route::get('clasificacion_verde/detalles_x_variedad', 'ClasificacionVerdeController@detalles_x_variedad');
 Route::get('clasificacion_verde/detalles_reales', 'ClasificacionVerdeController@detalles_reales');
 Route::get('clasificacion_verde/buscar_detalles_reales', 'ClasificacionVerdeController@buscar_detalles_reales');

@@ -114,6 +114,10 @@
                onclick="add_info('{{$clasificacion->id_clasificacion_verde}}')">
                 Añadir información personalizada
             </a>
+            <a href="#div_content_opciones" class="list-group-item list-group-item-action"
+               onclick="cargar_opcion('clasificaciones_x_fecha','{{$clasificacion->id_clasificacion_verde}}')">
+                Clasificaciones por fecha
+            </a>
         </div>
     </div>
 </div>
