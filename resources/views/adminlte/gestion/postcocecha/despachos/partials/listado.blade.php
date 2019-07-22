@@ -191,18 +191,19 @@
                                         <td class="text-center" style="border-color: #9d9d9d">
                                             {{$det_esp->cantidad * $esp_emp->cantidad * $det_ped->cantidad}}
                                             @php
-                                                if(!getFacturaAnulada($pedido->id_pedido)){
-                                                    $ramos_totales += $det_esp->cantidad * $esp_emp->cantidad * $det_ped->cantidad;
-                                                    $ramos_totales_estandar += convertToEstandar($det_esp->cantidad * $esp_emp->cantidad * $det_ped->cantidad, $det_esp->clasificacion_ramo->nombre);
-                                                    if (!in_array($det_esp->id_variedad, $variedades)){
-                                                        array_push($variedades, $det_esp->id_variedad);
+                                                    if(!getFacturaAnulada($pedido->id_pedido)){
+                                                        $ramos_totales += $det_esp->cantidad * $esp_emp->cantidad * $det_ped->cantidad;
+                                                        $ramos_totales_estandar += convertToEstandar($det_esp->cantidad * $esp_emp->cantidad * $det_ped->cantidad, $det_esp->clasificacion_ramo->nombre);
+                                                        if (!in_array($det_esp->id_variedad, $variedades)){
+                                                            array_push($variedades, $det_esp->id_variedad);
+                                                        }
+                                                        array_push($ramos_x_variedades, [
+                                                            'id_variedad' => $det_esp->id_variedad,
+                                                            'cantidad' => convertToEstandar($det_esp->cantidad * $esp_emp->cantidad * $det_ped->cantidad, $det_esp->clasificacion_ramo->nombre),
+                                                        ]);
                                                     }
-                                                    array_push($ramos_x_variedades, [
-                                                        'id_variedad' => $det_esp->id_variedad,
-                                                        'cantidad' => convertToEstandar($det_esp->cantidad * $esp_emp->cantidad * $det_ped->cantidad, $det_esp->clasificacion_ramo->nombre),
-                                                    ]);
-                                                }
                                             @endphp
+
                                         </td>
                                         <td class="text-center" style="border-color: #9d9d9d">
                                             {{$det_esp->cantidad}}
@@ -341,6 +342,7 @@
                     </tr>
                     @php
                         $cajas_equivalentes = [];
+
                         foreach ($variedades as $variedad){
                             $cantidad = 0;
                             foreach($ramos_x_variedades as $ramos){
