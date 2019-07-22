@@ -2,6 +2,7 @@
 
 namespace yura\Http\Controllers;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use PHPExcel;
@@ -57,7 +58,8 @@ class DespachosController extends Controller
 
             $ids_pedidos = [];
             foreach ($listado as $item) {
-                array_push($ids_pedidos, $item->id_pedido);
+                if(!getFacturaAnulada($item->id_pedido))
+                    array_push($ids_pedidos, $item->id_pedido);
             }
 
             $ramos_x_variedad = DB::table('detalle_especificacionempaque as dee')
@@ -752,6 +754,293 @@ class DespachosController extends Controller
             )
         );
         $objSheet->getDefaultStyle()->applyFromArray($style);
+        $objSheet1->getDefaultStyle()->applyFromArray($style);
+
+    }
+
+
+    public function exportar_pedidos_despacho_cuarto_frio(Request $request){
+        //---------------------- EXCEL --------------------------------------
+        $objPHPExcel = new PHPExcel;
+        $objPHPExcel->getDefaultStyle()->getFont()->setName('Calibri');
+        $objPHPExcel->getDefaultStyle()->getFont()->setSize(12);
+        $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, "Excel2007");
+
+        $this->excel_pedidos_despacho_cuarto_frio($objPHPExcel, $request);
+
+        //--------------------------- GUARDAR EL EXCEL -----------------------
+
+        header("Content-Type: application/force-download");
+        header("Content-Type: application/octet-stream");
+        header("Content-Type: application/download");
+        header('Content-Disposition:inline;filename="Etiquestas Cajas.xlsx"');
+        header("Content-Transfer-Encoding: binary");
+        header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
+        header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+        header("Pragma: no-cache");
+        ob_start();
+        $objWriter->save('php://output');
+        $xlsData = ob_get_contents();
+        ob_end_clean();
+        $opResult = array(
+            'status' => 1,
+            'data' => "data:application/vnd.ms-excel;base64," . base64_encode($xlsData)
+        );
+        echo json_encode($opResult);
+    }
+
+    public function excel_pedidos_despacho_cuarto_frio($objPHPExcel, $request){
+        $pedidos = Pedido::where([['fecha_pedido',$request->fecha_pedido],['pedido.estado',1],['dc.estado',1]])
+            ->join('cliente as c','pedido.id_cliente','c.id_cliente')->join('detalle_cliente as dc','c.id_cliente','dc.id_cliente')
+            ->orderBy('dc.nombre','asc')->select('id_pedido')->get();
+
+        $objSheet1 = new PHPExcel_Worksheet($objPHPExcel,'Despacho finca '. now()->toDateString());
+        $objPHPExcel->addSheet($objSheet1, 1);
+        $objPHPExcel->setActiveSheetIndex(1);
+
+
+        $objSheet1->getCell('A1' )->setValue(getConfiguracionEmpresa()->razon_social);
+        $objSheet1->mergeCells('A1:A3');
+        $objSheet1->mergeCells('B1:B3');
+        $objSheet1->mergeCells('A1:B1');
+        $objSheet1->mergeCells('A2:B2');
+        $objSheet1->mergeCells('A3:B3');
+
+
+        $objSheet1->getCell('C1' )->setValue('SEMANA: '. getSemanaByDate($request->fecha_pedido)->codigo);
+        $objSheet1->getCell('C2' )->setValue('DIA: '. Carbon::parse($request->fecha_pedido)->dayOfWeek);
+        $objSheet1->getCell('C3' )->setValue('FECHA: '. Carbon::parse($request->fecha_pedido)->format('d-m-Y'));
+        $objSheet1->mergeCells('C1:C3');
+        $objSheet1->mergeCells('D1:D3');
+        $objSheet1->mergeCells('E1:E3');
+        $objSheet1->mergeCells('F1:F3');
+        $objSheet1->mergeCells('C1:F1');
+        $objSheet1->mergeCells('C1:F1');
+        $objSheet1->mergeCells('C2:F2');
+        $objSheet1->mergeCells('C3:F3');
+
+
+
+        $objSheet1->getCell('G3' )->setValue('DESPACHO DIARIOS DE CAJAS');
+        $objSheet1->mergeCells('G1:G3');
+        $objSheet1->mergeCells('H1:H3');
+        $objSheet1->mergeCells('I1:I3');
+        $objSheet1->mergeCells('J1:J3');
+        $objSheet1->mergeCells('K1:K3');
+        $objSheet1->mergeCells('L1:L3');
+        $objSheet1->mergeCells('G1:L1');
+        $objSheet1->mergeCells('G2:L2');
+        $objSheet1->mergeCells('G3:L3');
+
+
+
+        $objSheet1->getCell('A4' )->setValue('FACTURA');
+        $objSheet1->getCell('B4' )->setValue('CLIENTE / CÓDIGO');
+        $objSheet1->getCell('C')->setValue('FLOR');
+        $objSheet1->getCell('D4')->setValue('EMPAQUE');
+        $objSheet1->getCell('E4' )->setValue('PRESENTACIÓN');
+        $objSheet1->getCell('F4')->setValue('PIEZAS');
+        $objSheet1->getCell('G4')->setValue('CAJAS FULL');
+        $objSheet1->getCell('H4')->setValue('RAMOS');
+        $objSheet1->getCell('I4')->setValue('RAMOS POR CAJA');
+        $objSheet1->getCell('J4')->setValue('INGRESO DIA APERTURA');
+        $objSheet1->getCell('K4')->setValue('DIAS FRIO');
+        $objSheet1->getCell('L4')->setValue('HORARIO FRIO');
+        $objSheet1->getCell('M4')->setValue('TEMPERATURA');
+        $objSheet1->getCell('N4')->setValue('LONGITUD');
+        $objSheet1->getCell('O4')->setValue('FLOR COMPRADA');
+        $objSheet1->getCell('P4')->setValue('PROVEEDOR');
+        $objSheet1->getCell('Q4')->setValue('CUARTO FRIO');
+        $objSheet1->getCell('R4')->setValue('GUIA');
+        $objSheet1->getCell('S4')->setValue('FUE');
+        $BStyle = array(
+            'borders' => array(
+                'allborders' => array(
+                    'style' => PHPExcel_Style_Border::BORDER_THIN
+                )
+            )
+        );
+
+        $x = 1;
+        $ids_pedidos_no_tinturados = [];
+        $ramos_x_variedades_no_tinturados = [];
+        $cajas_equivalentes_no_tinturados = [];
+        $variedades_no_tinturados = [];
+        $ramos_totales_no_tinturados = 0;
+        $piezas_totales_no_tinturados = 0;
+        $ramos_totales_estandar_no_tinturados = 0;
+        $cajas_full_totales_no_tinturados = 0;
+
+        /*foreach ($pedidos as $a => $pedido){
+            $p = getPedido($pedido->id_pedido);
+            if(!getFacturaAnulada($pedido->id_pedido)){
+
+                    $ids_pedidos_no_tinturados[] = $p->id_pedido;
+                    foreach ($p->detalles as $det => $det_ped) {
+                        $datos_exportacion = '';
+                        if (getDatosExportacionByDetPed($det_ped->id_detalle_pedido)->count() > 0)
+                            foreach (getDatosExportacionByDetPed($det_ped->id_detalle_pedido) as $dE)
+                                $datos_exportacion .= $dE->valor . "-";
+                        if ($det == 0) $inicio_a = $x + 1;
+                        $final_a = getCantidadDetallesEspecificacionByPedido($pedido->id_pedido) + $inicio_a - 1;
+                        foreach ($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $sp => $esp_emp) {
+                            foreach ($esp_emp->detalles as $det_sp => $det_esp_emp) {
+                                if ($sp == 0 && $det_sp == 0) {
+                                    $inicio_b = $x + 1;
+                                    $piezas_totales_no_tinturados += ($esp_emp->cantidad * $det_ped->cantidad);
+                                }
+                                $final_b = getCantidadDetallesByEspecificacion($det_ped->cliente_especificacion->id_especificacion) + $inicio_b - 1;
+                                if ($det_sp == 0) {
+                                    $inicio_d = $x + 1;
+                                    $cajas_full_totales_no_tinturados += ($esp_emp->cantidad * $det_ped->cantidad) * explode('|', $esp_emp->empaque->nombre)[1];
+                                }
+                                $final_d = count($esp_emp->detalles) + $inicio_d - 1;
+                                $objSheet1->mergeCells('A' . $inicio_a . ':A' . $final_a);
+                                $objSheet1->mergeCells('B' . $inicio_b . ':B' . $final_b);
+                                $objSheet1->mergeCells('D' . $inicio_d . ':D' . $final_d);
+                                $objSheet1->mergeCells('F' . $inicio_b . ':F' . $final_b);
+                                $objSheet1->mergeCells('G' . $inicio_d . ':G' . $final_d);
+                                $objSheet1->getCell('A' . ($x + 1))->setValue($p->cliente->detalle()->nombre);
+                                $objSheet1->getCell('B' . ($x + 1))->setValue((!$datos_exportacion) ? "No posee" : substr($datos_exportacion, 0, -1));
+                                $objSheet1->getCell('C' . ($x + 1))->setValue($det_esp_emp->variedad->siglas . " " . explode('|', $det_esp_emp->clasificacion_ramo->nombre)[0] . " " . $det_esp_emp->clasificacion_ramo->unidad_medida->siglas);
+                                $objSheet1->getCell('D' . ($x + 1))->setValue(explode("|", $esp_emp->empaque->nombre)[0]);
+                                $objSheet1->getCell('E' . ($x + 1))->setValue(explode('|', $det_esp_emp->empaque_p->nombre)[0]);
+                                $objSheet1->getCell('F' . ($x + 1))->setValue($esp_emp->cantidad * $det_ped->cantidad);
+                                $objSheet1->getCell('G' . ($x + 1))->setValue(($esp_emp->cantidad * $det_ped->cantidad) * explode('|', $esp_emp->empaque->nombre)[1]);
+                                $ramos_totales_no_tinturados += $det_esp_emp->cantidad * $esp_emp->cantidad * $det_ped->cantidad;
+                                $ramos_totales_estandar_no_tinturados += convertToEstandar($det_esp_emp->cantidad * $esp_emp->cantidad * $det_ped->cantidad, $det_esp_emp->clasificacion_ramo->nombre);
+                                if (!in_array($det_esp_emp->id_variedad, $variedades_no_tinturados)) {
+                                    $variedades_no_tinturados[] = $det_esp_emp->id_variedad;
+                                }
+                                $ramos_x_variedades_no_tinturados[] = [
+                                    'id_variedad' => $det_esp_emp->id_variedad,
+                                    'cantidad' => convertToEstandar($det_esp_emp->cantidad * $esp_emp->cantidad * $det_ped->cantidad, $det_esp_emp->clasificacion_ramo->nombre),
+                                ];
+
+                                $objSheet1->getStyle('A' . ($x + 1) . ':I' . ($x + 1))->applyFromArray($BStyle);
+                                $objSheet1->getCell('H' . ($x + 1))->setValue($det_esp_emp->cantidad * $esp_emp->cantidad * $det_ped->cantidad);
+                                $objSheet1->getCell('I' . ($x + 1))->setValue($det_esp_emp->cantidad);
+
+                                $x++;
+                            }
+                        }
+                    }
+
+
+
+            }
+        }
+        //CUADRO VALORES
+        if($x > 1){
+            $objSheet1->mergeCells('A'. ($x + 4).':B'.($x + 4));
+            $objSheet1->getCell('A' . ($x + 4))->setValue("TOTALES RAMOS POR VARIEDAD");
+            $objSheet1->mergeCells('E'. ($x + 4).':G'.($x + 4));
+            $objSheet1->getCell('E' . ($x + 4))->setValue("CAJAS EQUIVALENTES");
+            $objSheet1->mergeCells('I'. ($x + 4).':K'.($x + 4));
+            $objSheet1->mergeCells('I'. ($x + 5).':K'.($x + 5));
+            $objSheet1->mergeCells('I'. ($x + 6).':K'.($x + 6));
+            $objSheet1->mergeCells('I'. ($x + 7).':K'.($x + 7));
+            $objSheet1->getCell('I' . ($x + 4))->setValue("Piezas Totales Pedidas: ");
+            $objSheet1->getCell('L' . ($x + 4))->setValue($piezas_totales_no_tinturados);
+            $objSheet1->getCell('I' . ($x + 5))->setValue("Ramos Totales Pedidos:");
+            $objSheet1->getCell('L' . ($x + 5))->setValue($ramos_totales_no_tinturados);
+            $objSheet1->getCell('I' . ($x + 6))->setValue("Cajas Full Totales Pedidas:" );
+            $objSheet1->getCell('L' . ($x + 6))->setValue($cajas_full_totales_no_tinturados);
+            $objSheet1->getCell('I' . ($x + 7))->setValue("Cajas Equivalentes Totales Pedidas: " );
+            $objSheet1->getCell('L' . ($x + 7))->setValue(round($ramos_totales_estandar_no_tinturados / getConfiguracionEmpresa()->ramos_x_caja,2));
+            $objSheet1->getStyle('A'. ($x + 4).':C'.($x + 4))->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('357ca5');
+            $objSheet1->getStyle('A'. ($x + 4))->getFont()->getColor()->applyFromArray( array('rgb' => 'ffffff'));
+            $objSheet1->getStyle('E'. ($x + 4).':G'.($x + 4))->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('357ca5');
+            $objSheet1->getStyle('E'. ($x + 4))->getFont()->getColor()->applyFromArray( array('rgb' => 'ffffff'));
+            $objSheet1->getStyle('I'. ($x + 4).':K'.($x + 4))->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('357ca5');
+            $objSheet1->getStyle('I'. ($x + 5).':K'.($x + 5))->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('357ca5');
+            $objSheet1->getStyle('I'. ($x + 6).':K'.($x + 6))->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('357ca5');
+            $objSheet1->getStyle('I'. ($x + 7).':K'.($x + 7))->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('357ca5');
+            $objSheet1->getStyle('I'. ($x + 4))->getFont()->getColor()->applyFromArray( array('rgb' => 'ffffff'));
+            $objSheet1->getStyle('I'. ($x + 5))->getFont()->getColor()->applyFromArray( array('rgb' => 'ffffff'));
+            $objSheet1->getStyle('I'. ($x + 6))->getFont()->getColor()->applyFromArray( array('rgb' => 'ffffff'));
+            $objSheet1->getStyle('I'. ($x + 7))->getFont()->getColor()->applyFromArray( array('rgb' => 'ffffff'));
+
+            $ramos_x_variedad_no_tinturados = DB::table('detalle_especificacionempaque as dee')
+                ->join('especificacion_empaque as ee', 'dee.id_especificacion_empaque', 'ee.id_especificacion_empaque')
+                ->join('cliente_pedido_especificacion as cpe', 'ee.id_especificacion', 'cpe.id_especificacion')
+                ->join('detalle_pedido as dp', 'cpe.id_cliente_pedido_especificacion', 'dp.id_cliente_especificacion')
+                ->select('dee.id_variedad', 'dee.id_clasificacion_ramo', 'dee.tallos_x_ramos', 'dee.longitud_ramo', 'dee.id_unidad_medida',
+                    DB::raw('sum(dee.cantidad * ee.cantidad * dp.cantidad) as cantidad'))->whereIn('dp.id_pedido', $ids_pedidos_no_tinturados)
+                ->groupBy('dee.id_variedad', 'dee.id_clasificacion_ramo', 'dee.tallos_x_ramos', 'dee.longitud_ramo', 'dee.id_unidad_medida')
+                ->orderBy('dp.id_pedido', 'desc')->get();
+
+            $variedades_no_tinturados = DB::table('detalle_especificacionempaque as dee')
+                ->join('especificacion_empaque as ee', 'dee.id_especificacion_empaque', 'ee.id_especificacion_empaque')
+                ->join('cliente_pedido_especificacion as cpe', 'ee.id_especificacion', 'cpe.id_especificacion')
+                ->join('detalle_pedido as dp', 'cpe.id_cliente_pedido_especificacion', 'dp.id_cliente_especificacion')
+                ->select('dee.id_variedad')->distinct()->whereIn('dp.id_pedido', $ids_pedidos_no_tinturados)->get();
+
+            foreach ($variedades_no_tinturados as $variedad_no_tinturados){
+                $cantidad = 0;
+
+                foreach($ramos_x_variedades_no_tinturados as $ramos_no_tinturados){
+                    if($ramos_no_tinturados['id_variedad'] == $variedad_no_tinturados->id_variedad){
+                        $cantidad += $ramos_no_tinturados['cantidad'];
+                    }
+                }
+                $cajas_equivalentes_no_tinturados[] = [
+                    'id_variedad' => $variedad_no_tinturados,
+                    'cantidad' => round($cantidad / getConfiguracionEmpresa()->ramos_x_caja, 2),
+                ];
+            }
+
+            foreach($ramos_x_variedad_no_tinturados as $x_ramo_x_variedad_no_tinturado => $ramo_x_variedad_no_tinutrado){
+                // $objSheet1->mergeCells('A'.($x + 5 + $x_ramo_x_variedad_no_tinturado).':B'.($x + 5 + $x_ramo_x_variedad_no_tinturado));
+                $objSheet1->getCell('A' . ($x + 5 + $x_ramo_x_variedad_no_tinturado))->setValue(getVariedad($ramo_x_variedad_no_tinutrado->id_variedad)->siglas." ".
+                    explode('|',getCalibreRamoById($ramo_x_variedad_no_tinutrado->id_clasificacion_ramo)->nombre)[0]."".
+                    getCalibreRamoById($ramo_x_variedad_no_tinutrado->id_clasificacion_ramo)->unidad_medida->siglas. " ". ($ramo_x_variedad_no_tinutrado->tallos_x_ramos != '' ? $ramo_x_variedad_no_tinutrado->tallos_x_ramos." tallos " : "") .
+                    ($ramo_x_variedad_no_tinutrado->longitud_ramo != '' ?  $ramo_x_variedad_no_tinutrado->longitud_ramo." ".getUnidadMedida($ramo_x_variedad_no_tinutrado->id_unidad_medida)->siglas : "" ));
+                $objSheet1->getCell('B' . ($x + 5 + $x_ramo_x_variedad_no_tinturado))->setValue($ramo_x_variedad_no_tinutrado->cantidad);
+                // $objSheet1->mergeCells('A'.($x + 5 + $x_ramo_x_variedad_no_tinturado+1).':B'.($x + 5 + $x_ramo_x_variedad_no_tinturado+1));
+            }
+
+            $objSheet1->getStyle('A'. ($x + 5 + $x_ramo_x_variedad_no_tinturado+1).':B'.($x + 5 + $x_ramo_x_variedad_no_tinturado+1))->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('357ca5');
+            $objSheet1->getStyle('C' . ($x + 4))->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('ffffff');
+            $objSheet1->getStyle('A'. ($x + 5 + $x_ramo_x_variedad_no_tinturado+1))->getFont()->getColor()->applyFromArray( array('rgb' => 'ffffff'));
+            $objSheet1->getCell('A' . ($x + 5+ $x_ramo_x_variedad_no_tinturado+1))->setValue("Ramos Totales Pedidos");
+            $objSheet1->getStyle('B'. ($x + 5 + $x_ramo_x_variedad_no_tinturado+1))->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('357ca5');
+            $objSheet1->getStyle('B'. ($x + 5 + $x_ramo_x_variedad_no_tinturado+1))->getFont()->getColor()->applyFromArray( array('rgb' => 'ffffff'));
+            $objSheet1->getCell('B' . ($x + 5+ $x_ramo_x_variedad_no_tinturado+1))->setValue($ramos_totales_no_tinturados);
+
+            $a = 1;
+            foreach($cajas_equivalentes_no_tinturados as $caja_equivalente_no_tinturado){
+                $objSheet1->mergeCells('E'.($x + 4 + $a).':F'.($x + 4 + $a));
+                $objSheet1->getCell('E' . ($x + 4 + $a))->setValue(getVariedad($caja_equivalente_no_tinturado['id_variedad']->id_variedad)->nombre." (".getVariedad($caja_equivalente_no_tinturado['id_variedad']->id_variedad)->siglas.")");
+                $objSheet1->getCell('G' . ($x + 4 + $a))->setValue($caja_equivalente_no_tinturado["cantidad"]);
+                $a++;
+            }
+            $objSheet1->mergeCells('E'.($x + 4 + $a).':F'.($x + 4 + $a ));
+            $objSheet1->getStyle('E'. ($x + 4 + $a))->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('357ca5');
+            $objSheet1->getStyle('E'. ($x + 4 + $a))->getFont()->getColor()->applyFromArray( array('rgb' => 'ffffff'));
+            $objSheet1->getCell('E' . ($x + 4 + $a))->setValue("Cajas Equivalentes Totales Pedidas");
+            $objSheet1->getStyle('G'. ($x + 4 + $a))->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('357ca5');
+            $objSheet1->getStyle('G'. ($x + 4 + $a))->getFont()->getColor()->applyFromArray( array('rgb' => 'ffffff'));
+            $objSheet1->getCell('G' . ($x + 4 + $a))->setValue(round($ramos_totales_estandar_no_tinturados / getConfiguracionEmpresa()->ramos_x_caja,2));
+
+            $objSheet1->getColumnDimension('A')->setWidth(35);
+            $objSheet1->getColumnDimension('B')->setWidth(30);
+            $objSheet1->getColumnDimension('C')->setWidth(10);
+            $objSheet1->getColumnDimension('D')->setWidth(20);
+            $objSheet1->getColumnDimension('E')->setWidth(35);
+            $objSheet1->getColumnDimension('F')->setWidth(8);
+            $objSheet1->getColumnDimension('G')->setWidth(10);
+            $objSheet1->getColumnDimension('H')->setWidth(10);
+            $objSheet1->getColumnDimension('I')->setWidth(15);
+            $objSheet1->getStyle('A1:I1')->getFont()->setBold(true);
+        }*/
+
+        $style = array(
+            'alignment' => array(
+                'vertical' => PHPExcel_Style_Alignment::VERTICAL_CENTER,
+                'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER
+            )
+        );
         $objSheet1->getDefaultStyle()->applyFromArray($style);
 
     }
