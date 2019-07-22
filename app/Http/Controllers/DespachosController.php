@@ -836,7 +836,7 @@ class DespachosController extends Controller
 
         $objSheet1->getCell('A4' )->setValue('FACTURA');
         $objSheet1->getCell('B4' )->setValue('CLIENTE / CÓDIGO');
-        $objSheet1->getCell('C')->setValue('FLOR');
+        $objSheet1->getCell('C4')->setValue('FLOR');
         $objSheet1->getCell('D4')->setValue('EMPAQUE');
         $objSheet1->getCell('E4' )->setValue('PRESENTACIÓN');
         $objSheet1->getCell('F4')->setValue('PIEZAS');
