@@ -45,7 +45,7 @@
                                     @foreach($var['calibres'] as $cal)
                                         <th class="text-center"
                                             style="border-color: #9d9d9d">
-                                            {{$cal->cant}}
+                                            {{number_format($cal->cant)}}
                                         </th>
                                     @endforeach
                                 </tr>
