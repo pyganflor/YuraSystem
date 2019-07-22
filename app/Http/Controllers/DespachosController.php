@@ -57,7 +57,8 @@ class DespachosController extends Controller
 
             $ids_pedidos = [];
             foreach ($listado as $item) {
-                array_push($ids_pedidos, $item->id_pedido);
+                if(!getFacturaAnulada($item->id_pedido))
+                    array_push($ids_pedidos, $item->id_pedido);
             }
 
             $ramos_x_variedad = DB::table('detalle_especificacionempaque as dee')
