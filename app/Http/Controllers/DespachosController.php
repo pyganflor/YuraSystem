@@ -802,7 +802,7 @@ class DespachosController extends Controller
         $objSheet1->mergeCells('A1:B3');
 
         $objSheet1->getCell('C1' )->setValue('SEMANA: '. getSemanaByDate($request->fecha_pedido)->codigo);
-        $objSheet1->getCell('C2' )->setValue('DIA: '. Carbon::parse($request->fecha_pedido)->dayOfWeek);
+        $objSheet1->getCell('C2' )->setValue('DIA: '. getDias(TP_COMPLETO,FR_ARREGLO)[transformDiaPhp(date('w',strtotime(substr($request->fecha_pedido,0,10))))]);
         $objSheet1->getCell('C3' )->setValue('FECHA: '. Carbon::parse($request->fecha_pedido)->format('d-m-Y'));
         $objSheet1->mergeCells('C1:F1');
         $objSheet1->mergeCells('C2:F2');
@@ -884,6 +884,9 @@ class DespachosController extends Controller
                                 $objSheet1->getCell('E' . ($x + 1))->setValue(explode('|', $det_esp_emp->empaque_p->nombre)[0]);
                                 $objSheet1->getCell('F' . ($x + 1))->setValue($esp_emp->cantidad * $det_ped->cantidad);
                                 $objSheet1->getCell('G' . ($x + 1))->setValue(($esp_emp->cantidad * $det_ped->cantidad) * explode('|', $esp_emp->empaque->nombre)[1]);
+                                $objSheet1->getCell('Q' . ($x + 1))->setValue($p->detalles[0]->agencia_carga->nombre);
+                                $objSheet1->getCell('R' . ($x + 1))->setValue(isset($p->envios[0]->guia_madre) ? $p->envios[0]->guia_madre ." / ". $p->envios[0]->guia_hija : "");
+                                $objSheet1->getCell('S' . ($x + 1))->setValue(isset($p->envios[0]->dae) ? $p->envios[0]->dae : "");
                                 $ramos_totales_no_tinturados += $det_esp_emp->cantidad * $esp_emp->cantidad * $det_ped->cantidad;
                                 $ramos_totales_estandar_no_tinturados += convertToEstandar($det_esp_emp->cantidad * $esp_emp->cantidad * $det_ped->cantidad, $det_esp_emp->clasificacion_ramo->nombre);
                                 if (!in_array($det_esp_emp->id_variedad, $variedades_no_tinturados)) {
@@ -1000,16 +1003,25 @@ class DespachosController extends Controller
             $objSheet1->getStyle('G'. ($x + 4 + $a))->getFont()->getColor()->applyFromArray( array('rgb' => 'ffffff'));
             $objSheet1->getCell('G' . ($x + 4 + $a))->setValue(round($ramos_totales_estandar_no_tinturados / getConfiguracionEmpresa()->ramos_x_caja,2));
 
-            $objSheet1->getColumnDimension('A')->setWidth(35);
-            $objSheet1->getColumnDimension('B')->setWidth(30);
+            $objSheet1->getColumnDimension('A')->setWidth(20);
+            $objSheet1->getColumnDimension('B')->setWidth(45);
             $objSheet1->getColumnDimension('C')->setWidth(10);
             $objSheet1->getColumnDimension('D')->setWidth(20);
             $objSheet1->getColumnDimension('E')->setWidth(35);
             $objSheet1->getColumnDimension('F')->setWidth(8);
             $objSheet1->getColumnDimension('G')->setWidth(10);
+            $objSheet1->getColumnDimension('J')->setWidth(22);
             $objSheet1->getColumnDimension('H')->setWidth(10);
             $objSheet1->getColumnDimension('I')->setWidth(15);
-            $objSheet1->getStyle('A1:I1')->getFont()->setBold(true);
+            $objSheet1->getColumnDimension('M')->setWidth(15);
+            $objSheet1->getColumnDimension('N')->setWidth(12);
+            $objSheet1->getColumnDimension('M')->setWidth(15);
+            $objSheet1->getColumnDimension('O')->setWidth(15);
+            $objSheet1->getColumnDimension('P')->setWidth(13);
+            $objSheet1->getColumnDimension('Q')->setWidth(20);
+            $objSheet1->getColumnDimension('R')->setWidth(30);
+            $objSheet1->getColumnDimension('S')->setWidth(25);
+            $objSheet1->getStyle('A1:A2')->getFont()->setBold(true);
         }
 
         $style = array(
