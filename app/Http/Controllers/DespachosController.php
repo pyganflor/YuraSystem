@@ -798,27 +798,15 @@ class DespachosController extends Controller
         $objPHPExcel->addSheet($objSheet1, 1);
         $objPHPExcel->setActiveSheetIndex(1);
 
-
         $objSheet1->getCell('A1' )->setValue(getConfiguracionEmpresa()->razon_social);
-        $objSheet1->mergeCells('A1:A3');
-        $objSheet1->mergeCells('B1:B3');
-        $objSheet1->mergeCells('A1:B1');
-        $objSheet1->mergeCells('A2:B2');
-        $objSheet1->mergeCells('A3:B3');
-
+        $objSheet1->mergeCells('A1:B3');
 
         $objSheet1->getCell('C1' )->setValue('SEMANA: '. getSemanaByDate($request->fecha_pedido)->codigo);
         $objSheet1->getCell('C2' )->setValue('DIA: '. Carbon::parse($request->fecha_pedido)->dayOfWeek);
         $objSheet1->getCell('C3' )->setValue('FECHA: '. Carbon::parse($request->fecha_pedido)->format('d-m-Y'));
-        $objSheet1->mergeCells('C1:C3');
-        $objSheet1->mergeCells('D1:D3');
-        $objSheet1->mergeCells('E1:E3');
-        $objSheet1->mergeCells('F1:F3');
-        $objSheet1->mergeCells('C1:F1');
         $objSheet1->mergeCells('C1:F1');
         $objSheet1->mergeCells('C2:F2');
         $objSheet1->mergeCells('C3:F3');
-
 
 
         $objSheet1->getCell('G3' )->setValue('DESPACHO DIARIOS DE CAJAS');
@@ -836,7 +824,7 @@ class DespachosController extends Controller
 
         $objSheet1->getCell('A4' )->setValue('FACTURA');
         $objSheet1->getCell('B4' )->setValue('CLIENTE / CÓDIGO');
-        $objSheet1->getCell('C')->setValue('FLOR');
+        $objSheet1->getCell('C4')->setValue('FLOR');
         $objSheet1->getCell('D4')->setValue('EMPAQUE');
         $objSheet1->getCell('E4' )->setValue('PRESENTACIÓN');
         $objSheet1->getCell('F4')->setValue('PIEZAS');
