@@ -798,41 +798,19 @@ class DespachosController extends Controller
         $objPHPExcel->addSheet($objSheet1, 1);
         $objPHPExcel->setActiveSheetIndex(1);
 
-
-        $objSheet1->getCell('A1' )->setValue(getConfiguracionEmpresa()->razon_social);
-        $objSheet1->mergeCells('A1:A3');
-        $objSheet1->mergeCells('B1:B3');
-        $objSheet1->mergeCells('A1:B1');
-        $objSheet1->mergeCells('A2:B2');
-        $objSheet1->mergeCells('A3:B3');
-
+        $objSheet1->getCell('A1' )->setValue(strtoupper(getConfiguracionEmpresa()->razon_social));
+        $objSheet1->mergeCells('A1:B3');
 
         $objSheet1->getCell('C1' )->setValue('SEMANA: '. getSemanaByDate($request->fecha_pedido)->codigo);
         $objSheet1->getCell('C2' )->setValue('DIA: '. Carbon::parse($request->fecha_pedido)->dayOfWeek);
         $objSheet1->getCell('C3' )->setValue('FECHA: '. Carbon::parse($request->fecha_pedido)->format('d-m-Y'));
-        $objSheet1->mergeCells('C1:C3');
-        $objSheet1->mergeCells('D1:D3');
-        $objSheet1->mergeCells('E1:E3');
-        $objSheet1->mergeCells('F1:F3');
-        $objSheet1->mergeCells('C1:F1');
         $objSheet1->mergeCells('C1:F1');
         $objSheet1->mergeCells('C2:F2');
         $objSheet1->mergeCells('C3:F3');
 
 
-
-        $objSheet1->getCell('G3' )->setValue('DESPACHO DIARIOS DE CAJAS');
-        $objSheet1->mergeCells('G1:G3');
-        $objSheet1->mergeCells('H1:H3');
-        $objSheet1->mergeCells('I1:I3');
-        $objSheet1->mergeCells('J1:J3');
-        $objSheet1->mergeCells('K1:K3');
-        $objSheet1->mergeCells('L1:L3');
-        $objSheet1->mergeCells('G1:L1');
-        $objSheet1->mergeCells('G2:L2');
-        $objSheet1->mergeCells('G3:L3');
-
-
+        $objSheet1->getCell('G1' )->setValue('DESPACHO DIARIOS DE CAJAS');
+        $objSheet1->mergeCells('G1:L3');
 
         $objSheet1->getCell('A4' )->setValue('FACTURA');
         $objSheet1->getCell('B4' )->setValue('CLIENTE / CÓDIGO');
@@ -861,7 +839,7 @@ class DespachosController extends Controller
             )
         );
 
-        $x = 1;
+        $x = 4;
         $ids_pedidos_no_tinturados = [];
         $ramos_x_variedades_no_tinturados = [];
         $cajas_equivalentes_no_tinturados = [];
@@ -871,10 +849,9 @@ class DespachosController extends Controller
         $ramos_totales_estandar_no_tinturados = 0;
         $cajas_full_totales_no_tinturados = 0;
 
-        /*foreach ($pedidos as $a => $pedido){
+        foreach ($pedidos as $a => $pedido){
             $p = getPedido($pedido->id_pedido);
             if(!getFacturaAnulada($pedido->id_pedido)){
-
                     $ids_pedidos_no_tinturados[] = $p->id_pedido;
                     foreach ($p->detalles as $det => $det_ped) {
                         $datos_exportacion = '';
@@ -900,8 +877,8 @@ class DespachosController extends Controller
                                 $objSheet1->mergeCells('D' . $inicio_d . ':D' . $final_d);
                                 $objSheet1->mergeCells('F' . $inicio_b . ':F' . $final_b);
                                 $objSheet1->mergeCells('G' . $inicio_d . ':G' . $final_d);
-                                $objSheet1->getCell('A' . ($x + 1))->setValue($p->cliente->detalle()->nombre);
-                                $objSheet1->getCell('B' . ($x + 1))->setValue((!$datos_exportacion) ? "No posee" : substr($datos_exportacion, 0, -1));
+                                $objSheet1->getCell('A' . ($x + 1))->setValue(isset($p->envios[0]->comprobante->secuencial) ? $p->envios[0]->comprobante->secuencial : "");
+                                $objSheet1->getCell('B' . ($x + 1))->setValue($p->cliente->detalle()->nombre. ((!$datos_exportacion) ? "" : " / ". substr($datos_exportacion, 0, -1)));
                                 $objSheet1->getCell('C' . ($x + 1))->setValue($det_esp_emp->variedad->siglas . " " . explode('|', $det_esp_emp->clasificacion_ramo->nombre)[0] . " " . $det_esp_emp->clasificacion_ramo->unidad_medida->siglas);
                                 $objSheet1->getCell('D' . ($x + 1))->setValue(explode("|", $esp_emp->empaque->nombre)[0]);
                                 $objSheet1->getCell('E' . ($x + 1))->setValue(explode('|', $det_esp_emp->empaque_p->nombre)[0]);
@@ -917,7 +894,7 @@ class DespachosController extends Controller
                                     'cantidad' => convertToEstandar($det_esp_emp->cantidad * $esp_emp->cantidad * $det_ped->cantidad, $det_esp_emp->clasificacion_ramo->nombre),
                                 ];
 
-                                $objSheet1->getStyle('A' . ($x + 1) . ':I' . ($x + 1))->applyFromArray($BStyle);
+                                $objSheet1->getStyle('A' . ($x - 3) . ':S' . ($x + 1))->applyFromArray($BStyle);
                                 $objSheet1->getCell('H' . ($x + 1))->setValue($det_esp_emp->cantidad * $esp_emp->cantidad * $det_ped->cantidad);
                                 $objSheet1->getCell('I' . ($x + 1))->setValue($det_esp_emp->cantidad);
 
@@ -1033,7 +1010,7 @@ class DespachosController extends Controller
             $objSheet1->getColumnDimension('H')->setWidth(10);
             $objSheet1->getColumnDimension('I')->setWidth(15);
             $objSheet1->getStyle('A1:I1')->getFont()->setBold(true);
-        }*/
+        }
 
         $style = array(
             'alignment' => array(
