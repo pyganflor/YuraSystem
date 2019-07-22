@@ -22,6 +22,9 @@
                             <i class="fa fa-truck" aria-hidden="true"></i> Crear despacho
                         </button>
                     @endif
+                        <button type="button" class="btn btn-xs btn-primary" onclick="exportar_listado_cuarto_frio('{{csrf_token()}}')">
+                            <i class="fa fa-fw fa-file-excel-o"></i> Exportar a Excel Cuarto Frio
+                        </button>
                     <button type="button" class="btn btn-xs btn-success" onclick="exportar_listado_despacho('{{csrf_token()}}')">
                         <i class="fa fa-fw fa-file-excel-o"></i> Exportar a Excel
                     </button>
@@ -122,12 +125,12 @@
                                                 @if($opciones)
                                                     <br>
                                                     <strong>
-                                                        ${{number_format($ped->getPrecio(), 2)}}
+                                                        ${{number_format($ped->getPrecioByPedido(), 2)}}
                                                     </strong>
                                                 @endif
                                                 @php
                                                     if(!getFacturaAnulada($pedido->id_pedido))
-                                                        $valor_total += $ped->getPrecio();
+                                                        $valor_total += $ped->getPrecioByPedido();
                                                 @endphp
                                                 @if($facturado != null)
                                                     <br/>
@@ -191,18 +194,19 @@
                                         <td class="text-center" style="border-color: #9d9d9d">
                                             {{$det_esp->cantidad * $esp_emp->cantidad * $det_ped->cantidad}}
                                             @php
-                                                if(!getFacturaAnulada($pedido->id_pedido)){
-                                                    $ramos_totales += $det_esp->cantidad * $esp_emp->cantidad * $det_ped->cantidad;
-                                                    $ramos_totales_estandar += convertToEstandar($det_esp->cantidad * $esp_emp->cantidad * $det_ped->cantidad, $det_esp->clasificacion_ramo->nombre);
-                                                    if (!in_array($det_esp->id_variedad, $variedades)){
-                                                        array_push($variedades, $det_esp->id_variedad);
+                                                    if(!getFacturaAnulada($pedido->id_pedido)){
+                                                        $ramos_totales += $det_esp->cantidad * $esp_emp->cantidad * $det_ped->cantidad;
+                                                        $ramos_totales_estandar += convertToEstandar($det_esp->cantidad * $esp_emp->cantidad * $det_ped->cantidad, $det_esp->clasificacion_ramo->nombre);
+                                                        if (!in_array($det_esp->id_variedad, $variedades)){
+                                                            array_push($variedades, $det_esp->id_variedad);
+                                                        }
+                                                        array_push($ramos_x_variedades, [
+                                                            'id_variedad' => $det_esp->id_variedad,
+                                                            'cantidad' => convertToEstandar($det_esp->cantidad * $esp_emp->cantidad * $det_ped->cantidad, $det_esp->clasificacion_ramo->nombre),
+                                                        ]);
                                                     }
-                                                    array_push($ramos_x_variedades, [
-                                                        'id_variedad' => $det_esp->id_variedad,
-                                                        'cantidad' => convertToEstandar($det_esp->cantidad * $esp_emp->cantidad * $det_ped->cantidad, $det_esp->clasificacion_ramo->nombre),
-                                                    ]);
-                                                }
                                             @endphp
+
                                         </td>
                                         <td class="text-center" style="border-color: #9d9d9d">
                                             {{$det_esp->cantidad}}
@@ -341,6 +345,7 @@
                     </tr>
                     @php
                         $cajas_equivalentes = [];
+
                         foreach ($variedades as $variedad){
                             $cantidad = 0;
                             foreach($ramos_x_variedades as $ramos){
