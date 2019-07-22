@@ -91,7 +91,8 @@
             id_clasificacion_verde: id_clasificacion_verde
         };
         $.get('{{url('clasificacion_verde/ver_clasificacion')}}', datos, function (retorno) {
-            modal_view('modal_view_clasificacion_verde', retorno, '<i class="fa fa-fw fa-eye"></i> Detalles de clasificación', true, false, '{{isPC() ? '50%' : ''}}');
+            modal_view('modal_view_clasificacion_verde', retorno, '<i class="fa fa-fw fa-eye"></i> Detalles de clasificación', true, false,
+                '{{isPC() ? '75%' : ''}}');
             $.LoadingOverlay('hide');
         });
         $.LoadingOverlay('hide');
