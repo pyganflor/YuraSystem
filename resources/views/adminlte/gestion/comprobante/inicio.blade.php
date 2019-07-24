@@ -18,7 +18,7 @@
                     <tr>
                         <td>
                             <div class="form-inline">
-                                <div class="form-group">
+                                {{--<div class="form-group">
                                     <label for="anno">Año</label><br />
                                     <select class="form-control" id="anno" name="anno">
                                         <option value=""> Seleccione </option>
@@ -26,7 +26,7 @@
                                             <option value="{{$anno->anno}}"> {{$anno->anno}} </option>
                                         @endforeach
                                     </select>
-                                </div>
+                                </div>--}}
                                 <div class="form-group">
                                     <label for="anno">Cliente</label><br />
                                     <select class="form-control" id="id_cliente" name="id_cliente" style="width: 200px;">
@@ -58,8 +58,12 @@
                                     </select>
                                 </div>
                                 <div class="form-group">
-                                    <label> Fecha</label><br />
-                                    <input type="date" class="form-control" id="fecha" name="fecha" value="{{\Carbon\Carbon::now()->toDateString()}}">
+                                    <label> Desde</label><br />
+                                    <input type="date" class="form-control" id="desde" name="desde" value="{{\Carbon\Carbon::now()->toDateString()}}">
+                                </div>
+                                <div class="form-group">
+                                    <label> Hasta </label><br />
+                                    <input type="date" class="form-control" id="hasta" name="hasta" value="{{\Carbon\Carbon::now()->toDateString()}}">
                                 </div>
                                 <div class="form-group">
                                     <label style="visibility: hidden;"> .</label><br />
