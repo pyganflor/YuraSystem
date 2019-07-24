@@ -370,6 +370,9 @@ class DespachosController extends Controller
         $objSheet->getCell('E1' )->setValue('Presentación');
         $objSheet->getCell('F1')->setValue('Ramos');
         $objSheet->getCell('G1')->setValue('Color');
+        $objSheet->getCell('H1')->setValue('Cuarto frio');
+        $objSheet->getCell('I1')->setValue('Guía aérea');
+        $objSheet->getCell('J1')->setValue('Fue');
 
         //HOJA No tinturados
         $objSheet1 = new PHPExcel_Worksheet($objPHPExcel,'No tinturados');
@@ -384,11 +387,20 @@ class DespachosController extends Controller
         $objSheet1->getCell('G1')->setValue('Cajas full');
         $objSheet1->getCell('H1')->setValue('Ramos');
         $objSheet1->getCell('I1')->setValue('Ramos por caja');
+        $objSheet1->getCell('J1')->setValue('Cuarto frio');
+        $objSheet1->getCell('K1')->setValue('Guía aérea');
+        $objSheet1->getCell('L1')->setValue('Fue');
         $BStyle = array(
             'borders' => array(
                 'allborders' => array(
                     'style' => PHPExcel_Style_Border::BORDER_THIN
                 )
+            )
+        );
+        $style = array(
+            'alignment' => array(
+                'vertical' => PHPExcel_Style_Alignment::VERTICAL_CENTER,
+                'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER
             )
         );
         $w = 1;
@@ -413,10 +425,8 @@ class DespachosController extends Controller
         foreach ($pedidos as $a => $pedido){
             $p = getPedido($pedido->id_pedido);
             if(!getFacturaAnulada($pedido->id_pedido)){
-
                 if ($p->tipo_especificacion === "N") {
-
-                    $ids_pedidos_no_tinturados[] = $p->id_pedido;
+                        $ids_pedidos_no_tinturados[] = $p->id_pedido;
                     foreach ($p->detalles as $det => $det_ped) {
                         $datos_exportacion = '';
                         if (getDatosExportacionByDetPed($det_ped->id_detalle_pedido)->count() > 0)
@@ -441,6 +451,9 @@ class DespachosController extends Controller
                                 $objSheet1->mergeCells('D' . $inicio_d . ':D' . $final_d);
                                 $objSheet1->mergeCells('F' . $inicio_b . ':F' . $final_b);
                                 $objSheet1->mergeCells('G' . $inicio_d . ':G' . $final_d);
+                                $objSheet1->mergeCells('J' . $inicio_a . ':J' . $final_a);
+                                $objSheet1->mergeCells('K' . $inicio_a . ':K' . $final_a);
+                                $objSheet1->mergeCells('L' . $inicio_a . ':L' . $final_a);
                                 $objSheet1->getCell('A' . ($x + 1))->setValue($p->cliente->detalle()->nombre);
                                 $objSheet1->getCell('B' . ($x + 1))->setValue((!$datos_exportacion) ? "No posee" : substr($datos_exportacion, 0, -1));
                                 $objSheet1->getCell('C' . ($x + 1))->setValue($det_esp_emp->variedad->siglas . " " . explode('|', $det_esp_emp->clasificacion_ramo->nombre)[0] . " " . $det_esp_emp->clasificacion_ramo->unidad_medida->siglas);
@@ -458,19 +471,22 @@ class DespachosController extends Controller
                                     'cantidad' => convertToEstandar($det_esp_emp->cantidad * $esp_emp->cantidad * $det_ped->cantidad, $det_esp_emp->clasificacion_ramo->nombre),
                                 ];
 
-                                $objSheet1->getStyle('A' . ($x + 1) . ':I' . ($x + 1))->applyFromArray($BStyle);
+                                $objSheet1->getStyle('A' . ($x + 1) . ':L' . ($x + 1))->applyFromArray($BStyle);
                                 $objSheet1->getCell('H' . ($x + 1))->setValue($det_esp_emp->cantidad * $esp_emp->cantidad * $det_ped->cantidad);
                                 $objSheet1->getCell('I' . ($x + 1))->setValue($det_esp_emp->cantidad);
+                                $objSheet1->getCell('J' . ($x + 1))->setValue($p->detalles[0]->agencia_carga->nombre);
+                                $objSheet1->getCell('K' . ($x + 1))->setValue(isset($p->envios[0]->guia_madre) ? $p->envios[0]->guia_madre ." / ". $p->envios[0]->guia_hija : "");
+                                $objSheet1->getCell('L' . ($x + 1))->setValue(isset($p->envios[0]->dae) ? $p->envios[0]->dae : "");
 
                                 $x++;
                             }
                         }
                     }
 
-
                 } else if ($p->tipo_especificacion === "T") {
                     $count_pedido_tinturado = true;
                     $ids_pedidos_tinturados[] = $p->id_pedido;
+
                     foreach ($p->detalles as $det_tinturado => $det_ped) {
                         $datos_exportacion = '';
                         if (getDatosExportacionByDetPed($det_ped->id_detalle_pedido)->count() > 0)
@@ -493,11 +509,15 @@ class DespachosController extends Controller
                                 ];
                             }
                         }
-
                         $final_tinturado_a = 0;
                         $merge_espcificacion = $w + 1;
                         foreach ($det_ped->coloraciones as $col => $coloracion) {
-                            $total_cantidad_mc = 0;
+
+                            if ($count_pedido_tinturado) {
+                                $inicio_tinturado_a = $w + 1;
+                                $count_pedido_tinturado = false;
+                            }
+                            $count_coloracion = 1;
                             foreach ($coloracion->marcaciones_coloraciones as $mar_col => $m_c) {
                                 $det_esp_emp_tinturado = $m_c->detalle_especificacionempaque;
                                 $objSheet->getCell('A' . ($w + 1))->setValue($p->cliente->detalle()->nombre);
@@ -507,37 +527,52 @@ class DespachosController extends Controller
                                 $objSheet->getCell('E' . ($w + 1))->setValue(explode('|', $det_esp_emp_tinturado->empaque_p->nombre)[0]);
 
                                 $final_tinturado_a++;
-                                if ($count_pedido_tinturado) {
-                                    $inicio_tinturado_a = $w + 1;
-                                    $count_pedido_tinturado = false;
-                                }
-                                if ($mar_col == 0) {
-                                    $inicio_tinturado_d = $w + 1;
-                                    $inicio_merge_especificacion = $merge_espcificacion;
-                                }
+                                if ($mar_col == 0) $inicio_tinturado_d = $w + 1;
                                 $final_tinturado_d = count($coloracion->marcaciones_coloraciones);
-                                foreach ($coloracion->marcaciones_coloraciones as $mar_col => $m_c) $total_cantidad_mc += $m_c->cantidad;
-                                $objSheet->getCell('F' . ($w + 1))->setValue($total_cantidad_mc);
+
+
                                 $objSheet->mergeCells('C' . $inicio_tinturado_d . ':C' . ($final_tinturado_d + $inicio_tinturado_d - 1));
                                 $objSheet->mergeCells('D' . $inicio_tinturado_d . ':D' . ($final_tinturado_d + $inicio_tinturado_d - 1));
                                 $objSheet->mergeCells('E' . $inicio_tinturado_d . ':E' . ($final_tinturado_d + $inicio_tinturado_d - 1));
                                 $objSheet->mergeCells('G' . $inicio_tinturado_d . ':G' . ($final_tinturado_d + $inicio_tinturado_d - 1));
-                                $objSheet->getCell('G' . ($w + 1))->setValue($coloracion->color->nombre . " - " . $merge_espcificacion);
+                                $objSheet->getCell('G' . ($w + 1))->setValue($coloracion->color->nombre);
                                 $objSheet->getStyle('G' . $inicio_tinturado_d . ':G' . ($final_tinturado_d + $inicio_tinturado_d - 1))->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB(substr($coloracion->color->fondo, 1));
                                 $objSheet->getStyle('G' . ($w + 1))->getFont()->getColor()->applyFromArray(array('rgb' => substr($coloracion->color->texto, 1)));
-                                $objSheet->getStyle('A' . ($w + 1) . ':G' . ($w + 1))->applyFromArray($BStyle);
+                                $objSheet->getStyle('A' . ($w + 1) . ':J' . ($w + 1))->applyFromArray($BStyle);
+                                $objSheet->getStyle('A' . ($w + 1) . ':J' . ($w + 1))->applyFromArray($style);
+                                $objSheet->getCell('H' . ($w+1))->setValue($p->detalles[0]->agencia_carga->nombre);
+                                $objSheet->getCell('I' . ($w+1))->setValue(isset($p->envios[0]->guia_madre) ? $p->envios[0]->guia_madre ." / ". $p->envios[0]->guia_hija : "");
+                                $objSheet->getCell('J' . ($w+1))->setValue(isset($p->envios[0]->dae) ? $p->envios[0]->dae : "");
                                 $w++;
                                 $merge_espcificacion++;
+                               $objSheet->getCell('F' . ($w))->setValue($m_c->cantidad);
                             }
-                        }
-                        $objSheet->mergeCells('A' . $inicio_tinturado_a . ':A' . ($final_tinturado_a + $inicio_tinturado_a - 1));
-                        $objSheet->mergeCells('B' . $inicio_tinturado_a . ':B' . ($final_tinturado_a + $inicio_tinturado_a - 1));
-                    }
-                    $objSheet->getStyle('A1:I1')->getFont()->setBold(true);
 
+                        }
+                        $objSheet->mergeCells('A' . $inicio_tinturado_a . ':A' . ($final_tinturado_a + $inicio_tinturado_a-1 ));
+                        /*$objSheet->mergeCells('B' . $inicio_tinturado_a . ':B' . ($final_tinturado_a + $inicio_tinturado_a-1));*/
+                        $objSheet->mergeCells('H' . $inicio_tinturado_a . ':H' . ($final_tinturado_a + $inicio_tinturado_a - 1));
+                        $objSheet->mergeCells('I' . $inicio_tinturado_a . ':I' . ($final_tinturado_a + $inicio_tinturado_a - 1));
+                        $objSheet->mergeCells('J' . $inicio_tinturado_a . ':J' . ($final_tinturado_a + $inicio_tinturado_a - 1));
+                    }
+                    $objSheet->getStyle('A1:J1')->getFont()->setBold(true);
                 }
             }
         }
+
+        $objSheet->getColumnDimension('A')->setWidth(20);
+        $objSheet->getColumnDimension('B')->setWidth(20);
+        $objSheet->getColumnDimension('C')->setWidth(20);
+        $objSheet->getColumnDimension('D')->setWidth(20);
+        $objSheet->getColumnDimension('E')->setWidth(20);
+        $objSheet->getColumnDimension('F')->setWidth(20);
+        $objSheet->getColumnDimension('G')->setWidth(20);
+        $objSheet->getColumnDimension('H')->setWidth(18);
+        $objSheet->getColumnDimension('I')->setWidth(28);
+        $objSheet->getColumnDimension('j')->setWidth(20);
+        $objSheet1->getColumnDimension('J')->setWidth(20);
+        $objSheet1->getColumnDimension('K')->setWidth(27);
+        $objSheet1->getColumnDimension('L')->setWidth(22);
 
         //CUADRO VALORES
         if($x > 1){
@@ -641,7 +676,7 @@ class DespachosController extends Controller
             $objSheet1->getColumnDimension('G')->setWidth(10);
             $objSheet1->getColumnDimension('H')->setWidth(10);
             $objSheet1->getColumnDimension('I')->setWidth(15);
-            $objSheet1->getStyle('A1:I1')->getFont()->setBold(true);
+            $objSheet1->getStyle('A1:L1')->getFont()->setBold(true);
         }
 
         //CUADRO VALORES
@@ -738,21 +773,9 @@ class DespachosController extends Controller
             $objSheet->getStyle('G'. ($w + 4 + $b))->getFont()->getColor()->applyFromArray( array('rgb' => 'ffffff'));
             $objSheet->getCell('G' . ($w + 4 + $b))->setValue(round($ramos_totales_estandar_tinturados / getConfiguracionEmpresa()->ramos_x_caja,2));
 
-            $objSheet->getColumnDimension('A')->setWidth(20);
-            $objSheet->getColumnDimension('B')->setWidth(20);
-            $objSheet->getColumnDimension('C')->setWidth(20);
-            $objSheet->getColumnDimension('D')->setWidth(20);
-            $objSheet->getColumnDimension('E')->setWidth(20);
-            $objSheet->getColumnDimension('F')->setWidth(20);
-            $objSheet->getColumnDimension('G')->setWidth(20);
         }
 
-        $style = array(
-            'alignment' => array(
-                'vertical' => PHPExcel_Style_Alignment::VERTICAL_CENTER,
-                'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER
-            )
-        );
+
         $objSheet->getDefaultStyle()->applyFromArray($style);
         $objSheet1->getDefaultStyle()->applyFromArray($style);
 
@@ -838,6 +861,12 @@ class DespachosController extends Controller
                 )
             )
         );
+        $style = array(
+            'alignment' => array(
+                'vertical' => PHPExcel_Style_Alignment::VERTICAL_CENTER,
+                'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER
+            )
+        );
 
         $x = 4;
         $ids_pedidos_no_tinturados = [];
@@ -896,7 +925,7 @@ class DespachosController extends Controller
                                     'id_variedad' => $det_esp_emp->id_variedad,
                                     'cantidad' => convertToEstandar($det_esp_emp->cantidad * $esp_emp->cantidad * $det_ped->cantidad, $det_esp_emp->clasificacion_ramo->nombre),
                                 ];
-
+                                $objSheet1->getStyle('A' . ($x - 3) . ':S' . ($x + 1))->applyFromArray($style);
                                 $objSheet1->getStyle('A' . ($x - 3) . ':S' . ($x + 1))->applyFromArray($BStyle);
                                 $objSheet1->getCell('H' . ($x + 1))->setValue($det_esp_emp->cantidad * $esp_emp->cantidad * $det_ped->cantidad);
                                 $objSheet1->getCell('I' . ($x + 1))->setValue($det_esp_emp->cantidad);
@@ -1015,7 +1044,7 @@ class DespachosController extends Controller
             $objSheet1->getColumnDimension('I')->setWidth(15);
             $objSheet1->getColumnDimension('M')->setWidth(15);
             $objSheet1->getColumnDimension('N')->setWidth(12);
-            $objSheet1->getColumnDimension('M')->setWidth(15);
+            $objSheet1->getColumnDimension('L')->setWidth(15);
             $objSheet1->getColumnDimension('O')->setWidth(15);
             $objSheet1->getColumnDimension('P')->setWidth(13);
             $objSheet1->getColumnDimension('Q')->setWidth(20);
@@ -1024,13 +1053,7 @@ class DespachosController extends Controller
             $objSheet1->getStyle('A1:A2')->getFont()->setBold(true);
         }
 
-        $style = array(
-            'alignment' => array(
-                'vertical' => PHPExcel_Style_Alignment::VERTICAL_CENTER,
-                'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER
-            )
-        );
-        $objSheet1->getDefaultStyle()->applyFromArray($style);
+
 
     }
 }
