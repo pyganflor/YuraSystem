@@ -94,7 +94,7 @@
         @endforeach
 
         datasets.push({
-            label: '{{$variedad['variedad']->nombre}}' + ' ',
+            label: '{{espacios($variedad['variedad']->nombre)}}' + ' ',
             data: data_list,
             backgroundColor: '{{$variedad['variedad']->color}}',
             borderColor: '{{$variedad['variedad']->color}}',
