@@ -206,9 +206,7 @@
                 </div>
             @endif
         @endif
-        <div id="pagination_listado_comprobante">
-            {!! str_replace('/?','?',$listado->render()) !!}
-        </div>
+
     @else
         <div class="alert alert-info text-center">No se han encontrado coincidencias</div>
     @endif
