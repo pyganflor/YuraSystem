@@ -345,6 +345,7 @@
             };
             post_jquery('comprobante/integrar_factura_venture', datos, function () {
                 buscar_listado_comprobante();
+                cerrar_modals();
             });
         });
     }
