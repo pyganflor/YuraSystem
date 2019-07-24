@@ -8,7 +8,7 @@
             id_cliente         : $('#id_cliente').val(),
             codigo_comprobante : $("#codigo_comprobante").val(),
             desde              : $('#desde').val(),
-            desde              : $('#desde').val(),
+            hasta              : $('#hasta').val(),
             estado             : $('#estado').val()
         };
         $.get('{{url('comprobante/buscar')}}', datos, function (retorno) {
