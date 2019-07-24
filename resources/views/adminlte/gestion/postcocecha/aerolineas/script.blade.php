@@ -23,7 +23,7 @@
         url = url.replace('?', '?busqueda=' + $('#busqueda_aerolinea').val());
         $('#div_listado_aerolinea').html($('#table_aerolinea').html());
         $.get(url, function (resul) {
-            $('#div_listado_agencia_transporte').html(resul);
+            $('#div_listado_aerolinea').html(resul);
             estructura_tabla('table_content_agencias_transporte');
         }).always(function () {
             $.LoadingOverlay("hide");
