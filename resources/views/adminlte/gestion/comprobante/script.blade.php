@@ -330,7 +330,7 @@
                         "<p><label class='alert alert-info' style='width: 100%; margin: 0;'>Escoja la fecha con la que desea integrar la factura</label></p>" +
                         "<div class='row'>" +
                             "<div class='col-md-12'>" +
-                                "<input type='date' id='fecha_integrado' name='fecha_integrado' class='form-control' value='{{now()->toDayDateTimeString()}}' required> "+
+                                "<input type='date' id='fecha_integrado' name='fecha_integrado' class='form-control' value='{{now()->format('Y-m-d')}}' required> "+
                             "</div>"+
                         "</div>" +
                     "</form>" +
