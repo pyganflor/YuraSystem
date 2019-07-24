@@ -93,14 +93,14 @@
             data_list.push("{{$tallos}}");
             @endforeach
 
-            datasets.push({
-                label: '{{$variedad['variedad']->nombre}}' + ' ',
-                data: data_list,
-                backgroundColor: '{{$variedad['variedad']->color}}',
-                borderColor: '{{$variedad['variedad']->color}}',
-                borderWidth: 2,
-                fill: false,
-            });
+        datasets.push({
+            label: '{{espacios($variedad['variedad']->nombre)}}' + ' ',
+            data: data_list,
+            backgroundColor: '{{$variedad['variedad']->color}}',
+            borderColor: '{{$variedad['variedad']->color}}',
+            borderWidth: 2,
+            fill: false,
+        });
         @endforeach
 
             ctx = document.getElementById(id).getContext('2d');
