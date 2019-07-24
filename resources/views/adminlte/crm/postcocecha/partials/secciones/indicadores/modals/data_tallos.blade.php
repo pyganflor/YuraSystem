@@ -87,20 +87,20 @@
         @endfor
 
                 {{-- Data_list --}}
-                @foreach($arreglo_variedades as $variedad)
+        @foreach($arreglo_variedades as $variedad)
             data_list = [];
-        @foreach($variedad['tallos'] as $tallos)
-        data_list.push("{{$tallos}}");
-        @endforeach
+            @foreach($variedad['tallos'] as $tallos)
+            data_list.push("{{$tallos}}");
+            @endforeach
 
-        datasets.push({
-            label: '{{$variedad['variedad']->nombre}}' + ' ',
-            data: data_list,
-            backgroundColor: '{{$variedad['variedad']->color}}',
-            borderColor: '{{$variedad['variedad']->color}}',
-            borderWidth: 2,
-            fill: false,
-        });
+            datasets.push({
+                label: '{{$variedad['variedad']->nombre}}' + ' ',
+                data: data_list,
+                backgroundColor: '{{$variedad['variedad']->color}}',
+                borderColor: '{{$variedad['variedad']->color}}',
+                borderWidth: 2,
+                fill: false,
+            });
         @endforeach
 
             ctx = document.getElementById(id).getContext('2d');
