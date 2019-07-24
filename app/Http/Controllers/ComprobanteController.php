@@ -1516,8 +1516,6 @@ class ComprobanteController extends Controller
                             $i = 0;
                             foreach ($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $m => $esp_emp) {
                                 foreach ($esp_emp->detalles as $n => $det_esp_emp) {
-
-
                                     $contenido .= Carbon::parse($pedido->envios[0]->comprobante->fecha_emision)->format('d/m/Y')."\t".$pedido->envios[0]->comprobante->secuencial."\t".$pedido->cliente->detalle()->informacion_adicional('codigo venture')->varchar."\t". Carbon::parse($pedido->envios[0]->comprobante->fecha_emision)->addDay(21)->format('d/m/Y')."\t";
                                     $contenido .= getCodigoVenturePresentacion($det_esp_emp->variedad->planta->id_planta,$det_esp_emp->variedad->id_variedad,$det_esp_emp->clasificacion_ramo->id_clasificacion_ramo,$det_esp_emp->clasificacion_ramo->unidad_medida->id_unidad_medida,$det_esp_emp->tallos_x_ramos,$det_esp_emp->longitud_ramo,$det_esp_emp->unidad_medida->id_unidad_medida)."\t";
                                     $contenido .= ($det_ped->cantidad*$det_esp_emp->cantidad)."\t".explode(";", $precio[$i])[0]."\t".($pedido->cliente->detalle()->codigo_pais != getConfiguracionEmpresa()->codigo_pais ? 0 : 1)."\t".'001009'/*Código venture dasalflor para crédito como forma de pago*/."\t".$pedido->envios[0]->dae."\t".$pedido->envios[0]->dae."\t"."N"."\t"."N"."\t"."1113495085"."\t".$pedido->envios[0]->guia_madre."\t";
@@ -1564,7 +1562,10 @@ class ComprobanteController extends Controller
                 $objComprobante = Comprobante::find($comprobante['id_comprobante']);
                 $objComprobante->update(['integrado'=>true]);
             }
+<<<<<<< HEAD
 
+=======
+>>>>>>> fa96f457b657e750ff4541c0b4c42e4e12caf5e1
 
             $opResult = array(
                 'fecha' => now()->toDateString(),
@@ -1573,7 +1574,6 @@ class ComprobanteController extends Controller
             echo json_encode($opResult);
 
         }else {
-
             $errores = '';
             foreach ($valida->errors()->all() as $mi_error) {
                 if ($errores == '') {
