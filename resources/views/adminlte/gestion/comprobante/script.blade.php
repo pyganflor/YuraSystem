@@ -327,8 +327,8 @@
         html = "<div class='row'>" +
                 "<div class='col-md-12'>" +
                     "<form id='form_carga_xml' name='form_carga_xml'>" +
+                        "<p><label class='alert alert-info' style='width: 100%; margin: 0;'>Escoja la fecha con la que desea integrar la factura</label></p>" +
                         "<div class='row'>" +
-                            "<p><label class='alert alert-info' style='width: 100%; margin: 0;'>Escoja la fecha con la que desea integrar la factura</label></p>" +
                             "<div class='col-md-12'>" +
                                 "<input type='date' id='fecha_integrado' name='fecha_integrado' class='form-control' value='{{now()->toDayDateTimeString()}}' required> "+
                             "</div>"+
@@ -341,10 +341,10 @@
             fecha_integrado : $("#fecha_integrado").val(),
             _token : '{{csrf_token()}}'
         };
-        modal_view('modal_fecha_integrado', html, '<i class="fa fa-fw fa-plus"></i> Fecha de integración', true, false, '50%');
-        post_jquery('comprobante/integrar_factura_venture', datos, function () {
-            buscar_listado_comprobante();
-            cerrar_modals();
+        modal_form('modal_fecha_integrado', html, '<i class="fa fa-calendar"></i> Fecha de integración', true, false, '30%', function () {
+            post_jquery('comprobante/integrar_factura_venture', datos, function () {
+                buscar_listado_comprobante();
+            });
         });
     }
 
