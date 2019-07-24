@@ -1561,9 +1561,10 @@ class ComprobanteController extends Controller
                         }
                     }
                 }
+                $objComprobante = Comprobante::find($comprobante['id_comprobante']);
+                $objComprobante->update(['integrado'=>true]);
             }
-            $objComprobante = Comprobante::find($comprobante['id_comprobante']);
-            $objComprobante->update(['integrado'=>true]);
+
 
             $opResult = array(
                 'fecha' => now()->toDateString(),
