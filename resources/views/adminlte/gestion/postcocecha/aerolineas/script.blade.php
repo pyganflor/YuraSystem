@@ -20,11 +20,11 @@
         //para que la pagina se cargen los elementos
         e.preventDefault();
         var url = $(this).attr("href");
-        url = url.replace('?', '?busqueda=' + $('#busqueda_aerolinea').val());
+        url = url.replace('?', '?busqueda=' + $('#busqueda_aerolinea').val() + '&');
         $('#div_listado_aerolinea').html($('#table_aerolinea').html());
         $.get(url, function (resul) {
             $('#div_listado_aerolinea').html(resul);
-            estructura_tabla('table_content_agencias_transporte');
+            estructura_tabla('table_content_aerolinea');
         }).always(function () {
             $.LoadingOverlay("hide");
         });
