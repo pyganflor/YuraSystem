@@ -261,7 +261,7 @@
                                             <div class="col-md-3">
                                                 <label for="guia_madre">Guía madre</label>
                                                 <input type="text" placeholder="Guía madre" class="form-control" {{($facturado) ? "disabled='disabled'" : ""}}
-                                                id="guia_madre" name="guia_madre" required value="{{$envio->guia_madre}}">
+                                                id="guia_madre" name="guia_madre" value="{{$envio->guia_madre}}">
                                             </div>
                                             <div class="col-md-3">
                                                 <label for="guia_hija">Guía hija</label>
