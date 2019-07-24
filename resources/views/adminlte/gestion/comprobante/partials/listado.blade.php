@@ -141,7 +141,7 @@
                                 @else
                                     <button class="btn btn-default btn-xs">
                                         <input type="checkbox" id="integrar_{{$key+1}}" name="integrar" {{$item->integrado ? "disabled" : "" }}
-                                        title="Integrar con el Venture" value="{{$item->id_comprobante}}" style="margin:0;position:relative;top:3px">
+                                        title="Integrar con el Venture hola" value="{{$item->id_comprobante}}" style="margin:0;position:relative;top:3px">
                                     </button>
                                 @endif
                             {{--<button class="btn btn-default btn-xs">

@@ -333,11 +333,7 @@
                 '<i class="fa fa-file-text-o" aria-hidden="true"></i> Comprobante electrónicos', true, false, '{{isPC() ? '50%' : ''}}');
             return false;
         }
-<<<<<<< HEAD
-       
-=======
 
->>>>>>> fa96f457b657e750ff4541c0b4c42e4e12caf5e1
         modal_quest('modal_crear_especificacion',
             '<div class="alert alert-warning text-center"><p>Al integrar estas facturas no podran ser modificado el pedido ni la facturación.!</p></div>',
             "<i class='fa fa-exclamation-triangle' ></i> Alerta",true, false, '{{isPC() ? '50%' : ''}}', function () {
