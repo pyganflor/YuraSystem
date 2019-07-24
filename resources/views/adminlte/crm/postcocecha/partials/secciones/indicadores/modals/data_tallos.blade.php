@@ -87,11 +87,11 @@
         @endfor
 
                 {{-- Data_list --}}
-                @foreach($arreglo_variedades as $variedad)
+        @foreach($arreglo_variedades as $variedad)
             data_list = [];
-        @foreach($variedad['tallos'] as $tallos)
-        data_list.push("{{$tallos}}");
-        @endforeach
+            @foreach($variedad['tallos'] as $tallos)
+            data_list.push("{{$tallos}}");
+            @endforeach
 
         datasets.push({
             label: '{{espacios($variedad['variedad']->nombre)}}' + ' ',

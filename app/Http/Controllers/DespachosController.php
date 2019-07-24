@@ -1053,7 +1053,5 @@ class DespachosController extends Controller
             $objSheet1->getStyle('A1:A2')->getFont()->setBold(true);
         }
 
-
-
     }
 }
