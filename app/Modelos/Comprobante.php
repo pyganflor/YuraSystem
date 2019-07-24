@@ -25,7 +25,8 @@ class Comprobante extends Model
         'fecha_autorizacion',
         'secuencial',
         'rehusar',
-        'ambiente'
+        'ambiente',
+        'fecha_integrado'
     ];
 
     public function envio(){
