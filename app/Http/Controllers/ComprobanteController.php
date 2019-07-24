@@ -1816,7 +1816,7 @@ class ComprobanteController extends Controller
             . '</div>';
 
         $objComprobante = Comprobante::find($request->id_comprobante);
-        if($objComprobante->update(['integrado'=>false])){
+        if($objComprobante->update(['integrado'=>false,'fecha_integrado' => null])){
             $success = true;
             $msg = '<div class="alert alert-success text-center">' .
                 '<p> Se ha desvinculado la facutra exitosamente</p>'
