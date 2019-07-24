@@ -59,11 +59,11 @@
                                 </div>
                                 <div class="form-group">
                                     <label> Desde</label><br />
-                                    <input type="date" class="form-control" id="desde" name="desde" value="{{\Carbon\Carbon::now()->toDateString()}}">
+                                    <input type="date" class="form-control" id="desde" name="desde" style="width:150px" value="{{\Carbon\Carbon::now()->toDateString()}}">
                                 </div>
                                 <div class="form-group">
                                     <label> Hasta </label><br />
-                                    <input type="date" class="form-control" id="hasta" name="hasta" value="{{\Carbon\Carbon::now()->toDateString()}}">
+                                    <input type="date" class="form-control" id="hasta" name="hasta" style="width:150px" value="{{\Carbon\Carbon::now()->toDateString()}}">
                                 </div>
                                 <div class="form-group">
                                     <label style="visibility: hidden;"> .</label><br />
