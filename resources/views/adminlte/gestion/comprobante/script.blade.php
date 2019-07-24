@@ -341,6 +341,7 @@
             fecha_integrado : $("#fecha_integrado").val(),
             _token : '{{csrf_token()}}'
         };
+        console.log(datos);
         modal_form('modal_fecha_integrado', html, '<i class="fa fa-calendar"></i> Fecha de integración', true, false, '30%', function () {
             post_jquery('comprobante/integrar_factura_venture', datos, function () {
                 buscar_listado_comprobante();
