@@ -20,7 +20,7 @@
         //para que la pagina se cargen los elementos
         e.preventDefault();
         var url = $(this).attr("href");
-        url = url.replace('?', '?busqueda=' + $('#busqueda_agencias_transporte').val() + '&');
+        url = url.replace('?', '?busqueda=' + $('#busqueda_aerolinea').val());
         $('#div_listado_aerolinea').html($('#table_aerolinea').html());
         $.get(url, function (resul) {
             $('#div_listado_agencia_transporte').html(resul);
