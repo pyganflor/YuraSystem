@@ -4,10 +4,11 @@
     function buscar_listado_comprobante() {
         $.LoadingOverlay('show');
         datos = {
-            anno               : $('#anno').val(),
+            //anno               : $('#anno').val(),
             id_cliente         : $('#id_cliente').val(),
             codigo_comprobante : $("#codigo_comprobante").val(),
-            fecha              : $('#fecha').val(),
+            desde              : $('#desde').val(),
+            desde              : $('#desde').val(),
             estado             : $('#estado').val()
         };
         $.get('{{url('comprobante/buscar')}}', datos, function (retorno) {
@@ -321,18 +322,33 @@
         });
     });
 
-    function integrar_comprobante(){
-        arrComprobante = [];
-        $.each($('input:checkbox[name=integrar]:checked'), function (i, j) {
-            arrComprobante.push({id_comprobante: j.value});
-        });
+    function integrar_factura_venture(id_comprobante) {
 
-        if (arrComprobante.length === 0) {
-            modal_view('modal_view_msg_factura',
-                '<div class="alert text-center  alert-warning"><p><i class="fa fa-fw fa-exclamation-triangle"></i> Debe seleccionar al menos un documento electrónico para integrar al Venture</p></div>',
-                '<i class="fa fa-file-text-o" aria-hidden="true"></i> Comprobante electrónicos', true, false, '{{isPC() ? '50%' : ''}}');
-            return false;
-        }
+        html = "<div class='row'>" +
+                "<div class='col-md-12'>" +
+                    "<form id='form_carga_xml' name='form_carga_xml'>" +
+                        "<div class='row'>" +
+                            "<p><label class='alert alert-info' style='width: 100%; margin: 0;'>Escoja la fecha con la que desea integrar la factura</label></p>" +
+                            "<div class='col-md-12'>" +
+                                "<input type='date' id='fecha_integrado' name='fecha_integrado' class='form-control' value='{{now()->toDayDateTimeString()}}' required> "+
+                            "</div>"+
+                        "</div>" +
+                    "</form>" +
+                "</div>"+
+               "</div>";
+        datos = {
+            id_comprobante : id_comprobante,
+            fecha_integrado : $("#fecha_integrado").val(),
+            _token : '{{csrf_token()}}'
+        };
+        modal_view('modal_fecha_integrado', html, '<i class="fa fa-fw fa-plus"></i> Fecha de integración', true, false, '50%');
+        post_jquery('comprobante/integrar_factura_venture', datos, function () {
+            buscar_listado_comprobante();
+            cerrar_modals();
+        });
+    }
+
+    function txt_venture(){
 
         modal_quest('modal_crear_especificacion',
             '<div class="alert alert-warning text-center"><p>Al integrar estas facturas no podran ser modificado el pedido ni la facturación.!</p></div>',
@@ -342,9 +358,10 @@
                 type: "POST",
                 dataType: "html",
                 contentType: "application/x-www-form-urlencoded",
-                url: '{{url('comprobante/integrar_comprobante')}}',
+                url: '{{url('comprobante/descargar_txt')}}',
                 data: {
-                    arrComprobante: arrComprobante,
+                    desde: $("#desde").val(),
+                    hasta : $("#hasta").val(),
                     tipo_comprobante : $("#codigo_comprobante").val(),
                     _token: '{{csrf_token()}}',
                 },
