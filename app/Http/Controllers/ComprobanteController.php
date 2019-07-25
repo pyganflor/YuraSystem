@@ -1832,15 +1832,20 @@ class ComprobanteController extends Controller
 
     public function actualizar_comprobante_venture(Request $request){
         $valida = Validator::make($request->all(), [
-            'fecha' => 'required',
-        ],['fecha.required'=>'Debe elegir un fecha de busqueda']);
+            'desde' => 'required',
+            'hasta' => 'required',
+        ],[
+            'desde.required'=>'Debe elegir un fecha desde',
+            'hasta.required'=>'Debe elegir un fecha hasta'
+        ]);
 
         if(!$valida->fails()) {
             $comprobantes = Comprobante::where([
-                ['fecha_emision',$request->fecha],
                 ['tipo_comprobante',$request->tipo_comprobante],
-                ['estado',1]
-            ])->get();
+                ['estado',1],
+                ['habilitado',true],
+                ['integrado',true]
+            ])->whereBetween('fecha_emision',[$request->desde,$request->hasta])->get();
             $msg ="";
             if($request->tipo_comprobante == "01"){
                 $documento = "factura";

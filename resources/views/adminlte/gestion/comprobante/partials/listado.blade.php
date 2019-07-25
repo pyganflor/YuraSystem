@@ -29,7 +29,7 @@
                             TOTAL
                         </th>
                         <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
-                            CAJAS
+                            CAJAS FULL
                         </th>
                     @endif
                     <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
@@ -39,17 +39,19 @@
                         ESTADO
                     </th>--}}
                     @if($columna_causa)
-                    <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
-                        CAUSA
-                    </th>
-                    @endif
+                        <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
+                            CAUSA
+                        </th>
+                        @endif
                     <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
                         OPCIONES
                     </th>
                 </tr>
             </thead>
             <tbody>
+            @php $total_cajas_full = 0; @endphp
             @foreach($listado as $key => $item)
+                @php $cajas_full = 0; @endphp
                 <tr onmouseover="$(this).css('background-color','#add8e6')" onmouseleave="$(this).css('background-color','')"
                     {{$item->estado== 6 ? 'style=color:red' : ""}} id="row_comprobante_{{$item->id_comprobante}}">
                     {{--<td style="border-color: #9d9d9d" class="text-center">
@@ -69,7 +71,19 @@
                     @if($tipo_comprobante!="06")
                         <td style="border-color: #9d9d9d" class="text-center"> {{$item->nombre_cliente}}</td>
                         <td style="border-color: #9d9d9d" class="text-center"> ${{number_format($item->monto_total,2,".","")}}</td>
-                        <td style="border-color: #9d9d9d" class="text-center"> </td>
+                        <td style="border-color: #9d9d9d" class="text-center">
+                            @php
+                                foreach($item->envio->pedido->detalles as $det_ped){
+                                    foreach($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $pos_esp_emp => $esp_emp){
+                                        if(!getFacturaAnulada($item->envio->pedido->id_pedido))
+                                            $total_cajas_full +=($esp_emp->cantidad * $det_ped->cantidad) * explode('|',$esp_emp->empaque->nombre)[1];
+
+                                        $cajas_full +=  ($esp_emp->cantidad * $det_ped->cantidad) * explode('|',$esp_emp->empaque->nombre)[1];
+                                    }
+                                }
+                            @endphp
+                            {{$cajas_full}}
+                        </td>
                     @endif
                     <td style="border-color: #9d9d9d" class="text-center"> {{$item->envio->pedido->detalles[0]->agencia_carga->nombre}} </td>
                     {{--<td style="border-color: #9d9d9d" class="text-center">
@@ -179,6 +193,15 @@
                     </td>
                 </tr>
             @endforeach
+            <tr>
+                <td>dgxj</td>
+                <td>tfjdfy</td>
+                <td>stjrj</td>
+                <td>shtrh</td>
+                <td>erhwrtrt</td>
+                <td>trhert</td>
+                <td>trhert</td>
+            </tr>
             </tbody>
         </table>
         @if($item->estado !=5 && $item->estado != 3 && $item->estado != 4)

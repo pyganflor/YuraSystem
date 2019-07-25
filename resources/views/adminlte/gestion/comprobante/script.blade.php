@@ -402,7 +402,8 @@
 
     function actualizar_comprobante(){
         datos = {
-            fecha: $("#fecha").val(),
+            desde: $("#desde").val(),
+            hasta: $("#hasta").val(),
             _token: '{{csrf_token()}}',
             tipo_comprobante : $("#codigo_comprobante").val()
         };
