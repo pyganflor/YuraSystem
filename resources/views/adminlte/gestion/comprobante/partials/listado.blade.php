@@ -109,7 +109,7 @@
                     @if($columna_causa)
                         <td style="border-color: #9d9d9d;" class="text-center"> {{!empty($item->causa) ? $item->causa : "-"}} </td>
                     @endif
-                    <td style="border-color: #9d9d9d;width:110px" class="text-center">
+                    <td style="border-color: #9d9d9d;width:120px" class="text-center">
                         @if($item->estado==5)
                             {{--<a target="_blank" href="{{url('comprobante/comprobante_aprobado_sri',$item->clave_acceso)}}" class="btn btn-info btn-xs" title="Ver factura" >
                                 <i class="fa fa-eye" aria-hidden="true"></i>
