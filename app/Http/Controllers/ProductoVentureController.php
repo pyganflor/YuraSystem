@@ -20,7 +20,7 @@ class ProductoVentureController extends Controller
         foreach ($data as $item)
             foreach($item as $i)
                 $data_completa[] = $i;
-            
+
         return view('adminlte.gestion.configuracion_facturacion.productos_venture.inicio',
             [
                 'url' => $request->getRequestUri(),
