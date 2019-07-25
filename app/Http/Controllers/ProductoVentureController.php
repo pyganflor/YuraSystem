@@ -11,13 +11,25 @@ use yura\Modelos\ProductoYuraVenture;
 class ProductoVentureController extends Controller
 {
     public function inicio(Request $request){
+        $data=[];
+        $det_esp_emp = DetalleEspecificacionEmpaque::select('id_variedad','id_clasificacion_ramo','tallos_x_ramos','longitud_ramo','id_unidad_medida')->distinct()->get();
+        foreach ($det_esp_emp as $dsp)
+            $data[$dsp->id_variedad][] = $dsp;
+
+        $data_completa = [];
+        foreach ($data as $item)
+            foreach($item as $i)
+                $data_completa[] = $i;
+
+
+       // dd(collect($data_completa));
         return view('adminlte.gestion.configuracion_facturacion.productos_venture.inicio',
             [
                 'url' => $request->getRequestUri(),
                 'submenu' => Submenu::Where('url', '=', substr($request->getRequestUri(), 1))->get()[0],
                 'text' => ['titulo' => 'Administración', 'subtitulo' => 'Productos venture'],
                 'presentacion_venture' => getCodigoArticuloVenture(),
-                'presentaciones_yuraSystem' => DetalleEspecificacionEmpaque::select('id_variedad','id_clasificacion_ramo','tallos_x_ramos','longitud_ramo','id_unidad_medida')->distinct()->get(),
+                'presentaciones_yuraSystem' => $data_completa
             ]);
     }
 
