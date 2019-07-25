@@ -98,7 +98,6 @@ class ComprobanteController extends Controller
         ini_set('max_execution_time', env('MAX_EXECUTION_TIME'));
         $valida = Validator::make($request->all(), [
             'id_envio' => 'required',
-            'guia_madre' => 'required',
             'codigo_pais' => 'required',
             'destino' => 'required',
             'email' => 'required',
@@ -148,7 +147,6 @@ class ComprobanteController extends Controller
                                     foreach(explode("|",$coloracion->precio) as $p)
                                         if($m_c->id_detalle_especificacionempaque == explode(";",$p)[1])
                                             $precio = explode(";",$p)[0];
-                                    //$precio =explode( ";",explode("|",$coloracion->precio)[$i])[0];
                                 }
                                 $precio_x_variedad = $m_c->cantidad * $precio * $cant_esp_emp;
                                 $precio_total_sin_impuestos += $precio_x_variedad;
