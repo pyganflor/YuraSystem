@@ -97,7 +97,7 @@
                     {{number_format($item->plantas_actuales)}}
                 </td>
                 <td class="text-center" style="border-color: #9d9d9d">
-                    {{number_format($item->getMortalidad(), 2)}}
+                    {{$item->getMortalidad()}}
                 </td>
             </tr>
             @php
@@ -147,7 +147,7 @@
             </th>
             <th class="text-center" style="border-color: #9d9d9d">
                 @if($total_mortalidad['positivos'] > 0)
-                    {{number_format(round($total_mortalidad['valor'] / $total_mortalidad['positivos'], 2), 2)}}
+                    {{round($total_mortalidad['valor'] / $total_mortalidad['positivos'], 2)}}
                 @endif
             </th>
         </tr>
