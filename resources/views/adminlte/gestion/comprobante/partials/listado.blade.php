@@ -197,7 +197,7 @@
                     </button>--}}
                     <button class="btn btn-success" title="Descargar txt" onclick="txt_venture()">
                         <i class="fa fa-download" ></i>
-                        Descargar arhivo txt
+                        Descargar archivo txt
                     </button>
                     <button class="btn btn-info" onclick="actualizar_comprobante()">
                         <i class="fa fa-refresh" ></i>
