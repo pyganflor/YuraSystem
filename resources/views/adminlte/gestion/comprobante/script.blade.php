@@ -351,36 +351,31 @@
     }
 
     function txt_venture(){
-
-        modal_quest('modal_crear_especificacion',
-            '<div class="alert alert-warning text-center"><p>Al integrar estas facturas no podran ser modificado el pedido ni la facturación.!</p></div>',
-            "<i class='fa fa-exclamation-triangle' ></i> Alerta",true, false, '{{isPC() ? '50%' : ''}}', function () {
-                $.LoadingOverlay("show");
-                $.ajax({
-                type: "POST",
-                dataType: "html",
-                contentType: "application/x-www-form-urlencoded",
-                url: '{{url('comprobante/descargar_txt')}}',
-                data: {
-                    desde: $("#desde").val(),
-                    hasta : $("#hasta").val(),
-                    tipo_comprobante : $("#codigo_comprobante").val(),
-                    _token: '{{csrf_token()}}',
-                },
-                success: function (data) {
-                    var opResult = JSON.parse(data);
-                    var $a = $("<a>");
-                    $a.attr("href", opResult.data);
-                    $("body").append($a);
-                    $a.attr("download", "text_integrador_" + opResult.fecha + ".txt");
-                    $a[0].click();
-                    $a.remove();
-                }
-            }).always(function () {
-                buscar_listado_comprobante();
-                cerrar_modals();
-                $.LoadingOverlay('hide');
-            });
+        $.LoadingOverlay("show");
+        $.ajax({
+            type: "POST",
+            dataType: "html",
+            contentType: "application/x-www-form-urlencoded",
+            url: '{{url('comprobante/descargar_txt')}}',
+            data: {
+                desde: $("#desde").val(),
+                hasta : $("#hasta").val(),
+                tipo_comprobante : $("#codigo_comprobante").val(),
+                _token: '{{csrf_token()}}',
+            },
+            success: function (data) {
+                var opResult = JSON.parse(data);
+                var $a = $("<a>");
+                $a.attr("href", opResult.data);
+                $("body").append($a);
+                $a.attr("download", "text_integrador_" + opResult.fecha + ".txt");
+                $a[0].click();
+                $a.remove();
+            }
+        }).always(function () {
+            buscar_listado_comprobante();
+            cerrar_modals();
+            $.LoadingOverlay('hide');
         });
     }
 
