@@ -49,7 +49,7 @@
                 </tr>
             </thead>
             <tbody>
-            @php $total_cajas_full = 0; @endphp
+            @php $total_cajas_full = 0; $monto_total  =0; @endphp
             @foreach($listado as $key => $item)
                 @php $cajas_full = 0; @endphp
                 <tr onmouseover="$(this).css('background-color','#add8e6')" onmouseleave="$(this).css('background-color','')"
@@ -70,14 +70,15 @@
                         <td style="border-color: #9d9d9d" class="text-center"> {{$item->clave_acceso}} </td>
                     @if($tipo_comprobante!="06")
                         <td style="border-color: #9d9d9d" class="text-center"> {{$item->nombre_cliente}}</td>
-                        <td style="border-color: #9d9d9d" class="text-center"> ${{number_format($item->monto_total,2,".","")}}</td>
+                        <td style="border-color: #9d9d9d" class="text-center">
+                            ${{number_format($item->monto_total,2,".","")}}
+                            @php $monto_total += $item->monto_total @endphp
+                        </td>
                         <td style="border-color: #9d9d9d" class="text-center">
                             @php
                                 foreach($item->envio->pedido->detalles as $det_ped){
                                     foreach($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $pos_esp_emp => $esp_emp){
-                                        if(!getFacturaAnulada($item->envio->pedido->id_pedido))
-                                            $total_cajas_full +=($esp_emp->cantidad * $det_ped->cantidad) * explode('|',$esp_emp->empaque->nombre)[1];
-
+                                        $total_cajas_full +=($esp_emp->cantidad * $det_ped->cantidad) * explode('|',$esp_emp->empaque->nombre)[1];
                                         $cajas_full +=  ($esp_emp->cantidad * $det_ped->cantidad) * explode('|',$esp_emp->empaque->nombre)[1];
                                     }
                                 }
@@ -196,11 +197,11 @@
             <tr>
                 <td></td>
                 <td></td>
+                <td>TOTALES: </td>
                 <td></td>
+                <td>{{$total_cajas_full}}</td>
+                <td>${{number_format($monto_total,2,".","")}}</td>
                 <td></td>
-                <td></td>
-                <td></td>
-                <td>trhert</td>
             </tr>
             </tbody>
         </table>
