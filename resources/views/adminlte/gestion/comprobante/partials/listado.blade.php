@@ -26,7 +26,7 @@
                             CLIENTE
                         </th>
                         <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
-                            TOTAL
+                            DINERO
                         </th>
                         <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
                             CAJAS FULL
@@ -193,8 +193,11 @@
                     </td>
                 </tr>
             @endforeach
+            </tbody>
+        </table>
+        <table width="100%" class="table table-responsive table-bordered" style="font-size: 0.8em; border-color: #9d9d9d">
             <tr>
-                <td>dgxj</td>
+                <td></td>
                 <td>tfjdfy</td>
                 <td>stjrj</td>
                 <td>shtrh</td>
@@ -202,7 +205,6 @@
                 <td>trhert</td>
                 <td>trhert</td>
             </tr>
-            </tbody>
         </table>
         @if($item->estado !=5 && $item->estado != 3 && $item->estado != 4)
             @if($item->estado == 0)
@@ -230,7 +232,6 @@
                 </div>
             @endif
         @endif
-
     @else
         <div class="alert alert-info text-center">No se han encontrado coincidencias</div>
     @endif
