@@ -1848,7 +1848,7 @@ class ComprobanteController extends Controller
             ])->whereBetween('fecha_emision',[$request->desde,$request->hasta])->get();
 
             $msg ='<div class="alert alert-warning text-center">' .
-                        '<p> No se han integrado las facturas generadas </p>
+                        '<p> No se han integrado las facturas generadas en las fechas seleccionadas </p>
                    </div>';
             $success = false;
             if($request->tipo_comprobante == "01"){
