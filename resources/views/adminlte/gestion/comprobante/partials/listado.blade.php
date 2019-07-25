@@ -195,13 +195,11 @@
             @endforeach
             <tr>
                 <td></td>
-
                 <td></td>
                 <td></td>
                 <td></td>
                 <td></td>
                 <td></td>
-
                 <td>trhert</td>
             </tr>
             </tbody>
