@@ -30,6 +30,12 @@
             <th class="text-center" style="border-color: #9d9d9d">
                 Tallos/m<sup>2</sup>
             </th>
+            <th class="text-center" style="border-color: #9d9d9d">
+                Ptas Iniciales
+            </th>
+            <th class="text-center" style="border-color: #9d9d9d">
+                Ptas Actuales
+            </th>
         </tr>
         </thead>
         <tbody>
@@ -39,6 +45,8 @@
             $total_tallos = 0;
             $total_tallos_m2 = 0;
             $positivos_tallos_m2 = 0;
+            $total_iniciales = 0;
+            $total_actuales = 0;
         @endphp
         @foreach($ciclos as $item)
             <tr style="font-size: 0.8em" onmouseover="$(this).addClass('bg-teal-active')" onmouseleave="$(this).removeClass('bg-teal-active')">
@@ -75,9 +83,17 @@
                 <td class="text-center" style="border-color: #9d9d9d">
                     {{round($item->getTallosCosechados()/$item->area, 2)}}
                 </td>
+                <td class="text-center" style="border-color: #9d9d9d">
+                    {{number_format($item->plantas_iniciales)}}
+                </td>
+                <td class="text-center" style="border-color: #9d9d9d">
+                    {{number_format($item->plantas_actuales)}}
+                </td>
             </tr>
             @php
                 $total_area += $item->area;
+                $total_iniciales += $item->plantas_iniciales;
+                $total_actuales += $item->plantas_actuales;
                 $ciclo += $item->fecha_fin != '' ? difFechas($item->fecha_fin, $item->fecha_inicio)->days : difFechas(date('Y-m-d'), $item->fecha_inicio)->days;
                 $total_tallos += $item->getTallosCosechados();
                 $total_tallos_m2 += round($item->getTallosCosechados()/$item->area, 2);
@@ -108,6 +124,12 @@
                 @else
                     0
                 @endif
+            </th>
+            <th class="text-center" style="border-color: #9d9d9d">
+                {{number_format($total_iniciales)}}
+            </th>
+            <th class="text-center" style="border-color: #9d9d9d">
+                {{number_format($total_actuales)}}
             </th>
             <th class="text-center" style="border-color: #9d9d9d">
             </th>
