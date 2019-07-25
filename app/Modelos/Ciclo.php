@@ -101,4 +101,14 @@ class Ciclo extends Model
 
         return difFechas($dia, $this->fecha_inicio)->days;
     }
+
+    public function getMortalidad()
+    {
+        if ($this->plantas_actuales > 0 && $this->plantas_iniciales > 0) {
+            $r = ($this->plantas_actuales / $this->plantas_iniciales) * 100;
+            return round(100 - $r, 2);
+        }
+        return 0;
+
+    }
 }
