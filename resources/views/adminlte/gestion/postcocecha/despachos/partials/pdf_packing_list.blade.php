@@ -101,7 +101,7 @@
         <thead style="border: 1px solid black" >
             <tr>
                 <td style="padding-left: 5px;border: 1px solid black;font-size:13px;border:1px solid black" > PIECES<br />Piezas</td>
-                <td style="padding-left: 5px;border: 1px solid black;font-size:13px;border:1px solid black" >UNITIS / BOX<br />Por Caja</td>
+                <td style="padding-left: 5px;border: 1px solid black;font-size:13px;border:1px solid black" >UNITIS / BOX<br />Ramos x Caja</td>
                 <td style="padding-left: 5px;border: 1px solid black;font-size:13px;border:1px solid black" > ST / BN</td>
                 <td style="padding-left: 5px;border: 1px solid black;font-size:13px;border:1px solid black" >TOTAL UNITS <br />Total Unidades</td>
                 <td style="padding-left: 5px;border: 1px solid black;font-size:13px;border:1px solid black" >DETALLE POR CAJA / BOXES CONTENT</td>
@@ -148,7 +148,6 @@
                                     $valor = isset(getDatosExportacion($det_ped->id_detalle_pedido, $cde->datos_exportacion->id_dato_exportacion)->valor) ? getDatosExportacion($det_ped->id_detalle_pedido, $cde->datos_exportacion->id_dato_exportacion)->valor : "";
                                     $dato_exportacion.= "  ".$valor." ";
                                 }
-
                             @endphp
                             <tr>
                                 @if($y == 0 && $z == 0)
@@ -177,7 +176,7 @@
                                 <td style="padding-left: 5px;font-size:13px;
                                     {{($y == 0 && $z == 0) ? "border-top:2px solid black;border-left:1px solid black;border-right:1px solid black ":"border:1px solid black"}}
                                     {{(($z+1) == getCantidadDetallesByEspecificacion($det_ped->cliente_especificacion->id_especificacion)) ? ";border-bottom:2px solid black" : ";border-bottom:1px solid black"}}" >
-                                    {{getVariedad($det_esp_emp->id_variedad)->siglas." ".getClasificacionRamo($det_esp_emp->id_clasificacion_ramo)->nombre. " " . $dato_exportacion}}</td>
+                                    {{getVariedad($det_esp_emp->id_variedad)->siglas." ".getClasificacionRamo($det_esp_emp->id_clasificacion_ramo)->nombre.getClasificacionRamo($det_esp_emp->id_clasificacion_ramo)->unidad_medida->siglas. " " . $dato_exportacion}}</td>
                             </tr>
                         @endforeach
                     @endforeach
@@ -210,8 +209,9 @@
         </tr>
     </table>
 
+
 @elseif($pedido->tipo_especificacion === "T")
-    @php $env = getEnvio($pedido->envios[0]->id_envio) @endphp
+    @php $env = getEnvio($pedido->envios[0]->id_envio); $data = []; @endphp
     <table style="width:100%;font-family: arial, sans-serif;border-collapse: collapse;" >
         <thead style="border: 1px solid black" >
             <tr>
@@ -226,55 +226,28 @@
             </tr>
         </thead>
         <tbody style="border: 1px solid black">
-
-                @foreach($env->pedido->pedidoMarcacionesOrderAsc as $w => $distribucion)
-                    <tr>
-                        <td style="font-size:12px;border:1px solid black">{{$distribucion->nombre}}</td>
-                        <td style=";font-size:12px;border:1px solid black">{{$distribucion->ramos}}</td>
-                        <td style="font-size:12px;border:1px solid black">{{$distribucion->pos_pieza}}</td>
-                        <td style="font-size:12px;border:1px solid black">
-                            @if ($distribucion->piezas === 1 )
-                                {{$distribucion->pos_pieza}}
-                            @else
-                                {{($distribucion->pos_pieza-1)+$distribucion->piezas}}
+            @foreach($env->pedido->pedidoMarcacionesOrderAsc as $w => $distribucion)
+                <tr>
+                    <td style="font-size:12px;border:1px solid black">{{getEspecificacionEmpaque($distribucion->id_especificacion_empaque)->detalles[0]->variedad->siglas}} {{$distribucion->nombre}}</td>
+                    <td style=";font-size:12px;border:1px solid black">{{$distribucion->ramos}}</td>
+                    <td style="font-size:12px;border:1px solid black">{{$distribucion->pos_pieza}}</td>
+                    <td style="font-size:12px;border:1px solid black">
+                        @if ($distribucion->piezas === 1 )
+                            {{$distribucion->pos_pieza}}
+                        @else
+                            {{($distribucion->pos_pieza-1)+$distribucion->piezas}}
+                        @endif
+                    </td>
+                    <td style="font-size:12px;border:1px solid black">{{$distribucion->piezas}}</td>
+                    <td style="font-size:12px;border:1px solid black">
+                        @foreach (getDistribucion($distribucion->id_distribucion)->distribuciones_coloraciones as $z => $distribucion_coloracion)
+                            @if($distribucion_coloracion->cantidad > 0)
+                                {{$distribucion_coloracion->cantidad ." ". $distribucion_coloracion->marcacion_coloracion->coloracion->color->nombre. ","}}
                             @endif
-                        </td>
-                        <td style="font-size:12px;border:1px solid black">{{$distribucion->piezas}}</td>
-                        <td style="font-size:12px;border:1px solid black">
-                            @foreach (getDistribucion($distribucion->id_distribucion)->distribuciones_coloraciones as $z => $distribucion_coloracion)
-                                 @if($distribucion_coloracion->cantidad !== 0)
-                                    {{$distribucion_coloracion->cantidad ." ". $distribucion_coloracion->marcacion_coloracion->coloracion->color->nombre. ","}}
-                                @endif
-                            @endforeach
-                        </td>
-                    </tr>
-                @endforeach
-            {{---@foreach ($env->pedido->detalles as $x => $det_ped) {
-                @foreach ($det_ped->marcaciones as $marcion){
-                    @foreach ($marcion->distribuciones as $distribucion){
-                        <tr>
-                            <td style="font-size:12px;border:1px solid black">{{$marcion->nombre}}</td>
-                            <td style=";font-size:12px;border:1px solid black">{{$distribucion->ramos}}</td>
-                            <td style="font-size:12px;border:1px solid black">{{$distribucion->pos_pieza}}</td>
-                            <td style="font-size:12px;border:1px solid black">
-                                @if ($distribucion->piezas === 1 )
-                                    {{$distribucion->pos_pieza}}
-                                @else
-                                    {{($distribucion->pos_pieza-1)+$distribucion->piezas}}
-                                @endif
-                            </td>
-                            <td style="font-size:12px;border:1px solid black">{{$distribucion->piezas}}</td>
-                            <td style="font-size:12px;border:1px solid black">
-                                @foreach ($distribucion->distribuciones_coloraciones as $x => $distribucion_coloracion)
-                                    @if($distribucion_coloracion->cantidad !== 0)
-                                        {{$distribucion_coloracion->cantidad ." ".$distribucion_coloracion->marcacion_coloracion->coloracion->color->nombre. ","}}
-                                    @endif
-                                @endforeach
-                            </td>
-                        </tr>
-                    @endforeach
-                @endforeach
-            @endforeach--}}
+                        @endforeach
+                    </td>
+                </tr>
+            @endforeach
         </tbody>
     </table>
 @endif

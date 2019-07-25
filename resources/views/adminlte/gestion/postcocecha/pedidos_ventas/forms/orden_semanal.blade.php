@@ -202,7 +202,7 @@
                             {{$det_esp->empaque_p->nombre}}
                         </td>
                         <td class="text-center" style="border-color: #9d9d9d">
-                            {{$det_esp->tallos_x_ramo}}
+                            {{$det_esp->tallos_x_ramos}}
                         </td>
                         <td class="text-center" style="border-color: #9d9d9d">
                             {{$det_esp->longitud_ramo}}

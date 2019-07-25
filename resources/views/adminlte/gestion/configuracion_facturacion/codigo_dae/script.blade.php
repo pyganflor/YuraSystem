@@ -144,4 +144,19 @@
         });
     }
 
+    $(document).on("click", "#pagination_listado_codigo_dae .pagination li a", function (e) {
+        $.LoadingOverlay("show");
+        //para que la pagina se cargen los elementos
+        e.preventDefault();
+        var url = $(this).attr("href");
+        url = url.replace('?', '?busqueda=' + $('#busqueda_codigo_dae').val() + '&');
+        $('#div_listado_clientes').html($('#table_agencia_carga').html());
+        $.get(url, function (resul) {
+            $('#div_listado_agencia_carga').html(resul);
+            estructura_tabla('table_content_agencias_carga');
+        }).always(function () {
+            $.LoadingOverlay("hide");
+        });
+    });
+
 </script>

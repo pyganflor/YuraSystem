@@ -378,13 +378,11 @@ class EnvioController extends Controller
     public function actualizar_envio(Request $request)
     {
         $valida = Validator::make($request->all(), [
-            'guia_madre' => 'required',
             'codigo_pais' => 'required',
             'email' => 'required',
             'telefono' => 'required',
             'direccion' => 'required',
             'fecha_envio' => 'required',
-            'aerolinea' => 'required',
         ]);
 
         if (!$valida->fails()) {
