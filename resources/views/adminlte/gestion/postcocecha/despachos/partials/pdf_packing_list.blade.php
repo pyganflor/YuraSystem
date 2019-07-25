@@ -226,6 +226,16 @@
             </tr>
         </thead>
         <tbody style="border: 1px solid black">
+<<<<<<< HEAD
+        {{--@foreach($env->pedido->pedidoMarcacionesOrderAsc as $w => $distribucion)
+            @php
+                foreach (getDistribucion($distribucion->id_distribucion)->distribuciones_coloraciones as $z => $distribucion_coloracion)
+                    if($distribucion_coloracion->cantidad > 0)
+                        $data[$distribucion->id_distribucion][] = $distribucion_coloracion->cantidad ." ". $distribucion_coloracion->marcacion_coloracion->coloracion->color->nombre
+            @endphp
+        @endforeach--}}
+=======
+>>>>>>> 130e22fbec3a641458ece781fa05df333887da5d
             @foreach($env->pedido->pedidoMarcacionesOrderAsc as $w => $distribucion)
                 <tr>
                     <td style="font-size:12px;border:1px solid black">{{getEspecificacionEmpaque($distribucion->id_especificacion_empaque)->detalles[0]->variedad->siglas}} {{$distribucion->nombre}}</td>
@@ -248,6 +258,10 @@
                     </td>
                 </tr>
             @endforeach
+<<<<<<< HEAD
+        {{--{{dd(array_values($data))}}--}}
+=======
+>>>>>>> 130e22fbec3a641458ece781fa05df333887da5d
         </tbody>
     </table>
 @endif

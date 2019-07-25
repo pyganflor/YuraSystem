@@ -140,9 +140,10 @@
                                 </button>
                             @else
                                 <button class="btn btn-default btn-xs" title="Integrar factura" onclick="integrar_factura_venture('{{$item->id_comprobante}}')">
-                                    <i class="fa fa-upload" aria-hidden="true"></i>
+                                    <i class="fa fa-calendar-check-o" ></i>
                                 </button>
                             @endif
+
                             {{--<button class="btn btn-default btn-xs">
                                 <input type="checkbox" id="facturar_{{$key+1}}" name="enviar" {{$item->integrado ? "disabled" : "" }}  title="Enviar al SRI" value="{{$item->clave_acceso}}" style="margin:0;position:relative;top:3px">
                             </button>--}}
@@ -197,10 +198,10 @@
                     </button>--}}
                     <button class="btn btn-success" title="Descargar txt" onclick="txt_venture()">
                         <i class="fa fa-download" ></i>
-                        Integrar con el venture
+                        Descargar arhivo txt
                     </button>
                     <button class="btn btn-info" onclick="actualizar_comprobante()">
-                        <i class="fa fa-file-text-o" ></i>
+                        <i class="fa fa-refresh" ></i>
                         Actualizar comprobantes integrados
                     </button>
                 </div>
