@@ -94,6 +94,8 @@ Route::group(['middleware' => 'autenticacion'], function () {
             /* ================== NOTIFICACIONES =================== */
             include 'notificaciones/rutas.php';
 
+            /* ================== PROYECCIONES =================== */
+            include 'proyecciones/cosecha.php';
         });
 
         include 'colores/rutas.php';
