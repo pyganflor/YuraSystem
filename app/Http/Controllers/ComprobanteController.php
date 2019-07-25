@@ -1846,7 +1846,11 @@ class ComprobanteController extends Controller
                 ['habilitado',true],
                 ['integrado',true]
             ])->whereBetween('fecha_emision',[$request->desde,$request->hasta])->get();
-            $msg ="";
+
+            $msg ='<div class="alert alert-warning text-center">' .
+                        '<p> No se han integrado las facturas generadas </p>
+                   </div>';
+            $success = false;
             if($request->tipo_comprobante == "01"){
                 $documento = "factura";
                 $arhcivo = "fac_";
