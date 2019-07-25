@@ -105,7 +105,7 @@ class Ciclo extends Model
     public function getMortalidad()
     {
         if ($this->plantas_actuales > 0 && $this->plantas_iniciales > 0) {
-            $r = round($this->plantas_actuales / $this->plantas_iniciales, 2) * 100;
+            $r = ($this->plantas_actuales / $this->plantas_iniciales) * 100;
             return round(100 - $r, 2);
         }
         return 0;
