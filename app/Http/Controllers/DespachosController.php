@@ -1044,6 +1044,7 @@ class DespachosController extends Controller
             $objSheet1->getColumnDimension('I')->setWidth(15);
             $objSheet1->getColumnDimension('M')->setWidth(15);
             $objSheet1->getColumnDimension('N')->setWidth(12);
+            $objSheet1->getColumnDimension('L')->setWidth(15);
             $objSheet1->getColumnDimension('O')->setWidth(15);
             $objSheet1->getColumnDimension('P')->setWidth(13);
             $objSheet1->getColumnDimension('Q')->setWidth(20);
@@ -1051,5 +1052,6 @@ class DespachosController extends Controller
             $objSheet1->getColumnDimension('S')->setWidth(25);
             $objSheet1->getStyle('A1:A2')->getFont()->setBold(true);
         }
+
     }
 }

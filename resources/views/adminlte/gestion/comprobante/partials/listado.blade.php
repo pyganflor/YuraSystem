@@ -143,6 +143,7 @@
                                     <i class="fa fa-calendar-check-o" ></i>
                                 </button>
                             @endif
+
                             {{--<button class="btn btn-default btn-xs">
                                 <input type="checkbox" id="facturar_{{$key+1}}" name="enviar" {{$item->integrado ? "disabled" : "" }}  title="Enviar al SRI" value="{{$item->clave_acceso}}" style="margin:0;position:relative;top:3px">
                             </button>--}}
