@@ -198,8 +198,8 @@
                 <td></td>
                 <td></td>
                 <td class="text-right"><b>TOTALES: </b></td>
-                <td><b>{{number_format($monto_total,2,".","")}}</b></td>
-                <td><b>{{$total_cajas_full}}</b></td>
+                <td class="text-center"><b>${{number_format($monto_total,2,".","")}}</b></td>
+                <td class="text-center"><b>{{$total_cajas_full}}</b></td>
                 <td></td>
                 <td></td>
             </tr>
