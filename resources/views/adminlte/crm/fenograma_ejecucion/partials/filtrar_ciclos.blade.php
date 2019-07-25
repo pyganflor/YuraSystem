@@ -97,7 +97,7 @@
                     {{number_format($item->plantas_actuales)}}
                 </td>
                 <td class="text-center" style="border-color: #9d9d9d">
-                    {{number_format($item->getMortalidad)}}
+                    {{number_format($item->getMortalidad())}}
                 </td>
             </tr>
             @php
