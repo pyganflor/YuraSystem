@@ -24,6 +24,8 @@ class Ciclo extends Model
         'fecha_fin',
         'activo',   // boolean 1
         'poda_siembra', // char(1) P
+        'plantas_iniciales',
+        'plantas_actuales',
     ];
 
     public function variedad()
