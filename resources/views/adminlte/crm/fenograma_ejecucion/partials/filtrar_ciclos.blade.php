@@ -30,16 +30,16 @@
             <th class="text-center" style="border-color: #9d9d9d">
                 Tallos/m<sup>2</sup>
             </th>
-            <th class="text-center" style="border-color: #9d9d9d">
+            <th class="text-center" style="border-color: #9d9d9d; background-color: #0b3248">
                 Ptas Iniciales
             </th>
-            <th class="text-center" style="border-color: #9d9d9d">
+            <th class="text-center" style="border-color: #9d9d9d; background-color: #0b3248">
                 Ptas Actuales
             </th>
-            <th class="text-center" style="border-color: #9d9d9d">
+            <th class="text-center" style="border-color: #9d9d9d; background-color: #0b3248">
                 %<sup>M</sup>
             </th>
-            <th class="text-center" style="border-color: #9d9d9d">
+            <th class="text-center" style="border-color: #9d9d9d; background-color: #0b3248">
                 Dend P.Ini/m<sup>2</sup>
             </th>
         </tr>
