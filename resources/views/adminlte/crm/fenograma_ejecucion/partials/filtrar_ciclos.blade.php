@@ -30,16 +30,16 @@
             <th class="text-center" style="border-color: #9d9d9d">
                 Tallos/m<sup>2</sup>
             </th>
-            <th class="text-center" style="border-color: #9d9d9d">
+            <th class="text-center" style="border-color: #9d9d9d; background-color: #0b3248">
                 Ptas Iniciales
             </th>
-            <th class="text-center" style="border-color: #9d9d9d">
+            <th class="text-center" style="border-color: #9d9d9d; background-color: #0b3248">
                 Ptas Actuales
             </th>
-            <th class="text-center" style="border-color: #9d9d9d">
+            <th class="text-center" style="border-color: #9d9d9d; background-color: #0b3248">
                 %<sup>M</sup>
             </th>
-            <th class="text-center" style="border-color: #9d9d9d">
+            <th class="text-center" style="border-color: #9d9d9d; background-color: #0b3248">
                 Dend P.Ini/m<sup>2</sup>
             </th>
         </tr>
@@ -153,18 +153,18 @@
                     0
                 @endif
             </th>
-            <th class="text-center" style="border-color: #9d9d9d">
+            <th class="text-center" style="border-color: #9d9d9d; background-color: #0b3248">
                 {{number_format($total_iniciales)}}
             </th>
-            <th class="text-center" style="border-color: #9d9d9d">
+            <th class="text-center" style="border-color: #9d9d9d; background-color: #0b3248">
                 {{number_format($total_actuales)}}
             </th>
-            <th class="text-center" style="border-color: #9d9d9d">
+            <th class="text-center" style="border-color: #9d9d9d; background-color: #0b3248">
                 @if($total_mortalidad['positivos'] > 0)
                     {{round($total_mortalidad['valor'] / $total_mortalidad['positivos'], 2)}}
                 @endif
             </th>
-            <th class="text-center" style="border-color: #9d9d9d">
+            <th class="text-center" style="border-color: #9d9d9d; background-color: #0b3248">
                 @if($total_densidad['positivos'] > 0)
                     {{round($total_densidad['valor'] / $total_densidad['positivos'], 2)}}
                 @endif
