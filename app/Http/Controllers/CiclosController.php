@@ -190,6 +190,8 @@ class CiclosController extends Controller
             if ($request->fecha_cosecha != '')
                 $ciclo->fecha_cosecha = opDiasFecha('+', $request->fecha_cosecha, $request->fecha_inicio);
             $ciclo->fecha_fin = $request->fecha_fin;
+            $ciclo->plantas_iniciales = $request->plantas_iniciales;
+            $ciclo->plantas_actuales = $request->plantas_actuales;
 
             if ($ciclo->save()) {
                 $success = true;
