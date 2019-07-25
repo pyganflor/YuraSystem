@@ -110,4 +110,9 @@ class Ciclo extends Model
         }
         return 0;
     }
+
+    public function getDensidadIniciales()
+    {
+        return round($this->plantas_iniciales / $this->area, 2);
+    }
 }

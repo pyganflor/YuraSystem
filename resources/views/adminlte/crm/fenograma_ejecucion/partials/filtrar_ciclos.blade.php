@@ -39,6 +39,9 @@
             <th class="text-center" style="border-color: #9d9d9d">
                 %<sup>M</sup>
             </th>
+            <th class="text-center" style="border-color: #9d9d9d">
+                Dend P.Ini/m<sup>2</sup>
+            </th>
         </tr>
         </thead>
         <tbody>
@@ -51,6 +54,10 @@
             $total_iniciales = 0;
             $total_actuales = 0;
             $total_mortalidad = [
+                'valor' => 0,
+                'positivos' => 0,
+            ];
+            $total_densidad = [
                 'valor' => 0,
                 'positivos' => 0,
             ];
@@ -99,6 +106,9 @@
                 <td class="text-center" style="border-color: #9d9d9d">
                     {{$item->getMortalidad()}}
                 </td>
+                <td class="text-center" style="border-color: #9d9d9d">
+                    {{$item->getDensidadIniciales()}}
+                </td>
             </tr>
             @php
                 $total_area += $item->area;
@@ -107,6 +117,10 @@
                 if($item->plantas_iniciales > 0 && $item->plantas_actuales > 0){
                     $total_mortalidad['valor'] += $item->getMortalidad();
                     $total_mortalidad['positivos']++;
+                }
+                if($item->plantas_iniciales > 0 && $item->area > 0){
+                    $total_densidad['valor'] += $item->getDensidadIniciales();
+                    $total_densidad['positivos']++;
                 }
                 $ciclo += $item->fecha_fin != '' ? difFechas($item->fecha_fin, $item->fecha_inicio)->days : difFechas(date('Y-m-d'), $item->fecha_inicio)->days;
                 $total_tallos += $item->getTallosCosechados();
@@ -148,6 +162,11 @@
             <th class="text-center" style="border-color: #9d9d9d">
                 @if($total_mortalidad['positivos'] > 0)
                     {{round($total_mortalidad['valor'] / $total_mortalidad['positivos'], 2)}}
+                @endif
+            </th>
+            <th class="text-center" style="border-color: #9d9d9d">
+                @if($total_densidad['positivos'] > 0)
+                    {{round($total_densidad['valor'] / $total_densidad['positivos'], 2)}}
                 @endif
             </th>
         </tr>
