@@ -193,18 +193,18 @@
                     </td>
                 </tr>
             @endforeach
-            </tbody>
-        </table>
-        <table width="100%" class="table table-responsive table-bordered" style="font-size: 0.8em; border-color: #9d9d9d">
             <tr>
                 <td></td>
-                <td>tfjdfy</td>
-                <td>stjrj</td>
-                <td>shtrh</td>
-                <td>erhwrtrt</td>
-                <td>trhert</td>
+
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+
                 <td>trhert</td>
             </tr>
+            </tbody>
         </table>
         @if($item->estado !=5 && $item->estado != 3 && $item->estado != 4)
             @if($item->estado == 0)

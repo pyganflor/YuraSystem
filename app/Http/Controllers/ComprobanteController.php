@@ -1863,7 +1863,10 @@ class ComprobanteController extends Controller
                 $carpeta = "guias_remision/";
             }
 
+            if($comprobantes->count() > 0) $msg='';
+
             foreach ($comprobantes as $comprobante){
+
                 if(file_exists(env('PATH_XML_AUTORIZADOS').$carpeta.$arhcivo.$comprobante->secuencial.'.xml')){
                     $cadena = file_get_contents(env('PATH_XML_AUTORIZADOS').$carpeta.$arhcivo.$comprobante->secuencial.'.xml');
                     $objXmlAutorizado = simplexml_load_string($cadena);
