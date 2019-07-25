@@ -200,7 +200,7 @@
                         Descargar arhivo txt
                     </button>
                     <button class="btn btn-info" onclick="actualizar_comprobante()">
-                        <i class="fa fa-file-text-o" ></i>
+                        <i class="fa fa-refresh" ></i>
                         Actualizar comprobantes integrados
                     </button>
                 </div>
