@@ -26,7 +26,7 @@
                             CLIENTE
                         </th>
                         <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
-                            TOTAL
+                            DINERO
                         </th>
                         <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
                             CAJAS FULL
@@ -49,7 +49,7 @@
                 </tr>
             </thead>
             <tbody>
-            @php $total_cajas_full = 0; @endphp
+            @php $total_cajas_full = 0; $monto_total  =0; @endphp
             @foreach($listado as $key => $item)
                 @php $cajas_full = 0; @endphp
                 <tr onmouseover="$(this).css('background-color','#add8e6')" onmouseleave="$(this).css('background-color','')"
@@ -70,14 +70,15 @@
                         <td style="border-color: #9d9d9d" class="text-center"> {{$item->clave_acceso}} </td>
                     @if($tipo_comprobante!="06")
                         <td style="border-color: #9d9d9d" class="text-center"> {{$item->nombre_cliente}}</td>
-                        <td style="border-color: #9d9d9d" class="text-center"> ${{number_format($item->monto_total,2,".","")}}</td>
+                        <td style="border-color: #9d9d9d" class="text-center">
+                            ${{number_format($item->monto_total,2,".","")}}
+                            @php $monto_total += $item->monto_total @endphp
+                        </td>
                         <td style="border-color: #9d9d9d" class="text-center">
                             @php
                                 foreach($item->envio->pedido->detalles as $det_ped){
                                     foreach($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $pos_esp_emp => $esp_emp){
-                                        if(!getFacturaAnulada($item->envio->pedido->id_pedido))
-                                            $total_cajas_full +=($esp_emp->cantidad * $det_ped->cantidad) * explode('|',$esp_emp->empaque->nombre)[1];
-
+                                        $total_cajas_full +=($esp_emp->cantidad * $det_ped->cantidad) * explode('|',$esp_emp->empaque->nombre)[1];
                                         $cajas_full +=  ($esp_emp->cantidad * $det_ped->cantidad) * explode('|',$esp_emp->empaque->nombre)[1];
                                     }
                                 }
@@ -108,7 +109,7 @@
                     @if($columna_causa)
                         <td style="border-color: #9d9d9d;" class="text-center"> {{!empty($item->causa) ? $item->causa : "-"}} </td>
                     @endif
-                    <td style="border-color: #9d9d9d;width:110px" class="text-center">
+                    <td style="border-color: #9d9d9d;width:120px" class="text-center">
                         @if($item->estado==5)
                             {{--<a target="_blank" href="{{url('comprobante/comprobante_aprobado_sri',$item->clave_acceso)}}" class="btn btn-info btn-xs" title="Ver factura" >
                                 <i class="fa fa-eye" aria-hidden="true"></i>
@@ -194,13 +195,13 @@
                 </tr>
             @endforeach
             <tr>
-                <td>dgxj</td>
-                <td>tfjdfy</td>
-                <td>stjrj</td>
-                <td>shtrh</td>
-                <td>erhwrtrt</td>
-                <td>trhert</td>
-                <td>trhert</td>
+                <td></td>
+                <td></td>
+                <td class="text-right"><b>TOTALES: </b></td>
+                <td class="text-center"><b>${{number_format($monto_total,2,".","")}}</b></td>
+                <td class="text-center"><b>{{$total_cajas_full}}</b></td>
+                <td></td>
+                <td></td>
             </tr>
             </tbody>
         </table>
@@ -230,7 +231,6 @@
                 </div>
             @endif
         @endif
-
     @else
         <div class="alert alert-info text-center">No se han encontrado coincidencias</div>
     @endif

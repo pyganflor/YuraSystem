@@ -13,7 +13,7 @@
         };
         $.get('{{url('comprobante/buscar')}}', datos, function (retorno) {
             $('#div_listado_comprobante').html(retorno);
-            estructura_tabla('table_content_comprobante');
+            //estructura_tabla('table_content_comprobante');
         }).always(function () {
             $.LoadingOverlay('hide');
         });
