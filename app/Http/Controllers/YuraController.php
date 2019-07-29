@@ -2,6 +2,7 @@
 
 namespace yura\Http\Controllers;
 
+use Greggilbert\Recaptcha\Recaptcha;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -222,7 +223,9 @@ class YuraController extends Controller
             $rsa->loadKey(Session::get('key_privada'));
             $raw = $rsa->getPublicKey(RSA::PUBLIC_FORMAT_RAW);
 
-            return view('login.login', ['key' => $raw['n']->toHex()]);
+            return view('login.login', [
+                'key' => $raw['n']->toHex(),
+            ]);
         };
 
         return redirect('/');   // Si está logeado redirect a inicio

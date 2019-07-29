@@ -6,7 +6,7 @@
                 <th class="text-center" style="border-color: white; color: white; background-color: #357ca5" rowspan="2">
                     Módulo
                 </th>
-                <th class="text-center" style="border-color: white; color: white; background-color: #357ca5" colspan="{{$tipo == 1 ? 11 : 6}}">
+                <th class="text-center" style="border-color: white; color: white; background-color: #357ca5" colspan="{{$tipo == 1 ? 12 : 6}}">
                     Ciclos
                 </th>
                 <th class="text-center" style="border-color: white; color: white; background-color: #357ca5" rowspan="2">
@@ -48,6 +48,9 @@
                         Ptas Iniciales
                     </th>
                     <th class="text-center" style="border-color: white; color: white; background-color: #357ca5">
+                        Ptas muertas
+                    </th>
+                    <th class="text-center" style="border-color: white; color: white; background-color: #357ca5">
                         Ptas actuales
                     </th>
                 @endif
@@ -57,6 +60,7 @@
             @php
                 $total_area = 0;
                 $total_iniciales = 0;
+                $total_muertas = 0;
                 $total_actuales = 0;
             @endphp
             @foreach($modulos as $pos_mdl => $modulo)
@@ -141,13 +145,19 @@
                         </td>
                         <td class="text-center" style="border-color: #9d9d9d">
                             @php
-                                $total_actuales += $modulo->cicloActual()->plantas_actuales;
+                                $total_muertas += $modulo->cicloActual()->plantas_muertas;
                             @endphp
-                            <span class="hidden">{{$modulo->cicloActual()->plantas_actuales}}</span>
-                            <input type="number" id="ciclo_plantas_actuales_{{$modulo->id_modulo}}"
-                                   name="ciclo_plantas_actuales_{{$modulo->id_modulo}}"
-                                   style="width: 100%" onkeypress="return isNumber(event)" value="{{$modulo->cicloActual()->plantas_actuales}}"
+                            <span class="hidden">{{$modulo->cicloActual()->plantas_muertas}}</span>
+                            <input type="number" id="ciclo_plantas_muertas_{{$modulo->id_modulo}}"
+                                   name="ciclo_plantas_muertas_{{$modulo->id_modulo}}"
+                                   style="width: 100%" onkeypress="return isNumber(event)" value="{{$modulo->cicloActual()->plantas_muertas}}"
                                    class="text-center" required>
+                        </td>
+                        <td class="text-center" style="border-color: #9d9d9d">
+                            @php
+                                $total_actuales += $modulo->cicloActual()->plantas_actuales();
+                            @endphp
+                            {{$modulo->cicloActual()->plantas_actuales()}}
                         </td>
                     @endif
 
@@ -189,6 +199,9 @@
                 @if($tipo == 1)
                     <th class="text-center" style="border-color: #9d9d9d">
                         {{number_format($total_iniciales, 2)}}
+                    </th>
+                    <th class="text-center" style="border-color: #9d9d9d">
+                        {{number_format($total_muertas, 2)}}
                     </th>
                     <th class="text-center" style="border-color: #9d9d9d">
                         {{number_format($total_actuales, 2)}}

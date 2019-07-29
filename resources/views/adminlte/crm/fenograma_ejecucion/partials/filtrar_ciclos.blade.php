@@ -101,7 +101,7 @@
                     {{number_format($item->plantas_iniciales)}}
                 </td>
                 <td class="text-center" style="border-color: #9d9d9d">
-                    {{number_format($item->plantas_actuales)}}
+                    {{number_format($item->plantas_actuales())}}
                 </td>
                 <td class="text-center" style="border-color: #9d9d9d">
                     {{$item->getMortalidad()}}
@@ -113,8 +113,8 @@
             @php
                 $total_area += $item->area;
                 $total_iniciales += $item->plantas_iniciales;
-                $total_actuales += $item->plantas_actuales;
-                if($item->plantas_iniciales > 0 && $item->plantas_actuales > 0){
+                $total_actuales += $item->plantas_actuales();
+                if($item->plantas_iniciales > 0 && $item->plantas_actuales() > 0){
                     $total_mortalidad['valor'] += $item->getMortalidad();
                     $total_mortalidad['positivos']++;
                 }

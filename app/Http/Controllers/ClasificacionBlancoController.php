@@ -40,7 +40,7 @@ class ClasificacionBlancoController extends Controller
 
         $fecha_fin = opDiasFecha('+', 7, $fecha_min);
 
-        //dd($fecha_min, $fecha_fin);
+        //dd($fecha_min, $fecha_fin, $fecha_min);
 
         $pedidos = DB::table('pedido as p')
             ->join('detalle_pedido as dp', 'dp.id_pedido', '=', 'p.id_pedido')
@@ -57,10 +57,14 @@ class ClasificacionBlancoController extends Controller
 
         $ids_pedidos = [];
         foreach ($pedidos as $id_ped) {
-            if (!getFacturaAnulada($id_ped->id_pedido))
+            if (!getFacturaAnulada($id_ped->id_pedido)) {
                 if (in_array($request->variedad, explode('|', getPedido($id_ped->id_pedido)->variedad)))
                     array_push($ids_pedidos, $id_ped->id_pedido);
+            }
         }
+
+        //dd($ids_pedidos);
+
         $fechas = DB::table('pedido')
             ->select('fecha_pedido')->distinct()
             ->whereIn('id_pedido', $ids_pedidos)
@@ -102,6 +106,8 @@ class ClasificacionBlancoController extends Controller
                 return '<div class="alert alert-danger text-center">Ha ocurrido un problema al guardar la información</div>';
             }
         }
+
+        //dd($fechas, $combinaciones, $stock_apertura);
 
         return view('adminlte.gestion.postcocecha.clasificacion_blanco.partials.listado', [
             'blanco' => $blanco,

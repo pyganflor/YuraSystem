@@ -51,21 +51,21 @@
                         <i class="fa fa-fw fa-leaf"></i> Tipo
                     </div>
                     <select name="filtro_predeterminado_variedad" id="filtro_predeterminado_variedad" class="form-control"
-                            onchange="filtrar_ciclos()">
+                            onchange="listar_proyecciones()">
                         <option value="T" selected>Todos los tipos</option>
                     </select>
                     <div class="input-group-addon bg-gray">
                         <i class="fa fa-fw fa-calendar"></i> Desde
                     </div>
                     <input type="number" class="form-control" id="filtro_predeterminado_desde" name="filtro_predeterminado_desde" required
-                           value="{{getSemanaByDate(date('Y-m-d'))->codigo}}" onchange="filtrar_ciclos()">
+                           value="{{getSemanaByDate(date('Y-m-d'))->codigo}}" onchange="listar_proyecciones()">
                     <div class="input-group-addon bg-gray">
                         <i class="fa fa-fw fa-calendar"></i> Hasta
                     </div>
                     <input type="number" class="form-control" id="filtro_predeterminado_hasta" name="filtro_predeterminado_hasta" required
-                           value="{{getSemanaByDate(date('Y-m-d'))->codigo}}" onchange="filtrar_ciclos()">
+                           value="{{getSemanaByDate(date('Y-m-d'))->codigo}}" onchange="listar_proyecciones()">
                     <div class="input-group-btn">
-                        <button type="button" class="btn btn-primary" onclick="filtrar_ciclos()">
+                        <button type="button" class="btn btn-primary" onclick="listar_proyecciones()">
                             <i class="fa fa-fw fa-search"></i>
                         </button>
                     </div>

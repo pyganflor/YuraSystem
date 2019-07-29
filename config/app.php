@@ -166,6 +166,11 @@ return [
         Fx3costa\LaravelChartJs\Providers\ChartjsServiceProvider::class,
 
         /*
+         * ReCaptccha
+         */
+        Greggilbert\Recaptcha\RecaptchaServiceProvider::class,
+
+        /*
          * Laravel IDE Helper
          */
         Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
@@ -231,6 +236,7 @@ return [
         'Excel' => Maatwebsite\Excel\Facades\Excel::class, // Para los Excel
         'PDF' => Barryvdh\DomPDF\Facade::class, //para los PDFs
         'Captcha' => Mews\Captcha\Facades\Captcha::class, // Capcha
+        'Recaptcha' => Greggilbert\Recaptcha\Facades\Recaptcha::class,
     ],
 
 ];
