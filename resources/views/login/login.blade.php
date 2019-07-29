@@ -50,11 +50,9 @@
                 <div class="col-xs-6 col-xs-offset-3">
                     <button type="button" id="btn_login" class="btn btn-primary btn-block btn-flat">Comenzar</button>
                 </div>
-                <!-- /.col -->
             </div>
         </form>
     </div>
-    <!-- /.login-box-body -->
 @endsection
 
 @section('script_final')

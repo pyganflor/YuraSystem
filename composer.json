@@ -15,6 +15,7 @@
         "laravel/tinker": "^1.0",
         "maatwebsite/excel": "2.1.x-dev",
         "mews/captcha": "^2.1",
+        "greggilbert/recaptcha": "dev-master",
         "phpseclib/phpseclib": "2.0.5"
     },
     "require-dev": {

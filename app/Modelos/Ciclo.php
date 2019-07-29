@@ -25,7 +25,7 @@ class Ciclo extends Model
         'activo',   // boolean 1
         'poda_siembra', // char(1) P
         'plantas_iniciales',
-        'plantas_actuales',
+        'plantas_muertas',
     ];
 
     public function variedad()
@@ -104,8 +104,8 @@ class Ciclo extends Model
 
     public function getMortalidad()
     {
-        if ($this->plantas_actuales > 0 && $this->plantas_iniciales > 0) {
-            $r = ($this->plantas_actuales / $this->plantas_iniciales) * 100;
+        if ($this->plantas_actuales() > 0 && $this->plantas_iniciales > 0) {
+            $r = ($this->plantas_actuales() / $this->plantas_iniciales) * 100;
             return round(100 - $r, 2);
         }
         return 0;
@@ -114,5 +114,10 @@ class Ciclo extends Model
     public function getDensidadIniciales()
     {
         return round($this->plantas_iniciales / $this->area, 2);
+    }
+
+    public function plantas_actuales()
+    {
+        return $this->plantas_iniciales - $this->plantas_muertas;
     }
 }
