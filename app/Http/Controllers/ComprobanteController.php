@@ -102,7 +102,9 @@ class ComprobanteController extends Controller
             'destino' => 'required',
             'email' => 'required',
             'telefono' => 'required',
-        ]);
+            'id_configuracion_empresa' => 'required'
+        ],['id_configuracion_empresa.required' => 'Debe seleccionar la empresa con la que desea facturar el pedido']);
+
         $msg = "";
         if (!$valida->fails()) {
             $precio_total_sin_impuestos = 0.00;
@@ -125,7 +127,6 @@ class ComprobanteController extends Controller
                         }
                     }
                 }
-
             }else if($envio->pedido->tipo_especificacion === "T"){
                 foreach ($envio->pedido->detalles as $x => $det_ped) {
                     foreach($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $m => $esp_emp){
@@ -539,6 +540,7 @@ class ComprobanteController extends Controller
                 //$obj_comprobante->secuencial = getDetallesClaveAcceso($claveAcceso, "SECUENCIAL");
                 $obj_comprobante->secuencial = $secuencial;
                 $obj_comprobante->estado = 1; //PARA QUE LA FACTURACION FUNCIONE CON EL VENTURE
+                $obj_comprobante->id_configuracion_empresa = $request->id_configuracion_empresa;
 
                 if ($obj_comprobante->save()) {
                     $model_comprobante = Comprobante::all()->last();

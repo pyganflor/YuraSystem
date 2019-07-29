@@ -354,7 +354,7 @@
                                                 <input type="text" placeholder="Anden" class="form-control" {{$factura_tercero ?  "disabled" : ""}} {{($facturado) ? "disabled='disabled'" : ""}}
                                                 id="almacen" name="almacen_{{$i+1}}" value="{{$almacen}}">
                                             </div>
-                                            <div class="col-md-6">
+                                            <div class="col-md-3">
                                                 @php
                                                     if(isset($envio->direccion)){
                                                         $direccion = $envio->direccion;
@@ -365,6 +365,14 @@
                                                 <label for="direccion">Destino</label>
                                                 <input type="text" placeholder="Dirección" {{$factura_tercero ?  "disabled" : ""}} class="form-control" {{($facturado) ? "disabled='disabled'" : ""}}
                                                 id="direccion" name="direccion" value="{{$direccion}}" required>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <label for="empresa">Empresa</label>
+                                                <select class="form-control" name="id_empresa" id="id_empresa">
+                                                    @foreach($empresas as $e)
+                                                    <option value="{{$e->id_configuracion_empresa}}">{{$e->razon_social}}</option>
+                                                    @endforeach
+                                                </select>
                                             </div>
                                         </div>
                                         <hr />

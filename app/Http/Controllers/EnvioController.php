@@ -3,6 +3,7 @@
 namespace yura\Http\Controllers;
 
 use Illuminate\Http\Request;
+use yura\Modelos\ConfiguracionEmpresa;
 use yura\Modelos\DetallePedido;
 use yura\Modelos\Aerolinea;
 use yura\Modelos\Envio;
@@ -185,7 +186,6 @@ class EnvioController extends Controller
     }
 
     public function buscar_envio(Request $request){
-
         $cliente = $request->has('id_cliente') ? $request->id_cliente : '';
         $fecha   = $request->has('fecha') ? $request->fecha : '';
         $estado  = $request->has('estado') ? $request->estado : '';
@@ -197,9 +197,8 @@ class EnvioController extends Controller
         ])->join('pedido as p', 'envio.id_pedido','=','p.id_pedido')
             ->join('detalle_cliente as dc','p.id_cliente','=','dc.id_cliente' )
             ->join('impuesto as i','dc.codigo_impuesto','i.codigo')
-            ->join('tipo_impuesto as ti','dc.codigo_porcentaje_impuesto','ti.codigo')
-            ->orderBy('envio.id_envio','Desc')
-        ->select('p.*','envio.*','i.nombre as nombre_impuesto','ti.porcentaje','dc.nombre','dc.direccion as direccion_cliente','dc.almacen as almacen_cliente','dc.provincia','dc.codigo_pais as pais_cliente','dc.telefono as telefono_cliente','dc.correo');
+            ->join('tipo_impuesto as ti','dc.codigo_porcentaje_impuesto','ti.codigo')->orderBy('envio.id_envio','Desc')
+            ->select('p.*','envio.*','i.nombre as nombre_impuesto','ti.porcentaje','dc.nombre','dc.direccion as direccion_cliente','dc.almacen as almacen_cliente','dc.provincia','dc.codigo_pais as pais_cliente','dc.telefono as telefono_cliente','dc.correo');
 
         if ($cliente != '')
             $listado = $listado->where('dc.id_cliente',$cliente);
