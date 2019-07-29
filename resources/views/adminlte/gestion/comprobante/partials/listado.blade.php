@@ -42,7 +42,7 @@
                         <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
                             CAUSA
                         </th>
-                        @endif
+                    @endif
                     <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
                         OPCIONES
                     </th>
@@ -111,9 +111,9 @@
                     @endif
                     <td style="border-color: #9d9d9d;width:120px" class="text-center">
                         @if($item->estado==5)
-                            {{--<a target="_blank" href="{{url('comprobante/comprobante_aprobado_sri',$item->clave_acceso)}}" class="btn btn-info btn-xs" title="Ver factura" >
+                            <a target="_blank" href="{{url('comprobante/comprobante_aprobado_sri',$item->clave_acceso)}}" class="btn btn-info btn-xs" title="Ver factura" >
                                 <i class="fa fa-eye" aria-hidden="true"></i>
-                            </a>--}}
+                            </a>
                             @if($tipo_comprobante=="01" && getComprobanteRelacionadFactura($item->id_comprobante) == null)
                                 @if(getCantDespacho(getComprobante($item->id_comprobante)->envio->pedido->id_pedido)>0)
                                     {{-- COMENTADO PARA QUE LA FACTURACION  FUNCIONE CON EL VENTURE
@@ -126,19 +126,23 @@
                                 @endif
                             @endif
                             @if($tipo_comprobante!="06")
-                                {{-- COMENTADO PARA QUE LA FACTURACION  FUNCIONE CON EL VENTURE
+                                {{-- COMENTADO PARA QUE LA FACTURACION FUNCIONE CON EL VENTURE
                                 <a target="_blank" href="{{url('comprobante/pre_factura',[$item->clave_acceso,true])}}" class="btn btn-info btn-xs" title="Ver factura Cliente">
                                     <i class="fa fa-user-circle-o" aria-hidden="true"></i>
                                 </a>
                                 <button class="btn btn-warning btn-xs" title="Reenviar correo" onclick="reenviar_correo('{{$item->clave_acceso}}')">
                                     <i class="fa fa-envelope-o" aria-hidden="true"></i>
                                 </button>--}}
-                                <a target="_blank" href="{{url('comprobante/documento_pre_factura',[$item->secuencial,true])}}" class="btn btn-info btn-xs" title="Ver factura Cliente">
-                                    <i class="fa fa-user-circle-o" aria-hidden="true"></i>
-                                </a>
-                                <a target="_blank" href="{{url('comprobante/documento_pre_factura',$item->secuencial)}}" class="btn btn-primary btn-xs" title="Ver factura SRI">
-                                    <i class="fa fa-eye" aria-hidden="true"></i>
-                                </a>
+
+                                    <a target="_blank" href="{{url('comprobante/documento_pre_factura',[$item->secuencial,true])}}" class="btn btn-info btn-xs" title="Ver factura Cliente">
+                                        <i class="fa fa-user-circle-o" aria-hidden="true"></i>
+                                    </a>
+
+                                @if($item->esatdo == 1)
+                                    <a target="_blank" href="{{url('comprobante/documento_pre_factura',$item->secuencial)}}" class="btn btn-primary btn-xs" title="Ver factura SRI">
+                                        <i class="fa fa-eye" aria-hidden="true"></i>
+                                    </a>
+                                @endif
                                 <button class="btn btn-danger btn-xs" title="Anular factura" onclick="anular_factura('{{$item->id_comprobante}}')">
                                     <i class="fa fa-times" ></i>
                                 </button>

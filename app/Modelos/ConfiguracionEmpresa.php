@@ -33,7 +33,10 @@ class ConfiguracionEmpresa extends Model
         'correo',
         'fax',
         'telefono',
-        'permiso_agrocalidad'
+        'permiso_agrocalidad',
+        'ruc',
+        'firma_electronica',
+        'imagen'
     ];
 
     public function clasificaciones_unitarias()

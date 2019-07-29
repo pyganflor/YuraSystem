@@ -3,7 +3,6 @@
 namespace yura\Http\Controllers;
 
 use Illuminate\Http\Request;
-use PHPUnit\Util\RegularExpressionTest;
 use yura\Modelos\Pais;
 use yura\Modelos\Rol;
 use yura\Modelos\Submenu;
@@ -15,7 +14,7 @@ use yura\Modelos\Icon;
 use yura\Modelos\Variedad;
 use yura\Modelos\DetalleEmpaque;
 use Validator;
-use DB;
+
 
 class ConfiguracionEmpresaController extends Controller
 {
@@ -26,7 +25,7 @@ class ConfiguracionEmpresaController extends Controller
      */
     public function index(Request $request)
     {
-        $config_empresa = ConfiguracionEmpresa::all();
+        $config_empresa = ConfiguracionEmpresa::where('estado',1)->first();
         $moneda = Icon::where('nombre', 'usd')
             ->orWhere('nombre', 'jpy')
             ->orWhere('nombre', 'eur')
@@ -38,9 +37,9 @@ class ConfiguracionEmpresaController extends Controller
             ->orderBy('id_icono', 'desc')
             ->get();
 
-        !empty($config_empresa[0]->propagacion) ? $arrPropagacion = explode("|", $config_empresa[0]->propagacion) : $arrPropagacion = false;
-        !empty($config_empresa[0]->campo) ? $arrCampo = explode("|", $config_empresa[0]->campo) : $arrCampo = false;
-        !empty($config_empresa[0]->postcocecha) ? $arrPostcocecha = explode("|", $config_empresa[0]->postcocecha) : $arrPostcocecha = false;
+        !empty($config_empresa->propagacion) ? $arrPropagacion = explode("|", $config_empresa->propagacion) : $arrPropagacion = false;
+        !empty($config_empresa->campo) ? $arrCampo = explode("|", $config_empresa->campo) : $arrCampo = false;
+        !empty($config_empresa->postcocecha) ? $arrPostcocecha = explode("|", $config_empresa->postcocecha) : $arrPostcocecha = false;
 
         return view('adminlte.gestion.configuracion_empresa.inicio', [
             'url' => $request->getRequestUri(),
@@ -89,123 +88,164 @@ class ConfiguracionEmpresaController extends Controller
      */
     public function store(Request $request)
     {
+
         $valida = Validator::make($request->all(), [
-            'nombre' => 'required|',
-            'cant_hectarea' => 'required|',
-            'cantidad_usuarios' => 'required|',
-            'clasifi_unit_tipos' => 'required|Array',
-            'clasifi_x_ramos_tipos' => 'required|Array',
-            'empaque_nombres' => 'required|Array',
+            'nombre' => 'required',
+            'cant_hectarea' => 'required',
+            'cantidad_usuarios' => 'required',
+            'clasifi_unit_tipos' => 'required',
+            'clasifi_x_ramos_tipos' => 'required',
+            'empaque_nombres' => 'required',
             'moneda' => 'required',
             'correo' => 'required',
             'telefono' => 'required',
             'codigo_pais' => 'required',
-            'permiso_agrocalidad' => 'required'
-        ]);
+            'permiso_agrocalidad' => 'required',
+            'firma_electronica' => 'required',
+            'img_empresa' => 'mimes:jpg,JPG,JPEG,jpeg,PNG,png'
+        ],[
+            'firma_electronica.required' => 'El archivo de la firma electrónica de la empresa es obligatorio',
+            'clasifi_unit_tipos.required' => 'No se obtuvieron las clasificaciones unitarias',
+            'clasifi_x_ramos_tipos.required' => 'No se obtuvieron las clasificaciones por ramo',
+            'empaque_nombres.required' => 'No se obtuvieron los nombres de los empaques',
+            'codigo_pais.required' => 'Debe seleccionar una opción  en el campo país',
+            'cant_hectarea.required' => 'Debe colocar la cantidad de hectareas',
+            'cantidad_usuarios.required' => 'Debe colocar la cantidad de usuarios que facturaran',
+            'img_empresa.mimes' => 'La imagen de la empresa debe ser en formato jpg o png',
+          ]);
+
+        $success = false;
+        $msg = '<div class="alert alert-warning text-center">' .
+            '<p> Ha ocurrido un problema al guardar la información al sistema</p>';
 
         if (!$valida->fails()) {
-            empty($request->id_config) ? $objConfigEmpresa = new ConfiguracionEmpresa : $objConfigEmpresa = ConfiguracionEmpresa::find($request->id_config);
-            $objConfigEmpresa->nombre = $request->nombre;
-            $objConfigEmpresa->cantidad_usuarios = $request->cantidad_usuarios;
-            $objConfigEmpresa->cantidad_hectareas = $request->cant_hectarea;
-            $objConfigEmpresa->propagacion = $request->propagacion;
-            $objConfigEmpresa->campo = $request->campo;
-            $objConfigEmpresa->postcocecha = $request->postcocecha;
-            $objConfigEmpresa->moneda = $request->moneda;
-            $objConfigEmpresa->razon_social = $request->razon_social;
-            $objConfigEmpresa->direccion_matriz = $request->matriz;
-            $objConfigEmpresa->direccion_establecimiento = $request->establecimiento;
-            $objConfigEmpresa->codigo_pais = $request->codigo_pais;
-            $objConfigEmpresa->correo = $request->correo;
-            $objConfigEmpresa->telefono = $request->telefono;
-            $objConfigEmpresa->fax = $request->fax;
-            $objConfigEmpresa->permiso_agrocalidad = $request->permiso_agrocalidad;
-            $objConfigEmpresa->save();
 
-            $idConfiEmpresa = ConfiguracionEmpresa::all()->last();
-            $cntClasifiUnit = count($request->clasifi_unit_tipos);
-            $cntClasifiXRamos = count($request->clasifi_x_ramos_tipos);
-            $cntempaques = count($request->empaque_nombres);
+            empty($request['id_config']) ? $objConfigEmpresa = new ConfiguracionEmpresa : $objConfigEmpresa = ConfiguracionEmpresa::find($request['id_config']);
+            $objConfigEmpresa->nombre = $request['nombre'];
+            $objConfigEmpresa->cantidad_usuarios = $request['cantidad_usuarios'];
+            $objConfigEmpresa->cantidad_hectareas = $request['cant_hectarea'];
+            $objConfigEmpresa->propagacion = $request['propagacion'];
+            $objConfigEmpresa->campo = $request['campo'];
+            $objConfigEmpresa->postcocecha = $request['postcocecha'];
+            $objConfigEmpresa->moneda = $request['moneda'];
+            $objConfigEmpresa->razon_social = $request['razon_social'];
+            $objConfigEmpresa->direccion_matriz = $request['matriz'];
+            $objConfigEmpresa->direccion_establecimiento = $request['establecimiento'];
+            $objConfigEmpresa->codigo_pais = $request['codigo_pais'];
+            $objConfigEmpresa->correo = $request['correo'];
+            $objConfigEmpresa->telefono = $request['telefono'];
+            $objConfigEmpresa->fax = $request['fax'];
+            $objConfigEmpresa->permiso_agrocalidad = $request['permiso_agrocalidad'];
+            $objConfigEmpresa->ruc = $request['ruc'];
+            if($request->has('firma_electronica')){
+                $firma = $request->file('firma_electronica');
+                $nombre_archivo = $request['razon_social']."_".$firma->getClientOriginalName();
+                $extension = $firma->getClientOriginalExtension();
+                if($extension === "P12" || $extension === "p12"){
+                    $firma->move(env('PATH_FIRMA_DIGITAL'),$nombre_archivo);
+                    $objConfigEmpresa->firma_electronica = $nombre_archivo;
+                }
+            }
+            if($request->has('img_empresa')){
+                $imagen = $request->file('img_empresa');
+                $nombre_archivo = $request['razon_social']."_".$imagen->getClientOriginalName();
+                $imagen->move(public_path('images'),$nombre_archivo);
+                $objConfigEmpresa->imagen = $nombre_archivo;
+            }
 
-            $msg = '';
+            if($objConfigEmpresa->save()){
+                $msg = "";
 
-            for ($i = 0; $i < $cntClasifiUnit; $i++) {
+                $idConfiEmpresa = ConfiguracionEmpresa::all()->last();
 
-                $existIdClasificacionUnitaria = ClasificacionUnitaria::find($request->arrIdClasifiUnit[$i]);
-                $objClasifiUnit = '';
-                empty($existIdClasificacionUnitaria->id_clasificacion_unitaria) ? $objClasifiUnit = new ClasificacionUnitaria : $objClasifiUnit = ClasificacionUnitaria::find($request->arrIdClasifiUnit[$i]);
-                $objClasifiUnit->nombre = $request->clasifi_unit_tipos[$i];
-                $objClasifiUnit->id_configuracion_empresa = $idConfiEmpresa->id_configuracion_empresa;
+                $clasifiUnitId = explode(",",$request['arrIdClasifiUnit']);
+                $clasifiUnitTipos = explode(",",$request['clasifi_unit_tipos']);
+                $cntClasifiUnit = count($clasifiUnitTipos);
 
-                if ($objClasifiUnit->save()) {
-                    $model = ClasificacionUnitaria::all()->last();
-                    $success = true;
-                    $msg .= '<div class="alert alert-success text-center">' .
-                        '<p> Se ha guardado la clasificación unitaria ' . $objClasifiUnit->nombre . '  exitosamente</p>'
-                        . '</div>';
-                    bitacora('configuracion_empresa', $model->id_clasificacion_unitaria, 'I', 'Inserción satisfactoria de una nueva clasificación unitaria');
-                } else {
-                    $success = false;
-                    $msg .= '<div class="alert alert-warning text-center">' .
-                        '<p> Ha ocurrido un problema al guardar la información al sistema</p>'
-                        . '</div>';
+                $clasifiXRamosId = explode(",",$request['arrIdClasifiXRamos']);
+                $clasifiXRamosTipos = explode(",",$request['clasifi_x_ramos_tipos']);
+                $cntClasifiXRamos = count($clasifiXRamosTipos);
+
+                $clasifiEmpaqueId = explode(",",$request['arrIdClasifiEmpaque']);
+                $empaquesTipos = explode(",",$request['empaque_nombres']);
+                $cntEmpaques = count($empaquesTipos);
+
+                $msg = '';
+                for ($i = 0; $i < $cntClasifiUnit; $i++) {
+
+                    $existIdClasificacionUnitaria = ClasificacionUnitaria::find($clasifiUnitId[$i]);
+                    empty($existIdClasificacionUnitaria->id_clasificacion_unitaria) ? $objClasifiUnit = new ClasificacionUnitaria : $objClasifiUnit = ClasificacionUnitaria::find($clasifiUnitId[$i]);
+                    $objClasifiUnit->nombre = $clasifiUnitTipos[$i];
+                    $objClasifiUnit->id_configuracion_empresa = $idConfiEmpresa->id_configuracion_empresa;
+
+                    if ($objClasifiUnit->save()) {
+                        $model = ClasificacionUnitaria::all()->last();
+                        $success = true;
+                        $msg .= '<div class="alert alert-success text-center">' .
+                            '<p> Se ha guardado la clasificación unitaria ' . $objClasifiUnit->nombre . '  exitosamente</p>'
+                            . '</div>';
+                        bitacora('configuracion_empresa', $model->id_clasificacion_unitaria, 'I', 'Inserción satisfactoria de una nueva clasificación unitaria');
+                    } else {
+                        $success = false;
+                        $msg .= '<div class="alert alert-warning text-center">' .
+                            '<p> Ha ocurrido un problema al guardar la información al sistema</p>'
+                            . '</div>';
+                    }
+                }
+
+                for ($j = 0; $j < $cntClasifiXRamos; $j++) {
+
+                    $existIdClasifiXRamos = ClasificacionRamo::find($clasifiXRamosId[$j]);
+                    empty($existIdClasifiXRamos->id_clasificacion_ramo) ? $objClasifiXRamos = new ClasificacionRamo : $objClasifiXRamos = ClasificacionRamo::find($clasifiXRamosId[$j]);
+                    $objClasifiXRamos->nombre = $clasifiXRamosTipos[$j];
+                    $objClasifiXRamos->id_configuracion_empresa = $idConfiEmpresa->id_configuracion_empresa;
+
+                    if ($objClasifiXRamos->save()) {
+                        $model = ClasificacionRamo::all()->last();
+                        $success = true;
+                        $msg .= '<div class="alert alert-success text-center">' .
+                            '<p> Se ha guardado la clasificación por rampos ' . $objClasifiXRamos->nombre . ' exitosamente</p>'
+                            . '</div>';
+                        bitacora('clasificacion_ramo', $model->id_clasificacion_ramo, 'I', 'Inserción satisfactoria de una nueva clasificación por ramos');
+                    } else {
+                        $success = false;
+                        $msg .= '<div class="alert alert-warning text-center">' .
+                            '<p> Ha ocurrido un problema al guardar la información al sistema</p>';
+                    }
+                }
+
+                for ($x = 0; $x < $cntEmpaques; $x++) {
+                    $existIdClasifiEmpaques = Empaque::find($clasifiEmpaqueId[$x]);
+                    empty($existIdClasifiEmpaques->id_empaque) ? $objEmpaques = new Empaque : $objEmpaques = Empaque::find($clasifiEmpaqueId[$x]);
+                    $objEmpaques->nombre =  substr($empaquesTipos[$x],0,-2);
+                    $objEmpaques->tipo = isset(explode("|",$empaquesTipos[$x])[3]) ? explode("|",$empaquesTipos[$x])[3] : explode("|",$empaquesTipos[$x])[1];
+                    $objEmpaques->id_configuracion_empresa = $idConfiEmpresa->id_configuracion_empresa;
+
+                    if ($objEmpaques->save()) {
+                        $model = Empaque::all()->last();
+                        $success = true;
+                        $msg .= '<div class="alert alert-success text-center">' .
+                            '<p> Se ha guardado el empaque ' . $objEmpaques->nombre . '  exitosamente</p>'
+                            . '</div>';
+                        bitacora('clasificacion_ramo', $model->id_empaque, 'I', 'Inserción satisfactoria de un nuevo empaque');
+                    } else {
+                        $success = false;
+                        $msg .= '<div class="alert alert-warning text-center">' .
+                            '<p> Ha ocurrido un problema al guardar la información al sistema</p>';
+                    }
                 }
             }
 
-            for ($j = 0; $j < $cntClasifiXRamos; $j++) {
-
-                $existIdClasifiXRamos = ClasificacionRamo::find($request->arrIdClasifiXRamos[$j]);
-                $objClasifiXRamos = '';
-                empty($existIdClasifiXRamos->id_clasificacion_ramo) ? $objClasifiXRamos = new ClasificacionRamo : $objClasifiXRamos = ClasificacionRamo::find($request->arrIdClasifiXRamos[$j]);
-                $objClasifiXRamos->nombre = $request->clasifi_x_ramos_tipos[$j];
-                $objClasifiXRamos->id_configuracion_empresa = $idConfiEmpresa->id_configuracion_empresa;
-
-                if ($objClasifiXRamos->save()) {
-                    $model = ClasificacionRamo::all()->last();
-                    $success = true;
-                    $msg .= '<div class="alert alert-success text-center">' .
-                        '<p> Se ha guardado la clasificación por rampos ' . $objClasifiXRamos->nombre . ' exitosamente</p>'
-                        . '</div>';
-                    bitacora('clasificacion_ramo', $model->id_clasificacion_ramo, 'I', 'Inserción satisfactoria de una nueva clasificación por ramos');
-                } else {
-                    $success = false;
-                    $msg .= '<div class="alert alert-warning text-center">' .
-                        '<p> Ha ocurrido un problema al guardar la información al sistema</p>';
-                }
-            }
-
-            for ($x = 0; $x < $cntempaques; $x++) {
-
-                $existIdClasifiEmpaques = Empaque::find($request->arrIdClasifiEmpaque[$x]);
-                $objEmpaques = '';
-                empty($existIdClasifiEmpaques->id_empaque) ? $objEmpaques = new Empaque : $objEmpaques = Empaque::find($request->arrIdClasifiEmpaque[$x]);
-                $objEmpaques->nombre = $request->empaque_nombres[$x][0];
-                $objEmpaques->tipo = $request->empaque_nombres[$x][1];
-                $objEmpaques->id_configuracion_empresa = $idConfiEmpresa->id_configuracion_empresa;
-
-                if ($objEmpaques->save()) {
-                    $model = Empaque::all()->last();
-                    $success = true;
-                    $msg .= '<div class="alert alert-success text-center">' .
-                        '<p> Se ha guardado el empaque ' . $objEmpaques->nombre . '  exitosamente</p>'
-                        . '</div>';
-                    bitacora('clasificacion_ramo', $model->id_empaque, 'I', 'Inserción satisfactoria de un nuevo empaque');
-                } else {
-                    $success = false;
-                    $msg .= '<div class="alert alert-warning text-center">' .
-                        '<p> Ha ocurrido un problema al guardar la información al sistema</p>';
-                }
-            }
         } else {
             $success = false;
             $errores = '';
             foreach ($valida->errors()->all() as $mi_error) {
                 if ($errores == '') {
                     $errores = '<li>' . $mi_error . '</li>';
-                } else {
-                    $errores .= '<li>' . $mi_error . '</li>';
-                }
+                } else {    }
             }
+            $errores .= '<li>' . $mi_error . '</li>';
+
             $msg = '<div class="alert alert-danger">' .
                 '<p class="text-center">¡Por favor corrija los siguientes errores!</p>' .
                 '<ul>' .
@@ -217,7 +257,6 @@ class ConfiguracionEmpresaController extends Controller
             'mensaje' => $msg,
             'success' => $success
         ];
-
 
     }
 
