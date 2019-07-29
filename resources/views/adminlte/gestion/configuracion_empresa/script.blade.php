@@ -79,8 +79,7 @@
     }
 
     function store_data_config() {
-        var id_config;
-        $("#id_config").val().length == 1 ? id_config = $("#id_config").val() : id_config = '';
+        $("#id_config").val().length > 0 ? id_config = $("#id_config").val() : id_config = '';
         var cant_inputs_clasif_unit = $("tbody#campos_clasifc_unitaria tr").length;
         var cant_inputs_clasif_x_ramos = $("tbody#campos_clasifc_x_ramo tr").length;
         var cant_inputs_empaques = $("tbody#empaques tr").length;
@@ -102,43 +101,65 @@
         var arrIdClasifiEmpaque = [];
         var arrClasifiEmpaque = [];
         for (var x = 0; x < cant_inputs_empaques; x++) {
-            arrClasifiEmpaque.push([$("#campo_empaque_" + (parseInt(x) + parseInt(1))).val(), $("#tipo_empaque_" + (parseInt(x) + parseInt(1))).val()]);
+            arrClasifiEmpaque.push([$("#campo_empaque_" + (parseInt(x) + parseInt(1))).val()+"|"+$("#tipo_empaque_" + (parseInt(x) + parseInt(1))).val()]);
             arrIdClasifiEmpaque.push($("#id_campo_empaque_" + (parseInt(x) + parseInt(1))).val());
         }
 
-
         if ($('#form_config').valid()) {
             $.LoadingOverlay('show');
-            datos = {
-                _token: '{{csrf_token()}}',
-                nombre: $("#nombre_empresa").val(),
-                razon_social : $("#razon_social").val(),
-                matriz : $("#matriz").val(),
-                establecimiento : $("#establecimiento").val(),
-                cantidad_usuarios: $("#cant_usuarios").val(),
-                cant_hectarea: $("#hectarea").val(),
-                propagacion: $("#propagacion_proceso1").val() + "|" + $("#propagacion_proceso2").val() + "|" + $("#propagacion_proceso3").val(),
-                campo: $("#campo_proceso1").val() + "|" + $("#campo_proceso2").val(),
-                postcocecha: $("#postcocecha_proceso1").val() + "|" + $("#postcocecha_proceso2").val() + "|" + $("#postcocecha_proceso3").val() + "|" + $("#postcocecha_proceso4").val() + "|" + $("#postcocecha_proceso5").val(),
-                clasifi_unit_tipos: arrClasifiUnit,
-                clasifi_x_ramos_tipos: arrClasifiXRamos,
-                empaque_nombres: arrClasifiEmpaque,
-                arrIdClasifiUnit: arrIdClasifiUnit,
-                arrIdClasifiXRamos: arrIdClasifiXRamos,
-                arrIdClasifiEmpaque: arrIdClasifiEmpaque,
-                tallos_x_ramo: $("#tallos_por_ramo").val(),
-                unidad_medida: $("#unidad_medida").val(),
-                moneda: $('#moneda').val(),
-                id_config: id_config,
-                codigo_pais : $("#codigo_pais").val(),
-                telefono : $("#telefono").val(),
-                correo : $("#correo").val(),
-                fax :$("#fax").val(),
-                permiso_agrocalidad : $("#permiso_agrocalidad").val(),
-            };
-            post_jquery('{{route('configuracion.store')}}', datos, function () {
-                cerrar_modals();
-                location.reload();
+
+            var formData = new FormData($("#form_config")[0]);
+            formData.append('nombre',$("#nombre_empresa").val());
+            formData.append('_token', '{{csrf_token()}}');
+            formData.append('nombre', $("#nombre_empresa").val());
+            formData.append(' razon_social', $("#razon_social").val());
+            formData.append('matriz', $("#matriz").val());
+            formData.append('establecimiento', $("#establecimiento").val());
+            formData.append('cantidad_usuarios', $("#cant_usuarios").val());
+            formData.append('cant_hectarea', $("#hectarea").val());
+            formData.append('propagacion', $("#propagacion_proceso1").val() + "|" + $("#propagacion_proceso2").val() + "|" + $("#propagacion_proceso3").val());
+            formData.append('campo', $("#campo_proceso1").val() + "|" + $("#campo_proceso2").val());
+            formData.append('postcocecha', $("#postcocecha_proceso1").val() + "|" + $("#postcocecha_proceso2").val() + "|" + $("#postcocecha_proceso3").val() + "|" + $("#postcocecha_proceso4").val() + "|" + $("#postcocecha_proceso5").val());
+            formData.append('clasifi_unit_tipos', arrClasifiUnit);
+            formData.append('clasifi_x_ramos_tipos', arrClasifiXRamos);
+            formData.append('empaque_nombres', arrClasifiEmpaque);
+            formData.append('arrIdClasifiUnit', arrIdClasifiUnit);
+            formData.append('arrIdClasifiXRamos', arrIdClasifiXRamos);
+            formData.append('arrIdClasifiEmpaque', arrIdClasifiEmpaque);
+            formData.append('tallos_x_ramo', $("#tallos_por_ramo").val());
+            formData.append('unidad_medida', $("#unidad_medida").val());
+            formData.append('moneda', $('#moneda').val());
+            formData.append('id_config', id_config);
+            formData.append('codigo_pais', $("#codigo_pais").val());
+            formData.append('telefono', $("#telefono").val());
+            formData.append('correo', $("#correo").val());
+            formData.append('fax',$("#fax").val());
+            formData.append('permiso_agrocalidad', $("#permiso_agrocalidad").val());
+            formData.append('ruc', $("#ruc").val());
+            $.ajax({
+                url: '{{route('configuracion.store')}}',
+                type: 'POST',
+                data: formData,
+                dataType: 'json',
+                cache: false,
+                contentType: false,
+                processData: false,
+                success: function (retorno) {
+                    if (retorno.success) {
+                        alerta_accion(retorno.mensaje, function () {
+                            cerrar_modals();
+                            location.reload();
+                        });
+                    } else {
+                        alerta(retorno.mensaje);
+                    }
+                },
+                //si ha ocurrido un error
+                error: function (retorno) {
+                    alerta(retorno.responseText);
+                    alert('Hubo un problema en la envío de la información');
+                    $.LoadingOverlay('hide');
+                }
             });
             $.LoadingOverlay('hide');
         }

@@ -7,6 +7,7 @@ use SoapClient;
 use yura\Modelos\Aerolinea;
 use yura\Modelos\ClienteDatoExportacion;
 use yura\Modelos\Comprobante;
+use yura\Modelos\ConfiguracionEmpresa;
 use yura\Modelos\DatosExportacion;
 use yura\Modelos\DetalleEnvio;
 use yura\Modelos\Pais;
@@ -469,7 +470,8 @@ class PedidoController extends Controller
             'envios' => $listado->paginate(10),
             'paises'    => Pais::all(),
             'aerolineas' => Aerolinea::where('estado',1)->get(),
-            'vista' => $request->path()
+            'vista' => $request->path(),
+            'empresas' => ConfiguracionEmpresa::all()
         ]);
     }
 

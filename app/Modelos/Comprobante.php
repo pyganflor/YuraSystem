@@ -26,7 +26,8 @@ class Comprobante extends Model
         'secuencial',
         'rehusar',
         'ambiente',
-        'fecha_integrado'
+        'fecha_integrado',
+        'id_configuracion_empresa'
     ];
 
     public function envio(){

@@ -805,10 +805,13 @@ function getCalibresRamo()
     return ClasificacionRamo::All()->where('estado', '=', 1)->sortBy('nombre');
 }
 
-function getConfiguracionEmpresa()
+function getConfiguracionEmpresa($id = null)
 {
-    $r = ConfiguracionEmpresa::All()->where('estado', '=', 1)->first();
-    return $r;
+    isset($id)
+        ? $empresa = ConfiguracionEmpresa::where('id_configuracion_empresa',$id)
+        : $empresa = ConfiguracionEmpresa::where('estado',1);
+
+    return $empresa->first();
 }
 
 function getDocumentos($entidad, $codigo)
