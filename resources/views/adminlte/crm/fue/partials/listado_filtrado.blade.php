@@ -77,7 +77,7 @@
                     <td style="border-color: #9d9d9d" class="text-center">{{$item->clave_acceso}}</td>
                     <td style="border-color: #9d9d9d" class="text-center">{{$item->dae}}</td>
                     <td style="border-color: #9d9d9d" class="text-center">{{$item->codigo_dae}}</td>
-                    <td style="border-color: #9d9d9d" class="text-center">{{getConfiguracionEmpresa()->razon_social}}</td>
+                    <td style="border-color: #9d9d9d" class="text-center">{{getConfiguracionEmpresa($item->id_configuracion_empresa)->razon_social}}</td>
                     <td style="border-color: #9d9d9d" class="text-center">{{$item->guia_madre}}</td>
                     <td style="border-color: #9d9d9d" class="text-center">{{$item->guia_hija}}</td>
                     <td style="border-color: #9d9d9d" class="text-center">{{\Carbon\Carbon::parse($item->fecha_pedido)->addDay(1)->format('d/m/Y')}}</td>

@@ -1,12 +1,16 @@
 @if(is_array($data))
-    @php  $detalleFactura = getDetalleFactura($data['comprobante']->id_comprobante); @endphp
+    @php  $detalleFactura = $data['comprobante']->detalle_factura; @endphp
     <table>
         <tr>
             <td style="width: 350px;">
                 <table>
                     <tr>
-                        <td style="border:1px solid black;border-radius:5px;padding:90px 110px;text-align:center">
-                            NO TIENE LOGO
+                        <td style="border:1px solid black;border-radius:5px;text-align:center {{(!isset($data['comprobante']->empresa->imagen)) ? "padding:90px 110px" : ""}}">
+                            @if(isset($data['comprobante']->empresa->imagen))
+                                <img src="{{"./images/".$data['comprobante']->empresa->imagen}}" style="width:320px;height: 200px">
+                            @else
+                                NO TIENE LOGO
+                            @endif
                         </td>
                     </tr>
                     <tr>

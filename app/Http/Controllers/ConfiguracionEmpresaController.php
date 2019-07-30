@@ -88,7 +88,6 @@ class ConfiguracionEmpresaController extends Controller
      */
     public function store(Request $request)
     {
-
         $valida = Validator::make($request->all(), [
             'nombre' => 'required',
             'cant_hectarea' => 'required',
@@ -179,6 +178,7 @@ class ConfiguracionEmpresaController extends Controller
                     $objClasifiUnit->id_configuracion_empresa = $idConfiEmpresa->id_configuracion_empresa;
 
                     if ($objClasifiUnit->save()) {
+
                         $model = ClasificacionUnitaria::all()->last();
                         $success = true;
                         $msg .= '<div class="alert alert-success text-center">' .
