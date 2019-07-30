@@ -33,7 +33,7 @@
             <div class="col-md-4">
                 <div class="form-group input-group">
                     <span class="input-group-addon" style="background-color: #e9ecef">N°. Usuarios</span>
-                    <input type="text" id="cant_usuarios" name="cant_usuarios" class="form-control" required maxlength="3"
+                    <input type="text" id="cant_usuarios" name="cant_usuarios" class="form-control" maxlength="3"
                            autocomplete="off" placeholder="Ej. 5" onkeypress="return isNumber(event)" minlength="1" pattern="^([0-9])*$"
                            value="{!! isset($config_empresa->cantidad_usuarios) ? $config_empresa->cantidad_usuarios : '' !!}">
                 </div>
@@ -41,7 +41,7 @@
             <div class="col-md-4">
                 <div class="form-group input-group">
                     <span class="input-group-addon" style="background-color: #e9ecef">Hectareas</span>
-                    <input type="text" id="hectarea" name="hectarea" class="form-control" required maxlength="20"
+                    <input type="text" id="hectarea" name="hectarea" class="form-control" maxlength="20"
                            autocomplete="off" placeholder="Ej. 1.00" minlength="1" pattern="^-?\d+(?:.\d+)?$"
                            value="{!! isset($config_empresa->cantidad_hectareas) ? $config_empresa->cantidad_hectareas : '' !!}">
                 </div>

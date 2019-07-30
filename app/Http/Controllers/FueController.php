@@ -257,7 +257,7 @@ class FueController extends Controller
                 $objSheet->getCell('B' . (($x+1) + 3))->setValue($d->clave_acceso);
                 $objSheet->getCell('C' . (($x+1) + 3))->setValue($d->dae);
                 $objSheet->getCell('D' . (($x+1) + 3))->setValue($d->codigo_dae);
-                $objSheet->getCell('E' . (($x+1) + 3))->setValue(getConfiguracionEmpresa()->razon_social);
+                $objSheet->getCell('E' . (($x+1) + 3))->setValue(getConfiguracionEmpresa($d->id_configuracion_empresa)->razon_social);
                 $objSheet->getCell('F' . (($x+1) + 3))->setValue($d->guia_madre);
                 $objSheet->getCell('G' . (($x+1) + 3))->setValue($d->guia_hija);
                 $objSheet->getCell('H' . (($x+1) + 3))->setValue(\Carbon\Carbon::parse($d->fecha_pedido)->addDay(1)->format('d/m/Y'));

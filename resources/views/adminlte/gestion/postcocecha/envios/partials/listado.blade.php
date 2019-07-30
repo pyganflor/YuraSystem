@@ -370,7 +370,9 @@
                                                 <label for="empresa">Empresa</label>
                                                 <select class="form-control" name="id_empresa" id="id_empresa">
                                                     @foreach($empresas as $e)
-                                                    <option value="{{$e->id_configuracion_empresa}}">{{$e->razon_social}}</option>
+                                                        <option {{isset($envio->comprobante->id_configuracion_empresa) ? ($envio->comprobante->id_configuracion_empresa == $e->id_configuracion_empresa ? "selected" : "") : ""}}
+                                                                value="{{$e->id_configuracion_empresa}}">{{$e->razon_social}}
+                                                        </option>
                                                     @endforeach
                                                 </select>
                                             </div>

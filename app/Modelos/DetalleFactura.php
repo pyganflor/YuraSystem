@@ -26,4 +26,8 @@ class DetalleFactura extends Model
         'propina',
         'importe_total'
     ];
+
+    public function factura(){
+        return $this->belongsTo('yura\Modelos\Comprobante','id_comprobante');
+    }
 }
