@@ -40,6 +40,11 @@ class Ciclo extends Model
 
     public function getTallosCosechados()
     {
+        $fin = date('Y-m-d');
+        if ($this->fecha_fin != '')
+            $fin = $this->fecha_fin;
+
+
         $r = DB::table('desglose_recepcion as dr')
             ->join('recepcion as r', 'r.id_recepcion', '=', 'dr.id_recepcion')
             ->select(DB::raw('sum(dr.cantidad_mallas * dr.tallos_x_malla) as cantidad'))
@@ -47,7 +52,7 @@ class Ciclo extends Model
             ->where('r.estado', '=', 1)
             ->where('dr.id_modulo', '=', $this->id_modulo)
             ->where('r.fecha_ingreso', '>=', opDiasFecha('+', 1, $this->fecha_inicio))
-            ->where('r.fecha_ingreso', '<=', $this->fecha_fin)
+            ->where('r.fecha_ingreso', '<=', $fin)
             ->get()[0]->cantidad;
 
         return $r;
@@ -78,13 +83,13 @@ class Ciclo extends Model
             ->where('c.estado', '=', 1)
             ->where('dr.id_modulo', '=', $this->id_modulo)
             ->where('c.fecha_ingreso', '>=', opDiasFecha('+', 1, $this->fecha_inicio));
-        if ($this->fecha_fin != '')
+        if ($this->fecha_fin != '') {
             $cosechas = $cosechas->where('c.fecha_ingreso', '<=', $this->fecha_fin);
+        }
         $cosechas = $cosechas->orderBy('c.fecha_ingreso')->get();
 
         $meta = round($this->getTallosCosechados() * 0.8, 2);
         $dia = $this->fecha_inicio;
-
         foreach ($cosechas as $c) {
             $c = Cosecha::find($c->id);
             if ($meta > 0) {
@@ -118,6 +123,11 @@ class Ciclo extends Model
 
     public function plantas_actuales()
     {
-        return $this->plantas_iniciales - $this->plantas_muertas;
+        if ($this->plantas_iniciales > 0)
+            if ($this->plantas_muertas > 0)
+                return $this->plantas_iniciales - $this->plantas_muertas;
+            else
+                return $this->plantas_iniciales;
+        return 0;
     }
 }

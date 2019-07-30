@@ -102,6 +102,12 @@ class CiclosController extends Controller
                 $ciclo->fecha_cosecha = opDiasFecha('+', $request->fecha_cosecha, $request->fecha_inicio);
             $ciclo->fecha_fin = $request->fecha_fin;
 
+            $last_siembra = Ciclo::All()->where('estado', 1)->where('id_modulo', $request->modulo)
+                ->where('poda_siembra', 'S')->sortBy('fecha_inicio')->last();
+
+            if ($last_siembra != '')
+                $ciclo->plantas_iniciales = $last_siembra->plantas_iniciales;
+
             if ($ciclo->save()) {
                 $ciclo = Ciclo::All()->last();
                 $success = true;
