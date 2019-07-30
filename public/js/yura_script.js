@@ -1534,6 +1534,7 @@ function genera_comprobante_cliente(id_envio, form, action, token, id_comprobant
         //$.each($('input[name=correo_extra]'), function (i, j) {
         //arrCorreos.push({correo: j.value})
         //});
+
         datos = {
             _token: token,
             id_envio: id_envio,
@@ -1553,7 +1554,8 @@ function genera_comprobante_cliente(id_envio, form, action, token, id_comprobant
             envio_correo_agencia_carga: $("#envio_correo_agencia_carga").is(":checked"),
             arrCorreos: arrCorreos,
             fecha_pedidos_search: $("#fecha_pedidos_search").val(),
-            id_comprobante: id_comprobante
+            id_comprobante: id_comprobante,
+            id_configuracion_empresa : $("form#" + form + " #id_empresa").val(),
         };
         cerrar_modals();
         $.LoadingOverlay("show", {

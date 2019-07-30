@@ -1,15 +1,15 @@
 <div>
-    <form name="form_config" id="form_config">
+    <form name="form_config" id="form_config" enctype="multipart/form-data">
         @csrf
         <input type="hidden" id="id_config"
-               value="{!! isset($config_empresa[0]->id_configuracion_empresa) ? $config_empresa[0]->id_configuracion_empresa : '' !!}">
+               value="{!! isset($config_empresa->id_configuracion_empresa) ? $config_empresa->id_configuracion_empresa : '' !!}">
         <div class="row">
             <div class="col-md-4">
                 <div class="form-group input-group">
                     <span class="input-group-addon" style="background-color: #e9ecef">Nombre comercial</span>
                     <input type="text" id="nombre_empresa" name="nombre_empresa" class="form-control" required maxlength="300" minlength="3"
                            autocomplete="off" placeholder="Nombre de la Empresa"
-                           value="{!! isset($config_empresa[0]->nombre) ? $config_empresa[0]->nombre : '' !!}">
+                           value="{!! isset($config_empresa->nombre) ? $config_empresa->nombre : '' !!}">
                 </div>
             </div>
             <div class="col-md-4">
@@ -17,7 +17,7 @@
                     <span class="input-group-addon" style="background-color: #e9ecef">Razón social</span>
                     <input type="text" id="razon_social" name="razon_social" class="form-control" required maxlength="300" minlength="3"
                            autocomplete="off" placeholder="Razón social"
-                           value="{!! isset($config_empresa[0]->razon_social) ? $config_empresa[0]->razon_social : '' !!}">
+                           value="{!! isset($config_empresa->razon_social) ? $config_empresa->razon_social : '' !!}">
                 </div>
             </div>
             <div class="col-md-4">
@@ -25,7 +25,7 @@
                     <span class="input-group-addon" style="background-color: #e9ecef">País</span>
                     <select id="codigo_pais" name="codigo_pais" class="form-control">
                         @foreach($paises as $pais)
-                            <option {{ ($config_empresa[0]->codigo_pais == $pais->codigo) ? "selected" : "" }} value="{{$pais->codigo}}">{{$pais->nombre}}</option>
+                            <option {{ ($config_empresa->codigo_pais == $pais->codigo) ? "selected" : "" }} value="{{$pais->codigo}}">{{$pais->nombre}}</option>
                         @endforeach
                     </select>
                 </div>
@@ -33,29 +33,29 @@
             <div class="col-md-4">
                 <div class="form-group input-group">
                     <span class="input-group-addon" style="background-color: #e9ecef">N°. Usuarios</span>
-                    <input type="text" id="cant_usuarios" name="cant_usuarios" class="form-control" required maxlength="3"
+                    <input type="text" id="cant_usuarios" name="cant_usuarios" class="form-control" maxlength="3"
                            autocomplete="off" placeholder="Ej. 5" onkeypress="return isNumber(event)" minlength="1" pattern="^([0-9])*$"
-                           value="{!! isset($config_empresa[0]->cantidad_usuarios) ? $config_empresa[0]->cantidad_usuarios : '' !!}">
+                           value="{!! isset($config_empresa->cantidad_usuarios) ? $config_empresa->cantidad_usuarios : '' !!}">
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="form-group input-group">
                     <span class="input-group-addon" style="background-color: #e9ecef">Hectareas</span>
-                    <input type="text" id="hectarea" name="hectarea" class="form-control" required maxlength="20"
+                    <input type="text" id="hectarea" name="hectarea" class="form-control" maxlength="20"
                            autocomplete="off" placeholder="Ej. 1.00" minlength="1" pattern="^-?\d+(?:.\d+)?$"
-                           value="{!! isset($config_empresa[0]->cantidad_hectareas) ? $config_empresa[0]->cantidad_hectareas : '' !!}">
+                           value="{!! isset($config_empresa->cantidad_hectareas) ? $config_empresa->cantidad_hectareas : '' !!}">
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="form-group input-group">
                     <span class="input-group-addon" style="background-color: #e9ecef" id="icono_moneda">
-                        {!! (isset($config_empresa[0]->moneda) && !empty($config_empresa[0]->moneda)) ? '<i class="fa fa-'.$config_empresa[0]->moneda.'"" aria-hidden="true"></i>' : '' !!}
+                        {!! (isset($config_empresa->moneda) && !empty($config_empresa->moneda)) ? '<i class="fa fa-'.$config_empresa->moneda.'"" aria-hidden="true"></i>' : '' !!}
                     </span>
                     <select class="form-control" id="moneda" onchange="icono_moneda()">
                         <option disabled selected>Seleccione</option>
                         @foreach($iconoMoneda as $moneda)
                             @php
-                                $config_empresa[0]->moneda === $moneda->nombre ? $selected = 'selected=selected' : $selected = '';
+                                $config_empresa->moneda === $moneda->nombre ? $selected = 'selected=selected' : $selected = '';
                             @endphp
                             <option value="{{$moneda->nombre}}" {{$selected}}>
                                 @if($moneda->nombre==='usd')  {{'Dolar'}} @endif
@@ -76,7 +76,7 @@
                     <span class="input-group-addon" style="background-color: #e9ecef">Teléfono</span>
                     <input type="text" id="telefono" name="telefono" class="form-control" required maxlength="300"
                            autocomplete="off" minlength="1"
-                           value="{!! isset($config_empresa[0]->telefono) ? $config_empresa[0]->telefono : '' !!}">
+                           value="{!! isset($config_empresa->telefono) ? $config_empresa->telefono : '' !!}">
                 </div>
             </div>
             <div class="col-md-4">
@@ -84,7 +84,7 @@
                     <span class="input-group-addon" style="background-color: #e9ecef">Fax</span>
                     <input type="text" id="fax" name="fax" class="form-control" maxlength="300"
                            autocomplete="off" minlength="1"
-                           value="{!! isset($config_empresa[0]->fax) ? $config_empresa[0]->fax : '' !!}">
+                           value="{!! isset($config_empresa->fax) ? $config_empresa->fax : '' !!}">
                 </div>
             </div>
             <div class="col-md-4">
@@ -92,22 +92,24 @@
                     <span class="input-group-addon" style="background-color: #e9ecef">Correo</span>
                     <input type="email" id="correo" name="correo" class="form-control" required maxlength="300"
                            autocomplete="off" minlength="1"
-                           value="{!! isset($config_empresa[0]->correo) ? $config_empresa[0]->correo : '' !!}">
+                           value="{!! isset($config_empresa->correo) ? $config_empresa->correo : '' !!}">
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="form-group input-group">
-                    <span class="input-group-addon" style="background-color: #e9ecef">Permiso agrocalidad</span>
-                    <input type="text" id="permiso_agrocalidad" name="permiso_agrocalidad" class="form-control" required maxlength="50"
-                           autocomplete="off" minlength="3" value="{!! isset($config_empresa[0]->permiso_agrocalidad) ? $config_empresa[0]->permiso_agrocalidad : '' !!}">
+                    <span class="input-group-addon" style="background-color: #e9ecef">Ruc</span>
+                    <input type="text" id="ruc" name="ruc" class="form-control" required maxlength="13"
+                           autocomplete="off" minlength="13" required
+                           value="{!! isset($config_empresa->ruc) ? $config_empresa->ruc : '' !!}">
                 </div>
             </div>
+
             <div class="col-md-4">
                 <div class="form-group input-group">
                     <span class="input-group-addon" style="background-color: #e9ecef">Matriz</span>
                     <input type="text" id="matriz" name="matriz" class="form-control" required maxlength="300"
                            autocomplete="off" minlength="3"
-                           value="{!! isset($config_empresa[0]->direccion_matriz) ? $config_empresa[0]->direccion_matriz : '' !!}">
+                           value="{!! isset($config_empresa->direccion_matriz) ? $config_empresa->direccion_matriz : '' !!}">
                 </div>
             </div>
             <div class="col-md-4">
@@ -115,7 +117,26 @@
                     <span class="input-group-addon" style="background-color: #e9ecef">Establecimiento</span>
                     <input type="text" id="establecimiento" name="establecimiento" class="form-control" required maxlength="300"
                            autocomplete="off" minlength="1"
-                           value="{!! isset($config_empresa[0]->direccion_establecimiento) ? $config_empresa[0]->direccion_establecimiento : '' !!}">
+                           value="{!! isset($config_empresa->direccion_establecimiento) ? $config_empresa->direccion_establecimiento : '' !!}">
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group input-group">
+                    <span class="input-group-addon" style="background-color: #e9ecef">Permiso agrocalidad</span>
+                    <input type="text" id="permiso_agrocalidad" name="permiso_agrocalidad" class="form-control" required maxlength="50"
+                           autocomplete="off" minlength="3" value="{!! isset($config_empresa->permiso_agrocalidad) ? $config_empresa->permiso_agrocalidad : '' !!}">
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group input-group">
+                    <span class="input-group-addon" style="background-color: #e9ecef">Firma .P12</span>
+                    <input type="file" id="firma_electronica" name="firma_electronica" accept="application/x-pkcs12" class="form-control" required>
+                </div>
+            </div>
+            <div class="col-md-5">
+                <div class="form-group input-group">
+                    <span class="input-group-addon" style="background-color: #e9ecef">Imagen</span>
+                    <input type="file" id="img_empresa" name="img_empresa" class="form-control" accept="image/*">
                 </div>
             </div>
         </div>

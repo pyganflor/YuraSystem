@@ -805,10 +805,13 @@ function getCalibresRamo()
     return ClasificacionRamo::All()->where('estado', '=', 1)->sortBy('nombre');
 }
 
-function getConfiguracionEmpresa()
+function getConfiguracionEmpresa($id = null)
 {
-    $r = ConfiguracionEmpresa::All()->where('estado', '=', 1)->first();
-    return $r;
+    isset($id)
+        ? $empresa = ConfiguracionEmpresa::where('id_configuracion_empresa',$id)
+        : $empresa = ConfiguracionEmpresa::where('estado',1);
+
+    return $empresa->first();
 }
 
 function getDocumentos($entidad, $codigo)
@@ -1382,7 +1385,7 @@ function generaDocumentoPDF($autorizacion, $tipo_documento, $pre_factura = false
     ];
     if ($tipo_documento == "01")
         PDF::loadView('adminlte.gestion.comprobante.partials.pdf.factura', compact('data'))->save(env('PDF_FACTURAS') . (isset($autorizacion->numeroAutorizacion) ? $autorizacion->numeroAutorizacion : (String)$autorizacion->infoTributaria->claveAcceso) . ".pdf");
-    PDF::loadView('adminlte.gestion.comprobante.partials.pdf.factura_cliente', compact('data'))->save(env('PDF_FACTURAS') . "cliente_" . (isset($autorizacion->numeroAutorizacion) ? $autorizacion->numeroAutorizacion : (String)$autorizacion->infoTributaria->claveAcceso) . ".pdf");
+        PDF::loadView('adminlte.gestion.comprobante.partials.pdf.factura_cliente', compact('data'))->save(env('PDF_FACTURAS') . "cliente_" . (isset($autorizacion->numeroAutorizacion) ? $autorizacion->numeroAutorizacion : (String)$autorizacion->infoTributaria->claveAcceso) . ".pdf");
     if ($tipo_documento == "06")
         PDF::loadView('adminlte.gestion.comprobante.partials.pdf.guia', compact('data'))->save(env('PATH_PDF_GUIAS') . $autorizacion->numeroAutorizacion . ".pdf");
 

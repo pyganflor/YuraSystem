@@ -102,7 +102,9 @@ class ComprobanteController extends Controller
             'destino' => 'required',
             'email' => 'required',
             'telefono' => 'required',
-        ]);
+            'id_configuracion_empresa' => 'required'
+        ],['id_configuracion_empresa.required' => 'Debe seleccionar la empresa con la que desea facturar el pedido']);
+
         $msg = "";
         if (!$valida->fails()) {
             $precio_total_sin_impuestos = 0.00;
@@ -125,7 +127,6 @@ class ComprobanteController extends Controller
                         }
                     }
                 }
-
             }else if($envio->pedido->tipo_especificacion === "T"){
                 foreach ($envio->pedido->detalles as $x => $det_ped) {
                     foreach($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $m => $esp_emp){
@@ -194,7 +195,7 @@ class ComprobanteController extends Controller
                 $dae = $request->dae;
             }
 
-            if ((strtoupper(getConfiguracionEmpresa()->codigo_pais) != strtoupper($codigo_pais))
+            if ((strtoupper(getConfiguracionEmpresa($request->id_configuracion_empresa)->codigo_pais) != strtoupper($codigo_pais))
                 && (!isset(getCodigoDae(strtoupper($codigo_pais),Carbon::parse($request->fecha_envio)->format('m'),Carbon::parse($request->fecha_envio)->format('Y'))->codigo_dae))
                 && $dae == null) {
                 return '<div class="alert alert-danger text-center">' .
@@ -243,10 +244,10 @@ class ComprobanteController extends Controller
                 $secuencial_rehusado = false;
                 $comprobante_rehusado = Comprobante::where('rehusar', true)->get();
                 if($comprobante_rehusado->count() > 0){
-                    foreach ($comprobante_rehusado as $sr){
-                        if(Carbon::parse($sr->fecha_emision)->format('Y-m') == Carbon::parse(now()->format('Y-m'))->format('Y-m')){
-                            $secuencial = $sr->secuencial;
-                            Comprobante::destroy($sr->id_comprobante);
+                    foreach ($comprobante_rehusado as $cr){
+                        if(Carbon::parse($cr->fecha_emision)->format('Y-m') == Carbon::parse(now()->format('Y-m'))->format('Y-m')){
+                            $secuencial = $cr->secuencial;
+                            Comprobante::destroy($cr->id_comprobante);
                             $secuencial_rehusado = true;
                             break;
                         }
@@ -274,7 +275,7 @@ class ComprobanteController extends Controller
 
             }
 
-            $datosEmpresa = getConfiguracionEmpresa();
+            $datosEmpresa = getConfiguracionEmpresa($request->id_configuracion_empresa);
             $tipoImpuesto = getTipoImpuesto($codigo_impuesto,$codigo_porcentaje_impuesto);
             $precio_total_con_impuestos = is_numeric($tipoImpuesto->porcentaje) ? number_format($precio_total_sin_impuestos * ($tipoImpuesto->porcentaje / 100), 2, ".", "") : "0.00";
 
@@ -354,7 +355,7 @@ class ComprobanteController extends Controller
             $infoFactura->appendChild($propina);
             $importeTotal = $xml->createElement('importeTotal', number_format($valorImpuesto + $precio_total_sin_impuestos, 2, ".", ""));
             $infoFactura->appendChild($importeTotal);
-            switch (getConfiguracionEmpresa()->moneda){
+            switch (getConfiguracionEmpresa($request->id_configuracion_empresa)->moneda){
                 case "usd":
                     $m = 'DOLAR';
                     break;
@@ -508,7 +509,7 @@ class ComprobanteController extends Controller
                 $campos_adicionales['GUIA_HIJA'] = $request->guia_hija;
             if(!empty($request->almacen))
                 $campos_adicionales['ALMACEN'] = $almacen;
-            if ((strtoupper(getConfiguracionEmpresa()->codigo_pais) != strtoupper($codigo_pais)))
+            if ((strtoupper(getConfiguracionEmpresa($request->id_configuracion_empresa)->codigo_pais) != strtoupper($codigo_pais)))
                 $campos_adicionales['DAE'] = $dae;
 
             foreach ($campos_adicionales as $key => $ca) {
@@ -539,6 +540,7 @@ class ComprobanteController extends Controller
                 //$obj_comprobante->secuencial = getDetallesClaveAcceso($claveAcceso, "SECUENCIAL");
                 $obj_comprobante->secuencial = $secuencial;
                 $obj_comprobante->estado = 1; //PARA QUE LA FACTURACION FUNCIONE CON EL VENTURE
+                $obj_comprobante->id_configuracion_empresa = $request->id_configuracion_empresa;
 
                 if ($obj_comprobante->save()) {
                     $model_comprobante = Comprobante::all()->last();
@@ -1088,7 +1090,7 @@ class ComprobanteController extends Controller
             if($comprobante->clave_acceso != null)
                 $img_clave_acceso = generateCodeBarGs1128($comprobante->clave_acceso);
             $data = [
-                'empresa' => getConfiguracionEmpresa(),
+                'empresa' => getConfiguracionEmpresa($comprobante->id_configuracion_empresa),
                 'secuencial' => $comprobante->secuencial,
                 'comprobante' => $comprobante,
                 'img_clave_acceso' => $img_clave_acceso
@@ -1197,7 +1199,7 @@ class ComprobanteController extends Controller
                     $tipo_emision = '1';
                 }
 
-                $datosEmpresa = getConfiguracionEmpresa();
+                $datosEmpresa = getConfiguracionEmpresa(getComprobante($request->id_comprobante)->id_configuracion_empresa);
                 $xml = new DomDocument('1.0', 'UTF-8');
                 $guiaRemision = $xml->createElement('guiaRemision');
                 $guiaRemision->setAttribute('id', 'comprobante');
@@ -1411,7 +1413,7 @@ class ComprobanteController extends Controller
                 $ruc = env('RUC');
                 $serie = '001'. getUsuario(session('id_usuario'))->punto_acceso;;
                 $tipo_emision = '1';
-                $datosEmpresa = getConfiguracionEmpresa();
+                $datosEmpresa = getConfiguracionEmpresa(getComprobante($request->id_comprobante)->id_configuracion_empresa);
                 $secuencial = $serie.getSecuencial('06');
                 $comprobante = Comprobante::find($request->id_comprobante);
 
@@ -1571,7 +1573,7 @@ class ComprobanteController extends Controller
                             foreach ($esp_emp->detalles as $n => $det_esp_emp) {
                                 $contenido .= Carbon::parse($pedido->envios[0]->comprobante->fecha_integrado)->format('d/m/Y')."\t".$pedido->envios[0]->comprobante->secuencial."\t".$pedido->cliente->detalle()->informacion_adicional('codigo venture')->varchar."\t". Carbon::parse($pedido->envios[0]->comprobante->fecha_emision)->addDay(21)->format('d/m/Y')."\t";
                                 $contenido .= getCodigoVenturePresentacion($det_esp_emp->variedad->planta->id_planta,$det_esp_emp->variedad->id_variedad,$det_esp_emp->clasificacion_ramo->id_clasificacion_ramo,$det_esp_emp->clasificacion_ramo->unidad_medida->id_unidad_medida,$det_esp_emp->tallos_x_ramos,$det_esp_emp->longitud_ramo,$det_esp_emp->unidad_medida->id_unidad_medida)."\t";
-                                $contenido .= ($det_ped->cantidad*$det_esp_emp->cantidad)."\t".explode(";", $precio[$i])[0]."\t".($pedido->cliente->detalle()->codigo_pais != getConfiguracionEmpresa()->codigo_pais ? 0 : 1)."\t".'001009'/*Código venture dasalflor para crédito como forma de pago*/."\t".$pedido->envios[0]->dae."\t".$pedido->envios[0]->dae."\t"."N"."\t"."N"."\t"."1113495085"."\t".$pedido->envios[0]->guia_madre."\t";
+                                $contenido .= ($det_ped->cantidad*$det_esp_emp->cantidad)."\t".explode(";", $precio[$i])[0]."\t".($pedido->cliente->detalle()->codigo_pais != getConfiguracionEmpresa($c->id_configuracion_empresa)->codigo_pais ? 0 : 1)."\t".'001009'/*Código venture dasalflor para crédito como forma de pago*/."\t".isset($pedido->envios[0]->dae) ? $pedido->envios[0]->dae : "N"."\t".isset($pedido->envios[0]->dae) ? $pedido->envios[0]->dae : "N"."\t"."N"."\t"."N"."\t"."1113495085"."\t".$pedido->envios[0]->guia_madre."\t";
                                 $contenido .= $piezas." Piezas. ".$caja_full." FULL BOXES"."\t"."\t"."\t"."0"."\t"."\t"."\t"."\t"."\t"."00101"/*codigo_tvn venture dasalflor*/."\t".$pedido->cliente->detalle()->nombre."\t"."\t"."\t"."\t"."\t".$tallos." Tallos."."\t"."\t"."\t"."\t"."\t". $pedido->envios[0]->guia_hija."\t".$pedido->detalles[0]->agencia_carga->codigo.chr(13).chr(10);
                                 $i++;
                             }
@@ -1605,7 +1607,7 @@ class ComprobanteController extends Controller
                                 }
                                 $contenido .= Carbon::parse($pedido->envios[0]->comprobante->fecha_emision)->format('d/m/Y') . "\t" . $pedido->envios[0]->comprobante->secuencial . "\t" . $pedido->cliente->detalle()->informacion_adicional('codigo venture')->varchar . "\t" . Carbon::parse($pedido->envios[0]->comprobante->fecha_emision)->addDay(21)->format('d/m/Y') . "\t";
                                 $contenido .= getCodigoVenturePresentacion($m_c->detalle_especificacionempaque->variedad->planta->id_planta, $m_c->detalle_especificacionempaque->variedad->id_variedad, $m_c->detalle_especificacionempaque->clasificacion_ramo->id_clasificacion_ramo, $m_c->detalle_especificacionempaque->clasificacion_ramo->unidad_medida->id_unidad_medida, $m_c->detalle_especificacionempaque->tallos_x_ramos, $m_c->detalle_especificacionempaque->longitud_ramo, $m_c->detalle_especificacionempaque->unidad_medida->id_unidad_medida) . "\t";
-                                $contenido .= $m_c->cantidad . "\t" . $precio . "\t" . ($pedido->cliente->detalle()->codigo_pais != getConfiguracionEmpresa()->codigo_pais ? 0 : 1) . "\t" . '001009'/*Código venture dasalflor para crédito como forma de pago*/ . "\t" . $pedido->envios[0]->dae . "\t" . $pedido->envios[0]->dae . "\t" . "N" . "\t" . "N" . "\t" . "1113495085" . "\t" . $pedido->envios[0]->guia_madre . "\t";
+                                $contenido .= $m_c->cantidad . "\t" . $precio . "\t" . ($pedido->cliente->detalle()->codigo_pais != getConfiguracionEmpresa($c->id_configuracion_empresa)->codigo_pais ? 0 : 1) . "\t" . '001009'/*Código venture dasalflor para crédito como forma de pago*/ . "\t" . isset($pedido->envios[0]->dae) ? $pedido->envios[0]->dae : "N" . "\t" . isset($pedido->envios[0]->dae) ? $pedido->envios[0]->dae : "N" . "\t" . "N" . "\t" . "N" . "\t" . "1113495085" . "\t" . $pedido->envios[0]->guia_madre . "\t";
                                 $contenido .= $piezas . " Piezas. " . $caja_full . " FULL BOXES" . "\t" . "\t" . "\t" . "0" . "\t" . "\t" . "\t" . "\t" . "\t" . "00101"/*codigo_tvn venture dasalflor*/ . "\t" . $pedido->cliente->detalle()->nombre . "\t" . "\t" . "\t" . "\t" . "\t" . $tallos . " Tallos." . "\t" . "\t" . "\t" . "\t" . "\t" . $pedido->envios[0]->guia_hija . "\t" . $pedido->detalles[0]->agencia_carga->codigo . chr(13) . chr(10);
                             }
                         }
@@ -1631,7 +1633,7 @@ class ComprobanteController extends Controller
 
         if($comprobante->tipo_comprobante === "01"){
             $data = [
-                'empresa' => getConfiguracionEmpresa(),
+                'empresa' => getConfiguracionEmpresa($comprobante->id_configuracion_empresa),
                 'secuencial' => $comprobante->secuencial,
                 'comprobante' => $comprobante,
                 'img_clave_acceso' => $img_clave_acceso
@@ -1737,7 +1739,7 @@ class ComprobanteController extends Controller
 
         if($request->dist_cajas === "true"){
             $pedido = getPedido($comprobante->envio->pedido->id_pedido);
-            $empresa = getConfiguracionEmpresa();
+            $empresa = getConfiguracionEmpresa($comprobante->id_configuracion_empresa);
             $despacho = isset(getDetalleDespacho($pedido->id_pedido)->despacho) ? getDetalleDespacho($pedido->id_pedido)->despacho : null;
             $facturaTercero = isset($pedido->envios) ? getFacturaClienteTercero($pedido->envios[0]->id_envio) : null;
             if($facturaTercero !== null){

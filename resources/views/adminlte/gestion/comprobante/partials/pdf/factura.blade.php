@@ -3,8 +3,12 @@
         <td style="width: 350px;">
             <table>
                 <tr>
-                    <td style="border:1px solid black;border-radius:5px;padding:90px 110px;text-align:center">
-                        NO TIENE LOGO
+                    <td style="border:1px solid black;border-radius:5px;text-align:center;{{!isset($data['pedido']->envios[0]->comprobante->empresa->imagen)  ? "padding:90px 110px;" : ""}}">
+                        @if(isset($data['pedido']->envios[0]->comprobante->empresa->imagen))
+                            <img src="{{public_path('imagen')."/".$data['pedido']->envios[0]->comprobante->empresa->imagen}}" style="width:320px;height: 200px">
+                            @else
+                            NO TIENE LOGO
+                        @endif
                     </td>
                 </tr>
                 <tr>
