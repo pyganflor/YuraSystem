@@ -198,6 +198,7 @@ class CiclosController extends Controller
             $ciclo->fecha_fin = $request->fecha_fin;
             $ciclo->plantas_iniciales = $request->plantas_iniciales;
             $ciclo->plantas_muertas = $request->plantas_muertas;
+            $ciclo->conteo = $request->conteo;
 
             if ($ciclo->save()) {
                 $success = true;

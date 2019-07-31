@@ -26,6 +26,7 @@ class Ciclo extends Model
         'poda_siembra', // char(1) P
         'plantas_iniciales',
         'plantas_muertas',
+        'conteo',
     ];
 
     public function variedad()
