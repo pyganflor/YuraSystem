@@ -250,13 +250,13 @@
                                                 <label for="dae">CÓDIGO DAE</label>
                                                 <input type="text" placeholder="CODÍGO DAE" class="form-control" {{($facturado) ? "disabled='disabled'" : ""}}
                                                 {{$factura_tercero ?  "disabled" : ""}} {{-- {{$dae != "" ? "disabled='disabled'" : ""}}--}} id="codigo_dae" name="codigo_dae" value="{{isset($envio->codigo_dae) ? $envio->codigo_dae : ""}}"
-                                                    {{(strtoupper($p) != getConfiguracionEmpresa()->codigo_pais) ? "required" : "" }} >
+                                                    {{(strtoupper($p) != getConfiguracionEmpresa(isset($envio->comprobante) ? $envio->comprobante->empresa->id_configuracion_empresa : null)->codigo_pais) ? "required" : "" }} >
                                             </div>
                                             <div class="col-md-3">
                                                 <label for="dae">DAE</label>
                                                 <input type="text" placeholder="DAE" class="form-control" {{($facturado) ? "disabled='disabled'" : ""}}
                                                 {{$factura_tercero ?  "disabled" : ""}} {{-- {{$dae != "" ? "disabled='disabled'" : ""}}--}} id="dae" name="dae" value="{{$dae}}"
-                                                    {{(strtoupper($p) != getConfiguracionEmpresa()->codigo_pais) ? "required" : "" }} >
+                                                    {{(strtoupper($p) != getConfiguracionEmpresa(isset($envio->comprobante) ? $envio->comprobante->empresa->id_configuracion_empresa : null)->codigo_pais) ? "required" : "" }} >
                                             </div>
                                             <div class="col-md-3">
                                                 <label for="guia_madre">Guía madre</label>

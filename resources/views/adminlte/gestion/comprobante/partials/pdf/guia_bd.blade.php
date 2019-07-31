@@ -92,7 +92,7 @@
                         <td style="font-size:12px;padding:5px">Placa: {{$data['detalle_despacho']->despacho->camion->placa}}</td>
                     </tr>
                     <tr>
-                        <td style="font-size:12px;padding:5px">Puerto de partida: {{getConfiguracionEmpresa()->direccion_establecimiento}}</td>
+                        <td style="font-size:12px;padding:5px">Puerto de partida: {{$data['detalle_despacho']->pedidos[0]->envios[0]->comprobante->empresapresa->direccion_establecimiento}}</td>
                     </tr>
                     <tr>
                         <td style="font-size:12px;padding:5px">Fecha inicio transporte: {{$data['detalle_despacho']->despacho->fecha_despacho}}</td>

@@ -1,6 +1,7 @@
 @php
-    $empresa = getConfiguracionEmpresa();
-    $comprobante = getComprobante(\yura\Modelos\Comprobante::where('clave_acceso',(String)$data['obj_xml']->infoTributaria->claveAcceso)->first()->id_comprobante);
+    use \yura\Modelos\Comprobante;
+    $comprobante = getComprobante(Comprobante::where('clave_acceso',(String)$data['obj_xml']->infoTributaria->claveAcceso)->first()->id_comprobante);
+    $empresa = getConfiguracionEmpresa($comprobante->id_configuracion_empresa);
     $cliente = getCliente(getEnvio($comprobante->envio->id_envio)->pedido->id_cliente)->detalle();
     $factura_tercero = getFacturaClienteTercero(getComprobante($comprobante->id_comprobante)->id_envio);
     $envio = getEnvio($comprobante->envio->id_envio);
@@ -90,7 +91,7 @@
                                 No. {{getDetallesClaveAcceso((String)(String)$data['obj_xml']->infoTributaria->claveAcceso, 'SERIE').getDetallesClaveAcceso((String)(String)$data['obj_xml']->infoTributaria->claveAcceso, 'SECUENCIAL')}}</b>
                         </td>
                     </tr>
-                    <tr> <td style="font-size: 12px">RUC: {{env('RUC')}}</td> </tr>
+                    <tr> <td style="font-size: 12px">RUC: {{$empresa->ruc}}</td> </tr>
                     <tr> <td style="font-size: 12px">AUT. SRI. No: {{$comprobante->estado === 5 ? (String)$data['obj_xml']->infoTributaria->claveAcceso : "Sin valor tributario"}}</td> </tr>
                 </table>
                 <table style="width: 100%;" >

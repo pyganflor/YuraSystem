@@ -1,6 +1,6 @@
 <table width="100%" style="font-size: 0.8em">
     <tr>
-        <td style="text-align: left;border:1px solid #9d9d9d"><b>Despacho N#: {{str_pad((getSecuenciaDespacho()-1), 9, "0", STR_PAD_LEFT)}}</b></td>
+        <td style="text-align: left;border:1px solid #9d9d9d"><b>Despacho N#: {{str_pad(($data['despacho'][0]->n_despacho), 9, "0", STR_PAD_LEFT)}}</b></td>
         <td style="text-align: center;border:1px solid #9d9d9d"><b>DESPACHO DE FINCA</b></td>
         <td style="text-align: right;border:1px solid #9d9d9d"><b>{{strtoupper($data['empresa']->razon_social)}}</b></td>
     </tr>

@@ -160,7 +160,7 @@ class EtiquetaController extends Controller
                     $pais_destino = getPais($factura_tercero->codigo_pais)->nombre;
                     $dae = $factura_tercero->dae;
                 }
-                $ruc = "RUC: ".env('RUC');
+                $ruc = "RUC: ". $comprobante->empresa->ruc;
                 for($y=1;$y<=$doble;$y++) {
                     if($comprobante->envio->pedido->tipo_especificacion == "N"){
                          foreach ($comprobante->envio->pedido->detalles as $det_ped) {
