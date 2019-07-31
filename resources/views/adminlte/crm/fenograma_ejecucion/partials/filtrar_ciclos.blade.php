@@ -42,6 +42,9 @@
             <th class="text-center" style="border-color: #9d9d9d; background-color: #0b3248">
                 Dend P.Ini/m<sup>2</sup>
             </th>
+            <th class="text-center" style="border-color: #9d9d9d; background-color: #0b3248">
+                Conteo T/P
+            </th>
         </tr>
         </thead>
         <tbody>
@@ -109,6 +112,9 @@
                 <td class="text-center" style="border-color: #9d9d9d">
                     {{$item->getDensidadIniciales()}}
                 </td>
+                <td class="text-center" style="border-color: #9d9d9d">
+                    {{$item->conteo}}
+                </td>
             </tr>
             @php
                 $total_area += $item->area;
@@ -168,6 +174,9 @@
                 @if($total_densidad['positivos'] > 0)
                     {{round($total_densidad['valor'] / $total_densidad['positivos'], 2)}}
                 @endif
+            </th>
+            <th class="text-center" style="border-color: #9d9d9d; background-color: #0b3248">
+
             </th>
         </tr>
     </table>
