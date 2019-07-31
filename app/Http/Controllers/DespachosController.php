@@ -88,6 +88,7 @@ class DespachosController extends Controller
             'ramos_x_variedad' => $ramos_x_variedad,
             'variedades' => $variedades,
             'opciones' => $request->opciones,
+            'empresas' => getConfiguracionEmpresa(null,true)
         ];
         return view('adminlte.gestion.postcocecha.despachos.partials.listado', $datos);
     }
@@ -100,7 +101,6 @@ class DespachosController extends Controller
         if(!empty($request->pedidos)){
             return view('adminlte.gestion.postcocecha.despachos.form.despacho_listado',[
                 'pedidos' => $arr_data_pedido,
-                'empresa' => getConfiguracionEmpresa(),
                 'datos_responsables' => Despacho::all()->last(),
             ]);
         }else{
@@ -199,14 +199,15 @@ class DespachosController extends Controller
                 $objDespacho->asist_comercial_ext = $despacho['nombre_asist_comercial'];
                 $objDespacho->id_asist_comrecial_ext = $despacho['id_asist_comercial'];
                 $objDespacho->resp_transporte = $despacho['nombre_transportista'];
-               // $objDespacho->id_resp_transporte = $despacho['firma_id_transportista'];
                 $objDespacho->mail_resp_ofi_despacho = $despacho['correo_oficina_despacho'];
-                $objDespacho->n_despacho = getSecuenciaDespacho();
+                $distribucion = explode(";",$distribucion);
+                $idPedido =explode("|",$distribucion[0])[0];
+                $empresa = getPedido($idPedido)->envios[0]->comprobante->empresa;
+                $objDespacho->n_despacho = getSecuenciaDespacho($empresa);
 
                 if ($objDespacho->save()) {
                     $modelDespacho = Despacho::all()->last();
                     bitacora('despacho', $modelDespacho->id_despacho, 'I', 'Inserción satisfactoria de un nuevo despacho');
-                    $distribucion = explode(";",$distribucion);
 
                     foreach ($distribucion as $d) {
                         $objDetalleDespacho = new DetalleDespacho;
@@ -236,12 +237,12 @@ class DespachosController extends Controller
                             <a target="_blank" href="'.url('despachos/descargar_despacho/'.$objDespacho->n_despacho.'').'">  clic aquí para ver y descargar</a></p>'
                         . '</div>';
                     $data = [
-                        'empresa' => getConfiguracionEmpresa(),
-                        'despacho' => Despacho::where('n_despacho',(getSecuenciaDespacho()-1))
+                        'empresa' => $empresa,
+                        'despacho' => Despacho::where('n_despacho',(getSecuenciaDespacho($empresa)-1))
                             ->join('detalle_despacho as dd','despacho.id_despacho','dd.id_despacho')->get()
                     ];
                     PDF::loadView('adminlte.gestion.postcocecha.despachos.partials.pdf_despacho', compact('data'))->setPaper('a4', 'landscape')
-                        ->save(env('PATH_PDF_DESPACHOS') . str_pad((getSecuenciaDespacho()-1), 9, "0", STR_PAD_LEFT) . ".pdf");
+                        ->save(env('PATH_PDF_DESPACHOS') . str_pad((getSecuenciaDespacho($empresa)-1), 9, "0", STR_PAD_LEFT) . ".pdf");
                 }else{
                     $success = false;
                     $msg = '<div class="alert alert-warning text-center">' .
@@ -274,10 +275,11 @@ class DespachosController extends Controller
     }
 
     public function descargar_despacho($n_despacho){
+        $despacho = Despacho::where('n_despacho',$n_despacho)
+            ->join('detalle_despacho as dd','despacho.id_despacho','dd.id_despacho')->get();
         $data = [
-            'empresa' => getConfiguracionEmpresa(),
-            'despacho' => Despacho::where('n_despacho',$n_despacho)
-                ->join('detalle_despacho as dd','despacho.id_despacho','dd.id_despacho')->get()
+            'empresa' => $despacho[0]->detalles[0]->pedidos[0]->envios[0]->comprobante->empresa,
+            'despacho' => $despacho
         ];
         return PDF::loadView('adminlte.gestion.postcocecha.despachos.partials.pdf_despacho', compact('data'))
             ->setPaper('a4', 'landscape')->stream();
@@ -813,6 +815,7 @@ class DespachosController extends Controller
     }
 
     public function excel_pedidos_despacho_cuarto_frio($objPHPExcel, $request){
+
         $pedidos = Pedido::where([['fecha_pedido',$request->fecha_pedido],['pedido.estado',1],['dc.estado',1]])
             ->join('cliente as c','pedido.id_cliente','c.id_cliente')->join('detalle_cliente as dc','c.id_cliente','dc.id_cliente')
             ->orderBy('dc.nombre','asc')->select('id_pedido')->get();

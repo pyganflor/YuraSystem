@@ -805,13 +805,17 @@ function getCalibresRamo()
     return ClasificacionRamo::All()->where('estado', '=', 1)->sortBy('nombre');
 }
 
-function getConfiguracionEmpresa($id = null)
+function getConfiguracionEmpresa($id = null,$all=false)
 {
-    isset($id)
-        ? $empresa = ConfiguracionEmpresa::where('id_configuracion_empresa',$id)
-        : $empresa = ConfiguracionEmpresa::where('estado',1);
+    if($all){
+       return ConfiguracionEmpresa::get();
+    }else{
+        isset($id)
+            ? $empresa = ConfiguracionEmpresa::where('id_configuracion_empresa',$id)
+            : $empresa = ConfiguracionEmpresa::where('estado',1);
 
-    return $empresa->first();
+        return $empresa->first();
+    }
 }
 
 function getDocumentos($entidad, $codigo)
@@ -1751,9 +1755,9 @@ function getFacturaClienteTercero($idEnvio)
     return FacturaClienteTercero::where('id_envio', $idEnvio)->first();
 }
 
-function getSecuenciaDespacho()
+function getSecuenciaDespacho($configuracion_empresa)
 {
-    return env('INICIAL_DESPACHO') + Despacho::count() + 1;
+    return $configuracion_empresa->inicial_despacho + Despacho::where('id_configuracion_empresa',$configuracion_empresa->id_configuracion_empresa)->count() + 1;
 }
 
 function getTransportista($idTransportista)

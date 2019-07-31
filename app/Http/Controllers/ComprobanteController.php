@@ -838,7 +838,7 @@ class ComprobanteController extends Controller
         $xml->appendChild($factura);
         $fechaEmision = now()->format('dmY');
         $tipoComprobante = '00';
-        $ruc = getConfiguracionEmpresa()->ruc;
+        $ruc = getConfiguracionEmpresa($request->id_configuracion_empresa)->ruc;
         $entorno = env('ENTORNO');
         $serie = '001' . $punto_acceso;
         $tipo_emision = '1';
@@ -1090,7 +1090,7 @@ class ComprobanteController extends Controller
             if($comprobante->clave_acceso != null)
                 $img_clave_acceso = generateCodeBarGs1128($comprobante->clave_acceso);
             $data = [
-                'empresa' => getConfiguracionEmpresa($comprobante->id_configuracion_empresa),
+                'empresa' => $comprobante->empresa,
                 'secuencial' => $comprobante->secuencial,
                 'comprobante' => $comprobante,
                 'img_clave_acceso' => $img_clave_acceso
@@ -1199,7 +1199,7 @@ class ComprobanteController extends Controller
                     $tipo_emision = '1';
                 }
 
-                $datosEmpresa = getConfiguracionEmpresa(getComprobante($request->id_comprobante)->id_configuracion_empresa);
+                $datosEmpresa = getComprobante($request->id_comprobante)->empresa;
                 $xml = new DomDocument('1.0', 'UTF-8');
                 $guiaRemision = $xml->createElement('guiaRemision');
                 $guiaRemision->setAttribute('id', 'comprobante');
@@ -1413,7 +1413,7 @@ class ComprobanteController extends Controller
                 $ruc = getComprobante($request->id_comprobante)->empresa->ruc;
                 $serie = '001'. getUsuario(session('id_usuario'))->punto_acceso;;
                 $tipo_emision = '1';
-                $datosEmpresa = getConfiguracionEmpresa(getComprobante($request->id_comprobante)->id_configuracion_empresa);
+                $datosEmpresa = getComprobante($request->id_comprobante)->empresa;
                 $secuencial = $serie.getSecuencial('06',getComprobante($request->id_comprobante)->empresa);
                 $comprobante = Comprobante::find($request->id_comprobante);
 

@@ -1,11 +1,9 @@
 <div class="box box-solid box-primary">
     <div class="box-header with-border">
-        <div class="box-title col-md-6 text-left" >
+        <div class="box-title col-md-12 text-center" >
             <b>DESPACHO DE FINCA</b>
         </div>
-        <div class="box-title col-md-6 text-right">
-            <b>{{strtoupper($empresa->razon_social)}}</b>
-        </div>
+
     </div>
     <!-- /.box-header -->
     <div class="box-body">

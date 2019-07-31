@@ -28,7 +28,7 @@
         }
         if (pedidos.length === 0) {
             modal_view('modal_view_msg_factura',
-                '<div class="alert text-center  alert-warning"><p><i class="fa fa-fw fa-exclamation-triangle"></i> Debe seleccionar al menos un pedido para crear el despacho</p></div>',
+                '<div class="alert text-center  alert-warning"><p><i class="fa fa-fw fa-exclamation-triangle"></i> Debe ordenar al menos un pedido para crear el despacho</p></div>',
                 '<i class="fa fa-truck" aria-hidden="true"></i> Despacho', true, false, '{{isPC() ? '50%' : ''}}');
             return false;
         }
@@ -175,4 +175,19 @@
         });
     });
 
+    function desbloquea_pedido() {
+
+        if($("#id_configuracion_empresa").val().length < 1){
+            $.each($(".orden_despacho"),function (i,j) { $(j).attr('disabled',true) });
+        }else{
+            $.each($("input[class!='id_configuracion_empresa_1"+$('#id_configuracion_empresa').val()+"']"),function (i,j) {
+                $(j).attr('disabled');
+            });
+        }
+
+        $.each($("input.id_configuracion_empresa_"+$("#id_configuracion_empresa").val()),function (i,j) {
+            $(j).removeAttr('disabled');
+        });
+
+    }
 </script>
