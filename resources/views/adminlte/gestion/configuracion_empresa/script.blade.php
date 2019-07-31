@@ -136,6 +136,12 @@
             formData.append('fax',$("#fax").val());
             formData.append('permiso_agrocalidad', $("#permiso_agrocalidad").val());
             formData.append('ruc', $("#ruc").val());
+            formData.append('obligado_contabilidad', $("#obligado_contabilidad").val());
+            formData.append('contrasena_firma_digital', $("#contrasena_firma_digital").val());
+            formData.append('inicial_factura', $("#inicial_factura").val());
+            formData.append('inicial_guia', $("#inicial_guia").val());
+            formData.append('inicial_lote', $("#inicial_lote").val());
+            formData.append('incial_despacho', $("#incial_despacho").val());
             $.ajax({
                 url: '{{route('configuracion.store')}}',
                 type: 'POST',
@@ -259,4 +265,12 @@
                 '{{isPC() ? '35%' : ''}}');
         });
     }
+    
+    function nueva_empresa() {
+        get_jquery('{{url('configuracion/empresa_facturacion')}}', {}, function (retorno) {
+            modal_view('modal_view_admin_empresa_facturacion', retorno, '<i class="fa fa-building-o"></i> Empresa para facturar', true, false,
+                '{{isPC() ? '35%' : ''}}');
+        });
+    }
+
 </script>

@@ -13,4 +13,5 @@ Route::resource('configuracion', 'ConfiguracionEmpresaController');
 Route::post('configuracion/actualizar_esatdo_clasificacion', 'ConfiguracionEmpresaController@actualizarEstado');
 Route::post('configuracion/guaradar_detalle_empaque', 'ConfiguracionEmpresaController@guardarDetalleEmpaque')->name('store.detalle_empaque');
 Route::post('configuracion/actualizar_esatdo_detalle_empaque', 'ConfiguracionEmpresaController@actualizarEstadoDetalleEmpaque')->name('update.detalle_empaque');
+Route::get('configuracion/empresa_facturacion', 'ConfiguracionEmpresaController@empresa_facturacion');
 

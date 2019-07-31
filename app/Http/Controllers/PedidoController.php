@@ -414,7 +414,7 @@ class PedidoController extends Controller
 
     public function crear_packing_list($id_pedido,$vista_despacho = false){
         $pedido = getPedido($id_pedido);
-        $empresa = getConfiguracionEmpresa();
+        $empresa = getConfiguracionEmpresa(isset($pedido->envios[0]->comprobante) ? $pedido->envios[0]->comprobante->empresa->id_configuracion_empresa : null);
         $despacho = isset(getDetalleDespacho($pedido->id_pedido)->despacho) ? getDetalleDespacho($pedido->id_pedido)->despacho : null;
         $facturaTercero = isset($pedido->envios) ? getFacturaClienteTercero($pedido->envios[0]->id_envio) : null;
         if($facturaTercero !== null){

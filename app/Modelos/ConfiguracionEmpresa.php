@@ -36,7 +36,14 @@ class ConfiguracionEmpresa extends Model
         'permiso_agrocalidad',
         'ruc',
         'firma_electronica',
-        'imagen'
+        'imagen',
+        'obligado_contabilidad',
+        'contrasena_firma_digital',
+        'inicial_factura',
+        'inicial_guia_remision',
+        'inicial_lote',
+        'inicial_despahco',
+
     ];
 
     public function clasificaciones_unitarias()

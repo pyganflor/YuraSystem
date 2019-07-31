@@ -91,7 +91,7 @@
                                 No. {{$data['secuencial']}}</b>
                         </td>
                     </tr>
-                    <tr> <td style="font-size: 12px">RUC: {{env('RUC')}}</td> </tr>
+                    <tr> <td style="font-size: 12px">RUC: {{$data['comprobante']->empresa->ruc}}</td> </tr>
                     <tr> <td style="font-size: 12px">AUT. SRI. No: {{$data['comprobante']->estado === 5 ? $data['comprobante']->clave_acceso : "Sin valor tributario"}}</td></tr>
                 </table>
                 <table style="width: 100%;" >

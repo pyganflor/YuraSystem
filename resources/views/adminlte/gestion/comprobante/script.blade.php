@@ -19,7 +19,7 @@
         });
     }
 
-    function enviar_comprobante(tipo_comprobante) {
+    function enviar_comprobante(tipo_comprobante,id_configuracion_empresa) {
         arrComprobante = [];
         $.each($('input:checkbox[name=enviar]:checked'), function (i, j) {
             arrComprobante.push(j.value);
@@ -66,7 +66,8 @@
                     _token: '{{csrf_token()}}',
                     arrComprobante: arrComprobante,
                     tipo_comprobante : tipo_comprobante,
-                    envio_correo : $("#envio_correo").is(":checked")
+                    envio_correo : $("#envio_correo").is(":checked"),
+                    id_configuracion_empresa : id_configuracion_empresa
                 };
                 $.get('{{url('comprobante/generar_comprobante_lote')}}', datos, function (retorno) {
                     $.LoadingOverlay("hide");
