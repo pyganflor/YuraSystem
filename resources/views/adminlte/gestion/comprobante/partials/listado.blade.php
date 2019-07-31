@@ -220,12 +220,12 @@
             @elseif($item->estado == 1)
                 <div class="text-center">
                     {{--COMENTADO PARA QUE LA FACTURACION FUNCIONE CON EL SRI--}}
-                    {{--<button class="btn btn-success" onclick="enviar_comprobante('{{$tipo_comprobante}}')">
+                    {{--<button class="btn btn-success" onclick="enviar_comprobante('{{$tipo_comprobante}}','{{$item->id_configuracion_empresa}}')">
                         <i class="fa fa-upload" aria-hidden="true"></i>
                         Enviar al SRI
                     </button>--}}
                     <button class="btn btn-success" title="Descargar txt" onclick="txt_venture()">
-                        <i class="fa fa-download" ></i>
+                        <i class="fa fa-download"></i>
                         Descargar archivo txt
                     </button>
                     <button class="btn btn-info" onclick="actualizar_comprobante()">

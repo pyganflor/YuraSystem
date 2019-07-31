@@ -257,17 +257,17 @@ class ComprobanteController extends Controller
                     //*******COMENTADO PARA QUE LA FACTURACIÓN FUNCIONE CON EL VENTURE*********//
                     /*($envio->pedido->clave_acceso_temporal != null && $envio->pedido->clave_acceso_temporal != "")
                         ? $secuencial = getDetallesClaveAcceso($envio->pedido->clave_acceso_temporal, "SECUENCIAL")
-                        : $secuencial = getSecuencial();*/
+                        : $secuencial = getSecuencial('01',getConfiguracionEmpresa($request->id_configuracion_empresa));*/
 
                     $punto_acceso = getUsuario(session('id_usuario'))->punto_acceso;
                     $serie = '001' . $punto_acceso;
 
-                    ($envio->pedido->clave_acceso_temporal != null && $envio->pedido->clave_acceso_temporal != "")
+                    isset($envio->pedido->clave_acceso_temporal)
                         ? $secuencial = $envio->pedido->clave_acceso_temporal
-                        : $secuencial = $serie.getSecuencial('01');
+                        : $secuencial = $serie.getSecuencial('01',getConfiguracionEmpresa($request->id_configuracion_empresa));
 
                     //*******COMENTADO PARA QUE LA FACTURACIÓN FUNCIONE CON EL VENTURE*********//
-                    /* $ruc = env('RUC');
+                    /* $ruc = isset($envio->comprobante->id_configuracion_empresa) ? getConfiguracionEmpresa($envio->comprobante->id_configuracion_empresa)->ruc : getConfiguracionEmpresa()->ruc ;
                      $codigo_numerico = env('CODIGO_NUMERICO');
                      $entorno = env('ENTORNO');
                      $tipo_emision = '1';*/
@@ -319,7 +319,7 @@ class ComprobanteController extends Controller
             $informacionFactura = [
                 'fechaEmision' => now()->format('d/m/Y'),
                 'dirEstablecimiento' => $datosEmpresa->direccion_establecimiento,
-                'obligadoContabilidad' => env('OBLIGADO_CONTABILIDAD'),
+                'obligadoContabilidad' => $datosEmpresa->obligado_contabilidad == 1 ? 'SI' : 'NO',
                 'tipoIdentificacionComprador' => $codigo_identificacion,
                 'razonSocialComprador' => $identificacion == "9999999999999" ? "CONSUMIDOR FINAL" : $nombre_cliente,
                 'identificacionComprador' => $identificacion,
@@ -551,7 +551,7 @@ class ComprobanteController extends Controller
                     $objDetalleFactura->nombre_comercial_emisor = $datosEmpresa->nombre;
                     $objDetalleFactura->direccion_matriz_emisor = $datosEmpresa->direccion_matriz;
                     $objDetalleFactura->direccion_establecimiento_emisor = $datosEmpresa->direccion_establecimiento;
-                    $objDetalleFactura->obligado_contabilidad = env('OBLIGADO_CONTABILIDAD') == "SI" ? 1 : 0;
+                    $objDetalleFactura->obligado_contabilidad =  $datosEmpresa->obligado_contabilidad;
                     $objDetalleFactura->tipo_identificacion_comprador = $codigo_identificacion;
                     $objDetalleFactura->razon_social_comprador = $identificacion == "9999999999999" ? "CONSUMIDOR FINAL" : $nombre_cliente;
                     $objDetalleFactura->identificacion_comprador = $identificacion;
@@ -689,7 +689,7 @@ class ComprobanteController extends Controller
                                 //*******COMENTADO PARA QUE LA FACTURACIÓN FUNCIONE CON EL VENTURE*********//
                                 /*$save_xml = $xml->save(env('PATH_XML_GENERADOS')."/facturas/".$nombre_xml);
                                 if ($save_xml && $save_xml > 0) {
-                                    $resultado = firmarComprobanteXml($nombre_xml,"/facturas/");
+                                    $resultado = firmarComprobanteXml($nombre_xml,"/facturas/",$model_comprobante->empresa->firma_electronica,$model_comprobante->empresa->contrasena_firma_digital);
                                     if ($resultado) {
                                         $class = 'warning';
                                         if ($resultado == 5) { //FIRMADO CON ÉXITO
@@ -829,7 +829,7 @@ class ComprobanteController extends Controller
 
     public function generar_comprobante_lote(Request $request){
         ini_set('max_execution_time', env('MAX_EXECUTION_TIME'));
-        $secuencial = getSecuencial('00');
+        $secuencial = getSecuencial('00',getConfiguracionEmpresa($request->id_configuracion_empresa));
         $punto_acceso = Usuario::where('id_usuario', session('id_usuario'))->first()->punto_acceso;
         $secuencial = str_pad($secuencial, 9, "0", STR_PAD_LEFT);
         $xml = new DomDocument('1.0', 'UTF-8');
@@ -838,7 +838,7 @@ class ComprobanteController extends Controller
         $xml->appendChild($factura);
         $fechaEmision = now()->format('dmY');
         $tipoComprobante = '00';
-        $ruc = env('RUC');
+        $ruc = getConfiguracionEmpresa()->ruc;
         $entorno = env('ENTORNO');
         $serie = '001' . $punto_acceso;
         $tipo_emision = '1';
@@ -922,7 +922,7 @@ class ComprobanteController extends Controller
                     "<p> No se encontró el comprobante electrónico generado relacionado a este registro, comuníquese con el área de sistemas</p>"
                     . "</div>";
             }else {
-                $resultado = firmarComprobanteXml($comprobante->clave_acceso . ".xml",$request->carpeta);
+                $resultado = firmarComprobanteXml($comprobante->clave_acceso . ".xml",$request->carpeta,$comprobante->empresa->firma_electronica,$comprobante->empresa->contrasena_firma_digital);
                 if ($resultado) {
                     $class = 'warning';
                     if ($resultado == 5) {
@@ -1189,8 +1189,8 @@ class ComprobanteController extends Controller
                     Comprobante::destroy($dataComprobante[0]->id_comprobante);
 
                 }else{
-                    $secuencial = getSecuencial('06');
-                    $ruc = env('RUC');
+                    $secuencial = getSecuencial('06',getComprobante($request->id_comprobante)->empresa);
+                    $ruc = getComprobante($request->id_comprobante)->empresa->ruc;
                     $codigo_numerico = env('CODIGO_NUMERICO');
                     $tipoComprobante = '06';
                     $entorno = env('ENTORNO');
@@ -1240,7 +1240,7 @@ class ComprobanteController extends Controller
                     'razonSocialTransportista' => $despacho->conductor->nombre,
                     'tipoIdentificacionTransportista'=>$despacho->conductor->tipo_identificacion,
                     'rucTransportista' => $despacho->conductor->ruc,
-                    'obligadoContabilidad' => env('OBLIGADO_CONTABILIDAD'),
+                    'obligadoContabilidad' => $datosEmpresa->obligado_contabilidad == 1 ? 'SI' : 'NO',
                     'fechaIniTransporte' => Carbon::parse($despacho->fecha_despacho)->format('d/m/Y'),
                     'fechaFinTransporte' => Carbon::parse($despacho->fecha_despacho)->format('d/m/Y'),
                     'placa' => $despacho->camion->placa
@@ -1339,7 +1339,7 @@ class ComprobanteController extends Controller
 
                         $save_xml = $xml->save(env('PATH_XML_GENERADOS') ."/guias_remision/". $nombre_xml);
                         if ($save_xml && $save_xml > 0) {
-                            $resultado = firmarComprobanteXml($nombre_xml,"/guias_remision/");
+                            $resultado = firmarComprobanteXml($nombre_xml,"/guias_remision/",$model_comprobante->empresa->firma_electronica,$model_comprobante->empresa->contrasena_firma_digital);
                             if ($resultado) {
                                 $class = 'warning';
                                 if ($resultado == 5) {
@@ -1410,11 +1410,11 @@ class ComprobanteController extends Controller
             ]);
             $fechaEmision = Carbon::now()->format('dmY');
             if(!$valida->fails()) {
-                $ruc = env('RUC');
+                $ruc = getComprobante($request->id_comprobante)->empresa->ruc;
                 $serie = '001'. getUsuario(session('id_usuario'))->punto_acceso;;
                 $tipo_emision = '1';
                 $datosEmpresa = getConfiguracionEmpresa(getComprobante($request->id_comprobante)->id_configuracion_empresa);
-                $secuencial = $serie.getSecuencial('06');
+                $secuencial = $serie.getSecuencial('06',getComprobante($request->id_comprobante)->empresa);
                 $comprobante = Comprobante::find($request->id_comprobante);
 
                 $obj_comprobante = new Comprobante;
@@ -1433,8 +1433,8 @@ class ComprobanteController extends Controller
                     $objDetalleGuiaRemision->razon_social_emisor = $datosEmpresa->razon_social;
                     $objDetalleGuiaRemision->direccion_matriz_emisor = $datosEmpresa->direccion_matriz;
                     $objDetalleGuiaRemision->direccion_establecimiento_emisor = $datosEmpresa->direccion_establecimiento;
-                    $objDetalleGuiaRemision->obligado_contabilidad = env('OBLIGADO_CONTABILIDAD') === "SI" ? true : false;
-                    $objDetalleGuiaRemision->identificacion_emisor = env('RUC');
+                    $objDetalleGuiaRemision->obligado_contabilidad = $datosEmpresa->obligado_contabilidad;
+                    $objDetalleGuiaRemision->identificacion_emisor = $model_comprobante->empresa->ruc;
                     $objDetalleGuiaRemision->destino = $request->ruta;
                     if($objDetalleGuiaRemision->save()){
                         $model_detalle_guia_remision = DetalleGuiaRemision::all()->last();

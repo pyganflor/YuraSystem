@@ -1171,15 +1171,15 @@ function generaDigitoVerificador($cadena)
     }
 }
 
-function firmarComprobanteXml($archivo_xml, $carpeta)
+function firmarComprobanteXml($archivo_xml, $carpeta, $firma_electronica, $contrasena_firma)
 {
     exec("java -Dfile.encoding=UTF-8 -jar " . env('PATH_JAR_FIRMADOR') . " "
         . env('PATH_XML_GENERADOS') . $carpeta . " "
         . $archivo_xml . " "
         . env('PATH_XML_FIRMADOS') . $carpeta . " "
         . env('PATH_FIRMA_DIGITAL') . " "
-        . env('CONTRASENA_FIRMA_DIGITAL') . " "
-        . env('NOMBRE_ARCHIVO_FIRMA_DIGITAL') . " ",
+        . $contrasena_firma . " "
+        . $firma_electronica . " ",
         $salida, $var);
 
     if ($var == 0)
@@ -1191,7 +1191,7 @@ function firmarComprobanteXml($archivo_xml, $carpeta)
 function mensajeFirmaElectronica($indice, $archivo)
 {
     $mensaje = [
-        0 => "No se ha obtenido el archivo de la firma digital correctamente, verifique que el path propocionado en la variable de entorno 'PATH_FIRMA_DIGITAL' en el archivo .env coincida con la ubicación actual del archivo la firma digital y el String pasado a la variable 'NOMBRE_ARCHIVO_FIRMA_DIGITAL' corresponda con el nombre del archivo), una vez corregido el error puede filtrar por 'NO FIRMADOS' en la vista de comprobantes y proceder a realizar la firma del mismo",
+        0 => "No se ha obtenido el archivo de la firma digital correctamente, verifique que el archivo deste debidamente cargado en el sistema, una vez corregido el error puede filtrar por 'NO FIRMADOS' en la vista de comprobantes y proceder a realizar la firma del mismo",
         1 => "Verificar lo explicado en el Índice 0 de este apartado y a su vez verificar que exista el certificado como archivo físico, una vez corregido el error puede filtrar por 'NO FIRMADOS' y proceder a realizar la firma del mismo",
         2 => "No se pudo acceder al contenido del archivo del certificado electrónico, verifique los indicies 0 y 1 de este apartado  y a su vez que el String pasado en la variable 'CONTRASENA_FIRMA_DIGITAL' en el archivo .env coincida con la propocionada por el ente certificador, una vez corregido el error puede filtrar por 'NO FIRMADOS' en la vista de comprobantes y proceder a realizar la firma del mismo",
         3 => "Se produjo un error al momento de generar la firma electrónica del xml " . $archivo . ", por favor comunicarse con el deparatmento de tecnología, una vez corregido el error puede filtrar por 'NO FIRMADOS' en la vista de comprobantes y proceder a realizar la firma del mismo",
@@ -1441,21 +1441,24 @@ function getDetallesClaveAcceso($numeroAutorizacion, $detalle)
     return $resultado;
 }
 
-function getSecuencial($tipoComprobante)
+function getSecuencial($tipoComprobante,$configuracionEmpresa)
 {
     switch ($tipoComprobante) {
         case '01':
-            $inicio_secuencial = env('INICIAL_FACTURA');
+            $inicio_secuencial = $configuracionEmpresa->inicial_factura;
             break;
         case '06':
-            $inicio_secuencial = env('INICIAL_GUIA_REMISION');
+            $inicio_secuencial = $configuracionEmpresa->inicial_guia_remision;
             break;
         case '00':
-            $inicio_secuencial = env('INICIAL_LOTE');
+            $inicio_secuencial = $configuracionEmpresa->inicial_lote;
             break;
     }
     $secuencial = $inicio_secuencial + 1;
-    $cant_reg = Comprobante::where('tipo_comprobante', $tipoComprobante)->count();
+    $cant_reg = Comprobante::where([
+        ['tipo_comprobante', $tipoComprobante],
+        ['id_configuracion_empresa',$configuracionEmpresa->id_configuracion_empresa]
+    ])->count();
     if ($cant_reg > 0)
         $secuencial = $cant_reg + $inicio_secuencial + 1;
 

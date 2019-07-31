@@ -4,7 +4,7 @@
             <div class="input-group">
                 <span class="input-group-addon" style="background-color: #e9ecef">Nombre</span>
                 <input type="text" id="campo_empaque_{{$cnatInptus+1}}" name="campo_empaque_{{$cnatInptus+1}}" required=""
-                       class="form-control" minlength="1" maxlength="255" placeholder="nombre|factor">
+                       class="form-control" minlength="1" maxlength="255" placeholder="nombre|factor|peso caja Gr">
             </div>
             <div class="input-group">
                 <span class="input-group-addon" style="background-color: #e9ecef">Tipo</span>
