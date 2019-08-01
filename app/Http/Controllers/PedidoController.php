@@ -133,10 +133,8 @@ class PedidoController extends Controller
                             $archivo_generado = env('PATH_XML_FIRMADOS').'/facturas/'.$dataComprobante[0]->clave_acceso.".xml";
                             $archivo_firmado = env('PATH_XML_GENERADOS').'/facturas/'.$dataComprobante[0]->clave_acceso.".xml";
 
-                            if(file_exists($archivo_generado))
-                                unlink($archivo_generado);
-                            if(file_exists($archivo_firmado))
-                                unlink($archivo_firmado);
+                            if(file_exists($archivo_generado)) unlink($archivo_generado);
+                            if(file_exists($archivo_firmado)) unlink($archivo_firmado);
 
                             $codigo_dae = $dataEnvio->codigo_dae;
                             $dae = $dataEnvio->dae;
@@ -148,6 +146,7 @@ class PedidoController extends Controller
                             $codigo_pais = $dataEnvio->codigo_pais;
                             $almacen = $dataEnvio->almacen;
                             $aerolinea = getEnvio($dataEnvio->id_envio)->detalles[0]->id_aerolinea;
+                            $id_configuracion_empresa = $dataEnvio->id_configuracion_empresa;
                         }
 
                         DetalleEnvio::where('id_envio',$dataEnvio->id_envio)->delete();
@@ -217,6 +216,7 @@ class PedidoController extends Controller
                     $objEnvio = new Envio;
                     $objEnvio->fecha_envio = $fechaFormateada;
                     $objEnvio->id_pedido = $model->id_pedido;
+                    $objEnvio->id_configuracion_empresa = isset($id_configuracion_empresa) ? $id_configuracion_empresa : getConfiguracionEmpresa()->id_configuracion_empresa;
                     if(isset($codigo_dae)) {
                         $objEnvio->codigo_dae = $codigo_dae;
                         $objEnvio->dae = $dae;
