@@ -196,7 +196,7 @@ class ComprobanteController extends Controller
             }
 
             if ((strtoupper(getConfiguracionEmpresa($request->id_configuracion_empresa)->codigo_pais) != strtoupper($codigo_pais))
-                && (!isset(getCodigoDae(strtoupper($codigo_pais),Carbon::parse($request->fecha_envio)->format('m'),Carbon::parse($request->fecha_envio)->format('Y'))->codigo_dae))
+                && (!isset(getCodigoDae(strtoupper($codigo_pais),Carbon::parse($request->fecha_envio)->format('m'),Carbon::parse($request->fecha_envio)->format('Y'),$request->id_configuracion_empresa)->codigo_dae))
                 && $dae == null) {
                 return '<div class="alert alert-danger text-center">' .
                     '<p> No se ha configurado un código DAE para ' . $request->pais . ' en la fecha seleccionada </p>'

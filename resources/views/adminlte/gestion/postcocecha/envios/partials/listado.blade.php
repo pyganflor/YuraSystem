@@ -236,17 +236,20 @@
                                     <div class="box-body">
                                         <div class="row">
                                             @php
-                                                $envio->codigo_pais == ""
-                                                    ? $p = $envio->pais_cliente
-                                                    : $p = $envio->codigo_pais;
-                                                if(isset($envio->dae)){
-                                                    $dae = $envio->dae;
-                                                    $codgio_dae =  $envio->codigo_dae;
-                                                }else{
-                                                    $d = getCodigoDae(strtoupper($p),Carbon\Carbon::parse($envio->fecha_envio)->format('m'),Carbon\Carbon::parse($envio->fecha_envio)->format('Y'),isset($envio->id_configuracion_empresa) ? $envio->id_configuracion_empresa : getConfiguracionEmpresa()->id_configuracion_empresa);
-                                                    $dae = isset($d->codigo_dae) ? $d->codigo_dae : "";
-                                                    $codigo_dae = isset($d->dae) ? $d->dae : "";
-                                                }
+                                                $ultimo_dia_mes =Carbon\Carbon::parse($envio->fecha_envio)->subMonths(4)->endOfMonth();
+                                                   $envio->codigo_pais == ""
+                                                       ? $p = $envio->pais_cliente
+                                                       : $p = $envio->codigo_pais;
+                                                   if(isset($envio->dae)){
+                                                       $dae = $envio->dae;
+                                                       $codgio_dae =  $envio->codigo_dae;
+                                                   }else{
+                                                       $mes =Carbon\Carbon::parse($envio->fecha_envio)->format('m');
+                                                       $anno = Carbon\Carbon::parse($envio->fecha_envio)->format('Y');
+                                                       $d = getCodigoDae(strtoupper($p),$mes,$anno,isset($envio->id_configuracion_empresa) ? $envio->id_configuracion_empresa : getConfiguracionEmpresa()->id_configuracion_empresa);
+                                                       $dae = isset($d->codigo_dae) ? $d->codigo_dae : "";
+                                                       $codigo_dae = isset($d->dae) ? $d->dae : "";
+                                                   }
                                             @endphp
                                             <div class="col-md-3">
                                                 <label for="empresa">Empresa</label>
