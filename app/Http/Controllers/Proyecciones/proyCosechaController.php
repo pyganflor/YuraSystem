@@ -22,23 +22,31 @@ class proyCosechaController extends Controller
 
     public function listar_proyecciones(Request $request)
     {
-        //dd($request->all());
+        $semana_desde = Semana::All()->where('codigo', $request->desde)->first();
+        $semana_hasta = Semana::All()->where('codigo', $request->hasta)->first();
+        if ($semana_desde != '' && $semana_hasta != '') {
+            $fecha_ini = DB::table('ciclo')
+                ->select(DB::raw('min(fecha_inicio) as inicio'))->distinct()
+                ->where('estado', '=', 1)
+                ->where('id_variedad', '=', $request->variedad)
+                ->where('fecha_fin', '>=', $semana_desde->fecha_inicial)
+                ->get()[0]->inicio;
 
-        $array_semanas = [];
-        for ($i = $request->desde; $i <= $request->hasta; $i++) {
-            $semana = Semana::All()->where('estado', 1)->where('codigo', $i)->first();
-            if ($semana != '')
-                if (!in_array($semana->codigo, $array_semanas))
-                    array_push($array_semanas, $semana->codigo);
-        }
+            if ($fecha_ini != '') {
+                $semana_desde = getSemanaByDate($fecha_ini);
 
-        $modulos = DB::table('ciclo as c')
-            ->select('c.id_modulo')->distinct()
-            ->where('c.estado', '=', 1)
-            ->where('c.id_variedad', '=', $request->variedad)
-            ->where('c.fecha_inicio', '>=', getSemanaByDate($request->desde)->fecha_inicial)
-            ->get();
+                $array_semanas = [];
+                for ($i = $semana_desde->codigo; $i <= $request->hasta; $i++) {
+                    $semana = Semana::All()->where('estado', 1)->where('codigo', $i)->first();
+                    if ($semana != '')
+                        if (!in_array($semana->codigo, $array_semanas))
+                            array_push($array_semanas, $semana->codigo);
+                }
+            } else
+                return 'No se han encontrado módulos en el rango establecido.';
+        } else
+            return 'Revise las semanas, están incorrectas.';
 
-        dd($array_semanas);
+        dd($array_semanas, $request->all());
     }
 }
