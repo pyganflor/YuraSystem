@@ -127,11 +127,15 @@ class SemanaController extends Controller
     public function update_semana(Request $request)
     {
         $valida = Validator::make($request->all(), [
-            'curva' => 'required|max:11|min:11',
+            'curva' => 'required',
             'desecho' => 'required|max:2|',
             'semana_poda' => 'required|max:2|',
             'semana_siembra' => 'required|max:2|',
             'id_semana' => 'required|',
+            'tallos_planta_siembra' => 'required|',
+            'tallos_planta_poda' => 'required|',
+            'tallos_ramo_siembra' => 'required|',
+            'tallos_ramo_poda' => 'required|',
         ], [
             'id_semana.required' => 'La semana es obligatoria',
             'semana_siembra.required' => 'La semana de inicio de siembra es obligatoria',
@@ -141,34 +145,28 @@ class SemanaController extends Controller
             'desecho.required' => 'El porcentaje de desecho es obligatorio',
             'desecho.max' => 'El porcentaje de desecho es muy grande',
             'curva.required' => 'La curva es obligatoria',
-            'curva.max' => 'La curva debe ser de 11 caracteres (10-20-40-30)',
-            'curva.min' => 'La curva debe ser de 11 caracteres (10-20-40-30)',
         ]);
         if (!$valida->fails()) {
-            $patron = "/^\d{2}-\d{2}-\d{2}-\d{2}$/";
-            if (preg_match($patron, $request->curva)) {
-                $model = Semana::find($request->id_semana);
-                $model->curva = str_limit(strtoupper(espacios($request->curva)), 11);
-                $model->desecho = $request->desecho;
-                $model->semana_poda = $request->semana_poda;
-                $model->semana_siembra = $request->semana_siembra;
+            $model = Semana::find($request->id_semana);
+            $model->curva = str_limit(strtoupper(espacios($request->curva)), 11);
+            $model->desecho = $request->desecho;
+            $model->semana_poda = $request->semana_poda;
+            $model->semana_siembra = $request->semana_siembra;
+            $model->tallos_planta_siembra = $request->tallos_planta_siembra;
+            $model->tallos_planta_poda = $request->tallos_planta_poda;
+            $model->tallos_ramo_siembra = $request->tallos_ramo_siembra;
+            $model->tallos_ramo_poda = $request->tallos_ramo_poda;
 
-                if ($model->save()) {
-                    $success = true;
-                    $msg = '<div class="alert alert-success text-center">' .
-                        '<p> Se ha actualizado la semana satisfactoriamente</p>'
-                        . '</div>';
-                    bitacora('semana', $model->id_semana, 'U', 'Actualización satisfactoria de una semana');
-                } else {
-                    $success = false;
-                    $msg = '<div class="alert alert-warning text-center">' .
-                        '<p> Ha ocurrido un problema al guardar la información al sistema</p>'
-                        . '</div>';
-                }
+            if ($model->save()) {
+                $success = true;
+                $msg = '<div class="alert alert-success text-center">' .
+                    '<p> Se ha actualizado la semana satisfactoriamente</p>'
+                    . '</div>';
+                bitacora('semana', $model->id_semana, 'U', 'Actualización satisfactoria de una semana');
             } else {
                 $success = false;
                 $msg = '<div class="alert alert-warning text-center">' .
-                    '<p> La curva debe tener el formato 00-00-00-00</p>'
+                    '<p> Ha ocurrido un problema al guardar la información al sistema</p>'
                     . '</div>';
             }
         } else {
@@ -201,6 +199,10 @@ class SemanaController extends Controller
             'desecho' => $request->desecho,
             'semana_poda' => $request->semana_poda,
             'semana_siembra' => $request->semana_siembra,
+            'tallos_planta_siembra' => $request->tallos_planta_siembra,
+            'tallos_planta_poda' => $request->tallos_planta_poda,
+            'tallos_ramo_siembra' => $request->tallos_ramo_siembra,
+            'tallos_ramo_poda' => $request->tallos_ramo_poda,
             'selection' => $request->selection,
         ]);
     }
@@ -218,19 +220,7 @@ class SemanaController extends Controller
             foreach ($request->ids as $id) {
                 $model = Semana::find($id);
                 if ($request->curva != null) {
-                    $patron = "/^\d{2}-\d{2}-\d{2}-\d{2}$/";
-                    if (preg_match($patron, $request->curva)) {
-                        $model->curva = str_limit(strtoupper(espacios($request->curva)), 11);
-                    } else {
-                        $success = false;
-                        $msg = '<div class="alert alert-warning text-center">' .
-                            '<p> La curva debe tener el formato 00-00-00-00</p>'
-                            . '</div>';
-                        return [
-                            'mensaje' => $msg,
-                            'success' => $success
-                        ];
-                    }
+                    $model->curva = str_limit(strtoupper(espacios($request->curva)), 11);
                 }
                 if ($request->desecho != null)
                     $model->desecho = str_limit(strtoupper(espacios($request->desecho)), 2);
@@ -238,6 +228,14 @@ class SemanaController extends Controller
                     $model->semana_poda = str_limit(strtoupper(espacios($request->semana_poda)), 2);
                 if ($request->semana_siembra != null)
                     $model->semana_siembra = str_limit(strtoupper(espacios($request->semana_siembra)), 2);
+                if ($request->tallos_planta_siembra != null)
+                    $model->tallos_planta_siembra = $request->tallos_planta_siembra;
+                if ($request->tallos_planta_poda != null)
+                    $model->tallos_planta_poda = $request->tallos_planta_poda;
+                if ($request->tallos_ramo_siembra != null)
+                    $model->tallos_ramo_siembra = $request->tallos_ramo_siembra;
+                if ($request->tallos_ramo_poda != null)
+                    $model->tallos_ramo_poda = $request->tallos_ramo_poda;
 
                 if ($model->save()) {
                     $msg .= '<div class="alert alert-success text-center">' .

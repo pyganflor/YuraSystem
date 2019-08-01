@@ -24,6 +24,10 @@ class Semana extends Model
         'fecha_registro',
         'estado',
         'id_variedad',
+        'tallos_planta_siembra',
+        'tallos_planta_poda',
+        'tallos_ramo_siembra',
+        'tallos_ramo_poda',
     ];
 
     public function variedad()

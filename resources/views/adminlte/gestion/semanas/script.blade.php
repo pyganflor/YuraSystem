@@ -67,10 +67,16 @@
 
     function save_semana(id) {
         if ($('#form-semana_curva-' + id).valid() && $('#form-semana_desecho-' + id).valid() &&
+            $('#form-semana_tallos_planta_siembra-' + id).valid() && $('#form-semana_tallos_planta_poda-' + id).valid() &&
+            $('#form-semana_tallos_ramo_siembra-' + id).valid() && $('#form-semana_tallos_ramo_poda-' + id).valid() &&
             $('#form-semana_poda-' + id).valid() && $('#form-semana_siembra-' + id).valid()) {
             datos = {
                 _token: '{{csrf_token()}}',
                 id_semana: id,
+                tallos_planta_siembra: $('#tallos_planta_siembra_' + id).val(),
+                tallos_planta_poda: $('#tallos_planta_poda_' + id).val(),
+                tallos_ramo_siembra: $('#tallos_ramo_siembra_' + id).val(),
+                tallos_ramo_poda: $('#tallos_ramo_poda_' + id).val(),
                 curva: $('#curva_' + id).val(),
                 desecho: $('#desecho_' + id).val(),
                 semana_poda: $('#semana_poda_' + id).val(),
@@ -123,19 +129,31 @@
         }
         if (cant > 1) {
             if (option == 1) {
-                igualar_datos(true, true, true, true);  // todos
+                igualar_datos(true, true, true, true, true, true, true, true);  // todos
             }
             if (option == 2) {
-                igualar_datos(true, false, false, false);   // curva
+                igualar_datos(true, false, false, false, false, false, false, false);   // curva
             }
             if (option == 3) {
-                igualar_datos(false, true, false, false);   // desecho
+                igualar_datos(false, true, false, false, false, false, false, false);   // desecho
             }
             if (option == 4) {
-                igualar_datos(false, false, true, false);   // semana_poda
+                igualar_datos(false, false, true, false, false, false, false, false);   // semana_poda
             }
             if (option == 5) {
-                igualar_datos(false, false, false, true);   // semana_poda
+                igualar_datos(false, false, false, true, false, false, false, false);   // semana_poda
+            }
+            if (option == 6) {
+                igualar_datos(false, false, false, false, true, false, false, false);   // tallos_planta_siembra
+            }
+            if (option == 7) {
+                igualar_datos(false, false, false, false, false, true, false, false);   // tallos_planta_poda
+            }
+            if (option == 8) {
+                igualar_datos(false, false, false, false, false, false, true, false);   // tallos_ramo_siembra
+            }
+            if (option == 9) {
+                igualar_datos(false, false, false, false, false, false, false, true);   // tallos_ramo_poda
             }
         } else {
             alerta('<p class="text-center">Selecciona al menos dos semanas</p>');
@@ -143,15 +161,19 @@
         $('#all_options').val('');
     }
 
-    function igualar_datos(curva, desecho, semana_poda, semana_siembra) {
+    function igualar_datos(curva, desecho, semana_poda, semana_siembra, tallos_planta_siembra, tallos_planta_poda, tallos_ramo_siembra, tallos_ramo_poda) {
         datos = {
             curva: curva,
             desecho: desecho,
             semana_poda: semana_poda,
             semana_siembra: semana_siembra,
+            tallos_planta_siembra: tallos_planta_siembra,
+            tallos_planta_poda: tallos_planta_poda,
+            tallos_ramo_siembra: tallos_ramo_siembra,
+            tallos_ramo_poda: tallos_ramo_poda,
         };
         get_jquery('{{url('semanas/igualar_datos')}}', datos, function (retorno) {
-            modal_form('modal_igualar_datos', retorno, '<i class="fa fa-fw fa-exchange"></i> Igualar todos los datos', false, true, '35%', function () {
+            modal_form('modal_igualar_datos', retorno, '<i class="fa fa-fw fa-exchange"></i> Igualar todos los datos', false, true, '75%', function () {
                 if ($('#form-igualar_datos').valid()) {
                     arreglo = [];
                     list = $('.check_week');
@@ -166,6 +188,10 @@
                         desecho: $('#desecho').val(),
                         semana_siembra: $('#semana_siembra').val(),
                         semana_poda: $('#semana_poda').val(),
+                        tallos_planta_siembra: $('#tallos_planta_siembra').val(),
+                        tallos_planta_poda: $('#tallos_planta_poda').val(),
+                        tallos_ramo_siembra: $('#tallos_ramo_siembra').val(),
+                        tallos_ramo_poda: $('#tallos_ramo_poda').val(),
                         ids: arreglo
                     };
                     post_jquery('{{url('semanas/store_igualar_datos')}}', datos, function () {
