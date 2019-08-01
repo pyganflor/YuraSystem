@@ -18,7 +18,7 @@
     function add_codigo_dae() {
         $.LoadingOverlay('show');
         $.get('{{url('codigo_dae/seleccionar_pais')}}', datos, function (retorno) {
-            modal_form('modal_add_marca', retorno, '<i class="fa fa-fw fa-plus"></i> Seleccionar paises', true, false, '{{isPC() ? '60%' : ''}}', function () {
+            modal_form('modal_add_marca', retorno, '<i class="fa fa-fw fa-plus"></i> Seleccionar paises', true, false, '{{isPC() ? '80%' : ''}}', function () {
                 exel_paises();
                 $.LoadingOverlay('hide');
             });

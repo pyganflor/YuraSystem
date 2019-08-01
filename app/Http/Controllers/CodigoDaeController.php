@@ -33,14 +33,14 @@ class CodigoDaeController extends Controller
         $busqueda = $request->has('busqueda') ? espacios($request->busqueda) : '';
         $bus = str_replace(' ', '%%', $busqueda);
 
-        $listado = DB::table('codigo_dae as cd')->where('cd.estado', 1)
-            ->join('pais as p', 'cd.codigo_pais', 'p.codigo');
+        $listado = CodigoDae::where('codigo_dae.estado', 1)
+            ->join('pais as p', 'codigo_dae.codigo_pais', 'p.codigo');
 
         if ($request->busqueda != '') $listado = $listado->Where(function ($q) use ($bus) {
-            $q->Where('cd.codigo_pais', 'like', '%' . $bus . '%');
+            $q->Where('codigo_dae.codigo_pais', 'like', '%' . $bus . '%');
         });
 
-        $listado = $listado->orderBy('cd.anno', 'asc')->paginate(20);
+        $listado = $listado->orderBy('codigo_dae.anno', 'asc')->paginate(20);
 
         $datos = [
             'listado' => $listado
@@ -51,7 +51,7 @@ class CodigoDaeController extends Controller
     public function seleccionar_pais()
     {
         return view('adminlte.gestion.configuracion_facturacion.codigo_dae.partials.lista_paises', [
-            'dataPaises' => Pais::all()
+            'dataPaises' => Pais::orderBy('nombre','asc')->get()
         ]);
     }
 
@@ -163,13 +163,20 @@ class CodigoDaeController extends Controller
 
     public function form_file_codigo_dae()
     {
-        return view('adminlte.gestion.configuracion_facturacion.codigo_dae.form.upload_codigo_dae');
+        return view('adminlte.gestion.configuracion_facturacion.codigo_dae.form.upload_codigo_dae',
+            [
+                'empresas' => getConfiguracionEmpresa(null,true)
+            ]);
     }
 
     public function importar_codigo_dae(Request $request)
     {
         $valida = Validator::make($request->all(), [
             'file' => 'required',
+            'id_configuracion_empresa' =>  'required'
+        ],[
+            'id_configuracion_empresa.required'=> 'Debe seleccionar la empresa a la que pertencen los códigos dae a subir',
+            'file.required' => 'Debe seleccionar el archivo excel descargado con los códigos dae'
         ]);
 
         if (!$valida->fails()) {
@@ -195,7 +202,7 @@ class CodigoDaeController extends Controller
                             $objCodigoDae->codigo_dae = $activeSheetData[$i]['D'];
                             $objCodigoDae->mes = $activeSheetData[$i]['E'];
                             $objCodigoDae->anno = $activeSheetData[$i]['F'];
-
+                            $objCodigoDae->id_configuracion_empresa = $request->id_configuracion_empresa;
                             if ($objCodigoDae->save()) {
                                 $model = CodigoDae::all()->last();
                                 $msg .= '<div class="alert alert-success text-center">' .
