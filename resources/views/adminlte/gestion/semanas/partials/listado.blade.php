@@ -1,37 +1,75 @@
 @if(sizeof($semanas)>0)
-    <table width="100%" class="table table-responsive table-bordered" style="font-size: 0.8em; border-color: #9d9d9d"
+    <table width="100%" class="table-responsive table-bordered" style="font-size: 0.8em; border-color: #9d9d9d"
            id="table_content_semanas">
         <thead>
         <tr style="background-color: #dd4b39; color: white">
-            <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
+            <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d"
+                rowspan="3">
                 VARIEDAD
             </th>
-            <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
+            <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d"
+                rowspan="3">
                 SEMANA
             </th>
-            <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
+            <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d"
+                rowspan="3">
                 INICIO
             </th>
-            <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
+            <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d"
+                rowspan="3">
                 FIN
             </th>
+            <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
+                style="border-color: #9d9d9d; background-color: #0b3248" colspan="4">
+                Proyección Exportación
+            </th>
             <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d"
-                width="7%">
+                width="7%" rowspan="3">
                 CURVA
             </th>
-            <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
+            <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d"
+                rowspan="3">
                 DESECHOS %
             </th>
             <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d"
-                width="10%">
+                width="10%" rowspan="3">
                 INICIO COSECHA PODA
             </th>
             <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d"
-                width="10%">
+                width="10%" rowspan="3">
                 INICIO COSECHA SIEMBRA
             </th>
-            <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
+            <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d"
+                rowspan="3">
                 OPCIONES
+            </th>
+        </tr>
+        <tr style="background-color: #dd4b39; color: white">
+            <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
+                style="border-color: #9d9d9d; background-color: #0b3248" colspan="2">
+                Tallos Planta
+            </th>
+            <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
+                style="border-color: #9d9d9d; background-color: #0b3248" colspan="2">
+                Tallos Ramo
+            </th>
+        </tr>
+        <tr style="background-color: #dd4b39; color: white">
+            <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
+                style="border-color: #9d9d9d; background-color: #0b3248">
+                Siembra
+            </th>
+            <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
+                style="border-color: #9d9d9d; background-color: #0b3248">
+                Poda
+            </th>
+            <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
+                style="border-color: #9d9d9d; background-color: #0b3248">
+                Siembra
+            </th>
+            <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
+                style="border-color: #9d9d9d; background-color: #0b3248">
+                Poda
             </th>
         </tr>
         </thead>
@@ -49,10 +87,37 @@
                 <td style="border-color: #9d9d9d" class="text-center">{{$item->fecha_inicial}}</td>
                 <td style="border-color: #9d9d9d" class="text-center">{{$item->fecha_final}}</td>
                 <td style="border-color: #9d9d9d" class="text-center">
+                    <form id="form-semana_tallos_planta_siembra-{{$item->id_semana}}">
+                        <input type="number" class="text-center" name="tallos_planta_siembra_{{$item->id_semana}}"
+                               id="tallos_planta_siembra_{{$item->id_semana}}" style="width: 100%"
+                               required value="{{$item->tallos_planta_siembra}}" min="0" max="99">
+                    </form>
+                </td>
+                <td style="border-color: #9d9d9d" class="text-center">
+                    <form id="form-semana_tallos_planta_poda-{{$item->id_semana}}">
+                        <input type="number" class="text-center" name="tallos_planta_poda_{{$item->id_semana}}"
+                               id="tallos_planta_poda_{{$item->id_semana}}" style="width: 100%"
+                               required value="{{$item->tallos_planta_poda}}" min="0" max="99">
+                    </form>
+                </td>
+                <td style="border-color: #9d9d9d" class="text-center">
+                    <form id="form-semana_tallos_ramo_siembra-{{$item->id_semana}}">
+                        <input type="number" class="text-center" name="tallos_ramo_siembra_{{$item->id_semana}}"
+                               id="tallos_ramo_siembra_{{$item->id_semana}}" style="width: 100%"
+                               required value="{{$item->tallos_ramo_siembra}}" min="0" max="99">
+                    </form>
+                </td>
+                <td style="border-color: #9d9d9d" class="text-center">
+                    <form id="form-semana_tallos_ramo_poda-{{$item->id_semana}}">
+                        <input type="number" class="text-center" name="tallos_ramo_poda_{{$item->id_semana}}"
+                               id="tallos_ramo_poda_{{$item->id_semana}}" style="width: 100%"
+                               required value="{{$item->tallos_ramo_poda}}" min="0" max="99">
+                    </form>
+                </td>
+                <td style="border-color: #9d9d9d" class="text-center">
                     <form id="form-semana_curva-{{$item->id_semana}}">
                         <input type="text" class="text-center" name="curva_{{$item->id_semana}}" id="curva_{{$item->id_semana}}"
-                               value="{{$item->curva}}" maxlength="11" required pattern="^\d{2}-\d{2}-\d{2}-\d{2}$"
-                               placeholder="10-20-40-30">
+                               value="{{$item->curva}}" maxlength="11" required placeholder="10-20-40-30">
                     </form>
                 </td>
                 <td style="border-color: #9d9d9d" class="text-center">
@@ -102,6 +167,10 @@
             <option value="">¿Qué desea hacer para los marcados?</option>
             <option value="1">Igualar todos los datos</option>
             <optgroup label="Igualar por separado"></optgroup>
+            <option value="6">Igualar solamente los tallos por planta siembra</option>
+            <option value="7">Igualar solamente los tallos por planta poda</option>
+            <option value="8">Igualar solamente los tallos por ramo siembra</option>
+            <option value="9">Igualar solamente los tallos por ramo poda</option>
             <option value="2">Igualar solamente la curva</option>
             <option value="3">Igualar solamente el porcentaje de desechos</option>
             <option value="4">Igualar solamente la semana de inicio de poda</option>
