@@ -581,8 +581,15 @@ class EnvioController extends Controller
 
     public function buscar_codigo_dae(Request $request){
 
+        $mes =Carbon::parse($request->fecha_envio)->format('m');
+        $anno = Carbon::parse($request->fecha_envio)->format('Y');
+        $ultimo_dia_mes = Carbon::parse($request->fecha_envio)->endOfMonth()->toDateString();
+        if($ultimo_dia_mes == Carbon::parse($request->fecha_envio)->toDateString()) {
+            $mes = Carbon::parse($request->fecha_envio)->addMonth()->format('m');
+            $anno = Carbon::parse($request->fecha_envio)->addMonth()->format('Y');
+        }
        // dd($request->codigo_pais,Carbon::parse($request->fecha_envio)->format('m'),Carbon::parse($request->fecha_envio)->format('Y'),$request->id_configuracion_empresa);
-    $dae = getCodigoDae($request->codigo_pais,Carbon::parse($request->fecha_envio)->format('m'),Carbon::parse($request->fecha_envio)->format('Y'),$request->id_configuracion_empresa);
+    $dae = getCodigoDae($request->codigo_pais,$mes,$anno,$request->id_configuracion_empresa);
     return response()->json([
         'dae' => isset($dae->dae) ? $dae->dae : "",
         'codigo_dae' => isset($dae->codigo_dae) ? $dae->codigo_dae : "",
