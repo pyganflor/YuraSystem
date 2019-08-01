@@ -6,7 +6,7 @@
                 <th class="text-center" style="border-color: white; color: white; background-color: #357ca5" rowspan="2">
                     Módulo
                 </th>
-                <th class="text-center" style="border-color: white; color: white; background-color: #357ca5" colspan="{{$tipo == 1 ? 12 : 6}}">
+                <th class="text-center" style="border-color: white; color: white; background-color: #357ca5" colspan="{{$tipo == 1 ? 13 : 6}}">
                     Ciclos
                 </th>
                 <th class="text-center" style="border-color: white; color: white; background-color: #357ca5" rowspan="2">
@@ -52,6 +52,9 @@
                     </th>
                     <th class="text-center" style="border-color: white; color: white; background-color: #357ca5">
                         Ptas actuales
+                    </th>
+                    <th class="text-center" style="border-color: white; color: white; background-color: #357ca5">
+                        Conteo T/P
                     </th>
                 @endif
             </tr>
@@ -159,6 +162,13 @@
                             @endphp
                             {{$modulo->cicloActual()->plantas_actuales()}}
                         </td>
+                        <td class="text-center" style="border-color: #9d9d9d">
+                            <span class="hidden">{{$modulo->cicloActual()->conteo}}</span>
+                            <input type="number" id="ciclo_conteo_{{$modulo->id_modulo}}"
+                                   name="ciclo_conteo_{{$modulo->id_modulo}}" style="width: 100%"
+                                   value="{{$modulo->cicloActual()->conteo}}"
+                                   class="text-center" required>
+                        </td>
                     @endif
 
                     <td class="text-center" style="border-color: #9d9d9d" colspan="6">
@@ -205,6 +215,8 @@
                     </th>
                     <th class="text-center" style="border-color: #9d9d9d">
                         {{number_format($total_actuales, 2)}}
+                    </th>
+                    <th class="text-center" style="border-color: #9d9d9d">
                     </th>
                 @endif
                 <th class="text-center" style="border-color: #9d9d9d">
