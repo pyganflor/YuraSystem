@@ -382,6 +382,11 @@ class EnvioController extends Controller
             'telefono' => 'required',
             'direccion' => 'required',
             'fecha_envio' => 'required',
+            'id_configuracion_empresa' => 'required'
+        ],[
+            'id_configuracion_empresa.required' => 'Debe seleccionar una empresa para facturar',
+            'email.required' => 'Debe colocar el email del cliente',
+            'fecha_envio.required' => 'Debe colocar la fecha del pedido',
         ]);
 
         if (!$valida->fails()) {
@@ -397,6 +402,7 @@ class EnvioController extends Controller
             $objEnvio->fecha_envio = $request->fecha_envio;
             $objEnvio->almacen = $request->almacen;
             $objEnvio->codigo_dae = $request->codigo_dae;
+            $objEnvio->id_configuracion_empresa = $request->id_configuracion_empresa;
 
             if($objEnvio->save()){
                 bitacora('envio', $request->id_envio, 'U', 'Actualización satisfactoria del envío');
@@ -572,5 +578,16 @@ class EnvioController extends Controller
             'cant_inputs' => $request->cant_input
         ]);
     }
+
+    public function buscar_codigo_dae(Request $request){
+
+       // dd($request->codigo_pais,Carbon::parse($request->fecha_envio)->format('m'),Carbon::parse($request->fecha_envio)->format('Y'),$request->id_configuracion_empresa);
+    $dae = getCodigoDae($request->codigo_pais,Carbon::parse($request->fecha_envio)->format('m'),Carbon::parse($request->fecha_envio)->format('Y'),$request->id_configuracion_empresa);
+    return response()->json([
+        'dae' => isset($dae->dae) ? $dae->dae : "",
+        'codigo_dae' => isset($dae->codigo_dae) ? $dae->codigo_dae : "",
+        'codigo_empresa' => ConfiguracionEmpresa::select('codigo_pais')->first()->codigo_pais
+    ]);
+}
 
 }

@@ -551,6 +551,7 @@ class OrdenSemanalController extends Controller
                 $objComprobante->save();
                 $pedido->clave_acceso_temporal = $c->secuencial;
                 $pedido->id_comprobante_temporal = $c->id_comprobante;
+                $id_configuracion_empresa = $e->id_configuracion_empresa;
             }
 
             if ($pedido->save()) {
@@ -680,6 +681,7 @@ class OrdenSemanalController extends Controller
                     $envio = new Envio();
                     $envio->id_pedido = $pedido->id_pedido;
                     $envio->fecha_envio = $request->fecha_envio;
+                    $envio->id_configuracion_empresa = isset($id_configuracion_empresa) ? $id_configuracion_empresa : getConfiguracionEmpresa()->id_configuracion_empresa;
                     if (isset($e)) {
                         $envio->guia_madre = $e->guia_madre;
                         $envio->guia_hija = $e->guia_hija;

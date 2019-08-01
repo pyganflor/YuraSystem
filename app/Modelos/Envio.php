@@ -24,7 +24,8 @@ class Envio extends Model
         'direccion',
         'codigo_pais',
         'almacen',
-        'codigo_dae'
+        'codigo_dae',
+        'id_configuracion_empresa'
 
     ];
 
@@ -46,5 +47,10 @@ class Envio extends Model
     public function pedido()
     {
         return $this->belongsTo('\yura\Modelos\Pedido', 'id_pedido');
+    }
+
+    public function empresa()
+    {
+        return $this->belongsTo('\yura\Modelos\ConfiguracionEmpresa', 'id_configuracion_empresa');
     }
 }

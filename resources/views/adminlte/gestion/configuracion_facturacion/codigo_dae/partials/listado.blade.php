@@ -14,6 +14,9 @@
                     CÓDIGO DAE
                 </th>
                 <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
+                    EMPRESA
+                </th>
+                <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
                     MES
                 </th>
                 <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
@@ -30,6 +33,7 @@
                     <td style="border-color: #9d9d9d" class="text-center">{{getPais($item->codigo_pais)->nombre}}</td>
                     <td style="border-color: #9d9d9d" class="text-center">{{$item->dae}}</td>
                     <td style="border-color: #9d9d9d" class="text-center"> {{$item->codigo_dae}} </td>
+                    <td style="border-color: #9d9d9d" class="text-center"> {{$item->empresa->razon_social}} </td>
                     <td style="border-color: #9d9d9d" class="text-center"> {{$item->mes}} </td>
                     <td style="border-color: #9d9d9d" class="text-center"> {{$item->anno}} </td>
                     <td style="border-color: #9d9d9d" class="text-center">
