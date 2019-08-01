@@ -137,7 +137,7 @@
                 <div class="form-group input-group">
                     <span class="input-group-addon" style="background-color: #e9ecef">Firma .P12</span>
                     <input type="file" id="firma_electronica" name="firma_electronica" accept="application/x-pkcs12" class="form-control" {!! isset($config_empresa->firma_electronica) ? '' : 'required' !!} >
-                    {!! isset($config_empresa->firma_electronica) ? '<span class="text-info" style="position:absolute;left: 0;top: 33px;"><b>Ya se ha cargado el archivo de la firma electrónica</b></span>' : '' !!}
+                    {!! !empty($config_empresa->firma_electronica) ? '<span class="text-info" style="position:absolute;left: 0;top: 33px;"><b>Ya se ha cargado el archivo de la firma electrónica</b></span>' : '' !!}
                 </div>
             </div>
             <div class="col-md-4">
