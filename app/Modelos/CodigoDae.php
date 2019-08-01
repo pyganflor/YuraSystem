@@ -18,6 +18,11 @@ class CodigoDae extends Model
         'anno',
         'codigo_dae',
         'estado',
-        'fecha_registro'
+        'fecha_registro',
+        'id_configuracion_empresa'
     ];
+
+    public function empresa(){
+        return $this->belongsTo(    'yura\Modelos\ConfiguracionEmpresa','id_configuracion_empresa');
+    }
 }

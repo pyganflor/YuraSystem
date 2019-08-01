@@ -1235,12 +1235,13 @@ function mensaje_envio_comprobante($indice)
     return $mensaje[$indice];
 }
 
-function getCodigoDae($codigoPais, $mes, $anno)
+function getCodigoDae($codigoPais, $mes, $anno,$idConfiguracionEmpresa)
 {
     return CodigoDae::where([
         ['mes', $mes],
         ['anno', $anno],
         ['codigo_pais', $codigoPais],
+        ['id_configuracion_empresa', $idConfiguracionEmpresa],
         ['estado', 1]
     ])->first();
 }

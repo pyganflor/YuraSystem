@@ -1608,17 +1608,18 @@ function buscar_codigo_dae(input, form, factura_cliente_tercero) {
     $.LoadingOverlay('show');
     datos = {
         codigo_pais: input.value,
-        fecha_envio: $("form#" + form + " #fecha_envio").val()
+        fecha_envio: $("form#" + form + " #fecha_envio").val(),
+        id_configuracion_empresa : $("form#" + form + " #id_empresa").val()
     };
     $.get('envio/buscar_codigo_dae', datos, function (retorno) {
         if (factura_cliente_tercero) {
             $("form#" + form + " #dae_cliente_tercero").val(retorno.codigo_dae);
             $("form#" + form + " #codigo_dae_cliente_tercero").val(retorno.dae);
         } else {
+            console.log(retorno);
             $("form#" + form + " #dae").val(retorno.codigo_dae);
             $("form#" + form + " #codigo_dae").val(retorno.dae);
         }
-        //retorno.codigo_dae == "" ? $("form#"+form+" #dae").removeAttr('disabled') : $("form#"+form+" #dae").attr('disabled','disabled');
 
         if (retorno.codigo_empresa === datos.codigo_pais) {
             $("form#" + form + " #dae").removeAttr('required').val('');
@@ -1669,7 +1670,8 @@ function actualizar_envio(id_envio, form, tipo_pedido, token, id_pedido, vista) 
             precios: arrDataPrecio,
             almacen: $("form#" + form + " #almacen").val(),
             tipo_pedido: tipo_pedido,
-            codigo_dae: $("#codigo_dae").val()
+            codigo_dae: $("#codigo_dae").val(),
+            id_configuracion_empresa: $("form#" + form + " #id_empresa").val(),
         };
         $.post('envio/actualizar_envio', datos, function (retorno) {
             if (retorno.success) {
