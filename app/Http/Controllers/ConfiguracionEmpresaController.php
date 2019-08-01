@@ -246,7 +246,7 @@ class ConfiguracionEmpresaController extends Controller
                                 '<p> Ha ocurrido un problema al guardar la información al sistema</p>';
                         }
                     }
-                    dd($empaquesTipos);
+                   // dd($empaquesTipos);
                     for ($x = 0; $x < $cntEmpaques; $x++) {
                         $existIdClasifiEmpaques = Empaque::find($clasifiEmpaqueId[$x]);
                         empty($existIdClasifiEmpaques->id_empaque) ? $objEmpaques = new Empaque : $objEmpaques = Empaque::find($clasifiEmpaqueId[$x]);
