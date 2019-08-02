@@ -139,8 +139,5 @@
 
         });
         $.LoadingOverlay('hide');
-
-
     }
-
 </script>

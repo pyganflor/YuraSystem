@@ -783,7 +783,6 @@ class DespachosController extends Controller
 
     }
 
-
     public function exportar_pedidos_despacho_cuarto_frio(Request $request){
         //---------------------- EXCEL --------------------------------------
         $objPHPExcel = new PHPExcel;
