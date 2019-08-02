@@ -196,12 +196,8 @@ class PedidoController extends Controller
                                 }
                             }
                             $success = true;
-                            $request->crear_envio == 'true'
-                                ? $text =  "y se ha creado el envío"
-                                : $text = "";
-
                             $msg = '<div class="alert alert-success text-center">' .
-                                '<p> Se ha guardado el pedido '.$text.' exitosamente</p>'
+                                '<p> Se ha guardado el pedido exitosamente</p>'
                                 . '</div>';
                         } else {
                             Pedido::destroy($model->id_pedido);
@@ -212,7 +208,7 @@ class PedidoController extends Controller
                         }
                     }
                 }
-                if($success && $request->crear_envio == "true"){
+                if($success){
                     $objEnvio = new Envio;
                     $objEnvio->fecha_envio = $fechaFormateada;
                     $objEnvio->id_pedido = $model->id_pedido;
