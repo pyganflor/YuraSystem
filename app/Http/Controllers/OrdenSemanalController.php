@@ -450,6 +450,7 @@ class OrdenSemanalController extends Controller
                     $envio = new Envio();
                     $envio->id_pedido = $pedido->id_pedido;
                     $envio->fecha_envio = $request->fecha_envio;
+                    $envio->id_configuracion_empresa = getConfiguracionEmpresa()->id_configuracion_empresa;
 
                     if ($envio->save()) {
                         $envio = Envio::All()->last();
