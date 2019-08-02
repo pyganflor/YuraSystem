@@ -84,7 +84,7 @@ class PedidoController extends Controller
                     ->where('dt.estado', 1)->orderBy('dt.nombre','asc')->get(),
                 'id_pedido' => $request->id_pedido,
                 'datos_exportacion' => ClienteDatoExportacion::where('id_cliente',$request->id_cliente)->get(),
-                'comprobante' => isset($request->id_pedido) ? (getPedido($request->id_pedido)->envios[0]->comprobante != "" ? getPedido($request->id_pedido)->envios[0]->comprobante : null) : null
+                'comprobante' => isset($request->id_pedido) ? (isset(getPedido($request->id_pedido)->envios[0]->comprobante) ? getPedido($request->id_pedido)->envios[0]->comprobante : null) : null
 
             ]);
     }
@@ -371,11 +371,10 @@ class PedidoController extends Controller
     {
         $pedido = getPedido($request->id_pedido);
 
-        if($pedido->envios[0]->comprobante != null && $pedido->envios[0]->comprobante != ""){
+        if(isset($pedido->envios[0]->comprobante) && $pedido->envios[0]->comprobante != ""){
             $objComprobante = Comprobante::find($pedido->envios[0]->comprobante->id_comprobante);
             $objComprobante->update(['id_envio'=>null,'rehusar'=>true]);
         }
-
 
         //$objPedido = Pedido::find($request->id_pedido);
         //$objPedido->estado = $request->estado == 0 ? 1 : 0;
