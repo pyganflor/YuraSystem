@@ -267,12 +267,10 @@
                                                                 <i class="fa fa-{!! $det_ped->estado == 1 ? 'trash' : 'undo' !!}" aria-hidden="true"></i>
                                                         </button>
                                                         @if($pedido->empaquetado == 0)
-
                                                             @if($ped->haveDistribucion() == 1)
                                                                 <button type="button" class="btn btn-xs btn-info" title="Distribuir"
                                                                         onclick="distribuir_orden_semanal('{{$pedido->id_pedido}}')">
                                                                     <i class="fa fa-fw fa-gift"></i>
-
                                                                 </button>
                                                             @elseif($ped->haveDistribucion() == 2)
                                                                 <button onclick="ver_distribucion_orden_semanal('{{$pedido->id_pedido}}')" class="btn btn-default text-left" style="cursor:pointer;padding:5px 3px;width:100%;">
