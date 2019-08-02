@@ -308,4 +308,30 @@ class PedidoVentaController extends Controller
             'success' => $success
         ];
     }
+
+    public function empaquetar_pedido(Request $request){
+
+        $pedido = Pedido::find($request->id_pedido);
+        $pedido->update([
+            'variedad' => '',
+            'empaquetado' => true
+        ]);
+        if ($pedido) {
+            $success = true;
+            $msg = '<div class="alert alert-success text-center">' .
+                '<p> Se ha empaquetado el pedido exitosamente</p>'
+                . '</div>';
+            bitacora('pedido', $request->id_pedido, 'U', 'Pedido empaquetado con éxito');
+        } else {
+            $success = false;
+            $msg = '<div class="alert alert-danger text-center">' .
+                '<p> Ha ocurrido un problema al empaquetar el pedido, intente nuevamente</p>'
+                . '</div>';
+        }
+        return [
+            'mensaje' => $msg,
+            'success' => $success
+        ];
+    }
+
 }

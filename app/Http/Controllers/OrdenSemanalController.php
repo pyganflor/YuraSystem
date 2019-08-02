@@ -438,10 +438,10 @@ class OrdenSemanalController extends Controller
                 if (!in_array($pedido->variedad, $arreglo_variedades) && $pedido->variedad != '')
                     array_push($arreglo_variedades, $pedido->variedad);
                 $variedades = $arreglo_variedades[0];
-                foreach ($arreglo_variedades as $i => $v) {
+                foreach ($arreglo_variedades as $i => $v)
                     if ($i > 0)
                         $variedades .= '|' . $v;
-                }
+
                 $pedido->variedad = $variedades;
                 if ($pedido->save()) {
                     bitacora('pedido', $pedido->id_pedido, 'U', 'Modificacion del campo variedad de un pedido (Flor tinturada)');

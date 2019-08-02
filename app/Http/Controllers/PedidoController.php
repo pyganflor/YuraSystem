@@ -207,23 +207,21 @@ class PedidoController extends Controller
                                 . '</div>';
                         }
                     }
-                }
-                if($success){
                     $objEnvio = new Envio;
                     $objEnvio->fecha_envio = $fechaFormateada;
                     $objEnvio->id_pedido = $model->id_pedido;
                     $objEnvio->id_configuracion_empresa = isset($id_configuracion_empresa) ? $id_configuracion_empresa : getConfiguracionEmpresa()->id_configuracion_empresa;
                     if(isset($codigo_dae)) {
-                        $objEnvio->codigo_dae = $codigo_dae;
-                        $objEnvio->dae = $dae;
-                        $objEnvio->guia_madre = $guia_madre;
-                        $objEnvio->guia_hija = $guia_hija;
-                        $objEnvio->email = $email;
-                        $objEnvio->telefono = $telefono;
-                        $objEnvio->direccion = $direccion;
-                        $objEnvio->codigo_pais = $codigo_pais;
-                        $objEnvio->almacen = $almacen;
-                    }
+                            $objEnvio->codigo_dae = $codigo_dae;
+                            $objEnvio->dae = $dae;
+                            $objEnvio->guia_madre = $guia_madre;
+                            $objEnvio->guia_hija = $guia_hija;
+                            $objEnvio->email = $email;
+                            $objEnvio->telefono = $telefono;
+                            $objEnvio->direccion = $direccion;
+                            $objEnvio->codigo_pais = $codigo_pais;
+                            $objEnvio->almacen = $almacen;
+                        }
                     if($objEnvio->save()){
                         $modelEnvio = Envio::all()->last();
                         bitacora('envio', $modelEnvio->id_envio, 'I', 'Inserción satisfactoria de un nuevo envío');

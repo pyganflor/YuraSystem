@@ -46,7 +46,6 @@
                             @endforeach
                         </select>
                     </div>
-
                     <div class="col-md-3 hide">
                         <label for="envio" style="font-size: 11pt;margin-top: 30px">Envío automático</label>
                         <button type='button' id="" class='btn btn-xs btn-default'>

@@ -261,14 +261,13 @@
                                                     @endif
                                                     @if((isset($ped->envios[0]->comprobante) && $ped->envios[0]->comprobante->estado != 6) || !isset($ped->envios[0]->comprobante))
                                                     @if($facturado==null)
-                                                        @if($pedido->empaquetado == 0)
-                                                            <button class="btn  btn-{!! $det_ped->estado == 1 ? 'danger' : 'success' !!} btn-xs"
-                                                                    type="button"
-                                                                    title="{!! $det_ped->estado == 1 ? 'Cancelar pedido' : 'Activar pedido' !!}"
-                                                                    id="edit_pedidos"
-                                                                    onclick="cancelar_pedidos('{{$pedido->id_pedido}}','','{{$det_ped->estado}}','{{@csrf_token()}}')">
+                                                        <button class="btn  btn-{!! $det_ped->estado == 1 ? 'danger' : 'success' !!} btn-xs" type="button"
+                                                                title="{!! $det_ped->estado == 1 ? 'Cancelar pedido' : 'Activar pedido' !!}" id="edit_pedidos"
+                                                                onclick="cancelar_pedidos('{{$pedido->id_pedido}}','','{{$det_ped->estado}}','{{@csrf_token()}}')">
                                                                 <i class="fa fa-{!! $det_ped->estado == 1 ? 'trash' : 'undo' !!}" aria-hidden="true"></i>
-                                                            </button>
+                                                        </button>
+                                                        @if($pedido->empaquetado == 0)
+
                                                             @if($ped->haveDistribucion() == 1)
                                                                 <button type="button" class="btn btn-xs btn-info" title="Distribuir"
                                                                         onclick="distribuir_orden_semanal('{{$pedido->id_pedido}}')">
@@ -282,6 +281,9 @@
                                                             @endif
                                                             <button onclick="duplicar_pedido('{{$pedido->id_pedido}}','{{$pedido->id_cliente}}')" class="btn btn-primary  btn-xs " title="Duplicar pedido">
                                                                 <i class="fa fa-files-o" aria-hidden="true"></i>
+                                                            </button>
+                                                            <button onclick="empaquetar_pedido('{{$pedido->id_pedido}}','{{csrf_token()}}')" class="btn btn-warning  btn-xs " title="Empaquetar pedido">
+                                                                <i class="fa fa-cube"></i>
                                                             </button>
                                                         @endif
                                                             <button onclick="facturar_pedido('{{$pedido->id_pedido}}')" class="btn btn-success btn-xs" title="Generar factura">
