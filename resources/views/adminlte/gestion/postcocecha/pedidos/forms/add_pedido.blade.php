@@ -46,13 +46,13 @@
                             @endforeach
                         </select>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-3 hide">
                         <label for="envio" style="font-size: 11pt;margin-top: 30px">Envío automático</label>
                         <button type='button' id="" class='btn btn-xs btn-default'>
                             <input type="checkbox" id="envio_automatico" name="envio_automatico" checked >
                         </button>
                     </div>
-                    <div class="col-md-1" style="margin-top: 30px;text-align: right;">
+                    <div class="col-md-4" style="margin-top: 30px;text-align: right;">
                         <button type='button' class='btn btn-xs btn-danger' onclick='borrar_duplicado()'>
                             <i class='fa fa-fw fa-trash'></i>
                         </button>

@@ -23,5 +23,5 @@ Route::get('pedidos/listar_agencias_carga', 'OrdenSemanalController@listar_agenc
 Route::get('pedidos/duplicar_especificacion', 'PedidoVentaController@duplicar_especificacion');
 Route::get('pedidos/form_duplicar_pedido', 'PedidoVentaController@form_duplicar_pedido');
 Route::post('pedidos/store_duplicar_pedido', 'PedidoVentaController@store_duplicar_pedido');
-
+Route::post('pedidos/empaquetar_pedido', 'PedidoVentaController@empaquetar_pedido');
 Route::post('pedidos/auto_distribuir_pedido_tinturado', 'OrdenSemanalController@auto_distribuir_pedido_tinturado');

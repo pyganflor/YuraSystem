@@ -162,8 +162,8 @@
 @include('adminlte.gestion.postcocecha.pedidos_ventas.partials._tabla_orden_semanal')
 
 <script>
-    set_min_today($('#fecha_pedido'));
-    set_min_today($('#fecha_envio'));
+   // set_min_today($('#fecha_pedido'));
+   // set_min_today($('#fecha_envio'));
 
     function construir_tabla() {
         col = $('#num_colores').val();

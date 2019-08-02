@@ -1511,12 +1511,31 @@ function facturar_pedido(id_pedido) {
     $.LoadingOverlay('show');
     datos = {
         id_pedido: id_pedido
-    }
+    };
     $.get('pedidos/facturar_pedido', datos, function (retorno) {
         modal_view('modal_view_Facturar_pedido', retorno, '<i class="fa fa-cubes"></i> Pedido', true, false, '80%');
     }).always(function () {
         $.LoadingOverlay('hide');
     });
+}
+
+
+function empaquetar_pedido(id_pedido,token) {
+
+    modal_quest('modal_message_facturar_envios',
+        '<div class="alert alert-warning text-center"><label><i class="fa fa-exclamation-triangle" ></i> Esta seguro que desea empaquetar el pedido?</label></div>',
+        '<i class="fa fa-cube"></i> Empaquetar pedido', true, false, '50%', function () {
+            $.LoadingOverlay('show');
+        datos = {
+            id_pedido: id_pedido,
+            _token : token
+        };
+        post_jquery('pedidos/empaquetar_pedido', datos, function () {
+            cerrar_modals();
+            listar_resumen_pedidos($('#fecha_pedidos_search').val(),true);
+        });
+        $.LoadingOverlay('hide');
+        });
 }
 
 function genera_comprobante_cliente(id_envio, form, action, token, id_comprobante) {

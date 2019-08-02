@@ -84,7 +84,7 @@ class PedidoController extends Controller
                     ->where('dt.estado', 1)->orderBy('dt.nombre','asc')->get(),
                 'id_pedido' => $request->id_pedido,
                 'datos_exportacion' => ClienteDatoExportacion::where('id_cliente',$request->id_cliente)->get(),
-                'comprobante' => isset($request->id_pedido) ? (getPedido($request->id_pedido)->envios[0]->comprobante != "" ? getPedido($request->id_pedido)->envios[0]->comprobante : null) : null
+                'comprobante' => isset($request->id_pedido) ? (isset(getPedido($request->id_pedido)->envios[0]->comprobante) ? getPedido($request->id_pedido)->envios[0]->comprobante : null) : null
 
             ]);
     }
@@ -196,12 +196,8 @@ class PedidoController extends Controller
                                 }
                             }
                             $success = true;
-                            $request->crear_envio == 'true'
-                                ? $text =  "y se ha creado el envío"
-                                : $text = "";
-
                             $msg = '<div class="alert alert-success text-center">' .
-                                '<p> Se ha guardado el pedido '.$text.' exitosamente</p>'
+                                '<p> Se ha guardado el pedido exitosamente</p>'
                                 . '</div>';
                         } else {
                             Pedido::destroy($model->id_pedido);
@@ -211,23 +207,21 @@ class PedidoController extends Controller
                                 . '</div>';
                         }
                     }
-                }
-                if($success && $request->crear_envio == "true"){
                     $objEnvio = new Envio;
                     $objEnvio->fecha_envio = $fechaFormateada;
                     $objEnvio->id_pedido = $model->id_pedido;
                     $objEnvio->id_configuracion_empresa = isset($id_configuracion_empresa) ? $id_configuracion_empresa : getConfiguracionEmpresa()->id_configuracion_empresa;
                     if(isset($codigo_dae)) {
-                        $objEnvio->codigo_dae = $codigo_dae;
-                        $objEnvio->dae = $dae;
-                        $objEnvio->guia_madre = $guia_madre;
-                        $objEnvio->guia_hija = $guia_hija;
-                        $objEnvio->email = $email;
-                        $objEnvio->telefono = $telefono;
-                        $objEnvio->direccion = $direccion;
-                        $objEnvio->codigo_pais = $codigo_pais;
-                        $objEnvio->almacen = $almacen;
-                    }
+                            $objEnvio->codigo_dae = $codigo_dae;
+                            $objEnvio->dae = $dae;
+                            $objEnvio->guia_madre = $guia_madre;
+                            $objEnvio->guia_hija = $guia_hija;
+                            $objEnvio->email = $email;
+                            $objEnvio->telefono = $telefono;
+                            $objEnvio->direccion = $direccion;
+                            $objEnvio->codigo_pais = $codigo_pais;
+                            $objEnvio->almacen = $almacen;
+                        }
                     if($objEnvio->save()){
                         $modelEnvio = Envio::all()->last();
                         bitacora('envio', $modelEnvio->id_envio, 'I', 'Inserción satisfactoria de un nuevo envío');
@@ -371,11 +365,10 @@ class PedidoController extends Controller
     {
         $pedido = getPedido($request->id_pedido);
 
-        if($pedido->envios[0]->comprobante != null && $pedido->envios[0]->comprobante != ""){
+        if(isset($pedido->envios[0]->comprobante) && $pedido->envios[0]->comprobante != ""){
             $objComprobante = Comprobante::find($pedido->envios[0]->comprobante->id_comprobante);
             $objComprobante->update(['id_envio'=>null,'rehusar'=>true]);
         }
-
 
         //$objPedido = Pedido::find($request->id_pedido);
         //$objPedido->estado = $request->estado == 0 ? 1 : 0;
