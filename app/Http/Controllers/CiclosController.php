@@ -9,6 +9,7 @@ use yura\Modelos\Cosecha;
 use yura\Modelos\Modulo;
 use yura\Modelos\Sector;
 use Validator;
+use yura\Modelos\Semana;
 
 class CiclosController extends Controller
 {
@@ -101,6 +102,14 @@ class CiclosController extends Controller
             if ($request->fecha_cosecha != '')
                 $ciclo->fecha_cosecha = opDiasFecha('+', $request->fecha_cosecha, $request->fecha_inicio);
             $ciclo->fecha_fin = $request->fecha_fin;
+
+            $semana = Semana::All()
+                ->where('estado', 1)
+                ->where('id_variedad', $ciclo->id_variedad)
+                ->where('fecha_inicial', '<=', $ciclo->fecha_inicio)
+                ->where('fecha_final', '>=', $ciclo->fecha_inicio)
+                ->first();
+            $ciclo->curva = $semana->curva;
 
             $last_siembra = Ciclo::All()->where('estado', 1)->where('id_modulo', $request->modulo)
                 ->where('poda_siembra', 'S')->sortBy('fecha_inicio')->last();
@@ -199,6 +208,14 @@ class CiclosController extends Controller
             $ciclo->plantas_iniciales = $request->plantas_iniciales;
             $ciclo->plantas_muertas = $request->plantas_muertas;
             $ciclo->conteo = $request->conteo;
+
+            $semana = Semana::All()
+                ->where('estado', 1)
+                ->where('id_variedad', $ciclo->id_variedad)
+                ->where('fecha_inicial', '<=', $ciclo->fecha_inicio)
+                ->where('fecha_final', '>=', $ciclo->fecha_inicio)
+                ->first();
+            $ciclo->curva = $semana->curva;
 
             if ($ciclo->save()) {
                 $success = true;
