@@ -27,10 +27,9 @@ Route::get('comprobante/guia_remision/{secuencial}', 'ComprobanteController@ver_
 Route::post('comprobante/carga_xml', 'ComprobanteController@carga_xml');
 
 Route::get('comprobante/prueba', function (){
-
     $a =\yura\Modelos\Especificacion::whereIn('id_especificacion',function ($query){
         $query->select('id_especificacion')->from('cliente_pedido_especificacion as cpe');
-    })->where('especificacion.tipo','O')->get();
-    dd($a);
+    })->where('especificacion.tipo','O');
+    $a->delete();
 });
 
