@@ -7,6 +7,7 @@ use Validator;
 use yura\Modelos\DetalleEspecificacionEmpaque;
 use yura\Modelos\Submenu;
 use yura\Modelos\ProductoYuraVenture;
+use Illuminate\Support\Str;
 
 class ProductoVentureController extends Controller
 {
@@ -22,13 +23,20 @@ class ProductoVentureController extends Controller
             foreach($item as $i)
                 $data_completa[] = $i;
 
+        $products_vinculado = getProductosVinculadosYuraVenture();
+        $pv = [];
+        foreach ($products_vinculado as $item) {
+            $pv[] = Str::Slug($item->presentacion_yura);
+        }
+        
         return view('adminlte.gestion.configuracion_facturacion.productos_venture.inicio',
             [
                 'url' => $request->getRequestUri(),
                 'submenu' => Submenu::Where('url', '=', substr($request->getRequestUri(), 1))->get()[0],
                 'text' => ['titulo' => 'Administración', 'subtitulo' => 'Productos venture'],
                 'presentacion_venture' => getCodigoArticuloVenture(),
-                'presentaciones_yura_system' => $data_completa
+                'presentaciones_yura_system' => $data_completa,
+                'productos_vinculados' => $pv
             ]);
     }
 
