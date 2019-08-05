@@ -26,10 +26,3 @@ Route::post('comprobante/generar_comprobante_guia_remision_factura','Comprobante
 Route::get('comprobante/guia_remision/{secuencial}', 'ComprobanteController@ver_guia_remision_bd');
 Route::post('comprobante/carga_xml', 'ComprobanteController@carga_xml');
 
-Route::get('comprobante/prueba', function (){
-    $a =\yura\Modelos\Especificacion::whereIn('id_especificacion',function ($query){
-        $query->select('id_especificacion')->from('cliente_pedido_especificacion as cpe');
-    })->where('especificacion.tipo','O');
-    $a->delete();
-});
-
