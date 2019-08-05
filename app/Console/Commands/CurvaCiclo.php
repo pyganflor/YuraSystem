@@ -48,9 +48,12 @@ class CurvaCiclo extends Command
                 ->where('fecha_inicial', '<=', $c->fecha_inicio)
                 ->where('fecha_final', '>=', $c->fecha_inicio)
                 ->first();
-
-            $c->curva = $semana->curva;
-            $c->save();
+            if ($semana == '') {
+dd($semana, $c->id_variedad, $c->fecha_inicio);
+            } else {
+                $c->curva = $semana->curva;
+                $c->save();
+            }
         }
     }
 }

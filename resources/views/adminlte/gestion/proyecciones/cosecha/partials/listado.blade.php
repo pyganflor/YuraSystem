@@ -22,7 +22,10 @@
                     @php
                         $fondo = '';
                         if($val['data']['tipo'] == 'P')
-                            $fondo = '#efff00';
+                            if(substr($val['data']['info'], 2) > 1)
+                                $fondo = '#efff00';
+                            else
+                                $fondo = '#00ff00';
                         else if($val['data']['tipo'] == 'S')
                             $fondo = '#08ffe8';
 
