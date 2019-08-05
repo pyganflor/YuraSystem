@@ -36,17 +36,62 @@ class proyCosechaController extends Controller
                 $semana_desde = getSemanaByDate($fecha_ini);
 
                 $array_semanas = [];
+                $semanas = [];
                 for ($i = $semana_desde->codigo; $i <= $request->hasta; $i++) {
-                    $semana = Semana::All()->where('estado', 1)->where('codigo', $i)->first();
+                    $semana = Semana::All()
+                        ->where('estado', 1)
+                        ->where('id_variedad', '=', $request->variedad)
+                        ->where('codigo', $i)->first();
                     if ($semana != '')
-                        if (!in_array($semana->codigo, $array_semanas))
+                        if (!in_array($semana->codigo, $array_semanas)) {
                             array_push($array_semanas, $semana->codigo);
+                            array_push($semanas, $semana);
+                        }
+                }
+
+                $query_modulos = DB::table('ciclo')
+                    ->select('id_modulo')->distinct()
+                    ->where('estado', '=', 1)
+                    ->where('id_variedad', '=', $request->variedad)
+                    ->where('fecha_fin', '>=', $semana_desde->fecha_inicial)
+                    ->get();
+
+                $array_modulos = [];
+                foreach ($query_modulos as $mod) {
+                    $mod = getModuloById($mod->id_modulo);
+                    $array_valores = [];
+                    foreach ($semanas as $sem) {
+                        if ($sem->codigo < getSemanaByDate(date('Y-m-d'))->codigo) {    // semana pasada
+                            $data = $mod->getDataBySemana(-1, $sem, $request->variedad);
+                            $valor = [
+                                'tiempo' => -1,
+                                'data' => $data,
+                            ];
+                        } else if ($sem->codigo == getSemanaByDate(date('Y-m-d'))->codigo) {    // semana actual
+                            $data = $mod->getDataBySemana(0, $sem, $request->variedad);
+                            $valor = [
+                                'tiempo' => 0,
+                                'data' => $data,
+                            ];
+                        } else {    // semana posterior
+                            $data = $mod->getDataBySemana(1, $sem, $request->variedad);
+                            $valor = [
+                                'tiempo' => 1,
+                                'data' => $data,
+                            ];
+                        }
+                        array_push($array_valores, $valor);
+                    }
+                    array_push($array_modulos, [
+                        'modulo' => $mod,
+                        'valores' => $array_valores
+                    ]);
                 }
             } else
                 return 'No se han encontrado módulos en el rango establecido.';
         } else
             return 'Revise las semanas, están incorrectas.';
 
-        dd($array_semanas, $request->all());
+        dd($array_semanas, $array_modulos);
     }
 }

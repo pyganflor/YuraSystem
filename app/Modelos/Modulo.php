@@ -32,6 +32,11 @@ class Modulo extends Model
         return $this->hasMany('\yura\Modelos\Ciclo', 'id_modulo');
     }
 
+    public function proyecciones()
+    {
+        return $this->hasMany('\yura\Modelos\ProyeccionModulo', 'id_modulo');
+    }
+
     public function cicloActual()
     {
         foreach ($this->ciclos as $c) {
@@ -109,5 +114,41 @@ class Modulo extends Model
         if ($ciclo != '')
             return Ciclo::find($ciclo->id);
         return '';
+    }
+
+    public function getDataBySemana($tiempo, $semana, $variedad)
+    {
+        $data = [
+            'tipo' => 'otro'
+        ];
+        if ($tiempo == -1) {    // pasado
+            $ciclo_ini = $this->ciclos->where('estado', 1)
+                ->where('fecha_inicio', '>=', $semana->fecha_inicial)->where('fecha_inicio', '<=', $semana->fecha_final)
+                ->where('id_variedad', $variedad)->first();
+            if ($ciclo_ini != '') { // esa semana inició un ciclo
+                $data = [
+                    'tipo' => $ciclo_ini->poda_siembra,
+                    'info' => $ciclo_ini->poda_siembra . '-' . $this->getPodaSiembraActual($ciclo_ini->id_ciclo)
+                ];
+            } else {
+                $ciclo_last = $this->ciclos->where('estado', 1)
+                    ->where('fecha_inicio', '<=', $semana->fecha_inicial)
+                    ->where('id_variedad', $variedad)->sortBy('fecha_inicio')->last();
+
+                if ($ciclo_last != '') {
+                    $fecha_inicio = getSemanaByDate($ciclo_last->fecha_inicio)->fecha_inicial;
+                    $data = [
+                        'tipo' => 'I',  // informacion
+                        'info' => (intval(difFechas($semana->fecha_inicial, $fecha_inicio)->days / 7) + 1) . 'º',
+                    ];
+                } else {
+                    $data = [
+                        'tipo' => 'V',  // vacio
+                        'info' => '',
+                    ];
+                }
+            }
+        }
+        return $data;
     }
 }
