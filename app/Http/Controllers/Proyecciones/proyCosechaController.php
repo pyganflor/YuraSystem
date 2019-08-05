@@ -87,11 +87,14 @@ class proyCosechaController extends Controller
                         'valores' => $array_valores
                     ]);
                 }
+
+                return view('adminlte.gestion.proyecciones.cosecha.partials.listado', [
+                    'semanas' => $semanas,
+                    'modulos' => $array_modulos,
+                ]);
             } else
                 return 'No se han encontrado módulos en el rango establecido.';
         } else
             return 'Revise las semanas, están incorrectas.';
-
-        dd($array_semanas, $array_modulos);
     }
 }
