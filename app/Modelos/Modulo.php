@@ -116,7 +116,7 @@ class Modulo extends Model
         return '';
     }
 
-    public function getDataBySemana($tiempo, $semana, $variedad)
+    public function getDataBySemana($tiempo, $semana, $variedad, $desde)
     {
         $data = [
             'tipo' => 'otro'
@@ -134,17 +134,25 @@ class Modulo extends Model
                 ->where('fecha_inicio', '<=', $semana->fecha_inicial)
                 ->where('id_variedad', $variedad)->sortBy('fecha_inicio')->last();
 
+            $data = [
+                'tipo' => 'V',  // vacio
+                'info' => '',
+            ];
             if ($ciclo_last != '') {
-                $fecha_inicio = getSemanaByDate($ciclo_last->fecha_inicio)->fecha_inicial;
-                $data = [
-                    'tipo' => 'I',  // informacion
-                    'info' => (intval(difFechas($semana->fecha_inicial, $fecha_inicio)->days / 7) + 1) . 'º',
-                ];
-            } else {
-                $data = [
-                    'tipo' => 'V',  // vacio
-                    'info' => '',
-                ];
+                if ($ciclo_last->fecha_inicio >= $desde) {
+                    if ($ciclo_last->activo == 1 || ($ciclo_last->activo == 0 && $ciclo_last->fecha_fin >= $semana->fecha_inicial)) {
+                        $fecha_inicio = getSemanaByDate($ciclo_last->fecha_inicio)->fecha_inicial;
+                        $data = [
+                            'tipo' => 'I',  // informacion
+                            'info' => (intval(difFechas($semana->fecha_inicial, $fecha_inicio)->days / 7) + 1) . 'º',
+                        ];
+                    } else {
+                        $data = [
+                            'tipo' => 'F',  // fin de ciclo
+                            'info' => 'F',
+                        ];
+                    }
+                }
             }
         }
         return $data;
