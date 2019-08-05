@@ -12,9 +12,10 @@ class ProductoVentureController extends Controller
 {
     public function inicio(Request $request){
         $data=[];
-        $det_esp_emp = DetalleEspecificacionEmpaque::select('id_variedad','id_clasificacion_ramo','tallos_x_ramos','longitud_ramo','id_unidad_medida')->distinct()->get();
-        foreach ($det_esp_emp as $dsp)
-            $data[$dsp->id_variedad][] = $dsp;
+        $det_esp_emp = DetalleEspecificacionEmpaque::select('id_detalle_especificacionempaque','id_variedad','id_clasificacion_ramo','tallos_x_ramos','longitud_ramo','id_unidad_medida')->distinct()->get();
+        foreach ($det_esp_emp as $x =>  $dsp)
+            if(getDetalleEspecificacionEmpaque($dsp->id_detalle_especificacionempaque)->especificacion_empaque->especificacion->tipo === "N" && getDetalleEspecificacionEmpaque($dsp->id_detalle_especificacionempaque)->especificacion_empaque->especificacion->estado === 1)
+                $data[$dsp->id_variedad][] = $dsp;
 
         $data_completa = [];
         foreach ($data as $item)
@@ -27,7 +28,7 @@ class ProductoVentureController extends Controller
                 'submenu' => Submenu::Where('url', '=', substr($request->getRequestUri(), 1))->get()[0],
                 'text' => ['titulo' => 'Administración', 'subtitulo' => 'Productos venture'],
                 'presentacion_venture' => getCodigoArticuloVenture(),
-                'presentaciones_yuraSystem' => $data_completa
+                'presentaciones_yura_system' => $data_completa
             ]);
     }
 
