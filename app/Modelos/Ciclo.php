@@ -27,6 +27,7 @@ class Ciclo extends Model
         'plantas_iniciales',
         'plantas_muertas',
         'conteo',
+        'curva',
     ];
 
     public function variedad()
