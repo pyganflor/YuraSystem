@@ -18,7 +18,6 @@ class ProductoVentureController extends Controller
             if(getDetalleEspecificacionEmpaque($dsp->id_detalle_especificacionempaque)->especificacion_empaque->especificacion->tipo === "N" && getDetalleEspecificacionEmpaque($dsp->id_detalle_especificacionempaque)->especificacion_empaque->especificacion->estado === 1)
                 $data[$dsp->id_variedad][] = $dsp;
 
-        array_unique($data);
         $data_completa = [];
         foreach ($data as $item)
             foreach($item as $i)
