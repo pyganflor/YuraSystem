@@ -19,6 +19,13 @@ class ProyeccionModulo extends Model
         'id_variedad',
         'tipo', // Poda, Siembra, Cerrado
         'curva',
+        'semana_poda_siembra',
+        'poda_siembra', // numero de poda o 0 si es siembra
+        'plantas_iniciales',
+        'desecho',
+        'tallos_planta',
+        'tallos_ramo',
+        'fecha_inicio',
     ];
 
     public function modulo()

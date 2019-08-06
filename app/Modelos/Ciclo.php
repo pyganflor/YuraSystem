@@ -23,11 +23,12 @@ class Ciclo extends Model
         'fecha_cosecha',
         'fecha_fin',
         'activo',   // boolean 1
-        'poda_siembra', // char(1) P
+        'poda_siembra', // char(1) Poda, Siembra
         'plantas_iniciales',
         'plantas_muertas',
         'conteo',
         'curva',
+        'semana_poda_siembra',
     ];
 
     public function variedad()

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 02-08-2019 a las 16:15:55
+-- Tiempo de generación: 06-08-2019 a las 19:01:28
 -- Versión del servidor: 10.1.36-MariaDB
 -- Versión de PHP: 7.2.11
 
@@ -36,7 +36,13 @@ CREATE TABLE `proyeccion_modulo` (
   `tipo` char(1) COLLATE utf8_bin NOT NULL COMMENT 'Poda; Siembra; Cerrado',
   `curva` varchar(25) COLLATE utf8_bin NOT NULL,
   `estado` tinyint(1) NOT NULL DEFAULT '1',
-  `fecha_registro` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+  `fecha_registro` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `semana_poda_siembra` int(11) DEFAULT NULL,
+  `poda_siembra` int(11) NOT NULL,
+  `plantas_iniciales` int(11) NOT NULL,
+  `desecho` float NOT NULL,
+  `tallos_planta` float NOT NULL,
+  `tallos_ramo` float NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 --

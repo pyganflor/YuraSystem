@@ -13,4 +13,20 @@
                 $('#div_listado_proyecciones').html(retorno);
             });
     }
+
+    function select_celda(tipo, mod, sem, model) {
+        if (['F', 'P', 'S', 'Y'].indexOf(tipo) >= 0) {
+            datos = {
+                tipo: tipo,
+                modulo: mod,
+                semana: sem,
+                model: model,
+                variedad: $('#filtro_predeterminado_variedad').val(),
+            };
+            get_jquery('{{url('proy_cosecha/select_celda')}}', datos, function (retorno) {
+                modal_view('modal-view_select_celda', retorno, '<i class="fa fa-fw fa-tasks"></i> Proyección Cosecha', true, false,
+                    '{{isPC() ? '50%' : ''}}');
+            });
+        }
+    }
 </script>
