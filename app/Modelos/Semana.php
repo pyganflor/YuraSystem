@@ -17,7 +17,6 @@ class Semana extends Model
         'fecha_inicial',
         'fecha_final',
         'curva',
-        'descecho',
         'desecho',
         'semana_poda',
         'semana_siembra',

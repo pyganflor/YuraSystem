@@ -10,6 +10,9 @@
                     {{$sem->codigo}}
                 </th>
             @endforeach
+            <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
+                Módulos
+            </th>
         </tr>
         </thead>
         <tbody>
@@ -18,7 +21,7 @@
                 <td class="text-center" style="border-color: #9d9d9d">
                     {{$mod['modulo']->nombre}}
                 </td>
-                @foreach($mod['valores'] as $val)
+                @foreach($mod['valores'] as $pos_val => $val)
                     @php
                         $fondo = '';
                         if($val['data']['tipo'] == 'P')
@@ -28,12 +31,21 @@
                                 $fondo = '#00ff00';
                         else if($val['data']['tipo'] == 'S')
                             $fondo = '#08ffe8';
+                        else if($val['data']['tipo'] == 'Y')
+                            $fondo = '#9100ff7d';
 
                     @endphp
-                    <td class="text-center" style="border-color: #9d9d9d; background-color: {{$fondo}}">
+                    <td class="text-center {{in_array($val['data']['tipo'], ['F', 'P', 'S', 'Y']) ? 'mouse-hand' : ''}}"
+                        onmouseover="$(this).css('border', '3px solid black')"
+                        onmouseleave="$(this).css('border', '1px solid #9d9d9d')"
+                        style="border-color: #9d9d9d; background-color: {{$fondo}}"
+                        onclick="select_celda('{{$val['data']['tipo']}}', '{{$mod['modulo']->id_modulo}}', '{{$semanas[$pos_val]->id_semana}}', null)">
                         {{$val['data']['info']}}
                     </td>
                 @endforeach
+                <td class="text-center" style="border-color: #9d9d9d">
+                    {{$mod['modulo']->nombre}}
+                </td>
             </tr>
         @endforeach
         </tbody>

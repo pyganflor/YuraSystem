@@ -7,8 +7,10 @@ use Illuminate\Support\Facades\DB;
 use yura\Http\Controllers\Controller;
 use yura\Modelos\Ciclo;
 use yura\Modelos\Modulo;
+use yura\Modelos\ProyeccionModulo;
 use yura\Modelos\Semana;
 use yura\Modelos\Submenu;
+use Validator;
 
 class proyCosechaController extends Controller
 {
@@ -96,5 +98,105 @@ class proyCosechaController extends Controller
                 return 'No se han encontrado módulos en el rango establecido.';
         } else
             return 'Revise las semanas, están incorrectas.';
+    }
+
+    public function select_celda(Request $request)
+    {
+        if ($request->tipo == 'F') {    // crear una proyecccion
+            return view('adminlte.gestion.proyecciones.cosecha.forms.new_proy', [
+                'modulo' => getModuloById($request->modulo),
+                'semana' => Semana::find($request->semana),
+                'variedad' => getVariedad($request->variedad),
+                'last_ciclo' => Ciclo::All()
+                    ->where('estado', 1)
+                    ->where('id_variedad', $request->variedad)
+                    ->where('id_modulo', $request->modulo)->last(),
+            ]);
+        }
+    }
+
+    public function store_proyeccion(Request $request)
+    {
+        $valida = Validator::make($request->all(), [
+            'id_modulo' => 'required',
+            'id_variedad' => 'required',
+            'id_semana' => 'required',
+            'tipo' => 'required',
+            'curva' => 'required',
+            'semana_poda_siembra' => 'required',
+            'plantas_iniciales' => 'required',
+            'desecho' => 'required',
+            'tallos_planta' => 'required',
+            'tallos_ramo' => 'required',
+        ], [
+            'id_modulo.required' => 'El modulo es obligatorio',
+            'tipo.required' => 'El tipo es obligatorio',
+            'desecho.required' => 'El desecho es obligatorio',
+            'plantas_iniciales.required' => 'Las plantas iniciales son obligatorias',
+            'tallos_planta.required' => 'Los tallos por planta son obligatorios',
+            'tallos_ramo.required' => 'Los tallos por ramo son obligatorios',
+            'semana_poda_siembra.required' => 'Las semanas son obligatorias',
+            'curva.required' => 'La curva es obligatoria',
+            'id_variedad.required' => 'La variedad es obligatoria',
+            'id_semana.required' => 'La semana es obligatoria',
+        ]);
+        if (!$valida->fails()) {
+            $model = new ProyeccionModulo();
+            $model->id_modulo = $request->id_modulo;
+            $model->id_variedad = $request->id_variedad;
+            $model->id_semana = $request->id_semana;
+            $model->fecha_inicio = Semana::find($request->id_semana)->fecha_inicial;
+            $model->tipo = $request->tipo;
+            $model->curva = $request->curva;
+            $model->semana_poda_siembra = $request->semana_poda_siembra;
+            $model->plantas_iniciales = $request->plantas_iniciales;
+            $model->desecho = $request->desecho;
+            $model->tallos_planta = $request->tallos_planta;
+            $model->tallos_ramo = $request->tallos_ramo;
+            $model->poda_siembra = 0;
+
+            if ($request->tipo == 'P') {
+                $last_ciclo = Ciclo::All()
+                    ->where('estado', 1)
+                    ->where('id_variedad', $request->id_variedad)
+                    ->where('id_modulo', $request->id_modulo)->last();
+                if ($last_ciclo != '')
+                    $model->poda_siembra = $last_ciclo->poda_siembra == 'S' ? 0 : intval(getModuloById($request->id_modulo)->getPodaSiembraByCiclo($last_ciclo->id_ciclo) + 1);
+            }
+
+            if ($model->save()) {
+                $model = ProyeccionModulo::All()->last();
+                $success = true;
+                $msg = '<div class="alert alert-success text-center">' .
+                    '<p> Se ha guardado una nueva proyección satisfactoriamente</p>'
+                    . '</div>';
+                bitacora('proyeccion_modulo', $model->id_proyeccion_modulo, 'I', 'Inserción satisfactoria de una nueva proyección');
+            } else {
+                $success = false;
+                $msg = '<div class="alert alert-warning text-center">' .
+                    '<p> Ha ocurrido un problema al guardar la información al sistema</p>'
+                    . '</div>';
+            }
+        } else {
+            $success = false;
+            $errores = '';
+            foreach ($valida->errors()->all() as $mi_error) {
+                if ($errores == '') {
+                    $errores = '<li>' . $mi_error . '</li>';
+                } else {
+                    $errores .= '<li>' . $mi_error . '</li>';
+                }
+            }
+            $msg = '<div class="alert alert-danger">' .
+                '<p class="text-center">¡Por favor corrija los siguientes errores!</p>' .
+                '<ul>' .
+                $errores .
+                '</ul>' .
+                '</div>';
+        }
+        return [
+            'mensaje' => $msg,
+            'success' => $success
+        ];
     }
 }
