@@ -969,7 +969,6 @@ function valida_identificacion() {
         $("#identificacion").removeAttr("minlength");
         $("#identificacion").removeAttr("maxlength");
     }
-
 }
 
 function editar_pedido_tinturado(id_pedido, pos_det_ped, global = true, listar_resumen_pedido = true) {
