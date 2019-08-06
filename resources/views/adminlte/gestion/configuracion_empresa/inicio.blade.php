@@ -14,7 +14,7 @@
             <div class="box-header with-border">
                 <h3 class="box-title"> Datos principales </h3>
                 <button type="button" class="btn btn-xs btn-default" title="Registra una nueva empresa para facturacíon" onclick="add_empresa_facturacion()">
-                    <i class="fa fa-plus"></i>
+                    <i class="fa fa-building"></i>
                 </button>
                 <a href="javascript:void(0)" class="btn btn-xs btn-primary pull-right" title="Grosor de Ramos" onclick="admin_grosor_ramo()">
                     <i class="fa fa-fw fa-leaf"></i>

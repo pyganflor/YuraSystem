@@ -14,6 +14,6 @@ Route::post('configuracion/actualizar_esatdo_clasificacion', 'ConfiguracionEmpre
 Route::post('configuracion/guaradar_detalle_empaque', 'ConfiguracionEmpresaController@guardarDetalleEmpaque')->name('store.detalle_empaque');
 Route::post('configuracion/actualizar_esatdo_detalle_empaque', 'ConfiguracionEmpresaController@actualizarEstadoDetalleEmpaque')->name('update.detalle_empaque');
 Route::post('configuracion/empresa_facturacion', 'ConfiguracionEmpresaController@empresa_facturacion');
-Route::post('configuracion/configuracion_empresa_facturacion', 'ConfiguracionEmpresaController@empresa_facturacion');
+Route::post('configuracion/configuracion_empresa_facturacion', 'ConfiguracionEmpresaController@configuracion_empresa_facturacion');
 Route::post('configuracion/store_configuracion_empresa_facturacion', 'ConfiguracionEmpresaController@store_configuracion_empresa_facturacion');
 

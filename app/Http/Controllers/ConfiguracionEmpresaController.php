@@ -480,7 +480,7 @@ class ConfiguracionEmpresaController extends Controller
 
     public function empresa_facturacion(){
         return view('adminlte.gestion.configuracion_empresa.partials.admin_empresa_facturacion_inicio',[
-            'config_empresa' => ConfiguracionEmpresa::/*where('estado',false)->*/get()
+            'config_empresa' => ConfiguracionEmpresa::where('estado',false)->get()
         ]);
     }
 
@@ -498,20 +498,20 @@ class ConfiguracionEmpresaController extends Controller
     public function store_configuracion_empresa_facturacion(Request $request){
 
         $valida = Validator::make($request->all(), [
-            'nombre' => 'required',
-            'cantidad_usuarios' => 'required',
-            'moneda' => 'required',
-            'correo' => 'required',
-            'telefono' => 'required',
-            'codigo_pais' => 'required',
-            'permiso_agrocalidad' => 'required',
-            'obligado_contabilidad'=>'required',
-            'img_empresa' => 'mimes:jpg,JPG,JPEG,jpeg,PNG,png',
-            'contrasena_firma_digital'=>'required',
-            'inicial_factura'=>'required',
-            'inicial_guia'=>'required',
-            'incial_despacho'=>'required',
-            'inicial_lote'=>'required'
+            'nombre_empresa_facturacion' => 'required',
+            'cant_usuarios_empresa_facturacion' => 'required',
+            'moneda_empresa_facturacion' => 'required',
+            'correo_empresa_facturacion' => 'required',
+            'telefono_empresa_facturacion' => 'required',
+            'codigo_pais_empresa_facturacion' => 'required',
+            'permiso_agrocalidad_empresa_facturacion' => 'required',
+            'obligado_contabilidad_empresa_facturacion'=>'required',
+            'img_empresa_empresa_facturacion' => 'mimes:jpg,JPG,JPEG,jpeg,PNG,png',
+            'contrasena_firma_digital_empresa_facturacion'=>'required',
+            'inicial_factura_empresa_facturacion'=>'required',
+            'inicial_guia_empresa_facturacion'=>'required',
+            'incial_despacho_empresa_facturacion'=>'required',
+            'inicial_lote_empresa_facturacion'=>'required'
         ],[
             'firma_electronica.required' => 'El archivo de la firma electrónica de la empresa es obligatorio',
             'codigo_pais.required' => 'Debe seleccionar una opción  en el campo país',
@@ -530,9 +530,10 @@ class ConfiguracionEmpresaController extends Controller
             '<p> Ha ocurrido un problema al guardar la información al sistema</p>';
 
         if (!$valida->fails()) {
-            empty($request->id_config) ? $objConfigEmpresa = new ConfiguracionEmpresa : $objConfigEmpresa = ConfiguracionEmpresa::find($request->id_config);
+
+            !isset($request->id_conf_empresa_facturacion) ? $objConfigEmpresa = new ConfiguracionEmpresa : $objConfigEmpresa = ConfiguracionEmpresa::find($request->id_conf_empresa_facturacion);
             $continuar = true;
-            if(!empty($request->id_config) && empty($objConfigEmpresa->firma_electronica)){
+            if(!isset($request->id_conf_empresa_facturacion) && isset($objConfigEmpresa->firma_electronica)){
                 $valida = Validator::make($request->all(), [
                     'firma_electronica' => 'required',
                 ],['firma_electronica.required' => 'El archivo de la firma electrónica de la empresa es obligatorio']);
@@ -555,42 +556,44 @@ class ConfiguracionEmpresaController extends Controller
                         '</div>';
                 }
             }
+
             if($continuar) {
-                $objConfigEmpresa->nombre = $request->nombre;
-                $objConfigEmpresa->cantidad_usuarios = $request->cantidad_usuarios;
-                $objConfigEmpresa->moneda = $request->moneda;
-                $objConfigEmpresa->razon_social = $request->razon_social;
-                $objConfigEmpresa->direccion_matriz = $request->matriz;
-                $objConfigEmpresa->direccion_establecimiento = $request->establecimiento;
-                $objConfigEmpresa->codigo_pais = $request->codigo_pais;
-                $objConfigEmpresa->correo = $request->correo;
-                $objConfigEmpresa->telefono = $request->telefono;
-                $objConfigEmpresa->permiso_agrocalidad = $request->permiso_agrocalidad;
-                $objConfigEmpresa->ruc = $request->ruc;
-                $objConfigEmpresa->obligado_contabilidad = $request->obligado_contabilidad;
-                $objConfigEmpresa->contrasena_firma_digital = $request->contrasena_firma_digital;
-                $objConfigEmpresa->inicial_factura = $request->inicial_factura;
-                $objConfigEmpresa->inicial_lote = $request->inicial_lote;
-                $objConfigEmpresa->inicial_guia_remision = $request->inicial_guia;
-                $objConfigEmpresa->inicial_despacho = $request->incial_despacho;
-                if ($request->has('firma_electronica')) {
-                    $firma = $request->file('firma_electronica');
-                    $nombre_archivo = $request->razon_social . "_" . $firma->getClientOriginalName();
+                $objConfigEmpresa->nombre = $request->nombre_empresa_facturacion;
+                $objConfigEmpresa->cantidad_usuarios = $request->cant_usuarios_empresa_facturacion;
+                $objConfigEmpresa->moneda = $request->moneda_empresa_facturacion;
+                $objConfigEmpresa->razon_social = $request->razon_social_empresa_facturacion;
+                $objConfigEmpresa->direccion_matriz = $request->matriz_empresa_facturacion;
+                $objConfigEmpresa->direccion_establecimiento = $request->establecimiento_empresa_facturacion;
+                $objConfigEmpresa->codigo_pais = $request->codigo_pais_empresa_facturacion;
+                $objConfigEmpresa->correo = $request->correo_empresa_facturacion;
+                $objConfigEmpresa->telefono = $request->telefono_empresa_facturacion;
+                $objConfigEmpresa->permiso_agrocalidad = $request->permiso_agrocalidad_empresa_facturacion;
+                $objConfigEmpresa->ruc = $request->ruc_empresa_facturacion;
+                $objConfigEmpresa->obligado_contabilidad = $request->obligado_contabilidad_empresa_facturacion;
+                $objConfigEmpresa->contrasena_firma_digital = $request->contrasena_firma_digital_empresa_facturacion;
+                $objConfigEmpresa->inicial_factura = $request->inicial_factura_empresa_facturacion;
+                $objConfigEmpresa->inicial_lote = $request->inicial_lote_empresa_facturacion;
+                $objConfigEmpresa->inicial_guia_remision = $request->inicial_guia_empresa_facturacion;
+                $objConfigEmpresa->inicial_despacho = $request->incial_despacho_empresa_facturacion;
+                $objConfigEmpresa->estado = false;
+                if ($request->has('firma_electronica_empresa_facturacion')) {
+                    $firma = $request->file('firma_electronica_empresa_facturacion');
+                    $nombre_archivo = $request->razon_social_empresa_facturacion . "_" . $firma->getClientOriginalName();
                     $extension = $firma->getClientOriginalExtension();
                     if ($extension === "P12" || $extension === "p12") {
                         $firma->move(env('PATH_FIRMA_DIGITAL'), $nombre_archivo);
                         $objConfigEmpresa->firma_electronica = $nombre_archivo;
                     }
                 }
-                if ($request->has('img_empresa')) {
-                    $imagen = $request->file('img_empresa');
-                    $nombre_archivo = $request->razon_social . "_" . $imagen->getClientOriginalName();
+                if ($request->has('img_empresa_empresa_facturacion')) {
+                    $imagen = $request->file('img_empresa_empresa_facturacion');
+                    $nombre_archivo = $request->razon_social_empresa_facturacion . "_" . $imagen->getClientOriginalName();
                     $imagen->move(public_path('images'), $nombre_archivo);
                     $objConfigEmpresa->imagen = $nombre_archivo;
                 }
                 if ($objConfigEmpresa->save()) {
                     $success = true;
-                    $msg .= '<div class="alert alert-success text-center">' .
+                    $msg = '<div class="alert alert-success text-center">' .
                         '<p> Se han guardado los datos de la empresa '.$request->razon_social.' exitosamente </p>'
                         . '</div>';
                 }
@@ -612,6 +615,7 @@ class ConfiguracionEmpresaController extends Controller
                 '</ul>' .
                 '</div>';
         }
+
         return [
             'mensaje' => $msg,
             'success' => $success
