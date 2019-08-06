@@ -7,28 +7,35 @@ use Validator;
 use yura\Modelos\DetalleEspecificacionEmpaque;
 use yura\Modelos\Submenu;
 use yura\Modelos\ProductoYuraVenture;
+use Illuminate\Support\Str;
 
 class ProductoVentureController extends Controller
 {
     public function inicio(Request $request){
         $data=[];
-        $det_esp_emp = DetalleEspecificacionEmpaque::select('id_detalle_especificacionempaque','id_variedad','id_clasificacion_ramo','tallos_x_ramos','longitud_ramo','id_unidad_medida')->distinct()->get();
+        $det_esp_emp = DetalleEspecificacionEmpaque::select('id_variedad','id_clasificacion_ramo','tallos_x_ramos','longitud_ramo','id_unidad_medida')->distinct()->get();
         foreach ($det_esp_emp as $x =>  $dsp)
-            if(getDetalleEspecificacionEmpaque($dsp->id_detalle_especificacionempaque)->especificacion_empaque->especificacion->tipo === "N" && getDetalleEspecificacionEmpaque($dsp->id_detalle_especificacionempaque)->especificacion_empaque->especificacion->estado === 1)
-                $data[$dsp->id_variedad][] = $dsp;
+            $data[$dsp->id_variedad][] = $dsp;
 
         $data_completa = [];
         foreach ($data as $item)
             foreach($item as $i)
                 $data_completa[] = $i;
 
+        $products_vinculado = getProductosVinculadosYuraVenture();
+        $pv = [];
+        foreach ($products_vinculado as $item) {
+            $pv[] = Str::Slug($item->presentacion_yura);
+        }
+        
         return view('adminlte.gestion.configuracion_facturacion.productos_venture.inicio',
             [
                 'url' => $request->getRequestUri(),
                 'submenu' => Submenu::Where('url', '=', substr($request->getRequestUri(), 1))->get()[0],
                 'text' => ['titulo' => 'Administración', 'subtitulo' => 'Productos venture'],
                 'presentacion_venture' => getCodigoArticuloVenture(),
-                'presentaciones_yura_system' => $data_completa
+                'presentaciones_yura_system' => $data_completa,
+                'productos_vinculados' => $pv
             ]);
     }
 

@@ -478,10 +478,144 @@ class ConfiguracionEmpresaController extends Controller
             ['cnatInptus' => $request->cant_tr]);
     }
 
-    public function empresa_facturacion(Request $request){
+    public function empresa_facturacion(){
         return view('adminlte.gestion.configuracion_empresa.partials.admin_empresa_facturacion_inicio',[
-            'config_empresa' => ConfiguracionEmpresa::where('estado',false)->get()
+            'config_empresa' => ConfiguracionEmpresa::/*where('estado',false)->*/get()
         ]);
+    }
+
+    public function configuracion_empresa_facturacion(Request $request){
+        $moneda = Icon::whereIn('nombre',['usd','jpy','eur','krw','try','inr','gbp','rub'])
+            ->orderBy('id_icono', 'desc')->get();
+
+        return view('adminlte.gestion.configuracion_empresa.forms.partials.add_empresa_facturacion',[
+            'config_empresa_facturacion' => ConfiguracionEmpresa::where('id_configuracion_empresa',$request->id_configuracion_empresa)->first(),
+            'paises' => Pais::get(),
+            'iconoMoneda' => $moneda
+        ]);
+    }
+
+    public function store_configuracion_empresa_facturacion(Request $request){
+
+        $valida = Validator::make($request->all(), [
+            'nombre' => 'required',
+            'cantidad_usuarios' => 'required',
+            'moneda' => 'required',
+            'correo' => 'required',
+            'telefono' => 'required',
+            'codigo_pais' => 'required',
+            'permiso_agrocalidad' => 'required',
+            'obligado_contabilidad'=>'required',
+            'img_empresa' => 'mimes:jpg,JPG,JPEG,jpeg,PNG,png',
+            'contrasena_firma_digital'=>'required',
+            'inicial_factura'=>'required',
+            'inicial_guia'=>'required',
+            'incial_despacho'=>'required',
+            'inicial_lote'=>'required'
+        ],[
+            'firma_electronica.required' => 'El archivo de la firma electrónica de la empresa es obligatorio',
+            'codigo_pais.required' => 'Debe seleccionar una opción  en el campo país',
+            'cantidad_usuarios.required' => 'Debe colocar la cantidad de usuarios que facturaran',
+            'obligado_contabilidad.required' => 'Debe seleccionar si la empresa es obligada a llevar contabilidad o no',
+            'img_empresa.mimes' => 'La imagen de la empresa debe ser en formato jpg o png',
+            'contrasena_firma_digital.required'=> 'Debe colocar la contraseña del archivo de la firma digital de la empresa',
+            'inicial_factura.required'=> 'Debe colocar el último numero de factura electronica con que la empresa termino antes de migrar a este sistema',
+            'inicial_guia.required'=> 'Debe colocar el último número de guía de remisión electronica con que la empresa termino antes de migrar a este sistema',
+            'inicial_lote.required'=> 'Debe colocar el último número de documento en lote enviado de forma electrónica al SRI, si su empresa no usa el envío en lote deje este valor en 0',
+            'incial_despacho.required'=> 'Debe colocar el último número de despacho con el que terminó en la anterior empresa antes de migrar a este sistema',
+        ]);
+
+        $success = false;
+        $msg = '<div class="alert alert-warning text-center">' .
+            '<p> Ha ocurrido un problema al guardar la información al sistema</p>';
+
+        if (!$valida->fails()) {
+            empty($request->id_config) ? $objConfigEmpresa = new ConfiguracionEmpresa : $objConfigEmpresa = ConfiguracionEmpresa::find($request->id_config);
+            $continuar = true;
+            if(!empty($request->id_config) && empty($objConfigEmpresa->firma_electronica)){
+                $valida = Validator::make($request->all(), [
+                    'firma_electronica' => 'required',
+                ],['firma_electronica.required' => 'El archivo de la firma electrónica de la empresa es obligatorio']);
+                if ($valida->fails()) {
+                    $continuar = false;
+                    $success = false;
+                    $errores = '';
+                    foreach ($valida->errors()->all() as $mi_error) {
+                        if ($errores == '') {
+                            $errores = '<li>' . $mi_error . '</li>';
+                        }
+                    }
+                    $errores .= '<li>' . $mi_error . '</li>';
+
+                    $msg = '<div class="alert alert-danger">' .
+                        '<p class="text-center">¡Por favor corrija los siguientes errores!</p>' .
+                        '<ul>' .
+                        $errores .
+                        '</ul>' .
+                        '</div>';
+                }
+            }
+            if($continuar) {
+                $objConfigEmpresa->nombre = $request->nombre;
+                $objConfigEmpresa->cantidad_usuarios = $request->cantidad_usuarios;
+                $objConfigEmpresa->moneda = $request->moneda;
+                $objConfigEmpresa->razon_social = $request->razon_social;
+                $objConfigEmpresa->direccion_matriz = $request->matriz;
+                $objConfigEmpresa->direccion_establecimiento = $request->establecimiento;
+                $objConfigEmpresa->codigo_pais = $request->codigo_pais;
+                $objConfigEmpresa->correo = $request->correo;
+                $objConfigEmpresa->telefono = $request->telefono;
+                $objConfigEmpresa->permiso_agrocalidad = $request->permiso_agrocalidad;
+                $objConfigEmpresa->ruc = $request->ruc;
+                $objConfigEmpresa->obligado_contabilidad = $request->obligado_contabilidad;
+                $objConfigEmpresa->contrasena_firma_digital = $request->contrasena_firma_digital;
+                $objConfigEmpresa->inicial_factura = $request->inicial_factura;
+                $objConfigEmpresa->inicial_lote = $request->inicial_lote;
+                $objConfigEmpresa->inicial_guia_remision = $request->inicial_guia;
+                $objConfigEmpresa->inicial_despacho = $request->incial_despacho;
+                if ($request->has('firma_electronica')) {
+                    $firma = $request->file('firma_electronica');
+                    $nombre_archivo = $request->razon_social . "_" . $firma->getClientOriginalName();
+                    $extension = $firma->getClientOriginalExtension();
+                    if ($extension === "P12" || $extension === "p12") {
+                        $firma->move(env('PATH_FIRMA_DIGITAL'), $nombre_archivo);
+                        $objConfigEmpresa->firma_electronica = $nombre_archivo;
+                    }
+                }
+                if ($request->has('img_empresa')) {
+                    $imagen = $request->file('img_empresa');
+                    $nombre_archivo = $request->razon_social . "_" . $imagen->getClientOriginalName();
+                    $imagen->move(public_path('images'), $nombre_archivo);
+                    $objConfigEmpresa->imagen = $nombre_archivo;
+                }
+                if ($objConfigEmpresa->save()) {
+                    $success = true;
+                    $msg .= '<div class="alert alert-success text-center">' .
+                        '<p> Se han guardado los datos de la empresa '.$request->razon_social.' exitosamente </p>'
+                        . '</div>';
+                }
+            }
+        }else {
+            $success = false;
+            $errores = '';
+            foreach ($valida->errors()->all() as $mi_error) {
+                if ($errores == '') {
+                    $errores = '<li>' . $mi_error . '</li>';
+                } else {    }
+            }
+            $errores .= '<li>' . $mi_error . '</li>';
+
+            $msg = '<div class="alert alert-danger">' .
+                '<p class="text-center">¡Por favor corrija los siguientes errores!</p>' .
+                '<ul>' .
+                $errores .
+                '</ul>' .
+                '</div>';
+        }
+        return [
+            'mensaje' => $msg,
+            'success' => $success
+        ];
     }
 }
 

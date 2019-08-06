@@ -25,8 +25,10 @@
                                 <select class="form-control" id="presentacion_yura_system" name="presentacion_yura_system" required>
                                     <option selected disabled>Seleccione</option>
                                     @foreach ($presentaciones_yura_system as $pys)
-                                        <option value="{{$pys->variedad->planta->id_planta."|".$pys->variedad->id_variedad."|".$pys->clasificacion_ramo->id_clasificacion_ramo."|".$pys->clasificacion_ramo->unidad_medida->id_unidad_medida."|".$pys->tallos_x_ramos."|".$pys->longitud_ramo."|".$pys->unidad_medida->id_unidad_medida."|".substr($pys->variedad->planta->nombre, 0,3).". ".$pys->variedad->nombre. " ".  $pys->clasificacion_ramo->nombre.$pys->clasificacion_ramo->unidad_medida->siglas . " ,". $pys->tallos_x_ramos ." Tallos ". $pys->longitud_ramo.$pys->unidad_medida->siglas}}" >
+                                        <option {{(in_array(Illuminate\Support\Str::Slug($pys->variedad->planta->id_planta."|".$pys->variedad->id_variedad."|".$pys->clasificacion_ramo->id_clasificacion_ramo."|".$pys->clasificacion_ramo->unidad_medida->id_unidad_medida."|".$pys->tallos_x_ramos."|".$pys->longitud_ramo."|".$pys->unidad_medida->id_unidad_medida."|".substr($pys->variedad->planta->nombre, 0,3).". ".$pys->variedad->nombre. " ".  $pys->clasificacion_ramo->nombre.$pys->clasificacion_ramo->unidad_medida->siglas . " ,". $pys->tallos_x_ramos ." Tallos ". $pys->longitud_ramo.$pys->unidad_medida->siglas),$productos_vinculados)) ? "style=font-weight:bold" : ""}}
+                                                value="{{$pys->variedad->planta->id_planta."|".$pys->variedad->id_variedad."|".$pys->clasificacion_ramo->id_clasificacion_ramo."|".$pys->clasificacion_ramo->unidad_medida->id_unidad_medida."|".$pys->tallos_x_ramos."|".$pys->longitud_ramo."|".$pys->unidad_medida->id_unidad_medida."|".substr($pys->variedad->planta->nombre, 0,3).". ".$pys->variedad->nombre. " ".  $pys->clasificacion_ramo->nombre.$pys->clasificacion_ramo->unidad_medida->siglas . " ,". $pys->tallos_x_ramos ." Tallos ". $pys->longitud_ramo.$pys->unidad_medida->siglas}}" >
                                             {{substr($pys->variedad->planta->nombre, 0,3).". ".$pys->variedad->nombre. " ".  $pys->clasificacion_ramo->nombre.$pys->clasificacion_ramo->unidad_medida->siglas . ", ". $pys->tallos_x_ramos ." Tallos ". $pys->longitud_ramo.$pys->unidad_medida->siglas}}
+                                        </option>
                                     @endforeach
                                 </select>
                             </div>
@@ -49,7 +51,7 @@
                         </div>
                     </form>
                 </div>
-                <div id="div_listado_codigo_prodcutos" style="margin-top: 20px"> </div>
+                <div id="div_listado_codigo_prodcutos" style="margin-top: 20px"></div>
             </div>
         </div>
     </section>

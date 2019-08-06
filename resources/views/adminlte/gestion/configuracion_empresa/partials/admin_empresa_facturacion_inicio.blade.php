@@ -1,10 +1,13 @@
-<section class="content">
+<section class="">
     <div class="box box-info">
         <div class="box-header with-border">
-            <h3 class="box-title"> Datos principales </h3>
-            <button type="button" class="btn btn-xs btn-default" title="Registra una nueva empresa para facturacíon" onclick="nueva_empresa()">
-                <i class="fa fa-plus"></i>
-            </button>
+            <select id="id_configuracion_empresa_facturacion" name="id_configuracion_emppresa_facturacion"
+                    onchange="selected_configuracion_empresa()" class="form-control">
+                <option value="" disabled selected> Seleccione una empresa</option>
+                @foreach($config_empresa as $ce)
+                    <option value="{{$ce->id_configuracion_empresa}}">{{$ce->razon_social}}</option>
+                @endforeach
+            </select>
         </div>
         <div class="box-body" id="div_content_permisos">
             <div class="row">

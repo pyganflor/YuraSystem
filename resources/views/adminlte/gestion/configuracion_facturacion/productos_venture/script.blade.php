@@ -19,7 +19,7 @@
                 _token : '{{csrf_token()}}'
             };
             post_jquery('{{url('producto_venture/vincular_yura_system_venture')}}', datos, function () {
-                listar_productos_vinculados();
+                location.reload();
                 cerrar_modals();
             });
             $.LoadingOverlay('hide');
