@@ -139,7 +139,8 @@ class Modulo extends Model
         if ($ciclo_ini != '') { // esa semana inició un ciclo
             $data = [
                 'tipo' => $ciclo_ini->poda_siembra,
-                'info' => $ciclo_ini->poda_siembra . '-' . $this->getPodaSiembraByCiclo($ciclo_ini->id_ciclo)
+                'info' => $ciclo_ini->poda_siembra . '-' . $this->getPodaSiembraByCiclo($ciclo_ini->id_ciclo),
+                'cosechado' => 0
             ];
         } else {
             $ciclo_last = $this->ciclos->where('estado', 1)
@@ -149,6 +150,7 @@ class Modulo extends Model
             $data = [
                 'tipo' => 'V',  // vacio
                 'info' => '',
+                'cosechado' => 0
             ];
             if ($ciclo_last != '') {    // existe un ciclo real
                 if ($ciclo_last->fecha_inicio >= $desde) {
@@ -157,9 +159,23 @@ class Modulo extends Model
                         $num_semana = (intval(difFechas($semana->fecha_inicial, $fecha_inicio)->days / 7) + 1);
                         $num_sem_cosecha = count(explode('-', $ciclo_last->curva)) - 1;
                         if (intval($num_semana) <= intval($ciclo_last->semana_poda_siembra + $num_sem_cosecha) || $ciclo_last->activo == 0) {  // aun esta dentro de lo programado
+                            if ($num_semana >= $ciclo_last->semana_poda_siembra)
+                                $tipo = 'T';    // semana de cosecha
+                            else
+                                $tipo = 'I';    // informacion
+
+                            $cosechas_real = Cosecha::All()->where('estado', 1)
+                                ->where('fecha_ingreso', '>=', $semana->fecha_inicial)
+                                ->where('fecha_ingreso', '<=', $semana->fecha_final);
+                            $tallos = 0;
+                            foreach ($cosechas_real as $item) {
+                                $tallos += $item->getTotalTallosByModuloVariedad($this->id_modulo, $variedad);
+                            }
+
                             $data = [
-                                'tipo' => 'I',  // informacion
+                                'tipo' => $tipo,  // semana de cosecha o informacion
                                 'info' => $num_semana . 'º',
+                                'cosechado' => $tallos
                             ];
                         } else {    // ya pasó de lo programado
                             /* ========== BUSCAR PROYECCION =========== */
@@ -172,6 +188,7 @@ class Modulo extends Model
                                 $data = [
                                     'tipo' => 'Y',  // inicio de una proyeccion
                                     'info' => $proy_ini->tipo . '-' . $proy_ini->poda_siembra,
+                                    'cosechado' => 0
                                 ];
                             } else {    // BUSCAR ULTIMA PROYECCION
                                 $proy_last = $this->getProyeccionByDate($semana->fecha_final, $variedad);
@@ -180,20 +197,37 @@ class Modulo extends Model
                                     if ($proy_last->tipo != 'C') {  // indica no cerrar modulo
                                         $fecha_inicio = $proy_last->semana->fecha_inicial;
                                         $num_semana = (intval(difFechas($semana->fecha_inicial, $fecha_inicio)->days / 7) + 1);
-                                        $data = [
-                                            'tipo' => 'I',  // informacion de proyeccion
-                                            'info' => $num_semana . 'º',
-                                        ];
+                                        $num_sem_cosecha = count(explode('-', $proy_last->curva)) - 1;
+                                        if (intval($num_semana) <= intval($proy_last->semana_poda_siembra + $num_sem_cosecha)) {  // aun esta dentro de lo programado
+                                            if ($num_semana >= $proy_last->semana_poda_siembra)
+                                                $tipo = 'T';    // semana de cosecha
+                                            else
+                                                $tipo = 'I';    // informacion
+
+                                            $data = [
+                                                'tipo' => $tipo,
+                                                'info' => $num_semana . 'º',
+                                                'cosechado' => 0
+                                            ];
+                                        } else {
+                                            $data = [
+                                                'tipo' => 'F',  // fin de proyeccion
+                                                'info' => '-',
+                                                'cosechado' => 0
+                                            ];
+                                        }
                                     } else {
                                         $data = [
                                             'tipo' => 'X',  // cerrado
                                             'info' => '*',
+                                            'cosechado' => 0
                                         ];
                                     }
                                 } else {
                                     $data = [
                                         'tipo' => 'F',  // fin de ciclo
                                         'info' => '-',
+                                        'cosechado' => 0
                                     ];
                                 }
                             }
@@ -202,6 +236,7 @@ class Modulo extends Model
                         $data = [
                             'tipo' => 'F',  // fin de ciclo
                             'info' => '-',
+                            'cosechado' => 0
                         ];
                     }
                 }
