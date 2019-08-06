@@ -267,13 +267,16 @@
                 '{{isPC() ? '35%' : ''}}');
         });
     }
-    
+
     function add_empresa_facturacion() {
         $.LoadingOverlay('show');
         datos = { _token : '{{csrf_token()}}' };
         $.post('{{url('configuracion/empresa_facturacion')}}', datos, function (retorno) {
             modal_view('modal_view_admin_empresa_facturacion', retorno, '<i class="fa fa-building-o"></i> Empresa para facturar', true, false,
                 '{{isPC() ? '75%' : ''}}');
+            setTimeout(function(){
+                selected_configuracion_empresa();
+            },1000);
         }).always(function () {
             $.LoadingOverlay('hide');
         });
@@ -292,54 +295,51 @@
         });
     }
     
-    function store_configuracion_empresa_factura(id_configuracion_empresa) {
-        datos = {
-            _token : '{{csrf_token()}}',
-            id_config : id_configuracion_empresa,
-            nombre :$("#nombre_empresa_facturacion").val(),
-            razon_social : $("#razon_social_empresa_facturacion").val(),
-            matriz : $("#matriz_empresa_facturacion").val(),
-            establecimiento : $("#establecimiento_empresa_facturacion").val(),
-            cantidad_usuarios : $("#cant_usuarios_empresa_facturacion").val(),
-            moneda : $('#moneda_empresa_facturacion').val(),
-            codigo_pais : $("#codigo_pais_empresa_facturacion").val(),
-            telefono : $("#telefono_empresa_facturacion").val(),
-            correo : $("#correo_empresa_facturacion").val(),
-            permiso_agrocalidad : $("#permiso_agrocalidad_empresa_facturacion").val(),
-            ruc : $("#ruc_empresa_facturacion").val(),
-            obligado_contabilidad : $("#obligado_contabilidad_empresa_facturacion").val(),
-            contrasena_firma_digital : $("#contrasena_firma_digital_empresa_facturacion").val(),
-            inicial_factura : $("#inicial_factura_empresa_facturacion").val(),
-            inicial_guia : $("#inicial_guia_empresa_facturacion").val(),
-            inicial_lote : $("#inicial_lote_empresa_facturacion").val(),
-            incial_despacho : $("#incial_despacho_empresa_facturacion").val(),
-        };
-
-        $.ajax({
-            url: '{{url('configuracion/store_configuracion_empresa_facturacion')}}',
-            type: 'POST',
-            data: formData,
-            dataType: 'json',
-            cache: false,
-            contentType: false,
-            processData: false,
-            success: function (retorno) {
-                if (retorno.success) {
-                    alerta_accion(retorno.mensaje, function () {
-                        cerrar_modals();
-                        location.reload();
-                    });
-                } else {
-                    alerta(retorno.mensaje);
+    function store_configuracion_empresa_factura() {
+        if($("#form_config_empresa").valid()){
+            $.LoadingOverlay('show');
+            var formData = new FormData($("#form_config_empresa")[0]);
+            formData.append('_token', '{{csrf_token()}}');
+            formData.append('id_conf_empresa_facturacion', $("#id_configuracion_empresa_facturacion").val() == null ? "" : $("#id_configuracion_empresa_facturacion").val());
+            $.ajax({
+                url  : '{{url('configuracion/store_configuracion_empresa_facturacion')}}',
+                type : 'POST',
+                data: formData,
+                dataType : 'json',
+                cache : false,
+                contentType : false,
+                processData : false,
+                success: function (retorno) {
+                    if (retorno.success) {
+                        alerta_accion(retorno.mensaje, function () {
+                            cerrar_modals();
+                            add_empresa_facturacion()
+                        });
+                    } else {
+                        alerta(retorno.mensaje);
+                    }
+                    $.LoadingOverlay('hide');
+                },
+                //si ha ocurrido un error
+                error: function (retorno) {
+                    alerta(retorno.responseText);
+                    alert('Hubo un problema en la envío de la información');
+                    $.LoadingOverlay('hide');
                 }
-            },
-            //si ha ocurrido un error
-            error: function (retorno) {
-                alerta(retorno.responseText);
-                alert('Hubo un problema en la envío de la información');
-                $.LoadingOverlay('hide');
-            }
+            });
+        }
+
+    }
+
+    function nueva_empresa() {
+        $.each($("div#div_content_form_config_empresa_facturacion .col-md-4 input"),function(i,j){
+            $(j).val("");
         });
-        $.LoadingOverlay('hide');
+        $.each($("div#div_content_form_config_empresa_facturacion .col-md-3 input"),function(i,j){
+            $(j).val("");
+        });
+        $(".text-info").html("");
+        $("#firma_electronica_empresa_facturacion").attr('required',true);
+        $("#id_configuracion_empresa_facturacion").val("");
     }
 </script>
