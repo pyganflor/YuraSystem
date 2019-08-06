@@ -291,7 +291,7 @@
                                                 id="guia_hija" name="guia_hija" value="{{$envio->guia_hija}}">
                                             </div>
                                             <div class="col-md-3">
-                                                <label for="aerolinea">Agencia de transporte</label>
+                                                <label for="aerolinea">Aerolínea</label>
                                                 <select id="aerolinea" name="aerolinea" class="form-control"
                                                         {{($facturado) ? "disabled='disabled'" : ""}}required>
                                                     @if(getEnvio($envio->id_envio)->detalles[0]->id_aerolinea == null)
