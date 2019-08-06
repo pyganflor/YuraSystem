@@ -90,7 +90,7 @@
                 <select class="form-control" id="moneda_empresa_facturacion"  name="moneda_empresa_facturacion" onchange="icono_moneda_empresa_facturacion()">
                     <option disabled selected>Seleccione</option>
                     @foreach($iconoMoneda as $moneda)
-                        <option {{($config_empresa_facturacion->moneda === $moneda->nombre) ? 'selected' : ''}}
+                        <option {{(isset($config_empresa_facturacion->moneda) && $config_empresa_facturacion->moneda === $moneda->nombre) ? 'selected' : ''}}
                             value="{{$moneda->nombre}}">
                             @if($moneda->nombre==='usd') {{'Dolar'}} @endif
                             @if($moneda->nombre==='try') {{'Lira turca'}} @endif
