@@ -965,6 +965,10 @@ function valida_identificacion() {
         $("#identificacion").attr('minlength', 10);
         $("#identificacion").attr('maxlength', 10);
     }
+    if($("#tipo_identificacion").val() != "04" && $("#tipo_identificacion").val() != "05"){
+        $("#identificacion").removeAttr("minlength");
+        $("#identificacion").removeAttr("maxlength");
+    }
 
 }
 

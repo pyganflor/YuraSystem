@@ -15,8 +15,7 @@ class ProductoVentureController extends Controller
         $data=[];
         $det_esp_emp = DetalleEspecificacionEmpaque::select('id_variedad','id_clasificacion_ramo','tallos_x_ramos','longitud_ramo','id_unidad_medida')->distinct()->get();
         foreach ($det_esp_emp as $x =>  $dsp)
-           // if(getDetalleEspecificacionEmpaque($dsp->id_detalle_especificacionempaque)->especificacion_empaque->especificacion->tipo === "N" && getDetalleEspecificacionEmpaque($dsp->id_detalle_especificacionempaque)->especificacion_empaque->especificacion->estado === 1)
-                $data[$dsp->id_variedad][] = $dsp;
+            $data[$dsp->id_variedad][] = $dsp;
 
         $data_completa = [];
         foreach ($data as $item)

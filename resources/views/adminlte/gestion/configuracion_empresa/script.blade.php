@@ -227,9 +227,11 @@
     }
 
     function icono_moneda() {
-
         $("#icono_moneda").html('<i class="fa fa-' + $('#moneda').val() + '" aria-hidden="true"></i>');
+    }
 
+    function icono_moneda_empresa_facturacion() {
+        $("#icono_moneda_empresa_facturacion").html('<i class="fa fa-' + $('#moneda_empresa_facturacion').val() + '" aria-hidden="true"></i>');
     }
 
     function admin_clasificacion_unitaria() {
@@ -266,11 +268,78 @@
         });
     }
     
-    function nueva_empresa() {
-        get_jquery('{{url('configuracion/empresa_facturacion')}}', {}, function (retorno) {
+    function add_empresa_facturacion() {
+        $.LoadingOverlay('show');
+        datos = { _token : '{{csrf_token()}}' };
+        $.post('{{url('configuracion/empresa_facturacion')}}', datos, function (retorno) {
             modal_view('modal_view_admin_empresa_facturacion', retorno, '<i class="fa fa-building-o"></i> Empresa para facturar', true, false,
-                '{{isPC() ? '35%' : ''}}');
+                '{{isPC() ? '75%' : ''}}');
+        }).always(function () {
+            $.LoadingOverlay('hide');
         });
     }
 
+    function selected_configuracion_empresa(){
+        $.LoadingOverlay('show');
+        datos = {
+            _token : '{{csrf_token()}}',
+            id_configuracion_empresa  : $("#id_configuracion_empresa_facturacion").val()
+        };
+        $.post('{{url('configuracion/configuracion_empresa_facturacion')}}', datos, function (retorno) {
+            $("#div_content_form_config_empresa_facturacion").html(retorno)
+        }).always(function () {
+            $.LoadingOverlay('hide');
+        });
+    }
+    
+    function store_configuracion_empresa_factura(id_configuracion_empresa) {
+        datos = {
+            _token : '{{csrf_token()}}',
+            id_config : id_configuracion_empresa,
+            nombre :$("#nombre_empresa_facturacion").val(),
+            razon_social : $("#razon_social_empresa_facturacion").val(),
+            matriz : $("#matriz_empresa_facturacion").val(),
+            establecimiento : $("#establecimiento_empresa_facturacion").val(),
+            cantidad_usuarios : $("#cant_usuarios_empresa_facturacion").val(),
+            moneda : $('#moneda_empresa_facturacion').val(),
+            codigo_pais : $("#codigo_pais_empresa_facturacion").val(),
+            telefono : $("#telefono_empresa_facturacion").val(),
+            correo : $("#correo_empresa_facturacion").val(),
+            permiso_agrocalidad : $("#permiso_agrocalidad_empresa_facturacion").val(),
+            ruc : $("#ruc_empresa_facturacion").val(),
+            obligado_contabilidad : $("#obligado_contabilidad_empresa_facturacion").val(),
+            contrasena_firma_digital : $("#contrasena_firma_digital_empresa_facturacion").val(),
+            inicial_factura : $("#inicial_factura_empresa_facturacion").val(),
+            inicial_guia : $("#inicial_guia_empresa_facturacion").val(),
+            inicial_lote : $("#inicial_lote_empresa_facturacion").val(),
+            incial_despacho : $("#incial_despacho_empresa_facturacion").val(),
+        };
+
+        $.ajax({
+            url: '{{url('configuracion/store_configuracion_empresa_facturacion')}}',
+            type: 'POST',
+            data: formData,
+            dataType: 'json',
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function (retorno) {
+                if (retorno.success) {
+                    alerta_accion(retorno.mensaje, function () {
+                        cerrar_modals();
+                        location.reload();
+                    });
+                } else {
+                    alerta(retorno.mensaje);
+                }
+            },
+            //si ha ocurrido un error
+            error: function (retorno) {
+                alerta(retorno.responseText);
+                alert('Hubo un problema en la envío de la información');
+                $.LoadingOverlay('hide');
+            }
+        });
+        $.LoadingOverlay('hide');
+    }
 </script>
