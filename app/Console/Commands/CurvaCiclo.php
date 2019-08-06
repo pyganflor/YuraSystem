@@ -48,9 +48,14 @@ class CurvaCiclo extends Command
                 ->where('fecha_inicial', '<=', $c->fecha_inicio)
                 ->where('fecha_final', '>=', $c->fecha_inicio)
                 ->first();
-
-            $c->curva = $semana->curva;
-            $c->save();
+            if ($semana != '') {
+                $c->curva = $semana->curva;
+                if ($c->poda_siembra == 'P')
+                    $c->semana_poda_siembra = $semana->semana_poda;
+                else
+                    $c->semana_poda_siembra = $semana->semana_siembra;
+                $c->save();
+            }
         }
     }
 }

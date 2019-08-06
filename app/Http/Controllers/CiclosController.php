@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use yura\Modelos\Ciclo;
 use yura\Modelos\Cosecha;
 use yura\Modelos\Modulo;
+use yura\Modelos\ProyeccionModulo;
 use yura\Modelos\Sector;
 use Validator;
 use yura\Modelos\Semana;
@@ -110,6 +111,10 @@ class CiclosController extends Controller
                 ->where('fecha_final', '>=', $ciclo->fecha_inicio)
                 ->first();
             $ciclo->curva = $semana->curva;
+            if ($ciclo->poda_siembra == 'P')
+                $ciclo->semana_poda_siembra = $semana->semana_poda;
+            else
+                $ciclo->semana_poda_siembra = $semana->semana_siembra;
 
             $last_siembra = Ciclo::All()->where('estado', 1)->where('id_modulo', $request->modulo)
                 ->where('poda_siembra', 'S')->sortBy('fecha_inicio')->last();
@@ -124,6 +129,18 @@ class CiclosController extends Controller
                     '<p> Se ha guardado un nuevo ciclo satisfactoriamente</p>'
                     . '</div>';
                 bitacora('ciclo', $ciclo->id_ciclo, 'I', 'Inserción satisfactoria de un nuevo ciclo');
+
+                /* ===================== QUITAR PROYECCIONES =================== */
+                $proyecciones = ProyeccionModulo::All()->where('estado', 1)
+                    ->where('id_variedad', $request->variedad)
+                    ->where('id_modulo', $request->modulo)
+                    ->where('id_semana', $semana->id_semana);
+                foreach ($proyecciones as $proy) {
+                    $proy->estado = 0;
+
+                    $proy->save();
+                    bitacora('proyeccion_modulo', $proy->id_proyeccion_modulo, 'U', 'Actualizacion satisfactoria del estado');
+                }
             } else {
                 $success = false;
                 $msg = '<div class="alert alert-warning text-center">' .
@@ -216,6 +233,10 @@ class CiclosController extends Controller
                 ->where('fecha_final', '>=', $ciclo->fecha_inicio)
                 ->first();
             $ciclo->curva = $semana->curva;
+            if ($ciclo->poda_siembra == 'P')
+                $ciclo->semana_poda_siembra = $semana->semana_poda;
+            else
+                $ciclo->semana_poda_siembra = $semana->semana_siembra;
 
             if ($ciclo->save()) {
                 $success = true;
