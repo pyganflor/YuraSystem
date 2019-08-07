@@ -41,8 +41,10 @@
                         onmouseover="$(this).css('border', '3px solid black')"
                         onmouseleave="$(this).css('border', '1px solid #9d9d9d')"
                         style="border-color: #9d9d9d; background-color: {{$fondo}}"
-                        onclick="select_celda('{{$val['data']['tipo']}}', '{{$mod['modulo']->id_modulo}}', '{{$semanas[$pos_val]->id_semana}}', null)">
+                        onclick="select_celda('{{$val['data']['tipo']}}', '{{$mod['modulo']->id_modulo}}', '{{$semanas[$pos_val]->id_semana}}', '{{$val['data']['modelo']}}')">
                         @if($val['data']['tipo'] == 'T')
+                            <strong style="font-size: 0.8em">{{$val['data']['proyectados']}}</strong>
+                            <br>
                             <strong style="font-size: 0.8em">{{$val['data']['cosechado']}}</strong>
                         @else
                             {{$val['data']['info']}}

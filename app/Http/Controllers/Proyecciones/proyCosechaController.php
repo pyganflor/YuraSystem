@@ -102,6 +102,7 @@ class proyCosechaController extends Controller
 
     public function select_celda(Request $request)
     {
+        //dd($request->all());
         if ($request->tipo == 'F') {    // crear una proyecccion
             return view('adminlte.gestion.proyecciones.cosecha.forms.new_proy', [
                 'modulo' => getModuloById($request->modulo),
@@ -111,6 +112,14 @@ class proyCosechaController extends Controller
                     ->where('estado', 1)
                     ->where('id_variedad', $request->variedad)
                     ->where('id_modulo', $request->modulo)->last(),
+            ]);
+        }
+        if ($request->tipo == 'P') {    // editar ciclo poda
+            return view('adminlte.gestion.proyecciones.cosecha.forms.edit_ciclo', [
+                'modulo' => getModuloById($request->modulo),
+                'semana' => Semana::find($request->semana),
+                'variedad' => getVariedad($request->variedad),
+                'ciclo' => Ciclo::find($request->modelo),
             ]);
         }
     }
