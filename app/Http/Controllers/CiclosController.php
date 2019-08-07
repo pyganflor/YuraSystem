@@ -110,7 +110,7 @@ class CiclosController extends Controller
                 ->where('fecha_inicial', '<=', $ciclo->fecha_inicio)
                 ->where('fecha_final', '>=', $ciclo->fecha_inicio)
                 ->first();
-            $ciclo->desecho = $semana->desecho;
+            $ciclo->desecho = $semana->desecho != '' ? $semana->desecho : 0;
             $ciclo->curva = $semana->curva;
             if ($ciclo->poda_siembra == 'P')
                 $ciclo->semana_poda_siembra = $semana->semana_poda;
@@ -233,7 +233,7 @@ class CiclosController extends Controller
                 ->where('fecha_inicial', '<=', $ciclo->fecha_inicio)
                 ->where('fecha_final', '>=', $ciclo->fecha_inicio)
                 ->first();
-            $ciclo->desecho = $semana->desecho;
+            $ciclo->desecho = $semana->desecho != '' ? $semana->desecho : 0;
             $ciclo->curva = $semana->curva;
             if ($ciclo->poda_siembra == 'P')
                 $ciclo->semana_poda_siembra = $semana->semana_poda;
