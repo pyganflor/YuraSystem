@@ -31,7 +31,6 @@ class EspecificacionController extends Controller
 
     public function listado_especificaciones(Request $request)
     {
-        //dd($request->all());
         $busqueda   = $request->has('busqueda') ? espacios($request->busqueda) : '';
         $id_cliente = $request->has('id_cliente') ? $request->id_cliente : '';
         $estado     = $request->has('estado') ? $request->estado : '';
@@ -55,7 +54,7 @@ class EspecificacionController extends Controller
 
         $listado = $listado->orderBy('especificacion.id_especificacion', 'desc')
             ->select('especificacion.id_especificacion','especificacion.tipo','especificacion.estado')->distinct()->paginate(20);
-
+        //dd($listado);
         $datos = [
             'listado' => $listado,
             'variedades' => Variedad::select('nombre','id_variedad')->get(),
