@@ -1,6 +1,7 @@
 <div id="table_despachos">
     @if(count($listado)>0)
-        <table width="100%" class="table-responsive table-bordered" style="font-size: 0.8em; border-color: #9d9d9d"
+        <div style="width: 100%;overflow-x:auto">
+        <table width="100%" class="table-responsive table-bordered" style="font-size: 0.8em; border-color: #9d9d9d;overflow-x: auto"
                id="table_content_aperturas">
             <tr>
                 <th style="border-color: #9d9d9d; background-color: #e9ecef" colspan="2">
@@ -327,6 +328,7 @@
             @endforeach
         </table>
         <div class="row" style="margin-top: 10px">
+        </div>
             <div class="col-md-4">
                 <table class="table-striped table-bordered table-responsive" width="100%" style="border: 2px solid #9d9d9d; font-size: 0.8em">
                     <tr>

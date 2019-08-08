@@ -6,9 +6,9 @@
 
 @section('contenido')
     <!-- Content Header (Page header) -->
-    <section class="content-header">
+
         @include('adminlte.gestion.partials.breadcrumb')
-    </section>
+
 
     <!-- Main content -->
     <section class="content">
@@ -77,8 +77,8 @@
                                                 onmouseover="$('#title_btn_add').html('Añadir')"
                                                 onmouseleave="$('#title_btn_add').html('')"
                                                 onclick="add_especificacion()">
-                                            <i class="fa fa-fw fa-plus" style="color: #0c0c0c"></i> <em
-                                                id="title_btn_add"></em>
+                                            <i class="fa fa-fw fa-plus" style="color: #0c0c0c"></i>
+                                            <em id="title_btn_add"></em>
                                         </button>
                                     </span>
                                 </div>
