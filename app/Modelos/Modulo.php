@@ -200,7 +200,7 @@ class Modulo extends Model
                             if ($proy_ini != '') {
                                 $data = [
                                     'tipo' => 'Y',  // inicio de una proyeccion
-                                    'info' => $proy_ini->tipo . '-' . $proy_ini->poda_siembra,
+                                    'info' => $proy_ini->tipo,
                                     'cosechado' => 0,
                                     'proyectados' => $tallos_proyectados,
                                     'modelo' => $proy_ini->id_proyeccion_modulo,

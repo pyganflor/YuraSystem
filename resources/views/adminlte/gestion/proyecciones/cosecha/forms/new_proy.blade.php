@@ -27,7 +27,7 @@
     </tr>
     <tr>
         <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
-            Semanas
+            Semana Cosecha
         </th>
         <td class="text-center" style="border-color: #9d9d9d">
             <input type="number" name="semana_poda_siembra" id="semana_poda_siembra" style="width: 100%" class="text-center"
