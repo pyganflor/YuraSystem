@@ -1,6 +1,6 @@
 <legend style="font-size: 1em" class="text-center">
-    <i class="fa fa-fw fa-info-circle"></i> Crear nueva proyección para el módulo <strong>{{$modulo->nombre}}</strong> en la semana
-    <strong>{{$semana->codigo}}</strong>,
+    <i class="fa fa-fw fa-info-circle"></i> Proyección para el módulo <strong>{{$modulo->nombre}}</strong> en la semana
+    <strong>{{$proyeccion->semana->codigo}}</strong>,
     variedad: <strong>{{$variedad->nombre}}</strong>
 </legend>
 
@@ -11,10 +11,19 @@
         </th>
         <td class="text-center" style="border-color: #9d9d9d">
             <select name="tipo" id="tipo" style="width: 100%">
-                <option value="P">Poda</option>
-                <option value="S">Siembra</option>
-                <option value="C">Finalizar</option>
+                <option value="P" {{$proyeccion->tipo == 'P' ? 'selected' : ''}}>Poda</option>
+                <option value="S" {{$proyeccion->tipo == 'S' ? 'selected' : ''}}>Siembra</option>
+                <option value="C" {{$proyeccion->tipo == 'C' ? 'selected' : ''}}>Finalizar</option>
             </select>
+        </td>
+    </tr>
+    <tr>
+        <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
+            Semana Inicio
+        </th>
+        <td class="text-center" style="border-color: #9d9d9d">
+            <input type="number" onkeypress="return isNumber(event)" name="semana" id="semana" style="width: 100%" class="text-center"
+                   value="{{$proyeccion->semana->codigo}}">
         </td>
     </tr>
     <tr>
@@ -22,7 +31,7 @@
             Curva
         </th>
         <td class="text-center" style="border-color: #9d9d9d">
-            <input type="text" name="curva" id="curva" style="width: 100%" class="text-center" value="{{$semana->curva}}">
+            <input type="text" name="curva" id="curva" style="width: 100%" class="text-center" value="{{$proyeccion->curva}}">
         </td>
     </tr>
     <tr>
@@ -31,7 +40,7 @@
         </th>
         <td class="text-center" style="border-color: #9d9d9d">
             <input type="number" name="semana_poda_siembra" id="semana_poda_siembra" style="width: 100%" class="text-center"
-                   value="{{$semana->semana_poda}}">
+                   value="{{$proyeccion->semana_poda_siembra}}">
         </td>
     </tr>
     <tr>
@@ -40,7 +49,7 @@
         </th>
         <td class="text-center" style="border-color: #9d9d9d">
             <input type="number" name="plantas_iniciales" id="plantas_iniciales" style="width: 100%" class="text-center"
-                   value="{{$last_ciclo != '' ? $last_ciclo->plantas_iniciales : 0}}">
+                   value="{{$proyeccion->plantas_iniciales}}">
         </td>
     </tr>
     <tr>
@@ -49,7 +58,7 @@
         </th>
         <td class="text-center" style="border-color: #9d9d9d">
             <input type="number" name="desecho" id="desecho" style="width: 100%" class="text-center"
-                   value="{{$semana->desecho}}">
+                   value="{{$proyeccion->desecho}}">
         </td>
     </tr>
     <tr>
@@ -58,7 +67,7 @@
         </th>
         <td class="text-center" style="border-color: #9d9d9d">
             <input type="number" name="tallos_planta" id="tallos_planta" style="width: 100%" class="text-center"
-                   value="{{$last_ciclo != '' ? $last_ciclo->conteo : 0}}">
+                   value="{{$proyeccion->tallos_planta}}">
         </td>
     </tr>
     <tr>
@@ -67,29 +76,26 @@
         </th>
         <td class="text-center" style="border-color: #9d9d9d">
             <input type="number" name="tallos_ramo" id="tallos_ramo" style="width: 100%" class="text-center"
-                   value="{{$semana->tallos_ramo_poda}}">
+                   value="{{$proyeccion->tallos_ramo}}">
         </td>
     </tr>
 </table>
 
-<input type="hidden" id="id_variedad" value="{{$variedad->id_variedad}}">
-<input type="hidden" id="id_semana" value="{{$semana->id_semana}}">
-<input type="hidden" id="id_modulo" value="{{$modulo->id_modulo}}">
+<input type="hidden" id="id_proyeccion_modulo" value="{{$proyeccion->id_proyeccion_modulo}}">
 
 <div class="text-center" style="margin-top: 10px">
-    <button type="button" class="btn btn-success btn-xs" onclick="store_proyeccion()">
+    <button type="button" class="btn btn-success btn-xs" onclick="update_proyeccion()">
         <i class="fa fa-fw fa-save"></i> Guardar
     </button>
 </div>
 
 <script>
-    function store_proyeccion() {
+    function update_proyeccion() {
         datos = {
             _token: '{{csrf_token()}}',
-            id_modulo: $('#id_modulo').val(),
-            id_variedad: $('#id_variedad').val(),
-            id_semana: $('#id_semana').val(),
+            id_proyeccion_modulo: $('#id_proyeccion_modulo').val(),
             tipo: $('#tipo').val(),
+            semana: $('#semana').val(),
             curva: $('#curva').val(),
             semana_poda_siembra: $('#semana_poda_siembra').val(),
             plantas_iniciales: $('#plantas_iniciales').val(),
@@ -98,7 +104,7 @@
             tallos_ramo: $('#tallos_ramo').val(),
         };
 
-        post_jquery('{{url('proy_cosecha/store_proyeccion')}}', datos, function () {
+        post_jquery('{{url('proy_cosecha/update_proyeccion')}}', datos, function () {
             listar_proyecciones();
             cerrar_modals();
         });

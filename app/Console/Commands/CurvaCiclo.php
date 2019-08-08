@@ -50,18 +50,19 @@ class CurvaCiclo extends Command
                 ->first();
 
             if ($semana == '') {
-		dd('No se encontró la semana para los parametros siguientes:', $c->id_variedad, $c->fecha_inicio);
+                dd('No se encontró la semana para los parametros siguientes:', $c->id_variedad, $c->fecha_inicio);
             } else {
                 $c->curva = $semana->curva;
 
-            if ($semana != '') {
-                $c->curva = $semana->curva;
-                if ($c->poda_siembra == 'P')
-                    $c->semana_poda_siembra = $semana->semana_poda;
-                else
-                    $c->semana_poda_siembra = $semana->semana_siembra;
+                if ($semana != '') {
+                    $c->curva = $semana->curva;
+                    if ($c->poda_siembra == 'P')
+                        $c->semana_poda_siembra = $semana->semana_poda;
+                    else
+                        $c->semana_poda_siembra = $semana->semana_siembra;
 
-                $c->save();
+                    $c->save();
+                }
             }
         }
     }
