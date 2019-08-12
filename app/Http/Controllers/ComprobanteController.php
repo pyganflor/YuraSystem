@@ -102,8 +102,10 @@ class ComprobanteController extends Controller
             'destino' => 'required',
             'email' => 'required',
             'telefono' => 'required',
-            'id_configuracion_empresa' => 'required'
-        ],['id_configuracion_empresa.required' => 'Debe seleccionar la empresa con la que desea facturar el pedido']);
+        ],[
+            'id_envio.required' => 'No existe el envío para crear el comprobante',
+            'codigo_pais.required' => 'Debe seleccionar un pais para la facturación',
+        ]);
 
         $msg = "";
         if (!$valida->fails()) {
@@ -195,8 +197,8 @@ class ComprobanteController extends Controller
                 $dae = $request->dae;
             }
 
-            if ((strtoupper(getConfiguracionEmpresa($request->id_configuracion_empresa)->codigo_pais) != strtoupper($codigo_pais))
-                && (!isset(getCodigoDae(strtoupper($codigo_pais),Carbon::parse($request->fecha_envio)->format('m'),Carbon::parse($request->fecha_envio)->format('Y'),$request->id_configuracion_empresa)->codigo_dae))
+            if ((strtoupper(getConfiguracionEmpresa($envio->pedido->id_configuracion_empresa)->codigo_pais) != strtoupper($codigo_pais))
+                && (!isset(getCodigoDae(strtoupper($codigo_pais),Carbon::parse($request->fecha_envio)->format('m'),Carbon::parse($request->fecha_envio)->format('Y'),$envio->pedido->id_configuracion_empresa)->codigo_dae))
                 && $dae == null) {
                 return '<div class="alert alert-danger text-center">' .
                     '<p> No se ha configurado un código DAE para ' . $request->pais . ' en la fecha seleccionada </p>'
@@ -257,17 +259,17 @@ class ComprobanteController extends Controller
                     //*******COMENTADO PARA QUE LA FACTURACIÓN FUNCIONE CON EL VENTURE*********//
                     /*($envio->pedido->clave_acceso_temporal != null && $envio->pedido->clave_acceso_temporal != "")
                         ? $secuencial = getDetallesClaveAcceso($envio->pedido->clave_acceso_temporal, "SECUENCIAL")
-                        : $secuencial = getSecuencial('01',getConfiguracionEmpresa($request->id_configuracion_empresa));*/
+                        : $secuencial = getSecuencial('01',getConfiguracionEmpresa($envio->pedido->id_configuracion_empresa));*/
 
                     $punto_acceso = getUsuario(session('id_usuario'))->punto_acceso;
                     $serie = '001' . $punto_acceso;
 
                     isset($envio->pedido->clave_acceso_temporal)
                         ? $secuencial = $envio->pedido->clave_acceso_temporal
-                        : $secuencial = $serie.getSecuencial('01',getConfiguracionEmpresa($request->id_configuracion_empresa));
+                        : $secuencial = $serie.getSecuencial('01',getConfiguracionEmpresa($envio->pedido->id_configuracion_empresa));
 
                     //*******COMENTADO PARA QUE LA FACTURACIÓN FUNCIONE CON EL VENTURE*********//
-                    /* $ruc = isset($envio->comprobante->id_configuracion_empresa) ? getConfiguracionEmpresa($envio->comprobante->id_configuracion_empresa)->ruc : getConfiguracionEmpresa()->ruc ;
+                    /* $ruc = isset($envio->pedido->id_configuracion_empresa) ? getConfiguracionEmpresa($envio->pedido->id_configuracion_empresa)->ruc : getConfiguracionEmpresa()->ruc ;
                      $codigo_numerico = env('CODIGO_NUMERICO');
                      $entorno = env('ENTORNO');
                      $tipo_emision = '1';*/
@@ -275,7 +277,7 @@ class ComprobanteController extends Controller
 
             }
 
-            $datosEmpresa = getConfiguracionEmpresa($request->id_configuracion_empresa);
+            $datosEmpresa = getConfiguracionEmpresa($envio->pedido->id_configuracion_empresa);
             $tipoImpuesto = getTipoImpuesto($codigo_impuesto,$codigo_porcentaje_impuesto);
             $precio_total_con_impuestos = is_numeric($tipoImpuesto->porcentaje) ? number_format($precio_total_sin_impuestos * ($tipoImpuesto->porcentaje / 100), 2, ".", "") : "0.00";
 
@@ -355,7 +357,7 @@ class ComprobanteController extends Controller
             $infoFactura->appendChild($propina);
             $importeTotal = $xml->createElement('importeTotal', number_format($valorImpuesto + $precio_total_sin_impuestos, 2, ".", ""));
             $infoFactura->appendChild($importeTotal);
-            switch (getConfiguracionEmpresa($request->id_configuracion_empresa)->moneda){
+            switch (getConfiguracionEmpresa($envio->pedido->id_configuracion_empresa)->moneda){
                 case "usd":
                     $m = 'DOLAR';
                     break;
@@ -509,7 +511,7 @@ class ComprobanteController extends Controller
                 $campos_adicionales['GUIA_HIJA'] = $request->guia_hija;
             if(!empty($request->almacen))
                 $campos_adicionales['ALMACEN'] = $almacen;
-            if ((strtoupper(getConfiguracionEmpresa($request->id_configuracion_empresa)->codigo_pais) != strtoupper($codigo_pais)))
+            if ((strtoupper(getConfiguracionEmpresa($envio->pedido->id_configuracion_empresa)->codigo_pais) != strtoupper($codigo_pais)))
                 $campos_adicionales['DAE'] = $dae;
 
             foreach ($campos_adicionales as $key => $ca) {
@@ -540,7 +542,6 @@ class ComprobanteController extends Controller
                 //$obj_comprobante->secuencial = getDetallesClaveAcceso($claveAcceso, "SECUENCIAL");
                 $obj_comprobante->secuencial = $secuencial;
                 $obj_comprobante->estado = 1; //PARA QUE LA FACTURACION FUNCIONE CON EL VENTURE
-                $obj_comprobante->id_configuracion_empresa = $request->id_configuracion_empresa;
 
                 if ($obj_comprobante->save()) {
                     $model_comprobante = Comprobante::all()->last();
@@ -1090,7 +1091,7 @@ class ComprobanteController extends Controller
             if($comprobante->clave_acceso != null)
                 $img_clave_acceso = generateCodeBarGs1128($comprobante->clave_acceso);
             $data = [
-                'empresa' => $comprobante->empresa,
+                'empresa' => $comprobante->envio->pedido->empresa,
                 'secuencial' => $comprobante->secuencial,
                 'comprobante' => $comprobante,
                 'img_clave_acceso' => $img_clave_acceso
@@ -1573,7 +1574,7 @@ class ComprobanteController extends Controller
                             foreach ($esp_emp->detalles as $n => $det_esp_emp) {
                                 $contenido .= Carbon::parse($pedido->envios[0]->comprobante->fecha_integrado)->format('d/m/Y')."\t".$pedido->envios[0]->comprobante->secuencial."\t".$pedido->cliente->detalle()->informacion_adicional('codigo venture')->varchar."\t". Carbon::parse($pedido->envios[0]->comprobante->fecha_emision)->addDay(21)->format('d/m/Y')."\t";
                                 $contenido .= getCodigoVenturePresentacion($det_esp_emp->variedad->planta->id_planta,$det_esp_emp->variedad->id_variedad,$det_esp_emp->clasificacion_ramo->id_clasificacion_ramo,$det_esp_emp->clasificacion_ramo->unidad_medida->id_unidad_medida,$det_esp_emp->tallos_x_ramos,$det_esp_emp->longitud_ramo,$det_esp_emp->unidad_medida->id_unidad_medida)."\t";
-                                $contenido .= ($det_ped->cantidad*$det_esp_emp->cantidad)."\t".explode(";", $precio[$i])[0]."\t".($pedido->cliente->detalle()->codigo_pais != getConfiguracionEmpresa($c->id_configuracion_empresa)->codigo_pais ? 0 : 1)."\t".'001009'/*Código venture dasalflor para crédito como forma de pago*/."\t".isset($pedido->envios[0]->dae) ? $pedido->envios[0]->dae : "N"."\t".isset($pedido->envios[0]->dae) ? $pedido->envios[0]->dae : "N"."\t"."N"."\t"."N"."\t"."1113495085"."\t".$pedido->envios[0]->guia_madre."\t";
+                                $contenido .= ($det_ped->cantidad*$det_esp_emp->cantidad)."\t".explode(";", $precio[$i])[0]."\t".($pedido->cliente->detalle()->codigo_pais != getConfiguracionEmpresa($c->envio->pedido->id_configuracion_empresa)->codigo_pais ? 0 : 1)."\t".'001009'/*Código venture dasalflor para crédito como forma de pago*/."\t".isset($pedido->envios[0]->dae) ? $pedido->envios[0]->dae : "N"."\t".isset($pedido->envios[0]->dae) ? $pedido->envios[0]->dae : "N"."\t"."N"."\t"."N"."\t"."1113495085"."\t".$pedido->envios[0]->guia_madre."\t";
                                 $contenido .= $piezas." Piezas. ".$caja_full." FULL BOXES"."\t"."\t"."\t"."0"."\t"."\t"."\t"."\t"."\t"."00101"/*codigo_tvn venture dasalflor*/."\t".$pedido->cliente->detalle()->nombre."\t"."\t"."\t"."\t"."\t".$tallos." Tallos."."\t"."\t"."\t"."\t"."\t". $pedido->envios[0]->guia_hija."\t".$pedido->detalles[0]->agencia_carga->codigo.chr(13).chr(10);
                                 $i++;
                             }
@@ -1607,7 +1608,7 @@ class ComprobanteController extends Controller
                                 }
                                 $contenido .= Carbon::parse($pedido->envios[0]->comprobante->fecha_emision)->format('d/m/Y') . "\t" . $pedido->envios[0]->comprobante->secuencial . "\t" . $pedido->cliente->detalle()->informacion_adicional('codigo venture')->varchar . "\t" . Carbon::parse($pedido->envios[0]->comprobante->fecha_emision)->addDay(21)->format('d/m/Y') . "\t";
                                 $contenido .= getCodigoVenturePresentacion($m_c->detalle_especificacionempaque->variedad->planta->id_planta, $m_c->detalle_especificacionempaque->variedad->id_variedad, $m_c->detalle_especificacionempaque->clasificacion_ramo->id_clasificacion_ramo, $m_c->detalle_especificacionempaque->clasificacion_ramo->unidad_medida->id_unidad_medida, $m_c->detalle_especificacionempaque->tallos_x_ramos, $m_c->detalle_especificacionempaque->longitud_ramo, $m_c->detalle_especificacionempaque->unidad_medida->id_unidad_medida) . "\t";
-                                $contenido .= $m_c->cantidad . "\t" . $precio . "\t" . ($pedido->cliente->detalle()->codigo_pais != getConfiguracionEmpresa($c->id_configuracion_empresa)->codigo_pais ? 0 : 1) . "\t" . '001009'/*Código venture dasalflor para crédito como forma de pago*/ . "\t" . isset($pedido->envios[0]->dae) ? $pedido->envios[0]->dae : "N" . "\t" . isset($pedido->envios[0]->dae) ? $pedido->envios[0]->dae : "N" . "\t" . "N" . "\t" . "N" . "\t" . "1113495085" . "\t" . $pedido->envios[0]->guia_madre . "\t";
+                                $contenido .= $m_c->cantidad . "\t" . $precio . "\t" . ($pedido->cliente->detalle()->codigo_pais != getConfiguracionEmpresa($c->envio->pedido->id_configuracion_empresa)->codigo_pais ? 0 : 1) . "\t" . '001009'/*Código venture dasalflor para crédito como forma de pago*/ . "\t" . isset($pedido->envios[0]->dae) ? $pedido->envios[0]->dae : "N" . "\t" . isset($pedido->envios[0]->dae) ? $pedido->envios[0]->dae : "N" . "\t" . "N" . "\t" . "N" . "\t" . "1113495085" . "\t" . $pedido->envios[0]->guia_madre . "\t";
                                 $contenido .= $piezas . " Piezas. " . $caja_full . " FULL BOXES" . "\t" . "\t" . "\t" . "0" . "\t" . "\t" . "\t" . "\t" . "\t" . "00101"/*codigo_tvn venture dasalflor*/ . "\t" . $pedido->cliente->detalle()->nombre . "\t" . "\t" . "\t" . "\t" . "\t" . $tallos . " Tallos." . "\t" . "\t" . "\t" . "\t" . "\t" . $pedido->envios[0]->guia_hija . "\t" . $pedido->detalles[0]->agencia_carga->codigo . chr(13) . chr(10);
                             }
                         }
@@ -1633,7 +1634,7 @@ class ComprobanteController extends Controller
 
         if($comprobante->tipo_comprobante === "01"){
             $data = [
-                'empresa' => getConfiguracionEmpresa($comprobante->id_configuracion_empresa),
+                'empresa' => getConfiguracionEmpresa($comprobante->envio->pedido->id_configuracion_empresa),
                 'secuencial' => $comprobante->secuencial,
                 'comprobante' => $comprobante,
                 'img_clave_acceso' => $img_clave_acceso
@@ -1739,7 +1740,7 @@ class ComprobanteController extends Controller
 
         if($request->dist_cajas === "true"){
             $pedido = getPedido($comprobante->envio->pedido->id_pedido);
-            $empresa = getConfiguracionEmpresa($comprobante->id_configuracion_empresa);
+            $empresa = getConfiguracionEmpresa($comprobante->envio->pedido->id_configuracion_empresa);
             $despacho = isset(getDetalleDespacho($pedido->id_pedido)->despacho) ? getDetalleDespacho($pedido->id_pedido)->despacho : null;
             $facturaTercero = isset($pedido->envios) ? getFacturaClienteTercero($pedido->envios[0]->id_envio) : null;
             if($facturaTercero !== null){

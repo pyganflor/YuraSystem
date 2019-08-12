@@ -493,25 +493,30 @@
                     id_agencia_carga: $('#id_agencia_carga').val(),
                     nueva_esp: nueva_esp,
                     arreglo_esp: arreglo_esp,
+                    id_configuracion_empresa : $("select#id_configuracion_empresa").val()
                 };
-                $.LoadingOverlay('show');
-                $.post('{{url('pedidos/store_orden_semanal')}}', datos, function (retorno) {
-                    if (retorno.success) {
-                        alerta_accion(retorno.mensaje, function () {
-                            cerrar_modals();
-                            editar_pedido_tinturado(retorno.id_pedido, 0);
-                            listar_resumen_pedidos($("#fecha_pedidos_search").val(), true);
-                        });
-                    } else {
-                        alerta(retorno.mensaje);
-                    }
+                empresa = $("select#id_configuracion_empresa option:selected").text();
+                modal_quest('modal_edit_pedido',
+                    '<div class="alert alert-info text-center"><p>El pedido sera facturado con la empresa '+empresa+'</p></div>', 'Guarda Pedido', true, false, '40%', function () {
+                        $.LoadingOverlay('show');
+                        $.post('{{url('pedidos/store_orden_semanal')}}', datos, function (retorno) {
+                            if (retorno.success) {
+                                alerta_accion(retorno.mensaje, function () {
+                                    cerrar_modals();
+                                    editar_pedido_tinturado(retorno.id_pedido, 0);
+                                    listar_resumen_pedidos($("#fecha_pedidos_search").val(), true);
+                                });
+                            } else {
+                                alerta(retorno.mensaje);
+                            }
 
-                }, 'json').fail(function (retorno) {
-                    console.log(retorno);
-                    alerta_errores(retorno.responseText);
-                    alerta('Ha ocurrido un problema');
-                }).always(function () {
-                    $.LoadingOverlay('hide');
+                        }, 'json').fail(function (retorno) {
+                            console.log(retorno);
+                            alerta_errores(retorno.responseText);
+                            alerta('Ha ocurrido un problema');
+                        }).always(function () {
+                            $.LoadingOverlay('hide');
+                        });
                 });
             }
         }

@@ -27,7 +27,7 @@ class Comprobante extends Model
         'rehusar',
         'ambiente',
         'fecha_integrado',
-        'id_configuracion_empresa'
+
     ];
 
     public function envio(){
@@ -48,10 +48,6 @@ class Comprobante extends Model
 
     public function etiqueta_factura(){
         return $this->hasOne('\yura\Modelos\EtiquetaFactura','id_comprobante');
-    }
-
-    public function empresa(){
-        return $this->belongsTo('\yura\Modelos\ConfiguracionEmpresa','id_configuracion_empresa');
     }
 }
 

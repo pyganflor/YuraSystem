@@ -236,7 +236,6 @@
                                     <div class="box-body">
                                         <div class="row">
                                             @php
-
                                                    $envio->codigo_pais == ""
                                                        ? $p = $envio->pais_cliente
                                                        : $p = $envio->codigo_pais;
@@ -251,45 +250,36 @@
                                                             $mes = Carbon\Carbon::parse($envio->fecha_envio)->addMonth()->format('m');
                                                             $anno = Carbon\Carbon::parse($envio->fecha_envio)->addMonth()->format('Y');
                                                        }
-                                                       $d = getCodigoDae(strtoupper($p),$mes,$anno,isset($envio->id_configuracion_empresa) ? $envio->id_configuracion_empresa : getConfiguracionEmpresa()->id_configuracion_empresa);
+                                                       $d = getCodigoDae(strtoupper($p),$mes,$anno,isset($envio->pedido->id_configuracion_empresa) ? $envio->pedido->id_configuracion_empresa : getConfiguracionEmpresa()->id_configuracion_empresa);
                                                        $dae = isset($d->codigo_dae) ? $d->codigo_dae : "";
                                                        $codigo_dae = isset($d->dae) ? $d->dae : "";
                                                    }
                                             @endphp
-                                            <div class="col-md-3">
-                                                <label for="empresa">Empresa</label>
-                                                <select class="form-control" name="id_empresa" id="id_empresa" onchange="buscar_codigo_dae(this,'form_envios_{{$i+1}}')">
-                                                    @foreach($empresas as $e)
-                                                        <option {{isset($envio->id_configuracion_empresa) ? ($envio->id_configuracion_empresa == $e->id_configuracion_empresa ? "selected" : "") : ""}}
-                                                                value="{{$e->id_configuracion_empresa}}">{{$e->razon_social}}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
+
                                             <div class="col-md-3">
                                                 <label for="dae">CÓDIGO DAE</label>
                                                 <input type="text" placeholder="CODÍGO DAE" class="form-control" {{($facturado) ? "disabled='disabled'" : ""}}
                                                 {{$factura_tercero ?  "disabled" : ""}} {{-- {{$dae != "" ? "disabled='disabled'" : ""}}--}} id="codigo_dae" name="codigo_dae" value="{{isset($envio->codigo_dae) ? $envio->codigo_dae : $codigo_dae}}"
-                                                    {{(strtoupper($p) != getConfiguracionEmpresa(isset($envio->comprobante) ? $envio->comprobante->empresa->id_configuracion_empresa : null)->codigo_pais) ? "required" : "" }} >
+                                                    {{(strtoupper($p) != getConfiguracionEmpresa(isset($envio->pedido->id_configuracion_empresa) ? $envio->pedido->id_configuracion_empresa : null)->codigo_pais) ? "required" : "" }} >
                                             </div>
                                             <div class="col-md-3">
                                                 <label for="dae">DAE</label>
                                                 <input type="text" placeholder="DAE" class="form-control" {{($facturado) ? "disabled='disabled'" : ""}}
                                                 {{$factura_tercero ?  "disabled" : ""}} {{-- {{$dae != "" ? "disabled='disabled'" : ""}}--}} id="dae" name="dae" value="{{$dae}}"
-                                                    {{(strtoupper($p) != getConfiguracionEmpresa(isset($envio->comprobante) ? $envio->comprobante->empresa->id_configuracion_empresa : null)->codigo_pais) ? "required" : "" }} >
+                                                    {{(strtoupper($p) != getConfiguracionEmpresa(isset($envio->pedido->id_configuracion_empresa) ? $envio->pedido->id_configuracion_empresa : null)->codigo_pais) ? "required" : "" }} >
                                             </div>
                                             <div class="col-md-3">
                                                 <label for="guia_madre">Guía madre</label>
                                                 <input type="text" placeholder="Guía madre" class="form-control" {{($facturado) ? "disabled='disabled'" : ""}}
                                                 id="guia_madre" name="guia_madre" value="{{$envio->guia_madre}}">
                                             </div>
-                                        </div>
-                                        <div class="row" >
                                             <div class="col-md-3">
                                                 <label for="guia_hija">Guía hija</label>
                                                 <input type="text" placeholder="Guía hija" class="form-control" {{($facturado) ? "disabled='disabled'" : ""}}
                                                 id="guia_hija" name="guia_hija" value="{{$envio->guia_hija}}">
                                             </div>
+                                        </div>
+                                        <div class="row" >
                                             <div class="col-md-3">
                                                 <label for="aerolinea">Aerolínea</label>
                                                 <select id="aerolinea" name="aerolinea" class="form-control"
@@ -332,9 +322,6 @@
                                                 <input type="email" placeholder="Email" {{$factura_tercero ?  "disabled" : ""}} class="form-control" {{($facturado) ? "disabled='disabled'" : ""}}
                                                 id="email" name="email" value="{{$email}}" required >
                                             </div>
-
-                                        </div>
-                                        <div class="row" >
                                             <div class="col-md-3">
                                                 @php
                                                     if(isset($envio->telefono)){
@@ -348,9 +335,11 @@
                                                 class="form-control" {{($facturado) ? "disabled='disabled'" : ""}} id="telefono" name="telefono_{{$i+1}}"
                                                        value="{{$telefono}}" required>
                                             </div>
+                                        </div>
+                                        <div class="row" >
                                             <div class="col-md-3">
                                                 <label for="pais">País</label>
-                                                <select id="codigo_pais" name="codigo_pais" class="form-control" {{$factura_tercero ?  "disabled" : ""}} onchange="buscar_codigo_dae(this,'form_envios_{{$i+1}}')"
+                                                <select id="codigo_pais" name="codigo_pais" class="form-control" {{$factura_tercero ?  "disabled" : ""}} onchange="buscar_codigo_dae(this,'form_envios_{{$i+1}}','{{$envio->id_envio}}')"
                                                         {{($facturado) ? "disabled='disabled'" : ""}} required>
                                                     @php
                                                         $envio->codigo_pais == ""
@@ -374,7 +363,7 @@
                                                 <input type="text" placeholder="Anden" class="form-control" {{$factura_tercero ?  "disabled" : ""}} {{($facturado) ? "disabled='disabled'" : ""}}
                                                 id="almacen" name="almacen_{{$i+1}}" value="{{$almacen}}">
                                             </div>
-                                            <div class="col-md-3">
+                                            <div class="col-md-6">
                                                 @php
                                                     if(isset($envio->direccion)){
                                                         $direccion = $envio->direccion;

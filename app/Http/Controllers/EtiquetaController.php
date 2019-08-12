@@ -160,7 +160,7 @@ class EtiquetaController extends Controller
                     $pais_destino = getPais($factura_tercero->codigo_pais)->nombre;
                     $dae = $factura_tercero->dae;
                 }
-                $ruc = "RUC: ". $comprobante->empresa->ruc;
+                $ruc = "RUC: ". $comprobante->envio->pedido->empresa->ruc;
                 for($y=1;$y<=$doble;$y++) {
                     if($comprobante->envio->pedido->tipo_especificacion == "N"){
                          foreach ($comprobante->envio->pedido->detalles as $det_ped) {
@@ -184,7 +184,7 @@ class EtiquetaController extends Controller
                                              $objSheet->getCell('F' . ($w + 1))->setValue();
                                              $objSheet->getCell('G' . ($w + 1))->setValue($datos_exportacion != '' ? substr($datos_exportacion,0,-1): "");
                                              $objSheet->getCell('H' . ($w + 1))->setValue("DS-".$codigo_finca);
-                                             $objSheet->getCell('I' . ($w + 1))->setValue(getConfiguracionEmpresa($comprobante->id_configuracion_empresa)->permiso_agrocalidad);
+                                             $objSheet->getCell('I' . ($w + 1))->setValue(getConfiguracionEmpresa($comprobante->envio->pedido->id_configuracion_empresa)->permiso_agrocalidad);
                                              $objSheet->getCell('J' . ($w + 1))->setValue($pais_destino);
                                              $objSheet->getCell('K' . ($w + 1))->setValue($dae);
                                              $objSheet->getCell('L' . ($w + 1))->setValue($ruc);
@@ -218,7 +218,7 @@ class EtiquetaController extends Controller
                                             $objSheet->getCell('E' . ($w + 1))->setValue($comprobante->envio->pedido->cliente->detalle()->nombre);
                                             $objSheet->getCell('G' . ($w + 1))->setValue($datos_exportacion != '' ? substr($datos_exportacion, 0, -1) : "");
                                             $objSheet->getCell('H' . ($w + 1))->setValue("DS-" . $codigo_finca);
-                                            $objSheet->getCell('I' . ($w + 1))->setValue(getConfiguracionEmpresa($comprobante->id_configuracion_empresa)->permiso_agrocalidad);
+                                            $objSheet->getCell('I' . ($w + 1))->setValue(getConfiguracionEmpresa($comprobante->envio->pedido->id_configuracion_empresa)->permiso_agrocalidad);
                                             $objSheet->getCell('J' . ($w + 1))->setValue($pais_destino);
                                             $objSheet->getCell('K' . ($w + 1))->setValue($dae);
                                             $objSheet->getCell('L' . ($w + 1))->setValue($ruc);

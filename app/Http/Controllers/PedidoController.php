@@ -129,24 +129,26 @@ class PedidoController extends Controller
                             $objComprobante = Comprobante::find($dataComprobante[0]->id_comprobante);
                             $objComprobante->habilitado = false;
                             $objComprobante->id_envio = null;
-                            $objComprobante->save();
-                            $archivo_generado = env('PATH_XML_FIRMADOS').'/facturas/'.$dataComprobante[0]->clave_acceso.".xml";
-                            $archivo_firmado = env('PATH_XML_GENERADOS').'/facturas/'.$dataComprobante[0]->clave_acceso.".xml";
+                            if($objComprobante->save()){
+                                $archivo_generado = env('PATH_XML_FIRMADOS').'/facturas/'.$dataComprobante[0]->clave_acceso.".xml";
+                                $archivo_firmado = env('PATH_XML_GENERADOS').'/facturas/'.$dataComprobante[0]->clave_acceso.".xml";
 
-                            if(file_exists($archivo_generado)) unlink($archivo_generado);
-                            if(file_exists($archivo_firmado)) unlink($archivo_firmado);
+                                if(file_exists($archivo_generado)) unlink($archivo_generado);
+                                if(file_exists($archivo_firmado)) unlink($archivo_firmado);
 
-                            $codigo_dae = $dataEnvio->codigo_dae;
-                            $dae = $dataEnvio->dae;
-                            $guia_madre = $dataEnvio->guia_madre;
-                            $guia_hija = $dataEnvio->guia_hija;
-                            $email = $dataEnvio->email;
-                            $telefono = $dataEnvio->telefono;
-                            $direccion = $dataEnvio->direccion;
-                            $codigo_pais = $dataEnvio->codigo_pais;
-                            $almacen = $dataEnvio->almacen;
-                            $aerolinea = getEnvio($dataEnvio->id_envio)->detalles[0]->id_aerolinea;
-                            $id_configuracion_empresa = $dataEnvio->id_configuracion_empresa;
+                                $codigo_dae = $dataEnvio->codigo_dae;
+                                $dae = $dataEnvio->dae;
+                                $guia_madre = $dataEnvio->guia_madre;
+                                $guia_hija = $dataEnvio->guia_hija;
+                                $email = $dataEnvio->email;
+                                $telefono = $dataEnvio->telefono;
+                                $direccion = $dataEnvio->direccion;
+                                $codigo_pais = $dataEnvio->codigo_pais;
+                                $almacen = $dataEnvio->almacen;
+                                $aerolinea = getEnvio($dataEnvio->id_envio)->detalles[0]->id_aerolinea;
+                                $id_configuracion_empresa = $dataEnvio->pedido->id_configuracion_empresa;
+                            }
+
                         }
 
                         DetalleEnvio::where('id_envio',$dataEnvio->id_envio)->delete();
@@ -161,7 +163,9 @@ class PedidoController extends Controller
                 $objPedido->id_cliente = $request->id_cliente;
                 $objPedido->descripcion = $request->descripcion;
                 $objPedido->fecha_pedido = $fechaFormateada;
+                $objPedido->id_configuracion_empresa = isset($id_configuracion_empresa) ? $id_configuracion_empresa : $request->id_configuracion_empresa;
                 $objPedido->variedad = substr(implode("|",array_unique($request->variedades)), 0, -1);
+
                 if(isset($dataEnvio->id_envio) && count($dataComprobante) > 0){
                     $objPedido->clave_acceso_temporal = $dataComprobante[0]->secuencial;  //$dataComprobante[0]->clave_acceso; COMENTANDO PARA QUE LA FACTURACION FUNCIONE CON EL VENTURE
                     $objPedido->id_comprobante_temporal = $dataComprobante[0]->id_comprobante;
@@ -210,7 +214,6 @@ class PedidoController extends Controller
                     $objEnvio = new Envio;
                     $objEnvio->fecha_envio = $fechaFormateada;
                     $objEnvio->id_pedido = $model->id_pedido;
-                    $objEnvio->id_configuracion_empresa = isset($id_configuracion_empresa) ? $id_configuracion_empresa : getConfiguracionEmpresa()->id_configuracion_empresa;
                     if(isset($codigo_dae)) {
                             $objEnvio->codigo_dae = $codigo_dae;
                             $objEnvio->dae = $dae;
@@ -370,6 +373,7 @@ class PedidoController extends Controller
             $objComprobante->update(['id_envio'=>null,'rehusar'=>true]);
         }
 
+
         //$objPedido = Pedido::find($request->id_pedido);
         //$objPedido->estado = $request->estado == 0 ? 1 : 0;
 
@@ -407,7 +411,7 @@ class PedidoController extends Controller
 
     public function crear_packing_list($id_pedido,$vista_despacho = false){
         $pedido = getPedido($id_pedido);
-        $empresa = getConfiguracionEmpresa(isset($pedido->envios[0]->comprobante) ? $pedido->envios[0]->comprobante->empresa->id_configuracion_empresa : null);
+        $empresa = getConfiguracionEmpresa($pedido->id_configuracion_empresa);
         $despacho = isset(getDetalleDespacho($pedido->id_pedido)->despacho) ? getDetalleDespacho($pedido->id_pedido)->despacho : null;
         $facturaTercero = isset($pedido->envios) ? getFacturaClienteTercero($pedido->envios[0]->id_envio) : null;
         if($facturaTercero !== null){

@@ -22,7 +22,8 @@ class Pedido extends Model
         'tipo_especificacion',  // N => Normal; T => Flor Tinturada
         'confirmado',
         'clave_acceso_temporal',
-        'id_comprobante_temporal'
+        'id_comprobante_temporal',
+        'id_configuracion_empresa'
     ];
 
     public function detalles()
@@ -378,5 +379,9 @@ class Pedido extends Model
                 }
             }
         return $r;
+    }
+
+    public function empresa(){
+        return $this->belongsTo('\yura\Modelos\ConfiguracionEmpresa','id_configuracion_empresa');
     }
 }

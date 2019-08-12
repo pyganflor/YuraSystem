@@ -148,13 +148,15 @@ function store_pedido(id_cliente, pedido_fijo, csrf_token, vista, id_pedido, com
             '<p>Si este pedido posee envíos prefacturados al editarlo seran borrados y se deberán crea nuevamente</p>' +
             '</div>'
             : msg = '';*/
+
+        empresa = $("select#id_configuracion_empresa option:selected").text();
         option_agencias_transporte = [];
         if (id_pedido && comprobante)
             texto = '<div class="alert alert-warning text-center">' +
                 '<p>Luego de actualizar el pedido se debe actualizar tambien la factura de este pedido</p>' +
                 '</div>';
         if (!id_pedido || (id_pedido && !comprobante))
-            texto = '<div class="alert alert-info text-center"><p>Desea guardar este pedido?</p></div>';
+            texto = '<div class="alert alert-info text-center"><p>El pedido sera facturado con la empresa '+empresa+'</p></div>';
 
         modal_quest('modal_edit_pedido', texto, 'Editar pedido', true, false, '40%', function () {
             if ($("#envio_automatico").is(":checked"));
@@ -275,6 +277,7 @@ function store_pedido(id_cliente, pedido_fijo, csrf_token, vista, id_pedido, com
                 arrDatosExportacion: arrDatosExportacion,
                 crear_envio: $("#envio_automatico").is(":checked"),
                 fecha_envio: $("#fecha_de_entrega").val(),
+                id_configuracion_empresa : $("select#id_configuracion_empresa").val()
             };
 
             post_jquery('clientes/store_pedidos', datos, function () {
@@ -1626,19 +1629,18 @@ function input_required(input) {
     }
 }
 
-function buscar_codigo_dae(input, form, factura_cliente_tercero) {
+function buscar_codigo_dae(input, form, factura_cliente_tercero,id_envio) {
     $.LoadingOverlay('show');
     datos = {
         codigo_pais: input.value,
         fecha_envio: $("form#" + form + " #fecha_envio").val(),
-        id_configuracion_empresa : $("form#" + form + " #id_empresa").val()
+        id_envio : id_envio
     };
     $.get('envio/buscar_codigo_dae', datos, function (retorno) {
         if (factura_cliente_tercero) {
             $("form#" + form + " #dae_cliente_tercero").val(retorno.codigo_dae);
             $("form#" + form + " #codigo_dae_cliente_tercero").val(retorno.dae);
         } else {
-            console.log(retorno);
             $("form#" + form + " #dae").val(retorno.codigo_dae);
             $("form#" + form + " #codigo_dae").val(retorno.dae);
         }
