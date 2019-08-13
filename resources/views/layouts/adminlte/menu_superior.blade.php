@@ -16,9 +16,20 @@
         <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
             <span class="sr-only">Menú</span>
         </a>
-
         <div class="navbar-custom-menu">
             <ul class="nav navbar-nav">
+                <li  style="margin-top: 15px;color:white "><i class="fa fa-building-o"></i></li>
+                <li style="margin-top: 8px;">
+                    <select class="form-control" id="id_configuracion_empresa" name="id_configuracion_empresa" title="Seleccione un empresa para facturar los pedidos"
+                            style="border:none;color: white;background-color: transparent">
+                        <option value="" selected disabled>Facutrar pedido con:</option>
+                        @foreach(getConfiguracionEmpresa(null,true) as $empresa)
+                            @php $lastPedido = getLastPedido(); @endphp
+                            <option {{isset($lastPedido) ? (($lastPedido->id_configuracion_empresa === $empresa->id_configuracion_empresa) ? "selected" : "") : ""}}
+                               style=" color: black" value="{{$empresa->id_configuracion_empresa}}">{{$empresa->razon_social}}</option>
+                        @endforeach
+                    </select>
+                </li>
                 @if(in_array(getUsuario(Session::get('id_usuario'))->rol()->nombre,['SUPER ADMINISTRADOR', 'ADMINISTRADOR']))
                     <li class="dropdown notifications-menu">
                         <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"

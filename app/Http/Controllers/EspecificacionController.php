@@ -31,7 +31,6 @@ class EspecificacionController extends Controller
 
     public function listado_especificaciones(Request $request)
     {
-        //dd($request->all());
         $busqueda   = $request->has('busqueda') ? espacios($request->busqueda) : '';
         $id_cliente = $request->has('id_cliente') ? $request->id_cliente : '';
         $estado     = $request->has('estado') ? $request->estado : '';

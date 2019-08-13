@@ -37,10 +37,10 @@
                                     style="cursor:pointer;padding:5px 3px;width:100%;">
                                     <em id="title_btn_add_orden_semanal"> Flor tinturada</em>
                                 </li>
-                                <li onclick="add_pedido_personalizado()" class="btn btn-default text-left"
+                                {{--<li onclick="add_pedido_personalizado()" class="btn btn-default text-left"
                                     style="cursor:pointer;padding:5px 3px;width:100%;">
                                     <em id="title_btn_add_pedido_personalizado"> Pedido personalizado</em>
-                                </li>
+                                </li>--}}
                             </ul>
                         </span>
                 </div>

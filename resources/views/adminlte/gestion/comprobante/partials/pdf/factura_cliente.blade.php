@@ -1,7 +1,7 @@
 @php
     use \yura\Modelos\Comprobante;
     $comprobante = getComprobante(Comprobante::where('clave_acceso',(String)$data['obj_xml']->infoTributaria->claveAcceso)->first()->id_comprobante);
-    $empresa = getConfiguracionEmpresa($comprobante->id_configuracion_empresa);
+    $empresa = getConfiguracionEmpresa($comprobante->envio->pedido->id_configuracion_empresa);
     $cliente = getCliente(getEnvio($comprobante->envio->id_envio)->pedido->id_cliente)->detalle();
     $factura_tercero = getFacturaClienteTercero(getComprobante($comprobante->id_comprobante)->id_envio);
     $envio = getEnvio($comprobante->envio->id_envio);

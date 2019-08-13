@@ -25,7 +25,7 @@ class Envio extends Model
         'codigo_pais',
         'almacen',
         'codigo_dae',
-        'id_configuracion_empresa'
+
 
     ];
 

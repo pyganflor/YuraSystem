@@ -176,18 +176,20 @@
     });
 
     function desbloquea_pedido() {
-
+        console.log($("#id_configuracion_empresa").val().length);
         if($("#id_configuracion_empresa").val().length < 1){
+            console.log(1);
             $.each($(".orden_despacho"),function (i,j) { $(j).attr('disabled',true) });
         }else{
-            $.each($("input[class!='id_configuracion_empresa_1"+$('#id_configuracion_empresa').val()+"']"),function (i,j) {
+            console.log(2);
+            $.each($("input[class!='id_configuracion_empresa_"+$('#id_configuracion_empresa').val()+"']"),function (i,j) {
                 $(j).attr('disabled');
             });
         }
 
-        $.each($("input.id_configuracion_empresa_"+$("#id_configuracion_empresa").val()),function (i,j) {
+       /* $.each($("input.id_configuracion_empresa_"+$("#id_configuracion_empresa").val()),function (i,j) {
             $(j).removeAttr('disabled');
-        });
+        });*/
 
     }
 

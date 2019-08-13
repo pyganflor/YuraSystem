@@ -52,7 +52,7 @@ class CajasPresentacionesController extends Controller
 
             if(empty($request->id_empaque)){
                 $objEmpaque = new Empaque;
-                $objEmpaque->id_configuracion_empresa = 1;
+                $objEmpaque->id_configuracion_empresa = getConfiguracionEmpresa(null,false)->id_configuracion_empresa;
                 $objEmpaque->tipo = $request->tipo;
                 $letra = "I";
                 $accion = "Inserción";
@@ -304,7 +304,7 @@ class CajasPresentacionesController extends Controller
                                 }else{
                                     $objEmpaque = new Empaque;
                                     $objEmpaque->nombre = $activeSheetData[$i]['A'];
-                                    $objEmpaque->id_configuracion_empresa = 1;
+                                    $objEmpaque->id_configuracion_empresa = getConfiguracionEmpresa(null,false)->id_configuracion_empresa;
                                     $objEmpaque->save();
                                     $id_empaque = Empaque::all()->last()->id_empaque;
                                 }
@@ -317,7 +317,7 @@ class CajasPresentacionesController extends Controller
                                     $objClasificacionRamo = new ClasificacionRamo;
                                     $objClasificacionRamo->id_unidad_medida = $unidadMedida->id_unidad_medida;
                                     $objClasificacionRamo->nombre = explode("|", $activeSheetData[$i]['B'])[0];
-                                    $objClasificacionRamo->id_configuracion_empresa = 1;
+                                    $objClasificacionRamo->id_configuracion_empresa = getConfiguracionEmpresa(null,false)->id_configuracion_empresa;
                                     $objClasificacionRamo->save();
                                     $idClasificacionRamo = ClasificacionRamo::all()->last()->id_clasificacion_ramo;
                                 }

@@ -36,7 +36,7 @@
             <td style="border:1px solid black;border-radius:5px;width:350px">
                  <table>
                      <tr>
-                         <td style="font-size:13px;padding:5px">R.U.C.: {{$data['comprobante']->empresa->ruc}}</td>
+                         <td style="font-size:13px;padding:5px">R.U.C.: {{$data['empresa']->ruc}}</td>
                      </tr>
                      <tr>
                          <td style="font-size:15px;padding:5px">FACTURA</td>

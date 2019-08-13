@@ -18,6 +18,11 @@
                     <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
                         COMPROBANTE
                     </th>
+                    @if($tipo_comprobante=="01")
+                        <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
+                            FACTURADO POR
+                        </th>
+                    @endif
                     <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
                         CLAVE DE ACCESO
                     </th>
@@ -67,6 +72,11 @@
                         </td>
                     @endif
                         <td style="border-color: #9d9d9d" class="text-center">{{$item->nombre_comprobante}} - {{$item->secuencial}}  {{-- {{$item->nombre_comprobante." N# "."001-".{{--getDetallesClaveAcceso($item->clave_acceso, 'PUNTO_ACCESO')."-".getDetallesClaveAcceso($item->clave_acceso, 'SECUENCIAL')}} COMENTADO PARA QUE LA FACTURACION FUNCIONE CON EL VENTURE --}}</td>
+                    @if($tipo_comprobante=="01")
+                        <td style="border-color: #9d9d9d" class="text-center">
+                           {{$item->envio->pedido->empresa->razon_social}}
+                        </td>
+                    @endif
                         <td style="border-color: #9d9d9d" class="text-center"> {{$item->clave_acceso}} </td>
                     @if($tipo_comprobante!="06")
                         <td style="border-color: #9d9d9d" class="text-center"> {{$item->nombre_cliente}}</td>
@@ -220,7 +230,7 @@
             @elseif($item->estado == 1)
                 <div class="text-center">
                     {{--COMENTADO PARA QUE LA FACTURACION FUNCIONE CON EL SRI--}}
-                    {{--<button class="btn btn-success" onclick="enviar_comprobante('{{$tipo_comprobante}}','{{$item->id_configuracion_empresa}}')">
+                    {{--<button class="btn btn-success" onclick="enviar_comprobante('{{$tipo_comprobante}}','{{$item->envio->pedido->id_configuracion_empresa}}')">
                         <i class="fa fa-upload" aria-hidden="true"></i>
                         Enviar al SRI
                     </button>--}}

@@ -1,6 +1,7 @@
 <div id="table_despachos">
     @if(count($listado)>0)
-        <table width="100%" class="table-responsive table-bordered" style="font-size: 0.8em; border-color: #9d9d9d"
+        <div style="width: 100%;overflow-x:auto">
+        <table width="100%" class="table-responsive table-bordered" style="font-size: 0.8em; border-color: #9d9d9d;overflow-x: auto"
                id="table_content_aperturas">
             <tr>
                 <th style="border-color: #9d9d9d; background-color: #e9ecef" colspan="2">
@@ -13,10 +14,10 @@
                         </li>
                     </ul>
                 </th>
-                <th style="border-color: #9d9d9d; background-color: #e9ecef" class="text-right" colspan="{{$opciones ? "10" : "11"}}">
+                <th style="border-color: #9d9d9d; background-color: #e9ecef" class="text-right" colspan="{{$opciones ? "11" : "12"}}">
                     @if(!$opciones)
-                        <select id="id_configuracion_empresa" name="id_configuracion_empresa"
-                                style="height: 22px;position: relative;top: 1px;" onclick="desbloquea_pedido()">
+                        <select id="id_configuracion_empresa_despacho" name="id_configuracion_empresa_despacho"
+                                style="height: 22px;position: relative;top: 1px;" onchange="desbloquea_pedido()">
                             <option value="">Seleccionar empresa para ordenar pedidos</option>
                             @foreach($empresas as $emp)
                                 <option value="{{$emp->id_configuracion_empresa}}">{{$emp->razon_social}}</option>
@@ -29,6 +30,15 @@
                             <i class="fa fa-truck" aria-hidden="true"></i> Crear despacho
                         </button>
                     @endif
+                        @if($opciones)
+                        <select id="id_configuracion" name="id_configuracion_empresa"
+                                onchange="listar_resumen_pedidos(document.getElementById('fecha_pedidos_search').value,true,this.value)" style="height: 22px;position: relative;top: 1px;">
+                            <option value="" disabled selected>Ver pedidos de:</option>
+                            @foreach(getConfiguracionEmpresa(null,true) as $empresa)
+                                <option value="{{$empresa->id_configuracion_empresa}}">{{$empresa->razon_social}}</option>
+                            @endforeach
+                        </select>
+                        @endif
                         <button type="button" class="btn btn-xs btn-primary" onclick="exportar_listado_cuarto_frio('{{csrf_token()}}')">
                             <i class="fa fa-fw fa-file-excel-o"></i> Exportar a Excel Cuarto Frio
                         </button>
@@ -79,12 +89,11 @@
                     <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
                         CUARTO FRÍO
                     </th>
-                @else
-                    <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
-                        FACTURADO POR:
-                    </th>
                 @endif
-                <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white;width:165px">
+                <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
+                    FACTURADO POR:
+                </th>
+                <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white;width:180px">
                     OPCIONES
                 </th>
             </tr>
@@ -130,7 +139,7 @@
                                                         <i class="fa fa-2x fa-check-circle text-success" title="Despachado" aria-hidden="true"></i>
                                                     @else
                                                         <input type="number" name="orden_despacho" id="{{$pedido->id_pedido}}"
-                                                               class="form-control orden_despacho id_configuracion_empresa_{{isset($ped->envios[0]->comprobante) ? $ped->envios[0]->comprobante->empresa->id_configuracion_empresa : ""}}"
+                                                               class="form-control orden_despacho id_configuracion_empresa_{{isset($ped->id_configuracion_empresa) ? $ped->id_configuracion_empresa : ""}}"
                                                                min="1" style="width: 56px;border:none;text-align: center" disabled>
                                                     @endif
                                                 </td>
@@ -238,8 +247,10 @@
                                                     rowspan="{{$getCantidadDetallesEspecificacionByPedido}}">
                                                     {{getAgenciaCarga($det_ped->id_agencia_carga)->nombre}}
                                                 </td>
-                                                <td class="text-center" style="border-color: #9d9d9d" id="td_opciones_{{$pedido->id_pedido}}"
-                                                rowspan="{{$getCantidadDetallesEspecificacionByPedido}}">
+                                                <td style="border-color: #9d9d9d" class="text-center " rowspan="{{$getCantidadDetallesEspecificacionByPedido}}">
+                                                    {{isset($ped->empresa->razon_social) ? $ped->empresa->razon_social : ""}}
+                                                </td>
+                                                <td class="text-center" style="border-color: #9d9d9d" id="td_opciones_{{$pedido->id_pedido}}" rowspan="{{$getCantidadDetallesEspecificacionByPedido}}">
                                                     @if($pedido->tipo_especificacion == 'T')
                                                         <button type="button" class="btn btn-default btn-xs" title="{{(isset($ped->envios[0]->comprobante) && $ped->envios[0]->comprobante->estado != 1 ) ? "Ver pedido" : "Editar pedido"}}"
                                                                 onclick="editar_pedido_tinturado('{{$pedido->id_pedido}}', 0)">
@@ -306,18 +317,21 @@
                                                         </a>
                                                     @endif
                                                 </td>
-                                            @else
-                                                <td style="border-color: #9d9d9d" class="text-center " rowspan="{{$getCantidadDetallesEspecificacionByPedido}}">
-                                                    {{isset($ped->envios[0]->comprobante) ? $ped->envios[0]->comprobante->empresa->razon_social : ""}}
-                                                </td>
                                             @endif
+                                           @if(!$opciones)
+                                                <td style="border-color: #9d9d9d" class="text-center " rowspan="{{$getCantidadDetallesEspecificacionByPedido}}">
+                                                    {{isset($ped->empresa->razon_social) ? $ped->empresa->razon_social : ""}}
+                                                </td>
+                                           @endif
                                                 <td rowspan="{{$getCantidadDetallesEspecificacionByPedido}}" class="text-center" style="border-color: #9d9d9d">
                                                     @if(!$opciones && $pedido->tipo_especificacion === "T")
-                                                    <a target="_blank" href="{{url('pedidos/crear_packing_list',[$pedido->id_pedido,true])}}" class="btn btn-info btn-xs" title="Packing list">
-                                                        <i class="fa fa-cubes"></i>
-                                                    </a>
+                                                        <a target="_blank" href="{{url('pedidos/crear_packing_list',[$pedido->id_pedido,true])}}" class="btn btn-info btn-xs" title="Packing list">
+                                                            <i class="fa fa-cubes"></i>
+                                                        </a>
                                                     @endif
                                                 </td>
+
+
                                         @endif
                                     </tr>
                                 @endforeach
@@ -327,6 +341,7 @@
             @endforeach
         </table>
         <div class="row" style="margin-top: 10px">
+        </div>
             <div class="col-md-4">
                 <table class="table-striped table-bordered table-responsive" width="100%" style="border: 2px solid #9d9d9d; font-size: 0.8em">
                     <tr>

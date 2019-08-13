@@ -1460,12 +1460,15 @@ function getSecuencial($tipoComprobante, $configuracionEmpresa)
             break;
     }
     $secuencial = $inicio_secuencial + 1;
-    $cant_reg = Comprobante::where([
-        ['tipo_comprobante', $tipoComprobante],
-        ['id_configuracion_empresa', $configuracionEmpresa->id_configuracion_empresa]
-    ])->count();
-    if ($cant_reg > 0)
-        $secuencial = $cant_reg + $inicio_secuencial + 1;
+    $cant_reg = Comprobante::where('comprobante.tipo_comprobante', $tipoComprobante);
+
+    if($tipoComprobante == "01")
+        $cant_reg->join('envio as e','comprobante.id_envio','e.id_envio')
+            ->join('pedido as p','e.id_pedido','p.id_pedido')
+            ->where('p.id_configuracion_empresa', $configuracionEmpresa->id_configuracion_empresa);
+
+    if ($cant_reg->count() > 0)
+        $secuencial = $cant_reg->count() + $inicio_secuencial + 1;
 
     return str_pad($secuencial, 9, "0", STR_PAD_LEFT);
 }
@@ -2235,4 +2238,8 @@ function getFacturaAnulada($idPedido)
         $success = true;
 
     return $success;
+}
+
+function getLastPedido(){
+    return Pedido::all()->last();
 }
