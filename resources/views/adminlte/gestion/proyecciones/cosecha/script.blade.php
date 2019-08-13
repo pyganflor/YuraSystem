@@ -7,6 +7,8 @@
             tipo: $('#filtro_predeterminado_tipo').val(),
             desde: $('#filtro_predeterminado_desde').val(),
             hasta: $('#filtro_predeterminado_hasta').val(),
+            opcion: $('#filtro_predeterminado_opciones').val(),
+            detalle: $('#filtro_predeterminado_detalle').val(),
         };
         if (datos['variedad'] != 'T')
             get_jquery('{{url('proy_cosecha/listar_proyecciones')}}', datos, function (retorno) {

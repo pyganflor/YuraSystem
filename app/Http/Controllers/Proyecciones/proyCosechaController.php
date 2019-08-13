@@ -64,19 +64,19 @@ class proyCosechaController extends Controller
                     $array_valores = [];
                     foreach ($semanas as $sem) {
                         if ($sem->codigo < getSemanaByDate(date('Y-m-d'))->codigo) {    // semana pasada
-                            $data = $mod->getDataBySemana(-1, $sem, $request->variedad, $semana_desde->fecha_inicial);
+                            $data = $mod->getDataBySemana(-1, $sem, $request->variedad, $semana_desde->fecha_inicial, $request->opcion, $request->detalle);
                             $valor = [
                                 'tiempo' => -1,
                                 'data' => $data,
                             ];
                         } else if ($sem->codigo == getSemanaByDate(date('Y-m-d'))->codigo) {    // semana actual
-                            $data = $mod->getDataBySemana(0, $sem, $request->variedad, $semana_desde->fecha_inicial);
+                            $data = $mod->getDataBySemana(0, $sem, $request->variedad, $semana_desde->fecha_inicial, $request->opcion, $request->detalle);
                             $valor = [
                                 'tiempo' => 0,
                                 'data' => $data,
                             ];
                         } else {    // semana posterior
-                            $data = $mod->getDataBySemana(1, $sem, $request->variedad, $semana_desde->fecha_inicial);
+                            $data = $mod->getDataBySemana(1, $sem, $request->variedad, $semana_desde->fecha_inicial, $request->opcion, $request->detalle);
                             $valor = [
                                 'tiempo' => 1,
                                 'data' => $data,

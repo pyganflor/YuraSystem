@@ -128,16 +128,17 @@ class Modulo extends Model
         return $r;
     }
 
-    public function getDataBySemana($tiempo, $semana, $variedad, $desde)
+    public function getDataBySemana($tiempo, $semana, $variedad, $desde, $opcion, $detalle)
     {
         $tallos_proyectados = 0;
         /* ----------------------------- calcular cosecha real ----------------------------- */
+        $cosecha = 0;
+
         $cosechas_real = Cosecha::All()->where('estado', 1)
             ->where('fecha_ingreso', '>=', $semana->fecha_inicial)
             ->where('fecha_ingreso', '<=', $semana->fecha_final);
-        $tallos = 0;
         foreach ($cosechas_real as $item) {
-            $tallos += $item->getTotalTallosByModuloVariedad($this->id_modulo, $variedad);
+            $cosecha += $item->getTotalTallosByModuloVariedad($this->id_modulo, $variedad);
         }
 
         $ciclo_ini = $this->ciclos->where('estado', 1)
@@ -147,7 +148,7 @@ class Modulo extends Model
             $data = [
                 'tipo' => $ciclo_ini->poda_siembra,
                 'info' => $ciclo_ini->poda_siembra . '-' . $this->getPodaSiembraByCiclo($ciclo_ini->id_ciclo),
-                'cosechado' => $tallos,
+                'cosechado' => $cosecha,
                 'proyectados' => $tallos_proyectados,
                 'modelo' => $ciclo_ini->id_ciclo,
                 'ciclo' => $ciclo_ini,
@@ -162,7 +163,7 @@ class Modulo extends Model
             $data = [
                 'tipo' => 'V',  // vacio
                 'info' => '',
-                'cosechado' => $tallos,
+                'cosechado' => $cosecha,
                 'proyectados' => $tallos_proyectados,
                 'modelo' => $ciclo_last != '' ? $ciclo_last->id_ciclo : '',
                 'ciclo' => $ciclo_last != '' ? $ciclo_last : '',
@@ -181,7 +182,10 @@ class Modulo extends Model
                                 /* --------------------------- calcular cosecha proyectada ------------------------- */
                                 $pos_semana_cosecha = intval($num_semana - $ciclo_last->semana_poda_siembra);
                                 $desecho = 100 - $ciclo_last->desecho;
-                                $cosecha_totales = round(($ciclo_last->plantas_iniciales * $desecho) / 100, 2);
+                                if ($opcion == 'I') // plantas iniciales
+                                    $cosecha_totales = round(($ciclo_last->plantas_iniciales * $desecho) / 100, 2);
+                                else    // plantas actuales
+                                    $cosecha_totales = round(($ciclo_last->plantas_actuales() * $desecho) / 100, 2);
                                 $tallos_proyectados = round(($cosecha_totales * explode('-', $ciclo_last->curva)[$pos_semana_cosecha]) / 100, 2);
                             } else
                                 $tipo = 'I';    // informacion
@@ -189,7 +193,7 @@ class Modulo extends Model
                             $data = [
                                 'tipo' => $tipo,  // semana de cosecha o informacion
                                 'info' => $num_semana . 'º',
-                                'cosechado' => $tallos,
+                                'cosechado' => $cosecha,
                                 'proyectados' => $tallos_proyectados,
                                 'modelo' => $ciclo_last->id_ciclo,
                                 'ciclo' => $ciclo_last,
@@ -206,7 +210,7 @@ class Modulo extends Model
                                 $data = [
                                     'tipo' => 'Y',  // inicio de una proyeccion
                                     'info' => $proy_ini->tipo,
-                                    'cosechado' => $tallos,
+                                    'cosechado' => $cosecha,
                                     'proyectados' => $tallos_proyectados,
                                     'modelo' => $proy_ini->id_proyeccion_modulo,
                                     'ciclo' => '',
@@ -236,7 +240,7 @@ class Modulo extends Model
                                             $data = [
                                                 'tipo' => $tipo,
                                                 'info' => $num_semana . 'º',
-                                                'cosechado' => $tallos,
+                                                'cosechado' => $cosecha,
                                                 'proyectados' => $tallos_proyectados,
                                                 'modelo' => $proy_last->id_proyeccion_modulo,
                                                 'ciclo' => '',
@@ -247,7 +251,7 @@ class Modulo extends Model
                                             $data = [
                                                 'tipo' => 'F',  // fin de proyeccion
                                                 'info' => '-',
-                                                'cosechado' => $tallos,
+                                                'cosechado' => $cosecha,
                                                 'proyectados' => $tallos_proyectados,
                                                 'modelo' => '',
                                                 'ciclo' => '',
@@ -259,7 +263,7 @@ class Modulo extends Model
                                         $data = [
                                             'tipo' => 'X',  // cerrado
                                             'info' => '*',
-                                            'cosechado' => $tallos,
+                                            'cosechado' => $cosecha,
                                             'proyectados' => $tallos_proyectados,
                                             'modelo' => '',
                                             'ciclo' => '',
@@ -271,7 +275,7 @@ class Modulo extends Model
                                     $data = [
                                         'tipo' => 'F',  // fin de ciclo
                                         'info' => '-',
-                                        'cosechado' => $tallos,
+                                        'cosechado' => $cosecha,
                                         'proyectados' => $tallos_proyectados,
                                         'modelo' => '',
                                         'ciclo' => '',
@@ -285,7 +289,7 @@ class Modulo extends Model
                         $data = [
                             'tipo' => 'F',  // fin de ciclo
                             'info' => '-',
-                            'cosechado' => $tallos,
+                            'cosechado' => $cosecha,
                             'proyectados' => $tallos_proyectados,
                             'modelo' => '',
                             'ciclo' => '',
