@@ -59,7 +59,7 @@ class DespachosController extends Controller
                 $listado->where('id_configuracion_empresa',$request->id_configuracion_empresa);
 
             $listado->get();
-
+            dd($listado);
             $ids_pedidos = [];
             foreach ($listado as $item) {
                 if(!getFacturaAnulada($item->id_pedido))
