@@ -153,7 +153,7 @@ class DespachosController extends Controller
             'data_despacho.*.nombre_transportista' => 'required',
             //'data_despacho.*.arr_sellos' => 'required|Array',
             'data_despacho.*.semana' => 'required',
-            'data_despacho.*.correo_oficina_despacho'  => 'required'
+            'data_despacho.*.correo_oficina_despacho'  => 'required',
         ],[
             'data_despacho.*.fecha_despacho.required' => 'Debe colocar la fecha de despacho para el camión',
             'data_despacho.*.id_camion.required' => 'Debe seleccionar el camión',
@@ -206,7 +206,8 @@ class DespachosController extends Controller
                 $objDespacho->mail_resp_ofi_despacho = $despacho['correo_oficina_despacho'];
                 $distribucion = explode(";",$distribucion);
                 $idPedido =explode("|",$distribucion[0])[0];
-                $empresa = getPedido($idPedido)->envios[0]->comprobante->empresa;
+                $empresa = getPedido($idPedido)->empresa;
+                $objDespacho->id_configuracion_empresa = $empresa->id_configuracion_empresa;
                 $objDespacho->n_despacho = getSecuenciaDespacho($empresa);
 
                 if ($objDespacho->save()) {

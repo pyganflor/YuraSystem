@@ -176,20 +176,29 @@
     });
 
     function desbloquea_pedido() {
-        console.log($("#id_configuracion_empresa").val().length);
-        if($("#id_configuracion_empresa").val().length < 1){
+        console.log($("#id_configuracion_empresa_despacho").val().length);
+        if($("#id_configuracion_empresa_despacho").val().length < 1){
             console.log(1);
-            $.each($(".orden_despacho"),function (i,j) { $(j).attr('disabled',true) });
-        }else{
-            console.log(2);
-            $.each($("input[class!='id_configuracion_empresa_"+$('#id_configuracion_empresa').val()+"']"),function (i,j) {
-                $(j).attr('disabled');
+            $.each($(".orden_despacho"),function (i,j) {
+                $(j).attr('disabled',true);
+                $(j).val("");
             });
-        }
 
-       /* $.each($("input.id_configuracion_empresa_"+$("#id_configuracion_empresa").val()),function (i,j) {
-            $(j).removeAttr('disabled');
-        });*/
+        }else{
+            $.each($("div#table_despachos input.id_configuracion_empresa_"+$('#id_configuracion_empresa_despacho').val()),function (i,j) {
+                console.log("hola");
+                console.log(j);
+                $(j).removeAttr('disabled');
+            });
+
+        }
+        $.each($("div#table_despachos input").not(".id_configuracion_empresa_"+$('#id_configuracion_empresa_despacho').val()),function (i,j) {
+            console.log("hola32");
+            console.log(j);
+            $(j).attr('disabled',true);
+            $(j).val("");
+        });
+
 
     }
 

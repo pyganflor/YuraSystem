@@ -39,7 +39,8 @@ class Despacho extends Model
         'n_despacho',
         'sello_adicional',
         'estado',
-        'mail_resp_ofi_despacho'
+        'mail_resp_ofi_despacho',
+        'id_configuracion_empresa'
     ];
 
     public function detalles(){
