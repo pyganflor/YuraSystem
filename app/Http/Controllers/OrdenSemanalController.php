@@ -31,6 +31,7 @@ class OrdenSemanalController extends Controller
 {
     public function store_orden_semanal(Request $request)
     {
+       // dd($request->id_configuracion_empresa);
         if ($request->nueva_esp != '') {    // NUEVA ESPECIFICACION
             $esp = new Especificacion();
             $esp->tipo = 'O';
@@ -275,6 +276,7 @@ class OrdenSemanalController extends Controller
             $pedido->variedad = ''; // se calcula más abajo
             $pedido->fecha_pedido = $request->fecha_pedido;
             $pedido->tipo_especificacion = 'T'; // Flor tinturada
+            $pedido->id_configuracion_empresa = $request->id_configuracion_empresa;
             if ($pedido->save()) {
                 $pedido = Pedido::All()->last();
                 bitacora('pedido', $pedido->id_pedido, 'I', 'Insercion de un nuevo pedido');
@@ -552,7 +554,7 @@ class OrdenSemanalController extends Controller
                 $objComprobante->save();
                 $pedido->clave_acceso_temporal = $c->secuencial;
                 $pedido->id_comprobante_temporal = $c->id_comprobante;
-                $id_configuracion_empresa = $p->id_configuracion_empresa;
+                $pedido->id_configuracion_empresa = $p->id_configuracion_empresa;
             }
 
             if ($pedido->save()) {
