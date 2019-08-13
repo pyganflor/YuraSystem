@@ -811,11 +811,12 @@ function genera_codigo_barra(prefijo, codigo) {
     $.LoadingOverlay('hide');
 }
 
-function listar_resumen_pedidos(fecha, opciones) {
+function listar_resumen_pedidos(fecha, opciones,id_configuracion_empresa) {
     $.LoadingOverlay('show');
     datos = {
         fecha: fecha,
-        opciones: opciones
+        opciones: opciones,
+        id_configuracion_empresa : id_configuracion_empresa
     };
     $.get('despachos/listar_resumen_pedidos', datos, function (retorno) {
         $('#div_listado_blanco').html(retorno);
