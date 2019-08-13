@@ -56,12 +56,12 @@ class DespachosController extends Controller
                 ->orderBy('dc.nombre', 'asc')->get();
 
             if($request->id_configuracion_empresa != "")
-                $listado->where('id_configuracion_empresa',$request->id_configuracion_empresa);
+                $listado->where('p.id_configuracion_empresa','=',$request->id_configuracion_empresa);
 
-            //$listado
+            $listado = $listado->get();
            // dd($listado);
             $ids_pedidos = [];
-            foreach ($listado->get() as $item) {
+            foreach ($listado as $item) {
                 if(!getFacturaAnulada($item->id_pedido))
                     array_push($ids_pedidos, $item->id_pedido);
             }
