@@ -130,10 +130,15 @@ class Modulo extends Model
 
     public function getDataBySemana($tiempo, $semana, $variedad, $desde)
     {
-        $data = [
-            'tipo' => 'otro'
-        ];
         $tallos_proyectados = 0;
+        /* ----------------------------- calcular cosecha real ----------------------------- */
+        $cosechas_real = Cosecha::All()->where('estado', 1)
+            ->where('fecha_ingreso', '>=', $semana->fecha_inicial)
+            ->where('fecha_ingreso', '<=', $semana->fecha_final);
+        $tallos = 0;
+        foreach ($cosechas_real as $item) {
+            $tallos += $item->getTotalTallosByModuloVariedad($this->id_modulo, $variedad);
+        }
 
         $ciclo_ini = $this->ciclos->where('estado', 1)
             ->where('fecha_inicio', '>=', $semana->fecha_inicial)->where('fecha_inicio', '<=', $semana->fecha_final)
@@ -142,9 +147,12 @@ class Modulo extends Model
             $data = [
                 'tipo' => $ciclo_ini->poda_siembra,
                 'info' => $ciclo_ini->poda_siembra . '-' . $this->getPodaSiembraByCiclo($ciclo_ini->id_ciclo),
-                'cosechado' => 0,
+                'cosechado' => $tallos,
                 'proyectados' => $tallos_proyectados,
                 'modelo' => $ciclo_ini->id_ciclo,
+                'ciclo' => $ciclo_ini,
+                'proy' => '',
+                'tabla' => 'C',
             ];
         } else {
             $ciclo_last = $this->ciclos->where('estado', 1)
@@ -154,9 +162,12 @@ class Modulo extends Model
             $data = [
                 'tipo' => 'V',  // vacio
                 'info' => '',
-                'cosechado' => 0,
+                'cosechado' => $tallos,
                 'proyectados' => $tallos_proyectados,
                 'modelo' => $ciclo_last != '' ? $ciclo_last->id_ciclo : '',
+                'ciclo' => $ciclo_last != '' ? $ciclo_last : '',
+                'proy' => '',
+                'tabla' => 'C',
             ];
             if ($ciclo_last != '') {    // existe un ciclo real
                 if ($ciclo_last->fecha_inicio >= $desde) {
@@ -175,21 +186,15 @@ class Modulo extends Model
                             } else
                                 $tipo = 'I';    // informacion
 
-                            /* ----------------------------- calcular cosecha real ----------------------------- */
-                            $cosechas_real = Cosecha::All()->where('estado', 1)
-                                ->where('fecha_ingreso', '>=', $semana->fecha_inicial)
-                                ->where('fecha_ingreso', '<=', $semana->fecha_final);
-                            $tallos = 0;
-                            foreach ($cosechas_real as $item) {
-                                $tallos += $item->getTotalTallosByModuloVariedad($this->id_modulo, $variedad);
-                            }
-
                             $data = [
                                 'tipo' => $tipo,  // semana de cosecha o informacion
                                 'info' => $num_semana . 'º',
                                 'cosechado' => $tallos,
                                 'proyectados' => $tallos_proyectados,
                                 'modelo' => $ciclo_last->id_ciclo,
+                                'ciclo' => $ciclo_last,
+                                'proy' => '',
+                                'tabla' => 'C',
                             ];
                         } else {    // ya pasó de lo programado
                             /* ========== BUSCAR PROYECCION =========== */
@@ -201,9 +206,12 @@ class Modulo extends Model
                                 $data = [
                                     'tipo' => 'Y',  // inicio de una proyeccion
                                     'info' => $proy_ini->tipo,
-                                    'cosechado' => 0,
+                                    'cosechado' => $tallos,
                                     'proyectados' => $tallos_proyectados,
                                     'modelo' => $proy_ini->id_proyeccion_modulo,
+                                    'ciclo' => '',
+                                    'proy' => $proy_ini,
+                                    'tabla' => 'P',
                                 ];
                             } else {    // BUSCAR ULTIMA PROYECCION
                                 $proy_last = $this->getProyeccionByDate($semana->fecha_final, $variedad);
@@ -228,35 +236,47 @@ class Modulo extends Model
                                             $data = [
                                                 'tipo' => $tipo,
                                                 'info' => $num_semana . 'º',
-                                                'cosechado' => 0,
+                                                'cosechado' => $tallos,
                                                 'proyectados' => $tallos_proyectados,
                                                 'modelo' => $proy_last->id_proyeccion_modulo,
+                                                'ciclo' => '',
+                                                'proy' => $proy_last,
+                                                'tabla' => 'P',
                                             ];
                                         } else {
                                             $data = [
                                                 'tipo' => 'F',  // fin de proyeccion
                                                 'info' => '-',
-                                                'cosechado' => 0,
+                                                'cosechado' => $tallos,
                                                 'proyectados' => $tallos_proyectados,
                                                 'modelo' => '',
+                                                'ciclo' => '',
+                                                'proy' => '',
+                                                'tabla' => '',
                                             ];
                                         }
                                     } else {
                                         $data = [
                                             'tipo' => 'X',  // cerrado
                                             'info' => '*',
-                                            'cosechado' => 0,
+                                            'cosechado' => $tallos,
                                             'proyectados' => $tallos_proyectados,
                                             'modelo' => '',
+                                            'ciclo' => '',
+                                            'proy' => '',
+                                            'tabla' => '',
                                         ];
                                     }
                                 } else {
                                     $data = [
                                         'tipo' => 'F',  // fin de ciclo
                                         'info' => '-',
-                                        'cosechado' => 0,
+                                        'cosechado' => $tallos,
                                         'proyectados' => $tallos_proyectados,
                                         'modelo' => '',
+                                        'ciclo' => '',
+                                        'proy' => '',
+                                        'tabla' => '',
                                     ];
                                 }
                             }
@@ -265,9 +285,12 @@ class Modulo extends Model
                         $data = [
                             'tipo' => 'F',  // fin de ciclo
                             'info' => '-',
-                            'cosechado' => 0,
+                            'cosechado' => $tallos,
                             'proyectados' => $tallos_proyectados,
                             'modelo' => '',
+                            'ciclo' => '',
+                            'proy' => '',
+                            'tabla' => '',
                         ];
                     }
                 }
