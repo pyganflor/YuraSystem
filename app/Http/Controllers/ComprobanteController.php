@@ -1873,7 +1873,7 @@ class ComprobanteController extends Controller
                     $objXmlAutorizado = simplexml_load_string($cadena);
                     $objComprobante = Comprobante::find($comprobante->id_comprobante);
                     $secuencial = "001".getDetallesClaveAcceso((String)$objXmlAutorizado->numeroAutorizacion, 'PUNTO_ACCESO').getDetallesClaveAcceso((String)$objXmlAutorizado->numeroAutorizacion, 'SECUENCIAL');
-
+                    dd($secuencial, $comprobante->secuencial);
                     if($secuencial ===  $comprobante->secuencial){
                         if((String)$objXmlAutorizado->estado === "AUTORIZADO"){
                             $formato_fecha = explode("/",explode(" ",(String)$objXmlAutorizado->fechaAutorizacion)[0]);
