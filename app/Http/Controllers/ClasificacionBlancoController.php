@@ -32,7 +32,8 @@ class ClasificacionBlancoController extends Controller
         $fecha_min = DB::table('pedido')
             ->select(DB::raw('min(fecha_pedido) as fecha'))
             ->where('estado', '=', 1)
-            ->where('empaquetado', '=', 0)->get();
+            ->where('empaquetado', '=', 0)
+            ->get();
         if (count($fecha_min) > 0)
             $fecha_min = $fecha_min[0]->fecha;
         else
