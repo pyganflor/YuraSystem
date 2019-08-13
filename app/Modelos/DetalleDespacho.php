@@ -18,8 +18,8 @@ class DetalleDespacho extends Model
         'cantidad'
     ];
 
-    public function pedidos(){
-        return $this->hasMany('yura\Modelos\Pedido', 'id_pedido');
+    public function pedido(){
+        return $this->belongsTo('yura\Modelos\Pedido', 'id_pedido');
     }
 
     public function despacho(){

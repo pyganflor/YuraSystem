@@ -282,8 +282,9 @@ class DespachosController extends Controller
     public function descargar_despacho($n_despacho){
         $despacho = Despacho::where('n_despacho',$n_despacho)
             ->join('detalle_despacho as dd','despacho.id_despacho','dd.id_despacho')->get();
+        
         $data = [
-            'empresa' => $despacho[0]->detalles[0]->pedidos[0]->envios[0]->comprobante->empresa,
+            'empresa' => $despacho[0]->detalles[0]->pedido->empresa,
             'despacho' => $despacho
         ];
         return PDF::loadView('adminlte.gestion.postcocecha.despachos.partials.pdf_despacho', compact('data'))
