@@ -53,12 +53,12 @@ class DespachosController extends Controller
                 ->where('p.estado', '=', 1)
                 //->where('p.empaquetado', '=', 0)
                 ->where('p.fecha_pedido', '=', $request->fecha)
-                ->orderBy('dc.nombre', 'asc');
+                ->orderBy('dc.nombre', 'asc')->get();
 
             if($request->id_configuracion_empresa != "")
                 $listado->where('id_configuracion_empresa',$request->id_configuracion_empresa);
 
-            //$listado->get();
+            //$listado
            // dd($listado);
             $ids_pedidos = [];
             foreach ($listado->get() as $item) {
