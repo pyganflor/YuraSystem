@@ -31,7 +31,7 @@
                         </button>
                     @endif
                         <select id="id_configuracion" name="id_configuracion_empresa"
-                                onchange="listar_resumen_pedidos(document.getElementById('fecha_pedidos_search').value,true,this.id)" style="height: 22px;position: relative;top: 1px;">
+                                onchange="listar_resumen_pedidos(document.getElementById('fecha_pedidos_search').value,true,this.val())" style="height: 22px;position: relative;top: 1px;">
                             <option value="" disabled selected>Ver pedidos de:</option>
                             @foreach(getConfiguracionEmpresa(null,true) as $empresa)
                                 <option value="{{$empresa->id_configuracion_empresa}}">{{$empresa->razon_social}}</option>
