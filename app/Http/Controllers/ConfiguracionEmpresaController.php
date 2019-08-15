@@ -169,6 +169,8 @@ class ConfiguracionEmpresaController extends Controller
                 $objConfigEmpresa->inicial_lote = $request['inicial_lote'];
                 $objConfigEmpresa->inicial_guia_remision = $request['inicial_guia'];
                 $objConfigEmpresa->inicial_despacho = $request['incial_despacho'];
+                $objConfigEmpresa->codigo_fpo = $request['codigo_fpo'];
+                $objConfigEmpresa->codigo_tvn = $request['codigo_tvn'];
                 if($request->has('firma_electronica')){
                     $firma = $request->file('firma_electronica');
                     $nombre_archivo = $request['razon_social']."_".$firma->getClientOriginalName();
@@ -575,6 +577,8 @@ class ConfiguracionEmpresaController extends Controller
                 $objConfigEmpresa->inicial_lote = $request->inicial_lote_empresa_facturacion;
                 $objConfigEmpresa->inicial_guia_remision = $request->inicial_guia_empresa_facturacion;
                 $objConfigEmpresa->inicial_despacho = $request->incial_despacho_empresa_facturacion;
+                $objConfigEmpresa->codigo_fpo = $request->codigo_fpo_empresa_facturacion;
+                $objConfigEmpresa->codigo_tvn = $request->codigo_tvn_empresa_facturacion;
                 $objConfigEmpresa->estado = false;
                 if ($request->has('firma_electronica_empresa_facturacion')) {
                     $firma = $request->file('firma_electronica_empresa_facturacion');

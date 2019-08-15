@@ -365,13 +365,18 @@
                 _token: '{{csrf_token()}}',
             },
             success: function (data) {
+
                 var opResult = JSON.parse(data);
-                var $a = $("<a>");
-                $a.attr("href", opResult.data);
-                $("body").append($a);
-                $a.attr("download", "text_integrador_" + opResult.fecha + ".txt");
-                $a[0].click();
-                $a.remove();
+                if(opResult.success){
+                    var $a = $("<a>");
+                    $a.attr("href", opResult.data);
+                    $("body").append($a);
+                    $a.attr("download", "text_integrador_" + opResult.fecha + ".txt");
+                    $a[0].click();
+                    $a.remove();
+                }else{
+                    modal_view('modal_view_error_txt', opResult.msg, '<i class="fa fa-exclamation-triangle"></i> Alerrta al descargar el archivo .TXT', true, false, '50%');
+                }
             }
         }).always(function () {
             buscar_listado_comprobante();

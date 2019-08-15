@@ -142,6 +142,8 @@
             formData.append('inicial_guia', $("#inicial_guia").val());
             formData.append('inicial_lote', $("#inicial_lote").val());
             formData.append('incial_despacho', $("#incial_despacho").val());
+            formData.append('codigo_fpo', $("#codigo_fpo").val());
+            formData.append('codigo_tvn', $("#codigo_tvn").val());
             $.ajax({
                 url: '{{route('configuracion.store')}}',
                 type: 'POST',

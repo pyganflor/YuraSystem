@@ -169,6 +169,22 @@
                        value="{!! isset($config_empresa_facturacion->inicial_despacho) ? $config_empresa_facturacion->inicial_despacho : 0 !!}">
             </div>
         </div>
+        <div class="col-md-3">
+            <div class="form-group input-group">
+                <span class="input-group-addon" style="background-color: #e9ecef">Código fpo <i class="fa fa-question-circle-o" title="Código de la forma de pago configurada en el venture para la empresa"></i></span>
+                <input type="number" id="codigo_fpo_empresa_facturacion" name="codigo_fpo_empresa_facturacion" class="form-control"
+                       minlength="1"  required
+                       value="{!! isset($config_empresa_facturacion->codigo_fpo) ? $config_empresa_facturacion->codigo_fpo : 0 !!}">
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group input-group">
+                <span class="input-group-addon" style="background-color: #e9ecef">Código tvn <i class="fa fa-question-circle-o" title="Código del tipo de venta configurada en el venture para la empresa"></i></span>
+                <input type="number" id="codigo_tvn_empresa_facturacion" name="codigo_tvn_empresa_facturacion" class="form-control"
+                       minlength="1"  required
+                       value="{!! isset($config_empresa_facturacion->codigo_tvn) ? $config_empresa_facturacion->codigo_tvn : 0 !!}">
+            </div>
+        </div>
         <div class="col-md-12 text-center">
             <button type="button" class="btn btn-primary" onclick="store_configuracion_empresa_factura()">
                 <i class="fa fa-floppy-o"></i> Guardar
