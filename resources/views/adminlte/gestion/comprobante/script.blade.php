@@ -9,7 +9,8 @@
             codigo_comprobante : $("#codigo_comprobante").val(),
             desde              : $('#desde').val(),
             hasta              : $('#hasta').val(),
-            estado             : $('#estado').val()
+            estado             : $('#estado').val(),
+            id_configuracion_empresa : $('#id_configuracion_empresa_comproante').val()
         };
         $.get('{{url('comprobante/buscar')}}', datos, function (retorno) {
             $('#div_listado_comprobante').html(retorno);
