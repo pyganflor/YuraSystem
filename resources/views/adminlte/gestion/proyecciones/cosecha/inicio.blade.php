@@ -70,21 +70,21 @@
                         </button>
                     </div>
                 </div>
-                <div class="input-group">
+                <div class="input-group" style="display: none">
                     <div class="input-group-addon bg-gray">
                         <i class="fa fa-fw fa-calendar"></i> Opciones
                     </div>
                     <select class="form-control" id="filtro_predeterminado_opciones" name="filtro_predeterminado_opciones" required
                             onchange="listar_proyecciones()">
                         <option value="I">Plantas Iniciales</option>
-                        <option value="A">Plantas Actuales</option>
+                        <option value="A" selected>Plantas Actuales</option>
                     </select>
                     <div class="input-group-addon bg-gray">
                         <i class="fa fa-fw fa-calendar"></i> Detalle
                     </div>
                     <select class="form-control" id="filtro_predeterminado_detalle" name="filtro_predeterminado_detalle" required
                             onchange="listar_proyecciones()">
-                        <option value="T">Tallos</option>
+                        <option value="T" selected>Tallos</option>
                         <option value="C">Cajas</option>
                     </select>
                 </div>
