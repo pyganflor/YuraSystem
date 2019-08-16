@@ -43,6 +43,8 @@ class ConfiguracionEmpresa extends Model
         'inicial_guia_remision',
         'inicial_lote',
         'inicial_despahco',
+        'codigo_fpo',
+        'codigo_tvn'
 
     ];
 

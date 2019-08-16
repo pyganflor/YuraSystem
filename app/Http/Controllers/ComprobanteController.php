@@ -40,7 +40,8 @@ class ComprobanteController extends Controller
                 'tiposCompbantes' => TipoComprobante::all(),
                 'annos' => DB::table('comprobante as c')->select(DB::raw('YEAR(c.fecha_emision) as anno'))->distinct()->get(),
                 'clientes' => Cliente::join('detalle_cliente as dc', 'cliente.id_cliente', 'dc.id_cliente')->where('dc.estado', 1)->select('nombre', 'cliente.id_cliente')
-                    ->orderBy('dc.nombre','asc')->get()
+                    ->orderBy('dc.nombre','asc')->get(),
+                'empresas' =>  getConfiguracionEmpresa(null, true)
             ]);
     }
 
@@ -69,7 +70,8 @@ class ComprobanteController extends Controller
                 ->join('detalle_cliente as dc', 'p.id_cliente', 'dc.id_cliente')
             ->where([
                 ['dc.estado', 1],
-                ['p.estado',1]
+                ['p.estado',1],
+                ['p.id_configuracion_empresa',$request->id_configuracion_empresa]
             ]);
         }
 
@@ -1532,6 +1534,9 @@ class ComprobanteController extends Controller
          ];
     }
 
+    /**
+     * @param Request $request
+     */
     public function descargar_txt(Request $request){
 
         header("Content-Type: application/force-download");
@@ -1543,17 +1548,25 @@ class ComprobanteController extends Controller
         header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
         header("Pragma: no-cache");
         $contenido = "";
-        $total_ramos = 0.00;
 
         $comprobante = Comprobante::where([
             ['tipo_comprobante' , $request->tipo_comprobante],
             ['integrado',true],
             ['estado',1]
         ])->whereBetween('fecha_emision',[$request->desde,$request->hasta])->whereNotNull('fecha_integrado')->get();
-
+        $success = true;
         foreach ($comprobante as $c){
             if($c->tipo_comprobante === "01"){
                 $pedido = getComprobante($c->id_comprobante)->envio->pedido;
+                if(!isset($pedido->cliente->detalle()->informacion_adicional('codigo venture')->varchar)){
+                    $success = false;
+                    $opResult =[
+                        'msg' => '<div class="alert alert-warning text-center"><p>El cliente '.$pedido->cliente->detalle()->nombre.' no ha sido vinculado con su código del Venture</p></div>',
+                        'success'=>$success,
+                    ];
+                    echo json_encode($opResult);
+                    return;
+                }
                 if($pedido->tipo_especificacion === "N") {
                     $piezas = 0;
                     $caja_full = 0;
@@ -1572,10 +1585,20 @@ class ComprobanteController extends Controller
                         $i = 0;
                         foreach ($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $m => $esp_emp) {
                             foreach ($esp_emp->detalles as $n => $det_esp_emp) {
+                                $codigoPresentacion = getCodigoVenturePresentacion($det_esp_emp->variedad->planta->id_planta,$det_esp_emp->variedad->id_variedad,$det_esp_emp->clasificacion_ramo->id_clasificacion_ramo,$det_esp_emp->clasificacion_ramo->unidad_medida->id_unidad_medida,$det_esp_emp->tallos_x_ramos,$det_esp_emp->longitud_ramo,$det_esp_emp->unidad_medida->id_unidad_medida);
+                                if($codigoPresentacion == ""){
+                                    $success = false;
+                                    $opResult =[
+                                        'msg' => '<div class="alert alert-warning text-center"><p>La presentación '.$det_esp_emp->variedad->planta->nombre.' '.$det_esp_emp->variedad->nombre.' '. $det_esp_emp->clasificacion_ramo->nombre .' '.$det_esp_emp->clasificacion_ramo->unidad_medida->siglas. ', '. $det_esp_emp->tallos_x_ramos .' Tallos '. $det_esp_emp->longitud_ramo . $det_esp_emp->unidad_medida->siglas.' no ha sido vinculada con su código del Venture</p></div>',
+                                        'success'=>$success,
+                                    ];
+                                    echo json_encode($opResult);
+                                    return;
+                                }
                                 $contenido .= Carbon::parse($pedido->envios[0]->comprobante->fecha_integrado)->format('d/m/Y')."\t".$pedido->envios[0]->comprobante->secuencial."\t".$pedido->cliente->detalle()->informacion_adicional('codigo venture')->varchar."\t". Carbon::parse($pedido->envios[0]->comprobante->fecha_emision)->addDay(21)->format('d/m/Y')."\t";
-                                $contenido .= getCodigoVenturePresentacion($det_esp_emp->variedad->planta->id_planta,$det_esp_emp->variedad->id_variedad,$det_esp_emp->clasificacion_ramo->id_clasificacion_ramo,$det_esp_emp->clasificacion_ramo->unidad_medida->id_unidad_medida,$det_esp_emp->tallos_x_ramos,$det_esp_emp->longitud_ramo,$det_esp_emp->unidad_medida->id_unidad_medida)."\t";
-                                $contenido .= ($det_ped->cantidad*$det_esp_emp->cantidad)."\t".explode(";", $precio[$i])[0]."\t".($pedido->cliente->detalle()->codigo_pais != getConfiguracionEmpresa($c->envio->pedido->id_configuracion_empresa)->codigo_pais ? 0 : 1)."\t".'001009'/*Código venture dasalflor para crédito como forma de pago*/."\t".isset($pedido->envios[0]->dae) ? $pedido->envios[0]->dae : "N"."\t".isset($pedido->envios[0]->dae) ? $pedido->envios[0]->dae : "N"."\t"."N"."\t"."N"."\t"."1113495085"."\t".$pedido->envios[0]->guia_madre."\t";
-                                $contenido .= $piezas." Piezas. ".$caja_full." FULL BOXES"."\t"."\t"."\t"."0"."\t"."\t"."\t"."\t"."\t"."00101"/*codigo_tvn venture dasalflor*/."\t".$pedido->cliente->detalle()->nombre."\t"."\t"."\t"."\t"."\t".$tallos." Tallos."."\t"."\t"."\t"."\t"."\t". $pedido->envios[0]->guia_hija."\t".$pedido->detalles[0]->agencia_carga->codigo.chr(13).chr(10);
+                                $contenido .= $codigoPresentacion."\t";
+                                $contenido .= ($det_ped->cantidad*$det_esp_emp->cantidad)."\t".explode(";", $precio[$i])[0]."\t".($pedido->cliente->detalle()->codigo_pais != getConfiguracionEmpresa($c->envio->pedido->id_configuracion_empresa)->codigo_pais ? 0 : 1)."\t".$c->envio->pedido->empresa->codigo_fpo/*Código venture para forma de pago de los clientes*/."\t".(isset($pedido->envios[0]->dae) ? $pedido->envios[0]->dae : "N")."\t".(isset($pedido->envios[0]->dae) ? $pedido->envios[0]->dae : "N")."\t"."N"."\t"."N"."\t"."1113495085"."\t".$pedido->envios[0]->guia_madre."\t";
+                                $contenido .= $piezas." Piezas. ".$caja_full." FULL BOXES"."\t"."\t"."\t"."0"."\t"."\t"."\t"."\t"."\t".$c->envio->pedido->empresa->codigo_tvn/*codigo_tvn venture para el tipo de venta de la empresa*/."\t".$pedido->cliente->detalle()->nombre."\t"."\t"."\t"."\t"."\t".$tallos." Tallos."."\t"."\t"."\t"."\t"."\t". $pedido->envios[0]->guia_hija."\t".$pedido->detalles[0]->agencia_carga->codigo.chr(13).chr(10);
                                 $i++;
                             }
                         }
@@ -1596,6 +1619,16 @@ class ComprobanteController extends Controller
                     }
                     foreach ($det_ped->coloraciones as $y => $coloracion){
                         foreach ($coloracion->marcaciones_coloraciones as $m_c) {
+                            $codigoPresentacion = getCodigoVenturePresentacion($m_c->detalle_especificacionempaque->variedad->planta->id_planta,$m_c->detalle_especificacionempaque->variedad->id_variedad,$m_c->detalle_especificacionempaque->clasificacion_ramo->id_clasificacion_ramo,$m_c->detalle_especificacionempaque->clasificacion_ramo->unidad_medida->id_unidad_medida,$m_c->detalle_especificacionempaque->tallos_x_ramos,$m_c->detalle_especificacionempaque->longitud_ramo,$m_c->detalle_especificacionempaque->unidad_medida->id_unidad_medida);
+                            if($codigoPresentacion == ""){
+                                $success = false;
+                                $opResult =[
+                                    'msg' => '<div class="alert alert-warning text-center"><p>La presentación '.$m_c->detalle_especificacionempaque->variedad->planta->nombre.' '.$m_c->detalle_especificacionempaque->variedad->nombre.' '. $m_c->detalle_especificacionempaque->clasificacion_ramo->nombre .' '.$m_c->detalle_especificacionempaque->clasificacion_ramo->unidad_medida->siglas. ', '. $m_c->detalle_especificacionempaque->tallos_x_ramos .' Tallos '. $m_c->detalle_especificacionempaque->longitud_ramo . $m_c->detalle_especificacionempaque->unidad_medida->siglas.' no ha sido vinculada con su código del Venture</p></div>',
+                                    'success'=>$success,
+                                ];
+                                echo json_encode($opResult);
+                                return;
+                            }
                             if ($m_c->cantidad > 0){
                                 if ($coloracion->precio == "") {
                                     foreach (explode("|", $det_ped->precio) as $p)
@@ -1606,10 +1639,10 @@ class ComprobanteController extends Controller
                                         if ($m_c->id_detalle_especificacionempaque == explode(";", $p)[1])
                                             $precio = explode(";", $p)[0];
                                 }
-                                $contenido .= Carbon::parse($pedido->envios[0]->comprobante->fecha_emision)->format('d/m/Y') . "\t" . $pedido->envios[0]->comprobante->secuencial . "\t" . $pedido->cliente->detalle()->informacion_adicional('codigo venture')->varchar . "\t" . Carbon::parse($pedido->envios[0]->comprobante->fecha_emision)->addDay(21)->format('d/m/Y') . "\t";
-                                $contenido .= getCodigoVenturePresentacion($m_c->detalle_especificacionempaque->variedad->planta->id_planta, $m_c->detalle_especificacionempaque->variedad->id_variedad, $m_c->detalle_especificacionempaque->clasificacion_ramo->id_clasificacion_ramo, $m_c->detalle_especificacionempaque->clasificacion_ramo->unidad_medida->id_unidad_medida, $m_c->detalle_especificacionempaque->tallos_x_ramos, $m_c->detalle_especificacionempaque->longitud_ramo, $m_c->detalle_especificacionempaque->unidad_medida->id_unidad_medida) . "\t";
-                                $contenido .= $m_c->cantidad . "\t" . $precio . "\t" . ($pedido->cliente->detalle()->codigo_pais != getConfiguracionEmpresa($c->envio->pedido->id_configuracion_empresa)->codigo_pais ? 0 : 1) . "\t" . '001009'/*Código venture dasalflor para crédito como forma de pago*/ . "\t" . isset($pedido->envios[0]->dae) ? $pedido->envios[0]->dae : "N" . "\t" . isset($pedido->envios[0]->dae) ? $pedido->envios[0]->dae : "N" . "\t" . "N" . "\t" . "N" . "\t" . "1113495085" . "\t" . $pedido->envios[0]->guia_madre . "\t";
-                                $contenido .= $piezas . " Piezas. " . $caja_full . " FULL BOXES" . "\t" . "\t" . "\t" . "0" . "\t" . "\t" . "\t" . "\t" . "\t" . "00101"/*codigo_tvn venture dasalflor*/ . "\t" . $pedido->cliente->detalle()->nombre . "\t" . "\t" . "\t" . "\t" . "\t" . $tallos . " Tallos." . "\t" . "\t" . "\t" . "\t" . "\t" . $pedido->envios[0]->guia_hija . "\t" . $pedido->detalles[0]->agencia_carga->codigo . chr(13) . chr(10);
+                                $contenido .= Carbon::parse($pedido->envios[0]->comprobante->fecha_integrado)->format('d/m/Y') . "\t" . $pedido->envios[0]->comprobante->secuencial . "\t" . $pedido->cliente->detalle()->informacion_adicional('codigo venture')->varchar . "\t" . Carbon::parse($pedido->envios[0]->comprobante->fecha_emision)->addDay(21)->format('d/m/Y') . "\t";
+                                $contenido .= $codigoPresentacion . "\t";
+                                $contenido .= $m_c->cantidad . "\t" . $precio . "\t" . ($pedido->cliente->detalle()->codigo_pais != getConfiguracionEmpresa($c->envio->pedido->id_configuracion_empresa)->codigo_pais ? 0 : 1) . "\t" . $c->envio->pedido->empresa->codigo_fpo/*Código venture para forma de pago de los clientes*/ . "\t" . (isset($pedido->envios[0]->dae) ? $pedido->envios[0]->dae : "N") . "\t" . (isset($pedido->envios[0]->dae) ? $pedido->envios[0]->dae : "N") . "\t" . "N" . "\t" . "N" . "\t" . "1113495085" . "\t" . $pedido->envios[0]->guia_madre . "\t";
+                                $contenido .= $piezas . " Piezas. " . $caja_full . " FULL BOXES" . "\t" . "\t" . "\t" . "0" . "\t" . "\t" . "\t" . "\t" . "\t" .  $c->envio->pedido->empresa->codigo_tvn/*codigo_tvn venture para el tipo de venta de la empresa*/ . "\t" . $pedido->cliente->detalle()->nombre . "\t" . "\t" . "\t" . "\t" . "\t" . $tallos . " Tallos." . "\t" . "\t" . "\t" . "\t" . "\t" . $pedido->envios[0]->guia_hija . "\t" . $pedido->detalles[0]->agencia_carga->codigo.chr(13).chr(10);
                             }
                         }
                     }
@@ -1617,6 +1650,7 @@ class ComprobanteController extends Controller
             }
         }
         $opResult = array(
+            'success' => $success,
             'fecha' => now()->toDateString(),
             'data' => "data:text/plain;base64,".base64_encode($contenido)
         );

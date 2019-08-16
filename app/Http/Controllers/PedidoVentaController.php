@@ -169,7 +169,7 @@ class PedidoVentaController extends Controller
                 $objPedido->empaquetado = $dataPedido->empaquetado;
                 $objPedido->variedad = $dataPedido->variedad;
                 $objPedido->tipo_especificacion = $dataPedido->tipo_especificacion;
-
+                $objPedido->id_configuracion_empresa = $dataPedido->id_configuracion_empresa;
                 if ($objPedido->save()) {
                     $modelPedido = Pedido::all()->last();
                     $dataDetallePedido = DetallePedido::where('id_pedido', $request->id_pedido)->get();

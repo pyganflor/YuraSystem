@@ -190,6 +190,22 @@
                            value="{!! isset($config_empresa->inicial_despacho) ? $config_empresa->inicial_despacho : 0 !!}">
                 </div>
             </div>
+            <div class="col-md-3">
+                <div class="form-group input-group">
+                    <span class="input-group-addon" style="background-color: #e9ecef">Código fpo <i class="fa fa-question-circle-o" title="Código de la forma de pago configurada en el venture para la empresa"></i></span>
+                    <input type="number" id="codigo_fpo" name="codigo_fpo" class="form-control"
+                           minlength="1"  required
+                           value="{!! isset($config_empresa->codigo_fpo) ? $config_empresa->codigo_fpo : 0 !!}">
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group input-group">
+                    <span class="input-group-addon" style="background-color: #e9ecef">Código tvn <i class="fa fa-question-circle-o" title="Código del tipo de venta configurada en el venture para la empresa"></i></span>
+                    <input type="number" id="codigo_tvn" name="codigo_tvn" class="form-control"
+                           minlength="1"  required
+                           value="{!! isset($config_empresa->codigo_tvn) ? $config_empresa->codigo_tvn : 0 !!}">
+                </div>
+            </div>
         </div>
         <hr/>
         <div class="row">

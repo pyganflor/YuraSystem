@@ -40,6 +40,9 @@
                     <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
                        AGENCIA DE CARAGA
                     </th>
+                    <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
+                        FECHA
+                    </th>
                     {{--<th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
                         ESTADO
                     </th>--}}
@@ -97,6 +100,7 @@
                         </td>
                     @endif
                     <td style="border-color: #9d9d9d" class="text-center"> {{$item->envio->pedido->detalles[0]->agencia_carga->nombre}} </td>
+                    <td style="border-color: #9d9d9d" class="text-center"> {{$item->fecha_emision}} </td>
                     {{--<td style="border-color: #9d9d9d" class="text-center">
                         @if($item->estado == 0)
                             No firmado
