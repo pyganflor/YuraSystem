@@ -22,9 +22,6 @@
                 1ra Flor
             </th>
             <th class="text-center" style="border-color: #9d9d9d">
-                80%
-            </th>
-            <th class="text-center" style="border-color: #9d9d9d">
                 Tallos Cosechados
             </th>
             <th class="text-center" style="border-color: #9d9d9d">
@@ -45,6 +42,9 @@
             <th class="text-center" style="border-color: #9d9d9d; background-color: #0b3248">
                 Conteo T/P
             </th>
+            <th class="text-center" style="border-color: #9d9d9d; background-color: #0b3248">
+                Tallos/m<sup>2</sup>
+            </th>
         </tr>
         </thead>
         <tbody>
@@ -61,6 +61,10 @@
                 'positivos' => 0,
             ];
             $total_densidad = [
+                'valor' => 0,
+                'positivos' => 0,
+            ];
+            $total_tallos_m2_proy = [
                 'valor' => 0,
                 'positivos' => 0,
             ];
@@ -92,9 +96,6 @@
                     @endif
                 </td>
                 <td class="text-center" style="border-color: #9d9d9d">
-                    {{$item->get80Porciento()}}
-                </td>
-                <td class="text-center" style="border-color: #9d9d9d">
                     {{number_format($item->getTallosCosechados())}}
                 </td>
                 <td class="text-center" style="border-color: #9d9d9d">
@@ -115,6 +116,9 @@
                 <td class="text-center" style="border-color: #9d9d9d">
                     {{$item->conteo}}
                 </td>
+                <td class="text-center" style="border-color: #9d9d9d">
+                    {{round(($item->plantas_actuales() * $item->conteo) / $item->area, 2)}}
+                </td>
             </tr>
             @php
                 $total_area += $item->area;
@@ -127,6 +131,10 @@
                 if($item->plantas_iniciales > 0 && $item->area > 0){
                     $total_densidad['valor'] += $item->getDensidadIniciales();
                     $total_densidad['positivos']++;
+                }
+                if($item->area > 0 && round(($item->plantas_actuales() * $item->conteo) / $item->area, 2) > 0){
+                    $total_tallos_m2_proy['valor'] += round(($item->plantas_actuales() * $item->conteo) / $item->area, 2);
+                    $total_tallos_m2_proy['positivos']++;
                 }
                 $ciclo += $item->fecha_fin != '' ? difFechas($item->fecha_fin, $item->fecha_inicio)->days : difFechas(date('Y-m-d'), $item->fecha_inicio)->days;
                 $total_tallos += $item->getTallosCosechados();
@@ -147,7 +155,7 @@
             <th class="text-center" style="border-color: #9d9d9d">
                 {{number_format(round($total_area/ 10000, 2), 2)}}
             </th>
-            <th class="text-center" colspan="2" style="border-color: #9d9d9d">
+            <th class="text-center" style="border-color: #9d9d9d">
             </th>
             <th class="text-center" style="border-color: #9d9d9d">
                 {{number_format($total_tallos, 2)}}
@@ -177,6 +185,11 @@
             </th>
             <th class="text-center" style="border-color: #9d9d9d; background-color: #0b3248">
 
+            </th>
+            <th class="text-center" style="border-color: #9d9d9d; background-color: #0b3248">
+                @if($total_tallos_m2_proy['positivos'] > 0)
+                    {{round($total_tallos_m2_proy['valor'] / $total_tallos_m2_proy['positivos'], 2)}}
+                @endif
             </th>
         </tr>
     </table>
