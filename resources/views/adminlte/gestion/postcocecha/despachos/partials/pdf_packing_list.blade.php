@@ -1,3 +1,13 @@
+@php
+    $total_piezas = 0;
+    $ramos_estandar = 0;
+    $full = 0;
+    $half = 0;
+    $cuarto = 0;
+    $sexto = 0;
+    $octavo = 0;
+    $full_equivalente_real = 0;
+@endphp
 <table style="width:100%;font-family: arial, sans-serif;border-collapse: collapse;">
     <tr>
         <td style="vertical-align: middle;text-align: center">
@@ -108,16 +118,7 @@
             </tr>
         </thead>
         <tbody style="border: 1px solid black">
-            @php
-                $total_piezas = 0;
-                $ramos_estandar = 0;
-                $full = 0;
-                $half = 0;
-                $cuarto = 0;
-                $sexto = 0;
-                $octavo = 0;
-                $full_equivalente_real = 0;
-            @endphp
+
             @foreach($pedido->detalles as $x => $det_ped)
                 @php $dp = getDetallePedido($det_ped->id_detalle_pedido); @endphp
                     @foreach ($dp->cliente_especificacion->especificacion->especificacionesEmpaque as $y => $esp_emp)
@@ -183,31 +184,7 @@
             @endforeach
         </tbody>
     </table>
-    <table style="width:100%;margin-top: 20px;font-family: arial, sans-serif">
-        <tr>
-            <td style="font-size:15px" colspan="2">
-                {{$total_piezas}}  TOTAL PIECES / TOTAL PIEZAS TOTAL UNITS
-            </td>
-        </tr>
-        <tr>
-            <td colspan="2">
-                {{round($full_equivalente_real,2)}} TOTAL FULL BOXES EQUIVALENT / TOTAL CAJAS
-            </td>
-        </tr>
-        <tr>
-            <td colspan="2">
-                <table style="width: 100%;margin-top: 15px;font-size: 13px">
-                    <tr>
-                        <td>FULL BOXES : [{{number_format($full,2,".","")}}]</td>
-                        <td>HALF BOXES : [{{number_format($half,2,".","")}}]</td>
-                        <td>1/4 BOXES : [{{number_format($cuarto,2,".","")}}]</td>
-                        <td>1/6 BOXES : [{{number_format($sexto,2,".","")}}]</td>
-                        <td>1/8 BOXES : [{{number_format($octavo,2,".","")}}]</td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-    </table>
+
 
 
 
@@ -227,6 +204,31 @@
             </tr>
         </thead>
         <tbody style="border: 1px solid black">
+            @foreach($pedido->detalles as $x => $det_ped)
+                @php $dp = getDetallePedido($det_ped->id_detalle_pedido); @endphp
+                @foreach ($dp->cliente_especificacion->especificacion->especificacionesEmpaque as $y => $esp_emp)
+                    @php
+                        $full_equivalente_real += explode("|",$esp_emp->empaque->nombre)[1]*$dp->cantidad;
+                                switch (explode("|",$esp_emp->empaque->nombre)[1]) {
+                                    case '1':
+                                        $full += $dp->cantidad;
+                                        break;
+                                    case '0.5':
+                                        $half += $dp->cantidad;
+                                        break;
+                                    case '0.25':
+                                        $cuarto +=$dp->cantidad;
+                                        break;
+                                    case '0.17':
+                                        $sexto +=$dp->cantidad;
+                                        break;
+                                    case '0.125':
+                                        $octavo +=$dp->cantidad;
+                                        break;
+                                }
+                    @endphp
+                @endforeach
+            @endforeach
             @foreach($env->pedido->pedidoMarcacionesOrderAsc as $w => $distribucion)
                 <tr>
                     <td style="font-size:12px;border:1px solid black">{{$distribucion->nombre}}</td>
@@ -252,6 +254,31 @@
         </tbody>
     </table>
 @endif
+<table style="width:100%;margin-top: 20px;font-family: arial, sans-serif">
+    <tr>
+        <td style="font-size:15px" colspan="2">
+            {{$total_piezas}}  TOTAL PIECES / TOTAL PIEZAS TOTAL UNITS
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2">
+            {{round($full_equivalente_real,2)}} TOTAL FULL BOXES EQUIVALENT / TOTAL CAJAS
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2">
+            <table style="width: 100%;margin-top: 15px;font-size: 13px">
+                <tr>
+                    <td>FULL BOXES : [{{number_format($full,2,".","")}}]</td>
+                    <td>HALF BOXES : [{{number_format($half,2,".","")}}]</td>
+                    <td>1/4 BOXES : [{{number_format($cuarto,2,".","")}}]</td>
+                    <td>1/6 BOXES : [{{number_format($sexto,2,".","")}}]</td>
+                    <td>1/8 BOXES : [{{number_format($octavo,2,".","")}}]</td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
 @if(!$vista_despacho)
 <table style="width:100%;font-family: arial, sans-serif">
     <tr>
