@@ -376,7 +376,6 @@
                 @endforeach
             @endforeach
         @endforeach
-        @php $total_pie = 0 @endphp
         @foreach($data_body_table as $body_table)
             @foreach($body_table as $table)
                 @foreach($table as $t)
@@ -390,7 +389,7 @@
                             $ram+=$ta['ramos'];
                         @endphp
                     @endforeach
-                    @php $total_pie += $pie @endphp
+                    @php $total_piezas += $pie @endphp
                     <tr>
                         <td style="font-size:12px">{{number_format($pie,2,".","")}}</td>
                         <td style="font-size:12px">{{$t[0]['descripcion']}}</td>
@@ -422,7 +421,7 @@
         <td style="font-size:11px;font-family: arial, sans-serif;text_align:right">{{$tipoImpuesto->nombre}} : ${{is_numeric($tipoImpuesto->porcentaje) ? number_format($precio_total_sin_impuestos * ($tipoImpuesto->porcentaje / 100), 2, ".", "") : "0.00"}}</td>
     </tr>
     <tr>
-        <td style="font-size:11px;font-family: arial, sans-serif;width:50px"> <b>{{number_format($total_pie,2,".","")}}</b> </td>
+        <td style="font-size:11px;font-family: arial, sans-serif;width:50px"> <b>{{number_format($total_piezas,2,".","")}}</b> </td>
         <td style="font-size:11px;font-family: arial, sans-serif;width:300px"><b>TOTAL PIECES / TOTAL PIEZAS</b></td>
         @php $tipoImpuesto = $tipoImpuesto = getTipoImpuesto($envio->pedido->cliente->detalle()->codigo_impuesto, $envio->pedido->cliente->detalle()->codigo_porcentaje_impuesto); @endphp
         <td style="font-size:11px;font-family: arial, sans-serif;text_align:right">TOTAL : ${{is_numeric($tipoImpuesto->porcentaje) ? number_format($precio_total_sin_impuestos + ($precio_total_sin_impuestos * ($tipoImpuesto->porcentaje / 100)), 2, ".", "") : number_format($precio_total_sin_impuestos, 2, ".", "")}}</td>
