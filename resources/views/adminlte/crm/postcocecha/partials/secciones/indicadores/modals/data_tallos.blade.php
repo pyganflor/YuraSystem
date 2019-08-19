@@ -1,14 +1,14 @@
 <div class="nav-tabs-custom" style="cursor: move;">
     <!-- Tabs within a box -->
     <ul class="nav nav-pills nav-justified">
-        <li class="active"><a href="#cosecha-chart" data-toggle="tab" aria-expanded="false">Gráfica</a></li>
-        <li class=""><a href="#cosecha-tabla" data-toggle="tab" aria-expanded="true">Tabla</a></li>
+        <li class=""><a href="#cosecha-chart" data-toggle="tab" aria-expanded="false">Gráfica</a></li>
+        <li class="active"><a href="#cosecha-tabla" data-toggle="tab" aria-expanded="true">Tabla</a></li>
     </ul>
     <div class="tab-content no-padding">
-        <div class="chart tab-pane active" id="cosecha-chart" style="position: relative">
+        <div class="chart tab-pane" id="cosecha-chart" style="position: relative">
             <canvas id="chart_data_tallos" width="100%" height="40" style="margin-top: 5px"></canvas>
         </div>
-        <div class="chart tab-pane" id="cosecha-tabla" style="position: relative">
+        <div class="chart tab-pane active" id="cosecha-tabla" style="position: relative">
             @php
                 $totales_dia = [];
             @endphp
