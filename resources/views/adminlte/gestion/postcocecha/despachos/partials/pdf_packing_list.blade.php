@@ -5,7 +5,7 @@
                 @if(!$vista_despacho)
                     PACKING LIST / LISTA DE EMPAQUE
                 @else
-                    ORDER DE EMPAQUE
+                    ORDEN DE EMPAQUE
                 @endif
                 @if(!$vista_despacho)
                     {{isset($pedido->envios[0]->comprobante->clave_acceso) ? "# 001-".getDetallesClaveAcceso($pedido->envios[0]->comprobante->clave_acceso, 'PUNTO_ACCESO')."-".getDetallesClaveAcceso($pedido->envios[0]->comprobante->clave_acceso, 'SECUENCIAL') : null}}
@@ -210,6 +210,7 @@
     </table>
 
 
+
 @elseif($pedido->tipo_especificacion === "T")
     @php $env = getEnvio($pedido->envios[0]->id_envio); $data = []; @endphp
     <table style="width:100%;font-family: arial, sans-serif;border-collapse: collapse;" >
@@ -226,19 +227,9 @@
             </tr>
         </thead>
         <tbody style="border: 1px solid black">
-<<<<<<< HEAD
-        {{--@foreach($env->pedido->pedidoMarcacionesOrderAsc as $w => $distribucion)
-            @php
-                foreach (getDistribucion($distribucion->id_distribucion)->distribuciones_coloraciones as $z => $distribucion_coloracion)
-                    if($distribucion_coloracion->cantidad > 0)
-                        $data[$distribucion->id_distribucion][] = $distribucion_coloracion->cantidad ." ". $distribucion_coloracion->marcacion_coloracion->coloracion->color->nombre
-            @endphp
-        @endforeach--}}
-=======
->>>>>>> 130e22fbec3a641458ece781fa05df333887da5d
             @foreach($env->pedido->pedidoMarcacionesOrderAsc as $w => $distribucion)
                 <tr>
-                    <td style="font-size:12px;border:1px solid black">{{getEspecificacionEmpaque($distribucion->id_especificacion_empaque)->detalles[0]->variedad->siglas}} {{$distribucion->nombre}}</td>
+                    <td style="font-size:12px;border:1px solid black">{{$distribucion->nombre}}</td>
                     <td style=";font-size:12px;border:1px solid black">{{$distribucion->ramos}}</td>
                     <td style="font-size:12px;border:1px solid black">{{$distribucion->pos_pieza}}</td>
                     <td style="font-size:12px;border:1px solid black">
@@ -252,16 +243,12 @@
                     <td style="font-size:12px;border:1px solid black">
                         @foreach (getDistribucion($distribucion->id_distribucion)->distribuciones_coloraciones as $z => $distribucion_coloracion)
                             @if($distribucion_coloracion->cantidad > 0)
-                                {{$distribucion_coloracion->cantidad ." ". $distribucion_coloracion->marcacion_coloracion->coloracion->color->nombre. ","}}
+                                {{ $distribucion_coloracion->marcacion_coloracion->detalle_especificacionempaque->variedad->siglas." ".$distribucion_coloracion->cantidad ." ". $distribucion_coloracion->marcacion_coloracion->coloracion->color->nombre. ","}}
                             @endif
                         @endforeach
                     </td>
                 </tr>
             @endforeach
-<<<<<<< HEAD
-        {{--{{dd(array_values($data))}}--}}
-=======
->>>>>>> 130e22fbec3a641458ece781fa05df333887da5d
         </tbody>
     </table>
 @endif
