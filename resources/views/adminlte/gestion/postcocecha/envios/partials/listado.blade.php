@@ -339,7 +339,7 @@
                                         <div class="row" >
                                             <div class="col-md-3">
                                                 <label for="pais">País</label>
-                                                <select id="codigo_pais" name="codigo_pais" class="form-control" {{$factura_tercero ?  "disabled" : ""}} onchange="buscar_codigo_dae(this,'form_envios_{{$i+1}}','{{$envio->id_envio}}')"
+                                                <select id="codigo_pais" name="codigo_pais" class="form-control" {{$factura_tercero ?  "disabled" : ""}} onchange="buscar_codigo_dae(this,'form_envios_{{$i+1}}',false  ,'{{$envio->id_envio}}')"
                                                         {{($facturado) ? "disabled='disabled'" : ""}} required>
                                                     @php
                                                         $envio->codigo_pais == ""
