@@ -243,7 +243,7 @@
                     <td style="font-size:12px;border:1px solid black">
                         @foreach (getDistribucion($distribucion->id_distribucion)->distribuciones_coloraciones as $z => $distribucion_coloracion)
                             @if($distribucion_coloracion->cantidad > 0)
-                                {{ $distribucion_coloracion->marcacion_coloracion->detalle_especificacionempaque->variedad->siglas." ".$distribucion_coloracion->cantidad ." ". $distribucion_coloracion->marcacion_coloracion->coloracion->color->nombre. "<br />"}}
+                                {!! $distribucion_coloracion->marcacion_coloracion->detalle_especificacionempaque->variedad->siglas." ".$distribucion_coloracion->cantidad ." ". $distribucion_coloracion->marcacion_coloracion->coloracion->color->nombre. "<br />"!!}
                             @endif
                         @endforeach
                     </td>
