@@ -57,7 +57,7 @@ class proyCosechaController extends Controller
                     ->where('id_variedad', '=', $request->variedad)
                     ->where('fecha_fin', '>=', $semana_desde->fecha_inicial)
                     ->orderBy('activo', 'desc')
-                    ->orderBy('fecha_inicio', 'desc')
+                    ->orderBy('fecha_inicio', 'asc')
                     ->get();
 
                 $array_modulos = [];
