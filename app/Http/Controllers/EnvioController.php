@@ -585,7 +585,7 @@ class EnvioController extends Controller
             $mes = Carbon::parse($request->fecha_envio)->addMonth()->format('m');
             $anno = Carbon::parse($request->fecha_envio)->addMonth()->format('Y');
         }
-
+    dd($request->id_envio);
     $dae = getCodigoDae($request->codigo_pais,$mes,$anno,getEnvio($request->id_envio)->pedido->id_configuracion_empresa);
     return response()->json([
         'dae' => isset($dae->dae) ? $dae->dae : "",
