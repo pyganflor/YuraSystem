@@ -38,6 +38,7 @@ class Distribucion extends Model
 
     public function getDistribucionMarcacionByMarcCol($marc_col)
     {
+        ini_set('max_execution_time', env('MAX_EXECUTION_TIME'));
         return DistribucionColoracion::All()->where('id_distribucion', $this->id_distribucion)
             ->where('id_marcacion_coloracion', $marc_col)->first();
     }
