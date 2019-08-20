@@ -1,119 +1,119 @@
 <div id="table_despachos">
     @if(count($listado)>0)
         <div style="width: 100%;overflow-x:auto">
-        <table width="100%" class="table-responsive table-bordered" style="font-size: 0.8em; border-color: #9d9d9d;overflow-x: auto"
-               id="table_content_aperturas">
-            <tr>
-                <th style="border-color: #9d9d9d; background-color: #e9ecef" colspan="2">
-                    <ul class="list-unstyled">
-                        <li>
-                            Semana: {{isset(getSemanaByDate($fecha)->codigo) ? getSemanaByDate($fecha)->codigo : "Semana no programada"}}
-                        </li>
-                        <li>
-                            Día: {{getDias(TP_COMPLETO,FR_ARREGLO)[transformDiaPhp(date('w',strtotime($fecha)))]}}
-                        </li>
-                    </ul>
-                </th>
-                <th style="border-color: #9d9d9d; background-color: #e9ecef" class="text-right" colspan="{{$opciones ? "11" : "12"}}">
-                    @if(!$opciones)
-                        <select id="id_configuracion_empresa_despacho" name="id_configuracion_empresa_despacho"
-                                style="height: 22px;position: relative;top: 1px;" onchange="desbloquea_pedido()">
-                            <option value="">Seleccionar empresa para ordenar pedidos</option>
-                            @foreach($empresas as $emp)
-                                <option value="{{$emp->id_configuracion_empresa}}">{{$emp->razon_social}}</option>
-                            @endforeach
-                        </select>
-                        <button type="button" class="btn btn-xs btn-primary" onclick="ver_despachos()">
-                            <i class="fa fa-eye" aria-hidden="true"></i> Ver despachos
-                        </button>
-                        <button type="button" class="btn btn-xs btn-primary" onclick="crear_despacho()">
-                            <i class="fa fa-truck" aria-hidden="true"></i> Crear despacho
-                        </button>
-                    @endif
+            <table width="100%" class="table-responsive table-bordered" style="font-size: 0.8em; border-color: #9d9d9d;overflow-x: auto"
+                   id="table_content_aperturas">
+                <tr>
+                    <th style="border-color: #9d9d9d; background-color: #e9ecef" colspan="2">
+                        <ul class="list-unstyled">
+                            <li>
+                                Semana: {{isset(getSemanaByDate($fecha)->codigo) ? getSemanaByDate($fecha)->codigo : "Semana no programada"}}
+                            </li>
+                            <li>
+                                Día: {{getDias(TP_COMPLETO,FR_ARREGLO)[transformDiaPhp(date('w',strtotime($fecha)))]}}
+                            </li>
+                        </ul>
+                    </th>
+                    <th style="border-color: #9d9d9d; background-color: #e9ecef" class="text-right" colspan="{{$opciones ? "11" : "12"}}">
+                        @if(!$opciones)
+                            <select id="id_configuracion_empresa_despacho" name="id_configuracion_empresa_despacho"
+                                    style="height: 22px;position: relative;top: 1px;" onchange="desbloquea_pedido()">
+                                <option value="">Seleccionar empresa para ordenar pedidos</option>
+                                @foreach($empresas as $emp)
+                                    <option value="{{$emp->id_configuracion_empresa}}">{{$emp->razon_social}}</option>
+                                @endforeach
+                            </select>
+                            <button type="button" class="btn btn-xs btn-primary" onclick="ver_despachos()">
+                                <i class="fa fa-eye" aria-hidden="true"></i> Ver despachos
+                            </button>
+                            <button type="button" class="btn btn-xs btn-primary" onclick="crear_despacho()">
+                                <i class="fa fa-truck" aria-hidden="true"></i> Crear despacho
+                            </button>
+                        @endif
                         @if($opciones)
-                        <select id="id_configuracion" name="id_configuracion_empresa"
-                                onchange="listar_resumen_pedidos(document.getElementById('fecha_pedidos_search').value,true,this.value)" style="height: 22px;position: relative;top: 1px;">
-                            <option value="" disabled selected>Ver pedidos de:</option>
-                            @foreach(getConfiguracionEmpresa(null,true) as $empresa)
-                                <option value="{{$empresa->id_configuracion_empresa}}">{{$empresa->razon_social}}</option>
-                            @endforeach
-                        </select>
+                            <select id="id_configuracion" name="id_configuracion_empresa"
+                                    onchange="listar_resumen_pedidos(document.getElementById('fecha_pedidos_search').value,true,this.value)" style="height: 22px;position: relative;top: 1px;">
+                                <option value="" disabled selected>Ver pedidos de:</option>
+                                @foreach(getConfiguracionEmpresa(null,true) as $empresa)
+                                    <option value="{{$empresa->id_configuracion_empresa}}">{{$empresa->razon_social}}</option>
+                                @endforeach
+                            </select>
                         @endif
                         <button type="button" class="btn btn-xs btn-primary" onclick="exportar_listado_cuarto_frio('{{csrf_token()}}')">
                             <i class="fa fa-fw fa-file-excel-o"></i> Exportar a Excel Cuarto Frio
                         </button>
-                    <button type="button" class="btn btn-xs btn-success" onclick="exportar_listado_despacho('{{csrf_token()}}')">
-                        <i class="fa fa-fw fa-file-excel-o"></i> Exportar a Excel
-                    </button>
-                </th>
-            </tr>
-            <tr>
-                @if(!$opciones)
-                    <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white;width:50px">
-                       ORDEN PEDIDO
+                        <button type="button" class="btn btn-xs btn-success" onclick="exportar_listado_despacho('{{csrf_token()}}')">
+                            <i class="fa fa-fw fa-file-excel-o"></i> Exportar a Excel
+                        </button>
                     </th>
-                @endif
-                <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
-                    CLIENTE
-                </th>
-                @if($opciones)
-                    <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white;width:50px">
-                        FACTURA N°
-                    </th>
-                @endif
-                <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
-                    MARACACIONES
-                </th>
-                <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
-                    FLOR
-                </th>
-                <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
-                    EMPAQUE
-                </th>
-                <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
-                    PRESENTACIÓN
-                </th>
-                <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
-                    PIEZAS
-                </th>
-                <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
-                    CAJAS FULL
-                </th>
-                <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
-                    RAMOS
-                </th>
-                <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
-                    RAMOS x CAJA
-                </th>
-                @if($opciones)
+                </tr>
+                <tr>
+                    @if(!$opciones)
+                        <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white;width:50px">
+                            ORDEN PEDIDO
+                        </th>
+                    @endif
                     <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
-                        CUARTO FRÍO
+                        CLIENTE
                     </th>
-                @endif
-                <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
-                    FACTURADO POR:
-                </th>
-                <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white;width:180px">
-                    OPCIONES
-                </th>
-            </tr>
-            @php
-                $piezas_totales = 0;
-                $ramos_totales = 0;
-                $ramos_totales_estandar = 0;
-                $cajas_full_totales = 0;
-                $variedades = [];
-                $ramos_x_variedades = [];
-                $valor_total = 0;
-            @endphp
-            @foreach($listado as $x=> $pedido)
+                    @if($opciones)
+                        <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white;width:50px">
+                            FACTURA N°
+                        </th>
+                    @endif
+                    <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
+                        MARACACIONES
+                    </th>
+                    <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
+                        FLOR
+                    </th>
+                    <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
+                        EMPAQUE
+                    </th>
+                    <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
+                        PRESENTACIÓN
+                    </th>
+                    <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
+                        PIEZAS
+                    </th>
+                    <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
+                        CAJAS FULL
+                    </th>
+                    <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
+                        RAMOS
+                    </th>
+                    <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
+                        RAMOS x CAJA
+                    </th>
+                    @if($opciones)
+                        <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
+                            CUARTO FRÍO
+                        </th>
+                    @endif
+                    <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
+                        FACTURADO POR:
+                    </th>
+                    <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white;width:180px">
+                        OPCIONES
+                    </th>
+                </tr>
                 @php
-                    $listar = true;
-                    if(!$opciones && getFacturaAnulada($pedido->id_pedido))
-                        $listar = false;
+                    $piezas_totales = 0;
+                    $ramos_totales = 0;
+                    $ramos_totales_estandar = 0;
+                    $cajas_full_totales = 0;
+                    $variedades = [];
+                    $ramos_x_variedades = [];
+                    $valor_total = 0;
                 @endphp
-                @if($listar)
+                @foreach($listado as $x=> $pedido)
                     @php
+                        $listar = true;
+                        if(!$opciones && getFacturaAnulada($pedido->id_pedido))
+                            $listar = false;
+                    @endphp
+                    @if($listar)
+                        @php
                             $despachado = getCantDespacho($pedido->id_pedido) ;
                             $ped = getPedido($pedido->id_pedido);
                             $getCantidadDetallesEspecificacionByPedido = getCantidadDetallesEspecificacionByPedido($pedido->id_pedido);
@@ -125,7 +125,7 @@
                                 $facturado = null;
                             }
                         @endphp
-                    @foreach($ped->detalles as $pos_det_ped => $det_ped)
+                        @foreach($ped->detalles as $pos_det_ped => $det_ped)
                             @foreach($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $pos_esp_emp => $esp_emp)
                                 @php $getCantidadDetallesByEspecificacion = getCantidadDetallesByEspecificacion($det_ped->cliente_especificacion->id_especificacion) @endphp
                                 @foreach($esp_emp->detalles as $pos_det_esp => $det_esp)
@@ -224,17 +224,17 @@
                                         <td class="text-center" style="border-color: #9d9d9d">
                                             {{$det_esp->cantidad * $esp_emp->cantidad * $det_ped->cantidad}}
                                             @php
-                                                    if(!getFacturaAnulada($pedido->id_pedido)){
-                                                        $ramos_totales += $det_esp->cantidad * $esp_emp->cantidad * $det_ped->cantidad;
-                                                        $ramos_totales_estandar += convertToEstandar($det_esp->cantidad * $esp_emp->cantidad * $det_ped->cantidad, $det_esp->clasificacion_ramo->nombre);
-                                                        if (!in_array($det_esp->id_variedad, $variedades)){
-                                                            array_push($variedades, $det_esp->id_variedad);
-                                                        }
-                                                        array_push($ramos_x_variedades, [
-                                                            'id_variedad' => $det_esp->id_variedad,
-                                                            'cantidad' => convertToEstandar($det_esp->cantidad * $esp_emp->cantidad * $det_ped->cantidad, $det_esp->clasificacion_ramo->nombre),
-                                                        ]);
+                                                if(!getFacturaAnulada($pedido->id_pedido)){
+                                                    $ramos_totales += $det_esp->cantidad * $esp_emp->cantidad * $det_ped->cantidad;
+                                                    $ramos_totales_estandar += convertToEstandar($det_esp->cantidad * $esp_emp->cantidad * $det_ped->cantidad, $det_esp->clasificacion_ramo->nombre);
+                                                    if (!in_array($det_esp->id_variedad, $variedades)){
+                                                        array_push($variedades, $det_esp->id_variedad);
                                                     }
+                                                    array_push($ramos_x_variedades, [
+                                                        'id_variedad' => $det_esp->id_variedad,
+                                                        'cantidad' => convertToEstandar($det_esp->cantidad * $esp_emp->cantidad * $det_ped->cantidad, $det_esp->clasificacion_ramo->nombre),
+                                                    ]);
+                                                }
                                             @endphp
 
                                         </td>
@@ -271,46 +271,46 @@
                                                         </button>
                                                     @endif
                                                     @if((isset($ped->envios[0]->comprobante) && $ped->envios[0]->comprobante->estado != 6) || !isset($ped->envios[0]->comprobante))
-                                                    @if($facturado==null)
-                                                        <button class="btn  btn-{!! $det_ped->estado == 1 ? 'danger' : 'success' !!} btn-xs" type="button"
-                                                                title="{!! $det_ped->estado == 1 ? 'Cancelar pedido' : 'Activar pedido' !!}" id="edit_pedidos"
-                                                                onclick="cancelar_pedidos('{{$pedido->id_pedido}}','','{{$det_ped->estado}}','{{@csrf_token()}}')">
+                                                        @if($facturado==null)
+                                                            <button class="btn  btn-{!! $det_ped->estado == 1 ? 'danger' : 'success' !!} btn-xs" type="button"
+                                                                    title="{!! $det_ped->estado == 1 ? 'Cancelar pedido' : 'Activar pedido' !!}" id="edit_pedidos"
+                                                                    onclick="cancelar_pedidos('{{$pedido->id_pedido}}','','{{$det_ped->estado}}','{{@csrf_token()}}')">
                                                                 <i class="fa fa-{!! $det_ped->estado == 1 ? 'trash' : 'undo' !!}" aria-hidden="true"></i>
-                                                        </button>
-                                                        @if($pedido->empaquetado == 0)
-                                                            @if($ped->haveDistribucion() == 1)
-                                                                <button type="button" class="btn btn-xs btn-info" title="Distribuir"
-                                                                        onclick="distribuir_orden_semanal('{{$pedido->id_pedido}}')">
-                                                                    <i class="fa fa-fw fa-gift"></i>
+                                                            </button>
+                                                            @if($pedido->empaquetado == 0)
+                                                                @if($ped->haveDistribucion() == 1)
+                                                                    <button type="button" class="btn btn-xs btn-info" title="Distribuir"
+                                                                            onclick="distribuir_orden_semanal('{{$pedido->id_pedido}}')">
+                                                                        <i class="fa fa-fw fa-gift"></i>
+                                                                    </button>
+                                                                @elseif($ped->haveDistribucion() == 2)
+                                                                    <button onclick="ver_distribucion_orden_semanal('{{$pedido->id_pedido}}')" class="btn btn-default text-left" style="cursor:pointer;padding:5px 3px;width:100%;">
+                                                                        <em> Ver distribución</em>
+                                                                    </button>
+                                                                @endif
+                                                                <button onclick="duplicar_pedido('{{$pedido->id_pedido}}','{{$pedido->id_cliente}}')" class="btn btn-primary  btn-xs " title="Duplicar pedido">
+                                                                    <i class="fa fa-files-o" aria-hidden="true"></i>
                                                                 </button>
-                                                            @elseif($ped->haveDistribucion() == 2)
-                                                                <button onclick="ver_distribucion_orden_semanal('{{$pedido->id_pedido}}')" class="btn btn-default text-left" style="cursor:pointer;padding:5px 3px;width:100%;">
-                                                                    <em> Ver distribución</em>
+                                                                <button onclick="empaquetar_pedido('{{$pedido->id_pedido}}','{{csrf_token()}}')" class="btn btn-warning  btn-xs " title="Empaquetar pedido">
+                                                                    <i class="fa fa-cube"></i>
                                                                 </button>
                                                             @endif
-                                                            <button onclick="duplicar_pedido('{{$pedido->id_pedido}}','{{$pedido->id_cliente}}')" class="btn btn-primary  btn-xs " title="Duplicar pedido">
-                                                                <i class="fa fa-files-o" aria-hidden="true"></i>
-                                                            </button>
-                                                            <button onclick="empaquetar_pedido('{{$pedido->id_pedido}}','{{csrf_token()}}')" class="btn btn-warning  btn-xs " title="Empaquetar pedido">
-                                                                <i class="fa fa-cube"></i>
-                                                            </button>
-                                                        @endif
                                                             <button onclick="facturar_pedido('{{$pedido->id_pedido}}')" class="btn btn-success btn-xs" title="Generar factura">
                                                                 <i class="fa fa-usd" aria-hidden="true"></i>
                                                             </button>
-                                                    @else
-                                                        {{--<a target="_blank" href="{{url('pedidos/ver_factura_pedido',$pedido->id_pedido)}}" class="btn btn-default btn-xs" title="Ver factura SRI">
-                                                            <i class="fa fa-eye" aria-hidden="true"></i>
-                                                        </a>--}}
-                                                        <a target="_blank" href="{{url('pedidos/documento_pre_factura',[$pedido->id_pedido,true])}}" class="btn btn-info btn-xs" title="Ver factura Cliente">
-                                                            <i class="fa fa-user-circle-o" aria-hidden="true"></i>
-                                                        </a>
-                                                    @endif
-                                                    @if($firmado != null)
+                                                        @else
+                                                            {{--<a target="_blank" href="{{url('pedidos/ver_factura_pedido',$pedido->id_pedido)}}" class="btn btn-default btn-xs" title="Ver factura SRI">
+                                                                <i class="fa fa-eye" aria-hidden="true"></i>
+                                                            </a>--}}
                                                             <a target="_blank" href="{{url('pedidos/documento_pre_factura',[$pedido->id_pedido,true])}}" class="btn btn-info btn-xs" title="Ver factura Cliente">
                                                                 <i class="fa fa-user-circle-o" aria-hidden="true"></i>
                                                             </a>
-                                                    @endif
+                                                        @endif
+                                                        @if($firmado != null)
+                                                            <a target="_blank" href="{{url('pedidos/documento_pre_factura',[$pedido->id_pedido,true])}}" class="btn btn-info btn-xs" title="Ver factura Cliente">
+                                                                <i class="fa fa-user-circle-o" aria-hidden="true"></i>
+                                                            </a>
+                                                        @endif
                                                         <a target="_blank" href="{{url('pedidos/crear_packing_list',$pedido->id_pedido)}}"
                                                            class="btn btn-info btn-xs" title="Generar packing list">
                                                             <i class="fa fa-cubes"></i>
@@ -318,18 +318,18 @@
                                                     @endif
                                                 </td>
                                             @endif
-                                           @if(!$opciones)
+                                            @if(!$opciones)
                                                 <td style="border-color: #9d9d9d" class="text-center " rowspan="{{$getCantidadDetallesEspecificacionByPedido}}">
                                                     {{isset($ped->empresa->razon_social) ? $ped->empresa->razon_social : ""}}
                                                 </td>
-                                           @endif
-                                                <td rowspan="{{$getCantidadDetallesEspecificacionByPedido}}" class="text-center" style="border-color: #9d9d9d">
-                                                    @if(!$opciones && $pedido->tipo_especificacion === "T")
-                                                        <a target="_blank" href="{{url('pedidos/crear_packing_list',[$pedido->id_pedido,true])}}" class="btn btn-info btn-xs" title="Packing list">
-                                                            <i class="fa fa-cubes"></i>
-                                                        </a>
-                                                    @endif
-                                                </td>
+                                            @endif
+                                            <td rowspan="{{$getCantidadDetallesEspecificacionByPedido}}" class="text-center" style="border-color: #9d9d9d">
+                                                @if(!$opciones && $pedido->tipo_especificacion === "T")
+                                                    <a target="_blank" href="{{url('pedidos/crear_packing_list',[$pedido->id_pedido,true])}}" class="btn btn-info btn-xs" title="Packing list">
+                                                        <i class="fa fa-cubes"></i>
+                                                    </a>
+                                                @endif
+                                            </td>
 
 
                                         @endif
@@ -337,11 +337,11 @@
                                 @endforeach
                             @endforeach
                         @endforeach
-                @endif
-            @endforeach
-        </table>
-        <div class="row" style="margin-top: 10px">
-        </div>
+                    @endif
+                @endforeach
+            </table>
+            <div class="row" style="margin-top: 10px">
+            </div>
             <div class="col-md-4">
                 <table class="table-striped table-bordered table-responsive" width="100%" style="border: 2px solid #9d9d9d; font-size: 0.8em">
                     <tr>
