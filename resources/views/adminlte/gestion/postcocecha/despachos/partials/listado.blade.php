@@ -169,8 +169,8 @@
                                             $octavo +=$det_ped->cantidad;
                                             break;
                                     }
-                                    $piezas_despacho = $half+$cuarto+$sexto+$octavo;
                                 }
+                                $piezas_despacho = $half+$cuarto+$sexto+$octavo;
                             @endphp
                             @foreach($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $pos_esp_emp => $esp_emp)
                                 @php
