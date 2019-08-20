@@ -40,14 +40,11 @@ class Marcacion extends Model
 
     public function distribuciones()
     {
-        ini_set('max_execution_time', env('MAX_EXECUTION_TIME'));
-
         return $this->hasMany('\yura\Modelos\Distribucion', 'id_marcacion');
     }
 
     public function getMarcacionColoracionByDetEsp($color, $det_esp)
     {
-        ini_set('max_execution_time', env('MAX_EXECUTION_TIME'));
         $r = MarcacionColoracion::where('id_marcacion', $this->id_marcacion)
             ->where('id_coloracion', $color)
             ->where('id_detalle_especificacionempaque', $det_esp)->first();
