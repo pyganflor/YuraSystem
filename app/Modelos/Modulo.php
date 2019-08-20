@@ -134,6 +134,8 @@ class Modulo extends Model
         /* ----------------------------- calcular cosecha real ----------------------------- */
         $cosecha = 0;
 
+        $cosechas_real = [];
+
         /*$cosechas_real = Cosecha::All()->where('estado', 1)
             ->where('fecha_ingreso', '>=', $semana->fecha_inicial)
             ->where('fecha_ingreso', '<=', $semana->fecha_final);
@@ -154,6 +156,7 @@ class Modulo extends Model
                 'ciclo' => $ciclo_ini,
                 'proy' => '',
                 'tabla' => 'C',
+                'cosechas' => $cosechas_real,
             ];
         } else {
             $ciclo_last = $this->ciclos->where('estado', 1)
@@ -169,6 +172,7 @@ class Modulo extends Model
                 'ciclo' => $ciclo_last != '' ? $ciclo_last : '',
                 'proy' => '',
                 'tabla' => 'C',
+                'cosechas' => $cosechas_real,
             ];
             if ($ciclo_last != '') {    // existe un ciclo real
                 if ($ciclo_last->fecha_inicio >= $desde) {
@@ -199,6 +203,7 @@ class Modulo extends Model
                                 'ciclo' => $ciclo_last,
                                 'proy' => '',
                                 'tabla' => 'C',
+                                'cosechas' => $cosechas_real,
                             ];
                         } else {    // ya pasó de lo programado
                             /* ========== BUSCAR PROYECCION =========== */
@@ -216,6 +221,7 @@ class Modulo extends Model
                                     'ciclo' => '',
                                     'proy' => $proy_ini,
                                     'tabla' => 'P',
+                                    'cosechas' => $cosechas_real,
                                 ];
                             } else {    // BUSCAR ULTIMA PROYECCION
                                 $proy_last = $this->getProyeccionByDate($semana->fecha_final, $variedad);
@@ -246,6 +252,7 @@ class Modulo extends Model
                                                 'ciclo' => '',
                                                 'proy' => $proy_last,
                                                 'tabla' => 'P',
+                                                'cosechas' => $cosechas_real,
                                             ];
                                         } else {
                                             $data = [
@@ -257,6 +264,7 @@ class Modulo extends Model
                                                 'ciclo' => '',
                                                 'proy' => '',
                                                 'tabla' => '',
+                                                'cosechas' => $cosechas_real,
                                             ];
                                         }
                                     } else {
@@ -269,6 +277,7 @@ class Modulo extends Model
                                             'ciclo' => '',
                                             'proy' => '',
                                             'tabla' => '',
+                                            'cosechas' => $cosechas_real,
                                         ];
                                     }
                                 } else {
@@ -281,6 +290,7 @@ class Modulo extends Model
                                         'ciclo' => '',
                                         'proy' => '',
                                         'tabla' => '',
+                                        'cosechas' => $cosechas_real,
                                     ];
                                 }
                             }
@@ -295,6 +305,7 @@ class Modulo extends Model
                             'ciclo' => '',
                             'proy' => '',
                             'tabla' => '',
+                            'cosechas' => $cosechas_real,
                         ];
                     }
                 }
