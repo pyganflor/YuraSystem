@@ -283,7 +283,7 @@
                         '</td>';
                     titles_columnas += '<th class="text-center" style="border-color: #9d9d9d">' +
                         '<select id="titles_columnas_' + c + '_' + id_esp + '" name="titles_columnas_' + c + '_' + id_esp + '"' +
-                        ' class="text-center" onchange="seleccionar_color_x_esp(' + c + ', ' + id_esp + ')" style="width: 60px">' +
+                        ' class="text-center" onchange="seleccionar_color_x_esp(' + c + ', ' + id_esp + ')" style="width: 75px;font-size:11px">' +
                         '<option value="">C # ' + c + '</option>' + $('#select_colores').html() +
                         '</select>' +
                         '</th>';
@@ -370,7 +370,7 @@
                     '</td>';
                 titles_columnas += '<th class="text-center" style="border-color: #9d9d9d; width: 100px">' +
                     '<select id="titles_columnas_' + c + '_' + id_esp + '" name="titles_columnas_' + c + '_' + id_esp + '"' +
-                    ' class="text-center" onchange="seleccionar_color_x_esp(' + c + ', ' + id_esp + ')">' +
+                    ' class="text-center" onchange="seleccionar_color_x_esp(' + c + ', ' + id_esp + ')" style="width: 75px;font-size:11px">' +
                     '<option value="">C # ' + c + '</option>' + $('#select_colores').html() +
                     '</select>' +
                     '</th>';
