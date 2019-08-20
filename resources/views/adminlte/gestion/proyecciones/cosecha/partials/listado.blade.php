@@ -80,8 +80,7 @@
                         }
                     @endphp
                     <td class="text-center {{in_array($val['data']['tipo'], ['F', 'P', 'S', 'Y']) ? 'mouse-hand' : ''}}"
-                        onmouseover="$(this).css('border', '3px solid black')"
-                        onmouseleave="$(this).css('border', '1px solid #9d9d9d')"
+                        onmouseover="$(this).css('border', '3px solid black')" onmouseleave="$(this).css('border', '1px solid #9d9d9d')"
                         style="border-color: #9d9d9d; background-color: {{$fondo}}"
                         onclick="select_celda('{{$val['data']['tipo']}}', '{{$mod['modulo']->id_modulo}}', '{{$semanas[$pos_val]->id_semana}}', '{{$val['data']['modelo']}}')">
                         <span data-toggle="tooltip" data-placement="top" data-html="true"
