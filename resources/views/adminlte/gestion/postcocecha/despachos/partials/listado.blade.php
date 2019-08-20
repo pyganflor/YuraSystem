@@ -170,8 +170,8 @@
                                             break;
                                     }
                                 }
-
                             @endphp
+                            @php $piezas_despacho = $half+$cuarto+$sexto+$octavo; @endphp
                             @foreach($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $pos_esp_emp => $esp_emp)
                                 @php
                                     if(!getFacturaAnulada($pedido->id_pedido))
@@ -391,7 +391,7 @@
                                 @endforeach
                             @endforeach
                         @endforeach
-                        @php $piezas_despacho = $half+$cuarto+$sexto+$octavo; @endphp
+
                     @endif
                 @endforeach
             </table>
