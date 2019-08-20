@@ -1,3 +1,6 @@
+@php
+    ini_set('max_execution_time', env('MAX_EXECUTION_TIME'));
+@endphp
 @foreach($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $pos_esp_emp => $esp_emp)
     <legend style="font-size: 1em; margin-bottom: 0">
         <strong>
