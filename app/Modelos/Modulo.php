@@ -134,10 +134,12 @@ class Modulo extends Model
         /* ----------------------------- calcular cosecha real ----------------------------- */
         $cosecha = 0;
 
-        $cosechas_real = Cosecha::All()->where('estado', 1)
+        $cosechas_real = [];
+
+        /*$cosechas_real = Cosecha::All()->where('estado', 1)
             ->where('fecha_ingreso', '>=', $semana->fecha_inicial)
             ->where('fecha_ingreso', '<=', $semana->fecha_final);
-        /*foreach ($cosechas_real as $item) {
+        foreach ($cosechas_real as $item) {
             $cosecha += $item->getTotalTallosByModuloVariedad($this->id_modulo, $variedad);
         }*/
 
