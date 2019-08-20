@@ -31,7 +31,7 @@ class OrdenSemanalController extends Controller
 {
     public function store_orden_semanal(Request $request)
     {
-       // dd($request->id_configuracion_empresa);
+        // dd($request->id_configuracion_empresa);
         if ($request->nueva_esp != '') {    // NUEVA ESPECIFICACION
             $esp = new Especificacion();
             $esp->tipo = 'O';
@@ -856,6 +856,7 @@ class OrdenSemanalController extends Controller
 
     public function auto_distribuir_pedido_tinturado(Request $request)
     {
+        ini_set('max_execution_time', env('MAX_EXECUTION_TIME'));
         /* =================== OBTENER DISTRIBUCION ================= */
         $det_ped = DetallePedido::find($request->id_det_ped);
         $array_marc = [];
