@@ -45,6 +45,8 @@ class DetallePedido extends Model
 
     public function marcacionesByEspEmp($esp_emp)
     {
+        ini_set('max_execution_time', env('MAX_EXECUTION_TIME'));
+
         return Marcacion::All()->where('id_detalle_pedido', $this->id_detalle_pedido)
             ->where('id_especificacion_empaque', $esp_emp);
     }
@@ -56,12 +58,15 @@ class DetallePedido extends Model
 
     public function coloracionesByEspEmp($esp_emp)
     {
+        ini_set('max_execution_time', env('MAX_EXECUTION_TIME'));
+
         return Coloracion::All()->where('id_detalle_pedido', $this->id_detalle_pedido)
             ->where('id_especificacion_empaque', $esp_emp);
     }
 
     public function getColoracionesMarcacionesByEspEmp($esp_emp)
     {
+        ini_set('max_execution_time', env('MAX_EXECUTION_TIME'));
         return [
             'coloraciones' => Coloracion::where('id_detalle_pedido', $this->id_detalle_pedido)
                 ->where('id_especificacion_empaque', $esp_emp)->get(),
