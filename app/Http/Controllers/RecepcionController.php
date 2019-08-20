@@ -85,7 +85,6 @@ class RecepcionController extends Controller
 
     public function store_recepcion(Request $request)
     {
-        dd($request->all());
         $msg = '';
         $success = true;
         $valida = Validator::make($request->all(), [
