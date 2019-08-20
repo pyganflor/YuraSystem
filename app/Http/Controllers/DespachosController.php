@@ -443,10 +443,11 @@ class DespachosController extends Controller
                         if ($det == 0) $inicio_a = $x + 1;
                         $final_a = getCantidadDetallesEspecificacionByPedido($pedido->id_pedido) + $inicio_a - 1;
                         foreach ($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $sp => $esp_emp) {
+                            $piezas_totales_no_tinturados += ($esp_emp->cantidad * $det_ped->cantidad);
                             foreach ($esp_emp->detalles as $det_sp => $det_esp_emp) {
                                 if ($sp == 0 && $det_sp == 0) {
                                     $inicio_b = $x + 1;
-                                    $piezas_totales_no_tinturados += ($esp_emp->cantidad * $det_ped->cantidad);
+
                                 }
                                 $final_b = getCantidadDetallesByEspecificacion($det_ped->cliente_especificacion->id_especificacion) + $inicio_b - 1;
                                 if ($det_sp == 0) {
@@ -502,10 +503,12 @@ class DespachosController extends Controller
                                 $datos_exportacion .= $dE->valor . "-";
 
                         foreach ($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $sp_t => $esp_emp_t) {
+
                             foreach ($esp_emp_t->detalles as $det_sp_t => $det_esp_emp_t) {
+                                $piezas_totales_tinturados += ($esp_emp_t->cantidad * $det_ped->cantidad);
                                 $ramos_totales_tinturados += $det_esp_emp_t->cantidad * $esp_emp_t->cantidad * $det_ped->cantidad;
                                 if ($det_sp_t == 0) $cajas_full_totales_tinturados += ($esp_emp_t->cantidad * $det_ped->cantidad) * explode('|', $esp_emp_t->empaque->nombre)[1];
-                                if ($sp_t == 0 && $det_sp_t == 0) $piezas_totales_tinturados += ($esp_emp_t->cantidad * $det_ped->cantidad);
+                               // if ($sp_t == 0 && $det_sp_t == 0)
                                 $ramos_totales_estandar_tinturados += convertToEstandar($det_esp_emp_t->cantidad * $esp_emp_t->cantidad * $det_ped->cantidad, $det_esp_emp_t->clasificacion_ramo->nombre);
 
                                 if (!in_array($det_esp_emp_t->id_variedad, $variedades_tinturados)) {
@@ -898,10 +901,11 @@ class DespachosController extends Controller
                         if ($det == 0) $inicio_a = $x + 1;
                         $final_a = getCantidadDetallesEspecificacionByPedido($pedido->id_pedido) + $inicio_a - 1;
                         foreach ($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $sp => $esp_emp) {
+                            $piezas_totales_no_tinturados += ($esp_emp->cantidad * $det_ped->cantidad);
                             foreach ($esp_emp->detalles as $det_sp => $det_esp_emp) {
                                 if ($sp == 0 && $det_sp == 0) {
                                     $inicio_b = $x + 1;
-                                    $piezas_totales_no_tinturados += ($esp_emp->cantidad * $det_ped->cantidad);
+
                                 }
                                 $final_b = getCantidadDetallesByEspecificacion($det_ped->cliente_especificacion->id_especificacion) + $inicio_b - 1;
                                 if ($det_sp == 0) {
