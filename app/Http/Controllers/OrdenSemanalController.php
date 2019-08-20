@@ -1056,23 +1056,42 @@ class OrdenSemanalController extends Controller
             foreach ($det_ped->marcacionesByEspEmp($esp_emp->id_especificacion_empaque) as $pos_marc => $marc) {
                 $list_distribuciones = [];
                 foreach ($marc->distribuciones as $pos_distr => $distr) {
-
+                    $coloraciones = [];
+                    foreach ($list_coloracionesByEspEmp as $pos_col => $col) {
+                        $detalles = [];
+                        foreach ($esp_emp->detalles as $pos_det_esp => $det_esp) {
+                            array_push($detalles, [
+                                'det_esp' => $det_esp,
+                                'distr_col' => $distr->getDistribucionMarcacionByMarcCol($marc->getMarcacionColoracionByDetEsp($col->id_coloracion, $det_esp->id_detalle_especificacionempaque)->id_marcacion_coloracion)
+                            ]);
+                        }
+                        array_push($coloraciones, [
+                            'col' => $col,
+                            'detalles' => $detalles
+                        ]);
+                    }
+                    array_push($list_distribuciones, [
+                        'distr' => $distr,
+                        'coloraciones' => $coloraciones
+                    ]);
                 }
                 array_push($list_marcacionesByEspEmp, [
                     'marc' => $marc,
-                    'distr' => $distr
+                    'distribuciones' => $list_distribuciones
                 ]);
             }
-
             array_push($list_esp_emp, [
                 'esp_emp' => $esp_emp,
-                'list_coloracionesByEspEmp' => $list_coloracionesByEspEmp,
-                'list_marcacionesByEspEmp' => $list_marcacionesByEspEmp,
+                'coloraciones' => $list_coloracionesByEspEmp,
+                'marcaciones' => $list_marcacionesByEspEmp,
             ]);
         }
 
+        dd($list_esp_emp);
+
         return view('adminlte.gestion.postcocecha.pedidos_ventas.forms._ver_distribucion', [
-            'det_ped' => $det_ped
+            'det_ped' => $det_ped,
+            'list_esp_emp' => $list_esp_emp,
         ]);
     }
 
