@@ -1048,6 +1048,29 @@ class OrdenSemanalController extends Controller
     {
         ini_set('max_execution_time', env('MAX_EXECUTION_TIME'));
         $det_ped = DetallePedido::find($request->id_det_ped);
+
+        $list_esp_emp = [];
+        foreach ($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $pos_esp_emp => $esp_emp) {
+            $list_coloracionesByEspEmp = $det_ped->coloracionesByEspEmp($esp_emp->id_especificacion_empaque);
+            $list_marcacionesByEspEmp = [];
+            foreach ($det_ped->marcacionesByEspEmp($esp_emp->id_especificacion_empaque) as $pos_marc => $marc) {
+                $list_distribuciones = [];
+                foreach ($marc->distribuciones as $pos_distr => $distr) {
+
+                }
+                array_push($list_marcacionesByEspEmp, [
+                    'marc' => $marc,
+                    'distr' => $distr
+                ]);
+            }
+
+            array_push($list_esp_emp, [
+                'esp_emp' => $esp_emp,
+                'list_coloracionesByEspEmp' => $list_coloracionesByEspEmp,
+                'list_marcacionesByEspEmp' => $list_marcacionesByEspEmp,
+            ]);
+        }
+
         return view('adminlte.gestion.postcocecha.pedidos_ventas.forms._ver_distribucion', [
             'det_ped' => $det_ped
         ]);

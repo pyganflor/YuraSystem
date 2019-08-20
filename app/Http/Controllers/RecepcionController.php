@@ -85,6 +85,7 @@ class RecepcionController extends Controller
 
     public function store_recepcion(Request $request)
     {
+        dd($request->all());
         $msg = '';
         $success = true;
         $valida = Validator::make($request->all(), [
@@ -124,7 +125,7 @@ class RecepcionController extends Controller
                         $model = new Recepcion();
                         $model->id_cosecha = $cosecha->id_cosecha;
                         $model->id_semana = $semana->id_semana;
-                        $model->fecha_ingreso = $request->fecha_ingreso;
+                        $model->fecha_ingreso = $request->fecha_pasada == 'true' ? $request->fecha_ingreso : date('Y-m-d H:i:s');
                         $model->fecha_registro = date('Y-m-d H:i:s');
 
                         if ($model->save()) {

@@ -5,6 +5,10 @@
                 <span class="input-group-addon" style="background-color: #e9ecef">Fecha</span>
                 <input type="datetime-local" id="fecha_ingreso" name="fecha_ingreso" required onchange="buscarCosechaByFecha()"
                        class="form-control text-center">
+                <span class="input-group-addon" style="background-color: #e9ecef">
+                    <input type="checkbox" id="check_fecha_ingreso_pasada" name="check_fecha_ingreso_pasada">
+                    <label for="check_fecha_ingreso_pasada">Fecha-hora pasada</label>
+                </span>
             </div>
         </div>
     </div>
