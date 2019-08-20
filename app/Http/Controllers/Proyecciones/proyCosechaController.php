@@ -123,6 +123,23 @@ class proyCosechaController extends Controller
                 'proyeccion' => ProyeccionModulo::find($request->model),
             ]);
         }
+        if ($request->tipo == 'T') {    // crear una proyecccion
+            if ($request->tabla == 'P') {
+                return view('adminlte.gestion.proyecciones.cosecha.forms.edit_proy', [
+                    'modulo' => getModuloById($request->modulo),
+                    'semana' => Semana::find($request->semana),
+                    'variedad' => getVariedad($request->variedad),
+                    'proyeccion' => ProyeccionModulo::find($request->model),
+                ]);
+            } else {
+                return view('adminlte.gestion.proyecciones.cosecha.forms.edit_ciclo', [
+                    'modulo' => getModuloById($request->modulo),
+                    'semana' => Semana::find($request->semana),
+                    'variedad' => getVariedad($request->variedad),
+                    'ciclo' => Ciclo::find($request->model),
+                ]);
+            }
+        }
         if (in_array($request->tipo, ['P', 'S'])) {    // editar ciclo poda
             return view('adminlte.gestion.proyecciones.cosecha.forms.edit_ciclo', [
                 'modulo' => getModuloById($request->modulo),
