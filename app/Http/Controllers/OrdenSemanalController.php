@@ -1047,6 +1047,7 @@ class OrdenSemanalController extends Controller
     public function ver_distribucion(Request $request)
     {
         ini_set('max_execution_time', env('MAX_EXECUTION_TIME'));
+        dd(55);
         $det_ped = DetallePedido::find($request->id_det_ped);
         return view('adminlte.gestion.postcocecha.pedidos_ventas.forms._ver_distribucion', [
             'det_ped' => $det_ped
