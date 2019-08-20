@@ -31,7 +31,8 @@ class OrdenSemanalController extends Controller
 {
     public function store_orden_semanal(Request $request)
     {
-       // dd($request->id_configuracion_empresa);
+        // dd($request->id_configuracion_empresa);
+        ini_set('max_execution_time', env('MAX_EXECUTION_TIME'));
         if ($request->nueva_esp != '') {    // NUEVA ESPECIFICACION
             $esp = new Especificacion();
             $esp->tipo = 'O';
@@ -504,6 +505,7 @@ class OrdenSemanalController extends Controller
 
     public function editar_pedido_tinturado(Request $request)
     {
+        ini_set('max_execution_time', env('MAX_EXECUTION_TIME'));
         $pedido = Pedido::find($request->id_pedido);
         $have_next = false;
         if (count($pedido->detalles) > $request->pos_det_ped + 1)
@@ -519,6 +521,7 @@ class OrdenSemanalController extends Controller
 
     public function update_orden_tinturada(Request $request)
     {
+        ini_set('max_execution_time', env('MAX_EXECUTION_TIME'));
         $valida = Validator::make($request->all(), [
             'id_pedido' => 'required',
             'id_detalle_pedido' => 'required',
@@ -856,6 +859,7 @@ class OrdenSemanalController extends Controller
 
     public function auto_distribuir_pedido_tinturado(Request $request)
     {
+        ini_set('max_execution_time', env('MAX_EXECUTION_TIME'));
         /* =================== OBTENER DISTRIBUCION ================= */
         $det_ped = DetallePedido::find($request->id_det_ped);
         $array_marc = [];
@@ -1042,9 +1046,52 @@ class OrdenSemanalController extends Controller
 
     public function ver_distribucion(Request $request)
     {
+        ini_set('max_execution_time', env('MAX_EXECUTION_TIME'));
         $det_ped = DetallePedido::find($request->id_det_ped);
+
+        $list_esp_emp = [];
+        foreach ($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $pos_esp_emp => $esp_emp) {
+            $list_coloracionesByEspEmp = $det_ped->coloracionesByEspEmp($esp_emp->id_especificacion_empaque);
+            $list_marcacionesByEspEmp = [];
+            foreach ($det_ped->marcacionesByEspEmp($esp_emp->id_especificacion_empaque) as $pos_marc => $marc) {
+                $list_distribuciones = [];
+                foreach ($marc->distribuciones as $pos_distr => $distr) {
+                    $coloraciones = [];
+                    foreach ($list_coloracionesByEspEmp as $pos_col => $col) {
+                        $detalles = [];
+                        foreach ($esp_emp->detalles as $pos_det_esp => $det_esp) {
+                            array_push($detalles, [
+                                'det_esp' => $det_esp,
+                                'distr_col' => $distr->getDistribucionMarcacionByMarcCol($marc->getMarcacionColoracionByDetEsp($col->id_coloracion, $det_esp->id_detalle_especificacionempaque)->id_marcacion_coloracion)
+                            ]);
+                        }
+                        array_push($coloraciones, [
+                            'col' => $col,
+                            'detalles' => $detalles
+                        ]);
+                    }
+                    array_push($list_distribuciones, [
+                        'distr' => $distr,
+                        'coloraciones' => $coloraciones
+                    ]);
+                }
+                array_push($list_marcacionesByEspEmp, [
+                    'marc' => $marc,
+                    'distribuciones' => $list_distribuciones
+                ]);
+            }
+            array_push($list_esp_emp, [
+                'esp_emp' => $esp_emp,
+                'coloraciones' => $list_coloracionesByEspEmp,
+                'marcaciones' => $list_marcacionesByEspEmp,
+            ]);
+        }
+
+        //dd($list_esp_emp);
+
         return view('adminlte.gestion.postcocecha.pedidos_ventas.forms._ver_distribucion', [
-            'det_ped' => $det_ped
+            'det_ped' => $det_ped,
+            'list_esp_emp' => $list_esp_emp,
         ]);
     }
 

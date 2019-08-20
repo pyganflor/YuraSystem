@@ -1,4 +1,7 @@
-@foreach($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $pos_esp_emp => $esp_emp)
+@php
+    ini_set('max_execution_time', env('MAX_EXECUTION_TIME'));
+@endphp
+@foreach($list_esp_emp as $pos_esp_emp => $esp_emp)
     <legend style="font-size: 1em; margin-bottom: 0">
         <strong>
             Distribución EMP-{{$pos_esp_emp + 1}}
@@ -18,7 +21,7 @@
                 <th class="text-center" style="border-color: #9d9d9d; width: 150px">
                     Marcación/Coloración
                 </th>
-                @foreach($det_ped->coloracionesByEspEmp($esp_emp->id_especificacion_empaque) as $pos_col => $col)
+                @foreach($esp_emp['coloraciones'] as $pos_col => $col)
                     <th class="text-center"
                         style="border-color: #9d9d9d; width: 100px; background-color: {{$col->color->fondo}}; color: {{$col->color->texto}}">
                         {{$col->color->nombre}}
@@ -34,21 +37,21 @@
             @php
                 $anterior = '';
             @endphp
-            @foreach($det_ped->marcacionesByEspEmp($esp_emp->id_especificacion_empaque) as $pos_marc => $marc)
-                @foreach($marc->distribuciones as $pos_distr => $distr)
-                    <tr style="border-top: {{$anterior != $marc->id_marcacion ? '2px solid black' : ''}}">
+            @foreach($esp_emp['marcaciones'] as $pos_marc => $marc)
+                @foreach($marc['distribuciones'] as $pos_distr => $distr)
+                    <tr style="border-top: {{$anterior != $marc['marc']->id_marcacion ? '2px solid black' : ''}}">
                         @if($pos_distr == 0)
-                            <th class="text-center" style="border-color: #9d9d9d" rowspan="{{count($marc->distribuciones)}}">
-                                {{$marc->nombre}}
+                            <th class="text-center" style="border-color: #9d9d9d" rowspan="{{count($marc['distribuciones'])}}">
+                                {{$marc['marc']->nombre}}
                             </th>
                         @endif
-                        @foreach($det_ped->coloracionesByEspEmp($esp_emp->id_especificacion_empaque) as $pos_col => $col)
+                        @foreach($distr['coloraciones'] as $pos_col => $col)
                             <th class="text-center"
-                                style="border-color: #9d9d9d; width: 100px; background-color: {{$col->color->fondo}}; color: {{$col->color->texto}}">
+                                style="border-color: #9d9d9d; width: 100px; background-color: {{$col['col']->color->fondo}}; color: {{$col['col']->color->texto}}">
                                 <ul class="list-unstyled">
-                                    @foreach($esp_emp->detalles as $pos_det_esp => $det_esp)
+                                    @foreach($col['detalles'] as $pos_det_esp => $det_esp)
                                         @php
-                                            $distr_col = $distr->getDistribucionMarcacionByMarcCol($marc->getMarcacionColoracionByDetEsp($col->id_coloracion, $det_esp->id_detalle_especificacionempaque)->id_marcacion_coloracion);
+                                            $distr_col = $det_esp['distr_col'];
                                         @endphp
                                         <li>
                                             <div class="input-group" style="width: 100px">
@@ -57,7 +60,7 @@
                                             </span>
                                                 <input type="text" readonly class="text-center"
                                                        value="{{$distr_col != '' ? $distr_col->cantidad : ''}}"
-                                                       style="background-color: {{$col->color->fondo}}; color: {{$col->color->texto}}; width: 100%">
+                                                       style="background-color: {{$col['col']->color->fondo}}; color: {{$col['col']->color->texto}}; width: 100%">
                                             </div>
                                         </li>
                                     @endforeach
@@ -65,22 +68,22 @@
                             </th>
                         @endforeach
                         <th class="text-center" style="border-color: #9d9d9d; width: 65px">
-                            {{$distr->ramos}}
+                            {{$distr['distr']->ramos}}
                         </th>
                         <th class="text-center" style="border-color: #9d9d9d; width: 65px">
-                            {{$distr->piezas}}
+                            {{$distr['distr']->piezas}}
                         </th>
                         <th class="text-center" style="border-color: #9d9d9d; width: 65px">
-                            {{$distr->pos_pieza}}
+                            {{$distr['distr']->pos_pieza}}
                         </th>
                         @if($pos_distr == 0)
-                            <th class="text-center" style="border-color: #9d9d9d" rowspan="{{count($marc->distribuciones)}}">
-                                {{$marc->nombre}}
+                            <th class="text-center" style="border-color: #9d9d9d" rowspan="{{count($marc['distribuciones'])}}">
+                                {{$marc['marc']->nombre}}
                             </th>
                         @endif
                     </tr>
                     @php
-                        $anterior = $marc->id_marcacion;
+                        $anterior = $marc['marc']->id_marcacion;
                     @endphp
                 @endforeach
             @endforeach

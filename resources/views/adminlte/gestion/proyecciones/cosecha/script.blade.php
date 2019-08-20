@@ -17,7 +17,7 @@
     }
 
     function select_celda(tipo, mod, sem, model) {
-        if (['F', 'P', 'S', 'Y'].indexOf(tipo) >= 0) {
+        if (['F', 'P', 'S', 'T', 'Y'].indexOf(tipo) >= 0) {
             datos = {
                 tipo: tipo,
                 modulo: mod,

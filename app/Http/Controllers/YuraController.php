@@ -26,6 +26,7 @@ class YuraController extends Controller
 {
     public function inicio(Request $request)
     {
+        //dd(opDiasFecha('+', 120, '2018-12-26'));
         if (count(getUsuario(Session::get('id_usuario'))->rol()->getSubmenusByTipo('C')) > 0) {
             /* ========= CALIBRE ========= */
             $labels = DB::table('clasificacion_verde as v')

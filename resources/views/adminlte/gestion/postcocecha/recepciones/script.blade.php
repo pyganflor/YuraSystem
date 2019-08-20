@@ -76,6 +76,7 @@
                 personal: $('#personal').val(),
                 hora_inicio: $('#hora_inicio').val(),
                 fecha_ingreso: $('#fecha_ingreso').val(),
+                fecha_pasada: $('#check_fecha_ingreso_pasada').prop('checked'),
                 cantidad: arreglo
             };
             post_jquery('{{url('recepcion/store_recepcion')}}', datos, function () {
