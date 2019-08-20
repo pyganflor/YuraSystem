@@ -1087,7 +1087,7 @@ class OrdenSemanalController extends Controller
             ]);
         }
 
-        dd($list_esp_emp);
+        //dd($list_esp_emp);
 
         return view('adminlte.gestion.postcocecha.pedidos_ventas.forms._ver_distribucion', [
             'det_ped' => $det_ped,
