@@ -292,7 +292,7 @@
                                             </td>
                                         @else
                                             @if($pos_det_esp == 0 && $pos_esp_emp == 0 && $pos_det_ped == 0)
-                                                <td class="text-center" style="border-color: #9d9d9d">{{$full}}</td>
+                                                <td class="text-center" style="border-color: #9d9d9d" rowspan="{{$getCantidadDetallesEspecificacionByPedido}}">{{$full}}</td>
                                                 <td class="text-center" style="border-color: #9d9d9d" rowspan="{{$getCantidadDetallesEspecificacionByPedido}}">{{$half}}</td>
                                                 <td class="text-center" style="border-color: #9d9d9d" rowspan="{{$getCantidadDetallesEspecificacionByPedido}}">{{$cuarto}}</td>
                                                     <td class="text-center" style="border-color: #9d9d9d" rowspan="{{$getCantidadDetallesEspecificacionByPedido}}">{{$octavo}}</td>
