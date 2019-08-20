@@ -184,7 +184,7 @@
                     '</td>';
                 titles_columnas += '<th class="text-center" style="border-color: #9d9d9d">' +
                     '<select id="titles_columnas_' + c + '" name="titles_columnas_' + c + '"' +
-                    ' style="width: 60px" class="text-center" onchange="seleccionar_color(' + c + ')">' +
+                    ' style="width: 75px;font-size:11px" class="text-center" onchange="seleccionar_color(' + c + ')">' +
                     '<option value="">C # ' + c + '</option>' + $('#select_colores').html() +
                     '</select>' +
                     '</th>';

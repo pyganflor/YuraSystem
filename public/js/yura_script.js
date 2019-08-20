@@ -1215,7 +1215,7 @@ function add_coloracion(esp_emp) {
                     //insertamos una cabecera despues de la primera cabecera
                     $('<th class="text-center" style="border-color: #9d9d9d" width="100px">' +
                         '<select name="color_' + col + '_' + esp_emp + '" id="color_' + col + '_' + esp_emp + '"' +
-                        ' onchange="cambiar_color($(this).val(), ' + col + ', ' + esp_emp + ')">' +
+                        ' onchange="cambiar_color($(this).val(), ' + col + ', ' + esp_emp + ')" style="width: 100px;font-size:11px">' +
                         $('#select_colores').html() +
                         '</select>' +
                         '<input type="hidden" id="id_color_' + col + '_' + esp_emp + '" name="id_color_' + col + '_' + esp_emp + '" ' +
