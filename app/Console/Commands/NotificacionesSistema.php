@@ -77,6 +77,35 @@ class NotificacionesSistema extends Command
         }
     }
 
+    public function pedidos_sin_empaquetar($not)
+    {
+        $sum = count(DB::table('pedido')
+            ->select('*')
+            ->where('estado', '=', 1)
+            ->where('empaquetado', '=', 0)
+            ->where('variedad', '!=', '')
+            ->where('fecha_pedido', '<', date('Y-m-d'))
+            ->get());
+
+        $models = UserNotification::All()
+            ->where('estado', 1)
+            ->where('id_notificacion', $not->id_notificacion);
+        foreach ($models as $m) {   // desactivar las anteriores
+            $m->delete();
+        }
+        if ($sum > 0) { // crear las nuevas notificaciones
+            foreach ($not->usuarios as $not_user) {
+                $model = new UserNotification();
+                $model->id_notificacion = $not->id_notificacion;
+                $model->id_usuario = $not_user->id_usuario;
+                $model->titulo = 'Pedidos pasados sin empaquetar';
+                $model->texto = 'Hay ' . $sum . ' pedido(s) sin empaquetar de días pasados';
+                $model->url = 'pedidos';
+                $model->save();
+            }
+        }
+    }
+
     public function botar_flores_cuarto_frio($not)
     {
         $sum = DB::table('inventario_frio')
