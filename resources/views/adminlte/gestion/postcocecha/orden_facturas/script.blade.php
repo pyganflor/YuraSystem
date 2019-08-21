@@ -12,4 +12,10 @@
             $.LoadingOverlay('hide');
         });
     }
+
+    $(window).ready(function(){
+
+    })
+
+
 </script>
