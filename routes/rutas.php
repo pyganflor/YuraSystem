@@ -87,6 +87,7 @@ Route::group(['middleware' => 'autenticacion'], function () {
             include 'facturacion/emision_comprobante.php';
             include 'facturacion/codigo_dae.php';
             include 'facturacion/producto_venture.php';
+            include 'facturacion/orden_factura.php';
 
             /* ================== IMPORTAR DATA =================== */
             include 'importar_data/rutas.php';

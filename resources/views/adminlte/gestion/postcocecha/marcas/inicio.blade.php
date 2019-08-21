@@ -6,10 +6,7 @@
 
 @section('contenido')
     <!-- Content Header (Page header) -->
-    <section class="content-header">
-        @include('adminlte.gestion.partials.breadcrumb')
-    </section>
-
+    @include('adminlte.gestion.partials.breadcrumb')
     <!-- Main content -->
     <section class="content">
         <div class="box box-info">
