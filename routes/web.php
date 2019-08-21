@@ -38,6 +38,7 @@ Route::group(['middleware' => 'autenticacion'], function () {
         include 'permisos/rutas.php';
         include 'usuarios/rutas.php';
 
+
     });
 
 });
