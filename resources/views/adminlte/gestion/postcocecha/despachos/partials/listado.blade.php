@@ -147,10 +147,9 @@
                             $cuarto = 0;
                             $sexto = 0;
                             $octavo = 0;
-                            $piezas_despacho= 0;
                         @endphp
                         @foreach($ped->detalles as $pos_det_ped => $det_ped)
-                            @foreach($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $m => $esp_emp){
+                            @foreach($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $m => $esp_emp)
                                 @php
                                     $full += explode("|",$esp_emp->empaque->nombre)[1]*$det_ped->cantidad;
                                     switch (explode("|",$esp_emp->empaque->nombre)[1]){
@@ -393,9 +392,7 @@
                                     </tr>
                                 @endforeach
                             @endforeach
-
                         @endforeach
-
                     @endif
                 @endforeach
             </table>
