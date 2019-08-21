@@ -56,40 +56,57 @@
                     <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
                         CLIENTE
                     </th>
-                    @if($opciones)
-                        <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white;width:50px">
-                            FACTURA N°
-                        </th>
-                    @endif
+                    <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white;width:50px">
+                        FACTURA N°
+                    </th>
                     <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
                         MARACACIONES
                     </th>
-                    <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
-                        FLOR
-                    </th>
-                    <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
-                        EMPAQUE
-                    </th>
-                    <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
-                        PRESENTACIÓN
-                    </th>
+                    @if($opciones)
+                        <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
+                            FLOR
+                        </th>
+                        <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
+                            EMPAQUE
+                        </th>
+                        <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
+                            PRESENTACIÓN
+                        </th>
+                    @endif
                     <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
                         PIEZAS
                     </th>
-                    <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
-                        CAJAS FULL
-                    </th>
-                    <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
-                        RAMOS
-                    </th>
-                    <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
-                        RAMOS x CAJA
-                    </th>
                     @if($opciones)
                         <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
-                            CUARTO FRÍO
+                            CAJAS FULL
+                        </th>
+                        <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
+                            RAMOS
+                        </th>
+                        <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
+                            RAMOS x CAJA
+                        </th>
+                    @else
+                        <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
+                            CAJAS FULL
+                        </th>
+                        <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
+                            HALF
+                        </th>
+                        <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
+                            CUARTOS
+                        </th>
+                        <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
+                            OCTAVOS
                         </th>
                     @endif
+                    <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
+                        @if($opciones)
+                            CUARTO FRÍO
+                        @else
+                            AGENCIA DE CARGA
+                        @endif
+                    </th>
                     <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
                         FACTURADO POR:
                     </th>
@@ -105,6 +122,7 @@
                     $variedades = [];
                     $ramos_x_variedades = [];
                     $valor_total = 0;
+
                 @endphp
                 @foreach($listado as $x=> $pedido)
                     @php
@@ -124,10 +142,41 @@
                                 $firmado = null;
                                 $facturado = null;
                             }
+                            $full = 0;
+                            $half = 0;
+                            $cuarto = 0;
+                            $sexto = 0;
+                            $octavo = 0;
                         @endphp
                         @foreach($ped->detalles as $pos_det_ped => $det_ped)
+                            @foreach($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $m => $esp_emp)
+                                @php
+                                    $full += explode("|",$esp_emp->empaque->nombre)[1]*$det_ped->cantidad;
+                                    switch (explode("|",$esp_emp->empaque->nombre)[1]){
+                                        case '0.5':
+                                            $half += $det_ped->cantidad;
+                                            break;
+                                        case '0.25':
+                                            $cuarto +=$det_ped->cantidad;
+                                            break;
+                                        case '0.17':
+                                            $sexto +=$det_ped->cantidad;
+                                            break;
+                                        case '0.125':
+                                            $octavo +=$det_ped->cantidad;
+                                            break;
+                                    }
+                                    $piezas_despacho = $half+$cuarto+$sexto+$octavo;
+                                @endphp
+                            @endforeach
+                        @endforeach
+                            @foreach($ped->detalles as $pos_det_ped => $det_ped)
                             @foreach($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $pos_esp_emp => $esp_emp)
-                                @php $getCantidadDetallesByEspecificacion = getCantidadDetallesByEspecificacion($det_ped->cliente_especificacion->id_especificacion) @endphp
+                                @php
+                                    if(!getFacturaAnulada($pedido->id_pedido))
+                                        $piezas_totales += ($esp_emp->cantidad * $det_ped->cantidad);
+                                    $getCantidadDetallesByEspecificacion = getCantidadDetallesByEspecificacion($det_ped->cliente_especificacion->id_especificacion);
+                                @endphp
                                 @foreach($esp_emp->detalles as $pos_det_esp => $det_esp)
                                     <tr style="background-color: {{!in_array($det_esp->id_variedad,explode('|',$pedido->variedad)) ? '#b9ffb4' : ''}}; border-bottom: 2px solid #9d9d9d"
                                         title="{{!in_array($det_esp->id_variedad,explode('|',$pedido->variedad)) ? 'Confirmado' : 'Por confirmar'}}">
@@ -170,11 +219,9 @@
                                                     </span>
                                                 @endif
                                             </td>
-                                            @if($opciones)
-                                                <td class="text-center" style="border-color: #9d9d9d" rowspan="{{$getCantidadDetallesEspecificacionByPedido}}">
-                                                    <span style="padding:0px 5px"><b>{{isset($ped->envios[0]->comprobante) ? $ped->envios[0]->comprobante->secuencial : ""}}</b></span>
-                                                </td>
-                                            @endif
+                                            <td class="text-center" style="border-color: #9d9d9d" rowspan="{{$getCantidadDetallesEspecificacionByPedido}}">
+                                                <span style="padding:0px 5px"><b>{{isset($ped->envios[0]->comprobante) ? $ped->envios[0]->comprobante->secuencial : ""}}</b></span>
+                                            </td>
                                         @endif
                                         @if($pos_det_esp == 0 && $pos_esp_emp == 0)
                                             <td class="text-center" style="border-color: #9d9d9d;vertical-align: middle"
@@ -189,64 +236,75 @@
                                                 @endif
                                             </td>
                                         @endif
-                                        <td class="text-center" style="border-color: #9d9d9d">
-                                            {{$det_esp->variedad->siglas}}
-                                            {{explode('|',$det_esp->clasificacion_ramo->nombre)[0]}}{{$det_esp->clasificacion_ramo->unidad_medida->siglas}}
-                                        </td>
-                                        @if($pos_det_esp == 0)
-                                            <td class="text-center" style="border-color: #9d9d9d" rowspan="{{count($esp_emp->detalles)}}">
-                                                {{explode('|',$esp_emp->empaque->nombre)[0]}}
+                                        @if($opciones)
+                                            <td class="text-center" style="border-color: #9d9d9d">
+                                                {{$det_esp->variedad->siglas}}
+                                                {{explode('|',$det_esp->clasificacion_ramo->nombre)[0]}}{{$det_esp->clasificacion_ramo->unidad_medida->siglas}}
                                             </td>
-                                        @endif
-                                        <td class="text-center" style="border-color: #9d9d9d">
-                                            {{--{{explode('|',$det_esp->empaque_e->nombre)[0]}}--}}
-                                            {{explode('|',$det_esp->empaque_p->nombre)[0]}}
-                                        </td>
-                                        @if($pos_det_esp == 0 && $pos_esp_emp == 0)
-                                            <td class="text-center" style="border-color: #9d9d9d"
-                                                rowspan="{{$getCantidadDetallesByEspecificacion}}">
-                                                {{$esp_emp->cantidad * $det_ped->cantidad}}
-                                                @php
-                                                    if(!getFacturaAnulada($pedido->id_pedido))
-                                                        $piezas_totales += ($esp_emp->cantidad * $det_ped->cantidad);
-                                                @endphp
-                                            </td>
-                                        @endif
-                                        @if($pos_det_esp == 0)
-                                            <td class="text-center" style="border-color: #9d9d9d" rowspan="{{count($esp_emp->detalles)}}">
-                                                {{($esp_emp->cantidad * $det_ped->cantidad) * explode('|',$esp_emp->empaque->nombre)[1]}}
-                                                @php
-                                                    if(!getFacturaAnulada($pedido->id_pedido))
-                                                        $cajas_full_totales += ($esp_emp->cantidad * $det_ped->cantidad) * explode('|',$esp_emp->empaque->nombre)[1];
-                                                @endphp
-                                            </td>
-                                        @endif
-                                        <td class="text-center" style="border-color: #9d9d9d">
-                                            {{$det_esp->cantidad * $esp_emp->cantidad * $det_ped->cantidad}}
-                                            @php
-                                                if(!getFacturaAnulada($pedido->id_pedido)){
-                                                    $ramos_totales += $det_esp->cantidad * $esp_emp->cantidad * $det_ped->cantidad;
-                                                    $ramos_totales_estandar += convertToEstandar($det_esp->cantidad * $esp_emp->cantidad * $det_ped->cantidad, $det_esp->clasificacion_ramo->nombre);
-                                                    if (!in_array($det_esp->id_variedad, $variedades)){
-                                                        array_push($variedades, $det_esp->id_variedad);
-                                                    }
-                                                    array_push($ramos_x_variedades, [
-                                                        'id_variedad' => $det_esp->id_variedad,
-                                                        'cantidad' => convertToEstandar($det_esp->cantidad * $esp_emp->cantidad * $det_ped->cantidad, $det_esp->clasificacion_ramo->nombre),
-                                                    ]);
-                                                }
-                                            @endphp
-
-                                        </td>
-                                        <td class="text-center" style="border-color: #9d9d9d">
-                                            {{$det_esp->cantidad}}
-                                        </td>
-                                        @if($pos_det_esp == 0 && $pos_esp_emp == 0 && $pos_det_ped == 0)
-                                            @if($opciones)
-                                                <td style="border-color: #9d9d9d" class="text-center "
-                                                    rowspan="{{$getCantidadDetallesEspecificacionByPedido}}">
-                                                    {{getAgenciaCarga($det_ped->id_agencia_carga)->nombre}}
+                                            @if($pos_det_esp == 0)
+                                                <td class="text-center" style="border-color: #9d9d9d" rowspan="{{count($esp_emp->detalles)}}">
+                                                    {{explode('|',$esp_emp->empaque->nombre)[0]}}
                                                 </td>
+                                            @endif
+                                            <td class="text-center" style="border-color: #9d9d9d">
+                                                {{--{{explode('|',$det_esp->empaque_e->nombre)[0]}}--}}
+                                                {{explode('|',$det_esp->empaque_p->nombre)[0]}}
+                                            </td>
+                                        @endif
+                                        @if($opciones)
+                                            @if($pos_det_esp == 0 && $pos_esp_emp == 0)
+                                                <td class="text-center" style="border-color: #9d9d9d" rowspan="{{$getCantidadDetallesByEspecificacion}}">
+                                                     {{$esp_emp->cantidad * $det_ped->cantidad}}
+                                                </td>
+                                            @endif
+                                        @else
+                                            @if($pos_det_esp == 0 && $pos_esp_emp == 0 && $pos_det_ped == 0)
+                                                <td class="text-center" style="border-color: #9d9d9d" rowspan="{{$getCantidadDetallesEspecificacionByPedido}}">
+                                                    {{$piezas_despacho}}
+                                                </td>
+                                            @endif
+                                        @endif
+                                        @php
+                                            if(!getFacturaAnulada($pedido->id_pedido))
+                                                $cajas_full_totales += ($esp_emp->cantidad * $det_ped->cantidad) * explode('|',$esp_emp->empaque->nombre)[1];
+
+                                            if(!getFacturaAnulada($pedido->id_pedido)){
+                                                $ramos_totales += $det_esp->cantidad * $esp_emp->cantidad * $det_ped->cantidad;
+                                                $ramos_totales_estandar += convertToEstandar($det_esp->cantidad * $esp_emp->cantidad * $det_ped->cantidad, $det_esp->clasificacion_ramo->nombre);
+                                                if (!in_array($det_esp->id_variedad, $variedades)){
+                                                    array_push($variedades, $det_esp->id_variedad);
+                                                }
+                                                array_push($ramos_x_variedades, [
+                                                    'id_variedad' => $det_esp->id_variedad,
+                                                    'cantidad' => convertToEstandar($det_esp->cantidad * $esp_emp->cantidad * $det_ped->cantidad, $det_esp->clasificacion_ramo->nombre),
+                                                ]);
+                                            }
+                                        @endphp
+                                        @if($opciones)
+                                            @if($pos_det_esp == 0)
+                                                <td class="text-center" style="border-color: #9d9d9d" rowspan="{{count($esp_emp->detalles)}}">
+                                                    {{($esp_emp->cantidad * $det_ped->cantidad) * explode('|',$esp_emp->empaque->nombre)[1]}}
+                                                </td>
+                                            @endif
+                                            <td class="text-center" style="border-color: #9d9d9d">
+                                                {{$det_esp->cantidad * $esp_emp->cantidad * $det_ped->cantidad}}
+                                            </td>
+                                            <td class="text-center" style="border-color: #9d9d9d">
+                                                {{$det_esp->cantidad}}
+                                            </td>
+                                        @else
+                                            @if($pos_det_esp == 0 && $pos_esp_emp == 0 && $pos_det_ped == 0)
+                                                <td class="text-center" style="border-color: #9d9d9d" rowspan="{{$getCantidadDetallesEspecificacionByPedido}}">{{$full}}</td>
+                                                <td class="text-center" style="border-color: #9d9d9d" rowspan="{{$getCantidadDetallesEspecificacionByPedido}}">{{$half}}</td>
+                                                <td class="text-center" style="border-color: #9d9d9d" rowspan="{{$getCantidadDetallesEspecificacionByPedido}}">{{$cuarto}}</td>
+                                                <td class="text-center" style="border-color: #9d9d9d" rowspan="{{$getCantidadDetallesEspecificacionByPedido}}">{{$octavo}}</td>
+                                            @endif
+                                        @endif
+                                        @if($pos_det_esp == 0 && $pos_esp_emp == 0 && $pos_det_ped == 0)
+                                           <td style="border-color: #9d9d9d" class="text-center " rowspan="{{$getCantidadDetallesEspecificacionByPedido}}">
+                                               {{getAgenciaCarga($det_ped->id_agencia_carga)->nombre}}
+                                           </td>
+                                            @if($opciones)
                                                 <td style="border-color: #9d9d9d" class="text-center " rowspan="{{$getCantidadDetallesEspecificacionByPedido}}">
                                                     {{isset($ped->empresa->razon_social) ? $ped->empresa->razon_social : ""}}
                                                 </td>
@@ -330,8 +388,6 @@
                                                     </a>
                                                 @endif
                                             </td>
-
-
                                         @endif
                                     </tr>
                                 @endforeach
