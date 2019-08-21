@@ -147,15 +147,13 @@
                             $cuarto = 0;
                             $sexto = 0;
                             $octavo = 0;
+                            $piezas_despacho= 0;
                         @endphp
                         @foreach($ped->detalles as $pos_det_ped => $det_ped)
-                            @php
-                                foreach($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $m => $esp_emp){
+                            @foreach($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $m => $esp_emp){
+                                @php
                                     $full += explode("|",$esp_emp->empaque->nombre)[1]*$det_ped->cantidad;
                                     switch (explode("|",$esp_emp->empaque->nombre)[1]){
-                                        case '1':
-                                            $full += $det_ped->cantidad;
-                                            break;
                                         case '0.5':
                                             $half += $det_ped->cantidad;
                                             break;
@@ -169,9 +167,11 @@
                                             $octavo +=$det_ped->cantidad;
                                             break;
                                     }
-                                }
-                            @endphp
-                            @php $piezas_despacho = $half+$cuarto+$sexto+$octavo; @endphp
+                                    $piezas_despacho = $half+$cuarto+$sexto+$octavo;
+                                @endphp
+                            @endforeach
+                        @endforeach
+                            @foreach($ped->detalles as $pos_det_ped => $det_ped)
                             @foreach($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $pos_esp_emp => $esp_emp)
                                 @php
                                     if(!getFacturaAnulada($pedido->id_pedido))
@@ -252,20 +252,23 @@
                                                 {{explode('|',$det_esp->empaque_p->nombre)[0]}}
                                             </td>
                                         @endif
-                                        @if($pos_det_esp == 0 && $pos_esp_emp == 0)
-                                            <td class="text-center" style="border-color: #9d9d9d" rowspan="{{$getCantidadDetallesByEspecificacion}}">
-                                                @if($opciones)
-                                                    {{$esp_emp->cantidad * $det_ped->cantidad}}
-                                                @else
+                                        @if($opciones)
+                                            @if($pos_det_esp == 0 && $pos_esp_emp == 0)
+                                                <td class="text-center" style="border-color: #9d9d9d" rowspan="{{$getCantidadDetallesByEspecificacion}}">
+                                                     {{$esp_emp->cantidad * $det_ped->cantidad}}
+                                                </td>
+                                            @endif
+                                        @else
+                                            @if($pos_det_esp == 0 && $pos_esp_emp == 0 && $pos_det_ped == 0)
+                                                <td class="text-center" style="border-color: #9d9d9d" rowspan="{{$getCantidadDetallesEspecificacionByPedido}}">
                                                     {{$piezas_despacho}}
-                                                @endif
-                                            </td>
+                                                </td>
+                                            @endif
                                         @endif
                                         @php
                                             if(!getFacturaAnulada($pedido->id_pedido))
                                                 $cajas_full_totales += ($esp_emp->cantidad * $det_ped->cantidad) * explode('|',$esp_emp->empaque->nombre)[1];
-                                        @endphp
-                                        @php
+
                                             if(!getFacturaAnulada($pedido->id_pedido)){
                                                 $ramos_totales += $det_esp->cantidad * $esp_emp->cantidad * $det_ped->cantidad;
                                                 $ramos_totales_estandar += convertToEstandar($det_esp->cantidad * $esp_emp->cantidad * $det_ped->cantidad, $det_esp->clasificacion_ramo->nombre);
@@ -295,7 +298,7 @@
                                                 <td class="text-center" style="border-color: #9d9d9d" rowspan="{{$getCantidadDetallesEspecificacionByPedido}}">{{$full}}</td>
                                                 <td class="text-center" style="border-color: #9d9d9d" rowspan="{{$getCantidadDetallesEspecificacionByPedido}}">{{$half}}</td>
                                                 <td class="text-center" style="border-color: #9d9d9d" rowspan="{{$getCantidadDetallesEspecificacionByPedido}}">{{$cuarto}}</td>
-                                                    <td class="text-center" style="border-color: #9d9d9d" rowspan="{{$getCantidadDetallesEspecificacionByPedido}}">{{$octavo}}</td>
+                                                <td class="text-center" style="border-color: #9d9d9d" rowspan="{{$getCantidadDetallesEspecificacionByPedido}}">{{$octavo}}</td>
                                             @endif
                                         @endif
                                         @if($pos_det_esp == 0 && $pos_esp_emp == 0 && $pos_det_ped == 0)
@@ -390,6 +393,7 @@
                                     </tr>
                                 @endforeach
                             @endforeach
+
                         @endforeach
 
                     @endif
