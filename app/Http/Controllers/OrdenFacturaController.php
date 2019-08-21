@@ -29,7 +29,7 @@ class OrdenFacturaController extends Controller
                 ['comprobante.integrado',0],
                 ['p.id_configuracion_empresa',$request->id_configuracion_empresa]
             ])->join('envio as e','comprobante.id_envio','e.id_envio')
-                ->join('pedido as p', 'e.id_pedido','p.id_pedido')->get(),
+                ->join('pedido as p', 'e.id_pedido','p.id_pedido')->orderBy('comprobante.secuencial','asc')->get(),
         ]);
     }
 }

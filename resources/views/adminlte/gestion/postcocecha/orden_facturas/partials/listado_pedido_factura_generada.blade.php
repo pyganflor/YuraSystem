@@ -39,14 +39,14 @@
         </thead>
         @foreach($comprobantes as $comprobante)
                   <tr onmouseover="$(this).css('background-color','#add8e6')" onmouseleave="$(this).css('background-color','')">
-                           <td style="border-color: #9d9d9d" class="text-center">
+                           <td style="border-color: #9d9d9d;width:150px" class="text-center">
                                {{$comprobante->secuencial}}
                            </td>
                            <td style="border-color: #9d9d9d" class="text-center">
                                {{$comprobante->envio->pedido->cliente->detalle()->nombre}}
                            </td>
                            <td style="border-color: #9d9d9d" class="text-center">
-                               {{$comprobante->fecha_emision}}git add -A
+                               {{\Carbon\Carbon::parse($comprobante->fecha_emision)->format('d/m/Y')}}
                            </td>
                        </tr>
                @endforeach
