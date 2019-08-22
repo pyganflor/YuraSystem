@@ -38,27 +38,66 @@
                 Cliente
             </th>
             <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
-                Fecha
+                Agencia de carga
+            </th>
+            <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
+                Cajas físicas
+            </th>
+            <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
+                Cajas full
+            </th>
+            <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
+                Opciones
             </th>
         </tr>
         </thead>
+        @php $total_full_equivalente= 0; $total_full_fisicas=0; @endphp
         @foreach($comprobantes as $comprobante)
+            @php $full_equivalente_real =0;  $full_fisicas = 0;  @endphp
             <tr onmouseover="$(this).css('background-color','#add8e6')" onmouseleave="$(this).css('background-color','')">
                 <td style="border-color: #9d9d9d;width:100px;cursor:pointer;" class="text-center orden_factura"
                     title="Haga clic para eliminar" onclick="delete_item_factura(this)"></td>
                 <td style="border-color: #9d9d9d;" class="text-center">{{$comprobante->secuencial}}</td>
                 <td style="border-color: #9d9d9d" class="text-center">{{$comprobante->envio->pedido->cliente->detalle()->nombre}}</td>
-                <td style="border-color: #9d9d9d" class="text-center">{{\Carbon\Carbon::parse($comprobante->fecha_emision)->format('d/m/Y')}}</td>
+                <td style="border-color: #9d9d9d" class="text-center">{{$comprobante->envio->pedido->detalles[0]->agencia_carga->nombre}}</td>
+                <td style="border-color: #9d9d9d" class="text-center">
+                    @php
+                        foreach($comprobante->envio->pedido->detalles as $x => $det_ped){
+                            foreach($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $m => $esp_emp){
+                                $full_equivalente_real += explode("|",$esp_emp->empaque->nombre)[1]*$det_ped->cantidad;
+                                $full_fisicas+=$det_ped->cantidad;
+
+                            }
+                        }
+                    @endphp
+                    {{$full_fisicas}}
+                    @php $total_full_equivalente += $full_equivalente_real;
+                         $total_full_fisicas+= $full_fisicas;
+                    @endphp
+
+                </td>
+                <td style="border-color: #9d9d9d" class="text-center">
+                    {{$full_equivalente_real}}
+                </td>
+                <td style="border-color: #9d9d9d;padding:0;vertical-align: middle;" class="text-center" >
+                    <a target="_blank" href="{{url('comprobante/documento_pre_factura',[$comprobante->secuencial,true])}}" class="btn btn-info btn-xs" title="Ver factura Cliente">
+                        <i class="fa fa-user-circle-o" aria-hidden="true"></i>
+                    </a>
+                </td>
             </tr>
         @endforeach
         <tr>
-            <td class="text-center" colspan="4">
-                <buttom class="btn btn-primary" title="Guardar orden de facturas">
-                    <i class="fa fa-floppy-o"></i> Guardar
-                </buttom>
-            </td>
+            <td colspan="3" ></td>
+            <td class="text-center"> <b> Total: </b> </td>
+            <td class="text-center"><b>{{$total_full_fisicas}} </b></td>
+            <td class="text-center"> <b>{{$total_full_equivalente}} </b></td>
         </tr>
     </table>
+    <div class="text-center">
+        <buttom class="btn btn-primary" title="Guardar orden de facturas">
+            <i class="fa fa-floppy-o"></i> Guardar
+        </buttom>
+    </div>
 @else
     <div class="alert alert-info text-center">No se han encontrado pedidos con facturas generadas</div>
 @endif
