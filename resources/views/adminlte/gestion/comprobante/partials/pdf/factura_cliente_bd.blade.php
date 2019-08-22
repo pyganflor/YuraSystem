@@ -268,27 +268,35 @@
                         $total_tallos += number_format(($det_ped->cantidad*$esp_emp->cantidad*$det_esp_emp->cantidad*$det_esp_emp->tallos_x_ramos),2,".","");
                         $full_equivalente_real += explode("|",$esp_emp->empaque->nombre)[1]*$det_ped->cantidad;
                         $descripcion = substr($det_esp_emp->variedad->planta->nombre, 0, 3) .", ". $det_esp_emp->variedad->nombre;
-                        switch (explode("|",$esp_emp->empaque->nombre)[1]) {
-                            case '1':
-                                $full += $det_ped->cantidad;
-                                break;
-                            case '0.5':
-                                $half += $det_ped->cantidad;
-                                break;
-                            case '0.25':
-                                $cuarto +=$det_ped->cantidad;
-                                break;
-                            case '0.17':
-                                $sexto +=$det_ped->cantidad;
-                                break;
-                            case '0.125':
-                                $octavo +=$det_ped->cantidad;
-                                break;
-                        }
+
                     @endphp
                     <tr>
-                        <td style="font-size:11px"> {{number_format($det_ped->cantidad,2,".","")}}</td>
-                        @php $total_piezas += $det_ped->cantidad @endphp
+                        @if($n == 0)
+                            <td style="font-size:11px;vertical-align:middle;text-aling:center" rowspan="{{$det_ped->cliente_especificacion->especificacion->especificacionesEmpaque->count()}}">
+                                {{number_format($det_ped->cantidad,2,".","")}}
+                                @php
+                                    $total_piezas += $det_ped->cantidad;
+                                    switch (explode("|",$esp_emp->empaque->nombre)[1]) {
+                                        case '1':
+                                            $full += $det_ped->cantidad;
+                                            break;
+                                        case '0.5':
+                                            $half += $det_ped->cantidad;
+                                            break;
+                                        case '0.25':
+                                            $cuarto +=$det_ped->cantidad;
+                                            break;
+                                        case '0.17':
+                                            $sexto +=$det_ped->cantidad;
+                                            break;
+                                        case '0.125':
+                                            $octavo +=$det_ped->cantidad;
+                                            break;
+                                     }
+                                @endphp
+
+                            </td>
+                        @endif
                         <td style="font-size:11px">{{$descripcion}}</td>
                         <td style="font-size:11px"> A</td>
                         <td style="font-size:11px"> {{$det_esp_emp->variedad->planta->tarifa}}</td>
