@@ -314,6 +314,7 @@
             @endforeach
         @endforeach
     @elseif($envio->pedido->tipo_especificacion === "T")
+        @php $data_body_table=[]; @endphp
         @foreach ($envio->pedido->detalles as $x => $det_ped)
             @foreach($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $m => $esp_emp)
                 @foreach ($esp_emp->detalles as $n => $det_esp_emp)
@@ -340,7 +341,7 @@
                     @endphp
                 @endforeach
             @endforeach
-            @php $data_body_table=[]; @endphp
+
             @foreach($det_ped->coloraciones as $y => $coloracion)
                 @foreach($coloracion->marcaciones_coloraciones as $m_c)
                     @if($m_c->cantidad > 0)
@@ -369,21 +370,22 @@
                                     @endphp
                                 @endif
                             @endforeach
+                            @php
+                                $data_body_table[$m_c->detalle_especificacionempaque->variedad->planta->id_planta][$m_c->detalle_especificacionempaque->variedad->id_variedad][$precio][]=[
+                                    'ramos' => $m_c->cantidad,
+                                    'precio'=> $precio,
+                                    'hts' => $m_c->detalle_especificacionempaque->especificacion_empaque->detalles[0]->variedad->planta->tarifa,
+                                    'nandina' =>$m_c->detalle_especificacionempaque->especificacion_empaque->detalles[0]->variedad->planta->nandina,
+                                    'descripcion' =>substr($m_c->detalle_especificacionempaque->variedad->planta->nombre, 0, 3) .", ". $m_c->detalle_especificacionempaque->variedad->nombre,
+                                    'piezas'=> number_format(($m_c->cantidad/$m_c->detalle_especificacionempaque->cantidad),2,".","")
+                                ];
+                            @endphp
                         @endforeach
-                        @php
-                            $data_body_table[$m_c->detalle_especificacionempaque->variedad->planta->id_planta][$m_c->detalle_especificacionempaque->variedad->id_variedad][$precio][]=[
-                                'ramos' => $m_c->cantidad,
-                                'precio'=> $precio,
-                                'hts' => $m_c->detalle_especificacionempaque->especificacion_empaque->detalles[0]->variedad->planta->tarifa,
-                                'nandina' =>$m_c->detalle_especificacionempaque->especificacion_empaque->detalles[0]->variedad->planta->nandina,
-                                'descripcion' =>substr($m_c->detalle_especificacionempaque->variedad->planta->nombre, 0, 3) .", ". $m_c->detalle_especificacionempaque->variedad->nombre,
-                                'piezas'=>number_format(($m_c->cantidad/$m_c->detalle_especificacionempaque->cantidad),2,".","")
-                            ];
-                        @endphp
                     @endif
                 @endforeach
             @endforeach
         @endforeach
+
         @foreach($data_body_table as $body_table)
             @foreach($body_table as $table)
                 @foreach($table as $t)
