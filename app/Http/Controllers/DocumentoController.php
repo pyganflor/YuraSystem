@@ -113,11 +113,11 @@ class DocumentoController extends Controller
             'id_documento' => 'required',
             'valor' => 'required',
             'nombre_campo' => 'required',
-            'descripcion' => 'required',
+            //'descripcion' => 'required',
         ], [
             'id_documento.required' => 'El documento es obligatorio',
             'valor.required' => 'El valor es obligatorio',
-            'descripcion.required' => 'La descripción es obligatoria',
+            //'descripcion.required' => 'La descripción es obligatoria',
             'nombre_campo.required' => 'El nombre del campo es obligatorio',
         ]);
         if (!$valida->fails()) {

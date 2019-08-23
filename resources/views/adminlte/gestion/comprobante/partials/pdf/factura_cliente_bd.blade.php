@@ -268,27 +268,35 @@
                         $total_tallos += number_format(($det_ped->cantidad*$esp_emp->cantidad*$det_esp_emp->cantidad*$det_esp_emp->tallos_x_ramos),2,".","");
                         $full_equivalente_real += explode("|",$esp_emp->empaque->nombre)[1]*$det_ped->cantidad;
                         $descripcion = substr($det_esp_emp->variedad->planta->nombre, 0, 3) .", ". $det_esp_emp->variedad->nombre;
-                        switch (explode("|",$esp_emp->empaque->nombre)[1]) {
-                            case '1':
-                                $full += $det_ped->cantidad;
-                                break;
-                            case '0.5':
-                                $half += $det_ped->cantidad;
-                                break;
-                            case '0.25':
-                                $cuarto +=$det_ped->cantidad;
-                                break;
-                            case '0.17':
-                                $sexto +=$det_ped->cantidad;
-                                break;
-                            case '0.125':
-                                $octavo +=$det_ped->cantidad;
-                                break;
-                        }
+
                     @endphp
                     <tr>
-                        <td style="font-size:11px"> {{number_format($det_ped->cantidad,2,".","")}}</td>
-                        @php $total_piezas += $det_ped->cantidad @endphp
+                        @if($n == 0)
+                            <td style="font-size:11px;vertical-align:middle;text-aling:center" rowspan="{{$det_ped->cliente_especificacion->especificacion->especificacionesEmpaque->count()}}">
+                                {{number_format($det_ped->cantidad,2,".","")}}
+                                @php
+                                    $total_piezas += $det_ped->cantidad;
+                                    switch (explode("|",$esp_emp->empaque->nombre)[1]) {
+                                        case '1':
+                                            $full += $det_ped->cantidad;
+                                            break;
+                                        case '0.5':
+                                            $half += $det_ped->cantidad;
+                                            break;
+                                        case '0.25':
+                                            $cuarto +=$det_ped->cantidad;
+                                            break;
+                                        case '0.17':
+                                            $sexto +=$det_ped->cantidad;
+                                            break;
+                                        case '0.125':
+                                            $octavo +=$det_ped->cantidad;
+                                            break;
+                                     }
+                                @endphp
+
+                            </td>
+                        @endif
                         <td style="font-size:11px">{{$descripcion}}</td>
                         <td style="font-size:11px"> A</td>
                         <td style="font-size:11px"> {{$det_esp_emp->variedad->planta->tarifa}}</td>
@@ -306,6 +314,7 @@
             @endforeach
         @endforeach
     @elseif($envio->pedido->tipo_especificacion === "T")
+        @php $data_body_table=[]; @endphp
         @foreach ($envio->pedido->detalles as $x => $det_ped)
             @foreach($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $m => $esp_emp)
                 @foreach ($esp_emp->detalles as $n => $det_esp_emp)
@@ -332,7 +341,7 @@
                     @endphp
                 @endforeach
             @endforeach
-            @php $data_body_table=[]; @endphp
+
             @foreach($det_ped->coloraciones as $y => $coloracion)
                 @foreach($coloracion->marcaciones_coloraciones as $m_c)
                     @if($m_c->cantidad > 0)
@@ -361,21 +370,30 @@
                                     @endphp
                                 @endif
                             @endforeach
+                            @php
+                                $data_body_table[$m_c->detalle_especificacionempaque->variedad->planta->id_planta][$m_c->detalle_especificacionempaque->variedad->id_variedad][$precio][]=[
+                                    'ramos' => $m_c->cantidad,
+                                    'precio'=> $precio,
+                                    'hts' => $m_c->detalle_especificacionempaque->especificacion_empaque->detalles[0]->variedad->planta->tarifa,
+                                    'nandina' =>$m_c->detalle_especificacionempaque->especificacion_empaque->detalles[0]->variedad->planta->nandina,
+                                    'descripcion' =>substr($m_c->detalle_especificacionempaque->variedad->planta->nombre, 0, 3) .", ". $m_c->detalle_especificacionempaque->variedad->nombre,
+                                    'piezas'=> number_format(($m_c->cantidad/$m_c->detalle_especificacionempaque->cantidad),2,".","")
+                                ];
+                            @endphp
                         @endforeach
-                        @php
-                            $data_body_table[$m_c->detalle_especificacionempaque->variedad->planta->id_planta][$m_c->detalle_especificacionempaque->variedad->id_variedad][$precio][]=[
-                                'ramos' => $m_c->cantidad,
-                                'precio'=> $precio,
-                                'hts' => $m_c->detalle_especificacionempaque->especificacion_empaque->detalles[0]->variedad->planta->tarifa,
-                                'nandina' =>$m_c->detalle_especificacionempaque->especificacion_empaque->detalles[0]->variedad->planta->nandina,
-                                'descripcion' =>substr($m_c->detalle_especificacionempaque->variedad->planta->nombre, 0, 3) .", ". $m_c->detalle_especificacionempaque->variedad->nombre,
-                                'piezas'=>number_format(($m_c->cantidad/$m_c->detalle_especificacionempaque->cantidad),2,".","")
-                            ];
-                        @endphp
+<<<<<<< HEAD
+=======
+
+>>>>>>> 67f729ccd5989238813903ed706a9a4aa3822121
                     @endif
                 @endforeach
             @endforeach
         @endforeach
+<<<<<<< HEAD
+
+=======
+        
+>>>>>>> 67f729ccd5989238813903ed706a9a4aa3822121
         @foreach($data_body_table as $body_table)
             @foreach($body_table as $table)
                 @foreach($table as $t)
