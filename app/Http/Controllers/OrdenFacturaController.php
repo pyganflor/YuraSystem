@@ -16,7 +16,7 @@ class OrdenFacturaController extends Controller
             [
                 'url' => $request->getRequestUri(),
                 'submenu' => Submenu::Where('url', '=', substr($request->getRequestUri(), 1))->get()[0],
-                'text' => ['titulo' => 'Ordenar facturas', 'subtitulo' => 'módulo de facturación'],
+                'text' => ['titulo' => 'Ordenar facturas', 'subtitulo' => 'módulo de ventas'],
                 'empresas' => getConfiguracionEmpresa(null,true)
             ]);
     }

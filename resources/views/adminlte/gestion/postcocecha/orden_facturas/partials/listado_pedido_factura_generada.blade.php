@@ -4,7 +4,7 @@
             <thead>
             <tr style="background-color: #dd4b39; color: white">
                 <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d;">
-                    N° de factura
+                    Facturas generadas
                 </th>
             </tr>
             </thead>
