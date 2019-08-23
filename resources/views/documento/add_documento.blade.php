@@ -24,9 +24,9 @@
                     </span>
                 </div>
                 <div class="form-group input-group">
-                    <span class="input-group-addon" style="background-color: #e9ecef">Descripción <span class="error">*</span></span>
+                    <span class="input-group-addon" style="background-color: #e9ecef">Descripción </span>
                     <textarea name="descripcion_1" id="descripcion_1" cols="30" rows="3" maxlength="4000" class="form-control"
-                              placeholder="Escriba alguna descripción sobre la información adicional" required></textarea>
+                              placeholder="Escriba alguna descripción sobre la información adicional"></textarea>
                 </div>
             </td>
         </tr>
@@ -82,9 +82,9 @@
             '                    </span>' +
             '                </div>' +
             '                <div class="form-group input-group">' +
-            '                    <span class="input-group-addon" style="background-color: #e9ecef">Descripción <span class="error">*</span></span>' +
+            '                    <span class="input-group-addon" style="background-color: #e9ecef">Descripción </span>' +
             '                    <textarea name="descripcion_' + cant_doc + '" id="descripcion_' + cant_doc + '" cols="30" rows="3" maxlength="4000" class="form-control"' +
-            '                              placeholder="Escriba alguna descripción sobre la información adicional" required></textarea>' +
+            '                              placeholder="Escriba alguna descripción sobre la información adicional"></textarea>' +
             '                </div>' +
             '            </td>' +
             '        </tr>');

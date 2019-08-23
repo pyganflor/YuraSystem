@@ -4,6 +4,7 @@ namespace yura\Http\Controllers;
 
 use DB;
 use Illuminate\Http\Request;
+use Validator;
 use yura\Modelos\Cliente;
 use yura\Modelos\Comprobante;
 use yura\Modelos\Submenu;
@@ -32,5 +33,55 @@ class OrdenFacturaController extends Controller
             ])->join('envio as e','comprobante.id_envio','e.id_envio')
                 ->join('pedido as p', 'e.id_pedido','p.id_pedido')->orderBy('comprobante.secuencial','asc')->get(),
         ]);
+    }
+
+    public function update_secuencial_factura(Request $request){
+        $valida = Validator::make($request->all(), [
+            'arr_comprobante.*.secuencial' => 'required',
+            'arr_comprobante.*.id_comprobante' => 'required',
+        ],[
+            'arr_comprobante.*.secuencial.required' => 'No se logro capturar el numero de la factura',
+            'arr_comprobante.*.id_comprobante.required' => 'No se logro capturar el identificador de la factura'
+        ]);
+
+        if (!$valida->fails()) {
+            $msg="";
+            foreach ($request->arr_comprobante as $comprobante) {
+                $objComprobante = Comprobante::find($comprobante['id_comprobante']);
+                $objComprobante->update(['secuencial'=>$comprobante['secuencial']]);
+                if($objComprobante){
+                    $success = true;
+                    $msg = '<div class="alert alert-success text-center">' .
+                        '<p> Se han actualizado los números de factura seleccionados exitosamente </p>'
+                        . '</div>';
+                }else{
+                    $success = false;
+                    $msg .= '<div class="alert alert-danger text-center">' .
+                        '<p> No se ha actualizado el numero de factura '.$comprobante['secuencial'].', intente nuevamente </p>'
+                        . '</div>';
+                }
+            }
+        
+        }else {
+            $success = false;
+            $errores = '';
+            foreach ($valida->errors()->all() as $mi_error) {
+                if ($errores == '') {
+                    $errores = '<li>' . $mi_error . '</li>';
+                } else {
+                    $errores .= '<li>' . $mi_error . '</li>';
+                }
+            }
+            $msg = '<div class="alert alert-danger">' .
+                '<p class="text-center">¡Por favor corrija los siguientes errores!</p>' .
+                '<ul>' .
+                $errores .
+                '</ul>' .
+                '</div>';
+        }
+            return [
+                'mensaje' => $msg,
+                'success' => $success
+            ];
     }
 }
