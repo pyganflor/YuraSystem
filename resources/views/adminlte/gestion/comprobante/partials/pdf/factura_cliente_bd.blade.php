@@ -381,12 +381,19 @@
                                 ];
                             @endphp
                         @endforeach
+<<<<<<< HEAD
+=======
 
+>>>>>>> 67f729ccd5989238813903ed706a9a4aa3822121
                     @endif
                 @endforeach
             @endforeach
         @endforeach
+<<<<<<< HEAD
+
+=======
         
+>>>>>>> 67f729ccd5989238813903ed706a9a4aa3822121
         @foreach($data_body_table as $body_table)
             @foreach($body_table as $table)
                 @foreach($table as $t)

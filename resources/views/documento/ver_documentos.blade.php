@@ -47,8 +47,9 @@
                     </td>
                     <td style="border-color: #9d9d9d" class="text-center">
                     <textarea name="descripcion_{{$item->id_documento}}" id="descripcion_{{$item->id_documento}}" rows="2"
-                              maxlength="4000" class="form-control" placeholder="Escriba alguna descripción sobre la información adicional"
-                              required>{{$item->descripcion}}</textarea>
+                              maxlength="4000" class="form-control" placeholder="Escriba alguna descripción sobre la información adicional">
+                        {{$item->descripcion}}
+                    </textarea>
                     </td>
                     <td style="border-color: #9d9d9d" class="text-center" width="10%">
                         <div class="btn-group">
