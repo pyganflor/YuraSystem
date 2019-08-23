@@ -1462,9 +1462,9 @@ function getSecuencial($tipoComprobante, $configuracionEmpresa)
     $secuencial = $inicio_secuencial + 1;
     $cant_reg = Comprobante::where('comprobante.tipo_comprobante', $tipoComprobante);
 
-    if($tipoComprobante == "01")
-        $cant_reg->join('envio as e','comprobante.id_envio','e.id_envio')
-            ->join('pedido as p','e.id_pedido','p.id_pedido')
+    if ($tipoComprobante == "01")
+        $cant_reg->join('envio as e', 'comprobante.id_envio', 'e.id_envio')
+            ->join('pedido as p', 'e.id_pedido', 'p.id_pedido')
             ->where('p.id_configuracion_empresa', $configuracionEmpresa->id_configuracion_empresa);
 
     if ($cant_reg->count() > 0)
@@ -2240,6 +2240,28 @@ function getFacturaAnulada($idPedido)
     return $success;
 }
 
-function getLastPedido(){
+function getLastPedido()
+{
     return Pedido::all()->last();
+}
+
+function getTallosCosechadosByModSemVar($mod, $semana, $variedad)
+{
+    $sem = Semana::All()
+        ->where('codigo', '=', $semana)
+        ->where('id_variedad', '=', $variedad)
+        ->first();
+
+    $r = DB::table('desglose_recepcion as dr')
+        ->select(DB::raw('sum(dr.cantidad_mallas * dr.tallos_x_malla) as cantidad'))
+        ->join('recepcion as r', 'dr.id_recepcion', '=', 'r.id_recepcion')
+        ->where('r.estado', '=', 1)
+        ->where('dr.estado', '=', 1)
+        ->where('dr.id_modulo', '=', $mod)
+        ->where('dr.id_variedad', '=', $variedad)
+        ->where('r.fecha_ingreso', '>=', $sem->fecha_inicial)
+        ->where('r.fecha_ingreso', '<=', $sem->fecha_final)
+        ->get()[0]->cantidad;
+
+    return $r;
 }
