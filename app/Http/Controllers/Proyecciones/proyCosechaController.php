@@ -97,6 +97,7 @@ class proyCosechaController extends Controller
                 return view('adminlte.gestion.proyecciones.cosecha.partials.listado', [
                     'semanas' => $semanas,
                     'modulos' => $array_modulos,
+                    'variedad' => $request->variedad,
                 ]);
             } else
                 return 'No se han encontrado módulos en el rango establecido.';
