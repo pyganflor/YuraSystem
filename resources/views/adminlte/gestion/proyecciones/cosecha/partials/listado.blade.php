@@ -23,7 +23,7 @@
         <tbody>
         @foreach($modulos as $mod)
             <tr>
-                <th class="text-center" style="border-color: #9d9d9d">
+                <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
                     {{$mod['modulo']->nombre}}
                 </th>
                 @foreach($mod['valores'] as $pos_val => $val)
@@ -78,6 +78,8 @@
                                 $title .= '<em>Desecho: '.($val['data']['proy']->desecho).'%</em><br>';
                             }
                         }
+
+                    $cosechado = getTallosCosechadosByModSemVar($mod['modulo']->id_modulo, $semanas[$pos_val]->codigo, $variedad);
                     @endphp
                     <td class="text-center {{in_array($val['data']['tipo'], ['F', 'P', 'S', 'Y']) ? 'mouse-hand' : ''}}"
                         onmouseover="$(this).css('border', '3px solid black')" onmouseleave="$(this).css('border', '1px solid #9d9d9d')"
@@ -90,14 +92,14 @@
                             @else
                                 {{$val['data']['info']}}
                             @endif
-                            @if($val['data']['cosechado'] > 0)
+                            @if($cosechado > 0)
                                 <br>
-                                <strong style="font-size: 0.8em">{{number_format($val['data']['cosechado'])}}</strong>
+                                <strong style="font-size: 0.8em">{{number_format($cosechado)}}</strong>
                             @endif
                         </span>
                     </td>
                 @endforeach
-                <th class="text-center" style="border-color: #9d9d9d">
+                <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
                     {{$mod['modulo']->nombre}}
                 </th>
             </tr>
