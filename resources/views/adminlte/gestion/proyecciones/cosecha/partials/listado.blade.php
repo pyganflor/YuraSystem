@@ -79,7 +79,7 @@
                             }
                         }
 
-                    $cosechado = getTallosCosechadosByModSemVar($mod['modulo']->id_modulo, $semanas[$pos_val]->codigo, $variedad);
+                    //$cosechado = getTallosCosechadosByModSemVar($mod['modulo']->id_modulo, $semanas[$pos_val]->codigo, $variedad);
                     @endphp
                     <td class="text-center {{in_array($val['data']['tipo'], ['F', 'P', 'S', 'Y']) ? 'mouse-hand' : ''}}"
                         onmouseover="$(this).css('border', '3px solid black')" onmouseleave="$(this).css('border', '1px solid #9d9d9d')"
@@ -92,9 +92,9 @@
                             @else
                                 {{$val['data']['info']}}
                             @endif
-                            @if($cosechado > 0)
+                            @if($val['data']['cosechado'] > 0)
                                 <br>
-                                <strong style="font-size: 0.8em">{{number_format($cosechado)}}</strong>
+                                <strong style="font-size: 0.8em">{{number_format($val['data']['cosechado'])}}</strong>
                             @endif
                         </span>
                     </td>
