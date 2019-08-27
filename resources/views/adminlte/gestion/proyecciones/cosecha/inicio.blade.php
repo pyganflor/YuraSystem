@@ -6,6 +6,20 @@
 
 @section('script_inicio')
     <script>
+        function load_celda(mod, sem, variedad, desde, opcion, detalle) {
+            datos = {
+                modulo: mod,
+                semana: sem,
+                variedad: variedad,
+                desde: desde,
+                opcion: opcion,
+                detalle: detalle,
+            };
+
+            $.get('{{url('proy_cosecha/load_celda')}}', datos, function (retorno) {
+                $('#celda_' + mod + '_' + sem).html(retorno);
+            });
+        }
     </script>
 @endsection
 
@@ -95,6 +109,5 @@
 @endsection
 
 @section('script_final')
-
     @include('adminlte.gestion.proyecciones.cosecha.script')
 @endsection
