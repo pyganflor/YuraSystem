@@ -5,9 +5,9 @@
         get_jquery('{{url('crm_postcosecha/cargar_cosecha')}}', {}, function (retorno) {
             $('#div_cosecha').html(retorno);
 
-            setTimeout("activar_tab('tallos')", 500);
+            /*setTimeout("activar_tab('tallos')", 500);
             setTimeout("activar_tab('calibres')", 600);
-            setTimeout("activar_tab('cajas')", 700);
+            setTimeout("activar_tab('cajas')", 700);*/
         });
     }
 
@@ -118,9 +118,9 @@
             get_jquery('{{url('crm_postcosecha/buscar_reporte_cosecha_chart')}}', datos, function (retorno) {
                 $('#div_chart_cosecha').html(retorno);
 
-                setTimeout("activar_tab('tallos')", 1000);
+                /*setTimeout("activar_tab('tallos')", 1000);
                 setTimeout("activar_tab('calibres')", 1500);
-                setTimeout("activar_tab('cajas')", 2000);
+                setTimeout("activar_tab('cajas')", 2000);*/
             });
         }
     }
