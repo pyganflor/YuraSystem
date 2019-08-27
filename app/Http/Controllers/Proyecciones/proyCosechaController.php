@@ -24,7 +24,8 @@ class proyCosechaController extends Controller
 
     public function listar_proyecciones(Request $request)
     {
-        //ini_set('max_execution_time', env('MAX_EXECUTION_TIME'));
+        ini_set('max_execution_time', env('MAX_EXECUTION_TIME'));
+        set_time_limit(120);
 
         $semana_desde = Semana::All()->where('codigo', $request->desde)->first();
         $semana_hasta = Semana::All()->where('codigo', $request->hasta)->first();
