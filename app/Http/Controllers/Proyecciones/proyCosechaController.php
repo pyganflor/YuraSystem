@@ -24,6 +24,9 @@ class proyCosechaController extends Controller
 
     public function listar_proyecciones(Request $request)
     {
+        ini_set('max_execution_time', env('MAX_EXECUTION_TIME'));
+        set_time_limit(120);
+
         $semana_desde = Semana::All()->where('codigo', $request->desde)->first();
         $semana_hasta = Semana::All()->where('codigo', $request->hasta)->first();
         if ($semana_desde != '' && $semana_hasta != '') {
@@ -60,41 +63,15 @@ class proyCosechaController extends Controller
                     ->orderBy('fecha_inicio', 'asc')
                     ->get();
 
-                $array_modulos = [];
-                foreach ($query_modulos as $mod) {
-                    $mod = getModuloById($mod->id_modulo);
-                    $array_valores = [];
-                    foreach ($semanas as $sem) {
-                        if ($sem->codigo < getSemanaByDate(date('Y-m-d'))->codigo) {    // semana pasada
-                            $data = $mod->getDataBySemana(-1, $sem, $request->variedad, $semana_desde->fecha_inicial, $request->opcion, $request->detalle);
-                            $valor = [
-                                'tiempo' => -1,
-                                'data' => $data,
-                            ];
-                        } else if ($sem->codigo == getSemanaByDate(date('Y-m-d'))->codigo) {    // semana actual
-                            $data = $mod->getDataBySemana(0, $sem, $request->variedad, $semana_desde->fecha_inicial, $request->opcion, $request->detalle);
-                            $valor = [
-                                'tiempo' => 0,
-                                'data' => $data,
-                            ];
-                        } else {    // semana posterior
-                            $data = $mod->getDataBySemana(1, $sem, $request->variedad, $semana_desde->fecha_inicial, $request->opcion, $request->detalle);
-                            $valor = [
-                                'tiempo' => 1,
-                                'data' => $data,
-                            ];
-                        }
-                        array_push($array_valores, $valor);
-                    }
-                    array_push($array_modulos, [
-                        'modulo' => $mod,
-                        'valores' => $array_valores
-                    ]);
-                }
+                //dd($semanas, $query_modulos);
 
                 return view('adminlte.gestion.proyecciones.cosecha.partials.listado', [
                     'semanas' => $semanas,
-                    'modulos' => $array_modulos,
+                    'modulos' => $query_modulos,
+                    'variedad' => $request->variedad,
+                    'semana_desde' => $semana_desde,
+                    'opcion' => $request->opcion,
+                    'detalle' => $request->detalle,
                 ]);
             } else
                 return 'No se han encontrado módulos en el rango establecido.';
@@ -148,6 +125,14 @@ class proyCosechaController extends Controller
                 'ciclo' => Ciclo::find($request->model),
             ]);
         }
+    }
+
+    public function load_celda(Request $request)
+    {
+        $title = 'OK';
+        return view('adminlte.gestion.proyecciones.cosecha.partials._celda', [
+            'title' => $title
+        ]);
     }
 
     public function store_proyeccion(Request $request)
