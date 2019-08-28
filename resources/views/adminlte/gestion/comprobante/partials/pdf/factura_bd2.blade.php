@@ -5,7 +5,7 @@
             <td style="width: 350px;">
                 <table>
                     <tr>
-                        <td style="border:1px solid black;border-radius:5px;text-align:center;{{(!isset($data['comprobante']->empresa->imagen)) ? "padding:90px 110px" : ""}}">
+                        <td style="border:1px solid black;border-radius:5px;text-align:center {{(!isset($data['comprobante']->empresa->imagen)) ? "padding:90px 110px" : ""}}">
                             @if(isset($data['comprobante']->empresa->imagen))
                                 <img src="{{"./images/".$data['comprobante']->empresa->imagen}}" style="width:320px;height: 200px">
                             @else
@@ -92,23 +92,34 @@
             <tr>
                 <td style="border:1px solid black;border-radius:5px;width:720px">
                     @php
-                        $direccionComprador = $data['comprobante']->envio->pedido->cliente->detalle()->direccion;
-                        $telefonoComproador = $data['comprobante']->envio->pedido->cliente->detalle()->telefono;
-                        $correoComprador = $data['comprobante']->envio->pedido->cliente->detalle()->correo;
-                        $dae = $data['comprobante']->envio->dae;
-                        $andenComprador =  $data['comprobante']->envio->almacen;
-                        $codigoPorcentajeImpuesto = $data['comprobante']->envio->pedido->cliente->detalle()->codigo_porcentaje_impuesto;
-                        $impuesto =  getTipoImpuesto($data['comprobante']->envio->pedido->cliente->detalle()->codigo_impuesto, $data['comprobante']->envio->pedido->cliente->detalle()->codigo_porcentaje_impuesto);
+                            if($data['comprobante']->envio->fatura_cliente_tercero == null){
+                                $direccionComprador = $data['comprobante']->envio->pedido->cliente->detalle()->direccion;
+                                $telefonoComproador = $data['comprobante']->envio->pedido->cliente->detalle()->telefono;
+                                $correoComprador = $data['comprobante']->envio->pedido->cliente->detalle()->correo;
+                                $dae = $data['comprobante']->envio->dae;
+                                $andenComprador =  $data['comprobante']->envio->almacen;
+                                $codigoPorcentajeImpuesto = $data['comprobante']->envio->pedido->cliente->detalle()->codigo_porcentaje_impuesto;
+                                $impuesto =  getTipoImpuesto($data['comprobante']->envio->pedido->cliente->detalle()->codigo_impuesto, $data['comprobante']->envio->pedido->cliente->detalle()->codigo_porcentaje_impuesto);
+                                //dd($impuesto);
+                            }else{
+                                $direccionComprador = $data['comprobante']->envio->fatura_cliente_tercero->direccion;
+                                $telefonoComproador = $data['comprobante']->envio->fatura_cliente_tercero->telefono;
+                                $correoComprador = $data['comprobante']->envio->fatura_cliente_tercero->correo;
+                                $dae = $data['comprobante']->envio->fatura_cliente_tercero->dae;
+                                $andenComprador = $data['comprobante']->envio->fatura_cliente_tercero->almacen;
+                                $codigoPorcentajeImpuesto = $data['comprobante']->envio->fatura_cliente_tercero->codigo_impuesto_porcentaje;
+                                $impuesto =  getTipoImpuesto($data['comprobante']->envio->fatura_cliente_tercero->codigo_impuesto, $data['comprobante']->envio->fatura_cliente_tercero->codigo_impuesto_porcentaje);
+                            }
                     @endphp
                     <table>
                         <tr>
-                            <td style="font-size:15px;padding:5px">Razon social / Nombre y Apellidos: {{$data['comprobante']->envio->pedido->cliente->detalle()->nombre}}</td>
+                            <td style="font-size:15px;padding:5px">Razon social / Nombre y Apellidos: {{$detalleFactura->razon_social_comprador}}</td>
                         </tr>
                         <tr>
-                            <td style="font-size:12;padding:5px">RUC / CI: {{$data['comprobante']->envio->pedido->cliente->detalle()->ruc}}</td>
+                            <td style="font-size:12;padding:5px">RUC / CI: {{$detalleFactura->identificacion_comprador}}</td>
                         </tr>
                         <tr>
-                            <td style="font-size:15px;padding:5px">Destinatario: {{$data['comprobante']->envio->pedido->cliente->detalle()->nombre}}</td>
+                            <td style="font-size:15px;padding:5px">Destinatario: {{$detalleFactura->razon_social_comprador}}</td>
                         </tr>
                         <tr>
                             <td style="font-size:15px;padding:5px">Carguera: {{$data['comprobante']->envio->pedido->detalles[0]->agencia_carga->nombre}}</td>
