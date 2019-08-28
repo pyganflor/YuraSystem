@@ -31,9 +31,10 @@
                             <div class="form-inline">
                                 <div class="form-group">
                                     <label for="id_configuracion_empresa">Empresa</label><br />
-                                    <select class="form-control" id="id_configuracion_empresa_comproante" name="id_configuracion_empresa_comproante">
+                                    <select class="form-control" id="id_configuracion_empresa_comproante" style="width:180px"
+                                            name="id_configuracion_empresa_comproante">
                                         @foreach($empresas as $empresa)
-                                             <option value="{{$empresa->id_configuracion_empresa}}"> {{$empresa->razon_social}} </option>
+                                             <option value="{{$empresa->id_configuracion_empresa}}"> {{$empresa->nombre}} </option>
                                          @endforeach
                                      </select>
                                  </div>
