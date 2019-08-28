@@ -154,7 +154,7 @@ class EtiquetaController extends Controller
                 $factura['doble'] == "true"  ? $doble = 2  : $doble = 1;
 
                 $pais_destino = getPais($comprobante->envio->pedido->cliente->detalle()->codigo_pais)->nombre;
-                $dae = $comprobante->envio->dae;po
+                $dae = $comprobante->envio->dae;
                 $factura_tercero = getFacturaClienteTercero($comprobante->envio->id_envio);
                 if($factura_tercero!= "" && isset($factura_tercero->codigo_pais)){
                     $pais_destino = getPais($factura_tercero->codigo_pais)->nombre;
