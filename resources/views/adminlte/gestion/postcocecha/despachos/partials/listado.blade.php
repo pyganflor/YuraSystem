@@ -16,13 +16,6 @@
                     </th>
                     <th style="border-color: #9d9d9d; background-color: #e9ecef" class="text-right" colspan="{{$opciones ? "11" : "12"}}">
                         @if(!$opciones)
-                            <select id="id_configuracion_empresa_despacho" name="id_configuracion_empresa_despacho"
-                                    style="height: 22px;position: relative;top: 1px;" onchange="desbloquea_pedido()">
-                                <option value="">Seleccionar empresa para ordenar pedidos</option>
-                                @foreach($empresas as $emp)
-                                    <option value="{{$emp->id_configuracion_empresa}}">{{$emp->razon_social}}</option>
-                                @endforeach
-                            </select>
                             <button type="button" class="btn btn-xs btn-primary" onclick="ver_despachos()">
                                 <i class="fa fa-eye" aria-hidden="true"></i> Ver despachos
                             </button>
@@ -30,15 +23,7 @@
                                 <i class="fa fa-truck" aria-hidden="true"></i> Crear despacho
                             </button>
                         @endif
-                        @if($opciones)
-                            <select id="id_configuracion" name="id_configuracion_empresa"
-                                    onchange="listar_resumen_pedidos(document.getElementById('fecha_pedidos_search').value,true,this.value)" style="height: 22px;position: relative;top: 1px;">
-                                <option value="" disabled selected>Ver pedidos de:</option>
-                                @foreach(getConfiguracionEmpresa(null,true) as $empresa)
-                                    <option value="{{$empresa->id_configuracion_empresa}}">{{$empresa->nombre}}</option>
-                                @endforeach
-                            </select>
-                        @endif
+
                         <button type="button" class="btn btn-xs btn-primary" onclick="exportar_listado_cuarto_frio('{{csrf_token()}}')">
                             <i class="fa fa-fw fa-file-excel-o"></i> Exportar a Excel Cuarto Frio
                         </button>
@@ -189,7 +174,7 @@
                                                     @else
                                                         <input type="number" name="orden_despacho" id="{{$pedido->id_pedido}}"
                                                                class="form-control orden_despacho id_configuracion_empresa_{{isset($ped->id_configuracion_empresa) ? $ped->id_configuracion_empresa : ""}}"
-                                                               min="1" style="width: 56px;border:none;text-align: center" disabled>
+                                                               min="1" style="width: 56px;border:none;text-align: center" {{isset($id_configuracion_empresa) ? "" : "disabled"}}>
                                                     @endif
                                                 </td>
                                             @endif

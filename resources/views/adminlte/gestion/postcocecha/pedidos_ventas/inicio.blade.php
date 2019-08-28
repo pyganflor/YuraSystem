@@ -19,6 +19,13 @@
                     <label for="fecha_pedidos_search" style="margin-right: 10px">Fecha de pedidos</label>
                     <input type="date" name="fecha_pedidos_search" id="fecha_pedidos_search"
                            value="{{\Carbon\Carbon::now()->toDateString()}}" onchange="listar_resumen_pedidos($(this).val(),true)">
+                    <select id="id_configuracion_pedido" name="id_configuracion_empresa_pedido"
+                            onchange="listar_resumen_pedidos(document.getElementById('fecha_pedidos_search').value,true,this.value)" style="height: 26px">
+                        <option value="" disabled selected>Ver pedidos de:</option>
+                        @foreach(getConfiguracionEmpresa(null,true) as $empresa)
+                            <option value="{{$empresa->id_configuracion_empresa}}">{{$empresa->nombre}}</option>
+                        @endforeach
+                    </select>
                     <span class="dropdown">
                             <button class="btn btn-primary btn-xs dropdown-toggle" type="button" data-toggle="dropdown"
                                     style="padding-top: 3px;padding-bottom: 3px;position: relative;bottom: 2px;">

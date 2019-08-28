@@ -41,6 +41,7 @@ class PedidoVentaController extends Controller
                     ->where('dc.estado', 1)->get(),
                 'annos' => DB::table('pedido as p')->select(DB::raw('YEAR(p.fecha_pedido) as anno'))
                     ->distinct()->get(),
+                'empresas' => getConfiguracionEmpresa(null,true)
             ]);
     }
 

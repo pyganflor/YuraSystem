@@ -36,6 +36,7 @@ class DespachosController extends Controller
                 ->where('s.estado', '=', 1)->orderBy('s.anno')->get(),
             'variedades' => Variedad::All()->where('estado', '=', 1),
             'unitarias' => getUnitarias(),
+            'empresas' => getConfiguracionEmpresa(null,true)
         ]);
     }
 
@@ -85,14 +86,14 @@ class DespachosController extends Controller
                 ->whereIn('dp.id_pedido', $ids_pedidos)
                 ->get();
         }
-
         $datos = [
             'listado' => $listado,
             'fecha' => $request->fecha,
             'ramos_x_variedad' => $ramos_x_variedad,
             'variedades' => $variedades,
             'opciones' => $request->opciones,
-            'empresas' => getConfiguracionEmpresa(null,true)
+            'id_configuracion_empresa' => $request->id_configuracion_empresa
+
         ];
         return view('adminlte.gestion.postcocecha.despachos.partials.listado', $datos);
     }

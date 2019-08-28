@@ -312,29 +312,30 @@
         @php $data_body_table=[]; @endphp
         @foreach ($envio->pedido->detalles as $x => $det_ped)
             @foreach($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $m => $esp_emp)
-                @foreach ($esp_emp->detalles as $n => $det_esp_emp)
-                    @php
-                        $total_tallos += number_format(($det_ped->cantidad*$esp_emp->cantidad*$det_esp_emp->cantidad*$det_esp_emp->tallos_x_ramos),2,".","");
-                        $full_equivalente_real += explode("|",$esp_emp->empaque->nombre)[1]*$det_ped->cantidad;
-                        switch (explode("|",$esp_emp->empaque->nombre)[1]) {
-                            case '1':
-                                $full += $det_ped->cantidad;
-                                break;
-                            case '0.5':
-                                $half += $det_ped->cantidad;
-                                break;
-                            case '0.25':
-                                $cuarto +=$det_ped->cantidad;
-                                break;
-                            case '0.17':
-                                $sexto +=$det_ped->cantidad;
-                                break;
-                            case '0.125':
-                                $octavo +=$det_ped->cantidad;
-                                break;
-                        }
-                    @endphp
-                @endforeach
+                @php
+                    $total_tallos += number_format(($det_ped->cantidad*$esp_emp->cantidad*$det_esp_emp->cantidad*$det_esp_emp->tallos_x_ramos),2,".","");
+                    $full_equivalente_real += explode("|",$esp_emp->empaque->nombre)[1]*$det_ped->cantidad;
+                    switch (explode("|",$esp_emp->empaque->nombre)[1]) {
+                        case '1':
+                            $full += $det_ped->cantidad;
+                            break;
+                        case '0.5':
+                            $half += $det_ped->cantidad;
+                            break;
+                        case '0.25':
+                            $cuarto +=$det_ped->cantidad;
+                            break;
+                        case '0.17':
+                            $sexto +=$det_ped->cantidad;
+                            break;
+                        case '0.125':
+                            $octavo +=$det_ped->cantidad;
+                            break;
+                    }
+                @endphp
+                {{--@foreach ($esp_emp->detalles as $n => $det_esp_emp)
+
+                @endforeach--}}
             @endforeach
             @foreach($det_ped->coloraciones as $y => $coloracion)
                 @foreach($coloracion->marcaciones_coloraciones as $m_c)
@@ -364,17 +365,17 @@
                                     @endphp
                                 @endif
                             @endforeach
-                            @php
-                                $data_body_table[$m_c->detalle_especificacionempaque->variedad->planta->id_planta][$m_c->detalle_especificacionempaque->variedad->id_variedad][$precio][]=[
-                                    'ramos' => $m_c->cantidad,
-                                    'precio'=> $precio,
-                                    'hts' => $m_c->detalle_especificacionempaque->especificacion_empaque->detalles[0]->variedad->planta->tarifa,
-                                    'nandina' =>$m_c->detalle_especificacionempaque->especificacion_empaque->detalles[0]->variedad->planta->nandina,
-                                    'descripcion' =>substr($m_c->detalle_especificacionempaque->variedad->planta->nombre, 0, 3) .", ". $m_c->detalle_especificacionempaque->variedad->nombre,
-                                    'piezas'=> number_format(($m_c->cantidad/$m_c->detalle_especificacionempaque->cantidad),2,".","")
-                                ];
-                            @endphp
                         @endforeach
+                        @php
+                            $data_body_table[$m_c->detalle_especificacionempaque->variedad->planta->id_planta][$m_c->detalle_especificacionempaque->variedad->id_variedad][$precio][]=[
+                                'ramos' => $m_c->cantidad,
+                                'precio'=> $precio,
+                                'hts' => $m_c->detalle_especificacionempaque->especificacion_empaque->detalles[0]->variedad->planta->tarifa,
+                                'nandina' =>$m_c->detalle_especificacionempaque->especificacion_empaque->detalles[0]->variedad->planta->nandina,
+                                'descripcion' =>substr($m_c->detalle_especificacionempaque->variedad->planta->nombre, 0, 3) .", ". $m_c->detalle_especificacionempaque->variedad->nombre,
+                                'piezas'=> number_format(($m_c->cantidad/$m_c->detalle_especificacionempaque->cantidad),2,".","")
+                            ];
+                        @endphp
                     @endif
                 @endforeach
             @endforeach
