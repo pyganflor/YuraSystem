@@ -44,7 +44,7 @@
                             style="height: 26px;" onchange="desbloquea_pedido()">
                         <option value="">Seleccionar empresa para ordenar pedidos</option>
                         @foreach($empresas as $emp)
-                            <option value="{{$emp->id_configuracion_empresa}}">{{$emp->razon_social}}</option>
+                            <option value="{{$emp->id_configuracion_empresa}}">{{$emp->nombre}}</option>
                         @endforeach
                     </select>
                 </div>
