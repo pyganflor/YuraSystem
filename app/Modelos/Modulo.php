@@ -132,8 +132,8 @@ class Modulo extends Model
     {
         $tallos_proyectados = 0;
         /* ----------------------------- calcular cosecha real ----------------------------- */
-        //$cosecha = getTallosCosechadosByModSemVar($this->id_modulo, $semana->codigo, $variedad);
-        $cosecha = 0;
+        $cosecha = getTallosCosechadosByModSemVar($this->id_modulo, $semana->codigo, $variedad);
+        //$cosecha = 0;
 
         $ciclo_ini = $this->ciclos->where('estado', 1)
             ->where('fecha_inicio', '>=', $semana->fecha_inicial)->where('fecha_inicio', '<=', $semana->fecha_final)

@@ -65,9 +65,44 @@ class proyCosechaController extends Controller
 
                 //dd($semanas, $query_modulos);
 
+                $array_modulos = [];
+                foreach ($query_modulos as $pos_mod => $mod) {
+                    if ($pos_mod <= 10) {
+                        $mod = getModuloById($mod->id_modulo);
+                        $array_valores = [];
+                        foreach ($semanas as $sem) {
+                            if ($sem->codigo < getSemanaByDate(date('Y-m-d'))->codigo) {    // semana pasada
+                                $data = $mod->getDataBySemana(-1, $sem, $request->variedad, $semana_desde->fecha_inicial, $request->opcion, $request->detalle);
+                                $valor = [
+                                    'tiempo' => -1,
+                                    'data' => $data,
+                                ];
+                            } else if ($sem->codigo == getSemanaByDate(date('Y-m-d'))->codigo) {    // semana actual
+                                $data = $mod->getDataBySemana(0, $sem, $request->variedad, $semana_desde->fecha_inicial, $request->opcion, $request->detalle);
+                                $valor = [
+                                    'tiempo' => 0,
+                                    'data' => $data,
+                                ];
+                            } else {    // semana posterior
+                                $data = $mod->getDataBySemana(1, $sem, $request->variedad, $semana_desde->fecha_inicial, $request->opcion, $request->detalle);
+                                $valor = [
+                                    'tiempo' => 1,
+                                    'data' => $data,
+                                ];
+                            }
+                            array_push($array_valores, $valor);
+                        }
+                        array_push($array_modulos, [
+                            'modulo' => $mod,
+                            'valores' => $array_valores
+                        ]);
+                    }
+                }
+
+
                 return view('adminlte.gestion.proyecciones.cosecha.partials.listado', [
                     'semanas' => $semanas,
-                    'modulos' => $query_modulos,
+                    'modulos' => $array_modulos,
                     'variedad' => $request->variedad,
                     'semana_desde' => $semana_desde,
                     'opcion' => $request->opcion,
