@@ -691,13 +691,18 @@ function cargar_opcion(div, id_cliente = '', url, add) {
                 $("#div_content_opciones").html(retorno);
             }
 
-        } else if (div == 'div_content_opciones') {
+        } else if (div === 'div_content_opciones') {
             $("#div_content_opciones").removeClass('hide');
             $('#include_contactos_cliente,#include_agencia_carga').addClass('hide');
 
             $("#div_content_opciones").html(retorno);
 
-        } else if (div == 'div_pedidos') {
+        } else if (div === 'div_pedidos') {
+            $('#include_contactos_cliente,#include_agencia_carga').addClass('hide');
+            $("#div_content_opciones").removeClass('hide');
+            $("#div_content_opciones").html(retorno);
+
+        }else if(div === 'div_consignatario'){
             $('#include_contactos_cliente,#include_agencia_carga').addClass('hide');
             $("#div_content_opciones").removeClass('hide');
             $("#div_content_opciones").html(retorno);
@@ -706,6 +711,42 @@ function cargar_opcion(div, id_cliente = '', url, add) {
     });
     $.LoadingOverlay('hide');
 }
+
+function aumentar_consignatario(){
+    $objDom = $("div#row_add_user_contactos .col-md-4").html();
+    $("div#row_add_user_contactos").append("<div class='col-md-4'>"+$objDom+"</div>");
+}
+
+function elimnar_consignatario(){
+    var $objDom = $("div#row_add_user_contactos .col-md-4");
+    if($objDom.length > 1)
+        $objDom.last().remove();
+}
+
+function store_cliente_consignatario(token,id_cliente) {
+
+    arr_consignatarios = [];
+    $.each($("div#row_add_user_contactos select#consignatario"),function(i,j){
+        arr_consignatarios.push(j.value);
+    });
+    datos = {
+        _token : token,
+        id_cliente : id_cliente,
+        arr_consignatarios : arr_consignatarios
+    };
+
+    if (arr_consignatarios.length < 1) {
+        modal_view('modal_cliente_consignatario', '<div class="alert alert-danger text-center"><p> Debe añadir al menos un consignatario al cliente para guardar</p> </div>', '<i class="fa fa-times" aria-hidden="true"></i> Estado pedido', true, false, '50%');
+        return false;
+    }
+    post_jquery('clientes/store_cliente_consignatario', datos, function () {
+        cerrar_modals();
+    });
+    $.LoadingOverlay('hide');
+
+
+}
+
 
 function update_especificacion(id_especificacion, estado, token, cliente) {
 
@@ -1696,7 +1737,8 @@ function actualizar_envio(id_envio, form, tipo_pedido, token, id_pedido, vista) 
             almacen: $("form#" + form + " #almacen").val(),
             tipo_pedido: tipo_pedido,
             codigo_dae: $("#codigo_dae").val(),
-            id_configuracion_empresa: $("form#" + form + " #id_empresa").val(),
+            consignatario : $("#consignatario").val(),
+            //id_configuracion_empresa: $("form#" + form + " #id_empresa").val(),
         };
         $.post('envio/actualizar_envio', datos, function (retorno) {
             if (retorno.success) {

@@ -26,7 +26,7 @@
                         @foreach(getConfiguracionEmpresa(null,true) as $empresa)
                             @php $lastPedido = getLastPedido(); @endphp
                             <option {{isset($lastPedido) ? (($lastPedido->id_configuracion_empresa === $empresa->id_configuracion_empresa) ? "selected" : "") : ""}}
-                               style=" color: black" value="{{$empresa->id_configuracion_empresa}}">{{$empresa->razon_social}}</option>
+                               style=" color: black" value="{{$empresa->id_configuracion_empresa}}">{{$empresa->nombre}}</option>
                         @endforeach
                     </select>
                 </li>

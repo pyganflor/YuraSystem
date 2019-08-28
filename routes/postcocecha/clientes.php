@@ -14,6 +14,8 @@ Route::get('clientes/ver_detalles_cliente', 'ClienteController@detalles_cliente'
 Route::get('clientes/ver_contactos_clientes', 'ClienteController@ver_contactos_clientes');
 Route::post('clientes/store_contactos', 'ClienteController@store_contactos');
 Route::post('clientes/actualizar_estado_contacto', 'ClienteController@actualizar_estado_contacto');
+Route::get('clientes/agregar_consignatario', 'ClienteController@agregar_consignatario');
+Route::post('clientes/store_cliente_consignatario', 'ClienteController@store_cliente_consignatario');
 
 include 'especificaciones_cliente.php';
 include 'pedidos.php';

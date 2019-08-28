@@ -5,6 +5,7 @@ namespace yura\Http\Controllers;
 use Illuminate\Http\Request;
 use SoapClient;
 use yura\Modelos\Aerolinea;
+use yura\Modelos\ClienteConsignatario;
 use yura\Modelos\ClienteDatoExportacion;
 use yura\Modelos\Comprobante;
 use yura\Modelos\ConfiguracionEmpresa;
@@ -450,9 +451,9 @@ class PedidoController extends Controller
                 '<p> El pedido no posee envío creado, edite el pedido y deje el Check "Envío autmático" activado para realizar el envío</p>'
                 . '</div>';
         }
-
+        $pedido = getPedido($request->id_pedido);
         $listado = Envio::where([
-            ['id_envio',getPedido($request->id_pedido)->envios[0]->id_envio],
+            ['id_envio',$pedido->envios[0]->id_envio],
             ['dc.estado',1],
             ['envio.estado', 0],
             ['p.estado',1]
@@ -468,7 +469,9 @@ class PedidoController extends Controller
             'paises'    => Pais::all(),
             'aerolineas' => Aerolinea::where('estado',1)->orderBy('nombre','asc')->get(),
             'vista' => $request->path(),
-            'empresas' => ConfiguracionEmpresa::all()
+            'empresas' => ConfiguracionEmpresa::all(),
+            'consignatarios' => ClienteConsignatario::where('id_cliente',$pedido->id_cliente)
+                ->join('consignatario as c', 'cliente_consignatario.id_consignatario','c.id_consignatario')->get()
         ]);
     }
 

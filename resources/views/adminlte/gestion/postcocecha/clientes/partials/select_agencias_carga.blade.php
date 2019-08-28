@@ -1,6 +1,6 @@
 <tr id="tr_select_agencias_carga_{{$cantTr+1}}">
     <td>
-        <div class="form-group">
+        <div class="">
             <select id="select_agencia_carga_{{$cantTr+1}}" name="select_agencia_carga_{{$cantTr+1}}" class="form-control" required>
                 <option disabled selected>Seleccione</option>
                 @foreach($dataAgenciaCargo as $agenciaCargo)

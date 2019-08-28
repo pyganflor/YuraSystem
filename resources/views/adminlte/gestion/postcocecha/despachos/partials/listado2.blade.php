@@ -20,7 +20,7 @@
                                 style="height: 22px;position: relative;top: 1px;" onchange="desbloquea_pedido()">
                             <option value="">Seleccionar empresa para ordenar pedidos</option>
                             @foreach($empresas as $emp)
-                                <option value="{{$emp->id_configuracion_empresa}}">{{$emp->razon_social}}</option>
+                                <option value="{{$emp->id_configuracion_empresa}}">{{$emp->nombre}}</option>
                             @endforeach
                         </select>
                         <button type="button" class="btn btn-xs btn-primary" onclick="ver_despachos()">

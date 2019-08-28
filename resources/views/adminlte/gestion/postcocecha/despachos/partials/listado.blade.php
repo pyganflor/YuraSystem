@@ -35,7 +35,7 @@
                                     onchange="listar_resumen_pedidos(document.getElementById('fecha_pedidos_search').value,true,this.value)" style="height: 22px;position: relative;top: 1px;">
                                 <option value="" disabled selected>Ver pedidos de:</option>
                                 @foreach(getConfiguracionEmpresa(null,true) as $empresa)
-                                    <option value="{{$empresa->id_configuracion_empresa}}">{{$empresa->razon_social}}</option>
+                                    <option value="{{$empresa->id_configuracion_empresa}}">{{$empresa->nombre}}</option>
                                 @endforeach
                             </select>
                         @endif

@@ -95,7 +95,7 @@
                         </tbody>
                 </table>
             </form>
-            <div class="text-right">
+            <div class="text-center">
                 <button class="btn btn-success" type="button" id="btn_guardar_modal_add_cliente" onclick="store_contactos('{{$dataCliente->id_cliente}}','{{$dataCliente->id_detalle_cliente}}')"><span class="bootstrap-dialog-button-icon fa fa-fw fa-save"></span>Guardar</button>
             </div>
         </div>

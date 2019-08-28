@@ -162,26 +162,42 @@ class ComprobanteController extends Controller
                 }
             }
 
+            $facturaClienTeTercero = getFacturaClienteTercero($envio->id_envio);
             $dataCliente = DetalleCliente::where([
                 ['id_cliente', $envio->pedido->cliente->id_cliente],
                 ['estado', 1]
             ])->first();
 
-            $codigo_pais = $request->codigo_pais;
-            $codigo_impuesto = $dataCliente->codigo_impuesto;
-            $codigo_porcentaje_impuesto = $dataCliente->codigo_porcentaje_impuesto;
-            $codigo_identificacion = $dataCliente->codigo_identificacion;
-            $identificacion = isset($envio->consignatario->identificacion) ? $envio->consignatario->identificacion : $dataCliente->ruc;
-            $nombre_cliente = isset($envio->consignatario->nombre) ? $envio->consignatario->nombre : $dataCliente->nombre;
+            if($facturaClienTeTercero != null ){
+                $codigo_pais = $facturaClienTeTercero->codigo_pais;
+                $codigo_impuesto = $facturaClienTeTercero->codigo_impuesto;
+                $codigo_porcentaje_impuesto =  $facturaClienTeTercero->codigo_impuesto_porcentaje;
+                $codigo_identificacion = $facturaClienTeTercero->codigo_identificacion;
+                $identificacion =  $facturaClienTeTercero->identificacion;
+                $nombre_cliente =  $facturaClienTeTercero->nombre_cliente_tercero;
+                $provincia = $facturaClienTeTercero->provincia;
+                //*******COMENTADO PARA QUE LA FACTURACIÓN FUNCIONE CON EL VENTURE*********//
+                /*$direccion = $facturaClienTeTercero->direccion;
+                $correo = $facturaClienTeTercero->correo;
+                $telefono = $facturaClienTeTercero->telefono;
+                $almacen = $facturaClienTeTercero->almacen;*/
+                $dae = $facturaClienTeTercero->dae;
 
-            //*******COMENTADO PARA QUE LA FACTURACIÓN FUNCIONE CON EL VENTURE*********//
-            /*$provincia = $dataCliente->provincia;
-            $direccion = $dataCliente->direccion;
-            $correo = $dataCliente->correo;
-            $telefono = $dataCliente->telefono;
-            $almacen = $request->almacen;*/
-            $dae = $request->dae;
-
+            }else{
+                $codigo_pais = $request->codigo_pais;
+                $codigo_impuesto = $dataCliente->codigo_impuesto;
+                $codigo_porcentaje_impuesto = $dataCliente->codigo_porcentaje_impuesto;
+                $codigo_identificacion = $dataCliente->codigo_identificacion;
+                $identificacion = $dataCliente->ruc;
+                $nombre_cliente = $dataCliente->nombre;
+                //*******COMENTADO PARA QUE LA FACTURACIÓN FUNCIONE CON EL VENTURE*********//
+                /*$provincia = $dataCliente->provincia;
+                $direccion = $dataCliente->direccion;
+                $correo = $dataCliente->correo;
+                $telefono = $dataCliente->telefono;
+                $almacen = $request->almacen;*/
+                $dae = $request->dae;
+            }
 
             if ((strtoupper(getConfiguracionEmpresa($envio->pedido->id_configuracion_empresa)->codigo_pais) != strtoupper($codigo_pais))
                 && (!isset(getCodigoDae(strtoupper($codigo_pais),Carbon::parse($request->fecha_envio)->format('m'),Carbon::parse($request->fecha_envio)->format('Y'),$envio->pedido->id_configuracion_empresa)->codigo_dae))
@@ -518,7 +534,7 @@ class ComprobanteController extends Controller
                 //$obj_comprobante->clave_acceso = $claveAcceso;
 
                 $obj_comprobante->id_envio = $request->id_envio;
-                $obj_comprobante->tipo_comprobante = "01"; //CÓDIGO DE FACTURA A CLIENTE
+                $obj_comprobante->tipo_comprobante = "01"; //CÓDIGO DE FACTURA A CLIENTE EXTERNO
                 $obj_comprobante->monto_total = number_format($precio_total_con_impuestos + $precio_total_sin_impuestos, 2, ".", "");
                 $obj_comprobante->fecha_emision = $request->fecha_pedidos_search;//now()->toDateString();
                 $obj_comprobante->peso = number_format(($peso_neto/1000)+($peso_caja/1000),2,".","");

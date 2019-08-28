@@ -3,6 +3,7 @@
 namespace yura\Http\Controllers;
 
 use Illuminate\Http\Request;
+use yura\Modelos\ClienteConsignatario;
 use yura\Modelos\Submenu;
 use yura\Modelos\Pais;
 use yura\Modelos\Cliente;
@@ -15,6 +16,7 @@ use yura\Modelos\TipoImpuesto;
 use yura\Modelos\TipoIdentificacion;
 use yura\Modelos\Impuesto;
 use yura\Modelos\Marca;
+use yura\Modelos\Consignatario;
 use DB;
 use Validator;
 use PHPExcel;
@@ -572,4 +574,43 @@ class ClienteController extends Controller
         }
     }
 
+    public function agregar_consignatario(Request $request){
+        return view('adminlte.gestion.postcocecha.clientes.forms.add_consignatario',[
+            'consignatatios' => Consignatario::where('estado',1)->get(),
+            'id_cliente' => $request->id_cliente,
+            'cliente_consignatario' => ClienteConsignatario::where('id_cliente', $request->id_cliente)->get()
+        ]);
+    }
+
+    public function store_cliente_consignatario(Request $request){
+
+        $arrConsinatariosActuales = ClienteConsignatario::where('id_cliente',$request->id_cliente)->get();
+        $success = false;
+        foreach ($request->arr_consignatarios as $id_consignatario) {
+            $objClienteConsignatario = new ClienteConsignatario;
+            $objClienteConsignatario->id_cliente = $request->id_cliente;
+            $objClienteConsignatario->id_consignatario = $id_consignatario;
+            if($objClienteConsignatario->save()){
+                $success = true;
+                $msg = '<div class="alert alert-success text-center">' .
+                    '<p> Se han guardado los consignatarios con éxito </p>'
+                    . '</div>';
+            }else{
+                $success = false;
+                $msg = '<div class="alert alert-warning text-center">' .
+                    '<p> Ha ocurrido un problema al guardar la información al sistema</p>'
+                    . '</div>';
+                break;
+            }
+        }
+        if($success)
+            foreach ($arrConsinatariosActuales as $consinatariosActuales)
+                ClienteConsignatario::destroy($consinatariosActuales->id_consignatario);
+
+        return [
+            'mensaje' => $msg,
+            'success' => $success
+        ];
+
+    }
 }
