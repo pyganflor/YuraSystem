@@ -1,10 +1,8 @@
 @php
     $detalleFactura = getDetalleFactura($data['comprobante']->id_comprobante);
     $cliente = getCliente(getEnvio($data['comprobante']->envio->id_envio)->pedido->id_cliente)->detalle();
-    $factura_tercero = getFacturaClienteTercero(getComprobante($data['comprobante']->id_comprobante)->id_envio);
+    $consignatario = $data['comprobante']->envio->consignatario;
     $envio = getEnvio($data['comprobante']->envio->id_envio);
-    /*$comprobante = getComprobante(\yura\Modelos\Comprobante::where('clave_acceso',(String)$data['obj_xml']->infoTributaria->claveAcceso)->first()->id_comprobante);
-    ;*/
     $precio_total_sin_impuestos = 0.00;
     $total_ramos = 0.00;
     $total_piezas = 0.00;
@@ -59,10 +57,9 @@
                     </tr>
                 </table>
                 <table style="width: 100%">
-                    <tr><td style="font-size:12px">{{$cliente->nombre}}</td></tr>
-                    <tr><td style="font-size:12px">{{$cliente->direccion." ".$cliente->provincia}}</td></tr>
-                    <tr><td style="font-size:12px">{{getPais($cliente->codigo_pais)->nombre ." ". $cliente->provincia}}</td></tr>
-                    <tr><td style="font-size:12px">{{"ID: ".$cliente->ruc}}</td></tr>
+                    <tr><td style="font-size:12px">{{$detalleFactura->razon_social_comprador}}</td></tr>
+                    <tr><td style="font-size:12px">{{isset($consignatario->codigo_pais) ? getPais($consignatario->codigo_pais)->nombre : getPais($cliente->codigo_pais)->nombre}} -  {{isset($consignatario->ciudad) ? $consignatario->ciudad : $cliente->provincia }}</td></tr>
+                    <tr><td style="font-size:12px">ID:{{$detalleFactura->identificacion_comprador}}</td></tr>
                 </table>
                 {{--<table style="margin-top: 10px;">
                         <td>
@@ -78,11 +75,11 @@
                     </tr>
                 </table>
                 <table style="width: 100%">
-                    <tr><td style="font-size:12px">{{$detalleFactura->razon_social_comprador}}</td></tr>
-                    <tr><td style="font-size:12px">{{$factura_tercero !== null ? getPais($factura_tercero->codigo_pais)->nombre : getPais($cliente->codigo_pais)->nombre}} -  {{$factura_tercero !== null ? $factura_tercero->provincia : $cliente->provincia }}</td></tr>
-                    <tr><td style="font-size:12px">ID:{{$detalleFactura->identificacion_comprador}}</td></tr>
+                    <tr><td style="font-size:12px">{{$cliente->nombre}}</td></tr>
+                    <tr><td style="font-size:12px">{{$cliente->direccion." ".$cliente->provincia}}</td></tr>
+                    <tr><td style="font-size:12px">{{getPais($cliente->codigo_pais)->nombre ." ". $cliente->provincia}}</td></tr>
+                    <tr><td style="font-size:12px">{{"ID: ".$cliente->ruc}}</td></tr>
                 </table>
-
             </div>
         </td>
         <td>
@@ -141,11 +138,11 @@
                     <tr style="border: 1px solid black;">
                         <td style="border: 1px solid black;padding: 0;font-size: 12px;width: 60% ">
                             <b>Port of entry / Puerto de ent</b><br /> <br />
-                            {{$factura_tercero !== null ? $factura_tercero->puerto_entrada :  $cliente->puerto_entrada}}
+                            {{$cliente->puerto_entrada}}
                         </td>
                         <td style="border: 1px solid black;padding: 0;font-size: 12px">
                             <b>Final destination</b><br /> <br />
-                            {{$factura_tercero !== null ? getPais($factura_tercero->codigo_pais)->nombre : getPais($cliente->codigo_pais)->nombre}}
+                            {{getPais($cliente->codigo_pais)->nombre}}
                         </td>
                     </tr>
                     <tr style="border: 1px solid black;">
@@ -166,7 +163,6 @@
                                 @endforeach
                             @endforeach
                         @endforeach
-
                     @elseif($envio->pedido->tipo_especificacion === "T")
                         @foreach ($envio->pedido->detalles as $x => $det_ped)
                              @foreach($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $m => $esp_emp)
@@ -272,7 +268,7 @@
                     @endphp
                     <tr>
                         @if($n == 0)
-                            <td style="font-size:11px;vertical-align:middle;text-aling:center" rowspan="{{$det_ped->cliente_especificacion->especificacion->especificacionesEmpaque->count()}}">
+                            <td style="font-size:11px;vertical-align:middle;text-align:center" rowspan="{{$esp_emp->detalles->count()}}">
                                 {{number_format($det_ped->cantidad,2,".","")}}
                                 @php
                                     $total_piezas += $det_ped->cantidad;
@@ -294,16 +290,15 @@
                                             break;
                                      }
                                 @endphp
-
                             </td>
                         @endif
-                        <td style="font-size:11px">{{$descripcion}}</td>
-                        <td style="font-size:11px"> A</td>
-                        <td style="font-size:11px"> {{$det_esp_emp->variedad->planta->tarifa}}</td>
-                        <td style="font-size:11px"> {{$det_esp_emp->variedad->planta->nandina}}</td>
-                        <td style="font-size:11px"> {{$det_esp_emp->cantidad}}</td>
-                        <td style="font-size:11px"> BN </td>
-                        <td style="font-size:11px"> {{number_format(($det_ped->cantidad*$det_esp_emp->cantidad),2,".","")}} </td>
+                        <td style="font-size:11px;vertical-align:middle">{{$descripcion}}</td>
+                        <td style="font-size:11px;vertical-align:middle"> A</td>
+                        <td style="font-size:11px;vertical-align:middle"> {{$det_esp_emp->variedad->planta->tarifa}}</td>
+                        <td style="font-size:11px;vertical-align:middle"> {{$det_esp_emp->variedad->planta->nandina}}</td>
+                        <td style="font-size:11px;vertical-align:middle"> {{$det_esp_emp->cantidad}}</td>
+                        <td style="font-size:11px;vertical-align:middle"> BN </td>
+                        <td style="font-size:11px;vertical-align:middle"> {{number_format(($det_ped->cantidad*$det_esp_emp->cantidad),2,".","")}} </td>
                         @php $total_ramos += number_format(($det_ped->cantidad*$det_esp_emp->cantidad),2,".",""); @endphp
                         <td style="font-size:11px;"> {{"$".number_format(explode(";", $precio[$i])[0],2,".","")}} </td>
                         <td style="font-size:11px"> {{"$".number_format(($det_esp_emp->cantidad * ((float)explode(";", $precio[$i])[0]) * $esp_emp->cantidad * $det_ped->cantidad),2,".","")}} </td>
@@ -341,7 +336,6 @@
                     @endphp
                 @endforeach
             @endforeach
-
             @foreach($det_ped->coloraciones as $y => $coloracion)
                 @foreach($coloracion->marcaciones_coloraciones as $m_c)
                     @if($m_c->cantidad > 0)
@@ -381,19 +375,10 @@
                                 ];
                             @endphp
                         @endforeach
-<<<<<<< HEAD
-=======
-
->>>>>>> 67f729ccd5989238813903ed706a9a4aa3822121
                     @endif
                 @endforeach
             @endforeach
         @endforeach
-<<<<<<< HEAD
-
-=======
-        
->>>>>>> 67f729ccd5989238813903ed706a9a4aa3822121
         @foreach($data_body_table as $body_table)
             @foreach($body_table as $table)
                 @foreach($table as $t)
@@ -467,7 +452,7 @@
         </td>
         <td style="text-align: center;vertical-align: bottom;font-family:arial, sans-serif;font-size: 12px;width:50%">
             <label >MARKETING NAME</label>
-            <div style="border: 1px solid;height: 20px"><b>{{strtoupper($factura_tercero !== null ? $factura_tercero->marca_caja->nombre : $cliente->marca_caja->nombre)}}</b></div>
+            <div style="border: 1px solid;height: 20px"><b>{{strtoupper($cliente->marca_caja->nombre)}}</b></div>
         </td>
     </tr>
     <tr>

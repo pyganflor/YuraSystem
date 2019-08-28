@@ -25,8 +25,7 @@ class Envio extends Model
         'codigo_pais',
         'almacen',
         'codigo_dae',
-
-
+        'id_consignatario'
     ];
 
     public function detalles()
@@ -52,5 +51,10 @@ class Envio extends Model
     public function empresa()
     {
         return $this->belongsTo('\yura\Modelos\ConfiguracionEmpresa', 'id_configuracion_empresa');
+    }
+
+    public function consignatario()
+    {
+        return $this->belongsTo('\yura\Modelos\Consignatario', 'id_consignatario');
     }
 }

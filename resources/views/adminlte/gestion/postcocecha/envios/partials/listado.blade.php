@@ -220,7 +220,7 @@
                                                 <h3 class="box-title">DATOS DE EXPORTACIÓN</h3>
                                             </div>
                                             <div class="col-md-6 text-right">
-                                                <button type="button" class="btn btn-{{$factura_tercero ?  "primary" : "default"}} btn-xs" title="Facturar a terceros" onclick="factura_tercero('{{$envio->id_envio}}','{{csrf_token()}}','{{$envio->id_pedido}}','{{$vista}}')">
+                                                {{--<button type="button" class="btn btn-{{$factura_tercero ?  "primary" : "default"}} btn-xs" title="Facturar a terceros" onclick="factura_tercero('{{$envio->id_envio}}','{{csrf_token()}}','{{$envio->id_pedido}}','{{$vista}}')">
                                                     <i class="fa fa-user-plus" aria-hidden="true"></i>
                                                 </button>
                                                 @if($facturado == null)
@@ -229,7 +229,7 @@
                                                             <i class="fa fa-user-times" aria-hidden="true"></i>
                                                         </button>
                                                     @endif
-                                                @endif
+                                                @endif--}}
                                             </div>
                                         </div>
                                     </div>
@@ -363,7 +363,7 @@
                                                 <input type="text" placeholder="Anden" class="form-control" {{$factura_tercero ?  "disabled" : ""}} {{($facturado) ? "disabled='disabled'" : ""}}
                                                 id="almacen" name="almacen_{{$i+1}}" value="{{$almacen}}">
                                             </div>
-                                            <div class="col-md-6">
+                                            <div class="col-md-3">
                                                 @php
                                                     if(isset($envio->direccion)){
                                                         $direccion = $envio->direccion;
@@ -374,6 +374,18 @@
                                                 <label for="direccion">Destino</label>
                                                 <input type="text" placeholder="Dirección" {{$factura_tercero ?  "disabled" : ""}} class="form-control" {{($facturado) ? "disabled='disabled'" : ""}}
                                                 id="direccion" name="direccion" value="{{$direccion}}" required>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <label for="consignatario">Consignatario</label>
+                                                <select class="form-control" id="consignatario" name="consignatario">
+                                                    <option value=""> Mismo cliente </option>
+                                                    @foreach($consignatarios as $c)
+                                                        <option {{$envio->id_consignatario == $c->id_consignatario ? 'selected': ''}}
+                                                                value="{{$c->id_consignatario}}">
+                                                            {{$c->nombre}}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
                                             </div>
                                         </div>
                                         <hr />

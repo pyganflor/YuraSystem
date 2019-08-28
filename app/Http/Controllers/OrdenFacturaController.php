@@ -40,8 +40,8 @@ class OrdenFacturaController extends Controller
             'arr_comprobante.*.secuencial' => 'required',
             'arr_comprobante.*.id_comprobante' => 'required',
         ],[
-            'arr_comprobante.*.secuencial.required' => 'No se logro capturar el numero de la factura',
-            'arr_comprobante.*.id_comprobante.required' => 'No se logro capturar el identificador de la factura'
+            'arr_comprobante.*.secuencial.required' => 'No se logro capturar el numero de la factura a actualizar',
+            'arr_comprobante.*.id_comprobante.required' => 'No se logro capturar el identificador de la factura a actualizar'
         ]);
 
         if (!$valida->fails()) {

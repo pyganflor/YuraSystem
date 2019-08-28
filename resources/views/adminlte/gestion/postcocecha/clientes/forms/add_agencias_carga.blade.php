@@ -24,7 +24,7 @@
                         @foreach($dataClienteAgenciasCarga as $key => $clienteAgenciasCarga)
                         <tr id="tr_select_agencias_carga_{{$key+1}}">
                             <td>
-                                <div class="form-group">
+                                <div class="">
                                     <select id="select_agencia_carga_{{$key+1}}" {!! $clienteAgenciasCarga->estado == 0 ? 'disabled' : '' !!} name="select_agencia_carga_{{$key+1}}" class="form-control" required>
                                         <option disabled selected>Seleccione</option>
                                         @foreach($dataAgenciaCarga as $agenciaCarga)
@@ -51,7 +51,7 @@
                     @else
                         <tr id="tr_select_agencias_carga_1">
                             <td>
-                                <div class="form-group">
+                                <div class="">
                                     <select id="select_agencia_carga_1" name="select_agencia_carga_1" class="form-control" required>
                                         <option disabled selected>Seleccione</option>
                                         @foreach($dataAgenciaCarga as $agenciaCarga)
@@ -67,7 +67,7 @@
                     </tbody>
                 </table>
             </form>
-            <div class="text-right">
+            <div class="text-center">
                 <button class="btn btn-success" type="button" id="btn_guardar_modal_add_cliente" onclick="store_agencias('{{$dataCliente->id_cliente}}')"><span class="bootstrap-dialog-button-icon fa fa-fw fa-save"></span>Guardar</button>
             </div>
         </div>

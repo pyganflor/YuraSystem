@@ -91,18 +91,22 @@
                onclick="cargar_opcion('campos_contactos','{{$dataCliente->id_detalle_cliente}}','clientes/ver_contactos_clientes')">
                 Añadir contactos
             </a>
+            <a href="javascript:void(0)" class="list-group-item list-group-item-action" title="Consignatario"
+               onclick="cargar_opcion('div_consignatario','{{$dataCliente->id_cliente}}','clientes/agregar_consignatario')">
+                Consignatarios
+            </a>
             <a href="javascript:void(0)" class="list-group-item list-group-item-action" title="Añadir nueva información"
                onclick="cargar_opcion('campos_agencia_carga','','clientes/ver_agencias_carga')">
                 Agencia de carga
             </a>
-            <a href="javascript:void(0)" class="list-group-item list-group-item-action" title="Administrar especificaciones"
+            {{--<a href="javascript:void(0)" class="list-group-item list-group-item-action" title="Administrar especificaciones"
                onclick="admin_especificaciones('{{$dataCliente->id_cliente}}')">
                 Especificaciones
             </a>
             <a href="javascript:void(0)" class="list-group-item list-group-item-action" title="Administrar pedidos"
                onclick="cargar_opcion('div_pedidos','{{$dataCliente->id_cliente}}','clientes/listar_pedidos')">
                 Pedidos
-            </a>
+            </a>--}}
         </div>
     </div>
 </div>
@@ -111,11 +115,14 @@
     <div id="content_documentos"></div>
 @endif
 
-<legend></legend>
 <div id="div_content_opciones" style="margin-top: 10px"></div>
 
 <div id="include_agencia_carga" class="hide">
     @include('adminlte.gestion.postcocecha.clientes.forms.add_agencias_carga')
+</div>
+
+<div id="include_contactos_cliente" class="hide">
+    @include('adminlte.gestion.postcocecha.clientes.forms.add_contactos')
 </div>
 
 <div id="include_contactos_cliente" class="hide">

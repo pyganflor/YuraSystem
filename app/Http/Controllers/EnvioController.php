@@ -3,6 +3,7 @@
 namespace yura\Http\Controllers;
 
 use Illuminate\Http\Request;
+use yura\Modelos\ClienteConsignatario;
 use yura\Modelos\ConfiguracionEmpresa;
 use yura\Modelos\DetallePedido;
 use yura\Modelos\Aerolinea;
@@ -207,7 +208,9 @@ class EnvioController extends Controller
             'envios' => $listado->paginate(10),
             'paises'    => Pais::all(),
             'aerolineas' => Aerolinea::where('estado',1)->get(),
-            'vista' => $request->path()
+            'vista' => $request->path(),
+             'consignatarios' => []/*ClienteConsignatario::where('id_cliente',$pedido->id_cliente)
+            ->join('consignatario as c', 'cliente_consignatario.id_consignatario','c.id_consignatario')->get()*/
         ]);
     }
 
@@ -400,6 +403,7 @@ class EnvioController extends Controller
             $objEnvio->fecha_envio = $request->fecha_envio;
             $objEnvio->almacen = $request->almacen;
             $objEnvio->codigo_dae = $request->codigo_dae;
+            $objEnvio->id_consignatario = $request->consignatario;
 
             if($objEnvio->save()){
                 bitacora('envio', $request->id_envio, 'U', 'Actualización satisfactoria del envío');

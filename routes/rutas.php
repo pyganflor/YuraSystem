@@ -43,6 +43,7 @@ Route::group(['middleware' => 'autenticacion'], function () {
             include 'postcocecha/clasificacion_verde.php';
             include 'postcocecha/recepcion.php';
             include 'postcocecha/clientes.php';
+            include 'postcocecha/consignatario.php';
 
             include 'sectores_modulos/rutas.php';
             include 'semanas/rutas.php';
