@@ -14,4 +14,5 @@ Route::post('despachos/update_estado_despachos', 'DespachosController@update_est
 Route::get('despachos/distribuir_despacho', 'DespachosController@distribuir_despacho');
 Route::get('despachos/add_pedido_piezas', 'DespachosController@add_pedido_piezas');
 Route::post('despachos/exportar_pedidos_despacho', 'DespachosController@exportar_pedidos_despacho');
+Route::post('despachos/exportar_listado_pedidos_despacho', 'DespachosController@exportar_excel_listado_despacho');
 Route::post('despachos/exportar_pedidos_despacho_cuarto_frio', 'DespachosController@exportar_pedidos_despacho_cuarto_frio');

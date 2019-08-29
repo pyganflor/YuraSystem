@@ -23,13 +23,18 @@
                                 <i class="fa fa-truck" aria-hidden="true"></i> Crear despacho
                             </button>
                         @endif
-
                         <button type="button" class="btn btn-xs btn-primary" onclick="exportar_listado_cuarto_frio('{{csrf_token()}}')">
                             <i class="fa fa-fw fa-file-excel-o"></i> Exportar a Excel Cuarto Frio
                         </button>
-                        <button type="button" class="btn btn-xs btn-success" onclick="exportar_listado_despacho('{{csrf_token()}}')">
-                            <i class="fa fa-fw fa-file-excel-o"></i> Exportar a Excel
-                        </button>
+                        @if($opciones)
+                            <button type="button" class="btn btn-xs btn-success" onclick="exportar_listado_despacho('{{csrf_token()}}',document.getElementById('id_configuracion_pedido').value)">
+                                <i class="fa fa-fw fa-file-excel-o"></i> Exportar a Excel
+                            </button>
+                        @else
+                             <button type="button" class="btn btn-xs btn-success" onclick="exportar_excel_listado_despacho('{{csrf_token()}}',document.getElementById('id_configuracion_empresa_despacho').value)">
+                                 <i class="fa fa-fw fa-file-excel-o"></i> Exportar a Excel
+                             </button>
+                        @endif
                     </th>
                 </tr>
                 <tr>

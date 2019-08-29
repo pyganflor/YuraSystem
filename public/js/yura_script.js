@@ -1885,7 +1885,7 @@ function busqueda_placa_camion(id_form) {
     });
 }
 
-function exportar_listado_despacho(token) {
+function exportar_listado_despacho(token,id_configuracion_pedido) {
     $.LoadingOverlay('show');
     $.ajax({
         type: "POST",
@@ -1894,6 +1894,7 @@ function exportar_listado_despacho(token) {
         url: 'despachos/exportar_pedidos_despacho',
         data: {
             fecha_pedido: $("#fecha_pedidos_search").val(),
+            id_configuracion_empresa : id_configuracion_pedido,
             _token: token
         },
         success: function (data) {
@@ -1902,6 +1903,33 @@ function exportar_listado_despacho(token) {
             $a.attr("href", opResult.data);
             $("body").append($a);
             $a.attr("download", "Despachos " + $("#fecha_pedidos_search").val() + " .xlsx");
+            $a[0].click();
+            $a.remove();
+            cerrar_modals();
+            $.LoadingOverlay('hide');
+        }
+    });
+}
+
+function exportar_excel_listado_despacho(token,id_configuracion_pedido) {
+    $.LoadingOverlay('show');
+    $.ajax({
+        type: "POST",
+        dataType: "html",
+        contentType: "application/x-www-form-urlencoded",
+        url: 'despachos/exportar_listado_pedidos_despacho',
+        data: {
+            fecha_pedido: $("#fecha_pedidos_search").val(),
+            id_configuracion_empresa : id_configuracion_pedido,
+            fecha: $("#fecha_pedidos_search").val(),
+            _token: token
+        },
+        success: function (data) {
+            var opResult = JSON.parse(data);
+            var $a = $("<a>");
+            $a.attr("href", opResult.data);
+            $("body").append($a);
+            $a.attr("download", "Despacho " + $("#fecha_pedidos_search").val() + " .xlsx");
             $a[0].click();
             $a.remove();
             cerrar_modals();

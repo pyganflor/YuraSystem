@@ -364,10 +364,17 @@ class DespachosController extends Controller
     }
 
     public function excel_pedidos_despacho($objPHPExcel, $request){
-        $pedidos = Pedido::where([['fecha_pedido',$request->fecha_pedido],['pedido.estado',1],['dc.estado',1]])
+        $pedidos = Pedido::where([
+            ['fecha_pedido',$request->fecha_pedido],
+            ['pedido.estado',1],
+            ['dc.estado',1]])
             ->join('cliente as c','pedido.id_cliente','c.id_cliente')->join('detalle_cliente as dc','c.id_cliente','dc.id_cliente')
-            ->orderBy('dc.nombre','asc')->select('id_pedido')->get();
+            ->orderBy('dc.nombre','asc')->select('id_pedido');
 
+        if(isset($request->id_configuracion_empresa))
+            $pedidos->where('id_configuracion_empresa',$request->id_configuracion_empresa);
+
+        $pedidos = $pedidos->get();
         //HOJA Tinturados
         $objSheet = new PHPExcel_Worksheet($objPHPExcel,'Tinturados');
         $objPHPExcel->addSheet($objSheet, 0);
@@ -791,6 +798,187 @@ class DespachosController extends Controller
         $objSheet->getDefaultStyle()->applyFromArray($style);
         $objSheet1->getDefaultStyle()->applyFromArray($style);
 
+    }
+
+    public function exportar_excel_listado_despacho(Request $request){
+        //---------------------- EXCEL --------------------------------------
+        $objPHPExcel = new PHPExcel;
+        $objPHPExcel->getDefaultStyle()->getFont()->setName('Calibri');
+        $objPHPExcel->getDefaultStyle()->getFont()->setSize(12);
+        $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, "Excel2007");
+
+        $this->excel_listado_pedidos_despacho($objPHPExcel, $request);
+
+        //--------------------------- GUARDAR EL EXCEL -----------------------
+
+        header("Content-Type: application/force-download");
+        header("Content-Type: application/octet-stream");
+        header("Content-Type: application/download");
+        header('Content-Disposition:inline;filename="Listado despacho.xlsx"');
+        header("Content-Transfer-Encoding: binary");
+        header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
+        header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+        header("Pragma: no-cache");
+        ob_start();
+        $objWriter->save('php://output');
+        $xlsData = ob_get_contents();
+        ob_end_clean();
+        $opResult = array(
+            'status' => 1,
+            'data' => "data:application/vnd.ms-excel;base64," . base64_encode($xlsData)
+        );
+        echo json_encode($opResult);
+    }
+
+    public function excel_listado_pedidos_despacho($objPHPExcel, $request){
+        $pedidos = Pedido::where([
+            ['fecha_pedido',$request->fecha_pedido],
+            ['pedido.estado',1],
+            ['dc.estado',1]])
+            ->join('cliente as c','pedido.id_cliente','c.id_cliente')->join('detalle_cliente as dc','c.id_cliente','dc.id_cliente')
+            ->orderBy('dc.nombre','asc');
+
+        if(isset($request->id_configuracion_empresa))
+            $pedidos->where('id_configuracion_empresa',$request->id_configuracion_empresa);
+
+        //HOJA Tinturados
+        $objSheet = new PHPExcel_Worksheet($objPHPExcel,'Tinturados');
+        $objPHPExcel->addSheet($objSheet, 0);
+        $objPHPExcel->setActiveSheetIndex(0);
+        $objSheet->mergeCells('A1:J1');
+        $objSheet->getCell('A1')->setValue("DESPACHO DE PEDIDOS:  ". $request->fecha);
+        $objSheet->getCell('A2' )->setValue('Cliente');
+        $objSheet->getCell('B2' )->setValue('Factura');
+        $objSheet->getCell('C2')->setValue('Marcaciones');
+        $objSheet->getCell('D2')->setValue('Piezas');
+        $objSheet->getCell('E2' )->setValue('Cajas full');
+        $objSheet->getCell('F2')->setValue('Half');
+        $objSheet->getCell('G2')->setValue('Cuartos');
+        $objSheet->getCell('H2')->setValue('Octavos');
+        $objSheet->getCell('I2')->setValue('Agencia de carga');
+        $objSheet->getCell('J2')->setValue('Facturado por');
+
+        $style = array(
+            'alignment' => array(
+                'vertical' => PHPExcel_Style_Alignment::VERTICAL_CENTER,
+                'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER
+            )
+        );
+        $total_full= 0;
+        $total_half = 0;
+        $total_cuarto = 0;
+        $total_octavo = 0;
+        $total_piezas_despacho =  0 ;
+        $pedidos = $pedidos->get();
+        foreach ($pedidos as $p => $pedido){
+            if(!getFacturaAnulada($pedido->id_pedido)){
+                $full = 0;
+                $half = 0;
+                $cuarto = 0;
+                $sexto = 0;
+                $octavo = 0;
+                foreach ($pedido->detalles as $det_tinturado => $det_ped) {
+                    foreach ($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $m => $esp_emp){
+                        $full += explode("|", $esp_emp->empaque->nombre)[1] * $det_ped->cantidad;
+                        switch (explode("|", $esp_emp->empaque->nombre)[1]) {
+                            case '0.5':
+                                $half += $det_ped->cantidad;
+                                break;
+                            case '0.25':
+                                $cuarto += $det_ped->cantidad;
+                                break;
+                            case '0.17':
+                                $sexto += $det_ped->cantidad;
+                                break;
+                            case '0.125':
+                                $octavo += $det_ped->cantidad;
+                                break;
+                        }
+                        $piezas_despacho = $half + $cuarto + $sexto + $octavo;
+                    }
+                }
+
+                $objSheet->getStyle('A1:J1')->getFont()->setBold(true);
+                $objSheet->getStyle('A2:J2')->getFont()->setBold(true);
+                $objSheet->getStyle('A' . ($p + 3))->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+                $objSheet->getStyle('B' . ($p + 3))->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+                $objSheet->getStyle('C' . ($p + 3))->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+                $objSheet->getStyle('D' . ($p + 3))->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+                $objSheet->getStyle('E' . ($p + 3))->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+                $objSheet->getStyle('F' . ($p + 3))->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+                $objSheet->getStyle('G' . ($p + 3))->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+                $objSheet->getStyle('H' . ($p + 3))->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+                $objSheet->getStyle('I' . ($p + 3))->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+                $objSheet->getStyle('J' . ($p + 3))->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+                $objSheet->getCell('A' . ($p + 3))->setValue($pedido->cliente->detalle()->nombre);
+                $objSheet->getCell('B' . ($p + 3))->setValue(isset($pedido->envios[0]->comprobante->secuencial)? $pedido->envios[0]->comprobante->secuencial : "");
+                $objSheet->getCell('C' . ($p + 3))->setValue();
+                $objSheet->getCell('D' . ($p + 3))->setValue($piezas_despacho);
+                $objSheet->getCell('E' . ($p + 3))->setValue($full);
+                $objSheet->getCell('F' . ($p + 3))->setValue($half);
+                $objSheet->getCell('G' . ($p + 3))->setValue($cuarto);
+                $objSheet->getCell('H' . ($p + 3))->setValue($octavo);
+                $objSheet->getCell('I' . ($p + 3))->setValue($pedido->detalles[0]->agencia_carga->nombre);
+                $objSheet->getCell('J' . ($p + 3))->setValue($pedido->empresa->nombre);
+                $objSheet->getStyle('A' . ($p + 1) . ':J' . ($p + 1))->applyFromArray($style);
+                $total_full +=$full;
+                $total_half +=$half;
+                $total_cuarto +=$cuarto;
+                $total_octavo +=$octavo;
+                $total_piezas_despacho += $piezas_despacho;
+            }
+        }
+        $cant = $pedidos->count();
+        $objSheet->getCell('C' . ($cant + 3))->setValue('TOTALES: ');
+        $objSheet->getCell('D' . ($cant + 3))->setValue($total_piezas_despacho);
+        $objSheet->getCell('E' . ($cant + 3))->setValue($total_full);
+        $objSheet->getCell('F' . ($cant + 3))->setValue($total_half);
+        $objSheet->getCell('G' . ($cant + 3))->setValue($total_cuarto);
+        $objSheet->getCell('H' . ($cant + 3))->setValue($total_octavo);
+        $objSheet->getStyle('C'. ($cant + 3))->getFont()->getColor()->applyFromArray( array('rgb' => 'ffffff'));
+        $objSheet->getStyle('D'. ($cant + 3))->getFont()->getColor()->applyFromArray( array('rgb' => 'ffffff'));
+        $objSheet->getStyle('E'. ($cant + 3))->getFont()->getColor()->applyFromArray( array('rgb' => 'ffffff'));
+        $objSheet->getStyle('F'. ($cant + 3))->getFont()->getColor()->applyFromArray( array('rgb' => 'ffffff'));
+        $objSheet->getStyle('G'. ($cant + 3))->getFont()->getColor()->applyFromArray( array('rgb' => 'ffffff'));
+        $objSheet->getStyle('H'. ($cant + 3))->getFont()->getColor()->applyFromArray( array('rgb' => 'ffffff'));
+        $objSheet->getStyle('C'. ($cant + 3).':H'.($cant + 3))->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('357ca5');
+        $objSheet->getStyle('C' . ($cant + 3))->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+        $objSheet->getStyle('C' . ($cant + 3))->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+        $objSheet->getStyle('D' . ($cant + 3))->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+        $objSheet->getStyle('E' . ($cant + 3))->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);$objSheet->getStyle('C' . ($cant + 3))->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+        $objSheet->getStyle('F' . ($cant + 3))->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+        $objSheet->getStyle('G' . ($cant + 3))->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+        $objSheet->getStyle('H' . ($cant + 3))->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+        $objSheet->getColumnDimension('A')->setWidth(30);
+        $objSheet->getColumnDimension('B')->setWidth(20);
+        $objSheet->getColumnDimension('C')->setWidth(20);
+        $objSheet->getColumnDimension('D')->setWidth(10);
+        $objSheet->getColumnDimension('E')->setWidth(15);
+        $objSheet->getColumnDimension('F')->setWidth(10);
+        $objSheet->getColumnDimension('G')->setWidth(10);
+        $objSheet->getColumnDimension('H')->setWidth(10);
+        $objSheet->getColumnDimension('I')->setWidth(15);
+        $objSheet->getColumnDimension('J')->setWidth(20);
+
+        /*$objSheet->mergeCells('A1:J1');
+        $objSheet->getCell('A1')->setValue("DESPACHO DE PEDIDOS");
+        $objSheet->mergeCells('E'. ($w + 4).':G'.($w + 4));
+        $objSheet->getCell('E' . ($w + 4))->setValue("CAJAS EQUIVALENTES");
+        $objSheet->mergeCells('I'. ($w + 4).':K'.($w + 4));
+        $objSheet->mergeCells('I'. ($w + 5).':K'.($w + 5));
+        $objSheet->mergeCells('I'. ($w + 6).':K'.($w + 6));
+        $objSheet->mergeCells('I'. ($w + 7).':K'.($w + 7));
+        $objSheet->getCell('I' . ($w + 4))->setValue("Piezas Totales Pedidas: ");
+        $objSheet->getCell('L' . ($w + 4))->setValue($piezas_totales_tinturados);
+        $objSheet->getCell('I' . ($w + 5))->setValue("Ramos Totales Pedidos:");
+        $objSheet->getCell('L' . ($w + 5))->setValue($ramos_totales_tinturados);
+        $objSheet->getCell('I' . ($w + 6))->setValue("Cajas Full Totales Pedidas:" );
+        $objSheet->getCell('L' . ($w + 6))->setValue($cajas_full_totales_tinturados);
+        $objSheet->getCell('I' . ($w + 7))->setValue("Cajas Equivalentes Totales Pedidas: " );
+        $objSheet->getCell('L' . ($w + 7))->setValue(round($ramos_totales_estandar_tinturados / getConfiguracionEmpresa()->ramos_x_caja,2));
+        $objSheet->getStyle('A'. ($w + 4).':C'.($w + 4))->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('357ca5');*/
+
+        $objSheet->getDefaultStyle()->applyFromArray($style);
     }
 
     public function exportar_pedidos_despacho_cuarto_frio(Request $request){
