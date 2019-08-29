@@ -896,6 +896,13 @@ class DespachosController extends Controller
                         }
                         $piezas_despacho = $half + $cuarto + $sexto + $octavo;
                     }
+                    $datosExportacion ="";
+                    if(count(getDatosExportacionCliente($det_ped->id_detalle_pedido))>0)
+                        foreach(getDatosExportacionCliente($det_ped->id_detalle_pedido) as $de)
+                            $datosExportacion .= " ".$de->valor;
+                    }
+
+                    }
                 }
 
                 $objSheet->getStyle('A1:J1')->getFont()->setBold(true);
@@ -912,7 +919,7 @@ class DespachosController extends Controller
                 $objSheet->getStyle('J' . ($p + 3))->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
                 $objSheet->getCell('A' . ($p + 3))->setValue($pedido->cliente->detalle()->nombre);
                 $objSheet->getCell('B' . ($p + 3))->setValue(isset($pedido->envios[0]->comprobante->secuencial)? $pedido->envios[0]->comprobante->secuencial : "");
-                $objSheet->getCell('C' . ($p + 3))->setValue();
+                $objSheet->getCell('C' . ($p + 3))->setValue($datosExportacion);
                 $objSheet->getCell('D' . ($p + 3))->setValue($piezas_despacho);
                 $objSheet->getCell('E' . ($p + 3))->setValue($full);
                 $objSheet->getCell('F' . ($p + 3))->setValue($half);
