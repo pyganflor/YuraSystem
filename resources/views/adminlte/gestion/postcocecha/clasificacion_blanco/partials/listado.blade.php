@@ -118,13 +118,13 @@
                     <td class="text-center"
                         style="border-color: #9d9d9d; border-right-width: {{$pos_fecha == 1 ? '3px' : ''}}; border-left-width: {{$pos_fecha == 1 ? '3px' : ''}};"
                         onmouseover="$(this).css('background-color','#ADD8E6')" onmouseleave="$(this).css('background-color','')">
-                        <span class="badge" title="Pedidos">{{$cant_pedido}}</span>
+                        <span class="badge" title="Pedidos">{{number_format($cant_pedido,2,".","")}}</span>
                         <input type="hidden" id="pedido_{{$pos_comb}}_{{$pos_fecha}}" value="{{$cant_pedido}}">
 
                         @if($saldo >= 0)
                             <span class="badge bg-green" title="Armados">{{$saldo}}</span>
                         @else
-                            <span class="badge bg-red" title="Por armar">{{substr($saldo,1)}}</span>
+                            <span class="badge bg-red" title="Por armar">{{number_format(substr($saldo,1),2,".","")}}</span>
                         @endif
                     </td>
                     @php

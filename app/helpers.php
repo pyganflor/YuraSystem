@@ -2128,100 +2128,108 @@ function getDistribucion($idDistribucion)
     return Distribucion::find($idDistribucion);
 }
 
-function getCodigoArticuloVenture()
+function getCodigoArticuloVenture($idConfiguracionempresa=1)
 {
-    return [
-        '0011601010001' => 'GYP. MS. 250 Gr 50 cm',
-        '0011601010002' => 'GYP. MS. 250 Gr 60 cm',
-        '0011601010003' => 'GYP. MS. 250 Gr 75 cm',
-        '0011601010004' => 'GYP. MS. 500 Gr 60 cm',
-        '0011601010005' => 'GYP. MS. 500 Gr 75 cm',
-        '0011601010006' => 'GYP. MS. 75 Gr 75 cm',
-        '0011601010007' => 'GYP. MS. 40 Gr 50 cm',
-        '0011601010008' => 'GYP. MS. 150 Gr 60 cm',
-        '0011601010009' => 'GYP. MS. 750 Gr 75 cm',
-        '0011601010010' => 'GYP. MS. 875 Gr 75 cm',
-        '0011601010011' => 'GYP. MS. 1000 Gr 75 cm',
-        '0011601010012' => 'GYP. MS. 1250 Gr 75 cm',
-        '0011601010013' => 'GYP. MS. 250 Gr 65 cm',
-        '0011601010014' => 'GYP. MS. 250 Gr 80 cm',
-        '0011601010015' => 'GYP. MS. 200 Gr 60 cm',
-        '0011601010016' => 'GYP. MS. 450 Gr 15 cm',
-        '0011601010017' => 'GYP. MS. 650 Gr 80 cm',
-        '0011601010018' => 'GYP. MS. 150 Gr 75 cm',
-        '0011601010019' => 'GYP. MS. 100 Gr 75 cm',
-        '0011601010020' => 'GYP. MS. 580 Gr 75 cm',
-        '0011601010021' => 'GYP. MS. 180 Gr 75 cm',
-        '0011601010022' => 'GYP. MS. 9 Tallos',
-        '0011601010023' => 'GYP. MS. 680 Gr',
-        '0011601010024' => 'GYP. MS. 350 Gr',
-        '0011601010025' => 'GYP. MS. 5 Tallo',
-        '0011601010026' => 'GYP. MS. 500 Gr',
-        '0011601010027' => 'GYP. MS. 280 Gr',
-        '0011601010028' => 'GYP. MS. 5 Tallos Corta 60 cm',
-        '0011601010029' => 'GYP. MS. 220 Gr',
-        '0011601010030' => 'GYP. MS. 2 Tallos larga 75 cm',
-        '0011601010034' => 'GYP. MS. 3 Tallos Larga 75 cm',
-        '0011601010037' => 'GYP. MS. 280 Gr Corta 60 cm',
-        '0011601010040' => 'GYP. MS. 220 Gr Corta 60 cm',
-        '0011601010041' => 'GYP. MS. 280 Gr Larga 15 Tallos',
-        '0011601010042' => 'GYP. MS. 7 Tallos Larga',
-        '0011601010043' => 'GYP. MS. 1500 Hojas',
-        '0011601010044' => 'GYP. MS. 650 Gr Hojas 70 cm',
-        '0011601010045' => 'GYP. MS.  850 Gr Hojas',
-        '0011601010046' => 'GYP. MS. 175 Gr Larga',
-        '0011601010047' => 'GYP. MS. 170 Gr Larga',
-        '0011601010048' => 'GYP. MS. 520 Gr Gr Larga',
-        '0011601010049' => 'GYP. MS. 120 Gr Larga',
-        '0011601010050' => 'GYP. MS. 1 Tallo 60 cm',
-        '0011601010051' => 'GYP. MS. 400 Gr Larga',
-        '0011601010052' => 'GYP. MS. 400 Gr Corta',
-        '0011601030001' => 'GYP. XLENCE  1250',
-        '0011601030002' => 'GYP. XLENCE 1000',
-        '0011601030003' => 'GYP. XLENCE 750',
-        '0011601030004' => 'GYP. XLENCE 250 Corta',
-        '0011601030005' => 'GYP. XLENCE 250 Larga',
-        '0011601030006' => 'GYP. XLENCE 180 Larga',
-        '0011601030007' => 'GYP. XLENCE 500 Larga',
-        '0011601030008' => 'GYP. XLENCE 550',
-        '0011601030009' => 'GYP. XLENCE 420',
-        '0011601030010' => 'GYP. XLENCE 580',
-        '0011601030011' => 'GYP. XLENCE 75',
-        '0011601030012' => 'GYP. XLENCE 5 Tallos',
-        '0011601030013' => 'GYP. XLENCE 2 Tallos',
-        '0011601030014' => 'GYP. XLENCE 120',
-        '0011601030015' => 'GYP. XLENCE 400 Larga',
-        '0011601030016' => 'GYP. XLENCE 170',
-        '0011601030017' => 'GYP. XLENCE 250',
-        '0011601030018' => 'GYP. XLENCE 200',
-        '0011601030019' => 'GYP. XLENCE 40 Gr',
-        '0011601030020' => 'GYP. XLENCE 175',
-        '0011601030021' => 'GYP. XLENCE 125',
-        '0011601030022' => 'GYP. XLENCE 650 Hojas',
-        '0011601030023' => 'GYP. XLENCE 400 Corta',
-        '0011601030024' => 'GYP. XLENCE 220',
-        '0011601030025' => 'GYP. XLENCE 850',
-        '0011601030026' => 'GYP. XLENCE 550 Corta',
-        '0011601030027' => 'GYP. XLENCE 875',
-        '0011601030028' => 'GYP. XLENCE 200 Corta',
-        '0011601030029' => 'GYP. XLENCE 4 Tallos',
-        '001160401' => 'BROMELIAS 90 cm',
-        '001160402' => 'BROMELIAS 80 cm',
-        '001160403' => 'BROMELIAS 70 cm'
+    $codigosVenture =  [
+        1 => [ // id_configracion_empresa Dasalflor
+            '0011601010001' => 'GYP. MS. 250 Gr 50 cm',
+            '0011601010002' => 'GYP. MS. 250 Gr 60 cm',
+            '0011601010003' => 'GYP. MS. 250 Gr 75 cm',
+            '0011601010004' => 'GYP. MS. 500 Gr 60 cm',
+            '0011601010005' => 'GYP. MS. 500 Gr 75 cm',
+            '0011601010006' => 'GYP. MS. 75 Gr 75 cm',
+            '0011601010007' => 'GYP. MS. 40 Gr 50 cm',
+            '0011601010008' => 'GYP. MS. 150 Gr 60 cm',
+            '0011601010009' => 'GYP. MS. 750 Gr 75 cm',
+            '0011601010010' => 'GYP. MS. 875 Gr 75 cm',
+            '0011601010011' => 'GYP. MS. 1000 Gr 75 cm',
+            '0011601010012' => 'GYP. MS. 1250 Gr 75 cm',
+            '0011601010013' => 'GYP. MS. 250 Gr 65 cm',
+            '0011601010014' => 'GYP. MS. 250 Gr 80 cm',
+            '0011601010015' => 'GYP. MS. 200 Gr 60 cm',
+            '0011601010016' => 'GYP. MS. 450 Gr 15 cm',
+            '0011601010017' => 'GYP. MS. 650 Gr 80 cm',
+            '0011601010018' => 'GYP. MS. 150 Gr 75 cm',
+            '0011601010019' => 'GYP. MS. 100 Gr 75 cm',
+            '0011601010020' => 'GYP. MS. 580 Gr 75 cm',
+            '0011601010021' => 'GYP. MS. 180 Gr 75 cm',
+            '0011601010022' => 'GYP. MS. 9 Tallos',
+            '0011601010023' => 'GYP. MS. 680 Gr',
+            '0011601010024' => 'GYP. MS. 350 Gr',
+            '0011601010025' => 'GYP. MS. 5 Tallo',
+            '0011601010026' => 'GYP. MS. 500 Gr',
+            '0011601010027' => 'GYP. MS. 280 Gr',
+            '0011601010028' => 'GYP. MS. 5 Tallos Corta 60 cm',
+            '0011601010029' => 'GYP. MS. 220 Gr',
+            '0011601010030' => 'GYP. MS. 2 Tallos larga 75 cm',
+            '0011601010034' => 'GYP. MS. 3 Tallos Larga 75 cm',
+            '0011601010037' => 'GYP. MS. 280 Gr Corta 60 cm',
+            '0011601010040' => 'GYP. MS. 220 Gr Corta 60 cm',
+            '0011601010041' => 'GYP. MS. 280 Gr Larga 15 Tallos',
+            '0011601010042' => 'GYP. MS. 7 Tallos Larga',
+            '0011601010043' => 'GYP. MS. 1500 Hojas',
+            '0011601010044' => 'GYP. MS. 650 Gr Hojas 70 cm',
+            '0011601010045' => 'GYP. MS.  850 Gr Hojas',
+            '0011601010046' => 'GYP. MS. 175 Gr Larga',
+            '0011601010047' => 'GYP. MS. 170 Gr Larga',
+            '0011601010048' => 'GYP. MS. 520 Gr Gr Larga',
+            '0011601010049' => 'GYP. MS. 120 Gr Larga',
+            '0011601010050' => 'GYP. MS. 1 Tallo 60 cm',
+            '0011601010051' => 'GYP. MS. 400 Gr Larga',
+            '0011601010052' => 'GYP. MS. 400 Gr Corta',
+            '0011601030001' => 'GYP. XLENCE  1250',
+            '0011601030002' => 'GYP. XLENCE 1000',
+            '0011601030003' => 'GYP. XLENCE 750',
+            '0011601030004' => 'GYP. XLENCE 250 Corta',
+            '0011601030005' => 'GYP. XLENCE 250 Larga',
+            '0011601030006' => 'GYP. XLENCE 180 Larga',
+            '0011601030007' => 'GYP. XLENCE 500 Larga',
+            '0011601030008' => 'GYP. XLENCE 550',
+            '0011601030009' => 'GYP. XLENCE 420',
+            '0011601030010' => 'GYP. XLENCE 580',
+            '0011601030011' => 'GYP. XLENCE 75',
+            '0011601030012' => 'GYP. XLENCE 5 Tallos',
+            '0011601030013' => 'GYP. XLENCE 2 Tallos',
+            '0011601030014' => 'GYP. XLENCE 120',
+            '0011601030015' => 'GYP. XLENCE 400 Larga',
+            '0011601030016' => 'GYP. XLENCE 170',
+            '0011601030017' => 'GYP. XLENCE 250',
+            '0011601030018' => 'GYP. XLENCE 200',
+            '0011601030019' => 'GYP. XLENCE 40 Gr',
+            '0011601030020' => 'GYP. XLENCE 175',
+            '0011601030021' => 'GYP. XLENCE 125',
+            '0011601030022' => 'GYP. XLENCE 650 Hojas',
+            '0011601030023' => 'GYP. XLENCE 400 Corta',
+            '0011601030024' => 'GYP. XLENCE 220',
+            '0011601030025' => 'GYP. XLENCE 850',
+            '0011601030026' => 'GYP. XLENCE 550 Corta',
+            '0011601030027' => 'GYP. XLENCE 875',
+            '0011601030028' => 'GYP. XLENCE 200 Corta',
+            '0011601030029' => 'GYP. XLENCE 4 Tallos',
+            '001160401' => 'BROMELIAS 90 cm',
+            '001160402' => 'BROMELIAS 80 cm',
+            '001160403' => 'BROMELIAS 70 cm'
+        ],
+        2 =>[ //id_configracion_empresa Intraescorp
+            '0011601010001' => 'GYP. MS. 250 Gr 50 cm',
+        ]
     ];
+
+    return $codigosVenture[$idConfiguracionempresa];
 }
 
-function getProductosVinculadosYuraVenture()
+function getProductosVinculadosYuraVenture($idConfiguracionEmpresa)
 {
-    return ProductoYuraVenture::get();
+    return ProductoYuraVenture::where('id_configuracion_empresa',$idConfiguracionEmpresa)->get();
 }
 
-function getCodigoVenturePresentacion($idPlanta, $idVariedad, $idClasificacionRamo, $clasificacionRamoIdUnidadMedida, $tallosXramos, $longitudRamo, $longitudRamoIdUnidadMedida)
+function getCodigoVenturePresentacion($idPlanta, $idVariedad, $idClasificacionRamo, $clasificacionRamoIdUnidadMedida, $tallosXramos, $longitudRamo, $longitudRamoIdUnidadMedida,$idConfiguracionempresa)
 {
-    foreach (getProductosVinculadosYuraVenture() as $prductosVinculados) {
-        $datos = explode("|", $prductosVinculados->presentacion_yura);
+    $prductosVinculados = getProductosVinculadosYuraVenture($idConfiguracionempresa);
+    foreach ($prductosVinculados as $prductoVinculado) {
+        $datos = explode("|", $prductoVinculado->presentacion_yura);
         if ($datos[0] == $idPlanta && $datos[1] == $idVariedad && $datos[2] == $idClasificacionRamo && $datos[3] == $clasificacionRamoIdUnidadMedida && $datos[4] == $tallosXramos && $datos[5] == $longitudRamo && $datos[6] == $longitudRamoIdUnidadMedida) {
-            return $prductosVinculados->codigo_venture;
+            return $prductoVinculado->codigo_venture;
         }
     }
 }

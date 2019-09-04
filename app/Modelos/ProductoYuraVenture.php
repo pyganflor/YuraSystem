@@ -15,9 +15,14 @@ class ProductoYuraVenture extends Model
         'presentacion_yura',
         'codigo_venture',
         'fecha_registro',
+        'id_configuracion_empresa'
     ];
 
     public function detalle_especificacionempaque(){
         return $this->belongsTo('yura\Modelos\DetalleEspecificacionEmpaque','id_detalle_especificacionempaque');
+    }
+
+    public function empresa(){
+        return $this->belongsTo('yura\Modelos\ConfiguracionEmpresa','id_configuracion_empresa');
     }
 }

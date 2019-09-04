@@ -29,15 +29,17 @@
             <div class="row">
                 @if(!$pedido_fijo)
                     <div class="col-md-4">
-                        <label for="Fecha de entrega" style="font-size: 11pt">Fecha de entrega</label>
+                        <label for="Fecha de entrega" style="font-size: 11pt">
+                            <i class="fa fa-calendar"></i> Fecha de entrega </label>
                         <input type="date" id="fecha_de_entrega" name="fecha_de_entrega" onchange="buscar_saldos($(this).val(), 3, 3)"
                                value="{{\Carbon\Carbon::now()->toDateString()}}" class="form-control" required>
                     </div>
-
                 @endif
                 @if($vista === 'pedidos')
                     <div class="col-md-4">
-                        <label for="Cliente" style="font-size: 11pt">Cliente</label>
+                        <label for="Cliente" style="font-size: 11pt">
+                            <i class="fa fa-user-circle-o"></i> Cliente
+                        </label>
                         <select class="form-control" id="id_cliente_venta" name="id_cliente_venta"
                                 onchange="cargar_espeicificaciones_cliente(true)" required>
                             <option disabled selected> Seleccione</option>
@@ -52,7 +54,19 @@
                             <input type="checkbox" id="envio_automatico" name="envio_automatico" checked >
                         </button>
                     </div>
-                    <div class="col-md-4" style="margin-top: 30px;text-align: right;">
+                    <div class="col-md-3" >
+                        <label for="id_configuracion_empresa" style="font-size: 11pt">
+                            <i class="fa fa-building-o"></i> Facutrar pedido con:
+                        </label>
+                        <select class="form-control" id="id_configuracion_empresa" name="id_configuracion_empresa" title="Seleccione un empresa para facturar los pedidos">
+                            @foreach(getConfiguracionEmpresa(null,true) as $empresa)
+                                @php $lastPedido = getLastPedido(); @endphp
+                                <option {{isset($lastPedido) ? (($lastPedido->id_configuracion_empresa === $empresa->id_configuracion_empresa) ? "selected" : "") : ""}}
+                                        style=" color: black" value="{{$empresa->id_configuracion_empresa}}">{{$empresa->nombre}}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-md-1" style="margin-top: 30px;text-align: right;">
                         <button type='button' class='btn btn-xs btn-danger' onclick='borrar_duplicado()'>
                             <i class='fa fa-fw fa-trash'></i>
                         </button>

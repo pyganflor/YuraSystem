@@ -93,9 +93,13 @@
                                         <input type="hidden" id="id_detalle_especificacion_empaque_{{$x+1}}_{{$b}}" value="{{$det_esp_emp->id_detalle_especificacionempaque}}">
                                     </td>
                                     @if($z == 0)
-                                        <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;" class="text-center"
-                                            rowspan="{{count($esp_emp->detalles)}}">
-                                            {{explode('|',$esp_emp->empaque->nombre)[0]}}
+                                        <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;" class="text-center"  rowspan="{{count($esp_emp->detalles)}}">
+                                            <select id="empaque_{{$x+1}}" class="empaque_{{$x+1}}" name="empaque_{{$x+1}}" style="border:none;width:100%" onchange="cuenta_ramos(this)" >
+                                                <option value="{{$esp_emp->empaque->id_empaque}}" >{{explode('|',$esp_emp->empaque->nombre)[0]}}</option>
+                                                @isset($emp_ramos)
+                                                    <option value="{{$emp_ramos->id_empaque}}">{{explode('|',$emp_ramos->nombre)[0]}}</option>
+                                                @endisset
+                                            </select>
                                         </td>
                                     @endif
                                     <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;" class="text-center">

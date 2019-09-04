@@ -7,12 +7,7 @@
             <td class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
                 <input type="date" id="fecha_pedido" name="fecha_pedido" required style="width: 100%" class="form-control">
             </td>
-            <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
-                <i class="fa fa-fw fa-plane"></i> Fecha Envío
-            </th>
-            <td class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
-                <input type="date" id="fecha_envio" name="fecha_envio" required style="width: 100%" class="form-control">
-            </td>
+
             <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
                 Cliente
             </th>
@@ -28,11 +23,21 @@
                 </select>
             </td>
             <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
+                Facutrar pedido con:
+            </th>
+            <td class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
+                <select class="form-control" id="id_configuracion_empresa" name="id_configuracion_empresa" title="Seleccione un empresa para facturar los pedidos">
+                    @foreach(getConfiguracionEmpresa(null,true) as $empresa)
+                        @php $lastPedido = getLastPedido(); @endphp
+                        <option {{isset($lastPedido) ? (($lastPedido->id_configuracion_empresa === $empresa->id_configuracion_empresa) ? "selected" : "") : ""}}
+                                style=" color: black" value="{{$empresa->id_configuracion_empresa}}">{{$empresa->nombre}}</option>
+                    @endforeach
+                </select>
+            </td>
+            <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
                 Agencia de Carga
             </th>
-            <td class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef" id="div_agenia_carga">
-
-            </td>
+            <td class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef" id="div_agenia_carga"></td>
         </tr>
         <tr>
             <td colspan="8">
@@ -488,7 +493,7 @@
                 datos = {
                     _token: '{{csrf_token()}}',
                     fecha_pedido: $('#fecha_pedido').val(),
-                    fecha_envio: $('#fecha_envio').val(),
+                    fecha_envio: $('#fecha_pedido').val(),
                     id_cliente: $('#id_cliente_orden_semanal').val(),
                     id_agencia_carga: $('#id_agencia_carga').val(),
                     nueva_esp: nueva_esp,

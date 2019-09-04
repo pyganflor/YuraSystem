@@ -897,11 +897,9 @@ class DespachosController extends Controller
                         $piezas_despacho = $half + $cuarto + $sexto + $octavo;
                     }
                     $datosExportacion ="";
-                    if(count(getDatosExportacionCliente($det_ped->id_detalle_pedido))>0){
-                        foreach(getDatosExportacionCliente($det_ped->id_detalle_pedido) as $de){
+                    if(count(getDatosExportacionCliente($det_ped->id_detalle_pedido))>0)
+                        foreach(getDatosExportacionCliente($det_ped->id_detalle_pedido) as $de)
                             $datosExportacion .= " ".$de->valor;
-                        }
-                    }
                 }
 
                 $objSheet->getStyle('A1:J1')->getFont()->setBold(true);

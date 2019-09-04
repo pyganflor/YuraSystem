@@ -74,13 +74,16 @@
                        class="form-control">
             </th>
             <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
-                <i class="fa fa-fw fa-plane"></i> Fecha Envío
+                <i class="fa fa-building-o"></i> Facutrar pedido con:
             </th>
             <th class="text-center" style="border-color: #9d9d9d" width="85px">
-                <input type="date" id="fecha_envio" name="fecha_envio"
-                       value="{{count($pedido->envios) == 1 ? substr($pedido->envios[0]->fecha_envio, 0, 10) : $pedido->fecha_pedido}}" required
-                       width="100%"
-                       class="form-control">
+                <select class="form-control" style="width:180px" id="id_configuracion_empresa" name="id_configuracion_empresa" title="Seleccione un empresa para facturar los pedidos">
+                    @foreach(getConfiguracionEmpresa(null,true) as $empresa)
+                        @php $lastPedido = getLastPedido(); @endphp
+                        <option {{isset($lastPedido) ? (($lastPedido->id_configuracion_empresa === $empresa->id_configuracion_empresa) ? "selected" : "") : ""}}
+                                style=" color: black" value="{{$empresa->id_configuracion_empresa}}">{{$empresa->nombre}}</option>
+                    @endforeach
+                </select>
             </th>
             <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
                 Cliente
@@ -100,7 +103,6 @@
                            value="{{$detped_datexp != '' ? $detped_datexp->valor : ''}}" minlength="1"
                            style="text-transform: uppercase">
                 </th>
-
                 <input type="hidden" class="id_dato_exportacion" value="{{$cli_dat_exp->id_dato_exportacion}}">
             @endforeach
         </tr>

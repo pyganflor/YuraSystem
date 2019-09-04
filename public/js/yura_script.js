@@ -866,38 +866,7 @@ function listar_resumen_pedidos(fecha, opciones,id_configuracion_empresa) {
     });
 }
 
-function calcular_precio_pedido(input) {
-    monto_total = 0.00;
-    total_ramos = 0.00;
-    total_piezas = 0.00;
-    cant_rows = $(".input_cantidad").length;
-    for (i = 1; i <= cant_rows; i++) {
-        precio_especificacion = 0.00;
-        ramos_totales_especificacion = 0.00;
-        $.each($(".cantidad_" + i), function (p, q) {
-            $.each($(".td_ramos_x_caja_" + i), function (a, b) {
-                ramos_totales_especificacion += (q.value * b.value);
-            });
-            $.each($(".precio_" + i), function (y, z) {
-                precio_variedad = z.value == "" ? 0 : z.value;
-                ramos_x_caja = $(".input_ramos_x_caja_" + i + "_" + (y + 1)).val();
-                precio_especificacion += (parseFloat(precio_variedad) * parseFloat(ramos_x_caja) * q.value);
-            });
-        });
-        monto_total += parseFloat(precio_especificacion);
-        $("#td_total_ramos_" + i).html(parseFloat(ramos_totales_especificacion));
-        total_ramos += ramos_totales_especificacion;
-        $("#td_precio_especificacion_" + i).html("$" + parseFloat(precio_especificacion).toFixed(2));
-    }
 
-    $.each($(".seleccion_invidual"), function (n, m) {
-        if ($(".cantidad_" + (n + 1)).val() != "" && $("#seleccion_invidual_" + (n + 1)).is(":checked"))
-            total_piezas += parseInt($(".cantidad_" + (n + 1)).val());
-    });
-    $("#total_piezas").html(total_piezas);
-    $("#total_ramos").html(total_ramos);
-    $(".monto_total_pedido").html("$" + monto_total.toFixed(2));
-}
 
 function barra_string(input, event, barra = true) {
     value_input = $("#" + input.id).val();
@@ -1120,7 +1089,7 @@ function update_orden_tinturada(token) {
                     id_pedido: $('#id_pedido').val(),
                     id_detalle_pedido: $('#id_detalle_pedido').val(),
                     fecha_pedido: $('#fecha_pedido').val(),
-                    fecha_envio: $('#fecha_envio').val(),
+                    fecha_envio: $('#fecha_pedido').val(),
                     cantidad_piezas: $('#cantidad_piezas').val(),
                     id_agencia_carga: $('#id_agencia_carga').val(),
                     arreglo_esp_emp: arreglo_esp_emp,
@@ -1961,4 +1930,113 @@ function exportar_listado_cuarto_frio(token){
             $.LoadingOverlay('hide');
         }
     });
+}
+
+function listar_productos_vinculados() {
+    $.LoadingOverlay('show');
+    datos={
+        id_configuracion_empresa : $("#id_configuracion_empresa_productos").val()
+    };
+    $.get('/producto_venture/listar_productos_vinculados', datos, function (retorno) {
+        $('#div_listado_codigo_prodcutos').html(retorno);
+        estructura_tabla('table_productos_viculados');
+    }).always(function () {
+        $.LoadingOverlay('hide');
+    });
+}
+
+function listar_productos() {
+    $.LoadingOverlay('show');
+    datos={
+        id_configuracion_empresa : $("#id_configuracion_empresa_productos").val()
+    };
+    $.get('/producto_venture/listar_productos', datos, function (retorno) {
+        listar_productos_vinculados();
+        $("option.option_dinamico").remove();
+
+        console.log(retorno,$("select#presentacion_yura_system option").text());
+        //return false;
+        $.each(retorno.articulo_venture,function(i,j){
+            $("select#presentacion_venture").append('<option class="option_dinamico" value="'+i+'">'+j+'</option>');
+        });
+    }).always(function () {
+        $.LoadingOverlay('hide');
+    });
+}
+
+function cuenta_ramos(input){
+    id = input.id.split("_")[1];
+    for (let i = 0; i < $(input)[0].options.length ; i++) {
+        if($(input)[0].options[i].selected && $(input)[0].options[i].innerText === "Ramos"){
+            html='<input type="text" id="input_ramos_'+id+'" name="input_ramos_'+id+'" ' +
+                    'onkeyup="calcular_precio_pedido()" onchange="crear_orden_pedido(this)" ' +
+                    'value="0" style="width:100%;border:none;text-align:center;height: 34px;">';
+
+            $("input#cantidad_piezas_"+id).attr('disabled',true);
+            $("input.cantidad_"+id).val("");
+            $("#td_total_ramos_"+id).html(html);
+
+            for (let j = 0; j < $("select."+input.id).length ; j++) {
+                if($("select."+input.id)[j].options[1].innerText === "Ramos")
+                    $($("select."+input.id)[j].options[1]).attr('selected',true);
+            }
+            return false;
+        }else{
+            $("input#cantidad_piezas_"+id).removeAttr('disabled');
+            $("#td_total_ramos_"+id).html("0");
+            for (let j = 0; j < $("select."+input.id).length ; j++) {
+                if($("select."+input.id)[j].options[1].innerText === "Ramos")
+                    $($("select."+input.id)[j].options[1]).removeAttr('selected');
+            }
+        }
+    }
+}
+
+function calcular_precio_pedido(input) {
+    monto_total = 0.00;
+    total_ramos = 0.00;
+    total_piezas = 0.00;
+    cant_rows = $(".input_cantidad").length;
+    for (i = 1; i <= cant_rows; i++) {
+        precio_especificacion = 0.00;
+        ramos_totales_especificacion = 0.00;
+        $.each($(".cantidad_" + i), function (p, q) {
+            ramos= 0;
+            $.each($(".td_ramos_x_caja_" + i), function (a, b) {
+                if($("#empaque_"+i+" option:selected").text() === "Ramos"){
+                    ramos += parseFloat(b.value);
+                }else{
+                    ramos_totales_especificacion += (q.value * b.value);
+                }
+            });
+            if($("#empaque_"+i+" option:selected").text() === "Ramos") {
+                ramos_totales_especificacion += parseFloat($("#input_ramos_" + i).val());
+                $(".cantidad_" + i).val(parseFloat($("#input_ramos_"+i).val()/ramos).toFixed(2));
+            }
+
+            $.each($(".precio_" + i), function (y, z) {
+                precio_variedad = z.value == "" ? 0 : z.value;
+                ramos_x_caja = $(".input_ramos_x_caja_" + i + "_" + (y + 1)).val();
+                precio_especificacion += (parseFloat(precio_variedad) * parseFloat(ramos_x_caja) * q.value);
+            });
+        });
+        monto_total += parseFloat(precio_especificacion);
+        if($("#td_total_ramos_"+i+" input").length === 0 )
+            $("#td_total_ramos_" + i).html(parseFloat(ramos_totales_especificacion));
+
+        total_ramos += ramos_totales_especificacion;
+        $("#td_precio_especificacion_" + i).html("$" + parseFloat(precio_especificacion).toFixed(2));
+    }
+
+    $.each($(".seleccion_invidual"), function (n, m) {
+        if ($(".cantidad_" + (n + 1)).val() != "" && $("#seleccion_invidual_" + (n + 1)).is(":checked"))
+            total_piezas += parseFloat($(".cantidad_" + (n + 1)).val());
+    });
+    $("#total_piezas").html(total_piezas.toFixed(2));
+    $("#total_ramos").html(total_ramos);
+    $(".monto_total_pedido").html("$" + monto_total.toFixed(2));
+}
+
+function calcula_precio_pedido_ramos() {
+    console.log("hola")
 }
