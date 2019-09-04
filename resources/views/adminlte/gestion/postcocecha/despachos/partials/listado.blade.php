@@ -413,7 +413,7 @@
                                 @endif
                             </td>
                             <td class="text-center" style="border-color: #9d9d9d">
-                                {{$item->cantidad}}
+                                {{number_format($item->cantidad,2,".","")}}
                             </td>
                         </tr>
                     @endforeach
