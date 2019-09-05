@@ -23,7 +23,7 @@
                 </select>
             </td>
             <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
-                Facutrar pedido con:
+                Facturar pedido con:
             </th>
             <td class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
                 <select class="form-control" id="id_configuracion_empresa" name="id_configuracion_empresa" title="Seleccione un empresa para facturar los pedidos">

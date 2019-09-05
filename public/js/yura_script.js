@@ -2022,7 +2022,7 @@ function calcular_precio_pedido(input) {
         });
         monto_total += parseFloat(precio_especificacion);
         if($("#td_total_ramos_"+i+" input").length === 0 )
-            $("#td_total_ramos_" + i).html(parseFloat(ramos_totales_especificacion));
+            $("#td_total_ramos_" + i).html(parseFloat(ramos_totales_especificacion).toFixed(2));
 
         total_ramos += ramos_totales_especificacion;
         $("#td_precio_especificacion_" + i).html("$" + parseFloat(precio_especificacion).toFixed(2));
@@ -2037,6 +2037,3 @@ function calcular_precio_pedido(input) {
     $(".monto_total_pedido").html("$" + monto_total.toFixed(2));
 }
 
-function calcula_precio_pedido_ramos() {
-    console.log("hola")
-}

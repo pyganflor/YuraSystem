@@ -14,7 +14,7 @@
             <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
                 VARIEDAD
             </th>
-            <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
+            <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d;width:40px">
                 PESO
             </th>
             <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
@@ -23,20 +23,20 @@
             <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
                 PRESENTACIÓN
             </th>
-            <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
+            <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d;width:45px">
                 RAMO X CAJA
             </th>
             <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
                 TOTAL RAMOS
             </th>
-            <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
+            <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d;width:45px">
                 TALLOS X RAMO
             </th>
-            <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
+            <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d;width:60px">
                 LONGITUD
             </th>
             <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
-                style="border-color: #9d9d9d;width:100px">
+                style="border-color: #9d9d9d;width:80px">
                 PRECIO X VARIEDAD
             </th>
             <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
@@ -77,7 +77,7 @@
                                         class="text-center" rowspan="{{getCantidadDetallesByEspecificacion($item->id_especificacion)}}" >
                                         <input type="number" min="1" name="orden" class="orden" id="orden_{{($x+1)}}" style="border: none;text-align: center; width: 30px;font-size: 14px">
                                     </td>
-                                    <td style="border-color: #9d9d9d; padding: 0px; vertical-align: middle; width: 100px; "
+                                    <td style="border-color: #9d9d9d; padding: 0px; vertical-align: middle; width: 80px; "
                                         class="text-center" rowspan="{{getCantidadDetallesByEspecificacion($item->id_especificacion)}}">
                                         <input type="number" min="0" id="cantidad_piezas_{{($x+1)}}" style="border: none;" onkeyup="crear_orden_pedido(this)" onchange="calcular_precio_pedido(this)"
                                                name="cantidad_piezas_{{$item->id_especificacion}}"  class="text-center form-control cantidad_{{($x+1)}} input_cantidad" value="">
@@ -88,7 +88,7 @@
                                         {{$det_esp_emp->variedad->siglas}}
                                         <input type="hidden" class="input_variedad_{{$x+1}}" id="id_variedad_{{$x+1}}_{{$b}}" value="{{$det_esp_emp->variedad->id_variedad}}">
                                     </td>
-                                    <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;width: 70px;" class="text-center">
+                                    <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;width:40px" class="text-center">
                                         {{$det_esp_emp->clasificacion_ramo->nombre}}{{$det_esp_emp->clasificacion_ramo->unidad_medida->siglas}}
                                         <input type="hidden" id="id_detalle_especificacion_empaque_{{$x+1}}_{{$b}}" value="{{$det_esp_emp->id_detalle_especificacionempaque}}">
                                     </td>
@@ -105,24 +105,24 @@
                                     <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;" class="text-center">
                                         {{$det_esp_emp->empaque_p->nombre}}
                                     </td>
-                                    <td  style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;" class="text-center">
+                                    <td  style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;width:40px" class="text-center">
                                         {{$det_esp_emp->cantidad}}
                                         <input type="hidden" class="td_ramos_x_caja_{{$x+1}} input_ramos_x_caja_{{$x+1}}_{{$b}}" value="{{$det_esp_emp->cantidad}}">
                                     </td>
                                     @if($item->id_especificacion != $anterior)
-                                        <td id="td_total_ramos_{{$x+1}}" style="border-color: #9d9d9d; padding: 0px; vertical-align: middle; width: 70px; "
+                                        <td id="td_total_ramos_{{$x+1}}" style="border-color: #9d9d9d; padding: 0px; vertical-align: middle; width: 45px; "
                                             class="text-center" rowspan="{{getCantidadDetallesByEspecificacion($item->id_especificacion)}}">
                                         </td>
                                     @endif
                                     <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;" class="text-center">
                                         {{$det_esp_emp->tallos_x_ramos}}
                                     </td>
-                                    <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;" class="text-center">
+                                    <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;width:60px" class="text-center">
                                         @if($det_esp_emp->longitud_ramo != '' && $det_esp_emp->id_unidad_medida != '')
                                             {{$det_esp_emp->longitud_ramo}}{{$det_esp_emp->unidad_medida->siglas}}
                                         @endif
                                     </td>
-                                    <td id="td_precio_variedad_{{$det_esp_emp->id_detalle_especificacionempaque}}_{{($x+1)}}" style="border-color: #9d9d9d;padding: 0px 0px; vertical-align: middle;" >
+                                    <td id="td_precio_variedad_{{$det_esp_emp->id_detalle_especificacionempaque}}_{{($x+1)}}" style="border-color: #9d9d9d;padding: 0px 0px; vertical-align: middle;width:80px" >
                                         @if((getPrecioByClienteDetEspEmp($item->id_cliente, $det_esp_emp->id_detalle_especificacionempaque) != ''))
                                             <select name="precio_{{$det_esp_emp->id_detalle_especificacionempaque}}"
                                                     ondblclick="cambiar_input_precio('{{$det_esp_emp->id_detalle_especificacionempaque}}','{{($x+1)}}','{{$b}}')"

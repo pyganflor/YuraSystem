@@ -97,7 +97,12 @@
                             </td>
                             @if($z == 0)
                                  <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;" class="text-center"  rowspan="{{count($esp_emp->detalles)}}">
-                                     {{explode('|',$esp_emp->empaque->nombre)[0]}}
+                                     <select id="empaque_{{$x+1}}" class="empaque_{{$x+1}}" name="empaque_{{$x+1}}" style="width: 100%;border: none;text-align: center;height: 34px;" onchange="cuenta_ramos(this)" >
+                                         <option value="{{$esp_emp->empaque->id_empaque}}" >{{explode('|',$esp_emp->empaque->nombre)[0]}}</option>
+                                         @isset($emp_ramos)
+                                             <option value="{{$emp_ramos->id_empaque}}">{{explode('|',$emp_ramos->nombre)[0]}}</option>
+                                         @endisset
+                                     </select>
                                 </td>
                             @endif
                             <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;" class="text-center">
@@ -111,7 +116,7 @@
                                     <td id="td_total_ramos_{{$x+1}}" style="border-color: #9d9d9d; padding: 0px; vertical-align: middle; width: 70px; "
                                         class="text-center" rowspan="{{getCantidadDetallesByEspecificacion($det_ped->cliente_especificacion->especificacion->id_especificacion)}}">
                                     </td>
-                                @endif
+                            @endif
                             <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;" class="text-center">
                                 {{$det_esp_emp->tallos_x_ramos}}
                             </td>
@@ -178,7 +183,6 @@
                                     class="text-center" rowspan="{{getCantidadDetallesByEspecificacion($item->id_especificacion)}}">
                                     <input type="checkbox" class="seleccion_invidual"  name="seleccion_invidual" id="seleccion_invidual_{{($x+$cant_esp_creadas)}}"
                                            checked onclick="calcular_precio_pedido()">
-
                                 </td>
                                 <td style="border-color: #9d9d9d; padding: 0px; vertical-align: middle; width: 30px; text-align:center"
                                     class="text-center" rowspan="{{getCantidadDetallesByEspecificacion($item->id_especificacion)}}" >
@@ -202,7 +206,12 @@
                             @if($z == 0)
                                 <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;" class="text-center"
                                     rowspan="{{count($esp_emp->detalles)}}">
-                                    {{explode('|',$esp_emp->empaque->nombre)[0]}}
+                                    <select id="empaque_{{$x+$cant_esp_creadas}}" class="empaque_{{$x+$cant_esp_creadas}}" name="empaque_{{$x+$cant_esp_creadas}}" style="width: 100%;border: none;text-align: center;height: 34px;" onchange="cuenta_ramos(this)" >
+                                        <option value="{{$esp_emp->empaque->id_empaque}}" >{{explode('|',$esp_emp->empaque->nombre)[0]}}</option>
+                                        @isset($emp_ramos)
+                                            <option value="{{$emp_ramos->id_empaque}}">{{explode('|',$emp_ramos->nombre)[0]}}</option>
+                                        @endisset
+                                    </select>
                                 </td>
                             @endif
                             <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;" class="text-center">

@@ -56,7 +56,7 @@
                     </div>
                     <div class="col-md-3" >
                         <label for="id_configuracion_empresa" style="font-size: 11pt">
-                            <i class="fa fa-building-o"></i> Facutrar pedido con:
+                            <i class="fa fa-building-o"></i> Facturar pedido con:
                         </label>
                         <select class="form-control" id="id_configuracion_empresa" name="id_configuracion_empresa" title="Seleccione un empresa para facturar los pedidos">
                             @foreach(getConfiguracionEmpresa(null,true) as $empresa)

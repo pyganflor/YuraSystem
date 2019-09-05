@@ -74,7 +74,7 @@
                        class="form-control">
             </th>
             <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
-                <i class="fa fa-building-o"></i> Facutrar pedido con:
+                <i class="fa fa-building-o"></i> Facturar pedido con:
             </th>
             <th class="text-center" style="border-color: #9d9d9d" width="85px">
                 <select class="form-control" style="width:180px" id="id_configuracion_empresa" name="id_configuracion_empresa" title="Seleccione un empresa para facturar los pedidos">
