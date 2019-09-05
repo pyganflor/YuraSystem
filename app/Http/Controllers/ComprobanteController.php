@@ -1685,7 +1685,6 @@ class ComprobanteController extends Controller
             ];
         }
 
-
         if($request->cliente == "true"){
             if($comprobante->tipo_comprobante === "01"){
                 $comprobante->envio->fatura_cliente_tercero != null
@@ -1698,6 +1697,17 @@ class ComprobanteController extends Controller
             }
 
             $correos[] = $mail;
+        }
+
+        if($request->contactos == "true"){
+            $dataContacto = DB::table('detalle_cliente as dc')
+                ->where('id_cliente',$comprobante->envio->pedido->cliente->id_cliente)
+                ->join('detalle_cliente_contacto as dcc','dc.id_detalle_cliente','=','dcc.id_detalle_cliente')
+                ->join('contacto as c','dcc.id_contacto','=','c.id_contacto')
+                ->get();
+
+            foreach ($dataContacto as $contacto)
+                $correos[] = $contacto->correo;
         }
 
         if($request->agencia_carga == "true"){
@@ -1768,7 +1778,7 @@ class ComprobanteController extends Controller
 
         }
 
-        if($request->dist_cajas === "true"){
+        if($request->dist_cajas == "true"){
             $pedido = getPedido($comprobante->envio->pedido->id_pedido);
             $empresa = getConfiguracionEmpresa($comprobante->envio->pedido->id_configuracion_empresa);
             $despacho = isset(getDetalleDespacho($pedido->id_pedido)->despacho) ? getDetalleDespacho($pedido->id_pedido)->despacho : null;
@@ -1811,6 +1821,8 @@ class ComprobanteController extends Controller
             PDF::loadView('adminlte.gestion.comprobante.partials.pdf.guia_bd', compact('data'))->save(env('PDF_FACTURAS_TEMPORAL')."guia_factura_".$comprobante->secuencial.".pdf");
 
         $correos[] = "sales@dasalflor.com";
+        $correos[] = "sales@pyganflor.com";
+        $correos[] = $comprobante->envio->pedido->empresa->correo;
         $correos[] = "obrian@pyganflor.com"; // solo para pruebas, comentar en produccion
                     //$correos[0]
         Mail::to("pruebas-c26453@inbox.mailtrap.io")

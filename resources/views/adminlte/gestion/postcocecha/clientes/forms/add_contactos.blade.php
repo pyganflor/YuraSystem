@@ -54,8 +54,9 @@
                                             </div>
                                             <input type="hidden" id="id_inputs_contacto_{{$key+1}}" value="{{$contacto->id_contacto}}">
                                         </td>
-                                        <td><button type="button" class="btn btn-xs btn-warning" title="Desactivar campo" onclick="actualizarContacto('{{$contacto->id_contacto}}','{{$contacto->estado}}','{{$dataCliente->id_cliente}}')">
-                                                <i class="fa fa-ban " aria-hidden="true"></i>
+                                        <td style="vertical-align: middle;text-align: center;">
+                                            <button type="button" class="btn btn-xs btn-warning" title="Actualizar estado del contacto" onclick="actualizarContacto('{{$contacto->id_contacto}}','{{$contacto->estado}}','{{$dataCliente->id_cliente}}')">
+                                                <i class="fa fa-ban" aria-hidden="true"></i>
                                             </button>
                                         </td>
                                     </tr>

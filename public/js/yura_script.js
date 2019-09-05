@@ -680,7 +680,8 @@ function cargar_opcion(div, id_cliente = '', url, add) {
             } else {
                 $("#div_content_opciones").html(retorno);
             }
-        } else if (div === 'campos_contactos') {
+        }
+        else if (div === 'campos_contactos') {
 
             $('#include_agencia_carga,#div_content_opciones').addClass('hide');
             $('#include_contactos_cliente').removeClass('hide');

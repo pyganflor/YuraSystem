@@ -166,7 +166,11 @@
                 "<input type='checkbox' id='cliente' name='cliente' checked style='position:relative;top:3px'> "+
                 "<label style='font-weight:600' for='cliente'>Cliente</label>" +
                 "</div>"+
-                "<div class='col-md-8'>" +
+                "<div class='col-md-4'>" +
+                "<input type='checkbox' id='contactos' name='contactos' checked style='position:relative;top:3px'> "+
+                "<label style='font-weight:600' for='contactos'>Contactos</label>" +
+                "</div>"+
+                "<div class='col-md-4'>" +
                 "<input type='checkbox' id='agencia_carga' name='agencia_carga' style='position:relative;top:3px'> "+
                 "<label style='font-weight:600' for='agencia_carga'>Agencia de carga</label>" +
                 "</div>"+
@@ -216,9 +220,6 @@
                 "</div>";
         }
 
-
-
-
         modal_quest('modal_enviar_correo', html, "<i class='fa fa-envelope-o' ></i> Envio de correos",true, false, '{{isPC() ? '50%' : ''}}', function () {
             $.LoadingOverlay('show');
             datos = {
@@ -230,7 +231,8 @@
                 factura_sri : $("#factura_sri").is(':checked'),
                 csv_etiqueta : $("#csv_etiqueta").is(':checked'),
                 dist_cajas : $("#dist_cajas").is(':checked'),
-                guia_remision : $("#guia_remision").is(':checked')
+                guia_remision : $("#guia_remision").is(':checked'),
+                contactos : $("#contactos").is(':checked')
             };
             post_jquery('comprobante/enviar_correo', datos, function () {
 
