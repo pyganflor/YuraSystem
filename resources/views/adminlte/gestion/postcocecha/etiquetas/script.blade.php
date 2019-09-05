@@ -6,6 +6,7 @@
         datos = {
             desde: $('#desde').val(),
             hasta: $('#hasta').val(),
+            id_configuracion_empresa: $("#id_configuracion_empresa").val()
         };
         $.get('{{url('etiqueta/listado')}}', datos, function (retorno) {
             $('#div_listado_etiquetas').html(retorno);

@@ -185,6 +185,14 @@
                        value="{!! isset($config_empresa_facturacion->codigo_tvn) ? $config_empresa_facturacion->codigo_tvn : 0 !!}">
             </div>
         </div>
+        <div class="col-md-6">
+            <div class="form-group input-group">
+                <span class="input-group-addon" style="background-color: #e9ecef">Código de etiquetas <i class="fa fa-question-circle-o" title="Código de la empresa para generar etiquetas"></i></span>
+                <input type="text" id="codigo_etiqueta_empresa_facturacion" name="codigo_etiqueta_empresa_facturacion" class="form-control"
+                       minlength="1"  required
+                       value="{!! isset($config_empresa_facturacion->codigo_etiqueta_empresa) ? $config_empresa_facturacion->codigo_etiqueta_empresa : "" !!}">
+            </div>
+        </div>
         <div class="col-md-12 text-center">
             <button type="button" class="btn btn-primary" onclick="store_configuracion_empresa_factura()">
                 <i class="fa fa-floppy-o"></i> Guardar

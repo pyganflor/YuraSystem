@@ -6,6 +6,7 @@
         datos = {
             desde: $('#desde').val(),
             hasta: $('#hasta').val(),
+            id_configuracion_empresa: $("#id_configuracion_empresa").val()
         };
         $.get('{{url('etiqueta_factura/listado')}}', datos, function (retorno) {
             $('#div_listado_etiquetas').html(retorno);
@@ -87,7 +88,6 @@
             id_comprobante: id_comprobante,
             data : data
         };
-        console.log(datos.data);
         post_jquery('etiqueta_factura/store_etiqueta_factura', datos, function () {
             cerrar_modals();
             form_etiqueta_factura(id_comprobante);

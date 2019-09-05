@@ -144,6 +144,7 @@
             formData.append('incial_despacho', $("#incial_despacho").val());
             formData.append('codigo_fpo', $("#codigo_fpo").val());
             formData.append('codigo_tvn', $("#codigo_tvn").val());
+            formData.append('codigo_etiqueta_empresa', $("#codigo_etiqueta_empresa").val());
             $.ajax({
                 url: '{{route('configuracion.store')}}',
                 type: 'POST',
@@ -338,6 +339,9 @@
             $(j).val("");
         });
         $.each($("div#div_content_form_config_empresa_facturacion .col-md-3 input"),function(i,j){
+            $(j).val("");
+        });
+        $.each($("div#div_content_form_config_empresa_facturacion .col-md-6 input"),function(i,j){
             $(j).val("");
         });
         $(".text-info").html("");

@@ -206,6 +206,14 @@
                            value="{!! isset($config_empresa->codigo_tvn) ? $config_empresa->codigo_tvn : 0 !!}">
                 </div>
             </div>
+            <div class="col-md-6">
+                <div class="form-group input-group">
+                    <span class="input-group-addon" style="background-color: #e9ecef">Código de etiquetas <i class="fa fa-question-circle-o" title="Código de la empresa para generar etiquetas"></i></span>
+                    <input type="text" id="codigo_etiqueta_empresa" name="codigo_etiqueta_empresa" class="form-control"
+                           minlength="1"  required
+                           value="{!! isset($config_empresa->codigo_etiqueta_empresa) ? $config_empresa->codigo_etiqueta_empresa : "" !!}">
+                </div>
+            </div>
         </div>
         <hr/>
         <div class="row">
