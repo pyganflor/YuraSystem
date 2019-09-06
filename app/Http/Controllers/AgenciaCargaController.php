@@ -8,6 +8,7 @@ use yura\Modelos\Rol;
 use yura\Modelos\Submenu;
 use yura\Modelos\AgenciaCarga;
 use yura\Modelos\ClienteAgenciaCarga;
+use yura\Modelos\CodigoVentureAgenciaCarga;
 use Validator;
 use DB;
 use PHPExcel;
@@ -52,15 +53,16 @@ class AgenciaCargaController extends Controller
 
     public function createAgenciaCarga(Request $request){
         $request->id_agencia_carga != '' ? $dataAgencia = AgenciaCarga::find($request->id_agencia_carga): $dataAgencia = '';
-        return view('adminlte.gestion.agencias_carga.forms.partials.add_agencia_carga',
-            ['dataAgencia'=>$dataAgencia]);
+        return view('adminlte.gestion.agencias_carga.forms.partials.add_agencia_carga',[
+            'dataAgencia'=>$dataAgencia,
+            'empresas' => getConfiguracionEmpresa(null, true)
+        ]);
     }
 
     public function  storeAgenciaCarga(Request $request){
         //dd($request->all());
         $valida = Validator::make($request->all(), [
             'nombre' => 'required',
-            'codigo' => 'required',
             'correo' => 'required',
             'identificacion' => 'required',
         ]);
@@ -69,10 +71,9 @@ class AgenciaCargaController extends Controller
 
             empty($request->id_agencia_carga) ? $objAgenciaCarga = new AgenciaCarga : $objAgenciaCarga = AgenciaCarga::find($request->id_agencia_carga);
             $objAgenciaCarga->nombre = $request->nombre;
-            $objAgenciaCarga->codigo = $request->codigo;
             $objAgenciaCarga->correo = $request->correo;
             $objAgenciaCarga->correo2 = $request->correo2;
-            $objAgenciaCarga->correo3= $request->correo3;
+            //$objAgenciaCarga->correo3= $request->correo3;
             $objAgenciaCarga->identificacion = $request->identificacion;
             $msg='';
 
@@ -90,6 +91,23 @@ class AgenciaCargaController extends Controller
                         bitacora('cliente_agenciacarga', $model_cliente_agencia_carga->id_cliente_agencia_carga, 'I', 'Inserción satisfactoria de la asignación de una agencia de carga a un cliente');
                     }
                 }
+
+                if(isset($request->codigo_venture) && count($request->codigo_venture) > 0){
+                    $datos = CodigoVentureAgenciaCarga::where('id_agencia_carga', $model->id_agencia_carga)->get();
+
+                    foreach($request->codigo_venture as $codigoVenture){
+                        $objCodigoVentureAgenciaCarga = new CodigoVentureAgenciaCarga;
+                        $objCodigoVentureAgenciaCarga->id_agencia_carga = $model->id_agencia_carga;
+                        $objCodigoVentureAgenciaCarga->id_configuracion_empresa = $codigoVenture['id_configuracion_empresa'];
+                        $objCodigoVentureAgenciaCarga->codigo = $codigoVenture['codigo_venture'];
+                        $objCodigoVentureAgenciaCarga->save();
+                    }
+                }
+
+                if(isset($datos) && $datos->count() > 0)
+                    foreach($datos as $d)
+                        CodigoVentureAgenciaCarga::destroy($d->id_codigo_venture_agencia_carga);
+
                 $success = true;
                 $msg .= '<div class="alert alert-success text-center">' .
                     '<p> Se ha guardado la agencia de carga '. $objAgenciaCarga->nombre .'  exitosamente</p>'

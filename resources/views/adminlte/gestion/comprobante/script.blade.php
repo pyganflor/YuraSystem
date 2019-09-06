@@ -368,7 +368,7 @@
                 _token: '{{csrf_token()}}',
             },
             success: function (data) {
-
+                console.log(data);
                 var opResult = JSON.parse(data);
                 if(opResult.success){
                     var $a = $("<a>");
@@ -378,7 +378,7 @@
                     $a[0].click();
                     $a.remove();
                 }else{
-                    modal_view('modal_view_error_txt', opResult.msg, '<i class="fa fa-exclamation-triangle"></i> Alerrta al descargar el archivo .TXT', true, false, '50%');
+                    modal_view('modal_view_error_txt', opResult.msg, '<i class="fa fa-exclamation-triangle"></i> Alerta al descargar el archivo .TXT', true, false, '50%');
                 }
             }
         }).always(function () {

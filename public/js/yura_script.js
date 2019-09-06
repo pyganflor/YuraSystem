@@ -627,18 +627,28 @@ function create_agencia_carga(id_agencia_carga, token, id_cliente) {
 
 function store_agencia_carga(token, id_cliente) {
 
+    arr_codigo_venture =[];
+    $.each($("div.codigos_venture"),function(i,j){
+        if($(j).find('select#id_configuracion_empresa').val() != "")
+            arr_codigo_venture.push({
+                id_configuracion_empresa : $(j).find('select#id_configuracion_empresa').val(),
+                codigo_venture : $(j).find('input#codigo').val(),
+            });
+    });
+
     if ($('#form_add_agencia_carga').valid()) {
         $.LoadingOverlay('show');
         datos = {
-            _token: token,//'{{csrf_token()}}'
+            _token: token,
             id_agencia_carga: $("#id_agencia_carga").val(),
             nombre: $("#nombre_agencia").val(),
-            codigo: $("#codigo_agencia").val(),
+            //codigo: $("#codigo_agencia").val(),
             id_cliente: id_cliente,
             correo: $("#correo").val(),
             correo2: $("#correo2").val(),
-            correo3: $("#correo3").val(),
-            identificacion: $("#identificacion").val()
+            //correo3: $("#correo3").val(),
+            identificacion: $("#identificacion").val(),
+            codigo_venture : arr_codigo_venture
         };
         post_jquery('agrencias_carga/store_agencia', datos, function () {
             cerrar_modals();
@@ -648,7 +658,6 @@ function store_agencia_carga(token, id_cliente) {
                 detalles_cliente(id_cliente);
                 cargar_opcion('campos_agencia_carga', '', 'clientes/ver_agencias_carga');
             }
-
         });
         $.LoadingOverlay('hide');
     }
@@ -747,7 +756,6 @@ function store_cliente_consignatario(token,id_cliente) {
 
 
 }
-
 
 function update_especificacion(id_especificacion, estado, token, cliente) {
 
@@ -866,8 +874,6 @@ function listar_resumen_pedidos(fecha, opciones,id_configuracion_empresa) {
         $.LoadingOverlay('hide');
     });
 }
-
-
 
 function barra_string(input, event, barra = true) {
     value_input = $("#" + input.id).val();
@@ -1536,7 +1542,6 @@ function facturar_pedido(id_pedido) {
         $.LoadingOverlay('hide');
     });
 }
-
 
 function empaquetar_pedido(id_pedido,token) {
 
