@@ -97,7 +97,7 @@ class AgenciaCargaController extends Controller
 
                     foreach($request->codigo_venture as $codigoVenture){
                         $objCodigoVentureAgenciaCarga = new CodigoVentureAgenciaCarga;
-                        $objCodigoVentureAgenciaCarga->id_agencia_carga = $model->id_agencia_carga;
+                        $objCodigoVentureAgenciaCarga->id_agencia_carga = empty($request->id_agencia_carga) ? $model->id_agencia_carga : $request->id_agencia_carga;
                         $objCodigoVentureAgenciaCarga->id_configuracion_empresa = $codigoVenture['id_configuracion_empresa'];
                         $objCodigoVentureAgenciaCarga->codigo = $codigoVenture['codigo_venture'];
                         $objCodigoVentureAgenciaCarga->save();
