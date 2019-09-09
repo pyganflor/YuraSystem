@@ -32,7 +32,6 @@ class AgenciaCarga extends Model
 
     public function codigo_venture_agencia_carga_by_id_configutacion_empresa($id_configuracion_empresa)
     {
-
         return CodigoVentureAgenciaCarga::where([
             ['id_agencia_carga', $this->id_agencia_carga],
             ['id_configuracion_empresa', $id_configuracion_empresa]
