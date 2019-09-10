@@ -388,6 +388,7 @@ class Pedido extends Model
             foreach ($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $esp_emp) {
                 foreach ($esp_emp->detalles as $det_esp) {
                     if ($det_esp->id_variedad == $variedad) {
+                        return 1;
                         $ramos = $det_ped->cantidad * $esp_emp->cantidad * $det_esp->cantidad;
                         $ramos_col = 0;
                         $precio_col = 0;
