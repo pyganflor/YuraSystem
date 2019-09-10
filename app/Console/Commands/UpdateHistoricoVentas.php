@@ -43,7 +43,7 @@ class UpdateHistoricoVentas extends Command
     {
         $pedidos = Pedido::All()->where('estado', 1)
             ->where('historico', 0)
-            ->where('fecha_pedido', '<', date('Y-m-d'));
+            ->where('fecha_pedido', '=', '2019-09-02');
 
         if (count($pedidos) > 0) {
             Log::info('<<<<< ! >>>>> Ejecutando comando "historico_ventas:update" <<<<< ! >>>>>');
