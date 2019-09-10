@@ -1973,7 +1973,7 @@ function listar_productos() {
 function cuenta_ramos(input){
     id = input.id.split("_")[1];
     for (let i = 0; i < $(input)[0].options.length ; i++) {
-        if($(input)[0].options[i].selected && $(input)[0].options[i].innerText === "Ramos"){
+        if($(input)[0].options[i].selected && $(input)[0].options[i].innerText === "Mallas"){
             html='<input type="text" id="input_ramos_'+id+'" name="input_ramos_'+id+'" ' +
                     'onkeyup="calcular_precio_pedido()" onchange="crear_orden_pedido(this)" ' +
                     'value="0" style="width:100%;border:none;text-align:center;height: 34px;">';
@@ -1983,7 +1983,7 @@ function cuenta_ramos(input){
             $("#td_total_ramos_"+id).html(html);
 
             for (let j = 0; j < $("select."+input.id).length ; j++) {
-                if($("select."+input.id)[j].options[1].innerText === "Ramos")
+                if($("select."+input.id)[j].options[1].innerText === "Mallas")
                     $($("select."+input.id)[j].options[1]).attr('selected',true);
             }
             return false;
@@ -1991,7 +1991,7 @@ function cuenta_ramos(input){
             $("input#cantidad_piezas_"+id).removeAttr('disabled');
             $("#td_total_ramos_"+id).html("0");
             for (let j = 0; j < $("select."+input.id).length ; j++) {
-                if($("select."+input.id)[j].options[1].innerText === "Ramos")
+                if($("select."+input.id)[j].options[1].innerText === "Mallas")
                     $($("select."+input.id)[j].options[1]).removeAttr('selected');
             }
         }
@@ -2009,13 +2009,13 @@ function calcular_precio_pedido(input) {
         $.each($(".cantidad_" + i), function (p, q) {
             ramos= 0;
             $.each($(".td_ramos_x_caja_" + i), function (a, b) {
-                if($("#empaque_"+i+" option:selected").text() === "Ramos"){
+                if($("#empaque_"+i+" option:selected").text() === "Mallas"){
                     ramos += parseFloat(b.value);
                 }else{
                     ramos_totales_especificacion += (q.value * b.value);
                 }
             });
-            if($("#empaque_"+i+" option:selected").text() === "Ramos") {
+            if($("#empaque_"+i+" option:selected").text() === "Mallas") {
                 ramos_totales_especificacion += parseFloat($("#input_ramos_" + i).val());
                 $(".cantidad_" + i).val(parseFloat($("#input_ramos_"+i).val()/ramos).toFixed(2));
             }

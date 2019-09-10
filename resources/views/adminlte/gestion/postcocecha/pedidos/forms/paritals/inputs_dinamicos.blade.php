@@ -8,7 +8,7 @@
                 ORDEN
             </th>
             <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
-                style="border-color: #9d9d9d;width: 80px">
+                style="border-color: #9d9d9d;width: 30px">
                 PIEZAS
             </th>
             <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
@@ -17,10 +17,10 @@
             <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d;width:40px">
                 PESO
             </th>
-            <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
+            <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d;width:75px">
                 CAJA
             </th>
-            <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
+            <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d;width:65px">
                 PRESENTACIÓN
             </th>
             <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d;width:45px">
@@ -36,15 +36,15 @@
                 LONGITUD
             </th>
             <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
-                style="border-color: #9d9d9d;width:80px">
+                style="border-color: #9d9d9d;width:60px">
                 PRECIO X VARIEDAD
             </th>
             <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
-                style="border-color: #9d9d9d;width:100px">
+                style="border-color: #9d9d9d;width:70px">
                 PRECIO X ESPECIFICACIÓN
             </th>
             <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
-                style="border-color: #9d9d9d">
+                style="border-color: #9d9d9d;width:75px">
                 AGENCIA DE CARGA
             </th>
             @foreach($datos_exportacion as $key => $de)
@@ -75,12 +75,13 @@
                                     </td>
                                     <td style="border-color: #9d9d9d; padding: 0px; vertical-align: middle;width: 30px; text-align:center"
                                         class="text-center" rowspan="{{getCantidadDetallesByEspecificacion($item->id_especificacion)}}" >
-                                        <input type="number" min="1" name="orden" class="orden" id="orden_{{($x+1)}}" style="border: none;text-align: center; width: 30px;font-size: 14px">
+                                        <input type="number" min="1" name="orden" class="orden" id="orden_{{($x+1)}}"
+                                               style="border: none;text-align: center; width: 100%;font-size: 14px">
                                     </td>
-                                    <td style="border-color: #9d9d9d; padding: 0px; vertical-align: middle; width: 80px; "
+                                    <td style="border-color: #9d9d9d; padding: 0px; vertical-align: middle; width: 30px;"
                                         class="text-center" rowspan="{{getCantidadDetallesByEspecificacion($item->id_especificacion)}}">
-                                        <input type="number" min="0" id="cantidad_piezas_{{($x+1)}}" style="border: none;" onkeyup="crear_orden_pedido(this)" onchange="calcular_precio_pedido(this)"
-                                               name="cantidad_piezas_{{$item->id_especificacion}}"  class="text-center form-control cantidad_{{($x+1)}} input_cantidad" value="">
+                                        <input type="number" min="0" id="cantidad_piezas_{{($x+1)}}" style="border: none;width:100%" onkeyup="crear_orden_pedido(this)" onchange="calcular_precio_pedido(this)"
+                                               name="cantidad_piezas_{{$item->id_especificacion}}"  class="text-center cantidad_{{($x+1)}} input_cantidad" value="">
                                         <input type="hidden" id="id_cliente_pedido_especificacion_{{($x+1)}}" value="{{$item->id_cliente_pedido_especificacion}}">
                                     </td>
                                 @endif
@@ -93,7 +94,7 @@
                                         <input type="hidden" id="id_detalle_especificacion_empaque_{{$x+1}}_{{$b}}" value="{{$det_esp_emp->id_detalle_especificacionempaque}}">
                                     </td>
                                     @if($z == 0)
-                                        <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;" class="text-center"  rowspan="{{count($esp_emp->detalles)}}">
+                                        <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;width:75px" class="text-center"  rowspan="{{count($esp_emp->detalles)}}">
                                             <select id="empaque_{{$x+1}}" class="empaque_{{$x+1}}" name="empaque_{{$x+1}}" style="border:none;width:100%" onchange="cuenta_ramos(this)" >
                                                 <option value="{{$esp_emp->empaque->id_empaque}}" >{{explode('|',$esp_emp->empaque->nombre)[0]}}</option>
                                                 @isset($emp_ramos)
@@ -102,7 +103,7 @@
                                             </select>
                                         </td>
                                     @endif
-                                    <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;" class="text-center">
+                                    <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;width:65px" class="text-center">
                                         {{$det_esp_emp->empaque_p->nombre}}
                                     </td>
                                     <td  style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;width:40px" class="text-center">
@@ -122,7 +123,7 @@
                                             {{$det_esp_emp->longitud_ramo}}{{$det_esp_emp->unidad_medida->siglas}}
                                         @endif
                                     </td>
-                                    <td id="td_precio_variedad_{{$det_esp_emp->id_detalle_especificacionempaque}}_{{($x+1)}}" style="border-color: #9d9d9d;padding: 0px 0px; vertical-align: middle;width:80px" >
+                                    <td id="td_precio_variedad_{{$det_esp_emp->id_detalle_especificacionempaque}}_{{($x+1)}}" style="border-color: #9d9d9d;padding: 0px 0px; vertical-align: middle;width:60px" >
                                         @if((getPrecioByClienteDetEspEmp($item->id_cliente, $det_esp_emp->id_detalle_especificacionempaque) != ''))
                                             <select name="precio_{{$det_esp_emp->id_detalle_especificacionempaque}}"
                                                     ondblclick="cambiar_input_precio('{{$det_esp_emp->id_detalle_especificacionempaque}}','{{($x+1)}}','{{$b}}')"
@@ -139,12 +140,11 @@
                                         @endif
                                     </td>
                                     @if($item->id_especificacion != $anterior)
-                                        <td id="td_precio_especificacion_{{($x+1)}}" style="border-color: #9d9d9d;padding: 0px 0px; vertical-align: middle;" class="text-center" rowspan="{{getCantidadDetallesByEspecificacion($item->id_especificacion)}}">
-                                        </td>
-                                        <td class="text-center" style="border-color: #9d9d9d; vertical-align: middle"
+                                        <td id="td_precio_especificacion_{{($x+1)}}" style="border-color: #9d9d9d;padding: 0px 0px; vertical-align: middle;width:70px" class="text-center" rowspan="{{getCantidadDetallesByEspecificacion($item->id_especificacion)}}"></td>
+                                        <td class="text-center" style="border-color: #9d9d9d; vertical-align: middle;width:75px"
                                             rowspan="{{getCantidadDetallesByEspecificacion($item->id_especificacion)}}">
                                             <select name="id_agencia_carga_{{$item->id_especificacion}}" id="id_agencia_carga_{{$x+1}}"
-                                                    class="text-center form-control" style="border: none; width: 100%" required>
+                                                    class="text-center" style="border: none; width:100%" required>
                                                 @foreach($agenciasCarga as $agencia)
                                                     <option value="{{$agencia->id_agencia_carga}}">{{$agencia->nombre}}</option>
                                                 @endforeach
@@ -153,7 +153,7 @@
                                         @foreach($datos_exportacion as $de)
                                             <td rowspan="{{getCantidadDetallesByEspecificacion($item->id_especificacion)}}"
                                                 style="border-color: #9d9d9d; vertical-align: middle">
-                                                <input type="text" name="input_{{strtoupper($de->nombre)}}_{{$x+1}}" id="input_{{strtoupper($de->nombre)}}_{{$x+1}}" class="form-control" style="border: none">
+                                                <input type="text" name="input_{{strtoupper($de->nombre)}}_{{$x+1}}" id="input_{{strtoupper($de->nombre)}}_{{$x+1}}" class="" style="border: none;width:100%">
                                                 <input type="hidden" name="id_dato_exportacion_{{strtoupper($de->nombre)}}_{{$x+1}}" id="id_dato_exportacion_{{strtoupper($de->nombre)}}_{{$x+1}}" value="{{$de->id_dato_exportacion}}">
                                             </td>
                                         @endforeach

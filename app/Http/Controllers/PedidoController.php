@@ -293,7 +293,7 @@ class PedidoController extends Controller
         $empRamos = Empaque::get();
         foreach ($empRamos as $empRamo){
             $emp = explode("|",$empRamo->nombre)[0];
-            if($emp=="Ramos")
+            if($emp=="Mallas")
                 $ramo = $empRamo;
         }
         return view('adminlte.gestion.postcocecha.pedidos.forms.paritals.inputs_dinamicos',
@@ -338,7 +338,7 @@ class PedidoController extends Controller
         $empRamos = Empaque::get();
         foreach ($empRamos as $empRamo){
             $emp = explode("|",$empRamo->nombre)[0];
-            if($emp=="Ramos")
+            if($emp=="Mallas")
                 $ramo = $empRamo;
         }
 
