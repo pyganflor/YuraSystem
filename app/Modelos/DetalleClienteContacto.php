@@ -15,4 +15,12 @@ class DetalleClienteContacto extends Model
         'id_detalle_cliente',
         'id_contacto',
     ];
+
+    public function contacto(){
+        return $this->hasMany('yura\Modelos\Contacto','id_contacto');
+    }
+
+    public function cliente(){
+        return $this->belongsTo('yura\Modelos\Cliente','id_detalle_cliente');
+    }
 }

@@ -19,7 +19,19 @@
             <div class="box-body" >
                 <div class="row">
                     <form id="vicular_producto_venture_yura" name="vicular_producto_venture_yura">
-                        <div class="col-lg-6">
+                        <div class="col-lg-4">
+                            <div class="">
+                                <label>Empresa</label>
+                                <select class="form-control" id="id_configuracion_empresa_productos" name="id_configuracion_empresa_productos" onchange="listar_productos()">
+                                    @foreach ($empresas as $empresa)
+                                        <option value="{{$empresa->id_configuracion_empresa}}" >
+                                            {{$empresa->nombre}}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
                             <div class="">
                                 <label>Presentaciones YuraSystem</label>
                                 <select class="form-control" id="presentacion_yura_system" name="presentacion_yura_system" required>
@@ -33,13 +45,13 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-lg-6">
+                        <div class="col-lg-4">
                             <label>Presentaciones Venture</label>
                             <div class="input-group">
                                 <select class="form-control" id="presentacion_venture" name="presentacion_venture" required>
                                     <option selected disabled>Seleccione</option>
                                     @foreach($presentacion_venture as $x => $pv)
-                                        <option value="{{$x}}">{{$pv}}</option>
+                                        <option class="option_dinamico" value="{{$x}}">{{$pv}}</option>
                                     @endforeach
                                 </select>
                                 <span class="input-group-btn">

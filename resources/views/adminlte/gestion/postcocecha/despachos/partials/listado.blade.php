@@ -373,7 +373,7 @@
                                             @endif
                                             @if(!$opciones)
                                                 <td style="border-color: #9d9d9d" class="text-center " rowspan="{{$getCantidadDetallesEspecificacionByPedido}}">
-                                                    {{isset($ped->empresa->razon_social) ? $ped->empresa->razon_social : ""}}
+                                                    {{isset($ped->empresa->razon_social) ? $ped->empresa->nombre : ""}}
                                                 </td>
                                             @endif
                                             <td rowspan="{{$getCantidadDetallesEspecificacionByPedido}}" class="text-center" style="border-color: #9d9d9d">
@@ -413,7 +413,7 @@
                                 @endif
                             </td>
                             <td class="text-center" style="border-color: #9d9d9d">
-                                {{$item->cantidad}}
+                                {{number_format($item->cantidad,2,".","")}}
                             </td>
                         </tr>
                     @endforeach

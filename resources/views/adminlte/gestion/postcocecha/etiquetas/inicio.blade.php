@@ -6,7 +6,6 @@
 
 @section('contenido')
     @include('adminlte.gestion.partials.breadcrumb')
-
     <section class="content">
         <div class="box box-info">
             <div class="box-header with-border">
@@ -21,6 +20,14 @@
                             <td>
                                 <label>Selecciona una fecha</label>
                                 <input type="date" class="form-control" id="desde" name="desde" value="{{now()->toDateString()}}">
+                            </td>
+                            <td>
+                                <label>Ver etiquetas de: </label>
+                                <select id="id_configuracion_empresa" name="id_configuracion_empresa" class="form-control" style="width: 150px">
+                                    @foreach(getConfiguracionEmpresa(null,true) as $empresa)
+                                        <option value="{{$empresa->id_configuracion_empresa}}">{{$empresa->nombre}}</option>
+                                    @endforeach
+                                </select>
                             </td>
                             <td>
                                 <label style="visibility: hidden">.</label><br/>

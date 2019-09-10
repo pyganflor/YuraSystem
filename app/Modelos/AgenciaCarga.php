@@ -25,4 +25,17 @@ class AgenciaCarga extends Model
         return $this->hasMany('\yura\Modelos\ClienteAgenciaCarga', 'id_agencia_carga');
     }
 
+    public function codigo_venture_agencia_carga()
+    {
+        return $this->hasMany('\yura\Modelos\CodigoVentureAgenciaCarga', 'id_agencia_carga');
+    }
+
+    public function codigo_venture_agencia_carga_by_id_configutacion_empresa($id_configuracion_empresa)
+    {
+        return CodigoVentureAgenciaCarga::where([
+            ['id_agencia_carga', $this->id_agencia_carga],
+            ['id_configuracion_empresa', $id_configuracion_empresa]
+        ])->first();
+    }
+    
 }

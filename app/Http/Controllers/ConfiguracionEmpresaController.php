@@ -98,7 +98,8 @@ class ConfiguracionEmpresaController extends Controller
             'inicial_factura'=>'required',
             'inicial_guia'=>'required',
             'incial_despacho'=>'required',
-            'inicial_lote'=>'required'
+            'inicial_lote'=>'required',
+            'codigo_etiqueta_empresa' => 'required'
         ],[
             'firma_electronica.required' => 'El archivo de la firma electrónica de la empresa es obligatorio',
             'clasifi_unit_tipos.required' => 'No se obtuvieron las clasificaciones unitarias',
@@ -114,6 +115,7 @@ class ConfiguracionEmpresaController extends Controller
             'inicial_guia.required'=> 'Debe colocar el último número de guía de remisión electronica con que la empresa termino antes de migrar a este sistema',
             'inicial_lote.required'=> 'Debe colocar el último número de documento en lote enviado de forma electrónica al SRI, si su empresa no usa el envío en lote deje este valor en 0',
             'incial_despacho.required'=> 'Debe colocar el último número de despacho con el que terminó en la anterior empresa antes de migrar a este sistema',
+            'codigo_etiqueta_empresa.required'=> 'Debe colocar el código de la empresa que se usará para generar las etiquetas',
         ]);
 
         $success = false;
@@ -171,6 +173,7 @@ class ConfiguracionEmpresaController extends Controller
                 $objConfigEmpresa->inicial_despacho = $request['incial_despacho'];
                 $objConfigEmpresa->codigo_fpo = $request['codigo_fpo'];
                 $objConfigEmpresa->codigo_tvn = $request['codigo_tvn'];
+                $objConfigEmpresa->codigo_etiqueta_empresa = $request['codigo_etiqueta_empresa'];
                 if($request->has('firma_electronica')){
                     $firma = $request->file('firma_electronica');
                     $nombre_archivo = $request['razon_social']."_".$firma->getClientOriginalName();
@@ -513,7 +516,8 @@ class ConfiguracionEmpresaController extends Controller
             'inicial_factura_empresa_facturacion'=>'required',
             'inicial_guia_empresa_facturacion'=>'required',
             'incial_despacho_empresa_facturacion'=>'required',
-            'inicial_lote_empresa_facturacion'=>'required'
+            'inicial_lote_empresa_facturacion'=>'required',
+            'codigo_etiqueta_empresa_facturacion'=>'required'
         ],[
             'firma_electronica.required' => 'El archivo de la firma electrónica de la empresa es obligatorio',
             'codigo_pais.required' => 'Debe seleccionar una opción  en el campo país',
@@ -525,6 +529,7 @@ class ConfiguracionEmpresaController extends Controller
             'inicial_guia.required'=> 'Debe colocar el último número de guía de remisión electronica con que la empresa termino antes de migrar a este sistema',
             'inicial_lote.required'=> 'Debe colocar el último número de documento en lote enviado de forma electrónica al SRI, si su empresa no usa el envío en lote deje este valor en 0',
             'incial_despacho.required'=> 'Debe colocar el último número de despacho con el que terminó en la anterior empresa antes de migrar a este sistema',
+            'codigo_etiqueta_empresa_facturacion.required'=> 'Debe colocar el código de la empresa que se usará para generar las etiquetas',
         ]);
 
         $success = false;
@@ -579,6 +584,7 @@ class ConfiguracionEmpresaController extends Controller
                 $objConfigEmpresa->inicial_despacho = $request->incial_despacho_empresa_facturacion;
                 $objConfigEmpresa->codigo_fpo = $request->codigo_fpo_empresa_facturacion;
                 $objConfigEmpresa->codigo_tvn = $request->codigo_tvn_empresa_facturacion;
+                $objConfigEmpresa->codigo_etiqueta_empresa = $request->codigo_etiqueta_empresa_facturacion;
                 $objConfigEmpresa->estado = false;
                 if ($request->has('firma_electronica_empresa_facturacion')) {
                     $firma = $request->file('firma_electronica_empresa_facturacion');

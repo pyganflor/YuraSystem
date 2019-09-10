@@ -32,7 +32,10 @@ class EtiquetaController extends Controller
                 ['tipo_comprobante',01],
                 ['habilitado',1],
                 ['fecha_emision',$request->desde]
-            ])->whereIn('estado',[1,5])->select('id_comprobante')->get(),
+            ])->join('envio as e','comprobante.id_envio','e.id_envio')
+                ->join('pedido as p','p.id_pedido','e.id_pedido')
+                ->whereIn('comprobante.estado',[0,1,5])
+                ->where('p.id_configuracion_empresa', $request->id_configuracion_empresa)->get(),
         ]);
     }
 
@@ -130,7 +133,9 @@ class EtiquetaController extends Controller
 
         if (sizeof($request->arr_facturas) > 0) {
             $w = 1;
-            $nombre_empresa = ['E','D','A','S','A','L','F','L','O','R'];
+            $empresa = getComprobante($request->arr_facturas[0]['id_comprobante'])->envio->pedido->empresa;
+            $prefijo = explode("-",$empresa->codigo_etiqueta_empresa)[0];
+            $nombre_empresa = str_split(isset(explode("-",$empresa->codigo_etiqueta_empresa)[1]) ? explode("-",$empresa->codigo_etiqueta_empresa)[1] : explode("-",$empresa->codigo_etiqueta_empresa)[0]);
             $semana = substr(getSemanaByDate(now()->toDateString())->codigo,2,2);
             $anno = Carbon::parse(now()->toDateString())->format('y');
             $dia_semana = Carbon::parse(now()->toDateString())->dayOfWeek;
@@ -183,7 +188,7 @@ class EtiquetaController extends Controller
                                              $objSheet->getCell('E' . ($w + 1))->setValue(strtoupper($comprobante->envio->pedido->cliente->detalle()->nombre));
                                              $objSheet->getCell('F' . ($w + 1))->setValue();
                                              $objSheet->getCell('G' . ($w + 1))->setValue($datos_exportacion != '' ? substr($datos_exportacion,0,-1): "");
-                                             $objSheet->getCell('H' . ($w + 1))->setValue("DS-".$codigo_finca);
+                                             $objSheet->getCell('H' . ($w + 1))->setValue($prefijo."-".$codigo_finca);
                                              $objSheet->getCell('I' . ($w + 1))->setValue(getConfiguracionEmpresa($comprobante->envio->pedido->id_configuracion_empresa)->permiso_agrocalidad);
                                              $objSheet->getCell('J' . ($w + 1))->setValue($pais_destino);
                                              $objSheet->getCell('K' . ($w + 1))->setValue($dae);

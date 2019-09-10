@@ -23,6 +23,14 @@
                                 <input type="date" class="form-control" id="desde" name="desde" value="{{now()->toDateString()}}">
                             </td>
                             <td>
+                                <label>Ver etiquetas de: </label>
+                                <select id="id_configuracion_empresa" name="id_configuracion_empresa" class="form-control" style="width: 150px">
+                                    @foreach(getConfiguracionEmpresa(null,true) as $empresa)
+                                        <option value="{{$empresa->id_configuracion_empresa}}">{{$empresa->nombre}}</option>
+                                    @endforeach
+                                </select>
+                            </td>
+                            <td>
                                 <label style="visibility: hidden">.</label><br/>
                                 <button class="btn btn-default" onclick="listado_etiquetas()">
                                     <i class="fa fa-fw fa-search" style="color: #0c0c0c"></i> <em

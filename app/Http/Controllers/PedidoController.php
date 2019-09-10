@@ -16,6 +16,7 @@ use yura\Modelos\Pedido;
 use yura\Modelos\DetallePedido;
 use yura\Modelos\Envio;
 use yura\Modelos\DetallePedidoDatoExportacion;
+use yura\Modelos\Empaque;
 use Validator;
 use DB;
 use Barryvdh\DomPDF\Facade as PDF;
@@ -288,6 +289,13 @@ class PedidoController extends Controller
                 ->where('id_pedido',$request->id_pedido);
         }
 
+        $ramo = null;
+        $empRamos = Empaque::get();
+        foreach ($empRamos as $empRamo){
+            $emp = explode("|",$empRamo->nombre)[0];
+            if($emp=="Ramos")
+                $ramo = $empRamo;
+        }
         return view('adminlte.gestion.postcocecha.pedidos.forms.paritals.inputs_dinamicos',
             [
                 'especificaciones' => $data_especificaciones->orderBy('id_cliente_pedido_especificacion','asc')->get(),
@@ -299,6 +307,7 @@ class PedidoController extends Controller
                     ])->get(),
                 'datos_exportacion' => DatosExportacion::join('cliente_datoexportacion as cde','dato_exportacion.id_dato_exportacion','cde.id_dato_exportacion')
                     ->where('id_cliente',$request->id_cliente)->get(),
+                'emp_ramos' => $ramo
             ]);
     }
 
@@ -324,6 +333,15 @@ class PedidoController extends Controller
             $data_especificaciones = $data_especificaciones->join('detalle_pedido as dp','cpe.id_cliente_pedido_especificacion','dp.id_cliente_especificacion')
                 ->where('id_pedido',$request->id_pedido);
         }
+
+        $ramo = null;
+        $empRamos = Empaque::get();
+        foreach ($empRamos as $empRamo){
+            $emp = explode("|",$empRamo->nombre)[0];
+            if($emp=="Ramos")
+                $ramo = $empRamo;
+        }
+
         return view('adminlte.gestion.postcocecha.pedidos.forms.paritals.inputs_dinamicos_edit',
             [
                 'id_pedido' => $request->id_pedido,
@@ -336,7 +354,7 @@ class PedidoController extends Controller
                         ['cac.estado', 1]
                     ])->get(),
                 'especificaciones' => $data_especificaciones->orderBy('id_cliente_pedido_especificacion','asc')->get(),
-
+                'emp_ramos' => $ramo
             ]);
     }
 

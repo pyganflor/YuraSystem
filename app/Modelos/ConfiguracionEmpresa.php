@@ -44,7 +44,8 @@ class ConfiguracionEmpresa extends Model
         'inicial_lote',
         'inicial_despahco',
         'codigo_fpo',
-        'codigo_tvn'
+        'codigo_tvn',
+        'codigo_etiqueta_empresa'
 
     ];
 

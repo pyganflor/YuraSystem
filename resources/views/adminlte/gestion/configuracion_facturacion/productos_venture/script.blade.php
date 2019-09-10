@@ -1,14 +1,6 @@
 <script>
     listar_productos_vinculados();
-    function listar_productos_vinculados() {
-        $.LoadingOverlay('show');
-        $.get('{{url('producto_venture/listar_productos_vinculados')}}', datos, function (retorno) {
-            $('#div_listado_codigo_prodcutos').html(retorno);
-            estructura_tabla('table_productos_viculados');
-        }).always(function () {
-            $.LoadingOverlay('hide');
-        });
-    }
+
 
     function vincular_productos_venture() {
         if($("#vicular_producto_venture_yura").valid()){
@@ -16,6 +8,7 @@
             datos = {
                 presentacion_yura_sistem : $("#presentacion_yura_system").val(),
                 presentacion_venture : $("#presentacion_venture").val(),
+                id_configuracion_empresa : $("#id_configuracion_empresa_productos").val(),
                 _token : '{{csrf_token()}}'
             };
             post_jquery('{{url('producto_venture/vincular_yura_system_venture')}}', datos, function () {

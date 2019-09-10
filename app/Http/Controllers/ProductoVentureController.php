@@ -22,11 +22,11 @@ class ProductoVentureController extends Controller
             foreach($item as $i)
                 $data_completa[] = $i;
 
-        $products_vinculado = getProductosVinculadosYuraVenture();
-        $pv = [];
+        //$products_vinculado = getProductosVinculadosYuraVenture();
+        /*$pv = [];
         foreach ($products_vinculado as $item) {
             $pv[] = Str::Slug($item->presentacion_yura);
-        }
+        }*/
         
         return view('adminlte.gestion.configuracion_facturacion.productos_venture.inicio',
             [
@@ -35,7 +35,8 @@ class ProductoVentureController extends Controller
                 'text' => ['titulo' => 'Administración', 'subtitulo' => 'Productos venture'],
                 'presentacion_venture' => getCodigoArticuloVenture(),
                 'presentaciones_yura_system' => $data_completa,
-                'productos_vinculados' => $pv
+                'productos_vinculados' =>[],// $pv,
+                'empresas' =>getConfiguracionEmpresa(null, true)
             ]);
     }
 
@@ -53,6 +54,7 @@ class ProductoVentureController extends Controller
             $objProductoYuraVenture = new ProductoYuraVenture;
             $objProductoYuraVenture->presentacion_yura = $request->presentacion_yura_sistem;
             $objProductoYuraVenture->codigo_venture = $request->presentacion_venture;
+            $objProductoYuraVenture->id_configuracion_empresa = $request->id_configuracion_empresa;
             if($objProductoYuraVenture->save()){
                 $success = true;
                 $msg = '<div class="alert alert-success text-center">' .
@@ -89,9 +91,9 @@ class ProductoVentureController extends Controller
         ];
     }
 
-    public function listadoProdcutosVinculados(){
+    public function listadoProdcutosVinculados(Request $request){
         return view('adminlte.gestion.configuracion_facturacion.productos_venture.partials.listado',[
-            'productos_vinculados' => getProductosVinculadosYuraVenture()
+            'productos_vinculados' => getProductosVinculadosYuraVenture($request->id_configuracion_empresa)
         ]);
     }
 
@@ -112,4 +114,19 @@ class ProductoVentureController extends Controller
             'success' => $success
         ];
     }
+
+    public function listarProductos(Request $request){
+
+        $products_vinculado = getProductosVinculadosYuraVenture($request->id_configuracion_empresa);
+        $pv = [];
+        foreach ($products_vinculado as $item) {
+            $pv[] = $item->presentacion_yura;
+        }
+        return [
+            'prodc_vinculado'=>$pv,
+            'articulo_venture'=> getCodigoArticuloVenture($request->id_configuracion_empresa)
+        ];
+    }
 }
+
+

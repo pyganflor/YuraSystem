@@ -27,7 +27,10 @@ class EtiquetaFacturaController extends Controller
                 ['tipo_comprobante',01],
                 ['habilitado',1],
                 ['fecha_emision',$request->desde]
-            ])->whereIn('estado',[1,5])->select('id_comprobante')->get(),
+            ])->join('envio as e','comprobante.id_envio','e.id_envio')
+                ->join('pedido as p','p.id_pedido','e.id_pedido')
+                ->whereIn('comprobante.estado',[0,1,5])
+                ->where('p.id_configuracion_empresa', $request->id_configuracion_empresa)->get(),
             'vista' => 'etiqueta_factura'
         ]);
     }
