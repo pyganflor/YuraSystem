@@ -2128,9 +2128,9 @@ function getDistribucion($idDistribucion)
     return Distribucion::find($idDistribucion);
 }
 
-function getCodigoArticuloVenture($idConfiguracionempresa=1)
+function getCodigoArticuloVenture($idConfiguracionempresa = 1)
 {
-    $codigosVenture =  [
+    $codigosVenture = [
         1 => [ // id_configracion_empresa Dasalflor
             '0011601010001' => 'GYP. MS. 250 Gr 50 cm',
             '0011601010002' => 'GYP. MS. 250 Gr 60 cm',
@@ -2210,7 +2210,7 @@ function getCodigoArticuloVenture($idConfiguracionempresa=1)
             '001160402' => 'BROMELIAS 80 cm',
             '001160403' => 'BROMELIAS 70 cm'
         ],
-        2 =>[ //id_configracion_empresa Intraescorp
+        2 => [ //id_configracion_empresa Intraescorp
             '0011601010001' => 'GYP. MS. 250 Gr 50 cm',
         ]
     ];
@@ -2220,10 +2220,10 @@ function getCodigoArticuloVenture($idConfiguracionempresa=1)
 
 function getProductosVinculadosYuraVenture($idConfiguracionEmpresa)
 {
-    return ProductoYuraVenture::where('id_configuracion_empresa',$idConfiguracionEmpresa)->get();
+    return ProductoYuraVenture::where('id_configuracion_empresa', $idConfiguracionEmpresa)->get();
 }
 
-function getCodigoVenturePresentacion($idPlanta, $idVariedad, $idClasificacionRamo, $clasificacionRamoIdUnidadMedida, $tallosXramos, $longitudRamo, $longitudRamoIdUnidadMedida,$idConfiguracionempresa)
+function getCodigoVenturePresentacion($idPlanta, $idVariedad, $idClasificacionRamo, $clasificacionRamoIdUnidadMedida, $tallosXramos, $longitudRamo, $longitudRamoIdUnidadMedida, $idConfiguracionempresa)
 {
     $prductosVinculados = getProductosVinculadosYuraVenture($idConfiguracionempresa);
     foreach ($prductosVinculados as $prductoVinculado) {
@@ -2260,16 +2260,19 @@ function getTallosCosechadosByModSemVar($mod, $semana, $variedad)
         ->where('id_variedad', '=', $variedad)
         ->first();
 
-    $r = DB::table('desglose_recepcion as dr')
-        ->select(DB::raw('sum(dr.cantidad_mallas * dr.tallos_x_malla) as cantidad'))
-        ->join('recepcion as r', 'dr.id_recepcion', '=', 'r.id_recepcion')
-        ->where('r.estado', '=', 1)
-        ->where('dr.estado', '=', 1)
-        ->where('dr.id_modulo', '=', $mod)
-        ->where('dr.id_variedad', '=', $variedad)
-        ->where('r.fecha_ingreso', '>=', $sem->fecha_inicial)
-        ->where('r.fecha_ingreso', '<=', $sem->fecha_final)
-        ->get()[0]->cantidad;
+    if ($sem != '') {
+        $r = DB::table('desglose_recepcion as dr')
+            ->select(DB::raw('sum(dr.cantidad_mallas * dr.tallos_x_malla) as cantidad'))
+            ->join('recepcion as r', 'dr.id_recepcion', '=', 'r.id_recepcion')
+            ->where('r.estado', '=', 1)
+            ->where('dr.estado', '=', 1)
+            ->where('dr.id_modulo', '=', $mod)
+            ->where('dr.id_variedad', '=', $variedad)
+            ->where('r.fecha_ingreso', '>=', $sem->fecha_inicial)
+            ->where('r.fecha_ingreso', '<=', $sem->fecha_final)
+            ->get()[0]->cantidad;
 
-    return $r;
+        return $r;
+    } else
+        return 0;
 }
