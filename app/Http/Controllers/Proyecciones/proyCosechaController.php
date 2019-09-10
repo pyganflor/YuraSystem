@@ -3,6 +3,7 @@
 namespace yura\Http\Controllers\Proyecciones;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use yura\Http\Controllers\Controller;
 use yura\Modelos\Ciclo;
@@ -26,6 +27,8 @@ class proyCosechaController extends Controller
     {
         ini_set('max_execution_time', env('MAX_EXECUTION_TIME'));
         set_time_limit(120);
+
+        //Artisan::call('proyeccion:update_semanal');
 
         $semana_desde = Semana::All()->where('codigo', $request->desde)->first();
         $semana_hasta = Semana::All()->where('codigo', $request->hasta)->first();
@@ -71,11 +74,11 @@ class proyCosechaController extends Controller
                         $mod = getModuloById($mod->id_modulo);
                         $array_valores = [];
                         foreach ($semanas as $sem) {
-                                $data = $mod->getDataBySemana($sem, $request->variedad, $semana_desde->fecha_inicial, $request->opcion, $request->detalle);
-                                $valor = [
-                                    'tiempo' => -1,
-                                    'data' => $data,
-                                ];
+                            $data = $mod->getDataBySemana($sem, $request->variedad, $semana_desde->fecha_inicial, $request->opcion, $request->detalle);
+                            $valor = [
+                                'semana' => $sem,
+                                'data' => $data,
+                            ];
                             array_push($array_valores, $valor);
                         }
                         array_push($array_modulos, [
@@ -84,7 +87,6 @@ class proyCosechaController extends Controller
                         ]);
                     }
                 }
-
 
                 return view('adminlte.gestion.proyecciones.cosecha.partials.listado', [
                     'semanas' => $semanas,
@@ -146,14 +148,6 @@ class proyCosechaController extends Controller
                 'ciclo' => Ciclo::find($request->model),
             ]);
         }
-    }
-
-    public function load_celda(Request $request)
-    {
-        $title = 'OK';
-        return view('adminlte.gestion.proyecciones.cosecha.partials._celda', [
-            'title' => $title
-        ]);
     }
 
     public function store_proyeccion(Request $request)
