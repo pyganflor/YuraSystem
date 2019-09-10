@@ -128,7 +128,7 @@ class Modulo extends Model
         return $r;
     }
 
-    public function getDataBySemana($tiempo, $semana, $variedad, $desde, $opcion, $detalle)
+    public function getDataBySemana($semana, $variedad, $desde, $opcion, $detalle)
     {
         $tallos_proyectados = 0;
         /* ----------------------------- calcular cosecha real ----------------------------- */
