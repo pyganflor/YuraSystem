@@ -404,7 +404,7 @@ class Pedido extends Model
                 }
             }
         }
-        if (count($this->envios) > 0)
+        /*if (count($this->envios) > 0)
             if ($this->envios[0]->comprobante != '') {  // PEDIDO FACTURADO
                 return $this->envios[0]->comprobante->monto_total;
             } else {
@@ -428,7 +428,7 @@ class Pedido extends Model
             if (is_numeric($impuesto)) {
                 $r += $r * ($impuesto / 100);
             }
-        }
+        }*/
         return $r;
     }
 
