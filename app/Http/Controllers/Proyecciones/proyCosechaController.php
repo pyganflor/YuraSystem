@@ -28,7 +28,12 @@ class proyCosechaController extends Controller
         ini_set('max_execution_time', env('MAX_EXECUTION_TIME'));
         set_time_limit(120);
 
-        //Artisan::call('proyeccion:update_semanal');
+       /* Artisan::call('proyeccion:update_semanal',
+            [
+                'semana_desde' => '1936',
+                'semana_hasta' => '1945',
+                'variedad' => 1,
+            ]);*/
 
         $semana_desde = Semana::All()->where('codigo', $request->desde)->first();
         $semana_hasta = Semana::All()->where('codigo', $request->hasta)->first();

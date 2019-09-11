@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 09-09-2019 a las 19:23:20
+-- Tiempo de generación: 12-09-2019 a las 00:07:58
 -- Versión del servidor: 10.1.36-MariaDB
 -- Versión de PHP: 7.2.11
 
@@ -32,7 +32,7 @@ CREATE TABLE `proyeccion_modulo_semana` (
   `id_proyeccion_modulo_semana` int(11) NOT NULL,
   `id_modulo` int(11) NOT NULL,
   `semana` int(4) NOT NULL,
-  `tipo` char(1) COLLATE utf8_bin NOT NULL COMMENT 'Siembra; Poda; Info; T(semana de cosecha); Y(proyeccion)',
+  `tipo` char(1) COLLATE utf8_bin NOT NULL COMMENT 'Siembra; Poda; Info; T(semana de cosecha); Y(proyeccion); Vacio',
   `info` varchar(25) COLLATE utf8_bin DEFAULT NULL,
   `cosechados` float DEFAULT NULL,
   `proyectados` float DEFAULT NULL,
@@ -49,7 +49,8 @@ CREATE TABLE `proyeccion_modulo_semana` (
   `semana_poda_siembra` int(11) DEFAULT NULL,
   `desecho` float DEFAULT NULL,
   `estado` tinyint(1) NOT NULL DEFAULT '1',
-  `fecha_registro` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+  `fecha_registro` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `tabla` char(1) COLLATE utf8_bin DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 --
