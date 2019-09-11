@@ -27,7 +27,7 @@
                     {{$mod['modulo']->nombre}}
                 </th>
                 @foreach($mod['valores'] as $pos_val => $val)
-                    @php
+                    {{--@php
                         $fondo = '';
                         $title = '<em>Mod: '.$mod['modulo']->nombre.'</em><br>'.
                                  '<em>Sem: '.$semanas[$pos_val]->codigo.'</em><br>';
@@ -97,6 +97,10 @@
                                 <strong style="font-size: 0.8em">{{number_format($val['data']['cosechado'])}}</strong>
                             @endif
                         </span>
+                    </td>--}}
+
+                    <td class="text-center" style="border-color: #9d9d9d">
+                        -
                     </td>
                 @endforeach
 

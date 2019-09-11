@@ -16,7 +16,7 @@ class UpdateProyeccionSemanal extends Command
      *
      * @var string
      */
-    protected $signature = 'proyeccion:update_semanal {semana_desde=0} {semana_hasta=0} {variedad=0}';
+    protected $signature = 'proyeccion:update_semanal {semana_desde=0} {semana_hasta=0} {variedad=0} {modulo=0}';
 
     /**
      * The console command description.
@@ -47,6 +47,7 @@ class UpdateProyeccionSemanal extends Command
         $sem_parametro_desde = $this->argument('semana_desde');
         $sem_parametro_hasta = $this->argument('semana_hasta');
         $var_parametro = $this->argument('variedad');
+        $modulo_parametro = $this->argument('modulo');
 
         if ($sem_parametro_desde <= $sem_parametro_hasta) {
 
@@ -66,6 +67,9 @@ class UpdateProyeccionSemanal extends Command
             else
                 Log::info('VARIEDAD PARAMETRO: ' . $var_parametro . ' => TODAS');
 
+            if ($modulo_parametro != 0)
+                Log::info('MODULO PARAMETRO: ' . $modulo_parametro . ' => ' . getModuloById($modulo_parametro)->nombre);
+
             $array_semanas = [];
             $semanas = [];
             for ($i = $semana_desde->codigo; $i <= $semana_hasta->codigo; $i++) {
@@ -80,6 +84,8 @@ class UpdateProyeccionSemanal extends Command
             }
 
             $modulos = Modulo::All()->where('estado', 1)->where('area', '>', 0);
+            if ($modulo_parametro != 0)
+                $modulos = $modulos->where('id_modulo', $modulo_parametro);
             $variedades = Variedad::All()->where('estado', 1);
             if ($var_parametro != 0)
                 $variedades = $variedades->where('id_variedad', $var_parametro);
