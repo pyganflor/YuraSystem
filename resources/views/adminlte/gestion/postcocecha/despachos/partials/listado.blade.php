@@ -201,13 +201,14 @@
                                                     @endphp
                                                     @foreach(getVariedades() as $var)
                                                         @php
-                                                            $sum_precios += $ped->getPrecioByPedidoVariedad($var->id_variedad);
+                                                        $parcial = $ped->getPrecioByPedidoVariedad($var->id_variedad);
+                                                            $sum_precios += $parcial;
                                                         @endphp
-                                                        @if($ped->getPrecioByPedidoVariedad($var->id_variedad) > 0)
+                                                        @if($parcial > 0)
                                                             <br>
                                                             <small>
                                                                 <em>
-                                                                    {{$var->siglas}}: {{$ped->getPrecioByPedidoVariedad($var->id_variedad)}}
+                                                                    {{$var->siglas}}: {{$parcial}}
                                                                 </em>
                                                             </small>
                                                         @endif
