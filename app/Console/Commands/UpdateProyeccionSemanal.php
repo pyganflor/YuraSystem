@@ -135,7 +135,7 @@ class UpdateProyeccionSemanal extends Command
                             }
                         }
                         $proy->save();
-                        Log::info('Se ha actualizado el Módulo:' . $mod->id_modulo . ', Semana:' . $semana->codigo . ', Variedad:' . $var->id_variedad);
+                        //Log::info('Se ha actualizado el Modulo:' . $mod->id_modulo . ', Semana:' . $semana->codigo . ', Variedad:' . $var->id_variedad);
                     }
                 }
             }
