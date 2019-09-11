@@ -386,24 +386,21 @@ class Pedido extends Model
         $r = 0;
         foreach ($this->detalles as $det_ped) {
             foreach ($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $esp_emp) {
-                foreach ($esp_emp->detalles as $det_esp) {
-                    if ($det_esp->id_variedad == $variedad) {
-                        return 1;
-                        $ramos = $det_ped->cantidad * $esp_emp->cantidad * $det_esp->cantidad;
-                        $ramos_col = 0;
-                        $precio_col = 0;
-                        foreach (Coloracion::All()->where('id_detalle_pedido', $det_ped->id_detalle_pedido)
-                                     ->where('id_especificacion_empaque', $esp_emp->id_especificacion_empaque)
-                                     ->where('precio', '!=', '') as $col) {
-                            $ramos_col += $col->getTotalRamosByDetEsp($det_esp->id_detalle_especificacionempaque);
-                            $precio = getPrecioByDetEsp($col->precio, $det_esp->id_detalle_especificacionempaque);
-                            $precio_col += ($col->getTotalRamosByDetEsp($det_esp->id_detalle_especificacionempaque) * $precio);
-                        }
-                        $ramos -= $ramos_col;
-                        $precio_final = $ramos * getPrecioByDetEsp($det_ped->precio, $det_esp->id_detalle_especificacionempaque);
-                        $precio_final += $precio_col;
-                        $r += $precio_final;
+                foreach ($esp_emp->detalles->where('id_variedad', $variedad) as $det_esp) {
+                    $ramos = $det_ped->cantidad * $esp_emp->cantidad * $det_esp->cantidad;
+                    $ramos_col = 0;
+                    $precio_col = 0;
+                    foreach (Coloracion::All()->where('id_detalle_pedido', $det_ped->id_detalle_pedido)
+                                 ->where('id_especificacion_empaque', $esp_emp->id_especificacion_empaque)
+                                 ->where('precio', '!=', '') as $col) {
+                        $ramos_col += $col->getTotalRamosByDetEsp($det_esp->id_detalle_especificacionempaque);
+                        $precio = getPrecioByDetEsp($col->precio, $det_esp->id_detalle_especificacionempaque);
+                        $precio_col += ($col->getTotalRamosByDetEsp($det_esp->id_detalle_especificacionempaque) * $precio);
                     }
+                    $ramos -= $ramos_col;
+                    $precio_final = $ramos * getPrecioByDetEsp($det_ped->precio, $det_esp->id_detalle_especificacionempaque);
+                    $precio_final += $precio_col;
+                    $r += $precio_final;
                 }
             }
         }
