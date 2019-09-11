@@ -196,7 +196,7 @@
                                                         ${{number_format($ped->getPrecioByPedido(), 2)}}
                                                     </strong>
 
-                                                    @php
+                                                    {{--@php
                                                         $sum_precios = 0;
                                                     @endphp
                                                     @foreach(getVariedades() as $var)
@@ -213,7 +213,7 @@
                                                         @endif
                                                     @endforeach
                                                     <br>
-                                                    <small>{{number_format($sum_precios, 2)}}</small>
+                                                    <small>{{number_format($sum_precios, 2)}}</small>--}}
 
                                                 @endif
                                                 @php
