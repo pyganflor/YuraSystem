@@ -1972,30 +1972,40 @@ function listar_productos() {
 
 function cuenta_ramos(input){
     id = input.id.split("_")[1];
-    for (let i = 0; i < $(input)[0].options.length ; i++) {
-        if($(input)[0].options[i].selected && $(input)[0].options[i].innerText === "Mallas"){
-            html='<input type="text" id="input_ramos_'+id+'" name="input_ramos_'+id+'" ' +
-                    'onkeyup="calcular_precio_pedido()" onchange="crear_orden_pedido(this)" ' +
-                    'value="0" style="width:100%;border:none;text-align:center;height: 34px;">';
-
-            $("input#cantidad_piezas_"+id).attr('disabled',true);
-            $("input.cantidad_"+id).val("");
-            $("#td_total_ramos_"+id).html(html);
-
-            for (let j = 0; j < $("select."+input.id).length ; j++) {
-                if($("select."+input.id)[j].options[1].innerText === "Mallas")
-                    $($("select."+input.id)[j].options[1]).attr('selected',true);
-            }
-            return false;
-        }else{
-            $("input#cantidad_piezas_"+id).removeAttr('disabled');
-            $("#td_total_ramos_"+id).html("0");
-            for (let j = 0; j < $("select."+input.id).length ; j++) {
-                if($("select."+input.id)[j].options[1].innerText === "Mallas")
-                    $($("select."+input.id)[j].options[1]).removeAttr('selected');
-            }
+    if(input.value === "T"){
+        select = $("select."+input.id);
+        for (let j = 0; j < select.length ; j++) {
+            console.log($(select[j].options[1].value));
+            if(select[j].options[1].innerText === "Mallas")
+                $(select[j].options[1]).attr('selected',true);
         }
+    }else{
+
     }
+    /*for (let i = 0; i < $(input)[0].options.length ; i++) {
+      if($(input)[0].options[i].selected && $(input)[0].options[i].innerText === "Mallas"){
+           html='<input type="text" id="input_ramos_'+id+'" name="input_ramos_'+id+'" ' +
+                   'onkeyup="calcular_precio_pedido()" onchange="crear_orden_pedido(this)" ' +
+                   'value="0" style="width:100%;border:none;text-align:center;height: 34px;">';
+
+           $("input#cantidad_piezas_"+id).attr('disabled',true);
+           $("input.cantidad_"+id).val("");
+           $("#td_total_ramos_"+id).html(html);
+
+           for (let j = 0; j < $("select."+input.id).length ; j++) {
+               if($("select."+input.id)[j].options[1].innerText === "Mallas")
+                   $($("select."+input.id)[j].options[1]).attr('selected',true);
+           }
+           return false;
+       }else{
+           $("input#cantidad_piezas_"+id).removeAttr('disabled');
+           $("#td_total_ramos_"+id).html("0");
+           for (let j = 0; j < $("select."+input.id).length ; j++) {
+               if($("select."+input.id)[j].options[1].innerText === "Mallas")
+                   $($("select."+input.id)[j].options[1]).removeAttr('selected');
+           }
+       }
+    }*/
 }
 
 function calcular_precio_pedido(input) {

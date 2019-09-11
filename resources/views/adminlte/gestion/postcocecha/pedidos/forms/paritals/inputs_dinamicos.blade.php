@@ -97,9 +97,9 @@
                                         <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;width:75px" class="text-center"  rowspan="{{count($esp_emp->detalles)}}">
                                             <select id="empaque_{{$x+1}}" class="empaque_{{$x+1}}" name="empaque_{{$x+1}}" style="border:none;width:100%" onchange="cuenta_ramos(this)" >
                                                 <option value="{{$esp_emp->empaque->id_empaque}}" >{{explode('|',$esp_emp->empaque->nombre)[0]}}</option>
-                                                @isset($emp_ramos)
-                                                    <option value="{{$emp_ramos->id_empaque}}">{{explode('|',$emp_ramos->nombre)[0]}}</option>
-                                                @endisset
+                                                @foreach($emp_tallos as $t)
+                                                    <option value="{{$t->f_empaque}}">{{explode('|',$t->nombre)[0]}}</option>
+                                                @endforeach
                                             </select>
                                         </td>
                                     @endif

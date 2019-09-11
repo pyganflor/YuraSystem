@@ -289,12 +289,10 @@ class PedidoController extends Controller
                 ->where('id_pedido',$request->id_pedido);
         }
 
-        $ramo = null;
-        $empRamos = Empaque::get();
-        foreach ($empRamos as $empRamo){
-            $emp = explode("|",$empRamo->nombre)[0];
-            if($emp=="Mallas")
-                $ramo = $empRamo;
+        $empT = [];
+        $empTallos = Empaque::where('f_empaque','T')->get();
+        foreach ($empTallos as $empRamo){
+            $empT[] = $empRamo;
         }
         return view('adminlte.gestion.postcocecha.pedidos.forms.paritals.inputs_dinamicos',
             [
@@ -307,7 +305,7 @@ class PedidoController extends Controller
                     ])->get(),
                 'datos_exportacion' => DatosExportacion::join('cliente_datoexportacion as cde','dato_exportacion.id_dato_exportacion','cde.id_dato_exportacion')
                     ->where('id_cliente',$request->id_cliente)->get(),
-                'emp_ramos' => $ramo
+                'emp_tallos' => $empT
             ]);
     }
 
@@ -334,12 +332,10 @@ class PedidoController extends Controller
                 ->where('id_pedido',$request->id_pedido);
         }
 
-        $ramo = null;
-        $empRamos = Empaque::get();
-        foreach ($empRamos as $empRamo){
-            $emp = explode("|",$empRamo->nombre)[0];
-            if($emp=="Mallas")
-                $ramo = $empRamo;
+        $empT = [];
+        $empTallos = Empaque::where('f_empaque','T')->get();
+        foreach ($empTallos as $empRamo){
+            $empT[] = $empRamo;
         }
 
         return view('adminlte.gestion.postcocecha.pedidos.forms.paritals.inputs_dinamicos_edit',
@@ -354,7 +350,7 @@ class PedidoController extends Controller
                         ['cac.estado', 1]
                     ])->get(),
                 'especificaciones' => $data_especificaciones->orderBy('id_cliente_pedido_especificacion','asc')->get(),
-                'emp_ramos' => $ramo
+                'emp_tallos' => $empT
             ]);
     }
 
