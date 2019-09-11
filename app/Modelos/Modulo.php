@@ -296,4 +296,16 @@ class Modulo extends Model
         }
         return $data;
     }
+
+    public function getProyeccionesByRango($semana_desde, $semana_hasta, $variedad)
+    {
+        return DB::table('proyeccion_modulo_semana')
+            ->select('*')
+            ->where('id_modulo', '=', $this->id_modulo)
+            ->where('id_variedad', '=', $variedad)
+            ->where('semana', '>=', $semana_desde)
+            ->where('semana', '<=', $semana_hasta)
+            ->orderBy('semana')
+            ->get();
+    }
 }
