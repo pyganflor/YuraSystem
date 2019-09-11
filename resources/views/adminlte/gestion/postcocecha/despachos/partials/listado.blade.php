@@ -27,13 +27,15 @@
                             <i class="fa fa-fw fa-file-excel-o"></i> Exportar a Excel Cuarto Frio
                         </button>
                         @if($opciones)
-                            <button type="button" class="btn btn-xs btn-success" onclick="exportar_listado_despacho('{{csrf_token()}}',document.getElementById('id_configuracion_pedido').value)">
+                            <button type="button" class="btn btn-xs btn-success"
+                                    onclick="exportar_listado_despacho('{{csrf_token()}}',document.getElementById('id_configuracion_pedido').value)">
                                 <i class="fa fa-fw fa-file-excel-o"></i> Exportar a Excel
                             </button>
                         @else
-                             <button type="button" class="btn btn-xs btn-success" onclick="exportar_excel_listado_despacho('{{csrf_token()}}',document.getElementById('id_configuracion_empresa_despacho').value)">
-                                 <i class="fa fa-fw fa-file-excel-o"></i> Exportar a Excel
-                             </button>
+                            <button type="button" class="btn btn-xs btn-success"
+                                    onclick="exportar_excel_listado_despacho('{{csrf_token()}}',document.getElementById('id_configuracion_empresa_despacho').value)">
+                                <i class="fa fa-fw fa-file-excel-o"></i> Exportar a Excel
+                            </button>
                         @endif
                     </th>
                 </tr>
@@ -160,7 +162,7 @@
                                 @endphp
                             @endforeach
                         @endforeach
-                            @foreach($ped->detalles as $pos_det_ped => $det_ped)
+                        @foreach($ped->detalles as $pos_det_ped => $det_ped)
                             @foreach($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $pos_esp_emp => $esp_emp)
                                 @php
                                     if(!getFacturaAnulada($pedido->id_pedido))
@@ -175,11 +177,13 @@
                                                 <td class="text-center" style="border-color: #9d9d9d;vertical-align: middle"
                                                     rowspan="{{$getCantidadDetallesEspecificacionByPedido}}">
                                                     @if($despachado > 0)
-                                                        <i class="fa fa-2x fa-check-circle text-success" title="Despachado" aria-hidden="true"></i>
+                                                        <i class="fa fa-2x fa-check-circle text-success" title="Despachado"
+                                                           aria-hidden="true"></i>
                                                     @else
                                                         <input type="number" name="orden_despacho" id="{{$pedido->id_pedido}}"
                                                                class="form-control orden_despacho id_configuracion_empresa_{{isset($ped->id_configuracion_empresa) ? $ped->id_configuracion_empresa : ""}}"
-                                                               min="1" style="width: 56px;border:none;text-align: center" {{isset($id_configuracion_empresa) ? "" : "disabled"}}>
+                                                               min="1"
+                                                               style="width: 56px;border:none;text-align: center" {{isset($id_configuracion_empresa) ? "" : "disabled"}}>
                                                     @endif
                                                 </td>
                                             @endif
@@ -191,6 +195,26 @@
                                                     <strong>
                                                         ${{number_format($ped->getPrecioByPedido(), 2)}}
                                                     </strong>
+
+                                                    @php
+                                                        $sum_precios = 0;
+                                                    @endphp
+                                                    @foreach(getVariedades() as $var)
+                                                        @php
+                                                            $sum_precios += $ped->getPrecioByPedidoVariedad($var->id_variedad);
+                                                        @endphp
+                                                        @if($ped->getPrecioByPedidoVariedad($var->id_variedad) > 0)
+                                                            <br>
+                                                            <small>
+                                                                <em>
+                                                                    {{$var->siglas}}: {{$ped->getPrecioByPedidoVariedad($var->id_variedad)}}
+                                                                </em>
+                                                            </small>
+                                                        @endif
+                                                    @endforeach
+                                                    <br>
+                                                    <small>{{number_format($sum_precios, 2)}}</small>
+
                                                 @endif
                                                 @php
                                                     if(!getFacturaAnulada($pedido->id_pedido))
@@ -209,7 +233,8 @@
                                                     </span>
                                                 @endif
                                             </td>
-                                            <td class="text-center" style="border-color: #9d9d9d" rowspan="{{$getCantidadDetallesEspecificacionByPedido}}">
+                                            <td class="text-center" style="border-color: #9d9d9d"
+                                                rowspan="{{$getCantidadDetallesEspecificacionByPedido}}">
                                                 <span style="padding:0px 5px"><b>{{isset($ped->envios[0]->comprobante) ? $ped->envios[0]->comprobante->secuencial : ""}}</b></span>
                                             </td>
                                         @endif
@@ -243,37 +268,39 @@
                                         @endif
                                         @if($opciones)
                                             @if($pos_det_esp == 0 && $pos_esp_emp == 0)
-                                                <td class="text-center" style="border-color: #9d9d9d" rowspan="{{$getCantidadDetallesByEspecificacion}}">
-                                                     {{$esp_emp->cantidad * $det_ped->cantidad}}
+                                                <td class="text-center" style="border-color: #9d9d9d"
+                                                    rowspan="{{$getCantidadDetallesByEspecificacion}}">
+                                                    {{$esp_emp->cantidad * $det_ped->cantidad}}
                                                 </td>
-                                                    @php
-                                                        if(!getFacturaAnulada($pedido->id_pedido))
-                                                       $cajas_full_totales += ($esp_emp->cantidad * $det_ped->cantidad) * explode('|',$esp_emp->empaque->nombre)[1];
-                                                    @endphp
+                                                @php
+                                                    if(!getFacturaAnulada($pedido->id_pedido))
+                                                   $cajas_full_totales += ($esp_emp->cantidad * $det_ped->cantidad) * explode('|',$esp_emp->empaque->nombre)[1];
+                                                @endphp
                                             @endif
                                         @else
                                             @if($pos_det_esp == 0 && $pos_esp_emp == 0 && $pos_det_ped == 0)
-                                                <td class="text-center" style="border-color: #9d9d9d" rowspan="{{$getCantidadDetallesEspecificacionByPedido}}">
+                                                <td class="text-center" style="border-color: #9d9d9d"
+                                                    rowspan="{{$getCantidadDetallesEspecificacionByPedido}}">
                                                     {{$piezas_despacho}}
                                                 </td>
                                                 @php
                                                     if(!getFacturaAnulada($pedido->id_pedido))
                                                    $cajas_full_totales += ($esp_emp->cantidad * $det_ped->cantidad) * explode('|',$esp_emp->empaque->nombre)[1];
                                                 @endphp
-                                               @endif
-                                           @endif
-                                           @php
-                                               if(!getFacturaAnulada($pedido->id_pedido)){
-                                                   $ramos_totales += $det_esp->cantidad * $esp_emp->cantidad * $det_ped->cantidad;
-                                                   $ramos_totales_estandar += convertToEstandar($det_esp->cantidad * $esp_emp->cantidad * $det_ped->cantidad, $det_esp->clasificacion_ramo->nombre);
-                                                   if (!in_array($det_esp->id_variedad, $variedades)){
-                                                       array_push($variedades, $det_esp->id_variedad);
-                                                   }
-                                                   array_push($ramos_x_variedades, [
-                                                       'id_variedad' => $det_esp->id_variedad,
-                                                       'cantidad' => convertToEstandar($det_esp->cantidad * $esp_emp->cantidad * $det_ped->cantidad, $det_esp->clasificacion_ramo->nombre),
-                                                   ]);
-                                               }
+                                            @endif
+                                        @endif
+                                        @php
+                                            if(!getFacturaAnulada($pedido->id_pedido)){
+                                                $ramos_totales += $det_esp->cantidad * $esp_emp->cantidad * $det_ped->cantidad;
+                                                $ramos_totales_estandar += convertToEstandar($det_esp->cantidad * $esp_emp->cantidad * $det_ped->cantidad, $det_esp->clasificacion_ramo->nombre);
+                                                if (!in_array($det_esp->id_variedad, $variedades)){
+                                                    array_push($variedades, $det_esp->id_variedad);
+                                                }
+                                                array_push($ramos_x_variedades, [
+                                                    'id_variedad' => $det_esp->id_variedad,
+                                                    'cantidad' => convertToEstandar($det_esp->cantidad * $esp_emp->cantidad * $det_ped->cantidad, $det_esp->clasificacion_ramo->nombre),
+                                                ]);
+                                            }
                                         @endphp
                                         @if($opciones)
                                             @if($pos_det_esp == 0)
@@ -289,23 +316,31 @@
                                             </td>
                                         @else
                                             @if($pos_det_esp == 0 && $pos_esp_emp == 0 && $pos_det_ped == 0)
-                                                <td class="text-center" style="border-color: #9d9d9d" rowspan="{{$getCantidadDetallesEspecificacionByPedido}}">{{$full}}</td>
-                                                <td class="text-center" style="border-color: #9d9d9d" rowspan="{{$getCantidadDetallesEspecificacionByPedido}}">{{$half}}</td>
-                                                <td class="text-center" style="border-color: #9d9d9d" rowspan="{{$getCantidadDetallesEspecificacionByPedido}}">{{$cuarto}}</td>
-                                                <td class="text-center" style="border-color: #9d9d9d" rowspan="{{$getCantidadDetallesEspecificacionByPedido}}">{{$octavo}}</td>
+                                                <td class="text-center" style="border-color: #9d9d9d"
+                                                    rowspan="{{$getCantidadDetallesEspecificacionByPedido}}">{{$full}}</td>
+                                                <td class="text-center" style="border-color: #9d9d9d"
+                                                    rowspan="{{$getCantidadDetallesEspecificacionByPedido}}">{{$half}}</td>
+                                                <td class="text-center" style="border-color: #9d9d9d"
+                                                    rowspan="{{$getCantidadDetallesEspecificacionByPedido}}">{{$cuarto}}</td>
+                                                <td class="text-center" style="border-color: #9d9d9d"
+                                                    rowspan="{{$getCantidadDetallesEspecificacionByPedido}}">{{$octavo}}</td>
                                             @endif
                                         @endif
                                         @if($pos_det_esp == 0 && $pos_esp_emp == 0 && $pos_det_ped == 0)
-                                           <td style="border-color: #9d9d9d" class="text-center " rowspan="{{$getCantidadDetallesEspecificacionByPedido}}">
-                                               {{getAgenciaCarga($det_ped->id_agencia_carga)->nombre}}
-                                           </td>
+                                            <td style="border-color: #9d9d9d" class="text-center "
+                                                rowspan="{{$getCantidadDetallesEspecificacionByPedido}}">
+                                                {{getAgenciaCarga($det_ped->id_agencia_carga)->nombre}}
+                                            </td>
                                             @if($opciones)
-                                                <td style="border-color: #9d9d9d" class="text-center " rowspan="{{$getCantidadDetallesEspecificacionByPedido}}">
+                                                <td style="border-color: #9d9d9d" class="text-center "
+                                                    rowspan="{{$getCantidadDetallesEspecificacionByPedido}}">
                                                     {{isset($ped->empresa->razon_social) ? $ped->empresa->razon_social : ""}}
                                                 </td>
-                                                <td class="text-center" style="border-color: #9d9d9d" id="td_opciones_{{$pedido->id_pedido}}" rowspan="{{$getCantidadDetallesEspecificacionByPedido}}">
+                                                <td class="text-center" style="border-color: #9d9d9d" id="td_opciones_{{$pedido->id_pedido}}"
+                                                    rowspan="{{$getCantidadDetallesEspecificacionByPedido}}">
                                                     @if($pedido->tipo_especificacion == 'T')
-                                                        <button type="button" class="btn btn-default btn-xs" title="{{(isset($ped->envios[0]->comprobante) && $ped->envios[0]->comprobante->estado != 1 ) ? "Ver pedido" : "Editar pedido"}}"
+                                                        <button type="button" class="btn btn-default btn-xs"
+                                                                title="{{(isset($ped->envios[0]->comprobante) && $ped->envios[0]->comprobante->estado != 1 ) ? "Ver pedido" : "Editar pedido"}}"
                                                                 onclick="editar_pedido_tinturado('{{$pedido->id_pedido}}', 0)">
                                                             @if((isset($ped->envios[0]->comprobante) && $ped->envios[0]->comprobante->estado != 1 ))
                                                                 <i class="fa fa-eye" aria-hidden="true"></i>
@@ -314,7 +349,8 @@
                                                             @endif
                                                         </button>
                                                     @else
-                                                        <button type="button" class="btn btn-default btn-xs" title="{{(isset($ped->envios[0]->comprobante) && $ped->envios[0]->comprobante->estado != 1 ) ? "Ver pedido" : "Editar pedido"}}"
+                                                        <button type="button" class="btn btn-default btn-xs"
+                                                                title="{{(isset($ped->envios[0]->comprobante) && $ped->envios[0]->comprobante->estado != 1 ) ? "Ver pedido" : "Editar pedido"}}"
                                                                 onclick="editar_pedido('{{$pedido->id_cliente}}','{{$pedido->id_pedido}}')">
                                                             @if((isset($ped->envios[0]->comprobante) && $ped->envios[0]->comprobante->estado != 1 ))
                                                                 <i class="fa fa-eye" aria-hidden="true"></i>
@@ -325,10 +361,13 @@
                                                     @endif
                                                     @if((isset($ped->envios[0]->comprobante) && $ped->envios[0]->comprobante->estado != 6) || !isset($ped->envios[0]->comprobante))
                                                         @if($facturado==null)
-                                                            <button class="btn  btn-{!! $det_ped->estado == 1 ? 'danger' : 'success' !!} btn-xs" type="button"
-                                                                    title="{!! $det_ped->estado == 1 ? 'Cancelar pedido' : 'Activar pedido' !!}" id="edit_pedidos"
+                                                            <button class="btn  btn-{!! $det_ped->estado == 1 ? 'danger' : 'success' !!} btn-xs"
+                                                                    type="button"
+                                                                    title="{!! $det_ped->estado == 1 ? 'Cancelar pedido' : 'Activar pedido' !!}"
+                                                                    id="edit_pedidos"
                                                                     onclick="cancelar_pedidos('{{$pedido->id_pedido}}','','{{$det_ped->estado}}','{{@csrf_token()}}')">
-                                                                <i class="fa fa-{!! $det_ped->estado == 1 ? 'trash' : 'undo' !!}" aria-hidden="true"></i>
+                                                                <i class="fa fa-{!! $det_ped->estado == 1 ? 'trash' : 'undo' !!}"
+                                                                   aria-hidden="true"></i>
                                                             </button>
                                                             @if($pedido->empaquetado == 0)
                                                                 @if($ped->haveDistribucion() == 1)
@@ -337,30 +376,39 @@
                                                                         <i class="fa fa-fw fa-gift"></i>
                                                                     </button>
                                                                 @elseif($ped->haveDistribucion() == 2)
-                                                                    <button onclick="ver_distribucion_orden_semanal('{{$pedido->id_pedido}}')" class="btn btn-default text-left" style="cursor:pointer;padding:5px 3px;width:100%;">
+                                                                    <button onclick="ver_distribucion_orden_semanal('{{$pedido->id_pedido}}')"
+                                                                            class="btn btn-default text-left"
+                                                                            style="cursor:pointer;padding:5px 3px;width:100%;">
                                                                         <em> Ver distribución</em>
                                                                     </button>
                                                                 @endif
-                                                                <button onclick="duplicar_pedido('{{$pedido->id_pedido}}','{{$pedido->id_cliente}}')" class="btn btn-primary  btn-xs " title="Duplicar pedido">
+                                                                <button onclick="duplicar_pedido('{{$pedido->id_pedido}}','{{$pedido->id_cliente}}')"
+                                                                        class="btn btn-primary  btn-xs " title="Duplicar pedido">
                                                                     <i class="fa fa-files-o" aria-hidden="true"></i>
                                                                 </button>
-                                                                <button onclick="empaquetar_pedido('{{$pedido->id_pedido}}','{{csrf_token()}}')" class="btn btn-warning  btn-xs " title="Empaquetar pedido">
+                                                                <button onclick="empaquetar_pedido('{{$pedido->id_pedido}}','{{csrf_token()}}')"
+                                                                        class="btn btn-warning  btn-xs " title="Empaquetar pedido">
                                                                     <i class="fa fa-cube"></i>
                                                                 </button>
                                                             @endif
-                                                            <button onclick="facturar_pedido('{{$pedido->id_pedido}}')" class="btn btn-success btn-xs" title="Generar factura">
+                                                            <button onclick="facturar_pedido('{{$pedido->id_pedido}}')"
+                                                                    class="btn btn-success btn-xs" title="Generar factura">
                                                                 <i class="fa fa-usd" aria-hidden="true"></i>
                                                             </button>
                                                         @else
                                                             {{--<a target="_blank" href="{{url('pedidos/ver_factura_pedido',$pedido->id_pedido)}}" class="btn btn-default btn-xs" title="Ver factura SRI">
                                                                 <i class="fa fa-eye" aria-hidden="true"></i>
                                                             </a>--}}
-                                                            <a target="_blank" href="{{url('pedidos/documento_pre_factura',[$pedido->id_pedido,true])}}" class="btn btn-info btn-xs" title="Ver factura Cliente">
+                                                            <a target="_blank"
+                                                               href="{{url('pedidos/documento_pre_factura',[$pedido->id_pedido,true])}}"
+                                                               class="btn btn-info btn-xs" title="Ver factura Cliente">
                                                                 <i class="fa fa-user-circle-o" aria-hidden="true"></i>
                                                             </a>
                                                         @endif
                                                         @if($firmado != null)
-                                                            <a target="_blank" href="{{url('pedidos/documento_pre_factura',[$pedido->id_pedido,true])}}" class="btn btn-info btn-xs" title="Ver factura Cliente">
+                                                            <a target="_blank"
+                                                               href="{{url('pedidos/documento_pre_factura',[$pedido->id_pedido,true])}}"
+                                                               class="btn btn-info btn-xs" title="Ver factura Cliente">
                                                                 <i class="fa fa-user-circle-o" aria-hidden="true"></i>
                                                             </a>
                                                         @endif
@@ -372,13 +420,16 @@
                                                 </td>
                                             @endif
                                             @if(!$opciones)
-                                                <td style="border-color: #9d9d9d" class="text-center " rowspan="{{$getCantidadDetallesEspecificacionByPedido}}">
+                                                <td style="border-color: #9d9d9d" class="text-center "
+                                                    rowspan="{{$getCantidadDetallesEspecificacionByPedido}}">
                                                     {{isset($ped->empresa->razon_social) ? $ped->empresa->nombre : ""}}
                                                 </td>
                                             @endif
-                                            <td rowspan="{{$getCantidadDetallesEspecificacionByPedido}}" class="text-center" style="border-color: #9d9d9d">
+                                            <td rowspan="{{$getCantidadDetallesEspecificacionByPedido}}" class="text-center"
+                                                style="border-color: #9d9d9d">
                                                 @if(!$opciones && $pedido->tipo_especificacion === "T")
-                                                    <a target="_blank" href="{{url('pedidos/crear_packing_list',[$pedido->id_pedido,true])}}" class="btn btn-info btn-xs" title="Packing list">
+                                                    <a target="_blank" href="{{url('pedidos/crear_packing_list',[$pedido->id_pedido,true])}}"
+                                                       class="btn btn-info btn-xs" title="Packing list">
                                                         <i class="fa fa-cubes"></i>
                                                     </a>
                                                 @endif
