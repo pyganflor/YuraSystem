@@ -44,7 +44,6 @@ class UpdateProyeccionSemanal extends Command
     {
         Log::info('<<<<< ! >>>>> Ejecutando comando "proyeccion:update_semanal" <<<<< ! >>>>>');
 
-
         $sem_parametro_desde = $this->argument('semana_desde');
         $sem_parametro_hasta = $this->argument('semana_hasta');
         $var_parametro = $this->argument('variedad');

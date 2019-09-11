@@ -48,7 +48,6 @@ class Ciclo extends Model
         if ($this->fecha_fin != '')
             $fin = $this->fecha_fin;
 
-
         $r = DB::table('desglose_recepcion as dr')
             ->join('recepcion as r', 'r.id_recepcion', '=', 'dr.id_recepcion')
             ->select(DB::raw('sum(dr.cantidad_mallas * dr.tallos_x_malla) as cantidad'))
@@ -56,7 +55,7 @@ class Ciclo extends Model
             ->where('r.estado', '=', 1)
             ->where('dr.id_modulo', '=', $this->id_modulo)
             ->where('r.fecha_ingreso', '>=', opDiasFecha('+', 1, $this->fecha_inicio))
-            ->where('r.fecha_ingreso', '<=', $fin)
+            ->where('r.fecha_ingreso', '<=', $fin.' 23:59:59')
             ->get()[0]->cantidad;
 
         return $r;
