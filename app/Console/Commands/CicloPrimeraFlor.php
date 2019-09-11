@@ -45,7 +45,6 @@ class CicloPrimeraFlor extends Command
         if (count($ciclos) > 0) {
             Log::info('<<<<< ! >>>>> Ejecutando comando "ciclo:primera_flor" <<<<< ! >>>>>');
             foreach ($ciclos as $c) {
-
                 $fecha_min = DB::table('desglose_recepcion as dr')
                     ->join('recepcion as r', 'dr.id_recepcion', '=', 'r.id_recepcion')
                     ->select(DB::raw('min(r.fecha_ingreso) as fecha'))
@@ -53,7 +52,7 @@ class CicloPrimeraFlor extends Command
                     ->where('r.estado', '=', 1)
                     ->where('dr.id_modulo', '=', $c->id_modulo)
                     ->where('dr.id_variedad', '=', $c->id_variedad)
-                    ->where('r.fecha_ingreso', '>', $c->fecha_inicio)
+                    ->where('r.fecha_ingreso', '>', opDiasFecha('+', 1, $c->fecha_inicio))
                     ->where('r.fecha_ingreso', '<=', $c->fecha_fin . ' 23:59:59')
                     ->get()[0]->fecha;
 
