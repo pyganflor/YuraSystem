@@ -386,7 +386,9 @@ class Pedido extends Model
         $r = 0;
         foreach ($this->detalles as $det_ped) {
             foreach ($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $esp_emp) {
+                //@dump($variedad, $esp_emp->detalles->where('id_variedad', $variedad));
                 foreach ($esp_emp->detalles->where('id_variedad', $variedad) as $det_esp) {
+                    //@dump($variedad);
                     $ramos = $det_ped->cantidad * $esp_emp->cantidad * $det_esp->cantidad;
                     $ramos_col = 0;
                     $precio_col = 0;
@@ -404,7 +406,7 @@ class Pedido extends Model
                 }
             }
         }
-        if (count($this->envios) > 0)
+        /*if (count($this->envios) > 0)
             if ($this->envios[0]->comprobante != '') {  // PEDIDO FACTURADO
                 return $this->envios[0]->comprobante->monto_total;
             } else {
@@ -428,7 +430,7 @@ class Pedido extends Model
             if (is_numeric($impuesto)) {
                 $r += $r * ($impuesto / 100);
             }
-        }
+        }*/
         return $r;
     }
 
