@@ -90,6 +90,7 @@ class proyCosechaController extends Controller
                     'semana_desde' => $semana_desde,
                     'opcion' => $request->opcion,
                     'detalle' => $request->detalle,
+                    'ramos_x_caja' => getConfiguracionEmpresa()->ramos_x_caja,
                 ]);
             } else
                 return 'No se han encontrado módulos en el rango establecido.';
@@ -99,6 +100,7 @@ class proyCosechaController extends Controller
 
     public function select_celda(Request $request)
     {
+        dd($request->all());
         if ($request->tipo == 'F') {    // crear una proyecccion
             return view('adminlte.gestion.proyecciones.cosecha.forms.new_proy', [
                 'modulo' => getModuloById($request->modulo),

@@ -21,6 +21,9 @@
         </tr>
         </thead>
         <tbody>
+        @php
+            $cajas_proyectadas = [];
+        @endphp
         @foreach($modulos as $mod)
             <tr>
                 <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
@@ -150,22 +153,25 @@
                                 $title .= '<em>Desecho: '.($val->desecho).'%</em><br>';
                             }
                         }
+
+                        /* =============== INICIALIZAR TOTALES ===================== */
+                        $cajas_proyectadas[$pos_val] = 0;
                     @endphp
                     <td class="text-center {{in_array($val->tipo, ['F', 'P', 'S', 'T', 'Y']) ? 'mouse-hand' : ''}}"
                         style="border-color: #9d9d9d; background-color: {{$fondo}}"
-                        onclick="">
+                        onclick="select_celda('{{$val->tipo}}', '{{$mod['modulo']->id_modulo}}', '{{$val->semana}}', '{{$val->id_variedad}}')">
                         <span data-toggle="tooltip" data-placement="top" data-html="true"
                               title="{{$title}}">
                             @if($val->tipo == 'T')
                                 <strong style="font-size: 0.8em">
-                                    {{number_format($val->proyectados, 2)}}
+                                    {{$val->proyectados != '' ? number_format($val->proyectados, 2) : 0}}
                                 </strong>
                             @else
                                 {{$val->info}}
                             @endif
                             @if($val->cosechados > 0)
                                 <br>
-                                <strong style="font-size: 0.8em">{{number_format($val->cosechados)}}</strong>
+                                <strong style="font-size: 0.8em">*{{number_format($val->cosechados)}}</strong>
                             @endif
                         </span>
                     </td>
@@ -177,6 +183,45 @@
             </tr>
         @endforeach
         </tbody>
+
+        {{-- CALCULAR TOTALES --}}
+        @foreach($modulos as $mod)
+            @foreach($mod['valores'] as $pos_val => $val)
+                @php
+                    $cajas_proyectadas[$pos_val] = $cajas_proyectadas[$pos_val] + $val->proyectados;
+                @endphp
+            @endforeach
+        @endforeach
+
+        {{-- TOTALES --}}
+        <tr style="background-color: #fdff8b">
+            <th class="text-center" style="border-color: #9d9d9d">
+                Proyectados
+                <br>
+                <small>Tallos/cajas</small>
+            </th>
+            @foreach($cajas_proyectadas as $pos_val => $val)
+                <th class="text-center" style="border-color: #9d9d9d">
+                    @if($val > 0)
+                        <span data-toggle="tooltip" data-placement="top" title="{{$semanas[$pos_val]->codigo}}">
+                            {{number_format($val, 2)}}
+                            <br>
+                            <strong>
+                                @php
+                                    $calibre = 1;
+                                @endphp
+                                {{number_format(round(($val / $calibre) / $ramos_x_caja, 2), 2)}}
+                            </strong>
+                        </span>
+                    @endif
+                </th>
+            @endforeach
+            <th class="text-center" style="border-color: #9d9d9d">
+                Proyectados
+                <br>
+                <small>Tallos/cajas</small>
+            </th>
+        </tr>
     </table>
 </div>
 
