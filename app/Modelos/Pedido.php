@@ -386,7 +386,9 @@ class Pedido extends Model
         $r = 0;
         foreach ($this->detalles as $det_ped) {
             foreach ($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $esp_emp) {
+                //@dump($variedad, $esp_emp->detalles->where('id_variedad', $variedad));
                 foreach ($esp_emp->detalles->where('id_variedad', $variedad) as $det_esp) {
+                    //@dump($variedad);
                     $ramos = $det_ped->cantidad * $esp_emp->cantidad * $det_esp->cantidad;
                     $ramos_col = 0;
                     $precio_col = 0;
