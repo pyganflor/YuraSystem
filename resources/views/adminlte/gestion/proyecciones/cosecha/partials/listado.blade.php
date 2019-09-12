@@ -203,13 +203,14 @@
             @foreach($cajas_proyectadas as $pos_val => $val)
                 <th class="text-center" style="border-color: #9d9d9d">
                     @if($val > 0)
-                        <span data-toggle="tooltip" data-placement="top" title="{{$semanas[$pos_val]->codigo}}">
+                        @php
+                            $calibre = 1;
+                        @endphp
+                        <span data-toggle="tooltip" data-placement="top" data-html="true"
+                              title="{{$semanas[$pos_val]->codigo}} <br> <small>Calb:<em>{{$calibre}}</em></small>">
                             {{number_format($val, 2)}}
                             <br>
                             <strong>
-                                @php
-                                    $calibre = 1;
-                                @endphp
                                 {{number_format(round(($val / $calibre) / $ramos_x_caja, 2), 2)}}
                             </strong>
                         </span>
