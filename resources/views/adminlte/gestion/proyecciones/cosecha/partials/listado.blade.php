@@ -152,7 +152,8 @@
                         }
                     @endphp
                     <td class="text-center {{in_array($val->tipo, ['F', 'P', 'S', 'T', 'Y']) ? 'mouse-hand' : ''}}"
-                        style="border-color: #9d9d9d; background-color: {{$fondo}}">
+                        style="border-color: #9d9d9d; background-color: {{$fondo}}"
+                        onclick="">
                         <span data-toggle="tooltip" data-placement="top" data-html="true"
                               title="{{$title}}">
                             @if($val->tipo == 'T')

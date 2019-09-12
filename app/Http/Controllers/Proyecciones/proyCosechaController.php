@@ -72,8 +72,6 @@ class proyCosechaController extends Controller
                     ->orderBy('fecha_inicio', 'asc')
                     ->get();
 
-                //dd($semanas, $query_modulos);
-
                 $array_modulos = [];
                 foreach ($query_modulos as $mod) {
                     $mod = getModuloById($mod->id_modulo);
