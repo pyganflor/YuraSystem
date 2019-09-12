@@ -171,7 +171,7 @@
                             @endif
                             @if($val->cosechados > 0)
                                 <br>
-                                <strong style="font-size: 0.8em">*{{number_format($val->cosechados)}}</strong>
+                                <strong style="font-size: 0.8em">{{number_format($val->cosechados)}}</strong>
                             @endif
                         </span>
                     </td>
