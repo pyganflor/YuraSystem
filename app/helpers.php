@@ -2301,3 +2301,28 @@ function getCalibreByRangoVariedad($desde, $hasta, $variedad)
     }
     return $cant_verdes > 0 ? round($calibre / $cant_verdes, 2) : 0;
 }
+
+function getCajasByRangoVariedad($desde, $hasta, $variedad)
+{
+    $query = DB::table('clasificacion_verde as v')
+        ->select('v.fecha_ingreso as dia')->distinct()
+        ->where('v.fecha_ingreso', '>=', $desde)
+        ->where('v.fecha_ingreso', '<=', $hasta)
+        ->get();
+
+    $ramos = 0;
+
+    $cant_verdes = 0;
+    foreach ($query as $dia) {
+        $verde = ClasificacionVerde::All()->where('fecha_ingreso', '=', $dia->dia)->first();
+        if ($verde != '') {
+            if ($variedad == 'T') { // Todas las variedades
+                $ramos += $verde->getTotalRamosEstandar();
+            } else {    // por variedad
+                $ramos += $verde->getTotalRamosEstandarByVariedad($variedad);
+            }
+            $cant_verdes++;
+        }
+    }
+    return round($ramos / getConfiguracionEmpresa()->ramos_x_caja, 2);
+}
