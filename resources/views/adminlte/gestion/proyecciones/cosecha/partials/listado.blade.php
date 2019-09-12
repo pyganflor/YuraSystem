@@ -204,11 +204,12 @@
                 <th class="text-center" style="border-color: #9d9d9d">
                     @if($val > 0)
                         @php
-                            $calibre = 0;
-                            if($calibres[$pos_val] > 0){
-                                $calibre = $calibres[$pos_val];
-                            } elseif($semanas[$pos_val]->tallos_ramo_poda > 0){
-                                $calibre = $semanas[$pos_val]->tallos_ramo_poda;
+                            //$calibre = $calibres[$pos_val];
+                            $calibre = getCalibreByRangoVariedad($semanas[$pos_val]->fecha_inicial, $semanas[$pos_val]->fecha_final, $variedad);
+                            if($calibre <= 0){
+                                if($semanas[$pos_val]->tallos_ramo_poda > 0){
+                                    $calibre = $semanas[$pos_val]->tallos_ramo_poda;
+                                }
                             }
                         @endphp
                         <span data-toggle="tooltip" data-placement="top" data-html="true"
