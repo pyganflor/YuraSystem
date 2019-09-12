@@ -99,8 +99,70 @@
                         </span>
                     </td>--}}
 
-                    <td class="text-center" style="border-color: #9d9d9d">
-                        -
+                    @php
+                        $fondo = '';
+                        $title = '<em>Mod: '.$mod['modulo']->nombre.'</em><br>'.
+                                 '<em>Sem: '.$val->semana.'</em><br>';
+                        if($val->tipo == 'P'){
+                            if(substr($val->info, 2) > 1)
+                                $fondo = '#ffb100'; // poda de 2 o más
+                            else
+                                $fondo = '#efff00'; // poda de 1
+                            $title .= '<em>Ptas.Ini: '.number_format($val->plantas_iniciales).'</em><br>';
+                            $title .= '<em>Ptas.Act: '.number_format($val->plantas_actuales).'</em><br>';
+                            $title .= '<em>T/Ptas: '.($val->tallos_planta).'</em><br>';
+                            $title .= '<em>Sem.Cos: '.($val->semana_poda_siembra).'</em><br>';
+                            $title .= '<em>Curva: '.($val->curva).'</em><br>';
+                            $title .= '<em>Desecho: '.($val->desecho).'%</em><br>';
+                        } else if($val->tipo == 'S'){
+                            $fondo = '#08ffe8'; // siembra
+                            $title .= '<em>Ptas.Ini: '.number_format($val->plantas_iniciales).'</em><br>';
+                            $title .= '<em>Ptas.Act: '.number_format($val->plantas_actuales).'</em><br>';
+                            $title .= '<em>T/Ptas: '.($val->tallos_planta).'</em><br>';
+                            $title .= '<em>Sem.Cos: '.($val->semana_poda_siembra).'</em><br>';
+                            $title .= '<em>Curva: '.($val->curva).'</em><br>';
+                            $title .= '<em>Desecho: '.($val->desecho).'%</em><br>';
+                        } else if($val->tipo == 'Y'){
+                            $fondo = '#9100ff7d';   // proyeccion
+                            if($val->tipo != 'C'){  // no está cerrada la proyeccion
+                                $title .= '<em>Ptas.Ini: '.number_format($val->plantas_iniciales).'</em><br>';
+                                $title .= '<em>T/Ptas: '.($val->tallos_planta).'</em><br>';
+                                $title .= '<em>Sem.Cos: '.($val->semana_poda_siembra).'</em><br>';
+                                $title .= '<em>Curva: '.($val->curva).'</em><br>';
+                                $title .= '<em>Desecho: '.($val->desecho).'%</em><br>';
+                            } else {
+                                $title .= '<em>Cierre de módulo</em>';
+                            }
+                        } else if($val->tipo == 'T'){
+                            $fondo = '#03de00'; // semana de cosecha
+                            if($val->tabla == 'C'){   // ciclo
+                                $title .= '<em>Ptas.Ini: '.number_format($val->plantas_iniciales).'</em><br>';
+                                $title .= '<em>Ptas.Act: '.number_format($val->plantas_actuales).'</em><br>';
+                                $title .= '<em>T/Ptas: '.($val->tallos_planta).'</em><br>';
+                                $title .= '<em>Sem.Cos: '.($val->semana_poda_siembra).'</em><br>';
+                                $title .= '<em>Curva: '.($val->curva).'</em><br>';
+                                $title .= '<em>Desecho: '.($val->desecho).'%</em><br>';
+                            } else {    // proyeccion_modulo
+                                $title .= '<em>Ptas.Ini: '.number_format($val->plantas_iniciales).'</em><br>';
+                                $title .= '<em>T/Ptas: '.($val->tallos_planta).'</em><br>';
+                                $title .= '<em>Sem.Cos: '.($val->semana_poda_siembra).'</em><br>';
+                                $title .= '<em>Curva: '.($val->curva).'</em><br>';
+                                $title .= '<em>Desecho: '.($val->desecho).'%</em><br>';
+                            }
+                        }
+                    @endphp
+                    <td class="text-center {{in_array($val->tipo, ['F', 'P', 'S', 'T', 'Y']) ? 'mouse-hand' : ''}}"
+                        style="border-color: #9d9d9d; background-color: {{$fondo}}">
+                        <span data-toggle="tooltip" data-placement="top" data-html="true"
+                              title="{{$title}}">
+                            @if($val->tipo == 'T')
+                                <strong style="font-size: 0.8em">
+                                    {{number_format($val->proyectados, 2)}}
+                                </strong>
+                            @else
+                                {{$val->info}}
+                            @endif
+                        </span>
                     </td>
                 @endforeach
 
