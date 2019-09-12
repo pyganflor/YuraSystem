@@ -215,7 +215,7 @@
                             }
                         @endphp
                         <span data-toggle="tooltip" data-placement="top" data-html="true"
-                              title="{{$semanas[$pos_val]->codigo}} <br> <small>Calb:<em>{{$calibre}}</em></small>">
+                              title="{{$semanas[$pos_val]->codigo}} <br> <small>Calib:<em>{{$calibre}}</em></small>">
                             {{number_format($val, 2)}}
                             <br>
                             <strong>
@@ -234,7 +234,7 @@
             </th>
         </tr>
 
-        <tr style="background-color: #b7a6ff">
+        <tr style="background-color: #c4c4ff">
             <th class="text-center" style="border-color: #9d9d9d">
                 Cosechados
                 <br>

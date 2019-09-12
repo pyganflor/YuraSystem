@@ -42,6 +42,7 @@ class UpdateProyeccionSemanal extends Command
      */
     public function handle()
     {
+        $ini = date('Y-m-d H:i:s');
         Log::info('<<<<< ! >>>>> Ejecutando comando "proyeccion:update_semanal" <<<<< ! >>>>>');
 
         $sem_parametro_desde = $this->argument('semana_desde');
@@ -50,7 +51,6 @@ class UpdateProyeccionSemanal extends Command
         $modulo_parametro = $this->argument('modulo');
 
         if ($sem_parametro_desde <= $sem_parametro_hasta) {
-
             if ($sem_parametro_desde != 0)
                 $semana_desde = Semana::All()->where('estado', 1)->where('codigo', $sem_parametro_desde)->first();
             else
@@ -148,6 +148,7 @@ class UpdateProyeccionSemanal extends Command
         } else {
             Log::info('<*> La semana "desde" no puede ser mayor a la semana "hasta" <*>');
         }
+        $fin = difFechas(date('Y-m-d H:i:s'), $ini)->m;
         Log::info('<<<<< * >>>>> Fin satisfactorio del comando "proyeccion:update_semanal" <<<<< * >>>>>');
     }
 }
