@@ -75,25 +75,6 @@ class proyCosechaController extends Controller
                 //dd($semanas, $query_modulos);
 
                 $array_modulos = [];
-                /*foreach ($query_modulos as $pos_mod => $mod) {
-                    if ($pos_mod <= 10) {
-                        $mod = getModuloById($mod->id_modulo);
-                        $array_valores = [];
-                        foreach ($semanas as $sem) {
-                            $data = $mod->getDataBySemana($sem, $request->variedad, $semana_desde->fecha_inicial, $request->opcion, $request->detalle);
-                            $valor = [
-                                'semana' => $sem,
-                                'data' => $data,
-                            ];
-                            array_push($array_valores, $valor);
-                        }
-                        array_push($array_modulos, [
-                            'modulo' => $mod,
-                            'valores' => $array_valores
-                        ]);
-                    }
-                }*/
-
                 foreach ($query_modulos as $mod) {
                     $mod = getModuloById($mod->id_modulo);
                     $valores = $mod->getProyeccionesByRango($semana_desde->codigo, $request->hasta, $request->variedad);
