@@ -204,14 +204,21 @@
                 <th class="text-center" style="border-color: #9d9d9d">
                     @if($val > 0)
                         @php
-                            $calibre = 1;
+                            $calibre = 0;
+                            if($calibres[$pos_val] > 0){
+                                $calibre = $calibres[$pos_val];
+                            } elseif($semanas[$pos_val]->tallos_ramo_poda > 0){
+                                $calibre = $semanas[$pos_val]->tallos_ramo_poda;
+                            }
                         @endphp
                         <span data-toggle="tooltip" data-placement="top" data-html="true"
                               title="{{$semanas[$pos_val]->codigo}} <br> <small>Calb:<em>{{$calibre}}</em></small>">
                             {{number_format($val, 2)}}
                             <br>
                             <strong>
-                                {{number_format(round(($val / $calibre) / $ramos_x_caja, 2), 2)}}
+                                @if($calibre > 0)
+                                    {{number_format(round(($val / $calibre) / $ramos_x_caja, 2), 2)}}
+                                @endif
                             </strong>
                         </span>
                     @endif

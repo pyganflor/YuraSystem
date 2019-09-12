@@ -2276,3 +2276,28 @@ function getTallosCosechadosByModSemVar($mod, $semana, $variedad)
     } else
         return 0;
 }
+
+function getCalibreByRangoVariedad($desde, $hasta, $variedad)
+{
+    $query = DB::table('clasificacion_verde as v')
+        ->select('v.fecha_ingreso as dia')->distinct()
+        ->where('v.fecha_ingreso', '>=', $desde)
+        ->where('v.fecha_ingreso', '<=', $hasta)
+        ->get();
+
+    $calibre = 0;
+
+    $cant_verdes = 0;
+    foreach ($query as $dia) {
+        $verde = ClasificacionVerde::All()->where('fecha_ingreso', '=', $dia->dia)->first();
+        if ($verde != '') {
+            if ($variedad == 'T') { // Todas las variedades
+                $calibre += $verde->getCalibre();
+            } else {    // por variedad
+                $calibre += $verde->calibreByVariedad($variedad);
+            }
+            $cant_verdes++;
+        }
+    }
+    return $cant_verdes > 0 ? round($calibre / $cant_verdes, 2) : 0;
+}

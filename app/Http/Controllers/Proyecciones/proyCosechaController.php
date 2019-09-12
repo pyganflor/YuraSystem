@@ -51,6 +51,7 @@ class proyCosechaController extends Controller
 
                 $array_semanas = [];
                 $semanas = [];
+                $calibres = [];
                 for ($i = $semana_desde->codigo; $i <= $request->hasta; $i++) {
                     $semana = Semana::All()
                         ->where('estado', 1)
@@ -60,6 +61,7 @@ class proyCosechaController extends Controller
                         if (!in_array($semana->codigo, $array_semanas)) {
                             array_push($array_semanas, $semana->codigo);
                             array_push($semanas, $semana);
+                            array_push($calibres, getCalibreByRangoVariedad($semana->fecha_inicial, $semana->fecha_final, $request->variedad));
                         }
                 }
 
@@ -85,6 +87,7 @@ class proyCosechaController extends Controller
 
                 return view('adminlte.gestion.proyecciones.cosecha.partials.listado', [
                     'semanas' => $semanas,
+                    'calibres' => $calibres,
                     'modulos' => $array_modulos,
                     'variedad' => $request->variedad,
                     'semana_desde' => $semana_desde,
