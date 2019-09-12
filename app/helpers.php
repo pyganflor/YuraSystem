@@ -2157,7 +2157,7 @@ function getCodigoArticuloVenture($idConfiguracionempresa = 1)
             '0011601010023' => 'GYP. MS. 680 Gr',
             '0011601010024' => 'GYP. MS. 350 Gr',
             '0011601010025' => 'GYP. MS. 5 Tallo',
-            '0011601010026' => 'GYP. MS. 500 Gr',
+            '0011601010026' => 'GYP. MS. 550 Gr',
             '0011601010027' => 'GYP. MS. 280 Gr',
             '0011601010028' => 'GYP. MS. 5 Tallos Corta 60 cm',
             '0011601010029' => 'GYP. MS. 220 Gr',
@@ -2211,7 +2211,7 @@ function getCodigoArticuloVenture($idConfiguracionempresa = 1)
             '001160403' => 'BROMELIAS 70 cm'
         ],
         2 => [ //id_configracion_empresa Intraescorp
-            '0011601010001' => 'GYP. MS. 250 Gr 50 cm',
+
         ]
     ];
 
