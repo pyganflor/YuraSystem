@@ -171,7 +171,7 @@
                             @endif
                             @if($val->cosechados > 0)
                                 <br>
-                                <strong style="font-size: 0.8em">*{{number_format($val->cosechados)}}</strong>
+                                <strong style="font-size: 0.8em">{{number_format($val->cosechados)}}</strong>
                             @endif
                         </span>
                     </td>
@@ -198,7 +198,7 @@
             <th class="text-center" style="border-color: #9d9d9d">
                 Proyectados
                 <br>
-                <small>Tallos/cajas</small>
+                <small><em>Tallos/cajas</em></small>
             </th>
             @foreach($cajas_proyectadas as $pos_val => $val)
                 <th class="text-center" style="border-color: #9d9d9d">
@@ -219,7 +219,7 @@
             <th class="text-center" style="border-color: #9d9d9d">
                 Proyectados
                 <br>
-                <small>Tallos/cajas</small>
+                <small><em>Tallos/cajas</em></small>
             </th>
         </tr>
     </table>
