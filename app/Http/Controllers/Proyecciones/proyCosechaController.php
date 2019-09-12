@@ -61,7 +61,7 @@ class proyCosechaController extends Controller
                         if (!in_array($semana->codigo, $array_semanas)) {
                             array_push($array_semanas, $semana->codigo);
                             array_push($semanas, $semana);
-                            array_push($calibres, getCalibreByRangoVariedad($semana->fecha_inicial, $semana->fecha_final, $request->variedad));
+                            //array_push($calibres, getCalibreByRangoVariedad($semana->fecha_inicial, $semana->fecha_final, $request->variedad));
                         }
                 }
 
