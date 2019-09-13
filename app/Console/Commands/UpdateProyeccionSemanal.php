@@ -104,8 +104,6 @@ class UpdateProyeccionSemanal extends Command
                         if ($proy == '')
                             $proy = new ProyeccionModuloSemana();
 
-                        dd($data);
-
                         $proy->id_modulo = $mod->id_modulo;
                         $proy->id_variedad = $var->id_variedad;
                         $proy->semana = $semana->codigo;
