@@ -94,6 +94,7 @@ class UpdateProyeccionSemanal extends Command
             foreach ($modulos as $mod) {
                 foreach ($variedades as $pos_var => $var) {
                     foreach ($semanas as $pos_sem => $semana) {
+                    dd($semana);
                         $data = $mod->getDataBySemana($semana, $var->id_variedad, '2000-01-01', 'I', 'T');
 
                         $proy = ProyeccionModuloSemana::All()->where('estado', 1)
