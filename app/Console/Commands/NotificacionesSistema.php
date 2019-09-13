@@ -79,13 +79,20 @@ class NotificacionesSistema extends Command
 
     public function pedidos_sin_empaquetar($not)
     {
-        $sum = count(DB::table('pedido')
+        $pedidos = DB::table('pedido')
             ->select('*')
             ->where('estado', '=', 1)
             ->where('empaquetado', '=', 0)
             ->where('variedad', '!=', '')
             ->where('fecha_pedido', '<', date('Y-m-d'))
-            ->get());
+            ->get();
+
+        $sum = 0;
+        foreach ($pedidos as $ped) {
+            if (!getFacturaAnulada($ped->id_pedido)) {
+                $sum++;
+            }
+        }
 
         $models = UserNotification::All()
             ->where('estado', 1)
