@@ -100,11 +100,10 @@ class proyCosechaController extends Controller
 
     public function select_celda(Request $request)
     {
-        dd($request->all());
         if ($request->tipo == 'F') {    // crear una proyecccion
             return view('adminlte.gestion.proyecciones.cosecha.forms.new_proy', [
                 'modulo' => getModuloById($request->modulo),
-                'semana' => Semana::find($request->semana),
+                'semana' => Semana::All()->where('codigo', $request->semana)->where('id_variedad', $request->variedad)->first(),
                 'variedad' => getVariedad($request->variedad),
                 'last_ciclo' => Ciclo::All()
                     ->where('estado', 1)
@@ -112,6 +111,7 @@ class proyCosechaController extends Controller
                     ->where('id_modulo', $request->modulo)->last(),
             ]);
         }
+        dd($request->all());
         if ($request->tipo == 'Y') {    // crear una proyecccion
             return view('adminlte.gestion.proyecciones.cosecha.forms.edit_proy', [
                 'modulo' => getModuloById($request->modulo),
@@ -203,6 +203,21 @@ class proyCosechaController extends Controller
                     '<p> Se ha guardado una nueva proyección satisfactoriamente</p>'
                     . '</div>';
                 bitacora('proyeccion_modulo', $model->id_proyeccion_modulo, 'I', 'Inserción satisfactoria de una nueva proyección');
+
+                $semana = Semana::find($request->id_semana);
+                $semana_fin = DB::table('semana')
+                    ->select(DB::raw('max(codigo) as max'))
+                    ->where('estado', '=', 1)
+                    ->where('id_variedad', '=', $request->id_variedad)
+                    ->get()[0]->max;
+
+                Artisan::call('proyeccion:update_semanal', [
+                    'semana_desde' => $semana->codigo,
+                    'semana_hasta' => $semana_fin,
+                    'variedad' => $request->id_variedad,
+                    'modulo' => $request->id_modulo,
+                ]);
+
             } else {
                 $success = false;
                 $msg = '<div class="alert alert-warning text-center">' .

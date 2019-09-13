@@ -148,7 +148,8 @@ class UpdateProyeccionSemanal extends Command
         } else {
             Log::info('<*> La semana "desde" no puede ser mayor a la semana "hasta" <*>');
         }
-        $fin = difFechas(date('Y-m-d H:i:s'), $ini)->m;
+        $time_duration = difFechas(date('Y-m-d H:i:s'), $ini)->h . ':' . difFechas(date('Y-m-d H:i:s'), $ini)->m . ':' . difFechas(date('Y-m-d H:i:s'), $ini)->s;
+        Log::info('<*> DURACIÓN: ' . $time_duration . '  <*>');
         Log::info('<<<<< * >>>>> Fin satisfactorio del comando "proyeccion:update_semanal" <<<<< * >>>>>');
     }
 }
