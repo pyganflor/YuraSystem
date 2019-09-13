@@ -58,7 +58,7 @@ class UpdateHistoricoVentas extends Command
                             ->first();
 
                         if ($historico != '') {
-                            $historico->valor += $p->getPrecioByVariedad($v);
+                            $historico->valor += $p->getPrecioByPedidoVariedad($v);
                             $historico->cajas_fisicas += $p->getCajasFisicasByVariedad($v);
                             $historico->cajas_equivalentes += $p->getCajasByVariedad($v);
                             $historico->precio_x_ramo = round($historico->valor / ($historico->cajas_fisicas * getConfiguracionEmpresa()->ramos_x_caja), 2);
@@ -69,7 +69,7 @@ class UpdateHistoricoVentas extends Command
                             $historico->anno = substr($p->fecha_pedido, 0, 4);
                             $historico->mes = substr($p->fecha_pedido, 5, 2);
 
-                            $historico->valor = $p->getPrecioByVariedad($v);
+                            $historico->valor = $p->getPrecioByPedidoVariedad($v);
                             $historico->cajas_fisicas = $p->getCajasFisicasByVariedad($v);
                             $historico->cajas_equivalentes = $p->getCajasByVariedad($v);
                             $historico->precio_x_ramo = round($historico->valor / ($historico->cajas_fisicas * getConfiguracionEmpresa()->ramos_x_caja), 2);

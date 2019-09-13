@@ -196,24 +196,25 @@
                                                         ${{number_format($ped->getPrecioByPedido(), 2)}}
                                                     </strong>
 
-                                                    @php
+                                                    {{--@php
                                                         $sum_precios = 0;
                                                     @endphp
                                                     @foreach(getVariedades() as $var)
                                                         @php
-                                                            $sum_precios += $ped->getPrecioByPedidoVariedad($var->id_variedad);
+                                                        $parcial = $ped->getPrecioByPedidoVariedad($var->id_variedad);
+                                                            $sum_precios += $parcial;
                                                         @endphp
-                                                        @if($ped->getPrecioByPedidoVariedad($var->id_variedad) > 0)
+                                                        @if($parcial > 0)
                                                             <br>
                                                             <small>
                                                                 <em>
-                                                                    {{$var->siglas}}: {{$ped->getPrecioByPedidoVariedad($var->id_variedad)}}
+                                                                    {{$var->siglas}}: {{$parcial}}
                                                                 </em>
                                                             </small>
                                                         @endif
                                                     @endforeach
                                                     <br>
-                                                    <small>{{number_format($sum_precios, 2)}}</small>
+                                                    <small>{{number_format($sum_precios, 2)}}</small>--}}
 
                                                 @endif
                                                 @php

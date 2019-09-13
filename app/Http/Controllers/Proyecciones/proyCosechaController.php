@@ -28,7 +28,13 @@ class proyCosechaController extends Controller
         ini_set('max_execution_time', env('MAX_EXECUTION_TIME'));
         set_time_limit(120);
 
-        //Artisan::call('proyeccion:update_semanal');
+        /* Artisan::call('proyeccion:update_semanal',
+             [
+                 'semana_desde' => '1936',
+                 'semana_hasta' => '1945',
+                 'variedad' => 1,
+                 'modulo' => 1,
+             ]);*/
 
         $semana_desde = Semana::All()->where('codigo', $request->desde)->first();
         $semana_hasta = Semana::All()->where('codigo', $request->hasta)->first();
@@ -66,26 +72,15 @@ class proyCosechaController extends Controller
                     ->orderBy('fecha_inicio', 'asc')
                     ->get();
 
-                //dd($semanas, $query_modulos);
-
                 $array_modulos = [];
-                foreach ($query_modulos as $pos_mod => $mod) {
-                    if ($pos_mod <= 10) {
-                        $mod = getModuloById($mod->id_modulo);
-                        $array_valores = [];
-                        foreach ($semanas as $sem) {
-                            $data = $mod->getDataBySemana($sem, $request->variedad, $semana_desde->fecha_inicial, $request->opcion, $request->detalle);
-                            $valor = [
-                                'semana' => $sem,
-                                'data' => $data,
-                            ];
-                            array_push($array_valores, $valor);
-                        }
-                        array_push($array_modulos, [
-                            'modulo' => $mod,
-                            'valores' => $array_valores
-                        ]);
-                    }
+                foreach ($query_modulos as $mod) {
+                    $mod = getModuloById($mod->id_modulo);
+                    $valores = $mod->getProyeccionesByRango($semana_desde->codigo, $request->hasta, $request->variedad);
+
+                    array_push($array_modulos, [
+                        'modulo' => $mod,
+                        'valores' => $valores,
+                    ]);
                 }
 
                 return view('adminlte.gestion.proyecciones.cosecha.partials.listado', [
@@ -95,6 +90,7 @@ class proyCosechaController extends Controller
                     'semana_desde' => $semana_desde,
                     'opcion' => $request->opcion,
                     'detalle' => $request->detalle,
+                    'ramos_x_caja' => getConfiguracionEmpresa()->ramos_x_caja,
                 ]);
             } else
                 return 'No se han encontrado módulos en el rango establecido.';
@@ -107,7 +103,7 @@ class proyCosechaController extends Controller
         if ($request->tipo == 'F') {    // crear una proyecccion
             return view('adminlte.gestion.proyecciones.cosecha.forms.new_proy', [
                 'modulo' => getModuloById($request->modulo),
-                'semana' => Semana::find($request->semana),
+                'semana' => Semana::All()->where('codigo', $request->semana)->where('id_variedad', $request->variedad)->first(),
                 'variedad' => getVariedad($request->variedad),
                 'last_ciclo' => Ciclo::All()
                     ->where('estado', 1)
@@ -115,6 +111,7 @@ class proyCosechaController extends Controller
                     ->where('id_modulo', $request->modulo)->last(),
             ]);
         }
+        dd($request->all());
         if ($request->tipo == 'Y') {    // crear una proyecccion
             return view('adminlte.gestion.proyecciones.cosecha.forms.edit_proy', [
                 'modulo' => getModuloById($request->modulo),
@@ -206,6 +203,21 @@ class proyCosechaController extends Controller
                     '<p> Se ha guardado una nueva proyección satisfactoriamente</p>'
                     . '</div>';
                 bitacora('proyeccion_modulo', $model->id_proyeccion_modulo, 'I', 'Inserción satisfactoria de una nueva proyección');
+
+                $semana = Semana::find($request->id_semana);
+                $semana_fin = DB::table('semana')
+                    ->select(DB::raw('max(codigo) as max'))
+                    ->where('estado', '=', 1)
+                    ->where('id_variedad', '=', $request->id_variedad)
+                    ->get()[0]->max;
+
+                Artisan::call('proyeccion:update_semanal', [
+                    'semana_desde' => $semana->codigo,
+                    'semana_hasta' => $semana_fin,
+                    'variedad' => $request->id_variedad,
+                    'modulo' => $request->id_modulo,
+                ]);
+
             } else {
                 $success = false;
                 $msg = '<div class="alert alert-warning text-center">' .

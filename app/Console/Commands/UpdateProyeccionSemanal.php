@@ -16,7 +16,7 @@ class UpdateProyeccionSemanal extends Command
      *
      * @var string
      */
-    protected $signature = 'proyeccion:update_semanal {semana_desde=0} {semana_hasta=0} {variedad=0}';
+    protected $signature = 'proyeccion:update_semanal {semana_desde=0} {semana_hasta=0} {variedad=0} {modulo=0}';
 
     /**
      * The console command description.
@@ -42,15 +42,15 @@ class UpdateProyeccionSemanal extends Command
      */
     public function handle()
     {
+        $ini = date('Y-m-d H:i:s');
         Log::info('<<<<< ! >>>>> Ejecutando comando "proyeccion:update_semanal" <<<<< ! >>>>>');
-
 
         $sem_parametro_desde = $this->argument('semana_desde');
         $sem_parametro_hasta = $this->argument('semana_hasta');
         $var_parametro = $this->argument('variedad');
+        $modulo_parametro = $this->argument('modulo');
 
         if ($sem_parametro_desde <= $sem_parametro_hasta) {
-
             if ($sem_parametro_desde != 0)
                 $semana_desde = Semana::All()->where('estado', 1)->where('codigo', $sem_parametro_desde)->first();
             else
@@ -67,8 +67,10 @@ class UpdateProyeccionSemanal extends Command
             else
                 Log::info('VARIEDAD PARAMETRO: ' . $var_parametro . ' => TODAS');
 
+            if ($modulo_parametro != 0)
+                Log::info('MODULO PARAMETRO: ' . $modulo_parametro . ' => ' . getModuloById($modulo_parametro)->nombre);
+
             $array_semanas = [];
-            $semanas = [];
             for ($i = $semana_desde->codigo; $i <= $semana_hasta->codigo; $i++) {
                 $semana = Semana::All()
                     ->where('estado', 1)
@@ -76,19 +78,25 @@ class UpdateProyeccionSemanal extends Command
                 if ($semana != '')
                     if (!in_array($semana->codigo, $array_semanas)) {
                         array_push($array_semanas, $semana->codigo);
-                        array_push($semanas, $semana);
                     }
             }
 
             $modulos = Modulo::All()->where('estado', 1)->where('area', '>', 0);
+            if ($modulo_parametro != 0)
+                $modulos = $modulos->where('id_modulo', $modulo_parametro);
             $variedades = Variedad::All()->where('estado', 1);
             if ($var_parametro != 0)
                 $variedades = $variedades->where('id_variedad', $var_parametro);
 
-            Log::info('<!> Se han encontrado ' . count($modulos) * count($variedades) * count($semanas) . ' casos a procesar <!>');
+            Log::info('<!> Se han encontrado ' . count($modulos) * count($variedades) * count($array_semanas) . ' casos a procesar <!>');
             foreach ($modulos as $mod) {
                 foreach ($variedades as $pos_var => $var) {
-                    foreach ($semanas as $pos_sem => $semana) {
+                    foreach ($array_semanas as $pos_sem => $codigo) {
+                        $semana = Semana::All()
+                            ->where('estado', 1)
+                            ->where('codigo', $codigo)
+                            ->where('id_variedad', $var->id_variedad)
+                            ->first();
                         $data = $mod->getDataBySemana($semana, $var->id_variedad, '2000-01-01', 'I', 'T');
 
                         $proy = ProyeccionModuloSemana::All()->where('estado', 1)
@@ -136,13 +144,15 @@ class UpdateProyeccionSemanal extends Command
                             }
                         }
                         $proy->save();
-                        Log::info('Se ha actualizado el Módulo:' . $mod->id_modulo . ', Semana:' . $semana->codigo . ', Variedad:' . $var->id_variedad);
+                        //Log::info('Se ha actualizado el Modulo:' . $mod->id_modulo . ', Semana:' . $semana->codigo . ', Variedad:' . $var->id_variedad);
                     }
                 }
             }
         } else {
             Log::info('<*> La semana "desde" no puede ser mayor a la semana "hasta" <*>');
         }
+        $time_duration = difFechas(date('Y-m-d H:i:s'), $ini)->h . ':' . difFechas(date('Y-m-d H:i:s'), $ini)->m . ':' . difFechas(date('Y-m-d H:i:s'), $ini)->s;
+        Log::info('<*> DURACION: ' . $time_duration . '  <*>');
         Log::info('<<<<< * >>>>> Fin satisfactorio del comando "proyeccion:update_semanal" <<<<< * >>>>>');
     }
 }
