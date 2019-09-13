@@ -104,6 +104,8 @@ class UpdateProyeccionSemanal extends Command
                         if ($proy == '')
                             $proy = new ProyeccionModuloSemana();
 
+                        dd($data);
+
                         $proy->id_modulo = $mod->id_modulo;
                         $proy->id_variedad = $var->id_variedad;
                         $proy->semana = $semana->codigo;
@@ -149,7 +151,7 @@ class UpdateProyeccionSemanal extends Command
             Log::info('<*> La semana "desde" no puede ser mayor a la semana "hasta" <*>');
         }
         $time_duration = difFechas(date('Y-m-d H:i:s'), $ini)->h . ':' . difFechas(date('Y-m-d H:i:s'), $ini)->m . ':' . difFechas(date('Y-m-d H:i:s'), $ini)->s;
-        Log::info('<*> DURACIÓN: ' . $time_duration . '  <*>');
+        Log::info('<*> DURACION: ' . $time_duration . '  <*>');
         Log::info('<<<<< * >>>>> Fin satisfactorio del comando "proyeccion:update_semanal" <<<<< * >>>>>');
     }
 }
