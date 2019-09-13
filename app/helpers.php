@@ -2276,3 +2276,48 @@ function getTallosCosechadosByModSemVar($mod, $semana, $variedad)
     } else
         return 0;
 }
+
+function asignaClienteEspecificacion($arr_datos,$id_cliente){
+    $estado = false;
+    $id_cliente_pedido_especificacion ='';
+    $objEspecificacion = new Especificacion;
+    $objEspecificacion->estado = 1;
+    $objEspecificacion->tipo = 'O';
+    if($objEspecificacion->save()){
+        $modelEspecificacion = Especificacion::all()->last();
+        $objEspecificacionEmpaque = new EspecificacionEmpaque;
+        $objEspecificacionEmpaque->id_especificacion = $modelEspecificacion->id_especificacion;
+        $objEspecificacionEmpaque->id_empaque = Empaque::where([['f_empaque',"T"],['tipo','C']])->first()->id_empaque;
+        $objEspecificacionEmpaque->cantidad   = 1;
+        if($objEspecificacionEmpaque->save()) {
+            $modelEspecificacionEmpaque = EspecificacionEmpaque::all()->last();
+            $objDetalleEspecificacionEmpaque = new DetalleEspecificacionEmpaque;
+            $objDetalleEspecificacionEmpaque->id_especificacion_empaque = $modelEspecificacionEmpaque->id_especificacion_empaque;
+            $objDetalleEspecificacionEmpaque->id_variedad = $arr_datos['variedad'];
+            $objDetalleEspecificacionEmpaque->id_clasificacion_ramo = ClasificacionRamo::where('estandar',1)->first()->id_clasificacion_ramo;
+            $objDetalleEspecificacionEmpaque->cantidad = $arr_datos['ramos_x_caja'];
+            $objDetalleEspecificacionEmpaque->id_empaque_p = Empaque::where([['f_empaque',"T"],['tipo','P']])->first()->id_empaque;;
+            $objDetalleEspecificacionEmpaque->tallos_x_ramos = $arr_datos['tallos_x_ramos'];
+            $objDetalleEspecificacionEmpaque->longitud_ramo = $arr_datos['longitud_ramo'];
+            $objDetalleEspecificacionEmpaque->id_unidad_medida = $arr_datos['unidad_medida'];
+            if($objDetalleEspecificacionEmpaque->save()){
+                $objClientePedidoEspecificacion = new ClientePedidoEspecificacion;
+                $objClientePedidoEspecificacion->id_cliente        = $id_cliente;
+                $objClientePedidoEspecificacion->id_especificacion = $modelEspecificacion->id_especificacion;
+                if($objClientePedidoEspecificacion->save()){
+                    $modelClientePedidoEspecificacion = ClientePedidoEspecificacion::all()->last();
+                    $estado = true;
+                    $id_cliente_pedido_especificacion = $modelClientePedidoEspecificacion->id_cliente_pedido_especificacion;
+                }
+            }else{
+                Especificacion::destroy($modelEspecificacion->id_especificacion);
+            }
+        }else{
+            Especificacion::destroy($modelEspecificacion->id_especificacion);
+        }
+    }
+    return [
+        'estado' => $estado,
+        'id_cliente_pedido_especificacion' => $id_cliente_pedido_especificacion
+    ];
+}

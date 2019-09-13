@@ -11,6 +11,7 @@ use yura\Modelos\Comprobante;
 use yura\Modelos\ConfiguracionEmpresa;
 use yura\Modelos\DatosExportacion;
 use yura\Modelos\DetalleEnvio;
+use yura\Modelos\Especificacion;
 use yura\Modelos\Pais;
 use yura\Modelos\Pedido;
 use yura\Modelos\DetallePedido;
@@ -156,9 +157,15 @@ class PedidoController extends Controller
                         DetalleEnvio::where('id_envio',$dataEnvio->id_envio)->delete();
                         Envio::where('id_pedido',$request->id_pedido)->delete();
                     }
-                    foreach (getPedido($request->id_pedido)->detalles as $det_ped) DetallePedidoDatoExportacion::where('id_detalle_pedido',$det_ped->id_detalle_pedido)->delete();
-                    DetallePedido::where('id_pedido',$request->id_pedido)->delete();
+
                     Pedido::destroy($request->id_pedido);
+
+                    /*foreach (getPedido($request->id_pedido)->detalles as $det_ped)
+                        if($det_ped->cliente_especificacion->especificacion->tipo === "O")
+                            Especificacion::destroy($det_ped->cliente_especificacion->especificacion->id_especificacion);*/
+
+                     //DetallePedidoDatoExportacion::where('id_detalle_pedido',$det_ped->id_detalle_pedido)->delete();
+
                 }
 
                 $objPedido = new Pedido;
@@ -178,12 +185,34 @@ class PedidoController extends Controller
                     bitacora('pedido', $model->id_pedido, 'I', 'Inserción satisfactoria de un nuevo pedido');
                     foreach ($request->arrDataDetallesPedido as $key => $item) {
                         $objDetallePedido = new DetallePedido;
-                        $objDetallePedido->id_cliente_especificacion = $item['id_cliente_pedido_especificacion'];
+
+                        //SI UN DETALLE PEDIDO (ESPECIFICACION) DEL PEDIDO NO VA EN CAJAS SE CREA UNA NUEVA ESPECIFICACION DE TIPO 'O' Y SE ATA AL CLIENTE
+                        if(!isset($item['id_cliente_pedido_especificacion'])){
+                            $asignacion = asignaClienteEspecificacion($item['datos_especificacion'],$request->id_cliente);
+
+                            if(!$asignacion['estado']){
+                                Pedido::destroy($model->id_pedido);
+                                $success = false;
+                                $msg = '<div class="alert alert-danger text-center">' .
+                                    '<p> Hubo un error al guardar la información del pedido en el sistema, intente nuevamente, si el error persiste contacte al área de sistemas</p>'
+                                    . '</div>';
+                                return [
+                                    'mensaje' => $msg,
+                                    'success' => $success
+                                ];
+                            }
+                        }
+
+                        $objDetallePedido->id_cliente_especificacion = !isset($item['id_cliente_pedido_especificacion'])
+                            ? $asignacion['id_cliente_pedido_especificacion']
+                            : $item['id_cliente_pedido_especificacion'];
+
                         $objDetallePedido->id_pedido = $model->id_pedido;
                         $objDetallePedido->id_agencia_carga = $item['id_agencia_carga'];
                         $objDetallePedido->cantidad = $item['cantidad'];
                         $objDetallePedido->precio = substr($item['precio'], 0, -1);
                         $objDetallePedido->orden =  $item['orden'];
+
                         if ($objDetallePedido->save()) {
                             $modelDetallePedido = DetallePedido::all()->last();
                             bitacora('detalle_pedido', $modelDetallePedido->id_detalle_pedido, 'I', 'Inserción satisfactoria de un nuevo detalle pedido');
@@ -201,6 +230,7 @@ class PedidoController extends Controller
                                     }
                                 }
                             }
+
                             $success = true;
                             $msg = '<div class="alert alert-success text-center">' .
                                 '<p> Se ha guardado el pedido exitosamente</p>'
@@ -209,7 +239,7 @@ class PedidoController extends Controller
                             Pedido::destroy($model->id_pedido);
                             $success = false;
                             $msg = '<div class="alert alert-danger text-center">' .
-                                '<p> Hubo un error al guardar la información en el sistema</p>'
+                                '<p> Hubo un error al guardar la información del pedido en el sistema, intente nuevamente, si el error persiste contacte al área de sistemas</p>'
                                 . '</div>';
                         }
                     }
@@ -290,10 +320,13 @@ class PedidoController extends Controller
         }
 
         $empT = [];
-        $empTallos = Empaque::where('f_empaque','T')->get();
-        foreach ($empTallos as $empRamo){
+        $empTallos = Empaque::where([
+            ['f_empaque','T'],
+            ['tipo','C']
+        ])->get();
+        foreach ($empTallos as $empRamo)
             $empT[] = $empRamo;
-        }
+
         return view('adminlte.gestion.postcocecha.pedidos.forms.paritals.inputs_dinamicos',
             [
                 'especificaciones' => $data_especificaciones->orderBy('id_cliente_pedido_especificacion','asc')->get(),
@@ -310,33 +343,28 @@ class PedidoController extends Controller
     }
 
     public function inputs_pedidos_edit(Request $request){
-        $tipo_especificacion = DetallePedido::where('id_pedido',$request->id_pedido)
-            ->join('cliente_pedido_especificacion as cpe','detalle_pedido.id_cliente_especificacion','cpe.id_cliente_pedido_especificacion')
-            ->join('especificacion as esp','cpe.id_especificacion','esp.id_especificacion')->select('tipo')->first();
 
         $esp_creadas =[];
-        foreach(getPedido($request->id_pedido)->detalles as $det_ped){
+        $pedido = getPedido($request->id_pedido);
+        foreach($pedido->detalles as $det_ped)
             $esp_creadas[] = $det_ped->cliente_especificacion->especificacion->id_especificacion;
-        }
 
-        $data_especificaciones = DB::table('cliente_pedido_especificacion as cpe')
-            ->join('especificacion as esp', 'cpe.id_especificacion', '=', 'esp.id_especificacion')
+        $especificaciones_restantes = DB::table('cliente_pedido_especificacion as cpe')
+            ->join('especificacion as esp', 'cpe.id_especificacion', 'esp.id_especificacion')
             ->where([
                 ['cpe.id_cliente', $request->id_cliente],
-                ['esp.tipo',isset($tipo_especificacion->tipo) ? $tipo_especificacion->tipo : "N"],
+                ['esp.tipo',"N"],
                 ['esp.estado',1]
-            ])->whereNotIn('esp.id_especificacion',$esp_creadas);
-
-        if(isset($tipo_especificacion->tipo) && $tipo_especificacion->tipo == "O"){
-            $data_especificaciones = $data_especificaciones->join('detalle_pedido as dp','cpe.id_cliente_pedido_especificacion','dp.id_cliente_especificacion')
-                ->where('id_pedido',$request->id_pedido);
-        }
+            ])->whereNotIn('esp.id_especificacion',$esp_creadas)
+            ->orderBy('id_cliente_pedido_especificacion','asc')->get();
 
         $empT = [];
-        $empTallos = Empaque::where('f_empaque','T')->get();
-        foreach ($empTallos as $empRamo){
+        $empTallos = Empaque::where([
+            ['f_empaque','T'],
+            ['tipo','C']
+        ])->get();
+        foreach ($empTallos as $empRamo)
             $empT[] = $empRamo;
-        }
 
         return view('adminlte.gestion.postcocecha.pedidos.forms.paritals.inputs_dinamicos_edit',
             [
@@ -349,7 +377,7 @@ class PedidoController extends Controller
                         ['cac.id_cliente', $request->id_cliente],
                         ['cac.estado', 1]
                     ])->get(),
-                'especificaciones' => $data_especificaciones->orderBy('id_cliente_pedido_especificacion','asc')->get(),
+                'especificaciones_restante' => $especificaciones_restantes,
                 'emp_tallos' => $empT
             ]);
     }
