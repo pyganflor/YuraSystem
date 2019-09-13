@@ -87,9 +87,11 @@
                         $tallos_proyectados[$pos_val] = 0;
                         $tallos_cosechados[$pos_val] = 0;
                     @endphp
-                    <td class="text-center {{in_array($val->tipo, ['F', 'P', 'S', 'T', 'Y']) ? 'mouse-hand' : ''}}"
-                        style="border-color: #9d9d9d; background-color: {{$fondo}}"
-                        onclick="select_celda('{{$val->tipo}}', '{{$mod['modulo']->id_modulo}}', '{{$val->semana}}', '{{$val->id_variedad}}')">
+                    <td class="text-center celda_hovered {{in_array($val->tipo, ['F', 'P', 'S', 'T', 'Y']) ? 'mouse-hand' : ''}}"
+                        style="border-color: #9d9d9d; background-color: {{$fondo}}" id="celda_{{$mod['modulo']->id_modulo}}_{{$pos_val}}"
+                        onclick="select_celda('{{$val->tipo}}', '{{$mod['modulo']->id_modulo}}', '{{$val->semana}}', '{{$val->id_variedad}}')"
+                        onmouseover="mouse_over_celda('celda_{{$mod['modulo']->id_modulo}}_{{$pos_val}}', 1)"
+                        onmouseleave="mouse_over_celda('celda_{{$mod['modulo']->id_modulo}}_{{$pos_val}}', 0)">
                         <span data-toggle="tooltip" data-placement="top" data-html="true"
                               title="{{$title}}">
                             @if($val->tipo == 'T')
