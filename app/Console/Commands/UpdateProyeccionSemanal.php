@@ -71,7 +71,6 @@ class UpdateProyeccionSemanal extends Command
                 Log::info('MODULO PARAMETRO: ' . $modulo_parametro . ' => ' . getModuloById($modulo_parametro)->nombre);
 
             $array_semanas = [];
-            $semanas = [];
             for ($i = $semana_desde->codigo; $i <= $semana_hasta->codigo; $i++) {
                 $semana = Semana::All()
                     ->where('estado', 1)
@@ -79,7 +78,6 @@ class UpdateProyeccionSemanal extends Command
                 if ($semana != '')
                     if (!in_array($semana->codigo, $array_semanas)) {
                         array_push($array_semanas, $semana->codigo);
-                        array_push($semanas, $semana);
                     }
             }
 
@@ -90,11 +88,15 @@ class UpdateProyeccionSemanal extends Command
             if ($var_parametro != 0)
                 $variedades = $variedades->where('id_variedad', $var_parametro);
 
-            Log::info('<!> Se han encontrado ' . count($modulos) * count($variedades) * count($semanas) . ' casos a procesar <!>');
+            Log::info('<!> Se han encontrado ' . count($modulos) * count($variedades) * count($array_semanas) . ' casos a procesar <!>');
             foreach ($modulos as $mod) {
                 foreach ($variedades as $pos_var => $var) {
-                    foreach ($semanas as $pos_sem => $semana) {
-                    dd($semana);
+                    foreach ($array_semanas as $pos_sem => $codigo) {
+                        $semana = Semana::All()
+                            ->where('estado', 1)
+                            ->where('codigo', $codigo)
+                            ->where('id_variedad', $var->id_variedad)
+                            ->first();
                         $data = $mod->getDataBySemana($semana, $var->id_variedad, '2000-01-01', 'I', 'T');
 
                         $proy = ProyeccionModuloSemana::All()->where('estado', 1)
