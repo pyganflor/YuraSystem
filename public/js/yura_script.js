@@ -226,8 +226,7 @@ function store_pedido(id_cliente, pedido_fijo, csrf_token, vista, id_pedido, com
                     });
                 }
             }
-            console.log(arrDataDetallesPedido);
-            //return false;
+
             if (arrDataDetallesPedido.length < 1) {
                 modal_view('modal_status_pedidos', '<div class="alert alert-danger text-center"><p> Debe colocar la cantidad de piezas en al menos una especificación</p> </div>', '<i class="fa fa-times" aria-hidden="true"></i> Estado pedido', true, false, '50%');
                 return false;
@@ -2116,9 +2115,9 @@ function calcular_precio_pedido(input) {
        // }
     }
 
-    $("#total_piezas").html(total_piezas.toFixed(2));
+    $("#total_piezas").html(isNaN(total_piezas) ?  0 : total_piezas.toFixed(2));
     $("#total_ramos").html(total_ramos);
-    $(".monto_total_pedido").html("$" + monto_total.toFixed(2));
+    $(".monto_total_pedido").html( "$" + (isNaN(monto_total) ? 0 :  monto_total.toFixed(2)));
 
     /*$.each($(".seleccion_invidual"), function (n, m) {
         if ($(".cantidad_" + (n + 1)).val() != "" && $("#seleccion_invidual_" + (n + 1)).is(":checked"))
