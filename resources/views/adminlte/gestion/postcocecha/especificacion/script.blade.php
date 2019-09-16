@@ -39,7 +39,6 @@
         $.each($('input:checkbox[name=cliente]:checked'), function (i, j) {
             arrClientes.push([j.value,j.id.split("_")[1]]);
         });
-        console.log(arrClientes);
 
         if (arrClientes.length === 0) {
             modal_view('modal_view_msg_asignacion_especificacion',
