@@ -41,7 +41,7 @@
                             <i class="fa fa-user-circle-o"></i> Cliente
                         </label>
                         <select class="form-control" id="id_cliente_venta" name="id_cliente_venta"
-                                onchange="cargar_espeicificaciones_cliente(true)" required>
+                                onchange="cargar_espeicificaciones_cliente(true)" style="background:transparent" required>
                             <option disabled selected> Seleccione</option>
                             @foreach($clientes as $cliente)
                                 <option value="{{$cliente->id_cliente}}"> {{$cliente->nombre}} </option>

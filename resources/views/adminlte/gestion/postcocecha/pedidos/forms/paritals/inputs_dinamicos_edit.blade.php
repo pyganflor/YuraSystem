@@ -230,7 +230,8 @@
                             @if($z == 0)
                                 <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;" class="text-center"
                                     rowspan="{{count($esp_emp->detalles)}}">
-                                    <select id="empaque_{{$x+$cant_esp_creadas}}" class="empaque_{{$x+$cant_esp_creadas}}" name="empaque_{{$x+$cant_esp_creadas}}" style="width: 100%;border: none;text-align: center;height: 34px;" onchange="cuenta_ramos(this)" >
+                                    <select id="empaque_{{$x+$cant_esp_creadas}}" class="empaque_{{$x+$cant_esp_creadas}}" name="empaque_{{$x+$cant_esp_creadas}}"
+                                            style="width: 100%;border: none;text-align: center;height: 34px;background:transparent" onchange="cuenta_ramos(this)" >
                                         <option value="{{$esp_emp->empaque->id_empaque}}" >{{explode('|',$esp_emp->empaque->nombre)[0]}}</option>
                                         @isset($emp_tallos)
                                             @foreach($emp_tallos as $eT)
@@ -292,7 +293,7 @@
                                 <td class="text-center" style="border-color: #9d9d9d; vertical-align: middle"
                                     rowspan="{{getCantidadDetallesByEspecificacion($item->id_especificacion)}}">
                                     <select name="id_agencia_carga_{{$item->id_especificacion}}" id="id_agencia_carga_{{$x+$cant_esp_creadas}}"
-                                            class="text-center agencia_carga" style="border: none; width: 100%;height: 34px;" >
+                                            class="text-center agencia_carga" style="border: none; width: 100%;height: 34px;background:transparent" >
                                         @foreach($agenciasCarga as $agencia)
                                             <option value="{{$agencia->id_agencia_carga}}">{{$agencia->nombre}}</option>
                                         @endforeach
