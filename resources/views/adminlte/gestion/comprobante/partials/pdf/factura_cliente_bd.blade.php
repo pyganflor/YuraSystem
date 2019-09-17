@@ -156,7 +156,11 @@
                             @foreach($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $m => $esp_emp)
                                 @foreach ($esp_emp->detalles as $n => $det_esp_emp)
                                     @php
-                                        $total_ramos += number_format(($det_ped->cantidad*$esp_emp->cantidad*$det_esp_emp->cantidad),2,".","");
+                                        if($esp_emp->especificacion->tipo != "O"){
+                                         $total_ramos += number_format(($det_ped->cantidad*$esp_emp->cantidad*$det_esp_emp->cantidad),2,".","");
+                                        }else{
+                                           $total_ramos += $det_ped->cantidad;
+                                        }
                                         $peso_neto += (int)$det_esp_emp->clasificacion_ramo->nombre * number_format(($det_ped->cantidad*$det_esp_emp->cantidad),2,".","");
                                         $peso_caja += isset(explode("|",$det_esp_emp->especificacion_empaque->empaque->nombre)[2]) ? explode("|",$det_esp_emp->especificacion_empaque->empaque->nombre)[2] : 0;
                                     @endphp
@@ -215,8 +219,13 @@
     <thead style="border-bottom: 1px solid;border-top: 1px solid">
         <tr >
             <th style="font-size: 11px;vertical-align: top">
-                PIECES<br />
-                Piezas
+                @if($envio->pedido->detalles[0]->cliente_especificacion->especificacion->tipo !=="O")
+                    PIECES<br />
+                    Piezas
+                @else
+                    STEMS<br />
+                    Tallos
+                @endif
             </th>
             <th style="font-size: 11px;vertical-align: top">
                 DESCRIPTION<br />
@@ -264,12 +273,15 @@
                         $total_tallos += number_format(($det_ped->cantidad*$esp_emp->cantidad*$det_esp_emp->cantidad*$det_esp_emp->tallos_x_ramos),2,".","");
                         $full_equivalente_real += explode("|",$esp_emp->empaque->nombre)[1]*$det_ped->cantidad;
                         $descripcion = substr($det_esp_emp->variedad->planta->nombre, 0, 3) .", ". $det_esp_emp->variedad->nombre;
-
                     @endphp
                     <tr>
                         @if($n == 0)
                             <td style="font-size:11px;vertical-align:middle;text-align:center" rowspan="{{$esp_emp->detalles->count()}}">
-                                {{number_format($det_ped->cantidad,2,".","")}}
+                                @if($esp_emp->especificacion->tipo != "O")
+                                    {{number_format($det_ped->cantidad,2,".","")}}
+                                @else
+                                    {{number_format(($det_esp_emp->tallos_x_ramos*$det_ped->cantidad),2,".","")}}
+                                @endif
                                 @php
                                     $total_piezas += $det_ped->cantidad;
                                     switch (explode("|",$esp_emp->empaque->nombre)[1]) {
@@ -297,13 +309,39 @@
                         <td style="font-size:11px;vertical-align:middle"> {{$det_esp_emp->variedad->planta->tarifa}}</td>
                         <td style="font-size:11px;vertical-align:middle"> {{$det_esp_emp->variedad->planta->nandina}}</td>
                         <td style="font-size:11px;vertical-align:middle"> {{$det_esp_emp->cantidad}}</td>
-                        <td style="font-size:11px;vertical-align:middle"> BN </td>
-                        <td style="font-size:11px;vertical-align:middle"> {{number_format(($det_ped->cantidad*$det_esp_emp->cantidad),2,".","")}} </td>
-                        @php $total_ramos += number_format(($det_ped->cantidad*$det_esp_emp->cantidad),2,".",""); @endphp
+                        <td style="font-size:11px;vertical-align:middle">
+                            @if($esp_emp->especificacion->tipo != "O")
+                                BN
+                            @else
+                                ST
+                            @endif
+                        </td>
+                        <td style="font-size:11px;vertical-align:middle">
+                            @if($esp_emp->especificacion->tipo != "O")
+                                {{number_format(($det_ped->cantidad*$det_esp_emp->cantidad),2,".","")}}
+                            @else
+                                {{number_format(($det_esp_emp->tallos_x_ramos*$det_ped->cantidad),2,".","")}}
+                            @endif
+                        </td>
+                        @php
+
+                        @endphp
                         <td style="font-size:11px;"> {{"$".number_format(explode(";", $precio[$i])[0],2,".","")}} </td>
-                        <td style="font-size:11px"> {{"$".number_format(($det_esp_emp->cantidad * ((float)explode(";", $precio[$i])[0]) * $esp_emp->cantidad * $det_ped->cantidad),2,".","")}} </td>
+                        <td style="font-size:11px">
+                            @if($esp_emp->especificacion->tipo != "O")
+                                {{"$".number_format(($det_esp_emp->cantidad * ((float)explode(";", $precio[$i])[0]) * $esp_emp->cantidad * $det_ped->cantidad),2,".","")}}
+                            @else
+                                {{number_format(($det_esp_emp->tallos_x_ramos*$det_ped->cantidad*(float)explode(";", $precio[$i])[0]),2,".","")}}
+                            @endif
+                        </td>
                     </tr>
-                    @php $precio_total_sin_impuestos +=  ($det_esp_emp->cantidad * ((float)explode(";", $precio[$i])[0]) * $esp_emp->cantidad * $det_ped->cantidad); @endphp
+                    @php
+                        if($esp_emp->especificacion->tipo != "O"){
+                            $precio_total_sin_impuestos += ($det_esp_emp->cantidad * (float)explode(";", $precio[$i])[0] * $esp_emp->cantidad * $det_ped->cantidad);
+                        }else{
+                            $precio_total_sin_impuestos += $det_esp_emp->tallos_x_ramos*$det_ped->cantidad*(float)explode(";", $precio[$i])[0];
+                        }
+                    @endphp
                     @php  $i++;  @endphp
                 @endforeach
             @endforeach

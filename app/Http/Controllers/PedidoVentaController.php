@@ -126,6 +126,15 @@ class PedidoVentaController extends Controller
 
     public function duplicar_especificacion(Request $request)
     {
+
+        $empT = [];
+        $empTallos = Empaque::where([
+            ['f_empaque','T'],
+            ['tipo','C']
+        ])->get();
+        foreach ($empTallos as $empRamo)
+            $empT[] = $empRamo;
+
         $agenciasCarga = AgenciaCarga::where('c_ac.id_cliente', $request->id_cliente)
             ->join('cliente_agenciacarga as c_ac', 'agencia_carga.id_agencia_carga', 'c_ac.id_agencia_carga')->get();
         return view('adminlte.gestion.postcocecha.pedidos.forms.paritals.duplicar_especificacion', [
@@ -135,6 +144,7 @@ class PedidoVentaController extends Controller
             'id_cliente' => $request->id_cliente,
             'datos_exportacion' => DatosExportacion::join('cliente_datoexportacion as cde', 'dato_exportacion.id_dato_exportacion', 'cde.id_dato_exportacion')
                 ->where('id_cliente', $request->id_cliente)->get(),
+            'emp_tallos' => $empT
         ]);
     }
 
@@ -145,7 +155,8 @@ class PedidoVentaController extends Controller
             'datos_exportacion' => DatosExportacion::join('cliente_datoexportacion as cde', 'dato_exportacion.id_dato_exportacion', 'cde.id_dato_exportacion')
                 ->where('id_cliente', $request->id_cliente)->get(),
             'agenciasCarga' => AgenciaCarga::where('c_ac.id_cliente', $request->id_cliente)
-                ->join('cliente_agenciacarga as c_ac', 'agencia_carga.id_agencia_carga', 'c_ac.id_agencia_carga')->get()
+                ->join('cliente_agenciacarga as c_ac', 'agencia_carga.id_agencia_carga', 'c_ac.id_agencia_carga')->get(),
+
         ]);
     }
 

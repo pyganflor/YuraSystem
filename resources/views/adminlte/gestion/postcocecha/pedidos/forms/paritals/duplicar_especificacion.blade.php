@@ -29,29 +29,43 @@
                     <input type="hidden" id="id_detalle_especificacion_empaque_{{$cant_esp+1}}_{{$b}}" value="{{$det_esp_emp->id_detalle_especificacionempaque}}">
                 </td>
                 @if($z == 0)
-                    <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;" class="text-center"
-                        rowspan="{{count($esp_emp->detalles)}}">
-                        {{explode('|',$esp_emp->empaque->nombre)[0]}}
+                    <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;" class="text-center" rowspan="{{count($esp_emp->detalles)}}">
+                        <select id="empaque_{{$cant_esp+1}}" class="empaque_{{$cant_esp+1}}" name="empaque_{{$cant_esp+1}}" style="border:none;width:100%;height: 34px;" onchange="cuenta_ramos(this)" >
+                            <option value="{{$esp_emp->empaque->id_empaque}}" >{{explode('|',$esp_emp->empaque->nombre)[0]}}</option>
+                            @foreach($emp_tallos as $t)
+                                <option value="{{$t->f_empaque}}">{{explode('|',$t->nombre)[0]}}</option>
+                            @endforeach
+                        </select>
                     </td>
                 @endif
-                <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;" class="text-center">
-                    {{$det_esp_emp->empaque_p->nombre}}
+                <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;width:65px"
+                    class="text-center td_presentacion_{{$cant_esp+1}}">
+                    <span>{{$det_esp_emp->empaque_p->nombre}}</span>
+                    <input type="hidden" id="input_presentacion_{{$cant_esp+1}}_{{$b}}" name="input_presentacion_{{$cant_esp+1}}_{{$b}}"
+                           value="{{$det_esp_emp->empaque_p->nombre}}" class="input_presentacion_{{$cant_esp+1}}">
                 </td>
-                <td  style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;" class="text-center">
+                <td  style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;" class="text-center ramos_x_caja_{{$cant_esp+1}}">
                     {{$det_esp_emp->cantidad}}
                     <input type="hidden" class="td_ramos_x_caja_{{$cant_esp+1}} input_ramos_x_caja_{{$cant_esp+1}}_{{$b}}" value="{{$det_esp_emp->cantidad}}">
                 </td>
                 @if($id_especificacion != $anterior)
                     <td id="td_total_ramos_{{$cant_esp+1}}" style="border-color: #9d9d9d; padding: 0px; vertical-align: middle; width: 70px; "
                         class="text-center" rowspan="{{getCantidadDetallesByEspecificacion($id_especificacion)}}">
+                        0
                     </td>
                 @endif
-                <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;" class="text-center">
-                    {{$det_esp_emp->tallos_x_ramos}}
+                <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;" class="text-center td_tallos_x_ramo_{{$cant_esp+1}}_{{$b}} td_tallos_x_ramo_{{$cant_esp+1}}">
+                    <span>{{$det_esp_emp->tallos_x_ramos}}</span>
+                    <input id="tallos_x_ramo_{{$cant_esp+1}}_{{$b}}" name="tallos_x_ramo_{{$cant_esp+1}}_{{$b}}"
+                           type="hidden"  value="{{$det_esp_emp->tallos_x_ramos}}" class="tallos_x_ramo_{{$cant_esp+1}}_{{$b}} tallos_x_ramo_{{$cant_esp+1}}">
                 </td>
                 <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;" class="text-center">
                     @if($det_esp_emp->longitud_ramo != '' && $det_esp_emp->id_unidad_medida != '')
                         {{$det_esp_emp->longitud_ramo}}{{$det_esp_emp->unidad_medida->siglas}}
+                        <input type="hidden"  id="longitud_ramo_{{$cant_esp+1}}_{{$b}}" name="" class="longitud_ramo_{{$cant_esp+1}}"
+                               value="{{$det_esp_emp->longitud_ramo}}">
+                        <input type="hidden" id="u_m_longitud_ramo_{{$cant_esp+1}}_{{$b}}" name="" class="u_m_longitud_ramo_{{$cant_esp+1}}"
+                               value="{{$det_esp_emp->unidad_medida->id_unidad_medida}}">
                     @endif
                 </td>
                 <td id="td_precio_variedad_{{$det_esp_emp->id_detalle_especificacionempaque}}_{{($cant_esp+1)}}" style="border-color: #9d9d9d;padding: 0px 0px; vertical-align: middle;" >

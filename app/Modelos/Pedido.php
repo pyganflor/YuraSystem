@@ -336,7 +336,7 @@ class Pedido extends Model
         foreach ($this->detalles as $det_ped) {
             foreach ($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $esp_emp) {
                 foreach ($esp_emp->detalles as $det_esp) {
-                    $ramos = $det_ped->cantidad * $esp_emp->cantidad * $det_esp->cantidad;
+                    $ramos = $det_ped->cantidad * $esp_emp->cantidad * ($esp_emp->especificacion->tipo === "O" ? $det_esp->tallos_x_ramos :  $det_esp->cantidad);
                     $ramos_col = 0;
                     $precio_col = 0;
                     foreach (Coloracion::All()->where('id_detalle_pedido', $det_ped->id_detalle_pedido)

@@ -29,10 +29,10 @@
             <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
                 TOTAL RAMOS
             </th>
-            <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d;width:45px">
+            <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d;width:35px">
                 TALLOS X RAMO
             </th>
-            <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d;width:60px">
+            <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d;width:35px">
                 LONGITUD
             </th>
             <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
@@ -80,7 +80,7 @@
                                     </td>
                                     <td style="border-color: #9d9d9d; padding: 0px; vertical-align: middle; width: 30px;"
                                         class="text-center" rowspan="{{getCantidadDetallesByEspecificacion($item->id_especificacion)}}">
-                                        <input type="number" min="0" id="cantidad_piezas_{{($x+1)}}" style="border: none;width:100%" onkeyup="crear_orden_pedido(this)" onchange="calcular_precio_pedido(this)"
+                                        <input type="number" min="0" id="cantidad_piezas_{{($x+1)}}" style="border: none;width:100%;height: 34px;" onkeyup="crear_orden_pedido(this)" onchange="calcular_precio_pedido(this)"
                                                name="cantidad_piezas_{{$item->id_especificacion}}"  class="text-center cantidad_{{($x+1)}} input_cantidad" value="">
                                         <input type="hidden" id="id_cliente_pedido_especificacion_{{($x+1)}}" value="{{$item->id_cliente_pedido_especificacion}}">
                                     </td>
@@ -95,39 +95,49 @@
                                     </td>
                                     @if($z == 0)
                                         <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;width:75px" class="text-center"  rowspan="{{count($esp_emp->detalles)}}">
-                                            <select id="empaque_{{$x+1}}" class="empaque_{{$x+1}}" name="empaque_{{$x+1}}" style="border:none;width:100%" onchange="cuenta_ramos(this)" >
+                                            <select id="empaque_{{$x+1}}" class="empaque_{{$x+1}}" name="empaque_{{$x+1}}" style="border:none;width:100%;height: 34px;" onchange="cuenta_ramos(this)" >
                                                 <option value="{{$esp_emp->empaque->id_empaque}}" >{{explode('|',$esp_emp->empaque->nombre)[0]}}</option>
-                                                @isset($emp_ramos)
-                                                    <option value="{{$emp_ramos->id_empaque}}">{{explode('|',$emp_ramos->nombre)[0]}}</option>
-                                                @endisset
+                                                @foreach($emp_tallos as $t)
+                                                    <option value="{{$t->f_empaque}}">{{explode('|',$t->nombre)[0]}}</option>
+                                                @endforeach
                                             </select>
                                         </td>
                                     @endif
-                                    <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;width:65px" class="text-center">
-                                        {{$det_esp_emp->empaque_p->nombre}}
+                                    <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;width:65px"
+                                        class="text-center td_presentacion_{{$x+1}}">
+                                        <span>{{$det_esp_emp->empaque_p->nombre}}</span>
+                                        <input type="hidden" id="input_presentacion_{{$x+1}}_{{$b}}" name="input_presentacion_{{$x+1}}_{{$b}}"
+                                               value="{{$det_esp_emp->empaque_p->nombre}}" class="input_presentacion_{{$x+1}}">
                                     </td>
-                                    <td  style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;width:40px" class="text-center">
-                                        {{$det_esp_emp->cantidad}}
+                                    <td  style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;width:40px" class="text-center ramos_x_caja_{{$x+1}}">
+                                        <span>{{$det_esp_emp->cantidad}}</span>
                                         <input type="hidden" class="td_ramos_x_caja_{{$x+1}} input_ramos_x_caja_{{$x+1}}_{{$b}}" value="{{$det_esp_emp->cantidad}}">
                                     </td>
                                     @if($item->id_especificacion != $anterior)
                                         <td id="td_total_ramos_{{$x+1}}" style="border-color: #9d9d9d; padding: 0px; vertical-align: middle; width: 45px; "
                                             class="text-center" rowspan="{{getCantidadDetallesByEspecificacion($item->id_especificacion)}}">
+                                            0
                                         </td>
                                     @endif
-                                    <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;" class="text-center">
-                                        {{$det_esp_emp->tallos_x_ramos}}
+                                    <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;width:35px" class="text-center td_tallos_x_ramo_{{$x+1}}_{{$b}} td_tallos_x_ramo_{{$x+1}}">
+                                        <span>{{$det_esp_emp->tallos_x_ramos}}</span>
+                                        <input id="tallos_x_ramo_{{$x+1}}_{{$b}}" name="tallos_x_ramo_{{$x+1}}_{{$b}}"
+                                               type="hidden"  value="{{$det_esp_emp->tallos_x_ramos}}" class="tallos_x_ramo_{{$x+1}}_{{$b}} tallos_x_ramo_{{$x+1}}">
                                     </td>
-                                    <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;width:60px" class="text-center">
+                                    <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;width:35px" class="text-center">
                                         @if($det_esp_emp->longitud_ramo != '' && $det_esp_emp->id_unidad_medida != '')
                                             {{$det_esp_emp->longitud_ramo}}{{$det_esp_emp->unidad_medida->siglas}}
+                                            <input type="hidden"  id="longitud_ramo_{{$x+1}}_{{$b}}" name="" class="longitud_ramo_{{$x+1}}"
+                                                   value="{{$det_esp_emp->longitud_ramo}}">
+                                            <input type="hidden" id="u_m_longitud_ramo_{{$x+1}}_{{$b}}" name="" class="u_m_longitud_ramo_{{$x+1}}"
+                                                   value="{{$det_esp_emp->unidad_medida->id_unidad_medida}}">
                                         @endif
                                     </td>
                                     <td id="td_precio_variedad_{{$det_esp_emp->id_detalle_especificacionempaque}}_{{($x+1)}}" style="border-color: #9d9d9d;padding: 0px 0px; vertical-align: middle;width:60px" >
                                         @if((getPrecioByClienteDetEspEmp($item->id_cliente, $det_esp_emp->id_detalle_especificacionempaque) != ''))
                                             <select name="precio_{{$det_esp_emp->id_detalle_especificacionempaque}}"
                                                     ondblclick="cambiar_input_precio('{{$det_esp_emp->id_detalle_especificacionempaque}}','{{($x+1)}}','{{$b}}')"
-                                                    id="precio_{{($x+1)}}_{{$b}}" style="background-color: beige; width: 100%" onchange="calcular_precio_pedido()"
+                                                    id="precio_{{($x+1)}}_{{$b}}" style="background-color: beige; width: 100%;height: 34px;" onchange="calcular_precio_pedido()"
                                                     class="precio_{{($x+1)}} form-control" required>
                                                 @foreach(explode('|',getPrecioByClienteDetEspEmp($item->id_cliente, $det_esp_emp->id_detalle_especificacionempaque)->cantidad) as $precio)
                                                     <option value="{{$precio}}">{{$precio}}</option>
@@ -144,7 +154,7 @@
                                         <td class="text-center" style="border-color: #9d9d9d; vertical-align: middle;width:75px"
                                             rowspan="{{getCantidadDetallesByEspecificacion($item->id_especificacion)}}">
                                             <select name="id_agencia_carga_{{$item->id_especificacion}}" id="id_agencia_carga_{{$x+1}}"
-                                                    class="text-center" style="border: none; width:100%" required>
+                                                    class="text-center" style="border: none; width:100%;height: 34px;" required>
                                                 @foreach($agenciasCarga as $agencia)
                                                     <option value="{{$agencia->id_agencia_carga}}">{{$agencia->nombre}}</option>
                                                 @endforeach
@@ -153,7 +163,7 @@
                                         @foreach($datos_exportacion as $de)
                                             <td rowspan="{{getCantidadDetallesByEspecificacion($item->id_especificacion)}}"
                                                 style="border-color: #9d9d9d; vertical-align: middle">
-                                                <input type="text" name="input_{{strtoupper($de->nombre)}}_{{$x+1}}" id="input_{{strtoupper($de->nombre)}}_{{$x+1}}" class="" style="border: none;width:100%">
+                                                <input type="text" name="input_{{strtoupper($de->nombre)}}_{{$x+1}}" id="input_{{strtoupper($de->nombre)}}_{{$x+1}}" class="" style="border: none;width:100%;height:34px">
                                                 <input type="hidden" name="id_dato_exportacion_{{strtoupper($de->nombre)}}_{{$x+1}}" id="id_dato_exportacion_{{strtoupper($de->nombre)}}_{{$x+1}}" value="{{$de->id_dato_exportacion}}">
                                             </td>
                                         @endforeach

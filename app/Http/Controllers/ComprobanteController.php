@@ -125,7 +125,7 @@ class ComprobanteController extends Controller
                         foreach ($esp_emp->detalles as $n => $det_esp_emp) {
                             $peso_neto += (int)$det_esp_emp->clasificacion_ramo->nombre * number_format(($det_ped->cantidad*$det_esp_emp->cantidad),2,".","");
                             $peso_caja += isset(explode("|",$det_esp_emp->especificacion_empaque->empaque->nombre)[2]) ? explode("|",$det_esp_emp->especificacion_empaque->empaque->nombre)[2] : 0;
-                            $precio_x_variedad = ($det_esp_emp->cantidad * ((float)explode(";", $precio[$i])[0]) * $esp_emp->cantidad * $det_ped->cantidad);
+                            $precio_x_variedad = (($esp_emp->especificacion->tipo === "O" ? $det_esp_emp->tallos_x_ramos : $det_esp_emp->cantidad) * (float)explode(";", $precio[$i])[0] * $esp_emp->cantidad * $det_ped->cantidad);
                             $precio_total_sin_impuestos += $precio_x_variedad;
                             $i++;
                         }
