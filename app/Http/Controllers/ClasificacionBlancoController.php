@@ -64,7 +64,7 @@ class ClasificacionBlancoController extends Controller
             }
         }
 
-        //dd($ids_pedidos);
+        //dd($fecha_fin);
 
         $fechas = DB::table('pedido')
             ->select('fecha_pedido')->distinct()
@@ -108,7 +108,7 @@ class ClasificacionBlancoController extends Controller
             }
         }
 
-        //dd($fechas, $combinaciones, $stock_apertura);
+        //dd($pedidos, $ids_pedidos, $fechas, $combinaciones, $stock_apertura);
 
         return view('adminlte.gestion.postcocecha.clasificacion_blanco.partials.listado', [
             'blanco' => $blanco,
