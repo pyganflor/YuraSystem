@@ -41,6 +41,8 @@
 
                 $.get('{{url('pedidos/editar_pedido')}}', datos, function (retorno) {
                     $("#fecha_de_entrega").val(retorno.pedido[0].fecha_pedido);
+                    $("#iva_cliente").val(retorno.iva_cliente);
+                    $(".iva_pedido").html(retorno.iva_cliente+"%");
                     calcular_precio_pedido();
                     //$("#descripcion").val(retorno[0].descripcion);
                 });

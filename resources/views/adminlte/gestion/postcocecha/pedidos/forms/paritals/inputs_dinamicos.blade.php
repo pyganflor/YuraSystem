@@ -76,7 +76,7 @@
                                     <td style="border-color: #9d9d9d; padding: 0px; vertical-align: middle;width: 30px; text-align:center"
                                         class="text-center" rowspan="{{getCantidadDetallesByEspecificacion($item->id_especificacion)}}" >
                                         <input type="number" min="1" name="orden" class="orden" id="orden_{{($x+1)}}"
-                                               style="border: none;text-align: center; width: 100%;font-size: 14px">
+                                               style="border: none;text-align: center; width: 100%;">
                                     </td>
                                     <td style="border-color: #9d9d9d; padding: 0px; vertical-align: middle; width: 30px;"
                                         class="text-center" rowspan="{{getCantidadDetallesByEspecificacion($item->id_especificacion)}}">
