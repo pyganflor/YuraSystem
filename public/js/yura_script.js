@@ -187,7 +187,9 @@ function store_pedido(id_cliente, pedido_fijo, csrf_token, vista, id_pedido, com
                     if ($(".cantidad_piezas_" + (i + 1)).val() != "" && $(".cantidad_piezas_" + (i + 1)).val() != 0 && arr_ordenado[z] === j.value) {
                         for (x = 1; x <= $(".input_variedad_" + (i + 1)).length; x++) {
                             id_variedades += $("#id_variedad_" + (i + 1) + "_" + x).val() + "|";
-                            precio += $("#precio_" + (i + 1) + "_" + x).val() + ";" + $("#id_detalle_especificacion_empaque_" + (i + 1) + "_" + x).val() + "|"
+                            precio += $("#precio_" + (i + 1) + "_" + x).val() + ";" + ($("#empaque_"+ (i + 1)).val() !== "T"
+                                                                                        ? $("#id_detalle_especificacion_empaque_" + (i + 1) + "_" + x).val() + "|"
+                                                                                        : "0" + "|");
                         }
                         variedades += id_variedades;
 
@@ -1344,6 +1346,7 @@ function calcular_precio_envio() {
         total_piezas = 0.00;
         cant_rows = $(".input_cantidad_" + o).length;
         for (i = 1; i <= cant_rows; i++) {
+            tipo_especificacion = $("#tipo_especificacion_"+i).val();
             precio_especificacion = 0.00;
             ramos_totales_especificacion = 0.00;
             $.each($(".cantidad_" + o + "_" + i), function (p, q) {
@@ -1352,8 +1355,14 @@ function calcular_precio_envio() {
                 });
                 $.each($(".precio_" + o + "_" + i), function (y, z) {
                     precio_variedad = z.value == "" ? 0 : z.value;
-                    ramos_x_caja = $(".input_ramos_x_caja_" + o + "_" + i + "_" + (y + 1)).val();
-                    precio_especificacion += (parseFloat(precio_variedad) * parseFloat(ramos_x_caja) * q.value);
+
+                    if($("#tipo_especificacion_"+ o + "_" + i).val() === "O"){
+                        console.log($("#td_tallos_x_ramo_"+o+"_"+i).html().trim());
+                        precio_especificacion += (parseFloat(precio_variedad) * parseFloat($("#td_tallos_x_ramo_"+o+"_"+i).html().trim()) * q.value);
+                    }else{
+                        ramos_x_caja = $(".input_ramos_x_caja_" + o + "_" + i + "_" + (y + 1)).val();
+                        precio_especificacion += (parseFloat(precio_variedad) * parseFloat(ramos_x_caja) * q.value);
+                    }
                 });
             });
             sub_total += parseFloat(precio_especificacion);

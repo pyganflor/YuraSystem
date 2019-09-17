@@ -163,7 +163,7 @@
                                         @foreach($datos_exportacion as $de)
                                             <td rowspan="{{getCantidadDetallesByEspecificacion($item->id_especificacion)}}"
                                                 style="border-color: #9d9d9d; vertical-align: middle">
-                                                <input type="text" name="input_{{strtoupper($de->nombre)}}_{{$x+1}}" id="input_{{strtoupper($de->nombre)}}_{{$x+1}}" class="" style="border: none;width:100%">
+                                                <input type="text" name="input_{{strtoupper($de->nombre)}}_{{$x+1}}" id="input_{{strtoupper($de->nombre)}}_{{$x+1}}" class="" style="border: none;width:100%;height:34px">
                                                 <input type="hidden" name="id_dato_exportacion_{{strtoupper($de->nombre)}}_{{$x+1}}" id="id_dato_exportacion_{{strtoupper($de->nombre)}}_{{$x+1}}" value="{{$de->id_dato_exportacion}}">
                                             </td>
                                         @endforeach

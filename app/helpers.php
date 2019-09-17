@@ -1114,9 +1114,14 @@ function getPrecioByClienteDetEspEmp($cliente, $det_esp)
 function getPrecioByDetEsp($string, $det_esp)
 {
     foreach (explode('|', $string) as $x) {
-        if (count(explode(';', $x)) > 0)
-            if (explode(';', $x)[1] == $det_esp)
-                return explode(';', $x)[0];
+        if (count(explode(';', $x)) > 0){
+            if(explode(';', $x)[1] > 0){  //explode(';', $x)[1] == 0 CUANDO UN PEDIDO SEA EN TALLOS
+                if (explode(';', $x)[1] == $det_esp)
+                    return explode(';', $x)[0];
+            }else{
+                return explode(';', $x)[0]; //POR QUE SOLO REALIZARAN PEIDOS EN TALLOS CON UN SOLO DETALLE ESPECIFICACION EMPAQUE, CAMBIAR EN CASO DE QUE NO SE VAYA A HACER ASÍ
+            }
+        }
     }
     return 1;
 }

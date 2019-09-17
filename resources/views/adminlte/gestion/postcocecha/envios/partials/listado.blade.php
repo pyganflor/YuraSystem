@@ -19,7 +19,6 @@
             <form id="form_envios_{{$i+1}}">
                 <input type="hidden" id="porcentaje_impuesto_{{$i+1}}" value="{{$tipoImpuestoCliente->porcentaje}}">
                 @php
-
                     //$firmado = getFacturado($envio->id_envio,1); COMENTADO PARA QUE LA FACTURACION FUNCIONE CON EL VENTURE
                        $exist_comprobante=null;
                        if(isset($envio->pedido->id_comprobante_temporal) && $envio->pedido->id_comprobante_temporal != "")
@@ -133,6 +132,7 @@
                                                         <input type="hidden" id="cant_esp_fijas" value="">
                                                     @endif
                                                     <input type="hidden" id="id_cliente_pedido_especificacion_{{$i+1}}_{{($x+1)}}" value="{{$det_ped->cliente_especificacion->id_cliente_pedido_especificacion}}">
+                                                    <input type="hidden" id="tipo_especificacion_{{$i+1}}_{{($x+1)}}" value="{{$det_ped->cliente_especificacion->especificacion->tipo}}">
                                                 </td>
                                             @endif
                                                 <td style="border-color: #9d9d9d; padding: 0px; vertical-align: middle; width: 60px;"  class="text-center">
@@ -158,10 +158,11 @@
                                                 </td>
                                                 @if($det_ped->cliente_especificacion->especificacion->id_especificacion != $anterior)
                                                     <td id="td_total_ramos_{{$i+1}}_{{$x+1}}" style="border-color: #9d9d9d; padding: 0px; vertical-align: middle; width: 70px; "
-                                                        class="text-center" rowspan="{{getCantidadDetallesByEspecificacion($det_ped->cliente_especificacion->especificacion->id_especificacion)}}">
+                                                             class="text-center td_total_ramos_{{$i+1}}" rowspan="{{getCantidadDetallesByEspecificacion($det_ped->cliente_especificacion->especificacion->id_especificacion)}}">
                                                     </td>
                                                 @endif
-                                                <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;" class="text-center">
+                                                <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;"
+                                                    id="td_tallos_x_ramo_{{$i+1}}_{{$x+1}}" class="text-center">
                                                     {{$det_esp_emp->tallos_x_ramos}}
                                                 </td>
                                                 <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;" class="text-center">
