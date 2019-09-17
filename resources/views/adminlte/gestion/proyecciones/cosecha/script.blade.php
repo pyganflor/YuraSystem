@@ -37,5 +37,4 @@
             $('#' + id).css('border', '3px solid black');
         }
     }
-
 </script>

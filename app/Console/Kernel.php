@@ -6,6 +6,7 @@ use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use yura\Console\Commands\CicloPrimeraFlor;
 use yura\Console\Commands\DeleteRecepciones;
+use yura\Console\Commands\EmpaquetarPedidosAnulados;
 use yura\Console\Commands\FechaFinalCiclo;
 use yura\Console\Commands\NotificacionesSistema;
 use yura\Console\Commands\UpdateHistoricoVentas;
@@ -25,6 +26,7 @@ class Kernel extends ConsoleKernel
         NotificacionesSistema::class,
         CicloPrimeraFlor::class,
         UpdateProyeccionSemanal::class,
+        EmpaquetarPedidosAnulados::class,
     ];
 
     /**
@@ -44,6 +46,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('notificaciones:sistema')->everyTenMinutes()->runInBackground(); // NotificacionesSistema::class
         $schedule->command('ciclo:primera_flor')->hourly()->runInBackground(); // CicloPrimeraFlor::class
         $schedule->command('proyeccion:update_semanal')->hourly()->runInBackground(); // UpdateProyeccionSemanal::class
+        $schedule->command('pedido:empaquetar_anulados')->daily()->runInBackground(); // EmpaquetarPedidosAnulados::class
     }
 
     /**
