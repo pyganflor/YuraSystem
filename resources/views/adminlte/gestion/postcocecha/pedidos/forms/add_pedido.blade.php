@@ -47,6 +47,7 @@
                                 <option value="{{$cliente->id_cliente}}"> {{$cliente->nombre}} </option>
                             @endforeach
                         </select>
+                        <input type="hidden" id="iva_cliente" name="iva_cliente" value="">
                     </div>
                     <div class="col-md-3 hide">
                         <label for="envio" style="font-size: 11pt;margin-top: 30px">Envío automático</label>
@@ -83,15 +84,23 @@
                     <table style="width: 100%;text-align: right;margin-top:20px">
                         <tr>
                             <td><b>TOTAL DE PIEZAS:</b></td>
-                            <td style="vertical-align: middle;font-size: 14px;text-align: right; width: 80px;" id="total_piezas">0</td>
+                            <td style="vertical-align: middle;font-size: 14px;text-align: right; width: 8%;" id="total_piezas">0</td>
                         </tr>
                         <tr>
                             <td><b>TOTAL DE RAMOS:</b></td>
-                            <td style="vertical-align: middle;font-size: 14px;text-align: right; width: 80px;" id="total_ramos">0</td>
+                            <td style="vertical-align: middle;font-size: 14px;text-align: right; width: 8%;" id="total_ramos">0</td>
                         </tr>
                         <tr>
-                            <td><b>MONTO DEL PEDIDO:</b></td>
-                            <td class="monto_total_pedido" style="font-size: 14px;vertical-align: middle;text-align:rigth">$0.00</td>
+                            <td><b>SUBTOTAL:</b></td>
+                            <td class="monto_total_pedido" style="font-size: 14px;vertical-align: middle;text-align:right;width: 8%;">$0.00</td>
+                        </tr>
+                        <tr>
+                            <td style="width: 45px"><b>IVA:</b></td>
+                            <td class="iva_pedido" style="font-size: 14px;vertical-align: middle;text-align:right;width: 8%;">$0.00</td>
+                        </tr>
+                        <tr>
+                            <td><b>TOTAL:</b></td>
+                            <td class="total_pedido" style="font-size: 14px;vertical-align: middle;text-align:right;width: 8%;">$0.00</td>
                         </tr>
                     </table>
                 </div>

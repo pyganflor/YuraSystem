@@ -20,7 +20,8 @@ class DetalleCliente extends Model
         'ruc',
         'correo',
         'id_cliente',
-        'codigo_iva',
+        'codigo_impuesto',
+        'codigo_porcentaje_impuesto',
         'codigo_identificacion',
         'estado',
         'almacen',
@@ -39,5 +40,17 @@ class DetalleCliente extends Model
 
     public function marca_caja(){
         return $this->belongsTo('yura\Modelos\Marca','id_marca');
+    }
+
+    public function tipo_impuesto(){
+        //dd($this->codigo_impuesto,$this->codigo_porcentaje_impuesto);
+        $impuesto =  TipoImpuesto::where([
+            ['codigo_impuesto',$this->codigo_impuesto],
+            ['codigo',$this->codigo_porcentaje_impuesto]
+        ])->first();
+        return [
+            'tipo_empuesto'=>$impuesto->descripcion,
+            'porcentaje' =>$impuesto->porcentaje
+            ];
     }
 }

@@ -341,6 +341,8 @@ function cargar_espeicificaciones_cliente(remove) {
     get_jquery('pedidos/cargar_especificaciones', datos, function (response) {
         remove ? add_campos(1, '', response['agencias_carga']) : '';
         $("#btn_add_campos").attr('disabled', false);
+        $(".iva_pedido").html(response['iva_cliente']+"%");
+        $("#iva_cliente").val(response['iva_cliente']);
         calcular_precio_pedido();
     });
     $.LoadingOverlay('hide');
@@ -2066,9 +2068,11 @@ function calcular_precio_pedido(input) {
             piezas = parseInt($("input.cantidad_"+i).val());
             total_piezas+= piezas;
             total_tallos = tallos*ramo_x_caja*(isNaN(piezas) ? 0 : piezas);
+            console.log(tallos,ramo_x_caja,piezas);
             t_ramos = (isNaN(piezas) ? 0 : piezas)*$("input.input_tallos_"+i).length;
             $("td#td_total_ramos_"+i).html(t_ramos);
             ramos_totales_especificacion = t_ramos;
+
             precio_especificacion = (total_tallos*parseFloat($(".precio_"+i).val()));
             $("#td_precio_especificacion_" + i).html("$"+parseFloat(precio_especificacion).toFixed(2));
 
@@ -2124,9 +2128,24 @@ function calcular_precio_pedido(input) {
        // }
     }
 
+    if(isNaN(monto_total)){
+        t = 0.00;
+    }else{
+        t = monto_total;
+    }
+
+    if($("#iva_cliente").val() > 0){
+        iva = t*(parseFloat($("#iva_cliente").val())/100);
+    }else{
+        iva = 0.00;
+    }
+
     $("#total_piezas").html(isNaN(total_piezas) ?  0 : total_piezas.toFixed(2));
     $("#total_ramos").html(total_ramos);
     $(".monto_total_pedido").html( "$" + (isNaN(monto_total) ? 0 :  monto_total.toFixed(2)));
+    $(".total_pedido").html( "$" + (t+iva).toFixed(2));
+
+
 
     /*$.each($(".seleccion_invidual"), function (n, m) {
         if ($(".cantidad_" + (n + 1)).val() != "" && $("#seleccion_invidual_" + (n + 1)).is(":checked"))

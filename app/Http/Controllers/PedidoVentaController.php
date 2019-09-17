@@ -95,7 +95,9 @@ class PedidoVentaController extends Controller
                 ->select('cliente_pedido_especificacion.id_cliente_pedido_especificacion', 'e.nombre')->get(),
             'agencias_carga' => ClienteAgenciaCarga::where('id_cliente', $request->id_cliente)
                 ->join('agencia_carga as ac', 'cliente_agenciacarga.id_agencia_carga', '=', 'ac.id_agencia_carga')
-                ->select('ac.id_agencia_carga', 'ac.nombre')->get()
+                ->select('ac.id_agencia_carga', 'ac.nombre')->get(),
+            'iva_cliente' => getCliente($request->id_cliente)->detalle()->tipo_impuesto()['porcentaje']
+
         ];
     }
 
@@ -119,14 +121,16 @@ class PedidoVentaController extends Controller
             ->join('detalle_cliente as dc', 'pedido.id_cliente', 'dc.id_cliente')
             ->join('cliente_pedido_especificacion as cpe', 'dp.id_cliente_especificacion', 'cpe.id_cliente_pedido_especificacion')
             ->select('dp.cantidad as cantidad_especificacion', 'dp.precio', 'dp.id_agencia_carga', 'dc.id_cliente', 'pedido.fecha_pedido', 'pedido.descripcion', 'cpe.id_especificacion')->get();
+
         return [
             'pedido' => $pedido,
+            'iva_cliente' => $pedido[0]->cliente->detalle()->tipo_impuesto()['porcentaje']
+
         ];
     }
 
     public function duplicar_especificacion(Request $request)
     {
-
         $empT = [];
         $empTallos = Empaque::where([
             ['f_empaque','T'],
@@ -144,7 +148,8 @@ class PedidoVentaController extends Controller
             'id_cliente' => $request->id_cliente,
             'datos_exportacion' => DatosExportacion::join('cliente_datoexportacion as cde', 'dato_exportacion.id_dato_exportacion', 'cde.id_dato_exportacion')
                 ->where('id_cliente', $request->id_cliente)->get(),
-            'emp_tallos' => $empT
+            'emp_tallos' => $empT,
+            'tipo_especificacion' => getEspecificacion($request->id_especificacion)->tipo
         ]);
     }
 
