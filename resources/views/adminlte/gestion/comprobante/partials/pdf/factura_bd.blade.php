@@ -132,7 +132,11 @@
                     @foreach($data['comprobante']->desglose_envio_factura as $desglose)
                         <tr style="width: 750px">
                             <td style="font-size: 13px;;border:1px solid black;padding-left: 5px">{{$desglose->codigo_principal}}</td>
-                            <td style="font-size: 13px;border:1px solid black;padding-left: 5px">{{$desglose->cantidad}}</td>
+                            <td style="font-size: 13px;border:1px solid black;padding-left: 5px">
+
+                                {{$desglose->cantidad}}
+
+                            </td>
                             <td style="font-size: 12px;width: 205px;border:1px solid black;padding-left: 5px">{{$desglose->descripcion}}</td>
                             <td style="font-size: 13px;border:1px solid black;padding-left: 5px">{{number_format($desglose->precio_unitario,2,".","")}}</td>
                             <td style="font-size: 13px;border:1px solid black;padding-left: 5px">{{number_format($desglose->descuento,2,".","")}}</td>

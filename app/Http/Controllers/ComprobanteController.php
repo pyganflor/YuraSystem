@@ -583,10 +583,19 @@ class ComprobanteController extends Controller
                                             $objDesgloseEnvioFactura->id_comprobante = $model_comprobante->id_comprobante;
                                             $objDesgloseEnvioFactura->codigo_principal = 'ENV' . str_pad($request->id_envio, 9, "0", STR_PAD_LEFT);
                                             $objDesgloseEnvioFactura->descripcion = $variedad->planta->nombre . " (" . $variedad->siglas . ") " . $clasificacionRamo->nombre . $umPeso . " " . $longitudRamo . $umL;
-                                            $objDesgloseEnvioFactura->cantidad = number_format(($det_esp_emp->cantidad * $esp_emp->cantidad * $det_ped->cantidad), 2, ".", "");
+
+                                            if($esp_emp->especificacion->tipo != "O"){
+                                                $objDesgloseEnvioFactura->cantidad = number_format(($det_ped->cantidad*$esp_emp->cantidad*$det_esp_emp->cantidad),2,".","");
+                                            }else{
+                                                $objDesgloseEnvioFactura->cantidad = $det_ped->cantidad*$det_esp_emp->tallos_x_ramos;
+                                            }
                                             $objDesgloseEnvioFactura->precio_unitario = number_format(explode(";", $precio[$i])[0], 2, ".", "");
                                             $objDesgloseEnvioFactura->descuento = '0.00';
-                                            $objDesgloseEnvioFactura->precio_total_sin_impuesto = number_format($precio_x_variedad, 2, ".", "");
+                                            if($esp_emp->especificacion->tipo != "O"){
+                                                $objDesgloseEnvioFactura->precio_total_sin_impuesto = number_format($precio_x_variedad, 2, ".", "");
+                                            }else{
+                                                $objDesgloseEnvioFactura->precio_total_sin_impuesto = number_format(($det_ped->cantidad*$det_esp_emp->tallos_x_ramos*$objDesgloseEnvioFactura->precio_unitario), 2, ".", "");
+                                            }
 
                                             if ($objDesgloseEnvioFactura->save()) {
                                                 $model_desglose_envio_factura = DesgloseEnvioFactura::all()->last();
