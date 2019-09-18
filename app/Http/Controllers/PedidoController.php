@@ -5,6 +5,7 @@ namespace yura\Http\Controllers;
 use Illuminate\Http\Request;
 use SoapClient;
 use yura\Modelos\Aerolinea;
+use yura\Modelos\ClasificacionRamo;
 use yura\Modelos\ClienteConsignatario;
 use yura\Modelos\ClienteDatoExportacion;
 use yura\Modelos\Comprobante;
@@ -21,6 +22,7 @@ use yura\Modelos\Empaque;
 use Validator;
 use DB;
 use Barryvdh\DomPDF\Facade as PDF;
+use yura\Modelos\ProductoYuraVenture;
 
 class PedidoController extends Controller
 {
@@ -94,6 +96,7 @@ class PedidoController extends Controller
 
     public function store_pedidos(Request $request)
     {
+        //dd($request->arrDataPresentacionYuraVenture);
         $valida = Validator::make($request->all(), [
             'arrDataPedido' => 'Array',
             'id_cliente' => 'required',
@@ -272,9 +275,21 @@ class PedidoController extends Controller
                             if($objDetalleEnvio->save()){
                                 $modelDetalleEnvio = DetalleEnvio::all()->last();
                                 bitacora('detalle_envio', $modelDetalleEnvio->id_detalle_envio, 'I', 'Inserción satisfactoria de un nuevo detalle envío');
+
+
                             }
                         }
                     }
+                }
+            }
+            if(isset($request->arrDataPresentacionYuraVenture) && count($request->arrDataPresentacionYuraVenture)){
+                foreach ($request->arrDataPresentacionYuraVenture as $presentacionYuraVenture){
+                    $objProductoYuraVenture = new ProductoYuraVenture;
+                    $objProductoYuraVenture->presentacion_yura = $presentacionYuraVenture['codigo_presentacion'];
+                    $objProductoYuraVenture->codigo_venture = $presentacionYuraVenture['codigo_venture'];
+                    $objProductoYuraVenture->id_configuracion_empresa = isset($id_configuracion_empresa) ? $id_configuracion_empresa : $request->id_configuracion_empresa;
+                    $objProductoYuraVenture->tipo= "O";
+                    $objProductoYuraVenture->save();
                 }
             }
         } else {
@@ -599,4 +614,31 @@ class PedidoController extends Controller
         ];
     }
 
+    public function buscar_codigo_venture(Request $request){
+
+        $idPlanta = getVariedad($request->id_variedad)->planta->id_planta;
+        $presentacion_pedido_caja = $idPlanta."|".$request->id_variedad."|".$request->id_clasificacion_ramo."|".$request->id_u_m_clasificacion_ramo."|".$request->tallos_x_ramos."|".$request->longitud_ramo."|".$request->id_u_m_logitud_ramo;
+        $productoVinculados = ProductoYuraVenture::where('id_configuracion_empresa',$request->id_configuracion_empresa)
+                                ->select('codigo_venture','presentacion_yura')->get();
+        $arr = [];
+        foreach ($productoVinculados as $productoVinculado) {
+            $pieza = explode("|",$productoVinculado->presentacion_yura);
+            $ids = $pieza[0]."|".$pieza[1]."|".$pieza[2]."|".$pieza[3]."|".$pieza[4]."|".$pieza[5]."|".$pieza[6];
+            $arr[] = ["id"=>$ids,"codigo_venture"=> $productoVinculado->codigo_venture];
+        }
+        $presentacion_venture="";
+        $codigo_venture ="";
+        $clasificacionRamoEstandar= ClasificacionRamo::where('estandar',1)->first();
+        foreach ($arr as $item) {
+            if($item['id']=== $presentacion_pedido_caja){
+                $presentacion_venture = $idPlanta."|".$request->id_variedad."|".$clasificacionRamoEstandar->id_clasificacion_ramo."|".$clasificacionRamoEstandar->unidad_medida->id_unidad_medida."|".$request->tallos_x_malla."|".$request->longitud_ramo."|".$request->id_u_m_logitud_ramo;
+                $codigo_venture = $item['codigo_venture'];
+            }
+        }
+        //dump($presentacion_venture,$codigo_venture);
+        return response()->json([
+            'presentacion_venture'=>$presentacion_venture,
+            'codigo_venture' => $codigo_venture
+        ]);
+    }
 }

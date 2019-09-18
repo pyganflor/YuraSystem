@@ -78,6 +78,7 @@
             </div>
             <div class="row">
                 <div class="col-md-12" id="table_campo_pedido"></div>
+                <div class="text-danger col-md-12" id="error_codigo_venture"></div>
             </div>
             <div class="row">
                 <div class="col-md-12">
@@ -117,7 +118,7 @@
                         @if((isset($comprobante->estado) && $comprobante->estado != 5) && (isset($comprobante->estado) && $comprobante->estado != 6) && (isset(getPedido($id_pedido)->envios[0]->comprobante->integrado) && !getPedido($id_pedido)->envios[0]->comprobante->integrado) || !isset($comprobante->estado))
                             <tr>
                                 <td class="text-center" style="padding: 10px 0px 0px">
-                                    <button type="button" class=" btn btn-app btn-xs btn-success"
+                                    <button type="button" class=" btn btn-app btn-xs btn-success store_pedido_normal"
                                             onclick="store_pedido('{{$idCliente}}','@if($pedido_fijo) {{true}} @endif','{{csrf_token()}}','{{$vista}}','{{$id_pedido}}','{{$comprobante}}')">
                                         <span class="badge bg-green monto_total_pedido" >$0.00</span>
                                         <i class="fa fa-shopping-cart"></i> Guardar
