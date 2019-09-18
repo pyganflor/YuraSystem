@@ -129,7 +129,8 @@ class FueController extends Controller
                     ['dc.estado',1],
                     ['comprobante.habilitado',1],
                     ['comprobante.tipo_comprobante',01]
-                ])->whereIn('comprobante.estado',[1,5]);
+                ])->whereIn('comprobante.estado',[1,5])
+                ->orderBy('p.fecha_pedido','asc');
 
         if($request->get('id_cliente') != null)
             $data->where('c.id_cliente',$request->get('id_cliente'));
@@ -267,7 +268,7 @@ class FueController extends Controller
                 $objSheet->getCell('P' . (($x+1) + 3))->setValue($full_equivalente_real);
                 $objSheet->getCell('Q' . (($x+1) + 3))->setValue($total_tallos);
                 $objSheet->getCell('R' . (($x+1) + 3))->setValue($total_piezas);
-                $objSheet->getCell('S' . (($x+1) + 3))->setValue("$".$d->monto_total);
+                $objSheet->getCell('S' . (($x+1) + 3))->setValue($d->monto_total);
                 $objSheet->getCell('T' . (($x+1) + 3))->setValue($d->peso);
             }
 

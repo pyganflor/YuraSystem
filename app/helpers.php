@@ -2223,16 +2223,20 @@ function getCodigoArticuloVenture($idConfiguracionempresa = 1)
     return $codigosVenture[$idConfiguracionempresa];
 }
 
-function getProductosVinculadosYuraVenture($idConfiguracionEmpresa)
+function getProductosVinculadosYuraVenture($idConfiguracionEmpresa,$tipo)
 {
-    return ProductoYuraVenture::where('id_configuracion_empresa', $idConfiguracionEmpresa)->get();
+    return ProductoYuraVenture::where([
+        ['id_configuracion_empresa', $idConfiguracionEmpresa],
+        ['tipo',$tipo]
+    ])->get();
 }
 
-function getCodigoVenturePresentacion($idPlanta, $idVariedad, $idClasificacionRamo, $clasificacionRamoIdUnidadMedida, $tallosXramos, $longitudRamo, $longitudRamoIdUnidadMedida, $idConfiguracionempresa)
+function getCodigoVenturePresentacion($idPlanta, $idVariedad, $idClasificacionRamo, $clasificacionRamoIdUnidadMedida, $tallosXramos, $longitudRamo, $longitudRamoIdUnidadMedida, $idConfiguracionempresa,$tipo="N")
 {
-    $prductosVinculados = getProductosVinculadosYuraVenture($idConfiguracionempresa);
+    $prductosVinculados = getProductosVinculadosYuraVenture($idConfiguracionempresa,$tipo);
     foreach ($prductosVinculados as $prductoVinculado) {
         $datos = explode("|", $prductoVinculado->presentacion_yura);
+
         if ($datos[0] == $idPlanta && $datos[1] == $idVariedad && $datos[2] == $idClasificacionRamo && $datos[3] == $clasificacionRamoIdUnidadMedida && $datos[4] == $tallosXramos && $datos[5] == $longitudRamo && $datos[6] == $longitudRamoIdUnidadMedida) {
             return $prductoVinculado->codigo_venture;
         }

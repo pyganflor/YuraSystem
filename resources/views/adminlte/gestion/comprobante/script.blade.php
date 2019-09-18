@@ -368,7 +368,6 @@
                 _token: '{{csrf_token()}}',
             },
             success: function (data) {
-                console.log(data);
                 var opResult = JSON.parse(data);
                 if(opResult.success){
                     var $a = $("<a>");
