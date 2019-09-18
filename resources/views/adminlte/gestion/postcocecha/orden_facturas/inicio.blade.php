@@ -16,7 +16,7 @@
                     <label>Ver facturas de: </label>
                     <select id="id_configuracion_empresa_orden_factura" name="id_configuracion_empresa_orden_factura" class=form-control >
                         @foreach($empresas as $empresa)
-                            <option value="{{$empresa->id_configuracion_empresa}}"> {{$empresa->razon_social}} </option>
+                            <option value="{{$empresa->id_configuracion_empresa}}"> {{$empresa->nombre}} </option>
                         @endforeach
                     </select>
                     <input type="date" id="fecha" name="fecha" class="form-control" value="{{Carbon\Carbon::now()->toDateString()}}">

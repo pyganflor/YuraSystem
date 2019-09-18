@@ -475,7 +475,7 @@
 </table>
 <table style="width:100%">
     <tr>
-        <td style="font-size:12px;font-family: arial, sans-serif"> <b> FULL BOXES : [{{number_format($full,2,".","")}}]</b></td>
+        <td style="font-size:2px;font-family: arial, sans-serif"> <b> FULL BOXES : [{{number_format($full,2,".","")}}]</b></td>
         <td style="font-size:12px;font-family: arial, sans-serif"> <b> HALF BOXES : [{{number_format($half,2,".","")}}]</b></td>
         <td style="font-size:12px;font-family: arial, sans-serif"> <b> 1/4 BOXES : [{{number_format($cuarto,2,".","")}}]</b></td>
         <td style="font-size:12px;font-family: arial, sans-serif"> <b> 1/6 BOXES : [{{number_format($sexto,2,".","")}}]</b></td>
