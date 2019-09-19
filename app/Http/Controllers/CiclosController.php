@@ -3,6 +3,7 @@
 namespace yura\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use yura\Modelos\Ciclo;
 use yura\Modelos\Cosecha;
@@ -142,6 +143,20 @@ class CiclosController extends Controller
                     $proy->save();
                     bitacora('proyeccion_modulo', $proy->id_proyeccion_modulo, 'U', 'Actualizacion satisfactoria del estado');
                 }
+
+                /* ======================== ACTUALIZAR LA TABLA PROYECCION_MODULO_SEMANA ====================== */
+                $semana_fin = DB::table('semana')
+                    ->select(DB::raw('max(codigo) as max'))
+                    ->where('estado', '=', 1)
+                    ->where('id_variedad', '=', $request->variedad)
+                    ->get()[0]->max;
+
+                Artisan::call('proyeccion:update_semanal', [
+                    'semana_desde' => $semana->codigo,
+                    'semana_hasta' => $semana_fin,
+                    'variedad' => $request->variedad,
+                    'modulo' => $request->modulo,
+                ]);
             } else {
                 $success = false;
                 $msg = '<div class="alert alert-warning text-center">' .
@@ -246,6 +261,20 @@ class CiclosController extends Controller
                     '<p> Se ha actualizado el ciclo satisfactoriamente</p>'
                     . '</div>';
                 bitacora('ciclo', $ciclo->id_ciclo, 'U', 'Actualziacion satisfactoria de un ciclo');
+
+                /* ======================== ACTUALIZAR LA TABLA PROYECCION_MODULO_SEMANA ====================== */
+                $semana_fin = DB::table('semana')
+                    ->select(DB::raw('max(codigo) as max'))
+                    ->where('estado', '=', 1)
+                    ->where('id_variedad', '=', $request->variedad)
+                    ->get()[0]->max;
+
+                Artisan::call('proyeccion:update_semanal', [
+                    'semana_desde' => $semana->codigo,
+                    'semana_hasta' => $semana_fin,
+                    'variedad' => $request->variedad,
+                    'modulo' => $request->modulo,
+                ]);
             } else {
                 $success = false;
                 $msg = '<div class="alert alert-warning text-center">' .

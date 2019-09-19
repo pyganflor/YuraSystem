@@ -3,6 +3,8 @@
 namespace yura\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\DB;
 use yura\Modelos\Lote;
 use yura\Modelos\Modulo;
 use yura\Modelos\Sector;
@@ -150,6 +152,7 @@ class SectorController extends Controller
                         '<p> Se ha guardado un nuevo módulo satisfactoriamente</p>'
                         . '</div>';
                     bitacora('modulo', $model->id_modulo, 'I', 'Inserción satisfactoria de un nuevo módulo');
+
                 } else {
                     $success = false;
                     $msg = '<div class="alert alert-warning text-center">' .
