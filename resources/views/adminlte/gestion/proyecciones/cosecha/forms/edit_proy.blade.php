@@ -82,6 +82,7 @@
 </table>
 
 <input type="hidden" id="id_proyeccion_modulo" value="{{$proyeccion->id_proyeccion_modulo}}">
+<input type="hidden" id="semana_actual" value="{{$proyeccion->semana->codigo}}">
 
 <div class="text-center" style="margin-top: 10px">
     <button type="button" class="btn btn-success btn-xs" onclick="update_proyeccion()">
@@ -102,6 +103,7 @@
             desecho: $('#desecho').val(),
             tallos_planta: $('#tallos_planta').val(),
             tallos_ramo: $('#tallos_ramo').val(),
+            semana_actual: $('#semana_actual').val(),
         };
 
         post_jquery('{{url('proy_cosecha/update_proyeccion')}}', datos, function () {

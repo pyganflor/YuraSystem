@@ -210,6 +210,7 @@ class proyCosechaController extends Controller
                     . '</div>';
                 bitacora('proyeccion_modulo', $model->id_proyeccion_modulo, 'I', 'Inserción satisfactoria de una nueva proyección');
 
+                /* ======================== ACTUALIZAR LA TABLA PROYECCION_MODULO_SEMANA ====================== */
                 $semana = Semana::find($request->id_semana);
                 $semana_fin = DB::table('semana')
                     ->select(DB::raw('max(codigo) as max'))
@@ -255,7 +256,7 @@ class proyCosechaController extends Controller
 
     public function update_proyeccion(Request $request)
     {
-        dd($request->all());
+        //dd($request->all());
         $valida = Validator::make($request->all(), [
             'id_proyeccion_modulo' => 'required',
             'semana' => 'required',
@@ -289,21 +290,44 @@ class proyCosechaController extends Controller
 
             $semana = Semana::All()->where('estado', 1)->where('id_variedad', $model->id_variedad)
                 ->where('codigo', $request->semana)->first();
-            $model->id_semana = $semana->id_semana;
-            $model->fecha_inicio = $semana->fecha_inicial;
+            if ($semana != '') {
+                $model->id_semana = $semana->id_semana;
+                $model->fecha_inicio = $semana->fecha_inicial;
 
-            $model->poda_siembra = 0;       // borrar campo
+                $model->poda_siembra = 0;       // borrar campo
 
-            if ($model->save()) {
-                $success = true;
-                $msg = '<div class="alert alert-success text-center">' .
-                    '<p> Se ha guardado la proyección satisfactoriamente</p>'
-                    . '</div>';
-                bitacora('proyeccion_modulo', $model->id_proyeccion_modulo, 'U', 'Actualización satisfactoria de la proyección');
+                if ($model->save()) {
+                    $success = true;
+                    $msg = '<div class="alert alert-success text-center">' .
+                        '<p> Se ha guardado la proyección satisfactoriamente</p>'
+                        . '</div>';
+                    bitacora('proyeccion_modulo', $model->id_proyeccion_modulo, 'U', 'Actualización satisfactoria de la proyección');
+
+                    /* ======================== ACTUALIZAR LA TABLA PROYECCION_MODULO_SEMANA ====================== */
+                    $semana_desde = min($request->semana, $request->semana_actual, $semana->codigo);
+                    $semana_fin = DB::table('semana')
+                        ->select(DB::raw('max(codigo) as max'))
+                        ->where('estado', '=', 1)
+                        ->where('id_variedad', '=', $model->id_variedad)
+                        ->get()[0]->max;
+
+
+                    Artisan::call('proyeccion:update_semanal', [
+                        'semana_desde' => $semana_desde,
+                        'semana_hasta' => $semana_fin,
+                        'variedad' => $model->id_variedad,
+                        'modulo' => $model->id_modulo,
+                    ]);
+                } else {
+                    $success = false;
+                    $msg = '<div class="alert alert-warning text-center">' .
+                        '<p> Ha ocurrido un problema al guardar la información al sistema</p>'
+                        . '</div>';
+                }
             } else {
                 $success = false;
                 $msg = '<div class="alert alert-warning text-center">' .
-                    '<p> Ha ocurrido un problema al guardar la información al sistema</p>'
+                    '<p> La semana de inicio no se encuentra en el sistema</p>'
                     . '</div>';
             }
         } else {
