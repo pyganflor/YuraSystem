@@ -186,7 +186,10 @@ class Pedido extends Model
     public function getCajasByVariedad($variedad)
     {
         if (!getFacturaAnulada($this->id_pedido)) {
-            return round($this->getRamosEstandarByVariedad($variedad) / getConfiguracionEmpresa()->ramos_x_caja, 2);
+            if (!$this->isTipoSuelto())
+                return round($this->getRamosEstandarByVariedad($variedad) / getConfiguracionEmpresa()->ramos_x_caja, 2);
+            else
+                return $this->getCajasFisicasByVariedad($variedad);
         }
         return 0;
     }
