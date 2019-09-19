@@ -28,22 +28,15 @@ class proyCosechaController extends Controller
         ini_set('max_execution_time', env('MAX_EXECUTION_TIME'));
         set_time_limit(120);
 
-        /* Artisan::call('proyeccion:update_semanal',
-             [
-                 'semana_desde' => '1936',
-                 'semana_hasta' => '1945',
-                 'variedad' => 1,
-                 'modulo' => 1,
-             ]);*/
-
-        $semana_desde = Semana::All()->where('codigo', $request->desde)->first();
+        $semana_desde_par = Semana::All()->where('codigo', $request->desde)->first();
         $semana_hasta = Semana::All()->where('codigo', $request->hasta)->first();
-        if ($semana_desde != '' && $semana_hasta != '') {
+
+        if ($semana_desde_par != '' && $semana_hasta != '') {
             $fecha_ini = DB::table('ciclo')
                 ->select(DB::raw('min(fecha_inicio) as inicio'))->distinct()
                 ->where('estado', '=', 1)
                 ->where('id_variedad', '=', $request->variedad)
-                ->where('fecha_fin', '>=', $semana_desde->fecha_inicial)
+                ->where('fecha_fin', '>=', $semana_desde_par->fecha_inicial)
                 ->get()[0]->inicio;
 
             if ($fecha_ini != '') {
@@ -67,10 +60,12 @@ class proyCosechaController extends Controller
                     ->select('id_modulo')->distinct()
                     ->where('estado', '=', 1)
                     ->where('id_variedad', '=', $request->variedad)
-                    ->where('fecha_fin', '>=', $semana_desde->fecha_inicial)
+                    ->where('fecha_fin', '>=', $semana_desde_par->fecha_inicial)
                     ->orderBy('activo', 'desc')
                     ->orderBy('fecha_inicio', 'asc')
                     ->get();
+
+                //dd($semana_desde->fecha_inicial, $fecha_ini, $query_modulos);
 
                 $array_modulos = [];
                 foreach ($query_modulos as $mod) {
@@ -310,7 +305,6 @@ class proyCosechaController extends Controller
                         ->where('estado', '=', 1)
                         ->where('id_variedad', '=', $model->id_variedad)
                         ->get()[0]->max;
-
 
                     Artisan::call('proyeccion:update_semanal', [
                         'semana_desde' => $semana_desde,
