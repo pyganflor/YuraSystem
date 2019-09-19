@@ -111,15 +111,21 @@ class proyCosechaController extends Controller
                     ->where('id_modulo', $request->modulo)->last(),
             ]);
         }
-        dd($request->all());
         if ($request->tipo == 'Y') {    // crear una proyecccion
+            $semana = Semana::All()->where('codigo', $request->semana)->where('id_variedad', $request->variedad)->first();
+            $variedad = getVariedad($request->variedad);
             return view('adminlte.gestion.proyecciones.cosecha.forms.edit_proy', [
                 'modulo' => getModuloById($request->modulo),
-                'semana' => Semana::find($request->semana),
-                'variedad' => getVariedad($request->variedad),
-                'proyeccion' => ProyeccionModulo::find($request->model),
+                'semana' => $semana,
+                'variedad' => $variedad,
+                'proyeccion' => ProyeccionModulo::All()
+                    ->where('estado', 1)
+                    ->where('id_modulo', $request->modulo)
+                    ->where('id_semana', $semana->id_semana)
+                    ->where('id_variedad', $variedad->id_variedad)->first(),
             ]);
         }
+        dd($request->all());
         if ($request->tipo == 'T') {    // crear una proyecccion
             if ($request->tabla == 'P') {
                 return view('adminlte.gestion.proyecciones.cosecha.forms.edit_proy', [
@@ -249,7 +255,7 @@ class proyCosechaController extends Controller
 
     public function update_proyeccion(Request $request)
     {
-
+        dd($request->all());
         $valida = Validator::make($request->all(), [
             'id_proyeccion_modulo' => 'required',
             'semana' => 'required',

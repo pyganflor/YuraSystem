@@ -25,6 +25,7 @@ class DetalleEspecificacionEmpaque extends Model
         'longitud_ramo',
         'id_unidad_medida', // unidad de medida de longitud
         'id_grosor_ramo',   // grosor del ramo
+        'total_tallos'
     ];
 
     public function especificacion_empaque()
