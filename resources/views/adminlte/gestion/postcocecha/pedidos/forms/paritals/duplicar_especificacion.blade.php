@@ -11,12 +11,14 @@
                     </td>
                     <td style="border-color: #9d9d9d; padding: 0px; vertical-align: middle;width: 30px; text-align:center"
                         class="text-center" rowspan="{{getCantidadDetallesByEspecificacion($id_especificacion)}}" >
-                        <input type="number" min="1" name="orden" class="orden" id="orden_{{($cant_esp+1)}}" style="border: none;text-align: center;width: 30px;">
+                        <input type="number" min="1" name="orden" class="orden" id="orden_{{($cant_esp+1)}}" style="border: none;text-align: center;width: 100%;">
+                        <input type="hidden" min="1" name="codigo_presentacion_{{($cant_esp+1)}}" class="codigo_presentacion_{{($cant_esp+1)}}" id="codigo_presentacion_{{($cant_esp+1)}}" value="">
+                        <input type="hidden" min="1" name="codigo_venture_{{($cant_esp+1)}}" class="codigo_venture_{{($cant_esp+1)}}" id="codigo_venture_{{($cant_esp+1)}}" value="">
                     </td>
-                    <td style="border-color: #9d9d9d; padding: 0px; vertical-align: middle; "
+                    <td style="border-color: #9d9d9d; padding: 0px; vertical-align: middle;width: 30px;"
                         class="text-center" rowspan="{{getCantidadDetallesByEspecificacion($id_especificacion)}}">
-                        <input type="number" min="0" id="cantidad_piezas_{{($cant_esp+1)}}" style="border: none;" onkeyup="crear_orden_pedido(this)"  onchange="calcular_precio_pedido(this)"
-                               name="cantidad_piezas_{{$id_especificacion}}" class="text-center form-control cantidad_{{($cant_esp+1)}} input_cantidad" value="">
+                        <input type="number" min="0" id="cantidad_piezas_{{($cant_esp+1)}}" style="border: none;height: 34px;width: 100%;" onkeyup="crear_orden_pedido(this)"  onchange="calcular_precio_pedido(this)"
+                               name="cantidad_piezas_{{$id_especificacion}}" class="text-center cantidad_{{($cant_esp+1)}} input_cantidad" value="">
                         <input type="hidden" id="id_cliente_pedido_especificacion_{{($cant_esp+1)}}" value="{{getClienteEspecificacion($id_cliente,$id_especificacion)->id_cliente_pedido_especificacion}}">
                     </td>
                 @endif
@@ -27,11 +29,15 @@
                 <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;width: 70px;" class="text-center">
                     {{$det_esp_emp->clasificacion_ramo->nombre}}{{$det_esp_emp->clasificacion_ramo->unidad_medida->siglas}}
                     <input type="hidden" id="id_detalle_especificacion_empaque_{{$cant_esp+1}}_{{$b}}" value="{{$det_esp_emp->id_detalle_especificacionempaque}}">
+                    <input type="hidden" id="id_clasificacion_ramo_{{$cant_esp+1}}" name="id_clasificacion_ramo_{{$cant_esp+1}}" value="{{$det_esp_emp->clasificacion_ramo->id_clasificacion_ramo}}">
+                    <input type="hidden" id="u_m_clasificacion_ramo_{{$cant_esp+1}}" name="u_m_clasificacion_ramo_{{$cant_esp+1}}" value="{{$det_esp_emp->clasificacion_ramo->unidad_medida->id_unidad_medida}}">
                 </td>
                 @if($z == 0)
                     <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;" class="text-center" rowspan="{{count($esp_emp->detalles)}}">
                         <select id="empaque_{{$cant_esp+1}}" class="empaque_{{$cant_esp+1}}" name="empaque_{{$cant_esp+1}}" style="border:none;width:100%;height: 34px;" onchange="cuenta_ramos(this)" >
-                            <option value="{{$esp_emp->empaque->id_empaque}}" >{{explode('|',$esp_emp->empaque->nombre)[0]}}</option>
+                            @if($tipo_especificacion!=="O")
+                                <option value="{{$esp_emp->empaque->id_empaque}}" >{{explode('|',$esp_emp->empaque->nombre)[0]}}</option>
+                            @endif
                             @foreach($emp_tallos as $t)
                                 <option value="{{$t->f_empaque}}">{{explode('|',$t->nombre)[0]}}</option>
                             @endforeach
@@ -45,7 +51,7 @@
                            value="{{$det_esp_emp->empaque_p->nombre}}" class="input_presentacion_{{$cant_esp+1}}">
                 </td>
                 <td  style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;" class="text-center ramos_x_caja_{{$cant_esp+1}}">
-                    {{$det_esp_emp->cantidad}}
+                    <span>{{$det_esp_emp->cantidad}}</span>
                     <input type="hidden" class="td_ramos_x_caja_{{$cant_esp+1}} input_ramos_x_caja_{{$cant_esp+1}}_{{$b}}" value="{{$det_esp_emp->cantidad}}">
                 </td>
                 @if($id_especificacion != $anterior)
@@ -55,7 +61,16 @@
                     </td>
                 @endif
                 <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;" class="text-center td_tallos_x_ramo_{{$cant_esp+1}}_{{$b}} td_tallos_x_ramo_{{$cant_esp+1}}">
-                    <span>{{$det_esp_emp->tallos_x_ramos}}</span>
+                    <span>
+                         @if($tipo_especificacion!=="O")
+                            {{$det_esp_emp->tallos_x_ramos}}
+                        @else
+                            <input type="text" id="input_tallos_{{$cant_esp+1}}" name="input_tallos_{{$cant_esp+1}}" class="input_tallos_{{$cant_esp+1}}"
+                                   onkeyup="calcular_precio_pedido(this)" onchange="crear_orden_pedido(this)" value="0"
+                                   style="width:100%;border:none;text-align:center;height: 34px;"
+                                   title="Escribe la cantidad de tallos por malla">
+                        @endif
+                    </span>
                     <input id="tallos_x_ramo_{{$cant_esp+1}}_{{$b}}" name="tallos_x_ramo_{{$cant_esp+1}}_{{$b}}"
                            type="hidden"  value="{{$det_esp_emp->tallos_x_ramos}}" class="tallos_x_ramo_{{$cant_esp+1}}_{{$b}} tallos_x_ramo_{{$cant_esp+1}}">
                 </td>
@@ -90,7 +105,7 @@
                     <td class="text-center" style="border-color: #9d9d9d; vertical-align: middle"
                         rowspan="{{getCantidadDetallesByEspecificacion($id_especificacion)}}">
                         <select name="id_agencia_carga_{{$id_especificacion}}" id="id_agencia_carga_{{$cant_esp+1}}"
-                                class="text-center form-control" style="border: none; width: 100%" required>
+                                class="text-center" style="border: none; width: 100%;height: 34px;" required>
                             @foreach($agenciasCarga as $agencia)
                                 <option value="{{$agencia->id_agencia_carga}}">{{$agencia->nombre}}</option>
                             @endforeach

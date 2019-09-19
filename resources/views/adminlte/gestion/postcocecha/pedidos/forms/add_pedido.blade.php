@@ -41,12 +41,13 @@
                             <i class="fa fa-user-circle-o"></i> Cliente
                         </label>
                         <select class="form-control" id="id_cliente_venta" name="id_cliente_venta"
-                                onchange="cargar_espeicificaciones_cliente(true)" required>
+                                onchange="cargar_espeicificaciones_cliente(true)" style="background:transparent" required>
                             <option disabled selected> Seleccione</option>
                             @foreach($clientes as $cliente)
                                 <option value="{{$cliente->id_cliente}}"> {{$cliente->nombre}} </option>
                             @endforeach
                         </select>
+                        <input type="hidden" id="iva_cliente" name="iva_cliente" value="">
                     </div>
                     <div class="col-md-3 hide">
                         <label for="envio" style="font-size: 11pt;margin-top: 30px">Envío automático</label>
@@ -77,21 +78,30 @@
             </div>
             <div class="row">
                 <div class="col-md-12" id="table_campo_pedido"></div>
+                <div class="text-danger col-md-12" id="error_codigo_venture"></div>
             </div>
             <div class="row">
                 <div class="col-md-12">
                     <table style="width: 100%;text-align: right;margin-top:20px">
                         <tr>
                             <td><b>TOTAL DE PIEZAS:</b></td>
-                            <td style="vertical-align: middle;font-size: 14px;text-align: right; width: 80px;" id="total_piezas">0</td>
+                            <td style="vertical-align: middle;font-size: 14px;text-align: right; width: 8%;" id="total_piezas">0</td>
                         </tr>
                         <tr>
                             <td><b>TOTAL DE RAMOS:</b></td>
-                            <td style="vertical-align: middle;font-size: 14px;text-align: right; width: 80px;" id="total_ramos">0</td>
+                            <td style="vertical-align: middle;font-size: 14px;text-align: right; width: 8%;" id="total_ramos">0</td>
                         </tr>
                         <tr>
-                            <td><b>MONTO DEL PEDIDO:</b></td>
-                            <td class="monto_total_pedido" style="font-size: 14px;vertical-align: middle;text-align:rigth">$0.00</td>
+                            <td><b>SUBTOTAL:</b></td>
+                            <td class="monto_total_pedido" style="font-size: 14px;vertical-align: middle;text-align:right;width: 8%;">$0.00</td>
+                        </tr>
+                        <tr>
+                            <td style="width: 45px"><b>IVA:</b></td>
+                            <td class="iva_pedido" style="font-size: 14px;vertical-align: middle;text-align:right;width: 8%;">$0.00</td>
+                        </tr>
+                        <tr>
+                            <td><b>TOTAL:</b></td>
+                            <td class="total_pedido" style="font-size: 14px;vertical-align: middle;text-align:right;width: 8%;">$0.00</td>
                         </tr>
                     </table>
                 </div>
@@ -108,7 +118,7 @@
                         @if((isset($comprobante->estado) && $comprobante->estado != 5) && (isset($comprobante->estado) && $comprobante->estado != 6) && (isset(getPedido($id_pedido)->envios[0]->comprobante->integrado) && !getPedido($id_pedido)->envios[0]->comprobante->integrado) || !isset($comprobante->estado))
                             <tr>
                                 <td class="text-center" style="padding: 10px 0px 0px">
-                                    <button type="button" class=" btn btn-app btn-xs btn-success"
+                                    <button type="button" class=" btn btn-app btn-xs btn-success store_pedido_normal"
                                             onclick="store_pedido('{{$idCliente}}','@if($pedido_fijo) {{true}} @endif','{{csrf_token()}}','{{$vista}}','{{$id_pedido}}','{{$comprobante}}')">
                                         <span class="badge bg-green monto_total_pedido" >$0.00</span>
                                         <i class="fa fa-shopping-cart"></i> Guardar

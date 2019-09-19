@@ -77,6 +77,8 @@
                                 <td style="border-color: #9d9d9d; padding: 0px; vertical-align: middle; width: 30px; text-align:center"
                                     class="text-center" rowspan="{{getCantidadDetallesByEspecificacion($det_ped->cliente_especificacion->especificacion->id_especificacion)}}" >
                                     <input type="number" min="1" name="orden" class="orden no_edit" id="orden_{{($x+1)}}" style="border: none;text-align: center;width: 100%" value="{{$det_ped->orden}}">
+                                    <input type="hidden" min="1" name="codigo_presentacion_{{($x+1)}}" class="codigo_presentacion_{{($x+1)}}" id="codigo_presentacion_{{($x+1)}}" value="">
+                                    <input type="hidden" min="1" name="codigo_venture_{{($x+1)}}" class="codigo_venture_{{($x+1)}}" id="codigo_venture_{{($x+1)}}" value="">
                                 </td>
                                 <td style="border-color: #9d9d9d; padding: 0px; vertical-align: middle; width: 30px;"
                                     class="text-center" rowspan="{{getCantidadDetallesByEspecificacion($det_ped->cliente_especificacion->especificacion->id_especificacion)}}">
@@ -96,6 +98,8 @@
                             <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;width: 70px;" class="text-center">
                                 {{$det_esp_emp->clasificacion_ramo->nombre}}{{$det_esp_emp->clasificacion_ramo->unidad_medida->siglas}}
                                 <input type="hidden" id="id_detalle_especificacion_empaque_{{$x+1}}_{{$b}}" value="{{$det_esp_emp->id_detalle_especificacionempaque}}">
+                                <input type="hidden" id="id_clasificacion_ramo_{{$x+1}}" name="id_clasificacion_ramo_{{$x+1}}" value="{{$det_esp_emp->clasificacion_ramo->id_clasificacion_ramo}}">
+                                <input type="hidden" id="u_m_clasificacion_ramo_{{$x+1}}" name="u_m_clasificacion_ramo_{{$x+1}}" value="{{$det_esp_emp->clasificacion_ramo->unidad_medida->id_unidad_medida}}">
                             </td>
                             @if($z == 0)
                                  <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;" class="text-center"  rowspan="{{count($esp_emp->detalles)}}">
@@ -211,6 +215,8 @@
                                 <td style="border-color: #9d9d9d; padding: 0px; vertical-align: middle; width: 30px; text-align:center"
                                     class="text-center" rowspan="{{getCantidadDetallesByEspecificacion($item->id_especificacion)}}" >
                                     <input type="number" min="1" name="orden" class="orden" id="orden_{{($x+$cant_esp_creadas)}}" style="border: none;text-align: center;width: 100%">
+                                    <input type="hidden" min="1" name="codigo_presentacion_{{($x+$cant_esp_creadas)}}" class="codigo_presentacion_{{($x+$cant_esp_creadas)}}" id="codigo_presentacion_{{($x+$cant_esp_creadas)}}" value="">
+                                    <input type="hidden" min="1" name="codigo_venture_{{($x+$cant_esp_creadas)}}" class="codigo_venture_{{($x+$cant_esp_creadas)}}" id="codigo_venture_{{($x+$cant_esp_creadas)}}" value="">
                                 </td>
                                 <td style="border-color: #9d9d9d; padding: 0px; vertical-align: middle; width: 30px;"
                                     class="text-center" rowspan="{{getCantidadDetallesByEspecificacion($item->id_especificacion)}}">
@@ -226,11 +232,14 @@
                             <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;width: 70px;" class="text-center">
                                 {{$det_esp_emp->clasificacion_ramo->nombre}}{{$det_esp_emp->clasificacion_ramo->unidad_medida->siglas}}
                                 <input type="hidden" id="id_detalle_especificacion_empaque_{{$x+$cant_esp_creadas}}_{{$b}}" value="{{$det_esp_emp->id_detalle_especificacionempaque}}">
+                                <input type="hidden" id="id_clasificacion_ramo_{{$x+$cant_esp_creadas}}" name="id_clasificacion_ramo_{{$x+$cant_esp_creadas}}" value="{{$det_esp_emp->clasificacion_ramo->id_clasificacion_ramo}}">
+                                <input type="hidden" id="u_m_clasificacion_ramo_{{$x+$cant_esp_creadas}}" name="u_m_clasificacion_ramo_{{$x+$cant_esp_creadas}}" value="{{$det_esp_emp->clasificacion_ramo->unidad_medida->id_unidad_medida}}">
                             </td>
                             @if($z == 0)
                                 <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;" class="text-center"
                                     rowspan="{{count($esp_emp->detalles)}}">
-                                    <select id="empaque_{{$x+$cant_esp_creadas}}" class="empaque_{{$x+$cant_esp_creadas}}" name="empaque_{{$x+$cant_esp_creadas}}" style="width: 100%;border: none;text-align: center;height: 34px;" onchange="cuenta_ramos(this)" >
+                                    <select id="empaque_{{$x+$cant_esp_creadas}}" class="empaque_{{$x+$cant_esp_creadas}}" name="empaque_{{$x+$cant_esp_creadas}}"
+                                            style="width: 100%;border: none;text-align: center;height: 34px;background:transparent" onchange="cuenta_ramos(this)" >
                                         <option value="{{$esp_emp->empaque->id_empaque}}" >{{explode('|',$esp_emp->empaque->nombre)[0]}}</option>
                                         @isset($emp_tallos)
                                             @foreach($emp_tallos as $eT)
@@ -242,8 +251,8 @@
                             @endif
                             <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;" class="text-center td_presentacion_{{$x+$cant_esp_creadas}}">
                                 <span>{{$det_esp_emp->empaque_p->nombre}}</span>
-                                <input type="hidden" id="input_presentacion_{{$x+$cant_esp_creadas}}_{{$b}}" name="input_presentacion_{{$x+1}}_{{$b}}"
-                                       value="{{$det_esp_emp->empaque_p->nombre}}" class="input_presentacion_{{$x+1}}">
+                                <input type="hidden" id="input_presentacion_{{$x+$cant_esp_creadas}}_{{$b}}" name="input_presentacion_{{$x+$cant_esp_creadas}}_{{$b}}"
+                                       value="{{$det_esp_emp->empaque_p->nombre}}" class="input_presentacion_{{$x+$cant_esp_creadas}}">
                             </td>
                             <td  style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;" class="text-center ramos_x_caja_{{$x+$cant_esp_creadas}}">
                                 <span>{{$det_esp_emp->cantidad}}</span>
@@ -292,7 +301,7 @@
                                 <td class="text-center" style="border-color: #9d9d9d; vertical-align: middle"
                                     rowspan="{{getCantidadDetallesByEspecificacion($item->id_especificacion)}}">
                                     <select name="id_agencia_carga_{{$item->id_especificacion}}" id="id_agencia_carga_{{$x+$cant_esp_creadas}}"
-                                            class="text-center agencia_carga" style="border: none; width: 100%;height: 34px;" >
+                                            class="text-center agencia_carga" style="border: none; width: 100%;height: 34px;background:transparent" >
                                         @foreach($agenciasCarga as $agencia)
                                             <option value="{{$agencia->id_agencia_carga}}">{{$agencia->nombre}}</option>
                                         @endforeach

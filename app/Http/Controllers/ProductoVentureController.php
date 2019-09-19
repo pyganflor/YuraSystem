@@ -13,9 +13,10 @@ class ProductoVentureController extends Controller
 {
     public function inicio(Request $request){
         $data=[];
-        $det_esp_emp = DetalleEspecificacionEmpaque::select('id_variedad','id_clasificacion_ramo','tallos_x_ramos','longitud_ramo','id_unidad_medida')->distinct()->get();
+        $det_esp_emp = DetalleEspecificacionEmpaque::select('id_variedad','id_clasificacion_ramo','tallos_x_ramos','longitud_ramo','id_unidad_medida','id_detalle_especificacionempaque')->distinct()->get();
         foreach ($det_esp_emp as $x =>  $dsp)
-            $data[$dsp->id_variedad][] = $dsp;
+            if(getDetalleEspecificacionEmpaque($dsp->id_detalle_especificacionempaque)->especificacion_empaque->especificacion->tipo !== "O")
+                $data[$dsp->id_variedad][] = $dsp;
 
         $data_completa = [];
         foreach ($data as $item)
@@ -93,7 +94,7 @@ class ProductoVentureController extends Controller
 
     public function listadoProdcutosVinculados(Request $request){
         return view('adminlte.gestion.configuracion_facturacion.productos_venture.partials.listado',[
-            'productos_vinculados' => getProductosVinculadosYuraVenture($request->id_configuracion_empresa)
+            'productos_vinculados' => getProductosVinculadosYuraVenture($request->id_configuracion_empresa,"N")
         ]);
     }
 

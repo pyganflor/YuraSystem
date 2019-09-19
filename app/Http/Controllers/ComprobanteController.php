@@ -583,10 +583,19 @@ class ComprobanteController extends Controller
                                             $objDesgloseEnvioFactura->id_comprobante = $model_comprobante->id_comprobante;
                                             $objDesgloseEnvioFactura->codigo_principal = 'ENV' . str_pad($request->id_envio, 9, "0", STR_PAD_LEFT);
                                             $objDesgloseEnvioFactura->descripcion = $variedad->planta->nombre . " (" . $variedad->siglas . ") " . $clasificacionRamo->nombre . $umPeso . " " . $longitudRamo . $umL;
-                                            $objDesgloseEnvioFactura->cantidad = number_format(($det_esp_emp->cantidad * $esp_emp->cantidad * $det_ped->cantidad), 2, ".", "");
+
+                                            if($esp_emp->especificacion->tipo != "O"){
+                                                $objDesgloseEnvioFactura->cantidad = number_format(($det_ped->cantidad*$esp_emp->cantidad*$det_esp_emp->cantidad),2,".","");
+                                            }else{
+                                                $objDesgloseEnvioFactura->cantidad = $det_ped->cantidad*$det_esp_emp->tallos_x_ramos;
+                                            }
                                             $objDesgloseEnvioFactura->precio_unitario = number_format(explode(";", $precio[$i])[0], 2, ".", "");
                                             $objDesgloseEnvioFactura->descuento = '0.00';
-                                            $objDesgloseEnvioFactura->precio_total_sin_impuesto = number_format($precio_x_variedad, 2, ".", "");
+                                            if($esp_emp->especificacion->tipo != "O"){
+                                                $objDesgloseEnvioFactura->precio_total_sin_impuesto = number_format($precio_x_variedad, 2, ".", "");
+                                            }else{
+                                                $objDesgloseEnvioFactura->precio_total_sin_impuesto = number_format(($det_ped->cantidad*$det_esp_emp->tallos_x_ramos*$objDesgloseEnvioFactura->precio_unitario), 2, ".", "");
+                                            }
 
                                             if ($objDesgloseEnvioFactura->save()) {
                                                 $model_desglose_envio_factura = DesgloseEnvioFactura::all()->last();
@@ -1590,11 +1599,11 @@ class ComprobanteController extends Controller
                         $i = 0;
                         foreach ($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $m => $esp_emp) {
                             foreach ($esp_emp->detalles as $n => $det_esp_emp) {
-                                $codigoPresentacion = getCodigoVenturePresentacion($det_esp_emp->variedad->planta->id_planta,$det_esp_emp->variedad->id_variedad,$det_esp_emp->clasificacion_ramo->id_clasificacion_ramo,$det_esp_emp->clasificacion_ramo->unidad_medida->id_unidad_medida,$det_esp_emp->tallos_x_ramos,$det_esp_emp->longitud_ramo,$det_esp_emp->unidad_medida->id_unidad_medida,$pedido->id_configuracion_empresa);
+                                $codigoPresentacion = getCodigoVenturePresentacion($det_esp_emp->variedad->planta->id_planta,$det_esp_emp->variedad->id_variedad,$det_esp_emp->clasificacion_ramo->id_clasificacion_ramo,$det_esp_emp->clasificacion_ramo->unidad_medida->id_unidad_medida,$det_esp_emp->tallos_x_ramos,$det_esp_emp->longitud_ramo,$det_esp_emp->unidad_medida->id_unidad_medida,$pedido->id_configuracion_empresa,$esp_emp->especificacion->tipo);
                                 if($codigoPresentacion == ""){
                                     $success = false;
                                     $opResult =[
-                                        'msg' => '<div class="alert alert-warning text-center"><p>La presentación '.$det_esp_emp->variedad->planta->nombre.' '.$det_esp_emp->variedad->nombre.' '. $det_esp_emp->clasificacion_ramo->nombre .' '.$det_esp_emp->clasificacion_ramo->unidad_medida->siglas. ', '. $det_esp_emp->tallos_x_ramos .' Tallos '. $det_esp_emp->longitud_ramo . $det_esp_emp->unidad_medida->siglas.' no ha sido vinculada con su código del Venture con '. $pedido->empresa->nombre.'</p></div>',
+                                        'msg' => '<div class="alert alert-warning text-center"><p>La presentación '.$det_esp_emp->variedad->planta->nombre.' '.$det_esp_emp->variedad->nombre.' '. $det_esp_emp->clasificacion_ramo->nombre .' '.$det_esp_emp->clasificacion_ramo->unidad_medida->siglas. ', '. $det_esp_emp->tallos_x_ramos .' Tallos '. ($esp_emp->especificacion->tipo=="O" ? 'por malla de ': '') .  $det_esp_emp->longitud_ramo . $det_esp_emp->unidad_medida->siglas.' no ha sido vinculada con su código del Venture con '. $pedido->empresa->nombre.'</p></div>',
                                         'success'=>$success,
                                     ];
                                     echo json_encode($opResult);
@@ -1625,7 +1634,7 @@ class ComprobanteController extends Controller
                     }
                     foreach ($det_ped->coloraciones as $y => $coloracion){
                         foreach ($coloracion->marcaciones_coloraciones as $m_c) {
-                            $codigoPresentacion = getCodigoVenturePresentacion($m_c->detalle_especificacionempaque->variedad->planta->id_planta,$m_c->detalle_especificacionempaque->variedad->id_variedad,$m_c->detalle_especificacionempaque->clasificacion_ramo->id_clasificacion_ramo,$m_c->detalle_especificacionempaque->clasificacion_ramo->unidad_medida->id_unidad_medida,$m_c->detalle_especificacionempaque->tallos_x_ramos,$m_c->detalle_especificacionempaque->longitud_ramo,$m_c->detalle_especificacionempaque->unidad_medida->id_unidad_medida,$pedido->id_configuracion_empresa);
+                            $codigoPresentacion = getCodigoVenturePresentacion($m_c->detalle_especificacionempaque->variedad->planta->id_planta,$m_c->detalle_especificacionempaque->variedad->id_variedad,$m_c->detalle_especificacionempaque->clasificacion_ramo->id_clasificacion_ramo,$m_c->detalle_especificacionempaque->clasificacion_ramo->unidad_medida->id_unidad_medida,$m_c->detalle_especificacionempaque->tallos_x_ramos,$m_c->detalle_especificacionempaque->longitud_ramo,$m_c->detalle_especificacionempaque->unidad_medida->id_unidad_medida,$pedido->id_configuracion_empresa,$esp_emp->especificacion->tipo);
                             if($codigoPresentacion == ""){
                                 $success = false;
                                 $opResult =[
