@@ -18,6 +18,7 @@ class Empaque extends Model
         'fecha_registro',
         'estado',
         'tipo', //	C => Caja E => Envoltura P => Presentacion
+        'f_empaque' // Forma de empaque "" => Caja normal, "T" => Sin caja (En mallas de tallos)
     ];
 
     public function configuracion_empresa()
