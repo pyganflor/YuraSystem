@@ -3,6 +3,7 @@
 namespace yura\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use yura\Modelos\Apertura;
 use yura\Modelos\ClasificacionVerde;
@@ -158,6 +159,14 @@ class RecepcionController extends Controller
                                         $ciclo->save();
                                         bitacora('ciclo', $ciclo->id_ciclo, 'U', 'Actualizacion satisfactoria de un ciclo desde el ingreso de la cosecha: ' . $cosecha->id_cosecha);
                                     }
+
+                                    /* ============= ACTUALIZAR LA PROYECCION ================= */
+                                    Artisan::call('proyeccion:update_semanal', [
+                                        'semana_desde' => $semana->codigo,
+                                        'semana_hasta' => $semana->codigo,
+                                        'variedad' => $model->id_variedad,
+                                        'modulo' => $model->id_modulo,
+                                    ]);
                                 } else {
                                     $success = false;
                                     $msg .= '<div class="alert alert-warning text-center">' .
@@ -248,6 +257,14 @@ class RecepcionController extends Controller
                 $msg .= '<div class="alert alert-success text-center">' .
                     '<p> Se ha actualizado satisfactoriamente la información en el sistema</p>'
                     . '</div>';
+
+                /* ============= ACTUALIZAR LA PROYECCION ================= */
+                Artisan::call('proyeccion:update_semanal', [
+                    'semana_desde' => $model->recepcion->semana->codigo,
+                    'semana_hasta' => $model->recepcion->semana->codigo,
+                    'variedad' => $model->id_variedad,
+                    'modulo' => $model->id_modulo,
+                ]);
             } else {
                 $success = false;
                 $msg .= '<div class="alert alert-warning text-center">' .
@@ -324,6 +341,14 @@ class RecepcionController extends Controller
                     $ciclo->save();
                     bitacora('ciclo', $ciclo->id_ciclo, 'U', 'Actualizacion satisfactoria de un ciclo desde el ingreso de la cosecha: ' . $model->recepcion->id_cosecha);
                 }
+
+                /* ============= ACTUALIZAR LA PROYECCION ================= */
+                Artisan::call('proyeccion:update_semanal', [
+                    'semana_desde' => $model->recepcion->semana->codigo,
+                    'semana_hasta' => $model->recepcion->semana->codigo,
+                    'variedad' => $model->id_variedad,
+                    'modulo' => $model->id_modulo,
+                ]);
             } else {
                 $success = false;
                 $msg .= '<div class="alert alert-warning text-center">' .
@@ -372,6 +397,14 @@ class RecepcionController extends Controller
                 $msg .= '<div class="alert alert-success text-center">' .
                     '<p> Se ha actualizado satisfactoriamente la información en el sistema</p>'
                     . '</div>';
+
+                /* ============= ACTUALIZAR LA PROYECCION ================= */
+                Artisan::call('proyeccion:update_semanal', [
+                    'semana_desde' => $model->recepcion->semana->codigo,
+                    'semana_hasta' => $model->recepcion->semana->codigo,
+                    'variedad' => $model->id_variedad,
+                    'modulo' => $model->id_modulo,
+                ]);
             } else {
                 $success = false;
                 $msg .= '<div class="alert alert-warning text-center">' .
