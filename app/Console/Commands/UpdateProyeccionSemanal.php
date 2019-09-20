@@ -116,6 +116,7 @@ class UpdateProyeccionSemanal extends Command
                         $proy->cosechados = $data['cosechado'];
                         $proy->proyectados = $data['proyectados'];
                         $proy->tabla = $data['tabla'];
+                        $proy->modelo = $data['modelo'];
 
                         if (in_array($data['tipo'], ['S', 'P', 'T', 'Y'])) {
                             if ($data['tabla'] == 'C') {

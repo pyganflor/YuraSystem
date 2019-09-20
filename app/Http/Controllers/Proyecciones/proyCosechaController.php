@@ -111,11 +111,7 @@ class proyCosechaController extends Controller
                 'modulo' => getModuloById($request->modulo),
                 'semana' => $semana,
                 'variedad' => $variedad,
-                'proyeccion' => ProyeccionModulo::All()
-                    ->where('estado', 1)
-                    ->where('id_modulo', $request->modulo)
-                    ->where('id_semana', $semana->id_semana)
-                    ->where('id_variedad', $variedad->id_variedad)->first(),
+                'proyeccion' => ProyeccionModulo::find($request->modelo),
             ]);
         }
         if (in_array($request->tipo, ['P', 'S'])) {    // editar ciclo poda
@@ -125,30 +121,27 @@ class proyCosechaController extends Controller
                 'modulo' => getModuloById($request->modulo),
                 'semana' => $semana,
                 'variedad' => $variedad,
-                'ciclo' => Ciclo::All()
-                    ->where('estado', 1)
-                    ->where('id_modulo', $request->modulo)
-                    ->where('id_variedad', $request->variedad)
-                    ->where('fecha_inicio', '>=', $semana->fecha_inicial)
-                    ->where('fecha_inicio', '<=', $semana->fecha_final)
-                    ->first(),
+                'ciclo' => Ciclo::find($request->modelo),
             ]);
         }
-        dd($request->all());
         if ($request->tipo == 'T') {    // crear una proyecccion
             if ($request->tabla == 'P') {
+                $semana = Semana::All()->where('codigo', $request->semana)->where('id_variedad', $request->variedad)->first();
+                $variedad = getVariedad($request->variedad);
                 return view('adminlte.gestion.proyecciones.cosecha.forms.edit_proy', [
                     'modulo' => getModuloById($request->modulo),
-                    'semana' => Semana::find($request->semana),
-                    'variedad' => getVariedad($request->variedad),
-                    'proyeccion' => ProyeccionModulo::find($request->model),
+                    'semana' => $semana,
+                    'variedad' => $variedad,
+                    'proyeccion' => ProyeccionModulo::find($request->modelo),
                 ]);
             } else {
+                $semana = Semana::All()->where('codigo', $request->semana)->where('id_variedad', $request->variedad)->first();
+                $variedad = getVariedad($request->variedad);
                 return view('adminlte.gestion.proyecciones.cosecha.forms.edit_ciclo', [
                     'modulo' => getModuloById($request->modulo),
-                    'semana' => Semana::find($request->semana),
-                    'variedad' => getVariedad($request->variedad),
-                    'ciclo' => Ciclo::find($request->model),
+                    'semana' => $semana,
+                    'variedad' => $variedad,
+                    'ciclo' => Ciclo::find($request->modelo),
                 ]);
             }
         }

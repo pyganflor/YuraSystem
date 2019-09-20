@@ -16,13 +16,15 @@
             });
     }
 
-    function select_celda(tipo, mod, sem, variedad) {
+    function select_celda(tipo, mod, sem, variedad, tabla, modelo) {
         if (['F', 'P', 'S', 'T', 'Y'].indexOf(tipo) >= 0) {
             datos = {
                 tipo: tipo,
                 modulo: mod,
                 semana: sem,
                 variedad: variedad,
+                tabla: tabla,
+                modelo: modelo,
             };
             get_jquery('{{url('proy_cosecha/select_celda')}}', datos, function (retorno) {
                 modal_view('modal-view_select_celda', retorno, '<i class="fa fa-fw fa-tasks"></i> Proyección Cosecha', true, false,
