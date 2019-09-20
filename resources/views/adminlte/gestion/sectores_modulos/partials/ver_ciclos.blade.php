@@ -81,15 +81,11 @@
                         @endif
                     </th>
                     <th class="text-center" style="border-color: #9d9d9d">
-                        @if($ciclo->fecha_cosecha != '')
                             <span class="elemento_view_{{$ciclo->id_ciclo}}">
-                                {{difFechas($ciclo->fecha_cosecha, $ciclo->fecha_inicio)->days}}
+                                @if($ciclo->fecha_cosecha != '')
+                                    {{difFechas($ciclo->fecha_cosecha, $ciclo->fecha_inicio)->days}}
+                                @endif
                             </span>
-                        @else
-                            <span class="elemento_view_{{$ciclo->id_ciclo}}">
-                                {{difFechas(date('Y-m-d'), $ciclo->fecha_inicio)->days}}
-                            </span>
-                        @endif
                         <input type="text" id="fecha_cosecha_ciclo_modal_{{$ciclo->id_ciclo}}"
                                value="{{$ciclo->fecha_cosecha != '' ? difFechas($ciclo->fecha_cosecha, $ciclo->fecha_inicio)->days : ''}}"
                                class="elemento_input_{{$ciclo->id_ciclo}} text-center {{$ciclo->activo == 1 ? 'bg-green-gradient' : ''}}"
