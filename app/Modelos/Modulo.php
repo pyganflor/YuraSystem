@@ -134,7 +134,6 @@ class Modulo extends Model
             $tallos_proyectados = 0;
             /* ----------------------------- calcular cosecha real ----------------------------- */
             $cosecha = getTallosCosechadosByModSemVar($this->id_modulo, $semana->codigo, $variedad);
-            //$cosecha = 0;
 
             $ciclo_ini = $this->ciclos->where('estado', 1)
                 ->where('fecha_inicio', '>=', $semana->fecha_inicial)->where('fecha_inicio', '<=', $semana->fecha_final)
@@ -160,7 +159,7 @@ class Modulo extends Model
                     'info' => '',
                     'cosechado' => $cosecha,
                     'proyectados' => $tallos_proyectados,
-                    'modelo' => $ciclo_last != '' ? $ciclo_last->id_ciclo : '',
+                    'modelo' => $ciclo_last != '' ? $ciclo_last->id_ciclo : null,
                     'ciclo' => $ciclo_last != '' ? $ciclo_last : '',
                     'proy' => '',
                     'tabla' => 'C',
@@ -248,7 +247,7 @@ class Modulo extends Model
                                                     'info' => '-',
                                                     'cosechado' => $cosecha,
                                                     'proyectados' => $tallos_proyectados,
-                                                    'modelo' => '',
+                                                    'modelo' => null,
                                                     'ciclo' => '',
                                                     'proy' => '',
                                                     'tabla' => '',
@@ -260,7 +259,7 @@ class Modulo extends Model
                                                 'info' => '*',
                                                 'cosechado' => $cosecha,
                                                 'proyectados' => $tallos_proyectados,
-                                                'modelo' => '',
+                                                'modelo' => null,
                                                 'ciclo' => '',
                                                 'proy' => '',
                                                 'tabla' => '',
@@ -272,7 +271,7 @@ class Modulo extends Model
                                             'info' => '-',
                                             'cosechado' => $cosecha,
                                             'proyectados' => $tallos_proyectados,
-                                            'modelo' => '',
+                                            'modelo' => null,
                                             'ciclo' => '',
                                             'proy' => '',
                                             'tabla' => '',
@@ -286,7 +285,7 @@ class Modulo extends Model
                                 'info' => '-',
                                 'cosechado' => $cosecha,
                                 'proyectados' => $tallos_proyectados,
-                                'modelo' => '',
+                                'modelo' => null,
                                 'ciclo' => '',
                                 'proy' => '',
                                 'tabla' => '',
@@ -301,7 +300,7 @@ class Modulo extends Model
                 'info' => '',
                 'cosechado' => 0,
                 'proyectados' => 0,
-                'modelo' => '',
+                'modelo' => null,
                 'ciclo' => '',
                 'proy' => '',
                 'tabla' => 'C',

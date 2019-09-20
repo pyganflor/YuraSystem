@@ -33,6 +33,7 @@ class ProyeccionModuloSemana extends Model
         'semana_poda_siembra',
         'desecho',
         'tabla',
+        'modelo',
     ];
 
     public function modulo()
