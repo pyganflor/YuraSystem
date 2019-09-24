@@ -303,15 +303,24 @@
                 }
             }
             factor = (Math.round((100 / selected.length) * 100) / 100);
+            total_progress = 0;
+            $('#div_barra_progreso').show();
             for (i = 0; i < selected.length; i++) {
                 datos = {
                     _token: '{{csrf_token()}}',
                     modulo: selected[i]
                 };
-                alert(datos['modulo']);
+                mod = datos['modulo'];
                 $('#celda_modulo_' + mod).LoadingOverlay('show');
+                alert
                 $.post('{{url('proy_cosecha/restaurar_proyeccion')}}', datos, function (retorno) {
-                    //listar_proyecciones();
+                    total_progress += factor;
+                    $('#barra_progreso').css('width', total_progress + '%');
+                    if ((i+1) == selected.length) {
+                        alert(55);
+                        $('#div_barra_progreso').hide();
+                        listar_proyecciones();
+                    }
                 }, 'json').fail(function (retorno) {
                     console.log(retorno);
                     alerta_errores(retorno.responseText);
@@ -319,7 +328,6 @@
                     $('#celda_modulo_' + mod).LoadingOverlay('hide');
                 });
             }
-
         }
     }
 

@@ -426,7 +426,6 @@ class proyCosechaController extends Controller
 
     public function restaurar_proyeccion(Request $request)
     {
-        dd($request->all());
         Artisan::call('proyeccion:auto_create', [
             'modulo' => $request->modulo
         ]);

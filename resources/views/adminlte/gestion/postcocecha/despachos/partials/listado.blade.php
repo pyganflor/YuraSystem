@@ -190,24 +190,27 @@
                                             <td class="text-center" style="border-color: #9d9d9d"
                                                 rowspan="{{$getCantidadDetallesEspecificacionByPedido}}">
                                                 {{getCliente($pedido->id_cliente)->detalle()->nombre}}
+                                                @php
+                                                    $precio_pedido = $ped->getPrecioByPedido();
+                                                @endphp
                                                 @if($opciones)
                                                     <br>
                                                     <strong>
-                                                        ${{number_format($ped->getPrecioByPedido(), 2)}}
+                                                        ${{number_format($precio_pedido, 2)}}
                                                     </strong>
                                                     {{--@php
                                                         $sum_precios = 0;
                                                     @endphp
-                                                    @foreach(getVariedades() as $var)
+                                                    @foreach($ped->detalles as $det)
                                                         @php
-                                                        $parcial = $ped->getPrecioByPedidoVariedad($var->id_variedad);
+                                                            $parcial = $det->total_tallos();
                                                             $sum_precios += $parcial;
                                                         @endphp
                                                         @if($parcial > 0)
                                                             <br>
                                                             <small>
                                                                 <em>
-                                                                    {{$var->siglas}}: {{$parcial}}
+                                                                    {{$parcial}}
                                                                 </em>
                                                             </small>
                                                         @endif
@@ -217,7 +220,7 @@
                                                 @endif
                                                 @php
                                                     if(!getFacturaAnulada($pedido->id_pedido))
-                                                        $valor_total += $ped->getPrecioByPedido();
+                                                        $valor_total += $precio_pedido;
                                                 @endphp
                                                 @if($facturado != null)
                                                     <br/>
