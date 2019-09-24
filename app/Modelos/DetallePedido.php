@@ -102,6 +102,6 @@ class DetallePedido extends Model
 
     public function total_tallos()
     {
-        return $this->data_tallos()->mallas * $this->data_tallos()->tallos_x_malla;
+        return $this->data_tallos->mallas * $this->data_tallos->tallos_x_malla;
     }
 }
