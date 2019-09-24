@@ -28,22 +28,15 @@ class proyCosechaController extends Controller
         ini_set('max_execution_time', env('MAX_EXECUTION_TIME'));
         set_time_limit(120);
 
-        /* Artisan::call('proyeccion:update_semanal',
-             [
-                 'semana_desde' => '1936',
-                 'semana_hasta' => '1945',
-                 'variedad' => 1,
-                 'modulo' => 1,
-             ]);*/
-
-        $semana_desde = Semana::All()->where('codigo', $request->desde)->first();
+        $semana_desde_par = Semana::All()->where('codigo', $request->desde)->first();
         $semana_hasta = Semana::All()->where('codigo', $request->hasta)->first();
-        if ($semana_desde != '' && $semana_hasta != '') {
+
+        if ($semana_desde_par != '' && $semana_hasta != '') {
             $fecha_ini = DB::table('ciclo')
                 ->select(DB::raw('min(fecha_inicio) as inicio'))->distinct()
                 ->where('estado', '=', 1)
                 ->where('id_variedad', '=', $request->variedad)
-                ->where('fecha_fin', '>=', $semana_desde->fecha_inicial)
+                ->where('fecha_fin', '>=', $semana_desde_par->fecha_inicial)
                 ->get()[0]->inicio;
 
             if ($fecha_ini != '') {
@@ -67,7 +60,7 @@ class proyCosechaController extends Controller
                     ->select('id_modulo')->distinct()
                     ->where('estado', '=', 1)
                     ->where('id_variedad', '=', $request->variedad)
-                    ->where('fecha_fin', '>=', $semana_desde->fecha_inicial)
+                    ->where('fecha_fin', '>=', $semana_desde_par->fecha_inicial)
                     ->orderBy('activo', 'desc')
                     ->orderBy('fecha_inicio', 'asc')
                     ->get();
@@ -111,39 +104,46 @@ class proyCosechaController extends Controller
                     ->where('id_modulo', $request->modulo)->last(),
             ]);
         }
-        dd($request->all());
         if ($request->tipo == 'Y') {    // crear una proyecccion
+            $semana = Semana::All()->where('codigo', $request->semana)->where('id_variedad', $request->variedad)->first();
+            $variedad = getVariedad($request->variedad);
             return view('adminlte.gestion.proyecciones.cosecha.forms.edit_proy', [
                 'modulo' => getModuloById($request->modulo),
-                'semana' => Semana::find($request->semana),
-                'variedad' => getVariedad($request->variedad),
-                'proyeccion' => ProyeccionModulo::find($request->model),
+                'semana' => $semana,
+                'variedad' => $variedad,
+                'proyeccion' => ProyeccionModulo::find($request->modelo),
+            ]);
+        }
+        if (in_array($request->tipo, ['P', 'S'])) {    // editar ciclo poda
+            $semana = Semana::All()->where('codigo', $request->semana)->where('id_variedad', $request->variedad)->first();
+            $variedad = getVariedad($request->variedad);
+            return view('adminlte.gestion.proyecciones.cosecha.forms.edit_ciclo', [
+                'modulo' => getModuloById($request->modulo),
+                'semana' => $semana,
+                'variedad' => $variedad,
+                'ciclo' => Ciclo::find($request->modelo),
             ]);
         }
         if ($request->tipo == 'T') {    // crear una proyecccion
             if ($request->tabla == 'P') {
+                $semana = Semana::All()->where('codigo', $request->semana)->where('id_variedad', $request->variedad)->first();
+                $variedad = getVariedad($request->variedad);
                 return view('adminlte.gestion.proyecciones.cosecha.forms.edit_proy', [
                     'modulo' => getModuloById($request->modulo),
-                    'semana' => Semana::find($request->semana),
-                    'variedad' => getVariedad($request->variedad),
-                    'proyeccion' => ProyeccionModulo::find($request->model),
+                    'semana' => $semana,
+                    'variedad' => $variedad,
+                    'proyeccion' => ProyeccionModulo::find($request->modelo),
                 ]);
             } else {
+                $semana = Semana::All()->where('codigo', $request->semana)->where('id_variedad', $request->variedad)->first();
+                $variedad = getVariedad($request->variedad);
                 return view('adminlte.gestion.proyecciones.cosecha.forms.edit_ciclo', [
                     'modulo' => getModuloById($request->modulo),
-                    'semana' => Semana::find($request->semana),
-                    'variedad' => getVariedad($request->variedad),
-                    'ciclo' => Ciclo::find($request->model),
+                    'semana' => $semana,
+                    'variedad' => $variedad,
+                    'ciclo' => Ciclo::find($request->modelo),
                 ]);
             }
-        }
-        if (in_array($request->tipo, ['P', 'S'])) {    // editar ciclo poda
-            return view('adminlte.gestion.proyecciones.cosecha.forms.edit_ciclo', [
-                'modulo' => getModuloById($request->modulo),
-                'semana' => Semana::find($request->semana),
-                'variedad' => getVariedad($request->variedad),
-                'ciclo' => Ciclo::find($request->model),
-            ]);
         }
     }
 
@@ -204,6 +204,7 @@ class proyCosechaController extends Controller
                     . '</div>';
                 bitacora('proyeccion_modulo', $model->id_proyeccion_modulo, 'I', 'Inserción satisfactoria de una nueva proyección');
 
+                /* ======================== ACTUALIZAR LA TABLA PROYECCION_MODULO_SEMANA ====================== */
                 $semana = Semana::find($request->id_semana);
                 $semana_fin = DB::table('semana')
                     ->select(DB::raw('max(codigo) as max'))
@@ -249,7 +250,7 @@ class proyCosechaController extends Controller
 
     public function update_proyeccion(Request $request)
     {
-
+        //dd($request->all());
         $valida = Validator::make($request->all(), [
             'id_proyeccion_modulo' => 'required',
             'semana' => 'required',
@@ -283,21 +284,43 @@ class proyCosechaController extends Controller
 
             $semana = Semana::All()->where('estado', 1)->where('id_variedad', $model->id_variedad)
                 ->where('codigo', $request->semana)->first();
-            $model->id_semana = $semana->id_semana;
-            $model->fecha_inicio = $semana->fecha_inicial;
+            if ($semana != '') {
+                $model->id_semana = $semana->id_semana;
+                $model->fecha_inicio = $semana->fecha_inicial;
 
-            $model->poda_siembra = 0;       // borrar campo
+                $model->poda_siembra = 0;       // borrar campo
 
-            if ($model->save()) {
-                $success = true;
-                $msg = '<div class="alert alert-success text-center">' .
-                    '<p> Se ha guardado la proyección satisfactoriamente</p>'
-                    . '</div>';
-                bitacora('proyeccion_modulo', $model->id_proyeccion_modulo, 'U', 'Actualización satisfactoria de la proyección');
+                if ($model->save()) {
+                    $success = true;
+                    $msg = '<div class="alert alert-success text-center">' .
+                        '<p> Se ha guardado la proyección satisfactoriamente</p>'
+                        . '</div>';
+                    bitacora('proyeccion_modulo', $model->id_proyeccion_modulo, 'U', 'Actualización satisfactoria de la proyección');
+
+                    /* ======================== ACTUALIZAR LA TABLA PROYECCION_MODULO_SEMANA ====================== */
+                    $semana_desde = min($request->semana, $request->semana_actual, $semana->codigo);
+                    $semana_fin = DB::table('semana')
+                        ->select(DB::raw('max(codigo) as max'))
+                        ->where('estado', '=', 1)
+                        ->where('id_variedad', '=', $model->id_variedad)
+                        ->get()[0]->max;
+
+                    Artisan::call('proyeccion:update_semanal', [
+                        'semana_desde' => $semana_desde,
+                        'semana_hasta' => $semana_fin,
+                        'variedad' => $model->id_variedad,
+                        'modulo' => $model->id_modulo,
+                    ]);
+                } else {
+                    $success = false;
+                    $msg = '<div class="alert alert-warning text-center">' .
+                        '<p> Ha ocurrido un problema al guardar la información al sistema</p>'
+                        . '</div>';
+                }
             } else {
                 $success = false;
                 $msg = '<div class="alert alert-warning text-center">' .
-                    '<p> Ha ocurrido un problema al guardar la información al sistema</p>'
+                    '<p> La semana de inicio no se encuentra en el sistema</p>'
                     . '</div>';
             }
         } else {
@@ -357,6 +380,21 @@ class proyCosechaController extends Controller
                     '<p> Se ha guardado la información satisfactoriamente</p>'
                     . '</div>';
                 bitacora('ciclo', $model->id_ciclo, 'U', 'Actualización satisfactoria de un ciclo');
+
+                /* ======================== ACTUALIZAR LA TABLA PROYECCION_MODULO_SEMANA ====================== */
+                $semana_desde = getSemanaByDate($model->fecha_inicio)->codigo;
+                $semana_fin = DB::table('semana')
+                    ->select(DB::raw('max(codigo) as max'))
+                    ->where('estado', '=', 1)
+                    ->where('id_variedad', '=', $model->id_variedad)
+                    ->get()[0]->max;
+
+                Artisan::call('proyeccion:update_semanal', [
+                    'semana_desde' => $semana_desde,
+                    'semana_hasta' => $semana_fin,
+                    'variedad' => $model->id_variedad,
+                    'modulo' => $model->id_modulo,
+                ]);
             } else {
                 $success = false;
                 $msg = '<div class="alert alert-warning text-center">' .
@@ -383,6 +421,16 @@ class proyCosechaController extends Controller
         return [
             'mensaje' => $msg,
             'success' => $success
+        ];
+    }
+
+    public function restaurar_proyeccion(Request $request)
+    {
+        Artisan::call('proyeccion:auto_create', [
+            'modulo' => $request->modulo
+        ]);
+        return [
+          'success' => true,
         ];
     }
 }

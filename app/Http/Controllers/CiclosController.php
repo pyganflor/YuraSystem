@@ -3,6 +3,7 @@
 namespace yura\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use yura\Modelos\Ciclo;
 use yura\Modelos\Cosecha;
@@ -142,6 +143,55 @@ class CiclosController extends Controller
                     $proy->save();
                     bitacora('proyeccion_modulo', $proy->id_proyeccion_modulo, 'U', 'Actualizacion satisfactoria del estado');
                 }
+
+                /* ===================== CREAR SIGUIENTE PROYECCION ==================== */
+                $sum_semana = intval($ciclo->semana_poda_siembra) + intval(count(explode('-', $ciclo->curva)));
+                $codigo = $semana->codigo;
+                $i = 1;
+                $next = 1;
+                while ($i < $sum_semana) {
+                    $new_codigo = $codigo + $next;
+                    $query = Semana::All()
+                        ->where('estado', '=', 1)
+                        ->where('codigo', '=', $new_codigo)
+                        ->where('id_variedad', '=', $ciclo->id_variedad)
+                        ->first();
+
+                    if ($query != '') {
+                        $i++;
+                    }
+                    $next++;
+                }
+
+                $proy = new ProyeccionModulo();
+                $proy->id_modulo = $ciclo->id_modulo;
+                $proy->id_semana = $query->id_semana;
+                $proy->id_variedad = $ciclo->id_variedad;
+                $proy->tipo = 'P';
+                $proy->curva = $ciclo->curva;
+                $proy->semana_poda_siembra = $ciclo->semana_poda_siembra;
+                $proy->poda_siembra = $ciclo->modulo->getPodaSiembraByCiclo($ciclo->id_ciclo) + 1;
+                $proy->plantas_iniciales = $ciclo->plantas_iniciales != '' ? $ciclo->plantas_iniciales : 0;
+                $proy->desecho = $ciclo->desecho;
+                $proy->tallos_planta = $ciclo->conteo != '' ? $ciclo->conteo : 0;
+                $proy->tallos_ramo = $query->tallos_ramo_poda != '' ? $query->tallos_ramo_poda : 0;
+                $proy->fecha_inicio = $query->fecha_final;
+
+                $proy->save();
+
+                /* ======================== ACTUALIZAR LA TABLA PROYECCION_MODULO_SEMANA ====================== */
+                $semana_fin = DB::table('semana')
+                    ->select(DB::raw('max(codigo) as max'))
+                    ->where('estado', '=', 1)
+                    ->where('id_variedad', '=', $request->variedad)
+                    ->get()[0]->max;
+
+                Artisan::call('proyeccion:update_semanal', [
+                    'semana_desde' => $semana->codigo,
+                    'semana_hasta' => $semana_fin,
+                    'variedad' => $request->variedad,
+                    'modulo' => $request->modulo,
+                ]);
             } else {
                 $success = false;
                 $msg = '<div class="alert alert-warning text-center">' .
@@ -188,6 +238,11 @@ class CiclosController extends Controller
         ]);
         if (!$valida->fails()) {
             $ciclo = Ciclo::find($request->ciclo);
+
+            /* ======================== ACTUALIZAR LA TABLA PROYECCION_MODULO_SEMANA ====================== */
+            $semana_ini = min(getSemanaByDate($ciclo->fecha_inicio)->codigo, getSemanaByDate($request->fecha_inicio)->codigo);
+            /* ------------------------ ******************************************* ---------------------- */
+
             foreach ($ciclo->modulo->ciclos->where('estado', 1) as $c) {
                 if ($c->id_ciclo != $ciclo->id_ciclo) {
                     if ($request->fecha_inicio >= $c->fecha_inicio && $request->fecha_inicio < $c->fecha_fin)
@@ -222,6 +277,8 @@ class CiclosController extends Controller
             $ciclo->poda_siembra = $request->poda_siembra;
             if ($request->fecha_cosecha != '')
                 $ciclo->fecha_cosecha = opDiasFecha('+', $request->fecha_cosecha, $request->fecha_inicio);
+            else
+                $ciclo->fecha_cosecha = null;
             $ciclo->fecha_fin = $request->fecha_fin;
             $ciclo->plantas_iniciales = $request->plantas_iniciales;
             $ciclo->plantas_muertas = $request->plantas_muertas;
@@ -246,6 +303,20 @@ class CiclosController extends Controller
                     '<p> Se ha actualizado el ciclo satisfactoriamente</p>'
                     . '</div>';
                 bitacora('ciclo', $ciclo->id_ciclo, 'U', 'Actualziacion satisfactoria de un ciclo');
+
+                /* ======================== ACTUALIZAR LA TABLA PROYECCION_MODULO_SEMANA ====================== */
+                $semana_fin = DB::table('semana')
+                    ->select(DB::raw('max(codigo) as max'))
+                    ->where('estado', '=', 1)
+                    ->where('id_variedad', '=', $request->variedad)
+                    ->get()[0]->max;
+
+                Artisan::call('proyeccion:update_semanal', [
+                    'semana_desde' => $semana_ini,
+                    'semana_hasta' => $semana_fin,
+                    'variedad' => $request->variedad,
+                    'modulo' => $ciclo->id_modulo,
+                ]);
             } else {
                 $success = false;
                 $msg = '<div class="alert alert-warning text-center">' .
@@ -297,6 +368,21 @@ class CiclosController extends Controller
                         '<p> Se ha terminado el ciclo satisfactoriamente</p>'
                         . '</div>';
                     bitacora('ciclo', $ciclo->id_ciclo, 'U', 'Actualizacion satisfactoria de un ciclo (terminar ciclo)');
+
+                    /* ======================== ACTUALIZAR LA TABLA PROYECCION_MODULO_SEMANA ====================== */
+                    $semana_ini = getSemanaByDate($ciclo->fecha_inicio)->codigo;
+                    $semana_fin = DB::table('semana')
+                        ->select(DB::raw('max(codigo) as max'))
+                        ->where('estado', '=', 1)
+                        ->where('id_variedad', '=', $ciclo->id_variedad)
+                        ->get()[0]->max;
+
+                    Artisan::call('proyeccion:update_semanal', [
+                        'semana_desde' => $semana_ini,
+                        'semana_hasta' => $semana_fin,
+                        'variedad' => $ciclo->id_variedad,
+                        'modulo' => $ciclo->id_modulo,
+                    ]);
                 } else {
                     $success = false;
                     $msg = '<div class="alert alert-warning text-center">' .
@@ -349,9 +435,24 @@ class CiclosController extends Controller
             if ($ciclo->save()) {
                 $success = true;
                 $msg = '<div class="alert alert-success text-center">' .
-                    '<p> Se ha terminado el ciclo satisfactoriamente</p>'
+                    '<p> Se ha abierto el ciclo satisfactoriamente</p>'
                     . '</div>';
                 bitacora('ciclo', $ciclo->id_ciclo, 'U', 'Actualizacion satisfactoria de un ciclo (abrir ciclo)');
+
+                /* ======================== ACTUALIZAR LA TABLA PROYECCION_MODULO_SEMANA ====================== */
+                $semana_ini = getSemanaByDate($ciclo->fecha_inicio)->codigo;
+                $semana_fin = DB::table('semana')
+                    ->select(DB::raw('max(codigo) as max'))
+                    ->where('estado', '=', 1)
+                    ->where('id_variedad', '=', $ciclo->id_variedad)
+                    ->get()[0]->max;
+
+                Artisan::call('proyeccion:update_semanal', [
+                    'semana_desde' => $semana_ini,
+                    'semana_hasta' => $semana_fin,
+                    'variedad' => $ciclo->id_variedad,
+                    'modulo' => $ciclo->id_modulo,
+                ]);
             } else {
                 $success = false;
                 $msg = '<div class="alert alert-warning text-center">' .
@@ -399,6 +500,21 @@ class CiclosController extends Controller
                     '<p> Se ha eliminado el ciclo satisfactoriamente</p>'
                     . '</div>';
                 bitacora('ciclo', $ciclo->id_ciclo, 'U', 'Actualizacion satisfactoria de un ciclo');
+
+                /* ======================== ACTUALIZAR LA TABLA PROYECCION_MODULO_SEMANA ====================== */
+                $semana_ini = getSemanaByDate($ciclo->fecha_inicio)->codigo;
+                $semana_fin = DB::table('semana')
+                    ->select(DB::raw('max(codigo) as max'))
+                    ->where('estado', '=', 1)
+                    ->where('id_variedad', '=', $ciclo->id_variedad)
+                    ->get()[0]->max;
+
+                Artisan::call('proyeccion:update_semanal', [
+                    'semana_desde' => $semana_ini,
+                    'semana_hasta' => $semana_fin,
+                    'variedad' => $ciclo->id_variedad,
+                    'modulo' => $ciclo->id_modulo,
+                ]);
             } else {
                 $success = false;
                 $msg = '<div class="alert alert-warning text-center">' .

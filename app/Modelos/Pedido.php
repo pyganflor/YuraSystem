@@ -162,15 +162,34 @@ class Pedido extends Model
     public function getCajas()
     {
         if (!getFacturaAnulada($this->id_pedido)) {
-            return round($this->getRamosEstandar() / getConfiguracionEmpresa()->ramos_x_caja, 2);
+            if (!$this->isTipoSuelto())
+                return round($this->getRamosEstandar() / getConfiguracionEmpresa()->ramos_x_caja, 2);
+            else {
+                return $this->getCajasFisicas();
+            }
+
         }
         return 0;
+    }
+
+    public function isTipoSuelto()
+    {
+        foreach ($this->detalles as $det_ped) {
+            foreach ($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $esp_emp) {
+                if ($esp_emp->empaque->f_empaque == 'T')
+                    return true;
+            }
+        }
+        return false;
     }
 
     public function getCajasByVariedad($variedad)
     {
         if (!getFacturaAnulada($this->id_pedido)) {
-            return round($this->getRamosEstandarByVariedad($variedad) / getConfiguracionEmpresa()->ramos_x_caja, 2);
+            if (!$this->isTipoSuelto())
+                return round($this->getRamosEstandarByVariedad($variedad) / getConfiguracionEmpresa()->ramos_x_caja, 2);
+            else
+                return $this->getCajasFisicasByVariedad($variedad);
         }
         return 0;
     }
@@ -336,20 +355,24 @@ class Pedido extends Model
         foreach ($this->detalles as $det_ped) {
             foreach ($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $esp_emp) {
                 foreach ($esp_emp->detalles as $det_esp) {
-                    $ramos = $det_ped->cantidad * $esp_emp->cantidad * ($esp_emp->especificacion->tipo === "O" ? $det_esp->tallos_x_ramos :  $det_esp->cantidad);
-                    $ramos_col = 0;
-                    $precio_col = 0;
-                    foreach (Coloracion::All()->where('id_detalle_pedido', $det_ped->id_detalle_pedido)
-                                 ->where('id_especificacion_empaque', $esp_emp->id_especificacion_empaque)
-                                 ->where('precio', '!=', '') as $col) {
-                        $ramos_col += $col->getTotalRamosByDetEsp($det_esp->id_detalle_especificacionempaque);
-                        $precio = getPrecioByDetEsp($col->precio, $det_esp->id_detalle_especificacionempaque);
-                        $precio_col += ($col->getTotalRamosByDetEsp($det_esp->id_detalle_especificacionempaque) * $precio);
+                    if ($esp_emp->empaque->f_empaque == 'T') {
+                        $r += $det_esp->total_tallos * getPrecioByDetEsp($det_ped->precio, $det_esp->id_detalle_especificacionempaque);
+                    } else {
+                        $ramos = $det_ped->cantidad * $esp_emp->cantidad * ($esp_emp->especificacion->tipo === "O" ? $det_esp->tallos_x_ramos : $det_esp->cantidad);
+                        $ramos_col = 0;
+                        $precio_col = 0;
+                        foreach (Coloracion::All()->where('id_detalle_pedido', $det_ped->id_detalle_pedido)
+                                     ->where('id_especificacion_empaque', $esp_emp->id_especificacion_empaque)
+                                     ->where('precio', '!=', '') as $col) {
+                            $ramos_col += $col->getTotalRamosByDetEsp($det_esp->id_detalle_especificacionempaque);
+                            $precio = getPrecioByDetEsp($col->precio, $det_esp->id_detalle_especificacionempaque);
+                            $precio_col += ($col->getTotalRamosByDetEsp($det_esp->id_detalle_especificacionempaque) * $precio);
+                        }
+                        $ramos -= $ramos_col;
+                        $precio_final = $ramos * getPrecioByDetEsp($det_ped->precio, $det_esp->id_detalle_especificacionempaque);
+                        $precio_final += $precio_col;
+                        $r += $precio_final;
                     }
-                    $ramos -= $ramos_col;
-                    $precio_final = $ramos * getPrecioByDetEsp($det_ped->precio, $det_esp->id_detalle_especificacionempaque);
-                    $precio_final += $precio_col;
-                    $r += $precio_final;
                 }
             }
         }
@@ -386,51 +409,28 @@ class Pedido extends Model
         $r = 0;
         foreach ($this->detalles as $det_ped) {
             foreach ($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $esp_emp) {
-                //@dump($variedad, $esp_emp->detalles->where('id_variedad', $variedad));
                 foreach ($esp_emp->detalles->where('id_variedad', $variedad) as $det_esp) {
-                    //@dump($variedad);
-                    $ramos = $det_ped->cantidad * $esp_emp->cantidad * $det_esp->cantidad;
-                    $ramos_col = 0;
-                    $precio_col = 0;
-                    foreach (Coloracion::All()->where('id_detalle_pedido', $det_ped->id_detalle_pedido)
-                                 ->where('id_especificacion_empaque', $esp_emp->id_especificacion_empaque)
-                                 ->where('precio', '!=', '') as $col) {
-                        $ramos_col += $col->getTotalRamosByDetEsp($det_esp->id_detalle_especificacionempaque);
-                        $precio = getPrecioByDetEsp($col->precio, $det_esp->id_detalle_especificacionempaque);
-                        $precio_col += ($col->getTotalRamosByDetEsp($det_esp->id_detalle_especificacionempaque) * $precio);
+                    if ($esp_emp->empaque->f_empaque == 'T') {
+                        $r += $det_esp->total_tallos * getPrecioByDetEsp($det_ped->precio, $det_esp->id_detalle_especificacionempaque);
+                    } else {
+                        $ramos = $det_ped->cantidad * $esp_emp->cantidad * $det_esp->cantidad;
+                        $ramos_col = 0;
+                        $precio_col = 0;
+                        foreach (Coloracion::All()->where('id_detalle_pedido', $det_ped->id_detalle_pedido)
+                                     ->where('id_especificacion_empaque', $esp_emp->id_especificacion_empaque)
+                                     ->where('precio', '!=', '') as $col) {
+                            $ramos_col += $col->getTotalRamosByDetEsp($det_esp->id_detalle_especificacionempaque);
+                            $precio = getPrecioByDetEsp($col->precio, $det_esp->id_detalle_especificacionempaque);
+                            $precio_col += ($col->getTotalRamosByDetEsp($det_esp->id_detalle_especificacionempaque) * $precio);
+                        }
+                        $ramos -= $ramos_col;
+                        $precio_final = $ramos * getPrecioByDetEsp($det_ped->precio, $det_esp->id_detalle_especificacionempaque);
+                        $precio_final += $precio_col;
+                        $r += $precio_final;
                     }
-                    $ramos -= $ramos_col;
-                    $precio_final = $ramos * getPrecioByDetEsp($det_ped->precio, $det_esp->id_detalle_especificacionempaque);
-                    $precio_final += $precio_col;
-                    $r += $precio_final;
                 }
             }
         }
-        /*if (count($this->envios) > 0)
-            if ($this->envios[0]->comprobante != '') {  // PEDIDO FACTURADO
-                return $this->envios[0]->comprobante->monto_total;
-            } else {
-                if ($this->envios[0]->fatura_cliente_tercero != '') {   // FACTURAR A NOMBRE DE OTRA PERSONA
-                    $impuesto = TipoImpuesto::All()
-                        ->where('codigo', $this->envios[0]->fatura_cliente_tercero->codigo_impuesto_porcentaje)->first()->porcentaje;
-                    if (is_numeric($impuesto)) {
-                        $r += $r * ($impuesto / 100);
-                    }
-                } else {    // FACTURAR A NOMBRE DEL CLIENTE
-                    $impuesto = TipoImpuesto::All()
-                        ->where('codigo', $this->cliente->detalle()->codigo_porcentaje_impuesto)->first()->porcentaje;
-                    if (is_numeric($impuesto)) {
-                        $r += $r * ($impuesto / 100);
-                    }
-                }
-            }
-        else {    // FACTURAR A NOMBRE DEL CLIENTE
-            $impuesto = TipoImpuesto::All()
-                ->where('codigo', $this->cliente->detalle()->codigo_porcentaje_impuesto)->first()->porcentaje;
-            if (is_numeric($impuesto)) {
-                $r += $r * ($impuesto / 100);
-            }
-        }*/
         return $r;
     }
 

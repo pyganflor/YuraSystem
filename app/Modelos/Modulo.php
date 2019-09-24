@@ -130,124 +130,136 @@ class Modulo extends Model
 
     public function getDataBySemana($semana, $variedad, $desde, $opcion, $detalle)
     {
-        $tallos_proyectados = 0;
-        /* ----------------------------- calcular cosecha real ----------------------------- */
-        $cosecha = getTallosCosechadosByModSemVar($this->id_modulo, $semana->codigo, $variedad);
-        //$cosecha = 0;
+        if ($semana != '') {
+            $tallos_proyectados = 0;
+            /* ----------------------------- calcular cosecha real ----------------------------- */
+            $cosecha = getTallosCosechadosByModSemVar($this->id_modulo, $semana->codigo, $variedad);
 
-        $ciclo_ini = $this->ciclos->where('estado', 1)
-            ->where('fecha_inicio', '>=', $semana->fecha_inicial)->where('fecha_inicio', '<=', $semana->fecha_final)
-            ->where('id_variedad', $variedad)->first();
-        if ($ciclo_ini != '') { // esa semana inició un ciclo
-            $data = [
-                'tipo' => $ciclo_ini->poda_siembra,
-                'info' => $ciclo_ini->poda_siembra . '-' . $this->getPodaSiembraByCiclo($ciclo_ini->id_ciclo),
-                'cosechado' => $cosecha,
-                'proyectados' => $tallos_proyectados,
-                'modelo' => $ciclo_ini->id_ciclo,
-                'ciclo' => $ciclo_ini,
-                'proy' => '',
-                'tabla' => 'C',
-            ];
-        } else {
-            $ciclo_last = $this->ciclos->where('estado', 1)
-                ->where('fecha_inicio', '<=', $semana->fecha_inicial)
-                ->where('id_variedad', $variedad)->sortBy('fecha_inicio')->last();
+            $ciclo_ini = $this->ciclos->where('estado', 1)
+                ->where('fecha_inicio', '>=', $semana->fecha_inicial)->where('fecha_inicio', '<=', $semana->fecha_final)
+                ->where('id_variedad', $variedad)->first();
+            if ($ciclo_ini != '') { // esa semana inició un ciclo
+                $data = [
+                    'tipo' => $ciclo_ini->poda_siembra,
+                    'info' => $ciclo_ini->poda_siembra . '-' . $this->getPodaSiembraByCiclo($ciclo_ini->id_ciclo),
+                    'cosechado' => $cosecha,
+                    'proyectados' => $tallos_proyectados,
+                    'modelo' => $ciclo_ini->id_ciclo,
+                    'ciclo' => $ciclo_ini,
+                    'proy' => '',
+                    'tabla' => 'C',
+                ];
+            } else {
+                $ciclo_last = $this->ciclos->where('estado', 1)
+                    ->where('fecha_inicio', '<=', $semana->fecha_inicial)
+                    ->where('id_variedad', $variedad)->sortBy('fecha_inicio')->last();
 
-            $data = [
-                'tipo' => 'V',  // vacio
-                'info' => '',
-                'cosechado' => $cosecha,
-                'proyectados' => $tallos_proyectados,
-                'modelo' => $ciclo_last != '' ? $ciclo_last->id_ciclo : '',
-                'ciclo' => $ciclo_last != '' ? $ciclo_last : '',
-                'proy' => '',
-                'tabla' => 'C',
-            ];
-            if ($ciclo_last != '') {    // existe un ciclo real
-                if ($ciclo_last->fecha_inicio >= $desde) {
-                    if ($ciclo_last->activo == 1 || ($ciclo_last->activo == 0 && $ciclo_last->fecha_fin >= $semana->fecha_inicial)) {
-                        $fecha_inicio = getSemanaByDate($ciclo_last->fecha_inicio)->fecha_inicial;
-                        $num_semana = (intval(difFechas($semana->fecha_inicial, $fecha_inicio)->days / 7) + 1);
-                        $num_sem_cosecha = count(explode('-', $ciclo_last->curva)) - 1;
-                        if (intval($num_semana) <= intval($ciclo_last->semana_poda_siembra + $num_sem_cosecha) || $ciclo_last->activo == 0) {  // aun esta dentro de lo programado
-                            if ($num_semana >= $ciclo_last->semana_poda_siembra && $num_semana <= intval($ciclo_last->semana_poda_siembra + $num_sem_cosecha)) {
-                                $tipo = 'T';    // semana de cosecha
-                                /* --------------------------- calcular cosecha proyectada ------------------------- */
-                                $pos_semana_cosecha = intval($num_semana - $ciclo_last->semana_poda_siembra);
-                                $desecho = 100 - $ciclo_last->desecho;
-                                if ($opcion == 'I') // plantas iniciales
-                                    $cosecha_totales = round(($ciclo_last->plantas_iniciales * $desecho) / 100, 2);
-                                else    // plantas actuales
-                                    $cosecha_totales = round(($ciclo_last->plantas_actuales() * $desecho) / 100, 2);
-                                $tallos_proyectados = round(($cosecha_totales * explode('-', $ciclo_last->curva)[$pos_semana_cosecha]) / 100, 2);
-                            } else
-                                $tipo = 'I';    // informacion
+                $data = [
+                    'tipo' => 'V',  // vacio
+                    'info' => '',
+                    'cosechado' => $cosecha,
+                    'proyectados' => $tallos_proyectados,
+                    'modelo' => $ciclo_last != '' ? $ciclo_last->id_ciclo : null,
+                    'ciclo' => $ciclo_last != '' ? $ciclo_last : '',
+                    'proy' => '',
+                    'tabla' => 'C',
+                ];
+                if ($ciclo_last != '') {    // existe un ciclo real
+                    if ($ciclo_last->fecha_inicio >= $desde) {
+                        if ($ciclo_last->activo == 1 || ($ciclo_last->activo == 0 && $ciclo_last->fecha_fin >= $semana->fecha_inicial)) {
+                            $fecha_inicio = getSemanaByDate($ciclo_last->fecha_inicio)->fecha_inicial;
+                            $num_semana = (intval(difFechas($semana->fecha_inicial, $fecha_inicio)->days / 7) + 1);
+                            $num_sem_cosecha = count(explode('-', $ciclo_last->curva)) - 1;
+                            if (intval($num_semana) <= intval($ciclo_last->semana_poda_siembra + $num_sem_cosecha) || $ciclo_last->activo == 0) {  // aun esta dentro de lo programado
+                                if ($num_semana >= $ciclo_last->semana_poda_siembra && $num_semana <= intval($ciclo_last->semana_poda_siembra + $num_sem_cosecha)) {
+                                    $tipo = 'T';    // semana de cosecha
+                                    /* --------------------------- calcular cosecha proyectada ------------------------- */
+                                    $pos_semana_cosecha = intval($num_semana - $ciclo_last->semana_poda_siembra);
+                                    $desecho = 100 - $ciclo_last->desecho;
+                                    if ($opcion == 'I') // plantas iniciales
+                                        $cosecha_totales = round(($ciclo_last->plantas_iniciales * $desecho) / 100, 2);
+                                    else    // plantas actuales
+                                        $cosecha_totales = round(($ciclo_last->plantas_actuales() * $desecho) / 100, 2);
+                                    $tallos_proyectados = round(($cosecha_totales * explode('-', $ciclo_last->curva)[$pos_semana_cosecha]) / 100, 2);
+                                } else
+                                    $tipo = 'I';    // informacion
 
-                            $data = [
-                                'tipo' => $tipo,  // semana de cosecha o informacion
-                                'info' => $num_semana . 'º',
-                                'cosechado' => $cosecha,
-                                'proyectados' => $tallos_proyectados,
-                                'modelo' => $ciclo_last->id_ciclo,
-                                'ciclo' => $ciclo_last,
-                                'proy' => '',
-                                'tabla' => 'C',
-                            ];
-                        } else {    // ya pasó de lo programado
-                            /* ========== BUSCAR PROYECCION =========== */
-                            $proy_ini = $this->proyecciones->where('estado', 1)
-                                ->where('id_semana', $semana->id_semana)
-                                ->where('id_variedad', $variedad)->first();
-
-                            if ($proy_ini != '') {
                                 $data = [
-                                    'tipo' => 'Y',  // inicio de una proyeccion
-                                    'info' => $proy_ini->tipo,
+                                    'tipo' => $tipo,  // semana de cosecha o informacion
+                                    'info' => $num_semana . 'º',
                                     'cosechado' => $cosecha,
                                     'proyectados' => $tallos_proyectados,
-                                    'modelo' => $proy_ini->id_proyeccion_modulo,
-                                    'ciclo' => '',
-                                    'proy' => $proy_ini,
-                                    'tabla' => 'P',
+                                    'modelo' => $ciclo_last->id_ciclo,
+                                    'ciclo' => $ciclo_last,
+                                    'proy' => '',
+                                    'tabla' => 'C',
                                 ];
-                            } else {    // BUSCAR ULTIMA PROYECCION
-                                $proy_last = $this->getProyeccionByDate($semana->fecha_final, $variedad);
+                            } else {    // ya pasó de lo programado
+                                /* ========== BUSCAR PROYECCION =========== */
+                                $proy_ini = $this->proyecciones->where('estado', 1)
+                                    ->where('id_semana', $semana->id_semana)
+                                    ->where('id_variedad', $variedad)->first();
 
-                                if ($proy_last != '') {
-                                    if ($proy_last->tipo != 'C') {  // indica no cerrar modulo
-                                        $fecha_inicio = $proy_last->semana->fecha_inicial;
-                                        $num_semana = (intval(difFechas($semana->fecha_inicial, $fecha_inicio)->days / 7) + 1);
-                                        $num_sem_cosecha = count(explode('-', $proy_last->curva)) - 1;
-                                        if (intval($num_semana) <= intval($proy_last->semana_poda_siembra + $num_sem_cosecha)) {  // aun esta dentro de lo programado
-                                            if ($num_semana >= $proy_last->semana_poda_siembra) {
-                                                $tipo = 'T';    // semana de cosecha
+                                if ($proy_ini != '') {
+                                    $data = [
+                                        'tipo' => 'Y',  // inicio de una proyeccion
+                                        'info' => $proy_ini->tipo,
+                                        'cosechado' => $cosecha,
+                                        'proyectados' => $tallos_proyectados,
+                                        'modelo' => $proy_ini->id_proyeccion_modulo,
+                                        'ciclo' => '',
+                                        'proy' => $proy_ini,
+                                        'tabla' => 'P',
+                                    ];
+                                } else {    // BUSCAR ULTIMA PROYECCION
+                                    $proy_last = $this->getProyeccionByDate($semana->fecha_final, $variedad);
 
-                                                /* --------------------------- calcular cosecha proyectada ------------------------- */
-                                                $pos_semana_cosecha = intval($num_semana - $proy_last->semana_poda_siembra);
-                                                $desecho = 100 - $proy_last->desecho;
-                                                $cosecha_totales = round(($proy_last->plantas_iniciales * $desecho) / 100, 2);
-                                                $tallos_proyectados = round(($cosecha_totales * explode('-', $proy_last->curva)[$pos_semana_cosecha]) / 100, 2);
-                                            } else
-                                                $tipo = 'I';    // informacion
+                                    if ($proy_last != '') {
+                                        if ($proy_last->tipo != 'C') {  // indica no cerrar modulo
+                                            $fecha_inicio = $proy_last->semana->fecha_inicial;
+                                            $num_semana = (intval(difFechas($semana->fecha_inicial, $fecha_inicio)->days / 7) + 1);
+                                            $num_sem_cosecha = count(explode('-', $proy_last->curva)) - 1;
+                                            if (intval($num_semana) <= intval($proy_last->semana_poda_siembra + $num_sem_cosecha)) {  // aun esta dentro de lo programado
+                                                if ($num_semana >= $proy_last->semana_poda_siembra) {
+                                                    $tipo = 'T';    // semana de cosecha
 
-                                            $data = [
-                                                'tipo' => $tipo,
-                                                'info' => $num_semana . 'º',
-                                                'cosechado' => $cosecha,
-                                                'proyectados' => $tallos_proyectados,
-                                                'modelo' => $proy_last->id_proyeccion_modulo,
-                                                'ciclo' => '',
-                                                'proy' => $proy_last,
-                                                'tabla' => 'P',
-                                            ];
+                                                    /* --------------------------- calcular cosecha proyectada ------------------------- */
+                                                    $pos_semana_cosecha = intval($num_semana - $proy_last->semana_poda_siembra);
+                                                    $desecho = 100 - $proy_last->desecho;
+                                                    $cosecha_totales = round(($proy_last->plantas_iniciales * $desecho) / 100, 2);
+                                                    $tallos_proyectados = round(($cosecha_totales * explode('-', $proy_last->curva)[$pos_semana_cosecha]) / 100, 2);
+                                                } else
+                                                    $tipo = 'I';    // informacion
+
+                                                $data = [
+                                                    'tipo' => $tipo,
+                                                    'info' => $num_semana . 'º',
+                                                    'cosechado' => $cosecha,
+                                                    'proyectados' => $tallos_proyectados,
+                                                    'modelo' => $proy_last->id_proyeccion_modulo,
+                                                    'ciclo' => '',
+                                                    'proy' => $proy_last,
+                                                    'tabla' => 'P',
+                                                ];
+                                            } else {
+                                                $data = [
+                                                    'tipo' => 'F',  // fin de proyeccion
+                                                    'info' => '-',
+                                                    'cosechado' => $cosecha,
+                                                    'proyectados' => $tallos_proyectados,
+                                                    'modelo' => null,
+                                                    'ciclo' => '',
+                                                    'proy' => '',
+                                                    'tabla' => '',
+                                                ];
+                                            }
                                         } else {
                                             $data = [
-                                                'tipo' => 'F',  // fin de proyeccion
-                                                'info' => '-',
+                                                'tipo' => 'X',  // cerrado
+                                                'info' => '*',
                                                 'cosechado' => $cosecha,
                                                 'proyectados' => $tallos_proyectados,
-                                                'modelo' => '',
+                                                'modelo' => null,
                                                 'ciclo' => '',
                                                 'proy' => '',
                                                 'tabla' => '',
@@ -255,44 +267,44 @@ class Modulo extends Model
                                         }
                                     } else {
                                         $data = [
-                                            'tipo' => 'X',  // cerrado
-                                            'info' => '*',
+                                            'tipo' => 'F',  // fin de ciclo
+                                            'info' => '-',
                                             'cosechado' => $cosecha,
                                             'proyectados' => $tallos_proyectados,
-                                            'modelo' => '',
+                                            'modelo' => null,
                                             'ciclo' => '',
                                             'proy' => '',
                                             'tabla' => '',
                                         ];
                                     }
-                                } else {
-                                    $data = [
-                                        'tipo' => 'F',  // fin de ciclo
-                                        'info' => '-',
-                                        'cosechado' => $cosecha,
-                                        'proyectados' => $tallos_proyectados,
-                                        'modelo' => '',
-                                        'ciclo' => '',
-                                        'proy' => '',
-                                        'tabla' => '',
-                                    ];
                                 }
                             }
+                        } else {
+                            $data = [
+                                'tipo' => 'F',  // fin de ciclo
+                                'info' => '-',
+                                'cosechado' => $cosecha,
+                                'proyectados' => $tallos_proyectados,
+                                'modelo' => null,
+                                'ciclo' => '',
+                                'proy' => '',
+                                'tabla' => '',
+                            ];
                         }
-                    } else {
-                        $data = [
-                            'tipo' => 'F',  // fin de ciclo
-                            'info' => '-',
-                            'cosechado' => $cosecha,
-                            'proyectados' => $tallos_proyectados,
-                            'modelo' => '',
-                            'ciclo' => '',
-                            'proy' => '',
-                            'tabla' => '',
-                        ];
                     }
                 }
             }
+        } else {
+            $data = [
+                'tipo' => 'V',  // vacio
+                'info' => '',
+                'cosechado' => 0,
+                'proyectados' => 0,
+                'modelo' => null,
+                'ciclo' => '',
+                'proy' => '',
+                'tabla' => 'C',
+            ];
         }
         return $data;
     }

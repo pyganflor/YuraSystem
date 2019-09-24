@@ -97,11 +97,12 @@ class UpdateProyeccionSemanal extends Command
                             ->where('codigo', $codigo)
                             ->where('id_variedad', $var->id_variedad)
                             ->first();
+
                         $data = $mod->getDataBySemana($semana, $var->id_variedad, '2000-01-01', 'I', 'T');
 
                         $proy = ProyeccionModuloSemana::All()->where('estado', 1)
                             ->where('id_modulo', $mod->id_modulo)
-                            ->where('semana', $semana->codigo)
+                            ->where('semana', $codigo)
                             ->where('id_variedad', $var->id_variedad)
                             ->first();
                         if ($proy == '')
@@ -109,12 +110,13 @@ class UpdateProyeccionSemanal extends Command
 
                         $proy->id_modulo = $mod->id_modulo;
                         $proy->id_variedad = $var->id_variedad;
-                        $proy->semana = $semana->codigo;
+                        $proy->semana = $codigo;
                         $proy->tipo = $data['tipo'];
                         $proy->info = $data['info'];
                         $proy->cosechados = $data['cosechado'];
                         $proy->proyectados = $data['proyectados'];
                         $proy->tabla = $data['tabla'];
+                        $proy->modelo = $data['modelo'];
 
                         if (in_array($data['tipo'], ['S', 'P', 'T', 'Y'])) {
                             if ($data['tabla'] == 'C') {
