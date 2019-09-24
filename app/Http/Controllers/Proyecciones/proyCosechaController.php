@@ -423,4 +423,14 @@ class proyCosechaController extends Controller
             'success' => $success
         ];
     }
+
+    public function restaurar_proyeccion(Request $request)
+    {
+        Artisan::call('proyeccion:auto_create', [
+            'modulo' => $request->modulo
+        ]);
+        return [
+          'success' => true,
+        ];
+    }
 }

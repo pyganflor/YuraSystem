@@ -7,3 +7,4 @@ Route::get('proy_cosecha/load_celda', 'Proyecciones\proyCosechaController@load_c
 Route::post('proy_cosecha/store_proyeccion', 'Proyecciones\proyCosechaController@store_proyeccion');
 Route::post('proy_cosecha/update_proyeccion', 'Proyecciones\proyCosechaController@update_proyeccion');
 Route::post('proy_cosecha/update_ciclo', 'Proyecciones\proyCosechaController@update_ciclo');
+Route::post('proy_cosecha/restaurar_proyeccion', 'Proyecciones\proyCosechaController@restaurar_proyeccion');
