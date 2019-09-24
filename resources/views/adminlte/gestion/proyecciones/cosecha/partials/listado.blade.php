@@ -312,7 +312,7 @@
                 };
                 mod = datos['modulo'];
                 $('#celda_modulo_' + mod).LoadingOverlay('show');
-                alert
+                alert(i);
                 $.post('{{url('proy_cosecha/restaurar_proyeccion')}}', datos, function (retorno) {
                     total_progress += factor;
                     $('#barra_progreso').css('width', total_progress + '%');
