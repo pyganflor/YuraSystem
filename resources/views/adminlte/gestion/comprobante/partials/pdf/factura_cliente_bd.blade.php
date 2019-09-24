@@ -231,6 +231,11 @@
                 DESCRIPTION<br />
                 Descripción
             </th>
+            @if($envio->pedido->tipo_especificacion === "T")
+                <th style="font-size: 11px;vertical-align: top">
+                    COLOR
+                </th>
+            @endif
             <th style="font-size: 11px;vertical-align: top">
                 SGP
             </th>
@@ -411,7 +416,8 @@
                                 'hts' => $m_c->detalle_especificacionempaque->especificacion_empaque->detalles[0]->variedad->planta->tarifa,
                                 'nandina' =>$m_c->detalle_especificacionempaque->especificacion_empaque->detalles[0]->variedad->planta->nandina,
                                 'descripcion' =>substr($m_c->detalle_especificacionempaque->variedad->planta->nombre, 0, 3) .", ". $m_c->detalle_especificacionempaque->variedad->nombre,
-                                'piezas'=> number_format(($m_c->cantidad/$m_c->detalle_especificacionempaque->cantidad),2,".","")
+                                'piezas'=> number_format(($m_c->cantidad/$m_c->detalle_especificacionempaque->cantidad),2,".",""),
+                                'color' => $m_c->coloracion->color->nombre
                             ];
                         @endphp
                     @endif
@@ -423,7 +429,7 @@
                 @foreach($table as $t)
                     @php
                         $pie=0; //Sumatoria Piezas
-                        $ram = 0;//Sumatoria Ramos
+                        $ram=0; //Sumatoria Ramos
                     @endphp
                     @foreach($t as $ta)
                         @php
@@ -435,6 +441,9 @@
                     <tr>
                         <td style="font-size:12px">{{number_format($pie,2,".","")}}</td>
                         <td style="font-size:12px">{{$t[0]['descripcion']}}</td>
+                        @if($envio->pedido->tipo_especificacion === "T")
+                            <td style="font-size:12px">{{$t[0]['color']}}</td>
+                        @endif
                         <td style="font-size:12px">A</td>
                         <td style="font-size:12px">{{$t[0]['hts']}}</td>
                         <td style="font-size:12px">{{$t[0]['nandina']}}</td>
@@ -475,7 +484,7 @@
 </table>
 <table style="width:100%">
     <tr>
-        <td style="font-size:2px;font-family: arial, sans-serif"> <b> FULL BOXES : [{{number_format($full,2,".","")}}]</b></td>
+        <td style="font-size:12px;font-family: arial, sans-serif"> <b> FULL BOXES : [{{number_format($full,2,".","")}}]</b></td>
         <td style="font-size:12px;font-family: arial, sans-serif"> <b> HALF BOXES : [{{number_format($half,2,".","")}}]</b></td>
         <td style="font-size:12px;font-family: arial, sans-serif"> <b> 1/4 BOXES : [{{number_format($cuarto,2,".","")}}]</b></td>
         <td style="font-size:12px;font-family: arial, sans-serif"> <b> 1/6 BOXES : [{{number_format($sexto,2,".","")}}]</b></td>

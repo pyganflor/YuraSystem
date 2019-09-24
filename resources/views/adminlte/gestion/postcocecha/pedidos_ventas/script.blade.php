@@ -38,7 +38,6 @@
                 datos = {
                     id_pedido: id_pedido,
                 };
-
                 $.get('{{url('pedidos/editar_pedido')}}', datos, function (retorno) {
                     $("#fecha_de_entrega").val(retorno.pedido[0].fecha_pedido);
                     $("#iva_cliente").val(retorno.iva_cliente);
@@ -50,7 +49,6 @@
                 $.LoadingOverlay('hide');
             });
         }, 300);
-
     }
 
     function add_pedido_personalizado() {
