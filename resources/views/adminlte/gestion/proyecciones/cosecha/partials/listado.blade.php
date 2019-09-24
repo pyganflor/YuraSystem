@@ -1,7 +1,26 @@
+<div class="progress progress-xs" id="div_barra_progreso" style="display: none">
+    <div class="progress-bar progress-bar-warning progress-bar-striped" role="progressbar" aria-valuenow="60" aria-valuemin="0"
+         aria-valuemax="100" style="width: 0%" id="barra_progreso">
+    </div>
+</div>
+
 <div style="overflow-x: scroll">
     <table class="table table-striped table-bordered table-hover" style="border: 2px solid #9d9d9d" width="100%">
         <thead>
         <tr>
+            <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
+                <div class="input-group-btn">
+                    <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+                        <span class="fa fa-caret-down"></span></button>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a href="javascript:void(0)" onclick="restaurar_proyeccion()">
+                                Restaurar Proyecciones
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </th>
             <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef; width: 250px">
                 Módulos
             </th>
@@ -27,6 +46,9 @@
         @endphp
         @foreach($modulos as $mod)
             <tr>
+                <th class="text-center" style="border-color: #9d9d9d">
+                    <input type="checkbox" id="checkbox_modulo_{{$mod['modulo']->id_modulo}}" class="checkbox_modulo">
+                </th>
                 <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef" id="celda_modulo_{{$mod['modulo']->id_modulo}}">
                     <div class="btn-group">
                         <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
@@ -143,6 +165,8 @@
         {{-- TOTALES --}}
         <tr style="background-color: #fdff8b">
             <th class="text-center" style="border-color: #9d9d9d">
+            </th>
+            <th class="text-center" style="border-color: #9d9d9d">
                 Proyectados
                 <br>
                 <small><em>Tallos/cajas</em></small>
@@ -179,6 +203,8 @@
         </tr>
         <tr style="background-color: #c4c4ff">
             <th class="text-center" style="border-color: #9d9d9d">
+            </th>
+            <th class="text-center" style="border-color: #9d9d9d">
                 Cosechados
                 <br>
                 <small><em>Tallos/cajas</em></small>
@@ -210,6 +236,9 @@
         </tr>
 
         <tr>
+            <th class="text-center" style="border-color: #9d9d9d">
+                <input type="checkbox" id="checkbox_modulo_all" onclick="select_all_modulos($(this))">
+            </th>
             <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef; width: 250px">
                 Módulos
             </th>
@@ -251,18 +280,53 @@
     });
 
     function restaurar_proyeccion(mod) {
-        datos = {
-            _token: '{{csrf_token()}}',
-            modulo: mod
-        };
-        $('#celda_modulo_' + mod).LoadingOverlay('show');
-        $.post('{{url('proy_cosecha/restaurar_proyeccion')}}', datos, function (retorno) {
-            listar_proyecciones();
-        }, 'json').fail(function (retorno) {
-            console.log(retorno);
-            alerta_errores(retorno.responseText);
-        }).always(function () {
-            $('#celda_modulo_' + mod).LoadingOverlay('hide');
-        });
+        if (mod != null) {
+            datos = {
+                _token: '{{csrf_token()}}',
+                modulo: mod
+            };
+            $('#celda_modulo_' + mod).LoadingOverlay('show');
+            $.post('{{url('proy_cosecha/restaurar_proyeccion')}}', datos, function (retorno) {
+                listar_proyecciones();
+            }, 'json').fail(function (retorno) {
+                console.log(retorno);
+                alerta_errores(retorno.responseText);
+            }).always(function () {
+                $('#celda_modulo_' + mod).LoadingOverlay('hide');
+            });
+        } else {
+            var all = $('.checkbox_modulo');
+            var selected = [];
+            for (i = 0; i < all.length; i++) {
+                if ($('#' + all[i].id).prop('checked') == true) {
+                    selected.push(all[i].id.substr(16));
+                }
+            }
+            factor = (Math.round((100 / selected.length) * 100) / 100);
+            /*for (i = 0; i < selected.length; i++) {
+                datos = {
+                    _token: '{{csrf_token()}}',
+                    modulo: selected[i]
+                };
+                $('#celda_modulo_' + mod).LoadingOverlay('show');
+                $.post('{{url('proy_cosecha/restaurar_proyeccion')}}', datos, function (retorno) {
+                    listar_proyecciones();
+                }, 'json').fail(function (retorno) {
+                    console.log(retorno);
+                    alerta_errores(retorno.responseText);
+                }).always(function () {
+                    $('#celda_modulo_' + mod).LoadingOverlay('hide');
+                });
+            }*/
+
+        }
+    }
+
+    function select_all_modulos(input) {
+        if (input.prop('checked') == true) {  // select all
+            $('.checkbox_modulo').prop('checked', true);
+        } else {    // deseleccionar todos
+            $('.checkbox_modulo').prop('checked', false);
+        }
     }
 </script>
