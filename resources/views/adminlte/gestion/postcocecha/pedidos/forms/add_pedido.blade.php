@@ -48,6 +48,8 @@
                             @endforeach
                         </select>
                         <input type="hidden" id="iva_cliente" name="iva_cliente" value="">
+                        <input type="hidden" id="calibre_estandar" name="calibre_estandar" value="{{getCalibreRamoEstandar()->nombre}}">
+                        <input type="hidden" id="ramos_x_caja_conf_empresa" name="ramos_x_caja_conf_empresa" value="{{getConfiguracionEmpresa()->ramos_x_caja}}">
                     </div>
                     <div class="col-md-3 hide">
                         <label for="envio" style="font-size: 11pt;margin-top: 30px">Envío automático</label>
