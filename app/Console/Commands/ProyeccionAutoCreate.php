@@ -77,6 +77,16 @@ class ProyeccionAutoCreate extends Command
             $next++;
         }
 
+        /* ===================== QUITAR PROYECCIONES =================== */
+        $proyecciones = ProyeccionModulo::All()
+            ->where('estado', 1)
+            ->where('id_variedad', $ciclo->id_variedad)
+            ->where('id_modulo', $modulo)
+            ->where('id_semana', $query->id_semana);
+        foreach ($proyecciones as $proy) {
+            $proy->delete();
+        }
+
         $proy = new ProyeccionModulo();
         $proy->id_modulo = $ciclo->id_modulo;
         $proy->id_semana = $query->id_semana;
@@ -97,6 +107,9 @@ class ProyeccionAutoCreate extends Command
         $time_duration = difFechas(date('Y-m-d H:i:s'), $ini)->h . ':' . difFechas(date('Y-m-d H:i:s'), $ini)->m . ':' . difFechas(date('Y-m-d H:i:s'), $ini)->s;
         Log::info('<*> MODULO: ' . getModuloById($modulo)->nombre . '  <*>');
 
+
+        Log::info('<*> DURACION: ' . $time_duration . '  <*>');
+
         /* ======================== ACTUALIZAR LA TABLA PROYECCION_MODULO_SEMANA ====================== */
         $semana_fin = DB::table('semana')
             ->select(DB::raw('max(codigo) as max'))
@@ -111,8 +124,6 @@ class ProyeccionAutoCreate extends Command
             'modulo' => $modulo,
         ]);
 
-        Log::info('<*> DURACION: ' . $time_duration . '  <*>');
         Log::info('<<<<< * >>>>> Fin satisfactorio del comando "proyeccion:auto_create" <<<<< * >>>>>');
-
     }
 }

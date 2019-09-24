@@ -27,8 +27,19 @@
         @endphp
         @foreach($modulos as $mod)
             <tr>
-                <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
-                    {{$mod['modulo']->nombre}}
+                <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef" id="celda_modulo_{{$mod['modulo']->id_modulo}}">
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
+                            {{$mod['modulo']->nombre}}
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a href="javascript:void(0)" onclick="restaurar_proyeccion('{{$mod['modulo']->id_modulo}}')">
+                                    Restaurar Proyección
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
                 </th>
                 @foreach($mod['valores'] as $pos_val => $val)
                     @php
@@ -95,15 +106,18 @@
                         <span data-toggle="tooltip" data-placement="top" data-html="true"
                               title="{{$title}}">
                             @if($val->tipo == 'T')
-                                <strong style="font-size: 0.8em">
+                                <strong style="font-size: 0.8em; margin-bottom: 0">
                                     {{$val->proyectados != '' ? number_format($val->proyectados, 2) : 0}}
                                 </strong>
                             @else
-                                {{$val->info}}
+                                <p style="margin-top: 0; margin-bottom: 0">
+                                    {{$val->info}}
+                                </p>
                             @endif
                             @if($val->cosechados > 0)
-                                <br>
-                                <strong style="font-size: 0.8em">{{number_format($val->cosechados)}}</strong>
+                                <p style="margin-top: 0; margin-bottom: 0">
+                                    <strong style="font-size: 0.8em">{{number_format($val->cosechados)}}</strong>
+                                </p>
                             @endif
                         </span>
                     </td>
@@ -234,5 +248,21 @@
 <script>
     $(function () {
         $('[data-toggle="tooltip"]').tooltip()
-    })
+    });
+
+    function restaurar_proyeccion(mod) {
+        datos = {
+            _token: '{{csrf_token()}}',
+            modulo: mod
+        };
+        $('#celda_modulo_' + mod).LoadingOverlay('show');
+        $.post('{{url('proy_cosecha/restaurar_proyeccion')}}', datos, function (retorno) {
+            listar_proyecciones();
+        }, 'json').fail(function (retorno) {
+            console.log(retorno);
+            alerta_errores(retorno.responseText);
+        }).always(function () {
+            $('#celda_modulo_' + mod).LoadingOverlay('hide');
+        });
+    }
 </script>
