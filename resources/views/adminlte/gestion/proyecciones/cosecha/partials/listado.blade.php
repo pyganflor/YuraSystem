@@ -303,21 +303,22 @@
                 }
             }
             factor = (Math.round((100 / selected.length) * 100) / 100);
-            /*for (i = 0; i < selected.length; i++) {
+            for (i = 0; i < selected.length; i++) {
                 datos = {
                     _token: '{{csrf_token()}}',
                     modulo: selected[i]
                 };
+                alert(datos['modulo']);
                 $('#celda_modulo_' + mod).LoadingOverlay('show');
                 $.post('{{url('proy_cosecha/restaurar_proyeccion')}}', datos, function (retorno) {
-                    listar_proyecciones();
+                    //listar_proyecciones();
                 }, 'json').fail(function (retorno) {
                     console.log(retorno);
                     alerta_errores(retorno.responseText);
                 }).always(function () {
                     $('#celda_modulo_' + mod).LoadingOverlay('hide');
                 });
-            }*/
+            }
 
         }
     }
