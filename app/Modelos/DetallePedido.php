@@ -95,7 +95,13 @@ class DetallePedido extends Model
         }
     }
 
-    public function data_tallos(){
-        return $this->hasOne('yura\Modelos\DataTallos','id_detalle_pedido');
+    public function data_tallos()
+    {
+        return $this->hasOne('yura\Modelos\DataTallos', 'id_detalle_pedido');
+    }
+
+    public function total_tallos()
+    {
+        return $this->data_tallos()->mallas * $this->data_tallos()->tallos_x_malla;
     }
 }

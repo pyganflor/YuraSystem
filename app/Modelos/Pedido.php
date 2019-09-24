@@ -356,7 +356,7 @@ class Pedido extends Model
             foreach ($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $esp_emp) {
                 foreach ($esp_emp->detalles as $det_esp) {
                     if ($esp_emp->empaque->f_empaque == 'T') {
-                        $r += $det_esp->total_tallos * getPrecioByDetEsp($det_ped->precio, $det_esp->id_detalle_especificacionempaque);
+                        $r += $det_ped->total_tallos() * getPrecioByDetEsp($det_ped->precio, $det_esp->id_detalle_especificacionempaque);
                     } else {
                         $ramos = $det_ped->cantidad * $esp_emp->cantidad * ($esp_emp->especificacion->tipo === "O" ? $det_esp->tallos_x_ramos : $det_esp->cantidad);
                         $ramos_col = 0;
