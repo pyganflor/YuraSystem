@@ -25,7 +25,8 @@
                         </li>
                         <li class="divider"></li>
                         <li>
-                            <a href="javascript:void(0)" onclick="$('.checkbox_modulo').prop('checked', true)">
+                            <a href="javascript:void(0)"
+                               onclick="$('.checkbox_modulo').prop('checked', true); $('#checkbox_modulo_all').prop('checked', true)">
                                 <strong>
                                     Seleccionar Todos
                                 </strong>
@@ -255,7 +256,7 @@
 
         <tr>
             <th class="text-center" style="border-color: #9d9d9d">
-                <input type="checkbox" id="checkbox_modulo_all" onclick="select_all_modulos($(this))" class="checkbox_modulo">
+                <input type="checkbox" id="checkbox_modulo_all" onclick="select_all_modulos($(this))">
             </th>
             <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef; width: 250px">
                 Módulos
