@@ -243,6 +243,82 @@ class CiclosController extends Controller
             $semana_ini = min(getSemanaByDate($ciclo->fecha_inicio)->codigo, getSemanaByDate($request->fecha_inicio)->codigo);
             /* ------------------------ ******************************************* ---------------------- */
 
+            $semana_fin = getLastSemanaByVariedad($request->variedad);
+
+            /* ======================== MOVER PROYECCION_MODULO ====================== */
+            $model = $ciclo;
+            if (getSemanaByDate($model->fecha_inicio)->codigo != getSemanaByDate($request->fecha_inicio)->codigo) {   // hay que mover las proyecciones
+                $sum_semana = $model->semana_poda_siembra + count(explode('-', $model->curva));
+                $semana = Semana::All()
+                    ->where('estado', 1)
+                    ->where('id_variedad', $request->variedad)
+                    ->where('fecha_inicial', '<=', $model->fecha_inicio)
+                    ->where('fecha_final', '>=', $model->fecha_inicio)
+                    ->first();
+                $semana_req = Semana::All()
+                    ->where('estado', 1)
+                    ->where('id_variedad', $request->variedad)
+                    ->where('fecha_inicial', '<=', $request->fecha_inicio)
+                    ->where('fecha_final', '>=', $request->fecha_inicio)
+                    ->first();
+
+                /* ------------------------ OBTENER LAS SEMANAS NEW/OLD ---------------------- */
+                $codigo = $semana->codigo;
+                $new_codigo = $semana->codigo;
+                $i = 1;
+                $next = 1;
+                while ($i < $sum_semana && $new_codigo <= $semana_fin->codigo) {
+                    $new_codigo = $codigo + $next;
+                    $semana_new = Semana::All()
+                        ->where('estado', '=', 1)
+                        ->where('codigo', '=', $new_codigo)
+                        ->where('id_variedad', '=', $request->variedad)
+                        ->first();
+
+                    if ($semana_new != '') {
+                        $i++;
+                    }
+                    $next++;
+                }
+
+                $codigo = $semana_req->codigo;
+                $new_codigo = $semana_req->codigo;
+                $i = 1;
+                $next = 1;
+                while ($i < $sum_semana && $new_codigo <= $semana_fin->codigo) {
+                    $new_codigo = $codigo + $next;
+                    $semana_new_req = Semana::All()
+                        ->where('estado', '=', 1)
+                        ->where('codigo', '=', $new_codigo)
+                        ->where('id_variedad', '=', $request->variedad)
+                        ->first();
+
+                    if ($semana_new_req != '') {
+                        $i++;
+                    }
+                    $next++;
+                }
+
+                $proy = ProyeccionModulo::where('estado', 1)
+                    ->where('id_modulo', $model->id_modulo)
+                    ->where('id_variedad', $request->variedad)
+                    ->orderBy('fecha_inicio')
+                    ->get()->first();
+
+                if ($proy->id_semana == $semana_new->id_semana || $proy->semana->codigo <= $semana_new->codigo || $proy->semana->codigo < $semana_new_req->codigo) {    // hay que mover
+                    $proy->id_semana = $semana_new_req->id_semana;
+                    $proy->fecha_inicio = $semana_new_req->fecha_final;
+                    $proy->desecho = $semana_new_req->desecho > 0 ? $semana_new_req->desecho : 0;
+                    $proy->tallos_planta = $semana_new_req->tallos_planta_poda > 0 ? $semana_new_req->tallos_planta_poda : 0;
+                    $proy->tallos_ramo = $semana_new_req->tallos_ramo_poda > 0 ? $semana_new_req->tallos_ramo_poda : 0;
+
+                    $proy->save();
+                    $proy->restaurar_proyecciones();
+                }
+
+            }
+            /* ------------------------ ******************************************* ---------------------- */
+
             foreach ($ciclo->modulo->ciclos->where('estado', 1) as $c) {
                 if ($c->id_ciclo != $ciclo->id_ciclo) {
                     if ($request->fecha_inicio >= $c->fecha_inicio && $request->fecha_inicio < $c->fecha_fin)
@@ -305,15 +381,9 @@ class CiclosController extends Controller
                 bitacora('ciclo', $ciclo->id_ciclo, 'U', 'Actualziacion satisfactoria de un ciclo');
 
                 /* ======================== ACTUALIZAR LA TABLA PROYECCION_MODULO_SEMANA ====================== */
-                $semana_fin = DB::table('semana')
-                    ->select(DB::raw('max(codigo) as max'))
-                    ->where('estado', '=', 1)
-                    ->where('id_variedad', '=', $request->variedad)
-                    ->get()[0]->max;
-
                 Artisan::call('proyeccion:update_semanal', [
                     'semana_desde' => $semana_ini,
-                    'semana_hasta' => $semana_fin,
+                    'semana_hasta' => $semana_fin->codigo,
                     'variedad' => $request->variedad,
                     'modulo' => $ciclo->id_modulo,
                 ]);

@@ -231,6 +231,11 @@
                 DESCRIPTION<br />
                 Descripción
             </th>
+            @if($envio->pedido->tipo_especificacion === "T")
+                <th style="font-size: 11px;vertical-align: top">
+                    COLOR
+                </th>
+            @endif
             <th style="font-size: 11px;vertical-align: top">
                 SGP
             </th>
@@ -270,7 +275,11 @@
             @foreach($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $m => $esp_emp)
                 @foreach ($esp_emp->detalles as $n => $det_esp_emp)
                     @php
-                        $total_tallos += number_format(($det_ped->cantidad*$esp_emp->cantidad*$det_esp_emp->cantidad*$det_esp_emp->tallos_x_ramos),2,".","");
+                        if($esp_emp->especificacion->tipo != "O"){
+                            $total_tallos += number_format(($det_ped->cantidad*$esp_emp->cantidad*$det_esp_emp->cantidad*$det_esp_emp->tallos_x_ramos),2,".","");
+                        }else{
+                            $total_tallos += number_format($det_ped->total_tallos() ,2,".","");
+                        }
                         $full_equivalente_real += explode("|",$esp_emp->empaque->nombre)[1]*$det_ped->cantidad;
                         $descripcion = substr($det_esp_emp->variedad->planta->nombre, 0, 3) .", ". $det_esp_emp->variedad->nombre;
                     @endphp
@@ -280,7 +289,7 @@
                                 @if($esp_emp->especificacion->tipo != "O")
                                     {{number_format($det_ped->cantidad,2,".","")}}
                                 @else
-                                    {{number_format(($det_esp_emp->tallos_x_ramos*$det_ped->cantidad),2,".","")}}
+                                    {{number_format(($det_ped->total_tallos()),2,".","")}}
                                 @endif
                                 @php
                                     $total_piezas += $det_ped->cantidad;
@@ -320,7 +329,7 @@
                             @if($esp_emp->especificacion->tipo != "O")
                                 {{number_format(($det_ped->cantidad*$det_esp_emp->cantidad),2,".","")}}
                             @else
-                                {{number_format(($det_esp_emp->tallos_x_ramos*$det_ped->cantidad),2,".","")}}
+                                {{number_format(($det_ped->total_tallos()),2,".","")}}
                             @endif
                         </td>
                         @php
@@ -331,7 +340,7 @@
                             @if($esp_emp->especificacion->tipo != "O")
                                 {{"$".number_format(($det_esp_emp->cantidad * ((float)explode(";", $precio[$i])[0]) * $esp_emp->cantidad * $det_ped->cantidad),2,".","")}}
                             @else
-                                {{number_format(($det_esp_emp->tallos_x_ramos*$det_ped->cantidad*(float)explode(";", $precio[$i])[0]),2,".","")}}
+                                {{number_format(($det_ped->total_tallos()*(float)explode(";", $precio[$i])[0]),2,".","")}}
                             @endif
                         </td>
                     </tr>
@@ -339,7 +348,7 @@
                         if($esp_emp->especificacion->tipo != "O"){
                             $precio_total_sin_impuestos += ($det_esp_emp->cantidad * (float)explode(";", $precio[$i])[0] * $esp_emp->cantidad * $det_ped->cantidad);
                         }else{
-                            $precio_total_sin_impuestos += $det_esp_emp->tallos_x_ramos*$det_ped->cantidad*(float)explode(";", $precio[$i])[0];
+                            $precio_total_sin_impuestos += $det_ped->total_tallos()*(float)explode(";", $precio[$i])[0];
                         }
                     @endphp
                     @php  $i++;  @endphp
@@ -411,7 +420,8 @@
                                 'hts' => $m_c->detalle_especificacionempaque->especificacion_empaque->detalles[0]->variedad->planta->tarifa,
                                 'nandina' =>$m_c->detalle_especificacionempaque->especificacion_empaque->detalles[0]->variedad->planta->nandina,
                                 'descripcion' =>substr($m_c->detalle_especificacionempaque->variedad->planta->nombre, 0, 3) .", ". $m_c->detalle_especificacionempaque->variedad->nombre,
-                                'piezas'=> number_format(($m_c->cantidad/$m_c->detalle_especificacionempaque->cantidad),2,".","")
+                                'piezas'=> number_format(($m_c->cantidad/$m_c->detalle_especificacionempaque->cantidad),2,".",""),
+                                'color' => $m_c->coloracion->color->nombre
                             ];
                         @endphp
                     @endif
@@ -423,7 +433,7 @@
                 @foreach($table as $t)
                     @php
                         $pie=0; //Sumatoria Piezas
-                        $ram = 0;//Sumatoria Ramos
+                        $ram=0; //Sumatoria Ramos
                     @endphp
                     @foreach($t as $ta)
                         @php
@@ -435,6 +445,9 @@
                     <tr>
                         <td style="font-size:12px">{{number_format($pie,2,".","")}}</td>
                         <td style="font-size:12px">{{$t[0]['descripcion']}}</td>
+                        @if($envio->pedido->tipo_especificacion === "T")
+                            <td style="font-size:12px">{{$t[0]['color']}}</td>
+                        @endif
                         <td style="font-size:12px">A</td>
                         <td style="font-size:12px">{{$t[0]['hts']}}</td>
                         <td style="font-size:12px">{{$t[0]['nandina']}}</td>
@@ -475,7 +488,7 @@
 </table>
 <table style="width:100%">
     <tr>
-        <td style="font-size:2px;font-family: arial, sans-serif"> <b> FULL BOXES : [{{number_format($full,2,".","")}}]</b></td>
+        <td style="font-size:12px;font-family: arial, sans-serif"> <b> FULL BOXES : [{{number_format($full,2,".","")}}]</b></td>
         <td style="font-size:12px;font-family: arial, sans-serif"> <b> HALF BOXES : [{{number_format($half,2,".","")}}]</b></td>
         <td style="font-size:12px;font-family: arial, sans-serif"> <b> 1/4 BOXES : [{{number_format($cuarto,2,".","")}}]</b></td>
         <td style="font-size:12px;font-family: arial, sans-serif"> <b> 1/6 BOXES : [{{number_format($sexto,2,".","")}}]</b></td>

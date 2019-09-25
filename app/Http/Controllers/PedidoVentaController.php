@@ -149,7 +149,8 @@ class PedidoVentaController extends Controller
             'datos_exportacion' => DatosExportacion::join('cliente_datoexportacion as cde', 'dato_exportacion.id_dato_exportacion', 'cde.id_dato_exportacion')
                 ->where('id_cliente', $request->id_cliente)->get(),
             'emp_tallos' => $empT,
-            'tipo_especificacion' => getEspecificacion($request->id_especificacion)->tipo
+            'tipo_especificacion' => getEspecificacion($request->id_especificacion)->tipo,
+            'empaque' => $request->empaque
         ]);
     }
 

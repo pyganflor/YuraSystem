@@ -171,6 +171,7 @@ function store_pedido(id_cliente, pedido_fijo, csrf_token, vista, id_pedido, com
             variedades = '';
             arrDataDetallesPedido = [];
             arrDataPresentacionYuraVenture=[];
+            dataTallos =[];
             arrDatosExportacion = [];
             cant_especificaciones = $('tbody#tbody_inputs_pedidos input.input_cantidad').length;
             cant_datos_exportacion = $(".th_datos_exportacion").length;
@@ -187,17 +188,16 @@ function store_pedido(id_cliente, pedido_fijo, csrf_token, vista, id_pedido, com
                     precio = '';
                     if ($(".cantidad_piezas_" + (i + 1)).val() != "" && $(".cantidad_piezas_" + (i + 1)).val() != 0 && arr_ordenado[z] === j.value) {
                         for (x = 1; x <= $(".input_variedad_" + (i + 1)).length; x++) {
+                            empaque = $("select.empaque_"+ (i + 1)).val();
                             id_variedades += $("#id_variedad_" + (i + 1) + "_" + x).val() + "|";
-                            precio += $("#precio_" + (i + 1) + "_" + x).val() + ";" + ($("#empaque_"+ (i + 1)).val() !== "T"
+                            precio += $("#precio_" + (i + 1) + "_" + x).val() + ";" + (empaque !== "T"
                                                                                         ? $("#id_detalle_especificacion_empaque_" + (i + 1) + "_" + x).val() + "|"
                                                                                         : "0" + "|");
                         }
                         variedades += id_variedades;
 
-                        empaque = $("select.empaque_"+ (i + 1)).val();
-
                         arrDataDetallesPedido.push({
-                            cantidad: $("#cantidad_piezas_" + (i + 1)).val(),
+                            cantidad: empaque === "T" ? $("#cajas_mallas_"+(i + 1)).val() : $("#cantidad_piezas_" + (i + 1)).val(),
                             id_cliente_pedido_especificacion: empaque === "T" ? null : $("#id_cliente_pedido_especificacion_" + (i + 1)).val(),
                             id_agencia_carga: $("#id_agencia_carga_" + (i + 1)).val(),
                             precio: precio,
@@ -206,22 +206,34 @@ function store_pedido(id_cliente, pedido_fijo, csrf_token, vista, id_pedido, com
                                 variedad : parseInt($("input.input_variedad_"+(i + 1)).val()),
                                 ramos_x_caja : parseInt($("td.ramos_x_caja_"+(i + 1)+" span").html()),
                                 total_ramos : parseInt($("td#td_total_ramos_"+(i + 1)).html()),
-                                tallos_x_ramos : parseInt($("input.input_tallos_"+(i + 1)).val()),
+                                id_clasificacion_ramo : $("#id_clasificacion_ramo_"+(i + 1)).val(),
+                                tallos_x_ramos : parseInt($("td.td_tallos_x_ramo_"+(i + 1)+" span input").val()),
                                 longitud_ramo : parseInt($("input.longitud_ramo_"+(i + 1)).val()),
                                 unidad_medida : parseInt($("input.u_m_longitud_ramo_"+(i + 1)).val()),
                             } : null
                         });
+
                         if(empaque === "T"){
+                            console.log(i, $(".input_tallos_"+(i+1)).val());
                             codigo_presentacion = $(".codigo_presentacion_"+(i + 1)).val().replace('tallos_x_malla',$(".input_tallos_"+(i + 1)).val());
                             arrDataPresentacionYuraVenture.push({
                                 codigo_presentacion : codigo_presentacion,
                                 codigo_venture : $(".codigo_venture_"+(i + 1)).val()
                             });
+                            dataTallos.push({
+                                mallas : $(".cantidad_"+(i + 1)).val(),
+                                tallos_x_caja : $(".tallos_x_caja_"+(i + 1)).val(),
+                                tallos_x_ramo : $("td.td_tallos_x_ramo_"+(i + 1)+" span input").val(),
+                                tallos_x_malla : $(".tallos_x_malla_"+(i + 1)).val(),
+                                ramos_x_caja : parseInt($("td.ramos_x_caja_"+(i + 1)+" span").html()),
+                            });
+
                         }else{
                             arrDataPresentacionYuraVenture =[];
                         }
                     }
                 });
+
                 if (cant_datos_exportacion > 0) {
                     $.each($('input.orden'), function (i, j) {
                         arrDatosExportacionEspecificacion = [];
@@ -243,7 +255,6 @@ function store_pedido(id_cliente, pedido_fijo, csrf_token, vista, id_pedido, com
                 modal_view('modal_status_pedidos', '<div class="alert alert-danger text-center"><p> Debe colocar la cantidad de piezas en al menos una especificación</p> </div>', '<i class="fa fa-times" aria-hidden="true"></i> Estado pedido', true, false, '50%');
                 return false;
             }
-
             var arrFechas = [];
             if (pedido_fijo && ($("#opcion_pedido_fijo").val() == 1) || $("#opcion_pedido_fijo").val() == 2) {
                 var fechaDesde = moment($("#fecha_desde_pedido_fijo").val());
@@ -300,7 +311,8 @@ function store_pedido(id_cliente, pedido_fijo, csrf_token, vista, id_pedido, com
                 crear_envio: $("#envio_automatico").is(":checked"),
                 fecha_envio: $("#fecha_de_entrega").val(),
                 id_configuracion_empresa : $("select#id_configuracion_empresa").val(),
-                arrDataPresentacionYuraVenture : arrDataPresentacionYuraVenture
+                arrDataPresentacionYuraVenture : arrDataPresentacionYuraVenture,
+                dataTallos: dataTallos
             };
 
             post_jquery('clientes/store_pedidos', datos, function () {
@@ -934,7 +946,8 @@ function duplicar_especificacion(id_especificacion, especificacion_pedido) {
     datos = {
         id_especificacion: id_especificacion,
         id_cliente: $("#id_cliente_venta").val(),
-        cant_esp: $(".input_cantidad").length
+        cant_esp: $(".input_cantidad").length,
+        empaque : $("#empaque_"+especificacion_pedido).val()
     };
     $.get('pedidos/duplicar_especificacion', datos, function (retorno) {
         $("#tbody_inputs_pedidos").append(retorno);
@@ -1379,7 +1392,7 @@ function calcular_precio_envio() {
                 });
             });
             sub_total += parseFloat(precio_especificacion);
-            $("#td_total_ramos_" + o + "_" + i).html(parseFloat(ramos_totales_especificacion));
+            $("#td_total_ramos_" + o + "_" + i).html(Math.round(parseFloat(ramos_totales_especificacion)));
             total_ramos += ramos_totales_especificacion;
             $("#td_precio_especificacion_" + o + "_" + i).html("$" + parseFloat(precio_especificacion).toFixed(2));
             total_piezas += parseInt($(".cantidad_" + o + "_" + i).val());
@@ -1992,7 +2005,6 @@ function listar_productos() {
         listar_productos_vinculados();
         $("option.option_dinamico").remove();
 
-        console.log(retorno,$("select#presentacion_yura_system option").text());
         //return false;
         $.each(retorno.articulo_venture,function(i,j){
             $("select#presentacion_venture").append('<option class="option_dinamico" value="'+i+'">'+j+'</option>');
@@ -2007,21 +2019,32 @@ function cuenta_ramos(input){
     $("#codigo_presentacion_"+id).val("");
     $("#codigo_venture_"+id).val("");
     if(input.value === "T"){
-        select = $("select."+input.id);
-        for (let j = 0; j < select.length ; j++) {
-            if(select[j].options[1].value === "T"){
-                $(select[j].options[1]).attr('selected',true);
-                $(".cantidad_"+id).attr('title',"Ingrese el total de mallas");
-                $(".ramos_x_caja_"+id+ " span").html(1);
-                html='<input type="text" id="input_tallos_'+id+'" name="input_tallos_'+id+'" class="input_tallos_'+id+'" ' +
-                        'onkeyup="calcular_precio_pedido(this)" onchange="crear_orden_pedido(this)" ' +
-                        'value="0" style="width:100%;border:none;text-align:center;height: 34px;" ' +
-                        'title="Escribe la cantidad de tallos por malla">';
-                $("td.td_tallos_x_ramo_"+id+ " span").html(html);
-                $("td.td_presentacion_"+id+ " span").html($(input).find("option")[1].innerHTML);
-            }
-        }
+        $("td.td_presentacion_"+id+" span").html($(input).find("option")[1].innerHTML);
+        $.each($("select.empaque_"+id+" option"),function(i,j){
+            if($(this)[0].value ==="T")
+                $(this).attr('selected',true);
+            $(".cantidad_"+(i+1)).attr('title',"Ingrese el total de mallas");
+        });
+        calibre_estandar = parseInt($("#calibre_estandar").val());
+        ramos_x_caja_conf_empresa = parseInt($("#ramos_x_caja_conf_empresa").val());
 
+        //$.each($(".input_cantidad"),function (i) {
+            //$.each($("td.td_calibre_"+(i+1)),function(k,l) {
+                calibre = parseInt($("td.td_calibre_"+id).find("span")[0].innerText);
+                html = '<input type="text" id="input_tallos_' +id+ '" name="input_tallos_' +id+ '" class="input_tallos_' +id+ '" ' +
+                    'onkeyup="calcular_precio_pedido(this)" onchange="crear_orden_pedido(this)" ' +
+                    'value="0" style="width:100%;border:none;text-align:center;height: 34px;" ' +
+                    'title="Escribe la cantidad de tallos por malla">';
+                $("td.td_tallos_x_ramo_" +id+ " span").html(html);
+
+                calibre_actual = parseInt($("td.td_calibre_"+id+" span").html());
+                calibre_promedio = calibre_actual / calibre_estandar;
+                ramos_x_caja = ramos_x_caja_conf_empresa / calibre_promedio;
+                $("#input_tallos_"+id).val(25);
+                $("td.ramos_x_caja_"+id+" span").html(ramos_x_caja.toFixed(0));
+            //});
+     // //  //});
+            $(".th_tallo_x_malla, .td_tallos_x_malla").removeClass('hide');
         data = {
             id_variedad : $(".input_variedad_"+id).val(),
             id_clasificacion_ramo : $("#id_clasificacion_ramo_"+id).val(),
@@ -2047,125 +2070,99 @@ function cuenta_ramos(input){
             $.LoadingOverlay('hide');
         });
 
-    }else{
-        for (let j = 0; j < select.length ; j++) {
-            if(select[j].options[1].value === "T"){
-                $(select[j].options[1]).removeAttr('selected');
-                $(".cantidad_"+id).removeAttr('title');
-                $(".ramos_x_caja_"+id+ " span").html($(".td_ramos_x_caja_"+id).val());
-                $("td.td_tallos_x_ramo_"+id+ " span").html($("input.tallos_x_ramo_"+id).val());
-                $("td.td_presentacion_"+id+ " span").html($("input.input_presentacion_"+id).val());
+    }
+    else{
+        $.each($("select.empaque_"+id+" option"),function(i,j){
+            $(this).removeAttr('selected');
+            if($(this)[0].value !=="T"){
+                $(".cantidad_"+(i+1)).removeAttr('title');
+                $(this).attr('selected',true);
             }
-        }
+        });
+
+        //$.each($(".input_cantidad_"+id),function (i) {
+            //$.each($("td.td_calibre_"+(i+1)),function(k,l){
+                $("td.td_presentacion_"+id+" span").html($("input.input_presentacion_"+id).val());
+                $("td.ramos_x_caja_"+id+" span").html($("input.td_ramos_x_caja_"+id).val());
+                $("td.td_tallos_x_ramo_"+id+ " span").html($("input.tallos_x_ramo_"+id).val());
+           // });
+        //});
+        z=0;
+        $.each($("select.empaque"),function(i,j){
+            if(j.value === "T")
+                z++;
+        });
+        if(z===0)
+            $(".th_tallo_x_malla, .td_tallos_x_malla").addClass('hide');
+
         $("button.store_pedido_normal").removeAttr('disabled');
         $("#error_codigo_venture").html("");
     }
     calcular_precio_pedido(input);
-    /*for (let i = 0; i < $(input)[0].options.length ; i++) {
-      if($(input)[0].options[i].selected && $(input)[0].options[i].innerText === "Mallas"){
-           html='<input type="text" id="input_ramos_'+id+'" name="input_ramos_'+id+'" ' +
-                   'onkeyup="calcular_precio_pedido()" onchange="crear_orden_pedido(this)" ' +
-                   'value="0" style="width:100%;border:none;text-align:center;height: 34px;">';
-
-           $("input#cantidad_piezas_"+id).attr('disabled',true);
-           $("input.cantidad_"+id).val("");
-           $("#td_total_ramos_"+id).html(html);
-
-           for (let j = 0; j < $("select."+input.id).length ; j++) {
-               if($("select."+input.id)[j].options[1].innerText === "Mallas")
-                   $($("select."+input.id)[j].options[1]).attr('selected',true);
-           }
-           return false;
-       }else{
-           $("input#cantidad_piezas_"+id).removeAttr('disabled');
-           $("#td_total_ramos_"+id).html("0");
-           for (let j = 0; j < $("select."+input.id).length ; j++) {
-               if($("select."+input.id)[j].options[1].innerText === "Mallas")
-                   $($("select."+input.id)[j].options[1]).removeAttr('selected');
-           }
-       }
-    }*/
 }
 
 function calcular_precio_pedido(input) {
+
     monto_total = 0.00;
     total_ramos = 0.00;
     total_piezas = 0.00;
     cant_rows = $(".input_cantidad").length;
     for (i = 1; i <= cant_rows; i++) {
+        $("#td_precio_especificacion_"+i).html("");
         ramos_totales_especificacion = 0.00;
         precio_especificacion = 0.00;
         piezas = $(".cantidad_" + i).val();
-        //if(piezas !== "" && piezas > 0){
-        tallos=0;
 
-        if($("#empaque_"+i).val() === "T"){
-            //id = input.id.split("_")[2];
-            $.each($("input.input_tallos_"+i),function(i,j){
-                tallos+=parseInt(j.value);
-            });
-            ramo_x_caja = parseInt($("td.ramos_x_caja_"+i+" span").html());
-            piezas = parseInt($("input.cantidad_"+i).val());
-            total_piezas+= piezas;
-            total_tallos = tallos*ramo_x_caja*(isNaN(piezas) ? 0 : piezas);
-            console.log(tallos,ramo_x_caja,piezas);
-            t_ramos = (isNaN(piezas) ? 0 : piezas)*$("input.input_tallos_"+i).length;
-            $("td#td_total_ramos_"+i).html(t_ramos);
-            ramos_totales_especificacion = t_ramos;
-
-            precio_especificacion = (total_tallos*parseFloat($(".precio_"+i).val()));
-            $("#td_precio_especificacion_" + i).html("$"+parseFloat(precio_especificacion).toFixed(2));
-
-        }else{
-
-            ramos= 0;
-            pieza = ($(".cantidad_" + i).val() =="" ? 0 : parseInt($(".cantidad_" + i).val()));
-            total_piezas += pieza;
-            $.each($(".td_ramos_x_caja_" + i), function (a, b) {
-                ramos_totales_especificacion += (pieza * b.value);
-            });
-            $.each($(".precio_" + i), function (y, z) {
-                precio_variedad = z.value == "" ? 0 : z.value;
-                ramos_x_caja = $(".input_ramos_x_caja_" + i + "_" + (y + 1)).val();
-                precio_especificacion += (parseFloat(precio_variedad) * parseFloat(ramos_x_caja) * pieza);
-            });
-            if($("#td_total_ramos_"+i+" input").length === 0 )
-                $("#td_total_ramos_" + i).html(parseFloat(ramos_totales_especificacion).toFixed(2));
-
-            $("#td_precio_especificacion_" + i).html("$" + parseFloat(precio_especificacion).toFixed(2));
-        }
-
-        monto_total += parseFloat(precio_especificacion);
-        total_ramos += ramos_totales_especificacion;
-        /*precio_especificacion = 0.00;
-            ramos_totales_especificacion = 0.00;
-            $.each($(".cantidad_" + i), function (p, q) {
-                ramos= 0;
-                $.each($(".td_ramos_x_caja_" + i), function (a, b) {
-                    if($("#empaque_"+i+" option:selected").val() === "T"){
-                        ramos += parseFloat(b.value);
-                    }else{
-                        ramos_totales_especificacion += (q.value * b.value);
-                    }
+        td_total_ramos=0;
+        if(piezas !== "" && piezas > 0){
+            tallos=0;
+            tallos_totales=0;
+            tallos_x_ramo = 0;
+            ramos_x_caja= 0;
+            if($("#empaque_"+i).val() === "T"){
+                $.each($("td.td_calibre_"+i),function(k,l) {
+                    tallos_totales += piezas*parseInt($("#tallos_x_malla_"+i+"_"+(k+1)).val());
+                    ramos_x_caja += parseInt($(".ramos_x_caja_"+i+"_"+(k+1)+" span").html()).toFixed();
+                    tallos_x_ramo += parseInt($("#input_tallos_"+i).val());
+                    monto_especificacion = piezas*parseInt($("#tallos_x_malla_"+i+"_"+(k+1)).val())*parseFloat($("#precio_"+i+"_"+(k+1)).val());
+                    monto_total += tallos_totales*parseFloat($("#precio_"+i+"_"+(k+1)).val());
                 });
-                if($("#empaque_"+i+" option:selected").val() === "T") {
-                    ramos_totales_especificacion += parseFloat($("#input_ramos_" + i).val());
-                    $(".cantidad_" + i).val(parseFloat($("#input_ramos_"+i).val()/ramos).toFixed(2));
-                }
 
+                    $("#td_precio_especificacion_"+i).html(monto_especificacion.toFixed(2));
+                    tallos_x_caja = ramos_x_caja*tallos_x_ramo;
+                    total_piezas += (tallos_totales/tallos_x_caja);
+                    cajas = tallos_totales/tallos_x_caja;
+                    $("#cajas_mallas_"+i).val(Math.round(cajas));
+                    $(".tallos_x_caja_"+i).val(tallos_x_caja);
+                    ramos_totales_especificacion += (Math.round(tallos_totales)/Math.round(tallos_x_caja))*ramos_x_caja;
+                    total_ramos += ramos_totales_especificacion;
+                    $("#td_total_ramos_"+i).html(ramos_totales_especificacion.toFixed(2));
+
+            }
+            else{
+                ramos= 0;
+                pieza = ($(".cantidad_" + i).val() =="" ? 0 : parseInt($(".cantidad_" + i).val()));
+                total_piezas += pieza;
+                $.each($(".td_ramos_x_caja_" + i), function (a, b) {
+                    ramos_totales_especificacion += (pieza * b.value);
+                });
                 $.each($(".precio_" + i), function (y, z) {
                     precio_variedad = z.value == "" ? 0 : z.value;
                     ramos_x_caja = $(".input_ramos_x_caja_" + i + "_" + (y + 1)).val();
-                    precio_especificacion += (parseFloat(precio_variedad) * parseFloat(ramos_x_caja) * q.value);
+                    precio_especificacion += (parseFloat(precio_variedad) * parseFloat(ramos_x_caja) * pieza);
+                    total_ramos+= ramos_x_caja*pieza;
+                    console.log(precio_variedad,ramos_x_caja,pieza);
                 });
-            });
-            monto_total += parseFloat(precio_especificacion);
-            if($("#td_total_ramos_"+i+" input").length === 0 )
-                $("#td_total_ramos_" + i).html(parseFloat(ramos_totales_especificacion).toFixed(2));
 
-            total_ramos += ramos_totales_especificacion;
-            $("#td_precio_especificacion_" + i).html("$" + parseFloat(precio_especificacion).toFixed(2));*/
-       // }
+                if($("#td_total_ramos_"+i+" input").length === 0 )
+                    $("#td_total_ramos_" + i).html(parseFloat(ramos_totales_especificacion).toFixed(2));
+
+                $("#td_precio_especificacion_" + i).html("$" + parseFloat(precio_especificacion).toFixed(2));
+                monto_total+= parseFloat(precio_especificacion)
+            }
+        }else{
+            $("td#td_total_ramos_"+i).html(0);
+        }
     }
 
     if(isNaN(monto_total)){
@@ -2173,23 +2170,14 @@ function calcular_precio_pedido(input) {
     }else{
         t = monto_total;
     }
-
     if($("#iva_cliente").val() > 0){
         iva = t*(parseFloat($("#iva_cliente").val())/100);
     }else{
         iva = 0.00;
     }
-
-    $("#total_piezas").html(isNaN(total_piezas) ?  0 : total_piezas.toFixed(2));
-    $("#total_ramos").html(total_ramos);
+    $("#total_piezas").html(isNaN(total_piezas) ?  0 : total_piezas.toFixed());
+    $("#total_ramos").html(total_ramos.toFixed(2));
     $(".monto_total_pedido").html( "$" + (isNaN(monto_total) ? 0.00 :  monto_total.toFixed(2)));
     $(".total_pedido").html( "$" + (t+iva).toFixed(2));
 
-    /*$.each($(".seleccion_invidual"), function (n, m) {
-        if ($(".cantidad_" + (n + 1)).val() != "" && $("#seleccion_invidual_" + (n + 1)).is(":checked"))
-            total_piezas += parseFloat($(".cantidad_" + (n + 1)).val());
-    });
-    $("#total_piezas").html(total_piezas.toFixed(2));
-    $("#total_ramos").html(total_ramos);
-    $(".monto_total_pedido").html("$" + monto_total.toFixed(2));*/
 }

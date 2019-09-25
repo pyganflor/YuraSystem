@@ -26,6 +26,9 @@
             <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d;width:45px">
                 RAMO X CAJA
             </th>
+            <th class="text-center hide th_tallo_x_malla table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d;width:45px">
+                TALLOS X MALLA
+            </th>
             <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
                 TOTAL RAMOS
             </th>
@@ -85,21 +88,22 @@
                                         <input type="number" min="0" id="cantidad_piezas_{{($x+1)}}" style="border: none;width:100%;height: 34px;" onkeyup="crear_orden_pedido(this)" onchange="calcular_precio_pedido(this)"
                                                name="cantidad_piezas_{{$item->id_especificacion}}"  class="text-center cantidad_{{($x+1)}} input_cantidad" value="">
                                         <input type="hidden" id="id_cliente_pedido_especificacion_{{($x+1)}}" value="{{$item->id_cliente_pedido_especificacion}}">
+                                        <input type="hidden" id="cajas_mallas_{{($x+1)}}" name="cajas_mallas_{{($x+1)}}">
                                     </td>
                                 @endif
                                     <td style="border-color: #9d9d9d; padding: 0px; vertical-align: middle; width: 60px;"  class="text-center">
                                         {{$det_esp_emp->variedad->siglas}}
                                         <input type="hidden" class="input_variedad_{{$x+1}}" id="id_variedad_{{$x+1}}_{{$b}}" value="{{$det_esp_emp->variedad->id_variedad}}">
                                     </td>
-                                    <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;width:40px" class="text-center">
-                                        {{$det_esp_emp->clasificacion_ramo->nombre}}{{$det_esp_emp->clasificacion_ramo->unidad_medida->siglas}}
+                                    <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;width:40px" class="text-center td_calibre td_calibre_{{$x+1}}_{{$b}} td_calibre_{{$x+1}}">
+                                        <span>{{$det_esp_emp->clasificacion_ramo->nombre}}</span>{{$det_esp_emp->clasificacion_ramo->unidad_medida->siglas}}
                                         <input type="hidden" id="id_detalle_especificacion_empaque_{{$x+1}}_{{$b}}" value="{{$det_esp_emp->id_detalle_especificacionempaque}}">
                                         <input type="hidden" id="id_clasificacion_ramo_{{$x+1}}" name="id_clasificacion_ramo_{{$x+1}}" value="{{$det_esp_emp->clasificacion_ramo->id_clasificacion_ramo}}">
                                         <input type="hidden" id="u_m_clasificacion_ramo_{{$x+1}}" name="u_m_clasificacion_ramo_{{$x+1}}" value="{{$det_esp_emp->clasificacion_ramo->unidad_medida->id_unidad_medida}}">
                                     </td>
                                     @if($z == 0)
                                         <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;width:75px" class="text-center"  rowspan="{{count($esp_emp->detalles)}}">
-                                            <select id="empaque_{{$x+1}}" class="empaque_{{$x+1}}" name="empaque_{{$x+1}}" style="border:none;width:100%;height: 34px;" onchange="cuenta_ramos(this)" >
+                                            <select id="empaque_{{$x+1}}" class="empaque_{{$x+1}} empaque" name="empaque_{{$x+1}}" style="border:none;width:100%;height: 34px;" onchange="cuenta_ramos(this)" >
                                                 <option value="{{$esp_emp->empaque->id_empaque}}" >{{explode('|',$esp_emp->empaque->nombre)[0]}}</option>
                                                 @foreach($emp_tallos as $t)
                                                     <option value="{{$t->f_empaque}}">{{explode('|',$t->nombre)[0]}}</option>
@@ -108,14 +112,23 @@
                                         </td>
                                     @endif
                                     <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;width:65px"
-                                        class="text-center td_presentacion_{{$x+1}}">
+                                        class="text-center td_presentacion_{{$x+1}} td_presentacion_{{$x+1}}_{{$b}}">
                                         <span>{{$det_esp_emp->empaque_p->nombre}}</span>
                                         <input type="hidden" id="input_presentacion_{{$x+1}}_{{$b}}" name="input_presentacion_{{$x+1}}_{{$b}}"
                                                value="{{$det_esp_emp->empaque_p->nombre}}" class="input_presentacion_{{$x+1}}">
                                     </td>
-                                    <td  style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;width:40px" class="text-center ramos_x_caja_{{$x+1}}">
+                                    <td  style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;width:40px" class="text-center ramos_x_caja_{{$x+1}} ramos_x_caja_{{$x+1}}_{{$b}}">
                                         <span>{{$det_esp_emp->cantidad}}</span>
                                         <input type="hidden" class="td_ramos_x_caja_{{$x+1}} input_ramos_x_caja_{{$x+1}}_{{$b}}" value="{{$det_esp_emp->cantidad}}">
+                                    </td>
+                                    <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;width:40px"
+                                        class="td_tallos_x_malla td_tallos_x_malla_{{$x+1}} td_tallos_x_malla_{{$x+1}}_{{$b}}
+                                        {{(isset($det_ped->cliente_especificacion->especificacion->tipo) && $det_ped->cliente_especificacion->especificacion->tipo == "O") ? "" : "hide"}}">
+                                        <input type="number" min="0" id="tallos_x_malla_{{$x+1}}_{{$b}}" name="tallos_x_malla_{{$x+1}}_{{$b}}"
+                                               class="text-center tallos_x_malla_{{$x+1}} tallos_x_malla_{{$x+1}}_{{$b}}" value="0"
+                                               onchange="calcular_precio_pedido(this)" style="border: none;width: 100%;height: 34px;" >
+                                        <input type="hidden" id="tallos_x_caja_{{$x+1}}_{{$b}}" name="tallos_x_caja_{{$x+1}}_{{$b}}"
+                                               class="text-center tallos_x_caja_{{$x+1}} tallos_x_caja_{{$x+1}}_{{$b}}" >
                                     </td>
                                     @if($item->id_especificacion != $anterior)
                                         <td id="td_total_ramos_{{$x+1}}" style="border-color: #9d9d9d; padding: 0px; vertical-align: middle; width: 45px; "

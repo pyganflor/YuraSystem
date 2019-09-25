@@ -1114,11 +1114,11 @@ function getPrecioByClienteDetEspEmp($cliente, $det_esp)
 function getPrecioByDetEsp($string, $det_esp)
 {
     foreach (explode('|', $string) as $x) {
-        if (count(explode(';', $x)) > 0){
-            if(explode(';', $x)[1] > 0){  //explode(';', $x)[1] == 0 CUANDO UN PEDIDO SEA EN TALLOS
+        if (count(explode(';', $x)) > 0) {
+            if (explode(';', $x)[1] > 0) {  //explode(';', $x)[1] == 0 CUANDO UN PEDIDO SEA EN TALLOS
                 if (explode(';', $x)[1] == $det_esp)
                     return explode(';', $x)[0];
-            }else{
+            } else {
                 return explode(';', $x)[0]; //POR QUE SOLO REALIZARAN PEIDOS EN TALLOS CON UN SOLO DETALLE ESPECIFICACION EMPAQUE, CAMBIAR EN CASO DE QUE NO SE VAYA A HACER ASÍ
             }
         }
@@ -2223,17 +2223,17 @@ function getCodigoArticuloVenture($idConfiguracionempresa = 1)
     return $codigosVenture[$idConfiguracionempresa];
 }
 
-function getProductosVinculadosYuraVenture($idConfiguracionEmpresa,$tipo)
+function getProductosVinculadosYuraVenture($idConfiguracionEmpresa, $tipo)
 {
     return ProductoYuraVenture::where([
         ['id_configuracion_empresa', $idConfiguracionEmpresa],
-        ['tipo',$tipo]
+        ['tipo', $tipo]
     ])->get();
 }
 
-function getCodigoVenturePresentacion($idPlanta, $idVariedad, $idClasificacionRamo, $clasificacionRamoIdUnidadMedida, $tallosXramos, $longitudRamo, $longitudRamoIdUnidadMedida, $idConfiguracionempresa,$tipo="N")
+function getCodigoVenturePresentacion($idPlanta, $idVariedad, $idClasificacionRamo, $clasificacionRamoIdUnidadMedida, $tallosXramos, $longitudRamo, $longitudRamoIdUnidadMedida, $idConfiguracionempresa, $tipo = "N")
 {
-    $prductosVinculados = getProductosVinculadosYuraVenture($idConfiguracionempresa,$tipo);
+    $prductosVinculados = getProductosVinculadosYuraVenture($idConfiguracionempresa, $tipo);
     foreach ($prductosVinculados as $prductoVinculado) {
         $datos = explode("|", $prductoVinculado->presentacion_yura);
 
@@ -2286,51 +2286,6 @@ function getTallosCosechadosByModSemVar($mod, $semana, $variedad)
         return 0;
 }
 
-function asignaClienteEspecificacion($arr_datos,$id_cliente){
-    $estado = false;
-    $id_cliente_pedido_especificacion ='';
-    $objEspecificacion = new Especificacion;
-    $objEspecificacion->estado = 1;
-    $objEspecificacion->tipo = 'O';
-    if($objEspecificacion->save()){
-        $modelEspecificacion = Especificacion::all()->last();
-        $objEspecificacionEmpaque = new EspecificacionEmpaque;
-        $objEspecificacionEmpaque->id_especificacion = $modelEspecificacion->id_especificacion;
-        $objEspecificacionEmpaque->id_empaque = Empaque::where([['f_empaque',"T"],['tipo','C']])->first()->id_empaque;
-        $objEspecificacionEmpaque->cantidad   = 1;
-        if($objEspecificacionEmpaque->save()) {
-            $modelEspecificacionEmpaque = EspecificacionEmpaque::all()->last();
-            $objDetalleEspecificacionEmpaque = new DetalleEspecificacionEmpaque;
-            $objDetalleEspecificacionEmpaque->id_especificacion_empaque = $modelEspecificacionEmpaque->id_especificacion_empaque;
-            $objDetalleEspecificacionEmpaque->id_variedad = $arr_datos['variedad'];
-            $objDetalleEspecificacionEmpaque->id_clasificacion_ramo = ClasificacionRamo::where('estandar',1)->first()->id_clasificacion_ramo;
-            $objDetalleEspecificacionEmpaque->cantidad = $arr_datos['ramos_x_caja'];
-            $objDetalleEspecificacionEmpaque->id_empaque_p = Empaque::where([['f_empaque',"T"],['tipo','P']])->first()->id_empaque;;
-            $objDetalleEspecificacionEmpaque->tallos_x_ramos = $arr_datos['tallos_x_ramos'];
-            $objDetalleEspecificacionEmpaque->longitud_ramo = $arr_datos['longitud_ramo'];
-            $objDetalleEspecificacionEmpaque->id_unidad_medida = $arr_datos['unidad_medida'];
-            if($objDetalleEspecificacionEmpaque->save()){
-                $objClientePedidoEspecificacion = new ClientePedidoEspecificacion;
-                $objClientePedidoEspecificacion->id_cliente        = $id_cliente;
-                $objClientePedidoEspecificacion->id_especificacion = $modelEspecificacion->id_especificacion;
-                if($objClientePedidoEspecificacion->save()){
-                    $modelClientePedidoEspecificacion = ClientePedidoEspecificacion::all()->last();
-                    $estado = true;
-                    $id_cliente_pedido_especificacion = $modelClientePedidoEspecificacion->id_cliente_pedido_especificacion;
-                }
-            }else{
-                Especificacion::destroy($modelEspecificacion->id_especificacion);
-            }
-        }else{
-            Especificacion::destroy($modelEspecificacion->id_especificacion);
-        }
-    }
-    return [
-        'estado' => $estado,
-        'id_cliente_pedido_especificacion' => $id_cliente_pedido_especificacion
-    ];
-}
-
 function getCalibreByRangoVariedad($desde, $hasta, $variedad)
 {
     $query = DB::table('clasificacion_verde as v')
@@ -2379,4 +2334,13 @@ function getCajasByRangoVariedad($desde, $hasta, $variedad)
         }
     }
     return round($ramos / getConfiguracionEmpresa()->ramos_x_caja, 2);
+}
+
+function getLastSemanaByVariedad($variedad)
+{
+    return Semana::All()
+        ->where('estado', 1)
+        ->where('id_variedad', $variedad)
+        ->sortBy('codigo')
+        ->last();
 }

@@ -42,7 +42,6 @@ class DetallePedido extends Model
         return $this->hasMany('\yura\Modelos\Marcacion', 'id_detalle_pedido');
     }
 
-
     public function marcacionesByEspEmp($esp_emp)
     {
         return Marcacion::All()->where('id_detalle_pedido', $this->id_detalle_pedido)
@@ -94,5 +93,15 @@ class DetallePedido extends Model
         } else {
             return false;
         }
+    }
+
+    public function data_tallos()
+    {
+        return $this->hasOne('yura\Modelos\DataTallos', 'id_detalle_pedido');
+    }
+
+    public function total_tallos()
+    {
+        return $this->data_tallos->mallas * $this->data_tallos->tallos_x_malla;
     }
 }

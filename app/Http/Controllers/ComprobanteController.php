@@ -125,7 +125,12 @@ class ComprobanteController extends Controller
                         foreach ($esp_emp->detalles as $n => $det_esp_emp) {
                             $peso_neto += (int)$det_esp_emp->clasificacion_ramo->nombre * number_format(($det_ped->cantidad*$det_esp_emp->cantidad),2,".","");
                             $peso_caja += isset(explode("|",$det_esp_emp->especificacion_empaque->empaque->nombre)[2]) ? explode("|",$det_esp_emp->especificacion_empaque->empaque->nombre)[2] : 0;
-                            $precio_x_variedad = (($esp_emp->especificacion->tipo === "O" ? $det_esp_emp->tallos_x_ramos : $det_esp_emp->cantidad) * (float)explode(";", $precio[$i])[0] * $esp_emp->cantidad * $det_ped->cantidad);
+                            if($esp_emp->especificacion->tipo === "O"){
+                                $precio_x_variedad = $det_ped->total_tallos()*(float)explode(";", $precio[$i])[0];
+                            }else{
+                                $precio_x_variedad = $det_esp_emp->cantidad * (float)explode(";", $precio[$i])[0] * $esp_emp->cantidad * $det_ped->cantidad;
+                            }
+                            //$precio_x_variedad = (($esp_emp->especificacion->tipo === "O" ? $det_esp_emp->tallos_x_ramos : $det_esp_emp->cantidad) * (float)explode(";", $precio[$i])[0] * $esp_emp->cantidad * $det_ped->cantidad);
                             $precio_total_sin_impuestos += $precio_x_variedad;
                             $i++;
                         }
@@ -587,14 +592,14 @@ class ComprobanteController extends Controller
                                             if($esp_emp->especificacion->tipo != "O"){
                                                 $objDesgloseEnvioFactura->cantidad = number_format(($det_ped->cantidad*$esp_emp->cantidad*$det_esp_emp->cantidad),2,".","");
                                             }else{
-                                                $objDesgloseEnvioFactura->cantidad = $det_ped->cantidad*$det_esp_emp->tallos_x_ramos;
+                                                $objDesgloseEnvioFactura->cantidad = $det_ped->total_tallos();
                                             }
                                             $objDesgloseEnvioFactura->precio_unitario = number_format(explode(";", $precio[$i])[0], 2, ".", "");
                                             $objDesgloseEnvioFactura->descuento = '0.00';
                                             if($esp_emp->especificacion->tipo != "O"){
                                                 $objDesgloseEnvioFactura->precio_total_sin_impuesto = number_format($precio_x_variedad, 2, ".", "");
                                             }else{
-                                                $objDesgloseEnvioFactura->precio_total_sin_impuesto = number_format(($det_ped->cantidad*$det_esp_emp->tallos_x_ramos*$objDesgloseEnvioFactura->precio_unitario), 2, ".", "");
+                                                $objDesgloseEnvioFactura->precio_total_sin_impuesto = number_format(($det_ped->total_tallos()*$objDesgloseEnvioFactura->precio_unitario), 2, ".", "");
                                             }
 
                                             if ($objDesgloseEnvioFactura->save()) {

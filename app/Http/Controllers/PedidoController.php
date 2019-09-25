@@ -8,11 +8,15 @@ use yura\Modelos\Aerolinea;
 use yura\Modelos\ClasificacionRamo;
 use yura\Modelos\ClienteConsignatario;
 use yura\Modelos\ClienteDatoExportacion;
+use yura\Modelos\ClientePedidoEspecificacion;
 use yura\Modelos\Comprobante;
 use yura\Modelos\ConfiguracionEmpresa;
+use yura\Modelos\DataTallos;
 use yura\Modelos\DatosExportacion;
 use yura\Modelos\DetalleEnvio;
+use yura\Modelos\DetalleEspecificacionEmpaque;
 use yura\Modelos\Especificacion;
+use yura\Modelos\EspecificacionEmpaque;
 use yura\Modelos\Pais;
 use yura\Modelos\Pedido;
 use yura\Modelos\DetallePedido;
@@ -96,7 +100,7 @@ class PedidoController extends Controller
 
     public function store_pedidos(Request $request)
     {
-        //dd($request->arrDataPresentacionYuraVenture);
+        //dd($request->all());
         $valida = Validator::make($request->all(), [
             'arrDataPedido' => 'Array',
             'id_cliente' => 'required',
@@ -162,11 +166,9 @@ class PedidoController extends Controller
                     }
 
                     Pedido::destroy($request->id_pedido);
-
                     /*foreach (getPedido($request->id_pedido)->detalles as $det_ped)
                         if($det_ped->cliente_especificacion->especificacion->tipo === "O")
                             Especificacion::destroy($det_ped->cliente_especificacion->especificacion->id_especificacion);*/
-
                      //DetallePedidoDatoExportacion::where('id_detalle_pedido',$det_ped->id_detalle_pedido)->delete();
 
                 }
@@ -191,8 +193,7 @@ class PedidoController extends Controller
 
                         //SI UN DETALLE PEDIDO (ESPECIFICACION) DEL PEDIDO NO VA EN CAJAS SE CREA UNA NUEVA ESPECIFICACION DE TIPO 'O' Y SE ATA AL CLIENTE
                         if(!isset($item['id_cliente_pedido_especificacion'])){
-                            $asignacion = asignaClienteEspecificacion($item['datos_especificacion'],$request->id_cliente);
-
+                            $asignacion = $this->asignaClienteEspecificacion($item['datos_especificacion'],$request->id_cliente);
                             if(!$asignacion['estado']){
                                 Pedido::destroy($model->id_pedido);
                                 $success = false;
@@ -218,6 +219,20 @@ class PedidoController extends Controller
 
                         if ($objDetallePedido->save()) {
                             $modelDetallePedido = DetallePedido::all()->last();
+                            if(isset($request->dataTallos) && count($request->dataTallos) > 0){
+                                $storeDataTallos = $this->store_datos_tallos($request->dataTallos,$modelDetallePedido->id_detalle_pedido);
+                                if(!$storeDataTallos){
+                                    Pedido::destroy($model->id_pedido);
+                                    $success = false;
+                                    $msg = '<div class="alert alert-danger text-center">' .
+                                        '<p> Hubo un error al guardar la información del pedido en el sistema, intente nuevamente, si el error persiste contacte al área de sistemas</p>'
+                                        . '</div>';
+                                    return [
+                                        'mensaje' => $msg,
+                                        'success' => $success
+                                    ];
+                                }
+                            }
                             bitacora('detalle_pedido', $modelDetallePedido->id_detalle_pedido, 'I', 'Inserción satisfactoria de un nuevo detalle pedido');
                             if($request->arrDatosExportacion!=''){
                                 foreach ($request->arrDatosExportacion[$key] as $de){
@@ -260,6 +275,7 @@ class PedidoController extends Controller
                             $objEnvio->codigo_pais = $codigo_pais;
                             $objEnvio->almacen = $almacen;
                         }
+
                     if($objEnvio->save()){
                         $modelEnvio = Envio::all()->last();
                         bitacora('envio', $modelEnvio->id_envio, 'I', 'Inserción satisfactoria de un nuevo envío');
@@ -275,8 +291,6 @@ class PedidoController extends Controller
                             if($objDetalleEnvio->save()){
                                 $modelDetalleEnvio = DetalleEnvio::all()->last();
                                 bitacora('detalle_envio', $modelDetalleEnvio->id_detalle_envio, 'I', 'Inserción satisfactoria de un nuevo detalle envío');
-
-
                             }
                         }
                     }
@@ -615,9 +629,10 @@ class PedidoController extends Controller
     }
 
     public function buscar_codigo_venture(Request $request){
-
+       // dd($request->all());
         $idPlanta = getVariedad($request->id_variedad)->planta->id_planta;
         $presentacion_pedido_caja = $idPlanta."|".$request->id_variedad."|".$request->id_clasificacion_ramo."|".$request->id_u_m_clasificacion_ramo."|".$request->tallos_x_ramos."|".$request->longitud_ramo."|".$request->id_u_m_logitud_ramo;
+
         $productoVinculados = ProductoYuraVenture::where('id_configuracion_empresa',$request->id_configuracion_empresa)
                                 ->select('codigo_venture','presentacion_yura')->get();
         $arr = [];
@@ -626,12 +641,13 @@ class PedidoController extends Controller
             $ids = $pieza[0]."|".$pieza[1]."|".$pieza[2]."|".$pieza[3]."|".$pieza[4]."|".$pieza[5]."|".$pieza[6];
             $arr[] = ["id"=>$ids,"codigo_venture"=> $productoVinculado->codigo_venture];
         }
+
         $presentacion_venture="";
         $codigo_venture ="";
-        $clasificacionRamoEstandar= ClasificacionRamo::where('estandar',1)->first();
+        //$clasificacionRamoEstandar= ClasificacionRamo::where('estandar',1)->first();
         foreach ($arr as $item) {
             if($item['id']=== $presentacion_pedido_caja){
-                $presentacion_venture = $idPlanta."|".$request->id_variedad."|".$clasificacionRamoEstandar->id_clasificacion_ramo."|".$clasificacionRamoEstandar->unidad_medida->id_unidad_medida."|".$request->tallos_x_malla."|".$request->longitud_ramo."|".$request->id_u_m_logitud_ramo;
+                $presentacion_venture = $idPlanta."|".$request->id_variedad."|".$request->id_clasificacion_ramo."|".$request->id_u_m_clasificacion_ramo."|".$request->tallos_x_malla."|".$request->longitud_ramo."|".$request->id_u_m_logitud_ramo;
                 $codigo_venture = $item['codigo_venture'];
             }
         }
@@ -640,5 +656,67 @@ class PedidoController extends Controller
             'presentacion_venture'=>$presentacion_venture,
             'codigo_venture' => $codigo_venture
         ]);
+    }
+
+    public function asignaClienteEspecificacion($arr_datos,$id_cliente){
+        $estado = false;
+        $id_cliente_pedido_especificacion ='';
+        $objEspecificacion = new Especificacion;
+        $objEspecificacion->estado = 1;
+        $objEspecificacion->tipo = 'O';
+        if($objEspecificacion->save()){
+            $modelEspecificacion = Especificacion::all()->last();
+            $objEspecificacionEmpaque = new EspecificacionEmpaque;
+            $objEspecificacionEmpaque->id_especificacion = $modelEspecificacion->id_especificacion;
+            $objEspecificacionEmpaque->id_empaque = Empaque::where([['f_empaque',"T"],['tipo','C']])->first()->id_empaque;
+            $objEspecificacionEmpaque->cantidad   = 1;
+            if($objEspecificacionEmpaque->save()) {
+                $modelEspecificacionEmpaque = EspecificacionEmpaque::all()->last();
+                $objDetalleEspecificacionEmpaque = new DetalleEspecificacionEmpaque;
+                $objDetalleEspecificacionEmpaque->id_especificacion_empaque = $modelEspecificacionEmpaque->id_especificacion_empaque;
+                $objDetalleEspecificacionEmpaque->id_variedad = $arr_datos['variedad'];
+                $objDetalleEspecificacionEmpaque->id_clasificacion_ramo = $arr_datos['id_clasificacion_ramo'];//ClasificacionRamo::where('estandar',1)->first()->id_clasificacion_ramo;
+                $objDetalleEspecificacionEmpaque->cantidad = $arr_datos['ramos_x_caja'];
+                $objDetalleEspecificacionEmpaque->id_empaque_p = Empaque::where([['f_empaque',"T"],['tipo','P']])->first()->id_empaque;;
+                $objDetalleEspecificacionEmpaque->tallos_x_ramos = $arr_datos['tallos_x_ramos'];
+                $objDetalleEspecificacionEmpaque->longitud_ramo = $arr_datos['longitud_ramo'];
+                $objDetalleEspecificacionEmpaque->id_unidad_medida = $arr_datos['unidad_medida'];
+                if($objDetalleEspecificacionEmpaque->save()){
+                    $objClientePedidoEspecificacion = new ClientePedidoEspecificacion;
+                    $objClientePedidoEspecificacion->id_cliente        = $id_cliente;
+                    $objClientePedidoEspecificacion->id_especificacion = $modelEspecificacion->id_especificacion;
+                    if($objClientePedidoEspecificacion->save()){
+                        $modelClientePedidoEspecificacion = ClientePedidoEspecificacion::all()->last();
+                        $estado = true;
+                        $id_cliente_pedido_especificacion = $modelClientePedidoEspecificacion->id_cliente_pedido_especificacion;
+                    }
+                }else{
+                    Especificacion::destroy($modelEspecificacion->id_especificacion);
+                }
+            }else{
+                Especificacion::destroy($modelEspecificacion->id_especificacion);
+            }
+        }
+        return [
+            'estado' => $estado,
+            'id_cliente_pedido_especificacion' => $id_cliente_pedido_especificacion
+        ];
+    }
+
+    public function store_datos_tallos($arr_datos,$id_detalle_pedido){
+
+        $success =false;
+        foreach ($arr_datos as $dataTallo){
+            $objDataTallo = new DataTallos;
+            $objDataTallo->id_detalle_pedido = $id_detalle_pedido;
+            $objDataTallo->mallas = $dataTallo['mallas'];
+            $objDataTallo->tallos_x_caja = $dataTallo['tallos_x_caja'];
+            $objDataTallo->tallos_x_ramo = $dataTallo['tallos_x_ramo'];
+            $objDataTallo->tallos_x_malla = $dataTallo['tallos_x_malla'];
+            $objDataTallo->ramos_x_caja = $dataTallo['ramos_x_caja'];
+            if($objDataTallo->save())
+                $success = true;
+        }
+        return $success;
     }
 }
