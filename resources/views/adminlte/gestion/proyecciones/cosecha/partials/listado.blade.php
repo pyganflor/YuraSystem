@@ -1,5 +1,5 @@
-<div class="progress progress-xs" id="div_barra_progreso" style="display: none">
-    <div class="progress-bar progress-bar-warning progress-bar-striped" role="progressbar" aria-valuenow="60" aria-valuemin="0"
+<div class="progress progress-xs hide" id="div_barra_progreso">
+    <div class="progress-bar progress-bar-success progress-bar-striped" role="progressbar" aria-valuenow="60" aria-valuemin="0"
          aria-valuemax="100" style="width: 0%" id="barra_progreso">
     </div>
 </div>
@@ -274,6 +274,7 @@
     </ul>
 </div>
 
+
 <script>
     $(function () {
         $('[data-toggle="tooltip"]').tooltip()
@@ -302,24 +303,31 @@
                     selected.push(all[i].id.substr(16));
                 }
             }
+
             factor = (Math.round((100 / selected.length) * 100) / 100);
             total_progress = 0;
-            $('#div_barra_progreso').show();
+            $('#div_barra_progreso').removeClass('hide');
+
             for (i = 0; i < selected.length; i++) {
                 datos = {
                     _token: '{{csrf_token()}}',
                     modulo: selected[i]
                 };
                 mod = datos['modulo'];
+
                 $('#celda_modulo_' + mod).LoadingOverlay('show');
-                alert(i);
+
                 $.post('{{url('proy_cosecha/restaurar_proyeccion')}}', datos, function (retorno) {
+                    mod = retorno.modulo;
                     total_progress += factor;
                     $('#barra_progreso').css('width', total_progress + '%');
-                    if ((i+1) == selected.length) {
-                        alert(55);
-                        $('#div_barra_progreso').hide();
-                        listar_proyecciones();
+                    $('#celda_modulo_' + mod).LoadingOverlay('hide');
+
+                    if (mod == selected[selected.length - 1]) {
+                        setTimeout(function () {
+                            $('#div_barra_progreso').hide();
+                            listar_proyecciones();
+                        }, 500);
                     }
                 }, 'json').fail(function (retorno) {
                     console.log(retorno);

@@ -430,7 +430,8 @@ class proyCosechaController extends Controller
             'modulo' => $request->modulo
         ]);
         return [
-          'success' => true,
+            'success' => true,
+            'modulo' => $request->modulo
         ];
     }
 }
