@@ -398,7 +398,9 @@
                     calibre_actual = parseInt($("td.td_calibre_"+(i+1)+"_"+(k+1)+" span").html());
                     calibre_promedio = calibre_actual / calibre_estandar;
                     ramos_x_caja = ramos_x_caja_conf_empresa / calibre_promedio;
-                    $("td.ramos_x_caja_"+(i+1)+"_"+(k + 1)+" span").html(ramos_x_caja.toFixed(0));
+                    @if(getPedido($id_pedido)->detalles[0]->cliente_especificacion->especificacion->tipo === "O")
+                        $("td.ramos_x_caja_"+(i+1)+"_"+(k + 1)+" span").html(ramos_x_caja.toFixed(0));
+                    @endif
                 });
             });
         });

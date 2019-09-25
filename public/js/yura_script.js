@@ -234,10 +234,6 @@ function store_pedido(id_cliente, pedido_fijo, csrf_token, vista, id_pedido, com
                     }
                 });
 
-                if (arrDataDetallesPedido.length < 1) {
-                    modal_view('modal_status_pedidos', '<div class="alert alert-danger text-center"><p> Debe colocar la cantidad de piezas en al menos una especificación</p> </div>', '<i class="fa fa-times" aria-hidden="true"></i> Estado pedido', true, false, '50%');
-                    return false;
-                }
                 if (cant_datos_exportacion > 0) {
                     $.each($('input.orden'), function (i, j) {
                         arrDatosExportacionEspecificacion = [];
@@ -255,6 +251,10 @@ function store_pedido(id_cliente, pedido_fijo, csrf_token, vista, id_pedido, com
                 }
             }
 
+            if (arrDataDetallesPedido.length < 1) {
+                modal_view('modal_status_pedidos', '<div class="alert alert-danger text-center"><p> Debe colocar la cantidad de piezas en al menos una especificación</p> </div>', '<i class="fa fa-times" aria-hidden="true"></i> Estado pedido', true, false, '50%');
+                return false;
+            }
             var arrFechas = [];
             if (pedido_fijo && ($("#opcion_pedido_fijo").val() == 1) || $("#opcion_pedido_fijo").val() == 2) {
                 var fechaDesde = moment($("#fecha_desde_pedido_fijo").val());
@@ -1392,7 +1392,7 @@ function calcular_precio_envio() {
                 });
             });
             sub_total += parseFloat(precio_especificacion);
-            $("#td_total_ramos_" + o + "_" + i).html(parseFloat(ramos_totales_especificacion));
+            $("#td_total_ramos_" + o + "_" + i).html(Math.round(parseFloat(ramos_totales_especificacion)));
             total_ramos += ramos_totales_especificacion;
             $("#td_precio_especificacion_" + o + "_" + i).html("$" + parseFloat(precio_especificacion).toFixed(2));
             total_piezas += parseInt($(".cantidad_" + o + "_" + i).val());
@@ -2044,7 +2044,7 @@ function cuenta_ramos(input){
                 $("td.ramos_x_caja_"+id+" span").html(ramos_x_caja.toFixed(0));
             //});
      // //  //});
-        $(".th_tallo_x_malla, .td_tallos_x_malla").removeClass('hide');
+            $(".th_tallo_x_malla, .td_tallos_x_malla").removeClass('hide');
         data = {
             id_variedad : $(".input_variedad_"+id).val(),
             id_clasificacion_ramo : $("#id_clasificacion_ramo_"+id).val(),
@@ -2070,7 +2070,8 @@ function cuenta_ramos(input){
             $.LoadingOverlay('hide');
         });
 
-    }else{
+    }
+    else{
         $.each($("select.empaque_"+id+" option"),function(i,j){
             $(this).removeAttr('selected');
             if($(this)[0].value !=="T"){
@@ -2101,6 +2102,7 @@ function cuenta_ramos(input){
 }
 
 function calcular_precio_pedido(input) {
+
     monto_total = 0.00;
     total_ramos = 0.00;
     total_piezas = 0.00;
@@ -2110,6 +2112,7 @@ function calcular_precio_pedido(input) {
         ramos_totales_especificacion = 0.00;
         precio_especificacion = 0.00;
         piezas = $(".cantidad_" + i).val();
+
         td_total_ramos=0;
         if(piezas !== "" && piezas > 0){
             tallos=0;
@@ -2121,21 +2124,22 @@ function calcular_precio_pedido(input) {
                     tallos_totales += piezas*parseInt($("#tallos_x_malla_"+i+"_"+(k+1)).val());
                     ramos_x_caja += parseInt($(".ramos_x_caja_"+i+"_"+(k+1)+" span").html()).toFixed();
                     tallos_x_ramo += parseInt($("#input_tallos_"+i).val());
-                    monto_especificacion = tallos_totales*parseFloat($("#precio_"+i+"_"+(k+1)).val());
+                    monto_especificacion = piezas*parseInt($("#tallos_x_malla_"+i+"_"+(k+1)).val())*parseFloat($("#precio_"+i+"_"+(k+1)).val());
                     monto_total += tallos_totales*parseFloat($("#precio_"+i+"_"+(k+1)).val());
                 });
+
                     $("#td_precio_especificacion_"+i).html(monto_especificacion.toFixed(2));
-                    console.log(tallos_x_ramo);
                     tallos_x_caja = ramos_x_caja*tallos_x_ramo;
                     total_piezas += (tallos_totales/tallos_x_caja);
-                    $("#cajas_mallas_"+i).val(total_piezas.toFixed());
+                    cajas = tallos_totales/tallos_x_caja;
+                    $("#cajas_mallas_"+i).val(Math.round(cajas));
                     $(".tallos_x_caja_"+i).val(tallos_x_caja);
-                    ramos_totales_especificacion += (tallos_totales/tallos_x_caja)*ramos_x_caja;
+                    ramos_totales_especificacion += (Math.round(tallos_totales)/Math.round(tallos_x_caja))*ramos_x_caja;
                     total_ramos += ramos_totales_especificacion;
                     $("#td_total_ramos_"+i).html(ramos_totales_especificacion.toFixed(2));
 
-            }else{
-
+            }
+            else{
                 ramos= 0;
                 pieza = ($(".cantidad_" + i).val() =="" ? 0 : parseInt($(".cantidad_" + i).val()));
                 total_piezas += pieza;
@@ -2146,7 +2150,9 @@ function calcular_precio_pedido(input) {
                     precio_variedad = z.value == "" ? 0 : z.value;
                     ramos_x_caja = $(".input_ramos_x_caja_" + i + "_" + (y + 1)).val();
                     precio_especificacion += (parseFloat(precio_variedad) * parseFloat(ramos_x_caja) * pieza);
+                    console.log(precio_variedad,ramos_x_caja,pieza);
                 });
+
                 if($("#td_total_ramos_"+i+" input").length === 0 )
                     $("#td_total_ramos_" + i).html(parseFloat(ramos_totales_especificacion).toFixed(2));
 

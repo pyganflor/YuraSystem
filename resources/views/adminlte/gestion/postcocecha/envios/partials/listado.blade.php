@@ -54,10 +54,19 @@
                                 <tr style="background-color: #dd4b39; color: white">
                                     <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d; color: white">
                                         MARACACIONES
+                                        <input type="hidden" id="calibre_estandar" name="calibre_estandar" value="{{getCalibreRamoEstandar()->nombre}}">
+                                        <input type="hidden" id="ramos_x_caja_conf_empresa" name="ramos_x_caja_conf_empresa" value="{{getConfiguracionEmpresa()->ramos_x_caja}}">
+                                        <input type="hidden" id="iva_cliente" name="iva_cliente" value="{{$envio->pedido->cliente->detalle()->tipo_impuesto()['porcentaje']}}">
                                     </th>
                                     <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
                                         style="border-color: #9d9d9d;width: 80px">
-                                        PIEZAS
+                                        @if($envio->pedido->detalles[0]->cliente_especificacion->especificacion->tipo === "O")
+                                            {{strtoupper(explode("|",\yura\Modelos\Empaque::where(
+                                            [['tipo','C'],['f_empaque','T']]
+                                            )->first()->nombre)[0])}}
+                                        @else
+                                            PIEZAS
+                                        @endif
                                     </th>
                                     <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
                                         VARIEDAD
@@ -74,6 +83,11 @@
                                     <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
                                         RAMO X CAJA
                                     </th>
+                                    @if(getPedido($envio->id_pedido)->detalles[0]->cliente_especificacion->especificacion->tipo === "O")
+                                        <th class="text-center th_tallo_x_malla table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d;width:45px">
+                                            TALLOS X MALLA
+                                        </th>
+                                    @endif
                                     <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
                                         TOTAL RAMOS
                                     </th>
@@ -125,8 +139,11 @@
                                             @if($det_ped->cliente_especificacion->especificacion->id_especificacion != $anterior)
                                                 <td style="border-color: #9d9d9d; padding: 0px; vertical-align: middle; width: 100px; "
                                                     class="text-center" rowspan="{{getCantidadDetallesByEspecificacion($det_ped->cliente_especificacion->especificacion->id_especificacion)}}">
-                                                    <input  {{($facturado) ? "disabled='disabled'" : ""}} type="number" min="0" id="cantidad_piezas_{{$i+1}}_{{($x+1)}}" style="border: none" onchange="calcular_precio_envio()"
-                                                            name="cantidad_piezas_{{$i+1}}_{{$det_ped->cliente_especificacion->especificacion->id_especificacion}}" class="text-center form-control cantidad_{{$i+1}}_{{($x+1)}} input_cantidad_{{$i+1}}" value="{{$det_ped->cantidad}}">
+                                                    {{$det_ped->cliente_especificacion->especificacion->tipo === "O" ? $det_ped->data_tallos->mallas : $det_ped->cantidad}}
+                                                    <input  type="hidden"  id="cantidad_piezas_{{$i+1}}_{{($x+1)}}" onchange="calcular_precio_pedido()"
+                                                            name="cantidad_piezas_{{$i+1}}_{{$det_ped->cliente_especificacion->especificacion->id_especificacion}}"
+                                                            class="cantidad_{{($x+1)}} input_cantidad_{{($x+1)}} input_cantidad"
+                                                            value="{{$det_ped->cliente_especificacion->especificacion->tipo === "O" ? $det_ped->data_tallos->mallas : $det_ped->cantidad}}">
                                                     @if($x ==0)
                                                         <input type="hidden" id="cant_esp" value="">
                                                         <input type="hidden" id="cant_esp_fijas" value="">
@@ -139,7 +156,7 @@
                                                     {{$det_esp_emp->variedad->siglas}}
                                                     <input type="hidden" class="input_variedad_{{$i+1}}_{{$x+1}}" id="id_variedad_{{$i+1}}_{{$x+1}}_{{$b}}" value="{{$det_esp_emp->variedad->id_variedad}}">
                                                 </td>
-                                                <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;width: 70px;" class="text-center">
+                                                <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;width: 70px;" class="text-center td_calibre_{{$x+1}} td_calibre_{{$x+1}}_{{$x+1}}">
                                                     {{$det_esp_emp->clasificacion_ramo->nombre}}{{$det_esp_emp->clasificacion_ramo->unidad_medida->siglas}}
                                                     <input type="hidden" id="id_detalle_especificacion_empaque_{{$i+1}}_{{$x+1}}_{{$b}}" value="{{$det_esp_emp->id_detalle_especificacionempaque}}">
                                                 </td>
@@ -147,24 +164,49 @@
                                                     <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;" class="text-center"
                                                         rowspan="{{count($esp_emp->detalles)}}">
                                                         {{explode('|',$esp_emp->empaque->nombre)[0]}}
+                                                        <input type="hidden" id="empaque_{{$x+1}}" name="empaque_{{$x+1}}" value="{{$esp_emp->empaque->f_empaque}}">
                                                     </td>
                                                 @endif
                                                 <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;" class="text-center">
                                                     {{$det_esp_emp->empaque_p->nombre}}
                                                 </td>
-                                                <td  style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;" class="text-center">
-                                                    {{$det_esp_emp->cantidad}}
-                                                    <input type="hidden" class="td_ramos_x_caja_{{$i+1}}_{{$x+1}} input_ramos_x_caja_{{$i+1}}_{{$x+1}}_{{$b}}" value="{{$det_esp_emp->cantidad}}">
+                                                <td  style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;" class="text-center ramos_x_caja_{{$x+1}}_{{$i+1}}">
+                                                    <span>{{$det_esp_emp->cantidad}}</span>
+                                                    <input type="hidden" class="td_ramos_x_caja_{{$x+1}} td_ramos_x_caja_{{$i+1}}_{{$x+1}} input_ramos_x_caja_{{$x+1}}_{{$b}} input_ramos_x_caja_{{$i+1}}_{{$x+1}}_{{$b}}"
+                                                           value="{{$det_ped->cliente_especificacion->especificacion->tipo === "O" ? $det_ped->data_tallos->ramos_x_caja : $det_esp_emp->cantidad}}">
                                                 </td>
+                                                @if($det_ped->cliente_especificacion->especificacion->tipo === "O")
+                                                    @php
+                                                        $r_x_c = $det_ped->cliente_especificacion->especificacion->tipo === "O" ? $det_ped->data_tallos->ramos_x_caja : $det_esp_emp->cantidad;
+                                                        $t_x_r = isset($det_ped->data_tallos->tallos_x_ramo) ? $det_ped->data_tallos->tallos_x_ramo : $det_esp_emp->tallos_x_ramos;
+                                                        $t_x_c = $r_x_c*$t_x_r;
+                                                    @endphp
+                                                    <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;width:40px"
+                                                        class="td_tallos_x_malla td_tallos_x_malla_{{$i+1}} td_tallos_x_malla_{{$i+1}}_{{$x+1}}">
+                                                        <input type="number" min="0" id="tallos_x_malla_{{$x+1}}_{{$i+1}}" name="tallos_x_malla_{{$i+1}}_{{$x+1}}"
+                                                               class="text-center tallos_x_malla_{{$i+1}} tallos_x_malla_{{$i+1}}_{{$x+1}}" onchange="calcular_precio_pedido(this)"
+                                                               readonly style="border: none;width: 100%;height: 34px;" value="{{$det_ped->data_tallos->tallos_x_malla}}">
+                                                        <input type="hidden" id="tallos_x_caja_{{$i+1}}_{{$x+1}}" name="tallos_x_caja_{{$i+1}}_{{$x+1}}"
+                                                               class="text-center tallos_x_caja_{{$i+1}} tallos_x_caja_{{$i+1}}_{{$x+1}}" value="{{$t_x_c}}">
+                                                    </td>
+                                                @endif
                                                 @if($det_ped->cliente_especificacion->especificacion->id_especificacion != $anterior)
-                                                    <td id="td_total_ramos_{{$i+1}}_{{$x+1}}" style="border-color: #9d9d9d; padding: 0px; vertical-align: middle; width: 70px; "
-                                                             class="text-center td_total_ramos_{{$i+1}}" rowspan="{{getCantidadDetallesByEspecificacion($det_ped->cliente_especificacion->especificacion->id_especificacion)}}">
+                                                    <td id="td_total_ramos_{{$x+1}}" style="border-color: #9d9d9d; padding: 0px; vertical-align: middle; width: 70px; "
+                                                             class="text-center td_total_ramos_{{$x+1}}" rowspan="{{getCantidadDetallesByEspecificacion($det_ped->cliente_especificacion->especificacion->id_especificacion)}}">
                                                     </td>
                                                 @endif
                                                 <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;"
-                                                    id="td_tallos_x_ramo_{{$i+1}}_{{$x+1}}" class="text-center">
-                                                    {{$det_esp_emp->tallos_x_ramos}}
-                                                </td>
+                                                    id="td_tallos_x_ramo_{{$i+1}}_{{$x+1}}" class="text-center td_tallos_x_ramo_{{$i+1}}_{{$x+1}} td_tallos_x_ramo_{{$i+1}}">
+                                                    <span>
+                                                        @if(isset($det_ped->data_tallos->tallos_x_ramo))
+                                                            <input type="text" id="input_tallos_{{$x+1}}" name="input_tallos_{{$x+1}}_{{$b}}" class="input_tallos_{{$x+1}} input_tallos_{{$x+1}}_{{$b}}"
+                                                                   onkeyup="calcular_precio_pedido(this)" value="{{$det_ped->data_tallos->tallos_x_ramo}}"
+                                                                   style="width:100%;border:none;text-align:center;height: 34px;"
+                                                                   title="Escribe la cantidad de tallos por malla">
+                                                        @else
+                                                            {{$det_esp_emp->tallos_x_ramos}}
+                                                        @endif
+                                                    </span>
                                                 <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;" class="text-center">
                                                     @if($det_esp_emp->longitud_ramo != '' && $det_esp_emp->id_unidad_medida != '')
                                                         {{$det_esp_emp->longitud_ramo}}{{$det_esp_emp->unidad_medida->siglas}}
@@ -172,8 +214,8 @@
                                                 </td>
                                                 @if($envio->pedido->tipo_especificacion=="N")
                                                     <td id="td_precio_variedad_{{$i+1}}_{{$det_esp_emp->id_detalle_especificacionempaque}}_{{($x+1)}}" style="border-color: #9d9d9d;padding: 0px 0px; vertical-align: middle;text-align: center;" >
-                                                        <input type="number" name="precio_{{$i+1}}_{{($x+1)}}" id="precio_{{$i+1}}_{{($x+1)}}_{{$b}}" class="form-control text-center precio_{{$i+1}}_{{($x+1)}} form-control"
-                                                               style="background-color: beige; width: 100%;text-align: left" min="0" onchange="calcular_precio_envio()" value="{{explode(";",explode('|',$det_ped->precio)[$b-1])[0]}}"   {{($facturado) ? "disabled='disabled'" : ""}} required>
+                                                        <input type="number" name="precio_{{$i+1}}_{{($x+1)}}" id="precio_{{($x+1)}}_{{$i+1}}" class="form-control text-center precio_{{$x+1}} precio_{{$i+1}}_{{($x+1)}} form-control"
+                                                               style="background-color: beige; width: 100%;text-align: left" min="0" onchange="calcular_precio_pedido()" value="{{explode(";",explode('|',$det_ped->precio)[$b-1])[0]}}"   {{($facturado) ? "disabled='disabled'" : ""}} required>
                                                         <input type="hidden" class="id_detalle_esp_emp_{{$i+1}}_{{($x+1)}}" value="{{$det_esp_emp->id_detalle_especificacionempaque}}">
                                                     </td>
                                                 @elseif($envio->pedido->tipo_especificacion=="T")
@@ -187,7 +229,7 @@
                                                 @endif
                                                 @if($det_ped->cliente_especificacion->especificacion->id_especificacion != $anterior)
                                                     @if($envio->pedido->tipo_especificacion=="N")
-                                                        <td id="td_precio_especificacion_{{$i+1}}_{{($x+1)}}" style="border-color: #9d9d9d;padding: 0px 0px; vertical-align: middle;" class="text-center"
+                                                        <td id="td_precio_especificacion_{{$x+1}}" style="border-color: #9d9d9d;padding: 0px 0px; vertical-align: middle;" class="text-center"
                                                             rowspan="{{getCantidadDetallesByEspecificacion($det_ped->cliente_especificacion->especificacion->id_especificacion)}}">
                                                         </td>
                                                     @endif
@@ -423,8 +465,8 @@
                     <div class="box-footer" style="background: #d2d6de;">
                         <table width="100%" class="table-responsive" style="font-size: 1em;">
                             <tr>
-                                <td class="text-center" style="border: none; vertical-align: middle">Piezas: <span id="total_piezas_{{$i+1}}"></span></td>
-                                <td class="text-center" style="border: none; vertical-align: middle">Ramos: <span id="total_ramos_{{$i+1}}"></span></td>
+                                <td class="text-center" style="border: none; vertical-align: middle">Piezas: <span id="total_piezas"></span></td>
+                                <td class="text-center" style="border: none; vertical-align: middle">Ramos: <span id="total_ramos"></span></td>
                                 @php
                                     $precio_total_sin_impuestos = null;
                                     $precio_total_con_impuestos = null;
@@ -470,7 +512,7 @@
                                 @endphp
                                 @if(!isset($precio_total_sin_impuestos))
                                     <td class="text-center" style="border: none; vertical-align: middle">
-                                        Sub Total: $ <span id="sub_total_{{$i+1}}"></span>
+                                        Sub Total: <span class="monto_total_pedido"></span>
                                     </td>
                                 @else
                                     <td class="text-center" style="border: none; vertical-align: middle">
@@ -488,7 +530,7 @@
                                 @endif
                                 @if(!isset($precio_total_con_impuestos))
                                     <td class="text-center" style="border: none; vertical-align: middle">
-                                        Total: $<span id="total_{{$i+1}}"></span>
+                                        Total: <span class="total_pedido"></span>
                                     </td>
                                 @else
                                     <td class="text-center" style="border: none; vertical-align: middle">
@@ -537,7 +579,8 @@
 
 <script>
     $(function () {
-        $('[data-toggle="popover"]').popover()
+        $('[data-toggle="popover"]').popover();
+        calcular_precio_pedido();
     });
-    calcular_precio_envio();
+
 </script>
