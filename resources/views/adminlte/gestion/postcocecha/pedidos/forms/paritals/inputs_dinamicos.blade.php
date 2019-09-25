@@ -122,13 +122,13 @@
                                         <input type="hidden" class="td_ramos_x_caja_{{$x+1}} input_ramos_x_caja_{{$x+1}}_{{$b}}" value="{{$det_esp_emp->cantidad}}">
                                     </td>
                                     <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;width:40px"
-                                        class="hide td_tallos_x_malla td_tallos_x_malla_{{$x+1}} td_tallos_x_malla_{{$x+1}}_{{$b}}">
+                                        class="td_tallos_x_malla td_tallos_x_malla_{{$x+1}} td_tallos_x_malla_{{$x+1}}_{{$b}}
+                                        {{(isset($det_ped->cliente_especificacion->especificacion->tipo) && $det_ped->cliente_especificacion->especificacion->tipo == "O") ? "" : "hide"}}">
                                         <input type="number" min="0" id="tallos_x_malla_{{$x+1}}_{{$b}}" name="tallos_x_malla_{{$x+1}}_{{$b}}"
-                                               class="text-center tallos_x_malla_{{$x+1}} tallos_x_malla_{{$x+1}}_{{$b}}" value="0" onchange="calcular_precio_pedido(this)"
-                                               style="border: none;width: 100%;height: 34px;" >
+                                               class="text-center tallos_x_malla_{{$x+1}} tallos_x_malla_{{$x+1}}_{{$b}}" value="0"
+                                               onchange="calcular_precio_pedido(this)" style="border: none;width: 100%;height: 34px;" >
                                         <input type="hidden" id="tallos_x_caja_{{$x+1}}_{{$b}}" name="tallos_x_caja_{{$x+1}}_{{$b}}"
                                                class="text-center tallos_x_caja_{{$x+1}} tallos_x_caja_{{$x+1}}_{{$b}}" >
-
                                     </td>
                                     @if($item->id_especificacion != $anterior)
                                         <td id="td_total_ramos_{{$x+1}}" style="border-color: #9d9d9d; padding: 0px; vertical-align: middle; width: 45px; "

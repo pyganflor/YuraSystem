@@ -275,7 +275,11 @@
             @foreach($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $m => $esp_emp)
                 @foreach ($esp_emp->detalles as $n => $det_esp_emp)
                     @php
-                        $total_tallos += number_format(($det_ped->cantidad*$esp_emp->cantidad*$det_esp_emp->cantidad*$det_esp_emp->tallos_x_ramos),2,".","");
+                        if($esp_emp->especificacion->tipo != "O"){
+                            $total_tallos += number_format(($det_ped->cantidad*$esp_emp->cantidad*$det_esp_emp->cantidad*$det_esp_emp->tallos_x_ramos),2,".","");
+                        }else{
+                            $total_tallos += number_format($det_ped->total_tallos() ,2,".","");
+                        }
                         $full_equivalente_real += explode("|",$esp_emp->empaque->nombre)[1]*$det_ped->cantidad;
                         $descripcion = substr($det_esp_emp->variedad->planta->nombre, 0, 3) .", ". $det_esp_emp->variedad->nombre;
                     @endphp
@@ -285,7 +289,7 @@
                                 @if($esp_emp->especificacion->tipo != "O")
                                     {{number_format($det_ped->cantidad,2,".","")}}
                                 @else
-                                    {{number_format(($det_esp_emp->tallos_x_ramos*$det_ped->cantidad),2,".","")}}
+                                    {{number_format(($det_ped->total_tallos()),2,".","")}}
                                 @endif
                                 @php
                                     $total_piezas += $det_ped->cantidad;
@@ -325,7 +329,7 @@
                             @if($esp_emp->especificacion->tipo != "O")
                                 {{number_format(($det_ped->cantidad*$det_esp_emp->cantidad),2,".","")}}
                             @else
-                                {{number_format(($det_esp_emp->tallos_x_ramos*$det_ped->cantidad),2,".","")}}
+                                {{number_format(($det_ped->total_tallos()),2,".","")}}
                             @endif
                         </td>
                         @php
@@ -336,7 +340,7 @@
                             @if($esp_emp->especificacion->tipo != "O")
                                 {{"$".number_format(($det_esp_emp->cantidad * ((float)explode(";", $precio[$i])[0]) * $esp_emp->cantidad * $det_ped->cantidad),2,".","")}}
                             @else
-                                {{number_format(($det_esp_emp->tallos_x_ramos*$det_ped->cantidad*(float)explode(";", $precio[$i])[0]),2,".","")}}
+                                {{number_format(($det_ped->total_tallos()*(float)explode(";", $precio[$i])[0]),2,".","")}}
                             @endif
                         </td>
                     </tr>
@@ -344,7 +348,7 @@
                         if($esp_emp->especificacion->tipo != "O"){
                             $precio_total_sin_impuestos += ($det_esp_emp->cantidad * (float)explode(";", $precio[$i])[0] * $esp_emp->cantidad * $det_ped->cantidad);
                         }else{
-                            $precio_total_sin_impuestos += $det_esp_emp->tallos_x_ramos*$det_ped->cantidad*(float)explode(";", $precio[$i])[0];
+                            $precio_total_sin_impuestos += $det_ped->total_tallos()*(float)explode(";", $precio[$i])[0];
                         }
                     @endphp
                     @php  $i++;  @endphp

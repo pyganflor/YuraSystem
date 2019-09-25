@@ -133,9 +133,7 @@
                         <tr style="width: 750px">
                             <td style="font-size: 13px;;border:1px solid black;padding-left: 5px">{{$desglose->codigo_principal}}</td>
                             <td style="font-size: 13px;border:1px solid black;padding-left: 5px">
-
                                 {{$desglose->cantidad}}
-
                             </td>
                             <td style="font-size: 12px;width: 205px;border:1px solid black;padding-left: 5px">{{$desglose->descripcion}}</td>
                             <td style="font-size: 13px;border:1px solid black;padding-left: 5px">{{number_format($desglose->precio_unitario,2,".","")}}</td>
@@ -192,7 +190,8 @@
                        <td style="font-size:13px;padding:5px">TALLOS TOTALES:
                            @php
                                $total_tallos = 0;
-                                foreach($data['comprobante']->envio->detalles as $det_env){
+                               if($data['comprobante']->envio->pedido->tipo != "O"){
+                                    foreach($data['comprobante']->envio->detalles as $det_env){
                                     $i = 0;
                                     foreach ($det_env->especificacion->especificacionesEmpaque as $esp_emp) {
                                         foreach ($esp_emp->detalles as $det_esp_emp){
@@ -201,8 +200,13 @@
                                         }
                                     }
                                 }
-                            @endphp
-                            {{$total_tallos}}
+                               }else{
+                                    foreach ($data['comprobante']->envio->pedido->detalles as $det_ped) {
+                                        $total_tallos+= $det_ped->total_tallos();
+                                    }
+                               }
+                           @endphp
+                           {{$total_tallos}}
                         </td>
                    </tr>
                 </table>
