@@ -399,38 +399,50 @@ class proyCosechaController extends Controller
                     $next++;
                 }
 
-                $new_codigo = $semana->codigo;
-                $i = 1;
-                $next = 1;
-                while ($i < $sum_semana_old && $new_codigo <= $semana_fin->codigo) {
-                    $new_codigo = $codigo + $next;
-                    $semana_old = Semana::All()
-                        ->where('estado', '=', 1)
-                        ->where('codigo', '=', $new_codigo)
-                        ->where('id_variedad', '=', $model->id_variedad)
-                        ->first();
+                if ($new_codigo <= $semana_fin->codigo) {   // aun es una semana programada
+                    $new_codigo = $semana->codigo;
+                    $i = 1;
+                    $next = 1;
+                    while ($i < $sum_semana_old && $new_codigo <= $semana_fin->codigo) {
+                        $new_codigo = $codigo + $next;
+                        $semana_old = Semana::All()
+                            ->where('estado', '=', 1)
+                            ->where('codigo', '=', $new_codigo)
+                            ->where('id_variedad', '=', $model->id_variedad)
+                            ->first();
 
-                    if ($semana_old != '') {
-                        $i++;
+                        if ($semana_old != '') {
+                            $i++;
+                        }
+                        $next++;
                     }
-                    $next++;
-                }
 
-                $proy = ProyeccionModulo::where('estado', 1)
-                    ->where('id_modulo', $model->id_modulo)
-                    ->where('id_variedad', $model->id_variedad)
-                    ->orderBy('fecha_inicio')
-                    ->get()->first();
+                    $proy = ProyeccionModulo::where('estado', 1)
+                        ->where('id_modulo', $model->id_modulo)
+                        ->where('id_variedad', $model->id_variedad)
+                        ->orderBy('fecha_inicio')
+                        ->get()->first();
 
-                if ($proy->id_semana == $semana_old->id_semana || $proy->semana->codigo < $semana_new->codigo) {    // hay que mover
-                    $proy->id_semana = $semana_new->id_semana;
-                    $proy->fecha_inicio = $semana_new->fecha_final;
-                    $proy->desecho = $semana_new->desecho > 0 ? $semana_new->desecho : 0;
-                    $proy->tallos_planta = $semana_new->tallos_planta_poda > 0 ? $semana_new->tallos_planta_poda : 0;
-                    $proy->tallos_ramo = $semana_new->tallos_ramo_poda > 0 ? $semana_new->tallos_ramo_poda : 0;
+                    if ($proy != '')
+                        if ($proy->id_semana == $semana_old->id_semana || $proy->semana->codigo < $semana_new->codigo) {    // hay que mover
+                            $proy->id_semana = $semana_new->id_semana;
+                            $proy->fecha_inicio = $semana_new->fecha_final;
+                            $proy->desecho = $semana_new->desecho > 0 ? $semana_new->desecho : 0;
+                            $proy->tallos_planta = $semana_new->tallos_planta_poda > 0 ? $semana_new->tallos_planta_poda : 0;
+                            $proy->tallos_ramo = $semana_new->tallos_ramo_poda > 0 ? $semana_new->tallos_ramo_poda : 0;
 
-                    $proy->save();
-                    $proy->restaurar_proyecciones();
+                            $proy->save();
+                            $proy->restaurar_proyecciones();
+                        }
+                } else {    // se pasa de la ultima semana programada
+                    /* ======================== QUITAR PROYECCIONES ======================= */
+                    $proys = ProyeccionModulo::where('estado', 1)
+                        ->where('id_modulo', $model->id_modulo)
+                        ->where('id_variedad', $model->id_variedad)
+                        ->orderBy('fecha_inicio')
+                        ->get();
+                    foreach ($proys as $proy)
+                        $proy->delete();
                 }
             }
 
