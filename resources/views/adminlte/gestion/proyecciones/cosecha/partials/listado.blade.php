@@ -15,7 +15,7 @@
                     <ul class="dropdown-menu">
                         <li>
                             <a href="javascript:void(0)" onclick="actualizar_proyecciones()">
-                                Actualizar Proyecciones
+                                Actualizar Semanas
                             </a>
                         </li>
                         <li>
