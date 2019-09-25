@@ -23,6 +23,14 @@
                                 Restaurar Proyecciones
                             </a>
                         </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a href="javascript:void(0)" onclick="$('.checkbox_modulo').prop('checked', true)">
+                                <strong>
+                                    Seleccionar Todos
+                                </strong>
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </th>
@@ -247,7 +255,7 @@
 
         <tr>
             <th class="text-center" style="border-color: #9d9d9d">
-                <input type="checkbox" id="checkbox_modulo_all" onclick="select_all_modulos($(this))">
+                <input type="checkbox" id="checkbox_modulo_all" onclick="select_all_modulos($(this))" class="checkbox_modulo">
             </th>
             <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef; width: 250px">
                 Módulos
