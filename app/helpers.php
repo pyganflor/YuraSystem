@@ -1114,11 +1114,11 @@ function getPrecioByClienteDetEspEmp($cliente, $det_esp)
 function getPrecioByDetEsp($string, $det_esp)
 {
     foreach (explode('|', $string) as $x) {
-        if (count(explode(';', $x)) > 0){
-            if(explode(';', $x)[1] > 0){  //explode(';', $x)[1] == 0 CUANDO UN PEDIDO SEA EN TALLOS
+        if (count(explode(';', $x)) > 0) {
+            if (explode(';', $x)[1] > 0) {  //explode(';', $x)[1] == 0 CUANDO UN PEDIDO SEA EN TALLOS
                 if (explode(';', $x)[1] == $det_esp)
                     return explode(';', $x)[0];
-            }else{
+            } else {
                 return explode(';', $x)[0]; //POR QUE SOLO REALIZARAN PEIDOS EN TALLOS CON UN SOLO DETALLE ESPECIFICACION EMPAQUE, CAMBIAR EN CASO DE QUE NO SE VAYA A HACER ASÍ
             }
         }
@@ -2223,17 +2223,17 @@ function getCodigoArticuloVenture($idConfiguracionempresa = 1)
     return $codigosVenture[$idConfiguracionempresa];
 }
 
-function getProductosVinculadosYuraVenture($idConfiguracionEmpresa,$tipo)
+function getProductosVinculadosYuraVenture($idConfiguracionEmpresa, $tipo)
 {
     return ProductoYuraVenture::where([
         ['id_configuracion_empresa', $idConfiguracionEmpresa],
-        ['tipo',$tipo]
+        ['tipo', $tipo]
     ])->get();
 }
 
-function getCodigoVenturePresentacion($idPlanta, $idVariedad, $idClasificacionRamo, $clasificacionRamoIdUnidadMedida, $tallosXramos, $longitudRamo, $longitudRamoIdUnidadMedida, $idConfiguracionempresa,$tipo="N")
+function getCodigoVenturePresentacion($idPlanta, $idVariedad, $idClasificacionRamo, $clasificacionRamoIdUnidadMedida, $tallosXramos, $longitudRamo, $longitudRamoIdUnidadMedida, $idConfiguracionempresa, $tipo = "N")
 {
-    $prductosVinculados = getProductosVinculadosYuraVenture($idConfiguracionempresa,$tipo);
+    $prductosVinculados = getProductosVinculadosYuraVenture($idConfiguracionempresa, $tipo);
     foreach ($prductosVinculados as $prductoVinculado) {
         $datos = explode("|", $prductoVinculado->presentacion_yura);
 
@@ -2334,4 +2334,13 @@ function getCajasByRangoVariedad($desde, $hasta, $variedad)
         }
     }
     return round($ramos / getConfiguracionEmpresa()->ramos_x_caja, 2);
+}
+
+function getLastSemanaByVariedad($variedad)
+{
+    return Semana::All()
+        ->where('estado', 1)
+        ->where('id_variedad', $variedad)
+        ->sortBy('codigo')
+        ->last();
 }
