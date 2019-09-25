@@ -14,6 +14,11 @@
                         <span class="fa fa-caret-down"></span></button>
                     <ul class="dropdown-menu">
                         <li>
+                            <a href="javascript:void(0)" onclick="actualizar_proyecciones()">
+                                Actualizar Proyecciones
+                            </a>
+                        </li>
+                        <li>
                             <a href="javascript:void(0)" onclick="restaurar_proyeccion()">
                                 Restaurar Proyecciones
                             </a>
@@ -55,6 +60,11 @@
                             {{$mod['modulo']->nombre}}
                         </button>
                         <ul class="dropdown-menu">
+                            <li>
+                                <a href="javascript:void(0)" onclick="actualizar_proyecciones('{{$mod['modulo']->id_modulo}}')">
+                                    Actualizar
+                                </a>
+                            </li>
                             <li>
                                 <a href="javascript:void(0)" onclick="restaurar_proyeccion('{{$mod['modulo']->id_modulo}}')">
                                     Restaurar Proyección
@@ -288,7 +298,9 @@
             };
             $('#celda_modulo_' + mod).LoadingOverlay('show');
             $.post('{{url('proy_cosecha/restaurar_proyeccion')}}', datos, function (retorno) {
-                listar_proyecciones();
+                setTimeout(function () {
+                    listar_proyecciones();
+                }, 500);
             }, 'json').fail(function (retorno) {
                 console.log(retorno);
                 alerta_errores(retorno.responseText);
@@ -318,6 +330,73 @@
                 $('#celda_modulo_' + mod).LoadingOverlay('show');
 
                 $.post('{{url('proy_cosecha/restaurar_proyeccion')}}', datos, function (retorno) {
+                    mod = retorno.modulo;
+                    total_progress += factor;
+                    $('#barra_progreso').css('width', total_progress + '%');
+                    $('#celda_modulo_' + mod).LoadingOverlay('hide');
+
+                    if (mod == selected[selected.length - 1]) {
+                        setTimeout(function () {
+                            $('#div_barra_progreso').hide();
+                            listar_proyecciones();
+                        }, 500);
+                    }
+                }, 'json').fail(function (retorno) {
+                    console.log(retorno);
+                    alerta_errores(retorno.responseText);
+                }).always(function () {
+                    $('#celda_modulo_' + mod).LoadingOverlay('hide');
+                });
+            }
+        }
+    }
+
+    function actualizar_proyecciones(mod) {
+        if (mod != null) {
+            datos = {
+                _token: '{{csrf_token()}}',
+                modulo: mod,
+                variedad: $('#filtro_predeterminado_variedad').val(),
+                desde: $('#filtro_predeterminado_desde').val(),
+                hasta: $('#filtro_predeterminado_hasta').val(),
+            };
+            $('#celda_modulo_' + mod).LoadingOverlay('show');
+            $.post('{{url('proy_cosecha/actualizar_proyecciones')}}', datos, function (retorno) {
+                setTimeout(function () {
+                    listar_proyecciones();
+                }, 500);
+            }, 'json').fail(function (retorno) {
+                console.log(retorno);
+                alerta_errores(retorno.responseText);
+            }).always(function () {
+                $('#celda_modulo_' + mod).LoadingOverlay('hide');
+            });
+        } else {
+            var all = $('.checkbox_modulo');
+            var selected = [];
+            for (i = 0; i < all.length; i++) {
+                if ($('#' + all[i].id).prop('checked') == true) {
+                    selected.push(all[i].id.substr(16));
+                }
+            }
+
+            factor = (Math.round((100 / selected.length) * 100) / 100);
+            total_progress = 0;
+            $('#div_barra_progreso').removeClass('hide');
+
+            for (i = 0; i < selected.length; i++) {
+                datos = {
+                    _token: '{{csrf_token()}}',
+                    modulo: selected[i],
+                    variedad: $('#filtro_predeterminado_variedad').val(),
+                    desde: $('#filtro_predeterminado_desde').val(),
+                    hasta: $('#filtro_predeterminado_hasta').val(),
+                };
+                mod = datos['modulo'];
+
+                $('#celda_modulo_' + mod).LoadingOverlay('show');
+
+                $.post('{{url('proy_cosecha/actualizar_proyecciones')}}', datos, function (retorno) {
                     mod = retorno.modulo;
                     total_progress += factor;
                     $('#barra_progreso').css('width', total_progress + '%');

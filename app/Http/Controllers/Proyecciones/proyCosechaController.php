@@ -434,4 +434,18 @@ class proyCosechaController extends Controller
             'modulo' => $request->modulo
         ];
     }
+
+    public function actualizar_proyecciones(Request $request)
+    {
+        Artisan::call('proyeccion:update_semanal', [
+            'semana_desde' => $request->desde,
+            'semana_hasta' => $request->hasta,
+            'variedad' => $request->variedad,
+            'modulo' => $request->modulo,
+        ]);
+        return [
+            'success' => true,
+            'modulo' => $request->modulo
+        ];
+    }
 }
