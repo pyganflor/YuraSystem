@@ -61,9 +61,10 @@ class ProyeccionAutoCreate extends Command
 
         $sum_semana = intval($ciclo->semana_poda_siembra) + intval(count(explode('-', $ciclo->curva)));
         $codigo = $semana->codigo;
+        $new_codigo = $semana->codigo;
         $i = 1;
         $next = 1;
-        while ($i < $sum_semana) {
+        while ($i < $sum_semana && $new_codigo <= getLastSemanaByVariedad($ciclo->id_variedad)->codigo) {
             $new_codigo = $codigo + $next;
             $query = Semana::All()
                 ->where('estado', '=', 1)
@@ -81,8 +82,7 @@ class ProyeccionAutoCreate extends Command
         $proyecciones = ProyeccionModulo::All()
             ->where('estado', 1)
             ->where('id_variedad', $ciclo->id_variedad)
-            ->where('id_modulo', $modulo)
-            ->where('id_semana', $query->id_semana);
+            ->where('id_modulo', $modulo);
         foreach ($proyecciones as $proy) {
             $proy->delete();
         }

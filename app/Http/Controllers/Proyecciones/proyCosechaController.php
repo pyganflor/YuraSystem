@@ -367,6 +367,73 @@ class proyCosechaController extends Controller
         ]);
         if (!$valida->fails()) {
             $model = Ciclo::find($request->id_ciclo);
+
+            $semana_fin = getLastSemanaByVariedad($model->id_variedad);
+
+            $sum_semana_new = $request->semana_poda_siembra + count(explode('-', $request->curva));
+            $sum_semana_old = $model->semana_poda_siembra + count(explode('-', $model->curva));
+            if ($sum_semana_new != $sum_semana_old) {   // hay que mover las proyecciones
+                $semana = Semana::All()
+                    ->where('estado', 1)
+                    ->where('id_variedad', $model->id_variedad)
+                    ->where('fecha_inicial', '<=', $model->fecha_inicio)
+                    ->where('fecha_final', '>=', $model->fecha_inicio)
+                    ->first();
+
+                /* ------------------------ OBTENER LAS SEMANAS NEW/OLD ---------------------- */
+                $codigo = $semana->codigo;
+                $new_codigo = $semana->codigo;
+                $i = 1;
+                $next = 1;
+                while ($i < $sum_semana_new && $new_codigo <= $semana_fin->codigo) {
+                    $new_codigo = $codigo + $next;
+                    $semana_new = Semana::All()
+                        ->where('estado', '=', 1)
+                        ->where('codigo', '=', $new_codigo)
+                        ->where('id_variedad', '=', $model->id_variedad)
+                        ->first();
+
+                    if ($semana_new != '') {
+                        $i++;
+                    }
+                    $next++;
+                }
+
+                $new_codigo = $semana->codigo;
+                $i = 1;
+                $next = 1;
+                while ($i < $sum_semana_old && $new_codigo <= $semana_fin->codigo) {
+                    $new_codigo = $codigo + $next;
+                    $semana_old = Semana::All()
+                        ->where('estado', '=', 1)
+                        ->where('codigo', '=', $new_codigo)
+                        ->where('id_variedad', '=', $model->id_variedad)
+                        ->first();
+
+                    if ($semana_old != '') {
+                        $i++;
+                    }
+                    $next++;
+                }
+
+                $proy = ProyeccionModulo::where('estado', 1)
+                    ->where('id_modulo', $model->id_modulo)
+                    ->where('id_variedad', $model->id_variedad)
+                    ->orderBy('fecha_inicio')
+                    ->get()->first();
+
+                if ($proy->id_semana == $semana_old->id_semana || $proy->semana->codigo < $semana_new->codigo) {    // hay que mover
+                    $proy->id_semana = $semana_new->id_semana;
+                    $proy->fecha_inicio = $semana_new->fecha_final;
+                    $proy->desecho = $semana_new->desecho > 0 ? $semana_new->desecho : 0;
+                    $proy->tallos_planta = $semana_new->tallos_planta_poda > 0 ? $semana_new->tallos_planta_poda : 0;
+                    $proy->tallos_ramo = $semana_new->tallos_ramo_poda > 0 ? $semana_new->tallos_ramo_poda : 0;
+
+                    $proy->save();
+                    $proy->restaurar_proyecciones();
+                }
+            }
+
             $model->poda_siembra = $request->poda_siembra;
             $model->curva = $request->curva;
             $model->semana_poda_siembra = $request->semana_poda_siembra;
@@ -383,15 +450,10 @@ class proyCosechaController extends Controller
 
                 /* ======================== ACTUALIZAR LA TABLA PROYECCION_MODULO_SEMANA ====================== */
                 $semana_desde = getSemanaByDate($model->fecha_inicio)->codigo;
-                $semana_fin = DB::table('semana')
-                    ->select(DB::raw('max(codigo) as max'))
-                    ->where('estado', '=', 1)
-                    ->where('id_variedad', '=', $model->id_variedad)
-                    ->get()[0]->max;
 
                 Artisan::call('proyeccion:update_semanal', [
                     'semana_desde' => $semana_desde,
-                    'semana_hasta' => $semana_fin,
+                    'semana_hasta' => $semana_fin->codigo,
                     'variedad' => $model->id_variedad,
                     'modulo' => $model->id_modulo,
                 ]);
