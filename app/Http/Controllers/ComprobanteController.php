@@ -238,12 +238,12 @@ class ComprobanteController extends Controller
                 $comprobante_rehusado = Comprobante::where('rehusar', true)->get();
                 if($comprobante_rehusado->count() > 0){
                     foreach ($comprobante_rehusado as $cr){
-                        if(Carbon::parse($cr->fecha_emision)->format('Y-m') == Carbon::parse(now()->format('Y-m'))->format('Y-m')){
+                        //if(Carbon::parse($cr->fecha_emision)->format('Y-m') == Carbon::parse(now()->format('Y-m'))->format('Y-m')){
                             $secuencial = $cr->secuencial;
                             Comprobante::destroy($cr->id_comprobante);
                             $secuencial_rehusado = true;
                             break;
-                        }
+                        //}
                     }
                 }
                 if(!$secuencial_rehusado){
