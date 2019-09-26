@@ -87,7 +87,7 @@
                                            value="{{getCodigoVenturePresentacion($det_esp_emp->variedad->planta->id_planta, $det_esp_emp->variedad->id_variedad, $det_esp_emp->clasificacion_ramo->id_clasificacion_ramo, $det_esp_emp->clasificacion_ramo->unidad_medida->id_unidad_medida, $det_esp_emp->tallos_x_ramos, $det_esp_emp->longitud_ramo, $det_esp_emp->unidad_medida->id_unidad_medida, getPedido($id_pedido)->id_configuracion_empresa,getPedido($id_pedido)->detalles[0]->cliente_especificacion->especificacion->tipo)}}">
                                 </td>
                                 <td style="border-color: #9d9d9d; padding: 0px; vertical-align: middle; width: 30px;"
-                                    class="text-center" rowspan="{{getCantidadDetallesByEspecificacion($det_ped->cliente_especificacion->especificacion->id_especificacion)}}"
+                                    class="text-center" rowspan="{{getCantidadDetallesByEspecificacion($det_ped->cliente_especificacion->especificacion->id_especificacion)}}">
                                     <input type="number" min="0" id="cantidad_piezas_{{($x+1)}}" style="border: none;height: 34px;" onkeyup="crear_orden_pedido(this)" onchange="calcular_precio_pedido(this)"
                                            name="cantidad_piezas_{{$det_ped->cliente_especificacion->especificacion->id_especificacion}}" class="text-center cantidad_{{($x+1)}} input_cantidad no_edit"
                                            value="{{isset($det_ped->data_tallos->mallas) ? $det_ped->data_tallos->mallas : $det_ped->cantidad}}">
