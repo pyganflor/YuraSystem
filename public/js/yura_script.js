@@ -2151,7 +2151,6 @@ function calcular_precio_pedido(input) {
                     ramos_x_caja = $(".input_ramos_x_caja_" + i + "_" + (y + 1)).val();
                     precio_especificacion += (parseFloat(precio_variedad) * parseFloat(ramos_x_caja) * pieza);
                     total_ramos+= ramos_x_caja*pieza;
-                    console.log(precio_variedad,ramos_x_caja,pieza);
                 });
 
                 if($("#td_total_ramos_"+i+" input").length === 0 )

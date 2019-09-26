@@ -25,7 +25,6 @@
                 <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d;width:45px">
                     RAMO X CAJA
                 </th>
-
                 <th class="th_tallo_x_malla {{(isset(getPedido($id_pedido)->detalles[0]->cliente_especificacion->especificacion->tipo) && getPedido($id_pedido)->detalles[0]->cliente_especificacion->especificacion->tipo == "O") ? "" : "hide"}}
                     text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d;width:45px">
                     TALLOS X MALLA
@@ -372,7 +371,7 @@
             {{--FIN ESPECIFICACIONES RESTANTES--}}
         </tbody>
     </table>
-    @if(isset(getPedido($id_pedido)->envios[0]->comprobante) && getPedido($id_pedido)->envios[0]->comprobante->estado == 5 )
+    {{--@if(isset(getPedido($id_pedido)->envios[0]->comprobante) && getPedido($id_pedido)->envios[0]->comprobante->estado == 5 )
         <script>
             $.each($(".modal-content input.no_edit"),function (i,j) {
                 $(j).attr('disabled', true);
@@ -387,7 +386,7 @@
                 });
             }
         </script>
-    @endif
+    @endif--}}
     <script>
         $(function () {
             calibre_estandar = parseInt($("#calibre_estandar").val());
