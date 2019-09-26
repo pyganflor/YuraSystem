@@ -44,7 +44,7 @@
                             onchange="select_planta($(this).val(), 'filtro_predeterminado_variedad', 'div_cargar_variedades', '<option value=T selected>Todos los tipos</option>')">
                         <option value="">Todas las variedades</option>
                         @foreach(getPlantas() as $p)
-                            <option value="{{$p->id_planta}}">{{$p->nombre}}</option>
+                            <option value="{{$p->id_planta}}" {{$p->siglas == 'GYP' ? 'selected' : ''}}>{{$p->nombre}}</option>
                         @endforeach
                     </select>
                     <div class="input-group-addon bg-gray" id="div_cargar_variedades">

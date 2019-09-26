@@ -1,4 +1,6 @@
 <script>
+    select_planta($('#filtro_predeterminado_planta').val(), 'filtro_predeterminado_variedad', 'div_cargar_variedades', '<option value=T selected>Todos los tipos</option>');
+
     listar_proyecciones();
 
     function listar_proyecciones() {
