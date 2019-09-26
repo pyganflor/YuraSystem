@@ -111,7 +111,7 @@
             <div class="row">
                 <div class="col-md-12">
                     <table style="width: 100%;">
-                        {{--@if((isset($comprobante->estado) && $comprobante->estado != 5) && (isset($comprobante->estado) && $comprobante->estado != 6) && (isset(getPedido($id_pedido)->envios[0]->comprobante->integrado) && !getPedido($id_pedido)->envios[0]->comprobante->integrado) || !isset($comprobante->estado))--}}
+                        @if((isset($comprobante->estado) && $comprobante->estado != 5) && (isset($comprobante->estado) && $comprobante->estado != 6) && (isset(getPedido($id_pedido)->envios[0]->comprobante->integrado) && !getPedido($id_pedido)->envios[0]->comprobante->integrado) || !isset($comprobante->estado))--}}
                             <tr>
                                 <td class="text-center" style="padding: 10px 0px 0px">
                                     <button type="button" class=" btn btn-app btn-xs btn-success store_pedido_normal"
@@ -125,7 +125,7 @@
                                     </button>
                                 </td>
                             </tr>
-                        {{--@endif--}}
+                        @endif
                     </table>
                 </div>
             </div>

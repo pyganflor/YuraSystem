@@ -371,7 +371,7 @@
             {{--FIN ESPECIFICACIONES RESTANTES--}}
         </tbody>
     </table>
-    {{--@if(isset(getPedido($id_pedido)->envios[0]->comprobante) && getPedido($id_pedido)->envios[0]->comprobante->estado == 5 )
+    @if(isset(getPedido($id_pedido)->envios[0]->comprobante) && getPedido($id_pedido)->envios[0]->comprobante->estado == 5 )
         <script>
             $.each($(".modal-content input.no_edit"),function (i,j) {
                 $(j).attr('disabled', true);
@@ -386,7 +386,7 @@
                 });
             }
         </script>
-    @endif--}}
+    @endif
     <script>
         $(function () {
             calibre_estandar = parseInt($("#calibre_estandar").val());
