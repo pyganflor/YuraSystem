@@ -87,42 +87,45 @@ class ProyeccionAutoCreate extends Command
             $proy->delete();
         }
 
-        $proy = new ProyeccionModulo();
-        $proy->id_modulo = $ciclo->id_modulo;
-        $proy->id_semana = $query->id_semana;
-        $proy->id_variedad = $ciclo->id_variedad;
-        $proy->tipo = 'P';
-        $proy->curva = $ciclo->curva;
-        $proy->semana_poda_siembra = $ciclo->semana_poda_siembra;
-        $proy->poda_siembra = $ciclo->modulo->getPodaSiembraByCiclo($ciclo->id_ciclo) + 1;
-        $proy->plantas_iniciales = $ciclo->plantas_iniciales != '' ? $ciclo->plantas_iniciales : 0;
-        $proy->desecho = $ciclo->desecho;
-        $proy->tallos_planta = $ciclo->conteo != '' ? $ciclo->conteo : 0;
-        $proy->tallos_ramo = $query->tallos_ramo_poda != '' ? $query->tallos_ramo_poda : 0;
-        $proy->fecha_inicio = $query->fecha_final;
+        if ($query != '') {
+            $proy = new ProyeccionModulo();
+            $proy->id_modulo = $ciclo->id_modulo;
+            $proy->id_semana = $query->id_semana;
+            $proy->id_variedad = $ciclo->id_variedad;
+            $proy->tipo = 'P';
+            $proy->curva = $ciclo->curva;
+            $proy->semana_poda_siembra = $ciclo->semana_poda_siembra;
+            $proy->poda_siembra = $ciclo->modulo->getPodaSiembraByCiclo($ciclo->id_ciclo) + 1;
+            $proy->plantas_iniciales = $ciclo->plantas_iniciales != '' ? $ciclo->plantas_iniciales : 0;
+            $proy->desecho = $ciclo->desecho;
+            $proy->tallos_planta = $ciclo->conteo != '' ? $ciclo->conteo : 0;
+            $proy->tallos_ramo = $query->tallos_ramo_poda != '' ? $query->tallos_ramo_poda : 0;
+            $proy->fecha_inicio = $query->fecha_final;
 
-        $proy->save();
-        $proy = ProyeccionModulo::All()->where('estado', 1)->where('id_modulo', $modulo)->last();
+            $proy->save();
+            $proy = ProyeccionModulo::All()->where('estado', 1)->where('id_modulo', $modulo)->last();
+            $time_duration = difFechas(date('Y-m-d H:i:s'), $ini)->h . ':' . difFechas(date('Y-m-d H:i:s'), $ini)->m . ':' . difFechas(date('Y-m-d H:i:s'), $ini)->s;
+            Log::info('<*> MODULO: ' . getModuloById($modulo)->nombre . '  <*>');
 
-        $time_duration = difFechas(date('Y-m-d H:i:s'), $ini)->h . ':' . difFechas(date('Y-m-d H:i:s'), $ini)->m . ':' . difFechas(date('Y-m-d H:i:s'), $ini)->s;
-        Log::info('<*> MODULO: ' . getModuloById($modulo)->nombre . '  <*>');
 
+            Log::info('<*> DURACION: ' . $time_duration . '  <*>');
 
-        Log::info('<*> DURACION: ' . $time_duration . '  <*>');
+            /* ======================== ACTUALIZAR LA TABLA PROYECCION_MODULO_SEMANA ====================== */
+            $semana_fin = DB::table('semana')
+                ->select(DB::raw('max(codigo) as max'))
+                ->where('estado', '=', 1)
+                ->where('id_variedad', '=', $ciclo->id_variedad)
+                ->get()[0]->max;
 
-        /* ======================== ACTUALIZAR LA TABLA PROYECCION_MODULO_SEMANA ====================== */
-        $semana_fin = DB::table('semana')
-            ->select(DB::raw('max(codigo) as max'))
-            ->where('estado', '=', 1)
-            ->where('id_variedad', '=', $ciclo->id_variedad)
-            ->get()[0]->max;
-
-        Artisan::call('proyeccion:update_semanal', [
-            'semana_desde' => $proy->semana->codigo,
-            'semana_hasta' => $semana_fin,
-            'variedad' => $ciclo->id_variedad,
-            'modulo' => $modulo,
-        ]);
+            Artisan::call('proyeccion:update_semanal', [
+                'semana_desde' => $proy->semana->codigo,
+                'semana_hasta' => $semana_fin,
+                'variedad' => $ciclo->id_variedad,
+                'modulo' => $modulo,
+            ]);
+        } else {
+            Log::info('<*> La semana se encuentra fuera de lo programado  <*>');
+        }
 
         Log::info('<<<<< * >>>>> Fin satisfactorio del comando "proyeccion:auto_create" <<<<< * >>>>>');
     }
