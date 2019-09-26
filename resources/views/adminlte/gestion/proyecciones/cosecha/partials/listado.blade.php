@@ -59,7 +59,7 @@
             $tallos_cosechados = [];
         @endphp
         @foreach($modulos as $mod)
-            <tr>
+            <tr id="tr_modulo_{{$mod['modulo']->id_modulo}}">
                 <th class="text-center" style="border-color: #9d9d9d">
                     <input type="checkbox" id="checkbox_modulo_{{$mod['modulo']->id_modulo}}" class="checkbox_modulo">
                 </th>
@@ -165,7 +165,23 @@
                 @endforeach
 
                 <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
-                    {{$mod['modulo']->nombre}}
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
+                            {{$mod['modulo']->nombre}}
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-right">
+                            <li>
+                                <a href="javascript:void(0)" onclick="actualizar_proyecciones('{{$mod['modulo']->id_modulo}}')">
+                                    Actualizar
+                                </a>
+                            </li>
+                            <li>
+                                <a href="javascript:void(0)" onclick="restaurar_proyeccion('{{$mod['modulo']->id_modulo}}')">
+                                    Restaurar Proyección
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
                 </th>
             </tr>
         @endforeach
@@ -305,7 +321,7 @@
                 _token: '{{csrf_token()}}',
                 modulo: mod
             };
-            $('#celda_modulo_' + mod).LoadingOverlay('show');
+            $('#tr_modulo_' + mod).LoadingOverlay('show');
             $.post('{{url('proy_cosecha/restaurar_proyeccion')}}', datos, function (retorno) {
                 setTimeout(function () {
                     listar_proyecciones();
@@ -314,7 +330,7 @@
                 console.log(retorno);
                 alerta_errores(retorno.responseText);
             }).always(function () {
-                $('#celda_modulo_' + mod).LoadingOverlay('hide');
+                $('#tr_modulo_' + mod).LoadingOverlay('hide');
             });
         } else {
             var all = $('.checkbox_modulo');
@@ -336,7 +352,7 @@
                 };
                 mod = datos['modulo'];
 
-                $('#celda_modulo_' + mod).LoadingOverlay('show');
+                $('#tr_modulo_' + mod).LoadingOverlay('show');
 
                 $.post('{{url('proy_cosecha/restaurar_proyeccion')}}', datos, function (retorno) {
                     mod = retorno.modulo;
@@ -354,7 +370,7 @@
                     console.log(retorno);
                     alerta_errores(retorno.responseText);
                 }).always(function () {
-                    $('#celda_modulo_' + mod).LoadingOverlay('hide');
+                    $('#tr_modulo_' + mod).LoadingOverlay('hide');
                 });
             }
         }
@@ -369,7 +385,7 @@
                 desde: $('#filtro_predeterminado_desde').val(),
                 hasta: $('#filtro_predeterminado_hasta').val(),
             };
-            $('#celda_modulo_' + mod).LoadingOverlay('show');
+            $('#tr_modulo_' + mod).LoadingOverlay('show');
             $.post('{{url('proy_cosecha/actualizar_proyecciones')}}', datos, function (retorno) {
                 setTimeout(function () {
                     listar_proyecciones();
@@ -378,7 +394,7 @@
                 console.log(retorno);
                 alerta_errores(retorno.responseText);
             }).always(function () {
-                $('#celda_modulo_' + mod).LoadingOverlay('hide');
+                $('#tr_modulo_' + mod).LoadingOverlay('hide');
             });
         } else {
             var all = $('.checkbox_modulo');
@@ -403,26 +419,28 @@
                 };
                 mod = datos['modulo'];
 
-                $('#celda_modulo_' + mod).LoadingOverlay('show');
+                $('#tr_modulo_' + mod).LoadingOverlay('show');
 
-                $.post('{{url('proy_cosecha/actualizar_proyecciones')}}', datos, function (retorno) {
-                    mod = retorno.modulo;
-                    total_progress += factor;
-                    $('#barra_progreso').css('width', total_progress + '%');
-                    $('#celda_modulo_' + mod).LoadingOverlay('hide');
+                setTimeout(function () {
+                    $.post('{{url('proy_cosecha/actualizar_proyecciones')}}', datos, function (retorno) {
+                        mod = retorno.modulo;
+                        total_progress += factor;
+                        $('#barra_progreso').css('width', total_progress + '%');
+                        $('#celda_modulo_' + mod).LoadingOverlay('hide');
 
-                    if (mod == selected[selected.length - 1]) {
-                        setTimeout(function () {
-                            $('#div_barra_progreso').hide();
-                            listar_proyecciones();
-                        }, 500);
-                    }
-                }, 'json').fail(function (retorno) {
-                    console.log(retorno);
-                    alerta_errores(retorno.responseText);
-                }).always(function () {
-                    $('#celda_modulo_' + mod).LoadingOverlay('hide');
-                });
+                        if (mod == selected[selected.length - 1]) {
+                            setTimeout(function () {
+                                $('#div_barra_progreso').hide();
+                                listar_proyecciones();
+                            }, 500);
+                        }
+                    }, 'json').fail(function (retorno) {
+                        console.log(retorno);
+                        alerta_errores(retorno.responseText);
+                    }).always(function () {
+                        $('#tr_modulo_' + mod).LoadingOverlay('hide');
+                    });
+                }, 500);
             }
         }
     }
