@@ -5,7 +5,7 @@
 </div>
 
 <div style="overflow-x: scroll">
-    <table class="table table-striped table-bordered table-hover" style="border: 2px solid #9d9d9d" width="100%">
+    <table class="table-striped table-bordered table-hover" style="border: 2px solid #9d9d9d" width="100%">
         <thead>
         <tr>
             <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
@@ -65,7 +65,7 @@
                 </th>
                 <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef" id="celda_modulo_{{$mod['modulo']->id_modulo}}">
                     <div class="btn-group">
-                        <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
+                        <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
                             {{$mod['modulo']->nombre}}
                         </button>
                         <ul class="dropdown-menu">
@@ -166,7 +166,7 @@
 
                 <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
                     <div class="btn-group">
-                        <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
+                        <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
                             {{$mod['modulo']->nombre}}
                         </button>
                         <ul class="dropdown-menu dropdown-menu-right">
@@ -421,26 +421,24 @@
 
                 $('#tr_modulo_' + mod).LoadingOverlay('show');
 
-                setTimeout(function () {
-                    $.post('{{url('proy_cosecha/actualizar_proyecciones')}}', datos, function (retorno) {
-                        mod = retorno.modulo;
-                        total_progress += factor;
-                        $('#barra_progreso').css('width', total_progress + '%');
-                        $('#celda_modulo_' + mod).LoadingOverlay('hide');
+                $.post('{{url('proy_cosecha/actualizar_proyecciones')}}', datos, function (retorno) {
+                    mod = retorno.modulo;
+                    total_progress += factor;
+                    $('#barra_progreso').css('width', total_progress + '%');
+                    $('#celda_modulo_' + mod).LoadingOverlay('hide');
 
-                        if (mod == selected[selected.length - 1]) {
-                            setTimeout(function () {
-                                $('#div_barra_progreso').hide();
-                                listar_proyecciones();
-                            }, 500);
-                        }
-                    }, 'json').fail(function (retorno) {
-                        console.log(retorno);
-                        alerta_errores(retorno.responseText);
-                    }).always(function () {
-                        $('#tr_modulo_' + mod).LoadingOverlay('hide');
-                    });
-                }, 500);
+                    if (mod == selected[selected.length - 1]) {
+                        setTimeout(function () {
+                            $('#div_barra_progreso').hide();
+                            listar_proyecciones();
+                        }, 500);
+                    }
+                }, 'json').fail(function (retorno) {
+                    console.log(retorno);
+                    alerta_errores(retorno.responseText);
+                }).always(function () {
+                    $('#tr_modulo_' + mod).LoadingOverlay('hide');
+                });
             }
         }
     }
