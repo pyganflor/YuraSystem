@@ -88,6 +88,7 @@
                                 </td>
                                 <td style="border-color: #9d9d9d; padding: 0px; vertical-align: middle; width: 30px;"
                                     class="text-center" rowspan="{{getCantidadDetallesByEspecificacion($det_ped->cliente_especificacion->especificacion->id_especificacion)}}">
+                                    @dump($det_ped->data_tallos->id_data_tallos)
                                     <input type="number" min="0" id="cantidad_piezas_{{($x+1)}}" style="border: none;height: 34px;" onkeyup="crear_orden_pedido(this)" onchange="calcular_precio_pedido(this)"
                                            name="cantidad_piezas_{{$det_ped->cliente_especificacion->especificacion->id_especificacion}}" class="text-center cantidad_{{($x+1)}} input_cantidad no_edit"
                                            value="{{isset($det_ped->data_tallos->mallas) ? $det_ped->data_tallos->mallas : $det_ped->cantidad}}">
