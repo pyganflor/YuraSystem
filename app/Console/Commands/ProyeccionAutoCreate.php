@@ -122,6 +122,7 @@ class ProyeccionAutoCreate extends Command
                 'semana_hasta' => $semana_fin,
                 'variedad' => $ciclo->id_variedad,
                 'modulo' => $modulo,
+                'restriccion' => 1,
             ]);
         } else {
             Log::info('<*> La semana se encuentra fuera de lo programado  <*>');

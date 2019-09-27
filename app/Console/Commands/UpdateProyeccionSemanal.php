@@ -17,7 +17,7 @@ class UpdateProyeccionSemanal extends Command
      *
      * @var string
      */
-    protected $signature = 'proyeccion:update_semanal {semana_desde=0} {semana_hasta=0} {variedad=0} {modulo=0}';
+    protected $signature = 'proyeccion:update_semanal {semana_desde=0} {semana_hasta=0} {variedad=0} {modulo=0} {restriccion=0}';
 
     /**
      * The console command description.
@@ -50,6 +50,7 @@ class UpdateProyeccionSemanal extends Command
         $sem_parametro_hasta = $this->argument('semana_hasta');
         $var_parametro = $this->argument('variedad');
         $modulo_parametro = $this->argument('modulo');
+        $restriccion_parametro = $this->argument('restriccion');
 
         if ($sem_parametro_desde <= $sem_parametro_hasta) {
             if ($sem_parametro_desde != 0)
@@ -93,60 +94,62 @@ class UpdateProyeccionSemanal extends Command
             foreach ($modulos as $mod) {
                 foreach ($variedades as $pos_var => $var) {
                     foreach ($array_semanas as $pos_sem => $codigo) {
-                        $semana = Semana::All()
-                            ->where('estado', 1)
-                            ->where('codigo', $codigo)
-                            ->where('id_variedad', $var->id_variedad)
-                            ->first();
+                        if ($restriccion_parametro == 0 || ($restriccion_parametro == 1 && $pos_sem <= 15)) {
+                            $semana = Semana::All()
+                                ->where('estado', 1)
+                                ->where('codigo', $codigo)
+                                ->where('id_variedad', $var->id_variedad)
+                                ->first();
 
-                        $data = $mod->getDataBySemana($semana, $var->id_variedad, '2000-01-01', 'I', 'T');
+                            $data = $mod->getDataBySemana($semana, $var->id_variedad, '2000-01-01', 'I', 'T');
 
-                        $proy = ProyeccionModuloSemana::All()->where('estado', 1)
-                            ->where('id_modulo', $mod->id_modulo)
-                            ->where('semana', $codigo)
-                            ->where('id_variedad', $var->id_variedad)
-                            ->first();
-                        if ($proy == '')
-                            $proy = new ProyeccionModuloSemana();
+                            $proy = ProyeccionModuloSemana::All()->where('estado', 1)
+                                ->where('id_modulo', $mod->id_modulo)
+                                ->where('semana', $codigo)
+                                ->where('id_variedad', $var->id_variedad)
+                                ->first();
+                            if ($proy == '')
+                                $proy = new ProyeccionModuloSemana();
 
-                        $proy->id_modulo = $mod->id_modulo;
-                        $proy->id_variedad = $var->id_variedad;
-                        $proy->semana = $codigo;
-                        $proy->tipo = $data['tipo'];
-                        $proy->info = $data['info'];
-                        $proy->cosechados = $data['cosechado'];
-                        $proy->proyectados = $data['proyectados'];
-                        $proy->tabla = $data['tabla'];
-                        $proy->modelo = $data['modelo'];
+                            $proy->id_modulo = $mod->id_modulo;
+                            $proy->id_variedad = $var->id_variedad;
+                            $proy->semana = $codigo;
+                            $proy->tipo = $data['tipo'];
+                            $proy->info = $data['info'];
+                            $proy->cosechados = $data['cosechado'];
+                            $proy->proyectados = $data['proyectados'];
+                            $proy->tabla = $data['tabla'];
+                            $proy->modelo = $data['modelo'];
 
-                        if (in_array($data['tipo'], ['S', 'P', 'T', 'Y'])) {
-                            if ($data['tabla'] == 'C') {
-                                $proy->plantas_iniciales = $data['ciclo']->plantas_iniciales;
-                                $proy->plantas_actuales = $data['ciclo']->plantas_actuales();
-                                $proy->fecha_inicio = $data['ciclo']->fecha_inicio;
-                                $proy->activo = $data['ciclo']->activo;
-                                $proy->area = $data['ciclo']->area;
-                                $proy->tallos_planta = $data['ciclo']->conteo;
-                                $proy->curva = $data['ciclo']->curva;
-                                $proy->poda_siembra = $data['ciclo']->poda_siembra;
-                                $proy->desecho = $data['ciclo']->desecho;
-                                $proy->semana_poda_siembra = $data['ciclo']->semana_poda_siembra;
-                                $proy->tallos_ramo = 0; // CALCULAR CALIBRE ACTUAL
-                            } else if ($data['tabla'] == 'P') {
-                                $proy->plantas_iniciales = $data['proy']->plantas_iniciales;
-                                $proy->plantas_actuales = $data['proy']->plantas_iniciales;
-                                $proy->fecha_inicio = $data['proy']->fecha_inicio;
-                                $proy->activo = 0;
-                                $proy->area = $mod->area;
-                                $proy->tallos_planta = $data['proy']->tallos_planta;
-                                $proy->curva = $data['proy']->curva;
-                                $proy->poda_siembra = $data['proy']->poda_siembra;
-                                $proy->desecho = $data['proy']->desecho;
-                                $proy->semana_poda_siembra = $data['proy']->semana_poda_siembra;
-                                $proy->tallos_ramo = $data['proy']->tallos_ramo;
+                            if (in_array($data['tipo'], ['S', 'P', 'T', 'Y'])) {
+                                if ($data['tabla'] == 'C') {
+                                    $proy->plantas_iniciales = $data['ciclo']->plantas_iniciales;
+                                    $proy->plantas_actuales = $data['ciclo']->plantas_actuales();
+                                    $proy->fecha_inicio = $data['ciclo']->fecha_inicio;
+                                    $proy->activo = $data['ciclo']->activo;
+                                    $proy->area = $data['ciclo']->area;
+                                    $proy->tallos_planta = $data['ciclo']->conteo;
+                                    $proy->curva = $data['ciclo']->curva;
+                                    $proy->poda_siembra = $data['ciclo']->poda_siembra;
+                                    $proy->desecho = $data['ciclo']->desecho;
+                                    $proy->semana_poda_siembra = $data['ciclo']->semana_poda_siembra;
+                                    $proy->tallos_ramo = 0; // CALCULAR CALIBRE ACTUAL
+                                } else if ($data['tabla'] == 'P') {
+                                    $proy->plantas_iniciales = $data['proy']->plantas_iniciales;
+                                    $proy->plantas_actuales = $data['proy']->plantas_iniciales;
+                                    $proy->fecha_inicio = $data['proy']->fecha_inicio;
+                                    $proy->activo = 0;
+                                    $proy->area = $mod->area;
+                                    $proy->tallos_planta = $data['proy']->tallos_planta;
+                                    $proy->curva = $data['proy']->curva;
+                                    $proy->poda_siembra = $data['proy']->poda_siembra;
+                                    $proy->desecho = $data['proy']->desecho;
+                                    $proy->semana_poda_siembra = $data['proy']->semana_poda_siembra;
+                                    $proy->tallos_ramo = $data['proy']->tallos_ramo;
+                                }
                             }
+                            $proy->save();
                         }
-                        $proy->save();
                     }
                 }
             }
