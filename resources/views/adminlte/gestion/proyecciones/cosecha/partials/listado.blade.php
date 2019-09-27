@@ -38,7 +38,7 @@
             <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef; width: 250px">
                 Módulos
             </th>
-            @foreach($semanas as $sem)
+            @foreach($semanas as $pos_sem => $sem)
                 <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef; width: 250px">
                     <span data-toggle="tooltip" data-placement="top" data-html="true"
                           title="<em>T.Ramo: {{$sem->tallos_ramo_poda}}</em><br>
@@ -46,6 +46,8 @@
                           <em>%Desecho: {{$sem->desecho}}</em>">
                         {{$sem->codigo}}
                     </span>
+
+                    <input type="hidden" id="semana_{{$pos_sem}}" value="{{$sem->codigo}}">
                 </th>
             @endforeach
             <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef; width: 250px">
@@ -167,7 +169,6 @@
                                 </p>
                             @endif
                         </span>
-                        <input type="hidden" id="semana_modulo_{{$mod['modulo']->id_modulo}}_{{$pos_val}}" value="{{$val->semana}}">
                     </td>
                 @endforeach
 
@@ -469,12 +470,13 @@
             id = $('.celda_modulo_' + mod)[pos].id;
             $('#' + id).removeAttr('onclick').click(function () {
                 id = $(this).prop('id');
+                pos_sem = id.split('_')[2];
                 datos = {
                     _token: '{{csrf_token()}}',
                     modulo: mod,
                     variedad: $('#filtro_predeterminado_variedad').val(),
-                    desde: $('#semana_modulo_' + id.substr(6)).val(),
-                    hasta: $('#semana_modulo_' + id.substr(6)).val(),
+                    desde: $('#semana_' + pos_sem).val(),
+                    hasta: $('#semana_' + pos_sem).val(),
                     id_html: id,
                     get_obj: true,
                 };
@@ -497,7 +499,6 @@
                             '<strong style="font-size: 0.8em">' + cosechados + ' </strong>' +
                             '</p>';
                     }
-                    text += '<input type="hidden" id="semana_modulo_' + id.substr(6) + '" value="' + datos['desde'] + '">';
                     $('#' + id).html(text);
                 }, 'json').fail(function (retorno) {
                     console.log(retorno);
