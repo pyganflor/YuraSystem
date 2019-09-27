@@ -519,6 +519,7 @@ class proyCosechaController extends Controller
             'semana_hasta' => $request->hasta,
             'variedad' => $request->variedad,
             'modulo' => $request->modulo,
+            'restriccion' => 1,
         ]);
         if (!$request->get_obj)
             return [

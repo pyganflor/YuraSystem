@@ -19,6 +19,11 @@
                             </a>
                         </li>
                         <li>
+                            <a href="javascript:void(0)" onclick="actualizar_manual()">
+                                Actualizar Manualmente
+                            </a>
+                        </li>
+                        <li>
                             <a href="javascript:void(0)" onclick="restaurar_proyeccion()">
                                 Restaurar Proyecciones
                             </a>
@@ -466,48 +471,104 @@
     }
 
     function actualizar_manual(mod) {
-        $('.celda_modulo_' + mod).each(function (pos) {
-            id = $('.celda_modulo_' + mod)[pos].id;
-            $('#' + id).removeAttr('onclick').click(function () {
-                id = $(this).prop('id');
-                pos_sem = id.split('_')[2];
-                datos = {
-                    _token: '{{csrf_token()}}',
-                    modulo: mod,
-                    variedad: $('#filtro_predeterminado_variedad').val(),
-                    desde: $('#semana_' + pos_sem).val(),
-                    hasta: $('#semana_' + pos_sem).val(),
-                    id_html: id,
-                    get_obj: true,
-                };
+        if (mod != null) {
+            $('.celda_modulo_' + mod).each(function (pos) {
+                id = $('.celda_modulo_' + mod)[pos].id;
+                $('#' + id).removeAttr('onclick').click(function () {
+                    id = $(this).prop('id');
+                    pos_sem = id.split('_')[2];
+                    datos = {
+                        _token: '{{csrf_token()}}',
+                        modulo: mod,
+                        variedad: $('#filtro_predeterminado_variedad').val(),
+                        desde: $('#semana_' + pos_sem).val(),
+                        hasta: $('#semana_' + pos_sem).val(),
+                        id_html: id,
+                        get_obj: true,
+                    };
 
-                $('#' + id).html('');
-                $('#' + id).LoadingOverlay('show');
-                $.post('{{url('proy_cosecha/actualizar_proyecciones')}}', datos, function (retorno) {
-                    id = retorno.id_html;
-                    var text = '';
-                    if (retorno.model['tipo'] == 'T') {
-                        proyectados = retorno.model['proyectados'] != "" ? retorno.model['proyectados'] : 0;
-                        text += '<strong style="font-size: 0.8em; margin-bottom: 0">' + proyectados + '</strong>';
-                    } else {
-                        info = retorno.model['info'];
-                        text += '<p style="margin-top: 0; margin-bottom: 0">' + info + '</p>';
-                    }
-                    cosechados = retorno.model['cosechados'];
-                    if (cosechados > 0) {
-                        text += '<p style="margin-top: 0; margin-bottom: 0">' +
-                            '<strong style="font-size: 0.8em">' + cosechados + ' </strong>' +
-                            '</p>';
-                    }
-                    $('#' + id).html(text);
-                }, 'json').fail(function (retorno) {
-                    console.log(retorno);
-                    alerta_errores(retorno.responseText);
-                }).always(function () {
-                    $('#' + id).LoadingOverlay('hide');
-                });
-            }).addClass('mouse-hand').css('background-color', 'rgba(55, 222, 0, 0.5)');
-        })
+                    $('#' + id).html('');
+                    $('#' + id).LoadingOverlay('show');
+                    $.post('{{url('proy_cosecha/actualizar_proyecciones')}}', datos, function (retorno) {
+                        id = retorno.id_html;
+                        var text = '';
+                        if (retorno.model['tipo'] == 'T') {
+                            proyectados = retorno.model['proyectados'] != "" ? retorno.model['proyectados'] : 0;
+                            text += '<strong style="font-size: 0.8em; margin-bottom: 0">' + proyectados + '</strong>';
+                        } else {
+                            info = retorno.model['info'];
+                            text += '<p style="margin-top: 0; margin-bottom: 0">' + info + '</p>';
+                        }
+                        cosechados = retorno.model['cosechados'];
+                        if (cosechados > 0) {
+                            text += '<p style="margin-top: 0; margin-bottom: 0">' +
+                                '<strong style="font-size: 0.8em">' + cosechados + ' </strong>' +
+                                '</p>';
+                        }
+                        $('#' + id).html(text);
+                    }, 'json').fail(function (retorno) {
+                        console.log(retorno);
+                        alerta_errores(retorno.responseText);
+                    }).always(function () {
+                        $('#' + id).LoadingOverlay('hide');
+                    });
+                }).addClass('mouse-hand').css('background-color', 'rgba(55, 222, 0, 0.5)');
+            })
+        } else {
+            var all = $('.checkbox_modulo');
+            var selected = [];
+            for (i = 0; i < all.length; i++) {
+                if ($('#' + all[i].id).prop('checked') == true) {
+                    selected.push(all[i].id.substr(16));
+                }
+            }
+
+            for (i = 0; i < selected.length; i++) {
+                mod = selected[i];
+                $('.celda_modulo_' + mod).each(function (pos) {
+                    id = $('.celda_modulo_' + mod)[pos].id;
+                    $('#' + id).removeAttr('onclick').click(function () {
+                        id = $(this).prop('id');
+                        pos_sem = id.split('_')[2];
+                        datos = {
+                            _token: '{{csrf_token()}}',
+                            modulo: mod,
+                            variedad: $('#filtro_predeterminado_variedad').val(),
+                            desde: $('#semana_' + pos_sem).val(),
+                            hasta: $('#semana_' + pos_sem).val(),
+                            id_html: id,
+                            get_obj: true,
+                        };
+
+                        $('#' + id).html('');
+                        $('#' + id).LoadingOverlay('show');
+                        $.post('{{url('proy_cosecha/actualizar_proyecciones')}}', datos, function (retorno) {
+                            id = retorno.id_html;
+                            var text = '';
+                            if (retorno.model['tipo'] == 'T') {
+                                proyectados = retorno.model['proyectados'] != "" ? retorno.model['proyectados'] : 0;
+                                text += '<strong style="font-size: 0.8em; margin-bottom: 0">' + proyectados + '</strong>';
+                            } else {
+                                info = retorno.model['info'];
+                                text += '<p style="margin-top: 0; margin-bottom: 0">' + info + '</p>';
+                            }
+                            cosechados = retorno.model['cosechados'];
+                            if (cosechados > 0) {
+                                text += '<p style="margin-top: 0; margin-bottom: 0">' +
+                                    '<strong style="font-size: 0.8em">' + cosechados + ' </strong>' +
+                                    '</p>';
+                            }
+                            $('#' + id).html(text);
+                        }, 'json').fail(function (retorno) {
+                            console.log(retorno);
+                            alerta_errores(retorno.responseText);
+                        }).always(function () {
+                            $('#' + id).LoadingOverlay('hide');
+                        });
+                    }).addClass('mouse-hand').css('background-color', 'rgba(55, 222, 0, 0.5)');
+                })
+            }
+        }
     }
 
 </script>
