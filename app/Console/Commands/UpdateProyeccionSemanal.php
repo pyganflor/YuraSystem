@@ -5,6 +5,7 @@ namespace yura\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 use yura\Modelos\Modulo;
+use yura\Modelos\ProyeccionModulo;
 use yura\Modelos\ProyeccionModuloSemana;
 use yura\Modelos\Semana;
 use yura\Modelos\Variedad;
@@ -146,7 +147,6 @@ class UpdateProyeccionSemanal extends Command
                             }
                         }
                         $proy->save();
-                        //Log::info('Se ha actualizado el Modulo:' . $mod->id_modulo . ', Semana:' . $semana->codigo . ', Variedad:' . $var->id_variedad);
                     }
                 }
             }
