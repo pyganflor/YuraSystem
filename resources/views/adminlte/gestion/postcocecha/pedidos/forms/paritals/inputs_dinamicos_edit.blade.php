@@ -25,7 +25,6 @@
                 <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d;width:45px">
                     RAMO X CAJA
                 </th>
-
                 <th class="th_tallo_x_malla {{(isset(getPedido($id_pedido)->detalles[0]->cliente_especificacion->especificacion->tipo) && getPedido($id_pedido)->detalles[0]->cliente_especificacion->especificacion->tipo == "O") ? "" : "hide"}}
                     text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d;width:45px">
                     TALLOS X MALLA

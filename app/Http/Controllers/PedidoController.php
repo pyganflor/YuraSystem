@@ -220,7 +220,7 @@ class PedidoController extends Controller
                         if ($objDetallePedido->save()) {
                             $modelDetallePedido = DetallePedido::all()->last();
                             if(isset($request->dataTallos) && count($request->dataTallos) > 0){
-                                $storeDataTallos = $this->store_datos_tallos($request->dataTallos,$modelDetallePedido->id_detalle_pedido);
+                                $storeDataTallos = $this->store_datos_tallos($request->dataTallos[$key],$modelDetallePedido->id_detalle_pedido);
                                 if(!$storeDataTallos){
                                     Pedido::destroy($model->id_pedido);
                                     $success = false;
@@ -703,20 +703,20 @@ class PedidoController extends Controller
         ];
     }
 
-    public function store_datos_tallos($arr_datos,$id_detalle_pedido){
+    public function store_datos_tallos($datos,$id_detalle_pedido){
 
         $success =false;
-        foreach ($arr_datos as $dataTallo){
+        //foreach ($arr_datos as $dataTallo){
             $objDataTallo = new DataTallos;
             $objDataTallo->id_detalle_pedido = $id_detalle_pedido;
-            $objDataTallo->mallas = $dataTallo['mallas'];
-            $objDataTallo->tallos_x_caja = $dataTallo['tallos_x_caja'];
-            $objDataTallo->tallos_x_ramo = $dataTallo['tallos_x_ramo'];
-            $objDataTallo->tallos_x_malla = $dataTallo['tallos_x_malla'];
-            $objDataTallo->ramos_x_caja = $dataTallo['ramos_x_caja'];
+            $objDataTallo->mallas = $datos['mallas'];
+            $objDataTallo->tallos_x_caja = $datos['tallos_x_caja'];
+            $objDataTallo->tallos_x_ramo = $datos['tallos_x_ramo'];
+            $objDataTallo->tallos_x_malla = $datos['tallos_x_malla'];
+            $objDataTallo->ramos_x_caja = $datos['ramos_x_caja'];
             if($objDataTallo->save())
                 $success = true;
-        }
+        //}
         return $success;
     }
 }
