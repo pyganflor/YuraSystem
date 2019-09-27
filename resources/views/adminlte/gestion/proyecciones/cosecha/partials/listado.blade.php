@@ -14,16 +14,17 @@
                         <span class="fa fa-caret-down"></span></button>
                     <ul class="dropdown-menu">
                         <li>
-                            <a href="javascript:void(0)" onclick="actualizar_proyecciones()">
-                                Actualizar Semanas
-                            </a>
-                        </li>
-                        <li>
                             <a href="javascript:void(0)" onclick="actualizar_manual()">
                                 Actualizar Manualmente
                             </a>
                         </li>
-                        <li>
+                        <li class="divider"></li>
+                        <li class="list-group-item-danger">
+                            <a href="javascript:void(0)" onclick="actualizar_proyecciones()">
+                                Actualizar Semanas
+                            </a>
+                        </li>
+                        <li class="list-group-item-danger">
                             <a href="javascript:void(0)" onclick="restaurar_proyeccion()">
                                 Restaurar Proyecciones
                             </a>
