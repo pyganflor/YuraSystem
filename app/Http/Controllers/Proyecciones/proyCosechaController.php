@@ -5,6 +5,7 @@ namespace yura\Http\Controllers\Proyecciones;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use yura\Http\Controllers\Controller;
 use yura\Modelos\Ciclo;
 use yura\Modelos\Modulo;
@@ -500,6 +501,7 @@ class proyCosechaController extends Controller
 
     public function restaurar_proyeccion(Request $request)
     {
+        Log::info('INICIO DE RESTAURACION de PROYECCION, MODULO: ' . $request->modulo);
         Artisan::call('proyeccion:auto_create', [
             'modulo' => $request->modulo
         ]);

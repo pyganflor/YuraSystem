@@ -177,9 +177,9 @@ class Modulo extends Model
                                     $pos_semana_cosecha = intval($num_semana - $ciclo_last->semana_poda_siembra);
                                     $desecho = 100 - $ciclo_last->desecho;
                                     if ($opcion == 'I') // plantas iniciales
-                                        $cosecha_totales = round(($ciclo_last->plantas_iniciales * $desecho) / 100, 2);
+                                        $cosecha_totales = round((($ciclo_last->plantas_iniciales * $ciclo_last->conteo) * $desecho) / 100, 2);
                                     else    // plantas actuales
-                                        $cosecha_totales = round(($ciclo_last->plantas_actuales() * $desecho) / 100, 2);
+                                        $cosecha_totales = round((($ciclo_last->plantas_actuales() * $ciclo_last->conteo) * $desecho) / 100, 2);
                                     $tallos_proyectados = round(($cosecha_totales * explode('-', $ciclo_last->curva)[$pos_semana_cosecha]) / 100, 2);
                                 } else
                                     $tipo = 'I';    // informacion
@@ -226,7 +226,7 @@ class Modulo extends Model
                                                     /* --------------------------- calcular cosecha proyectada ------------------------- */
                                                     $pos_semana_cosecha = intval($num_semana - $proy_last->semana_poda_siembra);
                                                     $desecho = 100 - $proy_last->desecho;
-                                                    $cosecha_totales = round(($proy_last->plantas_iniciales * $desecho) / 100, 2);
+                                                    $cosecha_totales = round((($proy_last->plantas_iniciales * $proy_last->tallos_planta) * $desecho) / 100, 2);
                                                     $tallos_proyectados = round(($cosecha_totales * explode('-', $proy_last->curva)[$pos_semana_cosecha]) / 100, 2);
                                                 } else
                                                     $tipo = 'I';    // informacion
