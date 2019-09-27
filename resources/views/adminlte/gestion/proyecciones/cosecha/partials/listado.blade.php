@@ -14,7 +14,7 @@
                         <span class="fa fa-caret-down"></span></button>
                     <ul class="dropdown-menu">
                         <li>
-                            <a href="javascript:void(0)" onclick="actualizar_manual()">
+                            <a href="javascript:void(0)" onclick="actualizar_manual()" class="hide">
                                 Actualizar Manualmente
                             </a>
                         </li>
