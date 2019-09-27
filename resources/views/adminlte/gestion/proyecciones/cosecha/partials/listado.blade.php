@@ -167,7 +167,6 @@
                                 </p>
                             @endif
                         </span>
-
                         <input type="hidden" id="semana_modulo_{{$mod['modulo']->id_modulo}}_{{$pos_val}}" value="{{$val->semana}}">
                     </td>
                 @endforeach
@@ -476,12 +475,14 @@
                     variedad: $('#filtro_predeterminado_variedad').val(),
                     desde: $('#semana_modulo_' + id.substr(6)).val(),
                     hasta: $('#semana_modulo_' + id.substr(6)).val(),
-                    get_obj: true
+                    id_html: id,
+                    get_obj: true,
                 };
 
                 $('#' + id).html('');
                 $('#' + id).LoadingOverlay('show');
                 $.post('{{url('proy_cosecha/actualizar_proyecciones')}}', datos, function (retorno) {
+                    id = retorno.id_html;
                     var text = '';
                     if (retorno.model['tipo'] == 'T') {
                         proyectados = retorno.model['proyectados'] != "" ? retorno.model['proyectados'] : 0;

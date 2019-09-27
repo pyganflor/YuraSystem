@@ -514,7 +514,6 @@ class proyCosechaController extends Controller
 
     public function actualizar_proyecciones(Request $request)
     {
-        //dd($request->all());
         Artisan::call('proyeccion:update_semanal', [
             'semana_desde' => $request->desde,
             'semana_hasta' => $request->hasta,
@@ -540,7 +539,8 @@ class proyCosechaController extends Controller
                     ->where('id_modulo', $request->modulo)
                     ->where('id_variedad', $request->variedad)
                     ->where('semana', $semana->codigo)
-                    ->first()
+                    ->first(),
+                'id_html' => $request->id_html,
             ];
         }
     }
