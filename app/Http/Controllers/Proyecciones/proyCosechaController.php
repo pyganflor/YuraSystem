@@ -10,6 +10,7 @@ use yura\Http\Controllers\Controller;
 use yura\Modelos\Ciclo;
 use yura\Modelos\Modulo;
 use yura\Modelos\ProyeccionModulo;
+use yura\Modelos\ProyeccionModuloSemana;
 use yura\Modelos\Semana;
 use yura\Modelos\Submenu;
 use Validator;
@@ -513,15 +514,34 @@ class proyCosechaController extends Controller
 
     public function actualizar_proyecciones(Request $request)
     {
+        //dd($request->all());
         Artisan::call('proyeccion:update_semanal', [
             'semana_desde' => $request->desde,
             'semana_hasta' => $request->hasta,
             'variedad' => $request->variedad,
             'modulo' => $request->modulo,
         ]);
-        return [
-            'success' => true,
-            'modulo' => $request->modulo
-        ];
+        if (!$request->get_obj)
+            return [
+                'success' => true,
+                'modulo' => $request->modulo
+            ];
+        else {
+            $semana = Semana::All()
+                ->where('estado', 1)
+                ->where('codigo', $request->desde)
+                ->where('id_variedad', $request->variedad)
+                ->first();
+            return [
+                'success' => true,
+                'modulo' => $request->modulo,
+                'model' => ProyeccionModuloSemana::All()
+                    ->where('estado', 1)
+                    ->where('id_modulo', $request->modulo)
+                    ->where('id_variedad', $request->variedad)
+                    ->where('semana', $semana->codigo)
+                    ->first()
+            ];
+        }
     }
 }
