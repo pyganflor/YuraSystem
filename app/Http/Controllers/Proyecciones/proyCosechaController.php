@@ -5,10 +5,12 @@ namespace yura\Http\Controllers\Proyecciones;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use yura\Http\Controllers\Controller;
 use yura\Modelos\Ciclo;
 use yura\Modelos\Modulo;
 use yura\Modelos\ProyeccionModulo;
+use yura\Modelos\ProyeccionModuloSemana;
 use yura\Modelos\Semana;
 use yura\Modelos\Submenu;
 use Validator;
@@ -500,6 +502,7 @@ class proyCosechaController extends Controller
 
     public function restaurar_proyeccion(Request $request)
     {
+        Log::info('INICIO DE RESTAURACION de PROYECCION, MODULO: ' . $request->modulo);
         Artisan::call('proyeccion:auto_create', [
             'modulo' => $request->modulo
         ]);
@@ -516,10 +519,30 @@ class proyCosechaController extends Controller
             'semana_hasta' => $request->hasta,
             'variedad' => $request->variedad,
             'modulo' => $request->modulo,
+            'restriccion' => 1,
         ]);
-        return [
-            'success' => true,
-            'modulo' => $request->modulo
-        ];
+        if (!$request->get_obj)
+            return [
+                'success' => true,
+                'modulo' => $request->modulo
+            ];
+        else {
+            $semana = Semana::All()
+                ->where('estado', 1)
+                ->where('codigo', $request->desde)
+                ->where('id_variedad', $request->variedad)
+                ->first();
+            return [
+                'success' => true,
+                'modulo' => $request->modulo,
+                'model' => ProyeccionModuloSemana::All()
+                    ->where('estado', 1)
+                    ->where('id_modulo', $request->modulo)
+                    ->where('id_variedad', $request->variedad)
+                    ->where('semana', $semana->codigo)
+                    ->first(),
+                'id_html' => $request->id_html,
+            ];
+        }
     }
 }

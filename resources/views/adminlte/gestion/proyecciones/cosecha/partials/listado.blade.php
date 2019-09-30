@@ -14,11 +14,17 @@
                         <span class="fa fa-caret-down"></span></button>
                     <ul class="dropdown-menu">
                         <li>
+                            <a href="javascript:void(0)" onclick="actualizar_manual()" class="hide">
+                                Actualizar Manualmente
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                        <li class="list-group-item-danger">
                             <a href="javascript:void(0)" onclick="actualizar_proyecciones()">
                                 Actualizar Semanas
                             </a>
                         </li>
-                        <li>
+                        <li class="list-group-item-danger">
                             <a href="javascript:void(0)" onclick="restaurar_proyeccion()">
                                 Restaurar Proyecciones
                             </a>
@@ -38,7 +44,7 @@
             <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef; width: 250px">
                 Módulos
             </th>
-            @foreach($semanas as $sem)
+            @foreach($semanas as $pos_sem => $sem)
                 <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef; width: 250px">
                     <span data-toggle="tooltip" data-placement="top" data-html="true"
                           title="<em>T.Ramo: {{$sem->tallos_ramo_poda}}</em><br>
@@ -46,6 +52,8 @@
                           <em>%Desecho: {{$sem->desecho}}</em>">
                         {{$sem->codigo}}
                     </span>
+
+                    <input type="hidden" id="semana_{{$pos_sem}}" value="{{$sem->codigo}}">
                 </th>
             @endforeach
             <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef; width: 250px">
@@ -74,6 +82,12 @@
                                     Actualizar
                                 </a>
                             </li>
+                            <li>
+                                <a href="javascript:void(0)" onclick="actualizar_manual('{{$mod['modulo']->id_modulo}}')">
+                                    Actualizar manualmente
+                                </a>
+                            </li>
+                            <li class="divider"></li>
                             <li>
                                 <a href="javascript:void(0)" onclick="restaurar_proyeccion('{{$mod['modulo']->id_modulo}}')">
                                     Restaurar Proyección
@@ -139,7 +153,7 @@
                         $tallos_proyectados[$pos_val] = 0;
                         $tallos_cosechados[$pos_val] = 0;
                     @endphp
-                    <td class="text-center celda_hovered {{in_array($val->tipo, ['F', 'P', 'S', 'T', 'Y']) ? 'mouse-hand' : ''}}"
+                    <td class="text-center celda_hovered celda_modulo_{{$mod['modulo']->id_modulo}} {{in_array($val->tipo, ['F', 'P', 'S', 'T', 'Y']) ? 'mouse-hand' : ''}}"
                         style="border-color: #9d9d9d; background-color: {{$fondo}}" id="celda_{{$mod['modulo']->id_modulo}}_{{$pos_val}}"
                         onclick="select_celda('{{$val->tipo}}', '{{$mod['modulo']->id_modulo}}', '{{$val->semana}}', '{{$val->id_variedad}}', '{{$val->tabla}}', '{{$val->modelo}}')"
                         onmouseover="mouse_over_celda('celda_{{$mod['modulo']->id_modulo}}_{{$pos_val}}', 1)"
@@ -175,6 +189,12 @@
                                     Actualizar
                                 </a>
                             </li>
+                            <li>
+                                <a href="javascript:void(0)" onclick="actualizar_manual('{{$mod['modulo']->id_modulo}}')">
+                                    Actualizar manualmente
+                                </a>
+                            </li>
+                            <li class="divider"></li>
                             <li>
                                 <a href="javascript:void(0)" onclick="restaurar_proyeccion('{{$mod['modulo']->id_modulo}}')">
                                     Restaurar Proyección
@@ -450,4 +470,106 @@
             $('.checkbox_modulo').prop('checked', false);
         }
     }
+
+    function actualizar_manual(mod) {
+        if (mod != null) {
+            $('.celda_modulo_' + mod).each(function (pos) {
+                id = $('.celda_modulo_' + mod)[pos].id;
+                $('#' + id).removeAttr('onclick').click(function () {
+                    id = $(this).prop('id');
+                    pos_sem = id.split('_')[2];
+                    datos = {
+                        _token: '{{csrf_token()}}',
+                        modulo: mod,
+                        variedad: $('#filtro_predeterminado_variedad').val(),
+                        desde: $('#semana_' + pos_sem).val(),
+                        hasta: $('#semana_' + pos_sem).val(),
+                        id_html: id,
+                        get_obj: true,
+                    };
+
+                    $('#' + id).html('');
+                    $('#' + id).LoadingOverlay('show');
+                    $.post('{{url('proy_cosecha/actualizar_proyecciones')}}', datos, function (retorno) {
+                        id = retorno.id_html;
+                        var text = '';
+                        if (retorno.model['tipo'] == 'T') {
+                            proyectados = retorno.model['proyectados'] != "" ? retorno.model['proyectados'] : 0;
+                            text += '<strong style="font-size: 0.8em; margin-bottom: 0">' + proyectados + '</strong>';
+                        } else {
+                            info = retorno.model['info'];
+                            text += '<p style="margin-top: 0; margin-bottom: 0">' + info + '</p>';
+                        }
+                        cosechados = retorno.model['cosechados'];
+                        if (cosechados > 0) {
+                            text += '<p style="margin-top: 0; margin-bottom: 0">' +
+                                '<strong style="font-size: 0.8em">' + cosechados + ' </strong>' +
+                                '</p>';
+                        }
+                        $('#' + id).html(text);
+                    }, 'json').fail(function (retorno) {
+                        console.log(retorno);
+                        alerta_errores(retorno.responseText);
+                    }).always(function () {
+                        $('#' + id).LoadingOverlay('hide');
+                    });
+                }).addClass('mouse-hand').css('background-color', 'rgba(55, 222, 0, 0.5)');
+            })
+        } else {
+            var all = $('.checkbox_modulo');
+            var selected = [];
+            for (i = 0; i < all.length; i++) {
+                if ($('#' + all[i].id).prop('checked') == true) {
+                    selected.push(all[i].id.substr(16));
+                }
+            }
+
+            for (i = 0; i < selected.length; i++) {
+                mod = selected[i];
+                $('.celda_modulo_' + mod).each(function (pos) {
+                    id = $('.celda_modulo_' + mod)[pos].id;
+                    $('#' + id).removeAttr('onclick').click(function () {
+                        id = $(this).prop('id');
+                        pos_sem = id.split('_')[2];
+                        datos = {
+                            _token: '{{csrf_token()}}',
+                            modulo: mod,
+                            variedad: $('#filtro_predeterminado_variedad').val(),
+                            desde: $('#semana_' + pos_sem).val(),
+                            hasta: $('#semana_' + pos_sem).val(),
+                            id_html: id,
+                            get_obj: true,
+                        };
+
+                        $('#' + id).html('');
+                        $('#' + id).LoadingOverlay('show');
+                        $.post('{{url('proy_cosecha/actualizar_proyecciones')}}', datos, function (retorno) {
+                            id = retorno.id_html;
+                            var text = '';
+                            if (retorno.model['tipo'] == 'T') {
+                                proyectados = retorno.model['proyectados'] != "" ? retorno.model['proyectados'] : 0;
+                                text += '<strong style="font-size: 0.8em; margin-bottom: 0">' + proyectados + '</strong>';
+                            } else {
+                                info = retorno.model['info'];
+                                text += '<p style="margin-top: 0; margin-bottom: 0">' + info + '</p>';
+                            }
+                            cosechados = retorno.model['cosechados'];
+                            if (cosechados > 0) {
+                                text += '<p style="margin-top: 0; margin-bottom: 0">' +
+                                    '<strong style="font-size: 0.8em">' + cosechados + ' </strong>' +
+                                    '</p>';
+                            }
+                            $('#' + id).html(text);
+                        }, 'json').fail(function (retorno) {
+                            console.log(retorno);
+                            alerta_errores(retorno.responseText);
+                        }).always(function () {
+                            $('#' + id).LoadingOverlay('hide');
+                        });
+                    }).addClass('mouse-hand').css('background-color', 'rgba(55, 222, 0, 0.5)');
+                })
+            }
+        }
+    }
+
 </script>
