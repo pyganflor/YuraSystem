@@ -29,6 +29,6 @@ class Prueba implements ShouldQueue
      */
     public function handle()
     {
-       Info("Prueba");
+       Info("Prueba desde el servidor");
     }
 }
