@@ -219,6 +219,7 @@ class YuraController extends Controller
         if (!$request->session()->has('logeado')) { // Si no tiene variable logeado la session? logeado = false;
             Session::put('logeado', false);
         };
+
         if (!$request->session()->get('logeado')) { // Si no está logeado
 
             $rsa->loadKey(Session::get('key_privada'));
