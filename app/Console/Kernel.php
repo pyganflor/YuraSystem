@@ -11,6 +11,7 @@ use yura\Console\Commands\FechaFinalCiclo;
 use yura\Console\Commands\NotificacionesSistema;
 use yura\Console\Commands\UpdateHistoricoVentas;
 use yura\Console\Commands\UpdateProyeccionSemanal;
+use yura\Console\Commands\VentaSemanalReal;
 
 class Kernel extends ConsoleKernel
 {
@@ -27,6 +28,7 @@ class Kernel extends ConsoleKernel
         CicloPrimeraFlor::class,
         UpdateProyeccionSemanal::class,
         EmpaquetarPedidosAnulados::class,
+        VentaSemanalReal::class,
     ];
 
     /**
