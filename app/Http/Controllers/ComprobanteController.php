@@ -1551,7 +1551,7 @@ class ComprobanteController extends Controller
             ['tipo_comprobante' , $request->tipo_comprobante],
             ['integrado',true],
             ['estado',1]
-        ])->whereBetween('fecha_autorizacion',[$request->desde,$request->hasta])->whereNotNull('fecha_integrado')->get();
+        ])->whereBetween('fecha_integrado',[$request->desde,$request->hasta])->whereNotNull('fecha_integrado')->get();
         $success = true;
         foreach ($comprobante as $c){
             if($c->tipo_comprobante === "01"){
