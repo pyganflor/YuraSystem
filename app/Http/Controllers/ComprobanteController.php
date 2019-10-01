@@ -1849,7 +1849,7 @@ class ComprobanteController extends Controller
         $correos[] = $comprobante->envio->pedido->empresa->correo;
         $correos[] = "obrian@pyganflor.com"; // solo para pruebas, comentar en produccion
                     //$correos[0]
-
+        dd($correos);
         Mail::to($correos[0])
             ->cc($correos)->send(new CorreoFacturaVenture($request->factura_cliente,$request->factura_sri,$comprobante->secuencial,$request->csv_etiqueta,$request->dist_cajas,$request->guia_remision));
 
