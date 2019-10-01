@@ -5,6 +5,7 @@ namespace yura\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
+use yura\Jobs\ProyeccionUpdateSemanal;
 use yura\Modelos\Apertura;
 use yura\Modelos\ClasificacionVerde;
 use yura\Modelos\Cosecha;
@@ -160,13 +161,9 @@ class RecepcionController extends Controller
                                         bitacora('ciclo', $ciclo->id_ciclo, 'U', 'Actualizacion satisfactoria de un ciclo desde el ingreso de la cosecha: ' . $cosecha->id_cosecha);
                                     }
 
+
                                     /* ============= ACTUALIZAR LA PROYECCION ================= */
-                                    Artisan::call('proyeccion:update_semanal', [
-                                        'semana_desde' => $semana->codigo,
-                                        'semana_hasta' => $semana->codigo,
-                                        'variedad' => $model->id_variedad,
-                                        'modulo' => $model->id_modulo,
-                                    ]);
+                                    ProyeccionUpdateSemanal::dispatch($semana->codigo, $semana->codigo, $model->id_variedad, $model->id_modulo, 0);
                                 } else {
                                     $success = false;
                                     $msg .= '<div class="alert alert-warning text-center">' .
@@ -259,12 +256,7 @@ class RecepcionController extends Controller
                     . '</div>';
 
                 /* ============= ACTUALIZAR LA PROYECCION ================= */
-                Artisan::call('proyeccion:update_semanal', [
-                    'semana_desde' => $model->recepcion->semana->codigo,
-                    'semana_hasta' => $model->recepcion->semana->codigo,
-                    'variedad' => $model->id_variedad,
-                    'modulo' => $model->id_modulo,
-                ]);
+                ProyeccionUpdateSemanal::dispatch($model->recepcion->semana->codigo, $model->recepcion->semana->codigo, $model->id_variedad, $model->id_modulo, 0);
             } else {
                 $success = false;
                 $msg .= '<div class="alert alert-warning text-center">' .
@@ -343,12 +335,7 @@ class RecepcionController extends Controller
                 }
 
                 /* ============= ACTUALIZAR LA PROYECCION ================= */
-                Artisan::call('proyeccion:update_semanal', [
-                    'semana_desde' => $model->recepcion->semana->codigo,
-                    'semana_hasta' => $model->recepcion->semana->codigo,
-                    'variedad' => $model->id_variedad,
-                    'modulo' => $model->id_modulo,
-                ]);
+                ProyeccionUpdateSemanal::dispatch($model->recepcion->semana->codigo, $model->recepcion->semana->codigo, $model->id_variedad, $model->id_modulo, 0);
             } else {
                 $success = false;
                 $msg .= '<div class="alert alert-warning text-center">' .
@@ -399,12 +386,7 @@ class RecepcionController extends Controller
                     . '</div>';
 
                 /* ============= ACTUALIZAR LA PROYECCION ================= */
-                Artisan::call('proyeccion:update_semanal', [
-                    'semana_desde' => $model->recepcion->semana->codigo,
-                    'semana_hasta' => $model->recepcion->semana->codigo,
-                    'variedad' => $model->id_variedad,
-                    'modulo' => $model->id_modulo,
-                ]);
+                ProyeccionUpdateSemanal::dispatch($model->recepcion->semana->codigo, $model->recepcion->semana->codigo, $model->id_variedad, $model->id_modulo, 0);
             } else {
                 $success = false;
                 $msg .= '<div class="alert alert-warning text-center">' .
