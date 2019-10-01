@@ -65,6 +65,8 @@
         @php
             $tallos_proyectados = [];
             $tallos_cosechados = [];
+            $ptas_iniciales = [];
+            $total_area = [];
         @endphp
         @foreach($modulos as $mod)
             <tr id="tr_modulo_{{$mod['modulo']->id_modulo}}">
@@ -152,6 +154,8 @@
                         /* =============== INICIALIZAR TOTALES ===================== */
                         $tallos_proyectados[$pos_val] = 0;
                         $tallos_cosechados[$pos_val] = 0;
+                        $ptas_iniciales[$pos_val] = 0;
+                        $total_area[$pos_val] = 0;
                     @endphp
                     <td class="text-center celda_hovered celda_modulo_{{$mod['modulo']->id_modulo}} {{in_array($val->tipo, ['F', 'P', 'S', 'T', 'Y']) ? 'mouse-hand' : ''}}"
                         style="border-color: #9d9d9d; background-color: {{$fondo}}" id="celda_{{$mod['modulo']->id_modulo}}_{{$pos_val}}"
@@ -213,6 +217,10 @@
                 @php
                     $tallos_proyectados[$pos_val] += $val->proyectados;
                     $tallos_cosechados[$pos_val] += $val->cosechados;
+                    if (in_array($val->tipo, ['S', 'P', 'Y'])){
+                        $ptas_iniciales[$pos_val] += $val->plantas_iniciales;
+                        $total_area[$pos_val] += $val->area;
+                    }
                 @endphp
             @endforeach
         @endforeach
@@ -287,6 +295,46 @@
                 Cosechados
                 <br>
                 <small><em>Tallos/cajas</em></small>
+            </th>
+        </tr>
+        <tr style="background-color: #0c7605; color: white">
+            <th class="text-center" style="border-color: #9d9d9d">
+            </th>
+            <th class="text-center" style="border-color: #9d9d9d">
+                Ptas. Iniciales
+            </th>
+            @foreach($ptas_iniciales as $pos_val => $val)
+                <th class="text-center" style="border-color: #9d9d9d">
+                    @if($val > 0)
+                        <span data-toggle="tooltip" data-placement="top" data-html="true"
+                              title="{{$semanas[$pos_val]->codigo}}">
+                            {{number_format($val, 2)}}
+                        </span>
+                    @endif
+                </th>
+            @endforeach
+            <th class="text-center" style="border-color: #9d9d9d">
+                Ptas. Iniciales
+            </th>
+        </tr>
+        <tr style="background-color: #3b3b78; color: white">
+            <th class="text-center" style="border-color: #9d9d9d">
+            </th>
+            <th class="text-center" style="border-color: #9d9d9d">
+                Área
+            </th>
+            @foreach($total_area as $pos_val => $val)
+                <th class="text-center" style="border-color: #9d9d9d">
+                    @if($val > 0)
+                        <span data-toggle="tooltip" data-placement="top" data-html="true"
+                              title="{{$semanas[$pos_val]->codigo}}">
+                            {{number_format($val, 2)}}
+                        </span>
+                    @endif
+                </th>
+            @endforeach
+            <th class="text-center" style="border-color: #9d9d9d">
+                Área
             </th>
         </tr>
 
