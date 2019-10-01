@@ -1551,7 +1551,7 @@ class ComprobanteController extends Controller
             ['tipo_comprobante' , $request->tipo_comprobante],
             ['integrado',true],
             ['estado',1]
-        ])->whereBetween('fecha_emision',[$request->desde,$request->hasta])->whereNotNull('fecha_integrado')->get();
+        ])->whereBetween('fecha_integrado',[$request->desde,$request->hasta])->whereNotNull('fecha_integrado')->get();
         $success = true;
         foreach ($comprobante as $c){
             if($c->tipo_comprobante === "01"){
@@ -1618,7 +1618,7 @@ class ComprobanteController extends Controller
                                 $contenido .= Carbon::parse($pedido->envios[0]->comprobante->fecha_integrado)->format('d/m/Y')."\t".$pedido->envios[0]->comprobante->secuencial."\t".$pedido->cliente->detalle()->informacion_adicional($nombreCampo)->varchar."\t". Carbon::parse($pedido->envios[0]->comprobante->fecha_emision)->addDay(21)->format('d/m/Y')."\t";
                                 $contenido .= $codigoPresentacion."\t";
                                 $contenido .= ($det_ped->cantidad*$det_esp_emp->cantidad)."\t".explode(";", $precio[$i])[0]."\t".($pedido->cliente->detalle()->codigo_pais != getConfiguracionEmpresa($c->envio->pedido->id_configuracion_empresa)->codigo_pais ? 0 : 1)."\t".$c->envio->pedido->empresa->codigo_fpo/*Código venture para forma de pago de los clientes*/."\t".(isset($pedido->envios[0]->dae) ? $pedido->envios[0]->dae : "N")."\t".(isset($pedido->envios[0]->dae) ? $pedido->envios[0]->dae : "N")."\t"."N"."\t"."N"."\t"."1113495085"."\t".$pedido->envios[0]->guia_madre."\t";
-                                $contenido .= $piezas." Piezas. ".$caja_full." FULL BOXES"."\t"."\t"."\t"."0"."\t"."\t"."\t"."\t"."\t".$c->envio->pedido->empresa->codigo_tvn/*codigo_tvn venture para el tipo de venta de la empresa*/."\t".$pedido->cliente->detalle()->nombre."\t"."\t"."\t"."\t"."\t".$tallos." Tallos."."\t"."\t"."\t"."\t"."\t". $pedido->envios[0]->guia_hija."\t".$agencia_carga->codigo.chr(13).chr(10);
+                                $contenido .= $piezas." Piezas. ".$caja_full." FULL BOXES"."\t"."\t"."0"."\t"."\t"."\t".$c->envio->pedido->empresa->codigo_tvn/*codigo_tvn venture para el tipo de venta de la empresa*/."\t".$pedido->cliente->detalle()->nombre."\t"."\t"."\t"."\t"."\t".$tallos." Tallos."."\t"."\t"."\t"."\t"."\t". $pedido->envios[0]->guia_hija."\t".$agencia_carga->codigo.chr(13).chr(10);
                                 $i++;
                             }
                         }
@@ -1662,7 +1662,7 @@ class ComprobanteController extends Controller
                                 $contenido .= Carbon::parse($pedido->envios[0]->comprobante->fecha_integrado)->format('d/m/Y') . "\t" . $pedido->envios[0]->comprobante->secuencial . "\t" . $pedido->cliente->detalle()->informacion_adicional($nombreCampo)->varchar . "\t" . Carbon::parse($pedido->envios[0]->comprobante->fecha_emision)->addDay(21)->format('d/m/Y') . "\t";
                                 $contenido .= $codigoPresentacion . "\t";
                                 $contenido .= $m_c->cantidad . "\t" . $precio . "\t" . ($pedido->cliente->detalle()->codigo_pais != getConfiguracionEmpresa($c->envio->pedido->id_configuracion_empresa)->codigo_pais ? 0 : 1) . "\t" . $c->envio->pedido->empresa->codigo_fpo/*Código venture para forma de pago de los clientes*/ . "\t" . (isset($pedido->envios[0]->dae) ? $pedido->envios[0]->dae : "N") . "\t" . (isset($pedido->envios[0]->dae) ? $pedido->envios[0]->dae : "N") . "\t" . "N" . "\t" . "N" . "\t" . "1113495085" . "\t" . $pedido->envios[0]->guia_madre . "\t";
-                                $contenido .= $piezas . " Piezas. " . $caja_full . " FULL BOXES" . "\t" . "\t" . "\t" . "0" . "\t" . "\t" . "\t" . "\t" . "\t" .  $c->envio->pedido->empresa->codigo_tvn/*codigo_tvn venture para el tipo de venta de la empresa*/ . "\t" . $pedido->cliente->detalle()->nombre . "\t" . "\t" . "\t" . "\t" . "\t" . $tallos . " Tallos." . "\t" . "\t" . "\t" . "\t" . "\t" . $pedido->envios[0]->guia_hija . "\t" . $agencia_carga->codigo.chr(13).chr(10);
+                                $contenido .= $piezas . " Piezas. " . $caja_full . " FULL BOXES" . "\t" . "\t" . "0" . "\t" . "\t" . "\t" .  $c->envio->pedido->empresa->codigo_tvn/*codigo_tvn venture para el tipo de venta de la empresa*/ . "\t" . $pedido->cliente->detalle()->nombre . "\t" . "\t" . "\t" . "\t" . "\t" . $tallos . " Tallos." . "\t" . "\t" . "\t" . "\t" . "\t" . $pedido->envios[0]->guia_hija . "\t" . $agencia_carga->codigo.chr(13).chr(10);
                             }
                         }
                     }
@@ -1845,11 +1845,12 @@ class ComprobanteController extends Controller
             PDF::loadView('adminlte.gestion.comprobante.partials.pdf.guia_bd', compact('data'))->save(env('PDF_FACTURAS_TEMPORAL')."guia_factura_".$comprobante->secuencial.".pdf");
 
         $correos[] = "sales@dasalflor.com";
-        $correos[] = "sales@pyganflor.com";
+        //$correos[] = "sales@pyganflor.com";
         $correos[] = $comprobante->envio->pedido->empresa->correo;
         $correos[] = "obrian@pyganflor.com"; // solo para pruebas, comentar en produccion
                     //$correos[0]
-        Mail::to("pruebas-c26453@inbox.mailtrap.io")
+        //dd($correos);
+        Mail::to($correos[0])
             ->cc($correos)->send(new CorreoFacturaVenture($request->factura_cliente,$request->factura_sri,$comprobante->secuencial,$request->csv_etiqueta,$request->dist_cajas,$request->guia_remision));
 
         if($request->factura_sri == "true" && file_exists(env('PDF_FACTURAS_TEMPORAL')."fact_sri_".$comprobante->secuencial.'.pdf'))

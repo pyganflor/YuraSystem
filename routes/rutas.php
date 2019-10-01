@@ -101,6 +101,7 @@ Route::group(['middleware' => 'autenticacion'], function () {
 
             /* ================== PROYECCIONES =================== */
             include 'proyecciones/cosecha.php';
+            include 'proyecciones/ventas_x_cliente.php';
         });
 
         include 'colores/rutas.php';
