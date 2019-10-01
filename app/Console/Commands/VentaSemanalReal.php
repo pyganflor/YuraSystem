@@ -47,41 +47,49 @@ class VentaSemanalReal extends Command
             $variedad = $this->argument('variedad');
             $idCliente = $this->argument('id_cliente');
             Info("Variables,   desde: ".$desde. "hasta: ".$hasta. " variedad: ".$variedad ." idCliente: ".$idCliente);
+            $variedades = getVariedades();
             if($desde<=$hasta){
-                $pedidos = Pedido::where('pedido.estado',true);
+                $semanas = [];
+                if ($desde != 0)
+                    $semana_desde = Semana::All()->where('estado', 1)->where('codigo', $desde)->first();
+                else
+                    $semana_desde = getSemanaByDate(now()->toDateString());
+                if ($hasta != 0)
+                    $semana_hasta = Semana::All()->where('estado', 1)->where('codigo', $hasta)->first();
+                else
+                    $semana_hasta = getSemanaByDate(now()->toDateString());
 
-                if($idCliente>0)
-                    $pedidos->join('cliente as c','pedido.id_cliente','c.id_cliente')
-                        ->where('pedido.id_cliente',$idCliente);
+                info('SEMANA DESDE: ' . $desde . ' => ' . $semana_desde->codigo);
+                info('SEMANA HASTA: ' . $hasta . ' => ' . $semana_hasta->codigo);
+                for($i=$semana_desde;$i<=$semana_hasta;$i++){
+                    $existSemana= Semana::where('codigo', $i)->first();
+                    if(isset($existSemana->codigo)){
+                        $semanas[]=$existSemana->codigo;
+                    }
+                }
 
-                $fecha_desde = Semana::where('codigo', $desde)->first();
-                $fecha_hasta = Semana::where('codigo', $hasta)->first();
+                foreach ($semanas as $semana) {
 
-                if($hasta>0 && $desde>0)
-                    $pedidos->whereBetween('fecha_pedido',[$fecha_desde->fecha_inicial,$fecha_hasta->fecha_final]);
+                    $objSemana =  Semana::where('codigo', $semana)->first();
 
-                $pedidos = $pedidos->get();
-                //dd($pedidos);
-                $data =[];
-                foreach ($pedidos as $pedido){
-                    foreach ($pedido->detalles as $det_ped){
-                        foreach($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $m => $esp_emp){
-                            foreach ($esp_emp->detalles as $n => $det_esp_emp){
-                                $data[] = [
-                                    'id_cliente' => $pedido->id_pedido,
-                                    'id_variedad' => $det_esp_emp->id_variedad,
-                                    'valor' => '',
-                                    'cajas_equivalentes' => '',
-                                    'estado' => 1,
-                                    'codigo_semana' => '',
-                                    'cajas_fisicas' => ''
-                                ];
-                            }
+                    $pedidos = Pedido::where('pedido.estado',true)
+                        ->whereBetween('fecha_pedido',[$objSemana->fecha_inicial,$objSemana->fecha_final]);
+
+                    if($idCliente>0)
+                        $pedidos->join('cliente as c','pedido.id_cliente','c.id_cliente')
+                            ->where('pedido.id_cliente',$idCliente);
+
+                    $pedidos = $pedidos->get();
+
+                    foreach($pedidos as $pedido) {
+                        foreach($variedades as $variedad){
+
+
+
                         }
                     }
                 }
 
-                Info("Fechas: desde: ".$fecha_desde->fecha_inicial . " hasta: " . $fecha_hasta->fecha_final);
 
             }else{
                 Info('La semana hasta no pueder ser menor a la semana desde en el comando VentaSemanalReal');

@@ -6,6 +6,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use yura\Modelos\ConfiguracionEmpresa;
 
 class CorreoFacturaVenture extends Mailable
 {
@@ -40,8 +41,10 @@ class CorreoFacturaVenture extends Mailable
      */
     public function build()
     {
+
+
                                 //getConfiguracionEmpresa()->correo
-        $correo = $this->from("pruebas-c26453@inbox.mailtrap.io")
+        $correo = $this->from(ConfiguracionEmpresa::where('estado', 1)->first()->correo)
             ->view('adminlte.gestion.mails.correo_factura_venture');
 
         if($this->factura_cliente == "true")

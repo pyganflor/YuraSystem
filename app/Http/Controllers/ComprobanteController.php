@@ -1849,7 +1849,8 @@ class ComprobanteController extends Controller
         $correos[] = $comprobante->envio->pedido->empresa->correo;
         $correos[] = "obrian@pyganflor.com"; // solo para pruebas, comentar en produccion
                     //$correos[0]
-        Mail::to("pruebas-c26453@inbox.mailtrap.io")
+
+        Mail::to($correos[0])
             ->cc($correos)->send(new CorreoFacturaVenture($request->factura_cliente,$request->factura_sri,$comprobante->secuencial,$request->csv_etiqueta,$request->dist_cajas,$request->guia_remision));
 
         if($request->factura_sri == "true" && file_exists(env('PDF_FACTURAS_TEMPORAL')."fact_sri_".$comprobante->secuencial.'.pdf'))
