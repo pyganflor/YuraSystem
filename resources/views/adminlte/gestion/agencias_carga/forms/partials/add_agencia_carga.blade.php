@@ -13,7 +13,7 @@
                 <input type="text" id="identificacion" name="identificacion" class="form-control" required maxlength="20" autocomplete="off" value="{!! isset($dataAgencia->identificacion) ? $dataAgencia->identificacion : '' !!}"  required="" minlength="1">
             </div>
         </div>
-        <div class="col-md-6">
+        {{--<div class="col-md-6">
             <div class="form-group">
                 <label for="correo">Correo</label>
                 <input type="email" id="correo" name="correo" class="form-control" required autocomplete="off" value="{!! isset($dataAgencia->correo) ? $dataAgencia->correo : '' !!}"  required="" minlength="2">
@@ -24,7 +24,7 @@
                 <label for="correo2">Correo</label>
                 <input type="email" id="correo2" name="correo2" class="form-control" autocomplete="off" value="{!! isset($dataAgencia->correo2) ? $dataAgencia->correo2 : '' !!}"   minlength="2">
             </div>
-        </div>
+        </div>--}}
     </div>
     <div class="row" >
         <div class="col-md-12">

@@ -60,10 +60,9 @@ class AgenciaCargaController extends Controller
     }
 
     public function  storeAgenciaCarga(Request $request){
-        //dd($request->all());
+
         $valida = Validator::make($request->all(), [
             'nombre' => 'required',
-            'correo' => 'required',
             'identificacion' => 'required',
         ]);
 
@@ -71,9 +70,6 @@ class AgenciaCargaController extends Controller
 
             empty($request->id_agencia_carga) ? $objAgenciaCarga = new AgenciaCarga : $objAgenciaCarga = AgenciaCarga::find($request->id_agencia_carga);
             $objAgenciaCarga->nombre = $request->nombre;
-            $objAgenciaCarga->correo = $request->correo;
-            $objAgenciaCarga->correo2 = $request->correo2;
-            //$objAgenciaCarga->correo3= $request->correo3;
             $objAgenciaCarga->identificacion = $request->identificacion;
             $msg='';
 
