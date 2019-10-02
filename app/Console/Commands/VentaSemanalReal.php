@@ -7,7 +7,9 @@ use yura\Modelos\Pedido;
 use yura\Modelos\DetallePedido;
 use yura\Modelos\Cliente;
 use yura\Modelos\DetalleCliente;
+use yura\Modelos\ProyeccionVentaSemanal;
 use yura\Modelos\Semana;
+use yura\Modelos\Variedad;
 
 class VentaSemanalReal extends Command
 {
@@ -46,46 +48,82 @@ class VentaSemanalReal extends Command
             $hasta = $this->argument('semana_hasta');
             $variedad = $this->argument('variedad');
             $idCliente = $this->argument('id_cliente');
-            Info("Variables,   desde: ".$desde. "hasta: ".$hasta. " variedad: ".$variedad ." idCliente: ".$idCliente);
-            $variedades = getVariedades();
+            Info("Variables recibidas, desde: ".$desde. "hasta: ".$hasta. " variedad: ".$variedad ." idCliente: ".$idCliente);
+
+            $variedades = Variedad::where('estado', 1);
+            if($variedad != 0)
+                $variedades->where('id_variedad',$variedad);
+
+            $variedades = $variedades->get();
+
             if($desde<=$hasta){
                 $semanas = [];
-                if ($desde != 0)
-                    $semana_desde = Semana::All()->where('estado', 1)->where('codigo', $desde)->first();
-                else
+                $objSemana= [];
+                if($desde != 0){
+                    $semana_desde = Semana::where('estado', 1)->where('codigo', $desde)->first();
+                   return false;
+                }else {
                     $semana_desde = getSemanaByDate(now()->toDateString());
-                if ($hasta != 0)
-                    $semana_hasta = Semana::All()->where('estado', 1)->where('codigo', $hasta)->first();
-                else
-                    $semana_hasta = getSemanaByDate(now()->toDateString());
+                }
 
-                info('SEMANA DESDE: ' . $desde . ' => ' . $semana_desde->codigo);
-                info('SEMANA HASTA: ' . $hasta . ' => ' . $semana_hasta->codigo);
-                for($i=$semana_desde;$i<=$semana_hasta;$i++){
+                if($hasta != 0){
+                    $semana_hasta = Semana::where('estado', 1)->where('codigo', $hasta)->first();
+                   return false;
+                }else{
+                    $semana_hasta = getSemanaByDate(now()->toDateString());
+                }
+                Info('SEMANA DESDE: ' . $semana_desde->codigo);
+                Info('SEMANA HASTA: ' . $semana_hasta->codigo );
+
+                for($i=$semana_desde->codigo;$i<=$semana_hasta->codigo;$i++){
                     $existSemana= Semana::where('codigo', $i)->first();
-                    if(isset($existSemana->codigo)){
+                    if(isset($existSemana->codigo) && in_array($existSemana->codigo,$semanas)){
                         $semanas[]=$existSemana->codigo;
+                        $objSemana[] =$existSemana;
                     }
                 }
 
-                foreach ($semanas as $semana) {
+                foreach ($objSemana as $semana) {
 
-                    $objSemana =  Semana::where('codigo', $semana)->first();
-
-                    $pedidos = Pedido::where('pedido.estado',true)
-                        ->whereBetween('fecha_pedido',[$objSemana->fecha_inicial,$objSemana->fecha_final]);
+                    $clientes = Cliente::All()
+                        ->where('estado',1)
+                        ->select('id_cliente');
 
                     if($idCliente>0)
-                        $pedidos->join('cliente as c','pedido.id_cliente','c.id_cliente')
-                            ->where('pedido.id_cliente',$idCliente);
+                        $clientes->where('pedido.id_cliente',$idCliente);
 
-                    $pedidos = $pedidos->get();
+                    $clientes = $clientes->get();
 
-                    foreach($pedidos as $pedido) {
+                    dd($clientes);
+                    foreach($clientes as $cliente) {
                         foreach($variedades as $variedad){
+                            $pedidos = Pedido::where([
+                                ['pedido.estado',true],
+                                ['id_cliente',$cliente->id_cliente]
+                            ])->whereBetween('fecha_pedido',[$objSemana->fecha_inicial,$objSemana->fecha_final])->get();
 
+                            $objProyeccionentaSemanal = ProyeccionVentaSemanal::where([
+                                ['id_variedad',$variedad->id_variedad],
+                                ['id_cliente',$cliente->id_cliente],
+                                ['codigo_semana',$semana->codigo]
+                            ])->first();
 
+                            if(!isset($objProyeccionentaSemanal)){
+                                $objProySem = new ProyeccionVentaSemanal;
+                                $objProySem->id_cliente = $cliente->id_cliente;
+                                $objProySem->id_variedad = $variedad->id_variedad;
+                                $objProySem->codigo_semana = $semana->codigo;
+                            }
+                            $objProySem->valor =0;
+                            $objProySem->cajas_equivalente = 0;
+                            $objProySem->cajas_fisicas = 0;
 
+                            foreach ($pedidos as $pedido) {
+                                $objProySem->valor += $pedido->getPrecioByVariedad($variedad->id_variedad);
+                                $objProySem->cajas_equivalente += $pedido->getCajasByVariedad($variedad->id_variedad);
+                                $objProySem->cajas_fisicas += $pedido->getCajasFisicasByVariedad($variedad->id_variedad);
+                            }
+                            $objProySem->save();
                         }
                     }
                 }

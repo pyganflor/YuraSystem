@@ -19,7 +19,8 @@
                             <option value="{{$empresa->id_configuracion_empresa}}"> {{$empresa->nombre}} </option>
                         @endforeach
                     </select>
-                    <input type="date" id="fecha" name="fecha" class="form-control" value="{{Carbon\Carbon::now()->toDateString()}}">
+                    <input type="date" id="fecha_desde" name="fecha_desde" class="form-control" value="{{Carbon\Carbon::now()->toDateString()}}">
+                    <input type="date" id="fecha_hasta" name="fecha_hasta" class="form-control" value="{{Carbon\Carbon::now()->toDateString()}}">
                     <button class="btn btn-primary" title="Buscar" onclick="listado_pedido_factura_generada()">
                         <i class="fa fa-fw fa-search"></i>
                     </button>
