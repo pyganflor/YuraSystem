@@ -591,6 +591,7 @@
                     modulos.push(all[i].id.substr(16));
                 }
             }
+
             if (modulos.length == 0)
                 for (i = 0; i < all.length; i++) {
                     modulos.push(all[i].id.substr(16));
