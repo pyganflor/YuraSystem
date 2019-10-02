@@ -552,6 +552,13 @@ class proyCosechaController extends Controller
         $semana = Semana::find($request->semana);
         foreach ($request->modulos as $mod)
             ProyeccionUpdateSemanal::dispatch($semana->codigo, $semana->codigo, $request->variedad, $mod, 0);
+            /*Artisan::call('proyeccion:update_semanal', [
+                'semana_desde' => $semana->codigo,
+                'semana_hasta' => $semana->codigo,
+                'variedad' => $request->variedad,
+                'modulo' => $mod,
+                'restriccion' => 0,
+            ]);*/
 
         return [
             'success' => true,
