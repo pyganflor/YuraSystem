@@ -231,11 +231,11 @@
                 DESCRIPTION<br />
                 Descripción
             </th>
-            @if($envio->pedido->tipo_especificacion === "T")
+            {{--@if($envio->pedido->tipo_especificacion === "T")
                 <th style="font-size: 11px;vertical-align: top">
                     COLOR
                 </th>
-            @endif
+            @endif--}}
             <th style="font-size: 11px;vertical-align: top">
                 SGP
             </th>
@@ -332,9 +332,6 @@
                                 {{number_format(($det_ped->total_tallos()),2,".","")}}
                             @endif
                         </td>
-                        @php
-
-                        @endphp
                         <td style="font-size:11px;"> {{"$".number_format(explode(";", $precio[$i])[0],2,".","")}} </td>
                         <td style="font-size:11px">
                             @if($esp_emp->especificacion->tipo != "O")
@@ -360,7 +357,9 @@
         @foreach ($envio->pedido->detalles as $x => $det_ped)
             @foreach($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $m => $esp_emp)
                 @php
+                foreach($esp_emp->detalles as $det_esp_emp)
                     $total_tallos += number_format(($det_ped->cantidad*$esp_emp->cantidad*$det_esp_emp->cantidad*$det_esp_emp->tallos_x_ramos),2,".","");
+
                     $full_equivalente_real += explode("|",$esp_emp->empaque->nombre)[1]*$det_ped->cantidad;
                     switch (explode("|",$esp_emp->empaque->nombre)[1]) {
                         case '1':
@@ -445,9 +444,9 @@
                     <tr>
                         <td style="font-size:12px">{{number_format($pie,2,".","")}}</td>
                         <td style="font-size:12px">{{$t[0]['descripcion']}}</td>
-                        @if($envio->pedido->tipo_especificacion === "T")
+                        {{--@if($envio->pedido->tipo_especificacion === "T")
                             <td style="font-size:12px">{{$t[0]['color']}}</td>
-                        @endif
+                        @endif--}}
                         <td style="font-size:12px">A</td>
                         <td style="font-size:12px">{{$t[0]['hts']}}</td>
                         <td style="font-size:12px">{{$t[0]['nandina']}}</td>
@@ -465,12 +464,12 @@
 </table>
 <table style="width: 100%">
     <tr>
-        <td style="font-size:11px;font-family: arial, sans-serif;width:50px"> <b>{{number_format($total_ramos,2,".","")}}</b> </td>
+        <td style="font-size:11px;font-family: arial, sans-serif;width:50px"> <b>{{number_format($total_ramos,2,".",",")}}</b> </td>
         <td style="font-size:11px;font-family: arial, sans-serif;width:300px"><b>TOTAL BN</b></td>
         <td style="font-size:11px;font-family: arial, sans-serif;text_align:right">SUBTOTAL : ${{number_format($precio_total_sin_impuestos,2,".","")}}</td>
     </tr>
     <tr>
-        <td style="font-size:11px;font-family: arial, sans-serif;width:50px"> <b>{{$total_tallos}}</b> </td>
+        <td style="font-size:11px;font-family: arial, sans-serif;width:50px"> <b>{{number_format($total_tallos,2,".","")}}</b> </td>
         <td style="font-size:11px;font-family: arial, sans-serif;width:300px"><b>TOTAL STEMS</b></td>
         @php $tipoImpuesto = getTipoImpuesto($envio->pedido->cliente->detalle()->codigo_impuesto, $envio->pedido->cliente->detalle()->codigo_porcentaje_impuesto); @endphp
         <td style="font-size:11px;font-family: arial, sans-serif;text_align:right">{{$tipoImpuesto->nombre}} : ${{is_numeric($tipoImpuesto->porcentaje) ? number_format($precio_total_sin_impuestos * ($tipoImpuesto->porcentaje / 100), 2, ".", "") : "0.00"}}</td>
