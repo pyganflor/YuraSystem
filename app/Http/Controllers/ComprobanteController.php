@@ -8,6 +8,7 @@ use DomDocument;
 use PHPExcel;
 use PHPExcel_IOFactory;
 use yura\Modelos\Comprobante;
+use yura\Modelos\ConfiguracionEmpresa;
 use yura\Modelos\DetalleCliente;
 use yura\Modelos\FacturaClienteTercero;
 use yura\Modelos\ImpuestoDetalleFactura;
@@ -1844,10 +1845,10 @@ class ComprobanteController extends Controller
         if($request->guia_remision === "true")
             PDF::loadView('adminlte.gestion.comprobante.partials.pdf.guia_bd', compact('data'))->save(env('PDF_FACTURAS_TEMPORAL')."guia_factura_".$comprobante->secuencial.".pdf");
 
-        $correos[] = "sales@dasalflor.com";
+        $correos[] = ConfiguracionEmpresa::where('estado', 1)->first()->correo;
         //$correos[] = "sales@pyganflor.com";
         $correos[] = $comprobante->envio->pedido->empresa->correo;
-        $correos[] = "obrian@pyganflor.com"; // solo para pruebas, comentar en produccion
+        //$correos[] = "obrian@pyganflor.com"; // solo para pruebas, comentar en produccion
                     //$correos[0]
         //dd($correos);
         Mail::to($correos[0])

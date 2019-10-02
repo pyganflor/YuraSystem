@@ -29,9 +29,10 @@ class OrdenFacturaController extends Controller
                 ['comprobante.habilitado',1],
                 ['comprobante.integrado',0],
                 ['p.id_configuracion_empresa',$request->id_configuracion_empresa],
-                ['comprobante.fecha_emision',$request->fecha]
             ])->join('envio as e','comprobante.id_envio','e.id_envio')
-                ->join('pedido as p', 'e.id_pedido','p.id_pedido')->orderBy('comprobante.secuencial','asc')->get(),
+                ->join('pedido as p', 'e.id_pedido','p.id_pedido')->orderBy('comprobante.secuencial','asc')
+                ->whereBetween('comprobante.fecha_emision',[$request->fecha_desde,$request->fecha_hasta])
+                ->get(),
         ]);
     }
 
