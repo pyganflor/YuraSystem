@@ -9,3 +9,4 @@ Route::post('proy_cosecha/update_proyeccion', 'Proyecciones\proyCosechaControlle
 Route::post('proy_cosecha/update_ciclo', 'Proyecciones\proyCosechaController@update_ciclo');
 Route::post('proy_cosecha/restaurar_proyeccion', 'Proyecciones\proyCosechaController@restaurar_proyeccion');
 Route::post('proy_cosecha/actualizar_proyecciones', 'Proyecciones\proyCosechaController@actualizar_proyecciones');
+Route::post('proy_cosecha/actualizar_semana', 'Proyecciones\proyCosechaController@actualizar_semana');

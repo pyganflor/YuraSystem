@@ -545,4 +545,22 @@ class proyCosechaController extends Controller
             ];
         }
     }
+
+    public function actualizar_semana(Request $request)
+    {
+        $semana = Semana::find($request->semana);
+        foreach ($request->modulos as $mod) {
+            Artisan::call('proyeccion:update_semanal', [
+                'semana_desde' => $semana->codigo,
+                'semana_hasta' => $semana->codigo,
+                'variedad' => $request->variedad,
+                'modulo' => $mod,
+                'restriccion' => 0,
+            ]);
+        }
+        return [
+            'success' => true,
+            'semana' => $request->semana
+        ];
+    }
 }

@@ -5,6 +5,7 @@ namespace yura\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
+use yura\Jobs\ProyeccionUpdateSemanal;
 use yura\Modelos\Ciclo;
 use yura\Modelos\Cosecha;
 use yura\Modelos\Modulo;
@@ -186,12 +187,7 @@ class CiclosController extends Controller
                     ->where('id_variedad', '=', $request->variedad)
                     ->get()[0]->max;
 
-                Artisan::call('proyeccion:update_semanal', [
-                    'semana_desde' => $semana->codigo,
-                    'semana_hasta' => $semana_fin,
-                    'variedad' => $request->variedad,
-                    'modulo' => $request->modulo,
-                ]);
+                ProyeccionUpdateSemanal::dispatch($semana->codigo, $semana_fin, $request->variedad, $request->modulo, 0);
             } else {
                 $success = false;
                 $msg = '<div class="alert alert-warning text-center">' .
@@ -381,12 +377,7 @@ class CiclosController extends Controller
                 bitacora('ciclo', $ciclo->id_ciclo, 'U', 'Actualziacion satisfactoria de un ciclo');
 
                 /* ======================== ACTUALIZAR LA TABLA PROYECCION_MODULO_SEMANA ====================== */
-                Artisan::call('proyeccion:update_semanal', [
-                    'semana_desde' => $semana_ini,
-                    'semana_hasta' => $semana_fin->codigo,
-                    'variedad' => $request->variedad,
-                    'modulo' => $ciclo->id_modulo,
-                ]);
+                ProyeccionUpdateSemanal::dispatch($semana_ini, $semana_fin->codigo, $request->variedad, $ciclo->id_modulo, 0);
             } else {
                 $success = false;
                 $msg = '<div class="alert alert-warning text-center">' .
@@ -447,12 +438,7 @@ class CiclosController extends Controller
                         ->where('id_variedad', '=', $ciclo->id_variedad)
                         ->get()[0]->max;
 
-                    Artisan::call('proyeccion:update_semanal', [
-                        'semana_desde' => $semana_ini,
-                        'semana_hasta' => $semana_fin,
-                        'variedad' => $ciclo->id_variedad,
-                        'modulo' => $ciclo->id_modulo,
-                    ]);
+                    ProyeccionUpdateSemanal::dispatch($semana_ini, $semana_fin, $ciclo->id_variedad, $ciclo->id_modulo, 0);
                 } else {
                     $success = false;
                     $msg = '<div class="alert alert-warning text-center">' .
@@ -517,12 +503,7 @@ class CiclosController extends Controller
                     ->where('id_variedad', '=', $ciclo->id_variedad)
                     ->get()[0]->max;
 
-                Artisan::call('proyeccion:update_semanal', [
-                    'semana_desde' => $semana_ini,
-                    'semana_hasta' => $semana_fin,
-                    'variedad' => $ciclo->id_variedad,
-                    'modulo' => $ciclo->id_modulo,
-                ]);
+                ProyeccionUpdateSemanal::dispatch($semana_ini, $semana_fin, $ciclo->id_variedad, $ciclo->id_modulo, 0);
             } else {
                 $success = false;
                 $msg = '<div class="alert alert-warning text-center">' .
@@ -579,12 +560,7 @@ class CiclosController extends Controller
                     ->where('id_variedad', '=', $ciclo->id_variedad)
                     ->get()[0]->max;
 
-                Artisan::call('proyeccion:update_semanal', [
-                    'semana_desde' => $semana_ini,
-                    'semana_hasta' => $semana_fin,
-                    'variedad' => $ciclo->id_variedad,
-                    'modulo' => $ciclo->id_modulo,
-                ]);
+                ProyeccionUpdateSemanal::dispatch($semana_ini, $semana_fin, $ciclo->id_variedad, $ciclo->id_modulo, 0);
             } else {
                 $success = false;
                 $msg = '<div class="alert alert-warning text-center">' .
