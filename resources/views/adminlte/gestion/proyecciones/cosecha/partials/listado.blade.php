@@ -11,6 +11,43 @@
             <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
                 <div class="input-group-btn">
                     <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+                        <span class="fa fa-caret-right"></span></button>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a href="javascript:void(0)" onclick="actualizar_semana()">
+                                Actualizar
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a href="javascript:void(0)"
+                               onclick="select_all_semanas()">
+                                <strong>
+                                    Seleccionar Todas
+                                </strong>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </th>
+            <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef; width: 250px">
+                Semanas
+            </th>
+            @foreach($semanas as $pos_sem => $sem)
+                <th class="text-center celda_semana_{{$sem->id_semana}}" style="border-color: #9d9d9d; background-color: #e9ecef; width: 250px">
+                    <input type="checkbox" id="check_semana_{{$sem->id_semana}}" class="check_semana">
+                </th>
+            @endforeach
+            <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef; width: 250px">
+                Semanas
+
+                <input type="checkbox" id="check_semana_all" style="display: none">
+            </th>
+        </tr>
+        <tr>
+            <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
+                <div class="input-group-btn">
+                    <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
                         <span class="fa fa-caret-down"></span></button>
                     <ul class="dropdown-menu">
                         <li>
@@ -45,13 +82,22 @@
                 Módulos
             </th>
             @foreach($semanas as $pos_sem => $sem)
-                <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef; width: 250px">
-                    <span data-toggle="tooltip" data-placement="top" data-html="true"
-                          title="<em>T.Ramo: {{$sem->tallos_ramo_poda}}</em><br>
+                <th class="text-center celda_semana_{{$sem->id_semana}}" style="border-color: #9d9d9d; background-color: #e9ecef; width: 250px">
+                    <div class="btn-group" data-toggle="tooltip" data-placement="top" data-html="true"
+                         title="<em>T.Ramo: {{$sem->tallos_ramo_poda}}</em><br>
                           <em>T.Pta: {{$sem->tallos_planta_poda}}</em><br>
                           <em>%Desecho: {{$sem->desecho}}</em>">
-                        {{$sem->codigo}}
-                    </span>
+                        <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+                            {{$sem->codigo}}
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-right">
+                            <li>
+                                <a href="javascript:void(0)" onclick="actualizar_semana('{{$sem->id_semana}}')">
+                                    Actualizar
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
 
                     <input type="hidden" id="semana_{{$pos_sem}}" value="{{$sem->codigo}}">
                 </th>
@@ -157,7 +203,7 @@
                         $ptas_iniciales[$pos_val] = 0;
                         $total_area[$pos_val] = 0;
                     @endphp
-                    <td class="text-center celda_hovered celda_modulo_{{$mod['modulo']->id_modulo}} {{in_array($val->tipo, ['F', 'P', 'S', 'T', 'Y']) ? 'mouse-hand' : ''}}"
+                    <td class="text-center celda_hovered celda_semana_{{$semanas[$pos_val]->id_semana}} celda_modulo_{{$mod['modulo']->id_modulo}} {{in_array($val->tipo, ['F', 'P', 'S', 'T', 'Y']) ? 'mouse-hand' : ''}}"
                         style="border-color: #9d9d9d; background-color: {{$fondo}}" id="celda_{{$mod['modulo']->id_modulo}}_{{$pos_val}}"
                         onclick="select_celda('{{$val->tipo}}', '{{$mod['modulo']->id_modulo}}', '{{$val->semana}}', '{{$val->id_variedad}}', '{{$val->tabla}}', '{{$val->modelo}}')"
                         onmouseover="mouse_over_celda('celda_{{$mod['modulo']->id_modulo}}_{{$pos_val}}', 1)"
@@ -377,7 +423,6 @@
     </ul>
 </div>
 
-
 <script>
     $(function () {
         $('[data-toggle="tooltip"]').tooltip()
@@ -511,11 +556,98 @@
         }
     }
 
+    function actualizar_semana(sem) {
+        if (sem != null) {
+            datos = {
+                _token: '{{csrf_token()}}',
+                semana: sem,
+                modulos: [0],
+                variedad: $('#filtro_predeterminado_variedad').val(),
+            };
+            $('.celda_semana_' + sem).LoadingOverlay('show');
+            $.post('{{url('proy_cosecha/actualizar_semana')}}', datos, function (retorno) {
+                setTimeout(function () {
+                    listar_proyecciones();
+                }, 500);
+            }, 'json').fail(function (retorno) {
+                console.log(retorno);
+                alerta_errores(retorno.responseText);
+            }).always(function () {
+                $('.celda_semana_' + sem).LoadingOverlay('hide');
+            });
+        } else {
+            var all = $('.check_semana');
+            var selected = [];
+            for (i = 0; i < all.length; i++) {
+                if ($('#' + all[i].id).prop('checked') == true) {
+                    selected.push(all[i].id.substr(13));
+                }
+            }
+
+            all = $('.checkbox_modulo');
+            var modulos = [];
+            for (i = 0; i < all.length; i++) {
+                if ($('#' + all[i].id).prop('checked') == true) {
+                    modulos.push(all[i].id.substr(16));
+                }
+            }
+
+            if (modulos.length == 0)
+                for (i = 0; i < all.length; i++) {
+                    modulos.push(all[i].id.substr(16));
+                }
+
+            factor = (Math.round((100 / selected.length) * 100) / 100);
+            total_progress = 0;
+            $('#div_barra_progreso').removeClass('hide');
+
+            for (i = 0; i < selected.length; i++) {
+                datos = {
+                    _token: '{{csrf_token()}}',
+                    semana: selected[i],
+                    modulos: modulos,
+                    variedad: $('#filtro_predeterminado_variedad').val(),
+                };
+                sem = datos['semana'];
+
+                $('.celda_semana_' + sem).LoadingOverlay('show');
+                $.post('{{url('proy_cosecha/actualizar_semana')}}', datos, function (retorno) {
+                    sem = retorno.semana;
+                    total_progress += factor;
+                    $('#barra_progreso').css('width', total_progress + '%');
+                    $('.celda_semana_' + sem).LoadingOverlay('hide');
+
+                    if (sem == selected[selected.length - 1]) {
+                        setTimeout(function () {
+                            $('#div_barra_progreso').hide();
+                            listar_proyecciones();
+                        }, 500);
+                    }
+                }, 'json').fail(function (retorno) {
+                    console.log(retorno);
+                    alerta_errores(retorno.responseText);
+                }).always(function () {
+                    $('.celda_semana_' + sem).LoadingOverlay('hide');
+                });
+            }
+        }
+    }
+
     function select_all_modulos(input) {
         if (input.prop('checked') == true) {  // select all
             $('.checkbox_modulo').prop('checked', true);
         } else {    // deseleccionar todos
             $('.checkbox_modulo').prop('checked', false);
+        }
+    }
+
+    function select_all_semanas() {
+        if ($('#check_semana_all').prop('checked') == true) {  // deseleccionar all
+            $('#check_semana_all').prop('checked', false);
+            $('.check_semana').prop('checked', false);
+        } else {    // select todos
+            $('#check_semana_all').prop('checked', true);
+            $('.check_semana').prop('checked', true);
         }
     }
 

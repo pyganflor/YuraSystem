@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use yura\Http\Controllers\Controller;
+use yura\Jobs\ProyeccionUpdateSemanal;
 use yura\Modelos\Ciclo;
 use yura\Modelos\Modulo;
 use yura\Modelos\ProyeccionModulo;
@@ -544,5 +545,24 @@ class proyCosechaController extends Controller
                 'id_html' => $request->id_html,
             ];
         }
+    }
+
+    public function actualizar_semana(Request $request)
+    {
+        $semana = Semana::find($request->semana);
+        foreach ($request->modulos as $mod)
+            ProyeccionUpdateSemanal::dispatch($semana->codigo, $semana->codigo, $request->variedad, $mod, 0);
+            /*Artisan::call('proyeccion:update_semanal', [
+                'semana_desde' => $semana->codigo,
+                'semana_hasta' => $semana->codigo,
+                'variedad' => $request->variedad,
+                'modulo' => $mod,
+                'restriccion' => 0,
+            ]);*/
+
+        return [
+            'success' => true,
+            'semana' => $request->semana
+        ];
     }
 }
