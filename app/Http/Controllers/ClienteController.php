@@ -17,6 +17,7 @@ use yura\Modelos\TipoIdentificacion;
 use yura\Modelos\Impuesto;
 use yura\Modelos\Marca;
 use yura\Modelos\Consignatario;
+use yura\Modelos\ContactoClienteAgenciaCarga;
 use DB;
 use Validator;
 use PHPExcel;
@@ -372,12 +373,13 @@ class ClienteController extends Controller
 
     public function detalles_cliente(Request $request){
 
-        $dataAgenciasCarga         = AgenciaCarga::orderBy('id_agencia_carga','desc')->where('estado',1)->get();
-        $dataCliente               = DetalleCliente::where([
+        $dataAgenciasCarga = AgenciaCarga::orderBy('id_agencia_carga','desc')->where('estado',1)->get();
+        $dataCliente = DetalleCliente::where([
             ['id_cliente',$request->id_cliente],
             ['estado',1]
         ])->first();
-        $dataClienteAgenciasCarga  = ClienteAgenciaCarga::where('id_cliente',$request->id_cliente)->orderBy('id_cliente_agencia_carga','desc')->get();
+
+        $dataClienteAgenciasCarga = ClienteAgenciaCarga::where('id_cliente',$request->id_cliente)->orderBy('id_cliente_agencia_carga','desc')->get();
         $pais         = Pais::where('codigo',$dataCliente->codigo_pais)->first();
         $dataContacto = DB::table('detalle_cliente as dc')
             ->where('id_cliente',$request->id_cliente)
@@ -411,8 +413,15 @@ class ClienteController extends Controller
             'data_agencias_carga' => 'required|Array',
         ]);
         if (!$valida->fails()) {
+            $success = false;
+            $msg = '<div class="alert alert-warning text-center">' .
+                        '<p> Ha ocurrido un problema al guardar la información al sistema</p>'
+                    . '</div>';
+            $oldClienteAgenciaCarga = ClienteAgenciaCarga::where('id_cliente',$request->id_cliente)->get();
+            foreach ($oldClienteAgenciaCarga as $item)
+                ClienteAgenciaCarga::destroy($item->id_cliente_agencia_carga);
 
-            foreach ($request->data_agencias_carga as $agencias_carga) {
+            foreach ($request->data_agencias_carga as $x => $agencias_carga) {
 
                 !empty($agencias_carga[1]) ? $existAgenciaCargoCliente = ClienteAgenciaCarga::find($agencias_carga[1]) : $existAgenciaCargoCliente = '';
 
@@ -428,20 +437,28 @@ class ClienteController extends Controller
 
                 $objClienteAgenciaCarga->id_cliente = $request->id_cliente;
                 $objClienteAgenciaCarga->id_agencia_carga = $agencias_carga[0];
-                $msg ='';
 
                 if($objClienteAgenciaCarga->save()) {
                     $model = ClienteAgenciaCarga::all()->last();
-                    $success = true;
-                    $msg .= '<div class="alert alert-success text-center">' .
-                        '<p> Se ha guardado la agencia de carga exitosamente para el cliente</p>'
-                        . '</div>';
-                    bitacora('cliente_agenciacarga', $model->id_cliente_agencia_carga, $accion, $palabra.   ' satisfactoria de la relación de una agencia de carga a un cliente');
-                } else {
-                    $success = false;
-                    $msg .= '<div class="alert alert-warning text-center">' .
-                        '<p> Ha ocurrido un problema al guardar la información al sistema</p>'
-                        . '</div>';
+                    $y = 0;
+                    foreach ($request->contactos[$x] as $contacto) {
+                        $objContactoClienteAgenciaCarga = new ContactoClienteAgenciaCarga;
+                        $objContactoClienteAgenciaCarga->id_cliente_agencia_carga = $model->id_cliente_agencia_carga;
+                        $objContactoClienteAgenciaCarga->contacto = $contacto['contacto'];
+                        $objContactoClienteAgenciaCarga->correo = $contacto['correo'];
+                        $objContactoClienteAgenciaCarga->direccion = $contacto['direccion'];
+                        if($objContactoClienteAgenciaCarga->save()) $y++;
+                    }
+                    if($y == count($request->contactos[$x])){
+                        $success = true;
+                        $msg = '<div class="alert alert-success text-center">' .
+                            '<p> Se ha guardado la agencia de carga exitosamente para el cliente </p>'
+                            . '</div>';
+                        bitacora('cliente_agenciacarga', $model->id_cliente_agencia_carga, $accion, $palabra.' satisfactoria de la relación de una agencia de carga a un cliente');
+
+                    }else{
+                        ClienteAgenciaCarga::destroy($model->id_cliente_agencia_carga);
+                    }
                 }
             }
             return [
@@ -451,27 +468,20 @@ class ClienteController extends Controller
         }
     }
 
-    public function update_estado_cliente_agencia_carga(Request $request){
+    public function delete_cliente_agencia_carga(Request $request){
         $valida = Validator::make($request->all(), [
             'id_cliente_agencia_carga' => 'required',
-            'estado'                   => 'required',
+            //'estado'                   => 'required',
         ]);
 
         if (!$valida->fails()) {
-
-            $request->estado == 1 ? $estado = 0 : $estado = 1;
-            $objClienteAgenciCarga = ClienteAgenciaCarga::find($request->id_cliente_agencia_carga);
-            //dd($estado);
-            $objClienteAgenciCarga->estado = $estado;
             $msg ='';
-            if($objClienteAgenciCarga->save()) {
-                $model = ClienteAgenciaCarga::find($request->id_cliente_agencia_carga)->first();
-                //dd($model);
+            if(ClienteAgenciaCarga::destroy($request->id_cliente_agencia_carga)) {
                 $success = true;
                 $msg .= '<div class="alert alert-success text-center">' .
-                    '<p> Se ha actualizado la agencia de carga para el cliente exitosamente para el cliente</p>'
+                    '<p> Se ha eliminado la agencia de carga para el cliente exitosamente para el cliente</p>'
                     . '</div>';
-                bitacora('cliente_agenciacarga', $model->id_cliente_agencia_carga, 'U', 'Actualización satisfactoria de la relación de la agencia de carga con el cliente');
+                bitacora('cliente_agenciacarga', $request->id_cliente_agencia_carga, 'D', 'Eliminacion satisfactoria de la relación de la agencia de carga con el cliente');
             } else {
                 $success = false;
                 $msg .= '<div class="alert alert-warning text-center">' .

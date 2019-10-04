@@ -18,14 +18,14 @@ class VentaSemanalReal extends Command
      *
      * @var string
      */
-    protected $signature = 'proyeccion:venta_semanal_real {semana_desde=0} {semana_hasta=0} {variedad=0} {id_cliente=0}';
+    protected $signature = 'proyeccion:venta_semanal_real {semana_desde=0} {semana_hasta=0} {id_cliente=0} {variedad=0} ';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Rigstra el bturo por variedad de todos los pedidos que no tengan una factura anulada';
+    protected $description = 'Rigstra el bturo por cliente y variedad de todos los pedidos que no tengan una factura anulada';
 
     /**
      * Create a new command instance.
@@ -61,66 +61,71 @@ class VentaSemanalReal extends Command
                 $objSemana= [];
                 if($desde != 0){
                     $semana_desde = Semana::where('estado', 1)->where('codigo', $desde)->first();
-                   return false;
+                    if(!isset($semana_desde))
+                        return false;
                 }else {
                     $semana_desde = getSemanaByDate(now()->toDateString());
                 }
 
                 if($hasta != 0){
                     $semana_hasta = Semana::where('estado', 1)->where('codigo', $hasta)->first();
-                   return false;
+                    if(!isset($semana_hasta))
+                        return false;
+
                 }else{
                     $semana_hasta = getSemanaByDate(now()->toDateString());
                 }
                 Info('SEMANA DESDE: ' . $semana_desde->codigo);
                 Info('SEMANA HASTA: ' . $semana_hasta->codigo );
 
+                //dd($semana_desde->codigo,$semana_hasta->codigo);
                 for($i=$semana_desde->codigo;$i<=$semana_hasta->codigo;$i++){
                     $existSemana= Semana::where('codigo', $i)->first();
-                    if(isset($existSemana->codigo) && in_array($existSemana->codigo,$semanas)){
+                    //dump($existSemana->codigo);
+                    if(isset($existSemana->codigo)){
                         $semanas[]=$existSemana->codigo;
                         $objSemana[] =$existSemana;
                     }
                 }
 
-                foreach ($objSemana as $semana) {
+                foreach ($semanas as $x => $semana) {
 
-                    $clientes = Cliente::All()
-                        ->where('estado',1)
+                    $clientes = Cliente::where('estado',1)
                         ->select('id_cliente');
 
                     if($idCliente>0)
-                        $clientes->where('pedido.id_cliente',$idCliente);
+                        $clientes->where('cliente.id_cliente',$idCliente);
 
                     $clientes = $clientes->get();
 
-                    dd($clientes);
+                    //dd($clientes);
                     foreach($clientes as $cliente) {
                         foreach($variedades as $variedad){
                             $pedidos = Pedido::where([
                                 ['pedido.estado',true],
                                 ['id_cliente',$cliente->id_cliente]
-                            ])->whereBetween('fecha_pedido',[$objSemana->fecha_inicial,$objSemana->fecha_final])->get();
+                            ])->whereBetween('fecha_pedido',[$objSemana[$x]->fecha_inicial,$objSemana[$x]->fecha_final])->get();
 
                             $objProyeccionentaSemanal = ProyeccionVentaSemanal::where([
                                 ['id_variedad',$variedad->id_variedad],
                                 ['id_cliente',$cliente->id_cliente],
-                                ['codigo_semana',$semana->codigo]
+                                ['codigo_semana',$semana]
                             ])->first();
 
                             if(!isset($objProyeccionentaSemanal)){
                                 $objProySem = new ProyeccionVentaSemanal;
                                 $objProySem->id_cliente = $cliente->id_cliente;
                                 $objProySem->id_variedad = $variedad->id_variedad;
-                                $objProySem->codigo_semana = $semana->codigo;
+                                $objProySem->codigo_semana = $semana;
                             }
                             $objProySem->valor =0;
-                            $objProySem->cajas_equivalente = 0;
+                            $objProySem->cajas_equivalentes = 0;
                             $objProySem->cajas_fisicas = 0;
 
                             foreach ($pedidos as $pedido) {
+                                if(in_array($variedad->id_variedad,$pedido->getVariedades()))
                                 $objProySem->valor += $pedido->getPrecioByVariedad($variedad->id_variedad);
-                                $objProySem->cajas_equivalente += $pedido->getCajasByVariedad($variedad->id_variedad);
+                                $objProySem->cajas_equivalentes += $pedido->getCajasByVariedad($variedad->id_variedad);
                                 $objProySem->cajas_fisicas += $pedido->getCajasFisicasByVariedad($variedad->id_variedad);
                             }
                             $objProySem->save();
