@@ -738,13 +738,13 @@ function cargar_opcion(div, id_cliente = '', url, add) {
                 $("#div_content_opciones").html(retorno);
             }
 
-        } else if (div === 'div_content_opciones') {
+        }else if (div === 'div_content_opciones') {
             $("#div_content_opciones").removeClass('hide');
             $('#include_contactos_cliente,#include_agencia_carga').addClass('hide');
 
             $("#div_content_opciones").html(retorno);
 
-        } else if (div === 'div_pedidos') {
+        }else if (div === 'div_pedidos') {
             $('#include_contactos_cliente,#include_agencia_carga').addClass('hide');
             $("#div_content_opciones").removeClass('hide');
             $("#div_content_opciones").html(retorno);
