@@ -25,4 +25,8 @@ class ClienteAgenciaCarga extends Model
     {
         return $this->belongsTo('\yura\Modelos\Cliente', 'id_cliente');
     }
+
+    public function contacto_cliente_agencia_carga(){
+        return $this->hasMany('\yura\Modelos\ContactoClienteAgenciaCarga','id_cliente_agencia_carga');
+    }
 }

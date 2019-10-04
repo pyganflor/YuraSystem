@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use DomDocument;
 use PHPExcel;
 use PHPExcel_IOFactory;
+use yura\Modelos\ClienteAgenciaCarga;
 use yura\Modelos\Comprobante;
 use yura\Modelos\ConfiguracionEmpresa;
 use yura\Modelos\DetalleCliente;
@@ -1552,7 +1553,9 @@ class ComprobanteController extends Controller
             ['tipo_comprobante' , $request->tipo_comprobante],
             ['integrado',true],
             ['estado',1]
-        ])->whereBetween('fecha_integrado',[$request->desde,$request->hasta])->whereNotNull('fecha_integrado')->get();
+        ])->whereBetween('fecha_integrado',[$request->desde,$request->hasta])
+            ->whereNotNull('fecha_integrado')
+            ->whereNotNull('id_envio')->get();
         $success = true;
         foreach ($comprobante as $c){
             if($c->tipo_comprobante === "01"){
@@ -1737,12 +1740,22 @@ class ComprobanteController extends Controller
 
         if($request->agencia_carga == "true"){
             if($comprobante->tipo_comprobante === "01"){
-                $correos[] = $comprobante->envio->pedido->detalles[0]->agencia_carga->correo;
-                $comprobante->envio->pedido->detalles[0]->agencia_carga->correo2 != null ? $correos[] = $comprobante->envio->pedido->detalles[0]->agencia_carga->correo2 : "";
-                $comprobante->envio->pedido->detalles[0]->agencia_carga->correo3 != null ? $correos[] = $comprobante->envio->pedido->detalles[0]->agencia_carga->correo3 : "";
+                $idCliente = $comprobante->envio->pedido->id_cliente;
+                $idAgenciaCarga = $comprobante->envio->pedido->detalles[0]->agencia_carga->id_agencia_carga;
             }else if($comprobante->tipo_comprobante === "06"){
-                $correos[] = getComprobante($comprobanteRelacionado->id_comprobante_relacionado)->envio->pedido->detalles[0]->agencia_carga->correo;
+                $idCliente = getComprobante($comprobanteRelacionado->id_comprobante_relacionado)->envio->pedido->id_cliente;
+                $idAgenciaCarga = getComprobante($comprobanteRelacionado->id_comprobante_relacionado)->envio->pedido->detalles[0]->agencia_carga->id_agencia_carga;
             }
+
+            $clienteAgenciaCarga = ClienteAgenciaCarga::where([
+                ['id_cliente',$idCliente],
+                ['id_agencia_carga',$idAgenciaCarga]
+            ])->first();
+
+            if(isset($clienteAgenciaCarga->contacto_cliente_agencia_carga))
+                foreach ($clienteAgenciaCarga->contacto_cliente_agencia_carga as $item) {
+                    $correos[] = $item->correo;
+                }
         }
 
         if($comprobante->tipo_comprobante === "01"){
@@ -1846,7 +1859,6 @@ class ComprobanteController extends Controller
             PDF::loadView('adminlte.gestion.comprobante.partials.pdf.guia_bd', compact('data'))->save(env('PDF_FACTURAS_TEMPORAL')."guia_factura_".$comprobante->secuencial.".pdf");
 
         $correos[] = ConfiguracionEmpresa::where('estado', 1)->first()->correo;
-        //$correos[] = "sales@pyganflor.com";
         $correos[] = $comprobante->envio->pedido->empresa->correo;
         //$correos[] = "obrian@pyganflor.com"; // solo para pruebas, comentar en produccion
                     //$correos[0]

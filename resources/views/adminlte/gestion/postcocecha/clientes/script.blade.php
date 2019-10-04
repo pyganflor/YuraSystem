@@ -154,17 +154,34 @@
             $.LoadingOverlay('show');
             var cant_inputs_agencias_carga = $("tbody#campos_agencia_carga tr").length;
             var arrAgenciasCarga = [];
-
-            for (var i = 0; i < cant_inputs_agencias_carga; i++) {
-                arrAgenciasCarga.push(
-                    [$('#select_agencia_carga_' + (parseInt(i) + parseInt(1))).val(),
-                        $('#id_select_agencia_carga_' + (parseInt(i) + parseInt(1))).val()
-                    ]);
-            }
+            var contactos = [];
+            $.each($("tbody#campos_agencia_carga tr"), function(i,j){
+                var contactosAgenciaCarga = [];
+                arrAgenciasCarga.push([
+                    $('#select_agencia_carga_'+(i+1)).val(),
+                    $('#id_select_agencia_carga_'+(i+1)).val(),
+                    /*$("#contacto_cliente_agencia_carga_"+(i+1)).val(),
+                    $("#correo_cliente_agencia_carga_"+(i+1)).val(),
+                    $("#direccion_cliente_agencia_carga_"+(i+1)).val()*/
+                ]);
+                $.each($("div.contacto_agencia_carga_"+(i+1)+ " div.row"),function(l,m){
+                    if($(m).find('input.contacto_cliente_agencia_carga').val()!= ""){
+                        contactosAgenciaCarga.push({
+                            contacto : $(m).find('input.contacto_cliente_agencia_carga').val(),
+                            correo : $(m).find('input.correo_cliente_agencia_carga').val(),
+                            direccion : $(m).find('input.direccion_cliente_agencia_carga').val()
+                        });
+                    }
+                });
+                contactos.push(contactosAgenciaCarga);
+            });
+            console.log(contactos);
+           // return false;
             datos = {
                 _token: '{{csrf_token()}}',
                 data_agencias_carga: arrAgenciasCarga,
                 id_cliente: id_cliente,
+                contactos : contactos
             };
             post_jquery('{{url('clientes/store_agencia_carga')}}', datos, function () {
                 cerrar_modals();
@@ -174,14 +191,14 @@
         }
     }
 
-    function ActualizarClienteAgenciaCarga(id_cliente_agencia_carga, estado, id_cliente) {
+    function deleteClienteAgenciaCarga(id_cliente_agencia_carga, estado, id_cliente) {
         $.LoadingOverlay('show');
         datos = {
             _token: '{{csrf_token()}}',
             id_cliente_agencia_carga: id_cliente_agencia_carga,
             estado: estado,
         };
-        post_jquery('{{url('clientes/update_estado_cliente_agencia_carga')}}', datos, function () {
+        post_jquery('{{url('clientes/delete_cliente_agencia_carga')}}', datos, function () {
             cerrar_modals();
             detalles_cliente(id_cliente);
         });
