@@ -562,4 +562,9 @@ class proyCosechaController extends Controller
     {
         return view('adminlte.gestion.proyecciones.cosecha.forms.actualizar_datos', []);
     }
+
+    public function mover_fechas(Request $request)
+    {
+        return view('adminlte.gestion.proyecciones.cosecha.forms.mover_fechas', []);
+    }
 }

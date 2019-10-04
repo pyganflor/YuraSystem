@@ -15,7 +15,12 @@
                     <ul class="dropdown-menu">
                         <li>
                             <a href="javascript:void(0)" onclick="actualizar_datos()">
-                                Acutalizar datos
+                                Actualizar datos
+                            </a>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0)" onclick="mover_fechas()">
+                                Mover fecha
                             </a>
                         </li>
                         <li class="divider"></li>
@@ -777,6 +782,30 @@
         if (semanas.length > 0 && modulos.length > 0) {
             get_jquery('{{url('proy_cosecha/actualizar_datos')}}', {}, function (retorno) {
                 modal_view('modal-view_actualizar_datos', retorno, '<i class="fa fa-fw fa-edit"></i> Actualizar datos', true, false, '{{isPC() ? '50%' : ''}}');
+            });
+        }
+    }
+
+    function mover_fechas() {
+        var all = $('.check_semana');
+        var semanas = [];
+        for (i = 0; i < all.length; i++) {
+            if ($('#' + all[i].id).prop('checked') == true) {
+                semanas.push(all[i].id.substr(13));
+            }
+        }
+
+        all = $('.checkbox_modulo');
+        var modulos = [];
+        for (i = 0; i < all.length; i++) {
+            if ($('#' + all[i].id).prop('checked') == true) {
+                modulos.push(all[i].id.substr(16));
+            }
+        }
+
+        if (semanas.length > 0 && modulos.length > 0) {
+            get_jquery('{{url('proy_cosecha/mover_fechas')}}', {}, function (retorno) {
+                modal_view('modal-view_mover_cosecha', retorno, '<i class="fa fa-fw fa-edit"></i> Mover cosecha', true, false, '{{isPC() ? '50%' : ''}}');
             });
         }
     }

@@ -152,8 +152,13 @@
             </button>
         </th>
     </tr>
+    <tr>
+        <th class="text-center" colspan="4" style="border-color: #9d9d9d; background-color: #e9ecef">
+            <input type="checkbox" class="mouse-hand" id="check_save_semana">
+            <label for="check_save_semana" class="mouse-hand">Guardar en semana(s)</label>
+        </th>
+    </tr>
 </table>
-
 
 <div class="text-right" style="margin-top: 10px">
     <legend style="font-size: 1em; margin-bottom: 0">
