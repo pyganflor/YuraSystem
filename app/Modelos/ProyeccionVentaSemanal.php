@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class ProyeccionVentaSemanal extends Model
 {
-    protected $table = 'proyeccion_venta';
+    protected $table = 'proyeccion_venta_semanal';
     protected $primaryKey = 'id_proyeccion_venta_semanal';
     public $incrementing = false;
     public $timestamps = false;

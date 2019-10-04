@@ -23,6 +23,7 @@ use yura\Modelos\DetallePedido;
 use yura\Modelos\Envio;
 use yura\Modelos\DetallePedidoDatoExportacion;
 use yura\Modelos\Empaque;
+use yura\Jobs\ProyeccionVentaSemanalUpdate;
 use Validator;
 use DB;
 use Barryvdh\DomPDF\Facade as PDF;
@@ -306,6 +307,7 @@ class PedidoController extends Controller
                     $objProductoYuraVenture->save();
                 }
             }
+            ProyeccionVentaSemanalUpdate::dispatch();
         } else {
             $success = false;
             $errores = '';
@@ -457,6 +459,7 @@ class PedidoController extends Controller
                 '<p> Se ha cancelado el pedido exitosamente</p>'
                 . '</div>';
             bitacora('pedido', $model->id_pedido, 'D', 'Pedido eliminado con exito');
+            ProyeccionVentaSemanalUpdate::dispatch();
         } else {
             $success = false;
             $msg = '<div class="alert alert-danger text-center">' .

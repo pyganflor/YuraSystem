@@ -2,6 +2,7 @@
 
 namespace yura\Console\Commands;
 
+use Carbon\Carbon;
 use Illuminate\Console\Command;
 use yura\Modelos\Pedido;
 use yura\Modelos\Cliente;
@@ -44,6 +45,8 @@ class VentaSemanalReal extends Command
      */
     public function handle()
     {
+            $horaInicio =  Carbon::parse(now()->toDateString())->format('H:m:s');
+            Info("Comienza el script: ".$horaInicio);
             $desde = $this->argument('semana_desde');
             $hasta = $this->argument('semana_hasta');
             $variedad = $this->argument('variedad');
@@ -62,6 +65,7 @@ class VentaSemanalReal extends Command
                 if($desde != 0){
                     $semana_desde = Semana::where('estado', 1)->where('codigo', $desde)->first();
                     if(!isset($semana_desde))
+                        Info("No se proporciono semana de inicio");
                         return false;
                 }else {
                     $semana_desde = getSemanaByDate(now()->toDateString());
@@ -70,8 +74,8 @@ class VentaSemanalReal extends Command
                 if($hasta != 0){
                     $semana_hasta = Semana::where('estado', 1)->where('codigo', $hasta)->first();
                     if(!isset($semana_hasta))
+                        Info("No se proporciono semana de fin");
                         return false;
-
                 }else{
                     $semana_hasta = getSemanaByDate(now()->toDateString());
                 }
@@ -108,7 +112,7 @@ class VentaSemanalReal extends Command
                                 ['id_cliente',$cliente->id_cliente],
                                 ['codigo_semana',$semana]
                             ])->first();
-
+                           // dd($objProyeccionentaSemanal);
                             if(!isset($objProyeccionentaSemanal)){
                                 $objProySemReal = new ProyeccionVentaSemanalReal;
                                 $objProySemReal->id_cliente = $cliente->id_cliente;
@@ -136,9 +140,12 @@ class VentaSemanalReal extends Command
                                     ['codigo_semana',$semana]
                                 ])->first();
 
-                                $objProySemReal->valor_proy = $proyeccionVentaSemanal->valor;
-                                $objProySemReal->cajas_equivalentes_proy = $proyeccionVentaSemanal->cajas_equivalentes;
-                                $objProySemReal->cajas_fisicas_proy = $proyeccionVentaSemanal->cajas_fisicas;
+                                if(isset($proyeccionVentaSemanal)){
+                                    $objProySemReal->valor_proy = $proyeccionVentaSemanal->valor;
+                                    $objProySemReal->cajas_equivalentes_proy = $proyeccionVentaSemanal->cajas_equivalentes;
+                                    $objProySemReal->cajas_fisicas_proy = $proyeccionVentaSemanal->cajas_fisicas;
+                                }
+
                             }
                             $objProySemReal->save();
                         }
@@ -148,5 +155,8 @@ class VentaSemanalReal extends Command
             }else{
                 Info('La semana hasta no pueder ser menor a la semana desde en el comando VentaSemanalReal');
             }
+
+            $horaFin =  Carbon::parse(now()->toDateString())->format('H:m:s');
+            Info("Termina el script: ".$horaFin);
     }
 }
