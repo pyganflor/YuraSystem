@@ -15,11 +15,12 @@ use yura\Modelos\ProyeccionModuloSemana;
 use yura\Modelos\Semana;
 use yura\Modelos\Submenu;
 use Validator;
-
+use yura\Jobs\Prueba;
 class proyCosechaController extends Controller
 {
     public function inicio(Request $request)
     {
+    Prueba::dispatch();
         return view('adminlte.gestion.proyecciones.cosecha.inicio', [
             'url' => $request->getRequestUri(),
             'submenu' => Submenu::Where('url', '=', substr($request->getRequestUri(), 1))->get()[0],
