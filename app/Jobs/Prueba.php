@@ -30,7 +30,7 @@ class Prueba implements ShouldQueue
     public function handle()
     {
 
-        Info("Prueba desde ");
+        Info("Prueba desde el job");
 
     }
 }

@@ -2,14 +2,15 @@
 
 namespace yura\Console\Commands;
 
+use Carbon\Carbon;
 use Illuminate\Console\Command;
 use yura\Modelos\Pedido;
-use yura\Modelos\DetallePedido;
 use yura\Modelos\Cliente;
-use yura\Modelos\DetalleCliente;
+use yura\Modelos\ProyeccionVentaSemanalReal;
 use yura\Modelos\ProyeccionVentaSemanal;
 use yura\Modelos\Semana;
 use yura\Modelos\Variedad;
+use DB;
 
 class VentaSemanalReal extends Command
 {
@@ -44,6 +45,8 @@ class VentaSemanalReal extends Command
      */
     public function handle()
     {
+            $horaInicio =  Carbon::parse(now()->toDateString())->format('H:m:s');
+            Info("Comienza el script: ".$horaInicio);
             $desde = $this->argument('semana_desde');
             $hasta = $this->argument('semana_hasta');
             $variedad = $this->argument('variedad');
@@ -62,6 +65,7 @@ class VentaSemanalReal extends Command
                 if($desde != 0){
                     $semana_desde = Semana::where('estado', 1)->where('codigo', $desde)->first();
                     if(!isset($semana_desde))
+                        Info("No se proporciono semana de inicio");
                         return false;
                 }else {
                     $semana_desde = getSemanaByDate(now()->toDateString());
@@ -70,18 +74,16 @@ class VentaSemanalReal extends Command
                 if($hasta != 0){
                     $semana_hasta = Semana::where('estado', 1)->where('codigo', $hasta)->first();
                     if(!isset($semana_hasta))
+                        Info("No se proporciono semana de fin");
                         return false;
-
                 }else{
                     $semana_hasta = getSemanaByDate(now()->toDateString());
                 }
                 Info('SEMANA DESDE: ' . $semana_desde->codigo);
                 Info('SEMANA HASTA: ' . $semana_hasta->codigo );
 
-                //dd($semana_desde->codigo,$semana_hasta->codigo);
                 for($i=$semana_desde->codigo;$i<=$semana_hasta->codigo;$i++){
                     $existSemana= Semana::where('codigo', $i)->first();
-                    //dump($existSemana->codigo);
                     if(isset($existSemana->codigo)){
                         $semanas[]=$existSemana->codigo;
                         $objSemana[] =$existSemana;
@@ -98,7 +100,6 @@ class VentaSemanalReal extends Command
 
                     $clientes = $clientes->get();
 
-                    //dd($clientes);
                     foreach($clientes as $cliente) {
                         foreach($variedades as $variedad){
                             $pedidos = Pedido::where([
@@ -106,36 +107,56 @@ class VentaSemanalReal extends Command
                                 ['id_cliente',$cliente->id_cliente]
                             ])->whereBetween('fecha_pedido',[$objSemana[$x]->fecha_inicial,$objSemana[$x]->fecha_final])->get();
 
-                            $objProyeccionentaSemanal = ProyeccionVentaSemanal::where([
+                            $objProyeccionentaSemanal = ProyeccionVentaSemanalReal::where([
                                 ['id_variedad',$variedad->id_variedad],
                                 ['id_cliente',$cliente->id_cliente],
                                 ['codigo_semana',$semana]
                             ])->first();
-
+                           // dd($objProyeccionentaSemanal);
                             if(!isset($objProyeccionentaSemanal)){
-                                $objProySem = new ProyeccionVentaSemanal;
-                                $objProySem->id_cliente = $cliente->id_cliente;
-                                $objProySem->id_variedad = $variedad->id_variedad;
-                                $objProySem->codigo_semana = $semana;
+                                $objProySemReal = new ProyeccionVentaSemanalReal;
+                                $objProySemReal->id_cliente = $cliente->id_cliente;
+                                $objProySemReal->id_variedad = $variedad->id_variedad;
+                                $objProySemReal->codigo_semana = $semana;
+                            }else{
+                                $objProySemReal = ProyeccionVentaSemanalReal::find($objProyeccionentaSemanal->id_proyeccion_venta_semanal);
                             }
-                            $objProySem->valor =0;
-                            $objProySem->cajas_equivalentes = 0;
-                            $objProySem->cajas_fisicas = 0;
+                            $objProySemReal->valor =0;
+                            $objProySemReal->cajas_equivalentes = 0;
+                            $objProySemReal->cajas_fisicas = 0;
+                            $objProySemReal->valor_proy = 0;
+                            $objProySemReal->cajas_equivalentes_proy =0;
+                            $objProySemReal->cajas_fisicas_proy = 0;
 
-                            foreach ($pedidos as $pedido) {
-                                if(in_array($variedad->id_variedad,$pedido->getVariedades()))
-                                $objProySem->valor += $pedido->getPrecioByVariedad($variedad->id_variedad);
-                                $objProySem->cajas_equivalentes += $pedido->getCajasByVariedad($variedad->id_variedad);
-                                $objProySem->cajas_fisicas += $pedido->getCajasFisicasByVariedad($variedad->id_variedad);
+                            foreach ($pedidos as $pedido){
+                                if(in_array($variedad->id_variedad,$pedido->getVariedades())){
+                                    $objProySemReal->valor += $pedido->getPrecioByVariedad($variedad->id_variedad);
+                                    $objProySemReal->cajas_equivalentes += $pedido->getCajasByVariedad($variedad->id_variedad);
+                                    $objProySemReal->cajas_fisicas += $pedido->getCajasFisicasByVariedad($variedad->id_variedad);
+                                }
+                                $proyeccionVentaSemanal = ProyeccionVentaSemanal::where([
+                                    ['id_variedad',$variedad->id_variedad],
+                                    ['id_cliente',$cliente->id_cliente],
+                                    ['codigo_semana',$semana]
+                                ])->first();
+
+                                if(isset($proyeccionVentaSemanal)){
+                                    $objProySemReal->valor_proy = $proyeccionVentaSemanal->valor;
+                                    $objProySemReal->cajas_equivalentes_proy = $proyeccionVentaSemanal->cajas_equivalentes;
+                                    $objProySemReal->cajas_fisicas_proy = $proyeccionVentaSemanal->cajas_fisicas;
+                                }
+
                             }
-                            $objProySem->save();
+                            $objProySemReal->save();
                         }
                     }
                 }
 
-
             }else{
                 Info('La semana hasta no pueder ser menor a la semana desde en el comando VentaSemanalReal');
             }
+
+            $horaFin =  Carbon::parse(now()->toDateString())->format('H:m:s');
+            Info("Termina el script: ".$horaFin);
     }
 }
