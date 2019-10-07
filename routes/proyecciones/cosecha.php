@@ -12,3 +12,4 @@ Route::post('proy_cosecha/actualizar_proyecciones', 'Proyecciones\proyCosechaCon
 Route::post('proy_cosecha/actualizar_semana', 'Proyecciones\proyCosechaController@actualizar_semana');
 Route::get('proy_cosecha/actualizar_datos', 'Proyecciones\proyCosechaController@actualizar_datos');
 Route::get('proy_cosecha/mover_fechas', 'Proyecciones\proyCosechaController@mover_fechas');
+Route::post('proy_cosecha/actualizar_tipo', 'Proyecciones\proyCosechaController@actualizar_tipo');

@@ -2,7 +2,7 @@
     <i class="fa fa-fw fa-info-circle"></i> Ingrese los datos que desea modificar para las semanas|módulos seleccionados
 </legend>
 <table class="table-bordered" width="100%" style="border: 3px solid #9d9d9d">
-    <tr>
+    <tr id="tr_actualizar_tipo">
         <th class="text-center" style="background-color: #e9ecef; border-color: #9d9d9d" width="10px">
             <div style="width:0; height:0; -moz-border-radius: 100%; -webkit-border-radius: 100%; border-radius: 100%;
             border-right: 8px solid green;
@@ -22,7 +22,7 @@
             </select>
         </td>
         <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef" width="50px">
-            <button class="btn btn-xs btn-success" type="button">
+            <button class="btn btn-xs btn-success" type="button" onclick="actualizar_tipo()">
                 <i class="fa fa-fw fa-save"></i>
             </button>
         </th>
@@ -184,4 +184,6 @@
     $(function () {
         $('[data-toggle="tooltip"]').tooltip()
     });
+
+
 </script>

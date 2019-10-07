@@ -2,7 +2,7 @@
     select_planta($('#filtro_predeterminado_planta').val(), 'filtro_predeterminado_variedad', 'div_cargar_variedades', '<option value="T" selected>Todos los tipos</option>');
     listar_proyecciones();
 
-    function listar_proyecciones() {
+    function listar_proyecciones(div_interno = false) {
         datos = {
             variedad: $('#filtro_predeterminado_variedad').val(),
             tipo: $('#filtro_predeterminado_tipo').val(),
@@ -11,10 +11,11 @@
             opcion: $('#filtro_predeterminado_opciones').val(),
             detalle: $('#filtro_predeterminado_detalle').val(),
         };
-        if (datos['variedad'] != 'T')
+        if (datos['variedad'] != 'T') {
             get_jquery('{{url('proy_cosecha/listar_proyecciones')}}', datos, function (retorno) {
                 $('#div_listado_proyecciones').html(retorno);
-            });
+            }, div_interno);
+        }
     }
 
     function select_celda(tipo, mod, sem, variedad, tabla, modelo) {
