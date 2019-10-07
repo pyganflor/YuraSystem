@@ -780,7 +780,11 @@
         }
 
         if (semanas.length > 0 && modulos.length > 0) {
-            get_jquery('{{url('proy_cosecha/actualizar_datos')}}', {}, function (retorno) {
+            datos = {
+                semanas: semanas,
+                modulos: modulos,
+            }
+            get_jquery('{{url('proy_cosecha/actualizar_datos')}}', datos, function (retorno) {
                 modal_view('modal-view_actualizar_datos', retorno, '<i class="fa fa-fw fa-edit"></i> Actualizar datos', true, false, '{{isPC() ? '50%' : ''}}');
             });
         }
@@ -811,19 +815,19 @@
     }
 
     function actualizar_tipo() {
-        var all = $('.check_semana');
+        var all = $('.check_id_semana');
         var semanas = [];
         for (i = 0; i < all.length; i++) {
             if ($('#' + all[i].id).prop('checked') == true) {
-                semanas.push(all[i].id.substr(13));
+                semanas.push(all[i].id.substr(10));
             }
         }
 
-        all = $('.checkbox_modulo');
+        all = $('.check_id_modulo');
         var modulos = [];
         for (i = 0; i < all.length; i++) {
             if ($('#' + all[i].id).prop('checked') == true) {
-                modulos.push(all[i].id.substr(16));
+                modulos.push(all[i].id.substr(10));
             }
         }
 
@@ -843,6 +847,43 @@
                 alerta_errores(retorno.responseText);
             }).always(function () {
                 $('#tr_actualizar_tipo').LoadingOverlay('hide');
+            });
+        }
+    }
+
+    function actualizar_curva() {
+        var all = $('.check_id_semana');
+        var semanas = [];
+        for (i = 0; i < all.length; i++) {
+            if ($('#' + all[i].id).prop('checked') == true) {
+                semanas.push(all[i].id.substr(10));
+            }
+        }
+
+        all = $('.check_id_modulo');
+        var modulos = [];
+        for (i = 0; i < all.length; i++) {
+            if ($('#' + all[i].id).prop('checked') == true) {
+                modulos.push(all[i].id.substr(10));
+            }
+        }
+
+        if (semanas.length > 0 && modulos.length > 0) {
+            datos = {
+                _token: '{{csrf_token()}}',
+                curva: $('#curva').val(),
+                semanas: semanas,
+                modulos: modulos,
+                variedad: $('#filtro_predeterminado_variedad').val(),
+            };
+            $('#tr_actualizar_curva').LoadingOverlay('show');
+            $.post('{{url('proy_cosecha/actualizar_curva')}}', datos, function (retorno) {
+                listar_proyecciones('div_listado_proyecciones');
+            }, 'json').fail(function (retorno) {
+                console.log(retorno);
+                alerta_errores(retorno.responseText);
+            }).always(function () {
+                $('#tr_actualizar_curva').LoadingOverlay('hide');
             });
         }
     }
