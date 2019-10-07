@@ -8,7 +8,8 @@
             border-right: 8px solid green;
             border-top: 8px solid green;
             border-left: 8px solid blue;
-            border-bottom: 8px solid blue;">
+            border-bottom: 8px solid blue;" data-toggle="tooltip" data-placement="top" data-html="true"
+                 title="Ciclos - Proyecciones">
             </div>
         </th>
         <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef" width="25%">
@@ -32,7 +33,8 @@
             border-right: 8px solid green;
             border-top: 8px solid green;
             border-left: 8px solid red;
-            border-bottom: 8px solid blue;">
+            border-bottom: 8px solid blue;" data-toggle="tooltip" data-placement="top" data-html="true"
+                 title="Semanas - Ciclos - Proyecciones">
             </div>
         </th>
         <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef" width="25%">
@@ -53,7 +55,8 @@
             border-right: 8px solid green;
             border-top: 8px solid green;
             border-left: 8px solid red;
-            border-bottom: 8px solid blue;">
+            border-bottom: 8px solid blue;" data-toggle="tooltip" data-placement="top" data-html="true"
+                 title="Semanas - Ciclos - Proyecciones">
             </div>
         </th>
         <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef" width="25%">
@@ -74,7 +77,8 @@
             border-right: 8px solid green;
             border-top: 8px solid green;
             border-left: 8px solid blue;
-            border-bottom: 8px solid blue;">
+            border-bottom: 8px solid blue;" data-toggle="tooltip" data-placement="top" data-html="true"
+                 title="Ciclos - Proyecciones">
             </div>
         </th>
         <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef" width="25%">
@@ -95,7 +99,8 @@
                 border-right: 8px solid green;
                 border-top: 8px solid green;
                 border-left: 8px solid red;
-                border-bottom: 8px solid blue;">
+                border-bottom: 8px solid blue;" data-toggle="tooltip" data-placement="top" data-html="true"
+                 title="Semanas - Ciclos - Proyecciones">
             </div>
         </th>
         <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef" width="25%">
@@ -116,7 +121,8 @@
             border-right: 8px solid green;
             border-top: 8px solid green;
             border-left: 8px solid red;
-            border-bottom: 8px solid blue;">
+            border-bottom: 8px solid blue;" data-toggle="tooltip" data-placement="top" data-html="true"
+                 title="Semanas - Ciclos - Proyecciones">
             </div>
         </th>
         <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef" width="25%">
@@ -137,7 +143,8 @@
             border-right: 8px solid blue;
             border-top: 8px solid red;
             border-left: 8px solid red;
-            border-bottom: 8px solid blue;">
+            border-bottom: 8px solid blue;" data-toggle="tooltip" data-placement="top" data-html="true"
+                 title="Semanas - Proyecciones">
             </div>
         </th>
         <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef" width="25%">
@@ -172,3 +179,9 @@
         <li>Proyecciones <i class="fa fa-fw fa-circle" style="color: blue"></i></li>
     </ul>
 </div>
+
+<script>
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+    });
+</script>
