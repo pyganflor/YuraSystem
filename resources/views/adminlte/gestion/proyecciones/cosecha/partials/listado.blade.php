@@ -809,4 +809,41 @@
             });
         }
     }
+
+    function actualizar_tipo() {
+        var all = $('.check_semana');
+        var semanas = [];
+        for (i = 0; i < all.length; i++) {
+            if ($('#' + all[i].id).prop('checked') == true) {
+                semanas.push(all[i].id.substr(13));
+            }
+        }
+
+        all = $('.checkbox_modulo');
+        var modulos = [];
+        for (i = 0; i < all.length; i++) {
+            if ($('#' + all[i].id).prop('checked') == true) {
+                modulos.push(all[i].id.substr(16));
+            }
+        }
+
+        if (semanas.length > 0 && modulos.length > 0) {
+            datos = {
+                _token: '{{csrf_token()}}',
+                tipo: $('#tipo').val(),
+                semanas: semanas,
+                modulos: modulos,
+                variedad: $('#filtro_predeterminado_variedad').val(),
+            };
+            $('#tr_actualizar_tipo').LoadingOverlay('show');
+            $.post('{{url('proy_cosecha/actualizar_tipo')}}', datos, function (retorno) {
+                listar_proyecciones('div_listado_proyecciones');
+            }, 'json').fail(function (retorno) {
+                console.log(retorno);
+                alerta_errores(retorno.responseText);
+            }).always(function () {
+                $('#tr_actualizar_tipo').LoadingOverlay('hide');
+            });
+        }
+    }
 </script>

@@ -564,6 +564,53 @@ class proyCosechaController extends Controller
         return view('adminlte.gestion.proyecciones.cosecha.forms.actualizar_datos', []);
     }
 
+    /* ------------------------------------------------------------------- */
+    public function actualizar_tipo(Request $request)
+    {
+        foreach ($request->semanas as $sem) {
+            $sem = Semana::find($sem);
+            foreach ($request->modulos as $mod) {
+                $change = false;
+                /* ================ CICLOS ===================== */
+                $ciclo = Ciclo::All()
+                    ->where('id_variedad', $request->variedad)
+                    ->where('id_modulo', $mod)
+                    ->where('fecha_inicio', '>=', $sem->fecha_inicial)
+                    ->where('fecha_inicio', '<=', $sem->fecha_final)
+                    ->where('estado', 1)
+                    ->first();
+                if ($ciclo != '') {
+                    $ciclo->poda_siembra = $request->tipo;
+                    $ciclo->save();
+
+                    $change = true;
+                }
+
+                /* ================ CICLOS ===================== */
+                $proy = ProyeccionModulo::All()
+                    ->where('id_variedad', $request->variedad)
+                    ->where('id_modulo', $mod)
+                    ->where('id_semana', $sem->id_semana)
+                    ->where('estado', 1)
+                    ->first();
+                if ($proy != '') {
+                    $proy->tipo = $request->tipo;
+                    $proy->save();
+
+                    $change = true;
+                }
+
+                /* ================ ACTUALIZAR PROYECCIONES ===================== */
+                if ($change)
+                    ProyeccionUpdateSemanal::dispatch($sem->codigo, $sem->codigo, $request->variedad, $mod, 0)->onQueue('proy_cosecha/actualizar_tipo');
+            }
+        }
+        return [
+            'success' => true,
+            'mensaje' => '<div class="alert alert-success text-center">Se ha guardado la información satisfactoriamente</div>',
+        ];
+    }
+
     public function mover_fechas(Request $request)
     {
         return view('adminlte.gestion.proyecciones.cosecha.forms.mover_fechas', []);
