@@ -872,9 +872,11 @@
             datos = {
                 _token: '{{csrf_token()}}',
                 curva: $('#curva').val(),
+                check_save_semana: $('#check_save_semana').prop('checked'),
                 semanas: semanas,
                 modulos: modulos,
                 variedad: $('#filtro_predeterminado_variedad').val(),
+                semana_hasta: $('#filtro_predeterminado_hasta').val(),
             };
             $('#tr_actualizar_curva').LoadingOverlay('show');
             $.post('{{url('proy_cosecha/actualizar_curva')}}', datos, function (retorno) {
@@ -884,6 +886,45 @@
                 alerta_errores(retorno.responseText);
             }).always(function () {
                 $('#tr_actualizar_curva').LoadingOverlay('hide');
+            });
+        }
+    }
+
+    function actualizar_semana_cosecha() {
+        var all = $('.check_id_semana');
+        var semanas = [];
+        for (i = 0; i < all.length; i++) {
+            if ($('#' + all[i].id).prop('checked') == true) {
+                semanas.push(all[i].id.substr(10));
+            }
+        }
+
+        all = $('.check_id_modulo');
+        var modulos = [];
+        for (i = 0; i < all.length; i++) {
+            if ($('#' + all[i].id).prop('checked') == true) {
+                modulos.push(all[i].id.substr(10));
+            }
+        }
+
+        if (semanas.length > 0 && modulos.length > 0) {
+            datos = {
+                _token: '{{csrf_token()}}',
+                semana_cosecha: $('#semana_cosecha').val(),
+                check_save_semana: $('#check_save_semana').prop('checked'),
+                semanas: semanas,
+                modulos: modulos,
+                variedad: $('#filtro_predeterminado_variedad').val(),
+                semana_hasta: $('#filtro_predeterminado_hasta').val(),
+            };
+            $('#tr_actualizar_semana_cosecha').LoadingOverlay('show');
+            $.post('{{url('proy_cosecha/actualizar_semana_cosecha')}}', datos, function (retorno) {
+                listar_proyecciones('div_listado_proyecciones');
+            }, 'json').fail(function (retorno) {
+                console.log(retorno);
+                alerta_errores(retorno.responseText);
+            }).always(function () {
+                $('#tr_actualizar_semana_cosecha').LoadingOverlay('hide');
             });
         }
     }

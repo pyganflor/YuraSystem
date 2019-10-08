@@ -49,7 +49,7 @@
             </button>
         </th>
     </tr>
-    <tr>
+    <tr id="tr_actualizar_semana_cosecha">
         <th class="text-center" style="background-color: #e9ecef; border-color: #9d9d9d" width="10px">
             <div style="width:0; height:0; -moz-border-radius: 100%; -webkit-border-radius: 100%; border-radius: 100%;
             border-right: 8px solid green;
@@ -66,7 +66,7 @@
             <input type="number" id="semana_cosecha" max="52" style="width: 100%;" class="text-center" value="14">
         </td>
         <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef" width="50px">
-            <button class="btn btn-xs btn-success" type="button">
+            <button class="btn btn-xs btn-success" type="button" onclick="actualizar_semana_cosecha()">
                 <i class="fa fa-fw fa-save"></i>
             </button>
         </th>
