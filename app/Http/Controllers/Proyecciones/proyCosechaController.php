@@ -313,6 +313,7 @@ class proyCosechaController extends Controller
                         'semana_hasta' => $semana_fin,
                         'variedad' => $model->id_variedad,
                         'modulo' => $model->id_modulo,
+                        'restriccion' => 1,
                     ]);
                 } else {
                     $success = false;
