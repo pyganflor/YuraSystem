@@ -703,7 +703,6 @@ class proyCosechaController extends Controller
                                 ->where('fecha_final', '>=', $ciclo->fecha_inicio)
                                 ->first();
 
-                            dd(55, $semana, $sem);
                             /* ------------------------ OBTENER LAS SEMANAS NEW/OLD ---------------------- */
                             $codigo = $semana->codigo;
                             $new_codigo = $semana->codigo;
