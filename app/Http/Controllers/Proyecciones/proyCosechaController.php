@@ -471,6 +471,7 @@ class proyCosechaController extends Controller
                     'semana_hasta' => $semana_fin->codigo,
                     'variedad' => $model->id_variedad,
                     'modulo' => $model->id_modulo,
+                    'restriccion' => 1,
                 ]);
             } else {
                 $success = false;
@@ -703,7 +704,6 @@ class proyCosechaController extends Controller
                                 ->where('fecha_final', '>=', $ciclo->fecha_inicio)
                                 ->first();
 
-                            dd(55, $semana, $sem);
                             /* ------------------------ OBTENER LAS SEMANAS NEW/OLD ---------------------- */
                             $codigo = $semana->codigo;
                             $new_codigo = $semana->codigo;
