@@ -2,6 +2,7 @@
 
 namespace yura\Modelos;
 
+use DB;
 use Illuminate\Database\Eloquent\Model;
 
 class Cliente extends Model
@@ -38,5 +39,13 @@ class Cliente extends Model
     public function cliente_datoexportacion()
     {
         return $this->hasMany('\yura\Modelos\ClienteDatoExportacion', 'id_cliente');
+    }
+
+    public function contacto_principal(){
+        return DB::table('detalle_cliente as dc')
+            ->where('id_cliente',$this->id_cliente)
+            ->join('detalle_cliente_contacto as dcc','dc.id_detalle_cliente','=','dcc.id_detalle_cliente')
+            ->join('contacto as c','dcc.id_contacto','=','c.id_contacto')
+            ->first();
     }
 }

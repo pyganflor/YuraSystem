@@ -2,6 +2,7 @@
 
 namespace yura\Modelos;
 
+use DB;
 use Illuminate\Database\Eloquent\Model;
 
 class DetalleCliente extends Model
@@ -42,6 +43,10 @@ class DetalleCliente extends Model
         return $this->belongsTo('yura\Modelos\Marca','id_marca');
     }
 
+    public function cliente(){
+        return $this->belongsTo('App\Modelos\Cliente','id_cliente');
+    }
+
     public function tipo_impuesto(){
         //dd($this->codigo_impuesto,$this->codigo_porcentaje_impuesto);
         $impuesto =  TipoImpuesto::where([
@@ -53,4 +58,6 @@ class DetalleCliente extends Model
             'porcentaje' =>$impuesto->porcentaje
             ];
     }
+
+
 }
