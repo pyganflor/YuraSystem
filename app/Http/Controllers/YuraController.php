@@ -41,9 +41,10 @@ class YuraController extends Controller
             foreach ($labels as $dia) {
                 $verde = ClasificacionVerde::All()->where('fecha_ingreso', '=', $dia->dia)->first();
                 if ($verde != '') {
-                    $calibre += round($verde->total_tallos() / $verde->getTotalRamosEstandar(), 2);
+                    $ped_ramos_estandar = $verde->getTotalRamosEstandar();
+                    $calibre += $ped_ramos_estandar > 0 ? round($verde->total_tallos() / $ped_ramos_estandar, 2) : 0;
                     $tallos += $verde->total_tallos();
-                    $ramos += $verde->getTotalRamosEstandar();
+                    $ramos += $ped_ramos_estandar;
                     $cant_verde++;
                 }
             }
