@@ -64,7 +64,7 @@
                             }
                             $data_body_table[$m_c->detalle_especificacionempaque->variedad->planta->id_planta][$m_c->detalle_especificacionempaque->variedad->id_variedad][$precio][]=[
                                 'ramos' => $m_c->cantidad,
-                                   'descripcion' =>substr($m_c->detalle_especificacionempaque->variedad->planta->nombre, 0, 3) .", ". $m_c->detalle_especificacionempaque->variedad->siglas,
+                                   'descripcion' =>substr($m_c->detalle_especificacionempaque->variedad->planta->nombre, 0, 3) .", ". $m_c->detalle_especificacionempaque->variedad->siglas." ".$m_c->detalle_especificacionempaque->clasificacion_ramo->nombre,
                                    'piezas'=> number_format(($m_c->cantidad/$m_c->detalle_especificacionempaque->cantidad),2,".",""),
                                    'color' => $m_c->coloracion->color->nombre
                             ];
@@ -101,7 +101,6 @@
             @endforeach
         @endforeach
     @endif
-
     <tr>
         <td style="border: 1px solid;background: silver;text-align: center">{{number_format($totalPiezas,2,".","")}}</td>
         <td style="border: 1px solid;background: silver"></td>
