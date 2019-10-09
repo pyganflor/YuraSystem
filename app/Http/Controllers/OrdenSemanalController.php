@@ -5,6 +5,7 @@ namespace yura\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Validator;
+use yura\Jobs\ProyeccionUpdateSemanal;
 use yura\Modelos\ClasificacionRamo;
 use yura\Modelos\Cliente;
 use yura\Modelos\ClientePedidoEspecificacion;
@@ -494,6 +495,7 @@ class OrdenSemanalController extends Controller
                 }
             }
 
+        ProyeccionUpdateSemanal::dispatch();
         return [
             'id_pedido' => $pedido->id_pedido,
             'success' => true,

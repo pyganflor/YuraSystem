@@ -45,7 +45,7 @@ class VentaSemanalReal extends Command
      */
     public function handle()
     {
-            $horaInicio =  Carbon::parse(now()->toDateString())->format('H:m:s');
+            $horaInicio =  Carbon::parse(now())->format('H:m:s');
             Info("Comienza el script: ".$horaInicio);
             $desde = $this->argument('semana_desde');
             $hasta = $this->argument('semana_hasta');
@@ -60,25 +60,32 @@ class VentaSemanalReal extends Command
             $variedades = $variedades->get();
 
             if($desde<=$hasta){
+                Info("Hola1");
                 $semanas = [];
                 $objSemana= [];
                 if($desde != 0){
                     $semana_desde = Semana::where('estado', 1)->where('codigo', $desde)->first();
-                    if(!isset($semana_desde))
+                    Info("semana_desde: ".isset($semana_desde->codigo)." ". $semana_desde->codigo);
+                    if(!isset($semana_desde->codigo)){
                         Info("No se proporciono semana de inicio");
                         return false;
+                    }
                 }else {
                     $semana_desde = getSemanaByDate(now()->toDateString());
                 }
 
                 if($hasta != 0){
                     $semana_hasta = Semana::where('estado', 1)->where('codigo', $hasta)->first();
-                    if(!isset($semana_hasta))
+                    Info("semana_hasta: ". $semana_desde->codigo);
+                    if(!isset($semana_hasta->codigo)){
                         Info("No se proporciono semana de fin");
                         return false;
+                    }
+
                 }else{
                     $semana_hasta = getSemanaByDate(now()->toDateString());
                 }
+                Info("Hola2");
                 Info('SEMANA DESDE: ' . $semana_desde->codigo);
                 Info('SEMANA HASTA: ' . $semana_hasta->codigo );
 
@@ -112,14 +119,15 @@ class VentaSemanalReal extends Command
                                 ['id_cliente',$cliente->id_cliente],
                                 ['codigo_semana',$semana]
                             ])->first();
-                           // dd($objProyeccionentaSemanal);
+                            Info($objProyeccionentaSemanal);
                             if(!isset($objProyeccionentaSemanal)){
                                 $objProySemReal = new ProyeccionVentaSemanalReal;
                                 $objProySemReal->id_cliente = $cliente->id_cliente;
                                 $objProySemReal->id_variedad = $variedad->id_variedad;
                                 $objProySemReal->codigo_semana = $semana;
                             }else{
-                                $objProySemReal = ProyeccionVentaSemanalReal::find($objProyeccionentaSemanal->id_proyeccion_venta_semanal);
+
+                                $objProySemReal = ProyeccionVentaSemanalReal::find($objProyeccionentaSemanal->id_proyeccion_venta_semanal_real);
                             }
                             $objProySemReal->valor =0;
                             $objProySemReal->cajas_equivalentes = 0;
@@ -153,10 +161,10 @@ class VentaSemanalReal extends Command
                 }
 
             }else{
-                Info('La semana hasta no pueder ser menor a la semana desde en el comando VentaSemanalReal');
+                Info('La semana hasta no puede ser menor a la semana desde en el comando VentaSemanalReal');
             }
 
-            $horaFin =  Carbon::parse(now()->toDateString())->format('H:m:s');
+            $horaFin =  Carbon::parse(now())->format('H:m:s');
             Info("Termina el script: ".$horaFin);
     }
 }

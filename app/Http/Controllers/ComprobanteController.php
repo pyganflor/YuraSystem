@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use DomDocument;
 use PHPExcel;
 use PHPExcel_IOFactory;
+use yura\Jobs\MailDocumentosElectronicos;
 use yura\Modelos\ClienteAgenciaCarga;
 use yura\Modelos\Comprobante;
 use yura\Modelos\ConfiguracionEmpresa;
@@ -1682,12 +1683,13 @@ class ComprobanteController extends Controller
     }
 
     public function enviar_correo(Request $request){
+
         ini_set('max_execution_time', env('MAX_EXECUTION_TIME'));
         $comprobante = Comprobante::where('id_comprobante',$request->id_comprobante)->first();
         $img_clave_acceso = null;
         $correos = [];
 
-        if($comprobante->clave_acceso != null)
+        if(isset($comprobante->clave_acceso))
             $img_clave_acceso = generateCodeBarGs1128($comprobante->clave_acceso);
 
         if($comprobante->tipo_comprobante === "01"){
@@ -1723,8 +1725,7 @@ class ComprobanteController extends Controller
                     ? $mail = getComprobante($comprobanteRelacionado->id_comprobante_relacionado)->fatura_cliente_tercero->envio->correo
                     : $mail = getComprobante($comprobanteRelacionado->id_comprobante_relacionado)->envio->pedido->cliente->detalle()->correo;
             }
-
-            $correos[] = $mail;
+            $correos['cliente'][] = $mail;
         }
 
         if($request->contactos == "true"){
@@ -1735,7 +1736,7 @@ class ComprobanteController extends Controller
                 ->get();
 
             foreach ($dataContacto as $contacto)
-                $correos[] = $contacto->correo;
+                $correos['cliente'][] = $contacto->correo;
         }
 
         if($request->agencia_carga == "true"){
@@ -1754,16 +1755,16 @@ class ComprobanteController extends Controller
 
             if(isset($clienteAgenciaCarga->contacto_cliente_agencia_carga))
                 foreach ($clienteAgenciaCarga->contacto_cliente_agencia_carga as $item) {
-                    $correos[] = $item->correo;
+                    $correos['agencias'][] = $item->correo;
                 }
         }
 
         if($comprobante->tipo_comprobante === "01"){
             foreach ($comprobante->envio->pedido->cliente->detalle()->informacion_adicional_correo() as $correo)
-                $correos[] = $correo->varchar;
+                $correos['cliente'][] = $correo->varchar;
         }else if($comprobante->tipo_comprobante === "06"){
             foreach (getComprobante($comprobanteRelacionado->id_comprobante_relacionado)->envio->pedido->cliente->detalle()->informacion_adicional_correo() as $correo)
-                $correos[] = $correo->varchar;
+                $correos['cliente'][] = $correo->varchar;
         }
 
         if($request->csv_etiqueta == "true"){
@@ -1810,13 +1811,11 @@ class ComprobanteController extends Controller
                 }
                 $cadena.= $total_piezas.","."TOTALS".",".",".$total_ramos.",".",".$total_monto."\n";
             }
-
             fwrite($f,substr($cadena,0,-1));
             fclose($f);
-
         }
 
-        if($request->dist_cajas == "true"){
+        if($request->dist_cajas == "true" || $request->packing_list === "true"){
             $pedido = getPedido($comprobante->envio->pedido->id_pedido);
             $empresa = getConfiguracionEmpresa($comprobante->envio->pedido->id_configuracion_empresa);
             $despacho = isset(getDetalleDespacho($pedido->id_pedido)->despacho) ? getDetalleDespacho($pedido->id_pedido)->despacho : null;
@@ -1857,14 +1856,19 @@ class ComprobanteController extends Controller
             PDF::loadView('adminlte.gestion.comprobante.partials.pdf.lista_distribucion', compact('cliente','empresa','despacho','comprobante'))->save(env('PDF_FACTURAS_TEMPORAL')."dist_cajas_".$comprobante->secuencial.".pdf");
         if($request->guia_remision === "true")
             PDF::loadView('adminlte.gestion.comprobante.partials.pdf.guia_bd', compact('data'))->save(env('PDF_FACTURAS_TEMPORAL')."guia_factura_".$comprobante->secuencial.".pdf");
+        if($request->packing_list === "true"){
+            $vista_despacho = false;
+            PDF::loadView('adminlte.gestion.postcocecha.despachos.partials.pdf_packing_list', compact('pedido','vista_despacho','empresa','despacho','cliente'))->save(env('PDF_FACTURAS_TEMPORAL')."packing_list".$comprobante->secuencial.".pdf");
+        }
 
-        $correos[] = ConfiguracionEmpresa::where('estado', 1)->first()->correo;
-        $correos[] = $comprobante->envio->pedido->empresa->correo;
+        //$correos[] = $comprobante->envio->pedido->empresa->correo;
+        $correoEmpresa = ConfiguracionEmpresa::where('estado', 1)->first()->correo;
         //$correos[] = "obrian@pyganflor.com"; // solo para pruebas, comentar en produccion
-                    //$correos[0]
-        //dd($correos);
-        Mail::to($correos[0])
-            ->cc($correos)->send(new CorreoFacturaVenture($request->factura_cliente,$request->factura_sri,$comprobante->secuencial,$request->csv_etiqueta,$request->dist_cajas,$request->guia_remision));
+
+        MailDocumentosElectronicos::dispatch($correos,$request->all(),$comprobante,$correoEmpresa)->onQueue('documentos_electronicos');
+
+        /*Mail::to($correos[0])
+            ->cc($correos)->send(new CorreoFacturaVenture($request->factura_cliente,$request->factura_sri,$comprobante->secuencial,$request->csv_etiqueta,$request->dist_cajas,$request->guia_remision,$request->packing_list));
 
         if($request->factura_sri == "true" && file_exists(env('PDF_FACTURAS_TEMPORAL')."fact_sri_".$comprobante->secuencial.'.pdf'))
             unlink(env('PDF_FACTURAS_TEMPORAL')."fact_sri_".$comprobante->secuencial.'.pdf');
@@ -1880,6 +1884,9 @@ class ComprobanteController extends Controller
 
         if($request->guia_remision === "true" && file_exists(env('PDF_FACTURAS_TEMPORAL')."guia_factura_".$comprobante->secuencial.".pdf"))
             unlink(env('PDF_FACTURAS_TEMPORAL')."guia_factura_".$comprobante->secuencial.".pdf");
+
+        if($request->packing_list === "true" && file_exists(env('PDF_FACTURAS_TEMPORAL')."packing_list".$comprobante->secuencial.".pdf"))
+            unlink(env('PDF_FACTURAS_TEMPORAL')."packing_list".$comprobante->secuencial.".pdf");*/
 
         return[
             'mensaje' => '<div class="alert text-center  alert-success">' .

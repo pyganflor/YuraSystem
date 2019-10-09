@@ -28,6 +28,7 @@ use Validator;
 use DB;
 use Barryvdh\DomPDF\Facade as PDF;
 use yura\Modelos\ProductoYuraVenture;
+use yura\Modelos\Semana;
 
 class PedidoController extends Controller
 {
@@ -95,13 +96,11 @@ class PedidoController extends Controller
                 'id_pedido' => $request->id_pedido,
                 'datos_exportacion' => ClienteDatoExportacion::where('id_cliente',$request->id_cliente)->get(),
                 'comprobante' => isset($request->id_pedido) ? (isset(getPedido($request->id_pedido)->envios[0]->comprobante) ? getPedido($request->id_pedido)->envios[0]->comprobante : null) : null
-
             ]);
     }
 
     public function store_pedidos(Request $request)
     {
-        //dd($request->all());
         $valida = Validator::make($request->all(), [
             'arrDataPedido' => 'Array',
             'id_cliente' => 'required',
@@ -266,16 +265,16 @@ class PedidoController extends Controller
                     $objEnvio->fecha_envio = $fechaFormateada;
                     $objEnvio->id_pedido = $model->id_pedido;
                     if(isset($codigo_dae)) {
-                            $objEnvio->codigo_dae = $codigo_dae;
-                            $objEnvio->dae = $dae;
-                            $objEnvio->guia_madre = $guia_madre;
-                            $objEnvio->guia_hija = $guia_hija;
-                            $objEnvio->email = $email;
-                            $objEnvio->telefono = $telefono;
-                            $objEnvio->direccion = $direccion;
-                            $objEnvio->codigo_pais = $codigo_pais;
-                            $objEnvio->almacen = $almacen;
-                        }
+                        $objEnvio->codigo_dae = $codigo_dae;
+                        $objEnvio->dae = $dae;
+                        $objEnvio->guia_madre = $guia_madre;
+                        $objEnvio->guia_hija = $guia_hija;
+                        $objEnvio->email = $email;
+                        $objEnvio->telefono = $telefono;
+                        $objEnvio->direccion = $direccion;
+                        $objEnvio->codigo_pais = $codigo_pais;
+                        $objEnvio->almacen = $almacen;
+                    }
 
                     if($objEnvio->save()){
                         $modelEnvio = Envio::all()->last();
@@ -307,7 +306,8 @@ class PedidoController extends Controller
                     $objProductoYuraVenture->save();
                 }
             }
-            ProyeccionVentaSemanalUpdate::dispatch();
+            $semana = getSemanaByDate($objPedido->fecha_pedido)->codigo;
+            ProyeccionVentaSemanalUpdate::dispatch($semana,$semana,0,$request->id_cliente);
         } else {
             $success = false;
             $errores = '';
@@ -446,20 +446,18 @@ class PedidoController extends Controller
             $objComprobante = Comprobante::find($pedido->envios[0]->comprobante->id_comprobante);
             $objComprobante->update(['id_envio'=>null,'rehusar'=>true]);
         }
-
-
         //$objPedido = Pedido::find($request->id_pedido);
         //$objPedido->estado = $request->estado == 0 ? 1 : 0;
 
         if (Pedido::destroy($request->id_pedido)) {
-            $model = Pedido::all()->last();
             $success = true;
             // $objPedido->estado == 0 ? $palabra = 'cancelado' : $palabra = 'activado';
             $msg = '<div class="alert alert-success text-center">' .
-                '<p> Se ha cancelado el pedido exitosamente</p>'
-                . '</div>';
-            bitacora('pedido', $model->id_pedido, 'D', 'Pedido eliminado con exito');
-            ProyeccionVentaSemanalUpdate::dispatch();
+                        '<p> Se ha cancelado el pedido exitosamente</p>'
+                 . '</div>';
+            bitacora('pedido',$request->id_pedido, 'D', 'Pedido eliminado con exito');
+            $semana = getSemanaByDate($pedido->fecha_pedido)->codigo;
+            ProyeccionVentaSemanalUpdate::dispatch($semana,$semana,0,$pedido->id_cliente);
         } else {
             $success = false;
             $msg = '<div class="alert alert-danger text-center">' .
