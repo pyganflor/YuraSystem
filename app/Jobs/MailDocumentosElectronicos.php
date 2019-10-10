@@ -40,14 +40,14 @@ class MailDocumentosElectronicos implements ShouldQueue
      */
     public function handle()
     {
-        if($this->request['cliente'] == "true"){
-            $this->correos['cliente'][] = $this->correoEmpresa;
+        $this->correos['cliente'][] = $this->correoEmpresa;
+        $this->correos['agencias'][] = $this->correoEmpresa;
+        if($this->request['cliente'] == "true" || isset($this->correos['cliente'][0])){
             Mail::to($this->correos['cliente'][0])
                 ->cc($this->correos['cliente'])->send(new DocumentosElectronicosCliente($this->request,$this->comprobante,$this->correoEmpresa));
         }
 
-        if($this->request['agencia_carga'] == "true"){
-            $this->correos['agencias'][] = $this->correoEmpresa;
+        if($this->request['agencia_carga'] == "true" || isset($this->correos['cliente'][0])){
             Mail::to($this->correos['agencias'][0])
                 ->cc($this->correos['agencias'])->send(new DocumentosElectronicosAgenciaCarga($this->request,$this->comprobante,$this->correoEmpresa));
         }
@@ -70,6 +70,6 @@ class MailDocumentosElectronicos implements ShouldQueue
         if($this->request['packing_list'] === "true" && file_exists(env('PDF_FACTURAS_TEMPORAL')."packing_list".$this->comprobante->secuencial.".pdf"))
             unlink(env('PDF_FACTURAS_TEMPORAL')."packing_list".$this->comprobante->secuencial.".pdf");
 
-        Info("documentos electronicos enviados a: ".(isset($this->correos['cliente'][0]) ? $this->correos['cliente'][0] : "nadie") . " ".(isset($this->correos['agencias'][0]) ? $this->correos['agencias'][0] : "niguna agencia"));
+        Info("documentos electronicos enviados a: ".$this->correoEmpresa .(isset($this->correos['cliente'][0]) ? $this->correos['cliente'][0] : "nadie") . " ".(isset($this->correos['agencias'][0]) ? $this->correos['agencias'][0] : "niguna agencia"));
     }
 }
