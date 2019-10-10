@@ -82,6 +82,7 @@
                 plantas_iniciales: $('#plantas_iniciales').val(),
                 desecho: $('#desecho').val(),
                 conteo: $('#conteo').val(),
+                filtro_semana_hasta: $('#filtro_predeterminado_hasta').val(),
             };
 
             post_jquery('{{url('proy_cosecha/update_ciclo')}}', datos, function () {
