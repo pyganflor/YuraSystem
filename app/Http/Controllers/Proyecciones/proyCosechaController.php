@@ -393,7 +393,7 @@ class proyCosechaController extends Controller
                         $mover = $cant_semanas_old - $cant_semanas_new;
                         dd('hay que mover para atras ' . $mover);
 
-                        $proyecciones =
+                        $proyecciones = '';
                     }
                 } else if ($cant_curva_old != $cant_curva_new) {
                     $proyecciones = ProyeccionModuloSemana::whereIn('tipo', ['T'])
