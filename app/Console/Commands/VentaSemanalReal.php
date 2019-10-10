@@ -65,7 +65,6 @@ class VentaSemanalReal extends Command
                 $objSemana= [];
                 if($desde != 0){
                     $semana_desde = Semana::where('estado', 1)->where('codigo', $desde)->first();
-                    Info("semana_desde: ".isset($semana_desde->codigo)." ". $semana_desde->codigo);
                     if(!isset($semana_desde->codigo)){
                         Info("No se proporciono semana de inicio");
                         return false;
@@ -76,7 +75,6 @@ class VentaSemanalReal extends Command
 
                 if($hasta != 0){
                     $semana_hasta = Semana::where('estado', 1)->where('codigo', $hasta)->first();
-                    Info("semana_hasta: ". $semana_desde->codigo);
                     if(!isset($semana_hasta->codigo)){
                         Info("No se proporciono semana de fin");
                         return false;
@@ -85,7 +83,6 @@ class VentaSemanalReal extends Command
                 }else{
                     $semana_hasta = getSemanaByDate(now()->toDateString());
                 }
-                Info("Hola2");
                 Info('SEMANA DESDE: ' . $semana_desde->codigo);
                 Info('SEMANA HASTA: ' . $semana_hasta->codigo );
 

@@ -25,4 +25,11 @@ class ProyeccionVentaSemanalReal extends Model
         'cajas_fisicas_proy'
     ];
 
+    public function cliente(){
+        return $this->belongsTo('App\Modelos\Cliente','id_cliente');
+    }
+
+    public function variedad(){
+        return $this->belongsTo('App\Modelos\Variedad','id_variedad');
+    }
 }
