@@ -24,7 +24,6 @@
                     </div>
                     <select name="filtro_predeterminado_planta" id="filtro_predeterminado_planta" class="form-control planta"
                             onchange="select_planta($(this).val(), 'filtro_predeterminado_variedad', 'div_cargar_variedades', '<option value=T selected>Todos los tipos</option>')">
-                        <option value="">Todas</option>
                         @foreach(getPlantas() as $p)
                             <option value="{{$p->id_planta}}" {{$p->siglas == 'GYP' ? 'selected' : ''}}>{{$p->nombre}}</option>
                         @endforeach
@@ -32,9 +31,8 @@
                     <div class="input-group-addon bg-gray" id="div_cargar_variedades">
                         <i class="fa fa-fw fa-leaf"></i> Tipo
                     </div>
-                    <select name="filtro_predeterminado_variedad" id="filtro_predeterminado_variedad" class="form-control vaiedad"
+                    <select name="filtro_predeterminado_variedad" id="filtro_predeterminado_variedad" class="form-control variedad"
                             onchange="listar_proyecciones_venta_semanal()">
-                        <option value="" selected>Todos</option>
                     </select>
                     <div class="input-group-addon bg-gray">
                         <i class="fa fa-fw fa-calendar"></i> Desde
