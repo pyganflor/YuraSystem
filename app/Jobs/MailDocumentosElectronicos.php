@@ -69,5 +69,7 @@ class MailDocumentosElectronicos implements ShouldQueue
 
         if($this->request['packing_list'] === "true" && file_exists(env('PDF_FACTURAS_TEMPORAL')."packing_list".$this->comprobante->secuencial.".pdf"))
             unlink(env('PDF_FACTURAS_TEMPORAL')."packing_list".$this->comprobante->secuencial.".pdf");
+
+        Info("documentos electronicos enviados a: ".(isset($this->correos['cliente'][0]) ? $this->correos['cliente'][0] : "nadie") . " ".(isset($this->correos['agencias'][0]) ? $this->correos['agencias'][0] : "niguna agencia"));
     }
 }
