@@ -145,12 +145,8 @@
 
     function enviar_correo(id_comprobante,tipo_pedido,tipo_comprobante){
         if(tipo_comprobante === "01"){
-            if(tipo_pedido === "N"){
-                check = "<div class='col-md-4'>" +
-                    "<input type='checkbox' id='csv_etiqueta' name='csv_etiqueta' checked style='position:relative;top:3px'> "+
-                    "<label style='font-weight:600' for='csv_etiqueta'>CSV de etiquetas</label>" +
-                    "</div>";
-            }else if(tipo_pedido === "T"){
+            check="";
+            if(tipo_pedido === "T"){
                 check = "<div class='col-md-4'>" +
                     "<input type='checkbox' id='dist_cajas' name='dist_cajas' style='position:relative;top:3px'> "+
                     "<label style='font-weight:600' for='dist_cajas'>Lista de distribución</label>" +
@@ -181,8 +177,15 @@
                 "<input type='checkbox' id='factura_cliente' name='factura_cliente' checked style='position:relative;top:3px'> "+
                 "<label style='font-weight:600' for='factura_cliente'>Factura del cliente</label>" +
                 "</div>"+
-                check
-                +
+                "<div class='col-md-4'>" +
+                "<input type='checkbox' id='csv_etiqueta' name='csv_etiqueta' checked style='position:relative;top:3px'> "+
+                "<label style='font-weight:600' for='csv_etiqueta'>CSV de etiquetas</label>" +
+                "</div>"+
+                "<div class='col-md-4'>" +
+                "<input type='checkbox' id='packing_list' name='packing_list' style='position:relative;top:3px'> "+
+                "<label style='font-weight:600' for='packing_list'>Lista de empaque</label>" +
+                "</div>"
+                +check+
                 "<div class='col-md-4'>" +
                 "<input type='checkbox' id='factura_sri' name='factura_sri' style='position:relative;top:3px'> "+
                 "<label style='font-weight:600' for='factura_sri'>Factura del SRI</label>" +
@@ -232,7 +235,8 @@
                 csv_etiqueta : $("#csv_etiqueta").is(':checked'),
                 dist_cajas : $("#dist_cajas").is(':checked'),
                 guia_remision : $("#guia_remision").is(':checked'),
-                contactos : $("#contactos").is(':checked')
+                contactos : $("#contactos").is(':checked'),
+                packing_list : $("#packing_list").is(':checked')
             };
             post_jquery('comprobante/enviar_correo', datos, function () {
 

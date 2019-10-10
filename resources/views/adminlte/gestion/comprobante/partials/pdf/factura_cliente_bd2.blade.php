@@ -167,7 +167,7 @@
 
                     @elseif($envio->pedido->tipo_especificacion === "T")
                         @foreach ($envio->pedido->detalles as $x => $det_ped)
-                             @foreach($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $m => $esp_emp)
+                            @foreach($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $m => $esp_emp)
                                   @foreach ($esp_emp->detalles as $n => $det_esp_emp)
                                        @php
                                             $total_ramos += number_format(($det_ped->cantidad*$esp_emp->cantidad*$det_esp_emp->cantidad),2,".","");

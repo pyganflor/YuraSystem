@@ -167,7 +167,6 @@ class Pedido extends Model
             else {
                 return $this->getCajasFisicas();
             }
-
         }
         return 0;
     }
@@ -439,5 +438,15 @@ class Pedido extends Model
     public function empresa()
     {
         return $this->belongsTo('\yura\Modelos\ConfiguracionEmpresa', 'id_configuracion_empresa');
+    }
+
+    public function getCajasFull(){
+        $cajasFull = 0;
+        foreach($this->detalles as $det_ped){
+            foreach($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $esp_emp){
+                $cajasFull += ($esp_emp->cantidad * $det_ped->cantidad) * explode('|',$esp_emp->empaque->nombre)[1];
+            }
+        }
+        return $cajasFull;
     }
 }
