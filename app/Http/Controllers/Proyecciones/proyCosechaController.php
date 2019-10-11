@@ -451,6 +451,8 @@ class proyCosechaController extends Controller
                         }
                         $proy->save();
                     }
+                    if ($last_semana_new == '')
+                        $last_semana_new = $last_semana;
 
                     $success = true;
                     $msg = '<div class="alert alert-success text-center">' .
