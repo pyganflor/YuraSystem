@@ -3,7 +3,7 @@
 namespace yura\Console\Commands;
 
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Request;
+use Illuminate\Support\Facades\Log;
 use yura\Modelos\Ciclo;
 use yura\Modelos\ProyeccionModulo;
 use yura\Modelos\Semana;
@@ -41,6 +41,7 @@ class ProyeccionUpdateCiclo extends Command
      */
     public function handle()
     {
+        Log::info('<<<<< ! >>>>> Ejecutando comando "proyeccion:update_ciclo" <<<<< ! >>>>>');
         $par_id_ciclo = $this->argument('id_ciclo');
         $par_semana_poda_siembra = $this->argument('semana_poda_siembra');
         $par_curva = $this->argument('curva');
@@ -137,5 +138,6 @@ class ProyeccionUpdateCiclo extends Command
 
         $model->save();
         bitacora('ciclo', $model->id_ciclo, 'U', 'Actualización satisfactoria de un ciclo');
+        Log::info('<<<<< * >>>>> Fin satisfactorio del comando "proyeccion:update_ciclo" <<<<< * >>>>>');
     }
 }
