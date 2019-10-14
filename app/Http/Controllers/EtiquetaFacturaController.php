@@ -83,7 +83,7 @@ class EtiquetaFacturaController extends Controller
                     $objDetalleEtiquetaFactura->id_detalle_especificacion_empaque = substr($item['id_det_esp_emp'],0,-1);
                     $objDetalleEtiquetaFactura->siglas = $item['siglas'];
                     $objDetalleEtiquetaFactura->et_inicial = $item['et_inicial'];
-                    $objDetalleEtiquetaFactura->et_final = $item['et_inicial'];
+                    $objDetalleEtiquetaFactura->et_final = $item['et_final'];
                     if($objDetalleEtiquetaFactura->save()) $x++;
                 }
                 if($x == count($request->data)){
