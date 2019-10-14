@@ -916,7 +916,7 @@
 
     set_config('');
 
-    function select_planta(p, input_variedad, elemento_load, li_adicional = '') {
+    function select_planta(p, input_variedad, elemento_load, li_adicional = '',f) {
         if (p != '') {
             datos = {
                 planta: p
@@ -925,6 +925,7 @@
                 $('#' + input_variedad).html(li_adicional);
                 $('#' + input_variedad).append(retorno);
             }, elemento_load);
+           
         } else
             $('#' + input_variedad).html(li_adicional);
     }

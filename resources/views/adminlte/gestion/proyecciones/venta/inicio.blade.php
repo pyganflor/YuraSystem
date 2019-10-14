@@ -33,6 +33,9 @@
                     </div>
                     <select name="filtro_predeterminado_variedad" id="filtro_predeterminado_variedad" class="form-control variedad"
                             onchange="listar_proyecciones_venta_semanal()">
+                        @foreach(getPlantas()[0]->variedades as $variedad)
+                            <option value="{{$variedad->id_variedad}}" >{{$variedad->nombre}}</option>
+                        @endforeach
                     </select>
                     <div class="input-group-addon bg-gray">
                         <i class="fa fa-fw fa-calendar"></i> Desde
