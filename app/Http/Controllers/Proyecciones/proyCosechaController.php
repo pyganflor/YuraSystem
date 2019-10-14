@@ -360,9 +360,11 @@ class proyCosechaController extends Controller
                                 }
                                 $pos_proy++;
                             } else if ($next_proy != '') {    // semanas despues de la proyeccion, pero en caso de que exista una siguiente proy
+                                //dd($proy->semana . '... semanas despues de la proyeccion, pero en caso de que exista una siguiente proy');
                                 if ($last_semana == '')
                                     $last_semana = $proy->semana;
                                 if ($last_semana > $next_proy->semana) {    // hay que mover la siguiente proyeccion
+                                    //dd($proy->semana . '... hay que mover la siguiente proyeccion');
                                     if ($pos_proy_new == '') {
                                         $pos_proy_new = 0;
                                         $pos_cosecha = 0;
@@ -413,7 +415,8 @@ class proyCosechaController extends Controller
                                         $proy->modelo = null;
                                     }
                                     $pos_proy_new++;
-                                }/* else {    // es una semana que queda vacia antes de la siguiente proy
+                                } else if ($proy->semana < $next_proy->semana) {    // es una semana que queda vacia antes de la siguiente proy
+                                    //dd($proy->semana . '... es una semana que queda vacia antes de la siguiente proy');
                                     $proy->tipo = 'F';
                                     $proy->proyectados = 0;
                                     $proy->info = '-';
@@ -427,7 +430,8 @@ class proyCosechaController extends Controller
                                     $proy->poda_siembra = null;
                                     $proy->tabla = null;
                                     $proy->modelo = null;
-                                }*/
+                                }
+                                $pos_proy++;
                             } else {    // fuera de las semanas de la proy
                                 if ($last_semana_new == '') {
                                     $last_semana_new = $proy->semana;
@@ -445,6 +449,8 @@ class proyCosechaController extends Controller
                                 $proy->poda_siembra = null;
                                 $proy->tabla = null;
                                 $proy->modelo = null;
+
+                                $pos_proy++;
                             }
                         } else {
                             break;
@@ -458,6 +464,8 @@ class proyCosechaController extends Controller
                     $msg = '<div class="alert alert-success text-center">' .
                         '<p> Se ha guardado la proyección satisfactoriamente</p>'
                         . '</div>';
+
+                    //dd('fin');
 
                     /* ======================== ACTUALIZAR LAS TABLAS CICLO y PROYECCION_MODULO ====================== */
                     ProyeccionUpdateProy::dispatch($request->id_proyeccion_modulo, $request->semana, $request->tipo, $request->curva, $request->semana_poda_siembra, $request->plantas_iniciales, $request->desecho, $request->tallos_planta, $request->tallos_ramo)
