@@ -52,7 +52,7 @@
         @endforeach
     </table>
     @else
-        <div class="alert alert-info text-center" style="font-size:14px">Seleccione una variedad</div>
+        <div class="alert alert-info text-center" style="font-size:14px">No se encontraron registros</div>
     @endif
 </div>
 <script>
