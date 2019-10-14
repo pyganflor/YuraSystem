@@ -28,7 +28,6 @@ class ProyVentaController extends Controller
         $semana_desde = Semana::where('codigo', $desde)->first();
         $semana_hasta = Semana::where('codigo', $hasta)->first();
 
-
         if (isset($semana_desde) && isset($semana_hasta)) {
 
             $objProyeccionVentaSemanalReal = ProyeccionVentaSemanalReal::whereBetween('codigo_semana',[$semana_desde->codigo,$semana_hasta->codigo]);
