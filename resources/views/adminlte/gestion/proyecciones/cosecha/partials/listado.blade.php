@@ -5,7 +5,7 @@
 </div>
 
 <div style="overflow-x: scroll">
-    <table class="table-striped table-bordered table-hover" style="border: 2px solid #9d9d9d" width="100%">
+    <table class="table-striped table-bordered table-hover" style="border: 2px solid #9d9d9d; font-size: 0.8em" width="100%">
         <thead>
         <tr>
             <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
