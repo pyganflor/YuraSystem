@@ -40,10 +40,8 @@ class ProyVentaController extends Controller
             if(isset($request->id_cliente))
                 $objClientes->where('cliente.id_cliente',$request->id_cliente);
 
-
             if(isset($request->id_variedad))
                 $objProyeccionVentaSemanalReal->where('id_variedad',$request->id_variedad);
-
 
             $objProyeccionVentaSemanalReal = $objProyeccionVentaSemanalReal->get();
             $objClientes = $objClientes->get();
@@ -52,17 +50,18 @@ class ProyVentaController extends Controller
             /*foreach($objProyeccionVentaSemanalReal as $proyeccionVentaSemanalReal) {
                 $data[$proyeccionVentaSemanalReal->id_cliente][$proyeccionVentaSemanalReal->codigo_semana][] = $proyeccionVentaSemanalReal;
             }*/
-            foreach($objClientes as $x => $cliente){
-                foreach($objProyeccionVentaSemanalReal as $proyeccionVentaSemanalReal){
-                    if($cliente->id_cliente === $proyeccionVentaSemanalReal->id_cliente){
-                        $data[$cliente->nombre][] =[
-                            'proyeccion' => $proyeccionVentaSemanalReal
-                        ];
+            if(isset($request->id_variedad)){
+                foreach($objClientes as $x => $cliente){
+                    foreach($objProyeccionVentaSemanalReal as $proyeccionVentaSemanalReal){
+                        if($cliente->id_cliente === $proyeccionVentaSemanalReal->id_cliente){
+                            $data[$cliente->nombre][$proyeccionVentaSemanalReal->codigo_semana] =[
+                                'proyeccion' => $proyeccionVentaSemanalReal
+                            ];
+                        }
                     }
                 }
             }
 
-            dd($data);
             return view('adminlte.gestion.proyecciones.venta.partials.listado',[
                 'proyeccionVentaSemanalReal' => $data
             ]);
