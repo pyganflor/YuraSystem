@@ -177,11 +177,12 @@ class proyCosechaController extends Controller
             'id_semana.required' => 'La semana es obligatoria',
         ]);
         if (!$valida->fails()) {
+            $semana_ini = Semana::find($request->id_semana);
             $model = new ProyeccionModulo();
             $model->id_modulo = $request->id_modulo;
             $model->id_variedad = $request->id_variedad;
             $model->id_semana = $request->id_semana;
-            $model->fecha_inicio = Semana::find($request->id_semana)->fecha_inicial;
+            $model->fecha_inicio = $semana_ini->fecha_inicial;
             $model->tipo = $request->tipo;
             $model->curva = $request->curva;
             $model->semana_poda_siembra = $request->semana_poda_siembra;
@@ -209,20 +210,7 @@ class proyCosechaController extends Controller
                 bitacora('proyeccion_modulo', $model->id_proyeccion_modulo, 'I', 'Inserción satisfactoria de una nueva proyección');
 
                 /* ======================== ACTUALIZAR LA TABLA PROYECCION_MODULO_SEMANA ====================== */
-                $semana = Semana::find($request->id_semana);
-                $semana_fin = DB::table('semana')
-                    ->select(DB::raw('max(codigo) as max'))
-                    ->where('estado', '=', 1)
-                    ->where('id_variedad', '=', $request->id_variedad)
-                    ->get()[0]->max;
 
-                Artisan::call('proyeccion:update_semanal', [
-                    'semana_desde' => $semana->codigo,
-                    'semana_hasta' => $semana_fin,
-                    'variedad' => $request->id_variedad,
-                    'modulo' => $request->id_modulo,
-                    'restriccion' => 1,
-                ]);
 
             } else {
                 $success = false;
