@@ -3,7 +3,7 @@
 namespace yura\Console\Commands;
 
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Request;
+use Illuminate\Support\Facades\Log;
 use yura\Modelos\Ciclo;
 use yura\Modelos\ProyeccionModulo;
 use yura\Modelos\Semana;
@@ -41,6 +41,7 @@ class ProyeccionUpdateCiclo extends Command
      */
     public function handle()
     {
+        Log::info('<<<<< ! >>>>> Ejecutando comando "proyeccion:update_ciclo" <<<<< ! >>>>>');
         $par_id_ciclo = $this->argument('id_ciclo');
         $par_semana_poda_siembra = $this->argument('semana_poda_siembra');
         $par_curva = $this->argument('curva');
@@ -104,9 +105,16 @@ class ProyeccionUpdateCiclo extends Command
                     ->where('id_variedad', $model->id_variedad)
                     ->orderBy('fecha_inicio')
                     ->get()->first();
-
                 if ($proy != '')
                     if ($proy->id_semana == $semana_old->id_semana || $proy->semana->codigo < $semana_new->codigo) {    // hay que mover
+                        $del_proyecciones = ProyeccionModulo::where('estado', 1)
+                            ->where('id_modulo', $model->id_modulo)
+                            ->where('id_variedad', $model->id_variedad)
+                            ->where('fecha_inicio', '>', $proy->fecha_inicio)
+                            ->get();
+                        foreach ($del_proyecciones as $next_proy)    // borrar las proyecciones a partir de esta proyeccion en adelante
+                            $next_proy->delete();
+
                         $proy->id_semana = $semana_new->id_semana;
                         $proy->fecha_inicio = $semana_new->fecha_final;
                         $proy->desecho = $semana_new->desecho > 0 ? $semana_new->desecho : 0;
@@ -137,5 +145,6 @@ class ProyeccionUpdateCiclo extends Command
 
         $model->save();
         bitacora('ciclo', $model->id_ciclo, 'U', 'Actualización satisfactoria de un ciclo');
+        Log::info('<<<<< * >>>>> Fin satisfactorio del comando "proyeccion:update_ciclo" <<<<< * >>>>>');
     }
 }
