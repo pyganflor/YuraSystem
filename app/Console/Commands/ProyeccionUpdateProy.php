@@ -55,8 +55,6 @@ class ProyeccionUpdateProy extends Command
         $semana_ini = Semana::All()->where('estado', 1)->where('id_variedad', $model->id_variedad)
             ->where('codigo', $par_semana)->first();
 
-        Log::info('OKOKOKOKOK: ' . $par_tipo);
-
         if ($par_tipo == 'C') {    // borrar las siguientes proyecciones
             $next_proyecciones = ProyeccionModulo::All()
                 ->where('fecha_inicio', '>=', $model->fecha_inicio)
@@ -66,7 +64,6 @@ class ProyeccionUpdateProy extends Command
             foreach ($next_proyecciones as $proy) {
                 $proy->delete();
             }
-            Log::info('se borro todas las proyecciones');
         } else {
             $next_proy = ProyeccionModulo::where('estado', 1)
                 ->where('id_modulo', $model->id_modulo)
