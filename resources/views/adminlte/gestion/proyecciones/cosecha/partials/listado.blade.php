@@ -180,7 +180,7 @@
                             $title .= '<em>Desecho: '.($val->desecho).'%</em><br>';
                         } else if($val->tipo == 'Y'){
                             $fondo = '#9100ff7d';   // proyeccion
-                            if($val->tipo != 'C'){  // no está cerrada la proyeccion
+                            if($val->info != 'C'){  // no está cerrada la proyeccion
                                 $title .= '<em>Ptas.Ini: '.number_format($val->plantas_iniciales).'</em><br>';
                                 $title .= '<em>T/Ptas: '.($val->tallos_planta).'</em><br>';
                                 $title .= '<em>Sem.Cos: '.($val->semana_poda_siembra).'</em><br>';

@@ -13,7 +13,6 @@
             <select name="tipo" id="tipo" style="width: 100%">
                 <option value="P">Poda</option>
                 <option value="S">Siembra</option>
-                <option value="C">Finalizar</option>
             </select>
         </td>
     </tr>
