@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Validator;
 use yura\Http\Controllers\Controller;
+use yura\Jobs\CicloUpdateCampo;
+use yura\Jobs\ProyeccionUpdateCampo;
 use yura\Jobs\ProyeccionUpdateCiclo;
 use yura\Jobs\ProyeccionUpdateProy;
 use yura\Jobs\ProyeccionUpdateSemanal;
@@ -1064,8 +1066,7 @@ class proyCosechaController extends Controller
         foreach ($request->semanas as $sem) {
             $sem = Semana::find($sem);
             foreach ($request->modulos as $mod) {
-                $change = false;
-                /* ================ CICLOS ===================== */
+                /* ===================== CICLO ===================== */
                 $ciclo = Ciclo::All()
                     ->where('id_variedad', $request->variedad)
                     ->where('id_modulo', $mod)
@@ -1073,30 +1074,46 @@ class proyCosechaController extends Controller
                     ->where('fecha_inicio', '<=', $sem->fecha_final)
                     ->where('estado', 1)
                     ->first();
-                if ($ciclo != '') {
-                    $ciclo->poda_siembra = $request->tipo;
-                    $ciclo->save();
 
-                    $change = true;
-                }
-
-                /* ================ CICLOS ===================== */
+                /* ====================== PROYECCION ===================== */
                 $proy = ProyeccionModulo::All()
                     ->where('id_variedad', $request->variedad)
                     ->where('id_modulo', $mod)
                     ->where('id_semana', $sem->id_semana)
                     ->where('estado', 1)
                     ->first();
-                if ($proy != '') {
-                    $proy->tipo = $request->tipo;
-                    $proy->save();
 
-                    $change = true;
+                /* ========================= ACTUALIZAR TABLA PROYECCION_MODULO_SEMANA ======================== */
+                if ($ciclo != '' || $proy != '') {
+                    $model = ProyeccionModuloSemana::All()
+                        ->where('estado', 1)
+                        ->where('id_modulo', $mod)
+                        ->where('semana', $sem->codigo)
+                        ->where('id_variedad', $request->variedad)
+                        ->first();
+
+                    $model->tipo = $model->tipo != 'Y' ? $request->tipo : $model->tipo;
+                    if (in_array($model->tipo, ['S', 'P'])) {   // se trata de un ciclo
+                        $model->info = $request->tipo == 'S' ? 'S-0' : 'P-' . $ciclo->modulo->getPodaSiembraByCiclo($ciclo->id_ciclo);
+                        $model->poda_siembra = $request->tipo;
+                    } else {    // se trata de una proy
+                        $model->info = $request->tipo;
+                        $model->poda_siembra = 0;
+                    }
+
+                    $model->save();
                 }
 
+                /* ========================= ACTUALIZAR LAS TABLAS CICLO y PROYECCION_MODULO ======================== */
+                if ($ciclo != '')
+                    CicloUpdateCampo::dispatch($ciclo->id_ciclo, 'Tipo', $request->tipo)
+                        ->onQueue('proy_cosecha/actualizar_tipo');
+                if ($proy != '')
+                    ProyeccionUpdateCampo::dispatch($proy->id_proyeccion_modulo, 'Tipo', $request->tipo)
+                        ->onQueue('proy_cosecha/actualizar_tipo');
+
                 /* ================ ACTUALIZAR PROYECCIONES ===================== */
-                if ($change)
-                    ProyeccionUpdateSemanal::dispatch($sem->codigo, $sem->codigo, $request->variedad, $mod, 0)->onQueue('proy_cosecha/actualizar_tipo');
+
             }
         }
         return [
