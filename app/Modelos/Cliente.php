@@ -13,7 +13,8 @@ class Cliente extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'estado'
+        'estado',
+        'factor'
     ];
 
     public function detalles()
@@ -47,5 +48,14 @@ class Cliente extends Model
             ->join('detalle_cliente_contacto as dcc','dc.id_detalle_cliente','=','dcc.id_detalle_cliente')
             ->join('contacto as c','dcc.id_contacto','=','c.id_contacto')
             ->first();
+    }
+
+    public function precio_promedio($idVariedad=null){
+        if(isset($idVariedad)){
+            $precio = $this->hasOne('yura\Modelos\PrecioVariedadCliente','id_cliente')->where('id_variedad',$idVariedad)->first();
+        }else{
+            $precio = $this->hasMany('yura\Modelos\PrecioVariedadCliente','id_cliente');
+        }
+        return $precio;
     }
 }

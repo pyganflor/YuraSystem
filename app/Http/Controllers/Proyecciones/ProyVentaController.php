@@ -54,7 +54,7 @@ class ProyVentaController extends Controller
                     foreach($objProyeccionVentaSemanalReal as $proyeccionVentaSemanalReal){
                         if($cliente->id_cliente === $proyeccionVentaSemanalReal->id_cliente){
                             $data[$cliente->nombre][$proyeccionVentaSemanalReal->codigo_semana] =[
-                                'proyeccion' => $proyeccionVentaSemanalReal
+                                'proyeccion' => $proyeccionVentaSemanalReal,
                             ];
                         }
                     }
@@ -62,12 +62,64 @@ class ProyVentaController extends Controller
             }
 
             return view('adminlte.gestion.proyecciones.venta.partials.listado',[
-                'proyeccionVentaSemanalReal' => $data
+                'proyeccionVentaSemanalReal' => $data,
+                'idVariedad' => $request->id_variedad
             ]);
 
         }else{ // LA semana no esta programada
             $a ="La semana no esta programada";
         }
 
+    }
+
+    public function storeFactorCliente(Request $request){
+        $success = false;
+        $msg = '<div class="alert alert-danger text-center">' .
+                    '<p> Ha ocurrido un error al guardar el factor de conversión del cliente</p>'
+             . '</div>';
+
+        $objCliente = Cliente::find($request->id_cliente);
+        $objCliente->factor = $request->factor;
+
+        if($objCliente->save()){
+            $success = true;
+            $msg = '<div class="alert alert-success text-center">' .
+                        '<p> Se ha guardado el factor de conversión del cliente con éxito </p>'
+                  .'</div>';
+        }
+
+        return [
+            'mensaje' => $msg,
+            'success' => $success
+        ];
+    }
+
+    public function storeProyeccionVenta(Request $request){
+        $success = false;
+        $msg = '<div class="alert alert-danger text-center">' .
+            '<p> Ha ocurrido un error al guardar la proyección, intente nuevamente</p>'
+            . '</div>';
+
+        $objProyeccionVentaSemanalReal = ProyeccionVentaSemanalReal::where([
+            ['id_cliente',$request->id_cliente],
+            ['id_variedad',$request->id_variedad],
+            ['codigo_semana',$request->semana]
+        ]);
+        
+        if($objProyeccionVentaSemanalReal->update([
+            'cajas_fisicas' => $request->cajas_fisicas,
+            'cajas_equivalentes' => $request->cajas_equivalentes,
+            'valor' => substr($request->valor,1,20)
+        ])){
+            $success = true;
+            $msg = '<div class="alert alert-success text-center">' .
+                '<p> Se ha guardado la proyección con éxito </p>'
+                .'</div>';
+        }
+
+        return [
+            'mensaje' => $msg,
+            'success' => $success
+        ];
     }
 }

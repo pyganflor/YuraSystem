@@ -29,6 +29,7 @@ class Kernel extends ConsoleKernel
         UpdateProyeccionSemanal::class,
         EmpaquetarPedidosAnulados::class,
         VentaSemanalReal::class,
+        PrecioVariedadCliente::class,
     ];
 
     /**
@@ -49,6 +50,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('ciclo:primera_flor')->hourly()->runInBackground(); // CicloPrimeraFlor::class
         $schedule->command('proyeccion:update_semanal')->hourly()->runInBackground(); // UpdateProyeccionSemanal::class
         $schedule->command('pedido:empaquetar_anulados')->daily()->runInBackground(); // EmpaquetarPedidosAnulados::class
+        $schedule->command('precio:variedad_x_cliente')->sundays()->between('7:00', '22:00')->runInBackground(); // PrecioVariedadCliente::class
     }
 
     /**
