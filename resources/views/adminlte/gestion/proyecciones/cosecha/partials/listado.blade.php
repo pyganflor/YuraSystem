@@ -841,7 +841,7 @@
             };
             $('#tr_actualizar_tipo').LoadingOverlay('show');
             $.post('{{url('proy_cosecha/actualizar_tipo')}}', datos, function (retorno) {
-                listar_proyecciones('div_listado_proyecciones');
+                listar_proyecciones('celda_button_tipo');
             }, 'json').fail(function (retorno) {
                 console.log(retorno);
                 alerta_errores(retorno.responseText);
