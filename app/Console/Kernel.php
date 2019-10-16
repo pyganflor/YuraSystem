@@ -12,6 +12,7 @@ use yura\Console\Commands\NotificacionesSistema;
 use yura\Console\Commands\UpdateHistoricoVentas;
 use yura\Console\Commands\UpdateProyeccionSemanal;
 use yura\Console\Commands\VentaSemanalReal;
+use yura\Console\Commands\PrecioVariedadCliente;
 
 class Kernel extends ConsoleKernel
 {
