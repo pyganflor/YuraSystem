@@ -100,44 +100,42 @@ class VentaSemanalReal extends Command
                     $clientes->where('cliente.id_cliente',$idCliente);
 
                 $clientes = $clientes->get();
-                foreach ($semanas as $x => $semana) {
-
-                        foreach($clientes as $cliente) {
-                            foreach($variedades as $variedad){
-                                $pedidos = Pedido::where([
+                foreach ($semanas as $x => $semana){
+                    foreach($clientes as $cliente){
+                        foreach($variedades as $variedad){
+                            $pedidos = Pedido::where([
                                     ['pedido.estado',true],
                                     ['id_cliente',$cliente->id_cliente]
-                                ])
-                                    ->whereBetween('fecha_pedido',[$objSemana[$x]->fecha_inicial,$objSemana[$x]->fecha_final])->get();
+                            ])->whereBetween('fecha_pedido',[$objSemana[$x]->fecha_inicial,$objSemana[$x]->fecha_final])->get();
 
-                                $objProyeccionVentaSemanal = ProyeccionVentaSemanalReal::where([
+                            $objProyeccionVentaSemanal = ProyeccionVentaSemanalReal::where([
                                     ['id_variedad',$variedad->id_variedad],
                                     ['id_cliente',$cliente->id_cliente],
                                     ['codigo_semana',$semana]
                                 ])->first();
 
-                                if(!isset($objProyeccionVentaSemanal)){
+                            if(!isset($objProyeccionVentaSemanal)){
                                     $objProySemReal = new ProyeccionVentaSemanalReal;
                                     $objProySemReal->id_cliente = $cliente->id_cliente;
                                     $objProySemReal->id_variedad = $variedad->id_variedad;
                                     $objProySemReal->codigo_semana = $semana;
                                 }else{
-                                    $objProySemReal = ProyeccionVentaSemanalReal::find($objProyeccionVentaSemanal->id_proyeccion_venta_semanal_real);
-                                }
+                                $objProySemReal = ProyeccionVentaSemanalReal::find($objProyeccionVentaSemanal->id_proyeccion_venta_semanal_real);
+                            }
 
-                                if($objSemana[$x]->fecha_final >= $fechaActual->toDateString()){ //Comentar cuando se va a recopilar por primera vez toda la informacion en la tabla proyeccion_venta_semanal_real
-                                    $objProySemReal->valor =0;
-                                    $objProySemReal->cajas_equivalentes = 0;
-                                    $objProySemReal->cajas_fisicas = 0;
-                                    foreach ($pedidos as $pedido){
-                                        if($pedido->fecha_pedido >= $fechaActual->toDateString()){ //Comentar cuando se va a recopilar por primera vez toda la informacion en la tabla proyeccion_venta_semanal_real
-                                            Info("Pedido incluido de fecha: ". $pedido->fecha_pedido);
-                                            if(in_array($variedad->id_variedad,$pedido->getVariedades())){
-                                                $objProySemReal->valor += $pedido->getPrecioByVariedad($variedad->id_variedad);
-                                                $objProySemReal->cajas_equivalentes += $pedido->getCajasByVariedad($variedad->id_variedad);
-                                                $objProySemReal->cajas_fisicas += $pedido->getCajasFisicasByVariedad($variedad->id_variedad);
-                                            }
-                                            /*$proyeccionVentaSemanal = ProyeccionVentaSemanal::where([
+                            if($objSemana[$x]->fecha_final >= $fechaActual->toDateString()){ //Comentar cuando se va a recopilar por primera vez toda la informacion en la tabla proyeccion_venta_semanal_real
+                                $objProySemReal->valor =0;
+                                $objProySemReal->cajas_equivalentes = 0;
+                                $objProySemReal->cajas_fisicas = 0;
+                                foreach ($pedidos as $pedido){
+                                    if($pedido->fecha_pedido >= $fechaActual->toDateString()){ //Comentar cuando se va a recopilar por primera vez toda la informacion en la tabla proyeccion_venta_semanal_real
+                                        Info("Pedido incluido de fecha: ". $pedido->fecha_pedido);
+                                        if(in_array($variedad->id_variedad,$pedido->getVariedades())){
+                                            $objProySemReal->valor += $pedido->getPrecioByVariedad($variedad->id_variedad);
+                                            $objProySemReal->cajas_equivalentes += $pedido->getCajasByVariedad($variedad->id_variedad);
+                                            $objProySemReal->cajas_fisicas += $pedido->getCajasFisicasByVariedad($variedad->id_variedad);
+                                        }
+                                        /*$proyeccionVentaSemanal = ProyeccionVentaSemanal::where([
                                                 ['id_variedad',$variedad->id_variedad],
                                                 ['id_cliente',$cliente->id_cliente],
                                                 ['codigo_semana',$semana]
@@ -148,16 +146,17 @@ class VentaSemanalReal extends Command
                                                 $objProySemReal->cajas_equivalentes_proy = $proyeccionVentaSemanal->cajas_equivalentes;
                                                 $objProySemReal->cajas_fisicas_proy = $proyeccionVentaSemanal->cajas_fisicas;
                                             }*/
-                                        }
                                     }
-                                    $objProySemReal->save();
                                 }
+                                $objProySemReal->save();
                             }
                         }
                     }
+                }
             }else{
                 Info('La semana hasta no puede ser menor a la semana desde en el comando VentaSemanalReal');
             }
+
             $fin = microtime(true);
             Info("El script se completo en : ".(number_format(($fin-$inicio),2,".","")). " segundos");
     }

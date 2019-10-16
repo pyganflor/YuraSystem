@@ -4,10 +4,10 @@ namespace yura\Modelos;
 
 use Illuminate\Database\Eloquent\Model;
 
-class ProyeccionVentaSemanalReal extends Model
+class PrecioVariedadCliente extends Model
 {
-    protected $table = 'proyeccion_venta_semanal_real';
-    protected $primaryKey = 'id_proyeccion_venta_semanal_real';
+    protected $table = 'precio_variedad_cliente';
+    protected $primaryKey = 'id_precio_variedad_cliente';
     public $incrementing = false;
     public $timestamps = false;
 
@@ -15,11 +15,7 @@ class ProyeccionVentaSemanalReal extends Model
         'id_cliente',
         'id_variedad',
         'fecha_registro',
-        'estado',
-        'valor',
-        'cajas_equivalentes',
-        'codigo_semana',
-        'cajas_fisicas',
+        'precio'
     ];
 
     public function cliente(){
