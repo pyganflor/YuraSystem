@@ -880,7 +880,7 @@
             };
             $('#tr_actualizar_curva').LoadingOverlay('show');
             $.post('{{url('proy_cosecha/actualizar_curva')}}', datos, function (retorno) {
-                listar_proyecciones('div_listado_proyecciones');
+                listar_proyecciones('celda_button_curva');
             }, 'json').fail(function (retorno) {
                 console.log(retorno);
                 alerta_errores(retorno.responseText);
