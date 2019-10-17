@@ -919,7 +919,7 @@
             };
             $('#tr_actualizar_semana_cosecha').LoadingOverlay('show');
             $.post('{{url('proy_cosecha/actualizar_semana_cosecha')}}', datos, function (retorno) {
-                listar_proyecciones('div_listado_proyecciones');
+                listar_proyecciones('celda_button_semana_cosecha');
             }, 'json').fail(function (retorno) {
                 console.log(retorno);
                 alerta_errores(retorno.responseText);

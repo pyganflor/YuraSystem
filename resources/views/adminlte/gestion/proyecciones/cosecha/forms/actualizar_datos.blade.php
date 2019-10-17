@@ -65,7 +65,7 @@
         <td class="text-cetner" style="border-color: #9d9d9d">
             <input type="number" id="semana_cosecha" max="52" style="width: 100%;" class="text-center" value="14">
         </td>
-        <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef" width="50px">
+        <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef" width="50px" id="celda_button_semana_cosecha">
             <button class="btn btn-xs btn-success" type="button" onclick="actualizar_semana_cosecha()">
                 <i class="fa fa-fw fa-save"></i>
             </button>
