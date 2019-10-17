@@ -29,7 +29,7 @@
                                         <input type="number" name="factor_cliente_{{$proyeccion->cliente->id_cliente}}"
                                                value="{{$proyeccion->cliente->factor}}" id="factor_cliente_{{$proyeccion->id_cliente}}" style="width:80px;text-align:center">
                                         <div class="form-group">
-                                            <button class="btn btn-success btn-xs" title="Guardar factor"  onclick="store_factor_cliente('{{$proyeccion->id_cliente}}','{{$idVariedad}}')" style="position: relative;border-radius: 0;bottom: 2px;padding-top: 2px;padding-bottom: 2px;">
+                                            <button type="button" class="btn btn-success btn-xs" title="Guardar factor"  onclick="store_factor_cliente('{{$proyeccion->id_cliente}}','{{$idVariedad}}')" style="position: relative;border-radius: 0;bottom: 2px;padding-top: 2px;padding-bottom: 2px;">
                                                 <i class="fa fa-floppy-o"></i>
                                             </button>
                                         </div>
@@ -43,7 +43,7 @@
                                         <input type="number" id="precio_variedad_{{$proyeccion->id_cliente}}" name="precio_variedad_{{$proyeccion->id_cliente}}"
                                                value="{{isset($proyeccion->cliente->precio_promedio($idVariedad)->precio) ? $proyeccion->cliente->precio_promedio($idVariedad)->precio : 0}}" style="width:80px;text-align:center">
                                         <div class="form-group">
-                                            <button class="btn btn-success btn-xs" title="Guardar precio promedio"  onclick="store_precio_promedio('{{$proyeccion->id_cliente}}','{{$idVariedad}}')" style="position: relative;border-radius: 0;bottom: 2px;padding-top: 2px;padding-bottom: 2px;">
+                                            <button type="button" class="btn btn-success btn-xs" title="Guardar precio promedio"  onclick="store_precio_promedio('{{$proyeccion->id_cliente}}','{{$idVariedad}}')" style="position: relative;border-radius: 0;bottom: 2px;padding-top: 2px;padding-bottom: 2px;">
                                                 <i class="fa fa-floppy-o"></i>
                                             </button>
                                         </div>
