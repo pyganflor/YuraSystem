@@ -55,7 +55,7 @@ class Ciclo extends Model
             ->where('r.estado', '=', 1)
             ->where('dr.id_modulo', '=', $this->id_modulo)
             ->where('r.fecha_ingreso', '>=', opDiasFecha('+', 1, $this->fecha_inicio))
-            ->where('r.fecha_ingreso', '<=', $fin.' 23:59:59')
+            ->where('r.fecha_ingreso', '<=', $fin . ' 23:59:59')
             ->get()[0]->cantidad;
 
         return $r;
@@ -132,5 +132,15 @@ class Ciclo extends Model
             else
                 return $this->plantas_iniciales;
         return 0;
+    }
+
+    public function semana()
+    {
+        return Semana::All()
+            ->where('estado', 1)
+            ->where('id_variedad', $this->id_variedad)
+            ->where('fecha_inicial', '<=', $this->fecha_inicio)
+            ->where('fecha_final', '>=', $this->fecha_inicio)
+            ->first();
     }
 }
