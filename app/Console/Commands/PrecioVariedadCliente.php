@@ -22,7 +22,7 @@ class PrecioVariedadCliente extends Command
      *
      * @var string
      */
-    protected $description = 'Obtiene el precio promedio cada variedad por cliente de los pedido anterirores a un mes';
+    protected $description = 'Obtiene el precio promedio por ramo equivalente de cada variedad por cliente de los pedido anterirores a un mes de la fecha actual';
 
     /**
      * Create a new command instance.
@@ -61,14 +61,17 @@ class PrecioVariedadCliente extends Command
             ->whereIn('id_cliente',$idsClientes)->get();
 
         $preciosXvariedad=[];
+        $calibreEstandar = getCalibreRamoEstandar()->nombre;
         foreach ($pedidos as $pedido) {
             foreach($pedido->detalles as $detPed){
                 foreach($detPed->cliente_especificacion->especificacion->especificacionesEmpaque as $m => $esp_emp){
                     foreach ($esp_emp->detalles as $n => $detEspEmp){
+                       $calibreDetEspemp = $detEspEmp->clasificacion_ramo->nombre;
+                       $ramoEquivalente = $calibreDetEspemp/$calibreEstandar;
                        $arrDetEspEmp = explode("|",$detPed->precio);
                         foreach ($arrDetEspEmp as $item) {
                             $x = explode(";",$item);
-                            $precio = $x[0];
+                            $precio = $x[0]/$ramoEquivalente;
                             if($detEspEmp->id_detalle_especificacionempaque == $x[1]){
                                 $preciosXvariedad[$pedido->id_cliente][$detEspEmp->id_variedad][] = $precio;
                             }
