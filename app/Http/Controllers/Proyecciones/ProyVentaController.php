@@ -8,6 +8,7 @@ use yura\Modelos\Semana;
 use yura\Modelos\Submenu;
 use yura\Modelos\Cliente;
 use yura\Modelos\ProyeccionVentaSemanalReal;
+use yura\Modelos\PrecioVariedadCliente;
 
 class ProyVentaController extends Controller
 {
