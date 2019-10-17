@@ -20,21 +20,35 @@
                     <div class="btn-group" style="width:100%" data-toggle="tooltip" data-placement="top" title="{{$cliente}}">
                         <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-expanded="true" style="width:100%">
                             <b>{{str_limit($cliente,15)}}</b>
-                            <input type="hidden" id="precio_variedad_{{$proyeccion->id_cliente}}" name="precio_variedad_{{$proyeccion->id_cliente}}"
-                                   value="{{$proyeccion->cliente->precio_promedio($idVariedad)->precio}}">
                         </button>
                         <ul class="dropdown-menu">
                             <li>
-                                <label class="control-label col-sm-3" for="factor_cliente">Factor:</label>
-                                <div class="col-sm-5">
-                                    <input type="number" name="factor_cliente_{{$proyeccion->cliente->id_cliente}}" style="left: 4px;width: 60px;height: 22px;position: relative;top: 1px;text-align:center"
-                                           value="{{$proyeccion->cliente->factor}}" id="factor_cliente_{{$proyeccion->id_cliente}}" >
-                                </div>
-                                <div class="col-sm-4">
-                                    <button class="btn btn-success btn-xs" title="Guardar factor"  onclick="store_factor_cliente('{{$proyeccion->id_cliente}}','{{$idVariedad}}')">
-                                        <i class="fa fa-floppy-o"></i>
-                                    </button>
-                                </div>
+                                <form class="form-inline" >
+                                    <div class="form-group">
+                                        <label class="control-label" for="factor_cliente">Factor:</label>
+                                        <input type="number" name="factor_cliente_{{$proyeccion->cliente->id_cliente}}"
+                                               value="{{$proyeccion->cliente->factor}}" id="factor_cliente_{{$proyeccion->id_cliente}}" style="width:80px;text-align:center">
+                                        <div class="form-group">
+                                            <button class="btn btn-success btn-xs" title="Guardar factor"  onclick="store_factor_cliente('{{$proyeccion->id_cliente}}','{{$idVariedad}}')" style="position: relative;border-radius: 0;bottom: 2px;padding-top: 2px;padding-bottom: 2px;">
+                                                <i class="fa fa-floppy-o"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </li>
+                            <li>
+                                <form class="form-inline" >
+                                    <div class="form-group">
+                                        <label class="control-label" for="precio_variedad_{{$proyeccion->id_cliente}}">Precio:</label>
+                                        <input type="number" id="precio_variedad_{{$proyeccion->id_cliente}}" name="precio_variedad_{{$proyeccion->id_cliente}}"
+                                               value="{{isset($proyeccion->cliente->precio_promedio($idVariedad)->precio) ? $proyeccion->cliente->precio_promedio($idVariedad)->precio : 0}}" style="width:80px;text-align:center">
+                                        <div class="form-group">
+                                            <button class="btn btn-success btn-xs" title="Guardar precio promedio"  onclick="store_precio_promedio('{{$proyeccion->id_cliente}}','{{$idVariedad}}')" style="position: relative;border-radius: 0;bottom: 2px;padding-top: 2px;padding-bottom: 2px;">
+                                                <i class="fa fa-floppy-o"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
                             </li>
                         </ul>
                     </div>

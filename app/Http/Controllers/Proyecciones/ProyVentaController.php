@@ -122,4 +122,42 @@ class ProyVentaController extends Controller
             'success' => $success
         ];
     }
+
+    public function storePrecioPromedio(Request $request){
+        $success = false;
+        $msg = '<div class="alert alert-danger text-center">' .
+            '<p> Ha ocurrido un error al guardar el precio promedio, intente nuevamente</p>'
+            . '</div>';
+
+        $objprecioVariedadCliente = PrecioVariedadCliente::where([
+            ['id_cliente',$request->id_cliente],
+            ['id_variedad',$request->id_variedad]
+        ]);
+        $data = $objprecioVariedadCliente->first();
+        if(isset($data)){
+            $objprecioVariedadCliente->update([
+                'precio' => $request->precio_promedio
+            ]);
+        }else{
+            $objprecioVariedadCliente = new PrecioVariedadCliente;
+            $objprecioVariedadCliente->id_cliente = $request->id_cliente;
+            $objprecioVariedadCliente->id_variedad = $request->id_variedad;
+            $objprecioVariedadCliente->precio = $request->precio_promedio;
+            $objprecioVariedadCliente->save();
+        }
+
+        if($objprecioVariedadCliente){
+            $success = true;
+            $msg = '<div class="alert alert-success text-center">' .
+                '<p> Se ha guardado el precio con éxito </p>'
+                .'</div>';
+        }
+
+        return [
+            'mensaje' => $msg,
+            'success' => $success
+        ];
+    }
+
+
 }

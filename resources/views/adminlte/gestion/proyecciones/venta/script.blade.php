@@ -62,4 +62,20 @@
         });
     }
 
+    function store_precio_promedio(id_cliente,id_variedad){
+        $.LoadingOverlay('show');
+        datos = {
+            _token: '{{csrf_token()}}',
+            id_cliente :id_cliente,
+            id_variedad : id_variedad,
+            precio_promedio : $("#precio_variedad_"+id_cliente).val()
+        };
+
+        post_jquery('{{url('proy_venta_semanal/store_precio_promedio')}}', datos, function () {
+            cerrar_modals();
+            //listar_proyecciones_venta_semanal();
+        });
+        $.LoadingOverlay('hide');
+    }
+
 </script>
