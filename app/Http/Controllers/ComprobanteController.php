@@ -659,8 +659,8 @@ class ComprobanteController extends Controller
                                                 $objDesgloseEnvioFactura = new DesgloseEnvioFactura;
                                                 $objDesgloseEnvioFactura->id_comprobante = $model_comprobante->id_comprobante;
                                                 $objDesgloseEnvioFactura->codigo_principal = 'ENV' . str_pad($request->id_envio, 9, "0", STR_PAD_LEFT);
-                                                $objDesgloseEnvioFactura->descripcion = $descripcion_detalle;
-                                                $objDesgloseEnvioFactura->cantidad = number_format(($m_c->cantidad * $m_c->detalle_especificacionempaque->especificacion_empaque->cantidad * $m_c->marcacion->piezas), 2, ".", "");
+                                                $objDesgloseEnvioFactura->descripcion = $descripcion_detalle;                                                                                   //ESTO NO ES
+                                                $objDesgloseEnvioFactura->cantidad = number_format($m_c->cantidad, 2, ".", "");
                                                 $objDesgloseEnvioFactura->precio_unitario = number_format($precio, 2, ".", "");
                                                 $objDesgloseEnvioFactura->descuento = '0.00';
                                                 $objDesgloseEnvioFactura->precio_total_sin_impuesto = number_format($precio_x_variedad, 2, ".", "");
