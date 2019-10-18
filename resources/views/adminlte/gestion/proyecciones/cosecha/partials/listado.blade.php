@@ -783,7 +783,7 @@
             datos = {
                 semanas: semanas,
                 modulos: modulos,
-            }
+            };
             get_jquery('{{url('proy_cosecha/actualizar_datos')}}', datos, function (retorno) {
                 modal_view('modal-view_actualizar_datos', retorno, '<i class="fa fa-fw fa-edit"></i> Actualizar datos', true, false, '{{isPC() ? '50%' : ''}}');
             });
@@ -808,8 +808,89 @@
         }
 
         if (semanas.length > 0 && modulos.length > 0) {
-            get_jquery('{{url('proy_cosecha/mover_fechas')}}', {}, function (retorno) {
+            datos = {
+                semanas: semanas,
+                modulos: modulos,
+            };
+            get_jquery('{{url('proy_cosecha/mover_fechas')}}', datos, function (retorno) {
                 modal_view('modal-view_mover_cosecha', retorno, '<i class="fa fa-fw fa-edit"></i> Mover cosecha', true, false, '{{isPC() ? '50%' : ''}}');
+            });
+        }
+    }
+
+    function mover_cosecha() {
+        var all = $('.check_id_semana');
+        var semanas = [];
+        for (i = 0; i < all.length; i++) {
+            if ($('#' + all[i].id).prop('checked') == true) {
+                semanas.push(all[i].id.substr(10));
+            }
+        }
+
+        all = $('.check_id_modulo');
+        var modulos = [];
+        for (i = 0; i < all.length; i++) {
+            if ($('#' + all[i].id).prop('checked') == true) {
+                modulos.push(all[i].id.substr(10));
+            }
+        }
+
+        if (semanas.length > 0 && modulos.length > 0) {
+            datos = {
+                _token: '{{csrf_token()}}',
+                mover: $('#cosecha').val(),
+                check_save_proy: $('#check_save_proyeccion').prop('checked'),
+                semanas: semanas,
+                modulos: modulos,
+                variedad: $('#filtro_predeterminado_variedad').val(),
+                semana_hasta: $('#filtro_predeterminado_hasta').val(),
+            };
+            $('#tr_mover_cosecha').LoadingOverlay('show');
+            $.post('{{url('proy_cosecha/mover_cosecha')}}', datos, function (retorno) {
+                listar_proyecciones('celda_button_mover_cosecha');
+            }, 'json').fail(function (retorno) {
+                console.log(retorno);
+                alerta_errores(retorno.responseText);
+            }).always(function () {
+                $('#tr_mover_cosecha').LoadingOverlay('hide');
+            });
+        }
+    }
+
+    function mover_inicio_proy() {
+        var all = $('.check_id_semana');
+        var semanas = [];
+        for (i = 0; i < all.length; i++) {
+            if ($('#' + all[i].id).prop('checked') == true) {
+                semanas.push(all[i].id.substr(10));
+            }
+        }
+
+        all = $('.check_id_modulo');
+        var modulos = [];
+        for (i = 0; i < all.length; i++) {
+            if ($('#' + all[i].id).prop('checked') == true) {
+                modulos.push(all[i].id.substr(10));
+            }
+        }
+
+        if (semanas.length > 0 && modulos.length > 0) {
+            datos = {
+                _token: '{{csrf_token()}}',
+                mover: $('#ini_proy').val(),
+                semanas: semanas,
+                modulos: modulos,
+                variedad: $('#filtro_predeterminado_variedad').val(),
+                semana_hasta: $('#filtro_predeterminado_hasta').val(),
+            };
+            $('#tr_mover_inicio_proy').LoadingOverlay('show');
+            $.post('{{url('proy_cosecha/mover_inicio_proy')}}', datos, function (retorno) {
+                listar_proyecciones('celda_button_mover_inicio_proy');
+            }, 'json').fail(function (retorno) {
+                console.log(retorno);
+                alerta_errores(retorno.responseText);
+            }).always(function () {
+                $('#tr_mover_inicio_proy').LoadingOverlay('hide');
             });
         }
     }

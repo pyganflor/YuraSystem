@@ -161,7 +161,7 @@
     </tr>
     <tr>
         <th class="text-center" colspan="4" style="border-color: #9d9d9d; background-color: #e9ecef">
-            <input type="checkbox" class="mouse-hand" id="check_save_semana">
+            <input type="checkbox" class="mouse-hand" id="check_save_semana" checked>
             <label for="check_save_semana" class="mouse-hand">Guardar en semana(s)</label>
         </th>
     </tr>
