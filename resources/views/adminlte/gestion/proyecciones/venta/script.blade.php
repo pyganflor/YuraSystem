@@ -9,7 +9,9 @@
             id_planta: $(".planta").val(),
             id_variedad: $(".variedad").val(),
             desde: $(".desde").val(),
-            hasta: $(".hasta").val()
+            hasta: $(".hasta").val(),
+            criterio : $("#filtro_predeterminado_criterio").val(),
+            top : $("#filtro_predeterminado_top").val()
         };
         get_jquery('{{url('proy_venta_semanal/listar_proyeccion_venta_semanal')}}', data, function (retorno) {
             $('#listado_proyecciones_venta_semanal').html(retorno);

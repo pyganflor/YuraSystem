@@ -13,7 +13,7 @@
                 Clientes / Semanas
             </td>
         </tr>
-        @foreach($proyeccionVentaSemanalReal as $cliente => $semana)
+        {{--@foreach($proyeccionVentaSemanalReal as $cliente => $semana)
             @php $proyeccion = array_values($semana)[0]['proyeccion'] @endphp
             <tr>
                 <td class="text-center" style="border-left:2px solid #000000;border-right:2px solid #000000;border-top:2px solid #000000;width: 250px">
@@ -85,7 +85,7 @@
                 @endforeach
                 <td class="text-center" style="border-bottom:2px solid #000000;border-left:2px solid #000000;border-right:2px solid #000000;width: 250px">Proyectado</td>
             </tr>
-        @endforeach
+        @endforeach--}}
         <tr>
             <td class="text-center" style="background-color: #e9ecef;width:250px;border-right: 2px solid #000000;">
                 <b>Totales</b>

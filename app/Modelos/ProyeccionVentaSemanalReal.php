@@ -20,6 +20,7 @@ class ProyeccionVentaSemanalReal extends Model
         'cajas_equivalentes',
         'codigo_semana',
         'cajas_fisicas',
+        'cajas_fisicas_anno_anterior'
     ];
 
     public function cliente(){

@@ -25,32 +25,83 @@ class ProyVentaController extends Controller
 
         $desde = isset($request->desde) ? $request->desde : now()->toDateString();
         $hasta = isset($request->hasta) ? $request->hasta : now()->toDateString();
-
         $semana_desde = Semana::where('codigo', $desde)->first();
         $semana_hasta = Semana::where('codigo', $hasta)->first();
+        $top = isset($request->top) ? $request->top : 10;
+        switch ($request->criterio){
+            case 'CF':
+                $columna =  'cajas_fisicas';
+                break;
+            case 'CE':
+                $columna =  'cajas_equivalentes';
+                break;
+            default:
+               $columna =  'valor';
+                break;
+        }
 
         if (isset($semana_desde) && isset($semana_hasta)) {
 
             $objProyeccionVentaSemanalReal = ProyeccionVentaSemanalReal::whereBetween('codigo_semana',[$semana_desde->codigo,$semana_hasta->codigo]);
-            $objClientes = Cliente::where([
+            /*$objClientes = Cliente::where([
                 ['cliente.estado',1],
                 ['dc.estado',1]
-           ])->join('detalle_cliente as dc','cliente.id_cliente','dc.id_cliente');
+           ])->join('detalle_cliente as dc','cliente.id_cliente','dc.id_cliente');*/
+            //$objClientes = $objClientes->get();
 
             if(isset($request->id_cliente))
-                $objClientes->where('cliente.id_cliente',$request->id_cliente);
+                $objProyeccionVentaSemanalReal->where('cliente.id_cliente',$request->id_cliente);
 
             if(isset($request->id_variedad))
                 $objProyeccionVentaSemanalReal->where('id_variedad',$request->id_variedad);
 
             $objProyeccionVentaSemanalReal = $objProyeccionVentaSemanalReal->get();
-            $objClientes = $objClientes->get();
 
-            $data =[];
-            /*foreach($objProyeccionVentaSemanalReal as $proyeccionVentaSemanalReal) {
-                $data[$proyeccionVentaSemanalReal->id_cliente][$proyeccionVentaSemanalReal->codigo_semana][] = $proyeccionVentaSemanalReal;
-            }*/
-            if(isset($request->id_variedad)){
+            $arrProyeccionVentaSemanalReal =[];
+            foreach($objProyeccionVentaSemanalReal as $proyeccionVentaSemanalReal){
+                $arrProyeccionVentaSemanalReal[$proyeccionVentaSemanalReal->id_cliente][$proyeccionVentaSemanalReal->codigo_semana] =[
+                    'cajas_fisicas' => $proyeccionVentaSemanalReal->cajas_fisicas,
+                    'cajas_equivalentes' => $proyeccionVentaSemanalReal->cajas_equivalentes,
+                    'valor' => $proyeccionVentaSemanalReal->valor,
+                ];
+            }
+            dump($arrProyeccionVentaSemanalReal);
+            $totales_x_cliente=[];
+            foreach($arrProyeccionVentaSemanalReal as $idCliente => $cliente){
+                $cf=0;
+                $ce=0;
+                $v =0;
+                foreach ($cliente as $semana => $item) {
+                    $totales_x_cliente[$idCliente] = [
+                        'cajas_fisicas_totales'=>$cf=+$item['cajas_fisicas'],
+                        'cajas_cajas_equivalentes'=>$ce=+$item['cajas_equivalentes'],
+                        'valor_total' => $v+=$item['valor']
+                    ];
+                }
+
+               //$coleccion =  collect($arrProyeccionVentaSemanalReal[$idCliente])->put();
+            }
+
+            dump($totales_x_cliente);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            /*if(isset($request->id_variedad)){
                 foreach($objClientes as $x => $cliente){
                     foreach($objProyeccionVentaSemanalReal as $proyeccionVentaSemanalReal){
                         if($cliente->id_cliente === $proyeccionVentaSemanalReal->id_cliente){
@@ -60,7 +111,7 @@ class ProyVentaController extends Controller
                         }
                     }
                 }
-            }
+            }*/
 
             return view('adminlte.gestion.proyecciones.venta.partials.listado',[
                 'proyeccionVentaSemanalReal' => $data,
