@@ -181,6 +181,18 @@ class ProyeccionUpdateCampo implements ShouldQueue
                 $proy->semana_poda_siembra = $this->valor;
             }
         }
+        if ($this->campo == 'PlantasIniciales') {
+            $proy->plantas_iniciales = $this->valor;
+        }
+        if ($this->campo == 'Desecho') {
+            $proy->desecho = $this->valor;
+        }
+        if ($this->campo == 'TallosPlanta') {
+            $proy->tallos_planta = $this->valor;
+        }
+        if ($this->campo == 'TallosRamo') {
+            $proy->tallos_ramo = $this->valor;
+        }
         $proy->save();
 
     }

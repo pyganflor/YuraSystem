@@ -1310,7 +1310,7 @@ class proyCosechaController extends Controller
 
 
                         CicloUpdateCampo::dispatch($ciclo->id_ciclo, 'Curva', $request->curva)
-                            ->onQueue('proy_cosecha/actualizar_curva')->onConnection('sync');
+                            ->onQueue('proy_cosecha/actualizar_curva');
 
                         if ($semana_desde != '')
                             ProyeccionUpdateSemanal::dispatch($semana_desde, $semana_fin->codigo, $obj['id_variedad'], $obj['id_modulo'], 0)
@@ -1700,7 +1700,7 @@ class proyCosechaController extends Controller
                         $semana_fin = getLastSemanaByVariedad($obj['id_variedad']);
 
                         CicloUpdateCampo::dispatch($ciclo->id_ciclo, 'SemanaCosecha', $request->semana_cosecha)
-                            ->onQueue('proy_cosecha/actualizar_semana_cosecha')->onConnection('sync');
+                            ->onQueue('proy_cosecha/actualizar_semana_cosecha');
 
                         if ($semana_desde != '')
                             ProyeccionUpdateSemanal::dispatch($semana_desde, $semana_fin->codigo, $obj['id_variedad'], $obj['id_modulo'], 0)
@@ -1891,6 +1891,285 @@ class proyCosechaController extends Controller
             /* ================ SEMANAS ===================== */
             if ($request->check_save_semana == 'true') {
                 $sem->semana_poda = $request->semana_cosecha;
+                $sem->save();
+            }
+        }
+        return [
+            'success' => true,
+            'mensaje' => '<div class="alert alert-success text-center">Se ha guardado la información satisfactoriamente</div>',
+        ];
+    }
+
+    public function actualizar_plantas_iniciales(Request $request)
+    {
+        foreach ($request->semanas as $sem) {
+            $sem = Semana::find($sem);
+            foreach ($request->modulos as $mod) {
+                /* ===================== CICLO ===================== */
+                $ciclo = Ciclo::All()
+                    ->where('id_variedad', $request->variedad)
+                    ->where('id_modulo', $mod)
+                    ->where('fecha_inicio', '>=', $sem->fecha_inicial)
+                    ->where('fecha_inicio', '<=', $sem->fecha_final)
+                    ->where('estado', 1)
+                    ->first();
+
+                /* ====================== PROYECCION ===================== */
+                $proyeccion = ProyeccionModulo::All()
+                    ->where('id_variedad', $request->variedad)
+                    ->where('id_modulo', $mod)
+                    ->where('id_semana', $sem->id_semana)
+                    ->where('estado', 1)
+                    ->first();
+
+                if ($ciclo != '') {
+                    $proyecciones = ProyeccionModuloSemana::where('estado', 1)
+                        ->where('tabla', 'C')
+                        ->where('modelo', $ciclo->id_ciclo)
+                        ->orderBy('semana')
+                        ->get();
+
+                    $pos_cosecha = 0;
+                    foreach ($proyecciones as $pos_proy => $proy) {
+                        $proy->plantas_iniciales = $request->plantas_iniciales;
+                        if ($proy->tipo == 'T') {
+                            $total = $request->plantas_iniciales * $proy->tallos_planta;
+                            $total = $total * ((100 - $proy->desecho) / 100);
+                            $proy->proyectados = round($total * (explode('-', $proy->curva)[$pos_cosecha] / 100), 2);
+                            $pos_cosecha++;
+                        }
+                        $proy->save();
+                    }
+
+                    /* ========================= ACTUALIZAR LAS TABLAS CICLO y PROYECCION_MODULO ======================== */
+                    CicloUpdateCampo::dispatch($ciclo->id_ciclo, 'PlantasIniciales', $request->plantas_iniciales)
+                        ->onQueue('proy_cosecha/actualizar_plantas_iniciales');
+                }
+                if ($proyeccion != '') {
+                    $proyecciones = ProyeccionModuloSemana::where('estado', 1)
+                        ->where('tabla', 'P')
+                        ->where('modelo', $proyeccion->id_proyeccion_modulo)
+                        ->orderBy('semana')
+                        ->get();
+
+                    $pos_cosecha = 0;
+                    foreach ($proyecciones as $pos_proy => $proy) {
+                        $proy->plantas_iniciales = $request->plantas_iniciales;
+                        if ($proy->tipo == 'T') {
+                            $total = $request->plantas_iniciales * $proy->tallos_planta;
+                            $total = $total * ((100 - $proy->desecho) / 100);
+                            $proy->proyectados = round($total * (explode('-', $proy->curva)[$pos_cosecha] / 100), 2);
+                            $pos_cosecha++;
+                        }
+                        $proy->save();
+                    }
+
+                    ProyeccionUpdateCampo::dispatch($proyeccion->id_proyeccion_modulo, 'PlantasIniciales', $request->plantas_iniciales)
+                        ->onQueue('proy_cosecha/actualizar_plantas_iniciales');
+                }
+            }
+        }
+        return [
+            'success' => true,
+            'mensaje' => '<div class="alert alert-success text-center">Se ha guardado la información satisfactoriamente</div>',
+        ];
+    }
+
+    public function actualizar_desecho(Request $request)
+    {
+        foreach ($request->semanas as $sem) {
+            $sem = Semana::find($sem);
+            foreach ($request->modulos as $mod) {
+                /* ===================== CICLO ===================== */
+                $ciclo = Ciclo::All()
+                    ->where('id_variedad', $request->variedad)
+                    ->where('id_modulo', $mod)
+                    ->where('fecha_inicio', '>=', $sem->fecha_inicial)
+                    ->where('fecha_inicio', '<=', $sem->fecha_final)
+                    ->where('estado', 1)
+                    ->first();
+
+                /* ====================== PROYECCION ===================== */
+                $proyeccion = ProyeccionModulo::All()
+                    ->where('id_variedad', $request->variedad)
+                    ->where('id_modulo', $mod)
+                    ->where('id_semana', $sem->id_semana)
+                    ->where('estado', 1)
+                    ->first();
+
+                if ($ciclo != '') {
+                    $proyecciones = ProyeccionModuloSemana::where('estado', 1)
+                        ->where('tabla', 'C')
+                        ->where('modelo', $ciclo->id_ciclo)
+                        ->orderBy('semana')
+                        ->get();
+
+                    $pos_cosecha = 0;
+                    foreach ($proyecciones as $pos_proy => $proy) {
+                        $proy->desecho = $request->desecho;
+                        if ($proy->tipo == 'T') {
+                            $total = $proy->plantas_iniciales * $proy->tallos_planta;
+                            $total = $total * ((100 - $request->desecho) / 100);
+                            $proy->proyectados = round($total * (explode('-', $proy->curva)[$pos_cosecha] / 100), 2);
+                            $pos_cosecha++;
+                        }
+                        $proy->save();
+                    }
+
+                    /* ========================= ACTUALIZAR LAS TABLAS CICLO y PROYECCION_MODULO ======================== */
+                    CicloUpdateCampo::dispatch($ciclo->id_ciclo, 'Desecho', $request->desecho)
+                        ->onQueue('proy_cosecha/actualizar_desecho');
+                }
+                if ($proyeccion != '') {
+                    $proyecciones = ProyeccionModuloSemana::where('estado', 1)
+                        ->where('tabla', 'P')
+                        ->where('modelo', $proyeccion->id_proyeccion_modulo)
+                        ->orderBy('semana')
+                        ->get();
+
+                    $pos_cosecha = 0;
+                    foreach ($proyecciones as $pos_proy => $proy) {
+                        $proy->desecho = $request->desecho;
+                        if ($proy->tipo == 'T') {
+                            $total = $proy->plantas_iniciales * $proy->tallos_planta;
+                            $total = $total * ((100 - $request->desecho) / 100);
+                            $proy->proyectados = round($total * (explode('-', $proy->curva)[$pos_cosecha] / 100), 2);
+                            $pos_cosecha++;
+                        }
+                        $proy->save();
+                    }
+
+                    ProyeccionUpdateCampo::dispatch($proyeccion->id_proyeccion_modulo, 'Desecho', $request->desecho)
+                        ->onQueue('proy_cosecha/actualizar_desecho');
+                }
+            }
+
+            /* ================ SEMANAS ===================== */
+            if ($request->check_save_semana == 'true') {
+                $sem->desecho = $request->desecho;
+                $sem->save();
+            }
+        }
+        return [
+            'success' => true,
+            'mensaje' => '<div class="alert alert-success text-center">Se ha guardado la información satisfactoriamente</div>',
+        ];
+    }
+
+    public function actualizar_tallos_planta(Request $request)
+    {
+        foreach ($request->semanas as $sem) {
+            $sem = Semana::find($sem);
+            foreach ($request->modulos as $mod) {
+                /* ===================== CICLO ===================== */
+                $ciclo = Ciclo::All()
+                    ->where('id_variedad', $request->variedad)
+                    ->where('id_modulo', $mod)
+                    ->where('fecha_inicio', '>=', $sem->fecha_inicial)
+                    ->where('fecha_inicio', '<=', $sem->fecha_final)
+                    ->where('estado', 1)
+                    ->first();
+
+                /* ====================== PROYECCION ===================== */
+                $proyeccion = ProyeccionModulo::All()
+                    ->where('id_variedad', $request->variedad)
+                    ->where('id_modulo', $mod)
+                    ->where('id_semana', $sem->id_semana)
+                    ->where('estado', 1)
+                    ->first();
+
+                if ($ciclo != '') {
+                    $proyecciones = ProyeccionModuloSemana::where('estado', 1)
+                        ->where('tabla', 'C')
+                        ->where('modelo', $ciclo->id_ciclo)
+                        ->orderBy('semana')
+                        ->get();
+
+                    $pos_cosecha = 0;
+                    foreach ($proyecciones as $pos_proy => $proy) {
+                        $proy->tallos_planta = $request->tallos_planta;
+                        if ($proy->tipo == 'T') {
+                            $total = $proy->plantas_iniciales * $proy->tallos_planta;
+                            $total = $total * ((100 - $proy->desecho) / 100);
+                            $proy->proyectados = round($total * (explode('-', $proy->curva)[$pos_cosecha] / 100), 2);
+                            $pos_cosecha++;
+                        }
+                        $proy->save();
+                    }
+
+                    /* ========================= ACTUALIZAR LAS TABLAS CICLO y PROYECCION_MODULO ======================== */
+                    CicloUpdateCampo::dispatch($ciclo->id_ciclo, 'TallosPlanta', $request->tallos_planta)
+                        ->onQueue('proy_cosecha/actualizar_tallos_planta');
+                }
+                if ($proyeccion != '') {
+                    $proyecciones = ProyeccionModuloSemana::where('estado', 1)
+                        ->where('tabla', 'P')
+                        ->where('modelo', $proyeccion->id_proyeccion_modulo)
+                        ->orderBy('semana')
+                        ->get();
+
+                    $pos_cosecha = 0;
+                    foreach ($proyecciones as $pos_proy => $proy) {
+                        $proy->tallos_planta = $request->tallos_planta;
+                        if ($proy->tipo == 'T') {
+                            $total = $proy->plantas_iniciales * $proy->tallos_planta;
+                            $total = $total * ((100 - $proy->desecho) / 100);
+                            $proy->proyectados = round($total * (explode('-', $proy->curva)[$pos_cosecha] / 100), 2);
+                            $pos_cosecha++;
+                        }
+                        $proy->save();
+                    }
+
+                    ProyeccionUpdateCampo::dispatch($proyeccion->id_proyeccion_modulo, 'TallosPlanta', $request->tallos_planta)
+                        ->onQueue('proy_cosecha/actualizar_tallos_planta');
+                }
+            }
+
+            /* ================ SEMANAS ===================== */
+            if ($request->check_save_semana == 'true') {
+                $sem->desecho = $request->desecho;
+                $sem->save();
+            }
+        }
+        return [
+            'success' => true,
+            'mensaje' => '<div class="alert alert-success text-center">Se ha guardado la información satisfactoriamente</div>',
+        ];
+    }
+
+    public function actualizar_tallos_ramo(Request $request)
+    {
+        foreach ($request->semanas as $sem) {
+            $sem = Semana::find($sem);
+            foreach ($request->modulos as $mod) {
+                /* ====================== PROYECCION ===================== */
+                $proyeccion = ProyeccionModulo::All()
+                    ->where('id_variedad', $request->variedad)
+                    ->where('id_modulo', $mod)
+                    ->where('id_semana', $sem->id_semana)
+                    ->where('estado', 1)
+                    ->first();
+
+                if ($proyeccion != '') {
+                    $proyecciones = ProyeccionModuloSemana::where('estado', 1)
+                        ->where('tabla', 'P')
+                        ->where('modelo', $proyeccion->id_proyeccion_modulo)
+                        ->orderBy('semana')
+                        ->get();
+
+                    foreach ($proyecciones as $pos_proy => $proy) {
+                        $proy->tallos_ramo = $request->tallos_ramo;
+                        $proy->save();
+                    }
+
+                    ProyeccionUpdateCampo::dispatch($proyeccion->id_proyeccion_modulo, 'TallosRamo', $request->tallos_ramo)
+                        ->onQueue('proy_cosecha/actualizar_tallos_ramo');
+                }
+            }
+
+            /* ================ SEMANAS ===================== */
+            if ($request->check_save_semana == 'true') {
+                $sem->desecho = $request->desecho;
                 $sem->save();
             }
         }

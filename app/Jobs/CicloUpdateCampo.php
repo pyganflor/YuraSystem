@@ -187,6 +187,15 @@ class CicloUpdateCampo implements ShouldQueue
                 $ciclo->semana_poda_siembra = $this->valor;
             }
         }
+        if ($this->campo == 'PlantasIniciales') {
+            $ciclo->plantas_iniciales = $this->valor;
+        }
+        if ($this->campo == 'Desecho') {
+            $ciclo->desecho = $this->valor;
+        }
+        if ($this->campo == 'TallosPlanta') {
+            $ciclo->conteo = $this->valor;
+        }
         $ciclo->save();
     }
 }
