@@ -15,3 +15,7 @@ Route::get('proy_cosecha/mover_fechas', 'Proyecciones\proyCosechaController@move
 Route::post('proy_cosecha/actualizar_tipo', 'Proyecciones\proyCosechaController@actualizar_tipo');
 Route::post('proy_cosecha/actualizar_curva', 'Proyecciones\proyCosechaController@actualizar_curva');
 Route::post('proy_cosecha/actualizar_semana_cosecha', 'Proyecciones\proyCosechaController@actualizar_semana_cosecha');
+Route::post('proy_cosecha/actualizar_plantas_iniciales', 'Proyecciones\proyCosechaController@actualizar_plantas_iniciales');
+Route::post('proy_cosecha/actualizar_desecho', 'Proyecciones\proyCosechaController@actualizar_desecho');
+Route::post('proy_cosecha/actualizar_tallos_planta', 'Proyecciones\proyCosechaController@actualizar_tallos_planta');
+Route::post('proy_cosecha/actualizar_tallos_ramo', 'Proyecciones\proyCosechaController@actualizar_tallos_ramo');

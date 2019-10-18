@@ -851,6 +851,157 @@
         }
     }
 
+    function actualizar_plantas_iniciales() {
+        var all = $('.check_id_semana');
+        var semanas = [];
+        for (i = 0; i < all.length; i++) {
+            if ($('#' + all[i].id).prop('checked') == true) {
+                semanas.push(all[i].id.substr(10));
+            }
+        }
+
+        all = $('.check_id_modulo');
+        var modulos = [];
+        for (i = 0; i < all.length; i++) {
+            if ($('#' + all[i].id).prop('checked') == true) {
+                modulos.push(all[i].id.substr(10));
+            }
+        }
+
+        if (semanas.length > 0 && modulos.length > 0) {
+            datos = {
+                _token: '{{csrf_token()}}',
+                plantas_iniciales: $('#plantas_iniciales').val(),
+                semanas: semanas,
+                modulos: modulos,
+                variedad: $('#filtro_predeterminado_variedad').val(),
+            };
+            $('#tr_actualizar_plantas_iniciales').LoadingOverlay('show');
+            $.post('{{url('proy_cosecha/actualizar_plantas_iniciales')}}', datos, function (retorno) {
+                listar_proyecciones('celda_button_plantas_iniciales');
+            }, 'json').fail(function (retorno) {
+                console.log(retorno);
+                alerta_errores(retorno.responseText);
+            }).always(function () {
+                $('#tr_actualizar_plantas_iniciales').LoadingOverlay('hide');
+            });
+        }
+    }
+
+    function actualizar_desecho() {
+        var all = $('.check_id_semana');
+        var semanas = [];
+        for (i = 0; i < all.length; i++) {
+            if ($('#' + all[i].id).prop('checked') == true) {
+                semanas.push(all[i].id.substr(10));
+            }
+        }
+
+        all = $('.check_id_modulo');
+        var modulos = [];
+        for (i = 0; i < all.length; i++) {
+            if ($('#' + all[i].id).prop('checked') == true) {
+                modulos.push(all[i].id.substr(10));
+            }
+        }
+
+        if (semanas.length > 0 && modulos.length > 0) {
+            datos = {
+                _token: '{{csrf_token()}}',
+                desecho: $('#desecho').val(),
+                check_save_semana: $('#check_save_semana').prop('checked'),
+                semanas: semanas,
+                modulos: modulos,
+                variedad: $('#filtro_predeterminado_variedad').val(),
+            };
+            $('#tr_actualizar_desecho').LoadingOverlay('show');
+            $.post('{{url('proy_cosecha/actualizar_desecho')}}', datos, function (retorno) {
+                listar_proyecciones('celda_button_desecho');
+            }, 'json').fail(function (retorno) {
+                console.log(retorno);
+                alerta_errores(retorno.responseText);
+            }).always(function () {
+                $('#tr_actualizar_desecho').LoadingOverlay('hide');
+            });
+        }
+    }
+
+    function actualizar_tallos_planta() {
+        var all = $('.check_id_semana');
+        var semanas = [];
+        for (i = 0; i < all.length; i++) {
+            if ($('#' + all[i].id).prop('checked') == true) {
+                semanas.push(all[i].id.substr(10));
+            }
+        }
+
+        all = $('.check_id_modulo');
+        var modulos = [];
+        for (i = 0; i < all.length; i++) {
+            if ($('#' + all[i].id).prop('checked') == true) {
+                modulos.push(all[i].id.substr(10));
+            }
+        }
+
+        if (semanas.length > 0 && modulos.length > 0) {
+            datos = {
+                _token: '{{csrf_token()}}',
+                tallos_planta: $('#tallos_x_planta').val(),
+                check_save_semana: $('#check_save_semana').prop('checked'),
+                semanas: semanas,
+                modulos: modulos,
+                variedad: $('#filtro_predeterminado_variedad').val(),
+            };
+            $('#tr_actualizar_tallos_planta').LoadingOverlay('show');
+            $.post('{{url('proy_cosecha/actualizar_tallos_planta')}}', datos, function (retorno) {
+                listar_proyecciones('celda_button_tallos_planta');
+            }, 'json').fail(function (retorno) {
+                console.log(retorno);
+                alerta_errores(retorno.responseText);
+            }).always(function () {
+                $('#tr_actualizar_tallos_planta').LoadingOverlay('hide');
+            });
+        }
+    }
+
+    function actualizar_tallos_ramo() {
+        var all = $('.check_id_semana');
+        var semanas = [];
+        for (i = 0; i < all.length; i++) {
+            if ($('#' + all[i].id).prop('checked') == true) {
+                semanas.push(all[i].id.substr(10));
+            }
+        }
+
+        all = $('.check_id_modulo');
+        var modulos = [];
+        for (i = 0; i < all.length; i++) {
+            if ($('#' + all[i].id).prop('checked') == true) {
+                modulos.push(all[i].id.substr(10));
+            }
+        }
+
+        if (semanas.length > 0 && modulos.length > 0) {
+            datos = {
+                _token: '{{csrf_token()}}',
+                tallos_ramo: $('#tallos_x_ramo').val(),
+                check_save_semana: $('#check_save_semana').prop('checked'),
+                semanas: semanas,
+                modulos: modulos,
+                variedad: $('#filtro_predeterminado_variedad').val(),
+            };
+            $('#tr_actualizar_tallos_ramo').LoadingOverlay('show');
+            $.post('{{url('proy_cosecha/actualizar_tallos_ramo')}}', datos, function (retorno) {
+                listar_proyecciones('celda_button_tallos_ramo');
+            }, 'json').fail(function (retorno) {
+                console.log(retorno);
+                alerta_errores(retorno.responseText);
+            }).always(function () {
+                $('#tr_actualizar_tallos_ramo').LoadingOverlay('hide');
+            });
+        }
+    }
+
     function actualizar_curva() {
         var all = $('.check_id_semana');
         var semanas = [];
@@ -919,7 +1070,7 @@
             };
             $('#tr_actualizar_semana_cosecha').LoadingOverlay('show');
             $.post('{{url('proy_cosecha/actualizar_semana_cosecha')}}', datos, function (retorno) {
-                listar_proyecciones('div_listado_proyecciones');
+                listar_proyecciones('celda_button_semana_cosecha');
             }, 'json').fail(function (retorno) {
                 console.log(retorno);
                 alerta_errores(retorno.responseText);

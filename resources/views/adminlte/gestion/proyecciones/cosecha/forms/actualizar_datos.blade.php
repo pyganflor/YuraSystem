@@ -65,13 +65,13 @@
         <td class="text-cetner" style="border-color: #9d9d9d">
             <input type="number" id="semana_cosecha" max="52" style="width: 100%;" class="text-center" value="14">
         </td>
-        <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef" width="50px">
+        <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef" width="50px" id="celda_button_semana_cosecha">
             <button class="btn btn-xs btn-success" type="button" onclick="actualizar_semana_cosecha()">
                 <i class="fa fa-fw fa-save"></i>
             </button>
         </th>
     </tr>
-    <tr>
+    <tr id="tr_actualizar_plantas_iniciales">
         <th class="text-center" style="background-color: #e9ecef; border-color: #9d9d9d" width="10px">
             <div style="width:0; height:0; -moz-border-radius: 100%; -webkit-border-radius: 100%; border-radius: 100%;
             border-right: 8px solid green;
@@ -87,13 +87,13 @@
         <td class="text-cetner" style="border-color: #9d9d9d">
             <input type="number" id="plantas_iniciales" max="99999" style="width: 100%;" class="text-center">
         </td>
-        <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef" width="50px">
-            <button class="btn btn-xs btn-success" type="button">
+        <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef" width="50px" id="celda_button_plantas_iniciales">
+            <button class="btn btn-xs btn-success" type="button" onclick="actualizar_plantas_iniciales()">
                 <i class="fa fa-fw fa-save"></i>
             </button>
         </th>
     </tr>
-    <tr>
+    <tr id="tr_actualizar_desecho">
         <th class="text-center" style="background-color: #e9ecef; border-color: #9d9d9d" width="10px">
             <div style="width:0; height:0; -moz-border-radius: 100%; -webkit-border-radius: 100%; border-radius: 100%;
                 border-right: 8px solid green;
@@ -109,13 +109,13 @@
         <td class="text-cetner" style="border-color: #9d9d9d">
             <input type="number" id="desecho" max="100" style="width: 100%;" class="text-center">
         </td>
-        <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef" width="50px">
-            <button class="btn btn-xs btn-success" type="button">
+        <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef" width="50px" id="celda_button_desecho">
+            <button class="btn btn-xs btn-success" type="button" onclick="actualizar_desecho()">
                 <i class="fa fa-fw fa-save"></i>
             </button>
         </th>
     </tr>
-    <tr>
+    <tr id="tr_actualizar_tallos_planta">
         <th class="text-center" style="background-color: #e9ecef; border-color: #9d9d9d" width="10px">
             <div style="width:0; height:0; -moz-border-radius: 100%; -webkit-border-radius: 100%; border-radius: 100%;
             border-right: 8px solid green;
@@ -131,13 +131,13 @@
         <td class="text-cetner" style="border-color: #9d9d9d">
             <input type="number" id="tallos_x_planta" max="100" min="0" style="width: 100%;" class="text-center">
         </td>
-        <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef" width="50px">
-            <button class="btn btn-xs btn-success" type="button">
+        <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef" width="50px" id="celda_button_tallos_planta">
+            <button class="btn btn-xs btn-success" type="button" onclick="actualizar_tallos_planta()">
                 <i class="fa fa-fw fa-save"></i>
             </button>
         </th>
     </tr>
-    <tr>
+    <tr id="tr_actualizar_tallos_ramo">
         <th class="text-center" style="background-color: #e9ecef; border-color: #9d9d9d" width="10px">
             <div style="width:0; height:0; -moz-border-radius: 100%; -webkit-border-radius: 100%; border-radius: 100%;
             border-right: 8px solid blue;
@@ -151,10 +151,10 @@
             Tallos x Ramo
         </th>
         <td class="text-cetner" style="border-color: #9d9d9d">
-            <input type="number" id="tallos_x_planta" max="100" min="0" style="width: 100%;" class="text-center">
+            <input type="number" id="tallos_x_ramo" max="100" min="0" style="width: 100%;" class="text-center">
         </td>
-        <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef" width="50px">
-            <button class="btn btn-xs btn-success" type="button">
+        <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef" width="50px" id="celda_button_tallos_ramo">
+            <button class="btn btn-xs btn-success" type="button" onclick="actualizar_tallos_ramo()">
                 <i class="fa fa-fw fa-save"></i>
             </button>
         </th>

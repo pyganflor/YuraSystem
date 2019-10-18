@@ -100,21 +100,101 @@ class CicloUpdateCampo implements ShouldQueue
                 //dd($semana_new->codigo, $next_proy->semana->codigo);
                 $ciclo->curva = $this->valor;
                 if ($next_proy != '') {
-                    $proyecciones = ProyeccionModulo::where('estado', 1)
-                        ->where('fecha_inicio', '>', $next_proy->fecha_inicio)
-                        ->where('id_modulo', $ciclo->id_modulo)
-                        ->get();
-                    foreach ($proyecciones as $proy) {
-                        $proy->delete();
-                    }
-                    $next_proy->id_semana = $semana_new->id_semana;
-                    $next_proy->fecha_inicio = $semana_new->fecha_final;
+                    if ($semana_new->codigo > $next_proy->semana->codigo) { // se trata de mover hacia adelante
+                        $proyecciones = ProyeccionModulo::where('estado', 1)
+                            ->where('fecha_inicio', '>', $next_proy->fecha_inicio)
+                            ->where('id_modulo', $ciclo->id_modulo)
+                            ->get();
+                        foreach ($proyecciones as $proy) {
+                            $proy->delete();
+                        }
+                        $next_proy->id_semana = $semana_new->id_semana;
+                        $next_proy->fecha_inicio = $semana_new->fecha_final;
 
-                    $next_proy->save();
+                        $next_proy->save();
+                    }
                 }
             } else {    // es del mismo tamaño la curva
                 $ciclo->curva = $this->valor;
             }
+        }
+        if ($this->campo == 'SemanaCosecha') {
+            if (count(explode('-', $ciclo->curva)) != count(explode('-', $this->valor))) {  // hay que mover la curva
+                $sum_semanas_old = $ciclo->semana_poda_siembra + count(explode('-', $ciclo->curva));
+                $sum_semanas_new = $this->valor + count(explode('-', $ciclo->curva));
+
+                /* ------------------------ OBTENER LAS SEMANAS NEW/OLD ---------------------- */
+                $codigo = $semana_ini->codigo;
+                $new_codigo = $semana_ini->codigo;
+                $i = 1;
+                $next = 1;
+                while ($i < $sum_semanas_old && $new_codigo <= $semana_fin->codigo) {
+                    $new_codigo = $codigo + $next;
+                    $semana_old = Semana::All()
+                        ->where('estado', '=', 1)
+                        ->where('codigo', '=', $new_codigo)
+                        ->where('id_variedad', '=', $ciclo->id_variedad)
+                        ->first();
+
+                    if ($semana_old != '') {
+                        $i++;
+                    }
+                    $next++;
+                }
+
+                $codigo = $semana_ini->codigo;
+                $new_codigo = $semana_ini->codigo;
+                $i = 1;
+                $next = 1;
+                while ($i < $sum_semanas_new && $new_codigo <= $semana_fin->codigo) {
+                    $new_codigo = $codigo + $next;
+                    $semana_new = Semana::All()
+                        ->where('estado', '=', 1)
+                        ->where('codigo', '=', $new_codigo)
+                        ->where('id_variedad', '=', $ciclo->id_variedad)
+                        ->first();
+
+                    if ($semana_new != '') {
+                        $i++;
+                    }
+                    $next++;
+                }
+
+                $next_proy = ProyeccionModulo::All()
+                    ->where('estado', 1)
+                    ->where('id_modulo', $ciclo->id_modulo)
+                    ->where('id_semana', $semana_old->id_semana)
+                    ->first();
+
+                //dd($semana_new->codigo, $next_proy->semana->codigo);
+                $ciclo->semana_poda_siembra = $this->valor;
+                if ($next_proy != '') {
+                    if ($semana_new->codigo > $next_proy->semana->codigo) { // se trata de mover hacia adelante
+                        $proyecciones = ProyeccionModulo::where('estado', 1)
+                            ->where('fecha_inicio', '>', $next_proy->fecha_inicio)
+                            ->where('id_modulo', $ciclo->id_modulo)
+                            ->get();
+                        foreach ($proyecciones as $proy) {
+                            $proy->delete();
+                        }
+                        $next_proy->id_semana = $semana_new->id_semana;
+                        $next_proy->fecha_inicio = $semana_new->fecha_final;
+
+                        $next_proy->save();
+                    }
+                }
+            } else {    // es del mismo tamaño la curva
+                $ciclo->semana_poda_siembra = $this->valor;
+            }
+        }
+        if ($this->campo == 'PlantasIniciales') {
+            $ciclo->plantas_iniciales = $this->valor;
+        }
+        if ($this->campo == 'Desecho') {
+            $ciclo->desecho = $this->valor;
+        }
+        if ($this->campo == 'TallosPlanta') {
+            $ciclo->conteo = $this->valor;
         }
         $ciclo->save();
     }
