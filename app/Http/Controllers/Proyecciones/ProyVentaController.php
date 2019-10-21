@@ -79,7 +79,7 @@ class ProyVentaController extends Controller
             switch ($request->criterio){
                 case 'CF':
                     $data = $data->sortByDesc('cajas_fisicas_totales');
-                    break
+                    break;
                 case 'CE':
                     $data = $data->sortByDesc('cajas_equivalentes_totales');
                     break;
