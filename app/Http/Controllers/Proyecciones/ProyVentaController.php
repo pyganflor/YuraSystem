@@ -34,7 +34,7 @@ class ProyVentaController extends Controller
             $objProyeccionVentaSemanalReal = ProyeccionVentaSemanalReal::whereBetween('codigo_semana',[$semana_desde->codigo,$semana_hasta->codigo]);
 
             if(isset($request->id_cliente))
-                $objProyeccionVentaSemanalReal->where('cliente.id_cliente',$request->id_cliente);
+                $objProyeccionVentaSemanalReal->where('id_cliente',$request->id_cliente);
 
             if(isset($request->id_variedad))
                 $objProyeccionVentaSemanalReal->where('id_variedad',$request->id_variedad);
@@ -73,14 +73,13 @@ class ProyVentaController extends Controller
                     'cajas_equivalentes_totales'=>$totales_x_cliente[$idCliente]['cajas_equivalentes_totales'],
                     'valor_total'=>$totales_x_cliente[$idCliente]['valor_total'],
                 ];
-
             }
             $data = collect($data);
 
             switch ($request->criterio){
                 case 'CF':
                     $data = $data->sortByDesc('cajas_fisicas_totales');
-                    break;
+                    break
                 case 'CE':
                     $data = $data->sortByDesc('cajas_equivalentes_totales');
                     break;
