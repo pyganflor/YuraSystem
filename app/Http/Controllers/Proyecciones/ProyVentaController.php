@@ -28,26 +28,10 @@ class ProyVentaController extends Controller
         $semana_desde = Semana::where('codigo', $desde)->first();
         $semana_hasta = Semana::where('codigo', $hasta)->first();
         $top = isset($request->top) ? $request->top : 10;
-        switch ($request->criterio){
-            case 'CF':
-                $columna =  'cajas_fisicas';
-                break;
-            case 'CE':
-                $columna =  'cajas_equivalentes';
-                break;
-            default:
-               $columna =  'valor';
-                break;
-        }
 
         if (isset($semana_desde) && isset($semana_hasta)) {
 
             $objProyeccionVentaSemanalReal = ProyeccionVentaSemanalReal::whereBetween('codigo_semana',[$semana_desde->codigo,$semana_hasta->codigo]);
-            /*$objClientes = Cliente::where([
-                ['cliente.estado',1],
-                ['dc.estado',1]
-           ])->join('detalle_cliente as dc','cliente.id_cliente','dc.id_cliente');*/
-            //$objClientes = $objClientes->get();
 
             if(isset($request->id_cliente))
                 $objProyeccionVentaSemanalReal->where('cliente.id_cliente',$request->id_cliente);
@@ -63,9 +47,10 @@ class ProyVentaController extends Controller
                     'cajas_fisicas' => $proyeccionVentaSemanalReal->cajas_fisicas,
                     'cajas_equivalentes' => $proyeccionVentaSemanalReal->cajas_equivalentes,
                     'valor' => $proyeccionVentaSemanalReal->valor,
+
                 ];
             }
-            dump($arrProyeccionVentaSemanalReal);
+
             $totales_x_cliente=[];
             foreach($arrProyeccionVentaSemanalReal as $idCliente => $cliente){
                 $cf=0;
@@ -73,49 +58,41 @@ class ProyVentaController extends Controller
                 $v =0;
                 foreach ($cliente as $semana => $item) {
                     $totales_x_cliente[$idCliente] = [
-                        'cajas_fisicas_totales'=>$cf=+$item['cajas_fisicas'],
-                        'cajas_cajas_equivalentes'=>$ce=+$item['cajas_equivalentes'],
+                        'cajas_fisicas_totales'=>$cf+=$item['cajas_fisicas'],
+                        'cajas_equivalentes_totales'=>$ce+=$item['cajas_equivalentes'],
                         'valor_total' => $v+=$item['valor']
                     ];
                 }
-
-               //$coleccion =  collect($arrProyeccionVentaSemanalReal[$idCliente])->put();
             }
 
-            dump($totales_x_cliente);
+            $data = [];
+            foreach($arrProyeccionVentaSemanalReal as $idCliente => $cliente){
+                $data[$idCliente] = [
+                    'semanas'=>$cliente,
+                    'cajas_fisicas_totales'=>$totales_x_cliente[$idCliente]['cajas_fisicas_totales'],
+                    'cajas_equivalentes_totales'=>$totales_x_cliente[$idCliente]['cajas_equivalentes_totales'],
+                    'valor_total'=>$totales_x_cliente[$idCliente]['valor_total'],
+                ];
 
+            }
+            $data = collect($data);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            /*if(isset($request->id_variedad)){
-                foreach($objClientes as $x => $cliente){
-                    foreach($objProyeccionVentaSemanalReal as $proyeccionVentaSemanalReal){
-                        if($cliente->id_cliente === $proyeccionVentaSemanalReal->id_cliente){
-                            $data[$cliente->nombre][$proyeccionVentaSemanalReal->codigo_semana] =[
-                                'proyeccion' => $proyeccionVentaSemanalReal,
-                            ];
-                        }
-                    }
-                }
-            }*/
+            switch ($request->criterio){
+                case 'CF':
+                    $data = $data->sortByDesc('cajas_fisicas_totales');
+                    break;
+                case 'CE':
+                    $data = $data->sortByDesc('cajas_equivalentes_totales');
+                    break;
+                default:
+                    $data = $data->sortByDesc('valor_total'); ;
+                    break;
+            }
 
             return view('adminlte.gestion.proyecciones.venta.partials.listado',[
-                'proyeccionVentaSemanalReal' => $data,
-                'idVariedad' => $request->id_variedad
+                'proyeccionVentaSemanalReal' => $data->take($top),
+                'idVariedad' => $request->id_variedad,
+                'semanas'=>$data->values()[0]['semanas']
             ]);
 
         }else{ // LA semana no esta programada
