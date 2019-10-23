@@ -15,6 +15,7 @@ use yura\Modelos\Distribucion;
 use yura\Modelos\DistribucionColoracion;
 use yura\Modelos\Envio;
 use yura\Modelos\Marcacion;
+use yura\Modelos\DataTallos;
 use yura\Modelos\MarcacionColoracion;
 use yura\Modelos\Pedido;
 
@@ -40,6 +41,7 @@ class DuplicarPedidoFacturaAnulada implements ShouldQueue
      */
     public function handle()
     {
+      Info("Empezo a duplicar un pedido");
         $arrPedido = [];
 
         $dataPedido = Pedido::where('id_pedido', $this->idPedido)->first();
@@ -59,14 +61,7 @@ class DuplicarPedidoFacturaAnulada implements ShouldQueue
                 bitacora('pedido', $modelPedido->id_pedido, 'I', 'Inserción satisfactoria de un duplicado de pedido');
 
                 $objEnvio = new Envio;
-                Info($dataPedido->envios[0]->guia_hija);
-                Info($dataPedido->envios[0]->guia_madre);
-                Info($dataPedido->envios[0]->dae);
-                Info($dataPedido->envios[0]->email);
-                Info($dataPedido->envios[0]->telefono);
-                Info($dataPedido->envios[0]->direccion);
-                Info($dataPedido->envios[0]->direccion);
-                Info($dataPedido->envios[0]->alamcen);
+           
 
                 $objEnvio->fecha_envio = $dataPedido->fecha_pedido;
                 $objEnvio->id_pedido = $modelPedido->id_pedido;
@@ -77,9 +72,9 @@ class DuplicarPedidoFacturaAnulada implements ShouldQueue
                 $objEnvio->telefono = $dataPedido->envios[0]->telefono;
                 $objEnvio->direccion = $dataPedido->envios[0]->direccion;
                 $objEnvio->codigo_pais = $dataPedido->envios[0]->codigo_pais;
-                $objEnvio->alamcen = $dataPedido->envios[0]->alamcen;
+                $objEnvio->almacen = $dataPedido->envios[0]->almacen;
                 $objEnvio->codigo_dae = $dataPedido->envios[0]->codigo_dae;
-                $objEnvio->consignatario = $dataPedido->envios[0]->consignatario;
+                $objEnvio->id_consignatario = $dataPedido->envios[0]->id_consignatario;
                 if($objEnvio->save()) $modelEnvio = Envio::all()->last();
 
                 foreach ($dataPedido->detalles as $detallePedido) {
@@ -96,10 +91,26 @@ class DuplicarPedidoFacturaAnulada implements ShouldQueue
                     $detalleEnvio->id_especificacion = $objClienteEspecificacion->id_especificacion;
                     $detalleEnvio->cantidad = $detallePedido->cantidad;
                     $detalleEnvio->save();
-
+                    
+                    
                     if ($objDetallePedido->save()) {
 
                         $model_detalle_pedido = DetallePedido::all()->last();
+                        
+                        if(isset($detallePedido->data_tallos)){
+                    
+                          $objDataTallos = new DataTallos;
+                          $objDataTallos->id_detalle_pedido = $model_detalle_pedido->id_detalle_pedido;
+                          $objDataTallos->mallas = $detallePedido->data_tallos->mallas;
+                          $objDataTallos->ramos_x_caja =$detallePedido->data_tallos->ramos_x_caja;
+                          $objDataTallos->tallos_x_caja =$detallePedido->data_tallos->tallos_x_caja;
+                          $objDataTallos->tallos_x_malla =$detallePedido->data_tallos->tallos_x_malla;
+                          $objDataTallos->tallos_x_ramo =$detallePedido->data_tallos->tallos_x_ramo;
+                          $objDataTallos->save();
+                    
+                      }
+
+                        
                         bitacora('detalle_pedido', $model_detalle_pedido->id_detalle_pedido, 'I', 'Inserción satisfactoria del duplicado de un detalle pedio');
                         if($modelPedido->tipo_especificacion === "T") {
                             foreach ($detallePedido->cliente_especificacion->especificacion->especificacionesEmpaque as $z => $esp_emp){
