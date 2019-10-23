@@ -436,12 +436,13 @@
 
         modal_quest('modal_update_integrado',html,
             '<i class="fa fa-file-text-o" aria-hidden="true"></i>Anular factura', true, false, '{{isPC() ? '40%' : ''}}', function () {
-
                 datos = {
                     id_comprobante : id_comprobante,
-                    crear_factura : $("#crear_factura").is("checked"),
+                    crear_factura : $("#crear_factura").is(":checked"),
                     _token : '{{csrf_token()}}'
                 };
+               console.log(datos.crear_factura);
+
 
                 post_jquery('comprobante/anular_factura', datos, function () {
                     buscar_listado_comprobante();

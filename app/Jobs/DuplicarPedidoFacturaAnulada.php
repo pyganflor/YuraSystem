@@ -17,7 +17,6 @@ use yura\Modelos\Envio;
 use yura\Modelos\Marcacion;
 use yura\Modelos\MarcacionColoracion;
 use yura\Modelos\Pedido;
-use stdClass;
 
 class DuplicarPedidoFacturaAnulada implements ShouldQueue
 {
@@ -164,5 +163,170 @@ class DuplicarPedidoFacturaAnulada implements ShouldQueue
                     }
                 }
             }
+
+
+        /*$arrPedido['pedido']= [
+            'id_cliente'=> $pedido->id_cliente,
+            'fecha_pedido' => $pedido->fecha_pedido,
+            'empaquetado' => $pedido->empaquetado,
+            'variedad' => $pedido->variedad,
+            'tipo_especificacion' => $pedido->tipo_especificacion,
+            'confirmado' => $pedido->confirmado,
+            'historico' => $pedido->historico,
+            'id_configuracion_empresa' => $pedido->id_configuracion_empresa,
+        ];
+
+        foreach($pedido->detalles as $det_ped){
+            $arrPedido['detalles'][]=[
+                'id_detalle_pedido' => $det_ped->id_detalle_pedido,
+                'id_cliente_especificacion' => $det_ped->id_cliente_especificacion,
+                'id_agencia_carga' => $det_ped->id_agencia_carga,
+                'cantidad' => $det_ped->cantidad,
+                'precio' => $det_ped->precio,
+                'orden' => $det_ped->orden,
+            ];
+
+            if($pedido->tipo_especificacion === "T"){
+
+                foreach($det_ped->coloraciones as $coloracion) {
+                    $arrPedido['coloraciones'][$det_ped->id_detalle_pedido][] = [
+                        'id_color' => $coloracion->id_color,
+                        'id_especificacion_empaque' => $coloracion->id_especificacion_empaque,
+                        'precio' => $coloracion->precio,
+                    ];
+                }
+
+                foreach($det_ped->marcaciones as $marcacion){
+
+                    $arrPedido['marcaciones'][$marcacion->id_detalle_pedido][]=[
+                        'id_marcacion'=> $marcacion->id_marcacion,
+                        'nombre'=> $marcacion->nombre,
+                        'ramos'=> $marcacion->ramos,
+                        'id_especificacion_empaque'=> $marcacion->id_especificacion_empaque,
+                        'piezas'=> $marcacion->piezas,
+                    ];
+
+                    foreach($marcacion->marcaciones_coloraciones as $m_c){
+                        $arrPedido['marcaciones_coloraciones'][$det_ped->id_detalle_pedido][$m_c->id_marcacion][]=[
+                            //'id_marcacion_coloracion'=> $m_c->id_marcacion_coloracion,
+                            'id_detalle_especificacionempaque'=> $m_c->id_detalle_especificacionempaque,
+                            'cantidad'=> $m_c->cantidad,
+                        ];
+
+                        foreach ($m_c->distribuciones_coloraciones as $dist_col) {
+                            $arrPedido['distribucion_coloracion'][$m_c->id_marcacion_coloracion][]=[
+                                'id_distribucion'=>  $dist_col->id_distribucion,
+                                'id_marcacion_coloracion'=>  $dist_col->id_marcacion_coloracion,
+                                'cantidad'=>  $dist_col->cantidad
+                            ];
+                        }
+                    }
+
+                    foreach($marcacion->distribuciones as $distribucion){
+                        $arrPedido['distribucion'][$det_ped->id_detalle_pedido][$distribucion->id_marcacion][]=[
+                            'ramos'=> $distribucion->ramos,
+                            'piezas'=> $distribucion->piezas,
+                            'pos_pieza'=> $distribucion->pos_pieza,
+                        ];
+
+                        foreach ($distribucion->distribuciones_coloraciones as $dist_col) {
+                            $arrPedido['distribucion_coloracion'][$distribucion->id_distribucion][]=[
+                                'id_distribucion'=>  $dist_col->id_distribucion,
+                                'id_marcacion_coloracion'=>  $dist_col->id_marcacion_coloracion,
+                                'cantidad'=>  $dist_col->cantidad
+                            ];
+                        }
+                    }
+
+                }
+
+            }
+        }
+
+        //dd($arrPedido);
+        $objPedido = new Pedido;
+        $objPedido->id_cliente = $arrPedido['pedido']['id_cliente'];
+        $objPedido->fecha_pedido = $arrPedido['pedido']['fecha_pedido'];
+        $objPedido->empaquetado = $arrPedido['pedido']['empaquetado'];
+        $objPedido->variedad = $arrPedido['pedido']['variedad'];
+        $objPedido->tipo_especificacion = $arrPedido['pedido']['tipo_especificacion'];
+        $objPedido->confirmado = $arrPedido['pedido']['confirmado'];
+        $objPedido->historico = $arrPedido['pedido']['historico'];
+        $objPedido->id_configuracion_empresa = $arrPedido['pedido']['id_configuracion_empresa'];
+        if($objPedido->save()){
+            $modelPedido = Pedido::all()->last();
+            $idsMarcacion=[];
+            $idsColoracion=[];
+            foreach($arrPedido['detalles'] as $det_ped){
+                $objDetallePedido = new DetallePedido;
+                $objDetallePedido->id_pedido = $modelPedido->id_pedido;
+                $objDetallePedido->id_cliente_especificacion = $det_ped['id_cliente_especificacion'];
+                $objDetallePedido->id_agencia_carga = $det_ped['id_agencia_carga'];
+                $objDetallePedido->cantidad = $det_ped['cantidad'];
+                $objDetallePedido->precio = $det_ped['precio'];
+                $objDetallePedido->orden = $det_ped['orden'];
+                if($objDetallePedido->save()){
+                    if($arrPedido['pedido']['tipo_especificacion']==="T"){
+                        $modelDetallePedido = DetallePedido::all()->last();
+
+                        foreach ($arrPedido['marcaciones'][$det_ped['id_detalle_pedido']] as $marcacion){
+                            $objMarcacion = new Marcacion;
+                            $objMarcacion->id_detalle_pedido = $modelDetallePedido->id_detalle_pedido;
+                            $objMarcacion->nombre = $marcacion['nombre'];
+                            $objMarcacion->ramos = $marcacion['ramos'];
+                            $objMarcacion->id_especificacion_empaque = $marcacion['id_especificacion_empaque'];
+                            $objMarcacion->piezas = $marcacion['piezas'];
+                            if($objMarcacion->save()){
+                                $modelMarcacion = Marcacion::all()->last();
+                                $idsMarcacion[$det_ped['id_detalle_pedido']][$marcacion['id_especificacion_empaque']][]=[
+                                    'id_marcacion'=> $modelMarcacion->id_marcacion
+                                ];
+                            }
+                        }
+
+                        foreach ($arrPedido['coloraciones'][$det_ped['id_detalle_pedido']] as $coloracion) {
+                            $objColoracion = new Coloracion;
+                            $objColoracion->id_detalle_pedido = $modelDetallePedido->id_detalle_pedido;
+                            $objColoracion->id_color = $coloracion['id_color'];
+                            $objColoracion->id_especificacion_empaque = $coloracion['id_especificacion_empaque'];
+                            $objColoracion->precio = $coloracion['precio'];
+                            if($objColoracion->save()){
+                                $modelColoracion = Coloracion::all()->last();
+                                $idsColoracion[$det_ped['id_detalle_pedido']][$coloracion['id_especificacion_empaque']][]=[
+                                    'id_coloracion'=> $modelColoracion->id_coloracion,
+                                ];
+                            }
+                        }
+                        $dataMarcacionColoracion =[];
+                        foreach ($idsMarcacion[$det_ped['id_detalle_pedido']] as $idEspEmpMar => $maracion) {
+                            foreach($maracion as  $m){
+                                foreach ($idsColoracion[$det_ped['id_detalle_pedido']] as $idEspEmpCol => $coloracion) {
+                                    foreach ($coloracion as  $c) {
+                                        if($idEspEmpMar == $idEspEmpCol){
+                                            $dataMarcacionColoracion[$det_ped['id_detalle_pedido']][]=[
+                                                'id_marcacion'=> $m['id_marcacion'],
+                                                'id_coloracion' => $c['id_coloracion']
+                                            ];
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+
+                    }
+                }else{
+
+                }
+            }
+        }else{
+
+        }
+        //Info($idsMarcacion);
+        //Info($idsColoracion);
+        //Info($arrPedido['marcaciones_coloraciones']);
+        //Info($dataMarcacionColoracion);
+        //Info($marcacionColoracion);*/
+
     }
 }
