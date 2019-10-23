@@ -59,15 +59,6 @@ class DuplicarPedidoFacturaAnulada implements ShouldQueue
                 bitacora('pedido', $modelPedido->id_pedido, 'I', 'Inserción satisfactoria de un duplicado de pedido');
 
                 $objEnvio = new Envio;
-                Info($dataPedido->envios[0]->guia_hija);
-                Info($dataPedido->envios[0]->guia_madre);
-                Info($dataPedido->envios[0]->dae);
-                Info($dataPedido->envios[0]->email);
-                Info($dataPedido->envios[0]->telefono);
-                Info($dataPedido->envios[0]->direccion);
-                Info($dataPedido->envios[0]->direccion);
-                Info($dataPedido->envios[0]->alamcen);
-
                 $objEnvio->fecha_envio = $dataPedido->fecha_pedido;
                 $objEnvio->id_pedido = $modelPedido->id_pedido;
                 $objEnvio->guia_hija = $dataPedido->envios[0]->guia_hija;
