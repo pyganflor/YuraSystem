@@ -61,16 +61,16 @@ class DuplicarPedidoFacturaAnulada implements ShouldQueue
                 $objEnvio = new Envio;
                 $objEnvio->fecha_envio = $dataPedido->fecha_pedido;
                 $objEnvio->id_pedido = $modelPedido->id_pedido;
-                $objEnvio->guia_hija = $dataPedido->envio[0]->guia_hija;
-                $objEnvio->guia_madre = $dataPedido->envio[0]->guia_madre;
-                $objEnvio->dae = $dataPedido->envio[0]->dae;
-                $objEnvio->email = $dataPedido->envio[0]->email;
-                $objEnvio->telefono = $dataPedido->envio[0]->telefono;
-                $objEnvio->direccion = $dataPedido->envio[0]->direccion;
-                $objEnvio->codigo_pais = $dataPedido->envio[0]->codigo_pais;
-                $objEnvio->alamcen = $dataPedido->envio[0]->alamcen;
-                $objEnvio->codigo_dae = $dataPedido->envio[0]->codigo_dae;
-                $objEnvio->consignatario = $dataPedido->envio[0]->consignatario;
+                $objEnvio->guia_hija = $dataPedido->envios[0]->guia_hija;
+                $objEnvio->guia_madre = $dataPedido->envios[0]->guia_madre;
+                $objEnvio->dae = $dataPedido->envios[0]->dae;
+                $objEnvio->email = $dataPedido->envios[0]->email;
+                $objEnvio->telefono = $dataPedido->envios[0]->telefono;
+                $objEnvio->direccion = $dataPedido->envios[0]->direccion;
+                $objEnvio->codigo_pais = $dataPedido->envios[0]->codigo_pais;
+                $objEnvio->alamcen = $dataPedido->envios[0]->alamcen;
+                $objEnvio->codigo_dae = $dataPedido->envios[0]->codigo_dae;
+                $objEnvio->consignatario = $dataPedido->envios[0]->consignatario;
                 if($objEnvio->save()) $modelEnvio = Envio::all()->last();
 
                 foreach ($dataPedido->detalles as $detallePedido) {
