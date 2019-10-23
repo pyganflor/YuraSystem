@@ -56,8 +56,10 @@
                             </ul>
                         </div>
                     </td>
-                    @foreach($semanas as $codigoSemana => $s)
-                        <td class="text-center"  style="border-left:2px solid #000000;border-right:2px solid #000000;border-top:2px solid #000000;width: 250px" colspan="3"></td>
+                    @foreach($semanas as $codigoSemana => $dataSemana)
+                        <td class="text-center"  style="border-left:2px solid #000000;border-right:2px solid #000000;border-top:2px solid #000000;width: 250px" colspan="3">
+                            <div style="width:100%" data-toggle="tooltip" data-placement="top"  title="Cajas físiscas año anterior"><b>{{$dataSemana['cajas_fisicas_anno_anterior']}}</b></div>
+                        </td>
                     @endforeach
                     <td class="text-center" style="border-left:2px solid #000000;border-right:2px solid #000000;border-top:2px solid #000000;width: 250px">
                         <div class="btn-group" style="width:100%" data-toggle="tooltip" data-placement="top" title="{{$cliente->detalle()->nombre}}">

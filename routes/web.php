@@ -11,6 +11,9 @@
 |
 */
 
+use yura\Jobs\DuplicarPedidoFacturaAnulada;
+
+
 Route::get('login', 'YuraController@login');
 Route::post('login', 'YuraController@verificaUsuario');
 Route::get('logout', 'YuraController@logout');

@@ -141,7 +141,8 @@ class VentaSemanalReal extends Command
                                 $objProySemReal->cajas_fisicas = 0;
                                 $objProySemReal->cajas_fisicas_anno_anterior = isset($objProyeccionVentaSemanalAnoAnterior->cajas_fisicas) ? $objProyeccionVentaSemanalAnoAnterior->cajas_fisicas : 0;
                                 foreach ($pedidos as $pedido){
-                                    //if($pedido->fecha_pedido >= $fechaActual->toDateString()){ //Comentar cuando se va a recopilar por primera vez toda la informacion en la tabla proyeccion_venta_semanal_real
+                                    if(!getFacturaAnulada($pedido->id_pedido)){
+                                        //if($pedido->fecha_pedido >= $fechaActual->toDateString()){ //Comentar cuando se va a recopilar por primera vez toda la informacion en la tabla proyeccion_venta_semanal_real
                                         Info("Pedido incluido de fecha: ". $pedido->fecha_pedido);
                                         if(in_array($variedad->id_variedad,$pedido->getVariedades())){
                                             $objProySemReal->valor += $pedido->getPrecioByVariedad($variedad->id_variedad);
@@ -160,7 +161,9 @@ class VentaSemanalReal extends Command
                                                 $objProySemReal->cajas_equivalentes_proy = $proyeccionVentaSemanal->cajas_equivalentes;
                                                 $objProySemReal->cajas_fisicas_proy = $proyeccionVentaSemanal->cajas_fisicas;
                                             }*/
-                                   // }
+                                        // }
+                                    }
+
                                 }
                                 $objProySemReal->save();
                            // }

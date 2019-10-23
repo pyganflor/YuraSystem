@@ -214,7 +214,7 @@ class PedidoController extends Controller
                         $objDetallePedido->id_pedido = $model->id_pedido;
                         $objDetallePedido->id_agencia_carga = $item['id_agencia_carga'];
                         $objDetallePedido->cantidad = $item['cantidad'];
-                        $objDetallePedido->precio = substr($item['precio'], 0, -1);
+                        $objDetallePedido->precio = substr($item['precioprecio'], 0, -1);
                         $objDetallePedido->orden =  $item['orden'];
 
                         if ($objDetallePedido->save()) {
@@ -307,7 +307,7 @@ class PedidoController extends Controller
                 }
             }
             $semana = getSemanaByDate($objPedido->fecha_pedido)->codigo;
-            ProyeccionVentaSemanalUpdate::dispatch($semana,$semana,0,$request->id_cliente);
+            ProyeccionVentaSemanalUpdate::dispatch($semana,$semana,0,$request->id_cliente)->onQueue('update_venta_semanal_real');
         } else {
             $success = false;
             $errores = '';
@@ -457,7 +457,7 @@ class PedidoController extends Controller
                  . '</div>';
             bitacora('pedido',$request->id_pedido, 'D', 'Pedido eliminado con exito');
             $semana = getSemanaByDate($pedido->fecha_pedido)->codigo;
-            ProyeccionVentaSemanalUpdate::dispatch($semana,$semana,0,$pedido->id_cliente);
+            ProyeccionVentaSemanalUpdate::dispatch($semana,$semana,0,$pedido->id_cliente)->onQueue('update_venta_semanal_real');
         } else {
             $success = false;
             $msg = '<div class="alert alert-danger text-center">' .

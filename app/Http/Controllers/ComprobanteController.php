@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use DomDocument;
 use PHPExcel;
 use PHPExcel_IOFactory;
+use yura\Jobs\DuplicarPedidoFacturaAnulada;
 use yura\Jobs\MailDocumentosElectronicos;
 use yura\Modelos\ClienteAgenciaCarga;
 use yura\Modelos\Comprobante;
@@ -2048,6 +2049,8 @@ class ComprobanteController extends Controller
             $msg = '<div class="alert alert-success text-center">' .
                 '<p> Se ha anulado la facutra exitosamente</p>'
                 . '</div>';
+            if($request->crear_factura=="true")
+                DuplicarPedidoFacturaAnulada::dispatch($objComprobante->envio->pedido->id_pedido)->onQueue('duplicar_pedido_anulado');
         }
         return [
             'success' => $success,

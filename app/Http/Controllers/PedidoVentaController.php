@@ -3,6 +3,7 @@
 namespace yura\Http\Controllers;
 
 use Illuminate\Http\Request;
+use yura\Jobs\ProyeccionVentaSemanalUpdate;
 use yura\Modelos\Cliente;
 use yura\Modelos\Color;
 use yura\Modelos\Coloracion;
@@ -296,6 +297,8 @@ class PedidoVentaController extends Controller
                                     }
                                 }
                             }
+                            $semana = getSemanaByDate($fecha['fecha'])->codigo;
+                            ProyeccionVentaSemanalUpdate::dispatch($semana,$semana,0,$dataPedido->id_cliente)->onQueue('update_venta_semanal_real');
                             $success = true;
                             $msg = '<div class="alert alert-success text-center">' .
                                 '<p> Se ha duplicado el pedido exitosamente</p>'
