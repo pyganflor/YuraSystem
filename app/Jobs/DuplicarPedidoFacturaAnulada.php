@@ -61,6 +61,15 @@ class DuplicarPedidoFacturaAnulada implements ShouldQueue
                 $objEnvio = new Envio;
                 $objEnvio->fecha_envio = $dataPedido->fecha_pedido;
                 $objEnvio->id_pedido = $modelPedido->id_pedido;
+                $objEnvio->guia_hija = $dataPedido->envio->guia_hija;
+                $objEnvio->guia_madre = $dataPedido->envio->guia_madre;
+                $objEnvio->dae = $dataPedido->envio->dae;
+                $objEnvio->email = $dataPedido->envio->email;
+                $objEnvio->telefono = $dataPedido->envio->telefono;
+                $objEnvio->direccion = $dataPedido->envio->direccion;
+                $objEnvio->codigo_pais = $dataPedido->envio->codigo_pais;
+                $objEnvio->alamcen = $dataPedido->envio->alamcen;
+                $objEnvio->codigo_dae = $dataPedido->envio->codigo_dae;
                 if($objEnvio->save()) $modelEnvio = Envio::all()->last();
 
                 foreach ($dataPedido->detalles as $detallePedido) {
