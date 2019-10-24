@@ -165,6 +165,72 @@
             <label for="check_save_semana" class="mouse-hand">Guardar en semana(s)</label>
         </th>
     </tr>
+    <tr id="tr_actualizar_semana_cosecha_siembra">
+        <th class="text-center" style="background-color: #e9ecef; border-color: #9d9d9d" width="10px">
+            <div style="width:0; height:0; -moz-border-radius: 100%; -webkit-border-radius: 100%; border-radius: 100%;
+            border-right: 8px solid red;
+            border-top: 8px solid red;
+            border-left: 8px solid red;
+            border-bottom: 8px solid red;" data-toggle="tooltip" data-placement="top" data-html="true"
+                 title="Semanas">
+            </div>
+        </th>
+        <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef" width="25%">
+            Semana cosecha Siembra
+        </th>
+        <td class="text-cetner" style="border-color: #9d9d9d">
+            <input type="number" id="semana_cosecha_siembra" max="100" min="0" style="width: 100%;" class="text-center">
+        </td>
+        <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef" width="50px" id="celda_button_semana_cosecha_siembra">
+            <button class="btn btn-xs btn-success" type="button" onclick="actualizar_semana_cosecha_siembra()">
+                <i class="fa fa-fw fa-save"></i>
+            </button>
+        </th>
+    </tr>
+    <tr id="tr_actualizar_tallos_planta_siembra">
+        <th class="text-center" style="background-color: #e9ecef; border-color: #9d9d9d" width="10px">
+            <div style="width:0; height:0; -moz-border-radius: 100%; -webkit-border-radius: 100%; border-radius: 100%;
+            border-right: 8px solid red;
+            border-top: 8px solid red;
+            border-left: 8px solid red;
+            border-bottom: 8px solid red;" data-toggle="tooltip" data-placement="top" data-html="true"
+                 title="Semanas">
+            </div>
+        </th>
+        <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef" width="25%">
+            Tallos x Planta Siembra
+        </th>
+        <td class="text-cetner" style="border-color: #9d9d9d">
+            <input type="number" id="tallos_planta_siembra" max="100" min="0" style="width: 100%;" class="text-center">
+        </td>
+        <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef" width="50px" id="celda_button_tallos_planta_siembra">
+            <button class="btn btn-xs btn-success" type="button" onclick="actualizar_tallos_planta_siembra()">
+                <i class="fa fa-fw fa-save"></i>
+            </button>
+        </th>
+    </tr>
+    <tr id="tr_actualizar_tallos_ramo_siembra">
+        <th class="text-center" style="background-color: #e9ecef; border-color: #9d9d9d" width="10px">
+            <div style="width:0; height:0; -moz-border-radius: 100%; -webkit-border-radius: 100%; border-radius: 100%;
+            border-right: 8px solid red;
+            border-top: 8px solid red;
+            border-left: 8px solid red;
+            border-bottom: 8px solid red;" data-toggle="tooltip" data-placement="top" data-html="true"
+                 title="Semanas">
+            </div>
+        </th>
+        <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef" width="25%">
+            Tallos x Ramo Siembra
+        </th>
+        <td class="text-cetner" style="border-color: #9d9d9d">
+            <input type="number" id="tallos_ramo_siembra" max="100" min="0" style="width: 100%;" class="text-center">
+        </td>
+        <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef" width="50px" id="celda_button_tallos_ramo_siembra">
+            <button class="btn btn-xs btn-success" type="button" onclick="actualizar_tallos_ramo_siembra()">
+                <i class="fa fa-fw fa-save"></i>
+            </button>
+        </th>
+    </tr>
 </table>
 
 <div class="row">
