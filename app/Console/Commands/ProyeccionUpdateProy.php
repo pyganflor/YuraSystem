@@ -88,7 +88,9 @@ class ProyeccionUpdateProy extends Command
                 $last_ciclo = Ciclo::All()
                     ->where('estado', 1)
                     ->where('id_variedad', $model->id_variedad)
-                    ->where('id_modulo', $model->id_modulo)->last();
+                    ->where('id_modulo', $model->id_modulo)
+                    ->sortBy('fecha_inicio')
+                    ->last();
                 if ($last_ciclo != '') {
                     $last_proy = ProyeccionModulo::All()
                         ->where('estado', 1)

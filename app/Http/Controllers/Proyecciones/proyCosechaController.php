@@ -218,8 +218,6 @@ class proyCosechaController extends Controller
                 }
             }
 
-            dd($poda_siembra);
-
             if ($model->save()) {
                 $model = ProyeccionModulo::All()->last();
                 $success = true;
