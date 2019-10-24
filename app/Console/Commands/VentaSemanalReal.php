@@ -131,7 +131,7 @@ class VentaSemanalReal extends Command
                                     $objProySemReal->id_cliente = $cliente->id_cliente;
                                     $objProySemReal->id_variedad = $variedad->id_variedad;
                                     $objProySemReal->codigo_semana = $semana;
-                                }else{
+                            }else{
                                 $objProySemReal = ProyeccionVentaSemanalReal::find($objProyeccionVentaSemanal->id_proyeccion_venta_semanal_real);
                             }
 

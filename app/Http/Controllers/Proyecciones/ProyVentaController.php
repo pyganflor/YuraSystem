@@ -2,6 +2,7 @@
 
 namespace yura\Http\Controllers\Proyecciones;
 
+use Couchbase\Exception;
 use Illuminate\Http\Request;
 use yura\Http\Controllers\Controller;
 use yura\Modelos\Semana;
@@ -74,6 +75,7 @@ class ProyVentaController extends Controller
                     'valor_total'=>$totales_x_cliente[$idCliente]['valor_total'],
                 ];
             }
+
             $data = collect($data);
 
             switch ($request->criterio){
@@ -123,25 +125,27 @@ class ProyVentaController extends Controller
     }
 
     public function storeProyeccionVenta(Request $request){
-        $success = false;
-        $msg = '<div class="alert alert-danger text-center">' .
-            '<p> Ha ocurrido un error al guardar la proyección, intente nuevamente</p>'
-            . '</div>';
 
         $objProyeccionVentaSemanalReal = ProyeccionVentaSemanalReal::where([
             ['id_cliente',$request->id_cliente],
             ['id_variedad',$request->id_variedad],
             ['codigo_semana',$request->semana]
         ]);
-        
-        if($objProyeccionVentaSemanalReal->update([
-            'cajas_fisicas' => $request->cajas_fisicas,
-            'cajas_equivalentes' => $request->cajas_equivalentes,
-            'valor' => substr($request->valor,1,20)
-        ])){
+
+        try{
+            $objProyeccionVentaSemanalReal->update([
+                'cajas_fisicas' => $request->cajas_fisicas,
+                'cajas_equivalentes' => $request->cajas_equivalentes,
+                'valor' => substr($request->valor,1,20)
+            ]);
             $success = true;
             $msg = '<div class="alert alert-success text-center">' .
                 '<p> Se ha guardado la proyección con éxito </p>'
+                .'</div>';
+        }catch (\Exception $e){
+            $success = false;
+            $msg = '<div class="alert alert-danger text-center">' .
+                '<p>  Ha ocurrido el siguiente error al intentar guardar la información <br />"'.$e->getMessage().'"<br /> Comuníquelo al área de sistemas</p>'
                 .'</div>';
         }
 

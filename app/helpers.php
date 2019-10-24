@@ -2344,3 +2344,7 @@ function getLastSemanaByVariedad($variedad)
         ->sortBy('codigo')
         ->last();
 }
+
+function getObjSemana($idSemana){
+    return Semana::where('codigo',$idSemana)->first();
+}

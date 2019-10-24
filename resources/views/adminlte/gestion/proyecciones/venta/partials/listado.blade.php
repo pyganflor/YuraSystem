@@ -13,10 +13,16 @@
                 Clientes / Semanas
             </td>
         </tr>
+        @php
+            $x=1;
+            $idsClientes = [];
+        @endphp
         @foreach($proyeccionVentaSemanalReal as $idCliente => $semana)
             @php
                 $semanas= $semana['semanas'];
                 $cliente = getCliente($idCliente);
+                $total=0;
+                $idsClientes[]=$idCliente;
             @endphp
                 <tr>
                     <td class="text-center" style="border-left:2px solid #000000;border-right:2px solid #000000;border-top:2px solid #000000;width: 250px">
@@ -79,12 +85,12 @@
                                        name="cajas_proyectadas_{{$cliente->id_cliente}}_{{$codigoSemana}}" style="border:none;text-align:center;width:50px" value="{{$dataSemana['cajas_fisicas']}}">
                             </div>
                         </td>
-                        <td style="border: 1px solid #9d9d9d;border-bottom: 2px solid #000000;padding-left: 3px">
+                        <td style="border: 1px solid #9d9d9d;border-bottom: 2px solid #000000;">
                             <div style="padding: 3px 6px;width:100%;text-align:center;cursor:pointer" data-toggle="tooltip" data-placement="top" title="Cajas equivalentes proyectadas">
                                 <b id="cajas_equivalentes_{{$cliente->id_cliente}}_{{$codigoSemana}}">{{number_format($dataSemana['cajas_equivalentes'],2,".","")}}</b>
                             </div>
                         </td>
-                        <td style="border: 1px solid #9d9d9d;border-bottom: 2px solid #000000;padding-left: 3px;border-right: 2px solid #000000">
+                        <td style="border: 1px solid #9d9d9d;border-bottom: 2px solid #000000;border-right: 2px solid #000000">
                             <div style="padding: 3px 6px;width:100%;text-align:center;cursor:pointer;" data-toggle="tooltip" data-placement="top" title="Valor proyectado">
                                 <b id="precio_proyectado_{{$cliente->id_cliente}}_{{$codigoSemana}}">${{number_format($dataSemana['valor'],2,".",",")}}</b>
                             </div>
@@ -92,13 +98,32 @@
                     @endforeach
                     <td class="text-center" style="border-bottom:2px solid #000000;border-left:2px solid #000000;border-right:2px solid #000000;width: 250px">Proyectado</td>
                 </tr>
+                @if($x == count($proyeccionVentaSemanalReal))
+                    <tr>
+                        <td class="text-center" style="background-color: #e9ecef;width:250px;border-right: 2px solid #000000;">
+                            <b>Totales</b>
+                        </td>
+                        @foreach($semanas as $codigoSemana => $dataSemana)
+                            @php $objSemana = getObjSemana($codigoSemana)->getTotalesProyeccionVentaSemanal($idsClientes,$idVariedad);@endphp
+                            <td class="text-center"  style="border: 1px solid #9d9d9d" >
+                                <b>{{$objSemana->total_cajas_fisicas}}</b>
+                            </td>
+                            <td class="text-center"  style="border: 1px solid #9d9d9d" >
+                                <b>{{number_format($objSemana->total_cajas_equivalentes,2,".",",")}}</b>
+                            </td>
+                            <td class="text-center"  style="border-right:2px solid #000000;" >
+                               <b> ${{number_format($objSemana->total_valor,2,".",",")}}</b>
+                            </td>
+                        @endforeach
+
+                        <td class="text-center" style="background-color: #e9ecef;width:250px;border-right: 2px solid #000000;">
+                            <b>Totales</b>
+                        </td>
+                    </tr>
+                @endif
+            @php $x++ @endphp
         @endforeach
 
-        <tr>
-            <td class="text-center" style="background-color: #e9ecef;width:250px;border-right: 2px solid #000000;">
-                <b>Totales</b>
-            </td>
-        </tr>
     </table>
 
     @else
