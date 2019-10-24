@@ -3,14 +3,16 @@
 namespace yura\Http\Controllers;
 
 use Illuminate\Http\Request;
+use yura\Jobs\ProyeccionVentaSemanalUpdate;
 use yura\Modelos\ClienteConsignatario;
 use yura\Modelos\Submenu;
 use yura\Modelos\Pais;
 use yura\Modelos\Cliente;
-use yura\Modelos\DetalleCliente;
+use yura\Modelos\Pedido;
 use yura\Modelos\Contacto;
 use yura\Modelos\AgenciaCarga;
 use yura\Modelos\ClienteAgenciaCarga;
+use yura\Modelos\DetalleCliente;
 use yura\Modelos\DetalleClienteContacto;
 use yura\Modelos\TipoImpuesto;
 use yura\Modelos\TipoIdentificacion;
@@ -143,6 +145,10 @@ class ClienteController extends Controller
                             '<p> Se ha guardado el cliente '. $objDetalleCliente->nombre .'  exitosamente</p>'
                             . '</div>';
                         bitacora('cliente|detalle_cliente', $model->id_detalle_cliente, 'I', 'Inserción satisfactoria de un nuevo cliente con sus detalles(ID guardado tabla detalle_cliente)');
+
+                        $firstPedido = Pedido::orderBy('fecha_registro','asc')->first();
+                        $semana = getSemanaByDate($firstPedido->fecha_pedido)->codigo;
+                        ProyeccionVentaSemanalUpdate::dispatch($semana,getLastSemanaByVariedad(1)->codigo,0,$model->id_cliente)->onQueue('update_venta_semanal_real');
                     } else {
                         $success = false;
                         $msg .= '<div class="alert alert-warning text-center">' .

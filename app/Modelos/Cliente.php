@@ -58,4 +58,5 @@ class Cliente extends Model
         }
         return $precio;
     }
+
 }

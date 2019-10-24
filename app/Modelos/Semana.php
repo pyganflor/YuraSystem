@@ -3,6 +3,7 @@
 namespace yura\Modelos;
 
 use Illuminate\Database\Eloquent\Model;
+use DB;
 
 class Semana extends Model
 {
@@ -32,5 +33,21 @@ class Semana extends Model
     public function variedad()
     {
         return $this->belongsTo('\yura\Modelos\Variedad', 'id_variedad');
+    }
+
+    public function getTotalesProyeccionVentaSemanal($idsCliente,$idVariedad){
+
+        $proyeccion = ProyeccionVentaSemanalReal::where([
+            ['id_variedad',$idVariedad],
+            ['codigo_semana',$this->codigo]
+        ])->whereIn('id_cliente',$idsCliente)
+            ->select(
+                DB::raw('sum(valor) as total_valor'),
+                DB::raw('sum(cajas_fisicas) as total_cajas_fisicas'),
+                DB::raw('sum(cajas_equivalentes) as total_cajas_equivalentes')
+            )->groupBy('codigo_semana')->first();
+
+        return $proyeccion;
+
     }
 }
