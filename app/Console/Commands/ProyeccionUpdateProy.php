@@ -97,6 +97,7 @@ class ProyeccionUpdateProy extends Command
                         ->where('id_modulo', $model->id_modulo)
                         ->where('id_variedad', $model->id_variedad)
                         ->where('fecha_inicio', '<', $semana_ini->fecha_final)
+                        ->sortBy('fecha_inicio')
                         ->last();
                     if ($last_proy != '') {
                         $poda_siembra = $last_proy->poda_siembra + 1;
