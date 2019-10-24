@@ -224,6 +224,10 @@
                                 <strong style="font-size: 0.8em; margin-bottom: 0">
                                     {{$val->proyectados != '' ? number_format($val->proyectados, 2) : 0}}
                                 </strong>
+                            @elseif($val->tipo == 'Y')
+                                <p style="margin-top: 0; margin-bottom: 0">
+                                    {{$val->info}}-{{$val->poda_siembra}}
+                                </p>
                             @else
                                 <p style="margin-top: 0; margin-bottom: 0">
                                     {{$val->info}}
