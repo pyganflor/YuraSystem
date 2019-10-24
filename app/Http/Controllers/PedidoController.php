@@ -214,7 +214,7 @@ class PedidoController extends Controller
                         $objDetallePedido->id_pedido = $model->id_pedido;
                         $objDetallePedido->id_agencia_carga = $item['id_agencia_carga'];
                         $objDetallePedido->cantidad = $item['cantidad'];
-                        $objDetallePedido->precio = substr($item['precioprecio'], 0, -1);
+                        $objDetallePedido->precio = substr($item['precio'], 0, -1);
                         $objDetallePedido->orden =  $item['orden'];
 
                         if ($objDetallePedido->save()) {
