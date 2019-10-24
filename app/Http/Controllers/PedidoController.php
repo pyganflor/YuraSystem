@@ -161,11 +161,10 @@ class PedidoController extends Controller
 
                         }
 
-                        DetalleEnvio::where('id_envio',$dataEnvio->id_envio)->delete();
-                        Envio::where('id_pedido',$request->id_pedido)->delete();
+
                     }
 
-                    Pedido::destroy($request->id_pedido);
+
                     /*foreach (getPedido($request->id_pedido)->detalles as $det_ped)
                         if($det_ped->cliente_especificacion->especificacion->tipo === "O")
                             Especificacion::destroy($det_ped->cliente_especificacion->especificacion->id_especificacion);*/
@@ -248,6 +247,10 @@ class PedidoController extends Controller
                                     }
                                 }
                             }
+
+                            //DetalleEnvio::where('id_envio',$dataEnvio->id_envio)->delete();
+                            //Envio::where('id_pedido',$request->id_pedido)->delete();
+                            Pedido::destroy($request->id_pedido);
 
                             $success = true;
                             $msg = '<div class="alert alert-success text-center">' .
