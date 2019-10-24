@@ -34,4 +34,8 @@ class MarcacionColoracion extends Model
     {
         return $this->belongsTo('\yura\Modelos\Coloracion', 'id_coloracion');
     }
+
+    public function distribuciones_coloraciones(){
+        return $this->hasMany('\yura\Modelos\DistribucionColoracion', 'id_marcacion_coloracion');
+    }
 }

@@ -10,6 +10,8 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+
 Route::get('login', 'YuraController@login');
 Route::post('login', 'YuraController@verificaUsuario');
 Route::get('logout', 'YuraController@logout');

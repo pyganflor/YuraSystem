@@ -425,18 +425,30 @@
     }
 
     function anular_factura(id_comprobante){
-        datos = {
-            id_comprobante : id_comprobante,
-            _token : '{{csrf_token()}}'
-        };
-        modal_quest('modal_update_integrado',
-            '<div class="alert alert-warning text-center"><label>Esta seguro que desea anular esta factura?</label></div>',
-            '<i class="fa fa-file-text-o" aria-hidden="true"></i> Actualizar estado de la factura', true, false, '{{isPC() ? '40%' : ''}}', function () {
+        html = "<div class='row'>" +
+            "<div class='col-md-12'>" +
+            "<form id='form_envio_correo' name='form_envio_correo'>" +
+            "<input type='checkbox' id='crear_factura' name='crear_factura' style='position:relative;top:3px'> "+
+            "<label style='font-weight:600' for='crear_factura'>Crear una factura nueva con las mismas caracteristicas</label>" +
+            "</form>" +
+            "</div>"+
+            "</div>";
+
+        modal_quest('modal_update_integrado',html,
+            '<i class="fa fa-file-text-o" aria-hidden="true"></i>Anular factura', true, false, '{{isPC() ? '40%' : ''}}', function () {
+                datos = {
+                    id_comprobante : id_comprobante,
+                    crear_factura : $("#crear_factura").is(":checked"),
+                    _token : '{{csrf_token()}}'
+                };
+               console.log(datos.crear_factura);
+
+
                 post_jquery('comprobante/anular_factura', datos, function () {
                     buscar_listado_comprobante();
                     cerrar_modals();
                 });
-            });
+        });
     }
 
     function subir_archivos_xml(){

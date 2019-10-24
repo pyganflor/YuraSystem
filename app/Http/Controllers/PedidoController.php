@@ -161,11 +161,10 @@ class PedidoController extends Controller
 
                         }
 
-                        DetalleEnvio::where('id_envio',$dataEnvio->id_envio)->delete();
-                        Envio::where('id_pedido',$request->id_pedido)->delete();
+
                     }
 
-                    Pedido::destroy($request->id_pedido);
+
                     /*foreach (getPedido($request->id_pedido)->detalles as $det_ped)
                         if($det_ped->cliente_especificacion->especificacion->tipo === "O")
                             Especificacion::destroy($det_ped->cliente_especificacion->especificacion->id_especificacion);*/
@@ -249,6 +248,10 @@ class PedidoController extends Controller
                                 }
                             }
 
+                            //DetalleEnvio::where('id_envio',$dataEnvio->id_envio)->delete();
+                            //Envio::where('id_pedido',$request->id_pedido)->delete();
+                            Pedido::destroy($request->id_pedido);
+
                             $success = true;
                             $msg = '<div class="alert alert-success text-center">' .
                                 '<p> Se ha guardado el pedido exitosamente</p>'
@@ -307,7 +310,7 @@ class PedidoController extends Controller
                 }
             }
             $semana = getSemanaByDate($objPedido->fecha_pedido)->codigo;
-            ProyeccionVentaSemanalUpdate::dispatch($semana,$semana,0,$request->id_cliente);
+            ProyeccionVentaSemanalUpdate::dispatch($semana,$semana,0,$request->id_cliente)->onQueue('update_venta_semanal_real');
         } else {
             $success = false;
             $errores = '';
@@ -457,7 +460,7 @@ class PedidoController extends Controller
                  . '</div>';
             bitacora('pedido',$request->id_pedido, 'D', 'Pedido eliminado con exito');
             $semana = getSemanaByDate($pedido->fecha_pedido)->codigo;
-            ProyeccionVentaSemanalUpdate::dispatch($semana,$semana,0,$pedido->id_cliente);
+            ProyeccionVentaSemanalUpdate::dispatch($semana,$semana,0,$pedido->id_cliente)->onQueue('update_venta_semanal_real');
         } else {
             $success = false;
             $msg = '<div class="alert alert-danger text-center">' .
