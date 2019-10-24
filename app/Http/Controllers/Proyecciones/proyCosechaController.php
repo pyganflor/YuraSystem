@@ -2126,7 +2126,7 @@ class proyCosechaController extends Controller
 
             /* ================ SEMANAS ===================== */
             if ($request->check_save_semana == 'true') {
-                $sem->desecho = $request->desecho;
+                $sem->tallos_planta_poda = $request->tallos_planta_poda;
                 $sem->save();
             }
         }
@@ -2168,9 +2168,48 @@ class proyCosechaController extends Controller
 
             /* ================ SEMANAS ===================== */
             if ($request->check_save_semana == 'true') {
-                $sem->desecho = $request->desecho;
+                $sem->tallos_ramo_poda = $request->tallos_ramo_poda;
                 $sem->save();
             }
+        }
+        return [
+            'success' => true,
+            'mensaje' => '<div class="alert alert-success text-center">Se ha guardado la información satisfactoriamente</div>',
+        ];
+    }
+
+    public function actualizar_semana_cosecha_siembra(Request $request)
+    {
+        foreach ($request->semanas as $sem) {
+            $sem = Semana::find($sem);
+            $sem->semana_siembra = $request->semana_cosecha_siembra;
+            $sem->save();
+        }
+        return [
+            'success' => true,
+            'mensaje' => '<div class="alert alert-success text-center">Se ha guardado la información satisfactoriamente</div>',
+        ];
+    }
+
+    public function actualizar_tallos_planta_siembra(Request $request)
+    {
+        foreach ($request->semanas as $sem) {
+            $sem = Semana::find($sem);
+            $sem->tallos_planta_siembra = $request->tallos_planta_siembra;
+            $sem->save();
+        }
+        return [
+            'success' => true,
+            'mensaje' => '<div class="alert alert-success text-center">Se ha guardado la información satisfactoriamente</div>',
+        ];
+    }
+
+    public function actualizar_tallos_ramo_siembra(Request $request)
+    {
+        foreach ($request->semanas as $sem) {
+            $sem = Semana::find($sem);
+            $sem->tallos_ramo_siembra = $request->tallos_ramo_siembra;
+            $sem->save();
         }
         return [
             'success' => true,
@@ -2965,5 +3004,4 @@ class proyCosechaController extends Controller
             'mensaje' => '<div class="alert alert-success text-center">Se ha guardado la información satisfactoriamente</div>',
         ];
     }
-
 }

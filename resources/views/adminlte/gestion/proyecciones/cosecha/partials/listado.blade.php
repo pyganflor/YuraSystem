@@ -1160,4 +1160,91 @@
             });
         }
     }
+
+    function actualizar_semana_cosecha_siembra() {
+        var all = $('.check_id_semana');
+        var semanas = [];
+        for (i = 0; i < all.length; i++) {
+            if ($('#' + all[i].id).prop('checked') == true) {
+                semanas.push(all[i].id.substr(10));
+            }
+        }
+
+        if (semanas.length > 0) {
+            datos = {
+                _token: '{{csrf_token()}}',
+                semana_cosecha_siembra: $('#semana_cosecha_siembra').val(),
+                semanas: semanas,
+                variedad: $('#filtro_predeterminado_variedad').val(),
+                semana_hasta: $('#filtro_predeterminado_hasta').val(),
+            };
+            $('#tr_actualizar_semana_cosecha_siembra').LoadingOverlay('show');
+            $.post('{{url('proy_cosecha/actualizar_semana_cosecha_siembra')}}', datos, function (retorno) {
+                listar_proyecciones('celda_button_semana_cosecha_siembra');
+            }, 'json').fail(function (retorno) {
+                console.log(retorno);
+                alerta_errores(retorno.responseText);
+            }).always(function () {
+                $('#tr_actualizar_semana_cosecha_siembra').LoadingOverlay('hide');
+            });
+        }
+    }
+
+    function actualizar_tallos_planta_siembra() {
+        var all = $('.check_id_semana');
+        var semanas = [];
+        for (i = 0; i < all.length; i++) {
+            if ($('#' + all[i].id).prop('checked') == true) {
+                semanas.push(all[i].id.substr(10));
+            }
+        }
+
+        if (semanas.length > 0) {
+            datos = {
+                _token: '{{csrf_token()}}',
+                tallos_planta_siembra: $('#tallos_planta_siembra').val(),
+                semanas: semanas,
+                variedad: $('#filtro_predeterminado_variedad').val(),
+                semana_hasta: $('#filtro_predeterminado_hasta').val(),
+            };
+            $('#tr_actualizar_tallos_planta_siembra').LoadingOverlay('show');
+            $.post('{{url('proy_cosecha/actualizar_tallos_planta_siembra')}}', datos, function (retorno) {
+                listar_proyecciones('celda_button_tallos_planta_siembra');
+            }, 'json').fail(function (retorno) {
+                console.log(retorno);
+                alerta_errores(retorno.responseText);
+            }).always(function () {
+                $('#tr_actualizar_tallos_planta_siembra').LoadingOverlay('hide');
+            });
+        }
+    }
+
+    function actualizar_tallos_ramo_siembra() {
+        var all = $('.check_id_semana');
+        var semanas = [];
+        for (i = 0; i < all.length; i++) {
+            if ($('#' + all[i].id).prop('checked') == true) {
+                semanas.push(all[i].id.substr(10));
+            }
+        }
+
+        if (semanas.length > 0) {
+            datos = {
+                _token: '{{csrf_token()}}',
+                tallos_ramo_siembra: $('#tallos_ramo_siembra').val(),
+                semanas: semanas,
+                variedad: $('#filtro_predeterminado_variedad').val(),
+                semana_hasta: $('#filtro_predeterminado_hasta').val(),
+            };
+            $('#tr_actualizar_tallos_ramo_siembra').LoadingOverlay('show');
+            $.post('{{url('proy_cosecha/actualizar_tallos_ramo_siembra')}}', datos, function (retorno) {
+                listar_proyecciones('celda_button_tallos_ramo_siembra');
+            }, 'json').fail(function (retorno) {
+                console.log(retorno);
+                alerta_errores(retorno.responseText);
+            }).always(function () {
+                $('#tr_actualizar_tallos_ramo_siembra').LoadingOverlay('hide');
+            });
+        }
+    }
 </script>
