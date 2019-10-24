@@ -44,8 +44,8 @@ class Semana extends Model
             ->select(
                 DB::raw('sum(valor) as total_valor'),
                 DB::raw('sum(cajas_fisicas) as total_cajas_fisicas'),
-                DB::raw('sum(cajas_equivalentes) as total_cajas_equivalentes'))
-                ->groupBy('codigo_semana')->first();
+                DB::raw('sum(cajas_equivalentes) as total_cajas_equivalentes')
+            )->groupBy('codigo_semana')->first();
 
         return $proyeccion;
 
