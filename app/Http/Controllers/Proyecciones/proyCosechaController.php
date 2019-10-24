@@ -199,7 +199,9 @@ class proyCosechaController extends Controller
                 $last_ciclo = Ciclo::All()
                     ->where('estado', 1)
                     ->where('id_variedad', $request->id_variedad)
-                    ->where('id_modulo', $request->id_modulo)->last();
+                    ->where('id_modulo', $request->id_modulo)
+                    ->sortBy('fecha_inicio')
+                    ->last();
                 if ($last_ciclo != '') {
                     $last_proy = ProyeccionModulo::All()
                         ->where('estado', 1)
@@ -215,6 +217,7 @@ class proyCosechaController extends Controller
                     $model->poda_siembra = $poda_siembra;
                 }
             }
+
             if ($model->save()) {
                 $model = ProyeccionModulo::All()->last();
                 $success = true;
@@ -382,7 +385,9 @@ class proyCosechaController extends Controller
                         $last_ciclo = Ciclo::All()
                             ->where('estado', 1)
                             ->where('id_variedad', $model->id_variedad)
-                            ->where('id_modulo', $model->id_modulo)->last();
+                            ->where('id_modulo', $model->id_modulo)
+                            ->sortBy('fecha_inicio')
+                            ->last();
                         if ($last_ciclo != '') {
                             $last_proy = ProyeccionModulo::All()
                                 ->where('estado', 1)
