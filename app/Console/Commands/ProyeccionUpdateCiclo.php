@@ -55,6 +55,19 @@ class ProyeccionUpdateCiclo extends Command
 
         $sum_semana_new = $par_semana_poda_siembra + count(explode('-', $par_curva));
         $sum_semana_old = $model->semana_poda_siembra + count(explode('-', $model->curva));
+
+        $model->poda_siembra = $par_poda_siembra;
+        $model->curva = $par_curva;
+        $model->semana_poda_siembra = $par_semana_poda_siembra;
+        $model->plantas_iniciales = $par_plantas_iniciales;
+        $model->desecho = $par_desecho;
+        $model->conteo = $par_conteo;
+
+        $model->save();
+        bitacora('ciclo', $model->id_ciclo, 'U', 'Actualización satisfactoria de un ciclo');
+
+        $poda_siembra = $model->modulo->getPodaSiembraByCiclo($model->id_ciclo);
+
         if ($sum_semana_new != $sum_semana_old) {   // hay que mover las proyecciones
             $semana = Semana::All()
                 ->where('estado', 1)
@@ -107,19 +120,21 @@ class ProyeccionUpdateCiclo extends Command
                     ->get()->first();
                 if ($proy != '')
                     if ($proy->id_semana == $semana_old->id_semana || $proy->semana->codigo < $semana_new->codigo) {    // hay que mover
-                        $del_proyecciones = ProyeccionModulo::where('estado', 1)
+                        /*$del_proyecciones = ProyeccionModulo::where('estado', 1)
                             ->where('id_modulo', $model->id_modulo)
                             ->where('id_variedad', $model->id_variedad)
                             ->where('fecha_inicio', '>', $proy->fecha_inicio)
                             ->get();
                         foreach ($del_proyecciones as $next_proy)    // borrar las proyecciones a partir de esta proyeccion en adelante
-                            $next_proy->delete();
+                            $next_proy->delete();*/
 
                         $proy->id_semana = $semana_new->id_semana;
                         $proy->fecha_inicio = $semana_new->fecha_final;
                         $proy->desecho = $semana_new->desecho > 0 ? $semana_new->desecho : 0;
                         $proy->tallos_planta = $semana_new->tallos_planta_poda > 0 ? $semana_new->tallos_planta_poda : 0;
                         $proy->tallos_ramo = $semana_new->tallos_ramo_poda > 0 ? $semana_new->tallos_ramo_poda : 0;
+
+                        $proy->poda_siembra = $proy->tipo != 'S' ? $poda_siembra + 1 : 0;
 
                         $proy->save();
                         $proy->restaurar_proyecciones();
@@ -134,17 +149,24 @@ class ProyeccionUpdateCiclo extends Command
                 foreach ($proys as $proy)
                     $proy->delete();
             }
+        } else {    // no hay que mover pero hay que recalcular el campo poda_siembra en las proyecciones
+            $proyecciones = ProyeccionModulo::where('estado', 1)
+                ->where('id_modulo', $model->id_modulo)
+                ->where('id_variedad', $model->id_variedad)
+                ->orderBy('fecha_inicio')
+                ->get();
+
+            foreach ($proyecciones as $pos_proy => $proy) {
+                if ($proy->tipo == 'S') {
+                    $proy->poda_siembra = 0;
+                    $poda_siembra = 0;
+                } else {
+                    $proy->poda_siembra = $poda_siembra + 1;
+                    $poda_siembra++;
+                }
+                $proy->save();
+            }
         }
-
-        $model->poda_siembra = $par_poda_siembra;
-        $model->curva = $par_curva;
-        $model->semana_poda_siembra = $par_semana_poda_siembra;
-        $model->plantas_iniciales = $par_plantas_iniciales;
-        $model->desecho = $par_desecho;
-        $model->conteo = $par_conteo;
-
-        $model->save();
-        bitacora('ciclo', $model->id_ciclo, 'U', 'Actualización satisfactoria de un ciclo');
         Log::info('<<<<< * >>>>> Fin satisfactorio del comando "proyeccion:update_ciclo" <<<<< * >>>>>');
     }
 }
