@@ -146,6 +146,18 @@
                 @endif
             @php $x++ @endphp
         @endforeach
+        <tr>
+            <td class="text-center" style="border: 2px solid #000000;background-color: #e9ecef;width:250px;">
+                Clientes / Semanas
+                <input type="hidden" id="ramos_x_caja_empresa" name="ramos_x_caja_empresa" value="{{getConfiguracionEmpresa()->ramos_x_caja}}">
+            </td>
+            @foreach($semanas as $semana => $item)
+                <td class="text-center" style="border: 2px solid #000000;background-color: #e9ecef; width:350px;" colspan="3">{{$semana}}</td>
+            @endforeach
+            <td class="text-center" style="border: 2px solid #000000;background-color: #e9ecef;width:250px;">
+                Clientes / Semanas
+            </td>
+        </tr>
     </table>
     @else
         <div class="alert alert-info text-center" style="font-size:14px">No se encontraron registros</div>
@@ -161,8 +173,6 @@
         <li>Totales <i class="fa fa-fw fa-circle" style="color: rgb(3, 222, 0)"></i></li>
         <li>Otros clientes <i class="fa fa-fw fa-circle" style="color:#08ffe8"></i></li>
         <li>Total clientes: {{$clientes}} <i class="fa fa-users" style="color: #9100ff7d"></i> </li>
-        {{--<li>Proyección <i class="fa fa-fw fa-circle" style="color: #9100ff7d"></i></li>
-        <li>Semana de cosecha <i class="fa fa-fw fa-circle" style="color: #03de00"></i></li>--}}
     </ul>
 </div>
 <script>
