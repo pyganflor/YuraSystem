@@ -28,7 +28,7 @@
                     <td class="text-center" style="border-left:2px solid #000000;border-right:2px solid #000000;border-top:2px solid #000000;width: 250px">
                         <div class="btn-group" style="width:100%" data-toggle="tooltip" data-placement="top" title="{{$cliente->detalle()->nombre}}">
                             <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-expanded="true" style="width:100%">
-                                <b>{{str_limit($cliente->detalle()->nombre,15)}}</b>
+                               <b>{{str_limit($cliente->detalle()->nombre,15)}}</b>
                             </button>
                             <ul class="dropdown-menu">
                                 <li>
@@ -99,12 +99,36 @@
                     <td class="text-center" style="border-bottom:2px solid #000000;border-left:2px solid #000000;border-right:2px solid #000000;width: 250px">Proyectado</td>
                 </tr>
                 @if($x == count($proyeccionVentaSemanalReal))
-                    <tr>
-                        <td class="text-center" style="background-color: #e9ecef;width:250px;border-right: 2px solid #000000;">
+                    @if($otros)
+                        <tr style="background: #08ffe8">
+                           <td class="text-center" style="border-bottom:2px solid #000000;border-left:2px solid #000000;border-right:2px solid #000000;width: 250px"><b>Otros</b></td>
+                            @foreach($semana['semanas'] as $codigoSemana => $dataSemana)
+                                @php $objSemana = getObjSemana($codigoSemana)->getTotalesProyeccionVentaSemanal($idsClientes,$idVariedad);@endphp
+                                <td style="border: 1px solid #9d9d9d;border-bottom: 2px solid #000000;">
+                                    <div style="width:100%;text-align:center;" data-toggle="tooltip" data-placement="top" title="Cajas físicas proyectadas">
+                                        <b>{{isset($objSemana->total_cajas_fisicas) ? $objSemana->total_cajas_fisicas : 0}}</b>
+                                    </div>
+                                </td>
+                                <td style="border: 1px solid #9d9d9d;border-bottom: 2px solid #000000;">
+                                    <div style="padding: 3px 6px;width:100%;text-align:center;cursor:pointer" data-toggle="tooltip" data-placement="top" title="Cajas equivalentes proyectadas">
+                                        <b>{{isset($objSemana->total_cajas_equivalentes) ? number_format($objSemana->total_cajas_equivalentes,2,".",",") : 0}}</b>
+                                    </div>
+                                </td>
+                                <td style="border: 1px solid #9d9d9d;border-bottom: 2px solid #000000;border-right: 2px solid #000000">
+                                    <div style="padding: 3px 6px;width:100%;text-align:center;cursor:pointer;" data-toggle="tooltip" data-placement="top" title="Valor proyectado">
+                                        <b> ${{ isset($objSemana->total_valor) ? number_format($objSemana->total_valor,2,".",",") : 0}}</b>
+                                    </div>
+                                </td>
+                            @endforeach
+                            <td class="text-center" style="border-bottom:2px solid #000000;border-left:2px solid #000000;border-right:2px solid #000000;width: 250px"><b>Otros</b></td>
+                       </tr>
+                    @endif
+                    <tr style="background-color: rgb(3, 222, 0)">
+                        <td class="text-center" style="width:250px;border-right: 2px solid #000000;">
                             <b>Totales</b>
                         </td>
                         @foreach($semanas as $codigoSemana => $dataSemana)
-                            @php $objSemana = getObjSemana($codigoSemana)->getTotalesProyeccionVentaSemanal($idsClientes,$idVariedad);@endphp
+                            @php $objSemana = getObjSemana($codigoSemana)->getTotalesProyeccionVentaSemanal(false,$idVariedad);@endphp
                             <td class="text-center"  style="border: 1px solid #9d9d9d" >
                                 <b>{{$objSemana->total_cajas_fisicas}}</b>
                             </td>
@@ -115,20 +139,31 @@
                                <b> ${{number_format($objSemana->total_valor,2,".",",")}}</b>
                             </td>
                         @endforeach
-
-                        <td class="text-center" style="background-color: #e9ecef;width:250px;border-right: 2px solid #000000;">
+                        <td class="text-center" style="width:250px;border-right: 2px solid #000000;border-top: 2px solid #000000">
                             <b>Totales</b>
                         </td>
                     </tr>
                 @endif
             @php $x++ @endphp
         @endforeach
-
     </table>
-
     @else
         <div class="alert alert-info text-center" style="font-size:14px">No se encontraron registros</div>
     @endif
+</div>
+<div class="text-right" style="margin-top: 10px">
+    <legend style="font-size: 1em; margin-bottom: 0">
+        <a data-toggle="collapse" data-parent="#accordion" href="#collapseLeyenda">
+            <strong style="color: black">Leyenda <i class="fa fa-fw fa-caret-down"></i></strong>
+        </a>
+    </legend>
+    <ul style="margin-top: 5px" class="list-unstyled panel-collapse collapse" id="collapseLeyenda">
+        <li>Totales <i class="fa fa-fw fa-circle" style="color: rgb(3, 222, 0)"></i></li>
+        <li>Otros clientes <i class="fa fa-fw fa-circle" style="color:#08ffe8"></i></li>
+        <li>Total clientes: {{$clientes}} <i class="fa fa-users" style="color: #9100ff7d"></i> </li>
+        {{--<li>Proyección <i class="fa fa-fw fa-circle" style="color: #9100ff7d"></i></li>
+        <li>Semana de cosecha <i class="fa fa-fw fa-circle" style="color: #03de00"></i></li>--}}
+    </ul>
 </div>
 <script>
     $(function () {

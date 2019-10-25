@@ -32,6 +32,7 @@ class ProyVentaController extends Controller
 
         if (isset($semana_desde) && isset($semana_hasta)) {
 
+
             $objProyeccionVentaSemanalReal = ProyeccionVentaSemanalReal::whereBetween('codigo_semana',[$semana_desde->codigo,$semana_hasta->codigo]);
 
             if(isset($request->id_cliente))
@@ -78,7 +79,7 @@ class ProyVentaController extends Controller
 
             $data = collect($data);
 
-            switch ($request->criterio){
+            switch ($request->criterio) {
                 case 'CF':
                     $data = $data->sortByDesc('cajas_fisicas_totales');
                     break;
@@ -86,14 +87,18 @@ class ProyVentaController extends Controller
                     $data = $data->sortByDesc('cajas_equivalentes_totales');
                     break;
                 default:
-                    $data = $data->sortByDesc('valor_total'); ;
+                    $data = $data->sortByDesc('valor_total');;
                     break;
             }
+
+            $clientes= Cliente::where('estado',1)->count();
 
             return view('adminlte.gestion.proyecciones.venta.partials.listado',[
                 'proyeccionVentaSemanalReal' => $data->take($top),
                 'idVariedad' => $request->id_variedad,
-                'semanas'=>$data->values()[0]['semanas']
+                'semanas'=>$data->values()[0]['semanas'],
+                'otros' => $top >= $clientes ? false : true,
+                'clientes' => $clientes
             ]);
 
         }else{ // LA semana no esta programada
