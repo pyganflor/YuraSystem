@@ -40,14 +40,19 @@ class Semana extends Model
         $proyeccion = ProyeccionVentaSemanalReal::where([
             ['id_variedad',$idVariedad],
             ['codigo_semana',$this->codigo]
-        ])->whereIn('id_cliente',$idsCliente)
-            ->select(
+        ]);
+
+        if($idsCliente){
+            $proyeccion->whereNotIn('id_cliente',$idsCliente);
+        }
+
+        $proyeccion->select(
                 DB::raw('sum(valor) as total_valor'),
                 DB::raw('sum(cajas_fisicas) as total_cajas_fisicas'),
                 DB::raw('sum(cajas_equivalentes) as total_cajas_equivalentes')
-            )->groupBy('codigo_semana')->first();
+            )->groupBy('codigo_semana');
 
-        return $proyeccion;
+        return $proyeccion->first();
 
     }
 }
