@@ -2,31 +2,6 @@
     <i class="fa fa-fw fa-info-circle"></i> Ingrese los datos que desea modificar para las semanas|módulos seleccionados
 </legend>
 <table class="table-bordered" width="100%" style="border: 3px solid #9d9d9d">
-    <tr id="tr_actualizar_tipo">
-        <th class="text-center" style="background-color: #e9ecef; border-color: #9d9d9d" width="10px">
-            <div style="width:0; height:0; -moz-border-radius: 100%; -webkit-border-radius: 100%; border-radius: 100%;
-            border-right: 8px solid green;
-            border-top: 8px solid green;
-            border-left: 8px solid blue;
-            border-bottom: 8px solid blue;" data-toggle="tooltip" data-placement="top" data-html="true"
-                 title="Ciclos - Proyecciones">
-            </div>
-        </th>
-        <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef" width="25%">
-            Tipo
-        </th>
-        <td class="text-cetner" style="border-color: #9d9d9d">
-            <select id="tipo" style="width: 100%">
-                <option value="S">Siembra</option>
-                <option value="P">Poda</option>
-            </select>
-        </td>
-        <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef" width="50px" id="celda_button_tipo">
-            <button class="btn btn-xs btn-success" type="button" onclick="actualizar_tipo()">
-                <i class="fa fa-fw fa-save"></i>
-            </button>
-        </th>
-    </tr>
     <tr id="tr_actualizar_curva">
         <th class="text-center" style="background-color: #e9ecef; border-color: #9d9d9d" width="10px">
             <div style="width:0; height:0; -moz-border-radius: 100%; -webkit-border-radius: 100%; border-radius: 100%;

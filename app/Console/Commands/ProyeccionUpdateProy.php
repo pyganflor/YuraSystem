@@ -108,6 +108,8 @@ class ProyeccionUpdateProy extends Command
                 }
             }
 
+            //dd($poda_siembra);
+
             /* ========================================= ¿ MOVER SIGUIETNE PROYECCION ? ================================= */
             if (count($next_proy) > 0) {
                 $next_proy = $next_proy[0];
@@ -142,10 +144,11 @@ class ProyeccionUpdateProy extends Command
 
                     $next_proy->fecha_inicio = $semana_new->fecha_inicial;
                     $next_proy->id_semana = $semana_new->id_semana;
-                    $next_proy->poda_siembra = $next_proy->tipo == 'S' ? 0 : $poda_siembra + 1;
-
-                    $next_proy->save();
                 }
+
+                $next_proy->poda_siembra = $next_proy->tipo == 'S' ? 0 : $poda_siembra + 1;
+
+                $next_proy->save();
             }
             $model->save();
             bitacora('proyeccion_modulo', $model->id_proyeccion_modulo, 'U', 'Actualización satisfactoria de la proyección');
