@@ -963,8 +963,18 @@ function getEmpaque($id)
     return Empaque::find($id);
 }
 
-function getModulos()
+function getModulos($option = null)
 {
+    if ($option == 'A') {   // modulos activos
+        return DB::table('ciclo as c')
+            ->join('modulo as m', 'm.id_modulo', '=', 'c.id_modulo')
+            ->select('m.*')
+            ->where('m.estado', 1)
+            ->where('c.estado', 1)
+            ->where('c.activo', 1)
+            ->orderBy('m.nombre')
+            ->get();
+    }
     return Modulo::All()->where('estado', '=', 1);
 }
 
@@ -2345,6 +2355,7 @@ function getLastSemanaByVariedad($variedad)
         ->last();
 }
 
-function getObjSemana($idSemana){
-    return Semana::where('codigo',$idSemana)->first();
+function getObjSemana($idSemana)
+{
+    return Semana::where('codigo', $idSemana)->first();
 }

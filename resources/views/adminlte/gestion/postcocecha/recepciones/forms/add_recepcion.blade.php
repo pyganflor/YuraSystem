@@ -103,7 +103,7 @@
             <td style="border-color: #9d9d9d" class="text-center" colspan="2">
                 <div class="form-group">
                     <select id="id_modulo_1" name="id_modulo_1" required class="form-control">
-                        @foreach(getModulos() as $item)
+                        @foreach(getModulos('A') as $item)
                             <option value="{{$item->id_modulo}}">{{$item->nombre}}</option>
                         @endforeach
                     </select>
