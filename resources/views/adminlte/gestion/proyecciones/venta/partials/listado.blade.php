@@ -63,7 +63,7 @@
                         </div>
                     </td>
                     @foreach($semanas as $codigoSemana => $dataSemana)
-                        <td class="text-center"  style="border-left:2px solid #000000;border-right:2px solid #000000;border-top:2px solid #000000;width: 250px" colspan="3">
+                        <td class="text-center"  style="border-left:2px solid #000000;border-right:2px solid #000000;border-top:2px solid #000000;width: 250px;background: #08ffe836;" colspan="3">
                             <div style="width:100%" data-toggle="tooltip" data-placement="top"  title="Cajas físiscas año anterior"><b>{{$dataSemana['cajas_fisicas_anno_anterior']}}</b></div>
                         </td>
                     @endforeach
@@ -172,6 +172,7 @@
     <ul style="margin-top: 5px" class="list-unstyled panel-collapse collapse" id="collapseLeyenda">
         <li>Totales <i class="fa fa-fw fa-circle" style="color: rgb(3, 222, 0)"></i></li>
         <li>Otros clientes <i class="fa fa-fw fa-circle" style="color:#08ffe8"></i></li>
+        <li>Cajas físicas proyectadas del año anterior <i class="fa fa-fw fa-circle" style="color:#08ffe836"></i></li>
         <li>Total clientes: {{$clientes}} <i class="fa fa-users" style="color: #9100ff7d"></i> </li>
     </ul>
 </div>
