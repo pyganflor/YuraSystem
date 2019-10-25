@@ -81,8 +81,7 @@ class ProyeccionUpdateProy extends Command
             $model->tallos_planta = $par_tallos_planta;
             $model->tallos_ramo = $par_tallos_ramo;
             $model->id_semana = $semana_ini->id_semana;
-            $model->fecha_inicio = $semana_ini->fecha_final;
-            $model->poda_siembra = $poda_siembra;       // borrar campo
+            $model->poda_siembra = $poda_siembra;
 
             if ($model->tipo == 'P') {
                 $last_ciclo = Ciclo::All()
@@ -96,7 +95,7 @@ class ProyeccionUpdateProy extends Command
                         ->where('estado', 1)
                         ->where('id_modulo', $model->id_modulo)
                         ->where('id_variedad', $model->id_variedad)
-                        ->where('fecha_inicio', '<', $semana_ini->fecha_final)
+                        ->where('fecha_inicio', '<', $model->fecha_inicio)
                         ->sortBy('fecha_inicio')
                         ->last();
                     if ($last_proy != '') {
@@ -107,8 +106,7 @@ class ProyeccionUpdateProy extends Command
                     $model->poda_siembra = $poda_siembra;
                 }
             }
-
-            //dd($poda_siembra);
+            $model->fecha_inicio = $semana_ini->fecha_final;
 
             /* ========================================= ¿ MOVER SIGUIETNE PROYECCION ? ================================= */
             if (count($next_proy) > 0) {
