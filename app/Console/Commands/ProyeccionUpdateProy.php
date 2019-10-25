@@ -4,6 +4,7 @@ namespace yura\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
+use yura\Modelos\Ciclo;
 use yura\Modelos\ProyeccionModulo;
 use yura\Modelos\Semana;
 
@@ -54,6 +55,7 @@ class ProyeccionUpdateProy extends Command
         $model = ProyeccionModulo::find($par_id_proyeccion_modulo);
         $semana_ini = Semana::All()->where('estado', 1)->where('id_variedad', $model->id_variedad)
             ->where('codigo', $par_semana)->first();
+        $poda_siembra = 0;
 
         if ($par_tipo == 'C') {    // borrar las siguientes proyecciones
             $next_proyecciones = ProyeccionModulo::All()
@@ -79,8 +81,32 @@ class ProyeccionUpdateProy extends Command
             $model->tallos_planta = $par_tallos_planta;
             $model->tallos_ramo = $par_tallos_ramo;
             $model->id_semana = $semana_ini->id_semana;
-            $model->fecha_inicio = $semana_ini->fecha_inicial;
-            $model->poda_siembra = 0;       // borrar campo
+            $model->fecha_inicio = $semana_ini->fecha_final;
+            $model->poda_siembra = $poda_siembra;       // borrar campo
+
+            if ($model->tipo == 'P') {
+                $last_ciclo = Ciclo::All()
+                    ->where('estado', 1)
+                    ->where('id_variedad', $model->id_variedad)
+                    ->where('id_modulo', $model->id_modulo)
+                    ->sortBy('fecha_inicio')
+                    ->last();
+                if ($last_ciclo != '') {
+                    $last_proy = ProyeccionModulo::All()
+                        ->where('estado', 1)
+                        ->where('id_modulo', $model->id_modulo)
+                        ->where('id_variedad', $model->id_variedad)
+                        ->where('fecha_inicio', '<', $semana_ini->fecha_final)
+                        ->sortBy('fecha_inicio')
+                        ->last();
+                    if ($last_proy != '') {
+                        $poda_siembra = $last_proy->poda_siembra + 1;
+                    } else {
+                        $poda_siembra = intval($last_ciclo->modulo->getPodaSiembraByCiclo($last_ciclo->id_ciclo) + 1);
+                    }
+                    $model->poda_siembra = $poda_siembra;
+                }
+            }
 
             /* ========================================= ¿ MOVER SIGUIETNE PROYECCION ? ================================= */
             if (count($next_proy) > 0) {
@@ -116,6 +142,7 @@ class ProyeccionUpdateProy extends Command
 
                     $next_proy->fecha_inicio = $semana_new->fecha_inicial;
                     $next_proy->id_semana = $semana_new->id_semana;
+                    $next_proy->poda_siembra = $next_proy->tipo == 'S' ? 0 : $poda_siembra + 1;
 
                     $next_proy->save();
                 }
