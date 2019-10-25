@@ -23,7 +23,7 @@
     </tr>
     <tr id="tr_mover_inicio_proy">
         <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef" width="25%">
-            Inicio de proyección
+            Inicio de programación
         </th>
         <td class="text-cetner" style="border-color: #9d9d9d">
             <input type="number" id="ini_proy" min="-14" max="14" style="width: 100%" class="text-center">

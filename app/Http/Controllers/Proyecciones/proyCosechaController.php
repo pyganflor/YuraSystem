@@ -548,6 +548,14 @@ class proyCosechaController extends Controller
                                         $proy->poda_siembra = null;
                                         $proy->tabla = null;
                                         $proy->modelo = null;
+                                    } else {    // no hay que mover pero es una semana a partir de la siguiente proyeccion
+                                        if ($pos_proy_new == '') {
+                                            $pos_proy_new = 0;
+                                        }
+                                        if ($pos_proy_new + 1 <= $next_proy->semana_poda_siembra + count(explode('-', $next_proy->curva)) - 1) {    // es una semana de la siguiente proyeccion
+                                            $proy->poda_siembra = $next_proy->info == 'S' ? 0 : $poda_siembra + 1;
+                                        }
+                                        $pos_proy_new++;
                                     }
                                     $pos_proy++;
                                 } else {    // fuera de las semanas de la proy
@@ -652,11 +660,12 @@ class proyCosechaController extends Controller
         ]);
         $success = false;
         if (!$valida->fails()) {
+
             $model = Ciclo::find($request->id_ciclo);
             $semana_fin = getLastSemanaByVariedad($model->id_variedad);
             $last_semana_new = '';
             /* ======================== ACTUALIZAR LA TABLA PROYECCION_MODULO_SEMANA ====================== */
-            if ($model->semana_poda_siembra != $request->semana_poda_siembra ||
+            if ($model->semana_poda_siembra != $request->semana_poda_siembra || 1 ||
                 $model->curva != $request->curva || $model->poda_siembra != $request->poda_siembra ||
                 $model->desecho != $request->desecho || $model->conteo != $request->conteo ||
                 $model->plantas_iniciales != $request->plantas_iniciales) { // hubo algun cambio
@@ -665,6 +674,11 @@ class proyCosechaController extends Controller
                 $cant_semanas_new = $request->semana_poda_siembra + count(explode('-', $request->curva));   // cantidad de semanas que durará el ciclo new
                 $cant_curva_old = count(explode('-', $model->curva));   // cantidad de semanas que durará la cosecha old
                 $cant_curva_new = count(explode('-', $request->curva));   // cantidad de semanas que durará la cosecha new
+
+                /* ======================== ACTUALIZAR LAS TABLAS CICLO y PROYECCION_MODULO ====================== */
+                ProyeccionUpdateCiclo::dispatch($request->id_ciclo, $request->semana_poda_siembra, $request->curva, $request->poda_siembra, $request->plantas_iniciales, $request->desecho, $request->conteo)
+                    ->onQueue('update_ciclo')->onConnection('sync');
+
                 if ($cant_semanas_old != $cant_semanas_new) {   // hay que mover
                     if ($cant_semanas_old < $cant_semanas_new) {    // hay que mover para alante
                         $semana_ini_ciclo = getSemanaByDate($model->fecha_inicio);
@@ -776,6 +790,40 @@ class proyCosechaController extends Controller
                             }
                             $proy->save();
                         }
+
+                        /* ===================== RECALCULAR el # de PODA_SIEMBRA ===================== */
+                        $proyecciones = ProyeccionModuloSemana::whereIn('tipo', ['S', 'P', 'Y'])
+                            ->where('id_modulo', $model->id_modulo)
+                            ->where('id_variedad', $model->id_variedad)
+                            ->where('semana', '>=', $model->semana()->codigo)
+                            ->orderBy('semana')
+                            ->get();
+
+                        $poda_siembra = $model->modulo->getPodaSiembraByCiclo($model->id_ciclo);
+                        foreach ($proyecciones as $proy) {
+                            if ($proy->tipo == 'Y') {
+                                if ($proy->info == 'P') {
+                                    $last_proy = ProyeccionModulo::All()
+                                        ->where('estado', 1)
+                                        ->where('id_modulo', $proy->id_modulo)
+                                        ->where('id_variedad', $proy->id_variedad)
+                                        ->where('fecha_inicio', '<', $proy->fecha_inicio)
+                                        ->sortBy('fecha_inicio')
+                                        ->last();
+                                    if ($last_proy != '') {
+                                        $poda_siembra = $last_proy->poda_siembra + 1;
+                                    } else {
+                                        $poda_siembra = intval($poda_siembra + 1);
+                                    }
+                                }
+                                $proy->poda_siembra = $poda_siembra;
+                            } else {
+                                $proy->tipo = $request->poda_siembra;
+                                $proy->info = $request->poda_siembra == 'S' ? 'S-0' : $request->poda_siembra . '-' . $poda_siembra;
+                            }
+                            $proy->save();
+                        }
+
                     } else {    // hay que mover para atras
                         $proyecciones = ProyeccionModuloSemana::where('tabla', 'C')
                             ->where('modelo', $request->id_ciclo)
@@ -897,73 +945,160 @@ class proyCosechaController extends Controller
                         }
 
                         $last_semana_new = $last_semana;
-                    }
-                } else
-                    if ($cant_curva_old != $cant_curva_new) {   // no hay que mover, pero hay que recalcular la curva
-                        $proyecciones = ProyeccionModuloSemana::whereIn('tipo', ['T'])
-                            ->where('tabla', 'C')
-                            ->where('modelo', $model->id_ciclo)
+
+                        /* ===================== RECALCULAR el # de PODA_SIEMBRA ===================== */
+                        $proyecciones = ProyeccionModuloSemana::whereIn('tipo', ['S', 'P', 'Y'])
+                            ->where('id_modulo', $model->id_modulo)
+                            ->where('id_variedad', $model->id_variedad)
+                            ->where('semana', '>=', $model->semana()->codigo)
                             ->orderBy('semana')
                             ->get();
-                        if ($cant_curva_new < $cant_curva_old) {    // quitar semanas de cosecha
-                            $cant_quitar = $cant_curva_old - $cant_curva_new;
-                            $pos_cosecha = 0;
-                            foreach ($proyecciones as $pos_proy => $proy) {
-                                $proy->plantas_iniciales = $request->plantas_iniciales;
-                                $proy->tallos_planta = $request->conteo;
-                                $proy->curva = $request->curva;
-                                $proy->poda_siembra = $request->poda_siembra;
-                                $proy->semana_poda_siembra = $request->semana_poda_siembra;
-                                $proy->desecho = $request->desecho;
 
-                                if (($pos_proy + 1) <= $cant_quitar) {    // convertir a tipo I
-                                    $proy->tipo = 'I';
-                                    $proy->proyectados = 0;
-                                } else {    // recalcular % de curva
-                                    $total = $request->plantas_iniciales * $request->conteo;
-                                    $total = $total * ((100 - $request->desecho) / 100);
-                                    $proy->proyectados = round($total * (explode('-', $request->curva)[$pos_cosecha] / 100), 2);
-                                    $pos_cosecha++;
+                        $poda_siembra = $model->modulo->getPodaSiembraByCiclo($model->id_ciclo);
+                        foreach ($proyecciones as $proy) {
+                            if ($proy->tipo == 'Y') {
+                                if ($proy->info == 'P') {
+                                    $last_proy = ProyeccionModulo::All()
+                                        ->where('estado', 1)
+                                        ->where('id_modulo', $proy->id_modulo)
+                                        ->where('id_variedad', $proy->id_variedad)
+                                        ->where('fecha_inicio', '<', $proy->fecha_inicio)
+                                        ->sortBy('fecha_inicio')
+                                        ->last();
+                                    if ($last_proy != '') {
+                                        $poda_siembra = $last_proy->poda_siembra + 1;
+                                    } else {
+                                        $poda_siembra = intval($poda_siembra + 1);
+                                    }
                                 }
-                                //dd($pos_proy, 'ok');
-                                $proy->save();
+                                $proy->poda_siembra = $poda_siembra;
+                            } else {
+                                $proy->tipo = $request->poda_siembra;
+                                $proy->info = $request->poda_siembra == 'S' ? 'S-0' : $request->poda_siembra . '-' . $poda_siembra;
                             }
-                        } else {    // aumentar semanas de cosecha
-                            $cant_aumentar = $cant_curva_new - $cant_curva_old;
-                            $add_proyecciones = ProyeccionModuloSemana::whereIn('tipo', ['I'])
-                                ->where('tabla', 'C')
-                                ->where('modelo', $model->id_ciclo)
-                                ->orderBy('semana', 'desc')
-                                ->take($cant_aumentar)
-                                ->get();
-                            $proyecciones = $add_proyecciones->merge($proyecciones);
-                            $pos_cosecha = 0;
-                            foreach ($proyecciones as $pos_proy => $proy) {
-                                $proy->plantas_iniciales = $request->plantas_iniciales;
-                                $proy->tallos_planta = $request->conteo;
-                                $proy->curva = $request->curva;
-                                $proy->poda_siembra = $request->poda_siembra;
-                                $proy->semana_poda_siembra = $request->semana_poda_siembra;
-                                $proy->desecho = $request->desecho;
-                                $proy->tipo = 'T';
+                            $proy->save();
+                        }
+                    }
+                } else if ($cant_curva_old != $cant_curva_new) {   // no hay que mover, pero hay que recalcular la curva
+                    $proyecciones = ProyeccionModuloSemana::whereIn('tipo', ['T'])
+                        ->where('id_modulo', $model->id_modulo)
+                        ->where('id_variedad', $model->id_variedad)
+                        ->where('tabla', 'C')
+                        ->where('modelo', $model->id_ciclo)
+                        ->orderBy('semana')
+                        ->get();
+                    if ($cant_curva_new < $cant_curva_old) {    // quitar semanas de cosecha
+                        $cant_quitar = $cant_curva_old - $cant_curva_new;
+                        $pos_cosecha = 0;
+                        foreach ($proyecciones as $pos_proy => $proy) {
+                            $proy->plantas_iniciales = $request->plantas_iniciales;
+                            $proy->tallos_planta = $request->conteo;
+                            $proy->curva = $request->curva;
+                            $proy->poda_siembra = $request->poda_siembra;
+                            $proy->semana_poda_siembra = $request->semana_poda_siembra;
+                            $proy->desecho = $request->desecho;
 
+                            if (($pos_proy + 1) <= $cant_quitar) {    // convertir a tipo I
+                                $proy->tipo = 'I';
+                                $proy->proyectados = 0;
+                            } else {    // recalcular % de curva
                                 $total = $request->plantas_iniciales * $request->conteo;
                                 $total = $total * ((100 - $request->desecho) / 100);
                                 $proy->proyectados = round($total * (explode('-', $request->curva)[$pos_cosecha] / 100), 2);
                                 $pos_cosecha++;
-
-                                $proy->save();
                             }
+                            $proy->save();
                         }
-                    } else {    // no hay que mover, solo actualizar datos
-                        $proyecciones = ProyeccionModuloSemana::whereIn('tipo', ['S', 'P', 'T'])
+                    } else {    // aumentar semanas de cosecha
+                        $cant_aumentar = $cant_curva_new - $cant_curva_old;
+                        $add_proyecciones = ProyeccionModuloSemana::whereIn('tipo', ['I'])
                             ->where('tabla', 'C')
                             ->where('modelo', $model->id_ciclo)
-                            ->orderBy('semana')
+                            ->orderBy('semana', 'desc')
+                            ->take($cant_aumentar)
                             ->get();
-
+                        $proyecciones = $add_proyecciones->merge($proyecciones);
                         $pos_cosecha = 0;
                         foreach ($proyecciones as $pos_proy => $proy) {
+                            $proy->plantas_iniciales = $request->plantas_iniciales;
+                            $proy->tallos_planta = $request->conteo;
+                            $proy->curva = $request->curva;
+                            $proy->poda_siembra = $request->poda_siembra;
+                            $proy->semana_poda_siembra = $request->semana_poda_siembra;
+                            $proy->desecho = $request->desecho;
+                            $proy->tipo = 'T';
+
+                            $total = $request->plantas_iniciales * $request->conteo;
+                            $total = $total * ((100 - $request->desecho) / 100);
+                            $proy->proyectados = round($total * (explode('-', $request->curva)[$pos_cosecha] / 100), 2);
+                            $pos_cosecha++;
+
+                            $proy->save();
+                        }
+                    }
+
+                    /* ===================== RECALCULAR el # de PODA_SIEMBRA ===================== */
+                    $proyecciones = ProyeccionModuloSemana::whereIn('tipo', ['S', 'P', 'Y'])
+                        ->where('id_modulo', $model->id_modulo)
+                        ->where('id_variedad', $model->id_variedad)
+                        ->where('semana', '>=', $model->semana()->codigo)
+                        ->orderBy('semana')
+                        ->get();
+
+                    $poda_siembra = $model->modulo->getPodaSiembraByCiclo($model->id_ciclo);
+                    foreach ($proyecciones as $proy) {
+                        if ($proy->tipo == 'Y') {
+                            if ($proy->info == 'P') {
+                                $last_proy = ProyeccionModulo::All()
+                                    ->where('estado', 1)
+                                    ->where('id_modulo', $proy->id_modulo)
+                                    ->where('id_variedad', $proy->id_variedad)
+                                    ->where('fecha_inicio', '<', $proy->fecha_inicio)
+                                    ->sortBy('fecha_inicio')
+                                    ->last();
+                                if ($last_proy != '') {
+                                    $poda_siembra = $last_proy->poda_siembra + 1;
+                                } else {
+                                    $poda_siembra = intval($poda_siembra + 1);
+                                }
+                            }
+                            $proy->poda_siembra = $poda_siembra;
+                        } else {
+                            $proy->tipo = $request->poda_siembra;
+                            $proy->info = $request->poda_siembra == 'S' ? 'S-0' : $request->poda_siembra . '-' . $poda_siembra;
+                        }
+                        $proy->save();
+                    }
+
+                } else {    // no hay que mover, solo actualizar datos
+                    $proyecciones = ProyeccionModuloSemana::whereIn('tipo', ['S', 'P', 'T', 'Y'])
+                        ->where('id_modulo', $model->id_modulo)
+                        ->where('id_variedad', $model->id_variedad)
+                        ->where('semana', '>=', $model->semana()->codigo)
+                        ->orderBy('semana')
+                        ->get();
+
+                    $pos_cosecha = 0;
+                    foreach ($proyecciones as $pos_proy => $proy) {
+                        if ($proy->tipo == 'Y') {
+                            $poda_siembra = 0;
+                            if ($proy->info == 'P') {
+                                $poda_siembra = $model->modulo->getPodaSiembraByCiclo($model->id_ciclo);
+                                $last_proy = ProyeccionModulo::All()
+                                    ->where('estado', 1)
+                                    ->where('id_modulo', $proy->id_modulo)
+                                    ->where('id_variedad', $proy->id_variedad)
+                                    ->where('fecha_inicio', '<', $proy->fecha_inicio)
+                                    ->sortBy('fecha_inicio')
+                                    ->last();
+                                if ($last_proy != '') {
+                                    $poda_siembra = $last_proy->poda_siembra + 1;
+                                } else {
+                                    $poda_siembra = intval($poda_siembra + 1);
+                                }
+                            }
+                            $proy->poda_siembra = $poda_siembra;
+                        } else if ($proy->tabla == 'C') {
                             $proy->plantas_iniciales = $request->plantas_iniciales;
                             $proy->tallos_planta = $request->conteo;
                             $proy->curva = $request->curva;
@@ -976,11 +1111,15 @@ class proyCosechaController extends Controller
                                 $total = $total * ((100 - $request->desecho) / 100);
                                 $proy->proyectados = round($total * (explode('-', $request->curva)[$pos_cosecha] / 100), 2);
                                 $pos_cosecha++;
+                            } else {    //  se trata de una semana de inicio de ciclo, (Poda o Siembra)
+                                $proy->tipo = $request->poda_siembra;
+                                $proy->info = $request->poda_siembra == 'S' ? 'S-0' : $request->poda_siembra . '-' . $model->modulo->getPodaSiembraByCiclo($model->id_ciclo);
                             }
-
-                            $proy->save();
                         }
+
+                        $proy->save();
                     }
+                }
                 $success = true;
                 $msg = '<div class="alert alert-success text-center">' .
                     '<p>Se ha guardado la información satisfactoriamente</p>'
@@ -991,10 +1130,6 @@ class proyCosechaController extends Controller
                     '<p>No se han encontrado cambios</p>'
                     . '</div>';
             }
-
-            /* ======================== ACTUALIZAR LAS TABLAS CICLO y PROYECCION_MODULO ====================== */
-            ProyeccionUpdateCiclo::dispatch($request->id_ciclo, $request->semana_poda_siembra, $request->curva, $request->poda_siembra, $request->plantas_iniciales, $request->desecho, $request->conteo)
-                ->onQueue('update_ciclo');
 
             /* ======================== ACTUALIZAR LA TABLA PROYECCION_MODULO_SEMANA FINAL ====================== */
             $semana_desde = $last_semana_new;
@@ -1121,6 +1256,14 @@ class proyCosechaController extends Controller
                     ->where('estado', 1)
                     ->first();
 
+                /* ========================= ACTUALIZAR LAS TABLAS CICLO y PROYECCION_MODULO ======================== */
+                if ($ciclo != '')
+                    CicloUpdateCampo::dispatch($ciclo->id_ciclo, 'Tipo', $request->tipo)
+                        ->onQueue('proy_cosecha/actualizar_tipo')->onConnection('sync');
+                if ($proy != '')
+                    ProyeccionUpdateCampo::dispatch($proy->id_proyeccion_modulo, 'Tipo', $request->tipo)
+                        ->onQueue('proy_cosecha/actualizar_tipo')->onConnection('sync');
+
                 /* ========================= ACTUALIZAR TABLA PROYECCION_MODULO_SEMANA ======================== */
                 if ($ciclo != '' || $proy != '') {
                     $model = ProyeccionModuloSemana::All()
@@ -1132,23 +1275,81 @@ class proyCosechaController extends Controller
 
                     $model->tipo = $model->tipo != 'Y' ? $request->tipo : $model->tipo;
                     if (in_array($model->tipo, ['S', 'P'])) {   // se trata de un ciclo
-                        $model->info = $request->tipo == 'S' ? 'S-0' : 'P-' . $ciclo->modulo->getPodaSiembraByCiclo($ciclo->id_ciclo);
-                        $model->poda_siembra = $request->tipo;
+                        /* ===================== RECALCULAR el # de PODA_SIEMBRA ===================== */
+                        $proyecciones = ProyeccionModuloSemana::whereIn('tipo', ['S', 'P', 'Y'])
+                            ->where('id_modulo', $mod)
+                            ->where('id_variedad', $request->variedad)
+                            ->where('semana', '>=', $sem->codigo)
+                            ->orderBy('semana')
+                            ->get();
+
+                        $poda_siembra = $model->modulo->getPodaSiembraByCiclo($model->id_ciclo);
+                        foreach ($proyecciones as $proy) {
+                            if ($proy->tipo == 'Y') {
+                                if ($proy->info == 'P') {
+                                    $last_proy = ProyeccionModulo::All()
+                                        ->where('estado', 1)
+                                        ->where('id_modulo', $proy->id_modulo)
+                                        ->where('id_variedad', $proy->id_variedad)
+                                        ->where('fecha_inicio', '<', $proy->fecha_inicio)
+                                        ->sortBy('fecha_inicio')
+                                        ->last();
+                                    if ($last_proy != '') {
+                                        $poda_siembra = $last_proy->poda_siembra + 1;
+                                    } else {
+                                        $poda_siembra = intval($poda_siembra + 1);
+                                    }
+                                }
+                                $proy->poda_siembra = $poda_siembra;
+                            } else {
+                                $proy->tipo = $request->poda_siembra;
+                                $proy->info = $request->poda_siembra == 'S' ? 'S-0' : $request->poda_siembra . '-' . $poda_siembra;
+                            }
+                            $proy->save();
+                        }
                     } else {    // se trata de una proy
-                        $model->info = $request->tipo;
-                        $model->poda_siembra = 0;
+                        $poda_siembra = 0;
+                        if ($request->tipo == 'P') {
+                            $last_ciclo = Ciclo::All()
+                                ->where('estado', 1)
+                                ->where('id_variedad', $model->id_variedad)
+                                ->where('id_modulo', $model->id_modulo)
+                                ->sortBy('fecha_inicio')
+                                ->last();
+                            if ($last_ciclo != '') {
+                                /* ===================== RECALCULAR el # de PODA_SIEMBRA ===================== */
+                                $proyecciones = ProyeccionModuloSemana::whereIn('tipo', ['Y'])
+                                    ->where('id_modulo', $mod)
+                                    ->where('id_variedad', $request->variedad)
+                                    ->where('semana', '>=', $sem->codigo)
+                                    ->orderBy('semana')
+                                    ->get();
+
+                                $poda_siembra = $last_ciclo->modulo->getPodaSiembraByCiclo($last_ciclo->id_ciclo);
+                                foreach ($proyecciones as $proy) {
+                                    if ($proy->tipo == 'Y') {
+                                        if ($proy->info == 'P') {
+                                            $last_proy = ProyeccionModulo::All()
+                                                ->where('estado', 1)
+                                                ->where('id_modulo', $proy->id_modulo)
+                                                ->where('id_variedad', $proy->id_variedad)
+                                                ->where('fecha_inicio', '<', $proy->fecha_inicio)
+                                                ->sortBy('fecha_inicio')
+                                                ->last();
+                                            if ($last_proy != '') {
+                                                $poda_siembra = $last_proy->poda_siembra + 1;
+                                            } else {
+                                                $poda_siembra = intval($poda_siembra + 1);
+                                            }
+                                        }
+                                        $proy->poda_siembra = $poda_siembra;
+                                    }
+                                    $proy->save();
+                                }
+                            }
+                        }
                     }
-
-                    $model->save();
                 }
-
-                /* ========================= ACTUALIZAR LAS TABLAS CICLO y PROYECCION_MODULO ======================== */
-                if ($ciclo != '')
-                    CicloUpdateCampo::dispatch($ciclo->id_ciclo, 'Tipo', $request->tipo)
-                        ->onQueue('proy_cosecha/actualizar_tipo');
-                if ($proy != '')
-                    ProyeccionUpdateCampo::dispatch($proy->id_proyeccion_modulo, 'Tipo', $request->tipo)
-                        ->onQueue('proy_cosecha/actualizar_tipo');
             }
         }
         return [
@@ -1401,7 +1602,7 @@ class proyCosechaController extends Controller
                                     $proy->tallos_planta = $model->tallos_planta;
                                     $proy->tallos_ramo = $model->tallos_ramo;
                                     $proy->curva = $request->curva;
-                                    $proy->poda_siembra = 0;
+                                    $proy->poda_siembra = $model->poda_siembra;
                                     $proy->semana_poda_siembra = $model->semana_poda_siembra;
                                     $proy->desecho = $model->desecho;
                                     $proy->area = $model->modulo->area;
@@ -1608,7 +1809,7 @@ class proyCosechaController extends Controller
                         $pos_proy = 0;
                         $pos_proy_new = '';
                         foreach ($proyecciones as $proy) {
-                            if ($pos_proy + 1 <= $cant_semanas_new - 1) {   // dentro de las semanas de la proy // semana de cosecha **
+                            if ($pos_proy + 1 <= $cant_semanas_new - 1) {   // dentro de las semanas del ciclo // semana de cosecha **
                                 $proy->tabla = 'C';
                                 $proy->modelo = $model->id_ciclo;
 
@@ -1635,11 +1836,10 @@ class proyCosechaController extends Controller
                                     $pos_cosecha++;
                                 }
                                 $pos_proy++;
-                            } else if ($next_proy != '') {    // semanas despues de la proyeccion, pero en caso de que exista una siguiente proy
+                            } else if ($next_proy != '') {    // semanas despues del ciclo, pero en caso de que exista una siguiente proy
                                 if ($last_semana == '')
                                     $last_semana = $proy->semana;
                                 if ($last_semana > $next_proy->semana) {    // hay que mover la siguiente proyeccion
-                                    //dd($proy->semana . '... hay que mover la siguiente proyeccion');
                                     if ($pos_proy_new == '') {
                                         $pos_proy_new = 0;
                                         $pos_cosecha = 0;
@@ -1691,7 +1891,6 @@ class proyCosechaController extends Controller
                                     }
                                     $pos_proy_new++;
                                 } else if ($proy->semana < $next_proy->semana) {    // es una semana que queda vacia antes de la siguiente proy
-                                    //dd($proy->semana . '... es una semana que queda vacia antes de la siguiente proy');
                                     $proy->tipo = 'F';
                                     $proy->proyectados = 0;
                                     $proy->info = '-';
@@ -1707,7 +1906,7 @@ class proyCosechaController extends Controller
                                     $proy->modelo = null;
                                 }
                                 $pos_proy++;
-                            } else {    // fuera de las semanas de la proy
+                            } else {    // fuera de las semanas del ciclo
                                 if ($last_semana_new == '') {
                                     $last_semana_new = $proy->semana;
                                 }
@@ -1791,7 +1990,7 @@ class proyCosechaController extends Controller
                                     $proy->tallos_planta = $model->tallos_planta;
                                     $proy->tallos_ramo = $model->tallos_ramo;
                                     $proy->curva = $model->curva;
-                                    $proy->poda_siembra = 0;
+                                    $proy->poda_siembra = $model->poda_siembra;
                                     $proy->semana_poda_siembra = $request->semana_cosecha;
                                     $proy->desecho = $model->desecho;
                                     $proy->area = $model->modulo->area;
@@ -2517,7 +2716,7 @@ class proyCosechaController extends Controller
                                     $proy->tallos_planta = $model->tallos_planta;
                                     $proy->tallos_ramo = $model->tallos_ramo;
                                     $proy->curva = $model->curva;
-                                    $proy->poda_siembra = 0;
+                                    $proy->poda_siembra = $model->poda_siembra;
                                     $proy->semana_poda_siembra = $semana_cosecha;
                                     $proy->desecho = $model->desecho;
                                     $proy->area = $model->modulo->area;
@@ -2663,15 +2862,6 @@ class proyCosechaController extends Controller
         foreach ($request->semanas as $sem) {
             $sem = Semana::find($sem);
             foreach ($request->modulos as $mod) {
-                /* ===================== CICLO ===================== */
-                $ciclo = Ciclo::All()
-                    ->where('id_variedad', $request->variedad)
-                    ->where('id_modulo', $mod)
-                    ->where('fecha_inicio', '>=', $sem->fecha_inicial)
-                    ->where('fecha_inicio', '<=', $sem->fecha_final)
-                    ->where('estado', 1)
-                    ->first();
-
                 /* ====================== PROYECCION ===================== */
                 $proyeccion = ProyeccionModulo::All()
                     ->where('id_variedad', $request->variedad)
@@ -2680,183 +2870,8 @@ class proyCosechaController extends Controller
                     ->where('estado', 1)
                     ->first();
 
-                /* ========================= ACTUALIZAR LAS TABLAS CICLO y PROYECCION_MODULO ======================== */
-                if ($ciclo != '') {
-                    $semana_cosecha = $ciclo->semana_poda_siembra + $request->mover;
-                    if ($semana_cosecha != $ciclo->semana_poda_siembra && $semana_cosecha >= 5 && $ciclo->activo == 1) {
-                        $model = $ciclo;
-                        $obj = [
-                            'id_modulo' => $model->id_modulo,
-                            'id_variedad' => $model->id_variedad,
-                        ];
-                        $semana_ini_proy = $model->semana();
-
-                        $semana_ini = min($model->semana()->codigo, $semana_ini_proy->codigo);    // en este caso son la misma semana
-
-                        $next_proy = ProyeccionModuloSemana::where('estado', 1)
-                            ->where('tabla', 'P')
-                            ->where('tipo', 'Y')
-                            ->where('semana', '>', $semana_ini)
-                            ->where('id_modulo', $model->id_modulo)
-                            ->where('id_variedad', $model->id_variedad)
-                            ->where('modelo', '!=', $model->id_ciclo)
-                            ->orderBy('semana')
-                            ->get()->take(1);
-                        $next_proy = count($next_proy) > 0 ? $next_proy[0] : '';
-
-                        $proyecciones = ProyeccionModuloSemana::where('estado', 1)
-                            ->where('semana', '>=', $semana_ini)
-                            ->where('id_modulo', $model->id_modulo)
-                            ->where('id_variedad', $model->id_variedad)
-                            ->orderBy('semana')
-                            ->get();
-
-                        $cant_semanas_new = $semana_cosecha + count(explode('-', $model->curva));   // cantidad de semanas que durará la proy new
-
-                        $last_semana = '';
-                        $last_semana_new = '';
-                        $pos_cosecha = 0;
-                        $pos_proy = 0;
-                        $pos_proy_new = '';
-                        foreach ($proyecciones as $proy) {
-                            if ($pos_proy + 1 <= $cant_semanas_new - 1) {   // dentro de las semanas de la proy // semana de cosecha **
-                                $proy->tabla = 'C';
-                                $proy->modelo = $model->id_ciclo;
-
-                                $proy->plantas_iniciales = $model->plantas_iniciales;
-                                $proy->tallos_planta = $model->conteo;
-                                $proy->tallos_ramo = 0;
-                                $proy->curva = $model->curva;
-                                $proy->poda_siembra = $model->poda_siembra;
-                                $proy->semana_poda_siembra = $semana_cosecha;
-                                $proy->desecho = $model->desecho;
-                                $proy->area = $model->area;
-                                $proy->tipo = 'I';
-                                $proy->info = ($pos_proy + 1) . 'º';
-
-                                if ($pos_proy + 1 == 1) {   // primera semana de proyeccion
-                                    $proy->tipo = $model->poda_siembra;
-                                    $proy->info = $model->poda_siembra . '-' . $model->modulo->getPodaSiembraByCiclo($model->id_ciclo);
-                                }
-                                if ($pos_proy + 1 >= $semana_cosecha) {
-                                    $proy->tipo = 'T';
-                                    $total = $model->plantas_iniciales * $model->conteo;
-                                    $total = $total * ((100 - $model->desecho) / 100);
-                                    $proy->proyectados = round($total * (explode('-', $model->curva)[$pos_cosecha] / 100), 2);
-                                    $pos_cosecha++;
-                                }
-                                $pos_proy++;
-                            } else if ($next_proy != '') {    // semanas despues de la proyeccion, pero en caso de que exista una siguiente proy
-                                if ($last_semana == '')
-                                    $last_semana = $proy->semana;
-                                if ($last_semana > $next_proy->semana) {    // hay que mover la siguiente proyeccion
-                                    //dd($proy->semana . '... hay que mover la siguiente proyeccion');
-                                    if ($pos_proy_new == '') {
-                                        $pos_proy_new = 0;
-                                        $pos_cosecha = 0;
-                                    }
-                                    if ($pos_proy_new + 1 <= $next_proy->semana_poda_siembra + count(explode('-', $next_proy->curva)) - 1) {   // esta dentro de las semanas de la proyeccion
-                                        $proy->tabla = 'P';
-                                        $proy->modelo = $next_proy->modelo;
-
-                                        $proy->plantas_iniciales = $next_proy->plantas_iniciales;
-                                        $proy->tallos_planta = $next_proy->tallos_planta;
-                                        $proy->tallos_ramo = $next_proy->tallos_ramo;
-                                        $proy->curva = $next_proy->curva;
-                                        $proy->poda_siembra = $next_proy->poda_siembra;
-                                        $proy->semana_poda_siembra = $next_proy->semana_poda_siembra;
-                                        $proy->desecho = $next_proy->desecho;
-                                        $proy->area = $next_proy->area;
-                                        $proy->tipo = 'I';
-                                        $proy->info = ($pos_proy_new + 1) . 'º';
-                                        $proy->proyectados = 0;
-
-                                        if ($pos_proy_new + 1 == 1) {   // primera semana de proyeccion
-                                            $proy->tipo = $next_proy->tipo;
-                                            $proy->info = $next_proy->info;
-                                        }
-                                        if ($pos_proy_new + 1 >= $next_proy->semana_poda_siembra) {  // semana de cosecha
-                                            $proy->tipo = 'T';
-                                            $total = $next_proy->plantas_iniciales * $next_proy->tallos_planta;
-                                            $total = $total * ((100 - $next_proy->desecho) / 100);
-                                            $proy->proyectados = round($total * (explode('-', $next_proy->curva)[$pos_cosecha] / 100), 2);
-                                            $pos_cosecha++;
-                                        }
-                                    } else {    // semanas despues de la proyeccion
-                                        if ($last_semana_new == '') {
-                                            $last_semana_new = $proy->semana;
-                                        }
-                                        $proy->tipo = 'F';
-                                        $proy->proyectados = 0;
-                                        $proy->info = '-';
-                                        $proy->activo = 0;
-                                        $proy->plantas_iniciales = null;
-                                        $proy->plantas_actuales = null;
-                                        $proy->desecho = null;
-                                        $proy->curva = null;
-                                        $proy->semana_poda_siembra = null;
-                                        $proy->tallos_planta = null;
-                                        $proy->poda_siembra = null;
-                                        $proy->tabla = null;
-                                        $proy->modelo = null;
-                                    }
-                                    $pos_proy_new++;
-                                } else if ($proy->semana < $next_proy->semana) {    // es una semana que queda vacia antes de la siguiente proy
-                                    //dd($proy->semana . '... es una semana que queda vacia antes de la siguiente proy');
-                                    $proy->tipo = 'F';
-                                    $proy->proyectados = 0;
-                                    $proy->info = '-';
-                                    $proy->activo = 0;
-                                    $proy->plantas_iniciales = null;
-                                    $proy->plantas_actuales = null;
-                                    $proy->desecho = null;
-                                    $proy->curva = null;
-                                    $proy->semana_poda_siembra = null;
-                                    $proy->tallos_planta = null;
-                                    $proy->poda_siembra = null;
-                                    $proy->tabla = null;
-                                    $proy->modelo = null;
-                                }
-                                $pos_proy++;
-                            } else {    // fuera de las semanas de la proy
-                                if ($last_semana_new == '') {
-                                    $last_semana_new = $proy->semana;
-                                }
-                                $proy->tipo = 'F';
-                                $proy->proyectados = 0;
-                                $proy->info = '-';
-                                $proy->activo = 0;
-                                $proy->plantas_iniciales = null;
-                                $proy->plantas_actuales = null;
-                                $proy->desecho = null;
-                                $proy->curva = null;
-                                $proy->semana_poda_siembra = null;
-                                $proy->tallos_planta = null;
-                                $proy->poda_siembra = null;
-                                $proy->tabla = null;
-                                $proy->modelo = null;
-
-                                $pos_proy++;
-                            }
-                            $proy->save();
-                        }
-
-                        if ($last_semana_new == '')
-                            $last_semana_new = $last_semana;
-
-                        /* ======================== ACTUALIZAR LA TABLA PROYECCION_MODULO_SEMANA FINAL ====================== */
-                        $semana_desde = $last_semana_new;
-                        $semana_fin = getLastSemanaByVariedad($obj['id_variedad']);
-
-                        CicloUpdateCampo::dispatch($ciclo->id_ciclo, 'SemanaCosecha', $semana_cosecha)
-                            ->onQueue('proy_cosecha/actualizar_semana_cosecha');
-
-                        if ($semana_desde != '')
-                            ProyeccionUpdateSemanal::dispatch($semana_desde, $semana_fin->codigo, $obj['id_variedad'], $obj['id_modulo'], 0)
-                                ->onQueue('proy_cosecha');
-                    }
-                }
-                if ($proyeccion != '' && $request->check_save_proy == 'true') {
+                /* ========================= ACTUALIZAR LAS TABLAS PROYECCION_MODULO ======================== */
+                if ($proyeccion != '') {
                     $semana_cosecha = $proyeccion->semana_poda_siembra + $request->mover;
                     if ($semana_cosecha != $proyeccion->semana_poda_siembra && $semana_cosecha >= 5) {
                         $model = $proyeccion;
