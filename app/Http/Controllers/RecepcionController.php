@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use yura\Jobs\ProyeccionUpdateSemanal;
 use yura\Modelos\Apertura;
+use yura\Modelos\Ciclo;
 use yura\Modelos\ClasificacionVerde;
 use yura\Modelos\Cosecha;
 use yura\Modelos\DesgloseRecepcion;
@@ -73,7 +74,7 @@ class RecepcionController extends Controller
     public function add_recepcion(Request $request)
     {
         return view('adminlte.gestion.postcocecha.recepciones.forms.add_recepcion', [
-            'variedades' => Variedad::All()->where('estado', '=', 1),
+            'modulos' => getModulos('A'),
         ]);
     }
 
@@ -642,5 +643,19 @@ class RecepcionController extends Controller
         return view('adminlte.gestion.postcocecha.recepciones.forms.editar_desglose_recepcion', [
             'desglose' => DesgloseRecepcion::find($request->id_desglose_recepcion)
         ]);
+    }
+
+    public function select_modulo_recepcion(Request $request)
+    {
+        $ciclo = Ciclo::where('estado', 1)
+            ->where('activo', 1)
+            ->where('id_modulo', $request->modulo)
+            ->first();
+
+        return [
+            'id_ciclo' => $ciclo->id_ciclo,
+            'id_variedad' => $ciclo->id_variedad,
+            'nombre_variedad' => $ciclo->variedad->nombre,
+        ];
     }
 }

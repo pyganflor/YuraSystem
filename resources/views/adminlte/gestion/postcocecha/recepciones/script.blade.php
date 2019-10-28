@@ -85,7 +85,7 @@
                 buscar_cosecha();
                 set_max_today($('#fecha_ingreso'));
             });
-            $.LoadingOverlay('hide');
+            //$.LoadingOverlay('hide');
         }
     }
 
@@ -179,31 +179,27 @@
         cant_forms++;
         $('#table_forms_tallos_mallas').append('<tr id="row_form_' + cant_forms + '">' +
             '<td style="border-color: #9d9d9d" class="text-center">' +
-            '<div class="form-group">' +
-            '<select id="id_variedad_' + cant_forms + '" name="id_variedad_' + cant_forms + '" required class="form-control">' +
-            '<option value="">Seleccione...</option></select>' +
-            '</div>' +
-            '</td>' +
-            '<td style="border-color: #9d9d9d" class="text-center">' +
-            '<div class="form-group">' +
-            '<input type="number" id="cantidad_mallas_' + cant_forms + '" name="cantidad_mallas_' + cant_forms + '" required class="form-control"' +
-            '       min="1" max="1000">' +
-            '</div>' +
-            '</td>' +
-            '<td style="border-color: #9d9d9d" class="text-center">' +
-            '<div class="form-group">' +
-            '<input type="number" id="tallos_x_malla_' + cant_forms + '" name="tallos_x_malla_' + cant_forms + '" required class="form-control"' +
-            '       min="1" max="50">' +
-            '</div>' +
-            '</td>' +
-            '<td style="border-color: #9d9d9d" class="text-center" colspan="2">' +
-            '<div class="form-group">' +
-            '<select id="id_modulo_' + cant_forms + '" name="id_modulo_' + cant_forms + '" required class="form-control">' +
+            '<select id="id_modulo_' + cant_forms + '" name="id_modulo_' + cant_forms + '" required' +
+            ' onchange="select_modulo_recepcion(' + cant_forms + ')" style="width: 100%">' +
             $('#id_modulo_1').html() +
             '</select>' +
-            '</div>' +
+            '</td>' +
+            '<td style="border-color: #9d9d9d" class="text-center">' +
+            '<input type="text" class="text-center" readonly id="nombre_variedad_' + cant_forms + '" name="nombre_variedad_' + cant_forms + '"' +
+            ' style="width: 100%" required style="width: 100%">' +
+            '<input type="hidden" class="text-center" readonly id="id_variedad_' + cant_forms + '" name="id_variedad_' + cant_forms + '"' +
+            ' style="width: 100%" required>' +
+            '</td>' +
+            '<td style="border-color: #9d9d9d" class="text-center">' +
+            '<input type="number" id="cantidad_mallas_' + cant_forms + '" name="cantidad_mallas_' + cant_forms + '" required' +
+            '       min="1" max="1000" style="width: 100%" class="text-center">' +
+            '</td>' +
+            '<td style="border-color: #9d9d9d" class="text-center" colspan="2">' +
+            '<input type="number" id="tallos_x_malla_' + cant_forms + '" name="tallos_x_malla_' + cant_forms + '" required' +
+            '       min="1" max="50" style="width: 100%" class="text-center">' +
             '</td>' +
             '</tr>');
+        select_modulo_recepcion(cant_forms);
         $('#btn_del_form').show();
         for (i = 0; i < $('.option_variedades_form').length; i++) {
             $('#id_variedad_' + cant_forms).append('<option value="' + $('.option_variedades_form')[i].value + '">' +
