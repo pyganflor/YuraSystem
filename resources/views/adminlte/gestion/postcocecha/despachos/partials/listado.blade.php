@@ -102,7 +102,7 @@
                     <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
                         FACTURADO POR:
                     </th>
-                    <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white;width:180px">
+                    <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white;width:210px">
                         OPCIONES
                     </th>
                 </tr>
@@ -114,7 +114,6 @@
                     $variedades = [];
                     $ramos_x_variedades = [];
                     $valor_total = 0;
-
                 @endphp
                 @foreach($listado as $x=> $pedido)
                     @php
@@ -361,6 +360,8 @@
                                                             @endif
                                                         </button>
                                                     @endif
+                                                    <a target="_blank" class="btn btn btn-success btn-xs" href="{{url('pedidos/desglose_pedido',[$ped->id_pedido])}}"
+                                                       title="Ver desglose del pedido"><i class="fa fa-file-text-o"></i></a>
                                                     @if((isset($ped->envios[0]->comprobante) && $ped->envios[0]->comprobante->estado != 6) || !isset($ped->envios[0]->comprobante))
                                                         @if($facturado==null)
                                                             <button class="btn  btn-{!! $det_ped->estado == 1 ? 'danger' : 'success' !!} btn-xs"
