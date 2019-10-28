@@ -723,4 +723,36 @@ class PedidoController extends Controller
         //}
         return $success;
     }
+
+    public function desglose_pedido(Request $request){
+
+        $pedido = getPedido($request->id_pedido);
+       /*$path = explode('/',$request->path())[0];
+        if($path === "comprobante"){
+            $comprobante = Comprobante::where([
+                ['secuencial',$secuencial],
+                ['tipo_comprobante', '01']
+            ])->first();
+        }elseif($path=== "pedidos"){
+            $comprobante = getPedido($secuencial)->envios[0]->comprobante;
+        }*/
+
+        /*if($comprobante == null){
+            $data = null;
+        }else{
+            $img_clave_acceso = null;
+            if($comprobante->clave_acceso != null)
+                $img_clave_acceso = generateCodeBarGs1128($comprobante->clave_acceso);
+            $data = [
+                'empresa' => $comprobante->envio->pedido->empresa,
+                'secuencial' => $comprobante->secuencial,
+                'comprobante' => $comprobante,
+                'img_clave_acceso' => $img_clave_acceso
+            ];
+        }*/
+
+            return view('adminlte.gestion.postcocecha.pedidos.partials.desglose_pedido', [
+                'pedido'=>$pedido
+            ]);
+    }
 }
