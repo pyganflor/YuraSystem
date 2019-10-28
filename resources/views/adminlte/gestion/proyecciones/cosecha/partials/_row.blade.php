@@ -141,3 +141,9 @@
         </ul>
     </div>
 </th>
+
+<script>
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+    });
+</script>
