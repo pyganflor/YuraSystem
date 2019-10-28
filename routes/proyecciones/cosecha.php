@@ -24,3 +24,4 @@ Route::post('proy_cosecha/actualizar_tallos_planta_siembra', 'Proyecciones\proyC
 Route::post('proy_cosecha/actualizar_tallos_ramo_siembra', 'Proyecciones\proyCosechaController@actualizar_tallos_ramo_siembra');
 Route::post('proy_cosecha/mover_cosecha', 'Proyecciones\proyCosechaController@mover_cosecha');
 Route::post('proy_cosecha/mover_inicio_proy', 'Proyecciones\proyCosechaController@mover_inicio_proy');
+Route::get('proy_cosecha/get_row_byModulo', 'Proyecciones\proyCosechaController@get_row_byModulo');

@@ -442,6 +442,18 @@
         $('[data-toggle="tooltip"]').tooltip()
     });
 
+    function get_row_byModulo(mod) {
+        datos = {
+            modulo: mod,
+            variedad: $('#filtro_predeterminado_variedad').val(),
+            desde: $('#semana_0').val(),
+            hasta: $('#filtro_predeterminado_hasta').val(),
+        };
+        get_jquery('{{url('proy_cosecha/get_row_byModulo')}}', datos, function (retorno) {
+            $('#tr_modulo_' + mod).html(retorno);
+        }, 'tr_modulo_' + mod);
+    }
+
     function restaurar_proyeccion(mod) {
         if (mod != null) {
             datos = {
@@ -451,7 +463,7 @@
             $('#tr_modulo_' + mod).LoadingOverlay('show');
             $.post('{{url('proy_cosecha/restaurar_proyeccion')}}', datos, function (retorno) {
                 setTimeout(function () {
-                    listar_proyecciones();
+                    get_row_byModulo(mod);
                 }, 500);
             }, 'json').fail(function (retorno) {
                 console.log(retorno);
@@ -490,9 +502,9 @@
                     if (mod == selected[selected.length - 1]) {
                         setTimeout(function () {
                             $('#div_barra_progreso').hide();
-                            listar_proyecciones();
                         }, 500);
                     }
+                    get_row_byModulo(mod);
                 }, 'json').fail(function (retorno) {
                     console.log(retorno);
                     alerta_errores(retorno.responseText);
@@ -515,7 +527,7 @@
             $('#tr_modulo_' + mod).LoadingOverlay('show');
             $.post('{{url('proy_cosecha/actualizar_proyecciones')}}', datos, function (retorno) {
                 setTimeout(function () {
-                    listar_proyecciones();
+                    get_row_byModulo(mod);
                 }, 500);
             }, 'json').fail(function (retorno) {
                 console.log(retorno);
@@ -557,9 +569,10 @@
                     if (mod == selected[selected.length - 1]) {
                         setTimeout(function () {
                             $('#div_barra_progreso').hide();
-                            listar_proyecciones();
+                            //listar_proyecciones();
                         }, 500);
                     }
+                    get_row_byModulo(mod);
                 }, 'json').fail(function (retorno) {
                     console.log(retorno);
                     alerta_errores(retorno.responseText);
@@ -851,7 +864,9 @@
             };
             $('#tr_mover_cosecha').LoadingOverlay('show');
             $.post('{{url('proy_cosecha/mover_cosecha')}}', datos, function (retorno) {
-                listar_proyecciones('celda_button_mover_cosecha');
+                for (i = 0; i < modulos.length; i++) {
+                    get_row_byModulo(modulos[i]);
+                }
             }, 'json').fail(function (retorno) {
                 console.log(retorno);
                 alerta_errores(retorno.responseText);
@@ -889,7 +904,9 @@
             };
             $('#tr_mover_inicio_proy').LoadingOverlay('show');
             $.post('{{url('proy_cosecha/mover_inicio_proy')}}', datos, function (retorno) {
-                listar_proyecciones('celda_button_mover_inicio_proy');
+                for (i = 0; i < modulos.length; i++) {
+                    get_row_byModulo(modulos[i]);
+                }
             }, 'json').fail(function (retorno) {
                 console.log(retorno);
                 alerta_errores(retorno.responseText);
@@ -963,7 +980,9 @@
             };
             $('#tr_actualizar_plantas_iniciales').LoadingOverlay('show');
             $.post('{{url('proy_cosecha/actualizar_plantas_iniciales')}}', datos, function (retorno) {
-                listar_proyecciones('celda_button_plantas_iniciales');
+                for (i = 0; i < modulos.length; i++) {
+                    get_row_byModulo(modulos[i]);
+                }
             }, 'json').fail(function (retorno) {
                 console.log(retorno);
                 alerta_errores(retorno.responseText);
@@ -1001,7 +1020,9 @@
             };
             $('#tr_actualizar_desecho').LoadingOverlay('show');
             $.post('{{url('proy_cosecha/actualizar_desecho')}}', datos, function (retorno) {
-                listar_proyecciones('celda_button_desecho');
+                for (i = 0; i < modulos.length; i++) {
+                    get_row_byModulo(modulos[i]);
+                }
             }, 'json').fail(function (retorno) {
                 console.log(retorno);
                 alerta_errores(retorno.responseText);
@@ -1039,7 +1060,9 @@
             };
             $('#tr_actualizar_tallos_planta').LoadingOverlay('show');
             $.post('{{url('proy_cosecha/actualizar_tallos_planta')}}', datos, function (retorno) {
-                listar_proyecciones('celda_button_tallos_planta');
+                for (i = 0; i < modulos.length; i++) {
+                    get_row_byModulo(modulos[i]);
+                }
             }, 'json').fail(function (retorno) {
                 console.log(retorno);
                 alerta_errores(retorno.responseText);
@@ -1077,7 +1100,9 @@
             };
             $('#tr_actualizar_tallos_ramo').LoadingOverlay('show');
             $.post('{{url('proy_cosecha/actualizar_tallos_ramo')}}', datos, function (retorno) {
-                listar_proyecciones('celda_button_tallos_ramo');
+                for (i = 0; i < modulos.length; i++) {
+                    get_row_byModulo(modulos[i]);
+                }
             }, 'json').fail(function (retorno) {
                 console.log(retorno);
                 alerta_errores(retorno.responseText);
@@ -1116,7 +1141,9 @@
             };
             $('#tr_actualizar_curva').LoadingOverlay('show');
             $.post('{{url('proy_cosecha/actualizar_curva')}}', datos, function (retorno) {
-                listar_proyecciones('celda_button_curva');
+                for (i = 0; i < modulos.length; i++) {
+                    get_row_byModulo(modulos[i]);
+                }
             }, 'json').fail(function (retorno) {
                 console.log(retorno);
                 alerta_errores(retorno.responseText);
@@ -1155,7 +1182,9 @@
             };
             $('#tr_actualizar_semana_cosecha').LoadingOverlay('show');
             $.post('{{url('proy_cosecha/actualizar_semana_cosecha')}}', datos, function (retorno) {
-                listar_proyecciones('celda_button_semana_cosecha');
+                for (i = 0; i < modulos.length; i++) {
+                    get_row_byModulo(modulos[i]);
+                }
             }, 'json').fail(function (retorno) {
                 console.log(retorno);
                 alerta_errores(retorno.responseText);

@@ -98,7 +98,7 @@
         };
 
         post_jquery('{{url('proy_cosecha/store_proyeccion')}}', datos, function () {
-            listar_proyecciones();
+            get_row_byModulo(datos['id_modulo']);
             cerrar_modals();
         });
     }

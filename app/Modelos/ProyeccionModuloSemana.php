@@ -45,4 +45,15 @@ class ProyeccionModuloSemana extends Model
     {
         return $this->belongsTo('\yura\Modelos\Variedad', 'id_variedad');
     }
+
+    public function semana_model()
+    {
+        $sem = Semana::All()
+            ->where('estado', 1)
+            ->where('codigo', $this->semana)
+            ->where('id_variedad', $this->id_variedad)
+            ->first();
+
+        return $sem;
+    }
 }
