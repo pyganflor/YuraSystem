@@ -16,3 +16,4 @@ Route::get('recepcion/editar_desglose_recepcion', 'RecepcionController@editar_de
 Route::post('recepcion/update_desglose', 'RecepcionController@update_desglose');
 Route::post('recepcion/delete_desglose', 'RecepcionController@delete_desglose');
 Route::post('recepcion/store_desglose', 'RecepcionController@store_desglose');
+Route::post('recepcion/select_modulo_recepcion', 'RecepcionController@select_modulo_recepcion');
