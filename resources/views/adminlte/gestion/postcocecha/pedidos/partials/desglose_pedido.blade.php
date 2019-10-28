@@ -389,7 +389,7 @@
                             @endforeach
                         @endif
                         <tr>
-                            <td style="font-size:12px;border:1px solid;padding-left: 5px">{{number_format(($m_c->cantidad/$m_c->detalle_especificacionempaque->cantidad),1,".","")}}</td>
+                            <td style="font-size:12px;border:1px solid;padding-left: 5px">{{number_format(($m_c->cantidad/$m_c->detalle_especificacionempaque->cantidad),2,".","")}}</td>
                             <td style="font-size:12px;border:1px solid;padding-left: 5px"> {{$m_c->detalle_especificacionempaque->cantidad}} </td>
                             <td style="font-size:11px;vertical-align:middle;border:1px solid;padding-left: 5px">{{$m_c->cantidad}}</td>
                             <td style="font-size:12px;border:1px solid;padding-left: 5px">
