@@ -434,8 +434,8 @@
         });
     }
 
-    function post_jquery(url, datos, success) {
-        $.LoadingOverlay('show');
+    function post_jquery(url, datos, success, div = false) {
+        div == false ? $.LoadingOverlay('show') : $('#' + div).LoadingOverlay('show');
         $.post(url, datos, function (retorno) {
             if (retorno.success) {
                 alerta_accion(retorno.mensaje, function () {
@@ -449,7 +449,7 @@
             alerta_errores(retorno.responseText);
             alerta('Ha ocurrido un problema al enviar la información');
         }).always(function () {
-            $.LoadingOverlay('hide');
+            div == false ? $.LoadingOverlay('hide') : $('#' + div).LoadingOverlay('hide');
         });
     }
 
