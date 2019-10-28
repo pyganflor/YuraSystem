@@ -64,6 +64,7 @@
     </table>
 
     <input type="hidden" id="id_ciclo" value="{{$ciclo->id_ciclo}}">
+    <input type="hidden" id="modulo-edit_ciclo" value="{{$ciclo->id_modulo}}">
 
     <div class="text-center" style="margin-top: 10px">
         <button type="button" class="btn btn-success btn-xs" onclick="update_ciclo()">
@@ -84,9 +85,10 @@
                 conteo: $('#conteo').val(),
                 filtro_semana_hasta: $('#filtro_predeterminado_hasta').val(),
             };
+            mod = $('#modulo-edit_ciclo').val();
 
             post_jquery('{{url('proy_cosecha/update_ciclo')}}', datos, function () {
-                listar_proyecciones();
+                get_row_byModulo(mod);
                 cerrar_modals();
             });
         }

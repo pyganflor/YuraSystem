@@ -83,6 +83,7 @@
 
 <input type="hidden" id="id_proyeccion_modulo" value="{{$proyeccion->id_proyeccion_modulo}}">
 <input type="hidden" id="semana_actual" value="{{$proyeccion->semana->codigo}}">
+<input type="hidden" id="modulo-edit_proy" value="{{$proyeccion->id_modulo}}">
 
 <div class="text-center" style="margin-top: 10px">
     <button type="button" class="btn btn-success btn-xs" onclick="update_proyeccion()">
@@ -105,9 +106,9 @@
             tallos_ramo: $('#tallos_ramo').val(),
             semana_actual: $('#semana_actual').val(),
         };
-
+        mod = $('#modulo-edit_proy').val();
         post_jquery('{{url('proy_cosecha/update_proyeccion')}}', datos, function () {
-            listar_proyecciones();
+            get_row_byModulo(mod);
             cerrar_modals();
         });
     }

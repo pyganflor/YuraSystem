@@ -3140,4 +3140,21 @@ class proyCosechaController extends Controller
             'mensaje' => '<div class="alert alert-success text-center">Se ha guardado la información satisfactoriamente</div>',
         ];
     }
+
+    /* ------------------------------------------------------------------- */
+    public function get_row_byModulo(Request $request)
+    {
+        $list = ProyeccionModuloSemana::where('estado', '=', 1)
+            ->where('id_modulo', '=', $request->modulo)
+            ->where('id_variedad', '=', $request->variedad)
+            ->where('semana', '>=', $request->desde)
+            ->where('semana', '<=', $request->hasta)
+            ->orderBy('semana')
+            ->get();
+
+        return view('adminlte.gestion.proyecciones.cosecha.partials._row', [
+            'modulo' => getModuloById($request->modulo),
+            'proyecciones' => $list
+        ]);
+    }
 }
