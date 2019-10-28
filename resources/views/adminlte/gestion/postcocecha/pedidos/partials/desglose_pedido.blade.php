@@ -223,27 +223,19 @@
     <tr >
         <th style="font-size: 11px;vertical-align: middle;border: 1px solid">
             @if($pedido->detalles[0]->cliente_especificacion->especificacion->tipo !=="O")
-                PIECES<br />
                 Piezas
             @else
-                STEMS<br />
                 Tallos
             @endif
         </th>
         <th style="font-size: 11px;vertical-align: middle;border: 1px solid">
-            DESCRIPTION<br />
-            Descripción
-        </th>
-        {{--@if($pedido->tipo_especificacion === "T")
-            <th style="font-size: 11px;vertical-align: top">
-                COLOR
-            </th>
-        @endif--}}
-
-
-        <th style="font-size: 11px;vertical-align: middle;border: 1px solid">
-            Bunches/Box<br />
             Ramos/Caja
+        </th>
+        <th style="font-size: 11px;vertical-align: middle;border: 1px solid">
+            Total Unidades
+        </th>
+        <th style="font-size: 11px;vertical-align: middle;border: 1px solid">
+            Descripción
         </th>
         <th style="font-size: 11px;vertical-align: middle;border: 1px solid">
             ST/BN
@@ -252,11 +244,10 @@
             TOTAL ST/BN
         </th>
         <th style="font-size: 11px;vertical-align: middle;width:70px;border: 1px solid">
-            PRICE UNIT<br />
-            Precio US$
+            Precio USD$
         </th>
         <th style="font-size: 11px;vertical-align: middle;border: 1px solid">
-            TOTAL <br />US$
+            TOTAL <br />USD$
         </th>
     </tr>
     </thead>
@@ -310,6 +301,7 @@
                         @endif
                         <td style="font-size:11px;vertical-align:middle;border:1px solid;padding-left: 5px">{{$descripcion}}</td>
                         <td style="font-size:11px;vertical-align:middle;border:1px solid;padding-left: 5px"> {{$det_esp_emp->cantidad}}</td>
+                        <td style="font-size:11px;vertical-align:middle;border:1px solid;padding-left: 5px"></td>
                         <td style="font-size:11px;vertical-align:middle;border:1px solid;padding-left: 5px">
                             @if($esp_emp->especificacion->tipo != "O")
                                 BN
@@ -393,7 +385,21 @@
                                 @endphp
                             @endforeach
                         @endif
-                        @foreach($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $m => $esp_emp)
+                        <tr>
+                            <td style="font-size:12px;border:1px solid;padding-left: 5px">{{number_format(($m_c->cantidad/$m_c->detalle_especificacionempaque->cantidad),2,".","")}}</td>
+                            <td style="font-size:12px;border:1px solid;padding-left: 5px"> {{$m_c->detalle_especificacionempaque->cantidad}} </td>
+                            <td style="font-size:11px;vertical-align:middle;border:1px solid;padding-left: 5px">
+                                {{$m_c->cantidad}}
+                            </td>
+                            <td style="font-size:12px;border:1px solid;padding-left: 5px">
+                                {{substr($m_c->detalle_especificacionempaque->variedad->planta->nombre, 0, 3) .", ". $m_c->detalle_especificacionempaque->variedad->nombre." ". $m_c->marcacion->nombre. " - ". $m_c->coloracion->color->nombre}}
+                            </td>
+                            <td style="font-size:12px;border:1px solid;padding-left: 5px">BN</td>
+                            <td style="font-size:12px;border:1px solid;padding-left: 5px"></td>
+                            <td style="font-size:12px;border:1px solid;padding-left: 5px"></td>
+                            <td style="font-size:12px;borer:1px solid;padding-left: 5px;border:1px solid;padding-left: 5px"></td>
+                        </tr>
+                        {{--@foreach($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $m => $esp_emp)
                             @foreach ($esp_emp->detalles as $n => $det_esp_emp)
                                 @if($det_esp_emp->id_detalle_especificacionempaque === $m_c->id_detalle_especificacionempaque)
                                     @php
@@ -403,23 +409,12 @@
                                     @endphp
                                 @endif
                             @endforeach
-                        @endforeach
-                        @php
-                            $data_body_table[$m_c->detalle_especificacionempaque->variedad->planta->id_planta][$m_c->detalle_especificacionempaque->variedad->id_variedad][$precio][]=[
-                                'ramos' => $m_c->cantidad,
-                                'precio'=> $precio,
-                                'hts' => $m_c->detalle_especificacionempaque->especificacion_empaque->detalles[0]->variedad->planta->tarifa,
-                                'nandina' =>$m_c->detalle_especificacionempaque->especificacion_empaque->detalles[0]->variedad->planta->nandina,
-                                'descripcion' =>substr($m_c->detalle_especificacionempaque->variedad->planta->nombre, 0, 3) .", ". $m_c->detalle_especificacionempaque->variedad->nombre,
-                                'piezas'=> number_format(($m_c->cantidad/$m_c->detalle_especificacionempaque->cantidad),2,".",""),
-                                'color' => $m_c->coloracion->color->nombre
-                            ];
-                        @endphp
+                        @endforeach--}}
                     @endif
                 @endforeach
             @endforeach
         @endforeach
-        @foreach($data_body_table as $body_table)
+        {{--@foreach($data_body_table as $body_table)
             @foreach($body_table as $table)
                 @foreach($table as $t)
                     @php
@@ -436,9 +431,7 @@
                     <tr>
                         <td style="font-size:12px;border:1px solid;padding-left: 5px">{{number_format($pie,2,".","")}}</td>
                         <td style="font-size:12px;border:1px solid;padding-left: 5px">{{$t[0]['descripcion']}}</td>
-                        {{--@if($pedido->tipo_especificacion === "T")
-                            <td style="font-size:12px">{{$t[0]['color']}}</td>
-                        @endif--}}
+
                         <td style="font-size:12px;border:1px solid;padding-left: 5px"> {{$ram/$pie}} </td>
                         <td style="font-size:12px;border:1px solid;padding-left: 5px">BN</td>
                         <td style="font-size:12px;border:1px solid;padding-left: 5px">{{$ram}}</td>
@@ -447,7 +440,7 @@
                     </tr>
                 @endforeach
             @endforeach
-        @endforeach
+        @endforeach--}}
     @endif
     </tbody>
 </table>
