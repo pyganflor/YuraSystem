@@ -39,77 +39,55 @@
             </div>
         </div>
     </div>
-    <table width="100%" class="table table-responsive table-bordered" style="font-size: 0.8em; border-color: #9d9d9d"
-           id="table_forms_tallos_mallas">
+    <table class="table-striped table-bordered table-hover" width="100%" style="border: 3px solid #9d9d9d" id="table_forms_tallos_mallas">
         <thead>
-        <tr style="background-color: #dd4b39; color: white">
-            <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
-                style="border-color: #9d9d9d">
-                Variedad
-            </th>
-            <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
-                style="border-color: #9d9d9d">
-                Mallas
-            </th>
-            <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
-                style="border-color: #9d9d9d">
-                Tallos por malla
-            </th>
-            <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
-                style="border-color: #9d9d9d">
+        <tr>
+            <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
                 Módulo
             </th>
-            <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
-                style="border-color: #9d9d9d">
-                <div class="form-group">
-                    <button type="button" class="btn btn-xs btn-default" title="Añadir" onclick="add_tallo_malla()">
-                        <i class="fa fa-fw fa-plus"></i>
-                    </button>
-                    <button type="button" class="btn btn-xs btn-danger" title="Quitar" onclick="del_tallo_malla()"
-                            id="btn_del_form" style="display: none">
-                        <i class="fa fa-fw fa-times"></i>
-                    </button>
-                </div>
+            <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
+                Variedad
+            </th>
+            <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
+                Mallas
+            </th>
+            <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
+                Tallos x malla
+            </th>
+            <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
+                <button type="button" class="btn btn-xs btn-primary" title="Añadir" onclick="add_tallo_malla()">
+                    <i class="fa fa-fw fa-plus"></i>
+                </button>
+                <button type="button" class="btn btn-xs btn-danger" title="Quitar" onclick="del_tallo_malla()" id="btn_del_form"
+                        style="display: none">
+                    <i class="fa fa-fw fa-times"></i>
+                </button>
             </th>
         </tr>
         </thead>
-        <tr>
-            <td style="border-color: #9d9d9d" class="text-center">
-                <div class="form-group">
-                    <select id="id_variedad_1" name="id_variedad_1" required class="form-control">
-                        <option value="">Seleccione...</option>
-                        @foreach($variedades as $item)
-                            <option value="{{$item->id_variedad}}" class="option_variedades_form">
-                                {{$item->planta->nombre}} - {{$item->siglas}}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
+        <tbody>
+        <tr id="row_form_1">
+            <td class="text-center" style="border-color: #9d9d9d">
+                <select name="id_modulo_1" id="id_modulo_1" style="width: 100%" onchange="select_modulo_recepcion(1)" required>
+                    @foreach($modulos as $mod)
+                        <option value="{{$mod->id_modulo}}">{{$mod->nombre}}</option>
+                    @endforeach
+                </select>
             </td>
-            <td style="border-color: #9d9d9d" class="text-center">
-                <div class="form-group">
-                    <input type="number" id="cantidad_mallas_1" name="cantidad_mallas_1" required class="form-control"
-                           min="1" max="1000">
-                    {{-- Configurar el máximo permitido de cantidad de mallas segun la config de la empresa --}}
-                </div>
+            <td class="text-center" style="border-color: #9d9d9d">
+                <input type="text" class="text-center" readonly id="nombre_variedad_1" name="nombre_variedad_1" style="width: 100%" required>
+                <input type="hidden" class="text-center" readonly id="id_variedad_1" name="id_variedad_1" style="width: 100%" required>
             </td>
-            <td style="border-color: #9d9d9d" class="text-center">
-                <div class="form-group">
-                    <input type="number" id="tallos_x_malla_1" name="tallos_x_malla_1" required class="form-control"
-                           min="1" max="50">
-                    {{-- Configurar el máximo permitido de cantidad de tallos por malla segun la config de la empresa --}}
-                </div>
+            <td class="text-center" style="border-color: #9d9d9d">
+                <input type="number" min="1" max="100" class="text-center" id="cantidad_mallas_1" name="cantidad_mallas_1" style="width: 100%"
+                       required>
             </td>
-            <td style="border-color: #9d9d9d" class="text-center" colspan="2">
-                <div class="form-group">
-                    <select id="id_modulo_1" name="id_modulo_1" required class="form-control">
-                        @foreach(getModulos() as $item)
-                            <option value="{{$item->id_modulo}}">{{$item->nombre}}</option>
-                        @endforeach
-                    </select>
-                </div>
+            <td class="text-center" style="border-color: #9d9d9d" colspan="2">
+                <input type="number" min="1" max="100" class="text-center" id="tallos_x_malla_1" name="tallos_x_malla_1" style="width: 100%"
+                       required>
             </td>
         </tr>
+        </tbody>
     </table>
 </form>
 
@@ -119,6 +97,8 @@
     set_max_today($('#fecha_ingreso'));
 
     buscarCosechaByFecha();
+
+    select_modulo_recepcion(1);
 
     function buscarCosechaByFecha() {
         datos = {
@@ -158,6 +138,25 @@
                 modal_view('modal_view_ver_rendimiento', retorno, '<i class="fa fa-fw fa-balance-scale"></i> Rendimiento', true, false,
                     '{{isPC() ? '65%' : ''}}');
             });
+        }
+    }
+
+    function select_modulo_recepcion(pos) {
+        datos = {
+            _token: '{{csrf_token()}}',
+            modulo: $('#id_modulo_' + pos).val()
+        };
+        if (datos['modulo'] != '') {
+            $.post('{{url('recepcion/select_modulo_recepcion')}}', datos, function (retorno) {
+                $('#id_variedad_' + pos).val(retorno.id_variedad);
+                $('#nombre_variedad_' + pos).val(retorno.nombre_variedad);
+            }, 'json').fail(function (retorno) {
+                console.log(retorno);
+                alerta_errores(retorno.responseText);
+            });
+        } else {
+            $('#id_variedad_' + pos).val('');
+            $('#nombre_variedad_' + pos).val('');
         }
     }
 </script>
