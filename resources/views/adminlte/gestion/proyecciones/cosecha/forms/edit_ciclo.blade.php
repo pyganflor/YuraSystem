@@ -5,6 +5,10 @@
 </legend>
 
 @if($ciclo->activo == 1)
+    @php
+        $tallos_x_planta_default = $ciclo->poda_siembra == 'P' ? $ciclo->semana()->tallos_planta_poda : $ciclo->semana()->tallos_planta_siembra;
+        $desecho_default = $ciclo->semana()->desecho;
+    @endphp
     <table class="table-bordered" style="width: 100%; border: 2px solid #9d9d9d;">
         <tr>
             <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
@@ -46,19 +50,21 @@
         <tr>
             <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
                 % Desecho
+                <strong class="error" title="Dato correspondiente a la semana de inicio">{{$ciclo->desecho > 0 ? '' : '*'}}</strong>
             </th>
             <td class="text-center" style="border-color: #9d9d9d">
                 <input type="number" name="desecho" id="desecho" style="width: 100%" class="text-center"
-                       value="{{$ciclo->desecho}}">
+                       value="{{$ciclo->desecho > 0 ? $ciclo->desecho : $desecho_default}}">
             </td>
         </tr>
         <tr>
             <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
                 Tallos x Planta
+                <strong class="error" title="Dato correspondiente a la semana de inicio">{{$ciclo->conteo > 0 ? '' : '*'}}</strong>
             </th>
             <td class="text-center" style="border-color: #9d9d9d">
                 <input type="number" name="conteo" id="conteo" style="width: 100%" class="text-center"
-                       value="{{$ciclo->conteo}}">
+                       value="{{$ciclo->conteo > 0 ? $ciclo->conteo : $tallos_x_planta_default}}">
             </td>
         </tr>
     </table>
