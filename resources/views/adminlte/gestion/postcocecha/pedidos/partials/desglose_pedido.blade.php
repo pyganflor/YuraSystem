@@ -240,14 +240,11 @@
         <th style="font-size: 11px;vertical-align: middle;border: 1px solid">
             ST/BN
         </th>
-        <th style="font-size: 11px;vertical-align: middle;border: 1px solid">
-            TOTAL ST/BN
-        </th>
         <th style="font-size: 11px;vertical-align: middle;width:70px;border: 1px solid">
-            Precio USD$
+            Precio
         </th>
         <th style="font-size: 11px;vertical-align: middle;border: 1px solid">
-            TOTAL <br />USD$
+            TOTAL
         </th>
     </tr>
     </thead>
@@ -299,21 +296,27 @@
                                 @endphp
                             </td>
                         @endif
-                        <td style="font-size:11px;vertical-align:middle;border:1px solid;padding-left: 5px">{{$descripcion}}</td>
-                        <td style="font-size:11px;vertical-align:middle;border:1px solid;padding-left: 5px"> {{$det_esp_emp->cantidad}}</td>
-                        <td style="font-size:11px;vertical-align:middle;border:1px solid;padding-left: 5px"></td>
+                            <td style="font-size:11px;vertical-align:middle;border:1px solid;padding-left: 5px"> {{$det_esp_emp->cantidad}}</td>
+                            <td style="font-size:11px;vertical-align:middle;border:1px solid;padding-left: 5px">
+                                @if($esp_emp->especificacion->tipo != "O")
+                                    {{number_format(($det_ped->cantidad*$det_esp_emp->cantidad),2,".","")}}
+                                @else
+                                    {{number_format(($det_ped->total_tallos()),2,".","")}}
+                                @endif
+                            </td>
+                            <td style="font-size:11px;vertical-align:middle;border:1px solid;padding-left: 5px">
+                                {{$descripcion}}
+                                @if(count(getDatosExportacionCliente($det_ped->id_detalle_pedido))>0)
+                                        @foreach(getDatosExportacionCliente($det_ped->id_detalle_pedido) as $de)
+                                             {{$de->valor." "}}
+                                        @endforeach
+                                @endif
+                            </td>
                         <td style="font-size:11px;vertical-align:middle;border:1px solid;padding-left: 5px">
                             @if($esp_emp->especificacion->tipo != "O")
                                 BN
                             @else
                                 ST
-                            @endif
-                        </td>
-                        <td style="font-size:11px;vertical-align:middle;border:1px solid;padding-left: 5px">
-                            @if($esp_emp->especificacion->tipo != "O")
-                                {{number_format(($det_ped->cantidad*$det_esp_emp->cantidad),2,".","")}}
-                            @else
-                                {{number_format(($det_ped->total_tallos()),2,".","")}}
                             @endif
                         </td>
                         <td style="font-size:11px;border:1px solid;padding-left: 5px"> {{"$".number_format(explode(";", $precio[$i])[0],2,".","")}} </td>
@@ -386,18 +389,20 @@
                             @endforeach
                         @endif
                         <tr>
-                            <td style="font-size:12px;border:1px solid;padding-left: 5px">{{number_format(($m_c->cantidad/$m_c->detalle_especificacionempaque->cantidad),2,".","")}}</td>
+                            <td style="font-size:12px;border:1px solid;padding-left: 5px">{{number_format(($m_c->cantidad/$m_c->detalle_especificacionempaque->cantidad),1,".","")}}</td>
                             <td style="font-size:12px;border:1px solid;padding-left: 5px"> {{$m_c->detalle_especificacionempaque->cantidad}} </td>
-                            <td style="font-size:11px;vertical-align:middle;border:1px solid;padding-left: 5px">
-                                {{$m_c->cantidad}}
-                            </td>
+                            <td style="font-size:11px;vertical-align:middle;border:1px solid;padding-left: 5px">{{$m_c->cantidad}}</td>
                             <td style="font-size:12px;border:1px solid;padding-left: 5px">
-                                {{substr($m_c->detalle_especificacionempaque->variedad->planta->nombre, 0, 3) .", ". $m_c->detalle_especificacionempaque->variedad->nombre." ". $m_c->marcacion->nombre. " - ". $m_c->coloracion->color->nombre}}
+                                {{substr($m_c->detalle_especificacionempaque->variedad->planta->nombre, 0, 3) .", ". $m_c->detalle_especificacionempaque->variedad->nombre." ". ($m_c->marcacion->nombre == 1 ? "" : $m_c->marcacion->nombre) ." - ". $m_c->coloracion->color->nombre}}
+                                @if(count(getDatosExportacionCliente($det_ped->id_detalle_pedido))>0)
+                                    @foreach(getDatosExportacionCliente($det_ped->id_detalle_pedido) as $de)
+                                        {{$de->valor." "}}
+                                    @endforeach
+                                @endif
                             </td>
-                            <td style="font-size:12px;border:1px solid;padding-left: 5px">BN</td>
-                            <td style="font-size:12px;border:1px solid;padding-left: 5px"></td>
-                            <td style="font-size:12px;border:1px solid;padding-left: 5px"></td>
-                            <td style="font-size:12px;borer:1px solid;padding-left: 5px;border:1px solid;padding-left: 5px"></td>
+                            <td style="font-size:12px;border:1px solid;padding-left: 5px">BOUNCHE</td>
+                            <td style="font-size:12px;border:1px solid;padding-left: 5px">${{number_format($precio,2,".","")}}</td>
+                            <td style="font-size:12px;borer:1px solid;padding-left: 5px;border:1px solid;padding-left: 5px">${{number_format(($m_c->cantidad*$precio),2,".","")}}</td>
                         </tr>
                         {{--@foreach($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $m => $esp_emp)
                             @foreach ($esp_emp->detalles as $n => $det_esp_emp)
@@ -414,33 +419,6 @@
                 @endforeach
             @endforeach
         @endforeach
-        {{--@foreach($data_body_table as $body_table)
-            @foreach($body_table as $table)
-                @foreach($table as $t)
-                    @php
-                        $pie=0; //Sumatoria Piezas
-                        $ram=0; //Sumatoria Ramos
-                    @endphp
-                    @foreach($t as $ta)
-                        @php
-                            $pie+=$ta['piezas'];
-                            $ram+=$ta['ramos'];
-                        @endphp
-                    @endforeach
-                    @php $total_piezas += $pie @endphp
-                    <tr>
-                        <td style="font-size:12px;border:1px solid;padding-left: 5px">{{number_format($pie,2,".","")}}</td>
-                        <td style="font-size:12px;border:1px solid;padding-left: 5px">{{$t[0]['descripcion']}}</td>
-
-                        <td style="font-size:12px;border:1px solid;padding-left: 5px"> {{$ram/$pie}} </td>
-                        <td style="font-size:12px;border:1px solid;padding-left: 5px">BN</td>
-                        <td style="font-size:12px;border:1px solid;padding-left: 5px">{{$ram}}</td>
-                        <td style="font-size:12px;border:1px solid;padding-left: 5px">${{number_format($t[0]['precio'],2,".","")}}</td>
-                        <td style="font-size:12px;borer:1px solid;padding-left: 5px;border:1px solid;padding-left: 5px">${{number_format(($ram*$t[0]['precio']),2,".","")}}</td>
-                    </tr>
-                @endforeach
-            @endforeach
-        @endforeach--}}
     @endif
     </tbody>
 </table>

@@ -361,7 +361,8 @@
                                                         </button>
                                                     @endif
                                                     <a target="_blank" class="btn btn btn-success btn-xs" href="{{url('pedidos/desglose_pedido',[$ped->id_pedido])}}"
-                                                       title="Ver desglose del pedido"><i class="fa fa-file-text-o"></i></a>
+                                                       title="Ver desglose del pedido"><i class="fa fa-file-text-o"></i>
+                                                    </a>
                                                     @if((isset($ped->envios[0]->comprobante) && $ped->envios[0]->comprobante->estado != 6) || !isset($ped->envios[0]->comprobante))
                                                         @if($facturado==null)
                                                             <button class="btn  btn-{!! $det_ped->estado == 1 ? 'danger' : 'success' !!} btn-xs"
