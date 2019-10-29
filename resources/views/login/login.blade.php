@@ -41,9 +41,10 @@
 
             <div class=" panel panel-default" id="div_captcha">
                 <div class="text-center">
-                    {!! captcha_img() !!}
+                    {{--{!! captcha_img() !!}--}}
+                    {!! NoCaptcha::display() !!}
                 </div>
-                <input class="form-control text-center" name="captcha" placeholder="Ingrese el código" autocomplete="off" required>
+                {{--<input class="form-control text-center" name="captcha" placeholder="Ingrese el código" autocomplete="off" required>--}}
             </div>
 
             <div class="row">

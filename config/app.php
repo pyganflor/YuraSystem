@@ -147,6 +147,7 @@ return [
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
         Barryvdh\DomPDF\ServiceProvider::class,
+        Anhskohbo\NoCaptcha\NoCaptchaServiceProvider::class,
 
         /*
          * Package Service Providers...
@@ -155,10 +156,7 @@ return [
         //Illuminate\Hashing\HashServiceProvider::class,
         yura\Libraries\MD5HashServiceProvider::class,
 
-        /*
-         * mewebstudio/captcha https://github.com/mewebstudio
-         */
-        Mews\Captcha\CaptchaServiceProvider::class,
+
 
         /*
          * Chartjs
@@ -235,8 +233,8 @@ return [
 
         'Excel' => Maatwebsite\Excel\Facades\Excel::class, // Para los Excel
         'PDF' => Barryvdh\DomPDF\Facade::class, //para los PDFs
-        'Captcha' => Mews\Captcha\Facades\Captcha::class, // Capcha
         'Recaptcha' => Greggilbert\Recaptcha\Facades\Recaptcha::class,
+        'NoCaptcha' => Anhskohbo\NoCaptcha\Facades\NoCaptcha::class,
     ],
 
 ];

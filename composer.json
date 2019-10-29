@@ -6,16 +6,16 @@
     "type": "project",
     "require": {
         "php": "^7.1.3",
+        "anhskohbo/no-captcha": "^3.1",
         "barryvdh/laravel-dompdf": "^0.8.3",
         "barryvdh/laravel-ide-helper": "v2.4.3",
         "codeitnowin/barcode": "^3.0",
         "fideloper/proxy": "^4.0",
         "fx3costa/laravelchartjs": "^2.5",
+        "greggilbert/recaptcha": "dev-master",
         "laravel/framework": "5.6.*",
         "laravel/tinker": "^1.0",
         "maatwebsite/excel": "2.1.x-dev",
-        "mews/captcha": "^2.1",
-        "greggilbert/recaptcha": "dev-master",
         "phpseclib/phpseclib": "2.0.5"
     },
     "require-dev": {
