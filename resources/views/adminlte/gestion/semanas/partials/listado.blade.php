@@ -78,7 +78,7 @@
             <tr onmouseover="$(this).css('background-color','#add8e6')" onmouseleave="$(this).css('background-color','')"
                 id="row_semanas_{{$item->id_semana}}">
                 <td style="border-color: #9d9d9d" class="text-center">
-                    @if($item->fecha_inicial > date('Y-m-d'))
+                    @if($item->fecha_final sigla> date('Y-m-d'))
                         <input type="checkbox" id="check_{{$item->id_semana}}" class="pull-left check_week">
                     @endif
                     {{$item->variedad->planta->nombre}} - {{$item->variedad->siglas}}
@@ -141,16 +141,10 @@
                     </form>
                 </td>
                 <td style="border-color: #9d9d9d" class="text-center">
-                    @if($item->fecha_inicial > date('Y-m-d'))
-                        <button type="button" class="btn btn-primary btn-xs" title="Guardar semana {{$item->codigo}}"
-                                onclick="save_semana('{{$item->id_semana}}')">
-                            <i class="fa fa-fw fa-save"></i>
-                        </button>
-                    @else
-                        <button type="button" class="btn btn-xs btn-default" disabled title="Semana antigua">
-                            <i class="fa fa-fw fa-lock"></i>
-                        </button>
-                    @endif
+                    <button type="button" class="btn btn-primary btn-xs" title="Guardar semana {{$item->codigo}}"
+                            onclick="save_semana('{{$item->id_semana}}')">
+                        <i class="fa fa-fw fa-save"></i>
+                    </button>
                 </td>
             </tr>
         @endforeach
