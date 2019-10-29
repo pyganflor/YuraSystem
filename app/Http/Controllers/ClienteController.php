@@ -147,7 +147,7 @@ class ClienteController extends Controller
                         bitacora('cliente|detalle_cliente', $model->id_detalle_cliente, 'I', 'Inserción satisfactoria de un nuevo cliente con sus detalles(ID guardado tabla detalle_cliente)');
 
                         $firstPedido = Pedido::orderBy('fecha_registro','asc')->first();
-                        $semana = getSemanaByDate($firstPedido->fecha_pedido)->codigo;
+                        $semana = isset(getSemanaByDate($firstPedido->fecha_pedido)->codigo) ? getSemanaByDate($firstPedido->fecha_pedido)->codigo : getSemanaByDate(now()->toDateString())->codigo;
                         ProyeccionVentaSemanalUpdate::dispatch($semana,getLastSemanaByVariedad(1)->codigo,0,$model->id_cliente)->onQueue('update_venta_semanal_real');
                     } else {
                         $success = false;
