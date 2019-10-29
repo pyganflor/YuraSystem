@@ -78,10 +78,10 @@
             <tr onmouseover="$(this).css('background-color','#add8e6')" onmouseleave="$(this).css('background-color','')"
                 id="row_semanas_{{$item->id_semana}}">
                 <td style="border-color: #9d9d9d" class="text-center">
-                    @if($item->fecha_final sigla> date('Y-m-d'))
+                    @if($item->fecha_final > date('Y-m-d'))
                         <input type="checkbox" id="check_{{$item->id_semana}}" class="pull-left check_week">
                     @endif
-                    {{$item->variedad->planta->nombre}} - {{$item->variedad->siglas}}
+                    {{$item->variedad->planta->siglas}} - {{$item->variedad->siglas}}
                 </td>
                 <td style="border-color: #9d9d9d" class="text-center">{{$item->codigo}}</td>
                 <td style="border-color: #9d9d9d" class="text-center">{{$item->fecha_inicial}}</td>
