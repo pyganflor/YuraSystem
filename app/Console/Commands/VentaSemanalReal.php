@@ -2,15 +2,12 @@
 
 namespace yura\Console\Commands;
 
-use Carbon\Carbon;
 use Illuminate\Console\Command;
 use yura\Modelos\Pedido;
 use yura\Modelos\Cliente;
 use yura\Modelos\ProyeccionVentaSemanalReal;
-use yura\Modelos\ProyeccionVentaSemanal;
 use yura\Modelos\Semana;
 use yura\Modelos\Variedad;
-use DB;
 
 class VentaSemanalReal extends Command
 {
@@ -19,7 +16,7 @@ class VentaSemanalReal extends Command
      *
      * @var string
      */
-    protected $signature = 'proyeccion:venta_semanal_real {semana_desde=0} {semana_hasta=0} {id_cliente=0} {variedad=0} ';
+    protected $signature = 'proyeccion:venta_semanal_real {semana_desde=0} {semana_hasta=0} {id_cliente=0} {variedad=0}';
 
     /**
      * The console command description.
@@ -135,21 +132,21 @@ class VentaSemanalReal extends Command
                                 $objProySemReal = ProyeccionVentaSemanalReal::find($objProyeccionVentaSemanal->id_proyeccion_venta_semanal_real);
                             }
 
-                            //if($objSemana[$x]->fecha_final >= $fechaActual->toDateString()){ //Comentar cuando se va a recopilar por primera vez toda la informacion en la tabla proyeccion_venta_semanal_real
+                            if($objSemana[$x]->fecha_final >= $fechaActual->toDateString()){ //Comentar cuando se va a recopilar por primera vez toda la informacion en la tabla proyeccion_venta_semanal_real
                                 $objProySemReal->valor =0;
                                 $objProySemReal->cajas_equivalentes = 0;
                                 $objProySemReal->cajas_fisicas = 0;
                                 $objProySemReal->cajas_fisicas_anno_anterior = isset($objProyeccionVentaSemanalAnoAnterior->cajas_fisicas) ? $objProyeccionVentaSemanalAnoAnterior->cajas_fisicas : 0;
                                 foreach ($pedidos as $pedido){
                                     if(!getFacturaAnulada($pedido->id_pedido)){
-                                        //if($pedido->fecha_pedido >= $fechaActual->toDateString()){ //Comentar cuando se va a recopilar por primera vez toda la informacion en la tabla proyeccion_venta_semanal_real
-                                        Info("Pedido incluido de fecha: ". $pedido->fecha_pedido);
-                                        if(in_array($variedad->id_variedad,$pedido->getVariedades())){
-                                            $objProySemReal->valor += $pedido->getPrecioByVariedad($variedad->id_variedad);
-                                            $objProySemReal->cajas_equivalentes += $pedido->getCajasByVariedad($variedad->id_variedad);
-                                            $objProySemReal->cajas_fisicas += $pedido->getCajasFisicasByVariedad($variedad->id_variedad);
-                                            $objProySemReal->cajas_fisicas_anno_anterior = isset($objProyeccionVentaSemanalAnoAnterior->cajas_fisicas) ? $objProyeccionVentaSemanalAnoAnterior->cajas_fisicas : 0;
-                                        }
+                                        if($pedido->fecha_pedido >= $fechaActual->toDateString()){ //Comentar cuando se va a recopilar por primera vez toda la informacion en la tabla proyeccion_venta_semanal_real
+                                            Info("Pedido incluido de fecha: ". $pedido->fecha_pedido);
+                                            if(in_array($variedad->id_variedad,$pedido->getVariedades())){
+                                                $objProySemReal->valor += $pedido->getPrecioByVariedad($variedad->id_variedad);
+                                                $objProySemReal->cajas_equivalentes += $pedido->getCajasByVariedad($variedad->id_variedad);
+                                                $objProySemReal->cajas_fisicas += $pedido->getCajasFisicasByVariedad($variedad->id_variedad);
+                                                $objProySemReal->cajas_fisicas_anno_anterior = isset($objProyeccionVentaSemanalAnoAnterior->cajas_fisicas) ? $objProyeccionVentaSemanalAnoAnterior->cajas_fisicas : 0;
+                                            }
                                         /*$proyeccionVentaSemanal = ProyeccionVentaSemanal::where([
                                                 ['id_variedad',$variedad->id_variedad],
                                                 ['id_cliente',$cliente->id_cliente],
@@ -161,12 +158,11 @@ class VentaSemanalReal extends Command
                                                 $objProySemReal->cajas_equivalentes_proy = $proyeccionVentaSemanal->cajas_equivalentes;
                                                 $objProySemReal->cajas_fisicas_proy = $proyeccionVentaSemanal->cajas_fisicas;
                                             }*/
-                                        // }
+                                         }
                                     }
-
                                 }
                                 $objProySemReal->save();
-                           // }
+                            }
                         }
                     }
                 }
