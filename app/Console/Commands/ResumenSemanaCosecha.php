@@ -93,7 +93,7 @@ class ResumenSemanaCosecha extends Command
                         ['codigo_semana',$semana->codigo]
                     ])->first();
 
-                    if(isset($resumenSemanaCosecha)){
+                    if(!isset($resumenSemanaCosecha)){
                         $objResumenSemanaCosecha = new ResumenCosecha;
                         $objResumenSemanaCosecha->id_variedad = $variedad->id_variedad;
                         $objResumenSemanaCosecha->codigo_semana = $semana->codigo;
