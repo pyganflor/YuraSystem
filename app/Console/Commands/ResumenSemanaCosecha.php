@@ -55,6 +55,7 @@ class ResumenSemanaCosecha extends Command
 
         $variedades = $variedades->get();
         $fechaClasificacionVerde = ClasificacionVerde::all()->last();
+
         if($desde != 0){
             $semana_desde = Semana::where('estado', 1)->where('codigo', $desde)->first();
             if(!isset($semana_desde->codigo)){
@@ -106,10 +107,19 @@ class ResumenSemanaCosecha extends Command
                             ['id_variedad',]
                         ])->sum('proyectados');
                     $objResumenSemanaCosecha->cajas=getCajasByRangoVariedad($semana->fecha_inicial, $semana->fecha_final, $variedad->id_variedad);
-                    Info($semana->fecha_inicial." | ".$semana->fecha_final." | ".$variedad->id_variedad);
+
+                    //Info($semana->fecha_inicial." | ".$semana->fecha_final." | ".$variedad->id_variedad);
+                    $semanaActual = getSemanaByDate(now()->toDateString())->codigo;
+
+                    if($semana->codigo > $semanaActual){
+                        $calibre = Semana::where('codigo',$semana->codigo)->first()->tallos_ramo_poda;
+                    }else{
+                        $calibre = getCalibreByRangoVariedad($semana->fecha_inicial, $semana->fecha_final, $variedad->id_variedad)
+                    }
+
                     $tallos = getTallosCosechadosByModSemVar(null, $semana->codigo, $variedad->id_variedad);
                     $objResumenSemanaCosecha->tallos= isset($tallos) ? $tallos : 0;
-                    $objResumenSemanaCosecha->calibre=getCalibreByRangoVariedad($semana->fecha_inicial, $semana->fecha_final, $variedad->id_variedad);
+                    $objResumenSemanaCosecha->calibre=$calibre;
                     $objResumenSemanaCosecha->tallos_proyectados = $proyeccionModuloSemana;
                     $objResumenSemanaCosecha->cajas_proyectadas= $objResumenSemanaCosecha->calibre > 0 ? number_format(($proyeccionModuloSemana / $objResumenSemanaCosecha->calibre / getConfiguracionEmpresa(null,false)->ramos_x_caja),2,".",",") : 0;
                     $objResumenSemanaCosecha->save();
