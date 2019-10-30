@@ -5,6 +5,7 @@ namespace yura\Console\Commands;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use yura\Modelos\ClasificacionVerde;
+use yura\Modelos\ProyeccionModuloSemana;
 use yura\Modelos\Semana;
 use yura\Modelos\Variedad;
 use yura\Modelos\ResumenSemanaCosecha as ResumenCosecha;
@@ -100,10 +101,10 @@ class ResumenSemanaCosecha extends Command
                     }else{
                         $objResumenSemanaCosecha = ResumenCosecha::find($resumenSemanaCosecha->id_resumen_semana_cosecha);
                     }
-                    $proyeccionModuloSemana = ResumenCosecha::where([
+                    $proyeccionModuloSemana = ProyeccionModuloSemana::where([
                             ['semana',$semana->codigo],
                             ['id_variedad',]
-                        ])->sum('proyectados')->get();
+                        ])-sum('proyectados')->get();
                     $objResumenSemanaCosecha->cajas=getCajasByRangoVariedad($semana->fecha_inicial, $semana->fecha_final, $variedad->id_variedad);
                     $objResumenSemanaCosecha->tallos=getTallosCosechadosByModSemVar(null, $semana->codigo, $variedad->id_variedad);
                     $objResumenSemanaCosecha->calibre=getCalibreByRangoVariedad($semana->fecha_inicial, $semana->fecha_final, $variedad->id_variedad);
