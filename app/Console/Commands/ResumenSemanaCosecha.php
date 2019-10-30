@@ -100,7 +100,7 @@ class ResumenSemanaCosecha extends Command
                     }else{
                         $objResumenSemanaCosecha = ResumenCosecha::find($resumenSemanaCosecha->id_resumen_semana_cosecha);
                     }
-                    $proyeccionModuloSemana = where([
+                    $proyeccionModuloSemana = ResumenCosecha::where([
                             ['semana',$semana->codigo],
                             ['id_variedad',]
                         ])-sum('proyectados')->get();
