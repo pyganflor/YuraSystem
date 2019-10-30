@@ -119,7 +119,7 @@ class ResumenSemanaCosecha extends Command
 
                     $tallos = getTallosCosechadosByModSemVar(null, $semana->codigo, $variedad->id_variedad);
                     $objResumenSemanaCosecha->tallos= isset($tallos) ? $tallos : 0;
-                    $objResumenSemanaCosecha->calibre=$calibre;
+                    $objResumenSemanaCosecha->calibre=isset($calibre) ? $calibre : 0;
                     $objResumenSemanaCosecha->tallos_proyectados = $proyeccionModuloSemana;
                     $objResumenSemanaCosecha->cajas_proyectadas= $objResumenSemanaCosecha->calibre > 0 ? number_format(($proyeccionModuloSemana / $objResumenSemanaCosecha->calibre / getConfiguracionEmpresa(null,false)->ramos_x_caja),2,".",",") : 0;
                     $objResumenSemanaCosecha->save();
