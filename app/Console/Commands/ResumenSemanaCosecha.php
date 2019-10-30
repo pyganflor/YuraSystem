@@ -7,6 +7,7 @@ use Illuminate\Console\Command;
 use yura\Modelos\ClasificacionVerde;
 use yura\Modelos\Semana;
 use yura\Modelos\Variedad;
+use yura\Modelos\ResumenSemanaCosecha as ResumenCosecha;
 
 class ResumenSemanaCosecha extends Command
 {
@@ -87,17 +88,17 @@ class ResumenSemanaCosecha extends Command
 
             foreach ($semanas as $x => $semana){
                 foreach($variedades as $variedad){
-                    $resumenSemanaCosecha = ResumenSemanaCosecha::where([
+                    $resumenSemanaCosecha = ResumenCosecha::where([
                         ['id_variedad',$variedad->id_variedad],
                         ['codigo_semana',$semana->codigo]
                     ])->first();
 
                     if(isset($resumenSemanaCosecha)){
-                        $objResumenSemanaCosecha = new ResumenSemanaCosecha;
+                        $objResumenSemanaCosecha = new ResumenCosecha;
                         $objResumenSemanaCosecha->id_variedad = $variedad->id_variedad;
                         $objResumenSemanaCosecha->codigo_semana = $semana->codigo;
                     }else{
-                        $objResumenSemanaCosecha = ResumenSemanaCosecha::find($resumenSemanaCosecha->id_resumen_semana_cosecha);
+                        $objResumenSemanaCosecha = ResumenCosecha::find($resumenSemanaCosecha->id_resumen_semana_cosecha);
                     }
                     $proyeccionModuloSemana = where([
                             ['semana',$semana->codigo],
