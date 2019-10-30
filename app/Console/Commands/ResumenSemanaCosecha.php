@@ -47,6 +47,7 @@ class ResumenSemanaCosecha extends Command
         $desde = $this->argument('semana_desde');
         $hasta = $this->argument('semana_hasta');
         $variedad = $this->argument('variedad');
+        Info("Inicia el comando resumen:semana_cosecha");
         Info("Variables recibidas, desde: ".$desde. "hasta: ".$hasta. " variedad: ".$variedad );
 
         $variedades = Variedad::where('estado', 1);
@@ -87,9 +88,10 @@ class ResumenSemanaCosecha extends Command
                     $semanas[] = $existSemana;
                 }
             }
-
+            $calibreActual=0;
+            $z=0;
             foreach ($semanas as $x => $semana){
-                foreach($variedades as $variedad){
+                foreach($variedades as $y=> $variedad){
                     $resumenSemanaCosecha = ResumenCosecha::where([
                         ['id_variedad',$variedad->id_variedad],
                         ['codigo_semana',$semana->codigo]
@@ -106,24 +108,32 @@ class ResumenSemanaCosecha extends Command
                             ['semana',$semana->codigo],
                             ['id_variedad',]
                         ])->sum('proyectados');
-                    $objResumenSemanaCosecha->cajas=getCajasByRangoVariedad($semana->fecha_inicial, $semana->fecha_final, $variedad->id_variedad);
+                    $objResumenSemanaCosecha->cajas = getCajasByRangoVariedad($semana->fecha_inicial, $semana->fecha_final, $variedad->id_variedad);
 
                     //Info($semana->fecha_inicial." | ".$semana->fecha_final." | ".$variedad->id_variedad);
                     $semanaActual = getSemanaByDate(now()->toDateString())->codigo;
 
                     if($semana->codigo > $semanaActual){
-                        $calibre = Semana::where('codigo',$semana->codigo)->first()->tallos_ramo_poda;
+                        if($z>0 && $z<5){
+                            $calibre= $calibreActual;
+                        }else{
+                            $calibre = Semana::where('codigo',$semana->codigo)->first()->tallos_ramo_poda;
+                        }
                     }else{
+
                         $calibre = getCalibreByRangoVariedad($semana->fecha_inicial, $semana->fecha_final, $variedad->id_variedad);
+                        $calibreActual = $calibre;
+                        $z=1;
                     }
 
                     $tallos = getTallosCosechadosByModSemVar(null, $semana->codigo, $variedad->id_variedad);
-                    $objResumenSemanaCosecha->tallos= isset($tallos) ? $tallos : 0;
-                    $objResumenSemanaCosecha->calibre=isset($calibre) ? $calibre : 0;
+                    $objResumenSemanaCosecha->tallos = isset($tallos) ? $tallos : 0;
+                    $objResumenSemanaCosecha->calibre = isset($calibre) ? $calibre : 0;
                     $objResumenSemanaCosecha->tallos_proyectados = $proyeccionModuloSemana;
                     $objResumenSemanaCosecha->cajas_proyectadas= $objResumenSemanaCosecha->calibre > 0 ? number_format(($proyeccionModuloSemana / $objResumenSemanaCosecha->calibre / getConfiguracionEmpresa(null,false)->ramos_x_caja),2,".",",") : 0;
                     $objResumenSemanaCosecha->save();
                 }
+                $z++;
             }
 
         }else{
