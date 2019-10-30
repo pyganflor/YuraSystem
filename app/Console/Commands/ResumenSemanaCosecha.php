@@ -109,7 +109,7 @@ class ResumenSemanaCosecha extends Command
                     $objResumenSemanaCosecha->tallos=getTallosCosechadosByModSemVar(null, $semana->codigo, $variedad->id_variedad);
                     $objResumenSemanaCosecha->calibre=getCalibreByRangoVariedad($semana->fecha_inicial, $semana->fecha_final, $variedad->id_variedad);
                     $objResumenSemanaCosecha->tallos_proyectados = $proyeccionModuloSemana;
-                    $objResumenSemanaCosecha->cajas_proyectadas= number_format(($proyeccionModuloSemana / $objResumenSemanaCosecha->calibre / getConfiguracionEmpresa(null,false)->ramos_x_caja),2,".",",");
+                    $objResumenSemanaCosecha->cajas_proyectadas= $objResumenSemanaCosecha->calibre > 0 ? number_format(($proyeccionModuloSemana / $objResumenSemanaCosecha->calibre / getConfiguracionEmpresa(null,false)->ramos_x_caja),2,".",",") : 0;
                     $objResumenSemanaCosecha->save();
                 }
             }
