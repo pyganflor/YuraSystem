@@ -106,6 +106,7 @@ class ResumenSemanaCosecha extends Command
                             ['id_variedad',]
                         ])->sum('proyectados');
                     $objResumenSemanaCosecha->cajas=getCajasByRangoVariedad($semana->fecha_inicial, $semana->fecha_final, $variedad->id_variedad);
+                    Info($semana->fecha_inicial." | ".$semana->fecha_final." | ".$variedad->id_variedad);
                     $objResumenSemanaCosecha->tallos=getTallosCosechadosByModSemVar(null, $semana->codigo, $variedad->id_variedad);
                     $objResumenSemanaCosecha->calibre=getCalibreByRangoVariedad($semana->fecha_inicial, $semana->fecha_final, $variedad->id_variedad);
                     $objResumenSemanaCosecha->tallos_proyectados = $proyeccionModuloSemana;
