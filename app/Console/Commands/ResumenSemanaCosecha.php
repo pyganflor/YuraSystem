@@ -54,6 +54,7 @@ class ResumenSemanaCosecha extends Command
         $variedades = $variedades->get();
         $fechaClasificacionVerde = ClasificacionVerde::all()->last();
         if($desde != 0){
+            $semana_desde = Semana::where('estado', 1)->where('codigo', $desde)->first();
             if(!isset($semana_desde->codigo)){
                 Info("No existe la semana de inicio ".$desde);
                 return false;
