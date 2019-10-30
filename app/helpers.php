@@ -2287,8 +2287,8 @@ function getTallosCosechadosByModSemVar($mod = null, $semana, $variedad)
             ->where('dr.estado', '=', 1)
             ->where('dr.id_variedad', '=', $variedad)
             ->where('r.fecha_ingreso', '>=', $sem->fecha_inicial)
-            ->where('r.fecha_ingreso', '<=', $sem->fecha_final)
-            ->get()[0]->cantidad;
+            ->where('r.fecha_ingreso', '<=', $sem->fecha_final);
+            //->get()[0]->cantidad;
 
         if (isset($mod))
             $r->where('dr.id_modulo', '=', $mod);
