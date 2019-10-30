@@ -219,7 +219,7 @@
                         onmouseover="mouse_over_celda('celda_{{$mod['modulo']->id_modulo}}_{{$pos_val}}', 1)"
                         onmouseleave="mouse_over_celda('celda_{{$mod['modulo']->id_modulo}}_{{$pos_val}}', 0)">
                         <span data-toggle="tooltip" data-placement="top" data-html="true"
-                              title="{{$title}}">
+                              title="{{in_array($val->tipo, ['S', 'P', 'T', 'Y']) ? $title : ''}}">
                             @if($val->tipo == 'T')
                                 <strong style="font-size: 0.8em; margin-bottom: 0">
                                     {{$val->proyectados != '' ? number_format($val->proyectados, 2) : 0}}
