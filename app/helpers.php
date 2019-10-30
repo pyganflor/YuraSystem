@@ -2272,7 +2272,7 @@ function getLastPedido()
     return Pedido::all()->last();
 }
 
-function getTallosCosechadosByModSemVar($mod=null, $semana, $variedad)
+function getTallosCosechadosByModSemVar($mod = null, $semana, $variedad)
 {
     $sem = Semana::All()
         ->where('codigo', '=', $semana)
@@ -2287,9 +2287,10 @@ function getTallosCosechadosByModSemVar($mod=null, $semana, $variedad)
             ->where('dr.estado', '=', 1)
             ->where('dr.id_variedad', '=', $variedad)
             ->where('r.fecha_ingreso', '>=', $sem->fecha_inicial)
-            ->where('r.fecha_ingreso', '<=', $sem->fecha_final);
+            ->where('r.fecha_ingreso', '<=', $sem->fecha_final)
+            ->get()[0]->cantidad;
 
-        if(isset($mod))
+        if (isset($mod))
             $r->where('dr.id_modulo', '=', $mod);
 
         $r = $r->get()[0]->cantidad;
