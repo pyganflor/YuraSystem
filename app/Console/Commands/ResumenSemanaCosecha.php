@@ -114,7 +114,7 @@ class ResumenSemanaCosecha extends Command
                     if($semana->codigo > $semanaActual){
                         $calibre = Semana::where('codigo',$semana->codigo)->first()->tallos_ramo_poda;
                     }else{
-                        $calibre = getCalibreByRangoVariedad($semana->fecha_inicial, $semana->fecha_final, $variedad->id_variedad)
+                        $calibre = getCalibreByRangoVariedad($semana->fecha_inicial, $semana->fecha_final, $variedad->id_variedad);
                     }
 
                     $tallos = getTallosCosechadosByModSemVar(null, $semana->codigo, $variedad->id_variedad);
