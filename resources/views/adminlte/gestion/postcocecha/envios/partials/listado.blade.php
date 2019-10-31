@@ -286,12 +286,12 @@
                                                        $dae = $envio->dae;
                                                        $codgio_dae =  $envio->codigo_dae;
                                                    }else{
-                                                       $mes =Carbon\Carbon::parse($envio->fecha_envio)->format('m');
+                                                       $mes = Carbon\Carbon::parse($envio->fecha_envio)->format('m');
                                                        $anno = Carbon\Carbon::parse($envio->fecha_envio)->format('Y');
                                                        $ultimo_dia_mes = Carbon\Carbon::parse($envio->fecha_envio)->endOfMonth()->toDateString();
                                                        if($ultimo_dia_mes == Carbon\Carbon::parse($envio->fecha_envio)->toDateString()){
-                                                            $mes = Carbon\Carbon::parse($envio->fecha_envio)->addMonth()->format('m');
-                                                            $anno = Carbon\Carbon::parse($envio->fecha_envio)->addMonth()->format('Y');
+                                                            $mes = Carbon\Carbon::parse($envio->fecha_envio)->addDay()->format('m');
+                                                            $anno = Carbon\Carbon::parse($envio->fecha_envio)->addDay()->format('Y');
                                                        }
                                                        $d = getCodigoDae(strtoupper($p),$mes,$anno,isset($envio->pedido->id_configuracion_empresa) ? $envio->pedido->id_configuracion_empresa : getConfiguracionEmpresa()->id_configuracion_empresa);
                                                        $dae = isset($d->codigo_dae) ? $d->codigo_dae : "";

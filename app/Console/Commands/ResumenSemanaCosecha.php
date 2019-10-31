@@ -138,7 +138,7 @@ class ResumenSemanaCosecha extends Command
         }else{
                 Info('La semana hasta no puede ser menor a la semana desde en el comando ResumenSemanaCosecha');
         }
-        Info($calibreActual);
+
         $fin = microtime(true);
         Info("El script se completo en : ".(number_format(($fin-$inicio),2,".","")). " segundos");
     }
