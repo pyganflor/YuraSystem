@@ -312,7 +312,7 @@
             abrir: false,
             fecha_fin: $('#ciclo_fecha_fin_' + mod).val(),
         };
-        if ($('#ciclo_fecha_cosecha_' + mod).val() != '' && $('#ciclo_fecha_fin_' + mod) != '') {
+        if ($('#ciclo_fecha_fin_' + mod) != '') {
             modal_quest('modal-quest_terminar_ciclo', '<div class="alert alert-info text-center">¿Está seguro de <strong>TERMINAR</strong> este ciclo?</div>',
                 '<i class="fa fa-fw fa-exclamation-triangle"></i> Confirmar acción', true, false, '{{isPC() ? '35%' : ''}}', function () {
                     post_jquery('{{url('sectores_modulos/terminar_ciclo')}}', datos, function () {
