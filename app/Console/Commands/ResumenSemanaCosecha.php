@@ -88,7 +88,7 @@ class ResumenSemanaCosecha extends Command
                     $semanas[] = $existSemana;
                 }
             }
-            $calibreActual=0;
+            $calibreActual=[];
             $z=0;
             foreach ($semanas as $x => $semana){
                 foreach($variedades as $y=> $variedad){
@@ -114,17 +114,15 @@ class ResumenSemanaCosecha extends Command
                     $semanaActual = getSemanaByDate(now()->toDateString())->codigo;
 
                     if($semana->codigo > $semanaActual){
-                        if($z>0 && $z<5){
-                            Info($z);
-                            $calibre= $calibreActual;
+                        if($z>0 && $z<6){
+                            $calibre = $calibreActual[$variedad->id_variedad];
                         }else{
                             $calibre = Semana::where('codigo',$semana->codigo)->first()->tallos_ramo_poda;
                         }
                     }else{
-
                         $calibre = getCalibreByRangoVariedad($semana->fecha_inicial, $semana->fecha_final, $variedad->id_variedad);
-                        $calibreActual = $calibre;
-                        $z=0;
+                        $calibreActual[$variedad->id_variedad] = $calibre;
+                        $z=1;
                     }
 
                     $tallos = getTallosCosechadosByModSemVar(null, $semana->codigo, $variedad->id_variedad);
@@ -140,6 +138,7 @@ class ResumenSemanaCosecha extends Command
         }else{
                 Info('La semana hasta no puede ser menor a la semana desde en el comando ResumenSemanaCosecha');
         }
+        Info($calibreActual);
         $fin = microtime(true);
         Info("El script se completo en : ".(number_format(($fin-$inicio),2,".","")). " segundos");
     }
