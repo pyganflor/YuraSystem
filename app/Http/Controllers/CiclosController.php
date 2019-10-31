@@ -419,7 +419,7 @@ class CiclosController extends Controller
         if (!$valida->fails()) {
             $modulo = Modulo::find($request->modulo);
             $ciclo = $modulo->cicloActual();
-            if ($ciclo->fecha_cosecha != '' && $ciclo->fecha_fin != '') {
+            if ($ciclo->fecha_fin != '') {
                 $ciclo->activo = 0;
                 $ciclo->fecha_fin = $request->fecha_fin;
 
