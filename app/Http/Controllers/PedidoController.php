@@ -310,6 +310,7 @@ class PedidoController extends Controller
                 }
             }
             $semana = getSemanaByDate($objPedido->fecha_pedido)->codigo;
+
             ProyeccionVentaSemanalUpdate::dispatch($semana,$semana,0,$request->id_cliente)->onQueue('update_venta_semanal_real');
         } else {
             $success = false;
