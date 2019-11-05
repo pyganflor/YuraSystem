@@ -179,7 +179,12 @@
                             $title .= '<em>Curva: '.($val->curva).'</em><br>';
                             $title .= '<em>Desecho: '.($val->desecho).'%</em><br>';
                         } else if($val->tipo == 'Y'){
-                            $fondo = '#9100ff7d';   // proyeccion
+                            if($val->poda_siembra == 0)
+                                $fondo = '#08ffe8'; // siembra
+                            else if($val->poda_siembra == 1)
+                                $fondo = '#efff00'; // poda de 1
+                            else if($val->poda_siembra > 1)
+                                $fondo = '#ffb100'; // poda de 2 o más
                             if($val->info != 'C'){  // no está cerrada la proyeccion
                                 $title .= '<em>Ptas.Ini: '.number_format($val->plantas_iniciales).'</em><br>';
                                 $title .= '<em>T/Ptas: '.($val->tallos_planta).'</em><br>';
