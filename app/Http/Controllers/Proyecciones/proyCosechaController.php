@@ -2363,7 +2363,7 @@ class proyCosechaController extends Controller
 
             /* ================ SEMANAS ===================== */
             if ($request->check_save_semana == 'true') {
-                $sem->tallos_planta_poda = $request->tallos_planta_poda;
+                $sem->tallos_planta_poda = $request->tallos_planta;
                 $sem->save();
             }
         }
@@ -2405,7 +2405,7 @@ class proyCosechaController extends Controller
 
             /* ================ SEMANAS ===================== */
             if ($request->check_save_semana == 'true') {
-                $sem->tallos_ramo_poda = $request->tallos_ramo_poda;
+                $sem->tallos_ramo_poda = $request->tallos_ramo;
                 $sem->save();
             }
         }
