@@ -13,6 +13,17 @@
                 Clientes / Semanas
             </td>
         </tr>
+        <tr>
+            <td class="text-center" style="background-color: #e9ecef;width:250px;border-right: 2px solid #000000;">
+               Saldos
+            </td>
+            @foreach($semanas as $semana => $item)
+                <td class="text-center" style="border:1px solid #9d9d9d; background-color: #e9ecef; width:350px;border-bottom: 2px solid #000000;border-right: 2px solid #000000;" colspan="3"></td>
+            @endforeach
+            <td class="text-center" style="background-color: #e9ecef;width:250px;border-right: 2px solid #000000;">
+                Saldos
+            </td>
+        </tr>
         @php
             $x=1;
             $idsClientes = [];
