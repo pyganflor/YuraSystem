@@ -107,8 +107,8 @@ class ProyVentaController extends Controller
                 ];
             }
 
-            $data = [];
-            foreach($arrProyeccionVentaSemanalReal as $idCliente => $cliente){
+           $data = [];
+           foreach($arrProyeccionVentaSemanalReal as $idCliente => $cliente){
                 $data[$idCliente] = [
                     'semanas'=>$cliente,
                     'cajas_fisicas_totales'=>$arrProyeccionVentaSemanalReal[$idCliente],
@@ -117,15 +117,15 @@ class ProyVentaController extends Controller
                 ];
             }
 
-            $clientes= Cliente::where('estado',1)->count();
+           $clientes= Cliente::where('estado',1)->count();
 
-            return view('adminlte.gestion.proyecciones.venta.partials.listado',[
-                'proyeccionVentaSemanalReal' => $data,
-                'idVariedad' => $request->id_variedad,
-                'semanas'=>isset(array_values($data)[0]['semanas']) ? array_values($data)[0]['semanas'] : [],
-                'otros' => $top >= $clientes ? false : true,
-                'clientes' => $clientes
-            ]);
+           return view('adminlte.gestion.proyecciones.venta.partials.listado',[
+               'proyeccionVentaSemanalReal' => $data,
+               'idVariedad' => $request->id_variedad,
+               'semanas'=>isset(array_values($data)[0]['semanas']) ? array_values($data)[0]['semanas'] : [],
+               'otros' => $top >= $clientes ? false : true,
+               'clientes' => $clientes
+           ]);
 
         }else{ // LA semana no esta programada
             $a ="La semana no esta programada";
