@@ -122,7 +122,7 @@ class ProyVentaController extends Controller
             return view('adminlte.gestion.proyecciones.venta.partials.listado',[
                 'proyeccionVentaSemanalReal' => $data,
                 'idVariedad' => $request->id_variedad,
-                'semanas'=>array_values($data)[0]['semanas'],
+                'semanas'=>isset(array_values($data)[0]['semanas']) ? array_values($data)[0]['semanas'] : [],
                 'otros' => $top >= $clientes ? false : true,
                 'clientes' => $clientes
             ]);
