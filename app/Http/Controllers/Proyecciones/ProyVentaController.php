@@ -2,9 +2,11 @@
 
 namespace yura\Http\Controllers\Proyecciones;
 
+use Carbon\Carbon;
 use Couchbase\Exception;
 use Illuminate\Http\Request;
 use yura\Http\Controllers\Controller;
+use yura\Modelos\HistoricoVentas;
 use yura\Modelos\Semana;
 use yura\Modelos\Submenu;
 use yura\Modelos\Cliente;
@@ -32,8 +34,37 @@ class ProyVentaController extends Controller
 
         if (isset($semana_desde) && isset($semana_hasta)) {
 
+            $objHistoricoVentas = HistoricoVentas::where('id_variedad',$request->id_variedad);
 
-            $objProyeccionVentaSemanalReal = ProyeccionVentaSemanalReal::whereBetween('codigo_semana',[$semana_desde->codigo,$semana_hasta->codigo]);
+            if(isset($request->id_cliente))
+                $objHistoricoVentas->where('id_cliente',$request->id_cliente);
+
+            $fechaActual = now()->toDateString();
+            $mesActual = Carbon::parse($fechaActual)->format('m');
+            $annoActual = Carbon::parse($fechaActual)->format('Y');
+
+            $fechaAnnoAnterior = Carbon::parse($fechaActual)->subYear(1);
+            $mesAnterior = Carbon::parse($fechaAnnoAnterior)->format('m');
+            $annoAnterior = Carbon::parse($fechaAnnoAnterior)->format('Y');
+
+            $objHistoricoVentas = $objHistoricoVentas->where([
+                ['mes','>=',$mesAnterior],
+                ['mes','<=',12],
+                ['anno',$annoAnterior],
+            ])->orWhere([
+                ['mes','>=','01'],
+                ['mes','<=',$mesActual],
+                ['anno',$annoActual],
+            ]);
+
+            $objHistoricoVentas = $objHistoricoVentas->get();
+            $idsClientes =[];
+            /*foreach ($objHistoricoVentas as $item) {
+                
+            }*/
+
+
+            /*$objProyeccionVentaSemanalReal = ProyeccionVentaSemanalReal::whereBetween('codigo_semana',[$semana_desde->codigo,$semana_hasta->codigo]);
 
             if(isset($request->id_cliente))
                 $objProyeccionVentaSemanalReal->where('id_cliente',$request->id_cliente);
@@ -89,7 +120,7 @@ class ProyVentaController extends Controller
                 default:
                     $data = $data->sortByDesc('valor_total');;
                     break;
-            }
+            }*/
 
             $clientes= Cliente::where('estado',1)->count();
 
