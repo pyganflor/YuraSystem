@@ -37,10 +37,10 @@ class CodigoDaeController extends Controller
             ->join('pais as p', 'codigo_dae.codigo_pais', 'p.codigo');
 
         if ($request->busqueda != '') $listado = $listado->Where(function ($q) use ($bus) {
-            $q->Where('codigo_dae.codigo_pais', 'like', '%' . $bus . '%');
+            $q->Where('codigo_dae.codigo_pais', 'ilike', '%' . $bus . '%');
         });
 
-        $listado = $listado->orderBy('codigo_dae.anno', 'asc')->paginate(20);
+        $listado = $listado->orderBy('codigo_dae.anno', 'asc')->orderBy('codigo_dae.mes', 'desc')->paginate(30);
 
         $datos = [
             'listado' => $listado
@@ -57,7 +57,7 @@ class CodigoDaeController extends Controller
 
     public function busqueda_pais_modal(Request $request)
     {
-        $dataPais = Pais::where('nombre', 'like', $request->nombre . '%')->get();
+        $dataPais = Pais::where('nombre', 'ilike', $request->nombre . '%')->get();
 
         $html = '';
         foreach ($dataPais as $pais) {
