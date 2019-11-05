@@ -303,10 +303,14 @@
                 <th class="text-center" style="border-color: #9d9d9d">
                     @if($val > 0)
                         @php
-                            $calibre = getCalibreByRangoVariedad($semanas[$pos_val]->fecha_inicial, $semanas[$pos_val]->fecha_final, $variedad);
+                            if($semanas[$pos_val]->fecha_inicial >= getSemanaByDate(date('Y-m-d'))->fecha_inicial && $semanas[$pos_val]->fecha_inicial <= opDiasFecha('+', 35, date('Y-m-d'))){   // semana actual o una de las 4 siguientes
+                                $calibre = getCalibreByRangoVariedad(opDiasFecha('-', 8, $semanas[$pos_val]->fecha_inicial), opDiasFecha('-', 1, $semanas[$pos_val]->fecha_inicial), $variedad);    // calibre real de la semana anterior
+                            } else { // otra semana distinta a la actual
+                                $calibre = getCalibreByRangoVariedad($semanas[$pos_val]->fecha_inicial, $semanas[$pos_val]->fecha_final, $variedad);    // calibre real de la semana
+                            }
                             if($calibre <= 0){
                                 if($semanas[$pos_val]->tallos_ramo_poda > 0){
-                                    $calibre = $semanas[$pos_val]->tallos_ramo_poda;
+                                    $calibre = $semanas[$pos_val]->tallos_ramo_poda;    // calibre de poda programado en la semana
                                 }
                             }
                         @endphp
