@@ -437,7 +437,7 @@
         <li>Segunda poda o posterior <i class="fa fa-fw fa-circle" style="color: #ffb100"></i></li>
         <li>Primera poda <i class="fa fa-fw fa-circle" style="color: #efff00"></i></li>
         <li>Siembra <i class="fa fa-fw fa-circle" style="color: #08ffe8"></i></li>
-        <li>Proyección <i class="fa fa-fw fa-circle" style="color: #9100ff7d"></i></li>
+        {{--<li>Proyección <i class="fa fa-fw fa-circle" style="color: #9100ff7d"></i></li>--}}
         <li>Semana de cosecha <i class="fa fa-fw fa-circle" style="color: #03de00"></i></li>
     </ul>
 </div>
