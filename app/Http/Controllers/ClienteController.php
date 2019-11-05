@@ -17,6 +17,7 @@ use yura\Modelos\DetalleClienteContacto;
 use yura\Modelos\TipoImpuesto;
 use yura\Modelos\TipoIdentificacion;
 use yura\Modelos\Impuesto;
+use yura\Modelos\Semana;
 use yura\Modelos\Marca;
 use yura\Modelos\Consignatario;
 use yura\Modelos\ContactoClienteAgenciaCarga;
@@ -147,8 +148,11 @@ class ClienteController extends Controller
                         bitacora('cliente|detalle_cliente', $model->id_detalle_cliente, 'I', 'Inserción satisfactoria de un nuevo cliente con sus detalles(ID guardado tabla detalle_cliente)');
 
                         $firstPedido = Pedido::orderBy('fecha_registro','asc')->first();
-                        $semana = isset(getSemanaByDate($firstPedido->fecha_pedido)->codigo) ? getSemanaByDate($firstPedido->fecha_pedido)->codigo : getSemanaByDate(now()->toDateString())->codigo;
-                        ProyeccionVentaSemanalUpdate::dispatch($semana,getLastSemanaByVariedad(1)->codigo,0,$model->id_cliente)->onQueue('update_venta_semanal_real');
+                        $semana = Semana::select(
+                            DB::raw('MIN(codigo) as primera_semana'),
+                            DB::raw('MAX(codigo) as ultima_semana')
+                        )->first();
+                        ProyeccionVentaSemanalUpdate::dispatch($semana->primera_semana,$semana->ultima_semana,0,$model->id_cliente)->onQueue('update_venta_semanal_real');
                     } else {
                         $success = false;
                         $msg .= '<div class="alert alert-warning text-center">' .
