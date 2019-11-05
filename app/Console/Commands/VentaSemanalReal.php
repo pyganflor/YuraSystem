@@ -121,14 +121,14 @@ class VentaSemanalReal extends Command
                                 ['codigo_semana',$semanaAnoAnterior]
                             ])->select('cajas_fisicas')->first();
 
-                            if(isset($objProyeccionVentaSemanalAnoAnterior))
+                            //if(isset($objProyeccionVentaSemanalAnoAnterior))
                                 //Info("Cajas ano anterior: ".$objProyeccionVentaSemanalAnoAnterior->cajas_fisicas);
-
+                            //dd($objProyeccionVentaSemanal);
                             if(!isset($objProyeccionVentaSemanal)){
-                                    $objProySemReal = new ProyeccionVentaSemanalReal;
-                                    $objProySemReal->id_cliente = $cliente->id_cliente;
-                                    $objProySemReal->id_variedad = $variedad->id_variedad;
-                                    $objProySemReal->codigo_semana = $semana;
+                                $objProySemReal = new ProyeccionVentaSemanalReal;
+                                $objProySemReal->id_cliente = $cliente->id_cliente;
+                                $objProySemReal->id_variedad = $variedad->id_variedad;
+                                $objProySemReal->codigo_semana = $semana;
                             }else{
                                 $objProySemReal = ProyeccionVentaSemanalReal::find($objProyeccionVentaSemanal->id_proyeccion_venta_semanal_real);
                             }
