@@ -12,6 +12,7 @@ use yura\Modelos\Submenu;
 use yura\Modelos\Cliente;
 use yura\Modelos\ProyeccionVentaSemanalReal;
 use yura\Modelos\PrecioVariedadCliente;
+use DB;
 
 class ProyVentaController extends Controller
 {
@@ -39,7 +40,7 @@ class ProyVentaController extends Controller
             if(isset($request->id_cliente))
                 $objHistoricoVentas->where('id_cliente',$request->id_cliente);
 
-            $fechaActual = now()->toDateString();
+            $fechaActual = now();
             $mesActual = Carbon::parse($fechaActual)->format('m');
             $annoActual = Carbon::parse($fechaActual)->format('Y');
 
@@ -55,27 +56,53 @@ class ProyVentaController extends Controller
                 ['mes','>=','01'],
                 ['mes','<=',$mesActual],
                 ['anno',$annoActual],
-            ]);
-
-            $objHistoricoVentas = $objHistoricoVentas->get();
-            $idsClientes =[];
-            /*foreach ($objHistoricoVentas as $item) {
-                
-            }*/
-
-
-            /*$objProyeccionVentaSemanalReal = ProyeccionVentaSemanalReal::whereBetween('codigo_semana',[$semana_desde->codigo,$semana_hasta->codigo]);
+            ])->where('id_variedad',$request->id_variedad)
+            ->groupBy('id_cliente')->select('id_cliente',
+                    DB::raw('SUM(cajas_fisicas) as cajas_fisicas_totales'),
+                    DB::raw('SUM(cajas_equivalentes) as cajas_equivalentes_totales'),
+                    DB::raw('SUM(valor) as valor_total')
+            )->take($top);
 
             if(isset($request->id_cliente))
-                $objProyeccionVentaSemanalReal->where('id_cliente',$request->id_cliente);
+                $objHistoricoVentas->where('id_cliente',$request->id_cliente);
 
-            if(isset($request->id_variedad))
-                $objProyeccionVentaSemanalReal->where('id_variedad',$request->id_variedad);
+            switch ($request->criterio) {
+                case 'CF':
+                    $data = $objHistoricoVentas->orderBy('cajas_fisicas_totales','desc');
+                    break;
+                case 'CE':
+                    $data = $objHistoricoVentas->orderBy('cajas_equivalentes_totales','desc');
+                    break;
+                default:
+                    $data = $objHistoricoVentas->orderBy('valor_total','desc');
+                    break;
+            }
 
-            $objProyeccionVentaSemanalReal = $objProyeccionVentaSemanalReal->get();
+            $objHistoricoVentas = $data->get();
+
+           // dd($objHistoricoVentas);
+
+            $idsClientes =[];
+            foreach ($objHistoricoVentas as $cliente) {
+                $idsClientes[]= $cliente->id_cliente;
+            }
+
+            //dump($idsClientes);
+            $proyeccionVentaSemanalRealCliente=[];
+            foreach ($idsClientes as $idCliente) {
+                $objProyeccionVentaSemanalReal = ProyeccionVentaSemanalReal::whereBetween('codigo_semana',[$semana_desde->codigo,$semana_hasta->codigo])
+                ->where([
+                    ['id_cliente',$idCliente],
+                    ['id_variedad',$request->id_variedad]
+                ])->get();
+                foreach ($objProyeccionVentaSemanalReal as $item) {
+                    $proyeccionVentaSemanalRealCliente[]=$item;
+                }
+            }
 
             $arrProyeccionVentaSemanalReal =[];
-            foreach($objProyeccionVentaSemanalReal as $proyeccionVentaSemanalReal){
+           foreach($proyeccionVentaSemanalRealCliente as $proyeccionVentaSemanalReal){
+              //dump($proyeccionVentaSemanalReal);
                 $arrProyeccionVentaSemanalReal[$proyeccionVentaSemanalReal->id_cliente][$proyeccionVentaSemanalReal->codigo_semana] =[
                     'cajas_fisicas' => $proyeccionVentaSemanalReal->cajas_fisicas,
                     'cajas_equivalentes' => $proyeccionVentaSemanalReal->cajas_equivalentes,
@@ -84,7 +111,7 @@ class ProyVentaController extends Controller
                 ];
             }
 
-            $totales_x_cliente=[];
+            /* $totales_x_cliente=[];
             foreach($arrProyeccionVentaSemanalReal as $idCliente => $cliente){
                 $cf=0;
                 $ce=0;
@@ -96,21 +123,21 @@ class ProyVentaController extends Controller
                         'valor_total' => $v+=$item['valor']
                     ];
                 }
-            }
+            }*/
 
             $data = [];
             foreach($arrProyeccionVentaSemanalReal as $idCliente => $cliente){
                 $data[$idCliente] = [
                     'semanas'=>$cliente,
-                    'cajas_fisicas_totales'=>$totales_x_cliente[$idCliente]['cajas_fisicas_totales'],
-                    'cajas_equivalentes_totales'=>$totales_x_cliente[$idCliente]['cajas_equivalentes_totales'],
-                    'valor_total'=>$totales_x_cliente[$idCliente]['valor_total'],
+                    'cajas_fisicas_totales'=>$arrProyeccionVentaSemanalReal[$idCliente],
+                    'cajas_equivalentes_totales'=>$arrProyeccionVentaSemanalReal[$idCliente],
+                    'valor_total'=>$arrProyeccionVentaSemanalReal[$idCliente],
                 ];
             }
 
-            $data = collect($data);
+            //$data = collect($data);
 
-            switch ($request->criterio) {
+            /*switch ($request->criterio) {
                 case 'CF':
                     $data = $data->sortByDesc('cajas_fisicas_totales');
                     break;
@@ -125,9 +152,9 @@ class ProyVentaController extends Controller
             $clientes= Cliente::where('estado',1)->count();
 
             return view('adminlte.gestion.proyecciones.venta.partials.listado',[
-                'proyeccionVentaSemanalReal' => $data->take($top),
+                'proyeccionVentaSemanalReal' => $data,
                 'idVariedad' => $request->id_variedad,
-                'semanas'=>$data->values()[0]['semanas'],
+                'semanas'=>array_values($data)[0]['semanas'],
                 'otros' => $top >= $clientes ? false : true,
                 'clientes' => $clientes
             ]);
