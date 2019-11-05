@@ -147,7 +147,6 @@ class ClienteController extends Controller
                             . '</div>';
                         bitacora('cliente|detalle_cliente', $model->id_detalle_cliente, 'I', 'Inserción satisfactoria de un nuevo cliente con sus detalles(ID guardado tabla detalle_cliente)');
 
-                        $firstPedido = Pedido::orderBy('fecha_registro','asc')->first();
                         $semana = Semana::select(
                             DB::raw('MIN(codigo) as primera_semana'),
                             DB::raw('MAX(codigo) as ultima_semana')
