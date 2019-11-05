@@ -47,7 +47,7 @@ class ResumenSemanaCosecha extends Command
         $desde = $this->argument('semana_desde');
         $hasta = $this->argument('semana_hasta');
         $variedad = $this->argument('variedad');
-        Info("Inicia el comando resumen:semana_cosecha");
+        Info("Inicia el comando resumen:semana_cosecha el ". Carbon::parse(now())->format('d-m-Y H:i:s'));
         Info("Variables recibidas, desde: ".$desde. "hasta: ".$hasta. " variedad: ".$variedad );
 
         $variedades = Variedad::where('estado', 1);
