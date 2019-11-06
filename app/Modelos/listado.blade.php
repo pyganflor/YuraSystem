@@ -19,11 +19,7 @@
             </td>
             @foreach($semanas as $semana => $item)
                 @php $cajasRestantes = getObjSemana($semana)->getCajasRestantes($idVariedad,($semana-1));@endphp
-                <td class="text-center" style="border:1px solid #9d9d9d; background-color: #e9ecef; width:350px;border-bottom: 2px solid #000000;border-right: 2px solid #000000;" colspan="3">
-                    <b class="{{$cajasRestantes < 0 ? "text-red" : "text-success"}}">{{number_format($cajasRestantes,2,".",",")}}
-                        <i class="fa {{$cajasRestantes < 0 ? "fa-arrow-down" : "fa-arrow-up"}}" aria-hidden="true"></i>
-                    </b>
-                </td>
+                <td class="text-center" style="border:1px solid #9d9d9d; background-color: #e9ecef; width:350px;border-bottom: 2px solid #000000;border-right: 2px solid #000000;" colspan="3">{{number_format($cajasRestantes,2,".",",")}}</td>
             @endforeach
             <td class="text-center" style="background-color: #e9ecef;width:250px;border: 2px solid #000000;">
                 Saldo inicial
@@ -180,10 +176,7 @@
                             @php $cajasRestantes = getObjSemana($codigoSemana)->getCajasRestantes($idVariedad);@endphp
                             <td style="border: 1px solid #9d9d9d;border: 2px solid #000000;" colspan="3">
                                 <div style="width:100%;text-align:center;" data-toggle="tooltip" data-placement="top" title="Cajas físicas proyectadas">
-                                    <b class="{{$cajasRestantes < 0 ? "text-red" : "text-success"}}">
-                                        {{number_format($cajasRestantes,2,".",",")}}
-                                        <i class="fa {{$cajasRestantes < 0 ? "fa-arrow-down" : "fa-arrow-up"}}" aria-hidden="true"></i>
-                                    </b>
+                                    <b class="{{$cajasRestantes < 0 ? "text-red" : "text-success"}}">{{number_format($cajasRestantes,2,".",",")}}</b>
                                 </div>
                             </td>
                         @endforeach
