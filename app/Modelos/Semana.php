@@ -55,4 +55,18 @@ class Semana extends Model
         return $proyeccion->first();
 
     }
+
+    public function getCajasRestantes($idVariedad){
+
+        $objResumenSemanaCosecha = ResumenSemanaCosecha::where([
+            ['id_variedad',$idVariedad],
+            ['codigo_semana',$this->codigo]
+        ])->first();
+
+        $cajasCosechadas = $objResumenSemanaCosecha->cajas;
+        $cajasExportadas = $this->getTotalesProyeccionVentaSemanal(false,$idVariedad)->total_cajas_equivalentes;
+
+        $cajasRestantes = $cajasCosechadas-$cajasExportadas;
+        return $cajasRestantes;
+    }
 }

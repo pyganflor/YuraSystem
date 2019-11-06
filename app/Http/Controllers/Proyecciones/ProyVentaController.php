@@ -80,14 +80,11 @@ class ProyVentaController extends Controller
 
             $objHistoricoVentas = $data->get();
 
-           // dd($objHistoricoVentas);
-
             $idsClientes =[];
             foreach ($objHistoricoVentas as $cliente) {
                 $idsClientes[]= $cliente->id_cliente;
             }
 
-            //dump($idsClientes);
             $proyeccionVentaSemanalRealCliente=[];
             foreach ($idsClientes as $idCliente) {
                 $objProyeccionVentaSemanalReal = ProyeccionVentaSemanalReal::whereBetween('codigo_semana',[$semana_desde->codigo,$semana_hasta->codigo])
@@ -102,7 +99,6 @@ class ProyVentaController extends Controller
 
             $arrProyeccionVentaSemanalReal =[];
            foreach($proyeccionVentaSemanalRealCliente as $proyeccionVentaSemanalReal){
-              //dump($proyeccionVentaSemanalReal);
                 $arrProyeccionVentaSemanalReal[$proyeccionVentaSemanalReal->id_cliente][$proyeccionVentaSemanalReal->codigo_semana] =[
                     'cajas_fisicas' => $proyeccionVentaSemanalReal->cajas_fisicas,
                     'cajas_equivalentes' => $proyeccionVentaSemanalReal->cajas_equivalentes,
@@ -111,22 +107,8 @@ class ProyVentaController extends Controller
                 ];
             }
 
-            /* $totales_x_cliente=[];
-            foreach($arrProyeccionVentaSemanalReal as $idCliente => $cliente){
-                $cf=0;
-                $ce=0;
-                $v =0;
-                foreach ($cliente as $semana => $item) {
-                    $totales_x_cliente[$idCliente] = [
-                        'cajas_fisicas_totales'=>$cf+=$item['cajas_fisicas'],
-                        'cajas_equivalentes_totales'=>$ce+=$item['cajas_equivalentes'],
-                        'valor_total' => $v+=$item['valor']
-                    ];
-                }
-            }*/
-
-            $data = [];
-            foreach($arrProyeccionVentaSemanalReal as $idCliente => $cliente){
+           $data = [];
+           foreach($arrProyeccionVentaSemanalReal as $idCliente => $cliente){
                 $data[$idCliente] = [
                     'semanas'=>$cliente,
                     'cajas_fisicas_totales'=>$arrProyeccionVentaSemanalReal[$idCliente],
@@ -135,29 +117,15 @@ class ProyVentaController extends Controller
                 ];
             }
 
-            //$data = collect($data);
+           $clientes= Cliente::where('estado',1)->count();
 
-            /*switch ($request->criterio) {
-                case 'CF':
-                    $data = $data->sortByDesc('cajas_fisicas_totales');
-                    break;
-                case 'CE':
-                    $data = $data->sortByDesc('cajas_equivalentes_totales');
-                    break;
-                default:
-                    $data = $data->sortByDesc('valor_total');;
-                    break;
-            }*/
-
-            $clientes= Cliente::where('estado',1)->count();
-
-            return view('adminlte.gestion.proyecciones.venta.partials.listado',[
-                'proyeccionVentaSemanalReal' => $data,
-                'idVariedad' => $request->id_variedad,
-                'semanas'=>array_values($data)[0]['semanas'],
-                'otros' => $top >= $clientes ? false : true,
-                'clientes' => $clientes
-            ]);
+           return view('adminlte.gestion.proyecciones.venta.partials.listado',[
+               'proyeccionVentaSemanalReal' => $data,
+               'idVariedad' => $request->id_variedad,
+               'semanas'=>isset(array_values($data)[0]['semanas']) ? array_values($data)[0]['semanas'] : [],
+               'otros' => $top >= $clientes ? false : true,
+               'clientes' => $clientes
+           ]);
 
         }else{ // LA semana no esta programada
             $a ="La semana no esta programada";
