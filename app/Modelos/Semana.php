@@ -68,8 +68,9 @@ class Semana extends Model
         $cajasRestantes = $cajasCosechadas-$cajasExportadas;
         return $cajasRestantes;
     }
-    
+
     public function getSaldo($idVariedad,$semana){
 
     }
+
 }
