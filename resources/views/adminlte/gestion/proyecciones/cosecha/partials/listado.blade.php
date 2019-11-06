@@ -157,12 +157,16 @@
                 @foreach($mod['valores'] as $pos_val => $val)
                     @php
                         $fondo = '';
+                        $texto = 'black';
                         $title = '<em>Mod: '.$mod['modulo']->nombre.'</em><br>'.
                                  '<em>Sem: '.$val->semana.'</em><br>';
                         if($val->tipo == 'P'){
-                            if(substr($val->info, 2) > 1)
-                                $fondo = '#ffb100'; // poda de 2 o más
-                            else
+                            if(substr($val->info, 2) == 2)
+                                $fondo = '#ffb100'; // poda de 2
+                            else if(substr($val->info, 2) > 2) {
+                                $fondo = '#f70b00'; // poda de 3 o más
+                                $texto = 'white';
+                            } else
                                 $fondo = '#efff00'; // poda de 1
                             $title .= '<em>Ptas.Ini: '.number_format($val->plantas_iniciales).'</em><br>';
                             $title .= '<em>Ptas.Act: '.number_format($val->plantas_actuales).'</em><br>';
@@ -183,8 +187,12 @@
                                 $fondo = '#08ffe8'; // siembra
                             else if($val->poda_siembra == 1)
                                 $fondo = '#efff00'; // poda de 1
-                            else if($val->poda_siembra > 1)
-                                $fondo = '#ffb100'; // poda de 2 o más
+                            else if($val->poda_siembra == 2)
+                                $fondo = '#ffb100'; // poda de 2
+                            else if($val->poda_siembra > 2) {
+                                $fondo = '#f70b00'; // poda de 3 o más
+                                $texto = 'white';
+                            }
                             if($val->info != 'C'){  // no está cerrada la proyeccion
                                 $title .= '<em>Ptas.Ini: '.number_format($val->plantas_iniciales).'</em><br>';
                                 $title .= '<em>T/Ptas: '.($val->tallos_planta).'</em><br>';
@@ -219,7 +227,8 @@
                         $total_area[$pos_val] = 0;
                     @endphp
                     <td class="text-center celda_hovered celda_semana_{{$semanas[$pos_val]->id_semana}} celda_modulo_{{$mod['modulo']->id_modulo}} {{in_array($val->tipo, ['F', 'P', 'S', 'T', 'Y']) ? 'mouse-hand' : ''}}"
-                        style="border-color: #9d9d9d; background-color: {{$fondo}}" id="celda_{{$mod['modulo']->id_modulo}}_{{$pos_val}}"
+                        style="border-color: #9d9d9d; background-color: {{$fondo}}; color: {{$texto}}"
+                        id="celda_{{$mod['modulo']->id_modulo}}_{{$pos_val}}"
                         onclick="select_celda('{{$val->tipo}}', '{{$mod['modulo']->id_modulo}}', '{{$val->semana}}', '{{$val->id_variedad}}', '{{$val->tabla}}', '{{$val->modelo}}')"
                         onmouseover="mouse_over_celda('celda_{{$mod['modulo']->id_modulo}}_{{$pos_val}}', 1)"
                         onmouseleave="mouse_over_celda('celda_{{$mod['modulo']->id_modulo}}_{{$pos_val}}', 0)">
@@ -441,7 +450,8 @@
         </a>
     </legend>
     <ul style="margin-top: 5px" class="list-unstyled panel-collapse collapse" id="collapseLeyenda">
-        <li>Segunda poda o posterior <i class="fa fa-fw fa-circle" style="color: #ffb100"></i></li>
+        <li>Tercera poda o posterior <i class="fa fa-fw fa-circle" style="color: #f70b00"></i></li>
+        <li>Segunda poda <i class="fa fa-fw fa-circle" style="color: #ffb100"></i></li>
         <li>Primera poda <i class="fa fa-fw fa-circle" style="color: #efff00"></i></li>
         <li>Siembra <i class="fa fa-fw fa-circle" style="color: #08ffe8"></i></li>
         {{--<li>Proyección <i class="fa fa-fw fa-circle" style="color: #9100ff7d"></i></li>--}}
