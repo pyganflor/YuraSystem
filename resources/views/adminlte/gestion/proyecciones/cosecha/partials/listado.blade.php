@@ -306,9 +306,8 @@
                 <th class="text-center" style="border-color: #9d9d9d">
                     @if($val > 0)
                         @php
-                            if($semanas[$pos_val]->fecha_inicial >= $semana_actual->fecha_inicial && $semanas[$pos_val]->fecha_inicial <= opDiasFecha('+', 35, $semana_actual->fecha_inicial)){   // semana actual o una de las 4 siguientes
+                            if($semanas[$pos_val]->fecha_inicial >= $semana_actual->fecha_inicial && $semanas[$pos_val]->fecha_inicial <= opDiasFecha('+', 34, $semana_actual->fecha_inicial)){   // semana actual o una de las 4 siguientes
                                 $calibre = $calibre_actual;    // calibre real de la semana anterior
-                                @dump('*');
                             } else { // otra semana distinta a la actual
                                 $calibre = getCalibreByRangoVariedad($semanas[$pos_val]->fecha_inicial, $semanas[$pos_val]->fecha_final, $variedad);    // calibre real de la semana
                             }
