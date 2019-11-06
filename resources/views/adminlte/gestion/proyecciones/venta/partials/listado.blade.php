@@ -14,14 +14,29 @@
             </td>
         </tr>
         <tr>
-            <td class="text-center" style="background-color: #e9ecef;width:250px;border-right: 2px solid #000000;">
+            <td class="text-center" style="background-color: #e9ecef;width:250px;border: 2px solid #000000;">
                Saldos
             </td>
             @foreach($semanas as $semana => $item)
                 <td class="text-center" style="border:1px solid #9d9d9d; background-color: #e9ecef; width:350px;border-bottom: 2px solid #000000;border-right: 2px solid #000000;" colspan="3"></td>
             @endforeach
-            <td class="text-center" style="background-color: #e9ecef;width:250px;border-right: 2px solid #000000;">
+            <td class="text-center" style="background-color: #e9ecef;width:250px;border: 2px solid #000000;">
                 Saldos
+            </td>
+        </tr>
+        <tr style="background-color: #ffb100;">
+            <td class="text-center" style="width:250px;border: 2px solid #000000;">
+                Desecho %
+            </td>
+            @foreach($semanas as $semana => $item)
+                <td class="text-center" style="border:1px solid #9d9d9d; width:350px;border-bottom: 2px solid #000000;border-right: 2px solid #000000;" colspan="3">
+                    <input type="number" min="0" id="desecho_seman_{{$semana}}" name="desecho_seman_{{$semana}}" value="0"
+                           data-toggle="tooltip" data-placement="top" title="Pocentaje de desecho"
+                           style="border:none;background-color: transparent;text-align:center">
+                </td>
+            @endforeach
+            <td class="text-center" style="width:250px;border: 2px solid #000000;">
+                Desecho %
             </td>
         </tr>
         @php
@@ -138,6 +153,7 @@
                         <td class="text-center" style="width:250px;border-right: 2px solid #000000;">
                             <b>Totales</b>
                         </td>
+                        @dump($semanas)
                         @foreach($semanas as $codigoSemana => $dataSemana)
                             @php $objSemana = getObjSemana($codigoSemana)->getTotalesProyeccionVentaSemanal(false,$idVariedad);@endphp
                             <td class="text-center"  style="border: 1px solid #9d9d9d" >
@@ -153,6 +169,18 @@
                         <td class="text-center" style="width:250px;border-right: 2px solid #000000;border-top: 2px solid #000000">
                             <b>Totales</b>
                         </td>
+                    </tr>
+                    <tr style="background-color: #e9ecef">
+                        <td class="text-center" style="border:2px solid #000000;width: 250px"><b>C. restantes</b></td>
+                        @foreach($semana['semanas'] as $codigoSemana => $dataSemana)
+                            @php $cajasRestantes = getObjSemana($codigoSemana)->getCajasRestantes($idVariedad);@endphp
+                            <td style="border: 1px solid #9d9d9d;border: 2px solid #000000;" colspan="3">
+                                <div style="width:100%;text-align:center;" data-toggle="tooltip" data-placement="top" title="Cajas físicas proyectadas">
+                                    <b class="{{$cajasRestantes < 0 ? "text-red" : "text-success"}}">{{number_format($cajasRestantes,2,".",",")}}</b>
+                                </div>
+                            </td>
+                        @endforeach
+                        <td class="text-center" style="border:2px solid #000000;width: 250px"><b>C. restantes</b></td>
                     </tr>
                 @endif
             @php $x++ @endphp

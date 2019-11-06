@@ -42,9 +42,8 @@ class Semana extends Model
             ['codigo_semana',$this->codigo]
         ]);
 
-        if($idsCliente){
+        if($idsCliente)
             $proyeccion->whereNotIn('id_cliente',$idsCliente);
-        }
 
         $proyeccion->select(
                 DB::raw('sum(valor) as total_valor'),
@@ -53,6 +52,24 @@ class Semana extends Model
             )->groupBy('codigo_semana');
 
         return $proyeccion->first();
+
+    }
+
+    public function getCajasRestantes($idVariedad){
+
+        $objResumenSemanaCosecha = ResumenSemanaCosecha::where([
+            ['id_variedad',$idVariedad],
+            ['codigo_semana',$this->codigo]
+        ])->first();
+
+        $cajasCosechadas = $objResumenSemanaCosecha->cajas;
+        $cajasExportadas = $this->getTotalesProyeccionVentaSemanal(false,$idVariedad)->total_cajas_equivalentes;
+
+        $cajasRestantes = $cajasCosechadas-$cajasExportadas;
+        return $cajasRestantes;
+    }
+    
+    public function getSaldo($idVariedad,$semana){
 
     }
 }
