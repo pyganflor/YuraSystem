@@ -90,6 +90,7 @@ class proyCosechaController extends Controller
                     'opcion' => $request->opcion,
                     'detalle' => $request->detalle,
                     'ramos_x_caja' => getConfiguracionEmpresa()->ramos_x_caja,
+                    'semana_actual' => getSemanaByDate(date('Y-m-d')),
                 ]);
             } else
                 return 'No se han encontrado módulos en el rango establecido.';
