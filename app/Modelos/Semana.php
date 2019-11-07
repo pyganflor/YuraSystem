@@ -55,57 +55,43 @@ class Semana extends Model
 
     }
 
-    public function getCajasRestantes($idVariedad,$semana=null){
-       // dump($semana);
-        if(isset($semana)){
-            $primeraSemana = ResumenSemanaCosecha::where('id_variedad',$idVariedad)->select(DB::raw('MIN(codigo_semana) as codigo'))->first();
+    public function getSaldoInicial($idVariedad,$semana)
+    {
+        /*if (isset($semana)) {
+            $primeraSemana = ResumenSemanaCosecha::where('id_variedad', $idVariedad)->select(DB::raw('MIN(codigo_semana) as codigo'))->first();
 
-            while($semanaAnterior = $semana){
+            while ($semanaAnterior = $semana) {
                 $objSemana = Semana::where([
-                    ['codigo',$semanaAnterior],
-                    ['id_variedad',$idVariedad]
+                    ['codigo', $semanaAnterior],
+                    ['id_variedad', $idVariedad]
                 ])->first();
-                if(isset($objSemana->codigo)){
+                if (isset($objSemana->codigo)) {
                     break;
-                }else{
-                    if($primeraSemana->codigo == $semana){
-                        $semana = $primeraSemana->codigo ;
+                } else {
+                    if ($primeraSemana->codigo == $semana) {
+                        $semana = $primeraSemana->codigo;
                         break;
                     }
                     $semana--;
                 }
             }
-        }
+        }*/
 
-       // dump($semana);
+        return $this->getCajasProyectadas($idVariedad)- $this->getTotalesProyeccionVentaSemanal(null,$idVariedad)->total_cajas_equivalentes;
+    }
+
+
+    public function getCajasProyectadas($idVariedad){
+
         $objResumenSemanaCosecha = ResumenSemanaCosecha::where([
             ['id_variedad',$idVariedad],
-            ['codigo_semana',isset($semana) ? $semana : $this->codigo]
+            ['codigo_semana',$this->codigo-1]
         ])->first();
 
         $cajasCosechadas = $objResumenSemanaCosecha->cajas == 0 ? $objResumenSemanaCosecha->cajas_proyectadas : $objResumenSemanaCosecha->cajas;
-        $cajasExportadas = $this->getTotalesProyeccionVentaSemanal(false,$idVariedad,$semana)->total_cajas_equivalentes;
 
-        $cajasRestantes = $cajasCosechadas-$cajasExportadas;
-        return $cajasRestantes;
-    }
+        return $cajasCosechadas;
 
-    public function getSaldo($idVariedad,$semana){
-
-        /*$exist = false;
-        while($semanaAnterior = $semana-1){
-            $objSemana = Semana::where([
-                ['codigo',$semanaAnterior],
-                ['id_variedad',$idVariedad]
-            ])->first();
-            if(isset($objSemana)){
-
-                break;
-            }else{
-                
-                $semana = $semanaAnterior;
-            }
-        }*/
     }
 
 }
