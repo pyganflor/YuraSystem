@@ -24,9 +24,11 @@ class proyCosechaController extends Controller
 {
     public function inicio(Request $request)
     {
+        $hasta = getSemanaByDate(opDiasFecha('+', 98, date('Y-m-d')));
         return view('adminlte.gestion.proyecciones.cosecha.inicio', [
             'url' => $request->getRequestUri(),
             'submenu' => Submenu::Where('url', '=', substr($request->getRequestUri(), 1))->get()[0],
+            'semana_hasta' => $hasta
         ]);
     }
 
