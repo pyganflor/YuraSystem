@@ -44,7 +44,28 @@
     }
 
     function store_proyeccion_venta(id_cliente,columna,id_variedad){
-        modal_quest('modal_update_proyeccion_venta', '<div class="alert alert-info text-center"><i class="fa fa-fw fa-exclamation-triangle"></i> ¿Está seguro de programar esta proyección de venta? </div>', '<i class="fa fa-fw fa-trash"></i> Desactivar código DAE', true, false, '<?php echo e(isPC() ? '40%' : ''); ?>', function () {
+        modal_quest('modal_update_proyeccion_venta', '<div class="alert alert-info text-center"><i class="fa fa-fw fa-exclamation-triangle"></i> ¿Está seguro de programar esta proyección de venta? </div>', '<i class="fa fa-check"></i> Programar proyección', true, false, '<?php echo e(isPC() ? '40%' : ''); ?>', function () {
+            $.LoadingOverlay('show');
+            datos = {
+                _token: '{{csrf_token()}}',
+                semana : columna,
+                id_cliente :id_cliente,
+                id_variedad : id_variedad,
+                cajas_fisicas : $("#cajas_proyectadas_"+id_cliente+"_"+columna).val(),
+                cajas_equivalentes : parseFloat($("#cajas_equivalentes_"+id_cliente+"_"+columna).html()),
+                valor : $("#precio_proyectado_"+id_cliente+"_"+columna).html(),
+            };
+
+            post_jquery('{{url('proy_venta_semanal/store_proyeccion_venta')}}', datos, function () {
+                cerrar_modals();
+                //listar_proyecciones_venta_semanal();
+            });
+            $.LoadingOverlay('hide');
+        });
+    }
+
+    function store_proyeccion_desecho(id_cliente,columna,id_variedad){
+        modal_quest('modal_update_proyeccion_desecho', '<div class="alert alert-info text-center"><i class="fa fa-fw fa-exclamation-triangle"></i> ¿Está seguro de programar este desecho? </div>', '<i class="fa fa-fw fa-trash"></i> Programar desecho', true, false, '<?php echo e(isPC() ? '40%' : ''); ?>', function () {
             $.LoadingOverlay('show');
             datos = {
                 _token: '{{csrf_token()}}',
