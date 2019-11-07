@@ -57,7 +57,7 @@ class ProyVentaController extends Controller
                 ['mes','<=',$mesActual],
                 ['anno',$annoActual],
             ])->where('id_variedad',$request->id_variedad)
-            ->groupBy('id_cliente')->select('id_cliente',
+            ->groupBy('id_cliente')->select('id_cliente','desecho',
                     DB::raw('SUM(cajas_fisicas) as cajas_fisicas_totales'),
                     DB::raw('SUM(cajas_equivalentes) as cajas_equivalentes_totales'),
                     DB::raw('SUM(valor) as valor_total')
