@@ -21,7 +21,7 @@
                 @php $cajas= getObjSemana($semana-1)->getSaldoInicial($idVariedad,$semana); @endphp
                 <td class="text-center" style="border:1px solid #9d9d9d; background-color: #e9ecef; width:350px;border-bottom: 2px solid #000000;border-right: 2px solid #000000;" colspan="3">
                     <b class="{{$cajas < 0 ? "text-red" : "text-success"}}">
-                        {{$cajas}}
+                        {{number_format($cajas,2,".",",")}}
                         <i class="fa {{$cajas < 0 ? "fa-arrow-down" : "fa-arrow-up"}}" aria-hidden="true"></i>
                     </b>
                 </td>
@@ -192,12 +192,7 @@
                     <tr style="background-color: #e9ecef">
                         <td class="text-center" style="border:2px solid #000000;width: 250px"><b>Saldo final</b></td>
                         @foreach($semanas as $semana => $item)
-                            @php
-                                $objSemana =getObjSemana($semana);
-                                $cajasSemanaAnterior = $objSemana->getCajasProyectadas($idVariedad);
-                                $proyeccionVentaCajasSemanal =$objSemana->getTotalesProyeccionVentaSemanal(false,$idVariedad)->total_cajas_equivalentes;
-                                $saldoFinal = $cajasSemanaAnterior-$proyeccionVentaCajasSemanal;
-                            @endphp
+                            @php   $saldoFinal = getObjSemana($semana)->getSaldoFinal($idVariedad,$semana); @endphp
                             <td style="border: 1px solid #9d9d9d;border: 2px solid #000000;" colspan="3">
                                 <div style="width:100%;text-align:center;" data-toggle="tooltip" data-placement="top" title="Cajas físicas proyectadas">
                                     <b class="{{$saldoFinal < 0 ? "text-red" : "text-success"}}">

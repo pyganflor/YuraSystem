@@ -35,11 +35,20 @@ class Semana extends Model
         return $this->belongsTo('\yura\Modelos\Variedad', 'id_variedad');
     }
 
-    public function getTotalesProyeccionVentaSemanal($idsCliente,$idVariedad,$semana=null){
+    public function getTotalesProyeccionVentaSemanal($idsCliente,$idVariedad){
+
+        $primeraSemana = ProyeccionVentaSemanalReal::where('id_variedad', $idVariedad)->select(DB::raw('MIN(codigo_semana) as codigo'))->first();
+        $existeSemana =ProyeccionVentaSemanalReal::where([
+            ['id_variedad', $idVariedad],
+            ['codigo_semana',$this->codigo]
+        ])->first();
+
+        if(!$existeSemana)
+            $this->codigo = $primeraSemana->codigo;
 
         $proyeccion = ProyeccionVentaSemanalReal::where([
             ['id_variedad',$idVariedad],
-            ['codigo_semana',isset($semana) ? $semana : $this->codigo]
+            ['codigo_semana',$this->codigo]
         ]);
 
         if($idsCliente)
@@ -57,29 +66,13 @@ class Semana extends Model
 
     public function getSaldoInicial($idVariedad,$semana)
     {
-        /*if (isset($semana)) {
-            $primeraSemana = ResumenSemanaCosecha::where('id_variedad', $idVariedad)->select(DB::raw('MIN(codigo_semana) as codigo'))->first();
-
-            while ($semanaAnterior = $semana) {
-                $objSemana = Semana::where([
-                    ['codigo', $semanaAnterior],
-                    ['id_variedad', $idVariedad]
-                ])->first();
-                if (isset($objSemana->codigo)) {
-                    break;
-                } else {
-                    if ($primeraSemana->codigo == $semana) {
-                        $semana = $primeraSemana->codigo;
-                        break;
-                    }
-                    $semana--;
-                }
-            }
-        }*/
-
-        return $this->getCajasProyectadas($idVariedad)- $this->getTotalesProyeccionVentaSemanal(null,$idVariedad)->total_cajas_equivalentes;
+        return $this->getCajasProyectadas($idVariedad) - $this->getTotalesProyeccionVentaSemanal(null, $idVariedad)->total_cajas_equivalentes;
     }
 
+    public function getSaldoFinal($idVariedad,$semana){
+
+        return $this->getCajasProyectadas($idVariedad)-$this->getTotalesProyeccionVentaSemanal(null,$idVariedad)->total_cajas_equivalentes;
+    }
 
     public function getCajasProyectadas($idVariedad){
 
