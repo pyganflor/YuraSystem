@@ -15,13 +15,18 @@
         </tr>
         <tr>
             <td class="text-center" style="background-color: #e9ecef;width:250px;border: 2px solid #000000;">
-               Saldos
+               Saldo inicial
             </td>
             @foreach($semanas as $semana => $item)
-                <td class="text-center" style="border:1px solid #9d9d9d; background-color: #e9ecef; width:350px;border-bottom: 2px solid #000000;border-right: 2px solid #000000;" colspan="3"></td>
+                @php $cajasRestantes = getObjSemana($semana)->getCajasRestantes($idVariedad,($semana-1));@endphp
+                <td class="text-center" style="border:1px solid #9d9d9d; background-color: #e9ecef; width:350px;border-bottom: 2px solid #000000;border-right: 2px solid #000000;" colspan="3">
+                    <b class="{{$cajasRestantes < 0 ? "text-red" : "text-success"}}">{{number_format($cajasRestantes,2,".",",")}}
+                        <i class="fa {{$cajasRestantes < 0 ? "fa-arrow-down" : "fa-arrow-up"}}" aria-hidden="true"></i>
+                    </b>
+                </td>
             @endforeach
             <td class="text-center" style="background-color: #e9ecef;width:250px;border: 2px solid #000000;">
-                Saldos
+                Saldo inicial
             </td>
         </tr>
         <tr style="background-color: #ffb100;">
@@ -153,7 +158,6 @@
                         <td class="text-center" style="width:250px;border-right: 2px solid #000000;">
                             <b>Totales</b>
                         </td>
-                        @dump($semanas)
                         @foreach($semanas as $codigoSemana => $dataSemana)
                             @php $objSemana = getObjSemana($codigoSemana)->getTotalesProyeccionVentaSemanal(false,$idVariedad);@endphp
                             <td class="text-center"  style="border: 1px solid #9d9d9d" >
@@ -171,16 +175,19 @@
                         </td>
                     </tr>
                     <tr style="background-color: #e9ecef">
-                        <td class="text-center" style="border:2px solid #000000;width: 250px"><b>C. restantes</b></td>
+                        <td class="text-center" style="border:2px solid #000000;width: 250px"><b>Saldo final</b></td>
                         @foreach($semana['semanas'] as $codigoSemana => $dataSemana)
                             @php $cajasRestantes = getObjSemana($codigoSemana)->getCajasRestantes($idVariedad);@endphp
                             <td style="border: 1px solid #9d9d9d;border: 2px solid #000000;" colspan="3">
                                 <div style="width:100%;text-align:center;" data-toggle="tooltip" data-placement="top" title="Cajas físicas proyectadas">
-                                    <b class="{{$cajasRestantes < 0 ? "text-red" : "text-success"}}">{{number_format($cajasRestantes,2,".",",")}}</b>
+                                    <b class="{{$cajasRestantes < 0 ? "text-red" : "text-success"}}">
+                                        {{number_format($cajasRestantes,2,".",",")}}
+                                        <i class="fa {{$cajasRestantes < 0 ? "fa-arrow-down" : "fa-arrow-up"}}" aria-hidden="true"></i>
+                                    </b>
                                 </div>
                             </td>
                         @endforeach
-                        <td class="text-center" style="border:2px solid #000000;width: 250px"><b>C. restantes</b></td>
+                        <td class="text-center" style="border:2px solid #000000;width: 250px"><b>Saldo final</b></td>
                     </tr>
                 @endif
             @php $x++ @endphp

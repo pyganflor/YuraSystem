@@ -35,11 +35,11 @@ class Semana extends Model
         return $this->belongsTo('\yura\Modelos\Variedad', 'id_variedad');
     }
 
-    public function getTotalesProyeccionVentaSemanal($idsCliente,$idVariedad){
+    public function getTotalesProyeccionVentaSemanal($idsCliente,$idVariedad,$semana=null){
 
         $proyeccion = ProyeccionVentaSemanalReal::where([
             ['id_variedad',$idVariedad],
-            ['codigo_semana',$this->codigo]
+            ['codigo_semana',isset($semana) ? $semana : $this->codigo]
         ]);
 
         if($idsCliente)
@@ -55,15 +55,36 @@ class Semana extends Model
 
     }
 
-    public function getCajasRestantes($idVariedad){
+    public function getCajasRestantes($idVariedad,$semana=null){
+       // dump($semana);
+        if(isset($semana)){
+            $primeraSemana = ResumenSemanaCosecha::where('id_variedad',$idVariedad)->select(DB::raw('MIN(codigo_semana) as codigo'))->first();
 
+            while($semanaAnterior = $semana){
+                $objSemana = Semana::where([
+                    ['codigo',$semanaAnterior],
+                    ['id_variedad',$idVariedad]
+                ])->first();
+                if(isset($objSemana->codigo)){
+                    break;
+                }else{
+                    if($primeraSemana->codigo == $semana){
+                        $semana = $primeraSemana->codigo ;
+                        break;
+                    }
+                    $semana--;
+                }
+            }
+        }
+
+       // dump($semana);
         $objResumenSemanaCosecha = ResumenSemanaCosecha::where([
             ['id_variedad',$idVariedad],
-            ['codigo_semana',$this->codigo]
+            ['codigo_semana',isset($semana) ? $semana : $this->codigo]
         ])->first();
 
-        $cajasCosechadas = $objResumenSemanaCosecha->cajas;
-        $cajasExportadas = $this->getTotalesProyeccionVentaSemanal(false,$idVariedad)->total_cajas_equivalentes;
+        $cajasCosechadas = $objResumenSemanaCosecha->cajas == 0 ? $objResumenSemanaCosecha->cajas_proyectadas : $objResumenSemanaCosecha->cajas;
+        $cajasExportadas = $this->getTotalesProyeccionVentaSemanal(false,$idVariedad,$semana)->total_cajas_equivalentes;
 
         $cajasRestantes = $cajasCosechadas-$cajasExportadas;
         return $cajasRestantes;
@@ -71,6 +92,20 @@ class Semana extends Model
 
     public function getSaldo($idVariedad,$semana){
 
+        /*$exist = false;
+        while($semanaAnterior = $semana-1){
+            $objSemana = Semana::where([
+                ['codigo',$semanaAnterior],
+                ['id_variedad',$idVariedad]
+            ])->first();
+            if(isset($objSemana)){
+
+                break;
+            }else{
+                
+                $semana = $semanaAnterior;
+            }
+        }*/
     }
 
 }
