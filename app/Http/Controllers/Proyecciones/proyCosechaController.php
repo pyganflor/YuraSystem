@@ -14,6 +14,7 @@ use yura\Jobs\ProyeccionUpdateCiclo;
 use yura\Jobs\ProyeccionUpdateProy;
 use yura\Jobs\ProyeccionUpdateSemanal;
 use yura\Modelos\Ciclo;
+use yura\Modelos\Modulo;
 use yura\Modelos\ProyeccionModulo;
 use yura\Modelos\ProyeccionModuloSemana;
 use yura\Modelos\Semana;
@@ -70,6 +71,22 @@ class proyCosechaController extends Controller
                     ->orderBy('activo', 'desc')
                     ->orderBy('fecha_inicio', 'asc')
                     ->get();
+
+                $ids_modulos = [];
+                foreach ($query_modulos as $item) {
+                    array_push($ids_modulos, $item->id_modulo);
+                }
+
+                $modulos_inactivos = DB::table('proyeccion_modulo')
+                    ->select('id_modulo')->distinct()
+                    ->where('estado', '=', 1)
+                    ->where('id_variedad', '=', $request->variedad)
+                    ->where('fecha_inicio', '>=', $semana_desde_par->fecha_inicial)
+                    ->whereNotIn('id_modulo', $ids_modulos)
+                    ->orderBy('fecha_inicio', 'asc')
+                    ->get();
+
+                $query_modulos = $query_modulos->merge($modulos_inactivos);
 
                 $array_modulos = [];
                 foreach ($query_modulos as $mod) {
@@ -3156,6 +3173,23 @@ class proyCosechaController extends Controller
         return view('adminlte.gestion.proyecciones.cosecha.partials._row', [
             'modulo' => getModuloById($request->modulo),
             'proyecciones' => $list
+        ]);
+    }
+
+    public function new_proyeccion(Request $request)
+    {
+        $semana = Semana::find($request->id_semana);
+        $variedad = $semana->variedad;
+        $modulos = [];
+        foreach (Modulo::All()->where('estado', 1)->where('area', '>', 0)->sortBy('nombre') as $m) {   // módulos inactivos
+            if ($m->cicloActual() == '') {
+                array_push($modulos, $m);
+            }
+        }
+        return view('adminlte.gestion.proyecciones.cosecha.forms.nueva_proyeccion', [
+            'semana' => $semana,
+            'variedad' => $variedad,
+            'modulos' => $modulos,
         ]);
     }
 }

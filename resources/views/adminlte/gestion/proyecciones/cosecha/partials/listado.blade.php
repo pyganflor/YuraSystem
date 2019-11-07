@@ -106,6 +106,11 @@
                                     Actualizar
                                 </a>
                             </li>
+                            <li>
+                                <a href="javascript:void(0)" onclick="new_proyeccion('{{$sem->id_semana}}')">
+                                    Nueva Proyección
+                                </a>
+                            </li>
                         </ul>
                     </div>
 
@@ -1301,5 +1306,15 @@
                 $('#tr_actualizar_tallos_ramo_siembra').LoadingOverlay('hide');
             });
         }
+    }
+
+    function new_proyeccion(id_semana) {
+        datos = {
+            id_semana: id_semana,
+        }
+        get_jquery('{{url('proy_cosecha/new_proyeccion')}}', datos, function (retorno) {
+            modal_view('modal_view-new_proyeccion', retorno, '<i class="fa fa-fw fa-plus"></i> Nueva Proyección', true, false,
+                '{{isPC() ? '50%' : ''}}');
+        });
     }
 </script>
