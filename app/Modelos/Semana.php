@@ -76,7 +76,7 @@ class Semana extends Model
                 }
             }
         }*/
-        return $this->getCajasProyectadas($idVariedad) - $this->getTotalesProyeccionVentaSemanal(null,$idVariedad)->total_cajas_equivalentes;
+        return $this->getCajasProyectadas($idVariedad) - $this->getTotalesProyeccionVentaSemanal(null, $idVariedad)->total_cajas_equivalentes;
     }
 
 
