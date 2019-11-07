@@ -87,4 +87,10 @@ class Semana extends Model
 
     }
 
+    public function desecho($idVariedad){
+        return ResumenSemanaCosecha::where([
+            ['codigo_semana',$this->codigo],
+            ['id_variedad',$idVariedad]
+        ])->first()->desecho;
+    }
 }
