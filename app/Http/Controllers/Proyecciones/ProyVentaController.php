@@ -186,6 +186,32 @@ class ProyVentaController extends Controller
         ];
     }
 
+    public function storeProyeccionDesecho(Request $request){
+
+        $objProyeccionVentaSemanalReal = ProyeccionVentaSemanalReal::where([
+            ['id_variedad',$request->id_variedad],
+            ['codigo_semana',$request->semana]
+        ]);
+
+        try{
+            $objProyeccionVentaSemanalReal->update(['desecho' => $request->desecho]);
+            $success = true;
+            $msg = '<div class="alert alert-success text-center">' .
+                '<p> Se ha guardado el desecho con éxito </p>'
+                .'</div>';
+        }catch (\Exception $e){
+            $success = false;
+            $msg = '<div class="alert alert-danger text-center">' .
+                '<p>  Ha ocurrido el siguiente error al intentar guardar la información <br />"'.$e->getMessage().'"<br /> Comuníquelo al área de sistemas</p>'
+                .'</div>';
+        }
+
+        return [
+            'mensaje' => $msg,
+            'success' => $success
+        ];
+    }
+
     public function storePrecioPromedio(Request $request){
         $success = false;
         $msg = '<div class="alert alert-danger text-center">' .

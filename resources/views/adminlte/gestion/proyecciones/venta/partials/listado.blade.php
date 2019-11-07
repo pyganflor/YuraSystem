@@ -50,9 +50,9 @@
             </td>
             @foreach($semanas as $semana => $item)
                 <td class="text-center" style="border:1px solid #9d9d9d; width:350px;border-bottom: 2px solid #000000;border-right: 2px solid #000000;" colspan="3">
-                    <input type="number" min="0" id="desecho_seman_{{$semana}}" name="desecho_seman_{{$semana}}" value="0"
+                    <input type="number" min="0" id="desecho_semana_{{$semana}}" name="desecho_semana_{{$semana}}" value="0"
                            data-toggle="tooltip" data-placement="top" title="Pocentaje de desecho"
-                           onblur="store_proyeccion_desecho('{{$cliente->id_cliente}}','{{$semana}}','{{$idVariedad}}')" style="border:none;background-color: transparent;text-align:center">
+                           onblur="store_proyeccion_desecho('{{$semana}}','{{$idVariedad}}')" style="border:none;background-color: transparent;text-align:center">
                 </td>
             @endforeach
             <td class="text-center" style="width:250px;border: 2px solid #000000;">

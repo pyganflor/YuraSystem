@@ -64,20 +64,17 @@
         });
     }
 
-    function store_proyeccion_desecho(id_cliente,columna,id_variedad){
+    function store_proyeccion_desecho(columna,id_variedad){
         modal_quest('modal_update_proyeccion_desecho', '<div class="alert alert-info text-center"><i class="fa fa-fw fa-exclamation-triangle"></i> ¿Está seguro de programar este desecho? </div>', '<i class="fa fa-fw fa-trash"></i> Programar desecho', true, false, '<?php echo e(isPC() ? '40%' : ''); ?>', function () {
             $.LoadingOverlay('show');
             datos = {
                 _token: '{{csrf_token()}}',
                 semana : columna,
-                id_cliente :id_cliente,
                 id_variedad : id_variedad,
-                cajas_fisicas : $("#cajas_proyectadas_"+id_cliente+"_"+columna).val(),
-                cajas_equivalentes : parseFloat($("#cajas_equivalentes_"+id_cliente+"_"+columna).html()),
-                valor : $("#precio_proyectado_"+id_cliente+"_"+columna).html(),
+                desecho : $("#desecho_semana_"+columna).val(),
             };
 
-            post_jquery('{{url('proy_venta_semanal/store_proyeccion_venta')}}', datos, function () {
+            post_jquery('{{url('proy_venta_semanal/store_proyeccion_desecho')}}', datos, function () {
                 cerrar_modals();
                 //listar_proyecciones_venta_semanal();
             });
