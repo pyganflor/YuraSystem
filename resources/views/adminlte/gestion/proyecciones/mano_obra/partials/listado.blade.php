@@ -34,7 +34,7 @@
         <tr>
             <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
                 <b style="padding: 5px">
-                    <small title="Rendimiento">{{$rend_cosecha}} </small>
+                    <small title="Rendimiento / Personal">{{$rend_cosecha}} / {{$pers_cosecha}} </small>
                 </b>
             </th>
             <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
