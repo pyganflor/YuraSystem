@@ -1,5 +1,5 @@
 <div style="overflow-x: scroll">
-    <table class="table-bordered table-striped table-hover" width="100%" style="border: 3px solid #9d9d9d; font-size: 1em">
+    <table class="table-bordered table-striped table-hover" width="100%" style="border: 2px solid #9d9d9d; font-size: 1em">
         <thead>
         <tr style="background-color: #e9ecef">
             <th class="text-center" style="border-color: #9d9d9d; width: 250px">
@@ -68,13 +68,31 @@
             </th>
             @foreach($list_tallos as $item)
                 <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
-                    {{number_format($item->cant, 2)}}
+                    <b style="padding: 5px">{{number_format($item->cant, 2)}}</b>
                 </th>
             @endforeach
         </tr>
         </tbody>
     </table>
 </div>
+
+
+<div class="text-right" style="margin-top: 10px">
+    <legend style="font-size: 1em; margin-bottom: 0">
+        <a data-toggle="collapse" data-parent="#accordion" href="#collapseLeyenda">
+            <strong style="color: black">Leyenda <i class="fa fa-fw fa-caret-down"></i></strong>
+        </a>
+    </legend>
+    <ul style="margin-top: 5px" class="list-unstyled panel-collapse collapse" id="collapseLeyenda">
+        <li>Tercera poda o posterior <i class="fa fa-fw fa-circle" style="color: #f70b00"></i></li>
+        <li>Segunda poda <i class="fa fa-fw fa-circle" style="color: #ffb100"></i></li>
+        <li>Primera poda <i class="fa fa-fw fa-circle" style="color: #efff00"></i></li>
+        <li>Siembra <i class="fa fa-fw fa-circle" style="color: #08ffe8"></i></li>
+        {{--<li>Proyección <i class="fa fa-fw fa-circle" style="color: #9100ff7d"></i></li>--}}
+        <li>Semana de cosecha <i class="fa fa-fw fa-circle" style="color: #03de00"></i></li>
+    </ul>
+</div>
+
 <script>
     function update_horas_diarias_cosecha() {
         datos = {
