@@ -195,7 +195,7 @@ class ProyVentaController extends Controller
         ]);
 
         try{
-            $objProyeccionVentaSemanalReal->update(['desecho' => $request->desecho]);
+            $objProyeccionVentaSemanalReal->update(['desecho' => isset($request->desecho) ? $request->desecho : 0]);
             $success = true;
             $msg = '<div class="alert alert-success text-center">' .
                 '<p> Se ha guardado el desecho con éxito </p>'

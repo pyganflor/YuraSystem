@@ -107,7 +107,7 @@ class ResumenSemanaCosecha extends Command
                     $proyeccionModuloSemana = ProyeccionModuloSemana::where([
                             ['semana',$semana->codigo],
                             ['id_variedad',$variedad->id_variedad]
-                        ])->sum('proyectados');
+                        ])->select(DB::raw('SUM(proyectados) as proyectados'));
                     $objResumenSemanaCosecha->cajas = getCajasByRangoVariedad($semana->fecha_inicial, $semana->fecha_final, $variedad->id_variedad);
 
                     //Info($semana->fecha_inicial." | ".$semana->fecha_final." | ".$variedad->id_variedad);
@@ -128,7 +128,7 @@ class ResumenSemanaCosecha extends Command
                     $tallos = getTallosCosechadosByModSemVar(null, $semana->codigo, $variedad->id_variedad);
                     $objResumenSemanaCosecha->tallos = isset($tallos) ? $tallos : 0;
                     $objResumenSemanaCosecha->calibre = isset($calibre) ? $calibre : 0;
-                    $objResumenSemanaCosecha->tallos_proyectados = $proyeccionModuloSemana;
+                    $objResumenSemanaCosecha->tallos_proyectados = $proyeccionModuloSemana->proyectados;
                     $cajasProyectadas = $objResumenSemanaCosecha->calibre > 0 ? ($proyeccionModuloSemana / $objResumenSemanaCosecha->calibre / getConfiguracionEmpresa(null,false)->ramos_x_caja) : 0;
                     $objResumenSemanaCosecha->cajas_proyectadas= number_format($cajasProyectadas,2,".","");
                     $objResumenSemanaCosecha->save();
