@@ -71,7 +71,7 @@ class Semana extends Model
 
     public function getSaldoFinal($idVariedad,$semana){
 
-        return $this->getCajasProyectadas($idVariedad)-$this->getTotalesProyeccionVentaSemanal(null,$idVariedad)->total_cajas_equivalentes;
+        return  $this->getCajasProyectadas($idVariedad)-$this->getTotalesProyeccionVentaSemanal(null,$idVariedad)->total_cajas_equivalentes;
     }
 
     public function getCajasProyectadas($idVariedad){

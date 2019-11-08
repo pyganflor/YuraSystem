@@ -61,7 +61,7 @@
                     </td>
                     @foreach($semana['semanas'] as $codigoSemana => $dataSemana)
                         <td class="text-center" style="border:1px solid #9d9d9d; width:350px;border-bottom: 2px solid #000000;border-right: 2px solid #000000;" colspan="3">
-                            <input type="number" min="0" id="desecho_semana_{{$codigoSemana}}" name="desecho_semana_{{$codigoSemana}}" value="0"
+                            <input type="number" min="0" id="desecho_semana_{{$codigoSemana}}" name="desecho_semana_{{$codigoSemana}}"
                                    data-toggle="tooltip" data-placement="top" title="Pocentaje de desecho" value="{{getObjSemana($codigoSemana)->desecho($idVariedad)}}"
                                    onblur="store_proyeccion_desecho('{{$codigoSemana}}','{{$idVariedad}}')"
                                    style="border:none;background-color: transparent;text-align:center">
