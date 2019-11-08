@@ -18,8 +18,9 @@
         <tbody>
         {{-- CONTENIDO --}}
         <tr>
-            <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
-                <b style="padding: 10px">Cosecha</b>
+            <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef" rowspan="2">
+                <b style="padding: 10px" data-toggle="tooltip" data-placement="top" data-html="true"
+                   title="Rendimiento: {{$rend_cosecha}} <sup>t / hr / per</sup> <br> Personal: {{$pers_cosecha}}">Cosecha</b>
             </th>
             <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
                 7
@@ -32,11 +33,6 @@
             @endforeach
         </tr>
         <tr>
-            <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
-                <b style="padding: 5px">
-                    <small title="Rendimiento / Personal">{{$rend_cosecha}} / {{$pers_cosecha}} </small>
-                </b>
-            </th>
             <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
                 6
             </th>
@@ -106,6 +102,10 @@
 </div>
 
 <script>
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+    });
+
     function update_horas_diarias_cosecha() {
         datos = {
             _token: '{{csrf_token()}}',
