@@ -2288,7 +2288,7 @@ function getTallosCosechadosByModSemVar($mod = null, $semana, $variedad)
             ->where('dr.id_variedad', '=', $variedad)
             ->where('r.fecha_ingreso', '>=', $sem->fecha_inicial)
             ->where('r.fecha_ingreso', '<=', $sem->fecha_final);
-            //->get()[0]->cantidad;
+        //->get()[0]->cantidad;
 
         if (isset($mod))
             $r->where('dr.id_modulo', '=', $mod);
@@ -2361,4 +2361,50 @@ function getLastSemanaByVariedad($variedad)
 function getObjSemana($idSemana)
 {
     return Semana::where('codigo', $idSemana)->first();
+}
+
+function getRendimientoCosechaByRangoVariedad($desde, $hasta, $variedad)
+{
+    $query = DB::table('cosecha as c')
+        ->select('c.fecha_ingreso as dia')->distinct()
+        ->where('c.fecha_ingreso', '>=', $desde)
+        ->where('c.fecha_ingreso', '<=', $hasta)
+        ->get();
+
+    $rend = 0;
+    $cant_cosecha = 0;
+    foreach ($query as $fecha) {
+        $cosecha = Cosecha::All()->where('fecha_ingreso', '=', $fecha->dia)->first();
+        if ($cosecha != '') {
+            if ($variedad == 'T') { // Todas las variedades
+                $rend += $cosecha->getRendimiento();
+            } else {    // por variedad
+                $rend += $cosecha->getRendimientoByVariedad($variedad);
+            }
+            $cant_cosecha++;
+        }
+    }
+
+    return $cant_cosecha > 0 ? round($rend / $cant_cosecha, 2) : 0;
+}
+
+function getPersonalCosechaByRango($desde, $hasta)
+{
+    $query = DB::table('cosecha as c')
+        ->select('c.fecha_ingreso as dia')->distinct()
+        ->where('c.fecha_ingreso', '>=', $desde)
+        ->where('c.fecha_ingreso', '<=', $hasta)
+        ->get();
+
+    $personal = 0;
+    $cant_cosecha = 0;
+    foreach ($query as $fecha) {
+        $cosecha = Cosecha::All()->where('fecha_ingreso', '=', $fecha->dia)->first();
+        if ($cosecha != '') {
+            $personal += $cosecha->personal;
+            $cant_cosecha++;
+        }
+    }
+
+    return $cant_cosecha > 0 ? round($personal / $cant_cosecha, 2) : 0;
 }

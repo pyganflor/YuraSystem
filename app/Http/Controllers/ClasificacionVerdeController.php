@@ -4,6 +4,7 @@ namespace yura\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use yura\Jobs\ResumenSemanaCosecha;
 use yura\Modelos\ClasificacionUnitaria;
 use yura\Modelos\ClasificacionVerde;
 use yura\Modelos\DetalleClasificacionVerde;
@@ -182,6 +183,8 @@ class ClasificacionVerdeController extends Controller
         if (!$valida->fails()) {
             if (count($request->detalles) > 0) {
                 $semana = Semana::All()
+                    ->where('estado', 1)
+                    ->where('id_variedad', $request->id_variedad)
                     ->where('fecha_inicial', '<=', $request->fecha_ingreso)
                     ->where('fecha_final', '>=', $request->fecha_ingreso)->first();
                 if ($semana != '') {
@@ -239,6 +242,10 @@ class ClasificacionVerdeController extends Controller
                                 }
                             }
                         }
+
+                        /* ======================== ACTUALIZAR LA TABLA RESUMEN_COSECHA_SEMANA FINAL ====================== */
+                        $semana_fin = getLastSemanaByVariedad($request->id_variedad);
+                        ResumenSemanaCosecha::dispatch($verde->semana->codigo, $semana_fin->codigo, $request->id_variedad);
                     } else {
                         $success = false;
                         $msg = '<div class="alert alert-warning text-center">' .
@@ -348,6 +355,10 @@ class ClasificacionVerdeController extends Controller
                         'Se ha guardado toda la información satisfactoriamente'
                         . '</div>';
                 }
+
+                /* ======================== ACTUALIZAR LA TABLA RESUMEN_COSECHA_SEMANA FINAL ====================== */
+                $semana_fin = getLastSemanaByVariedad($request->id_variedad);
+                ResumenSemanaCosecha::dispatch($verde->semana->codigo, $semana_fin->codigo, $request->id_variedad);
             } else {
                 $success = false;
                 $msg = '<div class="alert alert-warning text-center">' .
@@ -1083,6 +1094,10 @@ class ClasificacionVerdeController extends Controller
                         }
                     }
                 }
+
+                /* ======================== ACTUALIZAR LA TABLA RESUMEN_COSECHA_SEMANA FINAL ====================== */
+                $semana_fin = getLastSemanaByVariedad($request->id_variedad);
+                ResumenSemanaCosecha::dispatch($verde->semana->codigo, $semana_fin->codigo, 0);
 
                 return [
                     'success' => true,

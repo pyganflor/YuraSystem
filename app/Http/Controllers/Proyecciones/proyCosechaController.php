@@ -13,6 +13,7 @@ use yura\Jobs\ProyeccionUpdateCampo;
 use yura\Jobs\ProyeccionUpdateCiclo;
 use yura\Jobs\ProyeccionUpdateProy;
 use yura\Jobs\ProyeccionUpdateSemanal;
+use yura\Jobs\ResumenSemanaCosecha;
 use yura\Modelos\Ciclo;
 use yura\Modelos\Modulo;
 use yura\Modelos\ProyeccionModulo;
@@ -316,6 +317,10 @@ class proyCosechaController extends Controller
                     ProyeccionUpdateSemanal::dispatch($semana_desde, $semana_fin->codigo, $request->id_variedad, $request->id_modulo, 0)
                         ->onQueue('proy_cosecha/store_proyeccion');
 
+                /* ======================== ACTUALIZAR LA TABLA RESUMEN_COSECHA_SEMANA FINAL ====================== */
+                ResumenSemanaCosecha::dispatch(Semana::find($request->id_semana)->codigo, $semana_fin->codigo, $request->id_variedad)
+                    ->onQueue('resumen_cosecha_semanal');
+
                 $success = true;
                 $msg = '<div class="alert alert-success text-center">' .
                     '<p> Se ha guardado la proyección satisfactoriamente</p>'
@@ -386,7 +391,8 @@ class proyCosechaController extends Controller
                 /* ======================== ACTUALIZAR LA TABLA PROYECCION_MODULO_SEMANA ====================== */
                 if ($model->id_semana != $semana_ini_proy->id_semana || $model->tipo != $request->tipo || $model->curva != $request->curva || 1 ||
                     $model->semana_poda_siembra != $request->semana_poda_siembra || $model->plantas_iniciales != $request->plantas_iniciales ||
-                    $model->desecho != $request->desecho || $model->tallos_planta != $request->tallos_planta || $model->tallos_ramo != $request->tallos_ramo) { // hubo algun cambio
+                    $model->desecho != $request->desecho || $model->tallos_planta != $request->tallos_planta ||
+                    $model->tallos_ramo != $request->tallos_ramo) { // hubo algun cambio
 
                     $semana_ini = min($model->semana->codigo, $semana_ini_proy->codigo);
 
@@ -624,6 +630,10 @@ class proyCosechaController extends Controller
                     if ($semana_desde != '')
                         ProyeccionUpdateSemanal::dispatch($semana_desde, $semana_fin->codigo, $obj['id_variedad'], $obj['id_modulo'], 0)
                             ->onQueue('proy_cosecha/update_proyeccion');
+
+                    /* ======================== ACTUALIZAR LA TABLA RESUMEN_COSECHA_SEMANA FINAL ====================== */
+                    ResumenSemanaCosecha::dispatch($semana_ini, $semana_fin->codigo, $obj['id_variedad'])
+                        ->onQueue('resumen_cosecha_semanal');
                 } else {
                     $success = false;
                     $msg = '<div class="alert alert-info text-center">' .
@@ -1157,6 +1167,10 @@ class proyCosechaController extends Controller
             if ($semana_desde != '')
                 ProyeccionUpdateSemanal::dispatch($semana_desde, $semana_fin->codigo, $model->id_variedad, $model->id_modulo, 0)
                     ->onQueue('update_ciclo');
+
+            /* ======================== ACTUALIZAR LA TABLA RESUMEN_COSECHA_SEMANA FINAL ====================== */
+            ResumenSemanaCosecha::dispatch($model->semana()->codigo, $semana_fin->codigo, $model->id_variedad)
+                ->onQueue('resumen_cosecha_semanal');
         } else {
             $success = false;
             $errores = '';
@@ -1574,6 +1588,10 @@ class proyCosechaController extends Controller
                         if ($semana_desde != '')
                             ProyeccionUpdateSemanal::dispatch($semana_desde, $semana_fin->codigo, $obj['id_variedad'], $obj['id_modulo'], 0)
                                 ->onQueue('proy_cosecha');
+
+                        /* ======================== ACTUALIZAR LA TABLA RESUMEN_COSECHA_SEMANA FINAL ====================== */
+                        ResumenSemanaCosecha::dispatch($model->semana()->codigo, $semana_fin->codigo, $model->id_variedad)
+                            ->onQueue('resumen_cosecha_semanal');
                     }
                 }
                 if ($proyeccion != '') {
@@ -1753,6 +1771,9 @@ class proyCosechaController extends Controller
                             ProyeccionUpdateSemanal::dispatch($semana_desde, $semana_fin->codigo, $obj['id_variedad'], $obj['id_modulo'], 0)
                                 ->onQueue('proy_cosecha');
 
+                        /* ======================== ACTUALIZAR LA TABLA RESUMEN_COSECHA_SEMANA FINAL ====================== */
+                        ResumenSemanaCosecha::dispatch($model->semana->codigo, $semana_fin->codigo, $model->id_variedad)
+                            ->onQueue('resumen_cosecha_semanal');
                     }
                 }
             }
@@ -1962,6 +1983,10 @@ class proyCosechaController extends Controller
                         if ($semana_desde != '')
                             ProyeccionUpdateSemanal::dispatch($semana_desde, $semana_fin->codigo, $obj['id_variedad'], $obj['id_modulo'], 0)
                                 ->onQueue('proy_cosecha');
+
+                        /* ======================== ACTUALIZAR LA TABLA RESUMEN_COSECHA_SEMANA FINAL ====================== */
+                        ResumenSemanaCosecha::dispatch($model->semana()->codigo, $semana_fin->codigo, $model->id_variedad)
+                            ->onQueue('resumen_cosecha_semanal');
                     }
                 }
                 if ($proyeccion != '') {
@@ -2140,6 +2165,10 @@ class proyCosechaController extends Controller
                         if ($semana_desde != '')
                             ProyeccionUpdateSemanal::dispatch($semana_desde, $semana_fin->codigo, $obj['id_variedad'], $obj['id_modulo'], 0)
                                 ->onQueue('proy_cosecha');
+
+                        /* ======================== ACTUALIZAR LA TABLA RESUMEN_COSECHA_SEMANA FINAL ====================== */
+                        ResumenSemanaCosecha::dispatch($proyeccion->semana->codigo, $semana_fin->codigo, $proyeccion->id_variedad)
+                            ->onQueue('resumen_cosecha_semanal');
                     }
                 }
             }
@@ -2200,6 +2229,11 @@ class proyCosechaController extends Controller
                     /* ========================= ACTUALIZAR LAS TABLAS CICLO y PROYECCION_MODULO ======================== */
                     CicloUpdateCampo::dispatch($ciclo->id_ciclo, 'PlantasIniciales', $request->plantas_iniciales)
                         ->onQueue('proy_cosecha/actualizar_plantas_iniciales');
+
+                    /* ======================== ACTUALIZAR LA TABLA RESUMEN_COSECHA_SEMANA FINAL ====================== */
+                    $semana_fin = getLastSemanaByVariedad($ciclo->id_variedad);
+                    ResumenSemanaCosecha::dispatch($ciclo->semana()->codigo, $semana_fin->codigo, $ciclo->id_variedad)
+                        ->onQueue('resumen_cosecha_semanal');
                 }
                 if ($proyeccion != '') {
                     $proyecciones = ProyeccionModuloSemana::where('estado', 1)
@@ -2222,6 +2256,11 @@ class proyCosechaController extends Controller
 
                     ProyeccionUpdateCampo::dispatch($proyeccion->id_proyeccion_modulo, 'PlantasIniciales', $request->plantas_iniciales)
                         ->onQueue('proy_cosecha/actualizar_plantas_iniciales');
+
+                    /* ======================== ACTUALIZAR LA TABLA RESUMEN_COSECHA_SEMANA FINAL ====================== */
+                    $semana_fin = getLastSemanaByVariedad($proyeccion->id_variedad);
+                    ResumenSemanaCosecha::dispatch($proyeccion->semana->codigo, $semana_fin->codigo, $proyeccion->id_variedad)
+                        ->onQueue('resumen_cosecha_semanal');
                 }
             }
         }
@@ -2275,6 +2314,11 @@ class proyCosechaController extends Controller
                     /* ========================= ACTUALIZAR LAS TABLAS CICLO y PROYECCION_MODULO ======================== */
                     CicloUpdateCampo::dispatch($ciclo->id_ciclo, 'Desecho', $request->desecho)
                         ->onQueue('proy_cosecha/actualizar_desecho');
+
+                    /* ======================== ACTUALIZAR LA TABLA RESUMEN_COSECHA_SEMANA FINAL ====================== */
+                    $semana_fin = getLastSemanaByVariedad($ciclo->id_variedad);
+                    ResumenSemanaCosecha::dispatch($ciclo->semana()->codigo, $semana_fin->codigo, $ciclo->id_variedad)
+                        ->onQueue('resumen_cosecha_semanal');
                 }
                 if ($proyeccion != '') {
                     $proyecciones = ProyeccionModuloSemana::where('estado', 1)
@@ -2297,6 +2341,11 @@ class proyCosechaController extends Controller
 
                     ProyeccionUpdateCampo::dispatch($proyeccion->id_proyeccion_modulo, 'Desecho', $request->desecho)
                         ->onQueue('proy_cosecha/actualizar_desecho');
+
+                    /* ======================== ACTUALIZAR LA TABLA RESUMEN_COSECHA_SEMANA FINAL ====================== */
+                    $semana_fin = getLastSemanaByVariedad($proyeccion->id_variedad);
+                    ResumenSemanaCosecha::dispatch($proyeccion->semana->codigo, $semana_fin->codigo, $proyeccion->id_variedad)
+                        ->onQueue('resumen_cosecha_semanal');
                 }
             }
 
@@ -2356,6 +2405,11 @@ class proyCosechaController extends Controller
                     /* ========================= ACTUALIZAR LAS TABLAS CICLO y PROYECCION_MODULO ======================== */
                     CicloUpdateCampo::dispatch($ciclo->id_ciclo, 'TallosPlanta', $request->tallos_planta)
                         ->onQueue('proy_cosecha/actualizar_tallos_planta');
+
+                    /* ======================== ACTUALIZAR LA TABLA RESUMEN_COSECHA_SEMANA FINAL ====================== */
+                    $semana_fin = getLastSemanaByVariedad($ciclo->id_variedad);
+                    ResumenSemanaCosecha::dispatch($ciclo->semana()->codigo, $semana_fin->codigo, $ciclo->id_variedad)
+                        ->onQueue('resumen_cosecha_semanal');
                 }
                 if ($proyeccion != '') {
                     $proyecciones = ProyeccionModuloSemana::where('estado', 1)
@@ -2378,6 +2432,11 @@ class proyCosechaController extends Controller
 
                     ProyeccionUpdateCampo::dispatch($proyeccion->id_proyeccion_modulo, 'TallosPlanta', $request->tallos_planta)
                         ->onQueue('proy_cosecha/actualizar_tallos_planta');
+
+                    /* ======================== ACTUALIZAR LA TABLA RESUMEN_COSECHA_SEMANA FINAL ====================== */
+                    $semana_fin = getLastSemanaByVariedad($proyeccion->id_variedad);
+                    ResumenSemanaCosecha::dispatch($proyeccion->semana->codigo, $semana_fin->codigo, $proyeccion->id_variedad)
+                        ->onQueue('resumen_cosecha_semanal');
                 }
             }
 
@@ -2420,6 +2479,11 @@ class proyCosechaController extends Controller
 
                     ProyeccionUpdateCampo::dispatch($proyeccion->id_proyeccion_modulo, 'TallosRamo', $request->tallos_ramo)
                         ->onQueue('proy_cosecha/actualizar_tallos_ramo');
+
+                    /* ======================== ACTUALIZAR LA TABLA RESUMEN_COSECHA_SEMANA FINAL ====================== */
+                    $semana_fin = getLastSemanaByVariedad($proyeccion->id_variedad);
+                    ResumenSemanaCosecha::dispatch($proyeccion->semana->codigo, $semana_fin->codigo, $proyeccion->id_variedad)
+                        ->onQueue('resumen_cosecha_semanal');
                 }
             }
 
@@ -2687,6 +2751,10 @@ class proyCosechaController extends Controller
                         if ($semana_desde != '')
                             ProyeccionUpdateSemanal::dispatch($semana_desde, $semana_fin->codigo, $obj['id_variedad'], $obj['id_modulo'], 0)
                                 ->onQueue('proy_cosecha');
+
+                        /* ======================== ACTUALIZAR LA TABLA RESUMEN_COSECHA_SEMANA FINAL ====================== */
+                        ResumenSemanaCosecha::dispatch($semana_ini, $semana_fin->codigo, $model->id_variedad)
+                            ->onQueue('resumen_cosecha_semanal');
                     }
                 }
                 if ($proyeccion != '' && $request->check_save_proy == 'true') {
@@ -2866,6 +2934,10 @@ class proyCosechaController extends Controller
                         if ($semana_desde != '')
                             ProyeccionUpdateSemanal::dispatch($semana_desde, $semana_fin->codigo, $obj['id_variedad'], $obj['id_modulo'], 0)
                                 ->onQueue('proy_cosecha');
+
+                        /* ======================== ACTUALIZAR LA TABLA RESUMEN_COSECHA_SEMANA FINAL ====================== */
+                        ResumenSemanaCosecha::dispatch($semana_ini, $semana_fin->codigo, $model->id_variedad)
+                            ->onQueue('resumen_cosecha_semanal');
                     }
                 }
             }
@@ -3152,6 +3224,9 @@ class proyCosechaController extends Controller
                         ProyeccionUpdateSemanal::dispatch($semana_desde, $semana_fin->codigo, $obj['id_variedad'], $obj['id_modulo'], 0)
                             ->onQueue('proy_cosecha/update_proyeccion');
 
+                    /* ======================== ACTUALIZAR LA TABLA RESUMEN_COSECHA_SEMANA FINAL ====================== */
+                    ResumenSemanaCosecha::dispatch($semana_ini, $semana_fin->codigo, $model->id_variedad)
+                        ->onQueue('resumen_cosecha_semanal');
                 }
             }
         }

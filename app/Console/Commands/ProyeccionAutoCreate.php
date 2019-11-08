@@ -177,6 +177,10 @@ class ProyeccionAutoCreate extends Command
                 if ($semana_desde != '')
                     ProyeccionUpdateSemanal::dispatch($semana_desde, $semana_fin->codigo, $model->id_variedad, $model->id_modulo, 0)
                         ->onQueue('proy_cosecha/store_proyeccion');
+
+                /* ======================== ACTUALIZAR LA TABLA RESUMEN_COSECHA_SEMANA FINAL ====================== */
+                ResumenSemanaCosecha::dispatch($ciclo->semana()->codigo, $semana_fin->codigo, $ciclo->id_variedad)
+                    ->onQueue('resumen_cosecha_semanal');
             } else {
                 Log::info('<*> La semana se encuentra fuera de lo programado  <*>');
             }
