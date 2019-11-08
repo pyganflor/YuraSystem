@@ -9,6 +9,7 @@ use yura\Modelos\ProyeccionModuloSemana;
 use yura\Modelos\Semana;
 use yura\Modelos\Variedad;
 use yura\Modelos\ResumenSemanaCosecha as ResumenCosecha;
+use DB;
 
 class ResumenSemanaCosecha extends Command
 {
