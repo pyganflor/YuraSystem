@@ -44,21 +44,6 @@
                 Cajas proyectadas
             </td>
         </tr>
-        <tr style="background-color: #ffb100;">
-            <td class="text-center" style="width:250px;border: 2px solid #000000;">
-                Desecho %
-            </td>
-            @foreach($semanas as $semana => $item)
-                <td class="text-center" style="border:1px solid #9d9d9d; width:350px;border-bottom: 2px solid #000000;border-right: 2px solid #000000;" colspan="3">
-                    <input type="number" min="0" id="desecho_semana_{{$semana}}" name="desecho_semana_{{$semana}}" value="0"
-                           data-toggle="tooltip" data-placement="top" title="Pocentaje de desecho"
-                           onblur="store_proyeccion_desecho('{{$semana}}','{{$idVariedad}}')" style="border:none;background-color: transparent;text-align:center">
-                </td>
-            @endforeach
-            <td class="text-center" style="width:250px;border: 2px solid #000000;">
-                Desecho %
-            </td>
-        </tr>
         @php
             $x=1;
             $idsClientes = [];
@@ -70,6 +55,22 @@
                 $total=0;
                 $idsClientes[]=$idCliente;
             @endphp
+                <tr style="background-color: #ffb100;">
+                    <td class="text-center" style="width:250px;border: 2px solid #000000;">
+                        Desecho %
+                    </td>
+                    @foreach($semana['semanas'] as $codigoSemana => $dataSemana)
+                        <td class="text-center" style="border:1px solid #9d9d9d; width:350px;border-bottom: 2px solid #000000;border-right: 2px solid #000000;" colspan="3">
+                            <input type="number" min="0" id="desecho_semana_{{$codigoSemana}}" name="desecho_semana_{{$codigoSemana}}" value="0"
+                                   data-toggle="tooltip" data-placement="top" title="Pocentaje de desecho" value="{{getObjSemana($codigoSemana)->desecho($idVariedad)}}"
+                                   onblur="store_proyeccion_desecho('{{$codigoSemana}}','{{$idVariedad}}')"
+                                   style="border:none;background-color: transparent;text-align:center">
+                        </td>
+                    @endforeach
+                    <td class="text-center" style="width:250px;border: 2px solid #000000;">
+                        Desecho %
+                    </td>
+                </tr>
                 <tr>
                     <td class="text-center" style="border-left:2px solid #000000;border-right:2px solid #000000;border-top:2px solid #000000;width: 250px">
                         <div class="btn-group" style="width:100%" data-toggle="tooltip" data-placement="top" title="{{$cliente->detalle()->nombre}}">

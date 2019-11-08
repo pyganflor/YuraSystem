@@ -4,4 +4,4 @@
     Route::post('proy_venta_semanal/store_factor_cliente','Proyecciones\ProyVentaController@storeFactorCliente');
     Route::post('proy_venta_semanal/store_proyeccion_venta','Proyecciones\ProyVentaController@storeProyeccionVenta');
     Route::post('proy_venta_semanal/store_precio_promedio','Proyecciones\ProyVentaController@storePrecioPromedio');
-    Route::get('proy_venta_semanal/store_proyeccion_desecho','Proyecciones\ProyVentaController@storeProyeccionDEsecho');
+    Route::post('proy_venta_semanal/store_proyeccion_desecho','Proyecciones\ProyVentaController@storeProyeccionDEsecho');
