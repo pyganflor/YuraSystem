@@ -58,7 +58,7 @@
 
             post_jquery('{{url('proy_venta_semanal/store_proyeccion_venta')}}', datos, function () {
                 cerrar_modals();
-                //listar_proyecciones_venta_semanal();
+                listar_proyecciones_venta_semanal();
             });
             $.LoadingOverlay('hide');
         });
