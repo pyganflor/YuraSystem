@@ -9,7 +9,6 @@ use yura\Modelos\ProyeccionModuloSemana;
 use yura\Modelos\Semana;
 use yura\Modelos\Variedad;
 use yura\Modelos\ResumenSemanaCosecha as ResumenCosecha;
-use DB;
 
 class ResumenSemanaCosecha extends Command
 {
@@ -108,9 +107,9 @@ class ResumenSemanaCosecha extends Command
                     $proyeccionModuloSemana = ProyeccionModuloSemana::where([
                             ['semana',$semana->codigo],
                             ['id_variedad',$variedad->id_variedad]
-                        ])->select(DB::raw('SUM(proyectados) as proyectados'))->get();
+                        ])->sum('proyectados');
                     $objResumenSemanaCosecha->cajas = getCajasByRangoVariedad($semana->fecha_inicial, $semana->fecha_final, $variedad->id_variedad);
-
+                    dump($proyeccionModuloSemana);
                     //Info($semana->fecha_inicial." | ".$semana->fecha_final." | ".$variedad->id_variedad);
                     $semanaActual = getSemanaByDate(now()->toDateString())->codigo;
 
@@ -129,7 +128,7 @@ class ResumenSemanaCosecha extends Command
                     $tallos = getTallosCosechadosByModSemVar(null, $semana->codigo, $variedad->id_variedad);
                     $objResumenSemanaCosecha->tallos = isset($tallos) ? $tallos : 0;
                     $objResumenSemanaCosecha->calibre = isset($calibre) ? $calibre : 0;
-                    $objResumenSemanaCosecha->tallos_proyectados = $proyeccionModuloSemana->proyectados;
+                    $objResumenSemanaCosecha->tallos_proyectados = $proyeccionModuloSemana;
                     $cajasProyectadas = $objResumenSemanaCosecha->calibre > 0 ? ($proyeccionModuloSemana / $objResumenSemanaCosecha->calibre / getConfiguracionEmpresa(null,false)->ramos_x_caja) : 0;
                     $objResumenSemanaCosecha->cajas_proyectadas= number_format($cajasProyectadas,2,".","");
                     $objResumenSemanaCosecha->save();
