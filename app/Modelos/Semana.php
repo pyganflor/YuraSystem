@@ -70,6 +70,7 @@ class Semana extends Model
     }
 
     public function getSaldoFinal($idVariedad,$semana){
+        dump($this->getSaldoInicial($idVariedad,$semana));
         $objResumenSemanaCosecha = ResumenSemanaCosecha::where([
             ['id_variedad',$idVariedad],
             ['codigo_semana',$this->codigo]
