@@ -76,8 +76,10 @@ class Semana extends Model
         $cajasProyectadas = $this->getCajasProyectadas($idVariedad);
         $cajasVendidas = $this->getTotalesProyeccionVentaSemanal(null,$idVariedad)->total_cajas_equivalentes;
         $desecho = $cajasProyectadas*($this->desecho($idVariedad)/100);
+
         $saldoInicialSemanaAnterior = getObjSemana($this->codigo-1)->getSaldoInicial($idVariedad,$semana);
         return $cajasProyectadas+$saldoInicialSemanaAnterior-$cajasVendidas-$desecho;
+
     }
 
     public function getCajasProyectadas($idVariedad){
