@@ -109,7 +109,7 @@ class ResumenSemanaCosecha extends Command
                             ['id_variedad',$variedad->id_variedad]
                         ])->sum('proyectados');
                     $objResumenSemanaCosecha->cajas = getCajasByRangoVariedad($semana->fecha_inicial, $semana->fecha_final, $variedad->id_variedad);
-
+                    dump($proyeccionModuloSemana);
                     //Info($semana->fecha_inicial." | ".$semana->fecha_final." | ".$variedad->id_variedad);
                     $semanaActual = getSemanaByDate(now()->toDateString())->codigo;
 
