@@ -76,7 +76,7 @@ class Semana extends Model
         ])->select('desecho')->first();
         $cajasProyectadas = $this->getCajasProyectadas($idVariedad);
         $cajasVendidas = $this->getTotalesProyeccionVentaSemanal(null,$idVariedad)->total_cajas_equivalentes;
-        $desecho = $this->getCajasProyectadas($idVariedad)*($objResumenSemanaCosecha/100) ;
+        $desecho = $cajasProyectadas*($objResumenSemanaCosecha/100) ;
         return  $cajasProyectadas-$cajasVendidas-$desecho;
     }
 
