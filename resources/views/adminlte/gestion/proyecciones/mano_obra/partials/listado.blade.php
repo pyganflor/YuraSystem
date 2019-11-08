@@ -26,9 +26,23 @@
                 7
             </th>
             @foreach($list_tallos as $item)
-                <td class="text-center celda_hovered" id="celda_cosecha_7_{{$item->semana}}" style="border-color: #9d9d9d"
+                @php
+                    $mano_obra = ($item->cant / $rend_cosecha) / (7 * $hr_diarias_cosecha);
+                    if($mano_obra > ($pers_cosecha + 5)){   // faltan más de 5 trabajadores
+                        $fondo = 'red';
+                        $texto = 'white';
+                    } else if($mano_obra <= $pers_cosecha){  // hay suficientes trabajadores
+                        $fondo = '#00ff00';
+                        $texto = 'black';
+                    } else {    // faltan hasta 5 trabajadores
+                        $fondo = 'orange';
+                        $texto = 'white';
+                    }
+                @endphp
+                <td class="text-center celda_hovered" id="celda_cosecha_7_{{$item->semana}}"
+                    style="border-color: #9d9d9d; background-color: {{$fondo}}; color: {{$texto}}"
                     onmouseover="mouse_over_celda('celda_cosecha_7_{{$item->semana}}', 1)" onmouseleave="mouse_over_celda('', 0)">
-                    -
+                    {{number_format($mano_obra, 2)}}
                 </td>
             @endforeach
         </tr>
@@ -37,25 +51,53 @@
                 6
             </th>
             @foreach($list_tallos as $item)
-                <td class="text-center celda_hovered" id="celda_cosecha_6_{{$item->semana}}" style="border-color: #9d9d9d"
+                @php
+                    $mano_obra = ($item->cant / $rend_cosecha) / (6 * $hr_diarias_cosecha);
+                    if($mano_obra > ($pers_cosecha + 5)){   // faltan más de 5 trabajadores
+                        $fondo = 'red';
+                        $texto = 'white';
+                    } else if($mano_obra <= $pers_cosecha){  // hay suficientes trabajadores
+                        $fondo = '#00ff00';
+                        $texto = 'black';
+                    } else {    // faltan hasta 5 trabajadores
+                        $fondo = 'orange';
+                        $texto = 'white';
+                    }
+                @endphp
+                <td class="text-center celda_hovered" id="celda_cosecha_6_{{$item->semana}}"
+                    style="border-color: #9d9d9d; background-color: {{$fondo}}; color: {{$texto}}"
                     onmouseover="mouse_over_celda('celda_cosecha_6_{{$item->semana}}', 1)" onmouseleave="mouse_over_celda('', 0)">
-                    -
+                    {{number_format($mano_obra, 2)}}
                 </td>
             @endforeach
         </tr>
         <tr>
             <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
-                <input type="number" id="horas_diarias_cosecha" min="1" max="24" style="width: 100%; height: 22px" class="text-center" readonly
+                <input type="number" id="horas_diarias_cosecha" min="1" max="24" style="width: 100%; height: 22px" class="text-center mouse-hand"
                        title="Horas diarias" ondblclick="$(this).prop('readonly', false)" onchange="update_horas_diarias_cosecha()"
-                       value="{{$hr_diarias_cosecha}}">
+                       value="{{$hr_diarias_cosecha}}" readonly>
             </th>
             <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
                 5
             </th>
             @foreach($list_tallos as $item)
-                <td class="text-center celda_hovered" id="celda_cosecha_5_{{$item->semana}}" style="border-color: #9d9d9d"
+                @php
+                    $mano_obra = ($item->cant / $rend_cosecha) / (5 * $hr_diarias_cosecha);
+                    if($mano_obra > ($pers_cosecha + 5)){   // faltan más de 5 trabajadores
+                        $fondo = 'red';
+                        $texto = 'white';
+                    } else if($mano_obra <= $pers_cosecha){  // hay suficientes trabajadores
+                        $fondo = '#00ff00';
+                        $texto = 'black';
+                    } else {    // faltan hasta 5 trabajadores
+                        $fondo = 'orange';
+                        $texto = 'white';
+                    }
+                @endphp
+                <td class="text-center celda_hovered" id="celda_cosecha_5_{{$item->semana}}"
+                    style="border-color: #9d9d9d; background-color: {{$fondo}}; color: {{$texto}}"
                     onmouseover="mouse_over_celda('celda_cosecha_5_{{$item->semana}}', 1)" onmouseleave="mouse_over_celda('', 0)">
-                    -
+                    {{number_format($mano_obra, 2)}}
                 </td>
             @endforeach
         </tr>
@@ -92,12 +134,9 @@
         </a>
     </legend>
     <ul style="margin-top: 5px" class="list-unstyled panel-collapse collapse" id="collapseLeyenda">
-        <li>Tercera poda o posterior <i class="fa fa-fw fa-circle" style="color: #f70b00"></i></li>
-        <li>Segunda poda <i class="fa fa-fw fa-circle" style="color: #ffb100"></i></li>
-        <li>Primera poda <i class="fa fa-fw fa-circle" style="color: #efff00"></i></li>
-        <li>Siembra <i class="fa fa-fw fa-circle" style="color: #08ffe8"></i></li>
-        {{--<li>Proyección <i class="fa fa-fw fa-circle" style="color: #9100ff7d"></i></li>--}}
-        <li>Semana de cosecha <i class="fa fa-fw fa-circle" style="color: #03de00"></i></li>
+        <li><strong>Suficientes</strong> trabajadores <i class="fa fa-fw fa-circle" style="color: #00ff00"></i></li>
+        <li>Se necesitan <strong>hasta 5</strong> trabajadores más <i class="fa fa-fw fa-circle" style="color: orange"></i></li>
+        <li>Se necesitan <strong>más de 5</strong> trabajadores <i class="fa fa-fw fa-circle" style="color: red"></i></li>
     </ul>
 </div>
 
