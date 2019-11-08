@@ -290,6 +290,90 @@ class Modulo extends Model
                                 'proy' => '',
                                 'tabla' => '',
                             ];
+
+                            /* ========== BUSCAR PROYECCION =========== */
+                            $proy_ini = $this->proyecciones->where('estado', 1)
+                                ->where('id_semana', $semana->id_semana)
+                                ->where('id_variedad', $variedad)->first();
+
+                            if ($proy_ini != '') {
+                                $data = [
+                                    'tipo' => 'Y',  // inicio de una proyeccion
+                                    'info' => $proy_ini->tipo,
+                                    'cosechado' => $cosecha,
+                                    'proyectados' => $tallos_proyectados,
+                                    'modelo' => $proy_ini->id_proyeccion_modulo,
+                                    'ciclo' => '',
+                                    'proy' => $proy_ini,
+                                    'tabla' => 'P',
+                                ];
+                            } else {    // BUSCAR ULTIMA PROYECCION
+                                $proy_last = $this->getProyeccionByDate($semana->fecha_final, $variedad);
+
+                                if ($proy_last != '') {
+                                    if ($proy_last->tipo != 'C') {  // indica no cerrar modulo
+                                        $fecha_inicio = $proy_last->semana->fecha_inicial;
+                                        $num_semana = (intval(difFechas($semana->fecha_inicial, $fecha_inicio)->days / 7) + 1);
+                                        $num_sem_cosecha = count(explode('-', $proy_last->curva)) - 1;
+                                        if (intval($num_semana) <= intval($proy_last->semana_poda_siembra + $num_sem_cosecha)) {  // aun esta dentro de lo programado
+                                            if ($num_semana >= $proy_last->semana_poda_siembra) {
+                                                $tipo = 'T';    // semana de cosecha
+
+                                                /* --------------------------- calcular cosecha proyectada ------------------------- */
+                                                $pos_semana_cosecha = intval($num_semana - $proy_last->semana_poda_siembra);
+                                                $desecho = 100 - $proy_last->desecho;
+                                                $cosecha_totales = round((($proy_last->plantas_iniciales * $proy_last->tallos_planta) * $desecho) / 100, 2);
+                                                $tallos_proyectados = round(($cosecha_totales * explode('-', $proy_last->curva)[$pos_semana_cosecha]) / 100, 2);
+                                            } else
+                                                $tipo = 'I';    // informacion
+
+                                            $data = [
+                                                'tipo' => $tipo,
+                                                'info' => $num_semana . 'º',
+                                                'cosechado' => $cosecha,
+                                                'proyectados' => $tallos_proyectados,
+                                                'modelo' => $proy_last->id_proyeccion_modulo,
+                                                'ciclo' => '',
+                                                'proy' => $proy_last,
+                                                'tabla' => 'P',
+                                            ];
+                                        } else {
+                                            $data = [
+                                                'tipo' => 'F',  // fin de proyeccion
+                                                'info' => '-',
+                                                'cosechado' => $cosecha,
+                                                'proyectados' => $tallos_proyectados,
+                                                'modelo' => null,
+                                                'ciclo' => '',
+                                                'proy' => '',
+                                                'tabla' => '',
+                                            ];
+                                        }
+                                    } else {
+                                        $data = [
+                                            'tipo' => 'X',  // cerrado
+                                            'info' => '*',
+                                            'cosechado' => $cosecha,
+                                            'proyectados' => $tallos_proyectados,
+                                            'modelo' => null,
+                                            'ciclo' => '',
+                                            'proy' => '',
+                                            'tabla' => '',
+                                        ];
+                                    }
+                                } else {
+                                    $data = [
+                                        'tipo' => 'F',  // fin de ciclo
+                                        'info' => '-',
+                                        'cosechado' => $cosecha,
+                                        'proyectados' => $tallos_proyectados,
+                                        'modelo' => null,
+                                        'ciclo' => '',
+                                        'proy' => '',
+                                        'tabla' => '',
+                                    ];
+                                }
+                            }
                         }
                     }
                 } else {    // no existe un ciclo pasado

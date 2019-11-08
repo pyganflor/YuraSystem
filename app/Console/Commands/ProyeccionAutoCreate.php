@@ -55,6 +55,15 @@ class ProyeccionAutoCreate extends Command
             ->where('id_modulo', $modulo)
             ->first();
 
+        /* ===================== QUITAR PROYECCIONES =================== */
+        $proyecciones = ProyeccionModulo::All()
+            ->where('estado', 1)
+            //->where('id_variedad', $ciclo->id_variedad)
+            ->where('id_modulo', $modulo);
+        foreach ($proyecciones as $proy) {
+            $proy->delete();
+        }
+
         if ($ciclo != '') {
             $semana = Semana::All()
                 ->where('estado', 1)
@@ -80,15 +89,6 @@ class ProyeccionAutoCreate extends Command
                     $i++;
                 }
                 $next++;
-            }
-
-            /* ===================== QUITAR PROYECCIONES =================== */
-            $proyecciones = ProyeccionModulo::All()
-                ->where('estado', 1)
-                ->where('id_variedad', $ciclo->id_variedad)
-                ->where('id_modulo', $modulo);
-            foreach ($proyecciones as $proy) {
-                $proy->delete();
             }
 
             if ($query != '') {

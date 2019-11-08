@@ -38,6 +38,16 @@
             <div class="box-header with-border">
                 <div class="input-group">
                     <div class="input-group-addon bg-gray">
+                        <i class="fa fa-fw fa-calendar"></i> Desde
+                    </div>
+                    <input type="number" class="form-control" id="filtro_predeterminado_desde" name="filtro_predeterminado_desde" required
+                           value="{{getSemanaByDate(date('Y-m-d'))->codigo}}">
+                    <div class="input-group-addon bg-gray">
+                        <i class="fa fa-fw fa-calendar"></i> Hasta
+                    </div>
+                    <input type="number" class="form-control" id="filtro_predeterminado_hasta" name="filtro_predeterminado_hasta" required
+                           value="{{$semana_hasta->codigo}}">
+                    <div class="input-group-addon bg-gray">
                         <i class="fa fa-fw fa-leaf"></i> Variedad
                     </div>
                     <select name="filtro_predeterminado_planta" id="filtro_predeterminado_planta" class="form-control"
@@ -50,20 +60,9 @@
                     <div class="input-group-addon bg-gray" id="div_cargar_variedades">
                         <i class="fa fa-fw fa-leaf"></i> Tipo
                     </div>
-                    <select name="filtro_predeterminado_variedad" id="filtro_predeterminado_variedad" class="form-control"
-                            onchange="listar_proyecciones()">
+                    <select name="filtro_predeterminado_variedad" id="filtro_predeterminado_variedad" class="form-control">
                         <option value="T" selected>Todos los tipos</option>
                     </select>
-                    <div class="input-group-addon bg-gray">
-                        <i class="fa fa-fw fa-calendar"></i> Desde
-                    </div>
-                    <input type="number" class="form-control" id="filtro_predeterminado_desde" name="filtro_predeterminado_desde" required
-                           value="{{getSemanaByDate(date('Y-m-d'))->codigo}}" onchange="listar_proyecciones()">
-                    <div class="input-group-addon bg-gray">
-                        <i class="fa fa-fw fa-calendar"></i> Hasta
-                    </div>
-                    <input type="number" class="form-control" id="filtro_predeterminado_hasta" name="filtro_predeterminado_hasta" required
-                           value="{{getSemanaByDate(date('Y-m-d'))->codigo}}" onchange="listar_proyecciones()">
                     <div class="input-group-btn">
                         <button type="button" class="btn btn-primary" onclick="listar_proyecciones()">
                             <i class="fa fa-fw fa-search"></i>
