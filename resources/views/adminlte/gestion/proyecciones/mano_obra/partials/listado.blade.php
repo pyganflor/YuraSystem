@@ -1,5 +1,5 @@
 <div style="overflow-x: scroll">
-    <table class="table-bordered table-striped table-hover" width="100%" style="border: 2px solid #9d9d9d; font-size: 1em">
+    <table class="table-bordered table-striped table-hover" width="100%" style="border: 2px solid #9d9d9d; font-size: 1em;">
         <thead>
         <tr style="background-color: #e9ecef">
             <th class="text-center" style="border-color: #9d9d9d; width: 250px">
@@ -33,7 +33,9 @@
         </tr>
         <tr>
             <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
-                <b style="padding: 5px"><small title="Rendimiento">{{$rend_cosecha}} </small></b>
+                <b style="padding: 5px">
+                    <small title="Rendimiento">{{$rend_cosecha}} </small>
+                </b>
             </th>
             <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
                 6
@@ -62,13 +64,23 @@
             @endforeach
         </tr>
         {{-- TOTALES --}}
-        <tr>
-            <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef" colspan="2">
+        <tr style="background-color: #f3ff91">
+            <th class="text-center" style="border-color: #9d9d9d" colspan="2">
                 <b style="padding: 5px">Tallos</b>
             </th>
             @foreach($list_tallos as $item)
-                <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
+                <th class="text-center" style="border-color: #9d9d9d">
                     <b style="padding: 5px">{{number_format($item->cant, 2)}}</b>
+                </th>
+            @endforeach
+        </tr>
+        <tr style="background-color: #93e6ff">
+            <th class="text-center" style="border-color: #9d9d9d" colspan="2">
+                <b style="padding: 5px">Horas Totales</b>
+            </th>
+            @foreach($list_tallos as $item)
+                <th class="text-center" style="border-color: #9d9d9d">
+                    <b style="padding: 5px">{{number_format($item->cant / $rend_cosecha, 2)}}</b>
                 </th>
             @endforeach
         </tr>
