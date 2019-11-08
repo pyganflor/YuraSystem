@@ -7,6 +7,7 @@ use Couchbase\Exception;
 use Illuminate\Http\Request;
 use yura\Http\Controllers\Controller;
 use yura\Modelos\HistoricoVentas;
+use yura\Modelos\ResumenSemanaCosecha;
 use yura\Modelos\Semana;
 use yura\Modelos\Submenu;
 use yura\Modelos\Cliente;
@@ -188,7 +189,7 @@ class ProyVentaController extends Controller
 
     public function storeProyeccionDesecho(Request $request){
 
-        $objProyeccionVentaSemanalReal = ProyeccionVentaSemanalReal::where([
+        $objProyeccionVentaSemanalReal = ResumenSemanaCosecha::where([
             ['id_variedad',$request->id_variedad],
             ['codigo_semana',$request->semana]
         ]);

@@ -23,7 +23,8 @@ class ResumenSemanaCosecha extends Model
         'cajas_proyectadas',
         'plantas_iniciales',
         'calibre',
-        'area'
+        'area',
+        'desecho'
     ];
 
     public function variedad(){
