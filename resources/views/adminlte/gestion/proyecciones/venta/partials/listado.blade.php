@@ -18,11 +18,13 @@
                Saldo inicial
             </td>
             @foreach($semanas as $semana => $item)
-                @php $cajas= getObjSemana($semana-1)->getSaldoInicial($idVariedad,$semana); @endphp
+                @php $saldoInicial= getObjSemana($semana-1)->getSaldoInicial($idVariedad,$semana);
+                       // dump(getObjSemana($semana)->getSaldoFinal($idVariedad,$semana))
+                @endphp
                 <td class="text-center" style="border:1px solid #9d9d9d; background-color: #e9ecef; width:350px;border-bottom: 2px solid #000000;border-right: 2px solid #000000;" colspan="3">
-                    <b class="{{$cajas < 0 ? "text-red" : "text-success"}}">
-                        {{number_format($cajas,2,".",",")}}
-                        <i class="fa {{$cajas < 0 ? "fa-arrow-down" : "fa-arrow-up"}}" aria-hidden="true"></i>
+                    <b class="{{$saldoInicial < 0 ? "text-red" : "text-success"}}">
+                        {{number_format($saldoInicial,2,".",",")}}
+                        <i class="fa {{$saldoInicial < 0 ? "fa-arrow-down" : "fa-arrow-up"}}" aria-hidden="true"></i>
                     </b>
                 </td>
             @endforeach
@@ -55,6 +57,7 @@
                 $total=0;
                 $idsClientes[]=$idCliente;
             @endphp
+            @if($x ==1)
                 <tr style="background-color: #ffb100;">
                     <td class="text-center" style="width:250px;border: 2px solid #000000;">
                         Desecho %
@@ -71,6 +74,7 @@
                         Desecho %
                     </td>
                 </tr>
+            @endif
                 <tr>
                     <td class="text-center" style="border-left:2px solid #000000;border-right:2px solid #000000;border-top:2px solid #000000;width: 250px">
                         <div class="btn-group" style="width:100%" data-toggle="tooltip" data-placement="top" title="{{$cliente->detalle()->nombre}}">
@@ -193,7 +197,7 @@
                     <tr style="background-color: #e9ecef">
                         <td class="text-center" style="border:2px solid #000000;width: 250px"><b>Saldo final</b></td>
                         @foreach($semanas as $semana => $item)
-                            @php   $saldoFinal = getObjSemana($semana)->getSaldoFinal($idVariedad,$semana); @endphp
+                            @php  $saldoFinal = getObjSemana($semana)->getSaldoFinal($idVariedad,$semana); @endphp
                             <td style="border: 1px solid #9d9d9d;border: 2px solid #000000;" colspan="3">
                                 <div style="width:100%;text-align:center;" data-toggle="tooltip" data-placement="top" title="Cajas físicas proyectadas">
                                     <b class="{{$saldoFinal < 0 ? "text-red" : "text-success"}}">
