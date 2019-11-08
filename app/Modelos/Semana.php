@@ -70,8 +70,14 @@ class Semana extends Model
     }
 
     public function getSaldoFinal($idVariedad,$semana){
-
-        return  $this->getCajasProyectadas($idVariedad)-$this->getTotalesProyeccionVentaSemanal(null,$idVariedad)->total_cajas_equivalentes;
+        $objResumenSemanaCosecha = ResumenSemanaCosecha::where([
+            ['id_variedad',$idVariedad],
+            ['codigo_semana',$this->codigo-1]
+        ])->select('desecho')->first();
+        $cajasProyectadas = $this->getCajasProyectadas($idVariedad);
+        $cajasVendidas = $this->getTotalesProyeccionVentaSemanal(null,$idVariedad)->total_cajas_equivalentes;
+        $desecho = $this->getCajasProyectadas($idVariedad)*($objResumenSemanaCosecha/100) ;
+        return  $cajasProyectadas-$cajasVendidas-$desecho;
     }
 
     public function getCajasProyectadas($idVariedad){
