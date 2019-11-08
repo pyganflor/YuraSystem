@@ -108,7 +108,7 @@ class ResumenSemanaCosecha extends Command
                     $proyeccionModuloSemana = ProyeccionModuloSemana::where([
                             ['semana',$semana->codigo],
                             ['id_variedad',$variedad->id_variedad]
-                        ])->select(DB::raw('SUM(proyectados) as proyectados'));
+                        ])->select(DB::raw('SUM(proyectados) as proyectados'))->get();
                     $objResumenSemanaCosecha->cajas = getCajasByRangoVariedad($semana->fecha_inicial, $semana->fecha_final, $variedad->id_variedad);
 
                     //Info($semana->fecha_inicial." | ".$semana->fecha_final." | ".$variedad->id_variedad);
