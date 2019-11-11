@@ -45,8 +45,8 @@ class ConfiguracionEmpresa extends Model
         'inicial_despahco',
         'codigo_fpo',
         'codigo_tvn',
-        'codigo_etiqueta_empresa'
-
+        'codigo_etiqueta_empresa',
+        'horas_diarias_cosecha'
     ];
 
     public function clasificaciones_unitarias()

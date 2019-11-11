@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use yura\Jobs\ProyeccionUpdateSemanal;
+use yura\Jobs\ResumenSemanaCosecha;
 use yura\Modelos\Apertura;
 use yura\Modelos\Ciclo;
 use yura\Modelos\ClasificacionVerde;
@@ -165,6 +166,10 @@ class RecepcionController extends Controller
 
                                     /* ============= ACTUALIZAR LA PROYECCION ================= */
                                     ProyeccionUpdateSemanal::dispatch($semana->codigo, $semana->codigo, $model->id_variedad, $model->id_modulo, 0);
+
+                                    /* ======================== ACTUALIZAR LA TABLA RESUMEN_COSECHA_SEMANA FINAL ====================== */
+                                    $semana_fin = getLastSemanaByVariedad($model->id_variedad);
+                                    ResumenSemanaCosecha::dispatch($semana->codigo, $semana_fin->codigo, $model->id_variedad);
                                 } else {
                                     $success = false;
                                     $msg .= '<div class="alert alert-warning text-center">' .
@@ -258,6 +263,10 @@ class RecepcionController extends Controller
 
                 /* ============= ACTUALIZAR LA PROYECCION ================= */
                 ProyeccionUpdateSemanal::dispatch($model->recepcion->semana->codigo, $model->recepcion->semana->codigo, $model->id_variedad, $model->id_modulo, 0);
+
+                /* ======================== ACTUALIZAR LA TABLA RESUMEN_COSECHA_SEMANA FINAL ====================== */
+                $semana_fin = getLastSemanaByVariedad($model->id_variedad);
+                ResumenSemanaCosecha::dispatch($model->recepcion->semana->codigo, $semana_fin->codigo, $model->id_variedad);
             } else {
                 $success = false;
                 $msg .= '<div class="alert alert-warning text-center">' .
@@ -337,6 +346,10 @@ class RecepcionController extends Controller
 
                 /* ============= ACTUALIZAR LA PROYECCION ================= */
                 ProyeccionUpdateSemanal::dispatch($model->recepcion->semana->codigo, $model->recepcion->semana->codigo, $model->id_variedad, $model->id_modulo, 0);
+
+                /* ======================== ACTUALIZAR LA TABLA RESUMEN_COSECHA_SEMANA FINAL ====================== */
+                $semana_fin = getLastSemanaByVariedad($model->id_variedad);
+                ResumenSemanaCosecha::dispatch($model->recepcion->semana->codigo, $semana_fin->codigo, $model->id_variedad);
             } else {
                 $success = false;
                 $msg .= '<div class="alert alert-warning text-center">' .
@@ -386,8 +399,13 @@ class RecepcionController extends Controller
                     '<p> Se ha actualizado satisfactoriamente la información en el sistema</p>'
                     . '</div>';
 
+                $semana_ini = $model->recepcion->semana->codigo;
                 /* ============= ACTUALIZAR LA PROYECCION ================= */
-                ProyeccionUpdateSemanal::dispatch($model->recepcion->semana->codigo, $model->recepcion->semana->codigo, $model->id_variedad, $model->id_modulo, 0);
+                ProyeccionUpdateSemanal::dispatch($semana_ini, $semana_ini, $model->id_variedad, $model->id_modulo, 0);
+
+                /* ======================== ACTUALIZAR LA TABLA RESUMEN_COSECHA_SEMANA FINAL ====================== */
+                $semana_fin = getLastSemanaByVariedad($model->id_variedad);
+                ResumenSemanaCosecha::dispatch($semana_ini, $semana_fin->codigo, $model->id_variedad);
             } else {
                 $success = false;
                 $msg .= '<div class="alert alert-warning text-center">' .
