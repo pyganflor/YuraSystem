@@ -122,7 +122,7 @@
                         </div>
                         <select name="criterio" id="criterio" class="form-control">
                             <option value="C">Cajas</option>
-                            <option value="T">Tallos</option>
+                            <option value="T">Tallos (verde)</option>
                             <option value="K">Tallos (cosecha)</option>
                             <option value="E">Ramos</option>
                             <option value="D">Desecho</option>
