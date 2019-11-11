@@ -99,7 +99,7 @@ class ProyVentaController extends Controller
             }
 
             $arrProyeccionVentaSemanalReal =[];
-           foreach($proyeccionVentaSemanalRealCliente as $proyeccionVentaSemanalReal){
+            foreach($proyeccionVentaSemanalRealCliente as $proyeccionVentaSemanalReal){
                 $arrProyeccionVentaSemanalReal[$proyeccionVentaSemanalReal->id_cliente][$proyeccionVentaSemanalReal->codigo_semana] =[
                     'cajas_fisicas' => $proyeccionVentaSemanalReal->cajas_fisicas,
                     'cajas_equivalentes' => $proyeccionVentaSemanalReal->cajas_equivalentes,
