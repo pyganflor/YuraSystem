@@ -80,6 +80,8 @@ class Semana extends Model
 
     public function getCajasProyectadas($idVariedad){
 
+
+
         $objResumenSemanaCosecha = ResumenSemanaCosecha::where([
             ['id_variedad',$idVariedad],
             ['codigo_semana',$this->codigo-1]
