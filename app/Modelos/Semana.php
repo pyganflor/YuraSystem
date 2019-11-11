@@ -75,19 +75,24 @@ class Semana extends Model
         $desecho = $cajasProyectadas*($this->desecho($idVariedad)/100);
         $saldoInicialSemanaAnterior = getObjSemana($this->codigo)->getSaldoInicial($idVariedad);
         dump($this->codigo.": ".$cajasProyectadas.",".$cajasVendidas.", ". $saldoInicialSemanaAnterior);
+        if($cajasProyectadas ==0 ){
+            $saldoInicialSemanaAnterior =0;
+            $cajasProyectadas =0;
+            $cajasVendidas=0;
+        }
         return $saldoInicialSemanaAnterior+$cajasProyectadas-$cajasVendidas-$desecho;
     }
 
     public function getCajasProyectadas($idVariedad){
-
-
 
         $objResumenSemanaCosecha = ResumenSemanaCosecha::where([
             ['id_variedad',$idVariedad],
             ['codigo_semana',$this->codigo-1]
         ])->first();
 
-        $cajasCosechadas =  isset($objResumenSemanaCosecha->cajas) ? ($objResumenSemanaCosecha->cajas == 0 ? $objResumenSemanaCosecha->cajas_proyectadas : $objResumenSemanaCosecha->cajas) : 0;
+        $cajasCosechadas =  isset($objResumenSemanaCosecha->cajas)
+                                ? ($objResumenSemanaCosecha->cajas == 0 ? $objResumenSemanaCosecha->cajas_proyectadas
+                                : $objResumenSemanaCosecha->cajas) : 0;
 
         return $cajasCosechadas;
 

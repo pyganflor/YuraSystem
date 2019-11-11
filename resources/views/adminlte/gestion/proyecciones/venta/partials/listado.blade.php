@@ -18,7 +18,7 @@
                Saldo inicial
             </td>
             @foreach($semanas as $semana => $item)
-                @php $saldoInicial= getObjSemana($semana-1)->getSaldoFinal($idVariedad); //getObjSemana($semana+1)->getSaldoInicial($idVariedad);
+                @php $saldoInicial=0;// getObjSemana($semana-1)->getSaldoFinal($idVariedad); //getObjSemana($semana+1)->getSaldoInicial($idVariedad);
                        //dump(getObjSemana($semana-1)->getSaldoFinal($idVariedad))
                 @endphp
                 <td class="text-center" style="border:1px solid #9d9d9d; background-color: #e9ecef; width:350px;border-bottom: 2px solid #000000;border-right: 2px solid #000000;" colspan="3">
