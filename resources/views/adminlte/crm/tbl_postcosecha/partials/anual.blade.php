@@ -20,7 +20,7 @@
                 @endphp
             @endforeach
             <th class="text-center" style="border-color: white; background-color: #357ca5; color: white; width: 80px">
-                @if($criterio == 'C' || $criterio == 'T' || $criterio == 'E')
+                @if($criterio == 'C' || $criterio == 'T' || $criterio == 'E' || $criterio == 'K')
                     Total
                 @else
                     Promedio
@@ -68,7 +68,7 @@
                     @endphp
                 @endforeach
                 <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
-                    @if($criterio == 'C' || $criterio == 'T' || $criterio == 'E')
+                    @if($criterio == 'C' || $criterio == 'T' || $criterio == 'E' || $criterio == 'K')
                         {{number_format($total,2)}}
                     @else
                         {{$count_positivos > 0 ? number_format(round($total / $count_positivos, 2),2) : 0}}
@@ -79,7 +79,7 @@
         </tbody>
         <tr>
             <th class="text-center" style="border-color: white; background-color: #357ca5; color: white; width: 80px">
-                @if($criterio == 'C' || $criterio == 'T' || $criterio == 'E')
+                @if($criterio == 'C' || $criterio == 'T' || $criterio == 'E' || $criterio == 'K')
                     Total
                 @else
                     Promedio
@@ -90,21 +90,21 @@
             @endphp
             @foreach($totales_anno as $valor)
                 <th class="text-center" style="border-color: white; background-color: #357ca5; color: white">
-                    @if($criterio == 'C' || $criterio == 'T' || $criterio == 'E')
+                    @if($criterio == 'C' || $criterio == 'T' || $criterio == 'E' || $criterio == 'K')
                         {{number_format($valor['valor'], 2)}}
                     @else
                         {{$valor['count_positivo'] > 0 ? number_format(round($valor['valor'] / $valor['count_positivo'], 2), 2) : 0}}
                     @endif
                 </th>
                 @php
-                    if($criterio == 'C' || $criterio == 'T' || $criterio == 'E')
+                    if($criterio == 'C' || $criterio == 'T' || $criterio == 'E' || $criterio == 'K')
                         $total += $valor['valor'];
                     else
                         $total += $valor['count_positivo'] > 0 ? number_format(round($valor['valor'] / $valor['count_positivo'], 2), 2) : 0;
                 @endphp
             @endforeach
             <th class="text-center" style="border-color: white; background-color: #357ca5; color: white; width: 80px">
-                @if($criterio == 'C' || $criterio == 'T' || $criterio == 'E')
+                @if($criterio == 'C' || $criterio == 'T' || $criterio == 'E' || $criterio == 'K')
                     {{number_format($total, 2)}}
                 @else
                     {{number_format(round($total / count($data['labels']), 2), 2)}}

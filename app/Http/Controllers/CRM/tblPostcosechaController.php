@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use yura\Http\Controllers\Controller;
 use yura\Modelos\ClasificacionVerde;
+use yura\Modelos\Cosecha;
 use yura\Modelos\Semana;
 use yura\Modelos\Submenu;
 use PHPExcel;
@@ -150,31 +151,43 @@ class tblPostcosechaController extends Controller
 
                 $verdes = [];
                 if ($s_inicial != '' && $s_final != '') {
-                    $verdes = DB::table('clasificacion_verde')
-                        ->select('id_clasificacion_verde as id')->distinct()
-                        ->where('estado', '=', 1)
+                    if ($criterio == 'K')    // tallos (cosecha)
+                        $verdes = DB::table('cosecha')
+                            ->select('id_cosecha as id')->distinct();
+                    else
+                        $verdes = DB::table('clasificacion_verde')
+                            ->select('id_clasificacion_verde as id')->distinct();
+
+                    $verdes = $verdes->where('estado', '=', 1)
                         ->where(DB::raw('year(fecha_ingreso)'), '=', $a)
                         ->where(DB::raw('fecha_ingreso'), '>=', $s_inicial->fecha_inicial)
                         ->where(DB::raw('fecha_ingreso'), '<=', $s_final->fecha_final)
                         ->get();
                     foreach ($verdes as $obj) {
-                        $verde = getClasificacionVerde($obj->id);
+                        if ($criterio == 'K') {
+                            $cosecha = Cosecha::find($obj->id);
+                            $valor += $cosecha->getTotalTallos();
+                        } else {
+                            $verde = getClasificacionVerde($obj->id);
 
-                        if ($criterio == 'C')
-                            $valor += round($verde->getTotalRamosEstandar() / getConfiguracionEmpresa()->ramos_x_caja, 2);
-                        if ($criterio == 'T')
-                            $valor += $verde->total_tallos();
-                        if ($criterio == 'E')
-                            $valor += $verde->getTotalRamosEstandar();
-                        if ($criterio == 'D')
-                            $valor += $verde->desecho();
-                        if ($criterio == 'R')
-                            $valor += $verde->getRendimiento();
-                        if ($criterio == 'Q')
-                            $valor += $verde->getCalibre();
+                            if ($criterio == 'C')
+                                $valor += round($verde->getTotalRamosEstandar() / getConfiguracionEmpresa()->ramos_x_caja, 2);
+                            if ($criterio == 'T')
+                                $valor += $verde->total_tallos();
+                            if ($criterio == 'E')
+                                $valor += $verde->getTotalRamosEstandar();
+                            if ($criterio == 'D')
+                                $valor += $verde->desecho();
+                            if ($criterio == 'R')
+                                $valor += $verde->getRendimiento();
+                            if ($criterio == 'Q')
+                                $valor += $verde->getCalibre();
+                        }
                     }
                 }
 
+                if ($criterio == 'K')
+                    array_push($valores, $valor);
                 if ($criterio == 'C')
                     array_push($valores, $valor);
                 if ($criterio == 'T')
@@ -204,31 +217,43 @@ class tblPostcosechaController extends Controller
 
                     $verdes = [];
                     if ($s_inicial != '' && $s_final != '') {
-                        $verdes = DB::table('clasificacion_verde')
-                            ->select('id_clasificacion_verde as id')->distinct()
-                            ->where('estado', '=', 1)
+                        if ($criterio == 'K')    // tallos (cosecha)
+                            $verdes = DB::table('cosecha')
+                                ->select('id_cosecha as id')->distinct();
+                        else
+                            $verdes = DB::table('clasificacion_verde')
+                                ->select('id_clasificacion_verde as id')->distinct();
+
+                        $verdes = $verdes->where('estado', '=', 1)
                             ->where(DB::raw('year(fecha_ingreso)'), '=', $a)
                             ->where(DB::raw('fecha_ingreso'), '>=', $s_inicial->fecha_inicial)
                             ->where(DB::raw('fecha_ingreso'), '<=', $s_final->fecha_final)
                             ->get();
                         foreach ($verdes as $obj) {
-                            $verde = getClasificacionVerde($obj->id);
+                            if ($criterio == 'K') {
+                                $cosecha = Cosecha::find($obj->id);
+                                $valor += $cosecha->getTotalTallosByVariedad($var->id_variedad);
+                            } else {
+                                $verde = getClasificacionVerde($obj->id);
 
-                            if ($criterio == 'C')
-                                $valor += round($verde->getTotalRamosEstandarByVariedad($var->id_variedad) / getConfiguracionEmpresa()->ramos_x_caja, 2);
-                            if ($criterio == 'T')
-                                $valor += $verde->tallos_x_variedad($var->id_variedad);
-                            if ($criterio == 'E')
-                                $valor += $verde->getTotalRamosEstandarByVariedad($var->id_variedad);
-                            if ($criterio == 'D')
-                                $valor += $verde->desechoByVariedad($var->id_variedad);
-                            if ($criterio == 'R')
-                                $valor += $verde->getRendimientoByVariedad($var->id_variedad);
-                            if ($criterio == 'Q')
-                                $valor += $verde->calibreByVariedad($var->id_variedad);
+                                if ($criterio == 'C')
+                                    $valor += round($verde->getTotalRamosEstandarByVariedad($var->id_variedad) / getConfiguracionEmpresa()->ramos_x_caja, 2);
+                                if ($criterio == 'T')
+                                    $valor += $verde->tallos_x_variedad($var->id_variedad);
+                                if ($criterio == 'E')
+                                    $valor += $verde->getTotalRamosEstandarByVariedad($var->id_variedad);
+                                if ($criterio == 'D')
+                                    $valor += $verde->desechoByVariedad($var->id_variedad);
+                                if ($criterio == 'R')
+                                    $valor += $verde->getRendimientoByVariedad($var->id_variedad);
+                                if ($criterio == 'Q')
+                                    $valor += $verde->calibreByVariedad($var->id_variedad);
+                            }
                         }
                     }
 
+                    if ($criterio == 'K')
+                        array_push($valores, $valor);
                     if ($criterio == 'C')
                         array_push($valores, $valor);
                     if ($criterio == 'T')
@@ -257,31 +282,43 @@ class tblPostcosechaController extends Controller
 
                 $verdes = [];
                 if ($s_inicial != '' && $s_final != '') {
-                    $verdes = DB::table('clasificacion_verde')
-                        ->select('id_clasificacion_verde as id')->distinct()
-                        ->where('estado', '=', 1)
+                    if ($criterio == 'K')    // tallos (cosecha)
+                        $verdes = DB::table('cosecha')
+                            ->select('id_cosecha as id')->distinct();
+                    else
+                        $verdes = DB::table('clasificacion_verde')
+                            ->select('id_clasificacion_verde as id')->distinct();
+
+                    $verdes = $verdes->where('estado', '=', 1)
                         ->where(DB::raw('year(fecha_ingreso)'), '=', $a)
                         ->where(DB::raw('fecha_ingreso'), '>=', $s_inicial->fecha_inicial)
                         ->where(DB::raw('fecha_ingreso'), '<=', $s_final->fecha_final)
                         ->get();
                     foreach ($verdes as $obj) {
-                        $verde = getClasificacionVerde($obj->id);
+                        if ($criterio == 'K') {
+                            $cosecha = Cosecha::find($obj->id);
+                            $valor += $cosecha->getTotalTallosByVariedad($variedad);
+                        } else {
+                            $verde = getClasificacionVerde($obj->id);
 
-                        if ($criterio == 'C')
-                            $valor += round($verde->getTotalRamosEstandarByVariedad($variedad) / getConfiguracionEmpresa()->ramos_x_caja, 2);
-                        if ($criterio == 'T')
-                            $valor += $verde->tallos_x_variedad($variedad);
-                        if ($criterio == 'E')
-                            $valor += $verde->getTotalRamosEstandarByVariedad($variedad);
-                        if ($criterio == 'D')
-                            $valor += $verde->desechoByVariedad($variedad);
-                        if ($criterio == 'R')
-                            $valor += $verde->getRendimientoByVariedad($variedad);
-                        if ($criterio == 'Q')
-                            $valor += $verde->calibreByVariedad($variedad);
+                            if ($criterio == 'C')
+                                $valor += round($verde->getTotalRamosEstandarByVariedad($variedad) / getConfiguracionEmpresa()->ramos_x_caja, 2);
+                            if ($criterio == 'T')
+                                $valor += $verde->tallos_x_variedad($variedad);
+                            if ($criterio == 'E')
+                                $valor += $verde->getTotalRamosEstandarByVariedad($variedad);
+                            if ($criterio == 'D')
+                                $valor += $verde->desechoByVariedad($variedad);
+                            if ($criterio == 'R')
+                                $valor += $verde->getRendimientoByVariedad($variedad);
+                            if ($criterio == 'Q')
+                                $valor += $verde->calibreByVariedad($variedad);
+                        }
                     }
                 }
 
+                if ($criterio == 'K')
+                    array_push($valores, $valor);
                 if ($criterio == 'C')
                     array_push($valores, $valor);
                 if ($criterio == 'T')
@@ -326,9 +363,14 @@ class tblPostcosechaController extends Controller
                     if (strlen($m) != 2)
                         $m = '0' . $m;
 
-                    $verdes = DB::table('clasificacion_verde')
-                        ->select('id_clasificacion_verde as id')->distinct()
-                        ->where('estado', '=', 1)
+                    if ($criterio == 'K') // tallos (cosecha)
+                        $verdes = DB::table('cosecha')
+                            ->select('id_cosecha as id')->distinct();
+                    else
+                        $verdes = DB::table('clasificacion_verde')
+                            ->select('id_clasificacion_verde as id')->distinct();
+
+                    $verdes = $verdes->where('estado', '=', 1)
                         ->where(DB::raw('year(fecha_ingreso)'), '=', $l);
 
                     if ($acumulado == 'true') {
@@ -343,28 +385,35 @@ class tblPostcosechaController extends Controller
                     $valor = 0;
 
                     foreach ($verdes as $obj) {
-                        $verde = getClasificacionVerde($obj->id);
+                        if ($criterio == 'K') {
+                            $cosecha = Cosecha::find($obj->id);
+                            $valor += $cosecha->getTotalTallos();
+                        } else {
+                            $verde = getClasificacionVerde($obj->id);
 
-                        if ($criterio == 'C') {
-                            $valor += round($verde->getTotalRamosEstandar() / getConfiguracionEmpresa()->ramos_x_caja, 2);
-                        }
-                        if ($criterio == 'T') {
-                            $valor += $verde->total_tallos();
-                        }
-                        if ($criterio == 'E') {
-                            $valor += $verde->getTotalRamosEstandar();
-                        }
-                        if ($criterio == 'D') {
-                            $valor += $verde->desecho();
-                        }
-                        if ($criterio == 'R') {
-                            $valor += $verde->getRendimiento();
-                        }
-                        if ($criterio == 'Q') {
-                            $valor += $verde->getCalibre();
+                            if ($criterio == 'C') {
+                                $valor += round($verde->getTotalRamosEstandar() / getConfiguracionEmpresa()->ramos_x_caja, 2);
+                            }
+                            if ($criterio == 'T') {
+                                $valor += $verde->total_tallos();
+                            }
+                            if ($criterio == 'E') {
+                                $valor += $verde->getTotalRamosEstandar();
+                            }
+                            if ($criterio == 'D') {
+                                $valor += $verde->desecho();
+                            }
+                            if ($criterio == 'R') {
+                                $valor += $verde->getRendimiento();
+                            }
+                            if ($criterio == 'Q') {
+                                $valor += $verde->getCalibre();
+                            }
                         }
                     }
 
+                    if ($criterio == 'K')
+                        array_push($valores, $valor);
                     if ($criterio == 'C')
                         array_push($valores, $valor);
                     if ($criterio == 'T')
@@ -397,9 +446,14 @@ class tblPostcosechaController extends Controller
                         if (strlen($m) != 2)
                             $m = '0' . $m;
 
-                        $verdes = DB::table('clasificacion_verde')
-                            ->select('id_clasificacion_verde as id')->distinct()
-                            ->where('estado', '=', 1)
+                        if ($criterio == 'K') // tallos (cosecha)
+                            $verdes = DB::table('cosecha')
+                                ->select('id_cosecha as id')->distinct();
+                        else
+                            $verdes = DB::table('clasificacion_verde')
+                                ->select('id_clasificacion_verde as id')->distinct();
+
+                        $verdes = $verdes->where('estado', '=', 1)
                             ->where(DB::raw('year(fecha_ingreso)'), '=', $l);
 
                         if ($acumulado == 'true') {
@@ -414,28 +468,35 @@ class tblPostcosechaController extends Controller
                         $valor = 0;
 
                         foreach ($verdes as $obj) {
-                            $verde = getClasificacionVerde($obj->id);
+                            if ($criterio == 'K') {
+                                $cosecha = Cosecha::find($obj->id);
+                                $valor += $cosecha->getTotalTallosByVariedad($var->id_variedad);
+                            } else {
+                                $verde = getClasificacionVerde($obj->id);
 
-                            if ($criterio == 'C') {
-                                $valor += round($verde->getTotalRamosEstandarByVariedad($var->id_variedad) / getConfiguracionEmpresa()->ramos_x_caja, 2);
-                            }
-                            if ($criterio == 'T') {
-                                $valor += $verde->tallos_x_variedad($var->id_variedad);
-                            }
-                            if ($criterio == 'E') {
-                                $valor += $verde->getTotalRamosEstandarByVariedad($var->id_variedad);
-                            }
-                            if ($criterio == 'D') {
-                                $valor += $verde->desechoByVariedad($var->id_variedad);
-                            }
-                            if ($criterio == 'R') {
-                                $valor += $verde->getRendimientoByVariedad($var->id_variedad);
-                            }
-                            if ($criterio == 'Q') {
-                                $valor += $verde->calibreByVariedad($var->id_variedad);
+                                if ($criterio == 'C') {
+                                    $valor += round($verde->getTotalRamosEstandarByVariedad($var->id_variedad) / getConfiguracionEmpresa()->ramos_x_caja, 2);
+                                }
+                                if ($criterio == 'T') {
+                                    $valor += $verde->tallos_x_variedad($var->id_variedad);
+                                }
+                                if ($criterio == 'E') {
+                                    $valor += $verde->getTotalRamosEstandarByVariedad($var->id_variedad);
+                                }
+                                if ($criterio == 'D') {
+                                    $valor += $verde->desechoByVariedad($var->id_variedad);
+                                }
+                                if ($criterio == 'R') {
+                                    $valor += $verde->getRendimientoByVariedad($var->id_variedad);
+                                }
+                                if ($criterio == 'Q') {
+                                    $valor += $verde->calibreByVariedad($var->id_variedad);
+                                }
                             }
                         }
 
+                        if ($criterio == 'K')
+                            array_push($valores, $valor);
                         if ($criterio == 'C')
                             array_push($valores, $valor);
                         if ($criterio == 'T')
@@ -466,9 +527,14 @@ class tblPostcosechaController extends Controller
                     if (strlen($m) != 2)
                         $m = '0' . $m;
 
-                    $verdes = DB::table('clasificacion_verde')
-                        ->select('id_clasificacion_verde as id')->distinct()
-                        ->where('estado', '=', 1)
+                    if ($criterio == 'K') // tallos (cosecha)
+                        $verdes = DB::table('cosecha')
+                            ->select('id_cosecha as id')->distinct();
+                    else
+                        $verdes = DB::table('clasificacion_verde')
+                            ->select('id_clasificacion_verde as id')->distinct();
+
+                    $verdes = $verdes->where('estado', '=', 1)
                         ->where(DB::raw('year(fecha_ingreso)'), '=', $l);
 
                     if ($acumulado == 'true') {
@@ -483,22 +549,29 @@ class tblPostcosechaController extends Controller
                     $valor = 0;
 
                     foreach ($verdes as $obj) {
-                        $verde = getClasificacionVerde($obj->id);
+                        if ($criterio == 'K') {
+                            $cosecha = Cosecha::find($obj->id);
+                            $valor += $cosecha->getTotalTallosByVariedad($variedad);
+                        } else {
+                            $verde = getClasificacionVerde($obj->id);
 
-                        if ($criterio == 'C')
-                            $valor += round($verde->getTotalRamosEstandarByVariedad($variedad) / getConfiguracionEmpresa()->ramos_x_caja, 2);
-                        if ($criterio == 'T')
-                            $valor += $verde->tallos_x_variedad($variedad);
-                        if ($criterio == 'E')
-                            $valor += $verde->getTotalRamosEstandarByVariedad($variedad);
-                        if ($criterio == 'D')
-                            $valor += $verde->desechoByVariedad($variedad);
-                        if ($criterio == 'R')
-                            $valor += $verde->getRendimientoByVariedad($variedad);
-                        if ($criterio == 'Q')
-                            $valor += $verde->calibreByVariedad($variedad);
+                            if ($criterio == 'C')
+                                $valor += round($verde->getTotalRamosEstandarByVariedad($variedad) / getConfiguracionEmpresa()->ramos_x_caja, 2);
+                            if ($criterio == 'T')
+                                $valor += $verde->tallos_x_variedad($variedad);
+                            if ($criterio == 'E')
+                                $valor += $verde->getTotalRamosEstandarByVariedad($variedad);
+                            if ($criterio == 'D')
+                                $valor += $verde->desechoByVariedad($variedad);
+                            if ($criterio == 'R')
+                                $valor += $verde->getRendimientoByVariedad($variedad);
+                            if ($criterio == 'Q')
+                                $valor += $verde->calibreByVariedad($variedad);
+                        }
                     }
 
+                    if ($criterio == 'K')
+                        array_push($valores, $valor);
                     if ($criterio == 'C')
                         array_push($valores, $valor);
                     if ($criterio == 'T')
@@ -547,9 +620,14 @@ class tblPostcosechaController extends Controller
                     $semana = Semana::All()->where('estado', 1)->where('codigo', substr($l, 2) . $s)->first();
 
                     if ($semana != '') {
-                        $verdes = DB::table('clasificacion_verde')
-                            ->select('id_clasificacion_verde as id')->distinct()
-                            ->where('estado', '=', 1)
+                        if ($criterio == 'K') { // tallos (cosecha)
+                            $verdes = DB::table('cosecha')
+                                ->select('id_cosecha as id')->distinct();
+                        } else {
+                            $verdes = DB::table('clasificacion_verde')
+                                ->select('id_clasificacion_verde as id')->distinct();
+                        }
+                        $verdes = $verdes->where('estado', '=', 1)
                             ->where(DB::raw('year(fecha_ingreso)'), '=', $l)
                             ->where(DB::raw('fecha_ingreso'), '<=', $semana->fecha_final);
 
@@ -568,28 +646,35 @@ class tblPostcosechaController extends Controller
                     $valor = 0;
 
                     foreach ($verdes as $obj) {
-                        $verde = getClasificacionVerde($obj->id);
+                        if ($criterio == 'K') { // tallos (cosecha)
+                            $cosecha = Cosecha::find($obj->id);
+                            $valor += $cosecha->getTotalTallos();
+                        } else {    // clasificacion verde
+                            $verde = getClasificacionVerde($obj->id);
 
-                        if ($criterio == 'C') {
-                            $valor += round($verde->getTotalRamosEstandar() / getConfiguracionEmpresa()->ramos_x_caja, 2);
-                        }
-                        if ($criterio == 'T') {
-                            $valor += $verde->total_tallos();
-                        }
-                        if ($criterio == 'E') {
-                            $valor += $verde->getTotalRamosEstandar();
-                        }
-                        if ($criterio == 'D') {
-                            $valor += $verde->desecho();
-                        }
-                        if ($criterio == 'R') {
-                            $valor += $verde->getRendimiento();
-                        }
-                        if ($criterio == 'Q') {
-                            $valor += $verde->getCalibre();
+                            if ($criterio == 'C') {
+                                $valor += round($verde->getTotalRamosEstandar() / getConfiguracionEmpresa()->ramos_x_caja, 2);
+                            }
+                            if ($criterio == 'T') {
+                                $valor += $verde->total_tallos();
+                            }
+                            if ($criterio == 'E') {
+                                $valor += $verde->getTotalRamosEstandar();
+                            }
+                            if ($criterio == 'D') {
+                                $valor += $verde->desecho();
+                            }
+                            if ($criterio == 'R') {
+                                $valor += $verde->getRendimiento();
+                            }
+                            if ($criterio == 'Q') {
+                                $valor += $verde->getCalibre();
+                            }
                         }
                     }
 
+                    if ($criterio == 'K')
+                        array_push($valores, $valor);
                     if ($criterio == 'C')
                         array_push($valores, $valor);
                     if ($criterio == 'T')
@@ -624,9 +709,14 @@ class tblPostcosechaController extends Controller
                         $semana = Semana::All()->where('estado', 1)->where('codigo', substr($l, 2) . $s)->first();
 
                         if ($semana != '') {
-                            $verdes = DB::table('clasificacion_verde')
-                                ->select('id_clasificacion_verde as id')->distinct()
-                                ->where('estado', '=', 1)
+                            if ($criterio == 'K') { // tallos (cosecha)
+                                $verdes = DB::table('cosecha')
+                                    ->select('id_cosecha as id')->distinct();
+                            } else {
+                                $verdes = DB::table('clasificacion_verde')
+                                    ->select('id_clasificacion_verde as id')->distinct();
+                            }
+                            $verdes = $verdes->where('estado', '=', 1)
                                 ->where(DB::raw('year(fecha_ingreso)'), '=', $l)
                                 ->where(DB::raw('fecha_ingreso'), '<=', $semana->fecha_final);
 
@@ -645,28 +735,35 @@ class tblPostcosechaController extends Controller
                         $valor = 0;
 
                         foreach ($verdes as $obj) {
-                            $verde = getClasificacionVerde($obj->id);
+                            if ($criterio == 'K') { // tallos (cosecha)
+                                $cosecha = Cosecha::find($obj->id);
+                                $valor += $cosecha->getTotalTallosByVariedad($var->id_variedad);
+                            } else {    // clasificacion verde
+                                $verde = getClasificacionVerde($obj->id);
 
-                            if ($criterio == 'C') {
-                                $valor += round($verde->getTotalRamosEstandarByVariedad($var->id_variedad) / getConfiguracionEmpresa()->ramos_x_caja, 2);
-                            }
-                            if ($criterio == 'T') {
-                                $valor += $verde->tallos_x_variedad($var->id_variedad);
-                            }
-                            if ($criterio == 'E') {
-                                $valor += $verde->getTotalRamosEstandarByVariedad($var->id_variedad);
-                            }
-                            if ($criterio == 'D') {
-                                $valor += $verde->desechoByVariedad($var->id_variedad);
-                            }
-                            if ($criterio == 'R') {
-                                $valor += $verde->getRendimientoByVariedad($var->id_variedad);
-                            }
-                            if ($criterio == 'Q') {
-                                $valor += $verde->calibreByVariedad($var->id_variedad);
+                                if ($criterio == 'C') {
+                                    $valor += round($verde->getTotalRamosEstandarByVariedad($var->id_variedad) / getConfiguracionEmpresa()->ramos_x_caja, 2);
+                                }
+                                if ($criterio == 'T') {
+                                    $valor += $verde->tallos_x_variedad($var->id_variedad);
+                                }
+                                if ($criterio == 'E') {
+                                    $valor += $verde->getTotalRamosEstandarByVariedad($var->id_variedad);
+                                }
+                                if ($criterio == 'D') {
+                                    $valor += $verde->desechoByVariedad($var->id_variedad);
+                                }
+                                if ($criterio == 'R') {
+                                    $valor += $verde->getRendimientoByVariedad($var->id_variedad);
+                                }
+                                if ($criterio == 'Q') {
+                                    $valor += $verde->calibreByVariedad($var->id_variedad);
+                                }
                             }
                         }
 
+                        if ($criterio == 'K')
+                            array_push($valores, $valor);
                         if ($criterio == 'C')
                             array_push($valores, $valor);
                         if ($criterio == 'T')
@@ -699,9 +796,14 @@ class tblPostcosechaController extends Controller
                     $semana = Semana::All()->where('estado', 1)->where('codigo', substr($l, 2) . $s)->first();
 
                     if ($semana != '') {
-                        $verdes = DB::table('clasificacion_verde')
-                            ->select('id_clasificacion_verde as id')->distinct()
-                            ->where('estado', '=', 1)
+                        if ($criterio == 'K') { // tallos (cosecha)
+                            $verdes = DB::table('cosecha')
+                                ->select('id_cosecha as id')->distinct();
+                        } else {
+                            $verdes = DB::table('clasificacion_verde')
+                                ->select('id_clasificacion_verde as id')->distinct();
+                        }
+                        $verdes = $verdes->where('estado', '=', 1)
                             ->where(DB::raw('year(fecha_ingreso)'), '=', $l)
                             ->where(DB::raw('fecha_ingreso'), '<=', $semana->fecha_final);
 
@@ -720,22 +822,29 @@ class tblPostcosechaController extends Controller
                     $valor = 0;
 
                     foreach ($verdes as $obj) {
-                        $verde = getClasificacionVerde($obj->id);
+                        if ($criterio == 'K') { // tallos (cosecha)
+                            $cosecha = Cosecha::find($obj->id);
+                            $valor += $cosecha->getTotalTallosByVariedad($variedad);
+                        } else {    // clasificacion verde
+                            $verde = getClasificacionVerde($obj->id);
 
-                        if ($criterio == 'C')
-                            $valor += round($verde->getTotalRamosEstandarByVariedad($variedad) / getConfiguracionEmpresa()->ramos_x_caja, 2);
-                        if ($criterio == 'T')
-                            $valor += $verde->tallos_x_variedad($variedad);
-                        if ($criterio == 'E')
-                            $valor += $verde->getTotalRamosEstandarByVariedad($variedad);
-                        if ($criterio == 'D')
-                            $valor += $verde->desechoByVariedad($variedad);
-                        if ($criterio == 'R')
-                            $valor += $verde->getRendimientoByVariedad($variedad);
-                        if ($criterio == 'Q')
-                            $valor += $verde->calibreByVariedad($variedad);
+                            if ($criterio == 'C')
+                                $valor += round($verde->getTotalRamosEstandarByVariedad($variedad) / getConfiguracionEmpresa()->ramos_x_caja, 2);
+                            if ($criterio == 'T')
+                                $valor += $verde->tallos_x_variedad($variedad);
+                            if ($criterio == 'E')
+                                $valor += $verde->getTotalRamosEstandarByVariedad($variedad);
+                            if ($criterio == 'D')
+                                $valor += $verde->desechoByVariedad($variedad);
+                            if ($criterio == 'R')
+                                $valor += $verde->getRendimientoByVariedad($variedad);
+                            if ($criterio == 'Q')
+                                $valor += $verde->calibreByVariedad($variedad);
+                        }
                     }
 
+                    if ($criterio == 'K')
+                        array_push($valores, $valor);
                     if ($criterio == 'C')
                         array_push($valores, $valor);
                     if ($criterio == 'T')
@@ -773,44 +882,55 @@ class tblPostcosechaController extends Controller
         $valores = [];
 
         if ($variedad == 'A') { // Acumulado
-
             foreach ($labels as $pos => $l) {
                 for ($d = 0; $d < difFechas($hasta, $desde)->days; $d++) {
                     if ($pos == 0) {
                         array_push($dias, opDiasFecha('+', $d, $desde));
                     }
 
-                    $verdes = DB::table('clasificacion_verde')
-                        ->select('id_clasificacion_verde as id')->distinct()
-                        ->where('estado', '=', 1)
+                    if ($criterio == 'K')    // tallos (cosecha)
+                        $verdes = DB::table('cosecha')
+                            ->select('id_cosecha as id')->distinct();
+                    else
+                        $verdes = DB::table('clasificacion_verde')
+                            ->select('id_clasificacion_verde as id')->distinct();
+
+                    $verdes = $verdes->where('estado', '=', 1)
                         ->where(DB::raw('fecha_ingreso'), '=', opDiasFecha('+', $d, $desde))
                         ->get();
 
                     $valor = 0;
 
                     foreach ($verdes as $obj) {
-                        $verde = getClasificacionVerde($obj->id);
+                        if ($criterio == 'K') {
+                            $cosecha = Cosecha::find($obj->id);
+                            $valor += $cosecha->getTotalTallos();
+                        } else {
+                            $verde = getClasificacionVerde($obj->id);
 
-                        if ($criterio == 'C') {
-                            $valor += round($verde->getTotalRamosEstandar() / getConfiguracionEmpresa()->ramos_x_caja, 2);
-                        }
-                        if ($criterio == 'T') {
-                            $valor += $verde->total_tallos();
-                        }
-                        if ($criterio == 'E') {
-                            $valor += $verde->getTotalRamosEstandar();
-                        }
-                        if ($criterio == 'D') {
-                            $valor += $verde->desecho();
-                        }
-                        if ($criterio == 'R') {
-                            $valor += $verde->getRendimiento();
-                        }
-                        if ($criterio == 'Q') {
-                            $valor += $verde->getCalibre();
+                            if ($criterio == 'C') {
+                                $valor += round($verde->getTotalRamosEstandar() / getConfiguracionEmpresa()->ramos_x_caja, 2);
+                            }
+                            if ($criterio == 'T') {
+                                $valor += $verde->total_tallos();
+                            }
+                            if ($criterio == 'E') {
+                                $valor += $verde->getTotalRamosEstandar();
+                            }
+                            if ($criterio == 'D') {
+                                $valor += $verde->desecho();
+                            }
+                            if ($criterio == 'R') {
+                                $valor += $verde->getRendimiento();
+                            }
+                            if ($criterio == 'Q') {
+                                $valor += $verde->getCalibre();
+                            }
                         }
                     }
 
+                    if ($criterio == 'K')
+                        array_push($valores, $valor);
                     if ($criterio == 'C')
                         array_push($valores, $valor);
                     if ($criterio == 'T')
@@ -839,37 +959,49 @@ class tblPostcosechaController extends Controller
                             array_push($dias, opDiasFecha('+', $d, $desde));
                         }
 
-                        $verdes = DB::table('clasificacion_verde')
-                            ->select('id_clasificacion_verde as id')->distinct()
-                            ->where('estado', '=', 1)
+                        if ($criterio == 'K')    // tallos (cosecha)
+                            $verdes = DB::table('cosecha')
+                                ->select('id_cosecha as id')->distinct();
+                        else
+                            $verdes = DB::table('clasificacion_verde')
+                                ->select('id_clasificacion_verde as id')->distinct();
+
+                        $verdes = $verdes->where('estado', '=', 1)
                             ->where(DB::raw('fecha_ingreso'), '=', opDiasFecha('+', $d, $desde))
                             ->get();
 
                         $valor = 0;
 
                         foreach ($verdes as $obj) {
-                            $verde = getClasificacionVerde($obj->id);
+                            if ($criterio == 'K') {
+                                $cosecha = Cosecha::find($obj->id);
+                                $valor += $cosecha->getTotalTallosByVariedad($var->id_variedad);
+                            } else {
+                                $verde = getClasificacionVerde($obj->id);
 
-                            if ($criterio == 'C') {
-                                $valor += round($verde->getTotalRamosEstandarByVariedad($var->id_variedad) / getConfiguracionEmpresa()->ramos_x_caja, 2);
-                            }
-                            if ($criterio == 'T') {
-                                $valor += $verde->tallos_x_variedad($var->id_variedad);
-                            }
-                            if ($criterio == 'E') {
-                                $valor += $verde->getTotalRamosEstandarByVariedad($var->id_variedad);
-                            }
-                            if ($criterio == 'D') {
-                                $valor += $verde->desechoByVariedad($var->id_variedad);
-                            }
-                            if ($criterio == 'R') {
-                                $valor += $verde->getRendimientoByVariedad($var->id_variedad);
-                            }
-                            if ($criterio == 'Q') {
-                                $valor += $verde->calibreByVariedad($var->id_variedad);
+                                if ($criterio == 'C') {
+                                    $valor += round($verde->getTotalRamosEstandarByVariedad($var->id_variedad) / getConfiguracionEmpresa()->ramos_x_caja, 2);
+                                }
+                                if ($criterio == 'T') {
+                                    $valor += $verde->tallos_x_variedad($var->id_variedad);
+                                }
+                                if ($criterio == 'E') {
+                                    $valor += $verde->getTotalRamosEstandarByVariedad($var->id_variedad);
+                                }
+                                if ($criterio == 'D') {
+                                    $valor += $verde->desechoByVariedad($var->id_variedad);
+                                }
+                                if ($criterio == 'R') {
+                                    $valor += $verde->getRendimientoByVariedad($var->id_variedad);
+                                }
+                                if ($criterio == 'Q') {
+                                    $valor += $verde->calibreByVariedad($var->id_variedad);
+                                }
                             }
                         }
 
+                        if ($criterio == 'K')
+                            array_push($valores, $valor);
                         if ($criterio == 'C')
                             array_push($valores, $valor);
                         if ($criterio == 'T')
@@ -897,31 +1029,43 @@ class tblPostcosechaController extends Controller
                         array_push($dias, opDiasFecha('+', $d, $desde));
                     }
 
-                    $verdes = DB::table('clasificacion_verde')
-                        ->select('id_clasificacion_verde as id')->distinct()
-                        ->where('estado', '=', 1)
+                    if ($criterio == 'K')    // tallos (cosecha)
+                        $verdes = DB::table('cosecha')
+                            ->select('id_cosecha as id')->distinct();
+                    else
+                        $verdes = DB::table('clasificacion_verde')
+                            ->select('id_clasificacion_verde as id')->distinct();
+
+                    $verdes = $verdes->where('estado', '=', 1)
                         ->where(DB::raw('fecha_ingreso'), '=', opDiasFecha('+', $d, $desde))
                         ->get();
 
                     $valor = 0;
 
                     foreach ($verdes as $obj) {
-                        $verde = getClasificacionVerde($obj->id);
+                        if ($criterio == 'K') {
+                            $cosecha = Cosecha::find($obj->id);
+                            $valor += $cosecha->getTotalTallosByVariedad($variedad);
+                        } else {
+                            $verde = getClasificacionVerde($obj->id);
 
-                        if ($criterio == 'C')
-                            $valor += round($verde->getTotalRamosEstandarByVariedad($variedad) / getConfiguracionEmpresa()->ramos_x_caja, 2);
-                        if ($criterio == 'T')
-                            $valor += $verde->tallos_x_variedad($variedad);
-                        if ($criterio == 'E')
-                            $valor += $verde->getTotalRamosEstandarByVariedad($variedad);
-                        if ($criterio == 'D')
-                            $valor += $verde->desechoByVariedad($variedad);
-                        if ($criterio == 'R')
-                            $valor += $verde->getRendimientoByVariedad($variedad);
-                        if ($criterio == 'Q')
-                            $valor += $verde->calibreByVariedad($variedad);
+                            if ($criterio == 'C')
+                                $valor += round($verde->getTotalRamosEstandarByVariedad($variedad) / getConfiguracionEmpresa()->ramos_x_caja, 2);
+                            if ($criterio == 'T')
+                                $valor += $verde->tallos_x_variedad($variedad);
+                            if ($criterio == 'E')
+                                $valor += $verde->getTotalRamosEstandarByVariedad($variedad);
+                            if ($criterio == 'D')
+                                $valor += $verde->desechoByVariedad($variedad);
+                            if ($criterio == 'R')
+                                $valor += $verde->getRendimientoByVariedad($variedad);
+                            if ($criterio == 'Q')
+                                $valor += $verde->calibreByVariedad($variedad);
+                        }
                     }
 
+                    if ($criterio == 'K')
+                        array_push($valores, $valor);
                     if ($criterio == 'C')
                         array_push($valores, $valor);
                     if ($criterio == 'T')
