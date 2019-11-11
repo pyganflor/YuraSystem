@@ -28,15 +28,23 @@
             @foreach($list_tallos as $item)
                 @php
                     $mano_obra = ($item->cant / $rend_cosecha) / (7 * $hr_diarias_cosecha);
-                    if($mano_obra > ($pers_cosecha + 5)){   // faltan más de 5 trabajadores
-                        $fondo = 'red';
-                        $texto = 'white';
-                    } else if($mano_obra <= $pers_cosecha){  // hay suficientes trabajadores
-                        $fondo = '#00ff00';
-                        $texto = 'black';
-                    } else {    // faltan hasta 5 trabajadores
-                        $fondo = 'orange';
-                        $texto = 'white';
+
+                    if($mano_obra <= $pers_cosecha){  // hay suficientes trabajadores
+                        if($mano_obra < ($pers_cosecha - 5)){   // sobran más de 5 trabajadores
+                            $fondo = '#00ffc4';
+                            $texto = 'black';
+                        } else {
+                            $fondo = '#00ff00';
+                            $texto = 'black';
+                        }
+                    } else {   // faltan trabajadores
+                        if($mano_obra > ($pers_cosecha + 5)){   // faltan más de 5 trabajadores
+                            $fondo = 'red';
+                            $texto = 'white';
+                        } else {    // faltan hasta 5 trabajadores
+                            $fondo = 'orange';
+                            $texto = 'white';
+                        }
                     }
                 @endphp
                 <td class="text-center celda_hovered" id="celda_cosecha_7_{{$item->semana}}"
@@ -53,15 +61,23 @@
             @foreach($list_tallos as $item)
                 @php
                     $mano_obra = ($item->cant / $rend_cosecha) / (6 * $hr_diarias_cosecha);
-                    if($mano_obra > ($pers_cosecha + 5)){   // faltan más de 5 trabajadores
-                        $fondo = 'red';
-                        $texto = 'white';
-                    } else if($mano_obra <= $pers_cosecha){  // hay suficientes trabajadores
-                        $fondo = '#00ff00';
-                        $texto = 'black';
-                    } else {    // faltan hasta 5 trabajadores
-                        $fondo = 'orange';
-                        $texto = 'white';
+
+                    if($mano_obra <= $pers_cosecha){  // hay suficientes trabajadores
+                        if($mano_obra < ($pers_cosecha - 5)){   // sobran más de 5 trabajadores
+                            $fondo = '#00ffc4';
+                            $texto = 'black';
+                        } else {
+                            $fondo = '#00ff00';
+                            $texto = 'black';
+                        }
+                    } else {   // faltan trabajadores
+                        if($mano_obra > ($pers_cosecha + 5)){   // faltan más de 5 trabajadores
+                            $fondo = 'red';
+                            $texto = 'white';
+                        } else {    // faltan hasta 5 trabajadores
+                            $fondo = 'orange';
+                            $texto = 'white';
+                        }
                     }
                 @endphp
                 <td class="text-center celda_hovered" id="celda_cosecha_6_{{$item->semana}}"
@@ -83,15 +99,23 @@
             @foreach($list_tallos as $item)
                 @php
                     $mano_obra = ($item->cant / $rend_cosecha) / (5 * $hr_diarias_cosecha);
-                    if($mano_obra > ($pers_cosecha + 5)){   // faltan más de 5 trabajadores
-                        $fondo = 'red';
-                        $texto = 'white';
-                    } else if($mano_obra <= $pers_cosecha){  // hay suficientes trabajadores
-                        $fondo = '#00ff00';
-                        $texto = 'black';
-                    } else {    // faltan hasta 5 trabajadores
-                        $fondo = 'orange';
-                        $texto = 'white';
+
+                    if($mano_obra <= $pers_cosecha){  // hay suficientes trabajadores
+                        if($mano_obra < ($pers_cosecha - 5)){   // sobran más de 5 trabajadores
+                            $fondo = '#00ffc4';
+                            $texto = 'black';
+                        } else {
+                            $fondo = '#00ff00';
+                            $texto = 'black';
+                        }
+                    } else {   // faltan trabajadores
+                        if($mano_obra > ($pers_cosecha + 5)){   // faltan más de 5 trabajadores
+                            $fondo = 'red';
+                            $texto = 'white';
+                        } else {    // faltan hasta 5 trabajadores
+                            $fondo = 'orange';
+                            $texto = 'white';
+                        }
                     }
                 @endphp
                 <td class="text-center celda_hovered" id="celda_cosecha_5_{{$item->semana}}"
@@ -112,7 +136,7 @@
                 </th>
             @endforeach
         </tr>
-        <tr style="background-color: #93e6ff">
+        <tr style="background-color: white">
             <th class="text-center" style="border-color: #9d9d9d" colspan="2">
                 <b style="padding: 5px">Horas Totales</b>
             </th>
@@ -134,6 +158,7 @@
         </a>
     </legend>
     <ul style="margin-top: 5px" class="list-unstyled panel-collapse collapse" id="collapseLeyenda">
+        <li><strong>Sobran más de 5</strong> trabajadores <i class="fa fa-fw fa-circle" style="color: #00ffc4"></i></li>
         <li><strong>Suficientes</strong> trabajadores <i class="fa fa-fw fa-circle" style="color: #00ff00"></i></li>
         <li>Se necesitan <strong>hasta 5</strong> trabajadores más <i class="fa fa-fw fa-circle" style="color: orange"></i></li>
         <li>Se necesitan <strong>más de 5</strong> trabajadores <i class="fa fa-fw fa-circle" style="color: red"></i></li>
