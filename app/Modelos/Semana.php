@@ -65,22 +65,22 @@ class Semana extends Model
         $cajasProyectadas = $this->getCajasProyectadas($idVariedad);
         $cajasVendidas = $this->getTotalesProyeccionVentaSemanal(null,$idVariedad)->total_cajas_equivalentes;
         $desecho = $cajasProyectadas*($this->desecho($idVariedad)/100);
-        //dump($this->codigo.": ".$cajasVendidas);
-        return $cajasProyectadas-$cajasVendidas-$desecho;
+        if($cajasProyectadas ==0 ){
+            $cajasProyectadas =0;
+            $cajasVendidas=0;
+        }
+            return $cajasProyectadas-$cajasVendidas-$desecho;
     }
 
     public function getSaldoFinal($idVariedad){
         $cajasProyectadas = $this->getCajasProyectadas($idVariedad);
         $cajasVendidas = $this->getTotalesProyeccionVentaSemanal(null,$idVariedad)->total_cajas_equivalentes;
         $desecho = $cajasProyectadas*($this->desecho($idVariedad)/100);
-        $saldoInicialSemanaAnterior = getObjSemana($this->codigo)->getSaldoInicial($idVariedad);
-        dump($this->codigo.": ".$cajasProyectadas.",".$cajasVendidas.", ". $saldoInicialSemanaAnterior);
         if($cajasProyectadas ==0 ){
-            $saldoInicialSemanaAnterior =0;
             $cajasProyectadas =0;
             $cajasVendidas=0;
         }
-        return $saldoInicialSemanaAnterior+$cajasProyectadas-$cajasVendidas-$desecho;
+        return  $cajasProyectadas-$cajasVendidas-$desecho;
     }
 
     public function getCajasProyectadas($idVariedad){
@@ -90,11 +90,11 @@ class Semana extends Model
             ['codigo_semana',$this->codigo-1]
         ])->first();
 
-        $cajasCosechadas =  isset($objResumenSemanaCosecha->cajas)
+        $cajasProyectadas =  isset($objResumenSemanaCosecha->cajas)
                                 ? ($objResumenSemanaCosecha->cajas == 0 ? $objResumenSemanaCosecha->cajas_proyectadas
                                 : $objResumenSemanaCosecha->cajas) : 0;
 
-        return $cajasCosechadas;
+        return $cajasProyectadas;
 
     }
 
