@@ -54,32 +54,26 @@ class Semana extends Model
         if($idsCliente)
             $proyeccion->whereNotIn('id_cliente',$idsCliente);
 
-        $proyeccion->select(
+        return $proyeccion->select(
                 DB::raw('sum(valor) as total_valor'),
                 DB::raw('sum(cajas_fisicas) as total_cajas_fisicas'),
                 DB::raw('sum(cajas_equivalentes) as total_cajas_equivalentes')
-            )->groupBy('codigo_semana');
-
-        return $proyeccion->first();
-
+            )->groupBy('codigo_semana')->first();
     }
 
-    public function getSaldoInicial($idVariedad,$semana)
-    {
+    public function getSaldoInicial($idVariedad){
         $cajasProyectadas = $this->getCajasProyectadas($idVariedad);
         $cajasVendidas = $this->getTotalesProyeccionVentaSemanal(null,$idVariedad)->total_cajas_equivalentes;
         $desecho = $cajasProyectadas*($this->desecho($idVariedad)/100);
         return $cajasProyectadas-$cajasVendidas-$desecho;
     }
 
-    public function getSaldoFinal($idVariedad,$semana){
+    public function getSaldoFinal($idVariedad){
         $cajasProyectadas = $this->getCajasProyectadas($idVariedad);
         $cajasVendidas = $this->getTotalesProyeccionVentaSemanal(null,$idVariedad)->total_cajas_equivalentes;
         $desecho = $cajasProyectadas*($this->desecho($idVariedad)/100);
-
-        $saldoInicialSemanaAnterior = getObjSemana($this->codigo-1)->getSaldoInicial($idVariedad,$semana);
+        $saldoInicialSemanaAnterior = getObjSemana($this->codigo-1)->getSaldoInicial($idVariedad);
         return $cajasProyectadas+$saldoInicialSemanaAnterior-$cajasVendidas-$desecho;
-
     }
 
     public function getCajasProyectadas($idVariedad){
