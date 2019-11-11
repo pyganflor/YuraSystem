@@ -150,7 +150,6 @@
     </table>
 </div>
 
-
 <div class="text-right" style="margin-top: 10px">
     <legend style="font-size: 1em; margin-bottom: 0">
         <a data-toggle="collapse" data-parent="#accordion" href="#collapseLeyenda">
