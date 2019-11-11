@@ -65,6 +65,7 @@ class Semana extends Model
         $cajasProyectadas = $this->getCajasProyectadas($idVariedad);
         $cajasVendidas = $this->getTotalesProyeccionVentaSemanal(null,$idVariedad)->total_cajas_equivalentes;
         $desecho = $cajasProyectadas*($this->desecho($idVariedad)/100);
+        //dump($this->codigo.": ".$cajasVendidas);
         return $cajasProyectadas-$cajasVendidas-$desecho;
     }
 
@@ -72,27 +73,32 @@ class Semana extends Model
         $cajasProyectadas = $this->getCajasProyectadas($idVariedad);
         $cajasVendidas = $this->getTotalesProyeccionVentaSemanal(null,$idVariedad)->total_cajas_equivalentes;
         $desecho = $cajasProyectadas*($this->desecho($idVariedad)/100);
-        $saldoInicialSemanaAnterior = getObjSemana($this->codigo-1)->getSaldoInicial($idVariedad);
-        return $cajasProyectadas+$saldoInicialSemanaAnterior-$cajasVendidas-$desecho;
+        $saldoInicialSemanaAnterior = getObjSemana($this->codigo)->getSaldoInicial($idVariedad);
+        dump($this->codigo.": ".$cajasProyectadas.",".$cajasVendidas.", ". $saldoInicialSemanaAnterior);
+        return $saldoInicialSemanaAnterior+$cajasProyectadas-$cajasVendidas-$desecho;
     }
 
     public function getCajasProyectadas($idVariedad){
+
+
 
         $objResumenSemanaCosecha = ResumenSemanaCosecha::where([
             ['id_variedad',$idVariedad],
             ['codigo_semana',$this->codigo-1]
         ])->first();
 
-        $cajasCosechadas = $objResumenSemanaCosecha->cajas == 0 ? $objResumenSemanaCosecha->cajas_proyectadas : $objResumenSemanaCosecha->cajas;
+        $cajasCosechadas =  isset($objResumenSemanaCosecha->cajas) ? ($objResumenSemanaCosecha->cajas == 0 ? $objResumenSemanaCosecha->cajas_proyectadas : $objResumenSemanaCosecha->cajas) : 0;
 
         return $cajasCosechadas;
 
     }
 
     public function desecho($idVariedad){
-        return ResumenSemanaCosecha::where([
+        $objResumenSemanaCosecha =  ResumenSemanaCosecha::where([
             ['codigo_semana',$this->codigo],
             ['id_variedad',$idVariedad]
-        ])->first()->desecho;
+        ])->first();
+
+        return isset($objResumenSemanaCosecha) ? $objResumenSemanaCosecha->desecho : 0;
     }
 }
