@@ -2358,9 +2358,9 @@ function getLastSemanaByVariedad($variedad)
         ->last();
 }
 
-function getObjSemana($idSemana)
+function getObjSemana($codigo)
 {
-    return Semana::where('codigo', $idSemana)->first();
+    return Semana::where('codigo', $codigo)->first();
 }
 
 function getRendimientoCosechaByRangoVariedad($desde, $hasta, $variedad)

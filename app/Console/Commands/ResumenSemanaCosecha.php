@@ -141,6 +141,6 @@ class ResumenSemanaCosecha extends Command
         }
 
         $fin = microtime(true);
-        Info("El script se completo en : ".(number_format(($fin-$inicio),2,".","")). " segundos");
+        Info("El comando resumen semana cosecha se completo en : ".(number_format(($fin-$inicio),2,".","")). " segundos");
     }
 }

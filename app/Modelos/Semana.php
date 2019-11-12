@@ -45,7 +45,7 @@ class Semana extends Model
 
         if(!$existeSemana)
             $this->codigo = $primeraSemana->codigo;
-
+        
         $proyeccion = ProyeccionVentaSemanalReal::where([
             ['id_variedad',$idVariedad],
             ['codigo_semana',$this->codigo]
@@ -61,27 +61,28 @@ class Semana extends Model
             )->groupBy('codigo_semana')->first();
     }
 
-    public function getSaldoInicial($idVariedad){
+    public function getSaldo($idVariedad){
         $cajasProyectadas = $this->getCajasProyectadas($idVariedad);
-        $cajasVendidas = $this->getTotalesProyeccionVentaSemanal(null,$idVariedad)->total_cajas_equivalentes;
+        $cajasVendidas = $cajasProyectadas > 0 ? $this->getTotalesProyeccionVentaSemanal(null,$idVariedad)->total_cajas_equivalentes : 0;
         $desecho = $cajasProyectadas*($this->desecho($idVariedad)/100);
-        if($cajasProyectadas ==0 ){
-            $cajasProyectadas =0;
-            $cajasVendidas=0;
-        }
-            return $cajasProyectadas-$cajasVendidas-$desecho;
+
+        return  $cajasProyectadas-$cajasVendidas-$desecho;
+    }
+
+    /*public function getSaldoInicial($idVariedad){
+        $cajasProyectadas = $this->getCajasProyectadas($idVariedad);
+        $cajasVendidas = $cajasProyectadas > 0 ? $this->getTotalesProyeccionVentaSemanal(null,$idVariedad)->total_cajas_equivalentes : 0;
+        $desecho = $cajasProyectadas*($this->desecho($idVariedad)/100);
+        return $cajasProyectadas-$cajasVendidas-$desecho;
     }
 
     public function getSaldoFinal($idVariedad){
         $cajasProyectadas = $this->getCajasProyectadas($idVariedad);
-        $cajasVendidas = $this->getTotalesProyeccionVentaSemanal(null,$idVariedad)->total_cajas_equivalentes;
+        $cajasVendidas = $cajasProyectadas > 0 ? $this->getTotalesProyeccionVentaSemanal(null,$idVariedad)->total_cajas_equivalentes : 0;
         $desecho = $cajasProyectadas*($this->desecho($idVariedad)/100);
-        if($cajasProyectadas ==0 ){
-            $cajasProyectadas =0;
-            $cajasVendidas=0;
-        }
+
         return  $cajasProyectadas-$cajasVendidas-$desecho;
-    }
+    }*/
 
     public function getCajasProyectadas($idVariedad){
 
@@ -95,6 +96,15 @@ class Semana extends Model
                                 : $objResumenSemanaCosecha->cajas) : 0;
 
         return $cajasProyectadas;
+
+    }
+
+    function getCajasProyectadasSearch($idVariedad,$semana){
+        $objResumenSemanaCosecha = ResumenSemanaCosecha::where([
+            ['id_variedad',$idVariedad],
+            ['codigo_semana',$semana]
+        ])->first();
+        
 
     }
 
