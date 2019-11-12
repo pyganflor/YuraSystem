@@ -245,7 +245,8 @@ class ClasificacionVerdeController extends Controller
 
                         /* ======================== ACTUALIZAR LA TABLA RESUMEN_COSECHA_SEMANA FINAL ====================== */
                         $semana_fin = getLastSemanaByVariedad($request->id_variedad);
-                        ResumenSemanaCosecha::dispatch($verde->semana->codigo, $semana_fin->codigo, $request->id_variedad);
+                        ResumenSemanaCosecha::dispatch($verde->semana->codigo, $semana_fin->codigo, $request->id_variedad)
+                            ->onQueue('resumen_cosecha_semanal');
                     } else {
                         $success = false;
                         $msg = '<div class="alert alert-warning text-center">' .
@@ -358,7 +359,8 @@ class ClasificacionVerdeController extends Controller
 
                 /* ======================== ACTUALIZAR LA TABLA RESUMEN_COSECHA_SEMANA FINAL ====================== */
                 $semana_fin = getLastSemanaByVariedad($request->id_variedad);
-                ResumenSemanaCosecha::dispatch($verde->semana->codigo, $semana_fin->codigo, $request->id_variedad);
+                ResumenSemanaCosecha::dispatch($verde->semana->codigo, $semana_fin->codigo, $request->id_variedad)
+                    ->onQueue('resumen_cosecha_semanal');
             } else {
                 $success = false;
                 $msg = '<div class="alert alert-warning text-center">' .
@@ -1097,7 +1099,8 @@ class ClasificacionVerdeController extends Controller
 
                 /* ======================== ACTUALIZAR LA TABLA RESUMEN_COSECHA_SEMANA FINAL ====================== */
                 $semana_fin = getLastSemanaByVariedad(getVariedades()[0]->id_variedad);
-                ResumenSemanaCosecha::dispatch($verde->semana->codigo, $semana_fin->codigo, 0);
+                ResumenSemanaCosecha::dispatch($verde->semana->codigo, $semana_fin->codigo, 0)
+                    ->onQueue('resumen_cosecha_semanal');
 
                 return [
                     'success' => true,

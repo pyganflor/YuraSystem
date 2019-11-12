@@ -102,6 +102,9 @@ Route::group(['middleware' => 'autenticacion'], function () {
             include 'proyecciones/cosecha.php';
             include 'proyecciones/ventas_x_cliente.php';
             include 'proyecciones/mano_obra.php';
+
+            /* ================== DB =================== */
+            Route::get('db_jobs', 'dbController@jobs');
         });
 
         include 'colores/rutas.php';

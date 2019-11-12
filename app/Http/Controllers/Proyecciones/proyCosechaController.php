@@ -1244,7 +1244,8 @@ class proyCosechaController extends Controller
     {
         $semana = Semana::find($request->semana);
         foreach ($request->modulos as $mod)
-            ProyeccionUpdateSemanal::dispatch($semana->codigo, $semana->codigo, $request->variedad, $mod, 0);
+            ProyeccionUpdateSemanal::dispatch($semana->codigo, $semana->codigo, $request->variedad, $mod, 0)
+                ->onQueue('resumen_cosecha_semanal');
         return [
             'success' => true,
             'semana' => $request->semana
