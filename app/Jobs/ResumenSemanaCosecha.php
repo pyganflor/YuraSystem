@@ -36,7 +36,7 @@ class ResumenSemanaCosecha implements ShouldQueue
      */
     public function handle()
     {
-        Artisan::call('proyeccion:venta_semanal_real', [
+        Artisan::call('resumen:semana_cosecha', [
             'semana_desde' => $this->semana_desde,
             'semana_hasta' => $this->semana_hasta,
             'variedad' => $this->variedad,
