@@ -165,11 +165,13 @@ class RecepcionController extends Controller
 
 
                                     /* ============= ACTUALIZAR LA PROYECCION ================= */
-                                    ProyeccionUpdateSemanal::dispatch($semana->codigo, $semana->codigo, $model->id_variedad, $model->id_modulo, 0);
+                                    ProyeccionUpdateSemanal::dispatch($semana->codigo, $semana->codigo, $model->id_variedad, $model->id_modulo, 0)
+                                        ->onQueue('resumen_cosecha_semanal');
 
                                     /* ======================== ACTUALIZAR LA TABLA RESUMEN_COSECHA_SEMANA FINAL ====================== */
                                     $semana_fin = getLastSemanaByVariedad($model->id_variedad);
-                                    ResumenSemanaCosecha::dispatch($semana->codigo, $semana_fin->codigo, $model->id_variedad);
+                                    ResumenSemanaCosecha::dispatch($semana->codigo, $semana_fin->codigo, $model->id_variedad)
+                                        ->onQueue('resumen_cosecha_semanal');
                                 } else {
                                     $success = false;
                                     $msg .= '<div class="alert alert-warning text-center">' .
@@ -262,11 +264,13 @@ class RecepcionController extends Controller
                     . '</div>';
 
                 /* ============= ACTUALIZAR LA PROYECCION ================= */
-                ProyeccionUpdateSemanal::dispatch($model->recepcion->semana->codigo, $model->recepcion->semana->codigo, $model->id_variedad, $model->id_modulo, 0);
+                ProyeccionUpdateSemanal::dispatch($model->recepcion->semana->codigo, $model->recepcion->semana->codigo, $model->id_variedad, $model->id_modulo, 0)
+                    ->onQueue('resumen_cosecha_semanal');
 
                 /* ======================== ACTUALIZAR LA TABLA RESUMEN_COSECHA_SEMANA FINAL ====================== */
                 $semana_fin = getLastSemanaByVariedad($model->id_variedad);
-                ResumenSemanaCosecha::dispatch($model->recepcion->semana->codigo, $semana_fin->codigo, $model->id_variedad);
+                ResumenSemanaCosecha::dispatch($model->recepcion->semana->codigo, $semana_fin->codigo, $model->id_variedad)
+                    ->onQueue('resumen_cosecha_semanal');
             } else {
                 $success = false;
                 $msg .= '<div class="alert alert-warning text-center">' .
@@ -345,11 +349,13 @@ class RecepcionController extends Controller
                 }
 
                 /* ============= ACTUALIZAR LA PROYECCION ================= */
-                ProyeccionUpdateSemanal::dispatch($model->recepcion->semana->codigo, $model->recepcion->semana->codigo, $model->id_variedad, $model->id_modulo, 0);
+                ProyeccionUpdateSemanal::dispatch($model->recepcion->semana->codigo, $model->recepcion->semana->codigo, $model->id_variedad, $model->id_modulo, 0)
+                    ->onQueue('resumen_cosecha_semanal');
 
                 /* ======================== ACTUALIZAR LA TABLA RESUMEN_COSECHA_SEMANA FINAL ====================== */
                 $semana_fin = getLastSemanaByVariedad($model->id_variedad);
-                ResumenSemanaCosecha::dispatch($model->recepcion->semana->codigo, $semana_fin->codigo, $model->id_variedad);
+                ResumenSemanaCosecha::dispatch($model->recepcion->semana->codigo, $semana_fin->codigo, $model->id_variedad)
+                    ->onQueue('resumen_cosecha_semanal');
             } else {
                 $success = false;
                 $msg .= '<div class="alert alert-warning text-center">' .
@@ -401,11 +407,13 @@ class RecepcionController extends Controller
 
                 $semana_ini = $model->recepcion->semana->codigo;
                 /* ============= ACTUALIZAR LA PROYECCION ================= */
-                ProyeccionUpdateSemanal::dispatch($semana_ini, $semana_ini, $model->id_variedad, $model->id_modulo, 0);
+                ProyeccionUpdateSemanal::dispatch($semana_ini, $semana_ini, $model->id_variedad, $model->id_modulo, 0)
+                    ->onQueue('resumen_cosecha_semanal');
 
                 /* ======================== ACTUALIZAR LA TABLA RESUMEN_COSECHA_SEMANA FINAL ====================== */
                 $semana_fin = getLastSemanaByVariedad($model->id_variedad);
-                ResumenSemanaCosecha::dispatch($semana_ini, $semana_fin->codigo, $model->id_variedad);
+                ResumenSemanaCosecha::dispatch($semana_ini, $semana_fin->codigo, $model->id_variedad)
+                    ->onQueue('resumen_cosecha_semanal');
             } else {
                 $success = false;
                 $msg .= '<div class="alert alert-warning text-center">' .
