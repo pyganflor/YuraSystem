@@ -13,6 +13,12 @@ class dbController extends Controller
         return view('adminlte.gestion.db.jobs', [
             'url' => $request->getRequestUri(),
             'submenu' => Submenu::Where('url', '=', substr($request->getRequestUri(), 1))->get()[0],
+        ]);
+    }
+
+    public function actualizar_jobs(Request $request)
+    {
+        return view('adminlte.gestion.db.partials._jobs', [
             'tabla' => DB::table('jobs')->get()
         ]);
     }
