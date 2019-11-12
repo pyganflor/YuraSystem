@@ -17,14 +17,25 @@
             <td class="text-center" style="background-color: #e9ecef;width:250px;border: 2px solid #000000;">
                Saldo inicial
             </td>
+            @php $x=0 @endphp
             @foreach($semanas as $semana => $item)
-                @php $saldoInicial= getObjSemana($semana-1)->getSaldoInicial($idVariedad); @endphp
+                @php
+                    if($x ==0)
+                        $saldoInicial = getObjSemana($semana)->getSaldo($idVariedad);
+
+                    $saldoFinal = getObjSemana($semana-1)->getSaldo($idVariedad)+$saldoInicial;
+                    if($x>0)
+                        $saldoInicial =$saldoFinal;
+
+                   // $saldoInicial= getObjSemana($semana-1)->getSaldo($idVariedad);
+                @endphp
                 <td class="text-center" style="border:1px solid #9d9d9d; background-color: #e9ecef; width:350px;border-bottom: 2px solid #000000;border-right: 2px solid #000000;" colspan="3">
                     <b class="{{$saldoInicial < 0 ? "text-red" : "text-success"}}">
                         {{number_format($saldoInicial,2,".",",")}}
                         <i class="fa {{$saldoInicial < 0 ? "fa-arrow-down" : "fa-arrow-up"}}" aria-hidden="true"></i>
                     </b>
                 </td>
+                @php $x++ @endphp
             @endforeach
             <td class="text-center" style="background-color: #e9ecef;width:250px;border: 2px solid #000000;">
                 Saldo inicial
@@ -194,8 +205,17 @@
                     </tr>
                     <tr style="background-color: #e9ecef">
                         <td class="text-center" style="border:2px solid #000000;width: 250px"><b>Saldo final</b></td>
+                        @php $x =0 @endphp
                         @foreach($semanas as $semana => $item)
-                            @php $saldoFinal = getObjSemana($semana)->getSaldoFinal($idVariedad); @endphp
+                            @php
+                                if($x ==0)
+                                    $saldoInicial = getObjSemana($semana-1)->getSaldo($idVariedad);
+
+                                $saldoFinal = getObjSemana($semana)->getSaldo($idVariedad)+$saldoInicial;
+                                if($x>0)
+                                    $saldoInicial =$saldoFinal;
+
+                            @endphp
                             <td style="border: 1px solid #9d9d9d;border: 2px solid #000000;" colspan="3">
                                 <div style="width:100%;text-align:center;" data-toggle="tooltip" data-placement="top" title="Cajas físicas proyectadas">
                                     <b class="{{$saldoFinal < 0 ? "text-red" : "text-success"}}">
@@ -204,6 +224,7 @@
                                     </b>
                                 </div>
                             </td>
+                            @php $x++ @endphp
                         @endforeach
                         <td class="text-center" style="border:2px solid #000000;width: 250px"><b>Saldo final</b></td>
                     </tr>
