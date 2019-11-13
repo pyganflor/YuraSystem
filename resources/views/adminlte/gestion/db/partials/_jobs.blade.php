@@ -23,6 +23,9 @@
             <th class="text-center" style="border-color: #9d9d9d">
                 created_at
             </th>
+            <th class="text-center" style="border-color: #9d9d9d">
+
+            </th>
         </tr>
         </thead>
         <tbody>
@@ -49,6 +52,11 @@
                 <th class="text-center" style="border-color: #9d9d9d">
                     {{$item->created_at}}
                 </th>
+                <th class="text-center" style="border-color: #9d9d9d">
+                    <button type="button" class="btn btn-xs btn-danger" title="Eliminar" onclick="delete_job('{{$item->id}}')">
+                        <i class="fa fa-fw fa-trash"></i>
+                    </button>
+                </th>
             </tr>
         @endforeach
         </tbody>
@@ -57,4 +65,16 @@
 
 <script>
     estructura_tabla('db_tbl_jobs', false, false);
+
+    function delete_job(id) {
+        datos = {
+            _token: '{{csrf_token()}}',
+            id: id
+        };
+        post_jquery('{{url('db_jobs/delete_job')}}', datos, function (retorno) {
+            $.get('{{url('db_jobs/actualizar')}}', {}, function (retorno) {
+                $('#div_listado').html(retorno);
+            });
+        });
+    }
 </script>
