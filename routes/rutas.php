@@ -106,6 +106,7 @@ Route::group(['middleware' => 'autenticacion'], function () {
             /* ================== DB =================== */
             Route::get('db_jobs', 'dbController@jobs');
             Route::get('db_jobs/actualizar', 'dbController@actualizar_jobs');
+            Route::post('db_jobs/delete_job', 'dbController@delete_job');
         });
 
         include 'colores/rutas.php';
