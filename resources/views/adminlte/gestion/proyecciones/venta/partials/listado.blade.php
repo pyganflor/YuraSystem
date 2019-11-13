@@ -29,8 +29,7 @@
                             $saldoInicial = $objSemanaActual->getLastSaldoInicial($idVariedad,$semana);
                         }
                     }
-
-                    $saldoFinal = $objSemanaPasada->getSaldo($idVariedad)+$saldoInicial;
+                    $saldoFinal = isset($objSemanaPasada) ? $objSemanaPasada->getSaldo($idVariedad)+$saldoInicial : $saldoInicial;
                     if($x>0)
                         $saldoInicial = $saldoFinal;
                 @endphp
@@ -215,6 +214,8 @@
                             @php
                                 $objSemanaActual =getObjSemana($semana);
                                 $objSemanaPasada =getObjSemana($semana-1);
+                                $cajasProyectadas =isset($objSemanaPasada) ? $objSemanaPasada->getCajasProyectadas($idVariedad) : 0;
+                                $cajasVendidas =  $objSemanaActual->getTotalesProyeccionVentaSemanal(null,$idVariedad)->total_cajas_equivalentes;
                                 if($x==0){
                                     if((int)$objSemanaActual->firstSemanaResumenSemanaCosechaByVariedad($idVariedad) >= $semana){
                                         $saldoFinal = $objSemanaActual->getSaldo($idVariedad);
@@ -222,11 +223,16 @@
                                         $saldoFinal = $objSemanaActual->getLastSaldoFinal($idVariedad,$semana);
                                     }
                                 }
-                                //dump($saldoFinal);
+
                                 $saldoInicial = $objSemanaActual->getSaldo($idVariedad)+$saldoFinal;
 
                                 if($x>0){
                                     $saldoFinal=$saldoInicial;
+                                    if($cajasProyectadas == 0 ){
+                                        dump($cajasVendidas);
+                                       // $saldoFinal= $saldoFinal-$cajasVendidas;
+                                    }
+                                    //dump($cajasProyectadas);
                                 }
 
 
