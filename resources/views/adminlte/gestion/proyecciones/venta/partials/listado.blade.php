@@ -23,10 +23,12 @@
                     $objSemanaActual =getObjSemana($semana);
                     $objSemanaPasada =getObjSemana($semana-1);
                     if($x ==0){
-                        if((int)$objSemanaActual->firstSemanaResumenSemanaCosechaByVariedad($idVariedad) >= $semana){
+                        if((int)$objSemanaActual->firstSemanaResumenSemanaCosechaByVariedad($idVariedad) > $semana){
                             $saldoInicial = $objSemanaActual->getSaldo($idVariedad);
-                        }else{
+                        }elseif((int)$objSemanaActual->firstSemanaResumenSemanaCosechaByVariedad($idVariedad) < $semana){
                             $saldoInicial = $objSemanaActual->getLastSaldoInicial($idVariedad,$semana);
+                        }else{
+                            $saldoInicial = $objSemanaActual->firstSaldoInicialByVariedad($idVariedad);
                         }
                     }
                     $saldoFinal = isset($objSemanaPasada) ? $objSemanaPasada->getSaldo($idVariedad)+$saldoInicial : $saldoInicial;
