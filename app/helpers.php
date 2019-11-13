@@ -2363,6 +2363,52 @@ function getObjSemana($codigo)
     return Semana::where('codigo', $codigo)->first();
 }
 
+function getRendimientoVerdeByRangoVariedad($desde, $hasta, $variedad)
+{
+    $query = DB::table('clasificacion_verde as v')
+        ->select('v.fecha_ingreso as dia')->distinct()
+        ->where('v.fecha_ingreso', '>=', $desde)
+        ->where('v.fecha_ingreso', '<=', $hasta)
+        ->get();
+
+    $rend = 0;
+    $cant_verde = 0;
+    foreach ($query as $fecha) {
+        $verde = ClasificacionVerde::All()->where('fecha_ingreso', '=', $fecha->dia)->first();
+        if ($verde != '') {
+            if ($variedad == 'T') { // Todas las variedades
+                $rend += $verde->getRendimiento();
+            } else {    // por variedad
+                $rend += $verde->getRendimientoByVariedad($variedad);
+            }
+            $cant_verde++;
+        }
+    }
+
+    return $cant_verde > 0 ? round($rend / $cant_verde, 2) : 0;
+}
+
+function getPersonalVerdeByRango($desde, $hasta)
+{
+    $query = DB::table('clasificacion_verde as v')
+        ->select('v.fecha_ingreso as dia')->distinct()
+        ->where('v.fecha_ingreso', '>=', $desde)
+        ->where('v.fecha_ingreso', '<=', $hasta)
+        ->get();
+
+    $personal = 0;
+    $cant_verde = 0;
+    foreach ($query as $fecha) {
+        $verde = ClasificacionVerde::All()->where('fecha_ingreso', '=', $fecha->dia)->first();
+        if ($verde != '') {
+            $personal += $verde->personal;
+            $cant_verde++;
+        }
+    }
+
+    return $cant_verde > 0 ? round($personal / $cant_verde, 2) : 0;
+}
+
 function getRendimientoCosechaByRangoVariedad($desde, $hasta, $variedad)
 {
     $query = DB::table('cosecha as c')

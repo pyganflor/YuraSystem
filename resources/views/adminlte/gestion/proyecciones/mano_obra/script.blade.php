@@ -3,6 +3,7 @@
 
     function listar_proyecciones() {
         datos = {
+            area: $('#area_trabajo').val(),
             desde: $('#filtro_desde').val(),
             hasta: $('#filtro_hasta').val(),
         };
