@@ -151,6 +151,10 @@ class Semana extends Model
                     $z++;
                 }
             }
+<<<<<<< HEAD
+=======
+            
+>>>>>>> 0cdd1c9d78edde2f9e067364e1aedd127a3383ef
             return $saldoInicial;
         }else{
             return 0;
