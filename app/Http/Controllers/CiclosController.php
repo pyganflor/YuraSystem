@@ -187,7 +187,8 @@ class CiclosController extends Controller
                     ->where('id_variedad', '=', $request->variedad)
                     ->get()[0]->max;
 
-                ProyeccionUpdateSemanal::dispatch($semana->codigo, $semana_fin, $request->variedad, $request->modulo, 0);
+                ProyeccionUpdateSemanal::dispatch($semana->codigo, $semana_fin, $request->variedad, $request->modulo, 0)
+                    ->onQueue('proy_cosecha');
             } else {
                 $success = false;
                 $msg = '<div class="alert alert-warning text-center">' .
@@ -377,7 +378,8 @@ class CiclosController extends Controller
                 bitacora('ciclo', $ciclo->id_ciclo, 'U', 'Actualziacion satisfactoria de un ciclo');
 
                 /* ======================== ACTUALIZAR LA TABLA PROYECCION_MODULO_SEMANA ====================== */
-                ProyeccionUpdateSemanal::dispatch($semana_ini, $semana_fin->codigo, $request->variedad, $ciclo->id_modulo, 0);
+                ProyeccionUpdateSemanal::dispatch($semana_ini, $semana_fin->codigo, $request->variedad, $ciclo->id_modulo, 0)
+                    ->onQueue('proy_cosecha');
             } else {
                 $success = false;
                 $msg = '<div class="alert alert-warning text-center">' .
@@ -438,7 +440,8 @@ class CiclosController extends Controller
                         ->where('id_variedad', '=', $ciclo->id_variedad)
                         ->get()[0]->max;
 
-                    ProyeccionUpdateSemanal::dispatch($semana_ini, $semana_fin, $ciclo->id_variedad, $ciclo->id_modulo, 0);
+                    ProyeccionUpdateSemanal::dispatch($semana_ini, $semana_fin, $ciclo->id_variedad, $ciclo->id_modulo, 0)
+                        ->onQueue('proy_cosecha');
                 } else {
                     $success = false;
                     $msg = '<div class="alert alert-warning text-center">' .
@@ -503,7 +506,8 @@ class CiclosController extends Controller
                     ->where('id_variedad', '=', $ciclo->id_variedad)
                     ->get()[0]->max;
 
-                ProyeccionUpdateSemanal::dispatch($semana_ini, $semana_fin, $ciclo->id_variedad, $ciclo->id_modulo, 0);
+                ProyeccionUpdateSemanal::dispatch($semana_ini, $semana_fin, $ciclo->id_variedad, $ciclo->id_modulo, 0)
+                    ->onQueue('proy_cosecha');
             } else {
                 $success = false;
                 $msg = '<div class="alert alert-warning text-center">' .
@@ -560,7 +564,8 @@ class CiclosController extends Controller
                     ->where('id_variedad', '=', $ciclo->id_variedad)
                     ->get()[0]->max;
 
-                ProyeccionUpdateSemanal::dispatch($semana_ini, $semana_fin, $ciclo->id_variedad, $ciclo->id_modulo, 0);
+                ProyeccionUpdateSemanal::dispatch($semana_ini, $semana_fin, $ciclo->id_variedad, $ciclo->id_modulo, 0)
+                    ->onQueue('proy_cosecha');
             } else {
                 $success = false;
                 $msg = '<div class="alert alert-warning text-center">' .

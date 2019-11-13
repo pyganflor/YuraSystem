@@ -71,6 +71,7 @@
                 tipo: $('#tipo').val(),
                 tallos_x_ramo_estandar: $('#tallos_x_ramo_estandar').val(),
                 tallos_x_malla: $('#tallos_x_malla').val(),
+                saldo_inicial: $('#saldo_inicial').val(),
             };
             post_jquery('{{url('plantas_variedades/store_variedad')}}', datos, function () {
                 cerrar_modals();
@@ -163,6 +164,7 @@
                 tipo: $('#tipo').val(),
                 tallos_x_ramo_estandar: $('#tallos_x_ramo_estandar').val(),
                 tallos_x_malla: $('#tallos_x_malla').val(),
+                saldo_inicial: $('#saldo_inicial').val(),
             };
             post_jquery('{{url('plantas_variedades/update_variedad')}}', datos, function () {
                 cerrar_modals();
