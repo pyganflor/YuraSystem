@@ -495,7 +495,6 @@ class OrdenSemanalController extends Controller
                 }
             }
 
-        ProyeccionUpdateSemanal::dispatch();
         return [
             'id_pedido' => $pedido->id_pedido,
             'success' => true,
