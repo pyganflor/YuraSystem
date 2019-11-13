@@ -20,14 +20,19 @@
             @php $x=0 @endphp
             @foreach($semanas as $semana => $item)
                 @php
-                    if($x ==0)
-                        $saldoInicial = getObjSemana($semana)->getSaldo($idVariedad);
+                    $objSemanaActual =getObjSemana($semana);
+                    $objSemanaPasada =getObjSemana($semana-1);
+                    if($x ==0){
+                        if((int)$objSemanaActual->firstSemanaResumenSemanaCosechaByVariedad($idVariedad) >= $semana){
+                            $saldoInicial = $objSemanaActual->getSaldo($idVariedad);
+                        }else{
+                            $saldoInicial = $objSemanaActual->getLastSaldoInicial($idVariedad,$semana);
+                        }
+                    }
 
-                    $saldoFinal = getObjSemana($semana-1)->getSaldo($idVariedad)+$saldoInicial;
+                    $saldoFinal = $objSemanaPasada->getSaldo($idVariedad)+$saldoInicial;
                     if($x>0)
-                        $saldoInicial =$saldoFinal;
-
-                   // $saldoInicial= getObjSemana($semana-1)->getSaldo($idVariedad);
+                        $saldoInicial = $saldoFinal;
                 @endphp
                 <td class="text-center" style="border:1px solid #9d9d9d; background-color: #e9ecef; width:350px;border-bottom: 2px solid #000000;border-right: 2px solid #000000;" colspan="3">
                     <b class="{{$saldoInicial < 0 ? "text-red" : "text-success"}}">
@@ -205,15 +210,25 @@
                     </tr>
                     <tr style="background-color: #e9ecef">
                         <td class="text-center" style="border:2px solid #000000;width: 250px"><b>Saldo final</b></td>
-                        @php $x =0 @endphp
+                        @php $x =0; @endphp
                         @foreach($semanas as $semana => $item)
                             @php
-                                if($x ==0)
-                                    $saldoInicial = getObjSemana($semana-1)->getSaldo($idVariedad);
+                                $objSemanaActual =getObjSemana($semana);
+                                $objSemanaPasada =getObjSemana($semana-1);
+                                if($x==0){
+                                    if((int)$objSemanaActual->firstSemanaResumenSemanaCosechaByVariedad($idVariedad) >= $semana){
+                                        $saldoFinal = $objSemanaActual->getSaldo($idVariedad);
+                                    }else{
+                                        $saldoFinal = $objSemanaActual->getLastSaldoFinal($idVariedad,$semana);
+                                    }
+                                }
+                                //dump($saldoFinal);
+                                $saldoInicial = $objSemanaActual->getSaldo($idVariedad)+$saldoFinal;
 
-                                $saldoFinal = getObjSemana($semana)->getSaldo($idVariedad)+$saldoInicial;
-                                if($x>0)
-                                    $saldoInicial =$saldoFinal;
+                                if($x>0){
+                                    $saldoFinal=$saldoInicial;
+                                }
+
 
                             @endphp
                             <td style="border: 1px solid #9d9d9d;border: 2px solid #000000;" colspan="3">
