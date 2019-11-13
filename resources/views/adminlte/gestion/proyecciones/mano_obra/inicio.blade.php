@@ -38,6 +38,14 @@
             <div class="box-header with-border">
                 <div class="input-group">
                     <div class="input-group-addon bg-gray">
+                        <i class="fa fa-fw fa-calendar"></i> Área
+                    </div>
+                    <select name="area_trabajo" id="area_trabajo" required class="form-control">
+                        <option value="C">Cosecha</option>
+                        <option value="V">Clasificación Verde</option>
+                        {{--<option value="B">Clasificación Blanco</option>--}}
+                    </select>
+                    <div class="input-group-addon bg-gray">
                         <i class="fa fa-fw fa-calendar"></i> Desde
                     </div>
                     <input type="number" class="form-control" id="filtro_desde" name="filtro_desde" required

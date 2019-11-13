@@ -46,7 +46,8 @@ class ConfiguracionEmpresa extends Model
         'codigo_fpo',
         'codigo_tvn',
         'codigo_etiqueta_empresa',
-        'horas_diarias_cosecha'
+        'horas_diarias_cosecha',
+        'horas_diarias_verde',
     ];
 
     public function clasificaciones_unitarias()

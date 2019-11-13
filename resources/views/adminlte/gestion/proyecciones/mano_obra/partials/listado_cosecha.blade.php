@@ -27,7 +27,7 @@
             </th>
             @foreach($list_tallos as $item)
                 @php
-                    $mano_obra = ($item->cant / $rend_cosecha) / (7 * $hr_diarias_cosecha);
+                    $mano_obra = $rend_cosecha > 0 ? ($item->cant / $rend_cosecha) / (7 * $hr_diarias_cosecha) : 0;
 
                     if($mano_obra <= $pers_cosecha){  // hay suficientes trabajadores
                         if($mano_obra < ($pers_cosecha - 5)){   // sobran más de 5 trabajadores
@@ -60,7 +60,7 @@
             </th>
             @foreach($list_tallos as $item)
                 @php
-                    $mano_obra = ($item->cant / $rend_cosecha) / (6 * $hr_diarias_cosecha);
+                    $mano_obra = $rend_cosecha > 0 ? ($item->cant / $rend_cosecha) / (6 * $hr_diarias_cosecha) : 0;
 
                     if($mano_obra <= $pers_cosecha){  // hay suficientes trabajadores
                         if($mano_obra < ($pers_cosecha - 5)){   // sobran más de 5 trabajadores
@@ -98,7 +98,7 @@
             </th>
             @foreach($list_tallos as $item)
                 @php
-                    $mano_obra = ($item->cant / $rend_cosecha) / (5 * $hr_diarias_cosecha);
+                    $mano_obra = $rend_cosecha > 0 ? ($item->cant / $rend_cosecha) / (5 * $hr_diarias_cosecha) : 0;
 
                     if($mano_obra <= $pers_cosecha){  // hay suficientes trabajadores
                         if($mano_obra < ($pers_cosecha - 5)){   // sobran más de 5 trabajadores
@@ -142,7 +142,7 @@
             </th>
             @foreach($list_tallos as $item)
                 <th class="text-center" style="border-color: #9d9d9d">
-                    <b style="padding: 5px">{{number_format($item->cant / $rend_cosecha, 2)}}</b>
+                    <b style="padding: 5px">{{$rend_cosecha > 0 ? number_format($item->cant / $rend_cosecha, 2) : 0}}</b>
                 </th>
             @endforeach
         </tr>
