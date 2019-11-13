@@ -31,7 +31,7 @@
                             $saldoInicial = $objSemanaActual->firstSaldoInicialByVariedad($idVariedad);
                         }
                     }
-                    $saldoFinal = isset($objSemanaPasada) ? $objSemanaPasada->getSaldo($idVariedad)+$saldoInicial : $saldoInicial;
+                    $saldoFinal = isset($objSemanaPasada) ? $objSemanaPasada->getSaldo($idVariedad)+$saldoInicial : $objSemanaActual->getSaldo($idVariedad)+$saldoInicial;
                     if($x>0)
                         $saldoInicial = $saldoFinal;
                 @endphp
@@ -219,24 +219,20 @@
                                 $cajasProyectadas =isset($objSemanaPasada) ? $objSemanaPasada->getCajasProyectadas($idVariedad) : 0;
                                 $cajasVendidas =  $objSemanaActual->getTotalesProyeccionVentaSemanal(null,$idVariedad)->total_cajas_equivalentes;
                                 if($x==0){
-                                    if((int)$objSemanaActual->firstSemanaResumenSemanaCosechaByVariedad($idVariedad) >= $semana){
+                                    if((int)$objSemanaActual->firstSemanaResumenSemanaCosechaByVariedad($idVariedad) > $semana){
                                         $saldoFinal = $objSemanaActual->getSaldo($idVariedad);
-                                    }else{
+                                    }elseif((int)$objSemanaActual->firstSemanaResumenSemanaCosechaByVariedad($idVariedad) < $semana){
                                         $saldoFinal = $objSemanaActual->getLastSaldoFinal($idVariedad,$semana);
+                                    }else{
+                                        $saldoFinal = $objSemanaActual->firstSaldoInicialByVariedad($idVariedad)+round($objSemanaActual->getSaldo($idVariedad),2);
                                     }
+
                                 }
 
-                                $saldoInicial = $objSemanaActual->getSaldo($idVariedad)+$saldoFinal;
+                                $saldoInicial = round($objSemanaActual->getSaldo($idVariedad),2)+$saldoFinal;
 
-                                if($x>0){
+                                if($x>0)
                                     $saldoFinal=$saldoInicial;
-                                    if($cajasProyectadas == 0 ){
-                                        dump($cajasVendidas);
-                                       // $saldoFinal= $saldoFinal-$cajasVendidas;
-                                    }
-                                    //dump($cajasProyectadas);
-                                }
-
 
                             @endphp
                             <td style="border: 1px solid #9d9d9d;border: 2px solid #000000;" colspan="3">
