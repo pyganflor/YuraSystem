@@ -92,4 +92,14 @@
             </div>
         </div>
     </div>
+    <legend class="text-center" style="font-size: 1em">Datos para proyecciones</legend>
+    <div class="row">
+        <div class="col-md-2">
+            <div class="form-group">
+                <label for="saldo_inicial">Saldo inicial</label>
+                <input type="number" id="saldo_inicial" name="saldo_inicial" class="form-control"
+                       min="1">
+            </div>
+        </div>
+    </div>
 </form>

@@ -95,6 +95,16 @@
             </div>
         </div>
     </div>
+    <legend class="text-center" style="font-size: 1em">Datos para proyecciones</legend>
+    <div class="row">
+        <div class="col-md-2">
+            <div class="form-group">
+                <label for="saldo_inicial">Saldo inicial</label>
+                <input type="number" id="saldo_inicial" name="saldo_inicial" class="form-control" value="{{$variedad->saldo_inicial}}"
+                       min="1">
+            </div>
+        </div>
+    </div>
 
     <input type="hidden" id="id_variedad" name="id_variedad" value="{{$variedad->id_variedad}}">
 </form>

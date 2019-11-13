@@ -149,6 +149,7 @@ class PlantaController extends Controller
                 $model->tallos_x_malla = $request->tallos_x_malla;
                 $model->fecha_registro = date('Y-m-d H:i:s');
                 $model->estandar_apertura = $request->estandar;
+                $model->saldo_inicial = $request->saldo_inicial;
 
                 if ($model->save()) {
                     $model = Variedad::All()->last();
@@ -370,6 +371,7 @@ class PlantaController extends Controller
                 $model->maximo_apertura = $request->maximo_apertura;
                 $model->estandar_apertura = $request->estandar;
                 $model->tallos_x_malla = $request->tallos_x_malla;
+                $model->saldo_inicial = $request->saldo_inicial;
 
                 if ($model->save()) {
                     $success = true;
