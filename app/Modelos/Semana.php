@@ -70,22 +70,6 @@ class Semana extends Model
         return  $cajasProyectadas-$cajasVendidas-$desecho;
     }
 
-    /*public function getSaldoInicial($idVariedad){
-        $cajasProyectadas = $this->getCajasProyectadas($idVariedad);
-        $cajasVendidas = $cajasProyectadas > 0 ? $this->getTotalesProyeccionVentaSemanal(null,$idVariedad)->total_cajas_equivalentes : 0;
-        $desecho = $cajasProyectadas*($this->desecho($idVariedad)/100);
-
-        return $cajasProyectadas-$cajasVendidas-$desecho;
-    }
-
-    public function getSaldoFinal($idVariedad){
-        $cajasProyectadas = $this->getCajasProyectadas($idVariedad);
-        $cajasVendidas = $cajasProyectadas > 0 ? $this->getTotalesProyeccionVentaSemanal(null,$idVariedad)->total_cajas_equivalentes : 0;
-        $desecho = $cajasProyectadas*($this->desecho($idVariedad)/100);
-
-        return  $cajasProyectadas-$cajasVendidas-$desecho;
-    }*/
-
     public function getCajasProyectadas($idVariedad){
 
         $objResumenSemanaCosecha = ResumenSemanaCosecha::where([
@@ -119,12 +103,13 @@ class Semana extends Model
                 $semana = Semana::where([['codigo',$x],['id_variedad',$idVariedad]])->first();
                 if(isset($semana)){
                     if($z ==0)
-                        $saldoInicial = getObjSemana($semana->codigo)->getSaldo($idVariedad);
+                        $saldoInicial = $this->firstSaldoInicialByVariedad($idVariedad);
 
                     $saldoFinal = getObjSemana($semana->codigo)->getSaldo($idVariedad)+$saldoInicial;
                     if($x>0)
                         $saldoInicial =$saldoFinal;
                     $z++;
+
                 }
             }
             return $saldoInicial;
@@ -141,9 +126,8 @@ class Semana extends Model
             for ($x=$firstSemana;$x<=$desde;$x++){
                 $semana = Semana::where([['codigo',$x],['id_variedad',$idVariedad]])->first();
                 if(isset($semana)){
-                   //dump($semana->codigo);
                     if($z ==0)
-                        $saldoInicial = getObjSemana($semana->codigo)->getSaldo($idVariedad);
+                        $saldoInicial = $this->firstSaldoInicialByVariedad($idVariedad);
 
                     $saldoFinal = getObjSemana($semana->codigo)->getSaldo($idVariedad)+$saldoInicial;
                     if($x>0)
@@ -160,6 +144,10 @@ class Semana extends Model
     public function firstSemanaResumenSemanaCosechaByVariedad($idVariedad){
         return ResumenSemanaCosecha::where('id_variedad',$idVariedad)
             ->select(DB::raw('MIN(codigo_semana) as codigo'))->first()->codigo;
+    }
+
+    public function firstSaldoInicialByVariedad($idVariedad){
+        return Variedad::find($idVariedad)->saldo_inicial;
     }
 
 }
