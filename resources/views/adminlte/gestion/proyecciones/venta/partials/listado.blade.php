@@ -29,8 +29,7 @@
                             $saldoInicial = $objSemanaActual->getLastSaldoInicial($idVariedad,$semana);
                         }
                     }
-
-                    $saldoFinal = $objSemanaPasada->getSaldo($idVariedad)+$saldoInicial;
+                    $saldoFinal = isset($objSemanaPasada) ? $objSemanaPasada->getSaldo($idVariedad)+$saldoInicial : $saldoInicial;
                     if($x>0)
                         $saldoInicial = $saldoFinal;
                 @endphp
@@ -215,6 +214,7 @@
                             @php
                                 $objSemanaActual =getObjSemana($semana);
                                 $objSemanaPasada =getObjSemana($semana-1);
+                                $cajasProyectadas =isset($objSemanaPasada) ? $objSemanaPasada->getCajasProyectadas($idVariedad) : 0;
                                 if($x==0){
                                     if((int)$objSemanaActual->firstSemanaResumenSemanaCosechaByVariedad($idVariedad) >= $semana){
                                         $saldoFinal = $objSemanaActual->getSaldo($idVariedad);
@@ -222,14 +222,17 @@
                                         $saldoFinal = $objSemanaActual->getLastSaldoFinal($idVariedad,$semana);
                                     }
                                 }
-                                //dump($saldoFinal);
+
                                 $saldoInicial = $objSemanaActual->getSaldo($idVariedad)+$saldoFinal;
 
                                 if($x>0){
                                     $saldoFinal=$saldoInicial;
                                 }
 
-
+                                if($cajasProyectadas == 0 )
+                                    dump($saldoFinal,$objSemanaActual->getTotalesProyeccionVentaSemanal(null,$idVariedad)->total_cajas_equivalentes);
+                                    //$saldoFinal= $saldoFinal-$objSemanaActual->getTotalesProyeccionVentaSemanal(null,$idVariedad)->total_cajas_equivalentes;
+                                //dump($cajasProyectadas);
                             @endphp
                             <td style="border: 1px solid #9d9d9d;border: 2px solid #000000;" colspan="3">
                                 <div style="width:100%;text-align:center;" data-toggle="tooltip" data-placement="top" title="Cajas físicas proyectadas">
