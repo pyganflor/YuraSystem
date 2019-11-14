@@ -2283,11 +2283,12 @@ function getTallosCosechadosByModSemVar($mod = null, $semana, $variedad)
         $r = DB::table('desglose_recepcion as dr')
             ->select(DB::raw('sum(dr.cantidad_mallas * dr.tallos_x_malla) as cantidad'))
             ->join('recepcion as r', 'dr.id_recepcion', '=', 'r.id_recepcion')
+            ->join('cosecha as c', 'c.id_cosecha', '=', 'r.id_cosecha') // *
             ->where('r.estado', '=', 1)
             ->where('dr.estado', '=', 1)
             ->where('dr.id_variedad', '=', $variedad)
-            ->where('r.fecha_ingreso', '>=', $sem->fecha_inicial)
-            ->where('r.fecha_ingreso', '<=', $sem->fecha_final);
+            ->where('c.fecha_ingreso', '>=', $sem->fecha_inicial)
+            ->where('c.fecha_ingreso', '<=', $sem->fecha_final);
         //->get()[0]->cantidad;
 
         if (isset($mod))
