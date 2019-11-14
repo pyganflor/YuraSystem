@@ -628,7 +628,6 @@ class tblPostcosechaController extends Controller
                                 ->select('id_clasificacion_verde as id')->distinct();
                         }
                         $verdes = $verdes->where('estado', '=', 1)
-                            ->where(DB::raw('year(fecha_ingreso)'), '=', $l)
                             ->where(DB::raw('fecha_ingreso'), '<=', $semana->fecha_final);
 
                         if ($acumulado == 'true') {
@@ -717,7 +716,6 @@ class tblPostcosechaController extends Controller
                                     ->select('id_clasificacion_verde as id')->distinct();
                             }
                             $verdes = $verdes->where('estado', '=', 1)
-                                ->where(DB::raw('year(fecha_ingreso)'), '=', $l)
                                 ->where(DB::raw('fecha_ingreso'), '<=', $semana->fecha_final);
 
                             if ($acumulado == 'true') {
