@@ -174,7 +174,7 @@ class Cosecha extends Model
         $r = [];
         $listado_fechas = DB::table('desglose_recepcion as dr')
             ->join('recepcion as r', 'r.id_recepcion', '=', 'dr.id_recepcion')
-            ->select('dr.fecha_registro')->distinct()
+            ->select('r.fecha_ingreso as fecha')->distinct()
             ->where('r.estado', '=', 1)
             ->where('dr.estado', '=', 1)
             ->where('r.id_cosecha', '=', $this->id_cosecha)
@@ -183,7 +183,7 @@ class Cosecha extends Model
 
         $listado = [];
         foreach ($listado_fechas as $item)
-            array_push($listado, $item->fecha_registro);
+            array_push($listado, $item->fecha);
 
         foreach ($listado as $item) {
             $intervalo = [
