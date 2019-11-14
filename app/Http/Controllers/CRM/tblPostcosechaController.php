@@ -1025,7 +1025,7 @@ dump($verdes);
             }
         } else {    // Una variedad
             foreach ($labels as $pos => $l) {
-                for ($d = 0; $d < difFechas($hasta, $desde)->days; $d++) {
+                for ($d = 0; $d <= difFechas($hasta, $desde)->days; $d++) {
                     if ($pos == 0) {
                         array_push($dias, opDiasFecha('+', $d, $desde));
                     }
