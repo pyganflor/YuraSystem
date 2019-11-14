@@ -413,7 +413,7 @@ class ClasificacionVerde extends Model
             ->select('d.id_variedad', 'd.id_clasificacion_unitaria')->distinct()
             ->where('d.id_clasificacion_verde', '=', $this->id_clasificacion_verde)
             ->where('d.id_variedad', '=', $variedad)
-            ->orderBy('v.nombre', 'asc')->simplePaginate(10);
+            ->orderBy('v.nombre', 'asc')->get();
 
         foreach ($listado as $item) {
             $r += round($this->getTallosByvariedadUnitaria($item->id_variedad, $item->id_clasificacion_unitaria) /

@@ -46,7 +46,7 @@ class dbController extends Controller
             ProyeccionUpdateSemanal::dispatch($request->desde, $request->hasta, $request->variedad, $request->modulo, $request->restriccion == 'true' ? 1 : 0)
                 ->onQueue('job');
         }
-        if ($request->comando == 2) {   // comando ProyeccionUpdateSemanal
+        if ($request->comando == 2) {   // comando ResumenSemanaCosecha
             ResumenSemanaCosecha::dispatch($request->desde, $request->hasta, $request->variedad)
                 ->onQueue('job');
         }
