@@ -115,7 +115,7 @@ class ResumenSemanaCosecha extends Command
 
                     if($semana->codigo > $semanaActual){
                         if($z>0 && $z<6){
-                            $calibre = $calibreActual[$variedad->id_variedad];
+                            $calibre = isset($calibreActual[$variedad->id_variedad]) ? $calibreActual[$variedad->id_variedad] : 0;
                         }else{
                             $calibre = Semana::where('codigo',$semana->codigo)->first()->tallos_ramo_poda;
                         }
