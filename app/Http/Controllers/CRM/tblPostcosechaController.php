@@ -214,6 +214,8 @@ class tblPostcosechaController extends Controller
                     $s_final = Semana::All()->where('estado', 1)->where('codigo', substr($a, 2) . $semana_final)->first();
 
                     $valor = 0;
+                    $cant_verdes = 0;
+                    $value = 0;
 
                     $verdes = [];
                     if ($s_inicial != '' && $s_final != '') {
@@ -242,12 +244,21 @@ class tblPostcosechaController extends Controller
                                     $valor += $verde->tallos_x_variedad($var->id_variedad);
                                 if ($criterio == 'E')
                                     $valor += $verde->getTotalRamosEstandarByVariedad($var->id_variedad);
-                                if ($criterio == 'D')
-                                    $valor += $verde->desechoByVariedad($var->id_variedad);
-                                if ($criterio == 'R')
-                                    $valor += $verde->getRendimientoByVariedad($var->id_variedad);
-                                if ($criterio == 'Q')
-                                    $valor += $verde->calibreByVariedad($var->id_variedad);
+                                if ($criterio == 'D') {
+                                    $value = $verde->desechoByVariedad($var->id_variedad);
+                                    $valor += $value;
+                                }
+                                if ($criterio == 'R') {
+                                    $value = $verde->getRendimientoByVariedad($var->id_variedad);
+                                    $valor += $value;
+                                }
+                                if ($criterio == 'Q') {
+                                    $value = $verde->calibreByVariedad($var->id_variedad);
+                                    $valor += $value;
+                                }
+
+                                if ($value > 0)
+                                    $cant_verdes++;
                             }
                         }
                     }
@@ -261,11 +272,11 @@ class tblPostcosechaController extends Controller
                     if ($criterio == 'E')
                         array_push($valores, $valor);
                     if ($criterio == 'D')
-                        array_push($valores, count($verdes) > 0 ? round($valor / count($verdes), 2) : 0);
+                        array_push($valores, $cant_verdes > 0 ? round($valor / $cant_verdes, 2) : 0);
                     if ($criterio == 'R')
-                        array_push($valores, count($verdes) > 0 ? round($valor / count($verdes), 2) : 0);
+                        array_push($valores, $cant_verdes > 0 ? round($valor / $cant_verdes, 2) : 0);
                     if ($criterio == 'Q')
-                        array_push($valores, count($verdes) > 0 ? round($valor / count($verdes), 2) : 0);
+                        array_push($valores, $cant_verdes > 0 ? round($valor / $cant_verdes, 2) : 0);
                 }
 
                 array_push($filas, [
@@ -279,6 +290,8 @@ class tblPostcosechaController extends Controller
                 $s_final = Semana::All()->where('estado', 1)->where('codigo', substr($a, 2) . $semana_final)->first();
 
                 $valor = 0;
+                $cant_verdes = 0;
+                $value = 0;
 
                 $verdes = [];
                 if ($s_inicial != '' && $s_final != '') {
@@ -307,12 +320,21 @@ class tblPostcosechaController extends Controller
                                 $valor += $verde->tallos_x_variedad($variedad);
                             if ($criterio == 'E')
                                 $valor += $verde->getTotalRamosEstandarByVariedad($variedad);
-                            if ($criterio == 'D')
-                                $valor += $verde->desechoByVariedad($variedad);
-                            if ($criterio == 'R')
-                                $valor += $verde->getRendimientoByVariedad($variedad);
-                            if ($criterio == 'Q')
-                                $valor += $verde->calibreByVariedad($variedad);
+                            if ($criterio == 'D') {
+                                $value = $verde->desechoByVariedad($var->id_variedad);
+                                $valor += $value;
+                            }
+                            if ($criterio == 'R') {
+                                $value = $verde->getRendimientoByVariedad($var->id_variedad);
+                                $valor += $value;
+                            }
+                            if ($criterio == 'Q') {
+                                $value = $verde->calibreByVariedad($var->id_variedad);
+                                $valor += $value;
+                            }
+
+                            if ($value > 0)
+                                $cant_verdes++;
                         }
                     }
                 }
@@ -326,11 +348,11 @@ class tblPostcosechaController extends Controller
                 if ($criterio == 'E')
                     array_push($valores, $valor);
                 if ($criterio == 'D')
-                    array_push($valores, count($verdes) > 0 ? round($valor / count($verdes), 2) : 0);
+                    array_push($valores, $cant_verdes > 0 ? round($valor / $cant_verdes, 2) : 0);
                 if ($criterio == 'R')
-                    array_push($valores, count($verdes) > 0 ? round($valor / count($verdes), 2) : 0);
+                    array_push($valores, $cant_verdes > 0 ? round($valor / $cant_verdes, 2) : 0);
                 if ($criterio == 'Q')
-                    array_push($valores, count($verdes) > 0 ? round($valor / count($verdes), 2) : 0);
+                    array_push($valores, $cant_verdes > 0 ? round($valor / $cant_verdes, 2) : 0);
             }
 
             array_push($filas, [
@@ -466,6 +488,8 @@ class tblPostcosechaController extends Controller
                         $verdes = $verdes->get();
 
                         $valor = 0;
+                        $cant_verdes = 0;
+                        $value = 0;
 
                         foreach ($verdes as $obj) {
                             if ($criterio == 'K') {
@@ -484,14 +508,20 @@ class tblPostcosechaController extends Controller
                                     $valor += $verde->getTotalRamosEstandarByVariedad($var->id_variedad);
                                 }
                                 if ($criterio == 'D') {
-                                    $valor += $verde->desechoByVariedad($var->id_variedad);
+                                    $value = $verde->desechoByVariedad($var->id_variedad);
+                                    $valor += $value;
                                 }
                                 if ($criterio == 'R') {
-                                    $valor += $verde->getRendimientoByVariedad($var->id_variedad);
+                                    $value = $verde->getRendimientoByVariedad($var->id_variedad);
+                                    $valor += $value;
                                 }
                                 if ($criterio == 'Q') {
-                                    $valor += $verde->calibreByVariedad($var->id_variedad);
+                                    $value = $verde->calibreByVariedad($var->id_variedad);
+                                    $valor += $value;
                                 }
+
+                                if ($value > 0)
+                                    $cant_verdes++;
                             }
                         }
 
@@ -504,11 +534,11 @@ class tblPostcosechaController extends Controller
                         if ($criterio == 'E')
                             array_push($valores, $valor);
                         if ($criterio == 'D')
-                            array_push($valores, count($verdes) > 0 ? round($valor / count($verdes), 2) : 0);
+                            array_push($valores, $cant_verdes > 0 ? round($valor / $cant_verdes, 2) : 0);
                         if ($criterio == 'R')
-                            array_push($valores, count($verdes) > 0 ? round($valor / count($verdes), 2) : 0);
+                            array_push($valores, $cant_verdes > 0 ? round($valor / $cant_verdes, 2) : 0);
                         if ($criterio == 'Q')
-                            array_push($valores, count($verdes) > 0 ? round($valor / count($verdes), 2) : 0);
+                            array_push($valores, $cant_verdes > 0 ? round($valor / $cant_verdes, 2) : 0);
                     }
                 }
 
@@ -547,6 +577,8 @@ class tblPostcosechaController extends Controller
                     $verdes = $verdes->get();
 
                     $valor = 0;
+                    $cant_verdes = 0;
+                    $value = 0;
 
                     foreach ($verdes as $obj) {
                         if ($criterio == 'K') {
@@ -561,12 +593,21 @@ class tblPostcosechaController extends Controller
                                 $valor += $verde->tallos_x_variedad($variedad);
                             if ($criterio == 'E')
                                 $valor += $verde->getTotalRamosEstandarByVariedad($variedad);
-                            if ($criterio == 'D')
-                                $valor += $verde->desechoByVariedad($variedad);
-                            if ($criterio == 'R')
-                                $valor += $verde->getRendimientoByVariedad($variedad);
-                            if ($criterio == 'Q')
-                                $valor += $verde->calibreByVariedad($variedad);
+                            if ($criterio == 'D') {
+                                $value = $verde->desechoByVariedad($variedad);
+                                $valor += $value;
+                            }
+                            if ($criterio == 'R') {
+                                $value = $verde->getRendimientoByVariedad($variedad);
+                                $valor += $value;
+                            }
+                            if ($criterio == 'Q') {
+                                $value = $verde->calibreByVariedad($variedad);
+                                $valor += $value;
+                            }
+
+                            if ($value > 0)
+                                $cant_verdes++;
                         }
                     }
 
@@ -579,11 +620,11 @@ class tblPostcosechaController extends Controller
                     if ($criterio == 'E')
                         array_push($valores, $valor);
                     if ($criterio == 'D')
-                        array_push($valores, count($verdes) > 0 ? round($valor / count($verdes), 2) : 0);
+                        array_push($valores, $cant_verdes > 0 ? round($valor / $cant_verdes, 2) : 0);
                     if ($criterio == 'R')
-                        array_push($valores, count($verdes) > 0 ? round($valor / count($verdes), 2) : 0);
+                        array_push($valores, $cant_verdes > 0 ? round($valor / $cant_verdes, 2) : 0);
                     if ($criterio == 'Q')
-                        array_push($valores, count($verdes) > 0 ? round($valor / count($verdes), 2) : 0);
+                        array_push($valores, $cant_verdes > 0 ? round($valor / $cant_verdes, 2) : 0);
                 }
             }
 
