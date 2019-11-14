@@ -57,7 +57,7 @@
                 </th>
                 <th class="text-center" style="border-color: #9d9d9d">
                     {{difFechas(getCurrentDateDB(), $item->fecha_registro)->h}}:
-                    {{difFechas(getCurrentDateDB(), $item->fecha_registro)->m}}:
+                    {{difFechas(getCurrentDateDB(), $item->fecha_registro)->i}}:
                     {{difFechas(getCurrentDateDB(), $item->fecha_registro)->s}}
                 </th>
                 <th class="text-center" style="border-color: #9d9d9d">
