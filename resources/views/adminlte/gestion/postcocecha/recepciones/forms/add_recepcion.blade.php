@@ -111,6 +111,11 @@
             $('#personal').val(retorno.personal);
             $('#hora_inicio').val(retorno.hora_inicio);
             $('#html_rendimiento').html(retorno.rendimiento);
+
+            if(datos['fecha'] < '{{date('Y-m-d')}}:00:00')
+                $('#check_fecha_ingreso_pasada').prop('checked', true);
+            else
+                $('#check_fecha_ingreso_pasada').prop('checked', false);
         });
     }
 

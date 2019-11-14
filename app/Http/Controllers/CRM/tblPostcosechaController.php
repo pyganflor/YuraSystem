@@ -628,7 +628,6 @@ class tblPostcosechaController extends Controller
                                 ->select('id_clasificacion_verde as id')->distinct();
                         }
                         $verdes = $verdes->where('estado', '=', 1)
-                            ->where(DB::raw('year(fecha_ingreso)'), '=', $l)
                             ->where(DB::raw('fecha_ingreso'), '<=', $semana->fecha_final);
 
                         if ($acumulado == 'true') {
@@ -717,7 +716,6 @@ class tblPostcosechaController extends Controller
                                     ->select('id_clasificacion_verde as id')->distinct();
                             }
                             $verdes = $verdes->where('estado', '=', 1)
-                                ->where(DB::raw('year(fecha_ingreso)'), '=', $l)
                                 ->where(DB::raw('fecha_ingreso'), '<=', $semana->fecha_final);
 
                             if ($acumulado == 'true') {
@@ -804,7 +802,7 @@ class tblPostcosechaController extends Controller
                                 ->select('id_clasificacion_verde as id')->distinct();
                         }
                         $verdes = $verdes->where('estado', '=', 1)
-                            ->where(DB::raw('year(fecha_ingreso)'), '=', $l)
+                            //->where(DB::raw('year(fecha_ingreso)'), '=', $l)
                             ->where(DB::raw('fecha_ingreso'), '<=', $semana->fecha_final);
 
                         if ($acumulado == 'true') {
@@ -883,7 +881,7 @@ class tblPostcosechaController extends Controller
 
         if ($variedad == 'A') { // Acumulado
             foreach ($labels as $pos => $l) {
-                for ($d = 0; $d < difFechas($hasta, $desde)->days; $d++) {
+                for ($d = 0; $d <= difFechas($hasta, $desde)->days; $d++) {
                     if ($pos == 0) {
                         array_push($dias, opDiasFecha('+', $d, $desde));
                     }
@@ -954,7 +952,7 @@ class tblPostcosechaController extends Controller
                 $valores = [];
 
                 foreach ($labels as $pos => $l) {
-                    for ($d = 0; $d < difFechas($hasta, $desde)->days; $d++) {
+                    for ($d = 0; $d <= difFechas($hasta, $desde)->days; $d++) {
                         if ($pos == 0 && $pos_var == 0) {
                             array_push($dias, opDiasFecha('+', $d, $desde));
                         }
@@ -1024,7 +1022,7 @@ class tblPostcosechaController extends Controller
             }
         } else {    // Una variedad
             foreach ($labels as $pos => $l) {
-                for ($d = 0; $d < difFechas($hasta, $desde)->days; $d++) {
+                for ($d = 0; $d <= difFechas($hasta, $desde)->days; $d++) {
                     if ($pos == 0) {
                         array_push($dias, opDiasFecha('+', $d, $desde));
                     }

@@ -2454,3 +2454,9 @@ function getPersonalCosechaByRango($desde, $hasta)
 
     return $cant_cosecha > 0 ? round($personal / $cant_cosecha, 2) : 0;
 }
+
+function getCurrentDateDB(){
+    return DB::table('usuario')
+        ->select(DB::raw('current_timestamp() as fecha_hora'))->distinct()
+        ->get()[0]->fecha_hora;
+}

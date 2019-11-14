@@ -39,8 +39,29 @@
     </div>
     <h4 class="control-sidebar-heading">
         Temas
-        @if(rand(0,99) > 90)
-            <span style="color: #222d32" class="pull-right">{｡^◕‿◕^｡}</span>
+        @php
+            $random_face = rand(0,99);
+        @endphp
+        @if($random_face == 90)
+            <span style="color: #222d32" class="pull-right"> (◠‿◠)</span>
+        @elseif($random_face == 91)
+            <span style="color: #222d32" class="pull-right">(◕‿◕)</span>
+        @elseif($random_face == 92)
+            <span style="color: #222d32" class="pull-right">(◕‿-)</span>
+        @elseif($random_face == 93)
+            <span style="color: #222d32" class="pull-right">(╯°□°)╯</span>
+        @elseif($random_face == 94)
+            <span style="color: #222d32" class="pull-right">╭( ◕﹏◕ )╮</span>
+        @elseif($random_face == 95)
+            <span style="color: #222d32" class="pull-right">( ̯͡◕ ▽ ̯͡◕ )</span>
+        @elseif($random_face == 96)
+            <span style="color: #222d32" class="pull-right">(~￣▽￣)~</span>
+        @elseif($random_face == 97)
+            <span style="color: #222d32" class="pull-right">(｡^◕‿◕^｡)</span>
+        @elseif($random_face == 98)
+            <span style="color: #222d32" class="pull-right">(•̪◡•̪)</span>
+        @elseif($random_face == 99)
+            <span style="color: #222d32" class="pull-right">ʕ•ܫ•ʔ</span>
         @endif
     </h4>
     <ul class="list-unstyled clearfix">

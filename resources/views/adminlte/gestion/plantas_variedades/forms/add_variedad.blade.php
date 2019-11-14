@@ -97,8 +97,7 @@
         <div class="col-md-2">
             <div class="form-group">
                 <label for="saldo_inicial">Saldo inicial</label>
-                <input type="number" id="saldo_inicial" name="saldo_inicial" class="form-control"
-                       min="1">
+                <input type="number" id="saldo_inicial" name="saldo_inicial" class="form-control">
             </div>
         </div>
     </div>
