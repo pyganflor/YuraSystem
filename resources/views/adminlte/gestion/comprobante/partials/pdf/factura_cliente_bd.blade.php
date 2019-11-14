@@ -1,8 +1,8 @@
 @php
-    $detalleFactura = getDetalleFactura($data['comprobante']->id_comprobante);
-    $cliente = getCliente(getEnvio($data['comprobante']->envio->id_envio)->pedido->id_cliente)->detalle();
+    $detalleFactura = $data['comprobante']->detalle_factura;
+    $cliente = $data['comprobante']->envio->pedido->cliente->detalle();
     $consignatario = $data['comprobante']->envio->consignatario;
-    $envio = getEnvio($data['comprobante']->envio->id_envio);
+    $envio = $data['comprobante']->envio;
     $precio_total_sin_impuestos = 0.00;
     $total_ramos = 0.00;
     $total_piezas = 0.00;
@@ -21,6 +21,14 @@
     $datos_tinturados = [];
     $data_body_table =[];
     $pieza=0;
+    $marcacion =[];
+    foreach($data['comprobante']->envio->pedido->cliente->cliente_datoexportacion as $cli_dat_exp){
+        foreach($data['comprobante']->envio->pedido->detalles as $det_ped){
+            $dat_exp = getDatosExportacion($det_ped->id_detalle_pedido, $cli_dat_exp->id_dato_exportacion);
+            if(isset($dat_exp) && count($marcacion) < 2)
+                $marcacion[]=  $dat_exp->valor;
+        }
+    }
 @endphp
 <table style="width:100%;font-family:arial, sans-serif">
     <tr>
@@ -59,14 +67,15 @@
                 <table style="width: 100%">
                     <tr><td style="font-size:12px">{{$detalleFactura->razon_social_comprador}}</td></tr>
                     <tr><td style="font-size:12px">{{isset($consignatario->codigo_pais) ? getPais($consignatario->codigo_pais)->nombre : getPais($cliente->codigo_pais)->nombre}} -  {{isset($consignatario->ciudad) ? $consignatario->ciudad : $cliente->provincia }}</td></tr>
+                    <tr><td style="font-size:12px">{{isset($consignatario->direccion) ? $consignatario->direccion : getPais($cliente->codigo_pais)->nombre ." ". $cliente->provincia }}</td></tr>
                     <tr><td style="font-size:12px">ID:{{$detalleFactura->identificacion_comprador}}</td></tr>
                 </table>
-                {{--<table style="margin-top: 10px;">
+                <table style="margin-top: 10px;">
                         <td>
-                            <b>AQUI LA MARACACIÓN </b>
+                            <b>{{count($marcacion) > 0 ? $marcacion[0] : ""}} </b>
                         </td>
                     </tr>
-                </table>--}}
+                </table>
                 <table style="margin-top: 10px;">
                     <tr>
                         <td>
