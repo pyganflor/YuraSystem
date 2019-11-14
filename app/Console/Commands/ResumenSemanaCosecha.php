@@ -91,7 +91,7 @@ class ResumenSemanaCosecha extends Command
             $calibreActual=[];
             $z=0;
             foreach ($semanas as $x => $semana){
-                foreach($variedades as $y=> $variedad){
+                foreach($variedades as $y => $variedad){
                     $resumenSemanaCosecha = ResumenCosecha::where([
                         ['id_variedad',$variedad->id_variedad],
                         ['codigo_semana',$semana->codigo]
