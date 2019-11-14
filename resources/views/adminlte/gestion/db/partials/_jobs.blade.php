@@ -33,7 +33,7 @@
         </thead>
         <tbody>
         @foreach($tabla as $item)
-            <tr>
+            <tr style="background-color: {{$item->queue == 'job' ? '#cbffc1' : ''}}">
                 <th class="text-center" style="border-color: #9d9d9d">
                     {{$item->id}}
                 </th>
