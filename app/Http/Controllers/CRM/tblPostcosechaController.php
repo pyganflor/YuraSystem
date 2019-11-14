@@ -808,9 +808,9 @@ class tblPostcosechaController extends Controller
                         if ($acumulado == 'true') {
                             $semana_1 = Semana::All()->where('estado', 1)->where('codigo', substr($l, 2) . '01')->first();
 
-                            $verdes = $verdes->where(DB::raw('fecha_ingreso'), '>=', $semana_1->fecha_inicial); dump('acumulado');
+                            $verdes = $verdes->where(DB::raw('fecha_ingreso'), '>=', $semana_1->fecha_inicial);
                         } else {
-                            $verdes = $verdes->where(DB::raw('fecha_ingreso'), '>=', $semana->fecha_inicial); dump('no acumulado');
+                            $verdes = $verdes->where(DB::raw('fecha_ingreso'), '>=', $semana->fecha_inicial);
                         }
 
                         $verdes = $verdes->get();
@@ -819,13 +819,10 @@ class tblPostcosechaController extends Controller
 
                     $valor = 0;
 
-dump($verdes);
                     foreach ($verdes as $obj) {
                         if ($criterio == 'K') { // tallos (cosecha)
                             $cosecha = Cosecha::find($obj->id);
                             $valor += $cosecha->getTotalTallosByVariedad($variedad);
-                                                        dump($cosecha->getTotalTallosByVariedad($variedad));
-                            
                         } else {    // clasificacion verde
                             $verde = getClasificacionVerde($obj->id);
 
