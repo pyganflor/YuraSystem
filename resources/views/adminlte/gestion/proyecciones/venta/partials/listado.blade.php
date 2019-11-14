@@ -28,7 +28,7 @@
                             $saldoInicial = $objSemanaActual->getSaldo($idVariedad);
                         }elseif((int)$objSemanaActual->firstSemanaResumenSemanaCosechaByVariedad($idVariedad) < $semana){
                             $saldoInicial = $objSemanaActual->getLastSaldoInicial($idVariedad,$semana);
-                             dump("A: ".$saldoInicial);
+                             //dump("A: ".$saldoInicial);
                         }else{
                             $saldoInicial = $objSemanaActual->firstSaldoInicialByVariedad($idVariedad);
 

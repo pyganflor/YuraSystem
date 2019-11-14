@@ -110,7 +110,7 @@ class Semana extends Model
                         $saldoInicial =$saldoFinal;
                     $z++;
                 }
-                dump($saldoInicial);
+               // dump($saldoInicial);
             }
             return $saldoInicial;
         }else{
