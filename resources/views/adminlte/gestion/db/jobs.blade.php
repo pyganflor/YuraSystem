@@ -77,6 +77,6 @@
             $.get('{{url('db_jobs/actualizar')}}', {}, function (retorno) {
                 $('#div_listado').html(retorno);
             });
-        }, 2000)
+        }, 1000)
     </script>
 @endsection
