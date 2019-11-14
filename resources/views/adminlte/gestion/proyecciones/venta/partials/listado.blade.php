@@ -226,7 +226,6 @@
                                     }else{
                                         $saldoFinal = $objSemanaActual->firstSaldoInicialByVariedad($idVariedad)+round($objSemanaActual->getSaldo($idVariedad),2);
                                     }
-
                                 }
 
                                 $saldoInicial = round($objSemanaActual->getSaldo($idVariedad),2)+$saldoFinal;
