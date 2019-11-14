@@ -5,6 +5,7 @@ namespace yura\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use yura\Jobs\ProyeccionUpdateSemanal;
+use yura\Jobs\ProyeccionVentaSemanalUpdate;
 use yura\Jobs\ResumenSemanaCosecha;
 use yura\Modelos\Job;
 use yura\Modelos\Submenu;
@@ -18,6 +19,7 @@ class dbController extends Controller
             'submenu' => Submenu::Where('url', '=', substr($request->getRequestUri(), 1))->get()[0],
             'variedades' => getVariedades(),
             'modulos' => getModulos()->where('estado', 1),
+            'clientes' => getClientes(),
             'semana_actual' => getSemanaByDate(date('Y-m-d')),
         ]);
     }
@@ -49,6 +51,10 @@ class dbController extends Controller
         }
         if ($request->comando == 2) {   // comando ResumenSemanaCosecha
             ResumenSemanaCosecha::dispatch($request->desde, $request->hasta, $request->variedad)
+                ->onQueue('job');
+        }
+        if ($request->comando == 3) {   // comando VentaSemanalReal
+            ProyeccionVentaSemanalUpdate::dispatch($request->desde, $request->hasta, $request->cliente, $request->variedad)
                 ->onQueue('job');
         }
 
