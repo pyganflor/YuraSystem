@@ -24,6 +24,9 @@
                 created_at
             </th>
             <th class="text-center" style="border-color: #9d9d9d">
+                tiempo
+            </th>
+            <th class="text-center" style="border-color: #9d9d9d">
 
             </th>
         </tr>
@@ -51,6 +54,11 @@
                 </th>
                 <th class="text-center" style="border-color: #9d9d9d">
                     {{$item->created_at}}
+                </th>
+                <th class="text-center" style="border-color: #9d9d9d">
+                    {{difFechas(getCurrentDateDB(), $item->fecha_registro)->h}}:
+                    {{difFechas(getCurrentDateDB(), $item->fecha_registro)->m}}:
+                    {{difFechas(getCurrentDateDB(), $item->fecha_registro)->s}}
                 </th>
                 <th class="text-center" style="border-color: #9d9d9d">
                     <button type="button" class="btn btn-xs btn-danger" title="Eliminar" onclick="delete_job('{{$item->id}}')">
