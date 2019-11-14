@@ -2456,6 +2456,7 @@ function getPersonalCosechaByRango($desde, $hasta)
 }
 
 function getCurrentDateDB(){
-    $fecha = new DateTime('NOW');
-    return $fecha->format('Y-m-d H:i:s');
+    return DB::table('usuario')
+        ->select(DB::raw('current_timestamp() as fecha_hora'))->distinct()
+        ->get()[0]->fecha_hora;
 }
