@@ -2454,3 +2454,8 @@ function getPersonalCosechaByRango($desde, $hasta)
 
     return $cant_cosecha > 0 ? round($personal / $cant_cosecha, 2) : 0;
 }
+
+function getCurrentDateDB(){
+    $fecha = new DateTime('NOW');
+    return $fecha->format('Y-m-d H:i:s');
+}

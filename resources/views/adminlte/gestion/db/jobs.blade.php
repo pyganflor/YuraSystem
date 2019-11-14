@@ -69,6 +69,8 @@
             </div>
         </div>
     </section>
+
+    @dump(getCurrentDateDB())
 @endsection
 
 @section('script_final')
