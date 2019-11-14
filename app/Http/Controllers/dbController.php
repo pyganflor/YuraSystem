@@ -43,7 +43,8 @@ class dbController extends Controller
     public function send_queue_job(Request $request)
     {
         if ($request->comando == 1) {   // comando ProyeccionUpdateSemanal
-            ProyeccionUpdateSemanal::dispatch($request->desde, $request->hasta, $request->variedad, $request->modulo, $request->restriccion == 'true' ? 1 : 0)
+            $restriccion = $request->restriccion == 'true' ? 1 : 0;
+            ProyeccionUpdateSemanal::dispatch($request->desde, $request->hasta, $request->variedad, $request->modulo, $restriccion)
                 ->onQueue('job');
         }
         if ($request->comando == 2) {   // comando ResumenSemanaCosecha
