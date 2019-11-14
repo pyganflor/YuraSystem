@@ -178,6 +178,7 @@ class Cosecha extends Model
             ->where('r.estado', '=', 1)
             ->where('dr.estado', '=', 1)
             ->where('r.id_cosecha', '=', $this->id_cosecha)
+            ->orderBy('r.fecha_ingreso')
             ->get();
 
         $listado = [];
