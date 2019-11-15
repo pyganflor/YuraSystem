@@ -2314,14 +2314,18 @@ function getCalibreByRangoVariedad($desde, $hasta, $variedad)
     $cant_verdes = 0;
     foreach ($query as $dia) {
         $verde = ClasificacionVerde::All()->where('fecha_ingreso', '=', $dia->dia)->first();
+        $value = 0;
         if ($verde != '') {
             if ($variedad == 'T') { // Todas las variedades
-                $calibre += $verde->getCalibre();
+                $value = $verde->getCalibre();
+                $calibre += $value;
             } else {    // por variedad
-                $calibre += $verde->calibreByVariedad($variedad);
+                $value = $verde->calibreByVariedad($variedad);
+                $calibre += $value;
             }
-            $cant_verdes++;
         }
+        if ($value > 0)
+            $cant_verdes++;
     }
     return $cant_verdes > 0 ? round($calibre / $cant_verdes, 2) : 0;
 }
@@ -2457,7 +2461,8 @@ function getPersonalCosechaByRango($desde, $hasta)
     return $cant_cosecha > 0 ? round($personal / $cant_cosecha, 2) : 0;
 }
 
-function getCurrentDateDB(){
+function getCurrentDateDB()
+{
     return DB::table('usuario')
         ->select(DB::raw('current_timestamp() as fecha_hora'))->distinct()
         ->get()[0]->fecha_hora;
