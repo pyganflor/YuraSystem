@@ -71,18 +71,23 @@ class Semana extends Model
     }
 
     public function getCajasProyectadas($idVariedad){
+        $semanaActual = getSemanaByDate(now()->toDateString());
 
         $objResumenSemanaCosecha = ResumenSemanaCosecha::where([
             ['id_variedad',$idVariedad],
             ['codigo_semana',$this->codigo-1]
         ])->first();
 
-        $cajasProyectadas =  isset($objResumenSemanaCosecha->cajas)
-                                ? ($objResumenSemanaCosecha->cajas == 0 ? $objResumenSemanaCosecha->cajas_proyectadas
-                                : $objResumenSemanaCosecha->cajas) : 0;
-
+        if(isset($objResumenSemanaCosecha)){
+            if($this->codigo >= $semanaActual->codigo){
+                $cajasProyectadas = $objResumenSemanaCosecha->cajas_proyectadas;
+            }else{
+                $cajasProyectadas =  $objResumenSemanaCosecha->cajas;
+            }
+        }else{
+            $cajasProyectadas = 0;
+        }
         return $cajasProyectadas;
-
     }
 
     public function desecho($idVariedad){
@@ -110,7 +115,6 @@ class Semana extends Model
                         $saldoInicial =$saldoFinal;
                     $z++;
                 }
-               // dump($saldoInicial);
             }
             return $saldoInicial;
         }else{

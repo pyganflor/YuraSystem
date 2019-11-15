@@ -28,13 +28,12 @@
                             $saldoInicial = $objSemanaActual->getSaldo($idVariedad);
                         }elseif((int)$objSemanaActual->firstSemanaResumenSemanaCosechaByVariedad($idVariedad) < $semana){
                             $saldoInicial = $objSemanaActual->getLastSaldoInicial($idVariedad,$semana);
-                             //dump("A: ".$saldoInicial);
-
                         }else{
                             $saldoInicial = $objSemanaActual->firstSaldoInicialByVariedad($idVariedad);
 
                         }
                     }
+                    //dump($saldoInicial);
                     $saldoFinal = isset($objSemanaPasada) ? $objSemanaPasada->getSaldo($idVariedad)+$saldoInicial : $objSemanaActual->getSaldo($idVariedad)+$saldoInicial;
                     if($x>0)
                         $saldoInicial = $saldoFinal;
@@ -279,6 +278,7 @@
     <ul style="margin-top: 5px" class="list-unstyled panel-collapse collapse" id="collapseLeyenda">
         <li>Totales <i class="fa fa-fw fa-circle" style="color: rgb(3, 222, 0)"></i></li>
         <li>Otros clientes <i class="fa fa-fw fa-circle" style="color:#08ffe8"></i></li>
+        <li>Desecho <i class="fa fa-fw fa-circle" style="color:#ffb100"></i></li>
         <li>Cajas físicas proyectadas del año anterior <i class="fa fa-fw fa-circle" style="color:#08ffe836"></i></li>
         <li>Total clientes: {{$clientes}} <i class="fa fa-users" style="color: #9100ff7d"></i> </li>
     </ul>
