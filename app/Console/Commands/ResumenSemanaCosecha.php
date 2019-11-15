@@ -90,6 +90,8 @@ class ResumenSemanaCosecha extends Command
             }
             $calibreActual=[];
             $z=0;
+            $semanaActual = getSemanaByDate(now()->toDateString())->codigo;
+
             foreach ($semanas as $x => $semana){
                 foreach($variedades as $y => $variedad){
                     $resumenSemanaCosecha = ResumenCosecha::where([
@@ -110,10 +112,7 @@ class ResumenSemanaCosecha extends Command
                         ])->sum('proyectados');
                     $objResumenSemanaCosecha->cajas = getCajasByRangoVariedad($semana->fecha_inicial, $semana->fecha_final, $variedad->id_variedad);
 
-                    //Info($semana->fecha_inicial." | ".$semana->fecha_final." | ".$variedad->id_variedad);
-                    $semanaActual = getSemanaByDate(now()->toDateString())->codigo;
-
-                    if($semana->codigo > $semanaActual){
+                    if($semana->codigo >= $semanaActual){
                         if($z>0 && $z<6){
                             $calibre = isset($calibreActual[$variedad->id_variedad]) ? $calibreActual[$variedad->id_variedad] : 0;
                         }else{
@@ -122,7 +121,7 @@ class ResumenSemanaCosecha extends Command
                     }else{
                         $calibre = getCalibreByRangoVariedad($semana->fecha_inicial, $semana->fecha_final, $variedad->id_variedad);
                         $calibreActual[$variedad->id_variedad] = $calibre;
-                        $z=1;
+                        $z=0;
                     }
 
                     $tallos = getTallosCosechadosByModSemVar(null, $semana->codigo, $variedad->id_variedad);
@@ -133,6 +132,7 @@ class ResumenSemanaCosecha extends Command
                     $objResumenSemanaCosecha->cajas_proyectadas= number_format($cajasProyectadas,2,".","");
                     $objResumenSemanaCosecha->save();
                 }
+                Info($calibreActual);
                 $z++;
             }
 
