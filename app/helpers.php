@@ -2314,6 +2314,7 @@ function getCalibreByRangoVariedad($desde, $hasta, $variedad)
     $cant_verdes = 0;
     foreach ($query as $dia) {
         $verde = ClasificacionVerde::All()->where('fecha_ingreso', '=', $dia->dia)->first();
+        $value = 0;
         if ($verde != '') {
             if ($variedad == 'T') { // Todas las variedades
                 $value = $verde->getCalibre();
@@ -2322,9 +2323,9 @@ function getCalibreByRangoVariedad($desde, $hasta, $variedad)
                 $value = $verde->calibreByVariedad($variedad);
                 $calibre += $value;
             }
-            if ($value > 0)
-                $cant_verdes++;
         }
+        if ($value > 0)
+            $cant_verdes++;
     }
     return $cant_verdes > 0 ? round($calibre / $cant_verdes, 2) : 0;
 }

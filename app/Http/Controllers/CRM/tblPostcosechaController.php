@@ -321,15 +321,15 @@ class tblPostcosechaController extends Controller
                             if ($criterio == 'E')
                                 $valor += $verde->getTotalRamosEstandarByVariedad($variedad);
                             if ($criterio == 'D') {
-                                $value = $verde->desechoByVariedad($var->id_variedad);
+                                $value = $verde->desechoByVariedad($variedad);
                                 $valor += $value;
                             }
                             if ($criterio == 'R') {
-                                $value = $verde->getRendimientoByVariedad($var->id_variedad);
+                                $value = $verde->getRendimientoByVariedad($variedad);
                                 $valor += $value;
                             }
                             if ($criterio == 'Q') {
-                                $value = $verde->calibreByVariedad($var->id_variedad);
+                                $value = $verde->calibreByVariedad($variedad);
                                 $valor += $value;
                             }
 
