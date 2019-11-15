@@ -26,7 +26,6 @@ class ProyVentaController extends Controller
     }
 
     public function listarProyecionVentaSemanal(Request $request){
-
         $desde = isset($request->desde) ? $request->desde : now()->toDateString();
         $hasta = isset($request->hasta) ? $request->hasta : now()->toDateString();
         $semana_desde = Semana::where('codigo', $desde)->first();
