@@ -91,7 +91,7 @@ class ProyVentaController extends Controller
                 ->where([
                     ['id_cliente',$idCliente],
                     ['id_variedad',$request->id_variedad]
-                ])->get();
+                ])->orderBy('codigo_semana','asc')->get();
                 foreach ($objProyeccionVentaSemanalReal as $item) {
                     $proyeccionVentaSemanalRealCliente[]=$item;
                 }

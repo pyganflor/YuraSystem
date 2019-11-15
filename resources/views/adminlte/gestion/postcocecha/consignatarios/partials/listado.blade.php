@@ -17,10 +17,10 @@
                     IDENTIFICACIÓN
                 </th>
                 <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
-                    CORREO
+                    TÉLEFONO
                 </th>
                 <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
-                    TÉLEFONO
+                    CORREO
                 </th>
                 <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d">
                     OPCIONES
