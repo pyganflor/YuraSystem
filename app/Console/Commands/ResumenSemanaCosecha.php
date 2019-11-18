@@ -112,27 +112,22 @@ class ResumenSemanaCosecha extends Command
                         ])->sum('proyectados');
                     $objResumenSemanaCosecha->cajas = getCajasByRangoVariedad($semana->fecha_inicial, $semana->fecha_final, $variedad->id_variedad);
 
-
-                    //dump($semanaActual->cuartaSemanaFutura($variedad->id_variedad));
                     if($semana->codigo >= $semanaActual->codigo){
                         if($semana->codigo <= $semanaActual->cuartaSemanaFutura($variedad->id_variedad)){
                             $resumenAnterior = ResumenCosecha::where([
                                 ['id_variedad',$variedad->id_variedad],
                                 ['codigo_semana',$semana->codigo-1]
                             ])->select('calibre')->first();
-                            dump("intervalo 4 sem: ".$resumenAnterior->calibre);
-                            //$calibreActual[$variedad->id_variedad] =$resumenAnterior->calibre;
-                            $calibre = $resumenAnterior->calibre;//$calibreActual[$variedad->id_variedad];
+                            //dump("intervalo 4 sem: ".$resumenAnterior->calibre);
+                            $calibre = $resumenAnterior->calibre;
                         }else{
                             $calibreProyectado = Semana::where([['codigo',$semana->codigo],['id_variedad',$variedad->id_variedad]])->first();
                             $calibre = isset($calibreProyectado) ? $calibreProyectado->tallos_ramo_poda : 0;
-                            dump("mayor que 4 sem: ".$calibre);
+                            //dump("mayor que 4 sem: ".$calibre);
                         }
                     }else{
                         $calibre = getCalibreByRangoVariedad($semana->fecha_inicial, $semana->fecha_final, $variedad->id_variedad);
-                        dump("menor que actual: ".$calibre);
-                        //$calibreActual[$variedad->id_variedad] = $calibre;
-                       // $z=0;
+                       // dump("menor que actual: ".$calibre);
                     }
 
                     $tallos = getTallosCosechadosByModSemVar(null, $semana->codigo, $variedad->id_variedad);
@@ -143,7 +138,6 @@ class ResumenSemanaCosecha extends Command
                     $objResumenSemanaCosecha->cajas_proyectadas= number_format($cajasProyectadas,2,".","");
                     $objResumenSemanaCosecha->save();
                 }
-               // $z++;
             }
 
         }else{
