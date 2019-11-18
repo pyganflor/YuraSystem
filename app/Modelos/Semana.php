@@ -166,14 +166,14 @@ class Semana extends Model
 
     }
 
-    public function diasFuturos($dias){
+    public function diasFuturos($dias,$idVariedad){
         $x =1;
         while($x>=1 && $x<=$dias){
-            $semana = Semana::where('codigo',$this->codigo)->first();
-            if(isset($semanas)){
+            $semana = Semana::where([['codigo',$this->codigo],['id_variedad',$idVariedad]])->first();
+            if(isset($semanas))
                 $semana = $semana->codigo;
-                $x++;
-            }
+
+            $x++;
             $this->codigo++;
         }
         return $semana;

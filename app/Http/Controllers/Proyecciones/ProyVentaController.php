@@ -22,7 +22,8 @@ class ProyVentaController extends Controller
             'url' => $request->getRequestUri(),
             'submenu' => Submenu::Where('url', '=', substr($request->getRequestUri(), 1))->get()[0],
             'text' => ['titulo' => 'Proyecciones', 'subtitulo' => 'ventas por cliente'],
-            'clientes' => Cliente::where('estado',1)->get()
+            'clientes' => Cliente::where('estado',1)->get(),
+            'hasta' => getSemanaByDate(opDiasFecha('+', 98, date('Y-m-d')))
         ]);
     }
 
@@ -125,7 +126,7 @@ class ProyVentaController extends Controller
                'idVariedad' => $request->id_variedad,
                'semanas'=>isset(array_values($data)[0]['semanas']) ? array_values($data)[0]['semanas'] : [],
                'otros' => $top >= $clientes ? false : true,
-               'clientes' => $clientes
+               'clientes' => $clientes,
            ]);
 
         }else{ // LA semana no esta programada

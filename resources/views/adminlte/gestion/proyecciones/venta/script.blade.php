@@ -1,5 +1,5 @@
 <script>
-    select_planta($('#filtro_predeterminado_planta').val(), 'filtro_predeterminado_variedad', 'div_cargar_variedades' );
+   // select_planta($('#filtro_predeterminado_planta').val(), 'filtro_predeterminado_variedad', 'div_cargar_variedades' );
 
     listar_proyecciones_venta_semanal();
 
