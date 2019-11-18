@@ -14,8 +14,6 @@ class dbController extends Controller
 {
     public function jobs(Request $request)
     {
-        dump('2018-12-31', '2019-01-06', 1);
-        dump(getCalibreByRangoVariedad('2018-12-31', '2019-01-06', 1));
         return view('adminlte.gestion.db.jobs', [
             'url' => $request->getRequestUri(),
             'submenu' => Submenu::Where('url', '=', substr($request->getRequestUri(), 1))->get()[0],
