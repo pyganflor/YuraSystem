@@ -119,11 +119,9 @@ class ResumenSemanaCosecha extends Command
                             $resumenAnterior = ResumenSemanaCosecha::where([
                                 ['id_variedad',$variedad->id_variedad],
                                 ['codigo_semana',$semana->codigo-1]
-                            ])->select('calibre')->get();
-                            foreach ($resumenAnterior as $ra)
-                                $calibreActual[$variedad->id_variedad] =$ra->calibre;
-
-                            $calibre = $calibreActual[$variedad->id_variedad];
+                            ])->select('calibre')->first();
+                            $calibreActual[$variedad->id_variedad] =$resumenAnterior->calibre;
+                            $calibre = $resumenAnterior->calibre;//$calibreActual[$variedad->id_variedad];
                         }else{
                             $calibreProyectado = Semana::where([['codigo',$semana->codigo],['id_variedad',$variedad->id_variedad]])->first();
                             $calibre = isset($calibreProyectado) ? $calibreProyectado->tallos_ramo_poda : 0;

@@ -102,6 +102,10 @@ class proyCosechaController extends Controller
                     ]);
                 }
 
+                $semana_actual = getSemanaByDate(date('Y-m-d'));
+                $semana_pasada = getSemanaByDate(opDiasFecha('-', 7, $semana_actual->fecha_inicial));
+                $calibre_actual = getCalibreByRangoVariedad($semana_pasada->fecha_inicial, $semana_pasada->fecha_final, $request->variedad);
+
                 return view('adminlte.gestion.proyecciones.cosecha.partials.listado', [
                     'semanas' => $semanas,
                     'modulos' => $array_modulos,
@@ -110,7 +114,9 @@ class proyCosechaController extends Controller
                     'opcion' => $request->opcion,
                     'detalle' => $request->detalle,
                     'ramos_x_caja' => getConfiguracionEmpresa()->ramos_x_caja,
-                    'semana_actual' => getSemanaByDate(date('Y-m-d')),
+                    'semana_actual' => $semana_actual,
+                    'semana_pasada' => $semana_pasada,
+                    'calibre_actual' => $calibre_actual,
                 ]);
             } else
                 return 'No se han encontrado módulos en el rango establecido.';
