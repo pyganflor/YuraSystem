@@ -155,4 +155,16 @@ class Semana extends Model
         return Variedad::find($idVariedad)->saldo_inicial;
     }
 
+    public function cuartaSemanaFutura($idVariedad){
+         $semanas = Semana::where([['codigo','>',$this->codigo],['id_variedad',$idVariedad]])
+             ->limit(4)->orderBy('codigo','asc');
+
+         if($semanas->count()>0){
+             return $semanas->get()->last()->codigo;
+         }else{
+             return 0;
+         }
+
+    }
+
 }

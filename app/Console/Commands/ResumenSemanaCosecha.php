@@ -90,7 +90,7 @@ class ResumenSemanaCosecha extends Command
             }
             $calibreActual=[];
             $z=0;
-            $semanaActual = getSemanaByDate(now()->toDateString())->codigo;
+            $semanaActual = getSemanaByDate(now()->toDateString());
 
             foreach ($semanas as $x => $semana){
                 foreach($variedades as $y => $variedad){
@@ -111,24 +111,33 @@ class ResumenSemanaCosecha extends Command
                             ['id_variedad',$variedad->id_variedad]
                         ])->sum('proyectados');
                     $objResumenSemanaCosecha->cajas = getCajasByRangoVariedad($semana->fecha_inicial, $semana->fecha_final, $variedad->id_variedad);
-                   dump($semana->codigo,$semanaActual,$z);
-                    if($semana->codigo >= $semanaActual){
-                        if($z>1 && $z<6){
-                            $calibre = isset($calibreActual[$variedad->id_variedad]) ? $calibreActual[$variedad->id_variedad] : 0;
+
+
+                    //dump($semanaActual->cuartaSemanaFutura($variedad->id_variedad));
+                    if($semana->codigo >= $semanaActual->codigo){
+                        if($semana->codigo <= $semanaActual->cuartaSemanaFutura($variedad->id_variedad)){
+                            $resumenAnterior = ResumenSemanaCosecha::where([
+                                ['id_variedad',$variedad->id_variedad],
+                                ['codigo_semana',$semana->codigo-1]
+                            ])->select('calibre')->get();
+                            foreach ($resumenAnterior as $ra)
+                                $calibreActual[$variedad->id_variedad] =$ra->calibre;
+
+                            $calibre = $calibreActual[$variedad->id_variedad];
                         }else{
                             $calibreProyectado = Semana::where([['codigo',$semana->codigo],['id_variedad',$variedad->id_variedad]])->first();
-                            //dump($calibreProyectado);
                             $calibre = isset($calibreProyectado) ? $calibreProyectado->tallos_ramo_poda : 0;
                         }
                     }else{
                         $calibre = getCalibreByRangoVariedad($semana->fecha_inicial, $semana->fecha_final, $variedad->id_variedad);
+                        dump($calibre);
                         $calibreActual[$variedad->id_variedad] = $calibre;
                         $z=0;
                     }
 
                     $tallos = getTallosCosechadosByModSemVar(null, $semana->codigo, $variedad->id_variedad);
                     $objResumenSemanaCosecha->tallos = isset($tallos) ? $tallos : 0;
-                    $objResumenSemanaCosecha->calibre = isset($calibre) ? $calibre : 0;
+                    $objResumenSemanaCosecha->calibre = $calibre;
                     $objResumenSemanaCosecha->tallos_proyectados = $proyeccionModuloSemana;
                     $cajasProyectadas = $objResumenSemanaCosecha->calibre > 0 ? ($proyeccionModuloSemana / $objResumenSemanaCosecha->calibre / getConfiguracionEmpresa(null,false)->ramos_x_caja) : 0;
                     $objResumenSemanaCosecha->cajas_proyectadas= number_format($cajasProyectadas,2,".","");
