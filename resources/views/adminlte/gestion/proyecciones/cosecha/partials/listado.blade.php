@@ -313,9 +313,6 @@
                 <br>
                 <small><em>Tallos/cajas</em></small>
             </th>
-            @php
-                $calibre_actual = getCalibreByRangoVariedad(opDiasFecha('-', 8, $semana_actual->fecha_inicial), opDiasFecha('-', 1, $semana_actual->fecha_inicial), $variedad);
-            @endphp
             @foreach($tallos_proyectados as $pos_val => $val)
                 <th class="text-center" style="border-color: #9d9d9d">
                     @if($val > 0)
