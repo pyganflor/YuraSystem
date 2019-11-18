@@ -98,4 +98,8 @@
         $.LoadingOverlay('hide');
     }
 
+    function habilitar(input){
+        $(input).removeAttr('disabled');
+    }
+
 </script>
