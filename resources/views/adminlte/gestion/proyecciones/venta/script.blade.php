@@ -99,6 +99,7 @@
     }
 
     function habilitar(input){
+        console.log($(input));
         $(input).removeAttr('disabled');
     }
 

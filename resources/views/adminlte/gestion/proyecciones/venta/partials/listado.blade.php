@@ -84,7 +84,7 @@
                             <input type="number" min="0" id="desecho_semana_{{$codigoSemana}}" name="desecho_semana_{{$codigoSemana}}"
                                    data-toggle="tooltip" data-placement="top" title="Pocentaje de desecho" value="{{getObjSemana($codigoSemana)->desecho($idVariedad)}}"
                                    onblur="store_proyeccion_desecho('{{$codigoSemana}}','{{$idVariedad}}')" disabled
-                                   style="border:none;background-color: transparent;text-align:center" ondblclick="habilitar(thid)">
+                                   style="border:none;background-color: transparent;text-align:center" ondblclick="habilitar(this)">
                         </td>
                     @endforeach
                     <td class="text-center" style="width:250px;border: 2px solid #000000;">
@@ -149,7 +149,7 @@
                         <td style="border: 1px solid #9d9d9d;border-bottom: 2px solid #000000;">
                             <div style="width:100%;text-align:center;" data-toggle="tooltip" data-placement="top" title="Cajas físicas proyectadas">
                                 <input type="number" id="cajas_proyectadas_{{$cliente->id_cliente}}_{{$codigoSemana}}"  min="0" onblur="store_proyeccion_venta('{{$cliente->id_cliente}}','{{$codigoSemana}}','{{$idVariedad}}')"
-                                       onkeyup="calcular_proyeccion_cliente('{{$cliente->id_cliente}}','{{$codigoSemana}}')" disabled ondblclick=" habilitar(this)"
+                                       onkeyup="calcular_proyeccion_cliente('{{$cliente->id_cliente}}','{{$codigoSemana}}')" disabled ondblclick="habilitar(this)"
                                        name="cajas_proyectadas_{{$cliente->id_cliente}}_{{$codigoSemana}}" style="border:none;text-align:center;width:50px" value="{{$dataSemana['cajas_fisicas']}}">
                             </div>
                         </td>
