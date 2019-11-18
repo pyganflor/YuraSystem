@@ -286,4 +286,8 @@
     $(function () {
         $('[data-toggle="tooltip"]').tooltip()
     });
+    function habilitar(input){
+        console.log($(input));
+        $(input).removeAttr('disabled');
+    }
 </script>
