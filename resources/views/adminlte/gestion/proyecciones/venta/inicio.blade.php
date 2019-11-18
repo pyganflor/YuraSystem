@@ -36,7 +36,7 @@
                         <i class="fa fa-fw fa-calendar"></i> Hasta
                     </div>
                     <input type="number" class="form-control hasta" id="filtro_predeterminado_hasta" name="filtro_predeterminado_hasta" required
-                           value="{{getSemanaByDate(date('Y-m-d'))->codigo}}" style="">
+                           value="{{getSemanaByDate(date('Y-m-d'))->diasFuturos(10)}}" style="">
                 </div>
                 <div class="input-group">
                     <div class="input-group-addon bg-gray">

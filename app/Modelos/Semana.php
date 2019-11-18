@@ -166,4 +166,17 @@ class Semana extends Model
 
     }
 
+    public function diasFuturos($dias){
+        $x =1;
+        while($x>=1 && $x<=$dias){
+            $semana = Semana::where('codigo',$this->codigo)->first();
+            if(isset($semanas)){
+                $semana = $semana->codigo;
+                $x++;
+            }
+            $this->codigo++;
+        }
+        return $semana;
+    }
+
 }
