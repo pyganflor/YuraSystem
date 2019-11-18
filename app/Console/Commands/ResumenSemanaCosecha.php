@@ -118,8 +118,8 @@ class ResumenSemanaCosecha extends Command
                                 ['id_variedad',$variedad->id_variedad],
                                 ['codigo_semana',$semana->codigo-1]
                             ])->select('calibre')->first();
-                            //dump("intervalo 4 sem: ".$resumenAnterior->calibre);
                             $calibre = $resumenAnterior->calibre;
+                            //dump("intervalo 4 sem: ".$resumenAnterior->calibre);
                         }else{
                             $calibreProyectado = Semana::where([['codigo',$semana->codigo],['id_variedad',$variedad->id_variedad]])->first();
                             $calibre = isset($calibreProyectado) ? $calibreProyectado->tallos_ramo_poda : 0;
@@ -127,7 +127,7 @@ class ResumenSemanaCosecha extends Command
                         }
                     }else{
                         $calibre = getCalibreByRangoVariedad($semana->fecha_inicial, $semana->fecha_final, $variedad->id_variedad);
-                       // dump("menor que actual: ".$calibre);
+                       //dump("menor que actual: ".$calibre);
                     }
 
                     $tallos = getTallosCosechadosByModSemVar(null, $semana->codigo, $variedad->id_variedad);
