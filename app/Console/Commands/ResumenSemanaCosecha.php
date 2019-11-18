@@ -111,12 +111,13 @@ class ResumenSemanaCosecha extends Command
                             ['id_variedad',$variedad->id_variedad]
                         ])->sum('proyectados');
                     $objResumenSemanaCosecha->cajas = getCajasByRangoVariedad($semana->fecha_inicial, $semana->fecha_final, $variedad->id_variedad);
-
+                   dump($semana->codigo,$semanaActual,$z);
                     if($semana->codigo >= $semanaActual){
-                        if($z>0 && $z<6){
+                        if($z>1 && $z<6){
                             $calibre = isset($calibreActual[$variedad->id_variedad]) ? $calibreActual[$variedad->id_variedad] : 0;
                         }else{
                             $calibreProyectado = Semana::where([['codigo',$semana->codigo],['id_variedad',$variedad->id_variedad]])->first();
+                            //dump($calibreProyectado);
                             $calibre = isset($calibreProyectado) ? $calibreProyectado->tallos_ramo_poda : 0;
                         }
                     }else{
@@ -133,7 +134,6 @@ class ResumenSemanaCosecha extends Command
                     $objResumenSemanaCosecha->cajas_proyectadas= number_format($cajasProyectadas,2,".","");
                     $objResumenSemanaCosecha->save();
                 }
-                Info($calibreActual);
                 $z++;
             }
 

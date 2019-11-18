@@ -81,6 +81,7 @@ class Semana extends Model
         if(isset($objResumenSemanaCosecha)){
             if($this->codigo >= $semanaActual->codigo){
                 $cajasProyectadas = $objResumenSemanaCosecha->cajas_proyectadas;
+                //dump($objResumenSemanaCosecha->id_resumen_semana_cosecha,$objResumenSemanaCosecha->cajas_proyectadas);
             }else{
                 $cajasProyectadas =  $objResumenSemanaCosecha->cajas;
             }
