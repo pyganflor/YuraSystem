@@ -18,8 +18,10 @@ class Venta
             $valor = 0;
             $ramos_estandar = 0;
             foreach ($pedidos_semanal as $p) {
-                $valor += $p->getPrecioByPedido();
-                $ramos_estandar += $p->getRamosEstandar();
+                if (!getFacturaAnulada($p->id_pedido)) {
+                    $valor += $p->getPrecioByPedido();
+                    $ramos_estandar += $p->getRamosEstandar();
+                }
             }
             $precio_x_ramo = $ramos_estandar > 0 ? round($valor / $ramos_estandar, 2) : 0;
 
@@ -47,7 +49,6 @@ class Venta
             foreach ($pedidos as $pos_ped => $ped) {
                 if (!getFacturaAnulada($ped->id_pedido)) {
                     $venta_mensual += $ped->getPrecioByPedido();
-                    dump($venta_mensual . ' => ' . $ped->fecha_pedido . ' -- ' . ($pos_ped + 1) . '/' . count($pedidos));
                 }
             }
 
