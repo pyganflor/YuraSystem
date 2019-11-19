@@ -283,12 +283,8 @@
 <script>
     $(function () {
         $('[data-toggle="tooltip"]').tooltip();
-
-
     });
     function habilitar(id){
-        console.log("hola");
         $("#"+id).removeAttr('disabled');
     }
-
 </script>

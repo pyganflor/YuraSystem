@@ -919,7 +919,7 @@
     function select_planta(p, input_variedad, elemento_load, li_adicional = '',f) {
         if (p != '') {
             datos = {
-                planta: p
+                    planta: p
             };
             get_jquery('{{url('select_planta')}}', datos, function (retorno) {
                 $('#' + input_variedad).html(li_adicional);

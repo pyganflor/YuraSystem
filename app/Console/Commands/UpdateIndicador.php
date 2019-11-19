@@ -45,8 +45,7 @@ class UpdateIndicador extends Command
         $indicador_par = $this->argument('indicador');
 
         if (in_array($indicador_par, [0, 'D1'])) {  // Calibre (7 días)
-            $comand = new Calibre();
-            $comand->dias_atras_7();
+            Calibre::dias_atras_7();
             Log::info('INDICADOR: "Calibre (7 días)"');
         }
 

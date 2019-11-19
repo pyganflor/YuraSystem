@@ -166,5 +166,4 @@ class Semana extends Model
 
     }
 
-
 }
