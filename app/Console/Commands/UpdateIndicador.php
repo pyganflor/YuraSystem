@@ -47,10 +47,10 @@ class UpdateIndicador extends Command
         $dia_1_atras = opDiasFecha('-', 1, date('Y-m-d'));
 
         if (in_array($indicador_par, [0, 'D1'])) {  // Calibre (7 días)
-            $model = getIndicadorByName($indicador_par);
+            $model = getIndicadorByName('D1');
             if ($model != '') {
                 $valor = getCalibreByRangoVariedad($dia_7_atras, $dia_1_atras, 'T');
-                $model = $valor;
+                $model->valor = $valor;
                 $model->save();
             }
             Log::info('INDICADOR: "Calibre (7 días)"');
