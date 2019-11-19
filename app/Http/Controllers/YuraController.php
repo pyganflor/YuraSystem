@@ -27,44 +27,6 @@ class YuraController extends Controller
     public function inicio(Request $request)
     {
         if (count(getUsuario(Session::get('id_usuario'))->rol()->getSubmenusByTipo('C')) > 0) {
-            /* ================= venta/m2/año en 4 meses =================== */
-            $fecha_hasta = date('Y-m-d', strtotime('last month'));
-            $fecha_desde = date('Y-m-d', strtotime('-4 month'));
-
-            $data_venta_mensual = DB::table('historico_ventas')
-                ->select(DB::raw('sum(valor) as cant'))
-                ->where('anno', '=', substr($fecha_desde, 0, 4))
-                ->where('mes', '>=', substr($fecha_desde, 5, 2))
-                ->get()[0]->cant;
-            if (substr($fecha_desde, 0, 4) != substr($fecha_hasta, 0, 4)) {
-                $data_venta_mensual += DB::table('historico_ventas')
-                    ->select(DB::raw('sum(valor) as cant'))
-                    ->where('anno', '=', substr($fecha_hasta, 0, 4))
-                    ->where('mes', '<=', substr($fecha_hasta, 5, 2))
-                    ->get()[0]->cant;
-            }
-
-            /* ================= venta en 1 año =================== */
-            $fecha_hasta = date('Y-m-d', strtotime('last month'));
-            $fecha_desde = date('Y-m-d', strtotime('last year'));
-
-            $data_venta_anual = DB::table('historico_ventas')
-                ->select(DB::raw('sum(valor) as cant'))
-                ->where('anno', '=', substr($fecha_desde, 0, 4))
-                ->where('mes', '>=', substr($fecha_desde, 5, 2))
-                ->get()[0]->cant;
-            if (substr($fecha_desde, 0, 4) != substr($fecha_hasta, 0, 4)) {
-                $data_venta_anual += DB::table('historico_ventas')
-                    ->select(DB::raw('sum(valor) as cant'))
-                    ->where('anno', '=', substr($fecha_hasta, 0, 4))
-                    ->where('mes', '<=', substr($fecha_hasta, 5, 2))
-                    ->get()[0]->cant;
-            }
-            $semana_desde = getSemanaByDate(opDiasFecha('-', 91, date('Y-m-d')));
-            $semana_hasta = getSemanaByDate(date('Y-m-d'));
-            $data = getAreaCiclosByRango($semana_desde->codigo, $semana_hasta->codigo, 'T');
-            $data_area_anual = getAreaActivaFromData($data['variedades'], $data['semanas']);
-
             return view('adminlte.inicio', [
                 'calibre' => getIndicadorByName('D1')->valor,
                 'tallos' => getIndicadorByName('D2')->valor,
@@ -74,9 +36,8 @@ class YuraController extends Controller
                 'desecho' => getIndicadorByName('D6')->valor,
                 'area_produccion' => getIndicadorByName('D7')->valor,
                 'ramos_m2_anno' => getIndicadorByName('D8')->valor,
-                'venta_mensual' => $data_venta_mensual,
-                'venta_anual' => $data_venta_anual,
-                'area_anual' => $data_area_anual,
+                'venta_m2_anno_mensual' => getIndicadorByName('D9')->valor,
+                'venta_m2_anno_anual' => getIndicadorByName('D10')->valor,
             ]);
         }
 

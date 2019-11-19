@@ -71,6 +71,14 @@ class UpdateIndicador extends Command
             Area::ramos_m2_anno_4_meses_atras();
             Log::info('INDICADOR: "Ramos/m2/año (4 meses)"');
         }
+        if ($indicador_par === '0' || $indicador_par === 'D9') { // Venta $/m2/año (4 meses)
+            Venta::dinero_m2_anno_4_meses_atras();
+            Log::info('INDICADOR: "Venta $/m2/año (4 meses)"');
+        }
+        if ($indicador_par === '0' || $indicador_par === 'D10') { // Venta $/m2/año (1 año)
+            Venta::dinero_m2_anno_1_anno_atras();
+            Log::info('INDICADOR: "Venta $/m2/año (1 año)"');
+        }
 
         $time_duration = difFechas(date('Y-m-d H:i:s'), $ini)->h . ':' . difFechas(date('Y-m-d H:i:s'), $ini)->m . ':' . difFechas(date('Y-m-d H:i:s'), $ini)->s;
         Log::info('<*> DURACION: ' . $time_duration . '  <*>');
