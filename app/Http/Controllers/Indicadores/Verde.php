@@ -18,8 +18,8 @@ class Verde
         $model = getIndicadorByName('D2');  // Tallos clasificados (7 días)
         if ($model != '') {
             $verdes = ClasificacionVerde::All()->where('estado', 1)
-                ->where('v.fecha_ingreso', '>=', opDiasFecha('-', 7, date('Y-m-d')))
-                ->where('v.fecha_ingreso', '<=', opDiasFecha('-', 1, date('Y-m-d')));
+                ->where('fecha_ingreso', '>=', opDiasFecha('-', 7, date('Y-m-d')))
+                ->where('fecha_ingreso', '<=', opDiasFecha('-', 1, date('Y-m-d')));
             $valor = 0;
             foreach ($verdes as $v) {
                 $valor += $v->total_tallos();
@@ -27,5 +27,6 @@ class Verde
             $model->valor = $valor;
             $model->save();
         }
+
     }
 }
