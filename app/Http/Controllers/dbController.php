@@ -7,8 +7,10 @@ use Illuminate\Support\Facades\DB;
 use yura\Jobs\ProyeccionUpdateSemanal;
 use yura\Jobs\ProyeccionVentaSemanalUpdate;
 use yura\Jobs\ResumenSemanaCosecha;
+use yura\Modelos\Indicador;
 use yura\Modelos\Job;
 use yura\Modelos\Submenu;
+use Validator;
 
 class dbController extends Controller
 {
@@ -60,4 +62,138 @@ class dbController extends Controller
 
         return ['success' => true];
     }
+
+    /* ========================= INDICADORES ========================== */
+    public function indicadores(Request $request)
+    {
+        return view('adminlte.gestion.db.indicadores', [
+            'url' => $request->getRequestUri(),
+            'submenu' => Submenu::Where('url', '=', substr($request->getRequestUri(), 1))->get()[0],
+            'indicadores' => getIndicadores(),
+        ]);
+    }
+
+    public function store_indicador(Request $request)
+    {
+        $valida = Validator::make($request->all(), [
+            'nombre' => 'required|max:4|unique:indicador',
+            'descripcion' => 'required|max:250',
+            'valor' => 'required',
+        ], [
+            'nombre.unique' => 'El nombre ya existe',
+            'nombre.required' => 'El nombre es obligatorio',
+            'nombre.max' => 'El nombre es muy grande',
+            'descripcion.required' => 'La descripcón es obligatoria',
+            'descripcion.max' => 'La descripcón es muy grande',
+            'valor.required' => 'El valor es obligatorio',
+        ]);
+        if (!$valida->fails()) {
+            $model = new Indicador();
+            $model->nombre = str_limit(mb_strtoupper(espacios($request->nombre)), 4);
+            $model->descripcion = str_limit(espacios($request->descripcion), 250);
+            $model->valor = $request->valor;
+            $model->estado = $request->estado == 'true' ? 1 : 0;
+            $model->fecha_registro = date('Y-m-d H:i:s');
+
+            if ($model->save()) {
+                $model = Indicador::All()->last();
+                $success = true;
+                $msg = '<div class="alert alert-success text-center">' .
+                    '<p> Se ha guardado un nuevo indicador satisfactoriamente</p>'
+                    . '</div>';
+                bitacora('indicador', $model->id_indicador, 'I', 'Inserción satisfactoria de un nuevo indicador');
+            } else {
+                $success = false;
+                $msg = '<div class="alert alert-warning text-center">' .
+                    '<p> Ha ocurrido un problema al guardar la información al sistema</p>'
+                    . '</div>';
+            }
+        } else {
+            $success = false;
+            $errores = '';
+            foreach ($valida->errors()->all() as $mi_error) {
+                if ($errores == '') {
+                    $errores = '<li>' . $mi_error . '</li>';
+                } else {
+                    $errores .= '<li>' . $mi_error . '</li>';
+                }
+            }
+            $msg = '<div class="alert alert-danger">' .
+                '<p class="text-center">¡Por favor corrija los siguientes errores!</p>' .
+                '<ul>' .
+                $errores .
+                '</ul>' .
+                '</div>';
+        }
+        return [
+            'mensaje' => $msg,
+            'success' => $success
+        ];
+    }
+
+    public function update_indicador(Request $request)
+    {
+        $valida = Validator::make($request->all(), [
+            'nombre' => 'required|max:4',
+            'descripcion' => 'required|max:250',
+            'valor' => 'required',
+            'id' => 'required|',
+        ], [
+            'nombre.required' => 'El nombre es obligatorio',
+            'descripcion.required' => 'La descripción es obligatoria',
+            'descripcion.max' => 'La descripción es muy grande',
+            'valor.required' => 'El valor es obligatorio',
+            'id.required' => 'El indicador es obligatorio',
+            'nombre.max' => 'El nombre es muy grande',
+        ]);
+        if (!$valida->fails()) {
+            if (count(Indicador::All()->where('nombre', '=', str_limit(mb_strtoupper(espacios($request->nombre)), 4))
+                    ->where('id_indicador', '!=', $request->id)) == 0) {
+                $model = Indicador::find($request->id);
+                $model->nombre = str_limit(mb_strtoupper(espacios($request->nombre)), 4);
+                $model->descripcion = str_limit(espacios($request->descripcion), 250);
+                $model->valor = $request->valor;
+                $model->estado = $request->estado == 'true' ? 1 : 0;
+
+                if ($model->save()) {
+                    $success = true;
+                    $msg = '<div class="alert alert-success text-center">' .
+                        '<p> Se ha actualizado el indicador satisfactoriamente</p>'
+                        . '</div>';
+                    bitacora('indicador', $model->id_indicador, 'U', 'Actualización satisfactoria de un indicador');
+                } else {
+                    $success = false;
+                    $msg = '<div class="alert alert-warning text-center">' .
+                        '<p> Ha ocurrido un problema al guardar la información al sistema</p>'
+                        . '</div>';
+                }
+            } else {
+                $success = false;
+                $msg = '<div class="alert alert-warning text-center">' .
+                    '<p> El indicador "' . espacios($request->nombre) . '" ya se encuentra en el sistema</p>'
+                    . '</div>';
+            }
+        } else {
+            $success = false;
+            $errores = '';
+            foreach ($valida->errors()->all() as $mi_error) {
+                if ($errores == '') {
+                    $errores = '<li>' . $mi_error . '</li>';
+                } else {
+                    $errores .= '<li>' . $mi_error . '</li>';
+                }
+            }
+            $msg = '<div class="alert alert-danger">' .
+                '<p class="text-center">¡Por favor corrija los siguientes errores!</p>' .
+                '<ul>' .
+                $errores .
+                '</ul>' .
+                '</div>';
+        }
+        return [
+            'mensaje' => $msg,
+            'success' => $success
+        ];
+    }
+
 }
