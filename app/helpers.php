@@ -2473,3 +2473,11 @@ function getIndicadores()
 {
     return Indicador::orderBy('estado', 'desc')->orderBy('nombre', 'asc')->get();
 }
+
+function getIndicadorByName($nombre)
+{
+    return Indicador::All()
+        ->where('estado', 1)
+        ->where('nombre', $nombre)
+        ->first();
+}
