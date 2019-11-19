@@ -3,6 +3,7 @@
 namespace yura\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use yura\Jobs\ProyeccionUpdateSemanal;
 use yura\Jobs\ProyeccionVentaSemanalUpdate;
@@ -62,8 +63,14 @@ class dbController extends Controller
                 ->onQueue('job');
         }
         if ($request->comando == 4) {   // comando VentaSemanalReal
-            UpdateIndicador::dispatch($request->indicador)
-                ->onQueue('job');
+            if ($request->cola == 1) {    // en cola
+                UpdateIndicador::dispatch($request->indicador)
+                    ->onQueue('job');
+            } else {
+                Artisan::call('indicador:update', [
+                    'indicador' => $request->indicador
+                ]);
+            }
         }
 
         return ['success' => true];

@@ -87,11 +87,13 @@ class Pedido extends Model
     {
         $r = 0;
         if (!getFacturaAnulada($this->id_pedido)) {
-            foreach ($this->detalles as $det_ped) {
-                foreach ($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $esp_emp) {
-                    foreach ($esp_emp->detalles as $det_esp) {
-                        $ramos = $det_ped->cantidad * $esp_emp->cantidad * $det_esp->cantidad;
-                        $r += convertToEstandar($ramos, explode('|', getCalibreRamoById($det_esp->id_clasificacion_ramo)->nombre)[0]);
+            if (!$this->isTipoSuelto()) {
+                foreach ($this->detalles as $det_ped) {
+                    foreach ($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $esp_emp) {
+                        foreach ($esp_emp->detalles as $det_esp) {
+                            $ramos = $det_ped->cantidad * $esp_emp->cantidad * $det_esp->cantidad;
+                            $r += convertToEstandar($ramos, explode('|', getCalibreRamoById($det_esp->id_clasificacion_ramo)->nombre)[0]);
+                        }
                     }
                 }
             }
@@ -103,12 +105,14 @@ class Pedido extends Model
     {
         $r = 0;
         if (!getFacturaAnulada($this->id_pedido)) {
-            foreach ($this->detalles as $det_ped) {
-                foreach ($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $esp_emp) {
-                    foreach ($esp_emp->detalles as $det_esp) {
-                        if ($det_esp->id_variedad == $variedad) {
-                            $ramos = $det_ped->cantidad * $esp_emp->cantidad * $det_esp->cantidad;
-                            $r += convertToEstandar($ramos, explode('|', getCalibreRamoById($det_esp->id_clasificacion_ramo)->nombre)[0]);
+            if (!$this->isTipoSuelto()) {
+                foreach ($this->detalles as $det_ped) {
+                    foreach ($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $esp_emp) {
+                        foreach ($esp_emp->detalles as $det_esp) {
+                            if ($det_esp->id_variedad == $variedad) {
+                                $ramos = $det_ped->cantidad * $esp_emp->cantidad * $det_esp->cantidad;
+                                $r += convertToEstandar($ramos, explode('|', getCalibreRamoById($det_esp->id_clasificacion_ramo)->nombre)[0]);
+                            }
                         }
                     }
                 }
@@ -160,7 +164,7 @@ class Pedido extends Model
     }
 
     public function getCajas()
-    {
+    {   // cajas equivalentes
         if (!getFacturaAnulada($this->id_pedido)) {
             if (!$this->isTipoSuelto())
                 return round($this->getRamosEstandar() / getConfiguracionEmpresa()->ramos_x_caja, 2);
@@ -440,11 +444,12 @@ class Pedido extends Model
         return $this->belongsTo('\yura\Modelos\ConfiguracionEmpresa', 'id_configuracion_empresa');
     }
 
-    public function getCajasFull(){
+    public function getCajasFull()
+    {
         $cajasFull = 0;
-        foreach($this->detalles as $det_ped){
-            foreach($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $esp_emp){
-                $cajasFull += ($esp_emp->cantidad * $det_ped->cantidad) * explode('|',$esp_emp->empaque->nombre)[1];
+        foreach ($this->detalles as $det_ped) {
+            foreach ($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $esp_emp) {
+                $cajasFull += ($esp_emp->cantidad * $det_ped->cantidad) * explode('|', $esp_emp->empaque->nombre)[1];
             }
         }
         return $cajasFull;

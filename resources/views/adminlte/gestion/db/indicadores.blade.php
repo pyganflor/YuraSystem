@@ -83,6 +83,10 @@
                                             onclick="update_indicador('{{$item->id_indicador}}')">
                                         <i class="fa fa-fw fa-save"></i>
                                     </button>
+                                    <button type="button" class="btn btn-xs btn-primary" title="Ejecutar Comando"
+                                            onclick="ejecutar_comando('{{$item->id_indicador}}')">
+                                        <i class="fa fa-fw fa-refresh"></i>
+                                    </button>
                                 </td>
                             </tr>
                         @endforeach
@@ -144,6 +148,22 @@
             };
             post_jquery('{{url('db_indicadores/update_indicador')}}', datos, function (retorno) {
                 //location.reload();
+            });
+        }
+
+        function ejecutar_comando(id) {
+            datos = {
+                _token: '{{csrf_token()}}',
+                indicador: $('#nombre_' + id).val(),
+                cola: 0,
+                comando: 4
+            };
+
+            $.LoadingOverlay('show');
+            $.post('{{url('db_jobs/send_queue_job')}}', datos, function (retorno) {
+                location.reload();
+            }, 'json').always(function () {
+                $.LoadingOverlay('hide');
             });
         }
     </script>
