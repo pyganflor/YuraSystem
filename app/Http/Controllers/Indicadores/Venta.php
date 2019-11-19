@@ -5,7 +5,6 @@ namespace yura\Http\Controllers\Indicadores;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use yura\Modelos\Pedido;
-use Illuminate\Support\Facades\Log;
 
 class Venta
 {
