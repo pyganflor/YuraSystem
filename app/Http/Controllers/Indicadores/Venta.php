@@ -43,9 +43,11 @@ class Venta
                 ->where('fecha_pedido', '<=', $hasta_sem->fecha_final);
 
             $venta_mensual = 0;
-            foreach ($pedidos as $ped) {
-                $venta_mensual += $ped->getPrecioByPedido();
-                dump($venta_mensual . ' => ' . $ped->fecha_pedido);
+            foreach ($pedidos as $pos_ped => $ped) {
+                if (!getFacturaAnulada($ped->id_pedido)) {
+                    $venta_mensual += $ped->getPrecioByPedido();
+                    dump($venta_mensual . ' => ' . $ped->fecha_pedido . ' -- ' . ($pos_ped + 1) . '/' . count($pedidos));
+                }
             }
 
             $semana_desde = getSemanaByDate(opDiasFecha('-', 98, date('Y-m-d')));   // 13 semanas atras
