@@ -40,7 +40,8 @@ class Venta
             $pedidos = Pedido::All()
                 ->where('estado', 1)
                 ->where('fecha_pedido', '>=', $desde_sem->fecha_inicial)
-                ->where('fecha_pedido', '<=', $hasta_sem->fecha_final);
+                ->where('fecha_pedido', '<=', $hasta_sem->fecha_final)
+                ->sortBy('fecha_pedido');
 
             $venta_mensual = 0;
             foreach ($pedidos as $pos_ped => $ped) {
