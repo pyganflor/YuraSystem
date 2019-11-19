@@ -33,7 +33,7 @@ class UpdateIndicador implements ShouldQueue
     public function handle()
     {
         Artisan::call('indicador:update', [
-
+            'indicador' => $this->indicador
         ]);
     }
 }

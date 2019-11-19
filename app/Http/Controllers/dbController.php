@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use yura\Jobs\ProyeccionUpdateSemanal;
 use yura\Jobs\ProyeccionVentaSemanalUpdate;
 use yura\Jobs\ResumenSemanaCosecha;
+use yura\Jobs\UpdateIndicador;
 use yura\Modelos\Indicador;
 use yura\Modelos\Job;
 use yura\Modelos\Submenu;
@@ -23,6 +24,7 @@ class dbController extends Controller
             'modulos' => getModulos()->where('estado', 1),
             'clientes' => getClientes(),
             'semana_actual' => getSemanaByDate(date('Y-m-d')),
+            'indicadores' => getIndicadores()->where('estado', 1),
         ]);
     }
 
@@ -57,6 +59,10 @@ class dbController extends Controller
         }
         if ($request->comando == 3) {   // comando VentaSemanalReal
             ProyeccionVentaSemanalUpdate::dispatch($request->desde, $request->hasta, $request->cliente, $request->variedad)
+                ->onQueue('job');
+        }
+        if ($request->comando == 4) {   // comando VentaSemanalReal
+            UpdateIndicador::dispatch($request->indicador)
                 ->onQueue('job');
         }
 

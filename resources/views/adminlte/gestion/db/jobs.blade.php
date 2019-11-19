@@ -60,6 +60,13 @@
                                 VentaSemanalReal
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="profile-tab" data-toggle="tab" href="#UpdateIndicador" role="tab"
+                               aria-controls="profile"
+                               aria-selected="false">
+                                UpdateIndicador
+                            </a>
+                        </li>
                     </ul>
                     <div class="tab-content" id="myTabContent">
                         <div class="tab-pane fade" id="ProyeccionUpdateSemanal" role="tabpanel" aria-labelledby="home-tab">
@@ -172,6 +179,26 @@
                                 </div>
                             </div>
                         </div>
+
+                        <div class="tab-pane fade" id="UpdateIndicador" role="tabpanel" aria-labelledby="profile-tab">
+                            <div class="input-group">
+                                <div class="input-group-addon" style="background-color: #e9ecef">
+                                    Indicador
+                                </div>
+                                <select name="comando4_indicador" id="comando4_indicador" class="form-control">
+                                    <option value="0">Todos</option>
+                                    @foreach($indicadores as $ind)
+                                        <option value="{{$ind->nombre}}" title="{{$ind->nombre}}">{{$ind->descripcion}}</option>
+                                    @endforeach
+                                </select>
+
+                                <div class="input-group-btn">
+                                    <button type="button" class="btn btn-primary" title="OK" onclick="send_queue_job(4)">
+                                        <i class="fa fa-fw fa-check"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -215,6 +242,13 @@
                     hasta: $('#comando3_hasta').val(),
                     cliente: $('#comando3_cliente').val(),
                     variedad: $('#comando3_variedad').val(),
+                    comando: comando
+                };
+            }
+            if (comando == 4) {
+                datos = {
+                    _token: '{{csrf_token()}}',
+                    indicador: $('#comando4_indicador').val(),
                     comando: comando
                 };
             }
