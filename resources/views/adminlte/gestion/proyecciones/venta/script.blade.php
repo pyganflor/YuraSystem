@@ -98,6 +98,4 @@
         $.LoadingOverlay('hide');
     }
 
-
-
 </script>
