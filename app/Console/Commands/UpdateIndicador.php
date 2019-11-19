@@ -58,6 +58,10 @@ class UpdateIndicador extends Command
             Venta::dinero_y_precio_x_ramo_7_dias_atras();
             Log::info('INDICADOR: "Precio promedio por ramo (7 días) - Dinero ingresado (7 días)"');
         }
+        if ($indicador_par === '0' || $indicador_par === 'D5' || $indicador_par === 'D6') { // Rendimiento (7 días) - Desecho (7 días)
+            Postcosecha::rendimiento_desecho_7_dias_atras();
+            Log::info('INDICADOR: "Rendimiento (7 días) - Desecho (7 días)"');
+        }
 
         $time_duration = difFechas(date('Y-m-d H:i:s'), $ini)->h . ':' . difFechas(date('Y-m-d H:i:s'), $ini)->m . ':' . difFechas(date('Y-m-d H:i:s'), $ini)->s;
         Log::info('<*> DURACION: ' . $time_duration . '  <*>');

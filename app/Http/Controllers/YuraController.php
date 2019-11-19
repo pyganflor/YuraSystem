@@ -27,49 +27,6 @@ class YuraController extends Controller
     public function inicio(Request $request)
     {
         if (count(getUsuario(Session::get('id_usuario'))->rol()->getSubmenusByTipo('C')) > 0) {
-
-            /* ========= RENDIMIENTO DESECHO =========== */
-            $fechas = [];
-            for ($i = 1; $i <= 7; $i++) {
-                array_push($fechas, opDiasFecha('-', $i, date('Y-m-d')));
-            }
-
-            $r_ver = 0;
-            $r_ver_r = 0;
-            $d_ver = 0;
-            $count_ver = 0;
-            $r_bla = 0;
-            $d_bla = 0;
-            $count_bla = 0;
-            foreach ($fechas as $f) {
-                $verde = ClasificacionVerde::All()->where('estado', 1)->where('fecha_ingreso', $f)->first();
-                $blanco = ClasificacionBlanco::All()->where('estado', 1)->where('fecha_ingreso', $f)->first();
-
-                if ($verde != '') {
-                    $r_ver += $verde->getRendimiento();
-                    $r_ver_r += $verde->getRendimientoRamos();
-                    $d_ver += $verde->desecho();
-                    $count_ver++;
-                }
-                if ($blanco != '') {
-                    $r_bla += $blanco->getRendimiento();
-                    $d_bla += $blanco->getDesecho();
-                    $count_bla++;
-                }
-            }
-
-            $rendimiento_desecho = [
-                'verde' => [
-                    'rendimiento' => $count_ver > 0 ? round($r_ver / $count_ver, 2) : 0,
-                    'rendimiento_ramos' => $count_ver > 0 ? round($r_ver_r / $count_ver, 2) : 0,
-                    'desecho' => $count_ver > 0 ? round($d_ver / $count_ver, 2) : 0
-                ],
-                'blanco' => [
-                    'rendimiento' => $count_bla > 0 ? round($r_bla / $count_bla, 2) : 0,
-                    'desecho' => $count_bla > 0 ? round($d_bla / $count_bla, 2) : 0
-                ]
-            ];
-
             /* ============ AREA =========== */
             $desde = opDiasFecha('-', 28, date('Y-m-d'));
             $hasta = opDiasFecha('-', 7, date('Y-m-d'));
@@ -162,7 +119,8 @@ class YuraController extends Controller
                 'tallos' => getIndicadorByName('D2')->valor,
                 'precio_x_ramo' => getIndicadorByName('D3')->valor,
                 'valor' => getIndicadorByName('D4')->valor,
-                'rendimiento_desecho' => $rendimiento_desecho,
+                'rendimiento' => getIndicadorByName('D5')->valor,
+                'desecho' => getIndicadorByName('D6')->valor,
                 'area' => $mensual,
                 'venta_mensual' => $data_venta_mensual,
                 'venta_anual' => $data_venta_anual,

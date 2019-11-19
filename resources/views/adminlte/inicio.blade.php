@@ -96,11 +96,11 @@
                                 <div class="info-box-content">
                                     <strong class="info-box-text" style="font-size: 1.2em">Rend/Desecho</strong>
                                     <span class="info-box-number">
-                                        {{number_format(round(($rendimiento_desecho['blanco']['rendimiento'] + $rendimiento_desecho['verde']['rendimiento_ramos'])/2,2) , 2)}}
+                                        {{number_format($rendimiento , 2)}}
                                         <small>r/hr rend</small>
                                     </span>
                                     <span class="info-box-number" title="Desecho">
-                                        {{number_format(round(($rendimiento_desecho['blanco']['desecho'] + $rendimiento_desecho['verde']['desecho'])/2,2) , 2)}}
+                                        {{number_format($desecho , 2)}}
                                         <small>% desecho</small>
                                     </span>
                                 </div>
