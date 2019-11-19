@@ -104,10 +104,7 @@ Route::group(['middleware' => 'autenticacion'], function () {
             include 'proyecciones/mano_obra.php';
 
             /* ================== DB =================== */
-            Route::get('db_jobs', 'dbController@jobs');
-            Route::get('db_jobs/actualizar', 'dbController@actualizar_jobs');
-            Route::post('db_jobs/delete_job', 'dbController@delete_job');
-            Route::post('db_jobs/send_queue_job', 'dbController@send_queue_job');
+            include 'db/rutas.php';
         });
 
         include 'colores/rutas.php';

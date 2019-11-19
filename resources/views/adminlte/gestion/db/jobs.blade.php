@@ -37,7 +37,7 @@
             <div class="box-body">
                 <div id="div_listado">
                 </div>
-                <div id="div_listado">
+                <div>
                     <ul class="nav nav-tabs" id="myTab" role="tablist">
                         <li class="nav-item">
                             <a class="nav-link active" id="home-tab" data-toggle="tab" href="#ProyeccionUpdateSemanal" role="tab"

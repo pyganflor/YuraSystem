@@ -68,6 +68,7 @@ use yura\Modelos\Cosecha;
 use yura\Modelos\Planta;
 use \yura\Modelos\Distribucion;
 use yura\Modelos\HistoricoVentas;
+use yura\Modelos\Indicador;
 
 /*
  * -------- BITÁCORA DE LAS ACCIONES ECHAS POR EL USUARIO ------
@@ -2466,4 +2467,17 @@ function getCurrentDateDB()
     return DB::table('usuario')
         ->select(DB::raw('current_timestamp() as fecha_hora'))->distinct()
         ->get()[0]->fecha_hora;
+}
+
+function getIndicadores()
+{
+    return Indicador::orderBy('estado', 'desc')->orderBy('nombre', 'asc')->get();
+}
+
+function getIndicadorByName($nombre)
+{
+    return Indicador::All()
+        ->where('estado', 1)
+        ->where('nombre', $nombre)
+        ->first();
 }
