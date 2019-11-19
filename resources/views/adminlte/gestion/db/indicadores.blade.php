@@ -143,7 +143,7 @@
                 estado: $('#estado_' + id).prop('checked'),
             };
             post_jquery('{{url('db_indicadores/update_indicador')}}', datos, function (retorno) {
-                location.reload();
+                //location.reload();
             });
         }
     </script>
