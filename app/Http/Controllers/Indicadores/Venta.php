@@ -4,6 +4,7 @@ namespace yura\Http\Controllers\Indicadores;
 
 use Illuminate\Support\Facades\DB;
 use yura\Modelos\Pedido;
+use Illuminate\Support\Facades\Log;
 
 class Venta
 {
@@ -49,6 +50,7 @@ class Venta
             foreach ($pedidos as $pos_ped => $ped) {
                 if (!getFacturaAnulada($ped->id_pedido)) {
                     $venta_mensual += $ped->getPrecioByPedido();
+                    Log::info($venta_mensual . ' => ' . $ped->fecha_pedido . ' -- ' . ($pos_ped + 1) . '/' . count($pedidos));
                 }
             }
 
