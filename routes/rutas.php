@@ -81,6 +81,7 @@ Route::group(['middleware' => 'autenticacion'], function () {
             include 'crm/tbl_ventas.php';
             include 'crm/tbl_rendimiento.php';
             include 'crm/fenograma_ejecucion.php';
+            include 'crm/crm_proy_venta.php';
 
 
             /* ========================== FACTURACIÓN ========================*/
