@@ -27,55 +27,6 @@ class YuraController extends Controller
     public function inicio(Request $request)
     {
         if (count(getUsuario(Session::get('id_usuario'))->rol()->getSubmenusByTipo('C')) > 0) {
-            /* ============ AREA =========== */
-            $desde = opDiasFecha('-', 28, date('Y-m-d'));
-            $hasta = opDiasFecha('-', 7, date('Y-m-d'));
-
-            $semanas_4 = DB::table('semana as s')
-                ->select('s.codigo as semana')->distinct()
-                ->Where(function ($q) use ($desde, $hasta) {
-                    $q->where('s.fecha_inicial', '>=', $desde)
-                        ->where('s.fecha_inicial', '<=', $hasta);
-                })
-                ->orWhere(function ($q) use ($desde, $hasta) {
-                    $q->where('s.fecha_final', '>=', $desde)
-                        ->Where('s.fecha_final', '<=', $hasta);
-                })
-                ->orderBy('codigo')
-                ->get();
-
-            $area = 0;
-            $data_4semanas = getAreaCiclosByRango($semanas_4[0]->semana, $semanas_4[3]->semana, 'T');
-
-            foreach ($data_4semanas['variedades'] as $var) {
-                foreach ($var['ciclos'] as $c) {
-                    foreach ($c['areas'] as $a) {
-                        $area += $a;
-                    }
-                }
-            }
-
-            $data_ciclos = getCiclosCerradosByRango($semanas_4[0]->semana, $semanas_4[3]->semana, 'T');
-            $ciclo = $data_ciclos['ciclo'];
-            $area_cerrada = $data_ciclos['area_cerrada'];
-            $tallos_ciclo = $data_ciclos['tallos_cosechados'];
-
-            $data_cosecha = getCosechaByRango($semanas_4[0]->semana, $semanas_4[3]->semana, 'T');
-            $calibre_ciclo = $data_cosecha['calibre'];
-            $calibre_ciclo > 0 ? $ramos_ciclo = round($tallos_ciclo / $calibre_ciclo, 2) : $ramos_ciclo = 0;
-
-            $ciclo_ano = $area_cerrada > 0 ? round(365 / $ciclo, 2) : 0;
-
-            $mensual = [
-                'ciclo_ano' => $ciclo_ano,
-                'area' => round($area / count($semanas_4), 2),
-                'ciclo' => $ciclo,
-                'area_cerrada' => $area_cerrada,
-                'tallos' => $area_cerrada > 0 ? round($tallos_ciclo / $area_cerrada, 2) : 0,
-                'ramos' => $area_cerrada > 0 ? round($ramos_ciclo / $area_cerrada, 2) : 0,
-                'ramos_anno' => $area_cerrada > 0 ? round($ciclo_ano * round($ramos_ciclo / $area_cerrada, 2), 2) : 0,
-            ];
-
             /* ================= venta/m2/año en 4 meses =================== */
             $fecha_hasta = date('Y-m-d', strtotime('last month'));
             $fecha_desde = date('Y-m-d', strtotime('-4 month'));
@@ -121,7 +72,8 @@ class YuraController extends Controller
                 'valor' => getIndicadorByName('D4')->valor,
                 'rendimiento' => getIndicadorByName('D5')->valor,
                 'desecho' => getIndicadorByName('D6')->valor,
-                'area' => $mensual,
+                'area_produccion' => getIndicadorByName('D7')->valor,
+                'ramos_m2_anno' => getIndicadorByName('D8')->valor,
                 'venta_mensual' => $data_venta_mensual,
                 'venta_anual' => $data_venta_anual,
                 'area_anual' => $data_area_anual,

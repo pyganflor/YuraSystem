@@ -4,6 +4,7 @@ namespace yura\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
+use yura\Http\Controllers\Indicadores\Area;
 use yura\Http\Controllers\Indicadores\Postcosecha;
 use yura\Http\Controllers\Indicadores\Venta;
 
@@ -61,6 +62,14 @@ class UpdateIndicador extends Command
         if ($indicador_par === '0' || $indicador_par === 'D5' || $indicador_par === 'D6') { // Rendimiento (7 días) - Desecho (7 días)
             Postcosecha::rendimiento_desecho_7_dias_atras();
             Log::info('INDICADOR: "Rendimiento (7 días) - Desecho (7 días)"');
+        }
+        if ($indicador_par === '0' || $indicador_par === 'D7') { // Área en producción (4 meses)
+            Area::area_produccion_4_meses_atras();
+            Log::info('INDICADOR: "Área en producción (4 meses)"');
+        }
+        if ($indicador_par === '0' || $indicador_par === 'D8') { // Ramos/m2/año (4 meses)
+            Area::ramos_m2_anno_4_meses_atras();
+            Log::info('INDICADOR: "Ramos/m2/año (4 meses)"');
         }
 
         $time_duration = difFechas(date('Y-m-d H:i:s'), $ini)->h . ':' . difFechas(date('Y-m-d H:i:s'), $ini)->m . ':' . difFechas(date('Y-m-d H:i:s'), $ini)->s;
