@@ -773,7 +773,8 @@ function getVariedadesByPlanta($p, $formato = 'option')
     if ($formato == 'option') {
         $r = '';
         foreach ($p->variedades as $v) {
-            $r .= '<option value="' . $v->id_variedad . '">' . $v->nombre . '</option>';
+            $selected = $v->id_variedad == 2 ? "selected" : "";
+            $r .= '<option value="' . $v->id_variedad . '" ' . $selected . '>' . $v->nombre . '</option>';
         }
         return $r;
     } else {

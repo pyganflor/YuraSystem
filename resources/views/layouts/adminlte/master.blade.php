@@ -916,7 +916,7 @@
 
     set_config('');
 
-    function select_planta(p, input_variedad, elemento_load, li_adicional = '',f) {
+    function select_planta(p, input_variedad, elemento_load, li_adicional = '', f) {
         if (p != '') {
             datos = {
                     planta: p
