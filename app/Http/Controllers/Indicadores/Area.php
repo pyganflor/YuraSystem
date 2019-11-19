@@ -37,7 +37,7 @@ class Area
                 }
             }
 
-            $model->valor = $area;
+            $model->valor = round($area / count($semanas_4), 2);
             $model->save();
         }
     }

@@ -122,6 +122,7 @@ class YuraController extends Controller
                 'rendimiento' => getIndicadorByName('D5')->valor,
                 'desecho' => getIndicadorByName('D6')->valor,
                 'area_produccion' => getIndicadorByName('D7')->valor,
+                'ramos_m2_anno' => getIndicadorByName('D8')->valor,
                 'area' => $mensual,
                 'venta_mensual' => $data_venta_mensual,
                 'venta_anual' => $data_venta_anual,

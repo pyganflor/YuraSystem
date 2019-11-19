@@ -113,11 +113,13 @@
                                 <div class="info-box-content">
                                     <strong class="info-box-text" style="font-size: 1.2em">Área</strong>
                                     <span class="info-box-number">
-                                        {{number_format(round($area['area'] / 10000, 2), 2)}}
+                                        {{number_format(round($area['area'] / 10000, 2), 2)}} =
+                                        {{number_format(round($area_produccion / 10000, 2), 2)}}
                                         <small> <sup>ha</sup></small>
                                     </span>
                                     <span class="info-box-number" title="Ramos/m2">
-                                        {{number_format($area['ramos_anno'], 2)}}
+                                        {{number_format($area['ramos_anno'], 2)}} =
+                                        {{number_format($ramos_m2_anno, 2)}}
                                         <small>r/m<sup>2</sup>/año</small>
                                     </span>
                                 </div>
