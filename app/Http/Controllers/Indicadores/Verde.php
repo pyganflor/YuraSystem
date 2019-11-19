@@ -27,6 +27,5 @@ class Verde
             $model->valor = $valor;
             $model->save();
         }
-
     }
 }
