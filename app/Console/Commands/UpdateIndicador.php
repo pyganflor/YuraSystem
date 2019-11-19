@@ -45,17 +45,17 @@ class UpdateIndicador extends Command
 
         $indicador_par = $this->argument('indicador');
 
-        if (in_array($indicador_par, [0, 'D1'])) {  // Calibre (7 días)
+        if ($indicador_par === '0' || $indicador_par === 'D1') {  // Calibre (7 días)
             Calibre::dias_atras_7();
-            Log::info('INDICADOR: "Calibre (7 días)"');
+            Log::info('INDICADOR: "Calibre (7 dias)"');
         }
-        if (in_array($indicador_par, [0, 'D2'])) {  // Tallos clasificados (7 días)
+        if ($indicador_par === '0' || $indicador_par === 'D2') {  // Tallos clasificados (7 días)
             Verde::tallos_clasificados_7_atras();
-            Log::info('INDICADOR: "Tallos clasificados (7 días)"');
+            Log::info('INDICADOR: "Tallos clasificados (7 dias)"');
         }
 
         $time_duration = difFechas(date('Y-m-d H:i:s'), $ini)->h . ':' . difFechas(date('Y-m-d H:i:s'), $ini)->m . ':' . difFechas(date('Y-m-d H:i:s'), $ini)->s;
         Log::info('<*> DURACION: ' . $time_duration . '  <*>');
-        Log::info('<<<<< * >>>>> Fin satisfactorio del comando "proyeccion:update_semanal" <<<<< * >>>>>');
+        Log::info('<<<<< * >>>>> Fin satisfactorio del comando "proyeccion:update_semanal" <<<<< * >>>>>' . $indicador_par);
     }
 }
