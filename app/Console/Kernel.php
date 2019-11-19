@@ -10,6 +10,7 @@ use yura\Console\Commands\EmpaquetarPedidosAnulados;
 use yura\Console\Commands\FechaFinalCiclo;
 use yura\Console\Commands\NotificacionesSistema;
 use yura\Console\Commands\UpdateHistoricoVentas;
+use yura\Console\Commands\UpdateIndicador;
 use yura\Console\Commands\UpdateProyeccionSemanal;
 use yura\Console\Commands\VentaSemanalReal;
 use yura\Console\Commands\PrecioVariedadCliente;
@@ -33,6 +34,7 @@ class Kernel extends ConsoleKernel
         VentaSemanalReal::class,
         PrecioVariedadCliente::class,
         ResumenSemanaCosecha::class,
+        UpdateIndicador::class,
     ];
 
     /**
@@ -55,6 +57,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('pedido:empaquetar_anulados')->daily()->runInBackground(); // EmpaquetarPedidosAnulados::class
         $schedule->command('precio:variedad_x_cliente')->sundays()->between('7:00', '22:00')->runInBackground(); // PrecioVariedadCliente::class
         $schedule->command('resumen:semana_cosecha')->hourly()->runInBackground(); // ResumenSemanaCosecha::class
+        $schedule->command('indicador:update')->hourly()->runInBackground(); // UpdateIndicador::class
     }
 
     /**

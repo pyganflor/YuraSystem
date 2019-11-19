@@ -26,85 +26,7 @@ class YuraController extends Controller
 {
     public function inicio(Request $request)
     {
-        //dd(opDiasFecha('+', 120, '2018-12-26'));
         if (count(getUsuario(Session::get('id_usuario'))->rol()->getSubmenusByTipo('C')) > 0) {
-            /* ========= CALIBRE ========= */
-            $labels = DB::table('clasificacion_verde as v')
-                ->select('v.fecha_ingreso as dia')->distinct()
-                ->where('v.fecha_ingreso', '>=', opDiasFecha('-', 7, date('Y-m-d')))
-                ->where('v.fecha_ingreso', '<=', opDiasFecha('-', 1, date('Y-m-d')))
-                ->get();
-            $calibre = 0;
-            $tallos = 0;
-            $ramos = 0;
-            $cant_verde = 0;
-            foreach ($labels as $dia) {
-                $verde = ClasificacionVerde::All()->where('fecha_ingreso', '=', $dia->dia)->first();
-                if ($verde != '') {
-                    $ped_ramos_estandar = $verde->getTotalRamosEstandar();
-                    $calibre += $ped_ramos_estandar > 0 ? round($verde->total_tallos() / $ped_ramos_estandar, 2) : 0;
-                    $tallos += $verde->total_tallos();
-                    $ramos += $ped_ramos_estandar;
-                    $cant_verde++;
-                }
-            }
-            $calibre = $cant_verde > 0 ? round($calibre / $cant_verde, 2) : 0;
-
-            /* ======== PRECIO x RAMO ======== */
-            $pedidos_semanal = Pedido::All()->where('estado', 1)
-                ->where('fecha_pedido', '>=', opDiasFecha('-', 7, date('Y-m-d')))
-                ->where('fecha_pedido', '<=', opDiasFecha('-', 1, date('Y-m-d')));
-            $valor = 0;
-            $cajas = 0;
-            foreach ($pedidos_semanal as $p) {
-                $valor += $p->getPrecio();
-                $cajas += $p->getCajas();
-            }
-            $ramos_estandar = $cajas * getConfiguracionEmpresa()->ramos_x_caja;
-            $precio_x_ramo = $ramos_estandar > 0 ? round($valor / $ramos_estandar, 2) : 0;
-
-            /* ========= RENDIMIENTO DESECHO =========== */
-            $fechas = [];
-            for ($i = 1; $i <= 7; $i++) {
-                array_push($fechas, opDiasFecha('-', $i, date('Y-m-d')));
-            }
-
-            $r_ver = 0;
-            $r_ver_r = 0;
-            $d_ver = 0;
-            $count_ver = 0;
-            $r_bla = 0;
-            $d_bla = 0;
-            $count_bla = 0;
-            foreach ($fechas as $f) {
-                $verde = ClasificacionVerde::All()->where('estado', 1)->where('fecha_ingreso', $f)->first();
-                $blanco = ClasificacionBlanco::All()->where('estado', 1)->where('fecha_ingreso', $f)->first();
-
-                if ($verde != '') {
-                    $r_ver += $verde->getRendimiento();
-                    $r_ver_r += $verde->getRendimientoRamos();
-                    $d_ver += $verde->desecho();
-                    $count_ver++;
-                }
-                if ($blanco != '') {
-                    $r_bla += $blanco->getRendimiento();
-                    $d_bla += $blanco->getDesecho();
-                    $count_bla++;
-                }
-            }
-
-            $rendimiento_desecho = [
-                'verde' => [
-                    'rendimiento' => $count_ver > 0 ? round($r_ver / $count_ver, 2) : 0,
-                    'rendimiento_ramos' => $count_ver > 0 ? round($r_ver_r / $count_ver, 2) : 0,
-                    'desecho' => $count_ver > 0 ? round($d_ver / $count_ver, 2) : 0
-                ],
-                'blanco' => [
-                    'rendimiento' => $count_bla > 0 ? round($r_bla / $count_bla, 2) : 0,
-                    'desecho' => $count_bla > 0 ? round($d_bla / $count_bla, 2) : 0
-                ]
-            ];
-
             /* ============ AREA =========== */
             $desde = opDiasFecha('-', 28, date('Y-m-d'));
             $hasta = opDiasFecha('-', 7, date('Y-m-d'));
@@ -193,11 +115,12 @@ class YuraController extends Controller
             $data_area_anual = getAreaActivaFromData($data['variedades'], $data['semanas']);
 
             return view('adminlte.inicio', [
-                'calibre' => $calibre,
-                'tallos' => $tallos,
-                'precio_x_ramo' => $precio_x_ramo,
-                'valor' => $valor,
-                'rendimiento_desecho' => $rendimiento_desecho,
+                'calibre' => getIndicadorByName('D1')->valor,
+                'tallos' => getIndicadorByName('D2')->valor,
+                'precio_x_ramo' => getIndicadorByName('D3')->valor,
+                'valor' => getIndicadorByName('D4')->valor,
+                'rendimiento' => getIndicadorByName('D5')->valor,
+                'desecho' => getIndicadorByName('D6')->valor,
                 'area' => $mensual,
                 'venta_mensual' => $data_venta_mensual,
                 'venta_anual' => $data_venta_anual,
