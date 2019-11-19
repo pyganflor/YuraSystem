@@ -40,19 +40,11 @@
                                         /año
                                     </strong>
                                     <span class="info-box-number text-center">
-                                        @if($area_anual > 0)
-                                            {{number_format(round(($venta_mensual / round($area_anual * 10000, 2)), 2), 2) * 3}}
-                                        @else
-                                            0
-                                        @endif
+                                            {{number_format($venta_m2_anno_mensual, 2)}}
                                         <small>$/m<sup>2</sup>/año (4 meses)</small>
                                     </span>
                                     <span class="info-box-number text-center">
-                                        @if($area_anual > 0)
-                                            {{number_format(round(($venta_anual / round($area_anual * 10000, 2)), 2), 2)}}
-                                        @else
-                                            0
-                                        @endif
+                                            {{number_format($venta_m2_anno_anual, 2)}}
                                         <small>$/m<sup>2</sup>/año (1 año)</small>
                                     </span>
                                 </div>
