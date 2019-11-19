@@ -37,11 +37,11 @@ class Venta
             $desde_sem = getSemanaByDate(opDiasFecha('-', 112, date('Y-m-d')));
             $hasta_sem = getSemanaByDate(opDiasFecha('-', 7, date('Y-m-d')));
 
-            $pedidos = Pedido::All()
-                ->where('estado', 1)
+            $pedidos = Pedido::where('estado', 1)
                 ->where('fecha_pedido', '>=', $desde_sem->fecha_inicial)
                 ->where('fecha_pedido', '<=', $hasta_sem->fecha_final)
-                ->sortBy('fecha_pedido');
+                ->orderBy('fecha_pedido')
+                ->get();
 
             $venta_mensual = 0;
             foreach ($pedidos as $pos_ped => $ped) {
