@@ -6,6 +6,7 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 use yura\Http\Controllers\Indicadores\Postcosecha;
 use yura\Http\Controllers\Indicadores\Venta;
+use yura\Http\Controllers\Indicadores\ProyeccionesVenta;
 
 class UpdateIndicador extends Command
 {
@@ -37,6 +38,8 @@ class UpdateIndicador extends Command
      * Execute the console command.
      *
      * @return mixed
+     * @argument D => dashboard
+     * @argument DP => dashboard de proyección
      */
     public function handle()
     {
@@ -61,6 +64,12 @@ class UpdateIndicador extends Command
         if ($indicador_par === '0' || $indicador_par === 'D5' || $indicador_par === 'D6') { // Rendimiento (7 días) - Desecho (7 días)
             Postcosecha::rendimiento_desecho_7_dias_atras();
             Log::info('INDICADOR: "Rendimiento (7 días) - Desecho (7 días)"');
+        }
+        if ($indicador_par === '0' || $indicador_par === 'DP1' || $indicador_par === 'DP1') {
+            //Cajas cosechados +4 semanas
+            $proyeccionVenta = new ProyeccionesVenta;
+            $proyeccionVenta->sumCajasFuturas4Semanas();
+            Log::info('INDICADOR: "Cajas cosechadas +4 semanas"');
         }
 
 
