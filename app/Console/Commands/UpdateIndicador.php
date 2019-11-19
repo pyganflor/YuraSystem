@@ -5,6 +5,7 @@ namespace yura\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 use yura\Http\Controllers\Indicadores\Calibre;
+use yura\Http\Controllers\Indicadores\Verde;
 
 class UpdateIndicador extends Command
 {
@@ -47,6 +48,10 @@ class UpdateIndicador extends Command
         if (in_array($indicador_par, [0, 'D1'])) {  // Calibre (7 días)
             Calibre::dias_atras_7();
             Log::info('INDICADOR: "Calibre (7 días)"');
+        }
+        if (in_array($indicador_par, [0, 'D2'])) {  // Tallos clasificados (7 días)
+            Verde::tallos_clasificados_7_atras();
+            Log::info('INDICADOR: "Tallos clasificados (7 días)"');
         }
 
         $time_duration = difFechas(date('Y-m-d H:i:s'), $ini)->h . ':' . difFechas(date('Y-m-d H:i:s'), $ini)->m . ':' . difFechas(date('Y-m-d H:i:s'), $ini)->s;
