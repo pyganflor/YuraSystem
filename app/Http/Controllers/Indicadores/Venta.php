@@ -45,6 +45,7 @@ class Venta
             $venta_mensual = 0;
             foreach ($pedidos as $ped) {
                 $venta_mensual += $ped->getPrecioByPedido();
+                dump($venta_mensual);
             }
 
             $semana_desde = getSemanaByDate(opDiasFecha('-', 98, date('Y-m-d')));   // 13 semanas atras
