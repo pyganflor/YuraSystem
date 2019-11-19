@@ -7,6 +7,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Support\Facades\Artisan;
 
 class UpdateIndicador implements ShouldQueue
 {
@@ -17,9 +18,11 @@ class UpdateIndicador implements ShouldQueue
      *
      * @return void
      */
-    public function __construct()
+    protected $indicador;
+
+    public function __construct($indicador = 0)
     {
-        //
+        $this->indicador = $indicador;
     }
 
     /**
@@ -29,6 +32,8 @@ class UpdateIndicador implements ShouldQueue
      */
     public function handle()
     {
-        //
+        Artisan::call('indicador:update', [
+
+        ]);
     }
 }
