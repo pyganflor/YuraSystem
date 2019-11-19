@@ -249,6 +249,7 @@
                 datos = {
                     _token: '{{csrf_token()}}',
                     indicador: $('#comando4_indicador').val(),
+                    cola: 1,
                     comando: comando
                 };
             }
