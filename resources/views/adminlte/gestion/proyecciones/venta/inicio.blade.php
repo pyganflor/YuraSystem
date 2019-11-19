@@ -24,7 +24,8 @@
                     <select name="filtro_predeterminado_variedad" id="filtro_predeterminado_variedad" class="form-control variedad"
                             style="width:200px">
                         @foreach(getPlantas()[0]->variedades as $variedad)
-                            <option value="{{$variedad->id_variedad}}" >{{$variedad->nombre}}</option>
+                            <option {{$variedad->id_variedad == "2" ? "selected" : "" }}
+                                value="{{$variedad->id_variedad}}" >{{$variedad->nombre}}</option>
                         @endforeach
                     </select>
                     <div class="input-group-addon bg-gray">
@@ -36,7 +37,7 @@
                         <i class="fa fa-fw fa-calendar"></i> Hasta
                     </div>
                     <input type="number" class="form-control hasta" id="filtro_predeterminado_hasta" name="filtro_predeterminado_hasta" required
-                           value="{{getSemanaByDate(date('Y-m-d'))->codigo}}" style="">
+                           value="{{$hasta->codigo}}" style="">
                 </div>
                 <div class="input-group">
                     <div class="input-group-addon bg-gray">
