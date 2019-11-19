@@ -20,7 +20,7 @@ class crmVentasController extends Controller
         foreach ($pedidos_today as $p) {
             if (!getFacturaAnulada($p->id_pedido)) {
                 $cajas += $p->getCajas();
-                $valor += $p->getPrecio();
+                $valor += $p->getPrecioByPedido();
             }
         }
         $today = [
@@ -37,7 +37,7 @@ class crmVentasController extends Controller
         $tallos = 0;
         foreach ($pedidos_semanal as $p) {
             if (!getFacturaAnulada($p->id_pedido)) {
-                $valor += $p->getPrecio();
+                $valor += $p->getPrecioByPedido();
                 $cajas += $p->getCajas();
                 $tallos += $p->getTallos();
             }
@@ -152,7 +152,7 @@ class crmVentasController extends Controller
                         $tallos = 0;
                         foreach ($pedidos_semanal as $p) {
                             if (!getFacturaAnulada($p->id_pedido)) {
-                                $valor += $p->getPrecio();
+                                $valor += $p->getPrecioByPedido();
                                 $cajas += $p->getCajas();
                                 $tallos += $p->getTallos();
                             }
@@ -184,7 +184,7 @@ class crmVentasController extends Controller
                         $tallos = 0;
                         foreach ($pedidos_semanal as $p) {
                             if (!getFacturaAnulada($p->id_pedido)) {
-                                $valor += $p->getPrecio();
+                                $valor += $p->getPrecioByPedido();
                                 $cajas += $p->getCajas();
                                 $tallos += $p->getTallos();
                             }
@@ -234,7 +234,7 @@ class crmVentasController extends Controller
 
                         foreach ($pedidos as $p) {
                             if (!getFacturaAnulada($p->id_pedido)) {
-                                $valor += $p->getPrecio();
+                                $valor += $p->getPrecioByPedido();
                                 $cajas += $p->getCajas();
                                 $tallos += $p->getTallos();
                             }
@@ -273,7 +273,7 @@ class crmVentasController extends Controller
 
                         foreach ($pedidos as $p) {
                             if (!getFacturaAnulada($p->id_pedido)) {
-                                $valor += $p->getPrecio();
+                                $valor += $p->getPrecioByPedido();
                                 $cajas += $p->getCajas();
                                 $tallos += $p->getTallos();
                             }
@@ -330,7 +330,7 @@ class crmVentasController extends Controller
                 $tallos = 0;
                 foreach ($pedidos_semanal as $p) {
                     if (!getFacturaAnulada($p->id_pedido)) {
-                        $valor += $p->getPrecioByVariedad($v->id_variedad);
+                        $valor += $p->getPrecioByPedidoVariedad($v->id_variedad);
                         $cajas += $p->getCajasByVariedad($v->id_variedad);
                         $tallos += $p->getTallosByVariedad($v->id_variedad);
                         if ($valor > 0)
