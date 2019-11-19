@@ -20,9 +20,12 @@
         <ul class="sidebar-menu" data-widget="tree">
             @if(getUsuario(Session::get('id_usuario'))->rol()->estado == 'A')
                 @foreach(getGrupoMenusOfUser(Session::get('id_usuario')) as $g)
-                    <li class="header">{{$g->nombre}}</li>
+                    <li class="header mouse-hand" onclick="$('.menu_{{$g->id_grupo_menu}}').toggleClass('hide')"
+                        onmouseover="$(this).css('color', 'white')" onmouseleave="$(this).css('color', '')">
+                        {{$g->nombre}}
+                    </li>
                     @foreach($g->menus_activos as $m)
-                        <li class="treeview">
+                        <li class="treeview menu_{{$g->id_grupo_menu}} hide">
                             <a href="#">
                                 <i class="fa fa-{{$m->icono->nombre}}"></i>
                                 <span>{{$m->nombre}}</span>
