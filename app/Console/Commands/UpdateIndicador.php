@@ -4,6 +4,7 @@ namespace yura\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
+use yura\Http\Controllers\Indicadores\Calibre;
 
 class UpdateIndicador extends Command
 {
@@ -43,16 +44,9 @@ class UpdateIndicador extends Command
 
         $indicador_par = $this->argument('indicador');
 
-        $dia_7_atras = opDiasFecha('-', 7, date('Y-m-d'));
-        $dia_1_atras = opDiasFecha('-', 1, date('Y-m-d'));
-
         if (in_array($indicador_par, [0, 'D1'])) {  // Calibre (7 días)
-            $model = getIndicadorByName('D1');
-            if ($model != '') {
-                $valor = getCalibreByRangoVariedad($dia_7_atras, $dia_1_atras, 'T');
-                $model->valor = $valor;
-                $model->save();
-            }
+            $comand = new Calibre();
+            $comand->dias_atras_7();
             Log::info('INDICADOR: "Calibre (7 días)"');
         }
 
