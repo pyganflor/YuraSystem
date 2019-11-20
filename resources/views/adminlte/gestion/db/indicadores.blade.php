@@ -44,7 +44,7 @@
                                 Nombre
                             </th>
                             <th class="text-center" style="border-color: #9d9d9d">
-                                Descripcion
+                                Descripción
                             </th>
                             <th class="text-center" style="border-color: #9d9d9d" width="10%">
                                 Valor
