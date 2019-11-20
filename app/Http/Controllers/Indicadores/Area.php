@@ -3,6 +3,7 @@
 namespace yura\Http\Controllers\Indicadores;
 
 use Illuminate\Support\Facades\DB;
+use yura\Modelos\Cosecha;
 
 class Area
 {
@@ -86,6 +87,28 @@ class Area
             ];
 
             $model->valor = $mensual['ramos_m2_anno'];
+            $model->save();
+        }
+    }
+
+    public static function tallos_m2_4_meses_atras()
+    {
+        $model = getIndicadorByName('D12');  // Tallos cosechados (-7 días)
+        if ($model != '') {
+            $desde_sem = getSemanaByDate(opDiasFecha('-', 112, date('Y-m-d')));
+            $hasta_sem = getSemanaByDate(opDiasFecha('-', 7, date('Y-m-d')));
+
+            $cosechas = Cosecha::All()->where('estado', 1)
+                ->where('fecha_ingreso', '>=', $desde_sem->fecha_inicial)
+                ->where('fecha_ingreso', '<=', $hasta_sem->fecha_final);
+            $tallos = 0;
+            foreach ($cosechas as $c) {
+                $tallos += $c->getTotalTallos();
+            }
+
+            $data_ciclos = getCiclosCerradosByRango($desde_sem->codigo, $hasta_sem->codigo, 'T');
+
+            $model->valor = $data_ciclos['area_cerrada'] > 0 ? round($tallos / $data_ciclos['area_cerrada'], 2) : 0;
             $model->save();
         }
     }
