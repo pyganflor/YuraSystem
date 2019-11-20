@@ -93,7 +93,7 @@ class Area
 
     public static function tallos_m2_4_meses_atras()
     {
-        $model = getIndicadorByName('D12');  // Tallos cosechados (-7 días)
+        $model = getIndicadorByName('D12');  // Tallos/m2 (-4 meses)
         if ($model != '') {
             $desde_sem = getSemanaByDate(opDiasFecha('-', 112, date('Y-m-d')));
             $hasta_sem = getSemanaByDate(opDiasFecha('-', 7, date('Y-m-d')));
