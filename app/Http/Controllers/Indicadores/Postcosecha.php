@@ -12,7 +12,7 @@ class Postcosecha
         $dia_7_atras = opDiasFecha('-', 7, date('Y-m-d'));
         $dia_1_atras = opDiasFecha('-', 1, date('Y-m-d'));
 
-        $model = getIndicadorByName('D1');  // Calibre (7 días)
+        $model = getIndicadorByName('D1');  // Calibre (-7 días)
         if ($model != '') {
             $valor = getCalibreByRangoVariedad($dia_7_atras, $dia_1_atras, 'T');
             $model->valor = $valor;
@@ -22,7 +22,7 @@ class Postcosecha
 
     public static function tallos_clasificados_7_dias_atras()
     {
-        $model = getIndicadorByName('D2');  // Tallos clasificados (7 días)
+        $model = getIndicadorByName('D2');  // Tallos clasificados (-7 días)
         if ($model != '') {
             $verdes = ClasificacionVerde::All()->where('estado', 1)
                 ->where('fecha_ingreso', '>=', opDiasFecha('-', 7, date('Y-m-d')))
@@ -38,8 +38,8 @@ class Postcosecha
 
     public static function rendimiento_desecho_7_dias_atras()
     {
-        $model_1 = getIndicadorByName('D5');  // Rendimiento (7 días)
-        $model_2 = getIndicadorByName('D6');  // Desecho (7 días)
+        $model_1 = getIndicadorByName('D5');  // Rendimiento (-7 días)
+        $model_2 = getIndicadorByName('D6');  // Desecho (-7 días)
         if ($model_1 != '' && $model_2 != '') {
             $fechas = [];
             for ($i = 1; $i <= 7; $i++) {
