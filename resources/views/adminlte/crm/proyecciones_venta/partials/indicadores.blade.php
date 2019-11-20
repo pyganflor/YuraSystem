@@ -3,8 +3,8 @@
         <div class="small-box bg-teal-active">
             <div class="inner">
                 <ul class="info-box-number list-unstyled">
-                    <li>Cajas: {{$indicador[1]->valor}}</li>
-                    <li>Tallos: {{$indicador[0]->valor}}</li>
+                    <li>Cajas: {{$indicador[0]->valor}}</li>
+                    <li>Tallos: {{$indicador[1]->valor}}</li>
                 </ul>
             </div>
             <div class="icon">
