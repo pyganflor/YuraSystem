@@ -4,14 +4,18 @@
     </div>
 </div>
 
-<div style="overflow-x: scroll">
-    <table class="table-striped table-bordered table-hover" style="border: 2px solid #9d9d9d; font-size: 0.8em" width="100%">
+<script type="text/javascript" src="{{url('js/gridviewscroll/gridviewscroll.js')}}"></script>
+
+<div id="div_content_fixed">
+    <table class="table-striped table-bordered table-hover" style="font-size: 0.8em" width="100%"
+           id="tabla_proyecciones">
         <thead>
-        <tr>
-            <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
+        <tr class="fila_fija_1">
+            <th class="text-center columna_fija_1" id="celda_opciones_semanas">
                 <div class="input-group-btn">
                     <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
-                        <span class="fa fa-caret-right"></span></button>
+                        <span class="fa fa-caret-right"></span>
+                    </button>
                     <ul class="dropdown-menu">
                         <li>
                             <a href="javascript:void(0)" onclick="actualizar_datos()">
@@ -40,25 +44,26 @@
                     </ul>
                 </div>
             </th>
-            <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef; width: 250px">
+            <th class="text-center columna_fija_2" style="width: 250px" id="celda_semanas">
                 Semanas
             </th>
             @foreach($semanas as $pos_sem => $sem)
-                <th class="text-center celda_semana_{{$sem->id_semana}}" style="border-color: #9d9d9d; background-color: #e9ecef; width: 250px">
+                <th class="text-center celda_semana_{{$sem->id_semana}}" style="width: 250px">
                     <input type="checkbox" id="check_semana_{{$sem->id_semana}}" class="check_semana">
                 </th>
             @endforeach
-            <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef; width: 250px">
+            <th class="text-center" style="width: 250px">
                 Semanas
 
                 <input type="checkbox" id="check_semana_all" style="display: none">
             </th>
         </tr>
-        <tr>
-            <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
+        <tr class="fila_fija_2">
+            <th class="text-center columna_fija_1" id="celda_opciones_modulos">
                 <div class="input-group-btn">
                     <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
-                        <span class="fa fa-caret-down"></span></button>
+                        <span class="fa fa-caret-right"></span>
+                    </button>
                     <ul class="dropdown-menu">
                         <li>
                             <a href="javascript:void(0)" onclick="actualizar_manual()" class="hide">
@@ -88,11 +93,11 @@
                     </ul>
                 </div>
             </th>
-            <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef; width: 250px">
+            <th class="text-center columna_fija_2" style="width: 250px;" id="celda_modulos">
                 Módulos
             </th>
             @foreach($semanas as $pos_sem => $sem)
-                <th class="text-center celda_semana_{{$sem->id_semana}}" style="border-color: #9d9d9d; background-color: #e9ecef; width: 250px">
+                <th class="text-center celda_semana_{{$sem->id_semana}}" style="width: 250px">
                     <div class="btn-group" data-toggle="tooltip" data-placement="top" data-html="true"
                          title="<em>T.Ramo: {{$sem->tallos_ramo_poda}}</em><br>
                           <em>T.Pta: {{$sem->tallos_planta_poda}}</em><br>
@@ -117,11 +122,12 @@
                     <input type="hidden" id="semana_{{$pos_sem}}" value="{{$sem->codigo}}">
                 </th>
             @endforeach
-            <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef; width: 250px">
+            <th class="text-center" style="width: 250px">
                 Módulos
             </th>
         </tr>
         </thead>
+
         <tbody>
         @php
             $tallos_proyectados = [];
@@ -131,10 +137,1275 @@
         @endphp
         @foreach($modulos as $mod)
             <tr id="tr_modulo_{{$mod['modulo']->id_modulo}}">
-                <th class="text-center" style="border-color: #9d9d9d">
+                <th class="text-center columna_fija_1" style="border-color: #9d9d9d">
                     <input type="checkbox" id="checkbox_modulo_{{$mod['modulo']->id_modulo}}" class="checkbox_modulo">
                 </th>
-                <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef" id="celda_modulo_{{$mod['modulo']->id_modulo}}">
+                <th class="text-center columna_fija_2" style="border-color: #9d9d9d; background-color: #e9ecef"
+                    id="celda_modulo_{{$mod['modulo']->id_modulo}}">
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+                            {{$mod['modulo']->nombre}}
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a href="javascript:void(0)" onclick="actualizar_proyecciones('{{$mod['modulo']->id_modulo}}')">
+                                    Actualizar
+                                </a>
+                            </li>
+                            <li>
+                                <a href="javascript:void(0)" onclick="actualizar_manual('{{$mod['modulo']->id_modulo}}')">
+                                    Actualizar manualmente
+                                </a>
+                            </li>
+                            <li class="divider"></li>
+                            <li>
+                                <a href="javascript:void(0)" onclick="restaurar_proyeccion('{{$mod['modulo']->id_modulo}}')">
+                                    Restaurar Proyección
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </th>
+                @foreach($mod['valores'] as $pos_val => $val)
+                    @php
+                        $fondo = '';
+                        $texto = 'black';
+                        $title = '<em>Mod: '.$mod['modulo']->nombre.'</em><br>'.
+                                 '<em>Sem: '.$val->semana.'</em><br>';
+                        if($val->tipo == 'P'){
+                            if(substr($val->info, 2) == 2)
+                                $fondo = '#ffb100'; // poda de 2
+                            else if(substr($val->info, 2) > 2) {
+                                $fondo = '#f70b00'; // poda de 3 o más
+                                $texto = 'white';
+                            } else
+                                $fondo = '#efff00'; // poda de 1
+                            $title .= '<em>Ptas.Ini: '.number_format($val->plantas_iniciales).'</em><br>';
+                            $title .= '<em>Ptas.Act: '.number_format($val->plantas_actuales).'</em><br>';
+                            $title .= '<em>T/Ptas: '.($val->tallos_planta).'</em><br>';
+                            $title .= '<em>Sem.Cos: '.($val->semana_poda_siembra).'</em><br>';
+                            $title .= '<em>Curva: '.($val->curva).'</em><br>';
+                            $title .= '<em>Desecho: '.($val->desecho).'%</em><br>';
+                        } else if($val->tipo == 'S'){
+                            $fondo = '#08ffe8'; // siembra
+                            $title .= '<em>Ptas.Ini: '.number_format($val->plantas_iniciales).'</em><br>';
+                            $title .= '<em>Ptas.Act: '.number_format($val->plantas_actuales).'</em><br>';
+                            $title .= '<em>T/Ptas: '.($val->tallos_planta).'</em><br>';
+                            $title .= '<em>Sem.Cos: '.($val->semana_poda_siembra).'</em><br>';
+                            $title .= '<em>Curva: '.($val->curva).'</em><br>';
+                            $title .= '<em>Desecho: '.($val->desecho).'%</em><br>';
+                        } else if($val->tipo == 'Y'){
+                            if($val->poda_siembra == 0)
+                                $fondo = '#08ffe8'; // siembra
+                            else if($val->poda_siembra == 1)
+                                $fondo = '#efff00'; // poda de 1
+                            else if($val->poda_siembra == 2)
+                                $fondo = '#ffb100'; // poda de 2
+                            else if($val->poda_siembra > 2) {
+                                $fondo = '#f70b00'; // poda de 3 o más
+                                $texto = 'white';
+                            }
+                            if($val->info != 'C'){  // no está cerrada la proyeccion
+                                $title .= '<em>Ptas.Ini: '.number_format($val->plantas_iniciales).'</em><br>';
+                                $title .= '<em>T/Ptas: '.($val->tallos_planta).'</em><br>';
+                                $title .= '<em>Sem.Cos: '.($val->semana_poda_siembra).'</em><br>';
+                                $title .= '<em>Curva: '.($val->curva).'</em><br>';
+                                $title .= '<em>Desecho: '.($val->desecho).'%</em><br>';
+                            } else {
+                                $title .= '<em>Cierre de módulo</em>';
+                            }
+                        } else if($val->tipo == 'T'){
+                            $fondo = '#03de00'; // semana de cosecha
+                            if($val->tabla == 'C'){   // ciclo
+                                $title .= '<em>Ptas.Ini: '.number_format($val->plantas_iniciales).'</em><br>';
+                                $title .= '<em>Ptas.Act: '.number_format($val->plantas_actuales).'</em><br>';
+                                $title .= '<em>T/Ptas: '.($val->tallos_planta).'</em><br>';
+                                $title .= '<em>Sem.Cos: '.($val->semana_poda_siembra).'</em><br>';
+                                $title .= '<em>Curva: '.($val->curva).'</em><br>';
+                                $title .= '<em>Desecho: '.($val->desecho).'%</em><br>';
+                            } else {    // proyeccion_modulo
+                                $title .= '<em>Ptas.Ini: '.number_format($val->plantas_iniciales).'</em><br>';
+                                $title .= '<em>T/Ptas: '.($val->tallos_planta).'</em><br>';
+                                $title .= '<em>Sem.Cos: '.($val->semana_poda_siembra).'</em><br>';
+                                $title .= '<em>Curva: '.($val->curva).'</em><br>';
+                                $title .= '<em>Desecho: '.($val->desecho).'%</em><br>';
+                            }
+                        }
+
+                        /* =============== INICIALIZAR TOTALES ===================== */
+                        $tallos_proyectados[$pos_val] = 0;
+                        $tallos_cosechados[$pos_val] = 0;
+                        $ptas_iniciales[$pos_val] = 0;
+                        $total_area[$pos_val] = 0;
+                    @endphp
+                    <td class="text-center celda_hovered celda_semana_{{$semanas[$pos_val]->id_semana}} celda_modulo_{{$mod['modulo']->id_modulo}} {{in_array($val->tipo, ['F', 'P', 'S', 'T', 'Y']) ? 'mouse-hand' : ''}}"
+                        style="border-color: #9d9d9d; background-color: {{$fondo}}; color: {{$texto}}"
+                        id="celda_{{$mod['modulo']->id_modulo}}_{{$pos_val}}"
+                        onclick="select_celda('{{$val->tipo}}', '{{$mod['modulo']->id_modulo}}', '{{$val->semana}}', '{{$val->id_variedad}}', '{{$val->tabla}}', '{{$val->modelo}}')"
+                        onmouseover="mouse_over_celda('celda_{{$mod['modulo']->id_modulo}}_{{$pos_val}}', 1)"
+                        onmouseleave="mouse_over_celda('celda_{{$mod['modulo']->id_modulo}}_{{$pos_val}}', 0)">
+                        <span data-toggle="tooltip" data-placement="top" data-html="true"
+                              title="{{in_array($val->tipo, ['S', 'P', 'T', 'Y']) ? $title : ''}}">
+                            @if($val->tipo == 'T')
+                                <strong style="font-size: 0.8em; margin-bottom: 0">
+                                    {{$val->proyectados != '' ? number_format($val->proyectados, 2) : 0}}
+                                </strong>
+                            @elseif($val->tipo == 'Y')
+                                <p style="margin-top: 0; margin-bottom: 0">
+                                    {{$val->info}}-{{$val->poda_siembra}}
+                                </p>
+                            @else
+                                <p style="margin-top: 0; margin-bottom: 0">
+                                    {{$val->info}}
+                                </p>
+                            @endif
+                            @if($val->cosechados > 0)
+                                <p style="margin-top: 0; margin-bottom: 0">
+                                    <strong style="font-size: 0.8em">{{number_format($val->cosechados)}}</strong>
+                                </p>
+                            @endif
+                        </span>
+                    </td>
+                @endforeach
+
+                <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+                            {{$mod['modulo']->nombre}}
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-right">
+                            <li>
+                                <a href="javascript:void(0)" onclick="actualizar_proyecciones('{{$mod['modulo']->id_modulo}}')">
+                                    Actualizar
+                                </a>
+                            </li>
+                            <li>
+                                <a href="javascript:void(0)" onclick="actualizar_manual('{{$mod['modulo']->id_modulo}}')">
+                                    Actualizar manualmente
+                                </a>
+                            </li>
+                            <li class="divider"></li>
+                            <li>
+                                <a href="javascript:void(0)" onclick="restaurar_proyeccion('{{$mod['modulo']->id_modulo}}')">
+                                    Restaurar Proyección
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </th>
+            </tr>
+            <tr id="tr_modulo_{{$mod['modulo']->id_modulo}}">
+                <th class="text-center columna_fija_1" style="border-color: #9d9d9d">
+                    <input type="checkbox" id="checkbox_modulo_{{$mod['modulo']->id_modulo}}" class="checkbox_modulo">
+                </th>
+                <th class="text-center columna_fija_2" style="border-color: #9d9d9d; background-color: #e9ecef"
+                    id="celda_modulo_{{$mod['modulo']->id_modulo}}">
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+                            {{$mod['modulo']->nombre}}
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a href="javascript:void(0)" onclick="actualizar_proyecciones('{{$mod['modulo']->id_modulo}}')">
+                                    Actualizar
+                                </a>
+                            </li>
+                            <li>
+                                <a href="javascript:void(0)" onclick="actualizar_manual('{{$mod['modulo']->id_modulo}}')">
+                                    Actualizar manualmente
+                                </a>
+                            </li>
+                            <li class="divider"></li>
+                            <li>
+                                <a href="javascript:void(0)" onclick="restaurar_proyeccion('{{$mod['modulo']->id_modulo}}')">
+                                    Restaurar Proyección
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </th>
+                @foreach($mod['valores'] as $pos_val => $val)
+                    @php
+                        $fondo = '';
+                        $texto = 'black';
+                        $title = '<em>Mod: '.$mod['modulo']->nombre.'</em><br>'.
+                                 '<em>Sem: '.$val->semana.'</em><br>';
+                        if($val->tipo == 'P'){
+                            if(substr($val->info, 2) == 2)
+                                $fondo = '#ffb100'; // poda de 2
+                            else if(substr($val->info, 2) > 2) {
+                                $fondo = '#f70b00'; // poda de 3 o más
+                                $texto = 'white';
+                            } else
+                                $fondo = '#efff00'; // poda de 1
+                            $title .= '<em>Ptas.Ini: '.number_format($val->plantas_iniciales).'</em><br>';
+                            $title .= '<em>Ptas.Act: '.number_format($val->plantas_actuales).'</em><br>';
+                            $title .= '<em>T/Ptas: '.($val->tallos_planta).'</em><br>';
+                            $title .= '<em>Sem.Cos: '.($val->semana_poda_siembra).'</em><br>';
+                            $title .= '<em>Curva: '.($val->curva).'</em><br>';
+                            $title .= '<em>Desecho: '.($val->desecho).'%</em><br>';
+                        } else if($val->tipo == 'S'){
+                            $fondo = '#08ffe8'; // siembra
+                            $title .= '<em>Ptas.Ini: '.number_format($val->plantas_iniciales).'</em><br>';
+                            $title .= '<em>Ptas.Act: '.number_format($val->plantas_actuales).'</em><br>';
+                            $title .= '<em>T/Ptas: '.($val->tallos_planta).'</em><br>';
+                            $title .= '<em>Sem.Cos: '.($val->semana_poda_siembra).'</em><br>';
+                            $title .= '<em>Curva: '.($val->curva).'</em><br>';
+                            $title .= '<em>Desecho: '.($val->desecho).'%</em><br>';
+                        } else if($val->tipo == 'Y'){
+                            if($val->poda_siembra == 0)
+                                $fondo = '#08ffe8'; // siembra
+                            else if($val->poda_siembra == 1)
+                                $fondo = '#efff00'; // poda de 1
+                            else if($val->poda_siembra == 2)
+                                $fondo = '#ffb100'; // poda de 2
+                            else if($val->poda_siembra > 2) {
+                                $fondo = '#f70b00'; // poda de 3 o más
+                                $texto = 'white';
+                            }
+                            if($val->info != 'C'){  // no está cerrada la proyeccion
+                                $title .= '<em>Ptas.Ini: '.number_format($val->plantas_iniciales).'</em><br>';
+                                $title .= '<em>T/Ptas: '.($val->tallos_planta).'</em><br>';
+                                $title .= '<em>Sem.Cos: '.($val->semana_poda_siembra).'</em><br>';
+                                $title .= '<em>Curva: '.($val->curva).'</em><br>';
+                                $title .= '<em>Desecho: '.($val->desecho).'%</em><br>';
+                            } else {
+                                $title .= '<em>Cierre de módulo</em>';
+                            }
+                        } else if($val->tipo == 'T'){
+                            $fondo = '#03de00'; // semana de cosecha
+                            if($val->tabla == 'C'){   // ciclo
+                                $title .= '<em>Ptas.Ini: '.number_format($val->plantas_iniciales).'</em><br>';
+                                $title .= '<em>Ptas.Act: '.number_format($val->plantas_actuales).'</em><br>';
+                                $title .= '<em>T/Ptas: '.($val->tallos_planta).'</em><br>';
+                                $title .= '<em>Sem.Cos: '.($val->semana_poda_siembra).'</em><br>';
+                                $title .= '<em>Curva: '.($val->curva).'</em><br>';
+                                $title .= '<em>Desecho: '.($val->desecho).'%</em><br>';
+                            } else {    // proyeccion_modulo
+                                $title .= '<em>Ptas.Ini: '.number_format($val->plantas_iniciales).'</em><br>';
+                                $title .= '<em>T/Ptas: '.($val->tallos_planta).'</em><br>';
+                                $title .= '<em>Sem.Cos: '.($val->semana_poda_siembra).'</em><br>';
+                                $title .= '<em>Curva: '.($val->curva).'</em><br>';
+                                $title .= '<em>Desecho: '.($val->desecho).'%</em><br>';
+                            }
+                        }
+
+                        /* =============== INICIALIZAR TOTALES ===================== */
+                        $tallos_proyectados[$pos_val] = 0;
+                        $tallos_cosechados[$pos_val] = 0;
+                        $ptas_iniciales[$pos_val] = 0;
+                        $total_area[$pos_val] = 0;
+                    @endphp
+                    <td class="text-center celda_hovered celda_semana_{{$semanas[$pos_val]->id_semana}} celda_modulo_{{$mod['modulo']->id_modulo}} {{in_array($val->tipo, ['F', 'P', 'S', 'T', 'Y']) ? 'mouse-hand' : ''}}"
+                        style="border-color: #9d9d9d; background-color: {{$fondo}}; color: {{$texto}}"
+                        id="celda_{{$mod['modulo']->id_modulo}}_{{$pos_val}}"
+                        onclick="select_celda('{{$val->tipo}}', '{{$mod['modulo']->id_modulo}}', '{{$val->semana}}', '{{$val->id_variedad}}', '{{$val->tabla}}', '{{$val->modelo}}')"
+                        onmouseover="mouse_over_celda('celda_{{$mod['modulo']->id_modulo}}_{{$pos_val}}', 1)"
+                        onmouseleave="mouse_over_celda('celda_{{$mod['modulo']->id_modulo}}_{{$pos_val}}', 0)">
+                        <span data-toggle="tooltip" data-placement="top" data-html="true"
+                              title="{{in_array($val->tipo, ['S', 'P', 'T', 'Y']) ? $title : ''}}">
+                            @if($val->tipo == 'T')
+                                <strong style="font-size: 0.8em; margin-bottom: 0">
+                                    {{$val->proyectados != '' ? number_format($val->proyectados, 2) : 0}}
+                                </strong>
+                            @elseif($val->tipo == 'Y')
+                                <p style="margin-top: 0; margin-bottom: 0">
+                                    {{$val->info}}-{{$val->poda_siembra}}
+                                </p>
+                            @else
+                                <p style="margin-top: 0; margin-bottom: 0">
+                                    {{$val->info}}
+                                </p>
+                            @endif
+                            @if($val->cosechados > 0)
+                                <p style="margin-top: 0; margin-bottom: 0">
+                                    <strong style="font-size: 0.8em">{{number_format($val->cosechados)}}</strong>
+                                </p>
+                            @endif
+                        </span>
+                    </td>
+                @endforeach
+
+                <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+                            {{$mod['modulo']->nombre}}
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-right">
+                            <li>
+                                <a href="javascript:void(0)" onclick="actualizar_proyecciones('{{$mod['modulo']->id_modulo}}')">
+                                    Actualizar
+                                </a>
+                            </li>
+                            <li>
+                                <a href="javascript:void(0)" onclick="actualizar_manual('{{$mod['modulo']->id_modulo}}')">
+                                    Actualizar manualmente
+                                </a>
+                            </li>
+                            <li class="divider"></li>
+                            <li>
+                                <a href="javascript:void(0)" onclick="restaurar_proyeccion('{{$mod['modulo']->id_modulo}}')">
+                                    Restaurar Proyección
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </th>
+            </tr>
+            <tr id="tr_modulo_{{$mod['modulo']->id_modulo}}">
+                <th class="text-center columna_fija_1" style="border-color: #9d9d9d">
+                    <input type="checkbox" id="checkbox_modulo_{{$mod['modulo']->id_modulo}}" class="checkbox_modulo">
+                </th>
+                <th class="text-center columna_fija_2" style="border-color: #9d9d9d; background-color: #e9ecef"
+                    id="celda_modulo_{{$mod['modulo']->id_modulo}}">
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+                            {{$mod['modulo']->nombre}}
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a href="javascript:void(0)" onclick="actualizar_proyecciones('{{$mod['modulo']->id_modulo}}')">
+                                    Actualizar
+                                </a>
+                            </li>
+                            <li>
+                                <a href="javascript:void(0)" onclick="actualizar_manual('{{$mod['modulo']->id_modulo}}')">
+                                    Actualizar manualmente
+                                </a>
+                            </li>
+                            <li class="divider"></li>
+                            <li>
+                                <a href="javascript:void(0)" onclick="restaurar_proyeccion('{{$mod['modulo']->id_modulo}}')">
+                                    Restaurar Proyección
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </th>
+                @foreach($mod['valores'] as $pos_val => $val)
+                    @php
+                        $fondo = '';
+                        $texto = 'black';
+                        $title = '<em>Mod: '.$mod['modulo']->nombre.'</em><br>'.
+                                 '<em>Sem: '.$val->semana.'</em><br>';
+                        if($val->tipo == 'P'){
+                            if(substr($val->info, 2) == 2)
+                                $fondo = '#ffb100'; // poda de 2
+                            else if(substr($val->info, 2) > 2) {
+                                $fondo = '#f70b00'; // poda de 3 o más
+                                $texto = 'white';
+                            } else
+                                $fondo = '#efff00'; // poda de 1
+                            $title .= '<em>Ptas.Ini: '.number_format($val->plantas_iniciales).'</em><br>';
+                            $title .= '<em>Ptas.Act: '.number_format($val->plantas_actuales).'</em><br>';
+                            $title .= '<em>T/Ptas: '.($val->tallos_planta).'</em><br>';
+                            $title .= '<em>Sem.Cos: '.($val->semana_poda_siembra).'</em><br>';
+                            $title .= '<em>Curva: '.($val->curva).'</em><br>';
+                            $title .= '<em>Desecho: '.($val->desecho).'%</em><br>';
+                        } else if($val->tipo == 'S'){
+                            $fondo = '#08ffe8'; // siembra
+                            $title .= '<em>Ptas.Ini: '.number_format($val->plantas_iniciales).'</em><br>';
+                            $title .= '<em>Ptas.Act: '.number_format($val->plantas_actuales).'</em><br>';
+                            $title .= '<em>T/Ptas: '.($val->tallos_planta).'</em><br>';
+                            $title .= '<em>Sem.Cos: '.($val->semana_poda_siembra).'</em><br>';
+                            $title .= '<em>Curva: '.($val->curva).'</em><br>';
+                            $title .= '<em>Desecho: '.($val->desecho).'%</em><br>';
+                        } else if($val->tipo == 'Y'){
+                            if($val->poda_siembra == 0)
+                                $fondo = '#08ffe8'; // siembra
+                            else if($val->poda_siembra == 1)
+                                $fondo = '#efff00'; // poda de 1
+                            else if($val->poda_siembra == 2)
+                                $fondo = '#ffb100'; // poda de 2
+                            else if($val->poda_siembra > 2) {
+                                $fondo = '#f70b00'; // poda de 3 o más
+                                $texto = 'white';
+                            }
+                            if($val->info != 'C'){  // no está cerrada la proyeccion
+                                $title .= '<em>Ptas.Ini: '.number_format($val->plantas_iniciales).'</em><br>';
+                                $title .= '<em>T/Ptas: '.($val->tallos_planta).'</em><br>';
+                                $title .= '<em>Sem.Cos: '.($val->semana_poda_siembra).'</em><br>';
+                                $title .= '<em>Curva: '.($val->curva).'</em><br>';
+                                $title .= '<em>Desecho: '.($val->desecho).'%</em><br>';
+                            } else {
+                                $title .= '<em>Cierre de módulo</em>';
+                            }
+                        } else if($val->tipo == 'T'){
+                            $fondo = '#03de00'; // semana de cosecha
+                            if($val->tabla == 'C'){   // ciclo
+                                $title .= '<em>Ptas.Ini: '.number_format($val->plantas_iniciales).'</em><br>';
+                                $title .= '<em>Ptas.Act: '.number_format($val->plantas_actuales).'</em><br>';
+                                $title .= '<em>T/Ptas: '.($val->tallos_planta).'</em><br>';
+                                $title .= '<em>Sem.Cos: '.($val->semana_poda_siembra).'</em><br>';
+                                $title .= '<em>Curva: '.($val->curva).'</em><br>';
+                                $title .= '<em>Desecho: '.($val->desecho).'%</em><br>';
+                            } else {    // proyeccion_modulo
+                                $title .= '<em>Ptas.Ini: '.number_format($val->plantas_iniciales).'</em><br>';
+                                $title .= '<em>T/Ptas: '.($val->tallos_planta).'</em><br>';
+                                $title .= '<em>Sem.Cos: '.($val->semana_poda_siembra).'</em><br>';
+                                $title .= '<em>Curva: '.($val->curva).'</em><br>';
+                                $title .= '<em>Desecho: '.($val->desecho).'%</em><br>';
+                            }
+                        }
+
+                        /* =============== INICIALIZAR TOTALES ===================== */
+                        $tallos_proyectados[$pos_val] = 0;
+                        $tallos_cosechados[$pos_val] = 0;
+                        $ptas_iniciales[$pos_val] = 0;
+                        $total_area[$pos_val] = 0;
+                    @endphp
+                    <td class="text-center celda_hovered celda_semana_{{$semanas[$pos_val]->id_semana}} celda_modulo_{{$mod['modulo']->id_modulo}} {{in_array($val->tipo, ['F', 'P', 'S', 'T', 'Y']) ? 'mouse-hand' : ''}}"
+                        style="border-color: #9d9d9d; background-color: {{$fondo}}; color: {{$texto}}"
+                        id="celda_{{$mod['modulo']->id_modulo}}_{{$pos_val}}"
+                        onclick="select_celda('{{$val->tipo}}', '{{$mod['modulo']->id_modulo}}', '{{$val->semana}}', '{{$val->id_variedad}}', '{{$val->tabla}}', '{{$val->modelo}}')"
+                        onmouseover="mouse_over_celda('celda_{{$mod['modulo']->id_modulo}}_{{$pos_val}}', 1)"
+                        onmouseleave="mouse_over_celda('celda_{{$mod['modulo']->id_modulo}}_{{$pos_val}}', 0)">
+                        <span data-toggle="tooltip" data-placement="top" data-html="true"
+                              title="{{in_array($val->tipo, ['S', 'P', 'T', 'Y']) ? $title : ''}}">
+                            @if($val->tipo == 'T')
+                                <strong style="font-size: 0.8em; margin-bottom: 0">
+                                    {{$val->proyectados != '' ? number_format($val->proyectados, 2) : 0}}
+                                </strong>
+                            @elseif($val->tipo == 'Y')
+                                <p style="margin-top: 0; margin-bottom: 0">
+                                    {{$val->info}}-{{$val->poda_siembra}}
+                                </p>
+                            @else
+                                <p style="margin-top: 0; margin-bottom: 0">
+                                    {{$val->info}}
+                                </p>
+                            @endif
+                            @if($val->cosechados > 0)
+                                <p style="margin-top: 0; margin-bottom: 0">
+                                    <strong style="font-size: 0.8em">{{number_format($val->cosechados)}}</strong>
+                                </p>
+                            @endif
+                        </span>
+                    </td>
+                @endforeach
+
+                <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+                            {{$mod['modulo']->nombre}}
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-right">
+                            <li>
+                                <a href="javascript:void(0)" onclick="actualizar_proyecciones('{{$mod['modulo']->id_modulo}}')">
+                                    Actualizar
+                                </a>
+                            </li>
+                            <li>
+                                <a href="javascript:void(0)" onclick="actualizar_manual('{{$mod['modulo']->id_modulo}}')">
+                                    Actualizar manualmente
+                                </a>
+                            </li>
+                            <li class="divider"></li>
+                            <li>
+                                <a href="javascript:void(0)" onclick="restaurar_proyeccion('{{$mod['modulo']->id_modulo}}')">
+                                    Restaurar Proyección
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </th>
+            </tr>
+            <tr id="tr_modulo_{{$mod['modulo']->id_modulo}}">
+                <th class="text-center columna_fija_1" style="border-color: #9d9d9d">
+                    <input type="checkbox" id="checkbox_modulo_{{$mod['modulo']->id_modulo}}" class="checkbox_modulo">
+                </th>
+                <th class="text-center columna_fija_2" style="border-color: #9d9d9d; background-color: #e9ecef"
+                    id="celda_modulo_{{$mod['modulo']->id_modulo}}">
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+                            {{$mod['modulo']->nombre}}
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a href="javascript:void(0)" onclick="actualizar_proyecciones('{{$mod['modulo']->id_modulo}}')">
+                                    Actualizar
+                                </a>
+                            </li>
+                            <li>
+                                <a href="javascript:void(0)" onclick="actualizar_manual('{{$mod['modulo']->id_modulo}}')">
+                                    Actualizar manualmente
+                                </a>
+                            </li>
+                            <li class="divider"></li>
+                            <li>
+                                <a href="javascript:void(0)" onclick="restaurar_proyeccion('{{$mod['modulo']->id_modulo}}')">
+                                    Restaurar Proyección
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </th>
+                @foreach($mod['valores'] as $pos_val => $val)
+                    @php
+                        $fondo = '';
+                        $texto = 'black';
+                        $title = '<em>Mod: '.$mod['modulo']->nombre.'</em><br>'.
+                                 '<em>Sem: '.$val->semana.'</em><br>';
+                        if($val->tipo == 'P'){
+                            if(substr($val->info, 2) == 2)
+                                $fondo = '#ffb100'; // poda de 2
+                            else if(substr($val->info, 2) > 2) {
+                                $fondo = '#f70b00'; // poda de 3 o más
+                                $texto = 'white';
+                            } else
+                                $fondo = '#efff00'; // poda de 1
+                            $title .= '<em>Ptas.Ini: '.number_format($val->plantas_iniciales).'</em><br>';
+                            $title .= '<em>Ptas.Act: '.number_format($val->plantas_actuales).'</em><br>';
+                            $title .= '<em>T/Ptas: '.($val->tallos_planta).'</em><br>';
+                            $title .= '<em>Sem.Cos: '.($val->semana_poda_siembra).'</em><br>';
+                            $title .= '<em>Curva: '.($val->curva).'</em><br>';
+                            $title .= '<em>Desecho: '.($val->desecho).'%</em><br>';
+                        } else if($val->tipo == 'S'){
+                            $fondo = '#08ffe8'; // siembra
+                            $title .= '<em>Ptas.Ini: '.number_format($val->plantas_iniciales).'</em><br>';
+                            $title .= '<em>Ptas.Act: '.number_format($val->plantas_actuales).'</em><br>';
+                            $title .= '<em>T/Ptas: '.($val->tallos_planta).'</em><br>';
+                            $title .= '<em>Sem.Cos: '.($val->semana_poda_siembra).'</em><br>';
+                            $title .= '<em>Curva: '.($val->curva).'</em><br>';
+                            $title .= '<em>Desecho: '.($val->desecho).'%</em><br>';
+                        } else if($val->tipo == 'Y'){
+                            if($val->poda_siembra == 0)
+                                $fondo = '#08ffe8'; // siembra
+                            else if($val->poda_siembra == 1)
+                                $fondo = '#efff00'; // poda de 1
+                            else if($val->poda_siembra == 2)
+                                $fondo = '#ffb100'; // poda de 2
+                            else if($val->poda_siembra > 2) {
+                                $fondo = '#f70b00'; // poda de 3 o más
+                                $texto = 'white';
+                            }
+                            if($val->info != 'C'){  // no está cerrada la proyeccion
+                                $title .= '<em>Ptas.Ini: '.number_format($val->plantas_iniciales).'</em><br>';
+                                $title .= '<em>T/Ptas: '.($val->tallos_planta).'</em><br>';
+                                $title .= '<em>Sem.Cos: '.($val->semana_poda_siembra).'</em><br>';
+                                $title .= '<em>Curva: '.($val->curva).'</em><br>';
+                                $title .= '<em>Desecho: '.($val->desecho).'%</em><br>';
+                            } else {
+                                $title .= '<em>Cierre de módulo</em>';
+                            }
+                        } else if($val->tipo == 'T'){
+                            $fondo = '#03de00'; // semana de cosecha
+                            if($val->tabla == 'C'){   // ciclo
+                                $title .= '<em>Ptas.Ini: '.number_format($val->plantas_iniciales).'</em><br>';
+                                $title .= '<em>Ptas.Act: '.number_format($val->plantas_actuales).'</em><br>';
+                                $title .= '<em>T/Ptas: '.($val->tallos_planta).'</em><br>';
+                                $title .= '<em>Sem.Cos: '.($val->semana_poda_siembra).'</em><br>';
+                                $title .= '<em>Curva: '.($val->curva).'</em><br>';
+                                $title .= '<em>Desecho: '.($val->desecho).'%</em><br>';
+                            } else {    // proyeccion_modulo
+                                $title .= '<em>Ptas.Ini: '.number_format($val->plantas_iniciales).'</em><br>';
+                                $title .= '<em>T/Ptas: '.($val->tallos_planta).'</em><br>';
+                                $title .= '<em>Sem.Cos: '.($val->semana_poda_siembra).'</em><br>';
+                                $title .= '<em>Curva: '.($val->curva).'</em><br>';
+                                $title .= '<em>Desecho: '.($val->desecho).'%</em><br>';
+                            }
+                        }
+
+                        /* =============== INICIALIZAR TOTALES ===================== */
+                        $tallos_proyectados[$pos_val] = 0;
+                        $tallos_cosechados[$pos_val] = 0;
+                        $ptas_iniciales[$pos_val] = 0;
+                        $total_area[$pos_val] = 0;
+                    @endphp
+                    <td class="text-center celda_hovered celda_semana_{{$semanas[$pos_val]->id_semana}} celda_modulo_{{$mod['modulo']->id_modulo}} {{in_array($val->tipo, ['F', 'P', 'S', 'T', 'Y']) ? 'mouse-hand' : ''}}"
+                        style="border-color: #9d9d9d; background-color: {{$fondo}}; color: {{$texto}}"
+                        id="celda_{{$mod['modulo']->id_modulo}}_{{$pos_val}}"
+                        onclick="select_celda('{{$val->tipo}}', '{{$mod['modulo']->id_modulo}}', '{{$val->semana}}', '{{$val->id_variedad}}', '{{$val->tabla}}', '{{$val->modelo}}')"
+                        onmouseover="mouse_over_celda('celda_{{$mod['modulo']->id_modulo}}_{{$pos_val}}', 1)"
+                        onmouseleave="mouse_over_celda('celda_{{$mod['modulo']->id_modulo}}_{{$pos_val}}', 0)">
+                        <span data-toggle="tooltip" data-placement="top" data-html="true"
+                              title="{{in_array($val->tipo, ['S', 'P', 'T', 'Y']) ? $title : ''}}">
+                            @if($val->tipo == 'T')
+                                <strong style="font-size: 0.8em; margin-bottom: 0">
+                                    {{$val->proyectados != '' ? number_format($val->proyectados, 2) : 0}}
+                                </strong>
+                            @elseif($val->tipo == 'Y')
+                                <p style="margin-top: 0; margin-bottom: 0">
+                                    {{$val->info}}-{{$val->poda_siembra}}
+                                </p>
+                            @else
+                                <p style="margin-top: 0; margin-bottom: 0">
+                                    {{$val->info}}
+                                </p>
+                            @endif
+                            @if($val->cosechados > 0)
+                                <p style="margin-top: 0; margin-bottom: 0">
+                                    <strong style="font-size: 0.8em">{{number_format($val->cosechados)}}</strong>
+                                </p>
+                            @endif
+                        </span>
+                    </td>
+                @endforeach
+
+                <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+                            {{$mod['modulo']->nombre}}
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-right">
+                            <li>
+                                <a href="javascript:void(0)" onclick="actualizar_proyecciones('{{$mod['modulo']->id_modulo}}')">
+                                    Actualizar
+                                </a>
+                            </li>
+                            <li>
+                                <a href="javascript:void(0)" onclick="actualizar_manual('{{$mod['modulo']->id_modulo}}')">
+                                    Actualizar manualmente
+                                </a>
+                            </li>
+                            <li class="divider"></li>
+                            <li>
+                                <a href="javascript:void(0)" onclick="restaurar_proyeccion('{{$mod['modulo']->id_modulo}}')">
+                                    Restaurar Proyección
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </th>
+            </tr>
+            <tr id="tr_modulo_{{$mod['modulo']->id_modulo}}">
+                <th class="text-center columna_fija_1" style="border-color: #9d9d9d">
+                    <input type="checkbox" id="checkbox_modulo_{{$mod['modulo']->id_modulo}}" class="checkbox_modulo">
+                </th>
+                <th class="text-center columna_fija_2" style="border-color: #9d9d9d; background-color: #e9ecef"
+                    id="celda_modulo_{{$mod['modulo']->id_modulo}}">
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+                            {{$mod['modulo']->nombre}}
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a href="javascript:void(0)" onclick="actualizar_proyecciones('{{$mod['modulo']->id_modulo}}')">
+                                    Actualizar
+                                </a>
+                            </li>
+                            <li>
+                                <a href="javascript:void(0)" onclick="actualizar_manual('{{$mod['modulo']->id_modulo}}')">
+                                    Actualizar manualmente
+                                </a>
+                            </li>
+                            <li class="divider"></li>
+                            <li>
+                                <a href="javascript:void(0)" onclick="restaurar_proyeccion('{{$mod['modulo']->id_modulo}}')">
+                                    Restaurar Proyección
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </th>
+                @foreach($mod['valores'] as $pos_val => $val)
+                    @php
+                        $fondo = '';
+                        $texto = 'black';
+                        $title = '<em>Mod: '.$mod['modulo']->nombre.'</em><br>'.
+                                 '<em>Sem: '.$val->semana.'</em><br>';
+                        if($val->tipo == 'P'){
+                            if(substr($val->info, 2) == 2)
+                                $fondo = '#ffb100'; // poda de 2
+                            else if(substr($val->info, 2) > 2) {
+                                $fondo = '#f70b00'; // poda de 3 o más
+                                $texto = 'white';
+                            } else
+                                $fondo = '#efff00'; // poda de 1
+                            $title .= '<em>Ptas.Ini: '.number_format($val->plantas_iniciales).'</em><br>';
+                            $title .= '<em>Ptas.Act: '.number_format($val->plantas_actuales).'</em><br>';
+                            $title .= '<em>T/Ptas: '.($val->tallos_planta).'</em><br>';
+                            $title .= '<em>Sem.Cos: '.($val->semana_poda_siembra).'</em><br>';
+                            $title .= '<em>Curva: '.($val->curva).'</em><br>';
+                            $title .= '<em>Desecho: '.($val->desecho).'%</em><br>';
+                        } else if($val->tipo == 'S'){
+                            $fondo = '#08ffe8'; // siembra
+                            $title .= '<em>Ptas.Ini: '.number_format($val->plantas_iniciales).'</em><br>';
+                            $title .= '<em>Ptas.Act: '.number_format($val->plantas_actuales).'</em><br>';
+                            $title .= '<em>T/Ptas: '.($val->tallos_planta).'</em><br>';
+                            $title .= '<em>Sem.Cos: '.($val->semana_poda_siembra).'</em><br>';
+                            $title .= '<em>Curva: '.($val->curva).'</em><br>';
+                            $title .= '<em>Desecho: '.($val->desecho).'%</em><br>';
+                        } else if($val->tipo == 'Y'){
+                            if($val->poda_siembra == 0)
+                                $fondo = '#08ffe8'; // siembra
+                            else if($val->poda_siembra == 1)
+                                $fondo = '#efff00'; // poda de 1
+                            else if($val->poda_siembra == 2)
+                                $fondo = '#ffb100'; // poda de 2
+                            else if($val->poda_siembra > 2) {
+                                $fondo = '#f70b00'; // poda de 3 o más
+                                $texto = 'white';
+                            }
+                            if($val->info != 'C'){  // no está cerrada la proyeccion
+                                $title .= '<em>Ptas.Ini: '.number_format($val->plantas_iniciales).'</em><br>';
+                                $title .= '<em>T/Ptas: '.($val->tallos_planta).'</em><br>';
+                                $title .= '<em>Sem.Cos: '.($val->semana_poda_siembra).'</em><br>';
+                                $title .= '<em>Curva: '.($val->curva).'</em><br>';
+                                $title .= '<em>Desecho: '.($val->desecho).'%</em><br>';
+                            } else {
+                                $title .= '<em>Cierre de módulo</em>';
+                            }
+                        } else if($val->tipo == 'T'){
+                            $fondo = '#03de00'; // semana de cosecha
+                            if($val->tabla == 'C'){   // ciclo
+                                $title .= '<em>Ptas.Ini: '.number_format($val->plantas_iniciales).'</em><br>';
+                                $title .= '<em>Ptas.Act: '.number_format($val->plantas_actuales).'</em><br>';
+                                $title .= '<em>T/Ptas: '.($val->tallos_planta).'</em><br>';
+                                $title .= '<em>Sem.Cos: '.($val->semana_poda_siembra).'</em><br>';
+                                $title .= '<em>Curva: '.($val->curva).'</em><br>';
+                                $title .= '<em>Desecho: '.($val->desecho).'%</em><br>';
+                            } else {    // proyeccion_modulo
+                                $title .= '<em>Ptas.Ini: '.number_format($val->plantas_iniciales).'</em><br>';
+                                $title .= '<em>T/Ptas: '.($val->tallos_planta).'</em><br>';
+                                $title .= '<em>Sem.Cos: '.($val->semana_poda_siembra).'</em><br>';
+                                $title .= '<em>Curva: '.($val->curva).'</em><br>';
+                                $title .= '<em>Desecho: '.($val->desecho).'%</em><br>';
+                            }
+                        }
+
+                        /* =============== INICIALIZAR TOTALES ===================== */
+                        $tallos_proyectados[$pos_val] = 0;
+                        $tallos_cosechados[$pos_val] = 0;
+                        $ptas_iniciales[$pos_val] = 0;
+                        $total_area[$pos_val] = 0;
+                    @endphp
+                    <td class="text-center celda_hovered celda_semana_{{$semanas[$pos_val]->id_semana}} celda_modulo_{{$mod['modulo']->id_modulo}} {{in_array($val->tipo, ['F', 'P', 'S', 'T', 'Y']) ? 'mouse-hand' : ''}}"
+                        style="border-color: #9d9d9d; background-color: {{$fondo}}; color: {{$texto}}"
+                        id="celda_{{$mod['modulo']->id_modulo}}_{{$pos_val}}"
+                        onclick="select_celda('{{$val->tipo}}', '{{$mod['modulo']->id_modulo}}', '{{$val->semana}}', '{{$val->id_variedad}}', '{{$val->tabla}}', '{{$val->modelo}}')"
+                        onmouseover="mouse_over_celda('celda_{{$mod['modulo']->id_modulo}}_{{$pos_val}}', 1)"
+                        onmouseleave="mouse_over_celda('celda_{{$mod['modulo']->id_modulo}}_{{$pos_val}}', 0)">
+                        <span data-toggle="tooltip" data-placement="top" data-html="true"
+                              title="{{in_array($val->tipo, ['S', 'P', 'T', 'Y']) ? $title : ''}}">
+                            @if($val->tipo == 'T')
+                                <strong style="font-size: 0.8em; margin-bottom: 0">
+                                    {{$val->proyectados != '' ? number_format($val->proyectados, 2) : 0}}
+                                </strong>
+                            @elseif($val->tipo == 'Y')
+                                <p style="margin-top: 0; margin-bottom: 0">
+                                    {{$val->info}}-{{$val->poda_siembra}}
+                                </p>
+                            @else
+                                <p style="margin-top: 0; margin-bottom: 0">
+                                    {{$val->info}}
+                                </p>
+                            @endif
+                            @if($val->cosechados > 0)
+                                <p style="margin-top: 0; margin-bottom: 0">
+                                    <strong style="font-size: 0.8em">{{number_format($val->cosechados)}}</strong>
+                                </p>
+                            @endif
+                        </span>
+                    </td>
+                @endforeach
+
+                <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+                            {{$mod['modulo']->nombre}}
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-right">
+                            <li>
+                                <a href="javascript:void(0)" onclick="actualizar_proyecciones('{{$mod['modulo']->id_modulo}}')">
+                                    Actualizar
+                                </a>
+                            </li>
+                            <li>
+                                <a href="javascript:void(0)" onclick="actualizar_manual('{{$mod['modulo']->id_modulo}}')">
+                                    Actualizar manualmente
+                                </a>
+                            </li>
+                            <li class="divider"></li>
+                            <li>
+                                <a href="javascript:void(0)" onclick="restaurar_proyeccion('{{$mod['modulo']->id_modulo}}')">
+                                    Restaurar Proyección
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </th>
+            </tr>
+            <tr id="tr_modulo_{{$mod['modulo']->id_modulo}}">
+                <th class="text-center columna_fija_1" style="border-color: #9d9d9d">
+                    <input type="checkbox" id="checkbox_modulo_{{$mod['modulo']->id_modulo}}" class="checkbox_modulo">
+                </th>
+                <th class="text-center columna_fija_2" style="border-color: #9d9d9d; background-color: #e9ecef"
+                    id="celda_modulo_{{$mod['modulo']->id_modulo}}">
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+                            {{$mod['modulo']->nombre}}
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a href="javascript:void(0)" onclick="actualizar_proyecciones('{{$mod['modulo']->id_modulo}}')">
+                                    Actualizar
+                                </a>
+                            </li>
+                            <li>
+                                <a href="javascript:void(0)" onclick="actualizar_manual('{{$mod['modulo']->id_modulo}}')">
+                                    Actualizar manualmente
+                                </a>
+                            </li>
+                            <li class="divider"></li>
+                            <li>
+                                <a href="javascript:void(0)" onclick="restaurar_proyeccion('{{$mod['modulo']->id_modulo}}')">
+                                    Restaurar Proyección
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </th>
+                @foreach($mod['valores'] as $pos_val => $val)
+                    @php
+                        $fondo = '';
+                        $texto = 'black';
+                        $title = '<em>Mod: '.$mod['modulo']->nombre.'</em><br>'.
+                                 '<em>Sem: '.$val->semana.'</em><br>';
+                        if($val->tipo == 'P'){
+                            if(substr($val->info, 2) == 2)
+                                $fondo = '#ffb100'; // poda de 2
+                            else if(substr($val->info, 2) > 2) {
+                                $fondo = '#f70b00'; // poda de 3 o más
+                                $texto = 'white';
+                            } else
+                                $fondo = '#efff00'; // poda de 1
+                            $title .= '<em>Ptas.Ini: '.number_format($val->plantas_iniciales).'</em><br>';
+                            $title .= '<em>Ptas.Act: '.number_format($val->plantas_actuales).'</em><br>';
+                            $title .= '<em>T/Ptas: '.($val->tallos_planta).'</em><br>';
+                            $title .= '<em>Sem.Cos: '.($val->semana_poda_siembra).'</em><br>';
+                            $title .= '<em>Curva: '.($val->curva).'</em><br>';
+                            $title .= '<em>Desecho: '.($val->desecho).'%</em><br>';
+                        } else if($val->tipo == 'S'){
+                            $fondo = '#08ffe8'; // siembra
+                            $title .= '<em>Ptas.Ini: '.number_format($val->plantas_iniciales).'</em><br>';
+                            $title .= '<em>Ptas.Act: '.number_format($val->plantas_actuales).'</em><br>';
+                            $title .= '<em>T/Ptas: '.($val->tallos_planta).'</em><br>';
+                            $title .= '<em>Sem.Cos: '.($val->semana_poda_siembra).'</em><br>';
+                            $title .= '<em>Curva: '.($val->curva).'</em><br>';
+                            $title .= '<em>Desecho: '.($val->desecho).'%</em><br>';
+                        } else if($val->tipo == 'Y'){
+                            if($val->poda_siembra == 0)
+                                $fondo = '#08ffe8'; // siembra
+                            else if($val->poda_siembra == 1)
+                                $fondo = '#efff00'; // poda de 1
+                            else if($val->poda_siembra == 2)
+                                $fondo = '#ffb100'; // poda de 2
+                            else if($val->poda_siembra > 2) {
+                                $fondo = '#f70b00'; // poda de 3 o más
+                                $texto = 'white';
+                            }
+                            if($val->info != 'C'){  // no está cerrada la proyeccion
+                                $title .= '<em>Ptas.Ini: '.number_format($val->plantas_iniciales).'</em><br>';
+                                $title .= '<em>T/Ptas: '.($val->tallos_planta).'</em><br>';
+                                $title .= '<em>Sem.Cos: '.($val->semana_poda_siembra).'</em><br>';
+                                $title .= '<em>Curva: '.($val->curva).'</em><br>';
+                                $title .= '<em>Desecho: '.($val->desecho).'%</em><br>';
+                            } else {
+                                $title .= '<em>Cierre de módulo</em>';
+                            }
+                        } else if($val->tipo == 'T'){
+                            $fondo = '#03de00'; // semana de cosecha
+                            if($val->tabla == 'C'){   // ciclo
+                                $title .= '<em>Ptas.Ini: '.number_format($val->plantas_iniciales).'</em><br>';
+                                $title .= '<em>Ptas.Act: '.number_format($val->plantas_actuales).'</em><br>';
+                                $title .= '<em>T/Ptas: '.($val->tallos_planta).'</em><br>';
+                                $title .= '<em>Sem.Cos: '.($val->semana_poda_siembra).'</em><br>';
+                                $title .= '<em>Curva: '.($val->curva).'</em><br>';
+                                $title .= '<em>Desecho: '.($val->desecho).'%</em><br>';
+                            } else {    // proyeccion_modulo
+                                $title .= '<em>Ptas.Ini: '.number_format($val->plantas_iniciales).'</em><br>';
+                                $title .= '<em>T/Ptas: '.($val->tallos_planta).'</em><br>';
+                                $title .= '<em>Sem.Cos: '.($val->semana_poda_siembra).'</em><br>';
+                                $title .= '<em>Curva: '.($val->curva).'</em><br>';
+                                $title .= '<em>Desecho: '.($val->desecho).'%</em><br>';
+                            }
+                        }
+
+                        /* =============== INICIALIZAR TOTALES ===================== */
+                        $tallos_proyectados[$pos_val] = 0;
+                        $tallos_cosechados[$pos_val] = 0;
+                        $ptas_iniciales[$pos_val] = 0;
+                        $total_area[$pos_val] = 0;
+                    @endphp
+                    <td class="text-center celda_hovered celda_semana_{{$semanas[$pos_val]->id_semana}} celda_modulo_{{$mod['modulo']->id_modulo}} {{in_array($val->tipo, ['F', 'P', 'S', 'T', 'Y']) ? 'mouse-hand' : ''}}"
+                        style="border-color: #9d9d9d; background-color: {{$fondo}}; color: {{$texto}}"
+                        id="celda_{{$mod['modulo']->id_modulo}}_{{$pos_val}}"
+                        onclick="select_celda('{{$val->tipo}}', '{{$mod['modulo']->id_modulo}}', '{{$val->semana}}', '{{$val->id_variedad}}', '{{$val->tabla}}', '{{$val->modelo}}')"
+                        onmouseover="mouse_over_celda('celda_{{$mod['modulo']->id_modulo}}_{{$pos_val}}', 1)"
+                        onmouseleave="mouse_over_celda('celda_{{$mod['modulo']->id_modulo}}_{{$pos_val}}', 0)">
+                        <span data-toggle="tooltip" data-placement="top" data-html="true"
+                              title="{{in_array($val->tipo, ['S', 'P', 'T', 'Y']) ? $title : ''}}">
+                            @if($val->tipo == 'T')
+                                <strong style="font-size: 0.8em; margin-bottom: 0">
+                                    {{$val->proyectados != '' ? number_format($val->proyectados, 2) : 0}}
+                                </strong>
+                            @elseif($val->tipo == 'Y')
+                                <p style="margin-top: 0; margin-bottom: 0">
+                                    {{$val->info}}-{{$val->poda_siembra}}
+                                </p>
+                            @else
+                                <p style="margin-top: 0; margin-bottom: 0">
+                                    {{$val->info}}
+                                </p>
+                            @endif
+                            @if($val->cosechados > 0)
+                                <p style="margin-top: 0; margin-bottom: 0">
+                                    <strong style="font-size: 0.8em">{{number_format($val->cosechados)}}</strong>
+                                </p>
+                            @endif
+                        </span>
+                    </td>
+                @endforeach
+
+                <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+                            {{$mod['modulo']->nombre}}
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-right">
+                            <li>
+                                <a href="javascript:void(0)" onclick="actualizar_proyecciones('{{$mod['modulo']->id_modulo}}')">
+                                    Actualizar
+                                </a>
+                            </li>
+                            <li>
+                                <a href="javascript:void(0)" onclick="actualizar_manual('{{$mod['modulo']->id_modulo}}')">
+                                    Actualizar manualmente
+                                </a>
+                            </li>
+                            <li class="divider"></li>
+                            <li>
+                                <a href="javascript:void(0)" onclick="restaurar_proyeccion('{{$mod['modulo']->id_modulo}}')">
+                                    Restaurar Proyección
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </th>
+            </tr>
+            <tr id="tr_modulo_{{$mod['modulo']->id_modulo}}">
+                <th class="text-center columna_fija_1" style="border-color: #9d9d9d">
+                    <input type="checkbox" id="checkbox_modulo_{{$mod['modulo']->id_modulo}}" class="checkbox_modulo">
+                </th>
+                <th class="text-center columna_fija_2" style="border-color: #9d9d9d; background-color: #e9ecef"
+                    id="celda_modulo_{{$mod['modulo']->id_modulo}}">
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+                            {{$mod['modulo']->nombre}}
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a href="javascript:void(0)" onclick="actualizar_proyecciones('{{$mod['modulo']->id_modulo}}')">
+                                    Actualizar
+                                </a>
+                            </li>
+                            <li>
+                                <a href="javascript:void(0)" onclick="actualizar_manual('{{$mod['modulo']->id_modulo}}')">
+                                    Actualizar manualmente
+                                </a>
+                            </li>
+                            <li class="divider"></li>
+                            <li>
+                                <a href="javascript:void(0)" onclick="restaurar_proyeccion('{{$mod['modulo']->id_modulo}}')">
+                                    Restaurar Proyección
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </th>
+                @foreach($mod['valores'] as $pos_val => $val)
+                    @php
+                        $fondo = '';
+                        $texto = 'black';
+                        $title = '<em>Mod: '.$mod['modulo']->nombre.'</em><br>'.
+                                 '<em>Sem: '.$val->semana.'</em><br>';
+                        if($val->tipo == 'P'){
+                            if(substr($val->info, 2) == 2)
+                                $fondo = '#ffb100'; // poda de 2
+                            else if(substr($val->info, 2) > 2) {
+                                $fondo = '#f70b00'; // poda de 3 o más
+                                $texto = 'white';
+                            } else
+                                $fondo = '#efff00'; // poda de 1
+                            $title .= '<em>Ptas.Ini: '.number_format($val->plantas_iniciales).'</em><br>';
+                            $title .= '<em>Ptas.Act: '.number_format($val->plantas_actuales).'</em><br>';
+                            $title .= '<em>T/Ptas: '.($val->tallos_planta).'</em><br>';
+                            $title .= '<em>Sem.Cos: '.($val->semana_poda_siembra).'</em><br>';
+                            $title .= '<em>Curva: '.($val->curva).'</em><br>';
+                            $title .= '<em>Desecho: '.($val->desecho).'%</em><br>';
+                        } else if($val->tipo == 'S'){
+                            $fondo = '#08ffe8'; // siembra
+                            $title .= '<em>Ptas.Ini: '.number_format($val->plantas_iniciales).'</em><br>';
+                            $title .= '<em>Ptas.Act: '.number_format($val->plantas_actuales).'</em><br>';
+                            $title .= '<em>T/Ptas: '.($val->tallos_planta).'</em><br>';
+                            $title .= '<em>Sem.Cos: '.($val->semana_poda_siembra).'</em><br>';
+                            $title .= '<em>Curva: '.($val->curva).'</em><br>';
+                            $title .= '<em>Desecho: '.($val->desecho).'%</em><br>';
+                        } else if($val->tipo == 'Y'){
+                            if($val->poda_siembra == 0)
+                                $fondo = '#08ffe8'; // siembra
+                            else if($val->poda_siembra == 1)
+                                $fondo = '#efff00'; // poda de 1
+                            else if($val->poda_siembra == 2)
+                                $fondo = '#ffb100'; // poda de 2
+                            else if($val->poda_siembra > 2) {
+                                $fondo = '#f70b00'; // poda de 3 o más
+                                $texto = 'white';
+                            }
+                            if($val->info != 'C'){  // no está cerrada la proyeccion
+                                $title .= '<em>Ptas.Ini: '.number_format($val->plantas_iniciales).'</em><br>';
+                                $title .= '<em>T/Ptas: '.($val->tallos_planta).'</em><br>';
+                                $title .= '<em>Sem.Cos: '.($val->semana_poda_siembra).'</em><br>';
+                                $title .= '<em>Curva: '.($val->curva).'</em><br>';
+                                $title .= '<em>Desecho: '.($val->desecho).'%</em><br>';
+                            } else {
+                                $title .= '<em>Cierre de módulo</em>';
+                            }
+                        } else if($val->tipo == 'T'){
+                            $fondo = '#03de00'; // semana de cosecha
+                            if($val->tabla == 'C'){   // ciclo
+                                $title .= '<em>Ptas.Ini: '.number_format($val->plantas_iniciales).'</em><br>';
+                                $title .= '<em>Ptas.Act: '.number_format($val->plantas_actuales).'</em><br>';
+                                $title .= '<em>T/Ptas: '.($val->tallos_planta).'</em><br>';
+                                $title .= '<em>Sem.Cos: '.($val->semana_poda_siembra).'</em><br>';
+                                $title .= '<em>Curva: '.($val->curva).'</em><br>';
+                                $title .= '<em>Desecho: '.($val->desecho).'%</em><br>';
+                            } else {    // proyeccion_modulo
+                                $title .= '<em>Ptas.Ini: '.number_format($val->plantas_iniciales).'</em><br>';
+                                $title .= '<em>T/Ptas: '.($val->tallos_planta).'</em><br>';
+                                $title .= '<em>Sem.Cos: '.($val->semana_poda_siembra).'</em><br>';
+                                $title .= '<em>Curva: '.($val->curva).'</em><br>';
+                                $title .= '<em>Desecho: '.($val->desecho).'%</em><br>';
+                            }
+                        }
+
+                        /* =============== INICIALIZAR TOTALES ===================== */
+                        $tallos_proyectados[$pos_val] = 0;
+                        $tallos_cosechados[$pos_val] = 0;
+                        $ptas_iniciales[$pos_val] = 0;
+                        $total_area[$pos_val] = 0;
+                    @endphp
+                    <td class="text-center celda_hovered celda_semana_{{$semanas[$pos_val]->id_semana}} celda_modulo_{{$mod['modulo']->id_modulo}} {{in_array($val->tipo, ['F', 'P', 'S', 'T', 'Y']) ? 'mouse-hand' : ''}}"
+                        style="border-color: #9d9d9d; background-color: {{$fondo}}; color: {{$texto}}"
+                        id="celda_{{$mod['modulo']->id_modulo}}_{{$pos_val}}"
+                        onclick="select_celda('{{$val->tipo}}', '{{$mod['modulo']->id_modulo}}', '{{$val->semana}}', '{{$val->id_variedad}}', '{{$val->tabla}}', '{{$val->modelo}}')"
+                        onmouseover="mouse_over_celda('celda_{{$mod['modulo']->id_modulo}}_{{$pos_val}}', 1)"
+                        onmouseleave="mouse_over_celda('celda_{{$mod['modulo']->id_modulo}}_{{$pos_val}}', 0)">
+                        <span data-toggle="tooltip" data-placement="top" data-html="true"
+                              title="{{in_array($val->tipo, ['S', 'P', 'T', 'Y']) ? $title : ''}}">
+                            @if($val->tipo == 'T')
+                                <strong style="font-size: 0.8em; margin-bottom: 0">
+                                    {{$val->proyectados != '' ? number_format($val->proyectados, 2) : 0}}
+                                </strong>
+                            @elseif($val->tipo == 'Y')
+                                <p style="margin-top: 0; margin-bottom: 0">
+                                    {{$val->info}}-{{$val->poda_siembra}}
+                                </p>
+                            @else
+                                <p style="margin-top: 0; margin-bottom: 0">
+                                    {{$val->info}}
+                                </p>
+                            @endif
+                            @if($val->cosechados > 0)
+                                <p style="margin-top: 0; margin-bottom: 0">
+                                    <strong style="font-size: 0.8em">{{number_format($val->cosechados)}}</strong>
+                                </p>
+                            @endif
+                        </span>
+                    </td>
+                @endforeach
+
+                <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+                            {{$mod['modulo']->nombre}}
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-right">
+                            <li>
+                                <a href="javascript:void(0)" onclick="actualizar_proyecciones('{{$mod['modulo']->id_modulo}}')">
+                                    Actualizar
+                                </a>
+                            </li>
+                            <li>
+                                <a href="javascript:void(0)" onclick="actualizar_manual('{{$mod['modulo']->id_modulo}}')">
+                                    Actualizar manualmente
+                                </a>
+                            </li>
+                            <li class="divider"></li>
+                            <li>
+                                <a href="javascript:void(0)" onclick="restaurar_proyeccion('{{$mod['modulo']->id_modulo}}')">
+                                    Restaurar Proyección
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </th>
+            </tr>
+            <tr id="tr_modulo_{{$mod['modulo']->id_modulo}}">
+                <th class="text-center columna_fija_1" style="border-color: #9d9d9d">
+                    <input type="checkbox" id="checkbox_modulo_{{$mod['modulo']->id_modulo}}" class="checkbox_modulo">
+                </th>
+                <th class="text-center columna_fija_2" style="border-color: #9d9d9d; background-color: #e9ecef"
+                    id="celda_modulo_{{$mod['modulo']->id_modulo}}">
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+                            {{$mod['modulo']->nombre}}
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a href="javascript:void(0)" onclick="actualizar_proyecciones('{{$mod['modulo']->id_modulo}}')">
+                                    Actualizar
+                                </a>
+                            </li>
+                            <li>
+                                <a href="javascript:void(0)" onclick="actualizar_manual('{{$mod['modulo']->id_modulo}}')">
+                                    Actualizar manualmente
+                                </a>
+                            </li>
+                            <li class="divider"></li>
+                            <li>
+                                <a href="javascript:void(0)" onclick="restaurar_proyeccion('{{$mod['modulo']->id_modulo}}')">
+                                    Restaurar Proyección
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </th>
+                @foreach($mod['valores'] as $pos_val => $val)
+                    @php
+                        $fondo = '';
+                        $texto = 'black';
+                        $title = '<em>Mod: '.$mod['modulo']->nombre.'</em><br>'.
+                                 '<em>Sem: '.$val->semana.'</em><br>';
+                        if($val->tipo == 'P'){
+                            if(substr($val->info, 2) == 2)
+                                $fondo = '#ffb100'; // poda de 2
+                            else if(substr($val->info, 2) > 2) {
+                                $fondo = '#f70b00'; // poda de 3 o más
+                                $texto = 'white';
+                            } else
+                                $fondo = '#efff00'; // poda de 1
+                            $title .= '<em>Ptas.Ini: '.number_format($val->plantas_iniciales).'</em><br>';
+                            $title .= '<em>Ptas.Act: '.number_format($val->plantas_actuales).'</em><br>';
+                            $title .= '<em>T/Ptas: '.($val->tallos_planta).'</em><br>';
+                            $title .= '<em>Sem.Cos: '.($val->semana_poda_siembra).'</em><br>';
+                            $title .= '<em>Curva: '.($val->curva).'</em><br>';
+                            $title .= '<em>Desecho: '.($val->desecho).'%</em><br>';
+                        } else if($val->tipo == 'S'){
+                            $fondo = '#08ffe8'; // siembra
+                            $title .= '<em>Ptas.Ini: '.number_format($val->plantas_iniciales).'</em><br>';
+                            $title .= '<em>Ptas.Act: '.number_format($val->plantas_actuales).'</em><br>';
+                            $title .= '<em>T/Ptas: '.($val->tallos_planta).'</em><br>';
+                            $title .= '<em>Sem.Cos: '.($val->semana_poda_siembra).'</em><br>';
+                            $title .= '<em>Curva: '.($val->curva).'</em><br>';
+                            $title .= '<em>Desecho: '.($val->desecho).'%</em><br>';
+                        } else if($val->tipo == 'Y'){
+                            if($val->poda_siembra == 0)
+                                $fondo = '#08ffe8'; // siembra
+                            else if($val->poda_siembra == 1)
+                                $fondo = '#efff00'; // poda de 1
+                            else if($val->poda_siembra == 2)
+                                $fondo = '#ffb100'; // poda de 2
+                            else if($val->poda_siembra > 2) {
+                                $fondo = '#f70b00'; // poda de 3 o más
+                                $texto = 'white';
+                            }
+                            if($val->info != 'C'){  // no está cerrada la proyeccion
+                                $title .= '<em>Ptas.Ini: '.number_format($val->plantas_iniciales).'</em><br>';
+                                $title .= '<em>T/Ptas: '.($val->tallos_planta).'</em><br>';
+                                $title .= '<em>Sem.Cos: '.($val->semana_poda_siembra).'</em><br>';
+                                $title .= '<em>Curva: '.($val->curva).'</em><br>';
+                                $title .= '<em>Desecho: '.($val->desecho).'%</em><br>';
+                            } else {
+                                $title .= '<em>Cierre de módulo</em>';
+                            }
+                        } else if($val->tipo == 'T'){
+                            $fondo = '#03de00'; // semana de cosecha
+                            if($val->tabla == 'C'){   // ciclo
+                                $title .= '<em>Ptas.Ini: '.number_format($val->plantas_iniciales).'</em><br>';
+                                $title .= '<em>Ptas.Act: '.number_format($val->plantas_actuales).'</em><br>';
+                                $title .= '<em>T/Ptas: '.($val->tallos_planta).'</em><br>';
+                                $title .= '<em>Sem.Cos: '.($val->semana_poda_siembra).'</em><br>';
+                                $title .= '<em>Curva: '.($val->curva).'</em><br>';
+                                $title .= '<em>Desecho: '.($val->desecho).'%</em><br>';
+                            } else {    // proyeccion_modulo
+                                $title .= '<em>Ptas.Ini: '.number_format($val->plantas_iniciales).'</em><br>';
+                                $title .= '<em>T/Ptas: '.($val->tallos_planta).'</em><br>';
+                                $title .= '<em>Sem.Cos: '.($val->semana_poda_siembra).'</em><br>';
+                                $title .= '<em>Curva: '.($val->curva).'</em><br>';
+                                $title .= '<em>Desecho: '.($val->desecho).'%</em><br>';
+                            }
+                        }
+
+                        /* =============== INICIALIZAR TOTALES ===================== */
+                        $tallos_proyectados[$pos_val] = 0;
+                        $tallos_cosechados[$pos_val] = 0;
+                        $ptas_iniciales[$pos_val] = 0;
+                        $total_area[$pos_val] = 0;
+                    @endphp
+                    <td class="text-center celda_hovered celda_semana_{{$semanas[$pos_val]->id_semana}} celda_modulo_{{$mod['modulo']->id_modulo}} {{in_array($val->tipo, ['F', 'P', 'S', 'T', 'Y']) ? 'mouse-hand' : ''}}"
+                        style="border-color: #9d9d9d; background-color: {{$fondo}}; color: {{$texto}}"
+                        id="celda_{{$mod['modulo']->id_modulo}}_{{$pos_val}}"
+                        onclick="select_celda('{{$val->tipo}}', '{{$mod['modulo']->id_modulo}}', '{{$val->semana}}', '{{$val->id_variedad}}', '{{$val->tabla}}', '{{$val->modelo}}')"
+                        onmouseover="mouse_over_celda('celda_{{$mod['modulo']->id_modulo}}_{{$pos_val}}', 1)"
+                        onmouseleave="mouse_over_celda('celda_{{$mod['modulo']->id_modulo}}_{{$pos_val}}', 0)">
+                        <span data-toggle="tooltip" data-placement="top" data-html="true"
+                              title="{{in_array($val->tipo, ['S', 'P', 'T', 'Y']) ? $title : ''}}">
+                            @if($val->tipo == 'T')
+                                <strong style="font-size: 0.8em; margin-bottom: 0">
+                                    {{$val->proyectados != '' ? number_format($val->proyectados, 2) : 0}}
+                                </strong>
+                            @elseif($val->tipo == 'Y')
+                                <p style="margin-top: 0; margin-bottom: 0">
+                                    {{$val->info}}-{{$val->poda_siembra}}
+                                </p>
+                            @else
+                                <p style="margin-top: 0; margin-bottom: 0">
+                                    {{$val->info}}
+                                </p>
+                            @endif
+                            @if($val->cosechados > 0)
+                                <p style="margin-top: 0; margin-bottom: 0">
+                                    <strong style="font-size: 0.8em">{{number_format($val->cosechados)}}</strong>
+                                </p>
+                            @endif
+                        </span>
+                    </td>
+                @endforeach
+
+                <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+                            {{$mod['modulo']->nombre}}
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-right">
+                            <li>
+                                <a href="javascript:void(0)" onclick="actualizar_proyecciones('{{$mod['modulo']->id_modulo}}')">
+                                    Actualizar
+                                </a>
+                            </li>
+                            <li>
+                                <a href="javascript:void(0)" onclick="actualizar_manual('{{$mod['modulo']->id_modulo}}')">
+                                    Actualizar manualmente
+                                </a>
+                            </li>
+                            <li class="divider"></li>
+                            <li>
+                                <a href="javascript:void(0)" onclick="restaurar_proyeccion('{{$mod['modulo']->id_modulo}}')">
+                                    Restaurar Proyección
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </th>
+            </tr>
+            <tr id="tr_modulo_{{$mod['modulo']->id_modulo}}">
+                <th class="text-center columna_fija_1" style="border-color: #9d9d9d">
+                    <input type="checkbox" id="checkbox_modulo_{{$mod['modulo']->id_modulo}}" class="checkbox_modulo">
+                </th>
+                <th class="text-center columna_fija_2" style="border-color: #9d9d9d; background-color: #e9ecef"
+                    id="celda_modulo_{{$mod['modulo']->id_modulo}}">
                     <div class="btn-group">
                         <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
                             {{$mod['modulo']->nombre}}
@@ -305,143 +1576,145 @@
         @endforeach
 
         {{-- TOTALES --}}
-        <tr style="background-color: #fdff8b">
-            <th class="text-center" style="border-color: #9d9d9d">
-            </th>
-            <th class="text-center" style="border-color: #9d9d9d">
-                Proyectados
-                <br>
-                <small><em>Tallos/cajas</em></small>
-            </th>
-            @foreach($tallos_proyectados as $pos_val => $val)
-                <th class="text-center" style="border-color: #9d9d9d">
-                    @if($val > 0)
-                        @php
-                            if($semanas[$pos_val]->fecha_inicial >= $semana_actual->fecha_inicial && $semanas[$pos_val]->fecha_inicial <= opDiasFecha('+', 34, $semana_actual->fecha_inicial)){   // semana actual o una de las 4 siguientes
-                                $calibre = $calibre_actual;    // calibre real de la semana anterior
-                            } else { // otra semana distinta a la actual
-                                $calibre = getCalibreByRangoVariedad($semanas[$pos_val]->fecha_inicial, $semanas[$pos_val]->fecha_final, $variedad);    // calibre real de la semana
-                            }
-                            if($calibre <= 0){
-                                if($semanas[$pos_val]->tallos_ramo_poda > 0){
-                                    $calibre = $semanas[$pos_val]->tallos_ramo_poda;    // calibre de poda programado en la semana
+        <tfooter>
+            <tr style="background-color: #fdff8b">
+                <th class="text-center columna_fija_1" style="border-color: #9d9d9d">
+                </th>
+                <th class="text-center columna_fija_2" style="border-color: #9d9d9d">
+                    Proyectados
+                    <br>
+                    <small><em>Tallos/cajas</em></small>
+                </th>
+                @foreach($tallos_proyectados as $pos_val => $val)
+                    <th class="text-center" style="border-color: #9d9d9d">
+                        @if($val > 0)
+                            @php
+                                if($semanas[$pos_val]->fecha_inicial >= $semana_actual->fecha_inicial && $semanas[$pos_val]->fecha_inicial <= opDiasFecha('+', 34, $semana_actual->fecha_inicial)){   // semana actual o una de las 4 siguientes
+                                    $calibre = $calibre_actual;    // calibre real de la semana anterior
+                                } else { // otra semana distinta a la actual
+                                    $calibre = getCalibreByRangoVariedad($semanas[$pos_val]->fecha_inicial, $semanas[$pos_val]->fecha_final, $variedad);    // calibre real de la semana
                                 }
-                            }
-                        @endphp
-                        <span data-toggle="tooltip" data-placement="top" data-html="true"
-                              title="{{$semanas[$pos_val]->codigo}} <br> <small>Calib:<em>{{$calibre}}</em></small>">
+                                if($calibre <= 0){
+                                    if($semanas[$pos_val]->tallos_ramo_poda > 0){
+                                        $calibre = $semanas[$pos_val]->tallos_ramo_poda;    // calibre de poda programado en la semana
+                                    }
+                                }
+                            @endphp
+                            <span data-toggle="tooltip" data-placement="top" data-html="true"
+                                  title="{{$semanas[$pos_val]->codigo}} <br> <small>Calib:<em>{{$calibre}}</em></small>">
                             {{number_format($val, 2)}}
-                            <br>
+                                <br>
                             <strong>
                                 @if($calibre > 0)
                                     {{number_format(round(($val / $calibre) / $ramos_x_caja, 2), 2)}}
                                 @endif
                             </strong>
                         </span>
-                    @endif
-                </th>
-            @endforeach
-            <th class="text-center" style="border-color: #9d9d9d">
-                Proyectados
-                <br>
-                <small><em>Tallos/cajas</em></small>
-            </th>
-        </tr>
-        <tr style="background-color: #c4c4ff">
-            <th class="text-center" style="border-color: #9d9d9d">
-            </th>
-            <th class="text-center" style="border-color: #9d9d9d">
-                Cosechados
-                <br>
-                <small><em>Tallos/cajas</em></small>
-            </th>
-            @foreach($tallos_cosechados as $pos_val => $val)
+                        @endif
+                    </th>
+                @endforeach
                 <th class="text-center" style="border-color: #9d9d9d">
-                    @if($val > 0)
-                        @php
-                            $cajas = getCajasByRangoVariedad($semanas[$pos_val]->fecha_inicial, $semanas[$pos_val]->fecha_final, $variedad);
-                        @endphp
-                        <span data-toggle="tooltip" data-placement="top" data-html="true"
-                              title="{{$semanas[$pos_val]->codigo}}">
+                    Proyectados
+                    <br>
+                    <small><em>Tallos/cajas</em></small>
+                </th>
+            </tr>
+            <tr style="background-color: #c4c4ff">
+                <th class="text-center columna_fija_1" style="border-color: #9d9d9d">
+                </th>
+                <th class="text-center columna_fija_2" style="border-color: #9d9d9d">
+                    Cosechados
+                    <br>
+                    <small><em>Tallos/cajas</em></small>
+                </th>
+                @foreach($tallos_cosechados as $pos_val => $val)
+                    <th class="text-center" style="border-color: #9d9d9d">
+                        @if($val > 0)
+                            @php
+                                $cajas = getCajasByRangoVariedad($semanas[$pos_val]->fecha_inicial, $semanas[$pos_val]->fecha_final, $variedad);
+                            @endphp
+                            <span data-toggle="tooltip" data-placement="top" data-html="true"
+                                  title="{{$semanas[$pos_val]->codigo}}">
                             {{number_format($val, 2)}}
-                            <br>
+                                <br>
                             <strong>
                                 @if($cajas > 0)
                                     {{number_format($cajas, 2)}}
                                 @endif
                             </strong>
                         </span>
-                    @endif
-                </th>
-            @endforeach
-            <th class="text-center" style="border-color: #9d9d9d">
-                Cosechados
-                <br>
-                <small><em>Tallos/cajas</em></small>
-            </th>
-        </tr>
-        <tr style="background-color: #0c7605; color: white">
-            <th class="text-center" style="border-color: #9d9d9d">
-            </th>
-            <th class="text-center" style="border-color: #9d9d9d">
-                Ptas. Iniciales
-            </th>
-            @foreach($ptas_iniciales as $pos_val => $val)
+                        @endif
+                    </th>
+                @endforeach
                 <th class="text-center" style="border-color: #9d9d9d">
-                    @if($val > 0)
-                        <span data-toggle="tooltip" data-placement="top" data-html="true"
-                              title="{{$semanas[$pos_val]->codigo}}">
+                    Cosechados
+                    <br>
+                    <small><em>Tallos/cajas</em></small>
+                </th>
+            </tr>
+            <tr style="background-color: #0c7605; color: white">
+                <th class="text-center columna_fija_1" style="border-color: #9d9d9d">
+                </th>
+                <th class="text-center columna_fija_2" style="border-color: #9d9d9d">
+                    Ptas. Iniciales
+                </th>
+                @foreach($ptas_iniciales as $pos_val => $val)
+                    <th class="text-center" style="border-color: #9d9d9d">
+                        @if($val > 0)
+                            <span data-toggle="tooltip" data-placement="top" data-html="true"
+                                  title="{{$semanas[$pos_val]->codigo}}">
                             {{number_format($val, 2)}}
                         </span>
-                    @endif
-                </th>
-            @endforeach
-            <th class="text-center" style="border-color: #9d9d9d">
-                Ptas. Iniciales
-            </th>
-        </tr>
-        <tr style="background-color: #3b3b78; color: white">
-            <th class="text-center" style="border-color: #9d9d9d">
-            </th>
-            <th class="text-center" style="border-color: #9d9d9d">
-                Área
-            </th>
-            @foreach($total_area as $pos_val => $val)
+                        @endif
+                    </th>
+                @endforeach
                 <th class="text-center" style="border-color: #9d9d9d">
-                    @if($val > 0)
-                        <span data-toggle="tooltip" data-placement="top" data-html="true"
-                              title="{{$semanas[$pos_val]->codigo}}">
+                    Ptas. Iniciales
+                </th>
+            </tr>
+            <tr style="background-color: #3b3b78; color: white">
+                <th class="text-center columna_fija_1" style="border-color: #9d9d9d">
+                </th>
+                <th class="text-center columna_fija_2" style="border-color: #9d9d9d">
+                    Área
+                </th>
+                @foreach($total_area as $pos_val => $val)
+                    <th class="text-center" style="border-color: #9d9d9d">
+                        @if($val > 0)
+                            <span data-toggle="tooltip" data-placement="top" data-html="true"
+                                  title="{{$semanas[$pos_val]->codigo}}">
                             {{number_format($val, 2)}}
                         </span>
-                    @endif
+                        @endif
+                    </th>
+                @endforeach
+                <th class="text-center" style="border-color: #9d9d9d">
+                    Área
                 </th>
-            @endforeach
-            <th class="text-center" style="border-color: #9d9d9d">
-                Área
-            </th>
-        </tr>
+            </tr>
 
-        <tr>
-            <th class="text-center" style="border-color: #9d9d9d">
-                <input type="checkbox" id="checkbox_modulo_all" onclick="select_all_modulos($(this))">
-            </th>
-            <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef; width: 250px">
-                Módulos
-            </th>
-            @foreach($semanas as $sem)
-                <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef; width: 250px">
+            <tr>
+                <th class="text-center columna_fija_1" style="border-color: #9d9d9d">
+                    <input type="checkbox" id="checkbox_modulo_all" onclick="select_all_modulos($(this))">
+                </th>
+                <th class="text-center columna_fija_2" style="border-color: #9d9d9d; background-color: #e9ecef; width: 250px">
+                    Módulos
+                </th>
+                @foreach($semanas as $sem)
+                    <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef; width: 250px">
                     <span data-toggle="tooltip" data-placement="top" data-html="true"
                           title="<em>T.Ramo: {{$sem->tallos_ramo_poda}}</em><br>
                           <em>T.Pta: {{$sem->tallos_planta_poda}}</em><br>
                           <em>%Desecho: {{$sem->desecho}}</em>">
                         {{$sem->codigo}}
                     </span>
+                    </th>
+                @endforeach
+                <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef; width: 250px">
+                    Módulos
                 </th>
-            @endforeach
-            <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef; width: 250px">
-                Módulos
-            </th>
-        </tr>
+            </tr>
+        </tfooter>
     </table>
 </div>
 
@@ -1315,3 +2588,79 @@
         });
     }
 </script>
+
+<style>
+    #div_content_fixed {
+        overflow-x: scroll;
+        overflow-y: scroll;
+        width: 100%;
+        max-height: 450px;
+        border: 2px solid #9d9d9d;
+    }
+
+    #tabla_proyecciones {
+        border-spacing: 0;
+        border-collapse: collapse;
+    }
+
+    #tabla_proyecciones th, #tabla_proyecciones td {
+        border-spacing: 0;
+        border-collapse: collapse;
+    }
+
+    #tabla_proyecciones thead .fila_fija_1 th {
+        background-color: #e9ecef !important;
+        border: 1px solid #9d9d9d !important;
+        z-index: 9;
+        position: sticky;
+        top: 0;
+    }
+
+    #tabla_proyecciones thead .fila_fija_2 th {
+        background-color: #e9ecef !important;
+        border: 1px solid #9d9d9d !important;
+        z-index: 9;
+        position: sticky;
+        top: 22px;
+    }
+
+    #tabla_proyecciones tr .columna_fija_1 {
+        background-color: #e9ecef !important;
+        border: 1px solid #9d9d9d !important;
+        z-index: 8;
+        position: sticky;
+        left: 0;
+    }
+
+    #tabla_proyecciones tr .columna_fija_2 {
+        background-color: #e9ecef !important;
+        border: 1px solid #9d9d9d !important;
+        z-index: 8;
+        position: sticky;
+        left: 15px;
+    }
+
+    #celda_opciones_semanas {
+        left: 0 !important;
+        top: 0 !important;
+        z-index: 10 !important;
+    }
+
+    #celda_semanas {
+        left: 15px !important;
+        top: 0 !important;
+        z-index: 10 !important;
+    }
+
+    #celda_opciones_modulos {
+        left: 0 !important;
+        top: 22px !important;
+        z-index: 10 !important;
+    }
+
+    #celda_modulos {
+        left: 15px !important;
+        top: 22px !important;
+        z-index: 10 !important;
+    }
+</style>
