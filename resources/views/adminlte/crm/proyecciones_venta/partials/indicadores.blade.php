@@ -3,8 +3,8 @@
         <div class="small-box bg-teal-active">
             <div class="inner">
                 <ul class="info-box-number list-unstyled">
-                    <li>Cajas: {{$indicador[0]->valor}}</li>
-                    <li>Tallos: {{$indicador[1]->valor}}</li>
+                    <li>Cajas: {{number_format($indicador[0]->valor,2,",",".")}}</li>
+                    <li>Tallos: {{number_format($indicador[1]->valor,2,",",".")}}</li>
                 </ul>
             </div>
             <div class="icon">
@@ -19,8 +19,8 @@
         <div class="small-box bg-aqua">
             <div class="inner">
                 <ul class="info-box-number list-unstyled">
-                    <li>Cajas: {{$indicador[2]->valor}}</li>
-                    <li>Dinero: {{$indicador[3]->valor}}</li>
+                    <li>Cajas: {{number_format($indicador[2]->valor,2,",",".")}}</li>
+                    <li>Dinero: ${{number_format($indicador[3]->valor,2,",",".")}}</li>
                 </ul>
             </div>
             <div class="icon">
@@ -44,7 +44,7 @@
                 <i class="fa fa-calendar-check-o"></i>
             </div>
             <a href="javascript:void(0)" class="small-box-footer">
-                Meses <sup>+3 meses</sup> <i class="fa fa-arrow-circle-right"></i>
+                Dinero proyectado <sup>3 meses</sup> <i class="fa fa-arrow-circle-right"></i>
             </a>
         </div>
     </div>

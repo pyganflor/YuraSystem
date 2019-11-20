@@ -50,8 +50,25 @@
             <div class="box-body">
                 <div class="row">
                     <div class="col-md-9" id="div_graficas"></div>
-                    <div class="col-md-3" id="div_today">
-                        {{--@include('adminlte.crm.crm_area.partials.today')--}}
+                    <div class="col-md-3">
+                        <div class="box box-solid box-info">
+                            <div class="box-header with-border ">
+                                <i class="fa fa-pie-chart"></i>
+                                <h3 class="box-title">Proyección a 1 semana</h3>
+                            </div>
+                            <!-- /.box-header -->
+                            <div class="box-body">
+                                <div class="box-footer no-padding">
+                                    <ul class="nav nav-stacked">
+                                        <li><a href="#">Tallos cosechados <span class="pull-right badge bg-blue">{{number_format($indicador[5]->valor,2,",",".")}}</span></a></li>
+                                        <li><a href="#">Cajas cosechadas <span class="pull-right badge bg-aqua">{{number_format($indicador[7]->valor,2,",",".")}}</span></a></li>
+                                        <li><a href="#">Cajas vendidas <span class="pull-right badge bg-lime-active">{{number_format($indicador[6]->valor,2,",",".")}}</span></a></li>
+                                        <li><a href="#">Dinero generado <span class="pull-right badge bg-green">${{number_format($indicador[8]->valor,2,",",".")}}</span></a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <!-- /.box-body -->
+                        </div>
                     </div>
                 </div>
             </div>
