@@ -10,8 +10,8 @@ class Venta
 {
     public static function dinero_y_precio_x_ramo_7_dias_atras()
     {
-        $model_1 = getIndicadorByName('D3');  // Precio promedio por ramo (7 días)
-        $model_2 = getIndicadorByName('D4');  // Dinero ingresado (7 días)
+        $model_1 = getIndicadorByName('D3');  // Precio promedio por ramo (-7 días)
+        $model_2 = getIndicadorByName('D4');  // Dinero ingresado (-7 días)
         if ($model_1 != '' && $model_2 != '') {
             $pedidos_semanal = Pedido::All()->where('estado', 1)
                 ->where('fecha_pedido', '>=', opDiasFecha('-', 7, date('Y-m-d')))
@@ -35,7 +35,7 @@ class Venta
 
     public static function dinero_m2_anno_4_meses_atras()
     {
-        $model = getIndicadorByName('D9');  // Venta $/m2/año (4 meses)
+        $model = getIndicadorByName('D9');  // Venta $/m2/año (-4 meses)
         if ($model != '') {
             $desde_sem = getSemanaByDate(opDiasFecha('-', 112, date('Y-m-d')));
             $hasta_sem = getSemanaByDate(opDiasFecha('-', 7, date('Y-m-d')));
@@ -59,7 +59,7 @@ class Venta
 
     public static function dinero_m2_anno_1_anno_atras()
     {
-        $model = getIndicadorByName('D10');  // Venta $/m2/año (1 año)
+        $model = getIndicadorByName('D10');  // Venta $/m2/año (-1 año)
         if ($model != '') {
             $fecha_hasta = date('Y-m-d', strtotime('last month'));
             $fecha_desde = date('Y-m-d', strtotime('last year'));
