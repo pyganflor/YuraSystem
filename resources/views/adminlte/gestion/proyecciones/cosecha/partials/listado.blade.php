@@ -4,14 +4,18 @@
     </div>
 </div>
 
-<div style="overflow-x: scroll">
-    <table class="table-striped table-bordered table-hover" style="border: 2px solid #9d9d9d; font-size: 0.8em" width="100%">
+<script type="text/javascript" src="{{url('js/gridviewscroll/gridviewscroll.js')}}"></script>
+
+<div id="div_content_fixed">
+    <table class="table-striped table-bordered table-hover" style="font-size: 0.8em" width="100%"
+           id="tabla_proyecciones">
         <thead>
-        <tr>
-            <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
+        <tr class="fila_fija_1">
+            <th class="text-center columna_fija_1" id="celda_opciones_semanas">
                 <div class="input-group-btn">
                     <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
-                        <span class="fa fa-caret-right"></span></button>
+                        <span class="fa fa-caret-right"></span>
+                    </button>
                     <ul class="dropdown-menu">
                         <li>
                             <a href="javascript:void(0)" onclick="actualizar_datos()">
@@ -40,25 +44,26 @@
                     </ul>
                 </div>
             </th>
-            <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef; width: 250px">
+            <th class="text-center columna_fija_2" style="width: 250px" id="celda_semanas">
                 Semanas
             </th>
             @foreach($semanas as $pos_sem => $sem)
-                <th class="text-center celda_semana_{{$sem->id_semana}}" style="border-color: #9d9d9d; background-color: #e9ecef; width: 250px">
+                <th class="text-center celda_semana_{{$sem->id_semana}}" style="width: 250px">
                     <input type="checkbox" id="check_semana_{{$sem->id_semana}}" class="check_semana">
                 </th>
             @endforeach
-            <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef; width: 250px">
+            <th class="text-center" style="width: 250px">
                 Semanas
 
                 <input type="checkbox" id="check_semana_all" style="display: none">
             </th>
         </tr>
-        <tr>
-            <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
+        <tr class="fila_fija_2">
+            <th class="text-center columna_fija_1" id="celda_opciones_modulos">
                 <div class="input-group-btn">
                     <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
-                        <span class="fa fa-caret-down"></span></button>
+                        <span class="fa fa-caret-right"></span>
+                    </button>
                     <ul class="dropdown-menu">
                         <li>
                             <a href="javascript:void(0)" onclick="actualizar_manual()" class="hide">
@@ -88,11 +93,11 @@
                     </ul>
                 </div>
             </th>
-            <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef; width: 250px">
+            <th class="text-center columna_fija_2" style="width: 250px;" id="celda_modulos">
                 Módulos
             </th>
             @foreach($semanas as $pos_sem => $sem)
-                <th class="text-center celda_semana_{{$sem->id_semana}}" style="border-color: #9d9d9d; background-color: #e9ecef; width: 250px">
+                <th class="text-center celda_semana_{{$sem->id_semana}}" style="width: 250px">
                     <div class="btn-group" data-toggle="tooltip" data-placement="top" data-html="true"
                          title="<em>T.Ramo: {{$sem->tallos_ramo_poda}}</em><br>
                           <em>T.Pta: {{$sem->tallos_planta_poda}}</em><br>
@@ -117,11 +122,12 @@
                     <input type="hidden" id="semana_{{$pos_sem}}" value="{{$sem->codigo}}">
                 </th>
             @endforeach
-            <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef; width: 250px">
+            <th class="text-center" style="width: 250px">
                 Módulos
             </th>
         </tr>
         </thead>
+
         <tbody>
         @php
             $tallos_proyectados = [];
@@ -131,10 +137,11 @@
         @endphp
         @foreach($modulos as $mod)
             <tr id="tr_modulo_{{$mod['modulo']->id_modulo}}">
-                <th class="text-center" style="border-color: #9d9d9d">
+                <th class="text-center columna_fija_1" style="border-color: #9d9d9d">
                     <input type="checkbox" id="checkbox_modulo_{{$mod['modulo']->id_modulo}}" class="checkbox_modulo">
                 </th>
-                <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef" id="celda_modulo_{{$mod['modulo']->id_modulo}}">
+                <th class="text-center columna_fija_2" style="border-color: #9d9d9d; background-color: #e9ecef"
+                    id="celda_modulo_{{$mod['modulo']->id_modulo}}">
                     <div class="btn-group">
                         <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
                             {{$mod['modulo']->nombre}}
@@ -305,143 +312,145 @@
         @endforeach
 
         {{-- TOTALES --}}
-        <tr style="background-color: #fdff8b">
-            <th class="text-center" style="border-color: #9d9d9d">
-            </th>
-            <th class="text-center" style="border-color: #9d9d9d">
-                Proyectados
-                <br>
-                <small><em>Tallos/cajas</em></small>
-            </th>
-            @foreach($tallos_proyectados as $pos_val => $val)
-                <th class="text-center" style="border-color: #9d9d9d">
-                    @if($val > 0)
-                        @php
-                            if($semanas[$pos_val]->fecha_inicial >= $semana_actual->fecha_inicial && $semanas[$pos_val]->fecha_inicial <= opDiasFecha('+', 34, $semana_actual->fecha_inicial)){   // semana actual o una de las 4 siguientes
-                                $calibre = $calibre_actual;    // calibre real de la semana anterior
-                            } else { // otra semana distinta a la actual
-                                $calibre = getCalibreByRangoVariedad($semanas[$pos_val]->fecha_inicial, $semanas[$pos_val]->fecha_final, $variedad);    // calibre real de la semana
-                            }
-                            if($calibre <= 0){
-                                if($semanas[$pos_val]->tallos_ramo_poda > 0){
-                                    $calibre = $semanas[$pos_val]->tallos_ramo_poda;    // calibre de poda programado en la semana
+        <tfooter>
+            <tr style="background-color: #fdff8b">
+                <th class="text-center columna_fija_1" style="border-color: #9d9d9d; background-color: #fdff8b !important;">
+                </th>
+                <th class="text-center columna_fija_2" style="border-color: #9d9d9d; background-color: #fdff8b !important;">
+                    Proyectados
+                    <br>
+                    <small><em>Tallos/cajas</em></small>
+                </th>
+                @foreach($tallos_proyectados as $pos_val => $val)
+                    <th class="text-center" style="border-color: #9d9d9d">
+                        @if($val > 0)
+                            @php
+                                if($semanas[$pos_val]->fecha_inicial >= $semana_actual->fecha_inicial && $semanas[$pos_val]->fecha_inicial <= opDiasFecha('+', 34, $semana_actual->fecha_inicial)){   // semana actual o una de las 4 siguientes
+                                    $calibre = $calibre_actual;    // calibre real de la semana anterior
+                                } else { // otra semana distinta a la actual
+                                    $calibre = getCalibreByRangoVariedad($semanas[$pos_val]->fecha_inicial, $semanas[$pos_val]->fecha_final, $variedad);    // calibre real de la semana
                                 }
-                            }
-                        @endphp
-                        <span data-toggle="tooltip" data-placement="top" data-html="true"
-                              title="{{$semanas[$pos_val]->codigo}} <br> <small>Calib:<em>{{$calibre}}</em></small>">
+                                if($calibre <= 0){
+                                    if($semanas[$pos_val]->tallos_ramo_poda > 0){
+                                        $calibre = $semanas[$pos_val]->tallos_ramo_poda;    // calibre de poda programado en la semana
+                                    }
+                                }
+                            @endphp
+                            <span data-toggle="tooltip" data-placement="top" data-html="true"
+                                  title="{{$semanas[$pos_val]->codigo}} <br> <small>Calib:<em>{{$calibre}}</em></small>">
                             {{number_format($val, 2)}}
-                            <br>
+                                <br>
                             <strong>
                                 @if($calibre > 0)
                                     {{number_format(round(($val / $calibre) / $ramos_x_caja, 2), 2)}}
                                 @endif
                             </strong>
                         </span>
-                    @endif
-                </th>
-            @endforeach
-            <th class="text-center" style="border-color: #9d9d9d">
-                Proyectados
-                <br>
-                <small><em>Tallos/cajas</em></small>
-            </th>
-        </tr>
-        <tr style="background-color: #c4c4ff">
-            <th class="text-center" style="border-color: #9d9d9d">
-            </th>
-            <th class="text-center" style="border-color: #9d9d9d">
-                Cosechados
-                <br>
-                <small><em>Tallos/cajas</em></small>
-            </th>
-            @foreach($tallos_cosechados as $pos_val => $val)
+                        @endif
+                    </th>
+                @endforeach
                 <th class="text-center" style="border-color: #9d9d9d">
-                    @if($val > 0)
-                        @php
-                            $cajas = getCajasByRangoVariedad($semanas[$pos_val]->fecha_inicial, $semanas[$pos_val]->fecha_final, $variedad);
-                        @endphp
-                        <span data-toggle="tooltip" data-placement="top" data-html="true"
-                              title="{{$semanas[$pos_val]->codigo}}">
+                    Proyectados
+                    <br>
+                    <small><em>Tallos/cajas</em></small>
+                </th>
+            </tr>
+            <tr style="background-color: #c4c4ff">
+                <th class="text-center columna_fija_1" style="border-color: #9d9d9d; background-color: #c4c4ff !important;">
+                </th>
+                <th class="text-center columna_fija_2" style="border-color: #9d9d9d; background-color: #c4c4ff !important;">
+                    Cosechados
+                    <br>
+                    <small><em>Tallos/cajas</em></small>
+                </th>
+                @foreach($tallos_cosechados as $pos_val => $val)
+                    <th class="text-center" style="border-color: #9d9d9d">
+                        @if($val > 0)
+                            @php
+                                $cajas = getCajasByRangoVariedad($semanas[$pos_val]->fecha_inicial, $semanas[$pos_val]->fecha_final, $variedad);
+                            @endphp
+                            <span data-toggle="tooltip" data-placement="top" data-html="true"
+                                  title="{{$semanas[$pos_val]->codigo}}">
                             {{number_format($val, 2)}}
-                            <br>
+                                <br>
                             <strong>
                                 @if($cajas > 0)
                                     {{number_format($cajas, 2)}}
                                 @endif
                             </strong>
                         </span>
-                    @endif
-                </th>
-            @endforeach
-            <th class="text-center" style="border-color: #9d9d9d">
-                Cosechados
-                <br>
-                <small><em>Tallos/cajas</em></small>
-            </th>
-        </tr>
-        <tr style="background-color: #0c7605; color: white">
-            <th class="text-center" style="border-color: #9d9d9d">
-            </th>
-            <th class="text-center" style="border-color: #9d9d9d">
-                Ptas. Iniciales
-            </th>
-            @foreach($ptas_iniciales as $pos_val => $val)
+                        @endif
+                    </th>
+                @endforeach
                 <th class="text-center" style="border-color: #9d9d9d">
-                    @if($val > 0)
-                        <span data-toggle="tooltip" data-placement="top" data-html="true"
-                              title="{{$semanas[$pos_val]->codigo}}">
+                    Cosechados
+                    <br>
+                    <small><em>Tallos/cajas</em></small>
+                </th>
+            </tr>
+            <tr style="background-color: #0c7605; color: white">
+                <th class="text-center columna_fija_1" style="border-color: #9d9d9d; background-color: #0c7605 !important;">
+                </th>
+                <th class="text-center columna_fija_2" style="border-color: #9d9d9d; background-color: #0c7605 !important;">
+                    Ptas. Iniciales
+                </th>
+                @foreach($ptas_iniciales as $pos_val => $val)
+                    <th class="text-center" style="border-color: #9d9d9d">
+                        @if($val > 0)
+                            <span data-toggle="tooltip" data-placement="top" data-html="true"
+                                  title="{{$semanas[$pos_val]->codigo}}">
                             {{number_format($val, 2)}}
                         </span>
-                    @endif
-                </th>
-            @endforeach
-            <th class="text-center" style="border-color: #9d9d9d">
-                Ptas. Iniciales
-            </th>
-        </tr>
-        <tr style="background-color: #3b3b78; color: white">
-            <th class="text-center" style="border-color: #9d9d9d">
-            </th>
-            <th class="text-center" style="border-color: #9d9d9d">
-                Área
-            </th>
-            @foreach($total_area as $pos_val => $val)
+                        @endif
+                    </th>
+                @endforeach
                 <th class="text-center" style="border-color: #9d9d9d">
-                    @if($val > 0)
-                        <span data-toggle="tooltip" data-placement="top" data-html="true"
-                              title="{{$semanas[$pos_val]->codigo}}">
+                    Ptas. Iniciales
+                </th>
+            </tr>
+            <tr style="background-color: #3b3b78; color: white">
+                <th class="text-center columna_fija_1" style="border-color: #9d9d9d; background-color: #3b3b78 !important;">
+                </th>
+                <th class="text-center columna_fija_2" style="border-color: #9d9d9d; background-color: #3b3b78 !important;">
+                    Área
+                </th>
+                @foreach($total_area as $pos_val => $val)
+                    <th class="text-center" style="border-color: #9d9d9d">
+                        @if($val > 0)
+                            <span data-toggle="tooltip" data-placement="top" data-html="true"
+                                  title="{{$semanas[$pos_val]->codigo}}">
                             {{number_format($val, 2)}}
                         </span>
-                    @endif
+                        @endif
+                    </th>
+                @endforeach
+                <th class="text-center" style="border-color: #9d9d9d">
+                    Área
                 </th>
-            @endforeach
-            <th class="text-center" style="border-color: #9d9d9d">
-                Área
-            </th>
-        </tr>
+            </tr>
 
-        <tr>
-            <th class="text-center" style="border-color: #9d9d9d">
-                <input type="checkbox" id="checkbox_modulo_all" onclick="select_all_modulos($(this))">
-            </th>
-            <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef; width: 250px">
-                Módulos
-            </th>
-            @foreach($semanas as $sem)
-                <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef; width: 250px">
+            <tr>
+                <th class="text-center columna_fija_1" style="border-color: #9d9d9d">
+                    <input type="checkbox" id="checkbox_modulo_all" onclick="select_all_modulos($(this))">
+                </th>
+                <th class="text-center columna_fija_2" style="border-color: #9d9d9d; background-color: #e9ecef; width: 250px">
+                    Módulos
+                </th>
+                @foreach($semanas as $sem)
+                    <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef; width: 250px">
                     <span data-toggle="tooltip" data-placement="top" data-html="true"
                           title="<em>T.Ramo: {{$sem->tallos_ramo_poda}}</em><br>
                           <em>T.Pta: {{$sem->tallos_planta_poda}}</em><br>
                           <em>%Desecho: {{$sem->desecho}}</em>">
                         {{$sem->codigo}}
                     </span>
+                    </th>
+                @endforeach
+                <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef; width: 250px">
+                    Módulos
                 </th>
-            @endforeach
-            <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef; width: 250px">
-                Módulos
-            </th>
-        </tr>
+            </tr>
+        </tfooter>
     </table>
 </div>
 
@@ -1315,3 +1324,79 @@
         });
     }
 </script>
+
+<style>
+    #div_content_fixed {
+        overflow-x: scroll;
+        overflow-y: scroll;
+        width: 100%;
+        max-height: 550px;
+        border: 2px solid #9d9d9d;
+    }
+
+    #tabla_proyecciones {
+        border-spacing: 0;
+        border-collapse: collapse;
+    }
+
+    #tabla_proyecciones th, #tabla_proyecciones td {
+        border-spacing: 0;
+        border-collapse: collapse;
+    }
+
+    #tabla_proyecciones thead .fila_fija_1 th {
+        background-color: #e9ecef !important;
+        border: 1px solid #9d9d9d !important;
+        z-index: 9;
+        position: sticky;
+        top: 0;
+    }
+
+    #tabla_proyecciones thead .fila_fija_2 th {
+        background-color: #e9ecef !important;
+        border: 1px solid #9d9d9d !important;
+        z-index: 9;
+        position: sticky;
+        top: 22px;
+    }
+
+    #tabla_proyecciones tr .columna_fija_1 {
+        background-color: #e9ecef !important;
+        border: 1px solid #9d9d9d !important;
+        z-index: 8;
+        position: sticky;
+        left: 0;
+    }
+
+    #tabla_proyecciones tr .columna_fija_2 {
+        background-color: #e9ecef !important;
+        border: 1px solid #9d9d9d !important;
+        z-index: 8;
+        position: sticky;
+        left: 15px;
+    }
+
+    #celda_opciones_semanas {
+        left: 0 !important;
+        top: 0 !important;
+        z-index: 10 !important;
+    }
+
+    #celda_semanas {
+        left: 15px !important;
+        top: 0 !important;
+        z-index: 10 !important;
+    }
+
+    #celda_opciones_modulos {
+        left: 0 !important;
+        top: 22px !important;
+        z-index: 10 !important;
+    }
+
+    #celda_modulos {
+        left: 15px !important;
+        top: 22px !important;
+        z-index: 10 !important;
+    }
+</style>
