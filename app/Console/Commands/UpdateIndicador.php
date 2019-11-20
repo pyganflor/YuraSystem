@@ -112,8 +112,6 @@ class UpdateIndicador extends Command
             Log::info('INDICADOR: "Dinero generado en ventas a futuro +1 semana"');
         }
 
-
-
         if ($indicador_par === '0' || $indicador_par === 'D7') { // Área en producción (-4 meses)
             Area::area_produccion_4_meses_atras();
             Log::info('INDICADOR: "Área en producción (-4 meses)"');
