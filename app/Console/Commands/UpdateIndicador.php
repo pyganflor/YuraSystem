@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Log;
 use yura\Http\Controllers\Indicadores\Area;
 use yura\Http\Controllers\Indicadores\Postcosecha;
 use yura\Http\Controllers\Indicadores\Venta;
+use yura\Http\Controllers\Indicadores\ProyeccionesVenta;
 
 class UpdateIndicador extends Command
 {
@@ -38,6 +39,8 @@ class UpdateIndicador extends Command
      * Execute the console command.
      *
      * @return mixed
+     * @argument D => dashboard
+     * @argument DP => dashboard de proyección
      */
     public function handle()
     {
@@ -63,6 +66,14 @@ class UpdateIndicador extends Command
             Postcosecha::rendimiento_desecho_7_dias_atras();
             Log::info('INDICADOR: "Rendimiento (7 días) - Desecho (7 días)"');
         }
+
+        if ($indicador_par === '0' || $indicador_par === 'DP1' || $indicador_par === 'DP1') {
+            //Cajas cosechados +4 semanas
+            $proyeccionVenta = new ProyeccionesVenta;
+            $proyeccionVenta->sumCajasFuturas4Semanas();
+            Log::info('INDICADOR: "Cajas cosechadas +4 semanas"');
+        }
+
         if ($indicador_par === '0' || $indicador_par === 'D7') { // Área en producción (4 meses)
             Area::area_produccion_4_meses_atras();
             Log::info('INDICADOR: "Área en producción (4 meses)"');
@@ -80,6 +91,7 @@ class UpdateIndicador extends Command
             Venta::dinero_m2_anno_1_anno_atras();
             Log::info('INDICADOR: "Venta $/m2/año (1 año)"');
         }
+
 
         $time_duration = difFechas(date('Y-m-d H:i:s'), $ini)->h . ':' . difFechas(date('Y-m-d H:i:s'), $ini)->m . ':' . difFechas(date('Y-m-d H:i:s'), $ini)->s;
         Log::info('<*> DURACION: ' . $time_duration . '  <*>');
