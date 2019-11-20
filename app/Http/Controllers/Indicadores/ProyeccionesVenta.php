@@ -10,7 +10,7 @@ use DB;
 
 class ProyeccionesVenta extends Controller
 {
-    public function sumCajasFuturas4Semanas(){
+    public static function sumCajasFuturas4Semanas(){
 
         $intervalos = self::intervalosTiempo();
         dump($intervalos['primeraSemanaFutura'],$intervalos['cuartSemanaFutura']);
