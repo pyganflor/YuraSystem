@@ -10,12 +10,12 @@ class Campo
     {
         $model = getIndicadorByName('D11');  // Tallos cosechados (-7 días)
         if ($model != '') {
-            $verdes = Cosecha::All()->where('estado', 1)
+            $cosechas = Cosecha::All()->where('estado', 1)
                 ->where('fecha_ingreso', '>=', opDiasFecha('-', 7, date('Y-m-d')))
                 ->where('fecha_ingreso', '<=', opDiasFecha('-', 1, date('Y-m-d')));
             $valor = 0;
-            foreach ($verdes as $v) {
-                $valor += $v->getTotalTallos();
+            foreach ($cosechas as $c) {
+                $valor += $c->getTotalTallos();
             }
             $model->valor = $valor;
             $model->save();

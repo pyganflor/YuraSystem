@@ -128,6 +128,10 @@ class UpdateIndicador extends Command
             Campo::tallos_cosechados_7_dias_atras();
             Log::info('INDICADOR: "Tallos cosechados (-7 días)"');
         }
+        if ($indicador_par === '0' || $indicador_par === 'D12') { // Tallos/m2 (-4 meses)
+            Area::tallos_m2_4_meses_atras();
+            Log::info('INDICADOR: "Tallos/m2 (-4 meses)"');
+        }
 
         $time_duration = difFechas(date('Y-m-d H:i:s'), $ini)->h . ':' . difFechas(date('Y-m-d H:i:s'), $ini)->m . ':' . difFechas(date('Y-m-d H:i:s'), $ini)->s;
         Log::info('<*> DURACION: ' . $time_duration . '  <*>');
