@@ -11,15 +11,21 @@ use DB;
 class ProyeccionesVenta extends Controller
 {
     public static function sumCajasFuturas4Semanas(){
-
         $intervalos = self::intervalosTiempo();
-        dump($intervalos['primeraSemanaFutura'],$intervalos['cuartSemanaFutura']);
-
         $dato = ResumenSemanaCosecha::whereBetween('codigo_semana',[$intervalos['primeraSemanaFutura'],$intervalos['cuartSemanaFutura']])
             ->select(DB::Raw('sum(cajas_proyectadas) as cajas'))->first();
 
         $objInidicardor = Indicador::where('nombre','DP1');
         $objInidicardor->update(['valor'=>$dato->cajas]);
+    }
+
+    public static function sumTallosFuturos4Semanas(){
+        $intervalos = self::intervalosTiempo();
+        $dato = ResumenSemanaCosecha::whereBetween('codigo_semana',[$intervalos['primeraSemanaFutura'],$intervalos['cuartSemanaFutura']])
+            ->select(DB::Raw('sum(tallos_proyectados) as tallos'))->first();
+        dd($dato->tallos);
+        $objInidicardor = Indicador::where('nombre','DP2');
+        $objInidicardor->update(['valor'=>$dato->tallos]);
     }
 
     public static function intervalosTiempo(){
