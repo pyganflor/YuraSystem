@@ -13,6 +13,7 @@ class ProyeccionesVenta extends Controller
     public static function sumCajasFuturas4Semanas(){
 
         $intervalos = self::intervalosTiempo();
+        dump($intervalos['primeraSemanaFutura'],$intervalos['cuartSemanaFutura']);
 
         $dato = ResumenSemanaCosecha::whereBetween('codigo_semana',[$intervalos['primeraSemanaFutura'],$intervalos['cuartSemanaFutura']])
             ->select(DB::Raw('sum(cajas_proyectadas) as cajas'))->first();
