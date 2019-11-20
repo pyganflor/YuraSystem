@@ -5,6 +5,7 @@ namespace yura\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 use yura\Http\Controllers\Indicadores\Area;
+use yura\Http\Controllers\Indicadores\Campo;
 use yura\Http\Controllers\Indicadores\Postcosecha;
 use yura\Http\Controllers\Indicadores\Venta;
 use yura\Http\Controllers\Indicadores\ProyeccionesVenta;
@@ -123,7 +124,10 @@ class UpdateIndicador extends Command
             Venta::dinero_m2_anno_1_anno_atras();
             Log::info('INDICADOR: "Venta $/m2/año (-1 año)"');
         }
-
+        if ($indicador_par === '0' || $indicador_par === 'D11') { // Tallos cosechados (-7 días)
+            Campo::tallos_cosechados_7_dias_atras();
+            Log::info('INDICADOR: "Tallos cosechados (-7 días)"');
+        }
 
         $time_duration = difFechas(date('Y-m-d H:i:s'), $ini)->h . ':' . difFechas(date('Y-m-d H:i:s'), $ini)->m . ':' . difFechas(date('Y-m-d H:i:s'), $ini)->s;
         Log::info('<*> DURACION: ' . $time_duration . '  <*>');

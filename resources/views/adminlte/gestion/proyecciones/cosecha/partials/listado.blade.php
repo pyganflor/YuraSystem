@@ -1335,13 +1335,12 @@
     }
 
     #tabla_proyecciones {
-        border-spacing: 0;
-        border-collapse: collapse;
+        border-spacing: 0 !important;
+        border: 1px solid #9d9d9d !important;
     }
 
     #tabla_proyecciones th, #tabla_proyecciones td {
         border-spacing: 0;
-        border-collapse: collapse;
     }
 
     #tabla_proyecciones thead .fila_fija_1 th {
