@@ -8,10 +8,10 @@ use yura\Modelos\Indicador;
 use yura\Modelos\Rol;
 use yura\Modelos\Submenu;
 
-class CrmProyeccionesVentasController extends Controller
+class CrmProyeccionesController extends Controller
 {
     public function inicio(Request $request){
-        return view('adminlte.crm.proyecciones_venta.inicio',[
+        return view('adminlte.crm.proyecciones.inicio',[
             'url' => $request->getRequestUri(),
             'submenu' => Submenu::Where('url', '=', substr($request->getRequestUri(), 1))->get()[0],
             'text' => ['titulo'=>'Dashboard','subtitulo'=>'Proyección de ventas'],

@@ -13,7 +13,7 @@
     @include('adminlte.gestion.partials.breadcrumb')
     <section class="content">
         <div id="div_indicadores">
-            @include('adminlte.crm.proyecciones_venta.partials.indicadores')
+            @include('adminlte.crm.proyecciones.partials.indicadores')
         </div>
         <div class="box box-success">
             <div class="box-header with-border">
@@ -80,5 +80,5 @@
     {{-- JS de Chart.js --}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
 
-    @include('adminlte.crm.proyecciones_venta.script')
+    @include('adminlte.crm.proyecciones.script')
 @endsection

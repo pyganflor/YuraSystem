@@ -67,32 +67,26 @@ class UpdateIndicador extends Command
             Postcosecha::rendimiento_desecho_7_dias_atras();
             Log::info('INDICADOR: "Rendimiento (-7 días) - Desecho (-7 días)"');
         }
-
         if ($indicador_par === '0' || $indicador_par === 'DP1') {
             ProyeccionesVenta::sumCajasFuturas4Semanas();
             Log::info('INDICADOR: "Cajas cosechadas +4 semanas"');
         }
-
         if ($indicador_par === '0' || $indicador_par === 'DP2') {
             ProyeccionesVenta::sumTallosFuturos4Semanas();
             Log::info('INDICADOR: "Tallos cosechados +4 semanas"');
         }
-
         if ($indicador_par === '0' || $indicador_par === 'DP3') {
             ProyeccionesVenta::sumCajasVendidas();
             Log::info('INDICADOR: "Cajas vendidas a futuro +4 semanas"');
         }
-
         if ($indicador_par === '0' || $indicador_par === 'DP4') {
             ProyeccionesVenta::sumDineroGeneradoVentas();
             Log::info('INDICADOR: "Dinero generado ventas a futuro +4 semanas"');
         }
-
         if ($indicador_par === '0' || $indicador_par === 'DP5') {
             ProyeccionesVenta::proyeccionVentaFutura3Meses();
             Log::info('INDICADOR: "Dinero generado ventas a futuro mes 1|mes 2|mes 3"');
         }
-
         if ($indicador_par === '0' || $indicador_par === 'DP6') {
             ProyeccionesVenta::sumTallosCosechadosFuturo1Semana();
             Log::info('INDICADOR: "Tallos cosechados a futuro +1 semana"');

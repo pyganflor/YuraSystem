@@ -1,5 +1,5 @@
 <div class="row">
-    <div class="col-md-4" style="cursor:pointer" onclick="desglose_indicador('tallos')">
+    <div class="col-md-4" style="cursor:pointer" onclick="modal_indicador('tallos')">
         <div class="small-box bg-teal-active">
             <div class="inner">
                 <ul class="info-box-number list-unstyled">
@@ -15,7 +15,7 @@
             </a>
         </div>
     </div>
-    <div class="col-md-4" style="cursor:pointer" onclick="desglose_indicador('tallos')">
+    <div class="col-md-4" style="cursor:pointer" onclick="modal_indicador('tallos')">
         <div class="small-box bg-aqua">
             <div class="inner">
                 <ul class="info-box-number list-unstyled">
@@ -31,7 +31,7 @@
             </a>
         </div>
     </div>
-    <div class="col-md-4" style="cursor:pointer" onclick="desglose_indicador()">
+    <div class="col-md-4" style="cursor:pointer" onclick="modal_indicador()">
         <div class="small-box bg-orange">
             <div class="inner" style="padding: 3.5px 10px">
                 <ul class="info-box-number list-unstyled">
