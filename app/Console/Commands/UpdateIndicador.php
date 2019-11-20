@@ -67,6 +67,11 @@ class UpdateIndicador extends Command
             Log::info('INDICADOR: "Rendimiento (7 días) - Desecho (7 días)"');
         }
 
+        if ($indicador_par === '0' || $indicador_par === 'DP2') {
+            ProyeccionesVenta::sumTallosFuturos4Semanas();
+            Log::info('INDICADOR: "Tallos cosechados +4 semanas"');
+        }
+
         if ($indicador_par === '0' || $indicador_par === 'DP1') {
             ProyeccionesVenta::sumCajasFuturas4Semanas();
             Log::info('INDICADOR: "Cajas cosechadas +4 semanas"');
