@@ -36,15 +36,13 @@ class ProyeccionesVenta extends Controller
         $objInidicardor->update(['valor'=>number_format($dato->cajas,2,".","")]);
     }
 
-
     public static function sumDineroGeneradoVentas(){
         $intervalos = self::intervalosTiempo();
         $dato = ProyeccionVentaSemanalReal::whereBetween('codigo_semana',[$intervalos['primeraSemanaFutura'],$intervalos['cuartSemanaFutura']])
             ->select(DB::Raw('sum(valor) as valor'))->first();
-        $objInidicardor = Indicador::where('nombre','DP3');
+        $objInidicardor = Indicador::where('nombre','DP4');
         $objInidicardor->update(['valor'=>number_format($dato->valor,2,".","")]);
     }
-
 
     public static function intervalosTiempo(){
         $fechaActual =now()->toDateString();
