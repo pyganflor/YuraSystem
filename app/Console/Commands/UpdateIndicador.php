@@ -77,6 +77,16 @@ class UpdateIndicador extends Command
             Log::info('INDICADOR: "Tallos cosechados +4 semanas"');
         }
 
+        if ($indicador_par === '0' || $indicador_par === 'DP3') {
+            ProyeccionesVenta::sumCajasVendidas();
+            Log::info('INDICADOR: "Cajas vendidas +4 semanas"');
+        }
+
+        if ($indicador_par === '0' || $indicador_par === 'DP4') {
+            ProyeccionesVenta::sumDineroGeneradoVentas();
+            Log::info('INDICADOR: "Dinero generado ventas +4 semanas"');
+        }
+
         if ($indicador_par === '0' || $indicador_par === 'D7') { // Área en producción (-4 meses)
             Area::area_produccion_4_meses_atras();
             Log::info('INDICADOR: "Área en producción (-4 meses)"');
