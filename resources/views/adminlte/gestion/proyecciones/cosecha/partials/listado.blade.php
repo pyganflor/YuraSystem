@@ -314,9 +314,9 @@
         {{-- TOTALES --}}
         <tfooter>
             <tr style="background-color: #fdff8b">
-                <th class="text-center columna_fija_1" style="border-color: #9d9d9d">
+                <th class="text-center columna_fija_1" style="border-color: #9d9d9d; background-color: #fdff8b !important;">
                 </th>
-                <th class="text-center columna_fija_2" style="border-color: #9d9d9d">
+                <th class="text-center columna_fija_2" style="border-color: #9d9d9d; background-color: #fdff8b !important;">
                     Proyectados
                     <br>
                     <small><em>Tallos/cajas</em></small>
@@ -356,9 +356,9 @@
                 </th>
             </tr>
             <tr style="background-color: #c4c4ff">
-                <th class="text-center columna_fija_1" style="border-color: #9d9d9d">
+                <th class="text-center columna_fija_1" style="border-color: #9d9d9d; background-color: #c4c4ff !important;">
                 </th>
-                <th class="text-center columna_fija_2" style="border-color: #9d9d9d">
+                <th class="text-center columna_fija_2" style="border-color: #9d9d9d; background-color: #c4c4ff !important;">
                     Cosechados
                     <br>
                     <small><em>Tallos/cajas</em></small>
@@ -389,9 +389,9 @@
                 </th>
             </tr>
             <tr style="background-color: #0c7605; color: white">
-                <th class="text-center columna_fija_1" style="border-color: #9d9d9d">
+                <th class="text-center columna_fija_1" style="border-color: #9d9d9d; background-color: #0c7605 !important;">
                 </th>
-                <th class="text-center columna_fija_2" style="border-color: #9d9d9d">
+                <th class="text-center columna_fija_2" style="border-color: #9d9d9d; background-color: #0c7605 !important;">
                     Ptas. Iniciales
                 </th>
                 @foreach($ptas_iniciales as $pos_val => $val)
@@ -409,9 +409,9 @@
                 </th>
             </tr>
             <tr style="background-color: #3b3b78; color: white">
-                <th class="text-center columna_fija_1" style="border-color: #9d9d9d">
+                <th class="text-center columna_fija_1" style="border-color: #9d9d9d; background-color: #3b3b78 !important;">
                 </th>
-                <th class="text-center columna_fija_2" style="border-color: #9d9d9d">
+                <th class="text-center columna_fija_2" style="border-color: #9d9d9d; background-color: #3b3b78 !important;">
                     Área
                 </th>
                 @foreach($total_area as $pos_val => $val)
