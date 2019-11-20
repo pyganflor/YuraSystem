@@ -40,19 +40,12 @@ class Venta
             $desde_sem = getSemanaByDate(opDiasFecha('-', 112, date('Y-m-d')));
             $hasta_sem = getSemanaByDate(opDiasFecha('-', 7, date('Y-m-d')));
 
-            $pedidos = Pedido::where('estado', 1)
-                ->where('fecha_pedido', '>=', $desde_sem->fecha_inicial)
-                ->where('fecha_pedido', '<=', $hasta_sem->fecha_final)
-                ->orderBy('fecha_pedido')
-                ->get();
-
-            $venta_mensual = 0;
-            foreach ($pedidos as $pos_ped => $ped) {
-                if (!getFacturaAnulada($ped->id_pedido)) {
-                    $venta_mensual += $ped->getPrecioByPedido();
-                    Log::info($ped->id_pedido . ' => ' . $ped->fecha_pedido . ' -- ' . ($pos_ped + 1) . '/' . count($pedidos));
-                }
-            }
+            $venta_mensual = DB::table('proyeccion_venta_semanal_real')
+                ->select(DB::raw('sum(valor) as cant'))
+                ->where('estado', 1)
+                ->where('codigo_semana', '>=', $desde_sem->codigo)
+                ->where('codigo_semana', '<=', $hasta_sem->codigo)
+                ->get()[0]->cant;
 
             $semana_desde = getSemanaByDate(opDiasFecha('-', 98, date('Y-m-d')));   // 13 semanas atras
             $semana_hasta = getSemanaByDate(date('Y-m-d'));
