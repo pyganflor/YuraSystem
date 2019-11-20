@@ -1330,7 +1330,7 @@
         overflow-x: scroll;
         overflow-y: scroll;
         width: 100%;
-        max-height: 450px;
+        max-height: 550px;
         border: 2px solid #9d9d9d;
     }
 
