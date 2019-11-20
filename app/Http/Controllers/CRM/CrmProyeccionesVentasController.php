@@ -15,7 +15,7 @@ class CrmProyeccionesVentasController extends Controller
             'url' => $request->getRequestUri(),
             'submenu' => Submenu::Where('url', '=', substr($request->getRequestUri(), 1))->get()[0],
             'text' => ['titulo'=>'Dashboard','subtitulo'=>'Proyección de ventas'],
-            'indicador' => Indicador::whereIn('nombre',['DP1','DP2','DP3','DP4','DP5','DP6','DP7','DP8','DP9'])->get()
+            'indicador' => Indicador::whereIn('nombre',['DP1','DP2','DP3','DP4','DP5','DP6','DP7','DP8','DP9'])->select('valor')->get()
         ]);
     }
 }
