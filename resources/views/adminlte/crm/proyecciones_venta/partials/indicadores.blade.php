@@ -1,11 +1,10 @@
 <div class="row">
-    @dump($indicador)
     <div class="col-md-4" style="cursor:pointer" onclick="desglose_indicador('tallos')">
         <div class="small-box bg-teal-active">
             <div class="inner">
                 <ul class="info-box-number list-unstyled">
-                    <li>Cajas: 999.99</li>
-                    <li>Tallos: 999.99</li>
+                    <li>Cajas: {{$indicador[1]->valor}}</li>
+                    <li>Tallos: {{$indicador[0]->valor}}</li>
                 </ul>
             </div>
             <div class="icon">
@@ -20,8 +19,8 @@
         <div class="small-box bg-aqua">
             <div class="inner">
                 <ul class="info-box-number list-unstyled">
-                    <li>Cajas: 999.99</li>
-                    <li>Dinero: $999.99</li>
+                    <li>Cajas: {{$indicador[2]->valor}}</li>
+                    <li>Dinero: {{$indicador[3]->valor}}</li>
                 </ul>
             </div>
             <div class="icon">
