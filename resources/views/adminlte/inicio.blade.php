@@ -40,19 +40,11 @@
                                         /año
                                     </strong>
                                     <span class="info-box-number text-center">
-                                        @if($area_anual > 0)
-                                            {{number_format(round(($venta_mensual / round($area_anual * 10000, 2)), 2), 2) * 3}}
-                                        @else
-                                            0
-                                        @endif
+                                            {{number_format($venta_m2_anno_mensual, 2)}}
                                         <small>$/m<sup>2</sup>/año (4 meses)</small>
                                     </span>
                                     <span class="info-box-number text-center">
-                                        @if($area_anual > 0)
-                                            {{number_format(round(($venta_anual / round($area_anual * 10000, 2)), 2), 2)}}
-                                        @else
-                                            0
-                                        @endif
+                                            {{number_format($venta_m2_anno_anual, 2)}}
                                         <small>$/m<sup>2</sup>/año (1 año)</small>
                                     </span>
                                 </div>
@@ -113,11 +105,11 @@
                                 <div class="info-box-content">
                                     <strong class="info-box-text" style="font-size: 1.2em">Área</strong>
                                     <span class="info-box-number">
-                                        {{number_format(round($area['area'] / 10000, 2), 2)}}
+                                        {{number_format(round($area_produccion / 10000, 2), 2)}}
                                         <small> <sup>ha</sup></small>
                                     </span>
                                     <span class="info-box-number" title="Ramos/m2">
-                                        {{number_format($area['ramos_anno'], 2)}}
+                                        {{number_format($ramos_m2_anno, 2)}}
                                         <small>r/m<sup>2</sup>/año</small>
                                     </span>
                                 </div>
