@@ -1,7 +1,7 @@
 @extends('layouts.adminlte.master')
 
 @section('titulo')
-    Dashboard - Proyecciones de ventas
+    Dashboard - Proyecciones
 @endsection
 
 @section('script_inicio')
