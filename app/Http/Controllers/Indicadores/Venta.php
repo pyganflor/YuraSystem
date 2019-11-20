@@ -3,6 +3,7 @@
 namespace yura\Http\Controllers\Indicadores;
 
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use yura\Modelos\Pedido;
 
 class Venta
@@ -18,8 +19,10 @@ class Venta
             $valor = 0;
             $ramos_estandar = 0;
             foreach ($pedidos_semanal as $p) {
-                $valor += $p->getPrecioByPedido();
-                $ramos_estandar += $p->getRamosEstandar();
+                if (!getFacturaAnulada($p->id_pedido)) {
+                    $valor += $p->getPrecioByPedido();
+                    $ramos_estandar += $p->getRamosEstandar();
+                }
             }
             $precio_x_ramo = $ramos_estandar > 0 ? round($valor / $ramos_estandar, 2) : 0;
 
@@ -37,14 +40,18 @@ class Venta
             $desde_sem = getSemanaByDate(opDiasFecha('-', 112, date('Y-m-d')));
             $hasta_sem = getSemanaByDate(opDiasFecha('-', 7, date('Y-m-d')));
 
-            $pedidos = Pedido::All()
-                ->where('estado', 1)
+            $pedidos = Pedido::where('estado', 1)
                 ->where('fecha_pedido', '>=', $desde_sem->fecha_inicial)
-                ->where('fecha_pedido', '<=', $hasta_sem->fecha_final);
+                ->where('fecha_pedido', '<=', $hasta_sem->fecha_final)
+                ->orderBy('fecha_pedido')
+                ->get();
 
             $venta_mensual = 0;
-            foreach ($pedidos as $ped) {
-                $venta_mensual += $ped->getPrecioByPedido();
+            foreach ($pedidos as $pos_ped => $ped) {
+                if (!getFacturaAnulada($ped->id_pedido)) {
+                    $venta_mensual += $ped->getPrecioByPedido();
+                    Log::info($ped->id_pedido . ' => ' . $ped->fecha_pedido . ' -- ' . ($pos_ped + 1) . '/' . count($pedidos));
+                }
             }
 
             $semana_desde = getSemanaByDate(opDiasFecha('-', 98, date('Y-m-d')));   // 13 semanas atras
