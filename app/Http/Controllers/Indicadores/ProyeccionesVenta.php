@@ -17,7 +17,7 @@ class ProyeccionesVenta extends Controller
             ->select(DB::Raw('sum(cajas_proyectadas) as cajas'))->first();
 
         $objInidicardor = Indicador::where('nombre','DP1');
-        $objInidicardor->update(['valor'=>number_format($dato->cajas,2,".",",")]);
+        $objInidicardor->update(['valor'=>number_format($dato->cajas,2,".","")]);
     }
 
     public static function sumTallosFuturos4Semanas(){
@@ -25,7 +25,7 @@ class ProyeccionesVenta extends Controller
         $dato = ResumenSemanaCosecha::whereBetween('codigo_semana',[$intervalos['primeraSemanaFutura'],$intervalos['cuartSemanaFutura']])
             ->select(DB::Raw('sum(tallos_proyectados) as tallos'))->first();
         $objInidicardor = Indicador::where('nombre','DP2');
-        $objInidicardor->update(['valor'=>number_format($dato->tallos,2,".",",")]);
+        $objInidicardor->update(['valor'=>number_format($dato->tallos,2,".","")]);
     }
 
     public static function sumCajasVendidas(){
@@ -33,7 +33,7 @@ class ProyeccionesVenta extends Controller
         $dato = ProyeccionVentaSemanalReal::whereBetween('codigo_semana',[$intervalos['primeraSemanaFutura'],$intervalos['cuartSemanaFutura']])
             ->select(DB::Raw('sum(cajas_equivalentes) as cajas'))->first();
         $objInidicardor = Indicador::where('nombre','DP3');
-        $objInidicardor->update(['valor'=>number_format($dato->cajas,2,".",",")]);
+        $objInidicardor->update(['valor'=>number_format($dato->cajas,2,".","")]);
     }
 
 
@@ -42,7 +42,7 @@ class ProyeccionesVenta extends Controller
         $dato = ProyeccionVentaSemanalReal::whereBetween('codigo_semana',[$intervalos['primeraSemanaFutura'],$intervalos['cuartSemanaFutura']])
             ->select(DB::Raw('sum(valor) as valor'))->first();
         $objInidicardor = Indicador::where('nombre','DP3');
-        $objInidicardor->update(['valor'=>number_format($dato->valor,2,".",",")]);
+        $objInidicardor->update(['valor'=>number_format($dato->valor,2,".","")]);
     }
 
 
