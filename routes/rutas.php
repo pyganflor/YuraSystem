@@ -116,3 +116,6 @@ Route::group(['middleware' => 'autenticacion'], function () {
 });
 include 'notificaciones/otras.php';
 
+Route::get('caca',function(){
+    return view('caca');
+});
