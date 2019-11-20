@@ -1,4 +1,5 @@
 <div class="row">
+    @dump($indicador)
     <div class="col-md-4" style="cursor:pointer" onclick="desglose_indicador('tallos')">
         <div class="small-box bg-teal-active">
             <div class="inner">

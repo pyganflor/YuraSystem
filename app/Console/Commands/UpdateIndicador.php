@@ -79,12 +79,37 @@ class UpdateIndicador extends Command
 
         if ($indicador_par === '0' || $indicador_par === 'DP3') {
             ProyeccionesVenta::sumCajasVendidas();
-            Log::info('INDICADOR: "Cajas vendidas +4 semanas"');
+            Log::info('INDICADOR: "Cajas vendidas a futuro +4 semanas"');
         }
 
         if ($indicador_par === '0' || $indicador_par === 'DP4') {
             ProyeccionesVenta::sumDineroGeneradoVentas();
-            Log::info('INDICADOR: "Dinero generado ventas +4 semanas"');
+            Log::info('INDICADOR: "Dinero generado ventas a futuro +4 semanas"');
+        }
+
+        if ($indicador_par === '0' || $indicador_par === 'DP5') {
+            ProyeccionesVenta::proyeccionVentaFutura3Meses();
+            Log::info('INDICADOR: "Dinero generado ventas a futuro mes 1|mes 2|mes 3"');
+        }
+
+        if ($indicador_par === '0' || $indicador_par === 'DP6') {
+            ProyeccionesVenta::sumTallosCosechadosFuturo1Semana();
+            Log::info('INDICADOR: "Tallos cosechados a futuro +1 semana"');
+        }
+
+        if ($indicador_par === '0' || $indicador_par === 'DP7') {
+            ProyeccionesVenta::sumCajasVendidasFuturas1Semana();
+            Log::info('INDICADOR: "Cajas vendidas futuro +1 semana"');
+        }
+
+        if ($indicador_par === '0' || $indicador_par === 'DP8') {
+            ProyeccionesVenta::sumCajasCosechadasFuturas1Semana();
+            Log::info('INDICADOR: "Cajas cosechadas a futuro +1 semana"');
+        }
+
+        if ($indicador_par === '0' || $indicador_par === 'DP9') {
+            ProyeccionesVenta::sumDineroGeneradoFuturo1Semana();
+            Log::info('INDICADOR: "Dinero generado en ventas a futuro +1 semana"');
         }
 
         if ($indicador_par === '0' || $indicador_par === 'D7') { // Área en producción (-4 meses)
