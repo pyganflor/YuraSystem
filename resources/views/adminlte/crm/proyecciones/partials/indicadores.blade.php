@@ -1,10 +1,10 @@
 <div class="row">
-    <div class="col-md-4" style="cursor:pointer" onclick="modal_indicador('tallos')">
+    <div class="col-md-4" style="cursor:pointer" onclick="modal_indicador('cosechado')">
         <div class="small-box bg-teal-active">
             <div class="inner">
                 <ul class="info-box-number list-unstyled">
-                    <li>Cajas: {{number_format($indicador[0]->valor,2,",",".")}}</li>
-                    <li>Tallos: {{number_format($indicador[1]->valor,2,",",".")}}</li>
+                    <li><b>Cajas:</b> {{number_format($indicador[0]->valor,2,",",".")}}</li>
+                    <li><b>Tallos:</b> {{number_format($indicador[1]->valor,2,",",".")}}</li>
                 </ul>
             </div>
             <div class="icon">
@@ -15,12 +15,12 @@
             </a>
         </div>
     </div>
-    <div class="col-md-4" style="cursor:pointer" onclick="modal_indicador('tallos')">
+    <div class="col-md-4" style="cursor:pointer" onclick="modal_indicador('vendido')">
         <div class="small-box bg-aqua">
             <div class="inner">
                 <ul class="info-box-number list-unstyled">
-                    <li>Cajas: {{number_format($indicador[2]->valor,2,",",".")}}</li>
-                    <li>Dinero: ${{number_format($indicador[3]->valor,2,",",".")}}</li>
+                    <li><b>Cajas:</b> {{number_format($indicador[2]->valor,2,",",".")}}</li>
+                    <li><b>Dinero:</b> ${{number_format($indicador[3]->valor,2,",",".")}}</li>
                 </ul>
             </div>
             <div class="icon">
@@ -31,13 +31,13 @@
             </a>
         </div>
     </div>
-    <div class="col-md-4" style="cursor:pointer" onclick="modal_indicador()">
+    <div class="col-md-4" style="cursor:pointer" onclick="modal_indicador('otros')">
         <div class="small-box bg-orange">
             <div class="inner" style="padding: 3.5px 10px">
                 <ul class="info-box-number list-unstyled">
-                    <li style="font-size: 15px">Mes 1: 999.99</li>
-                    <li style="font-size: 15px">Mes 2: 999.99</li>
-                    <li style="font-size: 15px">Mes 3: 999.99</li>
+                    <li style="font-size: 15px"><b>Mes 1: 999.99</b></li>
+                    <li style="font-size: 15px"><b>Mes 2: 999.99</b></li>
+                    <li style="font-size: 15px"><b>Mes 3: 999.99</b></li>
                 </ul>
             </div>
             <div class="icon">

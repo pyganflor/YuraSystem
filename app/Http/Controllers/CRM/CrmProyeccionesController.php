@@ -18,4 +18,8 @@ class CrmProyeccionesController extends Controller
             'indicador' => Indicador::whereIn('nombre',['DP1','DP2','DP3','DP4','DP5','DP6','DP7','DP8','DP9'])->select('valor')->get()
         ]);
     }
+
+    public function desgloseIndicador(Request $request){
+        return view();
+    }
 }
