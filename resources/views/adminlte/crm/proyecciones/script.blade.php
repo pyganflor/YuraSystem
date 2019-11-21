@@ -18,7 +18,8 @@
             var myChart = new Chart(ctx, {
                 type: 'line',
                 data: {
-                    datasets: [{
+                    datasets: retorno
+                        /*[{
                         label: 'First dataset',
                         data: [0, 20, 40, 50],
                         borderColor: 'black',
@@ -30,7 +31,7 @@
                         borderColor: 'black',
                         borderWidth: 2,
                         fill: false,
-                    }],
+                    }],*/
                     labels: ['January', 'February', 'March', 'April']
                 },
             });

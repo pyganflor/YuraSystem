@@ -105,7 +105,7 @@
         </div>
     </div>
 </div>
-    {{dump($data)}}
+
 <script>
 
 </script>
