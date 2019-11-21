@@ -12,54 +12,25 @@
             <canvas id="chart2" style="margin-top: 5px"></canvas>
         </div>
         <div class="tab-pane" id="tab_3">
+            @dump($data)
             <table class="table table-bordered">
                 <tbody>
                 <tr>
-                    <th style="width: 10px">Variedad/Semana</th>
-                    <th>Task</th>
-                    <th>Progress</th>
-                    <th style="width: 40px">Label</th>
+                    <th style="width: 10px" class="bg-gray-light">Variedad/Semana</th>
+                    @foreach($data[0]['data'] as $semana => $d)
+                        <th class="text-center">{{$semana}}</th>
+                    @endforeach
+                    <th style="width: 10px"  class="bg-gray-light">Variedad/Semana</th>
                 </tr>
-                <tr>
-                    <td>1.</td>
-                    <td>Update software</td>
-                    <td>
-                        <div class="progress progress-xs">
-                            <div class="progress-bar progress-bar-danger" style="width: 55%"></div>
-                        </div>
-                    </td>
-                    <td><span class="badge bg-red">55%</span></td>
-                </tr>
-                <tr>
-                    <td>2.</td>
-                    <td>Clean database</td>
-                    <td>
-                        <div class="progress progress-xs">
-                            <div class="progress-bar progress-bar-yellow" style="width: 70%"></div>
-                        </div>
-                    </td>
-                    <td><span class="badge bg-yellow">70%</span></td>
-                </tr>
-                <tr>
-                    <td>3.</td>
-                    <td>Cron job running</td>
-                    <td>
-                        <div class="progress progress-xs progress-striped active">
-                            <div class="progress-bar progress-bar-primary" style="width: 30%"></div>
-                        </div>
-                    </td>
-                    <td><span class="badge bg-light-blue">30%</span></td>
-                </tr>
-                <tr>
-                    <td>4.</td>
-                    <td>Fix and squish bugs</td>
-                    <td>
-                        <div class="progress progress-xs progress-striped active">
-                            <div class="progress-bar progress-bar-success" style="width: 90%"></div>
-                        </div>
-                    </td>
-                    <td><span class="badge bg-green">90%</span></td>
-                </tr>
+                @foreach($data as $d)
+                    <tr>
+                        <td class="bg-gray-light text-center">{{$d['variedad']}}</td>
+                        @foreach($d['data'] as $proy)
+                        <td class="text-center"><span data-toggle="tooltip" title="Cajas">{{$proy['cajas']}}</span> / <span data-toggle="tooltip" title="Tallos">{{$proy['tallos']}}</span></td>
+                        @endforeach
+                        <td class="bg-gray-light text-center">{{$d['variedad']}}</td>
+                    </tr>
+                @endforeach
                 </tbody>
             </table>
         </div>
@@ -67,5 +38,7 @@
 </div>
 
 <script>
-
+    $(function ( ) {
+        $('[data-toggle="tooltip"]').tooltip();
+    })
 </script>

@@ -23,10 +23,6 @@ class CrmProyeccionesController extends Controller
     public function desgloseIndicador(Request $request){
 
         $intervalo = Proyecciones::intervalosTiempo();
-
-        return view('adminlte.crm.proyecciones.partials.modal_cosechado');
-
-        $intervalo = Proyecciones::intervalosTiempo();
         $dataGeneral = ResumenSemanaCosecha::whereBetween('codigo_semana',[$intervalo['primeraSemanaFutura'],[$intervalo['cuartaSemanaFutura']]])->get();
         $dataAgrupada=[];
 
@@ -40,7 +36,12 @@ class CrmProyeccionesController extends Controller
                 'data'=> $semana,
             ];
         }
-        dd($data);
+
+        return view('adminlte.crm.proyecciones.partials.modal_cosechado',[
+            'data'=>$data
+        ]);
+
+
     }
 
     public function desgloseCosecha4Semanas(Request $request){
