@@ -20,6 +20,8 @@ class CrmProyeccionesController extends Controller
     }
 
     public function desgloseIndicador(Request $request){
-        return view('adminlte.crm.proyecciones.partials.modal_cosechado');
+        return view('adminlte.crm.proyecciones.partials.modal_cosechado',[
+            //$data =
+        ]);
     }
 }

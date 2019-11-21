@@ -5,7 +5,7 @@
     </ul>
     <div class="tab-content">
         <div class="tab-pane active" id="tab_1">
-            <canvas id="chart" width="100%" height="40" style="margin-top: 5px"></canvas>
+            <canvas id="chart" style="margin-top: 5px"></canvas>
         </div>
         <div class="tab-pane" id="tab_2">
             {{--<table class="table-striped table-responsive table-bordered" width="100%" style="border: 2px solid #9d9d9d">
@@ -105,70 +105,26 @@
         </div>
     </div>
 </div>
-
-<script src="{{url('adminlte/bower_components/Flot/jquery.flot.js')}}"></script>
-<script src="{{url('adminlte/bower_components/Flot/jquery.flot.resize.js')}}"></script>
-
 <script>
-
-    var sin = [], cos = []
-    for (var i = 0; i < 14; i += 0.5) {
-        sin.push([i, Math.sin(i)])
-        cos.push([i, Math.cos(i)])
-    }
-    var line_data1 = {
-        data : sin,
-        color: '#3c8dbc'
-    }
-    var line_data2 = {
-        data : cos,
-        color: '#00c0ef'
-    }
-    $.plot('#chart', [line_data1, line_data2], {
-        grid  : {
-            hoverable  : true,
-            borderColor: '#f3f3f3',
-            borderWidth: 1,
-            tickColor  : '#f3f3f3'
+    var ctx = document.getElementById('chart').getContext('2d');
+    var myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            datasets: [{
+                label: 'First dataset',
+                data: [0, 20, 40, 50],
+                borderColor: 'black',
+                borderWidth: 2,
+                fill: false,
+            }, {
+                label: 'Second dataset',
+                data: [5, 10,15, 25],
+                borderColor: 'black',
+                borderWidth: 2,
+                fill: false,
+            }],
+            labels: ['January', 'February', 'March', 'April']
         },
-        series: {
-            shadowSize: 0,
-            lines     : {
-                show: true
-            },
-            points    : {
-                show: true
-            }
-        },
-        lines : {
-            fill : false,
-            color: ['#3c8dbc', '#f56954']
-        },
-        yaxis : {
-            show: true
-        },
-        xaxis : {
-            show: true
-        }
-    })
-    //Initialize tooltip on hover
-    $('<div class="tooltip-inner" id="line-chart-tooltip"></div>').css({
-        position: 'absolute',
-        display : 'none',
-        opacity : 0.8
-    }).appendTo('body')
-    $('#line-chart').bind('plothover', function (event, pos, item) {
-
-        if (item) {
-            var x = item.datapoint[0].toFixed(2),
-                y = item.datapoint[1].toFixed(2)
-
-            $('#line-chart-tooltip').html(item.series.label + ' of ' + x + ' = ' + y)
-                .css({ top: item.pageY + 5, left: item.pageX + 5 })
-                .fadeIn(200)
-        } else {
-            $('#line-chart-tooltip').hide()
-        }
-
-    })
+    });
 </script>
+
