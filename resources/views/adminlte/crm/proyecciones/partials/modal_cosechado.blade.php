@@ -5,7 +5,7 @@
     </ul>
     <div class="tab-content">
         <div class="tab-pane active" id="tab_1">
-            <canvas id="chart" width="100%" height="40" style="margin-top: 5px"></canvas>
+            <canvas id="chart" style="margin-top: 5px"></canvas>
         </div>
         <div class="tab-pane" id="tab_2">
             {{--<table class="table-striped table-responsive table-bordered" width="100%" style="border: 2px solid #9d9d9d">
@@ -105,9 +105,39 @@
         </div>
     </div>
 </div>
+<script>
+    var ctx = document.getElementById('chart').getContext('2d');
+    var myChart = new Chart(ctx, {
 
-<script src="{{url('adminlte/bower_components/Flot/jquery.flot.js')}}"></script>
+        type: 'line',
+        data: {
+            datasets: [{
+                label: 'First dataset',
+                data: [0, 20, 40, 50],
+                borderColor: 'black',
+                borderWidth: 2,
+                fill: false,
+            },
+                {
+                    label: 'Second dataset',
+                    data: [5, 10,15, 25],
+                    borderColor: 'black',
+                    borderWidth: 2,
+                    fill: false,
+                }],
+            labels: ['January', 'February', 'March', 'April']
+
+
+
+        },
+
+    });
+</script>
+
+{{--<script src="{{url('adminlte/bower_components/Flot/jquery.flot.js')}}"></script>
 <script src="{{url('adminlte/bower_components/Flot/jquery.flot.resize.js')}}"></script>
+<script src="{{url('adminlte/bower_components/Flot/jquery.flot.pie.js')}}"></script>
+<script src="{{url('adminlte/Flot/jquery.flot.categories.js')}}"></script>
 
 <script>
 
@@ -129,7 +159,7 @@
             hoverable  : true,
             borderColor: '#f3f3f3',
             borderWidth: 1,
-            tickColor  : '#f3f3f3'
+            tickColor  : '#f3f3f3',
         },
         series: {
             shadowSize: 0,
@@ -171,4 +201,4 @@
         }
 
     })
-</script>
+</script>--}}
