@@ -107,24 +107,5 @@
 </div>
 
 <script>
-    var ctx = document.getElementById('chart').getContext('2d');
-    var myChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            datasets: [{
-                label: 'First dataset',
-                data: [0, 20, 40, 50],
-                borderColor: 'black',
-                borderWidth: 2,
-                fill: false,
-            }, {
-                label: 'Second dataset',
-                data: [5, 10,15, 25],
-                borderColor: 'black',
-                borderWidth: 2,
-                fill: false,
-            }],
-            labels: ['January', 'February', 'March', 'April']
-        },
-    });
+
 </script>

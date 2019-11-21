@@ -5,8 +5,9 @@ namespace yura\Http\Controllers\CRM;
 use Illuminate\Http\Request;
 use yura\Http\Controllers\Controller;
 use yura\Modelos\Indicador;
-use yura\Modelos\Rol;
+use yura\Modelos\ResumenSemanaCosecha;
 use yura\Modelos\Submenu;
+use yura\Http\Controllers\Indicadores\Proyecciones;
 
 class CrmProyeccionesController extends Controller
 {
@@ -20,8 +21,28 @@ class CrmProyeccionesController extends Controller
     }
 
     public function desgloseIndicador(Request $request){
-        return view('adminlte.crm.proyecciones.partials.modal_cosechado',[
-            //$data =
-        ]);
+
+        return view('adminlte.crm.proyecciones.partials.modal_cosechado');
+    }
+
+    public function desgloseTallos4Semanas(){
+
+        $intervalo = Proyecciones::intervalosTiempo();
+        $dataGeneral = ResumenSemanaCosecha::whereBetween('codigo_semana',[$intervalo['primeraSemanaFutura'],[$intervalo['cuartaSemanaFutura']]])->get();
+        $dataAgrupada=[];
+
+        foreach ($dataGeneral as $data)
+            $dataAgrupada[$data->id_variedad][$data->codigo_semana]=$data->tallos_proyectados;
+
+        $data=[];
+        foreach ($dataAgrupada as $idVariedad => $semana) {
+            $data[]= [
+                'label'=>getVariedad($idVariedad)->nombre,
+                'data'=> $semana,
+                'borderColor'=> 'black',
+                'borderWidth'=> 2,
+                'fill'=> false,
+            ];
+        }
     }
 }
