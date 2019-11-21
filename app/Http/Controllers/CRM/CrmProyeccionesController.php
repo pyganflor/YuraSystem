@@ -44,6 +44,6 @@ class CrmProyeccionesController extends Controller
                 'fill'=> false,
             ];
         }
-
+        return $data;
     }
 }
