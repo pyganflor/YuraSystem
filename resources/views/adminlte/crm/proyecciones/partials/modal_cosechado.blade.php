@@ -105,7 +105,7 @@
         </div>
     </div>
 </div>
-
+    {{dump($data)}}
 <script>
     var ctx = document.getElementById('chart').getContext('2d');
     var myChart = new Chart(ctx, {
