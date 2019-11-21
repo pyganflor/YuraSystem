@@ -15,11 +15,17 @@
         get_jquery('{{url('crm_proyeccion/desglose_tallos_4_semanas')}}', datos, function (retorno) {
             console.log(retorno);
             var ctx = document.getElementById('chart').getContext('2d');
+
+            labels=[];
+            $.each(retorno[0].data,function(i,j){
+                labels.push(j);
+            });
+
+            console.log(labels);
             var myChart = new Chart(ctx, {
                 type: 'line',
                 data: {
-                    datasets: retorno,
-                        /*[{
+                    datasets: [{
                         label: 'First dataset',
                         data: [0, 20, 40, 50],
                         borderColor: 'black',
@@ -31,7 +37,7 @@
                         borderColor: 'black',
                         borderWidth: 2,
                         fill: false,
-                    }],*/
+                    }],
                     labels: ['January', 'February', 'March', 'April']
                 },
             });
