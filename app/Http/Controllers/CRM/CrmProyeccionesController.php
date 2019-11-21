@@ -38,7 +38,7 @@ class CrmProyeccionesController extends Controller
         foreach ($dataAgrupada as $idVariedad => $semana) {
             $data[]= [
                 'label'=>getVariedad($idVariedad)->nombre,
-                'data'=> $semana,
+                'data'=> 0,
                 'borderColor'=> 'black',
                 'borderWidth'=> 2,
                 'fill'=> false,
