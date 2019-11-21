@@ -106,6 +106,9 @@
     </div>
 </div>
 
+<script src="{{asset('Flot/jquery.flot.js')}}"></script>
+<script src="{{asset('Flot/jquery.flot.resize.js')}}"></script>
+
 <script>
 
     var sin = [], cos = []
