@@ -106,8 +106,8 @@
     </div>
 </div>
 
-<script src="{{asset('Flot/jquery.flot.js')}}"></script>
-<script src="{{asset('Flot/jquery.flot.resize.js')}}"></script>
+<script src="{{url('adminlte/bower_components/Flot/jquery.flot.js')}}"></script>
+<script src="{{url('adminlte/bower_components/Flot/jquery.flot.resize.js')}}"></script>
 
 <script>
 
