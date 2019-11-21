@@ -13,26 +13,23 @@
 
     function tallos_4_semanas(){
         get_jquery('{{url('crm_proyeccion/desglose_tallos_4_semanas')}}', datos, function (retorno) {
-            console.log(retorno);
             var ctx = document.getElementById('chart').getContext('2d');
-
             labels=[];
             $.each(retorno[0].data,function(i){ labels.push(i);  });
-
+            colores=['#00ff00','#ff8000','#8080ff','#ff0000','#00c0ef','#00a65a','#ffac58','#1B14FF',];
             datasets = [];
+
             $.each(retorno,function(i,j){
                 data=[];
+                $.each(j.data,function (k,l) {
+                    data.push(l);
+                });
                 datasets.push({
-                    borderColor : j.borderColor,
-                    borderWidth : j.borderWidth,
-                    fill : j.fill,
                     label : j.label,
-                    data : function(){
-                        $.each(j,data,function (k,l) {
-                            data.push(l);
-                        });
-                        return data
-                    },
+                    borderColor : colores[i],
+                    borderWidth : 2,
+                    fill : false,
+                    data :data
                 });
             });
 
@@ -41,19 +38,7 @@
             var myChart = new Chart(ctx, {
                 type: 'line',
                 data: {
-                    datasets: [{
-                        label: 'First dataset',
-                        data: [0, 20, 40, 50],
-                        borderColor: 'black',
-                        borderWidth: 2,
-                        fill: false,
-                    }, {
-                        label: 'Second dataset',
-                        data: [5, 10,15, 25],
-                        borderColor: 'black',
-                        borderWidth: 2,
-                        fill: false,
-                    }],
+                    datasets: datasets,
                     labels: labels
                 },
             });

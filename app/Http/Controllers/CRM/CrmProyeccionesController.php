@@ -39,9 +39,6 @@ class CrmProyeccionesController extends Controller
             $data[]= [
                 'label'=>getVariedad($idVariedad)->nombre,
                 'data'=> $semana,
-                'borderColor'=> 'black',
-                'borderWidth'=> 2,
-                'fill'=> false,
             ];
         }
         return $data;
