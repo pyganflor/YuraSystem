@@ -17,11 +17,27 @@
             var ctx = document.getElementById('chart').getContext('2d');
 
             labels=[];
-            $.each(retorno[0].data,function(i,j){
-                labels.push(i);
+            $.each(retorno[0].data,function(i){ labels.push(i);  });
+
+            datasets = [];
+            $.each(retorno,function(i,j){
+                data=[];
+                datasets.push({
+                    borderColor : j.borderColor,
+                    borderWidth : j.borderWidth,
+                    fill : j.fill,
+                    label : j.label,
+                    data : function(){
+                        $.each(j,data,function (k,l) {
+                            data.push(l);
+                        });
+                        return data
+                    },
+                });
             });
 
-            console.log(labels);
+
+            console.log(datasets);
             var myChart = new Chart(ctx, {
                 type: 'line',
                 data: {
