@@ -18,7 +18,7 @@
 
             labels=[];
             $.each(retorno[0].data,function(i,j){
-                labels.push(j);
+                labels.push(i);
             });
 
             console.log(labels);
@@ -38,7 +38,7 @@
                         borderWidth: 2,
                         fill: false,
                     }],
-                    labels: ['January', 'February', 'March', 'April']
+                    labels: labels
                 },
             });
         });
