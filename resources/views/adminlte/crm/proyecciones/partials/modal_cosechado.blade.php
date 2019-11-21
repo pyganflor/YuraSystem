@@ -1,11 +1,15 @@
 <div class="nav-tabs-custom">
     <ul class="nav nav-pills nav-justified">
-        <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="true">Gráfica</a></li>
-        <li class=""><a href="#tab_2" data-toggle="tab" aria-expanded="false">Tabla</a></li>
+        <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="true">Tallos</a></li>
+        <li class="active"><a href="#tab_2" data-toggle="tab" aria-expanded="true">Cajas</a></li>
+        <li class=""><a href="#tab_3" data-toggle="tab" aria-expanded="false">Tabla</a></li>
     </ul>
     <div class="tab-content">
         <div class="tab-pane active" id="tab_1">
-            <canvas id="chart" style="margin-top: 5px"></canvas>
+            <canvas id="chart1" style="margin-top: 5px"></canvas>
+        </div>
+        <div class="tab-pane" id="tab_1">
+            <canvas id="chart2" style="margin-top: 5px"></canvas>
         </div>
         <div class="tab-pane" id="tab_2">
             {{--<table class="table-striped table-responsive table-bordered" width="100%" style="border: 2px solid #9d9d9d">

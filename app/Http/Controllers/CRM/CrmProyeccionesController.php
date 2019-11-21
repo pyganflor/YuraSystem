@@ -25,15 +25,14 @@ class CrmProyeccionesController extends Controller
         return view('adminlte.crm.proyecciones.partials.modal_cosechado');
     }
 
-    public function desgloseTallos4Semanas(){
+    public function desgloseCosecha4Semanas(Request $request){
 
         $intervalo = Proyecciones::intervalosTiempo();
         $dataGeneral = ResumenSemanaCosecha::whereBetween('codigo_semana',[$intervalo['primeraSemanaFutura'],[$intervalo['cuartaSemanaFutura']]])->get();
         $dataAgrupada=[];
 
         foreach ($dataGeneral as $data)
-            $dataAgrupada[$data->id_variedad][$data->codigo_semana]=$data->tallos_proyectados;
-
+            $dataAgrupada[$data->id_variedad][$data->codigo_semana]= $request->opcion == 'cajas' ?  $data->cajas_proyectadas : $data->tallos_proyectados;
         $data=[];
         foreach ($dataAgrupada as $idVariedad => $semana) {
             $data[]= [
