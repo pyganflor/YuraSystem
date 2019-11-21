@@ -1,8 +1,8 @@
 <div class="nav-tabs-custom">
     <ul class="nav nav-pills nav-justified">
-        <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="true">Tallos</a></li>
-        <li class=""><a href="#tab_2" data-toggle="tab" aria-expanded="true">Cajas</a></li>
-        <li class=""><a href="#tab_3" data-toggle="tab" aria-expanded="false">Tabla</a></li>
+        <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="true"><i class="fa fa-pagelines"></i> Tallos</a></li>
+        <li class=""><a href="#tab_2" data-toggle="tab" aria-expanded="true"><i class="fa fa-cube" ></i> Cajas</a></li>
+        <li class=""><a href="#tab_3" data-toggle="tab" aria-expanded="false"><i class="fa fa-usd" ></i> Tabla</a></li>
     </ul>
     <div class="tab-content">
         <div class="tab-pane active" id="tab_1">
