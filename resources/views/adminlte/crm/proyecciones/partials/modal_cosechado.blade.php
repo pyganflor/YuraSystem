@@ -5,7 +5,7 @@
     </ul>
     <div class="tab-content">
         <div class="tab-pane active" id="tab_1">
-            <canvas id="chart" width="100%" height="40" style="margin-top: 5px"></canvas>
+            <canvas id="chart" style="margin-top: 5px"></canvas>
         </div>
         <div class="tab-pane" id="tab_2">
             {{--<table class="table-striped table-responsive table-bordered" width="100%" style="border: 2px solid #9d9d9d">
@@ -107,49 +107,5 @@
 </div>
 
 <script>
-    ctx = document.getElementById('chart').getContext('2d');
-    datasets=({
-        label: 'XXXXX',
-        data: [],
-        backgroundColor: '',
-        borderColor: '',
-        borderWidth: 2,
-        fill: false,
-    });
-    myChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: labels,
-            datasets: datasets
-        },
-        options: {
-            scales: {
-                yAxes: [{
-                    ticks: {
-                        beginAtZero: false
-                    }
-                }]
-            },
-            elements: {
-                line: {
-                    tension: 0, // disables bezier curves
-                }
-            },
-            tooltips: {
-                mode: 'point' // nearest, point, index, dataset, x, y
-            },
-            legend: {
-                display: true,
-                position: 'bottom',
-                fullWidth: false,
-                onClick: function () {
-                },
-                onHover: function () {
-                },
-                reverse: true,
-            },
-            showLines: true, // for all datasets
-            borderCapStyle: 'round',    // "butt" || "round" || "square"
-        }
-    });
+
 </script>

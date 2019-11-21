@@ -4,11 +4,6 @@
     Dashboard - Proyecciones
 @endsection
 
-@section('script_inicio')
-    <script>
-    </script>
-@endsection
-
 @section('contenido')
     @include('adminlte.gestion.partials.breadcrumb')
     <section class="content">
@@ -54,7 +49,7 @@
                         <div class="box box-solid box-info">
                             <div class="box-header with-border ">
                                 <i class="fa fa-pie-chart"></i>
-                                <h3 class="box-title">Proyección a 1 semana</h3>
+                                <h3 class="box-title">Proyección semana: </h3>
                             </div>
                             <!-- /.box-header -->
                             <div class="box-body">
