@@ -27,12 +27,12 @@
 
     <section class="content">
         @if(count(getUsuario(Session::get('id_usuario'))->rol()->getSubmenusByTipo('C')) > 0)
-            <div class="box box-primary" style="background-color: #18ef152b">
+            <div class="box box-primary">
                 <div class="box-body">
                     <div class="row">
-                        <div class="col-md-6 col-md-offset-3">
-                            <div class="info-box mouse-hand sombra_pequeña" style="background-color: #fffb1f"
-                                 onclick="location.href='{{url('ventas_m2')}}'">
+                        <div class="col-md-6">
+                            <div class="info-box mouse-hand sombra_pequeña bg-gray" onclick="location.href='{{url('ventas_m2')}}'"
+                                 onmouseover="$(this).removeClass('bg-gray')" onmouseleave="$(this).addClass('bg-gray')">
                                 <span class="info-box-icon"><i class="fa fa-fw fa-diamond"></i></span>
                                 <div class="info-box-content">
                                     <strong class="info-box-text text-center" style="font-size: 1.2em">Ventas/
@@ -50,11 +50,35 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="col-md-3">
+                            <div class="info-box mouse-hand sombra_pequeña" onmouseover="$(this).addClass('bg-gray-light')"
+                                 onmouseleave="$(this).removeClass('bg-gray-light')" onclick="location.href='{{url('crm_postcosecha')}}'">
+                                <span class="info-box-icon"><i class="fa fa-fw fa-tree"></i></span>
+                                <div class="info-box-content">
+                                    <strong class="info-box-text" style="font-size: 1.2em">Cosecha</strong>
+                                    <span class="info-box-number">{{number_format($tallos_cosechados)}}
+                                        <small>tallos</small>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="info-box mouse-hand sombra_pequeña" onmouseover="$(this).addClass('bg-gray-light')"
+                                 onmouseleave="$(this).removeClass('bg-gray-light')" onclick="location.href='{{url('crm_postcosecha')}}'">
+                                <span class="info-box-icon"><i class="fa fa-fw fa-map"></i></span>
+                                <div class="info-box-content">
+                                    <strong class="info-box-text" style="font-size: 1.2em">Área</strong>
+                                    <span class="info-box-number">{{number_format(round($area_produccion / 10000, 2), 2)}}
+                                        <small>tallos</small>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="row">
                         <div class="col-md-3">
-                            <div class="info-box bg-green-gradient mouse-hand sombra_pequeña"
-                                 onclick="location.href='{{url('crm_postcosecha')}}'">
+                            <div class="info-box mouse-hand sombra_pequeña" onmouseover="$(this).addClass('bg-gray-light')"
+                                 onmouseleave="$(this).removeClass('bg-gray-light')" onclick="location.href='{{url('crm_postcosecha')}}'">
                                 <span class="info-box-icon"><i class="fa fa-fw fa-leaf"></i></span>
                                 <div class="info-box-content">
                                     <strong class="info-box-text" style="font-size: 1.2em">Postcosecha</strong>
@@ -67,8 +91,8 @@
                             </div>
                         </div>
                         <div class="col-md-3">
-                            <div class="info-box bg-orange mouse-hand sombra_pequeña"
-                                 onclick="location.href='{{url('crm_ventas')}}'">
+                            <div class="info-box mouse-hand sombra_pequeña" onmouseover="$(this).addClass('bg-gray-light')"
+                                 onmouseleave="$(this).removeClass('bg-gray-light')" onclick="location.href='{{url('crm_ventas')}}'">
                                 <span class="info-box-icon"><i class="fa fa-fw fa-usd"></i></span>
                                 <div class="info-box-content">
                                     <strong class="info-box-text" style="font-size: 1.2em">Ventas</strong>
@@ -82,8 +106,8 @@
                             </div>
                         </div>
                         <div class="col-md-3">
-                            <div class="info-box bg-teal mouse-hand sombra_pequeña"
-                                 onclick="location.href='{{url('crm_rendimiento')}}'">
+                            <div class="info-box mouse-hand sombra_pequeña" onmouseover="$(this).addClass('bg-gray-light')"
+                                 onmouseleave="$(this).removeClass('bg-gray-light')" onclick="location.href='{{url('crm_rendimiento')}}'">
                                 <span class="info-box-icon"><i class="ion ion-ios-people-outline"></i></span>
                                 <div class="info-box-content">
                                     <strong class="info-box-text" style="font-size: 1.2em">Rend/Desecho</strong>
@@ -99,13 +123,13 @@
                             </div>
                         </div>
                         <div class="col-md-3">
-                            <div class="info-box bg-fuchsia mouse-hand sombra_pequeña"
-                                 onclick="location.href='{{url('crm_area')}}'">
+                            <div class="info-box mouse-hand sombra_pequeña" onmouseover="$(this).addClass('bg-gray-light')"
+                                 onmouseleave="$(this).removeClass('bg-gray-light')" onclick="location.href='{{url('crm_area')}}'">
                                 <span class="info-box-icon"><i class="fa fa-fw fa-cube"></i></span>
                                 <div class="info-box-content">
-                                    <strong class="info-box-text" style="font-size: 1.2em">Área</strong>
+                                    <strong class="info-box-text" style="font-size: 1.2em">Producción</strong>
                                     <span class="info-box-number">
-                                        {{number_format(round($area_produccion / 10000, 2), 2)}}
+                                        {{number_format($tallos_m2, 2)}}
                                         <small> <sup>ha</sup></small>
                                     </span>
                                     <span class="info-box-number" title="Ramos/m2">

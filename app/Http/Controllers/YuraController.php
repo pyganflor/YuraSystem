@@ -38,6 +38,8 @@ class YuraController extends Controller
                 'ramos_m2_anno' => getIndicadorByName('D8')->valor,
                 'venta_m2_anno_mensual' => getIndicadorByName('D9')->valor,
                 'venta_m2_anno_anual' => getIndicadorByName('D10')->valor,
+                'tallos_cosechados' => getIndicadorByName('D11')->valor,
+                'tallos_m2' => getIndicadorByName('D12')->valor,
             ]);
         }
 
