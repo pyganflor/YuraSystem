@@ -18,7 +18,7 @@
             var myChart = new Chart(ctx, {
                 type: 'line',
                 data: {
-                    datasets: retorno
+                    datasets: retorno,
                         /*[{
                         label: 'First dataset',
                         data: [0, 20, 40, 50],
