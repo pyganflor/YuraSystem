@@ -51,8 +51,8 @@
                             </div>
                         </div>
                         <div class="col-md-3">
-                            <div class="info-box mouse-hand sombra_pequeña" onmouseover="$(this).addClass('bg-gray-light')"
-                                 onmouseleave="$(this).removeClass('bg-gray-light')" onclick="location.href='{{url('crm_postcosecha')}}'">
+                            <div class="info-box sombra_pequeña" onmouseover="$(this).addClass('bg-gray-light')"
+                                 onmouseleave="$(this).removeClass('bg-gray-light')">
                                 <span class="info-box-icon"><i class="fa fa-fw fa-tree"></i></span>
                                 <div class="info-box-content">
                                     <strong class="info-box-text" style="font-size: 1.2em">Cosecha</strong>
@@ -63,13 +63,13 @@
                             </div>
                         </div>
                         <div class="col-md-3">
-                            <div class="info-box mouse-hand sombra_pequeña" onmouseover="$(this).addClass('bg-gray-light')"
-                                 onmouseleave="$(this).removeClass('bg-gray-light')" onclick="location.href='{{url('crm_postcosecha')}}'">
+                            <div class="info-box sombra_pequeña" onmouseover="$(this).addClass('bg-gray-light')"
+                                 onmouseleave="$(this).removeClass('bg-gray-light')">
                                 <span class="info-box-icon"><i class="fa fa-fw fa-map"></i></span>
                                 <div class="info-box-content">
                                     <strong class="info-box-text" style="font-size: 1.2em">Área</strong>
                                     <span class="info-box-number">{{number_format(round($area_produccion / 10000, 2), 2)}}
-                                        <small>tallos</small>
+                                        <small> <sup>ha</sup></small>
                                     </span>
                                 </div>
                             </div>
@@ -130,7 +130,7 @@
                                     <strong class="info-box-text" style="font-size: 1.2em">Producción</strong>
                                     <span class="info-box-number">
                                         {{number_format($tallos_m2, 2)}}
-                                        <small> <sup>ha</sup></small>
+                                        <small> m<sup>2</sup></small>
                                     </span>
                                     <span class="info-box-number" title="Ramos/m2">
                                         {{number_format($ramos_m2_anno, 2)}}

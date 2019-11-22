@@ -22,44 +22,35 @@ class crmPostocechaController extends Controller
 {
     public function inicio(Request $request)
     {
+        $desde = opDiasFecha('-', 7, date('Y-m-d'));
+        $hasta = opDiasFecha('-', 1, date('Y-m-d'));
+
         $labels = DB::table('clasificacion_verde as v')
             ->select('v.fecha_ingreso as dia')->distinct()
-            ->where('v.fecha_ingreso', '>=', opDiasFecha('-', 7, date('Y-m-d')))
-            ->where('v.fecha_ingreso', '<=', opDiasFecha('-', 1, date('Y-m-d')))
+            ->where('v.fecha_ingreso', '>=', $desde)
+            ->where('v.fecha_ingreso', '<=', $hasta)
             ->get();
-
-        $cajas = 0;
-        $ramos = 0;
-        $tallos = 0;
-        $calibre = 0;
 
         $cant_verde = 0;
         foreach ($labels as $dia) {
             $verde = ClasificacionVerde::All()->where('fecha_ingreso', '=', $dia->dia)->first();
             if ($verde != '') {
-                $cajas += round($verde->getTotalRamosEstandar() / getConfiguracionEmpresa()->ramos_x_caja, 2);
-                $ramos += $verde->getTotalRamosEstandar();
-                $tallos += $verde->total_tallos();
-                $calibre += round($verde->total_tallos() / $verde->getTotalRamosEstandar(), 2);
                 $cant_verde++;
             }
         }
 
-        $calibre = $cant_verde > 0 ? round($calibre / $cant_verde, 2) : 0;
-
         $indicadores = [
-            'cajas' => $cajas,
-            'ramos' => $ramos,
-            'tallos' => $tallos,
-            'calibre' => $calibre,
+            'cajas' => getIndicadorByName('P1')->valor,
+            'tallos' => getIndicadorByName('D2')->valor,
+            'calibre' => getIndicadorByName('D1')->valor,
         ];
 
         $cosecha = Cosecha::All()->where('fecha_ingreso', '=', date('Y-m-d'))->first();
         $verde = ClasificacionVerde::All()->where('fecha_ingreso', '=', date('Y-m-d'))->first();
 
         return view('adminlte.crm.postcocecha.inicio', [
-            'desde' => opDiasFecha('-', 7, date('Y-m-d')),
-            'hasta' => opDiasFecha('-', 1, date('Y-m-d')),
+            'desde' => $desde,
+            'hasta' => $hasta,
             'cosecha' => $cosecha,
             'verde' => $verde,
             'indicadores' => $indicadores,
@@ -291,6 +282,9 @@ class crmPostocechaController extends Controller
 
     public function buscar_reporte_cosecha_chart(Request $request)
     {
+
+        //dd($request->all());
+
         $desde = '1990-01-01';
         if ($request->desde != '')
             $desde = $request->desde;
@@ -334,6 +328,7 @@ class crmPostocechaController extends Controller
                 ->orderBy('fecha_ingreso')
                 ->get();
         }
+
         $annos = [];
 
         $array_cajas = [];
@@ -357,6 +352,7 @@ class crmPostocechaController extends Controller
             $view = 'acumulado';
         }
 
+        $arreglo_variedades = [];
         if ($request->has('annos')) {
             $view = 'annos';
             $labels = [];
@@ -408,9 +404,7 @@ class crmPostocechaController extends Controller
                 ]);
             }
         }
-
         /* ================ OBTENER RESULTADOS =============*/
-        $arreglo_variedades = [];
         if ($periodo == 'diario') {
             if ($view == 'acumulado') {
                 foreach ($labels as $dia) {
@@ -732,6 +726,8 @@ class crmPostocechaController extends Controller
                 }
             }
         }
+
+        //dd($labels, $target, $periodo, $annos, $view);
 
         return view('adminlte.crm.postcocecha.partials.secciones.grafica._' . $view, [
             'target' => $target,

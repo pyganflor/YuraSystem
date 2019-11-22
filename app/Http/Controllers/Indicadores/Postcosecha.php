@@ -36,6 +36,22 @@ class Postcosecha
         }
     }
 
+    public static function cajas_cosechadas_7_dias_atras()
+    {
+        $model = getIndicadorByName('P1');  // Cajas cosechadas (-7 días)
+        if ($model != '') {
+            $verdes = ClasificacionVerde::All()->where('estado', 1)
+                ->where('fecha_ingreso', '>=', opDiasFecha('-', 7, date('Y-m-d')))
+                ->where('fecha_ingreso', '<=', opDiasFecha('-', 1, date('Y-m-d')));
+            $valor = 0;
+            foreach ($verdes as $v) {
+                $valor += round($v->getTotalRamosEstandar() / getConfiguracionEmpresa()->ramos_x_caja, 2);
+            }
+            $model->valor = $valor;
+            $model->save();
+        }
+    }
+
     public static function rendimiento_desecho_7_dias_atras()
     {
         $model_1 = getIndicadorByName('D5');  // Rendimiento (-7 días)
