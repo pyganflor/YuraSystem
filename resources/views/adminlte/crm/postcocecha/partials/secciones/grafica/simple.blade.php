@@ -19,6 +19,8 @@
 
 <script>
     construir_char_simple('Cajas', 'chart_cajas');
+    construir_char_simple('Tallos', 'chart_tallos');
+    construir_char_simple('Calibres', 'chart_calibres');
 
     function construir_char_simple(label, id) {
         labels = [];
@@ -26,12 +28,15 @@
 
         @for($i = 0; $i < count($labels); $i++)
         labels.push('{{$labels[$i]}}');
-        data_list.push('{{$data_cajas[$i]}}');
+        if (label == 'Cajas')
+            data_list.push('{{$data_cajas[$i]}}');
+        if (label == 'Tallos')
+            data_list.push('{{$data_tallos[$i]}}');
+        if (label == 'Calibres')
+            data_list.push('{{$data_calibres[$i]}}');
         @endfor
 
-            true;
-
-        datasets = [{
+            datasets = [{
             label: label + ' ',
             data: data_list,
             //backgroundColor: '#8c99ff54',
