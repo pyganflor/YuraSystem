@@ -35,10 +35,10 @@ class CrmProyeccionesController extends Controller
                 break;
             default:
                 $data = $this->dataCosecha($intervalo);
-                $first ='Tallos';
-                $iconFirst='fa-pagelines';
-                $second='Cajas';
-                $iconSecond='fa-cube';
+                $first ='Cajas';
+                $iconFirst='fa-cube';
+                $second='Tallos';
+                $iconSecond='fa-pagelines';
                 break;
         }
 
