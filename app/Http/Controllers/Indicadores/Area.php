@@ -7,7 +7,7 @@ use yura\Modelos\Cosecha;
 
 class Area
 {
-    public static function area_produccion_4_meses_atras()
+    public static function area_produccion_4_semanas_atras()
     {
         $desde = opDiasFecha('-', 28, date('Y-m-d'));
         $hasta = opDiasFecha('-', 7, date('Y-m-d'));
@@ -43,7 +43,7 @@ class Area
         }
     }
 
-    public static function ramos_m2_anno_4_meses_atras()
+    public static function ramos_m2_anno_4_semanas_atras()
     {
         $desde = opDiasFecha('-', 28, date('Y-m-d'));
         $hasta = opDiasFecha('-', 7, date('Y-m-d'));
@@ -91,24 +91,16 @@ class Area
         }
     }
 
-    public static function tallos_m2_4_meses_atras()
+    public static function tallos_m2_4_semanas_atras()
     {
         $model = getIndicadorByName('D12');  // Tallos/m2 (-4 meses)
         if ($model != '') {
-            $desde_sem = getSemanaByDate(opDiasFecha('-', 112, date('Y-m-d')));
+            $desde_sem = getSemanaByDate(opDiasFecha('-', 28, date('Y-m-d')));
             $hasta_sem = getSemanaByDate(opDiasFecha('-', 7, date('Y-m-d')));
-
-            $cosechas = Cosecha::All()->where('estado', 1)
-                ->where('fecha_ingreso', '>=', $desde_sem->fecha_inicial)
-                ->where('fecha_ingreso', '<=', $hasta_sem->fecha_final);
-            $tallos = 0;
-            foreach ($cosechas as $c) {
-                $tallos += $c->getTotalTallos();
-            }
 
             $data_ciclos = getCiclosCerradosByRango($desde_sem->codigo, $hasta_sem->codigo, 'T');
 
-            $model->valor = $data_ciclos['area_cerrada'] > 0 ? round($tallos / $data_ciclos['area_cerrada'], 2) : 0;
+            $model->valor = $data_ciclos['area_cerrada'] > 0 ? round($data_ciclos['tallos_cosechados'] / $data_ciclos['area_cerrada'], 2) : 0;
             $model->save();
         }
     }

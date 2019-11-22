@@ -1,65 +1,41 @@
 <div class="nav-tabs-custom" style="cursor: move;">
-    <!-- Tabs within a box -->
     <ul class="nav nav-pills nav-justified">
-        <li class="active"><a href="#cajas-chart" data-toggle="tab" aria-expanded="true">Cajas</a></li>
-        <li class=""><a href="#tallos-chart" data-toggle="tab" aria-expanded="false">Tallos</a></li>
-        <li class=""><a href="#calibres-chart" data-toggle="tab" aria-expanded="false">Calibres</a></li>
+        <li class="active li_tab_chart" id="li_tab_cajas"><a href="#cajas-chart" data-toggle="tab" aria-expanded="true">Cajas</a></li>
+        <li class="li_tab_chart" id="li_tab_tallos"><a href="#tallos-chart" data-toggle="tab" aria-expanded="false">Tallos</a></li>
+        <li class="li_tab_chart" id="li_tab_calibres"><a href="#calibres-chart" data-toggle="tab" aria-expanded="false">Calibres</a></li>
     </ul>
     <div class="tab-content no-padding">
-        <div class="chart tab-pane active" id="cajas-chart" style="position: relative; height: 300px;">
+        <div class="chart tab-pane active div_tab_chart" id="cajas-chart" style="position: relative; height: 300px;">
             <canvas id="chart_cajas" width="100%" height="40" style="margin-top: 5px; background-color: white"></canvas>
         </div>
-        <div class="chart tab-pane" id="tallos-chart" style="position: relative; height: 300px;">
+        <div class="chart tab-pane div_tab_chart" id="tallos-chart" style="position: relative; height: 300px;">
             <canvas id="chart_tallos" width="100%" height="40" style="margin-top: 5px; background-color: white"></canvas>
         </div>
-        <div class="chart tab-pane" id="calibres-chart" style="position: relative; height: 300px;">
+        <div class="chart tab-pane div_tab_chart" id="calibres-chart" style="position: relative; height: 300px;">
             <canvas id="chart_calibres" width="100%" height="40" style="margin-top: 5px; background-color: white"></canvas>
         </div>
     </div>
 </div>
 
 <script>
-    construir_char_annos('Cajas', 'chart_cajas');
-    construir_char_annos('Tallos', 'chart_tallos');
-    construir_char_annos('Calibres', 'chart_calibres');
+    construir_char_simple('Cajas', 'chart_cajas');
 
-    function construir_char_annos(label, id) {
+    function construir_char_simple(label, id) {
         labels = [];
         datasets = [];
-        @for($i = 0; $i < count($labels); $i++)
-        labels.push("{{$labels[$i]}}");
-                @endfor
+        data_list = [];
 
-                {{-- Data_list --}}
-                @foreach($annos as $pos_a => $a)
-            data_list = [];
-        if (label == 'Cajas') {
-            @foreach($a['cajas'] as $caja)
-            data_list.push("{{$caja}}");
-            @endforeach
-        }
-        else if (label == 'Tallos') {
-            @foreach($a['tallos'] as $tallos)
-            data_list.push("{{$tallos}}");
-            @endforeach
-        }
-        else {
-            @foreach($a['calibre'] as $calibres)
-            data_list.push("{{$calibres}}");
-            @endforeach
-        }
 
-        datasets.push({
-            label: '{{$a['anno']}}' + ' ',
+        datasets = [{
+            label: label + ' ',
             data: data_list,
-            backgroundColor: '{{getListColores()[$pos_a]}}',
-            borderColor: '{{getListColores()[$pos_a]}}',
-            borderWidth: 1,
+            //backgroundColor: '#8c99ff54',
+            borderColor: '#161617',
+            borderWidth: 2,
             fill: false,
-        });
-        @endforeach
+        }];
 
-            ctx = document.getElementById(id).getContext('2d');
+        ctx = document.getElementById(id).getContext('2d');
         myChart = new Chart(ctx, {
             type: 'line',
             data: {
