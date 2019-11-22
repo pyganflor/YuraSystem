@@ -15,7 +15,7 @@
                     <span data-toggle="tooltip" title="Cajas">{{$proy['cajas']}}</span></span>
                 </td>
                 <td class="text-center" style="border-right:1px solid;border-bottom:1px solid">
-                    <span data-toggle="tooltip" title="Tallos" >{{$proy['tallos']}}</span>
+                    <span data-toggle="tooltip" title="Dinero" >{{$proy['dinero']}}</span>
                 </td>
             @endforeach
             <td class="bg-gray-light text-center" style="border:1px solid">{{$d['variedad']}}</td>
