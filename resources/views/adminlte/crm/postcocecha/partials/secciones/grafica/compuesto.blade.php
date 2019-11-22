@@ -16,7 +16,6 @@
         </div>
     </div>
 </div>
-
 <script>
     construir_char_simple('Cajas', 'chart_cajas');
     construir_char_simple('Tallos', 'chart_tallos');
@@ -26,33 +25,35 @@
         labels = [];
         datasets = [];
 
-        @for($i = 0; $i < count($labels); $i++)
-        labels.push('{{$labels[$i]}}');
-        @endfor
+        @foreach($labels as $label)
+        labels.push('{{$label}}');
+        @endforeach
 
-                @for($i = 0; $i < count($datasets); $i++)
+                @foreach($datasets as $dataset)
             data_list = [];
-        if (label == 'Cajas')
-            @for($y = 0; $y < count($datasets[$i]['data_cajas']); $y++)
-            data_list.push('{{$datasets[$i]['data_cajas'][$y]}}');
-        @endfor
-        if (label == 'Tallos')
-            @for($y = 0; $y < count($datasets[$i]['data_tallos']); $y++)
-            data_list.push('{{$datasets[$i]['data_tallos'][$y]}}');
-        @endfor
-        if (label == 'Calibres')
-            @for($y = 0; $y < count($datasets[$i]['data_calibres']); $y++)
-            data_list.push('{{$datasets[$i]['data_calibres'][$y]}}');
-        @endfor
+        if (label == 'Cajas') {
+            @foreach($dataset['data_cajas'] as $valor)
+            data_list.push('{{$valor}}');
+            @endforeach
+        } else if (label == 'Tallos') {
+            @foreach($dataset['data_tallos'] as $valor)
+            data_list.push('{{$valor}}');
+            @endforeach
+        } else if (label == 'Calibres') {
+            @foreach($dataset['data_calibres'] as $valor)
+            data_list.push('{{$valor}}');
+            @endforeach
+        }
+
         datasets.push({
-            label: '{{$datasets[$i]['label']}}' + ' ',
+            label: '{{$dataset['label']}}' + ' ',
             data: data_list,
-            //backgroundColor: '#8c99ff54',
-            borderColor: '{{$datasets[$i]['color']}}',
+            backgroundColor: '{{$dataset['color']}}',
+            borderColor: '{{$dataset['color']}}',
             borderWidth: 2,
             fill: false,
         });
-        @endfor
+        @endforeach
 
             ctx = document.getElementById(id).getContext('2d');
         myChart = new Chart(ctx, {
