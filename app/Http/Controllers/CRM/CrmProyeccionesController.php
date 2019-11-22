@@ -28,17 +28,17 @@ class CrmProyeccionesController extends Controller
         switch ($request->param){
             case 'venta':
                 $data = $this->dataVenta($intervalo);
+                $first ='Cajas';
+                $iconFirst='fa-cube';
+                $second='Dinero';
+                $iconSecond='fa-usd';
+                break;
+            default:
+                $data = $this->dataCosecha($intervalo);
                 $first ='Tallos';
                 $iconFirst='fa-pagelines';
                 $second='Cajas';
                 $iconSecond='fa-cube';
-                break;
-            default:
-                $data = $this->dataCosecha($intervalo);
-                $first ='Cajas';
-                $iconFirst='Cajas';
-                $second='Dinero';
-                $iconSecond='fa-usd';
                 break;
         }
 
