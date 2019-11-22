@@ -84,11 +84,13 @@ class CrmProyeccionesController extends Controller
     public function dataVenta($intervalo){
 
         $dataGeneral =ProyeccionVentaSemanalReal::whereBetween('codigo_semana',[$intervalo['primeraSemanaFutura'],$intervalo['cuartaSemanaFutura']])
-            ->where([
-                ['cajas_equivalentes','>',0],
-                ['valor','>',0]
-            ])->select(DB::row('sum(cajas_equivalentes) as cajas_equivalentes'),DB::row('sum(valor) as valor'))->get();
-        dump($dataGeneral);
+            ->select(
+                'codigo_semana',
+                'id_variedad',
+                DB::raw('sum(cajas_equivalentes) as cajas_equivalentes'),
+                DB::raw('sum(valor) as valor'))
+            ->groupBy('codigo_semana','id_variedad')->get();
+
         $dataAgrupada=[];
         foreach ($dataGeneral as $data)
             $dataAgrupada[$data->id_variedad][$data->codigo_semana]= ['cajas'=>$data->cajas_equivalentes ,'dinero'=> $data->valor];
