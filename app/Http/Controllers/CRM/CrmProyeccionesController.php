@@ -23,22 +23,18 @@ class CrmProyeccionesController extends Controller
     public function desgloseIndicador(Request $request){
 
         $intervalo = Proyecciones::intervalosTiempo();
-        $dataGeneral = ResumenSemanaCosecha::whereBetween('codigo_semana',[$intervalo['primeraSemanaFutura'],[$intervalo['cuartaSemanaFutura']]])->get();
-        $dataAgrupada=[];
-
-        foreach ($dataGeneral as $data)
-            $dataAgrupada[$data->id_variedad][$data->codigo_semana]= ['cajas'=>$data->cajas_proyectadas ,'tallos'=> $data->tallos_proyectados];
-
-        $data=[];
-        foreach ($dataAgrupada as $idVariedad => $semana) {
-            $data[]= [
-                'variedad'=>getVariedad($idVariedad)->nombre,
-                'data'=> $semana,
-            ];
+        switch ($request->param){
+            case 'venta':
+                $data = $this->dataVenta($intervalo);
+                break;
+            default:
+                $data = $this->dataCosecha($intervalo);
+                break;
         }
 
         return view('adminlte.crm.proyecciones.partials.modal_cosechado',[
-            'data'=>$data
+            'data'=>$data,
+            'tabla'=>$request->param
         ]);
 
 
@@ -60,5 +56,30 @@ class CrmProyeccionesController extends Controller
             ];
         }
         return $data;
+    }
+
+    public function desgloseCosechaVenta4Semanas(Request $request){
+        return view();
+    }
+
+    public function dataCosecha($intervalo){
+        $dataGeneral = ResumenSemanaCosecha::whereBetween('codigo_semana',[$intervalo['primeraSemanaFutura'],[$intervalo['cuartaSemanaFutura']]])->get();
+        $dataAgrupada=[];
+
+        foreach ($dataGeneral as $data)
+            $dataAgrupada[$data->id_variedad][$data->codigo_semana]= ['cajas'=>$data->cajas_proyectadas ,'tallos'=> $data->tallos_proyectados];
+
+        $data=[];
+        foreach ($dataAgrupada as $idVariedad => $semana) {
+            $data[]= [
+                'variedad'=>getVariedad($idVariedad)->nombre,
+                'data'=> $semana,
+            ];
+        }
+        return $data;
+    }
+
+    public function dataVenta($intervalo){
+
     }
 }
