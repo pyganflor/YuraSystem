@@ -12,9 +12,12 @@
                     venta_4_semanas('crm_proyeccion/desglose_venta_4_semanas','chart1','cajas');
                     venta_4_semanas('crm_proyeccion/desglose_venta_4_semanas','chart2','dinero');
                     break;
+                case 'meses':
+                    dinero_3_meses();
+                    break;
                 default:
-                    cosecha_4_semanas('crm_proyeccion/desglose_cosecha_4_semanas','chart1','tallos');
-                    cosecha_4_semanas('crm_proyeccion/desglose_cosecha_4_semanas','chart2','cajas');
+                    cosecha_4_semanas('crm_proyeccion/desglose_cosecha_4_semanas','chart1','cajas');
+                    cosecha_4_semanas('crm_proyeccion/desglose_cosecha_4_semanas','chart2','valor');
                     break;
             }
         });
@@ -69,7 +72,7 @@
             $.each(retorno,function(i,j){
                 data=[];
                 $.each(j.data,function (k,l) {
-                    data.push(l);
+                    data.push(l.toFixed(2));
                 });
                 datasets.push({
                     label : j.label,
@@ -88,5 +91,9 @@
                 },
             });
         });
+    }
+
+    function dinero_3_meses(){
+
     }
 </script>

@@ -28,15 +28,27 @@ class CrmProyeccionesController extends Controller
         switch ($request->param){
             case 'venta':
                 $data = $this->dataVenta($intervalo);
+                $first ='Cajas';
+                $iconFirst='fa-cube';
+                $second='Dinero';
+                $iconSecond='fa-usd';
                 break;
             default:
                 $data = $this->dataCosecha($intervalo);
+                $first ='Cajas';
+                $iconFirst='fa-cube';
+                $second='Tallos';
+                $iconSecond='fa-pagelines';
                 break;
         }
 
         return view('adminlte.crm.proyecciones.partials.modal_cosechado',[
             'data'=>$data,
-            'tabla'=>$request->param
+            'tabla'=>$request->param,
+            'first'=>$first,
+            'iconFirst'=>$iconFirst,
+            'second'=>$second,
+            'iconSecond'=>$iconSecond
         ]);
 
 
@@ -60,8 +72,27 @@ class CrmProyeccionesController extends Controller
         return $data;
     }
 
-    public function desgloseCosechaVenta4Semanas(Request $request){
-        //return view();
+    public function desgloseVenta4Semanas(Request $request){
+        $intervalo = Proyecciones::intervalosTiempo();
+        $dataGeneral =ProyeccionVentaSemanalReal::whereBetween('codigo_semana',[$intervalo['primeraSemanaFutura'],$intervalo['cuartaSemanaFutura']])
+            ->select(
+                'codigo_semana',
+                'id_variedad',
+                DB::raw('sum(cajas_equivalentes) as cajas_equivalentes'),
+                DB::raw('sum(valor) as valor'))
+            ->groupBy('codigo_semana','id_variedad')->get();
+
+        $dataAgrupada=[];
+        foreach ($dataGeneral as $data)
+            $dataAgrupada[$data->id_variedad][$data->codigo_semana]= $request->opcion == 'cajas' ?  $data->cajas_equivalentes : $data->valor;
+        $data=[];
+        foreach ($dataAgrupada as $idVariedad => $semana) {
+            $data[]= [
+                'label'=>getVariedad($idVariedad)->nombre,
+                'data'=> $semana,
+            ];
+        }
+        return $data;
     }
 
     public function dataCosecha($intervalo){
@@ -102,7 +133,6 @@ class CrmProyeccionesController extends Controller
                 'data'=> $semana,
             ];
         }
-        dump($data);
         return $data;
     }
 }

@@ -91,22 +91,18 @@ class UpdateIndicador extends Command
             Proyecciones::sumTallosCosechadosFuturo1Semana();
             Log::info('INDICADOR: "Tallos cosechados a futuro +1 semana"');
         }
-
         if ($indicador_par === '0' || $indicador_par === 'DP7') {
             Proyecciones::sumCajasVendidasFuturas1Semana();
             Log::info('INDICADOR: "Cajas vendidas futuro +1 semana"');
         }
-
         if ($indicador_par === '0' || $indicador_par === 'DP8') {
             Proyecciones::sumCajasCosechadasFuturas1Semana();
             Log::info('INDICADOR: "Cajas cosechadas a futuro +1 semana"');
         }
-
         if ($indicador_par === '0' || $indicador_par === 'DP9') {
             Proyecciones::sumDineroGeneradoFuturo1Semana();
             Log::info('INDICADOR: "Dinero generado en ventas a futuro +1 semana"');
         }
-
         if ($indicador_par === '0' || $indicador_par === 'D7') { // Área en producción (-4 meses)
             Area::area_produccion_4_semanas_atras();
             Log::info('INDICADOR: "Área en producción (-4 meses)"');
