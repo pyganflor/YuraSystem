@@ -2,9 +2,11 @@
 
 namespace yura\Http\Controllers\CRM;
 
+use DB;
 use Illuminate\Http\Request;
 use yura\Http\Controllers\Controller;
 use yura\Modelos\Indicador;
+use yura\Modelos\ProyeccionVentaSemanalReal;
 use yura\Modelos\ResumenSemanaCosecha;
 use yura\Modelos\Submenu;
 use yura\Http\Controllers\Indicadores\Proyecciones;
@@ -59,7 +61,7 @@ class CrmProyeccionesController extends Controller
     }
 
     public function desgloseCosechaVenta4Semanas(Request $request){
-        return view();
+        //return view();
     }
 
     public function dataCosecha($intervalo){
@@ -80,6 +82,21 @@ class CrmProyeccionesController extends Controller
     }
 
     public function dataVenta($intervalo){
+        $dataGeneral =ProyeccionVentaSemanalReal::whereBetween('codigo_semana',[$intervalo['primeraSemanaFutura'],$intervalo['cuartaSemanaFutura']])->get();
 
+        $dataAgrupada=[];
+
+        foreach ($dataGeneral as $data)
+            $dataAgrupada[$data->id_variedad][$data->codigo_semana]= ['cajas'=>$data->cajas_equivalentes ,'dinero'=> $data->valor];
+
+        $data=[];
+        foreach ($dataAgrupada as $idVariedad => $semana) {
+            $data[]= [
+                'variedad'=>getVariedad($idVariedad)->nombre,
+                'data'=> $semana,
+            ];
+        }
+        dd($data);
+        return $data;
     }
 }
