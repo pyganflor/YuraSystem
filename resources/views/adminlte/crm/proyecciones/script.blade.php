@@ -69,7 +69,7 @@
             $.each(retorno,function(i,j){
                 data=[];
                 $.each(j.data,function (k,l) {
-                    data.push(l);
+                    data.push(l.toFixed(2));
                 });
                 datasets.push({
                     label : j.label,
