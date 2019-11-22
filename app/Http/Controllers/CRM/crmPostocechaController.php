@@ -378,24 +378,36 @@ class crmPostocechaController extends Controller
                         ]);
                     }
                 } else if ($request->semanal == 'true') {   // semanal
-                    $query = DB::table('resumen_semana_cosecha')
-                        ->where('estado', 1)
-                        ->where('id_variedad', $request->id_variedad)
-                        ->where('codigo_semana', '>=', $sem_desde->codigo)
-                        ->where('codigo_semana', '<=', $sem_hasta->codigo)
-                        ->orderBy('codigo_semana')
-                        ->get();
-
-                    $codigo_semana = $query[0]->codigo_semana;
+                    $variedades = Variedad::where('estado', 1)->get();
+                    $datasets = [];
                     $labels = [];
-                    $data_cajas = [];
-                    $data_tallos = [];
-                    $data_calibres = [];
-                    foreach ($query as $pos_item => $item) {
-                        array_push($labels, $codigo_semana);
-                        array_push($data_cajas, $item->cajas);
-                        array_push($data_tallos, $item->tallos);
-                        array_push($data_calibres, $item->calibre);
+                    foreach ($variedades as $pos_var => $var) {
+                        $query = DB::table('resumen_semana_cosecha')
+                            ->where('estado', 1)
+                            ->where('id_variedad', $var->id_variedad)
+                            ->where('codigo_semana', '>=', $sem_desde->codigo)
+                            ->where('codigo_semana', '<=', $sem_hasta->codigo)
+                            ->orderBy('codigo_semana')
+                            ->get();
+
+                        $data_cajas = [];
+                        $data_tallos = [];
+                        $data_calibres = [];
+                        foreach ($query as $pos_item => $item) {
+                            array_push($data_cajas, $item->cajas);
+                            array_push($data_tallos, $item->tallos);
+                            array_push($data_calibres, $item->calibre);
+
+                            if ($pos_var == 0)
+                                array_push($labels, $item->codigo_semana);
+                        }
+                        array_push($datasets, [
+                            'label' => $var->siglas,
+                            'color' => $var->color,
+                            'data_cajas' => $data_cajas,
+                            'data_tallos' => $data_tallos,
+                            'data_calibres' => $data_calibres,
+                        ]);
                     }
                 }
             } else if ($request->x_variedad == 'true' && $request->id_variedad != null) {   // por una variedad
@@ -426,13 +438,12 @@ class crmPostocechaController extends Controller
                         ->orderBy('codigo_semana')
                         ->get();
 
-                    $codigo_semana = $query[0]->codigo_semana;
                     $labels = [];
                     $data_cajas = [];
                     $data_tallos = [];
                     $data_calibres = [];
                     foreach ($query as $pos_item => $item) {
-                        array_push($labels, $codigo_semana);
+                        array_push($labels, $item->codigo_semana);
                         array_push($data_cajas, $item->cajas);
                         array_push($data_tallos, $item->tallos);
                         array_push($data_calibres, $item->calibre);
