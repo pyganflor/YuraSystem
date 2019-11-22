@@ -82,6 +82,7 @@ class CrmProyeccionesController extends Controller
     }
 
     public function dataVenta($intervalo){
+        dump($intervalo);
         $dataGeneral =ProyeccionVentaSemanalReal::whereBetween('codigo_semana',[$intervalo['primeraSemanaFutura'],$intervalo['cuartaSemanaFutura']])->get();
 
         $dataAgrupada=[];
@@ -96,7 +97,7 @@ class CrmProyeccionesController extends Controller
                 'data'=> $semana,
             ];
         }
-        dd($data);
+        dump($data);
         return $data;
     }
 }
