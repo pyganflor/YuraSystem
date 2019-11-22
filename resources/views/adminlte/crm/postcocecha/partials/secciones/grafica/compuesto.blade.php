@@ -76,7 +76,7 @@
                     }
                 },
                 tooltips: {
-                    mode: 'point' // nearest, point, index, dataset, x, y
+                    mode: 'x' // nearest, point, index, dataset, x, y
                 },
                 legend: {
                     display: true,
