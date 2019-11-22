@@ -22,26 +22,41 @@ class CrmProyeccionesController extends Controller
 
     public function desgloseIndicador(Request $request){
 
-        return view('adminlte.crm.proyecciones.partials.modal_cosechado');
+        $intervalo = Proyecciones::intervalosTiempo();
+        $dataGeneral = ResumenSemanaCosecha::whereBetween('codigo_semana',[$intervalo['primeraSemanaFutura'],[$intervalo['cuartaSemanaFutura']]])->get();
+        $dataAgrupada=[];
+
+        foreach ($dataGeneral as $data)
+            $dataAgrupada[$data->id_variedad][$data->codigo_semana]= ['cajas'=>$data->cajas_proyectadas ,'tallos'=> $data->tallos_proyectados];
+
+        $data=[];
+        foreach ($dataAgrupada as $idVariedad => $semana) {
+            $data[]= [
+                'variedad'=>getVariedad($idVariedad)->nombre,
+                'data'=> $semana,
+            ];
+        }
+
+        return view('adminlte.crm.proyecciones.partials.modal_cosechado',[
+            'data'=>$data
+        ]);
+
+
     }
 
-    public function desgloseTallos4Semanas(){
+    public function desgloseCosecha4Semanas(Request $request){
 
         $intervalo = Proyecciones::intervalosTiempo();
         $dataGeneral = ResumenSemanaCosecha::whereBetween('codigo_semana',[$intervalo['primeraSemanaFutura'],[$intervalo['cuartaSemanaFutura']]])->get();
         $dataAgrupada=[];
 
         foreach ($dataGeneral as $data)
-            $dataAgrupada[$data->id_variedad][$data->codigo_semana]=$data->tallos_proyectados;
-
+            $dataAgrupada[$data->id_variedad][$data->codigo_semana]= $request->opcion == 'cajas' ?  $data->cajas_proyectadas : $data->tallos_proyectados;
         $data=[];
         foreach ($dataAgrupada as $idVariedad => $semana) {
             $data[]= [
                 'label'=>getVariedad($idVariedad)->nombre,
-                'data'=> 0,
-                'borderColor'=> 'black',
-                'borderWidth'=> 2,
-                'fill'=> false,
+                'data'=> $semana,
             ];
         }
         return $data;

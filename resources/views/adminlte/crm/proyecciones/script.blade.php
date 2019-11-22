@@ -1,46 +1,63 @@
 <script>
 
     function modal_indicador(param){
-        datos={
-            param : param
-        };
+
         get_jquery('{{url('crm_proyeccion/desglose_indicador')}}', datos, function (retorno) {
             modal_view('modal_view_desglose_indicador', retorno, '<i class="fa fa-fw fa-bar-chart"></i> Desglose '+param+'', true, false,
                 '{{isPC() ? '65%' : ''}}');
-            tallos_4_semanas();
+            switch (param) {
+                case 'cosecha':
+                    cosecha_4_semanas('crm_proyeccion/desglose_cosecha_4_semanas','chart1','tallos');
+                    cosecha_4_semanas('crm_proyeccion/desglose_cosecha_4_semanas','chart2','cajas');
+                    break;
+                case 'venta':
+                    venta_4_semanas('crm_proyeccion/desglose_cosecha_4_semanas','cajas_proyectadas');
+                    break;
+                default:
+                    cosecha_4_semanas();
+                    break;
+            }
         });
     }
 
-    function tallos_4_semanas(){
-        get_jquery('{{url('crm_proyeccion/desglose_tallos_4_semanas')}}', datos, function (retorno) {
-            console.log(retorno);
-            var ctx = document.getElementById('chart').getContext('2d');
-
+    function cosecha_4_semanas(url,id,opcion){
+        datos={
+            opcion : opcion
+        };
+        get_jquery(url, datos, function (retorno) {
+            var ctx = document.getElementById(id).getContext('2d');
             labels=[];
-            $.each(retorno[0].data,function(i,j){
-                labels.push(j);
+            $.each(retorno[0].data,function(i){ labels.push(i);  });
+            colores=['#00ff00','#ff8000','#8080ff','#ff0000','#00c0ef','#00a65a','#ffac58','#1B14FF'];
+            datasets = [];
+
+            $.each(retorno,function(i,j){
+                data=[];
+                $.each(j.data,function (k,l) {
+                    data.push(l);
+                });
+                datasets.push({
+                    label : j.label,
+                    borderColor : colores[i],
+                    borderWidth : 2,
+                    fill : false,
+                    data :data
+                });
             });
 
-            console.log(labels);
+
+            console.log(datasets);
             var myChart = new Chart(ctx, {
                 type: 'line',
                 data: {
-                    datasets: [{
-                        label: 'First dataset',
-                        data: [0, 20, 40, 50],
-                        borderColor: 'black',
-                        borderWidth: 2,
-                        fill: false,
-                    }, {
-                        label: 'Second dataset',
-                        data: [5, 10,15, 25],
-                        borderColor: 'black',
-                        borderWidth: 2,
-                        fill: false,
-                    }],
-                    labels: ['January', 'February', 'March', 'April']
+                    datasets: datasets,
+                    labels: labels
                 },
             });
         });
+    }
+
+    function venta_4_semanas() {
+
     }
 </script>

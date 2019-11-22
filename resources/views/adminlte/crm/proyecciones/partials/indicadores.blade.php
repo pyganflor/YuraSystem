@@ -1,5 +1,5 @@
 <div class="row">
-    <div class="col-md-4" style="cursor:pointer" onclick="modal_indicador('cosechado')">
+    <div class="col-md-4" style="cursor:pointer" onclick="modal_indicador('cosecha')">
         <div class="small-box bg-teal-active">
             <div class="inner">
                 <ul class="info-box-number list-unstyled">
@@ -15,7 +15,7 @@
             </a>
         </div>
     </div>
-    <div class="col-md-4" style="cursor:pointer" onclick="modal_indicador('vendido')">
+    <div class="col-md-4" style="cursor:pointer" onclick="modal_indicador('venta')">
         <div class="small-box bg-aqua">
             <div class="inner">
                 <ul class="info-box-number list-unstyled">

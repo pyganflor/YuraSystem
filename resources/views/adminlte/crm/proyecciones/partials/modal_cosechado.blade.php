@@ -1,111 +1,44 @@
 <div class="nav-tabs-custom">
     <ul class="nav nav-pills nav-justified">
-        <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="true">Gráfica</a></li>
-        <li class=""><a href="#tab_2" data-toggle="tab" aria-expanded="false">Tabla</a></li>
+        <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="true"><i class="fa fa-pagelines"></i> Tallos</a></li>
+        <li class=""><a href="#tab_2" data-toggle="tab" aria-expanded="true"><i class="fa fa-cube" ></i> Cajas</a></li>
+        <li class=""><a href="#tab_3" data-toggle="tab" aria-expanded="false"><i class="fa fa-table" ></i> Tabla</a></li>
     </ul>
     <div class="tab-content">
         <div class="tab-pane active" id="tab_1">
-            <canvas id="chart" style="margin-top: 5px"></canvas>
+            <canvas id="chart1" style="margin-top: 5px"></canvas>
         </div>
         <div class="tab-pane" id="tab_2">
-            {{--<table class="table-striped table-responsive table-bordered" width="100%" style="border: 2px solid #9d9d9d">
+            <canvas id="chart2" style="margin-top: 5px"></canvas>
+        </div>
+        <div class="tab-pane" id="tab_3">
+            @dump($data)
+            <table class="table table-bordered">
+                <tbody>
                 <tr>
-                    <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
-                        Variedad
-                    </th>
-                    @php
-                        $totales_dia = [];
-                    @endphp
-                    @foreach($labels as $pos => $f)
-                        <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
-                            {{$f->dia}}
-                        </th>
-                        @php
-                            $totales_dia[$pos] = 0;
-                        @endphp
+                    <th style="width: 10px" class="bg-gray-light">Variedad/Semana</th>
+                    @foreach($data[0]['data'] as $semana => $d)
+                        <th class="text-center bg-gray-light">{{$semana}}</th>
                     @endforeach
-                    <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
-                        @if($option == 'valor' || $option == 'cajas')
-                            Total
-                        @else
-                            Promedio
-                        @endif
-                    </th>
+                    <th style="width: 10px"  class="bg-gray-light">Variedad/Semana</th>
                 </tr>
-                @foreach($arreglo_variedades as $pos_v => $v)
-                    <tr style="color: {{$v['variedad']->color}}">
-                        <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
-                            {{$v['variedad']->nombre}}
-                        </th>
-                        @php
-                            if($option == 'valor')
-                                $array = $v['valores'];
-                            if($option == 'cajas')
-                                $array = $v['cajas'];
-                            if($option == 'precios')
-                                $array = $v['precios'];
-                            if($option == 'tallos')
-                                $array = $v['tallos'];
-
-                            $total_var = 0;
-                        @endphp
-                        @foreach($array as $pos => $valor)
-                            <th class="text-center" style="border-color: #9d9d9d">
-                                {{$valor}}
-                            </th>
-                            @php
-                                $totales_dia[$pos] += $valor;
-                                $total_var += $valor;
-                            @endphp
+                @foreach($data as $d)
+                    <tr>
+                        <td class="bg-gray-light text-center">{{$d['variedad']}}</td>
+                        @foreach($d['data'] as $proy)
+                        <td class="text-center"><span data-toggle="tooltip" title="Cajas">{{$proy['cajas']}}</span> / <span data-toggle="tooltip" title="Tallos">{{$proy['tallos']}}</span></td>
                         @endforeach
-                        <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
-                            @if($option == 'valor' || $option == 'cajas')
-                                {{number_format($total_var, 2)}}
-                            @else
-                                {{round($total_var / count($labels), 2)}}
-                            @endif
-                        </th>
+                        <td class="bg-gray-light text-center">{{$d['variedad']}}</td>
                     </tr>
                 @endforeach
-                <tr>
-                    <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
-                        @if($option == 'valor' || $option == 'cajas')
-                            Total
-                        @else
-                            Promedio
-                        @endif
-                    </th>
-                    @php
-                        $total = 0;
-                    @endphp
-                    @foreach($totales_dia as $pos => $valor)
-                        <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
-                            @if($option == 'valor' || $option == 'cajas')
-                                {{number_format($valor, 2)}}
-                                @php
-                                    $total += $valor;
-                                @endphp
-                            @else
-                                {{round($valor / count($arreglo_variedades), 2)}}
-                                @php
-                                    $total += round($valor / count($arreglo_variedades), 2);
-                                @endphp
-                            @endif
-                        </th>
-                    @endforeach
-                    <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
-                        @if($option == 'valor' || $option == 'cajas')
-                            {{number_format($total, 2)}}*
-                        @else
-                            {{round($total / count($totales_dia), 2)}}*
-                        @endif
-                    </th>
-                </tr>
-            </table>--}}
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
 
 <script>
-
+    $(function ( ) {
+        $('[data-toggle="tooltip"]').tooltip();
+    })
 </script>
