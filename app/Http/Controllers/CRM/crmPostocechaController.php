@@ -363,9 +363,9 @@ class crmPostocechaController extends Controller
                         $data_tallos = [];
                         $data_calibres = [];
                         foreach ($verdes as $pos_v => $v) {
-                            array_push($data_cajas, $v->getTotalCajasByVariedad($request->id_variedad));
-                            array_push($data_tallos, $v->tallos_x_variedad($request->id_variedad));
-                            array_push($data_calibres, $v->calibreByVariedad($request->id_variedad));
+                            array_push($data_cajas, $v->getTotalCajasByVariedad($var->id_variedad));
+                            array_push($data_tallos, $v->tallos_x_variedad($var->id_variedad));
+                            array_push($data_calibres, $v->calibreByVariedad($var->id_variedad));
                             if ($pos_var == 0)
                                 array_push($labels, $v->fecha_ingreso);
                         }
