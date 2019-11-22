@@ -80,8 +80,9 @@ class Proyecciones extends Controller
     }
 
     public static function proyeccionVentaFutura3Meses(){
-
-
+        $inicioMesSiguiente =Carbon::parse(now())->addMonth()->startOfMonth()->toDateString();
+        $FinTercerMes = Carbon::parse($inicioMesSiguiente)->addMonths(2)->endOfMonth()->toDateString();
+        dump($inicioMesSiguiente,$FinTercerMes);
     }
 
     public static function intervalosTiempo(){
