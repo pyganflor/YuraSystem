@@ -50,7 +50,7 @@
             data: data_list,
             backgroundColor: '{{$dataset['color']}}',
             borderColor: '{{$dataset['color']}}',
-            borderWidth: 2,
+            borderWidth: 1.5,
             fill: false,
         });
         @endforeach
@@ -72,7 +72,7 @@
                 },
                 elements: {
                     line: {
-                        tension: 0, // disables bezier curves
+                        tension: 0.4, // disables bezier curves
                     }
                 },
                 tooltips: {
