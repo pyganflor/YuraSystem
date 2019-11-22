@@ -87,7 +87,7 @@ class CrmProyeccionesController extends Controller
             ->where([
                 ['cajas_equivalentes','>',0],
                 ['valor','>',0]
-            ])->get();
+            ])->select(DB::row('sum(cajas_equivalentes) as cajas_equivalentes'),DB::row('sum(valor) as valor'))->get();
         dump($dataGeneral);
         $dataAgrupada=[];
         foreach ($dataGeneral as $data)
