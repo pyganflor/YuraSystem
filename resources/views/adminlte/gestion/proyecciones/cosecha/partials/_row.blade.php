@@ -1,8 +1,8 @@
-<th class="text-center" style="border-color: #9d9d9d">
+<th class="text-center columna_fija_1" style="border-color: #9d9d9d">
     <input type="checkbox" id="checkbox_modulo_{{$modulo->id_modulo}}" class="checkbox_modulo">
 </th>
 
-<th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef" id="celda_modulo_{{$modulo->id_modulo}}">
+<th class="text-center columna_fija_2" style="border-color: #9d9d9d; background-color: #e9ecef" id="celda_modulo_{{$modulo->id_modulo}}">
     <div class="btn-group">
         <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
             {{$modulo->nombre}}
