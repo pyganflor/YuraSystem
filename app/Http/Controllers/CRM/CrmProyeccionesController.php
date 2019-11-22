@@ -69,10 +69,10 @@ class CrmProyeccionesController extends Controller
                 DB::raw('sum(cajas_equivalentes) as cajas_equivalentes'),
                 DB::raw('sum(valor) as valor'))
             ->groupBy('codigo_semana','id_variedad')->get();
-        $dataAgrupada=[];
 
+        $dataAgrupada=[];
         foreach ($dataGeneral as $data)
-            $dataAgrupada[$data->id_variedad][$data->codigo_semana]= $request->opcion == 'cajas' ?  $data->cajas_equivalente : $data->tallos_valor;
+            $dataAgrupada[$data->id_variedad][$data->codigo_semana]= $request->opcion == 'cajas' ?  $data->cajas_equivalentes : $data->valor;
         $data=[];
         foreach ($dataAgrupada as $idVariedad => $semana) {
             $data[]= [
