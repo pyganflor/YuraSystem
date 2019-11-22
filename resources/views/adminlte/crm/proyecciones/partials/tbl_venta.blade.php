@@ -12,10 +12,10 @@
             <td class="bg-gray-light text-center" style="border:1px solid">{{$d['variedad']}}</td>
             @foreach($d['data'] as $proy)
                 <td class="text-center" style="border-bottom:1px solid" >
-                    <span data-toggle="tooltip" title="Cajas">{{number_format($proy['cajas'],2,"",".")}}</span>
+                    <span data-toggle="tooltip" title="Cajas">{{number_format($proy['cajas'],2,".","")}}</span>
                 </td>
                 <td class="text-center" style="border-right:1px solid;border-bottom:1px solid">
-                    <span data-toggle="tooltip" title="Dinero" >${{number_format($proy['dinero'],2,"",".")}}</span>
+                    <span data-toggle="tooltip" title="Dinero" >${{number_format($proy['dinero'],2,".","")}}</span>
                 </td>
             @endforeach
             <td class="bg-gray-light text-center" style="border:1px solid">{{$d['variedad']}}</td>
