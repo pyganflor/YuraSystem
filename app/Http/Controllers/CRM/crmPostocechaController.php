@@ -18,6 +18,7 @@ use PHPExcel_Style_Fill;
 use PHPExcel_Style_Border;
 use PHPExcel_Style_Color;
 use PHPExcel_Style_Alignment;
+use yura\Modelos\Variedad;
 
 class crmPostocechaController extends Controller
 {
@@ -348,10 +349,95 @@ class crmPostocechaController extends Controller
                 }
             } else if ($request->x_variedad == 'false' && $request->total == 'true') {    // todos los tipos
                 $view = 'compuesto';
+                if ($request->diario == 'true') {   // diario
+                    $verdes = ClasificacionVerde::where('estado', 1)
+                        ->where('fecha_ingreso', '>=', $request->desde)
+                        ->where('fecha_ingreso', '<=', $request->hasta)
+                        ->orderBy('fecha_ingreso')
+                        ->get();
+                    $variedades = Variedad::where('estado', 1)->get();
+                    $datasets = [];
+                    $labels = [];
+                    foreach ($variedades as $pos_var => $var) {
+                        $data_cajas = [];
+                        $data_tallos = [];
+                        $data_calibres = [];
+                        foreach ($verdes as $pos_v => $v) {
+                            array_push($data_cajas, $v->getTotalCajasByVariedad($request->id_variedad));
+                            array_push($data_tallos, $v->tallos_x_variedad($request->id_variedad));
+                            array_push($data_calibres, $v->calibreByVariedad($request->id_variedad));
+                            if ($pos_var == 0)
+                                array_push($labels, $v->fecha_ingreso);
+                        }
+                        array_push($datasets, [
+                            'label' => $var->siglas,
+                            'color' => $var->color,
+                            'data_cajas' => $data_cajas,
+                            'data_tallos' => $data_tallos,
+                            'data_calibres' => $data_calibres,
+                        ]);
+                    }
+                } else if ($request->semanal == 'true') {   // semanal
+                    $query = DB::table('resumen_semana_cosecha')
+                        ->where('estado', 1)
+                        ->where('id_variedad', $request->id_variedad)
+                        ->where('codigo_semana', '>=', $sem_desde->codigo)
+                        ->where('codigo_semana', '<=', $sem_hasta->codigo)
+                        ->orderBy('codigo_semana')
+                        ->get();
 
+                    $codigo_semana = $query[0]->codigo_semana;
+                    $labels = [];
+                    $data_cajas = [];
+                    $data_tallos = [];
+                    $data_calibres = [];
+                    foreach ($query as $pos_item => $item) {
+                        array_push($labels, $codigo_semana);
+                        array_push($data_cajas, $item->cajas);
+                        array_push($data_tallos, $item->tallos);
+                        array_push($data_calibres, $item->calibre);
+                    }
+                }
             } else if ($request->x_variedad == 'true' && $request->id_variedad != null) {   // por una variedad
                 $view = 'simple';
+                if ($request->diario == 'true') {   // diario
+                    $verdes = ClasificacionVerde::where('estado', 1)
+                        ->where('fecha_ingreso', '>=', $request->desde)
+                        ->where('fecha_ingreso', '<=', $request->hasta)
+                        ->orderBy('fecha_ingreso')
+                        ->get();
 
+                    $labels = [];
+                    $data_cajas = [];
+                    $data_tallos = [];
+                    $data_calibres = [];
+                    foreach ($verdes as $pos_v => $v) {
+                        array_push($labels, $v->fecha_ingreso);
+                        array_push($data_cajas, $v->getTotalCajasByVariedad($request->id_variedad));
+                        array_push($data_tallos, $v->tallos_x_variedad($request->id_variedad));
+                        array_push($data_calibres, $v->calibreByVariedad($request->id_variedad));
+                    }
+                } else if ($request->semanal == 'true') {   // semanal
+                    $query = DB::table('resumen_semana_cosecha')
+                        ->where('estado', 1)
+                        ->where('id_variedad', $request->id_variedad)
+                        ->where('codigo_semana', '>=', $sem_desde->codigo)
+                        ->where('codigo_semana', '<=', $sem_hasta->codigo)
+                        ->orderBy('codigo_semana')
+                        ->get();
+
+                    $codigo_semana = $query[0]->codigo_semana;
+                    $labels = [];
+                    $data_cajas = [];
+                    $data_tallos = [];
+                    $data_calibres = [];
+                    foreach ($query as $pos_item => $item) {
+                        array_push($labels, $codigo_semana);
+                        array_push($data_cajas, $item->cajas);
+                        array_push($data_tallos, $item->tallos);
+                        array_push($data_calibres, $item->calibre);
+                    }
+                }
             }
         }
 
@@ -364,6 +450,8 @@ class crmPostocechaController extends Controller
             ]);
         else
             return view('adminlte.crm.postcocecha.partials.secciones.grafica.compuesto', [
+                'labels' => $labels,
+                'datasets' => $datasets,
             ]);
 
     }

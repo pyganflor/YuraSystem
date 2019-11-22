@@ -19,23 +19,42 @@
 
 <script>
     construir_char_simple('Cajas', 'chart_cajas');
+    construir_char_simple('Tallos', 'chart_tallos');
+    construir_char_simple('Calibres', 'chart_calibres');
 
     function construir_char_simple(label, id) {
         labels = [];
         datasets = [];
-        data_list = [];
 
+        @for($i = 0; $i < count($labels); $i++)
+        labels.push('{{$labels[$i]}}');
+        @endfor
 
-        datasets = [{
-            label: label + ' ',
+                @for($i = 0; $i < count($datasets); $i++)
+            data_list = [];
+        if (label == 'Cajas')
+            @for($y = 0; $y < count($datasets[$i]['data_cajas']); $y++)
+            data_list.push('{{$datasets[$i]['data_cajas'][$y]}}');
+        @endfor
+        if (label == 'Tallos')
+            @for($y = 0; $y < count($datasets[$i]['data_tallos']); $y++)
+            data_list.push('{{$datasets[$i]['data_tallos'][$y]}}');
+        @endfor
+        if (label == 'Calibres')
+            @for($y = 0; $y < count($datasets[$i]['data_calibres']); $y++)
+            data_list.push('{{$datasets[$i]['data_calibres'][$y]}}');
+        @endfor
+        datasets.push({
+            label: '{{$datasets[$i]['label']}}' + ' ',
             data: data_list,
             //backgroundColor: '#8c99ff54',
-            borderColor: '#161617',
+            borderColor: '{{$datasets[$i]['color']}}',
             borderWidth: 2,
             fill: false,
-        }];
+        });
+        @endfor
 
-        ctx = document.getElementById(id).getContext('2d');
+            ctx = document.getElementById(id).getContext('2d');
         myChart = new Chart(ctx, {
             type: 'line',
             data: {
