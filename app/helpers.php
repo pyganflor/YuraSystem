@@ -2482,3 +2482,22 @@ function getIndicadorByName($nombre)
         ->where('nombre', $nombre)
         ->first();
 }
+
+function getTallosClasificadosByRangoVariedad($desde, $hasta, $variedad = 'T')
+{
+    $verdes = ClasificacionVerde::where('estado', 1)
+        ->where('fecha_ingreso', '>=', $desde)
+        ->where('fecha_ingreso', '<=', $hasta)
+        ->orderBy('fecha_ingreso')
+        ->get();
+
+    $valor = 0;
+    foreach ($verdes as $v) {
+        if ($variedad == 'T')
+            $valor += $v->total_tallos();
+        else
+            $valor += $v->tallos_x_variedad($variedad);
+    }
+
+    return $valor;
+}
