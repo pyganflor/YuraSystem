@@ -2,7 +2,7 @@
     <ul class="nav nav-pills nav-justified">
         <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="true"><i class="fa fa-pagelines"></i> Tallos</a></li>
         <li class=""><a href="#tab_2" data-toggle="tab" aria-expanded="true"><i class="fa fa-cube" ></i> Cajas</a></li>
-        <li class=""><a href="#tab_3" data-toggle="tab" aria-expanded="false"><i class="fa fa-usd" ></i> Tabla</a></li>
+        <li class=""><a href="#tab_3" data-toggle="tab" aria-expanded="false"><i class="fa fa-table" ></i> Tabla</a></li>
     </ul>
     <div class="tab-content">
         <div class="tab-pane active" id="tab_1">
@@ -18,7 +18,7 @@
                 <tr>
                     <th style="width: 10px" class="bg-gray-light">Variedad/Semana</th>
                     @foreach($data[0]['data'] as $semana => $d)
-                        <th class="text-center">{{$semana}}</th>
+                        <th class="text-center bg-gray-light">{{$semana}}</th>
                     @endforeach
                     <th style="width: 10px"  class="bg-gray-light">Variedad/Semana</th>
                 </tr>
