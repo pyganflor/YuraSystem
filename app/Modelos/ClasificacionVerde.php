@@ -405,6 +405,11 @@ class ClasificacionVerde extends Model
         return $r;
     }
 
+    function getTotalCajas()
+    {
+        return round($this->getTotalRamosEstandar() / getConfiguracionEmpresa()->ramos_x_caja, 2);
+    }
+
     function getTotalRamosEstandarByVariedad($variedad)
     {
         $r = 0;

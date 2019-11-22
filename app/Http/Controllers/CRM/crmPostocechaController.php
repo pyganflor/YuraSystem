@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use yura\Http\Controllers\Controller;
 use yura\Modelos\ClasificacionVerde;
 use yura\Modelos\Cosecha;
+use yura\Modelos\ResumenSemanaCosecha;
 use yura\Modelos\Semana;
 use yura\Modelos\Submenu;
 use PHPExcel;
@@ -282,7 +283,8 @@ class crmPostocechaController extends Controller
 
     public function buscar_reporte_cosecha_chart(Request $request)
     {
-
+        $sem_desde = getSemanaByDate($request->desde);
+        $sem_hasta = getSemanaByDate($request->hasta);
 
         if ($request->has('anno')) {
             $view = 'compuesto';
@@ -299,16 +301,53 @@ class crmPostocechaController extends Controller
 
                     $labels = [];
                     $data_cajas = [];
+                    $data_tallos = [];
+                    $data_calibres = [];
                     foreach ($verdes as $pos_v => $v) {
                         array_push($labels, $v->fecha_ingreso);
-                        array_push($data_cajas, rand(0,99));
+                        array_push($data_cajas, $v->getTotalCajas());
+                        array_push($data_tallos, $v->total_tallos());
+                        array_push($data_calibres, $v->getCalibre());
                     }
-                    //dd($labels, $data_list);
                 } else if ($request->semanal == 'true') {   // semanal
+                    $query = DB::table('resumen_semana_cosecha')
+                        ->where('estado', 1)
+                        ->where('codigo_semana', '>=', $sem_desde->codigo)
+                        ->where('codigo_semana', '<=', $sem_hasta->codigo)
+                        ->orderBy('codigo_semana')
+                        ->get();
+                    $codigo_semana = $query[0]->codigo_semana;
+                    $labels = [];
+                    $data_cajas = [];
+                    $data_tallos = [];
+                    $data_calibres = [];
+                    $cajas = 0;
+                    $tallos = 0;
+                    $calibres = 0;
+                    $cant_calibres = 0;
+                    foreach ($query as $pos_item => $item) {
+                        if ($item->codigo_semana != $codigo_semana || ($pos_item + 1) == count($query)) {
+                            array_push($labels, $codigo_semana);
+                            array_push($data_cajas, $cajas);
+                            array_push($data_tallos, $tallos);
+                            array_push($data_calibres, $cant_calibres > 0 ? round($calibres / $cant_calibres, 2) : 0);
 
+                            $cajas = 0;
+                            $tallos = 0;
+                            $calibres = 0;
+                            $cant_calibres = 0;
+                            $codigo_semana = $item->codigo_semana;
+                        } else {
+                            $cajas += $item->cajas;
+                            $tallos += $item->tallos_clasificados;
+                            $calibres += $item->calibre;
+                            if ($item->calibre > 0)
+                                $cant_calibres++;
+                        }
+                    }
+
+                    //dd($labels, $data_cajas, $data_tallos, $data_calibres);
                 }
-
-
             } else if ($request->x_variedad == 'false' && $request->total == 'true') {    // todos los tipos
                 $view = 'compuesto';
 
@@ -322,6 +361,8 @@ class crmPostocechaController extends Controller
             return view('adminlte.crm.postcocecha.partials.secciones.grafica.simple', [
                 'labels' => $labels,
                 'data_cajas' => $data_cajas,
+                'data_tallos' => $data_tallos,
+                'data_calibres' => $data_calibres,
             ]);
         else
             return view('adminlte.crm.postcocecha.partials.secciones.grafica.compuesto', [
