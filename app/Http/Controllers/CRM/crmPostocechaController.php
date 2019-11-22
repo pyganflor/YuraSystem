@@ -345,8 +345,6 @@ class crmPostocechaController extends Controller
                                 $cant_calibres++;
                         }
                     }
-
-                    //dd($labels, $data_cajas, $data_tallos, $data_calibres);
                 }
             } else if ($request->x_variedad == 'false' && $request->total == 'true') {    // todos los tipos
                 $view = 'compuesto';

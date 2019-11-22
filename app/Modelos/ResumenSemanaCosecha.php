@@ -24,10 +24,12 @@ class ResumenSemanaCosecha extends Model
         'plantas_iniciales',
         'calibre',
         'area',
-        'desecho'
+        'desecho',
+        'tallos_clasificados',
     ];
 
-    public function variedad(){
-        return $this->belongsTo('yura\Modelos\Variedad','id_variedad');
+    public function variedad()
+    {
+        return $this->belongsTo('yura\Modelos\Variedad', 'id_variedad');
     }
 }
