@@ -72,7 +72,7 @@
                 },
                 elements: {
                     line: {
-                        tension: 0.4, // disables bezier curves
+                        tension: 0.3, // disables bezier curves
                     }
                 },
                 tooltips: {
