@@ -83,7 +83,11 @@ class CrmProyeccionesController extends Controller
 
     public function dataVenta($intervalo){
 
-        $dataGeneral =ProyeccionVentaSemanalReal::whereBetween('codigo_semana',[$intervalo['primeraSemanaFutura'],$intervalo['cuartaSemanaFutura']])->get();
+        $dataGeneral =ProyeccionVentaSemanalReal::whereBetween('codigo_semana',[$intervalo['primeraSemanaFutura'],$intervalo['cuartaSemanaFutura']])
+            ->where([
+                ['cajas_equivalentes','>',0],
+                ['valor','>',0]
+            ])->get();
         dump($dataGeneral);
         $dataAgrupada=[];
         foreach ($dataGeneral as $data)
