@@ -13,8 +13,8 @@
                     venta_4_semanas('crm_proyeccion/desglose_venta_4_semanas','chart2','dinero');
                     break;
                 default:
-                    cosecha_4_semanas('crm_proyeccion/desglose_cosecha_4_semanas','chart1','tallos');
-                    cosecha_4_semanas('crm_proyeccion/desglose_cosecha_4_semanas','chart2','cajas');
+                    cosecha_4_semanas('crm_proyeccion/desglose_cosecha_4_semanas','chart1','cajas');
+                    cosecha_4_semanas('crm_proyeccion/desglose_cosecha_4_semanas','chart2','valor');
                     break;
             }
         });
