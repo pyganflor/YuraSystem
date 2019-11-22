@@ -60,7 +60,7 @@ class CrmProyeccionesController extends Controller
         return $data;
     }
 
-    public function desgloseCosechaVenta4Semanas(Request $request){
+    public function desgloseVenta4Semanas(Request $request){
         $intervalo = Proyecciones::intervalosTiempo();
         $dataGeneral =ProyeccionVentaSemanalReal::whereBetween('codigo_semana',[$intervalo['primeraSemanaFutura'],$intervalo['cuartaSemanaFutura']])
             ->select(
