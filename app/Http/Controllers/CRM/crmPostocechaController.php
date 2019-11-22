@@ -287,9 +287,87 @@ class crmPostocechaController extends Controller
         $sem_desde = getSemanaByDate($request->desde);
         $sem_hasta = getSemanaByDate($request->hasta);
 
-        if ($request->has('anno')) {
+        if ($request->has('annos')) {
             $view = 'compuesto';
+            if ($request->id_variedad != null) {    // por una variedad
+                $datasets = [];
+                $labels = [];
+                foreach ($request->annos as $pos_anno => $anno) {
+                    $query = DB::table('resumen_semana_cosecha')
+                        ->where('estado', 1)
+                        ->where('id_variedad', $request->id_variedad)
+                        ->where('codigo_semana', 'like', substr($anno, 2) . '%')
+                        ->orderBy('codigo_semana')
+                        ->get();
 
+                    $data_cajas = [];
+                    $data_tallos = [];
+                    $data_calibres = [];
+                    foreach ($query as $pos_item => $item) {
+                        if ($pos_anno == 0) {
+                            array_push($labels, substr($item->codigo_semana, 2));
+                        }
+                        array_push($data_cajas, $item->cajas);
+                        array_push($data_tallos, $item->tallos);
+                        array_push($data_calibres, $item->calibre);
+                    }
+                    array_push($datasets, [
+                        'label' => $anno,
+                        'color' => getListColores()[$pos_anno],
+                        'data_cajas' => $data_cajas,
+                        'data_tallos' => $data_tallos,
+                        'data_calibres' => $data_calibres,
+                    ]);
+                }
+            } else {    // acumulado
+                $datasets = [];
+                $labels = [];
+                foreach ($request->annos as $pos_anno => $anno) {
+                    $query = DB::table('resumen_semana_cosecha')
+                        ->where('estado', 1)
+                        ->where('codigo_semana', 'like', substr($anno, 2) . '%')
+                        ->orderBy('codigo_semana')
+                        ->get();
+
+                    $codigo_semana = $query[0]->codigo_semana;
+                    $data_cajas = [];
+                    $data_tallos = [];
+                    $data_calibres = [];
+                    $cajas = 0;
+                    $tallos = 0;
+                    $calibres = 0;
+                    $cant_calibres = 0;
+                    foreach ($query as $pos_item => $item) {
+                        if ($item->codigo_semana != $codigo_semana || ($pos_item + 1) == count($query)) {
+                            if ($pos_anno == 0) {
+                                array_push($labels, substr($codigo_semana, 2));
+                            }
+                            array_push($data_cajas, $cajas);
+                            array_push($data_tallos, $tallos);
+                            array_push($data_calibres, $cant_calibres > 0 ? round($calibres / $cant_calibres, 2) : 0);
+
+                            $cajas = 0;
+                            $tallos = 0;
+                            $calibres = 0;
+                            $cant_calibres = 0;
+                            $codigo_semana = $item->codigo_semana;
+                        } else {
+                            $cajas += $item->cajas;
+                            $tallos += $item->tallos_clasificados;
+                            $calibres += $item->calibre;
+                            if ($item->calibre > 0)
+                                $cant_calibres++;
+                        }
+                    }
+                    array_push($datasets, [
+                        'label' => $anno,
+                        'color' => getListColores()[$pos_anno],
+                        'data_cajas' => $data_cajas,
+                        'data_tallos' => $data_tallos,
+                        'data_calibres' => $data_calibres,
+                    ]);
+                }
+            }
         } else {
             if ($request->x_variedad == 'false' && $request->total == 'false') {    // acumulado
                 $view = 'simple';
@@ -463,6 +541,7 @@ class crmPostocechaController extends Controller
             return view('adminlte.crm.postcocecha.partials.secciones.grafica.compuesto', [
                 'labels' => $labels,
                 'datasets' => $datasets,
+                'semana_actual' => getSemanaByDate(date('Y-m-d'))->codigo,
             ]);
 
     }
