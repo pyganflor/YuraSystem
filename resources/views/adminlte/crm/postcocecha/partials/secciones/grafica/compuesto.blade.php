@@ -26,8 +26,12 @@
         datasets = [];
 
         @foreach($labels as $label)
+        @if($label >= substr($semana_actual, 2))
+        labels.push('{{$label}}*');
+        @else
         labels.push('{{$label}}');
-        @endforeach
+        @endif
+                @endforeach
 
                 @foreach($datasets as $dataset)
             data_list = [];
