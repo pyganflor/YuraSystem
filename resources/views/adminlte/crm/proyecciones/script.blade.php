@@ -119,6 +119,7 @@
                 });
                 x++;
             });
+
             var myChart = new Chart(ctx, {
                 type: 'bar',
                 data: {
