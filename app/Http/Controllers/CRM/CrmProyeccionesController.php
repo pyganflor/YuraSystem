@@ -174,7 +174,7 @@ class CrmProyeccionesController extends Controller
         $ultimaSemanaFutura = getSemanaByDate($fechaFutura)->codigo;
         $data=[];
 
-        $dataProyeccionVentaSemanalReal = VentaSemanalReal::whereBetween('codigo_semana',[$primeraSemanaFutura,$ultimaSemanaFutura])
+        $dataProyeccionVentaSemanalReal = ProyeccionVentaSemanalReal::whereBetween('codigo_semana',[$primeraSemanaFutura,$ultimaSemanaFutura])
             ->select('codigo_semana',
                 DB::raw('sum(cajas_equivalentes) as cajas_equivalentes'),
                 DB::raw('sum(valor) as valor')
