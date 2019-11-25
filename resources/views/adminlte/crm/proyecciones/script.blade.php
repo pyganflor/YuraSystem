@@ -1,6 +1,20 @@
 <script>
     const colores=['#00ff00','#ff8000','#8080ff','#ff0000','#00c0ef','#00a65a','#ffac58','#1B14FF'];
 
+    select_planta($('#filtro_predeterminado_planta').val(), 'filtro_predeterminado_variedad', 'div_cargar_variedades' );
+
+    chart_inicio();
+    function chart_inicio(){
+        datos={
+            variedad : $("#filtro_predeterminado_variedad").val(),
+            rango :  $("#filtro_predeterminado_rango").val()
+        };
+        get_jquery('{{url('crm_proyeccion/chart_inicio')}}', datos, function (retorno) {
+
+        });
+
+    }
+
     function modal_indicador(param){
         datos = {
             param : param
