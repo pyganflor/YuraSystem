@@ -104,7 +104,7 @@ class CrmProyeccionesController extends Controller
     }
 
     public function desgloseVenta4Semanas3Meses(){
-        $data =proyeccionVentaFutura3Meses(true);
+        $data = Proyecciones::proyeccionVentaFutura3Meses(true);
         dump($data);
     }
 
