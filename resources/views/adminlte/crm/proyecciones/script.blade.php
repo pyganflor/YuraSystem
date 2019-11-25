@@ -99,17 +99,17 @@
             console.log(retorno);
             var ctx = document.getElementById('chart1').getContext('2d');
             labels=[];
-            $.each(retorno,function(i,j){ labels.push(i); });
+            $.each(retorno,function(i){ labels.push(i); });
             datasets = [];
 
             x=0;
             $.each(retorno,function(k,l){
                 datasets.push({
-                    label : l.label,
+                    label : k,
                     borderColor : colores[x],
                     borderWidth : 2,
                     fill : false,
-                    data :j.valor.toFixed(2)
+                    data :l.toFixed(2)
                 });
                 x++;
             });
