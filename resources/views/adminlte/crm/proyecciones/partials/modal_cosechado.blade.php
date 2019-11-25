@@ -16,6 +16,8 @@
                 @include('adminlte.crm.proyecciones.partials.tbl_cosecha')
             @elseif($tabla ==='venta')
                 @include('adminlte.crm.proyecciones.partials.tbl_venta')
+            @elseif($tabla ==='venta a 3 meses')
+                @include('adminlte.crm.proyecciones.partials.tbl_venta_3_meses')
             @else
             @endif
     </div>

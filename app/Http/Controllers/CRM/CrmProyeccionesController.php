@@ -36,7 +36,7 @@ class CrmProyeccionesController extends Controller
                 $iconSecond='fa-usd';
                 break;
             case 'venta a 3 meses':
-                $data = $this->dataVenta($intervalo);
+                $data = $this->dataVenta3Meses();
                 $first ='Dinero a 3 próximos meses';
                 $iconFirst='fa-usd';
                 $second=false;
@@ -164,5 +164,9 @@ class CrmProyeccionesController extends Controller
             ];
         }
         return $data;
+    }
+
+    public function dataVenta3Meses(){
+        return Proyecciones::proyeccionVentaFutura3Meses(true);
     }
 }
