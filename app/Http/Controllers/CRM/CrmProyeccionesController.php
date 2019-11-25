@@ -5,6 +5,7 @@ namespace yura\Http\Controllers\CRM;
 use Carbon\Carbon;
 use DB;
 use Illuminate\Http\Request;
+use yura\Console\Commands\VentaSemanalReal;
 use yura\Http\Controllers\Controller;
 use yura\Modelos\Indicador;
 use yura\Modelos\ProyeccionVentaSemanalReal;
@@ -166,4 +167,22 @@ class CrmProyeccionesController extends Controller
         return $data;
     }
 
+    public function chartInicio(Request $request){
+
+        $fechaFutura =Carbon::parse(now())->addDays(7)->addMonths($request->rango)->toDateString();
+        $primeraSemanaFutura = Proyecciones::intervalosTiempo()['primeraSemanaFutura'];
+        $ultimaSemanaFutura = getSemanaByDate($fechaFutura)->codigo;
+        $data=[];
+
+        $dataProyeccionVentaSemanalReal = VentaSemanalReal::whereBetween('codigo_semana',[$primeraSemanaFutura,$ultimaSemanaFutura])
+            ->select('codigo_semana',
+                DB::raw('sum(cajas_equivalentes) as cajas_equivalentes'),
+                DB::raw('sum(valor) as valor')
+            )->groupBy('codido_semana')->get();
+
+        dump($dataProyeccionVentaSemanalReal);
+        /*foreach ($dataProyeccionVentaSemanalReal as $proyeccionVentaSemanalReal) {
+            //$data
+        }*/
+    }
 }
