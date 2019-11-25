@@ -21,9 +21,9 @@
                     </div>
                     <select name="filtro_predeterminado_rango" id="filtro_predeterminado_rango" class="form-control"
                             onchange="filtrar_predeterminado()">
-                        <option value="2">3 Meses</option>
-                        <option value="3">6 Meses</option>
-                        <option value="4">1 Año</option>
+                        <option value="3">3 Meses</option>
+                        <option value="6">6 Meses</option>
+                        <option value="12">1 Año</option>
                     </select>
                     <div class="input-group-addon bg-gray">
                         <i class="fa fa-fw fa-leaf"></i> Variedad

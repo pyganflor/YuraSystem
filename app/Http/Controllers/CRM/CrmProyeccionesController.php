@@ -181,8 +181,8 @@ class CrmProyeccionesController extends Controller
             )->groupBy('codigo_semana')->get();
 
         dump($dataProyeccionVentaSemanalReal);
-        /*foreach ($dataProyeccionVentaSemanalReal as $proyeccionVentaSemanalReal) {
+        foreach ($dataProyeccionVentaSemanalReal as $proyeccionVentaSemanalReal) {
             //$data
-        }*/
+        }
     }
 }
