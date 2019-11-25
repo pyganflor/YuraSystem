@@ -96,22 +96,20 @@
     function dinero_3_meses(){
 
         get_jquery('{{url('crm_proyeccion/desglose_3_meses')}}', datos, function (retorno) {
+            console.log(retorno);
             var ctx = document.getElementById('chart1').getContext('2d');
             labels=[];
-            $.each(retorno[0].data,function(i){ labels.push(i); });
+            $.each(retorno,function(i,j){ labels.push(j.mes); });
             datasets = [];
 
             $.each(retorno,function(i,j){
-                data=[];
-                $.each(j.data,function (k,l) {
-                    data.push(l.toFixed(2));
-                });
+
                 datasets.push({
                     label : j.label,
                     borderColor : colores[i],
                     borderWidth : 2,
                     fill : false,
-                    data :data
+                    data :j.valor.toFixed(2)
                 });
             });
 

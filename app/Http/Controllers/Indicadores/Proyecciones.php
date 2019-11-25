@@ -81,7 +81,7 @@ class Proyecciones extends Controller
     }
 
     public static function proyeccionVentaFutura3Meses($returnData=false){
-        setlocale(LC_ALL, 'es_ES');
+
         $primerMesSiguiente = Carbon::parse(now())->addMonth()->toDateString();
         $SegundoMesSiguiente = Carbon::parse($primerMesSiguiente)->addMonth()->toDateString();
         $tercerMesSiguiente = Carbon::parse($SegundoMesSiguiente)->addMonth()->toDateString();

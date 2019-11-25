@@ -36,8 +36,8 @@ class CrmProyeccionesController extends Controller
                 break;
             case 'venta a 3 meses':
                 $data = $this->dataVenta($intervalo);
-                $first ='Dinero genredo en las ventas de los 3 próximos meses';
-                $iconFirst='fa-cube';
+                $first ='Dinero a 3 próximos meses';
+                $iconFirst='fa-usd';
                 $second=false;
                 $iconSecond=false;
                 break;
@@ -104,8 +104,7 @@ class CrmProyeccionesController extends Controller
     }
 
     public function desgloseVenta3Meses(){
-        $data = Proyecciones::proyeccionVentaFutura3Meses(true);
-        dump($data);
+       return Proyecciones::proyeccionVentaFutura3Meses(true);
     }
 
     public function dataCosecha($intervalo){
