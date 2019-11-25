@@ -107,7 +107,7 @@ class CrmProyeccionesController extends Controller
     public function desgloseVenta3Meses(){
 
         $indicadorDP5 = Indicador::where('nombre','DP5')->select('valor')->first();
-        $data= explode("|",$indicadorDP5);
+        $data= explode("|",$indicadorDP5->valor);
         $primerMesSiguiente = Carbon::parse(now())->addMonth()->toDateString();
         $SegundoMesSiguiente = Carbon::parse($primerMesSiguiente)->addMonth()->toDateString();
         $tercerMesSiguiente = Carbon::parse($SegundoMesSiguiente)->addMonth()->toDateString();
