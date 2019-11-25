@@ -116,7 +116,8 @@ class Proyecciones extends Controller
 
         $data['tercer_mes']=$valor;
 
-        dump($data);
+        $objInidicardor = Indicador::where('nombre','DP5');
+        $objInidicardor->update(['valor'=>$data['primer_mes']."|".$data['segundo_mes']."|".$data['tercer_mes']]);
     }
 
     public static function intervalosTiempo(){
