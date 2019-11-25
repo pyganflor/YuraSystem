@@ -95,7 +95,8 @@ class Proyecciones extends Controller
         foreach($pedidos as $pedido)
             $valor+= $pedido->getPrecioByPedido();
 
-        $data['primer_mes']=['mes'=>Carbon::parse($primerMesSiguiente)->formatLocalized('%B'),'valor'=>$valor];
+        $nombreMes= getMeses()[Carbon::parse($primerMesSiguiente)->format('n')-1];
+        $data['primer_mes']=['mes'=>$nombreMes,'valor'=>$valor];
 
         //-------------SEGUNDO MES SIGUIENTE--------------//
         $inicio =Carbon::parse($SegundoMesSiguiente)->startOfMonth()->toDateString();
@@ -105,7 +106,8 @@ class Proyecciones extends Controller
         foreach($pedidos as $pedido)
             $valor+= $pedido->getPrecioByPedido();
 
-        $data['segundo_mes']=['mes'=>Carbon::parse($SegundoMesSiguiente)->formatLocalized('%B'),'valor'=>$valor];;
+        $nombreMes= getMeses()[Carbon::parse($SegundoMesSiguiente)->format('n')-1];
+        $data['segundo_mes']=['mes'=>$nombreMes,'valor'=>$valor];;
 
         //-------------TERCER MES SIGUIENTE--------------//
         $inicio =Carbon::parse($tercerMesSiguiente)->startOfMonth()->toDateString();
@@ -115,7 +117,8 @@ class Proyecciones extends Controller
         foreach($pedidos as $pedido)
             $valor+= $pedido->getPrecioByPedido();
 
-        $data['tercer_mes']=['mes'=>Carbon::parse($tercerMesSiguiente)->formatLocalized('%B'),'valor'=>$valor];;
+        $nombreMes= getMeses()[Carbon::parse($tercerMesSiguiente)->format('n')-1];
+        $data['tercer_mes']=['mes'=>$nombreMes,'valor'=>$valor];
 
         if($returnData){
             return $data;
