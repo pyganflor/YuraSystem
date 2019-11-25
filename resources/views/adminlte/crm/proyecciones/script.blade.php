@@ -102,14 +102,16 @@
             $.each(retorno,function(i,j){ labels.push(i); });
             datasets = [];
 
+            x=0;
             $.each(retorno,function(k,l){
                 datasets.push({
                     label : l.label,
-                    borderColor : colores[i],
+                    borderColor : colores[x],
                     borderWidth : 2,
                     fill : false,
                     data :j.valor.toFixed(2)
                 });
+                x++;
             });
 
             var myChart = new Chart(ctx, {
