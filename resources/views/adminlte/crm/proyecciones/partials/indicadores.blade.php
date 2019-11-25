@@ -35,9 +35,10 @@
         <div class="small-box bg-orange">
             <div class="inner" style="padding: 3.5px 10px">
                 <ul class="info-box-number list-unstyled">
-                    <li style="font-size: 15px"><b>Mes 1: 999.99</b></li>
-                    <li style="font-size: 15px"><b>Mes 2: 999.99</b></li>
-                    <li style="font-size: 15px"><b>Mes 3: 999.99</b></li>
+                    @php $indicardor4 = explode("|",$indicador[4]); @endphp
+                    <li style="font-size: 15px"><b>Mes 1: {{$indicardor4[0]}}</b></li>
+                    <li style="font-size: 15px"><b>Mes 2:  {{$indicardor4[1]}}</b></li>
+                    <li style="font-size: 15px"><b>Mes 3:  {{$indicardor4[2]}}</b></li>
                 </ul>
             </div>
             <div class="icon">
