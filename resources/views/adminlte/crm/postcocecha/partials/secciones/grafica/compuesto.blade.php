@@ -16,26 +16,50 @@
         </div>
     </div>
 </div>
-
 <script>
     construir_char_simple('Cajas', 'chart_cajas');
+    construir_char_simple('Tallos', 'chart_tallos');
+    construir_char_simple('Calibres', 'chart_calibres');
 
     function construir_char_simple(label, id) {
         labels = [];
         datasets = [];
-        data_list = [];
 
+        @foreach($labels as $label)
+        @if($label >= substr($semana_actual, 2))
+        labels.push('{{$label}}*');
+        @else
+        labels.push('{{$label}}');
+        @endif
+                @endforeach
 
-        datasets = [{
-            label: label + ' ',
+                @foreach($datasets as $dataset)
+            data_list = [];
+        if (label == 'Cajas') {
+            @foreach($dataset['data_cajas'] as $valor)
+            data_list.push('{{$valor}}');
+            @endforeach
+        } else if (label == 'Tallos') {
+            @foreach($dataset['data_tallos'] as $valor)
+            data_list.push('{{$valor}}');
+            @endforeach
+        } else if (label == 'Calibres') {
+            @foreach($dataset['data_calibres'] as $valor)
+            data_list.push('{{$valor}}');
+            @endforeach
+        }
+
+        datasets.push({
+            label: '{{$dataset['label']}}' + ' ',
             data: data_list,
-            //backgroundColor: '#8c99ff54',
-            borderColor: '#161617',
-            borderWidth: 2,
+            backgroundColor: '{{$dataset['color']}}',
+            borderColor: '{{$dataset['color']}}',
+            borderWidth: 1.5,
             fill: false,
-        }];
+        });
+        @endforeach
 
-        ctx = document.getElementById(id).getContext('2d');
+            ctx = document.getElementById(id).getContext('2d');
         myChart = new Chart(ctx, {
             type: 'line',
             data: {
@@ -52,11 +76,11 @@
                 },
                 elements: {
                     line: {
-                        tension: 0, // disables bezier curves
+                        tension: 0.3, // disables bezier curves
                     }
                 },
                 tooltips: {
-                    mode: 'point' // nearest, point, index, dataset, x, y
+                    mode: 'x' // nearest, point, index, dataset, x, y
                 },
                 legend: {
                     display: true,

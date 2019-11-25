@@ -62,11 +62,11 @@
                 },
                 elements: {
                     line: {
-                        tension: 0, // disables bezier curves
+                        tension: 0.3, // disables bezier curves
                     }
                 },
                 tooltips: {
-                    mode: 'point' // nearest, point, index, dataset, x, y
+                    mode: 'x' // nearest, point, index, dataset, x, y
                 },
                 legend: {
                     display: true,
