@@ -35,6 +35,13 @@
                             <option value="{{$p->id_planta}}">{{$p->nombre}}</option>
                         @endforeach
                     </select>
+                    <div class="input-group-addon bg-gray" id="div_cargar_variedades">
+                        <i class="fa fa-fw fa-leaf"></i> Tipo
+                    </div>
+                    <select name="filtro_predeterminado_variedad" id="filtro_predeterminado_variedad" class="form-control"
+                            onchange="filtrar_predeterminado()">
+                        <option value="">Todos los tipos</option>
+                    </select>
                     <div class="input-group-btn">
                         <button type="button" id="btn_filtrar" class="btn btn-default" onclick="filtrar_predeterminado()" title="Buscar">
                             <i class="fa fa-fw fa-search"></i>
@@ -44,7 +51,18 @@
             </div>
             <div class="box-body">
                 <div class="row">
-                    <div class="col-md-9" id="div_graficas"></div>
+                    <div class="col-md-9" id="chart_inicio">
+                        <ul class="nav nav-pills nav-justified">
+                            <li class="active"><a href="#tab_inicio_1" data-toggle="tab" aria-expanded="true"><i class="fa fa-usd"></i>Dinero</a></li>
+                            <li class=""><a href="#tab_inicio_2" data-toggle="tab" aria-expanded="false"><i class="fa fa-cubes" ></i> Cajas</a></li>
+                        </ul>
+                        <div class="tab-pane active" id="tab_inicio_1">
+                            <canvas id="chart_inicio_1" style="margin-top: 5px"></canvas>
+                        </div>
+                        <div class="tab-pane active" id="tab_inicio_2">
+                            <canvas id="chart_inicio_2" style="margin-top: 5px"></canvas>
+                        </div>
+                    </div>
                     <div class="col-md-3">
                         <div class="box box-solid box-info">
                             <div class="box-header with-border ">
