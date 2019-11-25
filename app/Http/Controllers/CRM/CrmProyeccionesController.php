@@ -11,6 +11,7 @@ use yura\Modelos\ResumenSemanaCosecha;
 use yura\Modelos\Submenu;
 use yura\Http\Controllers\Indicadores\Proyecciones;
 
+
 class CrmProyeccionesController extends Controller
 {
     public function inicio(Request $request){
@@ -32,6 +33,13 @@ class CrmProyeccionesController extends Controller
                 $iconFirst='fa-cube';
                 $second='Dinero';
                 $iconSecond='fa-usd';
+                break;
+            case 'venta':
+                $data = $this->dataVenta($intervalo);
+                $first ='Dinero genredo en las ventas de los 3 próximos meses';
+                $iconFirst='fa-cube';
+                $second=false;
+                $iconSecond=false;
                 break;
             default:
                 $data = $this->dataCosecha($intervalo);
@@ -93,6 +101,11 @@ class CrmProyeccionesController extends Controller
             ];
         }
         return $data;
+    }
+
+    public function desgloseVenta4Semanas3Meses(){
+        $data =proyeccionVentaFutura3Meses(true);
+        dump($data);
     }
 
     public function dataCosecha($intervalo){

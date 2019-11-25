@@ -1,4 +1,5 @@
 <script>
+    const colores=['#00ff00','#ff8000','#8080ff','#ff0000','#00c0ef','#00a65a','#ffac58','#1B14FF'];
 
     function modal_indicador(param){
         datos = {
@@ -12,7 +13,7 @@
                     venta_4_semanas('crm_proyeccion/desglose_venta_4_semanas','chart1','cajas');
                     venta_4_semanas('crm_proyeccion/desglose_venta_4_semanas','chart2','dinero');
                     break;
-                case 'meses':
+                case 'venta a 3 meses':
                     dinero_3_meses();
                     break;
                 default:
@@ -31,7 +32,7 @@
             var ctx = document.getElementById(id).getContext('2d');
             labels=[];
             $.each(retorno[0].data,function(i){ labels.push(i); });
-            colores=['#00ff00','#ff8000','#8080ff','#ff0000','#00c0ef','#00a65a','#ffac58','#1B14FF'];
+
             datasets = [];
 
             $.each(retorno,function(i,j){
@@ -66,7 +67,6 @@
             var ctx = document.getElementById(id).getContext('2d');
             labels=[];
             $.each(retorno[0].data,function(i){ labels.push(i); });
-            colores=['#00ff00','#ff8000','#8080ff','#ff0000','#00c0ef','#00a65a','#ffac58','#1B14FF'];
             datasets = [];
 
             $.each(retorno,function(i,j){
@@ -95,5 +95,33 @@
 
     function dinero_3_meses(){
 
+        get_jquery('{{url('crm_proyeccion/desglose_3_meses')}}', datos, function (retorno) {
+            var ctx = document.getElementById('chart1').getContext('2d');
+            labels=[];
+            $.each(retorno[0].data,function(i){ labels.push(i); });
+            datasets = [];
+
+            $.each(retorno,function(i,j){
+                data=[];
+                $.each(j.data,function (k,l) {
+                    data.push(l.toFixed(2));
+                });
+                datasets.push({
+                    label : j.label,
+                    borderColor : colores[i],
+                    borderWidth : 2,
+                    fill : false,
+                    data :data
+                });
+            });
+
+            var myChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    datasets: datasets,
+                    labels: labels
+                },
+            });
+        });
     }
 </script>

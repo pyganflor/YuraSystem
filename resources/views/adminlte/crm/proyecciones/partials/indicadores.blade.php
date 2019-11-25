@@ -31,7 +31,7 @@
             </a>
         </div>
     </div>
-    <div class="col-md-4" style="cursor:pointer" onclick="modal_indicador('meses')">
+    <div class="col-md-4" style="cursor:pointer" onclick="modal_indicador('venta a 3 meses')">
         <div class="small-box bg-orange">
             <div class="inner" style="padding: 3.5px 10px">
                 <ul class="info-box-number list-unstyled">
