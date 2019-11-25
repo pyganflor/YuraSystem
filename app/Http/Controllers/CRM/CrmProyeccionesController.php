@@ -180,9 +180,14 @@ class CrmProyeccionesController extends Controller
                 DB::raw('sum(valor) as valor')
             )->groupBy('codigo_semana')->get();
 
-        dump($dataProyeccionVentaSemanalReal);
+
         foreach ($dataProyeccionVentaSemanalReal as $proyeccionVentaSemanalReal) {
-            //$data
+            $data[]=[
+                'codigo_semana'=>$proyeccionVentaSemanalReal->codigo_semana,
+                'cajas_equivalentes' => $proyeccionVentaSemanalReal->cajas_equivalentes,
+                'valor'=>$proyeccionVentaSemanalReal->valor
+            ];
         }
+        dump($data);
     }
 }
