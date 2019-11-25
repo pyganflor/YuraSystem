@@ -10,6 +10,34 @@
             rango :  $("#filtro_predeterminado_rango").val()
         };
         get_jquery('{{url('crm_proyeccion/chart_inicio')}}', datos, function (retorno) {
+            console.log(retorno);
+            var id1 = document.getElementById('chart_inicio_1').getContext('2d');
+            labels1=[];
+            $.each(retorno.semanas,function(i,j){ labels1.push(j); });
+
+            datasets1 = [];
+
+            /*$.each(retorno.data,function(i,j){
+                data=[];
+                $.each(j.data,function (k,l) {
+                    data.push(l);
+                });
+                datasets1.push({
+                    label : j.label,
+                    borderColor : colores[i],
+                    borderWidth : 2,
+                    fill : false,
+                    data :data
+                });
+            });
+
+            var myChart = new Chart(id1, {
+                type: 'line',
+                data: {
+                    datasets: datasets,
+                    labels: labels
+                },
+            });*/
 
         });
 
