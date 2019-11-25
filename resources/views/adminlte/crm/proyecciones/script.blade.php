@@ -99,13 +99,12 @@
             console.log(retorno);
             var ctx = document.getElementById('chart1').getContext('2d');
             labels=[];
-            $.each(retorno,function(i,j){ labels.push(j.mes); });
+            $.each(retorno,function(i,j){ labels.push(i); });
             datasets = [];
 
-            $.each(retorno,function(i,j){
-
+            $.each(retorno,function(k,l){
                 datasets.push({
-                    label : j.label,
+                    label : l.label,
                     borderColor : colores[i],
                     borderWidth : 2,
                     fill : false,

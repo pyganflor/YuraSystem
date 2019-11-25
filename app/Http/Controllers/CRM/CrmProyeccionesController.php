@@ -2,6 +2,7 @@
 
 namespace yura\Http\Controllers\CRM;
 
+use Carbon\Carbon;
 use DB;
 use Illuminate\Http\Request;
 use yura\Http\Controllers\Controller;
@@ -104,7 +105,24 @@ class CrmProyeccionesController extends Controller
     }
 
     public function desgloseVenta3Meses(){
-       return Proyecciones::proyeccionVentaFutura3Meses(true);
+
+        $indicadorDP5 = Indicador::where('nombre','DP5')->select('valor')->first();
+        $data= explode("|",$indicadorDP5);
+        $primerMesSiguiente = Carbon::parse(now())->addMonth()->toDateString();
+        $SegundoMesSiguiente = Carbon::parse($primerMesSiguiente)->addMonth()->toDateString();
+        $tercerMesSiguiente = Carbon::parse($SegundoMesSiguiente)->addMonth()->toDateString();
+
+        $nombrePrimerMes= getMeses()[Carbon::parse($primerMesSiguiente)->format('n')-1];
+        $nombreSegundoMes= getMeses()[Carbon::parse($SegundoMesSiguiente)->format('n')-1];
+        $nombretercerMes= getMeses()[Carbon::parse($tercerMesSiguiente)->format('n')-1];
+
+        return [
+            $nombrePrimerMes =>$data[0],
+            $nombreSegundoMes=>$data[1],
+            $nombretercerMes=>$data[2]
+        ];
+
+        // return Proyecciones::proyeccionVentaFutura3Meses(true);
     }
 
     public function dataCosecha($intervalo){

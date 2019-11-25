@@ -80,7 +80,7 @@ class Proyecciones extends Controller
         $objInidicardor->update(['valor'=>number_format($dato->valor,2,".","")]);
     }
 
-    public static function proyeccionVentaFutura3Meses($returnData=false){
+    public static function proyeccionVentaFutura3Meses(){
 
         $primerMesSiguiente = Carbon::parse(now())->addMonth()->toDateString();
         $SegundoMesSiguiente = Carbon::parse($primerMesSiguiente)->addMonth()->toDateString();
@@ -95,8 +95,7 @@ class Proyecciones extends Controller
         foreach($pedidos as $pedido)
             $valor+= $pedido->getPrecioByPedido();
 
-        $nombreMes= getMeses()[Carbon::parse($primerMesSiguiente)->format('n')-1];
-        $data['primer_mes']=['mes'=>$nombreMes,'valor'=>$valor];
+        $data['primer_mes']=$valor;
 
         //-------------SEGUNDO MES SIGUIENTE--------------//
         $inicio =Carbon::parse($SegundoMesSiguiente)->startOfMonth()->toDateString();
@@ -106,8 +105,7 @@ class Proyecciones extends Controller
         foreach($pedidos as $pedido)
             $valor+= $pedido->getPrecioByPedido();
 
-        $nombreMes= getMeses()[Carbon::parse($SegundoMesSiguiente)->format('n')-1];
-        $data['segundo_mes']=['mes'=>$nombreMes,'valor'=>$valor];;
+        $data['segundo_mes']=$valor;
 
         //-------------TERCER MES SIGUIENTE--------------//
         $inicio =Carbon::parse($tercerMesSiguiente)->startOfMonth()->toDateString();
@@ -117,15 +115,11 @@ class Proyecciones extends Controller
         foreach($pedidos as $pedido)
             $valor+= $pedido->getPrecioByPedido();
 
-        $nombreMes= getMeses()[Carbon::parse($tercerMesSiguiente)->format('n')-1];
-        $data['tercer_mes']=['mes'=>$nombreMes,'valor'=>$valor];
+        $data['tercer_mes']=$valor;
 
-        if($returnData){
-            return $data;
-        }else{
-            $objInidicardor = Indicador::where('nombre','DP5');
-            $objInidicardor->update(['valor'=>$data['primer_mes']['valor']."|".$data['segundo_mes']['valor']."|".$data['tercer_mes']['valor']]);
-        }
+        $objInidicardor = Indicador::where('nombre','DP5');
+        $objInidicardor->update(['valor'=>$data['primer_mes']['valor']."|".$data['segundo_mes']['valor']."|".$data['tercer_mes']['valor']]);
+
     }
 
     public static function intervalosTiempo(){
