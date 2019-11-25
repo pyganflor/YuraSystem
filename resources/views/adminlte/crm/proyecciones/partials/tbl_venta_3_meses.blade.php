@@ -4,7 +4,7 @@
             <td class="bg-gray-light text-center" style="border:1px solid">Mes</td>
             @foreach($data as $mes=> $valor)
                 <td class="bg-gray-light text-center" style="border:1px solid" >
-                    <span data-toggle="tooltip" title="Mes" style="border:1px solid">{{$mes}}</span></span>
+                    <span data-toggle="tooltip" title="Mes">{{$mes}}</span></span>
                 </td>
             @endforeach
             <td class="bg-gray-light text-center" style="border:1px solid">Mes</td>
