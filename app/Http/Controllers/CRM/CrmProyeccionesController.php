@@ -175,16 +175,20 @@ class CrmProyeccionesController extends Controller
         $data=[];
         $semanas =[];
         $dataProyeccionVentaSemanalReal = ProyeccionVentaSemanalReal::whereBetween('codigo_semana',[$primeraSemanaFutura,$ultimaSemanaFutura])
-            ->select('codigo_semana',
+            ->select('id_variedad','codigo_semana',
                 DB::raw('sum(cajas_equivalentes) as cajas_equivalentes'),
                 DB::raw('sum(valor) as valor')
-            )->groupBy('codigo_semana')->get();
+            )->groupBy('codigo_semana','id_variedad')->get();
 
 
         foreach ($dataProyeccionVentaSemanalReal as $proyeccionVentaSemanalReal) {
             $semanas[]=$proyeccionVentaSemanalReal->codigo_semana;
-            $data[]=$proyeccionVentaSemanalReal->valor;
+            $data[$proyeccionVentaSemanalReal->id_variedad][$proyeccionVentaSemanalReal->codigo_semana]=[
+                'valor'=>number_format($proyeccionVentaSemanalReal->valor,2,".",""),
+                'cajas'=>number_format($proyeccionVentaSemanalReal->cajas_equivalentes,2,".","")
+            ];
         }
+
         return[
             'semanas'=>$semanas,
             'data'=>$data
