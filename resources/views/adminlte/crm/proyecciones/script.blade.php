@@ -10,31 +10,48 @@
             rango :  $("#filtro_predeterminado_rango").val()
         };
         get_jquery('{{url('crm_proyeccion/chart_inicio')}}', datos, function (retorno) {
-            console.log(retorno);
+
             var id1 = document.getElementById('chart_inicio_1').getContext('2d');
-            labels1=[];
-            $.each(retorno.data[0],function(i){ labels1.push(i); });
-
+            var id2 = document.getElementById('chart_inicio_2').getContext('2d');
+            labels=[];
+            $.each(retorno[0].data,function(i){ labels.push(i); });
             datasets1 = [];
-
-            $.each(retorno.data,function(i,j){
-                data=[];
+            datasets2 = [];
+            $.each(retorno,function(i,j){
+                data1=[];
+                data2=[];
                 $.each(j.data,function (k,l) {
-                    data.push(l);
+                    data1.push(l.valor);
+                    data2.push(l.cajas);
                 });
                 datasets1.push({
-                    label : j.label,
+                    label : j.variedad,
                     borderColor : colores[i],
                     borderWidth : 2,
                     fill : false,
-                    data :data
+                    data :data1
+                });
+                datasets2.push({
+                    label : j.variedad,
+                    borderColor : colores[i],
+                    borderWidth : 2,
+                    fill : false,
+                    data :data2
                 });
             });
 
-            var myChart = new Chart(id1, {
+            new Chart(id1, {
                 type: 'line',
                 data: {
-                    datasets: datasets,
+                    datasets: datasets1,
+                    labels: labels
+                },
+            });
+
+            new Chart(id2, {
+                type: 'line',
+                data: {
+                    datasets: datasets2,
                     labels: labels
                 },
             });
