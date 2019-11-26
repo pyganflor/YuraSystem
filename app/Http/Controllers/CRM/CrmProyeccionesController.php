@@ -5,7 +5,6 @@ namespace yura\Http\Controllers\CRM;
 use Carbon\Carbon;
 use DB;
 use Illuminate\Http\Request;
-use yura\Console\Commands\VentaSemanalReal;
 use yura\Http\Controllers\Controller;
 use yura\Modelos\Indicador;
 use yura\Modelos\ProyeccionVentaSemanalReal;
@@ -21,7 +20,8 @@ class CrmProyeccionesController extends Controller
             'url' => $request->getRequestUri(),
             'submenu' => Submenu::Where('url', '=', substr($request->getRequestUri(), 1))->get()[0],
             'text' => ['titulo'=>'Dashboard','subtitulo'=>'Proyecciones'],
-            'indicador' => Indicador::whereIn('nombre',['DP1','DP2','DP3','DP4','DP5','DP6','DP7','DP8','DP9'])->select('valor')->get()
+            'indicador' => Indicador::whereIn('nombre',['DP1','DP2','DP3','DP4','DP5','DP6','DP7','DP8','DP9'])->select('valor')->get(),
+            'semana'=>getSemanaByDate(now()->addDays(7)->toDateString())->codigo
         ]);
     }
 

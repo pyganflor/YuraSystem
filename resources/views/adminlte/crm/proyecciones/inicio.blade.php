@@ -69,7 +69,7 @@
                         <div class="box box-solid box-info">
                             <div class="box-header with-border ">
                                 <i class="fa fa-pie-chart"></i>
-                                <h3 class="box-title">Proyección semana: </h3>
+                                <h3 class="box-title">Semana: {{$semana}}</h3>
                             </div>
                             <!-- /.box-header -->
                             <div class="box-body">
