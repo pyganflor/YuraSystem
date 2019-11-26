@@ -173,12 +173,17 @@ class CrmProyeccionesController extends Controller
         $primeraSemanaFutura = Proyecciones::intervalosTiempo()['primeraSemanaFutura'];
         $ultimaSemanaFutura = getSemanaByDate($fechaFutura)->codigo;
         $data=[];
-        $semanas =[];
+
         $dataProyeccionVentaSemanalReal = ProyeccionVentaSemanalReal::whereBetween('codigo_semana',[$primeraSemanaFutura,$ultimaSemanaFutura])
             ->select('id_variedad','codigo_semana',
                 DB::raw('sum(cajas_equivalentes) as cajas_equivalentes'),
                 DB::raw('sum(valor) as valor')
-            )->groupBy('codigo_semana','id_variedad')->get();
+            )->groupBy('codigo_semana','id_variedad');
+
+        if(isset($request->variedad) && $request->variedad!="T")
+            $dataProyeccionVentaSemanalReal->where('id_variedad',$request->variedad);
+
+        $dataProyeccionVentaSemanalReal =$dataProyeccionVentaSemanalReal->get();
 
         foreach ($dataProyeccionVentaSemanalReal as $proyeccionVentaSemanalReal) {
             $dataAgrupada[$proyeccionVentaSemanalReal->id_variedad][$proyeccionVentaSemanalReal->codigo_semana]=[
@@ -194,9 +199,7 @@ class CrmProyeccionesController extends Controller
 
         }
 
-        return[
-            'data'=>$data
-        ];
+        return $data;
 
     }
 }
