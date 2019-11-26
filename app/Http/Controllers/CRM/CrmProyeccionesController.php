@@ -186,12 +186,12 @@ class CrmProyeccionesController extends Controller
                 'cajas'=>number_format($proyeccionVentaSemanalReal->cajas_equivalentes,2,".","")
             ];
         }
-
         foreach ($dataAgrupada as $idVariedad => $semana) {
             $data[]= [
                 'variedad'=>getVariedad($idVariedad)->nombre,
                 'data'=> $semana,
             ];
+
         }
 
         return[
