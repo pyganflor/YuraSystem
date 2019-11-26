@@ -113,14 +113,14 @@ class CrmProyeccionesController extends Controller
         $SegundoMesSiguiente = Carbon::parse($primerMesSiguiente)->addMonth()->toDateString();
         $tercerMesSiguiente = Carbon::parse($SegundoMesSiguiente)->addMonth()->toDateString();
 
-        $nombrePrimerMes= getMeses()[Carbon::parse($primerMesSiguiente)->format('n')-1];
-        $nombreSegundoMes= getMeses()[Carbon::parse($SegundoMesSiguiente)->format('n')-1];
-        $nombretercerMes= getMeses()[Carbon::parse($tercerMesSiguiente)->format('n')-1];
+        //$nombrePrimerMes= getMeses()[Carbon::parse($primerMesSiguiente)->format('n')-1];
+        //$nombreSegundoMes= getMeses()[Carbon::parse($SegundoMesSiguiente)->format('n')-1];
+        //$nombretercerMes= getMeses()[Carbon::parse($tercerMesSiguiente)->format('n')-1];
 
         return [
-            $nombrePrimerMes =>$data[0],
-            $nombreSegundoMes=>$data[1],
-            $nombretercerMes=>$data[2]
+            explode(":",$data[0])[0] =>explode(":",$data[0])[1],
+            explode(":",$data[1])[0] =>explode(":",$data[1])[1],
+            explode(":",$data[2])[0] =>explode(":",$data[2])[1],
         ];
 
         // return Proyecciones::proyeccionVentaFutura3Meses(true);

@@ -4,6 +4,7 @@
     select_planta($('#filtro_predeterminado_planta').val(), 'filtro_predeterminado_variedad', 'div_cargar_variedades' );
 
     chart_inicio();
+
     function chart_inicio(){
         datos={
             variedad : $("#filtro_predeterminado_variedad").val(),
