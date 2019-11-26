@@ -125,7 +125,7 @@ class Proyecciones extends Controller
             return $data;
         }else{
             $objInidicardor = Indicador::where('nombre','DP5');
-            $objInidicardor->update(['valor'=>$data['primer_mes']['valor']."|".$data['segundo_mes']['valor']."|".$data['tercer_mes']['valor']]);
+            $objInidicardor->update(['valor'=>$data['primer_mes']['mes'].":".$data['primer_mes']['valor']."|".$data['segundo_mes']['mes'].":".$data['segundo_mes']['valor']."|".$data['tercer_mes']['mes'].":".$data['tercer_mes']['valor']]);
         }
     }
 
