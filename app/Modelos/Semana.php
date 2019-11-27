@@ -92,7 +92,7 @@ class Semana extends Model
                     ['codigo_semana',$x]
                 ])->select('cajas_proyectadas')->first();
                 if(isset($objResumenSemanaCosecha)){
-                    $cajasProyectadas =$objResumenSemanaCosecha->cajas_proyectadas
+                    $cajasProyectadas = $objResumenSemanaCosecha->cajas_proyectadas;
                     break;
                 }
             }
