@@ -94,6 +94,8 @@ class Semana extends Model
                     dump($objResumenSemanaCosecha->cajas_proyectadas);
                     $cajasProyectadas = $objResumenSemanaCosecha->cajas_proyectadas;
                     break;
+                }else{
+                    $cajasProyectadas=0;
                 }
             }
         }
