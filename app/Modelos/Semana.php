@@ -48,10 +48,7 @@ class Semana extends Model
         
         $proyeccion = ProyeccionVentaSemanalReal::where([
             ['id_variedad',$idVariedad],
-            ['codigo_semana',$this->codigo],
-            ['valor','>',0],
-            ['cajas_fisicas','>',0],
-            ['cajas_equivalentes','>',0]
+            ['codigo_semana',$this->codigo]
         ]);
 
         if($idsCliente)
@@ -65,9 +62,9 @@ class Semana extends Model
     }
 
     public function getSaldo($idVariedad){
-        $cv = $this->getTotalesProyeccionVentaSemanal(null,$idVariedad);
+
         $cajasProyectadas = $this->getCajasProyectadas($idVariedad);
-        $cajasVendidas =  isset($cv) ? $cv->total_cajas_equivalentes : 0;
+        $cajasVendidas =  $this->getTotalesProyeccionVentaSemanal(null,$idVariedad)->total_cajas_equivalentes;
 
         return  $cajasProyectadas-$cajasVendidas-$this->desecho($idVariedad);
     }
