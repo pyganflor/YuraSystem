@@ -98,6 +98,6 @@ class Venta
         }
 
         $indicadorD13 = Indicador::where('nombre','D13');
-        $indicadorD13->update('valor',$cajasEquivalentes);
+        $indicadorD13->update(['valor',$cajasEquivalentes]);
     }
 }
