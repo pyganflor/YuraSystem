@@ -65,6 +65,7 @@ class Semana extends Model
 
         $cajasProyectadas = $this->getCajasProyectadas($idVariedad);
         $cajasVendidas =  $this->getTotalesProyeccionVentaSemanal(null,$idVariedad)->total_cajas_equivalentes;
+        //dump("semana: ". $this->codigo." cajaProyectadas: ".$cajasProyectadas. "  cajasVendidas: ".$cajasVendidas);
 
         return  $cajasProyectadas-$cajasVendidas-$this->desecho($idVariedad);
     }

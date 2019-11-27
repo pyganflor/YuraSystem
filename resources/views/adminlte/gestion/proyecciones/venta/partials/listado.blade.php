@@ -22,6 +22,20 @@
                 @php
                     $objSemanaActual =getObjSemana($semana);
                     $objSemanaPasada =getObjSemana($semana-1);
+                    if(!isset($objSemanaPasada)){
+                        for($x=$semana;$x>0001;$x--){
+                            $objResumenSemanaCosecha = yura\Modelos\ResumenSemanaCosecha::where([
+                                ['id_variedad',$idVariedad],
+                                ['codigo_semana',$x-1]
+                            ])->select('codigo_semana')->first();
+                            if(isset($objResumenSemanaCosecha)){
+                                 $objSemanaPasada =getObjSemana($objResumenSemanaCosecha->codigo_semana);
+                                break;
+                            }
+                        }
+                    }
+
+
                     if($x ==0){
                         $firstSemanaResumenSemanaCosechaByVariedad = (int)$objSemanaActual->firstSemanaResumenSemanaCosechaByVariedad($idVariedad);
                         if($firstSemanaResumenSemanaCosechaByVariedad > $semana){
@@ -33,6 +47,7 @@
                         }
                     }
                     $saldoFinal = isset($objSemanaPasada) ? $objSemanaPasada->getSaldo($idVariedad)+$saldoInicial : $objSemanaActual->getSaldo($idVariedad)+$saldoInicial;
+                   // dump($saldoFinal);
                     if($x>0)
                         $saldoInicial = $saldoFinal;
                 @endphp
