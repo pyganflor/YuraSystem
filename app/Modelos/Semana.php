@@ -85,10 +85,10 @@ class Semana extends Model
             }
 
         }else{
-            for($x=($this->codigo-1);$x>0001;$x--){
+            for($x=($this->codigo);$x>0001;$x--){
                 $objResumenSemanaCosecha = ResumenSemanaCosecha::where([
                     ['id_variedad',$idVariedad],
-                    ['codigo_semana',$x]
+                    ['codigo_semana',$x-1]
                 ])->select('cajas_proyectadas','codigo_semana')->first();
                 if(isset($objResumenSemanaCosecha)){
                     dump($objResumenSemanaCosecha->cajas_proyectadas);
