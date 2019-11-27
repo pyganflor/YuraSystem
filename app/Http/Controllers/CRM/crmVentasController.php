@@ -5,6 +5,7 @@ namespace yura\Http\Controllers\CRM;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use yura\Http\Controllers\Controller;
+use yura\Modelos\Indicador;
 use yura\Modelos\Pedido;
 use yura\Modelos\Semana;
 use yura\Modelos\Submenu;
@@ -59,13 +60,17 @@ class crmVentasController extends Controller
             ->orderBy('anno')->distinct()
             ->get();
 
+        $data = Indicador::whereIn('nombre',['D3','D4'])->select('valor')->get();
+
+
         return view('adminlte.crm.ventas.inicio', [
             'today' => $today,
             'semanal' => $semanal,
             'annos' => $annos,
-
             'url' => $request->getRequestUri(),
             'submenu' => Submenu::Where('url', '=', substr($request->getRequestUri(), 1))->get()[0],
+            'dinero' => $data[0]->valor,
+            'precioPromedioRamo' =>$data[1]->valor
         ]);
     }
 

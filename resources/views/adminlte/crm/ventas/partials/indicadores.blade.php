@@ -3,7 +3,7 @@
         <div class="small-box bg-teal-active">
             <div class="inner">
                 <h3 class="info-box-number">
-                    {{number_format($semanal['valor'], 2)}}
+                    {{number_format($dinero, 2)}}
                 </h3>
             </div>
             <div class="icon">
@@ -33,7 +33,7 @@
         <div class="small-box bg-orange">
             <div class="inner">
                 <h3 class="info-box-number">
-                    {{number_format($semanal['precio_x_ramo'], 2)}}
+                    {{number_format($precioPromedioRamo, 2)}}
                 </h3>
             </div>
             <div class="icon">
