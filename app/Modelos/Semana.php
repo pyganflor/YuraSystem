@@ -65,9 +65,9 @@ class Semana extends Model
     }
 
     public function getSaldo($idVariedad){
-
+        $cv = $this->getTotalesProyeccionVentaSemanal(null,$idVariedad);
         $cajasProyectadas = $this->getCajasProyectadas($idVariedad);
-        $cajasVendidas =  $this->getTotalesProyeccionVentaSemanal(null,$idVariedad)->total_cajas_equivalentes;
+        $cajasVendidas =  isset($cv) ? $cv->total_cajas_equivalentes : 0;
 
         return  $cajasProyectadas-$cajasVendidas-$this->desecho($idVariedad);
     }
