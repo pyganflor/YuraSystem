@@ -48,7 +48,10 @@ class Semana extends Model
         
         $proyeccion = ProyeccionVentaSemanalReal::where([
             ['id_variedad',$idVariedad],
-            ['codigo_semana',$this->codigo]
+            ['codigo_semana',$this->codigo],
+            ['valor','>',0],
+            ['cajas_fisicas','>',0],
+            ['cajas_equivalentes','>',0]
         ]);
 
         if($idsCliente)
@@ -104,12 +107,12 @@ class Semana extends Model
             $z=0;
             $saldoInicial =0;
             for ($x=$firstSemana;$x<$desde;$x++){
-                $semana = Semana::where([['codigo',$x],['id_variedad',$idVariedad]])->select('codigo')->first();
-                if(isset($semana)){
+                $semana = Semana::where([['codigo',$x],['id_variedad',$idVariedad]])->select('codigo')->exists();
+                if($semana){
                     if($z ==0)
                         $saldoInicial = $this->firstSaldoInicialByVariedad($idVariedad);
 
-                    $saldoFinal = getObjSemana($semana->codigo)->getSaldo($idVariedad)+$saldoInicial;
+                    $saldoFinal = getObjSemana($x)->getSaldo($idVariedad)+$saldoInicial;
                     if($x>0)
                         $saldoInicial =$saldoFinal;
                     $z++;
@@ -127,12 +130,12 @@ class Semana extends Model
             $z=0;
             $saldoInicial =0;
             for ($x=$firstSemana;$x<=$desde;$x++){
-                $semana = Semana::where([['codigo',$x],['id_variedad',$idVariedad]])->select('codigo')->first();
-                if(isset($semana)){
+                $semana = Semana::where([['codigo',$x],['id_variedad',$idVariedad]])->select('codigo')->exists();
+                if($semana){
                     if($z ==0)
                         $saldoInicial = $this->firstSaldoInicialByVariedad($idVariedad);
 
-                    $saldoFinal = getObjSemana($semana->codigo)->getSaldo($idVariedad)+$saldoInicial;
+                    $saldoFinal = getObjSemana($x)->getSaldo($idVariedad)+$saldoInicial;
                     if($x>0)
                         $saldoInicial =$saldoFinal;
                     $z++;

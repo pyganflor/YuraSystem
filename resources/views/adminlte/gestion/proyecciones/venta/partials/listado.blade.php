@@ -220,9 +220,10 @@
                                 $cajasProyectadas =isset($objSemanaPasada) ? $objSemanaPasada->getCajasProyectadas($idVariedad) : 0;
                                 $cajasVendidas =  $objSemanaActual->getTotalesProyeccionVentaSemanal(null,$idVariedad)->total_cajas_equivalentes;
                                 if($x==0){
-                                    if((int)$objSemanaActual->firstSemanaResumenSemanaCosechaByVariedad($idVariedad) > $semana){
+                                    $firstSemanaResumenSemanaCosechaByVariedad = (int)$objSemanaActual->firstSemanaResumenSemanaCosechaByVariedad($idVariedad);
+                                    if($firstSemanaResumenSemanaCosechaByVariedad > $semana){
                                         $saldoFinal = $objSemanaActual->getSaldo($idVariedad);
-                                    }elseif((int)$objSemanaActual->firstSemanaResumenSemanaCosechaByVariedad($idVariedad) < $semana){
+                                    }elseif($firstSemanaResumenSemanaCosechaByVariedad < $semana){
                                         $saldoFinal = $objSemanaActual->getLastSaldoFinal($idVariedad,$semana);
                                     }else{
                                         $saldoFinal = $objSemanaActual->firstSaldoInicialByVariedad($idVariedad)+round($objSemanaActual->getSaldo($idVariedad),2);
