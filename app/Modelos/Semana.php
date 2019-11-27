@@ -71,7 +71,7 @@ class Semana extends Model
 
     public function getCajasProyectadas($idVariedad){
         $semanaActual = getSemanaByDate(now()->toDateString());
-        $sem = $this->codigo;
+
         $objResumenSemanaCosecha = ResumenSemanaCosecha::where([
             ['id_variedad',$idVariedad],
             ['codigo_semana',$this->codigo-1]
@@ -91,6 +91,7 @@ class Semana extends Model
             ])->select('cajas_proyectadas')->first();
             $cajasProyectadas =  $objResumenSemanaCosecha->cajas_proyectadas;
         }
+
         return $cajasProyectadas;
     }
 
