@@ -91,7 +91,6 @@ class Semana extends Model
                     ['codigo_semana',$x-1]
                 ])->select('cajas_proyectadas','codigo_semana')->first();
                 if(isset($objResumenSemanaCosecha)){
-                    dump($objResumenSemanaCosecha->cajas_proyectadas);
                     $cajasProyectadas = $objResumenSemanaCosecha->cajas_proyectadas;
                     break;
                 }else{
