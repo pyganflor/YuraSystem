@@ -23,9 +23,10 @@
                     $objSemanaActual =getObjSemana($semana);
                     $objSemanaPasada =getObjSemana($semana-1);
                     if($x ==0){
-                        if((int)$objSemanaActual->firstSemanaResumenSemanaCosechaByVariedad($idVariedad) > $semana){
+                        $firstSemanaResumenSemanaCosechaByVariedad = (int)$objSemanaActual->firstSemanaResumenSemanaCosechaByVariedad($idVariedad);
+                        if($firstSemanaResumenSemanaCosechaByVariedad > $semana){
                             $saldoInicial = $objSemanaActual->getSaldo($idVariedad);
-                        }elseif((int)$objSemanaActual->firstSemanaResumenSemanaCosechaByVariedad($idVariedad) < $semana){
+                        }elseif($firstSemanaResumenSemanaCosechaByVariedad < $semana){
                             $saldoInicial = $objSemanaActual->getLastSaldoInicial($idVariedad,$semana);
                         }else{
                             $saldoInicial = $objSemanaActual->firstSaldoInicialByVariedad($idVariedad);
@@ -164,7 +165,7 @@
                     @endforeach
                     <td class="text-center" style="border-bottom:2px solid #000000;border-left:2px solid #000000;border-right:2px solid #000000;width: 250px">Proyectado</td>
                 </tr>
-                @if($x == count($proyeccionVentaSemanalReal))
+                @if($x == $cantProyeccionVentaSemanalReal)
                     @if($otros)
                         <tr style="background: #08ffe8">
                            <td class="text-center" style="border-bottom:2px solid #000000;border-left:2px solid #000000;border-right:2px solid #000000;width: 250px"><b>Otros</b></td>

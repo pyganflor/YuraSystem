@@ -109,13 +109,6 @@ class CrmProyeccionesController extends Controller
 
         $indicadorDP5 = Indicador::where('nombre','DP5')->select('valor')->first();
         $data= explode("|",$indicadorDP5->valor);
-        $primerMesSiguiente = Carbon::parse(now())->addMonth()->toDateString();
-        $SegundoMesSiguiente = Carbon::parse($primerMesSiguiente)->addMonth()->toDateString();
-        $tercerMesSiguiente = Carbon::parse($SegundoMesSiguiente)->addMonth()->toDateString();
-
-        //$nombrePrimerMes= getMeses()[Carbon::parse($primerMesSiguiente)->format('n')-1];
-        //$nombreSegundoMes= getMeses()[Carbon::parse($SegundoMesSiguiente)->format('n')-1];
-        //$nombretercerMes= getMeses()[Carbon::parse($tercerMesSiguiente)->format('n')-1];
 
         return [
             explode(":",$data[0])[0] =>explode(":",$data[0])[1],

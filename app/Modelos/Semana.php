@@ -41,7 +41,7 @@ class Semana extends Model
         $existeSemana =ProyeccionVentaSemanalReal::where([
             ['id_variedad', $idVariedad],
             ['codigo_semana',$this->codigo]
-        ])->first();
+        ])->select('codigo_semana')->exists();
 
         if(!$existeSemana)
             $this->codigo = $primeraSemana->codigo;
@@ -75,12 +75,11 @@ class Semana extends Model
         $objResumenSemanaCosecha = ResumenSemanaCosecha::where([
             ['id_variedad',$idVariedad],
             ['codigo_semana',$this->codigo-1]
-        ])->first();
+        ])->select('cajas_proyectadas','cajas')->first();
 
         if(isset($objResumenSemanaCosecha)){
             if($this->codigo >= $semanaActual->codigo){
                 $cajasProyectadas = $objResumenSemanaCosecha->cajas_proyectadas;
-                //dump($objResumenSemanaCosecha->id_resumen_semana_cosecha,$objResumenSemanaCosecha->cajas_proyectadas);
             }else{
                 $cajasProyectadas =  $objResumenSemanaCosecha->cajas;
             }
@@ -94,7 +93,7 @@ class Semana extends Model
         $objResumenSemanaCosecha =  ResumenSemanaCosecha::where([
             ['codigo_semana',$this->codigo],
             ['id_variedad',$idVariedad]
-        ])->first();
+        ])->select('desecho')->first();
 
         return isset($objResumenSemanaCosecha) ? $objResumenSemanaCosecha->desecho : 0;
     }
@@ -105,7 +104,7 @@ class Semana extends Model
             $z=0;
             $saldoInicial =0;
             for ($x=$firstSemana;$x<$desde;$x++){
-                $semana = Semana::where([['codigo',$x],['id_variedad',$idVariedad]])->first();
+                $semana = Semana::where([['codigo',$x],['id_variedad',$idVariedad]])->select('codigo')->first();
                 if(isset($semana)){
                     if($z ==0)
                         $saldoInicial = $this->firstSaldoInicialByVariedad($idVariedad);
@@ -128,7 +127,7 @@ class Semana extends Model
             $z=0;
             $saldoInicial =0;
             for ($x=$firstSemana;$x<=$desde;$x++){
-                $semana = Semana::where([['codigo',$x],['id_variedad',$idVariedad]])->first();
+                $semana = Semana::where([['codigo',$x],['id_variedad',$idVariedad]])->select('codigo')->first();
                 if(isset($semana)){
                     if($z ==0)
                         $saldoInicial = $this->firstSaldoInicialByVariedad($idVariedad);
@@ -156,7 +155,7 @@ class Semana extends Model
 
     public function cuartaSemanaFutura($idVariedad){
          $semanas = Semana::where([['codigo','>',$this->codigo],['id_variedad',$idVariedad]])
-             ->limit(4)->orderBy('codigo','asc');
+             ->select('codigo')->limit(4)->orderBy('codigo','asc');
 
          if($semanas->count()>0){
              return $semanas->get()->last()->codigo;
