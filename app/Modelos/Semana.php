@@ -88,8 +88,8 @@ class Semana extends Model
             $objResumenSemanaCosecha = ResumenSemanaCosecha::where([
                 ['id_variedad',$idVariedad],
                 ['codigo_semana',$sem]
-            ])->select('cajas_proyectadas','cajas')->first();
-            $cajasProyectadas = 0;
+            ])->select('cajas_proyectadas')->first();
+            $cajasProyectadas =  $objResumenSemanaCosecha->cajas_proyectadas;
         }
         return $cajasProyectadas;
     }
