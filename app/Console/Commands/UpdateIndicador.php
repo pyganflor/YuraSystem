@@ -128,6 +128,10 @@ class UpdateIndicador extends Command
             Area::tallos_m2_4_semanas_atras();
             Log::info('INDICADOR: "Tallos/m2 (-4 semanas)"');
         }
+        if ($indicador_par === '0' || $indicador_par === 'D13') { // Cajas equivalentes vendidas(-7 dias)
+            Venta::cajas_equivalentes_vendidas_7_dias_atras();
+            Log::info('INDICADOR: "Cajas equivalentes vendidas (-7 dias)"');
+        }
         if ($indicador_par === '0' || $indicador_par === 'P1') { // Cajas cosechadas (-7 dias)
             Postcosecha::cajas_cosechadas_7_dias_atras();
             Log::info('INDICADOR: "Cajas cosechadas (-7 dias)"');

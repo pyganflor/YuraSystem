@@ -166,7 +166,7 @@ class Pedido extends Model
     public function getCajas()
     {   // cajas equivalentes
         if (!getFacturaAnulada($this->id_pedido)) {
-            if (!$this->isTipoSuelto())
+            if (!$this->isTipoSuelto()) //Venta en tallos
                 return round($this->getRamosEstandar() / getConfiguracionEmpresa()->ramos_x_caja, 2);
             else {
                 return $this->getCajasFisicas();

@@ -60,7 +60,7 @@ class crmVentasController extends Controller
             ->orderBy('anno')->distinct()
             ->get();
 
-        $data = Indicador::whereIn('nombre',['D3','D4'])->select('valor')->get();
+        $data = Indicador::whereIn('nombre',['D3','D4','D13'])->select('valor')->get();
 
 
         return view('adminlte.crm.ventas.inicio', [
@@ -70,7 +70,8 @@ class crmVentasController extends Controller
             'url' => $request->getRequestUri(),
             'submenu' => Submenu::Where('url', '=', substr($request->getRequestUri(), 1))->get()[0],
             'dinero' => $data[0]->valor,
-            'precioPromedioRamo' =>$data[1]->valor
+            'precioPromedioRamo' =>$data[1]->valor,
+            'cajasEquivalentes'=>$data[2]->valor,
         ]);
     }
 
