@@ -3,7 +3,10 @@
 namespace yura\Http\Controllers\Indicadores;
 
 use Carbon\Carbon;
+use http\Env\Request;
+use yura\Console\Commands\VentaSemanalReal;
 use yura\Http\Controllers\Controller;
+use yura\Modelos\Pedido;
 use yura\Modelos\ProyeccionVentaSemanalReal;
 use yura\Modelos\ResumenSemanaCosecha;
 use yura\Modelos\Indicador;
@@ -79,10 +82,51 @@ class Proyecciones extends Controller
         $objInidicardor->update(['valor'=>number_format($dato->valor,2,".","")]);
     }
 
-    public static function proyeccionVentaFutura3Meses(){
-        $inicioMesSiguiente =Carbon::parse(now())->addMonth()->startOfMonth()->toDateString();
-        $FinTercerMes = Carbon::parse($inicioMesSiguiente)->addMonths(2)->endOfMonth()->toDateString();
-        dump($inicioMesSiguiente,$FinTercerMes);
+    public static function proyeccionVentaFutura3Meses($returnData=false){
+        $primerMesSiguiente = Carbon::parse(now())->addMonth()->toDateString();
+        $SegundoMesSiguiente = Carbon::parse($primerMesSiguiente)->addMonth()->toDateString();
+        $tercerMesSiguiente = Carbon::parse($SegundoMesSiguiente)->addMonth()->toDateString();
+        $data=[];
+
+        //-------------PRIMER MES SIGUIENTE--------------//
+        $inicio = Carbon::parse($primerMesSiguiente)->startOfMonth()->toDateString();
+        $fin = Carbon::parse($primerMesSiguiente)->endOfMonth()->toDateString();
+        $valor=0;
+        $pedidos = Pedido::where('estado',1)->whereBetween('fecha_pedido',[$inicio,$fin])->get();
+        foreach($pedidos as $pedido)
+            $valor+= $pedido->getPrecioByPedido();
+
+        $nombreMes= getMeses()[Carbon::parse($primerMesSiguiente)->format('n')-1];
+        $data['primer_mes']=['mes'=>$nombreMes,'valor'=>$valor];
+
+        //-------------SEGUNDO MES SIGUIENTE--------------//
+        $inicio =Carbon::parse($SegundoMesSiguiente)->startOfMonth()->toDateString();
+        $fin =Carbon::parse($SegundoMesSiguiente)->endOfMonth()->toDateString();
+        $valor=0;
+        $pedidos = Pedido::where('estado',1)->whereBetween('fecha_pedido',[$inicio,$fin])->get();
+        foreach($pedidos as $pedido)
+            $valor+= $pedido->getPrecioByPedido();
+
+        $nombreMes= getMeses()[Carbon::parse($SegundoMesSiguiente)->format('n')-1];
+        $data['segundo_mes']=['mes'=>$nombreMes,'valor'=>$valor];;
+
+        //-------------TERCER MES SIGUIENTE--------------//
+        $inicio =Carbon::parse($tercerMesSiguiente)->startOfMonth()->toDateString();
+        $fin =Carbon::parse($tercerMesSiguiente)->endOfMonth()->toDateString();
+        $valor=0;
+        $pedidos = Pedido::where('estado',1)->whereBetween('fecha_pedido',[$inicio,$fin])->get();
+        foreach($pedidos as $pedido)
+            $valor+= $pedido->getPrecioByPedido();
+
+        $nombreMes= getMeses()[Carbon::parse($tercerMesSiguiente)->format('n')-1];
+        $data['tercer_mes']=['mes'=>$nombreMes,'valor'=>$valor];
+
+        if($returnData){
+            return $data;
+        }else{
+            $objInidicardor = Indicador::where('nombre','DP5');
+            $objInidicardor->update(['valor'=>$data['primer_mes']['mes'].":".$data['primer_mes']['valor']."|".$data['segundo_mes']['mes'].":".$data['segundo_mes']['valor']."|".$data['tercer_mes']['mes'].":".$data['tercer_mes']['valor']]);
+        }
     }
 
     public static function intervalosTiempo(){
@@ -92,4 +136,5 @@ class Proyecciones extends Controller
             'cuartaSemanaFutura' =>getSemanaByDate(opDiasFecha('+', 28,  $fechaActual))->codigo
         ];
     }
+
 }

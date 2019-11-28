@@ -20,10 +20,10 @@
                         <i class="fa fa-calendar-check-o"></i> Rango
                     </div>
                     <select name="filtro_predeterminado_rango" id="filtro_predeterminado_rango" class="form-control"
-                            onchange="filtrar_predeterminado()">
-                        <option value="2">3 Meses</option>
-                        <option value="3">6 Meses</option>
-                        <option value="4">1 Año</option>
+                            onchange="chart_inicio()">
+                        <option value="3">3 Meses</option>
+                        <option value="6">6 Meses</option>
+                        <option value="12">1 Año</option>
                     </select>
                     <div class="input-group-addon bg-gray">
                         <i class="fa fa-fw fa-leaf"></i> Variedad
@@ -35,8 +35,15 @@
                             <option value="{{$p->id_planta}}">{{$p->nombre}}</option>
                         @endforeach
                     </select>
+                    <div class="input-group-addon bg-gray" id="div_cargar_variedades">
+                        <i class="fa fa-fw fa-leaf"></i> Tipo
+                    </div>
+                    <select name="filtro_predeterminado_variedad" id="filtro_predeterminado_variedad" class="form-control"
+                            onchange="chart_inicio()">
+                        <option value="">Todos los tipos</option>
+                    </select>
                     <div class="input-group-btn">
-                        <button type="button" id="btn_filtrar" class="btn btn-default" onclick="filtrar_predeterminado()" title="Buscar">
+                        <button type="button" id="btn_filtrar" class="btn btn-default" onclick="chart_inicio()" title="Buscar">
                             <i class="fa fa-fw fa-search"></i>
                         </button>
                     </div>
@@ -44,12 +51,25 @@
             </div>
             <div class="box-body">
                 <div class="row">
-                    <div class="col-md-9" id="div_graficas"></div>
+                    <div class="col-md-9" id="chart_inicio">
+                        <ul class="nav nav-pills nav-justified">
+                            <li class="active"><a href="#tab_inicio_1" data-toggle="tab" aria-expanded="true"><i class="fa fa-usd"></i>Dinero</a></li>
+                            <li class=""><a href="#tab_inicio_2" data-toggle="tab" aria-expanded="false"><i class="fa fa-cubes" ></i> Cajas</a></li>
+                        </ul>
+                        <div class="tab-content">
+                            <div class="tab-pane active" id="tab_inicio_1">
+                                <canvas id="chart_inicio_1" style="margin-top: 5px" height="100px"></canvas>
+                            </div>
+                            <div class="tab-pane" id="tab_inicio_2">
+                                <canvas id="chart_inicio_2" style="margin-top: 5px" height="100px"></canvas>
+                            </div>
+                        </div>
+                    </div>
                     <div class="col-md-3">
                         <div class="box box-solid box-info">
                             <div class="box-header with-border ">
                                 <i class="fa fa-pie-chart"></i>
-                                <h3 class="box-title">Proyección semana: </h3>
+                                <h3 class="box-title">Semana: {{$semana}}</h3>
                             </div>
                             <!-- /.box-header -->
                             <div class="box-body">

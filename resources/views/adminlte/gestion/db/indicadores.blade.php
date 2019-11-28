@@ -72,7 +72,7 @@
                                            value="{{$item->descripcion}}" max="250">
                                 </td>
                                 <td class="text-center" style="border-color: #9d9d9d">
-                                    <input type="number" class="text-center" id="valor_{{$item->id_indicador}}" style="width: 100%"
+                                    <input type="text" class="text-center" id="valor_{{$item->id_indicador}}" style="width: 100%"
                                            value="{{$item->valor}}">
                                 </td>
                                 <td class="text-center" style="border-color: #9d9d9d">

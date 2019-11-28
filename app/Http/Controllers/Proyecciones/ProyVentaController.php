@@ -127,6 +127,7 @@ class ProyVentaController extends Controller
                'semanas'=>isset(array_values($data)[0]['semanas']) ? array_values($data)[0]['semanas'] : [],
                'otros' => $top >= $clientes ? false : true,
                'clientes' => $clientes,
+               'cantProyeccionVentaSemanalReal' => count($data)
            ]);
 
         }else{ // LA semana no esta programada

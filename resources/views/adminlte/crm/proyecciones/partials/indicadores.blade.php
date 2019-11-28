@@ -31,13 +31,17 @@
             </a>
         </div>
     </div>
-    <div class="col-md-4" style="cursor:pointer" onclick="modal_indicador('meses')">
+    <div class="col-md-4" style="cursor:pointer" onclick="modal_indicador('venta a 3 meses')">
         <div class="small-box bg-orange">
             <div class="inner" style="padding: 3.5px 10px">
                 <ul class="info-box-number list-unstyled">
-                    <li style="font-size: 15px"><b>Mes 1: 999.99</b></li>
-                    <li style="font-size: 15px"><b>Mes 2: 999.99</b></li>
-                    <li style="font-size: 15px"><b>Mes 3: 999.99</b></li>
+                    @php
+                        $indicardor4 = explode("|",$indicador[4]->valor);
+
+                    @endphp
+                    <li style="font-size: 15px"><b>{{explode(":",$indicardor4[0])[0]}}: ${{number_format((explode(":",$indicardor4[0])[1]),2,",",".")}}</b></li>
+                    <li style="font-size: 15px"><b>{{explode(":",$indicardor4[1])[0]}}:  ${{number_format((explode(":",$indicardor4[1])[1]),2,",",".")}}</b></li>
+                    <li style="font-size: 15px"><b>{{explode(":",$indicardor4[2])[0]}}:  ${{number_format((explode(":",$indicardor4[2])[1]),2,",",".")}}</b></li>
                 </ul>
             </div>
             <div class="icon">

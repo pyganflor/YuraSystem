@@ -4,6 +4,7 @@ namespace yura\Http\Controllers\Indicadores;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use yura\Modelos\Indicador;
 use yura\Modelos\Pedido;
 
 class Venta
@@ -85,5 +86,33 @@ class Venta
             $model->valor = $area_anual > 0 ? round(($venta_anual / round($area_anual * 10000, 2)), 2) : 0;
             $model->save();
         }
+    }
+
+    public static function cajas_equivalentes_vendidas_7_dias_atras(){
+        $pedidos_semanal = Pedido::where('estado', 1)
+            ->where('fecha_pedido', '>=', opDiasFecha('-', 7, date('Y-m-d')))
+            ->where('fecha_pedido', '<=', opDiasFecha('-', 1, date('Y-m-d')))->get();
+        $cajasEquivalentes=0;
+        foreach ($pedidos_semanal as $pedido) {
+            $cajasEquivalentes += $pedido->getCajas();
+        }
+
+        $indicadorD13 = Indicador::where('nombre','D13');
+        $indicadorD13->update(['valor'=>$cajasEquivalentes]);
+    }
+
+    public static function precio_por_ramo_7_dias_atras(){
+        $pedidos_semanal = Pedido::where('estado', 1)
+            ->where('fecha_pedido', '>=', opDiasFecha('-', 7, date('Y-m-d')))
+            ->where('fecha_pedido', '<=', opDiasFecha('-', 1, date('Y-m-d')))->get();
+        $valor=0;
+        $tallos=0;
+        foreach ($pedidos_semanal as $pedido){
+            $valor += $pedido->getPrecioByPedido();
+            $tallos += $pedido->getTallos();
+        }
+        $precioXTallo = $tallos > 0 ? round($valor / $tallos, 2) : 0;
+        $indicadorD14 = Indicador::where('nombre','D14');
+        $indicadorD14->update(['valor'=>$precioXTallo]);
     }
 }

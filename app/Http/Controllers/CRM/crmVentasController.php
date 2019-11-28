@@ -5,7 +5,9 @@ namespace yura\Http\Controllers\CRM;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use yura\Http\Controllers\Controller;
+use yura\Modelos\Indicador;
 use yura\Modelos\Pedido;
+use yura\Modelos\ProyeccionVentaSemanalReal;
 use yura\Modelos\Semana;
 use yura\Modelos\Submenu;
 
@@ -29,7 +31,7 @@ class crmVentasController extends Controller
         ];
 
         /* =========== SEMANAL ============= */
-        $pedidos_semanal = Pedido::All()->where('estado', 1)
+        /*$pedidos_semanal = Pedido::All()->where('estado', 1)
             ->where('fecha_pedido', '>=', opDiasFecha('-', 7, date('Y-m-d')))
             ->where('fecha_pedido', '<=', opDiasFecha('-', 1, date('Y-m-d')));
         $valor = 0;
@@ -51,7 +53,7 @@ class crmVentasController extends Controller
             'cajas' => $cajas,
             'precio_x_ramo' => $precio_x_ramo,
             'precio_x_tallo' => $precio_x_tallo,
-        ];
+        ];*/
 
         /* ======= AÑOS ======= */
         $annos = DB::table('historico_ventas')
@@ -59,13 +61,19 @@ class crmVentasController extends Controller
             ->orderBy('anno')->distinct()
             ->get();
 
+        $data = Indicador::whereIn('nombre',['D3','D4','D13','D14'])->select('valor')->get();
+
+
         return view('adminlte.crm.ventas.inicio', [
             'today' => $today,
-            'semanal' => $semanal,
+            //'semanal' => $semanal,
             'annos' => $annos,
-
             'url' => $request->getRequestUri(),
             'submenu' => Submenu::Where('url', '=', substr($request->getRequestUri(), 1))->get()[0],
+            'precioPromedioRamo' => $data[0]->valor,
+            'dinero' =>$data[1]->valor,
+            'cajasEquivalentes'=>$data[2]->valor,
+            'precioXTallo'=>$data[3]->valor,
         ]);
     }
 
@@ -223,7 +231,26 @@ class crmVentasController extends Controller
                         ->orderBy('codigo')
                         ->get();
 
-                    foreach ($fechas as $codigo) {
+                    $intevalo=[];
+                    foreach ($fechas as $fecha)
+                        $intevalo[]=$fecha->semana;
+
+                    //dump($intevalo);
+                    $dataProyeccionVentalSemanalReal = ProyeccionVentaSemanalReal::whereIn('codigo_semana',$intevalo)
+                        ->select('codigo_semana',
+                            DB::raw('SUM(cajas_equivalentes) as cajas'),
+                            DB::raw('SUM(valor)as valor')
+                        )->groupBy('codigo_semana')->get();
+
+                    //dd($dataProyeccionVentalSemanalReal);
+                    $defRamosXCaja =getConfiguracionEmpresa()->ramos_x_caja;
+                    foreach($dataProyeccionVentalSemanalReal as $data){
+                        $ramos_estandar = $data->cajas * $defRamosXCaja;
+                        $array_valor[]=round($data->valor,2); // Dinero
+                        $array_cajas[]=round($data->cajas,2); //cajas equivalentes
+                        $array_precios[]= $ramos_estandar > 0 ? round($data->valor / $ramos_estandar,2 ) : 0; //precio x ramo
+                    }
+                    /*foreach ($fechas as $codigo) {
                         $semana = Semana::All()->where('codigo', '=', $codigo->semana)->first();
                         $pedidos = Pedido::All()->where('estado', 1)
                             ->where('fecha_pedido', '>=', $semana->fecha_inicial)
@@ -246,7 +273,8 @@ class crmVentasController extends Controller
                         array_push($array_valor, $valor);
                         array_push($array_cajas, $cajas);
                         array_push($array_precios, $precio_x_ramo);
-                    }
+                    }*/
+
                 } else if ($request->x_cliente == 'true' && $request->id_cliente != '') {
                     $fechas = DB::table('semana as s')
                         ->select('s.codigo as semana')->distinct()
