@@ -279,6 +279,7 @@ class crmVentasController extends Controller
                     }*/
 
                 } /*else if ($request->x_cliente == 'true' && $request->id_cliente != '') {
+
                     $fechas = DB::table('semana as s')
                         ->select('s.codigo as semana')->distinct()
                         ->Where(function ($q) use ($desde, $hasta) {

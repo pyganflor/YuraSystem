@@ -11,6 +11,7 @@ use yura\Modelos\Ciclo;
 use yura\Modelos\ProyeccionModulo;
 use yura\Modelos\ProyeccionModuloSemana;
 use yura\Modelos\Semana;
+use yura\Jobs\ResumenSemanaCosecha;
 
 class ProyeccionAutoCreate extends Command
 {
