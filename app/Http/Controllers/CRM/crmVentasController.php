@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use yura\Http\Controllers\Controller;
 use yura\Modelos\Indicador;
 use yura\Modelos\Pedido;
+use yura\Modelos\ProyeccionVentaSemanalReal;
 use yura\Modelos\Semana;
 use yura\Modelos\Submenu;
 
@@ -230,6 +231,15 @@ class crmVentasController extends Controller
                         ->orderBy('codigo')
                         ->get();
 
+                    /*$intevalo=[];
+                    foreach ($fechas as $fecha)
+                        $intevalo[]=$fecha->semana;*/
+
+                    /*$dataProyeccionVentalSemanalReal = ProyeccionVentaSemanalReal::whereBetween('codigo_semana',[$intevalo])
+                        ->select(
+                            DB::raw('')
+                        )*/
+                   // dump($intevalo);
                     foreach ($fechas as $codigo) {
                         $semana = Semana::All()->where('codigo', '=', $codigo->semana)->first();
                         $pedidos = Pedido::All()->where('estado', 1)
