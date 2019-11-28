@@ -132,6 +132,10 @@ class UpdateIndicador extends Command
             Venta::cajas_equivalentes_vendidas_7_dias_atras();
             Log::info('INDICADOR: "Cajas equivalentes vendidas (-7 dias)"');
         }
+        if ($indicador_par === '0' || $indicador_par === 'D14') { // Cajas equivalentes vendidas(-7 dias)
+            Venta::precio_por_ramo_7_dias_atras();
+            Log::info('INDICADOR: "Precio por ramo (-7 dias)"');
+        }
         if ($indicador_par === '0' || $indicador_par === 'P1') { // Cajas cosechadas (-7 dias)
             Postcosecha::cajas_cosechadas_7_dias_atras();
             Log::info('INDICADOR: "Cajas cosechadas (-7 dias)"');

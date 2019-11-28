@@ -18,7 +18,7 @@
         <div class="small-box bg-aqua">
             <div class="inner">
                 <h3 class="info-box-number">
-                    {{number_format($semanal['cajas'], 2)}}
+                    {{number_format($cajasEquivalentes, 2)}}
                 </h3>
             </div>
             <div class="icon">

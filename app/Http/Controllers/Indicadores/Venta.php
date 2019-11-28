@@ -100,4 +100,19 @@ class Venta
         $indicadorD13 = Indicador::where('nombre','D13');
         $indicadorD13->update(['valor'=>$cajasEquivalentes]);
     }
+
+    public static function precio_por_ramo_7_dias_atras(){
+        $pedidos_semanal = Pedido::where('estado', 1)
+            ->where('fecha_pedido', '>=', opDiasFecha('-', 7, date('Y-m-d')))
+            ->where('fecha_pedido', '<=', opDiasFecha('-', 1, date('Y-m-d')))->get();
+        $valor=0;
+        $tallos=0;
+        foreach ($pedidos_semanal as $pedido){
+            $valor += $pedido->getPrecioByPedido();
+            $tallos += $pedido->getTallos();
+        }
+        $precioXTallo = $tallos > 0 ? round($valor / $tallos, 2) : 0;
+        $indicadorD14 = Indicador::where('nombre','D14');
+        $indicadorD14->update(['valor'=>$precioXTallo]);
+    }
 }
