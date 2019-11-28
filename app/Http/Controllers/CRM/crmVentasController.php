@@ -70,9 +70,9 @@ class crmVentasController extends Controller
             'url' => $request->getRequestUri(),
             'submenu' => Submenu::Where('url', '=', substr($request->getRequestUri(), 1))->get()[0],
             'dinero' => $data[0]->valor,
-            'precioPromedioRamo' =>$data[1]->valor,
+            'precioXTallo' =>$data[1]->valor,
             'cajasEquivalentes'=>$data[2]->valor,
-            'precioXTallo'=>$data[3]->valor,
+            'precioPromedioRamo'=>$data[3]->valor,
         ]);
     }
 
