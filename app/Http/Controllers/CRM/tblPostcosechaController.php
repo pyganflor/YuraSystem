@@ -17,6 +17,7 @@ use PHPExcel_Style_Fill;
 use PHPExcel_Style_Border;
 use PHPExcel_Style_Color;
 use PHPExcel_Style_Alignment;
+use yura\Modelos\Variedad;
 
 class tblPostcosechaController extends Controller
 {
@@ -207,7 +208,7 @@ class tblPostcosechaController extends Controller
                 'valores' => $valores,
             ]);
         } else if ($variedad == 'T') {
-            foreach (getVariedades() as $var) {
+            foreach (Variedad::All() as $var) {
                 $valores = [];
                 foreach ($labels as $a) {
                     $s_inicial = Semana::All()->where('estado', 1)->where('codigo', substr($a, 2) . $semana_inicial)->first();
@@ -456,7 +457,7 @@ class tblPostcosechaController extends Controller
                 'valores' => $valores,
             ]);
         } else if ($variedad == 'T') {  // Todas las variedades
-            foreach (getVariedades() as $pos_var => $var) {
+            foreach (Variedad::All() as $pos_var => $var) {
                 $valores = [];
 
                 foreach ($labels as $pos => $l) {
@@ -735,7 +736,7 @@ class tblPostcosechaController extends Controller
                 'valores' => $valores,
             ]);
         } else if ($variedad == 'T') {  // Todas las variedades
-            foreach (getVariedades() as $pos_var => $var) {
+            foreach (Variedad::All() as $pos_var => $var) {
                 $valores = [];
 
                 foreach ($labels as $pos => $l) {
@@ -1008,7 +1009,7 @@ class tblPostcosechaController extends Controller
                 'valores' => $valores,
             ]);
         } else if ($variedad == 'T') {  // Todas las variedades
-            foreach (getVariedades() as $pos_var => $var) {
+            foreach (Variedad::All() as $pos_var => $var) {
                 $valores = [];
 
                 foreach ($labels as $pos => $l) {

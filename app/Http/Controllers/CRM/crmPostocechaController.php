@@ -395,6 +395,7 @@ class crmPostocechaController extends Controller
                         ->where('codigo_semana', '<=', $sem_hasta->codigo)
                         ->orderBy('codigo_semana')
                         ->get();
+
                     $codigo_semana = $query[0]->codigo_semana;
                     $labels = [];
                     $data_cajas = [];
@@ -411,9 +412,9 @@ class crmPostocechaController extends Controller
                             array_push($data_tallos, $tallos);
                             array_push($data_calibres, $cant_calibres > 0 ? round($calibres / $cant_calibres, 2) : 0);
 
-                            $cajas = 0;
-                            $tallos = 0;
-                            $calibres = 0;
+                            $cajas = $item->cajas;
+                            $tallos = $item->tallos_clasificados;
+                            $calibres = $item->calibre;
                             $cant_calibres = 0;
                             $codigo_semana = $item->codigo_semana;
                         } else {
