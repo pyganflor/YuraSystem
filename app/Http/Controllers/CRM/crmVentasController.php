@@ -30,7 +30,7 @@ class crmVentasController extends Controller
         ];
 
         /* =========== SEMANAL ============= */
-        $pedidos_semanal = Pedido::All()->where('estado', 1)
+        /*$pedidos_semanal = Pedido::All()->where('estado', 1)
             ->where('fecha_pedido', '>=', opDiasFecha('-', 7, date('Y-m-d')))
             ->where('fecha_pedido', '<=', opDiasFecha('-', 1, date('Y-m-d')));
         $valor = 0;
@@ -52,7 +52,7 @@ class crmVentasController extends Controller
             'cajas' => $cajas,
             'precio_x_ramo' => $precio_x_ramo,
             'precio_x_tallo' => $precio_x_tallo,
-        ];
+        ];*/
 
         /* ======= AÑOS ======= */
         $annos = DB::table('historico_ventas')
@@ -60,18 +60,19 @@ class crmVentasController extends Controller
             ->orderBy('anno')->distinct()
             ->get();
 
-        $data = Indicador::whereIn('nombre',['D3','D4','D13'])->select('valor')->get();
+        $data = Indicador::whereIn('nombre',['D3','D4','D13','D14'])->select('valor')->get();
 
 
         return view('adminlte.crm.ventas.inicio', [
             'today' => $today,
-            'semanal' => $semanal,
+            //'semanal' => $semanal,
             'annos' => $annos,
             'url' => $request->getRequestUri(),
             'submenu' => Submenu::Where('url', '=', substr($request->getRequestUri(), 1))->get()[0],
             'dinero' => $data[0]->valor,
             'precioPromedioRamo' =>$data[1]->valor,
             'cajasEquivalentes'=>$data[2]->valor,
+            'precioXTallo'=>$data[3]->valor,
         ]);
     }
 

@@ -48,7 +48,7 @@
         <div class="small-box bg-green-gradient">
             <div class="inner">
                 <h3 class="info-box-number">
-                    {{number_format($semanal['precio_x_tallo'], 2)}}
+                    {{number_format($precioXTallo, 2)}}
                     <sup style="font-size: 0.4em"></sup>
                 </h3>
             </div>
