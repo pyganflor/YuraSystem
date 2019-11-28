@@ -217,19 +217,21 @@ class crmVentasController extends Controller
                 $array_valor = [];
                 $array_cajas = [];
                 $array_precios = [];
+
+                $fechas = DB::table('semana as s')
+                    ->select('s.codigo as semana')->distinct()
+                    ->Where(function ($q) use ($desde, $hasta) {
+                        $q->where('s.fecha_inicial', '>=', $desde)
+                            ->where('s.fecha_inicial', '<=', $hasta);
+                    })
+                    ->orWhere(function ($q) use ($desde, $hasta) {
+                        $q->where('s.fecha_final', '>=', $desde)
+                            ->Where('s.fecha_final', '<=', $hasta);
+                    })
+                    ->orderBy('codigo')
+                    ->get();
+
                 if ($request->total == 'true') {
-                    $fechas = DB::table('semana as s')
-                        ->select('s.codigo as semana')->distinct()
-                        ->Where(function ($q) use ($desde, $hasta) {
-                            $q->where('s.fecha_inicial', '>=', $desde)
-                                ->where('s.fecha_inicial', '<=', $hasta);
-                        })
-                        ->orWhere(function ($q) use ($desde, $hasta) {
-                            $q->where('s.fecha_final', '>=', $desde)
-                                ->Where('s.fecha_final', '<=', $hasta);
-                        })
-                        ->orderBy('codigo')
-                        ->get();
 
                     $intevalo=[];
                     foreach ($fechas as $fecha)
@@ -239,12 +241,7 @@ class crmVentasController extends Controller
                         ->select('codigo_semana',
                             DB::raw('SUM(cajas_equivalentes) as cajas'),
                             DB::raw('SUM(valor)as valor')
-                        )->groupBy('codigo_semana');
-
-                    if ($request->x_cliente == 'true' && $request->id_cliente != '')
-                        $dataProyeccionVentalSemanalReal->where('id_clietne',$request->id_cliente);
-
-                    $dataProyeccionVentalSemanalReal = $dataProyeccionVentalSemanalReal->get();
+                        )->groupBy('codigo_semana')->get();
 
                     $defRamosXCaja =getConfiguracionEmpresa()->ramos_x_caja;
                     foreach($dataProyeccionVentalSemanalReal as $data){
@@ -278,22 +275,25 @@ class crmVentasController extends Controller
                         array_push($array_precios, $precio_x_ramo);
                     }*/
 
-                } /*else if ($request->x_cliente == 'true' && $request->id_cliente != '') {
+                } else if ($request->x_cliente == 'true' && $request->id_cliente != '') {
 
-                    $fechas = DB::table('semana as s')
-                        ->select('s.codigo as semana')->distinct()
-                        ->Where(function ($q) use ($desde, $hasta) {
-                            $q->where('s.fecha_inicial', '>=', $desde)
-                                ->where('s.fecha_inicial', '<=', $hasta);
-                        })
-                        ->orWhere(function ($q) use ($desde, $hasta) {
-                            $q->where('s.fecha_final', '>=', $desde)
-                                ->Where('s.fecha_final', '<=', $hasta);
-                        })
-                        ->orderBy('codigo')
-                        ->get();
+                    foreach ($fechas as $fecha)
+                        $intevalo[]=$fecha->semana;
 
-                    foreach ($fechas as $codigo) {
+                    $dataProyeccionVentalSemanalReal = ProyeccionVentaSemanalReal::whereIn('codigo_semana',$intevalo)
+                            ->select('codigo_semana',
+                                DB::raw('SUM(cajas_equivalentes) as cajas'),
+                                DB::raw('SUM(valor)as valor')
+                            )->groupBy('codigo_semana')->where('id_cliente','=',$request->id_cliente)->get();
+
+                    $defRamosXCaja =getConfiguracionEmpresa()->ramos_x_caja;
+                    foreach($dataProyeccionVentalSemanalReal as $data){
+                        $ramos_estandar = $data->cajas * $defRamosXCaja;
+                        $array_valor[]=round($data->valor,2); // Dinero
+                        $array_cajas[]=round($data->cajas,2); //cajas equivalentes
+                        $array_precios[]= $ramos_estandar > 0 ? round($data->valor / $ramos_estandar,2 ) : 0; //precio x ramo
+                    }
+                    /*foreach ($fechas as $codigo) {
                         $semana = Semana::All()->where('codigo', '=', $codigo->semana)->first();
                         $pedidos = Pedido::All()->where('estado', 1)
                             ->where('id_cliente', '>=', $request->id_cliente)
@@ -317,8 +317,8 @@ class crmVentasController extends Controller
                         array_push($array_valor, $valor);
                         array_push($array_cajas, $cajas);
                         array_push($array_precios, $precio_x_ramo);
-                    }
-                }*/
+                    }*/
+                }
 
                 $data = [
                     'valores' => $array_valor,

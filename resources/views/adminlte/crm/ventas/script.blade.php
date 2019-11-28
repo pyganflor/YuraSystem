@@ -39,6 +39,7 @@
 
         if (list_annos.length == 0)
             $('#filtro_predeterminado_variedad').val('');
+
         datos = {
             anual: false,
             mensual: mensual,
