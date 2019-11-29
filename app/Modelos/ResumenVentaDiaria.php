@@ -6,8 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class ResumenVentaDiaria extends Model
 {
-    protected $table = 'venta_diaria';
-    protected $primaryKey = 'id_venta_diaria';
+    protected $table = 'resumen_venta_diaria';
+    protected $primaryKey = 'id_resumen_venta_diaria';
     public $incrementing = false;
     public $timestamps = false;
 
