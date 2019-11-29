@@ -3,9 +3,9 @@
 namespace yura\Console\Commands;
 
 use Illuminate\Console\Command;
-use yura\Http\Controllers\Indicadores\Venta;
 use yura\Modelos\Pedido;
 use yura\Modelos\ResumenVentaDiaria;
+
 use DB;
 
 class VentaDiariaMesAnterior extends Command
@@ -49,7 +49,7 @@ class VentaDiariaMesAnterior extends Command
             ->where('p.estado', '=', 1)
             ->whereBetween('p.fecha_pedido',[$inicio,$fin])
             ->orderBy('p.fecha_pedido')->get();
-
+        dump($inicio,$fin);
         foreach ($fechas as $f) {
 
             $valor = 0;
@@ -71,9 +71,15 @@ class VentaDiariaMesAnterior extends Command
             $ventaDiaria = ResumenVentaDiaria::where('fecha_pedido', $f->dia)->first();
 
             if(isset($existeData)){
+<<<<<<< HEAD
                 $objVentaDiaria= ResumenVentaDiaria::find($ventaDiaria->id_venta_diaria);
             }else{
                 $objVentaDiaria= new ResumenVentaDiaria;
+=======
+                $objVentaDiaria= VentaDiaria::find($ventaDiaria->id_venta_diaria);
+            }else{
+                $objVentaDiaria= new VentaDiaria;
+>>>>>>> 251f7fe766ebdabd5fbbeb32a7abf6a89b9edb5b
             }
             $objVentaDiaria->fecha_pedido= $f->dia;
             $objVentaDiaria->valor= $valor;
