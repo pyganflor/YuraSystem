@@ -4,7 +4,7 @@ namespace yura\Modelos;
 
 use Illuminate\Database\Eloquent\Model;
 
-class VentaDiaria extends Model
+class ResumenVentaDiaria extends Model
 {
     protected $table = 'venta_diaria';
     protected $primaryKey = 'id_venta_diaria';
