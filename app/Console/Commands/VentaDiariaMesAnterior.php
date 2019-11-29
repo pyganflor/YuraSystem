@@ -71,15 +71,10 @@ class VentaDiariaMesAnterior extends Command
             $ventaDiaria = ResumenVentaDiaria::where('fecha_pedido', $f->dia)->first();
 
             if(isset($existeData)){
-<<<<<<< HEAD
                 $objVentaDiaria= ResumenVentaDiaria::find($ventaDiaria->id_venta_diaria);
             }else{
                 $objVentaDiaria= new ResumenVentaDiaria;
-=======
-                $objVentaDiaria= VentaDiaria::find($ventaDiaria->id_venta_diaria);
-            }else{
-                $objVentaDiaria= new VentaDiaria;
->>>>>>> 251f7fe766ebdabd5fbbeb32a7abf6a89b9edb5b
+
             }
             $objVentaDiaria->fecha_pedido= $f->dia;
             $objVentaDiaria->valor= $valor;
