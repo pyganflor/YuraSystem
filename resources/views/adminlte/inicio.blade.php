@@ -130,7 +130,7 @@
                                     <strong class="info-box-text" style="font-size: 1.2em">Producción</strong>
                                     <span class="info-box-number">
                                         {{number_format($tallos_m2, 2)}}
-                                        <small> m<sup>2</sup></small>
+                                        <small> t/m<sup>2</sup></small>
                                     </span>
                                     <span class="info-box-number" title="Ramos/m2">
                                         {{number_format($ramos_m2_anno, 2)}}

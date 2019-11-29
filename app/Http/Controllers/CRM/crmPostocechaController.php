@@ -346,10 +346,10 @@ class crmPostocechaController extends Controller
                             array_push($data_tallos, $tallos);
                             array_push($data_calibres, $cant_calibres > 0 ? round($calibres / $cant_calibres, 2) : 0);
 
-                            $cajas = 0;
-                            $tallos = 0;
-                            $calibres = 0;
-                            $cant_calibres = 0;
+                            $cajas = $item->cajas;
+                            $tallos = $item->tallos_clasificados;
+                            $calibres = $item->calibre;
+                            $cant_calibres = $item->calibre > 0 ? 1 : 0;
                             $codigo_semana = $item->codigo_semana;
                         } else {
                             $cajas += $item->cajas;
@@ -415,7 +415,7 @@ class crmPostocechaController extends Controller
                             $cajas = $item->cajas;
                             $tallos = $item->tallos_clasificados;
                             $calibres = $item->calibre;
-                            $cant_calibres = 0;
+                            $cant_calibres = $item->calibre > 0 ? 1 : 0;
                             $codigo_semana = $item->codigo_semana;
                         } else {
                             $cajas += $item->cajas;
