@@ -5,8 +5,8 @@ namespace yura\Console\Commands;
 use Illuminate\Console\Command;
 use yura\Http\Controllers\Indicadores\Venta;
 use yura\Modelos\Pedido;
-use yura\Modelos\Variedad;
 use yura\Modelos\VentaDiaria;
+use DB;
 
 class VentaDiariaMesAnterior extends Command
 {
@@ -41,19 +41,15 @@ class VentaDiariaMesAnterior extends Command
      */
     public function handle()
     {
-        $array_valor = [];
-        $array_cajas = [];
-        $array_precios = [];
-        $fechaActual = now();
-        $inicio = $fechaActual->subDay()->subMonth()->toDateString();
-        $fin = $fechaActual->subDay()->toDateString();
+        $inicio = now()->subDay()->subMonth()->toDateString();
+        $fin =  now()->subDay()->toDateString();
 
         $fechas = DB::table('pedido as p')
             ->select('p.fecha_pedido as dia')->distinct()
             ->where('p.estado', '=', 1)
             ->whereBetween('p.fecha_pedido',[$inicio,$fin])
             ->orderBy('p.fecha_pedido')->get();
-
+        dump($inicio,$fin);
         foreach ($fechas as $f) {
 
             $valor = 0;
@@ -75,9 +71,9 @@ class VentaDiariaMesAnterior extends Command
             $ventaDiaria = VentaDiaria::where('fecha_pedido', $f->dia)->first();
 
             if(isset($existeData)){
-                $objVentaDiaria= Venta::find($ventaDiaria->id_venta_diaria);
+                $objVentaDiaria= VentaDiaria::find($ventaDiaria->id_venta_diaria);
             }else{
-                $objVentaDiaria= new Venta;
+                $objVentaDiaria= new VentaDiaria;
             }
             $objVentaDiaria->fecha_pedido= $f->dia;
             $objVentaDiaria->valor= $valor;
