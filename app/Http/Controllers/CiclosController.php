@@ -114,10 +114,13 @@ class CiclosController extends Controller
                 ->first();
             $ciclo->desecho = $semana->desecho != '' ? $semana->desecho : 0;
             $ciclo->curva = $semana->curva;
-            if ($ciclo->poda_siembra == 'P')
+            if ($ciclo->poda_siembra == 'P') {
                 $ciclo->semana_poda_siembra = $semana->semana_poda;
-            else
+                $ciclo->conteo = $semana->tallos_planta_poda;
+            } else {
                 $ciclo->semana_poda_siembra = $semana->semana_siembra;
+                $ciclo->conteo = $semana->tallos_planta_siembra;
+            }
 
             $last_siembra = Ciclo::All()->where('estado', 1)->where('id_modulo', $request->modulo)
                 ->where('poda_siembra', 'S')->sortBy('fecha_inicio')->last();
@@ -355,7 +358,6 @@ class CiclosController extends Controller
             $ciclo->fecha_fin = $request->fecha_fin;
             $ciclo->plantas_iniciales = $request->plantas_iniciales;
             $ciclo->plantas_muertas = $request->plantas_muertas;
-            $ciclo->conteo = $request->conteo;
 
             $semana = Semana::All()
                 ->where('estado', 1)
@@ -365,11 +367,13 @@ class CiclosController extends Controller
                 ->first();
             $ciclo->desecho = $semana->desecho != '' ? $semana->desecho : 0;
             $ciclo->curva = $semana->curva;
-            if ($ciclo->poda_siembra == 'P')
+            if ($ciclo->poda_siembra == 'P') {
                 $ciclo->semana_poda_siembra = $semana->semana_poda;
-            else
+                $ciclo->conteo = $request->conteo > 0 ? $request->conteo : $semana->tallos_planta_poda;
+            } else {
                 $ciclo->semana_poda_siembra = $semana->semana_siembra;
-
+                $ciclo->conteo = $request->conteo > 0 ? $request->conteo : $semana->tallos_planta_siembra;
+            }
             if ($ciclo->save()) {
                 $success = true;
                 $msg = '<div class="alert alert-success text-center">' .
