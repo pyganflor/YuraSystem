@@ -148,7 +148,7 @@
                     <form id="form-semana_mes-{{$item->id_semana}}">
                         <select class="form-coontrol" id="mes_semana_{{$item->id_semana}}" name="mes_semana_{{$item->id_semana}}">
                             @foreach(getMeses() as $pos => $m)
-                                <option value="{{$po+1}}"> {{$m}}</option>
+                                <option value="{{$pos+1}}"> {{$m}}</option>
                             @endforeach
                         </select>
                     </form>
