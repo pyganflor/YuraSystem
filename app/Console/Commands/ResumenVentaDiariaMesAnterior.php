@@ -44,7 +44,7 @@ class ResumenVentaDiariaMesAnterior extends Command
         $inicio = now()->subDay()->subMonth()->toDateString();
         $fin =  now()->subDay()->toDateString();
 
-        $fechas = DB::table('pedido as p')
+        $fechas = DB::table('pedido as p')  //Filtro de fecha donde solo hay pedidos
             ->select('p.fecha_pedido as dia')->distinct()
             ->where('p.estado', '=', 1)
             ->whereBetween('p.fecha_pedido',[$inicio,$fin])
@@ -67,10 +67,11 @@ class ResumenVentaDiariaMesAnterior extends Command
             $ramos_estandar = $cajas * getConfiguracionEmpresa()->ramos_x_caja;
             $precio_x_ramo = $ramos_estandar > 0 ? round($valor / $ramos_estandar, 2) : 0;
 
+
             $ventaDiaria = ResumenVentaDiaria::where('fecha_pedido', $f->dia)->first();
 
             if(isset($ventaDiaria)){
-                $objVentaDiaria= ResumenVentaDiaria::find($ventaDiaria->id_venta_diaria);
+                $objVentaDiaria= ResumenVentaDiaria::find($ventaDiaria->id_resumen_venta_diaria);
             }else{
                 $objVentaDiaria= new ResumenVentaDiaria;
             }
