@@ -8,6 +8,7 @@ use yura\Http\Controllers\Controller;
 use yura\Modelos\Indicador;
 use yura\Modelos\Pedido;
 use yura\Modelos\ProyeccionVentaSemanalReal;
+use yura\Modelos\ResumenVentaDiaria;
 use yura\Modelos\Semana;
 use yura\Modelos\Submenu;
 
@@ -153,7 +154,15 @@ class crmVentasController extends Controller
                         ->get();
 
                     foreach ($fechas as $f) {
-                        $pedidos_semanal = Pedido::All()->where('estado', 1)
+
+                        $objResumenVentaDiaria = ResumenVentaDiaria::where('fecha_pedido',$f->dia)->get();
+                        foreach($objResumenVentaDiaria as $ventaDiaria){
+                            $array_valor[]=$ventaDiaria->valor;
+                            $array_cajas[]=$ventaDiaria->cajas_equivalentes;
+                            $array_precios[]=$ventaDiaria->precio_x_ramo;
+                        }
+
+                        /*$pedidos_semanal = Pedido::All()->where('estado', 1)
                             ->where('fecha_pedido', '=', $f->dia);
                         $valor = 0;
                         $cajas = 0;
@@ -171,7 +180,7 @@ class crmVentasController extends Controller
 
                         array_push($array_valor, $valor);
                         array_push($array_cajas, $cajas);
-                        array_push($array_precios, $precio_x_ramo);
+                        array_push($array_precios, $precio_x_ramo);*/
                     }
                 } else if ($request->x_cliente == 'true' && $request->id_cliente != '') {
                     $fechas = DB::table('pedido as p')
