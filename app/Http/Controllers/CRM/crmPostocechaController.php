@@ -414,7 +414,7 @@ class crmPostocechaController extends Controller
 
                             $cajas = $item->cajas;
                             $tallos = $item->tallos_clasificados;
-                            $calibres = $item->calibre;
+                            $calibres = 0;
                             $cant_calibres = 0;
                             $codigo_semana = $item->codigo_semana;
                         } else {
