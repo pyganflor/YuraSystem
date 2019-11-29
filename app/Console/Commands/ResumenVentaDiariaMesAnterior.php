@@ -8,7 +8,7 @@ use yura\Modelos\ResumenVentaDiaria;
 
 use DB;
 
-class VentaDiariaMesAnterior extends Command
+class ResumenVentaDiariaMesAnterior extends Command
 {
     /**
      * The name and signature of the console command.
@@ -49,9 +49,8 @@ class VentaDiariaMesAnterior extends Command
             ->where('p.estado', '=', 1)
             ->whereBetween('p.fecha_pedido',[$inicio,$fin])
             ->orderBy('p.fecha_pedido')->get();
-        dump($inicio,$fin);
+        //dump($inicio,$fin);
         foreach ($fechas as $f) {
-
             $valor = 0;
             $cajas = 0;
             $tallos = 0;
@@ -70,11 +69,10 @@ class VentaDiariaMesAnterior extends Command
 
             $ventaDiaria = ResumenVentaDiaria::where('fecha_pedido', $f->dia)->first();
 
-            if(isset($existeData)){
+            if(isset($ventaDiaria)){
                 $objVentaDiaria= ResumenVentaDiaria::find($ventaDiaria->id_venta_diaria);
             }else{
                 $objVentaDiaria= new ResumenVentaDiaria;
-
             }
             $objVentaDiaria->fecha_pedido= $f->dia;
             $objVentaDiaria->valor= $valor;

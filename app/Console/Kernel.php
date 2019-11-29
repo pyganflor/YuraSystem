@@ -12,6 +12,7 @@ use yura\Console\Commands\NotificacionesSistema;
 use yura\Console\Commands\UpdateHistoricoVentas;
 use yura\Console\Commands\UpdateIndicador;
 use yura\Console\Commands\UpdateProyeccionSemanal;
+use yura\Console\Commands\ResumenVentaDiariaMesAnterior;
 use yura\Console\Commands\VentaSemanalReal;
 use yura\Console\Commands\PrecioVariedadCliente;
 use yura\Console\Commands\ResumenSemanaCosecha;
@@ -35,6 +36,7 @@ class Kernel extends ConsoleKernel
         PrecioVariedadCliente::class,
         ResumenSemanaCosecha::class,
         UpdateIndicador::class,
+        ResumenVentaDiariaMesAnterior::class,
     ];
 
     /**
@@ -58,6 +60,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('precio:variedad_x_cliente')->sundays()->between('7:00', '22:00')->runInBackground(); // PrecioVariedadCliente::class
         $schedule->command('resumen:semana_cosecha')->hourly()->runInBackground(); // ResumenSemanaCosecha::class
         $schedule->command('indicador:update')->hourly()->runInBackground(); // UpdateIndicador::class
+        $schedule->command('resumen_venta_diaria:mes_anterior')->daily()->runInBackground(); // ResumenVentaDiariaMesAnterior::class
     }
 
     /**
