@@ -121,7 +121,6 @@ class crmVentasController extends Controller
                     $query = $query->get();
                     $count_query = $count_query->get();
 
-
                     array_push($arreglo_valores, count($query) > 0 ? round($query[0]->valor, 2) : 0);
                     array_push($arreglo_fisicas, count($query) > 0 ? round($query[0]->cajas_fisicas, 2) : 0);
                     array_push($arreglo_cajas, count($query) > 0 ? round($query[0]->cajas_equivalentes, 2) : 0);
@@ -208,7 +207,7 @@ class crmVentasController extends Controller
                         }
                         $ramos_estandar = $cajas * getConfiguracionEmpresa()->ramos_x_caja;
                         $precio_x_ramo = $ramos_estandar > 0 ? round($valor / $ramos_estandar, 2) : 0;
-                        $precio_x_tallo = $tallos > 0 ? round($valor / $tallos, 2) : 0;
+                        //$precio_x_tallo = $tallos > 0 ? round($valor / $tallos, 2) : 0;
 
                         array_push($array_valor, $valor);
                         array_push($array_cajas, $cajas);
