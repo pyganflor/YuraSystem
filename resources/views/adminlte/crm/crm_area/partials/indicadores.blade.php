@@ -3,7 +3,7 @@
         <div class="small-box bg-teal-active">
             <div class="inner">
                 <h3 class="info-box-number">
-                    {{number_format(round($mensual['area'] / 10000, 2), 2)}}
+                    {{number_format(round($area_mensual / 10000, 2), 2)}}
                 </h3>
             </div>
             <div class="icon">
@@ -18,9 +18,9 @@
         <div class="small-box bg-aqua">
             <div class="inner">
                 <h3 class="info-box-number">
-                    {{number_format($mensual['ciclo'], 2)}}
-                    @if($mensual['ciclo'] > 0)
-                        <small style="font-size: 0.5em; color: white; font-weight: bold;">({{round(365 / $mensual['ciclo'],2)}})</small>
+                    {{number_format($ciclo_mensual, 2)}}
+                    @if($ciclo_mensual > 0)
+                        <small style="font-size: 0.5em; color: white; font-weight: bold;">({{round(365 / $ciclo_mensual,2)}})</small>
                     @endif
                 </h3>
             </div>
@@ -36,7 +36,7 @@
         <div class="small-box bg-orange">
             <div class="inner">
                 <h3 class="info-box-number">
-                    {{number_format($mensual['tallos'], 2)}}
+                    {{number_format($tallos_m2_mensual, 2)}}
                 </h3>
             </div>
             <div class="icon">
@@ -51,7 +51,7 @@
         <div class="small-box bg-green-gradient">
             <div class="inner">
                 <h3 class="info-box-number">
-                    {{number_format($mensual['ramos'], 2)}}
+                    {{number_format($ramos_m2_mensual, 2)}}
                 </h3>
             </div>
             <div class="icon">
@@ -66,7 +66,7 @@
         <div class="small-box bg-red">
             <div class="inner">
                 <h3 class="info-box-number">
-                    {{number_format($mensual['ramos_anno'], 2)}}
+                    {{number_format($ramos_m2_anno_mensual, 2)}}
                 </h3>
             </div>
             <div class="icon">
