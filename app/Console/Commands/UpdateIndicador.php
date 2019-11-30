@@ -107,6 +107,10 @@ class UpdateIndicador extends Command
             Area::area_produccion_4_semanas_atras();
             Log::info('INDICADOR: "Área en producción (-4 meses)"');
         }
+        if ($indicador_par === '0' || $indicador_par === 'DA1') { // Ciclo (-4 semanas)
+            Area::ciclo_4_semanas_atras();
+            Log::info('INDICADOR: "Ciclo (-4 semanas)"');
+        }
         if ($indicador_par === '0' || $indicador_par === 'D8') { // Ramos/m2/año (-4 meses)
             Area::ramos_m2_anno_4_semanas_atras();
             Log::info('INDICADOR: "Ramos/m2/año (-4 meses)"');
@@ -127,6 +131,10 @@ class UpdateIndicador extends Command
         if ($indicador_par === '0' || $indicador_par === 'D12') { // Tallos/m2 (-4 semanas)
             Area::tallos_m2_4_semanas_atras();
             Log::info('INDICADOR: "Tallos/m2 (-4 semanas)"');
+        }
+        if ($indicador_par === '0' || $indicador_par === 'DA2') { // Ramos/m2 (-4 semanas)
+            Area::ramos_m2_4_semanas_atras();
+            Log::info('INDICADOR: "Ramos/m2 (-4 semanas)"');
         }
         if ($indicador_par === '0' || $indicador_par === 'D13') { // Cajas equivalentes vendidas(-7 dias)
             Venta::cajas_equivalentes_vendidas_7_dias_atras();

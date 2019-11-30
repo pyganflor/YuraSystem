@@ -43,6 +43,34 @@ class Area
         }
     }
 
+    public static function ciclo_4_semanas_atras()
+    {
+        $model = getIndicadorByName('DA1');  // Ciclo (-4 semanas)
+        if ($model != '') {
+            $desde = opDiasFecha('-', 28, date('Y-m-d'));
+            $hasta = opDiasFecha('-', 7, date('Y-m-d'));
+
+            $fechas = DB::table('semana as s')
+                ->select('s.codigo as semana')->distinct()
+                ->Where(function ($q) use ($desde, $hasta) {
+                    $q->where('s.fecha_inicial', '>=', $desde)
+                        ->where('s.fecha_inicial', '<=', $hasta);
+                })
+                ->orWhere(function ($q) use ($desde, $hasta) {
+                    $q->where('s.fecha_final', '>=', $desde)
+                        ->Where('s.fecha_final', '<=', $hasta);
+                })
+                ->orderBy('codigo')
+                ->get();
+
+            $data_ciclos = getCiclosCerradosByRango($fechas[0]->semana, $fechas[3]->semana, 'T');
+            $ciclo = $data_ciclos['ciclo'];
+
+            $model->valor = $ciclo;
+            $model->save();
+        }
+    }
+
     public static function ramos_m2_anno_4_semanas_atras()
     {
         $desde = opDiasFecha('-', 28, date('Y-m-d'));
@@ -101,6 +129,39 @@ class Area
             $data_ciclos = getCiclosCerradosByRango($desde_sem->codigo, $hasta_sem->codigo, 'T');
 
             $model->valor = $data_ciclos['area_cerrada'] > 0 ? round($data_ciclos['tallos_cosechados'] / $data_ciclos['area_cerrada'], 2) : 0;
+            $model->save();
+        }
+    }
+
+    public static function ramos_m2_4_semanas_atras()
+    {
+        $model = getIndicadorByName('DA2');  // Ramos/m2 (-4 meses)
+        if ($model != '') {
+            $desde = opDiasFecha('-', 28, date('Y-m-d'));
+            $hasta = opDiasFecha('-', 7, date('Y-m-d'));
+
+            $fechas = DB::table('semana as s')
+                ->select('s.codigo as semana')->distinct()
+                ->Where(function ($q) use ($desde, $hasta) {
+                    $q->where('s.fecha_inicial', '>=', $desde)
+                        ->where('s.fecha_inicial', '<=', $hasta);
+                })
+                ->orWhere(function ($q) use ($desde, $hasta) {
+                    $q->where('s.fecha_final', '>=', $desde)
+                        ->Where('s.fecha_final', '<=', $hasta);
+                })
+                ->orderBy('codigo')
+                ->get();
+
+            $data_ciclos = getCiclosCerradosByRango($fechas[0]->semana, $fechas[3]->semana, 'T');
+            $area_cerrada = $data_ciclos['area_cerrada'];
+            $tallos = $data_ciclos['tallos_cosechados'];
+
+            $data_cosecha = getCosechaByRango($fechas[0]->semana, $fechas[3]->semana, 'T');
+            $calibre = $data_cosecha['calibre'];
+            $calibre > 0 ? $ramos = round($tallos / $calibre, 2) : $ramos = 0;
+
+            $model->valor = $area_cerrada > 0 ? round($ramos / $area_cerrada, 2) : 0;
             $model->save();
         }
     }
