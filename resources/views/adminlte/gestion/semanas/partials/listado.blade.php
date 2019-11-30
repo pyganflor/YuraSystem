@@ -40,6 +40,10 @@
                 INICIO COSECHA SIEMBRA
             </th>
             <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d"
+                width="10%" rowspan="3">
+                MES
+            </th>
+            <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d"
                 rowspan="3">
                 OPCIONES
             </th>
@@ -138,6 +142,15 @@
                         <input type="number" class="text-center" name="semana_siembra_{{$item->id_semana}}"
                                id="semana_siembra_{{$item->id_semana}}" required value="{{$item->semana_siembra}}" maxlength="2" min="1"
                                max="{{count($semanas)}}">
+                    </form>
+                </td>
+                <td style="border-color: #9d9d9d" class="text-center">
+                    <form id="form-semana_mes-{{$item->id_semana}}">
+                        <select class="form-coontrol" id="mes_semana_{{$item->id_semana}}" name="mes_semana_{{$item->id_semana}}">
+                            @foreach(getMeses() as $pos => $m)
+                                <option value="{{$pos+1}}"> {{$m}}</option>
+                            @endforeach
+                        </select>
                     </form>
                 </td>
                 <td style="border-color: #9d9d9d" class="text-center">
