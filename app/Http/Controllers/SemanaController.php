@@ -159,9 +159,9 @@ class SemanaController extends Controller
             $model->tallos_ramo_siembra = $request->tallos_ramo_siembra;
             $model->tallos_ramo_poda = $request->tallos_ramo_poda;
             $model->tallos_ramo_poda = $request->tallos_ramo_poda;
-            $model->mes = $request->mes;
 
-
+            $objSemana = Semana::where('codigo',$model->codigo);
+            $objSemana->update(['mes'=>$request->mes]);
 
             if ($model->save()) {
                 $success = true;
