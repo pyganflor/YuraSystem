@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use yura\Jobs\ProyeccionUpdateSemanal;
 use yura\Jobs\ProyeccionVentaSemanalUpdate;
+use yura\Jobs\ResumenAreaSemanal;
 use yura\Jobs\ResumenSemanaCosecha;
 use yura\Jobs\UpdateIndicador;
 use yura\Modelos\Indicador;
@@ -71,6 +72,10 @@ class dbController extends Controller
                     'indicador' => $request->indicador
                 ]);
             }
+        }
+        if ($request->comando == 5) {   // comando ResumenAreaSemanal
+            ResumenAreaSemanal::dispatch($request->desde, $request->hasta, $request->variedad)
+                ->onQueue('job');
         }
 
         return ['success' => true];
