@@ -119,9 +119,24 @@ class ResumenSemanaCosecha extends Command
                                 ['id_variedad', $variedad->id_variedad],
                                 ['codigo_semana', $semana->codigo - 1]
                             ])->select('calibre')->first();
-                            dump("Variedad: ".$variedad->id_variedad." Semana: ".($semana->codigo - 1)." Resultado".$resumenAnterior);
-                            //$calibre = $resumenAnterior->calibre;
-                            //dump("intervalo 4 sem: ".$resumenAnterior->calibre);
+
+                            if(isset($resumenAnterior)){
+                                $calibre = $resumenAnterior->calibre;
+                            }else{
+                                for($y=($semana->codigo);$y>0001;$y--){
+                                    $objResSemCos = ResumenCosecha::where([
+                                        ['id_variedad',$variedad->id_variedad],
+                                        ['codigo_semana',$y-1]
+                                    ])->select('calibre')->first();
+                                    if(isset($objResSemCos)){
+                                        $calibre = $objResSemCos->calibre;
+                                        break;
+                                    }
+                                }
+                            }
+                            dump("Variedad: ".$variedad->id_variedad." Semana: ".$semana->codigo." Resultado".$calibre);
+                            //dump("Variedad: ".$variedad->id_variedad." Semana: ".($semana->codigo - 1)." Resultado".$calibre." cuarta semana: ".$semanaActual->cuartaSemanaFutura($variedad->id_variedad));
+
                         } else {
                             $calibreProyectado = Semana::where([['codigo', $semana->codigo], ['id_variedad', $variedad->id_variedad]])->first();
                             $calibre = isset($calibreProyectado) ? $calibreProyectado->tallos_ramo_poda : 0;
@@ -140,7 +155,7 @@ class ResumenSemanaCosecha extends Command
                     $objResumenSemanaCosecha->cajas_proyectadas = number_format($cajasProyectadas, 2, ".", "");
                     $tallos_clasificados = getTallosClasificadosByRangoVariedad($semana->fecha_inicial, $semana->fecha_final, $variedad->id_variedad);
                     $objResumenSemanaCosecha->tallos_clasificados = number_format($tallos_clasificados, 2, ".", "");
-                    //$objResumenSemanaCosecha->save();
+                    $objResumenSemanaCosecha->save();
                 }
             }
 
