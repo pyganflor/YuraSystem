@@ -81,6 +81,7 @@
                 desecho: $('#desecho_' + id).val(),
                 semana_poda: $('#semana_poda_' + id).val(),
                 semana_siembra: $('#semana_siembra_' + id).val(),
+                mes: $('#mes_semana_' + id).val(),
             };
             modal_quest('modal_quest_update_semana', '<div class="alert alert-info text-center">¿Desea actualizar los datos de la semana?</div>',
                 '<i class="fa fa-fw fa-save"></i> Actualizar semana', true, false, '35%', function () {

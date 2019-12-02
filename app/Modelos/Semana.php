@@ -28,6 +28,7 @@ class Semana extends Model
         'tallos_planta_poda',
         'tallos_ramo_siembra',
         'tallos_ramo_poda',
+        'mes'
     ];
 
     public function variedad()
@@ -86,7 +87,7 @@ class Semana extends Model
             }
 
         }else{
-            for($x=($this->codigo);$x>0001;$x--){
+            for($x=$this->codigo;$x>0001;$x--){
                 $objResumenSemanaCosecha = ResumenSemanaCosecha::where([
                     ['id_variedad',$idVariedad],
                     ['codigo_semana',$x-1]

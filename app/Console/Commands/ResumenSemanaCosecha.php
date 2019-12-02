@@ -114,12 +114,28 @@ class ResumenSemanaCosecha extends Command
 
                     if ($semana->codigo >= $semanaActual->codigo) {
                         if ($semana->codigo <= $semanaActual->cuartaSemanaFutura($variedad->id_variedad)) {
+
                             $resumenAnterior = ResumenCosecha::where([
                                 ['id_variedad', $variedad->id_variedad],
                                 ['codigo_semana', $semana->codigo - 1]
                             ])->select('calibre')->first();
-                            $calibre = $resumenAnterior->calibre;
-                            //dump("intervalo 4 sem: ".$resumenAnterior->calibre);
+
+                            if(isset($resumenAnterior)){
+                                $calibre = $resumenAnterior->calibre;
+                            }else{
+                                for($y=($semana->codigo);$y>0001;$y--){
+                                    $objResSemCos = ResumenCosecha::where([
+                                        ['id_variedad',$variedad->id_variedad],
+                                        ['codigo_semana',$y-1]
+                                    ])->select('calibre')->first();
+                                    if(isset($objResSemCos)){
+                                        $calibre = $objResSemCos->calibre;
+                                        break;
+                                    }
+                                }
+                            }
+                            //dump("Variedad: ".$variedad->id_variedad." Semana: ".$semana->codigo." Resultado".$calibre);
+                            //dump("Variedad: ".$variedad->id_variedad." Semana: ".($semana->codigo - 1)." Resultado".$calibre." cuarta semana: ".$semanaActual->cuartaSemanaFutura($variedad->id_variedad));
                         } else {
                             $calibreProyectado = Semana::where([['codigo', $semana->codigo], ['id_variedad', $variedad->id_variedad]])->first();
                             $calibre = isset($calibreProyectado) ? $calibreProyectado->tallos_ramo_poda : 0;
