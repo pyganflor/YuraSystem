@@ -136,7 +136,6 @@ class ResumenSemanaCosecha extends Command
                             }
                             //dump("Variedad: ".$variedad->id_variedad." Semana: ".$semana->codigo." Resultado".$calibre);
                             //dump("Variedad: ".$variedad->id_variedad." Semana: ".($semana->codigo - 1)." Resultado".$calibre." cuarta semana: ".$semanaActual->cuartaSemanaFutura($variedad->id_variedad));
-
                         } else {
                             $calibreProyectado = Semana::where([['codigo', $semana->codigo], ['id_variedad', $variedad->id_variedad]])->first();
                             $calibre = isset($calibreProyectado) ? $calibreProyectado->tallos_ramo_poda : 0;
