@@ -87,7 +87,7 @@ class Semana extends Model
             }
 
         }else{
-            for($x=($this->codigo);$x>0001;$x--){
+            for($x=$this->codigo;$x>0001;$x--){
                 $objResumenSemanaCosecha = ResumenSemanaCosecha::where([
                     ['id_variedad',$idVariedad],
                     ['codigo_semana',$x-1]
