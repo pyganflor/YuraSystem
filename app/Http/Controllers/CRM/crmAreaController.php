@@ -51,54 +51,6 @@ class crmAreaController extends Controller
             'ramos_anno' => $area_cerrada > 0 ? round($ciclo_ano * round($ramos / $area_cerrada, 2), 2) : 0,
         ];
 
-        /* =========== MENSUAL ============= */
-        $desde = opDiasFecha('-', 28, date('Y-m-d'));
-        $hasta = opDiasFecha('-', 7, date('Y-m-d'));
-
-        $fechas = DB::table('semana as s')
-            ->select('s.codigo as semana')->distinct()
-            ->Where(function ($q) use ($desde, $hasta) {
-                $q->where('s.fecha_inicial', '>=', $desde)
-                    ->where('s.fecha_inicial', '<=', $hasta);
-            })
-            ->orWhere(function ($q) use ($desde, $hasta) {
-                $q->where('s.fecha_final', '>=', $desde)
-                    ->Where('s.fecha_final', '<=', $hasta);
-            })
-            ->orderBy('codigo')
-            ->get();
-
-        $area = 0;
-        $data_4semanas = getAreaCiclosByRango($fechas[0]->semana, $fechas[3]->semana, 'T');
-
-        foreach ($data_4semanas['variedades'] as $var) {
-            foreach ($var['ciclos'] as $c) {
-                foreach ($c['areas'] as $a) {
-                    $area += $a;
-                }
-            }
-        }
-
-        $data_ciclos = getCiclosCerradosByRango($fechas[0]->semana, $fechas[3]->semana, 'T');
-        $ciclo = $data_ciclos['ciclo'];
-        $area_cerrada = $data_ciclos['area_cerrada'];
-        $tallos = $data_ciclos['tallos_cosechados'];
-
-        $data_cosecha = getCosechaByRango($fechas[0]->semana, $fechas[3]->semana, 'T');
-        $calibre = $data_cosecha['calibre'];
-        $calibre > 0 ? $ramos = round($tallos / $calibre, 2) : $ramos = 0;
-
-        $ciclo_ano = $area_cerrada > 0 ? round(365 / $ciclo, 2) : 0;
-
-        $mensual = [
-            'ciclo_ano' => $ciclo_ano,
-            'area' => round($area / count($fechas), 2),
-            'ciclo' => $ciclo,
-            'tallos' => $area_cerrada > 0 ? round($tallos / $area_cerrada, 2) : 0,
-            'ramos' => $area_cerrada > 0 ? round($ramos / $area_cerrada, 2) : 0,
-            'ramos_anno' => $area_cerrada > 0 ? round($ciclo_ano * round($ramos / $area_cerrada, 2), 2) : 0,
-        ];
-
         /* ======= AÑOS ======= */
         $annos = DB::table('ciclo')
             ->select(DB::raw('year(fecha_inicio) as anno'))->distinct()
@@ -106,7 +58,11 @@ class crmAreaController extends Controller
             ->get();
 
         return view('adminlte.crm.crm_area.inicio', [
-            'mensual' => $mensual,
+            'area_mensual' => getIndicadorByName('D7')->valor,
+            'ciclo_mensual' => getIndicadorByName('DA1')->valor,
+            'tallos_m2_mensual' => getIndicadorByName('D12')->valor,
+            'ramos_m2_mensual' => getIndicadorByName('DA2')->valor,
+            'ramos_m2_anno_mensual' => getIndicadorByName('D8')->valor,
             'semanal' => $semanal,
             'annos' => $annos,
             'semana_actual' => $semana_actual,
