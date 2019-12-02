@@ -78,9 +78,6 @@ class Area
 
         $model = getIndicadorByName('D8');  // Calibre (-7 días)
         if ($model != '') {
-            $desde = opDiasFecha('-', 28, date('Y-m-d'));
-            $hasta = opDiasFecha('-', 7, date('Y-m-d'));
-
             $semanas_4 = DB::table('semana as s')
                 ->select('s.codigo as semana')->distinct()
                 ->Where(function ($q) use ($desde, $hasta) {
