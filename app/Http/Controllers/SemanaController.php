@@ -136,6 +136,7 @@ class SemanaController extends Controller
             'tallos_planta_poda' => 'required|',
             'tallos_ramo_siembra' => 'required|',
             'tallos_ramo_poda' => 'required|',
+            'mes' => 'required|',
         ], [
             'id_semana.required' => 'La semana es obligatoria',
             'semana_siembra.required' => 'La semana de inicio de siembra es obligatoria',
@@ -145,6 +146,7 @@ class SemanaController extends Controller
             'desecho.required' => 'El porcentaje de desecho es obligatorio',
             'desecho.max' => 'El porcentaje de desecho es muy grande',
             'curva.required' => 'La curva es obligatoria',
+            'mes.required' => 'El mes es obligatorio',
         ]);
         if (!$valida->fails()) {
             $model = Semana::find($request->id_semana);
@@ -156,6 +158,8 @@ class SemanaController extends Controller
             $model->tallos_planta_poda = $request->tallos_planta_poda;
             $model->tallos_ramo_siembra = $request->tallos_ramo_siembra;
             $model->tallos_ramo_poda = $request->tallos_ramo_poda;
+            $model->tallos_ramo_poda = $request->tallos_ramo_poda;
+            $model->mes = $request->mes;
 
             if ($model->save()) {
                 $success = true;
