@@ -161,6 +161,8 @@ class SemanaController extends Controller
             $model->tallos_ramo_poda = $request->tallos_ramo_poda;
             $model->mes = $request->mes;
 
+
+
             if ($model->save()) {
                 $success = true;
                 $msg = '<div class="alert alert-success text-center">' .
