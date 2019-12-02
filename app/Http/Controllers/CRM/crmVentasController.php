@@ -151,7 +151,7 @@ class crmVentasController extends Controller
                         ->where('p.fecha_pedido', '<=', $request->hasta)
                         ->orderBy('p.fecha_pedido')
                         ->get();
-
+                    dump($fechas);
                     foreach ($fechas as $f) {
 
                         $objResumenVentaDiaria = ResumenVentaDiaria::where('fecha_pedido',$f->dia)->get();
@@ -160,7 +160,6 @@ class crmVentasController extends Controller
                             $array_cajas[]=$ventaDiaria->cajas_equivalentes;
                             $array_precios[]=$ventaDiaria->precio_x_ramo;
                         }
-
                         /*$pedidos_semanal = Pedido::All()->where('estado', 1)
                             ->where('fecha_pedido', '=', $f->dia);
                         $valor = 0;
@@ -181,6 +180,7 @@ class crmVentasController extends Controller
                         array_push($array_cajas, $cajas);
                         array_push($array_precios, $precio_x_ramo);*/
                     }
+                    dump($array_cajas);
                 } else if ($request->x_cliente == 'true' && $request->id_cliente != '') {
                     $fechas = DB::table('pedido as p')
                         ->select('p.fecha_pedido as dia')->distinct()
