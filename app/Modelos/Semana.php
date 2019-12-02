@@ -28,6 +28,7 @@ class Semana extends Model
         'tallos_planta_poda',
         'tallos_ramo_siembra',
         'tallos_ramo_poda',
+        'mes'
     ];
 
     public function variedad()

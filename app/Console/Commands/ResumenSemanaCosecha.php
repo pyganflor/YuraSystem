@@ -114,11 +114,13 @@ class ResumenSemanaCosecha extends Command
 
                     if ($semana->codigo >= $semanaActual->codigo) {
                         if ($semana->codigo <= $semanaActual->cuartaSemanaFutura($variedad->id_variedad)) {
+
                             $resumenAnterior = ResumenCosecha::where([
                                 ['id_variedad', $variedad->id_variedad],
                                 ['codigo_semana', $semana->codigo - 1]
                             ])->select('calibre')->first();
-                            $calibre = $resumenAnterior->calibre;
+                            dump("Variedad: ".$variedad->id_variedad." Semana: ".($semana->codigo - 1)." Resultado".$resumenAnterior);
+                            //$calibre = $resumenAnterior->calibre;
                             //dump("intervalo 4 sem: ".$resumenAnterior->calibre);
                         } else {
                             $calibreProyectado = Semana::where([['codigo', $semana->codigo], ['id_variedad', $variedad->id_variedad]])->first();
@@ -138,7 +140,7 @@ class ResumenSemanaCosecha extends Command
                     $objResumenSemanaCosecha->cajas_proyectadas = number_format($cajasProyectadas, 2, ".", "");
                     $tallos_clasificados = getTallosClasificadosByRangoVariedad($semana->fecha_inicial, $semana->fecha_final, $variedad->id_variedad);
                     $objResumenSemanaCosecha->tallos_clasificados = number_format($tallos_clasificados, 2, ".", "");
-                    $objResumenSemanaCosecha->save();
+                    //$objResumenSemanaCosecha->save();
                 }
             }
 
