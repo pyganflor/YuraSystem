@@ -44,12 +44,18 @@ class ResumenVentaDiariaMesAnterior extends Command
         $inicio = now()->subDay()->subMonth()->toDateString();
         $fin =  now()->subDay()->toDateString();
 
+        Info('Comienzo del comando resumen_venta_diaria:mes_anterior a las '. now()->format('H:i:s'));
+        Info("Fecha de inicio de busqueda:". $inicio);
+        Info("Fecha de fin de busqueda:". $fin);
+
+        $inicio = $tiempo_inicial = microtime(true);
+
         $fechas = DB::table('pedido as p')  //Filtro de fecha donde solo hay pedidos
             ->select('p.fecha_pedido as dia')->distinct()
             ->where('p.estado', '=', 1)
             ->whereBetween('p.fecha_pedido',[$inicio,$fin])
             ->orderBy('p.fecha_pedido')->get();
-        //dump($inicio,$fin);
+
         foreach ($fechas as $f) {
             $valor = 0;
             $cajas = 0;
@@ -81,6 +87,8 @@ class ResumenVentaDiariaMesAnterior extends Command
             $objVentaDiaria->precio_x_ramo= $precio_x_ramo;
             $objVentaDiaria->save();
         }
+        $fin = microtime(true);
+        Info("El comando resumen_venta_diaria:mes_anterior se completo en : " . (number_format(($fin - $inicio), 2, ".", "")) . " segundos");
     }
 
 }
