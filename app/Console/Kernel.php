@@ -60,7 +60,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('precio:variedad_x_cliente')->sundays()->between('7:00', '22:00')->runInBackground(); // PrecioVariedadCliente::class
         $schedule->command('resumen:semana_cosecha')->hourly()->runInBackground(); // ResumenSemanaCosecha::class
         $schedule->command('indicador:update')->hourly()->runInBackground(); // UpdateIndicador::class
-        $schedule->command('resumen_venta_diaria:mes_anterior')->everyMinute()->runInBackground(); // ResumenVentaDiariaMesAnterior::class
+        $schedule->command('resumen_venta_diaria:mes_anterior')->daily()->runInBackground(); // ResumenVentaDiariaMesAnterior::class
     }
 
     /**
