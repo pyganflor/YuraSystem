@@ -2,6 +2,7 @@
 
 namespace yura\Console\Commands;
 
+use Carbon\Carbon;
 use Illuminate\Console\Command;
 use yura\Modelos\Pedido;
 use yura\Modelos\ResumenVentaDiaria;
@@ -87,6 +88,12 @@ class ResumenVentaDiariaMesAnterior extends Command
             $objVentaDiaria->precio_x_ramo= $precio_x_ramo;
             $objVentaDiaria->save();
         }
+
+        $deleteData =ResumenVentaDiaria::where('fecha_pedido','<=',Carbon::parse($inicio)->subDay()->toDateString())->select('id_resumen_venta_diaria')->get();
+        foreach ($deleteData as $deleteDat)
+            ResumenVentaDiaria::destroy($deleteDat->id_resumen_venta_diaria);
+
+
         $fin = microtime(true);
         Info("El comando resumen_venta_diaria:mes_anterior se completo en : " . (number_format(($fin - $inicio), 2, ".", "")) . " segundos");
     }

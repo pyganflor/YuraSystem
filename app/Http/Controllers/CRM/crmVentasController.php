@@ -231,13 +231,10 @@ class crmVentasController extends Controller
                     ->Where(function ($q) use ($desde, $hasta) {
                         $q->where('s.fecha_inicial', '>=', $desde)
                             ->where('s.fecha_inicial', '<=', $hasta);
-                    })
-                    ->orWhere(function ($q) use ($desde, $hasta) {
+                    })->orWhere(function ($q) use ($desde, $hasta) {
                         $q->where('s.fecha_final', '>=', $desde)
                             ->Where('s.fecha_final', '<=', $hasta);
-                    })
-                    ->orderBy('codigo')
-                    ->get();
+                    })->orderBy('codigo')->get();
 
                 if ($request->total == 'true') {
 
