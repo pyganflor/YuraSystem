@@ -2,13 +2,14 @@
     @if(count($proyeccionVentaSemanalReal)>0)
     <table class=" table-bordered table-hover" style="border: 2px solid #000000;font-size:0.8em" width="100%">
         <tr>
-            <td class="text-center" style="background-color: #e9ecef;width:250px;border-right: 2px solid #000000;">
+            <td class="text-center" style="background-color: #e9ecef;width:250px;border-right: 2px solid #000000;" >
                 Clientes / Semanas
                 <input type="hidden" id="ramos_x_caja_empresa" name="ramos_x_caja_empresa" value="{{getConfiguracionEmpresa()->ramos_x_caja}}">
             </td>
             @foreach($semanas as $semana => $item)
                 <td class="text-center" style="border:1px solid #9d9d9d; background-color: #e9ecef; width:350px;border-bottom: 2px solid #000000;border-right: 2px solid #000000;" colspan="3">
-                    <input type="checkbox" id="semana_{{$semana}}" name="semana_{{$semana}}" class="check_programacion_semana" style='margin: 0;position: relative;top: 2px;'>
+                    <input type="checkbox" id="semana_{{$semana}}" name="semana_{{$semana}}" value="{{$semana}}"
+                           class="check_programacion_semana" style='margin: 0;position: relative;top: 2px;'>
                     <label for="semana_{{$semana}}">{{$semana}}</label>
                 </td>
             @endforeach
@@ -17,7 +18,7 @@
             </td>
         </tr>
         <tr>
-            <td class="text-center" style="background-color: #e9ecef;width:250px;border: 2px solid #000000;">
+            <td class="text-center" style="background-color: #e9ecef;width:250px;border: 2px solid #000000;" >
                Saldo inicial
             </td>
             @php $x=0 @endphp
@@ -306,3 +307,4 @@
         $("#"+id).removeAttr('disabled');
     }
 </script>
+

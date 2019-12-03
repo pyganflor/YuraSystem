@@ -159,19 +159,34 @@ class ProyVentaController extends Controller
     }
 
     public function storeProyeccionVenta(Request $request){
-
-        $objProyeccionVentaSemanalReal = ProyeccionVentaSemanalReal::where([
-            ['id_cliente',$request->id_cliente],
-            ['id_variedad',$request->id_variedad],
-            ['codigo_semana',$request->semana]
-        ]);
-
         try{
-            $objProyeccionVentaSemanalReal->update([
-                'cajas_fisicas' => $request->cajas_fisicas,
-                'cajas_equivalentes' => $request->cajas_equivalentes,
-                'valor' => substr($request->valor,1,20)
-            ]);
+            if(isset($request->semanas) && count($request->semanas)>0){
+                $valor = substr($request->valor,1,20);
+                foreach($request->semanas as $semana){
+                    $objProyeccionVentaSemanalReal = ProyeccionVentaSemanalReal::where([
+                        ['id_cliente',$request->id_cliente],
+                        ['id_variedad',$request->id_variedad],
+                        ['codigo_semana',$semana]
+                    ]);
+                    $objProyeccionVentaSemanalReal->update([
+                        'cajas_fisicas' => $request->cajas_fisicas,
+                        'cajas_equivalentes' => $request->cajas_equivalentes,
+                        'valor' => round($valor,2)
+                    ]);
+                }
+            }else{
+                $objProyeccionVentaSemanalReal = ProyeccionVentaSemanalReal::where([
+                    ['id_cliente',$request->id_cliente],
+                    ['id_variedad',$request->id_variedad],
+                    ['codigo_semana',$request->semana]
+                ]);
+                $valor = substr($request->valor,1,20);
+                $objProyeccionVentaSemanalReal->update([
+                    'cajas_fisicas' => $request->cajas_fisicas,
+                    'cajas_equivalentes' => $request->cajas_equivalentes,
+                    'valor' => round($valor,2)
+                ]);
+            }
             $success = true;
             $msg = '<div class="alert alert-success text-center">' .
                 '<p> Se ha guardado la proyección con éxito </p>'
@@ -179,8 +194,8 @@ class ProyVentaController extends Controller
         }catch (\Exception $e){
             $success = false;
             $msg = '<div class="alert alert-danger text-center">' .
-                '<p>  Ha ocurrido el siguiente error al intentar guardar la información <br />"'.$e->getMessage().'"<br /> Comuníquelo al área de sistemas</p>'
-                .'</div>';
+                        '<p>  Ha ocurrido el siguiente error al intentar guardar la información <br />"'.$e->getMessage().'"<br /> Comuníquelo al área de sistemas</p>'
+                    .'</div>';
         }
 
         return [
