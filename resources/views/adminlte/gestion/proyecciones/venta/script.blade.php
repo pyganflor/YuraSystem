@@ -44,8 +44,26 @@
     }
 
     function store_proyeccion_venta(id_cliente,columna,id_variedad){
-        modal_quest('modal_update_proyeccion_venta', '<div class="alert alert-info text-center"><i class="fa fa-fw fa-exclamation-triangle"></i> ¿Está seguro de programar esta proyección de venta? </div>', '<i class="fa fa-check"></i> Programar proyección', true, false, '<?php echo e(isPC() ? '40%' : ''); ?>', function () {
+        checks=[];
+        semana_inicio="";
+        semana_fin="";
+        $.each($(".check_programacion_semana"),function (i,j) {
+            if(i===0)
+                semana_inicio=$(j).val();
+
+            checks.push({
+                semana : $(j).val()
+            });
+        });
+        text='¿Está seguro de programar esta proyección de venta?';
+        if(checks>0)
+            text='¿Está seguro de programar esta proyección entre la semana '+semana_inicio+' y la semana '+$(j).val()+'?';
+
+        modal_quest('modal_update_proyeccion_venta', '<div class="alert alert-info text-center"><i class="fa fa-fw fa-exclamation-triangle"></i> '+text+' </div>', '<i class="fa fa-check"></i> Programar proyección', true, false, '<?php echo e(isPC() ? '40%' : ''); ?>', function () {
             $.LoadingOverlay('show');
+
+
+
             datos = {
                 _token: '{{csrf_token()}}',
                 semana : columna,
@@ -97,9 +115,6 @@
         });
         $.LoadingOverlay('hide');
     }
-    
-    function programar_proyeccion() {
-        
-    }
+
 
 </script>
