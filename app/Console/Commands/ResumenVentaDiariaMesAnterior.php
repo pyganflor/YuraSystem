@@ -49,7 +49,7 @@ class ResumenVentaDiariaMesAnterior extends Command
         Info("Fecha de inicio de busqueda:". $inicio);
         Info("Fecha de fin de busqueda:". $fin);
 
-        $inicio = $tiempo_inicial = microtime(true);
+        $comienzo = $tiempo_inicial = microtime(true);
 
         $fechas = DB::table('pedido as p')  //Filtro de fecha donde solo hay pedidos
             ->select('p.fecha_pedido as dia')->distinct()
@@ -57,6 +57,7 @@ class ResumenVentaDiariaMesAnterior extends Command
             ->whereBetween('p.fecha_pedido',[$inicio,$fin])
             ->orderBy('p.fecha_pedido')->get();
 
+        //dump($inicio,$fin);
         foreach ($fechas as $f) {
             $valor = 0;
             $cajas = 0;
@@ -94,8 +95,8 @@ class ResumenVentaDiariaMesAnterior extends Command
             ResumenVentaDiaria::destroy($deleteDat->id_resumen_venta_diaria);
 
 
-        $fin = microtime(true);
-        Info("El comando resumen_venta_diaria:mes_anterior se completo en : " . (number_format(($fin - $inicio), 2, ".", "")) . " segundos");
+        $final = microtime(true);
+        Info("El comando resumen_venta_diaria:mes_anterior se completo en : " . (number_format(($final - $comienzo), 2, ".", "")) . " segundos");
     }
 
 }
