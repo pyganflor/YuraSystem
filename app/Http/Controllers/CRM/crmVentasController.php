@@ -160,7 +160,6 @@ class crmVentasController extends Controller
                             $array_cajas[]=$ventaDiaria->cajas_equivalentes;
                             $array_precios[]=$ventaDiaria->precio_x_ramo;
                         }
-
                         /*$pedidos_semanal = Pedido::All()->where('estado', 1)
                             ->where('fecha_pedido', '=', $f->dia);
                         $valor = 0;
@@ -181,6 +180,7 @@ class crmVentasController extends Controller
                         array_push($array_cajas, $cajas);
                         array_push($array_precios, $precio_x_ramo);*/
                     }
+
                 } else if ($request->x_cliente == 'true' && $request->id_cliente != '') {
                     $fechas = DB::table('pedido as p')
                         ->select('p.fecha_pedido as dia')->distinct()
@@ -231,13 +231,10 @@ class crmVentasController extends Controller
                     ->Where(function ($q) use ($desde, $hasta) {
                         $q->where('s.fecha_inicial', '>=', $desde)
                             ->where('s.fecha_inicial', '<=', $hasta);
-                    })
-                    ->orWhere(function ($q) use ($desde, $hasta) {
+                    })->orWhere(function ($q) use ($desde, $hasta) {
                         $q->where('s.fecha_final', '>=', $desde)
                             ->Where('s.fecha_final', '<=', $hasta);
-                    })
-                    ->orderBy('codigo')
-                    ->get();
+                    })->orderBy('codigo')->get();
 
                 if ($request->total == 'true') {
 

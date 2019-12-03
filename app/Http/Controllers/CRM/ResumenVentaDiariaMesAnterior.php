@@ -2,7 +2,6 @@
 
 namespace yura\Console\Commands;
 
-use Carbon\Carbon;
 use Illuminate\Console\Command;
 use yura\Modelos\Pedido;
 use yura\Modelos\ResumenVentaDiaria;
@@ -49,7 +48,7 @@ class ResumenVentaDiariaMesAnterior extends Command
         Info("Fecha de inicio de busqueda:". $inicio);
         Info("Fecha de fin de busqueda:". $fin);
 
-        $comienzo = $tiempo_inicial = microtime(true);
+        $inicio = $tiempo_inicial = microtime(true);
 
         $fechas = DB::table('pedido as p')  //Filtro de fecha donde solo hay pedidos
             ->select('p.fecha_pedido as dia')->distinct()
@@ -57,7 +56,6 @@ class ResumenVentaDiariaMesAnterior extends Command
             ->whereBetween('p.fecha_pedido',[$inicio,$fin])
             ->orderBy('p.fecha_pedido')->get();
 
-        //dump($inicio,$fin);
         foreach ($fechas as $f) {
             $valor = 0;
             $cajas = 0;
@@ -89,13 +87,8 @@ class ResumenVentaDiariaMesAnterior extends Command
             $objVentaDiaria->precio_x_ramo= $precio_x_ramo;
             $objVentaDiaria->save();
         }
-
-        $deleteData =ResumenVentaDiaria::where('fecha_pedido','<=',Carbon::parse($inicio)->subDay()->toDateString())->select('id_resumen_venta_diaria')->get();
-        foreach ($deleteData as $deleteDat)
-            ResumenVentaDiaria::destroy($deleteDat->id_resumen_venta_diaria);
-
-        $final = microtime(true);
-        Info("El comando resumen_venta_diaria:mes_anterior se completo en : " . (number_format(($final - $comienzo), 2, ".", "")) . " segundos");
+        $fin = microtime(true);
+        Info("El comando resumen_venta_diaria:mes_anterior se completo en : " . (number_format(($fin - $inicio), 2, ".", "")) . " segundos");
     }
 
 }

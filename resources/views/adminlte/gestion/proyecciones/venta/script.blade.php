@@ -44,8 +44,33 @@
     }
 
     function store_proyeccion_venta(id_cliente,columna,id_variedad){
-        modal_quest('modal_update_proyeccion_venta', '<div class="alert alert-info text-center"><i class="fa fa-fw fa-exclamation-triangle"></i> ¿Está seguro de programar esta proyección de venta? </div>', '<i class="fa fa-check"></i> Programar proyección', true, false, '<?php echo e(isPC() ? '40%' : ''); ?>', function () {
+        semanas=[];
+        semana_inicio="";
+        semana_fin="";
+        x=0;
+        $.each($(".check_programacion_semana"),function (i,j) {
+            if($(j).is(":checked")){
+                if(x==0)
+                    semana_inicio=$(j).val();
+
+                semana_fin= $(j).val();
+                semanas.push({
+                    semana : $(j).val()
+                });
+                x++;
+            }
+
+        });
+        text='¿Está seguro de programar esta proyección de venta?';
+        console.log(semanas);
+        if(semanas.length>0)
+            text='¿Está seguro de programar esta proyección entre las semanas '+semana_inicio+' y la '+semana_fin+'?';
+
+        modal_quest('modal_update_proyeccion_venta', '<div class="alert alert-info text-center"><i class="fa fa-fw fa-exclamation-triangle"></i> '+text+' </div>', '<i class="fa fa-check"></i> Programar proyección', true, false, '<?php echo e(isPC() ? '40%' : ''); ?>', function () {
             $.LoadingOverlay('show');
+
+
+
             datos = {
                 _token: '{{csrf_token()}}',
                 semana : columna,
@@ -54,6 +79,7 @@
                 cajas_fisicas : $("#cajas_proyectadas_"+id_cliente+"_"+columna).val(),
                 cajas_equivalentes : parseFloat($("#cajas_equivalentes_"+id_cliente+"_"+columna).html()),
                 valor : $("#precio_proyectado_"+id_cliente+"_"+columna).html(),
+                semanas : semanas
             };
 
             post_jquery('{{url('proy_venta_semanal/store_proyeccion_venta')}}', datos, function () {
@@ -97,5 +123,6 @@
         });
         $.LoadingOverlay('hide');
     }
+
 
 </script>

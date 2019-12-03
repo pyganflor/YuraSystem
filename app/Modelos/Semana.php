@@ -85,7 +85,6 @@ class Semana extends Model
             }else{
                 $cajasProyectadas = $objResumenSemanaCosecha->cajas;
             }
-
         }else{
             for($x=$this->codigo;$x>0001;$x--){
                 $objResumenSemanaCosecha = ResumenSemanaCosecha::where([
