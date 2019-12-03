@@ -94,7 +94,6 @@ class ResumenVentaDiariaMesAnterior extends Command
         foreach ($deleteData as $deleteDat)
             ResumenVentaDiaria::destroy($deleteDat->id_resumen_venta_diaria);
 
-
         $final = microtime(true);
         Info("El comando resumen_venta_diaria:mes_anterior se completo en : " . (number_format(($final - $comienzo), 2, ".", "")) . " segundos");
     }

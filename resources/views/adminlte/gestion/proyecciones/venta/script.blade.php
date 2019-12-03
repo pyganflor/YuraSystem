@@ -97,5 +97,9 @@
         });
         $.LoadingOverlay('hide');
     }
+    
+    function programar_proyeccion() {
+        
+    }
 
 </script>

@@ -7,7 +7,10 @@
                 <input type="hidden" id="ramos_x_caja_empresa" name="ramos_x_caja_empresa" value="{{getConfiguracionEmpresa()->ramos_x_caja}}">
             </td>
             @foreach($semanas as $semana => $item)
-                <td class="text-center" style="border:1px solid #9d9d9d; background-color: #e9ecef; width:350px;border-bottom: 2px solid #000000;border-right: 2px solid #000000;" colspan="3">{{$semana}}</td>
+                <td class="text-center" style="border:1px solid #9d9d9d; background-color: #e9ecef; width:350px;border-bottom: 2px solid #000000;border-right: 2px solid #000000;" colspan="3">
+                    <input type="checkbox" id="semana_{{$semana}}" name="semana_{{$semana}}" onclick="programar_proyeccion()">
+                    {{$semana}}
+                </td>
             @endforeach
             <td class="text-center" style="background-color: #e9ecef;width:250px;border-right: 2px solid #000000;">
                 Clientes / Semanas
@@ -34,7 +37,6 @@
                             }
                         }
                     }
-
                     if($x ==0){
                         $firstSemanaResumenSemanaCosechaByVariedad = (int)$objSemanaActual->firstSemanaResumenSemanaCosechaByVariedad($idVariedad);
                         if($firstSemanaResumenSemanaCosechaByVariedad > $semana){
