@@ -108,12 +108,21 @@
                             </div>
                         </div>
                         <div class="col-md-3">
+                            @php
+                                if($precio_x_ramo < 2)
+                                    $color1  = 'red';
+                                else if($precio_x_ramo >= 2 && $precio_x_ramo <= 2.1)
+                                    $color1 = 'orange';
+                                else
+                                    $color1 = 'green';
+                            @endphp
                             <div class="info-box mouse-hand sombra_pequeña" onmouseover="$(this).addClass('bg-gray-light')"
                                  onmouseleave="$(this).removeClass('bg-gray-light')" onclick="location.href='{{url('crm_ventas')}}'">
                                 <span class="info-box-icon"><i class="fa fa-fw fa-usd"></i></span>
                                 <div class="info-box-content">
                                     <strong class="info-box-text" style="font-size: 1.2em">Ventas</strong>
-                                    <span class="info-box-number">{{number_format($precio_x_ramo, 2)}}
+                                    <span class="info-box-number" style="color: {{$color1}};">
+                                        {{number_format($precio_x_ramo, 2)}}
                                         <small>precio</small></span>
                                     <span class="info-box-number" title="Valor">
                                         <small>$</small>
