@@ -31,6 +31,14 @@
                 <div class="box-body">
                     <div class="row">
                         <div class="col-md-6">
+                            @php
+                                if($venta_m2_anno_mensual < 28)
+                                    $color  = 'red';
+                                else if($venta_m2_anno_mensual >= 28 && $venta_m2_anno_mensual <= 32)
+                                    $color = 'orange';
+                                else
+                                    $color = 'green';
+                            @endphp
                             <div class="info-box mouse-hand sombra_pequeña bg-gray" onclick="location.href='{{url('ventas_m2')}}'"
                                  onmouseover="$(this).removeClass('bg-gray')" onmouseleave="$(this).addClass('bg-gray')">
                                 <span class="info-box-icon"><i class="fa fa-fw fa-diamond"></i></span>
@@ -39,14 +47,6 @@
                                         <small>m<sup>2</sup></small>
                                         /año
                                     </strong>
-                                    @php
-                                        if($venta_m2_anno_mensual < 28)
-                                            $color  = 'red';
-                                        else if($venta_m2_anno_mensual >= 28 && $venta_m2_anno_mensual <= 32)
-                                            $color = 'orange';
-                                        else
-                                            $color = 'green';
-                                    @endphp
                                     <span class="info-box-number text-center" style="color: {{$color}}">
                                             {{number_format($venta_m2_anno_mensual, 2)}}
                                         <small>$/m<sup>2</sup>/año (4 meses)</small>
@@ -64,7 +64,7 @@
                                 <span class="info-box-icon"><i class="fa fa-fw fa-tree"></i></span>
                                 <div class="info-box-content">
                                     <strong class="info-box-text" style="font-size: 1.2em">Cosecha</strong>
-                                    <span class="info-box-number">{{number_format($tallos_cosechados)}}
+                                    <span class="info-box-number">{{number_format($tallos_cosechados, 2)}}
                                         <small>tallos</small>
                                     </span>
                                 </div>
@@ -85,12 +85,21 @@
                     </div>
                     <div class="row">
                         <div class="col-md-3">
+                            @php
+                                if($calibre < 7.4)
+                                    $color1  = 'green';
+                                else if($calibre >= 7.4 && $calibre <= 7.8)
+                                    $color1 = 'orange';
+                                else
+                                    $color1 = 'red';
+                            @endphp
                             <div class="info-box mouse-hand sombra_pequeña" onmouseover="$(this).addClass('bg-gray-light')"
                                  onmouseleave="$(this).removeClass('bg-gray-light')" onclick="location.href='{{url('crm_postcosecha')}}'">
                                 <span class="info-box-icon"><i class="fa fa-fw fa-leaf"></i></span>
                                 <div class="info-box-content">
                                     <strong class="info-box-text" style="font-size: 1.2em">Postcosecha</strong>
-                                    <span class="info-box-number">{{$calibre}}
+                                    <span class="info-box-number" style="color: {{$color1}}">
+                                        {{$calibre}}
                                         <small>t/r calibre</small></span>
                                     <strong class="info-box-number" title="Tallos">{{number_format($tallos)}}
                                         <small>tallos</small>
