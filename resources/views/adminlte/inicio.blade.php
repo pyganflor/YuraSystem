@@ -31,6 +31,14 @@
                 <div class="box-body">
                     <div class="row">
                         <div class="col-md-6">
+                            @php
+                                if($venta_m2_anno_mensual < 28)
+                                    $color  = 'red';
+                                else if($venta_m2_anno_mensual >= 28 && $venta_m2_anno_mensual <= 32)
+                                    $color = 'orange';
+                                else
+                                    $color = 'green';
+                            @endphp
                             <div class="info-box mouse-hand sombra_pequeña bg-gray" onclick="location.href='{{url('ventas_m2')}}'"
                                  onmouseover="$(this).removeClass('bg-gray')" onmouseleave="$(this).addClass('bg-gray')">
                                 <span class="info-box-icon"><i class="fa fa-fw fa-diamond"></i></span>
@@ -39,11 +47,11 @@
                                         <small>m<sup>2</sup></small>
                                         /año
                                     </strong>
-                                    <span class="info-box-number text-center">
+                                    <span class="info-box-number text-center" style="color: {{$color}}">
                                             {{number_format($venta_m2_anno_mensual, 2)}}
                                         <small>$/m<sup>2</sup>/año (4 meses)</small>
                                     </span>
-                                    <span class="info-box-number text-center">
+                                    <span class="info-box-number text-center" style="color: {{$color}};">
                                             {{number_format($venta_m2_anno_anual, 2)}}
                                         <small>$/m<sup>2</sup>/año (1 año)</small>
                                     </span>
@@ -56,20 +64,33 @@
                                 <span class="info-box-icon"><i class="fa fa-fw fa-tree"></i></span>
                                 <div class="info-box-content">
                                     <strong class="info-box-text" style="font-size: 1.2em">Cosecha</strong>
-                                    <span class="info-box-number">{{number_format($tallos_cosechados)}}
+                                    <span class="info-box-number">{{number_format($tallos_cosechados, 2)}}
                                         <small>tallos</small>
                                     </span>
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-3">
+                            @php
+                                if($ciclo < 115)
+                                    $color1  = 'green';
+                                else if($ciclo >= 115 && $ciclo <= 125)
+                                    $color1 = 'orange';
+                                else
+                                    $color1 = 'red';
+                            @endphp
                             <div class="info-box sombra_pequeña" onmouseover="$(this).addClass('bg-gray-light')"
                                  onmouseleave="$(this).removeClass('bg-gray-light')">
                                 <span class="info-box-icon"><i class="fa fa-fw fa-map"></i></span>
                                 <div class="info-box-content">
                                     <strong class="info-box-text" style="font-size: 1.2em">Área</strong>
-                                    <span class="info-box-number">{{number_format(round($area_produccion / 10000, 2), 2)}}
+                                    <span class="info-box-number">
+                                        {{number_format(round($area_produccion / 10000, 2), 2)}}
                                         <small> <sup>ha</sup></small>
+                                    </span>
+                                    <span class="info-box-number" style="color: {{$color1}};">
+                                        {{number_format($ciclo, 2)}}
+                                        <small> ciclo</small>
                                     </span>
                                 </div>
                             </div>
@@ -77,12 +98,21 @@
                     </div>
                     <div class="row">
                         <div class="col-md-3">
+                            @php
+                                if($calibre < 7.4)
+                                    $color1  = 'green';
+                                else if($calibre >= 7.4 && $calibre <= 7.8)
+                                    $color1 = 'orange';
+                                else
+                                    $color1 = 'red';
+                            @endphp
                             <div class="info-box mouse-hand sombra_pequeña" onmouseover="$(this).addClass('bg-gray-light')"
                                  onmouseleave="$(this).removeClass('bg-gray-light')" onclick="location.href='{{url('crm_postcosecha')}}'">
                                 <span class="info-box-icon"><i class="fa fa-fw fa-leaf"></i></span>
                                 <div class="info-box-content">
                                     <strong class="info-box-text" style="font-size: 1.2em">Postcosecha</strong>
-                                    <span class="info-box-number">{{$calibre}}
+                                    <span class="info-box-number" style="color: {{$color1}}">
+                                        {{$calibre}}
                                         <small>t/r calibre</small></span>
                                     <strong class="info-box-number" title="Tallos">{{number_format($tallos)}}
                                         <small>tallos</small>
@@ -91,12 +121,21 @@
                             </div>
                         </div>
                         <div class="col-md-3">
+                            @php
+                                if($precio_x_ramo < 2)
+                                    $color1  = 'red';
+                                else if($precio_x_ramo >= 2 && $precio_x_ramo <= 2.1)
+                                    $color1 = 'orange';
+                                else
+                                    $color1 = 'green';
+                            @endphp
                             <div class="info-box mouse-hand sombra_pequeña" onmouseover="$(this).addClass('bg-gray-light')"
                                  onmouseleave="$(this).removeClass('bg-gray-light')" onclick="location.href='{{url('crm_ventas')}}'">
                                 <span class="info-box-icon"><i class="fa fa-fw fa-usd"></i></span>
                                 <div class="info-box-content">
                                     <strong class="info-box-text" style="font-size: 1.2em">Ventas</strong>
-                                    <span class="info-box-number">{{number_format($precio_x_ramo, 2)}}
+                                    <span class="info-box-number" style="color: {{$color1}};">
+                                        {{number_format($precio_x_ramo, 2)}}
                                         <small>precio</small></span>
                                     <span class="info-box-number" title="Valor">
                                         <small>$</small>
@@ -123,16 +162,32 @@
                             </div>
                         </div>
                         <div class="col-md-3">
+                            @php
+                                if($tallos_m2 < 35)
+                                    $color1  = 'red';
+                                else if($tallos_m2 >= 35 && $tallos_m2 <= 45)
+                                    $color1 = 'orange';
+                                else
+                                    $color1 = 'green';
+
+
+                                if($ramos_m2_anno < 13)
+                                    $color2  = 'red';
+                                else if($ramos_m2_anno >= 13 && $ramos_m2_anno <= 17)
+                                    $color2 = 'orange';
+                                else
+                                    $color2 = 'green';
+                            @endphp
                             <div class="info-box mouse-hand sombra_pequeña" onmouseover="$(this).addClass('bg-gray-light')"
                                  onmouseleave="$(this).removeClass('bg-gray-light')" onclick="location.href='{{url('crm_area')}}'">
                                 <span class="info-box-icon"><i class="fa fa-fw fa-cube"></i></span>
                                 <div class="info-box-content">
                                     <strong class="info-box-text" style="font-size: 1.2em">Producción</strong>
-                                    <span class="info-box-number">
+                                    <span class="info-box-number" style="color: {{$color1}};">
                                         {{number_format($tallos_m2, 2)}}
                                         <small> t/m<sup>2</sup></small>
                                     </span>
-                                    <span class="info-box-number" title="Ramos/m2">
+                                    <span class="info-box-number" title="Ramos/m2" style="color: {{$color2}}">
                                         {{number_format($ramos_m2_anno, 2)}}
                                         <small>r/m<sup>2</sup>/año</small>
                                     </span>
