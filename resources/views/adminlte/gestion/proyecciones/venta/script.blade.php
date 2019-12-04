@@ -43,7 +43,21 @@
         $("#precio_proyectado_"+id_cliente+"_"+columna).html("$"+valor);
     }
 
-    function store_proyeccion_venta(id_cliente,columna,id_variedad){
+    function store_proyeccion_venta(){
+        cliente=[];
+        $.each($(".td_cajas_proyectadas"),function(i,j){
+            if(!$(j).find(".input_cajas_proyectadas").prop('disabled')){
+                cliente.push({
+                    id_cliente : $(j).find('.id_cliente').val(),
+                    cajas_fisicas: $(j).find('.input_cajas_proyectadas').val(),
+                    semana:$(j).find('.input_codigo_semana').val(),
+                    cajas_equivalentes : parseFloat($(j).find('.cajas_equivalentes').html()),
+                    valor : $(j).find('precio_proyectado').html(),
+                });
+                return false;
+            }
+
+        });
         semanas=[];
         semana_inicio="";
         semana_fin="";
@@ -59,7 +73,6 @@
                 });
                 x++;
             }
-
         });
         text='¿Está seguro de programar esta proyección de venta?';
         console.log(semanas);
@@ -69,17 +82,16 @@
         modal_quest('modal_update_proyeccion_venta', '<div class="alert alert-info text-center"><i class="fa fa-fw fa-exclamation-triangle"></i> '+text+' </div>', '<i class="fa fa-check"></i> Programar proyección', true, false, '<?php echo e(isPC() ? '40%' : ''); ?>', function () {
             $.LoadingOverlay('show');
 
-
-
             datos = {
                 _token: '{{csrf_token()}}',
-                semana : columna,
-                id_cliente :id_cliente,
-                id_variedad : id_variedad,
-                cajas_fisicas : $("#cajas_proyectadas_"+id_cliente+"_"+columna).val(),
-                cajas_equivalentes : parseFloat($("#cajas_equivalentes_"+id_cliente+"_"+columna).html()),
-                valor : $("#precio_proyectado_"+id_cliente+"_"+columna).html(),
+                cliente : cliente,
                 semanas : semanas
+                //semana : columna,
+                //id_cliente :id_cliente,
+                //id_variedad : $("#filtro_predeterminado_variedad").val(),
+                //cajas_fisicas : $("#cajas_proyectadas_"+id_cliente+"_"+columna).val(),
+                //cajas_equivalentes : parseFloat($("#cajas_equivalentes_"+id_cliente+"_"+columna).html()),
+                //valor : $("#precio_proyectado_"+id_cliente+"_"+columna).html(),
             };
 
             post_jquery('{{url('proy_venta_semanal/store_proyeccion_venta')}}', datos, function () {

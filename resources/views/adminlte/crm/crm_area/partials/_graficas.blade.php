@@ -27,29 +27,27 @@
 
 <script>
     construir_char('Area', 'chart_area');
+
     construir_char('Ciclo', 'chart_ciclo');
     construir_char('Tallos', 'chart_tallos');
     construir_char('Ramos', 'chart_ramos');
-    construir_char('Ramos Año', 'chart_ramos_anno');
+    /*construir_char('Ramos Año', 'chart_ramos_anno');*/
 
     function construir_char(label, id) {
         labels = [];
-        datasets = [];
         data_list = [];
-        data_tallos = [];
-        @for($i = 0; $i < count($labels); $i++)
-        labels.push("{{$labels[$i]->semana}}");
+
+        @foreach($labels as $pos_l => $label)
+        labels.push('{{$label}}');
+        if (label == 'Area')
+            data_list.push('{{round($data['area'][$pos_l] / 10000, 2)}}');
         if (label == 'Ciclo')
-            data_list.push("{{$data['ciclo'][$i]}}");
-        else if (label == 'Area')
-            data_list.push("{{$data['area'][$i]}}");
-        else if (label == 'Tallos')
-            data_list.push("{{$data['tallos'][$i]}}");
-        else if (label == 'Ramos')
-            data_list.push("{{$data['ramos'][$i]}}");
-        else if (label == 'Ramos Año')
-            data_list.push("{{$data['ramos_anno'][$i]}}");
-        @endfor
+            data_list.push('{{$data['ciclo'][$pos_l]}}');
+        if (label == 'Tallos')
+            data_list.push('{{$data['tallos'][$pos_l]}}');
+        if (label == 'Ramos')
+            data_list.push('{{$data['ramos'][$pos_l]}}');
+        @endforeach
 
             datasets = [{
             label: label + ' ',

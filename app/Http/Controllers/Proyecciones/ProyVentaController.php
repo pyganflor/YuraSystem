@@ -159,6 +159,7 @@ class ProyVentaController extends Controller
     }
 
     public function storeProyeccionVenta(Request $request){
+        dd($request->all());
         try{
             if(isset($request->semanas) && count($request->semanas)>0){
                 $valor = substr($request->valor,1,20);
