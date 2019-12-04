@@ -110,7 +110,6 @@ class crmAreaController extends Controller
 
                 $codigo_semana = $query[0]->codigo_semana;
                 $area = 0;
-                $cant_area = 0;
                 $ciclo = 0;
                 $cant_ciclo = 0;
                 $tallos = 0;
@@ -120,7 +119,7 @@ class crmAreaController extends Controller
                 foreach ($query as $pos_item => $item) {
                     if ($item->codigo_semana != $codigo_semana || ($pos_item + 1) == count($query)) {
                         array_push($labels, $codigo_semana);
-                        array_push($array_area, $cant_area > 0 ? round($area / $cant_area, 2) : 0);
+                        array_push($array_area, $area);
                         array_push($array_ciclo, $cant_ciclo > 0 ? round($ciclo / $cant_ciclo, 2) : 0);
                         array_push($array_tallos, $cant_tallos > 0 ? round($tallos / $cant_tallos, 2) : 0);
                         array_push($array_ramos, $cant_ramos > 0 ? round($ramos / $cant_ramos, 2) : 0);
@@ -129,7 +128,6 @@ class crmAreaController extends Controller
                         $ciclo = $item->ciclo;
                         $tallos = $item->tallos_m2;
                         $ramos = $item->ramos_m2;
-                        $cant_area = $item->area > 0 ? 1 : 0;
                         $cant_ciclo = $item->ciclo > 0 ? 1 : 0;
                         $cant_tallos = $item->tallos_m2 > 0 ? 1 : 0;
                         $cant_ramos = $item->ramos_m2 > 0 ? 1 : 0;
@@ -139,8 +137,6 @@ class crmAreaController extends Controller
                         $ciclo += $item->ciclo;
                         $tallos += $item->tallos_m2;
                         $ramos += $item->ramos_m2;
-                        if ($item->area > 0)
-                            $cant_area++;
                         if ($item->ciclo > 0)
                             $cant_ciclo++;
                         if ($item->tallos_m2 > 0)
