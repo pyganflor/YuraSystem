@@ -39,7 +39,15 @@
                                         <small>m<sup>2</sup></small>
                                         /año
                                     </strong>
-                                    <span class="info-box-number text-center">
+                                    @php
+                                        if($venta_m2_anno_mensual < 28)
+                                            $color  = 'red';
+                                        else if($venta_m2_anno_mensual >= 28 && $venta_m2_anno_mensual <= 32)
+                                            $color = 'yellow';
+                                        else
+                                            $color = 'green';
+                                    @endphp
+                                    <span class="info-box-number text-center" style="color: '{{$color}}">
                                             {{number_format($venta_m2_anno_mensual, 2)}}
                                         <small>$/m<sup>2</sup>/año (4 meses)</small>
                                     </span>
