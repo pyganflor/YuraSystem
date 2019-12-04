@@ -71,13 +71,26 @@
                             </div>
                         </div>
                         <div class="col-md-3">
+                            @php
+                                if($ciclo < 115)
+                                    $color1  = 'green';
+                                else if($ciclo >= 115 && $ciclo <= 125)
+                                    $color1 = 'orange';
+                                else
+                                    $color1 = 'red';
+                            @endphp
                             <div class="info-box sombra_pequeña" onmouseover="$(this).addClass('bg-gray-light')"
                                  onmouseleave="$(this).removeClass('bg-gray-light')">
                                 <span class="info-box-icon"><i class="fa fa-fw fa-map"></i></span>
                                 <div class="info-box-content">
                                     <strong class="info-box-text" style="font-size: 1.2em">Área</strong>
-                                    <span class="info-box-number">{{number_format(round($area_produccion / 10000, 2), 2)}}
+                                    <span class="info-box-number">
+                                        {{number_format(round($area_produccion / 10000, 2), 2)}}
                                         <small> <sup>ha</sup></small>
+                                    </span>
+                                    <span class="info-box-number" style="color: {{$color1}};">
+                                        {{number_format($ciclo, 2)}}
+                                        <small> ciclo</small>
                                     </span>
                                 </div>
                             </div>
