@@ -34,7 +34,7 @@
                 Tallos/m<sup>2</sup>
             </th>
             <th class="text-center" style="border-color: #9d9d9d">
-                Cosechadop <sup>%</sup>
+                Cosechado <sup>%</sup>
             </th>
             <th class="text-center" style="border-color: #9d9d9d; background-color: #0b3248">
                 Ptas Iniciales
@@ -164,7 +164,7 @@
         @endforeach
         </tbody>
         <tr style="background-color: #357ca5; color: white">
-            <th class="text-center" colspan="3" style="border-color: #9d9d9d">
+            <th class="text-center" colspan="4" style="border-color: #9d9d9d">
                 Totales
             </th>
             <th class="text-center" style="border-color: #9d9d9d">
@@ -172,6 +172,8 @@
             </th>
             <th class="text-center" style="border-color: #9d9d9d">
                 {{number_format(round($total_area/ 10000, 2), 2)}}
+            </th>
+            <th class="text-center" style="border-color: #9d9d9d">
             </th>
             <th class="text-center" style="border-color: #9d9d9d">
             </th>
@@ -184,6 +186,8 @@
                 @else
                     0
                 @endif
+            </th>
+            <th class="text-center" style="border-color: #9d9d9d">
             </th>
             <th class="text-center" style="border-color: #9d9d9d; background-color: #0b3248">
                 {{number_format($total_iniciales)}}
