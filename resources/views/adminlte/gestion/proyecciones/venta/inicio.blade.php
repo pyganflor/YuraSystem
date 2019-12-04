@@ -63,7 +63,7 @@
                     <input type="number" class="form-control top" id="filtro_predeterminado_top" name="filtro_predeterminado_top" value="10" >
                     <div class="input-group-btn">
                         <button type="button" class="btn btn-success" onclick="store_proyeccion_venta()">
-                            <i class="fa fa-fw fa-search"></i>
+                            <i class="fa fa-fw fa-floppy-o"></i>
                         </button>
                         <button type="button" class="btn btn-primary" onclick="listar_proyecciones_venta_semanal()">
                             <i class="fa fa-fw fa-search"></i>
