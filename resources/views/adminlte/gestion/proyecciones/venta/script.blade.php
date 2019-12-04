@@ -44,19 +44,18 @@
     }
 
     function store_proyeccion_venta(){
-        cliente=[];
+        clientes=[];
         $.each($(".td_cajas_proyectadas"),function(i,j){
             if(!$(j).find(".input_cajas_proyectadas").prop('disabled')){
-                cliente.push({
+                clientes.push({
                     id_cliente : $(j).find('.id_cliente').val(),
                     cajas_fisicas: $(j).find('.input_cajas_proyectadas').val(),
-                    semana:$(j).find('.input_codigo_semana').val(),
-                    cajas_equivalentes : parseFloat($(j).find('.cajas_equivalentes').html()),
-                    valor : $(j).find('precio_proyectado').html(),
+                    semana : $(j).find('.input_codigo_semana').val(),
+                    cajas_equivalentes : parseFloat($("#cajas_equivalentes_"+$(j).find('.id_cliente').val()+"_"+ $(j).find('.input_codigo_semana').val()).html()),
+                    valor :$("#precio_proyectado_"+$(j).find('.id_cliente').val()+"_"+ $(j).find('.input_codigo_semana').val()).html(),
                 });
-                return false;
+               // return false;
             }
-
         });
         semanas=[];
         semana_inicio="";
@@ -84,11 +83,11 @@
 
             datos = {
                 _token: '{{csrf_token()}}',
-                cliente : cliente,
-                semanas : semanas
+                clientes : clientes,
+                semanas : semanas,
+                id_variedad : $("#filtro_predeterminado_variedad").val(),
                 //semana : columna,
                 //id_cliente :id_cliente,
-                //id_variedad : $("#filtro_predeterminado_variedad").val(),
                 //cajas_fisicas : $("#cajas_proyectadas_"+id_cliente+"_"+columna).val(),
                 //cajas_equivalentes : parseFloat($("#cajas_equivalentes_"+id_cliente+"_"+columna).html()),
                 //valor : $("#precio_proyectado_"+id_cliente+"_"+columna).html(),

@@ -80,7 +80,7 @@ class Semana extends Model
         ])->select('cajas_proyectadas','cajas')->first();
 
         if(isset($objResumenSemanaCosecha)){
-            if($this->codigo >= $semanaActual->codigo){
+            if($this->codigo > $semanaActual->codigo){
                 $cajasProyectadas = $objResumenSemanaCosecha->cajas_proyectadas;
             }else{
                 $cajasProyectadas = $objResumenSemanaCosecha->cajas;
