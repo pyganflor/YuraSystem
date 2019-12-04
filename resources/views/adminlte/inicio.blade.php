@@ -47,7 +47,7 @@
                                         else
                                             $color = 'green';
                                     @endphp
-                                    <span class="info-box-number text-center" style="color: '{{$color}}">
+                                    <span class="info-box-number text-center" style="color: {{$color}}">
                                             {{number_format($venta_m2_anno_mensual, 2)}}
                                         <small>$/m<sup>2</sup>/año (4 meses)</small>
                                     </span>
