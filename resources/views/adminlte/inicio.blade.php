@@ -43,7 +43,7 @@
                                         if($venta_m2_anno_mensual < 28)
                                             $color  = 'red';
                                         else if($venta_m2_anno_mensual >= 28 && $venta_m2_anno_mensual <= 32)
-                                            $color = 'yellow';
+                                            $color = 'orange';
                                         else
                                             $color = 'green';
                                     @endphp
@@ -135,7 +135,7 @@
                                 if($tallos_m2 < 35)
                                     $color1  = 'red';
                                 else if($tallos_m2 >= 35 && $tallos_m2 <= 45)
-                                    $color1 = 'yellow';
+                                    $color1 = 'orange';
                                 else
                                     $color1 = 'green';
 
@@ -143,7 +143,7 @@
                                 if($ramos_m2_anno < 13)
                                     $color2  = 'red';
                                 else if($ramos_m2_anno >= 13 && $ramos_m2_anno <= 17)
-                                    $color2 = 'yellow';
+                                    $color2 = 'orange';
                                 else
                                     $color2 = 'green';
                             @endphp
