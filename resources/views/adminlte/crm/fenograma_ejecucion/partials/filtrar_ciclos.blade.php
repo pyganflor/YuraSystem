@@ -9,6 +9,9 @@
             <th class="text-center" style="border-color: #9d9d9d" width="95px">
                 Inicio
             </th>
+            <th class="text-center" style="border-color: #9d9d9d" width="95px">
+                Semana
+            </th>
             <th class="text-center" style="border-color: #9d9d9d">
                 P/S
             </th>
@@ -19,6 +22,9 @@
                 Área m<sup>2</sup>
             </th>
             <th class="text-center" style="border-color: #9d9d9d">
+                Total x Semana m<sup>2</sup>
+            </th>
+            <th class="text-center" style="border-color: #9d9d9d">
                 1ra Flor
             </th>
             <th class="text-center" style="border-color: #9d9d9d">
@@ -26,6 +32,9 @@
             </th>
             <th class="text-center" style="border-color: #9d9d9d">
                 Tallos/m<sup>2</sup>
+            </th>
+            <th class="text-center" style="border-color: #9d9d9d">
+                Cosechadop <sup>%</sup>
             </th>
             <th class="text-center" style="border-color: #9d9d9d; background-color: #0b3248">
                 Ptas Iniciales
@@ -78,6 +87,9 @@
                     {{$item->fecha_inicio}}
                 </td>
                 <td class="text-center" style="border-color: #9d9d9d">
+                    {{getSemanaByDate($item->fecha_inicio)->codigo}}
+                </td>
+                <td class="text-center" style="border-color: #9d9d9d">
                     {{$item->modulo->getPodaSiembraByCiclo($item->id_ciclo)}}
                 </td>
                 <td class="text-center" style="border-color: #9d9d9d">
@@ -91,6 +103,9 @@
                     {{number_format($item->area, 2)}}
                 </td>
                 <td class="text-center" style="border-color: #9d9d9d">
+                    --
+                </td>
+                <td class="text-center" style="border-color: #9d9d9d">
                     @if($item->fecha_cosecha != '')
                         {{difFechas($item->fecha_cosecha, $item->fecha_inicio)->days}}
                     @endif
@@ -100,6 +115,9 @@
                 </td>
                 <td class="text-center" style="border-color: #9d9d9d">
                     {{round($item->getTallosCosechados()/$item->area, 2)}}
+                </td>
+                <td class="text-center" style="border-color: #9d9d9d">
+                    --
                 </td>
                 <td class="text-center" style="border-color: #9d9d9d">
                     {{number_format($item->plantas_iniciales)}}
