@@ -131,16 +131,32 @@
                             </div>
                         </div>
                         <div class="col-md-3">
+                            @php
+                                if($tallos_m2 < 35)
+                                    $color1  = 'red';
+                                else if($tallos_m2 >= 35 && $tallos_m2 <= 45)
+                                    $color1 = 'yellow';
+                                else
+                                    $color1 = 'green';
+
+
+                                if($ramos_m2_anno < 13)
+                                    $color2  = 'red';
+                                else if($ramos_m2_anno >= 13 && $ramos_m2_anno <= 17)
+                                    $color2 = 'yellow';
+                                else
+                                    $color2 = 'green';
+                            @endphp
                             <div class="info-box mouse-hand sombra_pequeña" onmouseover="$(this).addClass('bg-gray-light')"
                                  onmouseleave="$(this).removeClass('bg-gray-light')" onclick="location.href='{{url('crm_area')}}'">
                                 <span class="info-box-icon"><i class="fa fa-fw fa-cube"></i></span>
                                 <div class="info-box-content">
                                     <strong class="info-box-text" style="font-size: 1.2em">Producción</strong>
-                                    <span class="info-box-number">
+                                    <span class="info-box-number" style="color: {{$color1}};">
                                         {{number_format($tallos_m2, 2)}}
                                         <small> t/m<sup>2</sup></small>
                                     </span>
-                                    <span class="info-box-number" title="Ramos/m2">
+                                    <span class="info-box-number" title="Ramos/m2" style="color: {{$color2}}">
                                         {{number_format($ramos_m2_anno, 2)}}
                                         <small>r/m<sup>2</sup>/año</small>
                                     </span>
