@@ -88,7 +88,7 @@
                     $.LoadingOverlay('show');
                     post_jquery('{{url('semanas/update_semana')}}', datos, function () {
                         cerrar_modals();
-                        listar();
+                        //listar();
                     });
                     $.LoadingOverlay('hide');
                 });
