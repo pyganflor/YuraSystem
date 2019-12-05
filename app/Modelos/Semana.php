@@ -189,7 +189,7 @@ class Semana extends Model
             ['id_variedad',$idVariedad],
             ['id_cliente',$idCliente],
             ['codigo_semana',$semanaAnnoAnterior]
-        ])->select('cajas_fisicas_anno_anterior')->fisrt();
+        ])->select('cajas_fisicas_anno_anterior')->first();
 
     }
 }
