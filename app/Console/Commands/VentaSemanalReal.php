@@ -48,6 +48,7 @@ class VentaSemanalReal extends Command
             $variedad = $this->argument('variedad');
             $idCliente = $this->argument('id_cliente');
             $fechaActual = now();
+            Info("Inicio del comando proyeccion:venta_semanal_real");
             Info("Variables recibidas, desde: ".$desde. "hasta: ".$hasta. " variedad: ".$variedad ." idCliente: ".$idCliente);
 
             $variedades = Variedad::where('estado', 1);
@@ -172,6 +173,7 @@ class VentaSemanalReal extends Command
             }
 
             $fin = microtime(true);
+            Info("Fin del comando proyeccion:venta_semanal_real");
             Info("El script se completo en : ".(number_format(($fin-$inicio),2,".","")). " segundos");
     }
 }

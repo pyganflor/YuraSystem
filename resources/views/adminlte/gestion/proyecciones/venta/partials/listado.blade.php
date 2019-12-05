@@ -27,18 +27,19 @@
                     $objSemanaActual =getObjSemana($semana);
                     $objSemanaPasada =getObjSemana($semana-1);
                     if(!isset($objSemanaPasada)){
-                        for($x=$semana;$x>0001;$x--){
+                        for($y=$semana;$y>0001;$y--){
                             $objResumenSemanaCosecha = yura\Modelos\ResumenSemanaCosecha::where([
                                 ['id_variedad',$idVariedad],
-                                ['codigo_semana',$x-1]
+                                ['codigo_semana',$y-1]
                             ])->select('codigo_semana')->first();
                             if(isset($objResumenSemanaCosecha)){
-                                 $objSemanaPasada =getObjSemana($objResumenSemanaCosecha->codigo_semana);
+                                $objSemanaPasada =getObjSemana($objResumenSemanaCosecha->codigo_semana);
                                 break;
                             }
                         }
                     }
-                    if($x ==0){
+
+                    if($x == 0){
                         $firstSemanaResumenSemanaCosechaByVariedad = (int)$objSemanaActual->firstSemanaResumenSemanaCosechaByVariedad($idVariedad);
                         if($firstSemanaResumenSemanaCosechaByVariedad > $semana){
                             $saldoInicial = $objSemanaActual->getSaldo($idVariedad);
@@ -48,8 +49,9 @@
                             $saldoInicial = $objSemanaActual->firstSaldoInicialByVariedad($idVariedad);
                         }
                     }
+
                     $saldoFinal = isset($objSemanaPasada) ? $objSemanaPasada->getSaldo($idVariedad)+$saldoInicial : $objSemanaActual->getSaldo($idVariedad)+$saldoInicial;
-                   // dump($saldoFinal);
+
                     if($x>0)
                         $saldoInicial = $saldoFinal;
                 @endphp
@@ -147,8 +149,9 @@
                         </div>
                     </td>
                     @foreach($semanas as $codigoSemana => $dataSemana)
+                        @php $cajasFisicasAnnoAnterior = getObjSemana($codigoSemana)->cajasFisicasAnnoAnterior($idVariedad,$idCliente) @endphp
                         <td class="text-center"  style="border-left:2px solid #000000;border-right:2px solid #000000;border-top:2px solid #000000;width: 250px;background: #08ffe836;" colspan="3">
-                            <div style="width:100%" data-toggle="tooltip" data-placement="top"  title="Cajas equivalentes año anterior"><b>{{$dataSemana['cajas_fisicas_anno_anterior']}}</b></div>
+                            <div style="width:100%" data-toggle="tooltip" data-placement="top"  title="Cajas físicas año anterior"><b>{{isset($cajasFisicasAnnoAnterior->cajas_fisicas_anno_anterior) ? $cajasFisicasAnnoAnterior->cajas_fisicas_anno_anterior git a: 0}}</b></div>
                         </td>
                     @endforeach
                     <td class="text-center" style="border-left:2px solid #000000;border-right:2px solid #000000;border-top:2px solid #000000;width: 250px">

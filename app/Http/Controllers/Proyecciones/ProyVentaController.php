@@ -105,7 +105,7 @@ class ProyVentaController extends Controller
                     'cajas_fisicas' => $proyeccionVentaSemanalReal->cajas_fisicas,
                     'cajas_equivalentes' => $proyeccionVentaSemanalReal->cajas_equivalentes,
                     'valor' => $proyeccionVentaSemanalReal->valor,
-                    'cajas_fisicas_anno_anterior'=>$proyeccionVentaSemanalReal->cajas_fisicas_anno_anterior
+                    //'cajas_fisicas_anno_anterior'=>$proyeccionVentaSemanalReal->cajas_fisicas_anno_anterior
                 ];
             }
 
@@ -270,6 +270,4 @@ class ProyVentaController extends Controller
             'success' => $success
         ];
     }
-
-
 }
