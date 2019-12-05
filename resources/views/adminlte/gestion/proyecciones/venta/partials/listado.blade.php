@@ -150,7 +150,7 @@
                     @foreach($semanas as $codigoSemana => $dataSemana)
                         @php $cajasFisicasAnnoAnterior = getObjSemana($codigoSemana)->cajasFisicasAnnoAnterior($idVariedad,$idCliente) @endphp
                         <td class="text-center"  style="border-left:2px solid #000000;border-right:2px solid #000000;border-top:2px solid #000000;width: 250px;background: #08ffe836;" colspan="3">
-                            <div style="width:100%" data-toggle="tooltip" data-placement="top"  title="Cajas físicas año anterior"><b>{{isset($cajasFisicasAnnoAnterior->cajas_fisicas_anno_anterior) ? $cajasFisicasAnnoAnterior->cajas_fisicas_anno_anterior git a: 0}}</b></div>
+                            <div style="width:100%" data-toggle="tooltip" data-placement="top"  title="Cajas físicas año anterior"><b>{{isset($cajasFisicasAnnoAnterior->cajas_fisicas_anno_anterior) ? $cajasFisicasAnnoAnterior->cajas_fisicas_anno_anterior : 0}}</b></div>
                         </td>
                     @endforeach
                     <td class="text-center" style="border-left:2px solid #000000;border-right:2px solid #000000;border-top:2px solid #000000;width: 250px">
