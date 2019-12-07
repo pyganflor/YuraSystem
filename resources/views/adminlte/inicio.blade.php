@@ -5,8 +5,8 @@
 @endsection
 
 @section('script_inicio')
-    <script>
-    </script>
+    <!--Load the AJAX API-->
+
 @endsection
 
 @section('contenido')
@@ -198,6 +198,7 @@
                 </div>
             </div>
         @endif
+
     </section>
 @endsection
 
