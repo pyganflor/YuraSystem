@@ -83,9 +83,116 @@ class crmAreaController extends Controller
 
             $periodo = 'semanal';
 
-            foreach ($request->annos as $anno) {
+            if ($request->id_variedad != 'T') {    // por una variedad
+                $data = [];
+                $labels = [];
+                foreach ($request->annos as $pos_anno => $anno) {
+                    $query = DB::table('resumen_area_semanal')
+                        ->where('estado', 1)
+                        ->where('id_variedad', $request->id_variedad)
+                        ->where('codigo_semana', 'like', substr($anno, 2) . '%')
+                        ->orderBy('codigo_semana')
+                        ->get();
 
+                    $data_area = [];
+                    $data_ciclo = [];
+                    $data_tallos = [];
+                    $data_ramos = [];
+                    $data_ramos_anno = [];
+                    foreach ($query as $pos_item => $item) {
+                        if ($pos_anno == 0) {
+                            array_push($labels, substr($item->codigo_semana, 2));
+                        }
+                        array_push($data_area, $item->area);
+                        array_push($data_ciclo, $item->ciclo);
+                        array_push($data_tallos, $item->tallos_m2);
+                        array_push($data_ramos, $item->ramos_m2);
+                        array_push($data_ramos_anno, $item->ramos_m2_anno);
+                    }
+                    array_push($data, [
+                        'label' => $anno,
+                        'color' => getListColores()[$pos_anno],
+                        'data_area' => $data_area,
+                        'data_ciclo' => $data_ciclo,
+                        'data_tallos' => $data_tallos,
+                        'data_ramos' => $data_ramos,
+                        'data_ramos_anno' => $data_ramos_anno,
+                    ]);
+                }
+            } else {    // acumulado
+                $data = [];
+                $labels = [];
+                foreach ($request->annos as $pos_anno => $anno) {
+                    $query = DB::table('resumen_area_semanal')
+                        ->where('estado', 1)
+                        ->where('codigo_semana', 'like', substr($anno, 2) . '%')
+                        ->orderBy('codigo_semana')
+                        ->get();
+
+                    $codigo_semana = $query[0]->codigo_semana;
+                    $data_area = [];
+                    $data_ciclo = [];
+                    $data_tallos = [];
+                    $data_ramos = [];
+                    $data_ramos_anno = [];
+                    $area = 0;
+                    $ciclo = 0;
+                    $tallos = 0;
+                    $ramos = 0;
+                    $ramos_anno = 0;
+                    $cant_ciclo = 0;
+                    $cant_tallos = 0;
+                    $cant_ramos = 0;
+                    $cant_ramos_anno = 0;
+                    foreach ($query as $pos_item => $item) {
+                        if ($item->codigo_semana != $codigo_semana || ($pos_item + 1) == count($query)) {
+                            if ($pos_anno == 0) {
+                                array_push($labels, substr($codigo_semana, 2));
+                            }
+                            array_push($data_area, $area);
+                            array_push($data_ciclo, $cant_ciclo > 0 ? round($ciclo / $cant_ciclo, 2) : 0);
+                            array_push($data_tallos, $cant_tallos > 0 ? round($tallos / $cant_tallos, 2) : 0);
+                            array_push($data_ramos, $cant_ramos > 0 ? round($ramos / $cant_ramos, 2) : 0);
+                            array_push($data_ramos_anno, $cant_ramos_anno > 0 ? round($ramos_anno / $cant_ramos_anno, 2) : 0);
+
+                            $area = $item->area;
+                            $ciclo = $item->ciclo;
+                            $tallos = $item->tallos_m2;
+                            $ramos = $item->ramos_m2;
+                            $ramos_anno = $item->ramos_m2_anno;
+                            $cant_ciclo = $item->ciclo > 0 ? 1 : 0;
+                            $cant_tallos = $item->tallos_m2 > 0 ? 1 : 0;
+                            $cant_ramos = $item->ramos_m2 > 0 ? 1 : 0;
+                            $cant_ramos_anno = $item->ramos_m2_anno > 0 ? 1 : 0;
+                            $codigo_semana = $item->codigo_semana;
+                        } else {
+                            $area += $item->area;
+                            $ciclo += $item->ciclo;
+                            $tallos += $item->tallos_m2;
+                            $ramos += $item->ramos_m2;
+                            $ramos_anno += $item->ramos_m2_anno;
+                            if ($item->ciclo > 0)
+                                $cant_ciclo++;
+                            if ($item->tallos_m2 > 0)
+                                $cant_tallos++;
+                            if ($item->ramos_m2 > 0)
+                                $cant_ramos++;
+                            if ($item->ramos_m2_anno > 0)
+                                $cant_ramos_anno++;
+                        }
+                    }
+                    array_push($data, [
+                        'label' => $anno,
+                        'color' => getListColores()[$pos_anno],
+                        'data_area' => $data_area,
+                        'data_ciclo' => $data_ciclo,
+                        'data_tallos' => $data_tallos,
+                        'data_ramos' => $data_ramos,
+                        'data_ramos_anno' => $data_ramos_anno,
+                    ]);
+                }
             }
+
         } else {
             $view = '_graficas';
 
@@ -116,6 +223,8 @@ class crmAreaController extends Controller
                 $cant_tallos = 0;
                 $ramos = 0;
                 $cant_ramos = 0;
+                $ramos_anno = 0;
+                $cant_ramos_anno = 0;
                 foreach ($query as $pos_item => $item) {
                     if ($item->codigo_semana != $codigo_semana || ($pos_item + 1) == count($query)) {
                         array_push($labels, $codigo_semana);
@@ -123,26 +232,32 @@ class crmAreaController extends Controller
                         array_push($array_ciclo, $cant_ciclo > 0 ? round($ciclo / $cant_ciclo, 2) : 0);
                         array_push($array_tallos, $cant_tallos > 0 ? round($tallos / $cant_tallos, 2) : 0);
                         array_push($array_ramos, $cant_ramos > 0 ? round($ramos / $cant_ramos, 2) : 0);
+                        array_push($array_ramos_anno, $cant_ramos_anno > 0 ? round($ramos_anno / $cant_ramos_anno, 2) : 0);
 
                         $area = $item->area;
                         $ciclo = $item->ciclo;
                         $tallos = $item->tallos_m2;
                         $ramos = $item->ramos_m2;
+                        $ramos_anno = $item->ramos_m2_anno;
                         $cant_ciclo = $item->ciclo > 0 ? 1 : 0;
                         $cant_tallos = $item->tallos_m2 > 0 ? 1 : 0;
                         $cant_ramos = $item->ramos_m2 > 0 ? 1 : 0;
+                        $cant_ramos_anno = $item->ramos_m2_anno > 0 ? 1 : 0;
                         $codigo_semana = $item->codigo_semana;
                     } else {
                         $area += $item->area;
                         $ciclo += $item->ciclo;
                         $tallos += $item->tallos_m2;
                         $ramos += $item->ramos_m2;
+                        $ramos_anno += $item->ramos_m2_anno;
                         if ($item->ciclo > 0)
                             $cant_ciclo++;
                         if ($item->tallos_m2 > 0)
                             $cant_tallos++;
                         if ($item->ramos_m2 > 0)
                             $cant_ramos++;
+                        if ($item->ramos_m2_anno > 0)
+                            $cant_ramos_anno++;
                     }
                 }
             } else {    // una variedad
@@ -157,42 +272,13 @@ class crmAreaController extends Controller
                     ->orderBy('codigo_semana')
                     ->get();
 
-                $codigo_semana = $query[0]->codigo_semana;
-                $area = 0;
-                $ciclo = 0;
-                $cant_ciclo = 0;
-                $tallos = 0;
-                $cant_tallos = 0;
-                $ramos = 0;
-                $cant_ramos = 0;
                 foreach ($query as $pos_item => $item) {
-                    if ($item->codigo_semana != $codigo_semana || ($pos_item + 1) == count($query)) {
-                        array_push($labels, $codigo_semana);
-                        array_push($array_area, $area);
-                        array_push($array_ciclo, $cant_ciclo > 0 ? round($ciclo / $cant_ciclo, 2) : 0);
-                        array_push($array_tallos, $cant_tallos > 0 ? round($tallos / $cant_tallos, 2) : 0);
-                        array_push($array_ramos, $cant_ramos > 0 ? round($ramos / $cant_ramos, 2) : 0);
-
-                        $area = $item->area;
-                        $ciclo = $item->ciclo;
-                        $tallos = $item->tallos_m2;
-                        $ramos = $item->ramos_m2;
-                        $cant_ciclo = $item->ciclo > 0 ? 1 : 0;
-                        $cant_tallos = $item->tallos_m2 > 0 ? 1 : 0;
-                        $cant_ramos = $item->ramos_m2 > 0 ? 1 : 0;
-                        $codigo_semana = $item->codigo_semana;
-                    } else {
-                        $area += $item->area;
-                        $ciclo += $item->ciclo;
-                        $tallos += $item->tallos_m2;
-                        $ramos += $item->ramos_m2;
-                        if ($item->ciclo > 0)
-                            $cant_ciclo++;
-                        if ($item->tallos_m2 > 0)
-                            $cant_tallos++;
-                        if ($item->ramos_m2 > 0)
-                            $cant_ramos++;
-                    }
+                    array_push($labels, $item->codigo_semana);
+                    array_push($array_area, $item->area);
+                    array_push($array_ciclo, $item->ciclo);
+                    array_push($array_tallos, $item->tallos_m2);
+                    array_push($array_ramos, $item->ramos_m2);
+                    array_push($array_ramos_anno, $item->ramos_m2_anno);
                 }
             }
 
@@ -209,6 +295,7 @@ class crmAreaController extends Controller
             'labels' => $labels,
             'data' => $data,
             'periodo' => $periodo,
+            'semana_actual' => getSemanaByDate(date('Y-m-d'))->codigo,
         ]);
     }
 
