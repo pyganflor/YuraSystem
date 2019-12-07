@@ -80,7 +80,7 @@ class Semana extends Model
         ])->select('cajas_proyectadas','cajas')->first();
 
         if(isset($objResumenSemanaCosecha)){
-            if($this->codigo >= $semanaActual->codigo){
+            if($this->codigo > $semanaActual->codigo){
                 $cajasProyectadas = $objResumenSemanaCosecha->cajas_proyectadas;
             }else{
                 $cajasProyectadas = $objResumenSemanaCosecha->cajas;
@@ -179,4 +179,17 @@ class Semana extends Model
 
     }
 
+    public function cajasFisicasAnnoAnterior($idVariedad,$idCliente){
+
+        $arrSemana = str_split($this->codigo,2);
+        $anoAnterior = (int)$arrSemana[0]-1;
+        $semanaAnnoAnterior =  $anoAnterior.$arrSemana[1];
+
+        return ProyeccionVentaSemanalReal::where([
+            ['id_variedad',$idVariedad],
+            ['id_cliente',$idCliente],
+            ['codigo_semana',$semanaAnnoAnterior]
+        ])->select('cajas_fisicas_anno_anterior')->first();
+
+    }
 }

@@ -27,18 +27,18 @@
                     $objSemanaActual =getObjSemana($semana);
                     $objSemanaPasada =getObjSemana($semana-1);
                     if(!isset($objSemanaPasada)){
-                        for($x=$semana;$x>0001;$x--){
+                        for($y=$semana;$y>0001;$y--){
                             $objResumenSemanaCosecha = yura\Modelos\ResumenSemanaCosecha::where([
                                 ['id_variedad',$idVariedad],
-                                ['codigo_semana',$x-1]
+                                ['codigo_semana',$y-1]
                             ])->select('codigo_semana')->first();
                             if(isset($objResumenSemanaCosecha)){
-                                 $objSemanaPasada =getObjSemana($objResumenSemanaCosecha->codigo_semana);
+                                $objSemanaPasada =getObjSemana($objResumenSemanaCosecha->codigo_semana);
                                 break;
                             }
                         }
                     }
-                    if($x ==0){
+                    if($x == 0){
                         $firstSemanaResumenSemanaCosechaByVariedad = (int)$objSemanaActual->firstSemanaResumenSemanaCosechaByVariedad($idVariedad);
                         if($firstSemanaResumenSemanaCosechaByVariedad > $semana){
                             $saldoInicial = $objSemanaActual->getSaldo($idVariedad);
@@ -48,8 +48,9 @@
                             $saldoInicial = $objSemanaActual->firstSaldoInicialByVariedad($idVariedad);
                         }
                     }
+
                     $saldoFinal = isset($objSemanaPasada) ? $objSemanaPasada->getSaldo($idVariedad)+$saldoInicial : $objSemanaActual->getSaldo($idVariedad)+$saldoInicial;
-                   // dump($saldoFinal);
+
                     if($x>0)
                         $saldoInicial = $saldoFinal;
                 @endphp
@@ -147,8 +148,9 @@
                         </div>
                     </td>
                     @foreach($semanas as $codigoSemana => $dataSemana)
+                        @php $cajasFisicasAnnoAnterior = getObjSemana($codigoSemana)->cajasFisicasAnnoAnterior($idVariedad,$idCliente) @endphp
                         <td class="text-center"  style="border-left:2px solid #000000;border-right:2px solid #000000;border-top:2px solid #000000;width: 250px;background: #08ffe836;" colspan="3">
-                            <div style="width:100%" data-toggle="tooltip" data-placement="top"  title="Cajas año anterior"><b>{{$dataSemana['cajas_fisicas_anno_anterior']}}</b></div>
+                            <div style="width:100%" data-toggle="tooltip" data-placement="top"  title="Cajas físicas año anterior"><b>{{isset($cajasFisicasAnnoAnterior->cajas_fisicas_anno_anterior) ? $cajasFisicasAnnoAnterior->cajas_fisicas_anno_anterior : 0}}</b></div>
                         </td>
                     @endforeach
                     <td class="text-center" style="border-left:2px solid #000000;border-right:2px solid #000000;border-top:2px solid #000000;width: 250px">
@@ -162,21 +164,24 @@
                 <tr>
                     <td class="text-center" style="border-bottom:2px solid #000000;border-left:2px solid #000000;border-right:2px solid #000000;width: 250px">Proyectado</td>
                     @foreach($semana['semanas'] as $codigoSemana => $dataSemana)
-                        <td style="border: 1px solid #9d9d9d;border-bottom: 2px solid #000000;">
+                        <td style="border: 1px solid #9d9d9d;border-bottom: 2px solid #000000;" class="td_cajas_proyectadas">
                             <div style="width:100%;text-align:center;" data-toggle="tooltip" data-placement="top" title="Cajas físicas proyectadas" ondblclick="habilitar('cajas_proyectadas_{{$cliente->id_cliente}}_{{$codigoSemana}}')">
-                                <input type="number" id="cajas_proyectadas_{{$cliente->id_cliente}}_{{$codigoSemana}}"  min="0" onblur="store_proyeccion_venta('{{$cliente->id_cliente}}','{{$codigoSemana}}','{{$idVariedad}}')"
+                                <input type="number" id="cajas_proyectadas_{{$cliente->id_cliente}}_{{$codigoSemana}}"  min="0"
                                        onkeyup="calcular_proyeccion_cliente('{{$cliente->id_cliente}}','{{$codigoSemana}}')"
-                                       disabled name="cajas_proyectadas_{{$cliente->id_cliente}}_{{$codigoSemana}}" style="border:none;text-align:center;width:50px" value="{{$dataSemana['cajas_fisicas']}}" >
+                                       disabled name="cajas_proyectadas_{{$cliente->id_cliente}}_{{$codigoSemana}}" style="border:none;text-align:center;width:50px"
+                                       class="input_cajas_proyectadas" value="{{$dataSemana['cajas_fisicas']}}" >
+                                <input type="hidden" class="id_cliente" value="{{$cliente->id_cliente}}">
+                                <input type="hidden" class="input_codigo_semana" value="{{$codigoSemana}}">
                             </div>
                         </td>
                         <td style="border: 1px solid #9d9d9d;border-bottom: 2px solid #000000;">
-                            <div style="padding: 3px 6px;width:100%;text-align:center;cursor:pointer" data-toggle="tooltip" data-placement="top" title="Cajas equivalentes proyectadas">
+                            <div style="padding: 3px 6px;width:100%;text-align:center;cursor:pointer" class="cajas_equivalentes" data-toggle="tooltip" data-placement="top" title="Cajas equivalentes proyectadas">
                                 <b id="cajas_equivalentes_{{$cliente->id_cliente}}_{{$codigoSemana}}">{{number_format($dataSemana['cajas_equivalentes'],2,".","")}}</b>
                             </div>
                         </td>
                         <td style="border: 1px solid #9d9d9d;border-bottom: 2px solid #000000;border-right: 2px solid #000000">
-                            <div style="padding: 3px 6px;width:100%;text-align:center;cursor:pointer;" data-toggle="tooltip" data-placement="top" title="Valor proyectado">
-                                <b id="precio_proyectado_{{$cliente->id_cliente}}_{{$codigoSemana}}">${{number_format($dataSemana['valor'],2,".",",")}}</b>
+                            <div style="padding: 3px 6px;width:100%;text-align:center;cursor:pointer;" class="precio_proyectado" data-toggle="tooltip" data-placement="top" title="Valor proyectado">
+                                <b  id="precio_proyectado_{{$cliente->id_cliente}}_{{$codigoSemana}}">${{number_format($dataSemana['valor'],2,".",",")}}</b>
                             </div>
                         </td>
                     @endforeach
@@ -304,7 +309,11 @@
         $('[data-toggle="tooltip"]').tooltip();
     });
     function habilitar(id){
-        $("#"+id).removeAttr('disabled');
+        if($("#"+id).prop('disabled')){
+            $("#"+id).removeAttr('disabled');
+        }else{
+            $("#"+id).attr('disabled',true);
+        }
     }
 </script>
 

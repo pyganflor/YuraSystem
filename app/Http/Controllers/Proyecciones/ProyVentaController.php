@@ -105,7 +105,7 @@ class ProyVentaController extends Controller
                     'cajas_fisicas' => $proyeccionVentaSemanalReal->cajas_fisicas,
                     'cajas_equivalentes' => $proyeccionVentaSemanalReal->cajas_equivalentes,
                     'valor' => $proyeccionVentaSemanalReal->valor,
-                    'cajas_fisicas_anno_anterior'=>$proyeccionVentaSemanalReal->cajas_fisicas_anno_anterior
+                    //'cajas_fisicas_anno_anterior'=>$proyeccionVentaSemanalReal->cajas_fisicas_anno_anterior
                 ];
             }
 
@@ -159,34 +159,38 @@ class ProyVentaController extends Controller
     }
 
     public function storeProyeccionVenta(Request $request){
+      //  dd($request->all());
         try{
             if(isset($request->semanas) && count($request->semanas)>0){
-                $valor = substr($request->valor,1,20);
                 foreach($request->semanas as $semana){
+                    foreach($request->clientes as $cliente){
+                        $valor = substr($cliente['valor'],1,20);
+                        $objProyeccionVentaSemanalReal = ProyeccionVentaSemanalReal::where([
+                            ['id_cliente',$cliente['id_cliente']],
+                            ['id_variedad',$request->id_variedad],
+                            ['codigo_semana',$semana]
+                        ]);
+                        $objProyeccionVentaSemanalReal->update([
+                            'cajas_fisicas' => $cliente['cajas_fisicas'],
+                            'cajas_equivalentes' => $cliente['cajas_equivalentes'],
+                            'valor' => round($valor,2)
+                        ]);
+                    }
+                }
+            }else{
+                foreach($request->clientes as $cliente){
+                    $valor = substr($cliente['valor'],1,20);
                     $objProyeccionVentaSemanalReal = ProyeccionVentaSemanalReal::where([
-                        ['id_cliente',$request->id_cliente],
+                        ['id_cliente',$cliente['id_cliente']],
                         ['id_variedad',$request->id_variedad],
-                        ['codigo_semana',$semana]
+                        ['codigo_semana',$cliente['semana']]
                     ]);
-
                     $objProyeccionVentaSemanalReal->update([
-                        'cajas_fisicas' => $request->cajas_fisicas,
-                        'cajas_equivalentes' => $request->cajas_equivalentes,
+                        'cajas_fisicas' => $cliente['cajas_fisicas'],
+                        'cajas_equivalentes' => $cliente['cajas_equivalentes'],
                         'valor' => round($valor,2)
                     ]);
                 }
-            }else{
-                $objProyeccionVentaSemanalReal = ProyeccionVentaSemanalReal::where([
-                    ['id_cliente',$request->id_cliente],
-                    ['id_variedad',$request->id_variedad],
-                    ['codigo_semana',$request->semana]
-                ]);
-                $valor = substr($request->valor,1,20);
-                $objProyeccionVentaSemanalReal->update([
-                    'cajas_fisicas' => $request->cajas_fisicas,
-                    'cajas_equivalentes' => $request->cajas_equivalentes,
-                    'valor' => round($valor,2)
-                ]);
             }
             $success = true;
             $msg = '<div class="alert alert-success text-center">' .
@@ -195,8 +199,8 @@ class ProyVentaController extends Controller
         }catch (\Exception $e){
             $success = false;
             $msg = '<div class="alert alert-danger text-center">' .
-                '<p>  Ha ocurrido el siguiente error al intentar guardar la información <br />"'.$e->getMessage().'"<br /> Comuníquelo al área de sistemas</p>'
-                .'</div>';
+                        '<p>  Ha ocurrido el siguiente error al intentar guardar la información <br />"'.$e->getMessage().'"<br /> Comuníquelo al área de sistemas</p>'
+                    .'</div>';
         }
 
         return [
@@ -266,6 +270,4 @@ class ProyVentaController extends Controller
             'success' => $success
         ];
     }
-
-
 }
