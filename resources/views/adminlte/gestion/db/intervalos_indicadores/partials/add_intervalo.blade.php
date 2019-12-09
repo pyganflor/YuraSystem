@@ -1,19 +1,12 @@
-<form id="form_add_intervalo">
+<div class="text-right" style="margin-bottom: 10px">
+    <button class="btn btn-primary btn-xs" title="Agregar intervalo de rango" onclick="add_row('rango')">
+        <i class="fa fa-plus"></i>
+    </button>
+    <button class="btn btn-success btn-xs" title="Agregar intervalo de condición" onclick="add_row('condicion')">
+        <i class="fa fa-plus"></i>
+    </button>
+</div>
+<form id="form_add_intervalo" class="form_rows_intervalos">
     <input type="hidden" id="id_indicador" value="{{$indicador}}">
-    <div class="row">
-        <div class="col-md-6">
-            <div class="form-group">
-                <label for="desde">Desde</label>
-                <input type="number" id="desde" name="desde" class="form-control" required maxlength="250"  min="0" autocomplete="off"
-                       value=''>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="form-group">
-                <label for="hasta">Hasta</label>
-                <input type="number" id="hasta" name="hasta" class="form-control" min="1" required
-                       autocomplete="off" value="">
-            </div>
-        </div>
-    </div>
+    <div id="alert_intervalo" class="alert alert-info text-center">Ingrese al menos un intervalo</div>
 </form>
