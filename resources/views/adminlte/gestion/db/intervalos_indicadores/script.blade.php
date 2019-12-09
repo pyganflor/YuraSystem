@@ -28,7 +28,9 @@
     }
     
     function delete_row(id) {
-        $("#row_input_"+id).remove()
+        cant = $("form#form_add_intervalo div.row").length;
+        if(cant>1)
+            $("#row_input_"+id).remove()
     }
 
     function cambia_color(id,select) {
