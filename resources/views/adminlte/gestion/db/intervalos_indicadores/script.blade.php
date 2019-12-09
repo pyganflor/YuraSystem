@@ -28,7 +28,7 @@
     }
     
     function delete_row(id) {
-        $("#"+id).remove()
+        $("#row_input_"+id).remove()
     }
 
     function cambia_color(id,select) {

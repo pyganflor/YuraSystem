@@ -1,4 +1,4 @@
-<div class="row">
+<div class="row" id="row_input_{{$x}}">
     <div class="col-md-4">
         <div class="form-group">
             <label for="desde_{{$x}}">Desde</label>
@@ -35,4 +35,4 @@
         </div>
     </div>
 </div>
-<hr />
+<hr style="margin: 0 0 3px 0;"/>
