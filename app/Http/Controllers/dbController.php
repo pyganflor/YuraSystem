@@ -11,6 +11,7 @@ use yura\Jobs\ResumenAreaSemanal;
 use yura\Jobs\ResumenSemanaCosecha;
 use yura\Jobs\UpdateIndicador;
 use yura\Modelos\Indicador;
+use yura\Modelos\IntervaloIndicador;
 use yura\Modelos\Job;
 use yura\Modelos\Submenu;
 use Validator;
@@ -222,11 +223,11 @@ class dbController extends Controller
             'indicadores' => getIndicadores()->where('estado', 1)
         ]);
     }
-
-    public function listarIntervalIndicador(){
-        return view('adminlte.gestion.db.intervalos_indicadores.partials.listado',[
-            'indicadores' => getIndicadores()->where('estado', 1)
+    
+    public function addIntervaloIndicador(Request $request){
+        return view('adminlte.gestion.db.intervalos_indicadores.partials.add_intervalo',[
+            'indicador'=> $request->id_indicador,
+            'intervalo_indicador'=> IntervaloIndicador::where('id_intervalor_indicador')
         ]);
     }
-
 }
