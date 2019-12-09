@@ -7,3 +7,4 @@ Route::post('db_jobs/send_queue_job', 'dbController@send_queue_job');
 Route::get('db_indicadores', 'dbController@indicadores');
 Route::post('db_indicadores/store_indicador', 'dbController@store_indicador');
 Route::post('db_indicadores/update_indicador', 'dbController@update_indicador');
+Route::get('intervalo_indicador', 'dbController@intervalo_indicador');
