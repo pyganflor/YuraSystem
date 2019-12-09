@@ -25,6 +25,6 @@
     }
 
     function cambia_color(id,select) {
-        $("span#color_"+id).attr('background',$(select).val())
+        $("span#color_"+id).css('background',$(select).val())
     }
 </script>
