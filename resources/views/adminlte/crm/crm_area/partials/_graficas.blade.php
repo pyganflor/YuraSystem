@@ -31,7 +31,7 @@
     construir_char('Ciclo', 'chart_ciclo');
     construir_char('Tallos', 'chart_tallos');
     construir_char('Ramos', 'chart_ramos');
-    /*construir_char('Ramos Año', 'chart_ramos_anno');*/
+    construir_char('Ramos Año', 'chart_ramos_anno');
 
     function construir_char(label, id) {
         labels = [];
@@ -47,6 +47,8 @@
             data_list.push('{{$data['tallos'][$pos_l]}}');
         if (label == 'Ramos')
             data_list.push('{{$data['ramos'][$pos_l]}}');
+        if (label == 'Ramos Año')
+            data_list.push('{{$data['ramos_anno'][$pos_l]}}');
         @endforeach
 
             datasets = [{

@@ -17,11 +17,11 @@
     </div>
 </div>
 <script>
-    construir_char_simple('Cajas', 'chart_cajas');
-    construir_char_simple('Tallos', 'chart_tallos');
-    construir_char_simple('Calibres', 'chart_calibres');
+    construir_char_compuesto('Cajas', 'chart_cajas');
+    construir_char_compuesto('Tallos', 'chart_tallos');
+    construir_char_compuesto('Calibres', 'chart_calibres');
 
-    function construir_char_simple(label, id) {
+    function construir_char_compuesto(label, id) {
         labels = [];
         datasets = [];
 

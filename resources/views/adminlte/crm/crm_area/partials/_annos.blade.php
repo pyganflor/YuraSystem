@@ -37,45 +37,45 @@
     function construir_char_annos(label, id) {
         labels = [];
         datasets = [];
-        @foreach($labels as $sem)
-        labels.push("{{$sem->semana}}");
-        @endforeach
 
-                {{-- Data_list --}}
-                @foreach($data as $pos_a => $a)
+        @foreach($labels as $label)
+        @if($label >= substr($semana_actual, 2))
+        labels.push('{{$label}}*');
+        @else
+        labels.push('{{$label}}');
+        @endif
+                @endforeach
+
+                @foreach($data as $dataset)
             data_list = [];
         if (label == 'Area') {
-            @foreach($a['area'] as $item)
-            data_list.push("{{$item}}");
+            @foreach($dataset['data_area'] as $valor)
+            data_list.push('{{round($valor / 10000, 2)}}');
             @endforeach
-        }
-        else if (label == 'Ciclo') {
-            @foreach($a['ciclo'] as $item)
-            data_list.push("{{$item}}");
+        } else if (label == 'Ciclo') {
+            @foreach($dataset['data_ciclo'] as $valor)
+            data_list.push('{{$valor}}');
             @endforeach
-        }
-        else if (label == 'Tallos') {
-            @foreach($a['tallos'] as $item)
-            data_list.push("{{$item}}");
+        } else if (label == 'Tallos') {
+            @foreach($dataset['data_tallos'] as $valor)
+            data_list.push('{{$valor}}');
             @endforeach
-        }
-        else if (label == 'Ramos') {
-            @foreach($a['ramos'] as $item)
-            data_list.push("{{$item}}");
+        } else if (label == 'Ramos') {
+            @foreach($dataset['data_ramos'] as $valor)
+            data_list.push('{{$valor}}');
             @endforeach
-        }
-        else {
-            @foreach($a['ramos_anno'] as $item)
-            data_list.push("{{$item}}");
+        } else if (label == 'Ramos Año') {
+            @foreach($dataset['data_ramos_anno'] as $valor)
+            data_list.push('{{$valor}}');
             @endforeach
         }
 
         datasets.push({
-            label: '{{$a['anno']}}' + ' ',
+            label: '{{$dataset['label']}}' + ' ',
             data: data_list,
-            backgroundColor: '{{getListColores()[$pos_a]}}',
-            borderColor: '{{getListColores()[$pos_a]}}',
-            borderWidth: 1,
+            backgroundColor: '{{$dataset['color']}}',
+            borderColor: '{{$dataset['color']}}',
+            borderWidth: 1.5,
             fill: false,
         });
         @endforeach
@@ -97,11 +97,11 @@
                 },
                 elements: {
                     line: {
-                        tension: 0, // disables bezier curves
+                        tension: 0.3, // disables bezier curves
                     }
                 },
                 tooltips: {
-                    mode: 'point' // nearest, point, index, dataset, x, y
+                    mode: 'x' // nearest, point, index, dataset, x, y
                 },
                 legend: {
                     display: true,
@@ -118,4 +118,5 @@
             }
         });
     }
+
 </script>

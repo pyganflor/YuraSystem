@@ -130,6 +130,7 @@ class Modulo extends Model
 
     public function getDataBySemana($semana, $variedad, $desde, $opcion, $detalle)
     {
+        $opcion = 'A';  // setear automaticamente a plantas actuales
         if ($semana != '') {
             $tallos_proyectados = 0;
             /* ----------------------------- calcular cosecha real ----------------------------- */
