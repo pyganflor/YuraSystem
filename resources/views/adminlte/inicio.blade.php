@@ -4,8 +4,28 @@
     Dashboard
 @endsection
 
-@section('script_inicio')
+@section('css_inicio')
+    <style>
+        .nodo_org {
+            background-color: #e9ecef !important;
+            width: 200px;
+            cursor: pointer;
+            -webkit-box-shadow: 9px 8px 11px -2px rgba(0, 0, 0, 0.34);
+            -moz-box-shadow: 9px 8px 11px -2px rgba(0, 0, 0, 0.34);
+            box-shadow: 5px 3px 11px -2px rgba(0, 0, 0, 0.34);
+            font-size: 1em;
+        }
 
+        .nodo_org_selected {
+            background-color: #ccc9c9 !important;
+        }
+    </style>
+@endsection
+
+@section('script_inicio')
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+    <script src="https://bernii.github.io/gauge.js/dist/gauge.min.js"></script>
 @endsection
 
 @section('contenido')
@@ -34,6 +54,13 @@
                     $color_1 = 'orange';
                 else
                     $color_1 = 'green';
+
+                if($venta_m2_anno_anual < 28)
+                    $color_1_1  = 'red';
+                else if($venta_m2_anno_anual >= 28 && $venta_m2_anno_anual <= 32)
+                    $color_1_1 = 'orange';
+                else
+                    $color_1_1 = 'green';
 
                 if($ciclo < 115)
                     $color_2  = 'green';
@@ -193,111 +220,12 @@
                     </div>
                 </div>
             </div>
-            {{-- CHART 1 --}}
-            <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-
-            <style>
-                .nodo_org {
-                    background-color: #e9ecef !important;
-                    width: 200px;
-                    cursor: pointer;
-                    -webkit-box-shadow: 9px 8px 11px -2px rgba(0, 0, 0, 0.34);
-                    -moz-box-shadow: 9px 8px 11px -2px rgba(0, 0, 0, 0.34);
-                    box-shadow: 5px 3px 11px -2px rgba(0, 0, 0, 0.34);
-                    font-size: 1em;
-                }
-
-                .nodo_org_selected {
-                    background-color: #ccc9c9 !important;
-                }
-            </style>
 
             <div id="box_arbol" class="box box-success hide">
                 <div class="box-body" style="overflow-x: scroll;">
                     <div id="chart_org"></div>
                 </div>
             </div>
-
-            <script>
-                google.charts.load('current', {packages: ["orgchart"]});
-                google.charts.setOnLoadCallback(drawChartOrg);
-
-                function drawChartOrg() {
-                    var data = new google.visualization.DataTable();
-                    data.addColumn('string', 'Name');
-                    data.addColumn('string', 'Manager');
-                    data.addColumn('string', 'ToolTip');
-
-                    // For each orgchart box, provide the name, manager, and tooltip to show.
-                    data.addRows([
-                        [{'v': 'Rentabilidad', 'f': '<strong>Rentabilidad</strong>'}, '', 'Rentabilidad'],
-                        [{
-                            'v': 'Ventas_m2_anno',
-                            'f': '<strong style="color:{{$color_1}}">{{number_format($venta_m2_anno_mensual, 2)}}<small><sup>(4 meses)</sup></small></strong>' +
-                            '<br><strong style="color:{{$color_1}}">{{number_format($venta_m2_anno_anual, 2)}}<small><sup>(1 año)</sup></small></strong>' +
-                            '<br><button type="button" title="Ver dashboard" class="btn btn-xs btn-block btn-default" onclick="cargar_ventas_m2()">Ventas/m<sup>2</sup>/año</button>'
-                        }, 'Rentabilidad', 'Ventas/m2/año'],
-                        [{'v': 'Costos', 'f': '<strong>Costos</strong>'}, 'Rentabilidad', 'Costos'],
-                        [{
-                            'v': 'Postcosecha',
-                            'f': '<strong style="color: {{$color_3}}">{{$calibre}}<small><sup>t/r calibre</sup></small></strong>' +
-                            '<br><strong>{{number_format($tallos)}}<small><sup>tallos</sup></small></strong>' +
-                            '<br><button type="button" title="Ver dashboard" class="btn btn-xs btn-block btn-default" onclick="cargar_crm_postcosecha()">Postcosecha</button>'
-                        }, 'Ventas_m2_anno', 'Postcosecha'],
-                        [{
-                            'v': 'Ventas',
-                            'f': '<strong style="color: {{$color_4}}">{{number_format($precio_x_ramo, 2)}}<small><sup>precio</sup></small></strong>' +
-                            '<br><strong>${{number_format($valor, 2)}}</strong>' +
-                            '<br><button type="button" title="Ver dashboard" class="btn btn-xs btn-block btn-default" onclick="cargar_crm_ventas()">Ventas</button>'
-                        }, 'Ventas_m2_anno', 'Ventas'],
-                        [{
-                            'v': 'Produccion',
-                            'f': '<strong style="color: {{$color_5}}">{{number_format($tallos_m2, 2)}}<small><sup>t/m<sup>2</sup></sup></small></strong>' +
-                            '<br><strong style="color:{{$color_6}}">{{number_format($ramos_m2_anno, 2)}}<small><sup>r/m<sup>2</sup>/año</sup></small></strong>' +
-                            '<br><button type="button" title="Ver dashboard" class="btn btn-xs btn-block btn-default" onclick="cargar_crm_area()">Producción</button>'
-                        }, 'Ventas_m2_anno', 'Producción'],
-                        [{
-                            'v': 'Cosecha',
-                            'f': '<strong>Cosecha</strong><br><strong>{{number_format($tallos_cosechados)}} <small>tallos</small></strong>'
-                        }, 'Rentabilidad', 'Cosecha'],
-                        [{
-                            'v': 'Area',
-                            'f': '<strong>Área</strong><br><strong>{{number_format(round($area_produccion / 10000, 2), 2)}} <small><sup>ha</sup></small></strong>' +
-                            '<br><strong style="color: {{$color_2}}">{{number_format($ciclo, 2)}} <small>ciclo</small></strong>'
-                        }, 'Rentabilidad', 'Área'],
-                    ]);
-
-                    var options = {
-                        'allowHtml': true,
-                        'allowCollapse': true,
-                        'color': '#edf7ff',
-                        'nodeClass': 'nodo_org',
-                        'selectedNodeClass': 'nodo_org_selected',
-                        'size': 'large',
-                    };
-
-                    // Create the chart.
-                    var chart = new google.visualization.OrgChart(document.getElementById('chart_org'));
-                    // Draw the chart, setting the allowHtml option to true for the tooltips.
-                    chart.draw(data, options);
-                }
-
-                function cargar_ventas_m2() {
-                    location.href = '{{url('ventas_m2')}}';
-                }
-
-                function cargar_crm_postcosecha() {
-                    location.href = '{{url('crm_postcosecha')}}';
-                }
-
-                function cargar_crm_ventas() {
-                    location.href = '{{url('crm_ventas')}}';
-                }
-
-                function cargar_crm_area() {
-                    location.href = '{{url('crm_area')}}';
-                }
-            </script>
         @endif
     </section>
 @endsection
@@ -319,7 +247,6 @@
                 $('#box_arbol').addClass('hide');
                 $('#box_cuadros').removeClass('hide');
             }
-            console.log($(document).width())
         });
 
         $(window).resize(function () {
@@ -330,7 +257,160 @@
                 $('#box_arbol').addClass('hide');
                 $('#box_cuadros').removeClass('hide');
             }
-            console.log($(document).width())
         });
+
+        google.charts.load('current', {packages: ["orgchart"]});
+        google.charts.setOnLoadCallback(drawChartOrg);
+
+        function drawChartOrg() {
+            var data = new google.visualization.DataTable();
+            data.addColumn('string', 'Name');
+            data.addColumn('string', 'Manager');
+            data.addColumn('string', 'ToolTip');
+
+            // For each orgchart box, provide the name, manager, and tooltip to show.
+            data.addRows([
+                [{'v': 'Rentabilidad', 'f': '<strong>Rentabilidad</strong>'}, '', 'Rentabilidad'],
+                [{
+                    'v': 'Ventas_m2_anno',
+                    'f': '<strong style="color:{{$color_1}}">{{number_format($venta_m2_anno_mensual, 2)}}<small><sup>(4 meses)</sup></small></strong>' +
+                    '<canvas id="canvas_ventas_m2_anno_mensual" style="width: 50px"></canvas>' +
+                    '<br><strong style="color:{{$color_1_1}}">{{number_format($venta_m2_anno_anual, 2)}}<small><sup>(1 año)</sup></small></strong>' +
+                    '<canvas id="canvas_ventas_m2_anno" style="width: 50px"></canvas>'
+                }, 'Rentabilidad', 'Ventas/m2/año'],
+                [{'v': 'Costos', 'f': '<strong>Costos</strong>'}, 'Rentabilidad', 'Costos'],
+                [{
+                    'v': 'Indicadores_claves',
+                    'f': '<strong style="color: {{$color_4}}">{{number_format($precio_x_ramo, 2)}}<small><sup>precio</sup></small></strong>' +
+                    '<br><strong style="color:{{$color_6}}">{{number_format($ramos_m2_anno, 2)}}<small><sup>r/m<sup>2</sup>/año</sup></small></strong>' +
+                    '<br><strong style="color: {{$color_3}}">{{$calibre}}<small><sup>t/r calibre</sup></small></strong>' +
+                    '<br><strong style="color: {{$color_5}}">{{number_format($tallos_m2, 2)}}<small><sup>t/m<sup>2</sup></sup></small></strong>' +
+                    '<br><strong style="color: {{$color_2}}">{{number_format($ciclo, 2)}}<small><sup>ciclo</sup></small></strong>' +
+                    '<br><button type="button" class="btn btn-xs btn-block btn-default" disabled style="color: black">Ind. claves</button>'
+                }, 'Ventas_m2_anno', 'Indicadores claves'],
+                [{
+                    'v': 'Datos_importantes',
+                    'f': '<strong>{{number_format(round($area_produccion / 10000, 2), 2)}} <small><sup>ha</sup></small></strong>' +
+                    '<br><strong>${{number_format($valor, 2)}}</strong>' +
+                    '<br><strong title="Tallos cosechados">{{number_format($tallos_cosechados)}}<small><sup>t/cosechados</sup></small></strong>' +
+                    '<br><strong title="Tallos clasificados">{{number_format($tallos)}}<small><sup>t/clasificados</sup></small></strong>' +
+                    '<br><br><button type="button" class="btn btn-xs btn-block btn-default" disabled style="color: black">Datos importantes</button>'
+                }, 'Ventas_m2_anno', 'Datos importantes'],
+                [{
+                    'v': 'Dashboards',
+                    'f': '<button type="button" title="Ver dashboard" class="btn btn-block btn-default" onclick="cargar_ventas_m2()">Ventas/m<sup>2</sup>/año</button>' +
+                    '<button type="button" title="Ver dashboard" class="btn btn-block btn-default" onclick="cargar_crm_postcosecha()">Postcosecha</button>' +
+                    '<button type="button" title="Ver dashboard" class="btn btn-block btn-default" onclick="cargar_crm_ventas()">Venta</button>' +
+                    '<button type="button" title="Ver dashboard" class="btn btn-block btn-default" onclick="cargar_crm_area()">Área</button>'
+                }, 'Ventas_m2_anno', 'Dashboards'],
+            ]);
+
+            var options = {
+                'allowHtml': true,
+                'allowCollapse': true,
+                'color': '#edf7ff',
+                'nodeClass': 'nodo_org',
+                'selectedNodeClass': 'nodo_org_selected',
+                'size': 'large',
+            };
+
+            // Create the chart.
+            var chart = new google.visualization.OrgChart(document.getElementById('chart_org'));
+            // Draw the chart, setting the allowHtml option to true for the tooltips.
+            chart.draw(data, options);
+
+            render_gauge('canvas_ventas_m2_anno_mensual', '{{number_format($venta_m2_anno_mensual, 2)}}', [{
+                desde: 0,
+                hasta: 28,
+                color: '#f03e3e'
+            }, {
+                desde: 28,
+                hasta: 32,
+                color: '#fd0'
+            }, {
+                desde: 32,
+                hasta: 50,
+                color: '#30b32d'
+            }]);
+            render_gauge('canvas_ventas_m2_anno', '{{number_format($venta_m2_anno_anual, 2)}}', [{
+                desde: 0,
+                hasta: 28,
+                color: '#f03e3e'
+            }, {
+                desde: 28,
+                hasta: 32,
+                color: '#fd0'
+            }, {
+                desde: 32,
+                hasta: 50,
+                color: '#30b32d'
+            }]);
+        }
+
+        function render_gauge(canvas, value, rangos) {
+            var opts = {
+                angle: 0, // The span of the gauge arc
+                lineWidth: 0.2, // The line thickness
+                radiusScale: 1, // Relative radius
+                pointer: {
+                    length: 0.46, // // Relative to gauge radius
+                    strokeWidth: 0.033, // The thickness
+                    color: '#000000', // Fill color
+                },
+                limitMax: false,     // If false, max value increases automatically if value > maxValue
+                limitMin: true,     // If true, the min value of the gauge will be fixed
+                colorStart: '#6F6EA0',   // Colors
+                colorStop: '#C0C0DB',    // just experiment with them
+                strokeColor: '#EEEEEE',  // to see which ones work best for you
+                generateGradient: true,
+                highDpiSupport: true,     // High resolution support
+                // renderTicks is Optional
+                renderTicks: {
+                    divisions: 4,
+                    divWidth: 1,
+                    divLength: 0.79,
+                    divColor: '#333333',
+                    subDivisions: 5,
+                    subLength: 0.45,
+                    subWidth: 0.4,
+                    subColor: '#666666'
+                },
+                staticZones: [
+                    {strokeStyle: rangos[0]['color'], min: rangos[0]['desde'], max: rangos[0]['hasta'], height: 0.6}, // Red from 0 to 15
+                    {strokeStyle: rangos[1]['color'], min: rangos[1]['desde'], max: rangos[1]['hasta'], height: 1}, // Orange
+                    {strokeStyle: rangos[2]['color'], min: rangos[2]['desde'], max: rangos[2]['hasta'], height: 1.2}  // Green
+                ],
+                /*staticLabels: {
+                    font: "10px sans-serif",  // Specifies font
+                    labels: [0, 28, 32, 50],  // Print labels at these values
+                    color: "#000000",  // Optional: Label text color
+                    fractionDigits: 0  // Optional: Numerical precision. 0=round off.
+                },*/
+            };
+            var target = document.getElementById(canvas); // your canvas element
+            var gauge = new Gauge(target).setOptions(opts); // create sexy gauge!
+            gauge.maxValue = rangos[2]['hasta']; // set max gauge value
+            gauge.setMinValue(rangos[0]['desde']);  // Prefer setter over gauge.minValue = 0
+            gauge.animationSpeed = 50; // set animation speed (32 is default value)
+            gauge.set(value); // set actual value
+        }
+
+        function cargar_ventas_m2() {
+            location.href = '{{url('ventas_m2')}}';
+        }
+
+        function cargar_crm_postcosecha() {
+            location.href = '{{url('crm_postcosecha')}}';
+        }
+
+        function cargar_crm_ventas() {
+            location.href = '{{url('crm_ventas')}}';
+        }
+
+        function cargar_crm_area() {
+            location.href = '{{url('crm_area')}}';
+        }
+
+
     </script>
 @endsection
