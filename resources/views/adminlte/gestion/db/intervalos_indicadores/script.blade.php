@@ -11,4 +11,16 @@
         });
         $.LoadingOverlay('hide');
     }
+
+    function add_row(inputs){
+        $.LoadingOverlay('show');
+        datos = {
+            inputs: inputs,
+            cant : $("form#form_add_intervalo row").length+1
+        };
+        $.get('{{url('intervalo_indicador/add_row_intervalo')}}', datos, function (retorno) {
+            $("#form_add_intervalo").append(retorno);
+        });
+        $.LoadingOverlay('hide');
+    }
 </script>

@@ -10,6 +10,7 @@ use yura\Jobs\ProyeccionVentaSemanalUpdate;
 use yura\Jobs\ResumenAreaSemanal;
 use yura\Jobs\ResumenSemanaCosecha;
 use yura\Jobs\UpdateIndicador;
+use yura\Modelos\Color;
 use yura\Modelos\Indicador;
 use yura\Modelos\IntervaloIndicador;
 use yura\Modelos\Job;
@@ -227,7 +228,21 @@ class dbController extends Controller
     public function addIntervaloIndicador(Request $request){
         return view('adminlte.gestion.db.intervalos_indicadores.partials.add_intervalo',[
             'indicador'=> $request->id_indicador,
-            'intervalo_indicador'=> IntervaloIndicador::where('id_intervalor_indicador')
+            'intervalo_indicador'=> IntervaloIndicador::where('id_intervalor_indicador'),
         ]);
+    }
+
+    public function addRowIntervaloIndicador(Request $request){
+
+        if($request->inputs==="rango")
+            $view= 'adminlte.gestion.db.intervalos_indicadores.partials.inputs_rango';
+        if($request->inputs==="condicion")
+            $view= 'adminlte.gestion.db.intervalos_indicadores.partials.inputs_condicion';
+
+        return view($view,[
+            'x'=> $request->cant,
+            'colores'=>Color::where('estado',1)->get()
+        ]);
+
     }
 }
