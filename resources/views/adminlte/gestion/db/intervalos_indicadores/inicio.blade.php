@@ -41,7 +41,7 @@
                                 {{$indicador->valor}}
                             </td>
                             <td class="text-center" style="border-color: #9d9d9d">
-                                <button class="btn btn-primary btn-sm" title="Agregar semaforización">
+                                <button class="btn btn-primary btn-xs" title="Agregar semaforización" onclick="add_intervalo('{{$indicador->id_indicador}}')">
                                     <i class="fa fa-plus"></i>
                                 </button>
                             </td>
