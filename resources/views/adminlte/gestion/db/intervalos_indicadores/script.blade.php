@@ -22,7 +22,7 @@
         $.get('{{url('intervalo_indicador/add_row_intervalo')}}', datos, function (retorno) {
             $("#form_add_intervalo").append(retorno);
             if(cant>0)
-                $("#alert_intervalo").addClass('hidde');
+                $("#alert_intervalo").addClass('hide');
         });
         $.LoadingOverlay('hide');
     }
