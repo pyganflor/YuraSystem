@@ -16,33 +16,39 @@
                 </h3>
             </div>
             <div class="box-body" id="div_content_intervalo_indicador">
-                <table width="100%">
-                    <tr>
-                        <td>
-                            <div class="form-group input-group" style="padding: 0px">
-                                <input type="text" class="form-control" placeholder="Búsqueda" id="busqueda_intervalo_indicador"
-                                       name="busqueda_intervalo_indicador">
-                                <span class="input-group-btn">
-                                    <button class="btn btn-default" onclick="buscar_listado()"
-                                            onmouseover="$('#title_btn_buscar').html('Buscar')"
-                                            onmouseleave="$('#title_btn_buscar').html('')">
-                                        <i class="fa fa-fw fa-search" style="color: #0c0c0c"></i> <em
-                                            id="title_btn_buscar"></em>
-                                    </button>
-                                </span>
-                                <span class="input-group-btn">
-                                    <button class="btn btn-primary" onclick="add_marca()"
-                                            onmouseover="$('#title_btn_add').html('Añadir')"
-                                            onmouseleave="$('#title_btn_add').html('')">
-                                        <i class="fa fa-fw fa-plus" style="color: #0c0c0c"></i> <em
-                                            id="title_btn_add"></em>
-                                    </button>
-                                </span>
-                            </div>
-                        </td>
+                <table class="table-striped table-bordered table-hover" width="100%" style="border: 2px solid #9d9d9d"
+                       id="db_tbl_indicadores">
+                    <thead>
+                    <tr style="background-color: #e9ecef">
+                        <th class="text-center" style="border-color: #9d9d9d">
+                            Descripción
+                        </th>
+                        <th class="text-center" style="border-color: #9d9d9d" width="10%">
+                            Valor
+                        </th>
+                        <th class="text-center" style="border-color: #9d9d9d" width="10%">
+                            Acciones
+                        </th>
                     </tr>
+                    </thead>
+                    <tbody>
+                    @foreach($indicadores as $indicador)
+                        <tr>
+                            <td class="text-center" style="border-color: #9d9d9d">
+                                {{$indicador->descripcion}}
+                            </td>
+                            <td class="text-center" style="border-color: #9d9d9d">
+                                {{$indicador->valor}}
+                            </td>
+                            <td class="text-center" style="border-color: #9d9d9d">
+                                <button class="btn btn-primary btn-sm" title="Agregar semaforización">
+                                    <i class="fa fa-plus"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    @endforeach
+                    </tbody>
                 </table>
-                <div id="div_listado_intervalo_indicador"></div>
             </div>
         </div>
     </section>

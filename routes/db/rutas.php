@@ -8,4 +8,4 @@ Route::get('db_indicadores', 'dbController@indicadores');
 Route::post('db_indicadores/store_indicador', 'dbController@store_indicador');
 Route::post('db_indicadores/update_indicador', 'dbController@update_indicador');
 Route::get('intervalo_indicador', 'dbController@intervaloIndicador');
-Route::get('intervalo_indicador/listar', 'dbController@listarIntervalIndicador');
+

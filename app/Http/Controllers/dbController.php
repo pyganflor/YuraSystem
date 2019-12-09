@@ -218,7 +218,8 @@ class dbController extends Controller
         return view('adminlte.gestion.db.intervalos_indicadores.inicio',[
             'url' => $request->getRequestUri(),
             'submenu' => Submenu::Where('url', '=', substr($request->getRequestUri(), 1))->get()[0],
-            'text' => ['titulo' => 'Semaforización', 'subtitulo' => 'módulo de indicadores']
+            'text' => ['titulo' => 'Semaforización', 'subtitulo' => 'módulo de indicadores'],
+            'indicadores' => getIndicadores()->where('estado', 1)
         ]);
     }
 
