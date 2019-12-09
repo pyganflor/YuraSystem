@@ -106,6 +106,7 @@ Route::group(['middleware' => 'autenticacion'], function () {
 
             /* ================== DB =================== */
             include 'db/rutas.php';
+
         });
 
         include 'colores/rutas.php';
