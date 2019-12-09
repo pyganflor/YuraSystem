@@ -6,7 +6,7 @@
                    value=''>
         </div>
     </div>
-    <div class="col-md-3">
+    <div class="col-md-4">
         <div class="form-group">
             <label for="hasta">Hasta</label>
             <input type="number" id="hasta_{{$x}}" name="hasta_{{$x}}" class="form-control hasta" min="1" required
@@ -25,10 +25,13 @@
             </select>--}}
         </div>
     </div>
-    <div class="col-md-2 text-center">
-        <button class="btn btn-danger btn-xs" title="Eliminar rango" onclick="delete_row(this.id)">
-            <i class="fa fa-trash"></i>
-        </button>
+    <div class="col-md-1 text-center">
+        <div class="form-group">
+            <label> Acción </label>
+            <button class="btn btn-danger" title="Eliminar rango" onclick="delete_row(this.id)">
+                <i class="fa fa-trash"></i>
+            </button>
+        </div>
     </div>
 </div>
 <hr />

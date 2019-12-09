@@ -20,10 +20,9 @@
             cant : cant
         };
         $.get('{{url('intervalo_indicador/add_row_intervalo')}}', datos, function (retorno) {
+            $("#form_add_intervalo").append(retorno);
             if(cant>0)
                 $("#alert_intervalo").addClass('hidde');
-
-            $("#form_add_intervalo").append(retorno);
         });
         $.LoadingOverlay('hide');
     }
