@@ -25,11 +25,10 @@
             </select>--}}
         </div>
     </div>
-    <div class="col-md-1 text-center">
+    <div class="text-center">
         <div class="form-group">
             <label> Acción </label>
-            <button type="button" class="btn btn-danger" title="Eliminar rango" id="{{$x}}"
-                    onclick="delete_row(this.id)">
+            <button type="button" class="btn btn-danger" title="Eliminar rango" id="{{$x}}" onclick="delete_row(this.id)">
                 <i class="fa fa-trash"></i>
             </button>
         </div>
