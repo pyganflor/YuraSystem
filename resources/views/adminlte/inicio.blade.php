@@ -424,10 +424,10 @@
             count('span_calibre');
             count('span_tallos_m2');
             count('span_ciclo');
-            count('span_area_produccion');
+            /*count('span_area_produccion');
             count('span_valor');
             count('span_tallos_cosechados');
-            count('span_tallos');
+            count('span_tallos');*/
         }
 
         function render_gauge(canvas, value, rangos) {
