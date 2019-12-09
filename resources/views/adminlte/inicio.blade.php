@@ -298,7 +298,7 @@
                     'f': '<strong style="text-decoration: underline">Datos importantes</strong>' +
                     '<br><strong><span id="span_area_produccion">{{number_format(round($area_produccion / 10000, 2), 2)}}</span><small><sup>ha</sup></small></strong>' +
                     '<br><strong>$<span id="span_valor">{{number_format($valor, 2)}}</span></strong>' +
-                    '<br><strong title="Tallos cosechados"><span id="span_tallos_cosechados">{{$tallos_cosechados}}</span><small><sup>t/cosechados</sup></small></strong>' +
+                    '<br><strong title="Tallos cosechados"><span id="span_tallos_cosechados">{{number_format($tallos_cosechados)}}</span><small><sup>t/cosechados</sup></small></strong>' +
                     '<br><strong title="Tallos clasificados"><span id="span_tallos">{{number_format($tallos)}}</span><small><sup>t/clasificados</sup></small></strong>'
                 }, 'Ventas_m2_anno', 'Datos importantes'],
                 [{
