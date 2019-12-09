@@ -226,8 +226,6 @@
                     <div id="chart_org"></div>
                 </div>
             </div>
-
-            <canvas id="canvas_precio2"></canvas>
         @endif
     </section>
 @endsection
@@ -275,23 +273,23 @@
                 [{'v': 'Rentabilidad', 'f': '<strong>Rentabilidad</strong>'}, '', 'Rentabilidad'],
                 [{
                     'v': 'Ventas_m2_anno',
-                    'f': '<strong style="color:{{$color_1}}">{{number_format($venta_m2_anno_mensual, 2)}}<small><sup>(4 meses)</sup></small></strong>' +
+                    'f': '<strong style="color:{{$color_1}}"><span id="span_venta_m2_mensual">{{number_format($venta_m2_anno_mensual, 2)}}</span><small><sup>(4 meses)</sup></small></strong>' +
                     '<canvas id="canvas_ventas_m2_anno_mensual" style="width: 50px"></canvas>' +
-                    '<br><strong style="color:{{$color_1_1}}">{{number_format($venta_m2_anno_anual, 2)}}<small><sup>(1 año)</sup></small></strong>' +
+                    '<br><strong style="color:{{$color_1_1}}"><span id="span_venta_m2_anno">{{number_format($venta_m2_anno_anual, 2)}}</span><small><sup>(1 año)</sup></small></strong>' +
                     '<canvas id="canvas_ventas_m2_anno" style="width: 50px"></canvas>'
                 }, 'Rentabilidad', 'Ventas/m2/año'],
                 [{'v': 'Costos', 'f': '<strong>Costos</strong>'}, 'Rentabilidad', 'Costos'],
                 [{
                     'v': 'Indicadores_claves',
-                    'f': '<strong style="color: {{$color_4}}">{{number_format($precio_x_ramo, 2)}}<small><sup>precio</sup></small></strong>' +
+                    'f': '<strong style="color: {{$color_4}}"><span id="span_precio_x_ramo">{{number_format($precio_x_ramo, 2)}}</span><small><sup>precio</sup></small></strong>' +
                     '<canvas id="canvas_precio_x_ramo" style="width: 50px"></canvas>' +
-                    '<br><strong style="color:{{$color_6}}">{{number_format($ramos_m2_anno, 2)}}<small><sup>r/m<sup>2</sup>/año</sup></small></strong>' +
+                    '<br><strong style="color:{{$color_6}}"><span id="span_ramos_m2_anno">{{number_format($ramos_m2_anno, 2)}}</span><small><sup>r/m<sup>2</sup>/año</sup></small></strong>' +
                     '<canvas id="canvas_ramos_m2_anno" style="width: 50px"></canvas>' +
-                    '<br><strong style="color: {{$color_3}}">{{$calibre}}<small><sup>t/r calibre</sup></small></strong>' +
+                    '<br><strong style="color: {{$color_3}}"><span id="span_calibre">{{$calibre}}</span><small><sup>t/r calibre</sup></small></strong>' +
                     '<canvas id="canvas_calibre" style="width: 50px"></canvas>' +
-                    '<br><strong style="color: {{$color_5}}">{{number_format($tallos_m2, 2)}}<small><sup>t/m<sup>2</sup></sup></small></strong>' +
+                    '<br><strong style="color: {{$color_5}}"><span id="span_tallos_m2">{{number_format($tallos_m2, 2)}}</span><small><sup>t/m<sup>2</sup></sup></small></strong>' +
                     '<canvas id="canvas_tallos_m2" style="width: 50px"></canvas>' +
-                    '<br><strong style="color: {{$color_2}}">{{number_format($ciclo, 2)}}<small><sup>ciclo</sup></small></strong>' +
+                    '<br><strong style="color: {{$color_2}}"><span id="span_ciclo">{{number_format($ciclo, 2)}}</span><small><sup>ciclo</sup></small></strong>' +
                     '<canvas id="canvas_ciclo" style="width: 50px"></canvas>' +
                     '<br><button type="button" class="btn btn-xs btn-block btn-default" onclick="mostrar_indicadores_claves()" disabled style="color: black">Ind. claves</button>'
                 }, 'Ventas_m2_anno', 'Indicadores claves'],
@@ -418,6 +416,14 @@
                 hasta: 150,
                 color: '#f03e3e'    // red
             }]);
+
+            count('span_venta_m2_anno');
+            count('span_venta_m2_mensual');
+            count('span_precio_x_ramo');
+            count('span_ramos_m2_anno');
+            count('span_calibre');
+            count('span_tallos_m2');
+            count('span_ciclo');
         }
 
         function render_gauge(canvas, value, rangos) {
@@ -487,6 +493,26 @@
         function mostrar_indicadores_claves() {
             get_jquery('{{url('mostrar_indicadores_claves')}}', {}, function (retorno) {
                 modal_view('modal-view_indicadores_claves', retorno, '<i class="fa fa-fw fa-dashboard"></i> Indicadores claves', true, false, '50%')
+            });
+        }
+
+        function count(id) {
+            var $el = $("#" + id),
+                value = $el.html();
+
+            $({percentage: 0}).stop(true).animate({percentage: value}, {
+                duration: 4000,
+                easing: "easeOutExpo",
+                step: function () {
+                    // percentage with 1 decimal;
+                    var percentageVal = Math.round(this.percentage * 10) / 10;
+
+                    $el.text(percentageVal);
+                }
+            }).promise().done(function () {
+                // hard set the value after animation is done to be
+                // sure the value is correct
+                $el.text(value);
             });
         }
     </script>
