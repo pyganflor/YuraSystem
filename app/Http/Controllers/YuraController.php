@@ -533,4 +533,27 @@ class YuraController extends Controller
     {
         return getVariedadesByPlanta($request->planta);
     }
+
+    public function mostrar_indicadores_claves(Request $request)
+    {
+        if (count(getUsuario(Session::get('id_usuario'))->rol()->getSubmenusByTipo('C')) > 0) {
+            return view('adminlte.crm.indicadores_claves', [
+                'precio_x_ramo' => getIndicadorByName('D3')->valor,
+                'ramos_m2_anno' => getIndicadorByName('D8')->valor,
+                'calibre' => getIndicadorByName('D1')->valor,
+                'tallos_m2' => getIndicadorByName('D12')->valor,
+                'ciclo' => getIndicadorByName('DA1')->valor,
+
+                /*'venta_m2_anno_mensual' => getIndicadorByName('D9')->valor,
+                'venta_m2_anno_anual' => getIndicadorByName('D10')->valor,
+                'tallos_cosechados' => getIndicadorByName('D11')->valor,
+                'area_produccion' => getIndicadorByName('D7')->valor,
+                'desecho' => getIndicadorByName('D6')->valor,
+                'rendimiento' => getIndicadorByName('D5')->valor,
+                'valor' => getIndicadorByName('D4')->valor,
+                'tallos' => getIndicadorByName('D2')->valor,*/
+            ]);
+        } else
+            return view('adminlte.inicio');
+    }
 }

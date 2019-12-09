@@ -226,6 +226,8 @@
                     <div id="chart_org"></div>
                 </div>
             </div>
+
+            <canvas id="canvas_precio2"></canvas>
         @endif
     </section>
 @endsection
@@ -282,23 +284,29 @@
                 [{
                     'v': 'Indicadores_claves',
                     'f': '<strong style="color: {{$color_4}}">{{number_format($precio_x_ramo, 2)}}<small><sup>precio</sup></small></strong>' +
+                    '<canvas id="canvas_precio_x_ramo" style="width: 50px"></canvas>' +
                     '<br><strong style="color:{{$color_6}}">{{number_format($ramos_m2_anno, 2)}}<small><sup>r/m<sup>2</sup>/año</sup></small></strong>' +
+                    '<canvas id="canvas_ramos_m2_anno" style="width: 50px"></canvas>' +
                     '<br><strong style="color: {{$color_3}}">{{$calibre}}<small><sup>t/r calibre</sup></small></strong>' +
+                    '<canvas id="canvas_calibre" style="width: 50px"></canvas>' +
                     '<br><strong style="color: {{$color_5}}">{{number_format($tallos_m2, 2)}}<small><sup>t/m<sup>2</sup></sup></small></strong>' +
+                    '<canvas id="canvas_tallos_m2" style="width: 50px"></canvas>' +
                     '<br><strong style="color: {{$color_2}}">{{number_format($ciclo, 2)}}<small><sup>ciclo</sup></small></strong>' +
-                    '<br><button type="button" class="btn btn-xs btn-block btn-default" disabled style="color: black">Ind. claves</button>'
+                    '<canvas id="canvas_ciclo" style="width: 50px"></canvas>' +
+                    '<br><button type="button" class="btn btn-xs btn-block btn-default" onclick="mostrar_indicadores_claves()" disabled style="color: black">Ind. claves</button>'
                 }, 'Ventas_m2_anno', 'Indicadores claves'],
                 [{
                     'v': 'Datos_importantes',
-                    'f': '<strong>{{number_format(round($area_produccion / 10000, 2), 2)}} <small><sup>ha</sup></small></strong>' +
+                    'f': '<strong style="text-decoration: underline">Datos importantes</strong>' +
+                    '<br><strong>{{number_format(round($area_produccion / 10000, 2), 2)}} <small><sup>ha</sup></small></strong>' +
                     '<br><strong>${{number_format($valor, 2)}}</strong>' +
                     '<br><strong title="Tallos cosechados">{{number_format($tallos_cosechados)}}<small><sup>t/cosechados</sup></small></strong>' +
-                    '<br><strong title="Tallos clasificados">{{number_format($tallos)}}<small><sup>t/clasificados</sup></small></strong>' +
-                    '<br><br><button type="button" class="btn btn-xs btn-block btn-default" disabled style="color: black">Datos importantes</button>'
+                    '<br><strong title="Tallos clasificados">{{number_format($tallos)}}<small><sup>t/clasificados</sup></small></strong>'
                 }, 'Ventas_m2_anno', 'Datos importantes'],
                 [{
                     'v': 'Dashboards',
-                    'f': '<button type="button" title="Ver dashboard" class="btn btn-block btn-default" onclick="cargar_ventas_m2()">Ventas/m<sup>2</sup>/año</button>' +
+                    'f': '<strong style="text-decoration: underline">Dashboards</strong>' +
+                    '<button type="button" title="Ver dashboard" class="btn btn-block btn-default" onclick="cargar_ventas_m2()">Ventas/m<sup>2</sup>/año</button>' +
                     '<button type="button" title="Ver dashboard" class="btn btn-block btn-default" onclick="cargar_crm_postcosecha()">Postcosecha</button>' +
                     '<button type="button" title="Ver dashboard" class="btn btn-block btn-default" onclick="cargar_crm_ventas()">Venta</button>' +
                     '<button type="button" title="Ver dashboard" class="btn btn-block btn-default" onclick="cargar_crm_area()">Área</button>'
@@ -344,6 +352,71 @@
                 desde: 32,
                 hasta: 50,
                 color: '#30b32d'
+            }]);
+            render_gauge('canvas_precio_x_ramo', '{{number_format($precio_x_ramo, 2)}}', [{
+                desde: 1,
+                hasta: 2,
+                color: '#f03e3e'    // red
+            }, {
+                desde: 2,
+                hasta: 2.1,
+                color: '#fd0'   // orange
+            }, {
+                desde: 2.1,
+                hasta: 3,
+                color: '#30b32d'    // green
+            }]);
+            render_gauge('canvas_ramos_m2_anno', '{{number_format($ramos_m2_anno, 2)}}', [{
+                desde: 1,
+                hasta: 13,
+                color: '#f03e3e'    // red
+            }, {
+                desde: 13,
+                hasta: 17,
+                color: '#fd0'   // orange
+            }, {
+                desde: 17,
+                hasta: 20,
+                color: '#30b32d'    // green
+            }]);
+            render_gauge('canvas_calibre', '{{number_format($calibre, 2)}}', [{
+                desde: 1,
+                hasta: 7.4,
+                color: '#30b32d'    // green
+            }, {
+                desde: 7.4,
+                hasta: 7.8,
+                color: '#fd0'   // orange
+            }, {
+                desde: 7.8,
+                hasta: 16,
+                color: '#f03e3e'    // red
+            }]);
+            render_gauge('canvas_tallos_m2', '{{number_format($tallos_m2, 2)}}', [{
+                desde: 1,
+                hasta: 35,
+                color: '#f03e3e'    // red
+            }, {
+                desde: 35,
+                hasta: 45,
+                color: '#fd0'   // orange
+            }, {
+                desde: 45,
+                hasta: 60,
+                color: '#30b32d'    // green
+            }]);
+            render_gauge('canvas_ciclo', '{{number_format($ciclo, 2)}}', [{
+                desde: 1,
+                hasta: 115,
+                color: '#30b32d'    // green
+            }, {
+                desde: 115,
+                hasta: 125,
+                color: '#fd0'   // orange
+            }, {
+                desde: 125,
+                hasta: 150,
+                color: '#f03e3e'    // red
             }]);
         }
 
@@ -411,6 +484,10 @@
             location.href = '{{url('crm_area')}}';
         }
 
-
+        function mostrar_indicadores_claves() {
+            get_jquery('{{url('mostrar_indicadores_claves')}}', {}, function (retorno) {
+                modal_view('modal-view_indicadores_claves', retorno, '<i class="fa fa-fw fa-dashboard"></i> Indicadores claves', true, false, '50%')
+            });
+        }
     </script>
 @endsection
