@@ -286,7 +286,7 @@
                     '<br><strong style="color: {{$color_3}}">{{$calibre}}<small><sup>t/r calibre</sup></small></strong>' +
                     '<br><strong style="color: {{$color_5}}">{{number_format($tallos_m2, 2)}}<small><sup>t/m<sup>2</sup></sup></small></strong>' +
                     '<br><strong style="color: {{$color_2}}">{{number_format($ciclo, 2)}}<small><sup>ciclo</sup></small></strong>' +
-                    '<br><button type="button" class="btn btn-xs btn-block btn-default" disabled>Ind. claves</button>'
+                    '<br><button type="button" class="btn btn-xs btn-block btn-default" disabled style="color: black">Ind. claves</button>'
                 }, 'Ventas_m2_anno', 'Indicadores claves'],
                 [{
                     'v': 'Datos_importantes',
@@ -294,14 +294,14 @@
                     '<br><strong>${{number_format($valor, 2)}}</strong>' +
                     '<br><strong title="Tallos cosechados">{{number_format($tallos_cosechados)}}<small><sup>t/cosechados</sup></small></strong>' +
                     '<br><strong title="Tallos clasificados">{{number_format($tallos)}}<small><sup>t/clasificados</sup></small></strong>' +
-                    '<br><br><button type="button" class="btn btn-xs btn-block btn-default" disabled>Datos importantes</button>'
+                    '<br><br><button type="button" class="btn btn-xs btn-block btn-default" disabled style="color: black">Datos importantes</button>'
                 }, 'Ventas_m2_anno', 'Datos importantes'],
                 [{
                     'v': 'Dashboards',
-                    'f': '<button type="button" title="Ver dashboard" class="btn btn-xs btn-block btn-default" onclick="cargar_ventas_m2()">Ventas/m<sup>2</sup>/año</button>' +
-                    '<button type="button" title="Ver dashboard" class="btn btn-xs btn-block btn-default" onclick="cargar_crm_postcosecha()">Postcosecha</button>' +
-                    '<button type="button" title="Ver dashboard" class="btn btn-xs btn-block btn-default" onclick="cargar_crm_ventas()">Venta</button>' +
-                    '<button type="button" title="Ver dashboard" class="btn btn-xs btn-block btn-default" onclick="cargar_crm_area()">Área</button>'
+                    'f': '<button type="button" title="Ver dashboard" class="btn btn-block btn-default" onclick="cargar_ventas_m2()">Ventas/m<sup>2</sup>/año</button>' +
+                    '<button type="button" title="Ver dashboard" class="btn btn-block btn-default" onclick="cargar_crm_postcosecha()">Postcosecha</button>' +
+                    '<button type="button" title="Ver dashboard" class="btn btn-block btn-default" onclick="cargar_crm_ventas()">Venta</button>' +
+                    '<button type="button" title="Ver dashboard" class="btn btn-block btn-default" onclick="cargar_crm_area()">Área</button>'
                 }, 'Ventas_m2_anno', 'Dashboards'],
             ]);
 
