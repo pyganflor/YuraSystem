@@ -222,4 +222,10 @@ class dbController extends Controller
         ]);
     }
 
+    public function listarIntervalIndicador(){
+        return view('adminlte.gestion.db.intervalos_indicadores.partials.listado',[
+            'indicadores' => getIndicadores()->where('estado', 1)
+        ]);
+    }
+
 }

@@ -12,7 +12,7 @@
         <div class="box box-info">
             <div class="box-header with-border">
                 <h3 class="box-title">
-                    Semaforización de colores
+                    Indicadores
                 </h3>
             </div>
             <div class="box-body" id="div_content_intervalo_indicador">
