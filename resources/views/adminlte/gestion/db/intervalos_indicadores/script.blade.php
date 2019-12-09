@@ -14,14 +14,22 @@
 
     function add_row(inputs){
         $.LoadingOverlay('show');
+        cant = $("form#form_add_intervalo div.row").length+1;
         datos = {
             inputs: inputs,
-            cant : $("form#form_add_intervalo div.row").length+1
+            cant : cant
         };
         $.get('{{url('intervalo_indicador/add_row_intervalo')}}', datos, function (retorno) {
+            if(cant>0)
+                $("#alert_intervalo").addClass('hidde');
+
             $("#form_add_intervalo").append(retorno);
         });
         $.LoadingOverlay('hide');
+    }
+    
+    function delete_row(id) {
+        $("#"+id).remove()
     }
 
     function cambia_color(id,select) {
