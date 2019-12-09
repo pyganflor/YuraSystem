@@ -15,10 +15,13 @@
     </div>
     <div class="col-md-4">
         <div class="form-group">
-            <label for="id_color_{{$x}}">Color<span id="color_"></span></label>
-            <select class="form-control color" id="id_color_{{$x}}" name="id_color_{{$x}}">
+            <label for="id_color_{{$x}}">
+                Color <span style="width: 79px;height: 10px;float: right;margin-top: 6px;margin-left: 10px;" id="color_{{$x}}"></span>
+            </label>
+            <select class="form-control color" id="id_color_{{$x}}" name="id_color_{{$x}}"
+                onchange="cambia_color('{{$x}}',this)">
                 @foreach($colores as $color)
-                    <option value="{{$color->id_color}}">{{$color->nombre}}</option>
+                    <option value="{{$color->fondo}}">{{$color->nombre}}</option>
                 @endforeach
             </select>
         </div>

@@ -13,7 +13,7 @@ class IntervaloIndicador extends Model
 
     protected $fillable = [
         'id_indicador',
-        'id_color',
+        'codigo_color',
         'desde',
         'hasta',
         'fecha_registro',

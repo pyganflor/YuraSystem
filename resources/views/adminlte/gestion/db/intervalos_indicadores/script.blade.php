@@ -16,11 +16,15 @@
         $.LoadingOverlay('show');
         datos = {
             inputs: inputs,
-            cant : $("form#form_add_intervalo row").length+1
+            cant : $("form#form_add_intervalo div.row").length+1
         };
         $.get('{{url('intervalo_indicador/add_row_intervalo')}}', datos, function (retorno) {
             $("#form_add_intervalo").append(retorno);
         });
         $.LoadingOverlay('hide');
+    }
+
+    function cambia_color(id,select) {
+        $("span#color_"+id).attr('background',$(select).val())
     }
 </script>
