@@ -2,15 +2,15 @@
     <div class="col-md-4">
         <div class="form-group">
             <label for="desde_{{$x}}">Desde</label>
-            <input type="number" id="desde_{{$x}}" name="desde_{{$x}}" class="form-control desde" required maxlength="250"  min="0" autocomplete="off"
-                   value=''>
+            <input type="number" id="desde_{{$x}}" name="desde_{{$x}}" class="form-control desde text-center" required
+                   min="0" autocomplete="off" value=''>
         </div>
     </div>
     <div class="col-md-4">
         <div class="form-group">
             <label for="hasta">Hasta</label>
-            <input type="number" id="hasta_{{$x}}" name="hasta_{{$x}}" class="form-control hasta" min="1" required
-                   autocomplete="off" value="">
+            <input type="number" id="hasta_{{$x}}" name="hasta_{{$x}}" class="form-control hasta text-center" min="1"
+                   required autocomplete="off" value="">
         </div>
     </div>
     <div class="col-md-3">

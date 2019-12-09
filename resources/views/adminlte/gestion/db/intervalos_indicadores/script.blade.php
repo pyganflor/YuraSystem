@@ -5,7 +5,7 @@
         };
         $.LoadingOverlay('show');
         $.get('{{url('intervalo_indicador/add_intervalo')}}', datos, function (retorno) {
-            modal_form('modal_add_intervalos_indicadores', retorno, '<i class="fa fa-fw fa-plus"></i> Añadir intervalos', true, false, '{{isPC() ? '60%' : ''}}', function () {
+            modal_form('modal_add_intervalos_indicadores', retorno, '<i class="fa fa-fw fa-plus"></i> Añadir intervalos', true, false, '{{isPC() ? '50%' : ''}}', function () {
                 $.LoadingOverlay('hide');
             });
         });
