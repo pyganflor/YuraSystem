@@ -464,7 +464,7 @@
             var gauge = new Gauge(target).setOptions(opts); // create sexy gauge!
             gauge.maxValue = rangos[2]['hasta']; // set max gauge value
             gauge.setMinValue(rangos[0]['desde']);  // Prefer setter over gauge.minValue = 0
-            gauge.animationSpeed = 50; // set animation speed (32 is default value)
+            gauge.animationSpeed = 250; // set animation speed (32 is default value)
             gauge.set(value); // set actual value
         }
 
