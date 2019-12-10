@@ -50,14 +50,14 @@
                     datos.push({
                         tipo: $(j).find(".tipo").val(),
                         condicional: $(j).find('.condicional').val(),
-                        hasta: $(j).find('.hasta').val(),
+                        hasta: $(j).find('.cantidad').val(),
                         color :$(j).find('.color').val()
                     });
                 }
-               datos.push({
-                   id_indicador : $("#id_indicador").val()
-               });
            });
+            datos.push({
+                id_indicador : $("#id_indicador").val()
+            });
            console.log(datos);
            post_jquery('{{url('intervalo_indicador/store_intervalo')}}', datos, function () {
                cerrar_modals();
