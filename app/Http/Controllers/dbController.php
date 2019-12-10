@@ -216,6 +216,7 @@ class dbController extends Controller
         ];
     }
 
+    /* ========================= INTERVALOS INDICADORES ========================== */
     public function intervaloIndicador(Request $request){
         return view('adminlte.gestion.db.intervalos_indicadores.inicio',[
             'url' => $request->getRequestUri(),
@@ -228,7 +229,8 @@ class dbController extends Controller
     public function addIntervaloIndicador(Request $request){
         return view('adminlte.gestion.db.intervalos_indicadores.partials.add_intervalo',[
             'indicador'=> $request->id_indicador,
-            'intervalo_indicador'=> IntervaloIndicador::where('id_intervalor_indicador'),
+            'intervalos_indicadores'=> IntervaloIndicador::where('id_indicador',$request->id_indicador)->get(),
+
         ]);
     }
 
@@ -247,7 +249,7 @@ class dbController extends Controller
     }
 
     public function storeIntervaloIndicador(Request $request){
-        dd($request->all());
+        //dd($request->all());
         $valida = Validator::make($request->all(), [
             'color.*' => 'required',
             'desde.*' => 'required'
@@ -262,7 +264,7 @@ class dbController extends Controller
             foreach ($request->datos as $dato) {
                 try{
                     $objIntervaloIndicador = new IntervaloIndicador;
-                    $objIntervaloIndicador->id_indicador = $dato['id_indicador'];
+                    $objIntervaloIndicador->id_indicador = $request->id_indicador;
                     $objIntervaloIndicador->tipo = $dato['tipo'];
                     $objIntervaloIndicador->color = $dato['color'];
                     $objIntervaloIndicador->hasta = $dato['hasta'];

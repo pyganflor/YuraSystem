@@ -69,6 +69,8 @@ use yura\Modelos\Planta;
 use \yura\Modelos\Distribucion;
 use yura\Modelos\HistoricoVentas;
 use yura\Modelos\Indicador;
+use yura\Modelos\IntervaloIndicador;
+
 
 /*
  * -------- BITÁCORA DE LAS ACCIONES ECHAS POR EL USUARIO ------
@@ -2500,4 +2502,17 @@ function getTallosClasificadosByRangoVariedad($desde, $hasta, $variedad = 'T')
     }
 
     return $valor;
+}
+
+function getIntervalosIndicador($nombre){
+    $indicador = Indicador::where('nombre',$nombre)->select('id_indicador')->first();
+    $data=[];
+    foreach($indicador->intervalos->sortBy('desde') as $intervalo){
+        $obj = new stdClass();
+        $obj->desde = $intervalo->desde;
+        $obj->hasta = $intervalo->hasta;
+        $obj->color = $intervalo->color;
+        $data[]=$obj;
+    }
+    return $data;
 }

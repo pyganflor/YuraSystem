@@ -21,6 +21,9 @@
                     <thead>
                     <tr style="background-color: #e9ecef">
                         <th class="text-center" style="border-color: #9d9d9d">
+                            Nombre
+                        </th>
+                        <th class="text-center" style="border-color: #9d9d9d">
                             Descripción
                         </th>
                         <th class="text-center" style="border-color: #9d9d9d" width="10%">
@@ -34,6 +37,9 @@
                     <tbody>
                     @foreach($indicadores as $indicador)
                         <tr>
+                            <td class="text-center" style="border-color: #9d9d9d">
+                                {{$indicador->nombre}}
+                            </td>
                             <td class="text-center" style="border-color: #9d9d9d">
                                 {{$indicador->descripcion}}
                             </td>
