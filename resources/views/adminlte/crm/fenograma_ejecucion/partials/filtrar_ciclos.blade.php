@@ -1,5 +1,5 @@
 <div style="overflow-x: scroll">
-    <table data-order='[[ 3, "desc" ]]' class="table-striped table-bordered" width="100%" style="border: 2px solid #9d9d9d"
+    <table {{--data-order='[[ 3, "desc" ]]'--}} class="table-striped table-bordered" width="100%" style="border: 2px solid #9d9d9d"
            id="table_fenograma_ejecucion">
         <thead>
         <tr style="background-color: #357ca5; color: white">
