@@ -2512,7 +2512,7 @@ function getIntervalosIndicador($nombre){
         $obj->desde = $intervalo->desde;
         $obj->hasta = $intervalo->hasta;
         $obj->color = $intervalo->color;
-        $data[]=[$obj];
+        $data[]=$obj;
     }
     return $data;
 }
