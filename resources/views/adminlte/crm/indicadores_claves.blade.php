@@ -38,7 +38,7 @@
 
 <script>
     render_gauge('canvas_precio2', '{{number_format($precio_x_ramo, 2)}}', [{
-        desde: 0,
+        desde: 1,
         hasta: 2,
         color: '#f03e3e'    // red
     }, {
@@ -62,7 +62,7 @@
         desde: 17,
         hasta: 20,
         color: '#30b32d'    // green
-    }]);
+    }], true);
     render_gauge('canvas_calibre2', '{{number_format($calibre, 2)}}', [{
         desde: 1,
         hasta: 7.4,
@@ -75,7 +75,7 @@
         desde: 7.8,
         hasta: 16,
         color: '#f03e3e'    // red
-    }]);
+    }], true);
     render_gauge('canvas_tallos_m2_2', '{{number_format($tallos_m2, 2)}}', [{
         desde: 1,
         hasta: 35,
@@ -88,7 +88,7 @@
         desde: 45,
         hasta: 60,
         color: '#30b32d'    // green
-    }]);
+    }], true);
     render_gauge('canvas_ciclo2', '{{number_format($ciclo, 2)}}', [{
         desde: 1,
         hasta: 115,
@@ -101,5 +101,5 @@
         desde: 125,
         hasta: 150,
         color: '#f03e3e'    // red
-    }]);
+    }], true);
 </script>
