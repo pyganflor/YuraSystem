@@ -53,21 +53,21 @@
                     <div class="">
                         <label for="desde_{{$x+1}}">Desde</label>
                         <input type="number" id="desde_{{$x+1}}" name="desde_{{$x+1}}" class="form-control desde text-center" required
-                               min="0" autocomplete="off" value='{{$$intervalo_indicador->desde}}'>
+                               min="0" autocomplete="off" value='{{$intervalo_indicador->desde}}'>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="">
                         <label for="hasta">Hasta</label>
                         <input type="number" id="hasta_{{$x+1}}" name="hasta_{{$x+1}}" class="form-control hasta text-center" min="1"
-                               required autocomplete="off" value="{{$$intervalo_indicador->hasta}}">
+                               required autocomplete="off" value="{{$intervalo_indicador->hasta}}">
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="">
-                        <label for="id_color_{{$x+1}}"> Color
+                        <label for="id_color_{{$x+1}}"> Color</label>
                         <input type="color" class="form-control color" id="id_color_{{$x+1}}" name="id_color_{{$x+1}}"
-                               value="{{$$intervalo_indicador->color}}">
+                               value="{{$intervalo_indicador->color}}">
                     </div>
                 </div>
                 <div class="text-center">
