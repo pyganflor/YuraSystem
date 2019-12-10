@@ -18,11 +18,10 @@ class FenogramaEjecucionController extends Controller
 
     public function filtrar_ciclos(Request $request)
     {
-        $ciclos = Ciclo::All()
-            ->where('estado', 1)
+        $ciclos = Ciclo::where('estado', 1)
             ->where('fecha_inicio', '<=', $request->fecha)
             ->where('fecha_fin', '>=', $request->fecha)
-            ->sortBy('fecha_inicio');
+            ->orderBy('fecha_inicio');
 
         if ($request->variedad != 'T')
             $ciclos = $ciclos->where('id_variedad', $request->variedad);
