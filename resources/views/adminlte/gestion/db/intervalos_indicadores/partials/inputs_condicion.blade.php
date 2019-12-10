@@ -31,6 +31,6 @@
             </button>
         </div>
     </div>
-    <hr style="margin: 0 0 3px 0;"/>
+    <hr style="margin: 3px 0 3px 0;"/>
 </div>
 
