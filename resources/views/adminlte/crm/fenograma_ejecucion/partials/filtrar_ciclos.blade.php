@@ -82,6 +82,7 @@
             $codigo_semana = $ciclos[0]->semana()->codigo;
             $area = 0;
             @endphp
+            @dd($ciclos)
             @foreach($ciclos as $pos_item => $item)
                 @php
                     $semana = $item->semana();
@@ -128,13 +129,17 @@
                     <td class="text-center" style="border-color: #9d9d9d">
                         @php
                             if ($semana->codigo != $codigo_semana || ($pos_item + 1) == count($ciclos)){
-                                $area = $item->area;
+                                if(($pos_item + 1) != count($ciclos))
+                                    $area = $item->area;
+                                else
+                                     $area += $item->area;
                                 $codigo_semana = $semana->codigo;
                             } else {
                                 $area += $item->area;
                             }
-                            if(($pos_item + 1) == count($ciclos) || $ciclos[($pos_item + 1)]->semana()->codigo != $codigo_semana)
-                                echo $area;
+                            if(($pos_item + 1) <= count($ciclos))
+                                if(($pos_item + 1) == count($ciclos)) echo $area;
+                                elseif($ciclos[($pos_item + 1)]->semana()->codigo != $semana->codigo) echo $area.' - '.($pos_item+1);
                         @endphp
                     </td>
                     <td class="text-center" style="border-color: #9d9d9d">
