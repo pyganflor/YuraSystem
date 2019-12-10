@@ -8,7 +8,7 @@
 </div>
 <form id="form_add_intervalo" class="form_rows_intervalos">
     <input type="hidden" id="id_indicador" value="{{$indicador}}">
-    <div id="alert_intervalo" class="alert alert-info text-center">Ingrese al menos un intervalo</div>
+    <div id="alert_intervalo" class="alert alert-info text-center {{(isset($intervalos_indicadores) && $intervalos_indicadores->count() > 0) ? "hide": ""}}">Ingrese al menos un intervalo</div>
     @foreach($intervalos_indicadores as $x => $intervalo_indicador)
         @if($intervalo_indicador->tipo ==="C")
             <div class="row" id="row_input_{{$x+1}}">
