@@ -19,4 +19,8 @@ class Indicador extends Model
         'fecha_registro',
         'estado',
     ];
+
+    public function intervalos(){
+        return $this->hasMany('yura\Modelos\IntervaloIndicador','id_indicador');
+    }
 }
