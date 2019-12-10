@@ -226,6 +226,8 @@
                     <div id="chart_org"></div>
                 </div>
             </div>
+
+            <div id="div_indicadores_claves"></div>
         @endif
     </section>
 @endsection
@@ -291,7 +293,7 @@
                     '<canvas id="canvas_tallos_m2" style="width: 50px"></canvas>' +
                     '<br><strong style="color: {{$color_2}}"><span id="span_ciclo">{{number_format($ciclo, 2)}}</span><small><sup>ciclo</sup></small></strong>' +
                     '<canvas id="canvas_ciclo" style="width: 50px"></canvas>' +
-                    '<br><button type="button" class="btn btn-xs btn-block btn-default" onclick="mostrar_indicadores_claves()" disabled style="color: black">Ind. claves</button>'
+                    '<br><button type="button" class="btn btn-xs btn-block btn-default" onclick="mostrar_indicadores_claves()" style="color: black">Ind. claves</button>'
                 }, 'Ventas_m2_anno', 'Indicadores claves'],
                 [{
                     'v': 'Datos_importantes',
@@ -430,7 +432,17 @@
             count('span_tallos');*/
         }
 
-        function render_gauge(canvas, value, rangos) {
+        function render_gauge(canvas, value, rangos, indices = false) {
+            var staticLabels = false;
+            if (indices) {
+                staticLabels = {
+                    font: "10px sans-serif",  // Specifies font
+                    labels: [rangos[0]['desde'], rangos[1]['desde'], rangos[2]['desde'], rangos[2]['hasta']],  // Print labels at these values
+                    color: "#000000",  // Optional: Label text color
+                    fractionDigits: 0  // Optional: Numerical precision. 0=round off.
+                };
+            }
+
             var opts = {
                 angle: 0, // The span of the gauge arc
                 lineWidth: 0.2, // The line thickness
@@ -463,13 +475,9 @@
                     {strokeStyle: rangos[1]['color'], min: rangos[1]['desde'], max: rangos[1]['hasta'], height: 1}, // Orange
                     {strokeStyle: rangos[2]['color'], min: rangos[2]['desde'], max: rangos[2]['hasta'], height: 1.2}  // Green
                 ],
-                /*staticLabels: {
-                    font: "10px sans-serif",  // Specifies font
-                    labels: [0, 28, 32, 50],  // Print labels at these values
-                    color: "#000000",  // Optional: Label text color
-                    fractionDigits: 0  // Optional: Numerical precision. 0=round off.
-                },*/
+                staticLabels: staticLabels,
             };
+
             var target = document.getElementById(canvas); // your canvas element
             var gauge = new Gauge(target).setOptions(opts); // create sexy gauge!
             gauge.maxValue = rangos[2]['hasta']; // set max gauge value
@@ -496,7 +504,8 @@
 
         function mostrar_indicadores_claves() {
             get_jquery('{{url('mostrar_indicadores_claves')}}', {}, function (retorno) {
-                modal_view('modal-view_indicadores_claves', retorno, '<i class="fa fa-fw fa-dashboard"></i> Indicadores claves', true, false, '50%')
+                $('#div_indicadores_claves').html(retorno);
+                location.href = '#div_indicadores_claves';
             });
         }
 
