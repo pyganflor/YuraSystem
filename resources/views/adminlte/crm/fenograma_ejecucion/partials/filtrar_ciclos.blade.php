@@ -1,58 +1,58 @@
 @if(count($ciclos) > 0)
-    <div style="overflow-x: scroll">
+    <div id="div_content_fixed">
         <table {{--data-order='[[ 3, "desc" ]]'--}} class="table-striped table-bordered" width="100%" style="border: 2px solid #9d9d9d"
                id="table_fenograma_ejecucion">
             <thead>
             <tr style="background-color: #357ca5; color: white">
-                <th class="text-center" style="border-color: #9d9d9d">
+                <th class="text-center fila_fija1" style="border-color: #9d9d9d">
                     Módulo
                 </th>
-                <th class="text-center" style="border-color: #9d9d9d" width="95px">
+                <th class="text-center fila_fija1" style="border-color: #9d9d9d" width="95px">
                     Inicio
                 </th>
-                <th class="text-center" style="border-color: #9d9d9d" width="95px">
+                <th class="text-center fila_fija1" style="border-color: #9d9d9d" width="95px">
                     Semana
                 </th>
-                <th class="text-center" style="border-color: #9d9d9d">
+                <th class="text-center fila_fija1" style="border-color: #9d9d9d">
                     P/S
                 </th>
-                <th class="text-center" style="border-color: #9d9d9d">
+                <th class="text-center fila_fija1" style="border-color: #9d9d9d">
                     Días
                 </th>
-                <th class="text-center" style="border-color: #9d9d9d">
+                <th class="text-center fila_fija1" style="border-color: #9d9d9d">
                     Área m<sup>2</sup>
                 </th>
-                <th class="text-center" style="border-color: #9d9d9d">
+                <th class="text-center fila_fija1" style="border-color: #9d9d9d">
                     Total x Semana m<sup>2</sup>
                 </th>
-                <th class="text-center" style="border-color: #9d9d9d">
+                <th class="text-center fila_fija1" style="border-color: #9d9d9d">
                     1ra Flor
                 </th>
-                <th class="text-center" style="border-color: #9d9d9d">
+                <th class="text-center fila_fija1" style="border-color: #9d9d9d">
                     Tallos Cosechados
                 </th>
-                <th class="text-center" style="border-color: #9d9d9d">
+                <th class="text-center fila_fija1" style="border-color: #9d9d9d">
                     Tallos/m<sup>2</sup>
                 </th>
-                <th class="text-center" style="border-color: #9d9d9d">
+                <th class="text-center fila_fija1" style="border-color: #9d9d9d">
                     Cosechado <sup>%</sup>
                 </th>
-                <th class="text-center" style="border-color: #9d9d9d; background-color: #0b3248">
+                <th class="text-center fila_fija2" style="border-color: #9d9d9d; background-color: #0b3248">
                     Tallos/m<sup>2</sup>
                 </th>
-                <th class="text-center" style="border-color: #9d9d9d; background-color: #0b3248">
+                <th class="text-center fila_fija2" style="border-color: #9d9d9d; background-color: #0b3248">
                     Ptas Iniciales
                 </th>
-                <th class="text-center" style="border-color: #9d9d9d; background-color: #0b3248">
+                <th class="text-center fila_fija2" style="border-color: #9d9d9d; background-color: #0b3248">
                     Ptas Actuales
                 </th>
-                <th class="text-center" style="border-color: #9d9d9d; background-color: #0b3248">
+                <th class="text-center fila_fija2" style="border-color: #9d9d9d; background-color: #0b3248">
                     %<sup>M</sup>
                 </th>
-                <th class="text-center" style="border-color: #9d9d9d; background-color: #0b3248">
+                <th class="text-center fila_fija2" style="border-color: #9d9d9d; background-color: #0b3248">
                     Dend P.Ini/m<sup>2</sup>
                 </th>
-                <th class="text-center" style="border-color: #9d9d9d; background-color: #0b3248">
+                <th class="text-center fila_fija2" style="border-color: #9d9d9d; background-color: #0b3248">
                     Conteo T/P
                 </th>
             </tr>
@@ -264,4 +264,38 @@
     <script>
         estructura_tabla('table_fenograma_ejecucion', false, false);
     </script>
+
+    <style>
+        #div_content_fixed {
+            overflow-x: scroll;
+            overflow-y: scroll;
+            width: 100%;
+            max-height: 550px;
+        }
+
+        #table_fenograma_ejecucion {
+            border-spacing: 0 !important;
+            border: 1px solid #9d9d9d !important;
+        }
+
+        #table_fenograma_ejecucion th, #table_fenograma_ejecucion td {
+            border-spacing: 0;
+        }
+
+        #table_fenograma_ejecucion thead .fila_fija1 {
+            background-color: #357ca5 !important;
+            border: 1px solid #9d9d9d !important;
+            z-index: 9;
+            position: sticky;
+            top: 0;
+        }
+
+        #table_fenograma_ejecucion thead .fila_fija2 {
+            background-color: #0b3248 !important;
+            border: 1px solid #9d9d9d !important;
+            z-index: 9;
+            position: sticky;
+            top: 0;
+        }
+    </style>
 @endif
