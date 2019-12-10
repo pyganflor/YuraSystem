@@ -18,12 +18,6 @@
         <div class="">
             <label for="id_color_{{$x}}"> Color {{--<span style="width: 79px;height: 10px;float: right;margin-top: 6px;margin-left: 10px;" id="color_{{$x}}"></span>--}} </label>
             <input type="color" class="form-control color" id="id_color_{{$x}}" name="id_color_{{$x}}" value="">
-            {{--<select class="form-control color" id="id_color_{{$x}}" name="id_color_{{$x}}"
-                onchange="cambia_color('{{$x}}',this)">
-                @foreach($colores as $color)
-                    <option value="{{$color->fondo}}">{{$color->nombre}}</option>
-                @endforeach
-            </select>--}}
         </div>
     </div>
     <div class="text-center">

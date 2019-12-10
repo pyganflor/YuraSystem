@@ -13,17 +13,13 @@ class IntervaloIndicador extends Model
 
     protected $fillable = [
         'id_indicador',
-        'codigo_color',
+        'color',
         'desde',
         'hasta',
         'condicional',
         'tipo',
         'fecha_registro',
     ];
-
-    public function color(){
-        return $this->belongsTo('App\Modelos\Color','id_color');
-    }
 
     public function indicador(){
         return $this->belongsTo('App\Modelos\Indicador','id_indicador');
