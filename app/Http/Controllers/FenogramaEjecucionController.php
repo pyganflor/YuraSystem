@@ -21,7 +21,8 @@ class FenogramaEjecucionController extends Controller
         $ciclos = Ciclo::All()
             ->where('estado', 1)
             ->where('fecha_inicio', '<=', $request->fecha)
-            ->where('fecha_fin', '>=', $request->fecha);
+            ->where('fecha_fin', '>=', $request->fecha)
+            ->sortBy('fecha_inicio');
 
         if ($request->variedad != 'T')
             $ciclos = $ciclos->where('id_variedad', $request->variedad);
