@@ -20,12 +20,12 @@ class FenogramaEjecucionController extends Controller
     {
         $ciclos = Ciclo::where('estado', 1)
             ->where('fecha_inicio', '<=', $request->fecha)
-            ->where('fecha_fin', '>=', $request->fecha)
-            ->orderBy('fecha_inicio')
-            ->get();
+            ->where('fecha_fin', '>=', $request->fecha);
 
         if ($request->variedad != 'T')
             $ciclos = $ciclos->where('id_variedad', $request->variedad);
+
+        $ciclos = $ciclos->orderBy('fecha_inicio')->get();
 
         return view('adminlte.crm.fenograma_ejecucion.partials.filtrar_ciclos', [
             'ciclos' => $ciclos
