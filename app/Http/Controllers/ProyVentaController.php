@@ -155,7 +155,7 @@ class ProyVentaController extends Controller
     }
 
     public function storeProyeccionVenta(Request $request){
-        dd($request->all());
+        //dd($request->all());
         $objProyeccionVentaSemanalReal = ProyeccionVentaSemanalReal::where([
             ['id_cliente',$request->id_cliente],
             ['id_variedad',$request->id_variedad],
