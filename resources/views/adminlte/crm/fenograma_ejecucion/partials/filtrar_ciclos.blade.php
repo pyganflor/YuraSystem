@@ -37,6 +37,9 @@
                 Cosechado <sup>%</sup>
             </th>
             <th class="text-center" style="border-color: #9d9d9d; background-color: #0b3248">
+                Tallos/m<sup>2</sup>
+            </th>
+            <th class="text-center" style="border-color: #9d9d9d; background-color: #0b3248">
                 Ptas Iniciales
             </th>
             <th class="text-center" style="border-color: #9d9d9d; background-color: #0b3248">
@@ -50,9 +53,6 @@
             </th>
             <th class="text-center" style="border-color: #9d9d9d; background-color: #0b3248">
                 Conteo T/P
-            </th>
-            <th class="text-center" style="border-color: #9d9d9d; background-color: #0b3248">
-                Tallos/m<sup>2</sup>
             </th>
         </tr>
         </thead>
@@ -79,6 +79,24 @@
             ];
         @endphp
         @foreach($ciclos as $item)
+            @php
+                $semana = $item->semana();
+                $poda_siembra = $item->modulo->getPodaSiembraByCiclo($item->id_ciclo);
+                $tallos_cosechados = $item->getTallosCosechados();
+
+                $desecho = $item->desecho > 0 ? $item->desecho : $semana->desecho;
+                $desecho = $desecho > 0 ? $desecho : 20;
+
+                $conteo = $item->conteo;
+                if($item->conteo > 0)
+                    if ($poda_siembra > 0)
+                        $conteo = $semana->tallos_planta_poda;
+                    else
+                        $conteo = $semana->tallos_planta_siembra;
+
+                $tallos_m2_cos = round($tallos_cosechados / $item->area, 2);
+                $tallos_m2_proy = round((($item->plantas_actuales() * $conteo) * ((100 - $desecho) / 100)) / $item->area, 2);
+            @endphp
             <tr style="font-size: 0.8em" onmouseover="$(this).addClass('bg-teal-active')" onmouseleave="$(this).removeClass('bg-teal-active')">
                 <td class="text-center" style="border-color: #9d9d9d">
                     {{$item->modulo->nombre}}
@@ -87,10 +105,10 @@
                     {{$item->fecha_inicio}}
                 </td>
                 <td class="text-center" style="border-color: #9d9d9d">
-                    {{getSemanaByDate($item->fecha_inicio)->codigo}}
+                    {{$semana->codigo}}
                 </td>
                 <td class="text-center" style="border-color: #9d9d9d">
-                    {{$item->modulo->getPodaSiembraByCiclo($item->id_ciclo)}}
+                    {{$poda_siembra}}
                 </td>
                 <td class="text-center" style="border-color: #9d9d9d">
                     @if($item->fecha_fin != '')
@@ -111,13 +129,16 @@
                     @endif
                 </td>
                 <td class="text-center" style="border-color: #9d9d9d">
-                    {{number_format($item->getTallosCosechados())}}
+                    {{number_format($tallos_cosechados)}}
                 </td>
                 <td class="text-center" style="border-color: #9d9d9d">
-                    {{round($item->getTallosCosechados()/$item->area, 2)}}
+                    {{$tallos_m2_cos}}
                 </td>
                 <td class="text-center" style="border-color: #9d9d9d">
-                    --
+                    {{$tallos_m2_proy > 0 ? round(($tallos_m2_cos / $tallos_m2_proy) * 100, 2) : 0}}%
+                </td>
+                <td class="text-center" style="border-color: #9d9d9d">
+                    {{$tallos_m2_proy}}
                 </td>
                 <td class="text-center" style="border-color: #9d9d9d">
                     {{number_format($item->plantas_iniciales)}}
@@ -131,11 +152,9 @@
                 <td class="text-center" style="border-color: #9d9d9d">
                     {{$item->getDensidadIniciales()}}
                 </td>
-                <td class="text-center" style="border-color: #9d9d9d">
-                    {{$item->conteo}}
-                </td>
-                <td class="text-center" style="border-color: #9d9d9d">
-                    {{round(($item->plantas_actuales() * $item->conteo) / $item->area, 2)}}
+                <td class="text-center" style="border-color: #9d9d9d"
+                    title="{{$item->conteo <= 0 ? 'Dato correspondiente a la semana de inicio':''}}">
+                    {{$conteo}}{{$item->conteo <= 0 ? '*':''}}
                 </td>
             </tr>
             @php
@@ -150,14 +169,14 @@
                     $total_densidad['valor'] += $item->getDensidadIniciales();
                     $total_densidad['positivos']++;
                 }
-                if($item->area > 0 && round(($item->plantas_actuales() * $item->conteo) / $item->area, 2) > 0){
-                    $total_tallos_m2_proy['valor'] += round(($item->plantas_actuales() * $item->conteo) / $item->area, 2);
+                if($item->area > 0 && $tallos_m2_proy > 0){
+                    $total_tallos_m2_proy['valor'] += $tallos_m2_proy;
                     $total_tallos_m2_proy['positivos']++;
                 }
                 $ciclo += $item->fecha_fin != '' ? difFechas($item->fecha_fin, $item->fecha_inicio)->days : difFechas(date('Y-m-d'), $item->fecha_inicio)->days;
-                $total_tallos += $item->getTallosCosechados();
-                $total_tallos_m2 += round($item->getTallosCosechados()/$item->area, 2);
-                if($item->getTallosCosechados() > 0){
+                $total_tallos += $tallos_cosechados;
+                $total_tallos_m2 += $tallos_m2_cos;
+                if($tallos_cosechados > 0){
                     $positivos_tallos_m2 ++;
                 }
             @endphp
@@ -190,6 +209,11 @@
             <th class="text-center" style="border-color: #9d9d9d">
             </th>
             <th class="text-center" style="border-color: #9d9d9d; background-color: #0b3248">
+                @if($total_tallos_m2_proy['positivos'] > 0)
+                    {{round($total_tallos_m2_proy['valor'] / $total_tallos_m2_proy['positivos'], 2)}}
+                @endif
+            </th>
+            <th class="text-center" style="border-color: #9d9d9d; background-color: #0b3248">
                 {{number_format($total_iniciales)}}
             </th>
             <th class="text-center" style="border-color: #9d9d9d; background-color: #0b3248">
@@ -207,11 +231,6 @@
             </th>
             <th class="text-center" style="border-color: #9d9d9d; background-color: #0b3248">
 
-            </th>
-            <th class="text-center" style="border-color: #9d9d9d; background-color: #0b3248">
-                @if($total_tallos_m2_proy['positivos'] > 0)
-                    {{round($total_tallos_m2_proy['valor'] / $total_tallos_m2_proy['positivos'], 2)}}
-                @endif
             </th>
         </tr>
     </table>
