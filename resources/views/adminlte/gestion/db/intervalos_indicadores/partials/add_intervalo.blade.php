@@ -1,4 +1,3 @@
-@dump(getIntervalosIndicador('D1')))
 <div class="text-right" style="margin-bottom: 10px">
     <button class="btn btn-primary btn-xs" title="Agregar intervalo de rango" onclick="add_row('rango')">
         <i class="fa fa-plus"></i>
