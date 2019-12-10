@@ -59,6 +59,10 @@
                 id_indicador : $("#id_indicador").val()
             });
            console.log(datos);
+            datos={
+                datos : datos,
+                _token:'{{csrf_token()}}'
+            }
            post_jquery('{{url('intervalo_indicador/store_intervalo')}}', datos, function () {
                cerrar_modals();
            });
