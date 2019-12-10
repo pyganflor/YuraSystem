@@ -26,6 +26,17 @@
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 
     <script src="https://bernii.github.io/gauge.js/dist/gauge.min.js"></script>
+
+    <script>
+        var rangos_venta_m2_mensual = [];
+        @foreach(getIntervalosIndicador('D9') as $r)
+        rangos_venta_m2_mensual.push({
+            desde: '{{$r['desde']}}',
+            hasta: '{{$r['hasta']}}',
+            color: '{{$r['color']}}',
+        });
+        @endforeach
+    </script>
 @endsection
 
 @section('contenido')
