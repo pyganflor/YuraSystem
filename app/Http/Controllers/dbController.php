@@ -245,4 +245,67 @@ class dbController extends Controller
         ]);
 
     }
+
+    public function storeIntervaloIndicador(Request $request){
+        dd($request->all());
+        $valida = Validator::make($request->all(), [
+            'color.*' => 'required',
+            'desde.*' => 'required'
+        ],[
+            'color.*.required'=> 'Hace falta seleccionar colores',
+            'desde.*.required' => 'Debe color el número en el campo cantidad o en el campo desde'
+        ]);
+
+        if (!$valida->fails()) {
+            $dataOld = IntervaloIndicador::where('id_indicador',$request->id_indicador)->select('id_intervalo_indicador')->get();
+
+            foreach ($request->datos as $dato) {
+                try{
+                    $objIntervaloIndicador = new IntervaloIndicador;
+                    $objIntervaloIndicador->id_indicador = $dato['id_indicador'];
+                    $objIntervaloIndicador->tipo = $dato['tipo'];
+                    $objIntervaloIndicador->color = $dato['color'];
+                    $objIntervaloIndicador->hasta = $dato['hasta'];
+                    if($dato['tipo']=="I"){
+                        $objIntervaloIndicador->desde = $dato['desde'];
+                    }else{
+                        $objIntervaloIndicador->condicional = $dato['condicional'];
+                    }
+                    $objIntervaloIndicador->save();
+                    $success = true;
+                    $msg = '<div class="alert alert-success text-center">' .
+                        '<p> Se ha guardado la información con éxito </p>'
+                        .'</div>';
+                }catch (\Exception $e){
+                    $success = false;
+                    $msg = '<div class="alert alert-danger text-center">' .
+                        '<p>  Ha ocurrido el siguiente error al intentar guardar la información <br />"'.$e->getMessage().'"<br /> Comuníquelo al área de sistemas</p>'
+                        .'</div>';
+                }
+
+                foreach($dataOld as $data)
+                    IntervaloIndicador::destroy($data->id_intervalo_indicador);
+            }
+        } else {
+            $success = false;
+            $errores = '';
+            foreach ($valida->errors()->all() as $mi_error) {
+                if ($errores == '') {
+                    $errores = '<li>' . $mi_error . '</li>';
+                } else {
+                    $errores .= '<li>' . $mi_error . '</li>';
+                }
+            }
+            $msg = '<div class="alert alert-danger">' .
+                '<p class="text-center">¡Por favor corrija los siguientes errores!</p>' .
+                '<ul>' .
+                $errores .
+                '</ul>' .
+                '</div>';
+        }
+        return [
+            'mensaje' => $msg,
+            'success' => $success
+        ];
+    }
 }

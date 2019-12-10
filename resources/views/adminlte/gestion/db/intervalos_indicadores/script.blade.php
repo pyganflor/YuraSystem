@@ -35,6 +35,38 @@
     }
 
    function store_intervalo() {
-       
+        if($("#form_add_intervalo").valid()){
+           $.LoadingOverlay('show');
+           datos=[];
+           $.each($("form#form_add_intervalo div.row"),function (i,j) {
+                if($(j).find('.tipo').val() === "I"){
+                    datos.push({
+                        tipo: $(j).find(".tipo").val(),
+                        desde: $(j).find('.desde').val(),
+                        hasta: $(j).find('.hasta').val(),
+                        color :$(j).find('.color').val()
+                    });
+                }else{
+                    datos.push({
+                        tipo: $(j).find(".tipo").val(),
+                        condicional: $(j).find('.condicional').val(),
+                        hasta: $(j).find('.cantidad').val(),
+                        color :$(j).find('.color').val()
+                    });
+                }
+           });
+            datos.push({
+                id_indicador : $("#id_indicador").val()
+            });
+           console.log(datos);
+            datos={
+                datos : datos,
+                _token:'{{csrf_token()}}'
+            }
+           post_jquery('{{url('intervalo_indicador/store_intervalo')}}', datos, function () {
+               cerrar_modals();
+           });
+           $.LoadingOverlay('hide');
+        }
    }
 </script>
