@@ -18,7 +18,7 @@
                 <th class="text-left" style="padding-left: 90px">{{number_format($venta_m2_anno_anual, 2)}}</th>
             </tr>
         </table>
-
+<legend></legend>
         <table class="table-responsive" width="100%">
             <tr>
                 <th class="text-center">Precio</th>
