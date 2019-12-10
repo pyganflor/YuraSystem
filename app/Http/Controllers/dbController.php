@@ -229,7 +229,7 @@ class dbController extends Controller
     public function addIntervaloIndicador(Request $request){
         return view('adminlte.gestion.db.intervalos_indicadores.partials.add_intervalo',[
             'indicador'=> $request->id_indicador,
-            'intervalos_indicadores'=> IntervaloIndicador::where('id_intervalo_indicador',$request->id_indicador)->get(),
+            'intervalos_indicadores'=> IntervaloIndicador::where('id_indicador',$request->id_indicador)->get(),
 
         ]);
     }
