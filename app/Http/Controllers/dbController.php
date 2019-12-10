@@ -216,6 +216,7 @@ class dbController extends Controller
         ];
     }
 
+    /* ========================= INTERVALOS INDICADORES ========================== */
     public function intervaloIndicador(Request $request){
         return view('adminlte.gestion.db.intervalos_indicadores.inicio',[
             'url' => $request->getRequestUri(),
@@ -228,7 +229,8 @@ class dbController extends Controller
     public function addIntervaloIndicador(Request $request){
         return view('adminlte.gestion.db.intervalos_indicadores.partials.add_intervalo',[
             'indicador'=> $request->id_indicador,
-            'intervalo_indicador'=> IntervaloIndicador::where('id_intervalor_indicador'),
+            'intervalos_indicadores'=> IntervaloIndicador::where('id_intervalor_indicador',$request->id_indicador)->get(),
+
         ]);
     }
 
