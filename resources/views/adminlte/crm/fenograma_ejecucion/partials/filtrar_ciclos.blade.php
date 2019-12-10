@@ -127,7 +127,6 @@
                     </td>
                     <td class="text-center" style="border-color: #9d9d9d">
                         @php
-
                             if($codigo_semana == $semana->codigo){
                                 $area += $item->area;
                             } else {
@@ -137,10 +136,10 @@
 
                             if($pos_item + 1 < count($ciclos)){
                                 if($ciclos[$pos_item + 1]->semana()->codigo != $codigo_semana){
-                                    echo $area;
+                                    echo round($area / 10000, 2);
                                 }
                             } else {
-                                echo $area;
+                                echo round($area / 10000, 2);
                             }
                         @endphp
                     </td>
@@ -199,10 +198,6 @@
                     $total_tallos_m2 += $tallos_m2_cos;
                     if($tallos_cosechados > 0){
                         $positivos_tallos_m2 ++;
-                    }
-
-                    if($semana->codigo != $codigo_semana){
-                        $codigo_semana = $semana->codigo;
                     }
                 @endphp
             @endforeach
