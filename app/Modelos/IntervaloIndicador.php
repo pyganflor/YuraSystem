@@ -16,6 +16,8 @@ class IntervaloIndicador extends Model
         'codigo_color',
         'desde',
         'hasta',
+        'condicional',
+        'tipo',
         'fecha_registro',
     ];
 
