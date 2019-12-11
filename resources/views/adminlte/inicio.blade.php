@@ -122,61 +122,14 @@
         @if(count(getUsuario(Session::get('id_usuario'))->rol()->getSubmenusByTipo('C')) > 0)
             {{-- COLORES SEMAFOROS --}}
             @php
-                if($venta_m2_anno_mensual < 28)
-                    $color_1  = 'red';
-                else if($venta_m2_anno_mensual >= 28 && $venta_m2_anno_mensual <= 32)
-                    $color_1 = 'orange';
-                else
-                    $color_1 = 'green';
-
-                if($venta_m2_anno_anual < 28)
-                    $color_1_1  = 'red';
-                else if($venta_m2_anno_anual >= 28 && $venta_m2_anno_anual <= 32)
-                    $color_1_1 = 'orange';
-                else
-                    $color_1_1 = 'green';
-
-                if($ciclo < 115)
-                    $color_2  = 'green';
-                else if($ciclo >= 115 && $ciclo <= 125)
-                    $color_2 = 'orange';
-                else
-                    $color_2 = 'red';
-
-                if($calibre < 7.4)
-                    $color_3  = 'green';
-                else if($calibre >= 7.4 && $calibre <= 7.8)
-                    $color_3 = 'orange';
-                else
-                    $color_3 = 'red';
-
-                if($precio_x_ramo < 2)
-                    $color_4  = 'red';
-                else if($precio_x_ramo >= 2 && $precio_x_ramo <= 2.1)
-                    $color_4 = 'orange';
-                else
-                    $color_4 = 'green';
-
-                if($tallos_m2 < 35)
-                    $color_5  = 'red';
-                else if($tallos_m2 >= 35 && $tallos_m2 <= 45)
-                    $color_5 = 'orange';
-                else
-                    $color_5 = 'green';
-
-                if($ramos_m2_anno < 13)
-                    $color_6  = 'red';
-                else if($ramos_m2_anno >= 13 && $ramos_m2_anno <= 17)
-                    $color_6 = 'orange';
-                else
-                    $color_6 = 'green';
-
-                if($precio_x_tallo < 0.2)
-                    $color_7  = 'red';
-                else if($precio_x_tallo >= 0.2 && $precio_x_tallo <= 0.8)
-                    $color_7 = 'orange';
-                else
-                    $color_7 = 'green';
+                $color_1 = getColorByIndicador('D9');   //  venta_m2_anno_mensual
+                $color_1_1 = getColorByIndicador('D10');    //  venta_m2_anno_anual
+                $color_2 = getColorByIndicador('DA1');  //  ciclo
+                $color_3 = getColorByIndicador('D1');   //  calibre
+                $color_4 = getColorByIndicador('D3');   //  precio_x_ramo
+                $color_5 = getColorByIndicador('D12');   //  tallos_m2
+                $color_6 = getColorByIndicador('D8');   //  ramos_m2_anno
+                $color_7 = getColorByIndicador('D14');   //  precio_x_tallo
             @endphp
 
             <div id="box_cuadros" class="box box-primary hide">
