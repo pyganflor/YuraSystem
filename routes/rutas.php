@@ -105,6 +105,9 @@ Route::group(['middleware' => 'autenticacion'], function () {
             include 'proyecciones/ventas_x_cliente.php';
             include 'proyecciones/mano_obra.php';
 
+            /* ================== COSTOS =================== */
+            include 'costos/rutas.php';
+
             /* ================== DB =================== */
             include 'db/rutas.php';
 

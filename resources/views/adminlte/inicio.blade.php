@@ -26,6 +26,71 @@
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 
     <script src="https://bernii.github.io/gauge.js/dist/gauge.min.js"></script>
+
+    <script>
+        var rangos_venta_m2_mensual = [];
+        @foreach(getIntervalosIndicador('D9') as $r)
+        rangos_venta_m2_mensual.push({
+            desde: parseFloat('{{$r->desde}}'),
+            hasta: parseFloat('{{$r->hasta}}'),
+            color: '{{$r->color}}',
+        });
+                @endforeach
+
+        var rangos_venta_m2_anno = [];
+        @foreach(getIntervalosIndicador('D10') as $r)
+        rangos_venta_m2_anno.push({
+            desde: parseFloat('{{$r->desde}}'),
+            hasta: parseFloat('{{$r->hasta}}'),
+            color: '{{$r->color}}',
+        });
+                @endforeach
+
+        var rangos_precio = [];
+        @foreach(getIntervalosIndicador('D3') as $r)
+        rangos_precio.push({
+            desde: parseFloat('{{$r->desde}}'),
+            hasta: parseFloat('{{$r->hasta}}'),
+            color: '{{$r->color}}',
+        });
+                @endforeach
+
+        var rangos_ramos_m2_anno = [];
+        @foreach(getIntervalosIndicador('D8') as $r)
+        rangos_ramos_m2_anno.push({
+            desde: parseFloat('{{$r->desde}}'),
+            hasta: parseFloat('{{$r->hasta}}'),
+            color: '{{$r->color}}',
+        });
+                @endforeach
+
+        var rangos_calibre = [];
+        @foreach(getIntervalosIndicador('D1') as $r)
+        rangos_calibre.push({
+            desde: parseFloat('{{$r->desde}}'),
+            hasta: parseFloat('{{$r->hasta}}'),
+            color: '{{$r->color}}',
+        });
+                @endforeach
+
+        var rangos_tallos_m2 = [];
+        @foreach(getIntervalosIndicador('D12') as $r)
+        rangos_tallos_m2.push({
+            desde: parseFloat('{{$r->desde}}'),
+            hasta: parseFloat('{{$r->hasta}}'),
+            color: '{{$r->color}}',
+        });
+                @endforeach
+
+        var rangos_ciclo = [];
+        @foreach(getIntervalosIndicador('DA1') as $r)
+        rangos_ciclo.push({
+            desde: parseFloat('{{$r->desde}}'),
+            hasta: parseFloat('{{$r->hasta}}'),
+            color: '{{$r->color}}',
+        });
+        @endforeach
+    </script>
 @endsection
 
 @section('contenido')
@@ -96,6 +161,13 @@
                     $color_6 = 'orange';
                 else
                     $color_6 = 'green';
+
+                if($precio_x_tallo < 0.27)
+                    $color_7  = 'red';
+                else if($precio_x_tallo >= 0.27 && $precio_x_tallo <= 0.29)
+                    $color_7 = 'orange';
+                else
+                    $color_7 = 'green';
             @endphp
 
             <div id="box_cuadros" class="box box-primary hide">
@@ -241,45 +313,48 @@
 
                     // For each orgchart box, provide the name, manager, and tooltip to show.
                     data.addRows([
-                        [{'v': 'Rentabilidad', 'f': '<strong>Rentabilidad</strong>'}, '', 'Rentabilidad'],
+                        [{'v': 'Rentabilidad', 'f': '<strong>Rentabilidad/m<sup>2</sup></strong>'}, '', 'Rentabilidad'],
                         [{
                             'v': 'Ventas_m2_anno',
-                            'f': '<strong style="color:{{$color_1}}"><span id="span_venta_m2_mensual">{{number_format($venta_m2_anno_mensual, 2)}}</span><small><sup>(4 meses)</sup></small></strong>' +
-                            '<canvas id="canvas_ventas_m2_anno_mensual" style="width: 50px"></canvas>' +
-                            '<br><strong style="color:{{$color_1_1}}"><span id="span_venta_m2_anno">{{number_format($venta_m2_anno_anual, 2)}}</span><small><sup>(1 año)</sup></small></strong>' +
-                            '<canvas id="canvas_ventas_m2_anno" style="width: 50px"></canvas>'
+                            'f': '<strong style="color:{{$color_1}}"><small>$</small><span id="span_venta_m2_mensual">{{number_format($venta_m2_anno_mensual, 2)}}</span><small><sup>(4 meses)</sup></small></strong>' +
+                            '<br><strong style="color:{{$color_1_1}}"><small>$</small><span id="span_venta_m2_anno">{{number_format($venta_m2_anno_anual, 2)}}</span><small><sup>(1 año)</sup></small></strong>' +
+                            '<br><button type="button" class="btn btn-xs btn-block btn-default" disabled style="color: black">Ventas/m<sup>2</sup>/año</button>'
                         }, 'Rentabilidad', 'Ventas/m2/año'],
-                        [{'v': 'Costos', 'f': '<strong>Costos</strong>'}, 'Rentabilidad', 'Costos'],
+                        [{'v': 'Costos', 'f': '<strong>Costos/m<sup>2</sup></strong>'}, 'Rentabilidad', 'Costos'],
+                        [{
+                            'v': 'C1', 'f': '<strong>Planta</strong>' +
+                            '<br><strong>Campo/<sup>ha</sup>/semana</strong>' +
+                            '<br><strong>Cosecha x tallo</strong>' +
+                            '<br><strong>Postcosecha x tallo</strong>' +
+                            '<br><strong>Total x tallo</strong>' +
+                            '<br><button type="button" class="btn btn-xs btn-block btn-default" style="color: black">Indicadores claves</button>'
+                        }, 'Costos', 'C1'],
+                        [{
+                            'v': 'C2', 'f': '<strong>Total</strong>' +
+                            '<br><strong>Mano de Obra</strong>' +
+                            '<br><strong>Insumos</strong>' +
+                            '<br><strong></strong>' +
+                            '<br><strong></strong>' +
+                            '<br><button type="button" class="btn btn-xs btn-block btn-default" style="color: black" disabled>Datos importantes</button>'
+                        }, 'Costos', 'C2'],
                         [{
                             'v': 'Indicadores_claves',
-                            'f': '<strong style="color: {{$color_4}}"><span id="span_precio_x_ramo">{{number_format($precio_x_ramo, 2)}}</span><small><sup>precio</sup></small></strong>' +
-                            '<canvas id="canvas_precio_x_ramo" style="width: 50px"></canvas>' +
-                            '<br><strong style="color:{{$color_6}}"><span id="span_ramos_m2_anno">{{number_format($ramos_m2_anno, 2)}}</span><small><sup>r/m<sup>2</sup>/año</sup></small></strong>' +
-                            '<canvas id="canvas_ramos_m2_anno" style="width: 50px"></canvas>' +
-                            '<br><strong style="color: {{$color_3}}"><span id="span_calibre">{{$calibre}}</span><small><sup>t/r calibre</sup></small></strong>' +
-                            '<canvas id="canvas_calibre" style="width: 50px"></canvas>' +
-                            '<br><strong style="color: {{$color_5}}"><span id="span_tallos_m2">{{number_format($tallos_m2, 2)}}</span><small><sup>t/m<sup>2</sup></sup></small></strong>' +
-                            '<canvas id="canvas_tallos_m2" style="width: 50px"></canvas>' +
-                            '<br><strong style="color: {{$color_2}}"><span id="span_ciclo">{{number_format($ciclo, 2)}}</span><small><sup>ciclo</sup></small></strong>' +
-                            '<canvas id="canvas_ciclo" style="width: 50px"></canvas>' +
-                            '<br><button type="button" class="btn btn-xs btn-block btn-default" onclick="mostrar_indicadores_claves()" style="color: black">Ind. claves</button>'
+                            'f': '<strong style="color: {{$color_4}}"><small>Precio: $</small><span id="span_precio_x_ramo" title="Ramo">{{number_format($precio_x_ramo, 2)}}</span></strong>-<span title="Tallo" style="color:{{$color_7}}"><small>$</small>{{$precio_x_tallo}}</span>' +
+                            '<br><strong style="color:{{$color_6}}"><small>Productividad: </small><span id="span_ramos_m2_anno">{{number_format($ramos_m2_anno, 2)}}</span></strong>' +
+                            '<br><strong style="color: {{$color_3}}"><small>Calibre: </small><span id="span_calibre">{{$calibre}}</span></strong>' +
+                            '<br><strong style="color: {{$color_5}}"><small>Tallos x m<sup>2</sup>: </small><span id="span_tallos_m2">{{number_format($tallos_m2, 2)}}</span></strong>' +
+                            '<br><strong style="color: {{$color_2}}"><small>Ciclo: </small><span id="span_ciclo">{{number_format($ciclo, 2)}}</span></strong>' +
+                            '<br><button type="button" class="btn btn-xs btn-block btn-default" onclick="mostrar_indicadores_claves()" style="color: black">Indicadores claves</button>'
                         }, 'Ventas_m2_anno', 'Indicadores claves'],
                         [{
                             'v': 'Datos_importantes',
-                            'f': '<strong style="text-decoration: underline">Datos importantes</strong>' +
-                            '<br><strong><span id="span_area_produccion">{{number_format(round($area_produccion / 10000, 2), 2)}}</span><small><sup>ha</sup></small></strong>' +
-                            '<br><strong>$<span id="span_valor">{{number_format($valor, 2)}}</span></strong>' +
-                            '<br><strong title="Tallos cosechados"><span id="span_tallos_cosechados">{{number_format($tallos_cosechados)}}</span><small><sup>t/cosechados</sup></small></strong>' +
-                            '<br><strong title="Tallos clasificados"><span id="span_tallos">{{number_format($tallos)}}</span><small><sup>t/clasificados</sup></small></strong>'
+                            'f': '<strong><small>Área: </small><span id="span_area_produccion">{{number_format(round($area_produccion / 10000, 2), 2)}}</span></strong>' +
+                            '<br><strong><small>Venta: </small>$<span id="span_valor">{{number_format($valor, 2)}}</span></strong>' +
+                            '<br><strong title="Tallos cosechados"><small>T/cosechados: </small><span id="span_tallos_cosechados">{{number_format($tallos_cosechados)}}</span></strong>' +
+                            '<br><strong title="Tallos clasificados"><small>T/clasificados: </small><span id="span_tallos">{{number_format($tallos)}}</span></strong>' +
+                            '<br><strong title="Cajas exportadas"><small>Cajas exp: </small>{{number_format($cajas_exportadas, 2)}}</strong>' +
+                            '<br><button type="button" class="btn btn-xs btn-block btn-default" disabled style="color: black">Datos importantes</button>'
                         }, 'Ventas_m2_anno', 'Datos importantes'],
-                        [{
-                            'v': 'Dashboards',
-                            'f': '<strong style="text-decoration: underline">Dashboards</strong>' +
-                            '<button type="button" title="Ver dashboard" class="btn btn-block btn-default" onclick="cargar_ventas_m2()">Ventas/m<sup>2</sup>/año</button>' +
-                            '<button type="button" title="Ver dashboard" class="btn btn-block btn-default" onclick="cargar_crm_postcosecha()">Postcosecha</button>' +
-                            '<button type="button" title="Ver dashboard" class="btn btn-block btn-default" onclick="cargar_crm_ventas()">Venta</button>' +
-                            '<button type="button" title="Ver dashboard" class="btn btn-block btn-default" onclick="cargar_crm_area()">Área</button>'
-                        }, 'Ventas_m2_anno', 'Dashboards'],
                     ]);
 
                     var options = {
@@ -295,110 +370,6 @@
                     var chart = new google.visualization.OrgChart(document.getElementById('chart_org'));
                     // Draw the chart, setting the allowHtml option to true for the tooltips.
                     chart.draw(data, options);
-
-                    render_gauge('canvas_ventas_m2_anno_mensual', '{{number_format($venta_m2_anno_mensual, 2)}}', [{
-                        desde: 0,
-                        hasta: 28,
-                        color: '#f03e3e'
-                    }, {
-                        desde: 28,
-                        hasta: 32,
-                        color: '#fd0'
-                    }, {
-                        desde: 32,
-                        hasta: 50,
-                        color: '#30b32d'
-                    }]);
-                    render_gauge('canvas_ventas_m2_anno', '{{number_format($venta_m2_anno_anual, 2)}}', [{
-                        desde: 0,
-                        hasta: 28,
-                        color: '#f03e3e'
-                    }, {
-                        desde: 28,
-                        hasta: 32,
-                        color: '#fd0'
-                    }, {
-                        desde: 32,
-                        hasta: 50,
-                        color: '#30b32d'
-                    }]);
-                    render_gauge('canvas_precio_x_ramo', '{{number_format($precio_x_ramo, 2)}}', [{
-                        desde: 1,
-                        hasta: 2,
-                        color: '#f03e3e'    // red
-                    }, {
-                        desde: 2,
-                        hasta: 2.1,
-                        color: '#fd0'   // orange
-                    }, {
-                        desde: 2.1,
-                        hasta: 3,
-                        color: '#30b32d'    // green
-                    }]);
-                    render_gauge('canvas_ramos_m2_anno', '{{number_format($ramos_m2_anno, 2)}}', [{
-                        desde: 1,
-                        hasta: 13,
-                        color: '#f03e3e'    // red
-                    }, {
-                        desde: 13,
-                        hasta: 17,
-                        color: '#fd0'   // orange
-                    }, {
-                        desde: 17,
-                        hasta: 20,
-                        color: '#30b32d'    // green
-                    }]);
-                    render_gauge('canvas_calibre', '{{number_format($calibre, 2)}}', [{
-                        desde: 1,
-                        hasta: 7.4,
-                        color: '#30b32d'    // green
-                    }, {
-                        desde: 7.4,
-                        hasta: 7.8,
-                        color: '#fd0'   // orange
-                    }, {
-                        desde: 7.8,
-                        hasta: 16,
-                        color: '#f03e3e'    // red
-                    }]);
-                    render_gauge('canvas_tallos_m2', '{{number_format($tallos_m2, 2)}}', [{
-                        desde: 1,
-                        hasta: 35,
-                        color: '#f03e3e'    // red
-                    }, {
-                        desde: 35,
-                        hasta: 45,
-                        color: '#fd0'   // orange
-                    }, {
-                        desde: 45,
-                        hasta: 60,
-                        color: '#30b32d'    // green
-                    }]);
-                    render_gauge('canvas_ciclo', '{{number_format($ciclo, 2)}}', [{
-                        desde: 1,
-                        hasta: 115,
-                        color: '#30b32d'    // green
-                    }, {
-                        desde: 115,
-                        hasta: 125,
-                        color: '#fd0'   // orange
-                    }, {
-                        desde: 125,
-                        hasta: 150,
-                        color: '#f03e3e'    // red
-                    }]);
-
-                    count('span_venta_m2_anno');
-                    count('span_venta_m2_mensual');
-                    count('span_precio_x_ramo');
-                    count('span_ramos_m2_anno');
-                    count('span_calibre');
-                    count('span_tallos_m2');
-                    count('span_ciclo');
-                    /*count('span_area_produccion');
-                    count('span_valor');
-                    count('span_tallos_cosechados');
-                    count('span_tallos');*/
                 }
 
                 function render_gauge(canvas, value, rangos, indices = false) {
@@ -453,22 +424,6 @@
                     gauge.setMinValue(rangos[0]['desde']);  // Prefer setter over gauge.minValue = 0
                     gauge.animationSpeed = 250; // set animation speed (32 is default value)
                     gauge.set(value); // set actual value
-                }
-
-                function cargar_ventas_m2() {
-                    location.href = '{{url('ventas_m2')}}';
-                }
-
-                function cargar_crm_postcosecha() {
-                    location.href = '{{url('crm_postcosecha')}}';
-                }
-
-                function cargar_crm_ventas() {
-                    location.href = '{{url('crm_ventas')}}';
-                }
-
-                function cargar_crm_area() {
-                    location.href = '{{url('crm_area')}}';
                 }
 
                 function mostrar_indicadores_claves() {
