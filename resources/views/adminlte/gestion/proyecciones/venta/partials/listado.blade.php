@@ -38,7 +38,7 @@
                             }
                         }
                     }
-                    if($x == 0){
+                    if($x == 0){ //Primera iteración
                         $firstSemanaResumenSemanaCosechaByVariedad = (int)$objSemanaActual->firstSemanaResumenSemanaCosechaByVariedad($idVariedad);
                         if($firstSemanaResumenSemanaCosechaByVariedad > $semana){
                             $saldoInicial = $objSemanaActual->getSaldo($idVariedad);

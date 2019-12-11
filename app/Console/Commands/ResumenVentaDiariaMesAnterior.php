@@ -6,7 +6,6 @@ use Carbon\Carbon;
 use Illuminate\Console\Command;
 use yura\Modelos\Pedido;
 use yura\Modelos\ResumenVentaDiaria;
-
 use DB;
 
 class ResumenVentaDiariaMesAnterior extends Command
