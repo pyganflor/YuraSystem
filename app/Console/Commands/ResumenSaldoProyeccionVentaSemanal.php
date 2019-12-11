@@ -45,10 +45,10 @@ class ResumenSaldoProyeccionVentaSemanal extends Command
 
         $variedades = Variedad::where('estado',1)->select('id_variedad')->get();
         $semanaInicio= $this->argument('desde') == 0
-                            ? Semana::select(DB::raw('min(codigo) as codigo_semana'))->first()->codigo_semana
+                            ? getSemanaByDate(now()->subDays(7)->toDateString())->codigo //Semana::select(DB::raw('min(codigo) as codigo_semana'))->first()->codigo_semana
                             : $this->argument('desde');
         $semanaFin =  $this->argument('hasta') == 0
-                            ? getSemanaByDate(now()->subDays(7)->toDateString())->codigo
+                            ? getSemanaByDate(now()->toDateString())->codigo
                             : $this->argument('hasta');
 
         $semanas=[];
@@ -94,15 +94,19 @@ class ResumenSaldoProyeccionVentaSemanal extends Command
                     $saldoInicial = $saldoFinal;
 
                 $objResumenSaldoProyeccionVentaSemanal->saldo_inicial=$saldoInicial;
-                if($sFinal!='')
-                    $objResumenSaldoProyeccionVentaSemanal->saldo_final=$sFinal;
                 $objResumenSaldoProyeccionVentaSemanal->id_variedad = $variedad->id_variedad;
                 $objResumenSaldoProyeccionVentaSemanal->codigo_semana = $semana;
-                $objResumenSaldoProyeccionVentaSemanal->save();
+                if($objResumenSaldoProyeccionVentaSemanal->save()){
+                    $objResumenSaldoProyeccionVentaSemanalSemanaPasada = ResumenSaldoProyVentaSemanal::where([
+                        ['id_variedad',$variedad->id_variedad],
+                        ['codigo_semana',$semanaPasada]
+                    ]);
+                    $objResumenSaldoProyeccionVentaSemanalSemanaPasada->update(['saldo_final' => $saldoInicial]);
+                }
 
                 dump("Variedad: " . $variedad->id_variedad . " Semana: " . $semana . " Saldo inicial: " . $saldoInicial." Saldo Final: " . $sFinal);
                 $semanaPasada = $semana;
-                $sFinal = $saldoInicial;
+                //$sFinal = $saldoInicial;
                 $y++;
 
             }
