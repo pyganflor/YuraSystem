@@ -61,11 +61,10 @@ class ResumenSaldoProyeccionVentaSemanal extends Command
 
         foreach ($variedades as $variedad){
             $semanaPasada = '';
-            $saldoFinal = '';
+            $sFinal = '';
             $y=0;
             if($variedad->id_variedad ==2)
             foreach ($semanas as $semana) {
-
                 $dataResumenSaldoProyeccionVentaSemanal = ResumenSaldoProyVentaSemanal::where([
                     ['id_variedad',$variedad->id_variedad],
                     ['codigo_semana',$semana]
@@ -95,14 +94,14 @@ class ResumenSaldoProyeccionVentaSemanal extends Command
                     $saldoInicial = $saldoFinal;
 
                 $objResumenSaldoProyeccionVentaSemanal->saldo_inicial=$saldoInicial;
-                $objResumenSaldoProyeccionVentaSemanal->saldo_final=$saldoFinal;
+                $objResumenSaldoProyeccionVentaSemanal->saldo_final=$sFinal;
                 $objResumenSaldoProyeccionVentaSemanal->id_variedad = $variedad->id_variedad;
                 $objResumenSaldoProyeccionVentaSemanal->codigo_semana = $semana;
                 $objResumenSaldoProyeccionVentaSemanal->save();
 
                 dump("Variedad: " . $variedad->id_variedad . " Semana: " . $semana . " Saldo inicial: " . $saldoInicial);
                 $semanaPasada = $semana;
-                $saldoFinal = $saldoInicial;
+                $sFinal = $saldoInicial;
                 $y++;
 
             }
