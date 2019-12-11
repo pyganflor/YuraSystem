@@ -2504,15 +2504,33 @@ function getTallosClasificadosByRangoVariedad($desde, $hasta, $variedad = 'T')
     return $valor;
 }
 
-function getIntervalosIndicador($nombre){
-    $indicador = Indicador::where('nombre',$nombre)->select('id_indicador')->first();
-    $data=[];
-    foreach($indicador->intervalos->sortBy('desde') as $intervalo){
+function getIntervalosIndicador($nombre)
+{
+    $indicador = Indicador::where('nombre', $nombre)->select('id_indicador')->first();
+    $data = [];
+    foreach ($indicador->intervalos->sortBy('desde') as $intervalo) {
         $obj = new stdClass();
         $obj->desde = $intervalo->desde;
         $obj->hasta = $intervalo->hasta;
         $obj->color = $intervalo->color;
-        $data[]=$obj;
+        $data[] = $obj;
     }
     return $data;
+}
+
+function getColorByIndicador($nombre)
+{
+    $indicador = getIndicadorByName($nombre);
+    $rangos = getIntervalosIndicador($nombre);
+    if (count($rangos) > 0) {
+        if ($indicador->valor < $rangos[0]->desde)
+            return $rangos[0]->color;
+        if ($indicador->valor > $rangos[count($rangos) - 1]->hasta)
+            return $rangos[count($rangos) - 1]->color;
+        foreach ($rangos as $rango) {
+            if ($indicador->valor >= $rango->desde && $indicador->valor <= $rango->hasta)
+                return $rango->color;
+        }
+    }
+    return '#fff';
 }
