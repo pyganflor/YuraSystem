@@ -9,6 +9,18 @@
     </script>
 @endsection
 
+@section('css_inicio')
+    <style>
+        .tabla_master {
+            border: 2px solid #9d9d9d;
+        }
+
+        .tabla_master thead tr th {
+            background-color: #e9ecef;
+        }
+    </style>
+@endsection
+
 @section('contenido')
     <section class="content-header">
         <h1>
@@ -35,7 +47,16 @@
     <section class="content">
         <div class="box box-primary">
             <div class="box-body">
-                <div id="div_listado">
+                <div class="row">
+                    <div class="col-md-4 div_content_fixed">
+                        @include('adminlte.gestion.costos.partials.list_area')
+                    </div>
+                    <div class="col-md-4 div_content_fixed">
+                        @include('adminlte.gestion.costos.partials.list_actividad')
+                    </div>
+                    <div class="col-md-4 div_content_fixed">
+                        @include('adminlte.gestion.costos.partials.list_producto')
+                    </div>
                 </div>
             </div>
         </div>

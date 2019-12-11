@@ -315,6 +315,10 @@
                         }, 'Rentabilidad', 'Ventas/m2/año'],
                         [{'v': 'Costos', 'f': '<strong>Costos/m<sup>2</sup></strong>'}, 'Rentabilidad', 'Costos'],
                         [{
+                            'v': 'C1', 'f': '<strong>Planta</strong>' +
+                            '<br><strong>Campo/<sup>ha</sup>/semana</strong>'
+                        }, 'Costos', 'C1'],
+                        [{
                             'v': 'Indicadores_claves',
                             'f': '<strong style="color: {{$color_4}}"><small>Precio: </small><span id="span_precio_x_ramo">{{number_format($precio_x_ramo, 2)}}</span></strong>' +
                             '<br><strong style="color:{{$color_6}}"><small>Productividad: </small><span id="span_ramos_m2_anno">{{number_format($ramos_m2_anno, 2)}}</span></strong>' +
@@ -325,10 +329,10 @@
                         }, 'Ventas_m2_anno', 'Indicadores claves'],
                         [{
                             'v': 'Datos_importantes',
-                            'f': '<strong><span id="span_area_produccion">{{number_format(round($area_produccion / 10000, 2), 2)}}</span><small><sup>ha</sup></small></strong>' +
-                            '<br><strong>$<span id="span_valor">{{number_format($valor, 2)}}</span></strong>' +
-                            '<br><strong title="Tallos cosechados"><span id="span_tallos_cosechados">{{number_format($tallos_cosechados)}}</span><small><sup>t/cosechados</sup></small></strong>' +
-                            '<br><strong title="Tallos clasificados"><span id="span_tallos">{{number_format($tallos)}}</span><small><sup>t/clasificados</sup></small></strong>' +
+                            'f': '<strong><small>Área: </small><span id="span_area_produccion">{{number_format(round($area_produccion / 10000, 2), 2)}}</span></strong>' +
+                            '<br><strong><small>Venta: </small>$<span id="span_valor">{{number_format($valor, 2)}}</span></strong>' +
+                            '<br><strong title="Tallos cosechados"><small>T/cosechados: </small><span id="span_tallos_cosechados">{{number_format($tallos_cosechados)}}</span></strong>' +
+                            '<br><strong title="Tallos clasificados"><small>T/clasificados</small><span id="span_tallos">{{number_format($tallos)}}</span></strong>' +
                             '<br><br><button type="button" class="btn btn-xs btn-block btn-default" disabled style="color: black">Datos importantes</button>'
                         }, 'Ventas_m2_anno', 'Datos importantes'],
                     ]);
