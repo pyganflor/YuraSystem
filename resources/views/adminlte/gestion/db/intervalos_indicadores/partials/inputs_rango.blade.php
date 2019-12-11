@@ -10,7 +10,7 @@
     <div class="col-md-4">
         <div class="">
             <label for="hasta">Hasta</label>
-            <input type="number" id="hasta_{{$x}}" name="hasta_{{$x}}" class="form-control hasta text-center" min="1"
+            <input type="number" id="hasta_{{$x}}" name="hasta_{{$x}}" class="form-control hasta text-center"
                    required autocomplete="off" value="">
         </div>
     </div>
