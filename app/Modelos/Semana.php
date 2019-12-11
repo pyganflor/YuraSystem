@@ -198,7 +198,7 @@ class Semana extends Model
         $objResumenSaldoProyeccionVentaSemanal = ResumenSaldoProyVentaSemanal::where([
             ['id_variedad',$idVariedad],
             ['codigo_semana',$desde]
-        ])->selec('semana_inicial')->fisrt();
+        ])->select('semana_inicial')->fisrt();
 
         return $objResumenSaldoProyeccionVentaSemanal->semana_inicial;
     }
