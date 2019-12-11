@@ -248,8 +248,8 @@
                                     if($firstSemanaResumenSemanaCosechaByVariedad > $semana){
                                         $saldoFinal = $objSemanaActual->getSaldo($idVariedad);
                                     }elseif($firstSemanaResumenSemanaCosechaByVariedad < $semana){
-                                        $saldoFinal = $objSemanaActual->firstSaldoInicialBusqueda($idVariedad,$semanaPasada);
-                                        //$saldoFinal = $objSemanaActual->getLastSaldoFinal($idVariedad,$semana);
+                                        //$saldoFinal = $objSemanaActual->firstSaldoInicialBusqueda($idVariedad,$semanaPasada);
+                                        $saldoFinal = $objSemanaActual->getLastSaldoFinal($idVariedad,$semana);
                                     }else{
                                         $saldoFinal = $objSemanaActual->firstSaldoInicialByVariedad($idVariedad)+round($objSemanaActual->getSaldo($idVariedad),2);
                                     }
