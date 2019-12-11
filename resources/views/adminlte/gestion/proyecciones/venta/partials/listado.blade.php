@@ -236,11 +236,11 @@
                     </tr>
                     <tr style="background-color: #e9ecef">
                         <td class="text-center" style="border:2px solid #000000;width: 250px"><b>Saldo final</b></td>
-                        @php $x =0; @endphp
+                        @php $x =0;$semanaPasada=''  @endphp
                         @foreach($semanas as $semana => $item)
                             @php
                                 $objSemanaActual =getObjSemana($semana);
-                                $objSemanaPasada =getObjSemana($semana-1);
+                                $objSemanaPasada =getObjSemana($semanaPasada);
                                 $cajasProyectadas =isset($objSemanaPasada) ? $objSemanaPasada->getCajasProyectadas($idVariedad) : 0;
                                 $cajasVendidas =  $objSemanaActual->getTotalesProyeccionVentaSemanal(null,$idVariedad)->total_cajas_equivalentes;
                                 if($x==0){
@@ -248,7 +248,7 @@
                                     if($firstSemanaResumenSemanaCosechaByVariedad > $semana){
                                         $saldoFinal = $objSemanaActual->getSaldo($idVariedad);
                                     }elseif($firstSemanaResumenSemanaCosechaByVariedad < $semana){
-                                        $saldoFinal = $objSemanaActual->firstSaldoInicialBusqueda($idVariedad,$semana);
+                                        $saldoFinal = $objSemanaPasada->firstSaldoInicialBusqueda($idVariedad,$semana);
                                         //$saldoFinal = $objSemanaActual->getLastSaldoFinal($idVariedad,$semana);
                                     }else{
                                         $saldoFinal = $objSemanaActual->firstSaldoInicialByVariedad($idVariedad)+round($objSemanaActual->getSaldo($idVariedad),2);
@@ -269,7 +269,7 @@
                                     </b>
                                 </div>
                             </td>
-                            @php $x++ @endphp
+                            @php $x++; $semanaPasada=$semana @endphp
                         @endforeach
                         <td class="text-center" style="border:2px solid #000000;width: 250px"><b>Saldo final</b></td>
                     </tr>
