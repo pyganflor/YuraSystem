@@ -26,6 +26,71 @@
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 
     <script src="https://bernii.github.io/gauge.js/dist/gauge.min.js"></script>
+
+    <script>
+        var rangos_venta_m2_mensual = [];
+        @foreach(getIntervalosIndicador('D9') as $r)
+        rangos_venta_m2_mensual.push({
+            desde: parseFloat('{{$r->desde}}'),
+            hasta: parseFloat('{{$r->hasta}}'),
+            color: '{{$r->color}}',
+        });
+        @endforeach
+
+        var rangos_venta_m2_anno = [];
+        @foreach(getIntervalosIndicador('D10') as $r)
+        rangos_venta_m2_anno.push({
+            desde: parseFloat('{{$r->desde}}'),
+            hasta: parseFloat('{{$r->hasta}}'),
+            color: '{{$r->color}}',
+        });
+        @endforeach
+
+        var rangos_precio = [];
+        @foreach(getIntervalosIndicador('D3') as $r)
+        rangos_precio.push({
+            desde: parseFloat('{{$r->desde}}'),
+            hasta: parseFloat('{{$r->hasta}}'),
+            color: '{{$r->color}}',
+        });
+        @endforeach
+
+        var rangos_ramos_m2_anno = [];
+        @foreach(getIntervalosIndicador('D8') as $r)
+        rangos_ramos_m2_anno.push({
+            desde: parseFloat('{{$r->desde}}'),
+            hasta: parseFloat('{{$r->hasta}}'),
+            color: '{{$r->color}}',
+        });
+        @endforeach
+
+        var rangos_calibre = [];
+        @foreach(getIntervalosIndicador('D1') as $r)
+        rangos_calibre.push({
+            desde: parseFloat('{{$r->desde}}'),
+            hasta: parseFloat('{{$r->hasta}}'),
+            color: '{{$r->color}}',
+        });
+        @endforeach
+
+        var rangos_tallos_m2 = [];
+        @foreach(getIntervalosIndicador('D12') as $r)
+        rangos_tallos_m2.push({
+            desde: parseFloat('{{$r->desde}}'),
+            hasta: parseFloat('{{$r->hasta}}'),
+            color: '{{$r->color}}',
+        });
+        @endforeach
+
+        var rangos_ciclo = [];
+        @foreach(getIntervalosIndicador('DA1') as $r)
+        rangos_ciclo.push({
+            desde: parseFloat('{{$r->desde}}'),
+            hasta: parseFloat('{{$r->hasta}}'),
+            color: '{{$r->color}}',
+        });
+        @endforeach
+    </script>
 @endsection
 
 @section('contenido')
@@ -296,97 +361,13 @@
                     // Draw the chart, setting the allowHtml option to true for the tooltips.
                     chart.draw(data, options);
 
-                    render_gauge('canvas_ventas_m2_anno_mensual', '{{number_format($venta_m2_anno_mensual, 2)}}', [{
-                        desde: 0,
-                        hasta: 28,
-                        color: '#f03e3e'
-                    }, {
-                        desde: 28,
-                        hasta: 32,
-                        color: '#fd0'
-                    }, {
-                        desde: 32,
-                        hasta: 50,
-                        color: '#30b32d'
-                    }]);
-                    render_gauge('canvas_ventas_m2_anno', '{{number_format($venta_m2_anno_anual, 2)}}', [{
-                        desde: 0,
-                        hasta: 28,
-                        color: '#f03e3e'
-                    }, {
-                        desde: 28,
-                        hasta: 32,
-                        color: '#fd0'
-                    }, {
-                        desde: 32,
-                        hasta: 50,
-                        color: '#30b32d'
-                    }]);
-                    render_gauge('canvas_precio_x_ramo', '{{number_format($precio_x_ramo, 2)}}', [{
-                        desde: 1,
-                        hasta: 2,
-                        color: '#f03e3e'    // red
-                    }, {
-                        desde: 2,
-                        hasta: 2.1,
-                        color: '#fd0'   // orange
-                    }, {
-                        desde: 2.1,
-                        hasta: 3,
-                        color: '#30b32d'    // green
-                    }]);
-                    render_gauge('canvas_ramos_m2_anno', '{{number_format($ramos_m2_anno, 2)}}', [{
-                        desde: 1,
-                        hasta: 13,
-                        color: '#f03e3e'    // red
-                    }, {
-                        desde: 13,
-                        hasta: 17,
-                        color: '#fd0'   // orange
-                    }, {
-                        desde: 17,
-                        hasta: 20,
-                        color: '#30b32d'    // green
-                    }]);
-                    render_gauge('canvas_calibre', '{{number_format($calibre, 2)}}', [{
-                        desde: 1,
-                        hasta: 7.4,
-                        color: '#30b32d'    // green
-                    }, {
-                        desde: 7.4,
-                        hasta: 7.8,
-                        color: '#fd0'   // orange
-                    }, {
-                        desde: 7.8,
-                        hasta: 16,
-                        color: '#f03e3e'    // red
-                    }]);
-                    render_gauge('canvas_tallos_m2', '{{number_format($tallos_m2, 2)}}', [{
-                        desde: 1,
-                        hasta: 35,
-                        color: '#f03e3e'    // red
-                    }, {
-                        desde: 35,
-                        hasta: 45,
-                        color: '#fd0'   // orange
-                    }, {
-                        desde: 45,
-                        hasta: 60,
-                        color: '#30b32d'    // green
-                    }]);
-                    render_gauge('canvas_ciclo', '{{number_format($ciclo, 2)}}', [{
-                        desde: 1,
-                        hasta: 115,
-                        color: '#30b32d'    // green
-                    }, {
-                        desde: 115,
-                        hasta: 125,
-                        color: '#fd0'   // orange
-                    }, {
-                        desde: 125,
-                        hasta: 150,
-                        color: '#f03e3e'    // red
-                    }]);
+                    render_gauge('canvas_ventas_m2_anno_mensual', '{{number_format($venta_m2_anno_mensual, 2)}}', rangos_venta_m2_mensual);
+                    render_gauge('canvas_ventas_m2_anno', '{{number_format($venta_m2_anno_anual, 2)}}', rangos_venta_m2_anno);
+                    render_gauge('canvas_precio_x_ramo', '{{number_format($precio_x_ramo, 2)}}', rangos_precio);
+                    render_gauge('canvas_ramos_m2_anno', '{{number_format($ramos_m2_anno, 2)}}', rangos_ramos_m2_anno);
+                    render_gauge('canvas_calibre', '{{number_format($calibre, 2)}}', rangos_calibre);
+                    render_gauge('canvas_tallos_m2', '{{number_format($tallos_m2, 2)}}', rangos_tallos_m2);
+                    render_gauge('canvas_ciclo', '{{number_format($ciclo, 2)}}', rangos_ciclo);
 
                     count('span_venta_m2_anno');
                     count('span_venta_m2_mensual');
