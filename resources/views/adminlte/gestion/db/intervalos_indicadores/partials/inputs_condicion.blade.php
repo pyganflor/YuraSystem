@@ -13,7 +13,7 @@
     <div class="col-md-4">
         <div class="">
             <label for="cantidad_{{$x}}">Cantidad</label>
-            <input type="number" id="cantidad_{{$x}}" name="cantidad_{{$x}}" class="form-control cantidad text-center" min="1"
+            <input type="number" id="cantidad_{{$x}}" name="cantidad_{{$x}}" class="form-control cantidad text-center"
                    required autocomplete="off" value="">
         </div>
     </div>
