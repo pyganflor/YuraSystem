@@ -316,14 +316,26 @@
                         [{'v': 'Costos', 'f': '<strong>Costos/m<sup>2</sup></strong>'}, 'Rentabilidad', 'Costos'],
                         [{
                             'v': 'C1', 'f': '<strong>Planta</strong>' +
-                            '<br><strong>Campo/<sup>ha</sup>/semana</strong>'
+                            '<br><strong>Campo/<sup>ha</sup>/semana</strong>' +
+                            '<br><strong>Cosecha x tallo</strong>' +
+                            '<br><strong>Postcosecha x tallo</strong>' +
+                            '<br><strong>Total x tallo</strong>' +
+                            '<br><button type="button" class="btn btn-xs btn-block btn-default" style="color: black">Indicadores claves</button>'
                         }, 'Costos', 'C1'],
+                        [{
+                            'v': 'C2', 'f': '<strong>Total</strong>' +
+                            '<br><strong>Mano de Obra</strong>' +
+                            '<br><strong>Insumos</strong>' +
+                            '<br><strong></strong>' +
+                            '<br><strong></strong>' +
+                            '<br><button type="button" class="btn btn-xs btn-block btn-default" style="color: black" disabled>Datos importantes</button>'
+                        }, 'Costos', 'C2'],
                         [{
                             'v': 'Indicadores_claves',
                             'f': '<strong style="color: {{$color_4}}"><small>Precio: </small><span id="span_precio_x_ramo">{{number_format($precio_x_ramo, 2)}}</span></strong>' +
                             '<br><strong style="color:{{$color_6}}"><small>Productividad: </small><span id="span_ramos_m2_anno">{{number_format($ramos_m2_anno, 2)}}</span></strong>' +
                             '<br><strong style="color: {{$color_3}}"><small>Calibre: </small><span id="span_calibre">{{$calibre}}</span></strong>' +
-                            '<br><strong style="color: {{$color_5}}"><small>t/m<sup>2</sup>: </small><span id="span_tallos_m2">{{number_format($tallos_m2, 2)}}</span></strong>' +
+                            '<br><strong style="color: {{$color_5}}"><small>Tallos x m<sup>2</sup>: </small><span id="span_tallos_m2">{{number_format($tallos_m2, 2)}}</span></strong>' +
                             '<br><strong style="color: {{$color_2}}"><small>Ciclo: </small><span id="span_ciclo">{{number_format($ciclo, 2)}}</span></strong>' +
                             '<br><button type="button" class="btn btn-xs btn-block btn-default" onclick="mostrar_indicadores_claves()" style="color: black">Indicadores claves</button>'
                         }, 'Ventas_m2_anno', 'Indicadores claves'],
@@ -332,7 +344,7 @@
                             'f': '<strong><small>Área: </small><span id="span_area_produccion">{{number_format(round($area_produccion / 10000, 2), 2)}}</span></strong>' +
                             '<br><strong><small>Venta: </small>$<span id="span_valor">{{number_format($valor, 2)}}</span></strong>' +
                             '<br><strong title="Tallos cosechados"><small>T/cosechados: </small><span id="span_tallos_cosechados">{{number_format($tallos_cosechados)}}</span></strong>' +
-                            '<br><strong title="Tallos clasificados"><small>T/clasificados</small><span id="span_tallos">{{number_format($tallos)}}</span></strong>' +
+                            '<br><strong title="Tallos clasificados"><small>T/clasificados: </small><span id="span_tallos">{{number_format($tallos)}}</span></strong>' +
                             '<br><br><button type="button" class="btn btn-xs btn-block btn-default" disabled style="color: black">Datos importantes</button>'
                         }, 'Ventas_m2_anno', 'Datos importantes'],
                     ]);

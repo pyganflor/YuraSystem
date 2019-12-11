@@ -31,6 +31,7 @@ class YuraController extends Controller
                 'calibre' => getIndicadorByName('D1')->valor,
                 'tallos' => getIndicadorByName('D2')->valor,
                 'precio_x_ramo' => getIndicadorByName('D3')->valor,
+                'precio_x_tallo' => getIndicadorByName('D14')->valor,
                 'valor' => getIndicadorByName('D4')->valor,
                 'rendimiento' => getIndicadorByName('D5')->valor,
                 'desecho' => getIndicadorByName('D6')->valor,
