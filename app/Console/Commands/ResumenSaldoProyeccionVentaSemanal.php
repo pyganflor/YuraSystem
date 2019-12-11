@@ -94,7 +94,8 @@ class ResumenSaldoProyeccionVentaSemanal extends Command
                     $saldoInicial = $saldoFinal;
 
                 $objResumenSaldoProyeccionVentaSemanal->saldo_inicial=$saldoInicial;
-                $objResumenSaldoProyeccionVentaSemanal->saldo_final=$sFinal;
+                if($sFinal!='')
+                    $objResumenSaldoProyeccionVentaSemanal->saldo_final=$sFinal;
                 $objResumenSaldoProyeccionVentaSemanal->id_variedad = $variedad->id_variedad;
                 $objResumenSaldoProyeccionVentaSemanal->codigo_semana = $semana;
                 $objResumenSaldoProyeccionVentaSemanal->save();
