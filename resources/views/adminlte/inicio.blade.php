@@ -327,7 +327,7 @@
                             'v': 'Ventas_m2_anno',
                             'f': '<strong style="color:{{$color_1}}"><small>$</small><span id="span_venta_m2_mensual">{{number_format($venta_m2_anno_mensual, 2)}}</span><small><sup>(4 meses)</sup></small></strong>' +
                             '<br><strong style="color:{{$color_1_1}}"><small>$</small><span id="span_venta_m2_anno">{{number_format($venta_m2_anno_anual, 2)}}</span><small><sup>(1 año)</sup></small></strong>' +
-                            '<br><button type="button" class="btn btn-xs btn-block btn-default" disabled style="color: black">Ventas/m<sup>2</sup>/año</button>'
+                            '<br><button type="button" class="btn btn-xs btn-block btn-default" onclick="mostrar_indicadores_claves(0)" style="color: black">Ventas/m<sup>2</sup>/año</button>'
                         }, 'Rentabilidad', 'Ventas/m2/año'],
                         [{'v': 'Costos', 'f': '<strong>Costos/m<sup>2</sup></strong>'}, 'Rentabilidad', 'Costos'],
                         [{
@@ -353,7 +353,7 @@
                             '<br><strong style="color: {{$color_3}}"><small>Calibre: </small><span id="span_calibre">{{$calibre}}</span></strong>' +
                             '<br><strong style="color: {{$color_5}}"><small>Tallos x m<sup>2</sup>: </small><span id="span_tallos_m2">{{number_format($tallos_m2, 2)}}</span></strong>' +
                             '<br><strong style="color: {{$color_2}}"><small>Ciclo: </small><span id="span_ciclo">{{number_format($ciclo, 2)}}</span></strong>' +
-                            '<br><button type="button" class="btn btn-xs btn-block btn-default" onclick="mostrar_indicadores_claves()" style="color: black">Indicadores claves</button>'
+                            '<br><button type="button" class="btn btn-xs btn-block btn-default" onclick="mostrar_indicadores_claves(1)" style="color: black">Indicadores claves</button>'
                         }, 'Ventas_m2_anno', 'Indicadores claves'],
                         [{
                             'v': 'Datos_importantes',
@@ -435,8 +435,12 @@
                     gauge.set(value); // set actual value
                 }
 
-                function mostrar_indicadores_claves() {
-                    get_jquery('{{url('mostrar_indicadores_claves')}}', {}, function (retorno) {
+                function mostrar_indicadores_claves(view) {
+                    var views = ['indicadores_ventas_m2', 'indicadores_claves'];
+                    datos = {
+                        view: views[view]
+                    };
+                    get_jquery('{{url('mostrar_indicadores_claves')}}', datos, function (retorno) {
                         $('#div_indicadores_claves').html(retorno);
                         location.href = '#div_indicadores_claves';
                     });
