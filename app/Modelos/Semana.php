@@ -4,7 +4,6 @@ namespace yura\Modelos;
 
 use Illuminate\Database\Eloquent\Model;
 use DB;
-use yura\Modelos\ResumenSaldoProyeccionVentaSemanal as ResumenSaldoProyVentaSemanal;
 
 class Semana extends Model
 {
@@ -195,7 +194,7 @@ class Semana extends Model
     }
 
     public function firstSaldoInicialBusqueda($idVariedad,$desde){
-        $objResumenSaldoProyeccionVentaSemanal = ResumenSaldoProyVentaSemanal::where([
+        $objResumenSaldoProyeccionVentaSemanal = ResumenSaldoProyeccionVentaSemanal::where([
             ['id_variedad',$idVariedad],
             ['codigo_semana',$desde]
         ])->select('saldo_inicial')->first();
