@@ -21,12 +21,12 @@
             <td class="text-center" style="background-color: #e9ecef;width:250px;border: 2px solid #000000;" >
                Saldo inicial
             </td>
-            @php $x=0 @endphp
+            @php $x=0; $semanaPasada='' @endphp
             @foreach($semanas as $semana => $item)
                 @php
                     $objSemanaActual =getObjSemana($semana);
-                    $objSemanaPasada =getObjSemana($semana-1);
-                    if(!isset($objSemanaPasada)){
+                    $objSemanaPasada =getObjSemana($semanaPasada);
+                    /*if(!isset($objSemanaPasada)){
                         for($y=$semana;$y>0001;$y--){
                             $objResumenSemanaCosecha = yura\Modelos\ResumenSemanaCosecha::where([
                                 ['id_variedad',$idVariedad],
@@ -37,13 +37,13 @@
                                 break;
                             }
                         }
-                    }
+                    }*/
                     if($x == 0){ //Primera iteración
                         $firstSemanaResumenSemanaCosechaByVariedad = (int)$objSemanaActual->firstSemanaResumenSemanaCosechaByVariedad($idVariedad);
                         if($firstSemanaResumenSemanaCosechaByVariedad > $semana){
                             $saldoInicial = $objSemanaActual->getSaldo($idVariedad);
                         }elseif($firstSemanaResumenSemanaCosechaByVariedad < $semana){
-                            $saldoInicial = $objSemanaActual->getLastSaldoInicial($idVariedad,$semana);
+                            $saldoInicial = $objSemanaActual->firstSaldoInicialBusqueda($idVariedad,$semana);
                         }else{
                             $saldoInicial = $objSemanaActual->firstSaldoInicialByVariedad($idVariedad);
                         }
@@ -60,7 +60,7 @@
                         <i class="fa {{$saldoInicial < 0 ? "fa-arrow-down" : "fa-arrow-up"}}" aria-hidden="true"></i>
                     </b>
                 </td>
-                @php $x++ @endphp
+                @php $x++; $semanaPasada=$semana @endphp
             @endforeach
             <td class="text-center" style="background-color: #e9ecef;width:250px;border: 2px solid #000000;">
                 Saldo inicial
@@ -248,7 +248,8 @@
                                     if($firstSemanaResumenSemanaCosechaByVariedad > $semana){
                                         $saldoFinal = $objSemanaActual->getSaldo($idVariedad);
                                     }elseif($firstSemanaResumenSemanaCosechaByVariedad < $semana){
-                                        $saldoFinal = $objSemanaActual->getLastSaldoFinal($idVariedad,$semana);
+                                        $objSemanaActual->firstSaldoInicialBusqueda($idVariedad,$semana);
+                                        //$saldoFinal = $objSemanaActual->getLastSaldoFinal($idVariedad,$semana);
                                     }else{
                                         $saldoFinal = $objSemanaActual->firstSaldoInicialByVariedad($idVariedad)+round($objSemanaActual->getSaldo($idVariedad),2);
                                     }
