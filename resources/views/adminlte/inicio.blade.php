@@ -352,6 +352,7 @@
                             '<br><strong><small>Venta: </small>$<span id="span_valor">{{number_format($valor, 2)}}</span></strong>' +
                             '<br><strong title="Tallos cosechados"><small>T/cosechados: </small><span id="span_tallos_cosechados">{{number_format($tallos_cosechados)}}</span></strong>' +
                             '<br><strong title="Tallos clasificados"><small>T/clasificados: </small><span id="span_tallos">{{number_format($tallos)}}</span></strong>' +
+                            '<br><strong title="Cajas exportadas"><small>Cajas exp: </small>{{number_format($cajas_exportadas, 2)}}</strong>' +
                             '<br><br><button type="button" class="btn btn-xs btn-block btn-default" disabled style="color: black">Datos importantes</button>'
                         }, 'Ventas_m2_anno', 'Datos importantes'],
                     ]);
