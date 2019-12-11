@@ -99,7 +99,7 @@ class ResumenSaldoProyeccionVentaSemanal extends Command
                 $objResumenSaldoProyeccionVentaSemanal->codigo_semana = $semana;
                 $objResumenSaldoProyeccionVentaSemanal->save();
 
-                dump("Variedad: " . $variedad->id_variedad . " Semana: " . $semana . " Saldo inicial: " . $saldoInicial);
+                dump("Variedad: " . $variedad->id_variedad . " Semana: " . $semana . " Saldo inicial: " . $saldoInicial." Saldo Final: " . $sFinal);
                 $semanaPasada = $semana;
                 $sFinal = $saldoInicial;
                 $y++;

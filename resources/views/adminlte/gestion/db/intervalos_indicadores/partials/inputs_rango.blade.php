@@ -4,7 +4,7 @@
         <div class="">
             <label for="desde_{{$x}}">Desde</label>
             <input type="number" id="desde_{{$x}}" name="desde_{{$x}}" class="form-control desde text-center" required
-                   min="0" autocomplete="off" value=''>
+                   autocomplete="off" value=''>
         </div>
     </div>
     <div class="col-md-4">
