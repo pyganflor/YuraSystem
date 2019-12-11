@@ -22,6 +22,6 @@
 </div>
 
 <script>
-    render_gauge('canvas_venta_m2_anno_mensual2', '{{number_format($venta_m2_anno_mensual, 2)}}', rangos_venta_m2_mensual, true);
-    render_gauge('canvas_venta_m2_anno_anual2', '{{number_format($venta_m2_anno_anual, 2)}}', rangos_venta_m2_anno, true);
+    render_gauge('canvas_venta_m2_anno_mensual2', '{{number_format($venta_m2_anno_mensual, 2)}}', rangos_venta_m2_mensual, true, 100);
+    render_gauge('canvas_venta_m2_anno_anual2', '{{number_format($venta_m2_anno_anual, 2)}}', rangos_venta_m2_anno, true, 100);
 </script>

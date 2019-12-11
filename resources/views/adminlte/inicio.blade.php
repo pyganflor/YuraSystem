@@ -381,7 +381,7 @@
                     chart.draw(data, options);
                 }
 
-                function render_gauge(canvas, value, rangos, indices = false) {
+                function render_gauge(canvas, value, rangos, indices = false, time = 250) {
                     var staticLabels = false;
                     if (indices) {
                         staticLabels = {
@@ -431,7 +431,7 @@
                     var gauge = new Gauge(target).setOptions(opts); // create sexy gauge!
                     gauge.maxValue = rangos[2]['hasta']; // set max gauge value
                     gauge.setMinValue(rangos[0]['desde']);  // Prefer setter over gauge.minValue = 0
-                    gauge.animationSpeed = 250; // set animation speed (32 is default value)
+                    gauge.animationSpeed = time; // set animation speed (32 is default value)
                     gauge.set(value); // set actual value
                 }
 
