@@ -136,10 +136,10 @@
 
                             if($pos_item + 1 < count($ciclos)){
                                 if($ciclos[$pos_item + 1]->semana()->codigo != $codigo_semana){
-                                    echo number_format($area / 10000, 2);
+                                    echo $area;
                                 }
                             } else {
-                                echo number_format($area / 10000, 2);
+                                echo $area;
                             }
                         @endphp
                     </td>
