@@ -5,6 +5,7 @@ namespace yura\Console\Commands;
 use Illuminate\Console\Command;
 use yura\Modelos\Semana;
 use yura\Modelos\Variedad;
+use yura\Modelos\ResumenSaldoProyeccionVentaSemanal as ResumenSaldoProyVentaSemanal;
 use DB;
 
 class ResumenSaldoProyeccionVentaSemanal extends Command
@@ -14,7 +15,7 @@ class ResumenSaldoProyeccionVentaSemanal extends Command
      *
      * @var string
      */
-    protected $signature = 'resumen_saldo_proyeccion:venta_semanal';
+    protected $signature = 'resumen_saldo_proyeccion:venta_semanal {desde=0} {hasta=0}';
 
     /**
      * The console command description.
@@ -43,10 +44,13 @@ class ResumenSaldoProyeccionVentaSemanal extends Command
         Info('Comienzo del comando resumen_saldo_proyeccion:venta_semanal a las '. now()->format('H:i:s'));
 
         $variedades = Variedad::where('estado',1)->select('id_variedad')->get();
-        $semanaInicio= Semana::select(DB::raw('min(codigo) as codigo_semana'))->first()->codigo_semana;
-        $semanaFin = getSemanaByDate(now()->subDays(7)->toDateString())->codigo;
+        $semanaInicio= $this->argument('desde') == 0
+                            ? Semana::select(DB::raw('min(codigo) as codigo_semana'))->first()->codigo_semana
+                            : $this->argument('desde');
+        $semanaFin =  $this->argument('hasta') == 0
+                            ? getSemanaByDate(now()->subDays(7)->toDateString())->codigo
+                            : $this->argument('hasta');
 
-        //dd($semanaInicio, $semanaFin);
         $semanas=[];
         for ($x=$semanaInicio;$x<=$semanaFin;$x++){
             $existsSemana = Semana::where('codigo',$x)->exists();
@@ -57,9 +61,19 @@ class ResumenSaldoProyeccionVentaSemanal extends Command
 
         foreach ($variedades as $variedad){
             $semanaPasada = '';
+            $saldoFinal = '';
             $y=0;
             if($variedad->id_variedad ==2)
             foreach ($semanas as $semana) {
+
+                $dataResumenSaldoProyeccionVentaSemanal = ResumenSaldoProyVentaSemanal::where([
+                    ['id_variedad',$variedad->id_variedad],
+                    ['codigo_semana',$semana]
+                ])->select('id_resumen_saldo_proy_venta_semanal')->first();
+
+                isset($dataResumenSaldoProyeccionVentaSemanal)
+                    ? $objResumenSaldoProyeccionVentaSemanal = ResumenSaldoProyVentaSemanal::find($dataResumenSaldoProyeccionVentaSemanal->id_resumen_saldo_proy_venta_semanal)
+                    : $objResumenSaldoProyeccionVentaSemanal = new ResumenSaldoProyVentaSemanal;
 
                 $objSemanaActual = getObjSemana($semana);
                 $objSemanaPasada = getObjSemana($semanaPasada);
@@ -80,9 +94,15 @@ class ResumenSaldoProyeccionVentaSemanal extends Command
                 if ($y > 0)
                     $saldoInicial = $saldoFinal;
 
+                $objResumenSaldoProyeccionVentaSemanal->saldo_inicial=$saldoInicial;
+                $objResumenSaldoProyeccionVentaSemanal->saldo_final=$saldoFinal;
+                $objResumenSaldoProyeccionVentaSemanal->id_variedad = $variedad->id_variedad;
+                $objResumenSaldoProyeccionVentaSemanal->codigo_semana = $semana;
+                $objResumenSaldoProyeccionVentaSemanal->save();
 
                 dump("Variedad: " . $variedad->id_variedad . " Semana: " . $semana . " Saldo inicial: " . $saldoInicial);
                 $semanaPasada = $semana;
+                $saldoFinal = $saldoInicial;
                 $y++;
 
             }
