@@ -89,6 +89,15 @@
             hasta: parseFloat('{{$r->hasta}}'),
             color: '{{$r->color}}',
         });
+                @endforeach
+
+        var rangos_precio_tallo = [];
+        @foreach(getIntervalosIndicador('D14') as $r)
+        rangos_precio_tallo.push({
+            desde: parseFloat('{{$r->desde}}'),
+            hasta: parseFloat('{{$r->hasta}}'),
+            color: '{{$r->color}}',
+        });
         @endforeach
     </script>
 @endsection

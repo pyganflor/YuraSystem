@@ -541,6 +541,7 @@ class YuraController extends Controller
         if (count(getUsuario(Session::get('id_usuario'))->rol()->getSubmenusByTipo('C')) > 0) {
             return view('adminlte.crm.indicadores_claves', [
                 'precio_x_ramo' => getIndicadorByName('D3')->valor,
+                'precio_x_tallo' => getIndicadorByName('D14')->valor,
                 'ramos_m2_anno' => getIndicadorByName('D8')->valor,
                 'calibre' => getIndicadorByName('D1')->valor,
                 'tallos_m2' => getIndicadorByName('D12')->valor,
