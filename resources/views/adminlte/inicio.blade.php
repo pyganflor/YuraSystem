@@ -161,6 +161,13 @@
                     $color_6 = 'orange';
                 else
                     $color_6 = 'green';
+
+                if($precio_x_tallo < 0.27)
+                    $color_7  = 'red';
+                else if($precio_x_tallo >= 0.27 && $precio_x_tallo <= 0.29)
+                    $color_7 = 'orange';
+                else
+                    $color_7 = 'green';
             @endphp
 
             <div id="box_cuadros" class="box box-primary hide">
@@ -332,7 +339,7 @@
                         }, 'Costos', 'C2'],
                         [{
                             'v': 'Indicadores_claves',
-                            'f': '<strong style="color: {{$color_4}}"><small>Precio: </small><span id="span_precio_x_ramo">{{number_format($precio_x_ramo, 2)}}</span></strong>' +
+                            'f': '<strong style="color: {{$color_4}}"><small>Precio: $</small><span id="span_precio_x_ramo" title="Ramo">{{number_format($precio_x_ramo, 2)}}</span></strong>-<span title="Tallo" style="color:{{$color_7}}"><small>$</small>{{$precio_x_tallo}}</span>' +
                             '<br><strong style="color:{{$color_6}}"><small>Productividad: </small><span id="span_ramos_m2_anno">{{number_format($ramos_m2_anno, 2)}}</span></strong>' +
                             '<br><strong style="color: {{$color_3}}"><small>Calibre: </small><span id="span_calibre">{{$calibre}}</span></strong>' +
                             '<br><strong style="color: {{$color_5}}"><small>Tallos x m<sup>2</sup>: </small><span id="span_tallos_m2">{{number_format($tallos_m2, 2)}}</span></strong>' +
