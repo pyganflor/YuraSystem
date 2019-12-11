@@ -171,9 +171,9 @@
                 else
                     $color_6 = 'green';
 
-                if($precio_x_tallo < 0.27)
+                if($precio_x_tallo < 0.2)
                     $color_7  = 'red';
-                else if($precio_x_tallo >= 0.27 && $precio_x_tallo <= 0.29)
+                else if($precio_x_tallo >= 0.2 && $precio_x_tallo <= 0.8)
                     $color_7 = 'orange';
                 else
                     $color_7 = 'green';
