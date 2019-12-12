@@ -194,12 +194,10 @@ class Semana extends Model
     }
 
     public function firstSaldoInicialBusqueda($idVariedad,$desde){
-        $objResumenSaldoProyeccionVentaSemanal = ResumenSaldoProyeccionVentaSemanal::where([
+        return ResumenSaldoProyeccionVentaSemanal::where([
             ['id_variedad',$idVariedad],
             ['codigo_semana',$desde]
-        ])->select('saldo_inicial')->first();
-
-        return $objResumenSaldoProyeccionVentaSemanal;
+        ])->select('saldo_inicial','saldo_final')->first();
     }
 
 }

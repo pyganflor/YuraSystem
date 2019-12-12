@@ -54,7 +54,6 @@
                     cajas_equivalentes : parseFloat($("#cajas_equivalentes_"+$(j).find('.id_cliente').val()+"_"+ $(j).find('.input_codigo_semana').val()).html()),
                     valor :$("#precio_proyectado_"+$(j).find('.id_cliente').val()+"_"+ $(j).find('.input_codigo_semana').val()).html(),
                 });
-               // return false;
             }
         });
         semanas=[];
@@ -74,7 +73,7 @@
             }
         });
         text='¿Está seguro de programar esta proyección de venta?';
-        console.log(semanas);
+
         if(semanas.length>0)
             text='¿Está seguro de programar esta proyección entre las semanas '+semana_inicio+' y la '+semana_fin+'?';
 

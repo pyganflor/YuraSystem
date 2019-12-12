@@ -15,7 +15,7 @@ class ResumenSaldoProyeccionVentaSemanal extends Command
      *
      * @var string
      */
-    protected $signature = 'resumen_saldo_proyeccion:venta_semanal {desde=0} {hasta=0}';
+    protected $signature = 'resumen_saldo_proyeccion:venta_semanal {desde=0} {hasta=0} {variedad=0}';
 
     /**
      * The console command description.
@@ -43,7 +43,11 @@ class ResumenSaldoProyeccionVentaSemanal extends Command
 
         Info('Comienzo del comando resumen_saldo_proyeccion:venta_semanal a las '. now()->format('H:i:s'));
 
-        $variedades = Variedad::where('estado',1)->select('id_variedad')->get();
+        $variedades = Variedad::where(function ($query){
+            if($this->argument('variedad') != 0)
+                $query->where('id_variedad',$this->argument('variedad'));
+        })->where('estado',1)->select('id_variedad')->get();
+
         $semanaInicio= $this->argument('desde') == 0
                             ? getSemanaByDate(now()->subDays(7)->toDateString())->codigo //Semana::select(DB::raw('min(codigo) as codigo_semana'))->first()->codigo_semana
                             : $this->argument('desde');
@@ -63,7 +67,7 @@ class ResumenSaldoProyeccionVentaSemanal extends Command
             $semanaPasada = '';
             $sFinal = '';
             $y=0;
-            if($variedad->id_variedad ==2)
+
             foreach ($semanas as $semana) {
                 $dataResumenSaldoProyeccionVentaSemanal = ResumenSaldoProyVentaSemanal::where([
                     ['id_variedad',$variedad->id_variedad],
@@ -76,42 +80,48 @@ class ResumenSaldoProyeccionVentaSemanal extends Command
 
                 $objSemanaActual = getObjSemana($semana);
                 $objSemanaPasada = getObjSemana($semanaPasada);
-                if ($y == 0) { //Primera iteración
+                if ($y == 0) {
                     $firstSemanaResumenSemanaCosechaByVariedad = (int)$objSemanaActual->firstSemanaResumenSemanaCosechaByVariedad($variedad->id_variedad);
                     if ($firstSemanaResumenSemanaCosechaByVariedad > $semana) {
-                        $saldoInicial = $objSemanaActual->getSaldo($variedad->id_variedad);
+                        $valorSaldoInicial = $objSemanaActual->getSaldo($variedad->id_variedad);
+                        $valorSaldoFinal = $valorSaldoInicial;//$objSemanaActual->getSaldo($variedad->id_variedad);
                     } elseif ($firstSemanaResumenSemanaCosechaByVariedad < $semana) {
-                        $saldoInicial = $objSemanaActual->getLastSaldoInicial($variedad->id_variedad, $semana);
+                        $valorSaldoInicial = $objSemanaActual->getLastSaldoInicial($variedad->id_variedad, $semana);
+                        $valorSaldoFinal = $objSemanaActual->getLastSaldoFinal($variedad->id_variedad,$semana);
                     } else {
-                        $saldoInicial = $objSemanaActual->firstSaldoInicialByVariedad($variedad->id_variedad);
+                        $valorSaldoInicial = $objSemanaActual->firstSaldoInicialByVariedad($variedad->id_variedad);
+                        $valorSaldoFinal = $objSemanaActual->firstSaldoInicialByVariedad($variedad->id_variedad)+round($objSemanaActual->getSaldo($variedad->id_variedad),2);
                     }
 
                 }
 
-                $saldoFinal = isset($objSemanaPasada) ? $objSemanaPasada->getSaldo($variedad->id_variedad) + $saldoInicial : $objSemanaActual->getSaldo($variedad->id_variedad) + $saldoInicial;
+                $saldoF = isset($objSemanaPasada) ? $objSemanaPasada->getSaldo($variedad->id_variedad) + $valorSaldoInicial : $objSemanaActual->getSaldo($variedad->id_variedad) + $valorSaldoInicial;
+                $saldoI = round($objSemanaActual->getSaldo($variedad->id_variedad),2)+$valorSaldoFinal;
 
-                if ($y > 0)
-                    $saldoInicial = $saldoFinal;
+                if ($y > 0){
+                    $valorSaldoInicial = $saldoF;
+                    $valorSaldoFinal = $saldoI;
+                }
 
-                $objResumenSaldoProyeccionVentaSemanal->saldo_inicial=$saldoInicial;
+
+                $objResumenSaldoProyeccionVentaSemanal->saldo_inicial=$valorSaldoInicial;
+                $objResumenSaldoProyeccionVentaSemanal->saldo_final=$valorSaldoFinal;
                 $objResumenSaldoProyeccionVentaSemanal->id_variedad = $variedad->id_variedad;
                 $objResumenSaldoProyeccionVentaSemanal->codigo_semana = $semana;
                 if($objResumenSaldoProyeccionVentaSemanal->save()){
-                    $objResumenSaldoProyeccionVentaSemanalSemanaPasada = ResumenSaldoProyVentaSemanal::where([
+                   /* $objResumenSaldoProyeccionVentaSemanalSemanaPasada = ResumenSaldoProyVentaSemanal::where([
                         ['id_variedad',$variedad->id_variedad],
                         ['codigo_semana',$semanaPasada]
                     ]);
-                    $objResumenSaldoProyeccionVentaSemanalSemanaPasada->update(['saldo_final' => $saldoInicial]);
+                    $objResumenSaldoProyeccionVentaSemanalSemanaPasada->update(['saldo_final' => $valorSaldoInicial]);*/
                 }
 
-                dump("Variedad: " . $variedad->id_variedad . " Semana: " . $semana . " Saldo inicial: " . $saldoInicial." Saldo Final: " . $sFinal);
+                dump("Variedad: " . $variedad->id_variedad . " Semana: " . $semana . " Saldo inicial: " . $valorSaldoInicial." Saldo Final: " . $valorSaldoFinal);
                 $semanaPasada = $semana;
                 //$sFinal = $saldoInicial;
                 $y++;
 
             }
         }
-
-
     }
 }
