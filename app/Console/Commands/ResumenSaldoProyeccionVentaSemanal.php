@@ -86,8 +86,18 @@ class ResumenSaldoProyeccionVentaSemanal extends Command
                         $valorSaldoInicial = $objSemanaActual->getSaldo($variedad->id_variedad);
                         $valorSaldoFinal = $valorSaldoInicial;
                     } elseif ($firstSemanaResumenSemanaCosechaByVariedad < $semana) {
-                        $valorSaldoInicial = $objSemanaActual->getLastSaldoInicial($variedad->id_variedad, $semana);
-                        $valorSaldoFinal = $objSemanaActual->getLastSaldoFinal($variedad->id_variedad,$semana);
+                        $existeData = ResumenSaldoProyVentaSemanal::where([
+                            ['id_variedad',$variedad->id_variedad],
+                            ['codigo_semana',$semana]
+                        ])->first();
+                        if(isset($existeData)){
+                            $valorSaldoInicial = $existeData->saldoInicial;
+                            $valorSaldoFinal = $existeData->saldoFinal;
+                        }else{
+                            $valorSaldoInicial = $objSemanaActual->getLastSaldoInicial($variedad->id_variedad, $semana);
+                            $valorSaldoFinal = $objSemanaActual->getLastSaldoFinal($variedad->id_variedad,$semana);
+                        }
+
                     } else {
                         $valorSaldoInicial = $objSemanaActual->firstSaldoInicialByVariedad($variedad->id_variedad);
                         $valorSaldoFinal = $valorSaldoInicial+round($objSemanaActual->getSaldo($variedad->id_variedad),2);
@@ -113,6 +123,8 @@ class ResumenSaldoProyeccionVentaSemanal extends Command
 
             }
         }
+
+
         $tiempo_final = microtime(true);
         Info("Fin del comando resumen_saldo_proyeccion:venta_semanal");
         Info("El script se completo en : ".(number_format(($tiempo_final-$tiempo_inicial),2,".","")). " segundos");
