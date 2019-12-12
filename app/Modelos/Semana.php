@@ -199,7 +199,7 @@ class Semana extends Model
             ['codigo_semana',$desde]
         ])->select('saldo_inicial')->first();
 
-        return $objResumenSaldoProyeccionVentaSemanal->saldo_inicial;
+        return $objResumenSaldoProyeccionVentaSemanal;
     }
 
 }
