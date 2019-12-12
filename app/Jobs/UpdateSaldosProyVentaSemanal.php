@@ -7,6 +7,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use DB;
 
 class UpdateSaldosProyVentaSemanal implements ShouldQueue
 {
@@ -32,7 +33,7 @@ class UpdateSaldosProyVentaSemanal implements ShouldQueue
      */
     public function handle()
     {
-        $hasta='';
+        $hasta=Semana::where(DB::raw('MAX(codigo) as codigo)'))->first();
         Artisan::call('resumen_saldo_proyeccion:venta_semanal', [
             'desde'=>$this->desde,
             'hasta'=> $hasta,

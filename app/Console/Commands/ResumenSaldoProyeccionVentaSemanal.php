@@ -84,7 +84,7 @@ class ResumenSaldoProyeccionVentaSemanal extends Command
                     $firstSemanaResumenSemanaCosechaByVariedad = (int)$objSemanaActual->firstSemanaResumenSemanaCosechaByVariedad($variedad->id_variedad);
                     if ($firstSemanaResumenSemanaCosechaByVariedad > $semana) {
                         $valorSaldoInicial = $objSemanaActual->getSaldo($variedad->id_variedad);
-                        $valorSaldoFinal = $valorSaldoInicial;//$objSemanaActual->getSaldo($variedad->id_variedad);
+                        $valorSaldoFinal = $valorSaldoInicial;
                     } elseif ($firstSemanaResumenSemanaCosechaByVariedad < $semana) {
                         $valorSaldoInicial = $objSemanaActual->getLastSaldoInicial($variedad->id_variedad, $semana);
                         $valorSaldoFinal = $objSemanaActual->getLastSaldoFinal($variedad->id_variedad,$semana);

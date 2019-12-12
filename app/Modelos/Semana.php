@@ -198,6 +198,11 @@ class Semana extends Model
             ['id_variedad',$idVariedad],
             ['codigo_semana',$desde]
         ])->select('saldo_inicial','saldo_final')->first();
+<<<<<<< HEAD
+=======
+
+        return $objResumenSaldoProyeccionVentaSemanal;
+>>>>>>> 695e4a4e12ac5e92579f0784378d873bc751c007
     }
 
 }
