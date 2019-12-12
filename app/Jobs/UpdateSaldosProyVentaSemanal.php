@@ -34,7 +34,7 @@ class UpdateSaldosProyVentaSemanal implements ShouldQueue
      */
     public function handle()
     {
-        $hasta=Semana::select(DB::raw('max(codigo) as codigo)'))->first();
+        $hasta=Semana::select(DB::raw('max(codigo) as codigo'))->first();
         Artisan::call('resumen_saldo_proyeccion:venta_semanal', [
             'desde'=>$this->desde,
             'hasta'=> $hasta->codigo,
