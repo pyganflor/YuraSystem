@@ -39,7 +39,7 @@ class UpdateSaldosProyVentaSemanal implements ShouldQueue
         Artisan::call('resumen_saldo_proyeccion:venta_semanal', [
             'desde'=>$this->desde,
             'hasta'=> $hasta->codigo,
-            'id_variedad' => $this->id_variedad
+            'id_variedad' => $this->idVariedad
         ]);
     }
 }
