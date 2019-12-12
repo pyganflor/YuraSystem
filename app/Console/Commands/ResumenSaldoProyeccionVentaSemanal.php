@@ -42,6 +42,8 @@ class ResumenSaldoProyeccionVentaSemanal extends Command
     public function handle(){
 
         Info('Comienzo del comando resumen_saldo_proyeccion:venta_semanal a las '. now()->format('H:i:s'));
+        $tiempo_inicial =  $tiempo_inicial = microtime(true);
+        Info("Variables recibidas, desde: ".$this->argument('variedad'). "hasta: ". $this->argument('hasta') . " variedad: ".$this->argument('variedad'));
 
         $variedades = Variedad::where(function ($query){
             if($this->argument('variedad') != 0)
@@ -49,7 +51,7 @@ class ResumenSaldoProyeccionVentaSemanal extends Command
         })->where('estado',1)->select('id_variedad')->get();
 
         $semanaInicio= $this->argument('desde') == 0
-                            ? getSemanaByDate(now()->subDays(7)->toDateString())->codigo //Semana::select(DB::raw('min(codigo) as codigo_semana'))->first()->codigo_semana
+                            ? getSemanaByDate(now()->subDays(7)->toDateString())->codigo
                             : $this->argument('desde');
         $semanaFin =  $this->argument('hasta') == 0
                             ? getSemanaByDate(now()->toDateString())->codigo
@@ -65,9 +67,7 @@ class ResumenSaldoProyeccionVentaSemanal extends Command
 
         foreach ($variedades as $variedad){
             $semanaPasada = '';
-            $sFinal = '';
             $y=0;
-
             foreach ($semanas as $semana) {
                 $dataResumenSaldoProyeccionVentaSemanal = ResumenSaldoProyVentaSemanal::where([
                     ['id_variedad',$variedad->id_variedad],
@@ -90,9 +90,8 @@ class ResumenSaldoProyeccionVentaSemanal extends Command
                         $valorSaldoFinal = $objSemanaActual->getLastSaldoFinal($variedad->id_variedad,$semana);
                     } else {
                         $valorSaldoInicial = $objSemanaActual->firstSaldoInicialByVariedad($variedad->id_variedad);
-                        $valorSaldoFinal = $objSemanaActual->firstSaldoInicialByVariedad($variedad->id_variedad)+round($objSemanaActual->getSaldo($variedad->id_variedad),2);
+                        $valorSaldoFinal = $valorSaldoInicial+round($objSemanaActual->getSaldo($variedad->id_variedad),2);
                     }
-
                 }
 
                 $saldoF = isset($objSemanaPasada) ? $objSemanaPasada->getSaldo($variedad->id_variedad) + $valorSaldoInicial : $objSemanaActual->getSaldo($variedad->id_variedad) + $valorSaldoInicial;
@@ -103,25 +102,19 @@ class ResumenSaldoProyeccionVentaSemanal extends Command
                     $valorSaldoFinal = $saldoI;
                 }
 
-
                 $objResumenSaldoProyeccionVentaSemanal->saldo_inicial=$valorSaldoInicial;
                 $objResumenSaldoProyeccionVentaSemanal->saldo_final=$valorSaldoFinal;
                 $objResumenSaldoProyeccionVentaSemanal->id_variedad = $variedad->id_variedad;
                 $objResumenSaldoProyeccionVentaSemanal->codigo_semana = $semana;
-                if($objResumenSaldoProyeccionVentaSemanal->save()){
-                   /* $objResumenSaldoProyeccionVentaSemanalSemanaPasada = ResumenSaldoProyVentaSemanal::where([
-                        ['id_variedad',$variedad->id_variedad],
-                        ['codigo_semana',$semanaPasada]
-                    ]);
-                    $objResumenSaldoProyeccionVentaSemanalSemanaPasada->update(['saldo_final' => $valorSaldoInicial]);*/
-                }
-
-                dump("Variedad: " . $variedad->id_variedad . " Semana: " . $semana . " Saldo inicial: " . $valorSaldoInicial." Saldo Final: " . $valorSaldoFinal);
+                $objResumenSaldoProyeccionVentaSemanal->save();
+                //dump("Variedad: " . $variedad->id_variedad . " Semana: " . $semana . " Saldo inicial: " . $valorSaldoInicial." Saldo Final: " . $valorSaldoFinal);
                 $semanaPasada = $semana;
-                //$sFinal = $saldoInicial;
                 $y++;
 
             }
         }
+        $tiempo_final = microtime(true);
+        Info("Fin del comando resumen_saldo_proyeccion:venta_semanal");
+        Info("El script se completo en : ".(number_format(($tiempo_final-$tiempo_inicial),2,".","")). " segundos");
     }
 }

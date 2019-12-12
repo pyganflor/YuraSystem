@@ -7,6 +7,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use yura\Modelos\Semana;
 use DB;
 
 class UpdateSaldosProyVentaSemanal implements ShouldQueue
