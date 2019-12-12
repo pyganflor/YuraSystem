@@ -43,7 +43,7 @@ class ResumenSaldoProyeccionVentaSemanal extends Command
 
         Info('Comienzo del comando resumen_saldo_proyeccion:venta_semanal a las '. now()->format('H:i:s'));
         $tiempo_inicial =  $tiempo_inicial = microtime(true);
-        Info("Variables recibidas, desde: ".$this->argument('variedad'). "hasta: ". $this->argument('hasta') . " variedad: ".$this->argument('variedad'));
+        Info("Variables recibidas, desde: ".$this->argument('desde'). "hasta: ". $this->argument('hasta') . " variedad: ".$this->argument('variedad'));
 
         $variedades = Variedad::where(function ($query){
             if($this->argument('variedad') != 0)
