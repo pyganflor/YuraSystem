@@ -91,13 +91,13 @@ class ResumenSaldoProyeccionVentaSemanal extends Command
                             ['codigo_semana',$semana]
                         ])->first();
                         if(isset($existeData)){
-                            $valorSaldoInicial = $existeData->saldoInicial;
-                            $valorSaldoFinal = $existeData->saldoFinal;
+                            $valorSaldoInicial = $existeData->saldo_inicial;
+                            //$valorSaldoFinal = $existeData->saldo_final;
+                            Info("Saldo Inicial: ".$valorSaldoInicial. "Saldo Final: " );
                         }else{
                             $valorSaldoInicial = $objSemanaActual->getLastSaldoInicial($variedad->id_variedad, $semana);
-                            $valorSaldoFinal = $objSemanaActual->getLastSaldoFinal($variedad->id_variedad,$semana);
                         }
-
+                        $valorSaldoFinal = $objSemanaActual->getLastSaldoFinal($variedad->id_variedad,$semana);
                     } else {
                         $valorSaldoInicial = $objSemanaActual->firstSaldoInicialByVariedad($variedad->id_variedad);
                         $valorSaldoFinal = $valorSaldoInicial+round($objSemanaActual->getSaldo($variedad->id_variedad),2);
