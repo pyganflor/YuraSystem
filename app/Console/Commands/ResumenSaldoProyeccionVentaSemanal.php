@@ -82,7 +82,6 @@ class ResumenSaldoProyeccionVentaSemanal extends Command
                 $objSemanaPasada = getObjSemana($semanaPasada);
                 if ($y == 0) {
                     $firstSemanaResumenSemanaCosechaByVariedad = (int)$objSemanaActual->firstSemanaResumenSemanaCosechaByVariedad($variedad->id_variedad);
-                    Info("Primera semana: ".$firstSemanaResumenSemanaCosechaByVariedad." semana: ".$semana);
                     if ($firstSemanaResumenSemanaCosechaByVariedad > $semana) {
                         $valorSaldoInicial = $objSemanaActual->getSaldo($variedad->id_variedad);
                         $valorSaldoFinal = $valorSaldoInicial;
@@ -92,15 +91,13 @@ class ResumenSaldoProyeccionVentaSemanal extends Command
                             ['codigo_semana',$semana]
                         ])->first();
                         if(isset($existeData)){
-                            $valorSaldoInicial = $existeData->saldoInicial;
-                            $valorSaldoFinal = $existeData->saldoFinal;
-
-                            Info("Saldo Inicial: ".$valorSaldoInicial. "Saldo Final: ".$valorSaldoFinal  );
+                            $valorSaldoInicial = $existeData->saldo_inicial;
+                            //$valorSaldoFinal = $existeData->saldo_final;
+                            Info("Saldo Inicial: ".$valorSaldoInicial. "Saldo Final: " );
                         }else{
                             $valorSaldoInicial = $objSemanaActual->getLastSaldoInicial($variedad->id_variedad, $semana);
-                            $valorSaldoFinal = $objSemanaActual->getLastSaldoFinal($variedad->id_variedad,$semana);
                         }
-
+                        $valorSaldoFinal = $objSemanaActual->getLastSaldoFinal($variedad->id_variedad,$semana);
                     } else {
                         $valorSaldoInicial = $objSemanaActual->firstSaldoInicialByVariedad($variedad->id_variedad);
                         $valorSaldoFinal = $valorSaldoInicial+round($objSemanaActual->getSaldo($variedad->id_variedad),2);
