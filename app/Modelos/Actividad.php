@@ -17,4 +17,9 @@ class Actividad extends Model
         'estado',
         'fecha_registro',
     ];
+
+    public function area()
+    {
+        return $this->belongsTo('\yura\Modelos\Area', 'id_area');
+    }
 }
