@@ -6,8 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Producto extends Model
 {
-    protected $table = 'area';
-    protected $primaryKey = 'id_area';
+    protected $table = 'producto';
+    protected $primaryKey = 'id_producto';
     public $incrementing = false;
     public $timestamps = false;
 
