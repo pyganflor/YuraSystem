@@ -93,6 +93,8 @@ class ResumenSaldoProyeccionVentaSemanal extends Command
                         if(isset($existeData)){
                             $valorSaldoInicial = $existeData->saldoInicial;
                             $valorSaldoFinal = $existeData->saldoFinal;
+
+                            Info("Saldo Inicial: ".$valorSaldoInicial. "Saldo Final: ".$valorSaldoFinal  );
                         }else{
                             $valorSaldoInicial = $objSemanaActual->getLastSaldoInicial($variedad->id_variedad, $semana);
                             $valorSaldoFinal = $objSemanaActual->getLastSaldoFinal($variedad->id_variedad,$semana);
