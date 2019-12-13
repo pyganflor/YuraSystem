@@ -192,4 +192,12 @@ class Semana extends Model
         ])->select('cajas_fisicas_anno_anterior')->first();
 
     }
+
+    public function firstSaldoInicialBusqueda($idVariedad,$desde){
+        return ResumenSaldoProyeccionVentaSemanal::where([
+            ['id_variedad',$idVariedad],
+            ['codigo_semana',$desde]
+        ])->select('saldo_inicial','saldo_final')->first();
+    }
+
 }

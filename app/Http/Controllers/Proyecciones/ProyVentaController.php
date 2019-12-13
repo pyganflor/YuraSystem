@@ -13,6 +13,7 @@ use yura\Modelos\Submenu;
 use yura\Modelos\Cliente;
 use yura\Modelos\ProyeccionVentaSemanalReal;
 use yura\Modelos\PrecioVariedadCliente;
+use yura\Jobs\UpdateSaldosProyVentaSemanal;
 use DB;
 
 class ProyVentaController extends Controller
@@ -159,7 +160,6 @@ class ProyVentaController extends Controller
     }
 
     public function storeProyeccionVenta(Request $request){
-      //  dd($request->all());
         try{
             if(isset($request->semanas) && count($request->semanas)>0){
                 foreach($request->semanas as $semana){
@@ -192,10 +192,13 @@ class ProyVentaController extends Controller
                     ]);
                 }
             }
+
+            UpdateSaldosProyVentaSemanal::dispatch($request->clientes[0]['semana'], $request->id_variedad)->onQueue('update_saldos_proy_venta_semanal');
             $success = true;
             $msg = '<div class="alert alert-success text-center">' .
                 '<p> Se ha guardado la proyección con éxito </p>'
                 .'</div>';
+
         }catch (\Exception $e){
             $success = false;
             $msg = '<div class="alert alert-danger text-center">' .
@@ -218,6 +221,7 @@ class ProyVentaController extends Controller
 
         try{
             $objProyeccionVentaSemanalReal->update(['desecho' => isset($request->desecho) ? $request->desecho : 0]);
+            UpdateSaldosProyVentaSemanal::dispatch($request->semana, $request->id_variedad)->onQueue('update_saldos_proy_venta_semanal');
             $success = true;
             $msg = '<div class="alert alert-success text-center">' .
                 '<p> Se ha guardado el desecho con éxito </p>'
