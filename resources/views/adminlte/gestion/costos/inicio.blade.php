@@ -11,6 +11,10 @@
 
 @section('css_inicio')
     <style>
+        input, select {
+            font-size: 0.8em;
+        }
+
         .tabla_master {
             border: 2px solid #9d9d9d;
         }
@@ -48,13 +52,13 @@
         <div class="box box-primary">
             <div class="box-body">
                 <div class="row">
-                    <div class="col-md-4 div_content_fixed">
+                    <div class="col-md-3 div_content_fixed">
                         @include('adminlte.gestion.costos.partials.list_area')
                     </div>
                     <div class="col-md-4 div_content_fixed">
                         @include('adminlte.gestion.costos.partials.list_actividad')
                     </div>
-                    <div class="col-md-4 div_content_fixed">
+                    <div class="col-md-5 div_content_fixed">
                         @include('adminlte.gestion.costos.partials.list_producto')
                     </div>
                 </div>
