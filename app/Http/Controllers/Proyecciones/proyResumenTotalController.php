@@ -12,6 +12,7 @@ class proyResumenTotalController extends Controller
         return view('adminlte.gestion.proyecciones.resumen_total.inicio', [
             'url' => $request->getRequestUri(),
             'submenu' => Submenu::Where('url', '=', substr($request->getRequestUri(), 1))->get()[0],
+            'text' => ['titulo' => 'Proyecciones', 'subtitulo' => 'resumen total'],
         ]);
     }
 }
