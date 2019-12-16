@@ -19,6 +19,11 @@
                     </div>
                     <input type="number" class="form-control hasta" id="filtro_predeterminado_hasta" name="filtro_predeterminado_hasta" required
                            value="{{$hasta->codigo}}" style="">
+                    <div class="input-group-btn">
+                        <button type="button" class="btn btn-primary" onclick="listar_proyecciones_resumen_total()">
+                            <i class="fa fa-fw fa-search"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
             <div class="box-body">
