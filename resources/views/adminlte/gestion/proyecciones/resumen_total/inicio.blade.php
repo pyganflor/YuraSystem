@@ -7,54 +7,22 @@
     @include('adminlte.gestion.partials.breadcrumb')
     <section class="content">
         <div class="box box-primary">
+            <div class="box-header with-border">
+                <div class="input-group">
+                    <div class="input-group-addon bg-gray">
+                        <i class="fa fa-fw fa-calendar"></i> Desde
+                    </div>
+                    <input type="number" class="form-control desde" id="filtro_predeterminado_desde" name="filtro_predeterminado_desde"
+                           style="" required value="{{getSemanaByDate(date('Y-m-d'))->codigo}}">
+                    <div class="input-group-addon bg-gray">
+                        <i class="fa fa-fw fa-calendar"></i> Hasta
+                    </div>
+                    <input type="number" class="form-control hasta" id="filtro_predeterminado_hasta" name="filtro_predeterminado_hasta" required
+                           value="{{$hasta->codigo}}" style="">
+                </div>
+            </div>
             <div class="box-body">
-                <table class="table-bordered table-striped table-hover" width="100%" style="border: 2px solid #9d9d9d; font-size: 1em;">
-                    <thead>
-                        <tr style="background-color: #e9ecef">
-                            <th class="text-center" style="border-color: #9d9d9d; width: 250px">
-                                <b >Semanas</b>
-                            </th>
-                            {{--data semana--}}
-                            <th class="text-center" style="border-color: #9d9d9d; width: 250px">
-
-                            </th>
-                            {{--data semana--}}
-                            <th class="text-center" style="border-color: #9d9d9d; width: 250px">
-                                <b >Semanas</b>
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-
-                            <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
-                               <b>Cosechado</b>
-                            </th>
-                            {{--data cosechado--}}
-                            <td class="text-center celda_hovered" id="">
-
-                            </td>
-                            {{--data cosechado--}}
-                            <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
-                                <b>Proyeecion Cosecha</b>
-                            </th>
-                        <tr>
-
-                            <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
-                                <b>Proyeeción venta</b>
-                            </th>
-                            {{--data vendido--}}
-                            <td class="text-center celda_hovered" id="" >
-
-                            </td>
-                            {{--data vendido--}}
-                            <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
-                                <b>Proyeeción venta</b>
-                            </th>
-                        </tr>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="box-body" id="listado_proyecciones_resumen_total"></div>
             </div>
         </div>
     </section>
