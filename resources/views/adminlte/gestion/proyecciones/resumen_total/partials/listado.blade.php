@@ -5,9 +5,11 @@
             <b >Semanas</b>
         </th>
         {{--data semana--}}
+        @foreach($semanas as $semana)
         <th class="text-center" style="border-color: #9d9d9d; width: 250px">
-
+            {{$semana}}
         </th>
+        @endforeach
         {{--data semana--}}
         <th class="text-center" style="border-color: #9d9d9d; width: 250px">
             <b >Semanas</b>

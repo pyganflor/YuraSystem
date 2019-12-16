@@ -64,8 +64,8 @@ class proyResumenTotalController extends Controller
 
             dump($semanas);
             for($y=1;$y<count($semanas); $y++){
-                $d= $semResumenSemanaCosecha[$y];
-                if($semanas[$y-1] > $semanaActual->codigo){
+                $d= $semResumenSemanaCosecha[$y-1];
+                if($semanas[$y] > $semanaActual->codigo){
                     $data=[
                         'cajas'=> round($d->cajas_proyectadas,2),
                         'tallos'=>round($d->tallos_proyectados,2)
@@ -77,19 +77,22 @@ class proyResumenTotalController extends Controller
                     ];
                 }
 
-                $dataGeneral[$d->codigo_semana]=$data;
+                $dataGeneral[$semanas[$y]]=$data;
             }
-            dd($dataGeneral);
+            //dd($dataGeneral);
+            unset($semanas[0]);
             $success = true;
 
 
         }else{ // LA semana no esta programada
             $success = false;
+            $semanas=[];
         }
 
 
         return view('adminlte.gestion.proyecciones.resmen_total.partials.listado',[
-           'success' => $success
+           'success' => $success,
+            'semana'=>$semanas
         ]);
 
 
