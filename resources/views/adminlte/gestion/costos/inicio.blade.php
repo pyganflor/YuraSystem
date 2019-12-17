@@ -33,8 +33,8 @@
 @section('contenido')
     <section class="content-header">
         <h1>
-            DB
-            <small>Jobs</small>
+            Materia Prima
+            <small>Gestión</small>
         </h1>
         <ol class="breadcrumb">
             <li><a href="javascript:void(0)" onclick="cargar_url('')"><i class="fa fa-home"></i> Inicio</a></li>
@@ -61,7 +61,9 @@
                         @include('adminlte.gestion.costos.partials.list_area')
                     </div>
                     <div class="col-md-4 div_content_fixed">
-                        @include('adminlte.gestion.costos.partials.list_actividad')
+                        <div class="div_content_fixed" style="overflow-y: scroll; max-height: 450px">
+                            @include('adminlte.gestion.costos.partials.list_actividad')
+                        </div>
                     </div>
                     <div class="col-md-5">
                         <div class="div_content_fixed" style="overflow-y: scroll; max-height: 450px">
