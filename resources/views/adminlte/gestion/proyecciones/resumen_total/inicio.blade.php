@@ -27,7 +27,7 @@
                 </div>
             </div>
             <div class="box-body">
-                <div class="box-body" id="listado_proyecciones_resumen_total"></div>
+                <div class="box-body" id="listado_proyecciones_resumen_total" style="width:100%;overflow-x: auto"></div>
             </div>
         </div>
     </section>

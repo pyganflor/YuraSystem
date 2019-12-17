@@ -32,9 +32,9 @@ class proyResumenTotalController extends Controller
 
         if (isset($semana_desde) && isset($semana_hasta)) {
 
-            $semanaActual = getSemanaByDate(now()->toDateString());
+            //$semanaActual = getSemanaByDate(now()->toDateString());
             $semanas=[];
-            $existSemanaAnterior = Semana::where('codigo',($semana_desde->codigo-1))->select('codigo')->first();
+            /*$existSemanaAnterior = Semana::where('codigo',($semana_desde->codigo-1))->select('codigo')->first();
             if(isset($existSemanaAnterior)){
                 $semanaAnterior = $semana_desde->codigo-1;
             }else{
@@ -46,7 +46,7 @@ class proyResumenTotalController extends Controller
                     }
                 }
             }
-            $semanas[]=$semanaAnterior;
+            $semanas[]=$semanaAnterior;*/
 
             for ($i = $semana_desde->codigo; $i <= $semana_hasta->codigo; $i++) {
                 $existSemana = Semana::where('codigo', $i)->select('codigo')->first();
@@ -54,16 +54,14 @@ class proyResumenTotalController extends Controller
                     $semanas[] = $existSemana->codigo;
             }
 
-            $dataGeneral = [];
+           // $dataCosecha = [];
             $semResumenSemanaCosecha = ResumenSemanaCosecha::whereIn('codigo_semana',$semanas)
                 ->select('codigo_semana',
-                    DB::raw('SUM(cajas) as cajas'),
+                    //DB::raw('SUM(cajas) as cajas'),
+                    //DB::raw('SUM(tallos) as tallos'),
                     DB::raw('SUM(cajas_proyectadas) as cajas_proyectadas'),
-                    DB::raw('SUM(tallos) as tallos'),
                     DB::raw('SUM(tallos_proyectados) as tallos_proyectados'))->groupBy('codigo_semana')->get();
-
-            dump($semanas);
-            for($y=1;$y<count($semanas); $y++){
+            /*for($y=1;$y<count($semanas); $y++){
                 $d= $semResumenSemanaCosecha[$y-1];
                 if($semanas[$y] > $semanaActual->codigo){
                     $data=[
@@ -77,22 +75,28 @@ class proyResumenTotalController extends Controller
                     ];
                 }
 
-                $dataGeneral[$semanas[$y]]=$data;
+                $dataCosecha[$semanas[$y]]=$data;
             }
-            //dd($dataGeneral);
-            unset($semanas[0]);
+            unset($semanas[0]);*/
+            $dataVentas = ProyeccionVentaSemanalReal::whereIn('codigo_semana',$semanas)
+                ->select('codigo_semana',
+                    DB::raw('SUM(valor) as valor'),
+                    DB::raw('SUM(cajas_equivalentes) as cajas_equivalentes'))->groupBy('codigo_semana')->get();
+
             $success = true;
 
 
         }else{ // LA semana no esta programada
             $success = false;
-            $semanas=[];
         }
 
 
-        return view('adminlte.gestion.proyecciones.resmen_total.partials.listado',[
-           'success' => $success,
-            'semana'=>$semanas
+        return view('adminlte.gestion.proyecciones.resumen_total.partials.listado',[
+            'success' => $success,
+            'semanas'=>$semanas,
+            'dataCosecha'=>$semResumenSemanaCosecha,
+            'success'=>$success,
+            'dataVentas'=>$dataVentas
         ]);
 
 
