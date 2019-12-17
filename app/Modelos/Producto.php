@@ -1,6 +1,6 @@
 <?php
 
-namespace yura;
+namespace yura\Modelos;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -16,4 +16,9 @@ class Producto extends Model
         'estado',
         'fecha_registro',
     ];
+
+    public function actividades()
+    {
+        return $this->hasMany('\yura\Modelos\ActividadProducto', 'id_producto');
+    }
 }

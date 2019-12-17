@@ -22,6 +22,11 @@
         .tabla_master thead tr th {
             background-color: #e9ecef;
         }
+
+        .fila_fija th {
+            position: sticky;
+            top: 0;
+        }
     </style>
 @endsection
 
@@ -58,8 +63,10 @@
                     <div class="col-md-4 div_content_fixed">
                         @include('adminlte.gestion.costos.partials.list_actividad')
                     </div>
-                    <div class="col-md-5 div_content_fixed">
-                        @include('adminlte.gestion.costos.partials.list_producto')
+                    <div class="col-md-5">
+                        <div class="div_content_fixed" style="overflow-y: scroll; max-height: 450px">
+                            @include('adminlte.gestion.costos.partials.list_producto')
+                        </div>
                     </div>
                 </div>
             </div>
