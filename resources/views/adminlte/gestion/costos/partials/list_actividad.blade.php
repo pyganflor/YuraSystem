@@ -6,7 +6,7 @@
             <button type="button" class="btn btn-xs btn-primary" onclick="add_actividad()">
                 <i class="fa fa-fw fa-plus"></i>
             </button>
-            <button type="button" class="btn btn-xs btn-success" onclick="importar_actividad()">
+            <button type="button" class="btn btn-xs btn-default" onclick="importar_actividad()">
                 <i class="fa fa-fw fa-upload"></i>
             </button>
         </th>
@@ -14,11 +14,11 @@
     </thead>
     <tbody>
     @foreach($actividades as $a)
-        <tr id="tr_actividad_{{$a->id_actividad}}">
+        <tr id="tr_actividad_{{$a->id_actividad}}" class="{{$a->estado == 0 ? 'error' : ''}}">
             <td class="text-center" style="border-color: #9d9d9d">
                 <input type="text" maxlength="50" id="n_actividad_{{$a->id_actividad}}" name="n_actividad_{{$a->id_actividad}}"
-                       value="{{$a->nombre}}"
-                       style="width: 100%" class="text-center">
+                       value="{{$a->nombre}}" title="Doble click para vincular productos"
+                       style="width: 100%" class="text-center" ondblclick="vincular_actividad_producto('{{$a->id_actividad}}')">
             </td>
             <td class="text-center" style="border-color: #9d9d9d">
                 <select name="area_actividad_{{$a->id_actividad}}" id="area_actividad_{{$a->id_actividad}}" style="width: 100%">
@@ -36,9 +36,10 @@
                 </button>
                 <button type="button" class="btn btn-xs btn-danger" onclick="delete_actividad('{{$a->id_actividad}}')"
                         id="btn_del_actividad_{{$a->id_actividad}}">
-                    <i class="fa fa-fw fa-trash"></i>
+                    <i class="fa fa-fw fa-{{$a->estado == 1 ? 'trash' : 'unlock'}}"></i>
                 </button>
                 <i class="fa fa-fw fa-check hide" style="color: green" id="icon_actividad_{{$a->id_actividad}}"></i>
+                <i class="fa fa-fw fa-trash-o hide" style="color: red" id="icon_del_actividad_{{$a->id_actividad}}"></i>
             </td>
         </tr>
     @endforeach
@@ -118,6 +119,28 @@
         });
     }
 
+    function delete_actividad(id) {
+        datos = {
+            _token: '{{csrf_token()}}',
+            id_actividad: id,
+        };
+        $('#tr_actividad_' + id).LoadingOverlay('show');
+        $.post('{{url('costos_gestion/delete_actividad')}}', datos, function (retorno) {
+            if (retorno.success) {
+                $('#btn_upd_actividad_' + id).hide();
+                $('#btn_del_actividad_' + id).hide();
+                $('#icon_del_actividad_' + id).removeClass('hide');
+            } else {
+                alerta(retorno.mensaje)
+            }
+        }, 'json').fail(function (retorno) {
+            console.log(retorno);
+            alerta_errores(retorno.responseText);
+        }).always(function () {
+            $('#tr_actividad_' + id).LoadingOverlay('hide');
+        });
+    }
+
     function importar_actividad() {
         get_jquery('{{url('costos_gestion/importar_actividad')}}', {}, function (retorno) {
             modal_view('modal-view_importar_actividad', retorno, '<i class="fa fa-fw fa-upload"></i> Importar', true, false, '{{isPC() ? '75%' : ''}}')
@@ -161,5 +184,14 @@
                 }
             });
         }
+    }
+
+    function vincular_actividad_producto(id) {
+        datos = {
+            id: id
+        };
+        get_jquery('{{url('costos_gestion/vincular_actividad_producto')}}', datos, function (retorno) {
+            modal_view('modal-view_vincular_actividad_producto', retorno, '<i class="fa fa-fw fa-exchange"></i> Vincular productos a la actividad', true, false, '{{isPC() ? '75%' : ''}}')
+        })
     }
 </script>

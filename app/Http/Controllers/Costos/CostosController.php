@@ -5,12 +5,14 @@ namespace yura\Http\Controllers\Costos;
 use Illuminate\Http\Request;
 use yura\Http\Controllers\Controller;
 use yura\Modelos\Actividad;
+use yura\Modelos\ActividadProducto;
 use yura\Modelos\Area;
 use yura\Modelos\Submenu;
 use Validator;
 use PHPExcel;
 use PHPExcel_IOFactory;
 use PHPExcel_Worksheet;
+use yura\Modelos\Producto;
 
 class CostosController extends Controller
 {
@@ -19,8 +21,9 @@ class CostosController extends Controller
         return view('adminlte.gestion.costos.inicio', [
             'url' => $request->getRequestUri(),
             'submenu' => Submenu::Where('url', '=', substr($request->getRequestUri(), 1))->get()[0],
-            'areas' => Area::All(),
-            'actividades' => Actividad::All(),
+            'areas' => Area::All()->sortBy('nombre'),
+            'actividades' => Actividad::All()->sortBy('nombre'),
+            'productos' => Producto::All()->sortBy('nombre'),
         ]);
     }
 
@@ -285,6 +288,342 @@ class CostosController extends Controller
         return [
             'mensaje' => $msg,
             'success' => $success,
+        ];
+    }
+
+    public function store_producto(Request $request)
+    {
+        $valida = Validator::make($request->all(), [
+            'nombre' => 'required|max:250|unique:producto',
+        ], [
+            'nombre.unique' => 'El nombre ya existe',
+            'nombre.required' => 'El nombre es obligatorio',
+            'nombre.max' => 'El nombre es muy grande',
+        ]);
+        $msg = '';
+        if (!$valida->fails()) {
+            $model = new Producto();
+            $model->nombre = str_limit(mb_strtoupper(espacios($request->nombre)), 250);
+            $model->fecha_registro = date('Y-m-d H:i:s');
+
+            if ($model->save()) {
+                $model = Producto::All()->last();
+                $success = true;
+                bitacora('producto', $model->id_producto, 'I', 'Inserción satisfactoria de un nuevo producto');
+            } else {
+                $success = false;
+            }
+        } else {
+            $success = false;
+            $errores = '';
+            foreach ($valida->errors()->all() as $mi_error) {
+                if ($errores == '') {
+                    $errores = '<li>' . $mi_error . '</li>';
+                } else {
+                    $errores .= '<li>' . $mi_error . '</li>';
+                }
+            }
+            $msg = '<div class="alert alert-danger">' .
+                '<p class="text-center">¡Por favor corrija los siguientes errores!</p>' .
+                '<ul>' .
+                $errores .
+                '</ul>' .
+                '</div>';
+        }
+        return [
+            'success' => $success,
+            'mensaje' => $msg,
+        ];
+    }
+
+    public function update_producto(Request $request)
+    {
+        $valida = Validator::make($request->all(), [
+            'nombre' => 'required|max:250',
+            'id_producto' => 'required|',
+        ], [
+            'nombre.required' => 'El nombre es obligatorio',
+            'id_producto.required' => 'El producto es obligatorio',
+            'nombre.max' => 'El nombre es muy grande',
+        ]);
+        $msg = '';
+        if (!$valida->fails()) {
+            if (count(Producto::All()->where('nombre', '=', str_limit(mb_strtoupper(espacios($request->nombre)), 250))
+                    ->where('id_producto', '!=', $request->id_producto)) == 0) {
+                $model = Producto::find($request->id_producto);
+                $model->nombre = str_limit(mb_strtoupper(espacios($request->nombre)), 250);
+
+                if ($model->save()) {
+                    $success = true;
+                    bitacora('producto', $model->id_producto, 'U', 'Actualización satisfactoria de un producto');
+                } else {
+                    $success = false;
+                }
+            } else {
+                $success = false;
+                $msg = '<div class="alert alert-warning text-center">' .
+                    '<p> El producto "' . espacios($request->nombre) . '" ya se encuentra en el sistema</p>'
+                    . '</div>';
+            }
+        } else {
+            $success = false;
+            $errores = '';
+            foreach ($valida->errors()->all() as $mi_error) {
+                if ($errores == '') {
+                    $errores = '<li>' . $mi_error . '</li>';
+                } else {
+                    $errores .= '<li>' . $mi_error . '</li>';
+                }
+            }
+            $msg = '<div class="alert alert-danger">' .
+                '<p class="text-center">¡Por favor corrija los siguientes errores!</p>' .
+                '<ul>' .
+                $errores .
+                '</ul>' .
+                '</div>';
+        }
+        return [
+            'mensaje' => $msg,
+            'success' => $success
+        ];
+    }
+
+    public function importar_producto(Request $request)
+    {
+        return view('adminlte.gestion.costos.forms.importar_producto', [
+        ]);
+    }
+
+    public function vincular_actividad_producto(Request $request)
+    {
+        $actividad = Actividad::find($request->id);
+        $productos_vinc = [];
+        foreach ($actividad->productos->where('estado', 1) as $p) {
+            array_push($productos_vinc, $p->id_producto);
+        }
+
+        return view('adminlte.gestion.costos.forms.vincular_actividad_producto', [
+            'actividad' => $actividad,
+            'productos_vinc' => $productos_vinc,
+            'productos' => Producto::All()->where('estado', 1)->sortBy('nombre'),
+        ]);
+    }
+
+    public function store_actividad_producto(Request $request)
+    {
+        $valida = Validator::make($request->all(), [
+            'actividad' => 'required',
+            'producto' => 'required',
+        ], [
+            'actividad.required' => 'La actividad es obligatoria',
+            'producto.required' => 'El producto es obligatorio',
+        ]);
+        $msg = '';
+        $estado = 1;
+        if (!$valida->fails()) {
+            $model = ActividadProducto::All()
+                ->where('id_actividad', $request->actividad)
+                ->where('id_producto', $request->producto)
+                ->first();
+            if ($model == '') {
+                $model = new ActividadProducto();
+                $model->id_actividad = $request->actividad;
+                $model->id_producto = $request->producto;
+                $model->fecha_registro = date('Y-m-d H:i:s');
+
+                if ($model->save()) {
+                    $model = ActividadProducto::All()->last();
+                    $success = true;
+                    bitacora('actividad_producto', $model->actividad_producto, 'I', 'Inserción satisfactoria de un nuevo vínculo actividad_producto');
+                } else {
+                    $success = false;
+                }
+            } else {
+                $model->estado = $model->estado == 1 ? 0 : 1;
+                $estado = $model->estado;
+                $success = true;
+
+                $model->save();
+                bitacora('producto', $model->id_producto, 'U', 'Modificacion satisfactoria del estado de un producto');
+            }
+        } else {
+            $success = false;
+            $errores = '';
+            foreach ($valida->errors()->all() as $mi_error) {
+                if ($errores == '') {
+                    $errores = '<li>' . $mi_error . '</li>';
+                } else {
+                    $errores .= '<li>' . $mi_error . '</li>';
+                }
+            }
+            $msg = '<div class="alert alert-danger">' .
+                '<p class="text-center">¡Por favor corrija los siguientes errores!</p>' .
+                '<ul>' .
+                $errores .
+                '</ul>' .
+                '</div>';
+        }
+        return [
+            'success' => $success,
+            'mensaje' => $msg,
+            'estado' => $estado,
+        ];
+    }
+
+    public function importar_file_producto(Request $request)
+    {
+        ini_set('max_execution_time', env('MAX_EXECUTION_TIME'));
+        $valida = Validator::make($request->all(), [
+            'file_producto' => 'required',
+        ]);
+        $msg = '';
+        $success = true;
+        if (!$valida->fails()) {
+
+            $document = PHPExcel_IOFactory::load($request->file_producto);
+            $activeSheetData = $document->getActiveSheet()->toArray(null, true, true, true);
+
+            $titles = $activeSheetData[1];
+
+            foreach ($activeSheetData as $pos_row => $row) {
+                if ($pos_row > 1) {
+                    if ($row['A'] != '') {
+                        $nombre = str_limit(mb_strtoupper(espacios($row['A'])), 250);
+                        if (count(Producto::All()->where('nombre', $nombre)) == 0) {
+                            $model = new Producto();
+                            $model->nombre = $nombre;
+                            $model->fecha_registro = date('Y-m-d');
+
+                            $model->save();
+                            $model = Producto::All()->last();
+                            bitacora('producto', $model->id_producto, 'I', 'Inserción satisfactoria de un nuevo producto');
+                            $msg .= '<li class="bg-green">Se ha importado el producto: "' . $nombre . '."</li>';
+                        }
+                    }
+                }
+            }
+        } else {
+            $errores = '';
+            foreach ($valida->errors()->all() as $mi_error) {
+                if ($errores == '') {
+                    $errores = '<li>' . $mi_error . '</li>';
+                } else {
+                    $errores .= '<li>' . $mi_error . '</li>';
+                }
+            }
+            $success = false;
+            $msg = '<div class="alert alert-danger">' .
+                '<p class="text-center">¡Por favor corrija los siguientes errores!</p>' .
+                '<ul>' .
+                $errores .
+                '</ul>' .
+                '</div>';
+        }
+        return [
+            'mensaje' => $msg,
+            'success' => $success,
+        ];
+    }
+
+    public function importar_file_act_producto(Request $request)
+    {
+        ini_set('max_execution_time', env('MAX_EXECUTION_TIME'));
+        $valida = Validator::make($request->all(), [
+            'file_act_producto' => 'required',
+        ]);
+        $msg = '';
+        $success = true;
+        $array_ids_prod = [];
+        if (!$valida->fails()) {
+
+            $document = PHPExcel_IOFactory::load($request->file_act_producto);
+            $activeSheetData = $document->getActiveSheet()->toArray(null, true, true, true);
+
+            $titles = $activeSheetData[1];
+            foreach ($activeSheetData as $pos_row => $row) {
+                if ($pos_row > 1) {
+                    if ($row['A'] != '') {
+                        $nombre = str_limit(mb_strtoupper(espacios($row['A'])), 250);
+                        $producto = Producto::All()->where('nombre', $nombre)->first();
+
+                        if ($producto != '') {
+                            $model = ActividadProducto::All()
+                                ->where('id_actividad', $request->id_actividad)
+                                ->where('id_producto', $producto->id_producto)
+                                ->first();
+                            if ($model == '') {
+                                $model = new ActividadProducto();
+                                $model->id_actividad = $request->id_actividad;
+                                $model->id_producto = $producto->id_producto;
+                                $model->fecha_registro = date('Y-m-d H:i:s');
+
+                                if ($model->save()) {
+                                    $model = ActividadProducto::All()->last();
+                                    $success = true;
+                                    bitacora('actividad_producto', $model->actividad_producto, 'I', 'Inserción satisfactoria de un nuevo vínculo actividad_producto');
+                                } else {
+                                    $success = false;
+                                }
+                            } else {
+                                $model->estado = 1;
+                                $success = true;
+
+                                $model->save();
+                                bitacora('producto', $model->id_producto, 'U', 'Modificación satisfactoria del estado de un producto');
+                            }
+                            array_push($array_ids_prod, $producto->id_producto);
+                            $msg .= '<li class="bg-green">Se ha vinculado el producto: "' . $nombre . '."</li>';
+                        }
+                    }
+                }
+            }
+        } else {
+            $errores = '';
+            foreach ($valida->errors()->all() as $mi_error) {
+                if ($errores == '') {
+                    $errores = '<li>' . $mi_error . '</li>';
+                } else {
+                    $errores .= '<li>' . $mi_error . '</li>';
+                }
+            }
+            $success = false;
+            $msg = '<div class="alert alert-danger">' .
+                '<p class="text-center">¡Por favor corrija los siguientes errores!</p>' .
+                '<ul>' .
+                $errores .
+                '</ul>' .
+                '</div>';
+        }
+        return [
+            'mensaje' => $msg,
+            'success' => $success,
+            'ids' => $array_ids_prod,
+        ];
+    }
+
+    public function delete_actividad(Request $request)
+    {
+        $model = Actividad::find($request->id_actividad);
+        $model->estado = $model->estado == 1 ? 0 : 1;
+        $model->save();
+        bitacora('actividad', $model->id_actividad, 'U', 'Modificacion satisfactoria del estado de una actividad');
+
+        return [
+            'success' => true,
+            'mensaje' => '',
+        ];
+    }
+
+    public function delete_producto(Request $request)
+    {
+        $model = Producto::find($request->id_producto);
+        $model->estado = $model->estado == 1 ? 0 : 1;
+        $model->save();
+        bitacora('producto', $model->id_producto, 'U', 'Modificacion satisfactoria del estado de un producto');
+
+        return [
+            'success' => true,
+            'mensaje' => '',
         ];
     }
 }

@@ -22,4 +22,9 @@ class Actividad extends Model
     {
         return $this->belongsTo('\yura\Modelos\Area', 'id_area');
     }
+
+    public function productos()
+    {
+        return $this->hasMany('\yura\Modelos\ActividadProducto', 'id_actividad');
+    }
 }
