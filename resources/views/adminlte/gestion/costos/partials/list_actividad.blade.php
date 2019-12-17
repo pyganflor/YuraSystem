@@ -71,6 +71,7 @@
             '<i class="fa fa-fw fa-check hide" style="color: green" id="icon_new_actividad_' + cant_forms_actividad + '"></i>' +
             '</td>' +
             '</tr>');
+        $('#new_actividad_' + cant_forms_actividad).focus();
     }
 
     function store_actividad(num) {

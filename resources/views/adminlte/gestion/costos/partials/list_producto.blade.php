@@ -53,6 +53,7 @@
             '<i class="fa fa-fw fa-check hide" style="color: green" id="icon_new_producto_' + cant_forms_producto + '"></i>' +
             '</td>' +
             '</tr>');
+        $('#new_producto_' + cant_forms_producto).focus();
     }
 
     function store_producto(num) {
