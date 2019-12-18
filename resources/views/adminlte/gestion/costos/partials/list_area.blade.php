@@ -43,6 +43,7 @@
             '<i class="fa fa-fw fa-check hide" style="color: green" id="icon_new_area_' + cant_forms_area + '"></i>' +
             '</td>' +
             '</tr>');
+        $('#new_area_' + cant_forms_area).focus();
     }
 
     function store_area(num) {
