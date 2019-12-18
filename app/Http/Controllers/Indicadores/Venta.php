@@ -6,11 +6,13 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use yura\Modelos\Indicador;
 use yura\Modelos\Pedido;
+use yura\Modelos\Variedad;
 
 class Venta
 {
     public static function dinero_y_precio_x_ramo_7_dias_atras()
     {
+        $variedades = self::variedades();
         $model_1 = getIndicadorByName('D3');  // Precio promedio por ramo (-7 días)
         $model_2 = getIndicadorByName('D4');  // Dinero ingresado (-7 días)
         if ($model_1 != '' && $model_2 != '') {
@@ -28,7 +30,20 @@ class Venta
             $precio_x_ramo = $ramos_estandar > 0 ? round($valor / $ramos_estandar, 2) : 0;
 
             $model_1->valor = $precio_x_ramo;
-            $model_1->save();
+            if($model_1->save()){
+
+                $valorVariedad=0;
+                $ramosEstandarVariedad=0;
+                foreach ($pedidos_semanal as $p) {
+                    if (!getFacturaAnulada($p->id_pedido)) {
+                        foreach ($variedades as $variedad) {
+                            $valorVariedad += $p->getPrecioByPedidoVariedad($variedad->id_variedad);
+                            $ramosEstandarVariedad += $p->getRamosEstandarByVariedad($variedad->id_variedad);
+                        }
+                    }
+                }
+            }
+
             $model_2->valor = $valor;
             $model_2->save();
         }
@@ -114,5 +129,9 @@ class Venta
         $precioXTallo = $tallos > 0 ? round($valor / $tallos, 2) : 0;
         $indicadorD14 = Indicador::where('nombre','D14');
         $indicadorD14->update(['valor'=>$precioXTallo]);
+    }
+    
+    public static function variedades(){
+        return Variedad::where('estado',1)->selec('id_variedad')->get();
     }
 }
