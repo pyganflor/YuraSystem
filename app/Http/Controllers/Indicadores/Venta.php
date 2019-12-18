@@ -3,10 +3,10 @@
 namespace yura\Http\Controllers\Indicadores;
 
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use yura\Modelos\Indicador;
 use yura\Modelos\Pedido;
 use yura\Modelos\Variedad;
+use yura\Modelos\IndicadorVariedad;
 
 class Venta
 {
@@ -32,13 +32,44 @@ class Venta
             $model_1->valor = $precio_x_ramo;
             if($model_1->save()){
 
-                $valorVariedad=0;
-                $ramosEstandarVariedad=0;
                 foreach ($pedidos_semanal as $p) {
                     if (!getFacturaAnulada($p->id_pedido)) {
+
                         foreach ($variedades as $variedad) {
-                            $valorVariedad += $p->getPrecioByPedidoVariedad($variedad->id_variedad);
-                            $ramosEstandarVariedad += $p->getRamosEstandarByVariedad($variedad->id_variedad);
+                            $valor_x_variedad= $p->getPrecioByPedidoVariedad($variedad->id_variedad);
+                            $ramo_estandar_x_variedad = $p->getRamosEstandarByVariedad($variedad->id_variedad);
+                            $precio_x_ramo_x_variedad = $ramo_estandar_x_variedad > 0 ? round($valor_x_variedad / $ramo_estandar_x_variedad, 2) : 0;
+
+                            //------INDICADOR D3 POR VARIEDAD------//
+                            $dataIndicadorD3Variedad = IndicadorVariedad::where([
+                                ['id_variedad',$variedad->id_variedad],
+                                ['id_indicador',$model_1->id_indicador]
+                            ])->first();
+                            if(isset($dataIndicadorD3Variedad)){
+                                $objIndicadorD3Variedad = IndicadorVariedad::find($dataIndicadorD3Variedad->id_indicador_variedad);
+                            }else{
+                                $objIndicadorD3Variedad = new IndicadorVariedad;
+                            }
+                            $objIndicadorD3Variedad->id_variedad = $variedad->id_variedad;
+                            $objIndicadorD3Variedad->id_indicador = $model_1->id_indicador;
+                            $objIndicadorD3Variedad->valor = $precio_x_ramo_x_variedad;
+                            $objIndicadorD3Variedad->save();
+
+                            //-------- INDICADOR D4 POR VARIEDAD ---------//
+                            $dataIndicadorD4Variedad = IndicadorVariedad::where([
+                                ['id_variedad',$variedad->id_variedad],
+                                ['id_indicador',$model_2->id_indicador]
+                            ])->first();
+                            if(isset($dataIndicadorD4Variedad)){
+                                $objIndicadorD4Variedad = IndicadorVariedad::find($dataIndicadorD4Variedad->id_indicador_variedad);
+                            }else{
+                                $objIndicadorD4Variedad = new IndicadorVariedad;
+                            }
+                            $objIndicadorD4Variedad->id_variedad = $variedad->id_variedad;
+                            $objIndicadorD4Variedad->id_indicador = $model_2->id_indicador;
+                            $objIndicadorD4Variedad->valor = $valor_x_variedad;
+                            $objIndicadorD4Variedad->save();
+
                         }
                     }
                 }
