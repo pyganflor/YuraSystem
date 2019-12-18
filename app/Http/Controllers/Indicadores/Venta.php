@@ -23,27 +23,65 @@ class Venta
             $ramos_estandar = 0;
             $valor_x_variedad= 0;
             $ramo_estandar_x_variedad=0;
-            $data=[];
+            $dataGeneral=[];
             foreach ($pedidos_semanal as $p) {
                 if (!getFacturaAnulada($p->id_pedido)) {
                     $valor += $p->getPrecioByPedido();
                     $ramos_estandar += $p->getRamosEstandar();
                     foreach ($variedades as $variedad) {
-                        $data[$variedad->id_variedad][]=[
-                            'valor_x_variedad'=> $p->getPrecioByPedidoVariedad($variedad->id_variedad),
-                            'ramo_estandar_x_variedad'=> $p->getRamosEstandarByVariedad($variedad->id_variedad)
+                        $ramo_estandar_x_variedad= $p->getRamosEstandarByVariedad($variedad->id_variedad);
+                        $valor_x_variedad = $p->getPrecioByPedidoVariedad($variedad->id_variedad);
+                        $dataGeneral[$variedad->id_variedad][]=[
+                            'valor_x_variedad'=> $valor_x_variedad,
+                            'precio_x_ramo'=>  $ramo_estandar_x_variedad > 0 ? round($valor_x_variedad / $ramo_estandar_x_variedad, 2) : 0
                         ];
-                        //$valor_x_variedad+= $p->getPrecioByPedidoVariedad($variedad->id_variedad);
-                        //$ramo_estandar_x_variedad += $p->getRamosEstandarByVariedad($variedad->id_variedad);
                     }
                 }
             }
             $precio_x_ramo = $ramos_estandar > 0 ? round($valor / $ramos_estandar, 2) : 0;
 
-
             $model_1->valor = $precio_x_ramo;
+
             if($model_1->save()){
-                dump($data);
+
+                foreach($dataGeneral as $idVariedad => $data){
+                    $valor_x_variedad=0;
+                    $precio_x_ramo_x_variedad=0;
+                    foreach ($data as $valor) {
+                        $valor_x_variedad+=$valor['valor_x_variedad'];
+                        $precio_x_ramo_x_variedad+=$valor['precio_x_ramo'];
+                    }
+                    //------INDICADOR D3 POR VARIEDAD------//
+                    $dataIndicadorD3Variedad = IndicadorVariedad::where([
+                        ['id_variedad',$idVariedad],
+                        ['id_indicador',$model_1->id_indicador]
+                    ])->first();
+                    if(isset($dataIndicadorD3Variedad)){
+                        $objIndicadorD3Variedad = IndicadorVariedad::find($dataIndicadorD3Variedad->id_indicador_variedad);
+                    }else{
+                        $objIndicadorD3Variedad = new IndicadorVariedad;
+                    }
+                    $objIndicadorD3Variedad->id_variedad = $idVariedad;
+                    $objIndicadorD3Variedad->id_indicador = $model_1->id_indicador;
+                    $objIndicadorD3Variedad->valor = $precio_x_ramo_x_variedad;
+                    $objIndicadorD3Variedad->save();
+
+                    //-------- INDICADOR D4 POR VARIEDAD ---------//
+                    $dataIndicadorD4Variedad = IndicadorVariedad::where([
+                        ['id_variedad',$idVariedad],
+                        ['id_indicador',$model_2->id_indicador]
+                    ])->first();
+                    if(isset($dataIndicadorD4Variedad)){
+                        $objIndicadorD4Variedad = IndicadorVariedad::find($dataIndicadorD4Variedad->id_indicador_variedad);
+                    }else{
+                        $objIndicadorD4Variedad = new IndicadorVariedad;
+                    }
+                    $objIndicadorD4Variedad->id_variedad = $idVariedad;
+                    $objIndicadorD4Variedad->id_indicador = $model_2->id_indicador;
+                    $objIndicadorD4Variedad->valor = $valor_x_variedad;
+                    $objIndicadorD4Variedad->save();
+                }
+                dump($dataGeneral);
                 /*$valor_x_variedad= 0;
                 $precio_x_ramo_x_variedad=0;
                 foreach ($pedidos_semanal as $p) {
