@@ -42,7 +42,7 @@
                {{number_format($dC->tallos_proyectados,2,".",",")}}
             </td>
         @endforeach
-        {{--data cosechado--}}
+
         <th class="text-center" style="border:1px solid; background-color: #e9ecef">
             <b>Tallos proyectados (Cosecha)</b>
         </th>
