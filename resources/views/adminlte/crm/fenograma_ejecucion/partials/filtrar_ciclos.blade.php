@@ -82,6 +82,7 @@
             $codigo_semana = $ciclos[0]->semana()->codigo;
             $area = 0;
             @endphp
+            @dump($ciclos)
             @foreach($ciclos as $pos_item => $item)
                 @php
                     $semana = $item->semana();
