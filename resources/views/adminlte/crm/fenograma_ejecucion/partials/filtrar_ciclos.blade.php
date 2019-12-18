@@ -1,4 +1,5 @@
 @if(count($ciclos) > 0)
+    @dump($ciclos)
     <div id="div_content_fixed">
         <table {{--data-order='[[ 3, "desc" ]]'--}} class="table-striped table-bordered" width="100%" style="border: 2px solid #9d9d9d"
                id="table_fenograma_ejecucion">
@@ -82,7 +83,6 @@
             $codigo_semana = $ciclos[0]->semana()->codigo;
             $area = 0;
             @endphp
-            @dump($ciclos)
             @foreach($ciclos as $pos_item => $item)
                 @php
                     $semana = $item->semana();
