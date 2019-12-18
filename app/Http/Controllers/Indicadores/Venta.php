@@ -21,20 +21,33 @@ class Venta
                 ->where('fecha_pedido', '<=', opDiasFecha('-', 1, date('Y-m-d')));
             $valor = 0;
             $ramos_estandar = 0;
+            $valor_x_variedad= 0;
+            $ramo_estandar_x_variedad=0;
+            $data=[];
             foreach ($pedidos_semanal as $p) {
                 if (!getFacturaAnulada($p->id_pedido)) {
                     $valor += $p->getPrecioByPedido();
                     $ramos_estandar += $p->getRamosEstandar();
+                    foreach ($variedades as $variedad) {
+                        $data[$variedad->id_variedad][]=[
+                            'valor_x_variedad'=> $p->getPrecioByPedidoVariedad($variedad->id_variedad),
+                            'ramo_estandar_x_variedad'=> $p->getRamosEstandarByVariedad($variedad->id_variedad)
+                        ];
+                        //$valor_x_variedad+= $p->getPrecioByPedidoVariedad($variedad->id_variedad);
+                        //$ramo_estandar_x_variedad += $p->getRamosEstandarByVariedad($variedad->id_variedad);
+                    }
                 }
             }
             $precio_x_ramo = $ramos_estandar > 0 ? round($valor / $ramos_estandar, 2) : 0;
 
+
             $model_1->valor = $precio_x_ramo;
             if($model_1->save()){
-
+                dump($data);
+                /*$valor_x_variedad= 0;
+                $precio_x_ramo_x_variedad=0;
                 foreach ($pedidos_semanal as $p) {
                     if (!getFacturaAnulada($p->id_pedido)) {
-
                         foreach ($variedades as $variedad) {
                             $valor_x_variedad= $p->getPrecioByPedidoVariedad($variedad->id_variedad);
                             $ramo_estandar_x_variedad = $p->getRamosEstandarByVariedad($variedad->id_variedad);
@@ -67,12 +80,12 @@ class Venta
                             }
                             $objIndicadorD4Variedad->id_variedad = $variedad->id_variedad;
                             $objIndicadorD4Variedad->id_indicador = $model_2->id_indicador;
-                            $objIndicadorD4Variedad->valor = $valor_x_variedad;
+                            $objIndicadorD4Variedad->valor += $valor_x_variedad;
                             $objIndicadorD4Variedad->save();
 
                         }
                     }
-                }
+                }*/
             }
 
             $model_2->valor = $valor;
