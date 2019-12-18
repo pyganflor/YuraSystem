@@ -108,6 +108,7 @@ Route::group(['middleware' => 'autenticacion'], function () {
 
             /* ================== COSTOS =================== */
             include 'costos/rutas.php';
+            include 'costos/importar.php';
 
             /* ================== DB =================== */
             include 'db/rutas.php';
