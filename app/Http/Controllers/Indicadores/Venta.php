@@ -47,9 +47,9 @@ class Venta
                 foreach($dataGeneral as $idVariedad => $data){
                     $valor_x_variedad=0;
                     $precio_x_ramo_x_variedad=0;
-                    foreach ($data as $valor) {
-                        $valor_x_variedad+=$valor['valor_x_variedad'];
-                        $precio_x_ramo_x_variedad+=$valor['precio_x_ramo'];
+                    foreach ($data as $valor_data) {
+                        $valor_x_variedad+=$valor_data['valor_x_variedad'];
+                        $precio_x_ramo_x_variedad+=$valor_data['precio_x_ramo'];
                     }
                     //------INDICADOR D3 POR VARIEDAD------//
                     $dataIndicadorD3Variedad = IndicadorVariedad::where([
