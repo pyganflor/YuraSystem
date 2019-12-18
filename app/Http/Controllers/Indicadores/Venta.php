@@ -163,6 +163,6 @@ class Venta
     }
     
     public static function variedades(){
-        return Variedad::where('estado',1)->selec('id_variedad')->get();
+        return Variedad::where('estado',1)->select('id_variedad')->get();
     }
 }
