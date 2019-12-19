@@ -154,12 +154,12 @@
                     </td>
                 </tr>
                 <tr>
-                    <td class="text-center" style="border-bottom:2px solid #000000;border-left:2px solid #000000;border-right:2px solid #000000;width: 250px">Proyectado</td>
+                    <td class="text-center" style="border-bottom:2px solid #000000;border-left:2px solid #000000;border-right:2px solid #000000;width: 250px">Proyectado </td>
                     @foreach($semana['semanas'] as $codigoSemana => $dataSemana)
                         @php
                             $cajasFisicasAnnoAnterior = getObjSemana($codigoSemana)->cajasFisicasAnnoAnterior($idVariedad,$idCliente);
-                            dump($cajasFisicasAnnoAnterior->cajas_fisicas_anno_anterior);
-                            $cajasFisicas = ($dataSemana['cajas_fisicas'] < 1 && $semanaActual>$codigoSemana)
+                            //dump(" cajas fisicas  p: ".$dataSemana['cajas_fisicas']." cajas fisicas a: ".$cajasFisicasAnnoAnterior->cajas_fisicas_anno_anterior." semana actual: ". $semanaActual. " semana bucle: ".$codigoSemana);
+                            $cajasFisicas = ($dataSemana['cajas_fisicas'] < 1 && $semanaActual<$codigoSemana)
                                        ? (isset($cajasFisicasAnnoAnterior->cajas_fisicas_anno_anterior) ? $cajasFisicasAnnoAnterior->cajas_fisicas_anno_anterior : 0)
                                        : $dataSemana['cajas_fisicas'];
                         @endphp
