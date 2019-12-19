@@ -43,7 +43,9 @@ class UpdateTallosCosechadosProyeccion implements ShouldQueue
             ->where('semana', $this->semana)
             ->first();
 
-        $model->cosechados = 10;
-        $model->save();
+        if ($model != '') {
+            $model->cosechados = 10;
+            $model->save();
+        }
     }
 }
