@@ -5,15 +5,18 @@ namespace yura\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use yura\Jobs\ProyeccionUpdateSemanal;
 use yura\Jobs\ProyeccionVentaSemanalUpdate;
 use yura\Jobs\ResumenAreaSemanal;
 use yura\Jobs\ResumenSemanaCosecha;
 use yura\Jobs\UpdateIndicador;
+use yura\Jobs\UpdateTallosCosechadosProyeccion;
 use yura\Modelos\Color;
 use yura\Modelos\Indicador;
 use yura\Modelos\IntervaloIndicador;
 use yura\Modelos\Job;
+use yura\Modelos\ProyeccionModuloSemana;
 use yura\Modelos\Submenu;
 use Validator;
 
@@ -77,6 +80,10 @@ class dbController extends Controller
         }
         if ($request->comando == 5) {   // comando ResumenAreaSemanal
             ResumenAreaSemanal::dispatch($request->desde, $request->hasta, $request->variedad)
+                ->onQueue('job');
+        }
+        if ($request->comando == 6) {   // comando UpdateTallosCosechadosProyeccion
+            UpdateTallosCosechadosProyeccion::dispatch($request->semana, $request->variedad, $request->modulo)
                 ->onQueue('job');
         }
 
@@ -217,75 +224,79 @@ class dbController extends Controller
     }
 
     /* ========================= INTERVALOS INDICADORES ========================== */
-    public function intervaloIndicador(Request $request){
-        return view('adminlte.gestion.db.intervalos_indicadores.inicio',[
+    public function intervaloIndicador(Request $request)
+    {
+        return view('adminlte.gestion.db.intervalos_indicadores.inicio', [
             'url' => $request->getRequestUri(),
             'submenu' => Submenu::Where('url', '=', substr($request->getRequestUri(), 1))->get()[0],
             'text' => ['titulo' => 'Semaforización', 'subtitulo' => 'módulo de indicadores'],
             'indicadores' => getIndicadores()->where('estado', 1)
         ]);
     }
-    
-    public function addIntervaloIndicador(Request $request){
-        return view('adminlte.gestion.db.intervalos_indicadores.partials.add_intervalo',[
-            'indicador'=> $request->id_indicador,
-            'intervalos_indicadores'=> IntervaloIndicador::where('id_indicador',$request->id_indicador)->get(),
+
+    public function addIntervaloIndicador(Request $request)
+    {
+        return view('adminlte.gestion.db.intervalos_indicadores.partials.add_intervalo', [
+            'indicador' => $request->id_indicador,
+            'intervalos_indicadores' => IntervaloIndicador::where('id_indicador', $request->id_indicador)->get(),
 
         ]);
     }
 
-    public function addRowIntervaloIndicador(Request $request){
+    public function addRowIntervaloIndicador(Request $request)
+    {
 
-        if($request->inputs==="rango")
-            $view= 'adminlte.gestion.db.intervalos_indicadores.partials.inputs_rango';
-        if($request->inputs==="condicion")
-            $view= 'adminlte.gestion.db.intervalos_indicadores.partials.inputs_condicion';
+        if ($request->inputs === "rango")
+            $view = 'adminlte.gestion.db.intervalos_indicadores.partials.inputs_rango';
+        if ($request->inputs === "condicion")
+            $view = 'adminlte.gestion.db.intervalos_indicadores.partials.inputs_condicion';
 
-        return view($view,[
-            'x'=> $request->cant,
-            'colores'=>Color::where('estado',1)->get()
+        return view($view, [
+            'x' => $request->cant,
+            'colores' => Color::where('estado', 1)->get()
         ]);
 
     }
 
-    public function storeIntervaloIndicador(Request $request){
+    public function storeIntervaloIndicador(Request $request)
+    {
         //dd($request->all());
         $valida = Validator::make($request->all(), [
             'color.*' => 'required',
             'desde.*' => 'required'
-        ],[
-            'color.*.required'=> 'Hace falta seleccionar colores',
+        ], [
+            'color.*.required' => 'Hace falta seleccionar colores',
             'desde.*.required' => 'Debe color el número en el campo cantidad o en el campo desde'
         ]);
 
         if (!$valida->fails()) {
-            $dataOld = IntervaloIndicador::where('id_indicador',$request->id_indicador)->select('id_intervalo_indicador')->get();
+            $dataOld = IntervaloIndicador::where('id_indicador', $request->id_indicador)->select('id_intervalo_indicador')->get();
 
             foreach ($request->datos as $dato) {
-                try{
+                try {
                     $objIntervaloIndicador = new IntervaloIndicador;
                     $objIntervaloIndicador->id_indicador = $request->id_indicador;
                     $objIntervaloIndicador->tipo = $dato['tipo'];
                     $objIntervaloIndicador->color = $dato['color'];
                     $objIntervaloIndicador->hasta = $dato['hasta'];
-                    if($dato['tipo']=="I"){
+                    if ($dato['tipo'] == "I") {
                         $objIntervaloIndicador->desde = $dato['desde'];
-                    }else{
+                    } else {
                         $objIntervaloIndicador->condicional = $dato['condicional'];
                     }
                     $objIntervaloIndicador->save();
                     $success = true;
                     $msg = '<div class="alert alert-success text-center">' .
                         '<p> Se ha guardado la información con éxito </p>'
-                        .'</div>';
-                }catch (\Exception $e){
+                        . '</div>';
+                } catch (\Exception $e) {
                     $success = false;
                     $msg = '<div class="alert alert-danger text-center">' .
-                        '<p>  Ha ocurrido el siguiente error al intentar guardar la información <br />"'.$e->getMessage().'"<br /> Comuníquelo al área de sistemas</p>'
-                        .'</div>';
+                        '<p>  Ha ocurrido el siguiente error al intentar guardar la información <br />"' . $e->getMessage() . '"<br /> Comuníquelo al área de sistemas</p>'
+                        . '</div>';
                 }
 
-                foreach($dataOld as $data)
+                foreach ($dataOld as $data)
                     IntervaloIndicador::destroy($data->id_intervalo_indicador);
             }
         } else {
