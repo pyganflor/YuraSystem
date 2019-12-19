@@ -129,7 +129,8 @@ class ProyVentaController extends Controller
                'otros' => $top >= $clientes ? false : true,
                'clientes' => $clientes,
                'cantProyeccionVentaSemanalReal' => count($data),
-               'semanaActual'=> getSemanaByDate(now()->toDateString())->codigo
+               'semanaActual'=> getSemanaByDate(now()->toDateString())->codigo,
+               'ramosxCajaEmpresa'=>getConfiguracionEmpresa()->ramos_x_caja
            ]);
 
         }else{ // LA semana no esta programada

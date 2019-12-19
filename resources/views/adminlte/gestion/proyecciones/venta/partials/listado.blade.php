@@ -4,7 +4,7 @@
         <tr>
             <td class="text-center" style="background-color: #e9ecef;width:250px;border-right: 2px solid #000000;" >
                 Clientes / Semanas
-                <input type="hidden" id="ramos_x_caja_empresa" name="ramos_x_caja_empresa" value="{{getConfiguracionEmpresa()->ramos_x_caja}}">
+                <input type="hidden" id="ramos_x_caja_empresa" name="ramos_x_caja_empresa" value="{{$ramosxCajaEmpresa}}">
             </td>
             @foreach($semanas as $semana => $item)
                 <td class="text-center" style="border:1px solid #9d9d9d; background-color: #e9ecef; width:350px;border-bottom: 2px solid #000000;border-right: 2px solid #000000;" colspan="3">
@@ -159,11 +159,15 @@
                         @php
                             $cajasFisicasAnnoAnterior = getObjSemana($codigoSemana)->cajasFisicasAnnoAnterior($idVariedad,$idCliente);
                             if($dataSemana['cajas_fisicas'] < 1 && $semanaActual<$codigoSemana){
-                                $cajasFisicas = isset($cajasFisicasAnnoAnterior->cajas_fisicas_anno_anterior) ? $cajasFisicasAnnoAnterior->cajas_fisicas_anno_anterior : 0
+                                $cajasFisicas = isset($cajasFisicasAnnoAnterior->cajas_fisicas_anno_anterior) ? $cajasFisicasAnnoAnterior->cajas_fisicas_anno_anterior : 0;
                                 $cajas_equivalentes = $cajasFisicas*$cliente->factor;
+                                $ramos_totales =$cajasFisicas*$cliente->factor*$ramosxCajaEmpresa;
+                                $precio_promedio = $cliente->precio_promedio($idVariedad);
+                                $valor= $ramos_totales*(isset($precio_promedio) ? $precio_promedio->precio : 0);
                             }else{
                                 $cajasFisicas =  $dataSemana['cajas_fisicas'];
                                 $cajas_equivalentes =$dataSemana['cajas_equivalentes'];
+                                $valor = $dataSemana['valor'];
                             }
                         @endphp
                         <td style="border: 1px solid #9d9d9d;border-bottom: 2px solid #000000;" class="td_cajas_proyectadas">
@@ -184,7 +188,7 @@
                         </td>
                         <td style="border: 1px solid #9d9d9d;border-bottom: 2px solid #000000;border-right: 2px solid #000000">
                             <div style="padding: 3px 6px;width:100%;text-align:center;cursor:pointer;" class="precio_proyectado" data-toggle="tooltip" data-placement="top" title="Valor proyectado">
-                                <b  id="precio_proyectado_{{$cliente->id_cliente}}_{{$codigoSemana}}">${{number_format(,2,".",",")}}</b>
+                                <b  id="precio_proyectado_{{$cliente->id_cliente}}_{{$codigoSemana}}">${{number_format($valor,2,".",",")}}</b>
                             </div>
                         </td>
                     @endforeach
@@ -279,7 +283,7 @@
         <tr>
             <td class="text-center" style="border: 2px solid #000000;background-color: #e9ecef;width:250px;">
                 Clientes / Semanas
-                <input type="hidden" id="ramos_x_caja_empresa" name="ramos_x_caja_empresa" value="{{getConfiguracionEmpresa()->ramos_x_caja}}">
+                <input type="hidden" id="ramos_x_caja_empresa" name="ramos_x_caja_empresa" value="{{$ramosxCajaEmpresa}}">
             </td>
             @foreach($semanas as $semana => $item)
                 <td class="text-center" style="border: 2px solid #000000;background-color: #e9ecef; width:350px;" colspan="3">{{$semana}}</td>
