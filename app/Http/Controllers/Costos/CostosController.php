@@ -7,6 +7,7 @@ use yura\Http\Controllers\Controller;
 use yura\Modelos\Actividad;
 use yura\Modelos\ActividadProducto;
 use yura\Modelos\Area;
+use yura\Modelos\CostosSemana;
 use yura\Modelos\Submenu;
 use Validator;
 use PHPExcel;
@@ -626,4 +627,115 @@ class CostosController extends Controller
             'mensaje' => '',
         ];
     }
+
+    /* ==================================== IMPORTAR ===================================== */
+    public function costos_importar(Request $request)
+    {
+        return view('adminlte.gestion.costos.costos_importar', [
+            'url' => $request->getRequestUri(),
+            'submenu' => Submenu::Where('url', '=', substr($request->getRequestUri(), 1))->get()[0],
+        ]);
+    }
+
+    public function importar_file_costos(Request $request)
+    {
+        ini_set('max_execution_time', env('MAX_EXECUTION_TIME'));
+        $valida = Validator::make($request->all(), [
+            'file_costos' => 'required',
+        ]);
+        $msg = '';
+        $success = true;
+        if (!$valida->fails()) {
+
+            $document = PHPExcel_IOFactory::load($request->file_costos);
+            $activeSheetData = $document->getActiveSheet()->toArray(null, true, true, true);
+
+            $titles = $activeSheetData[1];
+            //dd($activeSheetData);
+            foreach ($activeSheetData as $pos_row => $row) {
+                if ($pos_row > 1) {
+                    if ($row['A'] != '' && $row['B'] != '') {
+                        $actividad = Actividad::All()->where('estado', 1)
+                            ->where('nombre', str_limit(mb_strtoupper(espacios($row['A'])), 50))->first();
+                        $producto = Producto::All()->where('estado', 1)
+                            ->where('nombre', str_limit(mb_strtoupper(espacios($row['B'])), 250))->first();
+
+                        if ($actividad != '' && $producto != '') {
+                            $act_prod = ActividadProducto::All()
+                                ->where('estado', 1)
+                                ->where('id_actividad', $actividad->id_actividad)
+                                ->where('id_producto', $producto->id_producto)
+                                ->first();
+                            if ($act_prod == '') {
+                                $model = new ActividadProducto();
+                                $model->id_actividad = $actividad->id_actividad;
+                                $model->id_producto = $producto->id_producto;
+                                $model->fecha_registro = date('Y-m-d H:i:s');
+
+                                $model->save();
+                                $act_prod = ActividadProducto::All()->last();
+                                bitacora('actividad_producto', $act_prod->id_actividad_producto, 'I', 'Inserción satisfactoria de un nuevo vínculo actividad_producto');
+                            }
+
+                            foreach ($titles as $pos_title => $t) {
+                                if (!in_array($pos_title, ['A', 'B'])) {
+                                    $codigo_semana = intval($t);
+                                    $value = floatval(str_replace(',', '', $row[$pos_title]));
+                                    $costos = CostosSemana::All()
+                                        ->where('codigo_semana', $codigo_semana)
+                                        ->where('id_actividad_producto', $act_prod->id_actividad_producto)
+                                        ->first();
+                                    if ($costos == '') {
+                                        $model = new CostosSemana();
+                                        $model->id_actividad_producto = $act_prod->id_actividad_producto;
+                                        $model->codigo_semana = $codigo_semana;
+                                        $model->fecha_registro = date('Y-m-d H:i:s');
+                                        if ($request->criterio_importar == 'V')  // dinero
+                                            $model->valor = $value;
+                                        else    //
+                                            $model->cantidad = $value;
+
+                                        $model->save();
+                                        $costos = CostosSemana::All()->last();
+                                        bitacora('costos_semana', $costos->id_costos_semana, 'I', 'Inserción satisfactoria de un nuevo costos_semana');
+                                    } else {
+                                        if ($request->criterio_importar == 'V')  // dinero
+                                            $costos->valor = $value;
+                                        else    //
+                                            $costos->cantidad = $value;
+
+                                        $costos->save();
+                                        bitacora('costos_semana', $costos->id_costos_semana, 'I', 'Inserción satisfactoria de un nuevo costos_semana');
+                                    }
+                                }
+                            }
+
+                            $msg .= '<li class="bg-green">Se ha importado el producto: "' . $producto->nombre . '" en la actividad: "' . $actividad->nombre . '</li>';
+                        }
+                    }
+                }
+            }
+        } else {
+            $errores = '';
+            foreach ($valida->errors()->all() as $mi_error) {
+                if ($errores == '') {
+                    $errores = '<li>' . $mi_error . '</li>';
+                } else {
+                    $errores .= '<li>' . $mi_error . '</li>';
+                }
+            }
+            $success = false;
+            $msg = '<div class="alert alert-danger">' .
+                '<p class="text-center">¡Por favor corrija los siguientes errores!</p>' .
+                '<ul>' .
+                $errores .
+                '</ul>' .
+                '</div>';
+        }
+        return [
+            'mensaje' => $msg,
+            'success' => $success,
+        ];
+    }
+
 }

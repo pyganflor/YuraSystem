@@ -24,6 +24,11 @@
                     Restaurar Proyección
                 </a>
             </li>
+            <li>
+                <a href="javascript:void(0)" onclick="get_row_byModulo('{{$modulo->id_modulo}}')">
+                    Refrescar fila
+                </a>
+            </li>
         </ul>
     </div>
 </th>
@@ -149,6 +154,11 @@
             <li>
                 <a href="javascript:void(0)" onclick="restaurar_proyeccion('{{$modulo->id_modulo}}')">
                     Restaurar Proyección
+                </a>
+            </li>
+            <li>
+                <a href="javascript:void(0)" onclick="get_row_byModulo('{{$modulo->id_modulo}}')">
+                    Refrescar fila
                 </a>
             </li>
         </ul>

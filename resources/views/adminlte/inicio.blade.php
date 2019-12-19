@@ -388,10 +388,11 @@
                     gauge.set(value); // set actual value
                 }
 
-                function mostrar_indicadores_claves(view) {
+                function mostrar_indicadores_claves(view, variedad = '') {
                     var views = ['indicadores_ventas_m2', 'indicadores_claves'];
                     datos = {
-                        view: views[view]
+                        view: views[view],
+                        variedad: variedad
                     };
                     get_jquery('{{url('mostrar_indicadores_claves')}}', datos, function (retorno) {
                         $('#div_indicadores_claves').html(retorno);
