@@ -157,11 +157,11 @@
                     <td class="text-center" style="border-bottom:2px solid #000000;border-left:2px solid #000000;border-right:2px solid #000000;width: 250px">Proyectado</td>
                     @foreach($semana['semanas'] as $codigoSemana => $dataSemana)
                         @php
-
                             $cajasFisicasAnnoAnterior = getObjSemana($codigoSemana)->cajasFisicasAnnoAnterior($idVariedad,$idCliente);
+                            dump($cajasFisicasAnnoAnterior->cajas_fisicas_anno_anterior);
                             $cajasFisicas = ($dataSemana['cajas_fisicas'] < 1 && $semanaActual>$codigoSemana)
                                        ? (isset($cajasFisicasAnnoAnterior->cajas_fisicas_anno_anterior) ? $cajasFisicasAnnoAnterior->cajas_fisicas_anno_anterior : 0)
-                                       : $dataSemana['cajas_fisicas']
+                                       : $dataSemana['cajas_fisicas'];
                         @endphp
                         <td style="border: 1px solid #9d9d9d;border-bottom: 2px solid #000000;" class="td_cajas_proyectadas">
                             <div style="width:100%;text-align:center;" data-toggle="tooltip" data-placement="top" title="Cajas físicas proyectadas" ondblclick="habilitar('cajas_proyectadas_{{$cliente->id_cliente}}_{{$codigoSemana}}')">
