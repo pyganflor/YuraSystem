@@ -92,7 +92,7 @@
                     $desecho = $desecho > 0 ? $desecho : 20;
 
                     $conteo = $item->conteo;
-                    if($item->conteo > 0)
+                    if($item->conteo <= 0)
                         if ($poda_siembra > 0)
                             $conteo = $semana->tallos_planta_poda;
                         else
