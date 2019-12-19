@@ -163,6 +163,11 @@
                                     Restaurar Proyección
                                 </a>
                             </li>
+                            <li>
+                                <a href="javascript:void(0)" onclick="get_row_byModulo('{{$mod['modulo']->id_modulo}}')">
+                                    Refrescar fila
+                                </a>
+                            </li>
                         </ul>
                     </div>
                 </th>
