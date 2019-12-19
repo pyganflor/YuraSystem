@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use yura\Jobs\ProyeccionUpdateSemanal;
 use yura\Jobs\ResumenSemanaCosecha;
+use yura\Jobs\UpdateTallosCosechadosProyeccion;
 use yura\Modelos\Apertura;
 use yura\Modelos\Ciclo;
 use yura\Modelos\ClasificacionVerde;
@@ -165,7 +166,7 @@ class RecepcionController extends Controller
 
 
                                     /* ============= ACTUALIZAR LA PROYECCION ================= */
-                                    ProyeccionUpdateSemanal::dispatch($semana->codigo, $semana->codigo, $model->id_variedad, $model->id_modulo, 0)
+                                    UpdateTallosCosechadosProyeccion::dispatch($semana->codigo, $model->id_variedad, $model->id_modulo)
                                         ->onQueue('resumen_cosecha_semanal');
 
                                     /* ======================== ACTUALIZAR LA TABLA RESUMEN_COSECHA_SEMANA FINAL ====================== */
@@ -264,7 +265,7 @@ class RecepcionController extends Controller
                     . '</div>';
 
                 /* ============= ACTUALIZAR LA PROYECCION ================= */
-                ProyeccionUpdateSemanal::dispatch($model->recepcion->semana->codigo, $model->recepcion->semana->codigo, $model->id_variedad, $model->id_modulo, 0)
+                UpdateTallosCosechadosProyeccion::dispatch($model->recepcion->semana->codigo, $model->id_variedad, $model->id_modulo)
                     ->onQueue('resumen_cosecha_semanal');
 
                 /* ======================== ACTUALIZAR LA TABLA RESUMEN_COSECHA_SEMANA FINAL ====================== */
@@ -349,7 +350,7 @@ class RecepcionController extends Controller
                 }
 
                 /* ============= ACTUALIZAR LA PROYECCION ================= */
-                ProyeccionUpdateSemanal::dispatch($model->recepcion->semana->codigo, $model->recepcion->semana->codigo, $model->id_variedad, $model->id_modulo, 0)
+                UpdateTallosCosechadosProyeccion::dispatch($model->recepcion->semana->codigo, $model->id_variedad, $model->id_modulo)
                     ->onQueue('resumen_cosecha_semanal');
 
                 /* ======================== ACTUALIZAR LA TABLA RESUMEN_COSECHA_SEMANA FINAL ====================== */
@@ -407,7 +408,7 @@ class RecepcionController extends Controller
 
                 $semana_ini = $model->recepcion->semana->codigo;
                 /* ============= ACTUALIZAR LA PROYECCION ================= */
-                ProyeccionUpdateSemanal::dispatch($semana_ini, $semana_ini, $model->id_variedad, $model->id_modulo, 0)
+                UpdateTallosCosechadosProyeccion::dispatch($semana_ini, $model->id_variedad, $model->id_modulo)
                     ->onQueue('resumen_cosecha_semanal');
 
                 /* ======================== ACTUALIZAR LA TABLA RESUMEN_COSECHA_SEMANA FINAL ====================== */

@@ -74,6 +74,13 @@
                                 ResumenAreaSemanal
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="profile-tab" data-toggle="tab" href="#UpdateTallosCosechadosProyeccion" role="tab"
+                               aria-controls="profile"
+                               aria-selected="false">
+                                UpdateTallosCosechadosProyeccion
+                            </a>
+                        </li>
                     </ul>
                     <div class="tab-content" id="myTabContent">
                         <div class="tab-pane fade" id="ProyeccionUpdateSemanal" role="tabpanel" aria-labelledby="home-tab">
@@ -236,6 +243,38 @@
                                 </div>
                             </div>
                         </div>
+
+                        <div class="tab-pane fade" id="UpdateTallosCosechadosProyeccion" role="tabpanel" aria-labelledby="profile-tab">
+                            <div class="input-group">
+                                <div class="input-group-addon" style="background-color: #e9ecef">
+                                    Semana
+                                </div>
+                                <input type="number" id="comando6_semana" onkeypress="return isNumber(event)" class="form-control text-center"
+                                       value="{{$semana_actual->codigo}}">
+                                <div class="input-group-addon" style="background-color: #e9ecef">
+                                    Variedad
+                                </div>
+                                <select name="comando6_variedad" id="comando6_variedad" class="form-control">
+                                    @foreach($variedades as $var)
+                                        <option value="{{$var->id_variedad}}">{{$var->siglas}}</option>
+                                    @endforeach
+                                </select>
+                                <div class="input-group-addon" style="background-color: #e9ecef">
+                                    Módulos
+                                </div>
+                                <select name="comando6_modulo" id="comando6_modulo" class="form-control">
+                                    @foreach($modulos as $mod)
+                                        <option value="{{$mod->id_modulo}}">{{$mod->nombre}}</option>
+                                    @endforeach
+                                </select>
+
+                                <div class="input-group-btn">
+                                    <button type="button" class="btn btn-primary" title="OK" onclick="send_queue_job(6)">
+                                        <i class="fa fa-fw fa-check"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -296,6 +335,15 @@
                     desde: $('#comando5_desde').val(),
                     hasta: $('#comando5_hasta').val(),
                     variedad: $('#comando5_variedad').val(),
+                    comando: comando
+                };
+            }
+            if (comando == 6) {
+                datos = {
+                    _token: '{{csrf_token()}}',
+                    semana: $('#comando6_semana').val(),
+                    variedad: $('#comando6_variedad').val(),
+                    modulo: $('#comando6_modulo').val(),
                     comando: comando
                 };
             }
