@@ -21,20 +21,70 @@ class Venta
                 ->where('fecha_pedido', '<=', opDiasFecha('-', 1, date('Y-m-d')));
             $valor = 0;
             $ramos_estandar = 0;
+            $dataGeneral=[];
             foreach ($pedidos_semanal as $p) {
                 if (!getFacturaAnulada($p->id_pedido)) {
                     $valor += $p->getPrecioByPedido();
                     $ramos_estandar += $p->getRamosEstandar();
+                    foreach ($variedades as $variedad) {
+                        $ramo_estandar_x_variedad = $p->getRamosEstandarByVariedad($variedad->id_variedad);
+                        $valor_x_variedad = $p->getPrecioByPedidoVariedad($variedad->id_variedad);
+                        $dataGeneral[$variedad->id_variedad][]=[
+                            'valor_x_variedad'=> $valor_x_variedad,
+                            'precio_x_ramo'=>  $ramo_estandar_x_variedad > 0 ? round($valor_x_variedad / $ramo_estandar_x_variedad, 2) : 0
+                        ];
+                    }
                 }
             }
-            $precio_x_ramo = $ramos_estandar > 0 ? round($valor / $ramos_estandar, 2) : 0;
 
+            $precio_x_ramo = $ramos_estandar > 0 ? round($valor / $ramos_estandar, 2) : 0;
+            dump($dataGeneral);
             $model_1->valor = $precio_x_ramo;
+
             if($model_1->save()){
 
+                foreach($dataGeneral as $idVariedad => $data){
+                    $valor_x_variedad=0;
+                    $precio_x_ramo_x_variedad=0;
+                    foreach ($data as $valor_data) {
+                        $valor_x_variedad+=$valor_data['valor_x_variedad'];
+                        $precio_x_ramo_x_variedad+=$valor_data['precio_x_ramo'];
+                    }
+                    //------INDICADOR D3 POR VARIEDAD------//
+                    $dataIndicadorD3Variedad = IndicadorVariedad::where([
+                        ['id_variedad',$idVariedad],
+                        ['id_indicador',$model_1->id_indicador]
+                    ])->first();
+                    if(isset($dataIndicadorD3Variedad)){
+                        $objIndicadorD3Variedad = IndicadorVariedad::find($dataIndicadorD3Variedad->id_indicador_variedad);
+                    }else{
+                        $objIndicadorD3Variedad = new IndicadorVariedad;
+                    }
+                    $objIndicadorD3Variedad->id_variedad = $idVariedad;
+                    $objIndicadorD3Variedad->id_indicador = $model_1->id_indicador;
+                    $objIndicadorD3Variedad->valor = $precio_x_ramo_x_variedad;
+                    $objIndicadorD3Variedad->save();
+
+                    //-------- INDICADOR D4 POR VARIEDAD ---------//
+                    $dataIndicadorD4Variedad = IndicadorVariedad::where([
+                        ['id_variedad',$idVariedad],
+                        ['id_indicador',$model_2->id_indicador]
+                    ])->first();
+                    if(isset($dataIndicadorD4Variedad)){
+                        $objIndicadorD4Variedad = IndicadorVariedad::find($dataIndicadorD4Variedad->id_indicador_variedad);
+                    }else{
+                        $objIndicadorD4Variedad = new IndicadorVariedad;
+                    }
+                    $objIndicadorD4Variedad->id_variedad = $idVariedad;
+                    $objIndicadorD4Variedad->id_indicador = $model_2->id_indicador;
+                    $objIndicadorD4Variedad->valor = $valor_x_variedad;
+                    $objIndicadorD4Variedad->save();
+                }
+                //dump($dataGeneral);
+                /*$valor_x_variedad= 0;
+                $precio_x_ramo_x_variedad=0;
                 foreach ($pedidos_semanal as $p) {
                     if (!getFacturaAnulada($p->id_pedido)) {
-
                         foreach ($variedades as $variedad) {
                             $valor_x_variedad= $p->getPrecioByPedidoVariedad($variedad->id_variedad);
                             $ramo_estandar_x_variedad = $p->getRamosEstandarByVariedad($variedad->id_variedad);
@@ -67,12 +117,12 @@ class Venta
                             }
                             $objIndicadorD4Variedad->id_variedad = $variedad->id_variedad;
                             $objIndicadorD4Variedad->id_indicador = $model_2->id_indicador;
-                            $objIndicadorD4Variedad->valor = $valor_x_variedad;
+                            $objIndicadorD4Variedad->valor += $valor_x_variedad;
                             $objIndicadorD4Variedad->save();
 
                         }
                     }
-                }
+                }*/
             }
 
             $model_2->valor = $valor;
@@ -135,16 +185,46 @@ class Venta
     }
 
     public static function cajas_equivalentes_vendidas_7_dias_atras(){
+        $variedades = self::variedades();
         $pedidos_semanal = Pedido::where('estado', 1)
             ->where('fecha_pedido', '>=', opDiasFecha('-', 7, date('Y-m-d')))
             ->where('fecha_pedido', '<=', opDiasFecha('-', 1, date('Y-m-d')))->get();
         $cajasEquivalentes=0;
+        $dataGeneral=[];
         foreach ($pedidos_semanal as $pedido) {
             $cajasEquivalentes += $pedido->getCajas();
+            foreach($variedades as $variedad){
+                $dataGeneral[$variedad->id_variedad][]=[
+                    'cajas_x_variedad'=>$pedido->getCajasByVariedad($variedad->id_variedad)
+                ];
+            }
+
         }
 
         $indicadorD13 = Indicador::where('nombre','D13');
         $indicadorD13->update(['valor'=>$cajasEquivalentes]);
+        $modelIndicadorD13 = Indicador::where('nombre','D13')->first();
+
+        foreach ($dataGeneral as $idVariedad=> $data){
+            $cantidadCajas=0;
+            foreach ($data as $cajas)
+                $cantidadCajas+=$cajas['cajas_x_variedad'];
+
+            //-------- INDICADOR D13 POR VARIEDAD ---------//
+            $dataIndicadorD13Variedad = IndicadorVariedad::where([
+                ['id_variedad',$idVariedad],
+                ['id_indicador',$modelIndicadorD13->id_indicador]
+            ])->first();
+            if(isset($dataIndicadorD13Variedad)){
+                $objIndicadorD13Variedad = IndicadorVariedad::find($dataIndicadorD13Variedad->id_indicador_variedad);
+            }else{
+                $objIndicadorD13Variedad = new IndicadorVariedad;
+            }
+            $objIndicadorD13Variedad->id_variedad = $idVariedad;
+            $objIndicadorD13Variedad->id_indicador = $modelIndicadorD13->id_indicador;
+            $objIndicadorD13Variedad->valor = $cantidadCajas;
+            $objIndicadorD13Variedad->save();
+        }
     }
 
     public static function precio_por_ramo_7_dias_atras(){
@@ -163,6 +243,6 @@ class Venta
     }
     
     public static function variedades(){
-        return Variedad::where('estado',1)->selec('id_variedad')->get();
+        return Variedad::where('estado',1)->select('id_variedad')->get();
     }
 }
