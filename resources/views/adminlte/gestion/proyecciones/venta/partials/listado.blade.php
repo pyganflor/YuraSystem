@@ -158,10 +158,13 @@
                     @foreach($semana['semanas'] as $codigoSemana => $dataSemana)
                         @php
                             $cajasFisicasAnnoAnterior = getObjSemana($codigoSemana)->cajasFisicasAnnoAnterior($idVariedad,$idCliente);
-                            //dump(" cajas fisicas  p: ".$dataSemana['cajas_fisicas']." cajas fisicas a: ".$cajasFisicasAnnoAnterior->cajas_fisicas_anno_anterior." semana actual: ". $semanaActual. " semana bucle: ".$codigoSemana);
-                            $cajasFisicas = ($dataSemana['cajas_fisicas'] < 1 && $semanaActual<$codigoSemana)
-                                       ? (isset($cajasFisicasAnnoAnterior->cajas_fisicas_anno_anterior) ? $cajasFisicasAnnoAnterior->cajas_fisicas_anno_anterior : 0)
-                                       : $dataSemana['cajas_fisicas'];
+                            if($dataSemana['cajas_fisicas'] < 1 && $semanaActual<$codigoSemana){
+                                $cajasFisicas = isset($cajasFisicasAnnoAnterior->cajas_fisicas_anno_anterior) ? $cajasFisicasAnnoAnterior->cajas_fisicas_anno_anterior : 0;
+                                $cajas_equivalentes = $cajasFisicas*$cliente->factor;
+                            }else{
+                                $cajasFisicas =  $dataSemana['cajas_fisicas'];
+                                $cajas_equivalentes =$dataSemana['cajas_equivalentes'];
+                            }
                         @endphp
                         <td style="border: 1px solid #9d9d9d;border-bottom: 2px solid #000000;" class="td_cajas_proyectadas">
                             <div style="width:100%;text-align:center;" data-toggle="tooltip" data-placement="top" title="Cajas físicas proyectadas" ondblclick="habilitar('cajas_proyectadas_{{$cliente->id_cliente}}_{{$codigoSemana}}')">
@@ -176,7 +179,7 @@
                         </td>
                         <td style="border: 1px solid #9d9d9d;border-bottom: 2px solid #000000;">
                             <div style="padding: 3px 6px;width:100%;text-align:center;cursor:pointer" class="cajas_equivalentes" data-toggle="tooltip" data-placement="top" title="Cajas equivalentes proyectadas">
-                                <b id="cajas_equivalentes_{{$cliente->id_cliente}}_{{$codigoSemana}}">{{number_format($dataSemana['cajas_equivalentes'],2,".","")}}</b>
+                                <b id="cajas_equivalentes_{{$cliente->id_cliente}}_{{$codigoSemana}}">{{number_format($cajas_equivalentes,2,".","")}}</b>
                             </div>
                         </td>
                         <td style="border: 1px solid #9d9d9d;border-bottom: 2px solid #000000;border-right: 2px solid #000000">
