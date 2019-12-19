@@ -159,7 +159,7 @@
                         @php
 
                             $cajasFisicasAnnoAnterior = getObjSemana($codigoSemana)->cajasFisicasAnnoAnterior($idVariedad,$idCliente);
-                            ($dataSemana['cajas_fisicas'] < 1 && $semanaActual>$codigoSemana)
+                            $cajasFisicas = ($dataSemana['cajas_fisicas'] < 1 && $semanaActual>$codigoSemana)
                                        ? (isset($cajasFisicasAnnoAnterior->cajas_fisicas_anno_anterior) ? $cajasFisicasAnnoAnterior->cajas_fisicas_anno_anterior : 0)
                                        : $dataSemana['cajas_fisicas']
                         @endphp
@@ -169,7 +169,7 @@
                                        onkeyup="calcular_proyeccion_cliente('{{$cliente->id_cliente}}','{{$codigoSemana}}')"
                                        disabled name="cajas_proyectadas_{{$cliente->id_cliente}}_{{$codigoSemana}}"
                                        class="input_cajas_proyectadas" style="border:none;text-align:center;width:50px"
-                                       value="{{}}" >
+                                       value="{{$cajasFisicas}}" >
                                 <input type="hidden" class="id_cliente" value="{{$cliente->id_cliente}}">
                                 <input type="hidden" class="input_codigo_semana" value="{{$codigoSemana}}">
                             </div>
