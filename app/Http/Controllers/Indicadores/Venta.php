@@ -38,7 +38,7 @@ class Venta
             }
 
             $precio_x_ramo = $ramos_estandar > 0 ? round($valor / $ramos_estandar, 2) : 0;
-
+            dump($dataGeneral);
             $model_1->valor = $precio_x_ramo;
 
             if($model_1->save()){
@@ -204,12 +204,12 @@ class Venta
         $indicadorD13 = Indicador::where('nombre','D13');
         $indicadorD13->update(['valor'=>$cajasEquivalentes]);
         $modelIndicadorD13 = Indicador::where('nombre','D13')->first();
-        dump($dataGeneral);
+
         foreach ($dataGeneral as $idVariedad=> $data){
             $cantidadCajas=0;
-            foreach ($data as $cajas) {
+            foreach ($data as $cajas)
                 $cantidadCajas+=$cajas['cajas_x_variedad'];
-            }
+
             //-------- INDICADOR D13 POR VARIEDAD ---------//
             $dataIndicadorD13Variedad = IndicadorVariedad::where([
                 ['id_variedad',$idVariedad],
