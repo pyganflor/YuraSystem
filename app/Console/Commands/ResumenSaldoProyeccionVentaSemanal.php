@@ -89,7 +89,7 @@ class ResumenSaldoProyeccionVentaSemanal extends Command
                         $existeData = ResumenSaldoProyVentaSemanal::where([
                             ['id_variedad',$variedad->id_variedad],
                             ['codigo_semana',$semana]
-                        ])->selct('saldo_inicial')->first();
+                        ])->select('saldo_inicial')->first();
                         if(isset($existeData)){
                             $valorSaldoInicial = $existeData->saldo_inicial;
                             //$valorSaldoFinal = $existeData->saldo_final;

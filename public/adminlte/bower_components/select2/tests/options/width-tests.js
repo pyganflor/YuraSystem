@@ -14,7 +14,7 @@ test('string passed as width', function (assert) {
 });
 
 test('width from style attribute', function (assert) {
-  var $test = $('<select style="width: 50%;"></selct>');
+  var $test = $('<select style="width: 50%;"></select>');
 
   var width = select._resolveWidth($test, 'style');
 
