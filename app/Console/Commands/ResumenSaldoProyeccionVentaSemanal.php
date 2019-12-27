@@ -3,6 +3,7 @@
 namespace yura\Console\Commands;
 
 use Illuminate\Console\Command;
+use yura\Modelos\ProyeccionVentaSemanalReal;
 use yura\Modelos\Semana;
 use yura\Modelos\Variedad;
 use yura\Modelos\ResumenSaldoProyeccionVentaSemanal as ResumenSaldoProyVentaSemanal;
@@ -45,10 +46,9 @@ class ResumenSaldoProyeccionVentaSemanal extends Command
         $tiempo_inicial =  $tiempo_inicial = microtime(true);
         Info("Variables recibidas, desde: ".$this->argument('desde'). "hasta: ". $this->argument('hasta') . " variedad: ".$this->argument('variedad'));
 
-        $variedades = Variedad::where(function ($query){
-            if($this->argument('variedad') != 0)
-                $query->where('id_variedad',$this->argument('variedad'));
-        })->where('estado',1)->select('id_variedad')->get();
+        $idVariedad = $this->argument('variedad') != 0
+            ? $idVariedad = $this->argument('variedad')
+            : null;
 
         $semanaInicio= $this->argument('desde') == 0
                             ? getSemanaByDate(now()->subDays(7)->toDateString())->codigo
@@ -57,6 +57,13 @@ class ResumenSaldoProyeccionVentaSemanal extends Command
                             ? getSemanaByDate(now()->toDateString())->codigo
                             : $this->argument('hasta');
 
+        $variedades = Variedad::where(function ($query){
+            if(isset($idVariedad))
+                $query->where('id_variedad',$idVariedad);
+        })->where('estado',1)->select('id_variedad')->get();
+
+
+
         $semanas=[];
         for ($x=$semanaInicio;$x<=$semanaFin;$x++){
             $existsSemana = Semana::where('codigo',$x)->exists();
@@ -64,6 +71,10 @@ class ResumenSaldoProyeccionVentaSemanal extends Command
                 $semanas[]=$x;
             }
         }
+        /*$cajasEquivalentesAnnoAnterior=0;
+        $cajasFisicasAnnoAterior=0;
+        $valorAnnoAnterior=0;
+        $ramosxCajaEmpresa = getConfiguracionEmpresa()->ramos_x_caja;*/
 
         foreach ($variedades as $variedad){
             $semanaPasada = '';
@@ -80,6 +91,7 @@ class ResumenSaldoProyeccionVentaSemanal extends Command
 
                 $objSemanaActual = getObjSemana($semana);
                 $objSemanaPasada = getObjSemana($semanaPasada);
+
                 if ($y == 0) {
                     $firstSemanaResumenSemanaCosechaByVariedad = (int)$objSemanaActual->firstSemanaResumenSemanaCosechaByVariedad($variedad->id_variedad);
                     if ($firstSemanaResumenSemanaCosechaByVariedad > $semana) {
@@ -92,8 +104,6 @@ class ResumenSaldoProyeccionVentaSemanal extends Command
                         ])->select('saldo_inicial')->first();
                         if(isset($existeData)){
                             $valorSaldoInicial = $existeData->saldo_inicial;
-                            //$valorSaldoFinal = $existeData->saldo_final;
-                            //Info("Saldo Inicial: ".$valorSaldoInicial. "Saldo Final: " );
                         }else{
                             $valorSaldoInicial = $objSemanaActual->getLastSaldoInicial($variedad->id_variedad, $semana);
                         }
@@ -111,6 +121,24 @@ class ResumenSaldoProyeccionVentaSemanal extends Command
                     $valorSaldoInicial = $saldoF;
                     $valorSaldoFinal = $saldoI;
                 }
+
+                ///  TOMA EN CUANTA EL AÑO PASADO PARA AFECTAR EL SALDO INICIAL Y FINAL   ///
+               /* $proyeccionAnnoActual = ProyeccionVentaSemanalReal::where(function($query) use ($idVariedad){
+                    if(isset($idVariedad))
+                        $query->where('id_variedad',$idVariedad);
+                })->where('codigo_semana',$semana)->get();
+
+
+                foreach ($proyeccionAnnoActual as $item) {
+                    if($item->cajas_fisicas == 0 && $semanaActual < $semana){
+                        $cF = $this->cajasFisicasAnnoAnterior($idVariedad,$item->cliente->id_cliente);
+                        $cajasEquivalentesAnnoAnterior += $cF->cajas_fisicas_anno_anterior*$item->cliente->factor;
+                        //$cajasFisicasAnnoAterior+= $cF->cajas_fisicas_anno_anterior;
+                        $ramosTotales = $cF->cajas_fisicas_anno_anterior*$item->cliente->factor*$ramosxCajaEmpresa;
+                        $precioPromedio = $item->cliente->precio_promedio($idVariedad);
+                        $valorAnnoAnterior += $ramosTotales*(isset($precioPromedio) ? $precioPromedio->precio : 0);
+                    }
+                }*/
 
                 $objResumenSaldoProyeccionVentaSemanal->saldo_inicial=$valorSaldoInicial;
                 $objResumenSaldoProyeccionVentaSemanal->saldo_final=$valorSaldoFinal;
