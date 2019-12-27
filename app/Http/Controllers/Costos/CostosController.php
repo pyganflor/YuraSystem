@@ -651,6 +651,7 @@ class CostosController extends Controller
             $activeSheetData = $document->getActiveSheet()->toArray(null, true, true, true);
 
             $titles = $activeSheetData[1];
+            //dd($titles,$activeSheetData);
             //dd($activeSheetData);
             foreach ($activeSheetData as $pos_row => $row) {
                 if ($pos_row > 1) {
@@ -671,7 +672,6 @@ class CostosController extends Controller
                                 $model->id_actividad = $actividad->id_actividad;
                                 $model->id_producto = $producto->id_producto;
                                 $model->fecha_registro = date('Y-m-d H:i:s');
-
                                 $model->save();
                                 $act_prod = ActividadProducto::All()->last();
                                 bitacora('actividad_producto', $act_prod->id_actividad_producto, 'I', 'Inserción satisfactoria de un nuevo vínculo actividad_producto');

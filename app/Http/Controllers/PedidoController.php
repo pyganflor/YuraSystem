@@ -311,7 +311,6 @@ class PedidoController extends Controller
                 }
             }
             $semana = getSemanaByDate($objPedido->fecha_pedido)->codigo;
-
             ProyeccionVentaSemanalUpdate::dispatch($semana,$semana,0,$request->id_cliente)->onQueue('update_venta_semanal_real');
             UpdateSaldosProyVentaSemanal::dispatch($semana, 0)->onQueue('update_saldos_proy_venta_semanal');
         } else {
@@ -620,7 +619,6 @@ class PedidoController extends Controller
                 }
             }
         }else{
-            dd($request->id_pedido,$request->id_agencia_carga   );
             $objDetallePedido = DetallePedido::where('id_pedido',$request->id_pedido);
             if($objDetallePedido->update(['id_agencia_carga' => $request->id_agencia_carga])){
                 $success = true;
