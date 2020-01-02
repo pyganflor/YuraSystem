@@ -46,7 +46,7 @@ class ResumenSaldoProyeccionVentaSemanal extends Command
         $tiempo_inicial =  $tiempo_inicial = microtime(true);
         Info("Variables recibidas, desde: ".$this->argument('desde'). "hasta: ". $this->argument('hasta') . " variedad: ".$this->argument('variedad'));
 
-        $idVariedad = $this->argument('variedad') != 0
+        $this->argument('variedad') != 0
             ? $idVariedad = $this->argument('variedad')
             : null;
 
