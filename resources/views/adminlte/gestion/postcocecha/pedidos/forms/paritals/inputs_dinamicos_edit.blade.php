@@ -68,7 +68,7 @@
             @foreach(getPedido($id_pedido)->detalles as $x =>$det_ped)
                 @php $b=1; @endphp
                 @foreach(getEspecificacion($det_ped->cliente_especificacion->especificacion->id_especificacion)->especificacionesEmpaque as $y => $esp_emp)
-                    @php $empaque_edit = $esp_emp->especificacion->tipo @endphp
+                    {{--@php $empaque_edit = $esp_emp->especificacion->tipo @endphp--}}
                     @foreach($esp_emp->detalles as $z => $det_esp_emp)
                         <tr style="border-top: {{$det_ped->cliente_especificacion->especificacion->id_especificacion != $anterior ? '2px solid #9d9d9d' : ''}}" >
                             @if($det_ped->cliente_especificacion->especificacion->id_especificacion != $anterior)

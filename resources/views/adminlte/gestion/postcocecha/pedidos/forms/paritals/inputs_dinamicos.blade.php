@@ -199,7 +199,7 @@
                 @endforeach
             @else
                 <tr id="">
-                    <td colspan="14">
+                    <td colspan="15">
                         <div class="alert alert-warning text-center">
                             <p style="font-size: 11pt;"> Este usuario no posee especificaciones asignadas </p>
                         </div>
