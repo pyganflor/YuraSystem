@@ -1,7 +1,7 @@
 @extends('layouts.adminlte.master')
 
 @section('titulo')
-    Costos - Gestión
+    Costos - Insumos
 @endsection
 
 @section('script_inicio')
@@ -33,7 +33,7 @@
 @section('contenido')
     <section class="content-header">
         <h1>
-            Materia Prima
+            Insumos
             <small>Gestión</small>
         </h1>
         <ol class="breadcrumb">
@@ -58,16 +58,16 @@
             <div class="box-body">
                 <div class="row">
                     <div class="col-md-3 div_content_fixed">
-                        @include('adminlte.gestion.costos.partials.list_area')
+                        @include('adminlte.gestion.costos.insumo.partials.list_area')
                     </div>
                     <div class="col-md-4 div_content_fixed">
                         <div class="div_content_fixed" style="overflow-y: scroll; max-height: 450px">
-                            @include('adminlte.gestion.costos.partials.list_actividad')
+                            @include('adminlte.gestion.costos.insumo.partials.list_actividad')
                         </div>
                     </div>
                     <div class="col-md-5">
                         <div class="div_content_fixed" style="overflow-y: scroll; max-height: 450px">
-                            @include('adminlte.gestion.costos.partials.list_producto')
+                            @include('adminlte.gestion.costos.insumo.partials.list_producto')
                         </div>
                     </div>
                 </div>
