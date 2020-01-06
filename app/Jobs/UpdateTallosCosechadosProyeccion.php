@@ -44,7 +44,7 @@ class UpdateTallosCosechadosProyeccion implements ShouldQueue
             ->first();
 
         if ($model != '') {
-            $model->cosechados = 10;
+            $model->cosechados = getTallosCosechadosByModSemVar($this->modulo, $this->semana, $this->variedad);
             $model->save();
         }
     }
