@@ -107,7 +107,8 @@ Route::group(['middleware' => 'autenticacion'], function () {
             include 'proyecciones/mano_obra.php';
 
             /* ================== COSTOS =================== */
-            include 'costos/rutas.php';
+            include 'costos/insumo.php';
+            include 'costos/mano_obra.php';
             include 'costos/importar.php';
 
             /* ================== DB =================== */

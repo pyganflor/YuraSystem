@@ -83,7 +83,7 @@
                 $title .= '<em>Cierre de módulo</em>';
             }
         } else if($val->tipo == 'T'){
-            $fondo = '#03de00'; semana
+            $fondo = '#03de00';
             if($val->tabla == 'C'){   // ciclo
                 $title .= '<em>Ptas.Ini: '.number_format($val->plantas_iniciales).'</em><br>';
                 $title .= '<em>Ptas.Act: '.number_format($val->plantas_actuales).'</em><br>';

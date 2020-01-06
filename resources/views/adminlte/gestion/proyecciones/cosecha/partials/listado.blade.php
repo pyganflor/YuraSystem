@@ -247,7 +247,7 @@
                     <td class="text-center celda_hovered celda_semana_{{$semanas[$pos_val]->id_semana}} celda_modulo_{{$mod['modulo']->id_modulo}} {{in_array($val->tipo, ['F', 'P', 'S', 'T', 'Y']) ? 'mouse-hand' : ''}}"
                         style="border-color: #9d9d9d; background-color: {{$fondo}}; color: {{$texto}}"
                         id="celda_{{$mod['modulo']->id_modulo}}_{{$pos_val}}"
-                        onclick="select_celda('{{$val->tipo}}', '{{$mod['modulo']->id_modulo}}', '{{$val->semana}}', '{{$sem->id_variedad}}', '{{$val->tabla}}', '{{$val->modelo}}')"
+                        onclick="select_celda('{{$val->tipo}}', '{{$mod['modulo']->id_modulo}}', '{{$val->semana}}', '{{$val->id_variedad}}', '{{$val->tabla}}', '{{$val->modelo}}')"
                         onmouseover="mouse_over_celda('celda_{{$mod['modulo']->id_modulo}}_{{$pos_val}}', 1)"
                         onmouseleave="mouse_over_celda('celda_{{$mod['modulo']->id_modulo}}_{{$pos_val}}', 0)">
                         <span data-toggle="tooltip" data-placement="top" data-html="true"

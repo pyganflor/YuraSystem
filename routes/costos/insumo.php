@@ -1,6 +1,6 @@
 <?php
 
-Route::get('costos_gestion', 'Costos\CostosController@gestion');
+Route::get('costos_gestion', 'Costos\CostosController@gestion_insumo');
 Route::post('costos_gestion/store_area', 'Costos\CostosController@store_area');
 Route::post('costos_gestion/update_area', 'Costos\CostosController@update_area');
 Route::post('costos_gestion/store_actividad', 'Costos\CostosController@store_actividad');
