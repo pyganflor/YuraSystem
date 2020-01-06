@@ -220,7 +220,8 @@
                                 $title .= '<em>Cierre de módulo</em>';
                             }
                         } else if($val->tipo == 'T'){
-                            $fondo = '#03de00'; semsemana                          if($val->tabla == 'C'){   // ciclo
+                            $fondo = '#03de00';
+                            if($val->tabla == 'C'){   // ciclo
                                 $title .= '<em>Ptas.Ini: '.number_format($val->plantas_iniciales).'</em><br>';
                                 $title .= '<em>Ptas.Act: '.number_format($val->plantas_actuales).'</em><br>';
                                 $title .= '<em>T/Ptas: '.($val->tallos_planta).'</em><br>';
@@ -346,16 +347,17 @@
                                     }
                                 }
                             @endphp
-                            <span data-toggle="tooltisemanaa-placement="top" data-html="true"
-                                  title="{{$semanas[$pos_val]->codigo}} <br> <small>Calib:<em>{{$calibre}}</em></small>">
+                            <span data-toggle="tooltisemanaa-placement=" top" data-html="true"
+                            title="{{$semanas[$pos_val]->codigo}} <br>
+                            <small>Calib:<em>{{$calibre}}</em></small>">
                             {{number_format($val, 2)}}
-                                <br>
+                            <br>
                             <strong>
                                 @if($calibre > 0)
                                     {{number_format(round(($val / $calibre) / $ramos_x_caja, 2), 2)}}
                                 @endif
                             </strong>
-                        </span>
+                            </span>
                         @endif
                     </th>
                 @endforeach
