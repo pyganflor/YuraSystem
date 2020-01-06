@@ -8,6 +8,7 @@ use yura\Modelos\Actividad;
 use yura\Modelos\ActividadProducto;
 use yura\Modelos\Area;
 use yura\Modelos\CostosSemana;
+use yura\Modelos\ManoObra;
 use yura\Modelos\Submenu;
 use Validator;
 use PHPExcel;
@@ -746,7 +747,7 @@ class CostosController extends Controller
             'submenu' => Submenu::Where('url', '=', substr($request->getRequestUri(), 1))->get()[0],
             'areas' => Area::All()->sortBy('nombre'),
             'actividades' => Actividad::All()->sortBy('nombre'),
-            'productos' => Producto::All()->sortBy('nombre'),
+            'manos_obra' => ManoObra::All()->sortBy('nombre'),
         ]);
     }
 }
