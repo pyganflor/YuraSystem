@@ -79,11 +79,11 @@
                 <input type="hidden" class="text-center" readonly id="id_variedad_1" name="id_variedad_1" style="width: 100%" required>
             </td>
             <td class="text-center" style="border-color: #9d9d9d">
-                <input type="number" min="1" max="100" class="text-center" id="cantidad_mallas_1" name="cantidad_mallas_1" style="width: 100%"
+                <input type="number" min="1" max="200" class="text-center" id="cantidad_mallas_1" name="cantidad_mallas_1" style="width: 100%"
                        required>
             </td>
             <td class="text-center" style="border-color: #9d9d9d" colspan="2">
-                <input type="number" min="1" max="100" class="text-center" id="tallos_x_malla_1" name="tallos_x_malla_1" style="width: 100%"
+                <input type="number" min="1" max="200" class="text-center" id="tallos_x_malla_1" name="tallos_x_malla_1" style="width: 100%"
                        required>
             </td>
         </tr>

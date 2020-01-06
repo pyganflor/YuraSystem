@@ -2,6 +2,10 @@
        id="table_content_recepciones">
     <thead>
     <tr style="background-color: #dd4b39; color: white">
+        {{--<th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
+            style="border-color: #9d9d9d;width: 80px">
+            ORDEN
+        </th>--}}
         <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
             style="border-color: #9d9d9d;width: 80px">
             PIEZAS
@@ -55,6 +59,11 @@
             @foreach($esp_emp->detalles as $z => $det_esp_emp)
                 <tr style="border-top: {{$det_ped->cliente_especificacion->especificacion->id_especificacion != $anterior ? '2px solid #9d9d9d' : ''}}" >
                     @if($det_ped->cliente_especificacion->especificacion->id_especificacion != $anterior)
+                        {{--<td style="border-color: #9d9d9d; padding: 0px; vertical-align: middle; width: 100px; "
+                            class="text-center" rowspan="{{getCantidadDetallesByEspecificacion($det_ped->cliente_especificacion->especificacion->id_especificacion)}}">
+                            <input disabled type="number" id="orden_{{($x+1)}}" style="border: none" value="{{$det_ped->orden}}"
+                                   name="orden_{{$det_ped->cliente_especificacion->especificacion->id_especificacion}}" class="text-center form-control orden_{{($x+1)}} input_orden">
+                        </td>--}}
                         <td style="border-color: #9d9d9d; padding: 0px; vertical-align: middle; width: 100px; "
                             class="text-center" rowspan="{{getCantidadDetallesByEspecificacion($det_ped->cliente_especificacion->especificacion->id_especificacion)}}">
                             <input disabled type="number" min="0" id="cantidad_piezas_{{($x+1)}}" style="border: none" onchange="calcular_precio_pedido(this)"
@@ -126,8 +135,8 @@
                 </tr>
                 @php
                     $anterior = $det_ped->cliente_especificacion->especificacion->id_especificacion;
+                    $b++
                 @endphp
-                @php $b++ @endphp
             @endforeach
         @endforeach
         @php $anterior = ''; @endphp
@@ -198,7 +207,7 @@
                 id_pedido : '{{$id_pedido}}'
             };
             post_jquery('{{url('pedidos/store_duplicar_pedido')}}', datos, function () {
-                listar_resumen_pedidos('{{\Carbon\Carbon::now()->toDateString()}}', true);
+                listar_resumen_pedidos('{{now()->toDateString()}}', true);
                 cerrar_modals();
             });
             $.LoadingOverlay('hide');

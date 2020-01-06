@@ -180,7 +180,7 @@ class PedidoVentaController extends Controller
 
         if (!$valida->fails()) {
             $dataPedido = Pedido::where('id_pedido', $request->id_pedido)->first();
-            //dd($dataPedido->id_pedido);
+
             foreach ($request->arrFechas as $fecha) {
                 $objPedido = new Pedido;
                 $objPedido->id_cliente = $dataPedido->id_cliente;
@@ -207,6 +207,7 @@ class PedidoVentaController extends Controller
                         $objDetallePedido->id_agencia_carga = $detallePedido->id_agencia_carga;
                         $objDetallePedido->cantidad = $detallePedido->cantidad;
                         $objDetallePedido->precio = $detallePedido->precio;
+                        $objDetallePedido->orden = $detallePedido->orden;
 
                         $detalleEnvio = new DetalleEnvio;
                         $detalleEnvio->id_envio = $modelEnvio->id_envio;

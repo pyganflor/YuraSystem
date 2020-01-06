@@ -4,7 +4,7 @@
         <tr>
             <td class="text-center" style="background-color: #e9ecef;width:250px;border-right: 2px solid #000000;" >
                 Clientes / Semanas
-                <input type="hidden" id="ramos_x_caja_empresa" name="ramos_x_caja_empresa" value="{{getConfiguracionEmpresa()->ramos_x_caja}}">
+                <input type="hidden" id="ramos_x_caja_empresa" name="ramos_x_caja_empresa" value="{{$ramosxCajaEmpresa}}">
             </td>
             @foreach($semanas as $semana => $item)
                 <td class="text-center" style="border:1px solid #9d9d9d; background-color: #e9ecef; width:350px;border-bottom: 2px solid #000000;border-right: 2px solid #000000;" colspan="3">
@@ -23,36 +23,17 @@
             </td>
             @php $x=0; $semanaPasada='' @endphp
             @foreach($semanas as $semana => $item)
-                @php
-                    $objSemanaActual =getObjSemana($semana);
-                    $saldoInicial = $objSemanaActual->firstSaldoInicialBusqueda($idVariedad,$semana)->saldo_inicial;
-                   /* $objSemanaPasada =getObjSemana($semanaPasada);
-                    if($x == 0){ //Primera iteración
-                        $firstSemanaResumenSemanaCosechaByVariedad = (int)$objSemanaActual->firstSemanaResumenSemanaCosechaByVariedad($idVariedad);
-                        if($firstSemanaResumenSemanaCosechaByVariedad > $semana){
-                            $saldoInicial = $objSemanaActual->getSaldo($idVariedad);
-                        }elseif($firstSemanaResumenSemanaCosechaByVariedad < $semana){
-                            //$saldoInicial = $objSemanaActual->getLastSaldoInicial($idVariedad,$semana);
-                            $saldoInicial = $objSemanaActual->firstSaldoInicialBusqueda($idVariedad,$semana)->saldo_inicial;
-                        }else{
-                            $saldoInicial = $objSemanaActual->firstSaldoInicialByVariedad($idVariedad);
-                        }
-                    }
-
-                    $saldoFinal = isset($objSemanaPasada) ? $objSemanaPasada->getSaldo($idVariedad)+$saldoInicial : $objSemanaActual->getSaldo($idVariedad)+$saldoInicial;
-
-                    if($x>0)
-                        $saldoInicial = $saldoFinal;*/
+                @php $saldoInicial = getObjSemana($semana)->firstSaldoInicialBusqueda($idVariedad,$semana)->saldo_inicial;
+                   semana
                 @endphp
                 <td class="text-center" style="border:1px solid #9d9d9d; background-color: #e9ecef; width:350px;border-bottom: 2px solid #000000;border-right: 2px solid #000000;" colspan="3">
-                    <b class="{{$saldoInicial < 0 ? "text-red" : "text-success"}}">
+                    <b class="{{$saldoInicial < 0 ? "text-red" : "text-success"}}" data-toggle="tooltsemanata-placement="top" title="Saldo inicial">
                         {{number_format($saldoInicial,2,".",",")}}
-                        <i class="fa {{$saldoInicial < 0 ? "fa-arrow-down" : "fa-arrow-up"}}" aria-hidden="true"></i>
+                        <i class="fa {{$saldoInicial < 0 semanaarrow-down" : "fa-arrow-up"}}" aria-hidden="true"></i>
                     </b>
-                </td>
-                @php $x++; $semanaPasada=$semana @endphp
+                </tdsemana            @php $x++; $semanaPasada=$semana @endphp
             @endforeach
-            <td class="text-center" style="background-color: #e9ecef;width:250px;border: 2px solid #000000;">
+            <td class="textsemanar" style="background-color: #e9ecef;width:250px;border: 2px solid #000000;">
                 Saldo inicial
             </td>
         </tr>
@@ -87,11 +68,12 @@
                         Desecho
                     </td>
                     @foreach($semana['semanas'] as $codigoSemana => $dataSemana)
-                        <td class="text-center " ondblclick="habilitar('desecho_semana_{{$codigoSemana}}')" style="border:1px solid #9d9d9d; width:350px;border-bottom: 2px solid #000000;border-right: 2px solid #000000;" colspan="3">
+                        <td class="text-center " ondblclick="habilitar('desecho_semana_{{$codigoSemana}}')"
+                            style="border:1px solid #9d9d9d; width:350px;border-bottom: 2px solid #000000;border-right: 2px solid #000000;" colspan="3">
                             <input type="number" min="0" id="desecho_semana_{{$codigoSemana}}" name="desecho_semana_{{$codigoSemana}}"
                                    data-toggle="tooltip" data-placement="top" title="Cajas desechadas" value="{{getObjSemana($codigoSemana)->desecho($idVariedad)}}"
-                                   onblur="store_proyeccion_desecho('{{$codigoSemana}}','{{$idVariedad}}')"  disabled id
-                                   style="border:none;background-color: transparent;text-align:center">
+                                   onblur="store_proyeccion_desecho('{{$codigoSemana}}','{{$idVariedad}}')"  disabled
+                    semana         style="border:none;background-color: transparent;text-align:center">
                         </td>
                     @endforeach
                     <td class="text-center" style="width:250px;border: 2px solid #000000;">
@@ -154,14 +136,22 @@
                     </td>
                 </tr>
                 <tr>
-                    <td class="text-center" style="border-bottom:2px solid #000000;border-left:2px solid #000000;border-right:2px solid #000000;width: 250px">Proyectado </td>
+                    <td class="text-center" style="border-bottom:2px solid #000000;border-left:2px solid #000000;border-right:2px solid #000000;width: 250px">Proyectado</td>
                     @foreach($semana['semanas'] as $codigoSemana => $dataSemana)
                         @php
-                            $cajasFisicasAnnoAnterior = getObjSemana($codigoSemana)->cajasFisicasAnnoAnterior($idVariedad,$idCliente);
-                            //dump(" cajas fisicas  p: ".$dataSemana['cajas_fisicas']." cajas fisicas a: ".$cajasFisicasAnnoAnterior->cajas_fisicas_anno_anterior." semana actual: ". $semanaActual. " semana bucle: ".$codigoSemana);
-                            $cajasFisicas = ($dataSemana['cajas_fisicas'] < 1 && $semanaActual<$codigoSemana)
-                                       ? (isset($cajasFisicasAnnoAnterior->cajas_fisicas_anno_anterior) ? $cajasFisicasAnnoAnterior->cajas_fisicas_anno_anterior : 0)
-                                       : $dataSemana['cajas_fisicas'];
+                            $objSemana = getObjSemana($codigoSemana);
+                            $cajasFisicasAnnoAnterior = $objSemana->cajasFisicasAnnoAnterior($idVariedad,$idCliente);
+                            if($dataSemana['cajas_fisicas'] == 0 && $semanaActual<$codigoSemana){
+                                $cajasFisicas = isset($cajasFisicasAnnoAnterior->cajas_fisicas_anno_anterior) ? $cajasFisicasAnnoAnterior->cajas_fisicas_anno_anterior : 0;
+                                $cajasEquivalentes = $cajasFisicas*$cliente->factor;
+                                $ramosTotales = $cajasFisicas*$cliente->factor*$ramosxCajaEmpresa;
+                                $precioPromedio = $cliente->precio_promedio($idVariedad);
+                                $valor = $ramosTotales*(isset($precioPromedio) ? $precioPromedio->precio : 0);
+                            }else{
+                                $cajasFisicas =  $dataSemana['cajas_fisicas'];
+                                $cajasEquivalentes =$dataSemana['cajas_equivalentes'];
+                                $valor = $dataSemana['valor'];
+                            }
                         @endphp
                         <td style="border: 1px solid #9d9d9d;border-bottom: 2px solid #000000;" class="td_cajas_proyectadas">
                             <div style="width:100%;text-align:center;" data-toggle="tooltip" data-placement="top" title="Cajas físicas proyectadas" ondblclick="habilitar('cajas_proyectadas_{{$cliente->id_cliente}}_{{$codigoSemana}}')">
@@ -176,12 +166,12 @@
                         </td>
                         <td style="border: 1px solid #9d9d9d;border-bottom: 2px solid #000000;">
                             <div style="padding: 3px 6px;width:100%;text-align:center;cursor:pointer" class="cajas_equivalentes" data-toggle="tooltip" data-placement="top" title="Cajas equivalentes proyectadas">
-                                <b id="cajas_equivalentes_{{$cliente->id_cliente}}_{{$codigoSemana}}">{{number_format($dataSemana['cajas_equivalentes'],2,".","")}}</b>
+                                <b id="cajas_equivalentes_{{$cliente->id_cliente}}_{{$codigoSemana}}">{{number_format($cajasEquivalentes,2,".","")}}</b>
                             </div>
                         </td>
                         <td style="border: 1px solid #9d9d9d;border-bottom: 2px solid #000000;border-right: 2px solid #000000">
                             <div style="padding: 3px 6px;width:100%;text-align:center;cursor:pointer;" class="precio_proyectado" data-toggle="tooltip" data-placement="top" title="Valor proyectado">
-                                <b  id="precio_proyectado_{{$cliente->id_cliente}}_{{$codigoSemana}}">${{number_format($dataSemana['valor'],2,".",",")}}</b>
+                                <b  id="precio_proyectado_{{$cliente->id_cliente}}_{{$codigoSemana}}">${{number_format($valor,2,".",",")}}</b>
                             </div>
                         </td>
                     @endforeach
@@ -195,17 +185,17 @@
                                 @php $objSemana = getObjSemana($codigoSemana)->getTotalesProyeccionVentaSemanal($idsClientes,$idVariedad);@endphp
                                 <td style="border: 1px solid #9d9d9d;border-bottom: 2px solid #000000;">
                                     <div style="width:100%;text-align:center;" data-toggle="tooltip" data-placement="top" title="Cajas físicas proyectadas">
-                                        <b>{{isset($objSemana->total_cajas_fisicas) ? round($objSemana->total_cajas_fisicas,2) : 0}}</b>
+                                        <b>{{round($objSemana['cajasFisicas'],2)}}</b>
                                     </div>
                                 </td>
                                 <td style="border: 1px solid #9d9d9d;border-bottom: 2px solid #000000;">
                                     <div style="padding: 3px 6px;width:100%;text-align:center;cursor:pointer" data-toggle="tooltip" data-placement="top" title="Cajas equivalentes proyectadas">
-                                        <b>{{isset($objSemana->total_cajas_equivalentes) ? number_format($objSemana->total_cajas_equivalentes,2,".",",") : 0}}</b>
+                                        <b>{{round($objSemana['cajasEquivalentes'],2)}}</b>
                                     </div>
                                 </td>
                                 <td style="border: 1px solid #9d9d9d;border-bottom: 2px solid #000000;border-right: 2px solid #000000">
                                     <div style="padding: 3px 6px;width:100%;text-align:center;cursor:pointer;" data-toggle="tooltip" data-placement="top" title="Valor proyectado">
-                                        <b> ${{ isset($objSemana->total_valor) ? number_format($objSemana->total_valor,2,".",",") : 0}}</b>
+                                        <b> ${{round($objSemana['valor'],2)}}</b>
                                     </div>
                                 </td>
                             @endforeach
@@ -217,15 +207,15 @@
                             <b>Totales</b>
                         </td>
                         @foreach($semanas as $semana => $dataSemana)
-                            @php $objSemana = getObjSemana($semana)->getTotalesProyeccionVentaSemanal(false,$idVariedad);@endphp
+                            @php $objSemana = getObjSemana($semana)->getTotalesProyeccionVentaSemanal(false,$idVariedad,true,$semanaActual,false,$ramosxCajaEmpresa); @endphp
                             <td class="text-center"  style="border: 1px solid #9d9d9d" >
-                                <b>{{round($objSemana->total_cajas_fisicas,2)}}</b>
+                                <b>{{round($objSemana['cajasFisicas'],2)}}</b>
                             </td>
                             <td class="text-center"  style="border: 1px solid #9d9d9d" >
-                                <b>{{number_format($objSemana->total_cajas_equivalentes,2,".",",")}}</b>
+                                <b>{{round($objSemana['cajasEquivalentes'],2)}}</b>
                             </td>
                             <td class="text-center"  style="border-right:2px solid #000000;" >
-                               <b> ${{number_format($objSemana->total_valor,2,".",",")}}</b>
+                               <b> ${{round($objSemana['valor'],2)}}</b>
                             </td>
                         @endforeach
                         <td class="text-center" style="width:250px;border-right: 2px solid #000000;border-top: 2px solid #000000">
@@ -236,9 +226,7 @@
                         <td class="text-center" style="border:2px solid #000000;width: 250px"><b>Saldo final</b></td>
                         @php $x =0;$semanaPasada=''  @endphp
                         @foreach($semanas as $semana => $item)
-                            @php
-                                $objSemanaActual =getObjSemana($semana);
-                                $saldoFinal= $objSemanaActual->firstSaldoInicialBusqueda($idVariedad,$semana)->saldo_final;
+                            @php $saldoFinal= getObjSemana($semana)->firstSaldoInicialBusqueda($idVariedad,$semana)->saldo_final;
                                 /*$objSemanaPasada =getObjSemana($semanaPasada);
                                 if($x==0){
                                     $firstSemanaResumenSemanaCosechaByVariedad = (int)$objSemanaActual->firstSemanaResumenSemanaCosechaByVariedad($idVariedad);
@@ -256,15 +244,14 @@
 
                                 if($x>0)
                                     $saldoFinal=$saldoInicial;*/
-
                             @endphp
                             <td style="border: 1px solid #9d9d9d;border: 2px solid #000000;" colspan="3">
-                                <div style="width:100%;text-align:center;" data-toggle="tooltip" data-placement="top" title="Cajas físicas proyectadas">
+                                <div style="width:100%;text-align:center;" data-tsemana"tooltip" data-placement="top" title="Saldo final">
                                     <b class="{{$saldoFinal < 0 ? "text-red" : "text-success"}}">
-                                        {{number_format($saldoFinal,2,".",",")}}
-                                        <i class="fa {{$saldoFinal < 0 ? "fa-arrow-down" : "fa-arrow-up"}}" aria-hidden="true"></i>
+                                      semanamber_format($saldoFinal,2,".",",")}}
+                                        <i class="fa {{$saldoFinal < 0 ? "fa-semanadown" : "fa-arrow-up"}}" aria-hidden="true"></i>
                                     </b>
-                                </div>
+                               semana>
                             </td>
                             @php $x++; $semanaPasada=$semana @endphp
                         @endforeach
@@ -276,7 +263,7 @@
         <tr>
             <td class="text-center" style="border: 2px solid #000000;background-color: #e9ecef;width:250px;">
                 Clientes / Semanas
-                <input type="hidden" id="ramos_x_caja_empresa" name="ramos_x_caja_empresa" value="{{getConfiguracionEmpresa()->ramos_x_caja}}">
+                <input type="hidden" id="ramos_x_caja_empresa" name="ramos_x_caja_empresa" value="{{$ramosxCajaEmpresa}}">
             </td>
             @foreach($semanas as $semana => $item)
                 <td class="text-center" style="border: 2px solid #000000;background-color: #e9ecef; width:350px;" colspan="3">{{$semana}}</td>

@@ -34,7 +34,7 @@
     function calcular_proyeccion_cliente(id_cliente,columna) {
         cajas_proyectadas = parseFloat($("#cajas_proyectadas_"+id_cliente+"_"+columna).val());
         factor_cliente = parseFloat($("#factor_cliente_"+id_cliente).val());
-        ramos_x_caja_conf_empresa = parseFloat($("#ramos_x_caja_empresa").val());
+        ramos_x_caja_conf_empresa = parseFloat($("#ramos_x_caja_empresa").val()); //40
         precio_promedio_variedad = parseFloat($("#precio_variedad_"+id_cliente).val());
         ramos_totales = cajas_proyectadas * factor_cliente * ramos_x_caja_conf_empresa;
         cajas_equivalentes = cajas_proyectadas * factor_cliente;

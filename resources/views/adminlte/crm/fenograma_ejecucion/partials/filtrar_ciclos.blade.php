@@ -173,8 +173,8 @@
                         {{$item->getDensidadIniciales()}}
                     </td>
                     <td class="text-center" style="border-color: #9d9d9d"
-                        title="{{$item->conteo <= 0 ? 'Dato correspondiente a la semana de inicio':''}}">
-                        {{$conteo}}{{$item->conteo <= 0 ? '*':''}}
+                        title="{{$item->conteo <= 0 ? 'semana':''}}">
+           semana       {{$conteo}}{{$item->conteo <= 0 ? '*':''}}
                     </td>
                 </tr>
                 @php

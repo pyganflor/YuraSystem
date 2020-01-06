@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Validator;
 use yura\Jobs\ProyeccionUpdateSemanal;
+use yura\Jobs\UpdateSaldosProyVentaSemanal;
 use yura\Modelos\ClasificacionRamo;
 use yura\Modelos\Cliente;
 use yura\Modelos\ClientePedidoEspecificacion;
@@ -495,6 +496,8 @@ class OrdenSemanalController extends Controller
                 }
             }
 
+        $semana = getSemanaByDate($request->fecha_pedido)->codigo;
+        UpdateSaldosProyVentaSemanal::dispatch($semana, 0)->onQueue('update_saldos_proy_venta_semanal');
         return [
             'id_pedido' => $pedido->id_pedido,
             'success' => true,
@@ -792,6 +795,8 @@ class OrdenSemanalController extends Controller
                 '</ul>' .
                 '</div>';
         }
+        $semana = getSemanaByDate($request->fecha_pedido)->codigo;
+        UpdateSaldosProyVentaSemanal::dispatch($semana, 0)->onQueue('update_saldos_proy_venta_semanal');
         return [
             'mensaje' => $msg,
             'success' => $success

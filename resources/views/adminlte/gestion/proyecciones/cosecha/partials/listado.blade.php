@@ -220,8 +220,7 @@
                                 $title .= '<em>Cierre de módulo</em>';
                             }
                         } else if($val->tipo == 'T'){
-                            $fondo = '#03de00'; // semana de cosecha
-                            if($val->tabla == 'C'){   // ciclo
+                            $fondo = '#03de00'; semsemana                          if($val->tabla == 'C'){   // ciclo
                                 $title .= '<em>Ptas.Ini: '.number_format($val->plantas_iniciales).'</em><br>';
                                 $title .= '<em>Ptas.Act: '.number_format($val->plantas_actuales).'</em><br>';
                                 $title .= '<em>T/Ptas: '.($val->tallos_planta).'</em><br>';
@@ -247,7 +246,7 @@
                     <td class="text-center celda_hovered celda_semana_{{$semanas[$pos_val]->id_semana}} celda_modulo_{{$mod['modulo']->id_modulo}} {{in_array($val->tipo, ['F', 'P', 'S', 'T', 'Y']) ? 'mouse-hand' : ''}}"
                         style="border-color: #9d9d9d; background-color: {{$fondo}}; color: {{$texto}}"
                         id="celda_{{$mod['modulo']->id_modulo}}_{{$pos_val}}"
-                        onclick="select_celda('{{$val->tipo}}', '{{$mod['modulo']->id_modulo}}', '{{$val->semana}}', '{{$val->id_variedad}}', '{{$val->tabla}}', '{{$val->modelo}}')"
+                        onclick="select_celda('{{$val->tipo}}', '{{$mod['modulo']->id_modulo}}', '{{$val->semana}}', '{{semanaid_variedad}}', '{{$val->tabla}}', '{{$val->modelo}}')"
                         onmouseover="mouse_over_celda('celda_{{$mod['modulo']->id_modulo}}_{{$pos_val}}', 1)"
                         onmouseleave="mouse_over_celda('celda_{{$mod['modulo']->id_modulo}}_{{$pos_val}}', 0)">
                         <span data-toggle="tooltip" data-placement="top" data-html="true"
@@ -336,18 +335,18 @@
                     <th class="text-center" style="border-color: #9d9d9d">
                         @if($val > 0)
                             @php
-                                if($semanas[$pos_val]->fecha_inicial >= $semana_actual->fecha_inicial && $semanas[$pos_val]->fecha_inicial <= opDiasFecha('+', 34, $semana_actual->fecha_inicial)){   // semana actual o una de las 4 siguientes
-                                    $calibre = $calibre_actual;    // calibre real de la semana anterior
-                                } else { // otra semana distinta a la actual
-                                    $calibre = getCalibreByRangoVariedad($semanas[$pos_val]->fecha_inicial, $semanas[$pos_val]->fecha_final, $variedad);    // calibre real de la semana
+                                if($semanas[$pos_val]->fecha_inicial >= $semana_actual->fecha_inicial && $semanas[$pos_val]->fecha_inicial <= opDiasFecha('+', 34, $semana_actual->fecha_inicial)){   semana
+          semana                    $calibre = $calibre_actual;    semana
+                                } else { semana
+                 semana             $calibre = getCalibreByRangoVariedad($semanas[semanaal]->fecha_inicial, $semanas[$pos_val]->fecha_final, $variedad);    semana
                                 }
                                 if($calibre <= 0){
                                     if($semanas[$pos_val]->tallos_ramo_poda > 0){
-                                        $calibre = $semanas[$pos_val]->tallos_ramo_poda;    // calibre de poda programado en la semana
+                                        $calibre = $semanas[$pos_val]->tallos_ramo_poda;    semana
                                     }
                                 }
                             @endphp
-                            <span data-toggle="tooltip" data-placement="top" data-html="true"
+                            <span data-toggle="tooltisemanaa-placement="top" data-html="true"
                                   title="{{$semanas[$pos_val]->codigo}} <br> <small>Calib:<em>{{$calibre}}</em></small>">
                             {{number_format($val, 2)}}
                                 <br>
