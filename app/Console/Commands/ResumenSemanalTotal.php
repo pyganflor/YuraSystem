@@ -52,7 +52,7 @@ class ResumenSemanalTotal extends Command
             ->where('codigo_semana',$data->codigo_semana)->first();
             
             if(isset($objResumenSemanalTotal)){
-                $objResumenSemanalTotal = ModelResumenSemanaTotal::find($objResumenSemanalTotal->id_resumen_semana_total);
+                $objResumenSemanalTotal = ModelResumenSemanaTotal::find($objResumenSemanalTotal->id_resumen_semanal_total);
             }else{
                 $objResumenSemanalTotal= new ModelResumenSemanaTotal;
             }
