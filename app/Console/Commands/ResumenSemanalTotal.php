@@ -57,6 +57,7 @@ class ResumenSemanalTotal extends Command
                 $objResumenSemanalTotal= new ModelResumenSemanaTotal;
             }
 
+            $objResumenSemanalTotal->codigo_semana = $data->codigo_semana;
             $objResumenSemanalTotal->valor = $data->valor;
             $objResumenSemanalTotal->save();
         }
