@@ -24,14 +24,14 @@
             @php $x=0; $semanaPasada='' @endphp
             @foreach($semanas as $semana => $item)
                 @php $saldoInicial = getObjSemana($semana)->firstSaldoInicialBusqueda($idVariedad,$semana)->saldo_inicial;
-                   semana
                 @endphp
                 <td class="text-center" style="border:1px solid #9d9d9d; background-color: #e9ecef; width:350px;border-bottom: 2px solid #000000;border-right: 2px solid #000000;" colspan="3">
                     <b class="{{$saldoInicial < 0 ? "text-red" : "text-success"}}" data-toggle="tooltsemanata-placement="top" title="Saldo inicial">
                         {{number_format($saldoInicial,2,".",",")}}
-                        <i class="fa {{$saldoInicial < 0 semanaarrow-down" : "fa-arrow-up"}}" aria-hidden="true"></i>
+                        <i class="fa {{$saldoInicial < 0 ? "fa-arrow-down" : "fa-arrow-up"}}" aria-hidden="true"></i>
                     </b>
-                </tdsemana            @php $x++; $semanaPasada=$semana @endphp
+                </td>
+                @php $x++; $semanaPasada=$semana @endphp
             @endforeach
             <td class="textsemanar" style="background-color: #e9ecef;width:250px;border: 2px solid #000000;">
                 Saldo inicial
@@ -246,12 +246,12 @@
                                     $saldoFinal=$saldoInicial;*/
                             @endphp
                             <td style="border: 1px solid #9d9d9d;border: 2px solid #000000;" colspan="3">
-                                <div style="width:100%;text-align:center;" data-tsemana"tooltip" data-placement="top" title="Saldo final">
+                                <div style="width:100%;text-align:center;" data-tooltip data-placement="top" title="Saldo final">
                                     <b class="{{$saldoFinal < 0 ? "text-red" : "text-success"}}">
-                                      semanamber_format($saldoFinal,2,".",",")}}
+                                      {{number_format($saldoFinal,2,".",",")}}
                                         <i class="fa {{$saldoFinal < 0 ? "fa-semanadown" : "fa-arrow-up"}}" aria-hidden="true"></i>
                                     </b>
-                               semana>
+                               </div>
                             </td>
                             @php $x++; $semanaPasada=$semana @endphp
                         @endforeach
