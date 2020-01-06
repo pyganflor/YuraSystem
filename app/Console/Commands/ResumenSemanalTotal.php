@@ -58,7 +58,8 @@ class ResumenSemanalTotal extends Command
             }
 
             $objResumenSemanalTotal->codigo_semana = $data->codigo_semana;
-            $objResumenSemanalTotal->valor = $data->valor;
+            if($data->valor > 0)
+                $objResumenSemanalTotal->valor = $data->valor;
             $objResumenSemanalTotal->save();
         }
 
