@@ -4,6 +4,7 @@ namespace yura\Console\Commands;
 
 use Illuminate\Console\Command;
 use yura\Modelos\ProyeccionVentaSemanalReal;
+use yura\Modelos\ResumenSemanalTotal as ModelResumenSemanaTotal;
 use DB;
 
 class ResumenSemanalTotal extends Command
@@ -40,12 +41,25 @@ class ResumenSemanalTotal extends Command
     public function handle()
     {
 
-        $objProyeccionVentaSemanalReal = ProyeccionVentaSemanalReal::select(
+        $dataProyeccionVentaSemanalReal = ProyeccionVentaSemanalReal::select(
             'codigo_semana',
             DB::raw('sum(valor) as valor')
         )->groupBy('codigo_semana')->get();
 
-        dd($objProyeccionVentaSemanalReal);
+        foreach($dataProyeccionVentaSemanalReal as $data){
+
+            $objResumenSemanalTotal = ModelResumenSemanaTotal::All()
+            ->where('codigo_semana',$data->codigo_semana)->first();
+            
+            if(isset($objResumenSemanalTotal)){
+                $objResumenSemanalTotal = ModelResumenSemanaTotal::find($objResumenSemanalTotal->id_resumen_semana_total);
+            }else{
+                $objResumenSemanalTotal= new ModelResumenSemanaTotal;
+            }
+
+            $objResumenSemanalTotal->valor = $data->valor;
+            $objResumenSemanalTotal->save();
+        }
 
     }
 }
