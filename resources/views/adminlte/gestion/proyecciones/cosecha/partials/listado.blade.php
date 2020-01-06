@@ -348,8 +348,8 @@
                                 }
                             @endphp
                             <span data-toggle="tooltip" data-placement="top" data-html="true"
-                            title="{{$semanas[$pos_val]->codigo}}"> <br>
-                            <small>Calib:<em>{{$calibre}}</em></small>
+                            title="{{$semanas[$pos_val]->codigo}} <br>
+                            <small>Calib:<em>{{$calibre}}</em></small>">
                             {{number_format($val, 2)}}
                             <br>
                             <strong>
