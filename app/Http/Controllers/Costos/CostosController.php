@@ -17,9 +17,9 @@ use yura\Modelos\Producto;
 
 class CostosController extends Controller
 {
-    public function gestion(Request $request)
+    public function gestion_insumo(Request $request)
     {
-        return view('adminlte.gestion.costos.inicio', [
+        return view('adminlte.gestion.costos.insumo.inicio', [
             'url' => $request->getRequestUri(),
             'submenu' => Submenu::Where('url', '=', substr($request->getRequestUri(), 1))->get()[0],
             'areas' => Area::All()->sortBy('nombre'),
@@ -230,7 +230,7 @@ class CostosController extends Controller
 
     public function importar_actividad(Request $request)
     {
-        return view('adminlte.gestion.costos.forms.importar_actividad', [
+        return view('adminlte.gestion.costos.insumo.forms.importar_actividad', [
             'areas' => Area::All(),
         ]);
     }
@@ -391,7 +391,7 @@ class CostosController extends Controller
 
     public function importar_producto(Request $request)
     {
-        return view('adminlte.gestion.costos.forms.importar_producto', [
+        return view('adminlte.gestion.costos.insumo.forms.importar_producto', [
         ]);
     }
 
@@ -403,7 +403,7 @@ class CostosController extends Controller
             array_push($productos_vinc, $p->id_producto);
         }
 
-        return view('adminlte.gestion.costos.forms.vincular_actividad_producto', [
+        return view('adminlte.gestion.costos.insumo.forms.vincular_actividad_producto', [
             'actividad' => $actividad,
             'productos_vinc' => $productos_vinc,
             'productos' => Producto::All()->where('estado', 1)->sortBy('nombre'),
@@ -631,7 +631,7 @@ class CostosController extends Controller
     /* ==================================== IMPORTAR ===================================== */
     public function costos_importar(Request $request)
     {
-        return view('adminlte.gestion.costos.costos_importar', [
+        return view('adminlte.gestion.costos.insumo.costos_importar', [
             'url' => $request->getRequestUri(),
             'submenu' => Submenu::Where('url', '=', substr($request->getRequestUri(), 1))->get()[0],
         ]);
@@ -738,4 +738,15 @@ class CostosController extends Controller
         ];
     }
 
+    /* =================================== MANO OBRA ======================================= */
+    public function gestion_mano_obra(Request $request)
+    {
+        return view('adminlte.gestion.costos.mano_obra.inicio', [
+            'url' => $request->getRequestUri(),
+            'submenu' => Submenu::Where('url', '=', substr($request->getRequestUri(), 1))->get()[0],
+            'areas' => Area::All()->sortBy('nombre'),
+            'actividades' => Actividad::All()->sortBy('nombre'),
+            'productos' => Producto::All()->sortBy('nombre'),
+        ]);
+    }
 }
