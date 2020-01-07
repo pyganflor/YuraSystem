@@ -47,7 +47,6 @@ class ResumenSemanalTotal extends Command
         )->groupBy('codigo_semana')->get();
 
         foreach($dataProyeccionVentaSemanalReal as $data){
-
             $objResumenSemanalTotal = ModelResumenSemanaTotal::All()
             ->where('codigo_semana',$data->codigo_semana)->first();
             
