@@ -17,8 +17,8 @@
         <tr id="tr_actividad_{{$a->id_actividad}}" class="{{$a->estado == 0 ? 'error' : ''}}">
             <td class="text-center" style="border-color: #9d9d9d">
                 <input type="text" maxlength="50" id="n_actividad_{{$a->id_actividad}}" name="n_actividad_{{$a->id_actividad}}"
-                       value="{{$a->nombre}}" title="Doble click para vincular productos"
-                       style="width: 100%" class="text-center" ondblclick="vincular_actividad_producto('{{$a->id_actividad}}')">
+                       value="{{$a->nombre}}" title="Doble click para vincular manos de obra"
+                       style="width: 100%" class="text-center" ondblclick="vincular_actividad_mano_obra('{{$a->id_actividad}}')">
             </td>
             <td class="text-center" style="border-color: #9d9d9d">
                 <select name="area_actividad_{{$a->id_actividad}}" id="area_actividad_{{$a->id_actividad}}" style="width: 100%">
@@ -187,12 +187,12 @@
         }
     }
 
-    function vincular_actividad_producto(id) {
+    function vincular_actividad_mano_obra(id) {
         datos = {
             id: id
         };
-        get_jquery('{{url('costos_gestion/vincular_actividad_producto')}}', datos, function (retorno) {
-            modal_view('modal-view_vincular_actividad_producto', retorno, '<i class="fa fa-fw fa-exchange"></i> Vincular productos a la actividad', true, false, '{{isPC() ? '75%' : ''}}')
+        get_jquery('{{url('gestion_mano_obra/vincular_actividad_mano_obra')}}', datos, function (retorno) {
+            modal_view('modal-view_vincular_actividad_mano_obra', retorno, '<i class="fa fa-fw fa-exchange"></i> Vincular manos de obra a la actividad', true, false, '{{isPC() ? '75%' : ''}}')
         })
     }
 </script>

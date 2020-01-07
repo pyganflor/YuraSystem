@@ -2,19 +2,19 @@
     <strong>Área: </strong>"{{$actividad->area->nombre}}" -
     <strong>Actividad: </strong>"{{$actividad->nombre}}"
 </legend>
-<form id="form-importar_act_producto" action="{{url('costos_gestion/importar_file_act_producto')}}" method="POST">
+<form id="form-importar_act_mano_obra" action="{{url('gestion_mano_obra/importar_file_act_mano_obra')}}" method="POST">
     {!! csrf_field() !!}
     <div class="input-group">
         <span class="input-group-addon" style="background-color: #e9ecef">
             Archivo
         </span>
-        <input type="file" id="file_act_producto" name="file_act_producto" required class="form-control input-group-addon"
+        <input type="file" id="file_act_mano_obra" name="file_act_mano_obra" required class="form-control input-group-addon"
                accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel">
 
         <input type="hidden" id="id_actividad" name="id_actividad" value="{{$actividad->id_actividad}}">
 
         <span class="input-group-btn">
-            <button type="button" class="btn btn-primary" onclick="importar_file_act_producto()">
+            <button type="button" class="btn btn-primary" onclick="importar_file_act_mano_obra()">
                 <i class="fa fa-fw fa-check"></i>
             </button>
         </span>
@@ -26,15 +26,15 @@
         <thead>
         <tr class="fila_fija">
             <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
-                Producto
+                Mano de Obra
             </th>
         </tr>
         </thead>
         <tbody>
-        @foreach($productos as $p)
-            <tr id="tr_vinc_producto_{{$p->id_producto}}"
-                style="background-color: {{in_array($p->id_producto, $productos_vinc) ? '#6dfd85' : ''}}">
-                <td class="text-center mouse-hand" style="border-color: #9d9d9d" onclick="store_actividad_producto('{{$p->id_producto}}')">
+        @foreach($manos_obra as $p)
+            <tr id="tr_vinc_mano_obra_{{$p->id_mano_obra}}"
+                style="background-color: {{in_array($p->id_mano_obra, $manos_obra_vinc) ? '#6dfd85' : ''}}">
+                <td class="text-center mouse-hand" style="border-color: #9d9d9d" onclick="store_actividad_mano_obra('{{$p->id_mano_obra}}')">
                     {{$p->nombre}}
                 </td>
             </tr>
@@ -46,10 +46,10 @@
 <script>
     estructura_tabla('table_vincular_act_prod', false, false);
 
-    function importar_file_act_producto() {
-        if ($('#form-importar_act_producto').valid()) {
+    function importar_file_act_mano_obra() {
+        if ($('#form-importar_act_mano_obra').valid()) {
             $.LoadingOverlay('show');
-            formulario = $('#form-importar_act_producto');
+            formulario = $('#form-importar_act_mano_obra');
             var formData = new FormData(formulario[0]);
             //hacemos la petición ajax
             $.ajax({
@@ -68,7 +68,7 @@
                         $.LoadingOverlay('hide');
                         alerta_accion(retorno2.mensaje, function () {
                             for (i = 0; i < retorno2.ids.length; i++) {
-                                $('#tr_vinc_producto_' + retorno2.ids[i]).css('background-color', '#6dfd85');
+                                $('#tr_vinc_mano_obra_' + retorno2.ids[i]).css('background-color', '#6dfd85');
                             }
                         });
                     } else {
@@ -87,19 +87,19 @@
         }
     }
 
-    function store_actividad_producto(producto) {
+    function store_actividad_mano_obra(mano_obra) {
         datos = {
             _token: '{{csrf_token()}}',
             actividad: $('#id_actividad').val(),
-            producto: producto,
+            mano_obra: mano_obra,
         };
-        $('#tr_vinc_producto_' + producto).LoadingOverlay('show');
-        $.post('{{url('costos_gestion/store_actividad_producto')}}', datos, function (retorno) {
+        $('#tr_vinc_mano_obra_' + mano_obra).LoadingOverlay('show');
+        $.post('{{url('gestion_mano_obra/store_actividad_mano_obra')}}', datos, function (retorno) {
             if (retorno.success) {
                 if (retorno.estado == 1)
-                    $('#tr_vinc_producto_' + producto).css('background-color', '#6dfd85');
+                    $('#tr_vinc_mano_obra_' + mano_obra).css('background-color', '#6dfd85');
                 else
-                    $('#tr_vinc_producto_' + producto).css('background-color', '');
+                    $('#tr_vinc_mano_obra_' + mano_obra).css('background-color', '');
             } else {
                 alerta(retorno.mensaje)
             }
@@ -107,7 +107,7 @@
             console.log(retorno);
             alerta_errores(retorno.responseText);
         }).always(function () {
-            $('#tr_vinc_producto_' + producto).LoadingOverlay('hide');
+            $('#tr_vinc_mano_obra_' + mano_obra).LoadingOverlay('hide');
         });
     }
 </script>

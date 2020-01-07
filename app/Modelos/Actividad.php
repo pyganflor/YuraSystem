@@ -27,4 +27,9 @@ class Actividad extends Model
     {
         return $this->hasMany('\yura\Modelos\ActividadProducto', 'id_actividad');
     }
+
+    public function manos_obra()
+    {
+        return $this->hasMany('\yura\Modelos\ActividadManoObra', 'id_actividad');
+    }
 }
