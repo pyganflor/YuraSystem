@@ -62,7 +62,7 @@
             nombre: $('#new_mano_obra_' + num).val()
         };
         $('#new_tr_mano_obra_' + num).LoadingOverlay('show');
-        $.post('{{url('costos_gestion/store_mano_obra')}}', datos, function (retorno) {
+        $.post('{{url('gestion_mano_obra/store_mano_obra')}}', datos, function (retorno) {
             if (retorno.success) {
                 $('#btn_mano_obra_' + num).hide();
                 $('#icon_new_mano_obra_' + num).removeClass('hide');
@@ -84,7 +84,7 @@
             nombre: $('#n_mano_obra_' + id).val(),
         };
         $('#tr_mano_obra_' + id).LoadingOverlay('show');
-        $.post('{{url('costos_gestion/update_mano_obra')}}', datos, function (retorno) {
+        $.post('{{url('gestion_mano_obra/update_mano_obra')}}', datos, function (retorno) {
             if (retorno.success) {
                 $('#btn_upd_mano_obra_' + id).hide();
                 $('#icon_mano_obra_' + id).removeClass('hide');
@@ -100,7 +100,7 @@
     }
 
     function importar_mano_obra() {
-        get_jquery('{{url('costos_gestion/importar_mano_obra')}}', {}, function (retorno) {
+        get_jquery('{{url('gestion_mano_obra/importar_mano_obra')}}', {}, function (retorno) {
             modal_view('modal-view_importar_mano_obra', retorno, '<i class="fa fa-fw fa-upload"></i> Importar', true, false, '{{isPC() ? '75%' : ''}}')
         })
     }
@@ -150,7 +150,7 @@
             id_mano_obra: id,
         };
         $('#tr_mano_obra_' + id).LoadingOverlay('show');
-        $.post('{{url('costos_gestion/delete_mano_obra')}}', datos, function (retorno) {
+        $.post('{{url('gestion_mano_obra/delete_mano_obra')}}', datos, function (retorno) {
             if (retorno.success) {
                 $('#btn_upd_mano_obra_' + id).hide();
                 $('#btn_del_mano_obra_' + id).hide();
