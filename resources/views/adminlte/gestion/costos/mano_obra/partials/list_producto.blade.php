@@ -150,7 +150,7 @@
             id_mano_obra: id,
         };
         $('#tr_mano_obra_' + id).LoadingOverlay('show');
-        $.post('{{url('costos_gestion/delete_mano_obra')}}', datos, function (retorno) {
+        $.post('{{url('gestion_mano_obra/delete_mano_obra')}}', datos, function (retorno) {
             if (retorno.success) {
                 $('#btn_upd_mano_obra_' + id).hide();
                 $('#btn_del_mano_obra_' + id).hide();

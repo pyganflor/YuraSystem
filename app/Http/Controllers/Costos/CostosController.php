@@ -1061,4 +1061,17 @@ class CostosController extends Controller
             'ids' => $array_ids_prod,
         ];
     }
+
+    public function delete_mano_obra(Request $request)
+    {
+        $model = ManoObra::find($request->id_mano_obra);
+        $model->estado = $model->estado == 1 ? 0 : 1;
+        $model->save();
+        bitacora('mano_obra', $model->id_mano_obra, 'U', 'Modificacion satisfactoria del estado de una mano de obra');
+
+        return [
+            'success' => true,
+            'mensaje' => '',
+        ];
+    }
 }
