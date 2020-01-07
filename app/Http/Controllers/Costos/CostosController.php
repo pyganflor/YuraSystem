@@ -5,6 +5,7 @@ namespace yura\Http\Controllers\Costos;
 use Illuminate\Http\Request;
 use yura\Http\Controllers\Controller;
 use yura\Modelos\Actividad;
+use yura\Modelos\ActividadManoObra;
 use yura\Modelos\ActividadProducto;
 use yura\Modelos\Area;
 use yura\Modelos\CostosSemana;
@@ -749,5 +750,315 @@ class CostosController extends Controller
             'actividades' => Actividad::All()->sortBy('nombre'),
             'manos_obra' => ManoObra::All()->sortBy('nombre'),
         ]);
+    }
+
+    public function store_mano_obra(Request $request)
+    {
+        $valida = Validator::make($request->all(), [
+            'nombre' => 'required|max:250|unique:mano_obra',
+        ], [
+            'nombre.unique' => 'El nombre ya existe',
+            'nombre.required' => 'El nombre es obligatorio',
+            'nombre.max' => 'El nombre es muy grande',
+        ]);
+        $msg = '';
+        if (!$valida->fails()) {
+            $model = new ManoObra();
+            $model->nombre = str_limit(mb_strtoupper(espacios($request->nombre)), 250);
+            $model->fecha_registro = date('Y-m-d H:i:s');
+
+            if ($model->save()) {
+                $model = ManoObra::All()->last();
+                $success = true;
+                bitacora('mano_obra', $model->id_mano_obra, 'I', 'Inserción satisfactoria de una nueva mano de obra');
+            } else {
+                $success = false;
+            }
+        } else {
+            $success = false;
+            $errores = '';
+            foreach ($valida->errors()->all() as $mi_error) {
+                if ($errores == '') {
+                    $errores = '<li>' . $mi_error . '</li>';
+                } else {
+                    $errores .= '<li>' . $mi_error . '</li>';
+                }
+            }
+            $msg = '<div class="alert alert-danger">' .
+                '<p class="text-center">¡Por favor corrija los siguientes errores!</p>' .
+                '<ul>' .
+                $errores .
+                '</ul>' .
+                '</div>';
+        }
+        return [
+            'success' => $success,
+            'mensaje' => $msg,
+        ];
+    }
+
+    public function importar_mano_obra(Request $request)
+    {
+        return view('adminlte.gestion.costos.mano_obra.forms.importar_producto', [
+        ]);
+    }
+
+    public function importar_file_mano_obra(Request $request)
+    {
+        ini_set('max_execution_time', env('MAX_EXECUTION_TIME'));
+        $valida = Validator::make($request->all(), [
+            'file_mano_obra' => 'required',
+        ]);
+        $msg = '';
+        $success = true;
+        if (!$valida->fails()) {
+
+            $document = PHPExcel_IOFactory::load($request->file_mano_obra);
+            $activeSheetData = $document->getActiveSheet()->toArray(null, true, true, true);
+
+            $titles = $activeSheetData[1];
+
+            foreach ($activeSheetData as $pos_row => $row) {
+                if ($pos_row > 1) {
+                    if ($row['A'] != '') {
+                        $nombre = str_limit(mb_strtoupper(espacios($row['A'])), 250);
+                        if (count(ManoObra::All()->where('nombre', $nombre)) == 0) {
+                            $model = new ManoObra();
+                            $model->nombre = $nombre;
+                            $model->fecha_registro = date('Y-m-d');
+
+                            $model->save();
+                            $model = ManoObra::All()->last();
+                            bitacora('mano_obra', $model->id_mano_obra, 'I', 'Inserción satisfactoria de una nueva mano de obra');
+                            $msg .= '<li class="bg-green">Se ha importado la mano de obra: "' . $nombre . '."</li>';
+                        }
+                    }
+                }
+            }
+        } else {
+            $errores = '';
+            foreach ($valida->errors()->all() as $mi_error) {
+                if ($errores == '') {
+                    $errores = '<li>' . $mi_error . '</li>';
+                } else {
+                    $errores .= '<li>' . $mi_error . '</li>';
+                }
+            }
+            $success = false;
+            $msg = '<div class="alert alert-danger">' .
+                '<p class="text-center">¡Por favor corrija los siguientes errores!</p>' .
+                '<ul>' .
+                $errores .
+                '</ul>' .
+                '</div>';
+        }
+        return [
+            'mensaje' => $msg,
+            'success' => $success,
+        ];
+    }
+
+    public function update_mano_obra(Request $request)
+    {
+        $valida = Validator::make($request->all(), [
+            'nombre' => 'required|max:250',
+            'id_mano_obra' => 'required|',
+        ], [
+            'nombre.required' => 'El nombre es obligatorio',
+            'id_mano_obra.required' => 'La mano de obra es obligatoria',
+            'nombre.max' => 'El nombre es muy grande',
+        ]);
+        $msg = '';
+        if (!$valida->fails()) {
+            if (count(ManoObra::All()->where('nombre', '=', str_limit(mb_strtoupper(espacios($request->nombre)), 250))
+                    ->where('id_mano_obra', '!=', $request->id_mano_obra)) == 0) {
+                $model = ManoObra::find($request->id_mano_obra);
+                $model->nombre = str_limit(mb_strtoupper(espacios($request->nombre)), 250);
+
+                if ($model->save()) {
+                    $success = true;
+                    bitacora('mano_obra', $model->id_mano_obra, 'U', 'Actualización satisfactoria de una mano de obra');
+                } else {
+                    $success = false;
+                }
+            } else {
+                $success = false;
+                $msg = '<div class="alert alert-warning text-center">' .
+                    '<p> La mano de obra "' . espacios($request->nombre) . '" ya se encuentra en el sistema</p>'
+                    . '</div>';
+            }
+        } else {
+            $success = false;
+            $errores = '';
+            foreach ($valida->errors()->all() as $mi_error) {
+                if ($errores == '') {
+                    $errores = '<li>' . $mi_error . '</li>';
+                } else {
+                    $errores .= '<li>' . $mi_error . '</li>';
+                }
+            }
+            $msg = '<div class="alert alert-danger">' .
+                '<p class="text-center">¡Por favor corrija los siguientes errores!</p>' .
+                '<ul>' .
+                $errores .
+                '</ul>' .
+                '</div>';
+        }
+        return [
+            'mensaje' => $msg,
+            'success' => $success
+        ];
+    }
+
+    public function vincular_actividad_mano_obra(Request $request)
+    {
+        $actividad = Actividad::find($request->id);
+        $manos_obra_vinc = [];
+        foreach ($actividad->manos_obra->where('estado', 1) as $p) {
+            array_push($manos_obra_vinc, $p->id_mano_obra);
+        }
+
+        return view('adminlte.gestion.costos.mano_obra.forms.vincular_actividad_mano_obra', [
+            'actividad' => $actividad,
+            'manos_obra_vinc' => $manos_obra_vinc,
+            'manos_obra' => ManoObra::All()->where('estado', 1)->sortBy('nombre'),
+        ]);
+    }
+
+    public function store_actividad_mano_obra(Request $request)
+    {
+        $valida = Validator::make($request->all(), [
+            'actividad' => 'required',
+            'mano_obra' => 'required',
+        ], [
+            'actividad.required' => 'La actividad es obligatoria',
+            'mano_obra.required' => 'La mano de obra es obligatorio',
+        ]);
+        $msg = '';
+        $estado = 1;
+        if (!$valida->fails()) {
+            $model = ActividadManoObra::All()
+                ->where('id_actividad', $request->actividad)
+                ->where('id_mano_obra', $request->mano_obra)
+                ->first();
+            if ($model == '') {
+                $model = new ActividadManoObra();
+                $model->id_actividad = $request->actividad;
+                $model->id_mano_obra = $request->mano_obra;
+                $model->fecha_registro = date('Y-m-d H:i:s');
+
+                if ($model->save()) {
+                    $model = ActividadManoObra::All()->last();
+                    $success = true;
+                    bitacora('actividad_mano_obra', $model->actividad_mano_obra, 'I', 'Inserción satisfactoria de un nuevo vínculo actividad_mano_obra');
+                } else {
+                    $success = false;
+                }
+            } else {
+                $model->estado = $model->estado == 1 ? 0 : 1;
+                $estado = $model->estado;
+                $success = true;
+
+                $model->save();
+                bitacora('mano_obra', $model->id_mano_obra, 'U', 'Modificacion satisfactoria del estado de una mano de obra');
+            }
+        } else {
+            $success = false;
+            $errores = '';
+            foreach ($valida->errors()->all() as $mi_error) {
+                if ($errores == '') {
+                    $errores = '<li>' . $mi_error . '</li>';
+                } else {
+                    $errores .= '<li>' . $mi_error . '</li>';
+                }
+            }
+            $msg = '<div class="alert alert-danger">' .
+                '<p class="text-center">¡Por favor corrija los siguientes errores!</p>' .
+                '<ul>' .
+                $errores .
+                '</ul>' .
+                '</div>';
+        }
+        return [
+            'success' => $success,
+            'mensaje' => $msg,
+            'estado' => $estado,
+        ];
+    }
+
+    public function importar_file_act_mano_obra(Request $request)
+    {
+        ini_set('max_execution_time', env('MAX_EXECUTION_TIME'));
+        $valida = Validator::make($request->all(), [
+            'file_act_mano_obra' => 'required',
+        ]);
+        $msg = '';
+        $success = true;
+        $array_ids_prod = [];
+        if (!$valida->fails()) {
+
+            $document = PHPExcel_IOFactory::load($request->file_act_mano_obra);
+            $activeSheetData = $document->getActiveSheet()->toArray(null, true, true, true);
+
+            $titles = $activeSheetData[1];
+            foreach ($activeSheetData as $pos_row => $row) {
+                if ($pos_row > 1) {
+                    if ($row['A'] != '') {
+                        $nombre = str_limit(mb_strtoupper(espacios($row['A'])), 250);
+                        $mano_obra = ManoObra::All()->where('nombre', $nombre)->first();
+
+                        if ($mano_obra != '') {
+                            $model = ActividadManoObra::All()
+                                ->where('id_actividad', $request->id_actividad)
+                                ->where('id_mano_obra', $mano_obra->id_mano_obra)
+                                ->first();
+                            if ($model == '') {
+                                $model = new ActividadManoObra();
+                                $model->id_actividad = $request->id_actividad;
+                                $model->id_mano_obra = $mano_obra->id_mano_obra;
+                                $model->fecha_registro = date('Y-m-d H:i:s');
+
+                                if ($model->save()) {
+                                    $model = ActividadManoObra::All()->last();
+                                    $success = true;
+                                    bitacora('actividad_mano_obra', $model->actividad_mano_obra, 'I', 'Inserción satisfactoria de un nuevo vínculo actividad_mano_obra');
+                                } else {
+                                    $success = false;
+                                }
+                            } else {
+                                $model->estado = 1;
+                                $success = true;
+
+                                $model->save();
+                                bitacora('mano_obra', $model->id_mano_obra, 'U', 'Modificación satisfactoria del estado de una mano de obra');
+                            }
+                            array_push($array_ids_prod, $mano_obra->id_mano_obra);
+                            $msg .= '<li class="bg-green">Se ha vinculado la mano de obra: "' . $nombre . '."</li>';
+                        }
+                    }
+                }
+            }
+        } else {
+            $errores = '';
+            foreach ($valida->errors()->all() as $mi_error) {
+                if ($errores == '') {
+                    $errores = '<li>' . $mi_error . '</li>';
+                } else {
+                    $errores .= '<li>' . $mi_error . '</li>';
+                }
+            }
+            $success = false;
+            $msg = '<div class="alert alert-danger">' .
+                '<p class="text-center">¡Por favor corrija los siguientes errores!</p>' .
+                '<ul>' .
+                $errores .
+                '</ul>' .
+                '</div>';
+        }
+        return [
+            'mensaje' => $msg,
+            'success' => $success,
+            'ids' => $array_ids_prod,
+        ];
     }
 }
