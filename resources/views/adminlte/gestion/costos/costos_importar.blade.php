@@ -42,6 +42,13 @@
                     {!! csrf_field() !!}
                     <div class="input-group">
                         <span class="input-group-addon" style="background-color: #e9ecef">
+                            Concepto
+                        </span>
+                        <select name="concepto_importar" id="concepto_importar" class="form-control input-group-addon">
+                            <option value="I">Insumos</option>
+                            <option value="M">Mano de Obra</option>
+                        </select>
+                        <span class="input-group-addon" style="background-color: #e9ecef">
                             Archivo
                         </span>
                         <input type="file" id="file_costos" name="file_costos" required class="form-control input-group-addon"
@@ -88,7 +95,7 @@
                         if (retorno2.success) {
                             $.LoadingOverlay('hide');
                             alerta_accion(retorno2.mensaje, function () {
-                                location.reload();
+                                //location.reload();
                             });
                         } else {
                             alerta(retorno2.mensaje);
