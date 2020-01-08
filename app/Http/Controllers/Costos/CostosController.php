@@ -546,7 +546,7 @@ class CostosController extends Controller
             foreach ($activeSheetData as $pos_row => $row) {
                 if ($pos_row > 1) {
                     if ($row['A'] != '') {
-                        $nombre = str_limit(mb_strtoupper(espacios($row['A'])), 250);
+                        $nombre = str_limit(mb_strtoupper(espacios($row['B'])), 250);
                         $producto = Producto::All()->where('nombre', $nombre)->first();
 
                         if ($producto != '') {
@@ -994,7 +994,7 @@ class CostosController extends Controller
         ]);
         $msg = '';
         $success = true;
-        $array_ids_prod = [];
+        $array_ids_mo = [];
         if (!$valida->fails()) {
 
             $document = PHPExcel_IOFactory::load($request->file_act_mano_obra);
@@ -1004,7 +1004,7 @@ class CostosController extends Controller
             foreach ($activeSheetData as $pos_row => $row) {
                 if ($pos_row > 1) {
                     if ($row['A'] != '') {
-                        $nombre = str_limit(mb_strtoupper(espacios($row['A'])), 250);
+                        $nombre = str_limit(mb_strtoupper(espacios($row['B'])), 250);
                         $mano_obra = ManoObra::All()->where('nombre', $nombre)->first();
 
                         if ($mano_obra != '') {
@@ -1032,7 +1032,7 @@ class CostosController extends Controller
                                 $model->save();
                                 bitacora('mano_obra', $model->id_mano_obra, 'U', 'Modificación satisfactoria del estado de una mano de obra');
                             }
-                            array_push($array_ids_prod, $mano_obra->id_mano_obra);
+                            array_push($array_ids_mo, $mano_obra->id_mano_obra);
                             $msg .= '<li class="bg-green">Se ha vinculado la mano de obra: "' . $nombre . '."</li>';
                         }
                     }
@@ -1058,7 +1058,7 @@ class CostosController extends Controller
         return [
             'mensaje' => $msg,
             'success' => $success,
-            'ids' => $array_ids_prod,
+            'ids' => $array_ids_mo,
         ];
     }
 
