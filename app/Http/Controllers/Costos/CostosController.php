@@ -9,6 +9,7 @@ use yura\Modelos\ActividadManoObra;
 use yura\Modelos\ActividadProducto;
 use yura\Modelos\Area;
 use yura\Modelos\CostosSemana;
+use yura\Modelos\CostosSemanaManoObra;
 use yura\Modelos\ManoObra;
 use yura\Modelos\Submenu;
 use Validator;
@@ -546,7 +547,7 @@ class CostosController extends Controller
             foreach ($activeSheetData as $pos_row => $row) {
                 if ($pos_row > 1) {
                     if ($row['A'] != '') {
-                        $nombre = str_limit(mb_strtoupper(espacios($row['A'])), 250);
+                        $nombre = str_limit(mb_strtoupper(espacios($row['B'])), 250);
                         $producto = Producto::All()->where('nombre', $nombre)->first();
 
                         if ($producto != '') {
@@ -633,7 +634,7 @@ class CostosController extends Controller
     /* ==================================== IMPORTAR ===================================== */
     public function costos_importar(Request $request)
     {
-        return view('adminlte.gestion.costos.insumo.costos_importar', [
+        return view('adminlte.gestion.costos.costos_importar', [
             'url' => $request->getRequestUri(),
             'submenu' => Submenu::Where('url', '=', substr($request->getRequestUri(), 1))->get()[0],
         ]);
@@ -653,43 +654,77 @@ class CostosController extends Controller
             $activeSheetData = $document->getActiveSheet()->toArray(null, true, true, true);
 
             $titles = $activeSheetData[1];
-            //dd($titles,$activeSheetData);
-            //dd($activeSheetData);
             foreach ($activeSheetData as $pos_row => $row) {
                 if ($pos_row > 1) {
                     if ($row['A'] != '' && $row['B'] != '') {
                         $actividad = Actividad::All()->where('estado', 1)
                             ->where('nombre', str_limit(mb_strtoupper(espacios($row['A'])), 50))->first();
-                        $producto = Producto::All()->where('estado', 1)
-                            ->where('nombre', str_limit(mb_strtoupper(espacios($row['B'])), 250))->first();
+                        if ($request->concepto_importar == 'I') { // insumos
+                            $producto = Producto::All()->where('estado', 1)
+                                ->where('nombre', str_limit(mb_strtoupper(espacios($row['B'])), 250))->first();
+                            $concepto = 'insumo';
+                        } else {    // mano de obra
+                            $producto = ManoObra::All()->where('estado', 1)
+                                ->where('nombre', str_limit(mb_strtoupper(espacios($row['B'])), 250))->first();
+                            $concepto = 'mano de obra';
+                        }
 
                         if ($actividad != '' && $producto != '') {
-                            $act_prod = ActividadProducto::All()
-                                ->where('estado', 1)
-                                ->where('id_actividad', $actividad->id_actividad)
-                                ->where('id_producto', $producto->id_producto)
-                                ->first();
+                            if ($request->concepto_importar == 'I') // insumos
+                                $act_prod = ActividadProducto::All()
+                                    ->where('estado', 1)
+                                    ->where('id_actividad', $actividad->id_actividad)
+                                    ->where('id_producto', $producto->id_producto)
+                                    ->first();
+                            else    // mano de obra
+                                $act_prod = ActividadManoObra::All()
+                                    ->where('estado', 1)
+                                    ->where('id_actividad', $actividad->id_actividad)
+                                    ->where('id_producto', $producto->id_mano_obra)
+                                    ->first();
+
                             if ($act_prod == '') {
-                                $model = new ActividadProducto();
+                                if ($request->concepto_importar == 'I') { // insumos
+                                    $model = new ActividadProducto();
+                                    $model->id_producto = $producto->id_producto;
+                                } else {    // mano de obra
+                                    $model = new ActividadManoObra();
+                                    $model->id_mano_obra = $producto->id_mano_obra;
+                                }
                                 $model->id_actividad = $actividad->id_actividad;
-                                $model->id_producto = $producto->id_producto;
                                 $model->fecha_registro = date('Y-m-d H:i:s');
                                 $model->save();
-                                $act_prod = ActividadProducto::All()->last();
-                                bitacora('actividad_producto', $act_prod->id_actividad_producto, 'I', 'Inserción satisfactoria de un nuevo vínculo actividad_producto');
+                                if ($request->concepto_importar == 'I') {   // insumos
+                                    $act_prod = ActividadProducto::All()->last();
+                                    bitacora('actividad_producto', $act_prod->id_actividad_producto, 'I', 'Inserción satisfactoria de un nuevo vínculo actividad_producto');
+                                } else {    // mano de obra
+                                    $act_prod = ActividadManoObra::All()->last();
+                                    bitacora('actividad_mano_obra', $act_prod->id_actividad_mano_obra, 'I', 'Inserción satisfactoria de un nuevo vínculo actividad_mano_obra');
+                                }
                             }
 
                             foreach ($titles as $pos_title => $t) {
                                 if (!in_array($pos_title, ['A', 'B'])) {
                                     $codigo_semana = intval($t);
                                     $value = floatval(str_replace(',', '', $row[$pos_title]));
-                                    $costos = CostosSemana::All()
-                                        ->where('codigo_semana', $codigo_semana)
-                                        ->where('id_actividad_producto', $act_prod->id_actividad_producto)
-                                        ->first();
+                                    if ($request->concepto_importar == 'I') // insumos
+                                        $costos = CostosSemana::All()
+                                            ->where('codigo_semana', $codigo_semana)
+                                            ->where('id_actividad_producto', $act_prod->id_actividad_producto)
+                                            ->first();
+                                    else    // mano de obra
+                                        $costos = CostosSemanaManoObra::All()
+                                            ->where('codigo_semana', $codigo_semana)
+                                            ->where('id_actividad_mano_obra', $act_prod->id_actividad_mano_obra)
+                                            ->first();
                                     if ($costos == '') {
-                                        $model = new CostosSemana();
-                                        $model->id_actividad_producto = $act_prod->id_actividad_producto;
+                                        if ($request->concepto_importar == 'I') { // insumos
+                                            $model = new CostosSemana();
+                                            $model->id_actividad_producto = $act_prod->id_actividad_producto;
+                                        } else {    // mano de obra
+                                            $model = new CostosSemanaManoObra();
+                                            $model->id_actividad_mano_obra = $act_prod->id_actividad_mano_obra;
+                                        }
                                         $model->codigo_semana = $codigo_semana;
                                         $model->fecha_registro = date('Y-m-d H:i:s');
                                         if ($request->criterio_importar == 'V')  // dinero
@@ -698,8 +733,13 @@ class CostosController extends Controller
                                             $model->cantidad = $value;
 
                                         $model->save();
-                                        $costos = CostosSemana::All()->last();
-                                        bitacora('costos_semana', $costos->id_costos_semana, 'I', 'Inserción satisfactoria de un nuevo costos_semana');
+                                        if ($request->concepto_importar == 'I') { // insumos
+                                            $costos = CostosSemana::All()->last();
+                                            bitacora('costos_semana', $costos->id_costos_semana, 'I', 'Inserción satisfactoria de un nuevo costos_semana');
+                                        } else {    // mano de obra
+                                            $costos = CostosSemanaManoObra::All()->last();
+                                            bitacora('costos_semana_mano_obra', $costos->id_costos_semana_mano_obra, 'I', 'Inserción satisfactoria de un nuevo costos_semana_mano_obra');
+                                        }
                                     } else {
                                         if ($request->criterio_importar == 'V')  // dinero
                                             $costos->valor = $value;
@@ -707,12 +747,15 @@ class CostosController extends Controller
                                             $costos->cantidad = $value;
 
                                         $costos->save();
-                                        bitacora('costos_semana', $costos->id_costos_semana, 'I', 'Inserción satisfactoria de un nuevo costos_semana');
+                                        if ($request->concepto_importar == 'I') // insumos
+                                            bitacora('costos_semana', $costos->id_costos_semana, 'U', 'Modificación satisfactoria de un costos_semana');
+                                        else    // mano de obra
+                                            bitacora('costos_semana_mano_obra', $costos->id_costos_semana_mano_obra, 'U', 'Modificación satisfactoria de un costos_semana_mano_obra');
                                     }
                                 }
                             }
 
-                            $msg .= '<li class="bg-green">Se ha importado el producto: "' . $producto->nombre . '" en la actividad: "' . $actividad->nombre . '</li>';
+                            $msg .= '<li class="bg-green">Se ha importado el ' . $concepto . ': "' . $producto->nombre . '" en la actividad: "' . $actividad->nombre . '</li>';
                         }
                     }
                 }
@@ -994,7 +1037,7 @@ class CostosController extends Controller
         ]);
         $msg = '';
         $success = true;
-        $array_ids_prod = [];
+        $array_ids_mo = [];
         if (!$valida->fails()) {
 
             $document = PHPExcel_IOFactory::load($request->file_act_mano_obra);
@@ -1004,7 +1047,7 @@ class CostosController extends Controller
             foreach ($activeSheetData as $pos_row => $row) {
                 if ($pos_row > 1) {
                     if ($row['A'] != '') {
-                        $nombre = str_limit(mb_strtoupper(espacios($row['A'])), 250);
+                        $nombre = str_limit(mb_strtoupper(espacios($row['B'])), 250);
                         $mano_obra = ManoObra::All()->where('nombre', $nombre)->first();
 
                         if ($mano_obra != '') {
@@ -1032,7 +1075,7 @@ class CostosController extends Controller
                                 $model->save();
                                 bitacora('mano_obra', $model->id_mano_obra, 'U', 'Modificación satisfactoria del estado de una mano de obra');
                             }
-                            array_push($array_ids_prod, $mano_obra->id_mano_obra);
+                            array_push($array_ids_mo, $mano_obra->id_mano_obra);
                             $msg .= '<li class="bg-green">Se ha vinculado la mano de obra: "' . $nombre . '."</li>';
                         }
                     }
@@ -1058,7 +1101,7 @@ class CostosController extends Controller
         return [
             'mensaje' => $msg,
             'success' => $success,
-            'ids' => $array_ids_prod,
+            'ids' => $array_ids_mo,
         ];
     }
 
