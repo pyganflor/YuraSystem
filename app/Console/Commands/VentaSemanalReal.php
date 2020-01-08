@@ -140,6 +140,8 @@ class VentaSemanalReal extends Command
                                 $objProySemReal->cajas_fisicas = 0;
                                 $objProySemReal->cajas_fisicas_anno_anterior = isset($objProyeccionVentaSemanalAnoAnterior->cajas_fisicas) ? $objProyeccionVentaSemanalAnoAnterior->cajas_fisicas : 0;
                                 foreach ($pedidos as $pedido){
+                                    dd($pedido->id_pedido,$pedido->getCajasFullByVariedad($variedad->id_variedad));
+
                                     if(!getFacturaAnulada($pedido->id_pedido)){
                                         //if($pedido->fecha_pedido >= $fechaActual->toDateString()){ //Comentar cuando se va a recopilar por primera vez toda la informacion en la tabla proyeccion_venta_semanal_real
                                             //Info("Pedido incluido de fecha: ". $pedido->fecha_pedido);
