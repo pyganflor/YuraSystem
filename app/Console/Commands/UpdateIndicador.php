@@ -6,6 +6,7 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 use yura\Http\Controllers\Indicadores\Area;
 use yura\Http\Controllers\Indicadores\Campo;
+use yura\Http\Controllers\Indicadores\Costos;
 use yura\Http\Controllers\Indicadores\Postcosecha;
 use yura\Http\Controllers\Indicadores\Venta;
 use yura\Http\Controllers\Indicadores\Proyecciones;
@@ -147,6 +148,14 @@ class UpdateIndicador extends Command
         if ($indicador_par === '0' || $indicador_par === 'P1') { // Cajas cosechadas (-7 dias)
             Postcosecha::cajas_cosechadas_7_dias_atras();
             Log::info('INDICADOR: "Cajas cosechadas (-7 dias)"');
+        }
+        if ($indicador_par === '0' || $indicador_par === 'C1') { // Costos Mano de Obra (-1 semana)
+            Costos::mano_de_obra_1_semana_atras();
+            Log::info('INDICADOR: "Costos Mano de Obra (-1 semana)"');
+        }
+        if ($indicador_par === '0' || $indicador_par === 'C2') { // Costos Insumos (-1 semana)
+            Costos::mano_insumos_1_semana_atras();
+            Log::info('INDICADOR: "Costos Insumos (-1 semana)"');
         }
 
         $time_duration = difFechas(date('Y-m-d H:i:s'), $ini)->h . ':' . difFechas(date('Y-m-d H:i:s'), $ini)->m . ':' . difFechas(date('Y-m-d H:i:s'), $ini)->s;

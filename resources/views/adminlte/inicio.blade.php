@@ -293,8 +293,8 @@
                         }, 'Costos', 'C1'],
                         [{
                             'v': 'C2', 'f': '<strong>Total</strong>' +
-                            '<br><strong>Mano de Obra</strong>' +
-                            '<br><strong>Insumos</strong>' +
+                            '<br><strong title="Mano de Obra, Semana: {{explode(':', $costos_mano_obra)[0]}}"><small>MO: </small><span id="span_costos_mano_obra">${{number_format(explode(':', $costos_mano_obra)[1] , 2)}}</span></strong>' +
+                            '<br><strong title="Insumos, Semana: {{explode(':', $costos_insumos)[0]}}"><small>IN: </small><span id="span_costos_insumos">${{number_format(explode(':', $costos_insumos)[1] , 2)}}</span></strong>' +
                             '<br><strong></strong>' +
                             '<br><strong></strong>' +
                             '<br><button type="button" class="btn btn-xs btn-block btn-default" style="color: black" disabled>Datos importantes</button>'
