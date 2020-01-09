@@ -77,7 +77,9 @@ class VentaSemanalReal extends Command
                         return false;
                     }
                 }else{
-                    $semana_hasta = getSemanaByDate(now()->toDateString());
+
+                    $semana_hasta = Semana::orderBy('codigo','desc')->first();
+                    //getSemanaByDate(now()->toDateString());
                 }
                 Info('SEMANA DESDE: ' . $semana_desde->codigo);
                 Info('SEMANA HASTA: ' . $semana_hasta->codigo );
