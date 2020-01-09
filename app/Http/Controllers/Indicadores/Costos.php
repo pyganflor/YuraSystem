@@ -36,4 +36,29 @@ class Costos
             $model->save();
         }
     }
+
+    public static function mano_insumos_1_semana_atras()
+    {
+        $model = getIndicadorByName('C2');  // Costos Insumos (-1 semana)
+        if ($model != '') {
+            $dias = 7;
+            $semana = '';
+            $valor = 0;
+            while ($valor <= 0) {
+                $dias += 7;
+                $semana = getSemanaByDate(opDiasFecha('-', $dias, date('Y-m-d')));
+                if ($semana != '') {
+                    $valor = DB::table('costos_semana')
+                        ->select(DB::raw('sum(valor) as cant'))
+                        ->where('codigo_semana', $semana->codigo)
+                        ->get()[0]->cant;
+                } else {
+                    return false;
+                }
+            }
+
+            $model->valor = $semana->codigo . ':' . round($valor, 2);
+            $model->save();
+        }
+    }
 }

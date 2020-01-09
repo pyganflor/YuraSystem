@@ -43,6 +43,8 @@ class YuraController extends Controller
                 'tallos_cosechados' => getIndicadorByName('D11')->valor,
                 'cajas_exportadas' => getIndicadorByName('D13')->valor,
                 'tallos_m2' => getIndicadorByName('D12')->valor,
+                'costos_mano_obra' => getIndicadorByName('C1')->valor,
+                'costos_insumos' => getIndicadorByName('C2')->valor,
             ]);
         }
 
