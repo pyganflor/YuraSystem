@@ -456,7 +456,7 @@ class Pedido extends Model
     }
 
     public function getCajasFullByVariedad($variedad){
-
+        dump($variedad);
         $cajasFullByVariedad = 0;
         if (!getFacturaAnulada($this->id_pedido)) {
             foreach ($this->detalles as $det_ped) {
