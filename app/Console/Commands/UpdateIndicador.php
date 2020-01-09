@@ -153,6 +153,10 @@ class UpdateIndicador extends Command
             Costos::mano_de_obra_1_semana_atras();
             Log::info('INDICADOR: "Costos Mano de Obra (-1 semana)"');
         }
+        if ($indicador_par === '0' || $indicador_par === 'C2') { // Costos Insumos (-1 semana)
+            Costos::mano_insumos_1_semana_atras();
+            Log::info('INDICADOR: "Costos Insumos (-1 semana)"');
+        }
 
         $time_duration = difFechas(date('Y-m-d H:i:s'), $ini)->h . ':' . difFechas(date('Y-m-d H:i:s'), $ini)->m . ':' . difFechas(date('Y-m-d H:i:s'), $ini)->s;
         Log::info('<*> DURACION: ' . $time_duration . '  <*>');
