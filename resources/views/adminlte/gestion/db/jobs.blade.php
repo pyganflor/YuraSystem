@@ -81,6 +81,12 @@
                                 UpdateTallosCosechadosProyeccion
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="profile-tab" data-toggle="tab" href="#UpdateOtrosGastos" role="tab" aria-controls="profile"
+                               aria-selected="false">
+                                UpdateOtrosGastos
+                            </a>
+                        </li>
                     </ul>
                     <div class="tab-content" id="myTabContent">
                         <div class="tab-pane fade" id="ProyeccionUpdateSemanal" role="tabpanel" aria-labelledby="home-tab">
@@ -275,6 +281,27 @@
                                 </div>
                             </div>
                         </div>
+
+                        <div class="tab-pane fade" id="UpdateOtrosGastos" role="tabpanel" aria-labelledby="profile-tab">
+                            <div class="input-group">
+                                <div class="input-group-addon" style="background-color: #e9ecef">
+                                    Desde
+                                </div>
+                                <input type="number" id="comando7_desde" onkeypress="return isNumber(event)" class="form-control text-center"
+                                       value="{{$semana_actual->codigo}}">
+                                <div class="input-group-addon" style="background-color: #e9ecef">
+                                    Hasta
+                                </div>
+                                <input type="number" id="comando7_hasta" onkeypress="return isNumber(event)" class="form-control text-center"
+                                       value="{{$semana_actual->codigo}}">
+
+                                <div class="input-group-btn">
+                                    <button type="button" class="btn btn-primary" title="OK" onclick="send_queue_job(7)">
+                                        <i class="fa fa-fw fa-check"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -344,6 +371,14 @@
                     semana: $('#comando6_semana').val(),
                     variedad: $('#comando6_variedad').val(),
                     modulo: $('#comando6_modulo').val(),
+                    comando: comando
+                };
+            }
+            if (comando == 7) {
+                datos = {
+                    _token: '{{csrf_token()}}',
+                    desde: $('#comando7_desde').val(),
+                    hasta: $('#comando7_hasta').val(),
                     comando: comando
                 };
             }
