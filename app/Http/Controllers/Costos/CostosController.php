@@ -11,6 +11,7 @@ use yura\Modelos\Area;
 use yura\Modelos\CostosSemana;
 use yura\Modelos\CostosSemanaManoObra;
 use yura\Modelos\ManoObra;
+use yura\Modelos\OtrosGastos;
 use yura\Modelos\Submenu;
 use Validator;
 use PHPExcel;
@@ -1117,4 +1118,76 @@ class CostosController extends Controller
             'mensaje' => '',
         ];
     }
+
+    public function otros_gastos(Request $request)
+    {
+        $area = Area::find($request->area);
+        $semana_actual = getSemanaByDate(date('Y-m-d'));
+        return view('adminlte.gestion.costos.mano_obra.forms.otros_gastos', [
+            'area' => $area,
+            'otros_gastos' => $area->otrosGastosBySemana($semana_actual->codigo),
+            'semana_actual' => $semana_actual,
+        ]);
+    }
+
+    public function store_otros_gastos(Request $request)
+    {
+        $valida = Validator::make($request->all(), [
+            'id_area' => 'required',
+            'semana' => 'required',
+            'gip' => 'required',
+            'ga' => 'required',
+        ], [
+            'semana.required' => 'La semana es obligatoria',
+            'id_area.required' => 'El área es obligatoria',
+            'gip.required' => 'El gip es obligatoria',
+            'ga.required' => 'El ga es obligatoria',
+        ]);
+        if (!$valida->fails()) {
+            $model = OtrosGastos::All()
+                ->where('id_area', $request->id_area)
+                ->where('codigo_semana', $request->semana)
+                ->first();
+            if ($model == '') {
+                $model = new OtrosGastos();
+                $model->id_area = $request->id_area;
+                $model->codigo_semana = $request->semana;
+            }
+            $model->gip = $request->gip;
+            $model->ga = $request->ga;
+
+            if ($model->save()) {
+                $success = true;
+                $msg = '<div class="alert alert-success text-center">' .
+                    '<p> Se han guardado los otros gastos satisfactoriamente</p>'
+                    . '</div>';
+            } else {
+                $success = false;
+                $msg = '<div class="alert alert-warning text-center">' .
+                    '<p> Ha ocurrido un problema al guardar la información al sistema</p>'
+                    . '</div>';
+            }
+        } else {
+            $success = false;
+            $errores = '';
+            foreach ($valida->errors()->all() as $mi_error) {
+                if ($errores == '') {
+                    $errores = '<li>' . $mi_error . '</li>';
+                } else {
+                    $errores .= '<li>' . $mi_error . '</li>';
+                }
+            }
+            $msg = '<div class="alert alert-danger">' .
+                '<p class="text-center">¡Por favor corrija los siguientes errores!</p>' .
+                '<ul>' .
+                $errores .
+                '</ul>' .
+                '</div>';
+        }
+        return [
+            'mensaje' => $msg,
+            'success' => $success
+        ];
+    }
+
 }

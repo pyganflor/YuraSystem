@@ -2,7 +2,7 @@
     <thead>
     <tr class="fila_fija">
         <th class="text-center" style="border-color: #9d9d9d">Área</th>
-        <th class="text-center" width="20px" style="border-color: #9d9d9d">
+        <th class="text-center" width="60px" style="border-color: #9d9d9d">
             <button type="button" class="btn btn-xs btn-primary" onclick="add_area()">
                 <i class="fa fa-fw fa-plus"></i>
             </button>
@@ -19,6 +19,10 @@
             <td class="text-center" style="border-color: #9d9d9d">
                 <button type="button" class="btn btn-xs btn-success" onclick="update_area('{{$a->id_area}}')" id="btn_upd_area_{{$a->id_area}}">
                     <i class="fa fa-fw fa-edit"></i>
+                </button>
+                <button type="button" class="btn btn-xs btn-default" onclick="otros_gastos('{{$a->id_area}}')"
+                        id="btn_otros_gastos_{{$a->id_area}}">
+                    <i class="fa fa-fw fa-tags"></i>
                 </button>
                 <i class="fa fa-fw fa-check hide" style="color: green" id="icon_area_{{$a->id_area}}"></i>
             </td>
@@ -86,6 +90,15 @@
             alerta_errores(retorno.responseText);
         }).always(function () {
             $('#tr_area_' + id).LoadingOverlay('hide');
+        });
+    }
+
+    function otros_gastos(area) {
+        datos = {
+            area: area,
+        };
+        get_jquery('{{url('gestion_mano_obra/otros_gastos')}}', datos, function (retorno) {
+            modal_view('modal-view_otros_gastos', retorno, '<i class="fa fa-fw fa-tags"></i> Otros Gastos', true, false, '{{!isPC() ? '50%' : ''}}')
         });
     }
 </script>
