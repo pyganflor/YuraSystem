@@ -1119,6 +1119,26 @@ class CostosController extends Controller
         ];
     }
 
+    /* ----------------------------------- REPORTE -------------------------------------------- */
+    public function reporte_mano_obra(Request $request)
+    {
+        $semana_actual = getSemanaByDate(date('Y-m-d'));
+        $semana_desde = getSemanaByDate(opDiasFecha('-', 35, date('Y-m-d')));
+        return view('adminlte.gestion.costos.mano_obra.reporte.inicio', [
+            'url' => $request->getRequestUri(),
+            'submenu' => Submenu::Where('url', '=', substr($request->getRequestUri(), 1))->get()[0],
+            'areas' => Area::All(),
+            'semana_actual' => $semana_actual,
+            'semana_desde' => $semana_desde
+        ]);
+    }
+
+    public function listar_reporte(Request $request)
+    {
+        return view('adminlte.gestion.costos.mano_obra.reporte.partials.listado', [
+        ]);
+    }
+
     /* =================================== OTROS GASTOS ======================================= */
     public function otros_gastos(Request $request)
     {
