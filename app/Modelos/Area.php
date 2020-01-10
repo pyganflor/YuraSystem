@@ -23,6 +23,11 @@ class Area extends Model
         return $this->hasMany('\yura\Modelos\OtrosGastos', 'id_area');
     }
 
+    public function actividades()
+    {
+        return $this->hasMany('\yura\Modelos\Actividad', 'id_area');
+    }
+
     function otrosGastosBySemana($semana)
     {
         return $this->otros_gastos->where('codigo_semana', $semana)->first();
