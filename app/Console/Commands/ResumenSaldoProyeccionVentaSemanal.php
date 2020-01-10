@@ -54,7 +54,7 @@ class ResumenSaldoProyeccionVentaSemanal extends Command
                             ? getSemanaByDate(now()->subDays(7)->toDateString())->codigo
                             : $this->argument('desde');
         $semanaFin =  $this->argument('hasta') == 0
-                            ? getSemanaByDate(now()->toDateString())->codigo
+                            ? Semana::orderBy('codigo','desc')->first()->codigo//getSemanaByDate(now()->toDateString())->codigo
                             : $this->argument('hasta');
 
         $variedades = Variedad::where(function ($query){

@@ -456,25 +456,29 @@ class Pedido extends Model
     }
 
     public function getCajasFullByVariedad($variedad){
-<<<<<<< HEAD
-        dump($variedad);
-=======
->>>>>>> 602f58608ccce7b7dda6344fa4cf733cfefeed52
+
         $cajasFullByVariedad = 0;
         if (!getFacturaAnulada($this->id_pedido)) {
-            foreach ($this->detalles as $det_ped) {
-                foreach ($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $esp_emp) {
-                    $calibre = explode('|', $esp_emp->empaque->nombre)[1];
-                    $ramosStandarCaja =0;
-                    foreach($esp_emp->detalles as $det_esp_emp)
-                        $ramosStandarCaja+=convertToEstandar($det_esp_emp->cantidad, $det_esp_emp->clasificacion_ramo->nombre);
-
-                    foreach($esp_emp->detalles->where('id_variedad',$variedad) as $det_esp_emp){
-                        $cajasFullVariedad = $calibre/($ramosStandarCaja/convertToEstandar($det_esp_emp->cantidad, $det_esp_emp->clasificacion_ramo->nombre));
-                        $cajasFullByVariedad += $cajasFullVariedad;
+            $ramosStandarCajaTotal = 0;
+            $ramosStandarCajaVariedad = 0;
+            $factorConversion=0;
+            foreach ($this->detalles as $det_ped){
+                foreach ($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $esp_emp)
+                    foreach ($esp_emp->detalles as $det_esp_emp){
+                        $ramosStandarCajaTotal += convertToEstandar($det_esp_emp->cantidad*$det_ped->cantidad, $det_esp_emp->clasificacion_ramo->nombre);
+                        $factorConversion +=explode('|', $esp_emp->empaque->nombre)[1]*$det_ped->cantidad;
                     }
-                }
+
+                foreach ($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $esp_emp)
+                    foreach($esp_emp->detalles->where('id_variedad',$variedad) as $det_esp_emp)
+                        $ramosStandarCajaVariedad +=convertToEstandar($det_esp_emp->cantidad*$det_ped->cantidad, $det_esp_emp->clasificacion_ramo->nombre);
             }
+
+            $standarTotal = $ramosStandarCajaTotal/$ramosStandarCajaVariedad;
+            $cajasFullByVariedad= $factorConversion / $standarTotal;
+
+            //dump(round($cajasFullByVariedad,2));
+
         }
         return round($cajasFullByVariedad,2);
     }

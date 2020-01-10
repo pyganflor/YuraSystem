@@ -195,7 +195,7 @@ class ProyVentaController extends Controller
                 }
             }
 
-            UpdateSaldosProyVentaSemanal::dispatch($request->clientes[0]['semana'], $request->id_variedad)->onQueue('update_saldos_proy_venta_semanal');
+            //UpdateSaldosProyVentaSemanal::dispatch($request->clientes[0]['semana'], $request->id_variedad)->onQueue('update_saldos_proy_venta_semanal');
             $success = true;
             $msg = '<div class="alert alert-success text-center">' .
                 '<p> Se ha guardado la proyección con éxito </p>'
@@ -223,7 +223,7 @@ class ProyVentaController extends Controller
 
         try{
             $objProyeccionVentaSemanalReal->update(['desecho' => isset($request->desecho) ? $request->desecho : 0]);
-            UpdateSaldosProyVentaSemanal::dispatch($request->semana, $request->id_variedad)->onQueue('update_saldos_proy_venta_semanal');
+            //UpdateSaldosProyVentaSemanal::dispatch($request->semana, $request->id_variedad)->onQueue('update_saldos_proy_venta_semanal');
             $success = true;
             $msg = '<div class="alert alert-success text-center">' .
                 '<p> Se ha guardado el desecho con éxito </p>'

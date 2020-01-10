@@ -497,7 +497,7 @@ class OrdenSemanalController extends Controller
             }
 
         $semana = getSemanaByDate($request->fecha_pedido)->codigo;
-        UpdateSaldosProyVentaSemanal::dispatch($semana, 0)->onQueue('update_saldos_proy_venta_semanal');
+        //UpdateSaldosProyVentaSemanal::dispatch($semana, 0)->onQueue('update_saldos_proy_venta_semanal');
         return [
             'id_pedido' => $pedido->id_pedido,
             'success' => true,
@@ -796,7 +796,7 @@ class OrdenSemanalController extends Controller
                 '</div>';
         }
         $semana = getSemanaByDate($request->fecha_pedido)->codigo;
-        UpdateSaldosProyVentaSemanal::dispatch($semana, 0)->onQueue('update_saldos_proy_venta_semanal');
+        //UpdateSaldosProyVentaSemanal::dispatch($semana, 0)->onQueue('update_saldos_proy_venta_semanal');
         return [
             'mensaje' => $msg,
             'success' => $success
