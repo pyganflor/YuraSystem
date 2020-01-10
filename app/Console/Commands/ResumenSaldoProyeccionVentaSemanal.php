@@ -51,7 +51,7 @@ class ResumenSaldoProyeccionVentaSemanal extends Command
             : null;
 
         $semanaInicio= $this->argument('desde') == 0
-                            ? getSemanaByDate(now()->toDateString())->codigo//getSemanaByDate(now()->subDays(7)->toDateString())->codigo
+                            ? getSemanaByDate(now()->subDays(7)->toDateString())->codigo
                             : $this->argument('desde');
         $semanaFin =  $this->argument('hasta') == 0
                             ? Semana::orderBy('codigo','desc')->first()->codigo//getSemanaByDate(now()->toDateString())->codigo

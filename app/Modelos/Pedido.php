@@ -461,24 +461,21 @@ class Pedido extends Model
         if (!getFacturaAnulada($this->id_pedido)) {
             $ramosStandarCajaTotal = 0;
             $ramosStandarCajaVariedad = 0;
-            $factorconversionVariedad=0;
+            $factorConversion=0;
             foreach ($this->detalles as $det_ped){
                 foreach ($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $esp_emp)
                     foreach ($esp_emp->detalles as $det_esp_emp){
                         $ramosStandarCajaTotal += convertToEstandar($det_esp_emp->cantidad*$det_ped->cantidad, $det_esp_emp->clasificacion_ramo->nombre);
-                        $factorconversionVariedad +=explode('|', $esp_emp->empaque->nombre)[1]*$det_ped->cantidad;
+                        $factorConversion +=explode('|', $esp_emp->empaque->nombre)[1]*$det_ped->cantidad;
                     }
 
                 foreach ($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $esp_emp)
                     foreach($esp_emp->detalles->where('id_variedad',$variedad) as $det_esp_emp)
                         $ramosStandarCajaVariedad +=convertToEstandar($det_esp_emp->cantidad*$det_ped->cantidad, $det_esp_emp->clasificacion_ramo->nombre);
-
-
             }
 
-            //dump($ramosStandarCajaTotal,$ramosStandarCajaVariedad);
             $standarTotal = $ramosStandarCajaTotal/$ramosStandarCajaVariedad;
-            $cajasFullByVariedad= $factorconversionVariedad / $standarTotal;
+            $cajasFullByVariedad= $factorConversion / $standarTotal;
 
             //dump(round($cajasFullByVariedad,2));
 
