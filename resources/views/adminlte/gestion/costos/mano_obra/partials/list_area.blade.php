@@ -20,11 +20,11 @@
                 <button type="button" class="btn btn-xs btn-success" onclick="update_area('{{$a->id_area}}')" id="btn_upd_area_{{$a->id_area}}">
                     <i class="fa fa-fw fa-edit"></i>
                 </button>
+                <i class="fa fa-fw fa-check hide" style="color: green" id="icon_area_{{$a->id_area}}"></i>
                 <button type="button" class="btn btn-xs btn-default" onclick="otros_gastos('{{$a->id_area}}')"
                         id="btn_otros_gastos_{{$a->id_area}}">
                     <i class="fa fa-fw fa-tags"></i>
                 </button>
-                <i class="fa fa-fw fa-check hide" style="color: green" id="icon_area_{{$a->id_area}}"></i>
             </td>
         </tr>
     @endforeach

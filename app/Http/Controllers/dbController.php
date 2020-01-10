@@ -11,6 +11,7 @@ use yura\Jobs\ProyeccionVentaSemanalUpdate;
 use yura\Jobs\ResumenAreaSemanal;
 use yura\Jobs\ResumenSemanaCosecha;
 use yura\Jobs\UpdateIndicador;
+use yura\Jobs\UpdateOtrosGastos;
 use yura\Jobs\UpdateTallosCosechadosProyeccion;
 use yura\Modelos\Color;
 use yura\Modelos\Indicador;
@@ -84,6 +85,10 @@ class dbController extends Controller
         }
         if ($request->comando == 6) {   // comando UpdateTallosCosechadosProyeccion
             UpdateTallosCosechadosProyeccion::dispatch($request->semana, $request->variedad, $request->modulo)
+                ->onQueue('job');
+        }
+        if ($request->comando == 7) {   // comando ResumenAreaSemanal
+            UpdateOtrosGastos::dispatch($request->desde, $request->hasta)
                 ->onQueue('job');
         }
 
