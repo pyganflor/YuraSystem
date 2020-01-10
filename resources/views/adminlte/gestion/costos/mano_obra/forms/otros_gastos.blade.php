@@ -9,8 +9,9 @@
             Semana
         </th>
         <td class="text-center" style=" border-color: #9d9d9d">
-            <input type="number" id="codigo_semana" name="codigo_semana" value="{{isset($semana_actual) ? $semana_actual->codigo : ''}}"
-                   style="width: 100%" class="text-center">
+            <input type="number" id="codigo_semana" name="codigo_semana"
+                   value="{{isset($semana_actual) ? $semana_actual->codigo : ''}}" style="width: 100%" class="text-center"
+                   onchange="buscar_otros_gastos()">
         </td>
     </tr>
     <tr>
@@ -19,7 +20,7 @@
         </th>
         <td class="text-center" style=" border-color: #9d9d9d">
             <input type="text" id="gip" name="gip" value="{{isset($otros_gastos) ? $otros_gastos->gip : 0}}" style="width: 100%"
-                   class="text-center">
+                   class="text-center input_search">
         </td>
     </tr>
     <tr>
@@ -28,7 +29,7 @@
         </th>
         <td class="text-center" style=" border-color: #9d9d9d">
             <input type="text" id="ga_" name="ga_" value="{{isset($otros_gastos) ? $otros_gastos->ga : 0}}" style="width: 100%"
-                   class="text-center">
+                   class="text-center input_search">
         </td>
     </tr>
     <tr>
@@ -53,6 +54,24 @@
         };
         post_jquery('{{url('gestion_mano_obra/store_otros_gastos')}}', datos, function (retorno) {
 
+        });
+    }
+
+    function buscar_otros_gastos() {
+        datos = {
+            _token: '{{csrf_token()}}',
+            id_area: $('#id_area_otros_gasstos').val(),
+            semana: $('#codigo_semana').val(),
+        };
+        $('.input_search').LoadingOverlay('show');
+        $.post('{{url('gestion_mano_obra/buscar_otros_gastos')}}', datos, function (retorno) {
+            $('#gip').val(retorno.gip);
+            $('#ga_').val(retorno.ga);
+        }, 'json').fail(function (retorno) {
+            console.log(retorno);
+            alerta_errores(retorno.responseText);
+        }).always(function () {
+            $('.input_search').LoadingOverlay('hide');
         });
     }
 </script>

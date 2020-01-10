@@ -1119,6 +1119,7 @@ class CostosController extends Controller
         ];
     }
 
+    /* =================================== OTROS GASTOS ======================================= */
     public function otros_gastos(Request $request)
     {
         $area = Area::find($request->area);
@@ -1190,4 +1191,13 @@ class CostosController extends Controller
         ];
     }
 
+    public function buscar_otros_gastos(Request $request)
+    {
+        $area = Area::find($request->id_area);
+        $costos = $area->otrosGastosBySemana($request->semana);
+        return [
+            'gip' => $costos != '' ? $costos->gip : 0,
+            'ga' => $costos != '' ? $costos->ga : 0,
+        ];
+    }
 }
