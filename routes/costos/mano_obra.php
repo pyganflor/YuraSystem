@@ -12,3 +12,4 @@ Route::post('gestion_mano_obra/importar_file_act_mano_obra', 'Costos\CostosContr
 
 Route::get('gestion_mano_obra/otros_gastos', 'Costos\CostosController@otros_gastos');
 Route::post('gestion_mano_obra/store_otros_gastos', 'Costos\CostosController@store_otros_gastos');
+Route::post('gestion_mano_obra/buscar_otros_gastos', 'Costos\CostosController@buscar_otros_gastos');
