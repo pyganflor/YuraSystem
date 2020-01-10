@@ -456,17 +456,27 @@ class Pedido extends Model
     }
 
     public function getCajasFullByVariedad($variedad){
-
+<<<<<<< HEAD
+        dump($variedad);
+=======
+>>>>>>> 602f58608ccce7b7dda6344fa4cf733cfefeed52
         $cajasFullByVariedad = 0;
         if (!getFacturaAnulada($this->id_pedido)) {
             foreach ($this->detalles as $det_ped) {
                 foreach ($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $esp_emp) {
+                    $calibre = explode('|', $esp_emp->empaque->nombre)[1];
+                    $ramosStandarCaja =0;
+                    foreach($esp_emp->detalles as $det_esp_emp)
+                        $ramosStandarCaja+=convertToEstandar($det_esp_emp->cantidad, $det_esp_emp->clasificacion_ramo->nombre);
+
                     foreach($esp_emp->detalles->where('id_variedad',$variedad) as $det_esp_emp){
-                        $cajasFullByVariedad += ($esp_emp->cantidad * $det_ped->cantidad) * explode('|', $esp_emp->empaque->nombre)[1];
+                        $cajasFullVariedad = $calibre/($ramosStandarCaja/convertToEstandar($det_esp_emp->cantidad, $det_esp_emp->clasificacion_ramo->nombre));
+                        $cajasFullByVariedad += $cajasFullVariedad;
                     }
                 }
             }
         }
-        return $cajasFullByVariedad;
+        return round($cajasFullByVariedad,2);
     }
+
 }
