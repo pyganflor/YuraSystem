@@ -77,9 +77,7 @@ class VentaSemanalReal extends Command
                         return false;
                     }
                 }else{
-
-                    $semana_hasta = Semana::orderBy('codigo','desc')->first();
-                    //getSemanaByDate(now()->toDateString());
+                    $semana_hasta = getSemanaByDate(now()->toDateString());
                 }
                 Info('SEMANA DESDE: ' . $semana_desde->codigo);
                 Info('SEMANA HASTA: ' . $semana_hasta->codigo );
@@ -142,9 +140,8 @@ class VentaSemanalReal extends Command
                                 $objProySemReal->cajas_fisicas = 0;
                                 $objProySemReal->cajas_fisicas_anno_anterior = isset($objProyeccionVentaSemanalAnoAnterior->cajas_fisicas) ? $objProyeccionVentaSemanalAnoAnterior->cajas_fisicas : 0;
                                 foreach ($pedidos as $pedido){
-                                    //if($variedad->id_variedad==2 )
-
-                                       // dd($pedido->getCajasFullByVariedad($variedad->id_variedad));
+                                    if($variedad->id_variedad==2 )
+                                        dd($pedido->getCajasFullByVariedad($variedad->id_variedad));
 
 
                                     if(!getFacturaAnulada($pedido->id_pedido)){
