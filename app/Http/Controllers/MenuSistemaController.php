@@ -122,6 +122,7 @@ class MenuSistemaController extends Controller
             'id_icono' => 'required|',
         ], [
             'nombre.required' => 'El nombre es obligatorio',
+            'nombre.unique' => 'El nombre ya existe',
             'id_grupo_menu.required' => 'El grupo es obligatorio',
             'id_icono.required' => 'El ícono es obligatorio',
             'nombre.max' => 'El nombre es muy grande',
