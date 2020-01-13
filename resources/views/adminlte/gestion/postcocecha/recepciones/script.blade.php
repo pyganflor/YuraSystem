@@ -206,6 +206,7 @@
                 $('.option_variedades_form')[i].text +
                 '</option>');
         }
+        $('#id_modulo_' + cant_forms).val($('#id_modulo_1').val());
     }
 
     function del_tallo_malla() {
