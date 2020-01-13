@@ -60,7 +60,10 @@
         };
         $('#div_form_verde').LoadingOverlay('show');
         $.post('{{url('clasificacion_verde/store_form_verde')}}', datos, function (retorno) {
-            select_fecha_recepciones();
+            if (retorno.success)
+                select_fecha_recepciones();
+            else
+                alerta(retorno.mensaje);
         }, 'json').fail(function (retorno) {
             console.log(retorno);
             alerta_errores(retorno.responseText);
