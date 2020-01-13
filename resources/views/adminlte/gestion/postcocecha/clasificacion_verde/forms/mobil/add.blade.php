@@ -1,1 +1,1 @@
-en desarrollo
+vista para dispositivos mobiles en desarrollo
