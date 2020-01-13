@@ -273,4 +273,17 @@
     function comprabar(id_input) {
         $("#id_precio_" + id_input).val('');
     }
+
+    function vincular_variedad_unitaria(v) {
+        $.LoadingOverlay('show');
+        datos = {
+            id_variedad: v
+        };
+        $.get('{{url('plantas_variedades/vincular_variedad_unitaria')}}', datos, function (retorno) {
+            modal_view('modal_vincular_variedad_unitaria', retorno, '<i class="fa fa-fw fa-plus"></i> Editar Variedad', true, false, '', function () {
+            });
+        });
+        $.LoadingOverlay('hide');
+    }
+
 </script>

@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use yura\Jobs\ResumenSemanaCosecha;
 use yura\Modelos\ClasificacionUnitaria;
 use yura\Modelos\ClasificacionVerde;
+use yura\Modelos\Cosecha;
 use yura\Modelos\DetalleClasificacionVerde;
 use yura\Modelos\LoteRE;
 use yura\Modelos\Recepcion;
@@ -111,13 +112,6 @@ class ClasificacionVerdeController extends Controller
     public function add_verde(Request $request)
     {
         return view('adminlte.gestion.postcocecha.clasificacion_verde.forms.add', [
-            'fecha' => $request->fecha
-        ]);
-    }
-
-    public function add_verde_mobil(Request $request)
-    {
-        return view('adminlte.gestion.postcocecha.clasificacion_verde.forms.mobil.add', [
             'fecha' => $request->fecha
         ]);
     }
@@ -1142,6 +1136,104 @@ class ClasificacionVerdeController extends Controller
         return view('adminlte.gestion.postcocecha.clasificacion_verde.partials.rendimiento', [
             'clasificacion_verde' => $clasificacion_verde,
             'listado' => $listado,
+        ]);
+    }
+
+    /* ---------------------------------- MOBIL ---------------------------------------- */
+    public function add_verde_mobil(Request $request)
+    {
+        $fecha = $request->fecha == '' ? date('Y-m-d') : $request->fecha;
+        $verde = ClasificacionVerde::All()
+            ->where('estado', 1)
+            ->where('fecha_ingreso', $fecha)
+            ->first();
+
+        return view('adminlte.gestion.postcocecha.clasificacion_verde.forms.mobil.add', [
+            'fecha' => $fecha,
+            'verde' => $verde,
+        ]);
+    }
+
+    public function store_form_verde(Request $request)
+    {
+        $valida = Validator::make($request->all(), [
+            'personal' => 'required',
+            'hora_inicio' => 'required',
+            'fecha' => 'required',
+        ], [
+            'personal.required' => 'El personal es obligatorio',
+            'hora_inicio.required' => 'La hora de inicio es obligatoria',
+            'fecha.required' => 'La fecha es obligatoria',
+        ]);
+        if (!$valida->fails()) {
+            $model = ClasificacionVerde::All()->where('fecha_ingreso', $request->fecha)->first();
+            if ($model == '') {
+                $model = new ClasificacionVerde();
+                $model->fecha_ingreso = $request->fecha;
+                $model->id_semana = getSemanaByDate($request->fecha)->id_semana;
+            }
+            $model->personal = $request->personal;
+            $model->hora_inicio = $request->hora_inicio;
+
+            if ($model->save()) {
+                $success = true;
+                $msg = '<div class="alert alert-success text-center">' .
+                    '<p> Se ha guardado la clasificación verde satisfactoriamente</p>'
+                    . '</div>';
+            } else {
+                $success = false;
+                $msg = '<div class="alert alert-warning text-center">' .
+                    '<p> Ha ocurrido un problema al guardar la información al sistema</p>'
+                    . '</div>';
+            }
+        } else {
+            $success = false;
+            $errores = '';
+            foreach ($valida->errors()->all() as $mi_error) {
+                if ($errores == '') {
+                    $errores = '<li>' . $mi_error . '</li>';
+                } else {
+                    $errores .= '<li>' . $mi_error . '</li>';
+                }
+            }
+            $msg = '<div class="alert alert-danger">' .
+                '<p class="text-center">¡Por favor corrija los siguientes errores!</p>' .
+                '<ul>' .
+                $errores .
+                '</ul>' .
+                '</div>';
+        }
+        return [
+            'mensaje' => $msg,
+            'success' => $success
+        ];
+    }
+
+    public function select_fecha_recepciones(Request $request)
+    {
+        $fecha = $request->fecha == '' ? date('Y-m-d') : $request->fecha;
+        $verde = ClasificacionVerde::All()
+            ->where('estado', 1)
+            ->where('fecha_ingreso', $fecha)
+            ->first();
+        $cosecha = Cosecha::All()
+            ->where('estado', 1)
+            ->where('fecha_ingreso', $fecha)
+            ->first();
+
+        return view('adminlte.gestion.postcocecha.clasificacion_verde.forms.mobil._formulario', [
+            'fecha' => $fecha,
+            'verde' => $verde,
+            'cosecha' => $cosecha,
+        ]);
+    }
+
+    public function construir_tabla(Request $request)
+    {
+        $variedad = Variedad::find($request->variedad);
+        return view('adminlte.gestion.postcocecha.clasificacion_verde.forms.mobil._tabla', [
+            'variedad' => $variedad,
+            'clasificaciones' => $variedad->clasificaciones,
         ]);
     }
 }

@@ -1,7 +1,7 @@
 <div id="table_clasificaciones">
     @if(count($listado)>0)
         @foreach($listado as $item)
-            <div style="overflow-x: scroll">
+            <div style="overflow-x: scroll; width: 100%">
                 <table width="100%" class="table table-responsive table-bordered sombra_estandar" style="font-size: 0.8em; border-color: #9d9d9d"
                        id="table_content_clasificaciones_{{$item->id_clasificacion_verde}}">
                     <tr style="background-color: #dd4b39; color: white">

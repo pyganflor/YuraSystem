@@ -33,6 +33,16 @@ class Variedad extends Model
         return $this->belongsTo('\yura\Modelos\Planta', 'id_planta');
     }
 
+    public function clasificaciones()
+    {
+        return $this->hasMany('\yura\Modelos\VariedadClasificacionUnitaria', 'id_variedad');
+    }
+
+    public function getClasificacion($id)
+    {
+        return $this->clasificaciones->where('id_clasificacion_unitaria', $id)->first();
+    }
+
     public function getDisponiblesToFecha($fecha)
     {
         $r = 0;
@@ -62,7 +72,7 @@ class Variedad extends Model
         //dd($r_a);
 
         return [
-            'cosechado' => round($r,2),
+            'cosechado' => round($r, 2),
             'saldo' => round($r_a - $pedidos, 2),
             'acumulado' => round($r_a, 2),
         ];

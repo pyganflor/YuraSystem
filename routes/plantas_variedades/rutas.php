@@ -20,3 +20,6 @@ Route::get('plantas_variedades/form_precio_variedad','PlantaController@form_prec
 Route::post('plantas_variedades/store_precio','PlantaController@store_precio');
 Route::post('plantas_variedades/update_precio','PlantaController@update_precio');
 Route::get('plantas_variedades/add_inptus_precio_variedad','PlantaController@add_inptus_precio_variedad');
+
+Route::get('plantas_variedades/vincular_variedad_unitaria','PlantaController@vincular_variedad_unitaria');
+Route::post('plantas_variedades/store_vinculo','PlantaController@store_vinculo');
