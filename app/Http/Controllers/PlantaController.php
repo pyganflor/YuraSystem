@@ -4,6 +4,7 @@ namespace yura\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Nature\Plant;
+use yura\Modelos\ClasificacionUnitaria;
 use yura\Modelos\Planta;
 use yura\Modelos\Submenu;
 use yura\Modelos\Precio;
@@ -11,6 +12,7 @@ use DB;
 use yura\Modelos\ClasificacionRamo;
 use Validator;
 use yura\Modelos\Variedad;
+use yura\Modelos\VariedadClasificacionUnitaria;
 
 class PlantaController extends Controller
 {
@@ -566,5 +568,73 @@ class PlantaController extends Controller
             ];
 
         }
+    }
+
+    /* ----------------------------------------------------------------- */
+    public function vincular_variedad_unitaria(Request $request)
+    {
+        $variedad = Variedad::find($request->id_variedad);
+        return view('adminlte.gestion.plantas_variedades.forms.vincular_variedad_unitaria', [
+            'variedad' => $variedad,
+            'clasificaciones' => ClasificacionUnitaria::All()->where('estado', 1),
+        ]);
+    }
+
+    public function store_vinculo(Request $request)
+    {
+        $valida = Validator::make($request->all(), [
+            'variedad' => 'required',
+            'unitaria' => 'required',
+        ], [
+            'variedad.required' => 'La variedad es obligatoria',
+            'unitaria.required' => 'La clasificación es obligatoria',
+        ]);
+        $msg = '';
+        if (!$valida->fails()) {
+            $model = VariedadClasificacionUnitaria::All()
+                ->where('id_variedad', $request->variedad)
+                ->where('id_clasificacion_unitaria', $request->unitaria)
+                ->first();
+            if ($model == '') {
+                $model = new VariedadClasificacionUnitaria();
+                $model->id_variedad = $request->variedad;
+                $model->id_clasificacion_unitaria = $request->unitaria;
+
+                if ($model->save()) {
+                    $model = VariedadClasificacionUnitaria::All()->last();
+                    $success = true;
+                    bitacora('variedad_clasificacion_unitaria', $model->id_variedad_clasificacion_unitaria, 'I', 'Inserción satisfactoria de un nuevo vinculo variedad_clasificacion_unitaria');
+                } else {
+                    $success = false;
+                    $msg = '<div class="alert alert-warning text-center">' .
+                        '<p> Ha ocurrido un problema al guardar la información al sistema</p>'
+                        . '</div>';
+                }
+            } else {
+                $model->delete();
+                $success = true;
+            }
+
+        } else {
+            $success = false;
+            $errores = '';
+            foreach ($valida->errors()->all() as $mi_error) {
+                if ($errores == '') {
+                    $errores = '<li>' . $mi_error . '</li>';
+                } else {
+                    $errores .= '<li>' . $mi_error . '</li>';
+                }
+            }
+            $msg = '<div class="alert alert-danger">' .
+                '<p class="text-center">¡Por favor corrija los siguientes errores!</p>' .
+                '<ul>' .
+                $errores .
+                '</ul>' .
+                '</div>';
+        }
+        return [
+            'mensaje' => $msg,
+            'success' => $success
+        ];
     }
 }

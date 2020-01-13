@@ -1,4 +1,4 @@
-<table width="100%" class="table table-responsive table-bordered" style="font-size: 0.8em; border-color: #9d9d9d"
+<table width="100%" class="table-striped table-bordered" style="font-size: 0.9em; border-color: #9d9d9d"
        id="table_content_variedades">
     <thead>
     <tr class="table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}">
@@ -11,7 +11,7 @@
         <th class="text-center" style="border-color: #9d9d9d">Tipo</th>
         <th class="text-center" style="border-color: #9d9d9d">Tallos por Ramo</th>
         <th class="text-center" style="border-color: #9d9d9d">Saldo Inicial</th>
-        <th class="text-center" style="border-color: #9d9d9d" width="80px">
+        <th class="text-center" style="border-color: #9d9d9d" width="100px">
             <button type="button" class="btn btn-xs btn-default" title="Añadir Variedad" onclick="add_variedad()">
                 <i class="fa fa-fw fa-plus"></i>
             </button>
@@ -59,6 +59,10 @@
                         <button class="btn btn-xs btn-default" type="button" title="Editar"
                                 onclick="edit_variedad('{{$v->id_variedad}}')">
                             <i class="fa fa-fw fa-pencil"></i>
+                        </button>
+                        <button class="btn btn-xs btn-default" type="button" title="Clasificaciones Unitarias"
+                                onclick="vincular_variedad_unitaria('{{$v->id_variedad}}')">
+                            <i class="fa fa-fw fa-filter"></i>
                         </button>
                         <button class="btn btn-xs btn-danger" type="button" title="{{$v->estado == 1 ? 'Desactivar' : 'Activar'}}"
                                 onclick="cambiar_estado_variedad('{{$v->id_variedad}}','{{$v->estado}}')">

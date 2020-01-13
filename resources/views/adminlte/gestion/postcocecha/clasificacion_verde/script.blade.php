@@ -47,13 +47,6 @@
         $.LoadingOverlay('hide');
     }
 
-    $(window).ready(function () {
-        console.log($(document).width());
-    });
-    $(window).resize(function () {
-        console.log($(document).width());
-    });
-
     function add_verde(fecha) {
         $.LoadingOverlay('show');
         datos = {
