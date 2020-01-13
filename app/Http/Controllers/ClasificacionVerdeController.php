@@ -115,6 +115,13 @@ class ClasificacionVerdeController extends Controller
         ]);
     }
 
+    public function add_verde_mobil(Request $request)
+    {
+        return view('adminlte.gestion.postcocecha.clasificacion_verde.forms.mobil.add', [
+            'fecha' => $request->fecha
+        ]);
+    }
+
     public function buscar_recepciones_byFecha(Request $request)
     {
         $r = [];
