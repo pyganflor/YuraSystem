@@ -47,6 +47,10 @@
 @else
     <div class="well text-center">
         No se ha encontrado ningún trabajo realizado en la fecha seleccionada
+        <a href="javascript:void(0)" onclick="$('#div_form_verde').toggleClass('hide')"
+           class="pull-right text-black btn btn-xs btn-default">
+            <i class="fa fa-fw fa-ellipsis-v"></i>
+        </a>
     </div>
 @endif
 
