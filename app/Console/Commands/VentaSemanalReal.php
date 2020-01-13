@@ -138,7 +138,7 @@ class VentaSemanalReal extends Command
                                 $objProySemReal->valor =0;
                                 $objProySemReal->cajas_equivalentes = 0;
                                 $objProySemReal->cajas_fisicas = 0;
-                                $objProySemReal->cajas_fisicas_anno_anterior = isset($objProyeccionVentaSemanalAnoAnterior->cajas_fisicas) ? $objProyeccionVentaSemanalAnoAnterior->cajas_fisicas : 0;
+                               // $objProySemReal->cajas_fisicas_anno_anterior = isset($objProyeccionVentaSemanalAnoAnterior->cajas_fisicas) ? $objProyeccionVentaSemanalAnoAnterior->cajas_fisicas : 0;
                                 foreach ($pedidos as $pedido){
                                     //if($variedad->id_variedad==2 )
                                        // dd($pedido->getCajasFullByVariedad($variedad->id_variedad));
@@ -151,7 +151,8 @@ class VentaSemanalReal extends Command
                                                 $objProySemReal->valor += $pedido->getPrecioByVariedad($variedad->id_variedad);
                                                 $objProySemReal->cajas_equivalentes += $pedido->getCajasByVariedad($variedad->id_variedad);
                                                 $objProySemReal->cajas_fisicas += $pedido->getCajasFullByVariedad($variedad->id_variedad);
-                                                $objProySemReal->cajas_fisicas_anno_anterior = (isset($objProyeccionVentaSemanalAnoAnterior->cajas_fisicas) && $objProyeccionVentaSemanalAnoAnterior->cajas_fisicas>0) ? $objProyeccionVentaSemanalAnoAnterior->cajas_fisicas : 0;
+                                                if(isset($objProyeccionVentaSemanalAnoAnterior->cajas_fisicas) && $objProyeccionVentaSemanalAnoAnterior->cajas_fisicas>0)
+                                                    $objProySemReal->cajas_fisicas_anno_anterior =  $objProyeccionVentaSemanalAnoAnterior->cajas_fisicas;
                                             }
                                         /*$proyeccionVentaSemanal = ProyeccionVentaSemanal::where([
                                                 ['id_variedad',$variedad->id_variedad],

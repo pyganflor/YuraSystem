@@ -217,14 +217,14 @@ class Semana extends Model
 
     public function cajasFisicasAnnoAnterior($idVariedad,$idCliente){
 
-        $arrSemana = str_split($this->codigo,2);
+        /*$arrSemana = str_split($this->codigo,2);
         $anoAnterior = (int)$arrSemana[0]-1;
-        $semanaAnnoAnterior =  $anoAnterior.$arrSemana[1];
+        $semanaAnnoAnterior =  $anoAnterior.$arrSemana[1];*/
 
         return ProyeccionVentaSemanalReal::where([
             ['id_variedad',$idVariedad],
             ['id_cliente',$idCliente],
-            ['codigo_semana',$semanaAnnoAnterior]
+            ['codigo_semana',$this->codigo]
         ])->select('cajas_fisicas_anno_anterior')->first();
 
     }
