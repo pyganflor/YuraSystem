@@ -137,4 +137,45 @@ class Costos
             $model->save();
         }
     }
+
+    public static function costos_postcosecha_tallo_4_semana_atras()
+    {
+        $model = getIndicadorByName('C5');  // Costos Postcosecha x Tallo (-4 semanas)
+        if ($model != '') {
+            $sem_desde = getSemanaByDate(opDiasFecha('-', 35, date('Y-m-d')));
+            $sem_hasta = getSemanaByDate(opDiasFecha('-', 7, date('Y-m-d')));
+
+            $insumos = DB::table('costos_semana as c')
+                ->select(DB::raw('sum(c.valor) as cant'))
+                ->join('actividad_producto as ac', 'ac.id_actividad_producto', '=', 'c.id_actividad_producto')
+                ->join('actividad as a', 'a.id_actividad', '=', 'ac.id_actividad')
+                ->join('area as ar', 'ar.id_area', '=', 'a.id_area')
+                ->where('ar.nombre', '=', 'POSTCOSECHA')
+                ->where('c.codigo_semana', '>=', $sem_desde->codigo)
+                ->where('c.codigo_semana', '<=', $sem_hasta->codigo)
+                ->get()[0]->cant;
+            $mano_obra = DB::table('costos_semana_mano_obra as c')
+                ->select(DB::raw('sum(c.valor) as cant'))
+                ->join('actividad_mano_obra as am', 'am.id_actividad_mano_obra', '=', 'c.id_actividad_mano_obra')
+                ->join('actividad as a', 'a.id_actividad', '=', 'am.id_actividad')
+                ->join('area as ar', 'ar.id_area', '=', 'a.id_area')
+                ->where('ar.nombre', '=', 'POSTCOSECHA')
+                ->where('c.codigo_semana', '>=', $sem_desde->codigo)
+                ->where('c.codigo_semana', '<=', $sem_hasta->codigo)
+                ->get()[0]->cant;
+
+            $costos_total = $insumos + $mano_obra;
+
+            $cosechas = Cosecha::All()->where('estado', 1)
+                ->where('fecha_ingreso', '>=', $sem_desde->fecha_inicial)
+                ->where('fecha_ingreso', '<=', $sem_hasta->fecha_final);
+            $tallos = 0;
+            foreach ($cosechas as $c) {
+                $tallos += $c->getTotalTallos();
+            }
+
+            $model->valor = $tallos > 0 ? round($costos_total / $tallos, 2) : 0;
+            $model->save();
+        }
+    }
 }
