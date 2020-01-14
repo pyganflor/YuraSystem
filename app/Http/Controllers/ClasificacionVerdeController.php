@@ -1186,6 +1186,32 @@ class ClasificacionVerdeController extends Controller
                     '<p> Ha ocurrido un problema al guardar la información al sistema</p>'
                     . '</div>';
             }
+
+            /* ================= GUARDAR TABLA RECEPCION_CLASIFICACION_VERDE ===================*/
+            $verde = ClasificacionVerde::All()->where('fecha_ingreso', $request->fecha)->first();
+            $recepciones = DB::table('recepcion')
+                ->select('id_recepcion')->distinct()
+                ->where('estado', 1)
+                ->where('fecha_ingreso', 'like', '%' . $request->fecha_recepciones . '%')
+                ->get();
+            foreach ($recepciones as $item) {
+                $relacion = RecepcionClasificacionVerde::where('id_recepcion', '=', $item->id_recepcion)->where('id_clasificacion_verde', '=', $verde->id_clasificacion_verde)->first();
+                if ($relacion == '') {
+                    $relacion = new RecepcionClasificacionVerde();
+                    $relacion->id_recepcion = $item->id_recepcion;
+                    $relacion->id_clasificacion_verde = $verde->id_clasificacion_verde;
+                    $relacion->fecha_registro = date('Y-m-d H:i:s');
+                    if ($relacion->save()) {
+                        $relacion = ClasificacionVerde::All()->last();
+                        bitacora('recepcion_clasificacion_verde', $relacion->id_recepcion_clasificacion_verde, 'I', 'Inserción satisfactoria de una nueva relacion recepcion-clasificación en verde');
+                    } else {
+                        $success = false;
+                        $msg = '<div class="alert alert-warning text-center">' .
+                            '<p> Ha ocurrido un problema al guardar la recepción del día ' . Recepcion::find($item->id_recepcion)->fecha_ingreso . '</p>'
+                            . '</div>';
+                    }
+                }
+            }
         } else {
             $success = false;
             $errores = '';
@@ -1235,5 +1261,90 @@ class ClasificacionVerdeController extends Controller
             'variedad' => $variedad,
             'clasificaciones' => $variedad->clasificaciones,
         ]);
+    }
+
+    public function store_detalle_verde(Request $request)
+    {
+        $valida = Validator::make($request->all(), [
+            'verde' => 'required',
+            'variedad' => 'required',
+            'array_data' => 'required',
+        ], [
+            'verde.required' => 'La clasificación verde es obligatoria',
+            'variedad.required' => 'La variedad es obligatoria',
+            'array_data.required' => 'El listado de datos es obligatorio',
+        ]);
+        $success = true;
+        $msg = '<div class="alert alert-success text-center">Se ha guardado la información satisfactoriamente</div>';
+        if (!$valida->fails()) {
+            $verde = ClasificacionVerde::find($request->verde);
+
+            /* ================= GUARDAR TABLA DETALLE_CLASIFICACION_VERDE ===================*/
+            foreach ($request->array_data as $data) {
+                if ($data['mesa'] != '' && $data['ramos'] != '' && $data['tallos_x_ramo'] != '') {
+                    $model = new DetalleClasificacionVerde();
+                    $model->id_clasificacion_verde = $request->verde;
+                    $model->id_variedad = $request->variedad;
+                    $model->id_clasificacion_unitaria = $data['unitaria'];
+                    $model->mesa = $data['mesa'];
+                    $model->cantidad_ramos = $data['ramos'];
+                    $model->tallos_x_ramos = $data['tallos_x_ramo'];
+                    $model->fecha_registro = date('Y-m-d H:i:s');
+                    $model->fecha_ingreso = date('Y-m-d H:i');    // ojo
+
+                    $model->save();
+                }
+            }
+
+            /* ================= GUARDAR TABLA RECEPCION_CLASIFICACION_VERDE ===================*/
+            $recepciones = DB::table('recepcion')
+                ->select('id_recepcion')->distinct()
+                ->where('estado', 1)
+                ->where('fecha_ingreso', 'like', '%' . $request->fecha_recepciones . '%')
+                ->get();
+            foreach ($recepciones as $item) {
+                $relacion = RecepcionClasificacionVerde::where('id_recepcion', '=', $item->id_recepcion)->where('id_clasificacion_verde', '=', $verde->id_clasificacion_verde)->first();
+                if ($relacion == '') {
+                    $relacion = new RecepcionClasificacionVerde();
+                    $relacion->id_recepcion = $item->id_recepcion;
+                    $relacion->id_clasificacion_verde = $verde->id_clasificacion_verde;
+                    $relacion->fecha_registro = date('Y-m-d H:i:s');
+                    if ($relacion->save()) {
+                        $relacion = ClasificacionVerde::All()->last();
+                        bitacora('recepcion_clasificacion_verde', $relacion->id_recepcion_clasificacion_verde, 'I', 'Inserción satisfactoria de una nueva relacion recepcion-clasificación en verde');
+                    } else {
+                        $success = false;
+                        $msg = '<div class="alert alert-warning text-center">' .
+                            '<p> Ha ocurrido un problema al guardar la recepción del día ' . Recepcion::find($item->id_recepcion)->fecha_ingreso . '</p>'
+                            . '</div>';
+                    }
+                }
+            }
+
+            /* ======================== ACTUALIZAR LA TABLA RESUMEN_COSECHA_SEMANA FINAL ====================== */
+            $semana_fin = getLastSemanaByVariedad($request->variedad);
+            ResumenSemanaCosecha::dispatch($verde->semana->codigo, $semana_fin->codigo, $request->variedad)
+                ->onQueue('resumen_cosecha_semanal');
+        } else {
+            $success = false;
+            $errores = '';
+            foreach ($valida->errors()->all() as $mi_error) {
+                if ($errores == '') {
+                    $errores = '<li>' . $mi_error . '</li>';
+                } else {
+                    $errores .= '<li>' . $mi_error . '</li>';
+                }
+            }
+            $msg = '<div class="alert alert-danger">' .
+                '<p class="text-center">¡Por favor corrija los siguientes errores!</p>' .
+                '<ul>' .
+                $errores .
+                '</ul>' .
+                '</div>';
+        }
+        return [
+            'mensaje' => $msg,
+            'success' => $success
+        ];
     }
 }

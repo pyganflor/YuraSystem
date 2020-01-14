@@ -30,3 +30,4 @@ Route::get('clasificacion_verde/add_verde_mobil', 'ClasificacionVerdeController@
 Route::post('clasificacion_verde/store_form_verde', 'ClasificacionVerdeController@store_form_verde');
 Route::get('clasificacion_verde/select_fecha_recepciones', 'ClasificacionVerdeController@select_fecha_recepciones');
 Route::get('clasificacion_verde/construir_tabla', 'ClasificacionVerdeController@construir_tabla');
+Route::post('clasificacion_verde/store_detalle_verde', 'ClasificacionVerdeController@store_detalle_verde');

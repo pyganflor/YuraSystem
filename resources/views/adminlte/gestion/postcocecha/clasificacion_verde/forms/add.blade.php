@@ -44,16 +44,6 @@
         buscar_recepciones_byFecha();
     }
 
-    function destinar_lotes_form(variedad, clasificacion) {
-        datos = {
-            id_variedad: variedad,
-            id_clasificacion_verde: clasificacion
-        };
-        get_jquery('<?php echo e(url('clasificacion_verde/destinar_lotes_form')); ?>', datos, function (retorno) {
-            $('#div_destinar_lotes_' + variedad).html(retorno);
-        });
-    }
-
     function seleccionar_variedad(id_variedad, li) {
         datos = {
             id_variedad: id_variedad,
