@@ -161,9 +161,13 @@ class UpdateIndicador extends Command
             Costos::costos_campo_ha_4_semana_atras();
             Log::info('INDICADOR: "Costos Campo/ha/semana (-4 semanas)"');
         }
+        if ($indicador_par === '0' || $indicador_par === 'C4') { // Costos Cosecha x Tallo (-4 semanas)
+            Costos::costos_cosecha_tallo_4_semana_atras();
+            Log::info('INDICADOR: "Costos Cosecha x Tallo (-4 semanas)"');
+        }
 
         $time_duration = difFechas(date('Y-m-d H:i:s'), $ini)->h . ':' . difFechas(date('Y-m-d H:i:s'), $ini)->m . ':' . difFechas(date('Y-m-d H:i:s'), $ini)->s;
         Log::info('<*> DURACION: ' . $time_duration . '  <*>');
-        Log::info('<<<<< * >>>>> Fin satisfactorio del comando "proyeccion:update_semanal" <<<<< * >>>>>');
+        Log::info('<<<<< * >>>>> Fin satisfactorio del comando "indicador:update" <<<<< * >>>>>');
     }
 }
