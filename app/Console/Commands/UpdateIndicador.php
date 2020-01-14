@@ -154,8 +154,12 @@ class UpdateIndicador extends Command
             Log::info('INDICADOR: "Costos Mano de Obra (-1 semana)"');
         }
         if ($indicador_par === '0' || $indicador_par === 'C2') { // Costos Insumos (-1 semana)
-            Costos::mano_insumos_1_semana_atras();
+            Costos::costos_insumos_1_semana_atras();
             Log::info('INDICADOR: "Costos Insumos (-1 semana)"');
+        }
+        if ($indicador_par === '0' || $indicador_par === 'C3') { // Costos Campo/ha/semana (-4 semanas)
+            Costos::costos_campo_ha_4_semana_atras();
+            Log::info('INDICADOR: "Costos Campo/ha/semana (-4 semanas)"');
         }
 
         $time_duration = difFechas(date('Y-m-d H:i:s'), $ini)->h . ':' . difFechas(date('Y-m-d H:i:s'), $ini)->m . ':' . difFechas(date('Y-m-d H:i:s'), $ini)->s;

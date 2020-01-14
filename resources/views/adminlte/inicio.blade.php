@@ -285,7 +285,7 @@
                         [{'v': 'Costos', 'f': '<strong>Costos/m<sup>2</sup></strong>'}, 'Rentabilidad', 'Costos'],
                         [{
                             'v': 'C1', 'f': '<strong>Planta</strong>' +
-                            '<br><strong>Campo/<sup>ha</sup>/semana</strong>' +
+                            '<br><strong title="Campo/ha/Semana"><small>Campo/<sup>ha</sup>/Semana: </small><span id="span_costos_mano_obra">${{number_format($costos_campo_semana , 2)}}</span></strong>' +
                             '<br><strong>Cosecha x tallo</strong>' +
                             '<br><strong>Postcosecha x tallo</strong>' +
                             '<br><strong>Total x tallo</strong>' +
