@@ -169,6 +169,10 @@ class UpdateIndicador extends Command
             Costos::costos_postcosecha_tallo_4_semana_atras();
             Log::info('INDICADOR: "Costos Postcosecha x Tallo (-4 semanas)"');
         }
+        if ($indicador_par === '0' || $indicador_par === 'C6') { // Costos Total x Tallo (-4 semanas)
+            Costos::costos_total_tallo_4_semana_atras();
+            Log::info('INDICADOR: "Costos Total x Tallo (-4 semanas)"');
+        }
 
         $time_duration = difFechas(date('Y-m-d H:i:s'), $ini)->h . ':' . difFechas(date('Y-m-d H:i:s'), $ini)->m . ':' . difFechas(date('Y-m-d H:i:s'), $ini)->s;
         Log::info('<*> DURACION: ' . $time_duration . '  <*>');
