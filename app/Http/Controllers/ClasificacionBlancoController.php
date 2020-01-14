@@ -71,8 +71,22 @@ class ClasificacionBlancoController extends Controller
             ->whereIn('id_pedido', $ids_pedidos)
             ->orderBy('fecha_pedido')->get();
 
-        $stock_apertura = StockEmpaquetado::All()->where('id_variedad', '=', $request->variedad)
-            ->where('empaquetado', '=', 0)->first();
+        $stock_apertura = StockEmpaquetado::All()
+            ->where('id_variedad', '=', $request->variedad)
+            ->where('empaquetado', '=', 0)
+            ->first();
+        if ($stock_apertura == '') {
+            /* ========= CREAR STOCK_EMPAQUETADO ========== */
+            $stock_apertura = new StockEmpaquetado();
+            $stock_apertura->fecha_registro = date('Y-m-d H:i:s');
+            $stock_apertura->id_variedad = $request->variedad;
+            $stock_apertura->cantidad_ingresada = 0;
+            $stock_apertura->cantidad_armada = 0;
+
+            $stock_apertura->save();
+            $stock_apertura = StockEmpaquetado::All()->last();
+            bitacora('stock_empaquetado', $stock_apertura->id_stock_empaquetado, 'I', 'Creacion satisfactoria de un stock empaquetado');
+        }
 
         $combinaciones = DB::table('pedido as p')
             ->join('detalle_pedido as dp', 'dp.id_pedido', '=', 'p.id_pedido')
@@ -308,15 +322,43 @@ class ClasificacionBlancoController extends Controller
         }
 
         $stock_empaquetado = StockEmpaquetado::find($request->id_stock_empaquetado);
-        $stock_empaquetado->cantidad_armada += $armados;
+        if ($stock_empaquetado == '') { // buscar si existe en la tabla
+            $stock_empaquetado = StockEmpaquetado::All()
+                ->where('empaquetado', 0)
+                ->where('id_variedad', $request->id_variedad)
+                ->first();
+            if ($stock_empaquetado == '') {
+                /* ========= CREAR STOCK_EMPAQUETADO ========== */
+                $stock_empaquetado = new StockEmpaquetado();
+                $stock_empaquetado->fecha_registro = date('Y-m-d H:i:s');
+                $stock_empaquetado->id_variedad = $request->id_variedad;
+                $stock_empaquetado->cantidad_ingresada = 0;
+                $stock_empaquetado->cantidad_armada = $armados;
 
-        if ($stock_empaquetado->save()) {
-            bitacora('stock_empaquetado', $stock_empaquetado->id_stock_empaquetado, 'U', 'Actualización de los armados de un stock_empaquetados');
+                $stock_empaquetado->save();
+                $stock_empaquetado = StockEmpaquetado::All()->last();
+                bitacora('stock_empaquetado', $stock_empaquetado->id_stock_empaquetado, 'I', 'Creacion satisfactoria de un stock empaquetado');
+            } else {
+                $stock_empaquetado->cantidad_armada += $armados;
+                if ($stock_empaquetado->save()) {
+                    bitacora('stock_empaquetado', $stock_empaquetado->id_stock_empaquetado, 'U', 'Actualización de los armados de un stock_empaquetados');
+                } else {
+                    $success = false;
+                    $msg .= '<div class="alert alert-warning text-center">' .
+                        'Ha ocurrido un problema al actualizar los ramos armados' .
+                        '</div>';
+                }
+            }
         } else {
-            $success = false;
-            $msg .= '<div class="alert alert-warning text-center">' .
-                'Ha ocurrido un problema al actualizar los ramos armados' .
-                '</div>';
+            $stock_empaquetado->cantidad_armada += $armados;
+            if ($stock_empaquetado->save()) {
+                bitacora('stock_empaquetado', $stock_empaquetado->id_stock_empaquetado, 'U', 'Actualización de los armados de un stock_empaquetados');
+            } else {
+                $success = false;
+                $msg .= '<div class="alert alert-warning text-center">' .
+                    'Ha ocurrido un problema al actualizar los ramos armados' .
+                    '</div>';
+            }
         }
 
         if ($success) {
