@@ -33,7 +33,7 @@
         <tfoter>
             <tr>
                 <th colspan="6" class="text-center" style="border-color: #9d9d9d">
-                    <button type="button" class="btn btn-xs btn-block btn-primary">
+                    <button type="button" class="btn btn-xs btn-block btn-primary" onclick="store_detalle_verde()">
                         <i class="fa fa-fw fa-save"></i> Guardar
                     </button>
                 </th>
@@ -42,25 +42,47 @@
     </table>
 
     <script>
+        $('#personal').val('{{$verde->personal}}');
+        $('#hora_inicio').val('{{$verde->hora_inicio}}');
+        $('#id_clasificacion_verde').val('{{$verde->id_clasificacion_verde}}');
         construir_tabla();
+
+        function store_detalle_verde() {
+            list_pos = $('.pos_c');
+            array_data = [];
+            for (i = 0; i < list_pos.length; i++) {
+                pos = list_pos[i].value;
+                array_data.push({
+                    mesa: $('#mesa_' + pos).val(),
+                    unitaria: $('#id_unitaria_' + pos).val(),
+                    ramos: $('#ramos_' + pos).val(),
+                    tallos_x_ramo: $('#tallos_x_ramo_' + pos).val(),
+                });
+            }
+
+            datos = {
+                _token: '{{csrf_token()}}',
+                verde: $('#id_clasificacion_verde').val(),
+                variedad: $('#variedad_form').val(),
+                array_data: array_data
+            };
+
+            post_jquery('{{url('clasificacion_verde/store_detalle_verde')}}', datos, function (retorno) {
+                select_fecha_recepciones();
+                buscar_listado();
+            }, 'div_formulario');
+        }
     </script>
 @else
     <div class="well text-center">
         No se ha encontrado ningún trabajo realizado en la fecha seleccionada
-        <a href="javascript:void(0)" onclick="$('#div_form_verde').toggleClass('hide')"
-           class="pull-right text-black btn btn-xs btn-default">
+        <a href="javascript:void(0)" onclick="$('#div_form_verde').toggleClass('hide')" class="pull-right text-black btn btn-xs btn-default">
             <i class="fa fa-fw fa-ellipsis-v"></i>
         </a>
     </div>
+
+    <script>
+        $('#personal').val('');
+        $('#hora_inicio').val('');
+    </script>
 @endif
-
-<script>
-    @if($verde != '')
-    $('#personal').val('{{$verde->personal}}');
-    $('#hora_inicio').val('{{$verde->hora_inicio}}');
-    @else
-    $('#personal').val('');
-    $('#hora_inicio').val('');
-
-    @endif
-</script>

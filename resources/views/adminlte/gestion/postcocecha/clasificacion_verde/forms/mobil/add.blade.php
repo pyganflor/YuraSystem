@@ -13,7 +13,7 @@
                 Fecha Clasf. Verde
             </th>
             <td style="border-color: #9d9d9d; background-color: #e9ecef">
-                <input class="text-center" type="date" style="width: 100%" id="fecha_verde" required>
+                <input class="text-center" type="date" style="width: 100%" id="fecha_ingreso" required>
             </td>
         </tr>
         <tr>
@@ -45,24 +45,41 @@
 
 <div id="div_formulario"></div>
 
+@if(isset($verde))
+    @if($verde->activo == 1)
+        <div class="text-center" id="btn_terminar_clasificacion" style="margin-top: 15px">
+            <button type="button" class="btn btn-danger btn-sm" onclick="terminar_clasificacion()">
+                <i class="fa fa-fw fa-times"></i> Terminar Clasificación
+            </button>
+        </div>
+        @foreach($verde->variedades() as $variedad)
+            <div id="div_destinar_lotes_{{$variedad->id_variedad}}" style="display: none;"></div>
+            <script>
+                destinar_lotes_form('{{$variedad->id_variedad}}', '{{$verde->id_clasificacion_verde}}');
+            </script>
+        @endforeach
+    @endif
+@endif
+
 <script>
     set_max_today($('#fecha_recepciones'));
-    set_max_today($('#fecha_verde'));
+    set_max_today($('#fecha_ingreso'));
     select_fecha_recepciones();
 
     function store_form_verde() {
         datos = {
             _token: '{{csrf_token()}}',
-            fecha: $('#fecha_verde').val(),
+            fecha_recepciones: $('#fecha_recepciones').val(),
+            fecha: $('#fecha_ingreso').val(),
             personal: $('#personal').val(),
             hora_inicio: $('#hora_inicio').val(),
             id: $('#id_clasificacion_verde').val(),
         };
         $('#div_form_verde').LoadingOverlay('show');
         $.post('{{url('clasificacion_verde/store_form_verde')}}', datos, function (retorno) {
-            if (retorno.success)
+            if (retorno.success) {
                 select_fecha_recepciones();
-            else
+            } else
                 alerta(retorno.mensaje);
         }, 'json').fail(function (retorno) {
             console.log(retorno);
@@ -78,7 +95,7 @@
         };
         get_jquery('{{url('clasificacion_verde/select_fecha_recepciones')}}', datos, function (retorno) {
             $('#div_formulario').html(retorno);
-            $('#fecha_verde').val($('#fecha_recepciones').val());
+            $('#fecha_ingreso').val($('#fecha_recepciones').val());
         }, 'div_form_verde');
     }
 
@@ -91,4 +108,40 @@
         }, 'table_formulario')
     }
 
+    function calcular_tabla(pos) {
+        ramos = $('#ramos_' + pos).val();
+        tallos_x_ramo = $('#tallos_x_ramo_' + pos).val();
+        $('#total_' + pos).html(ramos * tallos_x_ramo);
+    }
+
+    function terminar_clasificacion() {
+        datos = {
+            _token: '{{csrf_token()}}',
+            id_clasificacion_verde: $('#id_clasificacion_verde').val()
+        };
+        fecha = $('#fecha_recepciones').val();
+        modal_quest('modal_quest_terminar_clasificacion',
+            '<div class="alert alert-info text-center">Si termina esta clasificación en verde no podrá volver a clasificar más ramos en la fecha seleccionada</div>',
+            '<i class="fa fa-fw fa-exclamation-triangle"></i> Mensaje de alerta', true, false, '{{isPc() ? '35%' : ''}}', function () {
+                post_jquery('{{url('clasificacion_verde/terminar')}}', datos, function () {
+                    if ($('#check_mandar_apertura_auto').prop('checked')) {
+                        ids_variedades = $('.id_variedad_form');
+                        arreglo_master = [];
+                        for (v = 0; v < ids_variedades.length; v++) {
+                            arreglo_master.push(store_lote_re_from(ids_variedades[v].value));
+                        }
+                        datos = {
+                            _token: '{{csrf_token()}}',
+                            arreglo: arreglo_master
+                        };
+                        post_jquery('{{url('clasificacion_verde/store_lote_re_from')}}', datos, function () {
+                        });
+                    }
+                    cerrar_modals();
+                    buscar_listado();
+
+                    add_verde(fecha);
+                });
+            });
+    }
 </script>

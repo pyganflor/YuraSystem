@@ -165,7 +165,6 @@
                     <i class="fa fa-fw fa-times"></i> Terminar Clasificación
                 </button>
             </div>
-
             @foreach($clasificacion_verde->variedades() as $variedad)
                 <div id="div_destinar_lotes_{{$variedad->id_variedad}}" style="display: none;"></div>
                 <script>
@@ -293,6 +292,7 @@
             _token: '{{csrf_token()}}',
             id_clasificacion_verde: $('#id_clasificacion_verde').val()
         };
+        fecha = $('#fecha_recepciones').val();
         modal_quest('modal_quest_terminar_clasificacion',
             '<div class="alert alert-info text-center">Si termina esta clasificación en verde no podrá volver a clasificar más ramos en la fecha seleccionada</div>',
             '<i class="fa fa-fw fa-exclamation-triangle"></i> Mensaje de alerta', true, false, '{{isPc() ? '35%' : ''}}', function () {
@@ -313,7 +313,7 @@
                     cerrar_modals();
                     buscar_listado();
 
-                    add_verde($('#fecha_recepciones').val());
+                    add_verde(fecha);
                 });
             });
     }
