@@ -99,7 +99,7 @@ class Costos
 
     public static function costos_cosecha_tallo_4_semana_atras()
     {
-        $model = getIndicadorByName('C3');  // Costos Cosecha x Tallo (-4 semanas)
+        $model = getIndicadorByName('C4');  // Costos Cosecha x Tallo (-4 semanas)
         if ($model != '') {
             $sem_desde = getSemanaByDate(opDiasFecha('-', 35, date('Y-m-d')));
             $sem_hasta = getSemanaByDate(opDiasFecha('-', 7, date('Y-m-d')));
