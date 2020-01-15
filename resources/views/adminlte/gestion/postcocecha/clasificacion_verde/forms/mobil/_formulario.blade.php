@@ -30,15 +30,17 @@
         </tr>
         </thead>
         <tbody id="body_tabla_formulario"></tbody>
-        <tfoter>
-            <tr>
-                <th colspan="6" class="text-center" style="border-color: #9d9d9d">
-                    <button type="button" class="btn btn-xs btn-block btn-primary" onclick="store_detalle_verde()">
-                        <i class="fa fa-fw fa-save"></i> Guardar
-                    </button>
-                </th>
-            </tr>
-        </tfoter>
+        @if($verde->activo == 1)
+            <tfoter>
+                <tr>
+                    <th colspan="6" class="text-center" style="border-color: #9d9d9d">
+                        <button type="button" class="btn btn-xs btn-block btn-primary" onclick="store_detalle_verde()">
+                            <i class="fa fa-fw fa-save"></i> Guardar
+                        </button>
+                    </th>
+                </tr>
+            </tfoter>
+        @endif
     </table>
 
     <script>
