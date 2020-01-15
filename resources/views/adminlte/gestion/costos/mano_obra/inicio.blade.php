@@ -66,7 +66,7 @@
                         </div>
                     </div>
                     <div class="col-md-5">
-                        <div class="div_content_fixed" style="overflow-y: scroll; max-height: 450px">
+                        <div class="div_content_fixed" style="overflow-y: scroll; max-height: 450px" id="div1">
                             @include('adminlte.gestion.costos.mano_obra.partials.list_producto')
                         </div>
                     </div>
@@ -78,6 +78,5 @@
 
 @section('script_final')
     <script>
-
     </script>
 @endsection

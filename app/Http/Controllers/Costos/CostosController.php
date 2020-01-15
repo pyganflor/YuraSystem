@@ -4,6 +4,7 @@ namespace yura\Http\Controllers\Costos;
 
 use Illuminate\Http\Request;
 use yura\Http\Controllers\Controller;
+use yura\Jobs\ImportarCostos;
 use yura\Modelos\Actividad;
 use yura\Modelos\ActividadManoObra;
 use yura\Modelos\ActividadProducto;
@@ -647,120 +648,14 @@ class CostosController extends Controller
         $valida = Validator::make($request->all(), [
             'file_costos' => 'required',
         ]);
-        $msg = '';
+        $msg = '<div class="alert alert-info text-center">Se ha importado el archivo, actualmente se están ingresando los datos al sistema</div>';
         $success = true;
         if (!$valida->fails()) {
 
             $document = PHPExcel_IOFactory::load($request->file_costos);
             $activeSheetData = $document->getActiveSheet()->toArray(null, true, true, true);
 
-            $titles = $activeSheetData[1];
-            foreach ($activeSheetData as $pos_row => $row) {
-                if ($pos_row > 1) {
-                    if ($row['A'] != '' && $row['B'] != '') {
-                        $actividad = Actividad::All()->where('estado', 1)
-                            ->where('nombre', str_limit(mb_strtoupper(espacios($row['A'])), 50))->first();
-                        if ($request->concepto_importar == 'I') { // insumos
-                            $producto = Producto::All()->where('estado', 1)
-                                ->where('nombre', str_limit(mb_strtoupper(espacios($row['B'])), 250))->first();
-                            $concepto = 'insumo';
-                        } else {    // mano de obra
-                            $producto = ManoObra::All()->where('estado', 1)
-                                ->where('nombre', str_limit(mb_strtoupper(espacios($row['B'])), 250))->first();
-                            $concepto = 'mano de obra';
-                        }
-
-                        if ($actividad != '' && $producto != '') {
-                            if ($request->concepto_importar == 'I') // insumos
-                                $act_prod = ActividadProducto::All()
-                                    ->where('estado', 1)
-                                    ->where('id_actividad', $actividad->id_actividad)
-                                    ->where('id_producto', $producto->id_producto)
-                                    ->first();
-                            else    // mano de obra
-                                $act_prod = ActividadManoObra::All()
-                                    ->where('estado', 1)
-                                    ->where('id_actividad', $actividad->id_actividad)
-                                    ->where('id_producto', $producto->id_mano_obra)
-                                    ->first();
-
-                            if ($act_prod == '') {
-                                if ($request->concepto_importar == 'I') { // insumos
-                                    $model = new ActividadProducto();
-                                    $model->id_producto = $producto->id_producto;
-                                } else {    // mano de obra
-                                    $model = new ActividadManoObra();
-                                    $model->id_mano_obra = $producto->id_mano_obra;
-                                }
-                                $model->id_actividad = $actividad->id_actividad;
-                                $model->fecha_registro = date('Y-m-d H:i:s');
-                                $model->save();
-                                if ($request->concepto_importar == 'I') {   // insumos
-                                    $act_prod = ActividadProducto::All()->last();
-                                    bitacora('actividad_producto', $act_prod->id_actividad_producto, 'I', 'Inserción satisfactoria de un nuevo vínculo actividad_producto');
-                                } else {    // mano de obra
-                                    $act_prod = ActividadManoObra::All()->last();
-                                    bitacora('actividad_mano_obra', $act_prod->id_actividad_mano_obra, 'I', 'Inserción satisfactoria de un nuevo vínculo actividad_mano_obra');
-                                }
-                            }
-
-                            foreach ($titles as $pos_title => $t) {
-                                if (!in_array($pos_title, ['A', 'B'])) {
-                                    $codigo_semana = intval($t);
-                                    $value = floatval(str_replace(',', '', $row[$pos_title]));
-                                    if ($request->concepto_importar == 'I') // insumos
-                                        $costos = CostosSemana::All()
-                                            ->where('codigo_semana', $codigo_semana)
-                                            ->where('id_actividad_producto', $act_prod->id_actividad_producto)
-                                            ->first();
-                                    else    // mano de obra
-                                        $costos = CostosSemanaManoObra::All()
-                                            ->where('codigo_semana', $codigo_semana)
-                                            ->where('id_actividad_mano_obra', $act_prod->id_actividad_mano_obra)
-                                            ->first();
-                                    if ($costos == '') {
-                                        if ($request->concepto_importar == 'I') { // insumos
-                                            $model = new CostosSemana();
-                                            $model->id_actividad_producto = $act_prod->id_actividad_producto;
-                                        } else {    // mano de obra
-                                            $model = new CostosSemanaManoObra();
-                                            $model->id_actividad_mano_obra = $act_prod->id_actividad_mano_obra;
-                                        }
-                                        $model->codigo_semana = $codigo_semana;
-                                        $model->fecha_registro = date('Y-m-d H:i:s');
-                                        if ($request->criterio_importar == 'V')  // dinero
-                                            $model->valor = $value;
-                                        else    //
-                                            $model->cantidad = $value;
-
-                                        $model->save();
-                                        if ($request->concepto_importar == 'I') { // insumos
-                                            $costos = CostosSemana::All()->last();
-                                            bitacora('costos_semana', $costos->id_costos_semana, 'I', 'Inserción satisfactoria de un nuevo costos_semana');
-                                        } else {    // mano de obra
-                                            $costos = CostosSemanaManoObra::All()->last();
-                                            bitacora('costos_semana_mano_obra', $costos->id_costos_semana_mano_obra, 'I', 'Inserción satisfactoria de un nuevo costos_semana_mano_obra');
-                                        }
-                                    } else {
-                                        if ($request->criterio_importar == 'V')  // dinero
-                                            $costos->valor = $value;
-                                        else    //
-                                            $costos->cantidad = $value;
-
-                                        $costos->save();
-                                        if ($request->concepto_importar == 'I') // insumos
-                                            bitacora('costos_semana', $costos->id_costos_semana, 'U', 'Modificación satisfactoria de un costos_semana');
-                                        else    // mano de obra
-                                            bitacora('costos_semana_mano_obra', $costos->id_costos_semana_mano_obra, 'U', 'Modificación satisfactoria de un costos_semana_mano_obra');
-                                    }
-                                }
-                            }
-
-                            $msg .= '<li class="bg-green">Se ha importado el ' . $concepto . ': "' . $producto->nombre . '" en la actividad: "' . $actividad->nombre . '</li>';
-                        }
-                    }
-                }
-            }
+            ImportarCostos::dispatch($activeSheetData, $request->concepto_importar, $request->criterio_importar)->onQueue('job');
         } else {
             $errores = '';
             foreach ($valida->errors()->all() as $mi_error) {
