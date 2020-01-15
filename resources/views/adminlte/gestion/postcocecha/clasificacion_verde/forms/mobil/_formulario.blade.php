@@ -66,6 +66,7 @@
                 _token: '{{csrf_token()}}',
                 verde: $('#id_clasificacion_verde').val(),
                 variedad: $('#variedad_form').val(),
+                fecha_recepciones: $('#fecha_recepciones').val(),
                 array_data: array_data
             };
 
