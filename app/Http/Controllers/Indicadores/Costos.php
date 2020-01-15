@@ -101,7 +101,8 @@ class Costos
             $costos_total = $insumos + $mano_obra + $otros;
             $area = getIndicadorByName('D7');   // Área en producción (-4 semanas)
 
-            $model->valor = round($costos_total / ($area->valor / 10000), 2);
+            $valor = $area->valor > 0 ? round($costos_total / ($area->valor / 10000), 2) : 0;
+            $model->valor = $valor . '|' . $costos_total . '/' . ($area->valor / 10000);
             $model->save();
         }
     }
