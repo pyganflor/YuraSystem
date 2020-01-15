@@ -84,6 +84,4 @@
             modal_view('modal-view_admin_usuarios', retorno, '<i class="fa fa-fw fa-users"></i> Usuarios', true, false, '{{isPC() ? '65%' : ''}}');
         });
     }
-
-
 </script>
