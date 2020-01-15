@@ -43,6 +43,20 @@
         @endif
     </table>
 
+    @if($verde->activo == 1)
+        <div class="text-center" id="btn_terminar_clasificacion" style="margin-top: 15px">
+            <button type="button" class="btn btn-danger btn-sm" onclick="terminar_clasificacion()">
+                <i class="fa fa-fw fa-times"></i> Terminar Clasificación:{{$verde->activo}}:{{$verde->fecha_ingreso}}
+            </button>
+        </div>
+        @foreach($verde->variedades() as $variedad)
+            <div id="div_destinar_lotes_{{$variedad->id_variedad}}" style="display: none;"></div>
+            <script>
+                destinar_lotes_form('{{$variedad->id_variedad}}', '{{$verde->id_clasificacion_verde}}');
+            </script>
+        @endforeach
+    @endif
+
     <script>
         $('#personal').val('{{$verde->personal}}');
         $('#hora_inicio').val('{{$verde->hora_inicio}}');
