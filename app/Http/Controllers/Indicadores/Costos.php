@@ -92,7 +92,7 @@ class Costos
             $costos_total = $insumos + $mano_obra;
             $area = getIndicadorByName('D7');   // Área en producción (-4 semanas)
 
-            $model->valor = round($costos_total / $area->valor, 2);
+            $model->valor = round($costos_total / ($area->valor / 10000), 2);
             $model->save();
         }
     }
@@ -133,7 +133,7 @@ class Costos
                 $tallos += $c->getTotalTallos();
             }
 
-            $model->valor = $tallos > 0 ? round($costos_total / $tallos, 2) : 0;
+            $model->valor = $tallos > 0 ? round($costos_total / $tallos, 4) : 0;
             $model->save();
         }
     }
@@ -174,7 +174,7 @@ class Costos
                 $tallos += $c->getTotalTallos();
             }
 
-            $model->valor = $tallos > 0 ? round($costos_total / $tallos, 2) : 0;
+            $model->valor = $tallos > 0 ? round($costos_total / $tallos, 4) : 0;
             $model->save();
         }
     }
@@ -207,7 +207,7 @@ class Costos
                 $tallos += $c->getTotalTallos();
             }
 
-            $model->valor = $tallos > 0 ? round($costos_total / $tallos, 2) : 0;
+            $model->valor = $tallos > 0 ? round($costos_total / $tallos, 4) : 0;
             $model->save();
         }
     }
