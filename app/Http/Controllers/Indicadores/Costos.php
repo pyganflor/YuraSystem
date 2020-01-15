@@ -10,6 +10,7 @@ namespace yura\Http\Controllers\Indicadores;
 
 use Illuminate\Support\Facades\DB;
 use yura\Modelos\Cosecha;
+use yura\Modelos\Area;
 
 class Costos
 {
@@ -70,12 +71,15 @@ class Costos
             $sem_desde = getSemanaByDate(opDiasFecha('-', 35, date('Y-m-d')));
             $sem_hasta = getSemanaByDate(opDiasFecha('-', 7, date('Y-m-d')));
 
+            $area_trabajo = Area::All()
+                ->where('estado', 1)
+                ->where('nombre', 'CAMPO')
+                ->first();
             $insumos = DB::table('costos_semana as c')
                 ->select(DB::raw('sum(c.valor) as cant'))
                 ->join('actividad_producto as ac', 'ac.id_actividad_producto', '=', 'c.id_actividad_producto')
                 ->join('actividad as a', 'a.id_actividad', '=', 'ac.id_actividad')
-                ->join('area as ar', 'ar.id_area', '=', 'a.id_area')
-                ->where('ar.nombre', '=', 'CAMPO')
+                ->where('a.id_area', '=', $area_trabajo->id_area)
                 ->where('c.codigo_semana', '>=', $sem_desde->codigo)
                 ->where('c.codigo_semana', '<=', $sem_hasta->codigo)
                 ->get()[0]->cant;
@@ -83,13 +87,18 @@ class Costos
                 ->select(DB::raw('sum(c.valor) as cant'))
                 ->join('actividad_mano_obra as am', 'am.id_actividad_mano_obra', '=', 'c.id_actividad_mano_obra')
                 ->join('actividad as a', 'a.id_actividad', '=', 'am.id_actividad')
-                ->join('area as ar', 'ar.id_area', '=', 'a.id_area')
-                ->where('ar.nombre', '=', 'CAMPO')
+                ->where('a.id_area', '=', $area_trabajo->id_area)
                 ->where('c.codigo_semana', '>=', $sem_desde->codigo)
                 ->where('c.codigo_semana', '<=', $sem_hasta->codigo)
                 ->get()[0]->cant;
+            $otros = DB::table('otros_gastos as o')
+                ->select(DB::raw('sum(o.gip + o.ga) as cant'))
+                ->where('o.id_area', '=', $area_trabajo->id_area)
+                ->where('o.codigo_semana', '>=', $sem_desde->codigo)
+                ->where('o.codigo_semana', '<=', $sem_hasta->codigo)
+                ->get()[0]->cant;
 
-            $costos_total = $insumos + $mano_obra;
+            $costos_total = $insumos + $mano_obra + $otros;
             $area = getIndicadorByName('D7');   // Área en producción (-4 semanas)
 
             $model->valor = round($costos_total / ($area->valor / 10000), 2);
@@ -104,12 +113,15 @@ class Costos
             $sem_desde = getSemanaByDate(opDiasFecha('-', 35, date('Y-m-d')));
             $sem_hasta = getSemanaByDate(opDiasFecha('-', 7, date('Y-m-d')));
 
+            $area_trabajo = Area::All()
+                ->where('estado', 1)
+                ->where('nombre', 'CAMPO')
+                ->first();
             $insumos = DB::table('costos_semana as c')
                 ->select(DB::raw('sum(c.valor) as cant'))
                 ->join('actividad_producto as ac', 'ac.id_actividad_producto', '=', 'c.id_actividad_producto')
                 ->join('actividad as a', 'a.id_actividad', '=', 'ac.id_actividad')
-                ->join('area as ar', 'ar.id_area', '=', 'a.id_area')
-                ->where('ar.nombre', '=', 'COSECHA')
+                ->where('a.id_area', '=', $area_trabajo->id_area)
                 ->where('c.codigo_semana', '>=', $sem_desde->codigo)
                 ->where('c.codigo_semana', '<=', $sem_hasta->codigo)
                 ->get()[0]->cant;
@@ -117,13 +129,18 @@ class Costos
                 ->select(DB::raw('sum(c.valor) as cant'))
                 ->join('actividad_mano_obra as am', 'am.id_actividad_mano_obra', '=', 'c.id_actividad_mano_obra')
                 ->join('actividad as a', 'a.id_actividad', '=', 'am.id_actividad')
-                ->join('area as ar', 'ar.id_area', '=', 'a.id_area')
-                ->where('ar.nombre', '=', 'COSECHA')
+                ->where('a.id_area', '=', $area_trabajo->id_area)
                 ->where('c.codigo_semana', '>=', $sem_desde->codigo)
                 ->where('c.codigo_semana', '<=', $sem_hasta->codigo)
                 ->get()[0]->cant;
+            $otros = DB::table('otros_gastos as o')
+                ->select(DB::raw('sum(o.gip + o.ga) as cant'))
+                ->where('o.id_area', '=', $area_trabajo->id_area)
+                ->where('o.codigo_semana', '>=', $sem_desde->codigo)
+                ->where('o.codigo_semana', '<=', $sem_hasta->codigo)
+                ->get()[0]->cant;
 
-            $costos_total = $insumos + $mano_obra;
+            $costos_total = $insumos + $mano_obra + $otros;
 
             $cosechas = Cosecha::All()->where('estado', 1)
                 ->where('fecha_ingreso', '>=', $sem_desde->fecha_inicial)
