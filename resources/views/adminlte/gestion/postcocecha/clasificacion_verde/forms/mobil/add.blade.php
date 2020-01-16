@@ -79,7 +79,7 @@
         };
         get_jquery('{{url('clasificacion_verde/select_fecha_recepciones')}}', datos, function (retorno) {
             $('#div_formulario').html(retorno);
-            $('#fecha_ingreso').val($('#fecha_recepciones').val());
+            //$('#fecha_ingreso').val($('#fecha_recepciones').val());
         }, 'div_form_verde');
     }
 
