@@ -1237,18 +1237,20 @@ class ClasificacionVerdeController extends Controller
 
     public function select_fecha_recepciones(Request $request)
     {
-        $fecha = $request->fecha == '' ? date('Y-m-d') : $request->fecha;
+        $fecha_recepcion = $request->fecha_recepcion == '' ? date('Y-m-d') : $request->fecha_recepcion;
+        $fecha_verde = $request->fecha_verde == '' ? date('Y-m-d') : $request->fecha_verde;
         $verde = ClasificacionVerde::All()
             ->where('estado', 1)
-            ->where('fecha_ingreso', $fecha)
+            ->where('fecha_ingreso', $fecha_verde)
             ->first();
         $cosecha = Cosecha::All()
             ->where('estado', 1)
-            ->where('fecha_ingreso', $fecha)
+            ->where('fecha_ingreso', $fecha_recepcion)
             ->first();
 
         return view('adminlte.gestion.postcocecha.clasificacion_verde.forms.mobil._formulario', [
-            'fecha' => $fecha,
+            'fecha_recepcion' => $fecha_recepcion,
+            'fecha_verde' => $fecha_verde,
             'verde' => $verde,
             'cosecha' => $cosecha,
         ]);
