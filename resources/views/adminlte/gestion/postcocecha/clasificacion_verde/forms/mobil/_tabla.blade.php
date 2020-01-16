@@ -4,7 +4,7 @@
             <select id="mesa_{{$pos_c}}" onchange="$('.select_mesa').val($(this).val())" class="select_mesa"
                     style="width: 100%; background-color: {{explode('|', $c->clasificacion_unitaria->color)[0]}}; color: {{explode('|', $c->clasificacion_unitaria->color)[1]}}">
                 <option value="">Mesa</option>
-                @for($i=1; $i<=50; $i++)
+                @for($i=1; $i<=80; $i++)
                     <option value="{{$i}}">{{$i}}</option>
                 @endfor
             </select>

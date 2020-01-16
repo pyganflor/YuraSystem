@@ -13,7 +13,7 @@
                 Fecha Clasf. Verde
             </th>
             <td style="border-color: #9d9d9d; background-color: #e9ecef">
-                <input class="text-center" type="date" style="width: 100%" id="fecha_ingreso" required>
+                <input class="text-center" type="date" style="width: 100%" id="fecha_ingreso" required onchange="select_fecha_recepciones()">
             </td>
         </tr>
         <tr>
@@ -75,7 +75,8 @@
 
     function select_fecha_recepciones() {
         datos = {
-            fecha: $('#fecha_recepciones').val()
+            fecha_recepcion: $('#fecha_recepciones').val(),
+            fecha_verde: $('#fecha_ingreso').val()
         };
         get_jquery('{{url('clasificacion_verde/select_fecha_recepciones')}}', datos, function (retorno) {
             $('#div_formulario').html(retorno);
