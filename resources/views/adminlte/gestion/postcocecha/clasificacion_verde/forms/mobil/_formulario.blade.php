@@ -44,7 +44,7 @@
     </table>
 
     @if($verde->activo == 1)
-        <div class="text-center" id="btn_terminar_clasificacion" style="margin-top: 15px">
+        <div id="btn_terminar_clasificacion" style="margin-top: 15px">
             <button type="button" class="btn btn-danger btn-sm" onclick="terminar_clasificacion()">
                 <i class="fa fa-fw fa-times"></i> Terminar Clasificación
             </button>
