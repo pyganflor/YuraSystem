@@ -93,9 +93,9 @@ class PedidoController extends Controller
                 'vista' => $request->vista,
                 'clientes' => DB::table('cliente as c')
                     ->join('detalle_cliente as dt', 'c.id_cliente', '=', 'dt.id_cliente')
-                    ->where('dt.estado', 1)->orderBy('dt.nombre','asc')->get(),
+                    ->where('dt.estado', 1)->orderBy('dt.nombre', 'asc')->get(),
                 'id_pedido' => $request->id_pedido,
-                'datos_exportacion' => ClienteDatoExportacion::where('id_cliente',$request->id_cliente)->get(),
+                'datos_exportacion' => ClienteDatoExportacion::where('id_cliente', $request->id_cliente)->get(),
                 'comprobante' => isset($request->id_pedido) ? (isset(getPedido($request->id_pedido)->envios[0]->comprobante) ? getPedido($request->id_pedido)->envios[0]->comprobante : null) : null
             ]);
     }
@@ -124,28 +124,28 @@ class PedidoController extends Controller
 
                 (isset($request->opcion) && $request->opcion != 3) ? $fechaFormateada = $formatoFecha : $fechaFormateada = $fechas;
 
-                if(!empty($request->id_pedido)){
-                    $dataEnvio = Envio::where('id_pedido',$request->id_pedido)->first();
-                    if(isset($dataEnvio->id_envio)){
+                if (!empty($request->id_pedido)) {
+                    $dataEnvio = Envio::where('id_pedido', $request->id_pedido)->first();
+                    if (isset($dataEnvio->id_envio)) {
 
-                        $dataComprobante = Comprobante::where('id_envio',$dataEnvio->id_envio)
-                            ->join('detalle_factura as df','comprobante.id_comprobante','df.id_comprobante')
-                            ->join('impuesto_detalle_factura as idf','df.id_detalle_factura','idf.id_detalle_factura')
-                            ->join('desglose_envio_factura as def','comprobante.id_comprobante','def.id_comprobante')
-                            ->join('impuesto_desglose_envio_factura as idef','def.id_desglose_envio_factura','idef.id_desglose_envio_factura')
-                            ->select('clave_acceso','comprobante.id_comprobante','comprobante.secuencial')->get();
+                        $dataComprobante = Comprobante::where('id_envio', $dataEnvio->id_envio)
+                            ->join('detalle_factura as df', 'comprobante.id_comprobante', 'df.id_comprobante')
+                            ->join('impuesto_detalle_factura as idf', 'df.id_detalle_factura', 'idf.id_detalle_factura')
+                            ->join('desglose_envio_factura as def', 'comprobante.id_comprobante', 'def.id_comprobante')
+                            ->join('impuesto_desglose_envio_factura as idef', 'def.id_desglose_envio_factura', 'idef.id_desglose_envio_factura')
+                            ->select('clave_acceso', 'comprobante.id_comprobante', 'comprobante.secuencial')->get();
 
-                        if($dataComprobante->count() > 0){
+                        if ($dataComprobante->count() > 0) {
 
                             $objComprobante = Comprobante::find($dataComprobante[0]->id_comprobante);
                             $objComprobante->habilitado = false;
                             $objComprobante->id_envio = null;
-                            if($objComprobante->save()){
-                                $archivo_generado = env('PATH_XML_FIRMADOS').'/facturas/'.$dataComprobante[0]->clave_acceso.".xml";
-                                $archivo_firmado = env('PATH_XML_GENERADOS').'/facturas/'.$dataComprobante[0]->clave_acceso.".xml";
+                            if ($objComprobante->save()) {
+                                $archivo_generado = env('PATH_XML_FIRMADOS') . '/facturas/' . $dataComprobante[0]->clave_acceso . ".xml";
+                                $archivo_firmado = env('PATH_XML_GENERADOS') . '/facturas/' . $dataComprobante[0]->clave_acceso . ".xml";
 
-                                if(file_exists($archivo_generado)) unlink($archivo_generado);
-                                if(file_exists($archivo_firmado)) unlink($archivo_firmado);
+                                if (file_exists($archivo_generado)) unlink($archivo_generado);
+                                if (file_exists($archivo_firmado)) unlink($archivo_firmado);
 
                                 $codigo_dae = $dataEnvio->codigo_dae;
                                 $dae = $dataEnvio->dae;
@@ -169,7 +169,7 @@ class PedidoController extends Controller
                     /*foreach (getPedido($request->id_pedido)->detalles as $det_ped)
                         if($det_ped->cliente_especificacion->especificacion->tipo === "O")
                             Especificacion::destroy($det_ped->cliente_especificacion->especificacion->id_especificacion);*/
-                     //DetallePedidoDatoExportacion::where('id_detalle_pedido',$det_ped->id_detalle_pedido)->delete();
+                    //DetallePedidoDatoExportacion::where('id_detalle_pedido',$det_ped->id_detalle_pedido)->delete();
 
                 }
 
@@ -178,9 +178,9 @@ class PedidoController extends Controller
                 $objPedido->descripcion = $request->descripcion;
                 $objPedido->fecha_pedido = $fechaFormateada;
                 $objPedido->id_configuracion_empresa = isset($id_configuracion_empresa) ? $id_configuracion_empresa : $request->id_configuracion_empresa;
-                $objPedido->variedad = substr(implode("|",array_unique($request->variedades)), 0, -1);
+                $objPedido->variedad = substr(implode("|", array_unique($request->variedades)), 0, -1);
 
-                if(isset($dataEnvio->id_envio) && count($dataComprobante) > 0){
+                if (isset($dataEnvio->id_envio) && count($dataComprobante) > 0) {
                     $objPedido->clave_acceso_temporal = $dataComprobante[0]->secuencial;  //$dataComprobante[0]->clave_acceso; COMENTANDO PARA QUE LA FACTURACION FUNCIONE CON EL VENTURE
                     $objPedido->id_comprobante_temporal = $dataComprobante[0]->id_comprobante;
                 }
@@ -192,9 +192,9 @@ class PedidoController extends Controller
                         $objDetallePedido = new DetallePedido;
 
                         //SI UN DETALLE PEDIDO (ESPECIFICACION) DEL PEDIDO NO VA EN CAJAS SE CREA UNA NUEVA ESPECIFICACION DE TIPO 'O' Y SE ATA AL CLIENTE
-                        if(!isset($item['id_cliente_pedido_especificacion'])){
-                            $asignacion = $this->asignaClienteEspecificacion($item['datos_especificacion'],$request->id_cliente);
-                            if(!$asignacion['estado']){
+                        if (!isset($item['id_cliente_pedido_especificacion'])) {
+                            $asignacion = $this->asignaClienteEspecificacion($item['datos_especificacion'], $request->id_cliente);
+                            if (!$asignacion['estado']) {
                                 Pedido::destroy($model->id_pedido);
                                 $success = false;
                                 $msg = '<div class="alert alert-danger text-center">' .
@@ -215,13 +215,13 @@ class PedidoController extends Controller
                         $objDetallePedido->id_agencia_carga = $item['id_agencia_carga'];
                         $objDetallePedido->cantidad = $item['cantidad'];
                         $objDetallePedido->precio = substr($item['precio'], 0, -1);
-                        $objDetallePedido->orden =  $item['orden'];
+                        $objDetallePedido->orden = $item['orden'];
 
                         if ($objDetallePedido->save()) {
                             $modelDetallePedido = DetallePedido::all()->last();
-                            if(isset($request->dataTallos) && count($request->dataTallos) > 0){
-                                $storeDataTallos = $this->store_datos_tallos($request->dataTallos[$key],$modelDetallePedido->id_detalle_pedido);
-                                if(!$storeDataTallos){
+                            if (isset($request->dataTallos) && count($request->dataTallos) > 0) {
+                                $storeDataTallos = $this->store_datos_tallos($request->dataTallos[$key], $modelDetallePedido->id_detalle_pedido);
+                                if (!$storeDataTallos) {
                                     Pedido::destroy($model->id_pedido);
                                     $success = false;
                                     $msg = '<div class="alert alert-danger text-center">' .
@@ -234,14 +234,14 @@ class PedidoController extends Controller
                                 }
                             }
                             bitacora('detalle_pedido', $modelDetallePedido->id_detalle_pedido, 'I', 'Inserción satisfactoria de un nuevo detalle pedido');
-                            if($request->arrDatosExportacion!=''){
-                                foreach ($request->arrDatosExportacion[$key] as $de){
-                                    if( $de['valor'] != null){
+                            if ($request->arrDatosExportacion != '') {
+                                foreach ($request->arrDatosExportacion[$key] as $de) {
+                                    if ($de['valor'] != null) {
                                         $objDetallePedidoDatoExportacion = new DetallePedidoDatoExportacion;
                                         $objDetallePedidoDatoExportacion->id_detalle_pedido = $modelDetallePedido->id_detalle_pedido;
                                         $objDetallePedidoDatoExportacion->id_dato_exportacion = $de['id_dato_exportacion'];
                                         $objDetallePedidoDatoExportacion->valor = $de['valor'];
-                                        if($objDetallePedidoDatoExportacion->save()){
+                                        if ($objDetallePedidoDatoExportacion->save()) {
                                             $modelDetallePedidoDatoExportacion = DetallePedidoDatoExportacion::all()->last();
                                             bitacora('detallepedido_datoexportacion', $modelDetallePedidoDatoExportacion->id_detallepedido_datoexportacion, 'I', 'Inserción satisfactoria de un nuevo detallepedido_datoexportacion');
                                         }
@@ -268,7 +268,7 @@ class PedidoController extends Controller
                     $objEnvio = new Envio;
                     $objEnvio->fecha_envio = $fechaFormateada;
                     $objEnvio->id_pedido = $model->id_pedido;
-                    if(isset($codigo_dae)) {
+                    if (isset($codigo_dae)) {
                         $objEnvio->codigo_dae = $codigo_dae;
                         $objEnvio->dae = $dae;
                         $objEnvio->guia_madre = $guia_madre;
@@ -280,19 +280,19 @@ class PedidoController extends Controller
                         $objEnvio->almacen = $almacen;
                     }
 
-                    if($objEnvio->save()){
+                    if ($objEnvio->save()) {
                         $modelEnvio = Envio::all()->last();
                         bitacora('envio', $modelEnvio->id_envio, 'I', 'Inserción satisfactoria de un nuevo envío');
-                        $dataDetallePedido = DetallePedido::where('id_pedido',$model->id_pedido)
-                            ->join('cliente_pedido_especificacion as cpe','detalle_pedido.id_cliente_especificacion','cpe.id_cliente_pedido_especificacion')
-                            ->select('cpe.id_especificacion','detalle_pedido.cantidad')->get();
-                        foreach ($dataDetallePedido as $detallePeido){
+                        $dataDetallePedido = DetallePedido::where('id_pedido', $model->id_pedido)
+                            ->join('cliente_pedido_especificacion as cpe', 'detalle_pedido.id_cliente_especificacion', 'cpe.id_cliente_pedido_especificacion')
+                            ->select('cpe.id_especificacion', 'detalle_pedido.cantidad')->get();
+                        foreach ($dataDetallePedido as $detallePeido) {
                             $objDetalleEnvio = new DetalleEnvio;
                             $objDetalleEnvio->id_envio = $modelEnvio->id_envio;
                             $objDetalleEnvio->id_especificacion = $detallePeido->id_especificacion;
                             $objDetalleEnvio->cantidad = $detallePeido->cantidad;
                             isset($aerolinea) ? $objDetalleEnvio->id_aerolinea = $aerolinea : "";
-                            if($objDetalleEnvio->save()){
+                            if ($objDetalleEnvio->save()) {
                                 $modelDetalleEnvio = DetalleEnvio::all()->last();
                                 bitacora('detalle_envio', $modelDetalleEnvio->id_detalle_envio, 'I', 'Inserción satisfactoria de un nuevo detalle envío');
                             }
@@ -300,18 +300,21 @@ class PedidoController extends Controller
                     }
                 }
             }
-            if(isset($request->arrDataPresentacionYuraVenture) && count($request->arrDataPresentacionYuraVenture)){
-                foreach ($request->arrDataPresentacionYuraVenture as $presentacionYuraVenture){
+            if (isset($request->arrDataPresentacionYuraVenture) && count($request->arrDataPresentacionYuraVenture)) {
+                foreach ($request->arrDataPresentacionYuraVenture as $presentacionYuraVenture) {
                     $objProductoYuraVenture = new ProductoYuraVenture;
                     $objProductoYuraVenture->presentacion_yura = $presentacionYuraVenture['codigo_presentacion'];
                     $objProductoYuraVenture->codigo_venture = $presentacionYuraVenture['codigo_venture'];
                     $objProductoYuraVenture->id_configuracion_empresa = isset($id_configuracion_empresa) ? $id_configuracion_empresa : $request->id_configuracion_empresa;
-                    $objProductoYuraVenture->tipo= "O";
+                    $objProductoYuraVenture->tipo = "O";
                     $objProductoYuraVenture->save();
                 }
             }
-            $semana = getSemanaByDate($objPedido->fecha_pedido)->codigo;
-            ProyeccionVentaSemanalUpdate::dispatch($semana,$semana,0,$request->id_cliente)->onQueue('update_venta_semanal_real');
+            $semana = getSemanaByDate($fechaFormateada);
+            $codigo_semana = $semana != '' ? $semana->codigo : '';
+            if ($codigo_semana != '')
+                ProyeccionVentaSemanalUpdate::dispatch($codigo_semana, $codigo_semana, 0, $request->id_cliente)
+                    ->onQueue('update_venta_semanal_real');
             //UpdateSaldosProyVentaSemanal::dispatch($semana, 0)->onQueue('update_saldos_proy_venta_semanal');
         } else {
             $success = false;
@@ -338,66 +341,67 @@ class PedidoController extends Controller
 
     public function inputs_pedidos(Request $request)
     {
-        $tipo_especificacion = DetallePedido::where('id_pedido',$request->id_pedido)
-            ->join('cliente_pedido_especificacion as cpe','detalle_pedido.id_cliente_especificacion','cpe.id_cliente_pedido_especificacion')
-            ->join('especificacion as esp','cpe.id_especificacion','esp.id_especificacion')->select('tipo')->first();
+        $tipo_especificacion = DetallePedido::where('id_pedido', $request->id_pedido)
+            ->join('cliente_pedido_especificacion as cpe', 'detalle_pedido.id_cliente_especificacion', 'cpe.id_cliente_pedido_especificacion')
+            ->join('especificacion as esp', 'cpe.id_especificacion', 'esp.id_especificacion')->select('tipo')->first();
 
         $data_especificaciones = DB::table('cliente_pedido_especificacion as cpe')
             ->join('especificacion as esp', 'cpe.id_especificacion', '=', 'esp.id_especificacion')
             ->where([
                 ['cpe.id_cliente', $request->id_cliente],
-                ['esp.tipo',isset($tipo_especificacion->tipo) ? $tipo_especificacion->tipo : "N"],
-                ['esp.estado',1]
+                ['esp.tipo', isset($tipo_especificacion->tipo) ? $tipo_especificacion->tipo : "N"],
+                ['esp.estado', 1]
             ]);
 
-        if(isset($tipo_especificacion->tipo) && $tipo_especificacion->tipo == "O"){
-            $data_especificaciones = $data_especificaciones->join('detalle_pedido as dp','cpe.id_cliente_pedido_especificacion','dp.id_cliente_especificacion')
-                ->where('id_pedido',$request->id_pedido);
+        if (isset($tipo_especificacion->tipo) && $tipo_especificacion->tipo == "O") {
+            $data_especificaciones = $data_especificaciones->join('detalle_pedido as dp', 'cpe.id_cliente_pedido_especificacion', 'dp.id_cliente_especificacion')
+                ->where('id_pedido', $request->id_pedido);
         }
 
         $empT = [];
         $empTallos = Empaque::where([
-            ['f_empaque','T'],
-            ['tipo','C']
+            ['f_empaque', 'T'],
+            ['tipo', 'C']
         ])->get();
         foreach ($empTallos as $empRamo)
             $empT[] = $empRamo;
 
         return view('adminlte.gestion.postcocecha.pedidos.forms.paritals.inputs_dinamicos',
             [
-                'especificaciones' => $data_especificaciones->orderBy('id_cliente_pedido_especificacion','asc')->get(),
+                'especificaciones' => $data_especificaciones->orderBy('id_cliente_pedido_especificacion', 'asc')->get(),
                 'agenciasCarga' => DB::table('cliente_agenciacarga as cac')
                     ->join('agencia_carga as ac', 'cac.id_agencia_carga', 'ac.id_agencia_carga')
                     ->where([
                         ['cac.id_cliente', $request->id_cliente],
                         ['cac.estado', 1]
                     ])->get(),
-                'datos_exportacion' => DatosExportacion::join('cliente_datoexportacion as cde','dato_exportacion.id_dato_exportacion','cde.id_dato_exportacion')
-                    ->where('id_cliente',$request->id_cliente)->get(),
+                'datos_exportacion' => DatosExportacion::join('cliente_datoexportacion as cde', 'dato_exportacion.id_dato_exportacion', 'cde.id_dato_exportacion')
+                    ->where('id_cliente', $request->id_cliente)->get(),
                 'emp_tallos' => $empT
             ]);
     }
 
-    public function inputs_pedidos_edit(Request $request){
+    public function inputs_pedidos_edit(Request $request)
+    {
 
-        $esp_creadas =[];
+        $esp_creadas = [];
         $pedido = getPedido($request->id_pedido);
-        foreach($pedido->detalles as $det_ped)
+        foreach ($pedido->detalles as $det_ped)
             $esp_creadas[] = $det_ped->cliente_especificacion->especificacion->id_especificacion;
 
         $especificaciones_restantes = DB::table('cliente_pedido_especificacion as cpe')
             ->join('especificacion as esp', 'cpe.id_especificacion', 'esp.id_especificacion')
             ->where([
                 ['cpe.id_cliente', $request->id_cliente],
-                ['esp.tipo',"N"],
-                ['esp.estado',1]
-            ])->whereNotIn('esp.id_especificacion',$esp_creadas)
-            ->orderBy('id_cliente_pedido_especificacion','asc')->get();
+                ['esp.tipo', "N"],
+                ['esp.estado', 1]
+            ])->whereNotIn('esp.id_especificacion', $esp_creadas)
+            ->orderBy('id_cliente_pedido_especificacion', 'asc')->get();
 
         $empT = [];
         $empTallos = Empaque::where([
-            ['f_empaque','T'],
-            ['tipo','C']
+            ['f_empaque', 'T'],
+            ['tipo', 'C']
         ])->get();
         foreach ($empTallos as $empRamo)
             $empT[] = $empRamo;
@@ -405,8 +409,8 @@ class PedidoController extends Controller
         return view('adminlte.gestion.postcocecha.pedidos.forms.paritals.inputs_dinamicos_edit',
             [
                 'id_pedido' => $request->id_pedido,
-                'datos_exportacion' => DatosExportacion::join('cliente_datoexportacion as cde','dato_exportacion.id_dato_exportacion','cde.id_dato_exportacion')
-                    ->where('id_cliente',$request->id_cliente)->get(),
+                'datos_exportacion' => DatosExportacion::join('cliente_datoexportacion as cde', 'dato_exportacion.id_dato_exportacion', 'cde.id_dato_exportacion')
+                    ->where('id_cliente', $request->id_cliente)->get(),
                 'agenciasCarga' => DB::table('cliente_agenciacarga as cac')
                     ->join('agencia_carga as ac', 'cac.id_agencia_carga', 'ac.id_agencia_carga')
                     ->where([
@@ -447,9 +451,9 @@ class PedidoController extends Controller
     {
         $pedido = getPedido($request->id_pedido);
 
-        if(isset($pedido->envios[0]->comprobante) && $pedido->envios[0]->comprobante != ""){
+        if (isset($pedido->envios[0]->comprobante) && $pedido->envios[0]->comprobante != "") {
             $objComprobante = Comprobante::find($pedido->envios[0]->comprobante->id_comprobante);
-            $objComprobante->update(['id_envio'=>null,'rehusar'=>true]);
+            $objComprobante->update(['id_envio' => null, 'rehusar' => true]);
         }
         //$objPedido = Pedido::find($request->id_pedido);
         //$objPedido->estado = $request->estado == 0 ? 1 : 0;
@@ -458,11 +462,11 @@ class PedidoController extends Controller
             $success = true;
             // $objPedido->estado == 0 ? $palabra = 'cancelado' : $palabra = 'activado';
             $msg = '<div class="alert alert-success text-center">' .
-                        '<p> Se ha cancelado el pedido exitosamente</p>'
-                 . '</div>';
-            bitacora('pedido',$request->id_pedido, 'D', 'Pedido eliminado con exito');
+                '<p> Se ha cancelado el pedido exitosamente</p>'
+                . '</div>';
+            bitacora('pedido', $request->id_pedido, 'D', 'Pedido eliminado con exito');
             $semana = getSemanaByDate($pedido->fecha_pedido)->codigo;
-            ProyeccionVentaSemanalUpdate::dispatch($semana,$semana,0,$pedido->id_cliente)->onQueue('update_venta_semanal_real');
+            ProyeccionVentaSemanalUpdate::dispatch($semana, $semana, 0, $pedido->id_cliente)->onQueue('update_venta_semanal_real');
         } else {
             $success = false;
             $msg = '<div class="alert alert-danger text-center">' .
@@ -487,14 +491,15 @@ class PedidoController extends Controller
             ['cant_div' => $request->cant_div]);
     }
 
-    public function crear_packing_list($id_pedido,$vista_despacho = false){
+    public function crear_packing_list($id_pedido, $vista_despacho = false)
+    {
         $pedido = getPedido($id_pedido);
         $empresa = getConfiguracionEmpresa($pedido->id_configuracion_empresa);
         $despacho = isset(getDetalleDespacho($pedido->id_pedido)->despacho) ? getDetalleDespacho($pedido->id_pedido)->despacho : null;
         $facturaTercero = isset($pedido->envios) ? getFacturaClienteTercero($pedido->envios[0]->id_envio) : null;
-        if($facturaTercero !== null){
+        if ($facturaTercero !== null) {
             $cliente = [
-                'nombre' =>$facturaTercero->nombre_cliente_tercero,
+                'nombre' => $facturaTercero->nombre_cliente_tercero,
                 'identificacion' => $facturaTercero->identificacion,
                 'tipo_identificacion' => getTipoIdentificacion($facturaTercero->codigo_identificacion)->nombre,
                 'pais' => getPais($facturaTercero->codigo_pais)->nombre,
@@ -503,12 +508,12 @@ class PedidoController extends Controller
                 'telefono' => $facturaTercero->telefono,
                 'dae' => $facturaTercero->dae,
             ];
-        }else{
-            foreach($pedido->cliente->detalles as $det_cli)
-                if($det_cli->estado == 1)
+        } else {
+            foreach ($pedido->cliente->detalles as $det_cli)
+                if ($det_cli->estado == 1)
                     $cliente = $det_cli;
             $cliente = [
-                'nombre' =>$cliente->nombre,
+                'nombre' => $cliente->nombre,
                 'identificacion' => $cliente->ruc,
                 'tipo_identificacion' => getTipoIdentificacion($cliente->codigo_identificacion)->nombre,
                 'pais' => getPais($cliente->codigo_pais)->nombre,
@@ -518,51 +523,53 @@ class PedidoController extends Controller
                 'dae' => $pedido->envios[0]->dae
             ];
         }
-        return PDF::loadView('adminlte.gestion.postcocecha.despachos.partials.pdf_packing_list', compact('pedido','vista_despacho','empresa','despacho','cliente'))->stream();
+        return PDF::loadView('adminlte.gestion.postcocecha.despachos.partials.pdf_packing_list', compact('pedido', 'vista_despacho', 'empresa', 'despacho', 'cliente'))->stream();
     }
 
-    public function facturar_pedido(Request $request){
+    public function facturar_pedido(Request $request)
+    {
 
-        if(getPedido($request->id_pedido)->envios->count() === 0){
+        if (getPedido($request->id_pedido)->envios->count() === 0) {
             return '<div class="alert alert-danger text-center">' .
                 '<p> El pedido no posee envío creado, edite el pedido y deje el Check "Envío autmático" activado para realizar el envío</p>'
                 . '</div>';
         }
         $pedido = getPedido($request->id_pedido);
         $listado = Envio::where([
-            ['id_envio',$pedido->envios[0]->id_envio],
-            ['dc.estado',1],
+            ['id_envio', $pedido->envios[0]->id_envio],
+            ['dc.estado', 1],
             ['envio.estado', 0],
-            ['p.estado',1]
-        ])->join('pedido as p', 'envio.id_pedido','=','p.id_pedido')
-            ->join('detalle_cliente as dc','p.id_cliente','=','dc.id_cliente' )
-            ->join('impuesto as i','dc.codigo_impuesto','i.codigo')
-            ->join('tipo_impuesto as ti','dc.codigo_porcentaje_impuesto','ti.codigo')
-            ->orderBy('envio.id_envio','Desc')
-            ->select('p.*','envio.*','i.nombre as nombre_impuesto','ti.porcentaje','dc.nombre','dc.direccion as direccion_cliente','dc.almacen as almacen_cliente','dc.provincia','dc.codigo_pais as pais_cliente','dc.telefono as telefono_cliente','dc.correo');
+            ['p.estado', 1]
+        ])->join('pedido as p', 'envio.id_pedido', '=', 'p.id_pedido')
+            ->join('detalle_cliente as dc', 'p.id_cliente', '=', 'dc.id_cliente')
+            ->join('impuesto as i', 'dc.codigo_impuesto', 'i.codigo')
+            ->join('tipo_impuesto as ti', 'dc.codigo_porcentaje_impuesto', 'ti.codigo')
+            ->orderBy('envio.id_envio', 'Desc')
+            ->select('p.*', 'envio.*', 'i.nombre as nombre_impuesto', 'ti.porcentaje', 'dc.nombre', 'dc.direccion as direccion_cliente', 'dc.almacen as almacen_cliente', 'dc.provincia', 'dc.codigo_pais as pais_cliente', 'dc.telefono as telefono_cliente', 'dc.correo');
 
-        return view('adminlte.gestion.postcocecha.envios.partials.listado',[
+        return view('adminlte.gestion.postcocecha.envios.partials.listado', [
             'envios' => $listado->paginate(10),
-            'paises'    => Pais::all(),
-            'aerolineas' => Aerolinea::where('estado',1)->orderBy('nombre','asc')->get(),
+            'paises' => Pais::all(),
+            'aerolineas' => Aerolinea::where('estado', 1)->orderBy('nombre', 'asc')->get(),
             'vista' => $request->path(),
             'empresas' => ConfiguracionEmpresa::all(),
-            'consignatarios' => ClienteConsignatario::where('id_cliente',$pedido->id_cliente)
-                ->join('consignatario as c', 'cliente_consignatario.id_consignatario','c.id_consignatario')->get()
+            'consignatarios' => ClienteConsignatario::where('id_cliente', $pedido->id_cliente)
+                ->join('consignatario as c', 'cliente_consignatario.id_consignatario', 'c.id_consignatario')->get()
         ]);
     }
 
-    public function ver_factura_pedido($id_pedido){
+    public function ver_factura_pedido($id_pedido)
+    {
 
         $clave_acceso = getPedido($id_pedido)->envios[0]->comprobante->clave_acceso;
-        $tipo_documento = getDetallesClaveAcceso($clave_acceso,'TIPO_COMPROBANTE');
+        $tipo_documento = getDetallesClaveAcceso($clave_acceso, 'TIPO_COMPROBANTE');
 
-        if($tipo_documento == "01")
-            $dataComprobante = Comprobante::where('clave_acceso', $clave_acceso)->select('numero_comprobante','id_envio')->first();
+        if ($tipo_documento == "01")
+            $dataComprobante = Comprobante::where('clave_acceso', $clave_acceso)->select('numero_comprobante', 'id_envio')->first();
 
-        if($tipo_documento == "06")
+        if ($tipo_documento == "06")
             $dataComprobante = Comprobante::where('clave_acceso', $clave_acceso)
-                ->join('detalle_guia_remision as dgr','comprobante.id_comprobante','dgr.id_comprobante')->select('id_comprobante_relacionado')->first();
+                ->join('detalle_guia_remision as dgr', 'comprobante.id_comprobante', 'dgr.id_comprobante')->select('id_comprobante_relacionado')->first();
 
         $cliente = new SoapClient(env('URL_WS_ATURIZACION'));
         $response = $cliente->autorizacionComprobante(["claveAccesoComprobante" => $clave_acceso]);
@@ -579,23 +586,24 @@ class PedidoController extends Controller
         return PDF::loadView('adminlte.gestion.comprobante.partials.pdf.factura', compact('data'))->stream();
     }
 
-    public function store_especificacion_pedido(Request $request){
+    public function store_especificacion_pedido(Request $request)
+    {
         $success = false;
         $msg = '<div class="alert alert-danger text-center">' .
             '<p> Ha ocurrido un problema al guardar la información al sistema, intente nuevamente</p>'
             . '</div>';
         $save = false;
 
-        if($request->arrDatosExportacion != null){
-            foreach($request->arrDatosExportacion as $dato_exportacion){
+        if ($request->arrDatosExportacion != null) {
+            foreach ($request->arrDatosExportacion as $dato_exportacion) {
                 foreach ($dato_exportacion as $de) {
                     $objDetallePedido = DetallePedido::find($de['id_detalle_pedido']);
-                    if($objDetallePedido->update(['id_agencia_carga' => $request->id_agencia_carga])){
+                    if ($objDetallePedido->update(['id_agencia_carga' => $request->id_agencia_carga])) {
                         $objDetallePedidoDatoExportacion = DetallePedidoDatoExportacion::where([
-                            ['id_detalle_pedido',$de['id_detalle_pedido']],
+                            ['id_detalle_pedido', $de['id_detalle_pedido']],
                             ['id_dato_exportacion', $de['id_dato_exportacion']]
                         ]);
-                        if($objDetallePedidoDatoExportacion->first() == null){
+                        if ($objDetallePedidoDatoExportacion->first() == null) {
                             $detallePedidoDatoExportacion = new DetallePedidoDatoExportacion;
                             $detallePedidoDatoExportacion->id_detalle_pedido = $de['id_detalle_pedido'];
                             $detallePedidoDatoExportacion->id_dato_exportacion = $de['id_dato_exportacion'];
@@ -603,13 +611,13 @@ class PedidoController extends Controller
                             $detallePedidoDatoExportacion->save()
                                 ? $save = true
                                 : $save = false;
-                        }else{
+                        } else {
                             $objDetallePedidoDatoExportacion = DetallePedidoDatoExportacion::find($objDetallePedidoDatoExportacion->first()->id_detallepedido_datoexportacion);
-                            $objDetallePedidoDatoExportacion->update(['valor'=>$de['valor']])
+                            $objDetallePedidoDatoExportacion->update(['valor' => $de['valor']])
                                 ? $save = true
                                 : $save = false;
                         }
-                        if($save){
+                        if ($save) {
                             $success = true;
                             $msg = '<div class="alert alert-success text-center">' .
                                 '<p> Se ha actualizado la información con éxito</p>'
@@ -618,9 +626,9 @@ class PedidoController extends Controller
                     }
                 }
             }
-        }else{
-            $objDetallePedido = DetallePedido::where('id_pedido',$request->id_pedido);
-            if($objDetallePedido->update(['id_agencia_carga' => $request->id_agencia_carga])){
+        } else {
+            $objDetallePedido = DetallePedido::where('id_pedido', $request->id_pedido);
+            if ($objDetallePedido->update(['id_agencia_carga' => $request->id_agencia_carga])) {
                 $success = true;
                 $msg = '<div class="alert alert-success text-center">' .
                     '<p> Se ha actualizado la información con éxito</p>'
@@ -633,72 +641,74 @@ class PedidoController extends Controller
         ];
     }
 
-    public function buscar_codigo_venture(Request $request){
-       // dd($request->all());
+    public function buscar_codigo_venture(Request $request)
+    {
+        // dd($request->all());
         $idPlanta = getVariedad($request->id_variedad)->planta->id_planta;
-        $presentacion_pedido_caja = $idPlanta."|".$request->id_variedad."|".$request->id_clasificacion_ramo."|".$request->id_u_m_clasificacion_ramo."|".$request->tallos_x_ramos."|".$request->longitud_ramo."|".$request->id_u_m_logitud_ramo;
+        $presentacion_pedido_caja = $idPlanta . "|" . $request->id_variedad . "|" . $request->id_clasificacion_ramo . "|" . $request->id_u_m_clasificacion_ramo . "|" . $request->tallos_x_ramos . "|" . $request->longitud_ramo . "|" . $request->id_u_m_logitud_ramo;
 
-        $productoVinculados = ProductoYuraVenture::where('id_configuracion_empresa',$request->id_configuracion_empresa)
-                                ->select('codigo_venture','presentacion_yura')->get();
+        $productoVinculados = ProductoYuraVenture::where('id_configuracion_empresa', $request->id_configuracion_empresa)
+            ->select('codigo_venture', 'presentacion_yura')->get();
         $arr = [];
         foreach ($productoVinculados as $productoVinculado) {
-            $pieza = explode("|",$productoVinculado->presentacion_yura);
-            $ids = $pieza[0]."|".$pieza[1]."|".$pieza[2]."|".$pieza[3]."|".$pieza[4]."|".$pieza[5]."|".$pieza[6];
-            $arr[] = ["id"=>$ids,"codigo_venture"=> $productoVinculado->codigo_venture];
+            $pieza = explode("|", $productoVinculado->presentacion_yura);
+            $ids = $pieza[0] . "|" . $pieza[1] . "|" . $pieza[2] . "|" . $pieza[3] . "|" . $pieza[4] . "|" . $pieza[5] . "|" . $pieza[6];
+            $arr[] = ["id" => $ids, "codigo_venture" => $productoVinculado->codigo_venture];
         }
 
-        $presentacion_venture="";
-        $codigo_venture ="";
+        $presentacion_venture = "";
+        $codigo_venture = "";
         //$clasificacionRamoEstandar= ClasificacionRamo::where('estandar',1)->first();
         foreach ($arr as $item) {
-            if($item['id']=== $presentacion_pedido_caja){
-                $presentacion_venture = $idPlanta."|".$request->id_variedad."|".$request->id_clasificacion_ramo."|".$request->id_u_m_clasificacion_ramo."|".$request->tallos_x_malla."|".$request->longitud_ramo."|".$request->id_u_m_logitud_ramo;
+            if ($item['id'] === $presentacion_pedido_caja) {
+                $presentacion_venture = $idPlanta . "|" . $request->id_variedad . "|" . $request->id_clasificacion_ramo . "|" . $request->id_u_m_clasificacion_ramo . "|" . $request->tallos_x_malla . "|" . $request->longitud_ramo . "|" . $request->id_u_m_logitud_ramo;
                 $codigo_venture = $item['codigo_venture'];
             }
         }
         //dump($presentacion_venture,$codigo_venture);
         return response()->json([
-            'presentacion_venture'=>$presentacion_venture,
+            'presentacion_venture' => $presentacion_venture,
             'codigo_venture' => $codigo_venture
         ]);
     }
 
-    public function asignaClienteEspecificacion($arr_datos,$id_cliente){
+    public function asignaClienteEspecificacion($arr_datos, $id_cliente)
+    {
         $estado = false;
-        $id_cliente_pedido_especificacion ='';
+        $id_cliente_pedido_especificacion = '';
         $objEspecificacion = new Especificacion;
         $objEspecificacion->estado = 1;
         $objEspecificacion->tipo = 'O';
-        if($objEspecificacion->save()){
+        if ($objEspecificacion->save()) {
             $modelEspecificacion = Especificacion::all()->last();
             $objEspecificacionEmpaque = new EspecificacionEmpaque;
             $objEspecificacionEmpaque->id_especificacion = $modelEspecificacion->id_especificacion;
-            $objEspecificacionEmpaque->id_empaque = Empaque::where([['f_empaque',"T"],['tipo','C']])->first()->id_empaque;
-            $objEspecificacionEmpaque->cantidad   = 1;
-            if($objEspecificacionEmpaque->save()) {
+            $objEspecificacionEmpaque->id_empaque = Empaque::where([['f_empaque', "T"], ['tipo', 'C']])->first()->id_empaque;
+            $objEspecificacionEmpaque->cantidad = 1;
+            if ($objEspecificacionEmpaque->save()) {
                 $modelEspecificacionEmpaque = EspecificacionEmpaque::all()->last();
                 $objDetalleEspecificacionEmpaque = new DetalleEspecificacionEmpaque;
                 $objDetalleEspecificacionEmpaque->id_especificacion_empaque = $modelEspecificacionEmpaque->id_especificacion_empaque;
                 $objDetalleEspecificacionEmpaque->id_variedad = $arr_datos['variedad'];
                 $objDetalleEspecificacionEmpaque->id_clasificacion_ramo = $arr_datos['id_clasificacion_ramo'];//ClasificacionRamo::where('estandar',1)->first()->id_clasificacion_ramo;
                 $objDetalleEspecificacionEmpaque->cantidad = $arr_datos['ramos_x_caja'];
-                $objDetalleEspecificacionEmpaque->id_empaque_p = Empaque::where([['f_empaque',"T"],['tipo','P']])->first()->id_empaque;;
+                $objDetalleEspecificacionEmpaque->id_empaque_p = Empaque::where([['f_empaque', "T"], ['tipo', 'P']])->first()->id_empaque;;
                 $objDetalleEspecificacionEmpaque->tallos_x_ramos = $arr_datos['tallos_x_ramos'];
                 $objDetalleEspecificacionEmpaque->longitud_ramo = $arr_datos['longitud_ramo'];
                 $objDetalleEspecificacionEmpaque->id_unidad_medida = $arr_datos['unidad_medida'];
-                if($objDetalleEspecificacionEmpaque->save()){
+                if ($objDetalleEspecificacionEmpaque->save()) {
                     $objClientePedidoEspecificacion = new ClientePedidoEspecificacion;
-                    $objClientePedidoEspecificacion->id_cliente        = $id_cliente;
+                    $objClientePedidoEspecificacion->id_cliente = $id_cliente;
                     $objClientePedidoEspecificacion->id_especificacion = $modelEspecificacion->id_especificacion;
-                    if($objClientePedidoEspecificacion->save()){
+                    if ($objClientePedidoEspecificacion->save()) {
                         $modelClientePedidoEspecificacion = ClientePedidoEspecificacion::all()->last();
                         $estado = true;
                         $id_cliente_pedido_especificacion = $modelClientePedidoEspecificacion->id_cliente_pedido_especificacion;
                     }
-                }else{
+                } else {
                     Especificacion::destroy($modelEspecificacion->id_especificacion);
                 }
-            }else{
+            } else {
                 Especificacion::destroy($modelEspecificacion->id_especificacion);
             }
         }
@@ -708,35 +718,37 @@ class PedidoController extends Controller
         ];
     }
 
-    public function store_datos_tallos($datos,$id_detalle_pedido){
+    public function store_datos_tallos($datos, $id_detalle_pedido)
+    {
 
-        $success =false;
+        $success = false;
         //foreach ($arr_datos as $dataTallo){
-            $objDataTallo = new DataTallos;
-            $objDataTallo->id_detalle_pedido = $id_detalle_pedido;
-            $objDataTallo->mallas = $datos['mallas'];
-            $objDataTallo->tallos_x_caja = $datos['tallos_x_caja'];
-            $objDataTallo->tallos_x_ramo = $datos['tallos_x_ramo'];
-            $objDataTallo->tallos_x_malla = $datos['tallos_x_malla'];
-            $objDataTallo->ramos_x_caja = $datos['ramos_x_caja'];
-            if($objDataTallo->save())
-                $success = true;
+        $objDataTallo = new DataTallos;
+        $objDataTallo->id_detalle_pedido = $id_detalle_pedido;
+        $objDataTallo->mallas = $datos['mallas'];
+        $objDataTallo->tallos_x_caja = $datos['tallos_x_caja'];
+        $objDataTallo->tallos_x_ramo = $datos['tallos_x_ramo'];
+        $objDataTallo->tallos_x_malla = $datos['tallos_x_malla'];
+        $objDataTallo->ramos_x_caja = $datos['ramos_x_caja'];
+        if ($objDataTallo->save())
+            $success = true;
         //}
         return $success;
     }
 
-    public function desglose_pedido(Request $request){
+    public function desglose_pedido(Request $request)
+    {
 
         $pedido = getPedido($request->id_pedido);
-       /*$path = explode('/',$request->path())[0];
-        if($path === "comprobante"){
-            $comprobante = Comprobante::where([
-                ['secuencial',$secuencial],
-                ['tipo_comprobante', '01']
-            ])->first();
-        }elseif($path=== "pedidos"){
-            $comprobante = getPedido($secuencial)->envios[0]->comprobante;
-        }*/
+        /*$path = explode('/',$request->path())[0];
+         if($path === "comprobante"){
+             $comprobante = Comprobante::where([
+                 ['secuencial',$secuencial],
+                 ['tipo_comprobante', '01']
+             ])->first();
+         }elseif($path=== "pedidos"){
+             $comprobante = getPedido($secuencial)->envios[0]->comprobante;
+         }*/
 
         /*if($comprobante == null){
             $data = null;
@@ -752,8 +764,8 @@ class PedidoController extends Controller
             ];
         }*/
 
-            return view('adminlte.gestion.postcocecha.pedidos.partials.desglose_pedido', [
-                'pedido'=>$pedido
-            ]);
+        return view('adminlte.gestion.postcocecha.pedidos.partials.desglose_pedido', [
+            'pedido' => $pedido
+        ]);
     }
 }
