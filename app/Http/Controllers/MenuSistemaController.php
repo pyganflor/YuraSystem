@@ -117,12 +117,11 @@ class MenuSistemaController extends Controller
     public function store_menu(Request $request)
     {
         $valida = Validator::make($request->all(), [
-            'nombre' => 'required|max:25|unique:menu',
+            'nombre' => 'required|max:25',
             'id_grupo_menu' => 'required|',
             'id_icono' => 'required|',
         ], [
             'nombre.required' => 'El nombre es obligatorio',
-            'nombre.unique' => 'El nombre ya existe',
             'id_grupo_menu.required' => 'El grupo es obligatorio',
             'id_icono.required' => 'El ícono es obligatorio',
             'nombre.max' => 'El nombre es muy grande',
