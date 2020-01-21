@@ -63,7 +63,7 @@
                         <span class="input-group-addon" style="background-color: #e9ecef">
                             Sobreescribir
                         </span>
-                        <select name="criterio_importar" id="sobreescribir_importar" class="form-control input-group-addon">
+                        <select name="sobreescribir_importar" id="sobreescribir_importar" class="form-control input-group-addon">
                             <option value="N">No</option>
                             <option value="S">Sí</option>
                         </select>
