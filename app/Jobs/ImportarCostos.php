@@ -44,6 +44,9 @@ class ImportarCostos implements ShouldQueue
      */
     public function handle()
     {
+        ini_set('max_execution_time', env('MAX_EXECUTION_TIME'));
+        set_time_limit(120);
+
         $activeSheetData = $this->activeSheetData;
         $titles = $activeSheetData[1];
         foreach ($activeSheetData as $pos_row => $row) {
