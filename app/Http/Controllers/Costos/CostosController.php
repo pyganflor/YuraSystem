@@ -655,7 +655,8 @@ class CostosController extends Controller
             $document = PHPExcel_IOFactory::load($request->file_costos);
             $activeSheetData = $document->getActiveSheet()->toArray(null, true, true, true);
 
-            ImportarCostos::dispatch($activeSheetData, $request->concepto_importar, $request->criterio_importar)->onQueue('job');
+            ImportarCostos::dispatch($activeSheetData, $request->concepto_importar, $request->criterio_importar, $request->sobreescribir_importar == 'S' ? true : false)
+                ->onQueue('job');
         } else {
             $errores = '';
             foreach ($valida->errors()->all() as $mi_error) {

@@ -60,6 +60,13 @@
                             <option value="V">Dinero</option>
                             <option value="C">Cantidad</option>
                         </select>
+                        <span class="input-group-addon" style="background-color: #e9ecef">
+                            Sobreescribir
+                        </span>
+                        <select name="criterio_importar" id="sobreescribir_importar" class="form-control input-group-addon">
+                            <option value="N">No</option>
+                            <option value="S">Sí</option>
+                        </select>
                         <span class="input-group-btn">
                             <button type="button" class="btn btn-primary" onclick="importar_file_costos()">
                                 <i class="fa fa-fw fa-check"></i>
