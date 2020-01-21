@@ -70,7 +70,7 @@ class ImportarCostos implements ShouldQueue
                             $act_prod = ActividadManoObra::All()
                                 ->where('estado', 1)
                                 ->where('id_actividad', $actividad->id_actividad)
-                                ->where('id_producto', $producto->id_mano_obra)
+                                ->where('id_mano_obra', $producto->id_mano_obra)
                                 ->first();
 
                         if ($act_prod == '') {
