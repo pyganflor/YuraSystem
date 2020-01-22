@@ -87,14 +87,8 @@ class Costos
                 ->select(DB::raw('sum(gip) as cant_gip'), DB::raw('sum(ga) as cant_ga'))
                 ->where('codigo_semana', $semana->codigo)
                 ->get()[0];
-            $admin = Area::All()->where('nombre', 'ADMINISTRATIVOS')->first();
-            $administrativos = DB::table('otros_gastos')
-                ->select(DB::raw('sum(ga) as cant'))
-                ->where('id_area', $admin->id_area)
-                ->where('codigo_semana', $semana->codigo)
-                ->get()[0]->cant;
 
-            $valor = $otros_gastos->cant_gip + $otros_gastos->cant_ga + $administrativos;
+            $valor = $otros_gastos->cant_gip + $otros_gastos->cant_ga;
 
             $model->valor = $semana->codigo . ':' . round($valor, 2);
             $model->save();
