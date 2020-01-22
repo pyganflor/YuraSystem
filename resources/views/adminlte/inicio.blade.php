@@ -295,9 +295,9 @@
                             'v': 'C2',
                             'f': '<strong title="Total"><small>Total: </small><span id="span_costos_total">${{number_format(explode(':', $costos_mano_obra)[1] + explode(':', $costos_insumos)[1] , 2)}}</span></strong>' +
                             '<br><strong title="Mano de Obra, Semana: {{explode(':', $costos_mano_obra)[0]}}"><small>MO: </small><span id="span_costos_mano_obra">${{number_format(explode(':', $costos_mano_obra)[1] , 2)}}</span></strong>' +
-                            '<br><strong title="Insumos, Semana: {{explode(':', $costos_insumos)[0]}}"><small>IN: </small><span id="span_costos_insumos">${{number_format(explode(':', $costos_insumos)[1] , 2)}}</span></strong>' +
-                            '<br><strong title="Fijos, Semana: {{explode(':', $costos_insumos)[0]}}"><small>Fijos: </small><span id="span_costos_otros_gastos">${{0}}</span></strong>' +
-                            '<br><strong></strong>' +
+                            '<br><strong title="MP, Semana: {{explode(':', $costos_insumos)[0]}}"><small>MP: </small><span id="span_costos_insumos">${{number_format(explode(':', $costos_insumos)[1] , 2)}}</span></strong>' +
+                            '<br><strong title="Fijos, Semana: {{explode(':', $costos_insumos)[0]}}"><small>Fijos: </small><span id="span_costos_fijos">${{0}}</span></strong>' +
+                            '<br><strong title="Regalías, Semana: {{explode(':', $costos_insumos)[0]}}"><small>Regalías: </small><span id="span_costos_regalias">${{0}}</span></strong>' +
                             '<br><button type="button" class="btn btn-xs btn-block btn-default" style="color: black" disabled>Datos importantes</button>'
                         }, 'Costos', 'C2'],
                         [{
