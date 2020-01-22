@@ -64,6 +64,31 @@ class Costos
         }
     }
 
+    public static function costos_fijos_1_semana_atras()
+    {
+        $model = getIndicadorByName('C2');  // Costos Insumos (-1 semana)
+        if ($model != '') {
+            $dias = 7;
+            $semana = '';
+            $valor = 0;
+            while ($valor <= 0) {
+                $dias += 7;
+                $semana = getSemanaByDate(opDiasFecha('-', $dias, date('Y-m-d')));
+                if ($semana != '') {
+                    $valor = DB::table('costos_semana')
+                        ->select(DB::raw('sum(valor) as cant'))
+                        ->where('codigo_semana', $semana->codigo)
+                        ->get()[0]->cant;
+                } else {
+                    return false;
+                }
+            }
+
+            $model->valor = $semana->codigo . ':' . round($valor, 2);
+            $model->save();
+        }
+    }
+
     public static function costos_campo_ha_4_semana_atras()
     {
         $model = getIndicadorByName('C3');  // Costos Campo/ha/semana (-4 semanas)

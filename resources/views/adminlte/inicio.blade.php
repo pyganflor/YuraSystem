@@ -284,7 +284,7 @@
                         }, 'Rentabilidad', 'Ventas/m2/año'],
                         [{'v': 'Costos', 'f': '<strong>Costos/m<sup>2</sup></strong>'}, 'Rentabilidad', 'Costos'],
                         [{
-                            'v': 'C1', 'f': '<strong>Planta</strong>' +
+                            'v': 'C1', 'f': '<strong></strong>' +
                             '<br><strong title="Campo/ha/Semana"><small>Campo/<sup>ha</sup>/Semana: </small><span id="span_costos_campo_semana">${{number_format(explode('|', $costos_campo_semana)[0] , 2)}}</span></strong>' +
                             '<br><strong title="Cosecha x Tallo"><small>Cosecha x Tallo: </small><span id="span_costos_cosecha_tallo">${{number_format($costos_cosecha_x_tallo , 4)}}</span></strong>' +
                             '<br><strong title="Postcosecha x Tallo"><small>Postcosecha x Tallo: </small><span id="span_costos_postcosecha_tallo">${{number_format($costos_postcosecha_x_tallo , 4)}}</span></strong>' +
