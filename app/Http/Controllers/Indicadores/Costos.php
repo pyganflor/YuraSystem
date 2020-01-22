@@ -91,6 +91,7 @@ class Costos
             $administrativos = DB::table('otros_gastos')
                 ->select(DB::raw('sum(ga) as cant'))
                 ->where('id_area', $admin->id_area)
+                ->where('codigo_semana', $semana->codigo)
                 ->get()[0]->cant;
 
             $valor = $otros_gastos->cant_gip + $otros_gastos->cant_ga + $administrativos;
