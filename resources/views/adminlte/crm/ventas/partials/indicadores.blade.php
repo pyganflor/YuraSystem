@@ -3,7 +3,7 @@
         <div class="small-box bg-teal-active">
             <div class="inner">
                 <h3 class="info-box-number">
-                    {{number_format($dinero, 2)}}
+                    {{number_format($precioXTallo, 2)}}
                 </h3>
             </div>
             <div class="icon">
@@ -18,7 +18,7 @@
         <div class="small-box bg-aqua">
             <div class="inner">
                 <h3 class="info-box-number">
-                    {{number_format($cajasEquivalentes, 2)}}
+                    {{number_format($precioPromedioRamo, 2)}}
                 </h3>
             </div>
             <div class="icon">
@@ -33,7 +33,7 @@
         <div class="small-box bg-orange">
             <div class="inner">
                 <h3 class="info-box-number">
-                    {{number_format($precioPromedioRamo, 2)}}
+                    {{number_format($cajasEquivalentes, 2)}}
                 </h3>
             </div>
             <div class="icon">
@@ -48,7 +48,7 @@
         <div class="small-box bg-green-gradient">
             <div class="inner">
                 <h3 class="info-box-number">
-                    {{number_format($precioXTallo, 2)}}
+                    {{number_format($dinero, 2)}}
                     <sup style="font-size: 0.4em"></sup>
                 </h3>
             </div>
