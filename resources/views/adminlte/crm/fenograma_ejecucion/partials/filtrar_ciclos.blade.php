@@ -4,13 +4,13 @@
                id="table_fenograma_ejecucion">
             <thead>
             <tr style="background-color: #357ca5; color: white">
-                <th class="text-center fila_fija1" style="border-color: #9d9d9d">
+                <th class="text-center fila_fija1" style="border-color: #9d9d9d;">
                     Módulo
                 </th>
                 <th class="text-center fila_fija1" style="border-color: #9d9d9d" width="95px">
                     Inicio
                 </th>
-                <th class="text-center fila_fija1" style="border-color: #9d9d9d" width="95px">
+                <th class="text-center fila_fija1" style="border-color: #9d9d9d; width: 30px">
                     Semana
                 </th>
                 <th class="text-center fila_fija1" style="border-color: #9d9d9d">
@@ -28,16 +28,21 @@
                 <th class="text-center fila_fija1" style="border-color: #9d9d9d">
                     1ra Flor
                 </th>
+                <th class="text-center fila_fija2" style="border-color: #9d9d9d; background-color: #0b3248">
+                    %<sup>M</sup>
+                </th>
                 <th class="text-center fila_fija1" style="border-color: #9d9d9d">
                     Tallos Cosechados
                 </th>
                 <th class="text-center fila_fija1" style="border-color: #9d9d9d">
+                    Real <br>
                     Tallos/m<sup>2</sup>
                 </th>
                 <th class="text-center fila_fija1" style="border-color: #9d9d9d">
                     Cosechado <sup>%</sup>
                 </th>
                 <th class="text-center fila_fija2" style="border-color: #9d9d9d; background-color: #0b3248">
+                    Proy <br>
                     Tallos/m<sup>2</sup>
                 </th>
                 <th class="text-center fila_fija2" style="border-color: #9d9d9d; background-color: #0b3248">
@@ -45,9 +50,6 @@
                 </th>
                 <th class="text-center fila_fija2" style="border-color: #9d9d9d; background-color: #0b3248">
                     Ptas Actuales
-                </th>
-                <th class="text-center fila_fija2" style="border-color: #9d9d9d; background-color: #0b3248">
-                    %<sup>M</sup>
                 </th>
                 <th class="text-center fila_fija2" style="border-color: #9d9d9d; background-color: #0b3248">
                     Dend P.Ini/m<sup>2</sup>
@@ -109,20 +111,20 @@
                     <td class="text-center" style="border-color: #9d9d9d">
                         {{$item->fecha_inicio}}
                     </td>
-                    <td class="text-center" style="border-color: #9d9d9d">
+                    <td class="text-center" style="border-color: #9d9d9d;">
                         {{$semana->codigo}}
                     </td>
                     <td class="text-center" style="border-color: #9d9d9d">
                         {{$poda_siembra}}
                     </td>
-                    <td class="text-center" style="border-color: #9d9d9d">
+                    <td class="text-center" style="border-color: #9d9d9d;">
                         @if($item->fecha_fin != '')
                             {{difFechas($item->fecha_fin, $item->fecha_inicio)->days}}
                         @else
                             {{difFechas(date('Y-m-d'), $item->fecha_inicio)->days}}
                         @endif
                     </td>
-                    <td class="text-center" style="border-color: #9d9d9d">
+                    <td class="text-center" style="border-color: #9d9d9d;">
                         {{number_format($item->area, 2)}}
                     </td>
                     <td class="text-center" style="border-color: #9d9d9d">
@@ -149,6 +151,9 @@
                         @endif
                     </td>
                     <td class="text-center" style="border-color: #9d9d9d">
+                        {{$item->getMortalidad()}}
+                    </td>
+                    <td class="text-center" style="border-color: #9d9d9d">
                         {{number_format($tallos_cosechados)}}
                     </td>
                     <td class="text-center" style="border-color: #9d9d9d">
@@ -165,9 +170,6 @@
                     </td>
                     <td class="text-center" style="border-color: #9d9d9d">
                         {{number_format($item->plantas_actuales())}}
-                    </td>
-                    <td class="text-center" style="border-color: #9d9d9d">
-                        {{$item->getMortalidad()}}
                     </td>
                     <td class="text-center" style="border-color: #9d9d9d">
                         {{$item->getDensidadIniciales()}}
@@ -216,6 +218,11 @@
                 </th>
                 <th class="text-center" style="border-color: #9d9d9d">
                 </th>
+                <th class="text-center" style="border-color: #9d9d9d; background-color: #0b3248">
+                    @if($total_mortalidad['positivos'] > 0)
+                        {{round($total_mortalidad['valor'] / $total_mortalidad['positivos'], 2)}}
+                    @endif
+                </th>
                 <th class="text-center" style="border-color: #9d9d9d">
                     {{number_format($total_tallos, 2)}}
                 </th>
@@ -238,11 +245,6 @@
                 </th>
                 <th class="text-center" style="border-color: #9d9d9d; background-color: #0b3248">
                     {{number_format($total_actuales)}}
-                </th>
-                <th class="text-center" style="border-color: #9d9d9d; background-color: #0b3248">
-                    @if($total_mortalidad['positivos'] > 0)
-                        {{round($total_mortalidad['valor'] / $total_mortalidad['positivos'], 2)}}
-                    @endif
                 </th>
                 <th class="text-center" style="border-color: #9d9d9d; background-color: #0b3248">
                     @if($total_densidad['positivos'] > 0)
