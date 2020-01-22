@@ -93,8 +93,24 @@ class Costos
     {
         $model = getIndicadorByName('C3');  // Costos Campo/ha/semana (-4 semanas)
         if ($model != '') {
-            $sem_desde = getSemanaByDate(opDiasFecha('-', 35, date('Y-m-d')));
-            $sem_hasta = getSemanaByDate(opDiasFecha('-', 7, date('Y-m-d')));
+            $dias = 7;
+            $last_semana = '';
+            $valor = 0;
+            while ($valor <= 0) {
+                $dias += 7;
+                $last_semana = getSemanaByDate(opDiasFecha('-', $dias, date('Y-m-d')));
+                if ($last_semana != '') {
+                    $valor = DB::table('costos_semana')
+                        ->select(DB::raw('sum(valor) as cant'))
+                        ->where('codigo_semana', $last_semana->codigo)
+                        ->get()[0]->cant;
+                } else {
+                    return false;
+                }
+            }
+
+            $sem_desde = getSemanaByDate(opDiasFecha('-', 35, $last_semana->fecha_inicial));
+            $sem_hasta = $last_semana;
 
             $area_trabajo = Area::All()
                 ->where('estado', 1)
