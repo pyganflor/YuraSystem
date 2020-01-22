@@ -66,7 +66,7 @@ class Costos
 
     public static function costos_fijos_1_semana_atras()
     {
-        $model = getIndicadorByName('C2');  // Costos Insumos (-1 semana)
+        $model = getIndicadorByName('C7');  // Costos Insumos (-1 semana)
         if ($model != '') {
             $dias = 7;
             $semana = '';
@@ -83,6 +83,17 @@ class Costos
                     return false;
                 }
             }
+            $otros_gastos = DB::table('otros_gastos')
+                ->select(DB::raw('sum(gip) as cant_gip'), DB::raw('sum(ga) as cant_ga'))
+                ->where('codigo_semana', $semana->codigo)
+                ->get()[0];
+            $admin = Area::All()->where('nombre', 'ADMINISTRATIVOS')->first();
+            $administrativos = DB::table('otros_gastos')
+                ->select(DB::raw('sum(ga) as cant'))
+                ->where('id_area', $admin->id_area)
+                ->get()[0]->cant;
+
+            $valor = $otros_gastos->cant_gip + $otros_gastos->cant_ga + $administrativos;
 
             $model->valor = $semana->codigo . ':' . round($valor, 2);
             $model->save();
