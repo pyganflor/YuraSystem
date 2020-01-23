@@ -344,7 +344,6 @@
                     </script>
 
                     <div id="div_indicadores_claves"></div>
-
                 </div>
             </div>
 

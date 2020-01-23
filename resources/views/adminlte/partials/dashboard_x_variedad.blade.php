@@ -1,13 +1,13 @@
 {{-- COLORES SEMAFOROS --}}
 @php
-    $color_1 = getColorByIndicador('D9');   //  venta_m2_anno_mensual
-    $color_1_1 = getColorByIndicador('D10');    //  venta_m2_anno_anual
-    $color_2 = getColorByIndicador('DA1');  //  ciclo
-    $color_3 = getColorByIndicador('D1');   //  calibre
-    $color_4 = getColorByIndicador('D3');   //  precio_x_ramo
-    $color_5 = getColorByIndicador('D12');   //  tallos_m2
-    $color_6 = getColorByIndicador('D8');   //  ramos_m2_anno
-    $color_7 = getColorByIndicador('D14');   //  precio_x_tallo
+    $color_1 = $variedad == '' ? getColorByIndicador('D9') : getColorByIndicadorVariedad('D9', $variedad->id_variedad);   //  venta_m2_anno_mensual
+    $color_1_1 = $variedad == '' ? getColorByIndicador('D10') : getColorByIndicadorVariedad('D10', $variedad->id_variedad);    //  venta_m2_anno_anual
+    $color_2 = $variedad == '' ? getColorByIndicador('DA1') : getColorByIndicadorVariedad('DA1', $variedad->id_variedad);  //  ciclo
+    $color_3 = $variedad == '' ? getColorByIndicador('D1') : getColorByIndicadorVariedad('D1', $variedad->id_variedad);   //  calibre
+    $color_4 = $variedad == '' ? getColorByIndicador('D3') : getColorByIndicadorVariedad('D3', $variedad->id_variedad);   //  precio_x_ramo
+    $color_5 = $variedad == '' ? getColorByIndicador('D12') : getColorByIndicadorVariedad('D12', $variedad->id_variedad);   //  tallos_m2
+    $color_6 = $variedad == '' ? getColorByIndicador('D8') : getColorByIndicadorVariedad('D8', $variedad->id_variedad);   //  ramos_m2_anno
+    $color_7 = $variedad == '' ? getColorByIndicador('D14') : getColorByIndicadorVariedad('D14', $variedad->id_variedad);   //  precio_x_tallo
     $color_8 = getColorByIndicador('C3');   //  costos_campo_semana
     $color_9 = getColorByIndicador('C4');   //  costos_cosecha_x_tallo
     $color_10 = getColorByIndicador('C5');   //  costos_postcosecha_x_tallo
@@ -32,7 +32,7 @@
                 'v': 'Ventas_m2_anno',
                 'f': '<strong style="color:{{$color_1}}"><small>$</small><span id="span_venta_m2_mensual">{{number_format($venta_m2_anno_mensual, 2)}}</span><small><sup>(4 meses)</sup></small></strong>' +
                 '<br><strong style="color:{{$color_1_1}}"><small>$</small><span id="span_venta_m2_anno">{{number_format($venta_m2_anno_anual, 2)}}</span><small><sup>(1 año)</sup></small></strong>' +
-                '<br><button type="button" class="btn btn-xs btn-block btn-default" onclick="mostrar_indicadores_claves(0)" style="color: black">Ventas/m<sup>2</sup>/año</button>'
+                '<br><button type="button" class="btn btn-xs btn-block btn-default" onclick="mostrar_indicadores_claves(0, {{$variedad->id_variedad}})" style="color: black">Ventas/m<sup>2</sup>/año</button>'
             }, 'Rentabilidad', 'Ventas/m2/año'],
             [{'v': 'Costos', 'f': '<strong>Costos/m<sup>2</sup></strong>'}, 'Rentabilidad', 'Costos'],
             [{
@@ -59,7 +59,7 @@
                 '<br><strong style="color: {{$color_3}}"><small>Calibre: </small><span id="span_calibre">{{$calibre}}</span></strong>' +
                 '<br><strong style="color: {{$color_5}}"><small>Tallos x m<sup>2</sup>: </small><span id="span_tallos_m2">{{number_format($tallos_m2, 2)}}</span></strong>' +
                 '<br><strong style="color: {{$color_2}}"><small>Ciclo: </small><span id="span_ciclo">{{number_format($ciclo, 2)}}</span></strong>' +
-                '<br><button type="button" class="btn btn-xs btn-block btn-default" onclick="mostrar_indicadores_claves(1)" style="color: black">Indicadores claves</button>'
+                '<br><button type="button" class="btn btn-xs btn-block btn-default" onclick="mostrar_indicadores_claves(1, {{$variedad->id_variedad}})" style="color: black">Indicadores claves</button>'
             }, 'Ventas_m2_anno', 'Indicadores claves'],
             [{
                 'v': 'Datos_importantes',

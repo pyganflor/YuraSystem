@@ -2534,3 +2534,21 @@ function getColorByIndicador($nombre)
     }
     return '#fff';
 }
+
+function getColorByIndicadorVariedad($nombre, $variedad)
+{
+    $indicador = getIndicadorByName($nombre);
+    $valor = $indicador->getVariedad($variedad)->valor;
+    $rangos = getIntervalosIndicador($nombre);
+    if (count($rangos) > 0) {
+        if ($valor < $rangos[0]->desde)
+            return $rangos[0]->color;
+        if ($valor > $rangos[count($rangos) - 1]->hasta)
+            return $rangos[count($rangos) - 1]->color;
+        foreach ($rangos as $rango) {
+            if ($valor >= $rango->desde && $valor <= $rango->hasta)
+                return $rango->color;
+        }
+    }
+    return '#fff';
+}
