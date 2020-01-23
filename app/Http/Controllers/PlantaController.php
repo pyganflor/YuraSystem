@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Nature\Plant;
 use yura\Modelos\ClasificacionUnitaria;
 use yura\Modelos\Planta;
+use yura\Modelos\Regalias;
 use yura\Modelos\Submenu;
 use yura\Modelos\Precio;
 use DB;
@@ -637,4 +638,82 @@ class PlantaController extends Controller
             'success' => $success
         ];
     }
+
+    public function add_regalias(Request $request)
+    {
+        $variedad = Variedad::find($request->id_variedad);
+        $semana_actual = getSemanaByDate(date('Y-m-d'));
+        return view('adminlte.gestion.plantas_variedades.forms.add_regalias', [
+            'variedad' => $variedad,
+            'regalias' => $variedad->regaliasBySemana($semana_actual->codigo),
+            'semana_actual' => $semana_actual,
+        ]);
+    }
+
+    public function buscar_regalias(Request $request)
+    {
+        $variedad = Variedad::find($request->id_variedad);
+        $regalias = $variedad->regaliasBySemana($request->semana);
+        return [
+            'valor' => $regalias != '' ? $regalias->valor : 0,
+        ];
+    }
+
+    public function store_regalias(Request $request)
+    {
+        $valida = Validator::make($request->all(), [
+            'id_variedad' => 'required',
+            'semana' => 'required',
+            'valor' => 'required',
+        ], [
+            'semana.required' => 'La semana es obligatoria',
+            'id_variedad.required' => 'El área es obligatoria',
+            'valor.required' => 'El valor es obligatoria',
+        ]);
+        if (!$valida->fails()) {
+            $model = Regalias::All()
+                ->where('id_variedad', $request->id_variedad)
+                ->where('codigo_semana', $request->semana)
+                ->first();
+            if ($model == '') {
+                $model = new Regalias();
+                $model->id_variedad = $request->id_variedad;
+                $model->codigo_semana = $request->semana;
+            }
+            $model->valor = $request->valor;
+
+            if ($model->save()) {
+                $success = true;
+                $msg = '<div class="alert alert-success text-center">' .
+                    '<p> Se han guardado la regalía satisfactoriamente</p>'
+                    . '</div>';
+            } else {
+                $success = false;
+                $msg = '<div class="alert alert-warning text-center">' .
+                    '<p> Ha ocurrido un problema al guardar la información al sistema</p>'
+                    . '</div>';
+            }
+        } else {
+            $success = false;
+            $errores = '';
+            foreach ($valida->errors()->all() as $mi_error) {
+                if ($errores == '') {
+                    $errores = '<li>' . $mi_error . '</li>';
+                } else {
+                    $errores .= '<li>' . $mi_error . '</li>';
+                }
+            }
+            $msg = '<div class="alert alert-danger">' .
+                '<p class="text-center">¡Por favor corrija los siguientes errores!</p>' .
+                '<ul>' .
+                $errores .
+                '</ul>' .
+                '</div>';
+        }
+        return [
+            'mensaje' => $msg,
+            'success' => $success
+        ];
+    }
+
 }

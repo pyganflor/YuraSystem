@@ -3,6 +3,7 @@
 namespace yura\Modelos;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Variedad extends Model
 {
@@ -36,6 +37,27 @@ class Variedad extends Model
     public function clasificaciones()
     {
         return $this->hasMany('\yura\Modelos\VariedadClasificacionUnitaria', 'id_variedad');
+    }
+
+    public function regalias()
+    {
+        return $this->hasMany('\yura\Modelos\Regalias', 'id_variedad');
+    }
+
+    function regaliasBySemana($semana)
+    {
+        return $this->regalias->where('codigo_semana', $semana)->first();
+    }
+
+    function getRegaliasLastSemana($semana)
+    {
+        $r = DB::table('regalias')
+            ->select('codigo_semana', 'valor')
+            ->where('id_variedad', $this->id_variedad)
+            ->where('codigo_semana', '<', $semana)
+            ->orderBy('codigo_semana')
+            ->get();
+        return count($r) > 0 ? $r[count($r) - 1] : '';
     }
 
     public function getClasificacion($id)

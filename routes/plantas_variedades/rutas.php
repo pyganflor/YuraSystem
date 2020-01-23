@@ -23,3 +23,6 @@ Route::get('plantas_variedades/add_inptus_precio_variedad','PlantaController@add
 
 Route::get('plantas_variedades/vincular_variedad_unitaria','PlantaController@vincular_variedad_unitaria');
 Route::post('plantas_variedades/store_vinculo','PlantaController@store_vinculo');
+Route::get('plantas_variedades/add_regalias','PlantaController@add_regalias');
+Route::post('plantas_variedades/buscar_regalias','PlantaController@buscar_regalias');
+Route::post('plantas_variedades/store_regalias','PlantaController@store_regalias');
