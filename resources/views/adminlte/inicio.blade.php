@@ -474,10 +474,12 @@
             datos = {
                 variedad: $('#filtro_variedad').val()
             };
-            get_jquery('{{url('select_filtro_variedad')}}', datos, function (retorno) {
-                $('#div_box_body').html(retorno);
-                $('#option_acumulado_var').hide();
-            })
+            if (datos['variedad'] != '')
+                get_jquery('{{url('select_filtro_variedad')}}', datos, function (retorno) {
+                    $('#div_box_body').html(retorno);
+                });
+            else
+                location.href = '/';
         }
     </script>
 @endsection
