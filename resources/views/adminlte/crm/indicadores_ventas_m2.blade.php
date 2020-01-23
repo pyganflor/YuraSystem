@@ -1,11 +1,5 @@
 <div class="box box-info">
     <div class="box-body" style="overflow-x: scroll">
-        <select name="variedad" id="variedad" class="pull-right" onchange="mostrar_indicadores_claves(0, '')">
-            <option value="">Acumulado</option>
-            @foreach(getVariedades()->where('estado', 1) as $v)
-                <option value="{{$v->id_variedad}}">{{$v->nombre}}</option>
-            @endforeach
-        </select>
         <table class="table-responsive" width="100%">
             <tr>
                 <th class="text-right" style="padding-right: 50px">$/m<sup>2</sup>/año (4 meses)</th>

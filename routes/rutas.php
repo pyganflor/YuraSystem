@@ -22,6 +22,7 @@ Route::get('configuracion/campos_empaques', 'ConfiguracionEmpresaController@camp
 Route::group(['middleware' => 'autenticacion'], function () {
     Route::group(['middleware' => 'controlsession'], function () {
         Route::get('/', 'YuraController@inicio');
+        Route::get('select_filtro_variedad', 'YuraController@select_filtro_variedad');
         Route::get('mostrar_indicadores_claves', 'YuraController@mostrar_indicadores_claves');
         Route::post('save_config_user', 'YuraController@save_config_user');
         Route::get('perfil', 'YuraController@perfil');
