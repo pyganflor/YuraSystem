@@ -132,6 +132,41 @@ class Area
 
             $model->valor = $mensual['ramos_m2_anno'];
             $model->save();
+
+            /* ============================== INDICADOR x VARIEDAD ================================= */
+            foreach (Variedad::All() as $var) {
+                $ind = IndicadorVariedad::All()
+                    ->where('id_indicador', $model->id_indicador)
+                    ->where('id_variedad', $var->id_variedad)
+                    ->first();
+                if ($ind == '') {   // es nuevo
+                    $ind = new IndicadorVariedad();
+                    $ind->id_indicador = $model->id_indicador;
+                    $ind->id_variedad = $var->id_variedad;
+                }
+                $data_ciclos = getCiclosCerradosByRango($semanas_4[0]->semana, $semanas_4[3]->semana, $var->id_variedad);
+                $ciclo = $data_ciclos['ciclo'];
+                $area_cerrada = $data_ciclos['area_cerrada'];
+                $tallos_ciclo = $data_ciclos['tallos_cosechados'];
+
+                $data_cosecha = getCosechaByRango($semanas_4[0]->semana, $semanas_4[3]->semana, $var->id_variedad);
+                $calibre_ciclo = $data_cosecha['calibre'];
+                $ramos_ciclo = $calibre_ciclo > 0 ? round($tallos_ciclo / $calibre_ciclo, 2) : 0;
+
+                $ciclo_ano = $area_cerrada > 0 ? round(365 / $ciclo, 2) : 0;
+
+                $mensual = [
+                    'ciclo_ano' => $ciclo_ano,
+                    'ciclo' => $ciclo,
+                    'area_cerrada' => $area_cerrada,
+                    'tallos_m2' => $area_cerrada > 0 ? round($tallos_ciclo / $area_cerrada, 2) : 0,
+                    'ramos_m2' => $area_cerrada > 0 ? round($ramos_ciclo / $area_cerrada, 2) : 0,
+                    'ramos_m2_anno' => $area_cerrada > 0 ? round($ciclo_ano * round($ramos_ciclo / $area_cerrada, 2), 2) : 0,
+                ];
+
+                $ind->valor = $mensual['ramos_m2_anno'];
+                $ind->save();
+            }
         }
     }
 
