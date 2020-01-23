@@ -20,7 +20,18 @@ class Indicador extends Model
         'estado',
     ];
 
-    public function intervalos(){
-        return $this->hasMany('yura\Modelos\IntervaloIndicador','id_indicador');
+    public function intervalos()
+    {
+        return $this->hasMany('yura\Modelos\IntervaloIndicador', 'id_indicador');
+    }
+
+    public function variedades()
+    {
+        return $this->hasMany('yura\Modelos\IndicadorVariedad', 'id_indicador');
+    }
+
+    public function getVariedad($variedad)
+    {
+        return $this->variedades->where('id_variedad', $variedad)->first();
     }
 }
