@@ -21,6 +21,7 @@ use yura\Modelos\Submenu;
 use yura\Modelos\Usuario;
 use Validator;
 use Storage as Almacenamiento;
+use yura\Modelos\Variedad;
 
 class YuraController extends Controller
 {
@@ -557,14 +558,44 @@ class YuraController extends Controller
 
                 'venta_m2_anno_mensual' => getIndicadorByName('D9')->valor,
                 'venta_m2_anno_anual' => getIndicadorByName('D10')->valor,
-                /*'tallos_cosechados' => getIndicadorByName('D11')->valor,
-                'area_produccion' => getIndicadorByName('D7')->valor,
-                'desecho' => getIndicadorByName('D6')->valor,
-                'rendimiento' => getIndicadorByName('D5')->valor,
-                'valor' => getIndicadorByName('D4')->valor,
-                'tallos' => getIndicadorByName('D2')->valor,*/
             ]);
         } else
             return view('adminlte.inicio');
+    }
+
+    public function select_filtro_variedad(Request $request)
+    {
+        if (count(getUsuario(Session::get('id_usuario'))->rol()->getSubmenusByTipo('C')) > 0) {
+            $variedad = Variedad::find($request->variedad);
+
+            return view('adminlte.partials.dashboard_x_variedad', [
+                'variedad' => $variedad,
+                'calibre' => getIndicadorByName('D1')->valor,
+                'tallos' => getIndicadorByName('D2')->valor,
+                'precio_x_ramo' => getIndicadorByName('D3')->valor,
+                'precio_x_tallo' => getIndicadorByName('D14')->valor,
+                'valor' => getIndicadorByName('D4')->valor,
+                'rendimiento' => getIndicadorByName('D5')->valor,
+                'desecho' => getIndicadorByName('D6')->valor,
+                'area_produccion' => getIndicadorByName('D7')->valor,
+                'ciclo' => getIndicadorByName('DA1')->valor,
+                'ramos_m2_anno' => getIndicadorByName('D8')->valor,
+                'venta_m2_anno_mensual' => getIndicadorByName('D9')->valor,
+                'venta_m2_anno_anual' => getIndicadorByName('D10')->valor,
+                'tallos_cosechados' => getIndicadorByName('D11')->valor,
+                'cajas_exportadas' => getIndicadorByName('D13')->valor,
+                'tallos_m2' => getIndicadorByName('D12')->valor,
+                'costos_mano_obra' => getIndicadorByName('C1')->valor,
+                'costos_insumos' => getIndicadorByName('C2')->valor,
+                'costos_campo_semana' => getIndicadorByName('C3')->valor,
+                'costos_cosecha_x_tallo' => getIndicadorByName('C4')->valor,
+                'costos_postcosecha_x_tallo' => getIndicadorByName('C5')->valor,
+                'costos_total_x_tallo' => getIndicadorByName('C6')->valor,
+                'costos_fijos' => getIndicadorByName('C7')->valor,
+                'costos_regalias' => getIndicadorByName('C8')->valor,
+            ]);
+        }
+
+        return view('adminlte.inicio');
     }
 }
