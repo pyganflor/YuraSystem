@@ -11,6 +11,7 @@ namespace yura\Http\Controllers\Indicadores;
 use Illuminate\Support\Facades\DB;
 use yura\Modelos\Cosecha;
 use yura\Modelos\Area;
+use yura\Modelos\ResumenCostosSemanal;
 
 class Costos
 {
@@ -91,6 +92,35 @@ class Costos
             $valor = $otros_gastos->cant_gip + $otros_gastos->cant_ga;
 
             $model->valor = $semana->codigo . ':' . round($valor, 2);
+            $model->save();
+        }
+    }
+
+    public static function costos_regalias_1_semana_atras()
+    {
+        $model = getIndicadorByName('C8');  // Costos Insumos (-1 semana)
+        if ($model != '') {
+            $dias = 7;
+            $semana = '';
+            $valor = 0;
+            while ($valor <= 0) {
+                $dias += 7;
+                $semana = getSemanaByDate(opDiasFecha('-', $dias, date('Y-m-d')));
+                if ($semana != '') {
+                    $valor = DB::table('costos_semana')
+                        ->select(DB::raw('sum(valor) as cant'))
+                        ->where('codigo_semana', $semana->codigo)
+                        ->get()[0]->cant;
+                } else {
+                    return false;
+                }
+            }
+
+            $resumen = ResumenCostosSemanal::All()
+                ->where('codigo_semana', $semana->codigo)
+                ->first();
+
+            $model->valor = $semana->codigo . ':' . round($resumen->regalias, 2);
             $model->save();
         }
     }
