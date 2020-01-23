@@ -42,6 +42,31 @@ class Area
 
             $model->valor = round($area / count($semanas_4), 2);
             $model->save();
+
+            /* ============================== INDICADOR x VARIEDAD ================================= */
+            foreach (Variedad::All() as $var) {
+                $ind = IndicadorVariedad::All()
+                    ->where('id_indicador', $model->id_indicador)
+                    ->where('id_variedad', $var->id_variedad)
+                    ->first();
+                if ($ind == '') {   // es nuevo
+                    $ind = new IndicadorVariedad();
+                    $ind->id_indicador = $model->id_indicador;
+                    $ind->id_variedad = $var->id_variedad;
+                }
+                $area = 0;
+                $data_4semanas = getAreaCiclosByRango($semanas_4[0]->semana, $semanas_4[3]->semana, $var->id_variedad);
+                foreach ($data_4semanas['variedades'] as $v) {
+                    foreach ($v['ciclos'] as $c) {
+                        foreach ($c['areas'] as $a) {
+                            $area += $a;
+                        }
+                    }
+                }
+
+                $ind->valor = round($area / count($semanas_4), 2);
+                $ind->save();
+            }
         }
     }
 
