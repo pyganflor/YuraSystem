@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Log;
 use yura\Jobs\ProyeccionUpdateSemanal;
 use yura\Jobs\ProyeccionVentaSemanalUpdate;
 use yura\Jobs\ResumenAreaSemanal;
+use yura\Jobs\ResumenCostosSemanal;
 use yura\Jobs\ResumenSemanaCosecha;
 use yura\Jobs\UpdateIndicador;
 use yura\Jobs\UpdateOtrosGastos;
@@ -94,6 +95,10 @@ class dbController extends Controller
         }
         if ($request->comando == 8) {   // comando ResumenAreaSemanal
             UpdateRegalias::dispatch($request->desde, $request->hasta)
+                ->onQueue('job');
+        }
+        if ($request->comando == 9) {   // comando ResumenAreaSemanal
+            ResumenCostosSemanal::dispatch($request->desde, $request->hasta)
                 ->onQueue('job');
         }
 
