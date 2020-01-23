@@ -51,6 +51,25 @@ class Postcosecha
             }
             $model->valor = $valor;
             $model->save();
+
+            /* ============================== INDICADOR x VARIEDAD ================================= */
+            foreach (Variedad::All() as $var) {
+                $ind = IndicadorVariedad::All()
+                    ->where('id_indicador', $model->id_indicador)
+                    ->where('id_variedad', $var->id_variedad)
+                    ->first();
+                if ($ind == '') {   // es nuevo
+                    $ind = new IndicadorVariedad();
+                    $ind->id_indicador = $model->id_indicador;
+                    $ind->id_variedad = $var->id_variedad;
+                }
+                $valor = 0;
+                foreach ($verdes as $v) {
+                    $valor += $v->tallos_x_variedad($var->id_variedad);
+                }
+                $ind->valor = $valor;
+                $ind->save();
+            }
         }
     }
 
