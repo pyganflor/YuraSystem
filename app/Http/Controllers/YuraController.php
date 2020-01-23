@@ -50,6 +50,7 @@ class YuraController extends Controller
                 'costos_postcosecha_x_tallo' => getIndicadorByName('C5')->valor,
                 'costos_total_x_tallo' => getIndicadorByName('C6')->valor,
                 'costos_fijos' => getIndicadorByName('C7')->valor,
+                'costos_regalias' => getIndicadorByName('C8')->valor,
             ]);
         }
 

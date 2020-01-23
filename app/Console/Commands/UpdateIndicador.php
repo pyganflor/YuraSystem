@@ -177,6 +177,10 @@ class UpdateIndicador extends Command
             Costos::costos_fijos_1_semana_atras();
             Log::info('INDICADOR: "Costos Fijos (-1 semana)"');
         }
+        if ($indicador_par === '0' || $indicador_par === 'C8') { // Costos Regalías (-1 semana)
+            Costos::costos_regalias_1_semana_atras();
+            Log::info('INDICADOR: "Costos Regalías (-1 semana)"');
+        }
 
         $time_duration = difFechas(date('Y-m-d H:i:s'), $ini)->h . ':' . difFechas(date('Y-m-d H:i:s'), $ini)->m . ':' . difFechas(date('Y-m-d H:i:s'), $ini)->s;
         Log::info('<*> DURACION: ' . $time_duration . '  <*>');
