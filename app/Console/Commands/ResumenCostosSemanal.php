@@ -89,10 +89,10 @@ class ResumenCostosSemanal extends Command
                     $resumen = new ModelResumen();
                     $resumen->codigo_semana = $semana->codigo;
                 }
-                $resumen->mano_obra = $mano_obra;
-                $resumen->insumos = $insumos;
-                $resumen->fijos = $fijos;
-                $resumen->regalias = $regalias;
+                $resumen->mano_obra = $mano_obra != '' ? $mano_obra : 0;
+                $resumen->insumos = $insumos != '' ? $insumos : 0;
+                $resumen->fijos = $fijos != '' ? $fijos : 0;
+                $resumen->regalias = $regalias != '' ? $regalias : 0;
 
                 $resumen->save();
             }
