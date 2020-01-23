@@ -191,45 +191,36 @@ class Venta
 
     public static function cajas_equivalentes_vendidas_7_dias_atras()
     {
-        $variedades = self::variedades();
+        $model = getIndicadorByName('D13'); // Cajas equivalentes vendidas (-7 días)
         $pedidos_semanal = Pedido::where('estado', 1)
             ->where('fecha_pedido', '>=', opDiasFecha('-', 7, date('Y-m-d')))
             ->where('fecha_pedido', '<=', opDiasFecha('-', 1, date('Y-m-d')))->get();
-        $cajasEquivalentes = 0;
-        $dataGeneral = [];
+        $valor = 0;
         foreach ($pedidos_semanal as $pedido) {
-            $cajasEquivalentes += $pedido->getCajas();
-            foreach ($variedades as $variedad) {
-                $dataGeneral[$variedad->id_variedad][] = [
-                    'cajas_x_variedad' => $pedido->getCajasByVariedad($variedad->id_variedad)
-                ];
-            }
-
+            $valor += $pedido->getCajas();
         }
 
-        $indicadorD13 = Indicador::where('nombre', 'D13');
-        $indicadorD13->update(['valor' => $cajasEquivalentes]);
-        $modelIndicadorD13 = Indicador::where('nombre', 'D13')->first();
+        $model->valor = $valor;
+        $model->save();
 
-        foreach ($dataGeneral as $idVariedad => $data) {
-            $cantidadCajas = 0;
-            foreach ($data as $cajas)
-                $cantidadCajas += $cajas['cajas_x_variedad'];
-
-            //-------- INDICADOR D13 POR VARIEDAD ---------//
-            $dataIndicadorD13Variedad = IndicadorVariedad::where([
-                ['id_variedad', $idVariedad],
-                ['id_indicador', $modelIndicadorD13->id_indicador]
-            ])->first();
-            if (isset($dataIndicadorD13Variedad)) {
-                $objIndicadorD13Variedad = IndicadorVariedad::find($dataIndicadorD13Variedad->id_indicador_variedad);
-            } else {
-                $objIndicadorD13Variedad = new IndicadorVariedad;
+        /* ============================== INDICADOR x VARIEDAD ================================= */
+        foreach (Variedad::All() as $var) {
+            $ind = IndicadorVariedad::All()
+                ->where('id_indicador', $model->id_indicador)
+                ->where('id_variedad', $var->id_variedad)
+                ->first();
+            if ($ind == '') {   // es nuevo
+                $ind = new IndicadorVariedad();
+                $ind->id_indicador = $model->id_indicador;
+                $ind->id_variedad = $var->id_variedad;
             }
-            $objIndicadorD13Variedad->id_variedad = $idVariedad;
-            $objIndicadorD13Variedad->id_indicador = $modelIndicadorD13->id_indicador;
-            $objIndicadorD13Variedad->valor = $cantidadCajas;
-            $objIndicadorD13Variedad->save();
+            $valor = 0;
+            foreach ($pedidos_semanal as $pedido) {
+                $valor += $pedido->getCajasByVariedad($var->id_variedad);
+            }
+
+            $ind->valor = $valor;
+            $ind->save();
         }
     }
 
