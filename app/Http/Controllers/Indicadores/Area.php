@@ -4,6 +4,8 @@ namespace yura\Http\Controllers\Indicadores;
 
 use Illuminate\Support\Facades\DB;
 use yura\Modelos\Cosecha;
+use yura\Modelos\IndicadorVariedad;
+use yura\Modelos\Variedad;
 
 class Area
 {
@@ -68,6 +70,23 @@ class Area
 
             $model->valor = $ciclo;
             $model->save();
+
+            /* ============================== INDICADOR x VARIEDAD ================================= */
+            foreach (Variedad::All() as $var) {
+                $ind = IndicadorVariedad::All()
+                    ->where('id_indicador', $model->id_indicador)
+                    ->where('id_variedad', $var->id_variedad)
+                    ->first();
+                if ($ind == '') {   // es nuevo
+                    $ind = new IndicadorVariedad();
+                    $ind->id_indicador = $model->id_indicador;
+                    $ind->id_variedad = $var->id_variedad;
+                }
+                $data_ciclos = getCiclosCerradosByRango($fechas[0]->semana, $fechas[3]->semana, $var->id_variedad);
+                $ciclo = $data_ciclos['ciclo'];
+                $ind->valor = $ciclo;
+                $ind->save();
+            }
         }
     }
 
