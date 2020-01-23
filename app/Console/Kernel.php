@@ -16,6 +16,7 @@ use yura\Console\Commands\UpdateIndicador;
 use yura\Console\Commands\UpdateOtrosGastos;
 use yura\Console\Commands\UpdateProyeccionSemanal;
 use yura\Console\Commands\ResumenVentaDiariaMesAnterior;
+use yura\Console\Commands\UpdateRegalias;
 use yura\Console\Commands\VentaSemanalReal;
 use yura\Console\Commands\PrecioVariedadCliente;
 use yura\Console\Commands\ResumenSemanaCosecha;
@@ -42,6 +43,7 @@ class Kernel extends ConsoleKernel
         ResumenVentaDiariaMesAnterior::class,
         ResumenSemanalTotal::class,
         UpdateOtrosGastos::class,
+        UpdateRegalias::class,
         ResumenSaldoProyeccionVentaSemanal::class
     ];
 
@@ -69,6 +71,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('resumen_venta_diaria:mes_anterior')->daily()->runInBackground(); // ResumenVentaDiariaMesAnterior::class
         $schedule->command('resumen_total:semanal')->hourly()->runInBackground(); // ResumenSemanalTotal::class
         $schedule->command('otros_gastos:update')->hourly()->runInBackground(); // UpdateOtrosGastos::class
+        $schedule->command('regalias:update')->hourly()->runInBackground(); // UpdateRegalias::class
         $schedule->command('resumen_saldo_proyeccion:venta_semanal')->hourly()->runInBackground(); // ResumenSaldoProyeccionVentaSemanal::class
     }
 

@@ -286,4 +286,16 @@
         $.LoadingOverlay('hide');
     }
 
+    function add_regalias(v) {
+        $.LoadingOverlay('show');
+        datos = {
+            id_variedad: v
+        };
+        $.get('{{url('plantas_variedades/add_regalias')}}', datos, function (retorno) {
+            modal_view('modal_add_regalias', retorno, '<i class="fa fa-fw fa-plus"></i> Regalías', true, false, '', function () {
+            });
+        });
+        $.LoadingOverlay('hide');
+    }
+
 </script>

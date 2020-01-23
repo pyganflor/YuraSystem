@@ -11,7 +11,7 @@
         <th class="text-center" style="border-color: #9d9d9d">Tipo</th>
         <th class="text-center" style="border-color: #9d9d9d">Tallos por Ramo</th>
         <th class="text-center" style="border-color: #9d9d9d">Saldo Inicial</th>
-        <th class="text-center" style="border-color: #9d9d9d" width="100px">
+        <th class="text-center" style="border-color: #9d9d9d" width="115px">
             <button type="button" class="btn btn-xs btn-default" title="Añadir Variedad" onclick="add_variedad()">
                 <i class="fa fa-fw fa-plus"></i>
             </button>
@@ -63,6 +63,10 @@
                         <button class="btn btn-xs btn-default" type="button" title="Clasificaciones Unitarias"
                                 onclick="vincular_variedad_unitaria('{{$v->id_variedad}}')">
                             <i class="fa fa-fw fa-filter"></i>
+                        </button>
+                        <button class="btn btn-xs btn-default" type="button" title="Regalías"
+                                onclick="add_regalias('{{$v->id_variedad}}')">
+                            <i class="fa fa-fw fa-usd"></i>
                         </button>
                         <button class="btn btn-xs btn-danger" type="button" title="{{$v->estado == 1 ? 'Desactivar' : 'Activar'}}"
                                 onclick="cambiar_estado_variedad('{{$v->id_variedad}}','{{$v->estado}}')">

@@ -12,6 +12,7 @@ use yura\Jobs\ResumenAreaSemanal;
 use yura\Jobs\ResumenSemanaCosecha;
 use yura\Jobs\UpdateIndicador;
 use yura\Jobs\UpdateOtrosGastos;
+use yura\Jobs\UpdateRegalias;
 use yura\Jobs\UpdateTallosCosechadosProyeccion;
 use yura\Modelos\Color;
 use yura\Modelos\Indicador;
@@ -89,6 +90,10 @@ class dbController extends Controller
         }
         if ($request->comando == 7) {   // comando ResumenAreaSemanal
             UpdateOtrosGastos::dispatch($request->desde, $request->hasta)
+                ->onQueue('job');
+        }
+        if ($request->comando == 8) {   // comando ResumenAreaSemanal
+            UpdateRegalias::dispatch($request->desde, $request->hasta)
                 ->onQueue('job');
         }
 
