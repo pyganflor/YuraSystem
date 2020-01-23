@@ -99,6 +99,42 @@
             color: '{{$r->color}}',
         });
         @endforeach
+
+        var rangos_costos_campo_ha_semana = [];
+        @foreach(getIntervalosIndicador('C3') as $r)
+        rangos_costos_campo_ha_semana.push({
+            desde: parseFloat('{{$r->desde}}'),
+            hasta: parseFloat('{{$r->hasta}}'),
+            color: '{{$r->color}}',
+        });
+        @endforeach
+
+        var rangos_costos_cosecha_tallo = [];
+        @foreach(getIntervalosIndicador('C4') as $r)
+        rangos_costos_cosecha_tallo.push({
+            desde: parseFloat('{{$r->desde}}'),
+            hasta: parseFloat('{{$r->hasta}}'),
+            color: '{{$r->color}}',
+        });
+        @endforeach
+
+        var rangos_costos_postcosecha_tallo = [];
+        @foreach(getIntervalosIndicador('C5') as $r)
+        rangos_costos_postcosecha_tallo.push({
+            desde: parseFloat('{{$r->desde}}'),
+            hasta: parseFloat('{{$r->hasta}}'),
+            color: '{{$r->color}}',
+        });
+        @endforeach
+
+        var rangos_costos_total_tallo = [];
+        @foreach(getIntervalosIndicador('C6') as $r)
+        rangos_costos_total_tallo.push({
+            desde: parseFloat('{{$r->desde}}'),
+            hasta: parseFloat('{{$r->hasta}}'),
+            color: '{{$r->color}}',
+        });
+        @endforeach
     </script>
 @endsection
 
@@ -296,7 +332,7 @@
                                     '<br><strong title="Cosecha x Tallo" style="color:{{$color_9}}"><small>Cosecha x Tallo: </small><span id="span_costos_cosecha_tallo">${{number_format($costos_cosecha_x_tallo , 4)}}</span></strong>' +
                                     '<br><strong title="Postcosecha x Tallo" style="color:{{$color_10}}"><small>Postcosecha x Tallo: </small><span id="span_costos_postcosecha_tallo">${{number_format($costos_postcosecha_x_tallo , 4)}}</span></strong>' +
                                     '<br><strong title="Total x Tallo" style="color:{{$color_11}}"><small>Total x Tallo: </small><span id="span_costos_total_tallo">${{number_format($costos_total_x_tallo , 4)}}</span></strong>' +
-                                    '<br><button type="button" class="btn btn-xs btn-block btn-default" style="color: black">Indicadores claves</button>'
+                                    '<br><button type="button" class="btn btn-xs btn-block btn-default" style="color: black" onclick="mostrar_indicadores_claves(2)">Indicadores claves</button>'
                                 }, 'Costos', 'C1'],
                                 [{
                                     'v': 'C2',
@@ -404,7 +440,7 @@
                 }
 
                 function mostrar_indicadores_claves(view, variedad = '') {
-                    var views = ['indicadores_ventas_m2', 'indicadores_claves'];
+                    var views = ['indicadores_ventas_m2', 'indicadores_claves', 'indicadores_claves_costos'];
                     datos = {
                         view: views[view],
                         variedad: variedad

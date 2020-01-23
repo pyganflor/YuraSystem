@@ -561,6 +561,11 @@ class YuraController extends Controller
 
                 'venta_m2_anno_mensual' => $variedad == '' ? getIndicadorByName('D9')->valor : getIndicadorByName('D9')->getVariedad($variedad->id_variedad)->valor,
                 'venta_m2_anno_anual' => $variedad == '' ? getIndicadorByName('D10')->valor : getIndicadorByName('D10')->getVariedad($variedad->id_variedad)->valor,
+
+                'costos_campo_semana' => getIndicadorByName('C3')->valor,
+                'costos_cosecha_x_tallo' => getIndicadorByName('C4')->valor,
+                'costos_postcosecha_x_tallo' => getIndicadorByName('C5')->valor,
+                'costos_total_x_tallo' => getIndicadorByName('C6')->valor,
             ]);
         } else
             return view('adminlte.inicio');
