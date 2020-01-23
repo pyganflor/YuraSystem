@@ -548,16 +548,19 @@ class YuraController extends Controller
     public function mostrar_indicadores_claves(Request $request)
     {
         if (count(getUsuario(Session::get('id_usuario'))->rol()->getSubmenusByTipo('C')) > 0) {
+            $variedad = Variedad::find($request->variedad);
             return view('adminlte.crm.' . $request->view, [
-                'precio_x_ramo' => getIndicadorByName('D3')->valor,
-                'precio_x_tallo' => getIndicadorByName('D14')->valor,
-                'ramos_m2_anno' => getIndicadorByName('D8')->valor,
-                'calibre' => getIndicadorByName('D1')->valor,
-                'tallos_m2' => getIndicadorByName('D12')->valor,
-                'ciclo' => getIndicadorByName('DA1')->valor,
+                'variedad' => $variedad,
 
-                'venta_m2_anno_mensual' => getIndicadorByName('D9')->valor,
-                'venta_m2_anno_anual' => getIndicadorByName('D10')->valor,
+                'precio_x_ramo' => $variedad == '' ? getIndicadorByName('D3')->valor : getIndicadorByName('D3')->getVariedad($variedad->id_variedad)->valor,
+                'precio_x_tallo' => $variedad == '' ? getIndicadorByName('D14')->valor : getIndicadorByName('D14')->getVariedad($variedad->id_variedad)->valor,
+                'ramos_m2_anno' => $variedad == '' ? getIndicadorByName('D8')->valor : getIndicadorByName('D8')->getVariedad($variedad->id_variedad)->valor,
+                'calibre' => $variedad == '' ? getIndicadorByName('D1')->valor : getIndicadorByName('D1')->getVariedad($variedad->id_variedad)->valor,
+                'tallos_m2' => $variedad == '' ? getIndicadorByName('D12')->valor : getIndicadorByName('D12')->getVariedad($variedad->id_variedad)->valor,
+                'ciclo' => $variedad == '' ? getIndicadorByName('DA1')->valor : getIndicadorByName('DA1')->getVariedad($variedad->id_variedad)->valor,
+
+                'venta_m2_anno_mensual' => $variedad == '' ? getIndicadorByName('D9')->valor : getIndicadorByName('D9')->getVariedad($variedad->id_variedad)->valor,
+                'venta_m2_anno_anual' => $variedad == '' ? getIndicadorByName('D10')->valor : getIndicadorByName('D10')->getVariedad($variedad->id_variedad)->valor,
             ]);
         } else
             return view('adminlte.inicio');
