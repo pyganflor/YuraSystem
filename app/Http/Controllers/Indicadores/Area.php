@@ -3,8 +3,10 @@
 namespace yura\Http\Controllers\Indicadores;
 
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use yura\Modelos\Cosecha;
 use yura\Modelos\IndicadorVariedad;
+use yura\Modelos\ResumenSemanaCosecha;
 use yura\Modelos\Variedad;
 
 class Area
@@ -174,11 +176,29 @@ class Area
                 $area_cerrada = $data_ciclos['area_cerrada'];
                 $tallos_ciclo = $data_ciclos['tallos_cosechados'];
 
-                $data_cosecha = getCosechaByRango($semanas_4[0]->semana, $semanas_4[3]->semana, $var->id_variedad);
-                $calibre_ciclo = $data_cosecha['calibre'];
+                $calibre = 0;
+                $resumen = ResumenSemanaCosecha::All()
+                    ->where('estado', 1)
+                    ->where('id_variedad', $var->id_variedad)
+                    ->where('codigo_semana', '>=', $semanas_4[0]->semana)
+                    ->where('codigo_semana', '<=', $semanas_4[3]->semana);
+                $cant_calibres = 0;
+                foreach ($resumen as $r) {
+                    $c = $r->calibre;
+                    if ($c > 0)
+                        $cant_calibres++;
+                    $calibre += $c;
+                }
+
+                //$data_cosecha = getCosechaByRango($semanas_4[0]->semana, $semanas_4[3]->semana, $var->id_variedad);
+                //$calibre_ciclo = $data_cosecha['calibre'];
+                
+                $calibre_ciclo = $cant_calibres > 0 ? round($calibre / $cant_calibres, 2) : 0;
                 $ramos_ciclo = $calibre_ciclo > 0 ? round($tallos_ciclo / $calibre_ciclo, 2) : 0;
 
                 $ciclo_ano = $area_cerrada > 0 ? round(365 / $ciclo, 2) : 0;
+
+                Log::info('VAR = ' . $var->siglas . ', calibre = ' . $calibre_ciclo . ', tallos = ' . $tallos_ciclo . ', ciclo = ' . $ciclo_ano . ', ramos_ciclo = ' . $ramos_ciclo . ', area_cerrada = ' . $area_cerrada);
 
                 $mensual = [
                     'ciclo_ano' => $ciclo_ano,
