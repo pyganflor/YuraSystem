@@ -38,9 +38,9 @@
                 [{
                     'v': 'C1', 'f': '<strong></strong>' +
                     '<br><strong title="Campo/ha/Semana" style="color:{{$color_8}}"><small>Campo/<sup>ha</sup>/Semana: </small><span id="span_costos_campo_semana">${{number_format(explode('|', $costos_campo_semana)[0] , 2)}}</span></strong>' +
-                    '<br><strong title="Cosecha x Tallo" style="color:{{$color_9}}"><small>Cosecha x Tallo: </small><span id="span_costos_cosecha_tallo">${{number_format($costos_cosecha_x_tallo , 4)}}</span></strong>' +
-                    '<br><strong title="Postcosecha x Tallo" style="color:{{$color_10}}"><small>Postcosecha x Tallo: </small><span id="span_costos_postcosecha_tallo">${{number_format($costos_postcosecha_x_tallo , 4)}}</span></strong>' +
-                    '<br><strong title="Total x Tallo" style="color:{{$color_11}}"><small>Total x Tallo: </small><span id="span_costos_total_tallo">${{number_format($costos_total_x_tallo , 4)}}</span></strong>' +
+                    '<br><strong title="Cosecha x Tallo" style="color:{{$color_9}}"><small>Cosecha x Tallo: </small><span id="span_costos_cosecha_tallo">¢{{number_format($costos_cosecha_x_tallo * 100, 2)}}</span></strong>' +
+                    '<br><strong title="Postcosecha x Tallo" style="color:{{$color_10}}"><small>Postcosecha x Tallo: </small><span id="span_costos_postcosecha_tallo">¢{{number_format($costos_postcosecha_x_tallo * 100, 2)}}</span></strong>' +
+                    '<br><strong title="Total x Tallo" style="color:{{$color_11}}"><small>Total x Tallo: </small><span id="span_costos_total_tallo">¢{{number_format($costos_total_x_tallo * 100, 2)}}</span></strong>' +
                     '<br><button type="button" class="btn btn-xs btn-block btn-default" style="color: black" onclick="mostrar_indicadores_claves(2)">Indicadores claves</button>'
                 }, 'Costos', 'C1'],
                 [{
