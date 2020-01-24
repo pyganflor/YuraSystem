@@ -179,7 +179,7 @@
                             if ($tallos_m2_proy > 45)
                                 $color = 'green';
                         @endphp
-                        {{$tallos_m2_proy}}
+                        <span style="color: {{$color}}">{{$tallos_m2_proy}}</span>
                     </td>
                     <td class="text-center" style="border-color: #9d9d9d">
                         {{number_format($item->plantas_iniciales)}}
