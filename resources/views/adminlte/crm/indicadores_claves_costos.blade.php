@@ -24,9 +24,9 @@
                 </tr>
                 <tr>
                     <th class="text-center">{{number_format(explode('|', $costos_campo_semana)[0], 2)}}</th>
-                    <th class="text-center">{{number_format($costos_cosecha_x_tallo * 100, 2)}}</th>
-                    <th class="text-center">{{number_format($costos_postcosecha_x_tallo * 100, 2)}}</th>
-                    <th class="text-center">{{number_format($costos_total_x_tallo * 100, 2)}}</th>
+                    <th class="text-center">{{number_format($costos_cosecha_x_tallo, 2)}}</th>
+                    <th class="text-center">{{number_format($costos_postcosecha_x_tallo, 2)}}</th>
+                    <th class="text-center">{{number_format($costos_total_x_tallo, 2)}}</th>
                 </tr>
             </table>
         </div>
@@ -35,7 +35,7 @@
 
 <script>
     render_gauge('canvas_campo_ha_semana', '{{number_format(explode('|', $costos_campo_semana)[0], 2)}}', rangos_costos_campo_ha_semana, true);
-    render_gauge('canvas_cosecha_x_tallo', '{{number_format($costos_cosecha_x_tallo * 100, 2)}}', rangos_costos_cosecha_tallo, true);
-    render_gauge('canvas_postcosecha_x_tallo', '{{number_format($costos_postcosecha_x_tallo * 100, 2)}}', rangos_costos_postcosecha_tallo, true);
-    render_gauge('canvas_total_x_tallo', '{{number_format($costos_total_x_tallo * 100, 2)}}', rangos_costos_total_tallo, true);
+    render_gauge('canvas_cosecha_x_tallo', '{{number_format($costos_cosecha_x_tallo, 2)}}', rangos_costos_cosecha_tallo, true);
+    render_gauge('canvas_postcosecha_x_tallo', '{{number_format($costos_postcosecha_x_tallo, 2)}}', rangos_costos_postcosecha_tallo, true);
+    render_gauge('canvas_total_x_tallo', '{{number_format($costos_total_x_tallo, 2)}}', rangos_costos_total_tallo, true);
 </script>
