@@ -172,6 +172,13 @@
                         {{$tallos_m2_proy > 0 ? round(($tallos_m2_cos / $tallos_m2_proy) * 100, 2) : 0}}%
                     </td>
                     <td class="text-center" style="border-color: #9d9d9d">
+                        @php
+                            $color = 'orange';
+                            if ($tallos_m2_proy < 35)
+                                $color = 'red';
+                            if ($tallos_m2_proy > 45)
+                                $color = 'green';
+                        @endphp
                         {{$tallos_m2_proy}}
                     </td>
                     <td class="text-center" style="border-color: #9d9d9d">
