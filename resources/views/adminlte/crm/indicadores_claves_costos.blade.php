@@ -24,9 +24,9 @@
                 </tr>
                 <tr>
                     <th class="text-center">{{number_format(explode('|', $costos_campo_semana)[0], 2)}}</th>
-                    <th class="text-center">{{number_format($costos_cosecha_x_tallo, 2)}}</th>
-                    <th class="text-center">{{number_format($costos_postcosecha_x_tallo, 2)}}</th>
-                    <th class="text-center">{{number_format($costos_total_x_tallo, 2)}}</th>
+                    <th class="text-center">¢{{number_format($costos_cosecha_x_tallo, 2)}}</th>
+                    <th class="text-center">¢{{number_format($costos_postcosecha_x_tallo, 2)}}</th>
+                    <th class="text-center">¢{{number_format($costos_total_x_tallo, 2)}}</th>
                 </tr>
             </table>
         </div>
