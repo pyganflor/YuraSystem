@@ -9,6 +9,7 @@
 namespace yura\Http\Controllers\Indicadores;
 
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use yura\Modelos\Cosecha;
 use yura\Modelos\Area;
 use yura\Modelos\ResumenCostosSemanal;
@@ -145,7 +146,7 @@ class Costos
                 }
             }
 
-            $sem_desde = getSemanaByDate(opDiasFecha('-', 35, $last_semana->fecha_inicial));
+            $sem_desde = getSemanaByDate(opDiasFecha('-', 21, $last_semana->fecha_inicial));
             $sem_hasta = $last_semana;
 
             $area_trabajo = Area::All()
@@ -174,6 +175,8 @@ class Costos
                 ->where('o.codigo_semana', '>=', $sem_desde->codigo)
                 ->where('o.codigo_semana', '<=', $sem_hasta->codigo)
                 ->get()[0]->cant;
+
+            Log::info('mp = ' . $insumos . ', mo = ' . $mano_obra . ', otros = ' . $otros . ', desde = ' . $sem_desde->codigo . ', hasta = ' . $sem_hasta->codigo . ', area = ' . $area_trabajo->id_area);
 
             $costos_total = $insumos + $mano_obra + $otros;
             $area = getIndicadorByName('D7');   // Área en producción (-4 semanas)
