@@ -192,7 +192,7 @@ class Area
 
                 //$data_cosecha = getCosechaByRango($semanas_4[0]->semana, $semanas_4[3]->semana, $var->id_variedad);
                 //$calibre_ciclo = $data_cosecha['calibre'];
-                
+
                 $calibre_ciclo = $cant_calibres > 0 ? round($calibre / $cant_calibres, 2) : 0;
                 $ramos_ciclo = $calibre_ciclo > 0 ? round($tallos_ciclo / $calibre_ciclo, 2) : 0;
 
