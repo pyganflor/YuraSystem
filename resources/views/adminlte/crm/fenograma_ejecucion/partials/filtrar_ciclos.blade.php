@@ -151,7 +151,16 @@
                         @endif
                     </td>
                     <td class="text-center" style="border-color: #9d9d9d">
-                        {{$item->getMortalidad()}}
+                        @php
+                            $mortalidad = $item->getMortalidad();
+
+                            $color = 'orange';
+                            if ($mortalidad < 10)
+                                $color = 'green';
+                            if ($mortalidad > 20)
+                                $color = 'red';
+                        @endphp
+                        <span style="color: {{$color}}">{{$mortalidad}}</span>
                     </td>
                     <td class="text-center" style="border-color: #9d9d9d">
                         {{number_format($tallos_cosechados)}}
