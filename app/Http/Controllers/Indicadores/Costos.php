@@ -247,7 +247,7 @@ class Costos
                 $tallos += $c->getTotalTallos();
             }
 
-            $model->valor = $tallos > 0 ? round($costos_total / $tallos, 4) : 0;
+            $model->valor = $tallos > 0 ? round(($costos_total / $tallos) * 100, 2) : 0;
             $model->save();
         }
     }
@@ -312,7 +312,7 @@ class Costos
                 $tallos += $c->getTotalTallos();
             }
 
-            $model->valor = $tallos > 0 ? round($costos_total / $tallos, 4) : 0;
+            $model->valor = $tallos > 0 ? round(($costos_total / $tallos) * 100, 2) : 0;
             $model->save();
         }
     }
@@ -366,7 +366,7 @@ class Costos
                 $tallos += $c->getTotalTallos();
             }
 
-            $model->valor = $tallos > 0 ? round($costos_total / $tallos, 4) : 0;
+            $model->valor = $tallos > 0 ? round(($costos_total / $tallos) * 100, 2) : 0;
             $model->save();
         }
     }
