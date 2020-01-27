@@ -102,13 +102,25 @@ class VentaSemanalReal extends Command
                     $arrSemana = str_split($semana,2);
                     $anoAnterior = (int)$arrSemana[0]-1;
                     $semanaAnoAnterior =  $anoAnterior.$arrSemana[1];
+                    $fechaAnnoAnterior=Semana::where([
+                        ['codigo',$semanaAnoAnterior],
+                        ['esatdo',1]
+                    ])->first();
+
                     //Info("Semana anterior: ".$semanaAnoAnterior);
                     foreach($clientes as $cliente){
+
+                        $pedidosAnnoAnterior = Pedido::where([
+                            ['pedido.estado',true],
+                            ['id_cliente',$cliente->id_cliente]
+                        ])->whereBetween('fecha_pedido',[$fechaAnnoAnterior->fecha_inicial,$fechaAnnoAnterior->fecha_final])->get();
+
+                        $pedidos = Pedido::where([
+                            ['pedido.estado',true],
+                            ['id_cliente',$cliente->id_cliente]
+                        ])->whereBetween('fecha_pedido',[$objSemana[$x]->fecha_inicial,$objSemana[$x]->fecha_final])->get();
+
                         foreach($variedades as $variedad){
-                            $pedidos = Pedido::where([
-                                    ['pedido.estado',true],
-                                    ['id_cliente',$cliente->id_cliente]
-                            ])->whereBetween('fecha_pedido',[$objSemana[$x]->fecha_inicial,$objSemana[$x]->fecha_final])->get();
 
                             $objProyeccionVentaSemanal = ProyeccionVentaSemanalReal::where([
                                     ['id_variedad',$variedad->id_variedad],
@@ -116,11 +128,15 @@ class VentaSemanalReal extends Command
                                     ['codigo_semana',$semana]
                                 ])->first();
 
-                            $objProyeccionVentaSemanalAnoAnterior = ProyeccionVentaSemanalReal::where([
+                            /*$objProyeccionVentaSemanalAnoAnterior = ProyeccionVentaSemanalReal::where([
                                 ['id_variedad',$variedad->id_variedad],
                                 ['id_cliente',$cliente->id_cliente],
                                 ['codigo_semana',$semanaAnoAnterior]
-                            ])->select('cajas_fisicas')->first();
+                            ])->select('cajas_fisicas')->first();*/
+
+                            $cajasAnnoAnterior =0;
+                            foreach ($pedidosAnnoAnterior as $pedidoAnnoAnterior)
+                                $cajasAnnoAnterior=+ $pedidoAnnoAnterior->getCajasFullByVariedad($variedad->id_variedad);
 
                             //if(isset($objProyeccionVentaSemanalAnoAnterior))
                                 //Info("Cajas ano anterior: ".$objProyeccionVentaSemanalAnoAnterior->cajas_fisicas);
@@ -142,8 +158,6 @@ class VentaSemanalReal extends Command
                                 foreach ($pedidos as $pedido){
                                     //if($variedad->id_variedad==2 )
                                        // dd($pedido->getCajasFullByVariedad($variedad->id_variedad));
-
-
                                     if(!getFacturaAnulada($pedido->id_pedido)){
                                         //if($pedido->fecha_pedido >= $fechaActual->toDateString()){ //Comentar cuando se va a recopilar por primera vez toda la informacion en la tabla proyeccion_venta_semanal_real
                                             //Info("Pedido incluido de fecha: ". $pedido->fecha_pedido);
@@ -151,11 +165,7 @@ class VentaSemanalReal extends Command
                                                 $objProySemReal->valor += $pedido->getPrecioByVariedad($variedad->id_variedad);
                                                 $objProySemReal->cajas_equivalentes += $pedido->getCajasByVariedad($variedad->id_variedad);
                                                 $objProySemReal->cajas_fisicas += $pedido->getCajasFullByVariedad($variedad->id_variedad);
-                                                if(isset($objProyeccionVentaSemanalAnoAnterior->cajas_fisicas) && $objProyeccionVentaSemanalAnoAnterior->cajas_fisicas>0){
-                                                    $objProySemReal->cajas_fisicas_anno_anterior =  $objProyeccionVentaSemanalAnoAnterior->cajas_fisicas;
-                                                    Info("Semana: ".$objProyeccionVentaSemanalAnoAnterior->codigo_semana." cajas: " .$objProyeccionVentaSemanalAnoAnterior->cajas_fisicas);
-                                                }
-
+                                                $objProySemReal->cajas_fisicas_anno_anterior =  $cajasAnnoAnterior;
                                             }
                                         /*$proyeccionVentaSemanal = ProyeccionVentaSemanal::where([
                                                 ['id_variedad',$variedad->id_variedad],
