@@ -135,8 +135,9 @@ class VentaSemanalReal extends Command
                             ])->select('cajas_fisicas')->first();*/
 
                             $cajasAnnoAnterior =0;
-                            foreach ($pedidosAnnoAnterior as $pedidoAnnoAnterior)
-                                $cajasAnnoAnterior=+ $pedidoAnnoAnterior->getCajasFullByVariedad($variedad->id_variedad);
+                            if($pedidosAnnoAnterior->count()>0)
+                                foreach ($pedidosAnnoAnterior as $pedidoAnnoAnterior)
+                                    $cajasAnnoAnterior=+ $pedidoAnnoAnterior->getCajasFullByVariedad($variedad->id_variedad);
 
                             //if(isset($objProyeccionVentaSemanalAnoAnterior))
                                 //Info("Cajas ano anterior: ".$objProyeccionVentaSemanalAnoAnterior->cajas_fisicas);
@@ -165,7 +166,8 @@ class VentaSemanalReal extends Command
                                                 $objProySemReal->valor += $pedido->getPrecioByVariedad($variedad->id_variedad);
                                                 $objProySemReal->cajas_equivalentes += $pedido->getCajasByVariedad($variedad->id_variedad);
                                                 $objProySemReal->cajas_fisicas += $pedido->getCajasFullByVariedad($variedad->id_variedad);
-                                                $objProySemReal->cajas_fisicas_anno_anterior =  $cajasAnnoAnterior;
+                                                if($pedidosAnnoAnterior >0)
+                                                    $objProySemReal->cajas_fisicas_anno_anterior =  $cajasAnnoAnterior;
                                             }
                                         /*$proyeccionVentaSemanal = ProyeccionVentaSemanal::where([
                                                 ['id_variedad',$variedad->id_variedad],
