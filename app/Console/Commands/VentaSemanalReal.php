@@ -97,14 +97,13 @@ class VentaSemanalReal extends Command
                     $clientes->where('cliente.id_cliente',$idCliente);
 
                 $clientes = $clientes->get();
-                Info($clientes);
                 foreach ($semanas as $x => $semana){
                     $arrSemana = str_split($semana,2);
                     $anoAnterior = (int)$arrSemana[0]-1;
                     $semanaAnoAnterior =  $anoAnterior.$arrSemana[1];
                     $fechaAnnoAnterior=Semana::where([
                         ['codigo',$semanaAnoAnterior],
-                        ['esatdo',1]
+                        ['estado',1]
                     ])->first();
 
                     //Info("Semana anterior: ".$semanaAnoAnterior);
