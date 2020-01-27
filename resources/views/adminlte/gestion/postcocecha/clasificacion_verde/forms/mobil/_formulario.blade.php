@@ -46,7 +46,7 @@
     @if($verde->activo == 1)
         <div id="btn_terminar_clasificacion" style="margin-top: 15px">
             <button type="button" class="btn btn-danger btn-sm" onclick="terminar_clasificacion()">
-                <i class="fa fa-fw fa-times"></i> Terminar ClasificaciÃ³n
+                <i class="fa fa-fw fa-times"></i> Terminar Clasificación
             </button>
         </div>
         @foreach($verde->variedades() as $variedad)
