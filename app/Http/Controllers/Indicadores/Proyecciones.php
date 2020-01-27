@@ -131,8 +131,9 @@ class Proyecciones extends Controller
 
     public static function intervalosTiempo(){
         $fechaActual =now()->toDateString();
+        Info('Intervalo de busqueda, desde: '.Carbon::Parse($fechaActual)->addDays(7)->toDateString(). " Hasta: ".opDiasFecha('+', 28,  $fechaActual));
         return [
-            'primeraSemanaFutura' =>getSemanaByDate(Carbon::Parse($fechaActual)->addDays(7))->codigo,
+            'primeraSemanaFutura' =>getSemanaByDate(Carbon::Parse($fechaActual)->addDays(7)->toDateString())->codigo,
             'cuartaSemanaFutura' =>getSemanaByDate(opDiasFecha('+', 28,  $fechaActual))->codigo
         ];
     }
