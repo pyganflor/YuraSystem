@@ -474,8 +474,8 @@ class Pedido extends Model
                         $ramosStandarCajaVariedad +=convertToEstandar($det_esp_emp->cantidad*$det_ped->cantidad, $det_esp_emp->clasificacion_ramo->nombre);
             }
 
-            $standarTotal = $ramosStandarCajaTotal/$ramosStandarCajaVariedad;
-            $cajasFullByVariedad= $factorConversion / $standarTotal;
+            $standarTotal = $ramosStandarCajaVariedad > 0 ? $ramosStandarCajaTotal/$ramosStandarCajaVariedad : 0;
+            $cajasFullByVariedad= $standarTotal > 0 ? $factorConversion / $standarTotal : 0;
 
             //dump(round($cajasFullByVariedad,2));
 

@@ -558,6 +558,7 @@ class OrdenSemanalController extends Controller
                 $objComprobante = Comprobante::find($c->id_comprobante);
                 $objComprobante->id_envio = null;
                 $objComprobante->habilitado = 0;
+                $objComprobante->rehusar = 1;
                 $objComprobante->save();
                 $pedido->clave_acceso_temporal = $c->secuencial;
                 $pedido->id_comprobante_temporal = $c->id_comprobante;
@@ -706,6 +707,8 @@ class OrdenSemanalController extends Controller
 
                     if ($envio->save()) {
                         $envio = Envio::All()->last();
+
+
                         bitacora('envio', $envio->id_envio, 'I', 'Insercion de un nuevo envio');
 
                         foreach ($pedido->detalles as $det) {

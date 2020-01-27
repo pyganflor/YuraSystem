@@ -100,7 +100,7 @@ class ComprobanteController extends Controller
     }
 
     public function generar_comprobante_factura(Request $request){
-
+        //dd($request->all());
         ini_set('max_execution_time', env('MAX_EXECUTION_TIME'));
         $valida = Validator::make($request->all(), [
             'id_envio' => 'required',
