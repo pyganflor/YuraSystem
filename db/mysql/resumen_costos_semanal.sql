@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 23-01-2020 a las 18:17:19
+-- Tiempo de generación: 27-01-2020 a las 14:55:27
 -- Versión del servidor: 10.1.36-MariaDB
 -- Versión de PHP: 7.2.11
 
@@ -31,10 +31,10 @@ SET time_zone = "+00:00";
 CREATE TABLE `resumen_costos_semanal` (
   `id_resumen_costos_semanal` int(11) NOT NULL,
   `codigo_semana` int(4) NOT NULL,
-  `mano_obra` float NOT NULL DEFAULT '0',
-  `insumos` float NOT NULL DEFAULT '0',
-  `fijos` float NOT NULL DEFAULT '0',
-  `regalias` float NOT NULL DEFAULT '0'
+  `mano_obra` float DEFAULT '0',
+  `insumos` float DEFAULT '0',
+  `fijos` float DEFAULT '0',
+  `regalias` float DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 --
