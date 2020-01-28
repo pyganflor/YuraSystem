@@ -181,8 +181,7 @@
                                                     @else
                                                         <input type="number" name="orden_despacho" id="{{$pedido->id_pedido}}"
                                                                class="form-control orden_despacho id_configuracion_empresa_{{isset($ped->id_configuracion_empresa) ? $ped->id_configuracion_empresa : ""}}"
-                                                               min="1"
-                                                               style="width: 56px;border:none;text-align: center" {{isset($id_configuracion_empresa) ? "" : "disabled"}}>
+                                                               min="1" style="width: 56px;border:none;text-align: center" {{isset($id_configuracion_empresa) ? "" : "disabled"}}>
                                                     @endif
                                                 </td>
                                             @endif

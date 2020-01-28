@@ -124,7 +124,7 @@ class PedidoController extends Controller
 
                 (isset($request->opcion) && $request->opcion != 3) ? $fechaFormateada = $formatoFecha : $fechaFormateada = $fechas;
 
-                if (!empty($request->id_pedido)) {
+                if (!empty($request->id_pedido)) { //ACTUALIZAR
                     $dataEnvio = Envio::where('id_pedido', $request->id_pedido)->first();
                     if (isset($dataEnvio->id_envio)) {
 
@@ -140,6 +140,7 @@ class PedidoController extends Controller
                             $objComprobante = Comprobante::find($dataComprobante[0]->id_comprobante);
                             $objComprobante->habilitado = false;
                             $objComprobante->id_envio = null;
+                            $objComprobante->rehusar = true;
                             if ($objComprobante->save()) {
                                 $archivo_generado = env('PATH_XML_FIRMADOS') . '/facturas/' . $dataComprobante[0]->clave_acceso . ".xml";
                                 $archivo_firmado = env('PATH_XML_GENERADOS') . '/facturas/' . $dataComprobante[0]->clave_acceso . ".xml";
@@ -162,15 +163,12 @@ class PedidoController extends Controller
 
                         }
 
-
                     }
-
 
                     /*foreach (getPedido($request->id_pedido)->detalles as $det_ped)
                         if($det_ped->cliente_especificacion->especificacion->tipo === "O")
                             Especificacion::destroy($det_ped->cliente_especificacion->especificacion->id_especificacion);*/
                     //DetallePedidoDatoExportacion::where('id_detalle_pedido',$det_ped->id_detalle_pedido)->delete();
-
                 }
 
                 $objPedido = new Pedido;
@@ -453,7 +451,11 @@ class PedidoController extends Controller
 
         if (isset($pedido->envios[0]->comprobante) && $pedido->envios[0]->comprobante != "") {
             $objComprobante = Comprobante::find($pedido->envios[0]->comprobante->id_comprobante);
-            $objComprobante->update(['id_envio' => null, 'rehusar' => true]);
+            $objComprobante->update([
+                'id_envio' => null,
+                'rehusar' => true,
+                'habilitado'=>false
+            ]);
         }
         //$objPedido = Pedido::find($request->id_pedido);
         //$objPedido->estado = $request->estado == 0 ? 1 : 0;

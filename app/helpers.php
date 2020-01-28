@@ -1489,6 +1489,7 @@ function getSecuencial($tipoComprobante, $configuracionEmpresa)
     if ($cant_reg->count() > 0)
         $secuencial = $cant_reg->count() + $inicio_secuencial + 1;
 
+
     return str_pad($secuencial, 9, "0", STR_PAD_LEFT);
 }
 
