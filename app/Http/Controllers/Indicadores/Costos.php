@@ -371,9 +371,9 @@ class Costos
         }
     }
 
-    public function costos_m2_16_semanas_atras()
+    public static function costos_m2_16_semanas_atras()
     {
-        $model = getIndicadorByName('C9');
+        $model = getIndicadorByName('C9');  // Costos/m2 (-16 semanas)
         if ($model != '') {
             $dias = 7;
             $last_semana = '';
