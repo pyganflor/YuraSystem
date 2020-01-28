@@ -391,7 +391,7 @@ class Costos
                 }
             }
 
-            $sem_desde = getSemanaByDate(opDiasFecha('-', 105, $last_semana->fecha_inicial));
+            $sem_desde = getSemanaByDate(opDiasFecha('-', 112, $last_semana->fecha_inicial));
             $sem_hasta = $last_semana;
 
             $costos = DB::table('resumen_costos_semanal')
@@ -405,6 +405,7 @@ class Costos
                 ->where('codigo_semana', '<=', $sem_hasta->codigo)
                 ->get()[0]->cant;
 
+            dd($last_semana->codigo, $sem_desde->codigo, $sem_hasta->codigo, $costos . '/' . $area);
             $valor = $area > 0 ? round($costos / $area, 2) : 0;
             $model->valor = $valor;
             $model->save();
