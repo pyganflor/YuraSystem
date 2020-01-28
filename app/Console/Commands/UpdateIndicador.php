@@ -181,6 +181,10 @@ class UpdateIndicador extends Command
             Costos::costos_regalias_1_semana_atras();
             Log::info('INDICADOR: "Costos Regalías (-1 semana)"');
         }
+        if ($indicador_par === '0' || $indicador_par === 'C9') { // Costos/m2 (-16 semanas)
+            Costos::costos_m2_16_semanas_atras();
+            Log::info('INDICADOR: "Costos/m2 (-16 semanas)"');
+        }
 
         $time_duration = difFechas(date('Y-m-d H:i:s'), $ini)->h . ':' . difFechas(date('Y-m-d H:i:s'), $ini)->m . ':' . difFechas(date('Y-m-d H:i:s'), $ini)->s;
         Log::info('<*> DURACION: ' . $time_duration . '  <*>');
