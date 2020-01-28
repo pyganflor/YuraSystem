@@ -3,6 +3,7 @@
 namespace yura\Console\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 use PHPExcel_IOFactory;
 use yura\Modelos\Actividad;
 use yura\Modelos\ActividadManoObra;
@@ -48,6 +49,9 @@ class UploadCostosMasivo extends Command
      */
     public function handle()
     {
+        $ini = date('Y-m-d H:i:s');
+        Log::info('<<<<< ! >>>>> Ejecutando comando "costos:importar_file" <<<<< ! >>>>>');
+
         $url = $this->argument('url');
         $concepto_importar = $this->argument('concepto');
         $criterio_importar = $this->argument('criterio');
@@ -58,6 +62,10 @@ class UploadCostosMasivo extends Command
         $titles = $activeSheetData[1];
 
         $this->importar($activeSheetData, $concepto_importar, $criterio_importar, $sobreescribir);
+
+        $time_duration = difFechas(date('Y-m-d H:i:s'), $ini)->h . ':' . difFechas(date('Y-m-d H:i:s'), $ini)->m . ':' . difFechas(date('Y-m-d H:i:s'), $ini)->s;
+        Log::info('<*> DURACION: ' . $time_duration . '  <*>');
+        Log::info('<<<<< * >>>>> Fin satisfactorio del comando "costos:importar_file" <<<<< * >>>>>');
     }
 
     public function importar($activeSheetData, $concepto_importar, $criterio_importar, $sobreescribir = false)
