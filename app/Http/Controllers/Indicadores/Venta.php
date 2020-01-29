@@ -90,16 +90,8 @@ class Venta
             $semana_hasta = $desde_sem;
 
             $data = getAreaCiclosByRango($semana_desde->codigo, $semana_hasta->codigo, 'T');
-            $area_anual = getAreaActivaFromData($data['variedades'], $data['semanas']);
+            $area_anual = getAreaActivaFromData($data['variedades'], $data['semanas']) * 10000;
 
-            /*$area_anual = DB::table('resumen_area_semanal')
-                ->select(DB::raw('sum(area) as cant'))
-                ->where('estado', 1)
-                ->where('codigo_semana', '>=', $semana_desde->codigo)
-                ->where('codigo_semana', '<=', $semana_hasta->codigo)
-                ->get()[0]->cant;*/
-
-            dd($desde_sem->codigo, $hasta_sem->codigo, $venta_mensual, $semana_desde->codigo, $semana_hasta->codigo, $area_anual);
             $model->valor = $area_anual > 0 ? round(($venta_mensual / ($area_anual / 16)) * 3, 2) : 0;
             $model->save();
 
@@ -125,7 +117,7 @@ class Venta
                 $semana_desde = getSemanaByDate(opDiasFecha('-', 112, $desde_sem->fecha_inicial));   // 16 semanas atras
                 $semana_hasta = $desde_sem;
                 $data = getAreaCiclosByRango($semana_desde->codigo, $semana_hasta->codigo, $var->id_variedad);
-                $area_anual = getAreaActivaFromData($data['variedades'], $data['semanas']);
+                $area_anual = getAreaActivaFromData($data['variedades'], $data['semanas']) * 10000;
 
                 $ind->valor = $area_anual > 0 ? round(($venta_mensual / ($area_anual / 16)) * 3, 2) : 0;
                 $ind->save();
