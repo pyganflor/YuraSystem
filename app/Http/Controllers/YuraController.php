@@ -592,7 +592,7 @@ class YuraController extends Controller
             'ciclo' => getIndicadorByName('DA1')->getVariedad($variedad->id_variedad)->valor,
             'ramos_m2_anno' => getIndicadorByName('D8')->getVariedad($variedad->id_variedad)->valor,
             'venta_m2_anno_mensual' => getIndicadorByName('D9')->getVariedad($variedad->id_variedad)->valor,
-            'venta_m2_anno_anual' => getIndicadorByName('D10')->getVariedad($variedad->id_variedad)->valor,
+            'venta_m2_anno_anual' => getIndicadorByName('D10')->valor,
             'tallos_cosechados' => getIndicadorByName('D11')->getVariedad($variedad->id_variedad)->valor,
             'cajas_exportadas' => getIndicadorByName('D13')->getVariedad($variedad->id_variedad)->valor,
             'tallos_m2' => getIndicadorByName('D12')->getVariedad($variedad->id_variedad)->valor,
