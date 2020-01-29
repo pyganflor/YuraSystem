@@ -405,8 +405,8 @@ class Costos
                 ->where('codigo_semana', '<=', $sem_hasta->codigo)
                 ->get()[0]->cant;
 
-            dd($last_semana->codigo, $sem_desde->codigo, $sem_hasta->codigo, $costos . '/' . $area);
-            $valor = $area > 0 ? round(($costos / $area) * 3, 2) : 0;
+            //dd($last_semana->codigo, $sem_desde->codigo, $sem_hasta->codigo, $costos . '/' . $area);
+            $valor = $area > 0 ? round(($costos / ($area / 16)) * 3, 2) : 0;
             $model->valor = $valor;
             $model->save();
         }
