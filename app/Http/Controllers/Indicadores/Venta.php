@@ -81,7 +81,7 @@ class Venta
 
             $venta_mensual = DB::table('resumen_semanal_total')
                 ->select(DB::raw('sum(valor) as cant'))
-                ->where('estado', 1)
+                //->where('estado', 1)
                 ->where('codigo_semana', '>=', $desde_sem->codigo)
                 ->where('codigo_semana', '<=', $hasta_sem->codigo)
                 ->get()[0]->cant;
