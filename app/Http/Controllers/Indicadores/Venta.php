@@ -129,64 +129,24 @@ class Venta
     {
         $model = getIndicadorByName('D10');  // Venta $/m2/año (-1 año)
         if ($model != '') {
-            $fecha_hasta = date('Y-m-d', strtotime('last month'));
-            $fecha_desde = date('Y-m-d', strtotime('last year'));
+            $desde_sem = getSemanaByDate(opDiasFecha('-', 364, date('Y-m-d')));   // 52 semanas atras
+            $hasta_sem = getSemanaByDate(opDiasFecha('-', 7, date('Y-m-d')));
 
-            $venta_anual = DB::table('historico_ventas')
+            $venta_mensual = DB::table('resumen_semanal_total')
                 ->select(DB::raw('sum(valor) as cant'))
-                ->where('anno', '=', substr($fecha_desde, 0, 4))
-                ->where('mes', '>=', substr($fecha_desde, 5, 2))
+                //->where('estado', 1)
+                ->where('codigo_semana', '>=', $desde_sem->codigo)
+                ->where('codigo_semana', '<=', $hasta_sem->codigo)
                 ->get()[0]->cant;
-            if (substr($fecha_desde, 0, 4) != substr($fecha_hasta, 0, 4)) {
-                $venta_anual += DB::table('historico_ventas')
-                    ->select(DB::raw('sum(valor) as cant'))
-                    ->where('anno', '=', substr($fecha_hasta, 0, 4))
-                    ->where('mes', '<=', substr($fecha_hasta, 5, 2))
-                    ->get()[0]->cant;
-            }
 
-            $semana_desde = getSemanaByDate(opDiasFecha('-', 98, date('Y-m-d')));   // 13 semanas atras
-            $semana_hasta = getSemanaByDate(date('Y-m-d'));
+            $semana_desde = getSemanaByDate(opDiasFecha('-', 364, $desde_sem->fecha_inicial));   // 52 semanas atras
+            $semana_hasta = $desde_sem;
+
             $data = getAreaCiclosByRango($semana_desde->codigo, $semana_hasta->codigo, 'T');
-            $area_anual = getAreaActivaFromData($data['variedades'], $data['semanas']);
+            $area_anual = getAreaActivaFromData($data['variedades'], $data['semanas']) * 10000;
 
-            $model->valor = $area_anual > 0 ? round(($venta_anual / round($area_anual * 10000, 2)), 2) : 0;
+            $model->valor = $area_anual > 0 ? round(($venta_mensual / $area_anual) * 3, 2) : 0;
             $model->save();
-
-            /* ============================== INDICADOR x VARIEDAD ================================= */
-            foreach (Variedad::All() as $var) {
-                $ind = IndicadorVariedad::All()
-                    ->where('id_indicador', $model->id_indicador)
-                    ->where('id_variedad', $var->id_variedad)
-                    ->first();
-                if ($ind == '') {   // es nuevo
-                    $ind = new IndicadorVariedad();
-                    $ind->id_indicador = $model->id_indicador;
-                    $ind->id_variedad = $var->id_variedad;
-                }
-                $venta_anual = DB::table('historico_ventas')
-                    ->select(DB::raw('sum(valor) as cant'))
-                    ->where('id_variedad', $var->id_variedad)
-                    ->where('anno', '=', substr($fecha_desde, 0, 4))
-                    ->where('mes', '>=', substr($fecha_desde, 5, 2))
-                    ->get()[0]->cant;
-                if (substr($fecha_desde, 0, 4) != substr($fecha_hasta, 0, 4)) {
-                    $venta_anual += DB::table('historico_ventas')
-                        ->select(DB::raw('sum(valor) as cant'))
-                        ->where('id_variedad', $var->id_variedad)
-                        ->where('anno', '=', substr($fecha_hasta, 0, 4))
-                        ->where('mes', '<=', substr($fecha_hasta, 5, 2))
-                        ->get()[0]->cant;
-                }
-
-                $semana_desde = getSemanaByDate(opDiasFecha('-', 98, date('Y-m-d')));   // 13 semanas atras
-                $semana_hasta = getSemanaByDate(date('Y-m-d'));
-                $data = getAreaCiclosByRango($semana_desde->codigo, $semana_hasta->codigo, $var->id_variedad);
-                $area_anual = getAreaActivaFromData($data['variedades'], $data['semanas']);
-
-                $ind->valor = $area_anual > 0 ? round(($venta_anual / round($area_anual * 10000, 2)), 2) : 0;
-                $ind->save();
-            }
         }
     }
 
