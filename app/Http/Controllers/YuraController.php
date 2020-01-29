@@ -611,7 +611,7 @@ class YuraController extends Controller
             'costos_regalias' => getIndicadorByName('C8')->valor,
             'costos_m2_mensual' => getIndicadorByName('C9')->valor,
             'costos_m2_anual' => getIndicadorByName('C10')->valor,
-            'rentabilidad_m2_mensual' => getIndicadorByName('R1')->valor,
+            'rentabilidad_m2_mensual' => getIndicadorByName('R1')->getVariedad($variedad->id_variedad)->valor,
             'rentabilidad_m2_anual' => getIndicadorByName('R2')->valor,
         ]);
     }
