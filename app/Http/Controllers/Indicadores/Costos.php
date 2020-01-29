@@ -12,7 +12,9 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use yura\Modelos\Cosecha;
 use yura\Modelos\Area;
+use yura\Modelos\IndicadorVariedad;
 use yura\Modelos\ResumenCostosSemanal;
+use yura\Modelos\Variedad;
 
 class Costos
 {
@@ -460,6 +462,23 @@ class Costos
             $valor = getIndicadorByName('D9')->valor - getIndicadorByName('C9')->valor;
             $model->valor = $valor;
             $model->save();
+
+            /* -------------------------- X VARIEDAD ------------------------- */
+            foreach (Variedad::All() as $var) {
+                $ind = IndicadorVariedad::All()
+                    ->where('id_indicador', $model->id_indicador)
+                    ->where('id_variedad', $var->id_variedad)
+                    ->first();
+                if ($ind == '') {   // es nuevo
+                    $ind = new IndicadorVariedad();
+                    $ind->id_indicador = $model->id_indicador;
+                    $ind->id_variedad = $var->id_variedad;
+                }
+
+                $valor = getIndicadorByName('D9')->getVariedad($var->id_variedad)->valor - getIndicadorByName('C9')->valor;
+                $ind->valor = $valor;
+                $ind->save();
+            }
         }
     }
 
