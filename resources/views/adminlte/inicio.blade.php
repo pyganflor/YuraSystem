@@ -326,7 +326,10 @@
                                         '<br><strong style="color:{{$color_1_1}}"><small>$</small><span id="span_venta_m2_anno">{{number_format($venta_m2_anno_anual, 2)}}</span><small><sup>(1 año)</sup></small></strong>' +
                                         '<br><button type="button" class="btn btn-xs btn-block btn-default" onclick="mostrar_indicadores_claves(0)" style="color: black">Ventas/m<sup>2</sup>/año</button>'
                                     }, 'Rentabilidad', 'Ventas/m2/año'],
-                                    [{'v': 'Costos', 'f': '<strong>Costos/m<sup>2</sup></strong>'}, 'Rentabilidad', 'Costos'],
+                                    [{
+                                        'v': 'Costos',
+                                        'f': '<strong><small>$</small><span id="span_costos_m2_mensual">{{number_format($costos_m2_mensual, 2)}}</span><small><sup>(4 meses)</sup></small></strong>'
+                                    }, 'Rentabilidad', 'Costos'],
                                     [{
                                         'v': 'C1', 'f': '<strong></strong>' +
                                         '<br><strong title="Campo/ha/Semana" style="color:{{$color_8}}"><small>Campo/<sup>ha</sup>/Semana: </small><span id="span_costos_campo_semana">${{number_format(explode('|', $costos_campo_semana)[0] , 2)}}</span></strong>' +
