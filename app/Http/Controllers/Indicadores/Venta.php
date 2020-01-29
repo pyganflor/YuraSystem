@@ -88,8 +88,8 @@ class Venta
 
             $semana_desde = getSemanaByDate(opDiasFecha('-', 112, $desde_sem->fecha_inicial));   // 16 semanas atras
             $semana_hasta = $desde_sem;
-            $area_anual = DB::table('proyeccion_venta_semanal_real')
-                ->select(DB::raw('sum(valor) as cant'))
+            $area_anual = DB::table('resumen_area_semanal')
+                ->select(DB::raw('sum(area) as cant'))
                 ->where('estado', 1)
                 ->where('codigo_semana', '>=', $semana_desde->codigo)
                 ->where('codigo_semana', '<=', $semana_hasta->codigo)
