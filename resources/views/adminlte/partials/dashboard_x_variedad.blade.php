@@ -38,8 +38,8 @@
                 }, 'Rentabilidad', 'Ventas/m2/año'],
                 [{
                     'v': 'Costos',
-                    'f': '<strong><small>$</small><span id="span_costos_m2_mensual">{{number_format($costos_m2_mensual, 2)}}</span><small><sup>(4 meses)</sup></small></strong>' +
-                    '<br><strong><small>$</small><span id="span_costos_m2_anual">{{number_format($costos_m2_anual, 2)}}</span><small><sup>(4 meses)</sup></small></strong>' +
+                    'f': '<strong style="color:{{$color_12}}"><small>$</small><span id="span_costos_m2_mensual">{{number_format($costos_m2_mensual, 2)}}</span><small><sup>(4 meses)</sup></small></strong>' +
+                    '<br><strong style="color:{{$color_13}}"><small>$</small><span id="span_costos_m2_anual">{{number_format($costos_m2_anual, 2)}}</span><small><sup>(4 meses)</sup></small></strong>' +
                     '<br><button type="button" class="btn btn-xs btn-block btn-default" onclick="mostrar_indicadores_claves(3, {{$variedad->id_variedad}})" style="color: black">Costos/m<sup>2</sup>/año</button>'
                 }, 'Rentabilidad', 'Costos/m2/año'],
                 [{
