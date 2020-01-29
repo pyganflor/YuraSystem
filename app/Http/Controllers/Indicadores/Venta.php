@@ -92,7 +92,7 @@ class Venta
             $data = getAreaCiclosByRango($semana_desde->codigo, $semana_hasta->codigo, 'T');
             $area_anual = getAreaActivaFromData($data['variedades'], $data['semanas']) * 10000;
 
-            $model->valor = $area_anual > 0 ? round(($venta_mensual / ($area_anual / 16)) * 3, 2) : 0;
+            $model->valor = $area_anual > 0 ? round(($venta_mensual / $area_anual) * 3, 2) : 0;
             $model->save();
 
             /* ============================== INDICADOR x VARIEDAD ================================= */
@@ -119,7 +119,7 @@ class Venta
                 $data = getAreaCiclosByRango($semana_desde->codigo, $semana_hasta->codigo, $var->id_variedad);
                 $area_anual = getAreaActivaFromData($data['variedades'], $data['semanas']) * 10000;
 
-                $ind->valor = $area_anual > 0 ? round(($venta_mensual / ($area_anual / 16)) * 3, 2) : 0;
+                $ind->valor = $area_anual > 0 ? round(($venta_mensual / $area_anual) * 3, 2) : 0;
                 $ind->save();
             }
         }
