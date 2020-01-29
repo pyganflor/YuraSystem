@@ -185,6 +185,10 @@ class UpdateIndicador extends Command
             Costos::costos_m2_16_semanas_atras();
             Log::info('INDICADOR: "Costos/m2 (-16 semanas)"');
         }
+        if ($indicador_par === '0' || $indicador_par === 'C10') { // Costos/m2 (-52 semanas)
+            Costos::costos_m2_52_semanas_atras();
+            Log::info('INDICADOR: "Costos/m2 (-52 semanas)"');
+        }
 
         $time_duration = difFechas(date('Y-m-d H:i:s'), $ini)->h . ':' . difFechas(date('Y-m-d H:i:s'), $ini)->m . ':' . difFechas(date('Y-m-d H:i:s'), $ini)->s;
         Log::info('<*> DURACION: ' . $time_duration . '  <*>');

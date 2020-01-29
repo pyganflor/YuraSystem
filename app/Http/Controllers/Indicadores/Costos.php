@@ -411,4 +411,45 @@ class Costos
             $model->save();
         }
     }
+
+    public static function costos_m2_52_semanas_atras()
+    {
+        $model = getIndicadorByName('C10');  // Costos/m2 (-52 semanas)
+        if ($model != '') {
+            $dias = 7;
+            $last_semana = '';
+            $valor = 0;
+            while ($valor <= 0) {
+                $dias += 7;
+                $last_semana = getSemanaByDate(opDiasFecha('-', $dias, date('Y-m-d')));
+                if ($last_semana != '') {
+                    $valor = DB::table('costos_semana')
+                        ->select(DB::raw('sum(valor) as cant'))
+                        ->where('codigo_semana', $last_semana->codigo)
+                        ->get()[0]->cant;
+                } else {
+                    return false;
+                }
+            }
+
+            $sem_desde = getSemanaByDate(opDiasFecha('-', 364, $last_semana->fecha_inicial));
+            $sem_hasta = $last_semana;
+
+            $costos = DB::table('resumen_costos_semanal')
+                ->select(DB::raw('sum(mano_obra + insumos + fijos + regalias) as cant'))
+                ->where('codigo_semana', '>=', $sem_desde->codigo)
+                ->where('codigo_semana', '<=', $sem_hasta->codigo)
+                ->get()[0]->cant;
+            $area = DB::table('resumen_area_semanal')
+                ->select(DB::raw('sum(area) as cant'))
+                ->where('codigo_semana', '>=', $sem_desde->codigo)
+                ->where('codigo_semana', '<=', $sem_hasta->codigo)
+                ->get()[0]->cant;
+
+            //dd($last_semana->codigo, $sem_desde->codigo, $sem_hasta->codigo, $costos . '/' . $area);
+            $valor = $area > 0 ? round(($costos / ($area / 52)) * 3, 2) : 0;
+            $model->valor = $valor;
+            $model->save();
+        }
+    }
 }
