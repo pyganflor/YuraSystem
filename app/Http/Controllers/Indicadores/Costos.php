@@ -457,7 +457,7 @@ class Costos
     {
         $model = getIndicadorByName('R1');  // Rentabilidad (-4 meses)
         if ($model != '') {
-            $valor = getIndicadorByName('D9')->valor - getColorByIndicador('C9')->valor;
+            $valor = getIndicadorByName('D9')->valor - getIndicadorByName('C9')->valor;
             $model->valor = $valor;
             $model->save();
         }
@@ -467,7 +467,7 @@ class Costos
     {
         $model = getIndicadorByName('R2');  // Rentabilidad (-1 año)
         if ($model != '') {
-            $valor = getIndicadorByName('D10')->valor - getColorByIndicador('C10')->valor;
+            $valor = getIndicadorByName('D10')->valor - getIndicadorByName('C10')->valor;
             $model->valor = $valor;
             $model->save();
         }
