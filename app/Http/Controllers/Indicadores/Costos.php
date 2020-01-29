@@ -399,16 +399,14 @@ class Costos
                 ->where('codigo_semana', '>=', $sem_desde->codigo)
                 ->where('codigo_semana', '<=', $sem_hasta->codigo)
                 ->get()[0]->cant;
-            /*$area = DB::table('resumen_area_semanal')
+            $area = DB::table('resumen_area_semanal')
                 ->select(DB::raw('sum(area) as cant'))
                 ->where('codigo_semana', '>=', $sem_desde->codigo)
                 ->where('codigo_semana', '<=', $sem_hasta->codigo)
-                ->get()[0]->cant;*/
-            $data = getAreaCiclosByRango($sem_desde->codigo, $sem_hasta->codigo, 'T');
-            $area = getAreaActivaFromData($data['variedades'], $data['semanas']) * 10000;
+                ->get()[0]->cant;
 
-            dd($last_semana->codigo, $sem_desde->codigo, $sem_hasta->codigo, $costos . '/' . $area);
-            $valor = $area > 0 ? round(($costos / $area) * 3, 2) : 0;
+            //dd($last_semana->codigo, $sem_desde->codigo, $sem_hasta->codigo, $costos . '/' . $area);
+            $valor = $area > 0 ? round(($costos / ($area / 16)) * 3, 2) : 0;
             $model->valor = $valor;
             $model->save();
         }
@@ -442,16 +440,14 @@ class Costos
                 ->where('codigo_semana', '>=', $sem_desde->codigo)
                 ->where('codigo_semana', '<=', $sem_hasta->codigo)
                 ->get()[0]->cant;
-            /*$area = DB::table('resumen_area_semanal')
+            $area = DB::table('resumen_area_semanal')
                 ->select(DB::raw('sum(area) as cant'))
                 ->where('codigo_semana', '>=', $sem_desde->codigo)
                 ->where('codigo_semana', '<=', $sem_hasta->codigo)
-                ->get()[0]->cant;*/
-            $data = getAreaCiclosByRango($sem_desde->codigo, $sem_hasta->codigo, 'T');
-            $area = getAreaActivaFromData($data['variedades'], $data['semanas']) * 10000;
+                ->get()[0]->cant;
 
-            dd($last_semana->codigo, $sem_desde->codigo, $sem_hasta->codigo, $costos . '/' . $area);
-            $valor = $area > 0 ? round($costos / $area, 2) : 0;
+            //dd($last_semana->codigo, $sem_desde->codigo, $sem_hasta->codigo, $costos . '/' . $area);
+            $valor = $area > 0 ? round($costos / ($area / 52), 2) : 0;
             $model->valor = $valor;
             $model->save();
         }
