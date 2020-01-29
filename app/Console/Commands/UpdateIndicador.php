@@ -189,6 +189,14 @@ class UpdateIndicador extends Command
             Costos::costos_m2_52_semanas_atras();
             Log::info('INDICADOR: "Costos/m2 (-52 semanas)"');
         }
+        if ($indicador_par === '0' || $indicador_par === 'R1') { // Rentabilidad (-4 meses)
+            Costos::rentabilidad_4_meses();
+            Log::info('INDICADOR: "Rentabilidad (-4 meses)"');
+        }
+        if ($indicador_par === '0' || $indicador_par === 'R2') { // Rentabilidad (-1 año)
+            Costos::rentabilidad_1_anno();
+            Log::info('INDICADOR: "Rentabilidad (-1 año)"');
+        }
 
         $time_duration = difFechas(date('Y-m-d H:i:s'), $ini)->h . ':' . difFechas(date('Y-m-d H:i:s'), $ini)->m . ':' . difFechas(date('Y-m-d H:i:s'), $ini)->s;
         Log::info('<*> DURACION: ' . $time_duration . '  <*>');
