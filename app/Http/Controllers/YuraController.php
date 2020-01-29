@@ -53,6 +53,7 @@ class YuraController extends Controller
                 'costos_fijos' => getIndicadorByName('C7')->valor,
                 'costos_regalias' => getIndicadorByName('C8')->valor,
                 'costos_m2_mensual' => getIndicadorByName('C9')->valor,
+                'costos_m2_anual' => getIndicadorByName('C10')->valor,
             ]);
         }
 
@@ -567,6 +568,9 @@ class YuraController extends Controller
                 'costos_cosecha_x_tallo' => getIndicadorByName('C4')->valor,
                 'costos_postcosecha_x_tallo' => getIndicadorByName('C5')->valor,
                 'costos_total_x_tallo' => getIndicadorByName('C6')->valor,
+
+                'costos_m2_mensual' => getIndicadorByName('C9')->valor,
+                'costos_m2_anual' => getIndicadorByName('C10')->valor,
             ]);
         } else
             return view('adminlte.inicio');
@@ -600,6 +604,8 @@ class YuraController extends Controller
             'costos_total_x_tallo' => getIndicadorByName('C6')->valor,
             'costos_fijos' => getIndicadorByName('C7')->valor,
             'costos_regalias' => getIndicadorByName('C8')->valor,
+            'costos_m2_mensual' => getIndicadorByName('C9')->valor,
+            'costos_m2_anual' => getIndicadorByName('C10')->valor,
         ]);
     }
 }
