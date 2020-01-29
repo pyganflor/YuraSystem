@@ -416,7 +416,6 @@
                 </div>
             </div>
 
-
             <script>
                 function render_gauge(canvas, value, rangos, indices = false, time = 250) {
                     var staticLabels = false;
