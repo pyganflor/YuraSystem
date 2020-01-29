@@ -86,8 +86,8 @@ class Venta
                 ->where('codigo_semana', '<=', $hasta_sem->codigo)
                 ->get()[0]->cant;
 
-            $semana_desde = getSemanaByDate(opDiasFecha('-', 98, date('Y-m-d')));   // 13 semanas atras
-            $semana_hasta = getSemanaByDate(date('Y-m-d'));
+            $semana_desde = getSemanaByDate(opDiasFecha('-', 112, $desde_sem->fecha_inicial));   // 16 semanas atras
+            $semana_hasta = $hasta_sem;
             $data = getAreaCiclosByRango($semana_desde->codigo, $semana_hasta->codigo, 'T');
             $area_anual = getAreaActivaFromData($data['variedades'], $data['semanas']);
 
