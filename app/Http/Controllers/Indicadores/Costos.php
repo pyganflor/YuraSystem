@@ -391,7 +391,7 @@ class Costos
                 }
             }
 
-            $sem_desde = getSemanaByDate(opDiasFecha('-', 112, $last_semana->fecha_inicial));
+            $sem_desde = getSemanaByDate(opDiasFecha('-', 112, $last_semana->fecha_inicial));   // 16 semana atras
             $sem_hasta = $last_semana;
 
             $costos = DB::table('resumen_costos_semanal')
@@ -399,14 +399,16 @@ class Costos
                 ->where('codigo_semana', '>=', $sem_desde->codigo)
                 ->where('codigo_semana', '<=', $sem_hasta->codigo)
                 ->get()[0]->cant;
-            $area = DB::table('resumen_area_semanal')
+            /*$area = DB::table('resumen_area_semanal')
                 ->select(DB::raw('sum(area) as cant'))
                 ->where('codigo_semana', '>=', $sem_desde->codigo)
                 ->where('codigo_semana', '<=', $sem_hasta->codigo)
-                ->get()[0]->cant;
+                ->get()[0]->cant;*/
+            $data = getAreaCiclosByRango($sem_desde->codigo, $sem_hasta->codigo, 'T');
+            $area = getAreaActivaFromData($data['variedades'], $data['semanas']) * 10000;
 
-            //dd($last_semana->codigo, $sem_desde->codigo, $sem_hasta->codigo, $costos . '/' . $area);
-            $valor = $area > 0 ? round(($costos / ($area / 16)) * 3, 2) : 0;
+            dd($last_semana->codigo, $sem_desde->codigo, $sem_hasta->codigo, $costos . '/' . $area);
+            $valor = $area > 0 ? round(($costos / $area) * 3, 2) : 0;
             $model->valor = $valor;
             $model->save();
         }
@@ -432,7 +434,7 @@ class Costos
                 }
             }
 
-            $sem_desde = getSemanaByDate(opDiasFecha('-', 364, $last_semana->fecha_inicial));
+            $sem_desde = getSemanaByDate(opDiasFecha('-', 364, $last_semana->fecha_inicial));   // 52 semana atras
             $sem_hasta = $last_semana;
 
             $costos = DB::table('resumen_costos_semanal')
@@ -440,14 +442,16 @@ class Costos
                 ->where('codigo_semana', '>=', $sem_desde->codigo)
                 ->where('codigo_semana', '<=', $sem_hasta->codigo)
                 ->get()[0]->cant;
-            $area = DB::table('resumen_area_semanal')
+            /*$area = DB::table('resumen_area_semanal')
                 ->select(DB::raw('sum(area) as cant'))
                 ->where('codigo_semana', '>=', $sem_desde->codigo)
                 ->where('codigo_semana', '<=', $sem_hasta->codigo)
-                ->get()[0]->cant;
+                ->get()[0]->cant;*/
+            $data = getAreaCiclosByRango($sem_desde->codigo, $sem_hasta->codigo, 'T');
+            $area = getAreaActivaFromData($data['variedades'], $data['semanas']) * 10000;
 
-            //dd($last_semana->codigo, $sem_desde->codigo, $sem_hasta->codigo, $costos . '/' . $area);
-            $valor = $area > 0 ? round(($costos / ($area / 52)) * 3, 2) : 0;
+            dd($last_semana->codigo, $sem_desde->codigo, $sem_hasta->codigo, $costos . '/' . $area);
+            $valor = $area > 0 ? round($costos / $area, 2) : 0;
             $model->valor = $valor;
             $model->save();
         }
