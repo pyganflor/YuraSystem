@@ -134,7 +134,7 @@
             hasta: parseFloat('{{$r->hasta}}'),
             color: '{{$r->color}}',
         });
-        @endforeach
+                @endforeach
 
         var rangos_costos_m2_mensual = [];
         @foreach(getIntervalosIndicador('C9') as $r)
@@ -143,7 +143,7 @@
             hasta: parseFloat('{{$r->hasta}}'),
             color: '{{$r->color}}',
         });
-        @endforeach
+                @endforeach
 
         var rangos_costos_m2_anual = [];
         @foreach(getIntervalosIndicador('C10') as $r)
@@ -190,6 +190,8 @@
                 $color_11 = getColorByIndicador('C6');   //  costos_total_x_tallo
                 $color_12 = getColorByIndicador('C9');   //  costos_m2_mensual
                 $color_13 = getColorByIndicador('C10');   //  costos_m2_anual
+                $color_14 = getColorByIndicador('R1');   //  rentabilidad_m2_mensual
+                $color_15 = getColorByIndicador('R2');   //  rentabilidad_m2_anual
             @endphp
 
             <div id="box_cuadros" class="box box-primary hide">
@@ -339,7 +341,12 @@
 
                                 // For each orgchart box, provide the name, manager, and tooltip to show.
                                 data.addRows([
-                                    [{'v': 'Rentabilidad', 'f': '<strong>Rentabilidad/m<sup>2</sup></strong>'}, '', 'Rentabilidad'],
+                                    [{
+                                        'v': 'Rentabilidad',
+                                        'f': '<strong style="color:{{$color_14}}"><small>$</small><span id="span_rentabilidad_m2_mensual">{{number_format($rentabilidad_m2_mensual, 2)}}</span><small><sup>(4 meses)</sup></small></strong>' +
+                                        '<br><strong style="color:{{$color_15}}"><small>$</small><span id="span_rentabilidad_m2_anual">{{number_format($rentabilidad_m2_anual, 2)}}</span><small><sup>(1 año)</sup></small></strong>' +
+                                        '<br><button type="button" class="btn btn-xs btn-block btn-default" onclick="mostrar_indicadores_claves(4)" style="color: black">Rentabilidad/m<sup>2</sup>/año</button>'
+                                    }, '', 'Rentabilidad/m2/año'],
                                     [{
                                         'v': 'Ventas_m2_anno',
                                         'f': '<strong style="color:{{$color_1}}"><small>$</small><span id="span_venta_m2_mensual">{{number_format($venta_m2_anno_mensual, 2)}}</span><small><sup>(4 meses)</sup></small></strong>' +
@@ -466,7 +473,7 @@
                 }
 
                 function mostrar_indicadores_claves(view, variedad = '') {
-                    var views = ['indicadores_ventas_m2', 'indicadores_claves', 'indicadores_claves_costos', 'indicadores_costos_m2'];
+                    var views = ['indicadores_ventas_m2', 'indicadores_claves', 'indicadores_claves_costos', 'indicadores_costos_m2', 'indicadores_rentabilidad_m2'];
                     datos = {
                         view: views[view],
                         variedad: variedad
