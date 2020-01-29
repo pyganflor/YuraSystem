@@ -135,6 +135,24 @@
             color: '{{$r->color}}',
         });
         @endforeach
+
+        var rangos_costos_m2_mensual = [];
+        @foreach(getIntervalosIndicador('C9') as $r)
+        rangos_costos_m2_mensual.push({
+            desde: parseFloat('{{$r->desde}}'),
+            hasta: parseFloat('{{$r->hasta}}'),
+            color: '{{$r->color}}',
+        });
+        @endforeach
+
+        var rangos_costos_m2_anual = [];
+        @foreach(getIntervalosIndicador('C10') as $r)
+        rangos_costos_m2_anual.push({
+            desde: parseFloat('{{$r->desde}}'),
+            hasta: parseFloat('{{$r->hasta}}'),
+            color: '{{$r->color}}',
+        });
+        @endforeach
     </script>
 @endsection
 
@@ -170,6 +188,8 @@
                 $color_9 = getColorByIndicador('C4');   //  costos_cosecha_x_tallo
                 $color_10 = getColorByIndicador('C5');   //  costos_postcosecha_x_tallo
                 $color_11 = getColorByIndicador('C6');   //  costos_total_x_tallo
+                $color_12 = getColorByIndicador('C9');   //  costos_m2_mensual
+                $color_13 = getColorByIndicador('C10');   //  costos_m2_anual
             @endphp
 
             <div id="box_cuadros" class="box box-primary hide">
@@ -328,8 +348,10 @@
                                     }, 'Rentabilidad', 'Ventas/m2/año'],
                                     [{
                                         'v': 'Costos',
-                                        'f': '<strong><small>$</small><span id="span_costos_m2_mensual">{{number_format($costos_m2_mensual, 2)}}</span><small><sup>(4 meses)</sup></small></strong>'
-                                    }, 'Rentabilidad', 'Costos'],
+                                        'f': '<strong style="color:{{$color_12}}"><small>$</small><span id="span_costos_m2_mensual">{{number_format($costos_m2_mensual, 2)}}</span><small><sup>(4 meses)</sup></small></strong>' +
+                                        '<br><strong style="color:{{$color_13}}"><small>$</small><span id="span_costos_m2_anual">{{number_format($costos_m2_anual, 2)}}</span><small><sup>(1 año)</sup></small></strong>' +
+                                        '<br><button type="button" class="btn btn-xs btn-block btn-default" onclick="mostrar_indicadores_claves(3)" style="color: black">Costos/m<sup>2</sup>/año</button>'
+                                    }, 'Rentabilidad', 'Costos/m2/año'],
                                     [{
                                         'v': 'C1', 'f': '<strong></strong>' +
                                         '<br><strong title="Campo/ha/Semana" style="color:{{$color_8}}"><small>Campo/<sup>ha</sup>/Semana: </small><span id="span_costos_campo_semana">${{number_format(explode('|', $costos_campo_semana)[0] , 2)}}</span></strong>' +
@@ -444,7 +466,7 @@
                 }
 
                 function mostrar_indicadores_claves(view, variedad = '') {
-                    var views = ['indicadores_ventas_m2', 'indicadores_claves', 'indicadores_claves_costos'];
+                    var views = ['indicadores_ventas_m2', 'indicadores_claves', 'indicadores_claves_costos', 'indicadores_costos_m2'];
                     datos = {
                         view: views[view],
                         variedad: variedad
