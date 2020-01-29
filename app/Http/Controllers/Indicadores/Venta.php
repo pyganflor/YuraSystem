@@ -144,7 +144,6 @@ class Venta
             $data = getAreaCiclosByRango($semana_desde->codigo, $semana_hasta->codigo, 'T');
             $area_anual = getAreaActivaFromData($data['variedades'], $data['semanas']) * 10000;
 
-            //dd($desde_sem->codigo, $hasta_sem->codigo, $venta_mensual, $semana_desde->codigo, $semana_hasta->codigo, $area_anual / 10000);
             $model->valor = $area_anual > 0 ? round($venta_mensual / $area_anual, 2) : 0;
             $model->save();
         }
