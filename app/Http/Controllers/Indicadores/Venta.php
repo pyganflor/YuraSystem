@@ -95,6 +95,7 @@ class Venta
                 ->where('codigo_semana', '<=', $semana_hasta->codigo)
                 ->get()[0]->cant;
 
+            dd($desde_sem->codigo, $hasta_sem->codigo, $venta_mensual, $semana_desde->codigo, $semana_hasta->codigo, $area_anual);
             $model->valor = $area_anual > 0 ? round(($venta_mensual / ($area_anual / 16)) * 3, 2) : 0;
             $model->save();
 
