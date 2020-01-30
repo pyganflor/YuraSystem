@@ -140,23 +140,13 @@ function habilitar_campos() {
     $("#fecha_hasta_pedido_fijo").attr('disabled', false);
 }
 
-function store_pedido(id_cliente, pedido_fijo, csrf_token, vista, id_pedido, comprobante) {
+function store_pedido(id_cliente, pedido_fijo, csrf_token, vista, id_pedido) {
 
     if ($('#form_add_pedido').valid()) {
-        /*id_pedido
-            ? msg = '<div class="alert alert-warning text-center">' +
-            '<p>Si este pedido posee envíos prefacturados al editarlo seran borrados y se deberán crea nuevamente</p>' +
-            '</div>'
-            : msg = '';*/
 
         empresa = $("select#id_configuracion_empresa option:selected").text();
         option_agencias_transporte = [];
-        if (id_pedido && comprobante)
-            texto = '<div class="alert alert-warning text-center">' +
-                '<p>Luego de actualizar el pedido se debe actualizar tambien la factura de este pedido</p>' +
-                '</div>';
-        if (!id_pedido || (id_pedido && !comprobante))
-            texto = '<div class="alert alert-info text-center"><p>El pedido sera facturado con la empresa '+empresa+'</p></div>';
+        texto = '<div class="alert alert-info text-center"><p>El pedido sera facturado con la empresa '+empresa+'</p></div>';
 
         modal_quest('modal_edit_pedido', texto, 'Editar pedido', true, false, '40%', function () {
             if ($("#envio_automatico").is(":checked"));
@@ -326,10 +316,6 @@ function store_pedido(id_cliente, pedido_fijo, csrf_token, vista, id_pedido, com
 
         });
     }
-}
-
-function peticion() {
-
 }
 
 function cancelar_pedidos(id_pedido, id_cliente, estado, token) {

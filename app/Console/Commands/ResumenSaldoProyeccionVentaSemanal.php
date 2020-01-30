@@ -152,7 +152,6 @@ class ResumenSaldoProyeccionVentaSemanal extends Command
             }
         }
 
-
         $tiempo_final = microtime(true);
         Info("Fin del comando resumen_saldo_proyeccion:venta_semanal");
         Info("El script se completo en : ".(number_format(($tiempo_final-$tiempo_inicial),2,".","")). " segundos");

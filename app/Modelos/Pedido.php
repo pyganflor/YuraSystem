@@ -483,4 +483,14 @@ class Pedido extends Model
         return round($cajasFullByVariedad,2);
     }
 
+    public function catntidad_det_esp_emp(){
+        $cantidad=0;
+        foreach ($this->detalles as $det_ped) {
+            foreach($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $esp_emp){
+                $cantidad+= $esp_emp->detalles->count();
+            }
+        }
+        return $cantidad;
+    }
+
 }
