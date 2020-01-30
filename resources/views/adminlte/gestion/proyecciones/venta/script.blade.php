@@ -149,10 +149,6 @@
         semana = check.id.split("_")[1];
         z=parseInt(semana)+100;
         for(let x=(parseInt(semana)+1); x<z;x++){
-<<<<<<< HEAD
-=======
-            console.log(x);
->>>>>>> 0fca28f7d6a4b9a6f65bdf779e66f68a7ca7447c
             if(checked){
                 $("input#semana_"+x).prop('checked',true).attr('disabled',true);
             }else{
