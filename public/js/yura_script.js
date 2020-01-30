@@ -2166,3 +2166,9 @@ function calcular_precio_pedido(input) {
     $(".total_pedido").html( "$" + (t+iva).toFixed(2));
 
 }
+
+/*$(function(){
+    $(document).bind("contextmenu",function(e){
+        return false;
+    });
+});*/

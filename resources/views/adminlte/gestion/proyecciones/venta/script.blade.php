@@ -135,4 +135,20 @@
     }
 
 
+    function selecciona_check(check){
+        $(check).is(":checked")
+            ? checked = true
+            : checked = false;
+
+        semana = $(check).id.split("_")[1];
+
+        for(let x=semana; x<200;x++){
+            if(checked){
+                $("#semana_"+semana).prop('checked',true);
+            }else{
+                $("#semana_"+semana).prop('checked',false);
+            }
+        }
+    }
+
 </script>
