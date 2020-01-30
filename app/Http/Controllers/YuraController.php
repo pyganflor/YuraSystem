@@ -52,6 +52,10 @@ class YuraController extends Controller
                 'costos_total_x_tallo' => getIndicadorByName('C6')->valor,
                 'costos_fijos' => getIndicadorByName('C7')->valor,
                 'costos_regalias' => getIndicadorByName('C8')->valor,
+                'costos_m2_mensual' => getIndicadorByName('C9')->valor,
+                'costos_m2_anual' => getIndicadorByName('C10')->valor,
+                'rentabilidad_m2_mensual' => getIndicadorByName('R1')->valor,
+                'rentabilidad_m2_anual' => getIndicadorByName('R2')->valor,
             ]);
         }
 
@@ -560,12 +564,18 @@ class YuraController extends Controller
                 'ciclo' => $variedad == '' ? getIndicadorByName('DA1')->valor : getIndicadorByName('DA1')->getVariedad($variedad->id_variedad)->valor,
 
                 'venta_m2_anno_mensual' => $variedad == '' ? getIndicadorByName('D9')->valor : getIndicadorByName('D9')->getVariedad($variedad->id_variedad)->valor,
-                'venta_m2_anno_anual' => $variedad == '' ? getIndicadorByName('D10')->valor : getIndicadorByName('D10')->getVariedad($variedad->id_variedad)->valor,
+                'venta_m2_anno_anual' => getIndicadorByName('D10')->valor,
 
                 'costos_campo_semana' => getIndicadorByName('C3')->valor,
                 'costos_cosecha_x_tallo' => getIndicadorByName('C4')->valor,
                 'costos_postcosecha_x_tallo' => getIndicadorByName('C5')->valor,
                 'costos_total_x_tallo' => getIndicadorByName('C6')->valor,
+
+                'costos_m2_mensual' => getIndicadorByName('C9')->valor,
+                'costos_m2_anual' => getIndicadorByName('C10')->valor,
+
+                'rentabilidad_m2_mensual' => getIndicadorByName('R1')->valor,
+                'rentabilidad_m2_anual' => getIndicadorByName('R2')->valor,
             ]);
         } else
             return view('adminlte.inicio');
@@ -587,7 +597,7 @@ class YuraController extends Controller
             'ciclo' => getIndicadorByName('DA1')->getVariedad($variedad->id_variedad)->valor,
             'ramos_m2_anno' => getIndicadorByName('D8')->getVariedad($variedad->id_variedad)->valor,
             'venta_m2_anno_mensual' => getIndicadorByName('D9')->getVariedad($variedad->id_variedad)->valor,
-            'venta_m2_anno_anual' => getIndicadorByName('D10')->getVariedad($variedad->id_variedad)->valor,
+            'venta_m2_anno_anual' => getIndicadorByName('D10')->valor,
             'tallos_cosechados' => getIndicadorByName('D11')->getVariedad($variedad->id_variedad)->valor,
             'cajas_exportadas' => getIndicadorByName('D13')->getVariedad($variedad->id_variedad)->valor,
             'tallos_m2' => getIndicadorByName('D12')->getVariedad($variedad->id_variedad)->valor,
@@ -599,6 +609,10 @@ class YuraController extends Controller
             'costos_total_x_tallo' => getIndicadorByName('C6')->valor,
             'costos_fijos' => getIndicadorByName('C7')->valor,
             'costos_regalias' => getIndicadorByName('C8')->valor,
+            'costos_m2_mensual' => getIndicadorByName('C9')->valor,
+            'costos_m2_anual' => getIndicadorByName('C10')->valor,
+            'rentabilidad_m2_mensual' => getIndicadorByName('R1')->getVariedad($variedad->id_variedad)->valor,
+            'rentabilidad_m2_anual' => getIndicadorByName('R2')->valor,
         ]);
     }
 }

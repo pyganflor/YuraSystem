@@ -12,7 +12,9 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use yura\Modelos\Cosecha;
 use yura\Modelos\Area;
+use yura\Modelos\IndicadorVariedad;
 use yura\Modelos\ResumenCostosSemanal;
+use yura\Modelos\Variedad;
 
 class Costos
 {
@@ -367,6 +369,125 @@ class Costos
             }
 
             $model->valor = $tallos > 0 ? round(($costos_total / $tallos) * 100, 2) : 0;
+            $model->save();
+        }
+    }
+
+    public static function costos_m2_16_semanas_atras()
+    {
+        $model = getIndicadorByName('C9');  // Costos/m2 (-16 semanas)
+        if ($model != '') {
+            $dias = 7;
+            $last_semana = '';
+            $valor = 0;
+            while ($valor <= 0) {
+                $dias += 7;
+                $last_semana = getSemanaByDate(opDiasFecha('-', $dias, date('Y-m-d')));
+                if ($last_semana != '') {
+                    $valor = DB::table('costos_semana')
+                        ->select(DB::raw('sum(valor) as cant'))
+                        ->where('codigo_semana', $last_semana->codigo)
+                        ->get()[0]->cant;
+                } else {
+                    return false;
+                }
+            }
+
+            $sem_desde = getSemanaByDate(opDiasFecha('-', 112, $last_semana->fecha_inicial));   // 16 semana atras
+            $sem_hasta = $last_semana;
+
+            $costos = DB::table('resumen_costos_semanal')
+                ->select(DB::raw('sum(mano_obra + insumos + fijos + regalias) as cant'))
+                ->where('codigo_semana', '>=', $sem_desde->codigo)
+                ->where('codigo_semana', '<=', $sem_hasta->codigo)
+                ->get()[0]->cant;
+            $area = DB::table('resumen_area_semanal')
+                ->select(DB::raw('sum(area) as cant'))
+                ->where('codigo_semana', '>=', $sem_desde->codigo)
+                ->where('codigo_semana', '<=', $sem_hasta->codigo)
+                ->get()[0]->cant;
+
+            //dd($last_semana->codigo, $sem_desde->codigo, $sem_hasta->codigo, $costos . '/' . $area);
+            $valor = $area > 0 ? round(($costos / ($area / 16)) * 3, 2) : 0;
+            $model->valor = $valor;
+            $model->save();
+        }
+    }
+
+    public static function costos_m2_52_semanas_atras()
+    {
+        $model = getIndicadorByName('C10');  // Costos/m2 (-52 semanas)
+        if ($model != '') {
+            $dias = 7;
+            $last_semana = '';
+            $valor = 0;
+            while ($valor <= 0) {
+                $dias += 7;
+                $last_semana = getSemanaByDate(opDiasFecha('-', $dias, date('Y-m-d')));
+                if ($last_semana != '') {
+                    $valor = DB::table('costos_semana')
+                        ->select(DB::raw('sum(valor) as cant'))
+                        ->where('codigo_semana', $last_semana->codigo)
+                        ->get()[0]->cant;
+                } else {
+                    return false;
+                }
+            }
+
+            $sem_desde = getSemanaByDate(opDiasFecha('-', 364, $last_semana->fecha_inicial));   // 52 semana atras
+            $sem_hasta = $last_semana;
+
+            $costos = DB::table('resumen_costos_semanal')
+                ->select(DB::raw('sum(mano_obra + insumos + fijos + regalias) as cant'))
+                ->where('codigo_semana', '>=', $sem_desde->codigo)
+                ->where('codigo_semana', '<=', $sem_hasta->codigo)
+                ->get()[0]->cant;
+            $area = DB::table('resumen_area_semanal')
+                ->select(DB::raw('sum(area) as cant'))
+                ->where('codigo_semana', '>=', $sem_desde->codigo)
+                ->where('codigo_semana', '<=', $sem_hasta->codigo)
+                ->get()[0]->cant;
+
+            //dd($last_semana->codigo, $sem_desde->codigo, $sem_hasta->codigo, $costos . '/' . $area);
+            $valor = $area > 0 ? round($costos / ($area / 52), 2) : 0;
+            $model->valor = $valor;
+            $model->save();
+        }
+    }
+
+    public static function rentabilidad_4_meses()
+    {
+        $model = getIndicadorByName('R1');  // Rentabilidad (-4 meses)
+        if ($model != '') {
+            $valor = getIndicadorByName('D9')->valor - getIndicadorByName('C9')->valor;
+            $model->valor = $valor;
+            $model->save();
+
+            /* -------------------------- X VARIEDAD ------------------------- */
+            foreach (Variedad::All() as $var) {
+                $ind = IndicadorVariedad::All()
+                    ->where('id_indicador', $model->id_indicador)
+                    ->where('id_variedad', $var->id_variedad)
+                    ->first();
+                if ($ind == '') {   // es nuevo
+                    $ind = new IndicadorVariedad();
+                    $ind->id_indicador = $model->id_indicador;
+                    $ind->id_variedad = $var->id_variedad;
+                }
+
+                $valor = getIndicadorByName('D9')->getVariedad($var->id_variedad)->valor - getIndicadorByName('C9')->valor;
+                $ind->valor = $valor;
+                $ind->save();
+            }
+        }
+    }
+
+    public static function rentabilidad_1_anno()
+    {
+        $model = getIndicadorByName('R2');  // Rentabilidad (-1 año)
+        if ($model != '') {
+            $valor = getIndicadorByName('D10')->valor - getIndicadorByName('C10')->valor;
+            $model->valor = $valor;
             $model->save();
         }
     }
