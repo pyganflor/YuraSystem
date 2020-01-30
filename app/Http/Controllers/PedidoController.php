@@ -307,7 +307,7 @@ class PedidoController extends Controller
                             ];
                             ComprobanteController::actualizar_comprobante_factura($data_actualizar_factura);
                         }
-                        //LLAMAR A LA FUNCIÓN ESTÁTICA PARA ACTUALIZAR EL ENVÍO
+                        //LLAMAR A LA FUNCIÓN ESTÁTICA PARA ACTUALIZAR LA FACTURA
 
                     }
                 }

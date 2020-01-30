@@ -298,7 +298,6 @@
                                                        $codigo_dae = isset($d->dae) ? $d->dae : "";
                                                    }
                                             @endphp
-
                                             <div class="col-md-3">
                                                 <label for="dae">CÓDIGO DAE</label>
                                                 <input type="text" placeholder="CODÍGO DAE" class="form-control" {{($facturado) ? "disabled='disabled'" : ""}}
