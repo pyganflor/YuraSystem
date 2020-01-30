@@ -28,6 +28,7 @@ use yura\Modelos\MarcacionColoracion;
 use yura\Modelos\Pedido;
 use yura\Modelos\UnidadMedida;
 use yura\Modelos\Variedad;
+use yura\Http\Controllers\ComprobanteController;
 
 class OrdenSemanalController extends Controller
 {
@@ -557,9 +558,14 @@ class OrdenSemanalController extends Controller
                 $id_aerolinea = $e->detalles[0]->id_aerolinea;
                 $objComprobante = Comprobante::find($c->id_comprobante);
                 $objComprobante->id_envio = null;
-                $objComprobante->habilitado = 0;
-                $objComprobante->rehusar = 1;
-                $objComprobante->save();
+                $objComprobante->habilitado = false;
+                $objComprobante->rehusar = true;
+                if($objComprobante->save()){
+                    $archivo_generado = env('PATH_XML_FIRMADOS') . '/facturas/' . $c->clave_acceso . ".xml";
+                    $archivo_firmado = env('PATH_XML_GENERADOS') . '/facturas/' . $c->clave_acceso . ".xml";
+                    if (file_exists($archivo_generado)) unlink($archivo_generado);
+                    if (file_exists($archivo_firmado)) unlink($archivo_firmado);
+                };
                 $pedido->clave_acceso_temporal = $c->secuencial;
                 $pedido->id_comprobante_temporal = $c->id_comprobante;
                 $pedido->id_configuracion_empresa = $p->id_configuracion_empresa;
@@ -708,7 +714,6 @@ class OrdenSemanalController extends Controller
                     if ($envio->save()) {
                         $envio = Envio::All()->last();
 
-
                         bitacora('envio', $envio->id_envio, 'I', 'Insercion de un nuevo envio');
 
                         foreach ($pedido->detalles as $det) {
@@ -730,6 +735,23 @@ class OrdenSemanalController extends Controller
                                 ];
                             }
                         }
+
+                        if (isset($objComprobante)) {
+                            $data_actualizar_factura =[
+                                'id_envio' => $envio->id_envio,
+                                'codigo_pais' => $envio->codigo_pais,
+                                'dae'=> $envio->dae,
+                                'fecha_envio'=>$envio->fecha_envio,
+                                'pais'=> getPais($envio->codigo_pais)->nombre,
+                                'update'=>'true',
+                                'id_comprobante'=>$objComprobante->id_comprobante,
+                                'fecha_pedidos_search'=> $envio->pedido->fecha_pedido,
+                                'cant_variedades'=>$envio->pedido->catntidad_det_esp_emp(),
+                            ];
+                            ComprobanteController::actualizar_comprobante_factura($data_actualizar_factura);
+                        }
+                        //LLAMAR A LA FUNCIÓN ESTÁTICA PARA ACTUALIZAR LA FACTURA
+
                     } else {
                         $pedido->delete();
                         return [
