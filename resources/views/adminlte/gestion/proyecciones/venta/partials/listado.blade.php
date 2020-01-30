@@ -9,7 +9,7 @@
             @foreach($semanas as $semana => $item)
                 <td class="text-center" style="border:1px solid #9d9d9d; background-color: #e9ecef; width:350px;border-bottom: 2px solid #000000;border-right: 2px solid #000000;" colspan="3">
                     <input type="checkbox" id="semana_{{$semana}}" name="semana_{{$semana}}" value="{{$semana}}"
-                           class="check_programacion_semana" style='margin: 0;position: relative;top: 2px;'>
+                           class="check_programacion_semana" style='margin: 0;position: relative;top: 2px;' onclick="selecciona_check(this)">
                     <label for="semana_{{$semana}}">{{$semana}}</label>
                 </td>
             @endforeach
