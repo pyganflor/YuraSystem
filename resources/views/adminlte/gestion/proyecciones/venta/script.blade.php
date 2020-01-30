@@ -140,13 +140,14 @@
             ? checked = true
             : checked = false;
 
-        semana = $(check).id.split("_")[1];
-
-        for(let x=semana; x<200;x++){
+        semana = check.id.split("_")[1];
+        z=parseInt(semana)+100;
+        for(let x=(parseInt(semana)+1); x<z;x++){
+            console.log(x);
             if(checked){
-                $("#semana_"+semana).prop('checked',true);
+                $("input#semana_"+x).prop('checked',true).attr('disabled',true);
             }else{
-                $("#semana_"+semana).prop('checked',false);
+                $("input#semana_"+x).prop('checked',false).removeAttr('disabled');
             }
         }
     }
