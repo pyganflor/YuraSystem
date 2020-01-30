@@ -179,7 +179,8 @@ class ProyVentaController extends Controller
                         ]);
                     }
                 }
-            }else{
+            }
+            /*else{
                 foreach($request->clientes as $cliente){
                     $valor = substr($cliente['valor'],1,20);
                     $objProyeccionVentaSemanalReal = ProyeccionVentaSemanalReal::where([
@@ -193,7 +194,7 @@ class ProyVentaController extends Controller
                         'valor' => round($valor,2)
                     ]);
                 }
-            }
+            }*/
 
             //UpdateSaldosProyVentaSemanal::dispatch($request->clientes[0]['semana'], $request->id_variedad)->onQueue('update_saldos_proy_venta_semanal');
             $success = true;

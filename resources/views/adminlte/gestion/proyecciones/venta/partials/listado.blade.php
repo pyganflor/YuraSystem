@@ -37,7 +37,7 @@
                 Saldo inicial
             </td>
         </tr>
-        <tr>
+        <tr >
             <td class="text-center" style="background-color: #e9ecef;width:250px;border: 2px solid #000000;">
                 Cajas proyectadas
             </td>
@@ -68,12 +68,12 @@
                         Desecho
                     </td>
                     @foreach($semana['semanas'] as $codigoSemana => $dataSemana)
-                        <td class="text-center " ondblclick="habilitar('desecho_semana_{{$codigoSemana}}')"
+                        <td class="text-center semana_{{$codigoSemana}}" ondblclick="habilitar('desecho_semana_{{$codigoSemana}}')"
                             style="border:1px solid #9d9d9d; width:350px;border-bottom: 2px solid #000000;border-right: 2px solid #000000;" colspan="3">
                             <input type="number" min="0" id="desecho_semana_{{$codigoSemana}}" name="desecho_semana_{{$codigoSemana}}"
                                    data-toggle="tooltip" data-placement="top" title="Cajas desechadas" value="{{getObjSemana($codigoSemana)->desecho($idVariedad)}}"
                                    onblur="store_proyeccion_desecho('{{$codigoSemana}}','{{$idVariedad}}')"  disabled
-                    semana         style="border:none;background-color: transparent;text-align:center">
+                                   style="border:none;background-color: transparent;text-align:center">
                         </td>
                     @endforeach
                     <td class="text-center" style="width:250px;border: 2px solid #000000;">

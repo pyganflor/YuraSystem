@@ -45,21 +45,11 @@
 
     function store_proyeccion_venta(){
         clientes=[];
-        $.each($(".td_cajas_proyectadas"),function(i,j){
-            if(!$(j).find(".input_cajas_proyectadas").prop('disabled')){
-                clientes.push({
-                    id_cliente : $(j).find('.id_cliente').val(),
-                    cajas_fisicas: $(j).find('.input_cajas_proyectadas').val(),
-                    semana : $(j).find('.input_codigo_semana').val(),
-                    cajas_equivalentes : parseFloat($("#cajas_equivalentes_"+$(j).find('.id_cliente').val()+"_"+ $(j).find('.input_codigo_semana').val()).html()),
-                    valor :$("#precio_proyectado_"+$(j).find('.id_cliente').val()+"_"+ $(j).find('.input_codigo_semana').val()).html(),
-                });
-            }
-        });
         semanas=[];
         semana_inicio="";
         semana_fin="";
         x=0;
+
         $.each($(".check_programacion_semana"),function (i,j) {
             if($(j).is(":checked")){
                 if(x==0)
@@ -72,32 +62,48 @@
                 x++;
             }
         });
-        text='¿Está seguro de programar esta proyección de venta?';
 
-        if(semanas.length>0)
+
+
+        if(semanas.length>0) {
+
             text='¿Está seguro de programar esta proyección entre las semanas '+semana_inicio+' y la '+semana_fin+'?';
 
-        modal_quest('modal_update_proyeccion_venta', '<div class="alert alert-info text-center"><i class="fa fa-fw fa-exclamation-triangle"></i> '+text+' </div>', '<i class="fa fa-check"></i> Programar proyección', true, false, '<?php echo e(isPC() ? '40%' : ''); ?>', function () {
-            $.LoadingOverlay('show');
-
-            datos = {
-                _token: '{{csrf_token()}}',
-                clientes : clientes,
-                semanas : semanas,
-                id_variedad : $("#filtro_predeterminado_variedad").val(),
-                //semana : columna,
-                //id_cliente :id_cliente,
-                //cajas_fisicas : $("#cajas_proyectadas_"+id_cliente+"_"+columna).val(),
-                //cajas_equivalentes : parseFloat($("#cajas_equivalentes_"+id_cliente+"_"+columna).html()),
-                //valor : $("#precio_proyectado_"+id_cliente+"_"+columna).html(),
-            };
-
-            post_jquery('{{url('proy_venta_semanal/store_proyeccion_venta')}}', datos, function () {
-                listar_proyecciones_venta_semanal();
-                cerrar_modals();
+            modal_quest('modal_update_proyeccion_venta', '<div class="alert alert-info text-center"><i class="fa fa-fw fa-exclamation-triangle"></i> '+text+' </div>', '<i class="fa fa-check"></i> Programar proyección', true, false, '<?php echo e(isPC() ? '40%' : ''); ?>', function () {
+                $.LoadingOverlay('show');
+                $.each(semanas,function(i,j){
+                    $.each($('td.semana_'+j),function(l,k){
+                        if(!$(k).find(".input_cajas_proyectadas").prop('disabled')) {
+                            clientes.push({
+                                id_cliente: $(j).find('.id_cliente').val(),
+                                cajas_fisicas: $(j).find('.input_cajas_proyectadas').val(),
+                                semana: $(j).find('.input_codigo_semana').val(),
+                                cajas_equivalentes: parseFloat($("#cajas_equivalentes_" + $(j).find('.id_cliente').val() + "_" + $(j).find('.input_codigo_semana').val()).html()),
+                                valor: $("#precio_proyectado_" + $(j).find('.id_cliente').val() + "_" + $(j).find('.input_codigo_semana').val()).html(),
+                            });
+                        }
+                    });
+                });
+                datos = {
+                    _token: '{{csrf_token()}}',
+                    clientes : clientes,
+                    semanas : semanas,
+                    id_variedad : $("#filtro_predeterminado_variedad").val()
+                };
+                console.log(clientes);
+                return false;
+                post_jquery('{{url('proy_venta_semanal/store_proyeccion_venta')}}', datos, function () {
+                    listar_proyecciones_venta_semanal();
+                    cerrar_modals();
+                });
+                $.LoadingOverlay('hide');
             });
-            $.LoadingOverlay('hide');
-        });
+        }else{
+            modal_view('modal_error_store_proyeccion', '<div class="alert alert-danger text-center"><p> Debe seleccionar desde que semana en adelante desea programar</p> </div>', '<i class="fa fa-times"></i> Proyeccion de venta', true, false, '50%');
+            return false;
+        }
+
+
     }
 
     function store_proyeccion_desecho(columna,id_variedad){
@@ -140,13 +146,13 @@
             ? checked = true
             : checked = false;
 
-        semana = $(check).id.split("_")[1];
-
-        for(let x=semana; x<200;x++){
+        semana = check.id.split("_")[1];
+        z=parseInt(semana)+100;
+        for(let x=(parseInt(semana)+1); x<z;x++){
             if(checked){
-                $("#semana_"+semana).prop('checked',true);
+                $("input#semana_"+x).prop('checked',true).attr('disabled',true);
             }else{
-                $("#semana_"+semana).prop('checked',false);
+                $("input#semana_"+x).prop('checked',false).removeAttr('disabled');
             }
         }
     }
