@@ -31,16 +31,34 @@
         $.LoadingOverlay('hide');
     }
 
-    function calcular_proyeccion_cliente(id_cliente,columna) {
-        cajas_proyectadas = parseFloat($("#cajas_proyectadas_"+id_cliente+"_"+columna).val());
-        factor_cliente = parseFloat($("#factor_cliente_"+id_cliente).val());
-        ramos_x_caja_conf_empresa = parseFloat($("#ramos_x_caja_empresa").val()); //40
-        precio_promedio_variedad = parseFloat($("#precio_variedad_"+id_cliente).val());
-        ramos_totales = cajas_proyectadas * factor_cliente * ramos_x_caja_conf_empresa;
-        cajas_equivalentes = cajas_proyectadas * factor_cliente;
-        valor = (ramos_totales*precio_promedio_variedad).toFixed(2);
-        $("#cajas_equivalentes_"+id_cliente+"_"+columna).html(cajas_equivalentes);
-        $("#precio_proyectado_"+id_cliente+"_"+columna).html("$"+valor);
+    function calcular_proyeccion_cliente(id_cliente,semana) {
+
+        if($("input#semana_"+semana).is(":checked")){
+
+            cajas_proyectadas = parseFloat($("#cajas_proyectadas_"+id_cliente+"_"+semana).val());
+            factor_cliente = parseFloat($("#factor_cliente_"+id_cliente).val());
+            ramos_x_caja_conf_empresa = parseFloat($("#ramos_x_caja_empresa").val()); //40
+            precio_promedio_variedad = parseFloat($("#precio_variedad_"+id_cliente).val());
+            ramos_totales = cajas_proyectadas * factor_cliente * ramos_x_caja_conf_empresa;
+            cajas_equivalentes = cajas_proyectadas * factor_cliente;
+            valor = (ramos_totales*precio_promedio_variedad).toFixed(2);
+            $("#cajas_equivalentes_"+id_cliente+"_"+semana).html(cajas_equivalentes);
+            $("#precio_proyectado_"+id_cliente+"_"+semana).html("$"+valor);
+
+            z=parseInt(semana)+100;
+            for(let x=(parseInt(semana)+1); x<z;x++){
+
+            }
+
+        }else{
+            modal_view('modal_error_calcula_proyeccion', '<div class="alert alert-danger text-center"><p> Debe seleccionar desde que semana en adelante desea programar</p> </div>', '<i class="fa fa-times"></i> Proyeccion de venta', true, false, '50%');
+        }
+
+
+
+
+
+
     }
 
     function store_proyeccion_venta(){

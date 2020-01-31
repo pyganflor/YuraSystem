@@ -26,10 +26,11 @@
                 @php $saldoInicial = getObjSemana($semana)->firstSaldoInicialBusqueda($idVariedad,$semana)->saldo_inicial;
                 @endphp
                 <td class="text-center" style="border:1px solid #9d9d9d; background-color: #e9ecef; width:350px;border-bottom: 2px solid #000000;border-right: 2px solid #000000;" colspan="3">
-                    <b class="{{$saldoInicial < 0 ? "text-red" : "text-success"}}" data-toggle="tooltsemanata-placement="top" title="Saldo inicial">
+                    <b class="{{$saldoInicial < 0 ? "text-red" : "text-success"}} saldo_inicial_{{$semana}}"
+                       data-toggle="tooltip" data-placement="top" title="Saldo inicial">
                         {{number_format($saldoInicial,2,".",",")}}
-                        <i class="fa {{$saldoInicial < 0 ? "fa-arrow-down" : "fa-arrow-up"}}" aria-hidden="true"></i>
                     </b>
+                    <i class="fa {{$saldoInicial < 0 ? "fa-arrow-down" : "fa-arrow-up"}}" aria-hidden="true"></i>
                 </td>
                 @php $x++; $semanaPasada=$semana @endphp
             @endforeach
@@ -157,6 +158,7 @@
                             <div style="width:100%;text-align:center;" data-toggle="tooltip" data-placement="top" title="Cajas físicas proyectadas" ondblclick="habilitar('cajas_proyectadas_{{$cliente->id_cliente}}_{{$codigoSemana}}')">
                                 <input type="number" id="cajas_proyectadas_{{$cliente->id_cliente}}_{{$codigoSemana}}"  min="0"
                                        onkeyup="calcular_proyeccion_cliente('{{$cliente->id_cliente}}','{{$codigoSemana}}')"
+                                       onchange="calcular_proyeccion_cliente('{{$cliente->id_cliente}}','{{$codigoSemana}}')"
                                        disabled name="cajas_proyectadas_{{$cliente->id_cliente}}_{{$codigoSemana}}"
                                        class="input_cajas_proyectadas" style="border:none;text-align:center;width:50px"
                                        value="{{$cajasFisicas}}" >
@@ -190,7 +192,7 @@
                                 </td>
                                 <td style="border: 1px solid #9d9d9d;border-bottom: 2px solid #000000;">
                                     <div style="padding: 3px 6px;width:100%;text-align:center;cursor:pointer" data-toggle="tooltip" data-placement="top" title="Cajas equivalentes proyectadas">
-                                        <b>{{round($objSemana['cajasEquivalentes'],2)}}</b>
+                                        <b class="otros_semana_{{$codigoSemana}}">{{round($objSemana['cajasEquivalentes'],2)}}</b>
                                     </div>
                                 </td>
                                 <td style="border: 1px solid #9d9d9d;border-bottom: 2px solid #000000;border-right: 2px solid #000000">
@@ -211,8 +213,8 @@
                             <td class="text-center"  style="border: 1px solid #9d9d9d" >
                                 <b>{{round($objSemana['cajasFisicas'],2)}}</b>
                             </td>
-                            <td class="text-center"  style="border: 1px solid #9d9d9d" >
-                                <b>{{round($objSemana['cajasEquivalentes'],2)}}</b>
+                            <td class="text-center "  style="border: 1px solid #9d9d9d" >
+                                <b class="cajas_totales_semana_{{$semana}}">{{round($objSemana['cajasEquivalentes'],2)}}</b>
                             </td>
                             <td class="text-center"  style="border-right:2px solid #000000;" >
                                <b> ${{round($objSemana['valor'],2)}}</b>
@@ -247,10 +249,10 @@
                             @endphp
                             <td style="border: 1px solid #9d9d9d;border: 2px solid #000000;" colspan="3">
                                 <div style="width:100%;text-align:center;" data-tooltip data-placement="top" title="Saldo final">
-                                    <b class="{{$saldoFinal < 0 ? "text-red" : "text-success"}}">
+                                    <b class="{{$saldoFinal < 0 ? "text-red" : "text-success"}} saldo_final_{{$semana}}">
                                       {{number_format($saldoFinal,2,".",",")}}
-                                        <i class="fa {{$saldoFinal < 0 ? "fa-semanadown" : "fa-arrow-up"}}" aria-hidden="true"></i>
                                     </b>
+                                    <b><i class="fa {{$saldoFinal < 0 ? "fa-semanadown" : "fa-arrow-up"}}" aria-hidden="true"></i></b>
                                </div>
                             </td>
                             @php $x++; $semanaPasada=$semana @endphp
