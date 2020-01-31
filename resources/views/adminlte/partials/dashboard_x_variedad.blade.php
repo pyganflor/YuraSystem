@@ -15,7 +15,7 @@
     $color_12 = getColorByIndicador('C9');   //  costos_m2_mensual
     $color_13 = getColorByIndicador('C10');   //  costos_m2_anual
     $color_14 = $variedad == '' ? getColorByIndicador('R1') : getColorByIndicadorVariedad('R1', $variedad->id_variedad);   //  rentabilidad_m2_mensual
-    $color_15 = $variedad == '' ? getColorByIndicador('R2') : getColorByIndicadorVariedad('R2', $variedad->id_variedad);   //  rentabilidad_m2_anual
+    $color_15 = getColorByIndicador('R2');   //  rentabilidad_m2_anual
 @endphp
 <div style="overflow-x: scroll;">
     <div id="chart_org"></div>
