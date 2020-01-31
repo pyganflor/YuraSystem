@@ -4,11 +4,12 @@
 <script>
     var grafica = document.getElementById("div_chart_rentabilidad_m2_mensual").getContext('2d');
 
-    Chart.defaults.global.defaultFontFamily = "Lato";
-    Chart.defaults.global.defaultFontSize = 18;
+    Chart.defaults.global.defaultFontFamily = "Arial";
+    Chart.defaults.global.defaultFontStyle = "bold";
+    Chart.defaults.global.defaultFontSize = 13;
 
     var ventas = {
-        label: 'A',
+        label: 'Ventas/m2/año',
         data: [22, 23, 21, 24, 21, 22, 25, 26, 27, 22, 22, 23, 21, 24, 21, 22, 22, 23, 21, 24, 21, 22, 25, 26, 27, 22, 22, 23, 21, 24, 21, 22],
         fill: false,
         lineTension: 0.3,
@@ -24,8 +25,8 @@
     };
 
     var costos = {
-        label: 'B',
-        data: [25, 21, 25,26, 23, 24, 21, 22, 24, 25, 25, 21, 25,26, 23, 24, 25, 21, 25,26, 23, 24, 21, 22, 24, 25, 25, 21, 25,26, 23, 24],
+        label: 'Costos/m2/año',
+        data: [25, 21, 25, 26, 23, 24, 21, 22, 24, 25, 25, 21, 25, 26, 23, 24, 25, 21, 25, 26, 23, 24, 21, 22, 24, 25, 25, 21, 25, 26, 23, 24],
         fill: false,
         lineTension: 0.3,
         borderColor: 'red',
@@ -40,19 +41,19 @@
     };
 
     var rentabilidad = {
-        label: 'C',
-        data: [0.35, 0.24, -0.5,0.65, 0.1, 0.24, 0.31, -0.24, 0.37, 1.25, 0.35, 0.24, -0.5,0.65, 0.1, 0.24, 0.35, 0.24, -0.5,0.65, 0.1, 0.24, 0.31, -0.24, 0.37, 1.25, 0.35, 0.24, -0.5,0.65, 0.1, 0.24],
+        label: 'Rentabilidad/m2/año',
+        data: [0.35, 0.24, -0.5, 0.65, 0.1, 0.24, 0.31, -0.24, 0.37, 1.25, 0.35, 0.24, -0.5, 0.65, 0.1, 0.24, 0.35, 0.24, -0.5, 0.65, 0.1, 0.24, 0.31, -0.24, 0.37, 1.25, 0.35, 0.24, -0.5, 0.65, 0.1, 0.24],
         fill: false,
         lineTension: 0.3,
         borderColor: 'green',
-        borderDash: [5, 5],
+        //borderDash: [5, 5],
         pointBorderColor: 'black',
         pointBackgroundColor: 'green',
-        pointRadius: 6,
-        pointHoverRadius: 10,
+        pointRadius: 4,
+        pointHoverRadius: 7,
         pointStyle: 'circle',
         backgroundColor: 'green',
-        yAxisID: "y-axis-a"
+        yAxisID: "y-axis-b"
     };
 
     var data = {
@@ -84,6 +85,27 @@
                     labelString: "Ventas y Costos",
                     fontColor: "black"
                 },
+                ticks: {
+                    beginAtZero: true,
+                },
+                position: "left"
+            }, {
+                id: "y-axis-b",
+                gridLines: {
+                    display: false,
+                    color: "black",
+                    borderDash: [2, 5],
+                },
+                scaleLabel: {
+                    display: true,
+                    labelString: "Rentabilidad",
+                    fontColor: "green"
+                },
+                ticks: {
+                    min: -2,
+                    max: 5,
+                },
+                position: "right"
             }]
         }
     };
