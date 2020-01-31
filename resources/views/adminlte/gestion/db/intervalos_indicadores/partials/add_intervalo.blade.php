@@ -29,7 +29,7 @@
                 <div class="col-md-4">
                     <div class="">
                         <label for="cantidad_{{$x+1}}">Cantidad</label>
-                        <input type="number" id="cantidad_{{$x+1}}" name="cantidad_{{$x+1}}" class="form-control cantidad text-center" min="1"
+                        <input type="number" id="cantidad_{{$x+1}}" name="cantidad_{{$x+1}}" class="form-control cantidad text-center"
                                required value="{{$intervalo_indicador->hasta}}">
                     </div>
                 </div>
@@ -56,7 +56,7 @@
                     <div class="">
                         <label for="desde_{{$x+1}}">Desde</label>
                         <input type="number" id="desde_{{$x+1}}" name="desde_{{$x+1}}" class="form-control desde text-center" required
-                               min="0" autocomplete="off" value='{{$intervalo_indicador->desde}}'>
+                                autocomplete="off" value='{{$intervalo_indicador->desde}}'>
                     </div>
                 </div>
                 <div class="col-md-4">
