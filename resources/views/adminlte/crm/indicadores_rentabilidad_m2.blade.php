@@ -1,8 +1,8 @@
 <br>
-<div id="div_chart_rentabilidad_m2_mensual"></div>
+<canvas id="div_chart_rentabilidad_m2_mensual" style="width: 100%; height: 400px"></canvas>
 
 <script>
-    var grafica = document.getElementById("div_chart_rentabilidad_m2_mensual");
+    var grafica = document.getElementById("div_chart_rentabilidad_m2_mensual").getContext('2d');
 
     Chart.defaults.global.defaultFontFamily = "Lato";
     Chart.defaults.global.defaultFontSize = 18;
@@ -15,7 +15,7 @@
         borderColor: 'blue',
         borderDash: [5, 5],
         pointBorderColor: 'black',
-        pointBackgroundColor: 'red',
+        pointBackgroundColor: 'blue',
         pointRadius: 6,
         pointHoverRadius: 10,
         pointStyle: 'triangle',
@@ -31,7 +31,7 @@
         borderColor: 'red',
         borderDash: [5, 5],
         pointBorderColor: 'black',
-        pointBackgroundColor: 'blue',
+        pointBackgroundColor: 'red',
         pointRadius: 6,
         pointHoverRadius: 10,
         pointStyle: 'rect',
