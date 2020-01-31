@@ -14,8 +14,8 @@
         fill: false,
         lineTension: 0.3,
         borderColor: 'blue',
-        borderDash: [5, 5],
-        pointBorderColor: 'black',
+        borderDash: [15, 3],
+        pointBorderColor: 'blue',
         pointBackgroundColor: 'blue',
         pointRadius: 6,
         pointHoverRadius: 10,
@@ -30,8 +30,8 @@
         fill: false,
         lineTension: 0.3,
         borderColor: 'red',
-        borderDash: [5, 5],
-        pointBorderColor: 'black',
+        borderDash: [15, 3],
+        pointBorderColor: 'red',
         pointBackgroundColor: 'red',
         pointRadius: 6,
         pointHoverRadius: 10,
@@ -43,7 +43,7 @@
     var rentabilidad = {
         label: 'Rentabilidad/m2/año',
         data: [0.35, 0.24, -0.5, 0.65, 0.1, 0.24, 0.31, -0.24, 0.37, 1.25, 0.35, 0.24, -0.5, 0.65, 0.1, 0.24, 0.35, 0.24, -0.5, 0.65, 0.1, 0.24, 0.31, -0.24, 0.37, 1.25, 0.35, 0.24, -0.5, 0.65, 0.1, 0.24],
-        fill: false,
+        fill: true,
         lineTension: 0.3,
         borderColor: 'green',
         //borderDash: [5, 5],
@@ -71,7 +71,7 @@
                 scaleLabel: {
                     display: true,
                     labelString: "Semanas",
-                    fontColor: "black"
+                    fontColor: "gray"
                 },
             }],
             yAxes: [{
@@ -87,6 +87,7 @@
                 },
                 ticks: {
                     beginAtZero: true,
+                    max: 30,
                 },
                 position: "left"
             }, {
