@@ -211,13 +211,13 @@
                         @foreach($semanas as $semana => $dataSemana)
                             @php $objSemana = getObjSemana($semana)->getTotalesProyeccionVentaSemanal(false,$idVariedad,true,$semanaActual,false,$ramosxCajaEmpresa); @endphp
                             <td class="text-center"  style="border: 1px solid #9d9d9d" >
-                                <b>{{round($objSemana['cajasFisicas'],2)}}</b>
+                                <b class="total_cajas_semana_{{$semana}}">{{round($objSemana['cajasFisicas'],2)}}</b>
                             </td>
                             <td class="text-center "  style="border: 1px solid #9d9d9d" >
-                                <b class="cajas_totales_semana_{{$semana}}">{{round($objSemana['cajasEquivalentes'],2)}}</b>
+                                <b class="total_cajas_equivalentes_semana_{{$semana}}">{{round($objSemana['cajasEquivalentes'],2)}}</b>
                             </td>
                             <td class="text-center"  style="border-right:2px solid #000000;" >
-                               <b> ${{round($objSemana['valor'],2)}}</b>
+                               <b class="total_dinero_semana_{{$semana}}"> ${{round($objSemana['valor'],2)}}</b>
                             </td>
                         @endforeach
                         <td class="text-center" style="width:250px;border-right: 2px solid #000000;border-top: 2px solid #000000">
@@ -252,7 +252,7 @@
                                     <b class="{{$saldoFinal < 0 ? "text-red" : "text-success"}} saldo_final_{{$semana}}">
                                       {{number_format($saldoFinal,2,".",",")}}
                                     </b>
-                                    <b><i class="fa {{$saldoFinal < 0 ? "fa-semanadown" : "fa-arrow-up"}}" aria-hidden="true"></i></b>
+                                    <b><i class="fa {{$saldoFinal < 0 ? "fa-arrow-down text-red" : "fa-arrow-up text-success"}}" aria-hidden="true"></i></b>
                                </div>
                             </td>
                             @php $x++; $semanaPasada=$semana @endphp
