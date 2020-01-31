@@ -30,7 +30,7 @@
                        data-toggle="tooltip" data-placement="top" title="Saldo inicial">
                         {{number_format($saldoInicial,2,".",",")}}
                     </b>
-                    <i class="fa {{$saldoInicial < 0 ? "fa-arrow-down" : "fa-arrow-up"}}" aria-hidden="true"></i>
+                    <b><i class="fa {{$saldoInicial < 0 ? "fa-arrow-down" : "fa-arrow-up"}}" aria-hidden="true"></i></b>
                 </td>
                 @php $x++; $semanaPasada=$semana @endphp
             @endforeach
