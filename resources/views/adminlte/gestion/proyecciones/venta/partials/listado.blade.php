@@ -45,7 +45,7 @@
             @foreach($semanas as $semana => $item)
                 @php $cajasProyectadas = getObjSemana($semana)->getCajasProyectadas($idVariedad);@endphp
                 <td class="text-center" style="border:1px solid #9d9d9d; background-color: #e9ecef; width:350px;border-bottom: 2px solid #000000;border-right: 2px solid #000000;" colspan="3">
-                    <b>{{number_format($cajasProyectadas,2,".",",")}}</b>
+                    <b class="cajas_proyectas_semana_{{$semana}}">{{number_format($cajasProyectadas,2,".",",")}}</b>
                 </td>
             @endforeach
             <td class="text-center" style="background-color: #e9ecef;width:250px;border: 2px solid #000000;">
@@ -164,6 +164,7 @@
                                        value="{{$cajasFisicas}}" >
                                 <input type="hidden" class="id_cliente" value="{{$cliente->id_cliente}}">
                                 <input type="hidden" class="input_codigo_semana" value="{{$codigoSemana}}">
+                                <input type="hidden" class="cajas_fisicas_oculto_{{$codigoSemana}}" value="{{$cajasFisicas}}">
                             </div>
                         </td>
                         <td style="border: 1px solid #9d9d9d;border-bottom: 2px solid #000000;">
