@@ -164,17 +164,19 @@
                                        value="{{$cajasFisicas}}" >
                                 <input type="hidden" class="id_cliente" value="{{$cliente->id_cliente}}">
                                 <input type="hidden" class="input_codigo_semana" value="{{$codigoSemana}}">
-                                <input type="hidden" class="cajas_fisicas_oculto_{{$codigoSemana}}" value="{{$cajasFisicas}}">
+                                <input type="hidden" class="cajas_fisicas_inicial_{{$codigoSemana}}" value="{{$cajasFisicas}}">
                             </div>
                         </td>
                         <td style="border: 1px solid #9d9d9d;border-bottom: 2px solid #000000;">
                             <div style="padding: 3px 6px;width:100%;text-align:center;cursor:pointer" class="cajas_equivalentes" data-toggle="tooltip" data-placement="top" title="Cajas equivalentes proyectadas">
                                 <b id="cajas_equivalentes_{{$cliente->id_cliente}}_{{$codigoSemana}}">{{number_format($cajasEquivalentes,2,".","")}}</b>
+                                <input type="hidden" class="cajas_equivalente_inicial_{{$codigoSemana}}" value="{{number_format($cajasEquivalentes,2,".","")}}">
                             </div>
                         </td>
                         <td style="border: 1px solid #9d9d9d;border-bottom: 2px solid #000000;border-right: 2px solid #000000">
                             <div style="padding: 3px 6px;width:100%;text-align:center;cursor:pointer;" class="precio_proyectado" data-toggle="tooltip" data-placement="top" title="Valor proyectado">
                                 <b  id="precio_proyectado_{{$cliente->id_cliente}}_{{$codigoSemana}}">${{number_format($valor,2,".",",")}}</b>
+                                <input type="hidden" class="valor_inicial_{{$codigoSemana}}" value="{{number_format($valor,2,".",",")}}">
                             </div>
                         </td>
                     @endforeach
