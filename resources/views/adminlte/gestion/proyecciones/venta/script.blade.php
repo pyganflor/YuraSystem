@@ -65,9 +65,9 @@
             $("input.valor_inicial_"+semana).val(valor);
 
 
-            $("input.total_cajas_semana_"+semana).val(total_cajas_dinamico);
-            $("input.total_cajas_equivalentes_semana_"+semana).val(total_cajas_equivalentes_dinamico);
-            $("input.total_dinero_semana_"+semana).val(total_valor_dinamico);
+            $("b.total_cajas_semana_"+semana).html(total_cajas_dinamico);
+            $("b.total_cajas_equivalentes_semana_"+semana).html(total_cajas_equivalentes_dinamico);
+            $("b.total_dinero_semana_"+semana).html("$"+total_valor_dinamico);
 
 
             /*z=parseInt(semana)+100;
