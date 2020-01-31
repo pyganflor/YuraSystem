@@ -14,10 +14,10 @@
         fill: false,
         lineTension: 0.3,
         borderColor: 'blue',
-        borderDash: [15, 3],
+        //borderDash: [15, 3],
         pointBorderColor: 'blue',
         pointBackgroundColor: 'blue',
-        pointRadius: 6,
+        pointRadius: 1,
         pointHoverRadius: 10,
         pointStyle: 'triangle',
         backgroundColor: 'blue',
@@ -30,10 +30,10 @@
         fill: false,
         lineTension: 0.3,
         borderColor: 'red',
-        borderDash: [15, 3],
+        //borderDash: [15, 3],
         pointBorderColor: 'red',
         pointBackgroundColor: 'red',
-        pointRadius: 6,
+        pointRadius: 1,
         pointHoverRadius: 10,
         pointStyle: 'rect',
         backgroundColor: 'red',
@@ -43,29 +43,31 @@
     var rentabilidad = {
         label: 'Rentabilidad/m2/año',
         data: [0.35, 0.24, -0.5, 0.65, 0.1, 0.24, 0.31, -0.24, 0.37, 1.25, 0.35, 0.24, -0.5, 0.65, 0.1, 0.24, 0.35, 0.24, -0.5, 0.65, 0.1, 0.24, 0.31, -0.24, 0.37, 1.25, 0.35, 0.24, -0.5, 0.65, 0.1, 0.24],
-        fill: true,
+        fill: false,
         lineTension: 0.3,
         borderColor: 'green',
         //borderDash: [5, 5],
         pointBorderColor: 'black',
         pointBackgroundColor: 'green',
-        pointRadius: 4,
+        pointRadius: 1,
         pointHoverRadius: 7,
         pointStyle: 'circle',
         backgroundColor: 'green',
-        yAxisID: "y-axis-b"
+        yAxisID: "y-axis-b",
+
+        type: 'line',
     };
 
     var data = {
         labels: ["1901", "1902", "1903", "1904", "1905", "1906", "1907", "1908", "1901", "1902", "1903", "1904", "1905", "1906", "1907", "1908", "1901", "1902", "1903", "1904", "1905", "1906", "1907", "1908", "1901", "1902", "1903", "1904", "1905", "1906", "1907", "1908"],
-        datasets: [ventas, costos, rentabilidad]
+        datasets: [rentabilidad, ventas, costos]
     };
 
     var opciones = {
         scales: {
             xAxes: [{
                 gridLines: {
-                    display: true,
+                    display: false,
                     color: "darkgray"
                 },
                 scaleLabel: {
