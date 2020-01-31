@@ -35,6 +35,17 @@
 
         if($("input#semana_"+semana).is(":checked")){
 
+            cajas_inical = parseFloat($("input.cajas_fisicas_inicial_"+semana).val());
+            cajas_equivalente_inical = parseFloat($("input.cajas_equivalente_inicial_"+semana).val());
+            valor_inical = parseFloat($("input.valor_inicial_"+semana).val());
+
+            saldo_inicial = $("input.saldo_inicial_"+semana).val();
+            cajas_proyectadas = $("input.cajas_proyectas_semana_"+semana).val();
+
+            total_cajas_semana = parseFloat($("b.total_cajas_semana_"+semana).html().trim());
+            total_cajas_equivalentes_semana = parseFloat($("b.total_cajas_equivalentes_semana_"+semana).html().trim());
+            total_dinero_semana = parseFloat($("b.total_dinero_semana_"+semana).html().trim().substring(1));
+            console.log(total_dinero_semana);
             cajas_proyectadas = parseFloat($("#cajas_proyectadas_"+id_cliente+"_"+semana).val());
             factor_cliente = parseFloat($("#factor_cliente_"+id_cliente).val());
             ramos_x_caja_conf_empresa = parseFloat($("#ramos_x_caja_empresa").val()); //40
@@ -45,19 +56,28 @@
             $("#cajas_equivalentes_"+id_cliente+"_"+semana).html(cajas_equivalentes);
             $("#precio_proyectado_"+id_cliente+"_"+semana).html("$"+valor);
 
-            z=parseInt(semana)+100;
+            total_cajas_dinamico = total_cajas_semana-cajas_inical+cajas_proyectadas;
+            total_cajas_equivalentes_dinamico = total_cajas_equivalentes_semana-cajas_equivalente_inical+cajas_equivalentes;
+            total_valor_dinamico = total_dinero_semana-valor_inical+parseFloat(valor);
+
+            $("input.cajas_fisicas_inicial_"+semana).val(cajas_proyectadas);
+            $("input.cajas_equivalente_inicial_"+semana).val(cajas_equivalentes);
+            $("input.valor_inicial_"+semana).val(valor);
+
+            console.log(total_dinero_semana,valor_inical,valor);
+            $("b.total_cajas_semana_"+semana).html(total_cajas_dinamico.toFixed(2));
+            $("b.total_cajas_equivalentes_semana_"+semana).html(total_cajas_equivalentes_dinamico.toFixed(2));
+            $("b.total_dinero_semana_"+semana).html("$"+total_valor_dinamico.toFixed(2));
+
+
+            /*z=parseInt(semana)+100;
             for(let x=(parseInt(semana)+1); x<z;x++){
 
-            }
+            }*/
 
         }else{
             modal_view('modal_error_calcula_proyeccion', '<div class="alert alert-danger text-center"><p> Debe seleccionar desde que semana en adelante desea programar</p> </div>', '<i class="fa fa-times"></i> Proyeccion de venta', true, false, '50%');
         }
-
-
-
-
-
 
     }
 
