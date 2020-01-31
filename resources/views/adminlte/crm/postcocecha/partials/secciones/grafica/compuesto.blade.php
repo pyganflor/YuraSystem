@@ -56,6 +56,14 @@
             borderColor: '{{$dataset['color']}}',
             borderWidth: 1.5,
             fill: false,
+
+            borderDash: [5, 5],
+            pointBorderColor: 'black',
+            pointBackgroundColor: 'red',
+            pointRadius: 6,
+            pointHoverRadius: 10,
+            pointStyle: 'triangle',
+            yAxisID: "y-axis-a"
         });
         @endforeach
 
@@ -69,10 +77,31 @@
             options: {
                 scales: {
                     yAxes: [{
+                        id: "y-axis-a",
                         ticks: {
                             beginAtZero: false
-                        }
-                    }]
+                        },
+                        gridLines: {
+                            color: "black",
+                            borderDash: [2, 5],
+                        },
+                        scaleLabel: {
+                            display: true,
+                            labelString: "EJE y",
+                            fontColor: "black"
+                        },
+                    }],
+                    xAxes: [{
+                        gridLines: {
+                            display: true,
+                            color: "darkgray"
+                        },
+                        scaleLabel: {
+                            display: true,
+                            labelString: "EJE x",
+                            fontColor: "black"
+                        },
+                    }],
                 },
                 elements: {
                     line: {
