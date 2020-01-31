@@ -48,6 +48,7 @@
         semanas=[];
         semana_inicio="";
         semana_fin="";
+        desecho=[];
         x=0;
 
         $.each($(".check_programacion_semana"),function (i,j) {
@@ -72,14 +73,22 @@
             modal_quest('modal_update_proyeccion_venta', '<div class="alert alert-info text-center"><i class="fa fa-fw fa-exclamation-triangle"></i> '+text+' </div>', '<i class="fa fa-check"></i> Programar proyección', true, false, '<?php echo e(isPC() ? '40%' : ''); ?>', function () {
                 $.LoadingOverlay('show');
                 $.each(semanas,function(i,j){
-                    $.each($('td.semana_'+j),function(l,k){
+                    $.each($('td.semana_'+j.semana),function(l,k){
                         if(!$(k).find(".input_cajas_proyectadas").prop('disabled')) {
                             clientes.push({
-                                id_cliente: $(j).find('.id_cliente').val(),
-                                cajas_fisicas: $(j).find('.input_cajas_proyectadas').val(),
-                                semana: $(j).find('.input_codigo_semana').val(),
-                                cajas_equivalentes: parseFloat($("#cajas_equivalentes_" + $(j).find('.id_cliente').val() + "_" + $(j).find('.input_codigo_semana').val()).html()),
-                                valor: $("#precio_proyectado_" + $(j).find('.id_cliente').val() + "_" + $(j).find('.input_codigo_semana').val()).html(),
+                                id_cliente: $(k).find('.id_cliente').val(),
+                                cajas_fisicas: $(k).find('.input_cajas_proyectadas').val(),
+                                semana: j.semana,
+                                cajas_equivalentes: parseFloat($("#cajas_equivalentes_" + $(k).find('.id_cliente').val() + "_" + $(k).find('.input_codigo_semana').val()).html()),
+                                valor: $("#precio_proyectado_" + $(k).find('.id_cliente').val() + "_" + $(k).find('.input_codigo_semana').val()).html(),
+                            });
+                        }
+                    });
+                    $.each($("td.desecho_semana_"+j.semana),function(o,p){
+                        if(!$("input#desecho_semana_"+j.semana).prop('disabled')){
+                            desecho.push({
+                                cantidad : $(p).find('input.input_semana_'+j.semana).val(),
+                                semana : j.semana
                             });
                         }
                     });
@@ -88,9 +97,10 @@
                     _token: '{{csrf_token()}}',
                     clientes : clientes,
                     semanas : semanas,
+                    desecho : desecho,
                     id_variedad : $("#filtro_predeterminado_variedad").val()
                 };
-                console.log(clientes);
+                console.log(clientes,desecho);
                 return false;
                 post_jquery('{{url('proy_venta_semanal/store_proyeccion_venta')}}', datos, function () {
                     listar_proyecciones_venta_semanal();
@@ -107,7 +117,7 @@
     }
 
     function store_proyeccion_desecho(columna,id_variedad){
-        modal_quest('modal_update_proyeccion_desecho', '<div class="alert alert-info text-center"><i class="fa fa-fw fa-exclamation-triangle"></i> ¿Está seguro de programar este desecho? </div>', '<i class="fa fa-fw fa-trash"></i> Programar desecho', true, false, '<?php echo e(isPC() ? '40%' : ''); ?>', function () {
+        /*modal_quest('modal_update_proyeccion_desecho', '<div class="alert alert-info text-center"><i class="fa fa-fw fa-exclamation-triangle"></i> ¿Está seguro de programar este desecho? </div>', '<i class="fa fa-fw fa-trash"></i> Programar desecho', true, false, '<?php echo e(isPC() ? '40%' : ''); ?>', function () {
             $.LoadingOverlay('show');
             datos = {
                 _token: '{{csrf_token()}}',
@@ -121,7 +131,7 @@
                 cerrar_modals();
             });
             $.LoadingOverlay('hide');
-        });
+        });*/
     }
 
     function store_precio_promedio(id_cliente,id_variedad){
