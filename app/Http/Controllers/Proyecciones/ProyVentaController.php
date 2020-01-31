@@ -179,6 +179,14 @@ class ProyVentaController extends Controller
                         ]);
                     }
                 }
+
+                foreach($request->desecho as $desecho){
+                    $objResumenCosecha = ResumenSemanaCosecha::where([
+                        ['id_variedad',$request->id_variedad],
+                        ['codigo_semana',$desecho['semana']]
+                    ]);
+                    $objResumenCosecha->update(['desecho' => $desecho['cantidad']]);
+                }
             }
             /*else{
                 foreach($request->clientes as $cliente){

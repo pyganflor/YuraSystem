@@ -68,12 +68,12 @@
                         Desecho
                     </td>
                     @foreach($semana['semanas'] as $codigoSemana => $dataSemana)
-                        <td class="text-center semana_{{$codigoSemana}}" ondblclick="habilitar('desecho_semana_{{$codigoSemana}}')"
+                        <td class="text-center desecho_semana_{{$codigoSemana}}" ondblclick="habilitar('desecho_semana_{{$codigoSemana}}')"
                             style="border:1px solid #9d9d9d; width:350px;border-bottom: 2px solid #000000;border-right: 2px solid #000000;" colspan="3">
                             <input type="number" min="0" id="desecho_semana_{{$codigoSemana}}" name="desecho_semana_{{$codigoSemana}}"
                                    data-toggle="tooltip" data-placement="top" title="Cajas desechadas" value="{{getObjSemana($codigoSemana)->desecho($idVariedad)}}"
                                    onblur="store_proyeccion_desecho('{{$codigoSemana}}','{{$idVariedad}}')"  disabled
-                                   style="border:none;background-color: transparent;text-align:center">
+                                   style="border:none;background-color: transparent;text-align:center" class="input_semana_{{$codigoSemana}}">
                         </td>
                     @endforeach
                     <td class="text-center" style="width:250px;border: 2px solid #000000;">
@@ -153,7 +153,7 @@
                                 $valor = $dataSemana['valor'];
                             }
                         @endphp
-                        <td style="border: 1px solid #9d9d9d;border-bottom: 2px solid #000000;" class="td_cajas_proyectadas">
+                        <td style="border: 1px solid #9d9d9d;border-bottom: 2px solid #000000;" class="td_cajas_proyectadas semana_{{$codigoSemana}}">
                             <div style="width:100%;text-align:center;" data-toggle="tooltip" data-placement="top" title="Cajas físicas proyectadas" ondblclick="habilitar('cajas_proyectadas_{{$cliente->id_cliente}}_{{$codigoSemana}}')">
                                 <input type="number" id="cajas_proyectadas_{{$cliente->id_cliente}}_{{$codigoSemana}}"  min="0"
                                        onkeyup="calcular_proyeccion_cliente('{{$cliente->id_cliente}}','{{$codigoSemana}}')"
