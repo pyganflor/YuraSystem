@@ -2,7 +2,6 @@
 <br>
 <div id="div_chart_rentabilidad_m2_mensual"></div>
 
-
 <script>
     google.charts.load('current', {'packages': ['line', 'corechart']});
     google.charts.setOnLoadCallback(drawChart);
