@@ -29,6 +29,7 @@ use Validator;
 use DB;
 use Barryvdh\DomPDF\Facade as PDF;
 use yura\Modelos\ProductoYuraVenture;
+use yura\Http\Controllers\ComprobanteController;
 use yura\Modelos\Semana;
 
 class PedidoController extends Controller
@@ -136,7 +137,6 @@ class PedidoController extends Controller
                             ->select('clave_acceso', 'comprobante.id_comprobante', 'comprobante.secuencial')->get();
 
                         if ($dataComprobante->count() > 0) {
-
                             $objComprobante = Comprobante::find($dataComprobante[0]->id_comprobante);
                             $objComprobante->habilitado = false;
                             $objComprobante->id_envio = null;
@@ -144,25 +144,21 @@ class PedidoController extends Controller
                             if ($objComprobante->save()) {
                                 $archivo_generado = env('PATH_XML_FIRMADOS') . '/facturas/' . $dataComprobante[0]->clave_acceso . ".xml";
                                 $archivo_firmado = env('PATH_XML_GENERADOS') . '/facturas/' . $dataComprobante[0]->clave_acceso . ".xml";
-
                                 if (file_exists($archivo_generado)) unlink($archivo_generado);
                                 if (file_exists($archivo_firmado)) unlink($archivo_firmado);
-
-                                $codigo_dae = $dataEnvio->codigo_dae;
-                                $dae = $dataEnvio->dae;
-                                $guia_madre = $dataEnvio->guia_madre;
-                                $guia_hija = $dataEnvio->guia_hija;
-                                $email = $dataEnvio->email;
-                                $telefono = $dataEnvio->telefono;
-                                $direccion = $dataEnvio->direccion;
-                                $codigo_pais = $dataEnvio->codigo_pais;
-                                $almacen = $dataEnvio->almacen;
-                                $aerolinea = getEnvio($dataEnvio->id_envio)->detalles[0]->id_aerolinea;
-                                $id_configuracion_empresa = $dataEnvio->pedido->id_configuracion_empresa;
                             }
-
                         }
-
+                        $codigo_dae = $dataEnvio->codigo_dae;
+                        $dae = $dataEnvio->dae;
+                        $guia_madre = $dataEnvio->guia_madre;
+                        $guia_hija = $dataEnvio->guia_hija;
+                        $email = $dataEnvio->email;
+                        $telefono = $dataEnvio->telefono;
+                        $direccion = $dataEnvio->direccion;
+                        $codigo_pais = $dataEnvio->codigo_pais;
+                        $almacen = $dataEnvio->almacen;
+                        $aerolinea = getEnvio($dataEnvio->id_envio)->detalles[0]->id_aerolinea;
+                        $id_configuracion_empresa = $dataEnvio->pedido->id_configuracion_empresa;
                     }
 
                     /*foreach (getPedido($request->id_pedido)->detalles as $det_ped)
@@ -280,6 +276,7 @@ class PedidoController extends Controller
 
                     if ($objEnvio->save()) {
                         $modelEnvio = Envio::all()->last();
+
                         bitacora('envio', $modelEnvio->id_envio, 'I', 'Inserción satisfactoria de un nuevo envío');
                         $dataDetallePedido = DetallePedido::where('id_pedido', $model->id_pedido)
                             ->join('cliente_pedido_especificacion as cpe', 'detalle_pedido.id_cliente_especificacion', 'cpe.id_cliente_pedido_especificacion')
@@ -295,6 +292,23 @@ class PedidoController extends Controller
                                 bitacora('detalle_envio', $modelDetalleEnvio->id_detalle_envio, 'I', 'Inserción satisfactoria de un nuevo detalle envío');
                             }
                         }
+
+                        if (isset($objComprobante)) {
+                            $data_actualizar_factura =[
+                                'id_envio' => $modelEnvio->id_envio,
+                                'codigo_pais' => $modelEnvio->codigo_pais,
+                                'dae'=> $modelEnvio->dae,
+                                'fecha_envio'=>$modelEnvio->fecha_envio,
+                                'pais'=> getPais($modelEnvio->codigo_pais)->nombre,
+                                'update'=>'true',
+                                'id_comprobante'=>$objComprobante->id_comprobante,
+                                'fecha_pedidos_search'=> $modelEnvio->pedido->fecha_pedido,
+                                'cant_variedades'=>$modelEnvio->pedido->catntidad_det_esp_emp(),
+                            ];
+                            ComprobanteController::actualizar_comprobante_factura($data_actualizar_factura);
+                        }
+                        //LLAMAR A LA FUNCIÓN ESTÁTICA PARA ACTUALIZAR LA FACTURA
+
                     }
                 }
             }
