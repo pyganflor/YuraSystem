@@ -93,15 +93,32 @@
             saldo_final_inicial = parseFloat($('b.saldo_final_'+semana).html().trim());
             cajas_equivalentes_total=parseFloat($("b.total_cajas_equivalentes_semana_"+semana).html().trim());
             //FIN DE LA OBTENCION DE LOS DATOS INICIALES GENERALES PARA AFECTAR LOS SALDOS//
-            console.log(saldo_inicial,cajas_proyectadas_semana,desecho,cajas_equivalentes_total);
-            saldo_final = saldo_inicial+cajas_proyectadas_semana-desecho-cajas_equivalentes_total;
 
+            saldo_final = saldo_inicial+cajas_proyectadas_semana-desecho-cajas_equivalentes_total;
             $('b.saldo_final_'+semana).html(saldo_final.toFixed(2));
 
-            /*z=parseInt(semana)+100;
+            z=parseInt(semana)+100;
+            y=0;
             for(let x=(parseInt(semana)+1); x<z;x++){
+                if($("b.cajas_proyectas_semana_"+x).length>0){
+                    if(y==0){
+                        saldo_inicial = saldo_final;
+                    }else{
+                        saldo_inicial= saldo_final_anterior;
+                    }
+                    cajas_proyectadas_semana = parseFloat($("b.cajas_proyectas_semana_"+x).html().trim());
+                    desecho =  parseFloat($("input#desecho_semana_"+x).val());
+                    cajas_equivalentes_total=parseFloat($("b.total_cajas_equivalentes_semana_"+x).html().trim());
 
-            }*/
+                    saldo_final = saldo_inicial+cajas_proyectadas_semana-desecho-cajas_equivalentes_total;
+
+                    $("b.saldo_inicial_"+x).html(saldo_inicial.toFixed(2));
+                    $("b.saldo_final_"+x).html(saldo_final.toFixed(2));
+                    saldo_final_anterior= saldo_final;
+
+                    y++;
+                }
+            }
 
         }else{
             modal_view('modal_error_calcula_proyeccion', '<div class="alert alert-danger text-center"><p> Debe seleccionar desde que semana en adelante desea programar</p> </div>', '<i class="fa fa-times"></i> Proyeccion de venta', true, false, '50%');
