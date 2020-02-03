@@ -36,7 +36,9 @@
         if($("input#semana_"+semana).is(":checked")){
 
             cajas_inical = parseFloat($("input.cajas_fisicas_inicial_"+semana).val());
-            cajas_equivalente_inicial = parseFloat($("input.cajas_equivalente_inicial_"+semana).val());
+
+            cajas_equivalente_inical = parseFloat($("input.cajas_equivalente_inicial_"+semana).val());
+
             valor_inical = parseFloat($("input.valor_inicial_"+semana).val());
 
             saldo_inicial = parseFloat($("input.saldo_inicial_"+semana).val());
@@ -47,6 +49,7 @@
             total_cajas_semana = parseFloat($("b.total_cajas_semana_"+semana).html().trim());
             total_cajas_equivalentes_semana = parseFloat($("b.total_cajas_equivalentes_semana_"+semana).html().trim());
             total_dinero_semana = parseFloat($("b.total_dinero_semana_"+semana).html().trim().substring(1));
+
             cajas_proyectadas = parseFloat($("#cajas_proyectadas_"+id_cliente+"_"+semana).val());
             factor_cliente = parseFloat($("#factor_cliente_"+id_cliente).val());
             ramos_x_caja_conf_empresa = parseFloat($("#ramos_x_caja_empresa").val()); //40
@@ -64,11 +67,12 @@
 
 
             $("input.cajas_fisicas_inicial_"+semana).val(cajas_proyectadas);
-            $("input.cajas_equivalente_inicial_"+semana).val(cajas_equivalentes-desecho_inicial);
+
             $("input.valor_inicial_"+semana).val(valor);
 
 
             $("b.total_cajas_semana_"+semana).html(total_cajas_dinamico.toFixed(2));
+
             console.log(total_cajas_equivalentes_dinamico,desecho_inicial);
             $("b.total_cajas_equivalentes_semana_"+semana).html((total_cajas_equivalentes_dinamico-desecho_inicial).toFixed(2));
             $("b.total_dinero_semana_"+semana).html("$"+total_valor_dinamico.toFixed(2));
