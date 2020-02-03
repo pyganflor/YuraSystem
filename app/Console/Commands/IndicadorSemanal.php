@@ -81,10 +81,16 @@ class IndicadorSemanal extends Command
                         $model->id_indicador = $indicador->id_indicador;
                         $model->codigo_semana = $sem;
                     }
-                    $valor = DB::table('resumen_costos_semanal')
+                    $costos = DB::table('resumen_costos_semanal')
                         ->select(DB::raw('sum(mano_obra + insumos + fijos + regalias) as cant'))
                         ->where('codigo_semana', $sem)
                         ->get()[0]->cant;
+
+                    $data = getAreaCiclosByRango($sem, $sem, 'T');
+                    $area = getAreaActivaFromData($data['variedades'], $data['semanas']) * 10000;
+
+                    $valor = $area > 0 ? round($costos / $area, 2) : 0;
+
                     $model->valor = $valor;
                     $model->save();
                 }
