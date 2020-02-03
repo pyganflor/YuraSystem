@@ -8,6 +8,8 @@
     Chart.defaults.global.defaultFontStyle = "bold";
     Chart.defaults.global.defaultFontSize = 13;
 
+    array_labels = [];
+
     var ventas = {
         label: 'Ventas/m2/año',
         data: [22, 23, 21, 24, 21, 22, 25, 26, 27, 22, 22, 23, 21, 24, 21, 22, 22, 23, 21, 24, 21, 22, 25, 26, 27, 22, 22, 23, 21, 24, 21, 22],
@@ -24,9 +26,14 @@
         yAxisID: "y-axis-a"
     };
 
+    array_costos = [];
+    @foreach($costos_m2_mensuales as $pos_item => $item)
+        array_costos.push({{$item->valor}});
+        array_labels.push('{{$item->codigo_semana}}');
+    @endforeach
     var costos = {
         label: 'Costos/m2/año',
-        data: [25, 21, 25, 26, 23, 24, 21, 22, 24, 25, 25, 21, 25, 26, 23, 24, 25, 21, 25, 26, 23, 24, 21, 22, 24, 25, 25, 21, 25, 26, 23, 24],
+        data: array_costos,
         fill: false,
         lineTension: 0.3,
         borderColor: 'red',
@@ -59,7 +66,7 @@
     };
 
     var data = {
-        labels: ["1901", "1902", "1903", "1904", "1905", "1906", "1907", "1908", "1901", "1902", "1903", "1904", "1905", "1906", "1907", "1908", "1901", "1902", "1903", "1904", "1905", "1906", "1907", "1908", "1901", "1902", "1903", "1904", "1905", "1906", "1907", "1908"],
+        labels: array_labels,
         datasets: [rentabilidad, ventas, costos]
     };
 
