@@ -45,7 +45,7 @@
             @foreach($semanas as $semana => $item)
                 @php $cajasProyectadas = getObjSemana($semana)->getCajasProyectadas($idVariedad);@endphp
                 <td class="text-center" style="border:1px solid #9d9d9d; background-color: #e9ecef; width:350px;border-bottom: 2px solid #000000;border-right: 2px solid #000000;" colspan="3">
-                    <b class="cajas_proyectas_semana_{{$semana}}">{{number_format($cajasProyectadas,2,".",",")}}</b>
+                    <b class="cajas_proyectas_semana_{{$semana}}">{{number_format($cajasProyectadas,2,".","")}}</b>
                 </td>
             @endforeach
             <td class="text-center" style="background-color: #e9ecef;width:250px;border: 2px solid #000000;">
@@ -157,13 +157,14 @@
                             }
                         @endphp
                         <td style="border: 1px solid #9d9d9d;border-bottom: 2px solid #000000;" class="td_cajas_proyectadas semana_{{$codigoSemana}}">
-                            <div style="width:100%;text-align:center;" data-toggle="tooltip" data-placement="top" title="Cajas físicas proyectadas" ondblclick="habilitar('cajas_proyectadas_{{$cliente->id_cliente}}_{{$codigoSemana}}')">
+                            <div style="width:100%;text-align:center;" data-toggle="tooltip" data-placement="top" title="Cajas físicas proyectadas"
+                                 ondblclick="habilitar('cajas_proyectadas_{{$cliente->id_cliente}}_{{$codigoSemana}}')">
                                 <input type="number" id="cajas_proyectadas_{{$cliente->id_cliente}}_{{$codigoSemana}}"  min="0"
                                        onkeyup="calcular_proyeccion_cliente('{{$cliente->id_cliente}}','{{$codigoSemana}}')"
                                        onchange="calcular_proyeccion_cliente('{{$cliente->id_cliente}}','{{$codigoSemana}}')"
                                        disabled name="cajas_proyectadas_{{$cliente->id_cliente}}_{{$codigoSemana}}"
                                        class="input_cajas_proyectadas" style="border:none;text-align:center;width:50px"
-                                       value="{{$cajasFisicas}}" >
+                                       value="{{$cajasFisicas}}">
                                 <input type="hidden" class="id_cliente" value="{{$cliente->id_cliente}}">
                                 <input type="hidden" class="input_codigo_semana" value="{{$codigoSemana}}">
                                 <input type="hidden" class="cajas_fisicas_inicial_{{$cliente->id_cliente}}_{{$codigoSemana}}" value="{{$cajasFisicas}}">
