@@ -41,18 +41,12 @@
             valor_inicial = parseFloat($("input.valor_inicial_"+id_cliente+"_"+semana).val());
             //FIN DE OBTENCION DE VALORES INICIALES//
 
-            //OBTENCION DE LOS DATOS INCIALES GENERALES//
-            saldo_inicial = parseFloat($("input.saldo_inicial_"+semana).val());
-            cajas_proyectadas_semana = parseFloat($("input.cajas_proyectas_semana_"+semana).val());
-            saldo_final_inicial = parseFloat($('b.saldo_final_'+semana).html().trim());
-            //FIN DE LA OBTENCION DE LOS DATOS INCIALES GENERALES//
-
             //OBTENCION DE DATOS INICIALES TOTALES//
             total_cajas_semana_inicial = parseFloat($("b.total_cajas_semana_"+semana).html().trim());
             total_cajas_equivalentes_semana = parseFloat($("b.total_cajas_equivalentes_semana_"+semana).html().trim());
             total_dinero_semana = parseFloat($("b.total_dinero_semana_"+semana).html().trim().substring(1));
             //FIN DE OBTENCION DE DATOS INICIALES TOTALES//
-            console.log(total_dinero_semana);
+
             //CALCULOS DE LA CELDA A EDITAR EN LA PROYECCION//
             cajas_proyectadas = parseFloat($("#cajas_proyectadas_"+id_cliente+"_"+semana).val());
             factor_cliente = parseFloat($("#factor_cliente_"+id_cliente).val());
@@ -92,9 +86,17 @@
             $("b.total_dinero_semana_"+semana).html("$"+total_valor_dinamico.toFixed(2));
             //FIN REINICIO DE VALORES TOTALES//
 
+            //OBTENCION DE LOS DATOS INICIALES GENERALES PARA AFECTAR LOS SALDOS//
+            saldo_inicial = parseFloat($("b.saldo_inicial_"+semana).html());
+            cajas_proyectadas_semana = parseFloat($("b.cajas_proyectas_semana_"+semana).html());
+            desecho =  parseFloat($("input#desecho_semana_"+semana).val());
+            saldo_final_inicial = parseFloat($('b.saldo_final_'+semana).html().trim());
+            cajas_equivalentes_total=parseFloat($("b.total_cajas_equivalentes_semana_"+semana).html().trim());
+            //FIN DE LA OBTENCION DE LOS DATOS INICIALES GENERALES PARA AFECTAR LOS SALDOS//
+            console.log(saldo_inicial,cajas_proyectadas_semana,desecho,cajas_equivalentes_total);
+            saldo_final = saldo_inicial+cajas_proyectadas_semana-desecho+cajas_equivalentes_total;
 
-
-            //$('b.saldo_final_'+semana).html('');
+            $('b.saldo_final_'+semana).html(saldo_final.toFixed(2));
 
             /*z=parseInt(semana)+100;
             for(let x=(parseInt(semana)+1); x<z;x++){
