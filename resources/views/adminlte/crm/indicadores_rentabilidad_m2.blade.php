@@ -51,9 +51,13 @@
         yAxisID: "y-axis-a"
     };
 
+    array_rentabilidad = [];
+    @foreach($rentabilidad_m2_mensuales as $pos_item => $item)
+        array_rentabilidad.push({{$item}});
+    @endforeach
     var rentabilidad = {
         label: 'Rentabilidad/m2/año',
-        data: [0.35, 0.24, -0.5, 0.65, 0.1, 0.24, 0.31, -0.24, 0.37, 1.25, 0.35, 0.24, -0.5, 0.65, 0.1, 0.24, 0.35, 0.24, -0.5, 0.65, 0.1, 0.24, 0.31, -0.24, 0.37, 1.25, 0.35, 0.24, -0.5, 0.65, 0.1, 0.24],
+        data: array_rentabilidad,
         fill: false,
         lineTension: 0.3,
         borderColor: 'green',
@@ -65,8 +69,6 @@
         pointStyle: 'circle',
         backgroundColor: 'green',
         yAxisID: "y-axis-b",
-
-        type: 'line',
     };
 
     var data = {
