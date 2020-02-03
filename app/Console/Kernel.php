@@ -8,6 +8,7 @@ use yura\Console\Commands\CicloPrimeraFlor;
 use yura\Console\Commands\DeleteRecepciones;
 use yura\Console\Commands\EmpaquetarPedidosAnulados;
 use yura\Console\Commands\FechaFinalCiclo;
+use yura\Console\Commands\IndicadorSemanal;
 use yura\Console\Commands\NotificacionesSistema;
 use yura\Console\Commands\ResumenCostosSemanal;
 use yura\Console\Commands\ResumenSaldoProyeccionVentaSemanal;
@@ -21,7 +22,6 @@ use yura\Console\Commands\UpdateRegalias;
 use yura\Console\Commands\VentaSemanalReal;
 use yura\Console\Commands\PrecioVariedadCliente;
 use yura\Console\Commands\ResumenSemanaCosecha;
-use yura\Modelos\IndicadorSemana;
 
 class Kernel extends ConsoleKernel
 {
@@ -48,7 +48,7 @@ class Kernel extends ConsoleKernel
         UpdateRegalias::class,
         ResumenCostosSemanal::class,
         ResumenSaldoProyeccionVentaSemanal::class,
-        IndicadorSemana::class,
+        IndicadorSemanal::class,
     ];
 
     /**
