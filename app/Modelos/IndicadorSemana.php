@@ -1,6 +1,6 @@
 <?php
 
-namespace yura;
+namespace yura\Modelos;
 
 use Illuminate\Database\Eloquent\Model;
 
