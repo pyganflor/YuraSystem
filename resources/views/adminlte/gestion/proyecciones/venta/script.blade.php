@@ -94,7 +94,7 @@
             cajas_equivalentes_total=parseFloat($("b.total_cajas_equivalentes_semana_"+semana).html().trim());
             //FIN DE LA OBTENCION DE LOS DATOS INICIALES GENERALES PARA AFECTAR LOS SALDOS//
             console.log(saldo_inicial,cajas_proyectadas_semana,desecho,cajas_equivalentes_total);
-            saldo_final = saldo_inicial+cajas_proyectadas_semana-desecho+cajas_equivalentes_total;
+            saldo_final = saldo_inicial+cajas_proyectadas_semana-desecho-cajas_equivalentes_total;
 
             $('b.saldo_final_'+semana).html(saldo_final.toFixed(2));
 
