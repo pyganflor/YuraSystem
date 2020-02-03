@@ -37,7 +37,8 @@ class Indicador extends Model
 
     public function getSemanas($desde, $hasta)
     {
-        return $this->semanas->where('codigo_semana', '>=', $desde)->where('codigo_semana', '<=', $hasta);
+        return IndicadorSemana::where('id_indicador', $this->id_indicador)
+            ->where('codigo_semana', '>=', $desde)->where('codigo_semana', '<=', $hasta)->get();
     }
 
     public function getSemana($semana)
