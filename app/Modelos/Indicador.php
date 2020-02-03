@@ -35,6 +35,11 @@ class Indicador extends Model
         return $this->hasMany('yura\Modelos\IndicadorSemana', 'id_indicador');
     }
 
+    public function getSemanas($desde, $hasta)
+    {
+        return $this->semanas->where('codigo_semana', '>=', $desde)->where('codigo_semana', '<=', $hasta);
+    }
+
     public function getSemana($semana)
     {
         return $this->semanas->where('codigo_semana', $semana)->first();
