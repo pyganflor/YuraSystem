@@ -115,7 +115,6 @@
                     $("b.saldo_inicial_"+x).html(saldo_inicial.toFixed(2));
                     $("b.saldo_final_"+x).html(saldo_final.toFixed(2));
                     saldo_final_anterior= saldo_final;
-
                     y++;
                 }
             }
