@@ -69,12 +69,14 @@
                         Desecho
                     </td>
                     @foreach($semana['semanas'] as $codigoSemana => $dataSemana)
-                        <td class="text-center desecho_semana_{{$codigoSemana}}" ondblclick="habilitar('desecho_semana_{{$codigoSemana}}')"
+                        <td class="text-center desecho_semana_{{$codigoSemana}}"
                             style="border:1px solid #9d9d9d; width:350px;border-bottom: 2px solid #000000;border-right: 2px solid #000000;" colspan="3">
                             <input type="number" min="0" id="desecho_semana_{{$codigoSemana}}" name="desecho_semana_{{$codigoSemana}}"
                                    data-toggle="tooltip" data-placement="top" title="Cajas desechadas" value="{{getObjSemana($codigoSemana)->desecho($idVariedad)}}"
-                                   onblur="store_proyeccion_desecho('{{$codigoSemana}}','{{$idVariedad}}')"  disabled
+                                   onkeyup="calcular_proyeccion_cliente('{{$cliente->id_cliente}}','{{$codigoSemana}}')"
+                                   onchange="calcular_proyeccion_cliente('{{$cliente->id_cliente}}','{{$codigoSemana}}')"
                                    style="border:none;background-color: transparent;text-align:center" class="input_semana_{{$codigoSemana}}">
+                            <input type="hidden" class="desecho_inicial_{{$codigoSemana}}" value="{{getObjSemana($codigoSemana)->desecho($idVariedad)}}">
                         </td>
                     @endforeach
                     <td class="text-center" style="width:250px;border: 2px solid #000000;">
@@ -164,19 +166,19 @@
                                        value="{{$cajasFisicas}}" >
                                 <input type="hidden" class="id_cliente" value="{{$cliente->id_cliente}}">
                                 <input type="hidden" class="input_codigo_semana" value="{{$codigoSemana}}">
-                                <input type="hidden" class="cajas_fisicas_inicial_{{$codigoSemana}}" value="{{$cajasFisicas}}">
+                                <input type="hidden" class="cajas_fisicas_inicial_{{$cliente->id_cliente}}_{{$codigoSemana}}" value="{{$cajasFisicas}}">
                             </div>
                         </td>
                         <td style="border: 1px solid #9d9d9d;border-bottom: 2px solid #000000;">
                             <div style="padding: 3px 6px;width:100%;text-align:center;cursor:pointer" class="cajas_equivalentes" data-toggle="tooltip" data-placement="top" title="Cajas equivalentes proyectadas">
                                 <b id="cajas_equivalentes_{{$cliente->id_cliente}}_{{$codigoSemana}}">{{number_format($cajasEquivalentes,2,".","")}}</b>
-                                <input type="hidden" class="cajas_equivalente_inicial_{{$codigoSemana}}" value="{{number_format($cajasEquivalentes,2,".","")}}">
+                                <input type="hidden" class="cajas_equivalente_inicial_{{$cliente->id_cliente}}_{{$codigoSemana}}" value="{{number_format($cajasEquivalentes,2,".","")}}">
                             </div>
                         </td>
                         <td style="border: 1px solid #9d9d9d;border-bottom: 2px solid #000000;border-right: 2px solid #000000">
                             <div style="padding: 3px 6px;width:100%;text-align:center;cursor:pointer;" class="precio_proyectado" data-toggle="tooltip" data-placement="top" title="Valor proyectado">
                                 <b  id="precio_proyectado_{{$cliente->id_cliente}}_{{$codigoSemana}}">${{number_format($valor,2,".",",")}}</b>
-                                <input type="hidden" class="valor_inicial_{{$codigoSemana}}" value="{{number_format($valor,2,".",",")}}">
+                                <input type="hidden" class="valor_inicial_{{$cliente->id_cliente}}_{{$codigoSemana}}" value="{{number_format($valor,2,".","")}}">
                             </div>
                         </td>
                     @endforeach
@@ -253,7 +255,7 @@
                             <td style="border: 1px solid #9d9d9d;border: 2px solid #000000;" colspan="3">
                                 <div style="width:100%;text-align:center;" data-tooltip data-placement="top" title="Saldo final">
                                     <b class="{{$saldoFinal < 0 ? "text-red" : "text-success"}} saldo_final_{{$semana}}">
-                                      {{number_format($saldoFinal,2,".",",")}}
+                                      {{number_format($saldoFinal,2,".","")}}
                                     </b>
                                     <b><i class="fa {{$saldoFinal < 0 ? "fa-arrow-down text-red" : "fa-arrow-up text-success"}}" aria-hidden="true"></i></b>
                                </div>
