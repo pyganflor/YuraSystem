@@ -38,7 +38,7 @@
             //OBTENCION DE VALORES INICIALES//
             cajas_inicial = parseFloat($("input.cajas_fisicas_inicial_"+id_cliente+"_"+semana).val());
             cajas_equivalente_inicial = parseFloat($("input.cajas_equivalente_inicial_"+id_cliente+"_"+semana).val());
-            valor_inical = parseFloat($("input.valor_inicial_"+id_cliente+"_"+semana).val());
+            valor_inicial = parseFloat($("input.valor_inicial_"+id_cliente+"_"+semana).val());
             //FIN DE OBTENCION DE VALORES INICIALES//
 
             //OBTENCION DE LOS DATOS INCIALES GENERALES//
@@ -52,7 +52,7 @@
             total_cajas_equivalentes_semana = parseFloat($("b.total_cajas_equivalentes_semana_"+semana).html().trim());
             total_dinero_semana = parseFloat($("b.total_dinero_semana_"+semana).html().trim().substring(1));
             //FIN DE OBTENCION DE DATOS INICIALES TOTALES//
-
+            console.log(total_dinero_semana);
             //CALCULOS DE LA CELDA A EDITAR EN LA PROYECCION//
             cajas_proyectadas = parseFloat($("#cajas_proyectadas_"+id_cliente+"_"+semana).val());
             factor_cliente = parseFloat($("#factor_cliente_"+id_cliente).val());
@@ -77,9 +77,8 @@
             cajas_proyectadas = isNaN(cajas_proyectadas ) ? 0 : cajas_proyectadas;
             total_cajas_dinamico = total_cajas_semana_inicial-cajas_inicial+cajas_proyectadas;
             total_cajas_equivalentes_dinamico = total_cajas_equivalentes_semana-cajas_equivalente_inicial+cajas_equivalentes;
-            total_valor_dinamico = total_dinero_semana-valor_inical+parseFloat(valor);
+            total_valor_dinamico = total_dinero_semana-valor_inicial+parseFloat(valor);
             //FIN CALCULOS VALORES TOTALES//
-
 
             //REINICIO DE VALORES INICIALES//
             $("input.cajas_fisicas_inicial_"+id_cliente+"_"+semana).val(cajas_proyectadas);
@@ -90,12 +89,12 @@
             //REINICIO DE VALORES TOTALES//
             $("b.total_cajas_semana_"+semana).html(total_cajas_dinamico.toFixed(2));
             $("b.total_cajas_equivalentes_semana_"+semana).html(total_cajas_equivalentes_dinamico.toFixed(2));
-            $("b.total_dinero_semana_"+semana).html(total_valor_dinamico.toFixed(2));
+            $("b.total_dinero_semana_"+semana).html("$"+total_valor_dinamico.toFixed(2));
             //FIN REINICIO DE VALORES TOTALES//
 
 
 
-            $('b.saldo_final_'+semana).html('');
+            //$('b.saldo_final_'+semana).html('');
 
             /*z=parseInt(semana)+100;
             for(let x=(parseInt(semana)+1); x<z;x++){
