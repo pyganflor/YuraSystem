@@ -1,59 +1,121 @@
-<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <br>
-<div id="div_chart_rentabilidad_m2_mensual"></div>
+<canvas id="div_chart_rentabilidad_m2_mensual" style="width: 100%; height: 400px"></canvas>
 
 <script>
-    google.charts.load('current', {'packages': ['line', 'corechart']});
-    google.charts.setOnLoadCallback(drawChart);
+    var grafica = document.getElementById("div_chart_rentabilidad_m2_mensual").getContext('2d');
 
-    function drawChart() {
-        var chartDiv = document.getElementById('div_chart_rentabilidad_m2_mensual');
+    Chart.defaults.global.defaultFontFamily = "Arial";
+    Chart.defaults.global.defaultFontStyle = "bold";
+    Chart.defaults.global.defaultFontSize = 13;
 
-        var data = new google.visualization.DataTable();
-        data.addColumn('string', 'Semanas');
-        data.addColumn('number', "Ventas/m2/año");
-        data.addColumn('number', "Costos/m2/año");
-        data.addColumn('number', "Rentablididad/m2/año");
+    var ventas = {
+        label: 'Ventas/m2/año',
+        data: [22, 23, 21, 24, 21, 22, 25, 26, 27, 22, 22, 23, 21, 24, 21, 22, 22, 23, 21, 24, 21, 22, 25, 26, 27, 22, 22, 23, 21, 24, 21, 22],
+        fill: false,
+        lineTension: 0.3,
+        borderColor: 'blue',
+        //borderDash: [15, 3],
+        pointBorderColor: 'blue',
+        pointBackgroundColor: 'blue',
+        pointRadius: 1,
+        pointHoverRadius: 10,
+        pointStyle: 'triangle',
+        backgroundColor: 'blue',
+        yAxisID: "y-axis-a"
+    };
 
-        data.addRows([
-            ['1901', 21, 23, 0.1],
-            ['1902', 22, 21, 0.2],
-            ['1903', 23, 20, 0.3],
-            ['1904', 21, 22, -0.1],
-            ['1905', 20, 21, -0.2],
-            ['1906', 23, 23, 0.1],
-            ['1907', 22, 24, -0.1],
-            ['1908', 21, 23, -0.3],
-            ['1909', 23, 21, 0.2],
-            ['1910', 20, 22, 0.1],
-            ['1911', 24, 20, 0.3],
-            ['1912', 21, 23, 0.1]
-        ]);
+    var costos = {
+        label: 'Costos/m2/año',
+        data: [25, 21, 25, 26, 23, 24, 21, 22, 24, 25, 25, 21, 25, 26, 23, 24, 25, 21, 25, 26, 23, 24, 21, 22, 24, 25, 25, 21, 25, 26, 23, 24],
+        fill: false,
+        lineTension: 0.3,
+        borderColor: 'red',
+        //borderDash: [15, 3],
+        pointBorderColor: 'red',
+        pointBackgroundColor: 'red',
+        pointRadius: 1,
+        pointHoverRadius: 10,
+        pointStyle: 'rect',
+        backgroundColor: 'red',
+        yAxisID: "y-axis-a"
+    };
 
-        var opciones = {
-            chart: {
-                title: 'Rentabilidad/m2 (4 meses)'
-            },
-            width: '100%',
-            height: 400,
-            series: {
-                // Gives each series an axis name that matches the Y-axis below.
-                0: {axis: 'Ventas'},
-                1: {axis: 'Costos'},
-                2: {axis: 'Rentabilidad'}
-            },
-            axes: {
-                // Adds labels to each axis; they don't have to match the axis names.
-                y: {
-                    Ventas: {label: 'Ventas'},
-                    Costos: {label: 'Costos'},
-                    Rentabilidad: {label: 'Rentabilidad'}
-                }
-            },
-            selectionMode: 'multiple',
-        };
+    var rentabilidad = {
+        label: 'Rentabilidad/m2/año',
+        data: [0.35, 0.24, -0.5, 0.65, 0.1, 0.24, 0.31, -0.24, 0.37, 1.25, 0.35, 0.24, -0.5, 0.65, 0.1, 0.24, 0.35, 0.24, -0.5, 0.65, 0.1, 0.24, 0.31, -0.24, 0.37, 1.25, 0.35, 0.24, -0.5, 0.65, 0.1, 0.24],
+        fill: false,
+        lineTension: 0.3,
+        borderColor: 'green',
+        //borderDash: [5, 5],
+        pointBorderColor: 'black',
+        pointBackgroundColor: 'green',
+        pointRadius: 1,
+        pointHoverRadius: 7,
+        pointStyle: 'circle',
+        backgroundColor: 'green',
+        yAxisID: "y-axis-b",
 
-        var Chart = new google.charts.Line(chartDiv);
-        Chart.draw(data, opciones);
-    }
+        type: 'line',
+    };
+
+    var data = {
+        labels: ["1901", "1902", "1903", "1904", "1905", "1906", "1907", "1908", "1901", "1902", "1903", "1904", "1905", "1906", "1907", "1908", "1901", "1902", "1903", "1904", "1905", "1906", "1907", "1908", "1901", "1902", "1903", "1904", "1905", "1906", "1907", "1908"],
+        datasets: [rentabilidad, ventas, costos]
+    };
+
+    var opciones = {
+        scales: {
+            xAxes: [{
+                gridLines: {
+                    display: false,
+                    color: "darkgray"
+                },
+                scaleLabel: {
+                    display: true,
+                    labelString: "Semanas",
+                    fontColor: "gray"
+                },
+            }],
+            yAxes: [{
+                id: "y-axis-a",
+                gridLines: {
+                    color: "black",
+                    borderDash: [2, 5],
+                },
+                scaleLabel: {
+                    display: true,
+                    labelString: "Ventas y Costos",
+                    fontColor: "black"
+                },
+                ticks: {
+                    beginAtZero: true,
+                    max: 30,
+                },
+                position: "left"
+            }, {
+                id: "y-axis-b",
+                gridLines: {
+                    display: false,
+                    color: "black",
+                    borderDash: [2, 5],
+                },
+                scaleLabel: {
+                    display: true,
+                    labelString: "Rentabilidad",
+                    fontColor: "green"
+                },
+                ticks: {
+                    min: -2,
+                    max: 5,
+                },
+                position: "right"
+            }]
+        }
+    };
+
+    var lineChart = new Chart(grafica, {
+        type: 'line',
+        data: data,
+        options: opciones
+    });
 </script>
