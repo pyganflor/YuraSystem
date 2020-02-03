@@ -57,7 +57,7 @@ class CodigoDaeController extends Controller
 
     public function busqueda_pais_modal(Request $request)
     {
-        $dataPais = Pais::where('nombre', 'ilike', $request->nombre . '%')->get();
+        $dataPais = Pais::where('nombre', 'like', $request->nombre . '%')->get();
 
         $html = '';
         foreach ($dataPais as $pais) {
