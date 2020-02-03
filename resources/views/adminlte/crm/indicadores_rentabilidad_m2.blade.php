@@ -8,9 +8,16 @@
     Chart.defaults.global.defaultFontStyle = "bold";
     Chart.defaults.global.defaultFontSize = 13;
 
+    array_labels = [];
+
+    array_ventas = [];
+    @foreach($ventas_m2_mensuales as $pos_item => $item)
+        array_ventas.push({{$item->valor}});
+        array_labels.push('{{$item->codigo_semana}}');
+    @endforeach
     var ventas = {
         label: 'Ventas/m2/año',
-        data: [22, 23, 21, 24, 21, 22, 25, 26, 27, 22, 22, 23, 21, 24, 21, 22, 22, 23, 21, 24, 21, 22, 25, 26, 27, 22, 22, 23, 21, 24, 21, 22],
+        data: array_ventas,
         fill: false,
         lineTension: 0.3,
         borderColor: 'blue',
@@ -24,9 +31,13 @@
         yAxisID: "y-axis-a"
     };
 
+    array_costos = [];
+    @foreach($costos_m2_mensuales as $pos_item => $item)
+        array_costos.push({{$item->valor}});
+    @endforeach
     var costos = {
         label: 'Costos/m2/año',
-        data: [25, 21, 25, 26, 23, 24, 21, 22, 24, 25, 25, 21, 25, 26, 23, 24, 25, 21, 25, 26, 23, 24, 21, 22, 24, 25, 25, 21, 25, 26, 23, 24],
+        data: array_costos,
         fill: false,
         lineTension: 0.3,
         borderColor: 'red',
@@ -40,9 +51,13 @@
         yAxisID: "y-axis-a"
     };
 
+    array_rentabilidad = [];
+    @foreach($rentabilidad_m2_mensuales as $pos_item => $item)
+        array_rentabilidad.push({{$item}});
+    @endforeach
     var rentabilidad = {
         label: 'Rentabilidad/m2/año',
-        data: [0.35, 0.24, -0.5, 0.65, 0.1, 0.24, 0.31, -0.24, 0.37, 1.25, 0.35, 0.24, -0.5, 0.65, 0.1, 0.24, 0.35, 0.24, -0.5, 0.65, 0.1, 0.24, 0.31, -0.24, 0.37, 1.25, 0.35, 0.24, -0.5, 0.65, 0.1, 0.24],
+        data: array_rentabilidad,
         fill: false,
         lineTension: 0.3,
         borderColor: 'green',
@@ -54,12 +69,10 @@
         pointStyle: 'circle',
         backgroundColor: 'green',
         yAxisID: "y-axis-b",
-
-        type: 'line',
     };
 
     var data = {
-        labels: ["1901", "1902", "1903", "1904", "1905", "1906", "1907", "1908", "1901", "1902", "1903", "1904", "1905", "1906", "1907", "1908", "1901", "1902", "1903", "1904", "1905", "1906", "1907", "1908", "1901", "1902", "1903", "1904", "1905", "1906", "1907", "1908"],
+        labels: array_labels,
         datasets: [rentabilidad, ventas, costos]
     };
 
@@ -105,8 +118,8 @@
                     fontColor: "green"
                 },
                 ticks: {
-                    min: -2,
-                    max: 5,
+                    min: -3,
+                    max: 10,
                 },
                 position: "right"
             }]

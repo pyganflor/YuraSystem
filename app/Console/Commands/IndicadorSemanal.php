@@ -81,11 +81,62 @@ class IndicadorSemanal extends Command
                         $model->id_indicador = $indicador->id_indicador;
                         $model->codigo_semana = $sem;
                     }
-                    $valor = DB::table('resumen_costos_semanal')
+
+                    $semana = Semana::All()
+                        ->where('codigo', $sem)
+                        ->first();
+                    $sem_desde = getSemanaByDate(opDiasFecha('-', 112, $semana->fecha_inicial));   // 16 semana atras
+                    $sem_hasta = $semana;
+
+                    $costos = DB::table('resumen_costos_semanal')
                         ->select(DB::raw('sum(mano_obra + insumos + fijos + regalias) as cant'))
-                        ->where('codigo_semana', $sem)
+                        ->where('codigo_semana', '>=', $sem_desde->codigo)
+                        ->where('codigo_semana', '<=', $sem_hasta->codigo)
                         ->get()[0]->cant;
+                    $area = DB::table('resumen_area_semanal')
+                        ->select(DB::raw('sum(area) as cant'))
+                        ->where('codigo_semana', '>=', $sem_desde->codigo)
+                        ->where('codigo_semana', '<=', $sem_hasta->codigo)
+                        ->get()[0]->cant;
+
+                    $valor = $area > 0 ? round(($costos / ($area / 16)) * 3, 2) : 0;
+
                     $model->valor = $valor;
+                    $model->save();
+                }
+            }
+
+            /* ========================== D9 Venta $/m2/año (-4 meses) =========================== */
+            $indicador = getIndicadorByName('D9');  // Venta $/m2/año (-4 meses)
+            if ($indicador != '') {
+                foreach ($array_semanas as $sem) {
+                    $model = $indicador->getSemana($sem);
+                    if ($model == '') {
+                        $model = new IndicadorSemana();
+                        $model->id_indicador = $indicador->id_indicador;
+                        $model->codigo_semana = $sem;
+                    }
+                    $semana = Semana::All()
+                        ->where('codigo', $sem)
+                        ->first();
+
+                    $hasta_sem = $semana;
+                    $desde_sem = getSemanaByDate(opDiasFecha('-', 112, $hasta_sem->fecha_inicial));
+
+                    $venta_mensual = DB::table('resumen_semanal_total')
+                        ->select(DB::raw('sum(valor) as cant'))
+                        //->where('estado', 1)
+                        ->where('codigo_semana', '>=', $desde_sem->codigo)
+                        ->where('codigo_semana', '<=', $hasta_sem->codigo)
+                        ->get()[0]->cant;
+
+                    $semana_desde = getSemanaByDate(opDiasFecha('-', 112, $desde_sem->fecha_inicial));   // 16 semanas atras
+                    $semana_hasta = $desde_sem;
+
+                    $data = getAreaCiclosByRango($semana_desde->codigo, $semana_hasta->codigo, 'T');
+                    $area_anual = getAreaActivaFromData($data['variedades'], $data['semanas']) * 10000;
+
+                    $model->valor = $area_anual > 0 ? round(($venta_mensual / $area_anual) * 3, 2) : 0;
                     $model->save();
                 }
             }

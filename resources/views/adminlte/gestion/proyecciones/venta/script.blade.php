@@ -46,7 +46,7 @@
             total_cajas_equivalentes_semana = parseFloat($("b.total_cajas_equivalentes_semana_"+semana).html().trim());
             total_dinero_semana = parseFloat($("b.total_dinero_semana_"+semana).html().trim().substring(1));
             //FIN DE OBTENCION DE DATOS INICIALES TOTALES//
-
+            console.log(total_dinero_semana);
             //CALCULOS DE LA CELDA A EDITAR EN LA PROYECCION//
             cajas_proyectadas = parseFloat($("#cajas_proyectadas_"+id_cliente+"_"+semana).val());
             factor_cliente = parseFloat($("#factor_cliente_"+id_cliente).val());

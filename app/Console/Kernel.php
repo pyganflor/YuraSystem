@@ -8,6 +8,7 @@ use yura\Console\Commands\CicloPrimeraFlor;
 use yura\Console\Commands\DeleteRecepciones;
 use yura\Console\Commands\EmpaquetarPedidosAnulados;
 use yura\Console\Commands\FechaFinalCiclo;
+use yura\Console\Commands\IndicadorSemanal;
 use yura\Console\Commands\NotificacionesSistema;
 use yura\Console\Commands\ResumenCostosSemanal;
 use yura\Console\Commands\ResumenSaldoProyeccionVentaSemanal;
@@ -46,7 +47,8 @@ class Kernel extends ConsoleKernel
         UpdateOtrosGastos::class,
         UpdateRegalias::class,
         ResumenCostosSemanal::class,
-        ResumenSaldoProyeccionVentaSemanal::class
+        ResumenSaldoProyeccionVentaSemanal::class,
+        IndicadorSemanal::class,
     ];
 
     /**
@@ -75,6 +77,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('otros_gastos:update')->hourly()->runInBackground(); // UpdateOtrosGastos::class
         $schedule->command('regalias:update')->hourly()->runInBackground(); // UpdateRegalias::class
         $schedule->command('costos:update_semanal')->hourly()->runInBackground(); // ResumenCostosSemanal::class
+        $schedule->command('indicador_semana:update')->hourly()->runInBackground(); // IndicadorSemanal::class
         $schedule->command('resumen_saldo_proyeccion:venta_semanal')->hourly()->runInBackground(); // ResumenSaldoProyeccionVentaSemanal::class
     }
 
