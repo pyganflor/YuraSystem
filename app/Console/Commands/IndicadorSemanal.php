@@ -105,6 +105,41 @@ class IndicadorSemanal extends Command
                     $model->save();
                 }
             }
+
+            /* ========================== D9 Venta $/m2/año (-4 meses) =========================== */
+            $indicador = getIndicadorByName('D9');  // Venta $/m2/año (-4 meses)
+            if ($indicador != '') {
+                foreach ($array_semanas as $sem) {
+                    $model = $indicador->getSemana($sem);
+                    if ($model == '') {
+                        $model = new IndicadorSemana();
+                        $model->id_indicador = $indicador->id_indicador;
+                        $model->codigo_semana = $sem;
+                    }
+                    $semana = Semana::All()
+                        ->where('codigo', $sem)
+                        ->first();
+
+                    $hasta_sem = $semana;
+                    $desde_sem = getSemanaByDate(opDiasFecha('-', 112, $hasta_sem->fecha_inicial));
+
+                    $venta_mensual = DB::table('resumen_semanal_total')
+                        ->select(DB::raw('sum(valor) as cant'))
+                        //->where('estado', 1)
+                        ->where('codigo_semana', '>=', $desde_sem->codigo)
+                        ->where('codigo_semana', '<=', $hasta_sem->codigo)
+                        ->get()[0]->cant;
+
+                    $semana_desde = getSemanaByDate(opDiasFecha('-', 112, $desde_sem->fecha_inicial));   // 16 semanas atras
+                    $semana_hasta = $desde_sem;
+
+                    $data = getAreaCiclosByRango($semana_desde->codigo, $semana_hasta->codigo, 'T');
+                    $area_anual = getAreaActivaFromData($data['variedades'], $data['semanas']) * 10000;
+
+                    $model->valor = $area_anual > 0 ? round(($venta_mensual / $area_anual) * 3, 2) : 0;
+                    $model->save();
+                }
+            }
         }
 
         $time_duration = difFechas(date('Y-m-d H:i:s'), $ini)->h . ':' . difFechas(date('Y-m-d H:i:s'), $ini)->m . ':' . difFechas(date('Y-m-d H:i:s'), $ini)->s;
