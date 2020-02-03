@@ -10,9 +10,14 @@
 
     array_labels = [];
 
+    array_ventas = [];
+    @foreach($ventas_m2_mensuales as $pos_item => $item)
+        array_ventas.push({{$item->valor}});
+        array_labels.push('{{$item->codigo_semana}}');
+    @endforeach
     var ventas = {
         label: 'Ventas/m2/año',
-        data: [22, 23, 21, 24, 21, 22, 25, 26, 27, 22, 22, 23, 21, 24, 21, 22, 22, 23, 21, 24, 21, 22, 25, 26, 27, 22, 22, 23, 21, 24, 21, 22],
+        data: array_ventas,
         fill: false,
         lineTension: 0.3,
         borderColor: 'blue',
@@ -29,7 +34,6 @@
     array_costos = [];
     @foreach($costos_m2_mensuales as $pos_item => $item)
         array_costos.push({{$item->valor}});
-        array_labels.push('{{$item->codigo_semana}}');
     @endforeach
     var costos = {
         label: 'Costos/m2/año',

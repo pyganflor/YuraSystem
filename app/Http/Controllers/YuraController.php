@@ -554,11 +554,13 @@ class YuraController extends Controller
         if (count(getUsuario(Session::get('id_usuario'))->rol()->getSubmenusByTipo('C')) > 0) {
             $variedad = Variedad::find($request->variedad);
             $costos_m2_mensuales = [];
+            $ventas_m2_mensuales = [];
             if ($request->view == 'indicadores_rentabilidad_m2') {
                 $sem_hasta = getSemanaByDate(opDiasFecha('-', 7, date('Y-m-d')));   // 1 semana atras
                 $sem_desde = getSemanaByDate(opDiasFecha('-', 217, $sem_hasta->fecha_inicial));   // 32 semana atras
 
                 $costos_m2_mensuales = getIndicadorByName('C9')->getSemanas($sem_desde->codigo, $sem_hasta->codigo);
+                $ventas_m2_mensuales = getIndicadorByName('D9')->getSemanas($sem_desde->codigo, $sem_hasta->codigo);
             }
             return view('adminlte.crm.' . $request->view, [
                 'variedad' => $variedad,
@@ -584,6 +586,7 @@ class YuraController extends Controller
                 'rentabilidad_m2_mensual' => getIndicadorByName('R1')->valor,
                 'rentabilidad_m2_anual' => getIndicadorByName('R2')->valor,
                 'costos_m2_mensuales' => $costos_m2_mensuales,
+                'ventas_m2_mensuales' => $ventas_m2_mensuales,
             ]);
         } else
             return view('adminlte.inicio');
