@@ -164,7 +164,7 @@ class ProyVentaController extends Controller
 
     public function storeProyeccionVenta(Request $request){
        // dd($request->all());
-        /*try{*/
+        try{
             if(isset($request->semanas) && count($request->semanas)>0){
                 if(isset($request->clientes)){
                     foreach($request->semanas as $semana){
@@ -191,6 +191,18 @@ class ProyVentaController extends Controller
                     ]);
                     $objResumenCosecha->update(['desecho' => $desecho['cantidad']]);
                 }
+                ProyeccionVentaSemanalUpdate::dispatch($request->semanas[0],$semana[(count($request->semanas)-1)],0,0)->onQueue('update_venta_semanal_real');
+
+                //UpdateSaldosProyVentaSemanal::dispatch($request->clientes[0]['semana'], $request->id_variedad)->onQueue('update_saldos_proy_venta_semanal');
+                $success = true;
+                $msg = '<div class="alert alert-success text-center">' .
+                    '<p> Se ha guardado la proyección con éxito </p>'
+                    .'</div>';
+            }else{
+                $success = false;
+                $msg = '<div class="alert alert-danger text-center">' .
+                    '<p>  Debe elegir al menos una semana para programar </p>'
+                    .'</div>';
             }
             /*else{
                 foreach($request->clientes as $cliente){
@@ -208,19 +220,12 @@ class ProyVentaController extends Controller
                 }
             }*/
 
-            ProyeccionVentaSemanalUpdate::dispatch($request->semanas[0],$semana[(count($semana)-1)],0,0)->onQueue('update_venta_semanal_real');
-            //UpdateSaldosProyVentaSemanal::dispatch($request->clientes[0]['semana'], $request->id_variedad)->onQueue('update_saldos_proy_venta_semanal');
-            $success = true;
-            $msg = '<div class="alert alert-success text-center">' .
-                '<p> Se ha guardado la proyección con éxito </p>'
-                .'</div>';
-
-        /*}catch (\Exception $e){
+        }catch (\Exception $e){
             $success = false;
             $msg = '<div class="alert alert-danger text-center">' .
                         '<p>  Ha ocurrido el siguiente error al intentar guardar la información <br />"'.$e->getMessage().'"<br /> Comuníquelo al área de sistemas</p>'
                     .'</div>';
-        }*/
+        }
 
         return [
             'mensaje' => $msg,
