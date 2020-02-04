@@ -43,15 +43,18 @@ class VentaSemanalReal extends Command
      */
     public function handle()
     {
+    
             $inicio =  $tiempo_inicial = microtime(true);
             $desde = $this->argument('semana_desde');
             $hasta = $this->argument('semana_hasta');
             $variedad = $this->argument('variedad');
             $idCliente = $this->argument('id_cliente');
+
             Info("Inicio del comando proyeccion:venta_semanal_real");
             Info("Variables recibidas, desde: ".$desde. "hasta: ".$hasta. " variedad: ".$variedad ." idCliente: ".$idCliente);
-
+            Info("Inicio del comando proyeccion:venta_semanal_real");
             $variedades = Variedad::where('estado', 1);
+            
             if($variedad != 0)
                 $variedades->where('id_variedad',$variedad);
 

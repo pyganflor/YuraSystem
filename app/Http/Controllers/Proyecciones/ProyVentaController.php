@@ -193,8 +193,6 @@ class ProyVentaController extends Controller
                 }
 
                 ProyeccionVentaSemanalUpdate::dispatch($request->semanas[0]['semana'],$request->semanas[(count($request->semanas)-1)]['semana'],0,0)->onQueue('update_venta_semanal_real');
-
-                //UpdateSaldosProyVentaSemanal::dispatch($request->clientes[0]['semana'], $request->id_variedad)->onQueue('update_saldos_proy_venta_semanal');
                 $success = true;
                 $msg = '<div class="alert alert-success text-center">' .
                     '<p> Se ha guardado la proyección con éxito </p>'
