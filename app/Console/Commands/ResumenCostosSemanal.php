@@ -98,7 +98,6 @@ class ResumenCostosSemanal extends Command
                 $resumen->insumos = $insumos != '' ? $insumos : 0;
                 $resumen->fijos = $fijos != '' ? $fijos : 0;
                 $resumen->regalias = $regalias != '' ? $regalias : 0;
-
                 $resumen->save();
 
                 /* ======================== Guardar en 0 automaticamente los costos que no existan ======================== */
@@ -118,14 +117,14 @@ class ResumenCostosSemanal extends Command
                     }
                 }
                 //  insumos
-                foreach (ActividadProducto::All() as $act_mo) {
+                foreach (ActividadProducto::All() as $act_p) {
                     $model = CostosSemana::All()
-                        ->where('id_actividad_producto', $act_mo->id_actividad_producto)
+                        ->where('id_actividad_producto', $act_p->id_actividad_producto)
                         ->where('codigo_semana', $semana->codigo)
                         ->first();
                     if ($model == '') {
                         $model = new CostosSemana();
-                        $model->id_actividad_producto = $act_mo->id_actividad_producto;
+                        $model->id_actividad_producto = $act_p->id_actividad_producto;
                         $model->codigo_semana = $semana->codigo;
                         $model->valor = 0;
                         $model->cantidad = 0;
