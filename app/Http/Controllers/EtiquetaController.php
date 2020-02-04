@@ -131,6 +131,7 @@ class EtiquetaController extends Controller
         $objSheet->getCell('AY1')->setValue('Bounches7');
         $objSheet->getCell('AZ1')->setValue('Weigth7');
 
+
         if (sizeof($request->arr_facturas) > 0) {
             $w = 1;
             $empresa = getComprobante($request->arr_facturas[0]['id_comprobante'])->envio->pedido->empresa;
