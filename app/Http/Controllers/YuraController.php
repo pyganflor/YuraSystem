@@ -558,7 +558,7 @@ class YuraController extends Controller
             $rentabilidad_m2_mensuales = [];
             if ($request->view == 'indicadores_rentabilidad_m2') {
                 $sem_hasta = getSemanaByDate(opDiasFecha('-', 7, date('Y-m-d')));   // 1 semana atras
-                $sem_desde = getSemanaByDate(opDiasFecha('-', 217, $sem_hasta->fecha_inicial));   // 32 semana atras
+                $sem_desde = getSemanaByDate(opDiasFecha('-', 364, $sem_hasta->fecha_inicial));   // 32 semana atras
 
                 $ventas_m2_mensuales = getIndicadorByName('D9')->getSemanas($sem_desde->codigo, $sem_hasta->codigo);
                 $costos_m2_mensuales = getIndicadorByName('C9')->getSemanas($sem_desde->codigo, $sem_hasta->codigo);
