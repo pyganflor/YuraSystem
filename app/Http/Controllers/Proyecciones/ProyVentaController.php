@@ -191,7 +191,7 @@ class ProyVentaController extends Controller
                     ]);
                     $objResumenCosecha->update(['desecho' => $desecho['cantidad']]);
                 }
-                ProyeccionVentaSemanalUpdate::dispatch($request->semanas[0],$semana[(count($request->semanas)-1)],0,0)->onQueue('update_venta_semanal_real');
+                ProyeccionVentaSemanalUpdate::dispatch($request->semanas[0],$request->semanas[(count($request->semanas)-1)],0,0)->onQueue('update_venta_semanal_real');
 
                 //UpdateSaldosProyVentaSemanal::dispatch($request->clientes[0]['semana'], $request->id_variedad)->onQueue('update_saldos_proy_venta_semanal');
                 $success = true;
