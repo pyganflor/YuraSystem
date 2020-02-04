@@ -3,6 +3,7 @@
 namespace yura\Console\Commands;
 
 use Illuminate\Console\Command;
+use yura\Jobs\UpdateSaldosProyVentaSemanal;
 use yura\Modelos\Pedido;
 use yura\Modelos\Cliente;
 use yura\Modelos\ProyeccionVentaSemanalReal;
@@ -187,7 +188,7 @@ class VentaSemanalReal extends Command
             }else{
                 Info('La semana hasta no puede ser menor a la semana desde en el comando VentaSemanalReal');
             }
-
+            UpdateSaldosProyVentaSemanal::dispatch($desde,0)->onQueue('update_saldos_proy_venta_semanal');
             $fin = microtime(true);
             Info("Fin del comando proyeccion:venta_semanal_real");
             Info("El script se completo en : ".(number_format(($fin-$inicio),2,".","")). " segundos");
