@@ -46,7 +46,7 @@ class Semana extends Model
 
         if(!$existeSemana)
             $this->codigo = $primeraSemana->codigo;
-        
+
         $proyeccion = ProyeccionVentaSemanalReal::where([
             ['id_variedad',$idVariedad],
             ['codigo_semana',$this->codigo]

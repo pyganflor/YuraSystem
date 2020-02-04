@@ -46,7 +46,7 @@
             total_cajas_equivalentes_semana = parseFloat($("b.total_cajas_equivalentes_semana_"+semana).html().trim());
             total_dinero_semana = parseFloat($("b.total_dinero_semana_"+semana).html().trim().substring(1));
             //FIN DE OBTENCION DE DATOS INICIALES TOTALES//
-            console.log(total_dinero_semana);
+
             //CALCULOS DE LA CELDA A EDITAR EN LA PROYECCION//
             cajas_proyectadas = parseFloat($("#cajas_proyectadas_"+id_cliente+"_"+semana).val());
             factor_cliente = parseFloat($("#factor_cliente_"+id_cliente).val());
@@ -95,6 +95,7 @@
             //FIN DE LA OBTENCION DE LOS DATOS INICIALES GENERALES PARA AFECTAR LOS SALDOS//
 
             saldo_final = saldo_inicial+cajas_proyectadas_semana-desecho-cajas_equivalentes_total;
+
             $('b.saldo_final_'+semana).html(saldo_final.toFixed(2));
 
             z=parseInt(semana)+100;
@@ -192,24 +193,6 @@
 
     }
 
-    function store_proyeccion_desecho(columna,id_variedad){
-        /*modal_quest('modal_update_proyeccion_desecho', '<div class="alert alert-info text-center"><i class="fa fa-fw fa-exclamation-triangle"></i> ¿Está seguro de programar este desecho? </div>', '<i class="fa fa-fw fa-trash"></i> Programar desecho', true, false, '<?php echo e(isPC() ? '40%' : ''); ?>', function () {
-            $.LoadingOverlay('show');
-            datos = {
-                _token: '{{csrf_token()}}',
-                semana : columna,
-                id_variedad : id_variedad,
-                desecho : $("#desecho_semana_"+columna).val(),
-            };
-
-            post_jquery('{{url('proy_venta_semanal/store_proyeccion_desecho')}}', datos, function () {
-                //listar_proyecciones_venta_semanal();
-                cerrar_modals();
-            });
-            $.LoadingOverlay('hide');
-        });*/
-    }
-
     function store_precio_promedio(id_cliente,id_variedad){
         $.LoadingOverlay('show');
         datos = {
@@ -240,6 +223,23 @@
                 $("input#semana_"+x).prop('checked',false).removeAttr('disabled');
             }
         }
+    }
+
+    function calcula_totales(inicio,id_cliente){
+        //OBTENCION DE LOS DATOS INICIALES GENERALES PARA AFECTAR LOS SALDOS//
+        saldo_inicial = parseFloat($("b.saldo_inicial_"+semana).html());
+        cajas_proyectadas_semana = parseFloat($("b.cajas_proyectas_semana_"+semana).html());
+        desecho =  parseFloat($("input#desecho_semana_"+semana).val());
+        //FIN DE LA OBTENCION DE LOS DATOS INICIALES GENERALES PARA AFECTAR LOS SALDOS//
+
+        cajas=0;
+        cajas_equivalentes =0;
+        dinero = 0;
+        //z=parseInt(semana)+100;
+        $.each($("b#cajas_equivalentes_"+id_cliente+"_"+semana),function (i,j) {
+            cajas+= parseFloat($(j).trim());
+        });
+
     }
 
 </script>

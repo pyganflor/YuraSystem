@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Couchbase\Exception;
 use Illuminate\Http\Request;
 use yura\Http\Controllers\Controller;
+use yura\Jobs\ProyeccionVentaSemanalUpdate;
 use yura\Modelos\HistoricoVentas;
 use yura\Modelos\ResumenSemanaCosecha;
 use yura\Modelos\Semana;
@@ -190,6 +191,19 @@ class ProyVentaController extends Controller
                     ]);
                     $objResumenCosecha->update(['desecho' => $desecho['cantidad']]);
                 }
+                
+                ProyeccionVentaSemanalUpdate::dispatch($request->semanas[0]['semana'],$request->semanas[(count($request->semanas)-1)]['semana'],0,0)->onQueue('update_venta_semanal_real');
+
+                //UpdateSaldosProyVentaSemanal::dispatch($request->clientes[0]['semana'], $request->id_variedad)->onQueue('update_saldos_proy_venta_semanal');
+                $success = true;
+                $msg = '<div class="alert alert-success text-center">' .
+                    '<p> Se ha guardado la proyección con éxito </p>'
+                    .'</div>';
+            }else{
+                $success = false;
+                $msg = '<div class="alert alert-danger text-center">' .
+                    '<p>  Debe elegir al menos una semana para programar </p>'
+                    .'</div>';
             }
             /*else{
                 foreach($request->clientes as $cliente){
@@ -206,12 +220,6 @@ class ProyVentaController extends Controller
                     ]);
                 }
             }*/
-
-            //UpdateSaldosProyVentaSemanal::dispatch($request->clientes[0]['semana'], $request->id_variedad)->onQueue('update_saldos_proy_venta_semanal');
-            $success = true;
-            $msg = '<div class="alert alert-success text-center">' .
-                '<p> Se ha guardado la proyección con éxito </p>'
-                .'</div>';
 
         }catch (\Exception $e){
             $success = false;
