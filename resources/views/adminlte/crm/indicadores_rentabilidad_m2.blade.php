@@ -53,7 +53,7 @@
 
     array_rentabilidad = [];
     @foreach($rentabilidad_m2_mensuales as $pos_item => $item)
-        array_rentabilidad.push({{$item}});
+        array_rentabilidad.push({{$item->valor}});
     @endforeach
     var rentabilidad = {
         label: 'Rentabilidad/m2/año',
@@ -118,8 +118,8 @@
                     fontColor: "green"
                 },
                 ticks: {
-                    min: -3,
-                    max: 10,
+                    min: -5,
+                    max: 15,
                 },
                 position: "right"
             }]

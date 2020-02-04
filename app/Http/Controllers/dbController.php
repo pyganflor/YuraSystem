@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use yura\Jobs\IndicadorSemanal;
 use yura\Jobs\ProyeccionUpdateSemanal;
 use yura\Jobs\ProyeccionVentaSemanalUpdate;
 use yura\Jobs\ResumenAreaSemanal;
@@ -99,6 +100,10 @@ class dbController extends Controller
         }
         if ($request->comando == 9) {   // comando ResumenAreaSemanal
             ResumenCostosSemanal::dispatch($request->desde, $request->hasta)
+                ->onQueue('job');
+        }
+        if ($request->comando == 10) {   // comando IndicadorSemanal
+            IndicadorSemanal::dispatch($request->desde, $request->hasta)
                 ->onQueue('job');
         }
 

@@ -121,7 +121,7 @@ class IndicadorSemanal extends Command
                         ->first();
 
                     $hasta_sem = $semana;
-                    $desde_sem = getSemanaByDate(opDiasFecha('-', 112, $hasta_sem->fecha_inicial));
+                    $desde_sem = getSemanaByDate(opDiasFecha('-', 105, $hasta_sem->fecha_inicial));
 
                     $venta_mensual = DB::table('resumen_semanal_total')
                         ->select(DB::raw('sum(valor) as cant'))
@@ -136,7 +136,27 @@ class IndicadorSemanal extends Command
                     $data = getAreaCiclosByRango($semana_desde->codigo, $semana_hasta->codigo, 'T');
                     $area_anual = getAreaActivaFromData($data['variedades'], $data['semanas']) * 10000;
 
+                    /*if ($sem == 2005)
+                        dd($desde_sem->codigo, $hasta_sem->codigo, $venta_mensual, $semana_desde->codigo, $semana_hasta->codigo, $area_anual);*/
+
                     $model->valor = $area_anual > 0 ? round(($venta_mensual / $area_anual) * 3, 2) : 0;
+                    $model->save();
+                }
+            }
+
+            /* ========================== R1 Rentabilidad (-4 meses) =========================== */
+            $indicador = getIndicadorByName('R1');  // Rentabilidad (-4 meses)
+            if ($indicador != '') {
+                foreach ($array_semanas as $sem) {
+                    $model = $indicador->getSemana($sem);
+                    if ($model == '') {
+                        $model = new IndicadorSemana();
+                        $model->id_indicador = $indicador->id_indicador;
+                        $model->codigo_semana = $sem;
+                    }
+
+                    $valor = getIndicadorByName('D9')->getSemana($sem)->valor - getIndicadorByName('C9')->getSemana($sem)->valor;
+                    $model->valor = $valor;
                     $model->save();
                 }
             }
