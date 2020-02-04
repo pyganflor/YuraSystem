@@ -12,7 +12,7 @@
             </th>
             @foreach($semanas as $sem)
                 <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
-                    <span style="margin-left: 5px; margin-right: 5px">{{$sem->codigo}}</span>
+                    <span style="margin-left: 5px; margin-right: 5px">{{$sem->codigo_semana}}</span>
                 </th>
             @endforeach
             <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
