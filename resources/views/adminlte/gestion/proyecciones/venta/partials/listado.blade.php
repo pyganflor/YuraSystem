@@ -163,7 +163,7 @@
                                        onkeyup="calcular_proyeccion_cliente('{{$cliente->id_cliente}}','{{$codigoSemana}}')"
                                        onchange="calcular_proyeccion_cliente('{{$cliente->id_cliente}}','{{$codigoSemana}}')"
                                        disabled name="cajas_proyectadas_{{$cliente->id_cliente}}_{{$codigoSemana}}"
-                                       class="input_cajas_proyectadas" style="border:none;text-align:center;width:50px"
+                                       class="input_cajas_proyectadas input_cajas_proyectadas_{{$codigoSemana}}" style="border:none;text-align:center;width:50px"
                                        value="{{$cajasFisicas}}">
                                 <input type="hidden" class="id_cliente" value="{{$cliente->id_cliente}}">
                                 <input type="hidden" class="input_codigo_semana" value="{{$codigoSemana}}">
