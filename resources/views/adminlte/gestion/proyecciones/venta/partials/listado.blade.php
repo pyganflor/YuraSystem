@@ -28,7 +28,7 @@
                 <td class="text-center" style="border:1px solid #9d9d9d; background-color: #e9ecef; width:350px;border-bottom: 2px solid #000000;border-right: 2px solid #000000;" colspan="3">
                     <b class="{{$saldoInicial < 0 ? "text-red" : "text-success"}} saldo_inicial_{{$semana}}"
                        data-toggle="tooltip" data-placement="top" title="Saldo inicial">
-                        {{number_format($saldoInicial,2,".",",")}}
+                        {{number_format($saldoInicial,2)}}
                     </b>
                     <b><i class="fa {{$saldoInicial < 0 ? "fa-arrow-down" : "fa-arrow-up"}}" aria-hidden="true"></i></b>
                 </td>
