@@ -28,7 +28,7 @@
                 <td class="text-center" style="border:1px solid #9d9d9d; background-color: #e9ecef; width:350px;border-bottom: 2px solid #000000;border-right: 2px solid #000000;" colspan="3">
                     <b class="{{$saldoInicial < 0 ? "text-red" : "text-success"}} saldo_inicial_{{$semana}}"
                        data-toggle="tooltip" data-placement="top" title="Saldo inicial">
-                        {{number_format($saldoInicial,2)}}
+                        {{round($saldoInicial,2)}}
                     </b>
                     <b><i class="fa {{$saldoInicial < 0 ? "fa-arrow-down text-red" : "fa-arrow-up text-success"}}" aria-hidden="true"></i></b>
                 </td>
@@ -45,7 +45,7 @@
             @foreach($semanas as $semana => $item)
                 @php $cajasProyectadas = getObjSemana($semana)->getCajasProyectadas($idVariedad);@endphp
                 <td class="text-center" style="border:1px solid #9d9d9d; background-color: #e9ecef; width:350px;border-bottom: 2px solid #000000;border-right: 2px solid #000000;" colspan="3">
-                    <b class="cajas_proyectas_semana_{{$semana}}">{{number_format($cajasProyectadas,2)}}</b>
+                    <b class="cajas_proyectas_semana_{{$semana}}">{{round($cajasProyectadas,2)}}</b>
                 </td>
             @endforeach
             <td class="text-center" style="background-color: #e9ecef;width:250px;border: 2px solid #000000;">
@@ -172,14 +172,14 @@
                         </td>
                         <td style="border: 1px solid #9d9d9d;border-bottom: 2px solid #000000;">
                             <div style="padding: 3px 6px;width:100%;text-align:center;cursor:pointer" class="cajas_equivalentes" data-toggle="tooltip" data-placement="top" title="Cajas equivalentes proyectadas">
-                                <b id="cajas_equivalentes_{{$cliente->id_cliente}}_{{$codigoSemana}}">{{number_format($cajasEquivalentes,2,".","")}}</b>
-                                <input type="hidden" class="cajas_equivalente_inicial_{{$cliente->id_cliente}}_{{$codigoSemana}}" value="{{number_format($cajasEquivalentes,2,".","")}}">
+                                <b id="cajas_equivalentes_{{$cliente->id_cliente}}_{{$codigoSemana}}">{{round($cajasEquivalentes,2)}}</b>
+                                <input type="hidden" class="cajas_equivalente_inicial_{{$cliente->id_cliente}}_{{$codigoSemana}}" value="{{round($cajasEquivalentes,2)}}">
                             </div>
                         </td>
                         <td style="border: 1px solid #9d9d9d;border-bottom: 2px solid #000000;border-right: 2px solid #000000">
                             <div style="padding: 3px 6px;width:100%;text-align:center;cursor:pointer;" class="precio_proyectado" data-toggle="tooltip" data-placement="top" title="Valor proyectado">
-                                <b  id="precio_proyectado_{{$cliente->id_cliente}}_{{$codigoSemana}}">${{number_format($valor,2,".",",")}}</b>
-                                <input type="hidden" class="valor_inicial_{{$cliente->id_cliente}}_{{$codigoSemana}}" value="{{number_format($valor,2,".","")}}">
+                                <b  id="precio_proyectado_{{$cliente->id_cliente}}_{{$codigoSemana}}">${{round($valor,2)}}</b>
+                                <input type="hidden" class="valor_inicial_{{$cliente->id_cliente}}_{{$codigoSemana}}" value="{{round($valor,2)}}">
                             </div>
                         </td>
                     @endforeach
@@ -256,7 +256,7 @@
                             <td style="border: 1px solid #9d9d9d;border: 2px solid #000000;" colspan="3">
                                 <div style="width:100%;text-align:center;" data-tooltip data-placement="top" title="Saldo final">
                                     <b class="{{$saldoFinal < 0 ? "text-red" : "text-success"}} saldo_final_{{$semana}}">
-                                      {{number_format($saldoFinal,2,".","")}}
+                                      {{round($saldoFinal,2)}}
                                     </b>
                                     <b><i class="fa {{$saldoFinal < 0 ? "fa-arrow-down text-red" : "fa-arrow-up text-success"}}" aria-hidden="true"></i></b>
                                </div>
