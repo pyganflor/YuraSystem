@@ -68,8 +68,8 @@ class CodigoDaeController extends Controller
         }
         return $html;
     }
-
     public function pais(Request $request)
+
     {
         return Pais::where('codigo', $request->codigo)->first();
     }
