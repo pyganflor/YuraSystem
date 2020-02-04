@@ -562,10 +562,7 @@ class YuraController extends Controller
 
                 $ventas_m2_mensuales = getIndicadorByName('D9')->getSemanas($sem_desde->codigo, $sem_hasta->codigo);
                 $costos_m2_mensuales = getIndicadorByName('C9')->getSemanas($sem_desde->codigo, $sem_hasta->codigo);
-                $rentabilidad_m2_mensuales = [];
-                for ($i = 0; $i < count($ventas_m2_mensuales); $i++) {
-                    array_push($rentabilidad_m2_mensuales, round($ventas_m2_mensuales[$i]->valor - $costos_m2_mensuales[$i]->valor, 2));
-                }
+                $rentabilidad_m2_mensuales = getIndicadorByName('R1')->getSemanas($sem_desde->codigo, $sem_hasta->codigo);
             }
             return view('adminlte.crm.' . $request->view, [
                 'variedad' => $variedad,

@@ -143,6 +143,23 @@ class IndicadorSemanal extends Command
                     $model->save();
                 }
             }
+
+            /* ========================== R1 Rentabilidad (-4 meses) =========================== */
+            $indicador = getIndicadorByName('R1');  // Rentabilidad (-4 meses)
+            if ($indicador != '') {
+                foreach ($array_semanas as $sem) {
+                    $model = $indicador->getSemana($sem);
+                    if ($model == '') {
+                        $model = new IndicadorSemana();
+                        $model->id_indicador = $indicador->id_indicador;
+                        $model->codigo_semana = $sem;
+                    }
+
+                    $valor = getIndicadorByName('D9')->getSemana($sem)->valor - getIndicadorByName('C9')->getSemana($sem)->valor;
+                    $model->valor = $valor;
+                    $model->save();
+                }
+            }
         }
 
         $time_duration = difFechas(date('Y-m-d H:i:s'), $ini)->h . ':' . difFechas(date('Y-m-d H:i:s'), $ini)->m . ':' . difFechas(date('Y-m-d H:i:s'), $ini)->s;
