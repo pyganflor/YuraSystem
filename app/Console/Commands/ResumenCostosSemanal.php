@@ -5,6 +5,11 @@ namespace yura\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use yura\Modelos\ActividadManoObra;
+use yura\Modelos\ActividadProducto;
+use yura\Modelos\CostosSemana;
+use yura\Modelos\CostosSemanaManoObra;
+use yura\Modelos\ManoObra;
 use yura\Modelos\Semana;
 use yura\Modelos\ResumenCostosSemanal as ModelResumen;
 
@@ -95,6 +100,38 @@ class ResumenCostosSemanal extends Command
                 $resumen->regalias = $regalias != '' ? $regalias : 0;
 
                 $resumen->save();
+
+                /* ======================== Guardar en 0 automaticamente los costos que no existan ======================== */
+                //  mano de obra
+                foreach (ActividadManoObra::All() as $act_mo) {
+                    $model = CostosSemanaManoObra::All()
+                        ->where('id_actividad_mano_obra', $act_mo->id_actividad_mano_obra)
+                        ->where('codigo_semana', $semana->codigo)
+                        ->first();
+                    if ($model == '') {
+                        $model = new CostosSemanaManoObra();
+                        $model->id_actividad_mano_obra = $act_mo->id_actividad_mano_obra;
+                        $model->codigo_semana = $semana->codigo;
+                        $model->valor = 0;
+                        $model->cantidad = 0;
+                        $model->save();
+                    }
+                }
+                //  insumos
+                foreach (ActividadProducto::All() as $act_mo) {
+                    $model = CostosSemana::All()
+                        ->where('id_actividad_producto', $act_mo->id_actividad_producto)
+                        ->where('codigo_semana', $semana->codigo)
+                        ->first();
+                    if ($model == '') {
+                        $model = new CostosSemana();
+                        $model->id_actividad_producto = $act_mo->id_actividad_producto;
+                        $model->codigo_semana = $semana->codigo;
+                        $model->valor = 0;
+                        $model->cantidad = 0;
+                        $model->save();
+                    }
+                }
             }
         }
 
