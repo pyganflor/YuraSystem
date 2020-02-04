@@ -10,7 +10,20 @@
             datos = {
                 area: area,
                 actividad: actividad,
+                desde: $('#desde').val(),
+                hasta: $('#hasta').val(),
+                criterio: $('#criterio').val(),
             };
+            if (area != false) {
+                $('.btn_actividad').removeClass('bg-blue');
+                $('.btn_area').removeClass('bg-blue');
+                $('#btn_area_' + area).addClass('bg-blue');
+            }
+            if (actividad != false) {
+                $('.btn_area').removeClass('bg-blue');
+                $('.btn_actividad').removeClass('bg-blue');
+                $('#btn_actividad_' + actividad).addClass('bg-blue');
+            }
             get_jquery('{{url('reporte_mano_obra/listar_reporte')}}', datos, function (retorno) {
                 $('#div_content_fixed').html(retorno);
             }, 'div_content_fixed');
@@ -82,7 +95,7 @@
                         @include('adminlte.gestion.costos.mano_obra.reporte.partials.areas_actividades')
                     </div>
                     <div class="col-md-10 div_content_fixed">
-                        <div id="div_content_fixed" style="overflow-y: scroll; max-height: 450px">
+                        <div id="div_content_fixed" style="overflow-x: scroll; overflow-y: scroll; max-height: 450px">
                         </div>
                     </div>
                 </div>

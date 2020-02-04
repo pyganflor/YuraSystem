@@ -3,6 +3,7 @@
 namespace yura\Http\Controllers\Costos;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use yura\Http\Controllers\Controller;
 use yura\Jobs\ImportarCostos;
 use yura\Modelos\Actividad;
@@ -13,6 +14,7 @@ use yura\Modelos\CostosSemana;
 use yura\Modelos\CostosSemanaManoObra;
 use yura\Modelos\ManoObra;
 use yura\Modelos\OtrosGastos;
+use yura\Modelos\ResumenCostosSemanal;
 use yura\Modelos\Submenu;
 use Validator;
 use PHPExcel;
@@ -133,7 +135,7 @@ class CostosController extends Controller
     public function store_actividad(Request $request)
     {
         $valida = Validator::make($request->all(), [
-            'nombre' => 'required|max:50|unique:area',
+            'nombre' => 'required|max:50|unique:actividad',
             'area' => 'required',
         ], [
             'nombre.unique' => 'El nombre ya existe',
@@ -1031,7 +1033,63 @@ class CostosController extends Controller
 
     public function listar_reporte(Request $request)
     {
+        $semanas = DB::table('semana')
+            ->select('codigo')->distinct()
+            ->where('estado', 1)
+            ->where('codigo', '>=', $request->desde)
+            ->where('codigo', '<=', $request->hasta)
+            ->get();
+        $area = Area::find($request->area);
+        $actividad = Actividad::find($request->actividad);
+
+        $ids = DB::table('costos_semana_mano_obra as c')
+            ->select('c.id_actividad_mano_obra')->distinct();
+        if ($actividad != '')   // una actividad en especifico
+            $ids = $ids
+                ->join('actividad_mano_obra as ap', 'c.id_actividad_mano_obra', '=', 'ap.id_actividad_mano_obra')
+                ->where('ap.id_actividad', $actividad->id_actividad);
+        else if ($area != '') {
+            $ids = $ids
+                ->join('actividad_mano_obra as ap', 'c.id_actividad_mano_obra', '=', 'ap.id_actividad_mano_obra')
+                ->join('actividad as a', 'ap.id_actividad', '=', 'a.id_actividad')
+                ->where('a.id_area', $area->id_area);
+        }
+        if ($request->criterio == 'V')  // dinero
+            $ids = $ids->where('c.valor', '>', 0);
+        else    // cantidad
+            $ids = $ids->where('c.cantidad', '>', 0);
+        $ids = $ids
+            ->where('c.codigo_semana', '>=', $request->desde)
+            ->where('c.codigo_semana', '<=', $request->hasta)
+            ->get();
+
+        $list_ids = [];
+        $matriz = [];
+        foreach ($ids as $item) {
+            $query = CostosSemanaManoObra::where('codigo_semana', '>=', $request->desde)
+                ->where('codigo_semana', '<=', $request->hasta)
+                ->where('id_actividad_mano_obra', $item->id_actividad_mano_obra)
+                ->get();
+
+            array_push($matriz, $query);
+            array_push($list_ids, $item->id_actividad_mano_obra);
+        }
+
+        $totales = DB::table('costos_semana_mano_obra')
+            ->select(DB::raw('sum(valor) as cant'), 'codigo_semana as semana')
+            ->where('codigo_semana', '>=', $request->desde)
+            ->where('codigo_semana', '<=', $request->hasta)
+            ->whereIn('id_actividad_mano_obra', $list_ids)
+            ->groupBy('codigo_semana')
+            ->get();
+
         return view('adminlte.gestion.costos.mano_obra.reporte.partials.listado', [
+            'semanas' => $semanas,
+            'area' => $area,
+            'actividad' => $actividad,
+            'criterio' => $request->criterio,
+            'matriz' => $matriz,
+            'totales' => $totales,
         ]);
     }
 
