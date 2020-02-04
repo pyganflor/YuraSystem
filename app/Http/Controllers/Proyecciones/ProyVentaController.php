@@ -164,7 +164,7 @@ class ProyVentaController extends Controller
 
     public function storeProyeccionVenta(Request $request){
        // dd($request->all());
-        try{
+        /*try{*/
             if(isset($request->semanas) && count($request->semanas)>0){
                 if(isset($request->clientes)){
                     foreach($request->semanas as $semana){
@@ -215,12 +215,12 @@ class ProyVentaController extends Controller
                 '<p> Se ha guardado la proyección con éxito </p>'
                 .'</div>';
 
-        }catch (\Exception $e){
+        /*}catch (\Exception $e){
             $success = false;
             $msg = '<div class="alert alert-danger text-center">' .
                         '<p>  Ha ocurrido el siguiente error al intentar guardar la información <br />"'.$e->getMessage().'"<br /> Comuníquelo al área de sistemas</p>'
                     .'</div>';
-        }
+        }*/
 
         return [
             'mensaje' => $msg,
