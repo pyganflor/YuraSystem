@@ -100,6 +100,12 @@
                                 ResumenCostosSemanal
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="profile-tab" data-toggle="tab" href="#IndicadorSemanal" role="tab"
+                               aria-controls="profile" aria-selected="false">
+                                IndicadorSemanal
+                            </a>
+                        </li>
                     </ul>
                     <div class="tab-content" id="myTabContent">
                         <div class="tab-pane fade" id="ProyeccionUpdateSemanal" role="tabpanel" aria-labelledby="home-tab">
@@ -357,6 +363,27 @@
                                 </div>
                             </div>
                         </div>
+
+                        <div class="tab-pane fade" id="IndicadorSemanal" role="tabpanel" aria-labelledby="profile-tab">
+                            <div class="input-group">
+                                <div class="input-group-addon" style="background-color: #e9ecef">
+                                    Desde
+                                </div>
+                                <input type="number" id="comando10_desde" onkeypress="return isNumber(event)" class="form-control text-center"
+                                       value="{{$semana_actual->codigo}}">
+                                <div class="input-group-addon" style="background-color: #e9ecef">
+                                    Hasta
+                                </div>
+                                <input type="number" id="comando10_hasta" onkeypress="return isNumber(event)" class="form-control text-center"
+                                       value="{{$semana_actual->codigo}}">
+
+                                <div class="input-group-btn">
+                                    <button type="button" class="btn btn-primary" title="OK" onclick="send_queue_job(10)">
+                                        <i class="fa fa-fw fa-check"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -450,6 +477,14 @@
                     _token: '{{csrf_token()}}',
                     desde: $('#comando9_desde').val(),
                     hasta: $('#comando9_hasta').val(),
+                    comando: comando
+                };
+            }
+            if (comando == 10) {
+                datos = {
+                    _token: '{{csrf_token()}}',
+                    desde: $('#comando10_desde').val(),
+                    hasta: $('#comando10_hasta').val(),
                     comando: comando
                 };
             }
