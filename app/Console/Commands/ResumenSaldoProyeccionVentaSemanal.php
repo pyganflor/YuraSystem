@@ -3,7 +3,6 @@
 namespace yura\Console\Commands;
 
 use Illuminate\Console\Command;
-use yura\Modelos\ProyeccionVentaSemanalReal;
 use yura\Modelos\Semana;
 use yura\Modelos\Variedad;
 use yura\Modelos\ResumenSaldoProyeccionVentaSemanal as ResumenSaldoProyVentaSemanal;
@@ -145,13 +144,11 @@ class ResumenSaldoProyeccionVentaSemanal extends Command
                 $objResumenSaldoProyeccionVentaSemanal->id_variedad = $variedad->id_variedad;
                 $objResumenSaldoProyeccionVentaSemanal->codigo_semana = $semana;
                 $objResumenSaldoProyeccionVentaSemanal->save();
-                //dump("Variedad: " . $variedad->id_variedad . " Semana: " . $semana . " Saldo inicial: " . $valorSaldoInicial." Saldo Final: " . $valorSaldoFinal);
                 $semanaPasada = $semana;
                 $y++;
 
             }
         }
-
         $tiempo_final = microtime(true);
         Info("Fin del comando resumen_saldo_proyeccion:venta_semanal");
         Info("El script se completo en : ".(number_format(($tiempo_final-$tiempo_inicial),2,".","")). " segundos");
