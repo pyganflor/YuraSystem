@@ -162,21 +162,24 @@ class ProyVentaController extends Controller
     }
 
     public function storeProyeccionVenta(Request $request){
+       // dd($request->all());
         try{
             if(isset($request->semanas) && count($request->semanas)>0){
-                foreach($request->semanas as $semana){
-                    foreach($request->clientes as $cliente){
-                        $valor = substr($cliente['valor'],1,20);
-                        $objProyeccionVentaSemanalReal = ProyeccionVentaSemanalReal::where([
-                            ['id_cliente',$cliente['id_cliente']],
-                            ['id_variedad',$request->id_variedad],
-                            ['codigo_semana',$semana]
-                        ]);
-                        $objProyeccionVentaSemanalReal->update([
-                            'cajas_fisicas' => $cliente['cajas_fisicas'],
-                            'cajas_equivalentes' => $cliente['cajas_equivalentes'],
-                            'valor' => round($valor,2)
-                        ]);
+                if(isset($request->clientes)){
+                    foreach($request->semanas as $semana){
+                        foreach($request->clientes as $cliente){
+                            $valor = substr($cliente['valor'],1,20);
+                            $objProyeccionVentaSemanalReal = ProyeccionVentaSemanalReal::where([
+                                ['id_cliente',$cliente['id_cliente']],
+                                ['id_variedad',$request->id_variedad],
+                                ['codigo_semana',$semana]
+                            ]);
+                            $objProyeccionVentaSemanalReal->update([
+                                'cajas_fisicas' => $cliente['cajas_fisicas'],
+                                'cajas_equivalentes' => $cliente['cajas_equivalentes'],
+                                'valor' => round($valor,2)
+                            ]);
+                        }
                     }
                 }
 
