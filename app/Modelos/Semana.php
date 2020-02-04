@@ -46,7 +46,10 @@ class Semana extends Model
 
         if(!$existeSemana)
             $this->codigo = $primeraSemana->codigo;
-        
+
+        if($this->codigo==2010)
+            dump($idsCliente);
+
         $proyeccion = ProyeccionVentaSemanalReal::where([
             ['id_variedad',$idVariedad],
             ['codigo_semana',$this->codigo]
