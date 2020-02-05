@@ -63,7 +63,7 @@ class Semana extends Model
         $cajasEquivalentesAnnoAnterior=0;
         $cajasFisicasAnnoAterior=0;
 
-        if($calculaAnnoAnterior){ //TOMA EN CUENTA LAS CAJAS DEL AÑO PASADO PARA LA AUTO PROYECCIÓN DEL ANNO ACTUAL
+        if($calculaAnnoAnterior){ //TOMA EN CUENTA LAS CAJAS DEL AÑO PASADO PARRA LA AUTO PROYECCIÓN DEL ANO ACTUAL
 
             $proyeccionAnnoActual = ProyeccionVentaSemanalReal::where([
                 ['id_variedad',$idVariedad],
@@ -75,10 +75,10 @@ class Semana extends Model
 
             foreach ($proyeccionAnnoActual as $item) {
                 if($item->cajas_fisicas == 0 && $semanaActual < $this->codigo){
-                    /*$cF = $this->cajasFisicasAnnoAnterior($idVariedad,$item->cliente->id_cliente);
+                    $cF = $this->cajasFisicasAnnoAnterior($idVariedad,$item->cliente->id_cliente);
                     $cajasFisicasAnnoAnterior = 0;
-                    if(isset($cF))*/
-                        $cajasFisicasAnnoAnterior = $item->cajas_fisicas_anno_anterior;
+                    if(isset($cF))
+                        $cajasFisicasAnnoAnterior = $cF->cajas_fisicas_anno_anterior;
                     $cajasEquivalentesAnnoAnterior += $cajasFisicasAnnoAnterior*$item->cliente->factor;
                     $cajasFisicasAnnoAterior+= $cajasFisicasAnnoAnterior;
                     $ramosTotales = $cajasFisicasAnnoAnterior*$item->cliente->factor*$ramosxCajaEmpresa;
@@ -216,6 +216,10 @@ class Semana extends Model
     }
 
     public function cajasFisicasAnnoAnterior($idVariedad,$idCliente){
+
+        /*$arrSemana = str_split($this->codigo,2);
+        $anoAnterior = (int)$arrSemana[0]-1;
+        $semanaAnnoAnterior =  $anoAnterior.$arrSemana[1];*/
 
         return ProyeccionVentaSemanalReal::where([
             ['id_variedad',$idVariedad],

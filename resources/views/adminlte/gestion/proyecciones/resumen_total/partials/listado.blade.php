@@ -1,3 +1,4 @@
+@dd($dataVentas)
 <table class="table-bordered table-striped table-hover" width="100%" style="border: 2px solid #9d9d9d; font-size: 1em;">
     <thead>
     <tr style="background-color: #e9ecef">
@@ -39,7 +40,7 @@
         {{--data cosechado--}}
         @foreach($dataCosecha as $dC)
             <td class="text-center " style="border:1px solid;padding: 2px 4px" >
-               {{number_format($dC->tallos_proyectados,2,".",",")}}
+               {{number_format($dC['tallos_proyectados'],2,".",",")}}
             </td>
         @endforeach
         <th class="text-center" style="border:1px solid; background-color: #e9ecef">
@@ -53,7 +54,7 @@
         {{--data vendido--}}
         @foreach($dataVentas as $dV)
             <td class="text-center" style="border:1px solid;padding: 2px 4px"  >
-                ${{number_format($dV->valor,2,".",",")}}
+                ${{number_format($dV['valor'],2,".",",")}}
             </td>
         @endforeach
         {{--data vendido--}}
@@ -68,7 +69,7 @@
         {{--data vendido--}}
         @foreach($dataVentas as $dV)
             <td class="text-center" style="border:1px solid;padding: 2px 4px" >
-               {{number_format($dV->cajas_equivalentes,2,".",",")}}
+               {{number_format($dV['cajasEquivalentes'],2,".",",")}}
             </td>
         @endforeach
         {{--data vendido--}}
