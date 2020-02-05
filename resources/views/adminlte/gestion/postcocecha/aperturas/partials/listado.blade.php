@@ -1,7 +1,7 @@
 <div id="table_aperturas">
     @if(sizeof($listado)>0)
         <div style="overflow-x: scroll" class="pull-left">
-            <table width="100%" class="table table-responsive table-bordered" style="font-size: 0.8em; border-color: #9d9d9d"
+            <table width="100%" class="table-responsive table-bordered" style="font-size: 0.8em; border-color: #9d9d9d"
                    id="table_content_aperturas">
                 <thead>
                 <tr>
@@ -9,11 +9,11 @@
                         style="border-color: #9d9d9d">
                     </th>
                     <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
-                        style="border-color: #9d9d9d">
+                        style="border-color: #9d9d9d; width: 50px">
                         Semana
                     </th>
                     <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
-                        style="border-color: #9d9d9d">
+                        style="border-color: #9d9d9d; width: 100px">
                         Calibre
                     </th>
                     <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
@@ -46,7 +46,7 @@
                     </th>
                     <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
                         style="border-color: #9d9d9d" width="5%">
-                        Sacar Tallos
+                        Conteo Tallos
                     </th>
                     <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
                         style="border-color: #9d9d9d" width="5%">
@@ -162,13 +162,13 @@
                             </span>
                         </td>
                         <td class="text-center" style="border-color: #9d9d9d">
-                            <input type="number" class="text-center input_sacar" {{--onkeypress="return isNumber(event)"--}}
-                            id="sacar_{{$apertura->id_stock_apertura}}" min="1" width="100%"
-                                   max="{{getStockById($apertura->id_stock_apertura)->cantidad_disponible}}"
-                                   onchange="seleccionar_apertura_sacar('{{$apertura->id_stock_apertura}}')"
-                                   value="">
-                            <input type="hidden" class="input_sacar_ini"
-                                   id="sacar_ini_{{$apertura->id_stock_apertura}}"
+                            <input type="number" class="text-center input_sacar" id="nuevo_conteo_{{$apertura->id_stock_apertura}}" min="0"
+                                   style="width: 100%" max="{{getStockById($apertura->id_stock_apertura)->cantidad_disponible}}"
+                                   onchange="seleccionar_apertura_nuevo_conteo('{{$apertura->id_stock_apertura}}')" value="">
+                            <input type="hidden" class="text-center input_sacar" id="sacar_{{$apertura->id_stock_apertura}}" min="1"
+                                   style="width: 100%" max="{{getStockById($apertura->id_stock_apertura)->cantidad_disponible}}"
+                                   onchange="seleccionar_apertura_sacar('{{$apertura->id_stock_apertura}}')" value="">
+                            <input type="hidden" class="input_sacar_ini" id="sacar_ini_{{$apertura->id_stock_apertura}}"
                                    value="{{getStockById($apertura->id_stock_apertura)->cantidad_disponible}}">
                         </td>
                         <td class="text-center" style="border-color: #9d9d9d">
@@ -189,15 +189,13 @@
                     @if(count($listado) > ($i+1) && substr($listado[$i+1]->fecha_inicio,0,10) != substr($apertura->fecha_inicio,0,10) ||
                         count($listado) == ($i+1))
                         <tr style="background-color: #e9ecef;">
-                            <td style="border-bottom-color: #9d9d9d; border-left-color: #9d9d9d">
+                            <td style="border-bottom-color: #9d9d9d; border-color: #9d9d9d" colspan="3" class="text-center">
                                 <input type="hidden" id="fecha_{{substr($apertura->fecha_inicio,0,10)}}" class="fechas_aperturas"
                                        value="{{substr($apertura->fecha_inicio,0,10)}}">
                                 <input type="hidden" id="fecha_ids_aperturas_{{substr($apertura->fecha_inicio,0,10)}}"
                                        value="{{$ids_apertura}}">
                                 <input type="hidden" id="total_ramos_{{substr($apertura->fecha_inicio,0,10)}}"
                                        value="{{$total_ramos}}">
-                            </td>
-                            <td style="border-bottom-color: #9d9d9d; border-color: #9d9d9d" colspan="2" class="text-center">
                                 <strong>
                                     {{getDias(TP_COMPLETO,FR_ARREGLO)[transformDiaPhp(date('w',strtotime(substr($apertura->fecha_inicio,0,10))))]}}
                                     {{convertDateToText(substr($apertura->fecha_inicio,0,10))}}
@@ -239,9 +237,7 @@
                     @endphp
                 @endforeach
                 <tr style="background-color: #357CA5; color: white">
-                    <td style="border-bottom-color: #9d9d9d; border-left-color: #9d9d9d">
-                    </td>
-                    <th style="border-bottom-color: #9d9d9d; border-color: #9d9d9d" colspan="3" class="text-center">
+                    <th style="border-bottom-color: #9d9d9d; border-color: #9d9d9d" colspan="4" class="text-center">
                         TOTALES
                     </th>
                     <th class="text-center" style=" border-color: #9d9d9d">
@@ -266,6 +262,16 @@
 </div>
 
 <script>
+    function seleccionar_apertura_nuevo_conteo(apertura) {
+        sacar = $('#sacar_ini_' + apertura).val() - $('#nuevo_conteo_' + apertura).val();
+        if (sacar > 0 && sacar <= $('#sacar_ini_' + apertura).val())
+            $('#sacar_' + apertura).val(sacar);
+        else
+            $('#sacar_' + apertura).val('');
+
+        seleccionar_apertura_sacar(apertura);
+    }
+
     function seleccionar_apertura_sacar(apertura) {
         if ($('#sacar_' + apertura).val() != '' && $('#sacar_' + apertura).val() > 0) {
             texto = '';
