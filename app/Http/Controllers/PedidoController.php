@@ -325,9 +325,8 @@ class PedidoController extends Controller
             $semana = getSemanaByDate($fechaFormateada);
             $codigo_semana = $semana != '' ? $semana->codigo : '';
             if ($codigo_semana != '')
-                ProyeccionVentaSemanalUpdate::dispatch($codigo_semana, $codigo_semana, 0, $request->id_cliente)
-                    ->onQueue('update_venta_semanal_real');
-            //UpdateSaldosProyVentaSemanal::dispatch($semana, 0)->onQueue('update_saldos_proy_venta_semanal');
+                ProyeccionVentaSemanalUpdate::dispatch($codigo_semana, $codigo_semana, 0, $request->id_cliente)->onQueue('update_venta_semanal_real');
+
         } else {
             $success = false;
             $errores = '';

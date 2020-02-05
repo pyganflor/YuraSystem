@@ -10,6 +10,29 @@
             <div class="box-header with-border">
                 <div class="input-group">
                     <div class="input-group-addon bg-gray">
+                        <i class="fa fa-fw fa-leaf"></i> Variedad
+                    </div>
+                    <select name="filtro_predeterminado_planta" id="filtro_predeterminado_planta" class="form-control planta" style="width:200px"
+                            onchange="select_planta($(this).val(), 'filtro_predeterminado_variedad', 'div_cargar_variedades', '<option value=T selected>Todos los tipos</option>')">
+                        @foreach(getPlantas() as $p)
+                            <option value="{{$p->id_planta}}" {{$p->siglas == 'GYP' ? 'selected' : ''}}>{{$p->nombre}}</option>
+                        @endforeach
+                    </select>
+                    <div class="input-group-addon bg-gray" id="div_cargar_variedades">
+                        <i class="fa fa-fw fa-leaf"></i> Tipo
+                    </div>
+                    <select name="filtro_predeterminado_variedad" id="filtro_predeterminado_variedad" class="form-control variedad"
+                            style="width:200px">
+                        @foreach(getPlantas()[0]->variedades as $variedad)
+                            <option {{$variedad->id_variedad == "2" ? "selected" : "" }}
+                                    value="{{$variedad->id_variedad}}" >{{$variedad->nombre}}</option>
+                        @endforeach
+                    </select>
+
+
+
+
+                    <div class="input-group-addon bg-gray">
                         <i class="fa fa-fw fa-calendar"></i> Desde
                     </div>
                     <input type="number" class="form-control desde" id="filtro_predeterminado_desde" name="filtro_predeterminado_desde"
