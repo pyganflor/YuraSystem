@@ -32,28 +32,13 @@ class proyResumenTotalController extends Controller
 
         if (isset($semana_desde) && isset($semana_hasta)) {
 
-            //$semanaActual = getSemanaByDate(now()->toDateString());
             $semanas=[];
-            /*$existSemanaAnterior = Semana::where('codigo',($semana_desde->codigo-1))->select('codigo')->first();
-            if(isset($existSemanaAnterior)){
-                $semanaAnterior = $semana_desde->codigo-1;
-            }else{
-                for($x=($semana_desde->codigo-1);$x>0001;$x--){
-                    $existSemanaAnterior = Semana::where('codigo',$x)->select('codigo')->first();
-                    if(isset($existSemanaAnterior)){
-                        $semanaAnterior = $existSemanaAnterior->codigo;
-                        break;
-                    }
-                }
-            }
-            $semanas[]=$semanaAnterior;*/
             for ($i = $semana_desde->codigo; $i <= $semana_hasta->codigo; $i++) {
                 $existSemana = Semana::where('codigo', $i)->select('codigo')->first();
                 if (isset($existSemana->codigo))
                     $semanas[] = $existSemana->codigo;
             }
 
-           // $dataCosecha = [];
             $semResumenSemanaCosecha = ResumenSemanaCosecha::whereIn('codigo_semana',$semanas)
                 ->where(function($query) use ($request){
                     if(isset($request->id_variedad))
@@ -64,32 +49,25 @@ class proyResumenTotalController extends Controller
                     DB::raw('SUM(cajas_proyectadas) as cajas_proyectadas'),
                     DB::raw('SUM(tallos_proyectados) as tallos_proyectados'))
                 ->groupBy('codigo_semana')->get();
-           // dd($request->all(),$semResumenSemanaCosecha);
-            /*for($y=1;$y<count($semanas); $y++){
-                $d= $semResumenSemanaCosecha[$y-1];
-                if($semanas[$y] > $semanaActual->codigo){
-                    $data=[
-                        'cajas'=> round($d->cajas_proyectadas,2),
-                        'tallos'=>round($d->tallos_proyectados,2)
-                    ];
-                }else{
-                    $data=[
-                        'cajas'=> round($d->cajas,2),
-                        'tallos'=>round($d->tallos,2)
-                    ];
-                }
 
-                $dataCosecha[$semanas[$y]]=$data;
+            $dataVentas=[];
+            $semanaActual=getSemanaByDate(now()->toDateString())->codigo;
+            $ramosxCajaEmpresa= getConfiguracionEmpresa()->ramos_x_caja;
+            $idVariedad = isset($request->id_variedad) ? $request->id_variedad : null;
+
+            foreach ($semanas as $semana){
+               $data = getObjSemana($semana)->getTotalesProyeccionVentaSemanal(false,$idVariedad,true,$semanaActual,false,$ramosxCajaEmpresa);
+               dump($data);
             }
-            unset($semanas[0]);*/
-            $dataVentas = ProyeccionVentaSemanalReal::whereIn('codigo_semana',$semanas)
+
+            /*$dataVentas = ProyeccionVentaSemanalReal::whereIn('codigo_semana',$semanas)
                 ->where(function($query) use ($request){
                     if(isset($request->id_variedad))
                         $query->where('id_variedad',$request->id_variedad);
                 })->select('codigo_semana',
                     DB::raw('SUM(valor) as valor'),
                     DB::raw('SUM(cajas_equivalentes) as cajas_equivalentes'))
-                ->groupBy('codigo_semana')->get();
+                ->groupBy('codigo_semana')->get();*/
 
             $success = true;
 

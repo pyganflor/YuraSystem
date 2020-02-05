@@ -36,7 +36,7 @@ class Semana extends Model
         return $this->belongsTo('\yura\Modelos\Variedad', 'id_variedad');
     }
 
-    public function getTotalesProyeccionVentaSemanal($idsCliente,$idVariedad,$calculaAnnoAnterior=false,$semanaActual=false,$idsClientes=false,$ramosxCajaEmpresa=false){
+    public function getTotalesProyeccionVentaSemanal($idsCliente,$idVariedad=null,$calculaAnnoAnterior=false,$semanaActual=false,$idsClientes=false,$ramosxCajaEmpresa=false){
 
         $primeraSemana = ProyeccionVentaSemanalReal::where('id_variedad', $idVariedad)->select(DB::raw('MIN(codigo_semana) as codigo'))->first();
         $existeSemana =ProyeccionVentaSemanalReal::where([
@@ -50,9 +50,11 @@ class Semana extends Model
         $proyeccion = ProyeccionVentaSemanalReal::where([
             ['id_variedad',$idVariedad],
             ['codigo_semana',$this->codigo]
-        ])->where(function($query) use ($idsCliente){
-            if($idsCliente)
+        ])->where(function($query) use ($idsCliente,$idVariedad){
+            if(isset($idsCliente))
                 $query->whereNotIn('id_cliente',$idsCliente);
+            if(isset($idVariedad))
+                $query->where('id_variedad',$idVariedad);
         })->select(
             DB::raw('sum(valor) as total_valor'),
             DB::raw('sum(cajas_fisicas) as total_cajas_fisicas'),
@@ -68,9 +70,12 @@ class Semana extends Model
             $proyeccionAnnoActual = ProyeccionVentaSemanalReal::where([
                 ['id_variedad',$idVariedad],
                 ['codigo_semana',$this->codigo]
-            ])->where(function($query) use ($idsClientes){
-                if($idsClientes)
+            ])->where(function($query) use ($idsClientes,$idVariedad){
+                if(isset($idsClientes))
                     $query->whereIn('id_cliente',$idsClientes);
+                if(isset($idVariedad))
+                    $query->where('id_variedad',$idVariedad);
+
             })->get();
 
             foreach ($proyeccionAnnoActual as $item) {
