@@ -55,13 +55,16 @@ class proyResumenTotalController extends Controller
 
            // $dataCosecha = [];
             $semResumenSemanaCosecha = ResumenSemanaCosecha::whereIn('codigo_semana',$semanas)
-                ->where('id_variedad',$request->id_variedad)
-                ->select('codigo_semana',
+                ->where(function($query) use ($request){
+                    if(isset($request->id_variedad))
+                        $query->where('id_variedad',$request->id_variedad);
+                })->select('codigo_semana',
                     //DB::raw('SUM(cajas) as cajas'),
                     //DB::raw('SUM(tallos) as tallos'),
                     DB::raw('SUM(cajas_proyectadas) as cajas_proyectadas'),
                     DB::raw('SUM(tallos_proyectados) as tallos_proyectados'))
                 ->groupBy('codigo_semana')->get();
+           // dd($request->all(),$semResumenSemanaCosecha);
             /*for($y=1;$y<count($semanas); $y++){
                 $d= $semResumenSemanaCosecha[$y-1];
                 if($semanas[$y] > $semanaActual->codigo){
