@@ -8,12 +8,15 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 use phpseclib\Crypt\RSA;
+use yura\Modelos\AccessoDirecto;
 use yura\Modelos\Ciclo;
 use yura\Modelos\ClasificacionBlanco;
 use yura\Modelos\ClasificacionVerde;
 use yura\Modelos\ConfiguracionUser;
 use yura\Modelos\Cosecha;
+use yura\Modelos\GrupoMenu;
 use yura\Modelos\HistoricoVentas;
+use yura\Modelos\Icon;
 use yura\Modelos\Pedido;
 use yura\Modelos\Rol;
 use yura\Modelos\StockApertura;
@@ -262,11 +265,80 @@ class YuraController extends Controller
         $rsa->loadKey(Session::get('key_privada'));
         $raw = $rsa->getPublicKey(RSA::PUBLIC_FORMAT_RAW);
 
+        $usuario = Usuario::find(Session::get('id_usuario'));
+        $ids_submenu_ad = $usuario->getIdSubmenusAccesoDirecto();
         return view('perfil.inicio', [
-            'usuario' => Usuario::find(Session::get('id_usuario')),
+            'usuario' => $usuario,
             'key' => $raw['n']->toHex(),
             'roles' => Rol::All(),
+            'iconos' => Icon::All(),
+            'ids_submenu_ad' => $ids_submenu_ad,
+            'grupos_menu' => GrupoMenu::All()->where('estado', 'A')->sortBy('nombre'),
         ]);
+    }
+
+    public function seleccionar_submenu(Request $request)
+    {
+        $valida = Validator::make($request->all(), [
+            'submenu' => 'required',
+            'check' => 'required',
+        ], [
+            'submenu.required' => 'El submenu es obligatorio',
+            'check.required' => 'El check es obligatorio',
+        ]);
+        if (!$valida->fails()) {
+            $usuario = Usuario::find(Session::get('id_usuario'));
+            $model = AccessoDirecto::All()
+                ->where('id_usuario', $usuario->id_usuario)
+                ->where('id_submenu', $request->submenu)
+                ->first();
+            if ($model != '') { // ya existe
+                $model->delete();
+                $success = true;
+                $msg = '<div class="alert alert-success text-center">' .
+                    '<p> Se ha eliminado el acceso directo satisfactoriamente</p>'
+                    . '</div>';
+            } else {    // es nuevo
+                $model = new AccessoDirecto();
+                $model->id_usuario = $usuario->id_usuario;
+                $model->id_submenu = $request->submenu;
+                $model->id_icono = $request->icono;
+
+                if ($model->save()) {
+                    $model = AccessoDirecto::All()->last();
+                    $success = true;
+                    $msg = '<div class="alert alert-success text-center">' .
+                        '<p> Se ha creado el acceso directo satisfactoriamente</p>'
+                        . '</div>';
+                    bitacora('acceso_directo', $model->id_acceso_directo, 'I', 'Inserción satisfactoria del acceso directo');
+                } else {
+                    $success = false;
+                    $msg = '<div class="alert alert-warning text-center">' .
+                        '<p> Ha ocurrido un problema al guardar la información al sistema</p>'
+                        . '</div>';
+                }
+            }
+        } else {
+            $success = false;
+            $errores = '';
+            foreach ($valida->errors()->all() as $mi_error) {
+                if ($errores == '') {
+                    $errores = '<li>' . $mi_error . '</li>';
+                } else {
+                    $errores .= '<li>' . $mi_error . '</li>';
+                }
+            }
+            $msg = '<div class="alert alert-danger">' .
+                '<p class="text-center">¡Por favor corrija los siguientes errores!</p>' .
+                '<ul>' .
+                $errores .
+                '</ul>' .
+                '</div>';
+        }
+        return [
+            'mensaje' => $msg,
+            'success' => $success
+        ];
     }
 
     public function update_usuario(Request $request)
@@ -627,6 +699,16 @@ class YuraController extends Controller
             'costos_m2_anual' => getIndicadorByName('C10')->valor,
             'rentabilidad_m2_mensual' => getIndicadorByName('R1')->getVariedad($variedad->id_variedad)->valor,
             'rentabilidad_m2_anual' => getIndicadorByName('R2')->valor,
+        ]);
+    }
+
+    public function cargar_accesos_directos(Request $request)
+    {
+        $usuario = Usuario::find(Session::get('id_usuario'));
+
+        return view('layouts.adminlte.partials.accesos_directos', [
+            'usuarios' => $usuario,
+            'accesos' => $usuario->accesos_directos,
         ]);
     }
 }

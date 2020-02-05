@@ -75,6 +75,9 @@
                         <li class="tab-detalles">
                             <a href="#seguridad" data-toggle="tab">Seguridad</a>
                         </li>
+                        <li class="tab-detalles">
+                            <a href="#accesos_directos" data-toggle="tab">Accesos directos</a>
+                        </li>
                     </ul>
                     <div class="tab-content">
                         <div class="tab-pane active" id="datos_usuarios">
@@ -83,8 +86,12 @@
                         <div class="tab-pane" id="seguridad">
                             @include('perfil.partials.seguridad')
                         </div>
+                        <div class="tab-pane" id="accesos_directos">
+                            @include('perfil.partials.accesos_directos')
+                        </div>
                     </div>
                 </div>
+
             </div>
         </div>
     </section>

@@ -17,18 +17,8 @@
             <span class="sr-only">Menú</span>
         </a>
         <div class="navbar-custom-menu">
-            <ul class="nav navbar-nav">
+            <ul class="nav navbar-nav" id="ul_navbar_superior">
                 @if(in_array(getUsuario(Session::get('id_usuario'))->rol()->nombre,['SUPER ADMINISTRADOR', 'ADMINISTRADOR']))
-                    <li class="dropdown notifications-menu">
-                        <a href="javascript:void(0)" onclick="cargar_url('proy_cosecha')" title="Proyección Cosecha">
-                            <i class="fa fa-tint"></i>
-                        </a>
-                    </li>
-                    <li class="dropdown notifications-menu">
-                        <a href="javascript:void(0)" onclick="cargar_url('fenograma_ejecucion')" title="Fenograma de Ejecución">
-                            <i class="fa fa-tree"></i>
-                        </a>
-                    </li>
                     <li class="dropdown notifications-menu">
                         <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"
                            onclick="actualizar_cosecha_x_variedad('li_cosecha_hoy', false)">
