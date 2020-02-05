@@ -1033,11 +1033,10 @@ class CostosController extends Controller
 
     public function listar_reporte(Request $request)
     {
-        $semanas = DB::table('semana')
-            ->select('codigo')->distinct()
-            ->where('estado', 1)
-            ->where('codigo', '>=', $request->desde)
-            ->where('codigo', '<=', $request->hasta)
+        $semanas = DB::table('costos_semana_mano_obra')
+            ->select('codigo_semana')->distinct()
+            ->where('codigo_semana', '>=', $request->desde)
+            ->where('codigo_semana', '<=', $request->hasta)
             ->get();
         $area = Area::find($request->area);
         $actividad = Actividad::find($request->actividad);

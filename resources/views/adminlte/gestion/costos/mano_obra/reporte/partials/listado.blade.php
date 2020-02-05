@@ -1,18 +1,18 @@
 @if(count($matriz) > 0)
-    <table class="table-bordered table-striped" style="width: 100%; border: 2px solid #9d9d9d" id="table_costos">
+    <table class="table-bordered table-striped" style="width: 100%; border: 2px solid #9d9d9d; font-size: 0.9em" id="table_costos">
         <thead>
         <tr id="tr_fijo_top_0">
-            <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef" colspan="{{count($semanas)*5 + 3}}">
-                Costos {{$actividad != '' ? '"'.$actividad->nombre.'"' : ''}}
+            <th class="text-left" style="border-color: #9d9d9d; background-color: #e9ecef" colspan="{{count($semanas)*5 + 3}}">
+                <span style="margin-left: 5px; position: sticky; left: 7px !important;">Costos {{$actividad != '' ? '"'.$actividad->nombre.'"' : ''}}</span>
             </th>
         </tr>
         <tr id="tr_fijo_top_1">
-            <th class="text-center th_fijo_left_0" style="border-color: #9d9d9d; background-color: #e9ecef; z-index: 5 !important;">
+            <th class="text-left th_fijo_left_0" style="border-color: #9d9d9d; background-color: #e9ecef; z-index: 5 !important; width: 125px">
                 <span style="margin-left: 5px; margin-right: 5px">SEMANAS</span>
             </th>
             @foreach($semanas as $sem)
                 <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
-                    <span style="margin-left: 5px; margin-right: 5px">{{$sem->codigo}}</span>
+                    <span style="margin-left: 5px; margin-right: 5px">{{$sem->codigo_semana}}</span>
                 </th>
             @endforeach
             <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
@@ -25,7 +25,7 @@
         </thead>
         <tfoot>
         <tr>
-            <th class="text-center th_fijo_left_0" style="border-color: #9d9d9d; background-color: #e9ecef">
+            <th class="text-left th_fijo_left_0" style="border-color: #9d9d9d; background-color: #e9ecef">
                 <span style="margin-left: 5px; margin-right: 5px">Totales</span>
             </th>
             @php
@@ -55,8 +55,10 @@
                 @endphp
                 @foreach($act as $pos_item => $item)
                     @if($pos_item == 0)
-                        <td class="text-center th_fijo_left_0" style="border-color: #9d9d9d; background-color: #e9ecef">
-                            <span>{{$item->actividad_mano_obra->mano_obra->nombre}}</span>
+                        <td class="text-left th_fijo_left_0" style="border-color: #9d9d9d; background-color: #e9ecef">
+                            <div style="width: 200px; margin-left: 5px">
+                                {{$item->actividad_mano_obra->mano_obra->nombre}}
+                            </div>
                         </td>
                     @endif
                     <td class="text-center" style="border-color: #9d9d9d">
@@ -79,6 +81,8 @@
 
     <script>
         estructura_tabla('table_costos', false, false);
+
+        $('#table_costos_wrapper .row:first').hide()
     </script>
 
     <style>
@@ -101,7 +105,7 @@
 
         #tr_fijo_top_1 th {
             position: sticky;
-            top: 22px;
+            top: 20px;
         }
     </style>
 @else
