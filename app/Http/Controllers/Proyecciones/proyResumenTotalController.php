@@ -83,8 +83,10 @@ class proyResumenTotalController extends Controller
             }
             unset($semanas[0]);*/
             $dataVentas = ProyeccionVentaSemanalReal::whereIn('codigo_semana',$semanas)
-                ->where('id_variedad',$request->id_variedad)
-                ->select('codigo_semana',
+                ->where(function($query) use ($request){
+                    if(isset($request->id_variedad))
+                        $query->where('id_variedad',$request->id_variedad);
+                })->select('codigo_semana',
                     DB::raw('SUM(valor) as valor'),
                     DB::raw('SUM(cajas_equivalentes) as cajas_equivalentes'))
                 ->groupBy('codigo_semana')->get();
