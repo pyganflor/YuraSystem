@@ -75,9 +75,9 @@ class Semana extends Model
 
             foreach ($proyeccionAnnoActual as $item) {
                 if($item->cajas_fisicas == 0 && $semanaActual < $this->codigo){
-                    //$cF = $this->cajasFisicasAnnoAnterior($idVariedad,$item->cliente->id_cliente);
-                    //$cajasFisicasAnnoAnterior = 0;
-                    //if(isset($cF))
+                    /*$cF = $this->cajasFisicasAnnoAnterior($idVariedad,$item->cliente->id_cliente);
+                    $cajasFisicasAnnoAnterior = 0;
+                    if(isset($cF))*/
                         $cajasFisicasAnnoAnterior = $item->cajas_fisicas_anno_anterior;
                     $cajasEquivalentesAnnoAnterior += $cajasFisicasAnnoAnterior*$item->cliente->factor;
                     $cajasFisicasAnnoAterior+= $cajasFisicasAnnoAnterior;
@@ -216,10 +216,6 @@ class Semana extends Model
     }
 
     public function cajasFisicasAnnoAnterior($idVariedad,$idCliente){
-
-        /*$arrSemana = str_split($this->codigo,2);
-        $anoAnterior = (int)$arrSemana[0]-1;
-        $semanaAnnoAnterior =  $anoAnterior.$arrSemana[1];*/
 
         return ProyeccionVentaSemanalReal::where([
             ['id_variedad',$idVariedad],
