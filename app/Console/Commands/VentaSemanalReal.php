@@ -49,8 +49,8 @@ class VentaSemanalReal extends Command
             $hasta = $this->argument('semana_hasta');
             $variedad = $this->argument('variedad');
             $idCliente = $this->argument('id_cliente');
-            $fechaActual = now();
-           
+
+            Info("Inicio del comando proyeccion:venta_semanal_real");
             Info("Variables recibidas, desde: ".$desde. "hasta: ".$hasta. " variedad: ".$variedad ." idCliente: ".$idCliente);
             Info("Inicio del comando proyeccion:venta_semanal_real");
             $variedades = Variedad::where('estado', 1);
