@@ -47,7 +47,6 @@ class proyResumenTotalController extends Controller
                 }
             }
             $semanas[]=$semanaAnterior;*/
-
             for ($i = $semana_desde->codigo; $i <= $semana_hasta->codigo; $i++) {
                 $existSemana = Semana::where('codigo', $i)->select('codigo')->first();
                 if (isset($existSemana->codigo))

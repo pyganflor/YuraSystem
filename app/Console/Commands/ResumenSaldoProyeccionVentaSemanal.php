@@ -15,7 +15,7 @@ class ResumenSaldoProyeccionVentaSemanal extends Command
      *
      * @var string
      */
-    protected $signature = 'resumen_saldo_proyeccion:venta_semanal {desde=0} {hasta=0} {variedad=0}';
+    protected $signature = '`` {desde=0} {hasta=0} {variedad=0}';
 
     /**
      * The console command description.
