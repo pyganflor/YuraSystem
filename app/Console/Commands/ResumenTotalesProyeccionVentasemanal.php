@@ -5,6 +5,7 @@ namespace yura\Console\Commands;
 use DB;
 use Illuminate\Console\Command;
 use yura\Modelos\ProyeccionVentaSemanalReal;
+use yura\Modelos\Variedad;
 
 class ResumenTotalesProyeccionVentasemanal extends Command
 {
@@ -13,7 +14,7 @@ class ResumenTotalesProyeccionVentasemanal extends Command
      *
      * @var string
      */
-    protected $signature = 'command:name';
+    protected $signature = 'resumen_totales_proyeccion:venta_semanal';
 
     /**
      * The console command description.
@@ -39,6 +40,35 @@ class ResumenTotalesProyeccionVentasemanal extends Command
      */
     public function handle()
     {
+
+        $variedades = Variedad::where('estado',1)->get();
+        $semanaActual=getSemanaByDate(now()->toDateString())->codigo;
+        $ramosxCajaEmpresa= getConfiguracionEmpresa()->ramos_x_caja;
+        foreach($variedades as $variedad){
+            $semanas = ProyeccionVentaSemanalReal::where('id_variedad', $variedad->variedad)
+                ->select('codigo_semana')->distinct('codigo_semana')->get();
+
+            foreach ($semanas as  $semana) {
+
+                $dataVentas = getObjSemana($semana->codigo_semana)->getTotalesProyeccionVentaSemanal(false, $variedad->variedad, true, $semanaActual, false, $ramosxCajaEmpresa);
+                $objResumenTotalesProyeccionVentaSemanal = ResumenTotalesProyeccionVentaSemanal::all()
+                    ->where('id_variedad',$variedad->variedad)->where('codigo_semana',$semana->codigo_semana)->first();
+
+                if(!isset($dataResumenTotalesProyeccionVentaSemanal))
+                    $objResumenTotalesProyeccionVentaSemanal = new ResumenTotalesProyeccionVentaSemanal;
+
+                $objResumenTotalesProyeccionVentaSemanal->id_variedad = $variedad->variedad;
+                $objResumenTotalesProyeccionVentaSemanal->codigo_semana = $semana->codigo_semana;
+                $objResumenTotalesProyeccionVentaSemanal->cajas_fisicas = $dataVentas['cajasFisicas'];
+                $objResumenTotalesProyeccionVentaSemanal->cajs_proyectadas = $dataVentas['cajasEquivalentes'];
+                $objResumenTotalesProyeccionVentaSemanal->dinero_proyectado = $dataVentas['valor'];
+                $objResumenTotalesProyeccionVentaSemanal->save();
+
+            }
+        }
+
+
+
         /*$existeSemana =ProyeccionVentaSemanalReal::where([
             ['id_variedad', $idVariedad],
             ['codigo_semana',$this->codigo]
