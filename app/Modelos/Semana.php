@@ -36,7 +36,7 @@ class Semana extends Model
         return $this->belongsTo('\yura\Modelos\Variedad', 'id_variedad');
     }
 
-    public function getTotalesProyeccionVentaSemanal($idsCliente,$idVariedad=null,$calculaAnnoAnterior=false,$semanaActual=false,$idsClientes=false,$ramosxCajaEmpresa=false){
+    public function getTotalesProyeccionVentaSemanal($idsCliente,$idVariedad,$calculaAnnoAnterior=false,$semanaActual=false,$idsClientes=false,$ramosxCajaEmpresa=false){
 
         $primeraSemana = ProyeccionVentaSemanalReal::where('id_variedad', $idVariedad)->select(DB::raw('MIN(codigo_semana) as codigo'))->first();
         $existeSemana =ProyeccionVentaSemanalReal::where([
@@ -50,11 +50,9 @@ class Semana extends Model
         $proyeccion = ProyeccionVentaSemanalReal::where([
             ['id_variedad',$idVariedad],
             ['codigo_semana',$this->codigo]
-        ])->where(function($query) use ($idsCliente,$idVariedad){
-            if(isset($idsCliente))
+        ])->where(function($query) use ($idsCliente){
+            if($idsCliente)
                 $query->whereNotIn('id_cliente',$idsCliente);
-            if(isset($idVariedad))
-                $query->where('id_variedad',$idVariedad);
         })->select(
             DB::raw('sum(valor) as total_valor'),
             DB::raw('sum(cajas_fisicas) as total_cajas_fisicas'),
@@ -65,25 +63,22 @@ class Semana extends Model
         $cajasEquivalentesAnnoAnterior=0;
         $cajasFisicasAnnoAterior=0;
 
-        if($calculaAnnoAnterior){ //TOMA EN CUENTA LAS CAJAS DEL AÑO PASADO PARA LA AUTO PROYECCIÓN DEL ANNO ACTUAL
+        if($calculaAnnoAnterior){ //TOMA EN CUENTA LAS CAJAS DEL AÑO PASADO PARRA LA AUTO PROYECCIÓN DEL ANO ACTUAL
 
             $proyeccionAnnoActual = ProyeccionVentaSemanalReal::where([
                 ['id_variedad',$idVariedad],
                 ['codigo_semana',$this->codigo]
-            ])->where(function($query) use ($idsClientes,$idVariedad){
-                if(isset($idsClientes))
+            ])->where(function($query) use ($idsClientes){
+                if($idsClientes)
                     $query->whereIn('id_cliente',$idsClientes);
-                if(isset($idVariedad))
-                    $query->where('id_variedad',$idVariedad);
-
             })->get();
 
             foreach ($proyeccionAnnoActual as $item) {
                 if($item->cajas_fisicas == 0 && $semanaActual < $this->codigo){
-                    /*$cF = $this->cajasFisicasAnnoAnterior($idVariedad,$item->cliente->id_cliente);
+                    $cF = $this->cajasFisicasAnnoAnterior($idVariedad,$item->cliente->id_cliente);
                     $cajasFisicasAnnoAnterior = 0;
-                    if(isset($cF))*/
-                        $cajasFisicasAnnoAnterior = $item->cajas_fisicas_anno_anterior;
+                    if(isset($cF))
+                        $cajasFisicasAnnoAnterior = $cF->cajas_fisicas_anno_anterior;
                     $cajasEquivalentesAnnoAnterior += $cajasFisicasAnnoAnterior*$item->cliente->factor;
                     $cajasFisicasAnnoAterior+= $cajasFisicasAnnoAnterior;
                     $ramosTotales = $cajasFisicasAnnoAnterior*$item->cliente->factor*$ramosxCajaEmpresa;
@@ -221,6 +216,10 @@ class Semana extends Model
     }
 
     public function cajasFisicasAnnoAnterior($idVariedad,$idCliente){
+
+        /*$arrSemana = str_split($this->codigo,2);
+        $anoAnterior = (int)$arrSemana[0]-1;
+        $semanaAnnoAnterior =  $anoAnterior.$arrSemana[1];*/
 
         return ProyeccionVentaSemanalReal::where([
             ['id_variedad',$idVariedad],

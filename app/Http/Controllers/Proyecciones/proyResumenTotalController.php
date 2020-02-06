@@ -50,16 +50,15 @@ class proyResumenTotalController extends Controller
                     DB::raw('SUM(tallos_proyectados) as tallos_proyectados'))
                 ->groupBy('codigo_semana')->get();
 
-            $dataVentas=[];
+            $dataVentas=collect();
             $semanaActual=getSemanaByDate(now()->toDateString())->codigo;
             $ramosxCajaEmpresa= getConfiguracionEmpresa()->ramos_x_caja;
             $idVariedad = isset($request->id_variedad) ? $request->id_variedad : null;
 
-            foreach ($semanas as $semana){
-               $data = getObjSemana($semana)->getTotalesProyeccionVentaSemanal(false,$idVariedad,true,$semanaActual,false,$ramosxCajaEmpresa);
-               dump($data);
-            }
+            foreach ($semanas as $semana)
+                $dataVentas->push(collect(getObjSemana($semana)->getTotalesProyeccionVentaSemanal(false,$idVariedad,true,$semanaActual,false,$ramosxCajaEmpresa)));
 
+            //dump($dataVentas);
             /*$dataVentas = ProyeccionVentaSemanalReal::whereIn('codigo_semana',$semanas)
                 ->where(function($query) use ($request){
                     if(isset($request->id_variedad))
