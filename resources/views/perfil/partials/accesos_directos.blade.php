@@ -2,20 +2,14 @@
     <table class="table-bordered" style="border: 2px solid #9d9d9d; width: 100%">
         @foreach($grupos_menu as $g)
             <tr onclick="$('.tr_menu_from_{{$g->id_grupo_menu}}').toggleClass('hide')">
-                <th class="text-left mouse-hand" style="background-color: #00A6C7; border-color: #9d9d9d; color: white" colspan="2">
+                <th class="text-left mouse-hand" style="background-color: #00A6C7; border-color: #9d9d9d; color: white" colspan="3">
                     <span style="margin-left: 5px">{{$g->nombre}}</span>
-                </th>
-                <th class="text-center mouse-hand" style="background-color: #00A6C7; border-color: #9d9d9d; color: white; width: 20px">
-                    <span class="badge">0</span>
                 </th>
             </tr>
             @foreach($g->menus->where('estado', 'A')->sortBy('nombre') as $m)
                 <tr class="tr_menu_from_{{$g->id_grupo_menu}} hide" onclick="$('.tr_submenu_from_{{$m->id_menu}}').toggleClass('hide')">
-                    <th class="text-left mouse-hand" style="background-color: #e9ecef; border-color: #9d9d9d" colspan="2">
+                    <th class="text-left mouse-hand" style="background-color: #e9ecef; border-color: #9d9d9d" colspan="3">
                         <span style="margin-left: 15px">{{$m->nombre}}</span>
-                    </th>
-                    <th class="text-center mouse-hand" style="background-color: #e9ecef; border-color: #9d9d9d; width: 20px">
-                        <span class="badge">0</span>
                     </th>
                 </tr>
                 @foreach($m->submenus_activos as $s)
