@@ -1,4 +1,4 @@
-@dd($dataVentas)
+
 <table class="table-bordered table-striped table-hover" width="100%" style="border: 2px solid #9d9d9d; font-size: 1em;">
     <thead>
     <tr style="background-color: #e9ecef">
@@ -30,7 +30,7 @@
         @endforeach
         {{--data cosechado--}}
         <th class="text-center" style="border:1px solid; background-color: #e9ecef">
-            <b>Cajas proyectadas (Cosecha</b>
+            <b>Cajas proyectadas (Cosecha)</b>
         </th>
     </tr>
     <tr>
