@@ -10,6 +10,7 @@ use yura\Console\Commands\EmpaquetarPedidosAnulados;
 use yura\Console\Commands\FechaFinalCiclo;
 use yura\Console\Commands\IndicadorSemanal;
 use yura\Console\Commands\NotificacionesSistema;
+use yura\Console\Commands\ResumenAreaSemanal;
 use yura\Console\Commands\ResumenCostosSemanal;
 use yura\Console\Commands\ResumenSaldoProyeccionVentaSemanal;
 use yura\Console\Commands\ResumenSemanalTotal;
@@ -33,7 +34,7 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         UpdateHistoricoVentas::class,
         FechaFinalCiclo::class,
-        DeleteRecepciones::class,
+        //DeleteRecepciones::class,
         NotificacionesSistema::class,
         CicloPrimeraFlor::class,
         UpdateProyeccionSemanal::class,
@@ -43,6 +44,7 @@ class Kernel extends ConsoleKernel
         ResumenSemanaCosecha::class,
         UpdateIndicador::class,
         ResumenVentaDiariaMesAnterior::class,
+        ResumenAreaSemanal::class,
         ResumenSemanalTotal::class,
         UpdateOtrosGastos::class,
         UpdateRegalias::class,
@@ -62,23 +64,24 @@ class Kernel extends ConsoleKernel
         // $schedule->command('inspire')
         //          ->hourly();
 
-        $schedule->command('historico_ventas:update')->daily()->runInBackground();    // UpdateHistoricoVentas::class
-        $schedule->command('ciclo:fecha_fin')->everyTenMinutes()->runInBackground();    // FechaFinalCiclo::class
-        $schedule->command('recepciones:delete')->everyThirtyMinutes()->runInBackground(); // DeleteRecepciones::class
-        $schedule->command('notificaciones:sistema')->everyTenMinutes()->runInBackground(); // NotificacionesSistema::class
-        $schedule->command('ciclo:primera_flor')->hourly()->runInBackground(); // CicloPrimeraFlor::class
-        $schedule->command('proyeccion:update_semanal')->hourly()->runInBackground(); // UpdateProyeccionSemanal::class
-        $schedule->command('pedido:empaquetar_anulados')->daily()->runInBackground(); // EmpaquetarPedidosAnulados::class
+        $schedule->command('ciclo:fecha_fin')->cron('0 * * * *')->runInBackground();    // FechaFinalCiclo::class
+        $schedule->command('historico_ventas:update')->cron('0 0 * * *')->runInBackground();    // UpdateHistoricoVentas::class
+        //$schedule->command('recepciones:delete')->hourly()->runInBackground(); // DeleteRecepciones::class
+        $schedule->command('notificaciones:sistema')->cron('10 * * * *')->runInBackground(); // NotificacionesSistema::class
+        $schedule->command('ciclo:primera_flor')->cron('5 * * * *')->runInBackground(); // CicloPrimeraFlor::class
+        $schedule->command('proyeccion:update_semanal')->cron('30 * * * *')->runInBackground(); // UpdateProyeccionSemanal::class
+        $schedule->command('pedido:empaquetar_anulados')->cron('10 0 * * *')->runInBackground(); // EmpaquetarPedidosAnulados::class
         $schedule->command('precio:variedad_x_cliente')->sundays()->between('7:00', '22:00')->runInBackground(); // PrecioVariedadCliente::class
-        $schedule->command('resumen:semana_cosecha')->hourly()->runInBackground(); // ResumenSemanaCosecha::class
-        $schedule->command('indicador:update')->hourly()->runInBackground(); // UpdateIndicador::class
-        $schedule->command('resumen_venta_diaria:mes_anterior')->daily()->runInBackground(); // ResumenVentaDiariaMesAnterior::class
-        $schedule->command('resumen_total:semanal')->hourly()->runInBackground(); // ResumenSemanalTotal::class
-        $schedule->command('otros_gastos:update')->hourly()->runInBackground(); // UpdateOtrosGastos::class
-        $schedule->command('regalias:update')->hourly()->runInBackground(); // UpdateRegalias::class
-        $schedule->command('costos:update_semanal')->hourly()->runInBackground(); // ResumenCostosSemanal::class
-        $schedule->command('indicador_semana:update')->hourly()->runInBackground(); // IndicadorSemanal::class
-        $schedule->command('resumen_saldo_proyeccion:venta_semanal')->hourly()->runInBackground(); // ResumenSaldoProyeccionVentaSemanal::class
+        $schedule->command('resumen:semana_cosecha')->cron('20 * * * *')->runInBackground(); // ResumenSemanaCosecha::class
+        $schedule->command('indicador:update')->cron('40 * * * *')->runInBackground(); // UpdateIndicador::class
+        $schedule->command('resumen_venta_diaria:mes_anterior')->cron('0 6 * * *')->runInBackground(); // ResumenVentaDiariaMesAnterior::class
+        $schedule->command('area:update_semanal')->cron('20 * * * *')->runInBackground(); // ResumenAreaSemanal::class
+        $schedule->command('resumen_total:semanal')->cron('15 * * * *')->runInBackground(); // ResumenSemanalTotal::class
+        $schedule->command('otros_gastos:update')->cron('20 0 * * *')->runInBackground(); // UpdateOtrosGastos::class
+        $schedule->command('regalias:update')->cron('30 0 * * *')->runInBackground(); // UpdateRegalias::class
+        $schedule->command('costos:update_semanal')->cron('25 * * * *')->runInBackground(); // ResumenCostosSemanal::class
+        $schedule->command('indicador_semana:update')->cron('40 0 * * *')->runInBackground(); // IndicadorSemanal::class
+        $schedule->command('resumen_saldo_proyeccion:venta_semanal')->cron('*/15 * * * *')->runInBackground(); // ResumenSaldoProyeccionVentaSemanal::class
     }
 
     /**
