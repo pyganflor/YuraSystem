@@ -164,4 +164,32 @@
             $('#' + id).prop('type', 'password');
         }
     }
+
+    function seleccionar_submenu(submenu) {
+        datos = {
+            _token: '{{csrf_token()}}',
+            submenu: submenu,
+            icono: $('#id_icon_' + submenu).val(),
+            check: $('#check_' + submenu).prop('checked') == true ? 1 : 0
+        };
+        $('#tr_submenu_' + submenu).LoadingOverlay('show');
+        $.post('{{url('perfil/seleccionar_submenu')}}', datos, function (retorno) {
+            if (!retorno.success)
+                alerta(retorno.mensaje);
+            else {
+                $('.acceso_directo').remove();
+                cargar_accesos_directos();
+            }
+        }, 'json').fail(function (retorno) {
+            console.log(retorno);
+            alerta_errores(retorno.responseText);
+        }).always(function () {
+            $('#tr_submenu_' + submenu).LoadingOverlay('hide');
+        });
+    }
+
+    function select_icono(icono, nombre, submenu) {
+        $('#id_icon_' + submenu).val(icono);
+        $('#icon_selected_' + submenu).html('<i class="fa fa-fw fa-' + nombre + '"></i>');
+    }
 </script>

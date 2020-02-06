@@ -146,22 +146,22 @@ function store_pedido(id_cliente, pedido_fijo, csrf_token, vista, id_pedido) {
 
         empresa = $("select#id_configuracion_empresa option:selected").text();
         option_agencias_transporte = [];
-        texto = '<div class="alert alert-info text-center"><p>El pedido sera facturado con la empresa '+empresa+'</p></div>';
+        texto = '<div class="alert alert-info text-center"><p>El pedido sera facturado con la empresa ' + empresa + '</p></div>';
 
         modal_quest('modal_edit_pedido', texto, 'Editar pedido', true, false, '40%', function () {
-            if ($("#envio_automatico").is(":checked"));
-                if ($("#fecha_envio").val() == "") {
-                    $("#error_fecha_envio").html('<p style="color: red;">Debe seleccionar una fecha para realizar el envío</p>');
-                    return false;
-                } else {
-                    $("#error_fecha_envio").html("");
-                }
+            if ($("#envio_automatico").is(":checked")) ;
+            if ($("#fecha_envio").val() == "") {
+                $("#error_fecha_envio").html('<p style="color: red;">Debe seleccionar una fecha para realizar el envío</p>');
+                return false;
+            } else {
+                $("#error_fecha_envio").html("");
+            }
 
             id_variedades = '';
             variedades = '';
             arrDataDetallesPedido = [];
-            arrDataPresentacionYuraVenture=[];
-            dataTallos =[];
+            arrDataPresentacionYuraVenture = [];
+            dataTallos = [];
             arrDatosExportacion = [];
             cant_especificaciones = $('tbody#tbody_inputs_pedidos input.input_cantidad').length;
             cant_datos_exportacion = $(".th_datos_exportacion").length;
@@ -178,48 +178,48 @@ function store_pedido(id_cliente, pedido_fijo, csrf_token, vista, id_pedido) {
                     precio = '';
                     if ($(".cantidad_piezas_" + (i + 1)).val() != "" && $(".cantidad_piezas_" + (i + 1)).val() != 0 && arr_ordenado[z] === j.value) {
                         for (x = 1; x <= $(".input_variedad_" + (i + 1)).length; x++) {
-                            empaque = $("select.empaque_"+ (i + 1)).val();
+                            empaque = $("select.empaque_" + (i + 1)).val();
                             id_variedades += $("#id_variedad_" + (i + 1) + "_" + x).val() + "|";
                             precio += $("#precio_" + (i + 1) + "_" + x).val() + ";" + (empaque !== "T"
-                                                                                        ? $("#id_detalle_especificacion_empaque_" + (i + 1) + "_" + x).val() + "|"
-                                                                                        : "0" + "|");
+                                ? $("#id_detalle_especificacion_empaque_" + (i + 1) + "_" + x).val() + "|"
+                                : "0" + "|");
                         }
                         variedades += id_variedades;
 
                         arrDataDetallesPedido.push({
-                            cantidad: empaque === "T" ? $("#cajas_mallas_"+(i + 1)).val() : $("#cantidad_piezas_" + (i + 1)).val(),
+                            cantidad: empaque === "T" ? $("#cajas_mallas_" + (i + 1)).val() : $("#cantidad_piezas_" + (i + 1)).val(),
                             id_cliente_pedido_especificacion: empaque === "T" ? null : $("#id_cliente_pedido_especificacion_" + (i + 1)).val(),
                             id_agencia_carga: $("#id_agencia_carga_" + (i + 1)).val(),
                             precio: precio,
                             orden: $("#orden_" + (i + 1)).val(),
-                            datos_especificacion : empaque === "T" ? {
-                                variedad : parseInt($("input.input_variedad_"+(i + 1)).val()),
-                                ramos_x_caja : parseInt($("td.ramos_x_caja_"+(i + 1)+" span").html()),
-                                total_ramos : parseInt($("td#td_total_ramos_"+(i + 1)).html()),
-                                id_clasificacion_ramo : $("#id_clasificacion_ramo_"+(i + 1)).val(),
-                                tallos_x_ramos : parseInt($("td.td_tallos_x_ramo_"+(i + 1)+" span input").val()),
-                                longitud_ramo : parseInt($("input.longitud_ramo_"+(i + 1)).val()),
-                                unidad_medida : parseInt($("input.u_m_longitud_ramo_"+(i + 1)).val()),
+                            datos_especificacion: empaque === "T" ? {
+                                variedad: parseInt($("input.input_variedad_" + (i + 1)).val()),
+                                ramos_x_caja: parseInt($("td.ramos_x_caja_" + (i + 1) + " span").html()),
+                                total_ramos: parseInt($("td#td_total_ramos_" + (i + 1)).html()),
+                                id_clasificacion_ramo: $("#id_clasificacion_ramo_" + (i + 1)).val(),
+                                tallos_x_ramos: parseInt($("td.td_tallos_x_ramo_" + (i + 1) + " span input").val()),
+                                longitud_ramo: parseInt($("input.longitud_ramo_" + (i + 1)).val()),
+                                unidad_medida: parseInt($("input.u_m_longitud_ramo_" + (i + 1)).val()),
                             } : null
                         });
 
-                        if(empaque === "T"){
-                            console.log(i, $(".input_tallos_"+(i+1)).val());
-                            codigo_presentacion = $(".codigo_presentacion_"+(i + 1)).val().replace('tallos_x_malla',$(".input_tallos_"+(i + 1)).val());
+                        if (empaque === "T") {
+                            console.log(i, $(".input_tallos_" + (i + 1)).val());
+                            codigo_presentacion = $(".codigo_presentacion_" + (i + 1)).val().replace('tallos_x_malla', $(".input_tallos_" + (i + 1)).val());
                             arrDataPresentacionYuraVenture.push({
-                                codigo_presentacion : codigo_presentacion,
-                                codigo_venture : $(".codigo_venture_"+(i + 1)).val()
+                                codigo_presentacion: codigo_presentacion,
+                                codigo_venture: $(".codigo_venture_" + (i + 1)).val()
                             });
                             dataTallos.push({
-                                mallas : $(".cantidad_"+(i + 1)).val(),
-                                tallos_x_caja : $(".tallos_x_caja_"+(i + 1)).val(),
-                                tallos_x_ramo : $("td.td_tallos_x_ramo_"+(i + 1)+" span input").val(),
-                                tallos_x_malla : $(".tallos_x_malla_"+(i + 1)).val(),
-                                ramos_x_caja : parseInt($("td.ramos_x_caja_"+(i + 1)+" span").html()),
+                                mallas: $(".cantidad_" + (i + 1)).val(),
+                                tallos_x_caja: $(".tallos_x_caja_" + (i + 1)).val(),
+                                tallos_x_ramo: $("td.td_tallos_x_ramo_" + (i + 1) + " span input").val(),
+                                tallos_x_malla: $(".tallos_x_malla_" + (i + 1)).val(),
+                                ramos_x_caja: parseInt($("td.ramos_x_caja_" + (i + 1) + " span").html()),
                             });
 
-                        }else{
-                            arrDataPresentacionYuraVenture =[];
+                        } else {
+                            arrDataPresentacionYuraVenture = [];
                         }
                     }
                 });
@@ -300,8 +300,8 @@ function store_pedido(id_cliente, pedido_fijo, csrf_token, vista, id_pedido) {
                 arrDatosExportacion: arrDatosExportacion,
                 crear_envio: $("#envio_automatico").is(":checked"),
                 fecha_envio: $("#fecha_de_entrega").val(),
-                id_configuracion_empresa : $("select#id_configuracion_empresa").val(),
-                arrDataPresentacionYuraVenture : arrDataPresentacionYuraVenture,
+                id_configuracion_empresa: $("select#id_configuracion_empresa").val(),
+                arrDataPresentacionYuraVenture: arrDataPresentacionYuraVenture,
                 dataTallos: dataTallos
             };
 
@@ -350,7 +350,7 @@ function cargar_espeicificaciones_cliente(remove) {
     get_jquery('pedidos/cargar_especificaciones', datos, function (response) {
         remove ? add_campos(1, '', response['agencias_carga']) : '';
         $("#btn_add_campos").attr('disabled', false);
-        $(".iva_pedido").html(response['iva_cliente']+"%");
+        $(".iva_pedido").html(response['iva_cliente'] + "%");
         $("#iva_cliente").val(response['iva_cliente']);
         calcular_precio_pedido();
     });
@@ -650,12 +650,12 @@ function create_agencia_carga(id_agencia_carga, token, id_cliente) {
 
 function store_agencia_carga(token, id_cliente) {
 
-    arr_codigo_venture =[];
-    $.each($("div.codigos_venture"),function(i,j){
-        if($(j).find('select#id_configuracion_empresa').val() != "")
+    arr_codigo_venture = [];
+    $.each($("div.codigos_venture"), function (i, j) {
+        if ($(j).find('select#id_configuracion_empresa').val() != "")
             arr_codigo_venture.push({
-                id_configuracion_empresa : $(j).find('select#id_configuracion_empresa').val(),
-                codigo_venture : $(j).find('input#codigo').val(),
+                id_configuracion_empresa: $(j).find('select#id_configuracion_empresa').val(),
+                codigo_venture: $(j).find('input#codigo').val(),
             });
     });
 
@@ -671,7 +671,7 @@ function store_agencia_carga(token, id_cliente) {
             correo2: $("#correo2").val(),
             //correo3: $("#correo3").val(),
             identificacion: $("#identificacion").val(),
-            codigo_venture : arr_codigo_venture
+            codigo_venture: arr_codigo_venture
         };
         post_jquery('agrencias_carga/store_agencia', datos, function () {
             cerrar_modals();
@@ -724,18 +724,18 @@ function cargar_opcion(div, id_cliente = '', url, add) {
                 $("#div_content_opciones").html(retorno);
             }
 
-        }else if (div === 'div_content_opciones') {
+        } else if (div === 'div_content_opciones') {
             $("#div_content_opciones").removeClass('hide');
             $('#include_contactos_cliente,#include_agencia_carga').addClass('hide');
 
             $("#div_content_opciones").html(retorno);
 
-        }else if (div === 'div_pedidos') {
+        } else if (div === 'div_pedidos') {
             $('#include_contactos_cliente,#include_agencia_carga').addClass('hide');
             $("#div_content_opciones").removeClass('hide');
             $("#div_content_opciones").html(retorno);
 
-        }else if(div === 'div_consignatario'){
+        } else if (div === 'div_consignatario') {
             $('#include_contactos_cliente,#include_agencia_carga').addClass('hide');
             $("#div_content_opciones").removeClass('hide');
             $("#div_content_opciones").html(retorno);
@@ -745,27 +745,27 @@ function cargar_opcion(div, id_cliente = '', url, add) {
     $.LoadingOverlay('hide');
 }
 
-function aumentar_consignatario(){
+function aumentar_consignatario() {
     $objDom = $("div#row_add_user_contactos .col-md-4").html();
-    $("div#row_add_user_contactos").append("<div class='col-md-4'>"+$objDom+"</div>");
+    $("div#row_add_user_contactos").append("<div class='col-md-4'>" + $objDom + "</div>");
 }
 
-function elimnar_consignatario(){
+function elimnar_consignatario() {
     var $objDom = $("div#row_add_user_contactos .col-md-4");
-    if($objDom.length > 1)
+    if ($objDom.length > 1)
         $objDom.last().remove();
 }
 
-function store_cliente_consignatario(token,id_cliente) {
+function store_cliente_consignatario(token, id_cliente) {
 
     arr_consignatarios = [];
-    $.each($("div#row_add_user_contactos select#consignatario"),function(i,j){
+    $.each($("div#row_add_user_contactos select#consignatario"), function (i, j) {
         arr_consignatarios.push(j.value);
     });
     datos = {
-        _token : token,
-        id_cliente : id_cliente,
-        arr_consignatarios : arr_consignatarios
+        _token: token,
+        id_cliente: id_cliente,
+        arr_consignatarios: arr_consignatarios
     };
 
     if (arr_consignatarios.length < 1) {
@@ -858,7 +858,7 @@ function admin_colores() {
 
 function form_codigo_barra() {
     $.LoadingOverlay('show');
-    $.get(dominio+'/codigo_barra/form_codigo_barra', {}, function (retorno) {
+    $.get(dominio + '/codigo_barra/form_codigo_barra', {}, function (retorno) {
         modal_form('modal_form_codigo_barra', retorno, '<i class="fa fa-barcode"></i> Crear código de barras', true, false, '85%', function () {
             genera_codigo_barra($("#prefijo").val(), $("#codigo").val());
         });
@@ -871,25 +871,25 @@ function form_codigo_barra() {
 function genera_codigo_barra(prefijo, codigo) {
 
     $.LoadingOverlay('show');
-    if(prefijo != null && prefijo != ""){
-        $.get(dominio+'/codigo_barra/generar_codigo_barra/' + codigo +"/"+prefijo, {}, function (retorno) {
+    if (prefijo != null && prefijo != "") {
+        $.get(dominio + '/codigo_barra/generar_codigo_barra/' + codigo + "/" + prefijo, {}, function (retorno) {
             $("#img_codigo_barra").html(retorno);
         });
-    }else{
-        $.get(dominio+'/codigo_barra/generar_codigo_barra/' + codigo, {}, function (retorno) {
-        $("#img_codigo_barra").html(retorno);
-      });
+    } else {
+        $.get(dominio + '/codigo_barra/generar_codigo_barra/' + codigo, {}, function (retorno) {
+            $("#img_codigo_barra").html(retorno);
+        });
     }
 
     $.LoadingOverlay('hide');
 }
 
-function listar_resumen_pedidos(fecha, opciones,id_configuracion_empresa) {
+function listar_resumen_pedidos(fecha, opciones, id_configuracion_empresa) {
     $.LoadingOverlay('show');
     datos = {
         fecha: fecha,
         opciones: opciones,
-        id_configuracion_empresa : id_configuracion_empresa
+        id_configuracion_empresa: id_configuracion_empresa
     };
     $.get('despachos/listar_resumen_pedidos', datos, function (retorno) {
         $('#div_listado_blanco').html(retorno);
@@ -933,7 +933,7 @@ function duplicar_especificacion(id_especificacion, especificacion_pedido) {
         id_especificacion: id_especificacion,
         id_cliente: $("#id_cliente_venta").val(),
         cant_esp: $(".input_cantidad").length,
-        empaque : $("#empaque_"+especificacion_pedido).val()
+        empaque: $("#empaque_" + especificacion_pedido).val()
     };
     $.get('pedidos/duplicar_especificacion', datos, function (retorno) {
         $("#tbody_inputs_pedidos").append(retorno);
@@ -1010,7 +1010,7 @@ function valida_identificacion() {
         $("#identificacion").attr('minlength', 10);
         $("#identificacion").attr('maxlength', 10);
     }
-    if($("#tipo_identificacion").val() != "04" && $("#tipo_identificacion").val() != "05"){
+    if ($("#tipo_identificacion").val() != "04" && $("#tipo_identificacion").val() != "05") {
         $("#identificacion").removeAttr("minlength");
         $("#identificacion").removeAttr("maxlength");
     }
@@ -1358,7 +1358,7 @@ function calcular_precio_envio() {
         total_piezas = 0.00;
         cant_rows = $(".input_cantidad_" + o).length;
         for (i = 1; i <= cant_rows; i++) {
-            tipo_especificacion = $("#tipo_especificacion_"+i).val();
+            tipo_especificacion = $("#tipo_especificacion_" + i).val();
             precio_especificacion = 0.00;
             ramos_totales_especificacion = 0.00;
             $.each($(".cantidad_" + o + "_" + i), function (p, q) {
@@ -1368,10 +1368,10 @@ function calcular_precio_envio() {
                 $.each($(".precio_" + o + "_" + i), function (y, z) {
                     precio_variedad = z.value == "" ? 0 : z.value;
 
-                    if($("#tipo_especificacion_"+ o + "_" + i).val() === "O"){
-                        console.log($("#td_tallos_x_ramo_"+o+"_"+i).html().trim());
-                        precio_especificacion += (parseFloat(precio_variedad) * parseFloat($("#td_tallos_x_ramo_"+o+"_"+i).html().trim()) * q.value);
-                    }else{
+                    if ($("#tipo_especificacion_" + o + "_" + i).val() === "O") {
+                        console.log($("#td_tallos_x_ramo_" + o + "_" + i).html().trim());
+                        precio_especificacion += (parseFloat(precio_variedad) * parseFloat($("#td_tallos_x_ramo_" + o + "_" + i).html().trim()) * q.value);
+                    } else {
                         ramos_x_caja = $(".input_ramos_x_caja_" + o + "_" + i + "_" + (y + 1)).val();
                         precio_especificacion += (parseFloat(precio_variedad) * parseFloat(ramos_x_caja) * q.value);
                     }
@@ -1574,21 +1574,21 @@ function facturar_pedido(id_pedido) {
     });
 }
 
-function empaquetar_pedido(id_pedido,token) {
+function empaquetar_pedido(id_pedido, token) {
 
     modal_quest('modal_message_facturar_envios',
         '<div class="alert alert-warning text-center"><label><i class="fa fa-exclamation-triangle" ></i> Esta seguro que desea empaquetar el pedido?</label></div>',
         '<i class="fa fa-cube"></i> Empaquetar pedido', true, false, '50%', function () {
             $.LoadingOverlay('show');
-        datos = {
-            id_pedido: id_pedido,
-            _token : token
-        };
-        post_jquery('pedidos/empaquetar_pedido', datos, function () {
-            cerrar_modals();
-            listar_resumen_pedidos($('#fecha_pedidos_search').val(),true);
-        });
-        $.LoadingOverlay('hide');
+            datos = {
+                id_pedido: id_pedido,
+                _token: token
+            };
+            post_jquery('pedidos/empaquetar_pedido', datos, function () {
+                cerrar_modals();
+                listar_resumen_pedidos($('#fecha_pedidos_search').val(), true);
+            });
+            $.LoadingOverlay('hide');
         });
 }
 
@@ -1628,7 +1628,7 @@ function genera_comprobante_cliente(id_envio, form, action, token, id_comprobant
             arrCorreos: arrCorreos,
             fecha_pedidos_search: $("#fecha_pedidos_search").val(),
             id_comprobante: id_comprobante,
-            id_configuracion_empresa : $("form#" + form + " #id_empresa").val(),
+            id_configuracion_empresa: $("form#" + form + " #id_empresa").val(),
         };
         cerrar_modals();
         $.LoadingOverlay("show", {
@@ -1677,12 +1677,12 @@ function input_required(input) {
     }
 }
 
-function buscar_codigo_dae(input, form, factura_cliente_tercero,id_envio) {
+function buscar_codigo_dae(input, form, factura_cliente_tercero, id_envio) {
     $.LoadingOverlay('show');
     datos = {
         codigo_pais: input.value,
         fecha_envio: $("form#" + form + " #fecha_envio").val(),
-        id_envio : id_envio
+        id_envio: id_envio
     };
     $.get('envio/buscar_codigo_dae', datos, function (retorno) {
         if (factura_cliente_tercero) {
@@ -1743,7 +1743,7 @@ function actualizar_envio(id_envio, form, tipo_pedido, token, id_pedido, vista) 
             almacen: $("form#" + form + " #almacen").val(),
             tipo_pedido: tipo_pedido,
             codigo_dae: $("#codigo_dae").val(),
-            consignatario : $("#consignatario").val(),
+            consignatario: $("#consignatario").val(),
             //id_configuracion_empresa: $("form#" + form + " #id_empresa").val(),
         };
         $.post('envio/actualizar_envio', datos, function (retorno) {
@@ -1891,7 +1891,7 @@ function busqueda_placa_camion(id_form) {
     });
 }
 
-function exportar_listado_despacho(token,id_configuracion_pedido) {
+function exportar_listado_despacho(token, id_configuracion_pedido) {
     $.LoadingOverlay('show');
     $.ajax({
         type: "POST",
@@ -1900,7 +1900,7 @@ function exportar_listado_despacho(token,id_configuracion_pedido) {
         url: 'despachos/exportar_pedidos_despacho',
         data: {
             fecha_pedido: $("#fecha_pedidos_search").val(),
-            id_configuracion_empresa : id_configuracion_pedido,
+            id_configuracion_empresa: id_configuracion_pedido,
             _token: token
         },
         success: function (data) {
@@ -1917,7 +1917,7 @@ function exportar_listado_despacho(token,id_configuracion_pedido) {
     });
 }
 
-function exportar_excel_listado_despacho(token,id_configuracion_pedido) {
+function exportar_excel_listado_despacho(token, id_configuracion_pedido) {
     $.LoadingOverlay('show');
     $.ajax({
         type: "POST",
@@ -1926,7 +1926,7 @@ function exportar_excel_listado_despacho(token,id_configuracion_pedido) {
         url: 'despachos/exportar_listado_pedidos_despacho',
         data: {
             fecha_pedido: $("#fecha_pedidos_search").val(),
-            id_configuracion_empresa : id_configuracion_pedido,
+            id_configuracion_empresa: id_configuracion_pedido,
             fecha: $("#fecha_pedidos_search").val(),
             _token: token
         },
@@ -1944,7 +1944,7 @@ function exportar_excel_listado_despacho(token,id_configuracion_pedido) {
     });
 }
 
-function exportar_listado_cuarto_frio(token){
+function exportar_listado_cuarto_frio(token) {
     $.LoadingOverlay('show');
     $.ajax({
         type: "POST",
@@ -1971,8 +1971,8 @@ function exportar_listado_cuarto_frio(token){
 
 function listar_productos_vinculados() {
     $.LoadingOverlay('show');
-    datos={
-        id_configuracion_empresa : $("#id_configuracion_empresa_productos").val()
+    datos = {
+        id_configuracion_empresa: $("#id_configuracion_empresa_productos").val()
     };
     $.get('/producto_venture/listar_productos_vinculados', datos, function (retorno) {
         $('#div_listado_codigo_prodcutos').html(retorno);
@@ -1984,71 +1984,71 @@ function listar_productos_vinculados() {
 
 function listar_productos() {
     $.LoadingOverlay('show');
-    datos={
-        id_configuracion_empresa : $("#id_configuracion_empresa_productos").val()
+    datos = {
+        id_configuracion_empresa: $("#id_configuracion_empresa_productos").val()
     };
     $.get('/producto_venture/listar_productos', datos, function (retorno) {
         listar_productos_vinculados();
         $("option.option_dinamico").remove();
 
         //return false;
-        $.each(retorno.articulo_venture,function(i,j){
-            $("select#presentacion_venture").append('<option class="option_dinamico" value="'+i+'">'+j+'</option>');
+        $.each(retorno.articulo_venture, function (i, j) {
+            $("select#presentacion_venture").append('<option class="option_dinamico" value="' + i + '">' + j + '</option>');
         });
     }).always(function () {
         $.LoadingOverlay('hide');
     });
 }
 
-function cuenta_ramos(input){
+function cuenta_ramos(input) {
     id = input.id.split("_")[1];
-    $("#codigo_presentacion_"+id).val("");
-    $("#codigo_venture_"+id).val("");
-    if(input.value === "T"){
-        $("td.td_presentacion_"+id+" span").html($(input).find("option")[1].innerHTML);
-        $.each($("select.empaque_"+id+" option"),function(i,j){
-            if($(this)[0].value ==="T")
-                $(this).attr('selected',true);
-            $(".cantidad_"+(i+1)).attr('title',"Ingrese el total de mallas");
+    $("#codigo_presentacion_" + id).val("");
+    $("#codigo_venture_" + id).val("");
+    if (input.value === "T") {
+        $("td.td_presentacion_" + id + " span").html($(input).find("option")[1].innerHTML);
+        $.each($("select.empaque_" + id + " option"), function (i, j) {
+            if ($(this)[0].value === "T")
+                $(this).attr('selected', true);
+            $(".cantidad_" + (i + 1)).attr('title', "Ingrese el total de mallas");
         });
         calibre_estandar = parseInt($("#calibre_estandar").val());
         ramos_x_caja_conf_empresa = parseInt($("#ramos_x_caja_conf_empresa").val());
 
         //$.each($(".input_cantidad"),function (i) {
-            //$.each($("td.td_calibre_"+(i+1)),function(k,l) {
-                calibre = parseInt($("td.td_calibre_"+id).find("span")[0].innerText);
-                html = '<input type="text" id="input_tallos_' +id+ '" name="input_tallos_' +id+ '" class="input_tallos_' +id+ '" ' +
-                    'onkeyup="calcular_precio_pedido(this)" onchange="crear_orden_pedido(this)" ' +
-                    'value="0" style="width:100%;border:none;text-align:center;height: 34px;" ' +
-                    'title="Escribe la cantidad de tallos por malla">';
-                $("td.td_tallos_x_ramo_" +id+ " span").html(html);
+        //$.each($("td.td_calibre_"+(i+1)),function(k,l) {
+        calibre = parseInt($("td.td_calibre_" + id).find("span")[0].innerText);
+        html = '<input type="text" id="input_tallos_' + id + '" name="input_tallos_' + id + '" class="input_tallos_' + id + '" ' +
+            'onkeyup="calcular_precio_pedido(this)" onchange="crear_orden_pedido(this)" ' +
+            'value="0" style="width:100%;border:none;text-align:center;height: 34px;" ' +
+            'title="Escribe la cantidad de tallos por malla">';
+        $("td.td_tallos_x_ramo_" + id + " span").html(html);
 
-                calibre_actual = parseInt($("td.td_calibre_"+id+" span").html());
-                calibre_promedio = calibre_actual / calibre_estandar;
-                ramos_x_caja = ramos_x_caja_conf_empresa / calibre_promedio;
-                $("#input_tallos_"+id).val(25);
-                $("td.ramos_x_caja_"+id+" span").html(ramos_x_caja.toFixed(0));
-            //});
-     // //  //});
-            $(".th_tallo_x_malla, .td_tallos_x_malla").removeClass('hide');
+        calibre_actual = parseInt($("td.td_calibre_" + id + " span").html());
+        calibre_promedio = calibre_actual / calibre_estandar;
+        ramos_x_caja = ramos_x_caja_conf_empresa / calibre_promedio;
+        $("#input_tallos_" + id).val(25);
+        $("td.ramos_x_caja_" + id + " span").html(ramos_x_caja.toFixed(0));
+        //});
+        // //  //});
+        $(".th_tallo_x_malla, .td_tallos_x_malla").removeClass('hide');
         data = {
-            id_variedad : $(".input_variedad_"+id).val(),
-            id_clasificacion_ramo : $("#id_clasificacion_ramo_"+id).val(),
-            id_u_m_clasificacion_ramo : $("#u_m_clasificacion_ramo_"+id).val(),
-            tallos_x_ramos : $(".tallos_x_ramo_"+id).val(),
-            longitud_ramo : $(".longitud_ramo_"+id).val(),
-            id_u_m_logitud_ramo : $(".u_m_longitud_ramo_"+id).val(),
-            id_configuracion_empresa : $("#id_configuracion_empresa").val(),
-            tallos_x_malla : "tallos_x_malla"
+            id_variedad: $(".input_variedad_" + id).val(),
+            id_clasificacion_ramo: $("#id_clasificacion_ramo_" + id).val(),
+            id_u_m_clasificacion_ramo: $("#u_m_clasificacion_ramo_" + id).val(),
+            tallos_x_ramos: $(".tallos_x_ramo_" + id).val(),
+            longitud_ramo: $(".longitud_ramo_" + id).val(),
+            id_u_m_logitud_ramo: $(".u_m_longitud_ramo_" + id).val(),
+            id_configuracion_empresa: $("#id_configuracion_empresa").val(),
+            tallos_x_malla: "tallos_x_malla"
         };
         $.get('clientes/buscar_codigo_venture', data, function (retorno) {
-            if(retorno['presentacion_venture'] === "" || retorno['codigo_venture'] === ""){
-                $("#error_codigo_venture").html('<b>La presentación base transformada a '+$("select.empaque_"+id+" option:selected").text()+' no esta vinculada aún con su código del venture de la empresa '+$("select#id_configuracion_empresa option:selected").text()+"</b>");
-                $("button.store_pedido_normal").attr('disabled',true);
+            if (retorno['presentacion_venture'] === "" || retorno['codigo_venture'] === "") {
+                $("#error_codigo_venture").html('<b>La presentación base transformada a ' + $("select.empaque_" + id + " option:selected").text() + ' no esta vinculada aún con su código del venture de la empresa ' + $("select#id_configuracion_empresa option:selected").text() + "</b>");
+                $("button.store_pedido_normal").attr('disabled', true);
 
-            }else{
-                $("#codigo_presentacion_"+id).val(retorno['presentacion_venture']);
-                $("#codigo_venture_"+id).val(retorno['codigo_venture']);
+            } else {
+                $("#codigo_presentacion_" + id).val(retorno['presentacion_venture']);
+                $("#codigo_venture_" + id).val(retorno['codigo_venture']);
                 $("button.store_pedido_normal").removeAttr('disabled');
                 $("#error_codigo_venture").html("");
             }
@@ -2057,28 +2057,28 @@ function cuenta_ramos(input){
         });
 
     }
-    else{
-        $.each($("select.empaque_"+id+" option"),function(i,j){
+    else {
+        $.each($("select.empaque_" + id + " option"), function (i, j) {
             $(this).removeAttr('selected');
-            if($(this)[0].value !=="T"){
-                $(".cantidad_"+(i+1)).removeAttr('title');
-                $(this).attr('selected',true);
+            if ($(this)[0].value !== "T") {
+                $(".cantidad_" + (i + 1)).removeAttr('title');
+                $(this).attr('selected', true);
             }
         });
 
         //$.each($(".input_cantidad_"+id),function (i) {
-            //$.each($("td.td_calibre_"+(i+1)),function(k,l){
-                $("td.td_presentacion_"+id+" span").html($("input.input_presentacion_"+id).val());
-                $("td.ramos_x_caja_"+id+" span").html($("input.td_ramos_x_caja_"+id).val());
-                $("td.td_tallos_x_ramo_"+id+ " span").html($("input.tallos_x_ramo_"+id).val());
-           // });
+        //$.each($("td.td_calibre_"+(i+1)),function(k,l){
+        $("td.td_presentacion_" + id + " span").html($("input.input_presentacion_" + id).val());
+        $("td.ramos_x_caja_" + id + " span").html($("input.td_ramos_x_caja_" + id).val());
+        $("td.td_tallos_x_ramo_" + id + " span").html($("input.tallos_x_ramo_" + id).val());
+        // });
         //});
-        z=0;
-        $.each($("select.empaque"),function(i,j){
-            if(j.value === "T")
+        z = 0;
+        $.each($("select.empaque"), function (i, j) {
+            if (j.value === "T")
                 z++;
         });
-        if(z===0)
+        if (z === 0)
             $(".th_tallo_x_malla, .td_tallos_x_malla").addClass('hide');
 
         $("button.store_pedido_normal").removeAttr('disabled');
@@ -2094,40 +2094,40 @@ function calcular_precio_pedido(input) {
     total_piezas = 0.00;
     cant_rows = $(".input_cantidad").length;
     for (i = 1; i <= cant_rows; i++) {
-        $("#td_precio_especificacion_"+i).html("");
+        $("#td_precio_especificacion_" + i).html("");
         ramos_totales_especificacion = 0.00;
         precio_especificacion = 0.00;
         piezas = $(".cantidad_" + i).val();
 
-        td_total_ramos=0;
-        if(piezas !== "" && piezas > 0){
-            tallos=0;
-            tallos_totales=0;
+        td_total_ramos = 0;
+        if (piezas !== "" && piezas > 0) {
+            tallos = 0;
+            tallos_totales = 0;
             tallos_x_ramo = 0;
-            ramos_x_caja= 0;
-            if($("#empaque_"+i).val() === "T"){
-                $.each($("td.td_calibre_"+i),function(k,l) {
-                    tallos_totales += piezas*parseInt($("#tallos_x_malla_"+i+"_"+(k+1)).val());
-                    ramos_x_caja += parseInt($(".ramos_x_caja_"+i+"_"+(k+1)+" span").html()).toFixed();
-                    tallos_x_ramo += parseInt($("#input_tallos_"+i).val());
-                    monto_especificacion = piezas*parseInt($("#tallos_x_malla_"+i+"_"+(k+1)).val())*parseFloat($("#precio_"+i+"_"+(k+1)).val());
-                    monto_total += tallos_totales*parseFloat($("#precio_"+i+"_"+(k+1)).val());
+            ramos_x_caja = 0;
+            if ($("#empaque_" + i).val() === "T") {
+                $.each($("td.td_calibre_" + i), function (k, l) {
+                    tallos_totales += piezas * parseInt($("#tallos_x_malla_" + i + "_" + (k + 1)).val());
+                    ramos_x_caja += parseInt($(".ramos_x_caja_" + i + "_" + (k + 1) + " span").html()).toFixed();
+                    tallos_x_ramo += parseInt($("#input_tallos_" + i).val());
+                    monto_especificacion = piezas * parseInt($("#tallos_x_malla_" + i + "_" + (k + 1)).val()) * parseFloat($("#precio_" + i + "_" + (k + 1)).val());
+                    monto_total += tallos_totales * parseFloat($("#precio_" + i + "_" + (k + 1)).val());
                 });
 
-                    $("#td_precio_especificacion_"+i).html(monto_especificacion.toFixed(2));
-                    tallos_x_caja = ramos_x_caja*tallos_x_ramo;
-                    total_piezas += (tallos_totales/tallos_x_caja);
-                    cajas = tallos_totales/tallos_x_caja;
-                    $("#cajas_mallas_"+i).val(Math.round(cajas));
-                    $(".tallos_x_caja_"+i).val(tallos_x_caja);
-                    ramos_totales_especificacion += (Math.round(tallos_totales)/Math.round(tallos_x_caja))*ramos_x_caja;
-                    total_ramos += ramos_totales_especificacion;
-                    $("#td_total_ramos_"+i).html(ramos_totales_especificacion.toFixed(2));
+                $("#td_precio_especificacion_" + i).html(monto_especificacion.toFixed(2));
+                tallos_x_caja = ramos_x_caja * tallos_x_ramo;
+                total_piezas += (tallos_totales / tallos_x_caja);
+                cajas = tallos_totales / tallos_x_caja;
+                $("#cajas_mallas_" + i).val(Math.round(cajas));
+                $(".tallos_x_caja_" + i).val(tallos_x_caja);
+                ramos_totales_especificacion += (Math.round(tallos_totales) / Math.round(tallos_x_caja)) * ramos_x_caja;
+                total_ramos += ramos_totales_especificacion;
+                $("#td_total_ramos_" + i).html(ramos_totales_especificacion.toFixed(2));
 
             }
-            else{
-                ramos= 0;
-                pieza = ($(".cantidad_" + i).val() =="" ? 0 : parseInt($(".cantidad_" + i).val()));
+            else {
+                ramos = 0;
+                pieza = ($(".cantidad_" + i).val() == "" ? 0 : parseInt($(".cantidad_" + i).val()));
                 total_piezas += pieza;
                 $.each($(".td_ramos_x_caja_" + i), function (a, b) {
                     ramos_totales_especificacion += (pieza * b.value);
@@ -2136,34 +2136,34 @@ function calcular_precio_pedido(input) {
                     precio_variedad = z.value == "" ? 0 : z.value;
                     ramos_x_caja = $(".input_ramos_x_caja_" + i + "_" + (y + 1)).val();
                     precio_especificacion += (parseFloat(precio_variedad) * parseFloat(ramos_x_caja) * pieza);
-                    total_ramos+= ramos_x_caja*pieza;
+                    total_ramos += ramos_x_caja * pieza;
                 });
 
-                if($("#td_total_ramos_"+i+" input").length === 0 )
+                if ($("#td_total_ramos_" + i + " input").length === 0)
                     $("#td_total_ramos_" + i).html(parseFloat(ramos_totales_especificacion).toFixed(2));
 
                 $("#td_precio_especificacion_" + i).html("$" + parseFloat(precio_especificacion).toFixed(2));
-                monto_total+= parseFloat(precio_especificacion)
+                monto_total += parseFloat(precio_especificacion)
             }
-        }else{
-            $("td#td_total_ramos_"+i).html(0);
+        } else {
+            $("td#td_total_ramos_" + i).html(0);
         }
     }
 
-    if(isNaN(monto_total)){
+    if (isNaN(monto_total)) {
         t = 0.00;
-    }else{
+    } else {
         t = monto_total;
     }
-    if($("#iva_cliente").val() > 0){
-        iva = t*(parseFloat($("#iva_cliente").val())/100);
-    }else{
+    if ($("#iva_cliente").val() > 0) {
+        iva = t * (parseFloat($("#iva_cliente").val()) / 100);
+    } else {
         iva = 0.00;
     }
-    $("#total_piezas").html(isNaN(total_piezas) ?  0 : total_piezas.toFixed());
+    $("#total_piezas").html(isNaN(total_piezas) ? 0 : total_piezas.toFixed());
     $("#total_ramos").html(total_ramos.toFixed(2));
-    $(".monto_total_pedido").html( "$" + (isNaN(monto_total) ? 0.00 :  monto_total.toFixed(2)));
-    $(".total_pedido").html( "$" + (t+iva).toFixed(2));
+    $(".monto_total_pedido").html("$" + (isNaN(monto_total) ? 0.00 : monto_total.toFixed(2)));
+    $(".total_pedido").html("$" + (t + iva).toFixed(2));
 
 }
 
