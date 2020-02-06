@@ -7,7 +7,7 @@ use Illuminate\Console\Command;
 use yura\Modelos\ProyeccionVentaSemanalReal;
 use yura\Modelos\Variedad;
 
-class ResumenTotalesProyeccionVentasemanal extends Command
+class ResumenTotalesProyeccionVentaSemanal extends Command
 {
     /**
      * The name and signature of the console command.
@@ -48,8 +48,8 @@ class ResumenTotalesProyeccionVentasemanal extends Command
             $semanas = ProyeccionVentaSemanalReal::where('id_variedad', $variedad->variedad)
                 ->select('codigo_semana')->distinct('codigo_semana')->get();
 
+            dump($semanas);
             foreach ($semanas as  $semana) {
-
                 $dataVentas = getObjSemana($semana->codigo_semana)->getTotalesProyeccionVentaSemanal(false, $variedad->variedad, true, $semanaActual, false, $ramosxCajaEmpresa);
                 $objResumenTotalesProyeccionVentaSemanal = ResumenTotalesProyeccionVentaSemanal::all()
                     ->where('id_variedad',$variedad->variedad)->where('codigo_semana',$semana->codigo_semana)->first();
