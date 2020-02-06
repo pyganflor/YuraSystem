@@ -273,7 +273,7 @@ class YuraController extends Controller
             'roles' => Rol::All(),
             'iconos' => Icon::All(),
             'ids_submenu_ad' => $ids_submenu_ad,
-            'grupos_menu' => GrupoMenu::All()->where('estado', 'A')->sortBy('nombre'),
+            'grupos_menu' => getGrupoMenusOfUser(Session::get('id_usuario')),
         ]);
     }
 
