@@ -22,7 +22,7 @@ class PrecioVariedadCliente extends Command
      *
      * @var string
      */
-    protected $description = 'Obtiene el precio promedio por ramo equivalente de cada variedad por cliente de los pedido anterirores a un mes de la fecha actual';
+    protected $description = 'Obtiene el precio promedio por ramo equivalente de cada variedad por cliente, de los pedido anterirores a un mes de la fecha actual';
 
     /**
      * Create a new command instance.
