@@ -23,6 +23,7 @@
                     </div>
                     <select name="filtro_predeterminado_variedad" id="filtro_predeterminado_variedad" class="form-control variedad"
                             style="width:200px">
+                        <option value="">Seleccione</option>
                         @foreach(getPlantas()[0]->variedades as $variedad)
                             <option {{$variedad->id_variedad == "2" ? "selected" : "" }}
                                     value="{{$variedad->id_variedad}}" >{{$variedad->nombre}}</option>
