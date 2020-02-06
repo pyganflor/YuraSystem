@@ -24,8 +24,11 @@ Route::group(['middleware' => 'autenticacion'], function () {
         Route::get('/', 'YuraController@inicio');
         Route::get('select_filtro_variedad', 'YuraController@select_filtro_variedad');
         Route::get('mostrar_indicadores_claves', 'YuraController@mostrar_indicadores_claves');
+        Route::get('cargar_accesos_directos', 'YuraController@cargar_accesos_directos');
         Route::post('save_config_user', 'YuraController@save_config_user');
         Route::get('perfil', 'YuraController@perfil');
+        Route::get('perfil/admin_accesos', 'YuraController@admin_accesos');
+        Route::post('perfil/seleccionar_submenu', 'YuraController@seleccionar_submenu');
         Route::post('perfil/update_usuario', 'YuraController@update_usuario');
         Route::post('perfil/update_image_perfil', 'YuraController@update_image_perfil');
         Route::post('perfil/update_password', 'YuraController@update_password');

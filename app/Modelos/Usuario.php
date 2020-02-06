@@ -28,6 +28,20 @@ class Usuario extends Model
         return Rol::find($this->id_rol);
     }
 
+    public function accesos_directos()
+    {
+        return $this->hasMany('\yura\Modelos\AccessoDirecto', 'id_usuario');
+    }
+
+    public function getIdSubmenusAccesoDirecto()
+    {
+        $r = [];
+        foreach ($this->accesos_directos as $item) {
+            array_push($r, $item->id_submenu);
+        }
+        return $r;
+    }
+
     public function configuracion()
     {
         return $this->hasOne('\yura\Modelos\ConfiguracionUser', 'id_usuario');

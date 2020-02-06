@@ -919,13 +919,13 @@
     function select_planta(p, input_variedad, elemento_load, li_adicional = '', f) {
         if (p != '') {
             datos = {
-                    planta: p
+                planta: p
             };
             get_jquery('{{url('select_planta')}}', datos, function (retorno) {
                 $('#' + input_variedad).html(li_adicional);
                 $('#' + input_variedad).append(retorno);
             }, elemento_load);
-           
+
         } else
             $('#' + input_variedad).html(li_adicional);
     }
@@ -964,6 +964,15 @@
             });
         }
     }
+
+    function cargar_accesos_directos() {
+        datos = {};
+        get_jquery('{{url('cargar_accesos_directos')}}', datos, function (retorno) {
+            $('#ul_navbar_superior').prepend(retorno);
+        }, 'ul_navbar_superior');
+    }
+
+    cargar_accesos_directos();
 </script>
 
 @yield('css_final')
