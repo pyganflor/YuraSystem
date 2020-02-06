@@ -6,7 +6,9 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use yura\Modelos\IndicadorSemana;
+use yura\Modelos\IndicadorVariedad;
 use yura\Modelos\Semana;
+use yura\Modelos\Variedad;
 
 class IndicadorSemanal extends Command
 {
@@ -141,6 +143,17 @@ class IndicadorSemanal extends Command
 
                     $model->valor = $area_anual > 0 ? round(($venta_mensual / $area_anual) * 3, 2) : 0;
                     $model->save();
+
+                    /* ============================== INDICADOR x VARIEDAD ================================= */
+                    foreach (Variedad::All() as $var) {
+                        $ind_var = IndicadorVariedad::All()
+                            ->where('id_indicador', $model->id_indicador)
+                            ->where('id_variedad', $var->id_variedad)
+                            ->first();
+                        if ($ind_var != '') {
+
+                        }
+                    }
                 }
             }
 
