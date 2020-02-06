@@ -89,6 +89,6 @@ class ResumenTotalesProyeccionVentasemanal extends Command
                     $valorAnnoAnterior += $ramosTotales * (isset($precioPromedio) ? $precioPromedio->precio : 0);
                 }
             }
-        }
-    }*/
+        }*/
+    }
 }
