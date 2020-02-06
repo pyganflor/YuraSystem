@@ -5,6 +5,7 @@ namespace yura\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
+use yura\Jobs\DeleteRecepciones;
 use yura\Jobs\ProyeccionUpdateSemanal;
 use yura\Jobs\ResumenSemanaCosecha;
 use yura\Jobs\UpdateTallosCosechadosProyeccion;
@@ -415,6 +416,8 @@ class RecepcionController extends Controller
                 $semana_fin = getLastSemanaByVariedad($model->id_variedad);
                 ResumenSemanaCosecha::dispatch($semana_ini, $semana_fin->codigo, $model->id_variedad)
                     ->onQueue('resumen_cosecha_semanal');
+                /* ======================== JOB DeleteRecepciones ====================== */
+                DeleteRecepciones::dispatch()->onQueue('job');
             } else {
                 $success = false;
                 $msg .= '<div class="alert alert-warning text-center">' .
