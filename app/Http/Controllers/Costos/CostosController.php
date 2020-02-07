@@ -301,6 +301,7 @@ class CostosController extends Controller
 
     public function store_producto(Request $request)
     {
+        $request->nombre = str_limit(mb_strtoupper(espacios($request->nombre)), 250);
         $valida = Validator::make($request->all(), [
             'nombre' => 'required|max:250|unique:producto',
         ], [
