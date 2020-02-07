@@ -339,7 +339,7 @@ class Costos
                 }
             }
 
-            $sem_desde = getSemanaByDate(opDiasFecha('-', 35, $last_semana->fecha_inicial));
+            $sem_desde = getSemanaByDate(opDiasFecha('-', 21, $last_semana->fecha_inicial));
             $sem_hasta = $last_semana;
 
             $insumos = DB::table('costos_semana as c')
