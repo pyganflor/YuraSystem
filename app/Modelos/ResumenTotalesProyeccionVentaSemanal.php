@@ -15,8 +15,8 @@ class ResumenTotalesProyeccionVentaSemanal extends Model
         'id_variedad',
         'codigo_semana',
         'cajas_fisicas',
-        'cajas_proyectadas',
-        'dinero_proyectado',
+        'cajas_equivalentes',
+        'dinero',
         'fecha_registro',
     ];
 }
