@@ -43,7 +43,6 @@ class proyCosechaController extends Controller
 
         if ($semana_desde_par != '' && $semana_hasta != '') {
             $fecha_ini = DB::table('ciclo')
-                ->select(DB::raw('min(fecha_inicio) as inicio'))->distinct()
                 ->where('estado', '=', 1)
                 ->where('id_variedad', '=', $request->variedad)
                 ->where('fecha_fin', '>=', $semana_desde_par->fecha_inicial)
