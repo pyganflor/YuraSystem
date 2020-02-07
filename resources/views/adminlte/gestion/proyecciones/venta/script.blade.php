@@ -70,6 +70,7 @@
             cajas_inicial = isNaN(cajas_inicial) ? 0 : cajas_inicial;
             cajas_proyectadas = isNaN(cajas_proyectadas ) ? 0 : cajas_proyectadas;
             total_cajas_dinamico = total_cajas_semana_inicial-cajas_inicial+cajas_proyectadas;
+            console.log(total_cajas_equivalentes_semana,cajas_equivalente_inicial,cajas_equivalentes);
             total_cajas_equivalentes_dinamico = total_cajas_equivalentes_semana-cajas_equivalente_inicial+cajas_equivalentes;
             total_valor_dinamico = total_dinero_semana-valor_inicial+parseFloat(valor);
             //FIN CALCULOS VALORES TOTALES//
