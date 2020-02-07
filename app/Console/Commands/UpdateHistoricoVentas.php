@@ -84,6 +84,8 @@ class UpdateHistoricoVentas extends Command
 
             foreach ($array_meses as $mes) {
                 foreach (Cliente::All()->where('estado', 1) as $cli) {
+                    $pedidos = DB::select("select * from pedido where year(fecha_pedido) = " . $mes['anno'] . " and month(fecha_pedido) = " . $mes['mes'] . " and id_cliente = " . $cli->id_cliente);
+
                     foreach (getVariedades() as $var) {
                         $model = HistoricoVentas::All()
                             ->where('id_cliente', $cli->id_cliente)
@@ -99,11 +101,6 @@ class UpdateHistoricoVentas extends Command
                             $model->mes = $mes['mes'];
                             $model->anno = $mes['anno'];
                         }
-
-                        $pedidos = DB::table('pedido')
-                            ->where(DB::raw('month(fecha_pedido) = ' . $mes['mes']))
-                            ->where(DB::raw('year(fecha_pedido) = ' . $mes['anno']))
-                            ->get();
 
                         $valor = 0;
                         $cajas_fisicas = 0;
