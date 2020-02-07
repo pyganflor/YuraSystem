@@ -311,16 +311,23 @@ class CostosController extends Controller
         ]);
         $msg = '';
         if (!$valida->fails()) {
-            $model = new Producto();
-            $model->nombre = str_limit(mb_strtoupper(espacios($request->nombre)), 250);
-            $model->fecha_registro = date('Y-m-d H:i:s');
+            if (count(Producto::All()
+                    ->where('nombre', str_limit(mb_strtoupper(espacios($request->nombre)), 250))
+                    ->where('estado', 1)) == 0) {
+                $model = new Producto();
+                $model->nombre = str_limit(mb_strtoupper(espacios($request->nombre)), 250);
+                $model->fecha_registro = date('Y-m-d H:i:s');
 
-            if ($model->save()) {
-                $model = Producto::All()->last();
-                $success = true;
-                bitacora('producto', $model->id_producto, 'I', 'Inserción satisfactoria de un nuevo producto');
+                if ($model->save()) {
+                    $model = Producto::All()->last();
+                    $success = true;
+                    bitacora('producto', $model->id_producto, 'I', 'Inserción satisfactoria de un nuevo producto');
+                } else {
+                    $success = false;
+                }
             } else {
                 $success = false;
+                $msg = '<div class="alert alert-danger text-center">El nombre ya existe</div>';
             }
         } else {
             $success = false;
