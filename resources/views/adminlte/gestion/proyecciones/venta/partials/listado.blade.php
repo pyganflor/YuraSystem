@@ -73,8 +73,8 @@
                             style="border:1px solid #9d9d9d; width:350px;border-bottom: 2px solid #000000;border-right: 2px solid #000000;" colspan="3">
                             <input type="number" min="0" id="desecho_semana_{{$codigoSemana}}" name="desecho_semana_{{$codigoSemana}}"
                                    data-toggle="tooltip" data-placement="top" title="Cajas desechadas" value="{{getObjSemana($codigoSemana)->desecho($idVariedad)}}"
-                                   onkeyup="calcular_proyeccion_cliente('{{$cliente->id_cliente}}','{{$codigoSemana}}')"
-                                   onchange="calcular_proyeccion_cliente('{{$cliente->id_cliente}}','{{$codigoSemana}}')"
+                                   onkeyup="calcular_proyeccion_cliente(null,'{{$codigoSemana}}')"
+                                   onchange="calcular_proyeccion_cliente(null,'{{$codigoSemana}}')"
                                    style="border:none;background-color: transparent;text-align:center" class="input_semana_{{$codigoSemana}}">
                             <input type="hidden" class="desecho_inicial_{{$codigoSemana}}" value="{{getObjSemana($codigoSemana)->desecho($idVariedad)}}">
                         </td>
