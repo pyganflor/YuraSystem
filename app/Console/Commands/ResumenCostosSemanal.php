@@ -102,7 +102,7 @@ class ResumenCostosSemanal extends Command
 
                 /* ======================== Guardar en 0 automaticamente los costos que no existan ======================== */
                 //  mano de obra
-                foreach (ActividadManoObra::All() as $act_mo) {
+                /*foreach (ActividadManoObra::All() as $act_mo) {
                     $model = CostosSemanaManoObra::All()
                         ->where('id_actividad_mano_obra', $act_mo->id_actividad_mano_obra)
                         ->where('codigo_semana', $semana->codigo)
@@ -130,7 +130,7 @@ class ResumenCostosSemanal extends Command
                         $model->cantidad = 0;
                         $model->save();
                     }
-                }
+                }*/
             }
         }
 

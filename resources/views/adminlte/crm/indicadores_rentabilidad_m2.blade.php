@@ -118,8 +118,8 @@
                     fontColor: "green"
                 },
                 ticks: {
-                    min: -5,
-                    max: 15,
+                    min: -7,
+                    max: 10,
                 },
                 position: "right"
             }]

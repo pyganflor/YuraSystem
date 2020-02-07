@@ -339,26 +339,14 @@ class Costos
                 }
             }
 
-            $sem_desde = getSemanaByDate(opDiasFecha('-', 35, $last_semana->fecha_inicial));
+            $sem_desde = getSemanaByDate(opDiasFecha('-', 21, $last_semana->fecha_inicial));
             $sem_hasta = $last_semana;
 
-            $insumos = DB::table('costos_semana as c')
-                ->select(DB::raw('sum(c.valor) as cant'))
-                ->where('c.codigo_semana', '>=', $sem_desde->codigo)
-                ->where('c.codigo_semana', '<=', $sem_hasta->codigo)
+            $costos_total = DB::table('resumen_costos_semanal')
+                ->select(DB::raw('sum(mano_obra + insumos + fijos + regalias) as cant'))
+                ->where('codigo_semana', '>=', $sem_desde->codigo)
+                ->where('codigo_semana', '<=', $sem_hasta->codigo)
                 ->get()[0]->cant;
-            $mano_obra = DB::table('costos_semana_mano_obra as c')
-                ->select(DB::raw('sum(c.valor) as cant'))
-                ->where('c.codigo_semana', '>=', $sem_desde->codigo)
-                ->where('c.codigo_semana', '<=', $sem_hasta->codigo)
-                ->get()[0]->cant;
-            $otros = DB::table('otros_gastos as o')
-                ->select(DB::raw('sum(o.gip + o.ga) as cant'))
-                ->where('o.codigo_semana', '>=', $sem_desde->codigo)
-                ->where('o.codigo_semana', '<=', $sem_hasta->codigo)
-                ->get()[0]->cant;
-
-            $costos_total = $insumos + $mano_obra + $otros;
 
             $cosechas = Cosecha::All()->where('estado', 1)
                 ->where('fecha_ingreso', '>=', $sem_desde->fecha_inicial)
@@ -368,6 +356,7 @@ class Costos
                 $tallos += $c->getTotalTallos();
             }
 
+            //dd($sem_desde->codigo, $sem_hasta->codigo, $costos_total, $tallos);
             $model->valor = $tallos > 0 ? round(($costos_total / $tallos) * 100, 2) : 0;
             $model->save();
         }
