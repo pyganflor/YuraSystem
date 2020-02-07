@@ -6,7 +6,6 @@ use Carbon\Carbon;
 use DB;
 use Illuminate\Http\Request;
 use yura\Http\Controllers\Controller;
-use yura\Modelos\ProyeccionVentaSemanalReal;
 use yura\Modelos\ResumenSemanaCosecha;
 use yura\Modelos\Semana;
 use yura\Modelos\Submenu;

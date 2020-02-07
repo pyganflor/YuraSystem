@@ -20,6 +20,7 @@ class UpdateSaldosProyVentaSemanal implements ShouldQueue
      *
      * @return void
      */
+    public $timeout = 600;
     public $desde;
     public $idVariedad;
     public function __construct($desde,$idVariedad)
