@@ -113,11 +113,6 @@ class Semana extends Model
 
         //dump("semana: ". $this->codigo." cajaProyectadas: ".$cajasProyectadas. "  cajasVendidas: ".$cajasVendidas);
 
-<<<<<<< HEAD
-       // Info('id_Variedad: '.$idVariedad.' Semana '.$this->codigo.' Desecho :'.$this->desecho($idVariedad));
-=======
-        Info('id_Variedad: '.$idVariedad.' Semana '.$this->codigo.' Desecho :'.$this->desecho($idVariedad));
->>>>>>> 4851092c9495f29cc7cb0f9717ae3156b588df57
         return  $cajasProyectadas-$cajasVendidas['cajasEquivalentes']-$this->desecho($idVariedad);
     }
 
