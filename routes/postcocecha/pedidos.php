@@ -18,6 +18,3 @@ Route::get('pedidos/ver_factura_pedido/{id_pedido}', 'PedidoController@ver_factu
 Route::get('pedidos/desglose_pedido/{id_pedido}', 'PedidoController@desglose_pedido');
 //URL PARA QUE LA FACTURACION FUNCIONE OCN EL VENTURE
 Route::get('pedidos/documento_pre_factura/{secuencial}/{cliente?}', 'ComprobanteController@ver_pre_factura_bd');
-
-
-
