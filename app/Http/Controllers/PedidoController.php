@@ -7,6 +7,7 @@ use SoapClient;
 use yura\Jobs\UpdateSaldosProyVentaSemanal;
 use yura\Modelos\Aerolinea;
 use yura\Modelos\ClasificacionRamo;
+use yura\Modelos\Cliente;
 use yura\Modelos\ClienteConsignatario;
 use yura\Modelos\ClienteDatoExportacion;
 use yura\Modelos\ClientePedidoEspecificacion;
@@ -786,9 +787,6 @@ class PedidoController extends Controller
 
     public function pedidos_cliente(Request $request)
     {
-        $desde = date('Y-m-d');
-        $hasta = date('Y-m-d');
-
         $mes = array_search($request->mes, getMeses(TP_COMPLETO, FR_ARREGLO)) + 1;
         $mes = $mes <= 9 ? str_pad('0', 2, $mes) : $mes;
 
@@ -798,9 +796,11 @@ class PedidoController extends Controller
             ->whereMonth('fecha_pedido', $mes)
             ->get();
 
-        dd($pedidos);
         return view('adminlte.gestion.postcocecha.pedidos.partials.pedidos_cliente', [
-
+            'pedidos' => $pedidos,
+            'mes' => $request->mes,
+            'anno' => $request->anno,
+            'cliente' => Cliente::find($request->cliente),
         ]);
     }
 }
