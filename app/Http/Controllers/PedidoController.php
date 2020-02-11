@@ -786,6 +786,19 @@ class PedidoController extends Controller
 
     public function pedidos_cliente(Request $request)
     {
+        $desde = date('Y-m-d');
+        $hasta = date('Y-m-d');
+
+        $mes = array_search($request->mes, getMeses(TP_COMPLETO, FR_ARREGLO)) + 1;
+        $mes = $mes <= 9 ? str_pad('0', 2, $mes) : $mes;
+
+        $pedidos = Pedido::where('estado', 1)
+            ->where('id_cliente', $request->cliente)
+            ->whereYear('fecha_pedido', $request->anno)
+            ->whereMonth('fecha_pedido', $mes)
+            ->get();
+
+        dd($pedidos);
         return view('adminlte.gestion.postcocecha.pedidos.partials.pedidos_cliente', [
 
         ]);
