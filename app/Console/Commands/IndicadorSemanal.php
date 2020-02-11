@@ -195,6 +195,25 @@ class IndicadorSemanal extends Command
                     $valor = getIndicadorByName('D9')->getSemana($sem)->valor - getIndicadorByName('C9')->getSemana($sem)->valor;
                     $model->valor = $valor;
                     $model->save();
+
+                    /* ============================== INDICADOR x VARIEDAD ================================= */
+                    foreach (Variedad::All() as $var) {
+                        $ind_var = IndicadorVariedad::All()
+                            ->where('id_indicador', $indicador->id_indicador)
+                            ->where('id_variedad', $var->id_variedad)
+                            ->first();
+                        if ($ind_var != '') {
+                            $model = $ind_var->getSemana($sem);
+                            if ($model == '') {
+                                $model = new IndicadorVariedadSemana();
+                                $model->id_indicador_variedad = $ind_var->id_indicador_variedad;
+                                $model->codigo_semana = $sem;
+                            }
+                            $valor = getIndicadorByName('D9')->getVariedad($var->id_variedad)->getSemana($sem)->valor - getIndicadorByName('C9')->getSemana($sem)->valor;
+                            $model->valor = $valor;
+                            $model->save();
+                        }
+                    }
                 }
             }
         }
