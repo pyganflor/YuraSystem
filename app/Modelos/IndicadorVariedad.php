@@ -18,4 +18,24 @@ class IndicadorVariedad extends Model
         'fecha_registro',
     ];
 
+    public function indicador()
+    {
+        return $this->belongsTo('yura\Modelos\Indicador', 'id_indicador');
+    }
+
+    public function semanas()
+    {
+        return $this->hasMany('yura\Modelos\IndicadorVariedadSemana', 'id_indicador_variedad');
+    }
+
+    public function getSemanas($desde, $hasta)
+    {
+        return IndicadorVariedadSemana::where('id_indicador_variedad', $this->id_indicador_variedad)
+            ->where('codigo_semana', '>=', $desde)->where('codigo_semana', '<=', $hasta)->get();
+    }
+
+    public function getSemana($semana)
+    {
+        return $this->semanas->where('codigo_semana', $semana)->first();
+    }
 }
