@@ -294,16 +294,16 @@ class PedidoController extends Controller
                         }
 
                         if (isset($objComprobante)) {
-                            $data_actualizar_factura =[
+                            $data_actualizar_factura = [
                                 'id_envio' => $modelEnvio->id_envio,
                                 'codigo_pais' => $modelEnvio->codigo_pais,
-                                'dae'=> $modelEnvio->dae,
-                                'fecha_envio'=>$modelEnvio->fecha_envio,
-                                'pais'=> getPais($modelEnvio->codigo_pais)->nombre,
-                                'update'=>'true',
-                                'id_comprobante'=>$objComprobante->id_comprobante,
-                                'fecha_pedidos_search'=> $modelEnvio->pedido->fecha_pedido,
-                                'cant_variedades'=>$modelEnvio->pedido->catntidad_det_esp_emp(),
+                                'dae' => $modelEnvio->dae,
+                                'fecha_envio' => $modelEnvio->fecha_envio,
+                                'pais' => getPais($modelEnvio->codigo_pais)->nombre,
+                                'update' => 'true',
+                                'id_comprobante' => $objComprobante->id_comprobante,
+                                'fecha_pedidos_search' => $modelEnvio->pedido->fecha_pedido,
+                                'cant_variedades' => $modelEnvio->pedido->catntidad_det_esp_emp(),
                             ];
                             ComprobanteController::actualizar_comprobante_factura($data_actualizar_factura);
                         }
@@ -467,7 +467,7 @@ class PedidoController extends Controller
             $objComprobante->update([
                 'id_envio' => null,
                 'rehusar' => true,
-                'habilitado'=>false
+                'habilitado' => false
             ]);
         }
         //$objPedido = Pedido::find($request->id_pedido);
@@ -781,6 +781,13 @@ class PedidoController extends Controller
 
         return view('adminlte.gestion.postcocecha.pedidos.partials.desglose_pedido', [
             'pedido' => $pedido
+        ]);
+    }
+
+    public function pedidos_cliente(Request $request)
+    {
+        return view('adminlte.gestion.postcocecha.pedidos.partials.pedidos_cliente', [
+
         ]);
     }
 }
