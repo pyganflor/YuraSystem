@@ -794,6 +794,7 @@ class PedidoController extends Controller
             ->where('id_cliente', $request->cliente)
             ->whereYear('fecha_pedido', $request->anno)
             ->whereMonth('fecha_pedido', $mes)
+            ->orderBy('fecha_pedido')
             ->get();
 
         return view('adminlte.gestion.postcocecha.pedidos.partials.pedidos_cliente', [
