@@ -5,7 +5,7 @@
         <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">{{$anno}}</th>
     </tr>
 </table>
-<table class="table-bordered table-striped" style="width: 100%; border: 2px solid #9d9d9d">
+<table class="table-bordered" style="width: 100%; border: 2px solid #9d9d9d">
     <tr>
         <th class="text-center" style="background-color: #e9ecef; border-color: #9d9d9d">
             Fecha

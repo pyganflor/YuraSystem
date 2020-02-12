@@ -632,9 +632,9 @@ class YuraController extends Controller
                 $sem_hasta = getSemanaByDate(opDiasFecha('-', 7, date('Y-m-d')));   // 1 semana atras
                 $sem_desde = getSemanaByDate(opDiasFecha('-', 364, $sem_hasta->fecha_inicial));   // 32 semana atras
 
-                $ventas_m2_mensuales = getIndicadorByName('D9')->getSemanas($sem_desde->codigo, $sem_hasta->codigo);
+                $ventas_m2_mensuales = $variedad == '' ? getIndicadorByName('D9')->getSemanas($sem_desde->codigo, $sem_hasta->codigo) : getIndicadorByName('D9')->getVariedad($variedad->id_variedad)->getSemanas($sem_desde->codigo, $sem_hasta->codigo);
                 $costos_m2_mensuales = getIndicadorByName('C9')->getSemanas($sem_desde->codigo, $sem_hasta->codigo);
-                $rentabilidad_m2_mensuales = getIndicadorByName('R1')->getSemanas($sem_desde->codigo, $sem_hasta->codigo);
+                $rentabilidad_m2_mensuales = $variedad == '' ? getIndicadorByName('R1')->getSemanas($sem_desde->codigo, $sem_hasta->codigo) : getIndicadorByName('R1')->getVariedad($variedad->id_variedad)->getSemanas($sem_desde->codigo, $sem_hasta->codigo);
             }
             return view('adminlte.crm.' . $request->view, [
                 'variedad' => $variedad,
