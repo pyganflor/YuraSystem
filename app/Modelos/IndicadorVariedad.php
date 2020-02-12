@@ -31,7 +31,7 @@ class IndicadorVariedad extends Model
     public function getSemanas($desde, $hasta)
     {
         return IndicadorVariedadSemana::where('id_indicador_variedad', $this->id_indicador_variedad)
-            ->where('codigo_semana', '>=', $desde)->where('codigo_semana', '<=', $hasta)->get();
+            ->where('codigo_semana', '>=', $desde)->where('codigo_semana', '<=', $hasta)->orderBy('codigo_semana', 'asc')->get();
     }
 
     public function getSemana($semana)
