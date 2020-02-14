@@ -35,57 +35,62 @@
 
         if($("input#semana_"+semana).is(":checked")){
 
-            //OBTENCION DE VALORES INICIALES//
-            cajas_inicial = parseFloat($("input.cajas_fisicas_inicial_"+id_cliente+"_"+semana).val());
-            cajas_equivalente_inicial = parseFloat($("input.cajas_equivalente_inicial_"+id_cliente+"_"+semana).val());
-            valor_inicial = parseFloat($("input.valor_inicial_"+id_cliente+"_"+semana).val());
-            //FIN DE OBTENCION DE VALORES INICIALES//
+            if(id_cliente!=undefined){
+                //OBTENCION DE VALORES INICIALES//
+                cajas_inicial = parseFloat($("input.cajas_fisicas_inicial_"+id_cliente+"_"+semana).val());
+                cajas_equivalente_inicial = parseFloat($("input.cajas_equivalente_inicial_"+id_cliente+"_"+semana).val());
+                valor_inicial = parseFloat($("input.valor_inicial_"+id_cliente+"_"+semana).val());
+                //FIN DE OBTENCION DE VALORES INICIALES//
 
-            //OBTENCION DE DATOS INICIALES TOTALES//
-            total_cajas_semana_inicial = parseFloat($("b.total_cajas_semana_"+semana).html().trim());
-            total_cajas_equivalentes_semana = parseFloat($("b.total_cajas_equivalentes_semana_"+semana).html().trim());
-            total_dinero_semana = parseFloat($("b.total_dinero_semana_"+semana).html().trim().substring(1));
-            //FIN DE OBTENCION DE DATOS INICIALES TOTALES//
+                //OBTENCION DE DATOS INICIALES TOTALES//
+                total_cajas_semana_inicial = parseFloat($("b.total_cajas_semana_"+semana).html().trim());
+                total_cajas_equivalentes_semana = parseFloat($("b.total_cajas_equivalentes_semana_"+semana).html().trim());
+                total_dinero_semana = parseFloat($("b.total_dinero_semana_"+semana).html().trim().substring(1));
+                //FIN DE OBTENCION DE DATOS INICIALES TOTALES//
 
-            //CALCULOS DE LA CELDA A EDITAR EN LA PROYECCION//
-            cajas_proyectadas = parseFloat($("#cajas_proyectadas_"+id_cliente+"_"+semana).val());
-            factor_cliente = parseFloat($("#factor_cliente_"+id_cliente).val());
-            ramos_x_caja_conf_empresa = parseFloat($("#ramos_x_caja_empresa").val()); //40
-            precio_promedio_variedad = parseFloat($("#precio_variedad_"+id_cliente).val());
-            ramos_totales = cajas_proyectadas * factor_cliente * ramos_x_caja_conf_empresa;
-            cajas_equivalentes = cajas_proyectadas * factor_cliente;
-            valor = (ramos_totales*precio_promedio_variedad).toFixed(2);
-            //FIN CALCULOS DE LA CELDA A EDITAR EN LA PROYECCION//
+                //CALCULOS DE LA CELDA A EDITAR EN LA PROYECCION//
+                cajas_proyectadas = parseFloat($("#cajas_proyectadas_"+id_cliente+"_"+semana).val());
+                factor_cliente = parseFloat($("#factor_cliente_"+id_cliente).val());
+                ramos_x_caja_conf_empresa = parseFloat($("#ramos_x_caja_empresa").val()); //40
+                precio_promedio_variedad = parseFloat($("#precio_variedad_"+id_cliente).val());
+                ramos_totales = cajas_proyectadas * factor_cliente * ramos_x_caja_conf_empresa;
+                cajas_equivalentes = cajas_proyectadas * factor_cliente;
+                valor = (ramos_totales*precio_promedio_variedad).toFixed(2);
+                //FIN CALCULOS DE LA CELDA A EDITAR EN LA PROYECCION//
 
-            //ASGINACION DE CALCULOS DE LA CELDA A EDITAR EN LA PROYECCION//
-            cajas_equivalentes = isNaN(cajas_equivalentes) ? 0 : cajas_equivalentes;
-            valor = isNaN(valor) ? 0 : valor;
-            $("#cajas_equivalentes_"+id_cliente+"_"+semana).html(cajas_equivalentes.toFixed(2));
-            $("#precio_proyectado_"+id_cliente+"_"+semana).html("$"+valor);
-            desecho_semana = parseFloat($("input#desecho_semana_"+semana).val());
-            //FIN DE ASGINACION DE CALCULOS DE LA CELDA A EDITAR EN LA PROYECCION//
 
-            //CALCULOS VALORES TOTALES//
-            total_cajas_semana_inicial = isNaN(total_cajas_semana_inicial) ? 0 : total_cajas_semana_inicial;
-            cajas_inicial = isNaN(cajas_inicial) ? 0 : cajas_inicial;
-            cajas_proyectadas = isNaN(cajas_proyectadas ) ? 0 : cajas_proyectadas;
-            total_cajas_dinamico = total_cajas_semana_inicial-cajas_inicial+cajas_proyectadas;
-            console.log(total_cajas_equivalentes_semana,cajas_equivalente_inicial,cajas_equivalentes);
-            total_cajas_equivalentes_dinamico = total_cajas_equivalentes_semana-cajas_equivalente_inicial+cajas_equivalentes;
-            total_valor_dinamico = total_dinero_semana-valor_inicial+parseFloat(valor);
-            //FIN CALCULOS VALORES TOTALES//
+                //ASGINACION DE CALCULOS DE LA CELDA A EDITAR EN LA PROYECCION//
+                cajas_equivalentes = isNaN(cajas_equivalentes) ? 0 : cajas_equivalentes;
+                valor = isNaN(valor) ? 0 : valor;
+                //desecho_semana = parseFloat($("input#desecho_semana_"+semana).val());
+                $("#cajas_equivalentes_"+id_cliente+"_"+semana).html(cajas_equivalentes.toFixed(2));
+                $("#precio_proyectado_"+id_cliente+"_"+semana).html("$"+valor);
+                //FIN DE ASGINACION DE CALCULOS DE LA CELDA A EDITAR EN LA PROYECCION//
 
-            //REINICIO DE VALORES INICIALES//
-            $("input.cajas_fisicas_inicial_"+id_cliente+"_"+semana).val(cajas_proyectadas);
-            $("input.cajas_equivalente_inicial_"+id_cliente+"_"+semana).val(cajas_equivalentes);
-            $("input.valor_inicial_"+id_cliente+"_"+semana).val(valor);
-            //FIN DE REINICIO DE VALORES INICIALES//
 
-            //REINICIO DE VALORES TOTALES//
-            $("b.total_cajas_semana_"+semana).html(total_cajas_dinamico.toFixed(2));
-            $("b.total_cajas_equivalentes_semana_"+semana).html(total_cajas_equivalentes_dinamico.toFixed(2));
-            $("b.total_dinero_semana_"+semana).html("$"+total_valor_dinamico.toFixed(2));
-            //FIN REINICIO DE VALORES TOTALES//
+                //CALCULOS VALORES TOTALES//
+                total_cajas_semana_inicial = isNaN(total_cajas_semana_inicial) ? 0 : total_cajas_semana_inicial;
+                cajas_inicial = isNaN(cajas_inicial) ? 0 : cajas_inicial;
+                cajas_proyectadas = isNaN(cajas_proyectadas ) ? 0 : cajas_proyectadas;
+                total_cajas_dinamico = total_cajas_semana_inicial-cajas_inicial+cajas_proyectadas;
+
+                total_cajas_equivalentes_dinamico = total_cajas_equivalentes_semana-cajas_equivalente_inicial+cajas_equivalentes;
+                total_valor_dinamico = total_dinero_semana-valor_inicial+parseFloat(valor);
+                //FIN CALCULOS VALORES TOTALES//
+
+                //REINICIO DE VALORES INICIALES//
+                $("input.cajas_fisicas_inicial_"+id_cliente+"_"+semana).val(cajas_proyectadas);
+                $("input.cajas_equivalente_inicial_"+id_cliente+"_"+semana).val(cajas_equivalentes);
+                $("input.valor_inicial_"+id_cliente+"_"+semana).val(valor);
+                //FIN DE REINICIO DE VALORES INICIALES//
+
+
+                //REINICIO DE VALORES TOTALES//
+                $("b.total_cajas_semana_"+semana).html(total_cajas_dinamico.toFixed(2));
+                $("b.total_cajas_equivalentes_semana_"+semana).html(total_cajas_equivalentes_dinamico.toFixed(2));
+                $("b.total_dinero_semana_"+semana).html("$"+total_valor_dinamico.toFixed(2));
+                //FIN REINICIO DE VALORES TOTALES//
+            }
 
             //OBTENCION DE LOS DATOS INICIALES GENERALES PARA AFECTAR LOS SALDOS//
             saldo_inicial = parseFloat($("b.saldo_inicial_"+semana).html());
@@ -95,7 +100,6 @@
             cajas_equivalentes_total=parseFloat($("b.total_cajas_equivalentes_semana_"+semana).html().trim());
             //FIN DE LA OBTENCION DE LOS DATOS INICIALES GENERALES PARA AFECTAR LOS SALDOS//
 
-            console.log(saldo_inicial,cajas_proyectadas_semana,desecho,cajas_equivalentes_total);
             saldo_final = saldo_inicial+cajas_proyectadas_semana-desecho-cajas_equivalentes_total;
 
             $('b.saldo_final_'+semana).html(saldo_final.toFixed(2));
@@ -183,17 +187,20 @@
                     desecho : desecho,
                     id_variedad : $("#filtro_predeterminado_variedad").val()
                 };
-                post_jquery('{{url('proy_venta_semanal/store_proyeccion_venta')}}', datos, function () {
+
+                $.post('{{url('proy_venta_semanal/store_proyeccion_venta')}}', datos, function (retorno){
                     listar_proyecciones_venta_semanal();
                     cerrar_modals();
+                }).always(function () {
+                    $.LoadingOverlay('hide');
                 });
-                $.LoadingOverlay('hide');
             });
         }else{
             modal_view('modal_error_store_proyeccion', '<div class="alert alert-danger text-center"><p> Debe seleccionar desde que semana en adelante desea programar</p> </div>', '<i class="fa fa-times"></i> Proyeccion de venta', true, false, '50%');
         }
 
     }
+
 
     function store_precio_promedio(id_cliente,id_variedad){
         $.LoadingOverlay('show');

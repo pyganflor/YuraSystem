@@ -982,43 +982,25 @@ class OrdenSemanalController extends Controller
                 $distr->ramos = intval($marc['marca']->ramos / $marc['marca']->piezas);
                 $distr->pos_pieza = $last_distr;
                 $distr->piezas = 1;
-                //$distr->save();
-                //$distr = Distribucion::All()->last();
-                //bitacora('distribucion', $distr->id_distribucion, 'I', 'Creacion de una nueva distribucion');
-                $arr_presentaciones = [];
-                foreach ($marc['array'] as $Z=> $array) {
 
-                    $arr_colum_col =[];
+                $distr->save();
+                $distr = Distribucion::All()->last();
+                bitacora('distribucion', $distr->id_distribucion, 'I', 'Creacion de una nueva distribucion');
+
+                foreach ($marc['array'] as $array) {
                     foreach ($array['arreglo'][$d] as $item) {
-                        $mar_col = MarcacionColoracion::find($item['mc']);
-                        $arr_colum_col[]=[
-                            'p' =>'P-'.($Z+1),
-                            'cantidad'=>$item['cantidad'],
-                            'color'=>$mar_col->coloracion->color->nombre,
-                            'texto'=>$mar_col->coloracion->color->texto,
-                            'fondo'=>$mar_col->coloracion->color->fondo,
-                        ];
-                        /*$dc = new DistribucionColoracion();
+                        $dc = new DistribucionColoracion();
                         $dc->id_distribucion = $distr->id_distribucion;
                         $dc->id_marcacion_coloracion = $item['mc'];
                         $dc->cantidad = $item['cantidad'];
+
                         $dc->save();
                         $dc = DistribucionColoracion::All()->last();
-                        bitacora('distribucion_coloracion', $dc->id_distribucion_coloracion, 'I', 'Creacion de una nueva id_distribucion_coloracion');*/
-                        //$arr_presentaciones[]= $arr_colum_col;
+                        bitacora('distribucion_coloracion', $dc->id_distribucion_coloracion, 'I', 'Creacion de una nueva id_distribucion_coloracion');
                     }
-                    $arr_presentaciones[]=$arr_colum_col;
-
-                    //$distr = Distribucion::All()->last();
-                    //bitacora('distribucion', $distr->id_distribucion, 'I', 'Creacion de una nueva distribucion');
-
                 }
-                $distr->dist_col = collect($arr_presentaciones)->toJson();
-               // dump($distr->dist_col);
-                $distr->save();
             }
         }
-
         return [
             'mensaje' => '<div class="alert alert-success text-center">Se han distribuido satisfactoriamente los ramos del pedido</div>',
             'success' => true,
@@ -1095,62 +1077,7 @@ class OrdenSemanalController extends Controller
 
     public function ver_distribucion(Request $request)
     {
-
         ini_set('max_execution_time', env('MAX_EXECUTION_TIME'));
-        $det_ped = DetallePedido::find($request->id_det_ped);
-
-        $list_esp_emp = [];
-        foreach ($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $pos_esp_emp => $esp_emp) {
-            $list_coloracionesByEspEmp = $det_ped->coloracionesByEspEmp($esp_emp->id_especificacion_empaque);
-            $list_marcacionesByEspEmp = [];
-            foreach ($det_ped->marcacionesByEspEmp($esp_emp->id_especificacion_empaque) as $pos_marc => $marc) {
-                $list_distribuciones = [];
-                foreach ($marc->distribuciones as $pos_distr => $distr) {
-                    $coloraciones = [];
-                    $dis_col = json_decode($distr->dist_col);
-                    $coloraciones[]=$dis_col;
-                    /*foreach ($list_coloracionesByEspEmp as $pos_col => $col) {
-                        $detalles = [];
-                        foreach ($esp_emp->detalles as $pos_det_esp => $det_esp) {
-                            $dis_col = json_decode($distr->dist_col)[$pos_det_esp];
-                            dump($dis_col);
-                            $detalles[]= [
-                                //'det_esp' => $det_esp,
-                                'distr_col' => $dis_col
-                            ];
-                        }
-                        $coloraciones[]=[
-                            'col' => $col,
-                            'detalles' => $detalles
-                        ];
-                    }*/
-                    $list_distribuciones[]= [
-                        'distr' => $distr,
-                        'coloraciones' => $coloraciones
-                    ];
-
-                }
-
-                $list_marcacionesByEspEmp[]= [
-                    'marc' => $marc,
-                    'distribuciones' => $list_distribuciones
-                ];
-
-            }
-
-            $list_esp_emp[]= [
-                'esp_emp' => $esp_emp,
-                'coloraciones' => $list_coloracionesByEspEmp,
-                'marcaciones' => $list_marcacionesByEspEmp,
-            ];
-
-        }
-        return view('adminlte.gestion.postcocecha.pedidos_ventas.forms._ver_distribucion', [
-            'det_ped' => $det_ped,
-            'list_esp_emp' => $list_esp_emp,
-        ]);
-
-        /*ini_set('max_execution_time', env('MAX_EXECUTION_TIME'));
         $det_ped = DetallePedido::find($request->id_det_ped);
 
         $list_esp_emp = [];
@@ -1178,32 +1105,25 @@ class OrdenSemanalController extends Controller
                         'distr' => $distr,
                         'coloraciones' => $coloraciones
                     ]);
-
                 }
-
-                $marcaciones[]=[
-                    'nombre'=>$marc,
-                    'rows_maracion'=>''
-                ];
-
                 array_push($list_marcacionesByEspEmp, [
                     'marc' => $marc,
                     'distribuciones' => $list_distribuciones
                 ]);
-
             }
-
             array_push($list_esp_emp, [
                 'esp_emp' => $esp_emp,
                 'coloraciones' => $list_coloracionesByEspEmp,
                 'marcaciones' => $list_marcacionesByEspEmp,
             ]);
-
         }
+
+        //dd($list_esp_emp);
+
         return view('adminlte.gestion.postcocecha.pedidos_ventas.forms._ver_distribucion', [
             'det_ped' => $det_ped,
             'list_esp_emp' => $list_esp_emp,
-        ]);*/
+        ]);
     }
 
     public function quitar_distribuciones(Request $request)

@@ -1,4 +1,4 @@
-<form id="form_marcas_colores">
+{{--<form id="form_marcas_colores">
     <table class="table-striped table-responsive table-bordered" width="100%" style="border: 1px solid #9d9d9d">
         <tr>
             <th class="text-center" style="border-color: #9d9d9d; padding: 0" id="th_menu">
@@ -12,7 +12,7 @@
             </th>
         </tr>
     </table>
-</form>
+</form>--}}
 
 <div style="width: 100%; overflow-x: scroll; display: none" id="div_tabla_distribucion_pedido">
     <table class="table-striped table-bordered" width="100%" style="border: 2px solid #9d9d9d; margin-top: 10px">

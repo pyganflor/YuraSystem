@@ -1049,6 +1049,7 @@ function update_orden_tinturada(token) {
                     /* ========= MARCACIONES_COLORACIONES ========== */
                     fil = $('#marcaciones_' + ids_esp_emp[ee].value).val();
                     col = $('#coloraciones_' + ids_esp_emp[ee].value).val();
+                    console.log($('#cantidad_piezas').val() != $('#total_piezas_' + ids_esp_emp[ee].value).val());
                     if ($('#cantidad_piezas').val() != $('#total_piezas_' + ids_esp_emp[ee].value).val()) {
                         alerta('<div class="alert alert-warning text-center">Las cantidades de piezas distribuidas no coinciden con las pedidas</div>');
                         $('#cantidad_piezas').addClass('error');
