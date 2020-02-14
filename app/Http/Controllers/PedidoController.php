@@ -7,6 +7,7 @@ use SoapClient;
 use yura\Jobs\UpdateSaldosProyVentaSemanal;
 use yura\Modelos\Aerolinea;
 use yura\Modelos\ClasificacionRamo;
+use yura\Modelos\Cliente;
 use yura\Modelos\ClienteConsignatario;
 use yura\Modelos\ClienteDatoExportacion;
 use yura\Modelos\ClientePedidoEspecificacion;
@@ -294,16 +295,16 @@ class PedidoController extends Controller
                         }
 
                         if (isset($objComprobante)) {
-                            $data_actualizar_factura =[
+                            $data_actualizar_factura = [
                                 'id_envio' => $modelEnvio->id_envio,
                                 'codigo_pais' => $modelEnvio->codigo_pais,
-                                'dae'=> $modelEnvio->dae,
-                                'fecha_envio'=>$modelEnvio->fecha_envio,
-                                'pais'=> getPais($modelEnvio->codigo_pais)->nombre,
-                                'update'=>'true',
-                                'id_comprobante'=>$objComprobante->id_comprobante,
-                                'fecha_pedidos_search'=> $modelEnvio->pedido->fecha_pedido,
-                                'cant_variedades'=>$modelEnvio->pedido->catntidad_det_esp_emp(),
+                                'dae' => $modelEnvio->dae,
+                                'fecha_envio' => $modelEnvio->fecha_envio,
+                                'pais' => getPais($modelEnvio->codigo_pais)->nombre,
+                                'update' => 'true',
+                                'id_comprobante' => $objComprobante->id_comprobante,
+                                'fecha_pedidos_search' => $modelEnvio->pedido->fecha_pedido,
+                                'cant_variedades' => $modelEnvio->pedido->catntidad_det_esp_emp(),
                             ];
                             ComprobanteController::actualizar_comprobante_factura($data_actualizar_factura);
                         }
@@ -467,7 +468,7 @@ class PedidoController extends Controller
             $objComprobante->update([
                 'id_envio' => null,
                 'rehusar' => true,
-                'habilitado'=>false
+                'habilitado' => false
             ]);
         }
         //$objPedido = Pedido::find($request->id_pedido);
@@ -781,6 +782,26 @@ class PedidoController extends Controller
 
         return view('adminlte.gestion.postcocecha.pedidos.partials.desglose_pedido', [
             'pedido' => $pedido
+        ]);
+    }
+
+    public function pedidos_cliente(Request $request)
+    {
+        $mes = array_search($request->mes, getMeses(TP_COMPLETO, FR_ARREGLO)) + 1;
+        $mes = $mes <= 9 ? str_pad('0', 2, $mes) : $mes;
+
+        $pedidos = Pedido::where('estado', 1)
+            ->where('id_cliente', $request->cliente)
+            ->whereYear('fecha_pedido', $request->anno)
+            ->whereMonth('fecha_pedido', $mes)
+            ->orderBy('fecha_pedido')
+            ->get();
+
+        return view('adminlte.gestion.postcocecha.pedidos.partials.pedidos_cliente', [
+            'pedidos' => $pedidos,
+            'mes' => $request->mes,
+            'anno' => $request->anno,
+            'cliente' => Cliente::find($request->cliente),
         ]);
     }
 }

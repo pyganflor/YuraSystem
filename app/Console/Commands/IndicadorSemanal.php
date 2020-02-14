@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use yura\Modelos\IndicadorSemana;
 use yura\Modelos\IndicadorVariedad;
+use yura\Modelos\IndicadorVariedadSemana;
 use yura\Modelos\Semana;
 use yura\Modelos\Variedad;
 
@@ -147,11 +148,34 @@ class IndicadorSemanal extends Command
                     /* ============================== INDICADOR x VARIEDAD ================================= */
                     foreach (Variedad::All() as $var) {
                         $ind_var = IndicadorVariedad::All()
-                            ->where('id_indicador', $model->id_indicador)
+                            ->where('id_indicador', $indicador->id_indicador)
                             ->where('id_variedad', $var->id_variedad)
                             ->first();
                         if ($ind_var != '') {
+                            $model = $ind_var->getSemana($sem);
+                            if ($model == '') {
+                                $model = new IndicadorVariedadSemana();
+                                $model->id_indicador_variedad = $ind_var->id_indicador_variedad;
+                                $model->codigo_semana = $sem;
+                            }
+                            $hasta_sem = $semana;
+                            $desde_sem = getSemanaByDate(opDiasFecha('-', 105, $hasta_sem->fecha_inicial));
 
+                            $venta_mensual = DB::table('proyeccion_venta_semanal_real')
+                                ->select(DB::raw('sum(valor) as cant'))
+                                ->where('id_variedad', $ind_var->id_variedad)
+                                ->where('codigo_semana', '>=', $desde_sem->codigo)
+                                ->where('codigo_semana', '<=', $hasta_sem->codigo)
+                                ->get()[0]->cant;
+
+                            $semana_desde = getSemanaByDate(opDiasFecha('-', 112, $desde_sem->fecha_inicial));   // 16 semanas atras
+                            $semana_hasta = $desde_sem;
+
+                            $data = getAreaCiclosByRango($semana_desde->codigo, $semana_hasta->codigo, $ind_var->id_variedad);
+                            $area_anual = getAreaActivaFromData($data['variedades'], $data['semanas']) * 10000;
+
+                            $model->valor = $area_anual > 0 ? round(($venta_mensual / $area_anual) * 3, 2) : 0;
+                            $model->save();
                         }
                     }
                 }
@@ -171,6 +195,25 @@ class IndicadorSemanal extends Command
                     $valor = getIndicadorByName('D9')->getSemana($sem)->valor - getIndicadorByName('C9')->getSemana($sem)->valor;
                     $model->valor = $valor;
                     $model->save();
+
+                    /* ============================== INDICADOR x VARIEDAD ================================= */
+                    foreach (Variedad::All() as $var) {
+                        $ind_var = IndicadorVariedad::All()
+                            ->where('id_indicador', $indicador->id_indicador)
+                            ->where('id_variedad', $var->id_variedad)
+                            ->first();
+                        if ($ind_var != '') {
+                            $model = $ind_var->getSemana($sem);
+                            if ($model == '') {
+                                $model = new IndicadorVariedadSemana();
+                                $model->id_indicador_variedad = $ind_var->id_indicador_variedad;
+                                $model->codigo_semana = $sem;
+                            }
+                            $valor = getIndicadorByName('D9')->getVariedad($var->id_variedad)->getSemana($sem)->valor - getIndicadorByName('C9')->getSemana($sem)->valor;
+                            $model->valor = $valor;
+                            $model->save();
+                        }
+                    }
                 }
             }
         }

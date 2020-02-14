@@ -226,7 +226,6 @@ class ImportarDataController extends Controller
         $msg = '';
         $success = true;
         if (!$valida->fails()) {
-
             $document = PHPExcel_IOFactory::load($request->file_ventas);
             $activeSheetData = $document->getActiveSheet()->toArray(null, true, true, true);
 
@@ -247,11 +246,11 @@ class ImportarDataController extends Controller
 
                                 if ($historico != '') {
                                     if ($request->campo_ventas == 'V')
-                                        $historico->valor += str_replace('$', '', str_replace(',', '', $col));
+                                        $historico->valor = str_replace('$', '', str_replace(',', '', $col));
                                     if ($request->campo_ventas == 'F')
-                                        $historico->cajas_fisicas += str_replace('$', '', str_replace(',', '', $col));
+                                        $historico->cajas_fisicas = str_replace('$', '', str_replace(',', '', $col));
                                     if ($request->campo_ventas == 'Q')
-                                        $historico->cajas_equivalentes += str_replace('$', '', str_replace(',', '', $col));
+                                        $historico->cajas_equivalentes = str_replace('$', '', str_replace(',', '', $col));
                                     if ($request->campo_ventas == 'P')
                                         if ($historico->precio_x_ramo > 0)
                                             $historico->precio_x_ramo = round(str_replace('$', '', str_replace(',', '', $col)) / $historico->precio_x_ramo, 2);

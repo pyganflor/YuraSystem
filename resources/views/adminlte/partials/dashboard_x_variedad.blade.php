@@ -35,7 +35,7 @@
                     'v': 'Rentabilidad',
                     'f': '<strong style="color:{{$color_14}}"><small>$</small><span id="span_rentabilidad_m2_mensual">{{number_format($rentabilidad_m2_mensual, 2)}}</span><small><sup>(4 meses)</sup></small></strong>' +
                     '<br><strong style="color:{{$color_15}}"><small>$</small><span id="span_rentabilidad_m2_anual">{{number_format($rentabilidad_m2_anual, 2)}}</span><small><sup>(1 año)</sup></small></strong>' +
-                    '<br><button type="button" class="btn btn-xs btn-block btn-default" onclick="mostrar_indicadores_claves(4)" style="color: black">Rentabilidad/m<sup>2</sup>/año</button>'
+                    '<br><button type="button" class="btn btn-xs btn-block btn-default" onclick="mostrar_indicadores_claves(4, {{$variedad->id_variedad}})" style="color: black">Rentabilidad/m<sup>2</sup>/año</button>'
                 }, '', 'Rentabilidad/m2/año'],
                 [{
                     'v': 'Ventas_m2_anno',

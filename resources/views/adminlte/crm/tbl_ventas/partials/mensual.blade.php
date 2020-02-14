@@ -67,12 +67,19 @@
                 @php
                     $total = 0;
                     $count_positivos = 0;
-                $parcial = 0;
-                $count_parcial = count($data['meses']);
+                    $parcial = 0;
+                    $count_parcial = count($data['meses']);
                 @endphp
                 @foreach($fila['valores'] as $pos => $valor)
                     <th class="text-center" style="border-color: #9d9d9d; padding: 5px">
-                        {{number_format($valor,2)}}
+                        @if($cliente != 'P' && $cliente != 'A')
+                            <a href="javascript:void(0)" style="color: black; font-weight: bold" class="btn btn-xs btn-link"
+                               onclick="pedidos_cliente('{{$fila['encabezado']->id_cliente}}', '{{$data['meses'][count($data['meses']) - $count_parcial]}}', '{{$data['labels'][intval(($pos) / count($data['meses']))]}}')">
+                                {{number_format($valor,2)}}
+                            </a>
+                        @else
+                            {{number_format($valor,2)}}
+                        @endif
                     </th>
                     @if($count_parcial <= 1)
                         @php
@@ -191,5 +198,16 @@
 
     $('#table_mensual').DataTable({
         responsive: false,
-    })
+    });
+
+    function pedidos_cliente(cliente, mes, anno) {
+        datos = {
+            cliente: cliente,
+            mes: mes,
+            anno: anno,
+        };
+        get_jquery('{{url('tbl_ventas/pedidos_cliente')}}', datos, function (retorno) {
+            modal_view('modal-view_pedidos_cliente', retorno, '<i class="fa fa-fw fa-table"></i> Pedidos por cliente', true, false, '95%');
+        });
+    }
 </script>
