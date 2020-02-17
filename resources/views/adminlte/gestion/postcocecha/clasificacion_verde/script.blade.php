@@ -117,30 +117,33 @@
 
     function store_lote_re_from(variedad) {
         if ($('#form-add_lote_re_' + variedad).valid()) {
-            unitarias = $('.ids_unitaria_' + variedad);
+            posiciones = $('.pos_lotes_re_' + variedad);
 
             arreglo = [];
             success = true;
 
-            for (i = 0; i < unitarias.length; i++) {
-                total_tallos = parseInt($('#tallos_x_unitaria_' + unitarias[i].value + '_' + variedad).val());
-                apertura = parseInt($('#apertura_' + unitarias[i].value + '_' + variedad).val());
-                guarde = parseInt($('#guarde_' + unitarias[i].value + '_' + variedad).val());
-                dias = parseInt($('#dias_' + unitarias[i].value + '_' + variedad).val());
+            for (i = 0; i < posiciones.length; i++) {
+                pos = posiciones[i].value;
+                total_tallos = parseInt($('#tallos_x_unitaria_fecha_' + variedad + '_' + pos).val());
+                apertura = parseInt($('#apertura_' + variedad + '_' + pos).val());
+                guarde = parseInt($('#guarde_' + variedad + '_' + pos).val());
+                dias = parseInt($('#dias_' + variedad + '_' + pos).val());
+                fecha = $('#fecha_unitaria_' + variedad + '_' + pos).val();
 
                 if ((apertura + guarde) != total_tallos) {
-                    $('#apertura_' + unitarias[i].value + '_' + variedad).addClass('error');
-                    $('#guarde_' + unitarias[i].value + '_' + variedad).addClass('error');
-                    $('#badge_tallos_x_unitaria_' + unitarias[i].value + '_' + variedad).addClass('error');
+                    $('#apertura_' + variedad + '_' + pos).addClass('error');
+                    $('#guarde_' + variedad + '_' + pos).addClass('error');
+                    $('#badge_tallos_x_unitaria_' + variedad + '_' + pos).addClass('error');
                     success = false;
                 } else {
-                    $('#apertura_' + unitarias[i].value + '_' + variedad).removeClass('error');
-                    $('#guarde_' + unitarias[i].value + '_' + variedad).removeClass('error');
-                    $('#badge_tallos_x_unitaria_' + unitarias[i].value + '_' + variedad).removeClass('error');
+                    $('#apertura_' + variedad + '_' + pos).removeClass('error');
+                    $('#guarde_' + variedad + '_' + pos).removeClass('error');
+                    $('#badge_tallos_x_unitaria_' + variedad + '_' + pos).removeClass('error');
 
                     lote = {
-                        id_clasificacion_unitaria: unitarias[i].value,
+                        id_clasificacion_unitaria: parseInt($('#id_clasificacion_unitaria_' + variedad + '_' + pos).val()),
                         dias: dias,
+                        fecha: fecha,
                         apertura: apertura,
                         guarde: guarde,
                     };
@@ -149,7 +152,6 @@
                 }
             }
             if (success) {
-
                 datos = {
                     _token: '{{csrf_token()}}',
                     fecha: $('#fecha_ingreso').val(),
@@ -160,7 +162,6 @@
                 };
 
                 return datos;
-
             } else {
                 alerta('<p class="text-center">Debe distribuir la cantidad exacta de tallos entre Apertura y Guarde</p>');
             }

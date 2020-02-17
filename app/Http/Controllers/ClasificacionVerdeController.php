@@ -813,7 +813,7 @@ class ClasificacionVerdeController extends Controller
                                 $lote->fecha_registro = date('Y-m-d H:i:s');
                                 $lote->cantidad_tallos = $item['apertura'];
                                 $lote->etapa = 'A';
-                                $lote->apertura = $object['fecha'];
+                                $lote->apertura = $item['fecha'];
 
                                 if ($lote->save()) {
                                     $lote = LoteRE::All()->last();
@@ -822,7 +822,7 @@ class ClasificacionVerdeController extends Controller
                                     /* ================ GUARDAR EN TABLA STOCK_APERTURA ===============*/
                                     $stock = new StockApertura();
                                     $stock->fecha_registro = date('Y-m-d H:i:s');
-                                    $stock->fecha_inicio = $object['fecha'];
+                                    $stock->fecha_inicio = $item['fecha'];
                                     $stock->cantidad_tallos = $lote->cantidad_tallos;
                                     $stock->cantidad_disponible = $lote->cantidad_tallos;
                                     $stock->id_variedad = $lote->id_variedad;
@@ -860,7 +860,7 @@ class ClasificacionVerdeController extends Controller
                                 $lote->fecha_registro = date('Y-m-d H:i:s');
                                 $lote->cantidad_tallos = $item['guarde'];
                                 $lote->etapa = 'C';
-                                $lote->guarde_clasificacion = $object['fecha'];
+                                $lote->guarde_clasificacion = $item['fecha'];
                                 $lote->dias_guarde_clasificacion = $item['dias'];
 
                                 if ($lote->save()) {
@@ -870,7 +870,7 @@ class ClasificacionVerdeController extends Controller
                                     /* ================ GUARDAR EN TABLA STOCK_GUARDE ===============*/
                                     $stock = new StockGuarde();
                                     $stock->fecha_registro = date('Y-m-d H:i:s');
-                                    $stock->fecha_inicio = $object['fecha'];
+                                    $stock->fecha_inicio = $item['fecha'];
                                     $stock->cantidad_tallos = $lote->cantidad_tallos;
                                     $stock->cantidad_disponible = $lote->cantidad_tallos;
                                     $stock->id_variedad = $lote->id_variedad;
