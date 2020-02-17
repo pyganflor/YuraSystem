@@ -46,11 +46,11 @@
     @if($verde->activo == 1)
         <div id="btn_terminar_clasificacion" style="margin-top: 15px">
             <button type="button" class="btn btn-danger btn-sm" onclick="terminar_clasificacion()">
-                <i class="fa fa-fw fa-times"></i> Terminar Clasificación
+                <i class="fa fa-fw fa-times"></i> Terminar Clasificaciï¿½n
             </button>
         </div>
         @foreach($verde->variedades() as $variedad)
-            <div id="div_destinar_lotes_{{$variedad->id_variedad}}" style="display: none;"></div>
+            <div id="div_destinar_lotes_{{$variedad->id_variedad}}" style="display: none2;"></div>
             <script>
                 destinar_lotes_form('{{$variedad->id_variedad}}', '{{$verde->id_clasificacion_verde}}');
             </script>

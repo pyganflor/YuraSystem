@@ -166,7 +166,7 @@
                 </button>
             </div>
             @foreach($clasificacion_verde->variedades() as $variedad)
-                <div id="div_destinar_lotes_{{$variedad->id_variedad}}" style="display: none;"></div>
+                <div id="div_destinar_lotes_{{$variedad->id_variedad}}" style="display: none2;"></div>
                 <script>
                     destinar_lotes_form('{{$variedad->id_variedad}}', '{{$clasificacion_verde->id_clasificacion_verde}}');
                 </script>
@@ -300,6 +300,7 @@
                     if ($('#check_mandar_apertura_auto').prop('checked')) {
                         ids_variedades = $('.id_variedad_form');
                         arreglo_master = [];
+
                         for (v = 0; v < ids_variedades.length; v++) {
                             arreglo_master.push(store_lote_re_from(ids_variedades[v].value));
                         }

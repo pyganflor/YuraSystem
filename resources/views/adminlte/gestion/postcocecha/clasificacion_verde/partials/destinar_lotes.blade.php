@@ -94,7 +94,7 @@
                         <input type="hidden" class="ids_unitaria" id="id_clasificacion_unitaria_{{$unitaria->id_clasificacion_unitaria}}"
                                value="{{$unitaria->id_clasificacion_unitaria}}">
                         <script>
-                            calcular_stock('{{$unitaria->id_clasificacion_unitaria}}');
+                            //calcular_stock('{{$unitaria->id_clasificacion_unitaria}}');
                         </script>
                     @endif
                 @endforeach
