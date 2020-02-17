@@ -79,6 +79,7 @@ class UpdateResumenTotal extends Command
                 if ($model == '') {
                     $model = new ResumenSemanalTotal();
                     $model->codigo_semana = $sem;
+                    $model->valor = 0;
                 }
 
                 /* ----------------------------- campo ------------------------- */
@@ -111,6 +112,130 @@ class UpdateResumenTotal extends Command
                     ->where('o.codigo_semana', $sem)
                     ->get()[0]->cant;
                 $model->campo_ga = $campo_ga;
+
+                /* ----------------------------- propagacion ------------------------- */
+                $area = Area::All()->where('estado', 1)->where('nombre', 'PROPAGACIÓN')->first();
+                $propagacion_mp = DB::table('costos_semana as c')
+                    ->select(DB::raw('sum(c.valor) as cant'))
+                    ->join('actividad_producto as ac', 'ac.id_actividad_producto', '=', 'c.id_actividad_producto')
+                    ->join('actividad as a', 'a.id_actividad', '=', 'ac.id_actividad')
+                    ->where('a.id_area', '=', $area->id_area)
+                    ->where('c.codigo_semana', $sem)
+                    ->get()[0]->cant;
+                $model->propagacion_mp = $propagacion_mp;
+                $propagacion_mo = DB::table('costos_semana_mano_obra as c')
+                    ->select(DB::raw('sum(c.valor) as cant'))
+                    ->join('actividad_mano_obra as am', 'am.id_actividad_mano_obra', '=', 'c.id_actividad_mano_obra')
+                    ->join('actividad as a', 'a.id_actividad', '=', 'am.id_actividad')
+                    ->where('a.id_area', '=', $area->id_area)
+                    ->where('c.codigo_semana', $sem)
+                    ->get()[0]->cant;
+                $model->propagacion_mo = $propagacion_mo;
+                $propagacion_gip = DB::table('otros_gastos as o')
+                    ->select(DB::raw('sum(o.gip) as cant'))
+                    ->where('o.id_area', '=', $area->id_area)
+                    ->where('o.codigo_semana', $sem)
+                    ->get()[0]->cant;
+                $model->propagacion_gip = $propagacion_gip;
+                $propagacion_ga = DB::table('otros_gastos as o')
+                    ->select(DB::raw('sum(o.ga) as cant'))
+                    ->where('o.id_area', '=', $area->id_area)
+                    ->where('o.codigo_semana', $sem)
+                    ->get()[0]->cant;
+                $model->propagacion_ga = $propagacion_ga;
+
+                /* ----------------------------- cosecha ------------------------- */
+                $area = Area::All()->where('estado', 1)->where('nombre', 'COSECHA')->first();
+                $cosecha_mp = DB::table('costos_semana as c')
+                    ->select(DB::raw('sum(c.valor) as cant'))
+                    ->join('actividad_producto as ac', 'ac.id_actividad_producto', '=', 'c.id_actividad_producto')
+                    ->join('actividad as a', 'a.id_actividad', '=', 'ac.id_actividad')
+                    ->where('a.id_area', '=', $area->id_area)
+                    ->where('c.codigo_semana', $sem)
+                    ->get()[0]->cant;
+                $model->cosecha_mp = $cosecha_mp;
+                $cosecha_mo = DB::table('costos_semana_mano_obra as c')
+                    ->select(DB::raw('sum(c.valor) as cant'))
+                    ->join('actividad_mano_obra as am', 'am.id_actividad_mano_obra', '=', 'c.id_actividad_mano_obra')
+                    ->join('actividad as a', 'a.id_actividad', '=', 'am.id_actividad')
+                    ->where('a.id_area', '=', $area->id_area)
+                    ->where('c.codigo_semana', $sem)
+                    ->get()[0]->cant;
+                $model->cosecha_mo = $cosecha_mo;
+                $cosecha_gip = DB::table('otros_gastos as o')
+                    ->select(DB::raw('sum(o.gip) as cant'))
+                    ->where('o.id_area', '=', $area->id_area)
+                    ->where('o.codigo_semana', $sem)
+                    ->get()[0]->cant;
+                $model->cosecha_gip = $cosecha_gip;
+                $cosecha_ga = DB::table('otros_gastos as o')
+                    ->select(DB::raw('sum(o.ga) as cant'))
+                    ->where('o.id_area', '=', $area->id_area)
+                    ->where('o.codigo_semana', $sem)
+                    ->get()[0]->cant;
+                $model->cosecha_ga = $cosecha_ga;
+
+                /* ----------------------------- postcosecha ------------------------- */
+                $area = Area::All()->where('estado', 1)->where('nombre', 'POSTCOSECHA')->first();
+                $postcosecha_mp = DB::table('costos_semana as c')
+                    ->select(DB::raw('sum(c.valor) as cant'))
+                    ->join('actividad_producto as ac', 'ac.id_actividad_producto', '=', 'c.id_actividad_producto')
+                    ->join('actividad as a', 'a.id_actividad', '=', 'ac.id_actividad')
+                    ->where('a.id_area', '=', $area->id_area)
+                    ->where('c.codigo_semana', $sem)
+                    ->get()[0]->cant;
+                $model->postcosecha_mp = $postcosecha_mp;
+                $postcosecha_mo = DB::table('costos_semana_mano_obra as c')
+                    ->select(DB::raw('sum(c.valor) as cant'))
+                    ->join('actividad_mano_obra as am', 'am.id_actividad_mano_obra', '=', 'c.id_actividad_mano_obra')
+                    ->join('actividad as a', 'a.id_actividad', '=', 'am.id_actividad')
+                    ->where('a.id_area', '=', $area->id_area)
+                    ->where('c.codigo_semana', $sem)
+                    ->get()[0]->cant;
+                $model->postcosecha_mo = $postcosecha_mo;
+                $postcosecha_gip = DB::table('otros_gastos as o')
+                    ->select(DB::raw('sum(o.gip) as cant'))
+                    ->where('o.id_area', '=', $area->id_area)
+                    ->where('o.codigo_semana', $sem)
+                    ->get()[0]->cant;
+                $model->postcosecha_gip = $postcosecha_gip;
+                $postcosecha_ga = DB::table('otros_gastos as o')
+                    ->select(DB::raw('sum(o.ga) as cant'))
+                    ->where('o.id_area', '=', $area->id_area)
+                    ->where('o.codigo_semana', $sem)
+                    ->get()[0]->cant;
+                $model->postcosecha_ga = $postcosecha_ga;
+
+                /* ----------------------------- servicios_generales ------------------------- */
+                $area = Area::All()->where('estado', 1)->where('nombre', 'SERVICIOS GENERALES')->first();
+                $servicios_generales_mp = DB::table('costos_semana as c')
+                    ->select(DB::raw('sum(c.valor) as cant'))
+                    ->join('actividad_producto as ac', 'ac.id_actividad_producto', '=', 'c.id_actividad_producto')
+                    ->join('actividad as a', 'a.id_actividad', '=', 'ac.id_actividad')
+                    ->where('a.id_area', '=', $area->id_area)
+                    ->where('c.codigo_semana', $sem)
+                    ->get()[0]->cant;
+                $model->servicios_generales_mp = $servicios_generales_mp;
+                $servicios_generales_mo = DB::table('costos_semana_mano_obra as c')
+                    ->select(DB::raw('sum(c.valor) as cant'))
+                    ->join('actividad_mano_obra as am', 'am.id_actividad_mano_obra', '=', 'c.id_actividad_mano_obra')
+                    ->join('actividad as a', 'a.id_actividad', '=', 'am.id_actividad')
+                    ->where('a.id_area', '=', $area->id_area)
+                    ->where('c.codigo_semana', $sem)
+                    ->get()[0]->cant;
+                $model->servicios_generales_mo = $servicios_generales_mo;
+                $servicios_generales_gip = DB::table('otros_gastos as o')
+                    ->select(DB::raw('sum(o.gip) as cant'))
+                    ->where('o.id_area', '=', $area->id_area)
+                    ->where('o.codigo_semana', $sem)
+                    ->get()[0]->cant;
+                $model->servicios_generales_gip = $servicios_generales_gip;
+                $servicios_generales_ga = DB::table('otros_gastos as o')
+                    ->select(DB::raw('sum(o.ga) as cant'))
+                    ->where('o.id_area', '=', $area->id_area)
+                    ->where('o.codigo_semana', $sem)
+                    ->get()[0]->cant;
+                $model->servicios_generales_ga = $servicios_generales_ga;
 
                 $model->save();
             }
