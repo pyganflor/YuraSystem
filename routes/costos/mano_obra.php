@@ -16,4 +16,4 @@ Route::post('gestion_mano_obra/buscar_otros_gastos', 'Costos\CostosController@bu
 
 /* ---------------------------------- REPORTE ------------------------------------- */
 Route::get('reporte_mano_obra', 'Costos\CostosController@reporte_mano_obra');
-Route::get('reporte_mano_obra/listar_reporte', 'Costos\CostosController@listar_reporte');
+Route::get('reporte_mano_obra/listar_reporte', 'Costos\CostosController@listar_reporte_mano_obra');
