@@ -1174,6 +1174,30 @@ class CostosController extends Controller
         ]);
     }
 
+    public function costos_generales(Request $request)
+    {
+        $semana_actual = getSemanaByDate(date('Y-m-d'));
+        $semana_desde = getSemanaByDate(opDiasFecha('-', 35, date('Y-m-d')));
+        return view('adminlte.gestion.costos.generales.inicio', [
+            'url' => $request->getRequestUri(),
+            'submenu' => Submenu::Where('url', '=', substr($request->getRequestUri(), 1))->get()[0],
+            'semana_actual' => $semana_actual,
+            'semana_desde' => $semana_desde
+        ]);
+    }
+
+    public function listar_reporte_general(Request $request)
+    {
+        $semanas = DB::table('resumen_semanal_total')
+            ->where('codigo_semana', '>=', $request->desde)
+            ->where('codigo_semana', '<=', $request->hasta)
+            ->get();
+
+        return view('adminlte.gestion.costos.generales.partials.listado', [
+            'semanas' => $semanas
+        ]);
+    }
+
     /* =================================== OTROS GASTOS ======================================= */
     public function otros_gastos(Request $request)
     {

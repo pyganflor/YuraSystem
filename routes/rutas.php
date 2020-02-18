@@ -114,6 +114,7 @@ Route::group(['middleware' => 'autenticacion'], function () {
             include 'costos/insumo.php';
             include 'costos/mano_obra.php';
             include 'costos/importar.php';
+            include 'costos/generales.php';
 
             /* ================== DB =================== */
             include 'db/rutas.php';

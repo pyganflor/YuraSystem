@@ -112,6 +112,7 @@ class UpdateResumenTotal extends Command
                     ->where('o.codigo_semana', $sem)
                     ->get()[0]->cant;
                 $model->campo_ga = $campo_ga;
+                $model->campo = $campo_mp + $campo_mo + $campo_gip + $campo_ga;
 
                 /* ----------------------------- propagacion ------------------------- */
                 $area = Area::All()->where('estado', 1)->where('nombre', 'PROPAGACIÓN')->first();
@@ -143,6 +144,7 @@ class UpdateResumenTotal extends Command
                     ->where('o.codigo_semana', $sem)
                     ->get()[0]->cant;
                 $model->propagacion_ga = $propagacion_ga;
+                $model->propagacion = $propagacion_mp + $propagacion_mo + $propagacion_gip + $propagacion_ga;
 
                 /* ----------------------------- cosecha ------------------------- */
                 $area = Area::All()->where('estado', 1)->where('nombre', 'COSECHA')->first();
@@ -174,6 +176,7 @@ class UpdateResumenTotal extends Command
                     ->where('o.codigo_semana', $sem)
                     ->get()[0]->cant;
                 $model->cosecha_ga = $cosecha_ga;
+                $model->cosecha = $cosecha_mp + $cosecha_mo + $cosecha_gip + $cosecha_ga;
 
                 /* ----------------------------- postcosecha ------------------------- */
                 $area = Area::All()->where('estado', 1)->where('nombre', 'POSTCOSECHA')->first();
@@ -205,6 +208,7 @@ class UpdateResumenTotal extends Command
                     ->where('o.codigo_semana', $sem)
                     ->get()[0]->cant;
                 $model->postcosecha_ga = $postcosecha_ga;
+                $model->postcosecha = $postcosecha_mp + $postcosecha_mo + $postcosecha_gip + $postcosecha_ga;
 
                 /* ----------------------------- servicios_generales ------------------------- */
                 $area = Area::All()->where('estado', 1)->where('nombre', 'SERVICIOS GENERALES')->first();
@@ -236,6 +240,7 @@ class UpdateResumenTotal extends Command
                     ->where('o.codigo_semana', $sem)
                     ->get()[0]->cant;
                 $model->servicios_generales_ga = $servicios_generales_ga;
+                $model->servicios_generales = $servicios_generales_mp + $servicios_generales_mo + $servicios_generales_gip + $servicios_generales_ga;
 
                 $model->save();
             }
