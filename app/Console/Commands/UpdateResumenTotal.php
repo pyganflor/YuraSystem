@@ -242,6 +242,15 @@ class UpdateResumenTotal extends Command
                 $model->servicios_generales_ga = $servicios_generales_ga;
                 $model->servicios_generales = $servicios_generales_mp + $servicios_generales_mo + $servicios_generales_gip + $servicios_generales_ga;
 
+                /* ----------------------------- administrativos ------------------------- */
+                $area = Area::All()->where('estado', 1)->where('nombre', 'ADMINISTRATIVOS')->first();
+                $administrativos = DB::table('otros_gastos as o')
+                    ->select(DB::raw('sum(o.ga) as cant'))
+                    ->where('o.id_area', '=', $area->id_area)
+                    ->where('o.codigo_semana', $sem)
+                    ->get()[0]->cant;
+                $model->administrativos = $administrativos;
+
                 $model->save();
             }
         }
