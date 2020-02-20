@@ -455,7 +455,6 @@
     </tr>
 </table>
 
-
 <style>
     .th_fijo_left_0 {
         position: sticky;

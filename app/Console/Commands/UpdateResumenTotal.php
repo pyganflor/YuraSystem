@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Log;
 use yura\Modelos\Area;
 use yura\Modelos\Semana;
 use yura\Modelos\ResumenSemanalTotal;
+use yura\Modelos\ResumenCostosSemanal;
 
 class UpdateResumenTotal extends Command
 {
@@ -250,6 +251,10 @@ class UpdateResumenTotal extends Command
                     ->where('o.codigo_semana', $sem)
                     ->get()[0]->cant;
                 $model->administrativos = $administrativos;
+
+                /* ----------------------------- regalias ------------------------- */
+                $costos_semanal = ResumenCostosSemanal::All()->where('codigo_semana', $sem)->first();
+                $model->regalias = $costos_semanal != '' ? $costos_semanal->regalias : 0;
 
                 $model->save();
             }

@@ -63,9 +63,6 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')
-        //          ->hourly();
-
         $schedule->command('ciclo:fecha_fin')->cron('0 * * * *')->runInBackground();    // FechaFinalCiclo::class
         $schedule->command('historico_ventas:update')->cron('0 0 * * *')->runInBackground();    // UpdateHistoricoVentas::class
         //$schedule->command('recepciones:delete')->hourly()->runInBackground(); // DeleteRecepciones::class
