@@ -12,6 +12,32 @@
             Total
         </th>
     </tr>
+    {{-- TALLOS COSECHADOS --}}
+    <tr>
+        <th class="text-center th_fijo_left_0" style="background-color: #e9ecef; border-color: #9d9d9d">
+            <span style="margin: auto 5px; color: black; font-weight: bold; font-size: 0.85em">
+                TALLOS COSECHADOS
+            </span>
+        </th>
+        @php
+            $total_tallos_cosechados = 0;
+        @endphp
+        @foreach($semanas as $item)
+            <th class="text-center" style="border-color: #9d9d9d">
+                <div style="width: 100px">
+                    ${{number_format($item->tallos_cosechados, 2)}}
+                </div>
+            </th>
+            @php
+                $total_tallos_cosechados += $item->tallos_cosechados;
+            @endphp
+        @endforeach
+        <th class="text-center" style="background-color: #e9ecef; border-color: #9d9d9d">
+            <div style="width: 110px">
+                ${{number_format($total_tallos_cosechados, 2)}}
+            </div>
+        </th>
+    </tr>
     {{-- VENTA --}}
     <tr>
         <th class="text-center th_fijo_left_0" style="background-color: #e9ecef; border-color: #9d9d9d">
