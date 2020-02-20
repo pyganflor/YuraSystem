@@ -499,7 +499,10 @@ class Modulo extends Model
             ->where('r.estado', 1)
             ->where('dr.id_modulo', $this->id_modulo)
             ->where('r.fecha_ingreso', '<=', date('Y-m-d'))
-            ->get()->fecha;
-        return difFechas(date('Y-m-d'), $query)->days;
+            ->get();
+        if (count($query) > 0)
+            if ($query[0] != '')
+                return difFechas(date('Y-m-d'), $query)->days;
+        return 0;
     }
 }
