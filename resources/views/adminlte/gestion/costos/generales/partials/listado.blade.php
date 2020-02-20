@@ -505,6 +505,32 @@
             </div>
         </th>
     </tr>
+    {{-- EBITDA --}}
+    <tr>
+        <th class="text-center th_fijo_left_0" style="background-color: #e9ecef; border-color: #9d9d9d">
+            <span style="margin: auto 5px; color: black; font-weight: bold; font-size: 0.85em">
+                EBITDA
+            </span>
+        </th>
+        @foreach($semanas as $item)
+            @php
+                $ebitda = $item->valor - ($item->propagacion + $item->campo + $item->cosecha + $item->postcosecha + $item->servicios_generales + $item->administrativos + $item->regalias);
+            @endphp
+            <th class="text-center" style="border-color: #9d9d9d; color: {{$ebitda < 0 ? 'red' : ''}}">
+                <div style="width: 100px">
+                    ${{number_format($ebitda, 2)}}
+                </div>
+            </th>
+        @endforeach
+        <th class="text-center" style="background-color: #e9ecef; border-color: #9d9d9d">
+            @php
+                $ebitda = $total_valor - ($total_propagacion + $total_campo + $total_cosecha + $total_postcosecha + $total_servicios_generales + $total_administrativos + $total_regalias);
+            @endphp
+            <div style="width: 110px; color: {{$ebitda < 0 ? 'red' : ''}}">
+                ${{number_format($ebitda, 2)}}
+            </div>
+        </th>
+    </tr>
 </table>
 
 <style>
