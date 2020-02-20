@@ -502,7 +502,7 @@ class Modulo extends Model
             ->get();
         if (count($query) > 0)
             if ($query[0] != '')
-                return difFechas(date('Y-m-d'), substr($query[0]->fecha))->days;
+                return difFechas(date('Y-m-d'), substr($query[0]->fecha, 0, 10))->days;
         return 0;
     }
 }
