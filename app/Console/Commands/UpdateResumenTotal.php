@@ -256,6 +256,12 @@ class UpdateResumenTotal extends Command
                 $costos_semanal = ResumenCostosSemanal::All()->where('codigo_semana', $sem)->first();
                 $model->regalias = $costos_semanal != '' ? $costos_semanal->regalias : 0;
 
+                /* ----------------------------- tallos_cosechados ------------------------- */
+                $tallos_cosechados = DB::table('resumen_semana_cosecha')
+                    ->select(DB::raw('sum(tallos) as cant'))
+                    ->where('codigo_semana', $sem)->get()[0]->cant;
+                $model->tallos_cosechados = $tallos_cosechados != '' ? $tallos_cosechados : 0;
+
                 $model->save();
             }
         }
