@@ -38,6 +38,9 @@
                             Módulo
                         </th>
                         <th class="text-center detalle_horas" style="border-color: #9d9d9d">
+                            Ult. Cosecha
+                        </th>
+                        <th class="text-center detalle_horas" style="border-color: #9d9d9d">
                             Cantidad
                         </th>
                         <th class="text-center" style="border-color: #9d9d9d">
@@ -74,6 +77,15 @@
                                     @foreach($cosecha->getDetallesByIntervalo($intervalo['fecha_inicio_full'], $intervalo['fecha_fin_full']) as $detalle)
                                         <li style="border: 1px solid #9d9d9d">
                                             {{getModuloById($detalle->id_modulo)->nombre}}
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            </td>
+                            <td class="text-center detalle_horas" style="border-color: #9d9d9d">
+                                <ul class="list-unstyled">
+                                    @foreach($cosecha->getDetallesByIntervalo($intervalo['fecha_inicio_full'], $intervalo['fecha_fin_full']) as $detalle)
+                                        <li style="border: 1px solid #9d9d9d">
+                                            {{getModuloById($detalle->id_modulo)->nombre}}*
                                         </li>
                                     @endforeach
                                 </ul>
@@ -252,7 +264,7 @@
             $('#check_rendimiento_ingresos').prop('checked', false);
             if ($('#check_rendimiento_horas').prop('checked')) {
                 $('.detalle_horas').show();
-                $('#th_total_horas').prop('colspan', 4);
+                $('#th_total_horas').prop('colspan', 5);
             } else {
                 $('.detalle_horas').hide();
                 $('#th_total_horas').prop('colspan', 1);
