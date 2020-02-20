@@ -453,6 +453,32 @@
             </div>
         </th>
     </tr>
+    {{-- REGALÍAS --}}
+    <tr>
+        <th class="text-center th_fijo_left_0" style="background-color: #e9ecef; border-color: #9d9d9d">
+            <span style="margin: auto 5px; color: black; font-weight: bold; font-size: 0.85em">
+                REGALÍAS
+            </span>
+        </th>
+        @php
+            $total_regalias = 0;
+        @endphp
+        @foreach($semanas as $item)
+            <th class="text-center" style="border-color: #9d9d9d">
+                <div style="width: 100px">
+                    ${{number_format($item->regalias, 2)}}
+                </div>
+            </th>
+            @php
+                $total_regalias += $item->regalias;
+            @endphp
+        @endforeach
+        <th class="text-center" style="background-color: #e9ecef; border-color: #9d9d9d">
+            <div style="width: 110px">
+                ${{number_format($total_regalias, 2)}}
+            </div>
+        </th>
+    </tr>
 </table>
 
 <style>
