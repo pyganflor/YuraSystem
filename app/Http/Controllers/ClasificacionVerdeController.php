@@ -820,16 +820,26 @@ class ClasificacionVerdeController extends Controller
                                     bitacora('lote_re', $lote->id_lote_re, 'I', 'Inserción satisfactoria de un nuevo lote RE');
 
                                     /* ================ GUARDAR EN TABLA STOCK_APERTURA ===============*/
-                                    $stock = new StockApertura();
-                                    $stock->fecha_registro = date('Y-m-d H:i:s');
-                                    $stock->fecha_inicio = $item['fecha'];
-                                    $stock->cantidad_tallos = $lote->cantidad_tallos;
-                                    $stock->cantidad_disponible = $lote->cantidad_tallos;
-                                    $stock->id_variedad = $lote->id_variedad;
-                                    $stock->id_clasificacion_unitaria = $lote->id_clasificacion_unitaria;
-                                    $stock->dias = $item['dias'];
-                                    $stock->id_lote_re = $lote->id_lote_re;
-
+                                    $stock = StockApertura::All()
+                                        ->where('estado', 1)
+                                        ->where('fecha_inicio', $item['fecha'])
+                                        ->where('id_clasificacion_unitaria', $lote->id_clasificacion_unitaria)
+                                        ->where('id_variedad', $lote->id_variedad)
+                                        ->first();
+                                    if ($stock == '') {
+                                        $stock = new StockApertura();
+                                        $stock->fecha_registro = date('Y-m-d H:i:s');
+                                        $stock->fecha_inicio = $item['fecha'];
+                                        $stock->cantidad_tallos = $lote->cantidad_tallos;
+                                        $stock->cantidad_disponible = $lote->cantidad_tallos;
+                                        $stock->id_variedad = $lote->id_variedad;
+                                        $stock->id_clasificacion_unitaria = $lote->id_clasificacion_unitaria;
+                                        $stock->dias = $item['dias'];
+                                        $stock->id_lote_re = $lote->id_lote_re;
+                                    } else {
+                                        $stock->cantidad_tallos += $lote->cantidad_tallos;
+                                        $stock->cantidad_disponible += $lote->cantidad_tallos;
+                                    }
                                     if ($stock->save()) {
                                         $stock = StockApertura::All()->last();
                                         bitacora('stock_apertura', $stock->id_stock_apertura, 'I', 'Inserción satisfactoria de un nuevo lote RE a Stock');
