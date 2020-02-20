@@ -166,7 +166,7 @@
                 </button>
             </div>
             @foreach($clasificacion_verde->variedades() as $variedad)
-                <div id="div_destinar_lotes_{{$variedad->id_variedad}}" style="display: none2;"></div>
+                <div id="div_destinar_lotes_{{$variedad->id_variedad}}" style="display: none;"></div>
                 <script>
                     destinar_lotes_form('{{$variedad->id_variedad}}', '{{$clasificacion_verde->id_clasificacion_verde}}');
                 </script>
