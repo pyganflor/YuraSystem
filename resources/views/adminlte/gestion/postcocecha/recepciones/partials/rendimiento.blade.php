@@ -85,7 +85,7 @@
                                 <ul class="list-unstyled">
                                     @foreach($cosecha->getDetallesByIntervalo($intervalo['fecha_inicio_full'], $intervalo['fecha_fin_full']) as $detalle)
                                         <li style="border: 1px solid #9d9d9d">
-                                            {{getModuloById($detalle->id_modulo)->nombre}}*
+                                            {{getModuloById($detalle->id_modulo)->getLastCosecha()}}
                                         </li>
                                     @endforeach
                                 </ul>
