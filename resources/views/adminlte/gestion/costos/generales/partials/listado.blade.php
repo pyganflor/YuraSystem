@@ -23,7 +23,7 @@
             $total_valor = 0;
         @endphp
         @foreach($semanas as $item)
-            <th class="text-center" style="border-color: #9d9d9d">
+            <th class="text-center" style="border-color: #9d9d9d; background-color: #3cf7ff">
                 <div style="width: 100px">
                     ${{number_format($item->valor, 2)}}
                 </div>
@@ -50,7 +50,7 @@
             $total_propagacion = 0;
         @endphp
         @foreach($semanas as $item)
-            <th class="text-center" style="border-color: #9d9d9d">
+            <th class="text-center" style="border-color: #9d9d9d; background-color: #ffd1d1">
                 <div style="width: 100px">
                     ${{number_format($item->propagacion, 2)}}
                 </div>
@@ -133,7 +133,7 @@
             $total_campo = 0;
         @endphp
         @foreach($semanas as $item)
-            <th class="text-center" style="border-color: #9d9d9d">
+            <th class="text-center" style="border-color: #9d9d9d; background-color: #ffd1d1">
                 <div style="width: 100px">
                     ${{number_format($item->campo, 2)}}
                 </div>
@@ -216,7 +216,7 @@
             $total_cosecha = 0;
         @endphp
         @foreach($semanas as $item)
-            <th class="text-center" style="border-color: #9d9d9d">
+            <th class="text-center" style="border-color: #9d9d9d; background-color: #ffd1d1">
                 <div style="width: 100px">
                     ${{number_format($item->cosecha, 2)}}
                 </div>
@@ -299,7 +299,7 @@
             $total_postcosecha = 0;
         @endphp
         @foreach($semanas as $item)
-            <th class="text-center" style="border-color: #9d9d9d">
+            <th class="text-center" style="border-color: #9d9d9d; background-color: #ffd1d1">
                 <div style="width: 100px">
                     ${{number_format($item->postcosecha, 2)}}
                 </div>
@@ -382,7 +382,7 @@
             $total_servicios_generales = 0;
         @endphp
         @foreach($semanas as $item)
-            <th class="text-center" style="border-color: #9d9d9d">
+            <th class="text-center" style="border-color: #9d9d9d; background-color: #ffd1d1">
                 <div style="width: 100px">
                     ${{number_format($item->servicios_generales, 2)}}
                 </div>
@@ -453,6 +453,35 @@
             </td>
         @endforeach
     </tr>
+    {{-- TOTAL COSTOS --}}
+    <tr>
+        <th class="text-center th_fijo_left_0" style="background-color: #e9ecef; border-color: #9d9d9d">
+            <span style="margin: auto 5px; color: black; font-weight: bold; font-size: 0.85em">
+                TOTAL COSTOS
+            </span>
+        </th>
+        @php
+            $total_costos_operativos = 0;
+        @endphp
+        @foreach($semanas as $item)
+            @php
+                $costos_operativos = $item->propagacion + $item->campo + $item->cosecha + $item->postcosecha + $item->servicios_generales;
+            @endphp
+            <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
+                <div style="width: 100px">
+                    ${{number_format($costos_operativos, 2)}}
+                </div>
+            </th>
+            @php
+                $total_costos_operativos += $costos_operativos;
+            @endphp
+        @endforeach
+        <th class="text-center" style="background-color: #e9ecef; border-color: #9d9d9d">
+            <div style="width: 110px">
+                ${{number_format($total_costos_operativos, 2)}}
+            </div>
+        </th>
+    </tr>
     {{-- ADMINISTRATIVOS --}}
     <tr>
         <th class="text-center th_fijo_left_0" style="background-color: #e9ecef; border-color: #9d9d9d">
@@ -464,7 +493,7 @@
             $total_administrativos = 0;
         @endphp
         @foreach($semanas as $item)
-            <th class="text-center" style="border-color: #9d9d9d">
+            <th class="text-center" style="border-color: #9d9d9d; background-color: #ffd1d1">
                 <div style="width: 100px">
                     ${{number_format($item->administrativos, 2)}}
                 </div>
@@ -490,7 +519,7 @@
             $total_regalias = 0;
         @endphp
         @foreach($semanas as $item)
-            <th class="text-center" style="border-color: #9d9d9d">
+            <th class="text-center" style="border-color: #9d9d9d; background-color: #ffd1d1">
                 <div style="width: 100px">
                     ${{number_format($item->regalias, 2)}}
                 </div>
@@ -516,7 +545,7 @@
             @php
                 $ebitda = $item->valor - ($item->propagacion + $item->campo + $item->cosecha + $item->postcosecha + $item->servicios_generales + $item->administrativos + $item->regalias);
             @endphp
-            <th class="text-center" style="border-color: #9d9d9d; color: {{$ebitda < 0 ? 'red' : 'green'}}">
+            <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef; color: {{$ebitda < 0 ? 'red' : 'green'}}">
                 <div style="width: 100px">
                     ${{number_format($ebitda, 2)}}
                 </div>
