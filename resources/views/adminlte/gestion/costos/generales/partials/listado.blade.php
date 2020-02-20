@@ -516,7 +516,7 @@
             @php
                 $ebitda = $item->valor - ($item->propagacion + $item->campo + $item->cosecha + $item->postcosecha + $item->servicios_generales + $item->administrativos + $item->regalias);
             @endphp
-            <th class="text-center" style="border-color: #9d9d9d; color: {{$ebitda < 0 ? 'red' : ''}}">
+            <th class="text-center" style="border-color: #9d9d9d; color: {{$ebitda < 0 ? 'red' : 'green'}}">
                 <div style="width: 100px">
                     ${{number_format($ebitda, 2)}}
                 </div>
@@ -526,7 +526,7 @@
             @php
                 $ebitda = $total_valor - ($total_propagacion + $total_campo + $total_cosecha + $total_postcosecha + $total_servicios_generales + $total_administrativos + $total_regalias);
             @endphp
-            <div style="width: 110px; color: {{$ebitda < 0 ? 'red' : ''}}">
+            <div style="width: 110px; color: {{$ebitda < 0 ? 'red' : 'green'}}">
                 ${{number_format($ebitda, 2)}}
             </div>
         </th>
