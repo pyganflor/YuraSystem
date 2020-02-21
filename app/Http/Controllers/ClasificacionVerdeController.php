@@ -37,33 +37,11 @@ class ClasificacionVerdeController extends Controller
 
     public function buscar_clasificaciones(Request $request)
     {
-        $listado = DB::table('clasificacion_verde as c')
-            ->join('semana as s', 's.id_semana', '=', 'c.id_semana')
-            ->select('c.*', 's.codigo as semana')->distinct();
-
-
-        if ($request->fecha_verde != '')
-            $listado = $listado->where('c.fecha_ingreso', '=', $request->fecha_verde);
-        else {
-            if ($request->fecha_desde != '')
-                $listado = $listado->where('c.fecha_ingreso', '>=', $request->fecha_desde);
-            if ($request->fecha_hasta != '')
-                $listado = $listado->where('c.fecha_ingreso', '<=', $request->fecha_hasta);
-        }
-        if ($request->semana_desde != '')
-            $listado = $listado->where('s.codigo', '>=', $request->semana_desde);
-        if ($request->semana_hasta != '')
-            $listado = $listado->where('s.codigo', '<=', $request->semana_hasta);
-        if ($request->anno != '')
-            $listado = $listado->where('s.anno', '=', $request->anno);
-        if ($request->variedad != '')
-            $listado = $listado->where('c.anno', '=', $request->variedad);
-
-        $listado = $listado->orderBy('s.anno', 'desc')->orderBy('c.fecha_ingreso', 'desc')
-            ->paginate(10);
-
         $datos = [
-            'listado' => $listado
+            'verde' => ClasificacionVerde::All()
+                ->where('estado', 1)
+                ->where('fecha_ingreso', $request->fecha_verde)
+                ->first()
         ];
 
         return view('adminlte.gestion.postcocecha.clasificacion_verde.partials.listado', $datos);

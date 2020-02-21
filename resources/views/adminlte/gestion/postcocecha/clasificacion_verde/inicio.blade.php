@@ -50,12 +50,6 @@
                         <i class="fa fa-fw fa-file-excel-o" style="color: #e9ecef"></i> <em
                                 id="title_btn_exportar"></em>
                     </button>
-                    <button class="btn btn-default btn-sm" onclick="check_filtro()"
-                            onmouseover="$('#title_btn_filtro').html('Filtro')"
-                            onmouseleave="$('#title_btn_filtro').html('')">
-                        <i class="fa fa-fw fa-filter"></i>
-                        <em id="title_btn_filtro"></em>
-                    </button>
                     <input type="checkbox" id="check_filtro_verde" style="display: none">
                 </div>
                 <div class="form-group pull-right" style="margin-bottom: 0; margin-right: 10px">
@@ -64,46 +58,6 @@
                 </div>
             </div>
             <div class="box-body" id="div_content_clasificaciones">
-                <table width="100%" id="table_filtro" style="display: none;">
-                    <tr>
-                        <td>
-                            <div class="row">
-                                <div class="col-md-2">
-                                    <select name="anno_search" id="anno_search" class="form-control" onchange="buscar_listado()">
-                                        <option value="">Año</option>
-                                        @foreach($annos as $item)
-                                            <option value="{{$item->anno}}">{{$item->anno}}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group input-group" style="width: 100%">
-                                        <span class="input-group-addon" style="background-color: #e9ecef">Semana inicio</span>
-                                        <input type="text" id="semana_desde_search" name="semana_desde_search" class="form-control"
-                                               onkeypress="return isNumber(event)" maxlength="4" minlength="4" onchange="buscar_listado()">
-                                        <span class="input-group-addon" style="background-color: #e9ecef">Semana final</span>
-                                        <input type="text" id="semana_hasta_search" name="semana_hasta_search" class="form-control"
-                                               onkeypress="return isNumber(event)" maxlength="4" minlength="4" onchange="buscar_listado()">
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-group input-group">
-                                        <span class="input-group-addon" style="background-color: #e9ecef">Desde</span>
-                                        <input type="date" id="fecha_desde_search" name="fecha_desde_search" class="form-control"
-                                               onchange="buscar_listado()">
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-group input-group">
-                                        <span class="input-group-addon" style="background-color: #e9ecef">Hasta</span>
-                                        <input type="date" id="fecha_hasta_search" name="fecha_hasta_search" class="form-control"
-                                               onchange="buscar_listado()">
-                                    </div>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                </table>
                 <div class="row">
                     <div class="col-md-12">
                         <label for="check_mandar_apertura_auto" class="pull-right" style="margin-left: 5px">Mandar automáticamente a
