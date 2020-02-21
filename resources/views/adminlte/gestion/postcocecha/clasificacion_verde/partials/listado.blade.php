@@ -121,13 +121,12 @@
                                 @foreach($verde->variedades() as $variedad)
                                     <tr>
                                         <th style="border-color: #9d9d9d; margin-bottom: 0" class="text-center">
-                                            {{$variedad->planta->nombre}} - {{$variedad->siglas}} -
+                                            {{$variedad->planta->nombre}} - {{$variedad->siglas}}
                                             <em>
-                                                {{$verde->getPorcentajeByVariedad($variedad->id_variedad)}}
-                                                %
+                                                {{$verde->getPorcentajeByVariedad($variedad->id_variedad)}} %
                                             </em>
-                                            <br>
-                                            @if(count($verde->lotes_reByVariedad($variedad->id_variedad)) > 0)
+                                            {{--<br>--}}
+                                            {{--@if(count($verde->lotes_reByVariedad($variedad->id_variedad)) > 0)
                                                 <button type="button" class="btn btn-xs btn-primary" style="margin-top: 10px; color: #0a0a0a"
                                                         title="Ver lotes"
                                                         onclick="ver_lotes('{{$variedad->id_variedad}}', '{{$verde->id_clasificacion_verde}}')">
@@ -143,7 +142,7 @@
                                                     $('#table_content_clasificaciones_{{$verde->id_clasificacion_verde}}').removeClass('sombra_estandar');
                                                     $('#table_content_clasificaciones_{{$verde->id_clasificacion_verde}}').addClass('sombra_roja');
                                                 </script>
-                                            @endif
+                                            @endif--}}
                                         </th>
                                         <td style="border-color: #9d9d9d; padding: 0; margin-bottom: 0" class="text-center">
                                             <table width="100%" class="table table-responsive table-bordered"
@@ -151,8 +150,7 @@
                                                 <tr>
                                                     @foreach($verde->unitarias() as $unitaria)
                                                         <th style="border-color: #9d9d9d; background-color: {{explode('|',$unitaria->color)[0]}}; color: {{explode('|',$unitaria->color)[1]}}"
-                                                            class="text-center"
-                                                            width="{{100 / count($verde->unitarias())}}%">
+                                                            class="text-center" width="{{100 / count($verde->unitarias())}}%">
                                                             {{explode('|',$unitaria->nombre)[0]}}{{$unitaria->unidad_medida->siglas}} -
                                                             <em>
                                                                 {{$verde->getPorcentajeUnitariaByVariedad($variedad->id_variedad, $unitaria->id_clasificacion_unitaria)}}
