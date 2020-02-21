@@ -711,4 +711,20 @@ class YuraController extends Controller
             'accesos' => $usuario->accesos_directos,
         ]);
     }
+
+    public function detallar_indicador(Request $request)
+    {
+        if ($request->ind == 'D2') {
+            $view = 'listado_verdes';
+            $verdes = ClasificacionVerde::where('estado', 1)
+                ->where('fecha_ingreso', '>=', opDiasFecha('-', 15, date('Y-m-d')))
+                ->where('fecha_ingreso', '<=', opDiasFecha('-', 1, date('Y-m-d')))
+                ->get();
+            $datos = [
+                'verdes' => $verdes,
+            ];
+        }
+
+        return view('adminlte.partials.detalles_indicador.' . $view, $datos);
+    }
 }

@@ -215,7 +215,10 @@ class ClasificacionVerde extends Model
     {
         $l = DB::table('detalle_clasificacion_verde as d')
             ->select('d.id_clasificacion_unitaria')->distinct()
-            ->where('id_clasificacion_verde', '=', $this->id_clasificacion_verde)->get();
+            ->join('clasificacion_unitaria as u', 'u.id_clasificacion_unitaria', '=', 'd.id_clasificacion_unitaria')
+            ->where('id_clasificacion_verde', '=', $this->id_clasificacion_verde)
+            ->orderBy('u.nombre', 'asc')
+            ->get();
         $r = [];
         foreach ($l as $item) {
             array_push($r, ClasificacionUnitaria::find($item->id_clasificacion_unitaria));

@@ -390,7 +390,7 @@
                                         'f': '<strong><small>Área: </small><span id="span_area_produccion">{{number_format(round($area_produccion / 10000, 2), 2)}}</span></strong>' +
                                         '<br><strong><small>Venta: </small>$<span id="span_valor">{{number_format($valor, 2)}}</span></strong>' +
                                         '<br><strong title="Tallos cosechados"><small>T/cosechados: </small><span id="span_tallos_cosechados">{{number_format($tallos_cosechados)}}</span></strong>' +
-                                        '<br><strong title="Tallos clasificados"><small>T/clasificados: </small><span id="span_tallos">{{number_format($tallos)}}</span></strong>' +
+                                        '<br><strong title="Tallos clasificados" onclick="detallar_indicador({{'"D2"'}})" style="color: #333333"><small>T/clasificados: </small><span id="span_tallos">{{number_format($tallos)}}</span></strong>' +
                                         '<br><strong title="Cajas exportadas"><small>Cajas exp: </small>{{number_format($cajas_exportadas, 2)}}</strong>' +
                                         '<br><button type="button" class="btn btn-xs btn-block btn-default" disabled style="color: black">Datos importantes</button>'
                                     }, 'Ventas_m2_anno', 'Datos importantes'],
@@ -547,6 +547,15 @@
                 });
             else
                 location.href = '/';
+        }
+
+        function detallar_indicador(ind) {
+            datos = {
+                ind: ind
+            };
+            get_jquery('{{url('detallar_indicador')}}', datos, function (retorno) {
+                modal_view('modal-view_detallar_indicador', retorno, '<i class="fa fa-fw fa-table"></i> Detalles del indicador', true, false, '95%')
+            });
         }
     </script>
 @endsection
