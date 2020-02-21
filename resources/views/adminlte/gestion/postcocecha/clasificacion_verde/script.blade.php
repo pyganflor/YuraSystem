@@ -5,12 +5,7 @@
     function buscar_listado() {
         $.LoadingOverlay('show');
         datos = {
-            semana_desde: $('#semana_desde_search').val().trim(),
-            semana_hasta: $('#semana_hasta_search').val().trim(),
-            fecha_desde: $('#fecha_desde_search').val().trim(),
-            fecha_hasta: $('#fecha_hasta_search').val().trim(),
             fecha_verde: $('#fecha_verde_search').val().trim(),
-            anno: $('#anno_search').val(),
         };
         $.get('{{url('clasificacion_verde/buscar_clasificaciones')}}', datos, function (retorno) {
             $('#div_listado_clasificaciones').html(retorno);
