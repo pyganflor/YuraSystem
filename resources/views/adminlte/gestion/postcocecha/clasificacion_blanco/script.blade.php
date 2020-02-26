@@ -33,4 +33,10 @@
                 '{{isPC() ? '80%' : ''}}');
         });
     }
+
+    if ($(document).width() >= 1024) { // mostrar arbol
+        $('.label_blanco').html('Trabajar con la Clasificación en Blanco correspondiente a la fecha:');
+    } else {    // ocultar arbol
+        $('.label_blanco').html('Clasificación Blanco:');
+    }
 </script>

@@ -38,8 +38,7 @@
 
                 </h3>
                 <div class="form-group pull-right" style="margin: 0">
-                    <label class="psull-right">
-                        Trabajar con la Clasificación en Blanco correspondiente a la fecha:
+                    <label class="psull-right label_blanco">
                     </label>
 
                     <input type="date" id="fecha_blanco" name="fecha_blanco" onchange="listar_clasificacion_blanco($('#variedad_search').val())"

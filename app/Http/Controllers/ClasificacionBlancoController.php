@@ -300,6 +300,7 @@ class ClasificacionBlancoController extends Controller
                 $inventario->disponibles = $item['armar'];
                 $inventario->descripcion = $item['texto'];
                 $inventario->id_clasificacion_blanco = $request->blanco;
+                $inventario->mesa = $item['mesa'];
 
                 if ($inventario->save()) {
                     $id = InventarioFrio::All()->last()->id_inventario_frio;
