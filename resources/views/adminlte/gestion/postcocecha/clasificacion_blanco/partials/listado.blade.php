@@ -37,20 +37,24 @@
     </form>
 
     <label for="check_dias_maduracion" class="pull-right" style="margin-left: 5px">Seleccionar flores con mayor días de maduración</label>
+    <button class="btn btn-xs btn-default pull-left" onclick="$('.celdas_pc').toggleClass('hide'); $('.celdas_mobile').toggleClass('hide')"
+            style="margin-right: 5px" id="btn_ver_detalles">
+        <i class="fa fa-fw fa-eye"></i> Ver detalles
+    </button>
     <input type="checkbox" class="pull-right" id="check_dias_maduracion" checked>
     <table class="table-bordered table-striped table-responsive" width="100%" id="table_clasificacion_blanco"
            style="border: 1px solid #9d9d9d; font-size: 0.8em; margin-top: 10px; margin-bottom: 0">
         <tr>
-            <th style="border-color: #9d9d9d" width="5%" class="text-center">Calibre</th>
-            <th style="border-color: #9d9d9d" width="10%" class="text-center">Presentación</th>
-            <th style="border-color: #9d9d9d" width="5%" class="text-center">Tallos</th>
-            <th style="border-color: #9d9d9d" width="5%" class="text-center">Longitud</th>
+            <th style="border-color: #9d9d9d" width="5%" class="text-center celdas_mobile">Calibre</th>
+            <th style="border-color: #9d9d9d" width="10%" class="text-center celdas_mobile">Presentación</th>
+            <th style="border-color: #9d9d9d" width="5%" class="text-center celdas_mobile">Tallos</th>
+            <th style="border-color: #9d9d9d" width="5%" class="text-center celdas_mobile">Longitud</th>
             @php
                 $pos_fecha = 1;
             @endphp
             @foreach($fechas as $fecha)
                 <th class="text-center celdas_pc"
-                    style="background-color: #e9ecef; border-color: #9d9d9d; border-width: {{$pos_fecha == 1 ? '3px' : ''}}; display: none;">
+                    style="background-color: #e9ecef; border-color: #9d9d9d; border-width: {{$pos_fecha == 1 ? '3px' : ''}};">
                     {{getDias(TP_ABREVIADO,FR_ARREGLO)[transformDiaPhp(date('w',strtotime($fecha->fecha_pedido)))]}}<br>
                     <small>{{$fecha->fecha_pedido}}</small>
                     <input type="hidden" id="fecha_{{$pos_fecha}}" value="{{$fecha->fecha_pedido}}">
@@ -59,13 +63,13 @@
                     $pos_fecha++;
                 @endphp
             @endforeach
-            <th class="text-center" style="background-color: #357CA5; border-color: #9d9d9d; color: white">
+            <th class="text-center celdas_mobile" style="background-color: #357CA5; border-color: #9d9d9d; color: white">
                 Cuarto Frío
             </th>
-            <th class="text-center" style="background-color: #357CA5; border-color: #9d9d9d; color: white">
+            <th class="text-center celdas_mobile" style="background-color: #357CA5; border-color: #9d9d9d; color: white">
                 Armado
             </th>
-            <th class="text-center" style="background-color: #357CA5; border-color: #9d9d9d; color: white">
+            <th class="text-center celdas_mobile" style="background-color: #357CA5; border-color: #9d9d9d; color: white">
                 Mesa
             </th>
         </tr>
@@ -86,7 +90,7 @@
                     getEmpaque($item->id_empaque_p)->nombre.' '.$tallos_x_ramo.''.$longitud_ramo;
             @endphp
             <tr>
-                <th class="text-center" style="background-color: #e9ecef; border-color: #9d9d9d" id="th_pedidos_{{$pos_comb}}">
+                <th class="text-center celdas_mobile" style="background-color: #e9ecef; border-color: #9d9d9d" id="th_pedidos_{{$pos_comb}}">
                     {{getCalibreRamoById($item->id_clasificacion_ramo)->nombre.' '.getCalibreRamoById($item->id_clasificacion_ramo)->unidad_medida->siglas}}
                     <input type="hidden" id="texto_{{$pos_comb}}" value="{{$texto}}">
                     <input type="hidden" id="clasificacion_ramo_{{$pos_comb}}" value="{{$item->id_clasificacion_ramo}}">
@@ -96,13 +100,13 @@
                     <input type="hidden" id="id_empaque_p_{{$pos_comb}}" value="{{$item->id_empaque_p}}">
                     <input type="hidden" id="id_unidad_medida_{{$pos_comb}}" value="{{$item->id_unidad_medida}}">
                 </th>
-                <th class="text-center" style="background-color: #e9ecef; border-color: #9d9d9d">
+                <th class="text-center celdas_mobile" style="background-color: #e9ecef; border-color: #9d9d9d">
                     {{getEmpaque($item->id_empaque_p)->nombre}}
                 </th>
-                <th class="text-center" style="background-color: #e9ecef; border-color: #9d9d9d">
+                <th class="text-center celdas_mobile" style="background-color: #e9ecef; border-color: #9d9d9d">
                     {{$item->tallos_x_ramos}}
                 </th>
-                <th class="text-center" style="background-color: #e9ecef; border-color: #9d9d9d">
+                <th class="text-center celdas_mobile" style="background-color: #e9ecef; border-color: #9d9d9d">
                     {{$longitud_ramo}}
                 </th>
                 @php
@@ -120,7 +124,7 @@
                         $saldo = $total_inventario - $acumulado_pedido;
                     @endphp
                     <td class="text-center celdas_pc"
-                        style="border-color: #9d9d9d; border-right-width: {{$pos_fecha == 1 ? '3px' : ''}}; border-left-width: {{$pos_fecha == 1 ? '3px' : ''}}; display: none;"
+                        style="border-color: #9d9d9d; border-right-width: {{$pos_fecha == 1 ? '3px' : ''}}; border-left-width: {{$pos_fecha == 1 ? '3px' : ''}};"
                         onmouseover="$(this).css('background-color','#ADD8E6')" onmouseleave="$(this).css('background-color','')">
                         <span class="badge" title="Pedidos">{{number_format($cant_pedido,0)}}</span>
                         <input type="hidden" id="pedido_{{$pos_comb}}_{{$pos_fecha}}" value="{{$cant_pedido}}">
@@ -135,19 +139,19 @@
                         $pos_fecha++;
                     @endphp
                 @endforeach
-                <td class="text-center" style=" border-color: #9d9d9d;" width="7%">
+                <td class="text-center celdas_mobile" style=" border-color: #9d9d9d;" width="7%">
                     <input type="hidden" id="inventario_frio_{{$pos_comb}}" value="{{$total_inventario}}">
                     <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
                             aria-expanded="false" id="btn_inventario_{{$pos_comb}}" onclick="maduracion('{{$pos_comb}}')">
                         {{$total_inventario}}
                     </button>
                 </td>
-                <td class="text-center" style=" border-color: #9d9d9d;" width="7%">
+                <td class="text-center celdas_mobile" style=" border-color: #9d9d9d;" width="7%">
                     <input type="number" style="width: 100%" id="armar_{{$pos_comb}}" min="0"
                            onchange="calcular_inventario_i('{{$pos_comb}}', '{{$pos_comb-1}}')"
                            class="text-center" value="0">
                 </td>
-                <td class="text-center" style=" border-color: #9d9d9d;" width="7%">
+                <td class="text-center celdas_mobile" style=" border-color: #9d9d9d;" width="7%">
                     <input type="number" style="width: 100%" id="mesa_{{$pos_comb}}" min="0" class="text-center" onkeypress="isNumer(event)">
                 </td>
             </tr>
@@ -156,13 +160,13 @@
             @endphp
         @endforeach
         <tr>
-            <td style="border-color: #9d9d9d" colspan="4"></td>
+            <td style="border-color: #9d9d9d" colspan="4" class="celdas_mobile"></td>
             @php
                 $pos_fecha = 1;
             @endphp
             @foreach($fechas as $fecha)
                 <td style="border-color: #9d9d9d; border-bottom-width: {{$pos_fecha == 1 ? '3px' : ''}}; background-color: #e9ecef;
-                        border-right-width: {{$pos_fecha == 1 ? '3px' : ''}}; border-left-width: {{$pos_fecha == 1 ? '3px' : ''}}; display: none;"
+                        border-right-width: {{$pos_fecha == 1 ? '3px' : ''}}; border-left-width: {{$pos_fecha == 1 ? '3px' : ''}};"
                     class="text-center celdas_pc">
                     <button type="button" class="btn btn-xs btn-primary" title="Mandar a armar"
                             onclick="mostrar_despacho('{{$fecha->fecha_pedido}}')">
@@ -179,7 +183,7 @@
                     $pos_fecha++;
                 @endphp
             @endforeach
-            <td class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef" colspan="3">
+            <td class="text-center celdas_mobile" style="border-color: #9d9d9d; background-color: #e9ecef" colspan="3">
                 @if($stock_apertura->empaquetado == 0)
                     <button type="button" class="btn btn-xs btn-success" title="Guardar armados"
                             onclick="store_armar('{{$pos_comb-1}}')">
@@ -351,10 +355,12 @@
             });
         }
 
-        if ($(document).width() >= 1024) { // mostrar arbol
-            $('.celdas_pc').show();
+        if ($(document).width() >= 1024) { // mostrar
+            $('.celdas_pc').removeClass('hide');
+            $('#btn_ver_detalles').addClass('hide');
         } else {    // ocultar arbol
-            $('.celdas_pc').hide();
+            $('.celdas_pc').addClass('hide');
+            $('#btn_ver_detalles').removeClass('hide');
         }
     </script>
 
