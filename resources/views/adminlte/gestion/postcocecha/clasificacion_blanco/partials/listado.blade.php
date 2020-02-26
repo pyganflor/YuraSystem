@@ -49,7 +49,8 @@
                 $pos_fecha = 1;
             @endphp
             @foreach($fechas as $fecha)
-                <th class="text-center" style="background-color: #e9ecef; border-color: #9d9d9d; border-width: {{$pos_fecha == 1 ? '3px' : ''}}">
+                <th class="text-center celdas_pc"
+                    style="background-color: #e9ecef; border-color: #9d9d9d; border-width: {{$pos_fecha == 1 ? '3px' : ''}}; display: none;">
                     {{getDias(TP_ABREVIADO,FR_ARREGLO)[transformDiaPhp(date('w',strtotime($fecha->fecha_pedido)))]}}<br>
                     <small>{{$fecha->fecha_pedido}}</small>
                     <input type="hidden" id="fecha_{{$pos_fecha}}" value="{{$fecha->fecha_pedido}}">
@@ -63,6 +64,9 @@
             </th>
             <th class="text-center" style="background-color: #357CA5; border-color: #9d9d9d; color: white">
                 Armado
+            </th>
+            <th class="text-center" style="background-color: #357CA5; border-color: #9d9d9d; color: white">
+                Mesa
             </th>
         </tr>
         @php
@@ -115,8 +119,8 @@
                         $acumulado_pedido += $cant_pedido;
                         $saldo = $total_inventario - $acumulado_pedido;
                     @endphp
-                    <td class="text-center"
-                        style="border-color: #9d9d9d; border-right-width: {{$pos_fecha == 1 ? '3px' : ''}}; border-left-width: {{$pos_fecha == 1 ? '3px' : ''}};"
+                    <td class="text-center celdas_pc"
+                        style="border-color: #9d9d9d; border-right-width: {{$pos_fecha == 1 ? '3px' : ''}}; border-left-width: {{$pos_fecha == 1 ? '3px' : ''}}; display: none;"
                         onmouseover="$(this).css('background-color','#ADD8E6')" onmouseleave="$(this).css('background-color','')">
                         <span class="badge" title="Pedidos">{{number_format($cant_pedido,0)}}</span>
                         <input type="hidden" id="pedido_{{$pos_comb}}_{{$pos_fecha}}" value="{{$cant_pedido}}">
@@ -143,6 +147,9 @@
                            onchange="calcular_inventario_i('{{$pos_comb}}', '{{$pos_comb-1}}')"
                            class="text-center" value="0">
                 </td>
+                <td class="text-center" style=" border-color: #9d9d9d;" width="7%">
+                    <input type="number" style="width: 100%" id="mesa_{{$pos_comb}}" min="0" class="text-center" onkeypress="isNumer(event)">
+                </td>
             </tr>
             @php
                 $pos_comb++;
@@ -155,8 +162,8 @@
             @endphp
             @foreach($fechas as $fecha)
                 <td style="border-color: #9d9d9d; border-bottom-width: {{$pos_fecha == 1 ? '3px' : ''}}; background-color: #e9ecef;
-                        border-right-width: {{$pos_fecha == 1 ? '3px' : ''}}; border-left-width: {{$pos_fecha == 1 ? '3px' : ''}};"
-                    class="text-center">
+                        border-right-width: {{$pos_fecha == 1 ? '3px' : ''}}; border-left-width: {{$pos_fecha == 1 ? '3px' : ''}}; display: none;"
+                    class="text-center celdas_pc">
                     <button type="button" class="btn btn-xs btn-primary" title="Mandar a armar"
                             onclick="mostrar_despacho('{{$fecha->fecha_pedido}}')">
                         <i class="fa fa-fw fa-gift"></i>
@@ -172,7 +179,7 @@
                     $pos_fecha++;
                 @endphp
             @endforeach
-            <td class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef" colspan="2">
+            <td class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef" colspan="3">
                 @if($stock_apertura->empaquetado == 0)
                     <button type="button" class="btn btn-xs btn-success" title="Guardar armados"
                             onclick="store_armar('{{$pos_comb-1}}')">
@@ -248,6 +255,7 @@
                     inventario: parseFloat($('#inventario_frio_' + i).val()),
                     armar: $('#armar_' + i).val() != '' ? parseFloat($('#armar_' + i).val()) : 0,
                     clasificacion_ramo: $('#clasificacion_ramo_' + i).val(),
+                    mesa: $('#mesa_' + i).val(),
                     tallos_x_ramo: $('#tallos_x_ramo_' + i).val(),
                     longitud_ramo: $('#longitud_ramo_' + i).val(),
                     /*id_empaque_e: $('#id_empaque_e_' + i).val(),*/
@@ -341,6 +349,12 @@
             get_jquery('{{url('despachos/listar_resumen_pedidos')}}', datos, function (retorno) {
                 modal_view('modal_view_listar_resumen_pedidos', retorno, '<i class="fa fa-fw fa-list-alt"></i> Despachos', true, false, '{{isPC() ? '95%' : ''}}');
             });
+        }
+
+        if ($(document).width() >= 1024) { // mostrar arbol
+            $('.celdas_pc').show();
+        } else {    // ocultar arbol
+            $('.celdas_pc').hide();
         }
     </script>
 
