@@ -38,17 +38,17 @@
                     Listado de clasificaciones
                 </h3>
                 <div class="btn-group pull-right">
-                    <button class="btn btn-primary btn-sm" onclick="add_verde('')"
-                            onmouseover="$('#title_btn_add').html('Añadir')"
+                    <button class="btn btn-primary btn-sm" onclick="add_verde('')" onmouseover="$('#title_btn_add').html('Añadir')"
                             onmouseleave="$('#title_btn_add').html('')">
-                        <i class="fa fa-fw fa-plus" style="color: #e9ecef"></i> <em
-                                id="title_btn_add"></em>
+                        <i class="fa fa-fw fa-plus" style="color: #e9ecef"></i> <em id="title_btn_add"></em>
+                    </button>
+                    <button class="btn btn-default btn-sm" onclick="rendimiento_mesas()" onmouseover="$('#title_btn_mesas').html('Mesas')"
+                            onmouseleave="$('#title_btn_mesas').html('')">
+                        <i class="fa fa-fw fa-cubes"></i> <em id="title_btn_mesas"></em>
                     </button>
                     <button class="btn btn-success btn-sm" onclick="exportar_clasificaciones()"
-                            onmouseover="$('#title_btn_exportar').html('Exportar')"
-                            onmouseleave="$('#title_btn_exportar').html('')">
-                        <i class="fa fa-fw fa-file-excel-o" style="color: #e9ecef"></i> <em
-                                id="title_btn_exportar"></em>
+                            onmouseover="$('#title_btn_exportar').html('Exportar')" onmouseleave="$('#title_btn_exportar').html('')">
+                        <i class="fa fa-fw fa-file-excel-o" style="color: #e9ecef"></i> <em id="title_btn_exportar"></em>
                     </button>
                     <input type="checkbox" id="check_filtro_verde" style="display: none">
                 </div>

@@ -23,6 +23,7 @@ Route::get('clasificacion_verde/calcular_stock', 'ClasificacionVerdeController@c
 Route::post('clasificacion_verde/terminar', 'ClasificacionVerdeController@terminar');
 Route::post('clasificacion_verde/store_personal', 'ClasificacionVerdeController@store_personal');
 Route::get('clasificacion_verde/ver_rendimiento', 'ClasificacionVerdeController@ver_rendimiento');
+Route::get('clasificacion_verde/rendimiento_mesas', 'ClasificacionVerdeController@rendimiento_mesas');
 Route::post('clasificacion_verde/store_lote_re_from', 'ClasificacionVerdeController@store_lote_re_from');
 
 /* ------------------------------------- mobil ------------------------------------------------------ */

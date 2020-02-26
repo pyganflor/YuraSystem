@@ -1127,6 +1127,18 @@ class ClasificacionVerdeController extends Controller
         ]);
     }
 
+    public function rendimiento_mesas(Request $request)
+    {
+        $verde = ClasificacionVerde::All()
+            ->where('estado', 1)
+            ->where('fecha_ingreso', $request->fecha_verde)
+            ->first();
+
+        return view('adminlte.gestion.postcocecha.clasificacion_verde.partials.rendimiento_mesas', [
+            'verde' => $verde,
+        ]);
+    }
+
     /* ---------------------------------- MOBIL ---------------------------------------- */
     public function add_verde_mobil(Request $request)
     {

@@ -15,6 +15,18 @@
         });
     }
 
+    function rendimiento_mesas() {
+        $.LoadingOverlay('show');
+        datos = {
+            fecha_verde: $('#fecha_verde_search').val().trim(),
+        };
+        $.get('{{url('clasificacion_verde/rendimiento_mesas')}}', datos, function (retorno) {
+            modal_view('modal-view_rendimiento_mesas', retorno, '<i class="fa fa-fw fa-cubes"></i> Rendimiento por mesa', true, false, '99%')
+        }).always(function () {
+            $.LoadingOverlay('hide');
+        });
+    }
+
     $(document).on("click", "#pagination_listado_clasificaciones .pagination li a", function (e) {
         $.LoadingOverlay("show");
         //para que la pagina se cargen los elementos
