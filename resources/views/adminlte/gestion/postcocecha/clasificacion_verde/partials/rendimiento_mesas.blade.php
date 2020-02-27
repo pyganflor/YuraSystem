@@ -75,12 +75,17 @@
 @endif
 
 <script>
-    setInterval(function () {
+    setTimeout(function () {
+        /*$('.modal-backdrop').remove();
+        $('.modal').remove();
+        rendimiento_mesas();*/
+
+        beep_notificar();
         datos = {
             fecha_verde: $('#fecha_verde_search').val().trim(),
         };
         get_jquery('{{url('clasificacion_verde/rendimiento_mesas')}}', datos, function (retorno) {
             $('#div_modal-modal-view_rendimiento_mesas').html(retorno);
-        });
+        }, 'div_modal-modal-view_rendimiento_mesas');
     }, 60000)
 </script>
