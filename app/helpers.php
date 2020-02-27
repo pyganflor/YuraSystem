@@ -2557,10 +2557,10 @@ function getRendimientoVerdeByFechaMesa($fecha, $mesa)
         ->where('fecha_ingreso', 'like', $fecha . '%')
         ->where('mesa', $mesa)
         ->get()[0]->cant;
-    $getCantidadHorasTrabajo = getCantidadHorasTrabajoVerde($fecha);
+    $getCantidadHorasTrabajoVerde = getCantidadHorasTrabajoVerde($fecha);
 
-    if ($getCantidadHorasTrabajo > 0)
-        return $tallos / $getCantidadHorasTrabajo;
+    if ($getCantidadHorasTrabajoVerde > 0)
+        return $tallos / $getCantidadHorasTrabajoVerde;
     return 0;
 }
 
