@@ -2581,7 +2581,7 @@ function getCantidadHorasTrabajoVerde($fecha)
         ->where('fecha_ingreso', 'like', $fecha . '%')
         ->get();
     $LastFechaClasificacion = '';
-    if (count($getLastFechaClasificacion) > 0)
+    if ($getLastFechaClasificacion[0]->fecha != '')
         $LastFechaClasificacion = $getLastFechaClasificacion[0]->fecha . ':00';
 
     if ($LastFechaClasificacion != '' && $FechaHoraInicio != '') {
