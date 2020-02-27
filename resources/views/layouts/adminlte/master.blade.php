@@ -365,12 +365,11 @@
     }
 
     function modal_view(id_modal, mensaje, title, draggable, closable, size) {
-
         BootstrapDialog.show({
             title: title,
             closable: closable,
             draggable: draggable,
-            message: $('<div></div>').html(mensaje),
+            message: $('<div id="div_modal-' + id_modal + '"></div>').html(mensaje),
             onshown: function (modal) {
                 $('#' + modal.getId()).css('overflow-y', 'scroll');
                 $('#' + modal.getId() + '>div').css('width', size);
