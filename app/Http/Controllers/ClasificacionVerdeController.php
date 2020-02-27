@@ -1138,10 +1138,16 @@ class ClasificacionVerdeController extends Controller
             ->where('estado', 1)
             ->where('fecha_ingreso', 'like', $request->fecha_verde . '%')
             ->get()[0]->cant;
+        $query = DB::table('detalle_clasificacion_verde')
+            ->where('estado', 1)
+            ->where('fecha_ingreso', 'like', $request->fecha_verde . '%')
+            ->get();
 
         return view('adminlte.gestion.postcocecha.clasificacion_verde.partials.rendimiento_mesas', [
             'verde' => $verde,
             'tallos' => $tallos,
+            'query' => $query,
+            'getCantidadHorasTrabajoVerde' => getCantidadHorasTrabajoVerde($request->fecha_verde),
             'fecha_verde' => $request->fecha_verde,
         ]);
     }
