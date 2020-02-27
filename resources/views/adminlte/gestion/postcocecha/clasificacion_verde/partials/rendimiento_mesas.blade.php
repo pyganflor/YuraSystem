@@ -1,45 +1,30 @@
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-
-<script>
-    var time;
-    $(document).ready(function () {
-        append_clone();
-        pageScroll();
-    });
-
-    function append_clone() {
-        $("#contain li").each(function () {
-            $("#contain li").clone().appendTo("#contain");
-        });
-    }
-
-    function pageScroll() {
-        var objDiv = document.getElementById("contain");
-        objDiv.scrollTop = objDiv.scrollTop + 3;
-        time = setTimeout('pageScroll()', 100);
-        console.log(objDiv.scrollTop);
-        if (objDiv.scrollTop >= 6060)
-            objDiv.scrollTop = 0;
-    }
-</script>
-
-<style>
-    #contain {
-        height: 500px;
-        overflow-y: scroll;
-    }
-
-    #contain li {
-        border-top: 1px solid #ddd;
-        padding: 10px 0;
-        margin: 0px 0 0 0;
-    }
-</style>
-
-<ul id="contain">
-    <li>1</li>
-    <li>2</li>
-    <li>3</li>
-    <li>4</li>
-    <li>5</li>
-</ul>
+@if($tallos > 0)
+    <table style="width: 100%; font-size: 1.2em" class="table-bordered" id="table_rendimiento_mesa">
+        @for($i = 1; $i<=18; $i++)
+            <tr>
+                <th class="text-center" style="border-color: #9d9d9d; width: 33%">
+                    <div class="bg-teal disabled color-palette" style="height: 28px">
+                        <span style="margin-left: 10px">{{$i}}</span>
+                        <span class="badge">{{getRendimientoVerdeByFechaMesa($fecha_verde, $i)}}</span>
+                    </div>
+                </th>
+                <th class="text-center" style="border-color: #9d9d9d; width: 33%">
+                    <div class="bg-navy disabled color-palette" style="height: 28px">
+                        <span style="margin-left: 10px">{{$i+18}}</span>
+                        <span class="badge">{{getRendimientoVerdeByFechaMesa($fecha_verde, $i+18)}}</span>
+                    </div>
+                </th>
+                <th class="text-center" style="border-color: #9d9d9d">
+                    <div class="bg-orange disabled color-palette" style="height: 28px">
+                        <span style="margin-left: 10px">{{$i+36}}</span>
+                        <span class="badge">{{getRendimientoVerdeByFechaMesa($fecha_verde, $i+36)}}</span>
+                    </div>
+                </th>
+            </tr>
+        @endfor
+    </table>
+@else
+    <div class="alert alert-info text-center">
+        No se han encontrado clasificaciones para la fecha indicada
+    </div>
+@endif

@@ -228,9 +228,10 @@ class ClasificacionVerde extends Model
 
     function getRendimiento()
     {
-        if (count($this->detalles) > 0 && $this->personal > 0 && $this->getCantidadHorasTrabajo() > 0) {
+        $getCantidadHorasTrabajo = $this->getCantidadHorasTrabajo();
+        if (count($this->detalles) > 0 && $this->personal > 0 && $getCantidadHorasTrabajo > 0) {
             $r = $this->total_tallos_rendimiento() / $this->personal;
-            $r = $r / $this->getCantidadHorasTrabajo();
+            $r = $r / $getCantidadHorasTrabajo;
 
             return round($r, 2);
         } else {
@@ -238,11 +239,27 @@ class ClasificacionVerde extends Model
         }
     }
 
+    function getRendimientoByMesa($mesa)
+    {
+        $tallos = DB::table('detalle_clasificacion_verde')
+            ->select(DB::raw('sum(cantidad_ramos * tallos_x_ramos) as cant'))
+            ->where('estado', 1)
+            ->where('fecha_ingreso', 'like', $this->fecha_ingreso . '%')
+            ->where('mesa', $mesa)
+            ->get()[0]->cant;
+        $getCantidadHorasTrabajo = $this->getCantidadHorasTrabajo();
+
+        if ($getCantidadHorasTrabajo > 0)
+            return $tallos / $getCantidadHorasTrabajo;
+        return 0;
+    }
+
     function getRendimientoRamos()
     {
-        if (count($this->detalles) > 0 && $this->personal > 0 && $this->getCantidadHorasTrabajo() > 0) {
+        $getCantidadHorasTrabajo = $this->getCantidadHorasTrabajo();
+        if (count($this->detalles) > 0 && $this->personal > 0 && $getCantidadHorasTrabajo > 0) {
             $r = $this->total_ramos() / $this->personal;
-            $r = $r / $this->getCantidadHorasTrabajo();
+            $r = $r / $getCantidadHorasTrabajo;
 
             return round($r, 2);
         } else {
