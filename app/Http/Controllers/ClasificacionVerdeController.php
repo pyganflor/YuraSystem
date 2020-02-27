@@ -1133,9 +1133,16 @@ class ClasificacionVerdeController extends Controller
             ->where('estado', 1)
             ->where('fecha_ingreso', $request->fecha_verde)
             ->first();
+        $tallos = DB::table('detalle_clasificacion_verde')
+            ->select(DB::raw('sum(cantidad_ramos * tallos_x_ramos) as cant'))
+            ->where('estado', 1)
+            ->where('fecha_ingreso', 'like', $request->fecha_verde . '%')
+            ->get()[0]->cant;
 
         return view('adminlte.gestion.postcocecha.clasificacion_verde.partials.rendimiento_mesas', [
             'verde' => $verde,
+            'tallos' => $tallos,
+            'fecha_verde' => $request->fecha_verde,
         ]);
     }
 

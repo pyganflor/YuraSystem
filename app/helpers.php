@@ -1,75 +1,70 @@
 <?php
 
-use Illuminate\Support\Facades\Session;
-use yura\Modelos\Despacho;
-use yura\Modelos\ProductoYuraVenture;
-use yura\Modelos\Usuario;
-use yura\Modelos\Bitacora;
-use yura\Modelos\GrupoMenu;
-use yura\Modelos\Rol_Submenu;
-use yura\Modelos\Submenu;
+use Barryvdh\DomPDF\Facade as PDF;
+use CodeItNow\BarcodeBundle\Utils\BarcodeGenerator;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
-use yura\Modelos\Recepcion;
-use yura\Modelos\Pedido;
-use yura\Modelos\ConfiguracionEmpresa;
-use yura\Modelos\Documento;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Session;
+use Request as Resq;
+use yura\Mail\CorreoErrorEnvioComprobanteElectronico;
+use yura\Mail\CorreoFactura;
+use yura\Modelos\Aerolinea;
+use yura\Modelos\AgenciaCarga;
+use yura\Modelos\Bitacora;
+use yura\Modelos\Camion;
+use yura\Modelos\Ciclo;
 use yura\Modelos\ClasificacionRamo;
-use yura\Modelos\Variedad;
-use yura\Modelos\DetalleEmpaque;
-use yura\Modelos\ClasificacionVerde;
 use yura\Modelos\ClasificacionUnitaria;
-use yura\Modelos\StockApertura;
-use \yura\Modelos\DetalleFactura;
-use yura\Modelos\Semana;
-use yura\Modelos\LoteRE;
-use yura\Modelos\UnidadMedida;
+use yura\Modelos\ClasificacionVerde;
+use yura\Modelos\Cliente;
+use yura\Modelos\ClientePedidoEspecificacion;
+use yura\Modelos\CodigoDae;
+use yura\Modelos\Color;
+use yura\Modelos\Coloracion;
+use yura\Modelos\Comprobante;
+use yura\Modelos\Conductor;
+use yura\Modelos\ConfiguracionEmpresa;
 use yura\Modelos\Consumo;
-use yura\Modelos\Grosor;
+use yura\Modelos\Cosecha;
+use yura\Modelos\DesgloseEnvioFactura;
+use yura\Modelos\Despacho;
+use yura\Modelos\DetalleDespacho;
+use yura\Modelos\DetalleEmpaque;
+use yura\Modelos\DetalleEspecificacionEmpaque;
+use yura\Modelos\DetalleFactura;
+use yura\Modelos\DetalleGuiaRemision;
+use yura\Modelos\DetallePedido;
+use yura\Modelos\DetallePedidoDatoExportacion;
+use yura\Modelos\Distribucion;
+use yura\Modelos\Documento;
 use yura\Modelos\Empaque;
 use yura\Modelos\Envio;
 use yura\Modelos\Especificacion;
-use yura\Modelos\DetalleEspecificacionEmpaque;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Request as Resq;
-use yura\Modelos\Pais;
-use yura\Modelos\InventarioFrio;
-use CodeItNow\BarcodeBundle\Utils\BarcodeGenerator;
-use Carbon\Carbon;
-use yura\Modelos\Comprobante;
-use yura\Modelos\CodigoDae;
-use yura\Modelos\Modulo;
-use Barryvdh\DomPDF\Facade as PDF;
-use Illuminate\Support\Facades\Mail;
-use yura\Mail\CorreoFactura;
-use yura\Modelos\Cliente;
-use yura\Modelos\ClientePedidoEspecificacion;
-use yura\Modelos\AgenciaCarga;
-use yura\Modelos\DetallePedido;
-use yura\Modelos\Precio;
-use yura\Modelos\Color;
-use yura\Modelos\Marcacion;
-use yura\Modelos\DetallePedidoDatoExportacion;
-use yura\Modelos\DatosExportacion;
-use yura\Modelos\TipoImpuesto;
-use yura\Modelos\Aerolinea;
-use yura\Modelos\Coloracion;
 use yura\Modelos\EspecificacionEmpaque;
 use yura\Modelos\FacturaClienteTercero;
-use \yura\Modelos\Transportista;
-use \yura\Modelos\Camion;
-use \yura\Modelos\Conductor;
-use \yura\Modelos\DetalleDespacho;
-use \yura\Modelos\DesgloseEnvioFactura;
-use yura\Modelos\DetalleGuiaRemision;
-use yura\Mail\CorreoErrorEnvioComprobanteElectronico;
-use yura\Modelos\TipoIdentificacion;
-use yura\Modelos\Ciclo;
-use yura\Modelos\Cosecha;
-use yura\Modelos\Planta;
-use \yura\Modelos\Distribucion;
-use yura\Modelos\HistoricoVentas;
+use yura\Modelos\Grosor;
+use yura\Modelos\GrupoMenu;
 use yura\Modelos\Indicador;
-use yura\Modelos\IntervaloIndicador;
+use yura\Modelos\LoteRE;
+use yura\Modelos\Marcacion;
+use yura\Modelos\Modulo;
+use yura\Modelos\Pais;
+use yura\Modelos\Pedido;
+use yura\Modelos\Planta;
+use yura\Modelos\Precio;
+use yura\Modelos\ProductoYuraVenture;
+use yura\Modelos\Recepcion;
+use yura\Modelos\Rol_Submenu;
+use yura\Modelos\Semana;
+use yura\Modelos\StockApertura;
+use yura\Modelos\Submenu;
+use yura\Modelos\TipoIdentificacion;
+use yura\Modelos\TipoImpuesto;
+use yura\Modelos\Transportista;
+use yura\Modelos\UnidadMedida;
+use yura\Modelos\Usuario;
+use yura\Modelos\Variedad;
 
 
 /*
@@ -2552,4 +2547,46 @@ function getColorByIndicadorVariedad($nombre, $variedad)
         }
     }
     return '#fff';
+}
+
+function getRendimientoVerdeByFechaMesa($fecha, $mesa)
+{
+    $tallos = DB::table('detalle_clasificacion_verde')
+        ->select(DB::raw('sum(cantidad_ramos * tallos_x_ramos) as cant'))
+        ->where('estado', 1)
+        ->where('fecha_ingreso', 'like', $fecha . '%')
+        ->where('mesa', $mesa)
+        ->get()[0]->cant;
+    $getCantidadHorasTrabajo = getCantidadHorasTrabajoVerde($fecha);
+
+    if ($getCantidadHorasTrabajo > 0)
+        return $tallos / $getCantidadHorasTrabajo;
+    return 0;
+}
+
+function getCantidadHorasTrabajoVerde($fecha)
+{
+    $getFechaHoraInicio = DB::table('detalle_clasificacion_verde')
+        ->select(DB::raw('min(fecha_ingreso) as fecha'))
+        ->where('estado', 1)
+        ->where('fecha_ingreso', 'like', $fecha . '%')
+        ->get();
+    $FechaHoraInicio = '';
+    if (count($getFechaHoraInicio) > 0)
+        $FechaHoraInicio = $getFechaHoraInicio[0]->fecha . ':00';
+
+    $getLastFechaClasificacion = DB::table('detalle_clasificacion_verde')
+        ->select(DB::raw('max(fecha_ingreso) as fecha'))
+        ->where('estado', 1)
+        ->where('fecha_ingreso', 'like', $fecha . '%')
+        ->get();
+    $LastFechaClasificacion = '';
+    if (count($getLastFechaClasificacion) > 0)
+        $LastFechaClasificacion = $getLastFechaClasificacion[0]->fecha . ':00';
+
+    if ($LastFechaClasificacion != '' && $FechaHoraInicio != '') {
+        $r = difFechas($LastFechaClasificacion, $FechaHoraInicio);
+        return round($r->h + ($r->i / 60), 2);
+    }
+    return 0;
 }
