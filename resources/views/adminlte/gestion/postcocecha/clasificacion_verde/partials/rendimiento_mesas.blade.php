@@ -75,12 +75,12 @@
 @endif
 
 <script>
-    /*setInterval(function () {
+    setInterval(function () {
         datos = {
             fecha_verde: $('#fecha_verde_search').val().trim(),
         };
-        $.get('{{url('clasificacion_verde/rendimiento_mesas')}}', datos, function (retorno) {
+        get_jquery('{{url('clasificacion_verde/rendimiento_mesas')}}', datos, function (retorno) {
             $('#div_modal-modal-view_rendimiento_mesas').html(retorno);
         });
-    }, 60000)*/
+    }, 60000)
 </script>
