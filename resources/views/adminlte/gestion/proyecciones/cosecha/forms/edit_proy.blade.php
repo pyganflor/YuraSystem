@@ -8,6 +8,7 @@
     $tallos_x_planta_default = $proyeccion->tipo == 'P' ? $proyeccion->semana->tallos_planta_poda : $proyeccion->semana->tallos_planta_siembra;
     $desecho_default = $proyeccion->semana->desecho;
     $tallos_x_ramo_default = $proyeccion->tipo == 'P' ? $proyeccion->semana->tallos_ramo_poda : $proyeccion->semana->tallos_ramo_siembra;
+    $plantas_iniciales_default = $last_ciclo != '' ? $last_ciclo->plantas_iniciales : 0;
 @endphp
 <table class="table-bordered" style="width: 100%; border: 2px solid #9d9d9d;">
     <tr>
@@ -54,7 +55,7 @@
         </th>
         <td class="text-center" style="border-color: #9d9d9d">
             <input type="number" name="plantas_iniciales" id="plantas_iniciales" style="width: 100%" class="text-center"
-                   value="{{$proyeccion->plantas_iniciales}}">
+                   value="{{$proyeccion->plantas_iniciales > 0 ? $proyeccion->plantas_iniciales : $plantas_iniciales_default}}">
         </td>
     </tr>
     <tr>
