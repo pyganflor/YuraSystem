@@ -14,6 +14,7 @@ class ProyeccionUpdateSemanal implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    public $timeout = 3600;
     protected $semana_desde;
     protected $semana_hasta;
     protected $variedad;
