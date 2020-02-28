@@ -52,6 +52,7 @@
     <tr>
         <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
             Plantas Iniciales
+            <strong class="error" title="Dato correspondiente al ciclo anterior">{{$proyeccion->plantas_iniciales > 0 ? '' : '*'}}</strong>
         </th>
         <td class="text-center" style="border-color: #9d9d9d">
             <input type="number" name="plantas_iniciales" id="plantas_iniciales" style="width: 100%" class="text-center"
