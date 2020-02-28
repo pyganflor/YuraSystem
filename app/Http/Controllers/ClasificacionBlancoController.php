@@ -620,4 +620,29 @@ class ClasificacionBlancoController extends Controller
             'blanco' => $blanco
         ]);
     }
+
+    public function rendimiento_mesas(Request $request)
+    {
+        $blanco = ClasificacionBlanco::All()
+            ->where('estado', 1)
+            ->where('fecha_ingreso', $request->fecha_verde)
+            ->first();
+        $ramos = DB::table('inventario_frio')
+            ->select(DB::raw('sum(cantidad) as cant'))
+            ->where('estado', 1)
+            ->where('fecha_ingreso', 'like', $request->fecha_verde . '%')
+            ->get()[0]->cant;
+        $query = DB::table('inventario_frio')
+            ->where('estado', 1)
+            ->where('fecha_ingreso', 'like', $request->fecha_verde . '%')
+            ->get();
+
+        return view('adminlte.gestion.postcocecha.clasificacion_blanco.partials.rendimiento_mesas', [
+            'blanco' => $blanco,
+            'ramos' => $ramos,
+            'query' => $query,
+            'getCantidadHorasTrabajoBlanco' => getCantidadHorasTrabajoBlanco($request->fecha_verde),
+            'fecha_blanco' => $request->fecha_blanco,
+        ]);
+    }
 }

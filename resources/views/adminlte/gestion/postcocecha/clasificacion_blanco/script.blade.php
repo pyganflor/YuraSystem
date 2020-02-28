@@ -34,6 +34,18 @@
         });
     }
 
+    function rendimiento_mesas() {
+        $.LoadingOverlay('show');
+        datos = {
+            fecha_blanco: $('#fecha_blanco').val().trim(),
+        };
+        $.get('{{url('clasificacion_blanco/rendimiento_mesas')}}', datos, function (retorno) {
+            modal_view('modal-view_rendimiento_mesas', retorno, '<i class="fa fa-fw fa-cubes"></i> Rendimiento por mesa', true, false, '99%')
+        }).always(function () {
+            $.LoadingOverlay('hide');
+        });
+    }
+
     if ($(document).width() >= 1024) { // mostrar arbol
         $('.label_blanco').html('Trabajar con la Clasificación en Blanco correspondiente a la fecha:');
     } else {    // ocultar arbol
