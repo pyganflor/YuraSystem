@@ -2590,3 +2590,30 @@ function getCantidadHorasTrabajoVerde($fecha)
     }
     return 0;
 }
+
+function getCantidadHorasTrabajoBlanco($fecha)
+{
+    $getFechaHoraInicio = DB::table('inventario_frio')
+        ->select(DB::raw('min(fecha_registro) as fecha'))
+        ->where('estado', 1)
+        ->where('fecha_ingreso', 'like', $fecha . '%')
+        ->get();
+    $FechaHoraInicio = '';
+    if (count($getFechaHoraInicio) > 0)
+        $FechaHoraInicio = $getFechaHoraInicio[0]->fecha;
+
+    $getLastFechaClasificacion = DB::table('inventario_frio')
+        ->select(DB::raw('max(fecha_registro) as fecha'))
+        ->where('estado', 1)
+        ->where('fecha_ingreso', 'like', $fecha . '%')
+        ->get();
+    $LastFechaClasificacion = '';
+    if ($getLastFechaClasificacion[0]->fecha != '')
+        $LastFechaClasificacion = $getLastFechaClasificacion[0]->fecha;
+
+    if ($LastFechaClasificacion != '' && $FechaHoraInicio != '') {
+        $r = difFechas($LastFechaClasificacion, $FechaHoraInicio);
+        return round($r->h + ($r->i / 60), 2);
+    }
+    return 0;
+}

@@ -1,22 +1,22 @@
-@if($tallos > 0)
+@if($ramos > 0)
     @php
-        $rend_verde = $verde != '' ? $verde->getRendimiento() : 0;
+        $rend_blanco = $blanco != '' ? $blanco->getRendimiento() : 0;
     @endphp
     <table style="width: 100%; font-size: 1.5em; color: black" class="table-bordered" id="table_rendimiento_mesa">
         @for($i = 1; $i<=18; $i++)
             <tr style="height: 35px">
                 @php
                     $rend = 0;
-                    $tallos = 0;
+                    $ramos = 0;
                     foreach($query as $item){
                         if ($item->mesa == $i)
-                            $tallos += $item->cantidad_ramos * $item->tallos_x_ramos;
+                            $ramos += $item->cantidad;
                     }
 
-                    if ($getCantidadHorasTrabajoVerde > 0)
-                        $rend =  $tallos / $getCantidadHorasTrabajoVerde;
+                    if ($getCantidadHorasTrabajoBlanco > 0)
+                        $rend =  $ramos / $getCantidadHorasTrabajoBlanco;
 
-                    $color = $rend >= $rend_verde ? 'green' : 'orange';
+                    $color = $rend >= $rend_blanco ? 'green' : 'orange';
                 @endphp
                 <th class="text-right bg-{{$color}}" style="border-color: #001F3F; width: 16%; vertical-align: middle">
                     <span style="margin-right: 5px; color: black">{{$i}}</span>
@@ -28,16 +28,16 @@
 
                 @php
                     $rend = 0;
-                    $tallos = 0;
+                    $ramos = 0;
                     foreach($query as $item){
                         if ($item->mesa == $i+18)
-                            $tallos += $item->cantidad_ramos * $item->tallos_x_ramos;
+                            $ramos += $item->cantidad;
                     }
 
-                    if ($getCantidadHorasTrabajoVerde > 0)
-                        $rend =  $tallos / $getCantidadHorasTrabajoVerde;
+                    if ($getCantidadHorasTrabajoBlanco > 0)
+                        $rend =  $ramos / $getCantidadHorasTrabajoBlanco;
 
-                    $color = $rend >= $rend_verde ? 'green' : 'orange';
+                    $color = $rend >= $rend_blanco ? 'green' : 'orange';
                 @endphp
                 <th class="text-right bg-{{$color}}" style="border-color: #001F3F; width: 16%">
                     <span style="margin-right: 5px; color: black">{{$i+18}}</span>
@@ -48,16 +48,16 @@
 
                 @php
                     $rend = 0;
-                    $tallos = 0;
+                    $ramos = 0;
                     foreach($query as $item){
                         if ($item->mesa == $i+36)
-                            $tallos += $item->cantidad_ramos * $item->tallos_x_ramos;
+                            $ramos += $item->cantidad;
                     }
 
-                    if ($getCantidadHorasTrabajoVerde > 0)
-                        $rend =  $tallos / $getCantidadHorasTrabajoVerde;
+                    if ($getCantidadHorasTrabajoBlanco > 0)
+                        $rend =  $ramos / $getCantidadHorasTrabajoBlanco;
 
-                    $color = $rend >= $rend_verde ? 'green' : 'orange';
+                    $color = $rend >= $rend_blanco ? 'green' : 'orange';
                 @endphp
                 <th class="text-right bg-{{$color}}" style="border-color: #001F3F; width: 16%">
                     <span style="margin-right: 5px; color: black">{{$i+36}}</span>
@@ -81,10 +81,10 @@
         rendimiento_mesas();*/
 
         datos = {
-            fecha_verde: $('#fecha_verde_search').val().trim(),
+            fecha_blanco: $('#fecha_blanco').val().trim(),
         };
-        get_jquery('{{url('clasificacion_verde/rendimiento_mesas')}}', datos, function (retorno) {
+        get_jquery('{{url('clasificacion_blanco/rendimiento_mesas')}}', datos, function (retorno) {
             $('#div_modal-modal-view_rendimiento_mesas').html(retorno);
         }, 'div_modal-modal-view_rendimiento_mesas');
-    }, 60000)
+    }, 5000)
 </script>

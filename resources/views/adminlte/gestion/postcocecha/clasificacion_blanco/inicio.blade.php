@@ -36,10 +36,13 @@
                 <h3 class="box-title">
                     Empaquetado
 
+                    <button class="btn btn-default btn-sm" onclick="rendimiento_mesas()" onmouseover="$('#title_btn_mesas').html('Mesas')"
+                            onmouseleave="$('#title_btn_mesas').html('')">
+                        <i class="fa fa-fw fa-cubes"></i> <em id="title_btn_mesas"></em>
+                    </button>
                 </h3>
                 <div class="form-group pull-right" style="margin: 0">
-                    <label class="psull-right label_blanco">
-                    </label>
+                    <label class="psull-right label_blanco"></label>
 
                     <input type="date" id="fecha_blanco" name="fecha_blanco" onchange="listar_clasificacion_blanco($('#variedad_search').val())"
                            value="{{isset($blanco) ? $blanco->fecha_ingreso : date('Y-m-d')}}" class="text-center"
