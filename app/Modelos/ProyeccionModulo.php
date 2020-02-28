@@ -100,7 +100,7 @@ class ProyeccionModulo extends Model
         $last_ciclo = Ciclo::All()
             ->where('estado', 1)
             ->where('id_modulo', $this->id_modulo)
-            ->sortBy('fecha_inicio', 'desc')
+            ->sortByDesc('fecha_inicio')
             ->first();
 
         return $last_ciclo;
