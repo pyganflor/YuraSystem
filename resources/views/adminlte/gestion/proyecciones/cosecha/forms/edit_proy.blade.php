@@ -1,5 +1,5 @@
 <legend style="font-size: 1em" class="text-center">
-    <i class="fa fa-fw fa-info-circle"></i> Proyección para el módulo <strong>{{$modulo->nombre}}</strong> en la semana
+    <i class="fa fa-fw fa-info-circle"></i> Programación para el módulo <strong>{{$modulo->nombre}}</strong> en la semana
     <strong>{{$proyeccion->semana->codigo}}</strong>,
     variedad: <strong>{{$variedad->nombre}}</strong>
 </legend>
