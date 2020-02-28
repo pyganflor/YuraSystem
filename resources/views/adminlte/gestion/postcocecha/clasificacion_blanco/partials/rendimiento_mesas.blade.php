@@ -86,5 +86,5 @@
         get_jquery('{{url('clasificacion_blanco/rendimiento_mesas')}}', datos, function (retorno) {
             $('#div_modal-modal-view_rendimiento_mesas').html(retorno);
         }, 'div_modal-modal-view_rendimiento_mesas');
-    }, 5000)
+    }, 60000)
 </script>
