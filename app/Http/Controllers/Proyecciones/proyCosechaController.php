@@ -162,11 +162,13 @@ class proyCosechaController extends Controller
             if ($request->tabla == 'P') {
                 $semana = Semana::All()->where('codigo', $request->semana)->where('id_variedad', $request->variedad)->first();
                 $variedad = getVariedad($request->variedad);
+                $proyeccion = ProyeccionModulo::find($request->modelo);
                 return view('adminlte.gestion.proyecciones.cosecha.forms.edit_proy', [
                     'modulo' => getModuloById($request->modulo),
                     'semana' => $semana,
                     'variedad' => $variedad,
-                    'proyeccion' => ProyeccionModulo::find($request->modelo),
+                    'proyeccion' => $proyeccion,
+                    'last_ciclo' => $proyeccion->last_ciclo(),
                 ]);
             } else {
                 $semana = Semana::All()->where('codigo', $request->semana)->where('id_variedad', $request->variedad)->first();
