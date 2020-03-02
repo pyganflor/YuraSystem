@@ -7,7 +7,7 @@
         <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
             {{$modulo->nombre}}
         </button>
-        <ul class="dropdown-menu">
+        <ul class="dropdown-menu" style="margin-left: 40px">
             <li>
                 <a href="javascript:void(0)" onclick="actualizar_proyecciones('{{$modulo->id_modulo}}')">
                     Actualizar

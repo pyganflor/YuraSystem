@@ -146,7 +146,7 @@
                         <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
                             {{$mod['modulo']->nombre}}
                         </button>
-                        <ul class="dropdown-menu" style="z-index: 12">
+                        <ul class="dropdown-menu" style="z-index: 12; margin-left: 40px">
                             <li>
                                 <a href="javascript:void(0)" onclick="actualizar_proyecciones('{{$mod['modulo']->id_modulo}}')">
                                     Actualizar
