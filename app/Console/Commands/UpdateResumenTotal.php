@@ -83,6 +83,12 @@ class UpdateResumenTotal extends Command
                     $model->valor = 0;
                 }
 
+                /* ----------------------------- venta ------------------------- */
+                $valor = DB::table('proyeccion_venta_semanal_real')
+                    ->select(DB::raw('sum(valor) as cant'))
+                    ->where('codigo_semana', $sem)->get()[0]->cant;
+                $model->valor = $valor != '' ? $valor : 0;
+
                 /* ----------------------------- campo ------------------------- */
                 $area = Area::All()->where('estado', 1)->where('nombre', 'CAMPO')->first();
                 $campo_mp = DB::table('costos_semana as c')
