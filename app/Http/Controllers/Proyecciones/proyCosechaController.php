@@ -718,6 +718,7 @@ class proyCosechaController extends Controller
                 /* ======================== ACTUALIZAR LAS TABLAS CICLO y PROYECCION_MODULO ====================== */
                 ProyeccionUpdateCiclo::dispatch($request->id_ciclo, $request->semana_poda_siembra, $request->curva, $request->poda_siembra, $request->plantas_iniciales, $request->plantas_muertas, $request->desecho, $request->conteo)
                     ->onQueue('update_ciclo')->onConnection('sync');
+                $plantas_actuales = $model->plantas_actuales();
 
                 if ($cant_semanas_old != $cant_semanas_new) {   // hay que mover
                     if ($cant_semanas_old < $cant_semanas_new) {    // hay que mover para alante
@@ -748,8 +749,8 @@ class proyCosechaController extends Controller
                                 $proy->tabla = 'C';
                                 $proy->modelo = $model->id_ciclo;
 
-                                $proy->plantas_iniciales = 55;
-                                $proy->plantas_actuales = $model->plantas_actuales();
+                                $proy->plantas_iniciales = $request->plantas_iniciales;
+                                $proy->plantas_actuales = $plantas_actuales;
                                 $proy->tallos_planta = $request->conteo;
                                 $proy->tallos_ramo = 0;
                                 $proy->curva = $request->curva;
@@ -767,7 +768,7 @@ class proyCosechaController extends Controller
                                 }
                                 if ($pos_proy + 1 >= $request->semana_poda_siembra) {  // semana de cosecha **
                                     $proy->tipo = 'T';
-                                    $total = $model->plantas_actuales() * $request->conteo;
+                                    $total = $plantas_actuales * $request->conteo;
                                     $total = $total * ((100 - $request->desecho) / 100);
                                     $proy->proyectados = round($total * (explode('-', $request->curva)[$pos_cosecha] / 100), 2);
                                     $pos_cosecha++;
@@ -874,8 +875,8 @@ class proyCosechaController extends Controller
                         $last_semana = '';
                         foreach ($proyecciones as $pos_proy => $proy) {
                             if ($pos_proy + 1 <= $cant_semanas_new - 1) {
-                                $proy->plantas_iniciales = 55;
-                                $proy->plantas_actuales = $model->plantas_actuales();
+                                $proy->plantas_iniciales = $request->plantas_iniciales;
+                                $proy->plantas_actuales = $plantas_actuales;
                                 $proy->tallos_planta = $request->conteo;
                                 $proy->curva = $request->curva;
                                 $proy->poda_siembra = $request->poda_siembra;
@@ -886,7 +887,7 @@ class proyCosechaController extends Controller
                                     if ($pos_proy + 1 == $request->semana_poda_siembra) {   // nueva primera semana de cosecha
                                         $proy->tipo = 'T';
                                     }
-                                    $total = $model->plantas_actuales() * $request->conteo;
+                                    $total = $plantas_actuales * $request->conteo;
                                     $total = $total * ((100 - $request->desecho) / 100);
                                     $proy->proyectados = round($total * (explode('-', $request->curva)[$pos_cosecha] / 100), 2);
                                     $pos_cosecha++;
@@ -1033,8 +1034,8 @@ class proyCosechaController extends Controller
                         $cant_quitar = $cant_curva_old - $cant_curva_new;
                         $pos_cosecha = 0;
                         foreach ($proyecciones as $pos_proy => $proy) {
-                            $proy->plantas_iniciales = 55;
-                            $proy->plantas_actuales = $model->plantas_actuales();
+                            $proy->plantas_iniciales = $request->plantas_iniciales;
+                            $proy->plantas_actuales = $plantas_actuales;
                             $proy->tallos_planta = $request->conteo;
                             $proy->curva = $request->curva;
                             $proy->poda_siembra = $request->poda_siembra;
@@ -1045,7 +1046,7 @@ class proyCosechaController extends Controller
                                 $proy->tipo = 'I';
                                 $proy->proyectados = 0;
                             } else {    // recalcular % de curva
-                                $total = $model->plantas_actuales() * $request->conteo;
+                                $total = $plantas_actuales * $request->conteo;
                                 $total = $total * ((100 - $request->desecho) / 100);
                                 $proy->proyectados = round($total * (explode('-', $request->curva)[$pos_cosecha] / 100), 2);
                                 $pos_cosecha++;
@@ -1063,8 +1064,8 @@ class proyCosechaController extends Controller
                         $proyecciones = $add_proyecciones->merge($proyecciones);
                         $pos_cosecha = 0;
                         foreach ($proyecciones as $pos_proy => $proy) {
-                            $proy->plantas_iniciales = 55;
-                            $proy->plantas_actuales = $model->plantas_actuales();
+                            $proy->plantas_iniciales = $request->plantas_iniciales;
+                            $proy->plantas_actuales = $plantas_actuales;
                             $proy->tallos_planta = $request->conteo;
                             $proy->curva = $request->curva;
                             $proy->poda_siembra = $request->poda_siembra;
@@ -1072,7 +1073,7 @@ class proyCosechaController extends Controller
                             $proy->desecho = $request->desecho;
                             $proy->tipo = 'T';
 
-                            $total = $model->plantas_actuales() * $request->conteo;
+                            $total = $plantas_actuales * $request->conteo;
                             $total = $total * ((100 - $request->desecho) / 100);
                             $proy->proyectados = round($total * (explode('-', $request->curva)[$pos_cosecha] / 100), 2);
                             $pos_cosecha++;
@@ -1143,8 +1144,8 @@ class proyCosechaController extends Controller
                             }
                             $proy->poda_siembra = $poda_siembra;
                         } else if ($proy->tabla == 'C') {
-                            $proy->plantas_iniciales = 55;
-                            $proy->plantas_actuales = $model->plantas_actuales();
+                            $proy->plantas_iniciales = $request->plantas_iniciales;
+                            $proy->plantas_actuales = $plantas_actuales;
                             $proy->tallos_planta = $request->conteo;
                             $proy->curva = $request->curva;
                             $proy->poda_siembra = $request->poda_siembra;
@@ -1152,7 +1153,7 @@ class proyCosechaController extends Controller
                             $proy->desecho = $request->desecho;
 
                             if ($proy->tipo == 'T') {
-                                $total = $model->plantas_actuales() * $request->conteo;
+                                $total = $plantas_actuales * $request->conteo;
                                 $total = $total * ((100 - $request->desecho) / 100);
                                 $proy->proyectados = round($total * (explode('-', $request->curva)[$pos_cosecha] / 100), 2);
                                 $pos_cosecha++;
