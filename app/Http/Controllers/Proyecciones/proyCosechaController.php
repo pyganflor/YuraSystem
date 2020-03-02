@@ -874,7 +874,7 @@ class proyCosechaController extends Controller
                         $last_semana = '';
                         foreach ($proyecciones as $pos_proy => $proy) {
                             if ($pos_proy + 1 <= $cant_semanas_new - 1) {
-                                $proy->plantas_iniciales = $model->plantas_iniciales;
+                                $proy->plantas_iniciales = 55;
                                 $proy->plantas_actuales = $model->plantas_actuales();
                                 $proy->tallos_planta = $request->conteo;
                                 $proy->curva = $request->curva;
@@ -1033,7 +1033,8 @@ class proyCosechaController extends Controller
                         $cant_quitar = $cant_curva_old - $cant_curva_new;
                         $pos_cosecha = 0;
                         foreach ($proyecciones as $pos_proy => $proy) {
-                            $proy->plantas_iniciales = $model->plantas_actuales();
+                            $proy->plantas_iniciales = 55;
+                            $proy->plantas_actuales = $model->plantas_actuales();
                             $proy->tallos_planta = $request->conteo;
                             $proy->curva = $request->curva;
                             $proy->poda_siembra = $request->poda_siembra;
@@ -1062,7 +1063,8 @@ class proyCosechaController extends Controller
                         $proyecciones = $add_proyecciones->merge($proyecciones);
                         $pos_cosecha = 0;
                         foreach ($proyecciones as $pos_proy => $proy) {
-                            $proy->plantas_iniciales = $model->plantas_actuales();
+                            $proy->plantas_iniciales = 55;
+                            $proy->plantas_actuales = $model->plantas_actuales();
                             $proy->tallos_planta = $request->conteo;
                             $proy->curva = $request->curva;
                             $proy->poda_siembra = $request->poda_siembra;
@@ -1141,7 +1143,8 @@ class proyCosechaController extends Controller
                             }
                             $proy->poda_siembra = $poda_siembra;
                         } else if ($proy->tabla == 'C') {
-                            $proy->plantas_iniciales = $model->plantas_actuales();
+                            $proy->plantas_iniciales = 55;
+                            $proy->plantas_actuales = $model->plantas_actuales();
                             $proy->tallos_planta = $request->conteo;
                             $proy->curva = $request->curva;
                             $proy->poda_siembra = $request->poda_siembra;
