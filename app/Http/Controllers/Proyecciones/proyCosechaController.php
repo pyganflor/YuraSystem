@@ -370,6 +370,7 @@ class proyCosechaController extends Controller
             'semana' => 'required',
             'tipo' => 'required',
             'curva' => 'required',
+            'area' => 'required',
             'semana_poda_siembra' => 'required',
             'plantas_iniciales' => 'required',
             'desecho' => 'required',
@@ -384,6 +385,7 @@ class proyCosechaController extends Controller
             'tallos_ramo.required' => 'Los tallos por ramo son obligatorios',
             'semana_poda_siembra.required' => 'Las semanas son obligatorias',
             'curva.required' => 'La curva es obligatoria',
+            'area.required' => 'El área es obligatoria',
             'semana.required' => 'La semana es obligatoria',
         ]);
         if (!$valida->fails()) {
@@ -465,6 +467,7 @@ class proyCosechaController extends Controller
                                 $proy->plantas_actuales = null;
                                 $proy->desecho = null;
                                 $proy->curva = null;
+                                $proy->area = null;
                                 $proy->semana_poda_siembra = null;
                                 $proy->tallos_planta = null;
                                 $proy->poda_siembra = null;
@@ -480,6 +483,7 @@ class proyCosechaController extends Controller
                                     $proy->plantas_actuales = null;
                                     $proy->desecho = null;
                                     $proy->curva = null;
+                                    $proy->area = null;
                                     $proy->semana_poda_siembra = null;
                                     $proy->tallos_planta = null;
                                     $proy->poda_siembra = null;
@@ -497,7 +501,7 @@ class proyCosechaController extends Controller
                                     $proy->poda_siembra = $poda_siembra;
                                     $proy->semana_poda_siembra = $request->semana_poda_siembra;
                                     $proy->desecho = $request->desecho;
-                                    $proy->area = $model->modulo->area;
+                                    $proy->area = $request->area;
                                     $proy->tipo = 'I';
                                     $proy->info = ($pos_proy + 1) . 'º';
                                     $proy->proyectados = 0;
@@ -561,6 +565,7 @@ class proyCosechaController extends Controller
                                             $proy->plantas_actuales = null;
                                             $proy->desecho = null;
                                             $proy->curva = null;
+                                            $proy->area = null;
                                             $proy->semana_poda_siembra = null;
                                             $proy->tallos_planta = null;
                                             $proy->poda_siembra = null;
@@ -578,6 +583,7 @@ class proyCosechaController extends Controller
                                         $proy->plantas_actuales = null;
                                         $proy->desecho = null;
                                         $proy->curva = null;
+                                        $proy->area = null;
                                         $proy->semana_poda_siembra = null;
                                         $proy->tallos_planta = null;
                                         $proy->poda_siembra = null;
@@ -605,6 +611,7 @@ class proyCosechaController extends Controller
                                     $proy->plantas_actuales = null;
                                     $proy->desecho = null;
                                     $proy->curva = null;
+                                    $proy->area = null;
                                     $proy->semana_poda_siembra = null;
                                     $proy->tallos_planta = null;
                                     $proy->poda_siembra = null;
