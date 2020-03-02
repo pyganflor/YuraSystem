@@ -19,6 +19,7 @@ class ImportarCostos implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    public $timeout = 3600;
     protected $activeSheetData;
     protected $concepto_importar;
     protected $criterio_importar;
