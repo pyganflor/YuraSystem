@@ -748,7 +748,8 @@ class proyCosechaController extends Controller
                                 $proy->tabla = 'C';
                                 $proy->modelo = $model->id_ciclo;
 
-                                $proy->plantas_iniciales = $model->plantas_actuales();
+                                $proy->plantas_iniciales = $model->plantas_iniciales;
+                                $proy->plantas_actuales = $model->plantas_actuales();
                                 $proy->tallos_planta = $request->conteo;
                                 $proy->tallos_ramo = 0;
                                 $proy->curva = $request->curva;
@@ -873,7 +874,8 @@ class proyCosechaController extends Controller
                         $last_semana = '';
                         foreach ($proyecciones as $pos_proy => $proy) {
                             if ($pos_proy + 1 <= $cant_semanas_new - 1) {
-                                $proy->plantas_iniciales = $model->plantas_actuales();
+                                $proy->plantas_iniciales = $model->plantas_iniciales;
+                                $proy->plantas_actuales = $model->plantas_actuales();
                                 $proy->tallos_planta = $request->conteo;
                                 $proy->curva = $request->curva;
                                 $proy->poda_siembra = $request->poda_siembra;
