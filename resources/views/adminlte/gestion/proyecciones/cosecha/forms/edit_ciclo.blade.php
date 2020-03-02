@@ -53,7 +53,7 @@
             </th>
             <td class="text-center" style="border-color: #9d9d9d">
                 <input type="number" name="plantas_muertas" id="plantas_muertas" style="width: 100%" class="text-center"
-                       value="{{$ciclo->plantas_muertas}}">
+                       value="{{$ciclo->plantas_muertas != '' ? $ciclo->plantas_muertas : 0}}">
             </td>
         </tr>
         <tr>
