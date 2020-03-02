@@ -666,7 +666,7 @@ class CostosController extends Controller
             $activeSheetData = $document->getActiveSheet()->toArray(null, true, true, true);
 
             ImportarCostos::dispatch($activeSheetData, $request->concepto_importar, $request->criterio_importar, $request->sobreescribir_importar == 'S' ? true : false)
-                ->onQueue('job')->onConnection('sync');
+                ->onQueue('job');
         } else {
             $errores = '';
             foreach ($valida->errors()->all() as $mi_error) {
