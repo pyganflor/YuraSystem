@@ -748,7 +748,7 @@ class proyCosechaController extends Controller
                                 $proy->tabla = 'C';
                                 $proy->modelo = $model->id_ciclo;
 
-                                $proy->plantas_iniciales = $model->plantas_iniciales;
+                                $proy->plantas_iniciales = 55;
                                 $proy->plantas_actuales = $model->plantas_actuales();
                                 $proy->tallos_planta = $request->conteo;
                                 $proy->tallos_ramo = 0;
