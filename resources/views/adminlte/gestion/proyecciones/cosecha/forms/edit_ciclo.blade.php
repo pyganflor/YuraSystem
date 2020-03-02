@@ -80,7 +80,7 @@
         <tr>
             <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
                 Área
-                <strong class="error" title="Dato correspondiente al modulo">{{$ciclo->area > 0 ? '' : '*'}}</strong>
+                <strong class="error" title="Dato correspondiente al módulo">{{$ciclo->area > 0 ? '' : '*'}}</strong>
             </th>
             <td class="text-center" style="border-color: #9d9d9d">
                 <input type="number" name="area" id="area" style="width: 100%" class="text-center"
