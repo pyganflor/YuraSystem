@@ -18,6 +18,7 @@ class ProyeccionUpdateCiclo implements ShouldQueue
     protected $curva;
     protected $poda_siembra;
     protected $plantas_iniciales;
+    protected $plantas_muertas;
     protected $desecho;
     protected $conteo;
 
@@ -26,13 +27,14 @@ class ProyeccionUpdateCiclo implements ShouldQueue
      *
      * @return void
      */
-    public function __construct($id_ciclo, $semana_poda_siembra, $curva, $poda_siembra, $plantas_iniciales, $desecho, $conteo)
+    public function __construct($id_ciclo, $semana_poda_siembra, $curva, $poda_siembra, $plantas_iniciales, $plantas_muertas, $desecho, $conteo)
     {
         $this->id_ciclo = $id_ciclo;
         $this->semana_poda_siembra = $semana_poda_siembra;
         $this->curva = $curva;
         $this->poda_siembra = $poda_siembra;
         $this->plantas_iniciales = $plantas_iniciales;
+        $this->plantas_muertas = $plantas_muertas;
         $this->desecho = $desecho;
         $this->conteo = $conteo;
     }
@@ -50,6 +52,7 @@ class ProyeccionUpdateCiclo implements ShouldQueue
             'curva' => $this->curva,
             'poda_siembra' => $this->poda_siembra,
             'plantas_iniciales' => $this->plantas_iniciales,
+            'plantas_muertas' => $this->plantas_muertas,
             'desecho' => $this->desecho,
             'conteo' => $this->conteo,
         ]);

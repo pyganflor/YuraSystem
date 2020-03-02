@@ -686,6 +686,7 @@ class proyCosechaController extends Controller
             'curva' => 'required',
             'semana_poda_siembra' => 'required',
             'plantas_iniciales' => 'required',
+            'plantas_muertas' => 'required',
             'desecho' => 'required',
             'conteo' => 'required',
         ], [
@@ -693,13 +694,13 @@ class proyCosechaController extends Controller
             'poda_siembra.required' => 'La poda siembra es obligatoria',
             'desecho.required' => 'El desecho es obligatorio',
             'plantas_iniciales.required' => 'Las plantas iniciales son obligatorias',
+            'plantas_muertas.required' => 'Las plantas muertas son obligatorias',
             'conteo.required' => 'Los tallos por planta son obligatorios',
             'semana_poda_siembra.required' => 'Las semanas son obligatorias',
             'curva.required' => 'La curva es obligatoria',
         ]);
         $success = false;
         if (!$valida->fails()) {
-
             $model = Ciclo::find($request->id_ciclo);
             $semana_fin = getLastSemanaByVariedad($model->id_variedad);
             $last_semana_new = '';
@@ -715,7 +716,7 @@ class proyCosechaController extends Controller
                 $cant_curva_new = count(explode('-', $request->curva));   // cantidad de semanas que durará la cosecha new
 
                 /* ======================== ACTUALIZAR LAS TABLAS CICLO y PROYECCION_MODULO ====================== */
-                ProyeccionUpdateCiclo::dispatch($request->id_ciclo, $request->semana_poda_siembra, $request->curva, $request->poda_siembra, $request->plantas_iniciales, $request->desecho, $request->conteo)
+                ProyeccionUpdateCiclo::dispatch($request->id_ciclo, $request->semana_poda_siembra, $request->curva, $request->poda_siembra, $request->plantas_iniciales, $request->plantas_muertas, $request->desecho, $request->conteo)
                     ->onQueue('update_ciclo')->onConnection('sync');
 
                 if ($cant_semanas_old != $cant_semanas_new) {   // hay que mover
