@@ -99,6 +99,7 @@
                 $title .= '<em>Desecho: '.($val->desecho).'%</em><br>';
             }
         }
+        $title .= '<em>Área: '.($val->area).'</em><br>';
 
         /* =============== INICIALIZAR TOTALES ===================== */
         /*$tallos_proyectados[$pos_val] = 0;
