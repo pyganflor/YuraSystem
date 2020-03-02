@@ -8,6 +8,7 @@
     @php
         $tallos_x_planta_default = $ciclo->poda_siembra == 'P' ? $ciclo->semana()->tallos_planta_poda : $ciclo->semana()->tallos_planta_siembra;
         $desecho_default = $ciclo->semana()->desecho;
+        $area_default = $ciclo->area;
     @endphp
     <table class="table-bordered" style="width: 100%; border: 2px solid #9d9d9d;">
         <tr>
@@ -76,6 +77,16 @@
                        value="{{$ciclo->conteo > 0 ? $ciclo->conteo : $tallos_x_planta_default}}">
             </td>
         </tr>
+        <tr>
+            <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
+                Área
+                <strong class="error" title="Dato correspondiente al modulo">{{$ciclo->area > 0 ? '' : '*'}}</strong>
+            </th>
+            <td class="text-center" style="border-color: #9d9d9d">
+                <input type="number" name="area" id="area" style="width: 100%" class="text-center"
+                       value="{{$ciclo->area > 0 ? $ciclo->area : $area_default}}">
+            </td>
+        </tr>
     </table>
 
     <input type="hidden" id="id_ciclo" value="{{$ciclo->id_ciclo}}">
@@ -99,6 +110,7 @@
                 plantas_muertas: $('#plantas_muertas').val(),
                 desecho: $('#desecho').val(),
                 conteo: $('#conteo').val(),
+                area: $('#area').val(),
                 filtro_semana_hasta: $('#filtro_predeterminado_hasta').val(),
             };
             mod = $('#modulo-edit_ciclo').val();

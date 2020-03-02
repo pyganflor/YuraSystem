@@ -689,8 +689,10 @@ class proyCosechaController extends Controller
             'plantas_muertas' => 'required',
             'desecho' => 'required',
             'conteo' => 'required',
+            'area' => 'required',
         ], [
             'id_ciclo.required' => 'El ciclo es obligatorio',
+            'area.required' => 'El área es obligatorio',
             'poda_siembra.required' => 'La poda siembra es obligatoria',
             'desecho.required' => 'El desecho es obligatorio',
             'plantas_iniciales.required' => 'Las plantas iniciales son obligatorias',
@@ -716,7 +718,7 @@ class proyCosechaController extends Controller
                 $cant_curva_new = count(explode('-', $request->curva));   // cantidad de semanas que durará la cosecha new
 
                 /* ======================== ACTUALIZAR LAS TABLAS CICLO y PROYECCION_MODULO ====================== */
-                ProyeccionUpdateCiclo::dispatch($request->id_ciclo, $request->semana_poda_siembra, $request->curva, $request->poda_siembra, $request->plantas_iniciales, $request->plantas_muertas, $request->desecho, $request->conteo)
+                ProyeccionUpdateCiclo::dispatch($request->id_ciclo, $request->semana_poda_siembra, $request->curva, $request->poda_siembra, $request->plantas_iniciales, $request->plantas_muertas, $request->desecho, $request->conteo, $request->area)
                     ->onQueue('update_ciclo')->onConnection('sync');
                 $plantas_actuales = $model->plantas_actuales();
 
@@ -821,6 +823,7 @@ class proyCosechaController extends Controller
                                         $proy->plantas_actuales = null;
                                         $proy->desecho = null;
                                         $proy->curva = null;
+                                        $proy->area = null;
                                         $proy->semana_poda_siembra = null;
                                         $proy->tallos_planta = null;
                                         $proy->poda_siembra = null;
@@ -879,6 +882,7 @@ class proyCosechaController extends Controller
                                 $proy->plantas_actuales = $plantas_actuales;
                                 $proy->tallos_planta = $request->conteo;
                                 $proy->curva = $request->curva;
+                                $proy->area = $request->area;
                                 $proy->poda_siembra = $request->poda_siembra;
                                 $proy->semana_poda_siembra = $request->semana_poda_siembra;
                                 $proy->desecho = $request->desecho;
@@ -901,6 +905,7 @@ class proyCosechaController extends Controller
                                 $proy->plantas_actuales = null;
                                 $proy->desecho = null;
                                 $proy->curva = null;
+                                $proy->area = null;
                                 $proy->semana_poda_siembra = null;
                                 $proy->tallos_planta = null;
                                 $proy->poda_siembra = null;
@@ -977,6 +982,7 @@ class proyCosechaController extends Controller
                                     $proy->plantas_actuales = null;
                                     $proy->desecho = null;
                                     $proy->curva = null;
+                                    $proy->area = null;
                                     $proy->semana_poda_siembra = null;
                                     $proy->tallos_planta = null;
                                     $proy->poda_siembra = null;
@@ -1038,6 +1044,7 @@ class proyCosechaController extends Controller
                             $proy->plantas_actuales = $plantas_actuales;
                             $proy->tallos_planta = $request->conteo;
                             $proy->curva = $request->curva;
+                            $proy->area = $request->area;
                             $proy->poda_siembra = $request->poda_siembra;
                             $proy->semana_poda_siembra = $request->semana_poda_siembra;
                             $proy->desecho = $request->desecho;
@@ -1068,6 +1075,7 @@ class proyCosechaController extends Controller
                             $proy->plantas_actuales = $plantas_actuales;
                             $proy->tallos_planta = $request->conteo;
                             $proy->curva = $request->curva;
+                            $proy->area = $request->area;
                             $proy->poda_siembra = $request->poda_siembra;
                             $proy->semana_poda_siembra = $request->semana_poda_siembra;
                             $proy->desecho = $request->desecho;
@@ -1148,6 +1156,7 @@ class proyCosechaController extends Controller
                             $proy->plantas_actuales = $plantas_actuales;
                             $proy->tallos_planta = $request->conteo;
                             $proy->curva = $request->curva;
+                            $proy->area = $request->area;
                             $proy->poda_siembra = $request->poda_siembra;
                             $proy->semana_poda_siembra = $request->semana_poda_siembra;
                             $proy->desecho = $request->desecho;
