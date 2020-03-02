@@ -49,6 +49,15 @@
         </tr>
         <tr>
             <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
+                Plantas Muertas
+            </th>
+            <td class="text-center" style="border-color: #9d9d9d">
+                <input type="number" name="plantas_muertas" id="plantas_muertas" style="width: 100%" class="text-center"
+                       value="{{$ciclo->plantas_muertas}}">
+            </td>
+        </tr>
+        <tr>
+            <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
                 % Desecho
                 <strong class="error" title="Dato correspondiente a la semana de inicio">{{$ciclo->desecho > 0 ? '' : '*'}}</strong>
             </th>
@@ -87,6 +96,7 @@
                 curva: $('#curva').val(),
                 semana_poda_siembra: $('#semana_poda_siembra').val(),
                 plantas_iniciales: $('#plantas_iniciales').val(),
+                plantas_muertas: $('#plantas_muertas').val(),
                 desecho: $('#desecho').val(),
                 conteo: $('#conteo').val(),
                 filtro_semana_hasta: $('#filtro_predeterminado_hasta').val(),
