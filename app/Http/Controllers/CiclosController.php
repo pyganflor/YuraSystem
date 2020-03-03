@@ -612,4 +612,155 @@ class CiclosController extends Controller
             'sem_actual' => $sem_actual,
         ]);
     }
+
+    public function store_nuevo_ciclo(Request $request)
+    {
+        dd($request->all());
+        $valida = Validator::make($request->all(), [
+            'modulo' => 'required',
+            'variedad' => 'required',
+            'area' => 'required',
+            'fecha_inicio' => 'required',
+            'poda_siembra' => 'required',
+        ], [
+            'modulo.required' => 'El módulo es obligatorio',
+            'area.required' => 'El área es obligatorio',
+            'variedad.required' => 'La variedad es obligatoria',
+            'fecha_inicio.required' => 'La fecha de inicio de cilo es obligatoria',
+            'poda_siembra.required' => 'El campo poda/siembra es obligatorio',
+        ]);
+        if (!$valida->fails()) {
+            if ($request->fecha_fin != '' && $request->fecha_inicio > $request->fecha_fin) {
+                return [
+                    'success' => false,
+                    'mensaje' => '<div class="alert alert-warning text-center">' .
+                        '<p>La fecha de inicio debe ser menor que la fecha fin</p>'
+                        . '</div>',
+                ];
+            }
+
+            $ciclo = new Ciclo();
+            $ciclo->id_modulo = $request->modulo;
+            $ciclo->id_variedad = $request->variedad;
+            $ciclo->area = $request->area;
+            $ciclo->fecha_inicio = $request->fecha_inicio;
+            $ciclo->poda_siembra = $request->poda_siembra;
+            if ($request->fecha_cosecha != '')
+                $ciclo->fecha_cosecha = opDiasFecha('+', $request->fecha_cosecha, $request->fecha_inicio);
+            $ciclo->fecha_fin = $request->fecha_fin;
+
+            $semana = Semana::All()
+                ->where('estado', 1)
+                ->where('id_variedad', $ciclo->id_variedad)
+                ->where('fecha_inicial', '<=', $ciclo->fecha_inicio)
+                ->where('fecha_final', '>=', $ciclo->fecha_inicio)
+                ->first();
+            $ciclo->desecho = $semana->desecho != '' ? $semana->desecho : 0;
+            $ciclo->curva = $semana->curva;
+            if ($ciclo->poda_siembra == 'P') {
+                $ciclo->semana_poda_siembra = $semana->semana_poda;
+                $ciclo->conteo = $semana->tallos_planta_poda;
+            } else {
+                $ciclo->semana_poda_siembra = $semana->semana_siembra;
+                $ciclo->conteo = $semana->tallos_planta_siembra;
+            }
+
+            $last_siembra = Ciclo::All()->where('estado', 1)->where('id_modulo', $request->modulo)
+                ->where('poda_siembra', 'S')->sortBy('fecha_inicio')->last();
+
+            if ($last_siembra != '')
+                $ciclo->plantas_iniciales = $last_siembra->plantas_iniciales;
+
+            if ($ciclo->save()) {
+                $ciclo = Ciclo::All()->last();
+                $success = true;
+                $msg = '<div class="alert alert-success text-center">' .
+                    '<p> Se ha guardado un nuevo ciclo satisfactoriamente</p>'
+                    . '</div>';
+                bitacora('ciclo', $ciclo->id_ciclo, 'I', 'Inserción satisfactoria de un nuevo ciclo');
+
+                /* ===================== QUITAR PROYECCIONES =================== */
+                $proyecciones = ProyeccionModulo::All()->where('estado', 1)
+                    ->where('id_variedad', $request->variedad)
+                    ->where('id_modulo', $request->modulo)
+                    ->where('id_semana', $semana->id_semana);
+                foreach ($proyecciones as $proy) {
+                    $proy->estado = 0;
+
+                    $proy->save();
+                    bitacora('proyeccion_modulo', $proy->id_proyeccion_modulo, 'U', 'Actualizacion satisfactoria del estado');
+                }
+
+                /* ===================== CREAR SIGUIENTE PROYECCION ==================== */
+                $sum_semana = intval($ciclo->semana_poda_siembra) + intval(count(explode('-', $ciclo->curva)));
+                $codigo = $semana->codigo;
+                $i = 1;
+                $next = 1;
+                while ($i < $sum_semana) {
+                    $new_codigo = $codigo + $next;
+                    $query = Semana::All()
+                        ->where('estado', '=', 1)
+                        ->where('codigo', '=', $new_codigo)
+                        ->where('id_variedad', '=', $ciclo->id_variedad)
+                        ->first();
+
+                    if ($query != '') {
+                        $i++;
+                    }
+                    $next++;
+                }
+
+                $proy = new ProyeccionModulo();
+                $proy->id_modulo = $ciclo->id_modulo;
+                $proy->id_semana = $query->id_semana;
+                $proy->id_variedad = $ciclo->id_variedad;
+                $proy->tipo = 'P';
+                $proy->curva = $ciclo->curva;
+                $proy->semana_poda_siembra = $ciclo->semana_poda_siembra;
+                $proy->poda_siembra = $ciclo->modulo->getPodaSiembraByCiclo($ciclo->id_ciclo) + 1;
+                $proy->plantas_iniciales = $ciclo->plantas_iniciales != '' ? $ciclo->plantas_iniciales : 0;
+                $proy->desecho = $ciclo->desecho;
+                $proy->tallos_planta = $ciclo->conteo != '' ? $ciclo->conteo : 0;
+                $proy->tallos_ramo = $query->tallos_ramo_poda != '' ? $query->tallos_ramo_poda : 0;
+                $proy->fecha_inicio = $query->fecha_final;
+
+                $proy->save();
+
+                /* ======================== ACTUALIZAR LA TABLA PROYECCION_MODULO_SEMANA ====================== */
+                $semana_fin = DB::table('semana')
+                    ->select(DB::raw('max(codigo) as max'))
+                    ->where('estado', '=', 1)
+                    ->where('id_variedad', '=', $request->variedad)
+                    ->get()[0]->max;
+
+                ProyeccionUpdateSemanal::dispatch($semana->codigo, $semana_fin, $request->variedad, $request->modulo, 0)
+                    ->onQueue('proy_cosecha');
+            } else {
+                $success = false;
+                $msg = '<div class="alert alert-warning text-center">' .
+                    '<p> Ha ocurrido un problema al guardar la información al sistema</p>'
+                    . '</div>';
+            }
+        } else {
+            $success = false;
+            $errores = '';
+            foreach ($valida->errors()->all() as $mi_error) {
+                if ($errores == '') {
+                    $errores = '<li>' . $mi_error . '</li>';
+                } else {
+                    $errores .= '<li>' . $mi_error . '</li>';
+                }
+            }
+            $msg = '<div class="alert alert-danger">' .
+                '<p class="text-center">¡Por favor corrija los siguientes errores!</p>' .
+                '<ul>' .
+                $errores .
+                '</ul>' .
+                '</div>';
+        }
+        return [
+            'mensaje' => $msg,
+            'success' => $success
+        ];
+    }
 }
