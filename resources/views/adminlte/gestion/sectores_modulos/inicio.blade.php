@@ -34,6 +34,11 @@
         <div class="box box-info">
             <div class="box-header with-border">
                 <h3 class="box-title">Administración de los sectores y módulos</h3>
+                @if(count($nuevos_ciclos) > 0)
+                    <button class="btn btn-xs btn-default pull-right" onclick="nuevos_ciclos()">
+                        <i class="fa fa-fw fa-exclamation text-red"></i> Nuevos ciclos
+                    </button>
+                @endif
             </div>
             <div class="box-body" id="div_content_sectores_modulos">
                 <div class="box-group" id="accordion">
