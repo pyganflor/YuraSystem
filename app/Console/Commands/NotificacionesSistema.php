@@ -172,4 +172,33 @@ class NotificacionesSistema extends Command
             }
         }
     }
+
+    public function ciclos_programados($not)
+    {
+        $sem_actual = getSemanaByDate(date('Y-m-d'));
+        $query = DB::table('proyeccion_modulo')
+            ->select('*')
+            ->where('estado', '=', 1)
+            ->where('fecha_inicio', '>=', $sem_actual->fecha_inicial)
+            ->where('fecha_inicio', '<=', $sem_actual->fecha_final)
+            ->get();
+
+        $models = UserNotification::All()
+            ->where('estado', 1)
+            ->where('id_notificacion', $not->id_notificacion);
+        foreach ($models as $m) {   // desactivar las anteriores
+            $m->delete();
+        }
+        if (count($query) > 0) { // crear las nuevas notificaciones
+            foreach ($not->usuarios as $not_user) {
+                $model = new UserNotification();
+                $model->id_notificacion = $not->id_notificacion;
+                $model->id_usuario = $not_user->id_usuario;
+                $model->titulo = 'Nuevos ciclos';
+                $model->texto = 'Hay ' . count($query) . ' nuevos ciclos programados para esta semana';
+                $model->url = 'sectores_modulos';
+                $model->save();
+            }
+        }
+    }
 }
