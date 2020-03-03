@@ -605,7 +605,6 @@ class CiclosController extends Controller
         $query = ProyeccionModulo::where('estado', 1)
             ->where('fecha_inicio', '>=', $sem_actual->fecha_inicial)
             ->where('fecha_inicio', '<=', $sem_actual->fecha_final)
-            ->sortBy('id_variedad')
             ->get();
 
         return view('adminlte.gestion.sectores_modulos.partials.nuevos_ciclos', [
