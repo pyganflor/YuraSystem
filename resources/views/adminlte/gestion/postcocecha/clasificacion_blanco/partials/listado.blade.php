@@ -160,7 +160,7 @@
             @endphp
         @endforeach
         <tr>
-            <td style="border-color: #9d9d9d" colspan="4" class="celdas_mobile"></td>
+            <td style="border-color: #9d9d9d" colspan="4"></td>
             @php
                 $pos_fecha = 1;
             @endphp
