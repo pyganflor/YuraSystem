@@ -15,10 +15,19 @@ class SectorController extends Controller
 {
     public function inicio(Request $request)
     {
+        $sem_actual = getSemanaByDate(date('Y-m-d'));
+        $query = DB::table('proyeccion_modulo')
+            ->where('estado', 1)
+            ->where('fecha_inicio', '>=', $sem_actual->fecha_inicial)
+            ->where('fecha_inicio', '<=', $sem_actual->fecha_final)
+            ->get();
+
         return view('adminlte.gestion.sectores_modulos.inicio', [
             'url' => $request->getRequestUri(),
             'submenu' => Submenu::Where('url', '=', substr($request->getRequestUri(), 1))->get()[0],
-            'sectores' => Sector::All()
+            'sectores' => Sector::All(),
+            'nuevos_ciclos' => $query,
+            'sem_actual' => $sem_actual,
         ]);
     }
 

@@ -598,4 +598,19 @@ class CiclosController extends Controller
             'success' => $success
         ];
     }
+
+    public function nuevos_ciclos(Request $request)
+    {
+        $sem_actual = getSemanaByDate(date('Y-m-d'));
+        $query = DB::table('proyeccion_modulo')
+            ->where('estado', 1)
+            ->where('fecha_inicio', '>=', $sem_actual->fecha_inicial)
+            ->where('fecha_inicio', '<=', $sem_actual->fecha_final)
+            ->get();
+
+        return view('adminlte.gestion.sectores_modulos.partials.nuevos_ciclos', [
+            'nuevos_ciclos' => $query,
+            'sem_actual' => $sem_actual,
+        ]);
+    }
 }

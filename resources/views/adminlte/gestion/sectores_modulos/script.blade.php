@@ -455,4 +455,10 @@
             modal_view('modal-view_ver_cosechas', retorno, '<i class="fa fa-fw fa-le"></i> Cosechas', true, false, '{{isPC() ? '95%' : ''}}');
         });
     }
+
+    function nuevos_ciclos() {
+        get_jquery('{{url('sectores_modulos/nuevos_ciclos')}}', {}, function (retorno) {
+            modal_view('modal-view_nuevos_ciclos', retorno, '<i class="fa fa-fw fa-life-ring"></i> Nuevos ciclos para esta semana', true, false, '{{isPC() ? '95%' : ''}}')
+        });
+    }
 </script>
