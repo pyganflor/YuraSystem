@@ -602,8 +602,7 @@ class CiclosController extends Controller
     public function nuevos_ciclos(Request $request)
     {
         $sem_actual = getSemanaByDate(date('Y-m-d'));
-        $query = DB::table('proyeccion_modulo')
-            ->where('estado', 1)
+        $query = ProyeccionModulo::where('estado', 1)
             ->where('fecha_inicio', '>=', $sem_actual->fecha_inicial)
             ->where('fecha_inicio', '<=', $sem_actual->fecha_final)
             ->get();
