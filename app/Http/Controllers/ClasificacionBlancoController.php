@@ -282,6 +282,7 @@ class ClasificacionBlancoController extends Controller
 
     public function store_armar(Request $request)
     {
+        dd($request->all());
         $success = true;
         $msg = '';
         $armados = 0;
