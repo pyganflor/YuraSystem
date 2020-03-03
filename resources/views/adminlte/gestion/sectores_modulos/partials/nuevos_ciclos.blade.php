@@ -74,7 +74,8 @@
                     <input type="number" class="text-center" id="desecho_{{$pos}}" value="{{$item->desecho}}" style="width: 100%">
                 </td>
                 <td class="text-center" style="border-color: #9d9d9d">
-                    <button class="btn btn-xs btn-primary" onclick="store_nuevo_ciclo('{{$pos}}')" id="btn_nuevo_ciclo_{{$pos}}">
+                    <button class="btn btn-xs btn-primary" onclick="store_nuevo_ciclo('{{$pos}}')" id="btn_nuevo_ciclo_{{$pos}}"
+                            title="Crear ciclo">
                         <i class="fa fa-fw fa-check"></i>
                     </button>
                 </td>
@@ -87,6 +88,18 @@
     function store_nuevo_ciclo(pos) {
         datos = {
             _token: '{{csrf_token()}}',
+            id_modulo: $('#id_modulo_' + pos).val(),
+            id_variedad: $('#id_variedad_' + pos).val(),
+            id_proyeccion_modulo: $('#id_proyeccion_modulo_' + pos).val(),
+            id_semana: $('#id_semana_' + pos).val(),
+            fecha_inicio: $('#fecha_inicio_' + pos).val(),
+            poda_siembra: $('#poda_siembra_' + pos).val(),
+            area: $('#area_' + pos).val(),
+            plantas_iniciales: $('#plantas_iniciales_' + pos).val(),
+            curva: $('#curva_' + pos).val(),
+            conteo: $('#conteo_' + pos).val(),
+            semana_poda_siembra: $('#semana_poda_siembra_' + pos).val(),
+            desecho: $('#desecho_' + pos).val(),
         };
         post_jquery('{{url('sectores_modulos/store_nuevo_ciclo')}}', datos, function () {
             $('#tr_nuevo_ciclo_' + pos).remove();
