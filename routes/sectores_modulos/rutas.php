@@ -33,3 +33,4 @@ Route::post('sectores_modulos/update_ciclo', 'CiclosController@update_ciclo');
 Route::post('sectores_modulos/eliminar_ciclo', 'CiclosController@eliminar_ciclo');
 Route::get('sectores_modulos/ver_cosechas', 'CiclosController@ver_cosechas');
 Route::get('sectores_modulos/nuevos_ciclos', 'CiclosController@nuevos_ciclos');
+Route::post('sectores_modulos/store_nuevo_ciclo', 'CiclosController@store_nuevo_ciclo');
