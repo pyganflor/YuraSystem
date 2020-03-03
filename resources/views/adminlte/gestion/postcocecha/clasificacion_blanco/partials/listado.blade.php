@@ -45,10 +45,10 @@
     <table class="table-bordered table-striped table-responsive" width="100%" id="table_clasificacion_blanco"
            style="border: 1px solid #9d9d9d; font-size: 0.8em; margin-top: 10px; margin-bottom: 0">
         <tr>
-            <th style="border-color: #9d9d9d" width="5%" class="text-center celdas_mobile">Calibre</th>
-            <th style="border-color: #9d9d9d" width="10%" class="text-center celdas_mobile">Presentación</th>
-            <th style="border-color: #9d9d9d" width="5%" class="text-center celdas_mobile">Tallos</th>
-            <th style="border-color: #9d9d9d" width="5%" class="text-center celdas_mobile">Longitud</th>
+            <th style="border-color: #9d9d9d" width="5%" class="text-center">Calibre</th>
+            <th style="border-color: #9d9d9d" width="10%" class="text-center">Presentación</th>
+            <th style="border-color: #9d9d9d" width="5%" class="text-center">Tallos</th>
+            <th style="border-color: #9d9d9d" width="5%" class="text-center">Longitud</th>
             @php
                 $pos_fecha = 1;
             @endphp
@@ -90,7 +90,7 @@
                     getEmpaque($item->id_empaque_p)->nombre.' '.$tallos_x_ramo.''.$longitud_ramo;
             @endphp
             <tr>
-                <th class="text-center celdas_mobile" style="background-color: #e9ecef; border-color: #9d9d9d" id="th_pedidos_{{$pos_comb}}">
+                <th class="text-center" style="background-color: #e9ecef; border-color: #9d9d9d" id="th_pedidos_{{$pos_comb}}">
                     {{getCalibreRamoById($item->id_clasificacion_ramo)->nombre.' '.getCalibreRamoById($item->id_clasificacion_ramo)->unidad_medida->siglas}}
                     <input type="hidden" id="texto_{{$pos_comb}}" value="{{$texto}}">
                     <input type="hidden" id="clasificacion_ramo_{{$pos_comb}}" value="{{$item->id_clasificacion_ramo}}">
@@ -100,13 +100,13 @@
                     <input type="hidden" id="id_empaque_p_{{$pos_comb}}" value="{{$item->id_empaque_p}}">
                     <input type="hidden" id="id_unidad_medida_{{$pos_comb}}" value="{{$item->id_unidad_medida}}">
                 </th>
-                <th class="text-center celdas_mobile" style="background-color: #e9ecef; border-color: #9d9d9d">
+                <th class="text-center" style="background-color: #e9ecef; border-color: #9d9d9d">
                     {{getEmpaque($item->id_empaque_p)->nombre}}
                 </th>
-                <th class="text-center celdas_mobile" style="background-color: #e9ecef; border-color: #9d9d9d">
+                <th class="text-center" style="background-color: #e9ecef; border-color: #9d9d9d">
                     {{$item->tallos_x_ramos}}
                 </th>
-                <th class="text-center celdas_mobile" style="background-color: #e9ecef; border-color: #9d9d9d">
+                <th class="text-center" style="background-color: #e9ecef; border-color: #9d9d9d">
                     {{$longitud_ramo}}
                 </th>
                 @php
