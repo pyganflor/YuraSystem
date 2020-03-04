@@ -44,7 +44,7 @@
     </tr>
     <tr>
         <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white" colspan="2">
-            <button type="button" class="btn btn-xs btn-block btn-primary">
+            <button type="button" class="btn btn-xs btn-block btn-primary" onclick="store_nuevo_ciclo()">
                 <i class="fa fa-fw fa-check"></i> Crear nuevo ciclo
             </button>
         </th>
@@ -155,6 +155,26 @@
         post_jquery('{{url('proy_cosecha/update_proyeccion')}}', datos, function () {
             get_row_byModulo(mod);
             cerrar_modals();
+        });
+    }
+
+    function store_nuevo_ciclo() {
+        datos = {
+            _token: '{{csrf_token()}}',
+            id_modulo: $('#modulo-edit_proy').val(),
+            id_proyeccion_modulo: $('#id_proyeccion_modulo').val(),
+            fecha_inicio: $('#fecha_inicio_').val(),
+            fecha_fin: $('#fecha_fin').val(),
+            poda_siembra: $('#tipo').val(),
+            area: $('#area').val(),
+            plantas_iniciales: $('#plantas_iniciales').val(),
+            curva: $('#curva').val(),
+            conteo: $('#tallos_planta').val(),
+            semana_poda_siembra: $('#semana_poda_siembra').val(),
+            desecho: $('#desecho').val(),
+        };
+        post_jquery('{{url('proy_cosecha/store_nuevo_ciclo')}}', datos, function () {
+            get_row_byModulo(datos['id_modulo']);
         });
     }
 </script>

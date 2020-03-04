@@ -26,3 +26,4 @@ Route::post('proy_cosecha/mover_cosecha', 'Proyecciones\proyCosechaController@mo
 Route::post('proy_cosecha/mover_inicio_proy', 'Proyecciones\proyCosechaController@mover_inicio_proy');
 Route::get('proy_cosecha/get_row_byModulo', 'Proyecciones\proyCosechaController@get_row_byModulo');
 Route::get('proy_cosecha/new_proyeccion', 'Proyecciones\proyCosechaController@new_proyeccion');
+Route::post('proy_cosecha/store_nuevo_ciclo', 'Proyecciones\proyCosechaController@store_nuevo_ciclo');
