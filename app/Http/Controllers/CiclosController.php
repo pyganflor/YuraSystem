@@ -615,61 +615,46 @@ class CiclosController extends Controller
 
     public function store_nuevo_ciclo(Request $request)
     {
-        dd($request->all());
         $valida = Validator::make($request->all(), [
-            'modulo' => 'required',
-            'variedad' => 'required',
+            'id_modulo' => 'required',
+            'id_variedad' => 'required',
+            'id_semana' => 'required',
+            'id_proyeccion_modulo' => 'required',
             'area' => 'required',
             'fecha_inicio' => 'required',
             'poda_siembra' => 'required',
+            'plantas_iniciales' => 'required',
+            'curva' => 'required',
+            'desecho' => 'required',
+            'semana_poda_siembra' => 'required',
         ], [
-            'modulo.required' => 'El módulo es obligatorio',
-            'area.required' => 'El área es obligatorio',
-            'variedad.required' => 'La variedad es obligatoria',
+            'id_modulo.required' => 'El módulo es obligatorio',
+            'area.required' => 'El área es obligatoria',
+            'desecho.required' => 'El desecho es obligatorio',
+            'id_variedad.required' => 'La variedad es obligatoria',
+            'id_semana.required' => 'La semana es obligatoria',
+            'id_proyeccion_modulo.required' => 'La proyección es obligatoria',
+            'curva.required' => 'La curva es obligatoria',
+            'semana_poda_siembra.required' => 'La semana de inicio de cosecha es obligatoria',
+            'plantas_iniciales.required' => 'Las plantas iniciales son obligatorias',
             'fecha_inicio.required' => 'La fecha de inicio de cilo es obligatoria',
             'poda_siembra.required' => 'El campo poda/siembra es obligatorio',
         ]);
         if (!$valida->fails()) {
-            if ($request->fecha_fin != '' && $request->fecha_inicio > $request->fecha_fin) {
-                return [
-                    'success' => false,
-                    'mensaje' => '<div class="alert alert-warning text-center">' .
-                        '<p>La fecha de inicio debe ser menor que la fecha fin</p>'
-                        . '</div>',
-                ];
-            }
-
             $ciclo = new Ciclo();
-            $ciclo->id_modulo = $request->modulo;
-            $ciclo->id_variedad = $request->variedad;
+            $ciclo->id_modulo = $request->id_modulo;
+            $ciclo->id_variedad = $request->id_variedad;
             $ciclo->area = $request->area;
             $ciclo->fecha_inicio = $request->fecha_inicio;
+            $ciclo->fecha_fin = $request->fecha_inicio;
             $ciclo->poda_siembra = $request->poda_siembra;
-            if ($request->fecha_cosecha != '')
-                $ciclo->fecha_cosecha = opDiasFecha('+', $request->fecha_cosecha, $request->fecha_inicio);
-            $ciclo->fecha_fin = $request->fecha_fin;
+            $ciclo->desecho = $request->desecho;
+            $ciclo->curva = $request->curva;
+            $ciclo->semana_poda_siembra = $request->semana_poda_siembra;
+            $ciclo->conteo = $request->conteo;
+            $ciclo->plantas_iniciales = $request->plantas_iniciales;
 
-            $semana = Semana::All()
-                ->where('estado', 1)
-                ->where('id_variedad', $ciclo->id_variedad)
-                ->where('fecha_inicial', '<=', $ciclo->fecha_inicio)
-                ->where('fecha_final', '>=', $ciclo->fecha_inicio)
-                ->first();
-            $ciclo->desecho = $semana->desecho != '' ? $semana->desecho : 0;
-            $ciclo->curva = $semana->curva;
-            if ($ciclo->poda_siembra == 'P') {
-                $ciclo->semana_poda_siembra = $semana->semana_poda;
-                $ciclo->conteo = $semana->tallos_planta_poda;
-            } else {
-                $ciclo->semana_poda_siembra = $semana->semana_siembra;
-                $ciclo->conteo = $semana->tallos_planta_siembra;
-            }
-
-            $last_siembra = Ciclo::All()->where('estado', 1)->where('id_modulo', $request->modulo)
-                ->where('poda_siembra', 'S')->sortBy('fecha_inicio')->last();
-
-            if ($last_siembra != '')
-                $ciclo->plantas_iniciales = $last_siembra->plantas_iniciales;
+            $semana = Semana::find($request->id_semana);
 
             if ($ciclo->save()) {
                 $ciclo = Ciclo::All()->last();
@@ -680,16 +665,10 @@ class CiclosController extends Controller
                 bitacora('ciclo', $ciclo->id_ciclo, 'I', 'Inserción satisfactoria de un nuevo ciclo');
 
                 /* ===================== QUITAR PROYECCIONES =================== */
-                $proyecciones = ProyeccionModulo::All()->where('estado', 1)
-                    ->where('id_variedad', $request->variedad)
-                    ->where('id_modulo', $request->modulo)
-                    ->where('id_semana', $semana->id_semana);
-                foreach ($proyecciones as $proy) {
-                    $proy->estado = 0;
-
-                    $proy->save();
-                    bitacora('proyeccion_modulo', $proy->id_proyeccion_modulo, 'U', 'Actualizacion satisfactoria del estado');
-                }
+                $proyecciones = ProyeccionModulo::find($request->id_proyeccion_modulo);
+                $proyecciones->estado = 0;
+                $proyecciones->save();
+                bitacora('proyeccion_modulo', $proyecciones->id_proyeccion_modulo, 'U', 'Actualizacion satisfactoria del estado');
 
                 /* ===================== CREAR SIGUIENTE PROYECCION ==================== */
                 $sum_semana = intval($ciclo->semana_poda_siembra) + intval(count(explode('-', $ciclo->curva)));
@@ -730,7 +709,7 @@ class CiclosController extends Controller
                 $semana_fin = DB::table('semana')
                     ->select(DB::raw('max(codigo) as max'))
                     ->where('estado', '=', 1)
-                    ->where('id_variedad', '=', $request->variedad)
+                    ->where('id_variedad', '=', $request->id_variedad)
                     ->get()[0]->max;
 
                 ProyeccionUpdateSemanal::dispatch($semana->codigo, $semana_fin, $request->variedad, $request->modulo, 0)
