@@ -26,6 +26,15 @@
     </tr>
     <tr>
         <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
+            Fecha Inicio
+        </th>
+        <td class="text-center" style="border-color: #9d9d9d">
+            <input type="date" onkeypress="return isNumber(event)" name="semana" id="semana" style="width: 100%" class="text-center"
+                   value="{{$proyeccion->semana->codigo}}">
+        </td>
+    </tr>
+    <tr>
+        <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
             Semana Inicio
         </th>
         <td class="text-center" style="border-color: #9d9d9d">
