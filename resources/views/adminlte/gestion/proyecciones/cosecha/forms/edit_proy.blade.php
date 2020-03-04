@@ -25,13 +25,27 @@
         </td>
     </tr>
     <tr>
-        <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
-            Fecha Inicio
+        <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5">
+            Fecha inicio
         </th>
         <td class="text-center" style="border-color: #9d9d9d">
-            <input type="date" onkeypress="return isNumber(event)" name="semana" id="semana" style="width: 100%" class="text-center"
-                   value="{{$proyeccion->semana->codigo}}">
+            <input type="date" name="fecha_inicio" id="fecha_inicio" style="width: 100%" class="text-center"
+                   value="{{date('Y-m-d')}}">
         </td>
+    </tr>
+    <tr>
+        <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5">
+            Fecha fin anterior
+        </th>
+        <td class="text-center" style="border-color: #9d9d9d">
+            <input type="date" name="fecha_fin" id="fecha_fin" style="width: 100%" class="text-center"
+                   value="{{date('Y-m-d')}}">
+        </td>
+    </tr>
+    <tr>
+        <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5" colspan="2">
+            <button type="button" class="btn btn-xs btn-block btn-primary"></button>
+        </th>
     </tr>
     <tr>
         <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
