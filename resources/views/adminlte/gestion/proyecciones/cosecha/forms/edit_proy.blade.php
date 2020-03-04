@@ -163,7 +163,7 @@
             _token: '{{csrf_token()}}',
             id_modulo: $('#modulo-edit_proy').val(),
             id_proyeccion_modulo: $('#id_proyeccion_modulo').val(),
-            fecha_inicio: $('#fecha_inicio_').val(),
+            fecha_inicio: $('#fecha_inicio).val(),
             fecha_fin: $('#fecha_fin').val(),
             poda_siembra: $('#tipo').val(),
             area: $('#area').val(),
