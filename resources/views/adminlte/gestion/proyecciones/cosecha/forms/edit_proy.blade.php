@@ -34,7 +34,7 @@
         </td>
     </tr>
     <tr>
-        <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5">
+        <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
             Fecha fin anterior
         </th>
         <td class="text-center" style="border-color: #9d9d9d">
@@ -43,8 +43,10 @@
         </td>
     </tr>
     <tr>
-        <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5" colspan="2">
-            <button type="button" class="btn btn-xs btn-block btn-primary"></button>
+        <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white" colspan="2">
+            <button type="button" class="btn btn-xs btn-block btn-primary">
+                <i class="fa fa-fw fa-check"></i> Crear nuevo ciclo
+            </button>
         </th>
     </tr>
     <tr>
