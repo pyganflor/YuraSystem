@@ -25,7 +25,7 @@
         </td>
     </tr>
     <tr>
-        <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5">
+        <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
             Fecha inicio
         </th>
         <td class="text-center" style="border-color: #9d9d9d">
