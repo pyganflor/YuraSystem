@@ -81,7 +81,7 @@
                 </td>
             </tr>
             <script>
-                set_min_to_date($('#fecha_inicio_{{$pos}}'), $sem_actual->fecha_inicial);
+                set_min_to_date($('#fecha_inicio_{{$pos}}'), {{$sem_actual->fecha_inicial}});
             </script>
         @endforeach
     </table>
