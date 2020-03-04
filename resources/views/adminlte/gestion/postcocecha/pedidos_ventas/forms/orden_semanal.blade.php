@@ -4,7 +4,7 @@
         fil = $('#marcaciones_' + esp_emp).val();
         col = $('#coloraciones_' + esp_emp).val();
         ramos_x_caja = $('#ramos_x_caja_' + esp_emp).val();
-        ids_det_esp = $('.id_det_esp_' + esp_emp);
+        ids_det_esp = $('div#pedido_creado input.id_det_esp_' + esp_emp);
 
         total = 0;
         for (f = 0; f < fil; f++) {
@@ -12,7 +12,9 @@
             for (det = 0; det < ids_det_esp.length; det++) {
                 parcial = 0;
                 for (c = 0; c < col; c++) {
+                    console.log(f,c,ids_det_esp[det].value,esp_emp);
                     cant = $('#ramos_marcacion_' + f + '_' + c + '_' + ids_det_esp[det].value + '_' + esp_emp).val();
+
                     if (cant != '') {
                         parcial += parseInt(cant);
                     }
@@ -20,6 +22,7 @@
                 $('#parcial_marcacion_' + f + '_' + ids_det_esp[det].value + '_' + esp_emp).val(parcial);
                 total_fila += parcial;
             }
+
             $('#total_ramos_marcacion_' + f + '_' + esp_emp).val(total_fila);
             $('#total_piezas_marcacion_' + f + '_' + esp_emp).val(Math.round((total_fila / ramos_x_caja) * 100) / 100);
             total += total_fila;
@@ -105,13 +108,11 @@
     {{--<button type="button" class="btn btn-xs btn-default" onclick="editar_pedido_tinturado('{{$pedido->id_pedido}}', '{{$pos_det_ped}}',false)">
         <i class="fa fa-fw fa-refresh"></i> Refrescar
     </button>--}}
-    <button type="button" class="btn btn-xs btn-success" onclick="update_orden_tinturada('{{csrf_token()}}')" id="btn_update_orden_tinturada">
-        <i class="fa fa-fw fa-save"></i> Guardar
-    </button>
-    <button type="button" class="btn btn-xs btn-success" onclick="guardar_distribucion('{{csrf_token()}}')" id="btn_guardar_distribucion"
+
+    {{--<button type="button" class="btn btn-xs btn-success" onclick="guardar_distribucion('{{csrf_token()}}')" id="btn_guardar_distribucion"
             style="display: none;">
         <i class="fa fa-fw fa-save"></i> Guardar
-    </button>
+    </button>--}}
     {{--@if($have_prev)
         <button type="button" class="btn btn-xs btn-primary"
                 onclick="editar_pedido_tinturado('{{$pedido->id_pedido}}', '{{$pos_det_ped - 1}}', false)">
@@ -133,6 +134,7 @@
     </button>--}}
 </div>
 <input type="hidden" id="id_pedido" value="{{$pedido->id_pedido}}">
+<input type="hidden" id="id_cliente_update" value="{{$pedido->id_cliente}}">
 {{--<input type="hidden" id="id_detalle_pedido" value="{{$det_ped->id_detalle_pedido}}">
 <input type="hidden" id="pos_det_ped" value="{{$pos_det_ped}}">
 <input type="hidden" id="have_next" value="{{$have_next ? 1 : 0}}">

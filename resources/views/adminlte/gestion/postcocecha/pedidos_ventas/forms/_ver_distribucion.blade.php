@@ -6,10 +6,11 @@
                     onclick="imprimir_distribucion('{{$det_ped->id_detalle_pedido}}')">
                 <i class="fa fa-fw fa-print"></i> Imprimir
             </button>
-            <button type="button" class="btn btn-xs btn-danger pull-right"
+            {{--<button type="button" class="btn btn-xs btn-danger pull-right"
                     onclick="quitar_distribuciones('{{$det_ped->id_pedido}}','{{csrf_token()}}')">
                 <i class="fa fa-fw fa-times"></i> Quitar Distribuciones
-            </button>Marcación/Coloración
+            </button>--}}
+            Marcación/Coloración
         </strong>
     </legend>
     <div style="overflow-x: scroll">
@@ -62,14 +63,17 @@
                                             {{$distr['distr']->piezas}}
                                         </th>
                                         <th class="text-center" style="border-color: #9d9d9d; width: 65px" rowspan="{{count($esp_emp['marcaciones'])}}">
-                                            {{$distr['distr']->pos_pieza}}
+                                            <input type="number" min="1" value="{{$distr['distr']->pos_pieza}}"
+                                                   style="border:none;background:transparent;width: 100%;text-align:center" class="distribucion_{{$distr['distr']->id_distribucion}}">
+                                            <input type="hidden" class="marcacion_{{$marc['marc']->id_marcacion}}"
+                                                   value="{{$distr['distr']->id_distribucion}}">
                                         </th>
                                     @endif
                                     @if($pos_distr==0 && $z == 0)
-                                            <th class="text-center" style="border-color: #9d9d9d" rowspan="{{count($marc['distribuciones'])*count($esp_emp['marcaciones'])}}">
-                                                {{$marc['marc']->nombre}}
-                                            </th>
-                                        @endif
+                                        <th class="text-center" style="border-color: #9d9d9d" rowspan="{{count($marc['distribuciones'])*count($esp_emp['marcaciones'])}}">
+                                            {{$marc['marc']->nombre}}
+                                        </th>
+                                    @endif
                                 </tr>
                             @endforeach
                         @endforeach
@@ -94,20 +98,23 @@
                                     @endforeach
                                 @endforeach
                             @endforeach
-                                <th class="text-center" style="border-color: #9d9d9d; width: 65px">
-                                    {{$distr['distr']->ramos}}
+                            <th class="text-center" style="border-color: #9d9d9d; width: 65px">
+                                {{$distr['distr']->ramos}}
+                            </th>
+                            <th class="text-center" style="border-color: #9d9d9d; width: 65px">
+                                {{$distr['distr']->piezas}}
+                            </th>
+                            <th class="text-center" style="border-color: #9d9d9d; width: 65px">
+                                <input type="number" min="1" value="{{$distr['distr']->pos_pieza}}"
+                                       style="border:none;background:transparent;width: 100%;text-align:center" class="distribucion_{{$distr['distr']->id_distribucion}}">
+                                <input type="hidden" class="marcacion_{{$marc['marc']->id_marcacion}}"
+                                       value="{{$distr['distr']->id_distribucion}}">
+                            </th>
+                            @if($pos_distr == 0)
+                                <th class="text-center" style="border-color: #9d9d9d" rowspan="{{count($marc['distribuciones'])}}">
+                                    {{$marc['marc']->nombre}}
                                 </th>
-                                <th class="text-center" style="border-color: #9d9d9d; width: 65px">
-                                    {{$distr['distr']->piezas}}
-                                </th>
-                                <th class="text-center" style="border-color: #9d9d9d; width: 65px">
-                                    {{$distr['distr']->pos_pieza}}
-                                </th>
-                                @if($pos_distr == 0)
-                                    <th class="text-center" style="border-color: #9d9d9d" rowspan="{{count($marc['distribuciones'])}}">
-                                        {{$marc['marc']->nombre}}
-                                    </th>
-                                @endif
+                            @endif
                         </tr>
                     @endif
                 @endforeach
@@ -118,3 +125,11 @@
         </table>
     </div>
 @endforeach
+<input type="hidden" value="{{$idsMaracaciones}}" id="id_marcaciones">
+<input type="hidden" value="{{$idDistribuciones}}" id="id_distribuciones">
+
+<div class="form-row text-center" style="margin-top: 20px">
+    <buttom type="buttom" class="btn btn-primary" onclick="actualizar_distribucion()">
+        <i class="fa fa-floppy-o"></i> Actualizar distribución
+    </buttom>
+</div>

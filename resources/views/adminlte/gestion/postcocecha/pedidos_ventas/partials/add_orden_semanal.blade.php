@@ -302,6 +302,15 @@
         };
         get_jquery('{{url('pedidos/orden_semanal/listar_especificaciones_x_cliente')}}', datos, function (retorno) {
             $('#div_especificaciones_orden_semanal').html(retorno);
+            if($($(retorno)[0]).hasClass('well_1')){
+                $("#div_tabla_distribucion_pedido").css('display','none');
+
+            }else{
+                $("#div_tabla_distribucion_pedido").css('display','block');
+                $("#msj_busqueda_especificacion").html("El cliente no posee especificaciones");
+            }
+
+
         });
     }
 

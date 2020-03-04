@@ -204,7 +204,7 @@ function store_pedido(id_cliente, pedido_fijo, csrf_token, vista, id_pedido) {
                         });
 
                         if (empaque === "T") {
-                            console.log(i, $(".input_tallos_" + (i + 1)).val());
+                            //console.log(i, $(".input_tallos_" + (i + 1)).val());
                             codigo_presentacion = $(".codigo_presentacion_" + (i + 1)).val().replace('tallos_x_malla', $(".input_tallos_" + (i + 1)).val());
                             arrDataPresentacionYuraVenture.push({
                                 codigo_presentacion: codigo_presentacion,
@@ -330,7 +330,7 @@ function cancelar_pedidos(id_pedido, id_cliente, estado, token) {
             $.LoadingOverlay('show');
             post_jquery('clientes/cancelar_pedido', datos, function () {
                 cerrar_modals();
-                console.log($("#listar_resumen_pedido").val());
+                //console.log($("#listar_resumen_pedido").val());
                 ($("#listar_resumen_pedido").val() == 'true' || $("#listar_resumen_pedido").val() == undefined)
                     ? listar_resumen_pedidos($('#fecha_pedidos_search').val(), true)
                     : "";
@@ -1037,7 +1037,7 @@ function update_orden_tinturada(token) {
                 ids_esp_emp = $('.id_esp_emp');
                 arreglo_esp_emp = [];
                 for (ee = 0; ee < ids_esp_emp.length; ee++) {
-                    ids_det_esp = $('.id_det_esp_' + ids_esp_emp[ee].value);
+                    ids_det_esp = $('div#pedido_creado input.id_det_esp_' + ids_esp_emp[ee].value);
                     /* ========= PRECIOS x DETALLE ESPECIFICACION ========== */
                     arreglo_precios = [];
                     for (det = 0; det < ids_det_esp.length; det++) {
@@ -1049,7 +1049,7 @@ function update_orden_tinturada(token) {
                     /* ========= MARCACIONES_COLORACIONES ========== */
                     fil = $('#marcaciones_' + ids_esp_emp[ee].value).val();
                     col = $('#coloraciones_' + ids_esp_emp[ee].value).val();
-                    console.log($('#cantidad_piezas').val() != $('#total_piezas_' + ids_esp_emp[ee].value).val());
+                    //console.log($('#cantidad_piezas').val() != $('#total_piezas_' + ids_esp_emp[ee].value).val());
                     if ($('#cantidad_piezas').val() != $('#total_piezas_' + ids_esp_emp[ee].value).val()) {
                         alerta('<div class="alert alert-warning text-center">Las cantidades de piezas distribuidas no coinciden con las pedidas</div>');
                         $('#cantidad_piezas').addClass('error');
@@ -1167,17 +1167,24 @@ function eliminar_detalle_pedido(det_ped, token) {
 function add_marcacion(esp_emp) {
     fil = parseInt($('#marcaciones_' + esp_emp).val());
     col = parseInt($('#coloraciones_' + esp_emp).val());
+    console.log(fil,col);
+    cant_marc= $('input.check_marcacion_'+esp_emp).length+1;
 
     tabla = $('#tabla_marcacion_coloracion_' + esp_emp);
 
-    tr = '<tr style="border: 2px solid #9d9d9d">' +
+    tr = '<tr style="border: 2px solid #9d9d9d" class="tr_marcacion_'+esp_emp+'">' +
         '<td class="text-center" style="border-color: #9d9d9d">' +
+        '<div class="input-group">'+
+        '<span class="input-group-addon" style="border:none;">' +
+        '<input type="checkbox" class="marcacion_' + esp_emp + '_' + cant_marc + ' check_marcacion_' + esp_emp +'">' +
+        '</span>'+
         '<input type="text" id="nombre_marcacion_' + fil + '_' + esp_emp + '" name="nombre_marcacion_' + fil + '_' + esp_emp + '" ' +
-        'placeholder="Marc ' + (fil + 1) + '" width="150px" style="border: none" class="text-center">' +
+        'placeholder="Marc" width="150px" style="border: none" class="text-center form-control form-control-sm input_marcacion_'+esp_emp+'">' +
         '<input type="hidden" id="id_marcacion_' + fil + '_' + esp_emp + '" name="id_marcacion_' + fil + '_' + esp_emp + '" value="">' +
+        '</div>'+
         '</td>';
     for (c = 0; c < col; c++) {
-        ids_det_esp = $('.id_det_esp_' + esp_emp);
+        ids_det_esp = $('div#pedido_creado input.id_det_esp_' + esp_emp);
         inputs = '';
         for (det = 0; det < ids_det_esp.length; det++) {
             inputs += '<li>' +
@@ -1192,7 +1199,7 @@ function add_marcacion(esp_emp) {
                 '</div>' +
                 '</li>';
         }
-        tr += '<td class="text-center" style="border-color: #9d9d9d">' +
+        tr += '<td class="text-center text-center col_coloracion_'+esp_emp+'_'+(c+1)+'" style="border-color: #9d9d9d">' +
             '<ul class="list-unstyled">' +
             inputs +
             '</ul>' +
@@ -1200,7 +1207,7 @@ function add_marcacion(esp_emp) {
     }
 
     if (ids_det_esp.length > 1) {    // mixta
-        ids_det_esp = $('.id_det_esp_' + esp_emp);
+        ids_det_esp = $('div#pedido_creado input.id_det_esp_' + esp_emp);
         inputs = '';
         for (det = 0; det < ids_det_esp.length; det++) {
             inputs += '<li>' +
@@ -1223,12 +1230,12 @@ function add_marcacion(esp_emp) {
 
     tr += '<td class="text-center" style="border-color: #9d9d9d">' +
         '<input type="text" id="total_ramos_marcacion_' + fil + '_' + esp_emp + '" name="total_ramos_marcacion_' + fil + '_' + esp_emp + '" ' +
-        'readonly class="text-center" value="0" ' +
+        'readonly class="text-center ramos_marcacion_'+esp_emp+' value="0" ' +
         'style="background-color: #357ca5; color: white; width: 85px">' +
         '</td>' +
         '<td class="text-center" style="border-color: #9d9d9d">' +
         '<input type="text" id="total_piezas_marcacion_' + fil + '_' + esp_emp + '" name="total_piezas_marcacion_' + fil + '_' + esp_emp + '" ' +
-        'readonly class="text-center" value="0" ' +
+        'readonly class="text-center piezas_marcacion_' +esp_emp +'" value="0" ' +
         'style="background-color: #357ca5; color: white; width: 85px">' +
         '</td>';
 
@@ -1245,8 +1252,9 @@ function add_marcacion(esp_emp) {
 
 function add_coloracion(esp_emp) {
     col = parseInt($('#coloraciones_' + esp_emp).val());
+    cant_col = $('input.check_coloracion_'+esp_emp).length;
 
-    tabla = $('#tabla_marcacion_coloracion_' + esp_emp);
+    tabla = $('div#pedido_creado #tabla_marcacion_coloracion_' + esp_emp);
     columna = col;
     num_colum_a_insertar = 0;
     $(tabla).find('tr').each(function (f, row) { // recorremos todas sus rows
@@ -1255,16 +1263,21 @@ function add_coloracion(esp_emp) {
             for (var i = 0; i <= num_colum_a_insertar; i++) {
                 if (f == 0) {
                     //insertamos una cabecera despues de la primera cabecera
-                    $('<th class="text-center" style="border-color: #9d9d9d" width="100px">' +
-                        '<select name="color_' + col + '_' + esp_emp + '" id="color_' + col + '_' + esp_emp + '"' +
-                        ' onchange="cambiar_color($(this).val(), ' + col + ', ' + esp_emp + ')" style="width: 100px;font-size:11px">' +
+                    $('<th id="celda_col_' + col + '_' + esp_emp + '" class="text-center col_coloracion col_coloracion_'+esp_emp+' th_col_coloracion col_coloracion_'+esp_emp+'_'+cant_col+'" style="border-color: #9d9d9d" width="100px">' +
+                        '<div class="input-group">'+
+                        '<span class="input-group-addon" style="border:none;background: transparent;padding: 5px;">' +
+                        '<input type="checkbox" class="check_coloracion_'+esp_emp+' col_coloracion_'+esp_emp+'_'+cant_col+' coloracion_' + esp_emp + '_' + cant_col + '" value="'+cant_col+'">' +
+                        '</span>'+
+                        '<select name="color_' + col + '_' + esp_emp + '" id="color_' + col + '_' + esp_emp + '" class="col_coloracion_'+esp_emp+'_'+cant_col+' select_coloracion"' +
+                        ' style="width: 100px;font-size:11px">' +
                         $('#select_colores').html() +
                         '</select>' +
+                        '</div>'+
                         '<input type="hidden" id="id_color_' + col + '_' + esp_emp + '" name="id_color_' + col + '_' + esp_emp + '" ' +
                         'value="' + $('#select_colores').val() + '">' +
                         '</th>').insertAfter(primer_td);
                 } else if (f == $(tabla).find('tr').length - 2) {
-                    ids_det_esp = $('.id_det_esp_' + esp_emp);
+                    ids_det_esp = $('div#pedido_creado input.id_det_esp_' + esp_emp);
                     inputs = '';
                     for (det = 0; det < ids_det_esp.length; det++) {
                         inputs += '<li>' +
@@ -1274,17 +1287,17 @@ function add_coloracion(esp_emp) {
                             '</span>' +
                             '<input type="number" id="parcial_color_' + col + '_' + ids_det_esp[det].value + '_' + esp_emp + '" ' +
                             'name="parcial_color_' + col + '_' + ids_det_esp[det].value + '_' + esp_emp + '" value="0" ' +
-                            'style="width: 100%; background-color: #357ca5; color: white" class="text-center">' +
+                            'style="width: 100%; background-color: #357ca5; color: white" class="text-center valor_parcial">' +
                             '</div>' +
                             '</li>';
                     }
-                    $('<th class="text-center" style="border-color: #9d9d9d" width="100px">' +
+                    $('<th class="text-center th_parcial col_coloracion col_coloracion_'+esp_emp+' col_coloracion_'+esp_emp+'_'+cant_col+'" style="border-color: #9d9d9d" width="100px">' +
                         '<ul class="list-unstyled">' +
                         inputs +
                         '</ul>' +
                         '</th>').insertAfter(primer_td);
                 } else {
-                    ids_det_esp = $('.id_det_esp_' + esp_emp);
+                    ids_det_esp = $('div#pedido_creado input.id_det_esp_' + esp_emp);
                     inputs = '';
                     for (det = 0; det < ids_det_esp.length; det++) {
                         inputs += '<li>' +
@@ -1298,7 +1311,7 @@ function add_coloracion(esp_emp) {
                             '</div>' +
                             '</li>';
                     }
-                    $('<th class="text-center" style="border-color: #9d9d9d" width="100px">' +
+                    $('<th class="text-center th_parcial col_coloracion col_coloracion_'+esp_emp+' col_coloracion_'+esp_emp+'_'+cant_col+' precio_col_coloracion" style="border-color: #9d9d9d" width="100px">' +
                         '<ul class="list-unstyled">' +
                         inputs +
                         '</ul>' +
@@ -1307,7 +1320,7 @@ function add_coloracion(esp_emp) {
             }
         } else {
             for (var i = 0; i <= num_colum_a_insertar; i++) {
-                ids_det_esp = $('.id_det_esp_' + esp_emp);
+                ids_det_esp = $('div#pedido_creado input.id_det_esp_' + esp_emp);
                 inputs = '';
                 for (det = 0; det < ids_det_esp.length; det++) {
                     inputs += '<li>' +
@@ -1318,14 +1331,22 @@ function add_coloracion(esp_emp) {
                         '<input type="number" value="0" id="ramos_marcacion_' + (f - 1) + '_' + col + '_' + ids_det_esp[det].value + '_' + esp_emp + '" ' +
                         'name="ramos_marcacion_' + (f - 1) + '_' + col + '_' + ids_det_esp[det].value + '_' + esp_emp + '" ' +
                         'onkeypress="return isNumber(event)" style="width: 100%;" ' +
-                        'class="text-center elemento_color_' + col + '_' + esp_emp + '" onchange="calcular_totales_tinturado(' + esp_emp + ')">' +
+                        'class="text-center col_coloracion_'+esp_emp+'_'+cant_col+' elemento_color_' + col + '_' + esp_emp + '" onchange="calcular_totales_tinturado(' + esp_emp + ')">' +
                         '</div>' +
                         '</li>';
                 }
+
+                script ='<script>$(".select_coloracion").change(function($this){' +
+                    '            arrId = $this.target.name.split("_");' +
+                    '            fondo = $(\'#fondo_color_\' +  $("select#"+$this.target.name).val()).val();' +
+                    '            texto = $(\'#texto_color_\' +  $("select#"+$this.target.name).val()).val();' +
+                    '            $(\'.elemento_color_\' + arrId[1] + \'_\' + arrId[2]).css(\'background-color\', fondo);' +
+                    '            $(\'.elemento_color_\' + arrId[1] + \'_\' + arrId[2]).css(\'color\', texto);' +
+                    '        });</script>';
                 //insertamos un valor despues del primer valor de la primera columna
-                $('<td class="text-center" style="border-color: #9d9d9d;" width="100px">' +
+                $('<td class="text-center col_coloracion td_col_coloracion_'+esp_emp+' col_coloracion_'+esp_emp+'_'+cant_col+'" style="border-color: #9d9d9d;" width="100px">' +
                     '<ul class="list-unstyled">' +
-                    inputs +
+                    (inputs+script) +
                     '</ul>' +
                     '</td>').insertAfter(primer_td);
             }
@@ -1335,6 +1356,107 @@ function add_coloracion(esp_emp) {
     col++;
     $('#coloraciones_' + esp_emp).val(col);
     $('.elemento_distribuir').hide();
+}
+
+function delete_marcacion(id_esp_emp) {
+
+    $.each($("tr.tr_marcacion_"+id_esp_emp),function(i,j){
+        if($(j).find('input[type=checkbox]').is(':checked'))
+            if($(j).remove())
+                $('#marcaciones_' + id_esp_emp).val($('#marcaciones_' + id_esp_emp).val()-1);
+
+       $.each($("input.check_marcacion_"+id_esp_emp),function(k,l){
+            clase =  $(l).attr('class');
+           $(l).removeClass(clase).addClass('marcacion_'+id_esp_emp+'_'+(k+1));
+       });
+
+        $.each($("input.input_marcacion_"+id_esp_emp),function(m,n){
+            $(n).attr({id:'nombre_marcacion_'+m+'_'+id_esp_emp,name:'nombre_marcacion_'+m+'_'+id_esp_emp});
+        });
+
+        $.each($("input.ramos_marcacion_"+id_esp_emp),function(o,p){
+            $(p).attr({id:'total_ramos_marcacion'+o+'_'+id_esp_emp,name:'total_ramos_marcacion_'+o+'_'+id_esp_emp});
+        });
+
+        $.each($("input.piezas_marcacion_"+id_esp_emp),function(o,p){
+            $(p).attr({id:'total_piezas_marcacion_'+o+'_'+id_esp_emp,name:'total_piezas_marcacion_'+o+'_'+id_esp_emp});
+        });
+
+        $.each($("input.distribucion_m_"+id_esp_emp),function(o,p){
+            $(p).attr({id:'distribucion_marcacion_'+o+'_'+id_esp_emp,name:'distribucion_marcacion_'+o+'_'+id_esp_emp});
+        });
+
+    });
+
+
+
+
+    formateo_id_mar_col(id_esp_emp);
+
+}
+
+function delete_coloracion(id_esp_emp) {
+
+    col=[];
+    $.each($(".col_coloracion_"+id_esp_emp),function(i,j){
+        if($(j).find('input[type=checkbox]').is(':checked'))
+            col.push((i));
+    });
+
+    if(col.length>0)
+        for(let i =0; i<col.length;i++)
+            if($(".col_coloracion_"+id_esp_emp+"_"+col[i]).remove())
+                $('#coloraciones_' + id_esp_emp).val($('#coloraciones_' + id_esp_emp).val()-1);
+
+    formateo_id_mar_col(id_esp_emp);
+}
+
+function formateo_id_mar_col(id_esp_emp){
+
+    $.each($("table#tabla_marcacion_coloracion_"+id_esp_emp),function(i,j){
+        $.each($(j).find('.tr_marcacion_'+id_esp_emp),function(x,z){
+            $.each($(z).find('td.col_coloracion'),function(k,l){
+                arrId = $(l).attr('class').split(' ');
+                $(l).removeClass(arrId[3]).addClass('col_coloracion_'+id_esp_emp+'_'+k);
+                $.each($(l).find('input.'+arrId[3]),function(m,n){
+                    arr_id_input_colocarcion = n.id.split("_");
+                    id_input_coloracion = arr_id_input_colocarcion[0]+"_"+arr_id_input_colocarcion[1]+"_"+arr_id_input_colocarcion[2]+"_"+k+"_"+arr_id_input_colocarcion[4]+"_"+arr_id_input_colocarcion[5];
+                    $(n).attr({name:id_input_coloracion,id:id_input_coloracion}).removeClass(arrId[3]).addClass('col_coloracion_'+id_esp_emp+'_'+k).removeClass('elemento_color_'+arr_id_input_colocarcion[3]+'_'+id_esp_emp).addClass('elemento_color_'+k+'_'+id_esp_emp);
+                });
+            });
+        });
+
+        $.each($(j).find('th.th_col_coloracion'),function(o,p){
+            arrIdTH = $(p).attr('class').split(' ');
+            arr_th_coloracion = arrIdTH[4].split("_");
+            class_col_coloracion = "col_coloracion_"+arr_th_coloracion[2]+"_"+o;
+            id_th_coloracion = 'celda_col'+"_"+o+"_"+arr_th_coloracion[2];
+            $('th.'+arrIdTH[4]).removeClass(arrIdTH[4]).addClass(class_col_coloracion).attr('id',id_th_coloracion);
+
+            $(p).find("input[type='checkbox']."+arrIdTH[4]).removeClass(arrIdTH[4]).addClass('col_coloracion_'+id_esp_emp+"_"+o)
+                .removeClass('coloracion_'+id_esp_emp+"_"+arr_th_coloracion[3]).addClass('coloracion_'+id_esp_emp+"_"+o).val(o);
+
+            $(p).find('select.'+arrIdTH[4]).removeClass(arrIdTH[4]).addClass('col_coloracion_'+id_esp_emp+"_"+o)
+                .attr({id:'color_'+o+"_"+id_esp_emp,name:'color_'+o+"_"+id_esp_emp});
+
+            $(p).find('input#id_color_'+arr_th_coloracion[3]+'_'+id_esp_emp).attr({id:'id_color_'+o+"_"+id_esp_emp,name:'id_color_'+o+"_"+id_esp_emp});
+
+        });
+
+        $.each($("th.precio_col_coloracion"),function(q,r){
+            arrId = $(r).find("input[type='number']").attr('id').split("_");
+
+            $(r).find("input[type='number']").attr({id:'precio_color_'+q+'_'+arrId[3]+'_'+arrId[4],name:'precio_color_'+q+'_'+arrId[3]+'_'+arrId[4]});
+        });
+
+    });
+
+    $.each($("tr.tr_parcial_"+id_esp_emp+" th.th_parcial"),function(a,b){
+            arr_id_input_parcial = $(b).find('input.valor_parcial').attr('id').split("_");
+            id_input_parcial = arr_id_input_parcial[0]+"_"+arr_id_input_parcial[1]+"_"+a+"_"+arr_id_input_parcial[3]+"_"+arr_id_input_parcial[4];
+            $(b).find('input.valor_parcial').attr({id:id_input_parcial,name:id_input_parcial});
+    });
+
 }
 
 function buscar_listado_envios() {
@@ -1370,7 +1492,7 @@ function calcular_precio_envio() {
                     precio_variedad = z.value == "" ? 0 : z.value;
 
                     if ($("#tipo_especificacion_" + o + "_" + i).val() === "O") {
-                        console.log($("#td_tallos_x_ramo_" + o + "_" + i).html().trim());
+                       // console.log($("#td_tallos_x_ramo_" + o + "_" + i).html().trim());
                         precio_especificacion += (parseFloat(precio_variedad) * parseFloat($("#td_tallos_x_ramo_" + o + "_" + i).html().trim()) * q.value);
                     } else {
                         ramos_x_caja = $(".input_ramos_x_caja_" + o + "_" + i + "_" + (y + 1)).val();
@@ -1393,6 +1515,22 @@ function calcular_precio_envio() {
         $("#sub_total_" + o).html(sub_total.toFixed(2));
         $("#total_" + o).html(parseFloat(total).toFixed(2));
     }
+}
+
+function delete_detalle_pedido(id_det_ped,id_pedido,token){
+    modal_quest('modal-quest_auto_distribuir',
+        '<div class="alert alert-info text-center">¿Desea eliminar el detalle del pedido?</div>',
+        '<i class="fa fa-fw fa-exclamation-triangle"></i> Mensaje de confirmación', true, false, '', function () {
+            datos = {
+                _token: token,
+                id_det_ped: id_det_ped,
+            };
+            post_jquery('pedidos/delete_detalle_pedido_tinturado', datos, function () {
+                cerrar_modals();
+                listar_resumen_pedidos($('#fecha_pedidos_search').val(), true);
+                editar_pedido_tinturado(id_pedido, 0, false);
+            });
+        });
 }
 
 function distribuir_pedido_tinturado(det_ped, auto = false, id_esp_emp = false, token) {
@@ -1427,8 +1565,11 @@ function distribuir_pedido_tinturado(det_ped, auto = false, id_esp_emp = false, 
                     id_esp_emp: id_esp_emp
                 };
                 post_jquery('pedidos/auto_distribuir_pedido_tinturado', datos, function () {
-                    cerrar_modals();
-                    editar_pedido_tinturado($('#id_pedido').val(), 0);
+                    $("#auto_distribuir_"+id_esp_emp).addClass('hide');
+                    $("#distrubir_manual_"+id_esp_emp).addClass('hide');
+                    $("#distribuido_"+id_esp_emp).removeClass('hide');
+                    $("#div_distribucion_orden_semanal").empty();
+                    ver_todas_distribuciones();
                 });
             });
     } else {
@@ -1440,6 +1581,7 @@ function distribuir_pedido_tinturado(det_ped, auto = false, id_esp_emp = false, 
             $('#div_tabla_distribucion').html(retorno);
             $('#btn_guardar_distribucion').show();
             $('#btn_update_orden_tinturada').hide();
+
         });
     }
 }

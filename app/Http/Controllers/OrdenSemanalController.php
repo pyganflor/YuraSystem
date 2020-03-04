@@ -34,7 +34,6 @@ class OrdenSemanalController extends Controller
 {
     public function store_orden_semanal(Request $request)
     {
-        // dd($request->id_configuracion_empresa);
         ini_set('max_execution_time', env('MAX_EXECUTION_TIME'));
         if ($request->nueva_esp != '') {    // NUEVA ESPECIFICACION
             $esp = new Especificacion();
@@ -497,7 +496,194 @@ class OrdenSemanalController extends Controller
                 }
             }
 
-        $semana = getSemanaByDate($request->fecha_pedido)->codigo;
+       // $semana = getSemanaByDate($request->fecha_pedido)->codigo;
+        //UpdateSaldosProyVentaSemanal::dispatch($semana, 0)->onQueue('update_saldos_proy_venta_semanal');
+        return [
+            'id_pedido' => $pedido->id_pedido,
+            'success' => true,
+            'mensaje' => '<div class="alert alert-success text-center">' .
+                'Se ha guardado toda la información satisfactoriamente'
+                . '</div>',
+        ];
+    }
+
+    public function add_especificacion_orden_semanal(Request $request){
+        //dd($request->all());
+        ini_set('max_execution_time', env('MAX_EXECUTION_TIME'));
+
+        /* ============ AÑADIR NUEVOS DETALLES PEDIDO ============ */
+        $pedido = Pedido::find($request->id_pedido);
+        if ($request->has('arreglo_esp'))
+            if (count($request->arreglo_esp) > 0) {
+                $arreglo_variedades = [];
+                /* ============ TABLA DETALLE_PEDIDO ============ */
+                $arreglo_det_pedidos = [];
+                $arreglo_marcaciones = [];
+                $arreglo_coloraciones = [];
+                $arreglo_marc_col = [];
+                foreach ($request->arreglo_esp as $pos_esp => $esp) {
+                    $arreglo_det_esp = [];
+                    $cli_ped_esp = ClientePedidoEspecificacion::where('id_cliente', $pedido->id_cliente)
+                        ->where('id_especificacion', $esp['id_esp'])->first();
+                    $det_pedido = new DetallePedido();
+                    $det_pedido->id_pedido = $pedido->id_pedido;
+                    $det_pedido->id_cliente_especificacion = $cli_ped_esp->id_cliente_pedido_especificacion;
+                    $det_pedido->id_agencia_carga = $pedido->detalles[0]->id_agencia_carga;
+                    $det_pedido->cantidad = $esp['cant_piezas'];
+                    $det_pedido->precio = $esp['arreglo_esp_emp'][0]['arreglo_det_esp'][0]['precio'] . ';' .
+                        $esp['arreglo_esp_emp'][0]['arreglo_det_esp'][0]['id_det_esp'];   // se termina de calcular más abajo
+
+                    /* ========== OBTENER LOS PRECIOS POR DETALLES_ESPECIFICACION_EMPAQUE ========= */
+                    foreach ($esp['arreglo_esp_emp'] as $pos_esp_emp => $esp_emp) {
+                        foreach ($esp_emp['arreglo_det_esp'] as $pos_precio => $precio) {
+                            if (($pos_esp_emp == 0 && $pos_precio > 0) || $pos_esp_emp > 0)
+                                $det_pedido->precio .= '|' . $precio['precio'] . ';' . $precio['id_det_esp'];
+                        }
+                    }
+                    if ($det_pedido->save()) {
+                        $det_pedido = DetallePedido::All()->last();
+                        bitacora('detalle_pedido', $det_pedido->id_detalle_pedido, 'I', 'Insercion de un nuevo detalle-pedido para el pedido '.$pedido->id_pedido);
+                        array_push($arreglo_det_pedidos, $det_pedido);
+
+                        foreach ($esp['arreglo_esp_emp'] as $esp_emp) {
+                            /* =========== TABLA COLORACION ===========*/
+                            $sub_arreglo_coloraciones = [];
+                            foreach ($esp_emp['coloraciones'] as $c) {
+                                $coloracion = new Coloracion();
+                                $coloracion->id_detalle_pedido = $det_pedido->id_detalle_pedido;
+                                $coloracion->id_especificacion_empaque = $esp_emp['id_esp_emp'];
+                                $coloracion->id_color = $c;
+
+                                if ($coloracion->save()) {
+                                    $coloracion = Coloracion::All()->last();
+                                    bitacora('coloracion', $coloracion->id_coloracion, 'I', 'Insercion de una nueva coloracion');
+                                    array_push($arreglo_coloraciones, $coloracion);
+                                    array_push($sub_arreglo_coloraciones, $coloracion);
+                                } else {
+                                    foreach ($arreglo_coloraciones as $item)
+                                        $item->delete();
+                                    $det_pedido->delete();
+                                    $pedido->delete();
+                                    $cli_ped_esp->delete();
+                                    //$det_espemp->delete();
+                                    $esp_emp->delete();
+                                    $esp->delete();
+
+                                    return [
+                                        'id_pedido' => '',
+                                        'success' => false,
+                                        'mensaje' => '<div class="alert alert-warning text-center">No se ha podido crear la coloración "' .
+                                            getColor($c)->nombre
+                                            . '"</div>',
+                                    ];
+                                }
+                            }
+
+                            /* ============== TABLA MARCACION ===========*/
+                            foreach ($esp_emp['marcaciones'] as $m) {
+                                $marcacion = new Marcacion();
+                                $marcacion->nombre = $m['nombre'];
+                                $marcacion->ramos = $m['ramos'];
+                                $marcacion->piezas = $m['piezas'];
+                                $marcacion->id_detalle_pedido = $det_pedido->id_detalle_pedido;
+                                $marcacion->id_especificacion_empaque = $esp_emp['id_esp_emp'];
+
+                                if ($marcacion->save()) {
+                                    $marcacion = Marcacion::All()->last();
+                                    bitacora('marcacion', $marcacion->id_marcacion, 'I', 'Insercion de una nueva marcacion');
+                                    array_push($arreglo_marcaciones, $marcacion);
+
+                                    /* =========== TABLA MARCACION_COLORACION =========== */
+                                    foreach ($m['arreglo_colores'] as $pos_c => $c) {
+                                        if (isset($c['cant_x_det_esp']))
+                                            foreach ($c['cant_x_det_esp'] as $det_esp) {
+                                                $marc_col = new MarcacionColoracion();
+                                                $marc_col->id_marcacion = $marcacion->id_marcacion;
+                                                $marc_col->id_coloracion = $sub_arreglo_coloraciones[$pos_c]->id_coloracion;
+                                                $marc_col->id_detalle_especificacionempaque = $det_esp['id_det_esp'];
+                                                $marc_col->cantidad = $det_esp['cantidad'] != '' ? $det_esp['cantidad'] : 0;
+
+                                                if ($marc_col->save()) {
+                                                    $marc_col = MarcacionColoracion::All()->last();
+                                                    bitacora('marcaion_coloracion', $marc_col->id_marcaion_coloracion, 'I', 'Insercion de una nueva marcaion-coloracion');
+                                                    array_push($arreglo_marc_col, $marc_col);
+
+                                                    /* ======== OBTENER LAS VARIEDADES INCLUIDAS EN EL PEDIDO ======= */
+                                                    $det_esp = DetalleEspecificacionEmpaque::find($marc_col->id_detalle_especificacionempaque);
+                                                    if (!in_array($det_esp->id_variedad, $arreglo_variedades)) {
+                                                        array_push($arreglo_variedades, $det_esp->id_variedad);
+                                                    }
+                                                } else {
+                                                    foreach ($arreglo_marc_col as $item)
+                                                        $item->delete();
+                                                    foreach ($arreglo_coloraciones as $item)
+                                                        $item->delete();
+                                                    foreach ($arreglo_marcaciones as $item)
+                                                        $item->delete();
+                                                    foreach ($arreglo_det_pedidos as $item)
+                                                        $item->delete();
+                                                    return [
+                                                        'id_pedido' => '',
+                                                        'success' => false,
+                                                        'mensaje' => '<div class="alert alert-warning text-center error">No se ha podido crear la coloración ' .
+                                                            Color::find($c['id_color'])->nombre . ' de la marcación ' .
+                                                            $m['nombre'] . ' del detalle-pedido #' .
+                                                            $pos_esp . '</div>',
+                                                    ];
+                                                }
+                                            }
+                                    }
+                                } else {
+                                    foreach ($arreglo_coloraciones as $item)
+                                        $item->delete();
+                                    foreach ($arreglo_marcaciones as $item)
+                                        $item->delete();
+                                    foreach ($arreglo_det_pedidos as $item)
+                                        $item->delete();
+                                    return [
+                                        'id_pedido' => '',
+                                        'success' => false,
+                                        'mensaje' => '<div class="alert alert-warning text-center error">No se ha podido crear la marcación ' .
+                                            $m['nombre'] . ' del detalle-pedido #' .
+                                            $pos_esp . '</div>',
+                                    ];
+                                }
+                            }
+                        }
+                    } else {
+                        foreach ($arreglo_det_pedidos as $item)
+                            $item->delete();
+                        return [
+                            'id_pedido' => '',
+                            'success' => false,
+                            'mensaje' => '<div class="alert alert-warning text-center error">No se ha podido crear el detalle-pedido #' .
+                                $pos_esp . '</div>',
+                        ];
+                    }
+                }
+
+                /* ========== COMPLETAR EL CAMPO variedad DEL PEDIDO =========== */
+                if (!in_array($pedido->variedad, $arreglo_variedades) && $pedido->variedad != '')
+                    array_push($arreglo_variedades, $pedido->variedad);
+                $variedades = $arreglo_variedades[0];
+                foreach ($arreglo_variedades as $i => $v)
+                    if ($i > 0)
+                        $variedades .= '|' . $v;
+
+                $pedido->variedad = $pedido->variedad."|".$variedades;
+                if ($pedido->save()) {
+                    bitacora('pedido', $pedido->id_pedido, 'U', 'Modificacion del campo variedad de un pedido (Flor tinturada)');
+
+                } else {
+                    return [
+                        'id_pedido' => '',
+                        'success' => false,
+                        'mensaje' => '<div class="alert alert-warning text-center error">No se ha podido terminar de guardar el pedido</div>',
+                    ];
+                }
+            }
+
+        // $semana = getSemanaByDate($request->fecha_pedido)->codigo;
         //UpdateSaldosProyVentaSemanal::dispatch($semana, 0)->onQueue('update_saldos_proy_venta_semanal');
         return [
             'id_pedido' => $pedido->id_pedido,
@@ -688,6 +874,7 @@ class OrdenSemanalController extends Controller
 
                         /* ========= PRECIOS ========= */
                     }
+
                     $last_det_ped->delete();
 
                     /* =========== ENVIO ========= */
@@ -820,7 +1007,7 @@ class OrdenSemanalController extends Controller
                 '</ul>' .
                 '</div>';
         }
-        $semana = getSemanaByDate($request->fecha_pedido)->codigo;
+        //$semana = getSemanaByDate($request->fecha_pedido)->codigo;
         //UpdateSaldosProyVentaSemanal::dispatch($semana, 0)->onQueue('update_saldos_proy_venta_semanal');
         return [
             'mensaje' => $msg,
@@ -872,6 +1059,8 @@ class OrdenSemanalController extends Controller
         $cliente = Cliente::find($request->id_cliente);
         return view('adminlte.gestion.postcocecha.pedidos_ventas.partials._especificacion_orden_semanal', [
             'cliente' => $cliente,
+            'id_pedido'=> $request->id_pedido,
+            'add_especificaciones' => $request->add_especificaciones
         ]);
     }
 
@@ -1095,7 +1284,6 @@ class OrdenSemanalController extends Controller
 
     public function ver_distribucion(Request $request)
     {
-
         ini_set('max_execution_time', env('MAX_EXECUTION_TIME'));
         $det_ped = DetallePedido::find($request->id_det_ped);
 
@@ -1109,26 +1297,11 @@ class OrdenSemanalController extends Controller
                     $coloraciones = [];
                     $dis_col = json_decode($distr->dist_col);
                     $coloraciones[]=$dis_col;
-                    /*foreach ($list_coloracionesByEspEmp as $pos_col => $col) {
-                        $detalles = [];
-                        foreach ($esp_emp->detalles as $pos_det_esp => $det_esp) {
-                            $dis_col = json_decode($distr->dist_col)[$pos_det_esp];
-                            dump($dis_col);
-                            $detalles[]= [
-                                //'det_esp' => $det_esp,
-                                'distr_col' => $dis_col
-                            ];
-                        }
-                        $coloraciones[]=[
-                            'col' => $col,
-                            'detalles' => $detalles
-                        ];
-                    }*/
+
                     $list_distribuciones[]= [
                         'distr' => $distr,
                         'coloraciones' => $coloraciones
                     ];
-
                 }
 
                 $list_marcacionesByEspEmp[]= [
@@ -1150,60 +1323,93 @@ class OrdenSemanalController extends Controller
             'list_esp_emp' => $list_esp_emp,
         ]);
 
-        /*ini_set('max_execution_time', env('MAX_EXECUTION_TIME'));
-        $det_ped = DetallePedido::find($request->id_det_ped);
+    }
 
+    public function listar_distribuciones_pedido(Request $request){
+        ini_set('max_execution_time', env('MAX_EXECUTION_TIME'));
+        $pedido = Pedido::find($request->id_pedido);
         $list_esp_emp = [];
-        foreach ($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $pos_esp_emp => $esp_emp) {
-            $list_coloracionesByEspEmp = $det_ped->coloracionesByEspEmp($esp_emp->id_especificacion_empaque);
-            $list_marcacionesByEspEmp = [];
-            foreach ($det_ped->marcacionesByEspEmp($esp_emp->id_especificacion_empaque) as $pos_marc => $marc) {
-                $list_distribuciones = [];
-                foreach ($marc->distribuciones as $pos_distr => $distr) {
-                    $coloraciones = [];
-                    foreach ($list_coloracionesByEspEmp as $pos_col => $col) {
-                        $detalles = [];
-                        foreach ($esp_emp->detalles as $pos_det_esp => $det_esp) {
-                            array_push($detalles, [
-                                'det_esp' => $det_esp,
-                                'distr_col' => $distr->getDistribucionMarcacionByMarcCol($marc->getMarcacionColoracionByDetEsp($col->id_coloracion, $det_esp->id_detalle_especificacionempaque)->id_marcacion_coloracion)
-                            ]);
-                        }
-                        array_push($coloraciones, [
-                            'col' => $col,
-                            'detalles' => $detalles
-                        ]);
-                    }
-                    array_push($list_distribuciones, [
-                        'distr' => $distr,
-                        'coloraciones' => $coloraciones
-                    ]);
+        $idsMaracaciones='';
+        $idDistribuciones='';
+        foreach($pedido->detalles as $det_ped){
+            foreach ($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $pos_esp_emp => $esp_emp) {
+                $list_coloracionesByEspEmp = $det_ped->coloracionesByEspEmp($esp_emp->id_especificacion_empaque);
+                $list_marcacionesByEspEmp = [];
+                foreach ($det_ped->marcacionesByEspEmp($esp_emp->id_especificacion_empaque) as $pos_marc => $marc) {
+                    $list_distribuciones = [];
+                    foreach ($marc->distribuciones->sortBy('pos_pieza') as $pos_distr => $distr) {
+                        $coloraciones = [];
+                        $dis_col = json_decode($distr->dist_col);
+                        $coloraciones[]=$dis_col;
 
+                        $list_distribuciones[]= [
+                            'distr' => $distr,
+                            'coloraciones' => $coloraciones
+                        ];
+                        $idDistribuciones.=$distr->id_distribucion."|";
+                    }
+
+                    $list_marcacionesByEspEmp[]= [
+                        'marc' => $marc,
+                        'distribuciones' => $list_distribuciones
+                    ];
+                    $idsMaracaciones.=$marc->id_marcacion.'|';
                 }
 
-                $marcaciones[]=[
-                    'nombre'=>$marc,
-                    'rows_maracion'=>''
+                $list_esp_emp[]= [
+                    'esp_emp' => $esp_emp,
+                    'coloraciones' => $list_coloracionesByEspEmp,
+                    'marcaciones' => $list_marcacionesByEspEmp,
                 ];
 
-                array_push($list_marcacionesByEspEmp, [
-                    'marc' => $marc,
-                    'distribuciones' => $list_distribuciones
-                ]);
-
             }
-
-            array_push($list_esp_emp, [
-                'esp_emp' => $esp_emp,
-                'coloraciones' => $list_coloracionesByEspEmp,
-                'marcaciones' => $list_marcacionesByEspEmp,
-            ]);
-
         }
-        return view('adminlte.gestion.postcocecha.pedidos_ventas.forms._ver_distribucion', [
-            'det_ped' => $det_ped,
-            'list_esp_emp' => $list_esp_emp,
-        ]);*/
+         return view('adminlte.gestion.postcocecha.pedidos_ventas.forms._ver_distribucion', [
+             'det_ped' => $det_ped,
+             'list_esp_emp' => $list_esp_emp,
+             'idsMaracaciones'=>$idsMaracaciones,
+             'idDistribuciones'=>$idDistribuciones
+         ]);
+
+    }
+
+    public function delete_detalle_pedido_tinturado(Request $request){
+        $mensaje = '<div class="alert alert-danger text-center">Ha ocurrido un error al eliminar el detalle del pedido, intente nuevamente</div>';
+        $success = false;
+
+        if(DetallePedido::destroy($request->id_det_ped)){
+            $mensaje = '<div class="alert alert-success text-center">Se ha eliminado el detalle del pedido con éxito</div>';
+            $success = true;
+        }
+
+        return [
+            'mensaje' => $mensaje,
+            'success' => $success
+        ];
+    }
+
+    public function store_distribuciones_pos_pieza(Request $request){
+        $mensaje = '<div class="alert alert-danger text-center">Ha ocurrido un error al actualizar el orden de las cajas, intente nuevamente</div>';
+        $success = false;
+        if(isset($request->distribuciones) && count($request->distribuciones)>0){
+            $x=0;
+            foreach ($request->distribuciones as $distribucion) {
+                $objDistribucion = Distribucion::find($distribucion['id_distribucion']);
+                $objDistribucion->pos_pieza = $distribucion['pos_pieza'];
+                if($objDistribucion->save())$x++;
+            }
+            if($x==count($request->distribuciones)){
+                $mensaje = '<div class="alert alert-success text-center">Se ha actualizado el orden de las cajas satisfactoriamente</div>';
+                $success = true;
+            }else{
+                $mensaje = '<div class="alert alert-danger text-center">No se ha actualiazdo el orden de todas las cajas, intente nuevamente</div>';
+                $success = false;
+            }
+        }
+        return [
+            'mensaje' => $mensaje,
+            'success' => $success
+        ];
     }
 
     public function quitar_distribuciones(Request $request)

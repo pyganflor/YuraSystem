@@ -38,13 +38,11 @@ class Semana extends Model
 
     public function getTotalesProyeccionVentaSemanal($idsCliente,$idVariedad=null,$calculaAnnoAnterior=false,$semanaActual=false,$idsClientes=false,$ramosxCajaEmpresa=false){
 
-        $existeSemana =ProyeccionVentaSemanalReal::where([
-          //  ['id_variedad', $idVariedad],
-            ['codigo_semana',$this->codigo]
-        ])->where(function($query) use ($idVariedad){
-            if(isset($idVariedad))
-                $query->where('id_variedad', $idVariedad);
-        })->select('codigo_semana')->exists();
+        $existeSemana =ProyeccionVentaSemanalReal::where('codigo_semana',$this->codigo)
+            ->where(function($query) use ($idVariedad){
+                if(isset($idVariedad))
+                    $query->where('id_variedad', $idVariedad);
+            })->select('codigo_semana')->exists();
 
         if(!$existeSemana){
             $primeraSemana = ProyeccionVentaSemanalReal::where(function($query) use ($idVariedad){

@@ -6,9 +6,12 @@ Route::get('pedidos/cargar_especificaciones', 'PedidoVentaController@cargar_espe
 Route::get('pedidos/ver_envio', 'EnvioController@ver_envios');
 Route::get('pedidos/add_orden_semanal', 'PedidoVentaController@add_orden_semanal');
 Route::post('pedidos/store_orden_semanal', 'OrdenSemanalController@store_orden_semanal');
+Route::post('pedidos/add_especificacion_orden_semanal', 'OrdenSemanalController@add_especificacion_orden_semanal');
 Route::get('pedidos/buscar_agencia_carga', 'OrdenSemanalController@buscar_agencia_carga');
 Route::get('pedidos/distribuir_orden_semanal', 'OrdenSemanalController@distribuir_orden_semanal');
+Route::get('pedidos/orden_semanal/listar_distribuciones_pedido', 'OrdenSemanalController@listar_distribuciones_pedido');
 Route::get('pedidos/orden_semanal/listar_especificaciones_x_cliente', 'OrdenSemanalController@listar_especificaciones_x_cliente');
+Route::post('pedidos/orden_semanal/store_distribuciones_pos_pieza', 'OrdenSemanalController@store_distribuciones_pos_pieza');
 Route::get('pedidos/editar_pedido', 'PedidoVentaController@editar_pedido');
 Route::get('pedidos/editar_pedido_tinturado', 'OrdenSemanalController@editar_pedido_tinturado');
 Route::post('pedidos/update_orden_tinturada', 'OrdenSemanalController@update_orden_tinturada');
@@ -25,3 +28,4 @@ Route::get('pedidos/form_duplicar_pedido', 'PedidoVentaController@form_duplicar_
 Route::post('pedidos/store_duplicar_pedido', 'PedidoVentaController@store_duplicar_pedido');
 Route::post('pedidos/empaquetar_pedido', 'PedidoVentaController@empaquetar_pedido');
 Route::post('pedidos/auto_distribuir_pedido_tinturado', 'OrdenSemanalController@auto_distribuir_pedido_tinturado');
+Route::post('pedidos/delete_detalle_pedido_tinturado', 'OrdenSemanalController@delete_detalle_pedido_tinturado');
