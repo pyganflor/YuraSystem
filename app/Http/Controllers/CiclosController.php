@@ -641,12 +641,24 @@ class CiclosController extends Controller
             'poda_siembra.required' => 'El campo poda/siembra es obligatorio',
         ]);
         if (!$valida->fails()) {
+            /* ------------------------ Cerrar ciclo anterior ------------------- */
+            $last_ciclo = Ciclo::All()
+                ->where('estado', 1)
+                ->where('activo', 1)
+                ->where('id_modulo', $request->id_modulo)
+                ->first();
+            if ($last_ciclo != '') {
+                $last_ciclo->activo = 0;
+                $last_ciclo->fecha_fin = $request->fecha_fin;
+                $last_ciclo->save();
+            }
+
             $ciclo = new Ciclo();
             $ciclo->id_modulo = $request->id_modulo;
             $ciclo->id_variedad = $request->id_variedad;
             $ciclo->area = $request->area;
             $ciclo->fecha_inicio = $request->fecha_inicio;
-            $ciclo->fecha_fin = $request->fecha_inicio;
+            $ciclo->fecha_fin = date('Y-m-d');
             $ciclo->poda_siembra = $request->poda_siembra;
             $ciclo->desecho = $request->desecho;
             $ciclo->curva = $request->curva;
