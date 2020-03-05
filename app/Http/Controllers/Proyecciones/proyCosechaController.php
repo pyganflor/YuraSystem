@@ -3361,7 +3361,7 @@ class proyCosechaController extends Controller
             $ciclo->conteo = $request->conteo;
             $ciclo->plantas_iniciales = $request->plantas_iniciales;
 
-            $semana = Semana::find($request->id_semana);
+            $semana = $proyeccion->semana;
 
             if ($ciclo->save()) {
                 $ciclo = Ciclo::All()->last();
@@ -3371,11 +3371,10 @@ class proyCosechaController extends Controller
                     . '</div>';
                 bitacora('ciclo', $ciclo->id_ciclo, 'I', 'Inserción satisfactoria de un nuevo ciclo');
 
-                /* ===================== QUITAR PROYECCIONES =================== */
-                $proyecciones = ProyeccionModulo::find($request->id_proyeccion_modulo);
-                $proyecciones->estado = 0;
-                $proyecciones->save();
-                bitacora('proyeccion_modulo', $proyecciones->id_proyeccion_modulo, 'U', 'Actualizacion satisfactoria del estado');
+                /* ===================== QUITAR PROYECCION =================== */
+                $proyeccion->estado = 0;
+                $proyeccion->save();
+                bitacora('proyeccion_modulo', $proyeccion->id_proyeccion_modulo, 'U', 'Actualizacion satisfactoria del estado');
 
                 /* ===================== CREAR SIGUIENTE PROYECCION ==================== */
                 $sum_semana = intval($ciclo->semana_poda_siembra) + intval(count(explode('-', $ciclo->curva)));
@@ -3416,10 +3415,10 @@ class proyCosechaController extends Controller
                 $semana_fin = DB::table('semana')
                     ->select(DB::raw('max(codigo) as max'))
                     ->where('estado', '=', 1)
-                    ->where('id_variedad', '=', $request->id_variedad)
+                    ->where('id_variedad', '=', $ciclo->id_variedad)
                     ->get()[0]->max;
 
-                ProyeccionUpdateSemanal::dispatch($semana->codigo, $semana_fin, $request->variedad, $request->modulo, 0)
+                ProyeccionUpdateSemanal::dispatch($semana->codigo, $semana_fin, $ciclo->id_variedad, $ciclo->id_modulo, 0)
                     ->onQueue('proy_cosecha');
             } else {
                 $success = false;
