@@ -173,8 +173,12 @@
             semana_poda_siembra: $('#semana_poda_siembra').val(),
             desecho: $('#desecho').val(),
         };
-        post_jquery('{{url('proy_cosecha/store_nuevo_ciclo')}}', datos, function () {
-            get_row_byModulo(datos['id_modulo']);
-        });
+        if (datos['fecha_inicio'] <= datos['fecha_fin']) {
+            post_jquery('{{url('proy_cosecha/store_nuevo_ciclo')}}', datos, function () {
+                get_row_byModulo(datos['id_modulo']);
+            });
+        } else {
+            alerta_errores('La fecha inicio debe ser menor o igual que la fecha fin.');
+        }
     }
 </script>
