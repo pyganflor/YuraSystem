@@ -163,7 +163,7 @@
             _token: '{{csrf_token()}}',
             id_modulo: $('#modulo-edit_proy').val(),
             id_proyeccion_modulo: $('#id_proyeccion_modulo').val(),
-            fecha_inicio: $('#fecha_inicio).val(),
+            fecha_inicio: $('#fecha_inicio').val(),
             fecha_fin: $('#fecha_fin').val(),
             poda_siembra: $('#tipo').val(),
             area: $('#area').val(),
@@ -173,8 +173,12 @@
             semana_poda_siembra: $('#semana_poda_siembra').val(),
             desecho: $('#desecho').val(),
         };
-        post_jquery('{{url('proy_cosecha/store_nuevo_ciclo')}}', datos, function () {
-            get_row_byModulo(datos['id_modulo']);
-        });
+        if (datos['fecha_inicio'] <= datos['fecha_fin']) {
+            post_jquery('{{url('proy_cosecha/store_nuevo_ciclo')}}', datos, function () {
+                get_row_byModulo(datos['id_modulo']);
+            });
+        } else {
+            alerta_errores('La fecha inicio debe ser menor o igual que la fecha fin.');
+        }
     }
 </script>

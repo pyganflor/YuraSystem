@@ -3310,33 +3310,47 @@ class proyCosechaController extends Controller
         dd($request->all());
         $valida = Validator::make($request->all(), [
             'id_modulo' => 'required',
-            'id_variedad' => 'required',
-            'id_semana' => 'required',
             'id_proyeccion_modulo' => 'required',
             'area' => 'required',
             'fecha_inicio' => 'required',
+            'fecha_fin' => 'required',
             'poda_siembra' => 'required',
             'plantas_iniciales' => 'required',
             'curva' => 'required',
+            'conteo' => 'required',
             'desecho' => 'required',
             'semana_poda_siembra' => 'required',
         ], [
             'id_modulo.required' => 'El módulo es obligatorio',
+            'conteo.required' => 'El conteo es obligatorio',
             'area.required' => 'El área es obligatoria',
             'desecho.required' => 'El desecho es obligatorio',
-            'id_variedad.required' => 'La variedad es obligatoria',
-            'id_semana.required' => 'La semana es obligatoria',
             'id_proyeccion_modulo.required' => 'La proyección es obligatoria',
             'curva.required' => 'La curva es obligatoria',
             'semana_poda_siembra.required' => 'La semana de inicio de cosecha es obligatoria',
             'plantas_iniciales.required' => 'Las plantas iniciales son obligatorias',
             'fecha_inicio.required' => 'La fecha de inicio de cilo es obligatoria',
+            'fecha_fin.required' => 'La fecha fin del cilo anterior es obligatoria',
             'poda_siembra.required' => 'El campo poda/siembra es obligatorio',
         ]);
         if (!$valida->fails()) {
+            /* ------------------------ Cerrar ciclo anterior ------------------- */
+            $last_ciclo = Ciclo::All()
+                ->where('estado', 1)
+                ->where('activo', 1)
+                ->where('id_modulo', $request->id_modulo)
+                ->first();
+            if ($last_ciclo != '') {
+                $last_ciclo->activo = 0;
+                $last_ciclo->fecha_fin = $request->fecha_fin;
+                $last_ciclo->save();
+            }
+
+            $proyeccion = ProyeccionModulo::find($request->id_proyeccion_modulo);
+            /* ------------------------ Nuevo ciclo ------------------- */
             $ciclo = new Ciclo();
             $ciclo->id_modulo = $request->id_modulo;
-            $ciclo->id_variedad = $request->id_variedad;
+            $ciclo->id_variedad = $proyeccion->id_variedad;
             $ciclo->area = $request->area;
             $ciclo->fecha_inicio = $request->fecha_inicio;
             $ciclo->fecha_fin = $request->fecha_inicio;
