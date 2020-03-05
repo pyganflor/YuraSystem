@@ -25,26 +25,26 @@
         </td>
     </tr>
     <tr>
-        <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
+        <th class="text-center" style="border-color: #9d9d9d; background-color: #495054; color: white">
             Fecha inicio
         </th>
         <td class="text-center" style="border-color: #9d9d9d">
             <input type="date" name="fecha_inicio" id="fecha_inicio" style="width: 100%" class="text-center"
-                   value="{{date('Y-m-d')}}">
+                   value="{{$proyeccion->fecha_inicio}}">
         </td>
     </tr>
     <tr>
-        <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
+        <th class="text-center" style="border-color: #9d9d9d; background-color: #495054; color: white">
             Fecha fin anterior
         </th>
         <td class="text-center" style="border-color: #9d9d9d">
             <input type="date" name="fecha_fin" id="fecha_fin" style="width: 100%" class="text-center"
-                   value="{{date('Y-m-d')}}">
+                   value="{{$proyeccion->fecha_inicio}}">
         </td>
     </tr>
     <tr>
-        <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white" colspan="2">
-            <button type="button" class="btn btn-xs btn-block btn-primary" onclick="store_nuevo_ciclo()">
+        <th class="text-center" style="border-color: #9d9d9d; background-color: #495054; color: white" colspan="2">
+            <button type="button" class="btn btn-xs btn-block btn-success" onclick="store_nuevo_ciclo()">
                 <i class="fa fa-fw fa-check"></i> Crear nuevo ciclo
             </button>
         </th>
@@ -174,9 +174,14 @@
             desecho: $('#desecho').val(),
         };
         if (datos['fecha_inicio'] <= datos['fecha_fin']) {
-            post_jquery('{{url('proy_cosecha/store_nuevo_ciclo')}}', datos, function () {
-                get_row_byModulo(datos['id_modulo']);
-            });
+            modal_quest('modal-quest_store_nuevo_ciclo', '<div class="alert alert-warning text-center">¿Estás seguro de cerrar el ciclo anterior y crear uno nuevo?</div>',
+                '<i class="fa fa-fw fa-exclamation-triangle"></i> Mensaje de confirmación', true, false, '', function () {
+                    post_jquery('{{url('proy_cosecha/store_nuevo_ciclo')}}', datos, function () {
+                        cerrar_modals();
+                        restaurar_proyeccion(datos['id_modulo']);
+                        //get_row_byModulo(datos['id_modulo']);
+                    });
+                });
         } else {
             alerta_errores('La fecha inicio debe ser menor o igual que la fecha fin.');
         }
