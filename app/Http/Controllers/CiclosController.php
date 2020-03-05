@@ -712,7 +712,7 @@ class CiclosController extends Controller
                     ->where('id_variedad', '=', $request->id_variedad)
                     ->get()[0]->max;
 
-                ProyeccionUpdateSemanal::dispatch($semana->codigo, $semana_fin, $request->variedad, $request->modulo, 0)
+                ProyeccionUpdateSemanal::dispatch($semana->codigo, $semana_fin, $request->id_variedad, $request->id_modulo, 0)
                     ->onQueue('proy_cosecha');
             } else {
                 $success = false;
