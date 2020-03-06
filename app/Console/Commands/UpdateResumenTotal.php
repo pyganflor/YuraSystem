@@ -268,7 +268,6 @@ class UpdateResumenTotal extends Command
                     ->where('codigo_semana', $sem)->get()[0]->cant;
                 $model->tallos_cosechados = $tallos_cosechados != '' ? $tallos_cosechados : 0;
 
-                dd($model->getAttributes());
                 $model->save();
             }
         }
