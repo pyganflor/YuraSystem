@@ -16,6 +16,7 @@ use yura\Console\Commands\ResumenSaldoProyeccionVentaSemanal;
 use yura\Console\Commands\ResumenSemanalTotal;
 use yura\Console\Commands\UpdateHistoricoVentas;
 use yura\Console\Commands\UpdateIndicador;
+use yura\Console\Commands\UpdateMonitoreoCiclos;
 use yura\Console\Commands\UpdateOtrosGastos;
 use yura\Console\Commands\UpdateProyeccionSemanal;
 use yura\Console\Commands\ResumenVentaDiariaMesAnterior;
@@ -53,6 +54,7 @@ class Kernel extends ConsoleKernel
         ResumenSaldoProyeccionVentaSemanal::class,
         IndicadorSemanal::class,
         UpdateResumenTotal::class,
+        UpdateMonitoreoCiclos::class,
     ];
 
     /**
@@ -82,6 +84,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('resumen_total:update_semanal')->cron('50 * * * *')->runInBackground(); // UpdateResumenTotal::class
         $schedule->command('indicador_semana:update')->cron('40 0 * * *')->runInBackground(); // IndicadorSemanal::class
         $schedule->command('resumen_saldo_proyeccion:venta_semanal')->cron('*/15 * * * *')->runInBackground(); // ResumenSaldoProyeccionVentaSemanal::class
+        $schedule->command('ciclo:update_monitoreo')->cron('35 * * * *')->runInBackground(); // UpdateMonitoreoCiclos::class
     }
 
     /**
