@@ -17,7 +17,7 @@
     function mouse_over_celda(id, action) {
         $('.celda_hovered').css('border', '1px solid #9d9d9d');
         if (action == 1) {  // over
-            $('#' + id).css('border', '3px solid black');
+            $('#' + id).css('border', '2px solid black');
         }
     }
 
