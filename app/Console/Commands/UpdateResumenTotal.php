@@ -96,8 +96,9 @@ class UpdateResumenTotal extends Command
                     ->join('actividad_producto as ac', 'ac.id_actividad_producto', '=', 'c.id_actividad_producto')
                     ->join('actividad as a', 'a.id_actividad', '=', 'ac.id_actividad')
                     ->where('a.id_area', '=', $area->id_area)
-                    ->where('c.codigo_semana', $sem)
+                    ->where(' ', $sem)
                     ->get()[0]->cant;
+                dd($campo_mp);
                 $model->campo_mp = $campo_mp;
                 $campo_mo = DB::table('costos_semana_mano_obra as c')
                     ->select(DB::raw('sum(c.valor) as cant'))

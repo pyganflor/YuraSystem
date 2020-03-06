@@ -42,6 +42,11 @@ class Ciclo extends Model
         return $this->belongsTo('\yura\Modelos\Modulo', 'id_modulo');
     }
 
+    public function monitoreos()
+    {
+        return $this->hasMany('\yura\Modelos\Monitoreo', 'id_ciclo');
+    }
+
     public function getTallosCosechados()
     {
         $fin = date('Y-m-d');
