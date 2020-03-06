@@ -98,7 +98,6 @@ class UpdateResumenTotal extends Command
                     ->where('a.id_area', '=', $area->id_area)
                     ->where('c.codigo_semana', $sem)
                     ->get()[0]->cant;
-                dd($campo_mp);
                 $model->campo_mp = $campo_mp;
                 $campo_mo = DB::table('costos_semana_mano_obra as c')
                     ->select(DB::raw('sum(c.valor) as cant'))
@@ -269,6 +268,7 @@ class UpdateResumenTotal extends Command
                     ->where('codigo_semana', $sem)->get()[0]->cant;
                 $model->tallos_cosechados = $tallos_cosechados != '' ? $tallos_cosechados : 0;
 
+                dd($model->getAttributes());
                 $model->save();
             }
         }
