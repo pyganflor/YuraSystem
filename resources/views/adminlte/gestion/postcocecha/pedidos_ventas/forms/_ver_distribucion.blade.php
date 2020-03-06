@@ -43,7 +43,7 @@
                                 <tr>
                                     @if($pos_distr==0 && $z == 0)
                                         <th class="text-center" style="border-color: #9d9d9d"
-                                            rowspan="{{count($marc['distribuciones'])*count($esp_emp['marcaciones'])}}">
+                                            rowspan="{{count($marc['distribuciones'])*count($marc['distribuciones'][0]['coloraciones'][0])}}">
                                             {{$marc['marc']->nombre}}
                                         </th>
                                     @endif
@@ -70,7 +70,7 @@
                                         </th>
                                     @endif
                                     @if($pos_distr==0 && $z == 0)
-                                        <th class="text-center" style="border-color: #9d9d9d" rowspan="{{count($marc['distribuciones'])*count($esp_emp['marcaciones'])}}">
+                                        <th class="text-center" style="border-color: #9d9d9d" rowspan="{{count($marc['distribuciones'])*count($marc['distribuciones'][0]['coloraciones'][0])}}">
                                             {{$marc['marc']->nombre}}
                                         </th>
                                     @endif

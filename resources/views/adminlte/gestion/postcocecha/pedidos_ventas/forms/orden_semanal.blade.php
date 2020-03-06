@@ -12,7 +12,6 @@
             for (det = 0; det < ids_det_esp.length; det++) {
                 parcial = 0;
                 for (c = 0; c < col; c++) {
-                    console.log(f,c,ids_det_esp[det].value,esp_emp);
                     cant = $('#ramos_marcacion_' + f + '_' + c + '_' + ids_det_esp[det].value + '_' + esp_emp).val();
 
                     if (cant != '') {

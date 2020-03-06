@@ -111,4 +111,8 @@ class DetallePedido extends Model
     {
         return $this->data_tallos->mallas * $this->data_tallos->tallos_x_malla;
     }
+
+    public function detalle_pedido_dato_exportacion(){
+        return $this->hasMany('yura\Modelos\DetallePedidoDatoExportacion', 'id_detalle_pedido');
+    }
 }

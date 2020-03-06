@@ -8,15 +8,15 @@
 </ul>
 <div class="tab-content">
     <div id="pedido_creado" class="tab-pane fade in active">
-        @foreach($pedido->detalles as $det_ped)
-            <div class="well sombra_estandar">
+        @foreach($pedido->detalles as $x=> $det_ped)
+            <div class="well sombra_estandar well_detalle_pedido">
+                <input type="hidden" class="id_det_ped" value="{{$det_ped->id_detalle_pedido}}">
                 <legend style="font-size: 1.1em; margin-bottom: 0">
-                    <strong>Detalle del pedido</strong>
+                    <strong>Detalle del pedido {{$x+1}}</strong>
                     <buttom type="buttom" class="btn btn-danger btn-xs pull-right" onclick="delete_detalle_pedido('{{$det_ped->id_detalle_pedido}}','{{$pedido->id_pedido}}','{{csrf_token()}}')">
                         <i class="fa fa-times"></i> Eliminar detalle
                     </buttom>
                 </legend>
-
                 <div style="overflow-x: scroll">
                     <table class="table-bordered" width="100%" style="border: 2px solid #9d9d9d; font-size: 0.8em">
                         <tr style="background-color: #e9ecef">
@@ -166,13 +166,24 @@
                                             @php
                                                 $detped_datexp = getDatosExportacion($det_ped->id_detalle_pedido, $cli_dat_exp->id_dato_exportacion);
                                             @endphp
-                                            <td class="text-center" style="border-color: #9d9d9d" rowspan="{{getCantidadDetallesEspecificacionByPedido($pedido->id_pedido)}}">
-                                                <input type="text" id="dato_exportacion_{{$cli_dat_exp->id_dato_exportacion}}" class="form-control"
+                                            <td class="text-center dato_exportacion_{{$det_ped->id_detalle_pedido}}" style="border-color: #9d9d9d"
+                                                rowspan="{{getCantidadDetallesEspecificacionByPedido($pedido->id_pedido)}}">
+                                                <input type="text" id="dato_exportacion_{{$cli_dat_exp->id_dato_exportacion}}"
+                                                       class="form-control dato_exportacion_{{$det_ped->id_detalle_pedido}}"
                                                        value="{{$detped_datexp != '' ? $detped_datexp->valor : ''}}" minlength="1"
                                                        style="text-transform: uppercase;width:100px">
+                                                <input type="hidden" value="{{$cli_dat_exp->id_dato_exportacion}}" class="id_dato_exportacion_{{$det_ped->id_detalle_pedido}}">
                                             </td>
                                             <input type="hidden" class="id_dato_exportacion" value="{{$cli_dat_exp->id_dato_exportacion}}">
                                         @endforeach
+                                        @if($pedido->cliente->cliente_datoexportacion->count()>0)
+                                                <td class="text-center" style="border-color: #9d9d9d" rowspan="{{getCantidadDetallesEspecificacionByPedido($pedido->id_pedido)}}">
+                                                    <button class="btn btn-success btn-sm" title="Guardar datos de exportación"
+                                                        onclick="update_dato_exp_pedio_tinturado('{{$det_ped->id_detalle_pedido}}','{{@csrf_token()}}')">
+                                                        <i class="fa fa-floppy-o"></i>
+                                                    </button>
+                                                </td>
+                                        @endif
                                     @endif
                                 </tr>
                                 <input type="hidden"

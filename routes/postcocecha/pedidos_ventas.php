@@ -29,3 +29,4 @@ Route::post('pedidos/store_duplicar_pedido', 'PedidoVentaController@store_duplic
 Route::post('pedidos/empaquetar_pedido', 'PedidoVentaController@empaquetar_pedido');
 Route::post('pedidos/auto_distribuir_pedido_tinturado', 'OrdenSemanalController@auto_distribuir_pedido_tinturado');
 Route::post('pedidos/delete_detalle_pedido_tinturado', 'OrdenSemanalController@delete_detalle_pedido_tinturado');
+Route::post('pedidos/update_dato_exp_pedio_tinturado', 'OrdenSemanalController@update_dato_exp_pedio_tinturado');

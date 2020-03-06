@@ -9,6 +9,7 @@ use yura\Modelos\Color;
 use yura\Modelos\Coloracion;
 use yura\Modelos\DetalleEnvio;
 use yura\Modelos\DetallePedido;
+use yura\Modelos\DetallePedidoDatoExportacion;
 use yura\Modelos\Distribucion;
 use yura\Modelos\DistribucionColoracion;
 use yura\Modelos\Empaque;
@@ -179,7 +180,7 @@ class PedidoVentaController extends Controller
             . '</div>';
 
         if (!$valida->fails()) {
-            $dataPedido = Pedido::where('id_pedido', $request->id_pedido)->first();
+            $dataPedido = Pedido::find($request->id_pedido);
 
             foreach ($request->arrFechas as $fecha) {
                 $objPedido = new Pedido;
@@ -191,7 +192,7 @@ class PedidoVentaController extends Controller
                 $objPedido->id_configuracion_empresa = $dataPedido->id_configuracion_empresa;
                 if ($objPedido->save()) {
                     $modelPedido = Pedido::all()->last();
-                    $dataDetallePedido = DetallePedido::where('id_pedido', $request->id_pedido)->get();
+                    $dataDetallePedido = $dataPedido->detalles;
 
                     bitacora('pedido', $modelPedido->id_pedido, 'I', 'Inserción satisfactoria de un duplicado de pedido');
 
@@ -220,6 +221,17 @@ class PedidoVentaController extends Controller
 
                             $model_detalle_pedido = DetallePedido::all()->last();
                             bitacora('detalle_pedido', $model_detalle_pedido->id_detalle_pedido, 'I', 'Inserción satisfactoria del duplicado de un detalle pedio');
+
+                            foreach ($dataPedido->detalles as $dataDetPed) {
+                                foreach ($dataDetPed->detalle_pedido_dato_exportacion as $dePedDatExp){
+                                    $objDetallePedidoDatoExportacion = new DetallePedidoDatoExportacion;
+                                    $objDetallePedidoDatoExportacion->id_detalle_pedido = $model_detalle_pedido->id_detalle_pedido;
+                                    $objDetallePedidoDatoExportacion->id_dato_exportacion = $dePedDatExp->id_dato_exportacion;
+                                    $objDetallePedidoDatoExportacion->valor = $dePedDatExp->valor;
+                                    $objDetallePedidoDatoExportacion->save();
+                                }
+                            }
+
                             if($modelPedido->tipo_especificacion === "T") {
                                 foreach ($detallePedido->cliente_especificacion->especificacion->especificacionesEmpaque as $z => $esp_emp){
                                     $dataColoraciones = Coloracion::where([
@@ -281,7 +293,7 @@ class PedidoVentaController extends Controller
                                                         $objDistribucion->piezas = $d->piezas;
                                                         $objDistribucion->pos_pieza = $d->pos_pieza;
                                                         if($objDistribucion->save()){
-                                                            $dataDistribucionColoracion  = DistribucionColoracion::where('id_distribucion',$d->id_distribucion)->get();
+                                                            /*$dataDistribucionColoracion  = DistribucionColoracion::where('id_distribucion',$d->id_distribucion)->get();
                                                             $model_distribucion = Distribucion::All()->last();
                                                             foreach ($dataDistribucionColoracion as $z => $dC) {
                                                                 $objDistribucionColoracion = new DistribucionColoracion;
@@ -289,7 +301,7 @@ class PedidoVentaController extends Controller
                                                                 $objDistribucionColoracion->id_marcacion_coloracion = $arr_marcacion_coloracion[$z]->id_marcacion_coloracion;
                                                                 $objDistribucionColoracion->cantidad = $dC->cantidad;
                                                                 $objDistribucionColoracion->save();
-                                                            }
+                                                            }*/
                                                         }
                                                     }
                                                 }
@@ -298,8 +310,6 @@ class PedidoVentaController extends Controller
                                     }
                                 }
                             }
-                            $semana = getSemanaByDate($fecha['fecha'])->codigo;
-                            ProyeccionVentaSemanalUpdate::dispatch($semana,$semana,0,$dataPedido->id_cliente)->onQueue('update_venta_semanal_real');
                             $success = true;
                             $msg = '<div class="alert alert-success text-center">' .
                                 '<p> Se ha duplicado el pedido exitosamente</p>'
@@ -308,6 +318,12 @@ class PedidoVentaController extends Controller
                     }
                 }
             }
+            if(count($request->arrFechas) >0 ){
+                $semanaInicio = getSemanaByDate($request->arrFechas[0]['fecha'])->codigo;
+                $semanafin = getSemanaByDate($request->arrFechas[count($request->arrFechas)-1]['fecha'])->codigo;
+                ProyeccionVentaSemanalUpdate::dispatch($semanaInicio,$semanafin,0,$dataPedido->id_cliente)->onQueue('update_venta_semanal_real');
+            }
+
         } else {
             $success = false;
             $errores = '';

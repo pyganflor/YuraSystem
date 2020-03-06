@@ -620,6 +620,7 @@
 
     function add_especificacion_cliente_orden_semanal(id_pedido) {
         if (id_pedido != '') {
+            z=0;
             nueva_esp = '';
             arreglo_esp = [];
             if ($('#cantidad_cajas').val() > 0)
@@ -628,6 +629,7 @@
                     fil = $('#num_marcaciones').val();
 
                     if (col > 0 && fil > 0) {
+                        console.log('aqui', $('#total_piezas_' + fil + '_' + col).val() , $('#cantidad_cajas').val());
                         if ($('#total_piezas_' + fil + '_' + col).val() == $('#cantidad_cajas').val()) {
                             if ($('#total_ramos_' + fil + '_' + col).val() == parseInt($('#cantidad_ramos').val()) * parseInt($('#cantidad_cajas').val()) &&
                                 $('#total_piezas_' + fil + '_' + col).val() == $('#cantidad_cajas').val()) {
@@ -686,11 +688,11 @@
                         } else {
                             alerta('<div class="alert alert-warning text-center">Las cantidades de piezas distribuidas no coinciden con las pedidas</div>');
                             $('#cantidad_cajas').addClass('error');
-                            return false;
+                            z++;
                         }
                     } else {
                         alerta('<div class="alert alert-warning text-center">Faltan los datos de las marcaciones/colores</div>');
-                        return false;
+                          z++;
                     }
                 }   // NUEVA ESPECIFICACION
             ids_especificacion = $('.id_especificacion');
@@ -699,7 +701,7 @@
                 if (parseInt($('#cant_piezas_esp_' + id_esp).val()) > 0) {
                     if ($('#form_especificacion_' + id_esp).valid()) {
                         arreglo_esp_emp = [];
-                        ids_esp_emp = $('.id_especificacion_empaque_' + id_esp);
+                        ids_esp_emp = $('div#div_especificaciones_orden_semanal_update input.id_especificacion_empaque_' + id_esp);
                         for (esp_emp = 0; esp_emp < ids_esp_emp.length; esp_emp++) {    // ESPECIFICACIONES_EMPAQUE
                             id_esp_emp = ids_esp_emp[esp_emp].value;
                             ids_det_esp = $('.id_det_esp_' + id_esp_emp);
@@ -709,18 +711,17 @@
 
                             if (ids_det_esp.length > 1) {   // mixta
                                 tipo = 1;
-                                if ($('#cant_piezas_esp_' + id_esp).val() != $('#total_piezas_' + id_esp_emp).val()) {
+                                if ($('#cant_piezas_esp_' + id_esp).val() != $('div#div_especificaciones_orden_semanal_update input#total_piezas_' + num_marcaciones + '_' + num_colores + '_' + id_esp_emp).val()) {
                                     alerta('<div class="alert alert-warning text-center">Las cantidades de piezas distribuidas no coinciden con las pedidas</div>');
                                     $('#cant_piezas_esp_' + id_esp).addClass('error');
                                     return false;
                                 }
                             } else {    // sencilla
                                 tipo = 0;
-                                if ($('#cant_piezas_esp_' + id_esp).val() != $('#total_piezas_' + num_marcaciones + '_' + num_colores +
-                                    '_' + id_esp_emp).val()) {
+                                if ($('#cant_piezas_esp_' + id_esp).val() != $('div#div_especificaciones_orden_semanal_update input#total_piezas_' + num_marcaciones + '_' + num_colores + '_' + id_esp_emp).val()) {
                                     alerta('<div class="alert alert-warning text-center">Las cantidades de piezas distribuidas no coinciden con las pedidas</div>');
                                     $('#cant_piezas_esp_' + id_esp).addClass('error');
-                                    return false;
+                                   z++;
                                 }
                             }
                             arreglo_det_esp = [];
@@ -728,7 +729,7 @@
                                 id_det_esp = ids_det_esp[det_esp].value;
                                 arreglo_det_esp.push({
                                     id_det_esp: id_det_esp,
-                                    precio: $('div#div_especificaciones_orden_semanal_update input#precio_det_' + id_det_esp + '_esp_' + id_esp_emp).val()
+                                    precio: $('div#div_especificaciones_orden_semanal_update #precio_det_' + id_det_esp + '_esp_' + id_esp_emp).val()
                                 });
                             }
 
@@ -768,7 +769,7 @@
                                                 coloraciones.push($('#titles_columnas_' + c + '_' + id_esp_emp).val());
                                         } else {
                                             alert('Faltan datos (nombres de colores) por ingresar en la tabla.');
-                                            return false;
+                                            z++;
                                         }
                                     }
                                     marcaciones.push({
@@ -779,7 +780,7 @@
                                     });
                                 } else {
                                     alert('Faltan datos (nombres de marcaciones) por ingresar en la tabla.');
-                                    return false;
+                                    z++;
                                 }
                             }
 
@@ -810,27 +811,30 @@
                     arreglo_esp: arreglo_esp
                 };
 
+                console.log(datos);
                 modal_quest('modal_edit_pedido',
                     '<div class="alert alert-info text-center"><p>Esta seguro de agregar las especificaciones al pedido.?</p></div>', 'Agregar especificaciones', true, false, '40%', function () {
                         $.LoadingOverlay('show');
-                        $.post('{{url('pedidos/add_especificacion_orden_semanal')}}', datos, function (retorno) {
-                            if (retorno.success) {
-                                alerta_accion(retorno.mensaje, function () {
-                                    cerrar_modals();
-                                    editar_pedido_tinturado(retorno.id_pedido, 0);
-                                    listar_resumen_pedidos($("#fecha_pedidos_search").val(), true);
-                                });
-                            } else {
-                                alerta(retorno.mensaje);
-                            }
+                        if (z == 0){
+                            $.post('{{url('pedidos/add_especificacion_orden_semanal')}}', datos, function (retorno) {
+                                if (retorno.success) {
+                                    alerta_accion(retorno.mensaje, function () {
+                                        cerrar_modals();
+                                        editar_pedido_tinturado(retorno.id_pedido, 0);
+                                        listar_resumen_pedidos($("#fecha_pedidos_search").val(), true);
+                                    });
+                                } else {
+                                    alerta(retorno.mensaje);
+                                }
 
-                        }, 'json').fail(function (retorno) {
-                            console.log(retorno);
-                            alerta_errores(retorno.responseText);
-                            alerta('Ha ocurrido un problema');
-                        }).always(function () {
-                            $.LoadingOverlay('hide');
-                        });
+                            }, 'json').fail(function (retorno) {
+                                console.log(retorno);
+                                alerta_errores(retorno.responseText);
+                                alerta('Ha ocurrido un problema');
+                            }).always(function () {
+                                $.LoadingOverlay('hide');
+                            });
+                        }
                 });
             }
         }

@@ -1031,108 +1031,127 @@ function editar_pedido_tinturado(id_pedido, pos_det_ped, global = true, listar_r
 
 function update_orden_tinturada(token) {
     if ($('#form-update_orden_semanal').valid()) {
+        
         modal_quest('modal_quest_update_orden_tinturada', '<div class="alert alert-info text-center">' +
-            '¿Está seguro de modificar los datos de este pedido? (Se perderán las distribuciones relacionadas a esta especificación)</div>',
+            '¿Está seguro de modificar los datos de este pedido?</div>',
             '<i class="fa fa-fw fa-exclamation-triangle"></i> Mensaje de alerta', true, false, '35%', function () {
-                ids_esp_emp = $('.id_esp_emp');
-                arreglo_esp_emp = [];
-                for (ee = 0; ee < ids_esp_emp.length; ee++) {
-                    ids_det_esp = $('div#pedido_creado input.id_det_esp_' + ids_esp_emp[ee].value);
-                    /* ========= PRECIOS x DETALLE ESPECIFICACION ========== */
-                    arreglo_precios = [];
-                    for (det = 0; det < ids_det_esp.length; det++) {
-                        arreglo_precios.push({
-                            id_det_esp: ids_det_esp[det].value,
-                            precio: $('#precio_det_esp_' + ids_det_esp[det].value).val()
-                        });
-                    }
-                    /* ========= MARCACIONES_COLORACIONES ========== */
-                    fil = $('#marcaciones_' + ids_esp_emp[ee].value).val();
-                    col = $('#coloraciones_' + ids_esp_emp[ee].value).val();
-                    //console.log($('#cantidad_piezas').val() != $('#total_piezas_' + ids_esp_emp[ee].value).val());
-                    if ($('#cantidad_piezas').val() != $('#total_piezas_' + ids_esp_emp[ee].value).val()) {
-                        alerta('<div class="alert alert-warning text-center">Las cantidades de piezas distribuidas no coinciden con las pedidas</div>');
-                        $('#cantidad_piezas').addClass('error');
-                        return false;
-                    }
-                    arreglo_marcaciones = [];
-                    arreglo_coloraciones = [];
-                    for (f = 0; f < fil; f++) {
-                        if ($('#nombre_marcacion_' + f + '_' + ids_esp_emp[ee].value).val() != '') {
-                            colores = [];
-                            for (c = 0; c < col; c++) {
-                                cant_x_det_esp = [];
-                                if (f == 0) {
-                                    /* =========== PRECIOS x COLORACION ========= */
-                                    arreglo_precios_x_col = [];
-                                    for (det = 0; det < ids_det_esp.length; det++) {
-                                        arreglo_precios_x_col.push({
-                                            id_det_esp: ids_det_esp[det].value,
-                                            precio: $('#precio_color_' + c + '_' + ids_det_esp[det].value + '_' + ids_esp_emp[ee].value).val()
+                z=0;
+                 det_ped_arreglo_esp_emp =[];
+                 det_ped_arreglo_dat_exp=[];
+
+                $.each($("div.well_detalle_pedido"),function(i,j){
+                    arreglo_esp_emp = [];
+                    ids_esp_emp = $(j).find('.id_esp_emp');
+
+                    for (ee = 0; ee < ids_esp_emp.length; ee++) {
+                        ids_det_esp = $(j).find('input.id_det_esp_'+ids_esp_emp[ee].value);
+                        /* ========= PRECIOS x DETALLE ESPECIFICACION ========== */
+
+                        arreglo_precios = [];
+                        for (det = 0; det < ids_det_esp.length; det++) {
+                            console.log('#precio_det_esp_' + ids_det_esp[det].value);
+                            arreglo_precios.push({
+                                id_det_esp: ids_det_esp[det].value,
+                                precio: $(j).find('#precio_det_esp_' + ids_det_esp[det].value).val()
+                            });
+                        }
+
+                        /* ========= MARCACIONES_COLORACIONES ========== */
+                        fil = $(j).find('#marcaciones_' + ids_esp_emp[ee].value).val();
+                        col = $(j).find('#coloraciones_' + ids_esp_emp[ee].value).val();
+                        if ($(j).find('#cantidad_piezas').val() != $('#total_piezas_' + ids_esp_emp[ee].value).val()) {
+                            alerta('<div class="alert alert-warning text-center">Las cantidades de piezas distribuidas no coinciden con las pedidas en el Detalle del pedido '+(i+1)+'</div>');
+                            $(j).find('#cantidad_piezas').addClass('error');
+                            z++;
+                        }
+                        arreglo_marcaciones = [];
+                        arreglo_coloraciones = [];
+                        for (f = 0; f < fil; f++) {
+                            if ($(j).find('#nombre_marcacion_' + f + '_' + ids_esp_emp[ee].value).val() != '') {
+                                colores = [];
+                                for (c = 0; c < col; c++) {
+                                    cant_x_det_esp = [];
+                                    if (f == 0) {
+                                        /* =========== PRECIOS x COLORACION ========= */
+                                        arreglo_precios_x_col = [];
+                                        for (det = 0; det < ids_det_esp.length; det++) {
+                                            arreglo_precios_x_col.push({
+                                                id_det_esp: ids_det_esp[det].value,
+                                                precio: $(j).find('#precio_color_' + c + '_' + ids_det_esp[det].value + '_' + ids_esp_emp[ee].value).val()
+                                            });
+                                        }
+                                        arreglo_coloraciones.push({
+                                            id_color: $(j).find('#color_' + c + '_' + ids_esp_emp[ee].value).val(),
+                                            arreglo_precios_x_col: arreglo_precios_x_col
                                         });
                                     }
-                                    arreglo_coloraciones.push({
-                                        id_color: $('#color_' + c + '_' + ids_esp_emp[ee].value).val(),
-                                        arreglo_precios_x_col: arreglo_precios_x_col
+                                    for (det = 0; det < ids_det_esp.length; det++) {
+                                        cant_x_det_esp.push({
+                                            id_det_esp: ids_det_esp[det].value,
+                                            cantidad: $(j).find('#ramos_marcacion_' + f + '_' + c + '_' + ids_det_esp[det].value + '_' + ids_esp_emp[ee].value).val()
+                                        });
+                                    }
+                                    colores.push({
+                                        cant_x_det_esp: cant_x_det_esp
                                     });
                                 }
-                                for (det = 0; det < ids_det_esp.length; det++) {
-                                    cant_x_det_esp.push({
-                                        id_det_esp: ids_det_esp[det].value,
-                                        cantidad: $('#ramos_marcacion_' + f + '_' + c + '_' + ids_det_esp[det].value + '_' + ids_esp_emp[ee].value).val()
-                                    });
-                                }
-                                colores.push({
-                                    cant_x_det_esp: cant_x_det_esp
+                                arreglo_marcaciones.push({
+                                    nombre: $(j).find('#nombre_marcacion_' + f + '_' + ids_esp_emp[ee].value).val(),
+                                    ramos: $(j).find('#total_ramos_marcacion_' + f + '_' + ids_esp_emp[ee].value).val(),
+                                    piezas: $(j).find('#total_piezas_marcacion_' + f + '_' + ids_esp_emp[ee].value).val(),
+                                    colores: colores
                                 });
+                            } else {
+                                alerta('<div class="alert alert-warning text-center">Faltan datos (nombre de marcación) por ingresar en el Detalle del pedido '+(i+1)+'</div>');
+                                $(j).find('#nombre_marcacion_' + f + '_' + ids_esp_emp[ee].value).addClass('error');
+                                z++;
                             }
-                            arreglo_marcaciones.push({
-                                nombre: $('#nombre_marcacion_' + f + '_' + ids_esp_emp[ee].value).val(),
-                                ramos: $('#total_ramos_marcacion_' + f + '_' + ids_esp_emp[ee].value).val(),
-                                piezas: $('#total_piezas_marcacion_' + f + '_' + ids_esp_emp[ee].value).val(),
-                                colores: colores
-                            });
-                        } else {
-                            alerta('<div class="alert alert-warning text-center">Faltan datos (nombre de marcación) por ingresar</div>');
-                            $('#nombre_marcacion_' + f + '_' + ids_esp_emp[ee].value).addClass('error');
-                            return false;
                         }
+                        arreglo_esp_emp.push({
+                            id_esp_emp: ids_esp_emp[ee].value,
+                            arreglo_precios: arreglo_precios,
+                            arreglo_marcaciones: arreglo_marcaciones,
+                            arreglo_coloraciones: arreglo_coloraciones,
+                        });
                     }
 
-                    arreglo_esp_emp.push({
-                        id_esp_emp: ids_esp_emp[ee].value,
-                        arreglo_precios: arreglo_precios,
-                        arreglo_marcaciones: arreglo_marcaciones,
-                        arreglo_coloraciones: arreglo_coloraciones,
+                    ids_datos_exportacion = $(j).find('.id_dato_exportacion');
+                    arreglo_dat_exp = [];
+                    for (dat = 0; dat < ids_datos_exportacion.length; dat++) {
+                        id_dat_exp = ids_datos_exportacion[dat].value;
+                        arreglo_dat_exp.push({
+                            id_dat_exp: id_dat_exp,
+                            valor: $(j).find('#dato_exportacion_' + id_dat_exp).val().toUpperCase()
+                        });
+                    }
+                    det_ped_arreglo_esp_emp.push({
+                        id_det_ped:$(j).find('input.id_det_ped').val(),
+                        agencia_carga : $(j).find('#id_agencia_carga').val(),
+                        cant_piezas : $(j).find('#cantidad_piezas').val(),
+                        arreglo_esp_emp : arreglo_esp_emp
                     });
-                }
-
-                ids_datos_exportacion = $('.id_dato_exportacion');
-                arreglo_dat_exp = [];
-                for (dat = 0; dat < ids_datos_exportacion.length; dat++) {
-                    id_dat_exp = ids_datos_exportacion[dat].value;
-                    arreglo_dat_exp.push({
-                        id_dat_exp: id_dat_exp,
-                        valor: $('#dato_exportacion_' + id_dat_exp).val().toUpperCase()
-                    });
-                }
+                    det_ped_arreglo_dat_exp.push(arreglo_dat_exp);
+                });
+                
                 datos = {
                     _token: token,
                     id_pedido: $('#id_pedido').val(),
+                    arreglo_dat_exp: arreglo_dat_exp,
                     id_detalle_pedido: $('#id_detalle_pedido').val(),
                     fecha_pedido: $('#fecha_pedido').val(),
                     fecha_envio: $('#fecha_pedido').val(),
-                    cantidad_piezas: $('#cantidad_piezas').val(),
-                    id_agencia_carga: $('#id_agencia_carga').val(),
-                    arreglo_esp_emp: arreglo_esp_emp,
-                    arreglo_dat_exp: arreglo_dat_exp
+                    det_ped_arreglo_esp_emp: det_ped_arreglo_esp_emp,
+                    det_ped_arreglo_dat_exp: det_ped_arreglo_dat_exp
                 };
 
-                post_jquery('pedidos/update_orden_tinturada', datos, function () {
-                    cerrar_modals();
-                    editar_pedido_tinturado(datos['id_pedido'], $('#pos_det_ped').val(), false);
-                    listar_resumen_pedidos($('#fecha_pedidos_search').val(), true);
-                });
+                
+                if(z==0){
+                    post_jquery('pedidos/update_orden_tinturada', datos, function () {
+                        cerrar_modals();
+                        editar_pedido_tinturado(datos['id_pedido'], $('#pos_det_ped').val(), false);
+                        listar_resumen_pedidos($('#fecha_pedidos_search').val(), true);
+                    });
+                }
             });
     }
 }
@@ -1375,7 +1394,7 @@ function delete_marcacion(id_esp_emp) {
         });
 
         $.each($("input.ramos_marcacion_"+id_esp_emp),function(o,p){
-            $(p).attr({id:'total_ramos_marcacion'+o+'_'+id_esp_emp,name:'total_ramos_marcacion_'+o+'_'+id_esp_emp});
+            $(p).attr({id:'total_ramos_marcacion_'+o+'_'+id_esp_emp,name:'total_ramos_marcacion_'+o+'_'+id_esp_emp});
         });
 
         $.each($("input.piezas_marcacion_"+id_esp_emp),function(o,p){
@@ -1389,9 +1408,9 @@ function delete_marcacion(id_esp_emp) {
     });
 
 
-
-
     formateo_id_mar_col(id_esp_emp);
+
+    calcular_totales_tinturado(id_esp_emp, false);
 
 }
 
@@ -1409,6 +1428,33 @@ function delete_coloracion(id_esp_emp) {
                 $('#coloraciones_' + id_esp_emp).val($('#coloraciones_' + id_esp_emp).val()-1);
 
     formateo_id_mar_col(id_esp_emp);
+
+    calcular_totales_tinturado(id_esp_emp, false);
+}
+
+function update_dato_exp_pedio_tinturado(id_detalle_pedido,token){
+    $.LoadingOverlay('show');
+    datos_exportacion =[];
+    $.each($("td.dato_exportacion_"+id_detalle_pedido),function(i,j){
+        valor = $(j).find('input.dato_exportacion_'+id_detalle_pedido).val();
+        if(valor!=''){
+            datos_exportacion.push({
+                id_dato_exportacion : $(j).find('input.id_dato_exportacion_'+id_detalle_pedido).val(),
+                valor  :  $(j).find('input.dato_exportacion_'+id_detalle_pedido).val(),
+            });
+        }
+    });
+    datos = {
+        id_detalle_pedido: id_detalle_pedido,
+        datos_exportacion : datos_exportacion,
+        _token: token
+    };
+
+    post_jquery('pedidos/update_dato_exp_pedio_tinturado', datos, function () {
+        listar_resumen_pedidos($('#fecha_pedidos_search').val(), true);
+    });
+    $.LoadingOverlay('hide');
+
 }
 
 function formateo_id_mar_col(id_esp_emp){
