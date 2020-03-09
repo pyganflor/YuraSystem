@@ -474,7 +474,7 @@
         @endforeach
         <div class="form-row text-center">
             <button type="button" class="btn btn-success" onclick="update_orden_tinturada('{{csrf_token()}}')" id="btn_update_orden_tinturada">
-                <i class="fa fa-refresh"></i> Actualizar
+                <i class="fa fa-refresh"></i> Actualizar todo el pedido
             </button>
         </div>
     </div>

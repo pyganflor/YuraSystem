@@ -222,15 +222,15 @@ class PedidoVentaController extends Controller
                             $model_detalle_pedido = DetallePedido::all()->last();
                             bitacora('detalle_pedido', $model_detalle_pedido->id_detalle_pedido, 'I', 'Inserción satisfactoria del duplicado de un detalle pedio');
 
-                            foreach ($dataPedido->detalles as $dataDetPed) {
-                                foreach ($dataDetPed->detalle_pedido_dato_exportacion as $dePedDatExp){
+                            //foreach ($dataPedido->detalles as $dataDetPed) {
+                                foreach ($detallePedido->detalle_pedido_dato_exportacion as $dePedDatExp){
                                     $objDetallePedidoDatoExportacion = new DetallePedidoDatoExportacion;
                                     $objDetallePedidoDatoExportacion->id_detalle_pedido = $model_detalle_pedido->id_detalle_pedido;
                                     $objDetallePedidoDatoExportacion->id_dato_exportacion = $dePedDatExp->id_dato_exportacion;
                                     $objDetallePedidoDatoExportacion->valor = $dePedDatExp->valor;
                                     $objDetallePedidoDatoExportacion->save();
                                 }
-                            }
+                            //}
 
                             if($modelPedido->tipo_especificacion === "T") {
                                 foreach ($detallePedido->cliente_especificacion->especificacion->especificacionesEmpaque as $z => $esp_emp){

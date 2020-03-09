@@ -190,6 +190,7 @@
     }
     
     function store_duplicar_pedido() {
+        $.LoadingOverlay('show');
         if($("#form_fechas").valid()){
             arrFechas = [];
             $.each($(".fecha_pedio"),function (i,j) {

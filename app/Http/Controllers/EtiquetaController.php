@@ -35,7 +35,7 @@ class EtiquetaController extends Controller
             ])->join('envio as e','comprobante.id_envio','e.id_envio')
                 ->join('pedido as p','p.id_pedido','e.id_pedido')
                 ->whereIn('comprobante.estado',[0,1,5])
-                ->where('p.id_configuracion_empresa', $request->id_configuracion_empresa)->get(),
+                ->where('p.id_configuracion_empresa', $request->id_configuracion_empresa)->get()
         ]);
     }
 
@@ -230,14 +230,27 @@ class EtiquetaController extends Controller
                                             $objSheet->getCell('L' . ($w + 1))->setValue($ruc);
                                             $posicion = 13;
                                             $arr_posiciones = $this->posiciones_excel();
-                                            foreach ($dist->distribuciones_coloraciones_mayor_cero as $p => $dist_col) {
+                                            $distribucion_coloracion = json_decode($dist->dist_col);
+                                            foreach($distribucion_coloracion as $distCol){
+                                                foreach($distCol as $dc){
+                                                    if($dc->cantidad>0){
+                                                        $objSheet->getCell($arr_posiciones[$posicion] . ($w + 1))->setValue($dc->planta . " - " . $dc->variedad);
+                                                        $objSheet->getCell($arr_posiciones[$posicion + 1] . ($w + 1))->setValue($dc->color);
+                                                        $objSheet->getCell($arr_posiciones[$posicion + 2] . ($w + 1))->setValue($dc->longitud_ramo . " " . $dc->det_esp_u_m);
+                                                        $objSheet->getCell($arr_posiciones[$posicion + 3] . ($w + 1))->setValue($dc->cantidad);
+                                                        $objSheet->getCell($arr_posiciones[$posicion + 4] . ($w + 1))->setValue($dc->ramo . " " . $dc->ramo_u_m . ".");
+                                                    }
+                                                }
+                                            }
+
+                                            /*foreach ($dist->distribuciones_coloraciones_mayor_cero as $p => $dist_col) {
                                                 $objSheet->getCell($arr_posiciones[$posicion] . ($w + 1))->setValue(substr($dist_col->marcacion_coloracion->detalle_especificacionempaque->variedad->planta->nombre, 0, 3) . " - " . $dist_col->marcacion_coloracion->detalle_especificacionempaque->variedad->nombre);
                                                 $objSheet->getCell($arr_posiciones[$posicion + 1] . ($w + 1))->setValue($dist_col->marcacion_coloracion->coloracion->color->nombre);
                                                 $objSheet->getCell($arr_posiciones[$posicion + 2] . ($w + 1))->setValue($dist_col->marcacion_coloracion->detalle_especificacionempaque->longitud_ramo . " " . $dist_col->marcacion_coloracion->detalle_especificacionempaque->unidad_medida->siglas);
                                                 $objSheet->getCell($arr_posiciones[$posicion + 3] . ($w + 1))->setValue($dist_col->cantidad);
                                                 $objSheet->getCell($arr_posiciones[$posicion + 4] . ($w + 1))->setValue($dist_col->marcacion_coloracion->detalle_especificacionempaque->clasificacion_ramo->nombre . " " . $dist_col->marcacion_coloracion->detalle_especificacionempaque->clasificacion_ramo->unidad_medida->siglas . ".");
                                                 $posicion += 5;
-                                            }
+                                            }*/
                                             $w++;
                                         }
                                     }

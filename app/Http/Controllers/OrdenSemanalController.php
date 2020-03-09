@@ -1220,9 +1220,15 @@ class OrdenSemanalController extends Controller
                         $arr_colum_col[]=[
                             'p' =>'P-'.($Z+1),
                             'cantidad'=>$item['cantidad'],
-                            'color'=>$mar_col->coloracion->color->nombre,
-                            'texto'=>$mar_col->coloracion->color->texto,
-                            'fondo'=>$mar_col->coloracion->color->fondo,
+                            'color'=> $mar_col->coloracion->color->nombre,
+                            'texto'=> $mar_col->coloracion->color->texto,
+                            'fondo'=> $mar_col->coloracion->color->fondo,
+                            'variedad'=> $mar_col->detalle_especificacionempaque->variedad->siglas,
+                            'planta'=> substr($mar_col->detalle_especificacionempaque->variedad->planta->nombre, 0, 3),
+                            'longitud_ramo'=> $mar_col->detalle_especificacionempaque->longitud_ramo,
+                            'det_esp_u_m' => $mar_col->detalle_especificacionempaque->unidad_medida->siglas,
+                            'ramo'=> $mar_col->detalle_especificacionempaque->clasificacion_ramo->nombre,
+                            'ramo_u_m'=> $mar_col->detalle_especificacionempaque->clasificacion_ramo->unidad_medida->siglas
                         ];
                         /*$dc = new DistribucionColoracion();
                         $dc->id_distribucion = $distr->id_distribucion;
