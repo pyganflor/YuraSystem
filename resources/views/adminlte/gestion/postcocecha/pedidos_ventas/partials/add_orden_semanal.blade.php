@@ -5,9 +5,9 @@
                 Fecha Pedido
             </th>
             <td class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
-                <input type="date" id="fecha_pedido" name="fecha_pedido" required style="width: 100%" class="form-control">
+                <input type="date" id="fecha_pedido" name="fecha_pedido" required style="width: 100%" class="form-control"
+                value="{{now()->toDateString()}}">
             </td>
-
             <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
                 Cliente
             </th>
@@ -39,7 +39,7 @@
             </th>
             <td class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef" id="div_agenia_carga"></td>
         </tr>
-        <tr>
+        {{--<tr>
             <td colspan="8">
                 <table class="table-responsive table-bordered" style="width: 100%; border: 1px solid #9d9d9d; font-size: 0.9em">
                     <tr>
@@ -146,12 +146,12 @@
                     </tr>
                 </table>
             </td>
-        </tr>
+        </tr>--}}
     </table>
 </form>
 
 {{-- COLORES --}}
-<select name="select_colores" id="select_colores" style="display: none">
+{{--<select name="select_colores" id="select_colores" style="display: none">
     @foreach($colores as $c)
         <option value="{{$c->id_color}}" style="background-color: {{$c->fondo}}; color: {{$c->texto}}">{{$c->nombre}}</option>
     @endforeach
@@ -161,7 +161,7 @@
     <input type="hidden" id="fondo_color_{{$c->id_color}}" value="{{$c->fondo}}">
     <input type="hidden" id="texto_color_{{$c->id_color}}" value="{{$c->texto}}">
     <input type="hidden" id="nombre_color_{{$c->id_color}}" value="{{$c->nombre}}">
-@endforeach
+@endforeach--}}
 {{-- COLORES --}}
 
 @include('adminlte.gestion.postcocecha.pedidos_ventas.partials._tabla_orden_semanal')
@@ -302,6 +302,15 @@
         };
         get_jquery('{{url('pedidos/orden_semanal/listar_especificaciones_x_cliente')}}', datos, function (retorno) {
             $('#div_especificaciones_orden_semanal').html(retorno);
+            if($($(retorno)[0]).hasClass('well_1')){
+                $("#div_tabla_distribucion_pedido").css('display','none');
+
+            }else{
+                $("#div_tabla_distribucion_pedido").css('display','block');
+                $("#msj_busqueda_especificacion").html("El cliente no posee especificaciones");
+            }
+
+
         });
     }
 

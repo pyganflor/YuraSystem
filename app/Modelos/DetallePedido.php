@@ -48,6 +48,13 @@ class DetallePedido extends Model
             ->where('id_especificacion_empaque', $esp_emp);
     }
 
+    public function marcacionesDistribucionByEspEmp($esp_emp)
+    {
+        return Marcacion::where('id_detalle_pedido', $this->id_detalle_pedido)
+            ->where('id_especificacion_empaque', $esp_emp)
+            ->join('distribucion','distribucion.id_marcacion','marcacion.id_marcacion');
+    }
+
     public function coloraciones()
     {
         return $this->hasMany('\yura\Modelos\Coloracion', 'id_detalle_pedido');
@@ -103,5 +110,9 @@ class DetallePedido extends Model
     public function total_tallos()
     {
         return $this->data_tallos->mallas * $this->data_tallos->tallos_x_malla;
+    }
+
+    public function detalle_pedido_dato_exportacion(){
+        return $this->hasMany('yura\Modelos\DetallePedidoDatoExportacion', 'id_detalle_pedido');
     }
 }

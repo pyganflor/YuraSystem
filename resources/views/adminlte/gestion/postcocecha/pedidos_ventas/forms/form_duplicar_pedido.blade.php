@@ -190,6 +190,7 @@
     }
     
     function store_duplicar_pedido() {
+        $.LoadingOverlay('show');
         if($("#form_fechas").valid()){
             arrFechas = [];
             $.each($(".fecha_pedio"),function (i,j) {
@@ -216,7 +217,6 @@
     
     function eliminar_fecha() {
         cant_div = $(".div_fecha").length;
-        console.log(cant_div);
         $(".div_fecha_dulplicada_"+cant_div).remove();
     }
 </script>

@@ -187,17 +187,20 @@
                     desecho : desecho,
                     id_variedad : $("#filtro_predeterminado_variedad").val()
                 };
-                post_jquery('{{url('proy_venta_semanal/store_proyeccion_venta')}}', datos, function () {
+
+                $.post('{{url('proy_venta_semanal/store_proyeccion_venta')}}', datos, function (retorno){
                     listar_proyecciones_venta_semanal();
                     cerrar_modals();
+                }).always(function () {
+                    $.LoadingOverlay('hide');
                 });
-                $.LoadingOverlay('hide');
             });
         }else{
             modal_view('modal_error_store_proyeccion', '<div class="alert alert-danger text-center"><p> Debe seleccionar desde que semana en adelante desea programar</p> </div>', '<i class="fa fa-times"></i> Proyeccion de venta', true, false, '50%');
         }
 
     }
+
 
     function store_precio_promedio(id_cliente,id_variedad){
         $.LoadingOverlay('show');
