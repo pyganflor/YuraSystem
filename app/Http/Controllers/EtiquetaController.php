@@ -219,7 +219,7 @@ class EtiquetaController extends Controller
                                         for ($z = 1; $z <= $dist->piezas; $z++) {
                                             $objSheet->getCell('A' . ($w + 1))->setValue("AWB. " . $comprobante->envio->guia_madre);
                                             $objSheet->getCell('B' . ($w + 1))->setValue("HAWB. " . $comprobante->envio->guia_hija);
-                                            $objSheet->getCell('C' . ($w + 1))->setValue($z);
+                                            $objSheet->getCell('C' . ($w + 1))->setValue($dist->pos_pieza);
                                             $objSheet->getCell('D' . ($w + 1))->setValue($dist->piezas);
                                             $objSheet->getCell('E' . ($w + 1))->setValue($comprobante->envio->pedido->cliente->detalle()->nombre);
                                             $objSheet->getCell('G' . ($w + 1))->setValue($datos_exportacion != '' ? substr($datos_exportacion, 0, -1) : "");
