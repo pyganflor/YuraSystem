@@ -94,4 +94,15 @@ class ProyeccionModulo extends Model
             $proy->delete();
         }
     }
+
+    public function last_ciclo()
+    {
+        $last_ciclo = Ciclo::All()
+            ->where('estado', 1)
+            ->where('id_modulo', $this->id_modulo)
+            ->sortByDesc('fecha_inicio')
+            ->first();
+
+        return $last_ciclo;
+    }
 }

@@ -1,5 +1,5 @@
 <legend style="font-size: 1em" class="text-center">
-    <i class="fa fa-fw fa-info-circle"></i> Proyección para el módulo <strong>{{$modulo->nombre}}</strong> en la semana
+    <i class="fa fa-fw fa-info-circle"></i> Programación para el módulo <strong>{{$modulo->nombre}}</strong> en la semana
     <strong>{{$proyeccion->semana->codigo}}</strong>,
     variedad: <strong>{{$variedad->nombre}}</strong>
 </legend>
@@ -8,6 +8,8 @@
     $tallos_x_planta_default = $proyeccion->tipo == 'P' ? $proyeccion->semana->tallos_planta_poda : $proyeccion->semana->tallos_planta_siembra;
     $desecho_default = $proyeccion->semana->desecho;
     $tallos_x_ramo_default = $proyeccion->tipo == 'P' ? $proyeccion->semana->tallos_ramo_poda : $proyeccion->semana->tallos_ramo_siembra;
+    $plantas_iniciales_default = $last_ciclo != '' ? $last_ciclo->plantas_iniciales : 0;
+    $area_default = $last_ciclo != '' ? $last_ciclo->area : 0;
 @endphp
 <table class="table-bordered" style="width: 100%; border: 2px solid #9d9d9d;">
     <tr>
@@ -21,6 +23,31 @@
                 <option value="C" {{$proyeccion->tipo == 'C' ? 'selected' : ''}}>Finalizar</option>
             </select>
         </td>
+    </tr>
+    <tr>
+        <th class="text-center" style="border-color: #9d9d9d; background-color: #495054; color: white">
+            Fecha inicio
+        </th>
+        <td class="text-center" style="border-color: #9d9d9d">
+            <input type="date" name="fecha_inicio" id="fecha_inicio" style="width: 100%" class="text-center"
+                   value="{{$proyeccion->fecha_inicio}}">
+        </td>
+    </tr>
+    <tr>
+        <th class="text-center" style="border-color: #9d9d9d; background-color: #495054; color: white">
+            Fecha fin anterior
+        </th>
+        <td class="text-center" style="border-color: #9d9d9d">
+            <input type="date" name="fecha_fin" id="fecha_fin" style="width: 100%" class="text-center"
+                   value="{{$proyeccion->fecha_inicio}}">
+        </td>
+    </tr>
+    <tr>
+        <th class="text-center" style="border-color: #9d9d9d; background-color: #495054; color: white" colspan="2">
+            <button type="button" class="btn btn-xs btn-block btn-success" onclick="store_nuevo_ciclo()">
+                <i class="fa fa-fw fa-check"></i> Crear nuevo ciclo
+            </button>
+        </th>
     </tr>
     <tr>
         <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
@@ -51,10 +78,11 @@
     <tr>
         <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
             Plantas Iniciales
+            <strong class="error" title="Dato correspondiente al ciclo anterior">{{$proyeccion->plantas_iniciales > 0 ? '' : '*'}}</strong>
         </th>
         <td class="text-center" style="border-color: #9d9d9d">
             <input type="number" name="plantas_iniciales" id="plantas_iniciales" style="width: 100%" class="text-center"
-                   value="{{$proyeccion->plantas_iniciales}}">
+                   value="{{$proyeccion->plantas_iniciales > 0 ? $proyeccion->plantas_iniciales : $plantas_iniciales_default}}">
         </td>
     </tr>
     <tr>
@@ -87,6 +115,14 @@
                    value="{{$proyeccion->tallos_ramo > 0 ? $proyeccion->tallos_ramo : $tallos_x_ramo_default}}">
         </td>
     </tr>
+    <tr>
+        <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
+            Área
+        </th>
+        <td class="text-center" style="border-color: #9d9d9d">
+            <input type="number" name="area" id="area" style="width: 100%" class="text-center" value="{{$area_default}}" readonly>
+        </td>
+    </tr>
 </table>
 
 <input type="hidden" id="id_proyeccion_modulo" value="{{$proyeccion->id_proyeccion_modulo}}">
@@ -107,6 +143,7 @@
             tipo: $('#tipo').val(),
             semana: $('#semana').val(),
             curva: $('#curva').val(),
+            area: $('#area').val(),
             semana_poda_siembra: $('#semana_poda_siembra').val(),
             plantas_iniciales: $('#plantas_iniciales').val(),
             desecho: $('#desecho').val(),
@@ -119,5 +156,34 @@
             get_row_byModulo(mod);
             cerrar_modals();
         });
+    }
+
+    function store_nuevo_ciclo() {
+        datos = {
+            _token: '{{csrf_token()}}',
+            id_modulo: $('#modulo-edit_proy').val(),
+            id_proyeccion_modulo: $('#id_proyeccion_modulo').val(),
+            fecha_inicio: $('#fecha_inicio').val(),
+            fecha_fin: $('#fecha_fin').val(),
+            poda_siembra: $('#tipo').val(),
+            area: $('#area').val(),
+            plantas_iniciales: $('#plantas_iniciales').val(),
+            curva: $('#curva').val(),
+            conteo: $('#tallos_planta').val(),
+            semana_poda_siembra: $('#semana_poda_siembra').val(),
+            desecho: $('#desecho').val(),
+        };
+        if (datos['fecha_inicio'] <= datos['fecha_fin']) {
+            modal_quest('modal-quest_store_nuevo_ciclo', '<div class="alert alert-warning text-center">¿Estás seguro de cerrar el ciclo anterior y crear uno nuevo?</div>',
+                '<i class="fa fa-fw fa-exclamation-triangle"></i> Mensaje de confirmación', true, false, '', function () {
+                    post_jquery('{{url('proy_cosecha/store_nuevo_ciclo')}}', datos, function () {
+                        cerrar_modals();
+                        restaurar_proyeccion(datos['id_modulo']);
+                        //get_row_byModulo(datos['id_modulo']);
+                    });
+                });
+        } else {
+            alerta_errores('La fecha inicio debe ser menor o igual que la fecha fin.');
+        }
     }
 </script>

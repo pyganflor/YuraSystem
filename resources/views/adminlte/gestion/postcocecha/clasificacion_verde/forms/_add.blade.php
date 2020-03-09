@@ -300,6 +300,7 @@
                     if ($('#check_mandar_apertura_auto').prop('checked')) {
                         ids_variedades = $('.id_variedad_form');
                         arreglo_master = [];
+
                         for (v = 0; v < ids_variedades.length; v++) {
                             arreglo_master.push(store_lote_re_from(ids_variedades[v].value));
                         }

@@ -16,10 +16,12 @@ use yura\Console\Commands\ResumenSaldoProyeccionVentaSemanal;
 use yura\Console\Commands\ResumenSemanalTotal;
 use yura\Console\Commands\UpdateHistoricoVentas;
 use yura\Console\Commands\UpdateIndicador;
+use yura\Console\Commands\UpdateMonitoreoCiclos;
 use yura\Console\Commands\UpdateOtrosGastos;
 use yura\Console\Commands\UpdateProyeccionSemanal;
 use yura\Console\Commands\ResumenVentaDiariaMesAnterior;
 use yura\Console\Commands\UpdateRegalias;
+use yura\Console\Commands\UpdateResumenTotal;
 use yura\Console\Commands\VentaSemanalReal;
 use yura\Console\Commands\PrecioVariedadCliente;
 use yura\Console\Commands\ResumenSemanaCosecha;
@@ -51,6 +53,8 @@ class Kernel extends ConsoleKernel
         ResumenCostosSemanal::class,
         ResumenSaldoProyeccionVentaSemanal::class,
         IndicadorSemanal::class,
+        UpdateResumenTotal::class,
+        UpdateMonitoreoCiclos::class,
     ];
 
     /**
@@ -61,9 +65,6 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')
-        //          ->hourly();
-
         $schedule->command('ciclo:fecha_fin')->cron('0 * * * *')->runInBackground();    // FechaFinalCiclo::class
         $schedule->command('historico_ventas:update')->cron('0 0 * * *')->runInBackground();    // UpdateHistoricoVentas::class
         //$schedule->command('recepciones:delete')->hourly()->runInBackground(); // DeleteRecepciones::class
@@ -80,8 +81,10 @@ class Kernel extends ConsoleKernel
         $schedule->command('otros_gastos:update')->cron('20 0 * * *')->runInBackground(); // UpdateOtrosGastos::class
         $schedule->command('regalias:update')->cron('30 0 * * *')->runInBackground(); // UpdateRegalias::class
         $schedule->command('costos:update_semanal')->cron('25 * * * *')->runInBackground(); // ResumenCostosSemanal::class
+        $schedule->command('resumen_total:update_semanal')->cron('50 * * * *')->runInBackground(); // UpdateResumenTotal::class
         $schedule->command('indicador_semana:update')->cron('40 0 * * *')->runInBackground(); // IndicadorSemanal::class
         $schedule->command('resumen_saldo_proyeccion:venta_semanal')->cron('*/15 * * * *')->runInBackground(); // ResumenSaldoProyeccionVentaSemanal::class
+        $schedule->command('ciclo:update_monitoreo')->cron('35 * * * *')->runInBackground(); // UpdateMonitoreoCiclos::class
     }
 
     /**

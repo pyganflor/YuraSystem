@@ -22,7 +22,7 @@ class UpdateRegalias extends Command
      *
      * @var string
      */
-    protected $description = 'Comando para actualizar las regalias';
+    protected $description = 'Comando para actualizar las  regalias';
 
     /**
      * Create a new command instance.

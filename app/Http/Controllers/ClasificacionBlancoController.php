@@ -300,6 +300,7 @@ class ClasificacionBlancoController extends Controller
                 $inventario->disponibles = $item['armar'];
                 $inventario->descripcion = $item['texto'];
                 $inventario->id_clasificacion_blanco = $request->blanco;
+                $inventario->mesa = $item['mesa'];
 
                 if ($inventario->save()) {
                     $id = InventarioFrio::All()->last()->id_inventario_frio;
@@ -617,6 +618,31 @@ class ClasificacionBlancoController extends Controller
         $blanco = ClasificacionBlanco::find($request->blanco);
         return view('adminlte.gestion.postcocecha.clasificacion_blanco.partials.rendimiento', [
             'blanco' => $blanco
+        ]);
+    }
+
+    public function rendimiento_mesas(Request $request)
+    {
+        $blanco = ClasificacionBlanco::All()
+            ->where('estado', 1)
+            ->where('fecha_ingreso', $request->fecha_verde)
+            ->first();
+        $ramos = DB::table('inventario_frio')
+            ->select(DB::raw('sum(cantidad) as cant'))
+            ->where('estado', 1)
+            ->where('fecha_ingreso', 'like', $request->fecha_verde . '%')
+            ->get()[0]->cant;
+        $query = DB::table('inventario_frio')
+            ->where('estado', 1)
+            ->where('fecha_ingreso', 'like', $request->fecha_verde . '%')
+            ->get();
+
+        return view('adminlte.gestion.postcocecha.clasificacion_blanco.partials.rendimiento_mesas', [
+            'blanco' => $blanco,
+            'ramos' => $ramos,
+            'query' => $query,
+            'getCantidadHorasTrabajoBlanco' => getCantidadHorasTrabajoBlanco($request->fecha_verde),
+            'fecha_blanco' => $request->fecha_blanco,
         ]);
     }
 }

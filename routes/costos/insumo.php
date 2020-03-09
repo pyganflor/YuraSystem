@@ -16,3 +16,7 @@ Route::post('costos_gestion/importar_file_producto', 'Costos\CostosController@im
 Route::get('costos_gestion/vincular_actividad_producto', 'Costos\CostosController@vincular_actividad_producto');
 Route::post('costos_gestion/store_actividad_producto', 'Costos\CostosController@store_actividad_producto');
 Route::post('costos_gestion/importar_file_act_producto', 'Costos\CostosController@importar_file_act_producto');
+
+/* ---------------------------------- REPORTE ------------------------------------- */
+Route::get('reporte_insumos', 'Costos\CostosController@reporte_insumos');
+Route::get('reporte_insumos/listar_reporte', 'Costos\CostosController@listar_reporte_insumos');

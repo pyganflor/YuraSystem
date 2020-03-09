@@ -666,7 +666,7 @@ class CostosController extends Controller
             $activeSheetData = $document->getActiveSheet()->toArray(null, true, true, true);
 
             ImportarCostos::dispatch($activeSheetData, $request->concepto_importar, $request->criterio_importar, $request->sobreescribir_importar == 'S' ? true : false)
-                ->onQueue('job')->onConnection('sync');
+                ->onQueue('job');
         } else {
             $errores = '';
             foreach ($valida->errors()->all() as $mi_error) {
@@ -1039,7 +1039,7 @@ class CostosController extends Controller
         ]);
     }
 
-    public function listar_reporte(Request $request)
+    public function listar_reporte_mano_obra(Request $request)
     {
         $semanas = DB::table('costos_semana_mano_obra')
             ->select('codigo_semana')->distinct()
@@ -1097,6 +1097,104 @@ class CostosController extends Controller
             'criterio' => $request->criterio,
             'matriz' => $matriz,
             'totales' => $totales,
+        ]);
+    }
+
+    public function reporte_insumos(Request $request)
+    {
+        $semana_actual = getSemanaByDate(date('Y-m-d'));
+        $semana_desde = getSemanaByDate(opDiasFecha('-', 35, date('Y-m-d')));
+        return view('adminlte.gestion.costos.insumo.reporte.inicio', [
+            'url' => $request->getRequestUri(),
+            'submenu' => Submenu::Where('url', '=', substr($request->getRequestUri(), 1))->get()[0],
+            'areas' => Area::All(),
+            'semana_actual' => $semana_actual,
+            'semana_desde' => $semana_desde
+        ]);
+    }
+
+    public function listar_reporte_insumos(Request $request)
+    {
+        $semanas = DB::table('costos_semana')
+            ->select('codigo_semana')->distinct()
+            ->where('codigo_semana', '>=', $request->desde)
+            ->where('codigo_semana', '<=', $request->hasta)
+            ->get();
+        $area = Area::find($request->area);
+        $actividad = Actividad::find($request->actividad);
+
+        $ids = DB::table('costos_semana as c')
+            ->select('c.id_actividad_producto')->distinct();
+        if ($actividad != '')   // una actividad en especifico
+            $ids = $ids
+                ->join('actividad_producto as ap', 'c.id_actividad_producto', '=', 'ap.id_actividad_producto')
+                ->where('ap.id_actividad', $actividad->id_actividad);
+        else if ($area != '') {
+            $ids = $ids
+                ->join('actividad_producto as ap', 'c.id_actividad_producto', '=', 'ap.id_actividad_producto')
+                ->join('actividad as a', 'ap.id_actividad', '=', 'a.id_actividad')
+                ->where('a.id_area', $area->id_area);
+        }
+        if ($request->criterio == 'V')  // dinero
+            $ids = $ids->where('c.valor', '>', 0);
+        else    // cantidad
+            $ids = $ids->where('c.cantidad', '>', 0);
+        $ids = $ids
+            ->where('c.codigo_semana', '>=', $request->desde)
+            ->where('c.codigo_semana', '<=', $request->hasta)
+            ->get();
+
+        $list_ids = [];
+        $matriz = [];
+        foreach ($ids as $item) {
+            $query = CostosSemana::where('codigo_semana', '>=', $request->desde)
+                ->where('codigo_semana', '<=', $request->hasta)
+                ->where('id_actividad_producto', $item->id_actividad_producto)
+                ->get();
+
+            array_push($matriz, $query);
+            array_push($list_ids, $item->id_actividad_producto);
+        }
+
+        $totales = DB::table('costos_semana')
+            ->select(DB::raw('sum(valor) as cant'), 'codigo_semana as semana')
+            ->where('codigo_semana', '>=', $request->desde)
+            ->where('codigo_semana', '<=', $request->hasta)
+            ->whereIn('id_actividad_producto', $list_ids)
+            ->groupBy('codigo_semana')
+            ->get();
+
+        return view('adminlte.gestion.costos.insumo.reporte.partials.listado', [
+            'semanas' => $semanas,
+            'area' => $area,
+            'actividad' => $actividad,
+            'criterio' => $request->criterio,
+            'matriz' => $matriz,
+            'totales' => $totales,
+        ]);
+    }
+
+    public function costos_generales(Request $request)
+    {
+        $semana_actual = getSemanaByDate(date('Y-m-d'));
+        $semana_desde = getSemanaByDate(opDiasFecha('-', 35, date('Y-m-d')));
+        return view('adminlte.gestion.costos.generales.inicio', [
+            'url' => $request->getRequestUri(),
+            'submenu' => Submenu::Where('url', '=', substr($request->getRequestUri(), 1))->get()[0],
+            'semana_actual' => $semana_actual,
+            'semana_desde' => $semana_desde
+        ]);
+    }
+
+    public function listar_reporte_general(Request $request)
+    {
+        $semanas = DB::table('resumen_semanal_total')
+            ->where('codigo_semana', '>=', $request->desde)
+            ->where('codigo_semana', '<=', $request->hasta)
+            ->get();
+
+        return view('adminlte.gestion.costos.generales.partials.listado', [
+            'semanas' => $semanas
         ]);
     }
 

@@ -23,6 +23,7 @@ Route::group(['middleware' => 'autenticacion'], function () {
     Route::group(['middleware' => 'controlsession'], function () {
         Route::get('/', 'YuraController@inicio');
         Route::get('select_filtro_variedad', 'YuraController@select_filtro_variedad');
+        Route::get('detallar_indicador', 'YuraController@detallar_indicador');
         Route::get('mostrar_indicadores_claves', 'YuraController@mostrar_indicadores_claves');
         Route::get('cargar_accesos_directos', 'YuraController@cargar_accesos_directos');
         Route::post('save_config_user', 'YuraController@save_config_user');
@@ -109,11 +110,13 @@ Route::group(['middleware' => 'autenticacion'], function () {
             include 'proyecciones/ventas_x_cliente.php';
             include 'proyecciones/resumen_total.php';
             include 'proyecciones/mano_obra.php';
+            include 'proyecciones/monitoreo_ciclos.php';
 
             /* ================== COSTOS =================== */
             include 'costos/insumo.php';
             include 'costos/mano_obra.php';
             include 'costos/importar.php';
+            include 'costos/generales.php';
 
             /* ================== DB =================== */
             include 'db/rutas.php';

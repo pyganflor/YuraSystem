@@ -37,33 +37,11 @@ class ClasificacionVerdeController extends Controller
 
     public function buscar_clasificaciones(Request $request)
     {
-        $listado = DB::table('clasificacion_verde as c')
-            ->join('semana as s', 's.id_semana', '=', 'c.id_semana')
-            ->select('c.*', 's.codigo as semana')->distinct();
-
-
-        if ($request->fecha_verde != '')
-            $listado = $listado->where('c.fecha_ingreso', '=', $request->fecha_verde);
-        else {
-            if ($request->fecha_desde != '')
-                $listado = $listado->where('c.fecha_ingreso', '>=', $request->fecha_desde);
-            if ($request->fecha_hasta != '')
-                $listado = $listado->where('c.fecha_ingreso', '<=', $request->fecha_hasta);
-        }
-        if ($request->semana_desde != '')
-            $listado = $listado->where('s.codigo', '>=', $request->semana_desde);
-        if ($request->semana_hasta != '')
-            $listado = $listado->where('s.codigo', '<=', $request->semana_hasta);
-        if ($request->anno != '')
-            $listado = $listado->where('s.anno', '=', $request->anno);
-        if ($request->variedad != '')
-            $listado = $listado->where('c.anno', '=', $request->variedad);
-
-        $listado = $listado->orderBy('s.anno', 'desc')->orderBy('c.fecha_ingreso', 'desc')
-            ->paginate(10);
-
         $datos = [
-            'listado' => $listado
+            'verde' => ClasificacionVerde::All()
+                ->where('estado', 1)
+                ->where('fecha_ingreso', $request->fecha_verde)
+                ->first()
         ];
 
         return view('adminlte.gestion.postcocecha.clasificacion_verde.partials.listado', $datos);
@@ -813,23 +791,33 @@ class ClasificacionVerdeController extends Controller
                                 $lote->fecha_registro = date('Y-m-d H:i:s');
                                 $lote->cantidad_tallos = $item['apertura'];
                                 $lote->etapa = 'A';
-                                $lote->apertura = $object['fecha'];
+                                $lote->apertura = $item['fecha'];
 
                                 if ($lote->save()) {
                                     $lote = LoteRE::All()->last();
                                     bitacora('lote_re', $lote->id_lote_re, 'I', 'Inserción satisfactoria de un nuevo lote RE');
 
                                     /* ================ GUARDAR EN TABLA STOCK_APERTURA ===============*/
-                                    $stock = new StockApertura();
-                                    $stock->fecha_registro = date('Y-m-d H:i:s');
-                                    $stock->fecha_inicio = $object['fecha'];
-                                    $stock->cantidad_tallos = $lote->cantidad_tallos;
-                                    $stock->cantidad_disponible = $lote->cantidad_tallos;
-                                    $stock->id_variedad = $lote->id_variedad;
-                                    $stock->id_clasificacion_unitaria = $lote->id_clasificacion_unitaria;
-                                    $stock->dias = $item['dias'];
-                                    $stock->id_lote_re = $lote->id_lote_re;
-
+                                    $stock = StockApertura::All()
+                                        ->where('estado', 1)
+                                        ->where('fecha_inicio', $item['fecha'])
+                                        ->where('id_clasificacion_unitaria', $lote->id_clasificacion_unitaria)
+                                        ->where('id_variedad', $lote->id_variedad)
+                                        ->first();
+                                    if ($stock == '') {
+                                        $stock = new StockApertura();
+                                        $stock->fecha_registro = date('Y-m-d H:i:s');
+                                        $stock->fecha_inicio = $item['fecha'];
+                                        $stock->cantidad_tallos = $lote->cantidad_tallos;
+                                        $stock->cantidad_disponible = $lote->cantidad_tallos;
+                                        $stock->id_variedad = $lote->id_variedad;
+                                        $stock->id_clasificacion_unitaria = $lote->id_clasificacion_unitaria;
+                                        $stock->dias = $item['dias'];
+                                        $stock->id_lote_re = $lote->id_lote_re;
+                                    } else {
+                                        $stock->cantidad_tallos += $lote->cantidad_tallos;
+                                        $stock->cantidad_disponible += $lote->cantidad_tallos;
+                                    }
                                     if ($stock->save()) {
                                         $stock = StockApertura::All()->last();
                                         bitacora('stock_apertura', $stock->id_stock_apertura, 'I', 'Inserción satisfactoria de un nuevo lote RE a Stock');
@@ -860,7 +848,7 @@ class ClasificacionVerdeController extends Controller
                                 $lote->fecha_registro = date('Y-m-d H:i:s');
                                 $lote->cantidad_tallos = $item['guarde'];
                                 $lote->etapa = 'C';
-                                $lote->guarde_clasificacion = $object['fecha'];
+                                $lote->guarde_clasificacion = $item['fecha'];
                                 $lote->dias_guarde_clasificacion = $item['dias'];
 
                                 if ($lote->save()) {
@@ -870,7 +858,7 @@ class ClasificacionVerdeController extends Controller
                                     /* ================ GUARDAR EN TABLA STOCK_GUARDE ===============*/
                                     $stock = new StockGuarde();
                                     $stock->fecha_registro = date('Y-m-d H:i:s');
-                                    $stock->fecha_inicio = $object['fecha'];
+                                    $stock->fecha_inicio = $item['fecha'];
                                     $stock->cantidad_tallos = $lote->cantidad_tallos;
                                     $stock->cantidad_disponible = $lote->cantidad_tallos;
                                     $stock->id_variedad = $lote->id_variedad;
@@ -1136,6 +1124,31 @@ class ClasificacionVerdeController extends Controller
         return view('adminlte.gestion.postcocecha.clasificacion_verde.partials.rendimiento', [
             'clasificacion_verde' => $clasificacion_verde,
             'listado' => $listado,
+        ]);
+    }
+
+    public function rendimiento_mesas(Request $request)
+    {
+        $verde = ClasificacionVerde::All()
+            ->where('estado', 1)
+            ->where('fecha_ingreso', $request->fecha_verde)
+            ->first();
+        $tallos = DB::table('detalle_clasificacion_verde')
+            ->select(DB::raw('sum(cantidad_ramos * tallos_x_ramos) as cant'))
+            ->where('estado', 1)
+            ->where('fecha_ingreso', 'like', $request->fecha_verde . '%')
+            ->get()[0]->cant;
+        $query = DB::table('detalle_clasificacion_verde')
+            ->where('estado', 1)
+            ->where('fecha_ingreso', 'like', $request->fecha_verde . '%')
+            ->get();
+
+        return view('adminlte.gestion.postcocecha.clasificacion_verde.partials.rendimiento_mesas', [
+            'verde' => $verde,
+            'tallos' => $tallos,
+            'query' => $query,
+            'getCantidadHorasTrabajoVerde' => getCantidadHorasTrabajoVerde($request->fecha_verde),
+            'fecha_verde' => $request->fecha_verde,
         ]);
     }
 

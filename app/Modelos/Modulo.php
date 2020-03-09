@@ -489,4 +489,20 @@ class Modulo extends Model
             ->orderBy('semana')
             ->get();
     }
+
+    public function getLastCosecha()
+    {
+        $query = DB::table('desglose_recepcion as dr')
+            ->select(DB::raw('max(r.fecha_ingreso) as fecha'))
+            ->join('recepcion as r', 'r.id_recepcion', '=', 'dr.id_recepcion')
+            ->where('dr.estado', 1)
+            ->where('r.estado', 1)
+            ->where('dr.id_modulo', $this->id_modulo)
+            ->where('r.fecha_ingreso', '<=', date('Y-m-d'))
+            ->get();
+        if (count($query) > 0)
+            if ($query[0] != '')
+                return difFechas(date('Y-m-d'), substr($query[0]->fecha, 0, 10))->days;
+        return 0;
+    }
 }

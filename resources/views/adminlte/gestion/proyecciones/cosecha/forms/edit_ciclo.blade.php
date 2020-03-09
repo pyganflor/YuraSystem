@@ -8,6 +8,7 @@
     @php
         $tallos_x_planta_default = $ciclo->poda_siembra == 'P' ? $ciclo->semana()->tallos_planta_poda : $ciclo->semana()->tallos_planta_siembra;
         $desecho_default = $ciclo->semana()->desecho;
+        $area_default = $ciclo->area;
     @endphp
     <table class="table-bordered" style="width: 100%; border: 2px solid #9d9d9d;">
         <tr>
@@ -49,6 +50,15 @@
         </tr>
         <tr>
             <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
+                Plantas Muertas
+            </th>
+            <td class="text-center" style="border-color: #9d9d9d">
+                <input type="number" name="plantas_muertas" id="plantas_muertas" style="width: 100%" class="text-center"
+                       value="{{$ciclo->plantas_muertas != '' ? $ciclo->plantas_muertas : 0}}">
+            </td>
+        </tr>
+        <tr>
+            <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
                 % Desecho
                 <strong class="error" title="Dato correspondiente a la semana de inicio">{{$ciclo->desecho > 0 ? '' : '*'}}</strong>
             </th>
@@ -65,6 +75,16 @@
             <td class="text-center" style="border-color: #9d9d9d">
                 <input type="number" name="conteo" id="conteo" style="width: 100%" class="text-center"
                        value="{{$ciclo->conteo > 0 ? $ciclo->conteo : $tallos_x_planta_default}}">
+            </td>
+        </tr>
+        <tr>
+            <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
+                Área
+                <strong class="error" title="Dato correspondiente al módulo">{{$ciclo->area > 0 ? '' : '*'}}</strong>
+            </th>
+            <td class="text-center" style="border-color: #9d9d9d">
+                <input type="number" name="area" id="area" style="width: 100%" class="text-center"
+                       value="{{$ciclo->area > 0 ? $ciclo->area : $area_default}}">
             </td>
         </tr>
     </table>
@@ -87,8 +107,10 @@
                 curva: $('#curva').val(),
                 semana_poda_siembra: $('#semana_poda_siembra').val(),
                 plantas_iniciales: $('#plantas_iniciales').val(),
+                plantas_muertas: $('#plantas_muertas').val(),
                 desecho: $('#desecho').val(),
                 conteo: $('#conteo').val(),
+                area: $('#area').val(),
                 filtro_semana_hasta: $('#filtro_predeterminado_hasta').val(),
             };
             mod = $('#modulo-edit_ciclo').val();

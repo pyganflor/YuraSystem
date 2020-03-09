@@ -15,7 +15,7 @@ class ProyeccionUpdateCiclo extends Command
      *
      * @var string
      */
-    protected $signature = 'proyeccion:update_ciclo {id_ciclo} {semana_poda_siembra} {curva} {poda_siembra} {plantas_iniciales} {desecho} {conteo}';
+    protected $signature = 'proyeccion:update_ciclo {id_ciclo} {semana_poda_siembra} {curva} {poda_siembra} {plantas_iniciales} {plantas_muertas} {desecho} {conteo} {area}';
 
     /**
      * The console command description.
@@ -47,8 +47,10 @@ class ProyeccionUpdateCiclo extends Command
         $par_curva = $this->argument('curva');
         $par_poda_siembra = $this->argument('poda_siembra');
         $par_plantas_iniciales = $this->argument('plantas_iniciales');
+        $par_plantas_muertas = $this->argument('plantas_muertas');
         $par_desecho = $this->argument('desecho');
         $par_conteo = $this->argument('conteo');
+        $par_area = $this->argument('area');
 
         $model = Ciclo::find($par_id_ciclo);
         $semana_fin = getLastSemanaByVariedad($model->id_variedad);
@@ -60,8 +62,10 @@ class ProyeccionUpdateCiclo extends Command
         $model->curva = $par_curva;
         $model->semana_poda_siembra = $par_semana_poda_siembra;
         $model->plantas_iniciales = $par_plantas_iniciales;
+        $model->plantas_muertas = $par_plantas_muertas;
         $model->desecho = $par_desecho;
         $model->conteo = $par_conteo;
+        $model->area = $par_area;
 
         $model->save();
         bitacora('ciclo', $model->id_ciclo, 'U', 'Actualización satisfactoria de un ciclo');

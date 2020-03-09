@@ -170,6 +170,23 @@ class ClasificacionVerde extends Model
         return $r;
     }
 
+    public function getTallosByvariedadUnitariaFecha($variedad, $unitaria, $fecha)
+    {
+        $query = DB::table('detalle_clasificacion_verde')
+            ->where('estado', 1)
+            ->where('id_clasificacion_verde', $this->id_clasificacion_verde)
+            ->where('id_clasificacion_unitaria', $unitaria)
+            ->where('id_variedad', $variedad)
+            ->where('fecha_ingreso', 'like', $fecha . '%')
+            ->get();
+
+        $r = 0;
+        foreach ($query as $detalle) {
+            $r += $detalle->cantidad_ramos * $detalle->tallos_x_ramos;
+        }
+        return $r;
+    }
+
     public function getPorcentajeUnitariaByVariedad($variedad, $unitaria)
     {
         $parte = $this->getTallosByvariedadUnitaria($variedad, $unitaria);
@@ -198,7 +215,10 @@ class ClasificacionVerde extends Model
     {
         $l = DB::table('detalle_clasificacion_verde as d')
             ->select('d.id_clasificacion_unitaria')->distinct()
-            ->where('id_clasificacion_verde', '=', $this->id_clasificacion_verde)->get();
+            ->join('clasificacion_unitaria as u', 'u.id_clasificacion_unitaria', '=', 'd.id_clasificacion_unitaria')
+            ->where('id_clasificacion_verde', '=', $this->id_clasificacion_verde)
+            ->orderBy('u.nombre', 'asc')
+            ->get();
         $r = [];
         foreach ($l as $item) {
             array_push($r, ClasificacionUnitaria::find($item->id_clasificacion_unitaria));
@@ -208,9 +228,10 @@ class ClasificacionVerde extends Model
 
     function getRendimiento()
     {
-        if (count($this->detalles) > 0 && $this->personal > 0 && $this->getCantidadHorasTrabajo() > 0) {
+        $getCantidadHorasTrabajo = $this->getCantidadHorasTrabajo();
+        if (count($this->detalles) > 0 && $this->personal > 0 && $getCantidadHorasTrabajo > 0) {
             $r = $this->total_tallos_rendimiento() / $this->personal;
-            $r = $r / $this->getCantidadHorasTrabajo();
+            $r = $r / $getCantidadHorasTrabajo;
 
             return round($r, 2);
         } else {
@@ -218,11 +239,27 @@ class ClasificacionVerde extends Model
         }
     }
 
+    function getRendimientoByMesa($mesa)
+    {
+        $tallos = DB::table('detalle_clasificacion_verde')
+            ->select(DB::raw('sum(cantidad_ramos * tallos_x_ramos) as cant'))
+            ->where('estado', 1)
+            ->where('fecha_ingreso', 'like', $this->fecha_ingreso . '%')
+            ->where('mesa', $mesa)
+            ->get()[0]->cant;
+        $getCantidadHorasTrabajo = $this->getCantidadHorasTrabajo();
+
+        if ($getCantidadHorasTrabajo > 0)
+            return $tallos / $getCantidadHorasTrabajo;
+        return 0;
+    }
+
     function getRendimientoRamos()
     {
-        if (count($this->detalles) > 0 && $this->personal > 0 && $this->getCantidadHorasTrabajo() > 0) {
+        $getCantidadHorasTrabajo = $this->getCantidadHorasTrabajo();
+        if (count($this->detalles) > 0 && $this->personal > 0 && $getCantidadHorasTrabajo > 0) {
             $r = $this->total_ramos() / $this->personal;
-            $r = $r / $this->getCantidadHorasTrabajo();
+            $r = $r / $getCantidadHorasTrabajo;
 
             return round($r, 2);
         } else {
@@ -430,5 +467,41 @@ class ClasificacionVerde extends Model
                 explode('|', getUnitaria($item->id_clasificacion_unitaria)->nombre)[1], 2);
         }
         return $r;
+    }
+
+    function getUnitariasFechaByVariedad($variedad)
+    {
+        $query = DB::table('detalle_clasificacion_verde')
+            ->select('fecha_ingreso')->distinct()
+            ->where('estado', 1)
+            ->where('id_clasificacion_verde', $this->id_clasificacion_verde)
+            ->where('id_variedad', $variedad)
+            ->get();
+
+        $fechas = [];
+        foreach ($query as $item) {
+            if (!in_array(substr($item->fecha_ingreso, 0, 10), $fechas))
+                array_push($fechas, substr($item->fecha_ingreso, 0, 10));
+        }
+
+        $list = [];
+        foreach ($fechas as $f) {
+            $unitarias = DB::table('detalle_clasificacion_verde')
+                ->select('id_clasificacion_unitaria')->distinct()
+                ->where('estado', 1)
+                ->where('id_clasificacion_verde', $this->id_clasificacion_verde)
+                ->where('id_variedad', $variedad)
+                ->where('fecha_ingreso', 'like', $f . '%')
+                ->get();
+
+            foreach ($unitarias as $u) {
+                array_push($list, [
+                    'unitaria' => $u->id_clasificacion_unitaria,
+                    'fecha' => $f,
+                ]);
+            }
+        }
+
+        return $list;
     }
 }
