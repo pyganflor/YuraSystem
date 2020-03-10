@@ -32,6 +32,11 @@
                     ]);
                 @endphp
             @endfor
+            <th class="text-center th_fijo_right_0" style="border-color: #9d9d9d; background-color: #357CA5; color: white; z-index: 9">
+                <div style="width: 70px">
+                    Ingresar
+                </div>
+            </th>
         </tr>
         @foreach($ciclos as $pos => $item)
             @php
@@ -89,6 +94,11 @@
                         $cant_mon++;
                     @endphp
                 @endfor
+                <th class="text-center th_fijo_right_0" style="border-color: #9d9d9d; background-color: #e9ecef">
+                    <input type="number" style="width: 100%; background-color: #e9ecef" id="ingresar_{{$item['ciclo']->id_ciclo}}"
+                           class="text-center">
+                    <input type="hidden" class="ids_ciclo" value="{{$item['ciclo']->id_ciclo}}">
+                </th>
             </tr>
         @endforeach
         <tr class="tr_fijo_bottom_0">
@@ -103,6 +113,11 @@
                            value="{{$item['positivos'] > 0 ? round($item['valor'] / $item['positivos'], 2) : 0}}">
                 </th>
             @endforeach
+            <th class="text-center th_fijo_right_0" style="border-color: #9d9d9d; background-color: #357CA5; color: white; z-index: 9">
+                <button type="button" class="btn btn-xs btn-block btn-success" onclick="store_nuevos_ingresos()">
+                    <i class="fa fa-fw fa-check"></i>
+                </button>
+            </th>
         </tr>
     </table>
 </div>
@@ -150,12 +165,39 @@
         }
     }
 
+    function store_nuevos_ingresos() {
+        ids_ciclo = $('.ids_ciclo');
+        data = [];
+        for (i = 0; i < ids_ciclo.length; i++) {
+            id_ciclo = ids_ciclo[i].value;
+            valor = $('#ingresar_' + id_ciclo).val();
+            if (valor > 0) {
+                data.push({
+                    ciclo: id_ciclo,
+                    valor: valor
+                });
+            }
+        }
+        datos = {
+            _token: '{{csrf_token()}}',
+            data: data
+        };
+        post_jquery('{{url('monitoreo_ciclos/store_nuevos_ingresos')}}', datos, function () {
+            listar_ciclos();
+        }, 'div_listado_ciclos');
+    }
+
     $(window).ready(function () {
         colorear_celdas();
     })
 </script>
 
 <style>
+    .th_fijo_right_0 {
+        position: sticky;
+        right: 0;
+    }
+
     .th_fijo_left_0 {
         position: sticky;
         left: 0;

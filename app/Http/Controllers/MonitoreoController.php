@@ -107,4 +107,33 @@ class MonitoreoController extends Controller
         ];
     }
 
+    public function store_nuevos_ingresos(Request $request)
+    {
+        foreach ($request->data as $pos => $item) {
+            $ciclo = Ciclo::find($item['ciclo']);
+            if ($ciclo != '') {
+                $last_monitoreo = Monitoreo::where('estado', 1)
+                    ->where('id_ciclo', $ciclo->id_ciclo)
+                    ->orderBy('num_sem', 'desc')
+                    ->first();
+                if ($last_monitoreo == '') {
+                    $last_monitoreo = new Monitoreo();
+                    $last_monitoreo->id_ciclo = $ciclo->id_ciclo;
+                    $last_monitoreo->num_sem = 1;
+                }
+                $last_monitoreo->altura = $item['valor'];
+
+                if (!$last_monitoreo->save()) {
+                    return [
+                        'success' => false,
+                        'mensaje' => '<div class="alert alert-danger text-center">Ha ocurrido un problema con el módulo "' . $ciclo->modulo->nombre . '</div>',
+                    ];
+                }
+            }
+        }
+        return [
+            'success' => true,
+            'mensaje' => '<div class="alert alert-success text-center">Se ha guardado satisfactoramente la información</div>',
+        ];
+    }
 }
