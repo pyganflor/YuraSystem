@@ -45,14 +45,35 @@ class RecalcularCurvas extends Command
             ->where('estado', 1)
             ->where('tabla', 'C')
             ->where('semana', $semana_pasada->codigo)
-            ->where('id_variedad', 3)// quitar
             ->where('cosechados', '>', 0)
             ->get();
         foreach ($ciclos as $c) {
             $ciclo = Ciclo::find($c->modelo);
-            if ($ciclo->modulo->nombre == '81B') {      // quitar
-                if ($ciclo->activo == 1) {
-                    dd($ciclo->getTallosProyectados());
+            if ($ciclo->modulo->nombre == '80') {      // quitar
+                $sem_ini = $ciclo->semana();
+                $num_sem = intval(difFechas($semana_pasada->fecha_inicial, $sem_ini->fecha_inicial)->days / 7) + 1;
+                if ($ciclo->activo == 1 && $num_sem >= $ciclo->semana_poda_siembra - 2) {   // esta activo y es una semana minima 2 antes del inicio de cosecha
+                    $configuracion = getConfiguracionEmpresa();
+                    $modulo = $ciclo->modulo;
+                    $getTallosProyectados = $ciclo->getTallosProyectados();
+                    if ($num_sem < $ciclo->semana_poda_siembra) {   // se trata de una semana antes del inicio de cosecha
+                        $cosechado = DB::table('desglose_recepcion as dr')
+                            ->join('recepcion as r', 'r.id_recepcion', '=', 'dr.id_recepcion')
+                            ->select(DB::raw('sum(dr.cantidad_mallas * dr.tallos_x_malla) as cant'))
+                            ->where('dr.estado', 1)
+                            ->where('dr.id_modulo', $modulo->id_modulo)
+                            ->where('r.estado', 1)
+                            ->where('r.fecha_ingreso', '<=', $semana_pasada->fecha_final)
+                            ->where('r.fecha_ingreso', '>=', opDiasFecha('+', 35, $ciclo->fecha_inicio))
+                            ->get()[0]->cant;
+                        $porc_cosechado = intval(($cosechado * 100) / $getTallosProyectados);
+                        if ($porc_cosechado >= $configuracion->proy_minimo_cosecha) {   // hay que mover una semana antes la curva
+                            dump('mover alante');
+                            /* ------------- algoritmo -------------- */
+                            $new_curva = getNuevaCurva($ciclo->curva, $porc_cosechado);
+                        }
+                        dd('antes', 'modulo=' . $modulo->nombre, 'total=' . $getTallosProyectados, 'cosechado=' . $cosechado, 'porc=' . $porc_cosechado);
+                    }
                 }
             }
         }

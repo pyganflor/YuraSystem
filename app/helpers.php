@@ -2617,3 +2617,8 @@ function getCantidadHorasTrabajoBlanco($fecha)
     }
     return 0;
 }
+
+function getNuevaCurva($curva, $inicio)
+{
+    dd($curva, $inicio);
+}
