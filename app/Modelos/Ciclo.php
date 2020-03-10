@@ -151,6 +151,6 @@ class Ciclo extends Model
 
     public function getTallosProyectados()
     {
-        return round(($this->plantas_actuales() * $this->conteo) * ((100 / $this->desecho) / 100), 2);
+        return round(($this->plantas_actuales() * $this->conteo), 2);
     }
 }
