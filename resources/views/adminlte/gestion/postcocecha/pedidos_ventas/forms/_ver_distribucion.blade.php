@@ -92,7 +92,7 @@
                                                 <span class="input-group-addon" style="background-color: #e9ecef">
                                                     {{$colum->p}}
                                                 </span>
-                                                {{$colum->cantidad}}
+                                                {{$colum->cantidad}} {{$colum->variedad}} {{$colum->ramo}}
                                             </div>
                                         </th>
                                     @endforeach
