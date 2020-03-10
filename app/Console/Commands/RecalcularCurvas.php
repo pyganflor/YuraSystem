@@ -45,13 +45,15 @@ class RecalcularCurvas extends Command
             ->where('estado', 1)
             ->where('tabla', 'C')
             ->where('semana', $semana_pasada->codigo)
-            ->where('id_variedad', 3)
+            ->where('id_variedad', 3)// quitar
             ->where('cosechados', '>', 0)
             ->get();
         foreach ($ciclos as $c) {
             $ciclo = Ciclo::find($c->modelo);
-            if ($ciclo->modulo->nombre == '81B') {
-                dd($ciclo->getTallosProyectados());
+            if ($ciclo->modulo->nombre == '81B') {      // quitar
+                if ($ciclo->activo == 1) {
+                    dd($ciclo->getTallosProyectados());
+                }
             }
         }
     }
