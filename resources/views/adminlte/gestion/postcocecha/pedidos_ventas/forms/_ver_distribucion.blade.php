@@ -27,7 +27,7 @@
                 @endforeach
                 <th class="text-center" style="border-color: #9d9d9d; width: 65px; background-color: #357ca5; color: white">Ramos</th>
                 <th class="text-center" style="border-color: #9d9d9d; width: 65px; background-color: #357ca5; color: white">Piezas</th>
-                <th class="text-center" style="border-color: #9d9d9d; width: 65px; background-color: #357ca5; color: white">Nº Caja</th>
+                <th class="text-center" style="border-color: #9d9d9d; width: 85px; background-color: #357ca5; color: white">Nº Caja</th>
                 <th class="text-center" style="border-color: #9d9d9d; width: 150px">
                     Marcación
                 </th>
@@ -50,14 +50,14 @@
                                     @foreach($colum as $data)
                                         <th class="text-center" style="border-color: #9d9d9d;width:100px;background:{{$data->fondo}};color:{{$data->texto}}">
                                             <div class="input-group" style="text-align: center">
-                                                <span class="input-group-addon" style="background-color: #e9ecef;padding:3px 5px">{{$data->p}}</span>
+                                                <span class="input-group-addon" style="background-color: #e9ecef">{{$data->p}}</span>
                                                 {{$data->cantidad}}
                                             </div>
                                         </th>
                                     @endforeach
                                     @if($z==0 )
-                                        <th class="text-center" style="border-color: #9d9d9d; width: 65px" rowspan="{{count($esp_emp['marcaciones'])}}">
-                                            {{$distr['distr']->ramos}}
+                                        <th class="text-center" style="border-color: #9d9d9d; width: 85px" rowspan="{{count($esp_emp['marcaciones'])}}">
+                                            {{$distr['distr']->ramos}}  {{$col[0]->variedad}} {{$col[0]->ramo}}
                                         </th>
                                         <th class="text-center" style="border-color: #9d9d9d; width: 65px" rowspan="{{count($esp_emp['marcaciones'])}}">
                                             {{$distr['distr']->piezas}}
@@ -89,17 +89,17 @@
                                     @foreach($coloracion as $colum)
                                         <th style="background:{{$colum->fondo}};color:{{$colum->texto}};text-align: center;width: 100px;">
                                             <div class="input-group" style="">
-                                                <span class="input-group-addon" style="background-color: #e9ecef;padding:3px 5px">
+                                                <span class="input-group-addon" style="background-color: #e9ecef">
                                                     {{$colum->p}}
                                                 </span>
-                                                {{$colum->cantidad}} {{$colum->variedad}} {{$colum->ramo}}
+                                                {{$colum->cantidad}}
                                             </div>
                                         </th>
                                     @endforeach
                                 @endforeach
                             @endforeach
-                            <th class="text-center" style="border-color: #9d9d9d; width: 65px">
-                                {{$distr['distr']->ramos}}
+                            <th class="text-center" style="border-color: #9d9d9d; width: 85px">
+                                {{$distr['distr']->ramos}}  {{$coloracion[0]->variedad}} {{$coloracion[0]->ramo}}
                             </th>
                             <th class="text-center" style="border-color: #9d9d9d; width: 65px">
                                 {{$distr['distr']->piezas}}
