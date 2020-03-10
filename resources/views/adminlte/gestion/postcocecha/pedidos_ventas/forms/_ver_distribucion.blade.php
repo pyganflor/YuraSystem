@@ -50,7 +50,7 @@
                                     @foreach($colum as $data)
                                         <th class="text-center" style="border-color: #9d9d9d;width:100px;background:{{$data->fondo}};color:{{$data->texto}}">
                                             <div class="input-group" style="text-align: center">
-                                                <span class="input-group-addon" style="background-color: #e9ecef">{{$data->p}}</span>
+                                                <span class="input-group-addon" style="background-color: #e9ecef;padding:3px 5px">{{$data->p}}</span>
                                                 {{$data->cantidad}}
                                             </div>
                                         </th>
@@ -89,7 +89,7 @@
                                     @foreach($coloracion as $colum)
                                         <th style="background:{{$colum->fondo}};color:{{$colum->texto}};text-align: center;width: 100px;">
                                             <div class="input-group" style="">
-                                                <span class="input-group-addon" style="background-color: #e9ecef">
+                                                <span class="input-group-addon" style="background-color: #e9ecef;padding:3px 5px">
                                                     {{$colum->p}}
                                                 </span>
                                                 {{$colum->cantidad}} {{$colum->variedad}} {{$colum->ramo}}
