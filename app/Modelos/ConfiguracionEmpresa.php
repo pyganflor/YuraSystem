@@ -48,6 +48,8 @@ class ConfiguracionEmpresa extends Model
         'codigo_etiqueta_empresa',
         'horas_diarias_cosecha',
         'horas_diarias_verde',
+        'proy_minimo_cosecha',  // 	porcentaje mínimo de cosecha para iniciar la curva
+        'proy_maximo_cosecha_fin',  // 	porcentaje máximo de ultima semana de cosecha
     ];
 
     public function clasificaciones_unitarias()
