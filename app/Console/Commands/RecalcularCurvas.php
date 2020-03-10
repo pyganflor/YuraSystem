@@ -4,6 +4,7 @@ namespace yura\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
+use yura\Modelos\Ciclo;
 
 class RecalcularCurvas extends Command
 {
@@ -47,6 +48,11 @@ class RecalcularCurvas extends Command
             ->where('id_variedad', 3)
             ->where('cosechados', '>', 0)
             ->get();
-        dd($ciclos);
+        foreach ($ciclos as $c) {
+            $ciclo = Ciclo::find($c->modelo);
+            if ($ciclo->modulo->nombre == '81B') {
+                dd($ciclo->getTallosProyectados());
+            }
+        }
     }
 }
