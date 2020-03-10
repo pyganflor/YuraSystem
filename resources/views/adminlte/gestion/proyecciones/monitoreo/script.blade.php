@@ -10,7 +10,7 @@
         if (datos['variedad'] != 'T') {
             get_jquery('{{url('monitoreo_ciclos/listar_ciclos')}}', datos, function (retorno) {
                 $('#div_listado_ciclos').html(retorno);
-            });
+            }, 'div_listado_ciclos');
         }
     }
 
