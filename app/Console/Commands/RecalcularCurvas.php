@@ -51,7 +51,7 @@ class RecalcularCurvas extends Command
         foreach ($ciclos as $c) {
             $ciclo = Ciclo::find($c->modelo);
             if ($ciclo->modulo->nombre == '81B') {
-                dd($ciclo->modulo->nombre);
+                dd($ciclo->getTallosProyectados());
             }
         }
     }
