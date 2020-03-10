@@ -86,6 +86,8 @@
         $('.elemento_color_' + col + '_' + esp_emp).css('color', texto);
     }
 
+
+
     function crear_packing_list(id_pedido){
         modal_quest('modal_packing_list', "<div class='alert alert-info text-center'>¿Desea crear el Packing List de este pedido?</div>", "<i class='fa fa-exclamation-triangle' ></i> Seleccione una opción",true, false, '{{isPC() ? '35%' : ''}}', function () {
             datos = {

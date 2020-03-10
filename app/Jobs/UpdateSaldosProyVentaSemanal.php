@@ -17,10 +17,10 @@ class UpdateSaldosProyVentaSemanal implements ShouldQueue
 
     /**
      * Create a new job instance.
-     *
+     *s
      * @return void
      */
-    public $timeout = 600;
+    public $timeout = 1200;
     public $desde;
     public $idVariedad;
     public function __construct($desde,$idVariedad)

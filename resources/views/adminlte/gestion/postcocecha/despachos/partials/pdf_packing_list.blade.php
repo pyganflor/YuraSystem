@@ -118,7 +118,6 @@
             </tr>
         </thead>
         <tbody style="border: 1px solid black">
-
             @foreach($pedido->detalles as $x => $det_ped)
                 @php $dp = getDetallePedido($det_ped->id_detalle_pedido); @endphp
                     @foreach ($dp->cliente_especificacion->especificacion->especificacionesEmpaque as $y => $esp_emp)
@@ -184,10 +183,6 @@
             @endforeach
         </tbody>
     </table>
-
-
-
-
 @elseif($pedido->tipo_especificacion === "T")
     @php $env = getEnvio($pedido->envios[0]->id_envio); $data = []; @endphp
     <table style="width:100%;font-family: arial, sans-serif;border-collapse: collapse;" >
@@ -241,13 +236,26 @@
                             {{($distribucion->pos_pieza-1)+$distribucion->piezas}}
                         @endif
                     </td>
-                    <td style="font-size:12px;border:1px solid black">{{$distribucion->piezas}}</td>
                     <td style="font-size:12px;border:1px solid black">
-                        @foreach (getDistribucion($distribucion->id_distribucion)->distribuciones_coloraciones as $z => $distribucion_coloracion)
+                        {{$distribucion->piezas}}
+                        @php
+                            $total_piezas += $distribucion->piezas
+                        @endphp
+                    </td>
+                    <td style="font-size:12px;border:1px solid black">
+                        @php $dist_col = json_decode($distribucion->dist_col) @endphp
+                        @foreach($dist_col as $distCol)
+                            @foreach($distCol as $dc)
+                                @if($dc->cantidad>0)
+                                    {{$dc->cantidad}} {{$dc->variedad}} {{$dc->color}},
+                                @endif
+                            @endforeach
+                        @endforeach
+                        {{--@foreach (getDistribucion($distribucion->id_distribucion)->distribuciones_coloraciones as $z => $distribucion_coloracion)
                             @if($distribucion_coloracion->cantidad > 0)
                                 {{ $distribucion_coloracion->marcacion_coloracion->detalle_especificacionempaque->variedad->siglas." ".$distribucion_coloracion->cantidad ." ". $distribucion_coloracion->marcacion_coloracion->coloracion->color->nombre. ","}}
                             @endif
-                        @endforeach
+                        @endforeach--}}
                     </td>
                 </tr>
             @endforeach

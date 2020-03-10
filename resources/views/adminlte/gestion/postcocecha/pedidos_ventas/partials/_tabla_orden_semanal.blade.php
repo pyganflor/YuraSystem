@@ -1,4 +1,4 @@
-<form id="form_marcas_colores">
+{{--<form id="form_marcas_colores">
     <table class="table-striped table-responsive table-bordered" width="100%" style="border: 1px solid #9d9d9d">
         <tr>
             <th class="text-center" style="border-color: #9d9d9d; padding: 0" id="th_menu">
@@ -12,23 +12,19 @@
             </th>
         </tr>
     </table>
-</form>
-
-<div style="width: 100%; overflow-x: scroll; display: none" id="div_tabla_distribucion_pedido">
+</form>--}}
+<div style="width: 100%; overflow-x: scroll;" id="div_tabla_distribucion_pedido">
     <table class="table-striped table-bordered" width="100%" style="border: 2px solid #9d9d9d; margin-top: 10px">
         <tr>
             <td style="border-color: #9d9d9d; padding: 0;" width="100%">
                 <table class="table-striped table-responsive table-bordered" width="100%" style="border: 1px solid #9d9d9d"
-                       id="table_marcaciones_x_colores"></table>
+                       id="table_marcaciones_x_colores">
+                    <tr>
+                        <td id="msj_busqueda_especificacion" class="alert alert-info text-center">Seleccione un cliente</td>
+                    </tr>
+                </table>
             </td>
         </tr>
     </table>
 </div>
-
 <div id="div_especificaciones_orden_semanal" style="margin-top: 10px"></div>
-
-<div class="text-center" style="margin-top: 10px">
-    <button type="button" class="btn btn-xs btn-success" onclick="store_orden_semanal()">
-        <i class="fa fa-fw fa-check"></i> Guardar
-    </button>
-</div>

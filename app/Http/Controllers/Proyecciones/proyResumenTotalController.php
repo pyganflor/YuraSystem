@@ -73,7 +73,6 @@ class proyResumenTotalController extends Controller
             $success = false;
         }
 
-
         return view('adminlte.gestion.proyecciones.resumen_total.partials.listado',[
             'success' => $success,
             'semanas'=>$semanas,
