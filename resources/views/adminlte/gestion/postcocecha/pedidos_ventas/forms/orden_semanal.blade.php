@@ -72,7 +72,7 @@
                 Fecha Pedido
             </th>
             <th class="text-center" style="border-color: #9d9d9d" width="85px">
-                <input type="date" id="fecha_pedido" name="fecha_pedido" value="{{isset($predido) ? $pedido->fecha_pedido :  now()->toDateString()}}" required width="100%"
+                <input type="date" id="fecha_pedido" name="fecha_pedido" value="{{isset($pedido) ? $pedido->fecha_pedido :  now()->toDateString()}}" required width="100%"
                        class="form-control">
             </th>
             <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
