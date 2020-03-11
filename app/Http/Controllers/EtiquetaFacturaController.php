@@ -37,7 +37,7 @@ class EtiquetaFacturaController extends Controller
 
     public function form_etiqueta(Request $request){
         return view('adminlte.gestion.postcocecha.etiquetas_facturas.partials.form_etiquetas',[
-            'comprobante'=> getComprobante($request->id_comprobante)
+            'pedido'=> Pedido($request->id_pedido)
         ]);
     }
 

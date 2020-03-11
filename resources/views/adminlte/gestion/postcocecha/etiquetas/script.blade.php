@@ -41,7 +41,7 @@
                 if ($(j).is(":checked")) {
                     arr_facturas.push({
                         caja: j.value,
-                        id_comprobante : $("#tr_exportables_"+x+" .id_comprobante").val(),
+                        id_pedido : $("#tr_exportables_"+x+" .id_pedido").val(),
                         doble: $("#doble_" + j.name.split("_")[1]).is(":checked")
                     });
                 }
