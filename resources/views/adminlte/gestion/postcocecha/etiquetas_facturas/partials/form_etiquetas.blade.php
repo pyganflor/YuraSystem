@@ -33,7 +33,7 @@
     </tr>
     </thead>
     <tbody id="tbody">
-    {{--@foreach($facturas as $x => $item)
+    @foreach($facturas as $x => $item)
         @php $comprobante = getComprobante($item->id_comprobante) @endphp
         <tr onmouseover="$(this).css('background-color','#add8e6')" onmouseleave="$(this).css('background-color','')">
             <td style="border-color: #9d9d9d" class="text-center">{{$comprobante->secuencial}}</td>
@@ -118,7 +118,7 @@
                 </td>
             @endif
         </tr>
-    @endforeach--}}
+    @endforeach
     </tbody>
 </table>
 @if(!isset($comprobante->etiqueta_factura))

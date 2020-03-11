@@ -37,7 +37,6 @@ class EtiquetaController extends Controller
                 ->join('cliente as cl','pedido.id_cliente','cl.id_cliente')
                 ->join('detalle_cliente as dc','cl.id_cliente','dc.id_cliente')
                 ->leftJoin('comprobante as c','e.id_envio','c.id_envio')
-                //->whereIn('c.estado',[0,1,5])
                 ->select('c.secuencial','dc.nombre as cli_nombre','pedido.id_pedido','c.estado as estado_comprobante')
                 ->where('pedido.id_configuracion_empresa', $request->id_configuracion_empresa)->get()
 

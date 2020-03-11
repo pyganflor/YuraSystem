@@ -1,5 +1,5 @@
 <div id="table_etiqueta"  style="margin-top: 20px;">
-    @if(sizeof($facturas)>0)
+    @if(sizeof($pedidos)>0)
         <table width="100%" class="table-responsive table-bordered" style="font-size: 0.8em; border-color: #9d9d9d" id="table_content_etiqueta" >
             <thead>
             <tr style="background-color: #dd4b39; color: white">
@@ -22,13 +22,12 @@
             </tr>
             </thead>
             <tbody id="tbody_etiquetas_facturas">
-                @foreach($facturas as $x => $item)
-                    @php $comprobante = getComprobante($item->id_comprobante) @endphp
+                @foreach($pedidos as $x => $pedido)
                     {{--@if($comprobante->envio->pedido->tipo_especificacion === "N")--}}
                         <tr onmouseover="$(this).css('background-color','#add8e6')" onmouseleave="$(this).css('background-color','')">
-                            <td style="border-color: #9d9d9d" class="text-center">{{$comprobante->secuencial}}</td>
-                            <td style="border-color: #9d9d9d" class="text-center">{{$comprobante->envio->pedido->cliente->detalle()->nombre}}</td>
-                            <td style="border-color: #9d9d9d" class="text-center">{{$comprobante->envio->pedido->detalles[0]->agencia_carga->nombre}}</td>
+                            <td style="border-color: #9d9d9d" class="text-center">{{isset($pedido->secuencial) ? $pedido->secuencial : 'No posee'}}</td>
+                            <td style="border-color: #9d9d9d" class="text-center">{{$pedido->cli_nombre}}</td>
+                            <td style="border-color: #9d9d9d" class="text-center">{{$pedido->detalles[0]->agencia_carga->nombre}}</td>
                             <td style="border-color: #9d9d9d" class="text-center">
                                 @php
                                     $full_equivalente_real = 0;
@@ -37,7 +36,7 @@
                                     $cuarto = false;
                                     $sexto = false;
                                     $octavo = false;
-                                    foreach($comprobante->envio->pedido->detalles as $det_ped){
+                                    foreach($pedido->detalles as $det_ped){
                                         foreach($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $m => $esp_emp){
                                             $full_equivalente_real += explode("|",$esp_emp->empaque->nombre)[1]*$det_ped->cantidad;
                                             $caja = explode("|",$esp_emp->empaque->nombre)[1];
@@ -57,7 +56,7 @@
                                 {{number_format($full_equivalente_real,2,".","")}}
                             </td>
                             <td style="border-color: #9d9d9d;width:60px" class="text-center">
-                                <button type="button" class="btn btn-primary btn-xs" title="Generar etiqueta por factura" onclick="form_etiqueta_factura('{{$item->id_comprobante}}')">
+                                <button type="button" class="btn btn-primary btn-xs" title="Generar etiqueta por factura" onclick="form_etiqueta_factura('{{$pedido->id_pedido}}')">
                                     <i class="fa fa-file-excel-o"></i>
                                 </button>
                             </td>
