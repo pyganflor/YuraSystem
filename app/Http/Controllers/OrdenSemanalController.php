@@ -1218,6 +1218,7 @@ class OrdenSemanalController extends Controller
                     foreach ($array['arreglo'][$d] as $item) {
                         $mar_col = MarcacionColoracion::find($item['mc']);
                         $arr_colum_col[]=[
+                            'id_coloracion' => $mar_col->coloracion->id_coloracion,
                             'p' =>'P-'.($Z+1),
                             'cantidad'=>$item['cantidad'],
                             'color'=> $mar_col->coloracion->color->nombre,

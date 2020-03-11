@@ -18,7 +18,7 @@
     function form_etiqueta_factura(id_comprobante){
         $.LoadingOverlay('show');
         datos = {
-            id_comprobante: id_comprobante
+            id_pedido: id_pedido
         };
         $.get('{{url('etiqueta_factura/form_etiqueta')}}', datos, function (retorno) {
             modal_view('modal_etiquetas_factura', retorno, '<i class="fa fa-file-excel-o"></i> <b>Etiquetas</b> ', true, false, '{{isPC() ? '80%' : ''}}', function () {
