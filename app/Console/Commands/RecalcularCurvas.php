@@ -76,6 +76,17 @@ class RecalcularCurvas extends Command
                     } else {    // se trata de una semana de curva o posterior
                         $pos_sem = $num_sem - $ciclo->semana_poda_siembra;
                         if ($pos_sem == 0) {  // primera semana de la curva
+                            $cosechado = DB::table('desglose_recepcion as dr')
+                                ->join('recepcion as r', 'r.id_recepcion', '=', 'dr.id_recepcion')
+                                ->select(DB::raw('sum(dr.cantidad_mallas * dr.tallos_x_malla) as cant'))
+                                ->where('dr.estado', 1)
+                                ->where('dr.id_modulo', $modulo->id_modulo)
+                                ->where('r.estado', 1)
+                                ->where('r.fecha_ingreso', '<=', $semana_pasada->fecha_final)
+                                ->where('r.fecha_ingreso', '>=', opDiasFecha('+', 35, $ciclo->fecha_inicio))
+                                ->get()[0]->cant;
+                            $porc_cosechado = intval(($cosechado * 100) / $getTallosProyectados);
+                            if($porc_cosechado)
                             dd('primera semana de la curva: ');
                         } else if ($pos_sem < count(explode('-', $ciclo->curva)) - 1) {   // semana numero "$pos_sem" de la curva
                             dd('semana numero: ' . $pos_sem . ' de la curva');
