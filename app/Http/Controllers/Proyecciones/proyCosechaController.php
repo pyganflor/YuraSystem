@@ -105,6 +105,7 @@ class proyCosechaController extends Controller
                 $semana_pasada = getSemanaByDate(opDiasFecha('-', 7, $semana_actual->fecha_inicial));
                 $calibre_actual = getCalibreByRangoVariedad($semana_pasada->fecha_inicial, $semana_pasada->fecha_final, $request->variedad);
 
+                $configuracion = getConfiguracionEmpresa();
                 return view('adminlte.gestion.proyecciones.cosecha.partials.listado', [
                     'semanas' => $semanas,
                     'modulos' => $array_modulos,
@@ -112,10 +113,11 @@ class proyCosechaController extends Controller
                     'semana_desde' => $semana_desde,
                     'opcion' => $request->opcion,
                     'detalle' => $request->detalle,
-                    'ramos_x_caja' => getConfiguracionEmpresa()->ramos_x_caja,
+                    'ramos_x_caja' => $configuracion->ramos_x_caja,
                     'semana_actual' => $semana_actual,
                     'semana_pasada' => $semana_pasada,
                     'calibre_actual' => $calibre_actual,
+                    'configuracion' => $configuracion,
                 ]);
             } else
                 return 'No se han encontrado módulos en el rango establecido.';
@@ -3474,6 +3476,54 @@ class proyCosechaController extends Controller
                 $semana_fin = getLastSemanaByVariedad($ciclo->id_variedad);
                 ProyeccionUpdateSemanal::dispatch($ciclo->semana()->codigo, $semana_fin->codigo, $ciclo->id_variedad, $ciclo->id_modulo, 0)
                     ->onQueue('proy_cosecha');
+            } else {
+                $success = false;
+                $msg = '<div class="alert alert-warning text-center">' .
+                    '<p> Ha ocurrido un problema al guardar la información al sistema</p>'
+                    . '</div>';
+            }
+        } else {
+            $success = false;
+            $errores = '';
+            foreach ($valida->errors()->all() as $mi_error) {
+                if ($errores == '') {
+                    $errores = '<li>' . $mi_error . '</li>';
+                } else {
+                    $errores .= '<li>' . $mi_error . '</li>';
+                }
+            }
+            $msg = '<div class="alert alert-danger">' .
+                '<p class="text-center">¡Por favor corrija los siguientes errores!</p>' .
+                '<ul>' .
+                $errores .
+                '</ul>' .
+                '</div>';
+        }
+        return [
+            'mensaje' => $msg,
+            'success' => $success
+        ];
+    }
+
+    public function update_config(Request $request)
+    {
+        $valida = Validator::make($request->all(), [
+            'campo' => 'required',
+            'valor' => 'required',
+        ], [
+            'campo.required' => 'El campo es obligatorio',
+            'valor.required' => 'El valor es obligatorio',
+        ]);
+        if (!$valida->fails()) {
+            $model = getConfiguracionEmpresa();
+            $model[$request->campo] = $request->valor;
+
+            if ($model->save()) {
+                $success = true;
+                $msg = '<div class="alert alert-success text-center">' .
+                    '<p> Se ha guardado la configuración satisfactoriamente</p>'
+                    . '</div>';
+                bitacora('configuracion_empresa', $model->id_configuracion_empresa, 'U', 'Modificación satisfactoria de configuracion empresa');
             } else {
                 $success = false;
                 $msg = '<div class="alert alert-warning text-center">' .

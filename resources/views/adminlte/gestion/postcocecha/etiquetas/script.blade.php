@@ -67,14 +67,14 @@
                     _token: '{{csrf_token()}}'
                 },
                 success: function (data) {
-                    var opResult = JSON.parse(data);
+                    /*var opResult = JSON.parse(data);
                     var $a = $("<a>");
                     $a.attr("href", opResult.data);
                     $("body").append($a);
                     $a.attr("download", "Etiquestas Cajas.xlsx");
                     $a[0].click();
                     $a.remove();
-                    cerrar_modals();
+                    cerrar_modals();*/
                     $.LoadingOverlay('hide');
                 }
             });

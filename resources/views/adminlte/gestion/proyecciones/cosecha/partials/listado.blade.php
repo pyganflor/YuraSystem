@@ -348,10 +348,10 @@
                                 }
                             @endphp
                             <span data-toggle="tooltip" data-placement="top" data-html="true"
-                            title="{{$semanas[$pos_val]->codigo}} <br>
+                                  title="{{$semanas[$pos_val]->codigo}} <br>
                             <small>Calib:<em>{{$calibre}}</em></small>">
                             {{number_format($val, 2)}}
-                            <br>
+                                <br>
                             <strong>
                                 @if($calibre > 0)
                                     {{number_format(round(($val / $calibre) / $ramos_x_caja, 2), 2)}}
@@ -466,20 +466,49 @@
     </table>
 </div>
 
-<div class="text-right" style="margin-top: 10px">
-    <legend style="font-size: 1em; margin-bottom: 0">
-        <a data-toggle="collapse" data-parent="#accordion" href="#collapseLeyenda">
-            <strong style="color: black">Leyenda <i class="fa fa-fw fa-caret-down"></i></strong>
-        </a>
-    </legend>
-    <ul style="margin-top: 5px" class="list-unstyled panel-collapse collapse" id="collapseLeyenda">
-        <li>Tercera poda o posterior <i class="fa fa-fw fa-circle" style="color: #f70b00"></i></li>
-        <li>Segunda poda <i class="fa fa-fw fa-circle" style="color: #ffb100"></i></li>
-        <li>Primera poda <i class="fa fa-fw fa-circle" style="color: #efff00"></i></li>
-        <li>Siembra <i class="fa fa-fw fa-circle" style="color: #08ffe8"></i></li>
-        {{--<li>Proyección <i class="fa fa-fw fa-circle" style="color: #9100ff7d"></i></li>--}}
-        <li>Semana de cosecha <i class="fa fa-fw fa-circle" style="color: #03de00"></i></li>
-    </ul>
+<div class="row">
+    <div class="col-md-6">
+        <div class="text-left" style="margin-top: 10px">
+            <legend style="font-size: 1em; margin-bottom: 0">
+                <a data-toggle="collapse" data-parent="#accordion" href="#collapseConfig">
+                    <strong style="color: black">Configuración <i class="fa fa-fw fa-caret-down"></i></strong>
+                </a>
+            </legend>
+            <div class="panel-collapse collapse" id="collapseConfig">
+                <div class="input-group">
+                    <div class="input-group-addon bg-gray">
+                        <i class="fa fa-fw fa-calendar"></i> Mín. ini. cosecha %
+                    </div>
+                    <input type="number" class="form-control" id="proy_minimo_cosecha" required="" min="1" max="50"
+                           value="{{$configuracion->proy_minimo_cosecha}}" onchange="update_config('proy_minimo_cosecha')">
+                    <div class="input-group-addon bg-gray">
+                        <i class="fa fa-fw fa-calendar"></i> Máx. fin cosecha %
+                    </div>
+                    <input type="number" class="form-control" id="proy_maximo_cosecha_fin" required="" min="10" max="50"
+                           value="{{$configuracion->proy_maximo_cosecha_fin}}" onchange="update_config('proy_maximo_cosecha_fin')">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="text-right" style="margin-top: 10px">
+            <legend style="font-size: 1em; margin-bottom: 0">
+                <a data-toggle="collapse" data-parent="#accordion" href="#collapseLeyenda">
+                    <strong style="color: black">Leyenda <i class="fa fa-fw fa-caret-down"></i></strong>
+                </a>
+            </legend>
+            <div class="panel-collapse collapse" id="collapseLeyenda">
+                <ul style="margin-top: 5px" class="list-unstyled">
+                    <li>Tercera poda o posterior <i class=" fa fa-fw fa-circle" style="color: #f70b00"></i></li>
+                    <li>Segunda poda <i class="fa fa-fw fa-circle" style="color: #ffb100"></i></li>
+                    <li>Primera poda <i class="fa fa-fw fa-circle" style="color: #efff00"></i></li>
+                    <li>Siembra <i class="fa fa-fw fa-circle" style="color: #08ffe8"></i></li>
+                    {{--<li>Proyección <i class="fa fa-fw fa-circle" style="color: #9100ff7d"></i></li>--}}
+                    <li>Semana de cosecha <i class="fa fa-fw fa-circle" style="color: #03de00"></i></li>
+                </ul>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>
@@ -1336,6 +1365,15 @@
         });
     }
 
+    function update_config(id) {
+        datos = {
+            _token: '{{csrf_token()}}',
+            campo: id,
+            valor: $('#' + id).val()
+        };
+        post_jquery('{{url('proy_cosecha/update_config')}}', datos, function () {
+        }, 'collapseConfig');
+    }
 </script>
 
 <style>

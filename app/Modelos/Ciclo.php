@@ -148,4 +148,9 @@ class Ciclo extends Model
             ->where('fecha_final', '>=', $this->fecha_inicio)
             ->first();
     }
+
+    public function getTallosProyectados()
+    {
+        return round(($this->plantas_actuales() * $this->conteo) * ( (100 - $this->desecho) / 100 ), 2);
+    }
 }

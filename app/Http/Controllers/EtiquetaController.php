@@ -64,6 +64,7 @@ class EtiquetaController extends Controller
         $objPHPExcel->removeSheetByIndex(0); //Eliminar la hoja inicial por defecto
 
         $this->excel_facturas_etiquetas($objPHPExcel, $request);
+
         //dd("hola");
 
         //--------------------------- GUARDAR EL EXCEL -----------------------
@@ -240,6 +241,7 @@ class EtiquetaController extends Controller
                             foreach ($det_ped->marcaciones as $mc) {
                                 if (explode("|", $mc->especificacion_empaque->empaque->nombre)[1] === $factura['caja']) {
                                     foreach ($mc->distribuciones as $d => $dist) {
+
                                         $posicion = 13;
                                         $distribucion_coloracion = json_decode($dist->dist_col);
 
