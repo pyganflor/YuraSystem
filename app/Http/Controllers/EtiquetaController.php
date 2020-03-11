@@ -248,7 +248,7 @@ class EtiquetaController extends Controller
                                         $objSheet->getCell('A' . ($w + 1))->setValue("AWB. " . $pedido->envios[0]->guia_madre);
                                         $objSheet->getCell('B' . ($w + 1))->setValue("HAWB. " . $pedido->envios[0]->guia_hija);
                                         $objSheet->getCell('C' . ($w + 1))->setValue();
-                                        $objSheet->getCell('D' . ($w + 1))->setValue();
+                                        $objSheet->getCell('D' . ($w + 1))->setValue($mc->distribuciones->count());
                                         $objSheet->getCell('E' . ($w + 1))->setValue($pedido->cliente->detalle()->nombre);
                                         $objSheet->getCell('G' . ($w + 1))->setValue($datos_exportacion != '' ? substr($datos_exportacion, 0, -1) : "");
                                         $objSheet->getCell('H' . ($w + 1))->setValue("DS-" . $codigo_finca);
