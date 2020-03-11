@@ -74,7 +74,7 @@
                     $a.attr("download", "Etiquestas Cajas.xlsx");
                     $a[0].click();
                     $a.remove();
-                    cerrar_modals();*
+                    cerrar_modals();
                     $.LoadingOverlay('hide');
                 }
             });
