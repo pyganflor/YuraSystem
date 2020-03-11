@@ -15,7 +15,7 @@
         });
     }
 
-    function form_etiqueta_factura(id_comprobante){
+    function form_etiqueta_factura(id_pedido){
         $.LoadingOverlay('show');
         datos = {
             id_pedido: id_pedido
