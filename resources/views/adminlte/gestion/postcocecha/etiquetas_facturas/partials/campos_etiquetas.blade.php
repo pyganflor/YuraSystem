@@ -4,14 +4,15 @@
             <select id="empaque_{{$x}}" name="empaque_{{$x}}" style="width: 100%;border:none">
                 <option value="">Seleccione</option>
                 @foreach ($empaque as $e)
-                    <option {{isset($comprobante->etiqueta_factura->detalles[($x-1)]->empaque) ? ($comprobante->etiqueta_factura->detalles[($x-1)]->empaque === $e->id_empaque ? "selected" : "" ) : "" }} value="{{$e->id_empaque}}">
+                    <option {{isset($pedido->envios[0]->comprobante->etiqueta_factura->detalles[($x-1)]->empaque) ? ($pedido->envios[0]->comprobante->etiqueta_factura->detalles[($x-1)]->empaque === $e->id_empaque ? "selected" : "" ) : "" }} value="{{$e->id_empaque}}">
                         {{explode("|",$e->nombre)[0]}}
                     </option>
                 @endforeach
             </select>
         </td>
         <td style="border-color: #9d9d9d" class="text-center">
-            <input type="number"  min="1" class="cajas" id="cajas_{{$x}}" name="cajas_{{$x}}" value="{{isset($comprobante->etiqueta_factura->detalles[($x-1)]->cantidad) ? $comprobante->etiqueta_factura->detalles[($x-1)]->cantidad : ""}}"
+            <input type="number"  min="1" class="cajas" id="cajas_{{$x}}" name="cajas_{{$x}}"
+                   value="{{isset($pedido->envios[0]->comprobante->etiqueta_factura->detalles[($x-1)]->cantidad) ? $pedido->envios[0]->comprobante->etiqueta_factura->detalles[($x-1)]->cantidad : ""}}"
                    style="width: 100%;border:none;text-align: center">
         </td>
         <td style="border-color: #9d9d9d;width: 400px;" class="text-center">
@@ -22,8 +23,8 @@
                     <span id="span_presentaciones_{{$x}}">
                         @php
                             $presentaciones  ="";
-                            if(isset($comprobante->etiqueta_factura->detalles[($x-1)])){
-                                $id_det_esp_emp = explode("|",$comprobante->etiqueta_factura->detalles[($x-1)]->id_detalle_especificacion_empaque);
+                            if(isset($pedido->envios[0]->comprobante->etiqueta_factura->detalles[($x-1)])){
+                                $id_det_esp_emp = explode("|",$pedido->envios[0]->comprobante->etiqueta_factura->detalles[($x-1)]->id_detalle_especificacion_empaque);
                                 foreach($id_det_esp_emp as $id){
                                     $det_esp_emp = getDetalleEspecificacionEmpaque($id);
                                     $variedad = getVariedad($det_esp_emp->id_variedad);
@@ -40,7 +41,7 @@
                                             $umPeso->tipo == "P" ? $umPeso = $umPeso->siglas : $umPeso ="";
                                     }
                                     $det_ped_cantidad = 0;
-                                    foreach ($comprobante->envio->pedido->detalles as $det_ped)
+                                    foreach ($pedido->envios[0]->comprobante->envio->pedido->detalles as $det_ped)
                                         foreach ($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $esp_emp)
                                             foreach ($esp_emp->detalles as $z=> $det_esp_emp)
                                                 if($det_esp_emp->id_detalle_especificacionempaque == $id){
@@ -52,7 +53,7 @@
                                 }
                             }
                         @endphp
-                        @if(isset($comprobante->etiqueta_factura->detalles[($x-1)]))
+                        @if(isset($pedido->envios[0]->comprobante->etiqueta_factura->detalles[($x-1)]))
                             {!!"<br />". substr($presentaciones,0,-6) !!}
                         @endif
                     </span>
@@ -62,8 +63,8 @@
                 <ul class="dropdown-menu" style="width: 100%;">
                     <li>
                         <table style="width: 100%">
-                            @php $y = 0; @endphp
-                            @foreach ($comprobante->envio->pedido->detalles as $det_ped)
+                            @php $y = 0;  @endphp
+                            @foreach ($pedido->detalles as $det_ped)
                                 @foreach ($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $esp_emp)
                                     @foreach ($esp_emp->detalles as $z=> $det_esp_emp)
                                         @php
@@ -103,15 +104,18 @@
             </div>
         </td>
         <td style="border-color: #9d9d9d" class="text-center">
-            <input type="text" id="siglas_{{$x}}" name="siglas_{{$x}}" value="{{isset($comprobante->etiqueta_factura->detalles[($x-1)]->siglas) ? $comprobante->etiqueta_factura->detalles[($x-1)]->siglas : ""}}"
+            <input type="text" id="siglas_{{$x}}" name="siglas_{{$x}}"
+                   value="{{isset($pedido->envios[0]->comprobante->etiqueta_factura->detalles[($x-1)]->siglas) ? $pedido->envios[0]->comprobante->etiqueta_factura->detalles[($x-1)]->siglas : ""}}"
                    style="width: 100%;border:none;text-align: center">
         </td>
         <td style="border-color: #9d9d9d" class="text-center">
-            <input type="text" id="et_inicial_{{$x}}" name="et_inicial_{{$x}}" value="{{isset($comprobante->etiqueta_factura->detalles[($x-1)]->et_inicial) ? $comprobante->etiqueta_factura->detalles[($x-1)]->et_inicial : ""}}"
+            <input type="text" id="et_inicial_{{$x}}" name="et_inicial_{{$x}}"
+                   value="{{isset($pedido->envios[0]->comprobante->etiqueta_factura->detalles[($x-1)]->et_inicial) ? $pedido->envios[0]->comprobante->etiqueta_factura->detalles[($x-1)]->et_inicial : ""}}"
                    style="width: 100%;border:none;text-align: center">
         </td>
         <td style="border-color: #9d9d9d" class="text-center">
-            <input type="text" id="et_final_{{$x}}" name="et_final_{{$x}}" value="{{isset($comprobante->etiqueta_factura->detalles[($x-1)]->et_final) ? $comprobante->etiqueta_factura->detalles[($x-1)]->et_final : ""}}"
+            <input type="text" id="et_final_{{$x}}" name="et_final_{{$x}}"
+                   value="{{isset($pedido->envios[0]->comprobante->etiqueta_factura->detalles[($x-1)]->et_final) ? $pedido->envios[0]->comprobante->etiqueta_factura->detalles[($x-1)]->et_final : ""}}"
                    style="width: 100%;border:none;text-align: center">
         </td>
     </tr>

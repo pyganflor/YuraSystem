@@ -2,13 +2,14 @@
     <thead>
     <tr style="background-color: #dd4b39; color: white">
         <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d;vertical-align: middle" colspan="2">
-            Filas: <input type="number" id="filas" name="filas" value="10" style="border:none;width: 60px;color:black" onchange="filas('{{$comprobante->id_comprobante}}')">
+            Filas: <input type="number" id="filas" name="filas" value="10" style="border:none;width: 60px;color:black"
+                          onchange="filas('{{$pedido->id_pedido}}')">
         </th>
         <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d;vertical-align: middle" colspan="2">
             Siglas: <input type="text" id="siglas" name="siglas" style="border:none;width: 60px;color:black">
         </th>
         <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d;vertical-align: middle" colspan="2">
-            Factura: {{$comprobante->secuencial}}
+            Factura: {{isset($pedido->envios[0]->comprobante) ? $pedido->envios[0]->comprobante->secuencial :''}}
         </th>
     </tr>
     <tr style="background-color: #dd4b39; color: white">
@@ -33,7 +34,7 @@
     </tr>
     </thead>
     <tbody id="tbody">
-    @foreach($facturas as $x => $item)
+    {{--@foreach($facturas as $x => $item)
         @php $comprobante = getComprobante($item->id_comprobante) @endphp
         <tr onmouseover="$(this).css('background-color','#add8e6')" onmouseleave="$(this).css('background-color','')">
             <td style="border-color: #9d9d9d" class="text-center">{{$comprobante->secuencial}}</td>
@@ -118,14 +119,15 @@
                 </td>
             @endif
         </tr>
-    @endforeach
+    @endforeach--}}
     </tbody>
 </table>
-@if(!isset($comprobante->etiqueta_factura))
+@if(!isset($pedido->envios[0]->comprobante->etiqueta_factura))
 <table style="margin-top: 20px;width: 100%">
     <tr>
         <td class="text-center">
-            <button type="buttom" class="btn btn-success" onclick="store_etiquetas_factura('{{$comprobante->id_comprobante}}','{{csrf_token()}}')">
+            <button type="buttom" class="btn btn-success"
+                    onclick="store_etiquetas_factura('{{isset($pedido->envios[0]->comprobante) ? $pedido->envios[0]->comprobante->id_comprobante : ''}}','{{csrf_token()}}')">
                 <i class="fa fa-floppy-o" ></i> Guardar
             </button>
         </td>
@@ -135,11 +137,12 @@
     <table style="margin-top: 20px;width: 100%">
         <tr>
             <td class="text-center">
-                <button type="buttom" class="btn btn-danger" onclick="delete_etiquetas_factura('{{$comprobante->id_comprobante}}','{{csrf_token()}}')">
+                <button type="buttom" class="btn btn-danger"
+                        nclick="delete_etiquetas_factura('{{isset($pedido->envios[0]->comprobante) ? $pedido->envios[0]->comprobante->id_comprobante : ''}}','{{csrf_token()}}')">
                     <i class="fa fa-times" ></i> Eliminar etiquetas
                 </button>
             </td>
         </tr>
     </table>
 @endif
-<script>filas('{{$comprobante->id_comprobante}}')</script>
+<script>filas('{{$pedido->id_pedido}}')</script>
