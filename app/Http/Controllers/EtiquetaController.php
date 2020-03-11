@@ -265,11 +265,11 @@ class EtiquetaController extends Controller
                                                     $objSheet->getCell($arr_posiciones[$posicion + 3] . ($w + 1))->setValue($dc->cantidad);
                                                     $objSheet->getCell($arr_posiciones[$posicion + 4] . ($w + 1))->setValue($dc->ramo . " " . $dc->ramo_u_m . ".");
                                                     $posicion += 5;
-                                                    $arr_data[$dc->id_coloracion][]=[
+                                                    /*$arr_data[$dc->id_coloracion][]=[
                                                         'id_coloracion'=>$dc->id_coloracion,
                                                         'cantidad'=> $dc->cantidad,
                                                         'color'=>$dc->color
-                                                    ];
+                                                    ];*/
                                                 }
                                             }
                                         }
