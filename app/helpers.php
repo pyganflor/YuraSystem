@@ -2620,5 +2620,30 @@ function getCantidadHorasTrabajoBlanco($fecha)
 
 function getNuevaCurva($curva, $inicio)
 {
-    dd($curva, $inicio);
+    $curva = explode('-', $curva);
+    $new_curva = '';
+    if (count($curva) > 1) {    // son dos semanas o más
+        $configuracion = getConfiguracionEmpresa();
+        $new_curva = $inicio;
+        $dif = $curva[0] - $inicio;
+        $curva[0] = $inicio;
+        for ($i = count($curva) - 1; $i >= 0; $i--) {
+            $last = $curva[$i] + $dif;
+            $curva[$i] = $last;
+            if ($last > $configuracion->proy_maximo_cosecha_fin) {  // hay q duplicar el final
+                $curva[$i] = $last % 2 == 0 ? intval($last / 2) : intval($last / 2) + 1;
+                array_push($curva, intval($last / 2));
+            } else if ($last < $configuracion->proy_minimo_cosecha) { // hay que hacer cero la ultima semana
+                $dif = $last;
+                $curva[$i] = 0;
+            } else {
+                break;
+            }
+        }
+        foreach ($curva as $pos => $v) {
+            if ($pos > 0 && $v > 0)
+                $new_curva .= '-' . $v;
+        }
+    }
+    return $new_curva;
 }
