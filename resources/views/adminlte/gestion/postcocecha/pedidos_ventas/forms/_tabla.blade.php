@@ -295,13 +295,13 @@
                                 <tr style="border: 2px solid #9d9d9d" class="tr_marcacion_{{$esp_emp->id_especificacion_empaque}}">
                                     <td class="text-center" style="border-color: #9d9d9d;text-align:middle">
                                         <div class="input-group">
-                                            <span class="input-group-addon" style="border:none">
+                                            <span class="input-group-addon" style="border:none;padding: 0;">
                                                 <input type="checkbox" class="check_marcacion_{{$esp_emp->id_especificacion_empaque}}
                                                     marcacion_{{$esp_emp->id_especificacion_empaque}}_{{$pos_marca+1}}">
                                             </span>
                                             <input type="text" id="nombre_marcacion_{{$pos_marca}}_{{$esp_emp->id_especificacion_empaque}}"
                                                    name="nombre_marcacion_{{$pos_marca}}_{{$esp_emp->id_especificacion_empaque}}"
-                                                   value="{{getMarcacion($marca->id_marcacion)->nombre}}" style="border: none;"
+                                                   value="{{getMarcacion($marca->id_marcacion)->nombre}}" style="border: none;padding: 0;width: 110px;"
                                                    class="text-center form-control form-control-sm input_marcacion_{{$esp_emp->id_especificacion_empaque}}">
                                         </div>
                                         <input type="hidden" id="id_marcacion_{{$pos_marca}}_{{$esp_emp->id_especificacion_empaque}}"

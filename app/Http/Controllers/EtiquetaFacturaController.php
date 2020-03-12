@@ -50,7 +50,7 @@ class EtiquetaFacturaController extends Controller
 
     public function form_etiqueta(Request $request){
         return view('adminlte.gestion.postcocecha.etiquetas_facturas.partials.form_etiquetas',[
-            'comprobante'=> getComprobante($request->id_comprobante)
+            'pedido'=> Pedido::find($request->id_pedido)
         ]);
     }
 
@@ -59,7 +59,7 @@ class EtiquetaFacturaController extends Controller
         return view('adminlte.gestion.postcocecha.etiquetas_facturas.partials.campos_etiquetas',[
             'filas' => $request->filas,
             'empaque' => Empaque::where('tipo','C')->get(),
-            'comprobante' => getComprobante($request->id_comprobante)
+            'pedido' => getPedido($request->id_pedido)
 
         ]);
     }
@@ -80,6 +80,7 @@ class EtiquetaFacturaController extends Controller
             'data.*.id_det_esp_emp.required' => 'Debe seleccionar la presentación',
             'data.*.empaque.required' => 'Debe seleccionar el empaque',
         ]);
+
         if (!$valida->fails()) {
 
             $objEtiquetaFactura = new EtiquetaFactura;
