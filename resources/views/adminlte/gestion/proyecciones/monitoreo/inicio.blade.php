@@ -64,12 +64,12 @@
                         Desde
                     </div>
                     <input type="number" id="filtro_min_semanas" onkeypress="return isNumber(event)" class="form-control text-center" required
-                           value="6" min="1">
+                           value="6" min="1" style="width: 80px">
                     <div class="input-group-addon bg-gray">
                         Semanas
                     </div>
                     <input type="number" id="filtro_num_semanas" onkeypress="return isNumber(event)" class="form-control text-center" required
-                           value="18" min="1">
+                           value="18" min="1" style="width: 80px">
                     <div class="input-group-btn">
                         <button type="button" class="btn btn-primary" onclick="listar_ciclos()">
                             <i class="fa fa-fw fa-search"></i>
