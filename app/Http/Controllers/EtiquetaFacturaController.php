@@ -80,6 +80,7 @@ class EtiquetaFacturaController extends Controller
             'data.*.id_det_esp_emp.required' => 'Debe seleccionar la presentación',
             'data.*.empaque.required' => 'Debe seleccionar el empaque',
         ]);
+
         if (!$valida->fails()) {
 
             $objEtiquetaFactura = new EtiquetaFactura;
