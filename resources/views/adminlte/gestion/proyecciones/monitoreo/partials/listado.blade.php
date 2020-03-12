@@ -307,7 +307,7 @@
                 dif_dia = Math.sign(dif_dia) == -1 ? dif_dia * -1 : dif_dia;
                 dif_sem = Math.sign(dif_sem) == -1 ? dif_sem * -1 : dif_sem;
 
-                resultado = dif_dia > 0 ? dif_sem / (dif_dia * 7) : 0;
+                resultado = dif_sem > 0 ? (dif_dia * 7) / dif_sem : 0;
                 //resultado = Math.round(resultado);
                 resultado = parseInt(resultado);
                 direccion = Math.sign(valor - prom_sem);
