@@ -287,8 +287,7 @@
         }, 'div_listado_ciclos');
     }
 
-    $(window).ready(function () {
-        /* ------------- algoritmo para proyectar el inicio de curva ------------ */
+    function proyectar_inicio_curvas() {    // algoritmo para proyectar el inicio de curva
         ciclos = $('.ids_ciclo');
         for (i = 0; i < ciclos.length; i++) {
             id_ciclo = ciclos[i].value;
@@ -322,7 +321,10 @@
                     $('#monitoreo_' + id_ciclo + '_' + nueva_curva).css('border', '3px solid orange');
             }
         }
-        /* ------------------------------------------------------ */
+    }
+
+    $(window).ready(function () {
+        proyectar_inicio_curvas();
         colorear_celdas();
     })
 </script>
