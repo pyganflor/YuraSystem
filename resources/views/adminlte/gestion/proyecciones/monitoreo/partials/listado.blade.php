@@ -121,14 +121,11 @@
                 </th>
                 @php
                     $val = $item['positivos'] > 0 ? round($item['valor'] / $item['positivos'], 2) : 0;
-                    array_push($array_crec_sem, $val - $ant);
+                    array_push($array_crec_sem, round($val - $ant, 2));
                     $ant = $val;
                 @endphp
             @endforeach
-            <th class="text-center th_fijo_right_0" style="border-color: #9d9d9d; background-color: #e9ecef; color: white; z-index: 9" rowspan="3">
-                <button type="button" class="btn btn-xs btn-block btn-success" onclick="store_nuevos_ingresos()">
-                    <i class="fa fa-fw fa-check"></i>
-                </button>
+            <th class="text-center th_fijo_right_0" style="border-color: #9d9d9d; background-color: #e9ecef; color: white; z-index: 9">
             </th>
         </tr>
         <tr class="tr_fijo_bottom_1">
@@ -146,6 +143,8 @@
                     array_push($array_crec_dia, round($item > 0 ? $item / 7 : 0, 2))
                 @endphp
             @endforeach
+            <th class="text-center th_fijo_right_0" style="border-color: #9d9d9d; background-color: #e9ecef; color: white; z-index: 9">
+            </th>
         </tr>
         <tr class="tr_fijo_bottom_0">
             <th class="text-center th_fijo_left_0" style="border-color: #9d9d9d; background-color: #357CA5; color: white; z-index: 9"
@@ -159,6 +158,12 @@
                            value="{{$item}}">
                 </th>
             @endforeach
+            <th class="text-center th_fijo_right_0 th_fijo_bottom_0"
+                style="border-color: #9d9d9d; background-color: #e9ecef; color: white; z-index: 9" rowspan="3">
+                <button type="button" class="btn btn-xs btn-block btn-success" onclick="store_nuevos_ingresos()">
+                    <i class="fa fa-fw fa-check"></i>
+                </button>
+            </th>
         </tr>
     </table>
 </div>
@@ -260,9 +265,15 @@
         z-index: 5;
     }
 
-    .tr_fijo_bottom_0 th {
+    .tr_fijo_bottom_1 th {
         position: sticky;
-        bottom: 0;
+        bottom: 22px;
+        z-index: 5;
+    }
+
+    .tr_fijo_bottom_2 th {
+        position: sticky;
+        bottom: 39px;
         z-index: 5;
     }
 
