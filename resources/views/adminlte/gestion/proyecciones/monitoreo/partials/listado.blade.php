@@ -72,6 +72,7 @@
                     {{difFechas($item['ciclo']->fecha_inicio, date('Y-m-d'))->days}}
                 </th>
                 @php
+                    $mon_actual = $item['mon_actual'] != '' ? $item['mon_actual'] : '';
                     $ant = 0;
                 @endphp
                 @foreach($item['monitoreos'] as $pos_mon => $mon)
@@ -85,6 +86,9 @@
                         if ($crec_sem > 0){
                             $title = '<em>Crec. Sem.: '.$crec_sem.'</em><br>';
                             $title .= '<em>Crec. Día: '.$crec_dia.'</em>';
+                            if ($mon_actual != '')
+                                if ($mon_actual->num_sem == $cant_mon)
+                                    $title .= '*';
                         }
                     @endphp
                     <th class="text-center celda_hovered {{$cant_mon < $min_semanas ? 'hide' : ''}}"
