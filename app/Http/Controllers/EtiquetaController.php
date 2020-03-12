@@ -264,7 +264,7 @@ class EtiquetaController extends Controller
                                         $objSheet->getCell('C' . ($w + 1))->setValue($d+1);
                                         $objSheet->getCell('D' . ($w + 1))->setValue($mc->distribuciones->count());
                                         $objSheet->getCell('E' . ($w + 1))->setValue($pedido->cliente->detalle()->nombre);
-                                        $objSheet->getCell('G' . ($w + 1))->setValue($datos_exportacion != '' ? substr($datos_exportacion, 0, -1) : "");
+                                        $objSheet->getCell('G' . ($w + 1))->setValue($mc->nombre);
                                         $objSheet->getCell('H' . ($w + 1))->setValue("DS-" . $codigo_finca);
                                         $objSheet->getCell('I' . ($w + 1))->setValue(getConfiguracionEmpresa($pedido->id_configuracion_empresa)->permiso_agrocalidad);
                                         $objSheet->getCell('J' . ($w + 1))->setValue($pais_destino);
