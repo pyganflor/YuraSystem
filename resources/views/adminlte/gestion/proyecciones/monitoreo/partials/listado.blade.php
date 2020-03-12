@@ -101,23 +101,64 @@
                 </th>
             </tr>
         @endforeach
-        <tr class="tr_fijo_bottom_0">
+        @php
+            $array_crec_sem = [];
+            $array_crec_dia = [];
+        @endphp
+        <tr class="tr_fijo_bottom_2">
             <th class="text-center th_fijo_left_0" style="border-color: #9d9d9d; background-color: #357CA5; color: white; z-index: 9"
                 colspan="3">
                 Promedios <sup title="Altura">cm</sup>
             </th>
+            @php
+                $ant = 0;
+            @endphp
             @foreach($array_prom as $pos_sem => $item)
                 <th class="text-center {{$pos_sem + 1 < $min_semanas ? 'hide' : ''}}" style="border-color: #9d9d9d; background-color: #e9ecef">
                     {{$item['positivos'] > 0 ? round($item['valor'] / $item['positivos'], 2) : 0}}
                     <input type="hidden" id="prom_sem_{{$pos_sem + 1}}"
                            value="{{$item['positivos'] > 0 ? round($item['valor'] / $item['positivos'], 2) : 0}}">
                 </th>
+                @php
+                    $val = $item['positivos'] > 0 ? round($item['valor'] / $item['positivos'], 2) : 0;
+                    array_push($array_crec_sem, $val - $ant);
+                    $ant = $val;
+                @endphp
             @endforeach
-            <th class="text-center th_fijo_right_0" style="border-color: #9d9d9d; background-color: #357CA5; color: white; z-index: 9">
+            <th class="text-center th_fijo_right_0" style="border-color: #9d9d9d; background-color: #e9ecef; color: white; z-index: 9" rowspan="3">
                 <button type="button" class="btn btn-xs btn-block btn-success" onclick="store_nuevos_ingresos()">
                     <i class="fa fa-fw fa-check"></i>
                 </button>
             </th>
+        </tr>
+        <tr class="tr_fijo_bottom_1">
+            <th class="text-center th_fijo_left_0" style="border-color: #9d9d9d; background-color: #357CA5; color: white; z-index: 9"
+                colspan="3">
+                Crecimiento <sup title="Altura">semanal</sup>
+            </th>
+            @foreach($array_crec_sem as $pos_sem => $item)
+                <th class="text-center {{$pos_sem + 1 < $min_semanas ? 'hide' : ''}}" style="border-color: #9d9d9d; background-color: #e9ecef">
+                    {{$item > 0 ? $item : 0}}
+                    <input type="hidden" id="crec_sem_{{$pos_sem + 1}}"
+                           value="{{$item > 0 ? $item : 0}}">
+                </th>
+                @php
+                    array_push($array_crec_dia, round($item > 0 ? $item / 7 : 0, 2))
+                @endphp
+            @endforeach
+        </tr>
+        <tr class="tr_fijo_bottom_0">
+            <th class="text-center th_fijo_left_0" style="border-color: #9d9d9d; background-color: #357CA5; color: white; z-index: 9"
+                colspan="3">
+                Crecimiento <sup title="Altura">día</sup>
+            </th>
+            @foreach($array_crec_dia as $pos_sem => $item)
+                <th class="text-center {{$pos_sem + 1 < $min_semanas ? 'hide' : ''}}" style="border-color: #9d9d9d; background-color: #e9ecef">
+                    {{$item}}
+                    <input type="hidden" id="crec_sem_dia_{{$pos_sem + 1}}"
+                           value="{{$item}}">
+                </th>
+            @endforeach
         </tr>
     </table>
 </div>
@@ -211,6 +252,12 @@
     .th_fijo_left_2 {
         position: sticky;
         left: 142px;
+    }
+
+    .tr_fijo_bottom_0 th {
+        position: sticky;
+        bottom: 0;
+        z-index: 5;
     }
 
     .tr_fijo_bottom_0 th {
