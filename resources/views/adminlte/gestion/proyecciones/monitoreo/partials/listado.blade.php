@@ -51,7 +51,10 @@
                     $prom_ini_curva['valor'] += $item['ini_curva'];
                     $prom_ini_curva['cantidad']++;
                 }
+                $mon_actual = $item['mon_actual'] != '' ? $item['mon_actual'] : '';
             @endphp
+            <input type="hidden" id="last_sem_{{$item['ciclo']->id_ciclo}}" value="{{$mon_actual != '' ? $mon_actual->num_sem : ''}}">
+            <input type="hidden" id="ini_curva_{{$item['ciclo']->id_ciclo}}" value="{{$item['ini_curva']}}">
             <tr class="{{count($item['monitoreos']) >= $min_semanas ? '' : 'hide'}}">
                 <th class="text-center th_fijo_left_0" style="border-color: #9d9d9d; background-color: #e9ecef">
                     <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
@@ -72,7 +75,6 @@
                     {{difFechas($item['ciclo']->fecha_inicio, date('Y-m-d'))->days}}
                 </th>
                 @php
-                    $mon_actual = $item['mon_actual'] != '' ? $item['mon_actual'] : '';
                     $ant = 0;
                 @endphp
                 @foreach($item['monitoreos'] as $pos_mon => $mon)
@@ -86,9 +88,6 @@
                         if ($crec_sem > 0){
                             $title = '<em>Crec. Sem.: '.$crec_sem.'</em><br>';
                             $title .= '<em>Crec. Día: '.$crec_dia.'</em>';
-                            if ($mon_actual != '')
-                                if ($mon_actual->num_sem == $cant_mon)
-                                    $title .= '*';
                         }
                     @endphp
                     <th class="text-center celda_hovered {{$cant_mon < $min_semanas ? 'hide' : ''}}"
@@ -100,6 +99,8 @@
                                data-html="true" title="{{$title}}" value="{{$mon->altura}}" readonly ondblclick="$(this).attr('readonly', false)"
                                min="0" class="text-center input_sem_{{$cant_mon}} input_ciclo_{{$item['ciclo']->id_ciclo}}"
                                onchange="guardar_monitoreo('{{$item['ciclo']->id_ciclo}}', '{{$cant_mon}}')">
+                        <input type="hidden" id="crec_sem_{{$item['ciclo']->id_ciclo}}_{{$cant_mon}}" value="{{$crec_sem}}">
+                        <input type="hidden" id="crec_dia_{{$item['ciclo']->id_ciclo}}_{{$cant_mon}}" value="{{$crec_dia}}">
                     </th>
                     @php
                         if ($mon->altura > 0){
@@ -140,14 +141,12 @@
                 Promedios <sup title="Altura">cm</sup>
             </th>
             @php
+                $sem_prom_ini_curva = '';
+                if($prom_ini_curva['cantidad'] > 0)
+                    $sem_prom_ini_curva = round($prom_ini_curva['valor'] / $prom_ini_curva['cantidad']);
                 $ant = 0;
             @endphp
             @foreach($array_prom as $pos_sem => $item)
-                @php
-                    $sem_prom_ini_curva = '';
-                    if($prom_ini_curva['cantidad'] > 0)
-                        $sem_prom_ini_curva = round($prom_ini_curva['valor'] / $prom_ini_curva['cantidad']);
-                @endphp
                 <th class="text-center {{$pos_sem + 1 < $min_semanas ? 'hide' : ''}}"
                     style="border-color: #9d9d9d; background-color: {{$sem_prom_ini_curva == $pos_sem + 1 ? '#fbff00' : '#e9ecef'}}">
                     {{$item['positivos'] > 0 ? round($item['valor'] / $item['positivos'], 2) : 0}}
@@ -199,6 +198,7 @@
                 </button>
             </th>
         </tr>
+        <input type="hidden" id="sem_prom_ini_curva" value="{{$sem_prom_ini_curva}}">
     </table>
 </div>
 <div class="text-right" style="margin-top: 10px">
@@ -211,8 +211,9 @@
         <ul style="margin-top: 5px" class="list-unstyled">
             <li>Por encima que la media <i class=" fa fa-fw fa-circle" style="color: #30b32d"></i></li>
             <li>Por debajo de la media <i class="fa fa-fw fa-circle" style="color: #f03e3e"></i></li>
-            <li>Semana de inicio de curva en módulos con primera flor <i class="fa fa-fw fa-circle-o" style="color: blue"></i></li>
-            <li>Semana PROMEDIO de inicio de curva <i class="fa fa-fw fa-circle" style="color: #fbff00"></i></li>
+            <li>Semana de inicio de curva en módulos SIN primera flor <i class="fa fa-fw fa-circle-o" style="color: orange"></i></li>
+            <li>Semana de inicio de curva en módulos CON primera flor <i class="fa fa-fw fa-circle-o" style="color: blue"></i></li>
+            <li>Semana PROMEDIO de inicio de curva <sup>real</sup> <i class="fa fa-fw fa-circle" style="color: #fbff00"></i></li>
         </ul>
     </div>
 </div>
@@ -287,6 +288,41 @@
     }
 
     $(window).ready(function () {
+        /* ------------- algoritmo para proyectar el inicio de curva ------------ */
+        ciclos = $('.ids_ciclo');
+        for (i = 0; i < ciclos.length; i++) {
+            id_ciclo = ciclos[i].value;
+            last_sem = parseInt($('#last_sem_' + id_ciclo).val());
+            if (last_sem >= $('#filtro_min_semanas').val() && last_sem <= 11) {
+                valor = $('#monitoreo_' + id_ciclo + '_' + last_sem).val();
+                crec_sem = $('#crec_sem_' + id_ciclo + '_' + last_sem).val();
+                crec_dia = $('#crec_dia_' + id_ciclo + '_' + last_sem).val();
+
+                prom_sem = $('#prom_sem_' + last_sem).val();
+                crec_sem_prom = $('#crec_sem_' + last_sem).val();
+                crec_dia_prom = $('#crec_sem_dia_' + last_sem).val();
+
+                dif_dia = crec_dia - crec_dia_prom;
+                dif_sem = crec_sem - crec_sem_prom;
+                dif_dia = Math.sign(dif_dia) == -1 ? dif_dia * -1 : dif_dia;
+                dif_sem = Math.sign(dif_sem) == -1 ? dif_sem * -1 : dif_sem;
+
+                resultado = dif_dia > 0 ? dif_sem / (dif_dia * 7) : 0;
+                //resultado = Math.round(resultado);
+                resultado = parseInt(resultado);
+                direccion = Math.sign(valor - prom_sem);
+                sem_prom_ini_curva = parseInt($('#sem_prom_ini_curva').val());
+
+                if (direccion >= 0) {   // adelantar en el tiempo
+                    nueva_curva = sem_prom_ini_curva - resultado;
+                } else {    // atrasar en el tiempo
+                    nueva_curva = sem_prom_ini_curva + resultado;
+                }
+                if ($('#ini_curva_' + id_ciclo).val() == '')
+                    $('#monitoreo_' + id_ciclo + '_' + nueva_curva).css('border', '3px solid orange');
+            }
+        }
+        /* ------------------------------------------------------ */
         colorear_celdas();
     })
 </script>
