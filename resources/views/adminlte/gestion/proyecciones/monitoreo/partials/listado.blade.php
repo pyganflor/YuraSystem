@@ -52,7 +52,7 @@
                     $prom_ini_curva['cantidad']++;
                 }
             @endphp
-            <tr>
+            <tr class="{{count($item['monitoreos']) >= $min_semanas ? '' : 'hide'}}">
                 <th class="text-center th_fijo_left_0" style="border-color: #9d9d9d; background-color: #e9ecef">
                     <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
                         {{$modulo->nombre}}
@@ -71,15 +71,23 @@
                 <th class="text-center th_fijo_left_2" style="border-color: #9d9d9d; background-color: #e9ecef">
                     {{difFechas($item['ciclo']->fecha_inicio, date('Y-m-d'))->days}}
                 </th>
+                @php
+                    $ant = 0;
+                @endphp
                 @foreach($item['monitoreos'] as $pos_mon => $mon)
+                    @php    // algoritmo para calcular el crecimiento semanal
+                        $val = $mon->altura;
+                        $crec_sem = round($val - $ant, 2);
+                        $ant = $val;
+                    @endphp
                     <th class="text-center celda_hovered {{$cant_mon < $min_semanas ? 'hide' : ''}}"
                         style="border-color: #9d9d9d; background-color: #e9ecef" id="td_monitoreo_{{$item['ciclo']->id_ciclo}}_{{$cant_mon}}"
                         onmouseover="mouse_over_celda('td_monitoreo_{{$item['ciclo']->id_ciclo}}_{{$cant_mon}}', 1)"
                         onmouseleave="mouse_over_celda('{{$item['ciclo']->id_ciclo}}', 0)">
                         <input type="number" style="width: 100%; border: {{$item['ini_curva'] == $cant_mon ? '3px solid blue' : ''}}"
-                               id="monitoreo_{{$item['ciclo']->id_ciclo}}_{{$cant_mon}}"
-                               value="{{$mon->altura}}" readonly ondblclick="$(this).attr('readonly', false)" min="0"
-                               class="text-center input_sem_{{$cant_mon}} input_ciclo_{{$item['ciclo']->id_ciclo}}"
+                               id="monitoreo_{{$item['ciclo']->id_ciclo}}_{{$cant_mon}}" data-toggle="tooltip" data-placement="top"
+                               data-html="true" title="{{$title}}" value="{{$mon->altura}}" readonly ondblclick="$(this).attr('readonly', false)"
+                               min="0" class="text-center input_sem_{{$cant_mon}} input_ciclo_{{$item['ciclo']->id_ciclo}}"
                                onchange="guardar_monitoreo('{{$item['ciclo']->id_ciclo}}', '{{$cant_mon}}')">
                     </th>
                     @php
@@ -127,16 +135,15 @@
                 @php
                     $sem_prom_ini_curva = '';
                     if($prom_ini_curva['cantidad'] > 0)
-                        $sem_prom_ini_curva = intval($prom_ini_curva['valor'] / $prom_ini_curva['cantidad']);
+                        $sem_prom_ini_curva = round($prom_ini_curva['valor'] / $prom_ini_curva['cantidad']);
                 @endphp
                 <th class="text-center {{$pos_sem + 1 < $min_semanas ? 'hide' : ''}}"
-                    style="border-color: #9d9d9d; background-color: #e9ecef;
-                    border: {{$sem_prom_ini_curva == $pos_sem + 1 ? '3px solid green' : ''}}">
+                    style="border-color: #9d9d9d; background-color: {{$sem_prom_ini_curva == $pos_sem + 1 ? '#fbff00' : '#e9ecef'}}">
                     {{$item['positivos'] > 0 ? round($item['valor'] / $item['positivos'], 2) : 0}}
                     <input type="hidden" id="prom_sem_{{$pos_sem + 1}}"
                            value="{{$item['positivos'] > 0 ? round($item['valor'] / $item['positivos'], 2) : 0}}">
                 </th>
-                @php
+                @php    // algoritmo para calcular el crecimiento semanal
                     $val = $item['positivos'] > 0 ? round($item['valor'] / $item['positivos'], 2) : 0;
                     array_push($array_crec_sem, round($val - $ant, 2));
                     $ant = $val;
@@ -193,12 +200,17 @@
         <ul style="margin-top: 5px" class="list-unstyled">
             <li>Por encima que la media <i class=" fa fa-fw fa-circle" style="color: #30b32d"></i></li>
             <li>Por debajo de la media <i class="fa fa-fw fa-circle" style="color: #f03e3e"></i></li>
-            <li>Semana de inicio de curva <i class="fa fa-fw fa-circle-o" style="color: blue"></i></li>
+            <li>Semana de inicio de curva en módulos con primera flor <i class="fa fa-fw fa-circle-o" style="color: blue"></i></li>
+            <li>Semana PROMEDIO de inicio de curva <i class="fa fa-fw fa-circle" style="color: #fbff00"></i></li>
         </ul>
     </div>
 </div>
 
 <script>
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+    });
+    
     function guardar_monitoreo(ciclo, cant_mon) {
         datos = {
             _token: '{{csrf_token()}}',
