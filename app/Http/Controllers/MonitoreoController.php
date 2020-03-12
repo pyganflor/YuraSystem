@@ -42,8 +42,10 @@ class MonitoreoController extends Controller
                 $ini_curva = $item->semana_poda_siembra;
             $mon_actual = '';
             for ($i = count($monitoreos) - 1; $i >= 0; $i--) {
-                if ($monitoreos[$i]->altura > 0)
+                if ($monitoreos[$i]->altura > 0) {
                     $mon_actual = $monitoreos[$i];
+                    break;
+                }
             }
             array_push($ciclos, [
                 'ciclo' => $item,
