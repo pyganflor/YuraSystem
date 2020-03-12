@@ -59,7 +59,7 @@ class Ciclo extends Model
             ->where('dr.estado', '=', 1)
             ->where('r.estado', '=', 1)
             ->where('dr.id_modulo', '=', $this->id_modulo)
-            ->where('r.fecha_ingreso', '>=', opDiasFecha('+', 1, $this->fecha_inicio))
+            ->where('r.fecha_ingreso', '>=', opDiasFecha('+', 15, $this->fecha_inicio))
             ->where('r.fecha_ingreso', '<=', $fin . ' 23:59:59')
             ->get()[0]->cantidad;
 
