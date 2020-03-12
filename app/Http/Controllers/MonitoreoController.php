@@ -38,7 +38,7 @@ class MonitoreoController extends Controller
                 ->orderBy('num_sem')
                 ->get();
             $ini_curva = '';
-            if ($item->getTallosCosechados() > 0)
+            if ($item->getTallosCosechados(15) > 0)
                 $ini_curva = $item->semana_poda_siembra;
             array_push($ciclos, [
                 'ciclo' => $item,
