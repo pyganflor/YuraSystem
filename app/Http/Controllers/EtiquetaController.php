@@ -37,7 +37,6 @@ class EtiquetaController extends Controller
                 ->join('cliente as cl','pedido.id_cliente','cl.id_cliente')
                 ->join('detalle_cliente as dc','cl.id_cliente','dc.id_cliente')
                 ->leftJoin('comprobante as c','e.id_envio','c.id_envio')
-                //->whereIn('c.estado',[0,1,5])
                 ->select('c.secuencial','dc.nombre as cli_nombre','pedido.id_pedido','c.estado as estado_comprobante')
                 ->where('pedido.id_configuracion_empresa', $request->id_configuracion_empresa)->get()
 
@@ -247,8 +246,8 @@ class EtiquetaController extends Controller
 
                                         $objSheet->getCell('A' . ($w + 1))->setValue("AWB. " . $pedido->envios[0]->guia_madre);
                                         $objSheet->getCell('B' . ($w + 1))->setValue("HAWB. " . $pedido->envios[0]->guia_hija);
-                                        $objSheet->getCell('C' . ($w + 1))->setValue();
-                                        $objSheet->getCell('D' . ($w + 1))->setValue();
+                                        $objSheet->getCell('C' . ($w + 1))->setValue($d+1);
+                                        $objSheet->getCell('D' . ($w + 1))->setValue($mc->distribuciones->count());
                                         $objSheet->getCell('E' . ($w + 1))->setValue($pedido->cliente->detalle()->nombre);
                                         $objSheet->getCell('G' . ($w + 1))->setValue($datos_exportacion != '' ? substr($datos_exportacion, 0, -1) : "");
                                         $objSheet->getCell('H' . ($w + 1))->setValue("DS-" . $codigo_finca);
@@ -265,11 +264,11 @@ class EtiquetaController extends Controller
                                                     $objSheet->getCell($arr_posiciones[$posicion + 3] . ($w + 1))->setValue($dc->cantidad);
                                                     $objSheet->getCell($arr_posiciones[$posicion + 4] . ($w + 1))->setValue($dc->ramo . " " . $dc->ramo_u_m . ".");
                                                     $posicion += 5;
-                                                    $arr_data[$dc->id_coloracion][]=[
+                                                    /*$arr_data[$dc->id_coloracion][]=[
                                                         'id_coloracion'=>$dc->id_coloracion,
                                                         'cantidad'=> $dc->cantidad,
                                                         'color'=>$dc->color
-                                                    ];
+                                                    ];*/
                                                 }
                                             }
                                         }

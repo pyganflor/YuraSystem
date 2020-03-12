@@ -7,6 +7,7 @@ use Validator;
 use yura\Modelos\DetalleEtiquetaFactura;
 use yura\Modelos\EtiquetaFactura;
 use yura\Modelos\Comprobante;
+use yura\Modelos\Pedido;
 use yura\Modelos\Submenu;
 use yura\Modelos\Empaque;
 
@@ -23,21 +24,33 @@ class EtiquetaFacturaController extends Controller
 
     public function listado(Request $request){
         return view('adminlte.gestion.postcocecha.etiquetas_facturas.partials.listado',[
-            'facturas' => Comprobante::where([
+            'pedidos' => Pedido::where([
+                ['pedido.fecha_pedido',$request->desde],
+                ['pedido.estado',true],
+                ['dc.estado',true]
+            ])->join('envio as e','pedido.id_pedido','e.id_pedido')
+                ->join('cliente as cl','pedido.id_cliente','cl.id_cliente')
+                ->join('detalle_cliente as dc','cl.id_cliente','dc.id_cliente')
+                ->leftJoin('comprobante as c','e.id_envio','c.id_envio')
+                ->select('c.secuencial','dc.nombre as cli_nombre','pedido.id_pedido','c.estado as estado_comprobante')
+                ->where('pedido.id_configuracion_empresa', $request->id_configuracion_empresa)->get(),
+
+
+            /*Comprobante::where([
                 ['tipo_comprobante',01],
                 ['habilitado',1],
                 ['fecha_emision',$request->desde]
             ])->join('envio as e','comprobante.id_envio','e.id_envio')
                 ->join('pedido as p','p.id_pedido','e.id_pedido')
                 ->whereIn('comprobante.estado',[0,1,5])
-                ->where('p.id_configuracion_empresa', $request->id_configuracion_empresa)->get(),
+                ->where('p.id_configuracion_empresa', $request->id_configuracion_empresa)->get(),*/
             'vista' => 'etiqueta_factura'
         ]);
     }
 
     public function form_etiqueta(Request $request){
         return view('adminlte.gestion.postcocecha.etiquetas_facturas.partials.form_etiquetas',[
-            'pedido'=> Pedido($request->id_pedido)
+            'pedido'=> Pedido::find($request->id_pedido)
         ]);
     }
 
@@ -46,7 +59,7 @@ class EtiquetaFacturaController extends Controller
         return view('adminlte.gestion.postcocecha.etiquetas_facturas.partials.campos_etiquetas',[
             'filas' => $request->filas,
             'empaque' => Empaque::where('tipo','C')->get(),
-            'comprobante' => getComprobante($request->id_comprobante)
+            'pedido' => getPedido($request->id_pedido)
 
         ]);
     }
@@ -67,6 +80,7 @@ class EtiquetaFacturaController extends Controller
             'data.*.id_det_esp_emp.required' => 'Debe seleccionar la presentación',
             'data.*.empaque.required' => 'Debe seleccionar el empaque',
         ]);
+
         if (!$valida->fails()) {
 
             $objEtiquetaFactura = new EtiquetaFactura;

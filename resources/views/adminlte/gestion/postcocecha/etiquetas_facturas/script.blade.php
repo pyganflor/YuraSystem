@@ -15,7 +15,7 @@
         });
     }
 
-    function form_etiqueta_factura(id_comprobante){
+    function form_etiqueta_factura(id_pedido){
         $.LoadingOverlay('show');
         datos = {
             id_pedido: id_pedido
@@ -29,11 +29,11 @@
         });
     }
 
-    function filas(id_comprobante){
+    function filas(id_pedido){
         $.LoadingOverlay('show');
         datos = {
             filas: $("#filas").val(),
-            id_comprobante : id_comprobante
+            id_pedido : id_pedido
         };
         $.get('{{url('etiqueta_factura/campos_etiqueta')}}', datos, function (retorno) {
             $("tbody#tbody").empty().append(retorno);
