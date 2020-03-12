@@ -47,7 +47,7 @@ class Ciclo extends Model
         return $this->hasMany('\yura\Modelos\Monitoreo', 'id_ciclo');
     }
 
-    public function getTallosCosechados()
+    public function getTallosCosechados($dias_ini = 1)  // dias_ini: Dias despues del inicio de ciclo a tener en cuenta
     {
         $fin = date('Y-m-d');
         if ($this->fecha_fin != '')
@@ -59,7 +59,7 @@ class Ciclo extends Model
             ->where('dr.estado', '=', 1)
             ->where('r.estado', '=', 1)
             ->where('dr.id_modulo', '=', $this->id_modulo)
-            ->where('r.fecha_ingreso', '>=', opDiasFecha('+', 15, $this->fecha_inicio))
+            ->where('r.fecha_ingreso', '>=', opDiasFecha('+', $dias_ini, $this->fecha_inicio))
             ->where('r.fecha_ingreso', '<=', $fin . ' 23:59:59')
             ->get()[0]->cantidad;
 
