@@ -18,6 +18,10 @@
             </th>
             @php
                 $array_prom = [];
+                $prom_ini_curva = [
+                    'valor' => 0,
+                    'cantidad' => 0,
+                ];
             @endphp
             @for($i = 1; $i <= $num_semanas; $i++)
                 <th class="text-center {{$i < $min_semanas ? 'hide' : ''}}" style="border-color: #9d9d9d; background-color: #e9ecef">
@@ -43,6 +47,10 @@
                 $modulo = $item['ciclo']->modulo;
                 $semana = $item['ciclo']->semana();
                 $cant_mon = 1;
+                if($item['ini_curva'] > 0){
+                    $prom_ini_curva['valor'] += $item['ini_curva'];
+                    $prom_ini_curva['cantidad']++;
+                }
             @endphp
             <tr>
                 <th class="text-center th_fijo_left_0" style="border-color: #9d9d9d; background-color: #e9ecef">
@@ -68,7 +76,8 @@
                         style="border-color: #9d9d9d; background-color: #e9ecef" id="td_monitoreo_{{$item['ciclo']->id_ciclo}}_{{$cant_mon}}"
                         onmouseover="mouse_over_celda('td_monitoreo_{{$item['ciclo']->id_ciclo}}_{{$cant_mon}}', 1)"
                         onmouseleave="mouse_over_celda('{{$item['ciclo']->id_ciclo}}', 0)">
-                        <input type="number" style="width: 100%; border: {{$item['ini_curva'] == $cant_mon ? '3px solid #03de00' : ''}}" id="monitoreo_{{$item['ciclo']->id_ciclo}}_{{$cant_mon}}"
+                        <input type="number" style="width: 100%; border: {{$item['ini_curva'] == $cant_mon ? '3px solid blue' : ''}}"
+                               id="monitoreo_{{$item['ciclo']->id_ciclo}}_{{$cant_mon}}"
                                value="{{$mon->altura}}" readonly ondblclick="$(this).attr('readonly', false)" min="0"
                                class="text-center input_sem_{{$cant_mon}} input_ciclo_{{$item['ciclo']->id_ciclo}}"
                                onchange="guardar_monitoreo('{{$item['ciclo']->id_ciclo}}', '{{$cant_mon}}')">
@@ -86,7 +95,8 @@
                         id="td_monitoreo_{{$item['ciclo']->id_ciclo}}_{{$cant_mon}}"
                         onmouseover="mouse_over_celda('td_monitoreo_{{$item['ciclo']->id_ciclo}}_{{$cant_mon}}', 1)"
                         onmouseleave="mouse_over_celda('{{$item['ciclo']->id_ciclo}}', 0)">
-                        <input type="number" style="width: 100%;" id="monitoreo_{{$item['ciclo']->id_ciclo}}_{{$cant_mon}}" readonly
+                        <input type="number" style="width: 100%; border: {{$item['ini_curva'] == $cant_mon ? '3px solid blue' : ''}}"
+                               id="monitoreo_{{$item['ciclo']->id_ciclo}}_{{$cant_mon}}" readonly
                                ondblclick="$(this).attr('readonly', false)" class="text-center" min="0"
                                onchange="guardar_monitoreo('{{$item['ciclo']->id_ciclo}}', '{{$cant_mon}}')">
                     </th>
@@ -114,7 +124,14 @@
                 $ant = 0;
             @endphp
             @foreach($array_prom as $pos_sem => $item)
-                <th class="text-center {{$pos_sem + 1 < $min_semanas ? 'hide' : ''}}" style="border-color: #9d9d9d; background-color: #e9ecef">
+                @php
+                    $sem_prom_ini_curva = '';
+                    if($prom_ini_curva['cantidad'] > 0)
+                        $sem_prom_ini_curva = intval($prom_ini_curva['valor'] / $prom_ini_curva['cantidad']);
+                @endphp
+                <th class="text-center {{$pos_sem + 1 < $min_semanas ? 'hide' : ''}}"
+                    style="border-color: #9d9d9d; background-color: #e9ecef;
+                    border: {{$sem_prom_ini_curva == $pos_sem + 1 ? '3px solid green' : ''}}">
                     {{$item['positivos'] > 0 ? round($item['valor'] / $item['positivos'], 2) : 0}}
                     <input type="hidden" id="prom_sem_{{$pos_sem + 1}}"
                            value="{{$item['positivos'] > 0 ? round($item['valor'] / $item['positivos'], 2) : 0}}">
@@ -166,6 +183,20 @@
         </tr>
     </table>
 </div>
+<div class="text-right" style="margin-top: 10px">
+    <legend style="font-size: 1em; margin-bottom: 0">
+        <a data-toggle="collapse" data-parent="#accordion" href="#collapseLeyenda">
+            <strong style="color: black">Leyenda <i class="fa fa-fw fa-caret-down"></i></strong>
+        </a>
+    </legend>
+    <div class="panel-collapse collapse" id="collapseLeyenda">
+        <ul style="margin-top: 5px" class="list-unstyled">
+            <li>Por encima que la media <i class=" fa fa-fw fa-circle" style="color: #30b32d"></i></li>
+            <li>Por debajo de la media <i class="fa fa-fw fa-circle" style="color: #f03e3e"></i></li>
+            <li>Semana de inicio de curva <i class="fa fa-fw fa-circle-o" style="color: blue"></i></li>
+        </ul>
+    </div>
+</div>
 
 <script>
     function guardar_monitoreo(ciclo, cant_mon) {
@@ -200,9 +231,9 @@
             for (y = 0; y < inputs.length; y++) {
                 if (inputs[y].value > 0) {
                     if (parseFloat(inputs[y].value) >= parseFloat($('#prom_sem_' + i).val())) {
-                        $('#' + inputs[y].id).css('background-color', '#30b32d');
+                        $('#' + inputs[y].id).css('background-color', '#30b32d');   // verde
                     } else {
-                        $('#' + inputs[y].id).css('background-color', '#f03e3e');
+                        $('#' + inputs[y].id).css('background-color', '#f03e3e');   // rojo
                     }
                     $('#' + inputs[y].id).css('color', 'white');
                 }
