@@ -6,6 +6,8 @@
         datos = {
             variedad: $('#filtro_predeterminado_variedad').val(),
             num_semanas: $('#filtro_num_semanas').val(),
+            poda_siembra: $('#filtro_poda_siembra').val(),
+            min_semanas: $('#filtro_min_semanas').val(),
         };
         if (datos['variedad'] != 'T') {
             get_jquery('{{url('monitoreo_ciclos/listar_ciclos')}}', datos, function (retorno) {

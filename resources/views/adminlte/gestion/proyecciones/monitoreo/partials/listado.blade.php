@@ -20,7 +20,7 @@
                 $array_prom = [];
             @endphp
             @for($i = 1; $i <= $num_semanas; $i++)
-                <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
+                <th class="text-center {{$i < $min_semanas ? 'hide' : ''}}" style="border-color: #9d9d9d; background-color: #e9ecef">
                     <div style="width: 50px">
                         {{$i}}º
                     </div>
@@ -64,8 +64,8 @@
                     {{difFechas($item['ciclo']->fecha_inicio, date('Y-m-d'))->days}}
                 </th>
                 @foreach($item['monitoreos'] as $pos_mon => $mon)
-                    <th class="text-center celda_hovered" style="border-color: #9d9d9d; background-color: #e9ecef"
-                        id="td_monitoreo_{{$item['ciclo']->id_ciclo}}_{{$cant_mon}}"
+                    <th class="text-center celda_hovered {{$cant_mon < $min_semanas ? 'hide' : ''}}"
+                        style="border-color: #9d9d9d; background-color: #e9ecef" id="td_monitoreo_{{$item['ciclo']->id_ciclo}}_{{$cant_mon}}"
                         onmouseover="mouse_over_celda('td_monitoreo_{{$item['ciclo']->id_ciclo}}_{{$cant_mon}}', 1)"
                         onmouseleave="mouse_over_celda('{{$item['ciclo']->id_ciclo}}', 0)">
                         <input type="number" style="width: 100%" id="monitoreo_{{$item['ciclo']->id_ciclo}}_{{$cant_mon}}"
@@ -82,7 +82,7 @@
                     @endphp
                 @endforeach
                 @for($i = $cant_mon; $i <= $num_semanas; $i++)
-                    <th class="text-center celda_hovered" style="border-color: #9d9d9d"
+                    <th class="text-center celda_hovered {{$i < $min_semanas ? 'hide' : ''}}" style="border-color: #9d9d9d"
                         id="td_monitoreo_{{$item['ciclo']->id_ciclo}}_{{$cant_mon}}"
                         onmouseover="mouse_over_celda('td_monitoreo_{{$item['ciclo']->id_ciclo}}_{{$cant_mon}}', 1)"
                         onmouseleave="mouse_over_celda('{{$item['ciclo']->id_ciclo}}', 0)">
@@ -107,7 +107,7 @@
                 Promedios <sup title="Altura">cm</sup>
             </th>
             @foreach($array_prom as $pos_sem => $item)
-                <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
+                <th class="text-center {{$pos_sem + 1 < $min_semanas ? 'hide' : ''}}" style="border-color: #9d9d9d; background-color: #e9ecef">
                     {{$item['positivos'] > 0 ? round($item['valor'] / $item['positivos'], 2) : 0}}
                     <input type="hidden" id="prom_sem_{{$pos_sem + 1}}"
                            value="{{$item['positivos'] > 0 ? round($item['valor'] / $item['positivos'], 2) : 0}}">

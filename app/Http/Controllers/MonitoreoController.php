@@ -27,7 +27,9 @@ class MonitoreoController extends Controller
             ->where('activo', 1)
             ->where('id_variedad', $request->variedad)
             ->orderBy('fecha_inicio', 'desc')
+            ->where('poda_siembra', $request->poda_siembra)
             ->get();
+
         $ciclos = [];
         foreach ($query as $item) {
             $monitoreos = Monitoreo::where('estado', 1)
@@ -44,6 +46,7 @@ class MonitoreoController extends Controller
         return view('adminlte.gestion.proyecciones.monitoreo.partials.listado', [
             'ciclos' => $ciclos,
             'num_semanas' => $request->num_semanas,
+            'min_semanas' => $request->min_semanas,
         ]);
     }
 
