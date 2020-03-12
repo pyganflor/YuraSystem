@@ -24,7 +24,8 @@
                 ];
             @endphp
             @for($i = 1; $i <= $num_semanas; $i++)
-                <th class="text-center {{$i < $min_semanas ? 'hide' : ''}}" style="border-color: #9d9d9d; background-color: #e9ecef">
+                <th class="text-center {{$i < $min_semanas ? 'hide' : ''}}" style="border-color: #9d9d9d; background-color: #e9ecef"
+                    id="th_num_sem_{{$i}}">
                     <div style="width: 50px">
                         {{$i}}º
                     </div>
@@ -214,6 +215,7 @@
             <li>Semana de inicio de curva en módulos SIN primera flor <i class="fa fa-fw fa-circle-o" style="color: orange"></i></li>
             <li>Semana de inicio de curva en módulos CON primera flor <i class="fa fa-fw fa-circle-o" style="color: blue"></i></li>
             <li>Semana PROMEDIO de inicio de curva <sup>real</sup> <i class="fa fa-fw fa-circle" style="color: #fbff00"></i></li>
+            <li>Semana PROMEDIO de inicio de curva <sup>proyectado</sup> <i class="fa fa-fw fa-circle" style="color: orange"></i></li>
         </ul>
     </div>
 </div>
@@ -289,10 +291,14 @@
 
     function proyectar_inicio_curvas() {    // algoritmo para proyectar el inicio de curva
         ciclos = $('.ids_ciclo');
+        proy_sem_prom_ini_curva = {
+            valor: 0,
+            cantidad: 0,
+        };
         for (i = 0; i < ciclos.length; i++) {
             id_ciclo = ciclos[i].value;
             last_sem = parseInt($('#last_sem_' + id_ciclo).val());
-            if (last_sem >= $('#filtro_min_semanas').val() && last_sem <= 11) {
+            if (last_sem >= $('#filtro_min_semanas').val() && last_sem <= 11 && $('#ini_curva_' + id_ciclo).val() == '') {  // se trate de un ciclo en el rango de semanas que interesan && aun no tiene primera flor
                 valor = $('#monitoreo_' + id_ciclo + '_' + last_sem).val();
                 crec_sem = $('#crec_sem_' + id_ciclo + '_' + last_sem).val();
                 crec_dia = $('#crec_dia_' + id_ciclo + '_' + last_sem).val();
@@ -317,10 +323,13 @@
                 } else {    // atrasar en el tiempo
                     nueva_curva = sem_prom_ini_curva + resultado;
                 }
-                if ($('#ini_curva_' + id_ciclo).val() == '')
-                    $('#monitoreo_' + id_ciclo + '_' + nueva_curva).css('border', '3px solid orange');
+                $('#monitoreo_' + id_ciclo + '_' + nueva_curva).css('border', '3px solid orange');
+                proy_sem_prom_ini_curva['valor'] += nueva_curva;
+                proy_sem_prom_ini_curva['cantidad']++;
             }
         }
+        num_sem_proy = proy_sem_prom_ini_curva['cantidad'] > 0 ? Math.round(proy_sem_prom_ini_curva['valor'] / proy_sem_prom_ini_curva['cantidad']) : 0;
+        num_sem_proy > 0 ? $('#th_num_sem_' + num_sem_proy).css('background-color', 'orange') : false;
     }
 
     $(window).ready(function () {
