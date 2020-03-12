@@ -71,15 +71,25 @@
                 <th class="text-center th_fijo_left_2" style="border-color: #9d9d9d; background-color: #e9ecef">
                     {{difFechas($item['ciclo']->fecha_inicio, date('Y-m-d'))->days}}
                 </th>
+                @php
+                    $ant = 0;
+                @endphp
                 @foreach($item['monitoreos'] as $pos_mon => $mon)
+                    @php    // algoritmo para calcular el crecimiento semanal
+                        $val = $mon->altura;
+                        $crec_sem = round($val - $ant, 2);
+                        $ant = $val;
+
+                        $title = '
+                    @endphp
                     <th class="text-center celda_hovered {{$cant_mon < $min_semanas ? 'hide' : ''}}"
                         style="border-color: #9d9d9d; background-color: #e9ecef" id="td_monitoreo_{{$item['ciclo']->id_ciclo}}_{{$cant_mon}}"
                         onmouseover="mouse_over_celda('td_monitoreo_{{$item['ciclo']->id_ciclo}}_{{$cant_mon}}', 1)"
                         onmouseleave="mouse_over_celda('{{$item['ciclo']->id_ciclo}}', 0)">
                         <input type="number" style="width: 100%; border: {{$item['ini_curva'] == $cant_mon ? '3px solid blue' : ''}}"
-                               id="monitoreo_{{$item['ciclo']->id_ciclo}}_{{$cant_mon}}"
-                               value="{{$mon->altura}}" readonly ondblclick="$(this).attr('readonly', false)" min="0"
-                               class="text-center input_sem_{{$cant_mon}} input_ciclo_{{$item['ciclo']->id_ciclo}}"
+                               id="monitoreo_{{$item['ciclo']->id_ciclo}}_{{$cant_mon}}" data-toggle="tooltip" data-placement="top"
+                               data-html="true" title="{{$title}}" value="{{$mon->altura}}" readonly ondblclick="$(this).attr('readonly', false)"
+                               min="0" class="text-center input_sem_{{$cant_mon}} input_ciclo_{{$item['ciclo']->id_ciclo}}"
                                onchange="guardar_monitoreo('{{$item['ciclo']->id_ciclo}}', '{{$cant_mon}}')">
                     </th>
                     @php
@@ -199,6 +209,10 @@
 </div>
 
 <script>
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+    });
+
     function guardar_monitoreo(ciclo, cant_mon) {
         datos = {
             _token: '{{csrf_token()}}',
