@@ -37,9 +37,13 @@ class MonitoreoController extends Controller
                 ->where('num_sem', '<=', $request->num_semanas)
                 ->orderBy('num_sem')
                 ->get();
+            $ini_curva = '';
+            if ($item->getTallosCosechados() > 0)
+                $ini_curva = $item->semana_poda_siembra;
             array_push($ciclos, [
                 'ciclo' => $item,
                 'monitoreos' => $monitoreos,
+                'ini_curva' => $ini_curva,
             ]);
         }
 
