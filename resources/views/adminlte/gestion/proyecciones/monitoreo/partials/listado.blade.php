@@ -52,7 +52,7 @@
                     $prom_ini_curva['cantidad']++;
                 }
             @endphp
-            <tr>
+            <tr class="{{count($item['monitoreos']) >= $min_semanas ? '' : 'hide'}}">
                 <th class="text-center th_fijo_left_0" style="border-color: #9d9d9d; background-color: #e9ecef">
                     <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
                         {{$modulo->nombre}}
@@ -127,16 +127,15 @@
                 @php
                     $sem_prom_ini_curva = '';
                     if($prom_ini_curva['cantidad'] > 0)
-                        $sem_prom_ini_curva = intval($prom_ini_curva['valor'] / $prom_ini_curva['cantidad']);
+                        $sem_prom_ini_curva = round($prom_ini_curva['valor'] / $prom_ini_curva['cantidad']);
                 @endphp
                 <th class="text-center {{$pos_sem + 1 < $min_semanas ? 'hide' : ''}}"
-                    style="border-color: #9d9d9d; background-color: #e9ecef;
-                    border: {{$sem_prom_ini_curva == $pos_sem + 1 ? '3px solid green' : ''}}">
+                    style="border-color: #9d9d9d; background-color: {{$sem_prom_ini_curva == $pos_sem + 1 ? '#fbff00' : '#e9ecef'}}">
                     {{$item['positivos'] > 0 ? round($item['valor'] / $item['positivos'], 2) : 0}}
                     <input type="hidden" id="prom_sem_{{$pos_sem + 1}}"
                            value="{{$item['positivos'] > 0 ? round($item['valor'] / $item['positivos'], 2) : 0}}">
                 </th>
-                @php
+                @php    // algoritmo para calcular el crecimiento semanal
                     $val = $item['positivos'] > 0 ? round($item['valor'] / $item['positivos'], 2) : 0;
                     array_push($array_crec_sem, round($val - $ant, 2));
                     $ant = $val;
@@ -193,7 +192,8 @@
         <ul style="margin-top: 5px" class="list-unstyled">
             <li>Por encima que la media <i class=" fa fa-fw fa-circle" style="color: #30b32d"></i></li>
             <li>Por debajo de la media <i class="fa fa-fw fa-circle" style="color: #f03e3e"></i></li>
-            <li>Semana de inicio de curva <i class="fa fa-fw fa-circle-o" style="color: blue"></i></li>
+            <li>Semana de inicio de curva en módulos con primera flor <i class="fa fa-fw fa-circle-o" style="color: blue"></i></li>
+            <li>Semana PROMEDIO de inicio de curva <i class="fa fa-fw fa-circle" style="color: #fbff00"></i></li>
         </ul>
     </div>
 </div>
