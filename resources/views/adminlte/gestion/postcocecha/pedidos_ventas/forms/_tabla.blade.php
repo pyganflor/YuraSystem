@@ -338,9 +338,9 @@
                                                 @foreach($esp_emp->detalles as $pos_det_esp => $det_esp)
                                                     <li>
                                                         <div class="input-group" style="width: 100px">
-                                                <span class="input-group-addon" style="background-color: #e9ecef">
-                                                    P-{{$pos_det_esp + 1}}
-                                                </span>
+                                                            <span class="input-group-addon" style="background-color: #e9ecef">
+                                                                P-{{$pos_det_esp + 1}}
+                                                            </span>
                                                             <input type="number"
                                                                    id="parcial_marcacion_{{$pos_marca}}_{{$det_esp->id_detalle_especificacionempaque}}_{{$esp_emp->id_especificacion_empaque}}"
                                                                    name="parcial_marcacion_{{$pos_marca}}_{{$det_esp->id_detalle_especificacionempaque}}_{{$esp_emp->id_especificacion_empaque}}"

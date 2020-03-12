@@ -39,15 +39,6 @@ class EtiquetaController extends Controller
                 ->leftJoin('comprobante as c','e.id_envio','c.id_envio')
                 ->select('c.secuencial','dc.nombre as cli_nombre','pedido.id_pedido','c.estado as estado_comprobante')
                 ->where('pedido.id_configuracion_empresa', $request->id_configuracion_empresa)->get()
-
-            /*Comprobante::where([
-                ['tipo_comprobante',01],
-                ['habilitado',1],
-                ['fecha_emision',$request->desde]
-            ])->join('envio as e','comprobante.id_envio','e.id_envio')
-                ->join('pedido as p','p.id_pedido','e.id_pedido')
-                ->whereIn('comprobante.estado',[0,1,5])
-                ->where('p.id_configuracion_empresa', $request->id_configuracion_empresa)->get()*/
         ]);
     }
 
@@ -64,7 +55,6 @@ class EtiquetaController extends Controller
 
         $this->excel_facturas_etiquetas($objPHPExcel, $request);
 
-        //dd("hola");
 
         //--------------------------- GUARDAR EL EXCEL -----------------------
 
@@ -149,6 +139,31 @@ class EtiquetaController extends Controller
         $objSheet->getCell('AX1')->setValue('Length7');
         $objSheet->getCell('AY1')->setValue('Bounches7');
         $objSheet->getCell('AZ1')->setValue('Weigth7');
+        $objSheet->getCell('BA1')->setValue('Variedad8');
+        $objSheet->getCell('BB1')->setValue('Color8');
+        $objSheet->getCell('BC1')->setValue('Length8');
+        $objSheet->getCell('BD1')->setValue('Bounches8');
+        $objSheet->getCell('BE1')->setValue('Weigth8');
+        $objSheet->getCell('BF1')->setValue('Variedad9');
+        $objSheet->getCell('BG1')->setValue('Color9');
+        $objSheet->getCell('BH1')->setValue('Length9');
+        $objSheet->getCell('BI1')->setValue('Bounches9');
+        $objSheet->getCell('BJ1')->setValue('Weigth9');
+        $objSheet->getCell('BK1')->setValue('Variedad10');
+        $objSheet->getCell('BL1')->setValue('Color10');
+        $objSheet->getCell('BM1')->setValue('Length10');
+        $objSheet->getCell('BN1')->setValue('Bounches10');
+        $objSheet->getCell('BO1')->setValue('Weigth10');
+        $objSheet->getCell('BP1')->setValue('Variedad11');
+        $objSheet->getCell('BQ1')->setValue('Color11');
+        $objSheet->getCell('BR1')->setValue('Length11');
+        $objSheet->getCell('BS1')->setValue('Bounches11');
+        $objSheet->getCell('BT1')->setValue('Weigth11');
+        $objSheet->getCell('BU1')->setValue('Variedad12');
+        $objSheet->getCell('BV1')->setValue('Color12');
+        $objSheet->getCell('BW1')->setValue('Length12');
+        $objSheet->getCell('BX1')->setValue('Bounches12');
+        $objSheet->getCell('BY1')->setValue('Weigth12');
 
 
         if (sizeof($request->arr_facturas) > 0) {
