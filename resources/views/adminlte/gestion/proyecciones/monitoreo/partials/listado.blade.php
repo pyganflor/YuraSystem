@@ -78,7 +78,14 @@
                     @php    // algoritmo para calcular el crecimiento semanal
                         $val = $mon->altura;
                         $crec_sem = round($val - $ant, 2);
+                        $crec_dia = round($crec_sem / 7, 2);
                         $ant = $val;
+
+                        $title = '';
+                        if ($crec_sem > 0){
+                            $title = '<em>Crec. Sem.: '.$crec_sem.'</em><br>';
+                            $title .= '<em>Crec. Día: '.$crec_dia.'</em>';
+                        }
                     @endphp
                     <th class="text-center celda_hovered {{$cant_mon < $min_semanas ? 'hide' : ''}}"
                         style="border-color: #9d9d9d; background-color: #e9ecef" id="td_monitoreo_{{$item['ciclo']->id_ciclo}}_{{$cant_mon}}"
@@ -155,7 +162,7 @@
         <tr class="tr_fijo_bottom_1">
             <th class="text-center th_fijo_left_0" style="border-color: #9d9d9d; background-color: #357CA5; color: white; z-index: 9"
                 colspan="3">
-                Crecimiento <sup title="Altura">semanal</sup>
+                Crecimiento <sup>semanal</sup>
             </th>
             @foreach($array_crec_sem as $pos_sem => $item)
                 <th class="text-center {{$pos_sem + 1 < $min_semanas ? 'hide' : ''}}" style="border-color: #9d9d9d; background-color: #e9ecef">
@@ -172,7 +179,7 @@
         <tr class="tr_fijo_bottom_0">
             <th class="text-center th_fijo_left_0" style="border-color: #9d9d9d; background-color: #357CA5; color: white; z-index: 9"
                 colspan="3">
-                Crecimiento <sup title="Altura">día</sup>
+                Crecimiento <sup>diario</sup>
             </th>
             @foreach($array_crec_dia as $pos_sem => $item)
                 <th class="text-center {{$pos_sem + 1 < $min_semanas ? 'hide' : ''}}" style="border-color: #9d9d9d; background-color: #e9ecef">
@@ -210,7 +217,7 @@
     $(function () {
         $('[data-toggle="tooltip"]').tooltip()
     });
-    
+
     function guardar_monitoreo(ciclo, cant_mon) {
         datos = {
             _token: '{{csrf_token()}}',
