@@ -210,7 +210,7 @@
     </legend>
     <div class="panel-collapse collapse" id="collapseLeyenda">
         <ul style="margin-top: 5px" class="list-unstyled">
-            <li>Por encima que la media <i class=" fa fa-fw fa-circle" style="color: #30b32d"></i></li>
+            <li>Por encima de la media <i class=" fa fa-fw fa-circle" style="color: #30b32d"></i></li>
             <li>Por debajo de la media <i class="fa fa-fw fa-circle" style="color: #f03e3e"></i></li>
             <li>Semana de inicio de curva en módulos SIN primera flor <i class="fa fa-fw fa-circle-o" style="color: orange"></i></li>
             <li>Semana de inicio de curva en módulos CON primera flor <i class="fa fa-fw fa-circle-o" style="color: blue"></i></li>
