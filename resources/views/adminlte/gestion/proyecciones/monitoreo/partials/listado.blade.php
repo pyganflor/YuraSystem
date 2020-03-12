@@ -68,7 +68,7 @@
                         style="border-color: #9d9d9d; background-color: #e9ecef" id="td_monitoreo_{{$item['ciclo']->id_ciclo}}_{{$cant_mon}}"
                         onmouseover="mouse_over_celda('td_monitoreo_{{$item['ciclo']->id_ciclo}}_{{$cant_mon}}', 1)"
                         onmouseleave="mouse_over_celda('{{$item['ciclo']->id_ciclo}}', 0)">
-                        <input type="number" style="width: 100%" id="monitoreo_{{$item['ciclo']->id_ciclo}}_{{$cant_mon}}"
+                        <input type="number" style="width: 100%; border: {{$item['ini_curva'] == $cant_mon ? '3px solid #03de00' : ''}}" id="monitoreo_{{$item['ciclo']->id_ciclo}}_{{$cant_mon}}"
                                value="{{$mon->altura}}" readonly ondblclick="$(this).attr('readonly', false)" min="0"
                                class="text-center input_sem_{{$cant_mon}} input_ciclo_{{$item['ciclo']->id_ciclo}}"
                                onchange="guardar_monitoreo('{{$item['ciclo']->id_ciclo}}', '{{$cant_mon}}')">
@@ -136,8 +136,7 @@
             @foreach($array_crec_sem as $pos_sem => $item)
                 <th class="text-center {{$pos_sem + 1 < $min_semanas ? 'hide' : ''}}" style="border-color: #9d9d9d; background-color: #e9ecef">
                     {{$item > 0 ? $item : 0}}
-                    <input type="hidden" id="crec_sem_{{$pos_sem + 1}}"
-                           value="{{$item > 0 ? $item : 0}}">
+                    <input type="hidden" id="crec_sem_{{$pos_sem + 1}}" value="{{$item > 0 ? $item : 0}}">
                 </th>
                 @php
                     array_push($array_crec_dia, round($item > 0 ? $item / 7 : 0, 2))
