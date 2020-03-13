@@ -20,10 +20,19 @@
         <label for="curva">Nueva Curva</label>
         <input type="text" id="new_curva" placeholder="Nueva Curva" class="text-center form-control" style="width: 100%" readonly>
         <br>
-        <button type="button" class="btn btn-block btn-primary btn-lg" onclick="recalcular()">
+        <button type="button" class="btn btn-block btn-default btn-lg" onclick="recalcular()" id="btn_border">
             RECALCULAR
         </button>
     </section>
+
+    <style>
+        #btn_border {
+            border-top: 3px solid orange !important;
+            border-left: 3px solid orange !important;
+            border-bottom: 3px solid blue !important;
+            border-right: 3px solid blue !important;
+        }
+    </style>
 @endsection
 
 @section('script_final')
