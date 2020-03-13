@@ -98,7 +98,7 @@
             </th>
             @foreach($semanas as $pos_sem => $sem)
                 <th class="text-center celda_semana_{{$sem->id_semana}}" style="width: 250px">
-                    <div class="btn-group" data-toggle="tooltip" data-placement="top" data-html="true"
+                    <div class="btn-group" data-toggle="tooltip" data-placement="bottom" data-html="true"
                          title="<em>T.Ramo: {{$sem->tallos_ramo_poda}}</em><br>
                           <em>T.Pta: {{$sem->tallos_planta_poda}}</em><br>
                           <em>%Desecho: {{$sem->desecho}}</em>">

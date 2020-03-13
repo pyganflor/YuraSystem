@@ -18,9 +18,14 @@
             </th>
             @php
                 $array_prom = [];
+                $prom_ini_curva = [
+                    'valor' => 0,
+                    'cantidad' => 0,
+                ];
             @endphp
             @for($i = 1; $i <= $num_semanas; $i++)
-                <th class="text-center {{$i < $min_semanas ? 'hide' : ''}}" style="border-color: #9d9d9d; background-color: #e9ecef">
+                <th class="text-center {{$i < $min_semanas ? 'hide' : ''}}" style="border-color: #9d9d9d; background-color: #e9ecef"
+                    id="th_num_sem_{{$i}}">
                     <div style="width: 50px">
                         {{$i}}º
                     </div>
@@ -43,8 +48,15 @@
                 $modulo = $item['ciclo']->modulo;
                 $semana = $item['ciclo']->semana();
                 $cant_mon = 1;
+                if($item['ini_curva'] > 0){
+                    $prom_ini_curva['valor'] += $item['ini_curva'];
+                    $prom_ini_curva['cantidad']++;
+                }
+                $mon_actual = $item['mon_actual'] != '' ? $item['mon_actual'] : '';
             @endphp
-            <tr>
+            <input type="hidden" id="last_sem_{{$item['ciclo']->id_ciclo}}" value="{{$mon_actual != '' ? $mon_actual->num_sem : ''}}">
+            <input type="hidden" id="ini_curva_{{$item['ciclo']->id_ciclo}}" value="{{$item['ini_curva']}}">
+            <tr class="{{count($item['monitoreos']) >= $min_semanas ? '' : 'hide'}}">
                 <th class="text-center th_fijo_left_0" style="border-color: #9d9d9d; background-color: #e9ecef">
                     <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
                         {{$modulo->nombre}}
@@ -63,15 +75,33 @@
                 <th class="text-center th_fijo_left_2" style="border-color: #9d9d9d; background-color: #e9ecef">
                     {{difFechas($item['ciclo']->fecha_inicio, date('Y-m-d'))->days}}
                 </th>
+                @php
+                    $ant = 0;
+                @endphp
                 @foreach($item['monitoreos'] as $pos_mon => $mon)
+                    @php    // algoritmo para calcular el crecimiento semanal
+                        $val = $mon->altura;
+                        $crec_sem = round($val - $ant, 2);
+                        $crec_dia = round($crec_sem / 7, 2);
+                        $ant = $val;
+
+                        $title = '';
+                        if ($crec_sem > 0){
+                            $title = '<em>Crec. Sem.: '.$crec_sem.'</em><br>';
+                            $title .= '<em>Crec. Día: '.$crec_dia.'</em>';
+                        }
+                    @endphp
                     <th class="text-center celda_hovered {{$cant_mon < $min_semanas ? 'hide' : ''}}"
                         style="border-color: #9d9d9d; background-color: #e9ecef" id="td_monitoreo_{{$item['ciclo']->id_ciclo}}_{{$cant_mon}}"
                         onmouseover="mouse_over_celda('td_monitoreo_{{$item['ciclo']->id_ciclo}}_{{$cant_mon}}', 1)"
                         onmouseleave="mouse_over_celda('{{$item['ciclo']->id_ciclo}}', 0)">
-                        <input type="number" style="width: 100%" id="monitoreo_{{$item['ciclo']->id_ciclo}}_{{$cant_mon}}"
-                               value="{{$mon->altura}}" readonly ondblclick="$(this).attr('readonly', false)" min="0"
-                               class="text-center input_sem_{{$cant_mon}} input_ciclo_{{$item['ciclo']->id_ciclo}}"
+                        <input type="number" style="width: 100%; border: {{$item['ini_curva'] == $cant_mon ? '3px solid blue' : ''}}"
+                               id="monitoreo_{{$item['ciclo']->id_ciclo}}_{{$cant_mon}}" data-toggle="tooltip" data-placement="top"
+                               data-html="true" title="{{$title}}" value="{{$mon->altura}}" readonly ondblclick="$(this).attr('readonly', false)"
+                               min="0" class="text-center input_sem_{{$cant_mon}} input_ciclo_{{$item['ciclo']->id_ciclo}}"
                                onchange="guardar_monitoreo('{{$item['ciclo']->id_ciclo}}', '{{$cant_mon}}')">
+                        <input type="hidden" id="crec_sem_{{$item['ciclo']->id_ciclo}}_{{$cant_mon}}" value="{{$crec_sem}}">
+                        <input type="hidden" id="crec_dia_{{$item['ciclo']->id_ciclo}}_{{$cant_mon}}" value="{{$crec_dia}}">
                     </th>
                     @php
                         if ($mon->altura > 0){
@@ -86,7 +116,8 @@
                         id="td_monitoreo_{{$item['ciclo']->id_ciclo}}_{{$cant_mon}}"
                         onmouseover="mouse_over_celda('td_monitoreo_{{$item['ciclo']->id_ciclo}}_{{$cant_mon}}', 1)"
                         onmouseleave="mouse_over_celda('{{$item['ciclo']->id_ciclo}}', 0)">
-                        <input type="number" style="width: 100%;" id="monitoreo_{{$item['ciclo']->id_ciclo}}_{{$cant_mon}}" readonly
+                        <input type="number" style="width: 100%; border: {{$item['ini_curva'] == $cant_mon ? '3px solid blue' : ''}}"
+                               id="monitoreo_{{$item['ciclo']->id_ciclo}}_{{$cant_mon}}" readonly
                                ondblclick="$(this).attr('readonly', false)" class="text-center" min="0"
                                onchange="guardar_monitoreo('{{$item['ciclo']->id_ciclo}}', '{{$cant_mon}}')">
                     </th>
@@ -111,15 +142,19 @@
                 Promedios <sup title="Altura">cm</sup>
             </th>
             @php
+                $sem_prom_ini_curva = '';
+                if($prom_ini_curva['cantidad'] > 0)
+                    $sem_prom_ini_curva = round($prom_ini_curva['valor'] / $prom_ini_curva['cantidad']);
                 $ant = 0;
             @endphp
             @foreach($array_prom as $pos_sem => $item)
-                <th class="text-center {{$pos_sem + 1 < $min_semanas ? 'hide' : ''}}" style="border-color: #9d9d9d; background-color: #e9ecef">
+                <th class="text-center {{$pos_sem + 1 < $min_semanas ? 'hide' : ''}}"
+                    style="border-color: #9d9d9d; background-color: {{$sem_prom_ini_curva == $pos_sem + 1 ? '#fbff00' : '#e9ecef'}}">
                     {{$item['positivos'] > 0 ? round($item['valor'] / $item['positivos'], 2) : 0}}
                     <input type="hidden" id="prom_sem_{{$pos_sem + 1}}"
                            value="{{$item['positivos'] > 0 ? round($item['valor'] / $item['positivos'], 2) : 0}}">
                 </th>
-                @php
+                @php    // algoritmo para calcular el crecimiento semanal
                     $val = $item['positivos'] > 0 ? round($item['valor'] / $item['positivos'], 2) : 0;
                     array_push($array_crec_sem, round($val - $ant, 2));
                     $ant = $val;
@@ -131,13 +166,12 @@
         <tr class="tr_fijo_bottom_1">
             <th class="text-center th_fijo_left_0" style="border-color: #9d9d9d; background-color: #357CA5; color: white; z-index: 9"
                 colspan="3">
-                Crecimiento <sup title="Altura">semanal</sup>
+                Crecimiento <sup>semanal</sup>
             </th>
             @foreach($array_crec_sem as $pos_sem => $item)
                 <th class="text-center {{$pos_sem + 1 < $min_semanas ? 'hide' : ''}}" style="border-color: #9d9d9d; background-color: #e9ecef">
                     {{$item > 0 ? $item : 0}}
-                    <input type="hidden" id="crec_sem_{{$pos_sem + 1}}"
-                           value="{{$item > 0 ? $item : 0}}">
+                    <input type="hidden" id="crec_sem_{{$pos_sem + 1}}" value="{{$item > 0 ? $item : 0}}">
                 </th>
                 @php
                     array_push($array_crec_dia, round($item > 0 ? $item / 7 : 0, 2))
@@ -149,7 +183,7 @@
         <tr class="tr_fijo_bottom_0">
             <th class="text-center th_fijo_left_0" style="border-color: #9d9d9d; background-color: #357CA5; color: white; z-index: 9"
                 colspan="3">
-                Crecimiento <sup title="Altura">día</sup>
+                Crecimiento <sup>diario</sup>
             </th>
             @foreach($array_crec_dia as $pos_sem => $item)
                 <th class="text-center {{$pos_sem + 1 < $min_semanas ? 'hide' : ''}}" style="border-color: #9d9d9d; background-color: #e9ecef">
@@ -165,10 +199,32 @@
                 </button>
             </th>
         </tr>
+        <input type="hidden" id="sem_prom_ini_curva" value="{{$sem_prom_ini_curva}}">
     </table>
+</div>
+<div class="text-right" style="margin-top: 10px">
+    <legend style="font-size: 1em; margin-bottom: 0">
+        <a data-toggle="collapse" data-parent="#accordion" href="#collapseLeyenda">
+            <strong style="color: black">Leyenda <i class="fa fa-fw fa-caret-down"></i></strong>
+        </a>
+    </legend>
+    <div class="panel-collapse collapse" id="collapseLeyenda">
+        <ul style="margin-top: 5px" class="list-unstyled">
+            <li>Por encima de la media <i class=" fa fa-fw fa-circle" style="color: #30b32d"></i></li>
+            <li>Por debajo de la media <i class="fa fa-fw fa-circle" style="color: #f03e3e"></i></li>
+            <li>Semana de inicio de curva en módulos SIN primera flor <i class="fa fa-fw fa-circle-o" style="color: orange"></i></li>
+            <li>Semana de inicio de curva en módulos CON primera flor <i class="fa fa-fw fa-circle-o" style="color: blue"></i></li>
+            <li>Semana PROMEDIO de inicio de curva <sup>real</sup> <i class="fa fa-fw fa-circle" style="color: #fbff00"></i></li>
+            <li>Semana PROMEDIO de inicio de curva <sup>proyectado</sup> <i class="fa fa-fw fa-circle" style="color: orange"></i></li>
+        </ul>
+    </div>
 </div>
 
 <script>
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+    });
+
     function guardar_monitoreo(ciclo, cant_mon) {
         datos = {
             _token: '{{csrf_token()}}',
@@ -201,9 +257,9 @@
             for (y = 0; y < inputs.length; y++) {
                 if (inputs[y].value > 0) {
                     if (parseFloat(inputs[y].value) >= parseFloat($('#prom_sem_' + i).val())) {
-                        $('#' + inputs[y].id).css('background-color', '#30b32d');
+                        $('#' + inputs[y].id).css('background-color', '#30b32d');   // verde
                     } else {
-                        $('#' + inputs[y].id).css('background-color', '#f03e3e');
+                        $('#' + inputs[y].id).css('background-color', '#f03e3e');   // rojo
                     }
                     $('#' + inputs[y].id).css('color', 'white');
                 }
@@ -233,7 +289,51 @@
         }, 'div_listado_ciclos');
     }
 
+    function proyectar_inicio_curvas() {    // algoritmo para proyectar el inicio de curva
+        ciclos = $('.ids_ciclo');
+        proy_sem_prom_ini_curva = {
+            valor: 0,
+            cantidad: 0,
+        };
+        for (i = 0; i < ciclos.length; i++) {
+            id_ciclo = ciclos[i].value;
+            last_sem = parseInt($('#last_sem_' + id_ciclo).val());
+            if (last_sem >= $('#filtro_min_semanas').val() && last_sem <= 11 && $('#ini_curva_' + id_ciclo).val() == '') {  // se trate de un ciclo en el rango de semanas que interesan && aun no tiene primera flor
+                valor = $('#monitoreo_' + id_ciclo + '_' + last_sem).val();
+                crec_sem = $('#crec_sem_' + id_ciclo + '_' + last_sem).val();
+                crec_dia = $('#crec_dia_' + id_ciclo + '_' + last_sem).val();
+
+                prom_sem = $('#prom_sem_' + last_sem).val();
+                crec_sem_prom = $('#crec_sem_' + last_sem).val();
+                crec_dia_prom = $('#crec_sem_dia_' + last_sem).val();
+
+                dif_dia = crec_dia - crec_dia_prom;
+                dif_sem = crec_sem - crec_sem_prom;
+                dif_dia = Math.sign(dif_dia) == -1 ? dif_dia * -1 : dif_dia;
+                dif_sem = Math.sign(dif_sem) == -1 ? dif_sem * -1 : dif_sem;
+
+                resultado = dif_sem > 0 ? (dif_dia * 7) / dif_sem : 0;
+                //resultado = Math.round(resultado);
+                resultado = parseInt(resultado);
+                direccion = Math.sign(valor - prom_sem);
+                sem_prom_ini_curva = parseInt($('#sem_prom_ini_curva').val());
+
+                if (direccion >= 0) {   // adelantar en el tiempo
+                    nueva_curva = sem_prom_ini_curva - resultado;
+                } else {    // atrasar en el tiempo
+                    nueva_curva = sem_prom_ini_curva + resultado;
+                }
+                $('#monitoreo_' + id_ciclo + '_' + nueva_curva).css('border', '3px solid orange');
+                proy_sem_prom_ini_curva['valor'] += nueva_curva;
+                proy_sem_prom_ini_curva['cantidad']++;
+            }
+        }
+        num_sem_proy = proy_sem_prom_ini_curva['cantidad'] > 0 ? Math.round(proy_sem_prom_ini_curva['valor'] / proy_sem_prom_ini_curva['cantidad']) : 0;
+        num_sem_proy > 0 ? $('#th_num_sem_' + num_sem_proy).css('background-color', 'orange') : false;
+    }
+
     $(window).ready(function () {
+        proyectar_inicio_curvas();
         colorear_celdas();
     })
 </script>

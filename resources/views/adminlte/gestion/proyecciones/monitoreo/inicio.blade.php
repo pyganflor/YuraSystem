@@ -57,8 +57,8 @@
                         P/S
                     </div>
                     <select name="filtro_poda_siembra" id="filtro_poda_siembra" class="form-control">
-                        <option value="S">Siembra</option>
                         <option value="P">Poda</option>
+                        <option value="S">Siembra</option>
                     </select>
                     <div class="input-group-addon bg-gray">
                         Desde
