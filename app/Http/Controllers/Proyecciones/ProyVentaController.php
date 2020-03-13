@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use yura\Http\Controllers\Controller;
 use yura\Jobs\ProyeccionVentaSemanalUpdate;
 use yura\Modelos\HistoricoVentas;
+use yura\Modelos\ResumenSaldoProyeccionVentaSemanal;
 use yura\Modelos\ResumenSemanaCosecha;
 use yura\Modelos\Semana;
 use yura\Modelos\Submenu;
@@ -163,17 +164,17 @@ class ProyVentaController extends Controller
     }
 
     public function storeProyeccionVenta(Request $request){
-       // dd($request->all());
+        dd($request->all();
         try{
             if(isset($request->semanas) && count($request->semanas)>0){
                 if(isset($request->clientes)){
-                    foreach($request->semanas as $semana){
+                    //foreach($request->semanas as $semana){
                         foreach($request->clientes as $cliente){
                             $valor = substr($cliente['valor'],1,20);
                             $objProyeccionVentaSemanalReal = ProyeccionVentaSemanalReal::where([
                                 ['id_cliente',$cliente['id_cliente']],
                                 ['id_variedad',$request->id_variedad],
-                                ['codigo_semana',$semana]
+                                ['codigo_semana',$cliente['semana']]
                             ]);
                             $objProyeccionVentaSemanalReal->update([
                                 'cajas_fisicas' => $cliente['cajas_fisicas'],
@@ -181,7 +182,7 @@ class ProyVentaController extends Controller
                                 'valor' => round($valor,2)
                             ]);
                         }
-                    }
+                    //}
                 }
 
                 foreach($request->desecho as $desecho){
@@ -192,7 +193,27 @@ class ProyVentaController extends Controller
                     $objResumenCosecha->update(['desecho' => $desecho['cantidad']]);
                 }
 
-                ProyeccionVentaSemanalUpdate::dispatch($request->semanas[0]['semana'],$request->semanas[(count($request->semanas)-1)]['semana'],0,0)->onQueue('update_venta_semanal_real');
+                foreach($request->saldos as $saldo){
+                    $objResumenSaldos = ResumenSaldoProyeccionVentaSemanal::where([
+                        ['id_variedad',$request->id_variedad],
+                        ['codigo_semana',$saldo['semana']]
+                    ]);
+                    $objResumenSaldos->update([
+                        'saldo_inicial' => $saldo['inicial'],
+                        'saldo_final' => $saldo['final']
+                    ]);
+                }
+
+                $ultimaSemana = Semana::orderBy('codigo','Desc')->select('codigo')->first();
+                ProyeccionVentaSemanalUpdate::dispatch($request->semanas[(count($request->semanas)-1)]['semana'],$ultimaSemana,$request->id_variedad,0)->onQueue('update_venta_semanal_real');
+
+                /*if(isset($request->clientes)) {
+                    foreach ($request->clientes as $cliente)
+                        ProyeccionVentaSemanalUpdate::dispatch($request->semanas[0]['semana'],$request->semanas[(count($request->semanas)-1)]['semana'],$request->id_variedad,$cliente['id_cliente'])->onQueue('update_venta_semanal_real');
+                }else{
+                    ProyeccionVentaSemanalUpdate::dispatch($request->semanas[0]['semana'],$request->semanas[(count($request->semanas)-1)]['semana'],$request->id_variedad,0)->onQueue('update_venta_semanal_real');
+                }*/
+
                 $success = true;
                 $msg = '<div class="alert alert-success text-center">' .
                     '<p> Se ha guardado la proyección con éxito </p>'
