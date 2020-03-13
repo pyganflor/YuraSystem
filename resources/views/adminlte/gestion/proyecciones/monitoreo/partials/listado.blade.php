@@ -298,7 +298,7 @@
         for (i = 0; i < ciclos.length; i++) {
             id_ciclo = ciclos[i].value;
             last_sem = parseInt($('#last_sem_' + id_ciclo).val());
-            if (last_sem >= $('#filtro_min_semanas').val() && last_sem <= 11 && $('#ini_curva_' + id_ciclo).val() == '') {  // se trate de un ciclo en el rango de semanas que interesan && aun no tiene primera flor
+            if (last_sem >= $('#filtro_min_semanas').val() && last_sem <= 11) {  // se trate de un ciclo en el rango de semanas que interesan
                 valor = $('#monitoreo_' + id_ciclo + '_' + last_sem).val();
                 crec_sem = $('#crec_sem_' + id_ciclo + '_' + last_sem).val();
                 crec_dia = $('#crec_dia_' + id_ciclo + '_' + last_sem).val();
@@ -323,7 +323,14 @@
                 } else {    // atrasar en el tiempo
                     nueva_curva = sem_prom_ini_curva + resultado;
                 }
-                $('#monitoreo_' + id_ciclo + '_' + nueva_curva).css('border', '3px solid orange');
+                if ($('#ini_curva_' + id_ciclo).val() == nueva_curva) {
+                    $('#monitoreo_' + id_ciclo + '_' + nueva_curva).css('border-top', '3px solid orange');
+                    $('#monitoreo_' + id_ciclo + '_' + nueva_curva).css('border-left', '3px solid orange');
+                    $('#monitoreo_' + id_ciclo + '_' + nueva_curva).css('border-bottom', '3px solid blue');
+                    $('#monitoreo_' + id_ciclo + '_' + nueva_curva).css('border-right', '3px solid blue');
+                } else {
+                    $('#monitoreo_' + id_ciclo + '_' + nueva_curva).css('border', '3px solid orange');
+                }
                 proy_sem_prom_ini_curva['valor'] += nueva_curva;
                 proy_sem_prom_ini_curva['cantidad']++;
             }
