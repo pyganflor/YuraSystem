@@ -2630,9 +2630,15 @@ function getNuevaCurva($curva, $inicio)
         for ($i = count($curva) - 1; $i >= 0; $i--) {
             $last = $curva[$i] + $dif;
             $curva[$i] = $last;
-            if ($last > $configuracion->proy_maximo_cosecha_fin) {  // hay q duplicar el final
-                $curva[$i] = $last % 2 == 0 ? intval($last / 2) : intval($last / 2) + 1;
-                array_push($curva, intval($last / 2));
+            if ($last > $configuracion->proy_maximo_cosecha_fin) {  // supera el maximo permitido para la ultima semana
+                $exc = $last - $configuracion->proy_maximo_cosecha_fin;
+                if ($exc >= $configuracion->proy_minimo_cosecha) {  // hay que agregar una semana al final
+                    $curva[$i] = $configuracion->proy_maximo_cosecha_fin;
+                    array_push($curva, $exc);
+                } else {    // no hay que agregar ninguna semana
+                    $curva[$i] = $last;
+                }
+                break;
             } else if ($last < $configuracion->proy_minimo_cosecha) { // hay que hacer cero la ultima semana
                 $dif = $last;
                 $curva[$i] = 0;
