@@ -203,15 +203,15 @@ class ProyVentaController extends Controller
                         ]);
                     }
                 }
-
-
-                $ultimaSemana = Semana::orderBy('codigo','desc')->select('codigo')->first();
-                ProyeccionVentaSemanalUpdate::dispatch($request->semanas[(count($request->semanas)-1)]['semana'],$ultimaSemana,$request->id_variedad,0)->onQueue('update_venta_semanal_real');
-
                 $success = true;
                 $msg = '<div class="alert alert-success text-center">' .
                     '<p> Se ha guardado la proyección con éxito </p>'
                     .'</div>';
+
+
+                $ultimaSemana = Semana::orderBy('codigo','desc')->select('codigo')->first();
+                ProyeccionVentaSemanalUpdate::dispatch($request->semanas[(count($request->semanas)-1)]['semana'],$ultimaSemana->codigo,$request->id_variedad,0)->onQueue('update_venta_semanal_real');
+
             }else{
                 $success = false;
                 $msg = '<div class="alert alert-danger text-center">' .
