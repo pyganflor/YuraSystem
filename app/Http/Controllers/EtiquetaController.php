@@ -28,18 +28,6 @@ class EtiquetaController extends Controller
 
     public function listado(Request $request){
 
-        dd(Pedido::where([
-            ['pedido.fecha_pedido',$request->desde],
-            ['pedido.estado',true],
-            ['dc.estado',true]
-        ])->join('envio as e','pedido.id_pedido','e.id_pedido')
-            ->join('cliente as cl','pedido.id_cliente','cl.id_cliente')
-            ->join('detalle_cliente as dc','cl.id_cliente','dc.id_cliente')
-            ->leftJoin('comprobante as c','e.id_envio','c.id_envio')
-            ->select('c.secuencial','dc.nombre as cli_nombre','pedido.id_pedido','c.estado as estado_comprobante')
-            ->where('pedido.id_configuracion_empresa', $request->id_configuracion_empresa)->get());
-
-
         return view('adminlte.gestion.postcocecha.etiquetas.partials.listado',[
             'pedidos' => Pedido::where([
                 ['pedido.fecha_pedido',$request->desde],
