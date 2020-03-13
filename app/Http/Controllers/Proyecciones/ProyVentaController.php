@@ -25,7 +25,7 @@ class ProyVentaController extends Controller
             'submenu' => Submenu::Where('url', '=', substr($request->getRequestUri(), 1))->get()[0],
             'text' => ['titulo' => 'Proyecciones', 'subtitulo' => 'ventas por cliente'],
             'clientes' => Cliente::where('estado',1)->get(),
-            'hasta' => getSemanaByDate(opDiasFecha('+', 98, date('Y-m-d')))
+            'hasta' => getSemanaByDate(opDiasFecha('+', 70, date('Y-m-d')))
         ]);
     }
 
