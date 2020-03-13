@@ -311,6 +311,11 @@ class PedidoController extends Controller
                         //LLAMAR A LA FUNCIÓN ESTÁTICA PARA ACTUALIZAR LA FACTURA
 
                     }
+
+                    $semana = getSemanaByDate($objPedido->fecha_pedido);
+                    $codigo_semana = $semana != '' ? $semana->codigo : '';
+                    if ($codigo_semana != '')
+                        ProyeccionVentaSemanalUpdate::dispatch($codigo_semana, $codigo_semana, 0, $request->id_cliente)->onQueue('update_venta_semanal_real');
                 }
             }
             if (isset($request->arrDataPresentacionYuraVenture) && count($request->arrDataPresentacionYuraVenture)) {
@@ -323,11 +328,7 @@ class PedidoController extends Controller
                     $objProductoYuraVenture->save();
                 }
             }
-            $semana = getSemanaByDate($fechaFormateada);
-            $codigo_semana = $semana != '' ? $semana->codigo : '';
-            if ($codigo_semana != '')
-                ProyeccionVentaSemanalUpdate::dispatch($codigo_semana, $codigo_semana, 0, $request->id_cliente)->onQueue('update_venta_semanal_real');
-
+            
         } else {
             $success = false;
             $errores = '';
@@ -481,8 +482,10 @@ class PedidoController extends Controller
                 '<p> Se ha cancelado el pedido exitosamente</p>'
                 . '</div>';
             bitacora('pedido', $request->id_pedido, 'D', 'Pedido eliminado con exito');
-            $semana = getSemanaByDate($pedido->fecha_pedido)->codigo;
-            ProyeccionVentaSemanalUpdate::dispatch($semana, $semana, 0, $pedido->id_cliente)->onQueue('update_venta_semanal_real');
+            $semana = getSemanaByDate($pedido->fecha_pedido);
+            $codigo_semana = $semana != '' ? $semana->codigo : '';
+            if ($codigo_semana != '')
+                ProyeccionVentaSemanalUpdate::dispatch($codigo_semana, $codigo_semana, 0, $pedido->id_cliente)->onQueue('update_venta_semanal_real');
         } else {
             $success = false;
             $msg = '<div class="alert alert-danger text-center">' .

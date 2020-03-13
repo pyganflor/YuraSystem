@@ -35,7 +35,7 @@
                 @foreach($pedidos as $x => $pedido)
                     @if(!isset($pedido->estado_comprobante) || (isset($pedido->estado_comprobante) && ($pedido->estado_comprobante==0 ||$pedido->estado_comprobante==1 || $pedido->estado_comprobante==5)))
                         <tr onmouseover="$(this).css('background-color','#add8e6')" onmouseleave="$(this).css('background-color','')">
-                            <td style="border-color: #9d9d9d" class="text-center">{{$pedido->id_pedido}} {{isset($pedido->secuencial) ? $pedido->secuencial : 'No posee'}}</td>
+                            <td style="border-color: #9d9d9d" class="text-center">{{isset($pedido->secuencial) ? $pedido->secuencial : 'No posee'}}</td>
                             <td style="border-color: #9d9d9d" class="text-center">{{$pedido->cli_nombre}}</td>
                             <td style="border-color: #9d9d9d" class="text-center">{{$pedido->detalles[0]->agencia_carga->nombre}}</td>
                             <td style="border-color: #9d9d9d" class="text-center">

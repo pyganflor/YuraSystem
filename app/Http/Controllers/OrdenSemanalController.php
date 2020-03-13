@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Validator;
 use yura\Jobs\ProyeccionUpdateSemanal;
+use yura\Jobs\ProyeccionVentaSemanalUpdate;
 use yura\Jobs\UpdateSaldosProyVentaSemanal;
 use yura\Modelos\ClasificacionRamo;
 use yura\Modelos\Cliente;
@@ -496,8 +497,10 @@ class OrdenSemanalController extends Controller
                 }
             }
 
-       // $semana = getSemanaByDate($request->fecha_pedido)->codigo;
-        //UpdateSaldosProyVentaSemanal::dispatch($semana, 0)->onQueue('update_saldos_proy_venta_semanal');
+        $semana = getSemanaByDate($pedido->fecha_pedido);
+        $codigo_semana = $semana != '' ? $semana->codigo : '';
+        if ($codigo_semana != '')
+            ProyeccionVentaSemanalUpdate::dispatch($codigo_semana, $codigo_semana, 0, $pedido->id_cliente)->onQueue('update_venta_semanal_real');
         return [
             'id_pedido' => $pedido->id_pedido,
             'success' => true,
@@ -984,7 +987,10 @@ class OrdenSemanalController extends Controller
                             . '</div>';
                     }
                 }
-
+                $semana = getSemanaByDate($pedido->fecha_pedido);
+                $codigo_semana = $semana != '' ? $semana->codigo : '';
+                if ($codigo_semana != '')
+                    ProyeccionVentaSemanalUpdate::dispatch($codigo_semana, $codigo_semana, 0, $pedido->id_cliente)->onQueue('update_venta_semanal_real');
             } else {
                 $success = false;
                 $msg = '<div class="alert alert-warning text-center">' .
@@ -1008,8 +1014,7 @@ class OrdenSemanalController extends Controller
                 '</ul>' .
                 '</div>';
         }
-        //$semana = getSemanaByDate($request->fecha_pedido)->codigo;
-        //UpdateSaldosProyVentaSemanal::dispatch($semana, 0)->onQueue('update_saldos_proy_venta_semanal');
+
         return [
             'mensaje' => $msg,
             'success' => $success
