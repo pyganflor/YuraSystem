@@ -11,13 +11,6 @@
 |
 */
 
-use yura\Jobs\DuplicarPedidoFacturaAnulada;
-use yura\Modelos\Semana;
-
-Route::get('semana',function(){
-    $ultimaSemana = Semana::orderBy('codigo','desc')->select('codigo')->first();
-    dd($ultimaSemana);
-});
 
 Route::get('login', 'YuraController@login');
 Route::post('login', 'YuraController@verificaUsuario');
