@@ -188,7 +188,6 @@
                         });
                     });
                 });
-                console.log(saldos);
                 datos = {
                     _token: '{{csrf_token()}}',
                     clientes : clientes,
@@ -199,8 +198,14 @@
                 };
 
                 $.post('{{url('proy_venta_semanal/store_proyeccion_venta')}}', datos, function (retorno){
-                    listar_proyecciones_venta_semanal();
-                    cerrar_modals();
+                    if (retorno.success) {
+                        alerta_accion(retorno.mensaje, function () {
+                            listar_proyecciones_venta_semanal();
+                            cerrar_modals();
+                        });
+                    } else {
+                        alerta(retorno.mensaje);
+                    }
                 }).always(function () {
                     $.LoadingOverlay('hide');
                 });
