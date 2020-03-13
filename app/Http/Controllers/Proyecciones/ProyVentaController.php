@@ -3,7 +3,6 @@
 namespace yura\Http\Controllers\Proyecciones;
 
 use Carbon\Carbon;
-use Couchbase\Exception;
 use Illuminate\Http\Request;
 use yura\Http\Controllers\Controller;
 use yura\Jobs\ProyeccionVentaSemanalUpdate;
@@ -15,7 +14,6 @@ use yura\Modelos\Submenu;
 use yura\Modelos\Cliente;
 use yura\Modelos\ProyeccionVentaSemanalReal;
 use yura\Modelos\PrecioVariedadCliente;
-use yura\Jobs\UpdateSaldosProyVentaSemanal;
 use DB;
 
 class ProyVentaController extends Controller
@@ -206,15 +204,9 @@ class ProyVentaController extends Controller
                     }
                 }
 
-                $ultimaSemana = Semana::orderBy('codigo','Desc')->select('codigo')->first();
-                ProyeccionVentaSemanalUpdate::dispatch($request->semanas[(count($request->semanas)-1)]['semana'],$ultimaSemana,$request->id_variedad,0)->onQueue('update_venta_semanal_real');
 
-                /*if(isset($request->clientes)) {
-                    foreach ($request->clientes as $cliente)
-                        ProyeccionVentaSemanalUpdate::dispatch($request->semanas[0]['semana'],$request->semanas[(count($request->semanas)-1)]['semana'],$request->id_variedad,$cliente['id_cliente'])->onQueue('update_venta_semanal_real');
-                }else{
-                    ProyeccionVentaSemanalUpdate::dispatch($request->semanas[0]['semana'],$request->semanas[(count($request->semanas)-1)]['semana'],$request->id_variedad,0)->onQueue('update_venta_semanal_real');
-                }*/
+                $ultimaSemana = Semana::orderBy('codigo','desc')->select('codigo')->first();
+                ProyeccionVentaSemanalUpdate::dispatch($request->semanas[(count($request->semanas)-1)]['semana'],$ultimaSemana,$request->id_variedad,0)->onQueue('update_venta_semanal_real');
 
                 $success = true;
                 $msg = '<div class="alert alert-success text-center">' .
