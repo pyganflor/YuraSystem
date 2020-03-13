@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Validator;
 use yura\Jobs\ProyeccionUpdateSemanal;
+use yura\Jobs\ProyeccionVentaSemanalUpdate;
 use yura\Jobs\UpdateSaldosProyVentaSemanal;
 use yura\Modelos\ClasificacionRamo;
 use yura\Modelos\Cliente;
@@ -496,8 +497,10 @@ class OrdenSemanalController extends Controller
                 }
             }
 
-       // $semana = getSemanaByDate($request->fecha_pedido)->codigo;
-        //UpdateSaldosProyVentaSemanal::dispatch($semana, 0)->onQueue('update_saldos_proy_venta_semanal');
+        $semana = getSemanaByDate($pedido->fecha_pedido);
+        $codigo_semana = $semana != '' ? $semana->codigo : '';
+        if ($codigo_semana != '')
+            ProyeccionVentaSemanalUpdate::dispatch($codigo_semana, $codigo_semana, 0, $pedido->id_cliente)->onQueue('update_venta_semanal_real');
         return [
             'id_pedido' => $pedido->id_pedido,
             'success' => true,
@@ -879,72 +882,6 @@ class OrdenSemanalController extends Controller
                             $item->delete();
                         }
 
-                        $envio = new Envio();
-                        $envio->id_pedido = $pedido->id_pedido;
-                        $envio->fecha_envio = $request->fecha_envio;
-
-                        if (isset($e)) {
-                            $envio->guia_madre = $e->guia_madre;
-                            $envio->guia_hija = $e->guia_hija;
-                            $envio->dae = $e->dae;
-                            $envio->email = $e->email;
-                            $envio->telefono = $e->telefono;
-                            $envio->direccion = $e->direccion;
-                            $envio->codigo_pais = $e->codigo_pais;
-                            $envio->almacen = $e->almacen;
-                            $envio->codigo_dae = $e->codigo_dae;
-                        }
-
-                        if ($envio->save()) {
-                            $envio = Envio::All()->last();
-
-                            bitacora('envio', $envio->id_envio, 'I', 'Insercion de un nuevo envio');
-
-                            foreach ($pedido->detalles as $det) {
-                                $det_envio = new DetalleEnvio();
-                                $det_envio->id_envio = $envio->id_envio;
-                                $det_envio->id_especificacion = $det->cliente_especificacion->id_especificacion;
-                                $det_envio->cantidad = $det->cantidad;
-                                if (isset($e)) $det_envio->id_aerolinea = $id_aerolinea;
-
-                                if ($det_envio->save()) {
-                                    $det_envio = DetalleEnvio::All()->last();
-                                    bitacora('detalle_envio', $det_envio->id_detalle_envio, 'I', 'Insercion de un nuevo detalle-envio');
-                                } else {
-                                    $pedido->delete();
-                                    return [
-                                        'id_pedido' => '',
-                                        'success' => false,
-                                        'mensaje' => '<div class="alert alert-warning text-center error">No se ha podido crear el detalle-envío</div>',
-                                    ];
-                                }
-                            }
-
-                            if (isset($objComprobante)) {
-                                $data_actualizar_factura =[
-                                    'id_envio' => $envio->id_envio,
-                                    'codigo_pais' => $envio->codigo_pais,
-                                    'dae'=> $envio->dae,
-                                    'fecha_envio'=>$envio->fecha_envio,
-                                    'pais'=> getPais($envio->codigo_pais)->nombre,
-                                    'update'=>'true',
-                                    'id_comprobante'=>$objComprobante->id_comprobante,
-                                    'fecha_pedidos_search'=> $envio->pedido->fecha_pedido,
-                                    'cant_variedades'=>$envio->pedido->catntidad_det_esp_emp(),
-                                ];
-                                ComprobanteController::actualizar_comprobante_factura($data_actualizar_factura);
-                            }
-                            //LLAMAR A LA FUNCIÓN ESTÁTICA PARA ACTUALIZAR LA FACTURA
-
-                        } else {
-                            $pedido->delete();
-                            return [
-                                'id_pedido' => '',
-                                'success' => false,
-                                'mensaje' => '<div class="alert alert-warning text-center error">No se ha podido crear el envío</div>',
-                            ];
-                        }
-
                         /* ======== DATOS EXPORTACION ========= */
 
                         if ($request->has('det_ped_arreglo_dat_exp') && count($request->det_ped_arreglo_dat_exp) > 0)
@@ -985,6 +922,77 @@ class OrdenSemanalController extends Controller
                     }
                 }
 
+                $envio = new Envio();
+                $envio->id_pedido = $pedido->id_pedido;
+                $envio->fecha_envio = $request->fecha_envio;
+
+                if (isset($e)) {
+                    $envio->guia_madre = $e->guia_madre;
+                    $envio->guia_hija = $e->guia_hija;
+                    $envio->dae = $e->dae;
+                    $envio->email = $e->email;
+                    $envio->telefono = $e->telefono;
+                    $envio->direccion = $e->direccion;
+                    $envio->codigo_pais = $e->codigo_pais;
+                    $envio->almacen = $e->almacen;
+                    $envio->codigo_dae = $e->codigo_dae;
+                }
+
+                if ($envio->save()) {
+                    $envio = Envio::All()->last();
+
+                    bitacora('envio', $envio->id_envio, 'I', 'Insercion de un nuevo envio');
+
+                    foreach ($pedido->detalles as $det) {
+                        $det_envio = new DetalleEnvio();
+                        $det_envio->id_envio = $envio->id_envio;
+                        $det_envio->id_especificacion = $det->cliente_especificacion->id_especificacion;
+                        $det_envio->cantidad = $det->cantidad;
+                        if (isset($e)) $det_envio->id_aerolinea = $id_aerolinea;
+
+                        if ($det_envio->save()) {
+                            $det_envio = DetalleEnvio::All()->last();
+                            bitacora('detalle_envio', $det_envio->id_detalle_envio, 'I', 'Insercion de un nuevo detalle-envio');
+                        } else {
+                            $pedido->delete();
+                            return [
+                                'id_pedido' => '',
+                                'success' => false,
+                                'mensaje' => '<div class="alert alert-warning text-center error">No se ha podido crear el detalle-envío</div>',
+                            ];
+                        }
+                    }
+
+                    if (isset($objComprobante)) {
+                        $data_actualizar_factura =[
+                            'id_envio' => $envio->id_envio,
+                            'codigo_pais' => $envio->codigo_pais,
+                            'dae'=> $envio->dae,
+                            'fecha_envio'=>$envio->fecha_envio,
+                            'pais'=> getPais($envio->codigo_pais)->nombre,
+                            'update'=>'true',
+                            'id_comprobante'=>$objComprobante->id_comprobante,
+                            'fecha_pedidos_search'=> $envio->pedido->fecha_pedido,
+                            'cant_variedades'=>$envio->pedido->catntidad_det_esp_emp(),
+                        ];
+                        ComprobanteController::actualizar_comprobante_factura($data_actualizar_factura);
+                    }
+                    //LLAMAR A LA FUNCIÓN ESTÁTICA PARA ACTUALIZAR LA FACTURA
+
+                } else {
+                    $pedido->delete();
+                    return [
+                        'id_pedido' => '',
+                        'success' => false,
+                        'mensaje' => '<div class="alert alert-warning text-center error">No se ha podido crear el envío</div>',
+                    ];
+                }
+
+
+                $semana = getSemanaByDate($pedido->fecha_pedido);
+                $codigo_semana = $semana != '' ? $semana->codigo : '';
+                if ($codigo_semana != '')
+                    ProyeccionVentaSemanalUpdate::dispatch($codigo_semana, $codigo_semana, 0, $pedido->id_cliente)->onQueue('update_venta_semanal_real');
             } else {
                 $success = false;
                 $msg = '<div class="alert alert-warning text-center">' .
@@ -1008,8 +1016,7 @@ class OrdenSemanalController extends Controller
                 '</ul>' .
                 '</div>';
         }
-        //$semana = getSemanaByDate($request->fecha_pedido)->codigo;
-        //UpdateSaldosProyVentaSemanal::dispatch($semana, 0)->onQueue('update_saldos_proy_venta_semanal');
+
         return [
             'mensaje' => $msg,
             'success' => $success

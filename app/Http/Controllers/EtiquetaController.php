@@ -263,7 +263,8 @@ class EtiquetaController extends Controller
                                         $objSheet->getCell('B' . ($w + 1))->setValue("HAWB. " . $pedido->envios[0]->guia_hija);
                                         $objSheet->getCell('C' . ($w + 1))->setValue($d+1);
                                         $objSheet->getCell('D' . ($w + 1))->setValue($mc->distribuciones->count());
-                                        $objSheet->getCell('E' . ($w + 1))->setValue($pedido->cliente->detalle()->nombre);
+                                        $objSheet->getCell('E' . ($w + 1))->setValue($pedido->envios[0]->id_consignatario!= "" ? $pedido->envios[0]->consignatario->nombre : $pedido->cliente->detalle()->nombre);
+                                        $objSheet->getCell('F' . ($w + 1))->setValue($pedido->envios[0]->id_consignatario!= "" ? $pedido->cliente->detalle()->nombre : "");
                                         $objSheet->getCell('G' . ($w + 1))->setValue($mc->nombre);
                                         $objSheet->getCell('H' . ($w + 1))->setValue("DS-" . $codigo_finca);
                                         $objSheet->getCell('I' . ($w + 1))->setValue(getConfiguracionEmpresa($pedido->id_configuracion_empresa)->permiso_agrocalidad);
@@ -279,11 +280,6 @@ class EtiquetaController extends Controller
                                                     $objSheet->getCell($arr_posiciones[$posicion + 3] . ($w + 1))->setValue($dc->cantidad);
                                                     $objSheet->getCell($arr_posiciones[$posicion + 4] . ($w + 1))->setValue($dc->ramo . " " . $dc->ramo_u_m . ".");
                                                     $posicion += 5;
-                                                    /*$arr_data[$dc->id_coloracion][]=[
-                                                        'id_coloracion'=>$dc->id_coloracion,
-                                                        'cantidad'=> $dc->cantidad,
-                                                        'color'=>$dc->color
-                                                    ];*/
                                                 }
                                             }
                                         }
@@ -292,7 +288,6 @@ class EtiquetaController extends Controller
                                 }
                             }
                         }
-                        //dump($arr_data);
                     }
                 }
             }
