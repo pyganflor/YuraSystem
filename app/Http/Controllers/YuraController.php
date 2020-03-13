@@ -727,4 +727,11 @@ class YuraController extends Controller
 
         return view('adminlte.partials.detalles_indicador.' . $view, $datos);
     }
+
+    public function test(Request $request)
+    {
+        return [
+            'r' => getNuevaCurva($request->curva, $request->inicio)
+        ];
+    }
 }
