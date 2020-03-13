@@ -168,40 +168,42 @@ class ProyVentaController extends Controller
         try{
             if(isset($request->semanas) && count($request->semanas)>0){
                 if(isset($request->clientes)){
-                    //foreach($request->semanas as $semana){
-                        foreach($request->clientes as $cliente){
-                            $valor = substr($cliente['valor'],1,20);
-                            $objProyeccionVentaSemanalReal = ProyeccionVentaSemanalReal::where([
-                                ['id_cliente',$cliente['id_cliente']],
-                                ['id_variedad',$request->id_variedad],
-                                ['codigo_semana',$cliente['semana']]
-                            ]);
-                            $objProyeccionVentaSemanalReal->update([
-                                'cajas_fisicas' => $cliente['cajas_fisicas'],
-                                'cajas_equivalentes' => $cliente['cajas_equivalentes'],
-                                'valor' => round($valor,2)
-                            ]);
-                        }
-                    //}
+                    foreach($request->clientes as $cliente){
+                        $valor = substr($cliente['valor'],1,20);
+                        $objProyeccionVentaSemanalReal = ProyeccionVentaSemanalReal::where([
+                            ['id_cliente',$cliente['id_cliente']],
+                            ['id_variedad',$request->id_variedad],
+                            ['codigo_semana',$cliente['semana']]
+                        ]);
+                        $objProyeccionVentaSemanalReal->update([
+                            'cajas_fisicas' => $cliente['cajas_fisicas'],
+                            'cajas_equivalentes' => $cliente['cajas_equivalentes'],
+                            'valor' => round($valor,2)
+                        ]);
+                    }
                 }
 
-                foreach($request->desecho as $desecho){
-                    $objResumenCosecha = ResumenSemanaCosecha::where([
-                        ['id_variedad',$request->id_variedad],
-                        ['codigo_semana',$desecho['semana']]
-                    ]);
-                    $objResumenCosecha->update(['desecho' => $desecho['cantidad']]);
+                if(isset($request->desecho)) {
+                    foreach ($request->desecho as $desecho) {
+                        $objResumenCosecha = ResumenSemanaCosecha::where([
+                            ['id_variedad', $request->id_variedad],
+                            ['codigo_semana', $desecho['semana']]
+                        ]);
+                        $objResumenCosecha->update(['desecho' => $desecho['cantidad']]);
+                    }
                 }
 
-                foreach($request->saldos as $saldo){
-                    $objResumenSaldos = ResumenSaldoProyeccionVentaSemanal::where([
-                        ['id_variedad',$request->id_variedad],
-                        ['codigo_semana',$saldo['semana']]
-                    ]);
-                    $objResumenSaldos->update([
-                        'saldo_inicial' => $saldo['inicial'],
-                        'saldo_final' => $saldo['final']
-                    ]);
+                if(isset($request->saldos)) {
+                    foreach ($request->saldos as $saldo) {
+                        $objResumenSaldos = ResumenSaldoProyeccionVentaSemanal::where([
+                            ['id_variedad', $request->id_variedad],
+                            ['codigo_semana', $saldo['semana']]
+                        ]);
+                        $objResumenSaldos->update([
+                            'saldo_inicial' => $saldo['inicial'],
+                            'saldo_final' => $saldo['final']
+                        ]);
+                    }
                 }
 
                 $ultimaSemana = Semana::orderBy('codigo','Desc')->select('codigo')->first();
