@@ -136,6 +136,7 @@
         clientes=[];
         semanas=[];
         semana_inicio="";
+        saldos=[];
         semana_fin="";
         desecho=[];
         x=0;
@@ -179,12 +180,21 @@
                             });
                         }
                     });
+                    $.each($("b.saldo_inicial_"+j.semana),function(q,r){
+                        saldos.push({
+                            inicial : parseFloat($(r).html().trim()),
+                            final : parseFloat($("b.saldo_final_"+j.semana).html().trim()),
+                            semana: j.semana
+                        });
+                    });
                 });
+                console.log(saldos);
                 datos = {
                     _token: '{{csrf_token()}}',
                     clientes : clientes,
                     semanas : semanas,
                     desecho : desecho,
+                    saldos : saldos,
                     id_variedad : $("#filtro_predeterminado_variedad").val()
                 };
 
