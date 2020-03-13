@@ -180,7 +180,7 @@
                             });
                         }
                     });
-                    $.each($("b.saldo_inicial"+j.semana),function(q,r){
+                    $.each($("b.saldo_inicial_"+j.semana),function(q,r){
                         saldos.push({
                             inicial : parseFloat($(r).html().trim()),
                             final : parseFloat($("b.saldo_final_"+j.semana).html().trim()),
