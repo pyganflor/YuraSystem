@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use yura\Modelos\Ciclo;
 use yura\Modelos\GrupoMenu;
 use yura\Modelos\Monitoreo;
+use yura\Modelos\Sector;
 use yura\Modelos\Submenu;
 use Validator;
 
@@ -17,21 +18,28 @@ class MonitoreoController extends Controller
         return view('adminlte.gestion.proyecciones.monitoreo.inicio', [
             'url' => $request->getRequestUri(),
             'submenu' => Submenu::Where('url', '=', substr($request->getRequestUri(), 1))->get()[0],
-            'grupos_menu' => GrupoMenu::All()
+            'grupos_menu' => GrupoMenu::All(),
+            'sectores' => Sector::All()->where('estado', 1)->where('interno', 1)
         ]);
     }
 
     public function listar_ciclos(Request $request)
     {
-        $query = Ciclo::where('estado', 1)
-            ->where('activo', 1)
-            ->where('id_variedad', $request->variedad)
-            ->orderBy('fecha_inicio', 'desc')
-            ->where('poda_siembra', $request->poda_siembra)
-            ->get();
+        $query = DB::table('ciclo as c')
+            ->join('modulo as m', 'm.id_modulo', '=', 'c.id_modulo')
+            ->select('c.id_ciclo')->distinct()
+            ->where('c.estado', 1)
+            ->where('c.activo', 1)
+            ->where('c.id_variedad', $request->variedad)
+            ->orderBy('c.fecha_inicio', 'desc')
+            ->where('c.poda_siembra', $request->poda_siembra);
+        if ($request->sector != '')
+            $query = $query->where('m.id_sector', $request->sector);
+        $query = $query->get();
 
         $ciclos = [];
         foreach ($query as $item) {
+            $item = Ciclo::find($item->id_ciclo);
             $monitoreos = Monitoreo::where('estado', 1)
                 ->where('id_ciclo', $item->id_ciclo)
                 ->where('num_sem', '<=', $request->num_semanas)
