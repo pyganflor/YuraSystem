@@ -41,7 +41,7 @@
                         Sector
                     </div>
                     <select name="filtro_sector" id="filtro_sector" class="form-control">
-                        <option value="">Todos</option>
+                        <option value="T">Todos</option>
                         @foreach($sectores as $s)
                             <option value="{{$s->id_sector}}">{{$s->nombre}}</option>
                         @endforeach

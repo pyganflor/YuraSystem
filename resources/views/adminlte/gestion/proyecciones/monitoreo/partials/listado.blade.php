@@ -56,7 +56,7 @@
             @endphp
             <input type="hidden" id="last_sem_{{$item['ciclo']->id_ciclo}}" value="{{$mon_actual != '' ? $mon_actual->num_sem : ''}}">
             <input type="hidden" id="ini_curva_{{$item['ciclo']->id_ciclo}}" value="{{$item['ini_curva']}}">
-            <tr class="{{count($item['monitoreos']) >= $min_semanas && $modulo->id_sector == $sector ? '' : 'hide'}}">
+            <tr class="{{count($item['monitoreos']) >= $min_semanas && ($modulo->id_sector == $sector || $sector == 'T') ? '' : 'hide'}}">
                 <th class="text-center th_fijo_left_0" style="border-color: #9d9d9d; background-color: #e9ecef">
                     <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
                         {{$modulo->nombre}}
