@@ -25,21 +25,15 @@ class MonitoreoController extends Controller
 
     public function listar_ciclos(Request $request)
     {
-        $query = DB::table('ciclo as c')
-            ->join('modulo as m', 'm.id_modulo', '=', 'c.id_modulo')
-            ->select('c.id_ciclo')->distinct()
-            ->where('c.estado', 1)
-            ->where('c.activo', 1)
-            ->where('c.id_variedad', $request->variedad)
-            ->orderBy('c.fecha_inicio', 'desc')
-            ->where('c.poda_siembra', $request->poda_siembra);
-        if ($request->sector != '')
-            $query = $query->where('m.id_sector', $request->sector);
-        $query = $query->get();
+        $query = Ciclo::where('estado', 1)
+            ->where('activo', 1)
+            ->where('id_variedad', $request->variedad)
+            ->orderBy('fecha_inicio', 'desc')
+            ->where('poda_siembra', $request->poda_siembra)
+            ->get();
 
         $ciclos = [];
         foreach ($query as $item) {
-            $item = Ciclo::find($item->id_ciclo);
             $monitoreos = Monitoreo::where('estado', 1)
                 ->where('id_ciclo', $item->id_ciclo)
                 ->where('num_sem', '<=', $request->num_semanas)
@@ -67,6 +61,7 @@ class MonitoreoController extends Controller
             'ciclos' => $ciclos,
             'num_semanas' => $request->num_semanas,
             'min_semanas' => $request->min_semanas,
+            'sector' => $request->sector,
         ]);
     }
 
