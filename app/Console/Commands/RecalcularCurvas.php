@@ -49,7 +49,7 @@ class RecalcularCurvas extends Command
             ->get();
         foreach ($ciclos as $c) {
             $ciclo = Ciclo::find($c->modelo);
-            if ($ciclo->modulo->nombre == '86B') {      // quitar
+            if ($ciclo->modulo->nombre == '8') {      // quitar
                 $sem_ini = $ciclo->semana();
                 $num_sem = intval(difFechas($semana_pasada->fecha_inicial, $sem_ini->fecha_inicial)->days / 7) + 1;
                 if ($ciclo->activo == 1 && $num_sem >= $ciclo->semana_poda_siembra - 2) {   // esta activo y es una semana minima 2 antes del inicio de cosecha
@@ -68,7 +68,6 @@ class RecalcularCurvas extends Command
                             ->get()[0]->cant;
                         $porc_cosechado = intval(($cosechado * 100) / $getTallosProyectados);
                         if ($porc_cosechado >= $configuracion->proy_minimo_cosecha) {   // hay que mover una semana antes la curva
-                            /* ------------- algoritmo -------------- */
                             $new_curva = getNuevaCurva($ciclo->curva, $porc_cosechado);
                             dump('mover antes a la semana: ' . $num_sem);
                             dd($new_curva);
@@ -86,7 +85,13 @@ class RecalcularCurvas extends Command
                                 ->where('r.fecha_ingreso', '>=', opDiasFecha('+', 35, $ciclo->fecha_inicio))
                                 ->get()[0]->cant;
                             $porc_cosechado = intval(($cosechado * 100) / $getTallosProyectados);
-
+                            if ($porc_cosechado < $configuracion->proy_minimo_cosecha) {    // hay que mover una semana despues
+                                dd('hay que mover una semana despues');
+                            } else {    // recalcular solamente
+                                $new_curva = getNuevaCurva($ciclo->curva, $porc_cosechado);
+                                dump('recalcular solamente');
+                                dd($new_curva);
+                            }
                             dd('primera semana de la curva: ');
                         } else if ($pos_sem < count(explode('-', $ciclo->curva)) - 1) {   // semana numero "$pos_sem" de la curva
                             dd('semana numero: ' . $pos_sem . ' de la curva');
