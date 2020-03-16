@@ -49,7 +49,7 @@ class RecalcularCurvas extends Command
             ->get();
         foreach ($ciclos as $c) {
             $ciclo = Ciclo::find($c->modelo);
-            if ($ciclo->modulo->nombre == '8') {      // quitar
+            if ($ciclo->modulo->nombre == '211') {      // quitar
                 $sem_ini = $ciclo->semana();
                 $num_sem = intval(difFechas($semana_pasada->fecha_inicial, $sem_ini->fecha_inicial)->days / 7) + 1;
                 if ($ciclo->activo == 1 && $num_sem >= $ciclo->semana_poda_siembra - 2) {   // esta activo y es una semana minima 2 antes del inicio de cosecha
