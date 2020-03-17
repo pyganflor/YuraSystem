@@ -18,6 +18,7 @@ class ResumenSemanaCosecha implements ShouldQueue
      *
      * @return void
      */
+    public $timeout = 3600;
     protected $semana_desde;
     protected $semana_hasta;
     protected $variedad;
