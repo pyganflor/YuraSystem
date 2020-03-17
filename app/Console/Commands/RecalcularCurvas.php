@@ -123,7 +123,7 @@ class RecalcularCurvas extends Command
             }
         }
 
-        //UpdateSaldosProyVentaSemanal::dispatch($semana_pasada->codigo, 0)->onQueue('update_saldos_proy_venta_semanal');
+        UpdateSaldosProyVentaSemanal::dispatch($semana_pasada->codigo, 0)->onQueue('update_saldos_proy_venta_semanal');
     }
 
     function update_ciclo($ciclo, $new_curva, $new_semana_poda_siembra)
