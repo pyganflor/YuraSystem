@@ -54,7 +54,7 @@ class RecalcularCurvas extends Command
             ->get();
         foreach ($ciclos as $c) {
             $ciclo = Ciclo::find($c->modelo);
-            if ($ciclo->modulo->nombre == '212') {      // quitar
+            if ($ciclo->id_variedad == 3) {      // quitar
                 $sem_ini = $ciclo->semana();
                 $num_sem = intval(difFechas($semana_pasada->fecha_inicial, $sem_ini->fecha_inicial)->days / 7) + 1;
                 if ($ciclo->activo == 1 && $num_sem >= $ciclo->semana_poda_siembra - 2) {   // esta activo y es una semana minima 2 antes del inicio de cosecha
@@ -74,8 +74,7 @@ class RecalcularCurvas extends Command
                         $porc_cosechado = intval(($cosechado * 100) / $getTallosProyectados);
                         if ($porc_cosechado >= $configuracion->proy_minimo_cosecha) {   // hay que mover una semana antes la curva
                             $new_curva = getNuevaCurva($ciclo->curva, $porc_cosechado);
-                            dump('mover antes a la semana: ' . $num_sem);
-                            dd($new_curva);
+                            $this->update_ciclo($ciclo, $new_curva, $num_sem);
                         }
                     } else {    // se trata de una semana de curva o posterior
                         $pos_sem = $num_sem - $ciclo->semana_poda_siembra;
@@ -91,13 +90,11 @@ class RecalcularCurvas extends Command
                                 ->get()[0]->cant;
                             $porc_cosechado = intval(($cosechado * 100) / $getTallosProyectados);
                             if ($porc_cosechado < $configuracion->proy_minimo_cosecha) {    // hay que mover una semana despues
-                                dd('hay que mover una semana despues');
+                                $this->update_ciclo($ciclo, $ciclo->curva, ($ciclo->semana_poda_siembra + 1));
                             } else {    // recalcular solamente
                                 $new_curva = getNuevaCurva($ciclo->curva, $porc_cosechado);
-                                dump('recalcular solamente');
-                                dump($new_curva);
+                                $this->update_ciclo($ciclo, $new_curva, $ciclo->semana_poda_siembra);
                             }
-                            dd('primera semana de la curva');
                         } else if ($pos_sem < count(explode('-', $ciclo->curva)) - 1) {   // semana numero "$pos_sem" de la curva
                             $next_curva = explode('-', $ciclo->curva)[$pos_sem];
                             for ($i = $pos_sem; $i < count(explode('-', $ciclo->curva)); $i++) {
@@ -118,19 +115,17 @@ class RecalcularCurvas extends Command
                                     $new_curva .= '-' . explode('-', $ciclo->curva)[$i];
                             }
                             $new_curva .= '-' . getNuevaCurva($next_curva, $porc_cosechado);
-                            dump('guardar nueva curva, ' . $new_curva);
-                            dd('semana numero: ' . ($pos_sem + 1) . ' de la curva');
+                            $this->update_ciclo($ciclo, $new_curva, $ciclo->semana_poda_siembra);
                         } else {    // ultima semana de la curva
                             //dd('ultima semana de la curva');
                         }
                     }
-                    dd('modulo=' . $modulo->nombre, 'total=' . $getTallosProyectados);
                 }
             }
         }
     }
 
-    function update_curva($ciclo, $new_curva, $new_semana_poda_siembra)
+    function update_ciclo($ciclo, $new_curva, $new_semana_poda_siembra)
     {
         $model = $ciclo;
         $semana_fin = getLastSemanaByVariedad($model->id_variedad);
