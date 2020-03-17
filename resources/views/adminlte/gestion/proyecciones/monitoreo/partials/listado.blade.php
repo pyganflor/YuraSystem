@@ -13,7 +13,7 @@
             </th>
             <th class="text-center th_fijo_left_2" style="border-color: #9d9d9d; background-color: #357CA5; color: white; z-index: 9">
                 <div style="width: 70px">
-                    Días Fen.
+                    Semana Fen.
                 </div>
             </th>
             @php
@@ -73,7 +73,7 @@
                     {{$semana->codigo}}
                 </th>
                 <th class="text-center th_fijo_left_2" style="border-color: #9d9d9d; background-color: #e9ecef">
-                    {{difFechas($item['ciclo']->fecha_inicio, date('Y-m-d'))->days}}
+                    {{intval(difFechas($item['ciclo']->fecha_inicio, date('Y-m-d'))->days / 7)}}
                 </th>
                 @php
                     $ant = 0;
