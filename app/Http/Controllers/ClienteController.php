@@ -604,27 +604,29 @@ class ClienteController extends Controller
     public function store_cliente_consignatario(Request $request){
 
         $arrConsinatariosActuales = ClienteConsignatario::where('id_cliente',$request->id_cliente)->get();
-        $success = false;
-        foreach ($request->arr_consignatarios as $id_consignatario) {
+        foreach ($request->arr_consignatarios as $consignatario) {
+
             $objClienteConsignatario = new ClienteConsignatario;
             $objClienteConsignatario->id_cliente = $request->id_cliente;
-            $objClienteConsignatario->id_consignatario = $id_consignatario;
+            $objClienteConsignatario->id_consignatario = $consignatario['id_consignatario'];
+            $objClienteConsignatario->default = $consignatario['default'] == 'true';
             if($objClienteConsignatario->save()){
                 $success = true;
                 $msg = '<div class="alert alert-success text-center">' .
-                    '<p> Se han guardado los consignatarios con éxito </p>'
-                    . '</div>';
+                            '<p> Se han guardado los consignatarios con éxito </p>'
+                        .'</div>';
             }else{
                 $success = false;
                 $msg = '<div class="alert alert-warning text-center">' .
-                    '<p> Ha ocurrido un problema al guardar la información al sistema</p>'
-                    . '</div>';
+                            '<p> Ha ocurrido un problema al guardar la información al sistema</p>'
+                        . '</div>';
                 break;
             }
         }
+       // dump($success,$arrConsinatariosActuales);
         if($success)
-            foreach ($arrConsinatariosActuales as $consinatariosActuales)
-                ClienteConsignatario::destroy($consinatariosActuales->id_consignatario);
+            foreach ($arrConsinatariosActuales as $consinatarioActual)
+                $consinatarioActual->delete();
 
         return [
             'mensaje' => $msg,

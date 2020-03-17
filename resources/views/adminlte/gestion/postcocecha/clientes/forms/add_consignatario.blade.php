@@ -22,29 +22,39 @@
                 <div class="row" id="row_add_user_contactos">
                     @if($cliente_consignatario->count()>0)
                         @foreach($cliente_consignatario as $cc)
-                        <div class="col-md-4">
+                        <div class="col-md-4 col-sm-6">
                             <div class="form-group">
-                                <select id="consignatario" name="consignatario" class="form-control">
-                                    {{--<option value="" selected disabled>Seleccione</option>--}}
-                                    @foreach($consignatatios as $consignatario)
-                                        <option {{$cc->id_consignatario == $consignatario->id_consignatario ? 'selected' : '' }} value="{{$consignatario->id_consignatario}}">{{$consignatario->nombre}}</option>
-                                    @endforeach
-                                </select>
+                                <div class="input-group consignatario">
+                                    <select id="consignatario" name="consignatario" class="form-control">
+                                        {{--<option value="" selected disabled>Seleccione</option>--}}
+                                        @foreach($consignatatios as $consignatario)
+                                            <option {{$cc->id_consignatario == $consignatario->id_consignatario ? 'selected' : '' }} value="{{$consignatario->id_consignatario}}">{{$consignatario->nombre}}</option>
+                                        @endforeach
+                                    </select>
+                                    <span class="input-group-addon" title="Seleccione este consignatario para que parezca por default en la facturas del cliente">
+                                        <input type="radio" name="consignatario_default" {{$cc->default ? 'checked' : ''}}>
+                                    </span>
+                                </div>
                             </div>
                         </div>
                         @endforeach
                         @else
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <select id="consignatario" name="consignatario" class="form-control">
-                                    {{--<option value="" selected disabled>Seleccione</option>--}}
-                                    @foreach($consignatatios as $consignatario)
-                                        <option value="{{$consignatario->id_consignatario}}">{{$consignatario->nombre}}</option>
-                                    @endforeach
-                                </select>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <div class="input-group consignatario">
+                                        <select id="consignatario" name="consignatario" class="form-control">
+                                            {{--<option value="" selected disabled>Seleccione</option>--}}
+                                            @foreach($consignatatios as $consignatario)
+                                                <option value="{{$consignatario->id_consignatario}}">{{$consignatario->nombre}}</option>
+                                            @endforeach
+                                        </select>
+                                        <span class="input-group-addon" title="Seleccione este consignatario para que parezca por default en la facturas del cliente">
+                                            <input type="radio" name="consignatario_default">
+                                        </span>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    @endif
+                        @endif
                 </div>
             </form>
             <div class="text-center">

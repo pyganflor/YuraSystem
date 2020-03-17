@@ -422,7 +422,7 @@
                                                 <select class="form-control" id="consignatario" name="consignatario">
                                                     <option value=""> Mismo cliente </option>
                                                     @foreach($consignatarios as $c)
-                                                        <option {{$envio->id_consignatario == $c->id_consignatario ? 'selected': ''}}
+                                                        <option {{(($envio->id_consignatario!="") ? ($envio->id_consignatario == $c->id_consignatario ? 'selected': '') : ($c->default ? 'selected' : ''))}}
                                                                 value="{{$c->id_consignatario}}">
                                                             {{$c->nombre}}
                                                         </option>

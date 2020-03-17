@@ -15,6 +15,7 @@ class ClienteConsignatario extends Model
         'id_cliente',
         'id_consignatario',
         'fecha_registro',
+        'default',
         'estado'
     ];
 
