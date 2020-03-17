@@ -759,13 +759,16 @@ function elimnar_consignatario() {
 function store_cliente_consignatario(token, id_cliente) {
 
     arr_consignatarios = [];
-    $.each($("div#row_add_user_contactos select#consignatario"), function (i, j) {
-        arr_consignatarios.push(j.value);
+    $.each($("div#row_add_user_contactos div.consignatario"), function (i, j) {
+        arr_consignatarios.push({
+            'id_consignatario' : $(j).find('select').val(),
+            'default' : $(j).find("input[type='radio']").is(':checked')
+        });
     });
     datos = {
         _token: token,
-        id_cliente: id_cliente,
-        arr_consignatarios: arr_consignatarios
+        id_cliente : id_cliente,
+        arr_consignatarios : arr_consignatarios,
     };
 
     if (arr_consignatarios.length < 1) {
