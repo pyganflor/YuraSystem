@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use yura\Modelos\Ciclo;
 use yura\Modelos\GrupoMenu;
 use yura\Modelos\Monitoreo;
+use yura\Modelos\Sector;
 use yura\Modelos\Submenu;
 use Validator;
 
@@ -17,7 +18,8 @@ class MonitoreoController extends Controller
         return view('adminlte.gestion.proyecciones.monitoreo.inicio', [
             'url' => $request->getRequestUri(),
             'submenu' => Submenu::Where('url', '=', substr($request->getRequestUri(), 1))->get()[0],
-            'grupos_menu' => GrupoMenu::All()
+            'grupos_menu' => GrupoMenu::All(),
+            'sectores' => Sector::All()->where('estado', 1)->where('interno', 1)
         ]);
     }
 
@@ -59,6 +61,7 @@ class MonitoreoController extends Controller
             'ciclos' => $ciclos,
             'num_semanas' => $request->num_semanas,
             'min_semanas' => $request->min_semanas,
+            'sector' => $request->sector,
         ]);
     }
 

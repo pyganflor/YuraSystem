@@ -13,7 +13,7 @@
             </th>
             <th class="text-center th_fijo_left_2" style="border-color: #9d9d9d; background-color: #357CA5; color: white; z-index: 9">
                 <div style="width: 70px">
-                    Días Fen.
+                    Semana Fen.
                 </div>
             </th>
             @php
@@ -56,7 +56,7 @@
             @endphp
             <input type="hidden" id="last_sem_{{$item['ciclo']->id_ciclo}}" value="{{$mon_actual != '' ? $mon_actual->num_sem : ''}}">
             <input type="hidden" id="ini_curva_{{$item['ciclo']->id_ciclo}}" value="{{$item['ini_curva']}}">
-            <tr class="{{count($item['monitoreos']) >= $min_semanas ? '' : 'hide'}}">
+            <tr class="{{count($item['monitoreos']) >= $min_semanas && ($modulo->id_sector == $sector || $sector == 'T') ? '' : 'hide'}}">
                 <th class="text-center th_fijo_left_0" style="border-color: #9d9d9d; background-color: #e9ecef">
                     <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
                         {{$modulo->nombre}}
@@ -73,7 +73,7 @@
                     {{$semana->codigo}}
                 </th>
                 <th class="text-center th_fijo_left_2" style="border-color: #9d9d9d; background-color: #e9ecef">
-                    {{difFechas($item['ciclo']->fecha_inicio, date('Y-m-d'))->days}}
+                    {{intval(difFechas($item['ciclo']->fecha_inicio, date('Y-m-d'))->days / 7)}}
                 </th>
                 @php
                     $ant = 0;
@@ -298,7 +298,7 @@
         for (i = 0; i < ciclos.length; i++) {
             id_ciclo = ciclos[i].value;
             last_sem = parseInt($('#last_sem_' + id_ciclo).val());
-            if (last_sem >= $('#filtro_min_semanas').val() && last_sem <= 11 && $('#ini_curva_' + id_ciclo).val() == '') {  // se trate de un ciclo en el rango de semanas que interesan && aun no tiene primera flor
+            if (last_sem >= $('#filtro_min_semanas').val() && last_sem <= 11) {  // se trate de un ciclo en el rango de semanas que interesan
                 valor = $('#monitoreo_' + id_ciclo + '_' + last_sem).val();
                 crec_sem = $('#crec_sem_' + id_ciclo + '_' + last_sem).val();
                 crec_dia = $('#crec_dia_' + id_ciclo + '_' + last_sem).val();
@@ -323,7 +323,14 @@
                 } else {    // atrasar en el tiempo
                     nueva_curva = sem_prom_ini_curva + resultado;
                 }
-                $('#monitoreo_' + id_ciclo + '_' + nueva_curva).css('border', '3px solid orange');
+                if ($('#ini_curva_' + id_ciclo).val() == nueva_curva) {
+                    $('#monitoreo_' + id_ciclo + '_' + nueva_curva).css('border-top', '3px solid orange');
+                    $('#monitoreo_' + id_ciclo + '_' + nueva_curva).css('border-left', '3px solid orange');
+                    $('#monitoreo_' + id_ciclo + '_' + nueva_curva).css('border-bottom', '3px solid blue');
+                    $('#monitoreo_' + id_ciclo + '_' + nueva_curva).css('border-right', '3px solid blue');
+                } else {
+                    $('#monitoreo_' + id_ciclo + '_' + nueva_curva).css('border', '3px solid orange');
+                }
                 proy_sem_prom_ini_curva['valor'] += nueva_curva;
                 proy_sem_prom_ini_curva['cantidad']++;
             }

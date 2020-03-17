@@ -4,6 +4,7 @@
 
     function listar_ciclos() {
         datos = {
+            sector: $('#filtro_sector').val(),
             variedad: $('#filtro_predeterminado_variedad').val(),
             num_semanas: $('#filtro_num_semanas').val(),
             poda_siembra: $('#filtro_poda_siembra').val(),

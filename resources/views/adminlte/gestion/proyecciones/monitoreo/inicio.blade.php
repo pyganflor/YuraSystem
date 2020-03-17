@@ -38,6 +38,15 @@
             <div class="box-header with-border">
                 <div class="input-group">
                     <div class="input-group-addon bg-gray">
+                        Sector
+                    </div>
+                    <select name="filtro_sector" id="filtro_sector" class="form-control">
+                        <option value="T">Todos</option>
+                        @foreach($sectores as $s)
+                            <option value="{{$s->id_sector}}">{{$s->nombre}}</option>
+                        @endforeach
+                    </select>
+                    <div class="input-group-addon bg-gray">
                         <i class="fa fa-fw fa-leaf"></i> Variedad
                     </div>
                     <select name="filtro_predeterminado_planta" id="filtro_predeterminado_planta" class="form-control"
@@ -63,13 +72,13 @@
                     <div class="input-group-addon bg-gray">
                         Desde
                     </div>
-                    <input type="number" id="filtro_min_semanas" onkeypress="return isNumber(event)" class="form-control text-center" required
-                           value="6" min="1" style="width: 80px">
+                    <input type="number" id="filtro_min_semanas" onkeypress="return isNumber(event)" class="form-control" required
+                           value="6" min="1" style="width: 50px">
                     <div class="input-group-addon bg-gray">
                         Semanas
                     </div>
-                    <input type="number" id="filtro_num_semanas" onkeypress="return isNumber(event)" class="form-control text-center" required
-                           value="18" min="1" style="width: 80px">
+                    <input type="number" id="filtro_num_semanas" onkeypress="return isNumber(event)" class="form-control" required
+                           value="18" min="1" style="width: 60px">
                     <div class="input-group-btn">
                         <button type="button" class="btn btn-primary" onclick="listar_ciclos()">
                             <i class="fa fa-fw fa-search"></i>
