@@ -10,6 +10,7 @@ use yura\Console\Commands\EmpaquetarPedidosAnulados;
 use yura\Console\Commands\FechaFinalCiclo;
 use yura\Console\Commands\IndicadorSemanal;
 use yura\Console\Commands\NotificacionesSistema;
+use yura\Console\Commands\RecalcularCurvas;
 use yura\Console\Commands\ResumenAreaSemanal;
 use yura\Console\Commands\ResumenCostosSemanal;
 use yura\Console\Commands\ResumenSaldoProyeccionVentaSemanal;
@@ -55,6 +56,7 @@ class Kernel extends ConsoleKernel
         IndicadorSemanal::class,
         UpdateResumenTotal::class,
         UpdateMonitoreoCiclos::class,
+        RecalcularCurvas::class,
     ];
 
     /**
@@ -85,6 +87,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('indicador_semana:update')->cron('40 0 * * *')->runInBackground(); // IndicadorSemanal::class
         $schedule->command('resumen_saldo_proyeccion:venta_semanal')->cron('*/15 * * * *')->runInBackground(); // ResumenSaldoProyeccionVentaSemanal::class
         $schedule->command('ciclo:update_monitoreo')->cron('35 * * * *')->runInBackground(); // UpdateMonitoreoCiclos::class
+        $schedule->command('curva_cosecha:recalcular')->cron('1 0 * * 1')->runInBackground(); // RecalcularCurvas::class
     }
 
     /**
