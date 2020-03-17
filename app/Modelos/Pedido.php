@@ -493,4 +493,18 @@ class Pedido extends Model
         return $cantidad;
     }
 
+    public function cant_rows_etiqueta($arr_ped){
+        $totalCajas=0;
+        foreach($arr_ped as $ped) {
+            foreach ($this->detalles as $det_ped) {
+                foreach ($det_ped->marcaciones as $mc) {
+                    if (explode("|", $mc->especificacion_empaque->empaque->nombre)[1] === $ped['caja']) {
+                        $totalCajas+=$mc->distribuciones->count();
+                    }
+                }
+            }
+        }
+        return $totalCajas;
+    }
+
 }
