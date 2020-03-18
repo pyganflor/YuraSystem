@@ -20,6 +20,7 @@ class CurvaEstandarController extends Controller
 
     public function listar_ciclos(Request $request)
     {
+        dd($request->all());
         return view('adminlte.gestion.proyecciones.curva_estandar.partials.listado', [
         ]);
     }
