@@ -507,4 +507,8 @@ class Pedido extends Model
         return $totalCajas;
     }
 
+    public function etiqueta_factura(){
+        return $this->hasOne('\yura\Modelos\EtiquetaFactura','id_pedido');
+    }
+
 }

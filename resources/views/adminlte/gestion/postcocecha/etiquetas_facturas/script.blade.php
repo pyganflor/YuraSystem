@@ -66,7 +66,7 @@
         $("#ids_det_esp_emp_"+id_btn).val(id_det_esp_emp);
     }
 
-    function store_etiquetas_factura(id_comprobante,csrf_token){
+    function store_etiquetas_factura(id_pedido,csrf_token){
         $.LoadingOverlay('show');
 
         data = [];
@@ -85,27 +85,27 @@
 
         datos = {
             _token: csrf_token,
-            id_comprobante: id_comprobante,
+            id_pedido: id_pedido,
             data : data
         };
         post_jquery('etiqueta_factura/store_etiqueta_factura', datos, function () {
             cerrar_modals();
-            form_etiqueta_factura(id_comprobante);
+            form_etiqueta_factura(id_pedido);
         });
         $.LoadingOverlay('hide');
     }
 
 
-    function delete_etiquetas_factura(id_comprobante,csrf_token){
+    function delete_etiquetas_factura(id_pedido,csrf_token){
         datos = {
             _token: csrf_token,
-            id_comprobante: id_comprobante,
+            id_pedido: id_pedido,
         };
         modal_quest('modal_crear_especificacion', '<div class="alert alert-warning text-center"><p>Desea eliminar la etiqueta?</p></div>',
             "<i class='fa fa-cubes'></i> Seleccione una opción",true, false, '{{isPC() ? '25%' : ''}}', function () {
             post_jquery('etiqueta_factura/delete_etiqueta_factura', datos, function () {
                 cerrar_modals();
-                form_etiqueta_factura(id_comprobante);
+                form_etiqueta_factura(id_pedido);
             });
             $.LoadingOverlay('hide');
         });
