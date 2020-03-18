@@ -225,9 +225,10 @@ class EtiquetaController extends Controller
                                 }
                                 foreach ($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $esp_emp) {
                                     if (explode("|", $esp_emp->empaque->nombre)[1] === $ped['caja']) {
-                                        $posicion = 14;
+
                                         $x = 1;
                                         for ($z = 1; $z <= $det_ped->cantidad; $z++) {
+                                            $posicion = 14;
                                             //--------------------------- LLENAR LA TABLA ---------------------------------------------
                                             $objSheet->getCell('A' . ($w + 1))->setValue("AWB. " . $pedido->envios[0]->guia_madre);
                                             $objSheet->getCell('B' . ($w + 1))->setValue("HAWB. " . $pedido->envios[0]->guia_hija);
