@@ -27,7 +27,6 @@ class EtiquetaController extends Controller
     }
 
     public function listado(Request $request){
-
         return view('adminlte.gestion.postcocecha.etiquetas.partials.listado',[
             'pedidos' => Pedido::where([
                 ['pedido.fecha_pedido',$request->desde],
@@ -55,7 +54,7 @@ class EtiquetaController extends Controller
 
         $this->excel_facturas_etiquetas($objPHPExcel, $request);
 
-
+        //dd("hola");
         //--------------------------- GUARDAR EL EXCEL -----------------------
 
         header("Content-Type: application/force-download");
@@ -94,81 +93,82 @@ class EtiquetaController extends Controller
         $objSheet->getCell('E1')->setValue('Cliente');
         $objSheet->getCell('F1')->setValue('Cliente_b');
         $objSheet->getCell('G1')->setValue('Cod. Cliente');
-        $objSheet->getCell('H1')->setValue('Cod-Finca');
-        $objSheet->getCell('I1')->setValue('Registro');
-        $objSheet->getCell('J1')->setValue('País destino');
-        $objSheet->getCell('K1')->setValue('Refrendo');
-        $objSheet->getCell('L1')->setValue('Ruc');
-        $objSheet->getCell('M1')->setValue('Variedad0');
-        $objSheet->getCell('N1')->setValue('Color0');
-        $objSheet->getCell('O1')->setValue('Length0');
-        $objSheet->getCell('P1')->setValue('Bounches0');
-        $objSheet->getCell('Q1')->setValue('Weigth0');
-        $objSheet->getCell('R1')->setValue('Variedad1');
-        $objSheet->getCell('S1')->setValue('Color1');
-        $objSheet->getCell('T1')->setValue('Length1');
-        $objSheet->getCell('U1')->setValue('Bounches1');
-        $objSheet->getCell('V1')->setValue('Weigth1');
-        $objSheet->getCell('W1')->setValue('Variedad2');
-        $objSheet->getCell('X1')->setValue('Color2');
-        $objSheet->getCell('Y1')->setValue('Length2');
-        $objSheet->getCell('Z1')->setValue('Bounches2');
-        $objSheet->getCell('AA1')->setValue('Weigth2');
-        $objSheet->getCell('AB1')->setValue('Variedad3');
-        $objSheet->getCell('AC1')->setValue('Color3');
-        $objSheet->getCell('AD1')->setValue('Length3');
-        $objSheet->getCell('AE1')->setValue('Bounches3');
-        $objSheet->getCell('AF1')->setValue('Weigth3');
-        $objSheet->getCell('AG1')->setValue('Variedad4');
-        $objSheet->getCell('AH1')->setValue('Color4');
-        $objSheet->getCell('AI1')->setValue('Length4');
-        $objSheet->getCell('AJ1')->setValue('Bounches4');
-        $objSheet->getCell('AK1')->setValue('Weigth4');
-        $objSheet->getCell('AL1')->setValue('Variedad5');
-        $objSheet->getCell('AM1')->setValue('Color5');
-        $objSheet->getCell('AN1')->setValue('Length5');
-        $objSheet->getCell('AO1')->setValue('Bounches5');
-        $objSheet->getCell('AP1')->setValue('Weigth5');
-        $objSheet->getCell('AQ1')->setValue('Variedad6');
-        $objSheet->getCell('AR1')->setValue('Color6');
-        $objSheet->getCell('AS1')->setValue('Length6');
-        $objSheet->getCell('AT1')->setValue('Bounches6');
-        $objSheet->getCell('AU1')->setValue('Weigth6');
-        $objSheet->getCell('AV1')->setValue('Variedad7');
-        $objSheet->getCell('AW1')->setValue('Color7');
-        $objSheet->getCell('AX1')->setValue('Length7');
-        $objSheet->getCell('AY1')->setValue('Bounches7');
-        $objSheet->getCell('AZ1')->setValue('Weigth7');
-        $objSheet->getCell('BA1')->setValue('Variedad8');
-        $objSheet->getCell('BB1')->setValue('Color8');
-        $objSheet->getCell('BC1')->setValue('Length8');
-        $objSheet->getCell('BD1')->setValue('Bounches8');
-        $objSheet->getCell('BE1')->setValue('Weigth8');
-        $objSheet->getCell('BF1')->setValue('Variedad9');
-        $objSheet->getCell('BG1')->setValue('Color9');
-        $objSheet->getCell('BH1')->setValue('Length9');
-        $objSheet->getCell('BI1')->setValue('Bounches9');
-        $objSheet->getCell('BJ1')->setValue('Weigth9');
-        $objSheet->getCell('BK1')->setValue('Variedad10');
-        $objSheet->getCell('BL1')->setValue('Color10');
-        $objSheet->getCell('BM1')->setValue('Length10');
-        $objSheet->getCell('BN1')->setValue('Bounches10');
-        $objSheet->getCell('BO1')->setValue('Weigth10');
-        $objSheet->getCell('BP1')->setValue('Variedad11');
-        $objSheet->getCell('BQ1')->setValue('Color11');
-        $objSheet->getCell('BR1')->setValue('Length11');
-        $objSheet->getCell('BS1')->setValue('Bounches11');
-        $objSheet->getCell('BT1')->setValue('Weigth11');
-        $objSheet->getCell('BU1')->setValue('Variedad12');
-        $objSheet->getCell('BV1')->setValue('Color12');
-        $objSheet->getCell('BW1')->setValue('Length12');
-        $objSheet->getCell('BX1')->setValue('Bounches12');
-        $objSheet->getCell('BY1')->setValue('Weigth12');
-
+        $objSheet->getCell('H1')->setValue('Ramos caja');
+        $objSheet->getCell('I1')->setValue('Cod-Finca');
+        $objSheet->getCell('J1')->setValue('Registro');
+        $objSheet->getCell('K1')->setValue('País destino');
+        $objSheet->getCell('L1')->setValue('Refrendo');
+        $objSheet->getCell('M1')->setValue('Ruc');
+        $objSheet->getCell('N1')->setValue('Variedad0');
+        $objSheet->getCell('O1')->setValue('Color0');
+        $objSheet->getCell('P1')->setValue('Length0');
+        $objSheet->getCell('Q1')->setValue('Bounches0');
+        $objSheet->getCell('R1')->setValue('Weigth0');
+        $objSheet->getCell('S1')->setValue('Variedad1');
+        $objSheet->getCell('T1')->setValue('Color1');
+        $objSheet->getCell('U1')->setValue('Length1');
+        $objSheet->getCell('V1')->setValue('Bounches1');
+        $objSheet->getCell('W1')->setValue('Weigth1');
+        $objSheet->getCell('X1')->setValue('Variedad2');
+        $objSheet->getCell('Y1')->setValue('Color2');
+        $objSheet->getCell('Z1')->setValue('Length2');
+        $objSheet->getCell('AA1')->setValue('Bounches2');
+        $objSheet->getCell('AB1')->setValue('Weigth2');
+        $objSheet->getCell('AC1')->setValue('Variedad3');
+        $objSheet->getCell('AD1')->setValue('Color3');
+        $objSheet->getCell('AE1')->setValue('Length3');
+        $objSheet->getCell('AF1')->setValue('Bounches3');
+        $objSheet->getCell('AG1')->setValue('Weigth3');
+        $objSheet->getCell('AH1')->setValue('Variedad4');
+        $objSheet->getCell('AI1')->setValue('Color4');
+        $objSheet->getCell('AJ1')->setValue('Length4');
+        $objSheet->getCell('AK1')->setValue('Bounches4');
+        $objSheet->getCell('AL1')->setValue('Weigth4');
+        $objSheet->getCell('AM1')->setValue('Variedad5');
+        $objSheet->getCell('AN1')->setValue('Color5');
+        $objSheet->getCell('AO1')->setValue('Length5');
+        $objSheet->getCell('AP1')->setValue('Bounches5');
+        $objSheet->getCell('AQ1')->setValue('Weigth5');
+        $objSheet->getCell('AR1')->setValue('Variedad6');
+        $objSheet->getCell('AS1')->setValue('Color6');
+        $objSheet->getCell('AT1')->setValue('Length6');
+        $objSheet->getCell('AU1')->setValue('Bounches6');
+        $objSheet->getCell('AV1')->setValue('Weigth6');
+        $objSheet->getCell('AW1')->setValue('Variedad7');
+        $objSheet->getCell('AX1')->setValue('Color7');
+        $objSheet->getCell('AY1')->setValue('Length7');
+        $objSheet->getCell('AZ1')->setValue('Bounches7');
+        $objSheet->getCell('BA1')->setValue('Weigth7');
+        $objSheet->getCell('BB1')->setValue('Variedad8');
+        $objSheet->getCell('BC1')->setValue('Color8');
+        $objSheet->getCell('BD1')->setValue('Length8');
+        $objSheet->getCell('BE1')->setValue('Bounches8');
+        $objSheet->getCell('BF1')->setValue('Weigth8');
+        $objSheet->getCell('BG1')->setValue('Variedad9');
+        $objSheet->getCell('BH1')->setValue('Color9');
+        $objSheet->getCell('BI1')->setValue('Length9');
+        $objSheet->getCell('BJ1')->setValue('Bounches9');
+        $objSheet->getCell('BK1')->setValue('Weigth9');
+        $objSheet->getCell('BL1')->setValue('Variedad10');
+        $objSheet->getCell('BM1')->setValue('Color10');
+        $objSheet->getCell('BN1')->setValue('Length10');
+        $objSheet->getCell('BO1')->setValue('Bounches10');
+        $objSheet->getCell('BP1')->setValue('Weigth10');
+        $objSheet->getCell('BQ1')->setValue('Variedad11');
+        $objSheet->getCell('BR1')->setValue('Color11');
+        $objSheet->getCell('BS1')->setValue('Length11');
+        $objSheet->getCell('BT1')->setValue('Bounches11');
+        $objSheet->getCell('BU1')->setValue('Weigth11');
+        $objSheet->getCell('BV1')->setValue('Variedad12');
+        $objSheet->getCell('BW1')->setValue('Color12');
+        $objSheet->getCell('BX1')->setValue('Length12');
+        $objSheet->getCell('BY1')->setValue('Bounches12');
+        $objSheet->getCell('BZ1')->setValue('Weigth12');
 
         if (sizeof($request->arr_facturas) > 0) {
 
             $w = 1;
+
             $empresa = getPedido($request->arr_facturas[0]['id_pedido'])->empresa;
             $prefijo = explode("-",$empresa->codigo_etiqueta_empresa)[0];
             $nombre_empresa = str_split(isset(explode("-",$empresa->codigo_etiqueta_empresa)[1]) ? explode("-",$empresa->codigo_etiqueta_empresa)[1] : explode("-",$empresa->codigo_etiqueta_empresa)[0]);
@@ -190,100 +190,112 @@ class EtiquetaController extends Controller
                 }
             }
 
-            foreach ($request->arr_facturas as $a => $factura) {
-                $pedido = getPedido($factura['id_pedido']);
-                $factura['doble'] == "true"  ? $doble = 2  : $doble = 1;
+            $arr_pedidos = [];
+            foreach ($request->arr_facturas as $factura){
+                $arr_pedidos[$factura['id_pedido']][] = [
+                    'caja'=>$factura['caja'],
+                    'doble'=>$factura['doble']
+                ];
+            }
+            foreach ($arr_pedidos as $id_pedido => $arr_ped) {
+                $z=1;
+                $pedido = getPedido($id_pedido);
+                if($pedido->tipo_especificacion == "T")
+                    $total_cajas = $pedido->cant_rows_etiqueta($arr_ped);
+                foreach($arr_ped as $ped){
 
-                $pais_destino = getPais($pedido->cliente->detalle()->codigo_pais)->nombre;
-                $dae = $pedido->envios[0]->dae;
-                $factura_tercero = getFacturaClienteTercero($pedido->envios[0]->id_envio);
-                if($factura_tercero!= "" && isset($factura_tercero->codigo_pais)){
-                    $pais_destino = getPais($factura_tercero->codigo_pais)->nombre;
-                    $dae = $factura_tercero->dae;
-                }
-                $ruc = "RUC: ". $pedido->empresa->ruc;
+                    $ped['doble'] == "true"  ? $doble = 2  : $doble = 1;
+                    $pais_destino = getPais($pedido->cliente->detalle()->codigo_pais)->nombre;
+                    $dae = $pedido->envios[0]->dae;
+                    $factura_tercero = getFacturaClienteTercero($pedido->envios[0]->id_envio);
+                    if($factura_tercero!= "" && isset($factura_tercero->codigo_pais)){
+                        $pais_destino = getPais($factura_tercero->codigo_pais)->nombre;
+                        $dae = $factura_tercero->dae;
+                    }
+                    $ruc = "RUC: ". $pedido->empresa->ruc;
 
-                $arr_posiciones = $this->posiciones_excel();
-                for($y=1;$y<=$doble;$y++) {
-                    if($pedido->tipo_especificacion == "N"){
-                         foreach ($pedido->detalles as $det_ped) {
-                             $datos_exportacion ='';
-                             if(getDatosExportacionByDetPed($det_ped->id_detalle_pedido)->count() > 0){
-                                 foreach (getDatosExportacionByDetPed($det_ped->id_detalle_pedido) as $dE)
-                                     $datos_exportacion .= $dE->valor."-";
-                             }
-                             foreach ($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $esp_emp) {
-                                 if (explode("|", $esp_emp->empaque->nombre)[1] === $factura['caja']) {
-                                     foreach ($esp_emp->detalles as $det_esp_emp) {
-                                         $x = 1;
-                                         for ($z = 1; $z <= $det_ped->cantidad; $z++) {
-                                             //--------------------------- LLENAR LA TABLA ---------------------------------------------
-                                             $planta = substr(getVariedad($det_esp_emp->id_variedad)->planta->nombre, 0, 3);
-                                             $objSheet->getCell('A' . ($w + 1))->setValue("AWB. " . $pedido->envios[0]->guia_madre);
-                                             $objSheet->getCell('B' . ($w + 1))->setValue("HAWB. " . $pedido->envios[0]->guia_hija);
-                                             $objSheet->getCell('C' . ($w + 1))->setValue($x);
-                                             $objSheet->getCell('D' . ($w + 1))->setValue($det_ped->cantidad);
-                                             $objSheet->getCell('E' . ($w + 1))->setValue(strtoupper($pedido->cliente->detalle()->nombre));
-                                             $objSheet->getCell('F' . ($w + 1))->setValue();
-                                             $objSheet->getCell('G' . ($w + 1))->setValue($datos_exportacion != '' ? substr($datos_exportacion,0,-1): "");
-                                             $objSheet->getCell('H' . ($w + 1))->setValue($prefijo."-".$codigo_finca);
-                                             $objSheet->getCell('I' . ($w + 1))->setValue(getConfiguracionEmpresa($pedido->id_configuracion_empresa)->permiso_agrocalidad);
-                                             $objSheet->getCell('J' . ($w + 1))->setValue($pais_destino);
-                                             $objSheet->getCell('K' . ($w + 1))->setValue($dae);
-                                             $objSheet->getCell('L' . ($w + 1))->setValue($ruc);
-                                             $objSheet->getCell('M' . ($w + 1))->setValue($det_esp_emp->variedad->nombre);
-                                             $objSheet->getCell('N' . ($w + 1))->setValue("White");
-                                             $objSheet->getCell('O' . ($w + 1))->setValue($det_esp_emp->longitud_ramo." ". $det_esp_emp->unidad_medida->siglas);
-                                             $objSheet->getCell('P' . ($w + 1))->setValue($det_esp_emp->cantidad);
-                                             $objSheet->getCell('Q' . ($w + 1))->setValue($det_esp_emp->clasificacion_ramo->nombre." ". $det_esp_emp->clasificacion_ramo->unidad_medida->siglas.".");
-                                             $w++;
-                                             $x++;
-                                         }
-                                     }
-                                 }
-                             }
-                         }
-                    }else if($pedido->tipo_especificacion == "T") {
-                        $arr_data=[];
-                        foreach ($pedido->detalles as $det_ped) {
-                            $datos_exportacion = '';
-                            if (getDatosExportacionByDetPed($det_ped->id_detalle_pedido)->count() > 0) {
-                                foreach (getDatosExportacionByDetPed($det_ped->id_detalle_pedido) as $dE)
-                                    $datos_exportacion .= $dE->valor . "-";
-                            }
-
-                            foreach ($det_ped->marcaciones as $mc) {
-                                if (explode("|", $mc->especificacion_empaque->empaque->nombre)[1] === $factura['caja']) {
-                                    foreach ($mc->distribuciones as $d => $dist) {
-
-                                        $posicion = 13;
-                                        $distribucion_coloracion = json_decode($dist->dist_col);
-
-                                        $objSheet->getCell('A' . ($w + 1))->setValue("AWB. " . $pedido->envios[0]->guia_madre);
-                                        $objSheet->getCell('B' . ($w + 1))->setValue("HAWB. " . $pedido->envios[0]->guia_hija);
-                                        $objSheet->getCell('C' . ($w + 1))->setValue($d+1);
-                                        $objSheet->getCell('D' . ($w + 1))->setValue($mc->distribuciones->count());
-                                        $objSheet->getCell('E' . ($w + 1))->setValue($pedido->envios[0]->id_consignatario!= "" ? $pedido->envios[0]->consignatario->nombre : $pedido->cliente->detalle()->nombre);
-                                        $objSheet->getCell('F' . ($w + 1))->setValue($pedido->envios[0]->id_consignatario!= "" ? $pedido->cliente->detalle()->nombre : "");
-                                        $objSheet->getCell('G' . ($w + 1))->setValue($mc->nombre);
-                                        $objSheet->getCell('H' . ($w + 1))->setValue("DS-" . $codigo_finca);
-                                        $objSheet->getCell('I' . ($w + 1))->setValue(getConfiguracionEmpresa($pedido->id_configuracion_empresa)->permiso_agrocalidad);
-                                        $objSheet->getCell('J' . ($w + 1))->setValue($pais_destino);
-                                        $objSheet->getCell('K' . ($w + 1))->setValue($dae);
-                                        $objSheet->getCell('L' . ($w + 1))->setValue($ruc);
-                                        foreach($distribucion_coloracion as $dist_col){
-                                            foreach($dist_col as $dc){
-                                                if($dc->cantidad>0){
-                                                    $objSheet->getCell($arr_posiciones[$posicion] . ($w + 1))->setValue($dc->planta . " - " . $dc->variedad);
-                                                    $objSheet->getCell($arr_posiciones[$posicion + 1] . ($w + 1))->setValue($dc->color);
-                                                    $objSheet->getCell($arr_posiciones[$posicion + 2] . ($w + 1))->setValue($dc->longitud_ramo . " " . $dc->det_esp_u_m);
-                                                    $objSheet->getCell($arr_posiciones[$posicion + 3] . ($w + 1))->setValue($dc->cantidad);
-                                                    $objSheet->getCell($arr_posiciones[$posicion + 4] . ($w + 1))->setValue($dc->ramo . " " . $dc->ramo_u_m . ".");
-                                                    $posicion += 5;
-                                                }
+                    $arr_posiciones = $this->posiciones_excel();
+                    for($y=1;$y<=$doble;$y++) {
+                        if($pedido->tipo_especificacion == "N"){
+                            foreach ($pedido->detalles as $det_ped) {
+                                $datos_exportacion ='';
+                                if(getDatosExportacionByDetPed($det_ped->id_detalle_pedido)->count() > 0){
+                                    foreach (getDatosExportacionByDetPed($det_ped->id_detalle_pedido) as $dE)
+                                        $datos_exportacion .= $dE->valor."-";
+                                }
+                                foreach ($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $esp_emp) {
+                                    if (explode("|", $esp_emp->empaque->nombre)[1] === $ped['caja']) {
+                                        foreach ($esp_emp->detalles as $det_esp_emp) {
+                                            $x = 1;
+                                            for ($z = 1; $z <= $det_ped->cantidad; $z++) {
+                                                //--------------------------- LLENAR LA TABLA ---------------------------------------------
+                                                $objSheet->getCell('A' . ($w + 1))->setValue("AWB. " . $pedido->envios[0]->guia_madre);
+                                                $objSheet->getCell('B' . ($w + 1))->setValue("HAWB. " . $pedido->envios[0]->guia_hija);
+                                                $objSheet->getCell('C' . ($w + 1))->setValue($x);
+                                                $objSheet->getCell('D' . ($w + 1))->setValue($det_ped->cantidad);
+                                                $objSheet->getCell('E' . ($w + 1))->setValue($pedido->envios[0]->id_consignatario!= "" ? $pedido->envios[0]->consignatario->nombre : $pedido->cliente->detalle()->nombre);
+                                                $objSheet->getCell('F' . ($w + 1))->setValue($pedido->envios[0]->id_consignatario!= "" ? $pedido->cliente->detalle()->nombre : "");
+                                                $objSheet->getCell('G' . ($w + 1))->setValue($datos_exportacion != '' ? substr($datos_exportacion,0,-1): "");
+                                                $objSheet->getCell('H' . ($w + 1))->setValue($det_esp_emp->cantidad);
+                                                $objSheet->getCell('I' . ($w + 1))->setValue($prefijo."-".$codigo_finca);
+                                                $objSheet->getCell('J' . ($w + 1))->setValue(getConfiguracionEmpresa($pedido->id_configuracion_empresa)->permiso_agrocalidad);
+                                                $objSheet->getCell('K' . ($w + 1))->setValue('País destino. '.$pais_destino);
+                                                $objSheet->getCell('L' . ($w + 1))->setValue($dae);
+                                                $objSheet->getCell('M' . ($w + 1))->setValue($ruc);
+                                                $objSheet->getCell('N' . ($w + 1))->setValue($det_esp_emp->variedad->nombre);
+                                                $objSheet->getCell('O' . ($w + 1))->setValue("White");
+                                                $objSheet->getCell('P' . ($w + 1))->setValue($det_esp_emp->longitud_ramo." ". $det_esp_emp->unidad_medida->siglas);
+                                                $objSheet->getCell('Q' . ($w + 1))->setValue($det_esp_emp->cantidad);
+                                                $objSheet->getCell('R' . ($w + 1))->setValue($det_esp_emp->clasificacion_ramo->nombre." ". $det_esp_emp->clasificacion_ramo->unidad_medida->siglas.".");
+                                                $w++;
+                                                $x++;
                                             }
                                         }
-                                        $w++;
+                                    }
+                                }
+                            }
+                        }else if($pedido->tipo_especificacion == "T") {
+                            foreach ($pedido->detalles as $det_ped) {
+                                $datos_exportacion = '';
+                                if (getDatosExportacionByDetPed($det_ped->id_detalle_pedido)->count() > 0) {
+                                    foreach (getDatosExportacionByDetPed($det_ped->id_detalle_pedido) as $dE)
+                                        $datos_exportacion .= $dE->valor . "-";
+                                }
+
+                                foreach ($det_ped->marcaciones as $mc) {
+                                    if (explode("|", $mc->especificacion_empaque->empaque->nombre)[1] === $ped['caja']) {
+                                        foreach ($mc->distribuciones as $d => $dist) {
+                                            $posicion = 14;
+                                            $distribucion_coloracion = json_decode($dist->dist_col);
+
+                                            $objSheet->getCell('A' . ($w + 1))->setValue("AWB. " . $pedido->envios[0]->guia_madre);
+                                            $objSheet->getCell('B' . ($w + 1))->setValue("HAWB. " . $pedido->envios[0]->guia_hija);
+                                            $objSheet->getCell('C' . ($w + 1))->setValue($z);
+                                            $objSheet->getCell('D' . ($w + 1))->setValue($total_cajas);
+                                            $objSheet->getCell('E' . ($w + 1))->setValue($pedido->envios[0]->id_consignatario!= "" ? $pedido->envios[0]->consignatario->nombre : $pedido->cliente->detalle()->nombre);
+                                            $objSheet->getCell('F' . ($w + 1))->setValue($pedido->envios[0]->id_consignatario!= "" ? $pedido->cliente->detalle()->nombre : "");
+                                            $objSheet->getCell('G' . ($w + 1))->setValue($mc->nombre);
+                                            $objSheet->getCell('H' . ($w + 1))->setValue($mc->marcaciones_coloraciones[0]->detalle_especificacionempaque->cantidad);
+                                            $objSheet->getCell('I' . ($w + 1))->setValue("DS-" . $codigo_finca);
+                                            $objSheet->getCell('J' . ($w + 1))->setValue(getConfiguracionEmpresa($pedido->id_configuracion_empresa)->permiso_agrocalidad);
+                                            $objSheet->getCell('K' . ($w + 1))->setValue('País destino. '.$pais_destino);
+                                            $objSheet->getCell('L' . ($w + 1))->setValue($dae);
+                                            $objSheet->getCell('M' . ($w + 1))->setValue($ruc);
+                                            foreach($distribucion_coloracion as $dist_col){
+                                                foreach($dist_col as $dc){
+                                                    if($dc->cantidad>0){
+                                                        $objSheet->getCell($arr_posiciones[$posicion] . ($w + 1))->setValue($dc->planta . " - " . $dc->variedad);
+                                                        $objSheet->getCell($arr_posiciones[$posicion + 1] . ($w + 1))->setValue($dc->color);
+                                                        $objSheet->getCell($arr_posiciones[$posicion + 2] . ($w + 1))->setValue($dc->longitud_ramo . " " . $dc->det_esp_u_m);
+                                                        $objSheet->getCell($arr_posiciones[$posicion + 3] . ($w + 1))->setValue($dc->cantidad);
+                                                        $objSheet->getCell($arr_posiciones[$posicion + 4] . ($w + 1))->setValue($dc->ramo . " " . $dc->ramo_u_m . ".");
+                                                        $posicion += 5;
+                                                    }
+                                                }
+                                            }
+                                            $w++;
+                                            $z++;
+                                        }
                                     }
                                 }
                             }
@@ -291,7 +303,6 @@ class EtiquetaController extends Controller
                     }
                 }
             }
-
             $objSheet->getColumnDimension('A')->setAutoSize(true);
             $objSheet->getColumnDimension('B')->setAutoSize(true);
             $objSheet->getColumnDimension('C')->setAutoSize(true);
@@ -305,6 +316,7 @@ class EtiquetaController extends Controller
             $objSheet->getColumnDimension('K')->setAutoSize(true);
             $objSheet->getColumnDimension('L')->setAutoSize(true);
             $objSheet->getColumnDimension('M')->setAutoSize(true);
+            $objSheet->getColumnDimension('N')->setAutoSize(true);
             foreach($this->posiciones_excel() as $posicion) $objSheet->getColumnDimension($posicion)->setAutoSize(true);
 
         } else {
@@ -314,12 +326,12 @@ class EtiquetaController extends Controller
 
     public function posiciones_excel(){
         return [
-            13=>'M',14=>'N',15=>'O',16=>'P',17=>'Q',18=>'R',19=>'S',20=>'T',21=>'U',22=>'V',23=>'W',24=>'X',25=>'Y',26=>'Z',
+            14=>'N',15=>'O',16=>'P',17=>'Q',18=>'R',19=>'S',20=>'T',21=>'U',22=>'V',23=>'W',24=>'X',25=>'Y',26=>'Z',
             27=>'AA',28=>'AB',29=>'AC',30=>'AD',31=>'AE',32=>'AF',33=>'AG',34=>'AH',35=>'AI',36=>'AJ',37=>'AK',38=>'AL',39=>'AM',
             40=>'AN',41=>'AO',42=>'AP',43=>'AQ',44=>'AR',45=>'AS',46=>'AT',47=>'AU',48=>'AV',49=>'AW',50=>'AX',51=>'AY',52=>'AZ',
             53=>'BA',54=>'BB',55=>'BC',56=>'BD',57=>'BE',58=>'BF',59=>'BG',60=>'BH',61=>'BI',62=>'BJ',63=>'BK',64=>'BL',65=>'BM',
             66=>'BN',67=>'BO',68=>'BP',69=>'BQ',70=>'BR',71=>'BS',72=>'BS',73=>'BT',74=>'BU',75=>'BU',76=>'BV',77=>'BW',78=>'BX',
-            79=>'BY',80=>'BZ'
+            79=>'BY',80=>'BZ',81=>'CA'
 
         ];
     }
