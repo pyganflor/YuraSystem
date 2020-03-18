@@ -168,7 +168,6 @@ class EtiquetaController extends Controller
         if (sizeof($request->arr_facturas) > 0) {
 
             $w = 1;
-
             $empresa = getPedido($request->arr_facturas[0]['id_pedido'])->empresa;
             $prefijo = explode("-",$empresa->codigo_etiqueta_empresa)[0];
             $nombre_empresa = str_split(isset(explode("-",$empresa->codigo_etiqueta_empresa)[1]) ? explode("-",$empresa->codigo_etiqueta_empresa)[1] : explode("-",$empresa->codigo_etiqueta_empresa)[0]);
@@ -244,14 +243,13 @@ class EtiquetaController extends Controller
                                             $objSheet->getCell('M' . ($w + 1))->setValue($ruc);
                                             foreach ($esp_emp->detalles as $det_esp_emp) {
                                                 $objSheet->getCell($arr_posiciones[$posicion] . ($w + 1))->setValue($det_esp_emp->variedad->nombre);
-                                                $objSheet->getCell($arr_posiciones[$posicion] . ($w + 1))->setValue("White");
-                                                $objSheet->getCell($arr_posiciones[$posicion] . ($w + 1))->setValue($det_esp_emp->longitud_ramo . " " . $det_esp_emp->unidad_medida->siglas);
-                                                $objSheet->getCell($arr_posiciones[$posicion] . ($w + 1))->setValue($det_esp_emp->cantidad);
-                                                $objSheet->getCell($arr_posiciones[$posicion] . ($w + 1))->setValue($det_esp_emp->clasificacion_ramo->nombre . " " . $det_esp_emp->clasificacion_ramo->unidad_medida->siglas . ".");
+                                                $objSheet->getCell($arr_posiciones[$posicion + 1] . ($w + 1))->setValue("White");
+                                                $objSheet->getCell($arr_posiciones[$posicion + 2] . ($w + 1))->setValue($det_esp_emp->longitud_ramo . " " . $det_esp_emp->unidad_medida->siglas);
+                                                $objSheet->getCell($arr_posiciones[$posicion + 3] . ($w + 1))->setValue($det_esp_emp->cantidad);
+                                                $objSheet->getCell($arr_posiciones[$posicion + 4] . ($w + 1))->setValue($det_esp_emp->clasificacion_ramo->nombre . " " . $det_esp_emp->clasificacion_ramo->unidad_medida->siglas . ".");
                                                 $posicion += 5;
-                                                $w++;
                                             }
-
+                                            $w++;
                                             $x++;
                                         }
                                     }
