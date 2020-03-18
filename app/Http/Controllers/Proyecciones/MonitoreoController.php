@@ -1,6 +1,6 @@
 <?php
 
-namespace yura\Http\Controllers;
+namespace yura\Http\Controllers\Proyecciones;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -10,6 +10,7 @@ use yura\Modelos\Monitoreo;
 use yura\Modelos\Sector;
 use yura\Modelos\Submenu;
 use Validator;
+use yura\Http\Controllers\Controller;
 
 class MonitoreoController extends Controller
 {
