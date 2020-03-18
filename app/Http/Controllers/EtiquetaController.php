@@ -225,7 +225,6 @@ class EtiquetaController extends Controller
                                 }
                                 foreach ($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $esp_emp) {
                                     if (explode("|", $esp_emp->empaque->nombre)[1] === $ped['caja']) {
-
                                         $x = 1;
                                         for ($z = 1; $z <= $det_ped->cantidad; $z++) {
                                             $posicion = 14;
@@ -250,8 +249,9 @@ class EtiquetaController extends Controller
                                                 $objSheet->getCell($arr_posiciones[$posicion] . ($w + 1))->setValue($det_esp_emp->cantidad);
                                                 $objSheet->getCell($arr_posiciones[$posicion] . ($w + 1))->setValue($det_esp_emp->clasificacion_ramo->nombre . " " . $det_esp_emp->clasificacion_ramo->unidad_medida->siglas . ".");
                                                 $posicion += 5;
+                                                $w++;
                                             }
-                                            $w++;
+
                                             $x++;
                                         }
                                     }
