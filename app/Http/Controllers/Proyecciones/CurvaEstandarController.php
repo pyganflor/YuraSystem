@@ -26,7 +26,7 @@ class CurvaEstandarController extends Controller
         $query = Ciclo::All()
             ->where('estado', 1)
             ->where('id_variedad', $request->variedad)
-            ->where('poda_siembra', $request->poda_siembra)
+            //->where('poda_siembra', $request->poda_siembra)
             ->where('fecha_inicio', '<=', $sem_desde->fecha_inicial)
             ->where('fecha_fin', '>=', $sem_desde->fecha_inicial);
         $ciclos = [];
