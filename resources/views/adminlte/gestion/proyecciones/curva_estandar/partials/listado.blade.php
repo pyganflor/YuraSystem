@@ -11,11 +11,13 @@
         @php
             $modulo = $c->modulo;
         @endphp
-        <th class="text-center" style="border-color: #9d9d9d">
-            {{$modulo->nombre}}
-        </th>
-        <th class="text-center" style="border-color: #9d9d9d">
-            {{$modulo->poda_siembra}}
-        </th>
+        <tr>
+            <th class="text-center" style="border-color: #9d9d9d">
+                {{$modulo->nombre}}
+            </th>
+            <th class="text-center" style="border-color: #9d9d9d">
+                {{$c->semana_poda_siembra}}
+            </th>
+        </tr>
     @endforeach
 </table>
