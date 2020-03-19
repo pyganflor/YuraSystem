@@ -11,7 +11,7 @@ class EtiquetaFactura extends Model
     public $incrementing = false;
     public $timestamps = false;
     protected $fillable = [
-        'id_comprobante',
+        'id_pedido',
         'fecha_registro'
     ];
 

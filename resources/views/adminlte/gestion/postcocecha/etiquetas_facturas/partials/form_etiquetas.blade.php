@@ -127,7 +127,7 @@
     <tr>
         <td class="text-center">
             <button type="buttom" class="btn btn-success"
-                    onclick="store_etiquetas_factura('{{isset($pedido->envios[0]->comprobante) ? $pedido->envios[0]->comprobante->id_comprobante : ''}}','{{csrf_token()}}')">
+                    onclick="store_etiquetas_factura('{{$pedido->id_pedido}}','{{csrf_token()}}')">
                 <i class="fa fa-floppy-o" ></i> Guardar
             </button>
         </td>
@@ -138,7 +138,7 @@
         <tr>
             <td class="text-center">
                 <button type="buttom" class="btn btn-danger"
-                        nclick="delete_etiquetas_factura('{{isset($pedido->envios[0]->comprobante) ? $pedido->envios[0]->comprobante->id_comprobante : ''}}','{{csrf_token()}}')">
+                        onclick="delete_etiquetas_factura('{{$pedido->id_pedido}}','{{csrf_token()}}')">
                     <i class="fa fa-times" ></i> Eliminar etiquetas
                 </button>
             </td>

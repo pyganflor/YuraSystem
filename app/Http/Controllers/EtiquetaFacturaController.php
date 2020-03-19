@@ -34,8 +34,6 @@ class EtiquetaFacturaController extends Controller
                 ->leftJoin('comprobante as c','e.id_envio','c.id_envio')
                 ->select('c.secuencial','dc.nombre as cli_nombre','pedido.id_pedido','c.estado as estado_comprobante')
                 ->where('pedido.id_configuracion_empresa', $request->id_configuracion_empresa)->get(),
-
-
             /*Comprobante::where([
                 ['tipo_comprobante',01],
                 ['habilitado',1],
@@ -60,7 +58,6 @@ class EtiquetaFacturaController extends Controller
             'filas' => $request->filas,
             'empaque' => Empaque::where('tipo','C')->get(),
             'pedido' => getPedido($request->id_pedido)
-
         ]);
     }
 
@@ -72,6 +69,7 @@ class EtiquetaFacturaController extends Controller
             'data.*.et_final' => 'required',
             'data.*.id_det_esp_emp' => 'required',
             'data.*.empaque' => 'required',
+            'id_pedido' => 'required'
         ], [
             'data.*.siglas.required' => 'Debe escribir las siglas de la etiqueta',
             'data.*.cajas.required' => 'Debe escribir la cantidad de cajas',
@@ -79,12 +77,13 @@ class EtiquetaFacturaController extends Controller
             'data.*.et_final.required' => 'Debe escribir la etiqueta final',
             'data.*.id_det_esp_emp.required' => 'Debe seleccionar la presentación',
             'data.*.empaque.required' => 'Debe seleccionar el empaque',
-        ]);
+            'id_pedido.required' => 'No se obtuvo el identificacdor del pedido',
+            ]);
 
         if (!$valida->fails()) {
 
             $objEtiquetaFactura = new EtiquetaFactura;
-            $objEtiquetaFactura->id_comprobante = $request->id_comprobante;
+            $objEtiquetaFactura->id_pedido = $request->id_pedido;
 
             if($objEtiquetaFactura->save()){
                 $modelEtiquetaFactura = EtiquetaFactura::all()->last();
@@ -143,7 +142,7 @@ class EtiquetaFacturaController extends Controller
         $msg = '<div class="alert alert-danger text-center">' .
             '<p> Ha ocurrido un problema al eliminar las etiquetas, intente de nuevo</p>'
             . '</div>';
-        $etiqueta_comprobante = EtiquetaFactura::where('id_comprobante',$request->id_comprobante);
+        $etiqueta_comprobante = EtiquetaFactura::where('id_pedido',$request->id_pedido);
         if($etiqueta_comprobante->delete()){
             $success = true;
             $msg = '<div class="alert alert-success text-center">' .
