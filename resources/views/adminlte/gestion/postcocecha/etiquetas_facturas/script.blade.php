@@ -67,10 +67,9 @@
     }
 
     function store_etiquetas_factura(id_pedido,csrf_token){
-        $.LoadingOverlay('show');
-
         data = [];
         $.each($("input.cajas"),function(i,j){
+
             if(j.value.length > 0){
                 data.push({
                     cajas : j.value,
@@ -83,6 +82,11 @@
             }
         });
 
+        if(data.length==0){
+            modal_view('modal_error_etiqueta_factura', '<div class="alert alert-danger text-center"><p> Debe rellenar al menos una fila para guardar</p> </div>', '<i class="fa fa-times"></i> Etiquetas por factura', true, false, '50%');
+            return false;
+        }
+        $.LoadingOverlay('show');
         datos = {
             _token: csrf_token,
             id_pedido: id_pedido,
@@ -94,7 +98,6 @@
         });
         $.LoadingOverlay('hide');
     }
-
 
     function delete_etiquetas_factura(id_pedido,csrf_token){
         datos = {

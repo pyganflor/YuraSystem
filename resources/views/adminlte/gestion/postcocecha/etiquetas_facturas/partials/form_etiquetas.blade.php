@@ -122,7 +122,7 @@
     @endforeach--}}
     </tbody>
 </table>
-@if(!isset($pedido->envios[0]->comprobante->etiqueta_factura))
+@if(!isset($pedido->etiqueta_factura))
 <table style="margin-top: 20px;width: 100%">
     <tr>
         <td class="text-center">
