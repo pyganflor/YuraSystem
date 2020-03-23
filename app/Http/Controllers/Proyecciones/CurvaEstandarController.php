@@ -32,14 +32,25 @@ class CurvaEstandarController extends Controller
             ->where('fecha_fin', '<=', $sem_pasada->fecha_final)
             ->sortBy('semana_poda_siembra');
         $ciclos = [];
+        $min_dia = 0;
+        $max_dia = 0;
         foreach ($query as $item) {
             $sem_curva = getSemanaByDate(opDiasFecha('+', ($item->semana_poda_siembra * 7), $item->fecha_inicio));
             if ($sem_curva->codigo >= $sem_desde->codigo && $sem_curva->codigo <= $sem_pasada->codigo) {
                 array_push($ciclos, $item);
+                if ($min_dia == 0)
+                    $min_dia = $item->semana_poda_siembra;
+                if ($item->semana_poda_siembra < $min_dia)
+                    $min_dia = $item->semana_poda_siembra;
+                if ($item->semana_poda_siembra + count(explode('-', $item->curva)) - 1 > $max_dia)
+                    $max_dia = $item->semana_poda_siembra + count(explode('-', $item->curva)) - 1;
             }
         }
+
         return view('adminlte.gestion.proyecciones.curva_estandar.partials.listado', [
-            'ciclos' => $ciclos
+            'ciclos' => $ciclos,
+            'min_dia' => $min_dia,
+            'max_dia' => $max_dia,
         ]);
     }
 }
