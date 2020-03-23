@@ -29,6 +29,11 @@
             <th class="text-center" style="border-color: #9d9d9d">
                 {{$c['ciclo']->curva}}
             </th>
+            @foreach($c['cosechas'] as $v)
+                <th class="text-center" style="border-color: #9d9d9d">
+                    {{$v->cosechados}} - {{$v->info}}
+                </th>
+            @endforeach
         </tr>
     @endforeach
 </table>
