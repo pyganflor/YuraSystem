@@ -3,6 +3,7 @@
 namespace yura\Http\Controllers\Proyecciones;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use yura\Http\Controllers\Controller;
 use yura\Modelos\Ciclo;
 use yura\Modelos\GrupoMenu;
@@ -37,7 +38,17 @@ class CurvaEstandarController extends Controller
         foreach ($query as $item) {
             $sem_curva = getSemanaByDate(opDiasFecha('+', ($item->semana_poda_siembra * 7), $item->fecha_inicio));
             if ($sem_curva->codigo >= $sem_desde->codigo && $sem_curva->codigo <= $sem_pasada->codigo) {
-                array_push($ciclos, $item);
+                $cosechas = DB::table('proyeccion_modulo_semana')
+                    ->where('estado', 1)
+                    ->where('tabla', 'C')
+                    ->where('modelo', $item->id_ciclo)
+                    ->where('cosechados', '>', 0)
+                    ->where('semana', '>=', getSemanaByDate(opDiasFecha('-', 21, $sem_curva->fecha_inicial))->codigo)
+                    ->get();
+                array_push($ciclos, [
+                    'ciclo' => $item,
+                    'cosechas' => $cosechas,
+                ]);
                 if ($min_dia == 0)
                     $min_dia = $item->semana_poda_siembra;
                 if ($item->semana_poda_siembra < $min_dia)
