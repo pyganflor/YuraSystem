@@ -14,6 +14,9 @@
                     <i class="fa fa-circle {{getUsuario(Session::get('id_usuario'))->configuracion->config_online == 'S' ? 'text-success' : 'text-danger'}}"></i>
                     {{getUsuario(Session::get('id_usuario'))->configuracion->config_online == 'S' ? 'Online' : 'Offline'}}
                 </a>
+                <a href="javascript:void(0)" onclick="window.open('http://benchmark.yurasystem.com', '_blank')" class="pull-right">
+                    <i class="fa fa-fw fa-caret-right"></i>Benchmark
+                </a>
             </div>
         </div>
         <!-- sidebar menu: : style can be found in sidebar.less -->
