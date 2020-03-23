@@ -1,22 +1,33 @@
 <table class="table-striped table-bordered" style="width: 100%; border: 2px solid #9d9d9d">
     <tr>
-        <th class="text-center" style="border-color: #9d9d9d">
+        <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
             Módulo
         </th>
-        <th class="text-center" style="border-color: #9d9d9d">
-            Ini. Curva
+        <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
+            Semana P/S
         </th>
+        <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
+            Curva
+        </th>
+        @for($i = $min_dia; $i <= $max_dia; $i++)
+            <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
+                {{$i}}
+            </th>
+        @endfor
     </tr>
     @foreach($ciclos as $c)
         @php
-            $modulo = $c->modulo;
+            $modulo = $c['ciclo']->modulo;
         @endphp
         <tr>
             <th class="text-center" style="border-color: #9d9d9d">
                 {{$modulo->nombre}}
             </th>
             <th class="text-center" style="border-color: #9d9d9d">
-                {{$c->semana_poda_siembra}}
+                {{$c['ciclo']->semana_poda_siembra}}
+            </th>
+            <th class="text-center" style="border-color: #9d9d9d">
+                {{$c['ciclo']->curva}}
             </th>
         </tr>
     @endforeach
