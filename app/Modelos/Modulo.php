@@ -498,7 +498,7 @@ class Modulo extends Model
             ->where('dr.estado', 1)
             ->where('r.estado', 1)
             ->where('dr.id_modulo', $this->id_modulo)
-            ->where('r.fecha_ingreso', '<=', date('Y-m-d'))
+            ->where('r.fecha_ingreso', '<', date('Y-m-d'))
             ->get();
         if (count($query) > 0)
             if ($query[0] != '')
