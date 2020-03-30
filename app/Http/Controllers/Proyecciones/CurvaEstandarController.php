@@ -47,9 +47,19 @@ class CurvaEstandarController extends Controller
                     ->where('tipo', 'T')
                     ->get();
                 if (count(explode('-', $item->curva)) == count($cosechas)) {
+                    $total_cosechado = DB::table('proyeccion_modulo_semana')
+                        ->select(DB::raw('sum(cosechados) as cant'))
+                        ->where('estado', 1)
+                        ->where('tabla', 'C')
+                        ->where('modelo', $item->id_ciclo)
+                        ->where('cosechados', '>', 0)
+                        ->where('semana', '>=', getSemanaByDate(opDiasFecha('-', 21, $sem_curva->fecha_inicial))->codigo)
+                        ->where('tipo', 'T')
+                        ->get()[0]->cant;
                     array_push($ciclos, [
                         'ciclo' => $item,
                         'cosechas' => $cosechas,
+                        'total_cosechado' => $total_cosechado,
                     ]);
                     if ($min_dia == 0)
                         $min_dia = $item->semana_poda_siembra;
