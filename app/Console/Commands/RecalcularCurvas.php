@@ -4,6 +4,7 @@ namespace yura\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use yura\Jobs\ProyeccionUpdateSemanal;
 use yura\Jobs\UpdateSaldosProyVentaSemanal;
 use yura\Modelos\Ciclo;
@@ -45,6 +46,9 @@ class RecalcularCurvas extends Command
      */
     public function handle()
     {
+        $ini = date('Y-m-d H:i:s');
+        Log::info('<<<<< ! >>>>> Ejecutando comando "curva_cosecha:recalcular" <<<<< ! >>>>>');
+
         $semana_pasada = getSemanaByDate(opDiasFecha('-', 7, date('Y-m-d')));
         $ciclos = DB::table('proyeccion_modulo_semana')
             ->select('modelo')->distinct()
@@ -124,6 +128,10 @@ class RecalcularCurvas extends Command
         }
 
         UpdateSaldosProyVentaSemanal::dispatch($semana_pasada->codigo, 0)->onQueue('update_saldos_proy_venta_semanal');
+
+        $time_duration = difFechas(date('Y-m-d H:i:s'), $ini)->h . ':' . difFechas(date('Y-m-d H:i:s'), $ini)->m . ':' . difFechas(date('Y-m-d H:i:s'), $ini)->s;
+        Log::info('<*> DURACION: ' . $time_duration . '  <*>');
+        Log::info('<<<<< * >>>>> Fin satisfactorio del comando "curva_cosecha:recalcular" <<<<< * >>>>>');
     }
 
     function update_ciclo($ciclo, $new_curva, $new_semana_poda_siembra)
