@@ -16,34 +16,38 @@
         @endfor
     </tr>
     @foreach($ciclos as $c)
-        @if(count(explode('-', $c['ciclo']->curva)) == count($c['cosechas']))
-            @php
-                $modulo = $c['ciclo']->modulo;
-            @endphp
-            <tr>
-                <th class="text-center" style="border-color: #9d9d9d">
-                    {{$modulo->nombre}}
-                </th>
-                <th class="text-center" style="border-color: #9d9d9d">
-                    {{$c['ciclo']->semana_poda_siembra}}
-                </th>
-                <th class="text-center" style="border-color: #9d9d9d">
-                    {{$c['ciclo']->curva}}
-                </th>
-                @for($i = $min_dia; $i <= $max_dia; $i++)
-                    @foreach($c['cosechas'] as $v)
-                        @if(explode('º', $v->info) == $i)
-                            <th class="text-center" style="border-color: #9d9d9d">
-                                {{$v->cosechados}} - {{$v->info}}
-                            </th>
-                        @else
-                            <th class="text-center" style="border-color: #9d9d9d">
-
-                            </th>
-                        @endif
-                    @endforeach
-                @endfor
-            </tr>
-        @endif
+        @php
+            $modulo = $c['ciclo']->modulo;
+        @endphp
+        <tr>
+            <th class="text-center" style="border-color: #9d9d9d">
+                {{$modulo->nombre}}
+            </th>
+            <th class="text-center" style="border-color: #9d9d9d">
+                {{$c['ciclo']->semana_poda_siembra}}
+            </th>
+            <th class="text-center" style="border-color: #9d9d9d">
+                {{$c['ciclo']->curva}}
+            </th>
+            @for($i = $min_dia; $i <= $max_dia; $i++)
+                @php
+                    $exist = false;
+                @endphp
+                @foreach($c['cosechas'] as $v)
+                    @if(explode('º', $v->info)[0] == $i)
+                        <th class="text-center" style="border-color: #9d9d9d">
+                            {{$v->cosechados}} - {{$v->info}}
+                        </th>
+                        @php
+                            $exist = true;
+                        @endphp
+                    @endif
+                @endforeach
+                @if(!$exist)
+                    <th class="text-center" style="border-color: #9d9d9d">
+                    </th>
+                @endif
+            @endfor
+        </tr>
     @endforeach
 </table>

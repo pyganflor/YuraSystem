@@ -46,16 +46,18 @@ class CurvaEstandarController extends Controller
                     ->where('semana', '>=', getSemanaByDate(opDiasFecha('-', 21, $sem_curva->fecha_inicial))->codigo)
                     ->where('tipo', 'T')
                     ->get();
-                array_push($ciclos, [
-                    'ciclo' => $item,
-                    'cosechas' => $cosechas,
-                ]);
-                if ($min_dia == 0)
-                    $min_dia = $item->semana_poda_siembra;
-                if ($item->semana_poda_siembra < $min_dia)
-                    $min_dia = $item->semana_poda_siembra;
-                if ($item->semana_poda_siembra + count(explode('-', $item->curva)) - 1 > $max_dia)
-                    $max_dia = $item->semana_poda_siembra + count(explode('-', $item->curva)) - 1;
+                if (count(explode('-', $item->curva)) == count($cosechas)) {
+                    array_push($ciclos, [
+                        'ciclo' => $item,
+                        'cosechas' => $cosechas,
+                    ]);
+                    if ($min_dia == 0)
+                        $min_dia = $item->semana_poda_siembra;
+                    if ($item->semana_poda_siembra < $min_dia)
+                        $min_dia = $item->semana_poda_siembra;
+                    if ($item->semana_poda_siembra + count(explode('-', $item->curva)) - 1 > $max_dia)
+                        $max_dia = $item->semana_poda_siembra + count(explode('-', $item->curva)) - 1;
+                }
             }
         }
 
