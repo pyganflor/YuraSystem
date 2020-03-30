@@ -30,11 +30,19 @@
                 <th class="text-center" style="border-color: #9d9d9d">
                     {{$c['ciclo']->curva}}
                 </th>
-                @foreach($c['cosechas'] as $v)
-                    <th class="text-center" style="border-color: #9d9d9d">
-                        {{$v->cosechados}} - {{$v->info}}
-                    </th>
-                @endforeach
+                @for($i = $min_dia; $i <= $max_dia; $i++)
+                    @foreach($c['cosechas'] as $v)
+                        @if(explode('º', $v->info) == $i)
+                            <th class="text-center" style="border-color: #9d9d9d">
+                                {{$v->cosechados}} - {{$v->info}}
+                            </th>
+                        @else
+                            <th class="text-center" style="border-color: #9d9d9d">
+
+                            </th>
+                        @endif
+                    @endforeach
+                @endfor
             </tr>
         @endif
     @endforeach
