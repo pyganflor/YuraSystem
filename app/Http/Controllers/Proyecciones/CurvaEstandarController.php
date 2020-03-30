@@ -44,6 +44,7 @@ class CurvaEstandarController extends Controller
                     ->where('modelo', $item->id_ciclo)
                     ->where('cosechados', '>', 0)
                     ->where('semana', '>=', getSemanaByDate(opDiasFecha('-', 21, $sem_curva->fecha_inicial))->codigo)
+                    ->where('tipo', 'T')
                     ->get();
                 array_push($ciclos, [
                     'ciclo' => $item,
