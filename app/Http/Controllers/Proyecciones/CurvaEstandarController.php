@@ -3,6 +3,7 @@
 namespace yura\Http\Controllers\Proyecciones;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use yura\Http\Controllers\Controller;
 use yura\Modelos\Ciclo;
 use yura\Modelos\GrupoMenu;
@@ -25,22 +26,42 @@ class CurvaEstandarController extends Controller
         $sem_pasada = getSemanaByDate(opDiasFecha('-', 7, date('Y-m-d')));
         $query = Ciclo::All()
             ->where('estado', 1)
+            ->where('activo', 0)
             ->where('id_variedad', $request->variedad)
-            //->where('poda_siembra', $request->poda_siembra)
-            ->where('fecha_inicio', '<=', $sem_desde->fecha_inicial)
+            ->where('poda_siembra', $request->poda_siembra)
             ->where('fecha_fin', '>=', $sem_desde->fecha_inicial)
-            ->sortByDesc('fecha_inicio');
+            ->where('fecha_fin', '<=', $sem_pasada->fecha_final)
+            ->sortBy('semana_poda_siembra');
         $ciclos = [];
+        $min_dia = 0;
+        $max_dia = 0;
         foreach ($query as $item) {
             $sem_curva = getSemanaByDate(opDiasFecha('+', ($item->semana_poda_siembra * 7), $item->fecha_inicio));
-            if ($item->modulo == '90A')
-                dd($sem_curva->codigo);
             if ($sem_curva->codigo >= $sem_desde->codigo && $sem_curva->codigo <= $sem_pasada->codigo) {
-                array_push($ciclos, $item);
+                $cosechas = DB::table('proyeccion_modulo_semana')
+                    ->where('estado', 1)
+                    ->where('tabla', 'C')
+                    ->where('modelo', $item->id_ciclo)
+                    ->where('cosechados', '>', 0)
+                    ->where('semana', '>=', getSemanaByDate(opDiasFecha('-', 21, $sem_curva->fecha_inicial))->codigo)
+                    ->get();
+                array_push($ciclos, [
+                    'ciclo' => $item,
+                    'cosechas' => $cosechas,
+                ]);
+                if ($min_dia == 0)
+                    $min_dia = $item->semana_poda_siembra;
+                if ($item->semana_poda_siembra < $min_dia)
+                    $min_dia = $item->semana_poda_siembra;
+                if ($item->semana_poda_siembra + count(explode('-', $item->curva)) - 1 > $max_dia)
+                    $max_dia = $item->semana_poda_siembra + count(explode('-', $item->curva)) - 1;
             }
         }
+
         return view('adminlte.gestion.proyecciones.curva_estandar.partials.listado', [
-            'ciclos' => $ciclos
+            'ciclos' => $ciclos,
+            'min_dia' => $min_dia,
+            'max_dia' => $max_dia,
         ]);
     }
 }

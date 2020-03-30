@@ -9,10 +9,13 @@
             </div>
             <div class="pull-left info">
                 <p>{{getUsuario(Session::get('id_usuario'))->nombre_completo}}</p>
-                <a href="javascript:void(0)"
+                {{--<a href="javascript:void(0)"
                    onclick="{if ($('#config_online').prop('checked')) $('#config_online').prop('checked', false); else $('#config_online').prop('checked', true); save_config();}">
                     <i class="fa fa-circle {{getUsuario(Session::get('id_usuario'))->configuracion->config_online == 'S' ? 'text-success' : 'text-danger'}}"></i>
                     {{getUsuario(Session::get('id_usuario'))->configuracion->config_online == 'S' ? 'Online' : 'Offline'}}
+                </a>--}}
+                <a href="javascript:void(0)" onclick="window.open('http://benchmark.yurasystem.com', '_blank')" class="pull-right">
+                    <i class="fa fa-fw fa-caret-right"></i>Benchmark
                 </a>
             </div>
         </div>
