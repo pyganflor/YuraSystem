@@ -22,7 +22,7 @@ class CurvaEstandarController extends Controller
 
     public function listar_ciclos(Request $request)
     {
-        $sem_desde = getSemanaByDate(opDiasFecha('-', 42, date('Y-m-d')));
+        $sem_desde = getSemanaByDate(opDiasFecha('-', 70, date('Y-m-d')));
         $sem_pasada = getSemanaByDate(opDiasFecha('-', 7, date('Y-m-d')));
         $query = Ciclo::All()
             ->where('estado', 1)
