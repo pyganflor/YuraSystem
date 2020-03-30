@@ -16,24 +16,26 @@
         @endfor
     </tr>
     @foreach($ciclos as $c)
-        @php
-            $modulo = $c['ciclo']->modulo;
-        @endphp
-        <tr>
-            <th class="text-center" style="border-color: #9d9d9d">
-                {{$modulo->nombre}}
-            </th>
-            <th class="text-center" style="border-color: #9d9d9d">
-                {{$c['ciclo']->semana_poda_siembra}}
-            </th>
-            <th class="text-center" style="border-color: #9d9d9d">
-                {{$c['ciclo']->curva}}
-            </th>
-            @foreach($c['cosechas'] as $v)
+        @if(count(explode('-', $c['ciclo']->curva)) == count($c['cosechas']))
+            @php
+                $modulo = $c['ciclo']->modulo;
+            @endphp
+            <tr>
                 <th class="text-center" style="border-color: #9d9d9d">
-                    {{$v->cosechados}} - {{$v->info}}
+                    {{$modulo->nombre}}
                 </th>
-            @endforeach
-        </tr>
+                <th class="text-center" style="border-color: #9d9d9d">
+                    {{$c['ciclo']->semana_poda_siembra}}
+                </th>
+                <th class="text-center" style="border-color: #9d9d9d">
+                    {{$c['ciclo']->curva}}
+                </th>
+                @foreach($c['cosechas'] as $v)
+                    <th class="text-center" style="border-color: #9d9d9d">
+                        {{$v->cosechados}} - {{$v->info}}
+                    </th>
+                @endforeach
+            </tr>
+        @endif
     @endforeach
 </table>
