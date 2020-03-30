@@ -36,7 +36,7 @@
                 @foreach($c['cosechas'] as $v)
                     @if(explode('º', $v->info)[0] == $i)
                         <th class="text-center" style="border-color: #9d9d9d">
-                            {{$v->cosechados}} - {{$v->info}}
+                            {{$v->cosechados}} - {{$c['total_cosechado']}}
                         </th>
                         @php
                             $exist = true;
