@@ -54,9 +54,9 @@
                         @php
                             $porcent = round(($v->cosechados * 100) / $c['total_cosechado']);
                         @endphp
-                        <th class="text-center" style="border-color: #9d9d9d">
+                        <td class="text-center" style="border-color: #9d9d9d">
                             {{$porcent}}
-                        </th>
+                        </td>
                         @php
                             $exist = true;
                             if ($porcent > 0){
