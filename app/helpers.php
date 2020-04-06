@@ -1694,7 +1694,7 @@ function getSubmenusByTipo($tipo)
 function porcentaje($a, $b, $tipo)
 {
     if ($tipo == 1) { // a es el % de b
-        $r = round(($a / $b) * 100, 2);
+        $r = $b > 0 ? round(($a / $b) * 100, 2) : 0;
     }
     return $r;
 }
