@@ -3,7 +3,7 @@
 
     function listar_ciclos() {
         datos = {
-            filtro_sector: $('#filtro_sector').val(),
+            sector: $('#filtro_sector').val(),
             variedad: $('#filtro_predeterminado_variedad').val(),
             poda_siembra: $('#filtro_poda_siembra').val(),
         };
