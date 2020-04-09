@@ -1,20 +1,20 @@
 <table class="table-striped table-bordered" style="width: 100%; border: 2px solid #9d9d9d">
     <tr>
-        <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef" rowspan="2">
+        <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
             Módulo
         </th>
-        <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef" rowspan="2">
+        <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
             Semana P/S
         </th>
-        <th class="text-center hidden" style="border-color: #9d9d9d; background-color: #e9ecef" rowspan="2">
+        <th class="text-center hidden" style="border-color: #9d9d9d; background-color: #e9ecef">
             Curva
         </th>
         @php
             $array_prom = [];
         @endphp
-        @for($i = $min_dia; $i <= $max_dia; $i++)
+        @for($i = $min_dia, $pos = 1; $i <= $max_dia; $i++, $pos++)
             <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
-                {{$i}}
+                {{$pos}}º
             </th>
             @php
                 array_push($array_prom, [
@@ -22,13 +22,6 @@
                     'positivos' => 0,
                 ]);
             @endphp
-        @endfor
-    </tr>
-    <tr>
-        @for($i = $min_dia, $pos = 1; $i <= $max_dia; $i++, $pos++)
-            <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
-                {{$pos}}º
-            </th>
         @endfor
     </tr>
     @foreach($ciclos as $c)
