@@ -21,4 +21,9 @@
         }
     }
 
+    function add_temperatura() {
+        get_jquery('{{url('temperaturas/add_temperatura')}}', {}, function (retorno) {
+            modal_view('modal-view_add_temperatura', retorno, '<i class="fa fa-fw fa-plus"></i> Ingresar datos', true, false, '{{isPC() ? '50%' : ''}}')
+        });
+    }
 </script>
