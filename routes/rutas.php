@@ -111,6 +111,7 @@ Route::group(['middleware' => 'autenticacion'], function () {
             include 'proyecciones/mano_obra.php';
             include 'proyecciones/monitoreo_ciclos.php';
             include 'proyecciones/curva_estandar.php';
+            include 'proyecciones/temperaturas.php';
 
             /* ================== COSTOS =================== */
             include 'costos/insumo.php';
