@@ -17,7 +17,7 @@ class proyTemperaturaController extends Controller
             'url' => $request->getRequestUri(),
             'submenu' => Submenu::Where('url', '=', substr($request->getRequestUri(), 1))->get()[0],
             'grupos_menu' => GrupoMenu::All(),
-            'sectores' => Sector::All()->where('estado', 1)->where('interno', 1)
+            'sectores' => Sector::All()->where('estado', 1)->where('interno', 1)->sortBy('nombre')
         ]);
     }
 
