@@ -31,7 +31,7 @@ class MonitoreoController extends Controller
             ->where('id_variedad', $request->variedad)
             ->orderBy('fecha_inicio', 'desc')
             ->where('poda_siembra', $request->poda_siembra)
-            ->get();
+            ->get();    // ciclos activos
 
         $ciclos = [];
         foreach ($query as $item) {
