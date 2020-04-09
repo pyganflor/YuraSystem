@@ -53,7 +53,7 @@
                     }
                 @endphp
             @endforeach
-            @for($i = count($c['cosechas']); $i <= $max_dia; $i++)
+            @for($i = count($c['cosechas']) + 1; $i <= $max_dia; $i++)
                 <th class="text-center" style="border-color: #9d9d9d">
                 </th>
             @endfor
