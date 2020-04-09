@@ -29,7 +29,6 @@ class proyTemperaturaController extends Controller
             ->orderBy('fecha_inicio', 'desc')
             ->where('poda_siembra', $request->poda_siembra)
             ->get();    // ciclos activos
-        dd($query);
         return view('adminlte.gestion.proyecciones.temperaturas.partials.listado', [
             'ciclos' => $query,
             'sector' => $request->sector,
