@@ -12,9 +12,9 @@
         @php
             $array_prom = [];
         @endphp
-        @for($i = $min_dia, $pos = 1; $i <= $max_dia; $i++, $pos++)
+        @for($i = 1; $i <= $max_dia; $i++)
             <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
-                {{$pos}}º
+                {{$i}}º
             </th>
             @php
                 array_push($array_prom, [
@@ -38,31 +38,24 @@
             <th class="text-center hidden" style="border-color: #9d9d9d">
                 {{$c['ciclo']->curva}}
             </th>
-            @for($i = $min_dia, $pos = 0; $i <= $max_dia; $i++, $pos++)
+            @foreach($c['cosechas'] as $pos => $v)
                 @php
-                    $exist = false;
+                    $porcent = round(($v->cosechados * 100) / $c['total_cosechado']);
                 @endphp
-                @foreach($c['cosechas'] as $v)
-                    @if(explode('º', $v->info)[0] == $i)
-                        @php
-                            $porcent = round(($v->cosechados * 100) / $c['total_cosechado']);
-                        @endphp
-                        <td class="text-center" style="border-color: #9d9d9d">
-                            {{$porcent}}
-                        </td>
-                        @php
-                            $exist = true;
-                            if ($porcent > 0){
-                                $array_prom[$pos]['valor'] += $porcent;
-                                $array_prom[$pos]['positivos'] ++;
-                            }
-                        @endphp
-                    @endif
-                @endforeach
-                @if(!$exist)
-                    <th class="text-center" style="border-color: #9d9d9d">
-                    </th>
-                @endif
+                <td class="text-center" style="border-color: #9d9d9d">
+                    {{$porcent}}
+                </td>
+                @php
+                    $exist = true;
+                    if ($porcent > 0){
+                        $array_prom[$pos]['valor'] += $porcent;
+                        $array_prom[$pos]['positivos'] ++;
+                    }
+                @endphp
+            @endforeach
+            @for($i = count($c['cosechas']); $i <= $max_dia; $i++)
+                <th class="text-center" style="border-color: #9d9d9d">
+                </th>
             @endfor
         </tr>
     @endforeach

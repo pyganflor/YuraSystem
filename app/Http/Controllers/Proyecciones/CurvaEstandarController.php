@@ -61,19 +61,14 @@ class CurvaEstandarController extends Controller
                         'cosechas' => $cosechas,
                         'total_cosechado' => $total_cosechado,
                     ]);
-                    if ($min_dia == 0)
-                        $min_dia = $item->semana_poda_siembra;
-                    if ($item->semana_poda_siembra < $min_dia)
-                        $min_dia = $item->semana_poda_siembra;
-                    if ($item->semana_poda_siembra + count(explode('-', $item->curva)) - 1 > $max_dia)
-                        $max_dia = $item->semana_poda_siembra + count(explode('-', $item->curva)) - 1;
+                    if (count(explode('-', $item->curva)) > $max_dia)
+                        $max_dia = count(explode('-', $item->curva));
                 }
             }
         }
 
         return view('adminlte.gestion.proyecciones.curva_estandar.partials.listado', [
             'ciclos' => $ciclos,
-            'min_dia' => $min_dia,
             'max_dia' => $max_dia,
         ]);
     }
