@@ -74,9 +74,16 @@
                             <i class="fa fa-fw fa-search"></i>
                         </button>
                     </div>
+                    <div class="input-group-btn">
+                        <button type="button" class="btn btn-success" onclick="add_temperatura()">
+                            <i class="fa fa-fw fa-plus"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
-            <div class="box-body" id="div_listado_ciclos"></div>
+            <div class="box-body">
+                <div id="div_listado_ciclos"></div>
+            </div>
         </div>
     </section>
 @endsection
