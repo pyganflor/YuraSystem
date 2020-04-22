@@ -122,4 +122,42 @@ class proyTemperaturaController extends Controller
             'temperatura' => $temperatura
         ];
     }
+
+    public function store_all_temperatura(Request $request)
+    {
+        $success = true;
+        $msg = '';
+        foreach ($request->data as $data) {
+            if ($data['fecha'] != '') {
+                $model = Temperatura::All()
+                    ->where('estado', 1)
+                    ->where('fecha', $data['fecha'])
+                    ->first();
+                if ($model == '') {
+                    $model = new Temperatura();
+                    $model->fecha = $data['fecha'];
+                    $id_model = '';
+                } else
+                    $id_model = $model->id_temperatura;
+                $model->maxima = $data['maxima'];
+                $model->minima = $data['minima'];
+                $model->lluvia = $data['lluvia'];
+
+                if ($model->save()) {
+                    $model = $id_model != '' ? Temperatura::find($id_model) : Temperatura::All()->last();
+                    bitacora('temperatura', $model->id_temperatura, $id_model != '' ? 'U' : 'I', 'Inserción satisfactoria de una temperatura');
+                } else {
+                    $success = false;
+                    $msg = '<div class="alert alert-warning text-center">' .
+                        '<p> Ha ocurrido un problema al guardar la información del día "' . $data['fecha'] . '"</p>'
+                        . '</div>';
+                    break;
+                }
+            }
+        }
+        return [
+            'mensaje' => $msg,
+            'success' => $success
+        ];
+    }
 }

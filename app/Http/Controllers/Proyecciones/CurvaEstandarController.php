@@ -33,7 +33,6 @@ class CurvaEstandarController extends Controller
             ->where('fecha_fin', '<=', $sem_pasada->fecha_final)
             ->sortBy('semana_poda_siembra');
         $ciclos = [];
-        $min_dia = 0;
         $max_dia = 0;
         foreach ($query as $item) {
             $sem_curva = getSemanaByDate(opDiasFecha('+', ($item->semana_poda_siembra * 7), $item->fecha_inicio));
