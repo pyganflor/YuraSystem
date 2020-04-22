@@ -19,7 +19,7 @@ class proyTemperaturaController extends Controller
             'url' => $request->getRequestUri(),
             'submenu' => Submenu::Where('url', '=', substr($request->getRequestUri(), 1))->get()[0],
             'grupos_menu' => GrupoMenu::All(),
-            'sectores' => Sector::All()->where('estado', 1)->where('interno', 1)->sortBy('nombre')
+            'sectores' => Sector::All()->where('estado', 1)->where('interno', 1)->sortBy('nombre'),
         ]);
     }
 
@@ -45,6 +45,22 @@ class proyTemperaturaController extends Controller
             ->first();
         return view('adminlte.gestion.proyecciones.temperaturas.forms.add_temperatura', [
             'temperatura' => $temperatura,
+        ]);
+    }
+
+    public function listar_temperaturas(Request $request)
+    {
+        $desde = $request->desde != '' ? $request->desde : opDiasFecha('-', 30, date('Y-m-d'));
+        $hasta = $request->hasta != '' ? $request->hasta : date('Y-m-d');
+        $query = Temperatura::where('estado', 1)
+            ->where('fecha', '>=', $desde)
+            ->where('fecha', '<=', $hasta)
+            ->orderBy('fecha', 'desc')
+            ->get();
+        return view('adminlte.gestion.proyecciones.temperaturas.partials.table', [
+            'desde' => $desde,
+            'hasta' => $hasta,
+            'listado' => $query,
         ]);
     }
 
