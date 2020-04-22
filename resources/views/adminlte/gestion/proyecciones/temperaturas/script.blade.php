@@ -1,5 +1,6 @@
 <script>
     select_planta($('#filtro_predeterminado_planta').val(), 'filtro_predeterminado_variedad', 'div_cargar_variedades', '<option value="T" selected>Todos los tipos</option>');
+    listar_temperaturas();
 
     function listar_ciclos() {
         datos = {
@@ -25,5 +26,15 @@
         get_jquery('{{url('temperaturas/add_temperatura')}}', {}, function (retorno) {
             modal_view('modal-view_add_temperatura', retorno, '<i class="fa fa-fw fa-plus"></i> Ingresar datos', true, false, '{{isPC() ? '50%' : ''}}')
         });
+    }
+
+    function listar_temperaturas() {
+        datos = {
+            desde: $('#filtro_desde').val(),
+            hasta: $('#filtro_hasta').val(),
+        };
+        get_jquery('{{url('temperaturas/listar_temperaturas')}}', datos, function (retorno) {
+            $('#div_listado_ciclos').html(retorno);
+        }, 'div_listado_ciclos');
     }
 </script>

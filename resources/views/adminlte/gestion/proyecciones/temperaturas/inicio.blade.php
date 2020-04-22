@@ -82,7 +82,8 @@
                 </div>
             </div>
             <div class="box-body">
-                <div id="div_listado_ciclos"></div>
+                <div id="div_listado_ciclos">
+                </div>
             </div>
         </div>
     </section>
