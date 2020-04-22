@@ -5,3 +5,4 @@ Route::get('temperaturas/listar_ciclos', 'Proyecciones\proyTemperaturaController
 Route::get('temperaturas/add_temperatura', 'Proyecciones\proyTemperaturaController@add_temperatura');
 Route::post('temperaturas/store_temperatura', 'Proyecciones\proyTemperaturaController@store_temperatura');
 Route::post('temperaturas/buscar_temperatura', 'Proyecciones\proyTemperaturaController@buscar_temperatura');
+Route::post('temperaturas/store_all_temperatura', 'Proyecciones\proyTemperaturaController@store_all_temperatura');
