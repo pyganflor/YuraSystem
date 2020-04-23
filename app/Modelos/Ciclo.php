@@ -47,6 +47,11 @@ class Ciclo extends Model
         return $this->hasMany('\yura\Modelos\Monitoreo', 'id_ciclo');
     }
 
+    public function temperaturas()
+    {
+        return $this->hasMany('\yura\Modelos\CicloTemperatura', 'id_ciclo');
+    }
+
     public function getTallosCosechados($dias_ini = 1)  // dias_ini: Dias despues del inicio de ciclo a tener en cuenta
     {
         $fin = date('Y-m-d');
@@ -151,6 +156,6 @@ class Ciclo extends Model
 
     public function getTallosProyectados()
     {
-        return round(($this->plantas_actuales() * $this->conteo) * ( (100 - $this->desecho) / 100 ), 2);
+        return round(($this->plantas_actuales() * $this->conteo) * ((100 - $this->desecho) / 100), 2);
     }
 }
