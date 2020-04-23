@@ -41,7 +41,7 @@ class UploadTemperaturasMasivo extends Command
     public function handle()
     {
         $ini = date('Y-m-d H:i:s');
-        Log::info('<<<<< ! >>>>> Ejecutando comando "costos:importar_file" <<<<< ! >>>>>');
+        Log::info('<<<<< ! >>>>> Ejecutando comando "temperaturas:importar" <<<<< ! >>>>>');
 
         $url = $this->argument('url');
 
