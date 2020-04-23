@@ -14,7 +14,8 @@
     </div>
 </div>
 
-<table class="table-striped table-bordered" style="border: 2px solid #9d9d9d; width: 100%; margin-top: 10px">
+<table class="table-striped table-bordered" style="border: 2px solid #9d9d9d; width: 100%; margin-top: 10px" id="table_temperaturas">
+    <thead>
     <tr>
         <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
             Fecha
@@ -29,6 +30,8 @@
             Lluvia
         </th>
     </tr>
+    </thead>
+    <tbody>
     @foreach($listado as $item)
         <tr>
             <td class="text-center" style="border-color: #9d9d9d">
@@ -45,4 +48,9 @@
             </td>
         </tr>
     @endforeach
+    </tbody>
 </table>
+
+<script>
+    estructura_tabla('table_temperaturas', false, false);
+</script>
