@@ -88,6 +88,7 @@
     }
 
     function add_formulario() {
+        next_fecha = sum_dias(num_form);
         num_form++;
         $('#div_formularios').append('<legend style="margin-top: 10px; margin-bottom: 10px"></legend>' +
             '<div id="div_form_' + num_form + '">' +
@@ -95,7 +96,8 @@
             '<div class="input-group-addon bg-gray">\n' +
             'Fecha' +
             '</div>' +
-            '<input type="date" class="form-control text-center" id="fecha' + num_form + '" required onchange="buscar_temperatura(' + num_form + ')">' +
+            '<input type="date" class="form-control text-center" id="fecha' + num_form + '" required onchange="buscar_temperatura(' + num_form + ')"' +
+            ' value="' + next_fecha + '">' +
             '</div>' +
             '<div class="input-group" style="margin-top: 5px">' +
             '<div class="input-group-addon bg-gray">' +
