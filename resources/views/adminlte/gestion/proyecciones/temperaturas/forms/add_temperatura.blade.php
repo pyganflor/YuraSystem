@@ -53,6 +53,8 @@
         $.post('{{url('temperaturas/store_temperatura')}}', datos, function (retorno) {
             if (!retorno.success) {
                 alerta(retorno.mensaje)
+            } else {
+                listar_temperaturas();
             }
         }, 'json').fail(function (retorno) {
             console.log(retorno);
@@ -135,6 +137,8 @@
         $.post('{{url('temperaturas/store_all_temperatura')}}', datos, function (retorno) {
             if (!retorno.success) {
                 alerta(retorno.mensaje);
+            } else {
+                listar_temperaturas();
             }
         }, 'json').fail(function (retorno) {
             console.log(retorno);
