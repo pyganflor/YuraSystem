@@ -778,6 +778,27 @@
         return fecha;
     }
 
+    // FUNCION PARA SUMAR DIAS A UNA FECHA
+    function sum_dias_a_fecha(dias, fecha) {
+        var fecha = new Date(fecha);
+        fecha.setDate(fecha.getDate() + dias);
+
+        var dd = fecha.getDate();
+        var mm = fecha.getMonth() + 1; //January is 0!
+        var yyyy = fecha.getFullYear();
+
+        if (dd < 10) {
+            dd = '0' + dd
+        }
+        if (mm < 10) {
+            mm = '0' + mm
+        }
+
+        fecha = yyyy + '-' + mm + '-' + dd;
+
+        return fecha;
+    }
+
     function rest_dias(dias) {
         var fecha = new Date();
         fecha.setDate(fecha.getDate() - dias);
