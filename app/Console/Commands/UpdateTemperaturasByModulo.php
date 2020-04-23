@@ -3,8 +3,10 @@
 namespace yura\Console\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use yura\Modelos\Ciclo;
+use yura\Modelos\CicloTemperatura;
 
 class UpdateTemperaturasByModulo extends Command
 {
@@ -46,10 +48,29 @@ class UpdateTemperaturasByModulo extends Command
             ->where('activo', 1)
             ->get();
         foreach ($ciclos as $c) {
-            for ($i = 1; $i <= (intval(difFechas($c->fecha_inicio, date('Y-m-d'))->days / 7) + 1); $i++) {
+            $semana_fen = intval(difFechas($c->fecha_inicio, date('Y-m-d'))->days / 7) + 1;
+            for ($i = 1; $i <= $semana_fen; $i++) {
+                $fecha_hasta = opDiasFecha('+', ($i * 7), $c->fecha_inicio);
+                $acumulado = DB::table('temperatura')
+                    ->select(DB::raw('sum(((minima + maxima) / 2) - 8) as cant'))
+                    ->where('estado', 1)
+                    ->where('fecha', '>=', $c->fecha_inicio)
+                    ->where('fecha', '<=', $fecha_hasta)
+                    ->get()[0]->cant;
 
+                $ct = CicloTemperatura::All()
+                    ->where('estado', 1)
+                    ->where('id_ciclo', $c->id_ciclo)
+                    ->where('num_semana', $i)
+                    ->first();
+                if ($ct == '') {
+                    $ct = new CicloTemperatura();
+                    $ct->id_ciclo = $c->id_ciclo;
+                    $ct->num_semana = $i;
+                }
+                $ct->acumulado = $acumulado > 0 ? $acumulado : 0;
+                $ct->save();
             }
-            dd($c->modulo->nombre);
         }
 
         $time_duration = difFechas(date('Y-m-d H:i:s'), $ini)->h . ':' . difFechas(date('Y-m-d H:i:s'), $ini)->m . ':' . difFechas(date('Y-m-d H:i:s'), $ini)->s;
