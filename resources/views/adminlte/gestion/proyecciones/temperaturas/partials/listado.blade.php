@@ -23,7 +23,7 @@
                 {{$semana->codigo}}
             </th>
             <th class="text-center" style="background-color: #e9ecef; border-color: #9d9d9d">
-                {{intval(difFechas($c->fecha_inicio, date('Y-m-d'))->days / 7)}}
+                {{intval(difFechas($c->fecha_inicio, date('Y-m-d'))->days / 7) + 1}}
             </th>
         </tr>
     @endforeach
