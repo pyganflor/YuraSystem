@@ -53,4 +53,5 @@
 
 <script>
     estructura_tabla('table_temperaturas', false, false);
+    $('#table_temperaturas_wrapper .row:first').hide()
 </script>
