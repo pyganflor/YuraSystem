@@ -31,8 +31,21 @@ class proyTemperaturaController extends Controller
             ->orderBy('fecha_inicio', 'desc')
             ->where('poda_siembra', $request->poda_siembra)
             ->get();    // ciclos activos
+        $ciclos = [];
+        $max_semana = 0;
+        foreach ($query as $c) {
+            $temperaturas = $c->temperaturas;
+            array_push($ciclos, [
+                'ciclo' => $c,
+                'temperaturas' => $temperaturas,
+            ]);
+            $semana_fen = intval(difFechas($c->fecha_inicio, date('Y-m-d'))->days / 7) + 1;
+            if ($max_semana < $semana_fen)
+                $max_semana = $semana_fen;
+        }
         return view('adminlte.gestion.proyecciones.temperaturas.partials.listado', [
-            'ciclos' => $query,
+            'ciclos' => $ciclos,
+            'max_semana' => $max_semana,
             'sector' => $request->sector,
         ]);
     }
