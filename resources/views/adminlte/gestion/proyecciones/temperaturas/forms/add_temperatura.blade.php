@@ -88,8 +88,8 @@
     }
 
     function add_formulario() {
-        next_fecha = sum_dias(num_form);
         num_form++;
+        next_fecha = sum_dias_a_fecha(num_form, $('#fecha1').val());
         $('#div_formularios').append('<legend style="margin-top: 10px; margin-bottom: 10px"></legend>' +
             '<div id="div_form_' + num_form + '">' +
             '<div class="input-group">' +
