@@ -34,9 +34,13 @@ class proyTemperaturaController extends Controller
         $ciclos = [];
         $max_semana = 0;
         foreach ($query as $c) {
+            $ini_curva = '';
+            if ($c->getTallosCosechados(15) > 0)
+                $ini_curva = $c->semana_poda_siembra;
             $temperaturas = $c->temperaturas;
             array_push($ciclos, [
                 'ciclo' => $c,
+                'ini_curva' => $ini_curva,
                 'temperaturas' => $temperaturas,
             ]);
             $semana_fen = intval(difFechas($c->fecha_inicio, date('Y-m-d'))->days / 7) + 1;
