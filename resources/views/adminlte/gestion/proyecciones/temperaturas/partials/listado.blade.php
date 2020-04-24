@@ -43,6 +43,7 @@
                 $semana = $c['ciclo']->semana();
                 $pos_sem = 0;
             @endphp
+            <input type="hidden" class="ids_ciclo" value="{{$c['ciclo']->id_ciclo}}">
             <input type="hidden" class="ini_curva" value="{{$c['ini_curva']}}">
             <tr class="{{$modulo->id_sector == $sector || $sector == 'T' ? '' : 'hide'}}">
                 <td class="text-center th_fijo_left_0" style="background-color: #e9ecef; border-color: #9d9d9d">
@@ -60,8 +61,10 @@
                         $array_prom[$pos_sem]['positivos'] ++;
                         $pos_sem++;
                     @endphp
-                    <td class="text-center" style="border: {{$pos_sem == $c['ini_curva'] ? '2px solid blue' : '1px solid #9d9d9d'}}">
+                    <td class="text-center" style="border: {{$pos_sem == $c['ini_curva'] ? '2px solid blue' : '1px solid #9d9d9d'}}"
+                        id="td_acumulado_{{$c['ciclo']->id_ciclo}}_{{$pos_sem}}">
                         {{number_format($temp->acumulado, 2)}}
+                        <input type="hidden" id="acumulado_{{$c['ciclo']->id_ciclo}}_{{$pos_sem}}" value="{{$temp->acumulado}}">
                     </td>
                 @endforeach
                 @for($i = $pos_sem + 1; $i <= $max_semana; $i++)
@@ -86,6 +89,7 @@
                 @endphp
                 <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef" id="th_prom_{{$pos_prom + 1}}">
                     {{number_format($prom_semanal, 2)}}
+                    <input type="hidden" id="prom_{{$pos_prom + 1}}" value="{{$prom_semanal}}">
                 </th>
             @endforeach
         </tr>
@@ -96,7 +100,7 @@
             </th>
             @foreach($array_acum_semanal as $pos_sem => $item)
                 <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
-                    {{$item}}
+                    {{number_format($item, 2)}}
                 </th>
                 @php
                     $array_acum_diario[$pos_sem] = round($item / 7, 2);
@@ -110,12 +114,13 @@
             </th>
             @foreach($array_acum_diario as $pos_sem => $item)
                 <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
-                    {{$item}}
+                    {{number_format($item, 2)}}
                 </th>
             @endforeach
         </tr>
     </table>
 </div>
+<input type="hidden" id="max_semana" value="{{$max_semana}}">
 
 <div class="text-right" style="margin-top: 10px">
     <legend style="font-size: 1em; margin-bottom: 0">
@@ -150,6 +155,7 @@
         position: sticky;
         bottom: 18px;
     }
+
     .tr_fijo_bottom_2 th {
         position: sticky;
         bottom: 35px;
@@ -185,7 +191,28 @@
         $('#th_prom_' + promedio).css('background-color', '#fbff00')
     }
 
+    function colorear_celdas() {
+        num_semanas = $('#max_semana').val();
+        for (i = 1; i <= num_semanas; i++) {
+            prom = $('#prom_' + i).val();
+            ids_ciclo = $('.ids_ciclo');
+            for (c = 0; c < ids_ciclo.length; c++) {
+                id_ciclo = ids_ciclo[c].value;
+                acumulado = $('#acumulado_' + id_ciclo + '_' + i).val();
+                if (acumulado > 0) {
+                    if (acumulado >= prom) {
+                        $('#td_acumulado_' + id_ciclo + '_' + i).css('background-color', '#30b32d');
+                    } else {
+                        $('#td_acumulado_' + id_ciclo + '_' + i).css('background-color', '#f03e3e');
+                    }
+                    $('#td_acumulado_' + id_ciclo + '_' + i).css('color', 'white');
+                }
+            }
+        }
+    }
+
     $(window).ready(function () {
         calcular_iniCurva_promedio();
+        colorear_celdas();
     })
 </script>

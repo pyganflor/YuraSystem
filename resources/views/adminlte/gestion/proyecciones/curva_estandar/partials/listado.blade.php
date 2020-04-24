@@ -1,12 +1,15 @@
 <table class="table-striped table-bordered" style="width: 100%; border: 2px solid #9d9d9d">
     <tr>
-        <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
+        <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5">
             Módulo
         </th>
-        <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
+        <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5">
             Semana P/S
         </th>
-        <th class="text-center hidden" style="border-color: #9d9d9d; background-color: #e9ecef">
+        <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5">
+            Temperatura
+        </th>
+        <th class="text-center hidden" style="border-color: #9d9d9d; background-color: #357CA5">
             Curva
         </th>
         @php
@@ -35,6 +38,9 @@
             <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
                 {{$c['ciclo']->semana_poda_siembra}}
             </th>
+            <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
+                {{number_format($c['acumulado'], 2)}}
+            </th>
             <th class="text-center hidden" style="border-color: #9d9d9d">
                 {{$c['ciclo']->curva}}
             </th>
@@ -60,7 +66,7 @@
         </tr>
     @endforeach
     <tr>
-        <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef" rowspan="1" colspan="2">
+        <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef" rowspan="1" colspan="3">
             Promedio
         </th>
         @foreach($array_prom as $pos => $v)
