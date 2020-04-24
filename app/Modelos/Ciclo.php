@@ -169,4 +169,15 @@ class Ciclo extends Model
             ->fisrt();
         return $temp;
     }
+
+    public function getTemperaturaByFecha($fecha)
+    {
+        $acumulado = DB::table('temperatura')
+            ->select(DB::raw('sum(((minima + maxima) / 2) - 8) as cant'))
+            ->where('estado', 1)
+            ->where('fecha', '>=', $this->fecha_inicio)
+            ->where('fecha', '<=', $fecha)
+            ->get()[0]->cant;
+        return round($acumulado, 2);
+    }
 }

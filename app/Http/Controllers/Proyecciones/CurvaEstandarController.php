@@ -55,10 +55,12 @@ class CurvaEstandarController extends Controller
                         ->where('semana', '>=', getSemanaByDate(opDiasFecha('-', 21, $sem_curva->fecha_inicial))->codigo)
                         ->where('tipo', 'T')
                         ->get()[0]->cant;
+                    $acumulado = $item->fecha_cosecha != '' ? $item->getTemperaturaByFecha($item->fecha_cosecha) : 0;
                     array_push($ciclos, [
                         'ciclo' => $item,
                         'cosechas' => $cosechas,
                         'total_cosechado' => $total_cosechado,
+                        'acumulado' => $acumulado,
                     ]);
                     if (count(explode('-', $item->curva)) > $max_dia)
                         $max_dia = count(explode('-', $item->curva));
