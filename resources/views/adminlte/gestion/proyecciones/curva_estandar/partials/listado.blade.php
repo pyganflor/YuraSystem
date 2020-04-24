@@ -1,15 +1,15 @@
 <table class="table-striped table-bordered" style="width: 100%; border: 2px solid #9d9d9d">
     <tr>
-        <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5">
+        <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
             Módulo
         </th>
-        <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5">
+        <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
             Semana P/S
         </th>
-        <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5">
+        <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
             Temperatura
         </th>
-        <th class="text-center hidden" style="border-color: #9d9d9d; background-color: #357CA5">
+        <th class="text-center hidden" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
             Curva
         </th>
         @php
@@ -27,9 +27,13 @@
             @endphp
         @endfor
     </tr>
+    @php
+        $temp_prom = 0;
+    @endphp
     @foreach($ciclos as $c)
         @php
             $modulo = $c['ciclo']->modulo;
+            $temp_prom += $c['acumulado'];
         @endphp
         <tr>
             <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
@@ -38,9 +42,9 @@
             <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
                 {{$c['ciclo']->semana_poda_siembra}}
             </th>
-            <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
+            <td class="text-center" style="border-color: #9d9d9d">
                 {{number_format($c['acumulado'], 2)}}
-            </th>
+            </td>
             <th class="text-center hidden" style="border-color: #9d9d9d">
                 {{$c['ciclo']->curva}}
             </th>
@@ -65,9 +69,15 @@
             @endfor
         </tr>
     @endforeach
+    @php
+        $temp_prom = count($ciclos) > 0 ? round($temp_prom / count($ciclos), 2) : 0;
+    @endphp
     <tr>
-        <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef" rowspan="1" colspan="3">
+        <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white" rowspan="1" colspan="2">
             Promedio
+        </th>
+        <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
+            {{$temp_prom}}
         </th>
         @foreach($array_prom as $pos => $v)
             <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
