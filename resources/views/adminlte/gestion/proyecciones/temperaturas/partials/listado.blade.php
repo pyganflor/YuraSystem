@@ -1,17 +1,17 @@
 <div style="overflow-x: scroll; overflow-y: scroll; max-height: 450px">
-    <table class="table-bordered table-striped" style="width: 100%; border: 2px solid #9d9d9d">
+    <table class="table-bordered table-striped" style="width: 100%; border: 2px solid #9d9d9d; font-size: 0.9em">
         <tr>
-            <th class="text-center" style="background-color: #e9ecef; border-color: #9d9d9d">
+            <th class="text-center" style="background-color: #357CA5; color: white; border-color: #9d9d9d; z-index: 9">
                 <div style="padding: 5px">
                     Módulo
                 </div>
             </th>
-            <th class="text-center" style="background-color: #e9ecef; border-color: #9d9d9d">
+            <th class="text-center" style="background-color: #357CA5; color: white; border-color: #9d9d9d; z-index: 9">
                 <div style="padding: 5px">
                     Semana Inicio
                 </div>
             </th>
-            <th class="text-center" style="background-color: #e9ecef; border-color: #9d9d9d">
+            <th class="text-center" style="background-color: #357CA5; color: white; border-color: #9d9d9d; z-index: 9">
                 <div style="padding: 5px">
                     Semana Fen.
                 </div>
