@@ -1,4 +1,5 @@
-<table class="table-striped table-bordered" style="width: 100%; border: 2px solid #9d9d9d">
+<table class="table-striped table-bordered" style="width: 100%; border: 2px solid #9d9d9d" id="table_curvas">
+    <thead>
     <tr>
         <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
             Módulo
@@ -27,9 +28,11 @@
             @endphp
         @endfor
     </tr>
+    </thead>
     @php
         $temp_prom = 0;
     @endphp
+    <tbody>
     @foreach($ciclos as $c)
         @php
             $modulo = $c['ciclo']->modulo;
@@ -69,6 +72,7 @@
             @endfor
         </tr>
     @endforeach
+    </tbody>
     @php
         $temp_prom = count($ciclos) > 0 ? round($temp_prom / count($ciclos), 2) : 0;
     @endphp
@@ -86,3 +90,8 @@
         @endforeach
     </tr>
 </table>
+
+<script>
+    estructura_tabla('table_curvas', false, false);
+    $('#table_curvas_wrapper .row:first').hide();
+</script>
