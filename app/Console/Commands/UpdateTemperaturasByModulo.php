@@ -68,7 +68,7 @@ class UpdateTemperaturasByModulo extends Command
                     $ct->id_ciclo = $c->id_ciclo;
                     $ct->num_semana = $i;
                 }
-                $ct->acumulado = $acumulado > 0 ? $acumulado : 0;
+                $ct->acumulado = $acumulado > 0 ? round($acumulado, 2) : 0;
                 $ct->save();
             }
         }
