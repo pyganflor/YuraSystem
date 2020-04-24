@@ -158,4 +158,15 @@ class Ciclo extends Model
     {
         return round(($this->plantas_actuales() * $this->conteo) * ((100 - $this->desecho) / 100), 2);
     }
+
+    public function getTemperaturaBySemanaFenograma($semana = null)
+    {
+        $semana = $semana != null ? $semana : (intval(difFechas($this->fecha_inicio, date('Y-m-d'))->days / 7) + 1);
+        $temp = CicloTemperatura::All()
+            ->where('estado', 1)
+            ->where('id_ciclo', $this->id_ciclo)
+            ->where('num_semana', $semana)
+            ->fisrt();
+        return $temp;
+    }
 }
