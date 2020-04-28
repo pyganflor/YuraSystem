@@ -34,7 +34,7 @@ class CurvaEstandarController extends Controller
             ->sortBy('semana_poda_siembra');
         $ciclos = [];
         $max_dia = 0;
-        $min_temp = 0;
+        $min_temp = count($query) > 0 ? $query[0]->getTemperaturaByFecha($query[0]->fecha_cosecha) : 0;     // **
         $max_temp = 0;
         foreach ($query as $item) {
             $sem_curva = getSemanaByDate(opDiasFecha('+', ($item->semana_poda_siembra * 7), $item->fecha_inicio));
@@ -66,9 +66,9 @@ class CurvaEstandarController extends Controller
                     ]);
                     if (count(explode('-', $item->curva)) > $max_dia)
                         $max_dia = count(explode('-', $item->curva));
-                    if ($min_temp < $acumulado)
+                    if ($min_temp > $acumulado)
                         $min_temp = $acumulado;
-                    if ($max_temp > $acumulado)
+                    if ($max_temp < $acumulado)
                         $max_temp = $acumulado;
                 }
             }
