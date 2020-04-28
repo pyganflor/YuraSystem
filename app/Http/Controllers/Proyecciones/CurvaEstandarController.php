@@ -36,6 +36,7 @@ class CurvaEstandarController extends Controller
         $max_dia = 0;
         $min_temp = count($query) > 0 ? $query[0]->getTemperaturaByFecha($query[0]->fecha_cosecha) : 0;     // **
         $max_temp = 0;
+        $temp_prom = 0;
         foreach ($query as $item) {
             $sem_curva = getSemanaByDate(opDiasFecha('+', ($item->semana_poda_siembra * 7), $item->fecha_inicio));
             if ($sem_curva->codigo >= $sem_desde->codigo && $sem_curva->codigo <= $sem_pasada->codigo) {
@@ -70,15 +71,18 @@ class CurvaEstandarController extends Controller
                         $min_temp = $acumulado;
                     if ($max_temp < $acumulado)
                         $max_temp = $acumulado;
+                    $temp_prom += $acumulado;
                 }
             }
         }
+        $temp_prom = count($query) > 0 ? round($temp_prom / count($query), 2) : 0;
 
         return view('adminlte.gestion.proyecciones.curva_estandar.partials.listado', [
             'ciclos' => $ciclos,
             'max_dia' => $max_dia,
             'min_temp' => $min_temp,
             'max_temp' => $max_temp,
+            'temp_prom' => $temp_prom,
         ]);
     }
 }
