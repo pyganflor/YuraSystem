@@ -24,14 +24,14 @@ class CurvaEstandarController extends Controller
     {
         $sem_desde = getSemanaByDate(opDiasFecha('-', 70, date('Y-m-d')));
         $sem_pasada = getSemanaByDate(opDiasFecha('-', 7, date('Y-m-d')));
-        $query = Ciclo::All()
-            ->where('estado', 1)
+        $query = Ciclo::where('estado', 1)
             ->where('activo', 0)
             ->where('id_variedad', $request->variedad)
             ->where('poda_siembra', $request->poda_siembra)
             ->where('fecha_fin', '>=', $sem_desde->fecha_inicial)
             ->where('fecha_fin', '<=', $sem_pasada->fecha_final)
-            ->sortBy('semana_poda_siembra');
+            ->orderBy('semana_poda_siembra')
+            ->get();
         $ciclos = [];
         $max_dia = 0;
         $min_temp = count($query) > 0 ? $query[0]->getTemperaturaByFecha($query[0]->fecha_cosecha) : 0;     // **
