@@ -30,6 +30,7 @@
     </tr>
     </thead>
     @php
+        $semanas_prom = 0;
         $temp_prom = 0;
     @endphp
     <tbody>
@@ -37,6 +38,7 @@
         @php
             $modulo = $c['ciclo']->modulo;
             $temp_prom += $c['acumulado'];
+            $semanas_prom += count($c['cosechas']);
         @endphp
         <tr>
             <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
@@ -78,7 +80,7 @@
     @endphp
     <tr>
         <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white" rowspan="1" colspan="2">
-            Promedio
+            Promedio ({{round($semanas_prom / count($ciclos))}} semanas)
         </th>
         <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
             {{$temp_prom}}
@@ -88,6 +90,26 @@
                 {{round($v['valor'] / $v['positivos'])}}%
             </th>
         @endforeach
+    </tr>
+    {{--ESTIMACIONES--}}
+    <tr>
+        <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white" rowspan="2" colspan="3">
+            Estimaciones
+        </th>
+        <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef" colspan="2">
+            {{$min_temp}}-{{$temp_prom}}
+        </th>
+        <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef" colspan="2">
+            %%
+        </th>
+    </tr>
+    <tr>
+        <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef" colspan="2">
+            {{$temp_prom}}-{{$max_temp}}
+        </th>
+        <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef" colspan="2">
+            %%
+        </th>
     </tr>
 </table>
 
