@@ -7,7 +7,7 @@
         <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
             Semana P/S
         </th>
-        <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
+        <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white" colspan="2">
             Temperatura
         </th>
         <th class="text-center hidden" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
@@ -47,7 +47,7 @@
             <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
                 {{$c['ciclo']->semana_poda_siembra}}
             </th>
-            <td class="text-center" style="border-color: #9d9d9d">
+            <td class="text-center" style="border-color: #9d9d9d" colspan="2">
                 {{number_format($c['acumulado'], 2)}}
             </td>
             <th class="text-center hidden" style="border-color: #9d9d9d">
@@ -82,7 +82,7 @@
         <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white" rowspan="1" colspan="2">
             Promedio ({{round($semanas_prom / count($ciclos))}} semanas)
         </th>
-        <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
+        <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef" colspan="2">
             {{$temp_prom}}
         </th>
         @foreach($array_prom as $pos => $v)
@@ -93,27 +93,37 @@
     </tr>
     {{--ESTIMACIONES--}}
     <tr>
-        <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white" rowspan="2" colspan="3">
+        <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white" rowspan="2" colspan="2">
             Estimaciones
         </th>
-        <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef" colspan="2">
-            {{$min_temp}}-{{$temp_prom}}
+        <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
+            {{$min_temp}}
         </th>
-        <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef" colspan="2">
-            %%
+        <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
+            {{$temp_prom}}
         </th>
+        @foreach($array_prom as $pos => $v)
+            <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
+                %
+            </th>
+        @endforeach
     </tr>
     <tr>
-        <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef" colspan="2">
-            {{$temp_prom}}-{{$max_temp}}
+        <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
+            {{$temp_prom}}
         </th>
-        <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef" colspan="2">
-            %%
+        <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
+            {{$max_temp}}
         </th>
+        @foreach($array_prom as $pos => $v)
+            <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
+                %
+            </th>
+        @endforeach
     </tr>
 </table>
 
 <script>
-    estructura_tabla('table_curvas', false, false);
+    //estructura_tabla('table_curvas', false, false);
     $('#table_curvas_wrapper .row:first').hide();
 </script>
