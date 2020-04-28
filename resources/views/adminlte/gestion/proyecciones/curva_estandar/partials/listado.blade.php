@@ -15,6 +15,8 @@
         </th>
         @php
             $array_prom = [];
+            $array_prom_minimos = [];
+            $array_prom_maximos = [];
         @endphp
         @for($i = 1; $i <= $max_dia; $i++)
             <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
@@ -25,19 +27,25 @@
                     'valor' => 0,
                     'positivos' => 0,
                 ]);
+                array_push($array_prom_minimos, [
+                    'valor' => 0,
+                    'positivos' => 0,
+                ]);
+                array_push($array_prom_maximos, [
+                    'valor' => 0,
+                    'positivos' => 0,
+                ]);
             @endphp
         @endfor
     </tr>
     </thead>
     @php
         $semanas_prom = 0;
-        $temp_prom = 0;
     @endphp
     <tbody>
     @foreach($ciclos as $c)
         @php
             $modulo = $c['ciclo']->modulo;
-            $temp_prom += $c['acumulado'];
             $semanas_prom += count($c['cosechas']);
         @endphp
         <tr>
@@ -75,9 +83,6 @@
         </tr>
     @endforeach
     </tbody>
-    @php
-        $temp_prom = count($ciclos) > 0 ? round($temp_prom / count($ciclos), 2) : 0;
-    @endphp
     <tr>
         <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white" rowspan="1" colspan="2">
             Promedio ({{round($semanas_prom / count($ciclos))}} semanas)
