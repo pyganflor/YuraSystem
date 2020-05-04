@@ -2,29 +2,34 @@
     <!-- sidebar: style can be found in sidebar.less -->
     <section class="sidebar">
         <!-- Sidebar user panel -->
-        <div class="user-panel">
-            <div class="pull-left image">
-                <img src="{{url('storage/imagenes').'/'.getUsuario(Session::get('id_usuario'))->imagen_perfil}}" class="img-circle"
-                     alt="User Image" id="img_perfil_menu_izquierda">
-            </div>
-            <div class="pull-left info">
-                <p>{{getUsuario(Session::get('id_usuario'))->nombre_completo}}</p>
-                {{--<a href="javascript:void(0)"
-                   onclick="{if ($('#config_online').prop('checked')) $('#config_online').prop('checked', false); else $('#config_online').prop('checked', true); save_config();}">
-                    <i class="fa fa-circle {{getUsuario(Session::get('id_usuario'))->configuracion->config_online == 'S' ? 'text-success' : 'text-danger'}}"></i>
-                    {{getUsuario(Session::get('id_usuario'))->configuracion->config_online == 'S' ? 'Online' : 'Offline'}}
-                </a>--}}
-                <a href="javascript:void(0)" onclick="window.open('http://benchmark.yurasystem.com', '_blank')" class="pull-right">
-                    <i class="fa fa-fw fa-caret-right"></i>Benchmark
-                </a>
-            </div>
+    {{--<div class="user-panel">
+        <div class="pull-left image">
+            <img src="{{url('storage/imagenes').'/'.getUsuario(Session::get('id_usuario'))->imagen_perfil}}" class="img-circle"
+                 alt="User Image" id="img_perfil_menu_izquierda">
         </div>
-        <!-- sidebar menu: : style can be found in sidebar.less -->
+        <div class="pull-left info">
+            <p>{{getUsuario(Session::get('id_usuario'))->nombre_completo}}</p>
+            --}}{{--<a href="javascript:void(0)"
+               onclick="{if ($('#config_online').prop('checked')) $('#config_online').prop('checked', false); else $('#config_online').prop('checked', true); save_config();}">
+                <i class="fa fa-circle {{getUsuario(Session::get('id_usuario'))->configuracion->config_online == 'S' ? 'text-success' : 'text-danger'}}"></i>
+                {{getUsuario(Session::get('id_usuario'))->configuracion->config_online == 'S' ? 'Online' : 'Offline'}}
+            </a>--}}{{--
+            <a href="javascript:void(0)" onclick="window.open('http://benchmark.yurasystem.com', '_blank')" class="pull-right">
+                <i class="fa fa-fw fa-caret-right"></i>Benchmark
+            </a>
+        </div>
+    </div>--}}
+    <!-- sidebar menu: : style can be found in sidebar.less -->
+        <a href="javascript:void(0)" onclick="window.open('http://benchmark.yurasystem.com', '_blank')" class="pull-right"
+           style="margin-right: 5px">
+            <i class="fa fa-fw fa-caret-right"></i>Benchmark
+        </a>
+        <br>
         <ul class="sidebar-menu" data-widget="tree">
             @if(getUsuario(Session::get('id_usuario'))->rol()->estado == 'A')
                 @foreach(getGrupoMenusOfUser(Session::get('id_usuario')) as $g)
                     <li class="header mouse-hand" onclick="$('.menu_{{$g->id_grupo_menu}}').toggleClass('hide')"
-                        style="color: #e9ecef; font-size: 1em" onmouseover="$(this).css('color', '#0b93d5')"
+                        style="color: #e9ecef; font-size: 1em; border: 1px solid #97979721;" onmouseover="$(this).css('color', '#0b93d5')"
                         onmouseleave="$(this).css('color', '#e9ecef')">
                         {{$g->nombre}}
                     </li>
