@@ -28,7 +28,7 @@
                         onmouseleave="$(this).css('color', '#e9ecef')">
                         {{$g->nombre}}
                     </li>
-                    @foreach($g->menus_activos as $m)
+                    @foreach($g->menus_activosByUser(Session::get('id_usuario')) as $m)
                         <li class="treeview menu_{{$g->id_grupo_menu}} hide">
                             <a href="#">
                                 <i class="fa fa-{{$m->icono->nombre}}"></i>
@@ -40,7 +40,7 @@
                             </span>
                             </a>
                             <ul class="treeview-menu">
-                                @foreach($m->menus_activosByUser(Session::get('id_usuario')) as $s)
+                                @foreach($m->submenus_activos as $s)
                                     @if(isActive_action($s->id_submenu))
                                         <li>
                                             <a href="javascript:void(0)" onclick="cargar_url('{{$s->url}}')">
