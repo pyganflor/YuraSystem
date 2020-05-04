@@ -319,7 +319,9 @@
 
             <div id="box_arbol" class="box box-success hide">
                 <div class="box-header with-border">
-                    <select name="filtro_variedad" id="filtro_variedad" class="pull-left" onchange="select_filtro_variedad()">
+                    <select name="filtro_variedad" id="filtro_variedad" class="pull-left" onchange="select_filtro_variedad()"
+                            style="background: #00B388 0% 0% no-repeat padding-box; border-radius: 18px; text-align: center; letter-spacing: 0px;
+                            color: #FFFFFF; opacity: 1;">
                         <option value="" id="option_acumulado_var">Acumulado</option>
                         @foreach(getVariedades() as $var)
                             <option value="{{$var->id_variedad}}">{{$var->siglas}}</option>
@@ -345,19 +347,20 @@
                                         'v': 'Rentabilidad',
                                         'f': '<strong style="color:{{$color_14}}"><small>$</small><span id="span_rentabilidad_m2_mensual">{{number_format($rentabilidad_m2_mensual, 2)}}</span><small><sup>(4 meses)</sup></small></strong>' +
                                         '<br><strong style="color:{{$color_15}}"><small>$</small><span id="span_rentabilidad_m2_anual">{{number_format($rentabilidad_m2_anual, 2)}}</span><small><sup>(1 año)</sup></small></strong>' +
-                                        '<br><button type="button" class="btn btn-xs btn-block btn-default" onclick="mostrar_indicadores_claves(4)" style="color: black">Rentabilidad/m<sup>2</sup>/año</button>'
+                                        '<br><button type="button" class="btn btn-xs btn-block btn-default" onclick="mostrar_indicadores_claves(4)" style="color: #00B388; border: 1px solid #00B388; border-radius: 18px;">' +
+                                        'Rentabilidad/m<sup>2</sup>/año</button>'
                                     }, '', 'Rentabilidad/m2/año'],
                                     [{
                                         'v': 'Ventas_m2_anno',
                                         'f': '<strong style="color:{{$color_1}}"><small>$</small><span id="span_venta_m2_mensual">{{number_format($venta_m2_anno_mensual, 2)}}</span><small><sup>(4 meses)</sup></small></strong>' +
                                         '<br><strong style="color:{{$color_1_1}}"><small>$</small><span id="span_venta_m2_anno">{{number_format($venta_m2_anno_anual, 2)}}</span><small><sup>(1 año)</sup></small></strong>' +
-                                        '<br><button type="button" class="btn btn-xs btn-block btn-default" onclick="mostrar_indicadores_claves(0)" style="color: black">Ventas/m<sup>2</sup>/año</button>'
+                                        '<br><button type="button" class="btn btn-xs btn-block btn-default" onclick="mostrar_indicadores_claves(0)" style="color: #00B388; border: 1px solid #00B388; border-radius: 18px;">Ventas/m<sup>2</sup>/año</button>'
                                     }, 'Rentabilidad', 'Ventas/m2/año'],
                                     [{
                                         'v': 'Costos',
                                         'f': '<strong style="color:{{$color_12}}"><small>$</small><span id="span_costos_m2_mensual">{{number_format($costos_m2_mensual, 2)}}</span><small><sup>(4 meses)</sup></small></strong>' +
                                         '<br><strong style="color:{{$color_13}}"><small>$</small><span id="span_costos_m2_anual">{{number_format($costos_m2_anual, 2)}}</span><small><sup>(1 año)</sup></small></strong>' +
-                                        '<br><button type="button" class="btn btn-xs btn-block btn-default" onclick="mostrar_indicadores_claves(3)" style="color: black">Costos/m<sup>2</sup>/año</button>'
+                                        '<br><button type="button" class="btn btn-xs btn-block btn-default" onclick="mostrar_indicadores_claves(3)" style="color: #00B388; border: 1px solid #00B388; border-radius: 18px;">Costos/m<sup>2</sup>/año</button>'
                                     }, 'Rentabilidad', 'Costos/m2/año'],
                                     [{
                                         'v': 'C1', 'f': '<strong></strong>' +
@@ -365,7 +368,7 @@
                                         '<br><strong title="Cosecha x Tallo" style="color:{{$color_9}}"><small>Cosecha x Tallo: </small><span id="span_costos_cosecha_tallo">¢{{number_format($costos_cosecha_x_tallo, 2)}}</span></strong>' +
                                         '<br><strong title="Postcosecha x Tallo" style="color:{{$color_10}}"><small>Postcosecha x Tallo: </small><span id="span_costos_postcosecha_tallo">¢{{number_format($costos_postcosecha_x_tallo, 2)}}</span></strong>' +
                                         '<br><strong title="Total x Tallo" style="color:{{$color_11}}"><small>Total x Tallo: </small><span id="span_costos_total_tallo">¢{{number_format($costos_total_x_tallo, 2)}}</span></strong>' +
-                                        '<br><button type="button" class="btn btn-xs btn-block btn-default" style="color: black" onclick="mostrar_indicadores_claves(2)">Indicadores claves</button>'
+                                        '<br><button type="button" class="btn btn-xs btn-block btn-default" style="color: #00B388; border: 1px solid #00B388; border-radius: 18px;" onclick="mostrar_indicadores_claves(2)">Indicadores claves</button>'
                                     }, 'Costos', 'C1'],
                                     [{
                                         'v': 'C2',
@@ -374,7 +377,7 @@
                                         '<br><strong title="MP, Semana: {{explode(':', $costos_insumos)[0]}}"><small>MP: </small><span id="span_costos_insumos">${{number_format(explode(':', $costos_insumos)[1] , 2)}}</span></strong>' +
                                         '<br><strong title="Fijos, Semana: {{explode(':', $costos_fijos)[0]}}"><small>Fijos: </small><span id="span_costos_fijos">${{number_format(explode(':', $costos_fijos)[1] , 2)}}</span></strong>' +
                                         '<br><strong title="Regalías, Semana: {{explode(':', $costos_regalias)[0]}}"><small>Regalías: </small><span id="span_costos_regalias">${{number_format(explode(':', $costos_regalias)[1] , 2)}}</span></strong>' +
-                                        '<br><button type="button" class="btn btn-xs btn-block btn-default" style="color: black" disabled>Datos importantes</button>'
+                                        '<br><button type="button" class="btn btn-xs btn-block btn-default" style="color: #00B388; border: 1px solid #00B388; border-radius: 18px;" disabled>Datos importantes</button>'
                                     }, 'Costos', 'C2'],
                                     [{
                                         'v': 'Indicadores_claves',
@@ -383,7 +386,7 @@
                                         '<br><strong style="color: {{$color_3}}"><small>Calibre: </small><span id="span_calibre">{{$calibre}}</span></strong>' +
                                         '<br><strong style="color: {{$color_5}}"><small>Tallos x m<sup>2</sup>: </small><span id="span_tallos_m2">{{number_format($tallos_m2, 2)}}</span></strong>' +
                                         '<br><strong style="color: {{$color_2}}"><small>Ciclo: </small><span id="span_ciclo">{{number_format($ciclo, 2)}}</span></strong>' +
-                                        '<br><button type="button" class="btn btn-xs btn-block btn-default" onclick="mostrar_indicadores_claves(1)" style="color: black">Indicadores claves</button>'
+                                        '<br><button type="button" class="btn btn-xs btn-block btn-default" onclick="mostrar_indicadores_claves(1)" style="color: #00B388; border: 1px solid #00B388; border-radius: 18px;">Indicadores claves</button>'
                                     }, 'Ventas_m2_anno', 'Indicadores claves'],
                                     [{
                                         'v': 'Datos_importantes',
@@ -392,7 +395,7 @@
                                         '<br><strong title="Tallos cosechados"><small>T/cosechados: </small><span id="span_tallos_cosechados">{{number_format($tallos_cosechados)}}</span></strong>' +
                                         '<br><strong title="Tallos clasificados" onclick="detallar_indicador({{'"D2"'}})" style="color: #333333"><small>T/clasificados: </small><span id="span_tallos">{{number_format($tallos)}}</span></strong>' +
                                         '<br><strong title="Cajas exportadas"><small>Cajas exp: </small>{{number_format($cajas_exportadas, 2)}}</strong>' +
-                                        '<br><button type="button" class="btn btn-xs btn-block btn-default" disabled style="color: black">Datos importantes</button>'
+                                        '<br><button type="button" class="btn btn-xs btn-block btn-default" disabled style="color: #00B388; border: 1px solid #00B388; border-radius: 18px;">Datos importantes</button>'
                                     }, 'Ventas_m2_anno', 'Datos importantes'],
                                 ]);
 
@@ -421,7 +424,7 @@
                     var staticLabels = false;
                     if (indices) {
                         staticLabels = {
-                            font: "10px sans-serif",  // Specifies font
+                            //font: "10px sans-serif",  // Specifies font
                             labels: [rangos[0]['desde'], rangos[1]['desde'], rangos[2]['desde'], rangos[2]['hasta']],  // Print labels at these values
                             color: "#000000",  // Optional: Label text color
                             fractionDigits: 0  // Optional: Numerical precision. 0=round off.
