@@ -3,20 +3,23 @@
     -moz-box-shadow: 9px 8px 11px -2px rgba(0, 0, 0, 0.34);
     box-shadow: 9px 8px 11px -2px rgba(0, 0, 0, 0.34);
 }
+
 .sombra_pequeña {
     -webkit-box-shadow: 9px 8px 11px -2px rgba(0, 0, 0, 0.34);
     -moz-box-shadow: 9px 8px 11px -2px rgba(0, 0, 0, 0.34);
     box-shadow: 5px 3px 11px -2px rgba(0, 0, 0, 0.34);
 }
+
 .sombra_roja {
-    -webkit-box-shadow: 10px 10px 16px -1px rgba(255,48,48,0.7);
-    -moz-box-shadow: 10px 10px 16px -1px rgba(255,48,48,0.7);
-    box-shadow: 10px 10px 16px -1px rgba(255,48,48,0.7);
+    -webkit-box-shadow: 10px 10px 16px -1px rgba(255, 48, 48, 0.7);
+    -moz-box-shadow: 10px 10px 16px -1px rgba(255, 48, 48, 0.7);
+    box-shadow: 10px 10px 16px -1px rgba(255, 48, 48, 0.7);
 }
+
 .sombra_amarilla {
-    -webkit-box-shadow: 10px 10px 5px 0px rgba(239,252,53,0.71);
-    -moz-box-shadow: 10px 10px 5px 0px rgba(239,252,53,0.71);
-    box-shadow: 10px 10px 5px 0px rgba(239,252,53,0.71);
+    -webkit-box-shadow: 10px 10px 5px 0px rgba(239, 252, 53, 0.71);
+    -moz-box-shadow: 10px 10px 5px 0px rgba(239, 252, 53, 0.71);
+    box-shadow: 10px 10px 5px 0px rgba(239, 252, 53, 0.71);
 }
 
 .table-skin-blue, .table-skin-blue-light {
@@ -105,7 +108,7 @@
 }
 
 div span.input-group-addon + input + label.error,
-div span.input-group-addon + select  + label.error{
+div span.input-group-addon + select + label.error {
     position: absolute;
     width: 100%;
     top: 37px;
@@ -117,8 +120,8 @@ div span.input-group-addon + select  + label.error{
     margin-bottom: 25px;
 }
 
-div.form-group textarea + label.error{
-    top:57px
+div.form-group textarea + label.error {
+    top: 57px
 }
 
 .green {
@@ -129,6 +132,22 @@ table.dataTable thead .sorting:after,
 table.dataTable thead .sorting_asc:after,
 table.dataTable thead .sorting_desc:after,
 table.dataTable thead .sorting_asc_disabled:after,
-table.dataTable thead .sorting_desc_disabled:after{
+table.dataTable thead .sorting_desc_disabled:after {
     top: 0px;
+}
+
+/* -------------------------- NUEVOS-DISEÑOS --------------------- */
+.select-yura_default {
+    background: #00B388 0% 0% no-repeat padding-box;
+    border-radius: 18px;
+    text-align: center;
+    letter-spacing: 0px;
+    color: #FFFFFF;
+    opacity: 1;
+}
+
+.btn-yura_default {
+    color: #00B388;
+    border: 1px solid #00B388;
+    border-radius: 18px;
 }
