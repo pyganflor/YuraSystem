@@ -75,7 +75,7 @@ class CurvaEstandarController extends Controller
                 }
             }
         }
-        $temp_prom = count($query) > 0 ? round($temp_prom / count($query), 2) : 0;
+        $temp_prom = count($ciclos) > 0 ? round($temp_prom / count($ciclos), 2) : 0;
 
         return view('adminlte.gestion.proyecciones.curva_estandar.partials.listado', [
             'ciclos' => $ciclos,

@@ -63,7 +63,7 @@
             </th>
             @foreach($c['cosechas'] as $pos => $v)
                 @php
-                    $porcent = round(($v->cosechados * 100) / $c['total_cosechado']);
+                    $porcent = $c['total_cosechado'] > 0 ? round(($v->cosechados * 100) / $c['total_cosechado']) : 0;
                 @endphp
                 <td class="text-center" style="border-color: #9d9d9d">
                     {{$porcent}}
@@ -73,6 +73,13 @@
                     if ($porcent > 0){
                         $array_prom[$pos]['valor'] += $porcent;
                         $array_prom[$pos]['positivos'] ++;
+                        if ($c['acumulado'] >= $min_temp && $c['acumulado'] < $temp_prom){    // por debajo del promedio
+                            $array_prom_minimos[$pos]['valor'] += $porcent;
+                            $array_prom_minimos[$pos]['positivos'] ++;
+                        } else if ($c['acumulado'] > $temp_prom && $c['acumulado'] <= $max_temp){  // por encima del promedio
+                            $array_prom_maximos[$pos]['valor'] += $porcent;
+                            $array_prom_maximos[$pos]['positivos'] ++;
+                        }
                     }
                 @endphp
             @endforeach
@@ -85,14 +92,14 @@
     </tbody>
     <tr>
         <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white" rowspan="1" colspan="2">
-            Promedio ({{round($semanas_prom / count($ciclos))}} semanas)
+            Promedio ({{count($ciclos) > 0 ? round($semanas_prom / count($ciclos)) : 0}} semanas)
         </th>
         <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef" colspan="2">
             {{$temp_prom}}
         </th>
         @foreach($array_prom as $pos => $v)
             <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
-                {{round($v['valor'] / $v['positivos'])}}%
+                {{$v['positivos'] > 0 ? round($v['valor'] / $v['positivos']) : 0}}%
             </th>
         @endforeach
     </tr>
@@ -107,9 +114,9 @@
         <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
             {{$temp_prom}}
         </th>
-        @foreach($array_prom as $pos => $v)
+        @foreach($array_prom_minimos as $pos => $v)
             <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
-                %
+                {{$v['positivos'] > 0 ? round($v['valor'] / $v['positivos']) : 0}}%
             </th>
         @endforeach
     </tr>
@@ -120,9 +127,9 @@
         <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
             {{$max_temp}}
         </th>
-        @foreach($array_prom as $pos => $v)
+        @foreach($array_prom_maximos as $pos => $v)
             <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
-                %
+                {{$v['positivos'] > 0 ? round($v['valor'] / $v['positivos']) : 0}}%
             </th>
         @endforeach
     </tr>

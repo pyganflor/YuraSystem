@@ -583,6 +583,7 @@ function getGrupoMenusOfUser($usuario)
         ->join('rol_submenu as rs', 's.id_submenu', '=', 'rs.id_submenu')
         ->select('g.id_grupo_menu')->distinct()
         ->where('rs.id_rol', '=', getUsuario(Session::get('id_usuario'))->id_rol)
+        ->where('rs.estado', '=', 'A')
         ->where('g.estado', '=', 'A')
         ->orderBy('g.nombre')->get();
     $g = [];

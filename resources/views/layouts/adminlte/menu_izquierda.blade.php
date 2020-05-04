@@ -40,7 +40,7 @@
                             </span>
                             </a>
                             <ul class="treeview-menu">
-                                @foreach($m->submenus_activos as $s)
+                                @foreach($m->menus_activosByUser(Session::get('id_usuario')) as $s)
                                     @if(isActive_action($s->id_submenu))
                                         <li>
                                             <a href="javascript:void(0)" onclick="cargar_url('{{$s->url}}')">
