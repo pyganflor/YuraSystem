@@ -12,6 +12,11 @@
             <i class="fa fa-fw fa-search"></i>
         </button>
     </div>
+    <div class="input-group-btn">
+        <button type="button" class="btn btn-success" onclick="add_temperatura()">
+            <i class="fa fa-fw fa-plus"></i>
+        </button>
+    </div>
 </div>
 
 <div style="overflow-y: scroll; max-height: 450px; margin-top: 10px">
