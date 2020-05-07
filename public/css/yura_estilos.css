@@ -180,3 +180,19 @@ table.dataTable thead .sorting_desc_disabled:after {
     top: -5px;
     transform: rotate(-22.5deg);
 }
+
+.li_submenu_lateral {
+    background-color: #009874 !important;
+}
+
+.li_menu_lateral {
+    background-color: #00B388 !important;
+}
+
+.text-color_yura {
+    color: #00B388 !important;
+}
+
+.background-color_yura {
+    background-color: #00B388 !important;
+}
