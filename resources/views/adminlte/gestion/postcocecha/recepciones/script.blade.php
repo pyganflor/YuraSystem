@@ -15,6 +15,8 @@
         $.get('{{url('recepcion/buscar_recepciones')}}', datos, function (retorno) {
             $('#div_listado_recepciones').html(retorno);
             estructura_tabla('table_content_recepciones');
+            $('#table_content_recepciones_filter label').addClass('text-color_yura');
+            $('#table_content_recepciones_filter label input').addClass('input-yura_default');
         }).always(function () {
             $.LoadingOverlay('hide');
         });
@@ -34,6 +36,8 @@
         $.get(url, function (resul) {
             $('#div_listado_recepciones').html(resul);
             estructura_tabla('table_content_recepciones');
+            $('#table_content_recepciones_filter label').addClass('text-color_yura');
+            $('#table_content_recepciones_filter label input').addClass('input-yura_default');
         }).always(function () {
             $.LoadingOverlay("hide");
         });
@@ -256,13 +260,13 @@
                     $('#datos_cosecha_x_variedad').show();
                     for (i = 0; i < retorno.listado_x_variedad.length; i++) {
                         $('#datos_cosecha_x_variedad').append('<option value="">' +
-                            retorno.listado_x_variedad[i]['variedad'] + ' ' + retorno.listado_x_variedad[i]['cantidad'] + ' tallos' +
+                            retorno.listado_x_variedad[i]['variedad'] + ' ' + retorno.listado_x_variedad[i]['cantidad'] +
                             '</option>'
                         );
                     }
                 }
                 $('#rendimiento_cosecha').val(retorno.rendimiento + ' tallos/hora');
-                $('#html_ver_rendimiento').html('<button class="btn btn-default" onclick="ver_rendimiento_ini(' + retorno.id_cosecha + ')">' +
+                $('#html_ver_rendimiento').html('<button class="btn btn-default btn-yura_dark" onclick="ver_rendimiento_ini(' + retorno.id_cosecha + ')">' +
                     '<i class="fa fa-fw fa-eye"></i> Ver rendimiento' +
                     '</button>');
             }, 'json').fail(function (retorno) {

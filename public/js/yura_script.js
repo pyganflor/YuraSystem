@@ -2373,3 +2373,5 @@ function calcular_precio_pedido(input) {
         return false;
     });
 });*/
+
+/* ------------------------ Nuevo Diseño ------------------------------- */
