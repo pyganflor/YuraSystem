@@ -35,7 +35,7 @@
                     <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"
                        onclick="buscar_notificaciones('S', false)">
                         <i class="fa fa-bell-o"></i>
-                        <span class="label background-color_yura" id="link_not"></span>
+                        <span class="label label-success" id="link_not"></span>
                     </a>
                     <ul class="dropdown-menu" style="width: 450px">
                         <li class="header text-center" id="header_not"></li>
