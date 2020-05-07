@@ -150,4 +150,33 @@ table.dataTable thead .sorting_desc_disabled:after {
     color: #00B388;
     border: 1px solid #00B388;
     border-radius: 18px;
+    background-color: white !important;
+}
+
+.td-org {
+    background: #FFFFFF 0% 0% no-repeat padding-box;
+    box-shadow: 0px 2px 6px #00000022;
+    border-radius: 10px;
+    font-size: 1.2em;
+    opacity: 1;
+}
+
+.icon_td-org {
+    background: #FFFFFF;
+    color: #00B388;
+    font-size: 30px;
+    padding: 5px;
+    width: 60px;
+    height: 60px;
+    text-align: center;
+    line-height: 45px;
+    border-radius: 50%;
+    border: 3px solid #fff;
+    -webkit-box-shadow: inset 0 0 15px 0 rgba(0, 0, 0, 0.4);
+    box-shadow: inset 0 0 15px 0 rgba(0, 0, 0, 0.4);
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
+    position: absolute;
+    left: -10px;
+    top: -5px;
+    transform: rotate(-22.5deg);
 }

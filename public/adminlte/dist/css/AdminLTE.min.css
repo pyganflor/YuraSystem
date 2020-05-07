@@ -84,7 +84,8 @@ body {
 
 .content-wrapper {
     min-height: 100%;
-    background-image: url("../../../images/fondo-bg.png");
+    //background-image: url("../../../images/fondo-bg.png");
+    background-color: #F7F8F8;
     z-index: 800
 }
 
