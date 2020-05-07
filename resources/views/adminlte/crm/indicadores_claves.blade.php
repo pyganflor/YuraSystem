@@ -1,55 +1,52 @@
-<div class="box box-info">
-    <div class="box-body">
-        <table class="table-responsive" width="100%">
-            <tr>
-                <th class="text-center">Precio x Ramo</th>
-                <th class="text-center">Precio x Tallo</th>
-            </tr>
-            <tr>
-                <th class="text-center">
-                    <canvas id="canvas_precio2" style="width: 210px"></canvas>
-                </th>
-                <th class="text-center">
-                    <canvas id="canvas_precio_x_tallo2" style="width: 210px"></canvas>
-                </th>
-            </tr>
-            <tr>
-                <th class="text-center">{{number_format($precio_x_ramo, 2)}}</th>
-                <th class="text-center">{{number_format($precio_x_tallo, 2)}}</th>
-            </tr>
-        </table>
-        <legend style="margin-bottom: 5px"></legend>
-        <div style="overflow-x: scroll">
-            <table class="table-responsive" width="100%">
-                <tr>
-                    <th class="text-center">Ramos/m<sup>2</sup>/año</th>
-                    <th class="text-center">Calibre</th>
-                    <th class="text-center">Tallos/m<sup>2</sup></th>
-                    <th class="text-center">Ciclo</th>
-                </tr>
-                <tr>
-                    <th class="text-center">
-                        <canvas id="canvas_ramos_m2_anno2" style="width: 210px"></canvas>
-                    </th>
-                    <th class="text-center">
-                        <canvas id="canvas_calibre2" style="width: 210px"></canvas>
-                    </th>
-                    <th class="text-center">
-                        <canvas id="canvas_tallos_m2_2" style="width: 210px"></canvas>
-                    </th>
-                    <th class="text-center">
-                        <canvas id="canvas_ciclo2" style="width: 210px"></canvas>
-                    </th>
-                </tr>
-                <tr>
-                    <th class="text-center">{{number_format($ramos_m2_anno, 2)}}</th>
-                    <th class="text-center">{{number_format($calibre, 2)}}</th>
-                    <th class="text-center">{{number_format($tallos_m2, 2)}}</th>
-                    <th class="text-center">{{number_format($ciclo, 2)}}</th>
-                </tr>
-            </table>
-        </div>
-    </div>
+<legend style="margin-bottom: 5px"></legend>
+<table class="table-responsive" width="100%">
+    <tr>
+        <th class="text-center">Precio x Ramo</th>
+        <th class="text-center">Precio x Tallo</th>
+    </tr>
+    <tr>
+        <th class="text-center">
+            <canvas id="canvas_precio2" style="width: 210px"></canvas>
+        </th>
+        <th class="text-center">
+            <canvas id="canvas_precio_x_tallo2" style="width: 210px"></canvas>
+        </th>
+    </tr>
+    <tr>
+        <th class="text-center">{{number_format($precio_x_ramo, 2)}}</th>
+        <th class="text-center">{{number_format($precio_x_tallo, 2)}}</th>
+    </tr>
+</table>
+<legend style="margin-bottom: 5px"></legend>
+<div style="overflow-x: scroll">
+    <table class="table-responsive" width="100%">
+        <tr>
+            <th class="text-center">Ramos/m<sup>2</sup>/año</th>
+            <th class="text-center">Calibre</th>
+            <th class="text-center">Tallos/m<sup>2</sup></th>
+            <th class="text-center">Ciclo</th>
+        </tr>
+        <tr>
+            <th class="text-center">
+                <canvas id="canvas_ramos_m2_anno2" style="width: 210px"></canvas>
+            </th>
+            <th class="text-center">
+                <canvas id="canvas_calibre2" style="width: 210px"></canvas>
+            </th>
+            <th class="text-center">
+                <canvas id="canvas_tallos_m2_2" style="width: 210px"></canvas>
+            </th>
+            <th class="text-center">
+                <canvas id="canvas_ciclo2" style="width: 210px"></canvas>
+            </th>
+        </tr>
+        <tr>
+            <th class="text-center">{{number_format($ramos_m2_anno, 2)}}</th>
+            <th class="text-center">{{number_format($calibre, 2)}}</th>
+            <th class="text-center">{{number_format($tallos_m2, 2)}}</th>
+            <th class="text-center">{{number_format($ciclo, 2)}}</th>
+        </tr>
+    </table>
 </div>
 
 <script>

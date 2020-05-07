@@ -1,3 +1,4 @@
+<legend style="margin-bottom: 5px"></legend>
 <legend class="text-center" style="font-size: 1.2em">Rentabilidad/m<sup>2</sup>/año (4 meses)</legend>
 <canvas id="div_chart_rentabilidad_m2_mensual" style="width: 100%; height: 400px"></canvas>
 
