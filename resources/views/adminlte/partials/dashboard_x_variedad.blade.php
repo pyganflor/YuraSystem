@@ -299,6 +299,7 @@
                                     <span id="span_costos_total_tallo">¢{{number_format($costos_total_x_tallo, 2)}}</span></strong>
                             </li>
                         </ul>
+                        <br>
                     </div>
                 </div>
                 <div class="row" style="margin-top: 10px">
