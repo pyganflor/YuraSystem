@@ -761,14 +761,14 @@ function store_cliente_consignatario(token, id_cliente) {
     arr_consignatarios = [];
     $.each($("div#row_add_user_contactos div.consignatario"), function (i, j) {
         arr_consignatarios.push({
-            'id_consignatario' : $(j).find('select').val(),
-            'default' : $(j).find("input[type='radio']").is(':checked')
+            'id_consignatario': $(j).find('select').val(),
+            'default': $(j).find("input[type='radio']").is(':checked')
         });
     });
     datos = {
         _token: token,
-        id_cliente : id_cliente,
-        arr_consignatarios : arr_consignatarios,
+        id_cliente: id_cliente,
+        arr_consignatarios: arr_consignatarios,
     };
 
     if (arr_consignatarios.length < 1) {
@@ -1034,20 +1034,20 @@ function editar_pedido_tinturado(id_pedido, pos_det_ped, global = true, listar_r
 
 function update_orden_tinturada(token) {
     if ($('#form-update_orden_semanal').valid()) {
-        
+
         modal_quest('modal_quest_update_orden_tinturada', '<div class="alert alert-info text-center">' +
             '¿Está seguro de modificar los datos de este pedido?</div>',
             '<i class="fa fa-fw fa-exclamation-triangle"></i> Mensaje de alerta', true, false, '35%', function () {
-                z=0;
-                 det_ped_arreglo_esp_emp =[];
-                 det_ped_arreglo_dat_exp=[];
+                z = 0;
+                det_ped_arreglo_esp_emp = [];
+                det_ped_arreglo_dat_exp = [];
 
-                $.each($("div.well_detalle_pedido"),function(i,j){
+                $.each($("div.well_detalle_pedido"), function (i, j) {
                     arreglo_esp_emp = [];
                     ids_esp_emp = $(j).find('.id_esp_emp');
 
                     for (ee = 0; ee < ids_esp_emp.length; ee++) {
-                        ids_det_esp = $(j).find('input.id_det_esp_'+ids_esp_emp[ee].value);
+                        ids_det_esp = $(j).find('input.id_det_esp_' + ids_esp_emp[ee].value);
                         /* ========= PRECIOS x DETALLE ESPECIFICACION ========== */
 
                         arreglo_precios = [];
@@ -1063,7 +1063,7 @@ function update_orden_tinturada(token) {
                         fil = $(j).find('#marcaciones_' + ids_esp_emp[ee].value).val();
                         col = $(j).find('#coloraciones_' + ids_esp_emp[ee].value).val();
                         if ($(j).find('#cantidad_piezas').val() != $('#total_piezas_' + ids_esp_emp[ee].value).val()) {
-                            alerta('<div class="alert alert-warning text-center">Las cantidades de piezas distribuidas no coinciden con las pedidas en el Detalle del pedido '+(i+1)+'</div>');
+                            alerta('<div class="alert alert-warning text-center">Las cantidades de piezas distribuidas no coinciden con las pedidas en el Detalle del pedido ' + (i + 1) + '</div>');
                             $(j).find('#cantidad_piezas').addClass('error');
                             z++;
                         }
@@ -1105,7 +1105,7 @@ function update_orden_tinturada(token) {
                                     colores: colores
                                 });
                             } else {
-                                alerta('<div class="alert alert-warning text-center">Faltan datos (nombre de marcación) por ingresar en el Detalle del pedido '+(i+1)+'</div>');
+                                alerta('<div class="alert alert-warning text-center">Faltan datos (nombre de marcación) por ingresar en el Detalle del pedido ' + (i + 1) + '</div>');
                                 $(j).find('#nombre_marcacion_' + f + '_' + ids_esp_emp[ee].value).addClass('error');
                                 z++;
                             }
@@ -1128,14 +1128,14 @@ function update_orden_tinturada(token) {
                         });
                     }
                     det_ped_arreglo_esp_emp.push({
-                        id_det_ped:$(j).find('input.id_det_ped').val(),
-                        agencia_carga : $(j).find('#id_agencia_carga').val(),
-                        cant_piezas : $(j).find('#cantidad_piezas').val(),
-                        arreglo_esp_emp : arreglo_esp_emp
+                        id_det_ped: $(j).find('input.id_det_ped').val(),
+                        agencia_carga: $(j).find('#id_agencia_carga').val(),
+                        cant_piezas: $(j).find('#cantidad_piezas').val(),
+                        arreglo_esp_emp: arreglo_esp_emp
                     });
                     det_ped_arreglo_dat_exp.push(arreglo_dat_exp);
                 });
-                
+
                 datos = {
                     _token: token,
                     id_pedido: $('#id_pedido').val(),
@@ -1147,8 +1147,8 @@ function update_orden_tinturada(token) {
                     det_ped_arreglo_dat_exp: det_ped_arreglo_dat_exp
                 };
 
-                
-                if(z==0){
+
+                if (z == 0) {
                     post_jquery('pedidos/update_orden_tinturada', datos, function () {
                         cerrar_modals();
                         editar_pedido_tinturado(datos['id_pedido'], $('#pos_det_ped').val(), false);
@@ -1189,21 +1189,21 @@ function eliminar_detalle_pedido(det_ped, token) {
 function add_marcacion(esp_emp) {
     fil = parseInt($('#marcaciones_' + esp_emp).val());
     col = parseInt($('#coloraciones_' + esp_emp).val());
-    console.log(fil,col);
-    cant_marc= $('input.check_marcacion_'+esp_emp).length+1;
+    console.log(fil, col);
+    cant_marc = $('input.check_marcacion_' + esp_emp).length + 1;
 
     tabla = $('#tabla_marcacion_coloracion_' + esp_emp);
 
-    tr = '<tr style="border: 2px solid #9d9d9d" class="tr_marcacion_'+esp_emp+'">' +
+    tr = '<tr style="border: 2px solid #9d9d9d" class="tr_marcacion_' + esp_emp + '">' +
         '<td class="text-center" style="border-color: #9d9d9d">' +
-        '<div class="input-group">'+
+        '<div class="input-group">' +
         '<span class="input-group-addon" style="border:none;">' +
-        '<input type="checkbox" class="marcacion_' + esp_emp + '_' + cant_marc + ' check_marcacion_' + esp_emp +'">' +
-        '</span>'+
+        '<input type="checkbox" class="marcacion_' + esp_emp + '_' + cant_marc + ' check_marcacion_' + esp_emp + '">' +
+        '</span>' +
         '<input type="text" id="nombre_marcacion_' + fil + '_' + esp_emp + '" name="nombre_marcacion_' + fil + '_' + esp_emp + '" ' +
-        'placeholder="Marc" width="150px" style="border: none" class="text-center form-control form-control-sm input_marcacion_'+esp_emp+'">' +
+        'placeholder="Marc" width="150px" style="border: none" class="text-center form-control form-control-sm input_marcacion_' + esp_emp + '">' +
         '<input type="hidden" id="id_marcacion_' + fil + '_' + esp_emp + '" name="id_marcacion_' + fil + '_' + esp_emp + '" value="">' +
-        '</div>'+
+        '</div>' +
         '</td>';
     for (c = 0; c < col; c++) {
         ids_det_esp = $('div#pedido_creado input.id_det_esp_' + esp_emp);
@@ -1221,7 +1221,7 @@ function add_marcacion(esp_emp) {
                 '</div>' +
                 '</li>';
         }
-        tr += '<td class="text-center text-center col_coloracion_'+esp_emp+'_'+(c+1)+'" style="border-color: #9d9d9d">' +
+        tr += '<td class="text-center text-center col_coloracion_' + esp_emp + '_' + (c + 1) + '" style="border-color: #9d9d9d">' +
             '<ul class="list-unstyled">' +
             inputs +
             '</ul>' +
@@ -1252,12 +1252,12 @@ function add_marcacion(esp_emp) {
 
     tr += '<td class="text-center" style="border-color: #9d9d9d">' +
         '<input type="text" id="total_ramos_marcacion_' + fil + '_' + esp_emp + '" name="total_ramos_marcacion_' + fil + '_' + esp_emp + '" ' +
-        'readonly class="text-center ramos_marcacion_'+esp_emp+' value="0" ' +
+        'readonly class="text-center ramos_marcacion_' + esp_emp + ' value="0" ' +
         'style="background-color: #357ca5; color: white; width: 85px">' +
         '</td>' +
         '<td class="text-center" style="border-color: #9d9d9d">' +
         '<input type="text" id="total_piezas_marcacion_' + fil + '_' + esp_emp + '" name="total_piezas_marcacion_' + fil + '_' + esp_emp + '" ' +
-        'readonly class="text-center piezas_marcacion_' +esp_emp +'" value="0" ' +
+        'readonly class="text-center piezas_marcacion_' + esp_emp + '" value="0" ' +
         'style="background-color: #357ca5; color: white; width: 85px">' +
         '</td>';
 
@@ -1274,7 +1274,7 @@ function add_marcacion(esp_emp) {
 
 function add_coloracion(esp_emp) {
     col = parseInt($('#coloraciones_' + esp_emp).val());
-    cant_col = $('input.check_coloracion_'+esp_emp).length;
+    cant_col = $('input.check_coloracion_' + esp_emp).length;
 
     tabla = $('div#pedido_creado #tabla_marcacion_coloracion_' + esp_emp);
     columna = col;
@@ -1285,16 +1285,16 @@ function add_coloracion(esp_emp) {
             for (var i = 0; i <= num_colum_a_insertar; i++) {
                 if (f == 0) {
                     //insertamos una cabecera despues de la primera cabecera
-                    $('<th id="celda_col_' + col + '_' + esp_emp + '" class="text-center col_coloracion col_coloracion_'+esp_emp+' th_col_coloracion col_coloracion_'+esp_emp+'_'+cant_col+'" style="border-color: #9d9d9d" width="100px">' +
-                        '<div class="input-group">'+
+                    $('<th id="celda_col_' + col + '_' + esp_emp + '" class="text-center col_coloracion col_coloracion_' + esp_emp + ' th_col_coloracion col_coloracion_' + esp_emp + '_' + cant_col + '" style="border-color: #9d9d9d" width="100px">' +
+                        '<div class="input-group">' +
                         '<span class="input-group-addon" style="border:none;background: transparent;padding: 5px;">' +
-                        '<input type="checkbox" class="check_coloracion_'+esp_emp+' col_coloracion_'+esp_emp+'_'+cant_col+' coloracion_' + esp_emp + '_' + cant_col + '" value="'+cant_col+'">' +
-                        '</span>'+
-                        '<select name="color_' + col + '_' + esp_emp + '" id="color_' + col + '_' + esp_emp + '" class="col_coloracion_'+esp_emp+'_'+cant_col+' select_coloracion"' +
+                        '<input type="checkbox" class="check_coloracion_' + esp_emp + ' col_coloracion_' + esp_emp + '_' + cant_col + ' coloracion_' + esp_emp + '_' + cant_col + '" value="' + cant_col + '">' +
+                        '</span>' +
+                        '<select name="color_' + col + '_' + esp_emp + '" id="color_' + col + '_' + esp_emp + '" class="col_coloracion_' + esp_emp + '_' + cant_col + ' select_coloracion"' +
                         ' style="width: 100px;font-size:11px">' +
                         $('#select_colores').html() +
                         '</select>' +
-                        '</div>'+
+                        '</div>' +
                         '<input type="hidden" id="id_color_' + col + '_' + esp_emp + '" name="id_color_' + col + '_' + esp_emp + '" ' +
                         'value="' + $('#select_colores').val() + '">' +
                         '</th>').insertAfter(primer_td);
@@ -1313,7 +1313,7 @@ function add_coloracion(esp_emp) {
                             '</div>' +
                             '</li>';
                     }
-                    $('<th class="text-center th_parcial col_coloracion col_coloracion_'+esp_emp+' col_coloracion_'+esp_emp+'_'+cant_col+'" style="border-color: #9d9d9d" width="100px">' +
+                    $('<th class="text-center th_parcial col_coloracion col_coloracion_' + esp_emp + ' col_coloracion_' + esp_emp + '_' + cant_col + '" style="border-color: #9d9d9d" width="100px">' +
                         '<ul class="list-unstyled">' +
                         inputs +
                         '</ul>' +
@@ -1333,7 +1333,7 @@ function add_coloracion(esp_emp) {
                             '</div>' +
                             '</li>';
                     }
-                    $('<th class="text-center th_parcial col_coloracion col_coloracion_'+esp_emp+' col_coloracion_'+esp_emp+'_'+cant_col+' precio_col_coloracion" style="border-color: #9d9d9d" width="100px">' +
+                    $('<th class="text-center th_parcial col_coloracion col_coloracion_' + esp_emp + ' col_coloracion_' + esp_emp + '_' + cant_col + ' precio_col_coloracion" style="border-color: #9d9d9d" width="100px">' +
                         '<ul class="list-unstyled">' +
                         inputs +
                         '</ul>' +
@@ -1353,12 +1353,12 @@ function add_coloracion(esp_emp) {
                         '<input type="number" value="0" id="ramos_marcacion_' + (f - 1) + '_' + col + '_' + ids_det_esp[det].value + '_' + esp_emp + '" ' +
                         'name="ramos_marcacion_' + (f - 1) + '_' + col + '_' + ids_det_esp[det].value + '_' + esp_emp + '" ' +
                         'onkeypress="return isNumber(event)" style="width: 100%;" ' +
-                        'class="text-center col_coloracion_'+esp_emp+'_'+cant_col+' elemento_color_' + col + '_' + esp_emp + '" onchange="calcular_totales_tinturado(' + esp_emp + ')">' +
+                        'class="text-center col_coloracion_' + esp_emp + '_' + cant_col + ' elemento_color_' + col + '_' + esp_emp + '" onchange="calcular_totales_tinturado(' + esp_emp + ')">' +
                         '</div>' +
                         '</li>';
                 }
 
-                script ='<script>$(".select_coloracion").change(function($this){' +
+                script = '<script>$(".select_coloracion").change(function($this){' +
                     '            arrId = $this.target.name.split("_");' +
                     '            fondo = $(\'#fondo_color_\' +  $("select#"+$this.target.name).val()).val();' +
                     '            texto = $(\'#texto_color_\' +  $("select#"+$this.target.name).val()).val();' +
@@ -1366,9 +1366,9 @@ function add_coloracion(esp_emp) {
                     '            $(\'.elemento_color_\' + arrId[1] + \'_\' + arrId[2]).css(\'color\', texto);' +
                     '        });</script>';
                 //insertamos un valor despues del primer valor de la primera columna
-                $('<td class="text-center col_coloracion td_col_coloracion_'+esp_emp+' col_coloracion_'+esp_emp+'_'+cant_col+'" style="border-color: #9d9d9d;" width="100px">' +
+                $('<td class="text-center col_coloracion td_col_coloracion_' + esp_emp + ' col_coloracion_' + esp_emp + '_' + cant_col + '" style="border-color: #9d9d9d;" width="100px">' +
                     '<ul class="list-unstyled">' +
-                    (inputs+script) +
+                    (inputs + script) +
                     '</ul>' +
                     '</td>').insertAfter(primer_td);
             }
@@ -1382,30 +1382,30 @@ function add_coloracion(esp_emp) {
 
 function delete_marcacion(id_esp_emp) {
 
-    $.each($("tr.tr_marcacion_"+id_esp_emp),function(i,j){
-        if($(j).find('input[type=checkbox]').is(':checked'))
-            if($(j).remove())
-                $('#marcaciones_' + id_esp_emp).val($('#marcaciones_' + id_esp_emp).val()-1);
+    $.each($("tr.tr_marcacion_" + id_esp_emp), function (i, j) {
+        if ($(j).find('input[type=checkbox]').is(':checked'))
+            if ($(j).remove())
+                $('#marcaciones_' + id_esp_emp).val($('#marcaciones_' + id_esp_emp).val() - 1);
 
-       $.each($("input.check_marcacion_"+id_esp_emp),function(k,l){
-            clase =  $(l).attr('class');
-           $(l).removeClass(clase).addClass('marcacion_'+id_esp_emp+'_'+(k+1));
-       });
-
-        $.each($("input.input_marcacion_"+id_esp_emp),function(m,n){
-            $(n).attr({id:'nombre_marcacion_'+m+'_'+id_esp_emp,name:'nombre_marcacion_'+m+'_'+id_esp_emp});
+        $.each($("input.check_marcacion_" + id_esp_emp), function (k, l) {
+            clase = $(l).attr('class');
+            $(l).removeClass(clase).addClass('marcacion_' + id_esp_emp + '_' + (k + 1));
         });
 
-        $.each($("input.ramos_marcacion_"+id_esp_emp),function(o,p){
-            $(p).attr({id:'total_ramos_marcacion_'+o+'_'+id_esp_emp,name:'total_ramos_marcacion_'+o+'_'+id_esp_emp});
+        $.each($("input.input_marcacion_" + id_esp_emp), function (m, n) {
+            $(n).attr({id: 'nombre_marcacion_' + m + '_' + id_esp_emp, name: 'nombre_marcacion_' + m + '_' + id_esp_emp});
         });
 
-        $.each($("input.piezas_marcacion_"+id_esp_emp),function(o,p){
-            $(p).attr({id:'total_piezas_marcacion_'+o+'_'+id_esp_emp,name:'total_piezas_marcacion_'+o+'_'+id_esp_emp});
+        $.each($("input.ramos_marcacion_" + id_esp_emp), function (o, p) {
+            $(p).attr({id: 'total_ramos_marcacion_' + o + '_' + id_esp_emp, name: 'total_ramos_marcacion_' + o + '_' + id_esp_emp});
         });
 
-        $.each($("input.distribucion_m_"+id_esp_emp),function(o,p){
-            $(p).attr({id:'distribucion_marcacion_'+o+'_'+id_esp_emp,name:'distribucion_marcacion_'+o+'_'+id_esp_emp});
+        $.each($("input.piezas_marcacion_" + id_esp_emp), function (o, p) {
+            $(p).attr({id: 'total_piezas_marcacion_' + o + '_' + id_esp_emp, name: 'total_piezas_marcacion_' + o + '_' + id_esp_emp});
+        });
+
+        $.each($("input.distribucion_m_" + id_esp_emp), function (o, p) {
+            $(p).attr({id: 'distribucion_marcacion_' + o + '_' + id_esp_emp, name: 'distribucion_marcacion_' + o + '_' + id_esp_emp});
         });
 
     });
@@ -1419,37 +1419,37 @@ function delete_marcacion(id_esp_emp) {
 
 function delete_coloracion(id_esp_emp) {
 
-    col=[];
-    $.each($(".col_coloracion_"+id_esp_emp),function(i,j){
-        if($(j).find('input[type=checkbox]').is(':checked'))
+    col = [];
+    $.each($(".col_coloracion_" + id_esp_emp), function (i, j) {
+        if ($(j).find('input[type=checkbox]').is(':checked'))
             col.push((i));
     });
 
-    if(col.length>0)
-        for(let i =0; i<col.length;i++)
-            if($(".col_coloracion_"+id_esp_emp+"_"+col[i]).remove())
-                $('#coloraciones_' + id_esp_emp).val($('#coloraciones_' + id_esp_emp).val()-1);
+    if (col.length > 0)
+        for (let i = 0; i < col.length; i++)
+            if ($(".col_coloracion_" + id_esp_emp + "_" + col[i]).remove())
+                $('#coloraciones_' + id_esp_emp).val($('#coloraciones_' + id_esp_emp).val() - 1);
 
     formateo_id_mar_col(id_esp_emp);
 
     calcular_totales_tinturado(id_esp_emp, false);
 }
 
-function update_dato_exp_pedio_tinturado(id_detalle_pedido,token){
+function update_dato_exp_pedio_tinturado(id_detalle_pedido, token) {
     $.LoadingOverlay('show');
-    datos_exportacion =[];
-    $.each($("td.dato_exportacion_"+id_detalle_pedido),function(i,j){
-        valor = $(j).find('input.dato_exportacion_'+id_detalle_pedido).val();
-        if(valor!=''){
+    datos_exportacion = [];
+    $.each($("td.dato_exportacion_" + id_detalle_pedido), function (i, j) {
+        valor = $(j).find('input.dato_exportacion_' + id_detalle_pedido).val();
+        if (valor != '') {
             datos_exportacion.push({
-                id_dato_exportacion : $(j).find('input.id_dato_exportacion_'+id_detalle_pedido).val(),
-                valor  :  $(j).find('input.dato_exportacion_'+id_detalle_pedido).val(),
+                id_dato_exportacion: $(j).find('input.id_dato_exportacion_' + id_detalle_pedido).val(),
+                valor: $(j).find('input.dato_exportacion_' + id_detalle_pedido).val(),
             });
         }
     });
     datos = {
         id_detalle_pedido: id_detalle_pedido,
-        datos_exportacion : datos_exportacion,
+        datos_exportacion: datos_exportacion,
         _token: token
     };
 
@@ -1460,50 +1460,59 @@ function update_dato_exp_pedio_tinturado(id_detalle_pedido,token){
 
 }
 
-function formateo_id_mar_col(id_esp_emp){
+function formateo_id_mar_col(id_esp_emp) {
 
-    $.each($("table#tabla_marcacion_coloracion_"+id_esp_emp),function(i,j){
-        $.each($(j).find('.tr_marcacion_'+id_esp_emp),function(x,z){
-            $.each($(z).find('td.col_coloracion'),function(k,l){
+    $.each($("table#tabla_marcacion_coloracion_" + id_esp_emp), function (i, j) {
+        $.each($(j).find('.tr_marcacion_' + id_esp_emp), function (x, z) {
+            $.each($(z).find('td.col_coloracion'), function (k, l) {
                 arrId = $(l).attr('class').split(' ');
-                $(l).removeClass(arrId[3]).addClass('col_coloracion_'+id_esp_emp+'_'+k);
-                $.each($(l).find('input.'+arrId[3]),function(m,n){
+                $(l).removeClass(arrId[3]).addClass('col_coloracion_' + id_esp_emp + '_' + k);
+                $.each($(l).find('input.' + arrId[3]), function (m, n) {
                     arr_id_input_colocarcion = n.id.split("_");
-                    id_input_coloracion = arr_id_input_colocarcion[0]+"_"+arr_id_input_colocarcion[1]+"_"+arr_id_input_colocarcion[2]+"_"+k+"_"+arr_id_input_colocarcion[4]+"_"+arr_id_input_colocarcion[5];
-                    $(n).attr({name:id_input_coloracion,id:id_input_coloracion}).removeClass(arrId[3]).addClass('col_coloracion_'+id_esp_emp+'_'+k).removeClass('elemento_color_'+arr_id_input_colocarcion[3]+'_'+id_esp_emp).addClass('elemento_color_'+k+'_'+id_esp_emp);
+                    id_input_coloracion = arr_id_input_colocarcion[0] + "_" + arr_id_input_colocarcion[1] + "_" + arr_id_input_colocarcion[2] + "_" + k + "_" + arr_id_input_colocarcion[4] + "_" + arr_id_input_colocarcion[5];
+                    $(n).attr({
+                        name: id_input_coloracion,
+                        id: id_input_coloracion
+                    }).removeClass(arrId[3]).addClass('col_coloracion_' + id_esp_emp + '_' + k).removeClass('elemento_color_' + arr_id_input_colocarcion[3] + '_' + id_esp_emp).addClass('elemento_color_' + k + '_' + id_esp_emp);
                 });
             });
         });
 
-        $.each($(j).find('th.th_col_coloracion'),function(o,p){
+        $.each($(j).find('th.th_col_coloracion'), function (o, p) {
             arrIdTH = $(p).attr('class').split(' ');
             arr_th_coloracion = arrIdTH[4].split("_");
-            class_col_coloracion = "col_coloracion_"+arr_th_coloracion[2]+"_"+o;
-            id_th_coloracion = 'celda_col'+"_"+o+"_"+arr_th_coloracion[2];
-            $('th.'+arrIdTH[4]).removeClass(arrIdTH[4]).addClass(class_col_coloracion).attr('id',id_th_coloracion);
+            class_col_coloracion = "col_coloracion_" + arr_th_coloracion[2] + "_" + o;
+            id_th_coloracion = 'celda_col' + "_" + o + "_" + arr_th_coloracion[2];
+            $('th.' + arrIdTH[4]).removeClass(arrIdTH[4]).addClass(class_col_coloracion).attr('id', id_th_coloracion);
 
-            $(p).find("input[type='checkbox']."+arrIdTH[4]).removeClass(arrIdTH[4]).addClass('col_coloracion_'+id_esp_emp+"_"+o)
-                .removeClass('coloracion_'+id_esp_emp+"_"+arr_th_coloracion[3]).addClass('coloracion_'+id_esp_emp+"_"+o).val(o);
+            $(p).find("input[type='checkbox']." + arrIdTH[4]).removeClass(arrIdTH[4]).addClass('col_coloracion_' + id_esp_emp + "_" + o)
+                .removeClass('coloracion_' + id_esp_emp + "_" + arr_th_coloracion[3]).addClass('coloracion_' + id_esp_emp + "_" + o).val(o);
 
-            $(p).find('select.'+arrIdTH[4]).removeClass(arrIdTH[4]).addClass('col_coloracion_'+id_esp_emp+"_"+o)
-                .attr({id:'color_'+o+"_"+id_esp_emp,name:'color_'+o+"_"+id_esp_emp});
+            $(p).find('select.' + arrIdTH[4]).removeClass(arrIdTH[4]).addClass('col_coloracion_' + id_esp_emp + "_" + o)
+                .attr({id: 'color_' + o + "_" + id_esp_emp, name: 'color_' + o + "_" + id_esp_emp});
 
-            $(p).find('input#id_color_'+arr_th_coloracion[3]+'_'+id_esp_emp).attr({id:'id_color_'+o+"_"+id_esp_emp,name:'id_color_'+o+"_"+id_esp_emp});
+            $(p).find('input#id_color_' + arr_th_coloracion[3] + '_' + id_esp_emp).attr({
+                id: 'id_color_' + o + "_" + id_esp_emp,
+                name: 'id_color_' + o + "_" + id_esp_emp
+            });
 
         });
 
-        $.each($("th.precio_col_coloracion"),function(q,r){
+        $.each($("th.precio_col_coloracion"), function (q, r) {
             arrId = $(r).find("input[type='number']").attr('id').split("_");
 
-            $(r).find("input[type='number']").attr({id:'precio_color_'+q+'_'+arrId[3]+'_'+arrId[4],name:'precio_color_'+q+'_'+arrId[3]+'_'+arrId[4]});
+            $(r).find("input[type='number']").attr({
+                id: 'precio_color_' + q + '_' + arrId[3] + '_' + arrId[4],
+                name: 'precio_color_' + q + '_' + arrId[3] + '_' + arrId[4]
+            });
         });
 
     });
 
-    $.each($("tr.tr_parcial_"+id_esp_emp+" th.th_parcial"),function(a,b){
-            arr_id_input_parcial = $(b).find('input.valor_parcial').attr('id').split("_");
-            id_input_parcial = arr_id_input_parcial[0]+"_"+arr_id_input_parcial[1]+"_"+a+"_"+arr_id_input_parcial[3]+"_"+arr_id_input_parcial[4];
-            $(b).find('input.valor_parcial').attr({id:id_input_parcial,name:id_input_parcial});
+    $.each($("tr.tr_parcial_" + id_esp_emp + " th.th_parcial"), function (a, b) {
+        arr_id_input_parcial = $(b).find('input.valor_parcial').attr('id').split("_");
+        id_input_parcial = arr_id_input_parcial[0] + "_" + arr_id_input_parcial[1] + "_" + a + "_" + arr_id_input_parcial[3] + "_" + arr_id_input_parcial[4];
+        $(b).find('input.valor_parcial').attr({id: id_input_parcial, name: id_input_parcial});
     });
 
 }
@@ -1541,7 +1550,7 @@ function calcular_precio_envio() {
                     precio_variedad = z.value == "" ? 0 : z.value;
 
                     if ($("#tipo_especificacion_" + o + "_" + i).val() === "O") {
-                       // console.log($("#td_tallos_x_ramo_" + o + "_" + i).html().trim());
+                        // console.log($("#td_tallos_x_ramo_" + o + "_" + i).html().trim());
                         precio_especificacion += (parseFloat(precio_variedad) * parseFloat($("#td_tallos_x_ramo_" + o + "_" + i).html().trim()) * q.value);
                     } else {
                         ramos_x_caja = $(".input_ramos_x_caja_" + o + "_" + i + "_" + (y + 1)).val();
@@ -1566,7 +1575,7 @@ function calcular_precio_envio() {
     }
 }
 
-function delete_detalle_pedido(id_det_ped,id_pedido,token){
+function delete_detalle_pedido(id_det_ped, id_pedido, token) {
     modal_quest('modal-quest_auto_distribuir',
         '<div class="alert alert-info text-center">¿Desea eliminar el detalle del pedido?</div>',
         '<i class="fa fa-fw fa-exclamation-triangle"></i> Mensaje de confirmación', true, false, '', function () {
@@ -1614,9 +1623,9 @@ function distribuir_pedido_tinturado(det_ped, auto = false, id_esp_emp = false, 
                     id_esp_emp: id_esp_emp
                 };
                 post_jquery('pedidos/auto_distribuir_pedido_tinturado', datos, function () {
-                    $("#auto_distribuir_"+id_esp_emp).addClass('hide');
-                    $("#distrubir_manual_"+id_esp_emp).addClass('hide');
-                    $("#distribuido_"+id_esp_emp).removeClass('hide');
+                    $("#auto_distribuir_" + id_esp_emp).addClass('hide');
+                    $("#distrubir_manual_" + id_esp_emp).addClass('hide');
+                    $("#distribuido_" + id_esp_emp).removeClass('hide');
                     $("#div_distribucion_orden_semanal").empty();
                     ver_todas_distribuciones();
                 });

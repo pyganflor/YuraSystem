@@ -34,8 +34,8 @@
                         {{$g->nombre}}
                     </li>
                     @foreach($g->menus_activosByUser(Session::get('id_usuario')) as $m)
-                        <li class="treeview menu_{{$g->id_grupo_menu}} hide">
-                            <a href="#">
+                        <li class="treeview menu_{{$g->id_grupo_menu}} hide li_menu_lateral">
+                            <a href="#" style="color: white">
                                 <i class="fa fa-{{$m->icono->nombre}}"></i>
                                 <span>{{$m->nombre}}</span>
                                 <span class="pull-right-container">
@@ -47,8 +47,8 @@
                             <ul class="treeview-menu">
                                 @foreach($m->submenus_activos as $s)
                                     @if(isActive_action($s->id_submenu))
-                                        <li>
-                                            <a href="javascript:void(0)" onclick="cargar_url('{{$s->url}}')">
+                                        <li class="li_submenu_lateral">
+                                            <a href="javascript:void(0)" onclick="cargar_url('{{$s->url}}')" style="color: #efefef;">
                                                 <i class="fa fa-circle-o"></i> {!! $s->nombre !!}
                                             </a>
                                         </li>

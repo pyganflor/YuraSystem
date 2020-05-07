@@ -35,7 +35,7 @@
                     <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"
                        onclick="buscar_notificaciones('S', false)">
                         <i class="fa fa-bell-o"></i>
-                        <span class="label label-warning" id="link_not"></span>
+                        <span class="label background-color_yura" id="link_not"></span>
                     </a>
                     <ul class="dropdown-menu" style="width: 450px">
                         <li class="header text-center" id="header_not"></li>
@@ -50,7 +50,7 @@
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         <img src="{{url('storage/imagenes').'/'.getUsuario(Session::get('id_usuario'))->imagen_perfil}}" class="user-image"
                              alt="User Image" id="img_perfil_menu_superior">
-                        <span class="hidden-xs">{{getUsuario(Session::get('id_usuario'))->nombre_completo}}</span>
+                        <span class="hidden-xs text-color_yura">{{getUsuario(Session::get('id_usuario'))->nombre_completo}}</span>
                     </a>
                     <ul class="dropdown-menu">
                         <li class="user-header">
