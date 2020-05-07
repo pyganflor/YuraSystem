@@ -21,7 +21,7 @@
                 <li class="dropdown notifications-menu">
                     <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"
                        onclick="actualizar_cosecha_x_variedad('li_cosecha_hoy', false)">
-                        <i class="fa fa-leaf"></i>
+                        <i class="fa fa-leaf text-color_yura"></i>
                     </a>
                     <ul class="dropdown-menu" style="">
                         <li>
@@ -34,7 +34,7 @@
                 <li class="dropdown notifications-menu" title="Notifícame">
                     <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"
                        onclick="buscar_notificaciones('S', false)">
-                        <i class="fa fa-bell-o"></i>
+                        <i class="fa fa-bell-o text-color_yura"></i>
                         <span class="label label-success" id="link_not"></span>
                     </a>
                     <ul class="dropdown-menu" style="width: 450px">
@@ -53,29 +53,23 @@
                         <span class="hidden-xs text-color_yura">{{getUsuario(Session::get('id_usuario'))->nombre_completo}}</span>
                     </a>
                     <ul class="dropdown-menu">
-                        <li class="user-header">
-                            <img src="{{url('storage/imagenes').'/'.getUsuario(Session::get('id_usuario'))->imagen_perfil}}"
-                                 class="img-circle" alt="User Image" id="img_perfil_menu_superior_2">
-
-                            <p>
-                                {{getUsuario(Session::get('id_usuario'))->nombre_completo}}
-                                <small>Miembro desde {{substr(getUsuario(Session::get('id_usuario'))->fecha_registro,0,10)}}</small>
-                            </p>
+                        <li class="user-body text-center text-color_yura">
+                            <small>Miembro desde {{substr(getUsuario(Session::get('id_usuario'))->fecha_registro,0,10)}}</small>
                         </li>
                         <li class="user-footer">
                             <div class="pull-left">
-                                <a href="javascript:void(0)" class="btn btn-default btn-flat" onclick="cargar_url('perfil')">
+                                <a href="javascript:void(0)" class="btn btn-yura_default" onclick="cargar_url('perfil')">
                                     Mi Perfil
                                 </a>
                             </div>
                             <div class="pull-right">
-                                <a href="javascript:void(0)" onclick="cargar_url('logout')" class="btn btn-default btn-flat">Salir</a>
+                                <a href="javascript:void(0)" onclick="cargar_url('logout')" class="btn btn-yura_default">Salir</a>
                             </div>
                         </li>
                     </ul>
                 </li>
                 <li>
-                    <a href="#" data-toggle="control-sidebar"><i class="fa fa-gears"></i></a>
+                    <a href="#" data-toggle="control-sidebar"><i class="fa fa-gears text-color_yura"></i></a>
                 </li>
             </ul>
         </div>
