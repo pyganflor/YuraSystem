@@ -259,6 +259,6 @@ table.dataTable thead .sorting_desc_disabled:after {
     border: 1px solid #5A71771A;
 }
 
-.modal-content {
+.modal-content, .alert {
     border-radius: 20px !important;
 }
