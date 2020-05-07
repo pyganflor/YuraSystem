@@ -1,10 +1,11 @@
 <div id="table_recepciones">
     @if(sizeof($listado)>0)
-        <table width="100%" class="table table-bordered table-striped" style="font-size: 0.8em; border-color: #5A71771A"
+        <table width="100%" class="table table-bordered table-striped"
+               style="font-size: 0.8em; border-color: #5A71771A; border-radius: 18px 18px 0 0;"
                id="table_content_recepciones">
             <thead>
             <tr>
-                <th class="text-left th_yura_default">
+                <th class="text-left th_yura_default" style="border-radius: 18px 0 0 0;">
                     SEMANA
                 </th>
                 <th class="text-left th_yura_default">
@@ -16,7 +17,7 @@
                 <th class="text-left th_yura_default">
                     CANTIDADES
                 </th>
-                <th class="text-left th_yura_default" style="background: #00B3881A 0% 0% no-repeat padding-box">
+                <th class="text-left th_yura_default" style="border-radius: 0 18px 0 0">
                     OPCIONES
                 </th>
             </tr>
