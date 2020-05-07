@@ -161,12 +161,12 @@
     <section class="content-header">
         <h1>
             Bienvenido
-            <small>a <a href="{{url('')}}">{{explode('//',url(''))[1]}}</a></small>
+            <small>a <a href="{{url('')}}" class="text-color_yura">{{explode('//',url(''))[1]}}</a></small>
         </h1>
         <ol class="breadcrumb">
             <li class="active">
-                <a href="javascript:void(0)" onclick="location.reload()">
-                    <i class="fa fa-fw fa-refresh"></i> Inicio
+                <a href="javascript:void(0)" onclick="location.reload()" class="text-color_yura">
+                    <i class="fa fa-fw fa-refresh text-color_yura"></i> Inicio
                 </a>
             </li>
         </ol>
@@ -318,14 +318,6 @@
             </div>
 
             <div id="box_arbol" class="hide" style="margin-bottom: 10px">
-                <select name="filtro_variedad" id="filtro_variedad" class="pull-left select-yura_default" onchange="select_filtro_variedad()"
-                        style="top: 192px; left: 252px; width: 126px; height: 31px;">
-                    <option value="" id="option_acumulado_var">Acumulado</option>
-                    @foreach(getVariedades() as $var)
-                        <option value="{{$var->id_variedad}}">{{$var->siglas}}</option>
-                    @endforeach
-                </select>
-
                 <div id="div_box_body">
                     <table style="width: 100%;" align="center" class="table-borsdered">
                         <tr>
@@ -334,7 +326,15 @@
                             @endfor
                         </tr>
                         <tr>
-                            <td colspan="6"></td>
+                            <td colspan="6">
+                                <select name="filtro_variedad" id="filtro_variedad" class="pull-left select-yura_default" onchange="select_filtro_variedad()"
+                                        style="margin-top: 0; width: 126px; height: 31px;">
+                                    <option value="" id="option_acumulado_var">Acumulado</option>
+                                    @foreach(getVariedades() as $var)
+                                        <option value="{{$var->id_variedad}}">{{$var->siglas}}</option>
+                                    @endforeach
+                                </select>
+                            </td>
                             <td colspan="4" class="text-center">
                                 <div style="" class="td-org">
                                     <div class="row">
@@ -373,7 +373,8 @@
                                     </div>
                                 </div>
                             </td>
-                            <td colspan="6"></td>
+                            <td colspan="6">
+                            </td>
                         </tr>
                         <tr>
                             <td colspan="4"></td>

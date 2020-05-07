@@ -24,7 +24,15 @@
         @endfor
     </tr>
     <tr>
-        <td colspan="6"></td>
+        <td colspan="6">
+            <select name="filtro_variedad" id="filtro_variedad" class="pull-left select-yura_default" onchange="select_filtro_variedad()"
+                    style="margin-top: 0; width: 126px; height: 31px;">
+                <option value="" id="option_acumulado_var">Acumulado</option>
+                @foreach(getVariedades() as $var)
+                    <option value="{{$var->id_variedad}}" {{$variedad->id_variedad == $var->id_variedad ? 'selected' : ''}}>{{$var->siglas}}</option>
+                @endforeach
+            </select>
+        </td>
         <td colspan="4" class="text-center">
             <div style="" class="td-org">
                 <div class="row">
