@@ -1,45 +1,36 @@
 <div id="table_recepciones">
     @if(sizeof($listado)>0)
-        <table width="100%" class="table table-responsive table-bordered"
-               style="font-size: 0.8em; border-color: #9d9d9d"
+        <table width="100%" class="table table-bordered table-striped" style="font-size: 0.8em; border-color: #5A71771A"
                id="table_content_recepciones">
             <thead>
-            <tr style="background-color: #dd4b39; color: white">
-                <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
-                    style="border-color: #9d9d9d">
+            <tr>
+                <th class="text-left th_yura_default">
                     SEMANA
                 </th>
-                <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
-                    style="border-color: #9d9d9d">
+                <th class="text-left th_yura_default">
                     FECHA
                 </th>
-                <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
-                    style="border-color: #9d9d9d">
+                <th class="text-left th_yura_default">
                     TALLOS
                 </th>
-                <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
-                    style="border-color: #9d9d9d">
+                <th class="text-left th_yura_default">
                     CANTIDADES
                 </th>
-                <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
-                    style="border-color: #9d9d9d">
+                <th class="text-left th_yura_default" style="background: #00B3881A 0% 0% no-repeat padding-box">
                     OPCIONES
                 </th>
             </tr>
             </thead>
             @foreach($listado as $item)
-                <tr onmouseover="$(this).css('background-color','#add8e6')"
-                    onmouseleave="$(this).css('background-color','')" class="{{$item->estado == 1?'':'error'}}"
-                    id="row_recepciones_{{$item->id_recepcion}}">
-                    <td style="border-color: #9d9d9d" class="text-center">{{$item->semana}}</td>
-                    <td style="border-color: #9d9d9d" class="text-center">{{substr($item->fecha_ingreso,0,16)}}</td>
-                    <td style="border-color: #9d9d9d" class="text-center mouse-hand" data-toggle="popover"
-                        title="Cantidad de tallos" id="popover_tallos_{{$item->id_recepcion}}">
-                        <a href="javascript:void(0)">
-                            {{getRecepcion($item->id_recepcion)->cantidad_tallos()}}
-                        </a>
+                <tr onmouseover="$(this).css('background-color','#e5f7f3 !important');"
+                    onmouseleave="$(this).css('background-color','white');" class="{{$item->estado == 1?'':'error'}}"
+                    id="row_recepciones_{{$item->id_recepcion}}" style="background-color: white; border-bottom: 1px solid black">
+                    <td class="text-left">{{$item->semana}}</td>
+                    <td class="text-left">{{substr($item->fecha_ingreso,0,16)}}</td>
+                    <td class="text-left" title="Cantidad de tallos">
+                        {{getRecepcion($item->id_recepcion)->cantidad_tallos()}}
                     </td>
-                    <td style="border-color: #9d9d9d" class="text-center">
+                    <td class="text-left">
                         @foreach(getRecepcion($item->id_recepcion)->desgloses as $recepcion)
                             {{$recepcion->variedad->planta->nombre}} - {{$recepcion->variedad->siglas}}:
                             <strong>{{$recepcion->cantidad_mallas}}</strong> mallas
@@ -49,11 +40,11 @@
                             <br>
                         @endforeach
                     </td>
-                    <td style="border-color: #9d9d9d" class="text-center">
-                        <a href="javascript:void(0)" class="btn btn-default btn-xs" title="Detalles"
+                    <td class="text-center">
+                        <a href="javascript:void(0)" class="btn btn-yura_primary btn-xs" title="Detalles"
                            onclick="ver_recepcion('{{$item->id_recepcion}}')"
                            id="btn_view_recepcion_{{$item->id_recepcion}}">
-                            <i class="fa fa-fw fa-eye" style="color: black"></i>
+                            <i class="fa fa-fw fa-eye"></i>
                         </a>
                         {{--@if(getUsuario(Session::get('id_usuario'))->rol()->tipo == 'P')
                             <a href="javascript:void(0)"
