@@ -69,7 +69,7 @@
     @yield('css_inicio')
     @yield('script_inicio')
 </head>
-<body class="hold-transition skin-blue sidebar-mini">
+<body class="hold-transition skin-black sidebar-mini">
 <div class="wrapper">
 
 @include('layouts.adminlte.menu_superior')
