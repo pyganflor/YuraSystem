@@ -64,7 +64,7 @@
                 <div class="row" style="margin-top: 10px">
                     <div class="col-md-12">
                         <button type="button" class="btn btn-xs btn-block btn-yura_default"
-                                onclick="mostrar_indicadores_claves(4)">
+                                onclick="mostrar_indicadores_claves(4, '{{$variedad->id_variedad}}')">
                             Rentabilidad/m<sup>2</sup>/año
                         </button>
                     </div>
@@ -117,7 +117,7 @@
                 <div class="row" style="margin-top: 10px">
                     <div class="col-md-12">
                         <button type="button" class="btn btn-xs btn-block btn-yura_default"
-                                onclick="mostrar_indicadores_claves(0)">
+                                onclick="mostrar_indicadores_claves(0, '{{$variedad->id_variedad}}')">
                             Ventas/m<sup>2</sup>/año
                         </button>
                     </div>
@@ -222,7 +222,7 @@
                 <div class="row" style="margin-top: 10px">
                     <div class="col-md-12">
                         <button type="button" class="btn btn-xs btn-block btn-yura_default"
-                                onclick="mostrar_indicadores_claves(1)">
+                                onclick="mostrar_indicadores_claves(1, '{{$variedad->id_variedad}}')">
                             Indicadores claves
                         </button>
                     </div>
