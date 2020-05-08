@@ -89,18 +89,16 @@
                         </div>
                     </td>
                 </tr>
-                <tr>
+                <tr id="tr_datos_rendimiento">
                     <td>
                         <div class="form-row">
-                            <div class="col-md-2 col-sm-12 col-xs-12 mt-2 mt-md-0">
+                            <div class="col-md-2 col-sm-12 col-xs-12 mt-2 mt-md-0" id="div_col_rendimiento">
                                 <div class="form-group input-group">
                                     <input type="text" readonly id="rendimiento_cosecha" name="rendimiento_cosecha" style="width: 100%"
                                            class="form-control text-center input-yura_disabled" placeholder="Rendimiento">
                                 </div>
                             </div>
                             <div class="col-md-2 col-sm-12 col-xs-12 mt-2 mt-md-0 text-right" id="html_ver_rendimiento">
-                            </div>
-                            <div class="col-md-8 col-sm-12 col-xs-12 mt-2 mt-md-0 text-right" id="html_filtro_tabla">
                             </div>
                         </div>
                     </td>

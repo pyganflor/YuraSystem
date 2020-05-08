@@ -17,6 +17,7 @@
             estructura_tabla('table_content_recepciones');
             $('#table_content_recepciones_filter label').addClass('text-color_yura');
             $('#table_content_recepciones_filter label input').addClass('input-yura_default');
+            $('#table_content_recepciones_wrapper .row:first').remove();
         }).always(function () {
             $.LoadingOverlay('hide');
         });
