@@ -160,7 +160,7 @@ table.dataTable thead .sorting_desc_disabled:after {
     background: #8ED900 0% 0% no-repeat padding-box !important;
     box-shadow: 0px 2px 6px #0000000A !important;
     border: 1px solid #8ED900 !important;
-    border-radius: 16px !important;
+    border-radius: 18px !important;
     color: white !important;
     opacity: 1;
 }
@@ -175,6 +175,11 @@ table.dataTable thead .sorting_desc_disabled:after {
 .btn-yura_dark {
     color: white;
     border-radius: 18px;
+    background-color: #5A7177 !important;
+}
+
+.bg-yura_dark {
+    color: white;
     background-color: #5A7177 !important;
 }
 
@@ -242,8 +247,20 @@ table.dataTable thead .sorting_desc_disabled:after {
     left: -4px !important;
 }
 
+.span-input-group-yura-fixed {
+    border-radius: 18px 0 0 18px !important;
+    border: 1px solid #707070 !important;
+    z-index: 5 !important;
+}
+
+.span-input-group-yura-last {
+    border-radius: 0 18px 18px 0 !important;
+    border: 1px solid #707070 !important;
+    z-index: 5 !important;
+}
+
 .icon-input-group-yura {
-    color: white !important;
+    color: white;
     position: relative !important;
     left: -5px !important;
     top: 1px !important;

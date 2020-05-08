@@ -37,42 +37,37 @@
             Listado de ingresos
         </legend>
         <div id="div_content_recepciones">
-            <table width="100%" style="margin-bottom: 5px">
+            <table width="100%" style="margin-bottom: 0">
                 <tr>
                     <td>
-                        <div class="row">
-                            <div class="col-md-2">
+                        <div class="form-row">
+                            <div class="col-md-4 col-sm-12 col-xs-12 mt-2 mt-md-0">
                                 <div class="form-group input-group">
-                                        <span class="input-group-addon span-input-group-yura">
-                                            <i class="fa fa-fw fa-calendar icon-input-group-yura"></i>
-                                        </span>
+                                    <span class="input-group-addon bg-yura_dark span-input-group-yura-fixed">
+                                        <i class="fa fa-fw fa-calendar"></i>
+                                    </span>
                                     <input type="date" id="fecha_ingreso_search" name="fecha_ingreso_search" required
-                                           class="form-control input-yura_default text-right" onchange="buscar_listado(); buscar_cosecha()"
-                                           style="left: 15px; z-index: 1">
+                                           class="form-control input-yura_default text-center" onchange="buscar_listado(); buscar_cosecha()"
+                                           style="width: 100% !important;">
                                 </div>
                             </div>
-                            <div class="col-md-2">
-                                <input type="text" readonly id="datos_cosecha" name="datos_cosecha"
-                                       class="form-control text-center input-yura_disabled" placeholder="Cosecha">
-                            </div>
-                            <div class="col-md-2">
+                            <div class="col-md-2 col-sm-12 col-xs-12 mt-2 mt-md-0">
                                 <div class="form-group input-group">
-                                        <span class="input-group-addon span-input-group-yura">
-                                            <i class="fa fa-fw fa-leaf icon-input-group-yura"></i>
-                                        </span>
-                                    <select name="datos_cosecha_x_variedad" id="datos_cosecha_x_variedad"
-                                            class="form-control input-yura_default"
-                                            style="display: none; left: 23px; z-index: 1"></select>
+                                    <input type="text" readonly id="datos_cosecha" name="datos_cosecha" style="width: 100% !important;"
+                                           class="form-control text-center input-yura_disabled" placeholder="Cosecha">
                                 </div>
                             </div>
-                            <div class="col-md-2">
-                                <input type="text" readonly id="rendimiento_cosecha" name="rendimiento_cosecha"
-                                       class="form-control text-center input-yura_disabled" placeholder="Rendimiento">
+                            <div class="col-md-4 col-sm-12 col-xs-12 mt-2 mt-md-0">
+                                <div class="form-group input-group" style="display: none" id="div_cosecha_x_variedad">
+                                    <span class="input-group-addon bg-yura_dark span-input-group-yura-fixed">
+                                        <i class="fa fa-fw fa-leaf"></i>
+                                    </span>
+                                    <select name="datos_cosecha_x_variedad" id="datos_cosecha_x_variedad"
+                                            class="form-control input-yura_default" style="width: 100%;"></select>
+                                </div>
                             </div>
-                            <div class="col-md-2" id="html_ver_rendimiento">
-                            </div>
-                            <div class="col-md-2">
-                                <div class="btn-group pull-right" style="padding: 0px">
+                            <div class="col-md-2 col-sm-12 col-xs-12 mt-2 mt-md-0">
+                                <div class="btn-group" style="padding: 0px; margin-bottom: 25px">
                                         <span class="input-group-btn">
                                     <button class="btn btn-primary btn-yura_primary" onclick="add_recepcion()"
                                             onmouseover="$('#title_btn_add').html('Añadir')"
@@ -90,6 +85,22 @@
                                     </button>
                                 </span>
                                 </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="form-row">
+                            <div class="col-md-2 col-sm-12 col-xs-12 mt-2 mt-md-0">
+                                <div class="form-group input-group">
+                                    <input type="text" readonly id="rendimiento_cosecha" name="rendimiento_cosecha" style="width: 100%"
+                                           class="form-control text-center input-yura_disabled" placeholder="Rendimiento">
+                                </div>
+                            </div>
+                            <div class="col-md-2 col-sm-12 col-xs-12 mt-2 mt-md-0 text-right" id="html_ver_rendimiento">
+                            </div>
+                            <div class="col-md-8 col-sm-12 col-xs-12 mt-2 mt-md-0 text-right" id="html_filtro_tabla">
                             </div>
                         </div>
                     </td>
