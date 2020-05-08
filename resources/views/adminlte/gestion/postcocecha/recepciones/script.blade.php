@@ -247,7 +247,7 @@
 
     function buscar_cosecha() {
         $('#datos_cosecha_x_variedad').html('');
-        $('#datos_cosecha_x_variedad').hide();
+        $('#div_cosecha_x_variedad').hide();
         if ($('#fecha_ingreso_search').val()) {
             datos = {
                 _token: '{{csrf_token()}}',
@@ -257,7 +257,7 @@
             $.post('{{url('recepcion/buscar_cosecha')}}', datos, function (retorno) {
                 $('#datos_cosecha').val(retorno.total_cosecha + ' tallos');
                 if (retorno.listado_x_variedad.length > 0) {
-                    $('#datos_cosecha_x_variedad').show();
+                    $('#div_cosecha_x_variedad').show();
                     for (i = 0; i < retorno.listado_x_variedad.length; i++) {
                         $('#datos_cosecha_x_variedad').append('<option value="">' +
                             retorno.listado_x_variedad[i]['variedad'] + ' ' + retorno.listado_x_variedad[i]['cantidad'] +
