@@ -1,7 +1,7 @@
 <div id="table_recepciones">
     @if(sizeof($listado)>0)
         <table width="100%" class="table table-bordered table-striped"
-               style="font-size: 0.8em; border-color: #5A71771A; border-radius: 18px 18px 0 0;"
+               style="font-size: 0.8em; border-color: #9d9d9d; border-radius: 18px 18px 0 0;"
                id="table_content_recepciones">
             <thead>
             <tr>
@@ -26,12 +26,12 @@
                 <tr onmouseover="$(this).css('background-color','#e5f7f3 !important');"
                     onmouseleave="$(this).css('background-color','white');" class="{{$item->estado == 1?'':'error'}}"
                     id="row_recepciones_{{$item->id_recepcion}}" style="background-color: white; border-bottom: 1px solid black">
-                    <td class="text-left">{{$item->semana}}</td>
-                    <td class="text-left">{{substr($item->fecha_ingreso,0,16)}}</td>
-                    <td class="text-left" title="Cantidad de tallos">
+                    <td class="text-left" style="border-color: #9d9d9d">{{$item->semana}}</td>
+                    <td class="text-left" style="border-color: #9d9d9d">{{substr($item->fecha_ingreso,0,16)}}</td>
+                    <td class="text-left" title="Cantidad de tallos" style="border-color: #9d9d9d">
                         {{getRecepcion($item->id_recepcion)->cantidad_tallos()}}
                     </td>
-                    <td class="text-left">
+                    <td class="text-left" style="border-color: #9d9d9d">
                         @foreach(getRecepcion($item->id_recepcion)->desgloses as $recepcion)
                             {{$recepcion->variedad->planta->nombre}} - {{$recepcion->variedad->siglas}}:
                             <strong>{{$recepcion->cantidad_mallas}}</strong> mallas
@@ -41,7 +41,7 @@
                             <br>
                         @endforeach
                     </td>
-                    <td class="text-center">
+                    <td class="text-center" style="border-color: #9d9d9d">
                         <a href="javascript:void(0)" class="btn btn-yura_primary btn-xs" title="Detalles"
                            onclick="ver_recepcion('{{$item->id_recepcion}}')"
                            id="btn_view_recepcion_{{$item->id_recepcion}}">

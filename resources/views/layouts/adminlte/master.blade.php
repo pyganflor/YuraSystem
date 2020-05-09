@@ -335,6 +335,8 @@
                 $('#' + modal.getId() + '>div').css('width', size);
                 modal.setId(id_modal);
                 arreglo_modals_form.push(modal);
+                $('#btn_cerrar_' + id_modal).addClass('btn-yura_default');
+                $('#btn_guardar_' + id_modal).addClass('btn-yura_primary');
             },
             callback: function () {
                 arreglo_modals_form = [];
@@ -375,6 +377,7 @@
                 $('#' + modal.getId() + '>div').css('width', size);
                 modal.setId(id_modal);
                 arreglo_modals_form.push(modal);
+                $('#btn_cerrar_' + id_modal).addClass('btn-yura_default');
             },
             callback: function () {
                 arreglo_modals_form = [];
