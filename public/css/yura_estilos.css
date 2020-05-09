@@ -156,6 +156,14 @@ table.dataTable thead .sorting_desc_disabled:after {
     opacity: 1;
 }
 
+.input-yura_white {
+    border: 1px solid #707070;
+    border-radius: 18px;
+    letter-spacing: 0px;
+    color: #003729;
+    opacity: 1;
+}
+
 .input-yura_disabled {
     background: #8ED900 0% 0% no-repeat padding-box !important;
     box-shadow: 0px 2px 6px #0000000A !important;
@@ -187,6 +195,12 @@ table.dataTable thead .sorting_desc_disabled:after {
     color: white;
     border-radius: 18px;
     background-color: #00B388 !important;
+}
+
+.btn-yura_danger {
+    color: white;
+    border-radius: 18px;
+    background-color: #d01c62 !important;
 }
 
 .td-org {
@@ -253,6 +267,11 @@ table.dataTable thead .sorting_desc_disabled:after {
     z-index: 5 !important;
 }
 
+.span-input-group-yura-middle {
+    border: 1px solid #707070 !important;
+    z-index: 5 !important;
+}
+
 .span-input-group-yura-last {
     border-radius: 0 18px 18px 0 !important;
     border: 1px solid #707070 !important;
@@ -268,12 +287,12 @@ table.dataTable thead .sorting_desc_disabled:after {
 
 .th_yura_default {
     background: #5A71770D 0% 0% no-repeat padding-box !important;
-    border: 1px solid #5A71771A !important;
+    border: 1px solid #9d9d9d !important;
 }
 
 .td_yura_default {
     background-color: white;
-    border: 1px solid #5A71771A;
+    border: 1px solid #9d9d9d;
 }
 
 .modal-content, .alert {
