@@ -1,5 +1,5 @@
 <div style="overflow-x: scroll; overflow-y: scroll; max-height: 450px">
-    <table class="table-bordered table-striped" style="width: 100%; border: 2px solid #9d9d9d; font-size: 0.9em">
+    <table class="table-bordered table-striped" style="width: 100%; border: 1px solid #9d9d9d; font-size: 0.9em">
         <tr class="tr_fijo_top_0">
             <th class="text-center th_fijo_left_0" style="background-color: #357CA5; color: white; border-color: #9d9d9d; z-index: 9">
                 <div style="padding: 5px">

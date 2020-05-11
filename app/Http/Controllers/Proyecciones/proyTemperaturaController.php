@@ -169,7 +169,7 @@ class proyTemperaturaController extends Controller
         $success = true;
         $msg = '';
         foreach ($request->data as $data) {
-            if ($data['fecha'] != '') {
+            if ($data['fecha'] != '' && $data['minima'] != '' && $data['maxima'] != '' && $data['lluvia'] != '') {
                 $model = Temperatura::All()
                     ->where('estado', 1)
                     ->where('fecha', $data['fecha'])
