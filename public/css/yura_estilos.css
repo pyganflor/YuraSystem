@@ -298,3 +298,7 @@ table.dataTable thead .sorting_desc_disabled:after {
 .modal-content, .alert {
     border-radius: 20px !important;
 }
+
+.border-radius_18 {
+    border-radius: 18px !important;
+}
