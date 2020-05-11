@@ -94,7 +94,8 @@
                         }
                     @endphp
                     <th class="text-center celda_hovered {{$cant_mon < $min_semanas ? 'hide' : ''}}"
-                        style="border-color: #9d9d9d; background-color: #e9ecef !important;" id="td_monitoreo_{{$item['ciclo']->id_ciclo}}_{{$cant_mon}}"
+                        style="border-color: #9d9d9d; background-color: #e9ecef !important;"
+                        id="td_monitoreo_{{$item['ciclo']->id_ciclo}}_{{$cant_mon}}"
                         onmouseover="mouse_over_celda('td_monitoreo_{{$item['ciclo']->id_ciclo}}_{{$cant_mon}}', 1)"
                         onmouseleave="mouse_over_celda('{{$item['ciclo']->id_ciclo}}', 0)">
                         <input type="number" style="width: 100%; border: {{$item['ini_curva'] == $cant_mon ? '3px solid blue' : ''}}"
@@ -162,7 +163,8 @@
                     $ant = $val;
                 @endphp
             @endforeach
-            <th class="text-center th_fijo_right_0" style="border-color: #9d9d9d; background-color: #e9ecef !important;; color: white; z-index: 9">
+            <th class="text-center th_fijo_right_0"
+                style="border-color: #9d9d9d; background-color: #e9ecef !important;; color: white; z-index: 9">
             </th>
         </tr>
         <tr class="tr_fijo_bottom_1">
@@ -171,7 +173,8 @@
                 Crecimiento <sup>semanal</sup>
             </th>
             @foreach($array_crec_sem as $pos_sem => $item)
-                <th class="text-center {{$pos_sem + 1 < $min_semanas ? 'hide' : ''}}" style="border-color: #9d9d9d; background-color: #e9ecef !important;">
+                <th class="text-center {{$pos_sem + 1 < $min_semanas ? 'hide' : ''}}"
+                    style="border-color: #9d9d9d; background-color: #e9ecef !important;">
                     {{$item > 0 ? $item : 0}}
                     <input type="hidden" id="crec_sem_{{$pos_sem + 1}}" value="{{$item > 0 ? $item : 0}}">
                 </th>
@@ -179,7 +182,8 @@
                     array_push($array_crec_dia, round($item > 0 ? $item / 7 : 0, 2))
                 @endphp
             @endforeach
-            <th class="text-center th_fijo_right_0" style="border-color: #9d9d9d; background-color: #e9ecef !important;; color: white; z-index: 9">
+            <th class="text-center th_fijo_right_0"
+                style="border-color: #9d9d9d; background-color: #e9ecef !important;; color: white; z-index: 9">
             </th>
         </tr>
         <tr class="tr_fijo_bottom_0">
@@ -188,7 +192,8 @@
                 Crecimiento <sup>diario</sup>
             </th>
             @foreach($array_crec_dia as $pos_sem => $item)
-                <th class="text-center {{$pos_sem + 1 < $min_semanas ? 'hide' : ''}}" style="border-color: #9d9d9d; background-color: #e9ecef !important;">
+                <th class="text-center {{$pos_sem + 1 < $min_semanas ? 'hide' : ''}}"
+                    style="border-color: #9d9d9d; background-color: #e9ecef !important;">
                     {{$item}}
                     <input type="hidden" id="crec_sem_dia_{{$pos_sem + 1}}"
                            value="{{$item}}">
@@ -342,7 +347,9 @@
             }
         }
         num_sem_proy = proy_sem_prom_ini_curva['cantidad'] > 0 ? Math.round(proy_sem_prom_ini_curva['valor'] / proy_sem_prom_ini_curva['cantidad']) : 0;
-        num_sem_proy > 0 ? $('#th_num_sem_' + num_sem_proy).css('background-color', 'orange !important') : false;
+        num_sem_proy > 0 ? $('#th_num_sem_' + num_sem_proy).css({
+            'cssText': 'background-color: orange !important'
+        }) : false;
     }
 
     $(window).ready(function () {
