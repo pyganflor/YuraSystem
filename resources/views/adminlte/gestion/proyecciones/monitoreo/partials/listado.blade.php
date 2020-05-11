@@ -24,7 +24,9 @@
                 ];
             @endphp
             @for($i = 1; $i <= $num_semanas; $i++)
-                <th class="text-center {{$i < $min_semanas ? 'hide' : ''}} th_yura_default" id="th_num_sem_{{$i}}">
+                <th class="text-center {{$i < $min_semanas ? 'hide' : ''}} th_yura_default"
+                    style="border-color: #9d9d9d; background-color: #e9ecef !important;"
+                    id="th_num_sem_{{$i}}">
                     <div style="width: 50px">
                         {{$i}}º
                     </div>
@@ -56,7 +58,7 @@
             <input type="hidden" id="last_sem_{{$item['ciclo']->id_ciclo}}" value="{{$mon_actual != '' ? $mon_actual->num_sem : ''}}">
             <input type="hidden" id="ini_curva_{{$item['ciclo']->id_ciclo}}" value="{{$item['ini_curva']}}">
             <tr class="{{count($item['monitoreos']) >= $min_semanas && ($modulo->id_sector == $sector || $sector == 'T') ? '' : 'hide'}}">
-                <th class="text-center th_fijo_left_0 th_yura_default" style="border-color: #9d9d9d; background-color: #e9ecef">
+                <th class="text-center th_fijo_left_0 th_yura_default" style="border-color: #9d9d9d; background-color: #e9ecef !important;">
                     <button type="button" class="btn btn-yura_default btn-xs dropdown-toggle" data-toggle="dropdown">
                         {{$modulo->nombre}}
                     </button>
@@ -69,10 +71,10 @@
                         </li>
                     </ul>
                 </th>
-                <th class="text-center th_fijo_left_1 th_yura_default" style="border-color: #9d9d9d; background-color: #e9ecef">
+                <th class="text-center th_fijo_left_1 th_yura_default" style="border-color: #9d9d9d; background-color: #e9ecef !important;">
                     {{$semana->codigo}}
                 </th>
-                <th class="text-center th_fijo_left_2 th_yura_default" style="border-color: #9d9d9d; background-color: #e9ecef">
+                <th class="text-center th_fijo_left_2 th_yura_default" style="border-color: #9d9d9d; background-color: #e9ecef !important;">
                     {{intval(difFechas($item['ciclo']->fecha_inicio, date('Y-m-d'))->days / 7)}}
                 </th>
                 @php
@@ -92,7 +94,7 @@
                         }
                     @endphp
                     <th class="text-center celda_hovered {{$cant_mon < $min_semanas ? 'hide' : ''}}"
-                        style="border-color: #9d9d9d; background-color: #e9ecef" id="td_monitoreo_{{$item['ciclo']->id_ciclo}}_{{$cant_mon}}"
+                        style="border-color: #9d9d9d; background-color: #e9ecef !important;" id="td_monitoreo_{{$item['ciclo']->id_ciclo}}_{{$cant_mon}}"
                         onmouseover="mouse_over_celda('td_monitoreo_{{$item['ciclo']->id_ciclo}}_{{$cant_mon}}', 1)"
                         onmouseleave="mouse_over_celda('{{$item['ciclo']->id_ciclo}}', 0)">
                         <input type="number" style="width: 100%; border: {{$item['ini_curva'] == $cant_mon ? '3px solid blue' : ''}}"
@@ -125,8 +127,8 @@
                         $cant_mon++;
                     @endphp
                 @endfor
-                <th class="text-center th_fijo_right_0" style="border-color: #9d9d9d; background-color: #e9ecef">
-                    <input type="number" style="width: 100%; background-color: #e9ecef" id="ingresar_{{$item['ciclo']->id_ciclo}}"
+                <th class="text-center th_fijo_right_0" style="border-color: #9d9d9d; background-color: #e9ecef !important;">
+                    <input type="number" style="width: 100%; background-color: #e9ecef !important;" id="ingresar_{{$item['ciclo']->id_ciclo}}"
                            class="text-center border-radius_18">
                     <input type="hidden" class="ids_ciclo" value="{{$item['ciclo']->id_ciclo}}">
                 </th>
@@ -160,7 +162,7 @@
                     $ant = $val;
                 @endphp
             @endforeach
-            <th class="text-center th_fijo_right_0" style="border-color: #9d9d9d; background-color: #e9ecef; color: white; z-index: 9">
+            <th class="text-center th_fijo_right_0" style="border-color: #9d9d9d; background-color: #e9ecef !important;; color: white; z-index: 9">
             </th>
         </tr>
         <tr class="tr_fijo_bottom_1">
@@ -169,7 +171,7 @@
                 Crecimiento <sup>semanal</sup>
             </th>
             @foreach($array_crec_sem as $pos_sem => $item)
-                <th class="text-center {{$pos_sem + 1 < $min_semanas ? 'hide' : ''}}" style="border-color: #9d9d9d; background-color: #e9ecef">
+                <th class="text-center {{$pos_sem + 1 < $min_semanas ? 'hide' : ''}}" style="border-color: #9d9d9d; background-color: #e9ecef !important;">
                     {{$item > 0 ? $item : 0}}
                     <input type="hidden" id="crec_sem_{{$pos_sem + 1}}" value="{{$item > 0 ? $item : 0}}">
                 </th>
@@ -177,7 +179,7 @@
                     array_push($array_crec_dia, round($item > 0 ? $item / 7 : 0, 2))
                 @endphp
             @endforeach
-            <th class="text-center th_fijo_right_0" style="border-color: #9d9d9d; background-color: #e9ecef; color: white; z-index: 9">
+            <th class="text-center th_fijo_right_0" style="border-color: #9d9d9d; background-color: #e9ecef !important;; color: white; z-index: 9">
             </th>
         </tr>
         <tr class="tr_fijo_bottom_0">
@@ -186,14 +188,14 @@
                 Crecimiento <sup>diario</sup>
             </th>
             @foreach($array_crec_dia as $pos_sem => $item)
-                <th class="text-center {{$pos_sem + 1 < $min_semanas ? 'hide' : ''}}" style="border-color: #9d9d9d; background-color: #e9ecef">
+                <th class="text-center {{$pos_sem + 1 < $min_semanas ? 'hide' : ''}}" style="border-color: #9d9d9d; background-color: #e9ecef !important;">
                     {{$item}}
                     <input type="hidden" id="crec_sem_dia_{{$pos_sem + 1}}"
                            value="{{$item}}">
                 </th>
             @endforeach
             <th class="text-center th_fijo_right_0 th_fijo_bottom_0"
-                style="border-color: #9d9d9d; background-color: #e9ecef; color: white; z-index: 9" rowspan="3">
+                style="border-color: #9d9d9d; background-color: #e9ecef !important;; color: white; z-index: 9" rowspan="3">
                 <button type="button" class="btn btn-xs btn-block btn-yura_primary" onclick="store_nuevos_ingresos()">
                     <i class="fa fa-fw fa-check"></i>
                 </button>
