@@ -24,9 +24,7 @@
                 ];
             @endphp
             @for($i = 1; $i <= $num_semanas; $i++)
-                <th class="text-center {{$i < $min_semanas ? 'hide' : ''}} th_yura_default"
-                    style="border-color: #9d9d9d; background-color: #e9ecef"
-                    id="th_num_sem_{{$i}}">
+                <th class="text-center {{$i < $min_semanas ? 'hide' : ''}} th_yura_default" id="th_num_sem_{{$i}}">
                     <div style="width: 50px">
                         {{$i}}º
                     </div>
