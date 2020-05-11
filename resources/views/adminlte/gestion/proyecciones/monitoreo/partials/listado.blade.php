@@ -342,7 +342,7 @@
             }
         }
         num_sem_proy = proy_sem_prom_ini_curva['cantidad'] > 0 ? Math.round(proy_sem_prom_ini_curva['valor'] / proy_sem_prom_ini_curva['cantidad']) : 0;
-        num_sem_proy > 0 ? $('#th_num_sem_' + num_sem_proy).css('background-color', 'orange') : false;
+        num_sem_proy > 0 ? $('#th_num_sem_' + num_sem_proy).css('background-color', 'orange !important') : false;
     }
 
     $(window).ready(function () {
