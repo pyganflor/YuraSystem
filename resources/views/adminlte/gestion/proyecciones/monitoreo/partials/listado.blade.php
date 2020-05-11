@@ -355,21 +355,25 @@
     .th_fijo_right_0 {
         position: sticky;
         right: 0;
+        z-index: 5;
     }
 
     .th_fijo_left_0 {
         position: sticky;
         left: 0;
+        z-index: 5;
     }
 
     .th_fijo_left_1 {
         position: sticky;
         left: 71px;
+        z-index: 5;
     }
 
     .th_fijo_left_2 {
         position: sticky;
         left: 142px;
+        z-index: 5;
     }
 
     .tr_fijo_bottom_0 th {
@@ -393,5 +397,6 @@
     .tr_fija_top_0 th {
         position: sticky;
         top: 0;
+        z-index: 5;
     }
 </style>
