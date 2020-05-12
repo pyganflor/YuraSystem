@@ -286,7 +286,7 @@
             overflow-x: scroll;
             overflow-y: scroll;
             width: 100%;
-            max-height: 550px;
+            max-height: 450px;
         }
 
         #table_fenograma_ejecucion {
