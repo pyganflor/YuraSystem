@@ -541,6 +541,7 @@
                 $('#link_not').html('');
                 $('#header_not').html('No hay novedades para usted');
             }
+            $('#header_not').addClass('text-color_yura');
         }, 'json').fail(function (retorno) {
             console.log(retorno);
         });

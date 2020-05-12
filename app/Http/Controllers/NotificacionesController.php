@@ -196,7 +196,7 @@ class NotificacionesController extends Controller
                 $n = UserNotification::find($n->id_user_notification);
                 $n->url = "'" . $n->url . "'";
                 $li .= '<li title="' . $n->texto . '">
-                <a href="javascript:void(0)" onclick="cargar_url(' . $n->url . ')">
+                <a href="javascript:void(0)" class="text-color_yura" onclick="cargar_url(' . $n->url . ')">
                 <i class="fa fa-' . $n->notificacion->icono->nombre . '"></i> ' . $n->texto . '
                 </a></li>';
             }
