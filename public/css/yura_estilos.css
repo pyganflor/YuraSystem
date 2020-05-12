@@ -302,3 +302,12 @@ table.dataTable thead .sorting_desc_disabled:after {
 .border-radius_18 {
     border-radius: 18px !important;
 }
+
+.border-radius_16 {
+    border-radius: 16px !important;
+}
+
+.div_indicadores {
+    padding: 8px 30px;
+    box-shadow: 0px 2px 6px #cecece;
+}
