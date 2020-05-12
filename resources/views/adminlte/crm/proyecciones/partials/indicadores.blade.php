@@ -3,6 +3,8 @@
         <div class="div_indicadores border-radius_16" style="background-color: #30BBBB;">
             <legend class="text-white" style="font-size: 1.1em">Cosechado <sup>+4 semanas</sup></legend>
             <p>Cajas: <strong class="pull-right">{{number_format($indicador[0]->valor,2,",",".")}}</strong></p>
+            <p>Tallos: <strong class="pull-right">{{number_format($indicador[1]->valor,2,",",".")}}</strong></p>
+            <legend></legend>
         </div>
     </div>
     <div class="col-md-4">c</div>
