@@ -1,3 +1,14 @@
+<div class="form-row">
+    <div class="col-md-4">
+        <div style="border-radius: 16px; background-color: #30BBBB; color: white">
+            <legend>Cosechado <sup>+4 semanas</sup></legend>
+        </div>
+    </div>
+    <div class="col-md-4">c</div>
+    <div class="col-md-4">c</div>
+</div>
+
+
 <div class="row">
     <div class="col-md-4" style="cursor:pointer" onclick="modal_indicador('cosecha')">
         <div class="small-box bg-teal-active">
