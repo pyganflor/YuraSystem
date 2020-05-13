@@ -102,7 +102,7 @@ class YuraController extends Controller
             'username.max' => 'El nombre de usuario es muy grande',
             'username.required' => 'El nombre de usuario es obligatorio',
             'h_clave.required' => 'La contraseña es obligatoria',
-            'g-recaptcha-response.required' => 'Haga clic en el captcha de seguridad y espere a que verifique que noe s un robot',
+            'g-recaptcha-response.required' => 'Haga clic en el captcha de seguridad y espere a que verifique que no es un robot',
             'g-recaptcha-response.captcha' => 'El código de verificación es incorrecto',
             //'captcha.required' => 'El código de verificación es obligatorio',
             //'captcha.captcha' => 'El código de verificación es incorrecto',

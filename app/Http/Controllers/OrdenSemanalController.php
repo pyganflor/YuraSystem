@@ -500,7 +500,7 @@ class OrdenSemanalController extends Controller
         $semana = getSemanaByDate($pedido->fecha_pedido);
         $codigo_semana = $semana != '' ? $semana->codigo : '';
         if ($codigo_semana != '')
-            ProyeccionVentaSemanalUpdate::dispatch($codigo_semana, $codigo_semana, 0, $pedido->id_cliente)->onQueue('update_venta_semanal_real');
+            //ProyeccionVentaSemanalUpdate::dispatch($codigo_semana, $codigo_semana, 0, $pedido->id_cliente)->onQueue('update_venta_semanal_real');
         return [
             'id_pedido' => $pedido->id_pedido,
             'success' => true,
@@ -991,8 +991,8 @@ class OrdenSemanalController extends Controller
 
                 $semana = getSemanaByDate($pedido->fecha_pedido);
                 $codigo_semana = $semana != '' ? $semana->codigo : '';
-                if ($codigo_semana != '')
-                    ProyeccionVentaSemanalUpdate::dispatch($codigo_semana, $codigo_semana, 0, $pedido->id_cliente)->onQueue('update_venta_semanal_real');
+               //if ($codigo_semana != '')
+                    //ProyeccionVentaSemanalUpdate::dispatch($codigo_semana, $codigo_semana, 0, $pedido->id_cliente)->onQueue('update_venta_semanal_real');
             } else {
                 $success = false;
                 $msg = '<div class="alert alert-warning text-center">' .
