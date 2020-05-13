@@ -408,7 +408,7 @@
                 modal.setId(id_modal);
                 arreglo_modals_form.push(modal);
                 $('#btn_no_' + id_modal).addClass('btn-yura_default');
-                $('#btn_continue_' + id_modal).addClass('btn-yura_default');
+                $('#btn_continue_' + id_modal).addClass('btn-yura_primary');
             },
             callback: function () {
                 arreglo_modals_form = [];
