@@ -237,7 +237,7 @@
         </li>
     </ul>
 
-    <input type="hidden" id="skin_config" name="skin_config" value="{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}">
+    <input type="hidden" id="skin_config" name="skin_config" value="skin-black">
 
     <button type="button" class="btn btn-block btn-success" onclick="save_config()"><i class="fa fa-fw fa-save"></i> Guardar</button>
 </div>
