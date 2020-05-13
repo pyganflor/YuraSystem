@@ -319,9 +319,9 @@ class PedidoVentaController extends Controller
                 }
             }
             if(count($request->arrFechas) >0 ){
-                $semanaInicio = getSemanaByDate($request->arrFechas[0]['fecha'])->codigo;
-                $semanafin = getSemanaByDate($request->arrFechas[count($request->arrFechas)-1]['fecha'])->codigo;
-                ProyeccionVentaSemanalUpdate::dispatch($semanaInicio,$semanafin,0,$dataPedido->id_cliente)->onQueue('update_venta_semanal_real');
+                //$semanaInicio = getSemanaByDate($request->arrFechas[0]['fecha'])->codigo;
+                //$semanafin = getSemanaByDate($request->arrFechas[count($request->arrFechas)-1]['fecha'])->codigo;
+                //ProyeccionVentaSemanalUpdate::dispatch($semanaInicio,$semanafin,0,$dataPedido->id_cliente)->onQueue('update_venta_semanal_real');
             }
 
         } else {

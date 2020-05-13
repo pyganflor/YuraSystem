@@ -209,7 +209,7 @@ class ProyVentaController extends Controller
                     .'</div>';
 
                 $ultimaSemana = Semana::orderBy('codigo','desc')->select('codigo')->first();
-                ProyeccionVentaSemanalUpdate::dispatch($request->semanas[(count($request->semanas)-1)]['semana'],$ultimaSemana->codigo,$request->id_variedad,0)->onQueue('update_venta_semanal_real');
+                //ProyeccionVentaSemanalUpdate::dispatch($request->semanas[(count($request->semanas)-1)]['semana'],$ultimaSemana->codigo,$request->id_variedad,0)->onQueue('update_venta_semanal_real');
 
             }else{
                 $success = false;

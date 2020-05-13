@@ -315,7 +315,7 @@ class PedidoController extends Controller
                     $semana = getSemanaByDate($objPedido->fecha_pedido);
                     $codigo_semana = $semana != '' ? $semana->codigo : '';
                     if ($codigo_semana != '')
-                        ProyeccionVentaSemanalUpdate::dispatch($codigo_semana, $codigo_semana, 0, $request->id_cliente)->onQueue('update_venta_semanal_real');
+                        //ProyeccionVentaSemanalUpdate::dispatch($codigo_semana, $codigo_semana, 0, $request->id_cliente)->onQueue('update_venta_semanal_real');
                 }
             }
             if (isset($request->arrDataPresentacionYuraVenture) && count($request->arrDataPresentacionYuraVenture)) {
@@ -485,7 +485,7 @@ class PedidoController extends Controller
             $semana = getSemanaByDate($pedido->fecha_pedido);
             $codigo_semana = $semana != '' ? $semana->codigo : '';
             if ($codigo_semana != '')
-                ProyeccionVentaSemanalUpdate::dispatch($codigo_semana, $codigo_semana, 0, $pedido->id_cliente)->onQueue('update_venta_semanal_real');
+                //ProyeccionVentaSemanalUpdate::dispatch($codigo_semana, $codigo_semana, 0, $pedido->id_cliente)->onQueue('update_venta_semanal_real');
         } else {
             $success = false;
             $msg = '<div class="alert alert-danger text-center">' .
