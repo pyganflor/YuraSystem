@@ -1,7 +1,7 @@
 <section class="content-header">
-    <h1 class="text-color_yura">
+    <h1>
         {{$text['titulo']}}
-        <small>{{$text['subtitulo']}}</small>
+        <small class="text-color_yura">{{$text['subtitulo']}}</small>
     </h1>
 
     <ol class="breadcrumb">
