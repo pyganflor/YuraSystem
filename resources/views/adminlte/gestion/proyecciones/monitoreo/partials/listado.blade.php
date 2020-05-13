@@ -1,17 +1,17 @@
 <div style="overflow-x: scroll; overflow-y: scroll; max-height: 450px">
-    <table class="table-striped table-bordered" style="width: 100%; border: 2px solid #9d9d9d; font-size: 0.9em">
+    <table class="table-striped table-bordered" style="width: 100%; border: 1px solid #9d9d9d; font-size: 0.9em">
         <tr class="tr_fija_top_0">
-            <th class="text-center th_fijo_left_0" style="border-color: #9d9d9d; background-color: #357CA5; color: white; z-index: 9">
+            <th class="text-center th_fijo_left_0 background-color_yura" style="border-color: #9d9d9d; color: white; z-index: 9">
                 <div style="width: 70px">
                     Módulo
                 </div>
             </th>
-            <th class="text-center th_fijo_left_1" style="border-color: #9d9d9d; background-color: #357CA5; color: white; z-index: 9">
+            <th class="text-center th_fijo_left_1 background-color_yura" style="border-color: #9d9d9d; color: white; z-index: 9">
                 <div style="width: 70px">
                     Semana Inicio
                 </div>
             </th>
-            <th class="text-center th_fijo_left_2" style="border-color: #9d9d9d; background-color: #357CA5; color: white; z-index: 9">
+            <th class="text-center th_fijo_left_2 background-color_yura" style="border-color: #9d9d9d; color: white; z-index: 9">
                 <div style="width: 70px">
                     Semana Fen.
                 </div>
@@ -24,7 +24,8 @@
                 ];
             @endphp
             @for($i = 1; $i <= $num_semanas; $i++)
-                <th class="text-center {{$i < $min_semanas ? 'hide' : ''}}" style="border-color: #9d9d9d; background-color: #e9ecef"
+                <th class="text-center {{$i < $min_semanas ? 'hide' : ''}} th_yura_default"
+                    style="border-color: #9d9d9d; background-color: #e9ecef !important;"
                     id="th_num_sem_{{$i}}">
                     <div style="width: 50px">
                         {{$i}}º
@@ -37,7 +38,7 @@
                     ]);
                 @endphp
             @endfor
-            <th class="text-center th_fijo_right_0" style="border-color: #9d9d9d; background-color: #357CA5; color: white; z-index: 9">
+            <th class="text-center th_fijo_right_0 background-color_yura" style="border-color: #9d9d9d; color: white; z-index: 9">
                 <div style="width: 70px">
                     Ingresar
                 </div>
@@ -57,22 +58,23 @@
             <input type="hidden" id="last_sem_{{$item['ciclo']->id_ciclo}}" value="{{$mon_actual != '' ? $mon_actual->num_sem : ''}}">
             <input type="hidden" id="ini_curva_{{$item['ciclo']->id_ciclo}}" value="{{$item['ini_curva']}}">
             <tr class="{{count($item['monitoreos']) >= $min_semanas && ($modulo->id_sector == $sector || $sector == 'T') ? '' : 'hide'}}">
-                <th class="text-center th_fijo_left_0" style="border-color: #9d9d9d; background-color: #e9ecef">
-                    <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+                <th class="text-center th_fijo_left_0 th_yura_default" style="border-color: #9d9d9d; background-color: #e9ecef !important;">
+                    <button type="button" class="btn btn-yura_default btn-xs dropdown-toggle" data-toggle="dropdown">
                         {{$modulo->nombre}}
                     </button>
-                    <ul class="dropdown-menu dropdown-menu-left" style="margin-left: 210px; margin-top: 0">
+                    <ul class="dropdown-menu dropdown-menu-left border-radius_18" style="margin-left: 210px; margin-top: 0; top: -1px;">
                         <li>
-                            <a href="javascript:void(0)" onclick="$('.input_ciclo_{{$item['ciclo']->id_ciclo}}').attr('readonly', false)">
+                            <a href="javascript:void(0)" class="btn-yura_default"
+                               onclick="$('.input_ciclo_{{$item['ciclo']->id_ciclo}}').attr('readonly', false)">
                                 Habilitar
                             </a>
                         </li>
                     </ul>
                 </th>
-                <th class="text-center th_fijo_left_1" style="border-color: #9d9d9d; background-color: #e9ecef">
+                <th class="text-center th_fijo_left_1 th_yura_default" style="border-color: #9d9d9d; background-color: #e9ecef !important;">
                     {{$semana->codigo}}
                 </th>
-                <th class="text-center th_fijo_left_2" style="border-color: #9d9d9d; background-color: #e9ecef">
+                <th class="text-center th_fijo_left_2 th_yura_default" style="border-color: #9d9d9d; background-color: #e9ecef !important;">
                     {{intval(difFechas($item['ciclo']->fecha_inicio, date('Y-m-d'))->days / 7)}}
                 </th>
                 @php
@@ -92,13 +94,14 @@
                         }
                     @endphp
                     <th class="text-center celda_hovered {{$cant_mon < $min_semanas ? 'hide' : ''}}"
-                        style="border-color: #9d9d9d; background-color: #e9ecef" id="td_monitoreo_{{$item['ciclo']->id_ciclo}}_{{$cant_mon}}"
+                        style="border-color: #9d9d9d; background-color: #e9ecef !important;"
+                        id="td_monitoreo_{{$item['ciclo']->id_ciclo}}_{{$cant_mon}}"
                         onmouseover="mouse_over_celda('td_monitoreo_{{$item['ciclo']->id_ciclo}}_{{$cant_mon}}', 1)"
                         onmouseleave="mouse_over_celda('{{$item['ciclo']->id_ciclo}}', 0)">
                         <input type="number" style="width: 100%; border: {{$item['ini_curva'] == $cant_mon ? '3px solid blue' : ''}}"
                                id="monitoreo_{{$item['ciclo']->id_ciclo}}_{{$cant_mon}}" data-toggle="tooltip" data-placement="top"
                                data-html="true" title="{{$title}}" value="{{$mon->altura}}" readonly ondblclick="$(this).attr('readonly', false)"
-                               min="0" class="text-center input_sem_{{$cant_mon}} input_ciclo_{{$item['ciclo']->id_ciclo}}"
+                               min="0" class="text-center input_sem_{{$cant_mon}} input_ciclo_{{$item['ciclo']->id_ciclo}} border-radius_18"
                                onchange="guardar_monitoreo('{{$item['ciclo']->id_ciclo}}', '{{$cant_mon}}')">
                         <input type="hidden" id="crec_sem_{{$item['ciclo']->id_ciclo}}_{{$cant_mon}}" value="{{$crec_sem}}">
                         <input type="hidden" id="crec_dia_{{$item['ciclo']->id_ciclo}}_{{$cant_mon}}" value="{{$crec_dia}}">
@@ -118,16 +121,16 @@
                         onmouseleave="mouse_over_celda('{{$item['ciclo']->id_ciclo}}', 0)">
                         <input type="number" style="width: 100%; border: {{$item['ini_curva'] == $cant_mon ? '3px solid blue' : ''}}"
                                id="monitoreo_{{$item['ciclo']->id_ciclo}}_{{$cant_mon}}" readonly
-                               ondblclick="$(this).attr('readonly', false)" class="text-center" min="0"
+                               ondblclick="$(this).attr('readonly', false)" class="text-center border-radius_18" min="0"
                                onchange="guardar_monitoreo('{{$item['ciclo']->id_ciclo}}', '{{$cant_mon}}')">
                     </th>
                     @php
                         $cant_mon++;
                     @endphp
                 @endfor
-                <th class="text-center th_fijo_right_0" style="border-color: #9d9d9d; background-color: #e9ecef">
-                    <input type="number" style="width: 100%; background-color: #e9ecef" id="ingresar_{{$item['ciclo']->id_ciclo}}"
-                           class="text-center">
+                <th class="text-center th_fijo_right_0" style="border-color: #9d9d9d; background-color: #e9ecef !important;">
+                    <input type="number" style="width: 100%; background-color: #e9ecef !important;" id="ingresar_{{$item['ciclo']->id_ciclo}}"
+                           class="text-center border-radius_18">
                     <input type="hidden" class="ids_ciclo" value="{{$item['ciclo']->id_ciclo}}">
                 </th>
             </tr>
@@ -137,7 +140,7 @@
             $array_crec_dia = [];
         @endphp
         <tr class="tr_fijo_bottom_2">
-            <th class="text-center th_fijo_left_0" style="border-color: #9d9d9d; background-color: #357CA5; color: white; z-index: 9"
+            <th class="text-center th_fijo_left_0 background-color_yura" style="border-color: #9d9d9d; color: white; z-index: 9"
                 colspan="3">
                 Promedios <sup title="Altura">cm</sup>
             </th>
@@ -160,16 +163,18 @@
                     $ant = $val;
                 @endphp
             @endforeach
-            <th class="text-center th_fijo_right_0" style="border-color: #9d9d9d; background-color: #e9ecef; color: white; z-index: 9">
+            <th class="text-center th_fijo_right_0"
+                style="border-color: #9d9d9d; background-color: #e9ecef !important;; color: white; z-index: 9">
             </th>
         </tr>
         <tr class="tr_fijo_bottom_1">
-            <th class="text-center th_fijo_left_0" style="border-color: #9d9d9d; background-color: #357CA5; color: white; z-index: 9"
+            <th class="text-center th_fijo_left_0 background-color_yura" style="border-color: #9d9d9d; color: white; z-index: 9"
                 colspan="3">
                 Crecimiento <sup>semanal</sup>
             </th>
             @foreach($array_crec_sem as $pos_sem => $item)
-                <th class="text-center {{$pos_sem + 1 < $min_semanas ? 'hide' : ''}}" style="border-color: #9d9d9d; background-color: #e9ecef">
+                <th class="text-center {{$pos_sem + 1 < $min_semanas ? 'hide' : ''}}"
+                    style="border-color: #9d9d9d; background-color: #e9ecef !important;">
                     {{$item > 0 ? $item : 0}}
                     <input type="hidden" id="crec_sem_{{$pos_sem + 1}}" value="{{$item > 0 ? $item : 0}}">
                 </th>
@@ -177,24 +182,26 @@
                     array_push($array_crec_dia, round($item > 0 ? $item / 7 : 0, 2))
                 @endphp
             @endforeach
-            <th class="text-center th_fijo_right_0" style="border-color: #9d9d9d; background-color: #e9ecef; color: white; z-index: 9">
+            <th class="text-center th_fijo_right_0"
+                style="border-color: #9d9d9d; background-color: #e9ecef !important;; color: white; z-index: 9">
             </th>
         </tr>
         <tr class="tr_fijo_bottom_0">
-            <th class="text-center th_fijo_left_0" style="border-color: #9d9d9d; background-color: #357CA5; color: white; z-index: 9"
+            <th class="text-center th_fijo_left_0 background-color_yura" style="border-color: #9d9d9d; color: white; z-index: 9"
                 colspan="3">
                 Crecimiento <sup>diario</sup>
             </th>
             @foreach($array_crec_dia as $pos_sem => $item)
-                <th class="text-center {{$pos_sem + 1 < $min_semanas ? 'hide' : ''}}" style="border-color: #9d9d9d; background-color: #e9ecef">
+                <th class="text-center {{$pos_sem + 1 < $min_semanas ? 'hide' : ''}}"
+                    style="border-color: #9d9d9d; background-color: #e9ecef !important;">
                     {{$item}}
                     <input type="hidden" id="crec_sem_dia_{{$pos_sem + 1}}"
                            value="{{$item}}">
                 </th>
             @endforeach
             <th class="text-center th_fijo_right_0 th_fijo_bottom_0"
-                style="border-color: #9d9d9d; background-color: #e9ecef; color: white; z-index: 9" rowspan="3">
-                <button type="button" class="btn btn-xs btn-block btn-success" onclick="store_nuevos_ingresos()">
+                style="border-color: #9d9d9d; background-color: #e9ecef !important;; color: white; z-index: 9" rowspan="3">
+                <button type="button" class="btn btn-xs btn-block btn-yura_primary" onclick="store_nuevos_ingresos()">
                     <i class="fa fa-fw fa-check"></i>
                 </button>
             </th>
@@ -210,8 +217,8 @@
     </legend>
     <div class="panel-collapse collapse" id="collapseLeyenda">
         <ul style="margin-top: 5px" class="list-unstyled">
-            <li>Por encima de la media <i class=" fa fa-fw fa-circle" style="color: #30b32d"></i></li>
-            <li>Por debajo de la media <i class="fa fa-fw fa-circle" style="color: #f03e3e"></i></li>
+            <li>Por encima de la media <i class=" fa fa-fw fa-circle" style="color: #00B388"></i></li>
+            <li>Por debajo de la media <i class="fa fa-fw fa-circle" style="color: #D01C62"></i></li>
             <li>Semana de inicio de curva en módulos SIN primera flor <i class="fa fa-fw fa-circle-o" style="color: orange"></i></li>
             <li>Semana de inicio de curva en módulos CON primera flor <i class="fa fa-fw fa-circle-o" style="color: blue"></i></li>
             <li>Semana PROMEDIO de inicio de curva <sup>real</sup> <i class="fa fa-fw fa-circle" style="color: #fbff00"></i></li>
@@ -257,9 +264,9 @@
             for (y = 0; y < inputs.length; y++) {
                 if (inputs[y].value > 0) {
                     if (parseFloat(inputs[y].value) >= parseFloat($('#prom_sem_' + i).val())) {
-                        $('#' + inputs[y].id).css('background-color', '#30b32d');   // verde
+                        $('#' + inputs[y].id).css('background-color', '#00B388');   // verde
                     } else {
-                        $('#' + inputs[y].id).css('background-color', '#f03e3e');   // rojo
+                        $('#' + inputs[y].id).css('background-color', '#D01C62');   // rojo
                     }
                     $('#' + inputs[y].id).css('color', 'white');
                 }
@@ -270,6 +277,7 @@
     function store_nuevos_ingresos() {
         ids_ciclo = $('.ids_ciclo');
         data = [];
+        flag = false;
         for (i = 0; i < ids_ciclo.length; i++) {
             id_ciclo = ids_ciclo[i].value;
             valor = $('#ingresar_' + id_ciclo).val();
@@ -278,15 +286,18 @@
                     ciclo: id_ciclo,
                     valor: valor
                 });
+                flag = true;
             }
         }
-        datos = {
-            _token: '{{csrf_token()}}',
-            data: data
-        };
-        post_jquery('{{url('monitoreo_ciclos/store_nuevos_ingresos')}}', datos, function () {
-            listar_ciclos();
-        }, 'div_listado_ciclos');
+        if (flag) {
+            datos = {
+                _token: '{{csrf_token()}}',
+                data: data
+            };
+            post_jquery('{{url('monitoreo_ciclos/store_nuevos_ingresos')}}', datos, function () {
+                listar_ciclos();
+            }, 'div_listado_ciclos');
+        }
     }
 
     function proyectar_inicio_curvas() {    // algoritmo para proyectar el inicio de curva
@@ -336,7 +347,9 @@
             }
         }
         num_sem_proy = proy_sem_prom_ini_curva['cantidad'] > 0 ? Math.round(proy_sem_prom_ini_curva['valor'] / proy_sem_prom_ini_curva['cantidad']) : 0;
-        num_sem_proy > 0 ? $('#th_num_sem_' + num_sem_proy).css('background-color', 'orange') : false;
+        num_sem_proy > 0 ? $('#th_num_sem_' + num_sem_proy).css({
+            'cssText': 'background-color: orange !important'
+        }) : false;
     }
 
     $(window).ready(function () {
@@ -349,21 +362,25 @@
     .th_fijo_right_0 {
         position: sticky;
         right: 0;
+        z-index: 5;
     }
 
     .th_fijo_left_0 {
         position: sticky;
         left: 0;
+        z-index: 5;
     }
 
     .th_fijo_left_1 {
         position: sticky;
         left: 71px;
+        z-index: 5;
     }
 
     .th_fijo_left_2 {
         position: sticky;
         left: 142px;
+        z-index: 5;
     }
 
     .tr_fijo_bottom_0 th {
@@ -387,5 +404,6 @@
     .tr_fija_top_0 th {
         position: sticky;
         top: 0;
+        z-index: 5;
     }
 </style>

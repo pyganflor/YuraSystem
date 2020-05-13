@@ -23,6 +23,7 @@ use yura\Console\Commands\UpdateProyeccionSemanal;
 use yura\Console\Commands\ResumenVentaDiariaMesAnterior;
 use yura\Console\Commands\UpdateRegalias;
 use yura\Console\Commands\UpdateResumenTotal;
+use yura\Console\Commands\UpdateTemperaturasByModulo;
 use yura\Console\Commands\VentaSemanalReal;
 use yura\Console\Commands\PrecioVariedadCliente;
 use yura\Console\Commands\ResumenSemanaCosecha;
@@ -57,6 +58,7 @@ class Kernel extends ConsoleKernel
         UpdateResumenTotal::class,
         UpdateMonitoreoCiclos::class,
         RecalcularCurvas::class,
+        UpdateTemperaturasByModulo::class,
     ];
 
     /**
@@ -87,7 +89,8 @@ class Kernel extends ConsoleKernel
         $schedule->command('indicador_semana:update')->cron('40 0 * * *')->runInBackground(); // IndicadorSemanal::class
         $schedule->command('resumen_saldo_proyeccion:venta_semanal')->cron('*/15 * * * *')->runInBackground(); // ResumenSaldoProyeccionVentaSemanal::class
         $schedule->command('ciclo:update_monitoreo')->cron('35 * * * *')->runInBackground(); // UpdateMonitoreoCiclos::class
-        $schedule->command('curva_cosecha:recalcular')->cron('1 0 * * 1')->runInBackground(); // RecalcularCurvas::class
+        $schedule->command('curva_cosecha:recalcular')->cron('0 * * * *')->runInBackground(); // RecalcularCurvas::class
+        $schedule->command('ciclo:update_temperaturas')->cron('5 * * * *')->runInBackground(); // UpdateTemperaturasByModulo::class
     }
 
     /**

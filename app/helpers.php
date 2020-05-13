@@ -583,6 +583,7 @@ function getGrupoMenusOfUser($usuario)
         ->join('rol_submenu as rs', 's.id_submenu', '=', 'rs.id_submenu')
         ->select('g.id_grupo_menu')->distinct()
         ->where('rs.id_rol', '=', getUsuario(Session::get('id_usuario'))->id_rol)
+        ->where('rs.estado', '=', 'A')
         ->where('g.estado', '=', 'A')
         ->orderBy('g.nombre')->get();
     $g = [];
@@ -1694,7 +1695,7 @@ function getSubmenusByTipo($tipo)
 function porcentaje($a, $b, $tipo)
 {
     if ($tipo == 1) { // a es el % de b
-        $r = round(($a / $b) * 100, 2);
+        $r = $b > 0 ? round(($a / $b) * 100, 2) : 0;
     }
     return $r;
 }

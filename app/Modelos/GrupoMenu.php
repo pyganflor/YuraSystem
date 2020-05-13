@@ -27,4 +27,20 @@ class GrupoMenu extends Model
     {
         return $this->hasMany('\yura\Modelos\Menu', 'id_grupo_menu')->where('estado', '=', 'A')->orderBy('nombre');
     }
+
+    public function menus_activosByUser($user)
+    {
+        $r = [];
+        foreach ($this->menus_activos as $m) {
+            $flag = false;
+            foreach ($m->submenus_activos as $s) {
+                if (isActive_action($s->id_submenu)) {
+                    $flag = true;
+                }
+            }
+            if ($flag)
+                array_push($r, $m);
+        }
+        return $r;
+    }
 }

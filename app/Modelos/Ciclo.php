@@ -47,6 +47,11 @@ class Ciclo extends Model
         return $this->hasMany('\yura\Modelos\Monitoreo', 'id_ciclo');
     }
 
+    public function temperaturas()
+    {
+        return $this->hasMany('\yura\Modelos\CicloTemperatura', 'id_ciclo');
+    }
+
     public function getTallosCosechados($dias_ini = 1)  // dias_ini: Dias despues del inicio de ciclo a tener en cuenta
     {
         $fin = date('Y-m-d');
@@ -151,6 +156,28 @@ class Ciclo extends Model
 
     public function getTallosProyectados()
     {
-        return round(($this->plantas_actuales() * $this->conteo) * ( (100 - $this->desecho) / 100 ), 2);
+        return round(($this->plantas_actuales() * $this->conteo) * ((100 - $this->desecho) / 100), 2);
+    }
+
+    public function getTemperaturaBySemanaFenograma($semana = null)
+    {
+        $semana = $semana != null ? $semana : (intval(difFechas($this->fecha_inicio, date('Y-m-d'))->days / 7) + 1);
+        $temp = CicloTemperatura::All()
+            ->where('estado', 1)
+            ->where('id_ciclo', $this->id_ciclo)
+            ->where('num_semana', $semana)
+            ->fisrt();
+        return $temp;
+    }
+
+    public function getTemperaturaByFecha($fecha)
+    {
+        $acumulado = DB::table('temperatura')
+            ->select(DB::raw('sum(((minima + maxima) / 2) - 8) as cant'))
+            ->where('estado', 1)
+            ->where('fecha', '>=', $this->fecha_inicio)
+            ->where('fecha', '<=', $fecha)
+            ->get()[0]->cant;
+        return round($acumulado, 2);
     }
 }

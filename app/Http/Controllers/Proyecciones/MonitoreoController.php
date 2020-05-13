@@ -20,7 +20,7 @@ class MonitoreoController extends Controller
             'url' => $request->getRequestUri(),
             'submenu' => Submenu::Where('url', '=', substr($request->getRequestUri(), 1))->get()[0],
             'grupos_menu' => GrupoMenu::All(),
-            'sectores' => Sector::All()->where('estado', 1)->where('interno', 1)
+            'sectores' => Sector::All()->where('estado', 1)->where('interno', 1)->sortBy('nombre')
         ]);
     }
 
@@ -31,7 +31,7 @@ class MonitoreoController extends Controller
             ->where('id_variedad', $request->variedad)
             ->orderBy('fecha_inicio', 'desc')
             ->where('poda_siembra', $request->poda_siembra)
-            ->get();
+            ->get();    // ciclos activos
 
         $ciclos = [];
         foreach ($query as $item) {

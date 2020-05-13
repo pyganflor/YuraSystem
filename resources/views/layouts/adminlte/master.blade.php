@@ -69,7 +69,7 @@
     @yield('css_inicio')
     @yield('script_inicio')
 </head>
-<body class="hold-transition skin-blue sidebar-mini">
+<body class="hold-transition skin-black sidebar-mini">
 <div class="wrapper">
 
 @include('layouts.adminlte.menu_superior')
@@ -335,6 +335,8 @@
                 $('#' + modal.getId() + '>div').css('width', size);
                 modal.setId(id_modal);
                 arreglo_modals_form.push(modal);
+                $('#btn_cerrar_' + id_modal).addClass('btn-yura_default');
+                $('#btn_guardar_' + id_modal).addClass('btn-yura_primary');
             },
             callback: function () {
                 arreglo_modals_form = [];
@@ -375,6 +377,7 @@
                 $('#' + modal.getId() + '>div').css('width', size);
                 modal.setId(id_modal);
                 arreglo_modals_form.push(modal);
+                $('#btn_cerrar_' + id_modal).addClass('btn-yura_default');
             },
             callback: function () {
                 arreglo_modals_form = [];
@@ -404,6 +407,8 @@
                 $('#' + modal.getId() + '>div').css('width', size);
                 modal.setId(id_modal);
                 arreglo_modals_form.push(modal);
+                $('#btn_no_' + id_modal).addClass('btn-yura_default');
+                $('#btn_continue_' + id_modal).addClass('btn-yura_default');
             },
             callback: function () {
                 arreglo_modals_form = [];
@@ -536,6 +541,7 @@
                 $('#link_not').html('');
                 $('#header_not').html('No hay novedades para usted');
             }
+            $('#header_not').addClass('text-color_yura');
         }, 'json').fail(function (retorno) {
             console.log(retorno);
         });
@@ -760,6 +766,27 @@
     // FUNCION PARA SUMAR DIAS AL DIA DE HOY
     function sum_dias(dias) {
         var fecha = new Date();
+        fecha.setDate(fecha.getDate() + dias);
+
+        var dd = fecha.getDate();
+        var mm = fecha.getMonth() + 1; //January is 0!
+        var yyyy = fecha.getFullYear();
+
+        if (dd < 10) {
+            dd = '0' + dd
+        }
+        if (mm < 10) {
+            mm = '0' + mm
+        }
+
+        fecha = yyyy + '-' + mm + '-' + dd;
+
+        return fecha;
+    }
+
+    // FUNCION PARA SUMAR DIAS A UNA FECHA
+    function sum_dias_a_fecha(dias, fecha) {
+        var fecha = new Date(fecha);
         fecha.setDate(fecha.getDate() + dias);
 
         var dd = fecha.getDate();

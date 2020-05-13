@@ -15,6 +15,9 @@
         $.get('{{url('recepcion/buscar_recepciones')}}', datos, function (retorno) {
             $('#div_listado_recepciones').html(retorno);
             estructura_tabla('table_content_recepciones');
+            $('#table_content_recepciones_filter label').addClass('text-color_yura');
+            $('#table_content_recepciones_filter label input').addClass('input-yura_default');
+            $('#table_content_recepciones_wrapper .row:first').remove();
         }).always(function () {
             $.LoadingOverlay('hide');
         });
@@ -34,6 +37,8 @@
         $.get(url, function (resul) {
             $('#div_listado_recepciones').html(resul);
             estructura_tabla('table_content_recepciones');
+            $('#table_content_recepciones_filter label').addClass('text-color_yura');
+            $('#table_content_recepciones_filter label input').addClass('input-yura_default');
         }).always(function () {
             $.LoadingOverlay("hide");
         });
@@ -179,24 +184,24 @@
         cant_forms++;
         $('#table_forms_tallos_mallas').append('<tr id="row_form_' + cant_forms + '">' +
             '<td style="border-color: #9d9d9d" class="text-center">' +
-            '<select id="id_modulo_' + cant_forms + '" name="id_modulo_' + cant_forms + '" required' +
+            '<select id="id_modulo_' + cant_forms + '" name="id_modulo_' + cant_forms + '" class="select-yura_default" required' +
             ' onchange="select_modulo_recepcion(' + cant_forms + ')" style="width: 100%">' +
             $('#id_modulo_1').html() +
             '</select>' +
             '</td>' +
             '<td style="border-color: #9d9d9d" class="text-center">' +
-            '<input type="text" class="text-center" readonly id="nombre_variedad_' + cant_forms + '" name="nombre_variedad_' + cant_forms + '"' +
+            '<input type="text" class="text-center input-yura_default" readonly id="nombre_variedad_' + cant_forms + '" name="nombre_variedad_' + cant_forms + '"' +
             ' style="width: 100%" required style="width: 100%">' +
             '<input type="hidden" class="text-center" readonly id="id_variedad_' + cant_forms + '" name="id_variedad_' + cant_forms + '"' +
             ' style="width: 100%" required>' +
             '</td>' +
             '<td style="border-color: #9d9d9d" class="text-center">' +
             '<input type="number" id="cantidad_mallas_' + cant_forms + '" name="cantidad_mallas_' + cant_forms + '" required' +
-            '       min="1" max="1000" style="width: 100%" class="text-center">' +
+            '       min="1" max="1000" style="width: 100%" class="text-center input-yura_white">' +
             '</td>' +
             '<td style="border-color: #9d9d9d" class="text-center" colspan="2">' +
             '<input type="number" id="tallos_x_malla_' + cant_forms + '" name="tallos_x_malla_' + cant_forms + '" required' +
-            '       min="1" max="50" style="width: 100%" class="text-center">' +
+            '       min="1" max="50" style="width: 100%" class="text-center input-yura_white">' +
             '</td>' +
             '</tr>');
         select_modulo_recepcion(cant_forms);
@@ -243,7 +248,7 @@
 
     function buscar_cosecha() {
         $('#datos_cosecha_x_variedad').html('');
-        $('#datos_cosecha_x_variedad').hide();
+        $('#div_cosecha_x_variedad').hide();
         if ($('#fecha_ingreso_search').val()) {
             datos = {
                 _token: '{{csrf_token()}}',
@@ -253,16 +258,16 @@
             $.post('{{url('recepcion/buscar_cosecha')}}', datos, function (retorno) {
                 $('#datos_cosecha').val(retorno.total_cosecha + ' tallos');
                 if (retorno.listado_x_variedad.length > 0) {
-                    $('#datos_cosecha_x_variedad').show();
+                    $('#div_cosecha_x_variedad').show();
                     for (i = 0; i < retorno.listado_x_variedad.length; i++) {
                         $('#datos_cosecha_x_variedad').append('<option value="">' +
-                            retorno.listado_x_variedad[i]['variedad'] + ' ' + retorno.listado_x_variedad[i]['cantidad'] + ' tallos' +
+                            retorno.listado_x_variedad[i]['variedad'] + ' ' + retorno.listado_x_variedad[i]['cantidad'] +
                             '</option>'
                         );
                     }
                 }
                 $('#rendimiento_cosecha').val(retorno.rendimiento + ' tallos/hora');
-                $('#html_ver_rendimiento').html('<button class="btn btn-default" onclick="ver_rendimiento_ini(' + retorno.id_cosecha + ')">' +
+                $('#html_ver_rendimiento').html('<button class="btn btn-default btn-yura_dark" onclick="ver_rendimiento_ini(' + retorno.id_cosecha + ')">' +
                     '<i class="fa fa-fw fa-eye"></i> Ver rendimiento' +
                     '</button>');
             }, 'json').fail(function (retorno) {
