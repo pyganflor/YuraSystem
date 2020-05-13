@@ -151,7 +151,7 @@ class ClienteController extends Controller
                             DB::raw('MIN(codigo) as primera_semana'),
                             DB::raw('MAX(codigo) as ultima_semana')
                         )->first();
-                        ProyeccionVentaSemanalUpdate::dispatch($semana->primera_semana,$semana->ultima_semana,0,$model->id_cliente)->onQueue('update_venta_semanal_real');
+                        //ProyeccionVentaSemanalUpdate::dispatch($semana->primera_semana,$semana->ultima_semana,0,$model->id_cliente)->onQueue('update_venta_semanal_real');
                     } else {
                         $success = false;
                         $msg .= '<div class="alert alert-warning text-center">' .
