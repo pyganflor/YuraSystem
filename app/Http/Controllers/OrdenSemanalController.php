@@ -991,7 +991,7 @@ class OrdenSemanalController extends Controller
 
                 $semana = getSemanaByDate($pedido->fecha_pedido);
                 $codigo_semana = $semana != '' ? $semana->codigo : '';
-                if ($codigo_semana != '')
+               //if ($codigo_semana != '')
                     //ProyeccionVentaSemanalUpdate::dispatch($codigo_semana, $codigo_semana, 0, $pedido->id_cliente)->onQueue('update_venta_semanal_real');
             } else {
                 $success = false;
