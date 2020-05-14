@@ -149,7 +149,7 @@ class RecalcularCurvas extends Command
             $cant_curva_new = count(explode('-', $new_curva));   // cantidad de semanas que durará la cosecha new
 
             /* ======================== ACTUALIZAR LAS TABLAS CICLO y PROYECCION_MODULO ====================== */
-            ProyeccionUpdateCiclo::dispatch($model->id_ciclo, $new_semana_poda_siembra, $new_curva, $model->poda_siembra, $model->plantas_iniciales, $model->plantas_muertas, $model->desecho, $model->conteo, $model->area)
+            ProyeccionUpdateCiclo::dispatch($model->id_ciclo, $new_semana_poda_siembra, $new_curva, $model->poda_siembra, $model->plantas_iniciales, $model->plantas_muertas, $model->desecho, $model->conteo, $model->area, $model->no_recalcular_curva)
                 ->onQueue('update_ciclo')->onConnection('sync');
             $plantas_actuales = $model->plantas_actuales();
 
