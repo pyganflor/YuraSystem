@@ -727,7 +727,7 @@ class proyCosechaController extends Controller
                 $cant_curva_new = count(explode('-', $request->curva));   // cantidad de semanas que durará la cosecha new
 
                 /* ======================== ACTUALIZAR LAS TABLAS CICLO y PROYECCION_MODULO ====================== */
-                ProyeccionUpdateCiclo::dispatch($request->id_ciclo, $request->semana_poda_siembra, $request->curva, $request->poda_siembra, $request->plantas_iniciales, $request->plantas_muertas, $request->desecho, $request->conteo, $request->area)
+                ProyeccionUpdateCiclo::dispatch($request->id_ciclo, $request->semana_poda_siembra, $request->curva, $request->poda_siembra, $request->plantas_iniciales, $request->plantas_muertas, $request->desecho, $request->conteo, $request->area, $request->no_recalcular_curva == 'true' ? 1 : 0)
                     ->onQueue('update_ciclo')->onConnection('sync');
                 $plantas_actuales = $model->plantas_actuales();
 
