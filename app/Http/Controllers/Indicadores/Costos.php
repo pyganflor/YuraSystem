@@ -47,7 +47,7 @@ class Costos
     {
         $model = getIndicadorByName('C2');  // Costos Insumos (-1 semana)
         if ($model != '') {
-            $dias = 7;
+            $dias = 0;
             $semana = '';
             $valor = 0;
             while ($valor <= 0) {
@@ -72,7 +72,7 @@ class Costos
     {
         $model = getIndicadorByName('C7');  // Costos Insumos (-1 semana)
         if ($model != '') {
-            $dias = 7;
+            $dias = 0;
             $semana = '';
             $valor = 0;
             while ($valor <= 0) {
@@ -103,7 +103,7 @@ class Costos
     {
         $model = getIndicadorByName('C8');  // Costos Insumos (-1 semana)
         if ($model != '') {
-            $dias = 7;
+            $dias = 0;
             $semana = '';
             $valor = 0;
             while ($valor <= 0) {

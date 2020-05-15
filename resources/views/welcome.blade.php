@@ -23,6 +23,31 @@
         <button type="button" class="btn btn-block btn-default btn-lg" onclick="recalcular()" id="btn_border">
             RECALCULAR
         </button>
+
+
+        @php
+            $semana = \yura\Modelos\Semana::All()->where('codigo', 2017)->first();
+            $pedidos = \yura\Modelos\Pedido::where('estado', 1)
+                    ->where('fecha_pedido', '>=', $semana->fecha_inicial)
+                    ->where('fecha_pedido', '<=', $semana->fecha_final)
+                    ->get();
+            $venta_sem = 0;
+        @endphp
+        <legend>VENTAS: {{$semana->codigo}} ({{$semana->fecha_inicial}} __ {{$semana->fecha_final}})</legend>
+        <ul>
+            @foreach($pedidos as $p)
+                @php
+                    $facturaAnulada = getFacturaAnulada($p->id_pedido);
+                    $precio = $p->getPrecioByPedido();
+                    if(!$facturaAnulada)
+                        $venta_sem += $precio;
+                @endphp
+                <li class="{{!$facturaAnulada ? 'text-color_yura' : ''}}">
+                    {{$p->id_pedido}} __ {{$p->fecha_pedido}} __ {{$p->cliente->detalle()->nombre_completo}} __ $ {{$precio}}
+                </li>
+            @endforeach
+        </ul>
+        Venta total por semana = {{$venta_sem}}
     </section>
 
     <style>
