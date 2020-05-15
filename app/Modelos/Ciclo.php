@@ -30,6 +30,7 @@ class Ciclo extends Model
         'curva',
         'semana_poda_siembra',
         'desecho',
+        'no_recalcular_curva',
     ];
 
     public function variedad()

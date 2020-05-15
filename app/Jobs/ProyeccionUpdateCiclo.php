@@ -22,13 +22,14 @@ class ProyeccionUpdateCiclo implements ShouldQueue
     protected $desecho;
     protected $conteo;
     protected $area;
+    protected $no_recalcular_curva;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($id_ciclo, $semana_poda_siembra, $curva, $poda_siembra, $plantas_iniciales, $plantas_muertas, $desecho, $conteo, $area)
+    public function __construct($id_ciclo, $semana_poda_siembra, $curva, $poda_siembra, $plantas_iniciales, $plantas_muertas, $desecho, $conteo, $area, $no_recalcular_curva)
     {
         $this->id_ciclo = $id_ciclo;
         $this->semana_poda_siembra = $semana_poda_siembra;
@@ -39,6 +40,7 @@ class ProyeccionUpdateCiclo implements ShouldQueue
         $this->desecho = $desecho;
         $this->conteo = $conteo;
         $this->area = $area;
+        $this->no_recalcular_curva = $no_recalcular_curva;
     }
 
     /**
@@ -58,6 +60,7 @@ class ProyeccionUpdateCiclo implements ShouldQueue
             'desecho' => $this->desecho,
             'conteo' => $this->conteo,
             'area' => $this->area,
+            'no_recalcular_curva' => $this->no_recalcular_curva,
         ]);
     }
 }

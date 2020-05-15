@@ -25,9 +25,12 @@
         <tr>
             <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
                 Curva
+                <input type="checkbox" class="pull-right" title="No recalcular curva"
+                       id="no_recalcular_curva" {{$ciclo->no_recalcular_curva == 1 ? 'checked' : ''}}>
             </th>
             <td class="text-center" style="border-color: #9d9d9d">
-                <input type="text" name="curva" id="curva" style="width: 100%" class="text-center" value="{{$ciclo->curva}}">
+                <input type="text" name="curva" id="curva" style="width: 100%" class="text-center" value="{{$ciclo->curva}}"
+                       onchange="$('#no_recalcular_curva').prop('checked', true)">
             </td>
         </tr>
         <tr>
@@ -36,7 +39,7 @@
             </th>
             <td class="text-center" style="border-color: #9d9d9d">
                 <input type="number" name="semana_poda_siembra" id="semana_poda_siembra" style="width: 100%" class="text-center"
-                       value="{{$ciclo->semana_poda_siembra}}">
+                       value="{{$ciclo->semana_poda_siembra}}" onchange="$('#no_recalcular_curva').prop('checked', true)">
             </td>
         </tr>
         <tr>
@@ -112,6 +115,7 @@
                 conteo: $('#conteo').val(),
                 area: $('#area').val(),
                 filtro_semana_hasta: $('#filtro_predeterminado_hasta').val(),
+                no_recalcular_curva: $('#no_recalcular_curva').prop('checked')
             };
             mod = $('#modulo-edit_ciclo').val();
 

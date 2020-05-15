@@ -15,7 +15,7 @@ class ProyeccionUpdateCiclo extends Command
      *
      * @var string
      */
-    protected $signature = 'proyeccion:update_ciclo {id_ciclo} {semana_poda_siembra} {curva} {poda_siembra} {plantas_iniciales} {plantas_muertas} {desecho} {conteo} {area}';
+    protected $signature = 'proyeccion:update_ciclo {id_ciclo} {semana_poda_siembra} {curva} {poda_siembra} {plantas_iniciales} {plantas_muertas} {desecho} {conteo} {area} {no_recalcular_curva}';
 
     /**
      * The console command description.
@@ -51,6 +51,7 @@ class ProyeccionUpdateCiclo extends Command
         $par_desecho = $this->argument('desecho');
         $par_conteo = $this->argument('conteo');
         $par_area = $this->argument('area');
+        $par_no_recalcular_curva = $this->argument('no_recalcular_curva');
 
         $model = Ciclo::find($par_id_ciclo);
         $semana_fin = getLastSemanaByVariedad($model->id_variedad);
@@ -66,6 +67,7 @@ class ProyeccionUpdateCiclo extends Command
         $model->desecho = $par_desecho;
         $model->conteo = $par_conteo;
         $model->area = $par_area;
+        $model->no_recalcular_curva = $par_no_recalcular_curva;
 
         $model->save();
         bitacora('ciclo', $model->id_ciclo, 'U', 'Actualización satisfactoria de un ciclo');
