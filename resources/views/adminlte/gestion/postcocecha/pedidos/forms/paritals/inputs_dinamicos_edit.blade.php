@@ -329,7 +329,7 @@
                                 @else
                                     <input type="number"
                                            name="precio_{{($x+$cant_esp_creadas)}}" id="precio_{{($x+$cant_esp_creadas)}}_{{$b}}"
-                                           class="text-center precio_{{($x+$cant_esp_creadas)}}  no_edit"
+                                           class="text-center precio_{{($x+$cant_esp_creadas)}} form-control  no_edit"
                                            style="background-color: beige; width: 100%;text-align: left" min="0" onchange="calcular_precio_pedido()" value="0" required>
                                 @endif
                             </td>
@@ -354,13 +354,9 @@
                                 @endforeach
                                 <td class="text-center" style="border-color: #9d9d9d; vertical-align: middle"
                                     rowspan="{{getCantidadDetallesByEspecificacion($item->id_especificacion)}}">
-                                    @if(!isset(getPedido($id_pedido)->envios[0]->comprobante))
-                                        @if(!isset(getPedido($id_pedido)->envios[0]->comprobante) && (isset(getPedido($id_pedido)->envios[0]->comprobante->estado) && getPedido($id_pedido)->envios[0]->comprobante->estado == 1))
-                                            <button type="button" class="btn btn-xs btn-primary" onclick="duplicar_especificacion('{{$item->id_especificacion}}','{{$x+$cant_esp_creadas}}')">
-                                                <i class="fa fa-fw fa-copy"></i>
-                                            </button>
-                                        @endif
-                                    @endif
+                                    <button type="button" class="btn btn-xs btn-primary" onclick="duplicar_especificacion('{{$item->id_especificacion}}','{{$x+$cant_esp_creadas}}')">
+                                        <i class="fa fa-fw fa-copy"></i>
+                                    </button>
                                 </td>
                             @endif
                         </tr>
