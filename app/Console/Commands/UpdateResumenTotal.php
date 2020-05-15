@@ -88,6 +88,7 @@ class UpdateResumenTotal extends Command
                 /*$valor = DB::table('proyeccion_venta_semanal_real')
                     ->select(DB::raw('sum(valor) as cant'))
                     ->where('codigo_semana', $sem)->get()[0]->cant;*/
+                $semana = Semana::All()->where('codigo', $sem)->first();
 
                 $pedidos = Pedido::where('estado', 1)
                     ->where('fecha_pedido', '>=', $semana->fecha_inicial)
