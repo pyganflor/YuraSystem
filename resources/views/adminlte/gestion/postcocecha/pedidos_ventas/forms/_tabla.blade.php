@@ -282,6 +282,9 @@
                                     </th>
                                 @endif
                                 <th class="text-center" style="border-color: #9d9d9d; background-color: #357ca5; color: white" width="60px">
+                                    Precio
+                                </th>
+                                <th class="text-center" style="border-color: #9d9d9d; background-color: #357ca5; color: white" width="60px">
                                     Total
                                 </th>
                                 <th class="text-center" style="border-color: #9d9d9d; background-color: #357ca5; color: white" width="60px">
@@ -353,6 +356,12 @@
                                         </th>
                                     @endif
                                     <td class="text-center" style="border-color: #9d9d9d">
+                                        <input type="text" id="precio_marcacion_{{$pos_marca}}_{{$esp_emp->id_especificacion_empaque}}"
+                                               name="precio_marcacion_{{$pos_marca}}_{{$esp_emp->id_especificacion_empaque}}"
+                                               class="text-center precio_marcacion_{{$esp_emp->id_especificacion_empaque}}"
+                                               style="background-color: #e9ecef; color: #000000; width: 85px">
+                                    </td>
+                                    <td class="text-center" style="border-color: #9d9d9d">
                                         <input type="text" id="total_ramos_marcacion_{{$pos_marca}}_{{$esp_emp->id_especificacion_empaque}}"
                                                name="total_ramos_marcacion_{{$pos_marca}}_{{$esp_emp->id_especificacion_empaque}}" readonly
                                                class="text-center ramos_marcacion_{{$esp_emp->id_especificacion_empaque}}"
@@ -419,7 +428,7 @@
                                         </ul>
                                     </th>
                                 @endif
-
+                                <th class="text-center" style="border-color: #9d9d9d"></th>
                                 <td class="text-center" style="border-color: #9d9d9d">
                                     <input type="text" id="total_ramos_{{$esp_emp->id_especificacion_empaque}}"
                                            name="total_ramos_{{$esp_emp->id_especificacion_empaque}}" readonly class="text-center"
@@ -457,6 +466,7 @@
                                         </ul>
                                     </th>
                                 @endforeach
+                                <th class="text-center" style="border-color: #9d9d9d"></th>
                                 <th class="text-center" style="border-color: #9d9d9d">
                                     PRECIO TOTAL
                                 </th>
