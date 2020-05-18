@@ -16,16 +16,29 @@
                     Administración de pedidos
                 </h3>
                 <div class="form-group pull-right" style="margin: 0">
-                    <label for="fecha_pedidos_search" style="margin-right: 10px">Fecha de pedidos</label>
-                    <input type="date" name="fecha_pedidos_search" id="fecha_pedidos_search"
-                           value="{{\Carbon\Carbon::now()->toDateString()}}" onchange="listar_resumen_pedidos($(this).val(),true)">
-                    <select id="id_configuracion_pedido" name="id_configuracion_empresa_pedido"
-                            onchange="listar_resumen_pedidos(document.getElementById('fecha_pedidos_search').value,true,this.value)" style="height: 26px">
-                        <option value="" disabled selected>Ver pedidos de:</option>
-                        @foreach(getConfiguracionEmpresa(null,true) as $empresa)
-                            <option value="{{$empresa->id_configuracion_empresa}}">{{$empresa->nombre}}</option>
+                    {{--<label for="fecha_pedidos_search" style="margin-right: 10px">Fecha de pedidos</label>--}}
+                    <select id="id_cliente" name="id_cliente" style="height: 26px;">
+                        <option value="">Clientes</option>
+                        @foreach($clientes as $cliente)
+                            <option value="{{$cliente->id_cliente}}"> {{$cliente->nombre}} </option>
                         @endforeach
                     </select>
+                    <input type="date" name="fecha_pedidos_search" id="fecha_pedidos_search"
+                               value="{{\Carbon\Carbon::now()->toDateString()}}">
+                    <select id="id_configuracion_pedido" name="id_configuracion_empresa_pedido"
+                                style="height: 26px">
+                            <option value="" disabled selected>Ver pedidos de:</option>
+                            @foreach(getConfiguracionEmpresa(null,true) as $empresa)
+                                <option value="{{$empresa->id_configuracion_empresa}}">{{$empresa->nombre}}</option>
+                            @endforeach
+                        </select>
+                    <button class="btn btn-xs btn-primary"
+                        style="padding: 3px 7px;position: relative;bottom: 2px;right: 3px;"
+                        onclick="listar_resumen_pedidos(document.getElementById('fecha_pedidos_search').value,
+                                                        true,document.getElementById('id_configuracion_pedido').value,
+                                                        document.getElementById('id_cliente').value)">
+                        <i class="fa fa-search"></i>
+                    </button>
                     <span class="dropdown">
                             <button class="btn btn-primary btn-xs dropdown-toggle" type="button" data-toggle="dropdown"
                                     style="padding-top: 3px;padding-bottom: 3px;position: relative;bottom: 2px;">
