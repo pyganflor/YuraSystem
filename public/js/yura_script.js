@@ -887,12 +887,13 @@ function genera_codigo_barra(prefijo, codigo) {
     $.LoadingOverlay('hide');
 }
 
-function listar_resumen_pedidos(fecha, opciones, id_configuracion_empresa) {
+function listar_resumen_pedidos(fecha, opciones, id_configuracion_empresa,id_cliente) {
     $.LoadingOverlay('show');
     datos = {
         fecha: fecha,
         opciones: opciones,
-        id_configuracion_empresa: id_configuracion_empresa
+        id_configuracion_empresa: id_configuracion_empresa,
+        id_cliente: id_cliente
     };
     $.get('despachos/listar_resumen_pedidos', datos, function (retorno) {
         $('#div_listado_blanco').html(retorno);
@@ -1146,7 +1147,6 @@ function update_orden_tinturada(token) {
                     det_ped_arreglo_esp_emp: det_ped_arreglo_esp_emp,
                     det_ped_arreglo_dat_exp: det_ped_arreglo_dat_exp
                 };
-
 
                 if (z == 0) {
                     post_jquery('pedidos/update_orden_tinturada', datos, function () {

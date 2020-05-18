@@ -1,4 +1,5 @@
-<form id="form_despacho_{{$cant_form+1}}" class="form-horizontal sombra_estandar">
+<form id="form_despacho_{{$cant_form+1}}" style="overflow-x: auto"
+      class="form-horizontal sombra_estandar">
     <table width="100%" class="table-responsive table-bordered" style=" border-color: white;margin-top:20px" id="table_despacho_{{$cant_form+1}}">
         <tr>
             <td class="text-center" style="border-color: #9d9d9d;vertical-align: middle"><b>Transportisa</b></td>
@@ -128,7 +129,9 @@
 
         cant_tr_pedido_piezas = $("table#"+tabla+" #tr_pedido_piezas").length;
         arr_pedidos = [];
-        $.each($("input.id_pedido"),function(i,j){ arr_pedidos.push(j.value); });
+        $.each($("input.id_pedido"),function(i,j){
+            arr_pedidos.push(j.value);
+        });
         datos = {
             secuencial : cant_tr_pedido_piezas+1,
             arr_pedidos : arr_pedidos,
@@ -148,7 +151,9 @@
         $.LoadingOverlay('show');
         $.get('{{url('despachos/add_pedido_piezas')}}', datos, function (retorno) {
             $("#"+tabla).append(retorno);
-            if(datos.cant_form == 1){
+            console.log(datos.cant_form);
+            tr_pedido_piezas = $('table#table_despacho_'+datos.cant_form+' tr.tr_pedido_piezas').length;
+            if(datos.cant_form == 1 && tr_pedido_piezas<2){
                 $("#full_1_1").val(parseInt($("#full_box").html()));
                 $("#half_1_1").val(parseInt($("#half_box").html()));
                 $("#cuarto_1_1").val(parseInt($("#cuarto_box").html()));
@@ -181,6 +186,41 @@
 
         cant_tr_pedido_piezas = $("table#"+tabla+" #tr_pedido_piezas").length;
         if(cant_tr_pedido_piezas < 2 )  $("select.pedido").removeAttr('required');
+
+        form = tabla.split("_")[2];
+        calcular_piezas(tabla);
+        calcula_cajas_equivalentes(form);
+    }
+
+    function obetener_piezas(form, sec, select) {
+        pedido = isNaN(parseInt($('#'+select.id+ ' option:selected').text().trim().split("#")[1]))
+                    ? 1
+                    : parseInt($('#'+select.id+ ' option:selected').text().trim().split("#")[1]);
+
+        full = isNaN(parseFloat($(".full_"+pedido).html().trim())) ? 0 : parseFloat($(".full_"+pedido).html().trim());
+        half = isNaN(parseFloat($(".half_"+pedido).html().trim())) ? 0 : parseFloat($(".half_"+pedido).html().trim());
+        cuarto = isNaN(parseFloat($(".cuarto_"+pedido).html().trim())) ? 0 : parseFloat($(".cuarto_"+pedido).html().trim());
+        sexto = isNaN(parseFloat($(".sexto_"+pedido).html().trim())) ? 0 : parseFloat($(".sexto_"+pedido).html().trim());
+        octavo = isNaN(parseFloat($(".octavo_"+pedido).html().trim())) ? 0 : parseFloat($(".octavo_"+pedido).html().trim());
+
+        $("#full_"+form+"_"+sec).val(full);
+        $("#half_"+form+"_"+sec).val(half);
+        $("#cuarto_"+form+"_"+sec).val(cuarto);
+        $("#sexto_"+form+"_"+sec).val(sexto);
+        $("#octavo_"+form+"_"+sec).val(octavo);
+
+        piezas = 0;
+
+        cajas_equivalentes = 0;
+        $.each($("input.caja_"+form),function (i,j) {
+            piezas += isNaN(parseFloat($(j).val()))
+                        ? 0
+                        : parseFloat($(j).val());
+        });
+
+        $("#piezas_x_camion_"+form).html(piezas);
+        calcula_cajas_equivalentes(form);
+        calcular_piezas('table_despacho_'+form);
     }
 
     function calcular_piezas(tabla){
@@ -202,6 +242,41 @@
 
         $.each($("table#"+tabla+" input.caja"),function (i,j) { if(j.value > 0)  piezas_camion += parseInt(j.value); });
         $("table#"+tabla+" span.piezas_x_camion").html(piezas_camion);
+        form = tabla.split("_")[2];
+        calcula_cajas_equivalentes(form);
 
+    }
+
+    function calcula_cajas_equivalentes(form){
+        cajas_equivalentes=0;
+        console.log(form);
+        $.each($("input.caja_"+form),function (i,j) {
+            p = isNaN(parseFloat($(j).val()))
+                ? 0
+                : parseFloat($(j).val());
+
+            tipo = j.id.split("_")[0];
+
+            switch (tipo) {
+                case 'full':
+                    cajas_equivalentes += p * 1;
+                    break;
+                case 'half':
+                    cajas_equivalentes += p * 0.5;
+                    break;
+                case 'cuarto':
+                    cajas_equivalentes += p * 0.25;
+                    break;
+                case 'sexto':
+                    cajas_equivalentes += p * 0.166;
+                    break;
+                case 'octavo':
+                    cajas_equivalentes += p * 0.125;
+                    break;
+            }
+            console.log(cajas_equivalentes);
+        });
+        console.log(cajas_equivalentes);
+        $("#cajas_fules_"+form).html(cajas_equivalentes);
     }
 </script>

@@ -143,6 +143,7 @@
             <td class="text-center" style="border:1px solid #9d9d9d;text-align: center">Agencia</td>
             {{--<td class="text-center" style="border:1px solid #9d9d9d;text-align: center">Cajas Full</td>--}}
             <td class="text-center" style="border:1px solid #9d9d9d;text-align: center">Piezas</td>
+            <td class="text-center" style="border:1px solid #9d9d9d;text-align: center">Anden</td>
             <td class="text-center" style="border:1px solid #9d9d9d;text-align: center">Guia</td>
             <td class="text-center" style="border:1px solid #9d9d9d;text-align: center">Temp</td>
             <td class="text-center" style="border:1px solid #9d9d9d;text-align: center">Persona que recibe</td>
@@ -180,6 +181,9 @@
                 <td class="text-center" style="border:1px solid #9d9d9d;vertical-align: middle">
                     {{$pedido['cantidad']}}
                     @php $piezas_totales += $pedido['cantidad']; @endphp
+                </td>
+                <td class="text-center" style="border:1px solid #9d9d9d;vertical-align: middle">
+                    {{getPedido($pedido->id_pedido)->envios[0]->almacen}}
                 </td>
                 <td class="text-center" style="border:1px solid #9d9d9d;vertical-align: middle">
                     {{ getPedido($pedido->id_pedido)->envios[0]->detalles[0]->id_aerolinea ==  ""
