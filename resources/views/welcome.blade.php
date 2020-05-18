@@ -26,14 +26,14 @@
 
 
         @php
-            $semana = \yura\Modelos\Semana::All()->where('codigo', 2017)->first();
+            $semana = \yura\Modelos\Semana::All()->where('codigo', 2010)->first();
             $pedidos = \yura\Modelos\Pedido::where('estado', 1)
                     ->where('fecha_pedido', '>=', $semana->fecha_inicial)
                     ->where('fecha_pedido', '<=', $semana->fecha_final)
                     ->get();
             $venta_sem = 0;
         @endphp
-        <legend>VENTAS: {{$semana->codigo}} ({{$semana->fecha_inicial}} __ {{$semana->fecha_final}})</legend>
+        <legend class="mouse-hand" ondblclick="$('.li_hide').toggleClass('hide')">VENTAS: {{$semana->codigo}} ({{$semana->fecha_inicial}} __ {{$semana->fecha_final}})</legend>
         <ul>
             @foreach($pedidos as $p)
                 @php
@@ -42,12 +42,12 @@
                     if(!$facturaAnulada)
                         $venta_sem += $precio;
                 @endphp
-                <li class="{{!$facturaAnulada ? 'text-color_yura' : ''}}">
+                <li class="{{!$facturaAnulada ? 'text-color_yura' : ''}} li_hide hide" >
                     {{$p->id_pedido}} __ {{$p->fecha_pedido}} __ {{$p->cliente->detalle()->nombre_completo}} __ $ {{$precio}}
                 </li>
             @endforeach
         </ul>
-        Venta total por semana = {{$venta_sem}}
+        Venta total por semana = {{number_format($venta_sem, 2)}}
     </section>
 
     <style>
