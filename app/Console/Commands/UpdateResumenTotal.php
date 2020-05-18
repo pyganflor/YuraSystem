@@ -6,6 +6,7 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use yura\Modelos\Area;
+use yura\Modelos\Pedido;
 use yura\Modelos\Semana;
 use yura\Modelos\ResumenSemanalTotal;
 use yura\Modelos\ResumenCostosSemanal;
@@ -84,9 +85,22 @@ class UpdateResumenTotal extends Command
                 }
 
                 /* ----------------------------- venta ------------------------- */
-                $valor = DB::table('proyeccion_venta_semanal_real')
+                /*$valor = DB::table('proyeccion_venta_semanal_real')
                     ->select(DB::raw('sum(valor) as cant'))
-                    ->where('codigo_semana', $sem)->get()[0]->cant;
+                    ->where('codigo_semana', $sem)->get()[0]->cant;*/
+                $semana = Semana::All()->where('codigo', $sem)->first();
+
+                $pedidos = Pedido::where('estado', 1)
+                    ->where('fecha_pedido', '>=', $semana->fecha_inicial)
+                    ->where('fecha_pedido', '<=', $semana->fecha_final)
+                    ->get();
+                $valor = 0;
+                foreach ($pedidos as $p) {
+                    $facturaAnulada = getFacturaAnulada($p->id_pedido);
+                    $precio = $p->getPrecioByPedido();
+                    if (!$facturaAnulada)
+                        $valor += $precio;
+                }
                 $model->valor = $valor != '' ? $valor : 0;
 
                 /* ----------------------------- campo ------------------------- */
