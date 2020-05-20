@@ -17,7 +17,7 @@
                 </h3>
                 <div class="form-group pull-right" style="margin: 0">
                     {{--<label for="fecha_pedidos_search" style="margin-right: 10px">Fecha de pedidos</label>--}}
-                    <select id="id_cliente" name="id_cliente" style="height: 26px;">
+                    <select id="id_cliente" name="id_cliente" style="height: 26px;width:250px">
                         <option value="">Clientes</option>
                         @foreach($clientes as $cliente)
                             <option value="{{$cliente->id_cliente}}"> {{$cliente->nombre}} </option>
