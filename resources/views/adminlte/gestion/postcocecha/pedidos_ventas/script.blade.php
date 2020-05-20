@@ -24,7 +24,7 @@
         });
     }
 
-    function editar_pedido(id_cliente, id_pedido) {
+    function editar_pedido(id_cliente, id_pedido,secuencial_ficticio,secuencial) {
         add_pedido('', '', 'pedidos', id_pedido);
         datos = {
             id_cliente: id_cliente,
@@ -35,6 +35,15 @@
                 $("#table_campo_pedido").html(retorno);
                 $('select#id_cliente_venta option[value='+id_cliente+']').attr('selected', true);
                 $('select#id_cliente_venta').attr('disabled', true);
+
+                if(secuencial_ficticio!=''){
+                    $("#factura_ficticia").attr({'disabled':true,'checked':true});
+                    $("#numero_ficticio").attr({'disabled':false}).val(secuencial_ficticio.substr(6, secuencial_ficticio.length));
+                }else if(secuencial!=''){
+                    $("#factura_ficticia").attr({'disabled':true,'checked':false});
+                    $("#numero_ficticio").val(secuencial);
+                }
+
                 datos = {
                     id_pedido: id_pedido,
                 };
@@ -85,8 +94,6 @@
         $('.elemento_color_' + col + '_' + esp_emp).css('background-color', fondo);
         $('.elemento_color_' + col + '_' + esp_emp).css('color', texto);
     }
-
-
 
     function crear_packing_list(id_pedido){
         modal_quest('modal_packing_list', "<div class='alert alert-info text-center'>¿Desea crear el Packing List de este pedido?</div>", "<i class='fa fa-exclamation-triangle' ></i> Seleccione una opción",true, false, '{{isPC() ? '35%' : ''}}', function () {

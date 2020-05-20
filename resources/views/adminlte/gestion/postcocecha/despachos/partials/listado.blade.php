@@ -351,7 +351,9 @@
                                                     @else
                                                         <button type="button" class="btn btn-default btn-xs"
                                                                 title="{{(isset($ped->envios[0]->comprobante) && $ped->envios[0]->comprobante->estado != 1 ) ? "Ver pedido" : "Editar pedido"}}"
-                                                                onclick="editar_pedido('{{$pedido->id_cliente}}','{{$pedido->id_pedido}}')">
+                                                                onclick="editar_pedido('{{$pedido->id_cliente}}','{{$pedido->id_pedido}}',
+                                                                    '{{(isset($ped->envios[0]->comprobante) && $ped->envios[0]->comprobante->ficticio) ? $ped->envios[0]->comprobante->secuencial : ''}}',
+                                                                    '{{(isset($ped->envios[0]->comprobante) && !$ped->envios[0]->comprobante->ficticio) ? $ped->envios[0]->comprobante->secuencial : ''}}')">
                                                             @if((isset($ped->envios[0]->comprobante) && $ped->envios[0]->comprobante->estado != 1 ))
                                                                 <i class="fa fa-eye" aria-hidden="true"></i>
                                                             @else
@@ -394,10 +396,13 @@
                                                                     <i class="fa fa-cube"></i>
                                                                 </button>
                                                             @endif
-                                                            <button onclick="facturar_pedido('{{$pedido->id_pedido}}')"
-                                                                    class="btn btn-success btn-xs" title="Generar factura">
-                                                                <i class="fa fa-usd" aria-hidden="true"></i>
-                                                            </button>
+
+                                                            @if(!isset($ped->envios[0]->comprobante) || (isset($ped->envios[0]->comprobante) && !$ped->envios[0]->comprobante->ficticio))
+                                                                <button onclick="facturar_pedido('{{$pedido->id_pedido}}')"
+                                                                        class="btn btn-success btn-xs" title="Generar factura">
+                                                                    <i class="fa fa-usd" aria-hidden="true"></i>
+                                                                </button>
+                                                            @endif
                                                         @else
                                                             {{--<a target="_blank" href="{{url('pedidos/ver_factura_pedido',$pedido->id_pedido)}}" class="btn btn-default btn-xs" title="Ver factura SRI">
                                                                 <i class="fa fa-eye" aria-hidden="true"></i>

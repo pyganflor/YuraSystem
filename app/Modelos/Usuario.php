@@ -19,6 +19,7 @@ class Usuario extends Model
         'password',
         'fecha_registro',
         'estado',
+        'punto_acceso',
         'id_rol',
         'imagen_perfil',
     ];

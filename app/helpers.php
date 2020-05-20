@@ -1405,7 +1405,7 @@ function generaDocumentoPDF($autorizacion, $tipo_documento, $pre_factura = false
     ];
     if ($tipo_documento == "01")
         PDF::loadView('adminlte.gestion.comprobante.partials.pdf.factura', compact('data'))->save(env('PDF_FACTURAS') . (isset($autorizacion->numeroAutorizacion) ? $autorizacion->numeroAutorizacion : (String)$autorizacion->infoTributaria->claveAcceso) . ".pdf");
-    PDF::loadView('adminlte.gestion.comprobante.partials.pdf.factura_cliente', compact('data'))->save(env('PDF_FACTURAS') . "cliente_" . (isset($autorizacion->numeroAutorizacion) ? $autorizacion->numeroAutorizacion : (String)$autorizacion->infoTributaria->claveAcceso) . ".pdf");
+        PDF::loadView('adminlte.gestion.comprobante.partials.pdf.factura_cliente', compact('data'))->save(env('PDF_FACTURAS') . "cliente_" . (isset($autorizacion->numeroAutorizacion) ? $autorizacion->numeroAutorizacion : (String)$autorizacion->infoTributaria->claveAcceso) . ".pdf");
     if ($tipo_documento == "06")
         PDF::loadView('adminlte.gestion.comprobante.partials.pdf.guia', compact('data'))->save(env('PATH_PDF_GUIAS') . $autorizacion->numeroAutorizacion . ".pdf");
 
@@ -1475,7 +1475,10 @@ function getSecuencial($tipoComprobante, $configuracionEmpresa)
             break;
     }
     $secuencial = $inicio_secuencial + 1;
-    $cant_reg = Comprobante::where('comprobante.tipo_comprobante', $tipoComprobante);
+    $cant_reg = Comprobante::where([
+        ['comprobante.tipo_comprobante', $tipoComprobante],
+        ['ficticio',false]
+    ]);
 
     if ($tipoComprobante == "01")
         $cant_reg->join('envio as e', 'comprobante.id_envio', 'e.id_envio')

@@ -26,6 +26,7 @@ class Comprobante extends Model
         'secuencial',
         'rehusar',
         'ambiente',
+        'ficticio',
         'fecha_integrado',
 
     ];
