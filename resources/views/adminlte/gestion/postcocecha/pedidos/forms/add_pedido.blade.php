@@ -1,7 +1,7 @@
 <form id="form_add_pedido" name="form_add_pedido">
     <input type="hidden" id='id_cliente' value="{{$idCliente}}">
     @if($pedido_fijo)
-        <div class="">
+        <div class="row">
             <div class="col-md-3">
                 <div class="list-group">
                     <a href="javascript:void(0)" class="list-group-item list-group-item-action active">
@@ -26,9 +26,9 @@
     @endif
     <div>
         <div id="table_recepciones">
-            <div class="row">
+            <div class="row" style="margin-bottom: 10px">
                 @if(!$pedido_fijo)
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <label for="Fecha de entrega" style="font-size: 11pt">
                             <i class="fa fa-calendar"></i> Fecha de entrega </label>
                         <input type="date" id="fecha_de_entrega" name="fecha_de_entrega" onchange="buscar_saldos($(this).val(), 3, 3)"
@@ -36,7 +36,7 @@
                     </div>
                 @endif
                 @if($vista === 'pedidos')
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <label for="Cliente" style="font-size: 11pt">
                             <i class="fa fa-user-circle-o"></i> Cliente
                         </label>
@@ -57,6 +57,7 @@
                             <input type="checkbox" id="envio_automatico" name="envio_automatico" checked >
                         </button>
                     </div>
+
                     <div class="col-md-3" >
                         <label for="id_configuracion_empresa" style="font-size: 11pt">
                             <i class="fa fa-building-o"></i> Facturar pedido con:
@@ -69,11 +70,30 @@
                             @endforeach
                         </select>
                     </div>
-                    <div class="col-md-1" style="margin-top: 30px;text-align: right;">
-                        <button type='button' class='btn btn-xs btn-danger' onclick='borrar_duplicado()'>
-                            <i class='fa fa-fw fa-trash'></i>
-                        </button>
-                    </div>
+                        <div class="col-md-3" title="Usado para crear una factura ficticia">
+                            <label for="id_configuracion_empresa" style="font-size: 11pt">
+                                <i class="fa fa-pencil"></i> Facturar manual:
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-addon">
+                                    <input type="checkbox" id="factura_ficticia" name="factura_ficticia"
+                                            onclick="input_numero_ficticio(this)">
+                                </span>
+                                <input type="text" class="form-control" id="numero_ficticio"
+                                       placeholder="Escriba el número" disabled name="numero_ficticio">
+                                <span class="input-group-btn">
+                                    <button type='button' class='btn btn-danger'
+                                            title="Eliminar duplicado" onclick='borrar_duplicado()'>
+                                        <i class='fa fa-fw fa-trash'></i>
+                                    </button>
+                                </span>
+                            </div>
+
+
+                        </div>
+                    {{--<div class="col-md-1" style="margin-top: 30px;text-align: right;">
+
+                    </div>--}}
                 @else
                     <input type="hidden" value="{{$idCliente}}" id="id_cliente_venta">
                 @endif
@@ -157,3 +177,13 @@
 
     </script>
 @endif
+<script>
+    function input_numero_ficticio(check){
+        factura_ficticia= $("#numero_ficticio");
+        if($(check).is(':checked')){
+            factura_ficticia.removeAttr('disabled');
+        }else{
+            factura_ficticia.attr('disabled',true);
+        }
+    }
+</script>

@@ -301,6 +301,8 @@ function store_pedido(id_cliente, pedido_fijo, csrf_token, vista, id_pedido) {
                 crear_envio: $("#envio_automatico").is(":checked"),
                 fecha_envio: $("#fecha_de_entrega").val(),
                 id_configuracion_empresa: $("select#id_configuracion_empresa").val(),
+                factura_ficticia : $("#factura_ficticia").is(":checked"),
+                numero_ficticio : $("#numero_ficticio").val(),
                 arrDataPresentacionYuraVenture: arrDataPresentacionYuraVenture,
                 dataTallos: dataTallos
             };

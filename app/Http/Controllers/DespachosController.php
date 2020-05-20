@@ -66,7 +66,7 @@ class DespachosController extends Controller
                 });
 
             $listado = $listado->get();
-           // dd($listado);
+            //dd($listado);
             $ids_pedidos = [];
             foreach ($listado as $item) {
                 if(!getFacturaAnulada($item->id_pedido))

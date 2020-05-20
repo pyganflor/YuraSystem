@@ -172,9 +172,11 @@
                                     <i class="fa fa-ban"></i>
                                 </button>
                             @else
-                                <button class="btn btn-default btn-xs" title="Integrar factura" onclick="integrar_factura_venture('{{$item->id_comprobante}}')">
-                                    <i class="fa fa-calendar-check-o" ></i>
-                                </button>
+                                @if(!$item->ficticio)
+                                    <button class="btn btn-default btn-xs" title="Integrar factura" onclick="integrar_factura_venture('{{$item->id_comprobante}}')">
+                                        <i class="fa fa-calendar-check-o" ></i>
+                                    </button>
+                                @endif
                             @endif
 
                             {{--<button class="btn btn-default btn-xs">
