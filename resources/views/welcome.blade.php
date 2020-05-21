@@ -24,9 +24,8 @@
             RECALCULAR
         </button>
 
-
         @php
-            $semana = \yura\Modelos\Semana::All()->where('codigo', 2010)->first();
+            $semana = \yura\Modelos\Semana::All()->where('codigo', 2004)->first();
             $pedidos = \yura\Modelos\Pedido::where('estado', 1)
                     ->where('fecha_pedido', '>=', $semana->fecha_inicial)
                     ->where('fecha_pedido', '<=', $semana->fecha_final)
