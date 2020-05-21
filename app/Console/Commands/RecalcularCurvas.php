@@ -49,6 +49,7 @@ class RecalcularCurvas extends Command
         $ini = date('Y-m-d H:i:s');
         Log::info('<<<<< ! >>>>> Ejecutando comando "curva_cosecha:recalcular" <<<<< ! >>>>>');
 
+        $configuracion = getConfiguracionEmpresa();
         $semana_pasada = getSemanaByDate(opDiasFecha('-', 7, date('Y-m-d')));
         $ciclos = DB::table('proyeccion_modulo_semana')
             ->select('modelo')->distinct()
@@ -62,7 +63,6 @@ class RecalcularCurvas extends Command
             $sem_ini = $ciclo->semana();
             $num_sem = intval(difFechas($semana_pasada->fecha_inicial, $sem_ini->fecha_inicial)->days / 7) + 1;
             if ($ciclo->activo == 1 && $num_sem >= $ciclo->semana_poda_siembra - 2 && $ciclo->no_recalcular_curva == 0) {   // esta activo y es una semana minima 2 antes del inicio de cosecha
-                $configuracion = getConfiguracionEmpresa();
                 $modulo = $ciclo->modulo;
                 $getTallosProyectados = $ciclo->getTallosProyectados();
                 if ($num_sem < $ciclo->semana_poda_siembra) {   // se trata de una semana antes del inicio de cosecha
@@ -75,7 +75,7 @@ class RecalcularCurvas extends Command
                         ->where('r.fecha_ingreso', '<=', $semana_pasada->fecha_final)
                         ->where('r.fecha_ingreso', '>=', opDiasFecha('+', 35, $ciclo->fecha_inicio))
                         ->get()[0]->cant;
-                    $porc_cosechado = intval(($cosechado * 100) / $getTallosProyectados);
+                    $porc_cosechado = $getTallosProyectados > 0 ? intval(($cosechado * 100) / $getTallosProyectados) : 0;
                     if ($porc_cosechado >= $configuracion->proy_minimo_cosecha) {   // hay que mover una semana antes la curva
                         $new_curva = getNuevaCurva($ciclo->curva, $porc_cosechado);
                         $this->update_ciclo($ciclo, $new_curva, $num_sem);
@@ -127,7 +127,99 @@ class RecalcularCurvas extends Command
             }
         }
 
-        UpdateSaldosProyVentaSemanal::dispatch($semana_pasada->codigo, 0)->onQueue('update_saldos_proy_venta_semanal');
+        /* ---- recalcular los ciclos de la semana actual que sobrepasen sus proyecciones ---- */
+        $semana_actual = getSemanaByDate(date('Y-m-d'));
+        $ciclos = DB::table('proyeccion_modulo_semana')
+            ->select('modelo')->distinct()
+            ->where('estado', 1)
+            ->where('tabla', 'C')
+            ->where('semana', $semana_actual->codigo)
+            ->where('cosechados', '>', 0)
+            ->get();
+        foreach ($ciclos as $c) {
+            $ciclo = Ciclo::find($c->modelo);
+            $sem_ini = $ciclo->semana();
+            $num_sem = intval(difFechas($semana_actual->fecha_inicial, $sem_ini->fecha_inicial)->days / 7) + 1;
+            if ($ciclo->activo == 1 && $num_sem >= $ciclo->semana_poda_siembra - 2 && $ciclo->no_recalcular_curva == 0) {   // esta activo y es una semana minima 2 antes del inicio de cosecha
+                $modulo = $ciclo->modulo;
+                $getTallosProyectados = $ciclo->getTallosProyectados();
+                if ($num_sem < $ciclo->semana_poda_siembra) {   // se trata de una semana antes del inicio de cosecha
+                    $cosechado = DB::table('desglose_recepcion as dr')
+                        ->join('recepcion as r', 'r.id_recepcion', '=', 'dr.id_recepcion')
+                        ->select(DB::raw('sum(dr.cantidad_mallas * dr.tallos_x_malla) as cant'))
+                        ->where('dr.estado', 1)
+                        ->where('dr.id_modulo', $modulo->id_modulo)
+                        ->where('r.estado', 1)
+                        ->where('r.fecha_ingreso', '<=', $semana_actual->fecha_final)
+                        ->where('r.fecha_ingreso', '>=', opDiasFecha('+', 35, $ciclo->fecha_inicio))
+                        ->get()[0]->cant;
+                    $porc_cosechado = $getTallosProyectados > 0 ? intval(($cosechado * 100) / $getTallosProyectados) : 0;
+                    if ($porc_cosechado >= $configuracion->proy_minimo_cosecha) {   // hay que mover una semana antes la curva
+                        $new_curva = getNuevaCurva($ciclo->curva, $porc_cosechado);
+                        $this->update_ciclo($ciclo, $new_curva, $num_sem);
+                    }
+                } else {    // se trata de una semana de curva o posterior
+                    $pos_sem = $num_sem - $ciclo->semana_poda_siembra;
+                    if ($pos_sem == 0) {  // primera semana de la curva
+                        $cosechado = DB::table('desglose_recepcion as dr')
+                            ->join('recepcion as r', 'r.id_recepcion', '=', 'dr.id_recepcion')
+                            ->select(DB::raw('sum(dr.cantidad_mallas * dr.tallos_x_malla) as cant'))
+                            ->where('dr.estado', 1)
+                            ->where('dr.id_modulo', $modulo->id_modulo)
+                            ->where('r.estado', 1)
+                            ->where('r.fecha_ingreso', '<=', $semana_actual->fecha_final)
+                            ->where('r.fecha_ingreso', '>=', opDiasFecha('+', 35, $ciclo->fecha_inicio))
+                            ->get()[0]->cant;
+                        $proyectado = DB::table('proyeccion_modulo_semana')
+                            ->select('proyectados')
+                            ->where('estado', 1)
+                            ->where('tabla', 'C')
+                            ->where('semana', $semana_actual->codigo)
+                            ->where('modelo', $ciclo->id_ciclo)
+                            ->get()[0]->proyectados;
+                        if ($proyectado > $cosechado) {    // recalcular solamente
+                            $porc_cosechado = $getTallosProyectados > 0 ? intval(($cosechado * 100) / $getTallosProyectados) : 0;
+                            $new_curva = getNuevaCurva($ciclo->curva, $porc_cosechado);
+                            $this->update_ciclo($ciclo, $new_curva, $ciclo->semana_poda_siembra);
+                        }
+                    } else if ($pos_sem < count(explode('-', $ciclo->curva)) - 1) {   // semana numero "$pos_sem" de la curva
+                        $next_curva = explode('-', $ciclo->curva)[$pos_sem];
+                        for ($i = $pos_sem; $i < count(explode('-', $ciclo->curva)); $i++) {
+                            if ($i > $pos_sem)
+                                $next_curva .= '-' . explode('-', $ciclo->curva)[$i];
+                        }
+                        $cosechado = DB::table('proyeccion_modulo_semana')
+                            ->select('cosechados')
+                            ->where('estado', 1)
+                            ->where('tabla', 'C')
+                            ->where('semana', $semana_actual->codigo)
+                            ->where('modelo', $ciclo->id_ciclo)
+                            ->get()[0]->cosechados;
+                        $proyectado = DB::table('proyeccion_modulo_semana')
+                            ->select('proyectados')
+                            ->where('estado', 1)
+                            ->where('tabla', 'C')
+                            ->where('semana', $semana_actual->codigo)
+                            ->where('modelo', $ciclo->id_ciclo)
+                            ->get()[0]->proyectados;
+                        if ($proyectado > $cosechado) {
+                            $new_curva = explode('-', $ciclo->curva)[0];
+                            for ($i = 1; $i < count(explode('-', $ciclo->curva)); $i++) {
+                                if ($i < $pos_sem)
+                                    $new_curva .= '-' . explode('-', $ciclo->curva)[$i];
+                            }
+                            $porc_cosechado = $getTallosProyectados > 0 ? intval(($cosechado * 100) / $getTallosProyectados) : 0;
+                            $new_curva .= '-' . getNuevaCurva($next_curva, $porc_cosechado);
+                            $this->update_ciclo($ciclo, $new_curva, $ciclo->semana_poda_siembra);
+                        }
+                    } else {    // ultima semana de la curva o posterior
+                        //dd('ultima semana de la curva');
+                    }
+                }
+            }
+        }
+
+        //UpdateSaldosProyVentaSemanal::dispatch($semana_pasada->codigo, 0)->onQueue('update_saldos_proy_venta_semanal');
 
         $time_duration = difFechas(date('Y-m-d H:i:s'), $ini)->h . ':' . difFechas(date('Y-m-d H:i:s'), $ini)->m . ':' . difFechas(date('Y-m-d H:i:s'), $ini)->s;
         Log::info('<*> DURACION: ' . $time_duration . '  <*>');
