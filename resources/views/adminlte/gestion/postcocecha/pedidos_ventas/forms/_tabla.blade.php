@@ -329,7 +329,7 @@
                                                                        color: {{getColor($color->id_color)->texto}}" min="0" type="number"
                                                                    class="text-center elemento_color_{{$pos_color}}_{{$esp_emp->id_especificacion_empaque}} col_coloracion_{{$esp_emp->id_especificacion_empaque}}_{{$pos_color}}"
                                                                    onchange="calcular_totales_tinturado('{{$esp_emp->id_especificacion_empaque}}')">
-                                                            <input type="number" min="0" onkeypress="return isNumber(event)" style="width: 100%;background-color: #e9ecef;"
+                                                            <input type="number" min="0" style="width: 100%;background-color: #e9ecef;"
                                                                    id="precio_marcacion_coloracion_{{$pos_marca}}_{{$pos_color}}_{{$det_esp->id_detalle_especificacionempaque}}_{{$esp_emp->id_especificacion_empaque}}"
                                                                    name="precio_marcacion_coloracion_{{$pos_marca}}_{{$pos_color}}_{{$det_esp->id_detalle_especificacionempaque}}_{{$esp_emp->id_especificacion_empaque}}">
                                                         </div>
