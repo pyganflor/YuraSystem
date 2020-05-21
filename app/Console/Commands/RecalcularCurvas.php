@@ -92,7 +92,7 @@ class RecalcularCurvas extends Command
                             ->where('r.fecha_ingreso', '<=', $semana_pasada->fecha_final)
                             ->where('r.fecha_ingreso', '>=', opDiasFecha('+', 35, $ciclo->fecha_inicio))
                             ->get()[0]->cant;
-                        $porc_cosechado = intval(($cosechado * 100) / $getTallosProyectados);
+                        $porc_cosechado = $getTallosProyectados > 0 ? intval(($cosechado * 100) / $getTallosProyectados) : 0;
                         if ($porc_cosechado < $configuracion->proy_minimo_cosecha) {    // hay que mover una semana despues
                             $this->update_ciclo($ciclo, $ciclo->curva, ($ciclo->semana_poda_siembra + 1));
                         } else {    // recalcular solamente
@@ -112,7 +112,7 @@ class RecalcularCurvas extends Command
                             ->where('semana', $semana_pasada->codigo)
                             ->where('modelo', $ciclo->id_ciclo)
                             ->get()[0]->cosechados;
-                        $porc_cosechado = intval(($cosechado * 100) / $getTallosProyectados);
+                        $porc_cosechado = $getTallosProyectados > 0 ? intval(($cosechado * 100) / $getTallosProyectados) : 0;
                         $new_curva = explode('-', $ciclo->curva)[0];
                         for ($i = 1; $i < count(explode('-', $ciclo->curva)); $i++) {
                             if ($i < $pos_sem)
@@ -140,7 +140,7 @@ class RecalcularCurvas extends Command
             $ciclo = Ciclo::find($c->modelo);
             $sem_ini = $ciclo->semana();
             $num_sem = intval(difFechas($semana_actual->fecha_inicial, $sem_ini->fecha_inicial)->days / 7) + 1;
-            if ($ciclo->activo == 1 && $num_sem >= $ciclo->semana_poda_siembra - 2 && $ciclo->no_recalcular_curva == 0) {   // esta activo y es una semana minima 2 antes del inicio de cosecha
+            if ($ciclo->activo == 1 && $num_sem >= $ciclo->semana_poda_siembra - 2 && $ciclo->no_recalcular_curva == 0 && $ciclo->id_modulo == 160) {   // esta activo y es una semana minima 2 antes del inicio de cosecha
                 $modulo = $ciclo->modulo;
                 $getTallosProyectados = $ciclo->getTallosProyectados();
                 if ($num_sem < $ciclo->semana_poda_siembra) {   // se trata de una semana antes del inicio de cosecha
@@ -177,7 +177,7 @@ class RecalcularCurvas extends Command
                             ->where('semana', $semana_actual->codigo)
                             ->where('modelo', $ciclo->id_ciclo)
                             ->get()[0]->proyectados;
-                        if ($proyectado > $cosechado) {    // recalcular solamente
+                        if ($cosechado > $proyectado) {    // recalcular solamente
                             $porc_cosechado = $getTallosProyectados > 0 ? intval(($cosechado * 100) / $getTallosProyectados) : 0;
                             $new_curva = getNuevaCurva($ciclo->curva, $porc_cosechado);
                             $this->update_ciclo($ciclo, $new_curva, $ciclo->semana_poda_siembra);
@@ -202,7 +202,7 @@ class RecalcularCurvas extends Command
                             ->where('semana', $semana_actual->codigo)
                             ->where('modelo', $ciclo->id_ciclo)
                             ->get()[0]->proyectados;
-                        if ($proyectado > $cosechado) {
+                        if ($cosechado > $proyectado) {
                             $new_curva = explode('-', $ciclo->curva)[0];
                             for ($i = 1; $i < count(explode('-', $ciclo->curva)); $i++) {
                                 if ($i < $pos_sem)
