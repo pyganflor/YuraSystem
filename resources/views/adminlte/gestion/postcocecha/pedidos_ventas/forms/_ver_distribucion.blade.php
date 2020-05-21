@@ -56,8 +56,10 @@
                                         </th>
                                     @endforeach
                                     @if($z==0 )
-                                        <th class="text-center" style="border-color: #9d9d9d; width: 85px" rowspan="{{count($esp_emp['marcaciones'])}}">
-                                            {{$distr['distr']->ramos}}  {{$col[0]->variedad}} {{$col[0]->ramo}}
+                                        <th class="text-center" style="border-color: #9d9d9d; width: 85px" rowspan="{{count($esp_emp['marcaciones'])}}" style="width:200px">
+                                            {{isset($distr['distr']->ramos) ? $distr['distr']->ramos : ''}}
+                                            {{isset($col[0]->variedad) ? $col[0]->variedad : ''}}
+                                            {{isset($col[0]->ramo) ? $col[0]->ramo : ''}}
                                         </th>
                                         <th class="text-center" style="border-color: #9d9d9d; width: 65px" rowspan="{{count($esp_emp['marcaciones'])}}">
                                             {{$distr['distr']->piezas}}
