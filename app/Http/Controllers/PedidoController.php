@@ -107,7 +107,11 @@ class PedidoController extends Controller
         $valida = Validator::make($request->all(), [
             'arrDataPedido' => 'Array',
             'id_cliente' => 'required',
+            'numero_ficticio' =>'required_if:factura_ficticia,true'
+        ],[
+            'numero_ficticio.required_if' => 'Debe colocar el número manualmente para la factura'
         ]);
+
         if (!$valida->fails()) {
 
             $success = false;
@@ -128,6 +132,7 @@ class PedidoController extends Controller
 
                 if (!empty($request->id_pedido)) { //ACTUALIZAR
                     $dataEnvio = Envio::where('id_pedido', $request->id_pedido)->first();
+
                     if (isset($dataEnvio->id_envio)) {
 
                         $dataComprobante = Comprobante::where('id_envio', $dataEnvio->id_envio)
@@ -137,7 +142,7 @@ class PedidoController extends Controller
                             ->join('impuesto_desglose_envio_factura as idef', 'def.id_desglose_envio_factura', 'idef.id_desglose_envio_factura')
                             ->select('clave_acceso', 'comprobante.id_comprobante', 'comprobante.secuencial')->get();
 
-                        if ($dataComprobante->count() > 0) {
+                        if ($dataComprobante->count() > 0 && $request->factura_ficticia=='false') {
                             $objComprobante = Comprobante::find($dataComprobante[0]->id_comprobante);
                             $objComprobante->habilitado = false;
                             $objComprobante->id_envio = null;
@@ -148,7 +153,11 @@ class PedidoController extends Controller
                                 if (file_exists($archivo_generado)) unlink($archivo_generado);
                                 if (file_exists($archivo_firmado)) unlink($archivo_firmado);
                             }
+                        }else{
+                            if(isset($dataComprobante[0]))
+                                Comprobante::destroy($dataComprobante[0]->id_comprobante);
                         }
+
                         $codigo_dae = $dataEnvio->codigo_dae;
                         $dae = $dataEnvio->dae;
                         $guia_madre = $dataEnvio->guia_madre;
@@ -158,14 +167,9 @@ class PedidoController extends Controller
                         $direccion = $dataEnvio->direccion;
                         $codigo_pais = $dataEnvio->codigo_pais;
                         $almacen = $dataEnvio->almacen;
-                        $aerolinea = getEnvio($dataEnvio->id_envio)->detalles[0]->id_aerolinea;
+                        $aerolinea = $dataEnvio->detalles[0]->id_aerolinea;
                         $id_configuracion_empresa = $dataEnvio->pedido->id_configuracion_empresa;
                     }
-
-                    /*foreach (getPedido($request->id_pedido)->detalles as $det_ped)
-                        if($det_ped->cliente_especificacion->especificacion->tipo === "O")
-                            Especificacion::destroy($det_ped->cliente_especificacion->especificacion->id_especificacion);*/
-                    //DetallePedidoDatoExportacion::where('id_detalle_pedido',$det_ped->id_detalle_pedido)->delete();
                 }
 
                 $objPedido = new Pedido;
@@ -174,7 +178,6 @@ class PedidoController extends Controller
                 $objPedido->fecha_pedido = $fechaFormateada;
                 $objPedido->id_configuracion_empresa = isset($id_configuracion_empresa) ? $id_configuracion_empresa : $request->id_configuracion_empresa;
                 $objPedido->variedad = substr(implode("|", array_unique($request->variedades)), 0, -1);
-
                 if (isset($dataEnvio->id_envio) && count($dataComprobante) > 0) {
                     $objPedido->clave_acceso_temporal = $dataComprobante[0]->secuencial;  //$dataComprobante[0]->clave_acceso; COMENTANDO PARA QUE LA FACTURACION FUNCIONE CON EL VENTURE
                     $objPedido->id_comprobante_temporal = $dataComprobante[0]->id_comprobante;
@@ -244,8 +247,6 @@ class PedidoController extends Controller
                                 }
                             }
 
-                            //DetalleEnvio::where('id_envio',$dataEnvio->id_envio)->delete();
-                            //Envio::where('id_pedido',$request->id_pedido)->delete();
                             Pedido::destroy($request->id_pedido);
 
                             $success = true;
@@ -294,7 +295,7 @@ class PedidoController extends Controller
                             }
                         }
 
-                        if (isset($objComprobante)) {
+                        if (isset($objComprobante)) { //ACTULIAZAR COMPROBANTE
                             $data_actualizar_factura = [
                                 'id_envio' => $modelEnvio->id_envio,
                                 'codigo_pais' => $modelEnvio->codigo_pais,
@@ -306,16 +307,33 @@ class PedidoController extends Controller
                                 'fecha_pedidos_search' => $modelEnvio->pedido->fecha_pedido,
                                 'cant_variedades' => $modelEnvio->pedido->catntidad_det_esp_emp(),
                             ];
+                            //LLAMAR A LA FUNCIÓN ESTÁTICA PARA ACTUALIZAR LA FACTURA
                             ComprobanteController::actualizar_comprobante_factura($data_actualizar_factura);
+
+                        }else{
+
+                            //CREA UN COMPROBANTE FICTICIO
+                            if($request->factura_ficticia=='true'){
+                                $data=[
+                                    'id_envio'=>$modelEnvio->id_envio,
+                                    'update' => !empty($request->id_pedido),
+                                    'id_comprobante' => empty($request->id_pedido) ?  null :(isset($dataComprobante[0]) ? $dataComprobante[0]->id_comprobante : null),
+                                    'numero_ficticio' => $request->numero_ficticio,
+                                    'cant_variedades'=>$modelEnvio->pedido->catntidad_det_esp_emp(),
+                                    'fecha_pedido'=> $fechaFormateada
+                                ];
+                                if(ComprobanteController::crear_comprobante_ficticio($data)){
+
+                                }
+                            }
                         }
-                        //LLAMAR A LA FUNCIÓN ESTÁTICA PARA ACTUALIZAR LA FACTURA
 
                     }
 
                     $semana = getSemanaByDate($objPedido->fecha_pedido);
                     $codigo_semana = $semana != '' ? $semana->codigo : '';
-                   // if ($codigo_semana != '')
-                        //ProyeccionVentaSemanalUpdate::dispatch($codigo_semana, $codigo_semana, 0, $request->id_cliente)->onQueue('update_venta_semanal_real');
+                    if ($codigo_semana != '')
+                        ProyeccionVentaSemanalUpdate::dispatch($codigo_semana, $codigo_semana, 0, $request->id_cliente)->onQueue('update_venta_semanal_real');
                 }
             }
             if (isset($request->arrDataPresentacionYuraVenture) && count($request->arrDataPresentacionYuraVenture)) {
@@ -328,6 +346,8 @@ class PedidoController extends Controller
                     $objProductoYuraVenture->save();
                 }
             }
+
+
             
         } else {
             $success = false;
@@ -396,7 +416,6 @@ class PedidoController extends Controller
 
     public function inputs_pedidos_edit(Request $request)
     {
-
         $esp_creadas = [];
         $pedido = getPedido($request->id_pedido);
         foreach ($pedido->detalles as $det_ped)
@@ -464,16 +483,18 @@ class PedidoController extends Controller
     {
         $pedido = getPedido($request->id_pedido);
 
-        if (isset($pedido->envios[0]->comprobante) && $pedido->envios[0]->comprobante != "") {
-            $objComprobante = Comprobante::find($pedido->envios[0]->comprobante->id_comprobante);
-            $objComprobante->update([
-                'id_envio' => null,
-                'rehusar' => true,
-                'habilitado' => false
-            ]);
+        if(isset($pedido->envios[0]->comprobante) && $pedido->envios[0]->comprobante->ficticio){
+            Comprobante::destroy($pedido->envios[0]->comprobante->id_comprobante);
+        }else{
+            if (isset($pedido->envios[0]->comprobante) && $pedido->envios[0]->comprobante != "") {
+                $objComprobante = Comprobante::find($pedido->envios[0]->comprobante->id_comprobante);
+                $objComprobante->update([
+                    'id_envio' => null,
+                    'rehusar' => true,
+                    'habilitado' => false
+                ]);
+            }
         }
-        //$objPedido = Pedido::find($request->id_pedido);
-        //$objPedido->estado = $request->estado == 0 ? 1 : 0;
 
         if (Pedido::destroy($request->id_pedido)) {
             $success = true;
@@ -807,4 +828,5 @@ class PedidoController extends Controller
             'cliente' => Cliente::find($request->cliente),
         ]);
     }
+
 }

@@ -137,7 +137,9 @@
                     <tr style="border: 1px solid black;">
                         <td style="border: 1px solid black;padding: 0;font-size: 12px;width: 60% ">
                             <b>Carrier / Transportador</b><br /> <br />
-                            {{getAgenciaTransporte($envio->detalles[0]->id_aerolinea)->nombre}}
+                            {{isset(getAgenciaTransporte($envio->detalles[0]->id_aerolinea)->nombre)
+                                ?getAgenciaTransporte($envio->detalles[0]->id_aerolinea)->nombre
+                                : ''}}
                         </td>
                         <td style="border: 1px solid black;padding: 0;font-size: 12px">
                             <b>Add Case No. DAE</b><br /> <br />

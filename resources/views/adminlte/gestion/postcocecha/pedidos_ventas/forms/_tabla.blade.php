@@ -281,9 +281,9 @@
                                         Parcial
                                     </th>
                                 @endif
-                                <th class="text-center" style="border-color: #9d9d9d; background-color: #357ca5; color: white" width="60px">
+                                {{--<th class="text-center" style="border-color: #9d9d9d; background-color: #357ca5; color: white" width="60px">
                                     Precio
-                                </th>
+                                </th>--}}
                                 <th class="text-center" style="border-color: #9d9d9d; background-color: #357ca5; color: white" width="60px">
                                     Total
                                 </th>
@@ -325,10 +325,13 @@
                                                             <input value="{{$marc_col != '' ? $marc_col->cantidad : 0}}"
                                                                    id="ramos_marcacion_{{$pos_marca}}_{{$pos_color}}_{{$det_esp->id_detalle_especificacionempaque}}_{{$esp_emp->id_especificacion_empaque}}"
                                                                    name="ramos_marcacion_{{$pos_marca}}_{{$pos_color}}_{{$det_esp->id_detalle_especificacionempaque}}_{{$esp_emp->id_especificacion_empaque}}"
-                                                                   onkeypress="return isNumber(event)" style="width: 100%; background-color: {{getColor($color->id_color)->fondo}};
+                                                                   style="width: 100%; background-color: {{getColor($color->id_color)->fondo}};
                                                                        color: {{getColor($color->id_color)->texto}}" min="0" type="number"
                                                                    class="text-center elemento_color_{{$pos_color}}_{{$esp_emp->id_especificacion_empaque}} col_coloracion_{{$esp_emp->id_especificacion_empaque}}_{{$pos_color}}"
                                                                    onchange="calcular_totales_tinturado('{{$esp_emp->id_especificacion_empaque}}')">
+                                                            <input type="number" min="0" style="width: 100%;background-color: #e9ecef;"
+                                                                   id="precio_marcacion_coloracion_{{$pos_marca}}_{{$pos_color}}_{{$det_esp->id_detalle_especificacionempaque}}_{{$esp_emp->id_especificacion_empaque}}"
+                                                                   name="precio_marcacion_coloracion_{{$pos_marca}}_{{$pos_color}}_{{$det_esp->id_detalle_especificacionempaque}}_{{$esp_emp->id_especificacion_empaque}}">
                                                         </div>
                                                     </li>
                                                 @endforeach
@@ -355,12 +358,12 @@
                                             </ul>
                                         </th>
                                     @endif
-                                    <td class="text-center" style="border-color: #9d9d9d">
+                                    {{--<td class="text-center" style="border-color: #9d9d9d">
                                         <input type="text" id="precio_marcacion_{{$pos_marca}}_{{$esp_emp->id_especificacion_empaque}}"
                                                name="precio_marcacion_{{$pos_marca}}_{{$esp_emp->id_especificacion_empaque}}"
                                                class="text-center precio_marcacion_{{$esp_emp->id_especificacion_empaque}}"
                                                style="background-color: #e9ecef; color: #000000; width: 85px">
-                                    </td>
+                                    </td>--}}
                                     <td class="text-center" style="border-color: #9d9d9d">
                                         <input type="text" id="total_ramos_marcacion_{{$pos_marca}}_{{$esp_emp->id_especificacion_empaque}}"
                                                name="total_ramos_marcacion_{{$pos_marca}}_{{$esp_emp->id_especificacion_empaque}}" readonly
@@ -428,7 +431,7 @@
                                         </ul>
                                     </th>
                                 @endif
-                                <th class="text-center" style="border-color: #9d9d9d"></th>
+                                {{--<th class="text-center" style="border-color: #9d9d9d"></th>--}}
                                 <td class="text-center" style="border-color: #9d9d9d">
                                     <input type="text" id="total_ramos_{{$esp_emp->id_especificacion_empaque}}"
                                            name="total_ramos_{{$esp_emp->id_especificacion_empaque}}" readonly class="text-center"
@@ -466,7 +469,7 @@
                                         </ul>
                                     </th>
                                 @endforeach
-                                <th class="text-center" style="border-color: #9d9d9d"></th>
+                                {{--<th class="text-center" style="border-color: #9d9d9d"></th>--}}
                                 <th class="text-center" style="border-color: #9d9d9d">
                                     PRECIO TOTAL
                                 </th>

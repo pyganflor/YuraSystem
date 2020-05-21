@@ -35,6 +35,10 @@ class DespachosController extends Controller
                 ->select('s.anno')->distinct()
                 ->where('s.estado', '=', 1)->orderBy('s.anno')->get(),
             'variedades' => Variedad::All()->where('estado', '=', 1),
+            'clientes' => \DB::table('cliente as c')
+                ->join('detalle_cliente as dc', 'c.id_cliente', '=', 'dc.id_cliente')
+                ->orderBy('nombre','asc')
+                ->where('dc.estado', 1)->get(),
             'unitarias' => getUnitarias(),
             'empresas' => getConfiguracionEmpresa(null,true)
         ]);
@@ -43,7 +47,6 @@ class DespachosController extends Controller
     public function listar_resumen_pedidos(Request $request)
     {
         $listado = [];
-
         if ($request->fecha != '') {
             $listado = DB::table('pedido as p')
                 ->join('cliente as c', 'c.id_cliente', '=', 'p.id_cliente')
@@ -54,13 +57,17 @@ class DespachosController extends Controller
                 ->where('p.estado', '=', 1)
                 //->where('p.empaquetado', '=', 0)
                 ->where('p.fecha_pedido', '=', $request->fecha)
-                ->orderBy('dc.nombre', 'asc');
+                ->orderBy('dc.nombre', 'asc')
+                ->where(function($query) use($request){
+                    if(isset($request->id_cliente))
+                        $query->where('p.id_cliente',$request->id_cliente);
 
-            if($request->id_configuracion_empresa != "")
-                $listado->where('p.id_configuracion_empresa','=',$request->id_configuracion_empresa);
+                    if($request->id_configuracion_empresa != "")
+                        $query->where('p.id_configuracion_empresa','=',$request->id_configuracion_empresa);
+                });
 
             $listado = $listado->get();
-           // dd($listado);
+            //dd($listado);
             $ids_pedidos = [];
             foreach ($listado as $item) {
                 if(!getFacturaAnulada($item->id_pedido))

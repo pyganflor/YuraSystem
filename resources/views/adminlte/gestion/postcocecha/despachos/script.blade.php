@@ -192,7 +192,7 @@
             $(j).attr('disabled',true);
             $(j).val("");
         });*/
-        listar_resumen_pedidos($("#fecha_pedidos_search").val(), '',$("#id_configuracion_empresa_despacho").val());
+        //listar_resumen_pedidos($("#fecha_pedidos_search").val(), '',$("#id_configuracion_empresa_despacho").val());
     }
 
 </script>

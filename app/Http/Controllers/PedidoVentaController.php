@@ -40,6 +40,7 @@ class PedidoVentaController extends Controller
                 'text' => ['titulo' => 'Pedidos', 'subtitulo' => 'módulo de pedidos'],
                 'clientes' => DB::table('cliente as c')
                     ->join('detalle_cliente as dc', 'c.id_cliente', '=', 'dc.id_cliente')
+                    ->orderBy('nombre','asc')
                     ->where('dc.estado', 1)->get(),
                 'annos' => DB::table('pedido as p')->select(DB::raw('YEAR(p.fecha_pedido) as anno'))
                     ->distinct()->get(),
