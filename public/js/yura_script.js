@@ -1222,13 +1222,14 @@ function add_marcacion(esp_emp) {
                 'onkeypress="return isNumber(event)" style="width: 100%;" ' +
                 'class="text-center col_coloracion_' + esp_emp + '_' + c + ' elemento_color_' + c + '_' + esp_emp + ' ramos_marcacion_'+ esp_emp + '" onchange="calcular_totales_tinturado(' + esp_emp + ')">' +
                 '<input type="number" min="0" style="width: 100%;background-color: #e9ecef;text-align:center" ' +
-                'class="col_precio_' + fil + '_' + c + '"'+
+                'class="col_precio_' + esp_emp + '_' + c + '"'+
                 'id="p_marcacion_coloracion_' + fil + '_' + c + '_' + ids_det_esp[det].value + '_' + esp_emp + '" ' +
                 'name="p_marcacion_coloracion_' + fil + '_' + c + '_' + ids_det_esp[det].value + '_' + esp_emp + '" ' +
                 '</div>' +
                 '</li>';
         }
-        tr += '<td class="text-center text-center col_coloracion_' + esp_emp + '_' + (c + 1) + '" style="border-color: #9d9d9d">' +
+        tr += '<td class="text-center col_coloracion td_col_coloracion_' + esp_emp + ' col_coloracion_' + esp_emp + '_' + c + ' col_precio_' + esp_emp + '_' + c +'"' +
+            ' style="border-color: #9d9d9d">' +
             '<ul class="list-unstyled">' +
             inputs +
             '</ul>' +
@@ -1395,14 +1396,15 @@ function add_coloracion(esp_emp) {
 function delete_marcacion(id_esp_emp) {
 
     $.each($("tr.tr_marcacion_" + id_esp_emp), function (i, j) {
-        if ($(j).find('input[type=checkbox]').is(':checked'))
+        if ($(j).find('input[type=checkbox]').is(':checked')){
+            negativo = $(j).find('input[type=checkbox]').attr('class').split("_")[1].split("_")[2];
             if ($(j).remove())
                 $('#marcaciones_' + id_esp_emp).val($('#marcaciones_' + id_esp_emp).val() - 1);
+        }else{
+            negativo=false;
+        }
+            
 
-            /*if(i>0)
-                i--*/
-
-        console.log(i);
         $.each($("input.check_marcacion_" + id_esp_emp), function (k, l) {
             arr_clase = $(l).attr('class').split(" ");
             $(l).removeClass(arr_clase[1]).addClass('marcacion_' + id_esp_emp + '_' + (k + 1));
@@ -1411,15 +1413,6 @@ function delete_marcacion(id_esp_emp) {
         $.each($("input.input_marcacion_" + id_esp_emp), function (m, n) {
             $(n).attr({id: 'nombre_marcacion_' + m + '_' + id_esp_emp, name: 'nombre_marcacion_' + m + '_' + id_esp_emp});
         });
-
-        /*$.each($("input.ramos_marcacion_" + id_esp_emp), function (y, z) {
-            if(y>0)
-                y--
-            $(z).attr({
-                id: 'ramos_marcacion_' + i + '_' + y + '_' + id_esp_emp,
-                name: 'ramos_marcacion_' + i + '_' + y + '_' + id_esp_emp
-            });
-        });*/
 
         $.each($("input.total_ramos_marcacion_" + id_esp_emp), function (o, p) {
             $(p).attr({id: 'total_ramos_marcacion_' + o + '_' + id_esp_emp, name: 'total_ramos_marcacion_' + o + '_' + id_esp_emp});
@@ -1433,35 +1426,53 @@ function delete_marcacion(id_esp_emp) {
             $(s).attr({id: 'distribucion_marcacion_' + o + '_' + id_esp_emp, name: 'distribucion_marcacion_' + s + '_' + id_esp_emp});
         });
 
-    });
+        $.each($(j).find('td.col_coloracion'), function (k, l) {
+            arrId = $(l).attr('class').split(' ');
+            $(l).removeClass(arrId[3]).addClass('col_coloracion_' + id_esp_emp + '_' + k);
 
 
-    $.each($("table#tabla_marcacion_coloracion_" + id_esp_emp), function (i, j) {
-        $.each($(j).find('.tr_marcacion_' + id_esp_emp), function (x, z) {
-            $.each($(z).find('td.col_coloracion'), function (k, l) {
-                arrId = $(l).attr('class').split(' ');
-                $(l).removeClass(arrId[3]).addClass('col_coloracion_' + id_esp_emp + '_' + k);
-                $.each($(l).find('input.' + arrId[3]), function (m, n) {
-                    arr_id_input_colocarcion = n.id.split("_");
-                    console.log(arr_id_input_colocarcion);
-                    id_input_coloracion = arr_id_input_colocarcion[0] + "_" + arr_id_input_colocarcion[1] + "_" + (arr_id_input_colocarcion[2]-1) + "_" + k + "_" + arr_id_input_colocarcion[4] + "_" + arr_id_input_colocarcion[5];
-                    $(n).attr({
-                        name: id_input_coloracion,
-                        id: id_input_coloracion
-                    }).removeClass(arrId[3]).addClass('col_coloracion_' + id_esp_emp + '_' + k).removeClass('elemento_color_' + arr_id_input_colocarcion[3] + '_' + id_esp_emp).addClass('elemento_color_' + k + '_' + id_esp_emp);
-                });
+            $.each($(l).find('input.' + arrId[3]), function (m, n) {
+                arr_id_input_colocarcion = n.id.split("_");
+                (i==0)
+                    ? dinamico1 =arr_id_input_colocarcion[2]
+                    : dinamico1 =arr_id_input_colocarcion[2]-1;
 
-                $(l).removeClass(arrId[4]).addClass('col_precio_' + id_esp_emp + '_' + k);
-                $.each($(l).find('input.' + arrId[4]), function (y, w) {
-                    arr_id_input_precio_mc = w.id.split("_");
-                    id_input_precio_mc = arr_id_input_precio_mc[0] + "_" + arr_id_input_precio_mc[1] + "_" + arr_id_input_precio_mc[2] + "_" + (arr_id_input_precio_mc[3]-1) + "_" + k + "_" + arr_id_input_precio_mc[5]+ "_" + arr_id_input_precio_mc[6];
-                    $(w).attr({
-                        name: id_input_precio_mc,
-                        id: id_input_precio_mc
-                    }).removeClass(arrId[4]).addClass('col_precio_' + id_esp_emp + '_' + k)//.removeClass('elemento_color_' + arr_id_input_precio_mc[3] + '_' + id_esp_emp).addClass('elemento_color_' + k + '_' + id_esp_emp);
-                });
+                id_input_coloracion = arr_id_input_colocarcion[0] + "_" + arr_id_input_colocarcion[1] + "_" + dinamico1 + "_" + k + "_" + arr_id_input_colocarcion[4] + "_" + arr_id_input_colocarcion[5];
+                $(n).attr({
+                    name: id_input_coloracion,
+                    id: id_input_coloracion
+                }).removeClass(arrId[3]).addClass('col_coloracion_' + id_esp_emp + '_' + k).removeClass('elemento_color_' + arr_id_input_colocarcion[3] + '_' + id_esp_emp).addClass('elemento_color_' + k + '_' + id_esp_emp);
+            });
+
+            console.log('input.' + arrId[4]);
+            $(l).removeClass(arrId[4]).addClass('col_precio_' + id_esp_emp + '_' + k);
+            $.each($(l).find('input.' + arrId[4]), function (y, w) {
+                arr_id_input_precio_mc = w.id.split("_");
+                console.log(negativo , negativo >1);g
+                (i==0)
+                    ? dinamico2 =arr_id_input_precio_mc[3]
+                    : dinamico2 =arr_id_input_precio_mc[3]-1;
+
+                id_input_precio_mc = arr_id_input_precio_mc[0] + "_" + arr_id_input_precio_mc[1] + "_" + arr_id_input_precio_mc[2] + "_" + dinamico2 + "_" + k + "_" + arr_id_input_precio_mc[5]+ "_" + arr_id_input_precio_mc[6];
+                console.log(id_input_precio_mc)
+                $(w).attr({
+                    name: id_input_precio_mc,
+                    id: id_input_precio_mc
+                }).removeClass(arrId[4]).addClass('col_precio_' + id_esp_emp + '_' + k)//.removeClass('elemento_color_' + arr_id_input_precio_mc[3] + '_' + id_esp_emp).addClass('elemento_color_' + k + '_' + id_esp_emp);
             });
         });
+
+        $.each($("th.precio_col_coloracion"), function (q, r) {
+            arrId = $(r).find("input[type='number']").attr('id').split("_");
+
+            $(r).find("input[type='number']").attr({
+                id: 'precio_color_' + q + '_' + arrId[3] + '_' + arrId[4],
+                name: 'precio_color_' + q + '_' + arrId[3] + '_' + arrId[4]
+            });
+        });
+    });
+
+    $.each($("table#tabla_marcacion_coloracion_" + id_esp_emp), function (i, j) {
 
         $.each($(j).find('th.th_col_coloracion'), function (o, p) {
             arrIdTH = $(p).attr('class').split(' ');
@@ -1482,16 +1493,7 @@ function delete_marcacion(id_esp_emp) {
             });
 
         });
-
-        $.each($("th.precio_col_coloracion"), function (q, r) {
-            arrId = $(r).find("input[type='number']").attr('id').split("_");
-
-            $(r).find("input[type='number']").attr({
-                id: 'precio_color_' + q + '_' + arrId[3] + '_' + arrId[4],
-                name: 'precio_color_' + q + '_' + arrId[3] + '_' + arrId[4]
-            });
-        });
-
+        
     });
 
     calcular_totales_tinturado(id_esp_emp, false);
