@@ -17,6 +17,7 @@ class MarcacionColoracion extends Model
         'fecha_registro',
         'estado',
         'cantidad',
+        'precio',
         'id_detalle_especificacionempaque',
     ];
 
