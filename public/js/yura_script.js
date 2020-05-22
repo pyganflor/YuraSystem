@@ -1402,9 +1402,12 @@ function delete_marcacion(id_esp_emp) {
 
     if($cant >0){
         $.each($("tr.tr_marcacion_" + id_esp_emp), function (i, j) {
-            if ($(j).find('input[type=checkbox]').is(':checked'))
+            if ($(j).find('input[type=checkbox]').is(':checked')){
+                restar = true;
                 if ($(j).remove())
                     $('#marcaciones_' + id_esp_emp).val($('#marcaciones_' + id_esp_emp).val() - 1);
+            }
+
 
             $.each($("input.check_marcacion_" + id_esp_emp), function (k, l) {
                 arr_clase = $(l).attr('class').split(" ");
@@ -1434,9 +1437,9 @@ function delete_marcacion(id_esp_emp) {
 
                 $.each($(l).find('input.' + arrId[3]), function (m, n) {
                     arr_id_input_colocarcion = n.id.split("_");
-                    (i==0 || !$(j).find('input[type=checkbox]').is(':checked'))
-                        ? dinamico1 =arr_id_input_colocarcion[2]
-                        : dinamico1 =arr_id_input_colocarcion[2]-1;
+                    (restar)
+                        ? dinamico1 =arr_id_input_colocarcion[2]-1
+                        : dinamico1 =arr_id_input_colocarcion[2];
 
                     id_input_coloracion = arr_id_input_colocarcion[0] + "_" + arr_id_input_colocarcion[1] + "_" + dinamico1 + "_" + k + "_" + arr_id_input_colocarcion[4] + "_" + arr_id_input_colocarcion[5];
                     $(n).attr({
@@ -1449,9 +1452,9 @@ function delete_marcacion(id_esp_emp) {
                 $.each($(l).find('input.' + arrId[4]), function (y, w) {
                     arr_id_input_precio_mc = w.id.split("_");
 
-                    (i==0)
-                        ? dinamico2 =arr_id_input_precio_mc[3]
-                        : dinamico2 =arr_id_input_precio_mc[3]-1;
+                    (restar)
+                        ? dinamico2 =arr_id_input_precio_mc[3]-1
+                        : dinamico2 =arr_id_input_precio_mc[3];
 
                     id_input_precio_mc = arr_id_input_precio_mc[0] + "_" + arr_id_input_precio_mc[1] + "_" + arr_id_input_precio_mc[2] + "_" + dinamico2 + "_" + k + "_" + arr_id_input_precio_mc[5]+ "_" + arr_id_input_precio_mc[6];
 
