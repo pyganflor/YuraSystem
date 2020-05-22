@@ -52,7 +52,7 @@ class DetallePedido extends Model
     {
         return Marcacion::where('id_detalle_pedido', $this->id_detalle_pedido)
             ->where('id_especificacion_empaque', $esp_emp)
-            ->join('distribucion','distribucion.id_marcacion','marcacion.id_marcacion');
+            ->join('distribucion', 'distribucion.id_marcacion', 'marcacion.id_marcacion');
     }
 
     public function coloraciones()
@@ -112,7 +112,35 @@ class DetallePedido extends Model
         return $this->data_tallos->mallas * $this->data_tallos->tallos_x_malla;
     }
 
-    public function detalle_pedido_dato_exportacion(){
+    public function detalle_pedido_dato_exportacion()
+    {
         return $this->hasMany('yura\Modelos\DetallePedidoDatoExportacion', 'id_detalle_pedido');
+    }
+
+    public function getPrecioTinturadoByEspEmp($esp_emp)
+    {
+        $esp_emp = EspecificacionEmpaque::find($esp_emp);
+        $r = 0;
+        foreach ($esp_emp->detalles as $det_esp) {
+            foreach ($this->coloracionesByEspEmp($esp_emp->id_especificacion_empaque) as $col) {
+                $marcaciones_coloraciones = MarcacionColoracion::where('estado', 1)
+                    ->where('id_coloracion', $col->id_coloracion)
+                    ->where('id_detalle_especificacionempaque', $det_esp->id_detalle_especificacionempaque)
+                    ->get();
+                foreach ($marcaciones_coloraciones as $marc_col) {
+                    $ramos = $marc_col->cantidad;
+                    if ($marc_col->precio != '') {
+                        $r += $ramos * $marc_col->precio;
+                    } else if ($col->precio != '') {
+                        $precio = getPrecioByDetEsp($col->precio, $det_esp->id_detalle_especificacionempaque);
+                        $r += $ramos * $precio;
+                    } else {
+                        $precio = getPrecioByDetEsp($this->precio, $det_esp->id_detalle_especificacionempaque);
+                        $r += $ramos * $precio;
+                    }
+                }
+            }
+        }
+        return $r;
     }
 }

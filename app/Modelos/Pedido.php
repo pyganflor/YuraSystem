@@ -358,23 +358,33 @@ class Pedido extends Model
         foreach ($this->detalles as $det_ped) {
             foreach ($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $esp_emp) {
                 foreach ($esp_emp->detalles as $det_esp) {
-                    if ($esp_emp->empaque->f_empaque == 'T') {
+                    if ($esp_emp->empaque->f_empaque == 'T') {  // pedido de tallos sueltos en mallas
                         $r += $det_ped->total_tallos() * getPrecioByDetEsp($det_ped->precio, $det_esp->id_detalle_especificacionempaque);
                     } else {
-                        $ramos = $det_ped->cantidad * $esp_emp->cantidad * ($esp_emp->especificacion->tipo === "O" ? $det_esp->tallos_x_ramos : $det_esp->cantidad);
-                        $ramos_col = 0;
-                        $precio_col = 0;
-                        foreach (Coloracion::All()->where('id_detalle_pedido', $det_ped->id_detalle_pedido)
-                                     ->where('id_especificacion_empaque', $esp_emp->id_especificacion_empaque)
-                                     ->where('precio', '!=', '') as $col) {
-                            $ramos_col += $col->getTotalRamosByDetEsp($det_esp->id_detalle_especificacionempaque);
-                            $precio = getPrecioByDetEsp($col->precio, $det_esp->id_detalle_especificacionempaque);
-                            $precio_col += ($col->getTotalRamosByDetEsp($det_esp->id_detalle_especificacionempaque) * $precio);
+                        if ($this->tipo_especificacion == 'T') {    // flor tinturada
+                            foreach ($det_ped->coloracionesByEspEmp($esp_emp->id_especificacion_empaque) as $col) {
+                                $marcaciones_coloraciones = MarcacionColoracion::where('estado', 1)
+                                    ->where('id_coloracion', $col->id_coloracion)
+                                    ->where('id_detalle_especificacionempaque', $det_esp->id_detalle_especificacionempaque)
+                                    ->get();
+                                foreach ($marcaciones_coloraciones as $marc_col) {
+                                    $ramos = $marc_col->cantidad;
+                                    if ($marc_col->precio != '') {
+                                        $r += $ramos * $marc_col->precio;
+                                    } else if ($col->precio != '' && havePrecioByDetEsp($col->precio, $det_esp->id_detalle_especificacionempaque)) {
+                                        $precio = getPrecioByDetEsp($col->precio, $det_esp->id_detalle_especificacionempaque);
+                                        $r += $ramos * $precio;
+                                    } else {
+                                        $precio = getPrecioByDetEsp($det_ped->precio, $det_esp->id_detalle_especificacionempaque);
+                                        $r += $ramos * $precio;
+                                    }
+                                }
+                            }
+                        } else {    // pedido normal
+                            $ramos = $det_ped->cantidad * $esp_emp->cantidad * ($esp_emp->especificacion->tipo === "O" ? $det_esp->tallos_x_ramos : $det_esp->cantidad);
+                            $precio_final = $ramos * getPrecioByDetEsp($det_ped->precio, $det_esp->id_detalle_especificacionempaque);
+                            $r += $precio_final;
                         }
-                        $ramos -= $ramos_col;
-                        $precio_final = $ramos * getPrecioByDetEsp($det_ped->precio, $det_esp->id_detalle_especificacionempaque);
-                        $precio_final += $precio_col;
-                        $r += $precio_final;
                     }
                 }
             }
@@ -415,23 +425,33 @@ class Pedido extends Model
         foreach ($this->detalles as $det_ped) {
             foreach ($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $esp_emp) {
                 foreach ($esp_emp->detalles->where('id_variedad', $variedad) as $det_esp) {
-                    if ($esp_emp->empaque->f_empaque == 'T') {
+                    if ($esp_emp->empaque->f_empaque == 'T') {  // pedido de tallos sueltos en mallas
                         $r += $det_esp->total_tallos * getPrecioByDetEsp($det_ped->precio, $det_esp->id_detalle_especificacionempaque);
                     } else {
-                        $ramos = $det_ped->cantidad * $esp_emp->cantidad * $det_esp->cantidad;
-                        $ramos_col = 0;
-                        $precio_col = 0;
-                        foreach (Coloracion::All()->where('id_detalle_pedido', $det_ped->id_detalle_pedido)
-                                     ->where('id_especificacion_empaque', $esp_emp->id_especificacion_empaque)
-                                     ->where('precio', '!=', '') as $col) {
-                            $ramos_col += $col->getTotalRamosByDetEsp($det_esp->id_detalle_especificacionempaque);
-                            $precio = getPrecioByDetEsp($col->precio, $det_esp->id_detalle_especificacionempaque);
-                            $precio_col += ($col->getTotalRamosByDetEsp($det_esp->id_detalle_especificacionempaque) * $precio);
+                        if ($this->tipo_especificacion == 'T') {    // flor tinturada
+                            foreach ($det_ped->coloracionesByEspEmp($esp_emp->id_especificacion_empaque) as $col) {
+                                $marcaciones_coloraciones = MarcacionColoracion::where('estado', 1)
+                                    ->where('id_coloracion', $col->id_coloracion)
+                                    ->where('id_detalle_especificacionempaque', $det_esp->id_detalle_especificacionempaque)
+                                    ->get();
+                                foreach ($marcaciones_coloraciones as $marc_col) {
+                                    $ramos = $marc_col->cantidad;
+                                    if ($marc_col->precio != '') {
+                                        $r += $ramos * $marc_col->precio;
+                                    } else if ($col->precio != '' && havePrecioByDetEsp($col->precio, $det_esp->id_detalle_especificacionempaque)) {
+                                        $precio = getPrecioByDetEsp($col->precio, $det_esp->id_detalle_especificacionempaque);
+                                        $r += $ramos * $precio;
+                                    } else {
+                                        $precio = getPrecioByDetEsp($det_ped->precio, $det_esp->id_detalle_especificacionempaque);
+                                        $r += $ramos * $precio;
+                                    }
+                                }
+                            }
+                        } else {    // pedido normal
+                            $ramos = $det_ped->cantidad * $esp_emp->cantidad * ($esp_emp->especificacion->tipo === "O" ? $det_esp->tallos_x_ramos : $det_esp->cantidad);
+                            $precio_final = $ramos * getPrecioByDetEsp($det_ped->precio, $det_esp->id_detalle_especificacionempaque);
+                            $r += $precio_final;
                         }
-                        $ramos -= $ramos_col;
-                        $precio_final = $ramos * getPrecioByDetEsp($det_ped->precio, $det_esp->id_detalle_especificacionempaque);
-                        $precio_final += $precio_col;
-                        $r += $precio_final;
                     }
                 }
             }
@@ -455,51 +475,54 @@ class Pedido extends Model
         return $cajasFull;
     }
 
-    public function getCajasFullByVariedad($variedad){
+    public function getCajasFullByVariedad($variedad)
+    {
 
         $cajasFullByVariedad = 0;
         if (!getFacturaAnulada($this->id_pedido)) {
             $ramosStandarCajaTotal = 0;
             $ramosStandarCajaVariedad = 0;
-            $factorConversion=0;
-            foreach ($this->detalles as $det_ped){
+            $factorConversion = 0;
+            foreach ($this->detalles as $det_ped) {
                 foreach ($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $esp_emp)
-                    foreach ($esp_emp->detalles as $det_esp_emp){
-                        $ramosStandarCajaTotal += convertToEstandar($det_esp_emp->cantidad*$det_ped->cantidad, $det_esp_emp->clasificacion_ramo->nombre);
-                        $factorConversion +=explode('|', $esp_emp->empaque->nombre)[1]*$det_ped->cantidad;
+                    foreach ($esp_emp->detalles as $det_esp_emp) {
+                        $ramosStandarCajaTotal += convertToEstandar($det_esp_emp->cantidad * $det_ped->cantidad, $det_esp_emp->clasificacion_ramo->nombre);
+                        $factorConversion += explode('|', $esp_emp->empaque->nombre)[1] * $det_ped->cantidad;
                     }
 
                 foreach ($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $esp_emp)
-                    foreach($esp_emp->detalles->where('id_variedad',$variedad) as $det_esp_emp)
-                        $ramosStandarCajaVariedad +=convertToEstandar($det_esp_emp->cantidad*$det_ped->cantidad, $det_esp_emp->clasificacion_ramo->nombre);
+                    foreach ($esp_emp->detalles->where('id_variedad', $variedad) as $det_esp_emp)
+                        $ramosStandarCajaVariedad += convertToEstandar($det_esp_emp->cantidad * $det_ped->cantidad, $det_esp_emp->clasificacion_ramo->nombre);
             }
 
-            $standarTotal = $ramosStandarCajaVariedad > 0 ? $ramosStandarCajaTotal/$ramosStandarCajaVariedad : 0;
-            $cajasFullByVariedad= $standarTotal > 0 ? $factorConversion / $standarTotal : 0;
+            $standarTotal = $ramosStandarCajaVariedad > 0 ? $ramosStandarCajaTotal / $ramosStandarCajaVariedad : 0;
+            $cajasFullByVariedad = $standarTotal > 0 ? $factorConversion / $standarTotal : 0;
 
             //dump(round($cajasFullByVariedad,2));
 
         }
-        return round($cajasFullByVariedad,2);
+        return round($cajasFullByVariedad, 2);
     }
 
-    public function catntidad_det_esp_emp(){
-        $cantidad=0;
+    public function catntidad_det_esp_emp()
+    {
+        $cantidad = 0;
         foreach ($this->detalles as $det_ped) {
-            foreach($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $esp_emp){
-                $cantidad+= $esp_emp->detalles->count();
+            foreach ($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $esp_emp) {
+                $cantidad += $esp_emp->detalles->count();
             }
         }
         return $cantidad;
     }
 
-    public function cant_rows_etiqueta($arr_ped){
-        $totalCajas=0;
-        foreach($arr_ped as $ped) {
+    public function cant_rows_etiqueta($arr_ped)
+    {
+        $totalCajas = 0;
+        foreach ($arr_ped as $ped) {
             foreach ($this->detalles as $det_ped) {
                 foreach ($det_ped->marcaciones as $mc) {
                     if (explode("|", $mc->especificacion_empaque->empaque->nombre)[1] === $ped['caja']) {
-                        $totalCajas+=$mc->distribuciones->count();
+                        $totalCajas += $mc->distribuciones->count();
                     }
                 }
             }
@@ -507,8 +530,9 @@ class Pedido extends Model
         return $totalCajas;
     }
 
-    public function etiqueta_factura(){
-        return $this->hasOne('\yura\Modelos\EtiquetaFactura','id_pedido');
+    public function etiqueta_factura()
+    {
+        return $this->hasOne('\yura\Modelos\EtiquetaFactura', 'id_pedido');
     }
 
 }
