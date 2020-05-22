@@ -1434,7 +1434,7 @@ function delete_marcacion(id_esp_emp) {
 
                 $.each($(l).find('input.' + arrId[3]), function (m, n) {
                     arr_id_input_colocarcion = n.id.split("_");
-                    (i==0)
+                    (i==0 || !$(j).find('input[type=checkbox]').is(':checked'))
                         ? dinamico1 =arr_id_input_colocarcion[2]
                         : dinamico1 =arr_id_input_colocarcion[2]-1;
 
@@ -1454,11 +1454,11 @@ function delete_marcacion(id_esp_emp) {
                         : dinamico2 =arr_id_input_precio_mc[3]-1;
 
                     id_input_precio_mc = arr_id_input_precio_mc[0] + "_" + arr_id_input_precio_mc[1] + "_" + arr_id_input_precio_mc[2] + "_" + dinamico2 + "_" + k + "_" + arr_id_input_precio_mc[5]+ "_" + arr_id_input_precio_mc[6];
-                    console.log(id_input_precio_mc)
+
                     $(w).attr({
                         name: id_input_precio_mc,
                         id: id_input_precio_mc
-                    }).removeClass(arrId[4]).addClass('col_precio_' + id_esp_emp + '_' + k)//.removeClass('elemento_color_' + arr_id_input_precio_mc[3] + '_' + id_esp_emp).addClass('elemento_color_' + k + '_' + id_esp_emp);
+                    }).removeClass(arrId[4]).addClass('col_precio_' + id_esp_emp + '_' + k);
                 });
             });
 
