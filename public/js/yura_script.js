@@ -1401,6 +1401,7 @@ function delete_marcacion(id_esp_emp) {
     });
 
     if($cant >0){
+        restar=false;
         $.each($("tr.tr_marcacion_" + id_esp_emp), function (i, j) {
             if ($(j).find('input[type=checkbox]').is(':checked')){
                 restar = true;
