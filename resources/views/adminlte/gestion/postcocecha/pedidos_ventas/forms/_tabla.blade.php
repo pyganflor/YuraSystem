@@ -299,8 +299,7 @@
                                     <td class="text-center" style="border-color: #9d9d9d;text-align:middle">
                                         <div class="input-group">
                                             <span class="input-group-addon" style="border:none;padding: 0;">
-                                                <input type="checkbox" class="check_marcacion_{{$esp_emp->id_especificacion_empaque}}
-                                                    marcacion_{{$esp_emp->id_especificacion_empaque}}_{{$pos_marca+1}}">
+                                                <input type="checkbox" class="check_marcacion_{{$esp_emp->id_especificacion_empaque}} marcacion_{{$esp_emp->id_especificacion_empaque}}_{{$pos_marca+1}}">
                                             </span>
                                             <input type="text" id="nombre_marcacion_{{$pos_marca}}_{{$esp_emp->id_especificacion_empaque}}"
                                                    name="nombre_marcacion_{{$pos_marca}}_{{$esp_emp->id_especificacion_empaque}}"
@@ -311,12 +310,13 @@
                                                name="id_marcacion_{{$pos_marca}}_{{$esp_emp->id_especificacion_empaque}}" value="{{$marca->id_marcacion}}">
                                     </td>
                                     @foreach($det_ped->getColoracionesMarcacionesByEspEmp($esp_emp->id_especificacion_empaque)['coloraciones'] as $pos_color => $color)
-                                        <td class="text-center col_coloracion td_col_coloracion_{{$esp_emp->id_especificacion_empaque}} col_coloracion_{{$esp_emp->id_especificacion_empaque}}_{{$pos_color}}" style="border-color: #9d9d9d;" width="100px" >
+                                        <td class="text-center col_coloracion td_col_coloracion_{{$esp_emp->id_especificacion_empaque}} col_coloracion_{{$esp_emp->id_especificacion_empaque}}_{{$pos_color}} col_precio_{{$esp_emp->id_especificacion_empaque}}_{{$pos_color}}"
+                                            style="border-color: #9d9d9d;" width="100px" >
                                             <ul class="list-unstyled">
                                                 @foreach($esp_emp->detalles as $pos_det_esp => $det_esp)
                                                     <li>
                                                         <div class="input-group" style="width: 100px">
-                                                            <span class="input-group-addon" style="background-color: #e9ecef">
+                                                            <span class="input-group-caddon" style="background-color: #e9ecef">
                                                                 P-{{$pos_det_esp + 1}}
                                                             </span>
                                                             @php
@@ -327,11 +327,12 @@
                                                                    name="ramos_marcacion_{{$pos_marca}}_{{$pos_color}}_{{$det_esp->id_detalle_especificacionempaque}}_{{$esp_emp->id_especificacion_empaque}}"
                                                                    style="width: 100%; background-color: {{getColor($color->id_color)->fondo}};
                                                                        color: {{getColor($color->id_color)->texto}}" min="0" type="number"
-                                                                   class="text-center elemento_color_{{$pos_color}}_{{$esp_emp->id_especificacion_empaque}} col_coloracion_{{$esp_emp->id_especificacion_empaque}}_{{$pos_color}}"
+                                                                   class="text-center elemento_color_{{$pos_color}}_{{$esp_emp->id_especificacion_empaque}} col_coloracion_{{$esp_emp->id_especificacion_empaque}}_{{$pos_color}} ramos_marcacion_{{$esp_emp->id_especificacion_empaque}}"
                                                                    onchange="calcular_totales_tinturado('{{$esp_emp->id_especificacion_empaque}}')">
-                                                            <input type="number" min="0" style="width: 100%;background-color: #e9ecef;"
-                                                                   id="precio_marcacion_coloracion_{{$pos_marca}}_{{$pos_color}}_{{$det_esp->id_detalle_especificacionempaque}}_{{$esp_emp->id_especificacion_empaque}}"
-                                                                   name="precio_marcacion_coloracion_{{$pos_marca}}_{{$pos_color}}_{{$det_esp->id_detalle_especificacionempaque}}_{{$esp_emp->id_especificacion_empaque}}">
+                                                            <input type="number" min="0" style="width: 100%;background-color: #e9ecef;text-align:center" value="{{$marc_col != '' ? $marc_col->precio : ''}}"
+                                                                   class="col_precio_{{$esp_emp->id_especificacion_empaque}}_{{$pos_color}}"
+                                                                   id="p_marcacion_coloracion_{{$pos_marca}}_{{$pos_color}}_{{$det_esp->id_detalle_especificacionempaque}}_{{$esp_emp->id_especificacion_empaque}}"
+                                                                   name="p_marcacion_coloracion_{{$pos_marca}}_{{$pos_color}}_{{$det_esp->id_detalle_especificacionempaque}}_{{$esp_emp->id_especificacion_empaque}}">
                                                         </div>
                                                     </li>
                                                 @endforeach
@@ -358,16 +359,10 @@
                                             </ul>
                                         </th>
                                     @endif
-                                    {{--<td class="text-center" style="border-color: #9d9d9d">
-                                        <input type="text" id="precio_marcacion_{{$pos_marca}}_{{$esp_emp->id_especificacion_empaque}}"
-                                               name="precio_marcacion_{{$pos_marca}}_{{$esp_emp->id_especificacion_empaque}}"
-                                               class="text-center precio_marcacion_{{$esp_emp->id_especificacion_empaque}}"
-                                               style="background-color: #e9ecef; color: #000000; width: 85px">
-                                    </td>--}}
                                     <td class="text-center" style="border-color: #9d9d9d">
                                         <input type="text" id="total_ramos_marcacion_{{$pos_marca}}_{{$esp_emp->id_especificacion_empaque}}"
                                                name="total_ramos_marcacion_{{$pos_marca}}_{{$esp_emp->id_especificacion_empaque}}" readonly
-                                               class="text-center ramos_marcacion_{{$esp_emp->id_especificacion_empaque}}"
+                                               class="text-center ramos_marcacion_{{$esp_emp->id_especificacion_empaque}} total_ramos_marcacion_{{$esp_emp->id_especificacion_empaque}}"
                                                value="{{getMarcacion($marca->id_marcacion)->ramos}}"
                                                style="background-color: #357ca5; color: white; width: 85px">
                                     </td>

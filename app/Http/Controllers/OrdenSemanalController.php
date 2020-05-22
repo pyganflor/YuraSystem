@@ -714,7 +714,7 @@ class OrdenSemanalController extends Controller
     }
 
     public function update_orden_tinturada(Request $request)
-    {   //dd($request->all());
+    {
         ini_set('max_execution_time', env('MAX_EXECUTION_TIME'));
         $valida = Validator::make($request->all(), [
             'id_pedido' => 'required',
@@ -839,6 +839,7 @@ class OrdenSemanalController extends Controller
                                             $marc_col->id_marcacion = $marcacion->id_marcacion;
                                             $marc_col->id_coloracion = $arreglo_coloraciones[$pos_col]->id_coloracion;
                                             $marc_col->cantidad = $mc['cantidad'];
+                                            $marc_col->precio = $mc['precio'];
                                             $marc_col->id_detalle_especificacionempaque = $mc['id_det_esp'];
 
                                             if ($marc_col->save()) {
