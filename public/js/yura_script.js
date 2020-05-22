@@ -186,15 +186,30 @@ function store_pedido(id_cliente, pedido_fijo, csrf_token, vista, id_pedido) {
                         }
                         variedades += id_variedades;
 
+                        arr_custom_ramos_x_caja=[];
+                       $.each($("input.id_det_esp_"+ (i + 1)),function(y,w){
+                            ramos_det_esp_emp = $("input.td_ramos_x_caja_"+(i + 1)+"_"+(y + 1)).val();
+                            ramos_modificados = $("input#ramos_x_caja_"+(i + 1)+"_"+(y + 1)).val();
+                            console.log(ramos_det_esp_emp , ramos_modificados);
+                            if(ramos_det_esp_emp != ramos_modificados){
+                               arr_custom_ramos_x_caja.push({
+                                  ramos_x_caja : ramos_modificados,
+                                  id_det_esp_emp : $("input#id_det_esp_"+(i + 1)+"_"+(y + 1)).val()
+                               });
+                            }
+
+                       });
+
                         arrDataDetallesPedido.push({
                             cantidad: empaque === "T" ? $("#cajas_mallas_" + (i + 1)).val() : $("#cantidad_piezas_" + (i + 1)).val(),
                             id_cliente_pedido_especificacion: empaque === "T" ? null : $("#id_cliente_pedido_especificacion_" + (i + 1)).val(),
                             id_agencia_carga: $("#id_agencia_carga_" + (i + 1)).val(),
                             precio: precio,
                             orden: $("#orden_" + (i + 1)).val(),
+                            arr_custom_ramos_x_caja : arr_custom_ramos_x_caja,
                             datos_especificacion: empaque === "T" ? {
                                 variedad: parseInt($("input.input_variedad_" + (i + 1)).val()),
-                                ramos_x_caja: parseInt($("td.ramos_x_caja_" + (i + 1) + " span").html()),
+                                ramos_x_caja: parseInt($("input.ramos_x_caja_" + (i + 1)).val()),
                                 total_ramos: parseInt($("td#td_total_ramos_" + (i + 1)).html()),
                                 id_clasificacion_ramo: $("#id_clasificacion_ramo_" + (i + 1)).val(),
                                 tallos_x_ramos: parseInt($("td.td_tallos_x_ramo_" + (i + 1) + " span input").val()),
@@ -215,7 +230,7 @@ function store_pedido(id_cliente, pedido_fijo, csrf_token, vista, id_pedido) {
                                 tallos_x_caja: $(".tallos_x_caja_" + (i + 1)).val(),
                                 tallos_x_ramo: $("td.td_tallos_x_ramo_" + (i + 1) + " span input").val(),
                                 tallos_x_malla: $(".tallos_x_malla_" + (i + 1)).val(),
-                                ramos_x_caja: parseInt($("td.ramos_x_caja_" + (i + 1) + " span").html()),
+                                ramos_x_caja: parseInt($("input.ramos_x_caja_" + (i + 1)).val()),
                             });
 
                         } else {
@@ -1435,7 +1450,6 @@ function delete_marcacion(id_esp_emp) {
                 arrId = $(l).attr('class').split(' ');
                 $(l).removeClass(arrId[3]).addClass('col_coloracion_' + id_esp_emp + '_' + k);
 
-
                 $.each($(l).find('input.' + arrId[3]), function (m, n) {
                     arr_id_input_colocarcion = n.id.split("_");
                     (restar)
@@ -1641,7 +1655,7 @@ function calcular_precio_envio() {
             precio_especificacion = 0.00;
             ramos_totales_especificacion = 0.00;
             $.each($(".cantidad_" + o + "_" + i), function (p, q) {
-                $.each($(".td_ramos_x_caja_" + o + "_" + i), function (a, b) {
+                $.each($(".input_ramos_x_caja_" + o + "_" + i), function (a, b) {
                     ramos_totales_especificacion += (q.value * b.value);
                 });
                 $.each($(".precio_" + o + "_" + i), function (y, z) {
@@ -2368,7 +2382,7 @@ function cuenta_ramos(input) {
         //$.each($(".input_cantidad_"+id),function (i) {
         //$.each($("td.td_calibre_"+(i+1)),function(k,l){
         $("td.td_presentacion_" + id + " span").html($("input.input_presentacion_" + id).val());
-        $("td.ramos_x_caja_" + id + " span").html($("input.td_ramos_x_caja_" + id).val());
+        $("td.ramos_x_caja_" + id + " span").html($("input.input_ramos_x_caja_" + id).val());
         $("td.td_tallos_x_ramo_" + id + " span").html($("input.tallos_x_ramo_" + id).val());
         // });
         //});
@@ -2428,7 +2442,7 @@ function calcular_precio_pedido(input) {
                 ramos = 0;
                 pieza = ($(".cantidad_" + i).val() == "" ? 0 : parseFloat($(".cantidad_" + i).val()));
                 total_piezas += pieza;
-                $.each($(".td_ramos_x_caja_" + i), function (a, b) {
+                $.each($(".input_ramos_x_caja_" + i), function (a, b) {
                     ramos_totales_especificacion += (pieza * b.value);
                 });
                 $.each($(".precio_" + i), function (y, z) {

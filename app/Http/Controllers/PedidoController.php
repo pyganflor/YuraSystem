@@ -17,6 +17,7 @@ use yura\Modelos\DataTallos;
 use yura\Modelos\DatosExportacion;
 use yura\Modelos\DetalleEnvio;
 use yura\Modelos\DetalleEspecificacionEmpaque;
+use yura\Modelos\DetalleEspecificacionEmpaqueRamosCaja;
 use yura\Modelos\Especificacion;
 use yura\Modelos\EspecificacionEmpaque;
 use yura\Modelos\Pais;
@@ -103,7 +104,7 @@ class PedidoController extends Controller
     }
 
     public function store_pedidos(Request $request)
-    {
+    {   
         $valida = Validator::make($request->all(), [
             'arrDataPedido' => 'Array',
             'id_cliente' => 'required',
@@ -217,6 +218,29 @@ class PedidoController extends Controller
 
                         if ($objDetallePedido->save()) {
                             $modelDetallePedido = DetallePedido::all()->last();
+
+                            //GUARDAR LOS RAMOS X CAJAS MODIFICADOS EN EL PEDIDO DE CADA DETALLE_SPECIFICACION_EMPAQUE
+                            if(isset($item['arr_custom_ramos_x_caja']) && count($item['arr_custom_ramos_x_caja'])>0){
+                                foreach($item['arr_custom_ramos_x_caja'] as $z => $customRamosXCaja){
+                                    $objDetEspEmpRxC = new DetalleEspecificacionEmpaqueRamosCaja;
+                                    $objDetEspEmpRxC->id_detalle_pedido = $modelDetallePedido->id_detalle_pedido;
+                                    $objDetEspEmpRxC->id_detalle_especificacionempaque = $customRamosXCaja['id_det_esp_emp'];
+                                    $objDetEspEmpRxC->cantidad = $customRamosXCaja['ramos_x_caja'];
+                                    $objDetEspEmpRxC->fecha_registro = now()->format('Y-m-d H:i:s.v');
+                                    $objDetEspEmpRxC->save();
+                                }
+
+                                if(($z+1) < count($item['arr_custom_ramos_x_caja'])){
+                                    Pedido::destroy($model->id_pedido);
+                                    return [
+                                        'success' => false,
+                                        'mensaje' => '<div class="alert alert-danger text-center">' .
+                                                        '<p> Hubo un error al guardar la información del pedido en el sistema, intente nuevamente, si el error persiste contacte al área de sistemas</p>'
+                                                   . '</div>'
+                                    ];
+                                }
+                            }
+
                             if (isset($request->dataTallos) && count($request->dataTallos) > 0) {
                                 $storeDataTallos = $this->store_datos_tallos($request->dataTallos[$key], $modelDetallePedido->id_detalle_pedido);
                                 if (!$storeDataTallos) {
@@ -254,11 +278,7 @@ class PedidoController extends Controller
                                 '<p> Se ha guardado el pedido exitosamente</p>'
                                 . '</div>';
                         } else {
-                            Pedido::destroy($model->id_pedido);
-                            $success = false;
-                            $msg = '<div class="alert alert-danger text-center">' .
-                                '<p> Hubo un error al guardar la información del pedido en el sistema, intente nuevamente, si el error persiste contacte al área de sistemas</p>'
-                                . '</div>';
+
                         }
                     }
                     $objEnvio = new Envio;
@@ -346,8 +366,6 @@ class PedidoController extends Controller
                     $objProductoYuraVenture->save();
                 }
             }
-
-
             
         } else {
             $success = false;

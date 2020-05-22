@@ -65,6 +65,7 @@ use yura\Modelos\Transportista;
 use yura\Modelos\UnidadMedida;
 use yura\Modelos\Usuario;
 use yura\Modelos\Variedad;
+use yura\Modelos\DetalleEspecificacionEmpaqueRamosCaja;
 
 
 /*
@@ -1546,6 +1547,7 @@ function convertToEstandar($ramos, $calibre)
 {
     $estandar = getCalibreRamoEstandar()->nombre;
     $factor = round($calibre / $estandar, 2);
+    dump($calibre,$estandar,$ramos,$factor);
     return round($ramos * $factor);
 }
 
@@ -2657,4 +2659,11 @@ function getNuevaCurva($curva, $inicio)
         }
     }
     return $new_curva;
+}
+
+function getRamosXCajaModificado($idDetPed,$idDetEspEmp){
+    return DetalleEspecificacionEmpaqueRamosCaja::where([
+       ['id_detalle_pedido',$idDetPed],
+       ['id_detalle_especificacionempaque',$idDetEspEmp]
+    ])->first();
 }
