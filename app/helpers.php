@@ -1137,6 +1137,21 @@ function getPrecioByDetEsp($string, $det_esp)
     return 1;
 }
 
+function havePrecioByDetEsp($string, $det_esp)
+{
+    foreach (explode('|', $string) as $x) {
+        if (count(explode(';', $x)) > 0) {
+            if (explode(';', $x)[1] > 0) {  //explode(';', $x)[1] == 0 CUANDO UN PEDIDO SEA EN TALLOS
+                if (explode(';', $x)[1] == $det_esp)
+                    return true;
+            } else {
+                return true; //POR QUE SOLO REALIZARAN PEIDOS EN TALLOS CON UN SOLO DETALLE ESPECIFICACION EMPAQUE, CAMBIAR EN CASO DE QUE NO SE VAYA A HACER ASÍ
+            }
+        }
+    }
+    return false;
+}
+
 /* ============ Obtener los ramos sacados de apertura para los pedidos de un "fecha" ==============*/
 function getDestinadosToFrioByFecha($fecha, $variedad)
 {

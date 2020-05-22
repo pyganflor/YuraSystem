@@ -47,6 +47,11 @@
             @endforeach
         </ul>
         Venta total por semana = {{number_format($venta_sem, 2)}}
+
+@php
+    $pedido = \yura\Modelos\Pedido::find(21);
+dd($pedido->id_pedido, $pedido->fecha_pedido, $pedido->getPrecioByPedido());
+@endphp
     </section>
 
     <style>
