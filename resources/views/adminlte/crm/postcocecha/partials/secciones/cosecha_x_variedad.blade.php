@@ -39,8 +39,8 @@
                 <input type="hidden" id="cosechados_var_{{$variedad->id_variedad}}"
                        value="{{$cosecha->getTotalTallosByVariedad($variedad->id_variedad)}}">
             </span>
-            <div class="progress sm" style="margin-bottom: 5px">
-                <div class="progress progress-sm active">
+            <div class="progress sm border-radius_18" style="margin-bottom: 5px">
+                <div class="progress progress-sm active border-radius_18">
                     <div class="progress-bar progress-bar-{{$class_bar}} progress-bar-striped" role="progressbar" aria-valuenow="20"
                          aria-valuemin="0"
                          aria-valuemax="100" style="width: {{$porcentaje}}%" title="{{$porcentaje}}%">
