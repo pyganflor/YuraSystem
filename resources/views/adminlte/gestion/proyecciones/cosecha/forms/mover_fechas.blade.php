@@ -7,10 +7,10 @@
             Cosecha
         </th>
         <td class="text-cetner" style="border-color: #9d9d9d">
-            <input type="number" id="cosecha" min="-14" max="14" style="width: 100%" class="text-center">
+            <input type="number" id="cosecha" min="-14" max="14" style="width: 100%" class="text-center input-yura_white">
         </td>
         <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef" width="50px" id="celda_button_mover_cosecha">
-            <button class="btn btn-xs btn-success" type="button" onclick="mover_cosecha()">
+            <button class="btn btn-xs btn-yura_primary" type="button" onclick="mover_cosecha()">
                 <i class="fa fa-fw fa-save"></i>
             </button>
         </th>
@@ -26,10 +26,10 @@
             Inicio de programación
         </th>
         <td class="text-cetner" style="border-color: #9d9d9d">
-            <input type="number" id="ini_proy" min="-14" max="14" style="width: 100%" class="text-center">
+            <input type="number" id="ini_proy" min="-14" max="14" style="width: 100%" class="text-center input-yura_white">
         </td>
         <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef" width="50px" id="celda_button_mover_inicio_proy">
-            <button class="btn btn-xs btn-success" type="button" onclick="mover_inicio_proy()">
+            <button class="btn btn-xs btn-yura_primary" type="button" onclick="mover_inicio_proy()">
                 <i class="fa fa-fw fa-save"></i>
             </button>
         </th>
