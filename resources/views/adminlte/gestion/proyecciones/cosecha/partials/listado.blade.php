@@ -475,17 +475,26 @@
                 </a>
             </legend>
             <div class="panel-collapse collapse" id="collapseConfig">
-                <div class="input-group">
-                    <div class="input-group-addon bg-gray">
-                        <i class="fa fa-fw fa-calendar"></i> Mín. ini. cosecha %
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group input-group">
+                            <span class="input-group-addon span-input-group-yura-fixed bg-yura_dark">
+                                <i class="fa fa-fw fa-calendar"></i> Mín. ini. cosecha %
+                            </span>
+                            <input type="number" class="form-control input-yura_default" id="proy_minimo_cosecha" required="" min="1" max="50"
+                                   value="{{$configuracion->proy_minimo_cosecha}}" onchange="update_config('proy_minimo_cosecha')">
+                        </div>
                     </div>
-                    <input type="number" class="form-control" id="proy_minimo_cosecha" required="" min="1" max="50"
-                           value="{{$configuracion->proy_minimo_cosecha}}" onchange="update_config('proy_minimo_cosecha')">
-                    <div class="input-group-addon bg-gray">
-                        <i class="fa fa-fw fa-calendar"></i> Máx. fin cosecha %
+                    <div class="col-md-6">
+                        <div class="form-group input-group">
+                            <span class="input-group-addon span-input-group-yura-fixed bg-yura_dark">
+                                <i class="fa fa-fw fa-calendar"></i> Máx. fin cosecha %
+                            </span>
+                            <input type="number" class="form-control input-yura_default" id="proy_maximo_cosecha_fin" required="" min="10"
+                                   max="50" value="{{$configuracion->proy_maximo_cosecha_fin}}"
+                                   onchange="update_config('proy_maximo_cosecha_fin')">
+                        </div>
                     </div>
-                    <input type="number" class="form-control" id="proy_maximo_cosecha_fin" required="" min="10" max="50"
-                           value="{{$configuracion->proy_maximo_cosecha_fin}}" onchange="update_config('proy_maximo_cosecha_fin')">
                 </div>
             </div>
         </div>
