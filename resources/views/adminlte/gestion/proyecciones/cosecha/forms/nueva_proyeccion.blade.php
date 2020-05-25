@@ -10,7 +10,7 @@
             Módulo
         </th>
         <td class="text-center" style="border-color: #9d9d9d">
-            <select name="id_modulo" id="id_modulo" style="width: 100%">
+            <select name="id_modulo" id="id_modulo" style="width: 100%" class="input-yura_white">
                 @foreach($modulos as $mod)
                     <option value="{{$mod->id_modulo}}">{{$mod->nombre}}</option>
                 @endforeach
@@ -22,7 +22,7 @@
             Tipo
         </th>
         <td class="text-center" style="border-color: #9d9d9d">
-            <select name="tipo" id="tipo" style="width: 100%">
+            <select name="tipo" id="tipo" style="width: 100%" class="input-yura_white">
                 <option value="P">Poda</option>
                 <option value="S">Siembra</option>
             </select>
@@ -33,7 +33,7 @@
             Curva
         </th>
         <td class="text-center" style="border-color: #9d9d9d">
-            <input type="text" name="curva" id="curva" style="width: 100%" class="text-center" value="{{$semana->curva}}">
+            <input type="text" name="curva" id="curva" style="width: 100%" class="text-center input-yura_white" value="{{$semana->curva}}">
         </td>
     </tr>
     <tr>
@@ -41,7 +41,7 @@
             Semana Cosecha
         </th>
         <td class="text-center" style="border-color: #9d9d9d">
-            <input type="number" name="semana_poda_siembra" id="semana_poda_siembra" style="width: 100%" class="text-center"
+            <input type="number" name="semana_poda_siembra" id="semana_poda_siembra" style="width: 100%" class="text-center input-yura_white"
                    value="{{$semana->semana_siembra}}">
         </td>
     </tr>
@@ -50,7 +50,7 @@
             Plantas Iniciales
         </th>
         <td class="text-center" style="border-color: #9d9d9d">
-            <input type="number" name="plantas_iniciales" id="plantas_iniciales" style="width: 100%" class="text-center"
+            <input type="number" name="plantas_iniciales" id="plantas_iniciales" style="width: 100%" class="text-center input-yura_white"
                    value="0">
         </td>
     </tr>
@@ -59,7 +59,7 @@
             % Desecho
         </th>
         <td class="text-center" style="border-color: #9d9d9d">
-            <input type="number" name="desecho" id="desecho" style="width: 100%" class="text-center"
+            <input type="number" name="desecho" id="desecho" style="width: 100%" class="text-center input-yura_white"
                    value="{{$semana->desecho}}">
         </td>
     </tr>
@@ -68,7 +68,7 @@
             Tallos x Planta
         </th>
         <td class="text-center" style="border-color: #9d9d9d">
-            <input type="number" name="tallos_planta" id="tallos_planta" style="width: 100%" class="text-center"
+            <input type="number" name="tallos_planta" id="tallos_planta" style="width: 100%" class="text-center input-yura_white"
                    value="{{$semana->tallos_planta_siembra}}">
         </td>
     </tr>
@@ -77,7 +77,7 @@
             Tallos x Ramo
         </th>
         <td class="text-center" style="border-color: #9d9d9d">
-            <input type="number" name="tallos_ramo" id="tallos_ramo" style="width: 100%" class="text-center"
+            <input type="number" name="tallos_ramo" id="tallos_ramo" style="width: 100%" class="text-center input-yura_white"
                    value="{{$semana->tallos_ramo_siembra}}">
         </td>
     </tr>
@@ -87,7 +87,7 @@
 <input type="hidden" id="id_semana" value="{{$semana->id_semana}}">
 
 <div class="text-center" style="margin-top: 10px">
-    <button type="button" class="btn btn-success btn-xs" onclick="store_new_proyeccion()">
+    <button type="button" class="btn btn-yura_primary btn-xs" onclick="store_new_proyeccion()">
         <i class="fa fa-fw fa-save"></i> Guardar
     </button>
 </div>

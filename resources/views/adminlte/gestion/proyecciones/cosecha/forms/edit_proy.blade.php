@@ -17,7 +17,7 @@
             Tipo
         </th>
         <td class="text-center" style="border-color: #9d9d9d">
-            <select name="tipo" id="tipo" style="width: 100%">
+            <select name="tipo" id="tipo" style="width: 100%" class="input-yura_white">
                 <option value="P" {{$proyeccion->tipo == 'P' ? 'selected' : ''}}>Poda</option>
                 <option value="S" {{$proyeccion->tipo == 'S' ? 'selected' : ''}}>Siembra</option>
                 <option value="C" {{$proyeccion->tipo == 'C' ? 'selected' : ''}}>Finalizar</option>
@@ -29,7 +29,7 @@
             Fecha inicio
         </th>
         <td class="text-center" style="border-color: #9d9d9d">
-            <input type="date" name="fecha_inicio" id="fecha_inicio" style="width: 100%" class="text-center"
+            <input type="date" name="fecha_inicio" id="fecha_inicio" style="width: 100%" class="text-center input-yura_white"
                    value="{{$proyeccion->fecha_inicio}}">
         </td>
     </tr>
@@ -38,13 +38,13 @@
             Fecha fin anterior
         </th>
         <td class="text-center" style="border-color: #9d9d9d">
-            <input type="date" name="fecha_fin" id="fecha_fin" style="width: 100%" class="text-center"
+            <input type="date" name="fecha_fin" id="fecha_fin" style="width: 100%" class="text-center input-yura_white"
                    value="{{$proyeccion->fecha_inicio}}">
         </td>
     </tr>
     <tr>
-        <th class="text-center" style="border-color: #9d9d9d; background-color: #495054; color: white" colspan="2">
-            <button type="button" class="btn btn-xs btn-block btn-success" onclick="store_nuevo_ciclo()">
+        <th class="text-center" style="border-color: #9d9d9d; background-color: #00b388; color: white" colspan="2">
+            <button type="button" class="btn btn-xs btn-block btn-yura_primary" onclick="store_nuevo_ciclo()">
                 <i class="fa fa-fw fa-check"></i> Crear nuevo ciclo
             </button>
         </th>
@@ -54,7 +54,7 @@
             Semana Inicio
         </th>
         <td class="text-center" style="border-color: #9d9d9d">
-            <input type="number" onkeypress="return isNumber(event)" name="semana" id="semana" style="width: 100%" class="text-center"
+            <input type="number" onkeypress="return isNumber(event)" name="semana" id="semana" style="width: 100%" class="text-center input-yura_white"
                    value="{{$proyeccion->semana->codigo}}">
         </td>
     </tr>
@@ -63,7 +63,7 @@
             Curva
         </th>
         <td class="text-center" style="border-color: #9d9d9d">
-            <input type="text" name="curva" id="curva" style="width: 100%" class="text-center" value="{{$proyeccion->curva}}">
+            <input type="text" name="curva" id="curva" style="width: 100%" class="text-center input-yura_white" value="{{$proyeccion->curva}}">
         </td>
     </tr>
     <tr>
@@ -71,7 +71,7 @@
             Semana Cosecha
         </th>
         <td class="text-center" style="border-color: #9d9d9d">
-            <input type="number" name="semana_poda_siembra" id="semana_poda_siembra" style="width: 100%" class="text-center"
+            <input type="number" name="semana_poda_siembra" id="semana_poda_siembra" style="width: 100%" class="text-center input-yura_white"
                    value="{{$proyeccion->semana_poda_siembra}}">
         </td>
     </tr>
@@ -81,7 +81,7 @@
             <strong class="error" title="Dato correspondiente al ciclo anterior">{{$proyeccion->plantas_iniciales > 0 ? '' : '*'}}</strong>
         </th>
         <td class="text-center" style="border-color: #9d9d9d">
-            <input type="number" name="plantas_iniciales" id="plantas_iniciales" style="width: 100%" class="text-center"
+            <input type="number" name="plantas_iniciales" id="plantas_iniciales" style="width: 100%" class="text-center input-yura_white"
                    value="{{$proyeccion->plantas_iniciales > 0 ? $proyeccion->plantas_iniciales : $plantas_iniciales_default}}">
         </td>
     </tr>
@@ -91,7 +91,7 @@
             <strong class="error" title="Dato correspondiente a la semana de inicio">{{$proyeccion->desecho > 0 ? '' : '*'}}</strong>
         </th>
         <td class="text-center" style="border-color: #9d9d9d">
-            <input type="number" name="desecho" id="desecho" style="width: 100%" class="text-center"
+            <input type="number" name="desecho" id="desecho" style="width: 100%" class="text-center input-yura_white"
                    value="{{$proyeccion->desecho > 0 ? $proyeccion->desecho : $desecho_default}}">
         </td>
     </tr>
@@ -101,7 +101,7 @@
             <strong class="error" title="Dato correspondiente a la semana de inicio">{{$proyeccion->tallos_planta > 0 ? '' : '*'}}</strong>
         </th>
         <td class="text-center" style="border-color: #9d9d9d">
-            <input type="number" name="tallos_planta" id="tallos_planta" style="width: 100%" class="text-center"
+            <input type="number" name="tallos_planta" id="tallos_planta" style="width: 100%" class="text-center input-yura_white"
                    value="{{$proyeccion->tallos_planta > 0 ? $proyeccion->tallos_planta : $tallos_x_planta_default}}">
         </td>
     </tr>
@@ -111,7 +111,7 @@
             <strong class="error" title="Dato correspondiente a la semana de inicio">{{$proyeccion->tallos_ramo > 0 ? '' : '*'}}</strong>
         </th>
         <td class="text-center" style="border-color: #9d9d9d">
-            <input type="number" name="tallos_ramo" id="tallos_ramo" style="width: 100%" class="text-center"
+            <input type="number" name="tallos_ramo" id="tallos_ramo" style="width: 100%" class="text-center input-yura_white"
                    value="{{$proyeccion->tallos_ramo > 0 ? $proyeccion->tallos_ramo : $tallos_x_ramo_default}}">
         </td>
     </tr>
@@ -120,7 +120,7 @@
             Área
         </th>
         <td class="text-center" style="border-color: #9d9d9d">
-            <input type="number" name="area" id="area" style="width: 100%" class="text-center" value="{{$area_default}}" readonly>
+            <input type="number" name="area" id="area" style="width: 100%" class="text-center input-yura_white" value="{{$area_default}}" readonly>
         </td>
     </tr>
 </table>
@@ -130,7 +130,7 @@
 <input type="hidden" id="modulo-edit_proy" value="{{$proyeccion->id_modulo}}">
 
 <div class="text-center" style="margin-top: 10px">
-    <button type="button" class="btn btn-success btn-xs" onclick="update_proyeccion()">
+    <button type="button" class="btn btn-yura_primary btn-xs" onclick="update_proyeccion()">
         <i class="fa fa-fw fa-save"></i> Guardar
     </button>
 </div>

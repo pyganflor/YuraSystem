@@ -16,10 +16,10 @@
             Curva
         </th>
         <td class="text-cetner" style="border-color: #9d9d9d">
-            <input type="text" id="curva" maxlength="25" style="width: 100%;" class="text-center" placeholder="30-40-30">
+            <input type="text" id="curva" maxlength="25" style="width: 100%;" class="text-center input-yura_white" placeholder="30-40-30">
         </td>
         <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef" width="50px" id="celda_button_curva">
-            <button class="btn btn-xs btn-success" type="button" onclick="actualizar_curva()">
+            <button class="btn btn-xs btn-yura_primary" type="button" onclick="actualizar_curva()">
                 <i class="fa fa-fw fa-save"></i>
             </button>
         </th>
@@ -38,10 +38,10 @@
             Semana cosecha
         </th>
         <td class="text-cetner" style="border-color: #9d9d9d">
-            <input type="number" id="semana_cosecha" max="52" style="width: 100%;" class="text-center" value="14">
+            <input type="number" id="semana_cosecha" max="52" style="width: 100%;" class="text-center input-yura_white" value="14">
         </td>
         <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef" width="50px" id="celda_button_semana_cosecha">
-            <button class="btn btn-xs btn-success" type="button" onclick="actualizar_semana_cosecha()">
+            <button class="btn btn-xs btn-yura_primary" type="button" onclick="actualizar_semana_cosecha()">
                 <i class="fa fa-fw fa-save"></i>
             </button>
         </th>
@@ -60,10 +60,10 @@
             Plantas iniciales
         </th>
         <td class="text-cetner" style="border-color: #9d9d9d">
-            <input type="number" id="plantas_iniciales" max="99999" style="width: 100%;" class="text-center">
+            <input type="number" id="plantas_iniciales" max="99999" style="width: 100%;" class="text-center input-yura_white">
         </td>
         <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef" width="50px" id="celda_button_plantas_iniciales">
-            <button class="btn btn-xs btn-success" type="button" onclick="actualizar_plantas_iniciales()">
+            <button class="btn btn-xs btn-yura_primary" type="button" onclick="actualizar_plantas_iniciales()">
                 <i class="fa fa-fw fa-save"></i>
             </button>
         </th>
@@ -82,10 +82,10 @@
             % Desecho
         </th>
         <td class="text-cetner" style="border-color: #9d9d9d">
-            <input type="number" id="desecho" max="100" style="width: 100%;" class="text-center">
+            <input type="number" id="desecho" max="100" style="width: 100%;" class="text-center input-yura_white">
         </td>
         <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef" width="50px" id="celda_button_desecho">
-            <button class="btn btn-xs btn-success" type="button" onclick="actualizar_desecho()">
+            <button class="btn btn-xs btn-yura_primary" type="button" onclick="actualizar_desecho()">
                 <i class="fa fa-fw fa-save"></i>
             </button>
         </th>
@@ -104,10 +104,10 @@
             Tallos x Planta
         </th>
         <td class="text-cetner" style="border-color: #9d9d9d">
-            <input type="number" id="tallos_x_planta" max="100" min="0" style="width: 100%;" class="text-center">
+            <input type="number" id="tallos_x_planta" max="100" min="0" style="width: 100%;" class="text-center input-yura_white">
         </td>
         <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef" width="50px" id="celda_button_tallos_planta">
-            <button class="btn btn-xs btn-success" type="button" onclick="actualizar_tallos_planta()">
+            <button class="btn btn-xs btn-yura_primary" type="button" onclick="actualizar_tallos_planta()">
                 <i class="fa fa-fw fa-save"></i>
             </button>
         </th>
@@ -126,10 +126,10 @@
             Tallos x Ramo
         </th>
         <td class="text-cetner" style="border-color: #9d9d9d">
-            <input type="number" id="tallos_x_ramo" max="100" min="0" style="width: 100%;" class="text-center">
+            <input type="number" id="tallos_x_ramo" max="100" min="0" style="width: 100%;" class="text-center input-yura_white">
         </td>
         <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef" width="50px" id="celda_button_tallos_ramo">
-            <button class="btn btn-xs btn-success" type="button" onclick="actualizar_tallos_ramo()">
+            <button class="btn btn-xs btn-yura_primary" type="button" onclick="actualizar_tallos_ramo()">
                 <i class="fa fa-fw fa-save"></i>
             </button>
         </th>
@@ -154,10 +154,10 @@
             Semana cosecha Siembra
         </th>
         <td class="text-cetner" style="border-color: #9d9d9d">
-            <input type="number" id="semana_cosecha_siembra" max="100" min="0" style="width: 100%;" class="text-center">
+            <input type="number" id="semana_cosecha_siembra" max="100" min="0" style="width: 100%;" class="text-center input-yura_white">
         </td>
         <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef" width="50px" id="celda_button_semana_cosecha_siembra">
-            <button class="btn btn-xs btn-success" type="button" onclick="actualizar_semana_cosecha_siembra()">
+            <button class="btn btn-xs btn-yura_primary" type="button" onclick="actualizar_semana_cosecha_siembra()">
                 <i class="fa fa-fw fa-save"></i>
             </button>
         </th>
@@ -176,10 +176,10 @@
             Tallos x Planta Siembra
         </th>
         <td class="text-cetner" style="border-color: #9d9d9d">
-            <input type="number" id="tallos_planta_siembra" max="100" min="0" style="width: 100%;" class="text-center">
+            <input type="number" id="tallos_planta_siembra" max="100" min="0" style="width: 100%;" class="text-center input-yura_white">
         </td>
         <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef" width="50px" id="celda_button_tallos_planta_siembra">
-            <button class="btn btn-xs btn-success" type="button" onclick="actualizar_tallos_planta_siembra()">
+            <button class="btn btn-xs btn-yura_primary" type="button" onclick="actualizar_tallos_planta_siembra()">
                 <i class="fa fa-fw fa-save"></i>
             </button>
         </th>
@@ -198,10 +198,10 @@
             Tallos x Ramo Siembra
         </th>
         <td class="text-cetner" style="border-color: #9d9d9d">
-            <input type="number" id="tallos_ramo_siembra" max="100" min="0" style="width: 100%;" class="text-center">
+            <input type="number" id="tallos_ramo_siembra" max="100" min="0" style="width: 100%;" class="text-center input-yura_white">
         </td>
         <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef" width="50px" id="celda_button_tallos_ramo_siembra">
-            <button class="btn btn-xs btn-success" type="button" onclick="actualizar_tallos_ramo_siembra()">
+            <button class="btn btn-xs btn-yura_primary" type="button" onclick="actualizar_tallos_ramo_siembra()">
                 <i class="fa fa-fw fa-save"></i>
             </button>
         </th>
