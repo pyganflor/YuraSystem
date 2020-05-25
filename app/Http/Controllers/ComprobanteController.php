@@ -1888,7 +1888,7 @@ class ComprobanteController extends Controller
 
         //$correos[] = $comprobante->envio->pedido->empresa->correo;
         $correoEmpresa = ConfiguracionEmpresa::where('estado', 1)->first()->correo;
-        //$correos[] = "obrian@pyganflor.com"; // solo para pruebas, comentar en produccion
+        $correos[] = "obrian@pyganflor.com"; // solo para pruebas, comentar en produccion
 
         MailDocumentosElectronicos::dispatch($correos,$request->all(),$comprobante,$correoEmpresa)->onQueue('documentos_electronicos');
 

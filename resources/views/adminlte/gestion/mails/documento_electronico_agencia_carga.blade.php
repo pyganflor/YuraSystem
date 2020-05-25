@@ -28,8 +28,9 @@
                     $rXc = 0;
                     $description = "";
                     foreach ($esp_emp->detalles as $n => $det_esp_emp){
+                        $ramos_modificado = getRamosXCajaModificado($det_ped->id_detalle_pedido,$det_esp_emp->id_detalle_especificacionempaque);
                         $description .= substr($det_esp_emp->variedad->planta->nombre,0,3)." ".$det_esp_emp->variedad->siglas." ". $det_esp_emp->clasificacion_ramo->nombre.", ";
-                        $rXc += $det_esp_emp->cantidad;
+                        $rXc += (isset($ramos_modificado) ? $ramos_modificado->cantidad : $det_esp_emp->cantidad);
                     }
                 @endphp
                 <tr>
