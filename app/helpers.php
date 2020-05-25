@@ -1562,7 +1562,6 @@ function convertToEstandar($ramos, $calibre)
 {
     $estandar = getCalibreRamoEstandar()->nombre;
     $factor = round($calibre / $estandar, 2);
-    dump($calibre,$estandar,$ramos,$factor);
     return round($ramos * $factor);
 }
 
@@ -2680,5 +2679,5 @@ function getRamosXCajaModificado($idDetPed,$idDetEspEmp){
     return DetalleEspecificacionEmpaqueRamosCaja::where([
        ['id_detalle_pedido',$idDetPed],
        ['id_detalle_especificacionempaque',$idDetEspEmp]
-    ])->first();
+    ])->select('cantidad')->first();
 }

@@ -171,13 +171,16 @@
                                                     {{$det_esp_emp->empaque_p->nombre}}
                                                 </td>
                                                 <td  style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;" class="text-center ramos_x_caja_{{$x+1}}_{{$i+1}}">
-                                                    <span>{{$det_esp_emp->cantidad}}</span>
+                                                    @php
+                                                        $ramos_modificado = getRamosXCajaModificado($det_ped->id_detalle_pedido,$det_esp_emp->id_detalle_especificacionempaque);
+                                                    @endphp
+                                                    <span>{{isset($ramos_modificado) ? $ramos_modificado->cantidad : $det_esp_emp->cantidad}}</span>
                                                     <input type="hidden" class="td_ramos_x_caja_{{$x+1}} td_ramos_x_caja_{{$i+1}}_{{$x+1}} input_ramos_x_caja_{{$x+1}}_{{$b}} input_ramos_x_caja_{{$i+1}}_{{$x+1}}_{{$b}}"
-                                                           value="{{$det_ped->cliente_especificacion->especificacion->tipo === "O" ? $det_ped->data_tallos->ramos_x_caja : $det_esp_emp->cantidad}}">
+                                                           value="{{$det_ped->cliente_especificacion->especificacion->tipo === "O" ? $det_ped->data_tallos->ramos_x_caja : (isset($ramos_modificado) ? $ramos_modificado->cantidad : $det_esp_emp->cantidad)}}">
                                                 </td>
                                                 @if($det_ped->cliente_especificacion->especificacion->tipo === "O")
                                                     @php
-                                                        $r_x_c = $det_ped->cliente_especificacion->especificacion->tipo === "O" ? $det_ped->data_tallos->ramos_x_caja : $det_esp_emp->cantidad;
+                                                        $r_x_c = $det_ped->cliente_especificacion->especificacion->tipo === "O" ? $det_ped->data_tallos->ramos_x_caja : (isset($ramos_modificado) ? $ramos_modificado->cantidad : $det_esp_emp->cantidad);
                                                         $t_x_r = isset($det_ped->data_tallos->tallos_x_ramo) ? $det_ped->data_tallos->tallos_x_ramo : $det_esp_emp->tallos_x_ramos;
                                                         $t_x_c = $r_x_c*$t_x_r;
                                                     @endphp

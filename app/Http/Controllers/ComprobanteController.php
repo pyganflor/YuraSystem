@@ -127,14 +127,15 @@ class ComprobanteController extends Controller
                     $i = 0;
                     foreach ($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $m => $esp_emp) {
                         foreach ($esp_emp->detalles as $n => $det_esp_emp) {
-                            $peso_neto += (int)$det_esp_emp->clasificacion_ramo->nombre * number_format(($det_ped->cantidad*$det_esp_emp->cantidad),2,".","");
+                            $ramos_modificado = getRamosXCajaModificado($det_ped->id_detalle_pedido,$det_esp_emp->id_detalle_especificacionempaque);
+                            $peso_neto += (int)$det_esp_emp->clasificacion_ramo->nombre * number_format(($det_ped->cantidad*(isset($ramos_modificado) ? $ramos_modificado->cantidad : $det_esp_emp->cantidad)),2,".","");
                             $peso_caja += isset(explode("|",$det_esp_emp->especificacion_empaque->empaque->nombre)[2]) ? explode("|",$det_esp_emp->especificacion_empaque->empaque->nombre)[2] : 0;
                             if($esp_emp->especificacion->tipo === "O"){
                                 $precio_x_variedad = $det_ped->total_tallos()*(float)explode(";", $precio[$i])[0];
                             }else{
-                                $precio_x_variedad = $det_esp_emp->cantidad * (float)explode(";", $precio[$i])[0] * $esp_emp->cantidad * $det_ped->cantidad;
+                                $precio_x_variedad = (isset($ramos_modificado) ? $ramos_modificado->cantidad : $det_esp_emp->cantidad) * (float)explode(";", $precio[$i])[0] * $esp_emp->cantidad * $det_ped->cantidad;
                             }
-                            //$precio_x_variedad = (($esp_emp->especificacion->tipo === "O" ? $det_esp_emp->tallos_x_ramos : $det_esp_emp->cantidad) * (float)explode(";", $precio[$i])[0] * $esp_emp->cantidad * $det_ped->cantidad);
+                            //$precio_x_variedad = (($esp_emp->especificacion->tipo === "O" ? $det_esp_emp->tallos_x_ramos : (isset($ramos_modificado) ? $ramos_modificado->cantidad : $det_esp_emp->cantidad)) * (float)explode(";", $precio[$i])[0] * $esp_emp->cantidad * $det_ped->cantidad);
                             $precio_total_sin_impuestos += $precio_x_variedad;
                             $i++;
                         }
@@ -144,7 +145,8 @@ class ComprobanteController extends Controller
                 foreach ($envio->pedido->detalles as $x => $det_ped) {
                     foreach($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $m => $esp_emp){
                         foreach ($esp_emp->detalles as $n => $det_esp_emp){
-                            $peso_neto += (int)$det_esp_emp->clasificacion_ramo->nombre * number_format(($det_ped->cantidad*$det_esp_emp->cantidad),2,".","");
+                            $ramos_modificado = getRamosXCajaModificado($det_ped->id_detalle_pedido,$det_esp_emp->id_detalle_especificacionempaque);
+                            $peso_neto += (int)$det_esp_emp->clasificacion_ramo->nombre * number_format(($det_ped->cantidad*(isset($ramos_modificado) ? $ramos_modificado->cantidad : $det_esp_emp->cantidad)),2,".","");
                             $peso_caja += isset(explode("|",$det_esp_emp->especificacion_empaque->empaque->nombre)[2]) ? (explode("|",$det_esp_emp->especificacion_empaque->empaque->nombre)[2]*$det_ped->cantidad) : 0;
                         }
                     }
@@ -368,7 +370,8 @@ class ComprobanteController extends Controller
                     $i = 0;
                     foreach ($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $m => $esp_emp) {
                         foreach ($esp_emp->detalles as $n => $det_esp_emp) {
-                            $precio_x_variedad = ($det_esp_emp->cantidad * ((float)explode(";", $precio[$i])[0]) * $esp_emp->cantidad * $det_ped->cantidad);
+                            $ramos_modificado = getRamosXCajaModificado($det_ped->id_detalle_pedido,$det_esp_emp->id_detalle_especificacionempaque);
+                            $precio_x_variedad = ((isset($ramos_modificado) ? $ramos_modificado->cantidad : $det_esp_emp->cantidad) * ((float)explode(";", $precio[$i])[0]) * $esp_emp->cantidad * $det_ped->cantidad);
                             $variedad = getVariedad($det_esp_emp->id_variedad);
                             if($det_esp_emp->longitud_ramo != null){
                                 foreach (getUnidadesMedida($det_esp_emp->id_unidad_medida) as $umLongitud)
@@ -387,7 +390,7 @@ class ComprobanteController extends Controller
                             $informacionDetalle = [
                                 'codigoPrincipal' => 'ENV' . str_pad($request->id_envio, 9, "0", STR_PAD_LEFT),
                                 'descripcion' => $descripcion_detalle,
-                                'cantidad' => number_format(($det_esp_emp->cantidad* $esp_emp->cantidad * $det_ped->cantidad), 2, ".", ""),
+                                'cantidad' => number_format(((isset($ramos_modificado) ? $ramos_modificado->cantidad : $det_esp_emp->cantidad)* $esp_emp->cantidad * $det_ped->cantidad), 2, ".", ""),
                                 'precioUnitario' => number_format(explode(";",$precio[$i])[0], 2, ".", ""),
                                 'descuento' => '0.00',
                                 'precioTotalSinImpuesto' => number_format($precio_x_variedad, 2, ".", "")
@@ -576,7 +579,8 @@ class ComprobanteController extends Controller
                                     $i = 0;
                                     foreach ($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $m => $esp_emp) {
                                         foreach ($esp_emp->detalles as $n => $det_esp_emp) {
-                                            $precio_x_variedad = ($det_esp_emp->cantidad * ((float)explode(";", $precio[$i])[0]) * $esp_emp->cantidad * $det_ped->cantidad);
+                                            $ramos_modificado = getRamosXCajaModificado($det_ped->id_detalle_pedido,$det_esp_emp->id_detalle_especificacionempaque);
+                                            $precio_x_variedad = ((isset($ramos_modificado) ? $ramos_modificado->cantidad : $det_esp_emp->cantidad) * ((float)explode(";", $precio[$i])[0]) * $esp_emp->cantidad * $det_ped->cantidad);
                                             $variedad = getVariedad($det_esp_emp->id_variedad);
                                             if ($det_esp_emp->longitud_ramo != null) {
                                                 foreach (getUnidadesMedida($det_esp_emp->id_unidad_medida) as $umLongitud)
@@ -594,7 +598,7 @@ class ComprobanteController extends Controller
                                             $objDesgloseEnvioFactura->descripcion = $variedad->planta->nombre . " (" . $variedad->siglas . ") " . $clasificacionRamo->nombre . $umPeso . " " . $longitudRamo . $umL;
 
                                             if($esp_emp->especificacion->tipo != "O"){
-                                                $objDesgloseEnvioFactura->cantidad = number_format(($det_ped->cantidad*$esp_emp->cantidad*$det_esp_emp->cantidad),2,".","");
+                                                $objDesgloseEnvioFactura->cantidad = number_format(($det_ped->cantidad*$esp_emp->cantidad*(isset($ramos_modificado) ? $ramos_modificado->cantidad : $det_esp_emp->cantidad)),2,".","");
                                             }else{
                                                 $objDesgloseEnvioFactura->cantidad = $det_ped->total_tallos();
                                             }
@@ -1571,7 +1575,7 @@ class ComprobanteController extends Controller
                         $nombreCampo = 'codigo venture intradescorp';
                         break;
                 }
-                $agencia_carga = $pedido->detalles[0]->agencia_carga->codigo_venture_agencia_carga_by_id_configutacion_empresa($c->envio->pedido->empresa->id_configuracion_empresa);
+                $agencia_carga = $pedido->detalles[0]->agencia_carga->codigo_venture_agencia_carga_by_id_configuracion_empresa($c->envio->pedido->empresa->id_configuracion_empresa);
 
                 if(!isset($pedido->cliente->detalle()->informacion_adicional($nombreCampo)->varchar)){
                     $success = false;
@@ -1601,7 +1605,8 @@ class ComprobanteController extends Controller
                         foreach ($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $m => $esp_emp){
                             $caja_full += $det_ped->cantidad*explode("|",$esp_emp->empaque->nombre)[1];
                             foreach ($esp_emp->detalles as $n => $det_esp_emp) {
-                                $tallos += $det_ped->cantidad*$det_esp_emp->tallos_x_ramos*$esp_emp->cantidad*$det_esp_emp->cantidad;
+                                $ramos_modificado = getRamosXCajaModificado($det_ped->id_detalle_pedido,$det_esp_emp->id_detalle_especificacionempaque);
+                                $tallos += $det_ped->cantidad*$det_esp_emp->tallos_x_ramos*$esp_emp->cantidad*(isset($ramos_modificado) ? $ramos_modificado->cantidad : $det_esp_emp->cantidad);
                             }
                         }
                         $piezas += $det_ped->cantidad;
@@ -1611,11 +1616,19 @@ class ComprobanteController extends Controller
                         $i = 0;
                         foreach ($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $m => $esp_emp) {
                             foreach ($esp_emp->detalles as $n => $det_esp_emp) {
+                                $ramos_modificado = getRamosXCajaModificado($det_ped->id_detalle_pedido,$det_esp_emp->id_detalle_especificacionempaque);
                                 $codigoPresentacion = getCodigoVenturePresentacion($det_esp_emp->variedad->planta->id_planta,$det_esp_emp->variedad->id_variedad,$det_esp_emp->clasificacion_ramo->id_clasificacion_ramo,$det_esp_emp->clasificacion_ramo->unidad_medida->id_unidad_medida,$det_esp_emp->tallos_x_ramos,$det_esp_emp->longitud_ramo,$det_esp_emp->unidad_medida->id_unidad_medida,$pedido->id_configuracion_empresa,$esp_emp->especificacion->tipo);
                                 if($codigoPresentacion == ""){
                                     $success = false;
                                     $opResult =[
-                                        'msg' => '<div class="alert alert-warning text-center"><p>La presentación '.$det_esp_emp->variedad->planta->nombre.' '.$det_esp_emp->variedad->nombre.' '. $det_esp_emp->clasificacion_ramo->nombre .' '.$det_esp_emp->clasificacion_ramo->unidad_medida->siglas. ', '. $det_esp_emp->tallos_x_ramos .' Tallos '. ($esp_emp->especificacion->tipo=="O" ? 'por malla de ': '') .  $det_esp_emp->longitud_ramo . $det_esp_emp->unidad_medida->siglas.' no ha sido vinculada con su código del Venture con '. $pedido->empresa->nombre.'</p></div>',
+                                        'msg' => '<div class="alert alert-warning text-center">
+                                                    <p>La presentación '.$det_esp_emp->variedad->planta->nombre.' '.$det_esp_emp->variedad->nombre.
+                                                        ' '. $det_esp_emp->clasificacion_ramo->nombre .' '.$det_esp_emp->clasificacion_ramo->unidad_medida->siglas.
+                                                        ', '. $det_esp_emp->tallos_x_ramos .' Tallos '. ($esp_emp->especificacion->tipo=="O" ? 'por malla de ': '') .
+                                                        $det_esp_emp->longitud_ramo . $det_esp_emp->unidad_medida->siglas.' no ha sido vinculada con su código del Venture con '.
+                                                        $pedido->empresa->nombre.'
+                                                        </p>
+                                                 </div>',
                                         'success'=>$success,
                                     ];
                                     echo json_encode($opResult);
@@ -1624,7 +1637,7 @@ class ComprobanteController extends Controller
 
                                 $contenido .= Carbon::parse($pedido->envios[0]->comprobante->fecha_integrado)->format('d/m/Y')."\t".$pedido->envios[0]->comprobante->secuencial."\t".$pedido->cliente->detalle()->informacion_adicional($nombreCampo)->varchar."\t". Carbon::parse($pedido->envios[0]->comprobante->fecha_emision)->addDay(21)->format('d/m/Y')."\t";
                                 $contenido .= $codigoPresentacion."\t";
-                                $contenido .= ($esp_emp->especificacion->tipo === "O" ? $tallos : ($det_ped->cantidad*$esp_emp->cantidad*$det_esp_emp->cantidad))."\t";
+                                $contenido .= ($esp_emp->especificacion->tipo === "O" ? $tallos : ($det_ped->cantidad*$esp_emp->cantidad*(isset($ramos_modificado) ? $ramos_modificado->cantidad : $det_esp_emp->cantidad)))."\t";
                                 $contenido .= explode(";", $precio[$i])[0]."\t".($pedido->cliente->detalle()->codigo_pais != getConfiguracionEmpresa($c->envio->pedido->id_configuracion_empresa)->codigo_pais ? 0 : 1)."\t".$c->envio->pedido->empresa->codigo_fpo/*Código venture para forma de pago de los clientes*/."\t".(isset($pedido->envios[0]->dae) ? $pedido->envios[0]->dae : "N")."\t".(isset($pedido->envios[0]->dae) ? $pedido->envios[0]->dae : "N")."\t"."N"."\t"."N"."\t"."1113495085"."\t".$pedido->envios[0]->guia_madre."\t";
                                 $contenido .= $piezas." Piezas. ".$caja_full." FULL BOXES"."\t"."\t"."0"."\t"."\t"."\t".$c->envio->pedido->empresa->codigo_tvn/*codigo_tvn venture para el tipo de venta de la empresa*/."\t".$pedido->cliente->detalle()->nombre."\t"."\t"."\t"."\t"."\t".$tallos." Tallos."."\t"."\t"."\t"."\t"."\t". $pedido->envios[0]->guia_hija."\t".$agencia_carga->codigo.chr(13).chr(10);
                                 $i++;
@@ -1640,7 +1653,8 @@ class ComprobanteController extends Controller
                         foreach ($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $m => $esp_emp){
                             $caja_full += $det_ped->cantidad*explode("|",$esp_emp->empaque->nombre)[1];
                             foreach ($esp_emp->detalles as $n => $det_esp_emp) {
-                                $tallos += $det_ped->cantidad*$det_esp_emp->tallos_x_ramos*$esp_emp->cantidad*$det_esp_emp->cantidad;
+                                $ramos_modificado = getRamosXCajaModificado($det_ped->id_detalle_pedido,$det_esp_emp->id_detalle_especificacionempaque);
+                                $tallos += $det_ped->cantidad*$det_esp_emp->tallos_x_ramos*$esp_emp->cantidad*(isset($ramos_modificado) ? $ramos_modificado->cantidad : $det_esp_emp->cantidad);
                             }
                         }
                         $piezas += $det_ped->cantidad;
@@ -1651,7 +1665,13 @@ class ComprobanteController extends Controller
                                 if($codigoPresentacion == ""){
                                     $success = false;
                                     $opResult =[
-                                        'msg' => '<div class="alert alert-warning text-center"><p>La presentación '.$m_c->detalle_especificacionempaque->variedad->planta->nombre.' '.$m_c->detalle_especificacionempaque->variedad->nombre.' '. $m_c->detalle_especificacionempaque->clasificacion_ramo->nombre .' '.$m_c->detalle_especificacionempaque->clasificacion_ramo->unidad_medida->siglas. ', '. $m_c->detalle_especificacionempaque->tallos_x_ramos .' Tallos '. $m_c->detalle_especificacionempaque->longitud_ramo . $m_c->detalle_especificacionempaque->unidad_medida->siglas.' no ha sido vinculada con su código del Venture con '. $pedido->empresa->nombre.'</p></div>',
+                                        'msg' => '<div class="alert alert-warning text-center">
+                                                    <p>La presentación '.$m_c->detalle_especificacionempaque->variedad->planta->nombre.' '.$m_c->detalle_especificacionempaque->variedad->nombre.' '.
+                                                        $m_c->detalle_especificacionempaque->clasificacion_ramo->nombre .' '.$m_c->detalle_especificacionempaque->clasificacion_ramo->unidad_medida->siglas. ', '.
+                                                        $m_c->detalle_especificacionempaque->tallos_x_ramos .' Tallos '. $m_c->detalle_especificacionempaque->longitud_ramo . $m_c->detalle_especificacionempaque->unidad_medida->siglas.' 
+                                                        no ha sido vinculada con su código del Venture con '. $pedido->empresa->nombre.'
+                                                    </p>
+                                                 </div>',
                                         'success'=>$success,
                                     ];
                                     echo json_encode($opResult);
@@ -1795,8 +1815,9 @@ class ComprobanteController extends Controller
                             $precio = explode("|", $det_ped->precio);
                             foreach ($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $esp_emp){
                                 foreach ($esp_emp->detalles as $z=> $det_esp_emp){
+                                    $ramos_modificado = getRamosXCajaModificado($det_ped->id_detalle_pedido,$det_esp_emp->id_detalle_especificacionempaque);
                                     if($det_esp_emp->id_detalle_especificacionempaque == $id){
-                                        $det_esp_emp_cantidad = $det_esp_emp->cantidad;
+                                        $det_esp_emp_cantidad = isset($ramos_modificado) ? $ramos_modificado->cantidad : $det_esp_emp->cantidad;
                                         $precio_presentacion = (float)explode(";", $precio[$i])[0];
                                         break;
                                     }
@@ -2118,14 +2139,15 @@ class ComprobanteController extends Controller
                 $i = 0;
                 foreach ($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $m => $esp_emp) {
                     foreach ($esp_emp->detalles as $n => $det_esp_emp) {
-                        $peso_neto += (int)$det_esp_emp->clasificacion_ramo->nombre * number_format(($det_ped->cantidad*$det_esp_emp->cantidad),2,".","");
+                        $ramos_modificado = getRamosXCajaModificado($det_ped->id_detalle_pedido,$det_esp_emp->id_detalle_especificacionempaque);
+                        $peso_neto += (int)$det_esp_emp->clasificacion_ramo->nombre * number_format(($det_ped->cantidad*(isset($ramos_modificado) ? $ramos_modificado->cantidad : $det_esp_emp->cantidad)),2,".","");
                         $peso_caja += isset(explode("|",$det_esp_emp->especificacion_empaque->empaque->nombre)[2]) ? explode("|",$det_esp_emp->especificacion_empaque->empaque->nombre)[2] : 0;
                         if($esp_emp->especificacion->tipo === "O"){
                             $precio_x_variedad = $det_ped->total_tallos()*(float)explode(";", $precio[$i])[0];
                         }else{
-                            $precio_x_variedad = $det_esp_emp->cantidad * (float)explode(";", $precio[$i])[0] * $esp_emp->cantidad * $det_ped->cantidad;
+                            $precio_x_variedad = (isset($ramos_modificado) ? $ramos_modificado->cantidad : $det_esp_emp->cantidad) * (float)explode(";", $precio[$i])[0] * $esp_emp->cantidad * $det_ped->cantidad;
                         }
-                        //$precio_x_variedad = (($esp_emp->especificacion->tipo === "O" ? $det_esp_emp->tallos_x_ramos : $det_esp_emp->cantidad) * (float)explode(";", $precio[$i])[0] * $esp_emp->cantidad * $det_ped->cantidad);
+                        //$precio_x_variedad = (($esp_emp->especificacion->tipo === "O" ? $det_esp_emp->tallos_x_ramos : (isset($ramos_modificado) ? $ramos_modificado->cantidad : $det_esp_emp->cantidad)) * (float)explode(";", $precio[$i])[0] * $esp_emp->cantidad * $det_ped->cantidad);
                         $precio_total_sin_impuestos += $precio_x_variedad;
                         $i++;
                     }
@@ -2135,7 +2157,8 @@ class ComprobanteController extends Controller
             foreach ($envio->pedido->detalles as $x => $det_ped) {
                 foreach($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $m => $esp_emp){
                     foreach ($esp_emp->detalles as $n => $det_esp_emp){
-                        $peso_neto += (int)$det_esp_emp->clasificacion_ramo->nombre * number_format(($det_ped->cantidad*$det_esp_emp->cantidad),2,".","");
+                        $ramos_modificado = getRamosXCajaModificado($det_ped->id_detalle_pedido,$det_esp_emp->id_detalle_especificacionempaque);
+                        $peso_neto += (int)$det_esp_emp->clasificacion_ramo->nombre * number_format(($det_ped->cantidad*(isset($ramos_modificado) ? $ramos_modificado->cantidad : $det_esp_emp->cantidad)),2,".","");
                         $peso_caja += isset(explode("|",$det_esp_emp->especificacion_empaque->empaque->nombre)[2]) ? (explode("|",$det_esp_emp->especificacion_empaque->empaque->nombre)[2]*$det_ped->cantidad) : 0;
                     }
                 }
@@ -2319,7 +2342,8 @@ class ComprobanteController extends Controller
                             $i = 0;
                             foreach ($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $m => $esp_emp) {
                                 foreach ($esp_emp->detalles as $n => $det_esp_emp) {
-                                    $precio_x_variedad = ($det_esp_emp->cantidad * ((float)explode(";", $precio[$i])[0]) * $esp_emp->cantidad * $det_ped->cantidad);
+                                    $ramos_modificado = getRamosXCajaModificado($det_ped->id_detalle_pedido,$det_esp_emp->id_detalle_especificacionempaque);
+                                    $precio_x_variedad = ((isset($ramos_modificado) ? $ramos_modificado->cantidad : $det_esp_emp->cantidad) * ((float)explode(";", $precio[$i])[0]) * $esp_emp->cantidad * $det_ped->cantidad);
                                     $variedad = getVariedad($det_esp_emp->id_variedad);
                                     if ($det_esp_emp->longitud_ramo != null) {
                                         foreach (getUnidadesMedida($det_esp_emp->id_unidad_medida) as $umLongitud)
@@ -2337,7 +2361,7 @@ class ComprobanteController extends Controller
                                     $objDesgloseEnvioFactura->descripcion = $variedad->planta->nombre . " (" . $variedad->siglas . ") " . $clasificacionRamo->nombre . $umPeso . " " . $longitudRamo . $umL;
 
                                     if($esp_emp->especificacion->tipo != "O"){
-                                        $objDesgloseEnvioFactura->cantidad = number_format(($det_ped->cantidad*$esp_emp->cantidad*$det_esp_emp->cantidad),2,".","");
+                                        $objDesgloseEnvioFactura->cantidad = number_format(($det_ped->cantidad*$esp_emp->cantidad*(isset($ramos_modificado) ? $ramos_modificado->cantidad : $det_esp_emp->cantidad)),2,".","");
                                     }else{
                                         $objDesgloseEnvioFactura->cantidad = $det_ped->total_tallos();
                                     }
@@ -2484,14 +2508,15 @@ class ComprobanteController extends Controller
                     $i = 0;
                     foreach ($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $m => $esp_emp) {
                         foreach ($esp_emp->detalles as $n => $det_esp_emp) {
-                            $peso_neto += (int)$det_esp_emp->clasificacion_ramo->nombre * number_format(($det_ped->cantidad*$det_esp_emp->cantidad),2,".","");
+                            $ramos_modificado = getRamosXCajaModificado($det_ped->id_detalle_pedido,$det_esp_emp->id_detalle_especificacionempaque);
+                            $peso_neto += (int)$det_esp_emp->clasificacion_ramo->nombre * number_format(($det_ped->cantidad*(isset($ramos_modificado) ? $ramos_modificado->cantidad : $det_esp_emp->cantidad)),2,".","");
                             $peso_caja += isset(explode("|",$det_esp_emp->especificacion_empaque->empaque->nombre)[2]) ? explode("|",$det_esp_emp->especificacion_empaque->empaque->nombre)[2] : 0;
                             if($esp_emp->especificacion->tipo === "O"){
                                 $precio_x_variedad = $det_ped->total_tallos()*(float)explode(";", $precio[$i])[0];
                             }else{
-                                $precio_x_variedad = $det_esp_emp->cantidad * (float)explode(";", $precio[$i])[0] * $esp_emp->cantidad * $det_ped->cantidad;
+                                $precio_x_variedad = (isset($ramos_modificado) ? $ramos_modificado->cantidad : $det_esp_emp->cantidad) * (float)explode(";", $precio[$i])[0] * $esp_emp->cantidad * $det_ped->cantidad;
                             }
-                            //$precio_x_variedad = (($esp_emp->especificacion->tipo === "O" ? $det_esp_emp->tallos_x_ramos : $det_esp_emp->cantidad) * (float)explode(";", $precio[$i])[0] * $esp_emp->cantidad * $det_ped->cantidad);
+                            //$precio_x_variedad = (($esp_emp->especificacion->tipo === "O" ? $det_esp_emp->tallos_x_ramos : (isset($ramos_modificado) ? $ramos_modificado->cantidad : $det_esp_emp->cantidad)) * (float)explode(";", $precio[$i])[0] * $esp_emp->cantidad * $det_ped->cantidad);
                             $precio_total_sin_impuestos += $precio_x_variedad;
                             $i++;
                         }
@@ -2501,7 +2526,8 @@ class ComprobanteController extends Controller
             foreach ($envio->pedido->detalles as $x => $det_ped) {
                     foreach($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $m => $esp_emp){
                         foreach ($esp_emp->detalles as $n => $det_esp_emp){
-                            $peso_neto += (int)$det_esp_emp->clasificacion_ramo->nombre * number_format(($det_ped->cantidad*$det_esp_emp->cantidad),2,".","");
+                            $ramos_modificado = getRamosXCajaModificado($det_ped->id_detalle_pedido,$det_esp_emp->id_detalle_especificacionempaque);
+                            $peso_neto += (int)$det_esp_emp->clasificacion_ramo->nombre * number_format(($det_ped->cantidad*(isset($ramos_modificado) ? $ramos_modificado->cantidad : $det_esp_emp->cantidad)),2,".","");
                             $peso_caja += isset(explode("|",$det_esp_emp->especificacion_empaque->empaque->nombre)[2]) ? (explode("|",$det_esp_emp->especificacion_empaque->empaque->nombre)[2]*$det_ped->cantidad) : 0;
                         }
                     }
@@ -2600,7 +2626,8 @@ class ComprobanteController extends Controller
                             $i = 0;
                             foreach ($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $m => $esp_emp) {
                                 foreach ($esp_emp->detalles as $n => $det_esp_emp) {
-                                    $precio_x_variedad = ($det_esp_emp->cantidad * ((float)explode(";", $precio[$i])[0]) * $esp_emp->cantidad * $det_ped->cantidad);
+                                    $ramos_modificado = getRamosXCajaModificado($det_ped->id_detalle_pedido,$det_esp_emp->id_detalle_especificacionempaque);
+                                    $precio_x_variedad = ((isset($ramos_modificado) ? $ramos_modificado->cantidad : $det_esp_emp->cantidad) * ((float)explode(";", $precio[$i])[0]) * $esp_emp->cantidad * $det_ped->cantidad);
                                     $variedad = getVariedad($det_esp_emp->id_variedad);
                                     if ($det_esp_emp->longitud_ramo != null) {
                                         foreach (getUnidadesMedida($det_esp_emp->id_unidad_medida) as $umLongitud)
@@ -2611,14 +2638,15 @@ class ComprobanteController extends Controller
                                     }
                                     $longitudRamo = $det_esp_emp->longitud_ramo != "" ? $det_esp_emp->longitud_ramo : "";
                                     $clasificacionRamo = getClasificacionRamo($det_esp_emp->id_clasificacion_ramo);
-                                    foreach (getUnidadesMedida($clasificacionRamo->id_unidad_medida) as $umPeso) $umPeso->tipo == "P" ? $umPeso = $umPeso->siglas : $umPeso = "";
+                                    foreach (getUnidadesMedida($clasificacionRamo->id_unidad_medida) as $umPeso)
+                                        $umPeso->tipo == "P" ? $umPeso = $umPeso->siglas : $umPeso = "";
                                     $objDesgloseEnvioFactura = new DesgloseEnvioFactura;
                                     $objDesgloseEnvioFactura->id_comprobante = $model_comprobante->id_comprobante;
                                     $objDesgloseEnvioFactura->codigo_principal = 'ENV' . str_pad($envio->id_envio, 9, "0", STR_PAD_LEFT);
                                     $objDesgloseEnvioFactura->descripcion = $variedad->planta->nombre . " (" . $variedad->siglas . ") " . $clasificacionRamo->nombre . $umPeso . " " . $longitudRamo . $umL;
 
                                     if($esp_emp->especificacion->tipo != "O"){
-                                        $objDesgloseEnvioFactura->cantidad = number_format(($det_ped->cantidad*$esp_emp->cantidad*$det_esp_emp->cantidad),2,".","");
+                                        $objDesgloseEnvioFactura->cantidad = number_format(($det_ped->cantidad*$esp_emp->cantidad*(isset($ramos_modificado) ? $ramos_modificado->cantidad : $det_esp_emp->cantidad)),2,".","");
                                     }else{
                                         $objDesgloseEnvioFactura->cantidad = $det_ped->total_tallos();
                                     }

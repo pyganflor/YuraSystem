@@ -68,8 +68,10 @@
                             class="text-center" rowspan="{{getCantidadDetallesByEspecificacion($det_ped->cliente_especificacion->especificacion->id_especificacion)}}">
                             <input disabled type="number" min="0" id="cantidad_piezas_{{($x+1)}}" style="border: none" onchange="calcular_precio_pedido(this)"
                                    name="cantidad_piezas_{{$det_ped->cliente_especificacion->especificacion->id_especificacion}}" class="text-center form-control cantidad_{{($x+1)}} input_cantidad" value="{{$det_ped->cantidad}}">
-                            @if($x ==0) <input type="hidden" id="cant_esp" value="">
-                            <input type="hidden" id="cant_esp_fijas" value="">  @endif
+                            @if($x ==0)
+                                <input type="hidden" id="cant_esp" value="">
+                                <input type="hidden" id="cant_esp_fijas" value="">
+                            @endif
                             <input type="hidden" id="id_cliente_pedido_especificacion_{{($x+1)}}" value="{{$det_ped->cliente_especificacion->id_cliente_pedido_especificacion}}">
                         </td>
                     @endif
@@ -91,12 +93,17 @@
                         {{$det_esp_emp->empaque_p->nombre}}
                     </td>
                     <td  style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;" class="text-center">
-                        {{$det_esp_emp->cantidad}}
+                        @php
+                            $ramos_modificado = getRamosXCajaModificado($det_ped->id_detalle_pedido,$det_esp_emp->id_detalle_especificacionempaque);
+                            $ramos_x_caja =isset($ramos_modificado) ? $ramos_modificado->cantidad : $det_esp_emp->cantidad;
+                        @endphp
+                        {{$ramos_x_caja}}
                         <input type="hidden" class="td_ramos_x_caja_{{$x+1}} input_ramos_x_caja_{{$x+1}}_{{$b}}" value="{{$det_esp_emp->cantidad}}">
                     </td>
                     @if($det_ped->cliente_especificacion->especificacion->id_especificacion != $anterior)
                         <td id="td_total_ramos_{{$x+1}}" style="border-color: #9d9d9d; padding: 0px; vertical-align: middle; width: 70px; "
                             class="text-center" rowspan="{{getCantidadDetallesByEspecificacion($det_ped->cliente_especificacion->especificacion->id_especificacion)}}">
+                            {{$ramos_x_caja*$det_ped->cantidad}}
                         </td>
                     @endif
                     <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;" class="text-center">

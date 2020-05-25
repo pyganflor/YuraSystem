@@ -1158,7 +1158,8 @@ class OrdenSemanalController extends Controller
                         }
 
                         for ($i = 0; $i < $marca->piezas; $i++) {
-                            $meta = $det_esp->cantidad; // ramos x caja
+                            $ramos_modificado = getRamosXCajaModificado($det_ped->id_detalle_pedido,$det_esp->id_detalle_especificacionempaque);
+                            $meta = isset($ramos_modificado) ? $ramos_modificado->cantidad : $det_esp->cantidad; // ramos x caja
                             $array_distcol = [];
                             foreach ($array_marc_col as $pos => $item) {
                                 if ($meta > 0) {

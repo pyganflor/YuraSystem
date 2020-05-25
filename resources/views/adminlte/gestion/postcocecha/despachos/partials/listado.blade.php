@@ -297,6 +297,7 @@
                                                 if (!in_array($det_esp->id_variedad, $variedades)){
                                                     array_push($variedades, $det_esp->id_variedad);
                                                 }
+
                                                 array_push($ramos_x_variedades, [
                                                     'id_variedad' => $det_esp->id_variedad,
                                                     'cantidad' => convertToEstandar((isset($ramos_modificado) ? $ramos_modificado->cantidad : $det_esp->cantidad) * $esp_emp->cantidad * $det_ped->cantidad, $det_esp->clasificacion_ramo->nombre),
