@@ -16,7 +16,7 @@
                 Tipo
             </th>
             <td class="text-center" style="border-color: #9d9d9d">
-                <select name="poda_siembra" id="poda_siembra" style="width: 100%">
+                <select name="poda_siembra" id="poda_siembra" style="width: 100%" class="input-yura_white">
                     <option value="P" {{$ciclo->poda_siembra == 'P' ? 'selected' : ''}}>Poda</option>
                     <option value="S" {{$ciclo->poda_siembra == 'S' ? 'selected' : ''}}>Siembra</option>
                 </select>
@@ -29,7 +29,7 @@
                        id="no_recalcular_curva" {{$ciclo->no_recalcular_curva == 1 ? 'checked' : ''}}>
             </th>
             <td class="text-center" style="border-color: #9d9d9d">
-                <input type="text" name="curva" id="curva" style="width: 100%" class="text-center" value="{{$ciclo->curva}}"
+                <input type="text" name="curva" id="curva" style="width: 100%" class="text-center input-yura_white" value="{{$ciclo->curva}}"
                        onchange="$('#no_recalcular_curva').prop('checked', true)">
             </td>
         </tr>
@@ -38,7 +38,7 @@
                 Semana Cosecha
             </th>
             <td class="text-center" style="border-color: #9d9d9d">
-                <input type="number" name="semana_poda_siembra" id="semana_poda_siembra" style="width: 100%" class="text-center"
+                <input type="number" name="semana_poda_siembra" id="semana_poda_siembra" style="width: 100%" class="text-center input-yura_white"
                        value="{{$ciclo->semana_poda_siembra}}" onchange="$('#no_recalcular_curva').prop('checked', true)">
             </td>
         </tr>
@@ -47,7 +47,7 @@
                 Plantas Iniciales
             </th>
             <td class="text-center" style="border-color: #9d9d9d">
-                <input type="number" name="plantas_iniciales" id="plantas_iniciales" style="width: 100%" class="text-center"
+                <input type="number" name="plantas_iniciales" id="plantas_iniciales" style="width: 100%" class="text-center input-yura_white"
                        value="{{$ciclo->plantas_iniciales}}">
             </td>
         </tr>
@@ -56,7 +56,7 @@
                 Plantas Muertas
             </th>
             <td class="text-center" style="border-color: #9d9d9d">
-                <input type="number" name="plantas_muertas" id="plantas_muertas" style="width: 100%" class="text-center"
+                <input type="number" name="plantas_muertas" id="plantas_muertas" style="width: 100%" class="text-center input-yura_white"
                        value="{{$ciclo->plantas_muertas != '' ? $ciclo->plantas_muertas : 0}}">
             </td>
         </tr>
@@ -66,7 +66,7 @@
                 <strong class="error" title="Dato correspondiente a la semana de inicio">{{$ciclo->desecho > 0 ? '' : '*'}}</strong>
             </th>
             <td class="text-center" style="border-color: #9d9d9d">
-                <input type="number" name="desecho" id="desecho" style="width: 100%" class="text-center"
+                <input type="number" name="desecho" id="desecho" style="width: 100%" class="text-center input-yura_white"
                        value="{{$ciclo->desecho > 0 ? $ciclo->desecho : $desecho_default}}">
             </td>
         </tr>
@@ -76,7 +76,7 @@
                 <strong class="error" title="Dato correspondiente a la semana de inicio">{{$ciclo->conteo > 0 ? '' : '*'}}</strong>
             </th>
             <td class="text-center" style="border-color: #9d9d9d">
-                <input type="number" name="conteo" id="conteo" style="width: 100%" class="text-center"
+                <input type="number" name="conteo" id="conteo" style="width: 100%" class="text-center input-yura_white"
                        value="{{$ciclo->conteo > 0 ? $ciclo->conteo : $tallos_x_planta_default}}">
             </td>
         </tr>
@@ -86,7 +86,7 @@
                 <strong class="error" title="Dato correspondiente al módulo">{{$ciclo->area > 0 ? '' : '*'}}</strong>
             </th>
             <td class="text-center" style="border-color: #9d9d9d">
-                <input type="number" name="area" id="area" style="width: 100%" class="text-center"
+                <input type="number" name="area" id="area" style="width: 100%" class="text-center input-yura_white"
                        value="{{$ciclo->area > 0 ? $ciclo->area : $area_default}}">
             </td>
         </tr>
@@ -96,7 +96,7 @@
     <input type="hidden" id="modulo-edit_ciclo" value="{{$ciclo->id_modulo}}">
 
     <div class="text-center" style="margin-top: 10px">
-        <button type="button" class="btn btn-success btn-xs" onclick="update_ciclo()">
+        <button type="button" class="btn btn-yura_primary btn-xs" onclick="update_ciclo()">
             <i class="fa fa-fw fa-save"></i> Guardar
         </button>
     </div>

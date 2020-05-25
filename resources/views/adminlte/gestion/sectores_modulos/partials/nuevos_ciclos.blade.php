@@ -1,5 +1,5 @@
 <div style="overflow-x: scroll">
-    <table class="table-bordered table-striped" style="width: 100%; border: 2px solid #9d9d9d">
+    <table class="table-bordered table-striped" style="width: 100%; border: 1px solid #9d9d9d">
         <tr>
             <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
                 Módulo
@@ -48,33 +48,33 @@
                     <input type="hidden" id="id_variedad_{{$pos}}" value="{{$item->id_variedad}}">
                 </td>
                 <td class="text-center" style="border-color: #9d9d9d">
-                    <input type="date" class="text-center" id="fecha_inicio_{{$pos}}" value="{{date('Y-m-d')}}" style="width: 100%" required>
+                    <input type="date" class="text-center input-yura_white" id="fecha_inicio_{{$pos}}" value="{{date('Y-m-d')}}" style="width: 100%" required>
                 </td>
                 <td class="text-center" style="border-color: #9d9d9d">
-                    <input type="text" class="text-center" id="poda_siembra_{{$pos}}" value="{{$item->tipo}}" style="width: 100%" readonly>
+                    <input type="text" class="text-center input-yura_white" id="poda_siembra_{{$pos}}" value="{{$item->tipo}}" style="width: 100%" readonly>
                 </td>
                 <td class="text-center" style="border-color: #9d9d9d">
-                    <input type="number" class="text-center" id="area_{{$pos}}" value="{{$item->modulo->area}}" style="width: 100%">
+                    <input type="number" class="text-center input-yura_white" id="area_{{$pos}}" value="{{$item->modulo->area}}" style="width: 100%">
                 </td>
                 <td class="text-center" style="border-color: #9d9d9d">
-                    <input type="number" class="text-center" id="plantas_iniciales_{{$pos}}" value="{{$item->plantas_iniciales}}"
+                    <input type="number" class="text-center input-yura_white" id="plantas_iniciales_{{$pos}}" value="{{$item->plantas_iniciales}}"
                            style="width: 100%">
                 </td>
                 <td class="text-center" style="border-color: #9d9d9d">
-                    <input type="text" class="text-center" id="curva_{{$pos}}" value="{{$item->curva}}" style="width: 100%">
+                    <input type="text" class="text-center input-yura_white" id="curva_{{$pos}}" value="{{$item->curva}}" style="width: 100%">
                 </td>
                 <td class="text-center" style="border-color: #9d9d9d">
-                    <input type="number" class="text-center" id="conteo_{{$pos}}" value="{{$item->tallos_planta}}" style="width: 100%">
+                    <input type="number" class="text-center input-yura_white" id="conteo_{{$pos}}" value="{{$item->tallos_planta}}" style="width: 100%">
                 </td>
                 <td class="text-center" style="border-color: #9d9d9d">
-                    <input type="number" class="text-center" id="semana_poda_siembra_{{$pos}}" value="{{$item->semana_poda_siembra}}"
+                    <input type="number" class="text-center input-yura_white" id="semana_poda_siembra_{{$pos}}" value="{{$item->semana_poda_siembra}}"
                            style="width: 100%">
                 </td>
                 <td class="text-center" style="border-color: #9d9d9d">
-                    <input type="number" class="text-center" id="desecho_{{$pos}}" value="{{$item->desecho}}" style="width: 100%">
+                    <input type="number" class="text-center input-yura_white" id="desecho_{{$pos}}" value="{{$item->desecho}}" style="width: 100%">
                 </td>
                 <td class="text-center" style="border-color: #9d9d9d">
-                    <button class="btn btn-xs btn-primary" onclick="store_nuevo_ciclo('{{$pos}}')" id="btn_nuevo_ciclo_{{$pos}}"
+                    <button class="btn btn-xs btn-yura_primary" onclick="store_nuevo_ciclo('{{$pos}}')" id="btn_nuevo_ciclo_{{$pos}}"
                             title="Crear ciclo">
                         <i class="fa fa-fw fa-check"></i>
                     </button>
