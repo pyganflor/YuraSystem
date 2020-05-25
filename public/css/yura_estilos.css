@@ -197,6 +197,12 @@ table.dataTable thead .sorting_desc_disabled:after {
     background-color: #00B388 !important;
 }
 
+.btn-yura_warning {
+    color: white;
+    border-radius: 18px;
+    background-color: #ef6e11 !important;
+}
+
 .btn-yura_danger {
     color: white;
     border-radius: 18px;
