@@ -104,8 +104,7 @@
                     $tallos_m2_cos = round($tallos_cosechados / $item->area, 2);
                     $tallos_m2_proy = round((($item->plantas_actuales() * $conteo) * ((100 - $desecho) / 100)) / $item->area, 2);
                 @endphp
-                <tr style="font-size: 0.8em" onmouseover="$(this).css('background-color','#e5f7f3 !important');"
-                    onmouseleave="$(this).css('background-color','');">
+                <tr style="font-size: 0.8em; background-color: {{$pos_item % 2 == 0 ? '#72ffe0' : ''}}">
                     <td style="border-color: #9d9d9d; padding-left: 5px">
                         {{$item->modulo->nombre}}
                     </td>
