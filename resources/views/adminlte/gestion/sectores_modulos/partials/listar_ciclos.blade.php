@@ -1,59 +1,62 @@
 @if(count($modulos) > 0)
     <div style="overflow-x: scroll">
-        <table class="table-striped table-bordered" width="100%" style="border: 2px solid #9d9d9d" id="table_listado_ciclos">
+        <table class="table-striped table-bordered" width="100%" style="border: 1px solid #9d9d9d; border-radius: 18px 18px 0 0"
+               id="table_listado_ciclos">
             <thead>
             <tr>
-                <th class="text-center" style="border-color: white; color: white; background-color: #357ca5" rowspan="2">
+                <th class="text-center" style="border-color: white; color: white; background-color: #00b388; border-radius: 18px 0 0 0"
+                    rowspan="2">
                     Módulo
                 </th>
-                <th class="text-center" style="border-color: white; color: white; background-color: #357ca5" colspan="{{$tipo == 1 ? 13 : 6}}">
+                <th class="text-center" style="border-color: white; color: white; background-color: #00b388" colspan="{{$tipo == 1 ? 13 : 6}}">
                     Ciclos
                 </th>
-                <th class="text-center" style="border-color: white; color: white; background-color: #357ca5" rowspan="2">
+                <th class="text-center" style="border-color: white; color: white; background-color: #00b388; border-radius: 0 18px 0 0"
+                    rowspan="2">
                     Opciones
                 </th>
             </tr>
             <tr>
-                <th class="text-center" style="border-color: white; color: white; background-color: #357ca5">
+                <th class="text-center" style="border-color: white; color: white; background-color: #00b388">
                     Inicio
                 </th>
-                <th class="text-center" style="border-color: white; color: white; background-color: #357ca5">
+                <th class="text-center" style="border-color: white; color: white; background-color: #00b388">
                     Poda/Siembra
                 </th>
-                <th class="text-center" style="border-color: white; color: white; background-color: #357ca5">
+                <th class="text-center" style="border-color: white; color: white; background-color: #00b388">
                     Dias
                 </th>
                 @if($tipo == 1)
-                    <th class="text-center" style="border-color: white; color: white; background-color: #357ca5">
+                    <th class="text-center" style="border-color: white; color: white; background-color: #00b388">
                         1ra Flor
                     </th>
-                    <th class="text-center" style="border-color: white; color: white; background-color: #357ca5">
+                    <th class="text-center" style="border-color: white; color: white; background-color: #00b388">
                         80%
                     </th>
-                    <th class="text-center" style="border-color: white; color: white; background-color: #357ca5">
+                    <th class="text-center" style="border-color: white; color: white; background-color: #00b388">
                         Tallos Cosechados
                     </th>
                 @endif
-                <th class="text-center" style="border-color: white; color: white; background-color: #357ca5">
+                <th class="text-center" style="border-color: white; color: white; background-color: #00b388">
                     Cosecha
                 </th>
-                <th class="text-center" style="border-color: white; color: white; background-color: #357ca5">
+                <th class="text-center" style="border-color: white; color: white; background-color: #00b388">
                     Final
                 </th>
-                <th class="text-center" style="border-color: white; color: white; background-color: #357ca5">
+                <th class="text-center" style="border-color: white; color: white; background-color: #00b388">
                     Área m<sup>2</sup>
                 </th>
                 @if($tipo == 1)
-                    <th class="text-center" style="border-color: white; color: white; background-color: #357ca5">
+                    <th class="text-center" style="border-color: white; color: white; background-color: #00b388">
                         Ptas Iniciales
                     </th>
-                    <th class="text-center" style="border-color: white; color: white; background-color: #357ca5">
+                    <th class="text-center" style="border-color: white; color: white; background-color: #00b388">
                         Ptas muertas
                     </th>
-                    <th class="text-center" style="border-color: white; color: white; background-color: #357ca5">
+                    <th class="text-center" style="border-color: white; color: white; background-color: #00b388">
                         Ptas actuales
                     </th>
-                    <th class="text-center" style="border-color: white; color: white; background-color: #357ca5">
+                    <th class="text-center" style="border-color: white; color: white; background-color: #00b388">
                         Conteo T/P
                     </th>
                 @endif
@@ -71,19 +74,18 @@
                     <td class="text-center" style="border-color: #9d9d9d">
                         {{$modulo->nombre}}
                     </td>
-
                     <td class="text-center" style="border-color: #9d9d9d">
                         <span class="hidden">{{$tipo == 1 ? $modulo->cicloActual()->fecha_inicio : date('Y-m-d')}}</span>
                         <input type="date" id="ciclo_fecha_inicio_{{$modulo->id_modulo}}" name="ciclo_fecha_inicio_{{$modulo->id_modulo}}"
-                               required
-                               style="width: 100%" value="{{$tipo == 1 ? $modulo->cicloActual()->fecha_inicio : date('Y-m-d')}}"
-                               class="text-center">
+                               required style="width: 100%" value="{{$tipo == 1 ? $modulo->cicloActual()->fecha_inicio : date('Y-m-d')}}"
+                               class="text-center input-yura_white">
                     </td>
                     <td class="text-center" style="border-color: #9d9d9d">
                         @if($tipo == 1)
                             {{$modulo->getPodaSiembraActual()}}
                         @endif
-                        <select name="ciclo_poda_siembra_{{$modulo->id_modulo}}" id="ciclo_poda_siembra_{{$modulo->id_modulo}}">
+                        <select name="ciclo_poda_siembra_{{$modulo->id_modulo}}" id="ciclo_poda_siembra_{{$modulo->id_modulo}}"
+                                class="input-yura_white">
                             <option value="P" {{$tipo == 1 && $modulo->cicloActual()->poda_siembra == 'P' ? 'selected' : ''}}>Poda</option>
                             <option value="S" {{($tipo == 1 && $modulo->cicloActual()->poda_siembra == 'S') ? 'selected' : ''}}>
                                 Siembra
@@ -119,20 +121,22 @@
                         <input type="text" id="ciclo_fecha_cosecha_{{$modulo->id_modulo}}" name="ciclo_fecha_cosecha_{{$modulo->id_modulo}}"
                                style="width: 100%" onkeypress="return isNumber(event)" maxlength="3"
                                value="{{$tipo == 1 && $modulo->cicloActual()->fecha_cosecha != '' ? difFechas($modulo->cicloActual()->fecha_cosecha, $modulo->cicloActual()->fecha_inicio)->days : ''}}"
-                               class="text-center" required>
+                               class="text-center input-yura_white" required>
                     </td>
                     <td class="text-center" style="border-color: #9d9d9d">
                         <span class="hidden">{{$tipo == 1 ? $modulo->cicloActual()->fecha_fin : ''}}</span>
                         <input type="date" id="ciclo_fecha_fin_{{$modulo->id_modulo}}" name="ciclo_fecha_fin_{{$modulo->id_modulo}}"
-                               style="width: 100%" value="{{$tipo == 1 ? $modulo->cicloActual()->fecha_fin : ''}}" class="text-center" required>
+                               style="width: 100%" value="{{$tipo == 1 ? $modulo->cicloActual()->fecha_fin : ''}}"
+                               class="text-center input-yura_white" required>
                     </td>
                     <td class="text-center" style="border-color: #9d9d9d">
                         @php
                             $total_area += $tipo == 1 ? $modulo->cicloActual()->area : $modulo->area;
                         @endphp
                         <span class="hidden">{{number_format($tipo == 1 ? $modulo->cicloActual()->area : $modulo->area, 2)}}</span>
-                        <input type="number" id="ciclo_area_{{$modulo->id_modulo}}" name="ciclo_area_{{$modulo->id_modulo}}" class="text-center"
-                               value="{{$tipo == 1 ? $modulo->cicloActual()->area : $modulo->area}}" style="width: 100%" required>
+                        <input type="number" id="ciclo_area_{{$modulo->id_modulo}}" name="ciclo_area_{{$modulo->id_modulo}}"
+                               class="text-center input-yura_white" value="{{$tipo == 1 ? $modulo->cicloActual()->area : $modulo->area}}"
+                               style="width: 100%" required>
                     </td>
 
                     @if($tipo == 1)
@@ -144,7 +148,7 @@
                             <input type="number" id="ciclo_plantas_iniciales_{{$modulo->id_modulo}}"
                                    name="ciclo_plantas_iniciales_{{$modulo->id_modulo}}"
                                    style="width: 100%" onkeypress="return isNumber(event)" value="{{$modulo->cicloActual()->plantas_iniciales}}"
-                                   class="text-center" required>
+                                   class="text-center input-yura_white" required>
                         </td>
                         <td class="text-center" style="border-color: #9d9d9d">
                             @php
@@ -154,7 +158,7 @@
                             <input type="number" id="ciclo_plantas_muertas_{{$modulo->id_modulo}}"
                                    name="ciclo_plantas_muertas_{{$modulo->id_modulo}}"
                                    style="width: 100%" onkeypress="return isNumber(event)" value="{{$modulo->cicloActual()->plantas_muertas}}"
-                                   class="text-center" required>
+                                   class="text-center input-yura_white" required>
                         </td>
                         <td class="text-center" style="border-color: #9d9d9d">
                             @php
@@ -164,32 +168,30 @@
                         </td>
                         <td class="text-center" style="border-color: #9d9d9d">
                             <span class="hidden">{{$modulo->cicloActual()->conteo}}</span>
-                            <input type="number" id="ciclo_conteo_{{$modulo->id_modulo}}"
-                                   name="ciclo_conteo_{{$modulo->id_modulo}}" style="width: 100%"
-                                   value="{{$modulo->cicloActual()->conteo}}"
-                                   class="text-center" required>
+                            <input type="number" id="ciclo_conteo_{{$modulo->id_modulo}}" name="ciclo_conteo_{{$modulo->id_modulo}}"
+                                   style="width: 100%" value="{{$modulo->cicloActual()->conteo}}" class="text-center input-yura_white" required>
                         </td>
                     @endif
 
                     <td class="text-center" style="border-color: #9d9d9d" colspan="6">
                         <div class="btn-group">
                             @if($tipo == 1)
-                                <button type="button" class="btn btn-xs btn-warning" title="Terminar Ciclo"
+                                <button type="button" class="btn btn-xs btn-yura_danger" title="Terminar Ciclo"
                                         onclick="terminar_ciclo('{{$modulo->id_modulo}}')">
                                     <i class="fa fa-fw fa-times"></i>
                                 </button>
-                                <button type="button" class="btn btn-xs btn-success" title="Editar Ciclo"
+                                <button type="button" class="btn btn-xs btn-yura_primary" title="Editar Ciclo"
                                         onclick="update_ciclo('{{$modulo->cicloActual()->id_ciclo}}', '{{$modulo->id_modulo}}')">
                                     <i class="fa fa-fw fa-pencil"></i>
                                 </button>
                             @else
-                                <button type="button" class="btn btn-xs btn-success" title="Crear Ciclo"
+                                <button type="button" class="btn btn-xs btn-yura_primary" title="Crear Ciclo"
                                         onclick="store_ciclo('{{$modulo->id_modulo}}')">
                                     <i class="fa fa-fw fa-save"></i>
                                 </button>
                             @endif
                             @if(count($modulo->ciclos->where('estado',1)) > 0)
-                                <button type="button" class="btn btn-xs btn-info" title="Ver Ciclos"
+                                <button type="button" class="btn btn-xs btn-yura_default" title="Ver Ciclos"
                                         onclick="ver_ciclos('{{$modulo->id_modulo}}')">
                                     <i class="fa fa-fw fa-eye"></i>
                                 </button>
