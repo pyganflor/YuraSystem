@@ -190,7 +190,7 @@ function store_pedido(id_cliente, pedido_fijo, csrf_token, vista, id_pedido) {
                        $.each($("input.id_det_esp_"+ (i + 1)),function(y,w){
                             ramos_det_esp_emp = $("input.td_ramos_x_caja_"+(i + 1)+"_"+(y + 1)).val();
                             ramos_modificados = $("input#ramos_x_caja_"+(i + 1)+"_"+(y + 1)).val();
-                            console.log(ramos_det_esp_emp , ramos_modificados);
+                            //console.log(ramos_det_esp_emp , ramos_modificados);
                             if(ramos_det_esp_emp != ramos_modificados){
                                arr_custom_ramos_x_caja.push({
                                   ramos_x_caja : ramos_modificados,
@@ -1063,17 +1063,25 @@ function update_orden_tinturada(token) {
                 $.each($("div.well_detalle_pedido"), function (i, j) {
                     arreglo_esp_emp = [];
                     ids_esp_emp = $(j).find('.id_esp_emp');
+                    arr_custom_ramos_x_caja=[];
 
                     for (ee = 0; ee < ids_esp_emp.length; ee++) {
                         ids_det_esp = $(j).find('input.id_det_esp_' + ids_esp_emp[ee].value);
                         /* ========= PRECIOS x DETALLE ESPECIFICACION ========== */
 
                         arreglo_precios = [];
+                        //ramos_x_caja=[];
                         for (det = 0; det < ids_det_esp.length; det++) {
-                            console.log('#precio_det_esp_' + ids_det_esp[det].value);
+                            //console.log('#precio_det_esp_' + ids_det_esp[det].value);
+
+                            /*arr_custom_ramos_x_caja.push({
+
+                            });*/
+                            console.log(ids_det_esp[det].value);
                             arreglo_precios.push({
                                 id_det_esp: ids_det_esp[det].value,
-                                precio: $(j).find('#precio_det_esp_' + ids_det_esp[det].value).val()
+                                precio: $(j).find('#precio_det_esp_' + ids_det_esp[det].value).val(),
+                                ramos_modificados : $('#ramos_x_caja_det_esp_' + ids_det_esp[det].value+'_'+ids_esp_emp[ee].value).val()
                             });
                         }
 
@@ -1150,10 +1158,12 @@ function update_orden_tinturada(token) {
                         id_det_ped: $(j).find('input.id_det_ped').val(),
                         agencia_carga: $(j).find('#id_agencia_carga').val(),
                         cant_piezas: $(j).find('#cantidad_piezas').val(),
-                        arreglo_esp_emp: arreglo_esp_emp
+                        arreglo_esp_emp: arreglo_esp_emp,
+                        //arr_custom_ramos_x_caja : arr_custom_ramos_x_caja
                     });
                     det_ped_arreglo_dat_exp.push(arreglo_dat_exp);
                 });
+
 
                 datos = {
                     _token: token,

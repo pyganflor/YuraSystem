@@ -112,10 +112,11 @@
                                         </td>
                                     @endif
                                     <td class="text-center" style="border-color: #9d9d9d">
-                                        @php
-                                            $ramos_modificado = getRamosXCajaModificado($det_ped->id_detalle_pedido,$det_esp->id_detalle_especificacionempaque);
-                                        @endphp
-                                        {{isset($ramos_modificado) ? $ramos_modificado->cantidad : $det_esp->cantidad}}
+                                        <input type="number" style="width:55px;text-align:center" min="1" class="input_r_x_c_{{$esp_emp->id_especificacion_empaque}}"
+                                               onchange="cambia_input_r_x_c(this,'{{$esp_emp->id_especificacion_empaque}}','{{$det_esp->id_detalle_especificacionempaque}}'), calcular_totales_tinturado('{{$esp_emp->id_especificacion_empaque}}')"
+                                               onkeyup="cambia_input_r_x_c(this,'{{$esp_emp->id_especificacion_empaque}}','{{$det_esp->id_detalle_especificacionempaque}}'), calcular_totales_tinturado('{{$esp_emp->id_especificacion_empaque}}')"
+                                               value="{{isset($ramos_modificado) ? $ramos_modificado->cantidad : $det_esp->cantidad}}">
+                                        {{--isset($ramos_modificado) ? $ramos_modificado->cantidad : $det_esp->cantidad--}}
                                     </td>
                                     <td class="text-center" style="border-color: #9d9d9d">
                                         {{$det_esp->empaque_p->nombre}}
@@ -190,9 +191,6 @@
                                         @endif
                                     @endif
                                 </tr>
-                                @php
-                                    $ramos_modificado = getRamosXCajaModificado($det_ped->id_detalle_pedido,$det_esp->id_detalle_especificacionempaque);
-                                @endphp
                                 <input type="hidden"
                                        id="ramos_x_caja_det_esp_{{$det_esp->id_detalle_especificacionempaque}}_{{$esp_emp->id_especificacion_empaque}}"
                                        value="{{isset($ramos_modificado) ? $ramos_modificado->cantidad : $det_esp->cantidad}}">
@@ -555,17 +553,26 @@
         $.LoadingOverlay('hide');
     }
 
+    $(".select_coloracion").change(function($this){
+                console.log($this,$($this));
+                arrId = $this.target.name.split("_");
 
-        $(".select_coloracion").change(function($this){
-            console.log($this,$($this));
-            arrId = $this.target.name.split("_");
+                fondo = $('#fondo_color_' +  $("select#"+$this.target.name).val()).val();
+                texto = $('#texto_color_' +  $("select#"+$this.target.name).val()).val();
 
-            fondo = $('#fondo_color_' +  $("select#"+$this.target.name).val()).val();
-            texto = $('#texto_color_' +  $("select#"+$this.target.name).val()).val();
+                $('.elemento_color_' + arrId[1] + '_' + arrId[2]).css('background-color', fondo);
+                $('.elemento_color_' + arrId[1] + '_' + arrId[2]).css('color', texto);
+            });
 
-            $('.elemento_color_' + arrId[1] + '_' + arrId[2]).css('background-color', fondo);
-            $('.elemento_color_' + arrId[1] + '_' + arrId[2]).css('color', texto);
+    function cambia_input_r_x_c(input,idEspEmp,idDetEspEmp){
+        r_x_c_esp_emp = 0;
+        $.each($("input.input_r_x_c_"+idEspEmp),function (i,j) {
+           if(!isNaN(parseInt($(j).val())))
+               r_x_c_esp_emp+=parseInt($(j).val())
         });
+        $("#ramos_x_caja_"+idEspEmp).val(r_x_c_esp_emp)
+        $("#ramos_x_caja_det_esp_"+idDetEspEmp+'_'+idEspEmp).val($(input).val())
+    }
 
 
 </script>
