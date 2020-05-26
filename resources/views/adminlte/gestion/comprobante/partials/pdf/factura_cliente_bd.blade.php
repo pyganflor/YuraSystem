@@ -402,7 +402,6 @@
             @foreach($det_ped->coloraciones as $y => $coloracion)
                 @foreach($coloracion->marcaciones_coloraciones as $m_c)
                     @if($m_c->cantidad > 0)
-                        @dump($m_c->precio!="")
                         @if($m_c->precio!="")
                             @php
                                 $precio = $m_c->precio;
@@ -450,7 +449,6 @@
                 @endforeach
             @endforeach
         @endforeach
-        @dd($data_body_table)
         @foreach($data_body_table as $body_table)
             @foreach($body_table as $table)
                 @foreach($table as $t)
