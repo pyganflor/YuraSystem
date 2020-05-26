@@ -16,6 +16,7 @@ use yura\Modelos\Coloracion;
 use yura\Modelos\Comprobante;
 use yura\Modelos\DetalleEnvio;
 use yura\Modelos\DetalleEspecificacionEmpaque;
+use yura\Modelos\DetalleEspecificacionEmpaqueRamosCaja;
 use yura\Modelos\DetallePedido;
 use yura\Modelos\DetallePedidoDatoExportacion;
 use yura\Modelos\Distribucion;
@@ -775,12 +776,29 @@ class OrdenSemanalController extends Controller
                         foreach ($esp_emp['arreglo_precios'] as $pos_precio => $precio) {
                             if (($pos_esp_emp == 0 && $pos_precio > 0) || $pos_esp_emp > 0)
                                 $det_pedido->precio .= '|' . $precio['precio'] . ';' . $precio['id_det_esp'];
+
+
+
                         }
                     }
 
                     if ($det_pedido->save()) {
+
                         $det_pedido = DetallePedido::All()->last();
                         bitacora('detalle_pedido', $det_pedido->id_detalle_pedido, 'I', 'Inserción satisfactoria de un nuevo detalle_pedido');
+
+                        foreach($det_ped_arreglo_esp_emp['arreglo_esp_emp'] as $arr_esp_emp){
+                            foreach($arr_esp_emp['arreglo_precios'] as $z => $customRamosXCaja){
+                                $objDetEspEmpRxC = new DetalleEspecificacionEmpaqueRamosCaja;
+                                $objDetEspEmpRxC->id_detalle_pedido = $det_pedido->id_detalle_pedido;
+                                $objDetEspEmpRxC->id_detalle_especificacionempaque = $customRamosXCaja['id_det_esp'];
+                                $objDetEspEmpRxC->cantidad = $customRamosXCaja['ramos_modificados'];
+                                $objDetEspEmpRxC->fecha_registro = now()->format('Y-m-d H:i:s.v');
+                                $objDetEspEmpRxC->save();
+                            }
+                        }
+
+
 
                         $arreglo_variedades = [];
                         foreach ($det_ped_arreglo_esp_emp['arreglo_esp_emp'] as $pos_esp_emp => $esp_emp) {
