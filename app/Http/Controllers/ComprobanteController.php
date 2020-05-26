@@ -1799,8 +1799,8 @@ class ComprobanteController extends Controller
             $total_ramos = 0;
             $total_monto = 0;
 
-            if(isset($comprobante->etiqueta_factura->detalles)){
-                foreach ($comprobante->etiqueta_factura->detalles as $x =>  $detalle) {
+            if(isset($comprobante->envio->pedido->etiqueta_factura->detalles)){
+                foreach ($comprobante->envio->pedido->etiqueta_factura->detalles as $x =>  $detalle) {
                     $id_det_esp_emp = explode("|",$detalle->id_detalle_especificacion_empaque);
                     foreach($id_det_esp_emp as $id){
                         $det_esp_emp = getDetalleEspecificacionEmpaque($id);
@@ -1827,7 +1827,7 @@ class ComprobanteController extends Controller
                         }
                         $presentaciones = substr($variedad->planta->nombre,0,3)." ". $variedad->siglas . " " . $clasificacionRamo->nombre.$umPeso. " ";
                         $ramos_x_caja = $det_esp_emp_cantidad * $det_esp_emp->especificacion_empaque->cantidad;
-                        $etiqueta = $comprobante->etiqueta_factura->detalles[$x];
+                        $etiqueta = $comprobante->envio->pedido->etiqueta_factura->detalles[$x];
                         $cadena .= $detalle->cantidad.",".$presentaciones.",".$ramos_x_caja.",".($ramos_x_caja*$detalle->cantidad).",".$precio_presentacion.",".$precio_presentacion*($ramos_x_caja*$detalle->cantidad).",".$etiqueta->et_inicial." - ".$etiqueta->et_final."\n";
                         $total_piezas +=$detalle->cantidad;
                         $total_ramos += $ramos_x_caja*$detalle->cantidad;
