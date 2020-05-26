@@ -193,6 +193,7 @@
                              @endforeach
                             @foreach($det_ped->coloraciones as $y => $coloracion)
                                 @foreach($coloracion->marcaciones_coloraciones as $m_c)
+                                    @dump($m_c->precio)
                                     @if($m_c->precio!="")
                                         @php
                                              $precio = $m_c->precio;
