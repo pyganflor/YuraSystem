@@ -45,8 +45,9 @@
                                         foreach ($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $esp_emp)
                                             foreach ($esp_emp->detalles as $z=> $det_esp_emp)
                                                 if($det_esp_emp->id_detalle_especificacionempaque == $id){
+                                                    $ramos_modificado = getRamosXCajaModificado($det_ped->id_detalle_pedido,$det_esp_emp->id_detalle_especificacionempaque);
                                                     $det_ped_cantidad = $det_ped->cantidad;
-                                                    $det_esp_emp_cantidad = $det_esp_emp->cantidad;
+                                                    $det_esp_emp_cantidad = isset($ramos_modificado) ? $ramos_modificado->cantidad : $det_esp_emp->cantidad;
                                                     break;
                                                 }
                                     $presentaciones .= (substr($variedad->planta->nombre,0,3)." ". $variedad->siglas . " " . $clasificacionRamo->nombre.$umPeso. " ". $longitudRamo.$umL." Ramos por caja: ") ." ".($det_esp_emp_cantidad * $det_esp_emp->especificacion_empaque->cantidad)." <br />";
@@ -68,6 +69,7 @@
                                 @foreach ($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $esp_emp)
                                     @foreach ($esp_emp->detalles as $z=> $det_esp_emp)
                                         @php
+                                            $ramos_modificado = getRamosXCajaModificado($det_ped->id_detalle_pedido,$det_esp_emp->id_detalle_especificacionempaque);
                                             $clasificacionRamo = getClasificacionRamo($det_esp_emp->id_clasificacion_ramo);
                                             $variedad = getVariedad($det_esp_emp->id_variedad);
                                             if($det_esp_emp->longitud_ramo != null){
@@ -91,7 +93,7 @@
                                             @endif
                                             <td style="border: 1px solid black"  class="td_{{$x}}_{{$y}}">
                                                 <label style="font-weight: 600" id="{{$det_esp_emp->id_detalle_especificacionempaque}}">
-                                                    {{ substr($variedad->planta->nombre,0,3)." ". $variedad->siglas . " " . $clasificacionRamo->nombre.$umPeso. " ". $longitudRamo.$umL." Ramos por caja: " }} {{$det_esp_emp->cantidad * $esp_emp->cantidad}}
+                                                    {{ substr($variedad->planta->nombre,0,3)." ". $variedad->siglas . " " . $clasificacionRamo->nombre.$umPeso. " ". $longitudRamo.$umL." Ramos por caja: " }} {{(isset($ramos_modificado) ? $ramos_modificado->cantidad : $det_esp_emp->cantidad) * $esp_emp->cantidad}}
                                                 </label>
                                             </td>
                                         </tr>

@@ -158,7 +158,8 @@
                             @foreach($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $m => $esp_emp)
                                 @foreach ($esp_emp->detalles as $n => $det_esp_emp)
                                     @php
-                                        $total_ramos += number_format(($det_ped->cantidad*$esp_emp->cantidad*$det_esp_emp->cantidad),2,".","");
+                                        $ramos_modificado = getRamosXCajaModificado($det_ped->id_detalle_pedido,$det_esp_emp->id_detalle_especificacionempaque);
+                                        $total_ramos += number_format(($det_ped->cantidad*$esp_emp->cantidad*(isset($ramos_modificado) ? $ramos_modificado->cantidad : $det_esp_emp->cantidad)),2,".","");
                                         $peso_neto += (int)$det_esp_emp->clasificacion_ramo->nombre * number_format(($det_ped->cantidad*$det_esp_emp->cantidad),2,".","");
                                         $peso_caja += isset(explode("|",$det_esp_emp->especificacion_empaque->empaque->nombre)[2]) ? explode("|",$det_esp_emp->especificacion_empaque->empaque->nombre)[2] : 0;
                                     @endphp
@@ -170,7 +171,8 @@
                              @foreach($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $m => $esp_emp)
                                   @foreach ($esp_emp->detalles as $n => $det_esp_emp)
                                        @php
-                                            $total_ramos += number_format(($det_ped->cantidad*$esp_emp->cantidad*$det_esp_emp->cantidad),2,".","");
+                                            $ramos_modificado = getRamosXCajaModificado($det_ped->id_detalle_pedido,$det_esp_emp->id_detalle_especificacionempaque);
+                                            $total_ramos += number_format(($det_ped->cantidad*$esp_emp->cantidad*(isset($ramos_modificado) ? $ramos_modificado->cantidad : $det_esp_emp->cantidad)),2,".","");
                                             $peso_neto += (int)$det_esp_emp->clasificacion_ramo->nombre * number_format(($det_ped->cantidad*$det_esp_emp->cantidad),2,".","");
                                             $peso_caja += isset(explode("|",$det_esp_emp->especificacion_empaque->empaque->nombre)[2]) ? (explode("|",$det_esp_emp->especificacion_empaque->empaque->nombre)[2]*$det_ped->cantidad) : 0;
                                        @endphp
@@ -263,7 +265,8 @@
             @foreach($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $m => $esp_emp)
                 @foreach ($esp_emp->detalles as $n => $det_esp_emp)
                     @php
-                        $total_tallos += number_format(($det_ped->cantidad*$esp_emp->cantidad*$det_esp_emp->cantidad*$det_esp_emp->tallos_x_ramos),2,".","");
+                        $ramos_modificado = getRamosXCajaModificado($det_ped->id_detalle_pedido,$det_esp_emp->id_detalle_especificacionempaque);
+                        $total_tallos += number_format(($det_ped->cantidad*$esp_emp->cantidad*(isset($ramos_modificado) ? $ramos_modificado->cantidad : $det_esp_emp->cantidad)*$det_esp_emp->tallos_x_ramos),2,".","");
                         $full_equivalente_real += explode("|",$esp_emp->empaque->nombre)[1]*$det_ped->cantidad;
                         $descripcion = substr($det_esp_emp->variedad->planta->nombre, 0, 3) .", ". $det_esp_emp->variedad->nombre;
                         switch (explode("|",$esp_emp->empaque->nombre)[1]) {
@@ -286,19 +289,24 @@
                     @endphp
                     <tr>
                         <td style="font-size:11px"> {{number_format($det_ped->cantidad,2,".","")}}</td>
-                        @php $total_piezas += $det_ped->cantidad @endphp
+                        @php
+                            $total_piezas += $det_ped->cantidad;
+                            $ramos_modificado = getRamosXCajaModificado($det_ped->id_detalle_pedido,$det_esp_emp->id_detalle_especificacionempaque);
+                        @endphp
                         <td style="font-size:11px">{{$descripcion}}</td>
                         <td style="font-size:11px"> A</td>
                         <td style="font-size:11px"> {{$det_esp_emp->variedad->planta->tarifa}}</td>
                         <td style="font-size:11px"> {{$det_esp_emp->variedad->planta->nandina}}</td>
-                        <td style="font-size:11px"> {{$det_esp_emp->cantidad}}</td>
+                        <td style="font-size:11px"> {{isset($ramos_modificado) ? $ramos_modificado->cantidad : $det_esp_emp->cantidad}}</td>
                         <td style="font-size:11px"> BN </td>
-                        <td style="font-size:11px"> {{number_format(($det_ped->cantidad*$det_esp_emp->cantidad),2,".","")}} </td>
-                        @php $total_ramos += number_format(($det_ped->cantidad*$det_esp_emp->cantidad),2,".",""); @endphp
+                        <td style="font-size:11px"> {{number_format(($det_ped->cantidad*(isset($ramos_modificado) ? $ramos_modificado->cantidad : $det_esp_emp->cantidad)),2,".","")}} </td>
+                        @php
+                            $total_ramos += number_format(($det_ped->cantidad*(isset($ramos_modificado) ? $ramos_modificado->cantidad : $det_esp_emp->cantidad)),2,".","");
+                        @endphp
                         <td style="font-size:11px;"> {{"$".number_format(explode(";", $precio[$i])[0],2,".","")}} </td>
-                        <td style="font-size:11px"> {{"$".number_format(($det_esp_emp->cantidad * ((float)explode(";", $precio[$i])[0]) * $esp_emp->cantidad * $det_ped->cantidad),2,".","")}} </td>
+                        <td style="font-size:11px"> {{"$".number_format(((isset($ramos_modificado) ? $ramos_modificado->cantidad : $det_esp_emp->cantidad) * ((float)explode(";", $precio[$i])[0]) * $esp_emp->cantidad * $det_ped->cantidad),2,".","")}} </td>
                     </tr>
-                    @php $precio_total_sin_impuestos +=  ($det_esp_emp->cantidad * ((float)explode(";", $precio[$i])[0]) * $esp_emp->cantidad * $det_ped->cantidad); @endphp
+                    @php $precio_total_sin_impuestos +=  ((isset($ramos_modificado) ? $ramos_modificado->cantidad : $det_esp_emp->cantidad) * ((float)explode(";", $precio[$i])[0]) * $esp_emp->cantidad * $det_ped->cantidad); @endphp
                     @php  $i++;  @endphp
                 @endforeach
             @endforeach
@@ -308,7 +316,8 @@
             @foreach($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $m => $esp_emp)
                 @foreach ($esp_emp->detalles as $n => $det_esp_emp)
                     @php
-                        $total_tallos += number_format(($det_ped->cantidad*$esp_emp->cantidad*$det_esp_emp->cantidad*$det_esp_emp->tallos_x_ramos),2,".","");
+                        $ramos_modificado = getRamosXCajaModificado($det_ped->id_detalle_pedido,$det_esp_emp->id_detalle_especificacionempaque);
+                        $total_tallos += number_format(($det_ped->cantidad*$esp_emp->cantidad*(isset($ramos_modificado) ? $ramos_modificado->cantidad : $det_esp_emp->cantidad)*$det_esp_emp->tallos_x_ramos),2,".","");
                         $full_equivalente_real += explode("|",$esp_emp->empaque->nombre)[1]*$det_ped->cantidad;
                         switch (explode("|",$esp_emp->empaque->nombre)[1]) {
                             case '1':
@@ -331,10 +340,10 @@
                 @endforeach
             @endforeach
             @foreach($det_ped->coloraciones as $y => $coloracion)
+                @dd($coloracion->marcaciones_coloraciones)
                 @foreach($coloracion->marcaciones_coloraciones as $m_c)
                     @if($coloracion->precio=="")
                         @foreach (explode("|", $det_ped->precio) as $p)
-                            @php
                                 if($m_c->id_detalle_especificacionempaque == explode(";",$p)[1])
                                     $precio = explode(";",$p)[0];
                             @endphp
@@ -353,8 +362,9 @@
                                 @foreach ($esp_emp->detalles as $n => $det_esp_emp)
                                     @if($det_esp_emp->id_detalle_especificacionempaque === $m_c->id_detalle_especificacionempaque)
                                        @php
-                                           $piezas = $m_c->cantidad/$det_esp_emp->cantidad;
-                                           $descripcion = substr($det_esp_emp->variedad->planta->nombre, 0, 3) .", ". $det_esp_emp->variedad->nombre;
+                                            $ramos_modificado = getRamosXCajaModificado($det_ped->id_detalle_pedido,$det_esp_emp->id_detalle_especificacionempaque);
+                                            $piezas = $m_c->cantidad/(isset($ramos_modificado) ? $ramos_modificado->cantidad : $det_esp_emp->cantidad);
+                                            $descripcion = substr($det_esp_emp->variedad->planta->nombre, 0, 3) .", ". $det_esp_emp->variedad->nombre;
                                             $total_piezas += $piezas;
                                        @endphp
                                     @endif
@@ -462,3 +472,4 @@
         </td>
     </tr>
 </table>
+                            @php

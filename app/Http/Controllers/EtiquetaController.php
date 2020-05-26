@@ -235,7 +235,7 @@ class EtiquetaController extends Controller
                                             $objSheet->getCell('E' . ($w + 1))->setValue($pedido->envios[0]->id_consignatario!= "" ? $pedido->envios[0]->consignatario->nombre : $pedido->cliente->detalle()->nombre);
                                             $objSheet->getCell('F' . ($w + 1))->setValue($pedido->envios[0]->id_consignatario!= "" ? $pedido->cliente->detalle()->nombre : "");
                                             $objSheet->getCell('G' . ($w + 1))->setValue($datos_exportacion != '' ? substr($datos_exportacion,0,-1): "");
-                                            $objSheet->getCell('H' . ($w + 1))->setValue($esp_emp->ramos_x_caja());
+                                            $objSheet->getCell('H' . ($w + 1))->setValue($esp_emp->ramos_x_caja($det_ped->detalle_pedido));
                                             $objSheet->getCell('I' . ($w + 1))->setValue($prefijo."-".$codigo_finca);
                                             $objSheet->getCell('J' . ($w + 1))->setValue(getConfiguracionEmpresa($pedido->id_configuracion_empresa)->permiso_agrocalidad);
                                             $objSheet->getCell('K' . ($w + 1))->setValue('País destino. '.$pais_destino);
@@ -245,7 +245,8 @@ class EtiquetaController extends Controller
                                                 $objSheet->getCell($arr_posiciones[$posicion] . ($w + 1))->setValue($det_esp_emp->variedad->nombre);
                                                 $objSheet->getCell($arr_posiciones[$posicion + 1] . ($w + 1))->setValue("White");
                                                 $objSheet->getCell($arr_posiciones[$posicion + 2] . ($w + 1))->setValue($det_esp_emp->longitud_ramo . " " . $det_esp_emp->unidad_medida->siglas);
-                                                $objSheet->getCell($arr_posiciones[$posicion + 3] . ($w + 1))->setValue($det_esp_emp->cantidad);
+                                                $ramos_modificado = getRamosXCajaModificado($det_ped->id_detalle_pedido,$det_esp_emp->id_detalle_especificacionempaque);
+                                                $objSheet->getCell($arr_posiciones[$posicion + 3] . ($w + 1))->setValue(isset($ramos_modificado) ? $ramos_modificado->cantidad : $det_esp_emp->cantidad);
                                                 $objSheet->getCell($arr_posiciones[$posicion + 4] . ($w + 1))->setValue($det_esp_emp->clasificacion_ramo->nombre . " " . $det_esp_emp->clasificacion_ramo->unidad_medida->siglas . ".");
                                                 $posicion += 5;
                                             }

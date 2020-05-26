@@ -85,7 +85,8 @@
                                     </td>
                                     <td style="border-color: #9d9d9d; padding: 0px; vertical-align: middle; width: 30px;"
                                         class="text-center" rowspan="{{getCantidadDetallesByEspecificacion($item->id_especificacion)}}">
-                                        <input type="number" min="0" id="cantidad_piezas_{{($x+1)}}" style="border: none;width:100%;height: 34px;" onkeyup="crear_orden_pedido(this)" onchange="calcular_precio_pedido(this)"
+                                        <input type="number" min="0" id="cantidad_piezas_{{($x+1)}}" style="border: none;width:100%;height: 34px;"
+                                               onkeyup="crear_orden_pedido(this)" onchange="calcular_precio_pedido(this), calcular_precio_pedido()"
                                                name="cantidad_piezas_{{$item->id_especificacion}}"  class="text-center cantidad_{{($x+1)}} input_cantidad" value="">
                                         <input type="hidden" id="id_cliente_pedido_especificacion_{{($x+1)}}" value="{{$item->id_cliente_pedido_especificacion}}">
                                         <input type="hidden" id="cajas_mallas_{{($x+1)}}" name="cajas_mallas_{{($x+1)}}">
@@ -118,8 +119,14 @@
                                                value="{{$det_esp_emp->empaque_p->nombre}}" class="input_presentacion_{{$x+1}}">
                                     </td>
                                     <td  style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;width:40px" class="text-center ramos_x_caja_{{$x+1}} ramos_x_caja_{{$x+1}}_{{$b}}">
-                                        <span>{{$det_esp_emp->cantidad}}</span>
-                                        <input type="hidden" class="td_ramos_x_caja_{{$x+1}} input_ramos_x_caja_{{$x+1}}_{{$b}}" value="{{$det_esp_emp->cantidad}}">
+                                        <input type="number" min="0" id="ramos_x_caja_{{$x+1}}_{{$b}}"
+                                               value="{{$det_esp_emp->cantidad}}" style="width: 60px;text-align: center;border:none"
+                                               onchange="calcular_precio_pedido()" onkeyup="calcular_precio_pedido()"
+                                               class="input_ramos_x_caja_{{$x+1}} input_ramos_x_caja_{{$x+1}}_{{$b}}">
+                                        <input type="hidden" id="id_det_esp_{{$x+1}}_{{$b}}" class="id_det_esp_{{$x+1}}_{{$b}} id_det_esp_{{$x+1}}"
+                                               value="{{$det_esp_emp->id_detalle_especificacionempaque}}">
+                                        <input type="hidden" class="td_ramos_x_caja_{{$x+1}} td_ramos_x_caja_{{$x+1}}_{{$b}}"
+                                                 value="{{$det_esp_emp->cantidad}}">
                                     </td>
                                     <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;width:40px"
                                         class="td_tallos_x_malla td_tallos_x_malla_{{$x+1}} td_tallos_x_malla_{{$x+1}}_{{$b}}

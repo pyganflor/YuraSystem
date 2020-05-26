@@ -70,6 +70,7 @@
                 @foreach(getEspecificacion($det_ped->cliente_especificacion->especificacion->id_especificacion)->especificacionesEmpaque as $y => $esp_emp)
                     {{--@php $empaque_edit = $esp_emp->especificacion->tipo @endphp--}}
                     @foreach($esp_emp->detalles as $z => $det_esp_emp)
+                        @php $ramos_modificado = getRamosXCajaModificado($det_ped->id_detalle_pedido,$det_esp_emp->id_detalle_especificacionempaque); @endphp
                         <tr style="border-top: {{$det_ped->cliente_especificacion->especificacion->id_especificacion != $anterior ? '2px solid #9d9d9d' : ''}}" >
                             @if($det_ped->cliente_especificacion->especificacion->id_especificacion != $anterior)
                                 <td style="border-color: #9d9d9d; padding: 0px; vertical-align: middle; width: 15px; text-align:center"
@@ -129,8 +130,19 @@
                                        value="{{$det_esp_emp->empaque_p->nombre}}" class="input_presentacion_{{$x+1}}">
                             </td>
                             <td  style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;" class="text-center ramos_x_caja_{{$x+1}} ramos_x_caja_{{$x+1}}_{{$b}}">
-                                <span>{{isset($det_ped->data_tallos->ramos_x_caja) ? $det_ped->data_tallos->ramos_x_caja : $det_esp_emp->cantidad}}</span>
-                                <input type="hidden" class="td_ramos_x_caja_{{$x+1}} input_ramos_x_caja_{{$x+1}}_{{$b}}" value="{{$det_esp_emp->cantidad}}">
+
+                                <input type="number" min="0" id="ramos_x_caja_{{$x+1}}_{{$b}}"
+                                       value="{{isset($det_ped->data_tallos->ramos_x_caja)
+                                                ? $det_ped->data_tallos->ramos_x_caja
+                                                : (isset($ramos_modificado) ? $ramos_modificado->cantidad : $det_esp_emp->cantidad)}}"
+                                       style="width: 60px;text-align: center;border:none"
+                                       onchange="calcular_precio_pedido()" onkeyup="calcular_precio_pedido()"
+                                       class="input_ramos_x_caja_{{$x+1}} input_ramos_x_caja_{{$x+1}}_{{$b}}">
+                                <input type="hidden" id="id_det_esp_{{$x+1}}_{{$b}}" class="id_det_esp_{{$x+1}}_{{$b}} id_det_esp_{{$x+1}}"
+                                       value="{{$det_esp_emp->id_detalle_especificacionempaque}}">
+                                <input type="hidden" class="td_ramos_x_caja_{{$x+1}} td_ramos_x_caja_{{$x+1}}_{{$b}}"
+                                       value="{{$det_esp_emp->cantidad}}">
+
                             </td>
                             <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;width:40px"
                                 class="td_tallos_x_malla td_tallos_x_malla_{{$x+1}} td_tallos_x_malla_{{$x+1}}_{{$b}}
@@ -275,8 +287,15 @@
                                        value="{{$det_esp_emp->empaque_p->nombre}}" class="input_presentacion_{{$x+$cant_esp_creadas}}">
                             </td>
                             <td  style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;" class="text-center ramos_x_caja_{{$x+$cant_esp_creadas}} ramos_x_caja_{{$x+$cant_esp_creadas}}_{{$b}}">
-                                <span>{{$det_esp_emp->cantidad}}</span>
-                                <input type="hidden" class="td_ramos_x_caja_{{$x+$cant_esp_creadas}} input_ramos_x_caja_{{$x+$cant_esp_creadas}}_{{$b}}" value="{{$det_esp_emp->cantidad}}">
+                                <input type="number" min="0" id="ramos_x_caja_{{$x+$cant_esp_creadas}}_{{$b}}"
+                                       value="{{$det_esp_emp->cantidad}}" style="width: 60px;text-align: center;border:none"
+                                       onchange="calcular_precio_pedido()" onkeyup="calcular_precio_pedido()"
+                                       class="input_ramos_x_caja_{{$x+$cant_esp_creadas}} input_ramos_x_caja_{{$x+$cant_esp_creadas}}_{{$b}}">
+                                <input type="hidden" id="id_det_esp_{{$x+$cant_esp_creadas}}_{{$b}}" class="id_det_esp_{{$x+$cant_esp_creadas}}_{{$b}} id_det_esp_{{$x+$cant_esp_creadas}}"
+                                       value="{{$det_esp_emp->id_detalle_especificacionempaque}}">
+                                {{--<span>{{$det_esp_emp->cantidad}}</span>--}}
+                                <input type="hidden" class="td_ramos_x_caja_{{$x+$cant_esp_creadas}} td_ramos_x_caja_{{$x+$cant_esp_creadas}}_{{$b}}"
+                                       value="{{$det_esp_emp->cantidad}}">
                             </td>
                             <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;width:40px"
                                 class="td_tallos_x_malla td_tallos_x_malla_{{$x+$cant_esp_creadas}} td_tallos_x_malla_{{$x+$cant_esp_creadas}}_{{$b}}

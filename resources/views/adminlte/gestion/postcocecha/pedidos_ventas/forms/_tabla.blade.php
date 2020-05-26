@@ -80,7 +80,8 @@
                             @endphp
                             @foreach($esp_emp->detalles as $pos_det_esp => $det_esp)
                                 @php
-                                    $ramos_x_caja += $det_esp->cantidad;
+                                    $ramos_modificado = getRamosXCajaModificado($det_ped->id_detalle_pedido,$det_esp->id_detalle_especificacionempaque);
+                                    $ramos_x_caja += isset($ramos_modificado) ? $ramos_modificado->cantidad : $det_esp->cantidad;
                                 @endphp
                                 <tr>
                                     @if($pos_esp_emp == 0 && $pos_det_esp == 0)
@@ -111,7 +112,10 @@
                                         </td>
                                     @endif
                                     <td class="text-center" style="border-color: #9d9d9d">
-                                        {{$det_esp->cantidad}}
+                                        @php
+                                            $ramos_modificado = getRamosXCajaModificado($det_ped->id_detalle_pedido,$det_esp->id_detalle_especificacionempaque);
+                                        @endphp
+                                        {{isset($ramos_modificado) ? $ramos_modificado->cantidad : $det_esp->cantidad}}
                                     </td>
                                     <td class="text-center" style="border-color: #9d9d9d">
                                         {{$det_esp->empaque_p->nombre}}
@@ -186,9 +190,12 @@
                                         @endif
                                     @endif
                                 </tr>
+                                @php
+                                    $ramos_modificado = getRamosXCajaModificado($det_ped->id_detalle_pedido,$det_esp->id_detalle_especificacionempaque);
+                                @endphp
                                 <input type="hidden"
                                        id="ramos_x_caja_det_esp_{{$det_esp->id_detalle_especificacionempaque}}_{{$esp_emp->id_especificacion_empaque}}"
-                                       value="{{$det_esp->cantidad}}">
+                                       value="{{isset($ramos_modificado) ? $ramos_modificado->cantidad : $det_esp->cantidad}}">
                                 <input type="hidden" class="id_det_esp_{{$esp_emp->id_especificacion_empaque}}"
                                        value="{{$det_esp->id_detalle_especificacionempaque}}">
                             @endforeach

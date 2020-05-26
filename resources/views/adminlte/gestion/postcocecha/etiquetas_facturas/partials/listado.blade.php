@@ -56,7 +56,8 @@
                                 {{number_format($full_equivalente_real,2,".","")}}
                             </td>
                             <td style="border-color: #9d9d9d;width:60px" class="text-center">
-                                <button type="button" class="btn btn-primary btn-xs" title="Generar etiqueta por factura" onclick="form_etiqueta_factura('{{$pedido->id_pedido}}')">
+                                <button type="button" class="btn btn-primary btn-xs" title="Generar etiqueta por factura"
+                                        onclick="form_etiqueta_factura('{{$pedido->id_pedido}}')">
                                     <i class="fa fa-file-excel-o"></i>
                                 </button>
                             </td>

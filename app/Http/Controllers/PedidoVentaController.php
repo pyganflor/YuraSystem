@@ -8,6 +8,7 @@ use yura\Modelos\Cliente;
 use yura\Modelos\Color;
 use yura\Modelos\Coloracion;
 use yura\Modelos\DetalleEnvio;
+use yura\Modelos\DetalleEspecificacionEmpaqueRamosCaja;
 use yura\Modelos\DetallePedido;
 use yura\Modelos\DetallePedidoDatoExportacion;
 use yura\Modelos\Distribucion;
@@ -203,6 +204,7 @@ class PedidoVentaController extends Controller
                     if($objEnvio->save()) $modelEnvio = Envio::all()->last();
 
                     foreach ($dataDetallePedido as $detallePedido) {
+
                         $objDetallePedido = new DetallePedido;
                         $objDetallePedido->id_cliente_especificacion = $detallePedido->id_cliente_especificacion;
                         $objDetallePedido->id_pedido = $modelPedido->id_pedido;
@@ -221,6 +223,25 @@ class PedidoVentaController extends Controller
                         if ($objDetallePedido->save()) {
 
                             $model_detalle_pedido = DetallePedido::all()->last();
+
+                            foreach ($detallePedido->cliente_especificacion->especificacion->especificacionesEmpaque as $esp_emp) {
+                                foreach ($esp_emp->detalles as $det_esp_emp) {
+                                    $ramos_modificado = getRamosXCajaModificado($detallePedido->id_detalle_pedido,$det_esp_emp->id_detalle_especificacionempaque);
+                                    if(isset($ramos_modificado)){
+                                        $objDetEspEmpRamosCaja= new DetalleEspecificacionEmpaqueRamosCaja;
+                                        $objDetEspEmpRamosCaja->id_detalle_pedido= $model_detalle_pedido->id_detalle_pedido;
+                                        $objDetEspEmpRamosCaja->id_detalle_especificacionempaque= $det_esp_emp->id_detalle_especificacionempaque;
+                                        $objDetEspEmpRamosCaja->cantidad = $ramos_modificado->cantidad;
+                                        $objDetEspEmpRamosCaja->fecha_registro = now()->format('Y-m-d H:i:s.v');
+                                        $objDetEspEmpRamosCaja->save();
+                                    }
+
+                                }
+
+
+                            }
+
+
                             bitacora('detalle_pedido', $model_detalle_pedido->id_detalle_pedido, 'I', 'Inserción satisfactoria del duplicado de un detalle pedio');
 
                             //foreach ($dataPedido->detalles as $dataDetPed) {

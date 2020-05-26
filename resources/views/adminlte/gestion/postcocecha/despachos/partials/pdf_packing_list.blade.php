@@ -143,6 +143,7 @@
                         @endphp
                         @foreach($esp_emp->detalles as $z => $det_esp_emp)
                             @php
+                                $ramos_modificado = getRamosXCajaModificado($det_ped->id_detalle_pedido,$det_esp_emp->id_detalle_especificacionempaque);
                                 $dato_exportacion = "";
                                 foreach($pedido->cliente->cliente_datoexportacion as $cde){
                                     $valor = isset(getDatosExportacion($det_ped->id_detalle_pedido, $cde->datos_exportacion->id_dato_exportacion)->valor) ? getDatosExportacion($det_ped->id_detalle_pedido, $cde->datos_exportacion->id_dato_exportacion)->valor : "";
@@ -162,7 +163,7 @@
                                 <td style="padding-left: 5px;font-size:13px;
                                         {{($y == 0 && $z == 0) ? "border-top:2px solid black":"border:1px solid black"}}
                                         {{(($z+1) == getCantidadDetallesByEspecificacion($det_ped->cliente_especificacion->id_especificacion)) ? ";border-bottom:2px solid black" : ";border-bottom:1px solid black"}}" >
-                                    {{$det_esp_emp->cantidad}}
+                                    {{isset($ramos_modificado) ? $ramos_modificado->cantidad : $det_esp_emp->cantidad}}
                                 </td>
                                 <td style="padding-left: 5px;font-size:13px;
                                     {{($y == 0 && $z == 0) ? "border-top:2px solid black;border-left:1px solid black;border-right:1px solid black ":"border:1px solid black"}}
@@ -172,7 +173,7 @@
                                 <td style="padding-left: 5px;font-size:13px;
                                     {{($y == 0 && $z == 0) ? "border-top:2px solid black;border-left:1px solid black;border-right:1px solid black ":"border:1px solid black"}}
                                     {{(($z+1) == getCantidadDetallesByEspecificacion($det_ped->cliente_especificacion->id_especificacion)) ? ";border-bottom:2px solid black" : ";border-bottom:1px solid black"}}" >
-                                    {{$det_ped->cantidad * $det_esp_emp->cantidad * $esp_emp->cantidad}}</td>
+                                    {{$det_ped->cantidad * (isset($ramos_modificado) ? $ramos_modificado->cantidad : $det_esp_emp->cantidad) * $esp_emp->cantidad}}</td>
                                 <td style="padding-left: 5px;font-size:13px;
                                     {{($y == 0 && $z == 0) ? "border-top:2px solid black;border-left:1px solid black;border-right:1px solid black ":"border:1px solid black"}}
                                     {{(($z+1) == getCantidadDetallesByEspecificacion($det_ped->cliente_especificacion->id_especificacion)) ? ";border-bottom:2px solid black" : ";border-bottom:1px solid black"}}" >
