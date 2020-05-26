@@ -340,10 +340,10 @@
                 @endforeach
             @endforeach
             @foreach($det_ped->coloraciones as $y => $coloracion)
+                @dd($coloracion->marcaciones_coloraciones)
                 @foreach($coloracion->marcaciones_coloraciones as $m_c)
                     @if($coloracion->precio=="")
                         @foreach (explode("|", $det_ped->precio) as $p)
-                            @php
                                 if($m_c->id_detalle_especificacionempaque == explode(";",$p)[1])
                                     $precio = explode(";",$p)[0];
                             @endphp
@@ -472,3 +472,4 @@
         </td>
     </tr>
 </table>
+                            @php

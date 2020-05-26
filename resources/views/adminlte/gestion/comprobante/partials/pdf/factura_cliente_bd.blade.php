@@ -371,9 +371,10 @@
         @foreach ($envio->pedido->detalles as $x => $det_ped)
             @foreach($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $m => $esp_emp)
                 @php
-                foreach($esp_emp->detalles as $det_esp_emp)
-                    $ramos_modificado = getRamosXCajaModificado($det_ped->id_detalle_pedido,$det_esp_emp->id_detalle_especificacionempaque);
-                    $total_tallos += number_format(($det_ped->cantidad*$esp_emp->cantidad*(isset($ramos_modificado) ? $ramos_modificado->cantidad : $det_esp_emp->cantidad)*$det_esp_emp->tallos_x_ramos),2,".","");
+                    foreach($esp_emp->detalles as $det_esp_emp){
+                        $ramos_modificado = getRamosXCajaModificado($det_ped->id_detalle_pedido,$det_esp_emp->id_detalle_especificacionempaque);
+                        $total_tallos += number_format(($det_ped->cantidad*$esp_emp->cantidad*(isset($ramos_modificado) ? $ramos_modificado->cantidad : $det_esp_emp->cantidad)*$det_esp_emp->tallos_x_ramos),2,".","");
+                    }
                     $full_equivalente_real += explode("|",$esp_emp->empaque->nombre)[1]*$det_ped->cantidad;
                     switch (explode("|",$esp_emp->empaque->nombre)[1]) {
                         case '1':
@@ -393,14 +394,15 @@
                             break;
                     }
                 @endphp
-                {{--@foreach ($esp_emp->detalles as $n => $det_esp_emp)
-
-                @endforeach--}}
             @endforeach
             @foreach($det_ped->coloraciones as $y => $coloracion)
                 @foreach($coloracion->marcaciones_coloraciones as $m_c)
                     @if($m_c->cantidad > 0)
-                        @if($coloracion->precio=="")
+                        @if($m_c->precio!="")
+                            @php
+                                $precio = $m_c->precio;
+                            @endphp
+                        @elseif($coloracion->precio=="")
                             @foreach (explode("|", $det_ped->precio) as $p)
                                 @php
                                     if($m_c->id_detalle_especificacionempaque == explode(";",$p)[1])
@@ -410,8 +412,9 @@
                         @else
                             @foreach(explode("|",$coloracion->precio) as $p)
                                 @php
-                                    if($m_c->id_detalle_especificacionempaque == explode(";",$p)[1])
-                                        $precio = explode(";",$p)[0];
+                                        if($m_c->id_detalle_especificacionempaque == explode(";",$p)[1]){
+                                            $precio = explode(";",$p)[0];
+                                        }
                                 @endphp
                             @endforeach
                         @endif
