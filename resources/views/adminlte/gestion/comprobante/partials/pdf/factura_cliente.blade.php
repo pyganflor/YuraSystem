@@ -180,7 +180,11 @@
                              @endforeach
                             @foreach($det_ped->coloraciones as $y => $coloracion)
                                 @foreach($coloracion->marcaciones_coloraciones as $m_c)
-                                    @if($coloracion->precio=="")
+                                    @if($m_c->precio!="")
+                                        @php
+                                            $precio = $m_c->precio;
+                                        @endphp
+                                    @elseif($coloracion->precio=="")
                                         @foreach(explode("|", $det_ped->precio) as $p)
                                             @php
                                                 if($m_c->id_detalle_especificacionempaque == explode(";",$p)[1])
@@ -342,7 +346,11 @@
             @foreach($det_ped->coloraciones as $y => $coloracion)
                 @dd($coloracion->marcaciones_coloraciones)
                 @foreach($coloracion->marcaciones_coloraciones as $m_c)
-                    @if($coloracion->precio=="")
+                    @if($m_c->precio!="")
+                        @php
+                            $precio = $m_c->precio;
+                        @endphp
+                    @elseif($coloracion->precio=="")
                         @foreach (explode("|", $det_ped->precio) as $p)
                                 if($m_c->id_detalle_especificacionempaque == explode(";",$p)[1])
                                     $precio = explode(";",$p)[0];
