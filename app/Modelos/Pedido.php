@@ -91,7 +91,8 @@ class Pedido extends Model
                 foreach ($this->detalles as $det_ped) {
                     foreach ($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $esp_emp) {
                         foreach ($esp_emp->detalles as $det_esp) {
-                            $ramos = $det_ped->cantidad * $esp_emp->cantidad * $det_esp->cantidad;
+                            $ramos_modificado = getRamosXCajaModificado($det_ped->id_detalle_pedido,$det_esp->id_detalle_especificacionempaque);
+                            $ramos = $det_ped->cantidad * $esp_emp->cantidad * (isset($ramos_modificado) ? $ramos_modificado->cantidad : $det_esp->cantidad);
                             $r += convertToEstandar($ramos, explode('|', getCalibreRamoById($det_esp->id_clasificacion_ramo)->nombre)[0]);
                         }
                     }
@@ -110,7 +111,8 @@ class Pedido extends Model
                     foreach ($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $esp_emp) {
                         foreach ($esp_emp->detalles as $det_esp) {
                             if ($det_esp->id_variedad == $variedad) {
-                                $ramos = $det_ped->cantidad * $esp_emp->cantidad * $det_esp->cantidad;
+                                $ramos_modificado = getRamosXCajaModificado($det_ped->id_detalle_pedido,$det_esp->id_detalle_especificacionempaque);
+                                $ramos = $det_ped->cantidad * $esp_emp->cantidad * (isset($ramos_modificado) ? $ramos_modificado->cantidad : $det_esp->cantidad);
                                 $r += convertToEstandar($ramos, explode('|', getCalibreRamoById($det_esp->id_clasificacion_ramo)->nombre)[0]);
                             }
                         }
@@ -128,7 +130,8 @@ class Pedido extends Model
             foreach ($this->detalles as $det_ped) {
                 foreach ($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $esp_emp) {
                     foreach ($esp_emp->detalles as $det_esp) {
-                        $ramos = $det_ped->cantidad * $esp_emp->cantidad * $det_esp->cantidad;
+                        $ramos_modificado = getRamosXCajaModificado($det_ped->id_detalle_pedido,$det_esp->id_detalle_especificacionempaque);
+                        $ramos = $det_ped->cantidad * $esp_emp->cantidad * (isset($ramos_modificado) ? $ramos_modificado->cantidad : $det_esp->cantidad);
                         if ($det_esp->tallos_x_ramos != '') {
                             $r += $ramos * $det_esp->tallos_x_ramos;
                         } else {
@@ -149,7 +152,8 @@ class Pedido extends Model
                 foreach ($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $esp_emp) {
                     foreach ($esp_emp->detalles as $det_esp) {
                         if ($det_esp->id_variedad == $variedad) {
-                            $ramos = $det_ped->cantidad * $esp_emp->cantidad * $det_esp->cantidad;
+                            $ramos_modificado = getRamosXCajaModificado($det_ped->id_detalle_pedido,$det_esp->id_detalle_especificacionempaque);
+                            $ramos = $det_ped->cantidad * $esp_emp->cantidad * (isset($ramos_modificado) ? $ramos_modificado->cantidad : $det_esp->cantidad);
                             if ($det_esp->tallos_x_ramos != '') {
                                 $r += $ramos * $det_esp->tallos_x_ramos;
                             } else {
@@ -204,7 +208,8 @@ class Pedido extends Model
             foreach ($this->detalles as $det_ped) {
                 foreach ($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $esp_emp) {
                     foreach ($esp_emp->detalles as $det_esp) {
-                        $ramos = $det_ped->cantidad * $esp_emp->cantidad * $det_esp->cantidad;
+                        $ramos_modificado = getRamosXCajaModificado($det_ped->id_detalle_pedido,$det_esp->id_detalle_especificacionempaque);
+                        $ramos = $det_ped->cantidad * $esp_emp->cantidad * (isset($ramos_modificado) ? $ramos_modificado->cantidad : $det_esp->cantidad);
                         $ramos_col = 0;
                         $precio_col = 0;
                         foreach (Coloracion::All()->where('id_detalle_pedido', $det_ped->id_detalle_pedido)
@@ -258,7 +263,8 @@ class Pedido extends Model
                 foreach ($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $esp_emp) {
                     foreach ($esp_emp->detalles as $det_esp) {
                         if ($det_esp->id_variedad == $variedad) {
-                            $ramos = $det_ped->cantidad * $esp_emp->cantidad * $det_esp->cantidad;
+                            $ramos_modificado = getRamosXCajaModificado($det_ped->id_detalle_pedido,$det_esp->id_detalle_especificacionempaque);
+                            $ramos = $det_ped->cantidad * $esp_emp->cantidad * (isset($ramos_modificado) ? $ramos_modificado->cantidad : $det_esp->cantidad);
                             $ramos_col = 0;
                             $precio_col = 0;
                             foreach (Coloracion::All()->where('id_detalle_pedido', $det_ped->id_detalle_pedido)
@@ -381,7 +387,8 @@ class Pedido extends Model
                                 }
                             }
                         } else {    // pedido normal
-                            $ramos = $det_ped->cantidad * $esp_emp->cantidad * ($esp_emp->especificacion->tipo === "O" ? $det_esp->tallos_x_ramos : $det_esp->cantidad);
+                            $ramos_modificado = getRamosXCajaModificado($det_ped->id_detalle_pedido,$det_esp->id_detalle_especificacionempaque);
+                            $ramos = $det_ped->cantidad * $esp_emp->cantidad * ($esp_emp->especificacion->tipo === "O" ? $det_esp->tallos_x_ramos : (isset($ramos_modificado) ? $ramos_modificado->cantidad : $det_esp->cantidad));
                             $precio_final = $ramos * getPrecioByDetEsp($det_ped->precio, $det_esp->id_detalle_especificacionempaque);
                             $r += $precio_final;
                         }
@@ -448,7 +455,8 @@ class Pedido extends Model
                                 }
                             }
                         } else {    // pedido normal
-                            $ramos = $det_ped->cantidad * $esp_emp->cantidad * ($esp_emp->especificacion->tipo === "O" ? $det_esp->tallos_x_ramos : $det_esp->cantidad);
+                            $ramos_modificado = getRamosXCajaModificado($det_ped->id_detalle_pedido,$det_esp->id_detalle_especificacionempaque);
+                            $ramos = $det_ped->cantidad * $esp_emp->cantidad * ($esp_emp->especificacion->tipo === "O" ? $det_esp->tallos_x_ramos : (isset($ramos_modificado) ? $ramos_modificado->cantidad : $det_esp->cantidad));
                             $precio_final = $ramos * getPrecioByDetEsp($det_ped->precio, $det_esp->id_detalle_especificacionempaque);
                             $r += $precio_final;
                         }
@@ -486,13 +494,14 @@ class Pedido extends Model
             foreach ($this->detalles as $det_ped) {
                 foreach ($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $esp_emp)
                     foreach ($esp_emp->detalles as $det_esp_emp) {
-                        $ramosStandarCajaTotal += convertToEstandar($det_esp_emp->cantidad * $det_ped->cantidad, $det_esp_emp->clasificacion_ramo->nombre);
+                        $ramos_modificado = getRamosXCajaModificado($det_ped->id_detalle_pedido,$det_esp_emp->id_detalle_especificacionempaque);
+                        $ramosStandarCajaTotal += convertToEstandar((isset($ramos_modificado) ? $ramos_modificado->cantidad : $det_esp_emp->cantidad) * $det_ped->cantidad, $det_esp_emp->clasificacion_ramo->nombre);
                         $factorConversion += explode('|', $esp_emp->empaque->nombre)[1] * $det_ped->cantidad;
                     }
 
                 foreach ($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $esp_emp)
                     foreach ($esp_emp->detalles->where('id_variedad', $variedad) as $det_esp_emp)
-                        $ramosStandarCajaVariedad += convertToEstandar($det_esp_emp->cantidad * $det_ped->cantidad, $det_esp_emp->clasificacion_ramo->nombre);
+                        $ramosStandarCajaVariedad += convertToEstandar((isset($ramos_modificado) ? $ramos_modificado->cantidad : $det_esp_emp->cantidad) * $det_ped->cantidad, $det_esp_emp->clasificacion_ramo->nombre);
             }
 
             $standarTotal = $ramosStandarCajaVariedad > 0 ? $ramosStandarCajaTotal / $ramosStandarCajaVariedad : 0;

@@ -36,10 +36,13 @@ class EspecificacionEmpaque extends Model
         return $this->hasMany('\yura\Modelos\DetalleEspecificacionEmpaque', 'id_especificacion_empaque');
     }
     
-    public function ramos_x_caja(){
+    public function ramos_x_caja($idDetPed){
         $ramos = 0;
-        foreach($this->detalles as $det_esp_emp)
-            $ramos+= $det_esp_emp->cantidad;
+
+        foreach($this->detalles as $det_esp_emp){
+            $ramos_modificado = getRamosXCajaModificado($idDetPed,$det_esp_emp->id_detalle_especificacionempaque);
+            $ramos+= (isset($ramos_modificado) ? $ramos_modificado->cantidad : $det_esp_emp->cantidad);
+        }
 
         return $ramos;
     }

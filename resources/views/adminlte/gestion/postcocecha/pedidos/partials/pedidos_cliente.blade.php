@@ -88,13 +88,14 @@
                             </td>
                         @endif
                         @php
-                            $ramos += $det_esp->cantidad * $esp_emp->cantidad * $det_ped->cantidad;
+                            $ramos_modificado = getRamosXCajaModificado($det_ped->id_detalle_pedido,$det_esp->id_detalle_especificacionempaque);
+                            $ramos += (isset($ramos_modificado) ? $ramos_modificado->cantidad : $det_esp->cantidad)
                         @endphp
                         <td class="text-center" style="border-color: #9d9d9d">
-                            {{$det_esp->cantidad * $esp_emp->cantidad * $det_ped->cantidad}}
+                            {{(isset($ramos_modificado) ? $ramos_modificado->cantidad : $det_esp->cantidad) * $esp_emp->cantidad * $det_ped->cantidad}}
                         </td>
                         <td class="text-center" style="border-color: #9d9d9d">
-                            {{$det_esp->cantidad}}
+                            {{(isset($ramos_modificado) ? $ramos_modificado->cantidad : $det_esp->cantidad)}}
                         </td>
                         @if($pos_det_esp == 0 && $pos_emp == 0 && $pos_det == 0)
                             @php

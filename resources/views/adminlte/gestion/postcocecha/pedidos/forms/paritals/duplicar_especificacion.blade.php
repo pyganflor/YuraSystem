@@ -53,8 +53,16 @@
                            value="{{$det_esp_emp->empaque_p->nombre}}" class="input_presentacion_{{$cant_esp+1}}">
                 </td>
                 <td  style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;" class="text-center ramos_x_caja_{{$cant_esp+1}} ramos_x_caja_{{$cant_esp+1}}_{{$b}}">
-                    <span>{{$det_esp_emp->cantidad}}</span>
-                    <input type="hidden" class="td_ramos_x_caja_{{$cant_esp+1}} input_ramos_x_caja_{{$cant_esp+1}}_{{$b}}" value="{{$det_esp_emp->cantidad}}">
+                    <input type="number" min="0" id="ramos_x_caja_{{$cant_esp+1}}_{{$b}}"
+                           value="{{$det_esp_emp->cantidad}}" style="width: 60px;text-align: center;border:none"
+                           onchange="calcular_precio_pedido()" onkeyup="calcular_precio_pedido()"
+                           class="input_ramos_x_caja_{{$cant_esp+1}} input_ramos_x_caja_{{$cant_esp+1}}_{{$b}}">
+                    <input type="hidden" id="id_det_esp_{{$cant_esp+1}}_{{$b}}" class="id_det_esp_{{$cant_esp+1}}_{{$b}} id_det_esp_{{$cant_esp+1}}"
+                           value="{{$det_esp_emp->id_detalle_especificacionempaque}}">
+                    <input type="hidden" class="td_ramos_x_caja_{{$cant_esp+1}} td_ramos_x_caja_{{$cant_esp+1}}_{{$b}}"
+                           value="{{$det_esp_emp->cantidad}}">
+                    {{--<span>{{$det_esp_emp->cantidad}}</span>
+                    <input type="hidden" class="td_ramos_x_caja_{{$cant_esp+1}} input_ramos_x_caja_{{$cant_esp+1}}_{{$b}}" value="{{$det_esp_emp->cantidad}}">--}}
                 </td>
                 <td style="border-color: #9d9d9d;padding: 0px;vertical-align: middle;width:40px"
                     class="{{$empaque !=="T" ? "hide" : "" }} td_tallos_x_malla td_tallos_x_malla_{{$cant_esp+1}} td_tallos_x_malla_{{$cant_esp+1}}_{{$b}}">

@@ -154,15 +154,17 @@
                                 @foreach($pedido->detalles as $x => $det_ped)
                                     @php
                                         $precio = explode("|", $det_ped->precio);
-                                         $dp = getDetallePedido($det_ped->id_detalle_pedido);
+                                         //$dp = getDetallePedido($det_ped->id_detalle_pedido);
                                     @endphp
                                     @foreach($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $m => $esp_emp)
                                         @foreach ($esp_emp->detalles as $n => $det_esp_emp)
                                             @php
+
                                                 if($esp_emp->especificacion->tipo != "O"){
-                                                 $total_ramos += number_format(($det_ped->cantidad*$esp_emp->cantidad*$det_esp_emp->cantidad),2,".","");
+                                                    $ramos_modificado = getRamosXCajaModificado($det_ped->id_detalle_pedido,$det_esp_emp->id_detalle_especificacionempaque);
+                                                    $total_ramos += number_format(($det_ped->cantidad*$esp_emp->cantidad*(isset($ramos_modificado) ? $ramos_modificado->cantidad : $det_esp_emp->cantidad)),2,".","");
                                                 }else{
-                                                   $total_ramos += $det_ped->cantidad;
+                                                    $total_ramos += $det_ped->cantidad;
                                                 }
                                                 $peso_neto += (int)$det_esp_emp->clasificacion_ramo->nombre * number_format(($det_ped->cantidad*$det_esp_emp->cantidad),2,".","");
                                                 $peso_caja += isset(explode("|",$det_esp_emp->especificacion_empaque->empaque->nombre)[2]) ? explode("|",$det_esp_emp->especificacion_empaque->empaque->nombre)[2] : 0;
@@ -175,7 +177,8 @@
                                     @foreach($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $m => $esp_emp)
                                         @foreach ($esp_emp->detalles as $n => $det_esp_emp)
                                             @php
-                                                $total_ramos += number_format(($det_ped->cantidad*$esp_emp->cantidad*$det_esp_emp->cantidad),2,".","");
+                                                $ramos_modificado = getRamosXCajaModificado($det_ped->id_detalle_pedido,$det_esp_emp->id_detalle_especificacionempaque);
+                                                $total_ramos += number_format(($det_ped->cantidad*$esp_emp->cantidad*(isset($ramos_modificado) ? $ramos_modificado->cantidad : $det_esp_emp->cantidad)),2,".","");
                                                 $peso_neto += (int)$det_esp_emp->clasificacion_ramo->nombre * number_format(($det_ped->cantidad*$det_esp_emp->cantidad),2,".","");
                                                 $peso_caja += isset(explode("|",$det_esp_emp->especificacion_empaque->empaque->nombre)[2]) ? (explode("|",$det_esp_emp->especificacion_empaque->empaque->nombre)[2]*$det_ped->cantidad) : 0;
                                             @endphp
@@ -258,6 +261,7 @@
             @foreach($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $m => $esp_emp)
                 @foreach ($esp_emp->detalles as $n => $det_esp_emp)
                     @php
+                        $ramos_modificado = getRamosXCajaModificado($det_ped->id_detalle_pedido,$det_esp_emp->id_detalle_especificacionempaque);
                         if($esp_emp->especificacion->tipo != "O"){
                             $total_tallos += number_format(($det_ped->cantidad*$esp_emp->cantidad*$det_esp_emp->cantidad*$det_esp_emp->tallos_x_ramos),2,".","");
                         }else{
@@ -296,10 +300,10 @@
                                 @endphp
                             </td>
                         @endif
-                            <td style="font-size:11px;vertical-align:middle;border:1px solid;padding-left: 5px"> {{$det_esp_emp->cantidad}}</td>
+                            <td style="font-size:11px;vertical-align:middle;border:1px solid;padding-left: 5px"> {{isset($ramos_modificado) ? $ramos_modificado->cantidad :$det_esp_emp->cantidad}}</td>
                             <td style="font-size:11px;vertical-align:middle;border:1px solid;padding-left: 5px">
                                 @if($esp_emp->especificacion->tipo != "O")
-                                    {{number_format(($det_ped->cantidad*$det_esp_emp->cantidad),2,".","")}}
+                                    {{number_format(($det_ped->cantidad*(isset($ramos_modificado) ? $ramos_modificado->cantidad :$det_esp_emp->cantidad)),2,".","")}}
                                 @else
                                     {{number_format(($det_ped->total_tallos()),2,".","")}}
                                 @endif
@@ -322,7 +326,7 @@
                         <td style="font-size:11px;border:1px solid;padding-left: 5px"> {{"$".number_format(explode(";", $precio[$i])[0],2,".","")}} </td>
                         <td style="font-size:11px;border:1px solid;padding-left: 5px">
                             @if($esp_emp->especificacion->tipo != "O")
-                                {{"$".number_format(($det_esp_emp->cantidad * ((float)explode(";", $precio[$i])[0]) * $esp_emp->cantidad * $det_ped->cantidad),2,".","")}}
+                                {{"$".number_format(((isset($ramos_modificado) ? $ramos_modificado->cantidad :$det_esp_emp->cantidad) * ((float)explode(";", $precio[$i])[0]) * $esp_emp->cantidad * $det_ped->cantidad),2,".","")}}
                             @else
                                 {{number_format(($det_ped->total_tallos()*(float)explode(";", $precio[$i])[0]),2,".","")}}
                             @endif
@@ -330,7 +334,7 @@
                     </tr>
                     @php
                         if($esp_emp->especificacion->tipo != "O"){
-                            $precio_total_sin_impuestos += ($det_esp_emp->cantidad * (float)explode(";", $precio[$i])[0] * $esp_emp->cantidad * $det_ped->cantidad);
+                            $precio_total_sin_impuestos += ((isset($ramos_modificado) ? $ramos_modificado->cantidad :$det_esp_emp->cantidad) * (float)explode(";", $precio[$i])[0] * $esp_emp->cantidad * $det_ped->cantidad);
                         }else{
                             $precio_total_sin_impuestos += $det_ped->total_tallos()*(float)explode(";", $precio[$i])[0];
                         }
@@ -345,8 +349,8 @@
             @foreach($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $m => $esp_emp)
                 @php
                     foreach($esp_emp->detalles as $det_esp_emp)
-                        $total_tallos += number_format(($det_ped->cantidad*$esp_emp->cantidad*$det_esp_emp->cantidad*$det_esp_emp->tallos_x_ramos),2,".","");
-
+                        $ramos_modificado = getRamosXCajaModificado($det_ped->id_detalle_pedido,$det_esp_emp->id_detalle_especificacionempaque);
+                        $total_tallos += number_format(($det_ped->cantidad*$esp_emp->cantidad*(isset($ramos_modificado) ? $ramos_modificado->cantidad :$det_esp_emp->cantidad)*$det_esp_emp->tallos_x_ramos),2,".","");
                         $full_equivalente_real += explode("|",$esp_emp->empaque->nombre)[1]*$det_ped->cantidad;
                         switch (explode("|",$esp_emp->empaque->nombre)[1]) {
                             case '1':
@@ -373,7 +377,11 @@
             @foreach($det_ped->coloraciones as $y => $coloracion)
                 @foreach($coloracion->marcaciones_coloraciones as $m_c)
                     @if($m_c->cantidad > 0)
-                        @if($coloracion->precio=="")
+                        @if($m_c->precio=!"")
+                            @php
+                                $precio =$m_c->precio;
+                            @endphp
+                        @elseif($coloracion->precio=="")
                             @foreach (explode("|", $det_ped->precio) as $p)
                                 @php
                                     if($m_c->id_detalle_especificacionempaque == explode(";",$p)[1])

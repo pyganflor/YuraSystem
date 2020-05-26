@@ -28,8 +28,9 @@
                     $rXc = 0;
                     $description = "";
                     foreach ($esp_emp->detalles as $n => $det_esp_emp){
+                        $ramos_modificado = getRamosXCajaModificado($det_ped->id_detalle_pedido,$det_esp_emp->id_detalle_especificacionempaque);
                         $description .= substr($det_esp_emp->variedad->planta->nombre,0,3)." ".$det_esp_emp->variedad->siglas." ". $det_esp_emp->clasificacion_ramo->nombre.", ";
-                        $rXc += $det_esp_emp->cantidad;
+                        $rXc += (isset($ramos_modificado) ? $ramos_modificado->cantidad : $det_esp_emp->cantidad);
                     }
                 @endphp
                 <tr>
@@ -53,7 +54,9 @@
                 @foreach($coloracion->marcaciones_coloraciones as $m_c)
                     @php
                         if($m_c->cantidad > 0){
-                            if($coloracion->precio==""){
+                            if($m_c->precio!=''){
+                                $precio= $m_c->precio;
+                            }else if($coloracion->precio==""){
                                 foreach (explode("|", $det_ped->precio) as $p)
                                     if($m_c->id_detalle_especificacionempaque == explode(";",$p)[1])
                                             $precio = explode(";",$p)[0];
@@ -62,11 +65,11 @@
                                         if($m_c->id_detalle_especificacionempaque == explode(";",$p)[1])
                                             $precio = explode(";",$p)[0];
                             }
-                            $data_body_table[$m_c->detalle_especificacionempaque->variedad->planta->id_planta][$m_c->detalle_especificacionempaque->variedad->id_variedad][$precio][]=[
+                            $data_body_table[$m_c->detalle_especificacionempaque->variedad->planta->id_planta][$m_c->detalle_especificacionempaque->variedad->id_variedad][(String)$precio][]=[
                                 'ramos' => $m_c->cantidad,
-                                   'descripcion' =>substr($m_c->detalle_especificacionempaque->variedad->planta->nombre, 0, 3) .", ". $m_c->detalle_especificacionempaque->variedad->siglas." ".$m_c->detalle_especificacionempaque->clasificacion_ramo->nombre,
-                                   'piezas'=> number_format(($m_c->cantidad/$m_c->detalle_especificacionempaque->cantidad),2,".",""),
-                                   'color' => $m_c->coloracion->color->nombre
+                                'descripcion' =>substr($m_c->detalle_especificacionempaque->variedad->planta->nombre, 0, 3) .", ". $m_c->detalle_especificacionempaque->variedad->siglas." ".$m_c->detalle_especificacionempaque->clasificacion_ramo->nombre,
+                                'piezas'=> number_format(($m_c->cantidad/$m_c->detalle_especificacionempaque->cantidad),2,".",""),
+                                'color' => $m_c->coloracion->color->nombre
                             ];
                         }
                     @endphp

@@ -72,7 +72,7 @@
                     </div>
                         <div class="col-md-3" title="Usado para crear una factura ficticia">
                             <label for="id_configuracion_empresa" style="font-size: 11pt">
-                                <i class="fa fa-pencil"></i> Facturar manual:
+                                <i class="fa fa-pencil"></i> Factura asignada:
                             </label>
                             <div class="input-group">
                                 <span class="input-group-addon">

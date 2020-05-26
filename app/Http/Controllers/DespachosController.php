@@ -148,15 +148,15 @@ class DespachosController extends Controller
             'data_despacho.*.id_asist_comercial' => 'required',
             'data_despacho.*.id_camion' => 'required',
             'data_despacho.*.id_conductor' => 'required',
-            'data_despacho.*.id_cuarto_frio' => 'required',
-            'data_despacho.*.id_guardia_turno' => 'required',
-            'data_despacho.*.id_oficina_despacho' => 'required',
+           //'data_despacho.*.id_cuarto_frio' => 'required',
+            //'data_despacho.*.id_guardia_turno' => 'required',
+            //'data_despacho.*.id_oficina_despacho' => 'required',
             'data_despacho.*.id_transportista' => 'required',
             'data_despacho.*.n_placa' => 'required',
             'data_despacho.*.n_viaje' => 'required',
             'data_despacho.*.nombre_asist_comercial' => 'required',
-            'data_despacho.*.nombre_cuarto_frio' => 'required',
-            'data_despacho.*.nombre_guardia_turno' => 'required',
+            //'data_despacho.*.nombre_cuarto_frio' => 'required',
+            //'data_despacho.*.nombre_guardia_turno' => 'required',
             'data_despacho.*.nombre_oficina_despacho' => 'required',
             'data_despacho.*.nombre_transportista' => 'required',
             //'data_despacho.*.arr_sellos' => 'required|Array',
@@ -170,10 +170,10 @@ class DespachosController extends Controller
             'data_despacho.*.correo_oficina_despacho.required' => 'Debe escribir el correo de la persona de la oficina de despacho',
             'data_despacho.*.nombre_transportista.required' => 'Debe escribir el nombre del transportista',
             'data_despacho.*.nombre_oficina_despacho.required' => 'Debe escribir el nombre de la persona de la oficina de despacho',
-            'data_despacho.*.nombre_guardia_turno.required' => 'Debe escribir el nombre del guardia de turno',
-            'data_despacho.*.id_guardia_turno.required' => 'Debe escribir la identificación del guardia de turno',
-            'data_despacho.*.nombre_cuarto_frio.required' => 'Debe escribir el nombre de la persona del cuarto frio',
-            'data_despacho.*.id_cuarto_frio.required' => 'Debe escribir la identificación de la persona del cuarto frio',
+            //'data_despacho.*.nombre_guardia_turno.required' => 'Debe escribir el nombre del guardia de turno',
+            //'data_despacho.*.id_guardia_turno.required' => 'Debe escribir la identificación del guardia de turno',
+            //'data_despacho.*.nombre_cuarto_frio.required' => 'Debe escribir el nombre de la persona del cuarto frio',
+            //'data_despacho.*.id_cuarto_frio.required' => 'Debe escribir la identificación de la persona del cuarto frio',
             'data_despacho.*.id_conductor.required' => 'Debe seleccionar el conductor del camión',
             'data_despacho.*.id_transportista.required' => 'Debe seleccionar una agencia de transporte',
             'data_despacho.*.id_asist_comercial.required' => 'Debe escribir la identificación del asistente comercial'
@@ -460,9 +460,9 @@ class DespachosController extends Controller
                         foreach ($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $sp => $esp_emp) {
                             $piezas_totales_no_tinturados += ($esp_emp->cantidad * $det_ped->cantidad);
                             foreach ($esp_emp->detalles as $det_sp => $det_esp_emp) {
+                                $ramos_modificado = getRamosXCajaModificado($det_ped->id_detalle_pedido,$det_esp_emp->id_detalle_especificacionempaque);
                                 if ($sp == 0 && $det_sp == 0) {
                                     $inicio_b = $x + 1;
-
                                 }
                                 $final_b = getCantidadDetallesByEspecificacion($det_ped->cliente_especificacion->id_especificacion) + $inicio_b - 1;
                                 if ($det_sp == 0) {
@@ -485,19 +485,20 @@ class DespachosController extends Controller
                                 $objSheet1->getCell('E' . ($x + 1))->setValue(explode('|', $det_esp_emp->empaque_p->nombre)[0]);
                                 $objSheet1->getCell('F' . ($x + 1))->setValue($esp_emp->cantidad * $det_ped->cantidad);
                                 $objSheet1->getCell('G' . ($x + 1))->setValue(($esp_emp->cantidad * $det_ped->cantidad) * explode('|', $esp_emp->empaque->nombre)[1]);
-                                $ramos_totales_no_tinturados += $det_esp_emp->cantidad * $esp_emp->cantidad * $det_ped->cantidad;
-                                $ramos_totales_estandar_no_tinturados += convertToEstandar($det_esp_emp->cantidad * $esp_emp->cantidad * $det_ped->cantidad, $det_esp_emp->clasificacion_ramo->nombre);
+
+                                $ramos_totales_no_tinturados += (isset($ramos_modificado) ? $ramos_modificado->cantidad : $det_esp_emp->cantidad) * $esp_emp->cantidad * $det_ped->cantidad;
+                                $ramos_totales_estandar_no_tinturados += convertToEstandar((isset($ramos_modificado) ? $ramos_modificado->cantidad : $det_esp_emp->cantidad) * $esp_emp->cantidad * $det_ped->cantidad, $det_esp_emp->clasificacion_ramo->nombre);
                                 if (!in_array($det_esp_emp->id_variedad, $variedades_no_tinturados)) {
                                     $variedades_no_tinturados[] = $det_esp_emp->id_variedad;
                                 }
                                 $ramos_x_variedades_no_tinturados[] = [
                                     'id_variedad' => $det_esp_emp->id_variedad,
-                                    'cantidad' => convertToEstandar($det_esp_emp->cantidad * $esp_emp->cantidad * $det_ped->cantidad, $det_esp_emp->clasificacion_ramo->nombre),
+                                    'cantidad' => convertToEstandar((isset($ramos_modificado) ? $ramos_modificado->cantidad : $det_esp_emp->cantidad) * $esp_emp->cantidad * $det_ped->cantidad, $det_esp_emp->clasificacion_ramo->nombre),
                                 ];
 
                                 $objSheet1->getStyle('A' . ($x + 1) . ':L' . ($x + 1))->applyFromArray($BStyle);
-                                $objSheet1->getCell('H' . ($x + 1))->setValue($det_esp_emp->cantidad * $esp_emp->cantidad * $det_ped->cantidad);
-                                $objSheet1->getCell('I' . ($x + 1))->setValue($det_esp_emp->cantidad);
+                                $objSheet1->getCell('H' . ($x + 1))->setValue((isset($ramos_modificado) ? $ramos_modificado->cantidad : $det_esp_emp->cantidad) * $esp_emp->cantidad * $det_ped->cantidad);
+                                $objSheet1->getCell('I' . ($x + 1))->setValue((isset($ramos_modificado) ? $ramos_modificado->cantidad : $det_esp_emp->cantidad));
                                 $objSheet1->getCell('J' . ($x + 1))->setValue($p->detalles[0]->agencia_carga->nombre);
                                 $objSheet1->getCell('K' . ($x + 1))->setValue(isset($p->envios[0]->guia_madre) ? $p->envios[0]->guia_madre ." / ". $p->envios[0]->guia_hija : "");
                                 $objSheet1->getCell('L' . ($x + 1))->setValue(isset($p->envios[0]->dae) ? $p->envios[0]->dae : "");
@@ -1103,9 +1104,9 @@ class DespachosController extends Controller
                         foreach ($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $sp => $esp_emp) {
                             $piezas_totales_no_tinturados += ($esp_emp->cantidad * $det_ped->cantidad);
                             foreach ($esp_emp->detalles as $det_sp => $det_esp_emp) {
+                                $ramos_modificado = getRamosXCajaModificado($det_ped->id_detalle_pedido,$det_esp_emp->id_detalle_especificacionempaque);
                                 if ($sp == 0 && $det_sp == 0) {
                                     $inicio_b = $x + 1;
-
                                 }
                                 $final_b = getCantidadDetallesByEspecificacion($det_ped->cliente_especificacion->id_especificacion) + $inicio_b - 1;
                                 if ($det_sp == 0) {
@@ -1128,19 +1129,19 @@ class DespachosController extends Controller
                                 $objSheet1->getCell('Q' . ($x + 1))->setValue($p->detalles[0]->agencia_carga->nombre);
                                 $objSheet1->getCell('R' . ($x + 1))->setValue(isset($p->envios[0]->guia_madre) ? $p->envios[0]->guia_madre ." / ". $p->envios[0]->guia_hija : "");
                                 $objSheet1->getCell('S' . ($x + 1))->setValue(isset($p->envios[0]->dae) ? $p->envios[0]->dae : "");
-                                $ramos_totales_no_tinturados += $det_esp_emp->cantidad * $esp_emp->cantidad * $det_ped->cantidad;
-                                $ramos_totales_estandar_no_tinturados += convertToEstandar($det_esp_emp->cantidad * $esp_emp->cantidad * $det_ped->cantidad, $det_esp_emp->clasificacion_ramo->nombre);
+                                $ramos_totales_no_tinturados += (isset($ramos_modificado) ? $ramos_modificado->cantidad : $det_esp_emp->cantidad) * $esp_emp->cantidad * $det_ped->cantidad;
+                                $ramos_totales_estandar_no_tinturados += convertToEstandar((isset($ramos_modificado) ? $ramos_modificado->cantidad : $det_esp_emp->cantidad) * $esp_emp->cantidad * $det_ped->cantidad, $det_esp_emp->clasificacion_ramo->nombre);
                                 if (!in_array($det_esp_emp->id_variedad, $variedades_no_tinturados)) {
                                     $variedades_no_tinturados[] = $det_esp_emp->id_variedad;
                                 }
                                 $ramos_x_variedades_no_tinturados[] = [
                                     'id_variedad' => $det_esp_emp->id_variedad,
-                                    'cantidad' => convertToEstandar($det_esp_emp->cantidad * $esp_emp->cantidad * $det_ped->cantidad, $det_esp_emp->clasificacion_ramo->nombre),
+                                    'cantidad' => convertToEstandar((isset($ramos_modificado) ? $ramos_modificado->cantidad : $det_esp_emp->cantidad) * $esp_emp->cantidad * $det_ped->cantidad, $det_esp_emp->clasificacion_ramo->nombre),
                                 ];
                                 $objSheet1->getStyle('A' . ($x - 3) . ':S' . ($x + 1))->applyFromArray($style);
                                 $objSheet1->getStyle('A' . ($x - 3) . ':S' . ($x + 1))->applyFromArray($BStyle);
-                                $objSheet1->getCell('H' . ($x + 1))->setValue($det_esp_emp->cantidad * $esp_emp->cantidad * $det_ped->cantidad);
-                                $objSheet1->getCell('I' . ($x + 1))->setValue($det_esp_emp->cantidad);
+                                $objSheet1->getCell('H' . ($x + 1))->setValue((isset($ramos_modificado) ? $ramos_modificado->cantidad : $det_esp_emp->cantidad) * $esp_emp->cantidad * $det_ped->cantidad);
+                                $objSheet1->getCell('I' . ($x + 1))->setValue(isset($ramos_modificado) ? $ramos_modificado->cantidad : $det_esp_emp->cantidad);
 
                                 $x++;
                             }
