@@ -13,45 +13,54 @@
     <!-- Content Header (Page header) -->
     <section class="content-header">
         <h1>
-            Dashboard
-            <small>Regalías Semanas</small>
+            Reporte
+            <small class="text-color_yura">Regalías Semanas</small>
         </h1>
 
     </section>
 
     <section class="content">
-        <div class="box box-primary">
-            <div class="box-header with-border">
-                <div class="input-group">
-                    <span class="input-group-addon bg-gray">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group input-group">
+                    <span class="input-group-addon bg-yura_dark span-input-group-yura-fixed">
                         <i class="fa fa-fw fa-calendar-minus-o"></i> Desde
                     </span>
                     <input type="text" onkeypress="return isNumber(event)" id="desde" maxlength="4" minlength="4"
-                           value="{{getSemanaByDate(date('Y-m-d'))->codigo}}" class="form-control" required>
-                    <span class="input-group-addon bg-gray">
+                           value="{{getSemanaByDate(date('Y-m-d'))->codigo}}" class="form-control input-yura_default" required>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group input-group">
+                    <span class="input-group-addon bg-yura_dark span-input-group-yura-fixed">
                         <i class="fa fa-fw fa-calendar-plus-o"></i> Hasta
                     </span>
                     <input type="text" onkeypress="return isNumber(event)" id="hasta" maxlength="4" minlength="4"
-                           value="{{getSemanaByDate(date('Y-m-d'))->codigo}}" class="form-control" required>
-                    <span class="input-group-addon bg-gray">
+                           value="{{getSemanaByDate(date('Y-m-d'))->codigo}}" class="form-control input-yura_default" required>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group input-group">
+                    <span class="input-group-addon bg-yura_dark span-input-group-yura-fixed">
                         <i class="fa fa-fw fa-leaf"></i> Variedad
                     </span>
-                    <select class="form-control" id="variedad">
+                    <select class="form-control input-yura_default" id="variedad">
                         <option value="T">Todas</option>
                         @foreach(getVariedades() as $item)
                             <option value="{{$item->id_variedad}}">{{$item->nombre}}</option>
                         @endforeach
                     </select>
                     <span class="input-group-btn">
-                        <button type="button" class="btn btn-default" title="Buscar" onclick="buscar_listado()">
+                        <button type="button" class="btn btn-yura_dark" title="Buscar" onclick="buscar_listado()">
                             <i class="fa fa-fw fa-search"></i>
                         </button>
                     </span>
                 </div>
             </div>
-            <div class="box-body" id="div_listado">
+        </div>
 
-            </div>
+        <div id="div_listado">
+
         </div>
     </section>
 @endsection
