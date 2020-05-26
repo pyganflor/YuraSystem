@@ -798,8 +798,6 @@ class OrdenSemanalController extends Controller
                             }
                         }
 
-
-
                         $arreglo_variedades = [];
                         foreach ($det_ped_arreglo_esp_emp['arreglo_esp_emp'] as $pos_esp_emp => $esp_emp) {
                             /* ========= COLORACIONES ========== */

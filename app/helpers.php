@@ -2679,5 +2679,5 @@ function getRamosXCajaModificado($idDetPed,$idDetEspEmp){
     return DetalleEspecificacionEmpaqueRamosCaja::where([
        ['id_detalle_pedido',$idDetPed],
        ['id_detalle_especificacionempaque',$idDetEspEmp]
-    ])->select('cantidad')->first();
+    ])->orderBy('id_detalle_especificacionempaque_ramos_x_caja','desc')->select('cantidad')->first();
 }
