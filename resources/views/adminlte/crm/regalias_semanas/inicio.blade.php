@@ -27,7 +27,7 @@
                         <i class="fa fa-fw fa-calendar-minus-o"></i> Desde
                     </span>
                     <input type="number" onkeypress="return isNumber(event)" id="desde" maxlength="4" minlength="4"
-                           value="{{getSemanaByDate(date('Y-m-d'))->codigo}}" class="form-control input-yura_default" required>
+                           value="{{$semana_desde->codigo}}" class="form-control input-yura_default" required>
                 </div>
             </div>
             <div class="col-md-4">
@@ -36,7 +36,7 @@
                         <i class="fa fa-fw fa-calendar-plus-o"></i> Hasta
                     </span>
                     <input type="number" onkeypress="return isNumber(event)" id="hasta" maxlength="4" minlength="4"
-                           value="{{getSemanaByDate(date('Y-m-d'))->codigo}}" class="form-control input-yura_default" required>
+                           value="{{$semana_actual->codigo}}" class="form-control input-yura_default" required>
                 </div>
             </div>
             <div class="col-md-4">

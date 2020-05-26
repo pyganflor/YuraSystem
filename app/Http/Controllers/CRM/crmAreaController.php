@@ -443,9 +443,13 @@ class crmAreaController extends Controller
     /* ===================== REGALIAS SEMANAS ===================== */
     public function regalias_semanas(Request $request)
     {
+        $semana_actual = getSemanaByDate(date('Y-m-d'));
+        $semana_desde = getSemanaByDate(opDiasFecha('-', 28, date('Y-m-d')));
         return view('adminlte.crm.regalias_semanas.inicio', [
             'url' => $request->getRequestUri(),
             'submenu' => Submenu::Where('url', '=', substr($request->getRequestUri(), 1))->get()[0],
+            'semana_actual' => $semana_actual,
+            'semana_desde' => $semana_desde,
         ]);
     }
 
