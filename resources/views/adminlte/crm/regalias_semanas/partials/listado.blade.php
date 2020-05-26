@@ -7,32 +7,32 @@
             @php
                 $total_variedad = [];
             @endphp
-            <div class="panel box box-primary">
+            <div class="panel box box-success">
                 <div class="box-header with-border">
                     <h4 class="box-title">
                         <a data-toggle="collapse" data-parent="#accordion" href="#collapse{{$variedad['variedad']->id_variedad}}"
                            aria-expanded="false" class="collapsed"
-                           style="color: {{$variedad['variedad']->color}}">
+                           style="">
                             {{$variedad['variedad']->planta->nombre}} - {{$variedad['variedad']->nombre}}
                         </a>
                     </h4>
                 </div>
                 <div id="collapse{{$variedad['variedad']->id_variedad}}" class="panel-collapse collapse">
                     <div class="box-body" style="overflow-x: scroll">
-                        <table class="table-striped table-bordered" width="100%" style="border: 2px solid #9d9d9d"
+                        <table class="table-striped table-bordered" width="100%" style="border: 1px solid #9d9d9d"
                                id="table_variedad_{{$variedad['variedad']->id_variedad}}">
                             <thead>
                             <tr>
-                                <th class="text-left table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
-                                    style="border-color: #9d9d9d">
+                                <th class="text-left background-color_yura"
+                                    style="border-color: #9d9d9d; color: white">
                                     Módulo
                                 </th>
-                                <th class="text-left table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
-                                    style="border-color: #9d9d9d">
+                                <th class="text-left background-color_yura"
+                                    style="border-color: #9d9d9d; color: white">
                                     Fecha Inicio
                                 </th>
-                                <th class="text-left table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
-                                    style="border-color: #9d9d9d">
+                                <th class="text-left background-color_yura"
+                                    style="border-color: #9d9d9d; color: white">
                                     Semana Inicio
                                 </th>
                                 @foreach($semanas as $pos_sem => $semana)
@@ -71,8 +71,8 @@
                             @endforeach
                             </tbody>
                             <tr>
-                                <th class="text-left table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
-                                    style="border-color: #9d9d9d" colspan="3">
+                                <th class="text-left background-color_yura"
+                                    style="border-color: #9d9d9d; color: white" colspan="3">
                                     Total
                                 </th>
                                 @foreach($total_variedad as $valor)
@@ -97,7 +97,7 @@
         @php
             $totales_semanas = [];
         @endphp
-        <div class="panel box box-info">
+        <div class="panel box box-success">
             <div class="box-header with-border text-right">
                 <h4 class="box-title">
                     <a data-toggle="collapse" data-parent="#accordion" href="#collapseTablaTotal"
@@ -108,12 +108,12 @@
             </div>
             <div id="collapseTablaTotal" class="panel-collapse collapse">
                 <div class="box-body" style="overflow-x: scroll">
-                    <table class="table-striped table-bordered" width="100%" style="border: 2px solid #9d9d9d"
+                    <table class="table-striped table-bordered" width="100%" style="border: 1px solid #9d9d9d"
                            id="table_total">
                         <thead>
                         <tr>
-                            <th class="text-left table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
-                                style="border-color: #9d9d9d">
+                            <th class="text-left background-color_yura"
+                                style="border-color: #9d9d9d; color: white">
                                 Variedad
                             </th>
                             @foreach($semanas as $pos_sem => $semana)
@@ -125,8 +125,8 @@
                                     $totales_semanas[] = 0;
                                 @endphp
                             @endforeach
-                            <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
-                                style="border-color: #9d9d9d">
+                            <th class="text-center background-color_yura"
+                                style="border-color: #9d9d9d; color: white">
                                 Promedio
                             </th>
                         </tr>
@@ -156,8 +156,8 @@
                         @endforeach
                         </tbody>
                         <tr>
-                            <th class="text-left table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
-                                style="border-color: #9d9d9d">
+                            <th class="text-left background-color_yura"
+                                style="border-color: #9d9d9d; color: white">
                                 Total
                             </th>
                             @php
@@ -172,8 +172,8 @@
                                     $total_parcial += $valor;
                                 @endphp
                             @endforeach
-                            <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
-                                style="border-color: #9d9d9d">
+                            <th class="text-center background-color_yura"
+                                style="border-color: #9d9d9d; color: white">
                                 {{number_format(round(($total_parcial / 10000) / count($semanas), 2), 2)}}
                             </th>
                         </tr>
