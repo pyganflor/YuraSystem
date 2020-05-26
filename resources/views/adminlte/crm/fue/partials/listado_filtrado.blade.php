@@ -95,9 +95,10 @@
                                 foreach (getPedido($item->id_pedido)->detalles as $det_ped)
                                     foreach($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $m => $esp_emp)
                                         foreach ($esp_emp->detalles as $n => $det_esp_emp){
-                                            $total_ramos += number_format(($det_ped->cantidad*$esp_emp->cantidad*$det_esp_emp->cantidad),2,".","");
+                                            $ramos_modificado = getRamosXCajaModificado($det_ped->id_detalle_pedido,$det_esp_emp->id_detalle_especificacionempaque);
+                                            $total_ramos += number_format(($det_ped->cantidad*$esp_emp->cantidad*(isset($ramos_modificado) ? $ramos_modificado->cantidad :$det_esp_emp->cantidad)),2,".","");
                                             $full_equivalente_real += explode("|",$esp_emp->empaque->nombre)[1]*$det_ped->cantidad;
-                                            $total_tallos += number_format(($det_ped->cantidad*$esp_emp->cantidad*$det_esp_emp->cantidad*$det_esp_emp->tallos_x_ramos),2,".","");
+                                            $total_tallos += number_format(($det_ped->cantidad*$esp_emp->cantidad*(isset($ramos_modificado) ? $ramos_modificado->cantidad :$det_esp_emp->cantidad)*$det_esp_emp->tallos_x_ramos),2,".","");
                                         }
                         @endphp
                         {{$total_ramos}}
