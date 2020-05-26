@@ -193,7 +193,6 @@
                              @endforeach
                             @foreach($det_ped->coloraciones as $y => $coloracion)
                                 @foreach($coloracion->marcaciones_coloraciones as $m_c)
-                                    @dump($m_c->precio)
                                     @if($m_c->precio!="")
                                         @php
                                              $precio = $m_c->precio;
@@ -436,6 +435,7 @@
                             @endforeach
                         @endforeach
                         @php
+
                             $data_body_table[$m_c->detalle_especificacionempaque->variedad->planta->id_planta][$m_c->detalle_especificacionempaque->variedad->id_variedad][$precio][]=[
                                 'ramos' => $m_c->cantidad,
                                 'precio'=> $precio,
@@ -450,6 +450,7 @@
                 @endforeach
             @endforeach
         @endforeach
+        @dd($data_body_table)
         @foreach($data_body_table as $body_table)
             @foreach($body_table as $table)
                 @foreach($table as $t)
