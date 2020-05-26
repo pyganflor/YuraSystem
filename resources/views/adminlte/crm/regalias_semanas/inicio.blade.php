@@ -26,7 +26,7 @@
                     <span class="input-group-addon bg-yura_dark span-input-group-yura-fixed">
                         <i class="fa fa-fw fa-calendar-minus-o"></i> Desde
                     </span>
-                    <input type="text" onkeypress="return isNumber(event)" id="desde" maxlength="4" minlength="4"
+                    <input type="number" onkeypress="return isNumber(event)" id="desde" maxlength="4" minlength="4"
                            value="{{getSemanaByDate(date('Y-m-d'))->codigo}}" class="form-control input-yura_default" required>
                 </div>
             </div>
@@ -35,7 +35,7 @@
                     <span class="input-group-addon bg-yura_dark span-input-group-yura-fixed">
                         <i class="fa fa-fw fa-calendar-plus-o"></i> Hasta
                     </span>
-                    <input type="text" onkeypress="return isNumber(event)" id="hasta" maxlength="4" minlength="4"
+                    <input type="number" onkeypress="return isNumber(event)" id="hasta" maxlength="4" minlength="4"
                            value="{{getSemanaByDate(date('Y-m-d'))->codigo}}" class="form-control input-yura_default" required>
                 </div>
             </div>
