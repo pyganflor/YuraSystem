@@ -61,18 +61,17 @@
         </div>
     </div>
     <div class="col-md-2">
-        <div class="small-box bg-red">
-            <div class="inner">
-                <h3 class="info-box-number">
-                    {{number_format($ramos_m2_anno_mensual, 2)}}
-                </h3>
-            </div>
-            <div class="icon">
-                <i class="fa fa-fw fa-leaf"></i>
-            </div>
-            <a href="javascript:void(0)" class="small-box-footer" onclick="desglose_indicador('ramos_anno')">
-                Ramos/m<sup>2</sup>/año <i class="fa fa-arrow-circle-right"></i>
-            </a>
+        <div class="div_indicadores_md_2 border-radius_16" style="background-color: #FFFFFF; margin-bottom: 5px">
+            <legend class="text-center" style="font-size: 1.1em; margin-bottom: 5px;"><sup>-4 semanas</sup></legend>
+            <p>Ramos/m<sup>2</sup>/año
+                <strong class="pull-right">{{number_format($ramos_m2_anno_mensual, 2)}}</strong>
+            </p>
+            <legend style="margin-bottom: 5px;"></legend>
+            <p class="text-center" style="margin-bottom: 0px">
+                <a href="javascript:void(0)" class="text-center" onclick="desglose_indicador('ramos_anno')">
+                    <strong>Ver más <i class="fa fa-fw fa-arrow-circle-right"></i></strong>
+                </a>
+            </p>
         </div>
     </div>
 </div>
