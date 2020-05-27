@@ -376,6 +376,7 @@ class Pedido extends Model
                                 foreach ($marcaciones_coloraciones as $marc_col) {
                                     $ramos = $marc_col->cantidad;
                                     if ($marc_col->precio != '') {
+                                        $precio = $marc_col->precio;
                                         $r += $ramos * $marc_col->precio;
                                     } else if ($col->precio != '' && havePrecioByDetEsp($col->precio, $det_esp->id_detalle_especificacionempaque)) {
                                         $precio = getPrecioByDetEsp($col->precio, $det_esp->id_detalle_especificacionempaque);

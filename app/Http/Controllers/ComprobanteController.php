@@ -155,7 +155,9 @@ class ComprobanteController extends Controller
                         $i=0;
                         foreach($coloracion->marcaciones_coloraciones as $m_c){
                             if($m_c->cantidad >0){
-                                if($coloracion->precio==""){
+                                if($m_c->precio!=''){
+                                    $precio = $m_c->precio;
+                                } else if($coloracion->precio==""){
                                     foreach (explode("|", $det_ped->precio) as $p)
                                         if($m_c->id_detalle_especificacionempaque == explode(";",$p)[1])
                                             $precio = explode(";",$p)[0];
@@ -430,7 +432,9 @@ class ComprobanteController extends Controller
                         $i=0;
                         foreach($coloracion->marcaciones_coloraciones as $m_c){
                             if($m_c->cantidad > 0){
-                                if($coloracion->precio==""){
+                                if($m_c->precio !=''){
+                                    $precio = $m_c->precio;
+                                }else if($coloracion->precio==""){
                                     foreach (explode("|", $det_ped->precio) as $p)
                                         if($m_c->id_detalle_especificacionempaque == explode(";",$p)[1])
                                             $precio = explode(";",$p)[0];
@@ -637,7 +641,9 @@ class ComprobanteController extends Controller
                                         $i=0;
                                         foreach($coloracion->marcaciones_coloraciones as $m_c){
                                             if($m_c->cantidad > 0 ){
-                                                if($coloracion->precio==""){
+                                                if($m_c->precio !=''){
+                                                    $precio = $m_c->precio;
+                                                }else if($coloracion->precio==""){
                                                     foreach (explode("|", $det_ped->precio) as $p)
                                                         if($m_c->id_detalle_especificacionempaque == explode(";",$p)[1])
                                                             $precio = explode(";",$p)[0];
@@ -2167,7 +2173,9 @@ class ComprobanteController extends Controller
                     $i=0;
                     foreach($coloracion->marcaciones_coloraciones as $m_c){
                         if($m_c->cantidad >0){
-                            if($coloracion->precio==""){
+                            if($m_c->precio !=''){
+                                $precio = $m_c->precio;
+                            }else if($coloracion->precio==""){
                                 foreach (explode("|", $det_ped->precio) as $p)
                                     if($m_c->id_detalle_especificacionempaque == explode(";",$p)[1])
                                         $precio = explode(";",$p)[0];
@@ -2400,7 +2408,9 @@ class ComprobanteController extends Controller
                                 $i=0;
                                 foreach($coloracion->marcaciones_coloraciones as $m_c){
                                     if($m_c->cantidad > 0 ){
-                                        if($coloracion->precio==""){
+                                        if($m_c->precio !=''){
+                                            $precio = $m_c->precio;
+                                        }else if($coloracion->precio==""){
                                             foreach (explode("|", $det_ped->precio) as $p)
                                                 if($m_c->id_detalle_especificacionempaque == explode(";",$p)[1])
                                                     $precio = explode(";",$p)[0];
@@ -2536,7 +2546,9 @@ class ComprobanteController extends Controller
                         $i=0;
                         foreach($coloracion->marcaciones_coloraciones as $m_c){
                             if($m_c->cantidad >0){
-                                if($coloracion->precio==""){
+                                if($m_c->precio !=''){
+                                    $precio = $m_c->precio;
+                                }else if($coloracion->precio==""){
                                     foreach (explode("|", $det_ped->precio) as $p)
                                         if($m_c->id_detalle_especificacionempaque == explode(";",$p)[1])
                                             $precio = explode(";",$p)[0];
@@ -2685,7 +2697,9 @@ class ComprobanteController extends Controller
                                 $i=0;
                                 foreach($coloracion->marcaciones_coloraciones as $m_c){
                                     if($m_c->cantidad > 0 ){
-                                        if($coloracion->precio==""){
+                                        if($m_c->precio !=''){
+                                            $precio = $m_c->precio;
+                                        }else if($coloracion->precio==""){
                                             foreach (explode("|", $det_ped->precio) as $p)
                                                 if($m_c->id_detalle_especificacionempaque == explode(";",$p)[1])
                                                     $precio = explode(";",$p)[0];
