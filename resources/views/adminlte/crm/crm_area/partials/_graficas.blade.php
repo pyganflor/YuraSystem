@@ -1,10 +1,10 @@
 <div class="nav-tabs-custom" style="cursor: move;">
     <ul class="nav nav-pills nav-justified">
-        <li class="active"><a href="#area-chart" data-toggle="tab" aria-expanded="false">Área <sup>ha</sup></a></li>
-        <li class=""><a href="#ciclo-chart" data-toggle="tab" aria-expanded="true">Ciclo</a></li>
-        <li class=""><a href="#tallos-chart" data-toggle="tab" aria-expanded="true">Tallos/m<sup>2</sup></a></li>
-        <li class=""><a href="#ramos-chart" data-toggle="tab" aria-expanded="true">Ramos/m<sup>2</sup></a></li>
-        <li class=""><a href="#ramos_anno-chart" data-toggle="tab" aria-expanded="true">Ramos/m<sup>2</sup>/año</a></li>
+        <li class="active"><a href="#area-chart" class="border-radius_18" data-toggle="tab" aria-expanded="false">Área <sup>ha</sup></a></li>
+        <li class=""><a href="#ciclo-chart" class="border-radius_18" data-toggle="tab" aria-expanded="true">Ciclo</a></li>
+        <li class=""><a href="#tallos-chart" class="border-radius_18" data-toggle="tab" aria-expanded="true">Tallos/m<sup>2</sup></a></li>
+        <li class=""><a href="#ramos-chart" class="border-radius_18" data-toggle="tab" aria-expanded="true">Ramos/m<sup>2</sup></a></li>
+        <li class=""><a href="#ramos_anno-chart" class="border-radius_18" data-toggle="tab" aria-expanded="true">Ramos/m<sup>2</sup>/año</a></li>
     </ul>
     <div class="tab-content no-padding">
         <div class="chart tab-pane active" id="area-chart" style="position: relative">
