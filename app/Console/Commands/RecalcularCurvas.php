@@ -140,7 +140,7 @@ class RecalcularCurvas extends Command
             $ciclo = Ciclo::find($c->modelo);
             $sem_ini = $ciclo->semana();
             $num_sem = intval(difFechas($semana_actual->fecha_inicial, $sem_ini->fecha_inicial)->days / 7) + 1;
-            if ($ciclo->activo == 1 && $num_sem >= $ciclo->semana_poda_siembra - 2 && $ciclo->no_recalcular_curva == 0 && $ciclo->id_modulo == 160) {   // esta activo y es una semana minima 2 antes del inicio de cosecha
+            if ($ciclo->activo == 1 && $num_sem >= $ciclo->semana_poda_siembra - 2 && $ciclo->no_recalcular_curva == 0) {   // esta activo y es una semana minima 2 antes del inicio de cosecha
                 $modulo = $ciclo->modulo;
                 $getTallosProyectados = $ciclo->getTallosProyectados();
                 if ($num_sem < $ciclo->semana_poda_siembra) {   // se trata de una semana antes del inicio de cosecha
