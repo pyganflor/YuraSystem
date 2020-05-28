@@ -133,27 +133,24 @@
                                         @endif
                                     </td>
                                     <td class="text-center" style="border-color: #9d9d9d">
-                                        <input type="number" id="precio_det_esp_{{$det_esp->id_detalle_especificacionempaque}}"
-                                               style="width: 50px; background-color: #e9ecef" min="0"
+                                        <input id="precio_det_esp_{{$det_esp->id_detalle_especificacionempaque}}"
+                                               style="width: 50px; background-color: #e9ecef" min="0" class="text-center" type="number"
                                                name="precio_det_esp_{{$det_esp->id_detalle_especificacionempaque}}"
-                                               value="{{getPrecioByDetEsp($det_ped->precio, $det_esp->id_detalle_especificacionempaque)}}"
-                                               class="text-center">
+                                               value="{{getPrecioByDetEsp($det_ped->precio, $det_esp->id_detalle_especificacionempaque)}}">
                                     </td>
                                     @if($pos_det_esp == 0)
                                         <td class="text-center" style="border-color: #9d9d9d" rowspan="{{count($esp_emp->detalles)}}">
                                             <input type="number" id="marcaciones_{{$esp_emp->id_especificacion_empaque}}" onkeypress="return isNumber(event)"
                                                    name="marcaciones_{{$esp_emp->id_especificacion_empaque}}" readonly
                                                    value="{{count($det_ped->getColoracionesMarcacionesByEspEmp($esp_emp->id_especificacion_empaque)['marcaciones'])}}"
-                                                   required min="1" style="border: none" class="text-center"
-                                                   width="50px">
+                                                   required min="1" style="border: none" class="text-center" width="50px">
                                         </td>
                                         <td class="text-center" style="border-color: #9d9d9d" rowspan="{{count($esp_emp->detalles)}}">
                                             <input type="number" id="coloraciones_{{$esp_emp->id_especificacion_empaque}}"
                                                    onkeypress="return isNumber(event)" readonly
                                                    name="coloraciones_{{$esp_emp->id_especificacion_empaque}}"
                                                    value="{{count($det_ped->getColoracionesMarcacionesByEspEmp($esp_emp->id_especificacion_empaque)['coloraciones'])}}"
-                                                   required min="1" style="border: none" class="text-center"
-                                                   width="50px">
+                                                   required min="1" style="border: none" class="text-center" width="50px">
                                         </td>
                                     @endif
                                     @if($pos_esp_emp == 0 && $pos_det_esp == 0)
@@ -554,15 +551,15 @@
     }
 
     $(".select_coloracion").change(function($this){
-                console.log($this,$($this));
-                arrId = $this.target.name.split("_");
+        console.log($this,$($this));
+        arrId = $this.target.name.split("_");
 
-                fondo = $('#fondo_color_' +  $("select#"+$this.target.name).val()).val();
-                texto = $('#texto_color_' +  $("select#"+$this.target.name).val()).val();
+        fondo = $('#fondo_color_' +  $("select#"+$this.target.name).val()).val();
+        texto = $('#texto_color_' +  $("select#"+$this.target.name).val()).val();
 
-                $('.elemento_color_' + arrId[1] + '_' + arrId[2]).css('background-color', fondo);
-                $('.elemento_color_' + arrId[1] + '_' + arrId[2]).css('color', texto);
-            });
+        $('.elemento_color_' + arrId[1] + '_' + arrId[2]).css('background-color', fondo);
+        $('.elemento_color_' + arrId[1] + '_' + arrId[2]).css('color', texto);
+    });
 
     function cambia_input_r_x_c(input,idEspEmp,idDetEspEmp){
         r_x_c_esp_emp = 0;

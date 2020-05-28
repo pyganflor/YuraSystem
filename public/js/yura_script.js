@@ -1553,7 +1553,7 @@ function delete_coloracion(id_esp_emp) {
                     $(l).removeClass(arrId[3]).addClass('col_coloracion_' + id_esp_emp + '_' + k);
                     $.each($(l).find('input.' + arrId[3]), function (m, n) {
                         arr_id_input_colocarcion = n.id.split("_");
-                        console.log(arr_id_input_colocarcion);
+
                         id_input_coloracion = arr_id_input_colocarcion[0] + "_" + arr_id_input_colocarcion[1] + "_" + arr_id_input_colocarcion[2] + "_" + k + "_" + arr_id_input_colocarcion[4] + "_" + arr_id_input_colocarcion[5];
                         $(n).attr({
                             name: id_input_coloracion,
