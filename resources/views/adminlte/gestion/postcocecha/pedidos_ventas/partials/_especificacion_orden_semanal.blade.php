@@ -79,8 +79,9 @@
                                             {{explode('|',$esp_emp->empaque->nombre)[0]}}
                                         </td>
                                     @endif
-                                    <td class="text-center" style="border-color: #9d9d9d">
-                                        {{$det_esp_emp->cantidad}}
+                                    <td class="text-center add_esp_cant_det_esp_emp_{{$det_esp_emp->id_detalle_especificacionempaque}}_{{$esp_emp->id_especificacion_empaque}}"
+                                        style="border-color: #9d9d9d" >
+                                        <span>{{$det_esp_emp->cantidad}}</span>
                                         @php
                                             $ramos_x_caja += $det_esp_emp->cantidad;
                                         @endphp
@@ -215,7 +216,11 @@
                                             </td>
                                         @endif
                                         <td class="text-center" style="border-color: #9d9d9d">
-                                            {{$det_esp_emp->cantidad}}
+                                            <input type="number" min="1" value="{{$det_esp_emp->cantidad}}" style="width:55px;text-align:center"
+                                                   class="add_esp_input_r_x_c_{{$esp_emp->id_especificacion_empaque}}"
+                                                   onchange="add_esp_cambia_input_r_x_c(this,'{{$esp_emp->id_especificacion_empaque}}','{{$det_esp_emp->id_detalle_especificacionempaque}}')"
+                                                   onkeyup="add_esp_cambia_input_r_x_c(this,'{{$esp_emp->id_especificacion_empaque}}','{{$det_esp_emp->id_detalle_especificacionempaque}}')"
+                                                   id="add_esp_ramos_x_caja_det_esp_{{$det_esp_emp->id_detalle_especificacionempaque}}_{{$esp_emp->id_especificacion_empaque}}">
                                         </td>
                                         <td class="text-center" style="border-color: #9d9d9d">
                                             {{$det_esp_emp->empaque_p->nombre}}
@@ -289,7 +294,7 @@
                     html_columnas += '<td class="text-center" style="border-color: #9d9d9d">' +
                         '<input type="number" id="ramos_marcacion_color_' + f + '_' + c + '_' + id_esp + '" ' +
                         'name="ramos_marcacion_color_' + f + '_' + c + '_' + id_esp + '" onkeypress="return isNumber(event)"' +
-                        ' style="width: 60px" class="text-center input_ramos_marc_col_' + c + '_' + id_esp + '" ' +
+                        ' style="width: 60px" class="text-center input_ramos_marc_col_' + c + '_' + id_esp + ' text-center input_ramos_marc_col_'+ id_esp +'" ' +
                         'onchange="calcular_total_ramos_x_esp(' + c + ',' + f + ', ' + id_esp + ')">' +
                         '</td>';
                     titles_columnas += '<th class="text-center" style="border-color: #9d9d9d">' +
@@ -373,7 +378,7 @@
                         $('#td_presentacion_' + ids_det_esp[det].value).html() + '</span>' +
                         '<input type="number" id="ramos_marcacion_color_' + f + '_' + c + '_' + id_esp + '_det_' + ids_det_esp[det].value + '" ' +
                         'name="ramos_marcacion_color_' + f + '_' + c + '_' + id_esp + '_det_' + ids_det_esp[det].value + '" onkeypress="return isNumber(event)"' +
-                        ' style="width: 100%" class="text-center input_ramos_marc_col_' + c + '_' + id_esp + '" ' +
+                        ' style="width: 100%" class="text-center input_ramos_marc_col_' + c + '_' + id_esp + ' text-center input_ramos_marc_col_'+ id_esp +'" ' +
                         'onchange="calcular_total_ramos_x_esp(' + c + ',' + f + ', ' + id_esp + ', 1)" ' +
                         'value="">' +
                         '</div>' +
@@ -623,7 +628,8 @@
             z=0;
             nueva_esp = '';
             arreglo_esp = [];
-            if ($('#cantidad_cajas').val() > 0)
+            if ($('#cantidad_cajas').val() > 0){
+                // NUEVA ESPECIFICACION
                 if ($('#form_add_orden_semanal').valid() && $('#form_marcas_colores').valid()) {
                     col = $('#num_colores').val();
                     fil = $('#num_marcaciones').val();
@@ -692,9 +698,11 @@
                         }
                     } else {
                         alerta('<div class="alert alert-warning text-center">Faltan los datos de las marcaciones/colores</div>');
-                          z++;
+                        z++;
                     }
-                }   // NUEVA ESPECIFICACION
+                }
+            }
+
             ids_especificacion = $('.id_especificacion');
             for (esp = 0; esp < ids_especificacion.length; esp++) { // ESPECIFICACIONES
                 id_esp = ids_especificacion[esp].value;
@@ -704,24 +712,26 @@
                         ids_esp_emp = $('div#div_especificaciones_orden_semanal_update input.id_especificacion_empaque_' + id_esp);
                         for (esp_emp = 0; esp_emp < ids_esp_emp.length; esp_emp++) {    // ESPECIFICACIONES_EMPAQUE
                             id_esp_emp = ids_esp_emp[esp_emp].value;
-                            ids_det_esp = $('.id_det_esp_' + id_esp_emp);
+                            ids_det_esp = $('div#div_especificaciones_orden_semanal_update .id_det_esp_' + id_esp_emp);
 
                             num_marcaciones = $('#num_marcaciones_' + id_esp_emp).val();
-                            num_colores = $('#num_colores_' + id_esp_emp).val();
+                            num_colores = $('div#div_especificaciones_orden_semanal_update #num_colores_' + id_esp_emp).val();
 
                             if (ids_det_esp.length > 1) {   // mixta
                                 tipo = 1;
-                                if ($('#cant_piezas_esp_' + id_esp).val() != $('div#div_especificaciones_orden_semanal_update input#total_piezas_' + num_marcaciones + '_' + num_colores + '_' + id_esp_emp).val()) {
+                                if ($('#cant_piezas_esp_' + id_esp).val() != $('div#div_especificaciones_orden_semanal_update input#total_piezas_' + id_esp_emp).val()) {
                                     alerta('<div class="alert alert-warning text-center">Las cantidades de piezas distribuidas no coinciden con las pedidas</div>');
                                     $('#cant_piezas_esp_' + id_esp).addClass('error');
                                     return false;
                                 }
                             } else {    // sencilla
                                 tipo = 0;
-                                if ($('#cant_piezas_esp_' + id_esp).val() != $('div#div_especificaciones_orden_semanal_update input#total_piezas_' + num_marcaciones + '_' + num_colores + '_' + id_esp_emp).val()) {
+                                if ($('div#div_especificaciones_orden_semanal_update input#cant_piezas_esp_' + id_esp).val() != $('div#div_especificaciones_orden_semanal_update input#total_piezas_' + num_marcaciones + '_' + num_colores + '_' + id_esp_emp).val()) {
                                     alerta('<div class="alert alert-warning text-center">Las cantidades de piezas distribuidas no coinciden con las pedidas</div>');
-                                    $('#cant_piezas_esp_' + id_esp).addClass('error');
-                                   z++;
+                                    $('div#div_especificaciones_orden_semanal_update input#cant_piezas_esp_' + id_esp).addClass('error');
+                                    z++;
+                                    return false;
+
                                 }
                             }
                             arreglo_det_esp = [];
@@ -729,7 +739,8 @@
                                 id_det_esp = ids_det_esp[det_esp].value;
                                 arreglo_det_esp.push({
                                     id_det_esp: id_det_esp,
-                                    precio: $('div#div_especificaciones_orden_semanal_update #precio_det_' + id_det_esp + '_esp_' + id_esp_emp).val()
+                                    precio: $('div#div_especificaciones_orden_semanal_update #precio_det_' + id_det_esp + '_esp_' + id_esp_emp).val(),
+                                    ramos_modificados : $("input#add_esp_ramos_x_caja_det_esp_"+ id_det_esp + '_' + id_esp_emp).val()
                                 });
                             }
 
@@ -811,7 +822,7 @@
                     arreglo_esp: arreglo_esp
                 };
 
-                console.log(datos);
+                //console.log(datos);
                 modal_quest('modal_edit_pedido',
                     '<div class="alert alert-info text-center"><p>Esta seguro de agregar las especificaciones al pedido.?</p></div>', 'Agregar especificaciones', true, false, '40%', function () {
                         $.LoadingOverlay('show');
@@ -838,5 +849,28 @@
                 });
             }
         }
+    }
+
+    function add_esp_cambia_input_r_x_c(input,idEspEmp,idDetEspEmp){
+        r_x_c_esp_emp = 0;
+        $.each($("div#div_especificaciones_orden_semanal_update input.add_esp_input_r_x_c_"+idEspEmp),function (i,j) {
+            if(!isNaN(parseInt($(j).val())))
+                r_x_c_esp_emp+=parseInt($(j).val())
+        });
+        $("#ramos_x_caja_esp_"+idEspEmp).val(r_x_c_esp_emp)
+        $("#cantidad_ramos_esp_"+idEspEmp).val($(input).val())
+        $("td.add_esp_cant_det_esp_emp_"+idDetEspEmp+'_'+idEspEmp+' span').html($(input).val());
+
+        $.each($('.input_ramos_marc_col_'+idEspEmp),function(i,j){
+            id = j.id.split('_');
+            if($("input.add_esp_input_r_x_c_"+idEspEmp).length===1){
+                mixta= false
+            }else{
+                mixta= true
+            }
+            calcular_total_ramos_x_esp(id[3],id[4],idEspEmp,mixta)
+        });
+
+
     }
 </script>
