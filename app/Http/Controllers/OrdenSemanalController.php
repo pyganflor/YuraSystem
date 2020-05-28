@@ -105,6 +105,9 @@ class OrdenSemanalController extends Controller
                                     $det_pedido = DetallePedido::All()->last();
                                     bitacora('detalle_pedido', $det_pedido->id_detalle_pedido, 'I', 'Insercion de un nuevo detalle-pedido');
 
+
+
+
                                     /* =========== TABLA COLORACION ===========*/
                                     $arreglo_coloraciones = [];
                                     foreach ($request->nueva_esp['coloraciones'] as $c) {
@@ -302,7 +305,7 @@ class OrdenSemanalController extends Controller
                 $arreglo_coloraciones = [];
                 $arreglo_marc_col = [];
                 foreach ($request->arreglo_esp as $pos_esp => $esp) {
-                    $arreglo_det_esp = [];
+                    //$arreglo_det_esp = [];
                     $cli_ped_esp = ClientePedidoEspecificacion::where('id_cliente', $request->id_cliente)
                         ->where('id_especificacion', $esp['id_esp'])->first();
                     $det_pedido = new DetallePedido();
@@ -429,6 +432,27 @@ class OrdenSemanalController extends Controller
                                     ];
                                 }
                             }
+
+                            //GUARDAR LOS RAMOS X CAJAS MODIFICADOS EN EL PEDIDO DE CADA DETALLE_ESPECIFICACION_EMPAQUE
+                            foreach ($esp_emp['arreglo_det_esp'] as $z => $customRamosXCaja) {
+                                $objDetEspEmpRxC = new DetalleEspecificacionEmpaqueRamosCaja;
+                                $objDetEspEmpRxC->id_detalle_pedido = $det_pedido->id_detalle_pedido;
+                                $objDetEspEmpRxC->id_detalle_especificacionempaque = $customRamosXCaja['id_det_esp'];
+                                $objDetEspEmpRxC->cantidad = $customRamosXCaja['ramos_modificados'];
+                                $objDetEspEmpRxC->fecha_registro = now()->format('Y-m-d H:i:s.v');
+                                $objDetEspEmpRxC->save();
+                            }
+
+                            if (($z + 1) < count($esp_emp['arreglo_det_esp'])) {
+                                Pedido::destroy($pedido->id_pedido);
+                                return [
+                                    'id_pedido' => '',
+                                    'success' => false,
+                                    'mensaje' => '<div class="alert alert-danger text-center">' .
+                                        '<p> Hubo un error al guardar la información del pedido en el sistema, intente nuevamente, si el error persiste contacte al área de sistemas</p>'
+                                        . '</div>'
+                                ];
+                            }
                         }
                     } else {
                         foreach ($arreglo_det_pedidos as $item)
@@ -501,7 +525,7 @@ class OrdenSemanalController extends Controller
         $semana = getSemanaByDate($pedido->fecha_pedido);
         $codigo_semana = $semana != '' ? $semana->codigo : '';
         if ($codigo_semana != '')
-            //ProyeccionVentaSemanalUpdate::dispatch($codigo_semana, $codigo_semana, 0, $pedido->id_cliente)->onQueue('update_venta_semanal_real');
+            ProyeccionVentaSemanalUpdate::dispatch($codigo_semana, $codigo_semana, 0, $pedido->id_cliente)->onQueue('update_venta_semanal_real');
         return [
             'id_pedido' => $pedido->id_pedido,
             'success' => true,
@@ -549,29 +573,6 @@ class OrdenSemanalController extends Controller
                         $det_pedido = DetallePedido::All()->last();
                         bitacora('detalle_pedido', $det_pedido->id_detalle_pedido, 'I', 'Insercion de un nuevo detalle-pedido para el pedido '.$pedido->id_pedido);
                         array_push($arreglo_det_pedidos, $det_pedido);
-
-                        //GUARDAR LOS RAMOS X CAJAS MODIFICADOS EN EL PEDIDO DE CADA DETALLE_ESPECIFICACION_EMPAQUE
-                        foreach ($esp['arreglo_esp_emp'] as $pos_esp_emp => $esp_emp) {
-                            foreach ($esp_emp['arreglo_det_esp'] as $z => $customRamosXCaja) {
-                                $objDetEspEmpRxC = new DetalleEspecificacionEmpaqueRamosCaja;
-                                $objDetEspEmpRxC->id_detalle_pedido = $det_pedido->id_detalle_pedido;
-                                $objDetEspEmpRxC->id_detalle_especificacionempaque = $customRamosXCaja['id_det_esp'];
-                                $objDetEspEmpRxC->cantidad = $customRamosXCaja['ramos_modificados'];
-                                $objDetEspEmpRxC->fecha_registro = now()->format('Y-m-d H:i:s.v');
-                                $objDetEspEmpRxC->save();
-                            }
-
-                            if (($z + 1) < count($esp_emp['arreglo_det_esp'])) {
-                                Pedido::destroy($pedido->id_pedido);
-                                return [
-                                    'id_pedido' => '',
-                                    'success' => false,
-                                    'mensaje' => '<div class="alert alert-danger text-center">' .
-                                        '<p> Hubo un error al guardar la información del pedido en el sistema, intente nuevamente, si el error persiste contacte al área de sistemas</p>'
-                                        . '</div>'
-                                ];
-                            }
-                        }
 
                         foreach ($esp['arreglo_esp_emp'] as $esp_emp) {
                             /* =========== TABLA COLORACION ===========*/
@@ -677,6 +678,28 @@ class OrdenSemanalController extends Controller
                                     ];
                                 }
                             }
+
+                            //GUARDAR LOS RAMOS X CAJAS MODIFICADOS EN EL PEDIDO DE CADA DETALLE_ESPECIFICACION_EMPAQUE
+                            foreach ($esp_emp['arreglo_det_esp'] as $z => $customRamosXCaja) {
+                                $objDetEspEmpRxC = new DetalleEspecificacionEmpaqueRamosCaja;
+                                $objDetEspEmpRxC->id_detalle_pedido = $det_pedido->id_detalle_pedido;
+                                $objDetEspEmpRxC->id_detalle_especificacionempaque = $customRamosXCaja['id_det_esp'];
+                                $objDetEspEmpRxC->cantidad = $customRamosXCaja['ramos_modificados'];
+                                $objDetEspEmpRxC->fecha_registro = now()->format('Y-m-d H:i:s.v');
+                                $objDetEspEmpRxC->save();
+                            }
+
+                            if (($z + 1) < count($esp_emp['arreglo_det_esp'])) {
+                                Pedido::destroy($pedido->id_pedido);
+                                return [
+                                    'id_pedido' => '',
+                                    'success' => false,
+                                    'mensaje' => '<div class="alert alert-danger text-center">' .
+                                        '<p> Hubo un error al guardar la información del pedido en el sistema, intente nuevamente, si el error persiste contacte al área de sistemas</p>'
+                                        . '</div>'
+                                ];
+                            }
+
                         }
                     } else {
                         foreach ($arreglo_det_pedidos as $item)
