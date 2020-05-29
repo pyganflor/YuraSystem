@@ -211,8 +211,10 @@
                         @if($det_ped->cliente_especificacion->especificacion->id_especificacion != $anterior)
                             <td style="border-color: #9d9d9d; padding: 0px; vertical-align: middle; width: 100px; "
                                 class="text-center" rowspan="{{getCantidadDetallesByEspecificacion($det_ped->cliente_especificacion->especificacion->id_especificacion)}}">
-                                <input disabled type="number" min="0" id="cantidad_piezas_{{($x+1)}}" style="border: none" onchange="calcular_precio_pedido(this)"
-                                       name="cantidad_piezas_{{$det_ped->cliente_especificacion->especificacion->id_especificacion}}" class="text-center form-control cantidad_{{($x+1)}} input_cantidad" value="{{$det_ped->cantidad}}">
+                                <input disabled type="number" min="0" id="cantidad_piezas_{{($x+1)}}" style="border: none"
+                                       onchange="calcular_precio_pedido(this)"
+                                       name="cantidad_piezas_{{$det_ped->cliente_especificacion->especificacion->id_especificacion}}"
+                                       class="text-center form-control cantidad_{{($x+1)}} input_cantidad" value="{{$det_ped->cantidad}}">
                                 @if($x ==0)
                                     <input type="hidden" id="cant_esp" value="">
                                     <input type="hidden" id="cant_esp_fijas" value="">

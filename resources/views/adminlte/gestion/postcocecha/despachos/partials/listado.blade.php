@@ -102,7 +102,7 @@
                     <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white">
                         FACTURADO POR:
                     </th>
-                    <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white;width:210px">
+                    <th class="text-center" style="border-color: #9d9d9d; background-color: #357CA5; color: white;width:220px">
                         OPCIONES
                     </th>
                 </tr>
@@ -398,7 +398,6 @@
                                                                     <i class="fa fa-cube"></i>
                                                                 </button>
                                                             @endif
-
                                                             @if(!isset($ped->envios[0]->comprobante) || (isset($ped->envios[0]->comprobante) && !$ped->envios[0]->comprobante->ficticio))
                                                                 <button onclick="facturar_pedido('{{$pedido->id_pedido}}')"
                                                                         class="btn btn-success btn-xs" title="Generar factura">

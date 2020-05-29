@@ -417,7 +417,31 @@
                     @endif
                 });
             });
+
+            $("#cambia_tinturado").removeClass('hide');
         });
+
+        function cambia_tipo_pedido(){ ///CAMBIA UN PEDIDO NORMAL A UN PEDIDO TINTURADO
+
+            texto="<div class='alert alert-warning text-center' style='margin:0'>Esta seguro de cambiar el pedido normal a uno tinturado.?</div>";
+
+            modal_quest('modal_cambia_tipo_pedido', texto, 'Cambiar pedido', true, false, '40%', function () {
+
+                $.LoadingOverlay('show');
+                datos = {
+                    _token: '{{csrf_token()}}',
+                    id_pedido : '{{$id_pedido}}'
+                };
+                post_jquery('pedidos/cambia_tipo_pedido', datos, function () {
+                    cerrar_modals()
+                    editar_pedido_tinturado('{{$id_pedido}}', 0)
+                });
+                $.LoadingOverlay('hide');
+
+            })
+
+
+        }
 
        /*data = {
             id_variedad : $(".input_variedad_"+id).val(),
