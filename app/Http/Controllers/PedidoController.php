@@ -23,6 +23,7 @@ use yura\Modelos\EspecificacionEmpaque;
 use yura\Modelos\Pais;
 use yura\Modelos\Pedido;
 use yura\Modelos\DetallePedido;
+use yura\Modelos\Coloracion;
 use yura\Modelos\Envio;
 use yura\Modelos\DetallePedidoDatoExportacion;
 use yura\Modelos\Empaque;
@@ -32,6 +33,8 @@ use DB;
 use Barryvdh\DomPDF\Facade as PDF;
 use yura\Modelos\ProductoYuraVenture;
 use yura\Http\Controllers\ComprobanteController;
+use yura\Modelos\Marcacion;
+use yura\Modelos\MarcacionColoracion;
 use yura\Modelos\Semana;
 
 class PedidoController extends Controller
@@ -104,7 +107,7 @@ class PedidoController extends Controller
     }
 
     public function store_pedidos(Request $request)
-    {   
+    {
         $valida = Validator::make($request->all(), [
             'arrDataPedido' => 'Array',
             'id_cliente' => 'required',
@@ -366,7 +369,7 @@ class PedidoController extends Controller
                     $objProductoYuraVenture->save();
                 }
             }
-            
+
         } else {
             $success = false;
             $errores = '';
@@ -845,6 +848,108 @@ class PedidoController extends Controller
             'anno' => $request->anno,
             'cliente' => Cliente::find($request->cliente),
         ]);
+    }
+
+    public function cambia_tipo_pedido(Request $request){
+
+        $pedido = getPedido($request->id_pedido);
+
+        foreach($pedido->detalles as $det_ped){
+            $dataMarcacionesColoraciones=[];
+            $especificacionEmpaque= $det_ped->cliente_especificacion->especificacion->especificacionesEmpaque;
+
+            foreach ($especificacionEmpaque as $x=> $esp_emp) {
+                $marcacion= new Marcacion;
+                $marcacion->ramos = $esp_emp->ramos_x_caja($det_ped->id_detalle_pedido)*$det_ped->cantidad;
+                $marcacion->id_detalle_pedido= $det_ped->id_detalle_pedido;
+                $marcacion->id_especificacion_empaque = $esp_emp->id_especificacion_empaque;
+                $marcacion->piezas = $det_ped->cantidad;
+                if($marcacion->save()){
+                    $modelMarcacion = Marcacion::all()->last();
+
+                    $coloracion = new Coloracion;
+                    $coloracion->id_color=6;
+                    $coloracion->id_especificacion_empaque = $esp_emp->id_especificacion_empaque;
+                    $coloracion->id_detalle_pedido = $det_ped->id_detalle_pedido;
+
+                    if($coloracion->save()){
+                        $modelColoracion = Coloracion::all()->last();
+                        foreach($esp_emp->detalles as $det_esp_emp){
+                            $ramos_modificado = getRamosXCajaModificado($det_ped->id_detalle_pedido,$det_esp_emp->id_detalle_especificacionempaque);
+                            $dataMarcacionesColoraciones[$modelMarcacion->id_marcacion][]=[
+                                'id_marcacion' => $modelMarcacion->id_marcacion,
+                                'id_coloracion' => $modelColoracion->id_coloracion,
+                                'id_det_esp' => $det_esp_emp->id_detalle_especificacionempaque,
+                                'cantidad' => (isset($ramos_modificado) ? $ramos_modificado->cantidad : $det_esp_emp->cantidad) * $det_ped->cantidad,
+                                'r_x_c_modificados' =>(isset($ramos_modificado) ? $ramos_modificado->cantidad : $det_esp_emp->cantidad)
+                            ];
+                        }
+                    }
+                }
+            }
+
+            if(($x+1) == $especificacionEmpaque->count()){
+                $w=0;
+                $z=0;
+                foreach($dataMarcacionesColoraciones as $marcacionColoracion){
+                    foreach($marcacionColoracion as $marCol){
+                        $z++;
+                        $marcacionColoracion = new MarcacionColoracion;
+                        $marcacionColoracion->id_marcacion = $marCol['id_marcacion'];
+                        $marcacionColoracion->id_coloracion = $marCol['id_coloracion'];
+                        $marcacionColoracion->id_detalle_especificacionempaque = $marCol['id_det_esp'];
+                        $marcacionColoracion->cantidad = $marCol['cantidad'];
+                        if($marcacionColoracion->save()){
+                            $ramos_modificado = getRamosXCajaModificado($det_ped->id_detalle_pedido,$marCol['id_det_esp']);
+                            $detEspEmpRamocaja = new DetalleEspecificacionEmpaqueRamosCaja;
+                            $detEspEmpRamocaja->id_detalle_pedido = $det_ped->id_detalle_pedido;
+                            $detEspEmpRamocaja->id_detalle_especificacionempaque = $marCol['id_det_esp'];
+                            $detEspEmpRamocaja->cantidad =  (isset($ramos_modificado) ? $ramos_modificado->cantidad : $marCol['r_x_c_modificados']);
+                            if($detEspEmpRamocaja->save()){
+                                $w++;
+                            }else{
+                                break 2;
+                            };
+                        }
+                    }
+                }
+
+                if($w == $z){
+                    $pedido->update([
+                        "tipo_especificacion"=>"T",
+                        "descripcion" =>"Flor tinturada"
+                    ]);
+                    $success = true;
+                    $msg = '<div class="alert alert-success text-center">' .
+                            '<p> Se ha cambiado el pedido normal a pedido tinturado con éxito</p>'
+                        . '</div>';
+
+                }else{
+                    $marcacion = Marcacion::where('id_detalle_pedido',$det_ped->id_detalle_pedido);
+                    $marcacion->delete();
+                    $coloracion = Coloracion::where('id_detalle_pedido',$det_ped->id_detalle_pedido);
+                    $coloracion->delete();
+                    $success = false;
+                    $msg = '<div class="alert alert-danger text-center">' .
+                            '<p> Hubo un error al cambiar el tipo del pedido, intente nuevamente, si el error persiste contacte al área de sistemas</p>'
+                        . '</div>';
+                }
+
+            }else{
+                $marcacion = Marcacion::where('id_detalle_pedido',$det_ped->id_detalle_pedido);
+                $marcacion->delete();
+                $success = false;
+                $msg = '<div class="alert alert-danger text-center">' .
+                            '<p> Hubo un error al cambiar el tipo del pedido, intente nuevamente, si el error persiste contacte al área de sistemas</p>'
+                        . '</div>';
+            }
+        }
+
+        return [
+            'mensaje' => $msg,
+            'success' => $success
+        ];
+
     }
 
 }
