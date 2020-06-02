@@ -238,6 +238,7 @@
                 contactos : $("#contactos").is(':checked'),
                 packing_list : $("#packing_list").is(':checked')
             };
+
             post_jquery('comprobante/enviar_correo', datos, function () {
 
             });

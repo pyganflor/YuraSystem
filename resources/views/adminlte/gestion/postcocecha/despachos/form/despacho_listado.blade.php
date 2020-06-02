@@ -210,7 +210,7 @@
                            value="{{isset($datos_responsables->guardia_turno) ? $datos_responsables->guardia_turno : ""}}" required>
                 </td>
                 <td class="text-center" style="border-color: #9d9d9d;vertical-align: middle">
-                    <label>Asist Comercio Ext.</label>
+                    <label>Jefe de ventas</label>
                     <input type="text" id="nombre_asist_comercial" style="text-align: center" class="form-control input-sm" name="nombre_asist_comercial"
                            value="{{isset($datos_responsables->asist_comercial_ext) ? $datos_responsables->asist_comercial_ext : ""}}" required>
                 </td>
