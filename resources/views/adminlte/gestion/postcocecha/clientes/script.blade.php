@@ -116,7 +116,12 @@
                 almacen : $('#almacen').val(),
                 puerto_entrada : $("#puerto_entrada").val(),
                 tipo_credito : $("#tipo_credito").val(),
-                marca : $("#marca").val()
+                marca : $("#marca").val(),
+                factura_cliente : $("#factura_cliente").is(":checked"),
+                csv_etiqueta : $("#csv_etiqueta").is(":checked"),
+                packing_list : $("#packing_list").is(":checked"),
+                dist_cajas : $("#dist_cajas").is(":checked"),
+                factura_sri : $("#factura_sri").is(":checked")
             };
             post_jquery('{{url('clientes/store')}}', datos, function () {
                 cerrar_modals();
