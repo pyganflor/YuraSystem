@@ -123,7 +123,7 @@
                     @if($columna_causa)
                         <td style="border-color: #9d9d9d;" class="text-center"> {{!empty($item->causa) ? $item->causa : "-"}} </td>
                     @endif
-                    <td style="border-color: #9d9d9d;width:120px" class="text-center">
+                    <td style="border-color: #9d9d9d;width:150px" class="text-center">
                         @if($item->estado==5)
                             <a target="_blank" href="{{url('comprobante/comprobante_aprobado_sri',$item->clave_acceso)}}" class="btn btn-info btn-xs" title="Ver factura" >
                                 <i class="fa fa-eye" aria-hidden="true"></i>
@@ -207,7 +207,20 @@
                         @endif
                         {{--PARA QUE LA FACTURACION FUNCIONE CON EL VENTURE--}}
                         @if($item->estado != 6)
-                            <button class="btn btn-success btn-xs" title="Enviar correo" onclick="enviar_correo('{{$item->id_comprobante}}','{{isset($item->envio->pedido->tipo_especificacion) ? $item->envio->pedido->tipo_especificacion : null}}','{{$item->tipo_comprobante}}')">
+                            <button class="btn btn-success btn-xs" title="Enviar correo al cliente"
+                             onclick="enviar_correo(
+                                    '{{$item->id_comprobante}}',
+                                    '{{$item->envio->pedido->tipo_especificacion}}',
+                                    '{{$item->tipo_comprobante}}',1,
+                                    '{{$item->envio->pedido->cliente->fc}}',
+                                    '{{$item->envio->pedido->cliente->csv}}',
+                                    '{{$item->envio->pedido->cliente->le}}',
+                                    '{{$item->envio->pedido->cliente->dc}}',
+                                    {{$item->envio->pedido->cliente->fc_sri}})">
+                                <i class="fa fa-envelope-o" aria-hidden="true"></i>
+                            </button>
+                            <button class="btn btn-warning btn-xs" title="Enviar correo a la agencia de carga"
+                             onclick="enviar_correo('{{$item->id_comprobante}}','{{isset($item->envio->pedido->tipo_especificacion) ? $item->envio->pedido->tipo_especificacion : null}}','{{$item->tipo_comprobante}}',0)">
                                 <i class="fa fa-envelope-o" aria-hidden="true"></i>
                             </button>
                         @endif

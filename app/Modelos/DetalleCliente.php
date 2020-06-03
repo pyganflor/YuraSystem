@@ -44,7 +44,7 @@ class DetalleCliente extends Model
     }
 
     public function cliente(){
-        return $this->belongsTo('App\Modelos\Cliente','id_cliente');
+        return $this->belongsTo('yura\Modelos\Cliente','id_cliente');
     }
 
     public function tipo_impuesto(){

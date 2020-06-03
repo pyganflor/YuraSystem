@@ -14,7 +14,12 @@ class Cliente extends Model
 
     protected $fillable = [
         'estado',
-        'factor'
+        'factor',
+        'fc',
+        'csv',
+        'le',
+        'dc',
+        'fc_sri'
     ];
 
     public function detalles()
