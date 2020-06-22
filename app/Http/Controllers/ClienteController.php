@@ -95,6 +95,7 @@ class ClienteController extends Controller
     }
 
     public function store_clientes(Request $request){
+
         $valida = Validator::make($request->all(), [
             'nombre'              => 'required',
             'identificacion'      => 'required',
@@ -115,8 +116,13 @@ class ClienteController extends Controller
 
             if(empty($request->id_cliente)){ //Guardar
 
-                $objCliente          = new Cliente;
+                $objCliente = new Cliente;
                 $objCliente->estado  = 1;
+                $objCliente->fc = $request->factura_cliente== "true";
+                $objCliente->csv = $request->csv_etiqueta== "true";
+                $objCliente->le = $request->packing_list== "true";
+                $objCliente->dc = $request->dist_cajas== "true";
+                $objCliente->fc_sri = $request->factura_sri== "true";
 
                 if($objCliente->save()){
 
@@ -182,6 +188,15 @@ class ClienteController extends Controller
                 ];*/
 
             }else{ //Actualizar
+
+
+                $objCliente = Cliente::find($request->id_cliente);
+                $objCliente->fc = $request->factura_cliente== "true";
+                $objCliente->csv = $request->csv_etiqueta== "true";
+                $objCliente->le = $request->packing_list== "true";
+                $objCliente->dc = $request->dist_cajas== "true";
+                $objCliente->fc_sri = $request->factura_sri== "true";
+                $objCliente->save();
 
                 $detalleClienteActivo = DetalleCliente::where([
                     ['id_cliente',$request->id_cliente],

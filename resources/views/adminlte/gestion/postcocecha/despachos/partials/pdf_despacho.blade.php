@@ -141,9 +141,9 @@
         <tr>
             <td class="text-center" style="border:1px solid #9d9d9d;text-align: center;width: 170px;">Cliente</td>
             <td class="text-center" style="border:1px solid #9d9d9d;text-align: center">Agencia</td>
-            {{--<td class="text-center" style="border:1px solid #9d9d9d;text-align: center">Cajas Full</td>--}}
-            <td class="text-center" style="border:1px solid #9d9d9d;text-align: center">Piezas</td>
             <td class="text-center" style="border:1px solid #9d9d9d;text-align: center">Anden</td>
+            <td class="text-center" style="border:1px solid #9d9d9d;text-align: center">Cajas Fules</td>
+            <td class="text-center" style="border:1px solid #9d9d9d;text-align: center">Piezas</td>
             <td class="text-center" style="border:1px solid #9d9d9d;text-align: center">Guia</td>
             <td class="text-center" style="border:1px solid #9d9d9d;text-align: center">Temp</td>
             <td class="text-center" style="border:1px solid #9d9d9d;text-align: center">Persona que recibe</td>
@@ -168,23 +168,24 @@
                 <td class="text-center" style="border:1px solid #9d9d9d;vertical-align: middle">
                     {{getPedido($pedido->id_pedido)->detalles[0]->agencia_carga->nombre}}
                 </td>
-                {{--<td class="text-center" style="border:1px solid #9d9d9d;vertical-align: middle">
+                <td class="text-center" style="border:1px solid #9d9d9d;vertical-align: middle">
+                    {{getPedido($pedido->id_pedido)->envios[0]->almacen}}
+                </td>
+                <td class="text-center" style="border:1px solid #9d9d9d;vertical-align: middle;text-align:center">
                     @php $caja_full = 0; @endphp
                     @foreach(getPedido($pedido->id_pedido)->detalles as $det_ped)
                         @foreach($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $esp_emp)
                             @php $caja_full += ($esp_emp->cantidad * $det_ped->cantidad) * explode('|',$esp_emp->empaque->nombre)[1] @endphp
                         @endforeach
                     @endforeach
-                    @php $total_caja_full +=  $caja_full@endphp
+                    @php $total_caja_full +=  $caja_full @endphp
                     {{$caja_full}}
-                </td>--}}
-                <td class="text-center" style="border:1px solid #9d9d9d;vertical-align: middle">
+                </td>
+                <td class="text-center" style="border:1px solid #9d9d9d;vertical-align: middle;text-align:center">
                     {{$pedido['cantidad']}}
                     @php $piezas_totales += $pedido['cantidad']; @endphp
                 </td>
-                <td class="text-center" style="border:1px solid #9d9d9d;vertical-align: middle">
-                    {{getPedido($pedido->id_pedido)->envios[0]->almacen}}
-                </td>
+
                 <td class="text-center" style="border:1px solid #9d9d9d;vertical-align: middle">
                     {{ getPedido($pedido->id_pedido)->envios[0]->detalles[0]->id_aerolinea ==  ""
                          ? "No se ha asignado aerolínea"
@@ -200,10 +201,10 @@
             </tr>
         @endforeach
     <tr>
-        <td></td>
-        <td class="text-center" style="border:1px solid #9d9d9d;vertical-align: middle">Total:</td>
-        {{--<td class="text-center" style="border:1px solid #9d9d9d;vertical-align: middle"> {{$total_caja_full}}</td>--}}
-        <td class="text-center" style="border:1px solid #9d9d9d;vertical-align: middle"> {{$piezas_totales}}</td>
+        <td colspan="2"></td>
+        <td class="text-center" style="border:1px solid #9d9d9d;vertical-align: middle;text-align:center">Total:</td>
+        <td class="text-center" style="border:1px solid #9d9d9d;vertical-align: middle;text-align:center"> {{$total_caja_full}}</td>
+        <td class="text-center" style="border:1px solid #9d9d9d;vertical-align: middle;text-align:center"> {{$piezas_totales}}</td>
     </tr>
     <tr>
     </tr>
@@ -250,7 +251,7 @@
         <td class="text-center" style="vertical-align: middle">
             __________________________
             <br/>
-            Asist. Comercio. Ext
+            Jefe de ventas
             <br/>
             {{$data['despacho'][0]->asist_comercial_ext}}
             <br/>

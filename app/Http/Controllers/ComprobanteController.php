@@ -1674,7 +1674,7 @@ class ComprobanteController extends Controller
                                         'msg' => '<div class="alert alert-warning text-center">
                                                     <p>La presentación '.$m_c->detalle_especificacionempaque->variedad->planta->nombre.' '.$m_c->detalle_especificacionempaque->variedad->nombre.' '.
                                                         $m_c->detalle_especificacionempaque->clasificacion_ramo->nombre .' '.$m_c->detalle_especificacionempaque->clasificacion_ramo->unidad_medida->siglas. ', '.
-                                                        $m_c->detalle_especificacionempaque->tallos_x_ramos .' Tallos '. $m_c->detalle_especificacionempaque->longitud_ramo . $m_c->detalle_especificacionempaque->unidad_medida->siglas.' 
+                                                        $m_c->detalle_especificacionempaque->tallos_x_ramos .' Tallos '. $m_c->detalle_especificacionempaque->longitud_ramo . $m_c->detalle_especificacionempaque->unidad_medida->siglas.'
                                                         no ha sido vinculada con su código del Venture con '. $pedido->empresa->nombre.'
                                                     </p>
                                                  </div>',
@@ -1713,7 +1713,7 @@ class ComprobanteController extends Controller
     }
 
     public function enviar_correo(Request $request){
-
+       // dd($request->all());
         ini_set('max_execution_time', env('MAX_EXECUTION_TIME'));
         $comprobante = Comprobante::where('id_comprobante',$request->id_comprobante)->first();
         $img_clave_acceso = null;
@@ -1751,9 +1751,10 @@ class ComprobanteController extends Controller
                     ? $mail = $comprobante->envio->fatura_cliente_tercero->correo
                     : $mail = $comprobante->envio->pedido->cliente->detalle()->correo;
             }else if($comprobante->tipo_comprobante === "06"){
-                getComprobante($comprobanteRelacionado->id_comprobante_relacionado)->envio->fatura_cliente_tercero != null
-                    ? $mail = getComprobante($comprobanteRelacionado->id_comprobante_relacionado)->fatura_cliente_tercero->envio->correo
-                    : $mail = getComprobante($comprobanteRelacionado->id_comprobante_relacionado)->envio->pedido->cliente->detalle()->correo;
+                $getComprobante = getComprobante($comprobanteRelacionado->id_comprobante_relacionado);
+                $getComprobante->envio->fatura_cliente_tercero != null
+                    ? $mail = $getComprobante->fatura_cliente_tercero->envio->correo
+                    : $mail = $getComprobante->envio->pedido->cliente->detalle()->correo;
             }
             $correos['cliente'][] = $mail;
         }
@@ -1774,8 +1775,9 @@ class ComprobanteController extends Controller
                 $idCliente = $comprobante->envio->pedido->id_cliente;
                 $idAgenciaCarga = $comprobante->envio->pedido->detalles[0]->agencia_carga->id_agencia_carga;
             }else if($comprobante->tipo_comprobante === "06"){
-                $idCliente = getComprobante($comprobanteRelacionado->id_comprobante_relacionado)->envio->pedido->id_cliente;
-                $idAgenciaCarga = getComprobante($comprobanteRelacionado->id_comprobante_relacionado)->envio->pedido->detalles[0]->agencia_carga->id_agencia_carga;
+                $getComprobante = getComprobante($comprobanteRelacionado->id_comprobante_relacionado);
+                $idCliente = $getComprobante->envio->pedido->id_cliente;
+                $idAgenciaCarga = $getComprobante->envio->pedido->detalles[0]->agencia_carga->id_agencia_carga;
             }
 
             $clienteAgenciaCarga = ClienteAgenciaCarga::where([
@@ -1790,11 +1792,13 @@ class ComprobanteController extends Controller
         }
 
         if($comprobante->tipo_comprobante === "01"){
-            foreach ($comprobante->envio->pedido->cliente->detalle()->informacion_adicional_correo() as $correo)
-                $correos['cliente'][] = $correo->varchar;
+            if($request->cliente == "true")
+                foreach ($comprobante->envio->pedido->cliente->detalle()->informacion_adicional_correo() as $correo)
+                    $correos['cliente'][] = $correo->varchar;
         }else if($comprobante->tipo_comprobante === "06"){
-            foreach (getComprobante($comprobanteRelacionado->id_comprobante_relacionado)->envio->pedido->cliente->detalle()->informacion_adicional_correo() as $correo)
-                $correos['cliente'][] = $correo->varchar;
+            if($request->cliente == "true")
+                foreach (getComprobante($comprobanteRelacionado->id_comprobante_relacionado)->envio->pedido->cliente->detalle()->informacion_adicional_correo() as $correo)
+                    $correos['cliente'][] = $correo->varchar;
         }
 
         if($request->csv_etiqueta == "true"){
@@ -1892,9 +1896,9 @@ class ComprobanteController extends Controller
             PDF::loadView('adminlte.gestion.postcocecha.despachos.partials.pdf_packing_list', compact('pedido','vista_despacho','empresa','despacho','cliente'))->save(env('PDF_FACTURAS_TEMPORAL')."packing_list".$comprobante->secuencial.".pdf");
         }
 
-        //$correos[] = $comprobante->envio->pedido->empresa->correo;
-        $correoEmpresa = ConfiguracionEmpresa::where('estado', 1)->first()->correo;
-        $correos[] = "obrian@pyganflor.com"; // solo para pruebas, comentar en produccion
+        $correoEmpresa = $comprobante->envio->pedido->empresa->correo;
+        //$correoEmpresa = ConfiguracionEmpresa::where('estado', 1)->first()->correo;
+        //$correos[] = "obrian@pyganflor.com"; // solo para pruebas, comentar en produccion
 
         MailDocumentosElectronicos::dispatch($correos,$request->all(),$comprobante,$correoEmpresa)->onQueue('documentos_electronicos');
 
@@ -1919,9 +1923,23 @@ class ComprobanteController extends Controller
         if($request->packing_list === "true" && file_exists(env('PDF_FACTURAS_TEMPORAL')."packing_list".$comprobante->secuencial.".pdf"))
             unlink(env('PDF_FACTURAS_TEMPORAL')."packing_list".$comprobante->secuencial.".pdf");*/
 
+        //dd($correoEmpresa,$correos);
+        $c = '<ul class="list-unstyled"><li>'.$correoEmpresa.'</li>';
+        if(isset($correos['cliente']))
+            foreach($correos['cliente'] as $mails)
+                $c .= '<li>'.$mails.'</li>';
+
+        if(isset($correos['agencias']))
+            foreach($correos['agencias'] as $mails)
+                $c .= '<li>'.$mails.'</li>';
+
+        $c .= '</ul>';
+
         return[
             'mensaje' => '<div class="alert text-center  alert-success">' .
-                          '<p>Se han enviado los correos con éxito </p>'
+                          '<p>Se han enviado el mail con éxito a los correos:<br />
+                            '.$c.'
+                          </p>'
                     .'</div>',
             'success' => true,
         ];
@@ -2035,7 +2053,7 @@ class ComprobanteController extends Controller
                             '<p> El contenido del archivo '.$arhcivo.$comprobante->secuencial.'.xml no corresponde a la '.$documento.' N# '.$comprobante->secuencial.'</p>
                                 </div>';
                     }
-                    
+
                 }else{
                     $success = false;
                     $msg .= '<div class="alert alert-warning text-center">' .

@@ -86,6 +86,10 @@
                                             title="Eliminar duplicado" onclick='borrar_duplicado()'>
                                         <i class='fa fa-fw fa-trash'></i>
                                     </button>
+                                    <button type='button' class='btn btn-success hide' id="cambia_tinturado"
+                                            title="Cambiar a pedido tinturado" onclick='cambia_tipo_pedido()'>
+                                        <i class='fa fa-exchange'></i>
+                                    </button>
                                 </span>
                             </div>
 
@@ -186,4 +190,5 @@
             factura_ficticia.attr('disabled',true);
         }
     }
+
 </script>

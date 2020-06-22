@@ -1070,14 +1070,7 @@ function update_orden_tinturada(token) {
                         /* ========= PRECIOS x DETALLE ESPECIFICACION ========== */
 
                         arreglo_precios = [];
-                        //ramos_x_caja=[];
                         for (det = 0; det < ids_det_esp.length; det++) {
-                            //console.log('#precio_det_esp_' + ids_det_esp[det].value);
-
-                            /*arr_custom_ramos_x_caja.push({
-
-                            });*/
-                            console.log(ids_det_esp[det].value);
                             arreglo_precios.push({
                                 id_det_esp: ids_det_esp[det].value,
                                 precio: $(j).find('#precio_det_esp_' + ids_det_esp[det].value).val(),
@@ -1095,12 +1088,19 @@ function update_orden_tinturada(token) {
                         }
                         arreglo_marcaciones = [];
                         arreglo_coloraciones = [];
+                        console.log(fil);
                         for (f = 0; f < fil; f++) {
-                            if ($(j).find('#nombre_marcacion_' + f + '_' + ids_esp_emp[ee].value).val() != '') {
+                            console.log("entro en el for de fill");
+                            console.log($(j).find('#nombre_marcacion_' + f + '_' + ids_esp_emp[ee].value).val());
+                            //if ($(j).find('#nombre_marcacion_' + f + '_' + ids_esp_emp[ee].value).val() != '') {
+                                console.log("Entro en el siguiente if");
                                 colores = [];
+                                console.log(col);
                                 for (c = 0; c < col; c++) {
+                                    console.log("entro en el for de col");
                                     cant_x_det_esp = [];
                                     if (f == 0) {
+                                        console.log("f==0");
                                         /* =========== PRECIOS x COLORACION ========= */
                                         arreglo_precios_x_col = [];
                                         for (det = 0; det < ids_det_esp.length; det++) {
@@ -1131,11 +1131,11 @@ function update_orden_tinturada(token) {
                                     piezas: $(j).find('#total_piezas_marcacion_' + f + '_' + ids_esp_emp[ee].value).val(),
                                     colores: colores
                                 });
-                            } else {
-                                alerta('<div class="alert alert-warning text-center">Faltan datos (nombre de marcación) por ingresar en el Detalle del pedido ' + (i + 1) + '</div>');
-                                $(j).find('#nombre_marcacion_' + f + '_' + ids_esp_emp[ee].value).addClass('error');
-                                z++;
-                            }
+                            //} else {
+                                //alerta('<div class="alert alert-warning text-center">Faltan datos (nombre de marcación) por ingresar en el Detalle del pedido ' + (i + 1) + '</div>');
+                                //$(j).find('#nombre_marcacion_' + f + '_' + ids_esp_emp[ee].value).addClass('error');
+                                //z++;
+                            //}
                         }
                         arreglo_esp_emp.push({
                             id_esp_emp: ids_esp_emp[ee].value,
@@ -1553,7 +1553,7 @@ function delete_coloracion(id_esp_emp) {
                     $(l).removeClass(arrId[3]).addClass('col_coloracion_' + id_esp_emp + '_' + k);
                     $.each($(l).find('input.' + arrId[3]), function (m, n) {
                         arr_id_input_colocarcion = n.id.split("_");
-                        console.log(arr_id_input_colocarcion);
+
                         id_input_coloracion = arr_id_input_colocarcion[0] + "_" + arr_id_input_colocarcion[1] + "_" + arr_id_input_colocarcion[2] + "_" + k + "_" + arr_id_input_colocarcion[4] + "_" + arr_id_input_colocarcion[5];
                         $(n).attr({
                             name: id_input_coloracion,

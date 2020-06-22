@@ -40,17 +40,26 @@ class MailDocumentosElectronicos implements ShouldQueue
      */
     public function handle()
     {
-        $this->correos['cliente'][] = $this->correoEmpresa;
-        $this->correos['agencias'][] = $this->correoEmpresa;
-        if($this->request['cliente'] == "true" || isset($this->correos['cliente'][0])){
-            Mail::to($this->correos['cliente'][0])
-                ->cc($this->correos['cliente'])->send(new DocumentosElectronicosCliente($this->request,$this->comprobante,$this->correoEmpresa));
-        }
+        $correoEmpresa = $this->correoEmpresa;
+        //dump($this->correoEmpresa);
+        //$this->correos['agencias'][] = $this->correoEmpresa;
+        //$this->correos['cliente'][] = $this->correoEmpresa;
+        $mail = Mail::to($this->correoEmpresa);
+        $copia=[];
+        if($this->request['cliente'] == "true")
+            if(isset($this->correos['cliente']) && count($this->correos['cliente'])>0)
+            foreach($this->correos['cliente'] as $cliente)
+                $copia[]=$cliente;
 
-        if($this->request['agencia_carga'] == "true" || isset($this->correos['cliente'][0])){
-            Mail::to($this->correos['agencias'][0])
-                ->cc($this->correos['agencias'])->send(new DocumentosElectronicosAgenciaCarga($this->request,$this->comprobante,$this->correoEmpresa));
-        }
+        if($this->request['agencia_carga'] == "true")
+            if(isset($this->correos['agencias']) && count($this->correos['agencias'])>0)
+                foreach($this->correos['agencias'] as $agencia)
+                    $copia[]=$agencia;
+
+        if(count($copia)>0)
+            $mail->cc($copia);
+
+        $mail->send(new DocumentosElectronicosAgenciaCarga($this->request,$this->comprobante,$this->correoEmpresa));
 
         if($this->request['factura_sri'] == "true" && file_exists(env('PDF_FACTURAS_TEMPORAL')."fact_sri_".$this->comprobante->secuencial.'.pdf'))
             unlink(env('PDF_FACTURAS_TEMPORAL')."fact_sri_".$this->comprobante->secuencial.'.pdf');

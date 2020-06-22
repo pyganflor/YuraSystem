@@ -237,11 +237,17 @@ class FueController extends Controller
                 ->setRGB('CCFFCC');
 
             //--------------------------- LLENAR LA TABLA ---------------------------------------------
+            $tp=0;
+            $tr=0;
+            $ttll=0;
+            $tfull_eqv=0;
+            $tm=0;
             foreach ($datos as $x => $d) {
                 $total_piezas = 0;
                 $total_ramos = 0;
                 $total_tallos = 0;
                 $full_equivalente_real= 0;
+
                 foreach (getPedido($d->id_pedido)->detalles as $det_ped)
                     foreach($det_ped->cliente_especificacion->especificacion->especificacionesEmpaque as $m => $esp_emp)
                         foreach ($esp_emp->detalles as $n => $det_esp_emp){
@@ -250,7 +256,14 @@ class FueController extends Controller
                             $full_equivalente_real += explode("|",$esp_emp->empaque->nombre)[1]*$det_ped->cantidad;
                             $total_tallos += number_format(($det_ped->cantidad*$esp_emp->cantidad*(isset($ramos_modificado) ? $ramos_modificado->cantidad : $det_esp_emp->cantidad)*$det_esp_emp->tallos_x_ramos),2,".","");
                         }
-                foreach (getPedido($d->id_pedido)->detalles as $det_ped) $total_piezas += $det_ped->cantidad;
+                foreach (getPedido($d->id_pedido)->detalles as $det_ped)
+                    $total_piezas += $det_ped->cantidad;
+
+                $tp+=$total_piezas;
+                $tr+= $total_ramos;
+                $ttll+= $total_tallos;
+                $tfull_eqv+= $full_equivalente_real;
+                $tm+=$d->monto_total;
                 $objSheet->getCell('A' . (($x+1) + 3))->setValue(($x+1));
                 $objSheet->getCell('B' . (($x+1) + 3))->setValue($d->clave_acceso);
                 $objSheet->getCell('C' . (($x+1) + 3))->setValue($d->dae);
@@ -262,7 +275,11 @@ class FueController extends Controller
                 $objSheet->getCell('I' . (($x+1) + 3))->setValue($d->numero_comprobante);
                 $objSheet->getCell('J' . (($x+1) + 3))->setValue(\Carbon\Carbon::parse($d->fecha_pedido)->format('d/m/Y'));
                 $objSheet->getCell('K' . (($x+1) + 3))->setValue($d->manifiesto);
-                $objSheet->getCell('L' . (($x+1) + 3))->setValue(getAerolinea(getPedido($d->id_pedido)->envios[0]->detalles[0]->id_aerolinea)->nombre);
+                $objSheet->getCell('L' . (($x+1) + 3))->setValue(
+                    isset(getPedido($d->id_pedido)->envios[0]->detalles[0]->id_aerolinea)
+                        ? getAerolinea(getPedido($d->id_pedido)->envios[0]->detalles[0]->id_aerolinea)->nombre
+                        : ""
+                );
                 $objSheet->getCell('M' . (($x+1) + 3))->setValue(getAgenciaCarga(getPedido($d->id_pedido)->detalles[0]->id_agencia_carga)->nombre);
                 $objSheet->getCell('N' . (($x+1) + 3))->setValue($d->nombre);
                 $objSheet->getCell('O' . (($x+1) + 3))->setValue($total_ramos);
@@ -272,6 +289,21 @@ class FueController extends Controller
                 $objSheet->getCell('S' . (($x+1) + 3))->setValue($d->monto_total);
                 $objSheet->getCell('T' . (($x+1) + 3))->setValue($d->peso);
             }
+            $objSheet->getCell('N' . ($x+6))->setValue("Totales");
+            $objSheet->getCell('O' . ($x+6))->setValue($tr);
+            $objSheet->getCell('P' . ($x+6))->setValue($tfull_eqv);
+            $objSheet->getCell('Q' . ($x+6))->setValue($ttll);
+            $objSheet->getCell('R' . ($x+6))->setValue($tp);
+            $objSheet->getCell('S' . ($x+6))->setValue("$".$tm);
+
+            $objSheet->getStyle('N'.($x+6).':S'.($x+6))
+            ->getFill()
+            ->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
+            ->getStartColor()
+            ->setRGB('CCFFCC');
+
+
+            $objSheet->getStyle('N'.($x+6).':S'.($x+6))->getFont()->setBold(true)->setSize(12);
 
             $objSheet->getColumnDimension('A')->setAutoSize(true);
             $objSheet->getColumnDimension('B')->setAutoSize(true);

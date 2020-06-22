@@ -424,7 +424,8 @@
                                 id_det_esp = ids_det_esp[det_esp].value;
                                 arreglo_det_esp.push({
                                     id_det_esp: id_det_esp,
-                                    precio: $('#precio_det_' + id_det_esp + '_esp_' + id_esp_emp).val()
+                                    precio: $('#precio_det_' + id_det_esp + '_esp_' + id_esp_emp).val(),
+                                    ramos_modificados : $("input#add_esp_ramos_x_caja_det_esp_"+ id_det_esp + '_' + id_esp_emp).val()
                                 });
                             }
 
