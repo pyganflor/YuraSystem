@@ -39,7 +39,7 @@
             </th>
             <td class="text-center" style="border-color: #9d9d9d">
                 <input type="number" name="semana_poda_siembra" id="semana_poda_siembra" style="width: 100%" class="text-center input-yura_white"
-                       value="{{$ciclo->semana_poda_siembra}}" onchange="$('#no_recalcular_curva').prop('checked', true)">
+                       value="{{$ciclo->semana_poda_siembra}}">
             </td>
         </tr>
         <tr>
