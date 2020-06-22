@@ -219,7 +219,7 @@ class RecalcularCurvas extends Command
             }
         }
 
-        UpdateSaldosProyVentaSemanal::dispatch($semana_pasada->codigo, 0)->onQueue('update_saldos_proy_venta_semanal');
+        //UpdateSaldosProyVentaSemanal::dispatch($semana_pasada->codigo, 0)->onQueue('update_saldos_proy_venta_semanal');
 
         $time_duration = difFechas(date('Y-m-d H:i:s'), $ini)->h . ':' . difFechas(date('Y-m-d H:i:s'), $ini)->m . ':' . difFechas(date('Y-m-d H:i:s'), $ini)->s;
         Log::info('<*> DURACION: ' . $time_duration . '  <*>');

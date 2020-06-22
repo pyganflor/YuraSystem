@@ -68,7 +68,7 @@
         };
         $.get('{{url('fue/reporte_fue_filtrado')}}',datos, function (retorno) {
             $("#div_listado_datos_exportacion").html(retorno);
-            estructura_tabla('table_content_factura',false);
+           // estructura_tabla('table_content_factura',false);
             $("#table_content_factura_wrapper .col-sm-6").addClass('hide');
         }).always(function () {
             $.LoadingOverlay('hide');
