@@ -1224,28 +1224,35 @@ class CostosController extends Controller
             'ga.required' => 'El ga es obligatoria',
         ]);
         if (!$valida->fails()) {
-            $model = OtrosGastos::All()
-                ->where('id_area', $request->id_area)
-                ->where('codigo_semana', $request->semana)
-                ->first();
-            if ($model == '') {
-                $model = new OtrosGastos();
-                $model->id_area = $request->id_area;
-                $model->codigo_semana = $request->semana;
-            }
-            $model->gip = $request->gip;
-            $model->ga = $request->ga;
+            $semana_actual = getSemanaByDate(date('Y-m-d'));
+            for ($i = $request->semana; $i <= $semana_actual->codigo; $i++) {
+                $model = OtrosGastos::All()
+                    ->where('id_area', $request->id_area)
+                    ->where('codigo_semana', $i)
+                    ->first();
+                if ($model == '') {
+                    $model = new OtrosGastos();
+                    $model->id_area = $request->id_area;
+                    $model->codigo_semana = $request->semana;
+                }
+                $model->gip = $request->gip;
+                $model->ga = $request->ga;
 
-            if ($model->save()) {
-                $success = true;
-                $msg = '<div class="alert alert-success text-center">' .
-                    '<p> Se han guardado los otros gastos satisfactoriamente</p>'
-                    . '</div>';
-            } else {
-                $success = false;
-                $msg = '<div class="alert alert-warning text-center">' .
-                    '<p> Ha ocurrido un problema al guardar la información al sistema</p>'
-                    . '</div>';
+                if ($model->save()) {
+                    $success = true;
+                    $msg = '<div class="alert alert-success text-center">' .
+                        '<p> Se han guardado los otros gastos satisfactoriamente</p>'
+                        . '</div>';
+                } else {
+                    $success = false;
+                    $msg = '<div class="alert alert-warning text-center">' .
+                        '<p> Ha ocurrido un problema al guardar la información al sistema</p>'
+                        . '</div>';
+                    return [
+                        'mensaje' => $msg,
+                        'success' => $success
+                    ];
+                }
             }
         } else {
             $success = false;
