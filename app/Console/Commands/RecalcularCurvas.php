@@ -50,7 +50,7 @@ class RecalcularCurvas extends Command
         Log::info('<<<<< ! >>>>> Ejecutando comando "curva_cosecha:recalcular" <<<<< ! >>>>>');
 
         $configuracion = getConfiguracionEmpresa();
-        $semana_pasada = getSemanaByDate(opDiasFecha('-', 7, date('Y-m-d')));
+        $semana_pasada = getSemanaByDate(opDiasFecha('-', 42, date('Y-m-d')));
         $ciclos = DB::table('proyeccion_modulo_semana')
             ->select('modelo')->distinct()
             ->where('estado', 1)
@@ -62,7 +62,8 @@ class RecalcularCurvas extends Command
             $ciclo = Ciclo::find($c->modelo);
             $sem_ini = $ciclo->semana();
             $num_sem = intval(difFechas($semana_pasada->fecha_inicial, $sem_ini->fecha_inicial)->days / 7) + 1;
-            if ($ciclo->activo == 1 && $num_sem >= $ciclo->semana_poda_siembra - 2 && $ciclo->no_recalcular_curva == 0) {   // esta activo y es una semana minima 2 antes del inicio de cosecha
+            if ($ciclo->modulo->nombre == 207) {   // esta activo y es una semana minima 2 antes del inicio de cosecha
+                //$ciclo->activo == 1 && $num_sem >= $ciclo->semana_poda_siembra - 3 && $ciclo->no_recalcular_curva == 0
                 $modulo = $ciclo->modulo;
                 $getTallosProyectados = $ciclo->getTallosProyectados();
                 if ($num_sem < $ciclo->semana_poda_siembra) {   // se trata de una semana antes del inicio de cosecha
