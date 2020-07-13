@@ -14,6 +14,11 @@ Route::get('gestion_mano_obra/otros_gastos', 'Costos\CostosController@otros_gast
 Route::post('gestion_mano_obra/store_otros_gastos', 'Costos\CostosController@store_otros_gastos');
 Route::post('gestion_mano_obra/buscar_otros_gastos', 'Costos\CostosController@buscar_otros_gastos');
 
+Route::get('gestion_mano_obra/buscar_moByActividad', 'Costos\CostosController@buscar_moByActividad');
+Route::post('gestion_mano_obra/buscar_valorByActividadMOSemana', 'Costos\CostosController@buscar_valorByActividadMOSemana');
+Route::post('gestion_mano_obra/save_costo', 'Costos\CostosController@save_costoMO');
+
+
 /* ---------------------------------- REPORTE ------------------------------------- */
 Route::get('reporte_mano_obra', 'Costos\CostosController@reporte_mano_obra');
 Route::get('reporte_mano_obra/listar_reporte', 'Costos\CostosController@listar_reporte_mano_obra');

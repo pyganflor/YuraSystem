@@ -655,6 +655,18 @@ class CostosController extends Controller
         ]);
     }
 
+    public function buscar_moByActividad(Request $request)
+    {
+        $act_mo = [];
+        $actividad = Actividad::find($request->actividad);
+        if ($actividad != '')
+            $act_mo = $actividad->manos_obra;
+        return view('adminlte.gestion.costos.mano_obra.partials.select_edit_mo', [
+            'act_mo' => $act_mo,
+            'form' => $request->form,
+        ]);
+    }
+
     public function buscar_valorByActividadInsumoSemana(Request $request)
     {
         $valor = 0;
@@ -676,7 +688,28 @@ class CostosController extends Controller
         ];
     }
 
-    public function save_costo(Request $request)
+    public function buscar_valorByActividadMOSemana(Request $request)
+    {
+        $valor = 0;
+        $act_mo = ActividadManoObra::All()
+            ->where('estado', 1)
+            ->where('id_actividad', $request->actividad)
+            ->where('id_mano_obra', $request->mo)
+            ->first();
+        if ($act_mo != '') {
+            $costo_sem = CostosSemanaManoObra::All()
+                ->where('id_actividad_mano_obra', $act_mo->id_actividad_mano_obra)
+                ->where('codigo_semana', $request->semana)
+                ->first();
+            if ($costo_sem != '')
+                $valor = $costo_sem->valor;
+        }
+        return [
+            'valor' => $valor
+        ];
+    }
+
+    public function save_costoInsumo(Request $request)
     {
         $valida = Validator::make($request->all(), [
             'actividad' => 'required',
@@ -686,8 +719,8 @@ class CostosController extends Controller
         ], [
             'actividad.required' => 'La actividad es obligatoria',
             'semana.required' => 'La semana es obligatoria',
-            'insumo.required' => 'El insumo es obligatoria',
-            'valor.required' => 'El valor es obligatoria',
+            'insumo.required' => 'El insumo es obligatorio',
+            'valor.required' => 'El valor es obligatorio',
         ]);
         if (!$valida->fails()) {
             $act_ins = ActividadProducto::All()
@@ -717,6 +750,74 @@ class CostosController extends Controller
                     else
                         $id = $costo_sem->id_costos_semana;
                     bitacora('costos_semana', $id, 'I', 'Inserción satisfactoria de un costo por semana');
+                } else {
+                    $success = false;
+                }
+            } else
+                $success = false;
+        } else {
+            $success = false;
+            $errores = '';
+            foreach ($valida->errors()->all() as $mi_error) {
+                if ($errores == '') {
+                    $errores = '<li>' . $mi_error . '</li>';
+                } else {
+                    $errores .= '<li>' . $mi_error . '</li>';
+                }
+            }
+            $msg = '<div class="alert alert-danger">' .
+                '<p class="text-center">¡Por favor corrija los siguientes errores!</p>' .
+                '<ul>' .
+                $errores .
+                '</ul>' .
+                '</div>';
+        }
+        return [
+            'success' => $success
+        ];
+    }
+
+    public function save_costoMO(Request $request)
+    {
+        $valida = Validator::make($request->all(), [
+            'actividad' => 'required',
+            'semana' => 'required',
+            'valor' => 'required',
+            'mo' => 'required',
+        ], [
+            'actividad.required' => 'La actividad es obligatoria',
+            'semana.required' => 'La semana es obligatoria',
+            'mo.required' => 'La mano de obra es obligatoria',
+            'valor.required' => 'El valor es obligatorio',
+        ]);
+        if (!$valida->fails()) {
+            $act_mo = ActividadManoObra::All()
+                ->where('estado', 1)
+                ->where('id_actividad', $request->actividad)
+                ->where('id_mano_obra', $request->mo)
+                ->first();
+            if ($act_mo != '') {
+                $costo_sem = CostosSemanaManoObra::All()
+                    ->where('id_actividad_mano_obra', $act_mo->id_actividad_mano_obra)
+                    ->where('codigo_semana', $request->semana)
+                    ->first();
+                $new = false;
+                if ($costo_sem == '') {
+                    $costo_sem = new CostosSemanaManoObra();
+                    $costo_sem->id_actividad_mano_obra = $act_mo->id_actividad_mano_obra;
+                    $costo_sem->codigo_semana = $request->semana;
+                    $costo_sem->valor = $costo_sem->cantidad = 0;
+                    $new = true;
+                }
+                $costo_sem->valor = $request->valor;
+
+                if ($costo_sem->save()) {
+                    $success = true;
+                    if ($new)
+                        $id = CostosSemanaManoObra::All()->last()->id_costos_semana_mano_obra;
+                    else
+                        $id = $costo_sem->id_costos_semana_mano_obra;
+                    bitacora('costos_semana_mano_obra', $id, 'I', 'Inserción satisfactoria de un costo por semana');
                 } else {
                     $success = false;
                 }
