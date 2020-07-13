@@ -16,6 +16,9 @@ Route::post('costos_gestion/importar_file_producto', 'Costos\CostosController@im
 Route::get('costos_gestion/vincular_actividad_producto', 'Costos\CostosController@vincular_actividad_producto');
 Route::post('costos_gestion/store_actividad_producto', 'Costos\CostosController@store_actividad_producto');
 Route::post('costos_gestion/importar_file_act_producto', 'Costos\CostosController@importar_file_act_producto');
+Route::get('costos_gestion/buscar_insumosByActividad', 'Costos\CostosController@buscar_insumosByActividad');
+Route::post('costos_gestion/buscar_valorByActividadInsumoSemana', 'Costos\CostosController@buscar_valorByActividadInsumoSemana');
+Route::post('costos_gestion/save_costo', 'Costos\CostosController@save_costo');
 
 /* ---------------------------------- REPORTE ------------------------------------- */
 Route::get('reporte_insumos', 'Costos\CostosController@reporte_insumos');

@@ -643,6 +643,107 @@ class CostosController extends Controller
         ];
     }
 
+    public function buscar_insumosByActividad(Request $request)
+    {
+        $act_insumos = [];
+        $actividad = Actividad::find($request->actividad);
+        if ($actividad != '')
+            $act_insumos = $actividad->productos;
+        return view('adminlte.gestion.costos.insumo.partials.select_edit_insumo', [
+            'act_insumos' => $act_insumos,
+            'form' => $request->form,
+        ]);
+    }
+
+    public function buscar_valorByActividadInsumoSemana(Request $request)
+    {
+        $valor = 0;
+        $act_ins = ActividadProducto::All()
+            ->where('estado', 1)
+            ->where('id_actividad', $request->actividad)
+            ->where('id_producto', $request->insumo)
+            ->first();
+        if ($act_ins != '') {
+            $costo_sem = CostosSemana::All()
+                ->where('id_actividad_producto', $act_ins->id_actividad_producto)
+                ->where('codigo_semana', $request->semana)
+                ->first();
+            if ($costo_sem != '')
+                $valor = $costo_sem->valor;
+        }
+        return [
+            'valor' => $valor
+        ];
+    }
+
+    public function save_costo(Request $request)
+    {
+        $valida = Validator::make($request->all(), [
+            'actividad' => 'required',
+            'semana' => 'required',
+            'valor' => 'required',
+            'insumo' => 'required',
+        ], [
+            'actividad.required' => 'La actividad es obligatoria',
+            'semana.required' => 'La semana es obligatoria',
+            'insumo.required' => 'El insumo es obligatoria',
+            'valor.required' => 'El valor es obligatoria',
+        ]);
+        if (!$valida->fails()) {
+            $act_ins = ActividadProducto::All()
+                ->where('estado', 1)
+                ->where('id_actividad', $request->actividad)
+                ->where('id_producto', $request->insumo)
+                ->first();
+            if ($act_ins != '') {
+                $costo_sem = CostosSemana::All()
+                    ->where('id_actividad_producto', $act_ins->id_actividad_producto)
+                    ->where('codigo_semana', $request->semana)
+                    ->first();
+                $new = false;
+                if ($costo_sem == '') {
+                    $costo_sem = new CostosSemana();
+                    $costo_sem->id_actividad_producto = $act_ins->id_actividad_producto;
+                    $costo_sem->codigo_semana = $request->semana;
+                    $costo_sem->valor = $costo_sem->cantidad = 0;
+                    $new = true;
+                }
+                $costo_sem->valor = $request->valor;
+
+                if ($costo_sem->save()) {
+                    $success = true;
+                    if ($new)
+                        $id = CostosSemana::All()->last()->id_costos_semana;
+                    else
+                        $id = $costo_sem->id_costos_semana;
+                    bitacora('costos_semana', $id, 'I', 'Inserción satisfactoria de un costo por semana');
+                } else {
+                    $success = false;
+                }
+            } else
+                $success = false;
+        } else {
+            $success = false;
+            $errores = '';
+            foreach ($valida->errors()->all() as $mi_error) {
+                if ($errores == '') {
+                    $errores = '<li>' . $mi_error . '</li>';
+                } else {
+                    $errores .= '<li>' . $mi_error . '</li>';
+                }
+            }
+            $msg = '<div class="alert alert-danger">' .
+                '<p class="text-center">¡Por favor corrija los siguientes errores!</p>' .
+                '<ul>' .
+                $errores .
+                '</ul>' .
+                '</div>';
+        }
+        return [
+            'success' => $success
+        ];
+    }
+
     /* ==================================== IMPORTAR ===================================== */
     public function costos_importar(Request $request)
     {

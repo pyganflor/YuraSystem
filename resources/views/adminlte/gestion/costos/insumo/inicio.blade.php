@@ -54,22 +54,35 @@
     </section>
 
     <section class="content">
-        <div class="box box-primary">
-            <div class="box-body">
-                <div class="row">
-                    <div class="col-md-3 div_content_fixed">
-                        @include('adminlte.gestion.costos.insumo.partials.list_area')
-                    </div>
-                    <div class="col-md-4 div_content_fixed">
-                        <div class="div_content_fixed" style="overflow-y: scroll; max-height: 450px">
-                            @include('adminlte.gestion.costos.insumo.partials.list_actividad')
+        <div class="nav-tabs-custom">
+            <ul class="nav nav-tabs nav-justified">
+                <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="true">
+                        <i class="fa fa-fw fa-plus"></i> Ingresos
+                    </a></li>
+                <li class=""><a href="#tab_2" data-toggle="tab" aria-expanded="false">
+                        <i class="fa fa-fw fa-edit"></i> Editar
+                    </a></li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane active" id="tab_1">
+                    <div class="row">
+                        <div class="col-md-3 div_content_fixed">
+                            @include('adminlte.gestion.costos.insumo.partials.list_area')
+                        </div>
+                        <div class="col-md-4 div_content_fixed">
+                            <div class="div_content_fixed" style="overflow-y: scroll; max-height: 450px">
+                                @include('adminlte.gestion.costos.insumo.partials.list_actividad')
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+                            <div class="div_content_fixed" style="overflow-y: scroll; max-height: 450px">
+                                @include('adminlte.gestion.costos.insumo.partials.list_producto')
+                            </div>
                         </div>
                     </div>
-                    <div class="col-md-5">
-                        <div class="div_content_fixed" style="overflow-y: scroll; max-height: 450px">
-                            @include('adminlte.gestion.costos.insumo.partials.list_producto')
-                        </div>
-                    </div>
+                </div>
+                <div class="tab-pane" id="tab_2">
+                    @include('adminlte.gestion.costos.insumo.partials.editar_costos')
                 </div>
             </div>
         </div>
