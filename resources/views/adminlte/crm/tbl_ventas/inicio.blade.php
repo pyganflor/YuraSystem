@@ -55,7 +55,7 @@
                             @foreach(getMeses() as $pos => $m)
                                 <li>
                                     <a href="javascript:void(0)" onclick="select_mes('{{$pos + 1}}', 'desde')"
-                                       class="{{$pos + 1 == date('m') ? 'bg-aqua-active' : ''}} li_mes_desde" id="li_mes_desde_{{$pos + 1}}">
+                                       class="{{$pos + 1 == 1 ? 'bg-aqua-active' : ''}} li_mes_desde" id="li_mes_desde_{{$pos + 1}}">
                                         {{$m}}
                                     </a>
                                 </li>
@@ -63,7 +63,7 @@
                         </ul>
                     </div>
                     <input type="number" class="form-control" id="desde" placeholder="Desde" min="1" max="12"
-                           value="{{date('m')}}" onkeypress="return isNumber(event)" readonly maxlength="2">
+                           value="01" onkeypress="return isNumber(event)" readonly maxlength="2">
                     <div class="input-group-btn bg-gray btn_desde-hasta_M">
                         <button type="button" class="btn btn-default dropdown-toggle bg-gray" data-toggle="dropdown" aria-haspopup="true"
                                 aria-expanded="false">
