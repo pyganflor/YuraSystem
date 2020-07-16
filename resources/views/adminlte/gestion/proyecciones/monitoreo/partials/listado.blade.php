@@ -101,7 +101,7 @@
                         <input type="number" style="width: 100%; border: {{$item['ini_curva'] == $cant_mon ? '3px solid blue' : ''}}"
                                id="monitoreo_{{$item['ciclo']->id_ciclo}}_{{$cant_mon}}" data-toggle="tooltip" data-placement="top"
                                data-html="true" title="{{$title}}" value="{{$mon->altura}}" readonly ondblclick="$(this).attr('readonly', false)"
-                               min="0" class="text-center input_sem_{{$cant_mon}} input_ciclo_{{$item['ciclo']->id_ciclo}}"
+                               min="0" class="text-center input_sem_{{$cant_mon}} input_ciclo_{{$item['ciclo']->id_ciclo}} border-radius_18"
                                onchange="guardar_monitoreo('{{$item['ciclo']->id_ciclo}}', '{{$cant_mon}}')">
                         <input type="hidden" id="crec_sem_{{$item['ciclo']->id_ciclo}}_{{$cant_mon}}" value="{{$crec_sem}}">
                         <input type="hidden" id="crec_dia_{{$item['ciclo']->id_ciclo}}_{{$cant_mon}}" value="{{$crec_dia}}">
@@ -121,7 +121,7 @@
                         onmouseleave="mouse_over_celda('{{$item['ciclo']->id_ciclo}}', 0)">
                         <input type="number" style="width: 100%; border: {{$item['ini_curva'] == $cant_mon ? '3px solid blue' : ''}}"
                                id="monitoreo_{{$item['ciclo']->id_ciclo}}_{{$cant_mon}}" readonly
-                               ondblclick="$(this).attr('readonly', false)" class="text-center" min="0"
+                               ondblclick="$(this).attr('readonly', false)" class="text-center border-radius_18" min="0"
                                onchange="guardar_monitoreo('{{$item['ciclo']->id_ciclo}}', '{{$cant_mon}}')">
                     </th>
                     @php
@@ -130,7 +130,7 @@
                 @endfor
                 <th class="text-center th_fijo_right_0" style="border-color: #9d9d9d; background-color: #e9ecef !important;">
                     <input type="number" style="width: 100%; background-color: #e9ecef !important;" id="ingresar_{{$item['ciclo']->id_ciclo}}"
-                           class="text-center">
+                           class="text-center border-radius_18">
                     <input type="hidden" class="ids_ciclo" value="{{$item['ciclo']->id_ciclo}}">
                 </th>
             </tr>
@@ -309,7 +309,7 @@
         for (i = 0; i < ciclos.length; i++) {
             id_ciclo = ciclos[i].value;
             last_sem = parseInt($('#last_sem_' + id_ciclo).val());
-            if (last_sem >= $('#filtro_min_semanas').val() && last_sem <= 11) {  // se trate de un ciclo en el rango de semanas que interesan
+            if (last_sem >= $('#filtro_min_semanas').val() && last_sem <= 18) {  // se trate de un ciclo en el rango de semanas que interesan
                 valor = $('#monitoreo_' + id_ciclo + '_' + last_sem).val();
                 crec_sem = $('#crec_sem_' + id_ciclo + '_' + last_sem).val();
                 crec_dia = $('#crec_dia_' + id_ciclo + '_' + last_sem).val();
