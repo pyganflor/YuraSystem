@@ -45,7 +45,7 @@ class cronImportarCostos extends Command
 
         $files = Almacenamiento::disk('pdf_loads')->files('');
         foreach ($files as $nombre_archivo) {
-            $url = public_path('storage\pdf_loads\\' . $nombre_archivo);
+            $url = public_path('storage/pdf_loads/' . $nombre_archivo);
 
             Artisan::call('costos:importar_file', [
                 'url' => $url,
