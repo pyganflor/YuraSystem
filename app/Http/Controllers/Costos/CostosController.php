@@ -869,10 +869,10 @@ class CostosController extends Controller
 
             $archivo = $request->file_costos;
             $extension = $archivo->getClientOriginalExtension();
-            $nombre_archivo = "costos" . "." . $extension;
+            $nombre_archivo = "costos_" . $request->concepto_importar . "." . $extension;
             $r1 = Almacenamiento::disk('pdf_loads')->put($nombre_archivo, \File::get($archivo));
 
-            $url = 'public/storage/pdf_loads/' . $nombre_archivo;
+            $url = public_path('storage\pdf_loads\\' . $nombre_archivo);
 
             Artisan::call('costos:importar_file', [
                 'url' => $url,
