@@ -5,6 +5,7 @@ namespace yura\Console;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use yura\Console\Commands\CicloPrimeraFlor;
+use yura\Console\Commands\cronImportarCostos;
 use yura\Console\Commands\DeleteRecepciones;
 use yura\Console\Commands\EmpaquetarPedidosAnulados;
 use yura\Console\Commands\FechaFinalCiclo;
@@ -59,6 +60,7 @@ class Kernel extends ConsoleKernel
         UpdateMonitoreoCiclos::class,
         RecalcularCurvas::class,
         UpdateTemperaturasByModulo::class,
+        cronImportarCostos::class,
     ];
 
     /**
@@ -91,6 +93,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('ciclo:update_monitoreo')->cron('35 * * * *')->runInBackground(); // UpdateMonitoreoCiclos::class
         $schedule->command('curva_cosecha:recalcular')->cron('0 * * * *')->runInBackground(); // RecalcularCurvas::class
         $schedule->command('ciclo:update_temperaturas')->cron('5 * * * *')->runInBackground(); // UpdateTemperaturasByModulo::class
+        $schedule->command('cron:importar_costos')->cron('45 * * * *')->runInBackground(); // cronImportarCostos::class
     }
 
     /**
