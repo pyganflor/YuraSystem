@@ -428,8 +428,6 @@ class UsuarioController extends Controller
                 'success' => false
             ];
         }
-
-
     }
 
     public function get_usuario_json(Request $request)

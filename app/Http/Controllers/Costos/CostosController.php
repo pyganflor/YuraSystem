@@ -3,6 +3,7 @@
 namespace yura\Http\Controllers\Costos;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use yura\Http\Controllers\Controller;
 use yura\Jobs\ImportarCostos;
@@ -21,6 +22,7 @@ use PHPExcel;
 use PHPExcel_IOFactory;
 use PHPExcel_Worksheet;
 use yura\Modelos\Producto;
+use Storage as Almacenamiento;
 
 class CostosController extends Controller
 {
@@ -864,11 +866,20 @@ class CostosController extends Controller
         $success = true;
         if (!$valida->fails()) {
 
-            $document = PHPExcel_IOFactory::load($request->file_costos);
-            $activeSheetData = $document->getActiveSheet()->toArray(null, true, true, true);
 
-            ImportarCostos::dispatch($activeSheetData, $request->concepto_importar, $request->criterio_importar, $request->sobreescribir_importar == 'S' ? true : false)
-                ->onQueue('job');
+            $archivo = $request->file_costos;
+            $extension = $archivo->getClientOriginalExtension();
+            $nombre_archivo = "costos" . "." . $extension;
+            $r1 = Almacenamiento::disk('pdf_loads')->put($nombre_archivo, \File::get($archivo));
+
+            $url = '/public/storage/pdf_loads/' . $nombre_archivo;
+
+            Artisan::call('costos:importar_file', [
+                'url' => $url,
+                'concepto' => $request->concepto_importar,
+                'criterio' => $request->criterio_importar,
+                'sobreescribir' => $request->sobreescribir_importar == 'S' ? true : false,
+            ]);
         } else {
             $errores = '';
             foreach ($valida->errors()->all() as $mi_error) {
