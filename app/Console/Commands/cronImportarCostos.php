@@ -3,7 +3,9 @@
 namespace yura\Console\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Log;
+use Storage as Almacenamiento;
 
 class cronImportarCostos extends Command
 {
@@ -41,7 +43,17 @@ class cronImportarCostos extends Command
         $ini = date('Y-m-d H:i:s');
         Log::info('<<<<< ! >>>>> Ejecutando comando "cron:importar_costos" <<<<< ! >>>>>');
 
+        $files = Almacenamiento::disk('pdf_loads')->files('');
+        foreach ($files as $nombre_archivo) {
+            $url = public_path('storage\pdf_loads\\' . $nombre_archivo);
 
+            Artisan::call('costos:importar_file', [
+                'url' => $url,
+                'concepto' => substr(explode('.', $nombre_archivo)[0], -1),
+                'criterio' => 'V',
+                'sobreescribir' => true,
+            ]);
+        }
 
         $time_duration = difFechas(date('Y-m-d H:i:s'), $ini)->h . ':' . difFechas(date('Y-m-d H:i:s'), $ini)->m . ':' . difFechas(date('Y-m-d H:i:s'), $ini)->s;
         Log::info('<*> DURACION: ' . $time_duration . '  <*>');
