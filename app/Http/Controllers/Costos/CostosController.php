@@ -873,13 +873,6 @@ class CostosController extends Controller
             $r1 = Almacenamiento::disk('pdf_loads')->put($nombre_archivo, \File::get($archivo));
 
             $url = public_path('storage\pdf_loads\\' . $nombre_archivo);
-
-            Artisan::call('costos:importar_file', [
-                'url' => $url,
-                'concepto' => $request->concepto_importar,
-                'criterio' => $request->criterio_importar,
-                'sobreescribir' => $request->sobreescribir_importar == 'S' ? true : false,
-            ]);
         } else {
             $errores = '';
             foreach ($valida->errors()->all() as $mi_error) {
