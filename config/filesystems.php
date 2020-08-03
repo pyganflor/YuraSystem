@@ -53,6 +53,11 @@ return [
             'root' => public_path('storage/imagenes'),
         ],
 
+        'pdf_loads' => [
+            'driver' => 'local',
+            'root' => public_path('storage/pdf_loads'),
+        ],
+
         'xml' => [
             'driver' => 'local',
             'root' => storage_path('storage/xml/'),
