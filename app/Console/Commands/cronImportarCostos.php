@@ -53,6 +53,8 @@ class cronImportarCostos extends Command
                 'criterio' => 'V',
                 'sobreescribir' => true,
             ]);
+
+            unlink($url);
         }
 
         $time_duration = difFechas(date('Y-m-d H:i:s'), $ini)->h . ':' . difFechas(date('Y-m-d H:i:s'), $ini)->m . ':' . difFechas(date('Y-m-d H:i:s'), $ini)->s;
