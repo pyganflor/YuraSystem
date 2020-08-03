@@ -862,11 +862,9 @@ class CostosController extends Controller
         $valida = Validator::make($request->all(), [
             'file_costos' => 'required',
         ]);
-        $msg = '<div class="alert alert-info text-center">Se ha importado el archivo, actualmente se están ingresando los datos al sistema</div>';
+        $msg = '<div class="alert alert-info text-center">Se ha importado el archivo, en menos de una hora se reflejarán los datos en el sistema</div>';
         $success = true;
         if (!$valida->fails()) {
-
-
             $archivo = $request->file_costos;
             $extension = $archivo->getClientOriginalExtension();
             $nombre_archivo = "costos_" . $request->concepto_importar . "." . $extension;
