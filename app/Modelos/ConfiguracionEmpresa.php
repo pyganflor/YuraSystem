@@ -50,6 +50,7 @@ class ConfiguracionEmpresa extends Model
         'horas_diarias_verde',
         'proy_minimo_cosecha',  // 	porcentaje mínimo de cosecha para iniciar la curva
         'proy_maximo_cosecha_fin',  // 	porcentaje máximo de ultima semana de cosecha
+        'proy_inicio_cosecha',  // inicio de cosecha proyectado
     ];
 
     public function clasificaciones_unitarias()
