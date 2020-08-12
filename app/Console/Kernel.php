@@ -11,6 +11,7 @@ use yura\Console\Commands\EmpaquetarPedidosAnulados;
 use yura\Console\Commands\FechaFinalCiclo;
 use yura\Console\Commands\IndicadorSemanal;
 use yura\Console\Commands\NotificacionesSistema;
+use yura\Console\Commands\ProyectarInicioCosecha;
 use yura\Console\Commands\RecalcularCurvas;
 use yura\Console\Commands\ResumenAreaSemanal;
 use yura\Console\Commands\ResumenCostosSemanal;
@@ -61,6 +62,7 @@ class Kernel extends ConsoleKernel
         RecalcularCurvas::class,
         UpdateTemperaturasByModulo::class,
         cronImportarCostos::class,
+        ProyectarInicioCosecha::class,
     ];
 
     /**
@@ -94,6 +96,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('curva_cosecha:recalcular')->cron('0 * * * *')->runInBackground(); // RecalcularCurvas::class
         $schedule->command('ciclo:update_temperaturas')->cron('5 * * * *')->runInBackground(); // UpdateTemperaturasByModulo::class
         $schedule->command('cron:importar_costos')->cron('45 * * * *')->runInBackground(); // cronImportarCostos::class
+        $schedule->command('proyectar:inicio_cosecha')->cron('55 * * * *')->runInBackground(); // ProyectarInicioCosecha::class
     }
 
     /**
