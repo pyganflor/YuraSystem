@@ -1421,7 +1421,7 @@ function generaDocumentoPDF($autorizacion, $tipo_documento, $pre_factura = false
     ];
     if ($tipo_documento == "01")
         PDF::loadView('adminlte.gestion.comprobante.partials.pdf.factura', compact('data'))->save(env('PDF_FACTURAS') . (isset($autorizacion->numeroAutorizacion) ? $autorizacion->numeroAutorizacion : (String)$autorizacion->infoTributaria->claveAcceso) . ".pdf");
-        PDF::loadView('adminlte.gestion.comprobante.partials.pdf.factura_cliente', compact('data'))->save(env('PDF_FACTURAS') . "cliente_" . (isset($autorizacion->numeroAutorizacion) ? $autorizacion->numeroAutorizacion : (String)$autorizacion->infoTributaria->claveAcceso) . ".pdf");
+    PDF::loadView('adminlte.gestion.comprobante.partials.pdf.factura_cliente', compact('data'))->save(env('PDF_FACTURAS') . "cliente_" . (isset($autorizacion->numeroAutorizacion) ? $autorizacion->numeroAutorizacion : (String)$autorizacion->infoTributaria->claveAcceso) . ".pdf");
     if ($tipo_documento == "06")
         PDF::loadView('adminlte.gestion.comprobante.partials.pdf.guia', compact('data'))->save(env('PATH_PDF_GUIAS') . $autorizacion->numeroAutorizacion . ".pdf");
 
@@ -1493,7 +1493,7 @@ function getSecuencial($tipoComprobante, $configuracionEmpresa)
     $secuencial = $inicio_secuencial + 1;
     $cant_reg = Comprobante::where([
         ['comprobante.tipo_comprobante', $tipoComprobante],
-        ['ficticio',false]
+        ['ficticio', false]
     ]);
 
     if ($tipoComprobante == "01")
@@ -2675,9 +2675,20 @@ function getNuevaCurva($curva, $inicio)
     return $new_curva;
 }
 
-function getRamosXCajaModificado($idDetPed,$idDetEspEmp){
+function getRamosXCajaModificado($idDetPed, $idDetEspEmp)
+{
     return DetalleEspecificacionEmpaqueRamosCaja::where([
-       ['id_detalle_pedido',$idDetPed],
-       ['id_detalle_especificacionempaque',$idDetEspEmp]
-    ])->orderBy('id_detalle_especificacionempaque_ramos_x_caja','desc')->select('cantidad')->first();
+        ['id_detalle_pedido', $idDetPed],
+        ['id_detalle_especificacionempaque', $idDetEspEmp]
+    ])->orderBy('id_detalle_especificacionempaque_ramos_x_caja', 'desc')->select('cantidad')->first();
+}
+
+function getSigno($numero)
+{
+    if ($numero > 0)
+        return 1;
+    else if ($numero < 0)
+        return -1;
+    else
+        return 0;
 }
