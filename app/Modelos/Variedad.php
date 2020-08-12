@@ -28,7 +28,9 @@ class Variedad extends Model
         'tallos_x_malla',
         'color',
         'proy_inicio_cosecha_poda',  // inicio de cosecha proyectado para las podas
-        'proy_inicio_cosecha_siembra',  // inicio de cosecha proyectado para las siembras
+        'proy_inicio_cosecha_siembra',  // inicio de cosecha proyectado para las siembras,
+        'proy_curva_poda',  // curva proyectada para las podas,
+        'proy_curva_siembra',  // curva proyectada para las siembras,
     ];
 
     public function planta()
