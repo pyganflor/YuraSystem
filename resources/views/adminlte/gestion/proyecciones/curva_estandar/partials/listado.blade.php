@@ -97,9 +97,31 @@
         <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef" colspan="2">
             {{$temp_prom}}
         </th>
-        @foreach($array_prom as $pos => $v)
-            <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
-                {{$v['positivos'] > 0 ? round($v['valor'] / $v['positivos']) : 0}}%
+        @php
+            $suma_total = 0;
+            $array_prom_new = [];
+            foreach($array_prom as $pos => $v){
+                $valor = $v['positivos'] > 0 ? round($v['valor'] / $v['positivos']) : 0;
+                $suma_total += $valor;
+                if($pos == count($array_prom) - 1){
+                    if($suma_total > 100){
+                        $new_valor = $valor - ($suma_total - 100);
+                    } else if($suma_total < 100){
+                        $new_valor = $valor + (100 - $suma_total);
+                    }
+                    array_push($array_prom_new, $new_valor >= 5 ? $new_valor : 0);
+                    if($new_valor < 5){
+                        $array_prom_new[$pos - 1] += $new_valor;
+                    }
+                } else {
+                    array_push($array_prom_new, $valor);
+                }
+            }
+        @endphp
+
+        @foreach($array_prom_new as $pos => $v)
+            <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef" id="th_prom_{{$pos}}">
+                {{$v}}%
             </th>
         @endforeach
     </tr>
@@ -114,9 +136,30 @@
         <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
             {{$temp_prom}}
         </th>
-        @foreach($array_prom_minimos as $pos => $v)
+        @php
+            $suma_total = 0;
+            $array_prom_minimos_new = [];
+            foreach($array_prom_minimos as $pos => $v){
+                $valor = $v['positivos'] > 0 ? round($v['valor'] / $v['positivos']) : 0;
+                $suma_total += $valor;
+                if($pos == count($array_prom) - 1){
+                    if($suma_total > 100){
+                        $new_valor = $valor - ($suma_total - 100);
+                    } else if($suma_total < 100){
+                        $new_valor = $valor + (100 - $suma_total);
+                    }
+                    array_push($array_prom_minimos_new, $new_valor >= 5 ? $new_valor : 0);
+                    if($new_valor < 5){
+                        $array_prom_minimos_new[$pos - 1] += $new_valor;
+                    }
+                } else {
+                    array_push($array_prom_minimos_new, $valor);
+                }
+            }
+        @endphp
+        @foreach($array_prom_minimos_new as $pos => $v)
             <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
-                {{$v['positivos'] > 0 ? round($v['valor'] / $v['positivos']) : 0}}%
+                {{$v}}%
             </th>
         @endforeach
     </tr>
@@ -127,9 +170,30 @@
         <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
             {{$max_temp}}
         </th>
-        @foreach($array_prom_maximos as $pos => $v)
+        @php
+            $suma_total = 0;
+            $array_prom_maximos_new = [];
+            foreach($array_prom_maximos as $pos => $v){
+                $valor = $v['positivos'] > 0 ? round($v['valor'] / $v['positivos']) : 0;
+                $suma_total += $valor;
+                if($pos == count($array_prom) - 1){
+                    if($suma_total > 100){
+                        $new_valor = $valor - ($suma_total - 100);
+                    } else if($suma_total < 100){
+                        $new_valor = $valor + (100 - $suma_total);
+                    }
+                    array_push($array_prom_maximos_new, $new_valor >= 5 ? $new_valor : 0);
+                    if($new_valor < 5){
+                        $array_prom_maximos_new[$pos - 1] += $new_valor;
+                    }
+                } else {
+                    array_push($array_prom_maximos_new, $valor);
+                }
+            }
+        @endphp
+        @foreach($array_prom_maximos_new as $pos => $v)
             <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
-                {{$v['positivos'] > 0 ? round($v['valor'] / $v['positivos']) : 0}}%
+                {{$v}}%
             </th>
         @endforeach
     </tr>
