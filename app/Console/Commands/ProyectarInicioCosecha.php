@@ -196,7 +196,6 @@ class ProyectarInicioCosecha extends Command
                     $mon_actual = $item['mon_actual'] != '' ? $item['mon_actual'] : '';
                     $last_sem = $matriz[$pos]['last_sem'];
                     if ($last_sem >= $min_semanas && $last_sem <= 11 && $item['ciclo']->fecha_cosecha == '') { // se trate de un ciclo en el rango de semanas que interesan
-                        dump($item['ciclo']->modulo->nombre);
                         //$valor = $mon_actual->altura;
                         $valor = $matriz[$pos]['monitoreos'][$last_sem - 1];
                         $crec_sem = $matriz[$pos]['crec_sem'][$last_sem - 1];
@@ -222,6 +221,9 @@ class ProyectarInicioCosecha extends Command
                         } else {    // atrasar en el tiempo
                             $nuevo_inicio_cosecha = $sem_prom_ini_curva + $resultado;
                         }
+
+                        dump($item['ciclo']->modulo->nombre . ' -> ini:' . $nuevo_inicio_cosecha);
+
 
                         /* Actualizar inicio de cosecha */
                         /* ======================== ACTUALIZAR LA TABLA PROYECCION_MODULO_SEMANA FINAL ====================== */
