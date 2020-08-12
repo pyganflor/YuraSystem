@@ -253,7 +253,6 @@ class ProyectarInicioCosecha extends Command
                     else
                         $configuracion->proy_inicio_cosecha_siembra = $num_sem_proy;
                     $configuracion->save();
-                    dd('ok');
                 }
         }
 
