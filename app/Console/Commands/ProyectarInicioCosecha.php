@@ -248,7 +248,10 @@ class ProyectarInicioCosecha extends Command
                     /* Calcular inicio de cosecha proyectado */
                     $num_sem_proy = $proy_sem_prom_ini_curva['cantidad'] > 0 ? intval(round($proy_sem_prom_ini_curva['valor'] / $proy_sem_prom_ini_curva['cantidad'])) : 0;
                     $configuracion = getConfiguracionEmpresa();
-                    $configuracion->proy_inicio_cosecha = $num_sem_proy;
+                    if ($ps == 'P')
+                        $configuracion->proy_inicio_cosecha_poda = $num_sem_proy;
+                    else
+                        $configuracion->proy_inicio_cosecha_siembra = $num_sem_proy;
                     $configuracion->save();
                     dd('ok');
                 }
