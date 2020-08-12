@@ -4,6 +4,9 @@ namespace yura\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
+use yura\Jobs\CicloUpdateCampo;
+use yura\Jobs\ProyeccionUpdateSemanal;
+use yura\Jobs\ResumenSemanaCosecha;
 use yura\Modelos\Ciclo;
 use yura\Modelos\Monitoreo;
 use yura\Modelos\Variedad;
@@ -106,7 +109,6 @@ class ProyectarInicioCosecha extends Command
                     $matriz = [];
                     foreach ($ciclos as $pos => $item) {
                         $modulo = $item['ciclo']->modulo;
-                        $semana = $item['ciclo']->semana();
                         $cant_mon = 1;
                         if ($item['ini_curva'] > 0) {
                             $prom_ini_curva['valor'] += $item['ini_curva'];
@@ -213,11 +215,42 @@ class ProyectarInicioCosecha extends Command
                                 $resultado = $dif_sem > 0 ? ($dif_dia * 7) / $dif_sem : 0;
                                 $resultado = intval($resultado);
                                 $direccion = getSigno($valor - $prom_sem);
+                                $sem_prom_ini_curva = intval($sem_prom_ini_curva);
 
-                                dd($direccion, $valor - $prom_sem, $valor . ' - (' . $prom_sem . ')');
+                                if ($direccion >= 0) {  // adelantar en el tiempo
+                                    $nuevo_inicio_cosecha = $sem_prom_ini_curva - $resultado;
+                                } else {    // atrasar en el tiempo
+                                    $nuevo_inicio_cosecha = $sem_prom_ini_curva + $resultado;
+                                }
+
+                                /* Actualizar inicio de cosecha */
+                                /* ======================== ACTUALIZAR LA TABLA PROYECCION_MODULO_SEMANA FINAL ====================== */
+                                $semana_desde = $item['ciclo']->semana();
+                                $semana_fin = getLastSemanaByVariedad($var->id_variedad);
+
+                                CicloUpdateCampo::dispatch($id_ciclo, 'SemanaCosecha', $nuevo_inicio_cosecha)
+                                    ->onQueue('proy_cosecha/actualizar_semana_cosecha');
+
+                                if ($semana_desde != '')
+                                    ProyeccionUpdateSemanal::dispatch($semana_desde->codigo, $semana_fin->codigo, $var->id_variedad, $item['ciclo']->id_modulo, 0)
+                                        ->onQueue('proy_cosecha/actualizar_semana_cosecha');
+
+                                /* ======================== ACTUALIZAR LA TABLA RESUMEN_COSECHA_SEMANA FINAL ====================== */
+                                ResumenSemanaCosecha::dispatch($semana_desde->codigo, $semana_fin->codigo, $var->id_variedad)
+                                    ->onQueue('proy_cosecha/actualizar_semana_cosecha');
+
+                                $proy_sem_prom_ini_curva['valor'] += $nuevo_inicio_cosecha;
+                                $proy_sem_prom_ini_curva['cantidad']++;
                             }
                         }
                     }
+
+                    /* Calcular inicio de cosecha proyectado */
+                    $num_sem_proy = $proy_sem_prom_ini_curva['cantidad'] > 0 ? intval(round($proy_sem_prom_ini_curva['valor'] / $proy_sem_prom_ini_curva['cantidad'])) : 0;
+                    $configuracion = getConfiguracionEmpresa();
+                    $configuracion->proy_inicio_cosecha = $num_sem_proy;
+                    $configuracion->save();
+                    dd('ok');
                 }
         }
 
