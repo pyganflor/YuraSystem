@@ -1254,17 +1254,15 @@ class CostosController extends Controller
         $actividad = Actividad::find($request->actividad);
 
         $ids = DB::table('costos_semana_mano_obra as c')
-            ->select('c.id_actividad_mano_obra')->distinct();
+            ->select('c.id_actividad_mano_obra', 'mo.nombre')->distinct()
+            ->join('actividad_mano_obra as ap', 'c.id_actividad_mano_obra', '=', 'ap.id_actividad_mano_obra')
+            ->join('mano_obra as mo', 'mo.id_mano_obra', '=', 'ap.id_mano_obra');
         if ($actividad != '')   // una actividad en especifico
             $ids = $ids
-                ->join('actividad_mano_obra as ap', 'c.id_actividad_mano_obra', '=', 'ap.id_actividad_mano_obra')
-                ->join('mano_obra as mo', 'mo.id_mano_obra', '=', 'ap.id_mano_obra')
                 ->where('ap.id_actividad', $actividad->id_actividad);
         else if ($area != '') {
             $ids = $ids
-                ->join('actividad_mano_obra as ap', 'c.id_actividad_mano_obra', '=', 'ap.id_actividad_mano_obra')
                 ->join('actividad as a', 'ap.id_actividad', '=', 'a.id_actividad')
-                ->join('mano_obra as mo', 'mo.id_mano_obra', '=', 'ap.id_mano_obra')
                 ->where('a.id_area', $area->id_area);
         }
         if ($request->criterio == 'V')  // dinero

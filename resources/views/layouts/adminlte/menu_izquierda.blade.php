@@ -20,11 +20,6 @@
         </div>
     </div>--}}
     <!-- sidebar menu: : style can be found in sidebar.less -->
-        <a href="javascript:void(0)" onclick="window.open('http://benchmark.yurasystem.com', '_blank')" class="pull-right"
-           style="margin-right: 5px">
-            <i class="fa fa-fw fa-caret-right"></i>Benchmark
-        </a>
-        <br>
         <ul class="sidebar-menu" data-widget="tree">
             @if(getUsuario(Session::get('id_usuario'))->rol()->estado == 'A')
                 @foreach(getGrupoMenusOfUser(Session::get('id_usuario')) as $g)
@@ -58,6 +53,13 @@
                         </li>
                     @endforeach
                 @endforeach
+                <li class="header mouse-hand" onclick="window.open('http://benchmark.yurasystem.com', '_blank')"
+                    style="color: #e9ecef; border: 1px solid #97979721;" onmouseover="$(this).css('color', '#0b93d5')"
+                    onmouseleave="$(this).css('color', '#e9ecef')">
+                    <span class="pull-right">
+                        <i class="fa fa-fw fa-caret-right"></i> Benchmark
+                    </span>
+                </li>
             @else
                 <li class="header">NADA QUE MOSTRAR</li>
             @endif
