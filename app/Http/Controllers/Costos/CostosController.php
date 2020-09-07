@@ -1232,8 +1232,8 @@ class CostosController extends Controller
     /* ----------------------------------- REPORTE -------------------------------------------- */
     public function reporte_mano_obra(Request $request)
     {
-        $semana_actual = getSemanaByDate(date('Y-m-d'));
-        $semana_desde = getSemanaByDate(opDiasFecha('-', 35, date('Y-m-d')));
+        $semana_actual = getSemanaByDate(opDiasFecha('-', 7, date('Y-m-d')));
+        $semana_desde = getSemanaByDate(opDiasFecha('-', 42, date('Y-m-d')));
         return view('adminlte.gestion.costos.mano_obra.reporte.inicio', [
             'url' => $request->getRequestUri(),
             'submenu' => Submenu::Where('url', '=', substr($request->getRequestUri(), 1))->get()[0],
