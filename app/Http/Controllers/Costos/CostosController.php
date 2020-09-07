@@ -1258,11 +1258,13 @@ class CostosController extends Controller
         if ($actividad != '')   // una actividad en especifico
             $ids = $ids
                 ->join('actividad_mano_obra as ap', 'c.id_actividad_mano_obra', '=', 'ap.id_actividad_mano_obra')
+                ->join('mano_obra as mo', 'mo.id_mano_obra', '=', 'ap.id_mano_obra')
                 ->where('ap.id_actividad', $actividad->id_actividad);
         else if ($area != '') {
             $ids = $ids
                 ->join('actividad_mano_obra as ap', 'c.id_actividad_mano_obra', '=', 'ap.id_actividad_mano_obra')
                 ->join('actividad as a', 'ap.id_actividad', '=', 'a.id_actividad')
+                ->join('mano_obra as mo', 'mo.id_mano_obra', '=', 'ap.id_mano_obra')
                 ->where('a.id_area', $area->id_area);
         }
         if ($request->criterio == 'V')  // dinero
@@ -1272,6 +1274,7 @@ class CostosController extends Controller
         $ids = $ids
             ->where('c.codigo_semana', '>=', $request->desde)
             ->where('c.codigo_semana', '<=', $request->hasta)
+            ->orderBy('mo.nombre')
             ->get();
 
         $list_ids = [];

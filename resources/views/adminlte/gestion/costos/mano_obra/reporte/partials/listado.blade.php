@@ -2,7 +2,7 @@
     <table class="table-bordered table-striped" style="width: 100%; border: 2px solid #9d9d9d; font-size: 0.9em" id="table_costos">
         <thead>
         <tr id="tr_fijo_top_0">
-            <th class="text-left" style="border-color: #9d9d9d; background-color: #e9ecef" colspan="{{count($semanas)*5 + 3}}">
+            <th class="text-left" style="border-color: #9d9d9d; background-color: #e9ecef" colspan="{{count($semanas)*5 + 4}}">
                 <span style="margin-left: 5px; position: sticky; left: 7px !important;">Costos {{$actividad != '' ? '"'.$actividad->nombre.'"' : ''}}</span>
             </th>
         </tr>
@@ -21,11 +21,12 @@
             <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
                 <span style="margin-left: 5px; margin-right: 5px">%</span>
             </th>
+            <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef" rowspan="2">
+                <span style="margin-left: 5px; margin-right: 5px">Acum.</span>
+            </th>
         </tr>
-        </thead>
-        <tfoot>
-        <tr>
-            <th class="text-left th_fijo_left_0" style="border-color: #9d9d9d; background-color: #e9ecef">
+        <tr id="tr_fijo_top_2">
+            <th class="text-left th_fijo_left_0" style="border-color: #9d9d9d; background-color: #e9ecef; z-index: 5 !important;">
                 <span style="margin-left: 5px; margin-right: 5px">Totales</span>
             </th>
             @php
@@ -42,12 +43,16 @@
             <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
                 <span style="margin-left: 5px; margin-right: 5px">{{number_format($total, 2)}}</span>
             </th>
-            <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
+            <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef;">
                 <span style="margin-left: 5px; margin-right: 5px">100%</span>
             </th>
         </tr>
-        </tfoot>
+
+        </thead>
         <tbody>
+        @php
+            $acumulado = 0;
+        @endphp
         @foreach($matriz as $pos_act => $act)
             <tr onmouseover="$(this).css('background-color', '#77dbf9')" onmouseleave="$(this).css('background-color', '')">
                 @php
@@ -74,15 +79,21 @@
                 <td class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
                     <span>{{round(($total_prod / $total) * 100, 2)}}</span>
                 </td>
+                @php
+                    $acumulado += ($total_prod / $total) * 100;
+                @endphp
+                <td class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
+                    <span>{{round($acumulado, 2)}}</span>
+                </td>
             </tr>
         @endforeach
         </tbody>
     </table>
 
     <script>
-        estructura_tabla('table_costos', false, false);
+        $('#table_costos_wrapper .row:first').hide();
 
-        $('#table_costos_wrapper .row:first').hide()
+        estructura_tabla('table_costos', false, false);
     </script>
 
     <style>
@@ -106,6 +117,11 @@
         #tr_fijo_top_1 th {
             position: sticky;
             top: 20px;
+        }
+
+        #tr_fijo_top_2 th {
+            position: sticky;
+            top: 40px;
         }
     </style>
 @else
