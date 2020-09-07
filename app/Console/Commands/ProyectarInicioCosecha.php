@@ -224,7 +224,6 @@ class ProyectarInicioCosecha extends Command
 
                         dump($item['ciclo']->modulo->nombre . ' -> ini:' . $nuevo_inicio_cosecha);
 
-
                         /* Actualizar inicio de cosecha */
                         /* ======================== ACTUALIZAR LA TABLA PROYECCION_MODULO_SEMANA FINAL ====================== */
                         $semana_desde = $item['ciclo']->semana();
