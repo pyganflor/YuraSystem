@@ -225,20 +225,22 @@ class ProyectarInicioCosecha extends Command
                         dump($item['ciclo']->modulo->nombre . ' -> ini:' . $nuevo_inicio_cosecha);
 
                         /* Actualizar inicio de cosecha */
-                        /* ======================== ACTUALIZAR LA TABLA PROYECCION_MODULO_SEMANA FINAL ====================== */
-                        $semana_desde = $item['ciclo']->semana();
-                        $semana_fin = getLastSemanaByVariedad($var->id_variedad);
+                        if($nuevo_inicio_cosecha > 11){
+                          /* ======================== ACTUALIZAR LA TABLA PROYECCION_MODULO_SEMANA FINAL ====================== */
+                          $semana_desde = $item['ciclo']->semana();
+                          $semana_fin = getLastSemanaByVariedad($var->id_variedad);
 
-                        CicloUpdateCampo::dispatch($id_ciclo, 'SemanaCosecha', $nuevo_inicio_cosecha)
-                            ->onQueue('proy_cosecha/actualizar_semana_cosecha');
+                          CicloUpdateCampo::dispatch($id_ciclo, 'SemanaCosecha', $nuevo_inicio_cosecha)
+                              ->onQueue('proy_cosecha/actualizar_semana_cosecha');
 
-                        if ($semana_desde != '')
-                            ProyeccionUpdateSemanal::dispatch($semana_desde->codigo, $semana_fin->codigo, $var->id_variedad, $item['ciclo']->id_modulo, 0)
-                                ->onQueue('proy_cosecha/actualizar_semana_cosecha');
+                          if ($semana_desde != '')
+                              ProyeccionUpdateSemanal::dispatch($semana_desde->codigo, $semana_fin->codigo, $var->id_variedad, $item['ciclo']->id_modulo, 0)
+                                  ->onQueue('proy_cosecha/actualizar_semana_cosecha');
 
-                        /* ======================== ACTUALIZAR LA TABLA RESUMEN_COSECHA_SEMANA FINAL ====================== */
-                        ResumenSemanaCosecha::dispatch($semana_desde->codigo, $semana_fin->codigo, $var->id_variedad)
-                            ->onQueue('proy_cosecha/actualizar_semana_cosecha');
+                          /* ======================== ACTUALIZAR LA TABLA RESUMEN_COSECHA_SEMANA FINAL ====================== */
+                          ResumenSemanaCosecha::dispatch($semana_desde->codigo, $semana_fin->codigo, $var->id_variedad)
+                              ->onQueue('proy_cosecha/actualizar_semana_cosecha');
+                        }
 
                         $proy_sem_prom_ini_curva['valor'] += $nuevo_inicio_cosecha;
                         $proy_sem_prom_ini_curva['cantidad']++;

@@ -85,7 +85,7 @@ class Venta
                 ->where('codigo_semana', '>=', $desde_sem->codigo)
                 ->where('codigo_semana', '<=', $hasta_sem->codigo)
                 ->get()[0]->cant;
-
+                
             $semana_desde = getSemanaByDate(opDiasFecha('-', 112, $desde_sem->fecha_inicial));   // 16 semanas atras
             $semana_hasta = $desde_sem;
 

@@ -146,27 +146,27 @@
                 <div class='row'>
                     <div class='col-md-2'>
                         <input type='checkbox' id='factura_cliente' name='factura_cliente' style='position:relative;top:3px'
-                                {{isset($dataCliente) && $dataCliente->cliente->fc ? 'checked' : '' }}>
+                                {{isset($dataCliente) && $dataCliente!=""  && $dataCliente->cliente->fc ? 'checked' : '' }}>
                         <label style='font-weight:600' for='factura_cliente'>Factura del cliente</label>
                     </div>
                     <div class='col-md-2'>
                         <input type='checkbox' id='csv_etiqueta' name='csv_etiqueta' style='position:relative;top:3px'
-                            {{isset($dataCliente) && $dataCliente->cliente->csv ? 'checked' : '' }}>
+                            {{isset($dataCliente) && $dataCliente!="" && $dataCliente->cliente->csv ? 'checked' : '' }}>
                         <label style='font-weight:600' for='csv_etiqueta'>CSV de etiquetas</label>
                     </div>
                     <div class='col-md-2'>
                         <input type='checkbox' id='packing_list' name='packing_list' style='position:relative;top:3px'
-                            {{isset($dataCliente) && $dataCliente->cliente->le ? 'checked' : '' }}>
+                            {{isset($dataCliente) && $dataCliente!="" && $dataCliente->cliente->le ? 'checked' : '' }}>
                         <label style='font-weight:600' for='packing_list'>Lista de empaque</label>
                     </div>
                     <div class='col-md-2'>
                         <input type='checkbox' id='dist_cajas' name='dist_cajas' style='position:relative;top:3px'
-                            {{isset($dataCliente) && $dataCliente->cliente->dc ? 'checked' : '' }}>
+                            {{isset($dataCliente)  && $dataCliente!="" && $dataCliente->cliente->dc ? 'checked' : '' }}>
                         <label style='font-weight:600' for='dist_cajas'>Lista de distribución</label>
                         </div>
                     <div class='col-md-2'>
                         <input type='checkbox' id='factura_sri' name='factura_sri' style='position:relative;top:3px'
-                            {{isset($dataCliente) && $dataCliente->cliente->fc_sri ? 'checked' : '' }}>
+                            {{isset($dataCliente) && $dataCliente!="" && $dataCliente->cliente->fc_sri ? 'checked' : '' }}>
                         <label style='font-weight:600' for='factura_sri'>Factura del SRI</label>
                     </div>
                 </div>
