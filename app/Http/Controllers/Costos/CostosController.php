@@ -1383,7 +1383,7 @@ class CostosController extends Controller
     public function costos_generales(Request $request)
     {
         $semana_actual = getSemanaByDate(opDiasFecha('-', 7, date('Y-m-d')));
-        $semana_desde = getSemanaByDate(opDiasFecha('-', 35, date('Y-m-d')));
+        $semana_desde = getSemanaByDate(opDiasFecha('-', 42, date('Y-m-d')));
         return view('adminlte.gestion.costos.generales.inicio', [
             'url' => $request->getRequestUri(),
             'submenu' => Submenu::Where('url', '=', substr($request->getRequestUri(), 1))->get()[0],
