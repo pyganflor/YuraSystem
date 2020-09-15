@@ -54,7 +54,7 @@ class UpdateResumenTotal extends Command
             if ($desde_par != 0)
                 $semana_desde = Semana::All()->where('estado', 1)->where('codigo', $desde_par)->first();
             else
-                $semana_desde = getSemanaByDate(date('Y-m-d'));
+                $semana_desde = getSemanaByDate(opDiasFecha('-', 42, date('Y-m-d')));
             if ($hasta_par != 0)
                 $semana_hasta = Semana::All()->where('estado', 1)->where('codigo', $hasta_par)->first();
             else
