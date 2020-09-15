@@ -1329,14 +1329,14 @@ class CostosController extends Controller
         $actividad = Actividad::find($request->actividad);
 
         $ids = DB::table('costos_semana as c')
+            ->join('actividad_producto as ap', 'c.id_actividad_producto', '=', 'ap.id_actividad_producto')
+            ->join('producto as p', 'p.id_producto', '=', 'ap.id_producto')
             ->select('c.id_actividad_producto')->distinct();
         if ($actividad != '')   // una actividad en especifico
             $ids = $ids
-                ->join('actividad_producto as ap', 'c.id_actividad_producto', '=', 'ap.id_actividad_producto')
                 ->where('ap.id_actividad', $actividad->id_actividad);
         else if ($area != '') {
             $ids = $ids
-                ->join('actividad_producto as ap', 'c.id_actividad_producto', '=', 'ap.id_actividad_producto')
                 ->join('actividad as a', 'ap.id_actividad', '=', 'a.id_actividad')
                 ->where('a.id_area', $area->id_area);
         }
@@ -1347,6 +1347,7 @@ class CostosController extends Controller
         $ids = $ids
             ->where('c.codigo_semana', '>=', $request->desde)
             ->where('c.codigo_semana', '<=', $request->hasta)
+            ->orderBy('p.nombre')
             ->get();
 
         $list_ids = [];

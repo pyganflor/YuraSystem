@@ -21,11 +21,10 @@
             <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
                 <span style="margin-left: 5px; margin-right: 5px">%</span>
             </th>
-            <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef" rowspan="2">
-                <span style="margin-left: 5px; margin-right: 5px">Acum.</span>
+            <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
             </th>
         </tr>
-        <tr id="tr_fijo_top_2">
+        <tr id="tr_fijo_top_2" onclick="recalcular_acumulados()">
             <th class="text-left th_fijo_left_0" style="border-color: #9d9d9d; background-color: #e9ecef; z-index: 5 !important;">
                 <span style="margin-left: 5px; margin-right: 5px">Totales</span>
             </th>
@@ -45,6 +44,9 @@
             </th>
             <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef;">
                 <span style="margin-left: 5px; margin-right: 5px">100%</span>
+            </th>
+            <th class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
+                <span style="margin-left: 5px; margin-right: 5px">Acum.</span>
             </th>
         </tr>
 
@@ -78,12 +80,13 @@
                 </td>
                 <td class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
                     <span>{{round(($total_prod / $total) * 100, 2)}}</span>
+                    <input type="hidden" value="{{round(($total_prod / $total) * 100, 2)}}" class="porcentaje_parcial">
                 </td>
                 @php
                     $acumulado += ($total_prod / $total) * 100;
                 @endphp
                 <td class="text-center" style="border-color: #9d9d9d; background-color: #e9ecef">
-                    <span>{{round($acumulado, 2)}}</span>
+                    <span class="acumulado_parcial">{{round($acumulado, 2)}}</span>
                 </td>
             </tr>
         @endforeach
@@ -94,6 +97,17 @@
         $('#table_costos_wrapper .row:first').hide();
 
         estructura_tabla('table_costos', false, false);
+
+        function recalcular_acumulados() {
+            list_porc_parcial = $('.porcentaje_parcial');
+            list_acum_parcial = $('.acumulado_parcial');
+            acum = 0;
+            for (i = 0; i < list_porc_parcial.length; i++) {
+                porc_parcial = list_porc_parcial[i];
+                acum += parseFloat(porc_parcial.value);
+                list_acum_parcial[i].innerHTML = acum > 100 ? 100 : Math.round(acum * 100) / 100;
+            }
+        }
     </script>
 
     <style>
