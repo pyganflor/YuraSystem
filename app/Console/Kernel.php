@@ -6,6 +6,7 @@ use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use yura\Console\Commands\CicloPrimeraFlor;
 use yura\Console\Commands\cronImportarCostos;
+use yura\Console\Commands\cronImportarCostosDetails;
 use yura\Console\Commands\DeleteRecepciones;
 use yura\Console\Commands\EmpaquetarPedidosAnulados;
 use yura\Console\Commands\FechaFinalCiclo;
@@ -26,6 +27,7 @@ use yura\Console\Commands\ResumenVentaDiariaMesAnterior;
 use yura\Console\Commands\UpdateRegalias;
 use yura\Console\Commands\UpdateResumenTotal;
 use yura\Console\Commands\UpdateTemperaturasByModulo;
+use yura\Console\Commands\UploadCostosMasivoDetails;
 use yura\Console\Commands\VentaSemanalReal;
 use yura\Console\Commands\PrecioVariedadCliente;
 use yura\Console\Commands\ResumenSemanaCosecha;
@@ -63,6 +65,8 @@ class Kernel extends ConsoleKernel
         UpdateTemperaturasByModulo::class,
         cronImportarCostos::class,
         ProyectarInicioCosecha::class,
+        UploadCostosMasivoDetails::class,
+        cronImportarCostosDetails::class,
     ];
 
     /**

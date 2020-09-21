@@ -35,8 +35,14 @@
         </ol>
     </section>
 
+    {{-- Importar excel con resumen de totales por semana --}}
     <section class="content">
         <div class="box box-primary">
+            <div class="box-header">
+                <div class="box-title">
+                    Importar archivo excel con resumen de totales por semana
+                </div>
+            </div>
             <div class="box-body">
                 <form id="form-importar_costos" action="{{url('costos_importar/importar_file_costos')}}" method="POST">
                     {!! csrf_field() !!}
@@ -76,6 +82,53 @@
                 </form>
             </div>
         </div>
+
+        {{-- Importar directo desde el venture --}}
+        <div class="box box-primary">
+            <div class="box-header">
+                <div class="box-title">
+                    Importar archivo excel detallado por fechas
+                </div>
+            </div>
+            <div class="box-body">
+                <form id="form-importar_costos_details" action="{{url('costos_importar/importar_file_costos_details')}}" method="POST">
+                    {!! csrf_field() !!}
+                    <div class="input-group">
+                        <span class="input-group-addon" style="background-color: #e9ecef">
+                            Concepto
+                        </span>
+                        <select name="concepto_importar_details" id="concepto_importar_details" class="form-control input-group-addon">
+                            <option value="I">Insumos</option>
+                            <option value="M">Mano de Obra</option>
+                        </select>
+                        <span class="input-group-addon" style="background-color: #e9ecef">
+                            Archivo
+                        </span>
+                        <input type="file" id="file_costos_details" name="file_costos_details" required class="form-control input-group-addon"
+                               accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel">
+                        <span class="input-group-addon" style="background-color: #e9ecef">
+                            Criterio
+                        </span>
+                        <select name="criterio_importar_details" id="criterio_importar_details" class="form-control input-group-addon">
+                            <option value="V">Dinero</option>
+                            <option value="C">Cantidad</option>
+                        </select>
+                        <span class="input-group-addon" style="background-color: #e9ecef">
+                            Acción
+                        </span>
+                        <select name="sobreescribir_importar_details" id="sobreescribir_importar_details" class="form-control input-group-addon">
+                            <option value="S">Sobreescribir</option>
+                            <option value="I">Sumar a lo anterior</option>
+                        </select>
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-primary" onclick="importar_file_costos_details()">
+                                <i class="fa fa-fw fa-check"></i>
+                            </button>
+                        </span>
+                    </div>
+                </form>
+            </div>
+        </div>
     </section>
 @endsection
 
@@ -85,6 +138,45 @@
             if ($('#form-importar_costos').valid()) {
                 $.LoadingOverlay('show');
                 formulario = $('#form-importar_costos');
+                var formData = new FormData(formulario[0]);
+                //hacemos la petición ajax
+                $.ajax({
+                    url: formulario.attr('action'),
+                    type: 'POST',
+                    data: formData,
+                    dataType: 'json',
+                    //necesario para subir archivos via ajax
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+
+                    success: function (retorno2) {
+                        notificar('Se ha importado un archivo', '{{url('costos_gestion')}}');
+                        if (retorno2.success) {
+                            $.LoadingOverlay('hide');
+                            alerta_accion(retorno2.mensaje, function () {
+                                //location.reload();
+                            });
+                        } else {
+                            alerta(retorno2.mensaje);
+                            $.LoadingOverlay('hide');
+                        }
+                    },
+                    //si ha ocurrido un error
+                    error: function (retorno2) {
+                        console.log(retorno2);
+                        alerta(retorno2.responseText);
+                        alert('Hubo un problema en el envío de la información');
+                        $.LoadingOverlay('hide');
+                    }
+                });
+            }
+        }
+
+        function importar_file_costos_details() {
+            if ($('#form-importar_costos_details').valid()) {
+                $.LoadingOverlay('show');
+                formulario = $('#form-importar_costos_details');
                 var formData = new FormData(formulario[0]);
                 //hacemos la petición ajax
                 $.ajax({

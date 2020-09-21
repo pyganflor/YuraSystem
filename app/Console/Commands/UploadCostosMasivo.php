@@ -31,7 +31,7 @@ class UploadCostosMasivo extends Command
      *
      * @var string
      */
-    protected $description = 'Comando para subir los costos masivamente';
+    protected $description = 'Comando para subir los costos mediante un excel con el resumen de totales por semana';
 
     /**
      * Create a new command instance.
@@ -78,13 +78,18 @@ class UploadCostosMasivo extends Command
                     if ($concepto_importar == 'I') { // insumos
                         $producto = Producto::All()->where('estado', 1)
                             ->where('nombre', str_limit(mb_strtoupper(espacios($row['B'])), 250))->first();
+                        /*if ($producto == '') {
+                            $producto = new Producto();
+                            $producto->nombre = str_limit(mb_strtoupper(espacios($row['B'])), 250);
+                            $producto->fecha_registro = date('Y-m-d');
+                            $producto->save();
+                        }*/
                         $concepto = 'insumo';
                     } else {    // mano de obra
                         $producto = ManoObra::All()->where('estado', 1)
                             ->where('nombre', str_limit(mb_strtoupper(espacios($row['B'])), 250))->first();
                         $concepto = 'mano de obra';
                     }
-
                     if ($actividad != '' && $producto != '') {
                         if ($concepto_importar == 'I') // insumos
                             $act_prod = ActividadProducto::All()

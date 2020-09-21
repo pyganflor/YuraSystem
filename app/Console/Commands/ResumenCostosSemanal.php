@@ -50,7 +50,7 @@ class ResumenCostosSemanal extends Command
         Log::info('<<<<< ! >>>>> Ejecutando comando "costos:update_semanal" <<<<< ! >>>>>');
 
         $semana_actual = getSemanaByDate(date('Y-m-d'));
-        $semana_desde = getSemanaByDate(opDiasFecha('-', 42, date('Y-m-d')));
+        $semana_desde = getSemanaByDate(opDiasFecha('-', 7, date('Y-m-d')));
 
         $desde_par = $this->argument('desde') != 0 ? $this->argument('desde') : $semana_desde->codigo;
         $hasta_par = $this->argument('hasta') != 0 ? $this->argument('hasta') : $semana_actual->codigo;

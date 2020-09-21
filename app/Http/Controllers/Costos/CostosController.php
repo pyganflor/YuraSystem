@@ -894,6 +894,44 @@ class CostosController extends Controller
         ];
     }
 
+    public function importar_file_costos_details(Request $request)
+    {
+        ini_set('max_execution_time', env('MAX_EXECUTION_TIME'));
+        $valida = Validator::make($request->all(), [
+            'file_costos_details' => 'required',
+        ]);
+        $msg = '<div class="alert alert-info text-center">Se ha importado el archivo, en menos de una hora se reflejarán los datos en el sistema</div>';
+        $success = true;
+        if (!$valida->fails()) {
+            $archivo = $request->file_costos_details;
+            $extension = $archivo->getClientOriginalExtension();
+            $nombre_archivo = "costos_" . $request->concepto_importar_details . "_details." . $extension;
+            $r1 = Almacenamiento::disk('pdf_loads')->put($nombre_archivo, \File::get($archivo));
+
+            $url = public_path('storage\pdf_loads\\' . $nombre_archivo);
+        } else {
+            $errores = '';
+            foreach ($valida->errors()->all() as $mi_error) {
+                if ($errores == '') {
+                    $errores = '<li>' . $mi_error . '</li>';
+                } else {
+                    $errores .= '<li>' . $mi_error . '</li>';
+                }
+            }
+            $success = false;
+            $msg = '<div class="alert alert-danger">' .
+                '<p class="text-center">¡Por favor corrija los siguientes errores!</p>' .
+                '<ul>' .
+                $errores .
+                '</ul>' .
+                '</div>';
+        }
+        return [
+            'mensaje' => $msg,
+            'success' => $success,
+        ];
+    }
+
     /* =================================== MANO OBRA ======================================= */
     public function gestion_mano_obra(Request $request)
     {

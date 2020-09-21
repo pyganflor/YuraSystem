@@ -230,7 +230,7 @@ class ComprobanteController extends Controller
                 $serie = getDetallesClaveAcceso($dataComprobante[0]->clave_acceso, 'SERIE');
                 $tipo_emision = getDetallesClaveAcceso($dataComprobante[0]->clave_acceso, 'TIPO_EMISION');
                 $punto_acceso =  getDetallesClaveAcceso($dataComprobante[0]->clave_acceso, 'PUNTO_ACCESO');
-                $serie = '001' . $punto_acceso;*/
+                $serie = '002' . $punto_acceso;*/
 
                 $request->id_comprobante == null
                     ? $id_pedido = getEnvio($request->id_envio)->pedido->id_pedido
@@ -261,7 +261,7 @@ class ComprobanteController extends Controller
                         : $secuencial = getSecuencial('01',getConfiguracionEmpresa($envio->pedido->id_configuracion_empresa));*/
 
                     $punto_acceso = getUsuario(session('id_usuario'))->punto_acceso;
-                    $serie = '001' . $punto_acceso;
+                    $serie = '002' . $punto_acceso;
 
                     isset($envio->pedido->clave_acceso_temporal)
                         ? $secuencial = $envio->pedido->clave_acceso_temporal
@@ -299,7 +299,7 @@ class ComprobanteController extends Controller
                 'ruc' => $ruc,
                 'claveAcceso' => $claveAcceso,
                 'codDoc' => '01',
-                'estab' => '001',
+                'estab' => '002',
                 'ptoEmi' => $punto_acceso,
                 'secuencial' => $secuencial,
                 'dirMatriz' => $datosEmpresa->direccion_matriz
@@ -855,7 +855,7 @@ class ComprobanteController extends Controller
         $tipoComprobante = '00';
         $ruc = getConfiguracionEmpresa($request->id_configuracion_empresa)->ruc;
         $entorno = env('ENTORNO');
-        $serie = '001' . $punto_acceso;
+        $serie = '002' . $punto_acceso;
         $tipo_emision = '1';
         $codigo_numerico = env('CODIGO_NUMERICO');
         $cadena = $fechaEmision . $tipoComprobante . $ruc . $entorno . $serie . $secuencial . $codigo_numerico . $tipo_emision;
@@ -1210,7 +1210,7 @@ class ComprobanteController extends Controller
                     $tipoComprobante = '06';
                     $entorno = env('ENTORNO');
                     $punto_acceso = getUsuario(session('id_usuario'))->punto_acceso;
-                    $serie = '001' . $punto_acceso;
+                    $serie = '002' . $punto_acceso;
                     $tipo_emision = '1';
                 }
 
@@ -1233,7 +1233,7 @@ class ComprobanteController extends Controller
                     'ruc' => $ruc,
                     'claveAcceso' => $claveAcceso,
                     'codDoc' => '06',
-                    'estab' => '001',
+                    'estab' => '002',
                     'ptoEmi' => $punto_acceso,
                     'secuencial' => $secuencial,
                     'dirMatriz' => $datosEmpresa->direccion_matriz
@@ -1426,7 +1426,7 @@ class ComprobanteController extends Controller
             $fechaEmision = Carbon::now()->format('dmY');
             if(!$valida->fails()) {
                 $ruc = getComprobante($request->id_comprobante)->empresa->ruc;
-                $serie = '001'. getUsuario(session('id_usuario'))->punto_acceso;;
+                $serie = '002'. getUsuario(session('id_usuario'))->punto_acceso;;
                 $tipo_emision = '1';
                 $datosEmpresa = getComprobante($request->id_comprobante)->empresa;
                 $secuencial = $serie.getSecuencial('06',getComprobante($request->id_comprobante)->empresa);
@@ -2009,7 +2009,7 @@ class ComprobanteController extends Controller
                     $cadena = file_get_contents(env('PATH_XML_AUTORIZADOS').$carpeta.$arhcivo.$comprobante->secuencial.'.xml');
                     $objXmlAutorizado = simplexml_load_string($cadena);
                     $objComprobante = Comprobante::find($comprobante->id_comprobante);
-                    $secuencial = "001".getDetallesClaveAcceso((String)$objXmlAutorizado->numeroAutorizacion, 'PUNTO_ACCESO').getDetallesClaveAcceso((String)$objXmlAutorizado->numeroAutorizacion, 'SECUENCIAL');
+                    $secuencial = "002".getDetallesClaveAcceso((String)$objXmlAutorizado->numeroAutorizacion, 'PUNTO_ACCESO').getDetallesClaveAcceso((String)$objXmlAutorizado->numeroAutorizacion, 'SECUENCIAL');
 
                     if($secuencial ===  $comprobante->secuencial){
                         if((String)$objXmlAutorizado->estado === "AUTORIZADO"){
@@ -2021,7 +2021,7 @@ class ComprobanteController extends Controller
                                 'estado' => 5,
                                 'clave_acceso' => (String)$objXmlAutorizado->numeroAutorizacion,
                                 'fecha_autorizacion' => $fecha ." ".$hora,
-                                'numero_comprobante' => "001-".getDetallesClaveAcceso((String)$objXmlAutorizado->numeroAutorizacion, 'PUNTO_ACCESO')."-".getDetallesClaveAcceso((String)$objXmlAutorizado->numeroAutorizacion, 'SECUENCIAL'),
+                                'numero_comprobante' => "002-".getDetallesClaveAcceso((String)$objXmlAutorizado->numeroAutorizacion, 'PUNTO_ACCESO')."-".getDetallesClaveAcceso((String)$objXmlAutorizado->numeroAutorizacion, 'SECUENCIAL'),
                                 'ambiente' => ((String)$objXmlAutorizado->ambiente == "PRODUCCIÓN") ? 2 : 1
                             ]);
                             if($save){
@@ -2266,7 +2266,7 @@ class ComprobanteController extends Controller
             $serie = getDetallesClaveAcceso($dataComprobante[0]->clave_acceso, 'SERIE');
             $tipo_emision = getDetallesClaveAcceso($dataComprobante[0]->clave_acceso, 'TIPO_EMISION');
             $punto_acceso =  getDetallesClaveAcceso($dataComprobante[0]->clave_acceso, 'PUNTO_ACCESO');
-            $serie = '001' . $punto_acceso;*/
+            $serie = '002' . $punto_acceso;*/
 
             $data['id_comprobante'] == null
                 ? $id_pedido = getEnvio($data['id_envio'])->pedido->id_pedido
@@ -2297,7 +2297,7 @@ class ComprobanteController extends Controller
                     : $secuencial = getSecuencial('01',getConfiguracionEmpresa($envio->pedido->id_configuracion_empresa));*/
 
                 $punto_acceso = getUsuario(session('id_usuario'))->punto_acceso;
-                $serie = '001' . $punto_acceso;
+                $serie = '002' . $punto_acceso;
 
                 isset($envio->pedido->clave_acceso_temporal)
                     ? $secuencial = $envio->pedido->clave_acceso_temporal
@@ -2615,7 +2615,7 @@ class ComprobanteController extends Controller
         $obj_comprobante->peso = number_format(($peso_neto/1000)+($peso_caja/1000),2,".","");
         $obj_comprobante->ambiente = env('ENTORNO');
         $obj_comprobante->ficticio=true;
-        $obj_comprobante->secuencial = !isset($secuencial) ? '001002'.$data['numero_ficticio'] : $secuencial;
+        $obj_comprobante->secuencial = !isset($secuencial) ? '002002'.$data['numero_ficticio'] : $secuencial;
         $obj_comprobante->estado = 1;
 
         if ($obj_comprobante->save()) {
