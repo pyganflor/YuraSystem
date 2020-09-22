@@ -49,6 +49,7 @@ class ProyectarCurva extends Command
         $poda_siembra = ['P', 'S'];
         foreach (getVariedades() as $var) {
             foreach ($poda_siembra as $ps) {
+                dump($var->siglas . ', ' . $ps);
                 /* Consultar data */
                 $sem_desde = getSemanaByDate(opDiasFecha('-', 70, date('Y-m-d')));
                 $sem_pasada = getSemanaByDate(opDiasFecha('-', 7, date('Y-m-d')));
@@ -244,7 +245,23 @@ class ProyectarCurva extends Command
                         dump($c->modulo->nombre . ' - ' . $num_sem . ', rango de temperatura promedio: ' . $curva_prom);
                         $nueva_curva = $curva_prom;
 
+                        if ($nueva_curva != '') {
+                            /* Actualizar inicio de cosecha */
+                            /* ======================== ACTUALIZAR LA TABLA PROYECCION_MODULO_SEMANA FINAL ====================== */
+                            $semana_desde = $c->semana();
+                            $semana_fin = getLastSemanaByVariedad($var->id_variedad);
 
+                            /*CicloUpdateCampo::dispatch($c->id_ciclo, 'Curva', $nueva_curva)
+                                ->onQueue('proy_cosecha/actualizar_curva');
+
+                            if ($semana_desde != '')
+                                ProyeccionUpdateSemanal::dispatch($semana_desde->codigo, $semana_fin->codigo, $var->id_variedad, $c->id_modulo, 0)
+                                    ->onQueue('proy_cosecha/actualizar_curva');*/
+
+                            /* ======================== ACTUALIZAR LA TABLA RESUMEN_COSECHA_SEMANA FINAL ====================== */
+                            /*ResumenSemanaCosecha::dispatch($semana_desde->codigo, $semana_fin->codigo, $var->id_variedad)
+                                ->onQueue('proy_cosecha/actualizar_curva');*/
+                        }
                     }
                 }
             }
