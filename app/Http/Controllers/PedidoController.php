@@ -972,7 +972,7 @@ class PedidoController extends Controller
         $comprobante->save();
         return [
             'success' => true,
-            'mensaje' => ''
+            'mensaje' => '<div class="alert alert-success text-center">Se ha modificado satisfactoriamente el comprobante</div>'
         ];
     }
 }
