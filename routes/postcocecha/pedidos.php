@@ -20,3 +20,4 @@ Route::get('pedidos/desglose_pedido/{id_pedido}', 'PedidoController@desglose_ped
 Route::get('pedidos/documento_pre_factura/{secuencial}/{cliente?}', 'ComprobanteController@ver_pre_factura_bd');
 Route::post('pedidos/cambia_tipo_pedido','PedidoController@cambia_tipo_pedido');
 Route::get('pedidos/modificar_comprobante','PedidoController@modificar_comprobante');
+Route::post('pedidos/update_comprobante','PedidoController@update_comprobante');

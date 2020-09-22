@@ -964,4 +964,15 @@ class PedidoController extends Controller
             'comprobante' => $comprobante,
         ]);
     }
+
+    public function update_comprobante(Request $request)
+    {
+        $comprobante = Comprobante::find($request->id_comprobante);
+        $comprobante->secuencial = $request->secuencial;
+        $comprobante->save();
+        return [
+            'success' => true,
+            'mensaje' => ''
+        ];
+    }
 }
