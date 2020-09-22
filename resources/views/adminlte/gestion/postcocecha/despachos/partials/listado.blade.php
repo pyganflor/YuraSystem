@@ -181,7 +181,8 @@
                                                     @else
                                                         <input type="number" name="orden_despacho" id="{{$pedido->id_pedido}}"
                                                                class="form-control orden_despacho id_configuracion_empresa_{{isset($ped->id_configuracion_empresa) ? $ped->id_configuracion_empresa : ""}}"
-                                                               min="1" style="width: 56px;border:none;text-align: center" {{isset($id_configuracion_empresa) ? "" : "disabled"}}>
+                                                               min="1"
+                                                               style="width: 56px;border:none;text-align: center" {{isset($id_configuracion_empresa) ? "" : "disabled"}}>
                                                     @endif
                                                 </td>
                                             @endif
@@ -354,8 +355,8 @@
                                                         <button type="button" class="btn btn-default btn-xs"
                                                                 title="{{(isset($ped->envios[0]->comprobante) && $ped->envios[0]->comprobante->estado != 1 ) ? "Ver pedido" : "Editar pedido"}}"
                                                                 onclick="editar_pedido('{{$pedido->id_cliente}}','{{$pedido->id_pedido}}',
-                                                                    '{{(isset($ped->envios[0]->comprobante) && $ped->envios[0]->comprobante->ficticio) ? $ped->envios[0]->comprobante->secuencial : ''}}',
-                                                                    '{{(isset($ped->envios[0]->comprobante) && !$ped->envios[0]->comprobante->ficticio) ? $ped->envios[0]->comprobante->secuencial : ''}}')">
+                                                                        '{{(isset($ped->envios[0]->comprobante) && $ped->envios[0]->comprobante->ficticio) ? $ped->envios[0]->comprobante->secuencial : ''}}',
+                                                                        '{{(isset($ped->envios[0]->comprobante) && !$ped->envios[0]->comprobante->ficticio) ? $ped->envios[0]->comprobante->secuencial : ''}}')">
                                                             @if((isset($ped->envios[0]->comprobante) && $ped->envios[0]->comprobante->estado != 1 ))
                                                                 <i class="fa fa-eye" aria-hidden="true"></i>
                                                             @else
@@ -363,7 +364,8 @@
                                                             @endif
                                                         </button>
                                                     @endif
-                                                    <a target="_blank" class="btn btn btn-success btn-xs" href="{{url('pedidos/desglose_pedido',[$ped->id_pedido])}}"
+                                                    <a target="_blank" class="btn btn btn-success btn-xs"
+                                                       href="{{url('pedidos/desglose_pedido',[$ped->id_pedido])}}"
                                                        title="Ver desglose del pedido"><i class="fa fa-file-text-o"></i>
                                                     </a>
                                                     @if((isset($ped->envios[0]->comprobante) && $ped->envios[0]->comprobante->estado != 6) || !isset($ped->envios[0]->comprobante))
@@ -404,6 +406,12 @@
                                                                     <i class="fa fa-usd" aria-hidden="true"></i>
                                                                 </button>
                                                             @endif
+
+                                                            <button class="btn btn-danger btn-xs" title="Modificar Comprobante"
+                                                                    onclick="modificar_comprobante('{{$pedido->id_pedido}}')">
+                                                                <i class="fa fa-fw fa-exclamation-triangle"></i>
+                                                            </button>
+
                                                         @else
                                                             {{--<a target="_blank" href="{{url('pedidos/ver_factura_pedido',$pedido->id_pedido)}}" class="btn btn-default btn-xs" title="Ver factura SRI">
                                                                 <i class="fa fa-eye" aria-hidden="true"></i>

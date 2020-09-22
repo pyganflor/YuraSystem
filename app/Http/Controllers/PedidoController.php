@@ -111,8 +111,8 @@ class PedidoController extends Controller
         $valida = Validator::make($request->all(), [
             'arrDataPedido' => 'Array',
             'id_cliente' => 'required',
-            'numero_ficticio' =>'required_if:factura_ficticia,true'
-        ],[
+            'numero_ficticio' => 'required_if:factura_ficticia,true'
+        ], [
             'numero_ficticio.required_if' => 'Debe colocar el número manualmente para la factura'
         ]);
 
@@ -146,7 +146,7 @@ class PedidoController extends Controller
                             ->join('impuesto_desglose_envio_factura as idef', 'def.id_desglose_envio_factura', 'idef.id_desglose_envio_factura')
                             ->select('clave_acceso', 'comprobante.id_comprobante', 'comprobante.secuencial')->get();
 
-                        if ($dataComprobante->count() > 0 && $request->factura_ficticia=='false') {
+                        if ($dataComprobante->count() > 0 && $request->factura_ficticia == 'false') {
                             $objComprobante = Comprobante::find($dataComprobante[0]->id_comprobante);
                             $objComprobante->habilitado = false;
                             $objComprobante->id_envio = null;
@@ -157,8 +157,8 @@ class PedidoController extends Controller
                                 if (file_exists($archivo_generado)) unlink($archivo_generado);
                                 if (file_exists($archivo_firmado)) unlink($archivo_firmado);
                             }
-                        }else{
-                            if(isset($dataComprobante[0]))
+                        } else {
+                            if (isset($dataComprobante[0]))
                                 Comprobante::destroy($dataComprobante[0]->id_comprobante);
                         }
 
@@ -223,8 +223,8 @@ class PedidoController extends Controller
                             $modelDetallePedido = DetallePedido::all()->last();
 
                             //GUARDAR LOS RAMOS X CAJAS MODIFICADOS EN EL PEDIDO DE CADA DETALLE_SPECIFICACION_EMPAQUE
-                            if(isset($item['arr_custom_ramos_x_caja']) && count($item['arr_custom_ramos_x_caja'])>0){
-                                foreach($item['arr_custom_ramos_x_caja'] as $z => $customRamosXCaja){
+                            if (isset($item['arr_custom_ramos_x_caja']) && count($item['arr_custom_ramos_x_caja']) > 0) {
+                                foreach ($item['arr_custom_ramos_x_caja'] as $z => $customRamosXCaja) {
                                     $objDetEspEmpRxC = new DetalleEspecificacionEmpaqueRamosCaja;
                                     $objDetEspEmpRxC->id_detalle_pedido = $modelDetallePedido->id_detalle_pedido;
                                     $objDetEspEmpRxC->id_detalle_especificacionempaque = $customRamosXCaja['id_det_esp_emp'];
@@ -233,13 +233,13 @@ class PedidoController extends Controller
                                     $objDetEspEmpRxC->save();
                                 }
 
-                                if(($z+1) < count($item['arr_custom_ramos_x_caja'])){
+                                if (($z + 1) < count($item['arr_custom_ramos_x_caja'])) {
                                     Pedido::destroy($model->id_pedido);
                                     return [
                                         'success' => false,
                                         'mensaje' => '<div class="alert alert-danger text-center">' .
-                                                        '<p> Hubo un error al guardar la información del pedido en el sistema, intente nuevamente, si el error persiste contacte al área de sistemas</p>'
-                                                   . '</div>'
+                                            '<p> Hubo un error al guardar la información del pedido en el sistema, intente nuevamente, si el error persiste contacte al área de sistemas</p>'
+                                            . '</div>'
                                     ];
                                 }
                             }
@@ -333,19 +333,19 @@ class PedidoController extends Controller
                             //LLAMAR A LA FUNCIÓN ESTÁTICA PARA ACTUALIZAR LA FACTURA
                             ComprobanteController::actualizar_comprobante_factura($data_actualizar_factura);
 
-                        }else{
+                        } else {
 
                             //CREA UN COMPROBANTE FICTICIO
-                            if($request->factura_ficticia=='true'){
-                                $data=[
-                                    'id_envio'=>$modelEnvio->id_envio,
+                            if ($request->factura_ficticia == 'true') {
+                                $data = [
+                                    'id_envio' => $modelEnvio->id_envio,
                                     'update' => !empty($request->id_pedido),
-                                    'id_comprobante' => empty($request->id_pedido) ?  null :(isset($dataComprobante[0]) ? $dataComprobante[0]->id_comprobante : null),
+                                    'id_comprobante' => empty($request->id_pedido) ? null : (isset($dataComprobante[0]) ? $dataComprobante[0]->id_comprobante : null),
                                     'numero_ficticio' => $request->numero_ficticio,
-                                    'cant_variedades'=>$modelEnvio->pedido->catntidad_det_esp_emp(),
-                                    'fecha_pedido'=> $fechaFormateada
+                                    'cant_variedades' => $modelEnvio->pedido->catntidad_det_esp_emp(),
+                                    'fecha_pedido' => $fechaFormateada
                                 ];
-                                if(ComprobanteController::crear_comprobante_ficticio($data)){
+                                if (ComprobanteController::crear_comprobante_ficticio($data)) {
 
                                 }
                             }
@@ -504,9 +504,9 @@ class PedidoController extends Controller
     {
         $pedido = getPedido($request->id_pedido);
 
-        if(isset($pedido->envios[0]->comprobante) && $pedido->envios[0]->comprobante->ficticio){
+        if (isset($pedido->envios[0]->comprobante) && $pedido->envios[0]->comprobante->ficticio) {
             Comprobante::destroy($pedido->envios[0]->comprobante->id_comprobante);
-        }else{
+        } else {
             if (isset($pedido->envios[0]->comprobante) && $pedido->envios[0]->comprobante != "") {
                 $objComprobante = Comprobante::find($pedido->envios[0]->comprobante->id_comprobante);
                 $objComprobante->update([
@@ -527,7 +527,7 @@ class PedidoController extends Controller
             $semana = getSemanaByDate($pedido->fecha_pedido);
             $codigo_semana = $semana != '' ? $semana->codigo : '';
             //if ($codigo_semana != '')
-                //ProyeccionVentaSemanalUpdate::dispatch($codigo_semana, $codigo_semana, 0, $pedido->id_cliente)->onQueue('update_venta_semanal_real');
+            //ProyeccionVentaSemanalUpdate::dispatch($codigo_semana, $codigo_semana, 0, $pedido->id_cliente)->onQueue('update_venta_semanal_real');
         } else {
             $success = false;
             $msg = '<div class="alert alert-danger text-center">' .
@@ -850,98 +850,99 @@ class PedidoController extends Controller
         ]);
     }
 
-    public function cambia_tipo_pedido(Request $request){
+    public function cambia_tipo_pedido(Request $request)
+    {
 
         $pedido = getPedido($request->id_pedido);
 
-        foreach($pedido->detalles as $det_ped){
-            $dataMarcacionesColoraciones=[];
-            $especificacionEmpaque= $det_ped->cliente_especificacion->especificacion->especificacionesEmpaque;
+        foreach ($pedido->detalles as $det_ped) {
+            $dataMarcacionesColoraciones = [];
+            $especificacionEmpaque = $det_ped->cliente_especificacion->especificacion->especificacionesEmpaque;
 
-            foreach ($especificacionEmpaque as $x=> $esp_emp) {
-                $marcacion= new Marcacion;
-                $marcacion->ramos = $esp_emp->ramos_x_caja($det_ped->id_detalle_pedido)*$det_ped->cantidad;
-                $marcacion->id_detalle_pedido= $det_ped->id_detalle_pedido;
+            foreach ($especificacionEmpaque as $x => $esp_emp) {
+                $marcacion = new Marcacion;
+                $marcacion->ramos = $esp_emp->ramos_x_caja($det_ped->id_detalle_pedido) * $det_ped->cantidad;
+                $marcacion->id_detalle_pedido = $det_ped->id_detalle_pedido;
                 $marcacion->id_especificacion_empaque = $esp_emp->id_especificacion_empaque;
                 $marcacion->piezas = $det_ped->cantidad;
-                if($marcacion->save()){
+                if ($marcacion->save()) {
                     $modelMarcacion = Marcacion::all()->last();
 
                     $coloracion = new Coloracion;
-                    $coloracion->id_color=6;
+                    $coloracion->id_color = 6;
                     $coloracion->id_especificacion_empaque = $esp_emp->id_especificacion_empaque;
                     $coloracion->id_detalle_pedido = $det_ped->id_detalle_pedido;
 
-                    if($coloracion->save()){
+                    if ($coloracion->save()) {
                         $modelColoracion = Coloracion::all()->last();
-                        foreach($esp_emp->detalles as $det_esp_emp){
-                            $ramos_modificado = getRamosXCajaModificado($det_ped->id_detalle_pedido,$det_esp_emp->id_detalle_especificacionempaque);
-                            $dataMarcacionesColoraciones[$modelMarcacion->id_marcacion][]=[
+                        foreach ($esp_emp->detalles as $det_esp_emp) {
+                            $ramos_modificado = getRamosXCajaModificado($det_ped->id_detalle_pedido, $det_esp_emp->id_detalle_especificacionempaque);
+                            $dataMarcacionesColoraciones[$modelMarcacion->id_marcacion][] = [
                                 'id_marcacion' => $modelMarcacion->id_marcacion,
                                 'id_coloracion' => $modelColoracion->id_coloracion,
                                 'id_det_esp' => $det_esp_emp->id_detalle_especificacionempaque,
                                 'cantidad' => (isset($ramos_modificado) ? $ramos_modificado->cantidad : $det_esp_emp->cantidad) * $det_ped->cantidad,
-                                'r_x_c_modificados' =>(isset($ramos_modificado) ? $ramos_modificado->cantidad : $det_esp_emp->cantidad)
+                                'r_x_c_modificados' => (isset($ramos_modificado) ? $ramos_modificado->cantidad : $det_esp_emp->cantidad)
                             ];
                         }
                     }
                 }
             }
 
-            if(($x+1) == $especificacionEmpaque->count()){
-                $w=0;
-                $z=0;
-                foreach($dataMarcacionesColoraciones as $marcacionColoracion){
-                    foreach($marcacionColoracion as $marCol){
+            if (($x + 1) == $especificacionEmpaque->count()) {
+                $w = 0;
+                $z = 0;
+                foreach ($dataMarcacionesColoraciones as $marcacionColoracion) {
+                    foreach ($marcacionColoracion as $marCol) {
                         $z++;
                         $marcacionColoracion = new MarcacionColoracion;
                         $marcacionColoracion->id_marcacion = $marCol['id_marcacion'];
                         $marcacionColoracion->id_coloracion = $marCol['id_coloracion'];
                         $marcacionColoracion->id_detalle_especificacionempaque = $marCol['id_det_esp'];
                         $marcacionColoracion->cantidad = $marCol['cantidad'];
-                        if($marcacionColoracion->save()){
-                            $ramos_modificado = getRamosXCajaModificado($det_ped->id_detalle_pedido,$marCol['id_det_esp']);
+                        if ($marcacionColoracion->save()) {
+                            $ramos_modificado = getRamosXCajaModificado($det_ped->id_detalle_pedido, $marCol['id_det_esp']);
                             $detEspEmpRamocaja = new DetalleEspecificacionEmpaqueRamosCaja;
                             $detEspEmpRamocaja->id_detalle_pedido = $det_ped->id_detalle_pedido;
                             $detEspEmpRamocaja->id_detalle_especificacionempaque = $marCol['id_det_esp'];
-                            $detEspEmpRamocaja->cantidad =  (isset($ramos_modificado) ? $ramos_modificado->cantidad : $marCol['r_x_c_modificados']);
-                            if($detEspEmpRamocaja->save()){
+                            $detEspEmpRamocaja->cantidad = (isset($ramos_modificado) ? $ramos_modificado->cantidad : $marCol['r_x_c_modificados']);
+                            if ($detEspEmpRamocaja->save()) {
                                 $w++;
-                            }else{
+                            } else {
                                 break 2;
                             };
                         }
                     }
                 }
 
-                if($w == $z){
+                if ($w == $z) {
                     $pedido->update([
-                        "tipo_especificacion"=>"T",
-                        "descripcion" =>"Flor tinturada"
+                        "tipo_especificacion" => "T",
+                        "descripcion" => "Flor tinturada"
                     ]);
                     $success = true;
                     $msg = '<div class="alert alert-success text-center">' .
-                            '<p> Se ha cambiado el pedido normal a pedido tinturado con éxito</p>'
+                        '<p> Se ha cambiado el pedido normal a pedido tinturado con éxito</p>'
                         . '</div>';
 
-                }else{
-                    $marcacion = Marcacion::where('id_detalle_pedido',$det_ped->id_detalle_pedido);
+                } else {
+                    $marcacion = Marcacion::where('id_detalle_pedido', $det_ped->id_detalle_pedido);
                     $marcacion->delete();
-                    $coloracion = Coloracion::where('id_detalle_pedido',$det_ped->id_detalle_pedido);
+                    $coloracion = Coloracion::where('id_detalle_pedido', $det_ped->id_detalle_pedido);
                     $coloracion->delete();
                     $success = false;
                     $msg = '<div class="alert alert-danger text-center">' .
-                            '<p> Hubo un error al cambiar el tipo del pedido, intente nuevamente, si el error persiste contacte al área de sistemas</p>'
+                        '<p> Hubo un error al cambiar el tipo del pedido, intente nuevamente, si el error persiste contacte al área de sistemas</p>'
                         . '</div>';
                 }
 
-            }else{
-                $marcacion = Marcacion::where('id_detalle_pedido',$det_ped->id_detalle_pedido);
+            } else {
+                $marcacion = Marcacion::where('id_detalle_pedido', $det_ped->id_detalle_pedido);
                 $marcacion->delete();
                 $success = false;
                 $msg = '<div class="alert alert-danger text-center">' .
-                            '<p> Hubo un error al cambiar el tipo del pedido, intente nuevamente, si el error persiste contacte al área de sistemas</p>'
-                        . '</div>';
+                    '<p> Hubo un error al cambiar el tipo del pedido, intente nuevamente, si el error persiste contacte al área de sistemas</p>'
+                    . '</div>';
             }
         }
 
@@ -952,4 +953,15 @@ class PedidoController extends Controller
 
     }
 
+    public function modificar_comprobante(Request $request)
+    {
+        $pedido = Pedido::find($request->id_pedido);
+        $envio = $pedido->envios[0];
+        $comprobante = $envio->comprobante;
+        return view('adminlte.gestion.postcocecha.pedidos_ventas.forms.modificar_comprobante', [
+            'pedido' => $pedido,
+            'envio' => $envio,
+            'comprobante' => $comprobante,
+        ]);
+    }
 }

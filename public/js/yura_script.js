@@ -186,19 +186,19 @@ function store_pedido(id_cliente, pedido_fijo, csrf_token, vista, id_pedido) {
                         }
                         variedades += id_variedades;
 
-                        arr_custom_ramos_x_caja=[];
-                       $.each($("input.id_det_esp_"+ (i + 1)),function(y,w){
-                            ramos_det_esp_emp = $("input.td_ramos_x_caja_"+(i + 1)+"_"+(y + 1)).val();
-                            ramos_modificados = $("input#ramos_x_caja_"+(i + 1)+"_"+(y + 1)).val();
+                        arr_custom_ramos_x_caja = [];
+                        $.each($("input.id_det_esp_" + (i + 1)), function (y, w) {
+                            ramos_det_esp_emp = $("input.td_ramos_x_caja_" + (i + 1) + "_" + (y + 1)).val();
+                            ramos_modificados = $("input#ramos_x_caja_" + (i + 1) + "_" + (y + 1)).val();
                             //console.log(ramos_det_esp_emp , ramos_modificados);
-                            if(ramos_det_esp_emp != ramos_modificados){
-                               arr_custom_ramos_x_caja.push({
-                                  ramos_x_caja : ramos_modificados,
-                                  id_det_esp_emp : $("input#id_det_esp_"+(i + 1)+"_"+(y + 1)).val()
-                               });
+                            if (ramos_det_esp_emp != ramos_modificados) {
+                                arr_custom_ramos_x_caja.push({
+                                    ramos_x_caja: ramos_modificados,
+                                    id_det_esp_emp: $("input#id_det_esp_" + (i + 1) + "_" + (y + 1)).val()
+                                });
                             }
 
-                       });
+                        });
 
                         arrDataDetallesPedido.push({
                             cantidad: empaque === "T" ? $("#cajas_mallas_" + (i + 1)).val() : $("#cantidad_piezas_" + (i + 1)).val(),
@@ -206,7 +206,7 @@ function store_pedido(id_cliente, pedido_fijo, csrf_token, vista, id_pedido) {
                             id_agencia_carga: $("#id_agencia_carga_" + (i + 1)).val(),
                             precio: precio,
                             orden: $("#orden_" + (i + 1)).val(),
-                            arr_custom_ramos_x_caja : arr_custom_ramos_x_caja,
+                            arr_custom_ramos_x_caja: arr_custom_ramos_x_caja,
                             datos_especificacion: empaque === "T" ? {
                                 variedad: parseInt($("input.input_variedad_" + (i + 1)).val()),
                                 ramos_x_caja: parseInt($("input.ramos_x_caja_" + (i + 1)).val()),
@@ -316,8 +316,8 @@ function store_pedido(id_cliente, pedido_fijo, csrf_token, vista, id_pedido) {
                 crear_envio: $("#envio_automatico").is(":checked"),
                 fecha_envio: $("#fecha_de_entrega").val(),
                 id_configuracion_empresa: $("select#id_configuracion_empresa").val(),
-                factura_ficticia : $("#factura_ficticia").is(":checked"),
-                numero_ficticio : $("#numero_ficticio").val(),
+                factura_ficticia: $("#factura_ficticia").is(":checked"),
+                numero_ficticio: $("#numero_ficticio").val(),
                 arrDataPresentacionYuraVenture: arrDataPresentacionYuraVenture,
                 dataTallos: dataTallos
             };
@@ -904,7 +904,7 @@ function genera_codigo_barra(prefijo, codigo) {
     $.LoadingOverlay('hide');
 }
 
-function listar_resumen_pedidos(fecha, opciones, id_configuracion_empresa,id_cliente) {
+function listar_resumen_pedidos(fecha, opciones, id_configuracion_empresa, id_cliente) {
     $.LoadingOverlay('show');
     datos = {
         fecha: fecha,
@@ -1063,7 +1063,7 @@ function update_orden_tinturada(token) {
                 $.each($("div.well_detalle_pedido"), function (i, j) {
                     arreglo_esp_emp = [];
                     ids_esp_emp = $(j).find('.id_esp_emp');
-                    arr_custom_ramos_x_caja=[];
+                    arr_custom_ramos_x_caja = [];
 
                     for (ee = 0; ee < ids_esp_emp.length; ee++) {
                         ids_det_esp = $(j).find('input.id_det_esp_' + ids_esp_emp[ee].value);
@@ -1074,7 +1074,7 @@ function update_orden_tinturada(token) {
                             arreglo_precios.push({
                                 id_det_esp: ids_det_esp[det].value,
                                 precio: $(j).find('#precio_det_esp_' + ids_det_esp[det].value).val(),
-                                ramos_modificados : $('#ramos_x_caja_det_esp_' + ids_det_esp[det].value+'_'+ids_esp_emp[ee].value).val()
+                                ramos_modificados: $('#ramos_x_caja_det_esp_' + ids_det_esp[det].value + '_' + ids_esp_emp[ee].value).val()
                             });
                         }
 
@@ -1093,48 +1093,48 @@ function update_orden_tinturada(token) {
                             console.log("entro en el for de fill");
                             console.log($(j).find('#nombre_marcacion_' + f + '_' + ids_esp_emp[ee].value).val());
                             //if ($(j).find('#nombre_marcacion_' + f + '_' + ids_esp_emp[ee].value).val() != '') {
-                                console.log("Entro en el siguiente if");
-                                colores = [];
-                                console.log(col);
-                                for (c = 0; c < col; c++) {
-                                    console.log("entro en el for de col");
-                                    cant_x_det_esp = [];
-                                    if (f == 0) {
-                                        console.log("f==0");
-                                        /* =========== PRECIOS x COLORACION ========= */
-                                        arreglo_precios_x_col = [];
-                                        for (det = 0; det < ids_det_esp.length; det++) {
-                                            arreglo_precios_x_col.push({
-                                                id_det_esp: ids_det_esp[det].value,
-                                                precio: $(j).find('#precio_color_' + c + '_' + ids_det_esp[det].value + '_' + ids_esp_emp[ee].value).val()
-                                            });
-                                        }
-                                        arreglo_coloraciones.push({
-                                            id_color: $(j).find('#color_' + c + '_' + ids_esp_emp[ee].value).val(),
-                                            arreglo_precios_x_col: arreglo_precios_x_col
-                                        });
-                                    }
+                            console.log("Entro en el siguiente if");
+                            colores = [];
+                            console.log(col);
+                            for (c = 0; c < col; c++) {
+                                console.log("entro en el for de col");
+                                cant_x_det_esp = [];
+                                if (f == 0) {
+                                    console.log("f==0");
+                                    /* =========== PRECIOS x COLORACION ========= */
+                                    arreglo_precios_x_col = [];
                                     for (det = 0; det < ids_det_esp.length; det++) {
-                                        cant_x_det_esp.push({
+                                        arreglo_precios_x_col.push({
                                             id_det_esp: ids_det_esp[det].value,
-                                            cantidad: $(j).find('#ramos_marcacion_' + f + '_' + c + '_' + ids_det_esp[det].value + '_' + ids_esp_emp[ee].value).val(),
-                                            precio : $(j).find('#p_marcacion_coloracion_' + f + '_' + c + '_' + ids_det_esp[det].value + '_' + ids_esp_emp[ee].value).val()
+                                            precio: $(j).find('#precio_color_' + c + '_' + ids_det_esp[det].value + '_' + ids_esp_emp[ee].value).val()
                                         });
                                     }
-                                    colores.push({
-                                        cant_x_det_esp: cant_x_det_esp
+                                    arreglo_coloraciones.push({
+                                        id_color: $(j).find('#color_' + c + '_' + ids_esp_emp[ee].value).val(),
+                                        arreglo_precios_x_col: arreglo_precios_x_col
                                     });
                                 }
-                                arreglo_marcaciones.push({
-                                    nombre: $(j).find('#nombre_marcacion_' + f + '_' + ids_esp_emp[ee].value).val(),
-                                    ramos: $(j).find('#total_ramos_marcacion_' + f + '_' + ids_esp_emp[ee].value).val(),
-                                    piezas: $(j).find('#total_piezas_marcacion_' + f + '_' + ids_esp_emp[ee].value).val(),
-                                    colores: colores
+                                for (det = 0; det < ids_det_esp.length; det++) {
+                                    cant_x_det_esp.push({
+                                        id_det_esp: ids_det_esp[det].value,
+                                        cantidad: $(j).find('#ramos_marcacion_' + f + '_' + c + '_' + ids_det_esp[det].value + '_' + ids_esp_emp[ee].value).val(),
+                                        precio: $(j).find('#p_marcacion_coloracion_' + f + '_' + c + '_' + ids_det_esp[det].value + '_' + ids_esp_emp[ee].value).val()
+                                    });
+                                }
+                                colores.push({
+                                    cant_x_det_esp: cant_x_det_esp
                                 });
+                            }
+                            arreglo_marcaciones.push({
+                                nombre: $(j).find('#nombre_marcacion_' + f + '_' + ids_esp_emp[ee].value).val(),
+                                ramos: $(j).find('#total_ramos_marcacion_' + f + '_' + ids_esp_emp[ee].value).val(),
+                                piezas: $(j).find('#total_piezas_marcacion_' + f + '_' + ids_esp_emp[ee].value).val(),
+                                colores: colores
+                            });
                             //} else {
-                                //alerta('<div class="alert alert-warning text-center">Faltan datos (nombre de marcación) por ingresar en el Detalle del pedido ' + (i + 1) + '</div>');
-                                //$(j).find('#nombre_marcacion_' + f + '_' + ids_esp_emp[ee].value).addClass('error');
-                                //z++;
+                            //alerta('<div class="alert alert-warning text-center">Faltan datos (nombre de marcación) por ingresar en el Detalle del pedido ' + (i + 1) + '</div>');
+                            //$(j).find('#nombre_marcacion_' + f + '_' + ids_esp_emp[ee].value).addClass('error');
+                            //z++;
                             //}
                         }
                         arreglo_esp_emp.push({
@@ -1245,15 +1245,15 @@ function add_marcacion(esp_emp) {
                 '<input type="number" value="0" id="ramos_marcacion_' + fil + '_' + c + '_' + ids_det_esp[det].value + '_' + esp_emp + '" ' +
                 'name="ramos_marcacion_' + fil + '_' + c + '_' + ids_det_esp[det].value + '_' + esp_emp + '" ' +
                 'onkeypress="return isNumber(event)" style="width: 100%;" ' +
-                'class="text-center col_coloracion_' + esp_emp + '_' + c + ' elemento_color_' + c + '_' + esp_emp + ' ramos_marcacion_'+ esp_emp + '" onchange="calcular_totales_tinturado(' + esp_emp + ')">' +
+                'class="text-center col_coloracion_' + esp_emp + '_' + c + ' elemento_color_' + c + '_' + esp_emp + ' ramos_marcacion_' + esp_emp + '" onchange="calcular_totales_tinturado(' + esp_emp + ')">' +
                 '<input type="number" min="0" style="width: 100%;background-color: #e9ecef;text-align:center" ' +
-                'class="col_precio_' + esp_emp + '_' + c + '"'+
+                'class="col_precio_' + esp_emp + '_' + c + '"' +
                 'id="p_marcacion_coloracion_' + fil + '_' + c + '_' + ids_det_esp[det].value + '_' + esp_emp + '" ' +
                 'name="p_marcacion_coloracion_' + fil + '_' + c + '_' + ids_det_esp[det].value + '_' + esp_emp + '" ' +
                 '</div>' +
                 '</li>';
         }
-        tr += '<td class="text-center col_coloracion td_col_coloracion_' + esp_emp + ' col_coloracion_' + esp_emp + '_' + c + ' col_precio_' + esp_emp + '_' + c +'"' +
+        tr += '<td class="text-center col_coloracion td_col_coloracion_' + esp_emp + ' col_coloracion_' + esp_emp + '_' + c + ' col_precio_' + esp_emp + '_' + c + '"' +
             ' style="border-color: #9d9d9d">' +
             '<ul class="list-unstyled">' +
             inputs +
@@ -1285,7 +1285,7 @@ function add_marcacion(esp_emp) {
 
     tr += '<td class="text-center" style="border-color: #9d9d9d">' +
         '<input type="text" id="total_ramos_marcacion_' + fil + '_' + esp_emp + '" name="total_ramos_marcacion_' + fil + '_' + esp_emp + '" ' +
-        'readonly class="text-center ramos_marcacion_' + esp_emp + ' total_ramos_marcacion_'+esp_emp+'" value="0"' +
+        'readonly class="text-center ramos_marcacion_' + esp_emp + ' total_ramos_marcacion_' + esp_emp + '" value="0"' +
         'style="background-color: #357ca5; color: white; width: 85px">' +
         '</td>' +
         '<td class="text-center" style="border-color: #9d9d9d">' +
@@ -1388,8 +1388,8 @@ function add_coloracion(esp_emp) {
                         'onkeypress="return isNumber(event)" style="width: 100%;" ' +
                         'class="text-center col_coloracion_' + esp_emp + '_' + cant_col + ' elemento_color_' + col + '_' + esp_emp + '" onchange="calcular_totales_tinturado(' + esp_emp + ')">' +
                         '<input type="number" min="0" style="width: 100%;background-color: #e9ecef;text-align:center"' +
-                        'class="col_precio_' + esp_emp + '_' + cant_col + '"'+
-                        'id="p_marcacion_coloracion_' +  (f - 1) + '_' + col + '_' + ids_det_esp[det].value + '_' + esp_emp + '" ' +
+                        'class="col_precio_' + esp_emp + '_' + cant_col + '"' +
+                        'id="p_marcacion_coloracion_' + (f - 1) + '_' + col + '_' + ids_det_esp[det].value + '_' + esp_emp + '" ' +
                         'name="p_marcacion_coloracion_' + (f - 1) + '_' + col + '_' + ids_det_esp[det].value + '_' + esp_emp + '">' +
                         '</div>' +
                         '</li>';
@@ -1419,16 +1419,16 @@ function add_coloracion(esp_emp) {
 }
 
 function delete_marcacion(id_esp_emp) {
-    $cant=0
-    $.each($(".check_marcacion_"+id_esp_emp),function(i,j){
-        if($(j).is(":checked"))
+    $cant = 0
+    $.each($(".check_marcacion_" + id_esp_emp), function (i, j) {
+        if ($(j).is(":checked"))
             $cant++;
     });
 
-    if($cant >0){
-        restar=false;
+    if ($cant > 0) {
+        restar = false;
         $.each($("tr.tr_marcacion_" + id_esp_emp), function (i, j) {
-            if ($(j).find('input[type=checkbox]').is(':checked')){
+            if ($(j).find('input[type=checkbox]').is(':checked')) {
                 restar = true;
                 if ($(j).remove())
                     $('#marcaciones_' + id_esp_emp).val($('#marcaciones_' + id_esp_emp).val() - 1);
@@ -1463,8 +1463,8 @@ function delete_marcacion(id_esp_emp) {
                 $.each($(l).find('input.' + arrId[3]), function (m, n) {
                     arr_id_input_colocarcion = n.id.split("_");
                     (restar)
-                        ? dinamico1 =arr_id_input_colocarcion[2]-1
-                        : dinamico1 =arr_id_input_colocarcion[2];
+                        ? dinamico1 = arr_id_input_colocarcion[2] - 1
+                        : dinamico1 = arr_id_input_colocarcion[2];
 
                     id_input_coloracion = arr_id_input_colocarcion[0] + "_" + arr_id_input_colocarcion[1] + "_" + dinamico1 + "_" + k + "_" + arr_id_input_colocarcion[4] + "_" + arr_id_input_colocarcion[5];
                     $(n).attr({
@@ -1478,10 +1478,10 @@ function delete_marcacion(id_esp_emp) {
                     arr_id_input_precio_mc = w.id.split("_");
 
                     (restar)
-                        ? dinamico2 =arr_id_input_precio_mc[3]-1
-                        : dinamico2 =arr_id_input_precio_mc[3];
+                        ? dinamico2 = arr_id_input_precio_mc[3] - 1
+                        : dinamico2 = arr_id_input_precio_mc[3];
 
-                    id_input_precio_mc = arr_id_input_precio_mc[0] + "_" + arr_id_input_precio_mc[1] + "_" + arr_id_input_precio_mc[2] + "_" + dinamico2 + "_" + k + "_" + arr_id_input_precio_mc[5]+ "_" + arr_id_input_precio_mc[6];
+                    id_input_precio_mc = arr_id_input_precio_mc[0] + "_" + arr_id_input_precio_mc[1] + "_" + arr_id_input_precio_mc[2] + "_" + dinamico2 + "_" + k + "_" + arr_id_input_precio_mc[5] + "_" + arr_id_input_precio_mc[6];
 
                     $(w).attr({
                         name: id_input_precio_mc,
@@ -1532,15 +1532,15 @@ function delete_marcacion(id_esp_emp) {
 function delete_coloracion(id_esp_emp) {
 
     col = [];
-    $cant=0;
+    $cant = 0;
     $.each($(".col_coloracion_" + id_esp_emp), function (i, j) {
-        if ($(j).find('input[type=checkbox]').is(':checked')){
+        if ($(j).find('input[type=checkbox]').is(':checked')) {
             col.push((i));
             $cant++;
         }
     });
 
-    if($cant >0) {
+    if ($cant > 0) {
         if (col.length > 0)
             for (let i = 0; i < col.length; i++)
                 if ($(".col_coloracion_" + id_esp_emp + "_" + col[i]).remove())
@@ -1892,6 +1892,18 @@ function facturar_pedido(id_pedido) {
     };
     $.get('pedidos/facturar_pedido', datos, function (retorno) {
         modal_view('modal_view_Facturar_pedido', retorno, '<i class="fa fa-cubes"></i> Pedido', true, false, '80%');
+    }).always(function () {
+        $.LoadingOverlay('hide');
+    });
+}
+
+function modificar_comprobante(id_pedido) {
+    $.LoadingOverlay('show');
+    datos = {
+        id_pedido: id_pedido
+    };
+    $.get('pedidos/modificar_comprobante', datos, function (retorno) {
+        modal_view('modal_view_modificar_comprobante', retorno, '<i class="fa fa-exclamation-triangle"></i> Comprobante', true, false, '80%');
     }).always(function () {
         $.LoadingOverlay('hide');
     });
