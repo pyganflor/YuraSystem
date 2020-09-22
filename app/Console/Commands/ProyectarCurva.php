@@ -240,36 +240,11 @@ class ProyectarCurva extends Command
                 foreach ($ciclos as $c) {
                     $num_sem = round(difFechas($c->fecha_fin, $c->fecha_inicio)->days / 7);
                     $num_sem = intval($num_sem);
-                    $acumulado_c = $c->getTemperaturaByFecha($c->fecha_fin);
-                    if ($num_sem >= 6 && $num_sem <= 11 && $c->fecha_cosecha == ''/* && $acumulado_c >= $min_temp*/) {
-                        if ($acumulado_c >= $min_temp && $acumulado_c < $temp_prom) {   // rango de temperaturas minimas
-                            dump($c->modulo->nombre . ' - ' . $num_sem . ', acum: ' . $acumulado_c . ', rango de temperaturas minimas: ' . $curva_prom_min);
-                            $nueva_curva = $curva_prom_min;
-                        } else if ($acumulado_c > $temp_prom && $acumulado_c <= $max_temp) {    // rango de temperaturas maximas
-                            dump($c->modulo->nombre . ' - ' . $num_sem . ', acum: ' . $acumulado_c . ', rango de temperaturas maximas: ' . $curva_prom_max);
-                            $nueva_curva = $curva_prom_max;
-                        } else {    // temperatura promedio
-                            dump($c->modulo->nombre . ' - ' . $num_sem . ', acum: ' . $acumulado_c . ', rango de temperatura promedio: ' . $curva_prom);
-                            $nueva_curva = $curva_prom;
-                        }
+                    if ($num_sem >= 6 && $num_sem <= 11 && $c->fecha_cosecha == '') {
+                        dump($c->modulo->nombre . ' - ' . $num_sem . ', rango de temperatura promedio: ' . $curva_prom);
+                        $nueva_curva = $curva_prom;
 
-                        if ($nueva_curva != '') {
-                            /* Actualizar inicio de cosecha */
-                            /* ======================== ACTUALIZAR LA TABLA PROYECCION_MODULO_SEMANA FINAL ====================== */
-                            $semana_desde = $c->semana();
-                            $semana_fin = getLastSemanaByVariedad($var->id_variedad);
 
-                            CicloUpdateCampo::dispatch($c->id_ciclo, 'Curva', $nueva_curva)
-                                ->onQueue('proy_cosecha/actualizar_curva');
-
-                            if ($semana_desde != '')
-                                ProyeccionUpdateSemanal::dispatch($semana_desde->codigo, $semana_fin->codigo, $var->id_variedad, $c->id_modulo, 0)
-                                    ->onQueue('proy_cosecha/actualizar_curva');
-
-                            /* ======================== ACTUALIZAR LA TABLA RESUMEN_COSECHA_SEMANA FINAL ====================== */
-                            ResumenSemanaCosecha::dispatch($semana_desde->codigo, $semana_fin->codigo, $var->id_variedad)
-                                ->onQueue('proy_cosecha/actualizar_curva');
-                        }
                     }
                 }
             }
