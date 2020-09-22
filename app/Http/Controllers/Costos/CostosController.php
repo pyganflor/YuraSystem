@@ -905,7 +905,7 @@ class CostosController extends Controller
         if (!$valida->fails()) {
             $archivo = $request->file_costos_details;
             $extension = $archivo->getClientOriginalExtension();
-            $nombre_archivo = "costos_" . $request->concepto_importar_details . "_details." . $extension;
+            $nombre_archivo = "costos_" . $request->concepto_importar_details . "_" . $request->sobreescribir_importar_details . "_details." . $extension;
             $r1 = Almacenamiento::disk('pdf_loads')->put($nombre_archivo, \File::get($archivo));
 
             $url = public_path('storage\pdf_loads\\' . $nombre_archivo);

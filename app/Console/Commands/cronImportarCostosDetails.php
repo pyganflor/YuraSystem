@@ -44,14 +44,14 @@ class cronImportarCostosDetails extends Command
         Log::info('<<<<< ! >>>>> Ejecutando comando "cron:importar_costos_details" <<<<< ! >>>>>');
         $files = Almacenamiento::disk('pdf_loads')->files('');
         foreach ($files as $nombre_archivo) {
-            if (in_array($nombre_archivo, ['costos_I_details.xlsx', 'costos_M_details.xlsx'])) {
+            if (in_array($nombre_archivo, ['costos_I_S_details.xlsx', 'costos_M_S_details.xlsx', 'costos_I_I_details.xlsx', 'costos_M_I_details.xlsx'])) {
                 $url = public_path('storage/pdf_loads/' . $nombre_archivo);
                 if ($url != '') {
                     Artisan::call('costos:importar_file_details', [
                         'url' => $url,
                         'concepto' => explode('_', $nombre_archivo)[1],
                         'criterio' => 'V',
-                        'sobreescribir' => true,
+                        'sobreescribir' => explode('_', $nombre_archivo)[3],
                     ]);
 
                     unlink($url);
