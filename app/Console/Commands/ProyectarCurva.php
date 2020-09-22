@@ -251,16 +251,16 @@ class ProyectarCurva extends Command
                             $semana_desde = $c->semana();
                             $semana_fin = getLastSemanaByVariedad($var->id_variedad);
 
-                            /*CicloUpdateCampo::dispatch($c->id_ciclo, 'Curva', $nueva_curva)
+                            CicloUpdateCampo::dispatch($c->id_ciclo, 'Curva', $nueva_curva)
                                 ->onQueue('proy_cosecha/actualizar_curva');
 
                             if ($semana_desde != '')
                                 ProyeccionUpdateSemanal::dispatch($semana_desde->codigo, $semana_fin->codigo, $var->id_variedad, $c->id_modulo, 0)
-                                    ->onQueue('proy_cosecha/actualizar_curva');*/
+                                    ->onQueue('proy_cosecha/actualizar_curva');
 
                             /* ======================== ACTUALIZAR LA TABLA RESUMEN_COSECHA_SEMANA FINAL ====================== */
-                            /*ResumenSemanaCosecha::dispatch($semana_desde->codigo, $semana_fin->codigo, $var->id_variedad)
-                                ->onQueue('proy_cosecha/actualizar_curva');*/
+                            ResumenSemanaCosecha::dispatch($semana_desde->codigo, $semana_fin->codigo, $var->id_variedad)
+                                ->onQueue('proy_cosecha/actualizar_curva');
                             dump('ok');
                         }
                     }
