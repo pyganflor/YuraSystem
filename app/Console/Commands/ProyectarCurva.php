@@ -261,6 +261,7 @@ class ProyectarCurva extends Command
                             /* ======================== ACTUALIZAR LA TABLA RESUMEN_COSECHA_SEMANA FINAL ====================== */
                             /*ResumenSemanaCosecha::dispatch($semana_desde->codigo, $semana_fin->codigo, $var->id_variedad)
                                 ->onQueue('proy_cosecha/actualizar_curva');*/
+                            dump('ok');
                         }
                     }
                 }
