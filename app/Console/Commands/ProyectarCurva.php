@@ -259,7 +259,7 @@ class ProyectarCurva extends Command
                                 ProyeccionUpdateSemanal::dispatch($semana_desde->codigo, $semana_fin->codigo, $var->id_variedad, $c->id_modulo, 0)
                                     ->onQueue('proy_cosecha/actualizar_curva');
 
-                                RestaurarProyeccion::dispatch($c->id_modulo)->onQueue('proy_cosecha/actualizar_semana_cosecha');
+                                //RestaurarProyeccion::dispatch($c->id_modulo)->onQueue('proy_cosecha/actualizar_semana_cosecha');
                             }
 
                             /* ======================== ACTUALIZAR LA TABLA RESUMEN_COSECHA_SEMANA FINAL ====================== */
