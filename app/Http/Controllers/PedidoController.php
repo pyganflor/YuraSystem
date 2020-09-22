@@ -969,10 +969,16 @@ class PedidoController extends Controller
     {
         $comprobante = Comprobante::find($request->id_comprobante);
         $comprobante->secuencial = $request->secuencial;
-        $comprobante->save();
-        return [
-            'success' => true,
-            'mensaje' => '<div class="alert alert-success text-center">Se ha modificado satisfactoriamente el comprobante</div>'
-        ];
+        if ($comprobante->save())
+            return [
+                'success' => true,
+                'mensaje' => '<div class="alert alert-success text-center">Se ha modificado satisfactoriamente el comprobante</div>'
+            ];
+        else
+            return [
+                'success' => false,
+                'mensaje' => '<div class="alert alert-danger text-center">' .
+                    '<i class="fa fa-fw fa-exclamation-triangle"></i> Ha ocurrido un problema interno al modificar el comprobante</div>'
+            ];
     }
 }
