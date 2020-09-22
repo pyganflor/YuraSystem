@@ -6,6 +6,7 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 use yura\Jobs\CicloUpdateCampo;
 use yura\Jobs\ProyeccionUpdateSemanal;
+use yura\Jobs\RestaurarProyeccion;
 use yura\Jobs\ResumenSemanaCosecha;
 use yura\Modelos\Ciclo;
 use yura\Modelos\Monitoreo;
@@ -226,7 +227,6 @@ class ProyectarInicioCosecha extends Command
 
                         /* Actualizar inicio de cosecha */
                         if ($nuevo_inicio_cosecha > 11) {
-                            dump('> 11 semanas');
                             /* ======================== ACTUALIZAR LA TABLA PROYECCION_MODULO_SEMANA FINAL ====================== */
                             $semana_desde = $item['ciclo']->semana();
                             $semana_fin = getLastSemanaByVariedad($var->id_variedad);
@@ -234,13 +234,18 @@ class ProyectarInicioCosecha extends Command
                             CicloUpdateCampo::dispatch($id_ciclo, 'SemanaCosecha', $nuevo_inicio_cosecha)
                                 ->onQueue('proy_cosecha/actualizar_semana_cosecha');
 
-                            if ($semana_desde != '')
+                            if ($semana_desde != '') {
                                 ProyeccionUpdateSemanal::dispatch($semana_desde->codigo, $semana_fin->codigo, $var->id_variedad, $item['ciclo']->id_modulo, 0)
                                     ->onQueue('proy_cosecha/actualizar_semana_cosecha');
+
+                                RestaurarProyeccion::dispatch($item['ciclo']->id_modulo)->onQueue('proy_cosecha/actualizar_semana_cosecha');
+                            }
 
                             /* ======================== ACTUALIZAR LA TABLA RESUMEN_COSECHA_SEMANA FINAL ====================== */
                             ResumenSemanaCosecha::dispatch($semana_desde->codigo, $semana_fin->codigo, $var->id_variedad)
                                 ->onQueue('proy_cosecha/actualizar_semana_cosecha');
+
+                            dump('> 11 semanas: ok');
                         }
 
                         $proy_sem_prom_ini_curva['valor'] += $nuevo_inicio_cosecha;

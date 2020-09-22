@@ -5,6 +5,7 @@ namespace yura\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use yura\Jobs\RestaurarProyeccion;
 use yura\Jobs\ResumenSemanaCosecha;
 use yura\Jobs\CicloUpdateCampo;
 use yura\Jobs\ProyeccionUpdateSemanal;
@@ -254,9 +255,12 @@ class ProyectarCurva extends Command
                             CicloUpdateCampo::dispatch($c->id_ciclo, 'Curva', $nueva_curva)
                                 ->onQueue('proy_cosecha/actualizar_curva');
 
-                            if ($semana_desde != '')
+                            if ($semana_desde != '') {
                                 ProyeccionUpdateSemanal::dispatch($semana_desde->codigo, $semana_fin->codigo, $var->id_variedad, $c->id_modulo, 0)
                                     ->onQueue('proy_cosecha/actualizar_curva');
+
+                                RestaurarProyeccion::dispatch($c->id_modulo)->onQueue('proy_cosecha/actualizar_semana_cosecha');
+                            }
 
                             /* ======================== ACTUALIZAR LA TABLA RESUMEN_COSECHA_SEMANA FINAL ====================== */
                             ResumenSemanaCosecha::dispatch($semana_desde->codigo, $semana_fin->codigo, $var->id_variedad)
