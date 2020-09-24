@@ -39,6 +39,7 @@ Route::group(['middleware' => 'autenticacion'], function () {
 
         include 'documento/rutas.php';
         include 'crm/dashboard.php';
+        Route::get('pedidos/crear_packing_list/{id_pedido}/{despacho?}', 'PedidoController@crear_packing_list');
 
         Route::group(['middleware' => 'permiso'], function () {
             /* ========================== POSTCPCECHA ========================*/

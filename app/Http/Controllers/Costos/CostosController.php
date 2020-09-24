@@ -911,12 +911,29 @@ class CostosController extends Controller
         $msg = '<div class="alert alert-info text-center">Se ha importado el archivo, en menos de una hora se reflejarán los datos en el sistema</div>';
         $success = true;
         if (!$valida->fails()) {
-            $archivo = $request->file_costos_details;
-            $extension = $archivo->getClientOriginalExtension();
-            $nombre_archivo = "costos_" . $request->concepto_importar_details . "_" . $request->sobreescribir_importar_details . "_details." . $extension;
-            $r1 = Almacenamiento::disk('pdf_loads')->put($nombre_archivo, \File::get($archivo));
+            try {
+                $archivo = $request->file_costos_details;
+                $extension = $archivo->getClientOriginalExtension();
+                $nombre_archivo = "costos_" . $request->concepto_importar_details . "_" . $request->sobreescribir_importar_details . "_details." . $extension;
+                $r1 = Almacenamiento::disk('pdf_loads')->put($nombre_archivo, \File::get($archivo));
 
-            $url = public_path('storage\pdf_loads\\' . $nombre_archivo);
+                $url = public_path('storage\pdf_loads\\' . $nombre_archivo);
+
+                $document = \PHPExcel_IOFactory::load($url);
+            } catch (\Exception $e) {
+                if (strpos($e->getMessage(), 'DOMDocument::loadHTML(): Invalid char in CDATA') !== false)
+                    $mensaje_error = 'Problema con el archivo excel';
+                else
+                    $mensaje_error = $e->getMessage();
+                return [
+                    'mensaje' => '<div class="alert alert-danger text-center">' .
+                        '<p>¡Ha ocurrido un problema al subir el archivo, contacte al administrador del sistema!</p>' .
+                        '<legend style="font-size: 0.9em; color: white; margin-bottom: 2px">mensaje de error</legend>' .
+                        $mensaje_error .
+                        '</div>',
+                    'success' => false
+                ];
+            }
         } else {
             $errores = '';
             foreach ($valida->errors()->all() as $mi_error) {
