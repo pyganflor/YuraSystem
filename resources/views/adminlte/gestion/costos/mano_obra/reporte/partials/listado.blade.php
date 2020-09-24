@@ -136,6 +136,7 @@
         #tr_fijo_top_2 th {
             position: sticky;
             top: 40px;
+            z-index: 2;
         }
     </style>
 @else
