@@ -86,6 +86,7 @@
         };
         get_jquery('{{url('costos_gestion/buscar_insumosByActividad')}}', datos, function (retorno) {
             $('#edit_td_insumo_' + form).html(retorno);
+            $('#edit_valor_' + form).val('');
             $('#edit_semana_' + form).val('');
             $('#edit_semana_' + form).css('display', 'none');
             $('#edit_btn_' + form).show();
@@ -95,6 +96,7 @@
     }
 
     function select_insumo(form) {
+        $('#edit_valor_' + form).val('');
         $('#edit_semana_' + form).val('');
         $('#edit_semana_' + form).css('display', '');
         $('#edit_btn_' + form).show();

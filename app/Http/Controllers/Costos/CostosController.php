@@ -650,7 +650,11 @@ class CostosController extends Controller
         $act_insumos = [];
         $actividad = Actividad::find($request->actividad);
         if ($actividad != '')
-            $act_insumos = $actividad->productos;
+            $act_insumos = ActividadProducto::join('producto as p', 'p.id_producto', 'actividad_producto.id_producto')
+                ->where('actividad_producto.id_actividad', $request->actividad)
+                ->where('p.estado', 1)
+                ->orderBy('p.nombre')
+                ->get();
         return view('adminlte.gestion.costos.insumo.partials.select_edit_insumo', [
             'act_insumos' => $act_insumos,
             'form' => $request->form,
@@ -1312,6 +1316,7 @@ class CostosController extends Controller
             ->select('codigo_semana')->distinct()
             ->where('codigo_semana', '>=', $request->desde)
             ->where('codigo_semana', '<=', $request->hasta)
+            ->orderBy('codigo_semana')
             ->get();
         $area = Area::find($request->area);
         $actividad = Actividad::find($request->actividad);
@@ -1344,6 +1349,7 @@ class CostosController extends Controller
             $query = CostosSemanaManoObra::where('codigo_semana', '>=', $request->desde)
                 ->where('codigo_semana', '<=', $request->hasta)
                 ->where('id_actividad_mano_obra', $item->id_actividad_mano_obra)
+                ->orderBy('codigo_semana')
                 ->get();
 
             array_push($matriz, $query);
@@ -1387,6 +1393,7 @@ class CostosController extends Controller
             ->select('codigo_semana')->distinct()
             ->where('codigo_semana', '>=', $request->desde)
             ->where('codigo_semana', '<=', $request->hasta)
+            ->orderBy('codigo_semana')
             ->get();
         $area = Area::find($request->area);
         $actividad = Actividad::find($request->actividad);
@@ -1419,6 +1426,7 @@ class CostosController extends Controller
             $query = CostosSemana::where('codigo_semana', '>=', $request->desde)
                 ->where('codigo_semana', '<=', $request->hasta)
                 ->where('id_actividad_producto', $item->id_actividad_producto)
+                ->orderBy('codigo_semana')
                 ->get();
 
             array_push($matriz, $query);
@@ -1433,7 +1441,75 @@ class CostosController extends Controller
             ->groupBy('codigo_semana')
             ->get();
 
-        return view('adminlte.gestion.costos.insumo.reporte.partials.listado', [
+        $view = 'listado';
+        if ($request->actividad === 'false') {  // agrupar
+            if (count($matriz) > 0 && count($matriz[0]) == count($semanas) && count($matriz[0]) > 0) {  // esta completo el primer elemento
+                $completo = true;
+                $se_repite = false;
+                $data = [];
+                foreach ($matriz as $pos => $m) {
+                    if (count($m) == count($semanas) && count($m) > 0) {
+                        if ($pos == 0) {
+                            $valores = [];
+                            foreach ($m as $v) {
+                                $valores[] = $v->valor;
+                            }
+                            $last = [
+                                'producto' => $m[0]->actividad_producto->producto->nombre,
+                                'valores' => $valores
+                            ];
+                        }
+                        if ($pos > 0) {
+                            if ($last['producto'] == $m[0]->actividad_producto->producto->nombre) {  // se repite el anterior
+                                foreach ($m as $pos_m => $a) {
+                                    $valores[$pos_m] += $a->valor;
+                                }
+                                $last = [
+                                    'producto' => $m[0]->actividad_producto->producto->nombre,
+                                    'valores' => $valores
+                                ];
+                                $se_repite = true;
+                            } else {
+                                if (!$se_repite) {
+                                    $data[] = $last;
+                                    $valores = [];
+                                    foreach ($m as $v) {
+                                        $valores[] = $v->valor;
+                                    }
+                                    $last = [
+                                        'producto' => $m[0]->actividad_producto->producto->nombre,
+                                        'valores' => $valores
+                                    ];
+                                } else {
+                                    $data[] = $last;
+                                    $valores = [];
+                                    foreach ($m as $v) {
+                                        $valores[] = $v->valor;
+                                    }
+                                    $last = [
+                                        'producto' => $m[0]->actividad_producto->producto->nombre,
+                                        'valores' => $valores
+                                    ];
+                                    $se_repite = false;
+                                }
+                            }
+                        }
+                        if ($pos == count($matriz) - 1) {
+                            $data[] = $last;
+                        }
+                    } else {
+                        $completo = false;
+                        break;
+                    }
+                }
+                if ($completo) {
+                    $matriz = $data;
+                    $view = 'listado_agrupado';
+                }
+            }
+        }
+
+        return view('adminlte.gestion.costos.insumo.reporte.partials.' . $view, [
             'semanas' => $semanas,
             'area' => $area,
             'actividad' => $actividad,

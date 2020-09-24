@@ -160,7 +160,7 @@ class UploadCostosMasivoDetails extends Command
                     $existe = false;
                     for ($i = 0; $i < count($lista); $i++) {
                         if ($lista[$i]['semana'] == $semana->codigo && $lista[$i]['actividad']->id_actividad == $actividad->id_actividad && $lista[$i]['mano_obra']->id_mano_obra == $mo->id_mano_obra) {
-                            $lista[$i]['valor'] += $row['N'] + $row['P'];
+                            $lista[$i]['valor'] += $row['N'] + $row['P'] + $row['R'];
                             $existe = true;
                         }
                     }
@@ -169,7 +169,7 @@ class UploadCostosMasivoDetails extends Command
                             'semana' => $semana->codigo,
                             'actividad' => $actividad,
                             'mano_obra' => $mo,
-                            'valor' => $row['N'] + $row['P'],
+                            'valor' => $row['N'] + $row['P'] + $row['R'],
                         ]);
                     }
                 }
