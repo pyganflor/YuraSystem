@@ -672,6 +672,7 @@ class CostosController extends Controller
     public function buscar_valorByActividadInsumoSemana(Request $request)
     {
         $valor = 0;
+        $existe = false;
         $act_ins = ActividadProducto::All()
             ->where('estado', 1)
             ->where('id_actividad', $request->actividad)
@@ -682,17 +683,21 @@ class CostosController extends Controller
                 ->where('id_actividad_producto', $act_ins->id_actividad_producto)
                 ->where('codigo_semana', $request->semana)
                 ->first();
-            if ($costo_sem != '')
+            if ($costo_sem != '') {
                 $valor = $costo_sem->valor;
+                $existe = true;
+            }
         }
         return [
-            'valor' => $valor
+            'valor' => $valor,
+            'existe' => $existe,
         ];
     }
 
     public function buscar_valorByActividadMOSemana(Request $request)
     {
         $valor = 0;
+        $existe = false;
         $act_mo = ActividadManoObra::All()
             ->where('estado', 1)
             ->where('id_actividad', $request->actividad)
@@ -703,11 +708,14 @@ class CostosController extends Controller
                 ->where('id_actividad_mano_obra', $act_mo->id_actividad_mano_obra)
                 ->where('codigo_semana', $request->semana)
                 ->first();
-            if ($costo_sem != '')
+            if ($costo_sem != '') {
                 $valor = $costo_sem->valor;
+                $existe = true;
+            }
         }
         return [
-            'valor' => $valor
+            'valor' => $valor,
+            'existe' => $existe,
         ];
     }
 

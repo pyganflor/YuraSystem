@@ -88,12 +88,18 @@
             $('#edit_td_mo_' + form).html(retorno);
             $('#edit_semana_' + form).val('');
             $('#edit_semana_' + form).css('display', 'none');
+            $('#edit_btn_' + form).show();
+            $('#edit_icon_check_' + form).hide();
+            $('#edit_icon_ban_' + form).hide();
         }, 'tr_edit_' + form);
     }
 
     function select_mo(form) {
         $('#edit_semana_' + form).val('');
         $('#edit_semana_' + form).css('display', '');
+        $('#edit_btn_' + form).show();
+        $('#edit_icon_check_' + form).hide();
+        $('#edit_icon_ban_' + form).hide();
     }
 
     function select_semana(form) {
@@ -103,9 +109,15 @@
             mo: $('#edit_mo_' + form).val(),
             semana: $('#edit_semana_' + form).val(),
         };
+        $('#edit_btn_' + form).show();
+        $('#edit_icon_check_' + form).hide();
+        $('#edit_icon_ban_' + form).hide();
         $('#tr_edit_' + form).LoadingOverlay('show');
         $.post('{{url('gestion_mano_obra/buscar_valorByActividadMOSemana')}}', datos, function (retorno) {
             $('#edit_valor_' + form).val(retorno.valor);
+            if (!retorno.existe) {
+                save_costo(form);
+            }
         }, 'json').fail(function (retorno) {
             console.log(retorno);
             alerta_errores(retorno.responseText);

@@ -16,6 +16,7 @@ use yura\Console\Commands\ProyectarInicioCosecha;
 use yura\Console\Commands\RecalcularCurvas;
 use yura\Console\Commands\ResumenAreaSemanal;
 use yura\Console\Commands\ResumenCostosSemanal;
+use yura\Console\Commands\ResumenCostosSemanal7;
 use yura\Console\Commands\ResumenSaldoProyeccionVentaSemanal;
 use yura\Console\Commands\ResumenSemanalTotal;
 use yura\Console\Commands\UpdateHistoricoVentas;
@@ -67,6 +68,7 @@ class Kernel extends ConsoleKernel
         ProyectarInicioCosecha::class,
         UploadCostosMasivoDetails::class,
         cronImportarCostosDetails::class,
+        ResumenCostosSemanal7::class,
     ];
 
     /**
