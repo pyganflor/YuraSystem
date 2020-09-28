@@ -120,9 +120,11 @@ Route::group(['middleware' => 'autenticacion'], function () {
             include 'costos/importar.php';
             include 'costos/generales.php';
 
+            /* ================== PROPAGACION =============== */
+            include 'propagacion/camas_ciclos.php';
+
             /* ================== DB =================== */
             include 'db/rutas.php';
-
         });
 
         include 'colores/rutas.php';
