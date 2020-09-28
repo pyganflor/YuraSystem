@@ -1,4 +1,4 @@
-<div class="box box-info">
+<div class="box box-success">
     <div class="box-header with-border">
         <h3 class="box-title">Agregar cama</h3>
     </div>
@@ -38,48 +38,3 @@
         @endif
     </div>
 </div>
-
-<script>
-    function store_cama() {
-        datos = {
-            _token: '{{csrf_token()}}',
-            area_trabajo: $('#area_trabajo').val(),
-            nombre: $('#nombre_cama').val(),
-        };
-        $.LoadingOverlay('show');
-        $.post('{{url('camas_ciclos/store_cama')}}', datos, function (retorno) {
-            alerta(retorno.mensaje);
-            if (retorno.success) {
-                listar_camas();
-                add_cama();
-            }
-        }, 'json').fail(function (retorno) {
-            console.log(retorno);
-            alerta_errores(retorno.responseText);
-        }).always(function () {
-            $.LoadingOverlay('hide');
-        })
-    }
-
-    function update_cama(id) {
-        datos = {
-            _token: '{{csrf_token()}}',
-            id_cama: id,
-            area_trabajo: $('#area_trabajo').val(),
-            nombre: $('#nombre_cama').val(),
-        };
-        $.LoadingOverlay('show');
-        $.post('{{url('camas_ciclos/update_cama')}}', datos, function (retorno) {
-            alerta(retorno.mensaje);
-            if (retorno.success) {
-                listar_camas();
-                add_cama();
-            }
-        }, 'json').fail(function (retorno) {
-            console.log(retorno);
-            alerta_errores(retorno.responseText);
-        }).always(function () {
-            $.LoadingOverlay('hide');
-        })
-    }
-</script>

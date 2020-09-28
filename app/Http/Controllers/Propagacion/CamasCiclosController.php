@@ -102,7 +102,7 @@ class CamasCiclosController extends Controller
             'id_cama' => 'required|',
         ], [
             'nombre.required' => 'El nombre es obligatorio',
-            'id_cama.required' => 'El grupo de menú es obligatorio',
+            'id_cama.required' => 'La cama es obligatoria',
             'area_trabajo.required' => 'El área de trabajo es obligatorio',
             'nombre.max' => 'El nombre es muy grande',
             'area_trabajo.max' => 'El área de trabajo es muy grande',

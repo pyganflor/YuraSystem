@@ -34,29 +34,3 @@
     @endforeach
     </tbody>
 </table>
-
-<script>
-    function eliminar_cama(id) {
-        modal_quest('modal_quest-eliminar_cama',
-            '<div class="alert alert-warning text-center">¿Desea activar/desactivar esta cama?</div>',
-            '<i class="fa fa-fw fa-exclamation-triangle"></i> Pregunta de alerta', true, false, '50%', function () {
-                cerrar_modals();
-                datos = {
-                    _token: '{{csrf_token()}}',
-                    id_cama: id
-                };
-                $.LoadingOverlay('show');
-                $.post('{{url('camas_ciclos/eliminar_cama')}}', datos, function (retorno) {
-                    alerta(retorno.mensaje);
-                    if (retorno.success) {
-                        listar_camas();
-                    }
-                }, 'json').fail(function (retorno) {
-                    console.log(retorno);
-                    alerta_errores(retorno.responseText);
-                }).always(function () {
-                    $.LoadingOverlay('hide');
-                })
-            });
-    }
-</script>
