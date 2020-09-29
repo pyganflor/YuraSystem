@@ -185,7 +185,7 @@
                 cerrar_modals();
             });
             if (retorno.success) {
-                $('#activo_ciclos').val(1)
+                //$('#activo_ciclos').val(1)
                 listar_ciclos();
             }
         }, 'json').fail(function (retorno) {
