@@ -1,6 +1,8 @@
 <script>
     listar_camas();
+    listar_ciclos();
 
+    /* ================== CAMAS ================== */
     function listar_camas() {
         datos = {};
         $.LoadingOverlay('show');
@@ -100,5 +102,21 @@
         }).always(function () {
             $.LoadingOverlay('hide');
         })
+    }
+
+    /* ================== CICLOS ================== */
+    function listar_ciclos() {
+        datos = {
+            variedad: $('#variedad_ciclos').val(),
+            activo: $('#activo_ciclos').val(),
+        };
+        $.LoadingOverlay('show');
+        $.get('{{url('camas_ciclos/listar_ciclos')}}', datos, function (retorno) {
+            $('#div_gestion_ciclos').html(retorno);
+            estructura_tabla('table_ciclos', false, true);
+            //$('#table_camas_filter').remove();
+        }).always(function () {
+            $.LoadingOverlay('hide');
+        });
     }
 </script>

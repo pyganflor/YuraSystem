@@ -47,7 +47,29 @@
                     </div>
                 </div>
                 <div class="tab-pane" id="tab_ciclos">
-                    ciclos
+                    <div class="box box-success">
+                        <div class="box-header with-border">
+                            <h4 class="box-title">
+                                <a data-toggle="collapse" data-parent="#accordion" href="#collapse1" aria-expanded="true"
+                                   class="text-color_yura">
+                                    Gestión de <strong>ciclos</strong>
+                                </a>
+                            </h4>
+                            <div class="input-group pull-right">
+                                <select name="variedad_ciclos" id="variedad_ciclos" onchange="listar_ciclos()" class="border-radius_18">
+                                    @foreach($variedades as $v)
+                                        <option value="{{$v->id_variedad}}" {{$v->defecto == 1 ? 'selected' : ''}}>{{$v->nombre}}</option>
+                                    @endforeach
+                                </select>
+                                <select name="activo_ciclos" id="activo_ciclos" onchange="listar_ciclos()" class="border-radius_18">
+                                    <option value="1">Activos</option>
+                                    <option value="0">Inactivos</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="box-body" id="div_gestion_ciclos">
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

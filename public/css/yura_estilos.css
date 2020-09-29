@@ -301,6 +301,12 @@ table.dataTable thead .sorting_desc_disabled:after {
     border: 1px solid #9d9d9d;
 }
 
+.th_yura_green {
+    background-color: #00b388;
+    border: 1px solid #9d9d9d;
+    color: white;
+}
+
 .modal-content, .alert {
     border-radius: 20px !important;
 }

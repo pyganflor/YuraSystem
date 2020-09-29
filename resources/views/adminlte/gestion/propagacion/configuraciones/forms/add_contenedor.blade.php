@@ -1,9 +1,7 @@
 <div class="box box-success">
     <div class="box-header with-border">
-        <h3 class="box-title">Agregar contenedor</h3>
+        <h3 class="box-title text-color_yura">Agregar contenedor</h3>
     </div>
-    <!-- /.box-header -->
-    <!-- form start -->
     <div class="box-body">
         <div class="input-group">
             <div class="input-group-addon span-input-group-yura-fixed bg-yura_dark">

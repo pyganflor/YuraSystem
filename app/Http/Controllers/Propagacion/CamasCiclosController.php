@@ -5,8 +5,10 @@ namespace yura\Http\Controllers\Propagacion;
 use Illuminate\Http\Request;
 use yura\Http\Controllers\Controller;
 use yura\Modelos\Cama;
+use yura\Modelos\CicloCama;
 use yura\Modelos\Submenu;
 use Validator;
+use yura\Modelos\Variedad;
 
 class CamasCiclosController extends Controller
 {
@@ -15,9 +17,11 @@ class CamasCiclosController extends Controller
         return view('adminlte.gestion.propagacion.camas_ciclos.inicio', [
             'url' => $request->getRequestUri(),
             'submenu' => Submenu::Where('url', '=', substr($request->getRequestUri(), 1))->get()[0],
+            'variedades' => Variedad::All()
         ]);
     }
 
+    /* ======================= CAMAS ========================= */
     public function listar_camas(Request $request)
     {
         $camas = Cama::All()->sortBy('area_trabajo')->sortBy('nombre');
@@ -178,5 +182,32 @@ class CamasCiclosController extends Controller
                 'mensaje' => '<div class="alert alert-danger text-center">No se ha encontrado la cama en el sistema</div>',
             ];
         }
+    }
+
+    /* ======================= CICLOS ========================= */
+    public function listar_ciclos(Request $request)
+    {
+        if ($request->activo == 0) {
+            $view = 'listado_ciclos_inactivos';
+            $all_camas = Cama::All()->where('area_trabajo', 'PLANTAS MADRES')->sortBy('area_trabajo')->sortBy('nombre');
+            $camas = [];
+            foreach ($all_camas as $c)
+                if ($c->ciclo_actual() == '')
+                    array_push($camas, $c);
+            $json = [
+                'camas' => $camas,
+                'variedades' => getVariedades()
+            ];
+        } else {
+            $view = 'listado_ciclos_activos';
+            $ciclos = CicloCama::where('id_variedad', $request->variedad)
+                ->where('activo', 1)
+                ->get();
+            $json = [
+                'ciclos' => $ciclos,
+                'variedades' => getVariedades()
+            ];
+        }
+        return view('adminlte.gestion.propagacion.camas_ciclos.partials.' . $view, $json);
     }
 }

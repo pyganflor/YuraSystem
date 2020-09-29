@@ -18,8 +18,16 @@ class Cama extends Model
         'area_trabajo', // PLANTAS MADRES, ENRAIZAMIENTO, CONFINAMIENTO
     ];
 
-    public function sector()
+    public function ciclos()
     {
-        return $this->belongsTo('\yura\Modelos\Sector', 'id_cama');
+        return $this->hasMany('\yura\Modelos\CicloCama', 'id_cama');
+    }
+
+    public function ciclo_actual()
+    {
+        foreach ($this->ciclos as $c)
+            if ($c->activo == 1)
+                return $c;
+        return '';
     }
 }

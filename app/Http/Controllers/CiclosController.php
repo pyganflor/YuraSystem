@@ -19,7 +19,6 @@ class CiclosController extends Controller
     public function listar_ciclos(Request $request)
     {
         $r = [];
-
         if ($request->tipo == 0) {  // inactivos
             foreach (Modulo::All()->where('estado', 1)->sortBy('nombre') as $m) {
                 if ($m->cicloActual() == '') {

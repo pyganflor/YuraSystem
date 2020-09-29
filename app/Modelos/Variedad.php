@@ -31,6 +31,7 @@ class Variedad extends Model
         'proy_inicio_cosecha_siembra',  // inicio de cosecha proyectado para las siembras,
         'proy_curva_poda',  // curva proyectada para las podas,
         'proy_curva_siembra',  // curva proyectada para las siembras,
+        'defecto',  // indica si la variedad es la principal de la finca para reportes y demas
     ];
 
     public function planta()
