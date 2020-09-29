@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use yura\Http\Controllers\Controller;
 use yura\Modelos\Cama;
 use yura\Modelos\CicloCama;
+use yura\Modelos\CicloCamaContenedor;
+use yura\Modelos\ContenedorPropag;
 use yura\Modelos\Submenu;
 use Validator;
 use yura\Modelos\Variedad;
@@ -209,5 +211,80 @@ class CamasCiclosController extends Controller
             ];
         }
         return view('adminlte.gestion.propagacion.camas_ciclos.partials.' . $view, $json);
+    }
+
+    public function crear_ciclo(Request $request)
+    {
+        $cama = Cama::find($request->cama);
+        $variedad = getVariedad($request->variedad);
+        return view('adminlte.gestion.propagacion.camas_ciclos.forms.crear_ciclo', [
+            'cama' => $cama,
+            'variedad' => $variedad,
+            'fecha_inicio' => $request->fecha_inicio,
+            'fecha_fin' => $request->fecha_fin,
+            'esq_planta' => $request->esq_planta,
+            'contenedores' => ContenedorPropag::where('estado', 1)->orderBy('cantidad')->get(),
+        ]);
+    }
+
+    public function store_ciclo(Request $request)
+    {
+        if ($request->fecha_fin >= $request->fecha_inicio) {
+            $ciclo = new CicloCama();
+            $ciclo->id_cama = $request->cama;
+            $ciclo->id_variedad = $request->variedad;
+            $ciclo->fecha_inicio = $request->fecha_inicio;
+            $ciclo->fecha_fin = $request->fecha_fin;
+            $ciclo->esq_x_planta = $request->esq_planta;
+            $ciclo->activo = 1;
+            $ciclo->fecha_registro = date('Y-m-d H:i:s');
+            if ($ciclo->save()) {
+                $ciclo = CicloCama::All()->last();
+                bitacora('ciclo_cama', $ciclo->ciclo_cama, 'I', 'Inserción de un nuevo ciclo de propagación');
+                /* ================== Guardar en la tabla CicloCamaContenedor ============== */
+                foreach ($request->contenedores as $c) {
+                    $ciclo_cont = new CicloCamaContenedor();
+                    $ciclo_cont->id_ciclo_cama = $ciclo->id_ciclo_cama;
+                    $ciclo_cont->id_contenedor_propag = $c['id'];
+                    $ciclo_cont->cantidad = $c['cantidad'];
+                    if ($ciclo_cont->save()) {
+                        $ciclo_cont = CicloCamaContenedor::All()->last();
+                        bitacora('ciclo_cama_contenedor', $ciclo_cont->id_ciclo_cama_contenedor, 'I', 'Inserción de una nueva relación ciclo_cama_contenedor');
+                        $success = true;
+                        $msg = '<div class="alert alert-success text-center">Se ha creado el ciclo satisfactoriamente</div>';
+                    } else {
+                        $success = false;
+                        $msg = '<div class="alert alert-danger text-center">Ha ocurrido un problema al guardar la información de los contenedores</div>';
+                    }
+                }
+            } else {
+                $success = false;
+                $msg = '<div class="alert alert-danger text-center">Ha ocurrido un problema al guardar la información del ciclo</div>';
+            }
+        } else {
+            $success = false;
+            $msg = '<div class="alert alert-danger text-center">La fecha fin debe ser mayor o igual a la fecha de inicio</div>';
+        }
+        return [
+            'success' => $success,
+            'mensaje' => $msg,
+        ];
+    }
+
+    public function update_ciclo(Request $request)
+    {
+        dd($request->all());
+        if ($request->fecha_fin >= $request->fecha_inicio) {
+            $ciclo = CicloCama::find($request->ciclo);
+            $ciclo->fecha_inicio = $request->fecha_inicio;
+            $ciclo->fecha_fin = $request->fecha_inicio;
+        } else {
+            $success = false;
+            $msg = '<div class="alert alert-danger text-center">La fecha fin debe ser mayor o igual a la fecha de inicio</div>';
+        }
+        return [
+            'success' => $success,
+            'mensaje' => $msg,
+        ];
     }
 }

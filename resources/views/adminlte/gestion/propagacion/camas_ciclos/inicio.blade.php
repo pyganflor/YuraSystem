@@ -50,8 +50,7 @@
                     <div class="box box-success">
                         <div class="box-header with-border">
                             <h4 class="box-title">
-                                <a data-toggle="collapse" data-parent="#accordion" href="#collapse1" aria-expanded="true"
-                                   class="text-color_yura">
+                                <a class="text-color_yura">
                                     Gestión de <strong>ciclos</strong>
                                 </a>
                             </h4>

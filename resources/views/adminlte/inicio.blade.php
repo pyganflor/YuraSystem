@@ -582,6 +582,11 @@
                                         <div class="col-md-12" style="margin-top: 10px">
                                             <ul class="list-unstyled text-center">
                                                 <li>
+                                                    <strong title="Costo x planta" style="color:{{$color_8}}">
+                                                        <small>Costo x planta:</small>
+                                                        <span id="span_costos_x_planta">$</span></strong>
+                                                </li>
+                                                <li>
                                                     <strong title="Campo/ha/Semana" style="color:{{$color_8}}">
                                                         <small>Campo/<sup>ha</sup>/Semana:</small>
                                                         <span id="span_costos_campo_semana">${{number_format(explode('|', $costos_campo_semana)[0] , 2)}}</span></strong>
@@ -602,7 +607,6 @@
                                                         <span id="span_costos_total_tallo">¢{{number_format($costos_total_x_tallo, 2)}}</span></strong>
                                                 </li>
                                             </ul>
-                                            <br>
                                         </div>
                                     </div>
                                     <div class="row" style="margin-top: 10px">

@@ -11,3 +11,6 @@ Route::post('camas_ciclos/eliminar_cama', 'Propagacion\CamasCiclosController@eli
 
 /* ============================ CICLOS =========================== */
 Route::get('camas_ciclos/listar_ciclos', 'Propagacion\CamasCiclosController@listar_ciclos');
+Route::get('camas_ciclos/crear_ciclo', 'Propagacion\CamasCiclosController@crear_ciclo');
+Route::post('camas_ciclos/store_ciclo', 'Propagacion\CamasCiclosController@store_ciclo');
+Route::post('camas_ciclos/update_ciclo', 'Propagacion\CamasCiclosController@update_ciclo');

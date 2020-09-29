@@ -119,4 +119,80 @@
             $.LoadingOverlay('hide');
         });
     }
+
+    function crear_ciclo(cama) {
+        datos = {
+            cama: cama,
+            variedad: $('#variedad_' + cama).val(),
+            fecha_inicio: $('#fecha_inicio_' + cama).val(),
+            fecha_fin: $('#fecha_fin_' + cama).val(),
+            esq_planta: $('#esq_planta_' + cama).val(),
+        };
+        if (datos['fecha_fin'] >= datos['fecha_inicio']) {
+            $.LoadingOverlay('show');
+            $.get('{{url('camas_ciclos/crear_ciclo')}}', datos, function (retorno) {
+                modal_view('modal-view_crear_ciclo', retorno, '<i class="fa fa-fw fa-plsu"></i> Crear ciclo', true, false, '65%');
+            }).always(function () {
+                $.LoadingOverlay('hide');
+            })
+        } else {
+            alerta('<div class="alert alert-warning text-center">La fecha fin debe ser mayor o igual que la fecha de inicio</div>')
+        }
+    }
+
+    function calcular_totales_ciclo() {
+        ids_contenedor = $('.ids_contenedor');
+        total_contenedores = 0;
+        total_plantas = 0;
+        for (i = 0; i < ids_contenedor.length; i++) {
+            id = ids_contenedor[i].value;
+            cantidad = parseInt($('#cantidad_' + id).val());
+            cantidad_plantas = cantidad * $('#cantidad_x_unidad_' + id).val();
+            if (cantidad > 0) {
+                total_contenedores += cantidad;
+                total_plantas += cantidad_plantas;
+                $('#td_total_' + id).html(cantidad_plantas);
+            }
+        }
+        $('#th_total_contenedores').html(total_contenedores);
+        $('#th_total_plantas').html(total_plantas);
+    }
+
+    function store_ciclo() {
+        ids_contenedor = $('.ids_contenedor');
+        contenedores = [];
+        for (i = 0; i < ids_contenedor.length; i++) {
+            id = ids_contenedor[i].value;
+            cantidad = parseInt($('#cantidad_' + id).val());
+            if (cantidad > 0)
+                contenedores.push({
+                    id: id,
+                    cantidad: cantidad,
+                });
+        }
+        datos = {
+            _token: '{{csrf_token()}}',
+            cama: $('#id_cama').val(),
+            variedad: $('#id_variedad').val(),
+            fecha_inicio: $('#fecha_inicio').val(),
+            fecha_fin: $('#fecha_fin').val(),
+            esq_planta: $('#esq_planta').val(),
+            contenedores: contenedores,
+        };
+        $.LoadingOverlay('show');
+        $.post('{{url('camas_ciclos/store_ciclo')}}', datos, function (retorno) {
+            alerta_accion(retorno.mensaje, function () {
+                cerrar_modals();
+            });
+            if (retorno.success) {
+                $('#activo_ciclos').val(1)
+                listar_ciclos();
+            }
+        }, 'json').fail(function (retorno) {
+            console.log(retorno);
+            alerta_errores(retorno.responseText);
+        }).always(function () {
+            $.LoadingOverlay('hide');
+        })
+    }
 </script>

@@ -2,7 +2,7 @@
     <thead>
     <tr>
         <th class="text-center th_yura_green" style="border-color: white; border-radius: 18px 0 0 0">Contenedor</th>
-        <th class="text-center th_yura_green" style="border-color: white;">Cantidad</th>
+        <th class="text-center th_yura_green" style="border-color: white;">Cantidad plantas</th>
         <th class="text-center th_yura_green" style="border-color: white; width: 60px; border-radius: 0 18px 0 0">
             <div class="btn-group">
                 <button type="button" class="btn btn-xs btn-default btn-yura_default" onclick="listar_contenedores()" title="Actualizar listado">

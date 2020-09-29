@@ -45,4 +45,14 @@ class CicloCama extends Model
         }
         return $valor;
     }
+
+    public function getDiasVida()
+    {
+        return difFechas(date('Y-m-d'), $this->fecha_inicio)->days;
+    }
+
+    public function getEsquejesCosechados()
+    {
+        return 0;
+    }
 }

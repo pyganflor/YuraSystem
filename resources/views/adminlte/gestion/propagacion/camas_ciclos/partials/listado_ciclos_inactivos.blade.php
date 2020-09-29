@@ -57,21 +57,3 @@
         </tbody>
     </table>
 </div>
-
-<script>
-    function crear_ciclo(cama) {
-        datos = {
-            cama: cama,
-            variedad: $('#variedad_' + cama).val(),
-            fecha_inicio: $('#fecha_inicio_' + cama).val(),
-            fecha_fin: $('#fecha_fin_' + cama).val(),
-            esq_planta: $('#esq_planta_' + cama).val(),
-        };
-        $.LoadingOverlay('show');
-        $.get('{{url('camas_ciclos/crear_ciclo')}}', datos, function (retorno) {
-            modal_view('modal-view_crear_ciclo', retorno, '<i class="fa fa-fw fa-plsu"></i> Crear ciclo', true, false, '80%');
-        }).always(function () {
-            $.LoadingOverlay('hide');
-        })
-    }
-</script>

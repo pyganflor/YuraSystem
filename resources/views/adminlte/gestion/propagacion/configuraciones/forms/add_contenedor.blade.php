@@ -12,7 +12,7 @@
         </div>
         <div class="input-group" style="margin-top: 10px">
             <div class="input-group-addon span-input-group-yura-fixed bg-yura_dark">
-                Cantidad
+                Cantidad plantas
             </div>
             <input type="number" name="cantidad" id="cantidad" class="form-control input-yura_default text-center"
                    value="{{isset($contenedor) ? $contenedor->cantidad : ''}}">
