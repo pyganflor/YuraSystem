@@ -55,4 +55,13 @@ class CicloCama extends Model
     {
         return 0;
     }
+
+    public function getCicloContenedorByContenedor($contenedores, $id_cont)
+    {
+        foreach ($contenedores as $cont) {
+            if ($cont->id_contenedor_propag == $id_cont)
+                return $cont;
+        }
+        return '';
+    }
 }

@@ -131,7 +131,7 @@
         if (datos['fecha_fin'] >= datos['fecha_inicio']) {
             $.LoadingOverlay('show');
             $.get('{{url('camas_ciclos/crear_ciclo')}}', datos, function (retorno) {
-                modal_view('modal-view_crear_ciclo', retorno, '<i class="fa fa-fw fa-plsu"></i> Crear ciclo', true, false, '65%');
+                modal_view('modal-view_crear_ciclo', retorno, '<i class="fa fa-fw fa-plus"></i> Crear ciclo', true, false, '65%');
             }).always(function () {
                 $.LoadingOverlay('hide');
             })
@@ -152,6 +152,8 @@
                 total_contenedores += cantidad;
                 total_plantas += cantidad_plantas;
                 $('#td_total_' + id).html(cantidad_plantas);
+            } else {
+                $('#td_total_' + id).html('');
             }
         }
         $('#th_total_contenedores').html(total_contenedores);
@@ -191,6 +193,51 @@
         }, 'json').fail(function (retorno) {
             console.log(retorno);
             alerta_errores(retorno.responseText);
+        }).always(function () {
+            $.LoadingOverlay('hide');
+        })
+    }
+
+    function update_ciclo(ciclo) {
+        if ($('#fecha_fin_' + ciclo).val() >= $('#fecha_inicio_' + ciclo).val()) {
+            modal_quest('modal-quest_update_ciclo', '<div class="alert alert-info text-center">¿Desea modificar el ciclo?</div>',
+                '<i class="fa fa-fw fa-exclamation-triangle"></i> Pregunta de alerta', true, false, '50%', function () {
+                    datos = {
+                        _token: '{{csrf_token()}}',
+                        ciclo: ciclo,
+                        fecha_inicio: $('#fecha_inicio_' + ciclo).val(),
+                        fecha_fin: $('#fecha_fin_' + ciclo).val(),
+                        esq_x_planta: $('#esq_x_planta_' + ciclo).val(),
+                        plantas_muertas: $('#plantas_muertas_' + ciclo).val(),
+                    };
+                    $('#id_ciclo_' + ciclo).val()
+                    $.LoadingOverlay('show');
+                    $.post('{{url('camas_ciclos/update_ciclo')}}', datos, function (retorno) {
+                        alerta_accion(retorno.mensaje, function () {
+                            cerrar_modals();
+                        });
+                        if (retorno.success) {
+                            listar_ciclos();
+                        }
+                    }, 'json').fail(function (retorno) {
+                        console.log(retorno);
+                        alerta_errores(retorno.responseText);
+                    }).always(function () {
+                        $.LoadingOverlay('hide');
+                    })
+                });
+        } else {
+            alerta('<div class="alert alert-danger text-center">La fecha fin debe ser mayor o igual que la fecha de inicio</div>')
+        }
+    }
+
+    function edit_ciclo_contenedores(ciclo) {
+        datos = {
+            ciclo: ciclo
+        };
+        $.LoadingOverlay('show');
+        $.get('{{url('camas_ciclos/edit_ciclo_contenedores')}}', datos, function (retorno) {
+            modal_view('modal-view_edit_ciclo_contenedores', retorno, '<i class="fa fa-fw fa-plus"></i> Editar contenedores', true, false, '65%');
         }).always(function () {
             $.LoadingOverlay('hide');
         })

@@ -80,7 +80,7 @@
                 </th>
             </tr>
         </table>
-        <button type="button" class="btn btn-yura_primary" style="margin-top: 5px" onclick="store_ciclo()">
+        <button type="button" class="btn btn-yura_primary text-white" style="margin-top: 5px" onclick="store_ciclo()">
             <i class="fa fa-fw fa-save"></i> Crear ciclo
         </button>
     </div>

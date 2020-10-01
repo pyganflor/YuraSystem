@@ -273,14 +273,67 @@ class CamasCiclosController extends Controller
 
     public function update_ciclo(Request $request)
     {
-        dd($request->all());
         if ($request->fecha_fin >= $request->fecha_inicio) {
             $ciclo = CicloCama::find($request->ciclo);
             $ciclo->fecha_inicio = $request->fecha_inicio;
             $ciclo->fecha_fin = $request->fecha_inicio;
+            $ciclo->esq_x_planta = $request->esq_x_planta;
+            $ciclo->plantas_muertas = $request->plantas_muertas;
+            if ($ciclo->save()) {
+                bitacora('ciclo_cama', $ciclo->id_ciclo_cama, 'U', 'Update de un ciclo_cama');
+                $success = true;
+                $msg = '<div class="alert alert-success text-center">Se ha actualizado el ciclo satisfactoriamente</div>';
+            } else {
+                $success = false;
+                $msg = '<div class="alert alert-danger text-center">Ha ocurrido un problema al guardar la información</div>';
+            }
         } else {
             $success = false;
             $msg = '<div class="alert alert-danger text-center">La fecha fin debe ser mayor o igual a la fecha de inicio</div>';
+        }
+        return [
+            'success' => $success,
+            'mensaje' => $msg,
+        ];
+    }
+
+    public function edit_ciclo_contenedores(Request $request)
+    {
+        $ciclo = CicloCama::find($request->ciclo);
+        return view('adminlte.gestion.propagacion.camas_ciclos.forms.edit_ciclo_contenedores', [
+            'ciclo' => $ciclo,
+            'ciclo_contenedores' => $ciclo->contenedores,
+            'contenedores' => ContenedorPropag::where('estado', 1)->orderBy('cantidad')->get(),
+        ]);
+    }
+
+    public function update_ciclo_contenedores(Request $request)
+    {
+        $ciclo = CicloCama::find($request->ciclo);
+        if ($ciclo != '') {
+            /* delete anteriores */
+            $anteriores = $ciclo->contenedores;
+            foreach ($anteriores as $item)
+                $item->delete();
+            /* ================== Guardar en la tabla CicloCamaContenedor ============== */
+            foreach ($request->contenedores as $c) {
+                $ciclo_cont = new CicloCamaContenedor();
+                $ciclo_cont->id_ciclo_cama = $ciclo->id_ciclo_cama;
+                $ciclo_cont->id_contenedor_propag = $c['id'];
+                $ciclo_cont->cantidad = $c['cantidad'];
+                if ($ciclo_cont->save()) {
+                    $ciclo_cont = CicloCamaContenedor::All()->last();
+                    bitacora('ciclo_cama_contenedor', $ciclo_cont->id_ciclo_cama_contenedor, 'I', 'Inserción de una nueva relación ciclo_cama_contenedor');
+                    $success = true;
+                    $msg = '<div class="alert alert-success text-center">Se han actualizado las cantidades satisfactoriamente</div>';
+                } else {
+                    $success = false;
+                    $msg = '<div class="alert alert-danger text-center">Ha ocurrido un problema al guardar la información de los contenedores</div>';
+                }
+            }
+        } else {
+            $success = false;
+            $msg = '<div class="alert alert-danger text-center">No se ha encontrado el ciclo</div>';
         }
         return [
             'success' => $success,
