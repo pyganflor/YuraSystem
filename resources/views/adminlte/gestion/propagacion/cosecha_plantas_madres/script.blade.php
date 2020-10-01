@@ -95,4 +95,65 @@
             alerta('<div class="alert alert-danger text-center">Debe ingresar las cantidades</div>')
         }
     }
+
+    function edit_cosecha(cos) {
+        $('.field_edit_cosecha_' + cos).removeClass('hidden');
+        $('.field_show_cosecha_' + cos).addClass('hidden');
+        $('#btn_update_cosecha_' + cos).removeClass('hidden');
+        $('#btn_edit_cosecha_' + cos).addClass('hidden');
+    }
+
+    function select_cama_edit(cos) {
+        siglas_var = $('#cama_edit_' + cos).val().split(' - ')[1];
+        $('#td_variedad_listado_cosecha_' + cos).html(siglas_var);
+        id_var = $('#cama_edit_' + cos).val().split(' - ')[2];
+        $('#id_variedad_edit_cosecha_' + cos).val(id_var);
+    }
+
+    function update_cosecha(cos) {
+        datos = {
+            _token: '{{csrf_token()}}',
+            cosecha: cos,
+            cama: $('#cama_edit_' + cos).val().split(' - ')[0],
+            variedad: $('#id_variedad_edit_cosecha_' + cos).val(),
+            cantidad: $('#cantidad_edit_' + cos).val(),
+        };
+        $.LoadingOverlay('show');
+        $.post('{{url('cosecha_plantas_madres/update_cosecha')}}', datos, function (retorno) {
+            alerta(retorno.mensaje);
+            if (retorno.success) {
+                listar_cosechas();
+            }
+        }, 'json').fail(function (retorno) {
+            console.log(retorno);
+            alerta_errores(retorno.responseText);
+        }).always(function () {
+            $.LoadingOverlay('hide');
+        })
+    }
+
+    function eliminar_cosecha(cos) {
+        modal_quest('modal-quest_eliminar_cosecha', '<div class="alert alert-warning text-center">¿Desea ELIMINAR la cosecha?</div>',
+            '<i class="fa fa-fw fa-exclamation-triangle"></i> Pregunta de alerta', true, false, '50%', function () {
+                datos = {
+                    _token: '{{csrf_token()}}',
+                    cosecha: cos,
+                };
+                $.LoadingOverlay('show');
+                $.post('{{url('cosecha_plantas_madres/eliminar_cosecha')}}', datos, function (retorno) {
+                    alerta_accion(retorno.mensaje, function () {
+                        cerrar_modals();
+                    });
+                    if (retorno.success) {
+                        listar_cosechas();
+                    }
+                }, 'json').fail(function (retorno) {
+                    console.log(retorno);
+                    alerta_errores(retorno.responseText);
+                }).always(function () {
+                    $.LoadingOverlay('hide');
+                })
+            });
+    }
+
 </script>

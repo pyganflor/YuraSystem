@@ -19,7 +19,14 @@
     </tr>
     </thead>
     <tbody>
+    @php
+        $cosecha_x_variedad = [];
+        $cosecha_total = 0;
+    @endphp
     @foreach($cosechas as $cos)
+        @php
+            $cosecha_total += $cos->cantidad;
+        @endphp
         <tr>
             <td class="text-center" style="border-color: #9d9d9d">
                 {{$cos->semana()->codigo}}
@@ -27,17 +34,19 @@
             <td class="text-center" style="border-color: #9d9d9d">
                 <span class="field_show_cosecha_{{$cos->id_cosecha_plantas_madres}}">{{$cos->cama->nombre}}</span>
                 <select id="cama_edit_{{$cos->id_cosecha_plantas_madres}}" style="width: 100%"
+                        onchange="select_cama_edit('{{$cos->id_cosecha_plantas_madres}}')"
                         class="hidden field_edit_cosecha_{{$cos->id_cosecha_plantas_madres}}">
                     @foreach($camas as $cam)
-                        <option value="{{$cam->id_cama}}" {{$cam->id_cama == $cos->id_cama ? 'selected' : ''}}>
-                            {{$cam->nombre}} - {{$cam->siglas}}
+                        <option value="{{$cam->id_cama}} - {{$cam->siglas}} - {{$cam->id_variedad}}" {{$cam->id_cama == $cos->id_cama ? 'selected' : ''}}>
+                            {{$cam->nombre}}
                         </option>
                     @endforeach
                 </select>
             </td>
-            <td class="text-center" style="border-color: #9d9d9d">
+            <td class="text-center" style="border-color: #9d9d9d" id="td_variedad_listado_cosecha_{{$cos->id_cosecha_plantas_madres}}">
                 {{$cos->variedad->siglas}}
             </td>
+            <input type="hidden" id="id_variedad_edit_cosecha_{{$cos->id_cosecha_plantas_madres}}" value="{{$cos->id_variedad}}">
             <td class="text-center" style="border-color: #9d9d9d">
                 <span class="field_show_cosecha_{{$cos->id_cosecha_plantas_madres}}">{{$cos->cantidad}}</span>
                 <input type="number" id="cantidad_edit_{{$cos->id_cosecha_plantas_madres}}" style="width: 100%"
@@ -45,23 +54,33 @@
             </td>
             <td class="text-center" style="border-color: #9d9d9d">
                 <div class="btn-group">
-                    <button type="button" class="btn btn-xs btn-yura_default"
+                    <button type="button" class="btn btn-xs btn-yura_default" id="btn_edit_cosecha_{{$cos->id_cosecha_plantas_madres}}"
                             onclick="edit_cosecha('{{$cos->id_cosecha_plantas_madres}}')">
                         <i class="fa fa-fw fa-pencil"></i>
                     </button>
-                    <button type="button" class="btn btn-xs btn-yura_danger">
+                    <button type="button" class="btn btn-xs btn-yura_primary hidden" id="btn_update_cosecha_{{$cos->id_cosecha_plantas_madres}}"
+                            onclick="update_cosecha('{{$cos->id_cosecha_plantas_madres}}')">
+                        <i class="fa fa-fw fa-edit"></i>
+                    </button>
+                    <button type="button" class="btn btn-xs btn-yura_danger" onclick="eliminar_cosecha('{{$cos->id_cosecha_plantas_madres}}')">
                         <i class="fa fa-fw fa-trash"></i>
                     </button>
                 </div>
             </td>
         </tr>
+        @php
+            $existe = false;
+                foreach ($cosecha_x_variedad as $pos => $v){
+                    if($v->id_variedad == $cos->id_variedad){
+                        $cosecha_x_variedad[$pos]['cantidad'] += $cos->cantidad;
+                        $existe
+                    }
+                }
+        @endphp
     @endforeach
     </tbody>
 </table>
 
 <script>
-    function edit_cosecha(cos) {
-        $('.field_edit_cosecha_' + cos).removeClass('hidden');
-        $('.field_show_cosecha_' + cos).addClass('hidden');
-    }
+    $('#total_cosecha_dia').val('{{$cosecha_total}} esquejes')
 </script>

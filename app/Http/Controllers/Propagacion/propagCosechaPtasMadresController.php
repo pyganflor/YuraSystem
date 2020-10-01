@@ -34,7 +34,7 @@ class propagCosechaPtasMadresController extends Controller
         $camas_activas = DB::table('ciclo_cama as cc')
             ->join('cama as c', 'c.id_cama', 'cc.id_cama')
             ->join('variedad as v', 'v.id_variedad', 'cc.id_variedad')
-            ->select('cc.id_cama', 'c.nombre', 'v.siglas')->distinct()
+            ->select('cc.id_cama', 'c.nombre', 'cc.id_variedad', 'v.siglas')->distinct()
             ->where('cc.activo', 1)
             ->orderBy('c.nombre')
             ->get();
@@ -67,6 +67,7 @@ class propagCosechaPtasMadresController extends Controller
                     $cosecha->cantidad = $item['cantidad'];
                     $cosecha->fecha_registro = date('Y-m-d H:i:s');
                     if ($cosecha->save()) {
+                        $cosecha = CosechaPlantasMadres::All()->last();
                         bitacora('cosecha_plantas_madres', $cosecha->id_cosecha_plantas_madres, 'I', 'Insercion de una cosecha_plantas_madres');
                     } else {
                         $success = false;
@@ -80,6 +81,52 @@ class propagCosechaPtasMadresController extends Controller
         } else {
             $success = false;
             $msg = '<div class="alert alert-danger text-center">Debe indicar la fecha</div>';
+        }
+        return [
+            'success' => $success,
+            'mensaje' => $msg,
+        ];
+    }
+
+    public function update_cosecha(Request $request)
+    {
+        $cosecha = CosechaPlantasMadres::find($request->cosecha);
+        if ($cosecha != '') {
+            $cosecha->id_cama = $request->cama;
+            $cosecha->id_variedad = $request->variedad;
+            $cosecha->cantidad = $request->cantidad;
+            if ($cosecha->save()) {
+                $success = true;
+                $msg = '<div class="alert alert-success text-center">Se ha actualizado la cosecha satisfactoriamente</div>';
+                bitacora('cosecha_plantas_madres', $cosecha->id_cosecha_plantas_madres, 'U', 'Update de una cosecha_plantas_madres');
+            } else {
+                $success = false;
+                $msg = '<div class="alert alert-danger text-center">Ha ocurrido un problema al guardar la cosecha</div>';
+            }
+        } else {
+            $success = false;
+            $msg = '<div class="alert alert-danger text-center">No se ha encontrado la cosecha</div>';
+        }
+        return [
+            'success' => $success,
+            'mensaje' => $msg,
+        ];
+    }
+
+    public function eliminar_cosecha(Request $request)
+    {
+        $cosecha = CosechaPlantasMadres::find($request->cosecha);
+        if ($cosecha != '') {
+            if ($cosecha->delete()) {
+                $success = true;
+                $msg = '<div class="alert alert-success text-center">Se ha eliminado la cosecha satisfactoriamente</div>';
+            } else {
+                $success = false;
+                $msg = '<div class="alert alert-danger text-center">Ha ocurrido un problema al eliminar la cosecha</div>';
+            }
+        } else {
+            $success = false;
+            $msg = '<div class="alert alert-danger text-center">No se ha encontrado la cosecha</div>';
         }
         return [
             'success' => $success,
