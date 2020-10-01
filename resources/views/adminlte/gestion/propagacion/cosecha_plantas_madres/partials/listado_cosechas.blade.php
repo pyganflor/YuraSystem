@@ -73,7 +73,6 @@
                 foreach ($cosecha_x_variedad as $pos => $v){
                     if($v->id_variedad == $cos->id_variedad){
                         $cosecha_x_variedad[$pos]['cantidad'] += $cos->cantidad;
-                        $existe
                     }
                 }
         @endphp
