@@ -73,11 +73,14 @@
                 </td>
                 <td class="text-center" style="border-color: #9d9d9d">
                     <div class="btn-group">
+                        <button type="button" class="btn btn-xs btn-yura_danger" onclick="terminar_ciclo('{{$c->id_ciclo_cama}}')">
+                            <i class="fa fa-fw fa-times"></i>
+                        </button>
                         <button type="button" class="btn btn-xs btn-yura_default" onclick="update_ciclo('{{$c->id_ciclo_cama}}')">
                             <i class="fa fa-fw fa-edit"></i>
                         </button>
-                        <button type="button" class="btn btn-xs btn-yura_danger">
-                            <i class="fa fa-fw fa-times"></i>
+                        <button type="button" class="btn btn-xs btn-yura_danger" onclick="eliminar_ciclo('{{$c->id_ciclo_cama}}')">
+                            <i class="fa fa-fw fa-trash"></i>
                         </button>
                     </div>
                 </td>

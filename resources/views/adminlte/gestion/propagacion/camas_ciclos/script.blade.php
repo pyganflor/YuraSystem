@@ -242,4 +242,86 @@
             $.LoadingOverlay('hide');
         })
     }
+
+    function update_ciclo_contenedores() {
+        ids_contenedor = $('.ids_contenedor');
+        contenedores = [];
+        for (i = 0; i < ids_contenedor.length; i++) {
+            id = ids_contenedor[i].value;
+            cantidad = parseInt($('#cantidad_' + id).val());
+            if (cantidad > 0)
+                contenedores.push({
+                    id: id,
+                    cantidad: cantidad,
+                });
+        }
+        datos = {
+            _token: '{{csrf_token()}}',
+            ciclo: $('#id_ciclo').val(),
+            contenedores: contenedores,
+        };
+        $.LoadingOverlay('show');
+        $.post('{{url('camas_ciclos/update_ciclo_contenedores')}}', datos, function (retorno) {
+            alerta_accion(retorno.mensaje, function () {
+                cerrar_modals();
+            });
+            if (retorno.success) {
+                //$('#activo_ciclos').val(1)
+                listar_ciclos();
+            }
+        }, 'json').fail(function (retorno) {
+            console.log(retorno);
+            alerta_errores(retorno.responseText);
+        }).always(function () {
+            $.LoadingOverlay('hide');
+        })
+    }
+
+    function terminar_ciclo(ciclo) {
+        modal_quest('modal-quest_terminar_ciclo', '<div class="alert alert-info text-center">¿Desea TERMINAR el ciclo?</div>',
+            '<i class="fa fa-fw fa-exclamation-triangle"></i> Pregunta de alerta', true, false, '50%', function () {
+                datos = {
+                    _token: '{{csrf_token()}}',
+                    ciclo: ciclo,
+                };
+                $.LoadingOverlay('show');
+                $.post('{{url('camas_ciclos/terminar_ciclo')}}', datos, function (retorno) {
+                    alerta_accion(retorno.mensaje, function () {
+                        cerrar_modals();
+                    });
+                    if (retorno.success) {
+                        listar_ciclos();
+                    }
+                }, 'json').fail(function (retorno) {
+                    console.log(retorno);
+                    alerta_errores(retorno.responseText);
+                }).always(function () {
+                    $.LoadingOverlay('hide');
+                })
+            });
+    }
+
+    function eliminar_ciclo(ciclo) {
+        modal_quest('modal-quest_eliminar_ciclo', '<div class="alert alert-warning text-center">¿Desea ELIMINAR el ciclo?</div>',
+            '<i class="fa fa-fw fa-exclamation-triangle"></i> Pregunta de alerta', true, false, '50%', function () {
+                datos = {
+                    _token: '{{csrf_token()}}',
+                    ciclo: ciclo,
+                };
+                $.LoadingOverlay('show');
+                $.post('{{url('camas_ciclos/eliminar_ciclo')}}', datos, function (retorno) {
+                    alerta_accion(retorno.mensaje, function () {
+                        cerrar_modals();
+                    });
+                    if (retorno.success) {
+                        listar_ciclos();
+                    }
+                }, 'json').fail(function (retorno) {
+                    console.log(retorno);
+                    alerta_errores(retorno.responseText);
+                }).always(function () {
+                    $.LoadingOverlay('hide');
+                })
+            });
+    }
 </script>

@@ -16,3 +16,5 @@ Route::post('camas_ciclos/store_ciclo', 'Propagacion\CamasCiclosController@store
 Route::post('camas_ciclos/update_ciclo', 'Propagacion\CamasCiclosController@update_ciclo');
 Route::get('camas_ciclos/edit_ciclo_contenedores', 'Propagacion\CamasCiclosController@edit_ciclo_contenedores');
 Route::post('camas_ciclos/update_ciclo_contenedores', 'Propagacion\CamasCiclosController@update_ciclo_contenedores');
+Route::post('camas_ciclos/terminar_ciclo', 'Propagacion\CamasCiclosController@terminar_ciclo');
+Route::post('camas_ciclos/eliminar_ciclo', 'Propagacion\CamasCiclosController@eliminar_ciclo');

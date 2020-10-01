@@ -53,38 +53,4 @@
 </div>
 <script>
     calcular_totales_ciclo();
-
-    function update_ciclo_contenedores() {
-        ids_contenedor = $('.ids_contenedor');
-        contenedores = [];
-        for (i = 0; i < ids_contenedor.length; i++) {
-            id = ids_contenedor[i].value;
-            cantidad = parseInt($('#cantidad_' + id).val());
-            if (cantidad > 0)
-                contenedores.push({
-                    id: id,
-                    cantidad: cantidad,
-                });
-        }
-        datos = {
-            _token: '{{csrf_token()}}',
-            ciclo: $('#id_ciclo').val(),
-            contenedores: contenedores,
-        };
-        $.LoadingOverlay('show');
-        $.post('{{url('camas_ciclos/update_ciclo_contenedores')}}', datos, function (retorno) {
-            alerta_accion(retorno.mensaje, function () {
-                cerrar_modals();
-            });
-            if (retorno.success) {
-                //$('#activo_ciclos').val(1)
-                listar_ciclos();
-            }
-        }, 'json').fail(function (retorno) {
-            console.log(retorno);
-            alerta_errores(retorno.responseText);
-        }).always(function () {
-            $.LoadingOverlay('hide');
-        })
-    }
 </script>

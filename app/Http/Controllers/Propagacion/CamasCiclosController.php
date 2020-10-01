@@ -276,7 +276,7 @@ class CamasCiclosController extends Controller
         if ($request->fecha_fin >= $request->fecha_inicio) {
             $ciclo = CicloCama::find($request->ciclo);
             $ciclo->fecha_inicio = $request->fecha_inicio;
-            $ciclo->fecha_fin = $request->fecha_inicio;
+            $ciclo->fecha_fin = $request->fecha_fin;
             $ciclo->esq_x_planta = $request->esq_x_planta;
             $ciclo->plantas_muertas = $request->plantas_muertas;
             if ($ciclo->save()) {
@@ -330,6 +330,51 @@ class CamasCiclosController extends Controller
                     $success = false;
                     $msg = '<div class="alert alert-danger text-center">Ha ocurrido un problema al guardar la información de los contenedores</div>';
                 }
+            }
+        } else {
+            $success = false;
+            $msg = '<div class="alert alert-danger text-center">No se ha encontrado el ciclo</div>';
+        }
+        return [
+            'success' => $success,
+            'mensaje' => $msg,
+        ];
+    }
+
+    public function terminar_ciclo(Request $request)
+    {
+        $ciclo = CicloCama::find($request->ciclo);
+        if ($ciclo != '') {
+            $ciclo->activo = 0;
+            if ($ciclo->save()) {
+                bitacora('ciclo_cama', $ciclo->id_ciclo_cama, 'U', 'Terminar un ciclo_cama');
+                $success = true;
+                $msg = '<div class="alert alert-success text-center">Se ha terminado el ciclo satisfactoriamente</div>';
+            } else {
+                $success = false;
+                $msg = '<div class="alert alert-danger text-center">Ha ocurrido un problema al terminar el ciclo</div>';
+            }
+        } else {
+            $success = false;
+            $msg = '<div class="alert alert-danger text-center">No se ha encontrado el ciclo</div>';
+        }
+        return [
+            'success' => $success,
+            'mensaje' => $msg,
+        ];
+    }
+
+    public function eliminar_ciclo(Request $request)
+    {
+        $ciclo = CicloCama::find($request->ciclo);
+        if ($ciclo != '') {
+            $ciclo->activo = 0;
+            if ($ciclo->delete()) {
+                $success = true;
+                $msg = '<div class="alert alert-success text-center">Se ha eliminado el ciclo satisfactoriamente</div>';
+            } else {
+                $success = false;
+                $msg = '<div class="alert alert-danger text-center">Ha ocurrido un problema al eliminar el ciclo</div>';
             }
         } else {
             $success = false;
