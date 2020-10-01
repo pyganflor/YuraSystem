@@ -172,30 +172,34 @@
                     cantidad: cantidad,
                 });
         }
-        datos = {
-            _token: '{{csrf_token()}}',
-            cama: $('#id_cama').val(),
-            variedad: $('#id_variedad').val(),
-            fecha_inicio: $('#fecha_inicio').val(),
-            fecha_fin: $('#fecha_fin').val(),
-            esq_planta: $('#esq_planta').val(),
-            contenedores: contenedores,
-        };
-        $.LoadingOverlay('show');
-        $.post('{{url('camas_ciclos/store_ciclo')}}', datos, function (retorno) {
-            alerta_accion(retorno.mensaje, function () {
-                cerrar_modals();
-            });
-            if (retorno.success) {
-                //$('#activo_ciclos').val(1)
-                listar_ciclos();
-            }
-        }, 'json').fail(function (retorno) {
-            console.log(retorno);
-            alerta_errores(retorno.responseText);
-        }).always(function () {
-            $.LoadingOverlay('hide');
-        })
+        if (contenedores.length > 0) {
+            datos = {
+                _token: '{{csrf_token()}}',
+                cama: $('#id_cama').val(),
+                variedad: $('#id_variedad').val(),
+                fecha_inicio: $('#fecha_inicio').val(),
+                fecha_fin: $('#fecha_fin').val(),
+                esq_planta: $('#esq_planta').val(),
+                contenedores: contenedores,
+            };
+            $.LoadingOverlay('show');
+            $.post('{{url('camas_ciclos/store_ciclo')}}', datos, function (retorno) {
+                alerta_accion(retorno.mensaje, function () {
+                    cerrar_modals();
+                });
+                if (retorno.success) {
+                    //$('#activo_ciclos').val(1)
+                    listar_ciclos();
+                }
+            }, 'json').fail(function (retorno) {
+                console.log(retorno);
+                alerta_errores(retorno.responseText);
+            }).always(function () {
+                $.LoadingOverlay('hide');
+            })
+        } else {
+            alerta('<div class="alert alert-danger text-center">Debe ingresar las cantidades</div>')
+        }
     }
 
     function update_ciclo(ciclo) {
@@ -255,26 +259,30 @@
                     cantidad: cantidad,
                 });
         }
-        datos = {
-            _token: '{{csrf_token()}}',
-            ciclo: $('#id_ciclo').val(),
-            contenedores: contenedores,
-        };
-        $.LoadingOverlay('show');
-        $.post('{{url('camas_ciclos/update_ciclo_contenedores')}}', datos, function (retorno) {
-            alerta_accion(retorno.mensaje, function () {
-                cerrar_modals();
-            });
-            if (retorno.success) {
-                //$('#activo_ciclos').val(1)
-                listar_ciclos();
-            }
-        }, 'json').fail(function (retorno) {
-            console.log(retorno);
-            alerta_errores(retorno.responseText);
-        }).always(function () {
-            $.LoadingOverlay('hide');
-        })
+        if (contenedores.length > 0) {
+            datos = {
+                _token: '{{csrf_token()}}',
+                ciclo: $('#id_ciclo').val(),
+                contenedores: contenedores,
+            };
+            $.LoadingOverlay('show');
+            $.post('{{url('camas_ciclos/update_ciclo_contenedores')}}', datos, function (retorno) {
+                alerta_accion(retorno.mensaje, function () {
+                    cerrar_modals();
+                });
+                if (retorno.success) {
+                    //$('#activo_ciclos').val(1)
+                    listar_ciclos();
+                }
+            }, 'json').fail(function (retorno) {
+                console.log(retorno);
+                alerta_errores(retorno.responseText);
+            }).always(function () {
+                $.LoadingOverlay('hide');
+            })
+        } else {
+            alerta('<div class="alert alert-danger text-center">Debe ingresar las cantidades</div>')
+        }
     }
 
     function terminar_ciclo(ciclo) {
