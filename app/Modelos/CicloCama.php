@@ -3,6 +3,7 @@
 namespace yura\Modelos;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class CicloCama extends Model
 {
@@ -53,7 +54,11 @@ class CicloCama extends Model
 
     public function getEsquejesCosechados()
     {
-        return 0;
+        return DB::table('cosecha_plantas_madres')
+            ->select(DB::raw('sum(cantidad) as cant'))
+            ->where('id_cama', $this->id_cama)
+            ->where('fecha', '>', $this->fecha_inicio)
+            ->get()[0]->cant;
     }
 
     public function getCicloContenedorByContenedor($contenedores, $id_cont)
