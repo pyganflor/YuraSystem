@@ -50,7 +50,7 @@ class UsuarioController extends Controller
         });
 
         $listado = $listado->orderBy('u.nombre_completo', 'asc')->orderBy('r.nombre', 'asc')
-            ->paginate(20);
+            ->get();
 
         $datos = [
             'listado' => $listado

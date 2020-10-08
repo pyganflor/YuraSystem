@@ -30,7 +30,7 @@ class propagCosechaPtasMadresController extends Controller
 
     public function listar_cosechas(Request $request)
     {
-        $cosechas = CosechaPlantasMadres::where('fecha', $request->fecha)->orderBy('cantidad')->get();
+        $cosechas = CosechaPlantasMadres::where('fecha', $request->fecha)->orderBy('id_variedad')->get();
         $camas_activas = DB::table('ciclo_cama as cc')
             ->join('cama as c', 'c.id_cama', 'cc.id_cama')
             ->join('variedad as v', 'v.id_variedad', 'cc.id_variedad')
@@ -38,9 +38,17 @@ class propagCosechaPtasMadresController extends Controller
             ->where('cc.activo', 1)
             ->orderBy('c.nombre')
             ->get();
+        $cosecha_x_variedad = DB::table('cosecha_plantas_madres as cos')
+            ->join('variedad as v', 'v.id_variedad', 'cos.id_variedad')
+            ->select(DB::raw('sum(cantidad) as cantidad'), 'cos.id_variedad', 'v.siglas')
+            ->where('cos.fecha', $request->fecha)
+            ->groupBy('cos.id_variedad', 'v.siglas')
+            ->orderBy('v.siglas')
+            ->get();
         return view('adminlte.gestion.propagacion.cosecha_plantas_madres.partials.listado_cosechas', [
             'cosechas' => $cosechas,
             'camas' => $camas_activas,
+            'cosecha_x_variedad' => $cosecha_x_variedad,
         ]);
     }
 

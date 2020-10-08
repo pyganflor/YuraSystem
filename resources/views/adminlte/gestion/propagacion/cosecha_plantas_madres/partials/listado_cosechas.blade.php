@@ -20,10 +20,9 @@
     </thead>
     <tbody>
     @php
-        $cosecha_x_variedad = [];
         $cosecha_total = 0;
     @endphp
-    @foreach($cosechas as $cos)
+    @foreach($cosechas as $pos_cos => $cos)
         @php
             $cosecha_total += $cos->cantidad;
         @endphp
@@ -68,18 +67,13 @@
                 </div>
             </td>
         </tr>
-        @php
-            $existe = false;
-                foreach ($cosecha_x_variedad as $pos => $v){
-                    if($v->id_variedad == $cos->id_variedad){
-                        $cosecha_x_variedad[$pos]['cantidad'] += $cos->cantidad;
-                    }
-                }
-        @endphp
     @endforeach
     </tbody>
 </table>
-
 <script>
-    $('#total_cosecha_dia').val('{{$cosecha_total}} esquejes')
+    $('#total_cosecha_dia').val('{{$cosecha_total}} esquejes');
+    $('#datos_cosecha_x_variedad').html('');
+    @foreach($cosecha_x_variedad as $cos)
+        $('#datos_cosecha_x_variedad').append('<option value="">{{$cos->siglas}} - {{$cos->cantidad}}</option>');
+    @endforeach
 </script>

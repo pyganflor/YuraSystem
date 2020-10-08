@@ -14,21 +14,6 @@
         });
     }
 
-    $(document).on("click", "#pagination_listado_usuarios .pagination li a", function (e) {
-        $.LoadingOverlay("show");
-        //para que la pagina se cargen los elementos
-        e.preventDefault();
-        var url = $(buscar_listado).attr("href");
-        url = url.replace('?', '?busqueda=' + $('#busqueda_usuarios').val() + '&');
-        $('#div_listado_usuarios').html($('#table_usuarios').html());
-        $.get(url, function (resul) {
-            $('#div_listado_usuarios').html(resul);
-            estructura_tabla();
-        }).always(function () {
-            $.LoadingOverlay("hide");
-        });
-    });
-
     function exportar_usuarios() {
         $.LoadingOverlay('show');
         window.open('{{url('usuarios/exportar')}}' + '?busqueda=' + $('#busqueda_usuarios').val().trim(), '_blank');

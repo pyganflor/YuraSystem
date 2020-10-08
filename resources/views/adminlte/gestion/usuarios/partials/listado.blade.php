@@ -46,9 +46,6 @@
                 </tr>
             @endforeach
         </table>
-        <div id="pagination_listado_usuarios">
-            {!! str_replace('/?','?',$listado->render()) !!}
-        </div>
     @else
         <div class="alert alert-info text-center">No se han encontrado coincidencias</div>
     @endif
