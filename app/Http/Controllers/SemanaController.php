@@ -32,6 +32,13 @@ class SemanaController extends Controller
             return view('adminlte.gestion.semanas.partials.accion_procesar', [
                 'variedades' => Variedad::All()->where('estado', '=', 1)
             ]);
+        } else if ($request->accion == 3) { // copiar semanas
+            return view('adminlte.gestion.semanas.partials.accion_copiar', [
+                'variedades' => Variedad::All()->where('estado', '=', 1),
+                'annos' => DB::table('semana as s')
+                    ->select('s.anno')->distinct()
+                    ->where('s.estado', '=', 1)->orderBy('s.anno', 'desc')->get()
+            ]);
         }
     }
 
@@ -160,8 +167,8 @@ class SemanaController extends Controller
             $model->tallos_ramo_poda = $request->tallos_ramo_poda;
             $model->tallos_ramo_poda = $request->tallos_ramo_poda;
 
-            $objSemana = Semana::where('codigo',$model->codigo);
-            $objSemana->update(['mes'=>$request->mes]);
+            $objSemana = Semana::where('codigo', $model->codigo);
+            $objSemana->update(['mes' => $request->mes]);
 
             if ($model->save()) {
                 $success = true;
@@ -276,5 +283,51 @@ class SemanaController extends Controller
             'mensaje' => $msg,
             'success' => $success
         ];
+    }
+
+    public function copiar_semanas(Request $request)
+    {
+        $semanas = Semana::where('estado', 1)
+            ->where('id_variedad', $request->variedad)
+            ->where('anno', $request->anno)
+            ->get();
+        if (count($semanas) > 0) {
+            foreach (getVariedades() as $var) {
+                $sem_var = Semana::where('estado', 1)
+                    ->where('id_variedad', $var->id_variedad)
+                    ->where('anno', $request->anno)
+                    ->get();
+                if (count($sem_var) == 0)
+                    foreach ($semanas as $sem) {
+                        $new = new Semana();
+                        $new->id_variedad = $var->id_variedad;
+                        $new->anno = $sem->anno;
+                        $new->codigo = $sem->codigo;
+                        $new->fecha_inicial = $sem->fecha_inicial;
+                        $new->fecha_final = $sem->fecha_final;
+                        $new->curva = $sem->curva;
+                        $new->desecho = $sem->desecho;
+                        $new->semana_poda = $sem->semana_poda;
+                        $new->semana_siembra = $sem->semana_siembra;
+                        $new->tallos_planta_siembra = $sem->tallos_planta_siembra;
+                        $new->tallos_planta_poda = $sem->tallos_planta_poda;
+                        $new->tallos_ramo_siembra = $sem->tallos_ramo_siembra;
+                        $new->tallos_ramo_poda = $sem->tallos_ramo_poda;
+                        $new->mes = $sem->mes;
+
+                        $new->save();
+                    }
+            }
+            $success = true;
+            $msg = '<div class="alert alert-success text-center">Se han copiado las semanas satisfactoriamente</div>';
+        } else {
+            $success = false;
+            $msg = '<div class="alert alert-danger text-center">La variedad no tiene semanas ingresadas para el año indicado</div>';
+        }
+        return [
+            'success' => $success,
+            'mensaje' => $msg,
+        ];
+        dd($semanas, $request->all());
     }
 }

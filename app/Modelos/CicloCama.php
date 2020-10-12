@@ -21,6 +21,8 @@ class CicloCama extends Model
         'plantas_muertas',
         'esq_x_planta', // conteo de la cantidad de esquejes que se cosecha por semana
         'id_variedad',
+        'semana_cosecha',
+        'total_semanas_cosecha',
     ];
 
     public function cama()
@@ -82,7 +84,7 @@ class CicloCama extends Model
 
     public function getPorcentajeCosechado()
     {
-        $total = $this->getPlantasProductivas() * $this->esq_x_planta;
+        $total = $this->getPlantasProductivas() * $this->esq_x_planta * 1;
         $cosechado = $this->getEsquejesCosechados();
         return round(($cosechado * 100) / $total, 2);
     }

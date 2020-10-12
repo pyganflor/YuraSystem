@@ -1,77 +1,77 @@
 @if(sizeof($semanas)>0)
-    <table width="100%" class="table-responsive table-bordered" style="font-size: 0.8em; border-color: #9d9d9d"
+    <table width="100%" class="table-responsive table-bordered" style="font-size: 0.8em; border-color: #9d9d9d; border-radius: 18px 18px 0 0"
            id="table_content_semanas">
         <thead>
-        <tr style="background-color: #dd4b39; color: white">
-            <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d"
+        <tr style="background-color: #dd4b39; color: white; border-radius: 18px 0 0 0">
+            <th class="text-center th_yura_green" style="border-color: #9d9d9d"
                 rowspan="3">
                 VARIEDAD
             </th>
-            <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d"
+            <th class="text-center th_yura_green" style="border-color: #9d9d9d"
                 rowspan="3">
                 SEMANA
             </th>
-            <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d"
+            <th class="text-center th_yura_green" style="border-color: #9d9d9d"
                 rowspan="3">
                 INICIO
             </th>
-            <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d"
+            <th class="text-center th_yura_green" style="border-color: #9d9d9d"
                 rowspan="3">
                 FIN
             </th>
-            <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
+            <th class="text-center th_yura_green"
                 style="border-color: #9d9d9d; background-color: #0b3248" colspan="4">
                 Proyección Exportación
             </th>
-            <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d"
+            <th class="text-center th_yura_green" style="border-color: #9d9d9d"
                 width="7%" rowspan="3">
                 CURVA
             </th>
-            <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d"
+            <th class="text-center th_yura_green" style="border-color: #9d9d9d"
                 rowspan="3">
                 DESECHOS %
             </th>
-            <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d"
+            <th class="text-center th_yura_green" style="border-color: #9d9d9d"
                 width="10%" rowspan="3">
                 INICIO COSECHA PODA
             </th>
-            <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d"
+            <th class="text-center th_yura_green" style="border-color: #9d9d9d"
                 width="10%" rowspan="3">
                 INICIO COSECHA SIEMBRA
             </th>
-            <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d"
+            <th class="text-center th_yura_green" style="border-color: #9d9d9d"
                 width="10%" rowspan="3">
                 MES
             </th>
-            <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}" style="border-color: #9d9d9d"
+            <th class="text-center th_yura_green" style="border-color: #9d9d9d; border-radius: 0 18px 0 0"
                 rowspan="3">
                 OPCIONES
             </th>
         </tr>
         <tr style="background-color: #dd4b39; color: white">
-            <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
+            <th class="text-center th_yura_green"
                 style="border-color: #9d9d9d; background-color: #0b3248" colspan="2">
                 Tallos Planta
             </th>
-            <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
+            <th class="text-center th_yura_green"
                 style="border-color: #9d9d9d; background-color: #0b3248" colspan="2">
                 Tallos Ramo
             </th>
         </tr>
         <tr style="background-color: #dd4b39; color: white">
-            <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
+            <th class="text-center th_yura_green"
                 style="border-color: #9d9d9d; background-color: #0b3248">
                 Siembra
             </th>
-            <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
+            <th class="text-center th_yura_green"
                 style="border-color: #9d9d9d; background-color: #0b3248">
                 Poda
             </th>
-            <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
+            <th class="text-center th_yura_green"
                 style="border-color: #9d9d9d; background-color: #0b3248">
                 Siembra
             </th>
-            <th class="text-center table-{{getUsuario(Session::get('id_usuario'))->configuracion->skin}}"
+            <th class="text-center th_yura_green"
                 style="border-color: #9d9d9d; background-color: #0b3248">
                 Poda
             </th>
@@ -149,7 +149,7 @@
                         <select class="form-coontrol" id="mes_semana_{{$item->id_semana}}" name="mes_semana_{{$item->id_semana}}">
                             @foreach(getMeses() as $pos => $m)
                                 <option {{$item->mes == ($pos+1) ? "selected": ""}}
-                                    value="{{$pos+1}}"> {{$m}}</option>
+                                        value="{{$pos+1}}"> {{$m}}</option>
                             @endforeach
                         </select>
                     </form>

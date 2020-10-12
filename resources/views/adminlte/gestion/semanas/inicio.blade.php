@@ -41,6 +41,7 @@
                     <select name="accion" id="accion" class="form-control" onchange="select_accion($(this).val())">
                         <option value="1">Filtrar</option>
                         <option value="2">Procesar</option>
+                        <option value="3">Copiar semanas</option>
                     </select>
                 </div>
             </div>
