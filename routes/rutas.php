@@ -124,6 +124,7 @@ Route::group(['middleware' => 'autenticacion'], function () {
             include 'propagacion/camas_ciclos.php';
             include 'propagacion/configuraciones.php';
             include 'propagacion/cosecha_plantas_madres.php';
+            include 'propagacion/fenograma.php';
 
             /* ================== DB =================== */
             include 'db/rutas.php';
