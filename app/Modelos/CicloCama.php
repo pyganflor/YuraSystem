@@ -84,7 +84,7 @@ class CicloCama extends Model
 
     public function getPorcentajeCosechado()
     {
-        $total = $this->getPlantasProductivas() * $this->esq_x_planta * 1;
+        $total = $this->getPlantasProductivas() * $this->esq_x_planta * ($this->total_semanas_cosecha - $this->semana_cosecha);
         $cosechado = $this->getEsquejesCosechados();
         return round(($cosechado * 100) / $total, 2);
     }
