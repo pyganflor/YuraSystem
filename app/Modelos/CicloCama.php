@@ -38,6 +38,16 @@ class CicloCama extends Model
         return $this->hasMany('\yura\Modelos\CicloCamaContenedor', 'id_ciclo_cama');
     }
 
+    public function semana_ini()
+    {
+        return getSemanaByDate($this->fecha_inicio);
+    }
+
+    public function semana_vida()
+    {
+        return round(difFechas($this->fecha_fin, $this->fecha_inicio)->days / 7);
+    }
+
     public function getPlantasProductivas()
     {
         $valor = 0;
@@ -68,5 +78,12 @@ class CicloCama extends Model
                 return $cont;
         }
         return '';
+    }
+
+    public function getPorcentajeCosechado()
+    {
+        $total = $this->getPlantasProductivas() * $this->esq_x_planta;
+        $cosechado = $this->getEsquejesCosechados();
+        return round(($cosechado * 100) / $total, 2);
     }
 }
