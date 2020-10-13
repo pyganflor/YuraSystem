@@ -3,6 +3,7 @@
 namespace yura\Http\Controllers\Propagacion;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use yura\Modelos\CicloCama;
 use yura\Modelos\Submenu;
 use yura\Http\Controllers\Controller;
