@@ -11,10 +11,10 @@
                     Inicio
                 </th>
                 <th class="fila_fija1" style="border-color: #9d9d9d; width: 30px; padding-left: 5px">
-                    Semana ini
+                    Semana siembra
                 </th>
                 <th class="fila_fija1" style="border-color: #9d9d9d; width: 30px; padding-left: 5px">
-                    Semana vida
+                    Semana actual
                 </th>
                 <th class="fila_fija1" style="border-color: #9d9d9d; padding-left: 5px">
                     Esq. Cosechados
