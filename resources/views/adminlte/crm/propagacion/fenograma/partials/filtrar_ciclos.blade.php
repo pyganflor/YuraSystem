@@ -17,9 +17,6 @@
                     Semana vida
                 </th>
                 <th class="fila_fija1" style="border-color: #9d9d9d; padding-left: 5px">
-                    Días
-                </th>
-                <th class="fila_fija1" style="border-color: #9d9d9d; padding-left: 5px">
                     Esq. Cosechados
                 </th>
                 <th class="fila_fija1" style="border-color: #9d9d9d; padding-left: 5px">
@@ -60,9 +57,6 @@
                         {{$c->semana_vida()}}
                     </td>
                     <td class="text-center" style="border-color: #9d9d9d">
-                        {{difFechas($c->fecha_fin, $c->fecha_inicio)->days}}
-                    </td>
-                    <td class="text-center" style="border-color: #9d9d9d">
                         {{$c->getEsquejesCosechados()}}
                     </td>
                     <td class="text-center" style="border-color: #9d9d9d">
@@ -81,7 +75,7 @@
             @endforeach
             </tbody>
             <tr>
-                <th class="text-left th_yura_green" style="border-color: white" colspan="5">
+                <th class="text-left th_yura_green" style="border-color: white" colspan="4">
                     Totales
                 </th>
                 <th class="text-center th_yura_green" style="border-color: white">

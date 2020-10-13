@@ -19,16 +19,22 @@ class propagFenogramaController extends Controller
 
     public function filtrar_ciclos(Request $request)
     {
-        $ciclos = CicloCama::where('fecha_inicio', '<=', $request->fecha)
-            ->where('fecha_fin', '>=', $request->fecha);
+        $ciclos = DB::table('ciclo_cama as cc')
+            ->join('cama as c', 'c.id_cama', 'cc.id_cama')
+            ->select('cc.id_ciclo_cama')
+            ->where('cc.fecha_inicio', '<=', $request->fecha)
+            ->where('cc.fecha_fin', '>=', $request->fecha);
 
         if ($request->variedad != 'T')
-            $ciclos = $ciclos->where('id_variedad', $request->variedad);
+            $ciclos = $ciclos->where('cc.id_variedad', $request->variedad);
 
-        $ciclos = $ciclos->orderBy('fecha_inicio')->get();
+        $ciclos = $ciclos->orderBy('cc.fecha_inicio')->orderBy('c.nombre')->get();
 
+        $list = [];
+        foreach ($ciclos as $c)
+            array_push($list, CicloCama::find($c->id_ciclo_cama));
         return view('adminlte.crm.propagacion.fenograma.partials.filtrar_ciclos', [
-            'ciclos' => $ciclos
+            'ciclos' => $list
         ]);
     }
 }
