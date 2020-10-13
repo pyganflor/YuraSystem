@@ -88,4 +88,18 @@ class CicloCama extends Model
         $cosechado = $this->getEsquejesCosechados();
         return round(($cosechado * 100) / $total, 2);
     }
+
+    public function getFechaCosecha()
+    {
+        $fecha = DB::table('cosecha_plantas_madres')
+            ->select(DB::raw('min(fecha) as fecha'))
+            ->where('fecha', '>', $this->fecha_inicio)
+            ->where('fecha', '<=', $this->fecha_fin)
+            ->where('id_cama', $this->id_cama)
+            ->get();
+        if (count($fecha) > 0)
+            return $fecha[0]->fecha;
+        else
+            return '';
+    }
 }

@@ -279,6 +279,7 @@ class CamasCiclosController extends Controller
             $ciclo->fecha_fin = $request->fecha_fin;
             $ciclo->esq_x_planta = $request->esq_x_planta;
             $ciclo->plantas_muertas = $request->plantas_muertas;
+            $ciclo->total_semanas_cosecha = $request->semanas_totales;
             if ($ciclo->save()) {
                 bitacora('ciclo_cama', $ciclo->id_ciclo_cama, 'U', 'Update de un ciclo_cama');
                 $success = true;

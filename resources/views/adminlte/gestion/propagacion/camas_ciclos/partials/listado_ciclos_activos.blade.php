@@ -28,6 +28,9 @@
                 Plantas no productivas
             </th>
             <th class="text-center th_yura_green" style="border-color: white;">
+                Semanas Totales
+            </th>
+            <th class="text-center th_yura_green" style="border-color: white;">
                 Fecha fin
             </th>
             <th class="text-center th_yura_green" style="border-color: white; border-radius: 0 18px 0 0">
@@ -66,6 +69,10 @@
                 </td>
                 <td class="text-center" style="border-color: #9d9d9d">
                     <input type="number" id="plantas_muertas_{{$c->id_ciclo_cama}}" value="{{$c->plantas_muertas}}" style="width: 100%"
+                           class="text-center">
+                </td>
+                <td class="text-center" style="border-color: #9d9d9d">
+                    <input type="number" id="semanas_totales_{{$c->id_ciclo_cama}}" value="{{$c->total_semanas_cosecha}}" style="width: 100%"
                            class="text-center">
                 </td>
                 <td class="text-center" style="border-color: #9d9d9d">

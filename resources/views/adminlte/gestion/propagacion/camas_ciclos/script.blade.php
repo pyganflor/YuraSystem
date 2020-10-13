@@ -213,8 +213,9 @@
                         fecha_fin: $('#fecha_fin_' + ciclo).val(),
                         esq_x_planta: $('#esq_x_planta_' + ciclo).val(),
                         plantas_muertas: $('#plantas_muertas_' + ciclo).val(),
+                        semanas_totales: $('#semanas_totales_' + ciclo).val(),
                     };
-                    $('#id_ciclo_' + ciclo).val()
+                    $('#id_ciclo_' + ciclo).val();
                     $.LoadingOverlay('show');
                     $.post('{{url('camas_ciclos/update_ciclo')}}', datos, function (retorno) {
                         alerta_accion(retorno.mensaje, function () {

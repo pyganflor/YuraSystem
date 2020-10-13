@@ -23,6 +23,9 @@
                     Cosecha
                 </th>
                 <th class="fila_fija1" style="border-color: #9d9d9d; padding-left: 5px">
+                    Semana Cosecha
+                </th>
+                <th class="fila_fija1" style="border-color: #9d9d9d; padding-left: 5px">
                     Esq. x Semana
                 </th>
                 <th class="fila_fija1" style="border-color: #9d9d9d; background-color: #00B388; padding-left: 5px">
@@ -40,8 +43,13 @@
             @endphp
             @foreach($ciclos as $c)
                 @php
-                    $cosechados += $c->getEsquejesCosechados();
+                    $getExquejesCosechados = $c->getEsquejesCosechados();
+                    $cosechados += $getExquejesCosechados;
                     $ptas_iniciales += $c->getPlantasProductivas();
+                    $fechaCosecha = $c->getFechaCosecha();
+                    $getSemanaActual = $c->semana_vida();
+                    $semanas_cosecha = round(difFechas($fechaCosecha, $c->fecha_inicio)->days / 7);
+                    $semana_fin = getSemanaByDate(opDiasFecha('+', (7 * $c->total_semanas_cosecha), $c->fecha_inicio));
                 @endphp
                 <tr>
                     <td class="text-center" style="border-color: #9d9d9d">
@@ -54,19 +62,26 @@
                         {{$c->semana_ini()->codigo}}
                     </td>
                     <td class="text-center" style="border-color: #9d9d9d">
-                        {{$c->semana_vida()}}
+                        {{$getSemanaActual}}
                     </td>
                     <td class="text-center" style="border-color: #9d9d9d">
                         {{$c->getPlantasProductivas()}}
                     </td>
                     <td class="text-center" style="border-color: #9d9d9d">
-                        {{$c->getEsquejesCosechados()}}
+                        {{$getExquejesCosechados}}
                     </td>
                     <td class="text-center" style="border-color: #9d9d9d">
-                        ...
+                        {{$fechaCosecha != '' ? $semanas_cosecha : ''}}
                     </td>
                     <td class="text-center" style="border-color: #9d9d9d">
-                        ...
+                        {{$fechaCosecha != '' ? round($getExquejesCosechados / ($getSemanaActual - $semanas_cosecha), 2) : ''}}
+                    </td>
+                    <td class="text-center" style="border-color: #9d9d9d">
+                        @if($semana_fin != '')
+                            {{$semana_fin->codigo}}
+                        @else
+                            <i class="fa fa-fw fa-exclamation-triangle text-red" title="La semana fin, aún no esta programada en el sistema"></i>
+                        @endif
                     </td>
                     <td class="text-center" style="border-color: #9d9d9d">
                         {{$c->esq_x_planta}}
@@ -79,16 +94,12 @@
                     Totales
                 </th>
                 <th class="text-center th_yura_green" style="border-color: white">
-                    {{$cosechados}}
-                </th>
-                <th class="text-center th_yura_green" style="border-color: white">
-                </th>
-                <th class="text-center th_yura_green" style="border-color: white">
                     {{$ptas_iniciales}}
                 </th>
                 <th class="text-center th_yura_green" style="border-color: white">
+                    {{$cosechados}}
                 </th>
-                <th class="text-center th_yura_green" style="border-color: white">
+                <th class="text-center th_yura_green" style="border-color: white" colspan="4">
                 </th>
             </tr>
         </table>
