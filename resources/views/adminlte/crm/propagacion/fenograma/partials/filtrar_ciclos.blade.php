@@ -20,7 +20,7 @@
                     Ptas Iniciales
                 </th>
                 <th class="fila_fija1" style="border-color: #9d9d9d; padding-left: 5px">
-                    Esq. Cosechados
+                    Cosecha
                 </th>
                 <th class="fila_fija1" style="border-color: #9d9d9d; padding-left: 5px">
                     Cosechado <sup>%</sup>
