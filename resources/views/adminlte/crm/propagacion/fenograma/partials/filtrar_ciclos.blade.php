@@ -16,14 +16,14 @@
                 <th class="fila_fija1" style="border-color: #9d9d9d; width: 30px; padding-left: 5px">
                     Semana actual
                 </th>
+                <th class="fila_fija1" style="border-color: #9d9d9d; background-color: #00B388; padding-left: 5px">
+                    Ptas Iniciales
+                </th>
                 <th class="fila_fija1" style="border-color: #9d9d9d; padding-left: 5px">
                     Esq. Cosechados
                 </th>
                 <th class="fila_fija1" style="border-color: #9d9d9d; padding-left: 5px">
                     Cosechado <sup>%</sup>
-                </th>
-                <th class="fila_fija1" style="border-color: #9d9d9d; background-color: #00B388; padding-left: 5px">
-                    Ptas Iniciales
                 </th>
                 <th class="fila_fija1" style="border-color: #9d9d9d; background-color: #00B388; padding-left: 5px">
                     Ptas Muertas
@@ -57,13 +57,13 @@
                         {{$c->semana_vida()}}
                     </td>
                     <td class="text-center" style="border-color: #9d9d9d">
+                        {{$c->getPlantasProductivas()}}
+                    </td>
+                    <td class="text-center" style="border-color: #9d9d9d">
                         {{$c->getEsquejesCosechados()}}
                     </td>
                     <td class="text-center" style="border-color: #9d9d9d">
                         {{$c->getPorcentajeCosechado()}}%
-                    </td>
-                    <td class="text-center" style="border-color: #9d9d9d">
-                        {{$c->getPlantasProductivas()}}
                     </td>
                     <td class="text-center" style="border-color: #9d9d9d">
                         {{$c->plantas_muertas}}
