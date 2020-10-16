@@ -82,10 +82,8 @@
             <tr onmouseover="$(this).css('background-color','#add8e6')" onmouseleave="$(this).css('background-color','')"
                 id="row_semanas_{{$item->id_semana}}">
                 <td style="border-color: #9d9d9d" class="text-center">
-                    @if($item->fecha_final > date('Y-m-d'))
-                        <input type="checkbox" id="check_{{$item->id_semana}}" class="pull-left check_week">
-                    @endif
-                    {{$item->variedad->planta->siglas}} - {{$item->variedad->siglas}}
+                    <input type="checkbox" id="check_{{$item->id_semana}}" class="pull-left check_week">
+                    {{$variedad->nombre}}
                 </td>
                 <td style="border-color: #9d9d9d" class="text-center">{{$item->codigo}}</td>
                 <td style="border-color: #9d9d9d" class="text-center">{{$item->fecha_inicial}}</td>
@@ -121,35 +119,35 @@
                 <td style="border-color: #9d9d9d" class="text-center">
                     <form id="form-semana_curva-{{$item->id_semana}}">
                         <input type="text" class="text-center" name="curva_{{$item->id_semana}}" id="curva_{{$item->id_semana}}"
-                               value="{{$item->curva}}" maxlength="11" required placeholder="10-20-40-30">
+                               value="{{$item->curva}}" maxlength="11" required placeholder="10-20-40-30" style="width: 100%">
                     </form>
                 </td>
                 <td style="border-color: #9d9d9d" class="text-center">
                     <form id="form-semana_desecho-{{$item->id_semana}}">
                         <input type="number" class="text-center" name="desecho_{{$item->id_semana}}" id="desecho_{{$item->id_semana}}"
-                               required value="{{$item->desecho}}" maxlength="2" min="0" max="99">
+                               required value="{{$item->desecho}}" maxlength="2" min="0" max="99" style="width: 100%">
                     </form>
                 </td>
                 <td style="border-color: #9d9d9d" class="text-center">
                     <form id="form-semana_poda-{{$item->id_semana}}">
                         <input type="number" class="text-center" name="semana_poda_{{$item->id_semana}}"
                                id="semana_poda_{{$item->id_semana}}" required value="{{$item->semana_poda}}" maxlength="2" min="1"
-                               max="{{count($semanas)}}">
+                               max="{{count($semanas)}}" style="width: 100%">
                     </form>
                 </td>
                 <td style="border-color: #9d9d9d" class="text-center">
                     <form id="form-semana_siembra-{{$item->id_semana}}">
                         <input type="number" class="text-center" name="semana_siembra_{{$item->id_semana}}"
                                id="semana_siembra_{{$item->id_semana}}" required value="{{$item->semana_siembra}}" maxlength="2" min="1"
-                               max="{{count($semanas)}}">
+                               max="{{count($semanas)}}" style="width: 100%">
                     </form>
                 </td>
                 <td style="border-color: #9d9d9d" class="text-center">
                     <form id="form-semana_mes-{{$item->id_semana}}">
-                        <select class="form-coontrol" id="mes_semana_{{$item->id_semana}}" name="mes_semana_{{$item->id_semana}}">
-                            @foreach(getMeses() as $pos => $m)
-                                <option {{$item->mes == ($pos+1) ? "selected": ""}}
-                                        value="{{$pos+1}}"> {{$m}}</option>
+                        <select class="form-coontrol" id="mes_semana_{{$item->id_semana}}" name="mes_semana_{{$item->id_semana}}"
+                                style="width: 100%">
+                            @foreach($getMeses as $pos => $m)
+                                <option {{$item->mes == ($pos+1) ? "selected": ""}} value="{{$pos+1}}"> {{$m}}</option>
                             @endforeach
                         </select>
                     </form>
@@ -190,5 +188,5 @@
 @endif
 
 <script>
-    estructura_tabla();
+    //estructura_tabla();
 </script>

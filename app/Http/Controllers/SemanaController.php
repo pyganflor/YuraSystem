@@ -127,7 +127,9 @@ class SemanaController extends Controller
         $r = Semana::All()->where('anno', '=', $request->anno)
             ->where('id_variedad', '=', $request->id_variedad);
         return view('adminlte.gestion.semanas.partials.listado', [
-            'semanas' => $r
+            'semanas' => $r,
+            'variedad' => getVariedad($request->id_variedad),
+            'getMeses' => getMeses(),
         ]);
     }
 
