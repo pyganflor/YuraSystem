@@ -104,6 +104,7 @@ class CiclosController extends Controller
             if ($request->fecha_cosecha != '')
                 $ciclo->fecha_cosecha = opDiasFecha('+', $request->fecha_cosecha, $request->fecha_inicio);
             $ciclo->fecha_fin = $request->fecha_fin;
+            $ciclo->plantas_muertas = $request->plantas_muertas;
 
             $semana = Semana::All()
                 ->where('estado', 1)
@@ -115,17 +116,19 @@ class CiclosController extends Controller
             $ciclo->curva = $semana->curva;
             if ($ciclo->poda_siembra == 'P') {
                 $ciclo->semana_poda_siembra = $semana->semana_poda;
-                $ciclo->conteo = $semana->tallos_planta_poda;
+                $ciclo->conteo = $request->conteo > 0 ? $request->conteo : $semana->tallos_planta_poda;
             } else {
                 $ciclo->semana_poda_siembra = $semana->semana_siembra;
-                $ciclo->conteo = $semana->tallos_planta_siembra;
+                $ciclo->conteo = $request->conteo > 0 ? $request->conteo : $semana->tallos_planta_siembra;
             }
 
             $last_siembra = Ciclo::All()->where('estado', 1)->where('id_modulo', $request->modulo)
                 ->where('poda_siembra', 'S')->sortBy('fecha_inicio')->last();
 
             if ($last_siembra != '')
-                $ciclo->plantas_iniciales = $last_siembra->plantas_iniciales;
+                $ciclo->plantas_iniciales = $request->plantas_iniciales > 0 ? $request->plantas_iniciales : $last_siembra->plantas_iniciales;
+            else
+                $ciclo->plantas_iniciales = $request->plantas_iniciales;
 
             if ($ciclo->save()) {
                 $ciclo = Ciclo::All()->last();

@@ -373,6 +373,9 @@
             poda_siembra: $('#ciclo_poda_siembra_' + mod).val(),
             fecha_cosecha: $('#ciclo_fecha_cosecha_' + mod).val(),
             fecha_fin: $('#ciclo_fecha_fin_' + mod).val(),
+            plantas_iniciales: $('#ciclo_plantas_iniciales_' + mod).val(),
+            plantas_muertas: $('#ciclo_plantas_muertas_' + mod).val(),
+            conteo: $('#ciclo_conteo_' + mod).val(),
         };
 
         if (datos['area'] != '' && datos['variedad'] != '' && datos['fecha_inicio'] != '' && datos['poda_siembra'] != '')

@@ -26,7 +26,10 @@
                     Semana Cosecha
                 </th>
                 <th class="fila_fija1" style="border-color: #9d9d9d; padding-left: 5px">
-                    Esq. x Semana
+                    Esq. x Sem. x Pta.
+                </th>
+                <th class="fila_fija1" style="border-color: #9d9d9d; padding-left: 5px">
+                    Esq.x Pta.
                 </th>
                 <th class="fila_fija1" style="border-color: #9d9d9d; background-color: #00B388; padding-left: 5px">
                     Fin Producción
@@ -43,6 +46,7 @@
             @endphp
             @foreach($ciclos as $c)
                 @php
+                    $getPlantasProductivas = $c->getPlantasProductivas();
                     $getExquejesCosechados = $c->getEsquejesCosechados();
                     $cosechados += $getExquejesCosechados;
                     $ptas_iniciales += $c->getPlantasProductivas();
@@ -65,7 +69,7 @@
                         {{$getSemanaActual}}
                     </td>
                     <td class="text-center" style="border-color: #9d9d9d">
-                        {{$c->getPlantasProductivas()}}
+                        {{$getPlantasProductivas}}
                     </td>
                     <td class="text-center" style="border-color: #9d9d9d">
                         {{$getExquejesCosechados}}
@@ -74,7 +78,10 @@
                         {{$fechaCosecha != '' ? $semanas_cosecha : ''}}
                     </td>
                     <td class="text-center" style="border-color: #9d9d9d">
-                        {{$fechaCosecha != '' ? round($getExquejesCosechados / ($getSemanaActual - $semanas_cosecha), 2) : ''}}
+                        {{($fechaCosecha != '' && $getPlantasProductivas > 0) ? round(($getExquejesCosechados / $semanas_cosecha) / $getPlantasProductivas, 2) : ''}}
+                    </td>
+                    <td class="text-center" style="border-color: #9d9d9d">
+                        {{$getPlantasProductivas > 0 ? round($getExquejesCosechados / $getPlantasProductivas, 2) : ''}}
                     </td>
                     <td class="text-center" style="border-color: #9d9d9d">
                         @if($semana_fin != '')

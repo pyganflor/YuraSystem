@@ -505,4 +505,13 @@ class Modulo extends Model
                 return difFechas(date('Y-m-d'), substr($query[0]->fecha, 0, 10))->days;
         return 0;
     }
+
+    public function getLastCiclo()
+    {
+        $last = Ciclo::All()->where('estado', 1)
+            ->where('id_modulo', $this->id_modulo)
+            ->where('activo', 0)
+            ->sortBy('fecha_inicio')->last();
+        return $last;
+    }
 }
