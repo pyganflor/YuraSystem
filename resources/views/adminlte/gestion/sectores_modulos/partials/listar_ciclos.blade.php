@@ -183,10 +183,10 @@
                                         onclick="terminar_ciclo('{{$modulo->id_modulo}}')">
                                     <i class="fa fa-fw fa-times"></i>
                                 </button>
-                                <button type="button" class="btn btn-xs btn-yura_primary" title="Editar Ciclo"
+                                {{--<button type="button" class="btn btn-xs btn-yura_primary" title="Editar Ciclo"
                                         onclick="update_ciclo('{{$cicloActual->id_ciclo}}', '{{$modulo->id_modulo}}')">
                                     <i class="fa fa-fw fa-pencil"></i>
-                                </button>
+                                </button>--}}
                             @else
                                 <button type="button" class="btn btn-xs btn-yura_primary" title="Crear Ciclo"
                                         onclick="store_ciclo('{{$modulo->id_modulo}}')">
