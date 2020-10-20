@@ -193,7 +193,8 @@
                         tallos_planta_poda: $('#tallos_planta_poda').val(),
                         tallos_ramo_siembra: $('#tallos_ramo_siembra').val(),
                         tallos_ramo_poda: $('#tallos_ramo_poda').val(),
-                        ids: arreglo
+                        ids: arreglo,
+                        variedades: $('#check_variedades').prop('checked'),
                     };
                     post_jquery('{{url('semanas/store_igualar_datos')}}', datos, function () {
                         listar();

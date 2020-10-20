@@ -232,11 +232,13 @@ class SemanaController extends Controller
             'ids.required' => 'Al menos seleccione una semana',
         ]);
         if (!$valida->fails()) {
+            $variedades = [];
+            if ($request->variedades == 'true')
+                $variedades = Semana::find($request->ids[0])->variedad->planta->variedades;
             foreach ($request->ids as $id) {
                 $model = Semana::find($id);
-                if ($request->curva != null) {
+                if ($request->curva != null)
                     $model->curva = str_limit(strtoupper(espacios($request->curva)), 11);
-                }
                 if ($request->desecho != null)
                     $model->desecho = str_limit(strtoupper(espacios($request->desecho)), 2);
                 if ($request->semana_poda != null)
@@ -257,6 +259,33 @@ class SemanaController extends Controller
                         '<p> Se ha actualizado la semana ' . $model->codigo . ' satisfactoriamente</p>'
                         . '</div>';
                     bitacora('semana', $model->id_semana, 'U', 'Actualización satisfactoria de una semana');
+
+                    /* ================ OTRAS VARIEDADES ================= */
+                    if ($request->variedades == 'true') {
+                        foreach ($variedades as $item) {
+                            $semana = Semana::All()->where('codigo', $model->codigo)
+                                ->where('id_variedad', $item->id_variedad)
+                                ->first();
+
+                            if ($request->curva != null)
+                                $semana->curva = str_limit(strtoupper(espacios($request->curva)), 11);
+                            if ($request->desecho != null)
+                                $semana->desecho = str_limit(strtoupper(espacios($request->desecho)), 2);
+                            if ($request->semana_poda != null)
+                                $semana->semana_poda = str_limit(strtoupper(espacios($request->semana_poda)), 2);
+                            if ($request->semana_siembra != null)
+                                $semana->semana_siembra = str_limit(strtoupper(espacios($request->semana_siembra)), 2);
+                            if ($request->tallos_planta_siembra != null)
+                                $semana->tallos_planta_siembra = $request->tallos_planta_siembra;
+                            if ($request->tallos_planta_poda != null)
+                                $semana->tallos_planta_poda = $request->tallos_planta_poda;
+                            if ($request->tallos_ramo_siembra != null)
+                                $semana->tallos_ramo_siembra = $request->tallos_ramo_siembra;
+                            if ($request->tallos_ramo_poda != null)
+                                $semana->tallos_ramo_poda = $request->tallos_ramo_poda;
+                            $semana->save();
+                        }
+                    }
                 } else {
                     $success = false;
                     $msg = '<div class="alert alert-warning text-center">' .

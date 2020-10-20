@@ -111,4 +111,14 @@
             <input type="hidden" id="tallos_ramo_poda" name="tallos_ramo_poda" value="">
         @endif
     </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="form-group input-group">
+                <span class="input-group-addon" style="background-color: #e9ecef;">
+                    <input type="checkbox" id="check_variedades" name="check_variedades">
+                    <label for="check_variedades" class="mouse-hand">Igualar para las variedades de la misma planta</label>
+                </span>
+            </div>
+        </div>
+    </div>
 </form>
