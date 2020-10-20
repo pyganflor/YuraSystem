@@ -292,11 +292,12 @@
         };
         get_jquery('{{url('sectores_modulos/listar_ciclos')}}', datos, function (retorno) {
             $('#div_ciclos').html(retorno);
-            /*estructura_tabla('table_listado_ciclos', false, true);
+            estructura_tabla('table_listado_ciclos', false, true);
             $('#table_listado_ciclos_length label').addClass('text-color_yura');
             $('#table_listado_ciclos_length label select').addClass('input-yura_white');
+            $('#table_listado_ciclos_length label select').val(50);
             $('#table_listado_ciclos_filter label').addClass('text-color_yura');
-            $('#table_listado_ciclos_filter label input').addClass('input-yura_white');*/
+            $('#table_listado_ciclos_filter label input').addClass('input-yura_white');
         });
     }
 
