@@ -390,6 +390,7 @@ class Costos
                 ->where('codigo_semana', '>=', $sem_desde->codigo)
                 ->where('codigo_semana', '<=', $sem_hasta->codigo)
                 ->get()[0]->cant;
+
             $area = DB::table('resumen_area_semanal')
                 ->select(DB::raw('sum(area) as cant'))
                 ->where('codigo_semana', '>=', $sem_desde->codigo)

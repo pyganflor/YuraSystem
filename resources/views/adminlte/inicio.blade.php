@@ -339,7 +339,7 @@
                                 <div style="" class="td-org">
                                     <div class="row">
                                         <div class="col-md-12 text-center" style="margin-top: 10px">
-                                            <strong>Rentabilidad / m<sup>2</sup> / año</strong>
+                                            <strong>EBITDA / m<sup>2</sup> / año</strong>
                                         </div>
                                     </div>
                                     <div class="row">
@@ -367,7 +367,7 @@
                                         <div class="col-md-12">
                                             <button type="button" class="btn btn-xs btn-block btn-yura_default"
                                                     onclick="mostrar_indicadores_claves(4)">
-                                                Rentabilidad/m<sup>2</sup>/año
+                                                EBITDA/m<sup>2</sup>/año
                                             </button>
                                         </div>
                                     </div>

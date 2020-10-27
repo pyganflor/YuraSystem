@@ -85,11 +85,12 @@ class Venta
                 ->where('codigo_semana', '>=', $desde_sem->codigo)
                 ->where('codigo_semana', '<=', $hasta_sem->codigo)
                 ->get()[0]->cant;
-                
+
             $semana_desde = getSemanaByDate(opDiasFecha('-', 112, $desde_sem->fecha_inicial));   // 16 semanas atras
             $semana_hasta = $desde_sem;
 
-            $data = getAreaCiclosByRango($semana_desde->codigo, $semana_hasta->codigo, 'T');
+            //$data = getAreaCiclosByRango($semana_desde->codigo, $semana_hasta->codigo, 'T');
+            $data = getAreaCiclosByRango($desde_sem->codigo, $hasta_sem->codigo, 'T');
             $area_anual = getAreaActivaFromData($data['variedades'], $data['semanas']) * 10000;
 
             //dd($desde_sem->codigo, $hasta_sem->codigo, $venta_mensual, $semana_desde->codigo, $semana_hasta->codigo, $area_anual);
@@ -118,7 +119,8 @@ class Venta
 
                 $semana_desde = getSemanaByDate(opDiasFecha('-', 112, $desde_sem->fecha_inicial));   // 16 semanas atras
                 $semana_hasta = $desde_sem;
-                $data = getAreaCiclosByRango($semana_desde->codigo, $semana_hasta->codigo, $var->id_variedad);
+                //$data = getAreaCiclosByRango($semana_desde->codigo, $semana_hasta->codigo, $var->id_variedad);
+                $data = getAreaCiclosByRango($desde_sem->codigo, $hasta_sem->codigo, $var->id_variedad);
                 $area_anual = getAreaActivaFromData($data['variedades'], $data['semanas']) * 10000;
 
                 $ind->valor = $area_anual > 0 ? round(($venta_mensual / $area_anual) * 3, 2) : 0;
@@ -143,7 +145,8 @@ class Venta
             $semana_hasta = getSemanaByDate(opDiasFecha('-', 112, date('Y-m-d')));  // 16 semana atras
             $semana_desde = getSemanaByDate(opDiasFecha('-', 364, $semana_hasta->fecha_inicial));   // 16 + 52 semanas atras
 
-            $data = getAreaCiclosByRango($semana_desde->codigo, $semana_hasta->codigo, 'T');
+            //$data = getAreaCiclosByRango($semana_desde->codigo, $semana_hasta->codigo, 'T');
+            $data = getAreaCiclosByRango($desde_sem->codigo, $hasta_sem->codigo, 'T');
             $area_anual = getAreaActivaFromData($data['variedades'], $data['semanas']) * 10000;
 
             $model->valor = $area_anual > 0 ? round($venta_mensual / $area_anual, 2) : 0;
