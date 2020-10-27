@@ -632,7 +632,7 @@
                                         <div class="col-md-12">
                                             <button type="button" class="btn btn-xs btn-block btn-yura_default"
                                                     onclick="mostrar_indicadores_claves(2)">
-                                                Indicadores claves
+                                                Indicadores claves <sup>(4 semanas)</sup>
                                             </button>
                                         </div>
                                     </div>
