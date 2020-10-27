@@ -75,10 +75,13 @@ class CicloCama extends Model
 
     public function getExquejesCosechadosByLastSemana()
     {
+        $semana_pasada = getSemanaByDate(opDiasFecha('-', 7, date('Y-m-d')));
+
         return DB::table('cosecha_plantas_madres')
             ->select(DB::raw('sum(cantidad) as cant'))
             ->where('id_cama', $this->id_cama)
-            ->where('fecha', '>', $this->fecha_inicio)
+            ->where('fecha', '>=', $semana_pasada->fecha_inicial)
+            ->where('fecha', '<=', $semana_pasada->fecha_final)
             ->get()[0]->cant;
     }
 
