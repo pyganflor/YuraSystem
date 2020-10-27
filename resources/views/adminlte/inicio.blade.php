@@ -327,7 +327,8 @@
                         </tr>
                         <tr>
                             <td colspan="6">
-                                <select name="filtro_variedad" id="filtro_variedad" class="pull-left select-yura_default" onchange="select_filtro_variedad()"
+                                <select name="filtro_variedad" id="filtro_variedad" class="pull-left select-yura_default"
+                                        onchange="select_filtro_variedad()"
                                         style="margin-top: 0; width: 126px; height: 31px;">
                                     <option value="" id="option_acumulado_var">Acumulado</option>
                                     @foreach(getVariedades() as $var)
@@ -346,6 +347,12 @@
                                         <div class="col-md-12">
                                             <img src="{{url('images/negocio.png')}}" alt="$" class="icon_td-org" aria-hidden="true">
                                             <ul class="list-unstyled text-center" style="margin-top: 5px">
+                                                <li>
+                                                    <strong style="color:{{$color_14}}">
+                                                        $0.00
+                                                        <sup>(1 meses)</sup>
+                                                    </strong>
+                                                </li>
                                                 <li>
                                                     <strong style="color:{{$color_14}}">
                                                         $
@@ -402,6 +409,12 @@
                                             <ul class="list-unstyled text-center" style="margin-top: 5px">
                                                 <li>
                                                     <strong style="color:{{$color_1}}">
+                                                        $0.00
+                                                        <sup>(1 meses)</sup>
+                                                    </strong>
+                                                </li>
+                                                <li>
+                                                    <strong style="color:{{$color_1}}">
                                                         $
                                                         <span id="span_rentabilidad_m2_mensual">{{number_format($venta_m2_anno_mensual, 2)}}</span>
                                                         <sup>(4 meses)</sup>
@@ -439,6 +452,12 @@
                                         <div class="col-md-12">
                                             <img src="{{url('images/costos.png')}}" alt="$" class="icon_td-org" aria-hidden="true">
                                             <ul class="list-unstyled text-center" style="margin-top: 5px">
+                                                <li>
+                                                    <strong style="color:{{$color_12}}">
+                                                        $0.00
+                                                        <sup>(1 meses)</sup>
+                                                    </strong>
+                                                </li>
                                                 <li>
                                                     <strong style="color:{{$color_12}}">
                                                         $
