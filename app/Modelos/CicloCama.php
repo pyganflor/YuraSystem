@@ -73,6 +73,15 @@ class CicloCama extends Model
             ->get()[0]->cant;
     }
 
+    public function getExquejesCosechadosByLastSemana()
+    {
+        return DB::table('cosecha_plantas_madres')
+            ->select(DB::raw('sum(cantidad) as cant'))
+            ->where('id_cama', $this->id_cama)
+            ->where('fecha', '>', $this->fecha_inicio)
+            ->get()[0]->cant;
+    }
+
     public function getCicloContenedorByContenedor($contenedores, $id_cont)
     {
         foreach ($contenedores as $cont) {

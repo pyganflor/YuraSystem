@@ -26,7 +26,10 @@
                     Semana Cosecha
                 </th>
                 <th class="fila_fija1" style="border-color: #9d9d9d; padding-left: 5px">
-                    Esq. x Sem. x Pta.
+                    Esq. x Sem. Acum.
+                </th>
+                <th class="fila_fija1" style="border-color: #9d9d9d; padding-left: 5px">
+                    Esq. x Sem.
                 </th>
                 <th class="fila_fija1" style="border-color: #9d9d9d; padding-left: 5px">
                     Esq.x Pta.
@@ -48,6 +51,7 @@
                 @php
                     $getPlantasProductivas = $c->getPlantasProductivas();
                     $getExquejesCosechados = $c->getEsquejesCosechados();
+                    $getExquejesCosechadosByLastSemana = $c->getExquejesCosechadosByLastSemana();
                     $cosechados += $getExquejesCosechados;
                     $ptas_iniciales += $c->getPlantasProductivas();
                     $fechaCosecha = $c->getFechaCosecha();
@@ -82,6 +86,9 @@
                     </td>
                     <td class="text-center" style="border-color: #9d9d9d">
                         {{$getPlantasProductivas > 0 ? round($getExquejesCosechados / $getPlantasProductivas, 2) : ''}}
+                    </td>
+                    <td class="text-center" style="border-color: #9d9d9d">
+                        {{$getPlantasProductivas > 0 ? round($getExquejesCosechadosByLastSemana / $getPlantasProductivas, 2) : ''}}
                     </td>
                     <td class="text-center" style="border-color: #9d9d9d">
                         @if($semana_fin != '')

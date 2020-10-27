@@ -40,7 +40,7 @@
                         </span>
                         <input type="date" id="fecha_search" name="fecha_search" value="{{date('Y-m-d')}}"
                                class="form-control input-yura_default text-center" onchange="listar_cosechas();"
-                               style="width: 100% !important;" max="2020-10-01">
+                               style="width: 100% !important;">
                     </div>
                 </td>
                 <td style="padding-right: 10px; width: 150px">
