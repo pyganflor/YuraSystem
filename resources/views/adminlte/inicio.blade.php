@@ -178,6 +178,7 @@
             @php
                 $color_1 = getColorByIndicador('D9');   //  venta_m2_anno_mensual
                 $color_1_1 = getColorByIndicador('D10');    //  venta_m2_anno_anual
+                $color_1_2 = getColorByIndicador('D15');    //  venta_m2_anno_1_mes
                 $color_2 = getColorByIndicador('DA1');  //  ciclo
                 $color_3 = getColorByIndicador('D1');   //  calibre
                 $color_4 = getColorByIndicador('D3');   //  precio_x_ramo
@@ -189,9 +190,11 @@
                 $color_10 = getColorByIndicador('C5');   //  costos_postcosecha_x_tallo
                 $color_11 = getColorByIndicador('C6');   //  costos_total_x_tallo
                 $color_12 = getColorByIndicador('C9');   //  costos_m2_mensual
+                $color_17 = getColorByIndicador('C11');   //  costos_m2_1_mes
                 $color_13 = getColorByIndicador('C10');   //  costos_m2_anual
                 $color_14 = getColorByIndicador('R1');   //  rentabilidad_m2_mensual
                 $color_15 = getColorByIndicador('R2');   //  rentabilidad_m2_anual
+                $color_16 = getColorByIndicador('R3');   //  rentabilidad_m2_1_mes
             @endphp
 
             <div id="box_cuadros" class="box box-primary hide">
@@ -348,8 +351,9 @@
                                             <img src="{{url('images/negocio.png')}}" alt="$" class="icon_td-org" aria-hidden="true">
                                             <ul class="list-unstyled text-center" style="margin-top: 5px">
                                                 <li>
-                                                    <strong style="color:{{$color_14}}">
-                                                        $0.00
+                                                    <strong style="color:{{$color_16}}">
+                                                        $
+                                                        <span id="span_rentabilidad_m2_1_mes">{{number_format($rentabilidad_m2_1_mes, 2)}}</span>
                                                         <sup>(1 meses)</sup>
                                                     </strong>
                                                 </li>
@@ -408,8 +412,9 @@
                                             <img src="{{url('images/devaluacion.png')}}" alt="$" class="icon_td-org" aria-hidden="true">
                                             <ul class="list-unstyled text-center" style="margin-top: 5px">
                                                 <li>
-                                                    <strong style="color:{{$color_1}}">
-                                                        $0.00
+                                                    <strong style="color:{{$color_1_2}}">
+                                                        $
+                                                        <span id="span_rentabilidad_m2_1_mes">{{number_format($venta_m2_anno_1_mes, 2)}}</span>
                                                         <sup>(1 meses)</sup>
                                                     </strong>
                                                 </li>
@@ -453,8 +458,9 @@
                                             <img src="{{url('images/costos.png')}}" alt="$" class="icon_td-org" aria-hidden="true">
                                             <ul class="list-unstyled text-center" style="margin-top: 5px">
                                                 <li>
-                                                    <strong style="color:{{$color_12}}">
-                                                        $0.00
+                                                    <strong style="color:{{$color_17}}">
+                                                        $
+                                                        <span id="span_rentabilidad_m2_1_mes">{{number_format($costos_m2_1_mes, 2)}}</span>
                                                         <sup>(1 meses)</sup>
                                                     </strong>
                                                 </li>
