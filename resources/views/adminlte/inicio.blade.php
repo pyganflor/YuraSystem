@@ -145,6 +145,15 @@
         });
                 @endforeach
 
+        var rangos_costos_m2_1_mes = [];
+        @foreach(getIntervalosIndicador('C11') as $r)
+        rangos_costos_m2_1_mes.push({
+            desde: parseFloat('{{$r->desde}}'),
+            hasta: parseFloat('{{$r->hasta}}'),
+            color: '{{$r->color}}',
+        });
+                @endforeach
+
         var rangos_costos_m2_mensual = [];
         @foreach(getIntervalosIndicador('C9') as $r)
         rangos_costos_m2_mensual.push({
