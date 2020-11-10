@@ -121,6 +121,11 @@ class UpdateIndicador extends Command
             Venta::dinero_m2_anno_4_meses_atras();
             Log::info('fin INDICADOR: "Venta $/m2/año (-4 meses)"');
         }
+        if ($indicador_par === '0' || $indicador_par === 'D15') { // Venta $/m2/año (-1 mes)
+            Log::info('inicio INDICADOR: "Venta $/m2/año (-1 mes)"');
+            Venta::dinero_m2_anno_1_mes_atras();
+            Log::info('fin INDICADOR: "Venta $/m2/año (-4 meses)"');
+        }
         if ($indicador_par === '0' || $indicador_par === 'D10') { // Venta $/m2/año (-1 año)
             Venta::dinero_m2_anno_1_anno_atras();
             Log::info('INDICADOR: "Venta $/m2/año (-1 año)"');
@@ -192,6 +197,10 @@ class UpdateIndicador extends Command
         if ($indicador_par === '0' || $indicador_par === 'R1') { // Rentabilidad (-4 meses)
             Costos::rentabilidad_4_meses();
             Log::info('INDICADOR: "Rentabilidad (-4 meses)"');
+        }
+        if ($indicador_par === '0' || $indicador_par === 'R3') { // Rentabilidad (-1 mes)
+            Costos::rentabilidad_1_mes();
+            Log::info('INDICADOR: "Rentabilidad (-1 mes)"');
         }
         if ($indicador_par === '0' || $indicador_par === 'R2') { // Rentabilidad (-1 año)
             Costos::rentabilidad_1_anno();

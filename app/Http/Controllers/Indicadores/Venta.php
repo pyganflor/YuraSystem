@@ -129,6 +129,63 @@ class Venta
         }
     }
 
+    public static function dinero_m2_anno_1_mes_atras()
+    {
+        $model = getIndicadorByName('D15');  // Venta $/m2/año (-1 mes)
+        if ($model != '') {
+            $desde_sem = getSemanaByDate(opDiasFecha('-', 35, date('Y-m-d')));
+            $hasta_sem = getSemanaByDate(opDiasFecha('-', 7, date('Y-m-d')));
+
+            $venta_mensual = DB::table('resumen_semanal_total')
+                ->select(DB::raw('sum(valor) as cant'))
+                //->where('estado', 1)
+                ->where('codigo_semana', '>=', $desde_sem->codigo)
+                ->where('codigo_semana', '<=', $hasta_sem->codigo)
+                ->get()[0]->cant;
+
+            $semana_desde = getSemanaByDate(opDiasFecha('-', 35, $desde_sem->fecha_inicial));   // 5 semanas atras
+            $semana_hasta = $desde_sem;
+
+            //$data = getAreaCiclosByRango($semana_desde->codigo, $semana_hasta->codigo, 'T');
+            $data = getAreaCiclosByRango($desde_sem->codigo, $hasta_sem->codigo, 'T');
+            $area_anual = getAreaActivaFromData($data['variedades'], $data['semanas']) * 10000;
+
+            //dd($desde_sem->codigo, $hasta_sem->codigo, $venta_mensual, $semana_desde->codigo, $semana_hasta->codigo, $area_anual);
+
+            $model->valor = $area_anual > 0 ? round(($venta_mensual / $area_anual) * 3, 2) : 0;
+            $model->save();
+
+            /* ============================== INDICADOR x VARIEDAD ================================= */
+            foreach (Variedad::All() as $var) {
+                $ind = IndicadorVariedad::All()
+                    ->where('id_indicador', $model->id_indicador)
+                    ->where('id_variedad', $var->id_variedad)
+                    ->first();
+                if ($ind == '') {   // es nuevo
+                    $ind = new IndicadorVariedad();
+                    $ind->id_indicador = $model->id_indicador;
+                    $ind->id_variedad = $var->id_variedad;
+                }
+                $venta_mensual = DB::table('proyeccion_venta_semanal_real')
+                    ->select(DB::raw('sum(valor) as cant'))
+                    ->where('estado', 1)
+                    ->where('id_variedad', $var->id_variedad)
+                    ->where('codigo_semana', '>=', $desde_sem->codigo)
+                    ->where('codigo_semana', '<=', $hasta_sem->codigo)
+                    ->get()[0]->cant;
+
+                $semana_desde = getSemanaByDate(opDiasFecha('-', 35, $desde_sem->fecha_inicial));   // 5 semanas atras
+                $semana_hasta = $desde_sem;
+                //$data = getAreaCiclosByRango($semana_desde->codigo, $semana_hasta->codigo, $var->id_variedad);
+                $data = getAreaCiclosByRango($desde_sem->codigo, $hasta_sem->codigo, $var->id_variedad);
+                $area_anual = getAreaActivaFromData($data['variedades'], $data['semanas']) * 10000;
+
+                $ind->valor = $area_anual > 0 ? round(($venta_mensual / $area_anual) * 3, 2) : 0;
+                $ind->save();
+            }
+        }
+    }
+
     public static function dinero_m2_anno_1_anno_atras()
     {
         $model = getIndicadorByName('D10');  // Venta $/m2/año (-1 año)

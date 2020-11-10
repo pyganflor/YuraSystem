@@ -472,6 +472,33 @@ class Costos
         }
     }
 
+    public static function rentabilidad_1_mes()
+    {
+        $model = getIndicadorByName('R3');  // Rentabilidad (-1 mes)
+        if ($model != '') {
+            $valor = getIndicadorByName('D15')->valor - getIndicadorByName('C11')->valor;
+            $model->valor = $valor;
+            $model->save();
+
+            /* -------------------------- X VARIEDAD ------------------------- */
+            foreach (Variedad::All() as $var) {
+                $ind = IndicadorVariedad::All()
+                    ->where('id_indicador', $model->id_indicador)
+                    ->where('id_variedad', $var->id_variedad)
+                    ->first();
+                if ($ind == '') {   // es nuevo
+                    $ind = new IndicadorVariedad();
+                    $ind->id_indicador = $model->id_indicador;
+                    $ind->id_variedad = $var->id_variedad;
+                }
+
+                $valor = getIndicadorByName('D15')->getVariedad($var->id_variedad)->valor - getIndicadorByName('C11')->valor;
+                $ind->valor = $valor;
+                $ind->save();
+            }
+        }
+    }
+
     public static function rentabilidad_1_anno()
     {
         $model = getIndicadorByName('R2');  // Rentabilidad (-1 año)
