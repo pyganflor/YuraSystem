@@ -650,6 +650,7 @@ class YuraController extends Controller
                 'ciclo' => $variedad == '' ? getIndicadorByName('DA1')->valor : getIndicadorByName('DA1')->getVariedad($variedad->id_variedad)->valor,
 
                 'venta_m2_anno_mensual' => $variedad == '' ? getIndicadorByName('D9')->valor : getIndicadorByName('D9')->getVariedad($variedad->id_variedad)->valor,
+                'venta_m2_anno_1_mes' => $variedad == '' ? getIndicadorByName('D15')->valor : getIndicadorByName('D15')->getVariedad($variedad->id_variedad)->valor,
                 'venta_m2_anno_anual' => getIndicadorByName('D10')->valor,
 
                 'costos_campo_semana' => getIndicadorByName('C3')->valor,
@@ -659,9 +660,11 @@ class YuraController extends Controller
 
                 'costos_m2_mensual' => getIndicadorByName('C9')->valor,
                 'costos_m2_anual' => getIndicadorByName('C10')->valor,
+                'costos_m2_1_mes' => getIndicadorByName('C11')->valor,
 
                 'rentabilidad_m2_mensual' => getIndicadorByName('R1')->valor,
                 'rentabilidad_m2_anual' => getIndicadorByName('R2')->valor,
+                'rentabilidad_m2_1_mes' => getIndicadorByName('R3')->valor,
                 'costos_m2_mensuales' => $costos_m2_mensuales,
                 'ventas_m2_mensuales' => $ventas_m2_mensuales,
                 'rentabilidad_m2_mensuales' => $rentabilidad_m2_mensuales,

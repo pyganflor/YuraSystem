@@ -28,6 +28,15 @@
     <script src="https://bernii.github.io/gauge.js/dist/gauge.min.js"></script>
 
     <script>
+        var rangos_venta_m2_1_mes = [];
+        @foreach(getIntervalosIndicador('D15') as $r)
+        rangos_venta_m2_1_mes.push({
+            desde: parseFloat('{{$r->desde}}'),
+            hasta: parseFloat('{{$r->hasta}}'),
+            color: '{{$r->color}}',
+        });
+                @endforeach
+
         var rangos_venta_m2_mensual = [];
         @foreach(getIntervalosIndicador('D9') as $r)
         rangos_venta_m2_mensual.push({
