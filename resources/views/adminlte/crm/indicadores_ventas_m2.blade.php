@@ -2,9 +2,9 @@
 <div style="overflow-x: scroll">
     <table class="table-responsive" width="100%">
         <tr>
-            <th class="text-center" style="padding-right: 50px">$/m<sup>2</sup>/año (1 mes)</th>
-            <th class="text-center" style="padding-right: 50px">$/m<sup>2</sup>/año (4 meses)</th>
-            <th class="text-center" style="padding-left: 50px">$/m<sup>2</sup>/año (1 año)</th>
+            <th class="text-center">$/m<sup>2</sup>/año (1 mes)</th>
+            <th class="text-center">$/m<sup>2</sup>/año (4 meses)</th>
+            <th class="text-center">$/m<sup>2</sup>/año (1 año)</th>
         </tr>
         <tr>
             <th class="text-center">
@@ -18,9 +18,9 @@
             </th>
         </tr>
         <tr>
-            <th class="text-center" style="padding-right: 90px">{{number_format($venta_m2_anno_1_mes, 2)}}</th>
-            <th class="text-center" style="padding-right: 90px">{{number_format($venta_m2_anno_mensual, 2)}}</th>
-            <th class="text-center" style="padding-left: 90px">{{number_format($venta_m2_anno_anual, 2)}}</th>
+            <th class="text-center">{{number_format($venta_m2_anno_1_mes, 2)}}</th>
+            <th class="text-center">{{number_format($venta_m2_anno_mensual, 2)}}</th>
+            <th class="text-center">{{number_format($venta_m2_anno_anual, 2)}}</th>
         </tr>
     </table>
 </div>
@@ -34,6 +34,6 @@
         datos = {
             variedad: $('#variedad').val()
         };
-        get_jquery('{{url('')}}')
+        get_jquery('{{url('')}}');
     }
 </script>
