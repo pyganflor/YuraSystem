@@ -44,6 +44,7 @@ class YuraController extends Controller
                 'ramos_m2_anno' => getIndicadorByName('D8')->valor,
                 'venta_m2_anno_mensual' => getIndicadorByName('D9')->valor,
                 'venta_m2_anno_anual' => getIndicadorByName('D10')->valor,
+                'venta_m2_anno_1_mes' => getIndicadorByName('D15')->valor,
                 'tallos_cosechados' => getIndicadorByName('D11')->valor,
                 'cajas_exportadas' => getIndicadorByName('D13')->valor,
                 'tallos_m2' => getIndicadorByName('D12')->valor,
@@ -57,8 +58,10 @@ class YuraController extends Controller
                 'costos_regalias' => getIndicadorByName('C8')->valor,
                 'costos_m2_mensual' => getIndicadorByName('C9')->valor,
                 'costos_m2_anual' => getIndicadorByName('C10')->valor,
+                'costos_m2_1_mes' => getIndicadorByName('C11')->valor,
                 'rentabilidad_m2_mensual' => getIndicadorByName('R1')->valor,
                 'rentabilidad_m2_anual' => getIndicadorByName('R2')->valor,
+                'rentabilidad_m2_1_mes' => getIndicadorByName('R3')->valor,
             ]);
         }
 
@@ -683,6 +686,7 @@ class YuraController extends Controller
             'ciclo' => getIndicadorByName('DA1')->getVariedad($variedad->id_variedad)->valor,
             'ramos_m2_anno' => getIndicadorByName('D8')->getVariedad($variedad->id_variedad)->valor,
             'venta_m2_anno_mensual' => getIndicadorByName('D9')->getVariedad($variedad->id_variedad)->valor,
+            'venta_m2_anno_1_mes' => getIndicadorByName('D15')->getVariedad($variedad->id_variedad)->valor,
             'venta_m2_anno_anual' => getIndicadorByName('D10')->valor,
             'tallos_cosechados' => getIndicadorByName('D11')->getVariedad($variedad->id_variedad)->valor,
             'cajas_exportadas' => getIndicadorByName('D13')->getVariedad($variedad->id_variedad)->valor,
@@ -697,7 +701,9 @@ class YuraController extends Controller
             'costos_regalias' => getIndicadorByName('C8')->valor,
             'costos_m2_mensual' => getIndicadorByName('C9')->valor,
             'costos_m2_anual' => getIndicadorByName('C10')->valor,
+            'costos_m2_1_mes' => getIndicadorByName('C11')->valor,
             'rentabilidad_m2_mensual' => getIndicadorByName('R1')->getVariedad($variedad->id_variedad)->valor,
+            'rentabilidad_m2_1_mes' => getIndicadorByName('R3')->getVariedad($variedad->id_variedad)->valor,
             'rentabilidad_m2_anual' => getIndicadorByName('R2')->valor,
         ]);
     }
