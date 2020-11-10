@@ -152,7 +152,7 @@ class Venta
 
             //dd($desde_sem->codigo, $hasta_sem->codigo, $venta_mensual, $semana_desde->codigo, $semana_hasta->codigo, $area_anual);
 
-            $model->valor = $area_anual > 0 ? round(($venta_mensual / $area_anual) * 3, 2) : 0;
+            $model->valor = $area_anual > 0 ? round(($venta_mensual / $area_anual) * 12, 2) : 0;
             $model->save();
 
             /* ============================== INDICADOR x VARIEDAD ================================= */
