@@ -180,7 +180,7 @@ class Venta
                 $data = getAreaCiclosByRango($desde_sem->codigo, $hasta_sem->codigo, $var->id_variedad);
                 $area_anual = getAreaActivaFromData($data['variedades'], $data['semanas']) * 10000;
 
-                $ind->valor = $area_anual > 0 ? round(($venta_mensual / $area_anual) * 3, 2) : 0;
+                $ind->valor = $area_anual > 0 ? round(($venta_mensual / $area_anual) * 12, 2) : 0;
                 $ind->save();
             }
         }
