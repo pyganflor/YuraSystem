@@ -2,6 +2,7 @@
 @php
     $color_1 = $variedad == '' ? getColorByIndicador('D9') : getColorByIndicadorVariedad('D9', $variedad->id_variedad);   //  venta_m2_anno_mensual
     $color_1_1 = $variedad == '' ? getColorByIndicador('D10') : getColorByIndicadorVariedad('D10', $variedad->id_variedad);    //  venta_m2_anno_anual
+    $color_1_2 = $variedad == '' ? getColorByIndicador('D15') : getColorByIndicadorVariedad('D15', $variedad->id_variedad);    //  venta_m2_anno_1_mes
     $color_2 = $variedad == '' ? getColorByIndicador('DA1') : getColorByIndicadorVariedad('DA1', $variedad->id_variedad);  //  ciclo
     $color_3 = $variedad == '' ? getColorByIndicador('D1') : getColorByIndicadorVariedad('D1', $variedad->id_variedad);   //  calibre
     $color_4 = $variedad == '' ? getColorByIndicador('D3') : getColorByIndicadorVariedad('D3', $variedad->id_variedad);   //  precio_x_ramo
@@ -13,9 +14,11 @@
     $color_10 = getColorByIndicador('C5');   //  costos_postcosecha_x_tallo
     $color_11 = getColorByIndicador('C6');   //  costos_total_x_tallo
     $color_12 = getColorByIndicador('C9');   //  costos_m2_mensual
+    $color_17 = getColorByIndicador('C11');   //  costos_m2_1_mes
     $color_13 = getColorByIndicador('C10');   //  costos_m2_anual
     $color_14 = $variedad == '' ? getColorByIndicador('R1') : getColorByIndicadorVariedad('R1', $variedad->id_variedad);   //  rentabilidad_m2_mensual
     $color_15 = getColorByIndicador('R2');   //  rentabilidad_m2_anual
+    $color_16 = getColorByIndicador('R3');   //  rentabilidad_m2_1_mes
 @endphp
 <table style="width: 100%;" align="center" class="table-borsdered">
     <tr>
@@ -44,6 +47,13 @@
                     <div class="col-md-12">
                         <img src="{{url('images/negocio.png')}}" alt="$" class="icon_td-org" aria-hidden="true">
                         <ul class="list-unstyled text-center" style="margin-top: 5px">
+                            <li>
+                                <strong style="color:{{$color_16}}">
+                                    $
+                                    <span id="span_rentabilidad_m2_mensual">{{number_format($rentabilidad_m2_1_mes, 2)}}</span>
+                                    <sup>(1 mes)</sup>
+                                </strong>
+                            </li>
                             <li>
                                 <strong style="color:{{$color_14}}">
                                     $
@@ -98,6 +108,13 @@
                         <img src="{{url('images/devaluacion.png')}}" alt="$" class="icon_td-org" aria-hidden="true">
                         <ul class="list-unstyled text-center" style="margin-top: 5px">
                             <li>
+                                <strong style="color:{{$color_1_2}}">
+                                    $
+                                    <span id="span_rentabilidad_m2_mensual">{{number_format($venta_m2_anno_1_mes, 2)}}</span>
+                                    <sup>(1 mes)</sup>
+                                </strong>
+                            </li>
+                            <li>
                                 <strong style="color:{{$color_1}}">
                                     $
                                     <span id="span_rentabilidad_m2_mensual">{{number_format($venta_m2_anno_mensual, 2)}}</span>
@@ -136,6 +153,13 @@
                     <div class="col-md-12">
                         <img src="{{url('images/costos.png')}}" alt="$" class="icon_td-org" aria-hidden="true">
                         <ul class="list-unstyled text-center" style="margin-top: 5px">
+                            <li>
+                                <strong style="color:{{$color_17}}">
+                                    $
+                                    <span id="span_rentabilidad_m2_mensual">{{number_format($costos_m2_1_mes, 2)}}</span>
+                                    <sup>(1 mes)</sup>
+                                </strong>
+                            </li>
                             <li>
                                 <strong style="color:{{$color_12}}">
                                     $
