@@ -12,7 +12,8 @@ use yura\Modelos\Submenu;
 
 class proyResumenTotalController extends Controller
 {
-    public function inicio(Request $request){
+    public function inicio(Request $request)
+    {
         return view('adminlte.gestion.proyecciones.resumen_total.inicio', [
             'url' => $request->getRequestUri(),
             'submenu' => Submenu::Where('url', '=', substr($request->getRequestUri(), 1))->get()[0],
@@ -21,7 +22,8 @@ class proyResumenTotalController extends Controller
         ]);
     }
 
-    public function listarProyecionResumenTotal(Request $request){
+    public function listarProyecionResumenTotal(Request $request)
+    {
 
         $desde = isset($request->desde) ? $request->desde : now()->toDateString();
         $hasta = isset($request->hasta) ? $request->hasta : now()->toDateString();
@@ -31,17 +33,17 @@ class proyResumenTotalController extends Controller
 
         if (isset($semana_desde) && isset($semana_hasta)) {
 
-            $semanas=[];
+            $semanas = [];
             for ($i = $semana_desde->codigo; $i <= $semana_hasta->codigo; $i++) {
                 $existSemana = Semana::where('codigo', $i)->select('codigo')->first();
                 if (isset($existSemana->codigo))
                     $semanas[] = $existSemana->codigo;
             }
 
-            $semResumenSemanaCosecha = ResumenSemanaCosecha::whereIn('codigo_semana',$semanas)
-                ->where(function($query) use ($request){
-                    if(isset($request->id_variedad))
-                        $query->where('id_variedad',$request->id_variedad);
+            $semResumenSemanaCosecha = ResumenSemanaCosecha::whereIn('codigo_semana', $semanas)
+                ->where(function ($query) use ($request) {
+                    if (isset($request->id_variedad))
+                        $query->where('id_variedad', $request->id_variedad);
                 })->select('codigo_semana',
                     //DB::raw('SUM(cajas) as cajas'),
                     //DB::raw('SUM(tallos) as tallos'),
@@ -49,13 +51,13 @@ class proyResumenTotalController extends Controller
                     DB::raw('SUM(tallos_proyectados) as tallos_proyectados'))
                 ->groupBy('codigo_semana')->get();
 
-            $dataVentas=collect();
-            $semanaActual=getSemanaByDate(now()->toDateString())->codigo;
-            $ramosxCajaEmpresa= getConfiguracionEmpresa()->ramos_x_caja;
+            $dataVentas = collect();
+            $semanaActual = getSemanaByDate(now()->toDateString())->codigo;
+            $ramosxCajaEmpresa = getConfiguracionEmpresa()->ramos_x_caja;
             $idVariedad = isset($request->id_variedad) ? $request->id_variedad : null;
 
             foreach ($semanas as $semana)
-                $dataVentas->push(collect(getObjSemana($semana)->getTotalesProyeccionVentaSemanal(false,$idVariedad,true,$semanaActual,false,$ramosxCajaEmpresa)));
+                $dataVentas->push(collect(getObjSemana($semana)->getTotalesProyeccionVentaSemanal(false, $idVariedad, true, $semanaActual, false, $ramosxCajaEmpresa)));
 
             //dump($dataVentas);
             /*$dataVentas = ProyeccionVentaSemanalReal::whereIn('codigo_semana',$semanas)
@@ -69,18 +71,16 @@ class proyResumenTotalController extends Controller
 
             $success = true;
 
-        }else{ // LA semana no esta programada
+        } else { // LA semana no esta programada
             $success = false;
         }
 
-        return view('adminlte.gestion.proyecciones.resumen_total.partials.listado',[
+        return view('adminlte.gestion.proyecciones.resumen_total.partials.listado', [
             'success' => $success,
-            'semanas'=>$semanas,
-            'dataCosecha'=>$semResumenSemanaCosecha,
-            'success'=>$success,
-            'dataVentas'=>$dataVentas
+            'semanas' => $semanas,
+            'dataCosecha' => $semResumenSemanaCosecha,
+            'dataVentas' => $dataVentas
         ]);
-
 
 
     }
