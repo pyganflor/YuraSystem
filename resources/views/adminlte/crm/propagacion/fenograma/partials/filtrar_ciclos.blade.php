@@ -113,7 +113,7 @@
                 <th class="text-center th_yura_green" style="border-color: white">
                     {{$cosechados}}
                 </th>
-                <th class="text-center th_yura_green" style="border-color: white" colspan="4">
+                <th class="text-center th_yura_green" style="border-color: white" colspan="6">
                 </th>
             </tr>
         </table>
