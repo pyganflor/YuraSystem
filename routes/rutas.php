@@ -138,4 +138,5 @@ Route::group(['middleware' => 'autenticacion'], function () {
 });
 include 'notificaciones/otras.php';
 
-Route::get('test', 'YuraController@test');
+Route::get('pagina_a', 'ControladorNuevo@contenido_a');
+Route::get('pagina_b', 'ControladorNuevo@contenido_b');
