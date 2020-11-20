@@ -766,13 +766,15 @@ function getVariedades()
     return Variedad::All()->where('estado', '=', 1);
 }
 
-function getVariedadesByPlanta($p, $formato = 'option')
+function getVariedadesByPlanta($p, $formato = 'option', $select = 1)
 {
     $p = Planta::find($p);
     if ($formato == 'option') {
         $r = '';
         foreach ($p->variedades as $v) {
-            $selected = $v->id_variedad == 2 ? "selected" : "";
+            $selected = '';
+            if ($select == 1)
+                $selected = $v->id_variedad == 2 ? "selected" : "";
             $r .= '<option value="' . $v->id_variedad . '" ' . $selected . '>' . $v->nombre . '</option>';
         }
         return $r;

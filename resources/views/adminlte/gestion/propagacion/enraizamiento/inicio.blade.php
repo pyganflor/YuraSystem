@@ -32,19 +32,19 @@
     <!-- Main content -->
     <section class="content">
         <div class="row">
-            <div class="col-md-8 col-sm-12">
+            <div class="col-md-7 col-sm-12">
                 <div class="form-group input-group">
                     <span class="input-group-addon bg-yura_dark span-input-group-yura-fixed">
                         <i class="fa fa-fw fa-calendar"></i>
                     </span>
-                    <input type="date" id="fecha_search" name="fecha_search" value="{{date('Y-m-d')}}"
+                    <input type="date" id="fecha_search" name="fecha_search" value="{{date('Y-m-d')}}" required
                            class="form-control input-yura_default text-center" onchange="listar_siembras();" style="width: 100% !important;"
                            max="{{date('Y-m-d')}}">
                 </div>
 
                 <div id="listado_siembras"></div>
             </div>
-            <div class="col-md-4" id="div_form_add_siembras">
+            <div class="col-md-5" id="div_form_add_siembras">
                 @include('adminlte.gestion.propagacion.enraizamiento.form.add_siembra')
             </div>
         </div>

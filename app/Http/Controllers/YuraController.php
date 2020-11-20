@@ -621,7 +621,7 @@ class YuraController extends Controller
 
     public function select_planta(Request $request)
     {
-        return getVariedadesByPlanta($request->planta);
+        return getVariedadesByPlanta($request->planta, 'option', $request->select);
     }
 
     public function mostrar_indicadores_claves(Request $request)
