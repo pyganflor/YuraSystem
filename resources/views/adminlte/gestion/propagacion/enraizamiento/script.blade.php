@@ -8,7 +8,7 @@
             fecha: $('#fecha_search').val(),
         };
         $.LoadingOverlay('show');
-        $.get('{{url('propag_config/listar_contenedores')}}', datos, function (retorno) {
+        $.get('{{url('propag_config/listar_enraizamientos')}}', datos, function (retorno) {
             $('#listado_contenedores').html(retorno);
             estructura_tabla('table_contenedores', false, true);
             //$('#table_contenedores_filter').remove();
