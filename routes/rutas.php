@@ -127,6 +127,9 @@ Route::group(['middleware' => 'autenticacion'], function () {
             include 'propagacion/fenograma.php';
             include 'propagacion/enraizamiento.php';
 
+            /* ================== RRHH =================== */
+            include 'rrhh/parametros.php';
+
             /* ================== DB =================== */
             include 'db/rutas.php';
         });

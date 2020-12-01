@@ -26,10 +26,10 @@
                     Semana Cosecha
                 </th>
                 <th class="fila_fija1" style="border-color: #9d9d9d; padding-left: 5px">
-                    Esq. x Sem.
+                    Esq. x Sem. Acum.
                 </th>
                 <th class="fila_fija1" style="border-color: #9d9d9d; padding-left: 5px">
-                    Esq. x Sem. Acum.
+                    Esq. x Sem.
                 </th>
                 <th class="fila_fija1" style="border-color: #9d9d9d; padding-left: 5px">
                     Esq.x Pta.
@@ -83,6 +83,7 @@
                     </td>
                     <td class="text-center" style="border-color: #9d9d9d">
                         {{($fechaCosecha != '' && $getPlantasProductivas > 0 && $semanas_cosecha > 0) ? round(($getExquejesCosechados / $semanas_cosecha) / $getPlantasProductivas, 2) : ''}}
+                        ({{$getExquejesCosechados}} / {{$semanas_cosecha}}) / {{$getPlantasProductivas}}
                     </td>
                     <td class="text-center" style="border-color: #9d9d9d">
                         {{$getPlantasProductivas > 0 ? round($getExquejesCosechadosByLastSemana / $getPlantasProductivas, 2) : ''}}
