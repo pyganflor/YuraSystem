@@ -57,6 +57,7 @@
                     $fechaCosecha = $c->getFechaCosecha();
                     $getSemanaActual = $c->semana_vida();
                     $semanas_cosecha = round(difFechas($fechaCosecha, $c->fecha_inicio)->days / 7);
+                    $semanas_cosechando = $getSemanaActual - $semanas_cosecha;
                     $semana_fin = getSemanaByDate(opDiasFecha('+', (7 * $c->total_semanas_cosecha), $c->fecha_inicio));
                 @endphp
                 <tr>
@@ -82,8 +83,8 @@
                         {{$fechaCosecha != '' ? $semanas_cosecha : ''}}
                     </td>
                     <td class="text-center" style="border-color: #9d9d9d">
-                        {{($fechaCosecha != '' && $getPlantasProductivas > 0 && $semanas_cosecha > 0) ? round(($getExquejesCosechados / $semanas_cosecha) / $getPlantasProductivas, 2) : ''}}
-                        ({{$getExquejesCosechados}} / {{$semanas_cosecha}}) / {{$getPlantasProductivas}}
+                        {{($fechaCosecha != '' && $getPlantasProductivas > 0 && $semanas_cosechando > 0) ? round(($getExquejesCosechados / $semanas_cosechando) / $getPlantasProductivas, 2) : ''}}
+                        ({{$getExquejesCosechados}} / {{$semanas_cosechando}}) / {{$getPlantasProductivas}}
                     </td>
                     <td class="text-center" style="border-color: #9d9d9d">
                         {{$getPlantasProductivas > 0 ? round($getExquejesCosechadosByLastSemana / $getPlantasProductivas, 2) : ''}}
