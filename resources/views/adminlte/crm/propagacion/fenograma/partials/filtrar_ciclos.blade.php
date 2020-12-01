@@ -26,10 +26,10 @@
                     Semana Cosecha
                 </th>
                 <th class="fila_fija1" style="border-color: #9d9d9d; padding-left: 5px">
-                    Esq. x Sem. Acum.
+                    Esq. x Sem.
                 </th>
                 <th class="fila_fija1" style="border-color: #9d9d9d; padding-left: 5px">
-                    Esq. x Sem.
+                    Esq. x Sem. Acum.
                 </th>
                 <th class="fila_fija1" style="border-color: #9d9d9d; padding-left: 5px">
                     Esq.x Pta.
@@ -83,10 +83,10 @@
                         {{$fechaCosecha != '' ? $semanas_cosecha : ''}}
                     </td>
                     <td class="text-center" style="border-color: #9d9d9d">
-                        {{($fechaCosecha != '' && $getPlantasProductivas > 0 && $semanas_cosechando > 0) ? round(($getExquejesCosechados / $semanas_cosechando) / $getPlantasProductivas, 2) : ''}}
+                        {{$getPlantasProductivas > 0 ? round($getExquejesCosechadosByLastSemana / $getPlantasProductivas, 2) : ''}}
                     </td>
                     <td class="text-center" style="border-color: #9d9d9d">
-                        {{$getPlantasProductivas > 0 ? round($getExquejesCosechadosByLastSemana / $getPlantasProductivas, 2) : ''}}
+                        {{($fechaCosecha != '' && $getPlantasProductivas > 0 && $semanas_cosechando > 0) ? round(($getExquejesCosechados / $semanas_cosechando) / $getPlantasProductivas, 2) : ''}}
                     </td>
                     <td class="text-center" style="border-color: #9d9d9d">
                         {{$getPlantasProductivas > 0 ? round($getExquejesCosechados / $getPlantasProductivas, 2) : ''}}
