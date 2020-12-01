@@ -84,7 +84,6 @@
                     </td>
                     <td class="text-center" style="border-color: #9d9d9d">
                         {{($fechaCosecha != '' && $getPlantasProductivas > 0 && $semanas_cosechando > 0) ? round(($getExquejesCosechados / $semanas_cosechando) / $getPlantasProductivas, 2) : ''}}
-                        ({{$getExquejesCosechados}} / {{$semanas_cosechando}}) / {{$getPlantasProductivas}}
                     </td>
                     <td class="text-center" style="border-color: #9d9d9d">
                         {{$getPlantasProductivas > 0 ? round($getExquejesCosechadosByLastSemana / $getPlantasProductivas, 2) : ''}}
