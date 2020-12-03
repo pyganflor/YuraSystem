@@ -16,9 +16,9 @@
     $color_12 = getColorByIndicador('C9');   //  costos_m2_mensual
     $color_17 = getColorByIndicador('C11');   //  costos_m2_1_mes
     $color_13 = getColorByIndicador('C10');   //  costos_m2_anual
-    $color_14 = $variedad == '' ? getColorByIndicador('R1') : getColorByIndicadorVariedad('R1', $variedad->id_variedad);   //  rentabilidad_m2_mensual
+    $color_14 = getColorByIndicador('R1');   //  rentabilidad_m2_mensual
     $color_15 = getColorByIndicador('R2');   //  rentabilidad_m2_anual
-    $color_16 = getColorByIndicador('R3');   //  rentabilidad_m2_1_mes
+    $color_16 = $variedad == '' ? getColorByIndicador('R3') : getColorByIndicadorVariedad('R3', $variedad->id_variedad);   //  rentabilidad_m2_1_mes
 @endphp
 <table style="width: 100%;" align="center" class="table-borsdered">
     <tr>
